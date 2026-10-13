@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "def IsIntegerMultiplicity|abbrev Euclid|dtc_bc_cz_tc_weak_derivs|dgcr_bwd_coordinate_form",
+        "map_insertNth|curryLeft_apply_apply|setIntegral_eq_integral_of_forall_compl_eq_zero|fderiv_of_notMem_tsupport|exists_mem_of_measure_ne_zero_of_ae",
+        "IsSmoothForm|IsTestForm|exteriorDerivative_apply",
+        "testFormOnSubmodule|exteriorDerivativeTestOn|boundary_apply",
+        "git show bb4ef845af20b840ed2198f59dfe0c87d66b11fe:GMT/Ch07/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-ef3f91c228/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/parent_verification.py",
+        "/tmp/codex-top-constancy-audit/Challenges.lean",
+        "/tmp/codex-top-constancy-audit/ReusedAndWeakAudit.lean",
+        "/tmp/codex-top-constancy-audit/S2CAudit.lean",
+        "/tmp/codex-top-constancy-audit/Assembly.lean",
+        "/tmp/codex-top-constancy-audit/ImportClosure.lean"
+      ],
+      "conclusion": "Verified snapshot compatibility and independently compiled both child types without their implementations. Recompiled the accepted coordinate-form declaration, the supplied weak-derivative proof, and accepted S2C against their frozen types; each uses only propext, Classical.choice and Quot.sound. The weak-derivative insertion also passes check_source_delta. The library constancy theorem is absent from the frozen import closure, confirming the import-related split rationale. An independently written conditional assembly compiles the exact selected parent type from weak_derivs and the two existing dependency contracts, including empty B, integrality and the final supported-form identity. Its axioms are standard. top_density remains an explicit existing obligation. The proposed dependency closure is acyclic; coordinate_form is accepted with a byte-identical frozen type, and the new name has no DAG reservation. Neither proposed declaration name occurs in the searched snapshot or SimonGMT sources."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coordinate_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including the smoothness order and support conclusion. The proof constructs the continuous determinant covector, establishes its contraction values by insertion signs and repeated-entry vanishing, and differentiates a times that covector. The two factors (-1)^j cancel correctly, including when m = 0. No circular reliance or missing hypothesis occurs. The bare name validly reuses comparator-accepted dgcr_bwd_coordinate_form with an identical frozen type and standard axioms."
+    },
+    {
+      "key": "weak_derivs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes every prose hypothesis, and its bare name is unreserved. The proof uses coordinate_form to construct a compactly supported test form, applies the boundary and density hypotheses, and identifies the resulting integrand. The derivative vanishes outside tsupport a, permitting restriction to B; the pinned integral lemma requires neither measurability of B nor integrability of G. The supplied Lean proof independently compiles with standard axioms. Its sole child dependency is correctly directed toward coordinate_form, and its conclusion supplies exactly the S2C hypothesis needed by the selected parent."
+    }
+  ],
+  "required_changes": []
+}
