@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.height_transfer-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Weighted L^2 bound for u - Du(x)x on a graph piece from the conical integral of V (step 4 of the rate proof)",
+  "statement": "Let n, l >= 0, U any set, V a contract rectifiable n-varifold in U with weight mu and p_y := V.tangentProj y, q a linear isometry of R^(n+l), u : R^n -> R^l, and R, rho real. Let Omega := B^o_R(0) (open ball of R^n), F(x) := q(graphPoint(x, u x)), Du(x) := fderiv u x, and, for linear A, P_A := orthogonal projection onto q(span{graphPoint(v, A v)}). Assume:\n- u is C^1 on Omega, u(0) = 0, and ||Du(x)|| <= 1/7 for x in Omega;\n- F(Omega) is contained in B^o_rho(0);\n- y -> p_y is mu-a.e. strongly measurable;\n- (E1_Omega) for every Borel g : R^(n+l) -> [0, infinity], the lower integral over Omega of g(F(x)) dx is at most the lower integral over F(Omega) of g d mu;\n- (E2) p_{F(x)} = P_{Du(x)} for Lebesgue-a.e. x in Omega.\nThen the lower integral over Omega of ofReal(|u(x) - Du(x)x|^2/|x|^(n+2)) dx is at most ofReal(2^(n+4)) times the lower integral over B^o_rho(0) of ofReal(|y - p_y y|^2/|y|^(n+2)) d mu(y). Real division by 0 gives 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (R ρ : ℝ), ContDiffOn ℝ 1 u (ball 0 R) → u 0 = 0 → (∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x‖ ≤ 1 / 7) → q '' graphOver u (ball 0 R) ⊆ ball 0 ρ → AEStronglyMeasurable V.tangentProj V.weight → (∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in ball (0 : Rn n) R, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u (ball 0 R), g y ∂V.weight) → (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) R)), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) → ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖u x - fderiv ℝ u x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤ ENNReal.ofReal (2 ^ (n + 4)) * ∫⁻ y in ball (0 : Amb n ℓ) ρ, ENNReal.ofReal (‖y - V.tangentProj y y‖ ^ 2 / ‖y‖ ^ (n + 2)) ∂V.weight",
+  "lean_name": "any_radius_gr_height_transfer",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-height-transfer-a1-a1"
+}

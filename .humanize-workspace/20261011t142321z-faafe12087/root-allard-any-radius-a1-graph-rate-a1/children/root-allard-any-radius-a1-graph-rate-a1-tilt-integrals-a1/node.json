@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.tilt_integrals-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Integrability, lower-integral form, radius monotonicity and nonnegativity of the tilt-excess integral",
+  "statement": "Let n, l >= 0, U any subset of R^(n+l), and V a contract rectifiable n-varifold in U with weight mu, such that y -> V.tangentProj y is mu-a.e. strongly measurable. Let zeta in R^(n+l), T a linear subspace with orthogonal projection P_T, and E(zeta, s, T) := V.tiltExcess zeta s T = (s^n)^(-1) times the Bochner integral over the closed ball B_s(zeta) of hsNormSq(V.tangentProj y - P_T) d mu. Then:\n(T1) for every s > 0 with mu(B_s(zeta)) < infinity, the lower integral over B_s(zeta) of ofReal(hsNormSq(V.tangentProj y - P_T)) d mu equals ofReal(s^n E(zeta, s, T));\n(T2) for 0 < sigma <= s with mu(B_s(zeta)) < infinity, sigma^n E(zeta, sigma, T) <= s^n E(zeta, s, T);\n(T3) E(zeta, s, T) >= 0 for every s > 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (T : Submodule ℝ (Amb n ℓ)), (∀ s : ℝ, 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T)) ∧ (∀ σ s : ℝ, 0 < σ → σ ≤ s → V.weight (closedBall ζ s) < ⊤ → σ ^ n * V.tiltExcess ζ σ T ≤ s ^ n * V.tiltExcess ζ s T) ∧ ∀ s : ℝ, 0 < s → 0 ≤ V.tiltExcess ζ s T",
+  "lean_name": "any_radius_gr_tilt_integral_facts",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-tilt-integrals-a1-a1"
+}
