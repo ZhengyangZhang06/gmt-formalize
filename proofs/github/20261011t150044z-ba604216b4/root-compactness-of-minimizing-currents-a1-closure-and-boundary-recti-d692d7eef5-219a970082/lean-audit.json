@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "eb75933e0d87c3bdd89ef5cc756fff2e7cf186a324ddbf083d86a35c7c8e3e78",
+  "git_delta": {
+    "base_commit": "273f386f3a884062e14c3be2afde4272d30361f8",
+    "candidate_commit": "1f12d98ea73822ee357d027c11cda5e076d90728",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "d08b6d2bddddf77af12709a6d06f73180e46643af09ea11ec14ad54201f74f44",
+    "source_sha256": "c4745a5c884c2723345c7fdef4bdb9b977ca2f8d2b186fc515b7d2ceb26d2d2b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_tangent_cone_density_zero",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < n → μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → ∀ t : ℝ≥0∞, 0 < t → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ ({z | 2 * ‖Q.starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ)) ≤ t * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
