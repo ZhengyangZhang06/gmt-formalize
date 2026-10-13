@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "29b162002d82ebeb85a49bd4da86bd1148e9713ae286c3bd6bf1327dcb783c38",
+  "git_delta": {
+    "base_commit": "a0ca84e8f6b04f9aa2524be60fa91d76e96a247b",
+    "candidate_commit": "02ad4f72e9a7dd8e7df04a9c15afd5da124a64f8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_pr_adapted_orthonormalBasis",
+    "diff_sha256": "03f3ba1f723d0333eceae32170c977abac711d4783359b1231c78fb3f6647dcd",
+    "source_sha256": "f6a2280f413693adce10cccf46404d71a21805a63d76454f4f3d29eaaaf2fb98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_pr_adapted_orthonormalBasis",
+      "statement": "∀ (P : ℕ) (V : Submodule ℝ (Euclid P)), ∃ e : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, e i ∈ V ∨ e i ∈ Vᗮ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
