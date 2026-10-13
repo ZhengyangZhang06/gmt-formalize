@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_rlim_|dmcbr_|cbr_sublevel",
+        "exists_contDiff_support_eq_eq_one_iff|tendsto_measure_iInter_atTop|eventually_lt_of_limsup_lt|bounded_above_of_compact_support|theorem ContinuousAlternatingMap.apply|def apply",
+        "def covectorEuclideanNorm|def WeaklyConvergesOn|abbrev TestFormOn|def IsTestForm|def IsSmoothForm|abbrev Covector|abbrev DifferentialForm|testFormOnSubmodule",
+        "isBoundedBilinearMap_apply|comp_aestronglyMeasurable₂|integral_indicator_const|norm_integral_le_of_norm_le|integrable_indicator_iff|tsupport_smul_subset_right|HasCompactSupport.smul_left|toReal_lt_of_lt_ofReal",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/restriction_limit_independent_audit/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/restriction_limit_independent_audit/AssemblyFromHypotheses.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/restriction_limit_independent_audit/AcceptedProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-3409300014/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ff778db7b0/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-21ce450d73/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4b9aa9e550/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba1f8ba74e/isolated-comparator-result.json",
+        "/tmp/restriction_limit_independent_audit/ChallengeTypes.lean",
+        "/tmp/restriction_limit_independent_audit/AssemblyFromHypotheses.lean",
+        "/tmp/restriction_limit_independent_audit/AcceptedProofsAndAssembly.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match their pins; the inspected sources match the frozen versions. No cbr_rlim_, dmcbr_ or cbr_sublevel declarations occur in the searched snapshot project and Mathlib sources. Each proposed bare name uniquely identifies a comparator-accepted checkpoint with a byte-identical frozen type, so reuse creates no active-branch collision. All four types independently elaborate as propositions before any child declaration exists. The assembly compiled from explicit hypotheses of those types proves exactly the selected parent contract. The accepted child proofs and complete assembly also recompiled, using only propext, Classical.choice and Quot.sound. The split is appropriate: its independent obligations cover boundedness, cutoff construction, integral error and shrinking bands; their dependency lists are correctly empty and acyclic. The supplied parent digest was independently recomputed and matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree. Continuous coefficient evaluations, finite sums and square root give continuity of the coefficient norm; vanishing outside the compact support gives boundedness. Taking max with zero proves the precise existential conclusion without sibling or parent reliance."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and four conclusions match the type. The smooth Urysohn lemma applies to the stated closed and open sets, with the correct smoothness order. Multiplication preserves smoothness and compact support inside U, producing the required test form. No openness of U or compact support of χ is needed."
+    },
+    {
+      "key": "cutoff_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact finite-measure error bound is proved. The proof derives M ≥ 0, establishes measurability and integrability, rewrites the integral difference, and bounds it on the open band by an integrable indicator. Measurability of ξ(η) follows from η being a test form, so no unstated measurability of χ is needed. The argument also correctly requires no positivity assumption on ε."
+    },
+    {
+      "key": "thin_band",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and ENNReal inequalities match exactly. Both measurable band sequences decrease and have finite first terms. Their intersections are respectively μ-null and empty, so continuity from above supplies one positive width satisfying both bounds. No null-level hypothesis for ν is used or needed."
+    }
+  ],
+  "required_changes": []
+}
