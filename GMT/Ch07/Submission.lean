@@ -451,6 +451,187 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Weighted area formula, fibre side** (Simon Ch. 2, §3, (3.4)–(3.5), for the Lipschitz map
+`Φ : ℝⁿ → ℝⁿ`).  Let `g` be continuous and injective on the Borel set `A`, let `F ∘ g = Φ` on `A`
+with `Φ` Lipschitz, and let `h ≥ 0` be Borel.  Then `y ↦ Σ_{x ∈ g(A), F(x) = y} h(x)` is
+`Lⁿ`-a.e. measurable and its integral is `∫_A |det DΦ(a)| h(g(a)) dLⁿ(a)`.  The carrier fibre
+over `y` is `g(A ∩ Φ⁻¹{y})`, so the fibre sum is `Σ_{a ∈ A, Φ(a) = y} h(g(a))`.  The formula for
+`Φ` is proved in place from Mathlib's change of variables, as the SimonGMT area formula is not
+available in this file.  Off the null images of the non-differentiability set (Rademacher and
+the Lipschitz image bound) and of the critical set (Sard), the fibre sum splits over a countable
+partition of `A` into pieces on which `Φ` is injective, and on each piece the injective change
+of variables formula applies. -/
+theorem Submission.idtp_caf_paf_fiber_side : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (F : Euclid P → Euclid n) (Φ : Euclid n → Euclid n) (LΦ : NNReal) (h : Euclid P → ℝ≥0∞), Continuous g → MeasurableSet A → InjOn g A → LipschitzWith LΦ Φ → (∀ a ∈ A, F (g a) = Φ a) → Measurable h → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ Φ a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume := by
+  intro P n g A F Φ LΦ h hg hA hgA hΦ hFg hh
+  -- the weight `w = h ∘ g` on the parameter side is Borel
+  set w : Euclid n → ℝ≥0∞ := fun a => h (g a)
+  have hw : Measurable w := hh.comp hg.measurable
+  -- `g(A) ∩ F⁻¹{y} = g(A ∩ Φ⁻¹{y})`, and `tsum_image` reindexes the fibre sum
+  have hfib : ∀ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) = ∑' a : ↥(A ∩ Φ ⁻¹' {y}), w a := by
+    intro y
+    have hset : g '' A ∩ F ⁻¹' {y} = g '' (A ∩ Φ ⁻¹' {y}) := by
+      ext x
+      simp only [mem_inter_iff, mem_image, mem_preimage, mem_singleton_iff]
+      constructor
+      · rintro ⟨⟨a, ha, rfl⟩, hy⟩
+        exact ⟨a, ⟨ha, (hFg a ha).symm.trans hy⟩, rfl⟩
+      · rintro ⟨a, ⟨ha, hy⟩, rfl⟩
+        exact ⟨⟨a, ha, rfl⟩, (hFg a ha).trans hy⟩
+    rw [hset, tsum_image h (hgA.mono inter_subset_left)]
+  simp only [hfib]
+  -- `D`: differentiability points of `Φ`; `s`: the points of `A ∩ D` with `det DΦ ≠ 0`
+  set D : Set (Euclid n) := {x | DifferentiableAt ℝ Φ x}
+  have hDm : MeasurableSet D := measurableSet_of_differentiableAt ℝ Φ
+  have hdetm : Measurable fun x => (fderiv ℝ Φ x).det :=
+    ContinuousLinearMap.continuous_det.measurable.comp (measurable_fderiv ℝ Φ)
+  set s : Set (Euclid n) := A ∩ D ∩ {x | (fderiv ℝ Φ x).det ≠ 0}
+  have hsm : MeasurableSet s := (hA.inter hDm).inter (hdetm (measurableSet_singleton 0).compl)
+  -- precision `r B` with `r B * ‖B⁻¹‖ < 1` whenever `B` is invertible
+  let r : (Euclid n →L[ℝ] Euclid n) → NNReal := fun B =>
+    if hB : B.det ≠ 0 then
+      (‖((B.toContinuousLinearEquivOfDetNeZero hB).symm : Euclid n →L[ℝ] Euclid n)‖₊ + 1)⁻¹
+    else 1
+  have rpos : ∀ B, r B ≠ 0 := by
+    intro B
+    simp only [r]
+    split_ifs
+    · exact inv_ne_zero (by positivity)
+    · exact one_ne_zero
+  -- a countable measurable partition of `s` into pieces `S k` on which `Φ` is close to `B k`
+  obtain ⟨t, B, ht_disj, ht_meas, hst, happrox, hB⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt Φ s (fderiv ℝ Φ)
+      (fun x hx => (hx.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt) r rpos
+  set S : ℕ → Set (Euclid n) := fun k => s ∩ t k
+  have hSm : ∀ k, MeasurableSet (S k) := fun k => hsm.inter (ht_meas k)
+  have hSdisj : Pairwise (Disjoint on S) := fun i j hij =>
+    (ht_disj hij).mono inter_subset_right inter_subset_right
+  have hSU : ⋃ k, S k = s := by
+    simp only [S, ← inter_iUnion]
+    exact inter_eq_left.mpr hst
+  have hSder : ∀ k, ∀ x ∈ S k, HasFDerivWithinAt Φ (fderiv ℝ Φ x) (S k) x := fun k x hx =>
+    (hx.1.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt
+  -- `Φ` is injective on each piece: `B k = DΦ(z)` is invertible and `r (B k) * ‖(B k)⁻¹‖ < 1`
+  have hSinj : ∀ k, InjOn Φ (S k) := by
+    intro k x hx y hy hxy
+    obtain ⟨z, hz, hBz⟩ := hB ⟨x, hx.1⟩ k
+    have hdet : (B k).det ≠ 0 := hBz ▸ hz.2
+    set e := (B k).toContinuousLinearEquivOfDetNeZero hdet
+    set N : ℝ := ‖(e.symm : Euclid n →L[ℝ] Euclid n)‖
+    have hr : ((r (B k) : NNReal) : ℝ) = (N + 1)⁻¹ := by
+      simp only [r, dite_eq_left hdet, NNReal.coe_inv, NNReal.coe_add, coe_nnnorm,
+        NNReal.coe_one, N, e]
+    have happ := happrox k x hx y hy
+    rw [hxy, sub_self, zero_sub, norm_neg, hr] at happ
+    have h1 : ‖x - y‖ ≤ N * ‖B k (x - y)‖ := by
+      have hxy' : e.symm (B k (x - y)) = x - y := by
+        rw [show B k (x - y) = e (x - y) from rfl, ContinuousLinearEquiv.symm_apply_apply]
+      calc ‖x - y‖ = ‖(e.symm : Euclid n →L[ℝ] Euclid n) (B k (x - y))‖ := by
+              rw [ContinuousLinearEquiv.coe_coe, hxy']
+        _ ≤ N * ‖B k (x - y)‖ := (e.symm : Euclid n →L[ℝ] Euclid n).le_opNorm _
+    have hN : 0 ≤ N := norm_nonneg _
+    have h2 : ‖x - y‖ ≤ N * ((N + 1)⁻¹ * ‖x - y‖) :=
+      h1.trans (mul_le_mul_of_nonneg_left happ hN)
+    have h3 : ‖x - y‖ ≤ 0 := by
+      have hN1 : 0 < N + 1 := by linarith
+      have h4 : N * ((N + 1)⁻¹ * ‖x - y‖) = ‖x - y‖ - (N + 1)⁻¹ * ‖x - y‖ := by
+        field_simp
+        ring
+      rw [h4] at h2
+      have h5 : (N + 1)⁻¹ * ‖x - y‖ ≤ 0 := by linarith
+      have h6 : 0 < (N + 1)⁻¹ := inv_pos.mpr hN1
+      nlinarith [norm_nonneg (x - y)]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h3)
+  -- `G k y`: the fibre sum of `w` over `S k ∩ Φ⁻¹{y}`, which has at most one point
+  set G : ℕ → Euclid n → ℝ≥0∞ := fun k y => ∑' a, (S k ∩ Φ ⁻¹' {y}).indicator w a
+  have hG_apply : ∀ k, ∀ x ∈ S k, G k (Φ x) = w x := by
+    intro k x hx
+    simp only [G]
+    rw [tsum_eq_single x]
+    · exact indicator_of_mem (show x ∈ S k ∩ Φ ⁻¹' {Φ x} from ⟨hx, rfl⟩) w
+    · intro a hax
+      exact indicator_of_notMem (fun ha => hax (hSinj k ha.1 hx ha.2)) w
+  have hG_zero : ∀ k y, y ∉ Φ '' S k → G k y = 0 := by
+    intro k y hy
+    simp only [G]
+    exact (tsum_congr fun a => indicator_of_notMem (fun ha => hy ⟨a, ha.1, ha.2⟩) w).trans
+      tsum_zero
+  have hG_meas : ∀ k, Measurable (G k) := by
+    intro k
+    have hemb := measurableEmbedding_of_fderivWithin (hSm k) (hSder k) (hSinj k)
+    have hGe : G k = Function.extend ((S k).domRestrict Φ) (fun x => w x) 0 := by
+      funext y
+      by_cases hy : ∃ x : S k, (S k).domRestrict Φ x = y
+      · obtain ⟨x, rfl⟩ := hy
+        rw [hemb.injective.extend_apply]
+        exact hG_apply k x x.2
+      · rw [extend_apply' _ _ _ hy, hG_zero k y]
+        · rfl
+        · rintro ⟨x, hx, rfl⟩
+          exact hy ⟨⟨x, hx⟩, rfl⟩
+    rw [hGe]
+    exact hemb.measurable_extend (hw.comp measurable_subtype_coe) measurable_const
+  -- injective change of variables on each piece
+  have hG_int : ∀ k, ∫⁻ y, G k y =
+      ∫⁻ x in S k, ENNReal.ofReal |(fderiv ℝ Φ x).det| * w x := by
+    intro k
+    rw [← setLIntegral_eq_of_support_subset (s := Φ '' S k) (fun y hy => by
+        by_contra hy'
+        exact hy (hG_zero k y hy')),
+      lintegral_image_eq_lintegral_abs_det_fderiv_mul volume (hSm k) (hSder k) (hSinj k)]
+    exact setLIntegral_congr_fun (hSm k) (fun x hx => by rw [hG_apply k x hx])
+  -- null images: of `Dᶜ` (Rademacher, Lipschitz image bound) and of the critical set (Sard)
+  have hDc : volume Dᶜ = 0 := ae_iff.mp (hΦ.ae_differentiableAt (μ := volume))
+  have hnull1 : volume (Φ '' Dᶜ) = 0 := by
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hΦ.lipschitzOnWith (s := Dᶜ))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hDc, mul_zero] at h1
+    exact nonpos_iff_eq_zero.mp h1
+  have hnull2 : volume (Φ '' (A ∩ D ∩ {x | (fderiv ℝ Φ x).det = 0})) = 0 :=
+    addHaar_image_eq_zero_of_det_fderivWithin_eq_zero volume
+      (fun x hx => (hx.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt)
+      (fun x hx => hx.2)
+  -- off these null sets, the fibre sum over `A` splits over the pieces
+  have hae : ∀ᵐ y ∂volume, (∑' a : ↥(A ∩ Φ ⁻¹' {y}), w a) = ∑' k, G k y := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp (measure_union_null hnull1 hnull2)] with y hy
+    rw [tsum_subtype (A ∩ Φ ⁻¹' {y}) w]
+    simp only [G]
+    rw [ENNReal.tsum_comm]
+    refine tsum_congr fun a => ?_
+    by_cases ha : a ∈ A ∩ Φ ⁻¹' {y}
+    · have haD : a ∈ D := by
+        by_contra hD
+        exact hy (Or.inl ⟨a, hD, ha.2⟩)
+      have hadet : (fderiv ℝ Φ a).det ≠ 0 := by
+        intro h0
+        exact hy (Or.inr ⟨a, ⟨⟨ha.1, haD⟩, h0⟩, ha.2⟩)
+      have has : a ∈ s := ⟨⟨ha.1, haD⟩, hadet⟩
+      obtain ⟨k, hk⟩ := mem_iUnion.mp (hst has)
+      rw [indicator_of_mem ha, tsum_eq_single k]
+      · exact (indicator_of_mem (show a ∈ S k ∩ Φ ⁻¹' {y} from ⟨⟨has, hk⟩, ha.2⟩) w).symm
+      · intro j hj
+        exact indicator_of_notMem (fun haj => Set.disjoint_left.mp (ht_disj hj) haj.1.2 hk) w
+    · rw [indicator_of_notMem ha]
+      exact ((tsum_congr fun k => indicator_of_notMem
+        (fun hak => ha ⟨hak.1.1.1.1, hak.2⟩) w).trans tsum_zero).symm
+  have hGsum : Measurable fun y => ∑' k, G k y := Measurable.tsum hG_meas
+  refine ⟨hGsum.aemeasurable.congr (Filter.EventuallyEq.symm hae), ?_⟩
+  rw [lintegral_congr_ae hae, lintegral_tsum (fun k => (hG_meas k).aemeasurable)]
+  simp only [hG_int]
+  rw [← lintegral_iUnion hSm hSdisj, hSU]
+  -- the integrand vanishes a.e. on `A \ s`
+  rw [← inter_eq_left.mpr (show s ⊆ A from fun x hx => hx.1.1), ← setLIntegral_indicator hsm]
+  apply lintegral_congr_ae
+  filter_upwards [ae_restrict_of_ae (hΦ.ae_differentiableAt (μ := volume)), ae_restrict_mem hA]
+    with x hxD hxA
+  by_cases hxs : x ∈ s
+  · rw [indicator_of_mem hxs]
+  · rw [indicator_of_notMem hxs]
+    have h0 : (fderiv ℝ Φ x).det = 0 := by
+      by_contra h0
+      exact hxs ⟨⟨hxA, hxD⟩, h0⟩
+    have h0' : LinearMap.det (fderiv ℝ Φ x : Euclid n →ₗ[ℝ] Euclid n) = 0 := h0
+    simp [h0']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
