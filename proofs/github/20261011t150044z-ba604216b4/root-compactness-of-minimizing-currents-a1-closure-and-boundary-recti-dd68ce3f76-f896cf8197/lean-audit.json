@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4cbb6914bb4647d188bc51a82340f2d42aac0534d4415adabb11c36e636336ef",
+  "git_delta": {
+    "base_commit": "3eb6c5646d0c9482942e030eb164f15e55e86190",
+    "candidate_commit": "5a5c215da7acff971d137ae8baa6dfca788bd8e1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ct_vs_compact_exhaustion",
+    "diff_sha256": "a98e178f7813f59152181ae0a5e7792825b9e752ec942b039b297b2e041db1a7",
+    "source_sha256": "51bbbd10ae41568d5c1a7287f8e178c5f72d4032f318cdb2a3a605a51ab500f6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ct_vs_compact_exhaustion",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ K : ℕ → Set (Euclid P), (∀ i, IsCompact (K i)) ∧ (∀ i, K i ⊆ U) ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ∃ i, C ⊆ K i",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
