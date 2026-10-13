@@ -451,6 +451,49 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Locality of approximate tangent spaces** (Simon Ch. 3, Definition 1.4): if `M' ⊆ M`, `M` is
+Borel and `x ∉ closure (M \ M')`, then an approximate tangent space `Q` of `M'` at `x` is also one
+of `M`.  Some `ρ > 0` has `|z − x| ≥ ρ` on `M \ M'`, and a test function `f` vanishes on
+`|p| ≥ R`.  For `0 < r < ρ / R`, `η_{x,r}(M)` and `η_{x,r}(M')` differ only where
+`|p| ≥ ρ / r > R`, so `∫_{η_{x,r}(M)} f dHⁿ = ∫_{η_{x,r}(M')} f dHⁿ` and the limit transfers. -/
+theorem Submission.dor_lmbsf_cit_approxTangent_of_subset : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → x ∉ closure (M \ M') → HasApproximateTangentSpaceAt n M' x Q → HasApproximateTangentSpaceAt n M x Q := by
+  intro P n M M' x Q hM hM'M hx hM'
+  refine ⟨hM'.1, fun f => ?_⟩
+  -- `x ∉ closure (M \ M')`: some `ρ > 0` has `ρ ≤ |x − z|` for all `z ∈ M \ M'`
+  obtain ⟨ρ, hρ, hρM⟩ : ∃ ρ > 0, ∀ z ∈ M \ M', ρ ≤ dist x z := by
+    simpa only [Metric.mem_closure_iff, not_forall, not_exists, not_and, not_lt,
+      exists_prop] using hx
+  -- `f` has compact support: `f p = 0` once `R ≤ |p|`
+  obtain ⟨R, hR, hfR⟩ : ∃ R : ℝ, 0 < R ∧ ∀ p : Euclid P, R ≤ ‖p‖ → f p = 0 :=
+    f.hasCompactSupport.exists_pos_le_norm
+  -- for `0 < r < ρ / R` the blown-up integrals over `M` and `M'` agree
+  refine (hM'.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hρ hR)] with r hr
+  obtain ⟨hr0, hrR⟩ := hr
+  rw [lt_div_iff₀ hR] at hrR
+  -- `η_{x,r}(M)` is the preimage of `M` under `p ↦ x + r p`, hence Borel
+  have hmeas : MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M) := by
+    have himage : Poincare.SimonGMT.Chapter03.blowUpMap x r '' M =
+        (fun p : Euclid P => x + r • p) ⁻¹' M := by
+      ext p
+      constructor
+      · rintro ⟨z, hz, rfl⟩
+        simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr0.ne'] using hz
+      · intro hp
+        exact ⟨x + r • p, hp, by
+          simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr0.ne']⟩
+    rw [himage]
+    exact hM.preimage (by fun_prop)
+  symm
+  refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hmeas (image_mono hM'M) ?_
+  -- a point of `η_{x,r}(M) \ η_{x,r}(M')` comes from `z ∈ M \ M'`, so its norm is `≥ ρ / r > R`
+  rintro _ ⟨⟨z, hzM, rfl⟩, hzM'⟩
+  have hz : z ∈ M \ M' := ⟨hzM, fun h => hzM' ⟨z, h, rfl⟩⟩
+  apply hfR
+  rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr0.le),
+    ← dist_eq_norm, dist_comm, inv_mul_eq_div, le_div_iff₀ hr0]
+  linarith [hρM z hz]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
