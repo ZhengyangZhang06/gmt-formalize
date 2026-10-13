@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.weighted_tangent_combination-a1.blowup_error_vanishes-a1",
+  "parent_id": "root.chart_tangent_differential-a1.weighted_tangent_combination-a1",
+  "depth": 3,
+  "title": "Vanishing normalized density of |w| on S forces the normalized blow-up integrals of f·w over S to vanish (Simon's upper-density estimate in the proof of 1.6 '⇒'; parent Step 5)",
+  "statement": "Let n, N ∈ ℕ, let S ⊆ ℝ^N be an arbitrary set, w : ℝ^N → ℝ a function and x ∈ ℝ^N; write η_{x,r}(z) = r⁻¹(z − x) (SimonGMT blowUpMap x r) and Hⁿ = μHE[n], with ∫_T h dHⁿ the Bochner integral against the restriction Hⁿ⌞T (T need not be measurable; non-integrable functions have integral 0). Assume (i) w is Hⁿ-integrable on S ∩ B_ρ(x) for every ρ > 0, where B_ρ(x) = Metric.ball x ρ is the open ball, and (ii) ρ^{-n}∫_{S∩B_ρ(x)} |w| dHⁿ → 0 as ρ ↓ 0 (ρ^{-n} is Lean's (ρ ^ n)⁻¹; ↓ 0 is the filter 𝓝[>] 0). Then for every f ∈ C_c(ℝ^N, ℝ), r^{-n}∫_S f(η_{x,r}(z))·w(z) dHⁿ(z) → 0 as r ↓ 0.",
+  "lean_statement": "∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (x : Rn N), (∀ ρ : ℝ, 0 < ρ → IntegrableOn w (S ∩ Metric.ball x ρ) μHE[n]) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "chartTD_blowup_integral_tendsto_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-weighted-tangent-combination-a1-bl-efad4dd23a-a1"
+}

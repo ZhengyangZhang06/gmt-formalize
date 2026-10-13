@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.blowup_scaling-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "Scaling identity for integrals over blow-ups η_{x,r}(A) (change of variables (F1) behind Simon's proof of 1.6)",
+  "statement": "Let N, n ∈ ℕ, x ∈ ℝ^N, r > 0, let A ⊆ ℝ^N be an arbitrary set and g : ℝ^N → ℝ an arbitrary function, and let η_{x,r}(y) = r⁻¹(y − x) (SimonGMT blowUpMap x r), Hⁿ = μHE[n]. Then ∫_{η_{x,r}(A)} g dHⁿ = r^{-n} ∫_A g(η_{x,r}(z)) dHⁿ(z), where ∫_S h dHⁿ denotes the Bochner integral of h against the restricted measure Hⁿ⌞S (Measure.restrict; S need not be measurable, and each side is 0 when its integrand is not integrable).",
+  "lean_statement": "∀ (N n : ℕ) (x : Rn N) (r : ℝ), 0 < r → ∀ (A : Set (Rn N)) (g : Rn N → ℝ), ∫ y in blowUpMap x r '' A, g y ∂μHE[n] = (r ^ n)⁻¹ * ∫ z in A, g (blowUpMap x r z) ∂μHE[n]",
+  "lean_name": "chartTD_setIntegral_blowUpMap_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-blowup-scaling-a1-a1"
+}

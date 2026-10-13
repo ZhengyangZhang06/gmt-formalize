@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.normdet_le_opnorm_pow-a1",
+  "parent_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1",
+  "depth": 3,
+  "title": "Hadamard-type bound normDet(A) ≤ ‖A‖ⁿ for linear maps ℝⁿ → ℝᴺ",
+  "statement": "For all n, N ∈ ℕ and every continuous linear map A : ℝⁿ →L[ℝ] ℝᴺ, normDet(A) ≤ ‖A‖ⁿ, where ‖A‖ is the operator norm and normDet(A) = √det(A*A) (Mathlib LinearMap.normDet of A.toLinearMap).",
+  "lean_statement": "∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), A.toLinearMap.normDet ≤ ‖A‖ ^ n",
+  "lean_name": "chartTD_normDet_le_opNorm_pow",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-blowup-tangent-a1-normdet-le-05be3f74de-a1"
+}

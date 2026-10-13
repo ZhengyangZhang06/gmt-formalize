@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "blowUpMap|HasApproximateTangentSpaceAt|abbrev Rn",
+        "normDet_nonneg|normDet_sq|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|normDet_of_subsingleton",
+        "norm_fderiv_le_of_lipschitzOn|HasFDerivAt.lim",
+        "weighted_area_formula_lipschitzOn_fiberSum|def areaJacobianWithin|theorem continuous_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn|integral_area_formula_of_injective_derivative|def weightedAreaFiberSum|def areaFiber",
+        "continuous_normDet|normDet_le|normDet.*opNorm|normDet.*le.*norm|chartTD_chart_fderiv_bounds|chartTD_normDet_le_opNorm_pow|chartTD_injective_area_setIntegral|chartTD_chart_blowup_integral_tendsto",
+        "git show 81b893c025046b2d7e9c3ab4807d2ba7a9212fc2:GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/CBTIndependentReviewFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/CBTIndependentReviewTypesAll.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/CBTIndependentReviewTypesAllArea.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-chart-tangent-differential-a1-chart-blowup-tangent-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/CBTIndependentReviewFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/CBTIndependentReviewTypesAll.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/CBTIndependentReviewTypesAllArea.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the contract and inspected Mathlib sources. The cited derivative, area-formula, density-integral, substitution and dominated-convergence lemmas support the supplied arguments. Searches found normDet continuity but no matching operator-norm bound or conflicting proposed declarations. All four frozen statements are standalone one-line propositions and elaborate before any child implementation, both with and without AreaDomain. Their Euclidean norms, operator norms and measures are appropriate; no matrix-unit construction occurs. All names are bare identifiers and unreserved in the active DAG. Actual proof references exactly match the acyclic dependency lists. Independently compiled all four supplied proofs and the exact selected parent assembly, inserting the accepted scaling sibling whose type matches its frozen contract exactly. All six declarations use only propext, Classical.choice and Quot.sound. The four-child split is appropriate and establishes chartTD_biLipschitz_chart_approx_tangent, the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including unrestricted real c. Openness and C¹ regularity supply the derivative; the local Lipschitz lemma proves its operator-norm bound. Dividing the lower bound by positive t and passing to the directional-derivative limit is valid without assuming c > 0. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "normdet_le_opnorm_pow",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact all-dimensional statement follows by comparing the linear area formula with Lipschitz distortion on the closed unit ball. Its positive finite volume justifies ENNReal cancellation, and the return to real inequalities is justified. The argument includes n = 0 and has no circular dependency."
+    },
+    {
+      "key": "chart_area_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type correctly require neither differentiability nor integrability. The proof establishes the Borel image and push-forward measure identity using restricted measurability, injective fibre sums and the open-set equality of within and ordinary derivatives. The cited Bochner integral identities apply in this generality. No global measurability of ψ outside B is silently assumed."
+    },
+    {
+      "key": "blowup_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact rescaling, measures and right-hand limit match the prose. The two declared dependencies supply the Jacobian bound. Affine substitution, restricted measurability, compact-ball domination and pointwise derivative/Jacobian convergence fully justify filter dominated convergence, including n = 0. The assembly combines this limit with scaling and the area identity, specialized to the injective derivative, to obtain precisely the selected parent's tangent-space conclusion."
+    }
+  ],
+  "required_changes": []
+}

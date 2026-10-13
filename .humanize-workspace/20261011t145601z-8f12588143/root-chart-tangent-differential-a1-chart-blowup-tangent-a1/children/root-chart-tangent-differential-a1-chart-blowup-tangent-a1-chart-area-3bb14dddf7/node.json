@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1.chart_area_integral-a1",
+  "parent_id": "root.chart_tangent_differential-a1.chart_blowup_tangent-a1",
+  "depth": 3,
+  "title": "Injective area formula on an open Lipschitz domain, in integral form",
+  "statement": "Let n, N ∈ ℕ, B ⊆ ℝⁿ open, ψ : ℝⁿ → ℝᴺ K-Lipschitz on B (K ∈ ℝ≥0) and injective on B, and g : ℝᴺ → ℝ continuous. Then ∫_{ψ(B)} g dHⁿ = ∫_B g(ψ(v))·Jψ(v) dLⁿ(v), where Jψ(v) := normDet(Dψ(v)) with Dψ(v) = fderiv ℝ ψ v, Hⁿ = μHE[n] and Lⁿ = volume; both sides are Bochner integrals (no integrability assumption).",
+  "lean_statement": "∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0), IsOpen B → LipschitzOnWith K ψ B → InjOn ψ B → ∀ g : Rn N → ℝ, Continuous g → ∫ y in ψ '' B, g y ∂μHE[n] = ∫ v in B, g (ψ v) * (fderiv ℝ ψ v).toLinearMap.normDet",
+  "lean_name": "chartTD_injective_area_setIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-blowup-tangent-a1-chart-area-3bb14dddf7-a1"
+}
