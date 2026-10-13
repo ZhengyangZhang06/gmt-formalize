@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A `C¹` chart on a ball** (Simon Ch. 3, proof of Lemma 1.2, step 5): if `G : ℝᵐ → ℝᴾ` is
+`C¹`, injective on `B̄_r(x)` and has injective derivative on `B_r(x)`, then `G(B_r(x))` is an
+embedded `m`-dimensional `C¹` submanifold.  Every point is charted by `ψ = G` on `V = B_r(x)`
+with `W = ℝᴾ \ G(∂B_r(x))`: `W` is open because the sphere is compact; injectivity on `B̄_r(x)`
+gives `G(B_r(x)) ⊆ W`, so `ψ(V) = W ∩ G(B_r(x))`; and for compact `K ⊆ W`, sphere points map
+outside `K`, so `B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K)` is compact. -/
+theorem Submission.dor_lmbsf_c1c_injOn_closedBall_chart : ∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m) (r : ℝ), ContDiff ℝ 1 G → Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective (fderiv ℝ G z)) → IsEmbeddedSubmanifold 1 m (G '' Metric.ball x r) := by
+  intro P m G x r hG hinj hD
+  -- `W = ℝᴾ \ G(∂B_r(x))` is open: the sphere is compact and `G` is continuous
+  have hW : IsOpen (G '' Metric.sphere x r)ᶜ :=
+    ((isCompact_sphere x r).image hG.continuous).isClosed.isOpen_compl
+  -- `G(B_r(x)) ⊆ W`: `G` is injective on `B̄_r(x)` and the sphere misses the open ball
+  have hNW : G '' Metric.ball x r ⊆ (G '' Metric.sphere x r)ᶜ := by
+    rintro _ ⟨v, hv, rfl⟩ ⟨s, hs, hsv⟩
+    have hsv' : s = v :=
+      hinj (Metric.sphere_subset_closedBall hs) (Metric.ball_subset_closedBall hv) hsv
+    subst hsv'
+    exact (Metric.mem_ball.1 hv).ne (Metric.mem_sphere.1 hs)
+  -- the same chart `(V, W, ψ) = (B_r(x), W, G)` serves every point of `G(B_r(x))`
+  intro y hy
+  refine ⟨Metric.ball x r, (G '' Metric.sphere x r)ᶜ, G, Metric.isOpen_ball, hW, hNW hy, ?_,
+    hinj.mono Metric.ball_subset_closedBall, (Set.inter_eq_right.2 hNW).symm, ?_, hD⟩
+  · exact_mod_cast hG.contDiffOn
+  -- properness: for compact `K ⊆ W`, `B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K)` is compact
+  · intro K hKW hK
+    have hball : Metric.ball x r ∩ G ⁻¹' K = Metric.closedBall x r ∩ G ⁻¹' K := by
+      refine Set.Subset.antisymm
+        (Set.inter_subset_inter_left _ Metric.ball_subset_closedBall) ?_
+      rintro z ⟨hz, hzK⟩
+      refine ⟨?_, hzK⟩
+      rcases (Metric.mem_closedBall.1 hz).lt_or_eq with h | h
+      · exact Metric.mem_ball.2 h
+      · exact (hKW (Set.mem_preimage.1 hzK) ⟨z, Metric.mem_sphere.2 h, rfl⟩).elim
+    rw [hball]
+    exact (isCompact_closedBall x r).inter_right (hK.isClosed.preimage hG.continuous)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
