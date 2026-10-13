@@ -451,6 +451,20 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Mass densities are unique** (Simon Ch. 1, 3.1, chapter-01.txt lines 562–598: `Θⁿ(μ, x)` is
+the common value of the upper and lower densities, i.e. the limit of `(ωₙρⁿ)⁻¹μ(B_ρ(x))` as
+`ρ ↓ 0`; used for `Θⁿ(μ_T, x)` in Ch. 7, 3.1, chapter-07.txt lines 302–310).  If
+`HasMassDensity T x θ` and `HasMassDensity T x θ'`, the ratio `M_{B_ρ(x)}(T)/(ωₙρⁿ)` tends to both
+`ofReal θ` and `ofReal θ'` along the nontrivial filter `𝓝[>] 0` in the Hausdorff space `[0, ∞]`,
+so `ofReal θ = ofReal θ'`, and `θ, θ' ≥ 0` give `θ = θ'`. -/
+theorem Submission.dimred_cs_mi_hasMassDensity_unique : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ θ' : ℝ), HasMassDensity T x θ → HasMassDensity T x θ' → θ = θ' := by
+  intro P n U T x θ θ' hθ hθ'
+  -- Steps 1–2: `𝓝[>] 0` is nontrivial (`nhdsGT_neBot`) and `ℝ≥0∞` is Hausdorff, so the two
+  -- limits of the density ratio coincide.
+  have h : ENNReal.ofReal θ = ENNReal.ofReal θ' := tendsto_nhds_unique hθ.2 hθ'.2
+  -- Step 3: `ENNReal.ofReal` is injective on `[0, ∞)`.
+  exact (ENNReal.ofReal_eq_ofReal_iff hθ.1 hθ'.1).1 h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
