@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.inner_compact_approx-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P = Eucl P carries its Borel σ-algebra, μ is any measure on it, and μ⌞A = `μ.restrict A`. For a Borel set B, μ⌞B(E) = μ(E ∩ B) for every E ⊆ ℝ^P (Mathlib `Measure.restrict_apply'`); for a Borel set E, μ⌞A(E) = μ(E ∩ A) for every A (`Measure.restrict_apply`). 'μ-null-measurable' means measurable for the completion of μ (`NullMeasurableSet A μ`).
+
+1. (Borel kernel.) Since A is μ-null-measurable, there is a Borel set A′ ⊆ A with A′ = A μ-almost everywhere (Mathlib `NullMeasurableSet.exists_measurable_subset_ae_eq`). In particular μ(A ∖ A′) = 0.
+
+2. (Finite pieces.) Since μ⌞A is σ-finite, there are Borel sets S_m (m ∈ ℕ) with ⋃_m S_m = ℝ^P and μ⌞A(S_m) < ∞ for every m (Mathlib `spanningSets (μ.restrict A)` with `measurableSet_spanningSets`, `measure_spanningSets_lt_top`, `iUnion_spanningSets`). Put B_m := A′ ∩ S_m; it is a Borel set. Since B_m ⊆ A′ ⊆ A, we have B_m ∩ A = B_m, hence μ(B_m) = μ(B_m ∩ A) = μ⌞A(B_m) ≤ μ⌞A(S_m) < ∞.
+
+3. (Inner regularity on one finite piece.) Fix m and put ν_m := μ⌞B_m, so ν_m(E) = μ(E ∩ B_m) for every E. Then ν_m(ℝ^P) = μ(B_m) < ∞, so ν_m is a finite Borel measure on ℝ^P. Since ℝ^P is a σ-compact metric space, every locally finite (in particular every finite) Borel measure on ℝ^P is regular (Mathlib `Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure`; classically Simon Ch. 1, Theorem 1.15(2) with Remarks 1.16 and 1.12, or Ulam's tightness theorem for finite Borel measures on Polish spaces). In particular ν_m is inner regular with respect to compact sets on Borel sets of finite measure (Mathlib: `Regular` gives `InnerRegularCompactLTTop`, and then `MeasurableSet.exists_isCompact_sdiff_lt`, whose remaining hypotheses hold because ℝ^P is Hausdorff and its Borel σ-algebra contains the open sets). Applying this to the Borel set B_m, which has ν_m(B_m) = μ(B_m) < ∞, gives for every j ∈ ℕ a compact set K_{m,j} ⊆ B_m with ν_m(B_m ∖ K_{m,j}) < 1/(j+1). As B_m ∖ K_{m,j} ⊆ B_m, ν_m(B_m ∖ K_{m,j}) = μ((B_m ∖ K_{m,j}) ∩ B_m) = μ(B_m ∖ K_{m,j}). Hence μ(B_m ∖ K_{m,j}) < 1/(j+1) for all m, j ∈ ℕ.
+
+4. (Null remainder in each piece.) Fix m. For every j, B_m ∖ ⋃_{j′} K_{m,j′} ⊆ B_m ∖ K_{m,j}, so by monotonicity and step 3, μ(B_m ∖ ⋃_{j′} K_{m,j′}) < 1/(j+1). Letting j → ∞ gives μ(B_m ∖ ⋃_{j′} K_{m,j′}) = 0.
+
+5. (Global remainder.) Let x ∈ A ∖ ⋃_{m,j} K_{m,j}. If x ∉ A′, then x ∈ A ∖ A′. If x ∈ A′, choose m with x ∈ S_m (the S_m cover ℝ^P); then x ∈ B_m and x ∉ ⋃_j K_{m,j}, so x ∈ B_m ∖ ⋃_j K_{m,j}. Hence A ∖ ⋃_{m,j} K_{m,j} ⊆ (A ∖ A′) ∪ ⋃_m (B_m ∖ ⋃_j K_{m,j}). By monotonicity and countable subadditivity, together with steps 1 and 4, μ(A ∖ ⋃_{m,j} K_{m,j}) = 0.
+
+6. (Re-indexing.) Let k ↦ (a(k), b(k)) := Nat.unpair k, a surjection ℕ → ℕ × ℕ because Nat.unpair (Nat.pair m j) = (m, j). Put C_k := K_{a(k), b(k)}. Each C_k is compact, and C_k ⊆ B_{a(k)} ⊆ A′ ⊆ A. By surjectivity, ⋃_k C_k = ⋃_{m,j} K_{m,j}. Step 5 then gives μ(A ∖ ⋃_k C_k) = 0. ∎
+
+## Key steps
+
+1. Choose a Borel A′ ⊆ A with A′ = A μ-a.e., so μ(A ∖ A′) = 0.
+2. σ-finiteness of μ⌞A gives Borel S_m covering ℝ^P with μ(A′ ∩ S_m) = μ⌞A(A′ ∩ S_m) < ∞.
+3. The finite Borel measure μ⌞(A′ ∩ S_m) on the σ-compact metric space ℝ^P is regular. This gives compact K_{m,j} ⊆ A′ ∩ S_m with μ((A′ ∩ S_m) ∖ K_{m,j}) < 1/(j+1).
+4. Hence μ((A′ ∩ S_m) ∖ ⋃_j K_{m,j}) = 0. Since A ∖ ⋃_{m,j} K_{m,j} ⊆ (A ∖ A′) ∪ ⋃_m ((A′ ∩ S_m) ∖ ⋃_j K_{m,j}), subadditivity makes it μ-null.
+5. Re-index K_{m,j} by ℕ via Nat.unpair to get compact C_k ⊆ A with μ(A ∖ ⋃_k C_k) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean (identical)`
+- `rg -n 'def LocallyLipschitzOn|LocallyLipschitzOn.continuousOn|theorem LocallyLipschitzOn\.|lemma LocallyLipschitzOn\.' Mathlib`
+- `rg -n 'PolishSpace' Mathlib/MeasureTheory/Measure/RegularityCompacts.lean Mathlib/MeasureTheory/Measure/Regular.lean; rg -n 'InnerRegularCompactLTTop' Mathlib/MeasureTheory/Measure/Regular.lean`
+- `sed -n 165,215p Mathlib/MeasureTheory/Measure/RegularityCompacts.lean; sed -n 814,905p Mathlib/MeasureTheory/Measure/Regular.lean`
+- `rg -n 'theorem isOpen_iUnion_countable|theorem isOpen_sUnion_countable|theorem isOpen_biUnion_countable' Mathlib; rg -n 'elim_nhds_subcover|HereditarilyLindelof|indexed_countable_subcover' Mathlib/Topology/Compactness/Lindelof.lean`
+- `rg -n 'theorem exists_measurable_subset_ae_eq' Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `rg -n 'of_sigmaCompactSpace_of_isLocallyFiniteMeasure' Mathlib/MeasureTheory/Measure/Regular.lean; rg -n 'theorem mem_nhdsWithin|Countable.exists_eq_range|continuousWithinAt_inter' Mathlib`
+- `grep -n '^theorem' simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean; sed -n 180,420p simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `python3 import-closure walk of the Contract's Poincare imports (13 SimonGMT modules, including Chapter02.Lipschitz)`
+- `lake env lean Scratch/Probe.lean (#check MeasureTheory.instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace -> unknown identifier; IsCompletelyPseudoMetrizableSpace unknown; finite ν on Eucl P synthesizes InnerRegularCompactLTTop; #check Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure)`
+- `python3 listing of nodes[*].lean_name in dag.json (90 nodes; no lpf_lli_* collision)`
+- `gmt-compare.py contract_scope + child_modules (contract mode) and lean_contract.validate_lean_statement on the 3 statements`
+- `lake build GMT.Ch06.Submission (scratch, 3 inserted declarations); lake env lean Scratch/Check.lean Scratch/Check2.lean Scratch/NodeChallenge_*.lean Scratch/NodeSolution_*.lean (#print axioms)`
+- `grep -n '1\.15|Borel-regular' book/chapter-01.txt; sed -n 260,345p book/chapter-01.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Lindelof.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/lli_decomp/Scratch/Check.lean`
+- `/tmp/lli_decomp/Scratch/Check2.lean`
+- `/tmp/lli_decomp/GMT/Ch06/Submission.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) Contract is byte-identical to the workspace Contract.
+
+The frozen import closure provides everything the split needs:
+- SimonGMT Chapter02.Lipschitz (euclideanHausdorffMeasure_image_le_of_lipschitzOn, used for the parent's part (i)).
+- LocallyLipschitzOn and LocallyLipschitzOn.continuousOn.
+- mem_nhdsWithin, HereditarilyLindelofSpace.isLindelof, IsLindelof.elim_nhds_subcover and Set.Countable.exists_eq_range (child 1).
+- NullMeasurableSet.exists_measurable_subset_ae_eq, spanningSets and continuousWithinAt_inter.
+- Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, which makes finite measures on Eucl P regular, hence InnerRegularCompactLTTop, together with MeasurableSet.exists_isCompact_sdiff_lt (child 2).
+
+Mathlib's tightness instance for arbitrary measures on Polish spaces (RegularityCompacts, instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace) is NOT imported, so child 2's proof goes through finite restricted measures instead. SimonGMT's nullMeasurableSet_image_of_lipschitzOn only covers μHE[finrank] on finite-measure Borel sets, so it does not give part (ii) for general n. No Mathlib or SimonGMT lemma packages either child statement.
+
+In a scratch copy of the frozen project:
+- both children and the parent assembled from them compile with the standard axioms only;
+- the verifier-generated NodeChallenge and NodeSolution modules pass for all three names;
+- both child statements pass lean_contract;
+- the names do not collide with the 90 DAG lean_names.
