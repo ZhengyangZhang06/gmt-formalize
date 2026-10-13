@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bcba235676f71b3659d42a7bcc47eebc86e0d977e556b76db3c60954b728cbbe",
+  "git_delta": {
+    "base_commit": "bae171cee9ac264a3a8ff3e1bae4515097432f39",
+    "candidate_commit": "ddc5e2e91796d00fc9946a60ff8937c38b82ac57",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "5bd78ad291becf35f80c66c4ad7e9f46c1afa4ac1dbd2c486fc97c4f0c343256",
+    "source_sha256": "2b59279fb4621eee591887b086fa2a1b830ef1f1b61b5a333328ca4fa5ae557c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_minor_weak_continuity",
+      "statement": "∀ (k Q : ℕ) (Ω : Set (Eucl k)) (ψ : Eucl k → ℝ) (α : Eucl Q → Covector (Eucl Q) k) (C : ℝ≥0) (u : ℕ → Eucl k → Eucl Q) (u₀ : Eucl k → Eucl Q), IsOpen Ω → IntegrableOn ψ Ω (volume : Measure (Eucl k)) → Continuous α → HasCompactSupport α → (∀ j, LipschitzOnWith C (u j) Ω) → LipschitzOnWith C u₀ Ω → TendstoUniformlyOn u u₀ atTop Ω → Tendsto (fun j => ∫ w in Ω, ψ w * α (u j w) (fun b => fderiv ℝ (u j) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, ψ w * α (u₀ w) (fun b => fderiv ℝ u₀ w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
