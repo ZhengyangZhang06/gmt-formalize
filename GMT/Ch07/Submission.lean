@@ -451,6 +451,252 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Density points see every direction.**  If `y` is a Lebesgue density point of an arbitrary set
+`Z ⊆ ℝᵈ`, i.e. `Lᵈ(Z ∩ B̄_r(y)) / Lᵈ(B̄_r(y)) → 1` as `r ↓ 0`, then every unit vector `v` is a limit
+of secant directions `(yᵢ - y)/|yᵢ - y|` with `yᵢ ∈ Z ∖ {y}` and `yᵢ → y`.  For `0 < η ≤ 1` and
+`r > 0` the ball `B_{ηr/4}(y + (r/2)v)` lies in `B̄_r(y) ∖ {y}` and in the `η`-cone around `v`, and
+it has measure `(η/4)ᵈ Lᵈ(B̄_r(y))`, so density one forces `Z` to meet it for all small `r`; take
+`η = 1/(i+1)` and `r < 1/(i+1)`. -/
+theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v) := by
+  intro d Z y hdens v hv
+  -- the ball `B_{ηr/4}(y + (r/2)v)` lies in `B_r(y) ∖ {y}`, inside the `η`-cone around `v`
+  have cone : ∀ η r : ℝ, 0 < η → η ≤ 1 → 0 < r → ∀ z ∈ ball (y + (r / 2) • v) (η * r / 4),
+      ‖z - y‖ < r ∧ z ≠ y ∧ ‖‖z - y‖⁻¹ • (z - y) - v‖ < η := by
+    intro η r hη hη1 hr z hz
+    have hs : (0 : ℝ) < r / 2 := by positivity
+    -- the offset `w = z - y - (r/2)v` of `z` from the centre has `‖w‖ < ηr/4 ≤ r/4`
+    have hw : ‖z - y - (r / 2) • v‖ < η * r / 4 := by
+      rwa [mem_ball, dist_eq_norm, sub_add_eq_sub_sub] at hz
+    have hw' : ‖z - y - (r / 2) • v‖ < r / 4 := hw.trans_le (by nlinarith)
+    have hsv : ‖(r / 2) • v‖ = r / 2 := by rw [norm_smul, hv, mul_one, Real.norm_of_nonneg hs.le]
+    have hdiff : |‖z - y‖ - r / 2| ≤ ‖z - y - (r / 2) • v‖ := by
+      simpa only [hsv] using abs_norm_sub_norm_le (z - y) ((r / 2) • v)
+    obtain ⟨hlo, hhi⟩ := abs_le.1 hdiff
+    have hpos : 0 < ‖z - y‖ := by linarith
+    refine ⟨by linarith, fun h => by rw [h, sub_self, norm_zero] at hpos; exact lt_irrefl _ hpos,
+      ?_⟩
+    -- `‖z - y‖⁻¹ (z - y) - v = (‖z - y‖⁻¹ - (r/2)⁻¹) (z - y) + (r/2)⁻¹ w`
+    have hdecomp : ‖z - y‖⁻¹ • (z - y) - v
+        = (‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y) + (r / 2)⁻¹ • (z - y - (r / 2) • v) := by
+      rw [sub_smul ‖z - y‖⁻¹ (r / 2)⁻¹ (z - y), smul_sub (r / 2)⁻¹ (z - y) ((r / 2) • v), smul_smul,
+        inv_mul_cancel₀ hs.ne', one_smul]
+      abel
+    have h1 : ‖(‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y)‖ ≤ ‖z - y - (r / 2) • v‖ / (r / 2) := by
+      have hne : ‖z - y‖ ≠ 0 := hpos.ne'
+      have e : (‖z - y‖⁻¹ - (r / 2)⁻¹) * ‖z - y‖ = (r / 2 - ‖z - y‖) / (r / 2) := by
+        field_simp
+      calc ‖(‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y)‖ = |(‖z - y‖⁻¹ - (r / 2)⁻¹) * ‖z - y‖| := by
+            rw [norm_smul, Real.norm_eq_abs, abs_mul, abs_norm]
+        _ = |‖z - y‖ - r / 2| / (r / 2) := by rw [e, abs_div, abs_of_pos hs, abs_sub_comm]
+        _ ≤ ‖z - y - (r / 2) • v‖ / (r / 2) := by gcongr
+    have h2 : ‖(r / 2)⁻¹ • (z - y - (r / 2) • v)‖ = ‖z - y - (r / 2) • v‖ / (r / 2) := by
+      rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs.le), inv_mul_eq_div]
+    calc ‖‖z - y‖⁻¹ • (z - y) - v‖
+        ≤ ‖(‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y)‖ + ‖(r / 2)⁻¹ • (z - y - (r / 2) • v)‖ := by
+          rw [hdecomp]; exact norm_add_le _ _
+      _ ≤ ‖z - y - (r / 2) • v‖ / (r / 2) + ‖z - y - (r / 2) • v‖ / (r / 2) := by
+          rw [h2]; linarith
+      _ < η := by rw [← add_div, div_lt_iff₀ hs]; linarith
+  -- for `0 < η ≤ 1`, `Z` meets `B_{ηr/4}(y + (r/2)v)` for all small `r > 0`: otherwise
+  -- `Lᵈ(Z ∩ B̄_r(y)) ≤ Lᵈ(B̄_r(y)) - Lᵈ(B_{ηr/4}(y + (r/2)v)) = (1 - (η/4)ᵈ) Lᵈ(B̄_r(y))`
+  have hit : ∀ η : ℝ, 0 < η → η ≤ 1 → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ →
+      ∃ z ∈ Z, z ∈ ball (y + (r / 2) • v) (η * r / 4) := by
+    intro η hη hη1
+    have hκ : ENNReal.ofReal ((η / 4) ^ d) ≠ 0 := by
+      rw [Ne, ENNReal.ofReal_eq_zero, not_le]; positivity
+    obtain ⟨r₀, hr₀, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1
+      (hdens.eventually_const_lt (ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero hκ))
+    refine ⟨r₀, hr₀, fun r hr hrr₀ => ?_⟩
+    by_contra! hZ
+    have hB : ball (y + (r / 2) • v) (η * r / 4) ⊆ closedBall y r := fun z hz => by
+      rw [mem_closedBall, dist_eq_norm]; exact (cone η r hη hη1 hr z hz).1.le
+    have hvol : volume (ball (y + (r / 2) • v) (η * r / 4))
+        = ENNReal.ofReal ((η / 4) ^ d) * volume (closedBall y r) := by
+      rw [Measure.addHaar_ball_of_pos volume _ (by positivity : (0 : ℝ) < η * r / 4),
+        Measure.addHaar_closedBall volume _ hr.le, finrank_euclideanSpace_fin, ← mul_assoc,
+        ← ENNReal.ofReal_mul (by positivity), ← mul_pow, show η / 4 * r = η * r / 4 by ring]
+    have hle : volume (Z ∩ closedBall y r)
+        ≤ (1 - ENNReal.ofReal ((η / 4) ^ d)) * volume (closedBall y r) :=
+      calc volume (Z ∩ closedBall y r)
+          ≤ volume (closedBall y r \ ball (y + (r / 2) • v) (η * r / 4)) :=
+            measure_mono fun z hz => ⟨hz.2, hZ z hz.1⟩
+        _ = volume (closedBall y r) - volume (ball (y + (r / 2) • v) (η * r / 4)) :=
+            measure_sdiff hB measurableSet_ball.nullMeasurableSet measure_ball_lt_top.ne
+        _ = (1 - ENNReal.ofReal ((η / 4) ^ d)) * volume (closedBall y r) := by
+            rw [hvol, ENNReal.sub_mul fun _ _ => measure_closedBall_lt_top.ne, one_mul]
+    have hgt : 1 - ENNReal.ofReal ((η / 4) ^ d)
+        < volume (Z ∩ closedBall y r) / volume (closedBall y r) := hsub ⟨hr, hrr₀⟩
+    exact lt_irrefl _ (hgt.trans_le (ENNReal.div_le_of_le_mul hle))
+  -- take `η = 1/(i+1)` and `0 < rᵢ < min(r₀, 1/(i+1))`
+  have hη : ∀ i : ℕ, (0 : ℝ) < 1 / ((i : ℝ) + 1) := fun i => by positivity
+  have hη1 : ∀ i : ℕ, 1 / ((i : ℝ) + 1) ≤ 1 := fun i =>
+    (div_le_one (by positivity)).2 (by linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)])
+  have hseq : ∀ i : ℕ, ∃ z ∈ Z, ∃ r : ℝ, 0 < r ∧ r < 1 / ((i : ℝ) + 1) ∧
+      z ∈ ball (y + (r / 2) • v) (1 / ((i : ℝ) + 1) * r / 4) := by
+    intro i
+    obtain ⟨r₀, hr₀, h⟩ := hit _ (hη i) (hη1 i)
+    have hm : 0 < min r₀ (1 / ((i : ℝ) + 1)) := lt_min hr₀ (hη i)
+    obtain ⟨z, hzZ, hz⟩ := h (min r₀ (1 / ((i : ℝ) + 1)) / 2) (by positivity)
+      (by linarith [min_le_left r₀ (1 / ((i : ℝ) + 1))])
+    exact ⟨z, hzZ, _, by positivity, by linarith [min_le_right r₀ (1 / ((i : ℝ) + 1))], hz⟩
+  choose ys hysZ rs hrs hrsi hysB using hseq
+  have hcone := fun i => cone _ (rs i) (hη i) (hη1 i) (hrs i) (ys i) (hysB i)
+  refine ⟨ys, fun i => ⟨hysZ i, (hcone i).2.1⟩, ?_, ?_⟩
+  · rw [tendsto_iff_norm_sub_tendsto_zero]
+    exact squeeze_zero (fun i => norm_nonneg _) (fun i => ((hcone i).1.trans (hrsi i)).le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+  · rw [tendsto_iff_norm_sub_tendsto_zero]
+    exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+
+/-- **Functions agreeing on a measurable set have equal derivatives a.e. on it.**  Assume that
+density points see every direction (the statement of `Submission.dor_lmbsf_density_directions`).
+If `Z ⊆ ℝᵈ` is measurable and `v₁ = v₂` on `Z`, then `Dv₁(y) = Dv₂(y)` at `Lᵈ`-a.e. `y ∈ Z` where
+both are differentiable.  By the Besicovitch density theorem a.e. `y ∈ Z` is a density point of `Z`;
+there each unit vector `e` is a limit of `(yᵢ - y)/|yᵢ - y|` with `yᵢ ∈ Z ∖ {y}`, `yᵢ → y`, and the
+difference quotients of `v₁ - v₂` along `yᵢ` vanish, so `(Dv₁(y) - Dv₂(y)) e = 0`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn : (∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (v₁ v₂ : Euclid d → ℝ), MeasurableSet Z → EqOn v₁ v₂ Z → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → DifferentiableAt ℝ v₁ y → DifferentiableAt ℝ v₂ y → fderiv ℝ v₁ y = fderiv ℝ v₂ y := by
+  intro hDD d Z v₁ v₂ hZ hEq
+  -- a.e. point of `Z` is a Lebesgue density point of `Z`
+  have h := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (Euclid d)) Z
+  rw [ae_restrict_iff' hZ] at h
+  filter_upwards [h] with y hy hyZ h1 h2
+  have hden := hy hyZ
+  set L := fderiv ℝ v₁ y - fderiv ℝ v₂ y with hLdef
+  have hv : HasFDerivAt (fun x => v₁ x - v₂ x) L y := h1.hasFDerivAt.sub h2.hasFDerivAt
+  -- along `yᵢ ∈ Z` with `(yᵢ - y)/|yᵢ - y| → e` the difference quotients of `v₁ - v₂` are `0`
+  have hunit : ∀ e : Euclid d, ‖e‖ = 1 → L e = 0 := by
+    intro e he
+    obtain ⟨ys, hysZ, hys, hdir⟩ := hDD d Z y hden e he
+    have hd0 : Tendsto (fun i => ys i - y) atTop (𝓝 0) := by
+      simpa using hys.sub_const y
+    have hlim := (hv.hasFDerivWithinAt (s := univ)).lim (l := atTop)
+      (c := fun i => ‖ys i - y‖⁻¹) (d := fun i => ys i - y) hd0
+      (Eventually.of_forall fun _ => mem_univ _) hdir
+    have hzero : (fun i => ‖ys i - y‖⁻¹ • ((v₁ (y + (ys i - y)) - v₂ (y + (ys i - y))) -
+        (v₁ y - v₂ y))) = fun _ => (0 : ℝ) := by
+      funext i
+      have hi : y + (ys i - y) = ys i := by abel
+      rw [hi, hEq (hysZ i).1, hEq hyZ]
+      simp
+    rw [hzero] at hlim
+    exact tendsto_nhds_unique hlim tendsto_const_nhds
+  -- a linear map vanishing on unit vectors is `0`
+  have hL : L = 0 := by
+    ext e
+    by_cases he : e = 0
+    · simp [he]
+    · have hn : ‖e‖ ≠ 0 := norm_ne_zero_iff.2 he
+      have h1' : ‖‖e‖⁻¹ • e‖ = 1 := by
+        rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hn]
+      have := hunit _ h1'
+      rw [map_smul, smul_eq_mul, mul_eq_zero] at this
+      rcases this with h | h
+      · exact absurd (inv_eq_zero.1 h) hn
+      · simpa using h
+  exact sub_eq_zero.1 hL
+
+/-- **Chain rule for the cutoff `γ ∘ F`, a.e. on a Borel set.**  Let `a < b`,
+`γ(s) = min{1, max{0, (b - s)/(b - a)}}`, `F : ℝᵈ → ℝ` differentiable and `u` Lipschitz with
+`u = γ ∘ F` on a Borel set `Z`.  Assuming the density-directions lemma (DD), for a.e. `y ∈ Z`,
+`Du(y) = γ'(F(y)) DF(y)`, where `γ' = -(b - a)⁻¹` on `(a, b)` and `γ' = 0` elsewhere.  By
+Rademacher `u` is differentiable a.e.  On the kink levels `Z ∩ {F = a}` and `Z ∩ {F = b}`, `u` agrees
+with the constants `γ(a) = 1` and `γ(b) = 0`; off them `γ ∘ F` is, near `y`, identically `1`,
+`(b - F)/(b - a)` or `0`, hence differentiable with derivative `γ'(F(y)) DF(y)`.  In each case the
+agreement lemma `dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn` transfers the derivative to `u`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_cutoff_comp_ae : (∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (F u : Euclid d → ℝ) (K : NNReal) (a b : ℝ), MeasurableSet Z → Differentiable ℝ F → LipschitzWith K u → a < b → (∀ y ∈ Z, u y = min 1 (max 0 ((b - F y) / (b - a)))) → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → fderiv ℝ u y = (if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y := by
+  intro hDD d Z F u K a b hZ hF hu hab hEq
+  have hFc : Continuous F := hF.continuous
+  have hba : 0 < b - a := sub_pos.2 hab
+  set g : Euclid d → ℝ := fun y => min 1 (max 0 ((b - F y) / (b - a))) with hgdef
+  -- the Borel pieces `Z ∩ {F ∉ {a, b}}`, `Z ∩ {F = a}`, `Z ∩ {F = b}`
+  have hZ0 : MeasurableSet (Z ∩ {y | F y ≠ a ∧ F y ≠ b}) := by
+    refine hZ.inter ?_
+    have h1 : MeasurableSet {y | F y ≠ a} :=
+      (measurableSet_singleton a).compl.preimage hFc.measurable
+    have h2 : MeasurableSet {y | F y ≠ b} :=
+      (measurableSet_singleton b).compl.preimage hFc.measurable
+    exact h1.inter h2
+  have hZa : MeasurableSet (Z ∩ F ⁻¹' {a}) :=
+    hZ.inter ((measurableSet_singleton a).preimage hFc.measurable)
+  have hZb : MeasurableSet (Z ∩ F ⁻¹' {b}) :=
+    hZ.inter ((measurableSet_singleton b).preimage hFc.measurable)
+  -- Rademacher: `u` is differentiable a.e.
+  have hdiff : ∀ᵐ y ∂(volume : Measure (Euclid d)), DifferentiableAt ℝ u y :=
+    hu.ae_differentiableAt
+  -- `u = γ ∘ F` off the kinks, `u = γ(a) = 1` on `{F = a}` and `u = γ(b) = 0` on `{F = b}`
+  have h0 := Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn hDD d (Z ∩ {y | F y ≠ a ∧ F y ≠ b}) u g
+    hZ0 (fun y hy => hEq y hy.1)
+  have ha := Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn hDD d (Z ∩ F ⁻¹' {a}) u (fun _ => 1)
+    hZa (by
+      intro y hy
+      have hFy : F y = a := hy.2
+      simp only [hEq y hy.1, hFy, div_self hba.ne']
+      simp)
+  have hb := Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn hDD d (Z ∩ F ⁻¹' {b}) u (fun _ => 0)
+    hZb (by
+      intro y hy
+      have hFy : F y = b := hy.2
+      simp only [hEq y hy.1, hFy, sub_self, zero_div]
+      simp)
+  filter_upwards [hdiff, h0, ha, hb] with y hyd hy0 hya hyb hyZ
+  -- kink levels: `Du(y) = 0 = γ'(F(y)) DF(y)`
+  by_cases hFa : F y = a
+  · have h := hya ⟨hyZ, hFa⟩ hyd (differentiableAt_const _)
+    rw [h, fderiv_const_apply]
+    simp [hFa]
+  by_cases hFb : F y = b
+  · have h := hyb ⟨hyZ, hFb⟩ hyd (differentiableAt_const _)
+    rw [h, fderiv_const_apply]
+    simp [hFb]
+  -- off the kinks `g = γ ∘ F` is locally `1`, `(b - F)/(b - a)` or `0`
+  have hgd : HasFDerivAt g ((if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y) y := by
+    have hFd : HasFDerivAt F (fderiv ℝ F y) y := (hF y).hasFDerivAt
+    rcases lt_or_gt_of_ne hFa with h | h
+    · -- `F y < a`: `g = 1` near `y`
+      have hev : g =ᶠ[𝓝 y] fun _ => (1 : ℝ) := by
+        filter_upwards [hFc.continuousAt.eventually (gt_mem_nhds h)] with z hz
+        have : 1 < (b - F z) / (b - a) := by
+          rw [one_lt_div hba]; linarith
+        simp only [hgdef]
+        rw [max_eq_right (by linarith), min_eq_left this.le]
+      have hn : ¬ (a < F y ∧ F y < b) := fun h' => absurd h'.1 (not_lt.2 h.le)
+      simp only [hn, ite_false, zero_smul]
+      exact (hasFDerivAt_const (1 : ℝ) y).congr_of_eventuallyEq hev
+    · rcases lt_or_gt_of_ne hFb with h' | h'
+      · -- `a < F y < b`: `g = (b - F)/(b - a)` near `y`
+        have hev : g =ᶠ[𝓝 y] fun z => (b - F z) / (b - a) := by
+          filter_upwards [hFc.continuousAt.eventually (lt_mem_nhds h),
+            hFc.continuousAt.eventually (gt_mem_nhds h')] with z hz1 hz2
+          have hpos : 0 < (b - F z) / (b - a) := div_pos (by linarith) hba
+          have hlt : (b - F z) / (b - a) < 1 := by
+            rw [div_lt_one hba]; linarith
+          simp only [hgdef]
+          rw [max_eq_right hpos.le, min_eq_right hlt.le]
+        have hy' : a < F y ∧ F y < b := ⟨h, h'⟩
+        simp only [hy', and_self, ite_true]
+        have hlin : HasFDerivAt (fun z => (b - F z) / (b - a))
+            (-(b - a)⁻¹ • fderiv ℝ F y) y := by
+          have := ((hasFDerivAt_const b y).sub hFd).const_mul (b - a)⁻¹
+          convert this using 1
+          · funext z
+            simp only [Pi.sub_apply]
+            rw [div_eq_inv_mul]
+          · rw [zero_sub, smul_neg, neg_smul]
+        exact hlin.congr_of_eventuallyEq hev
+      · -- `F y > b`: `g = 0` near `y`
+        have hev : g =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+          filter_upwards [hFc.continuousAt.eventually (lt_mem_nhds h')] with z hz
+          have : (b - F z) / (b - a) < 0 := div_neg_of_neg_of_pos (by linarith) hba
+          simp only [hgdef]
+          rw [max_eq_left this.le]
+          simp
+        have hn : ¬ (a < F y ∧ F y < b) := fun h'' => absurd h''.2 (not_lt.2 h'.le)
+        simp only [hn, ite_false, zero_smul]
+        exact (hasFDerivAt_const (0 : ℝ) y).congr_of_eventuallyEq hev
+  have h := hy0 ⟨hyZ, hFa, hFb⟩ hyd hgd.differentiableAt
+  rw [h, hgd.fderiv]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

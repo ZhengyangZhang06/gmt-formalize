@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Tangential gradient of a Lipschitz function on the carrier of an integer multiplicity triple: co-area formula, slice tangents, weak limits (Simon Ch. 3, §2 and Ch. 6, 4.1)",
+  "statement": "Assume (TL): for all P, n ∈ ℕ, every open U ⊆ ℝ^P and all Borel sets A ⊆ B ⊆ U with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]), for Hⁿ-a.e. x ∈ A and every linear subspace Q of ℝ^P: B has approximate tangent space Q at x iff A does (HasApproximateTangentSpaceAt, Simon Ch. 3, 1.4).\nLet P, n ∈ ℕ, U ⊆ ℝ^P open, RT = (M, θ, ξ) an integer multiplicity triple in U of dimension n+1 (IMRep U (n+1)), and f : ℝ^P → ℝ L-Lipschitz (L ≥ 0). Write T_xM := approxTangentPlane (n+1) M x, γ_{a,b}(s) := min{1, max{0, (b − s)/(b − a)}}, and for g : ℝ^P → ℝ^P and t ∈ ℝ, M_t := M ∩ {g ≠ 0} ∩ f⁻¹(t). Then there is a Borel map g : ℝ^P → ℝ^P with:\n(G1) |g(x)| ≤ L for every x;\n(G2) g(x) ∈ T_xM for H^{n+1}-a.e. x ∈ M;\n(G3) for every Borel φ : ℝ^P → [0, ∞], t ↦ ∫_{M_t} φ dHⁿ is a.e.-measurable on ℝ and ∫_ℝ ∫_{M_t} φ dHⁿ dt = ∫_M |g| φ dH^{n+1};\n(G4a) M_t is countably n-rectifiable for every t;\n(G4b) for every t such that Hⁿ(M_t ∩ K) < ∞ for every compact K ⊆ U: for Hⁿ-a.e. x ∈ M_t, M_t has approximate tangent space T_xM ∩ g(x)^⊥ (= T_xM ⊓ (ℝ∙g(x))ᗮ) at x;\n(G5) for all a < b, every sequence (h_k) of C¹ functions ℝ^P → ℝ with ‖Dh_k(x)‖ ≤ c (all k, x) converging uniformly on ℝ^P to γ_{a,b}∘f, and every Borel W : ℝ^P → ℝ^P with |W| ≤ c', W = 0 outside some compact K ⊆ U, and W(x) ∈ T_xM for H^{n+1}-a.e. x ∈ M:\n ∫_M θ(x) Dh_k(x)[W(x)] dH^{n+1}(x) → ∫_{M∩{a<f<b}} θ(x)·(−(b − a)⁻¹⟨g(x), W(x)⟩) dH^{n+1}(x) as k → ∞.",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U : Set (Euclid P)) (RT : IMRep U (n + 1)) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → LipschitzWith L f → ∃ g : Euclid P → Euclid P, Measurable g ∧ (∀ x, ‖g x‖ ≤ L) ∧ (∀ᵐ x ∂(μHE[n + 1].restrict RT.carrier), g x ∈ approxTangentPlane (n + 1) RT.carrier x) ∧ (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x in RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) ∧ ∫⁻ t, (∫⁻ x in RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) = ∫⁻ x in RT.carrier, ‖g x‖ₑ * φ x ∂μHE[n + 1]) ∧ (∀ t, CountablyRectifiable n (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})) ∧ (∀ t, (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})), HasApproximateTangentSpaceAt n (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) x (approxTangentPlane (n + 1) RT.carrier x ⊓ (ℝ ∙ g x)ᗮ)) ∧ (∀ (a b : ℝ), a < b → ∀ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop → ∀ (W : Euclid P → Euclid P) (K : Set (Euclid P)) (c' : ℝ), Measurable W → IsCompact K → K ⊆ U → (∀ x, x ∉ K → W x = 0) → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[n + 1].restrict RT.carrier), W x ∈ approxTangentPlane (n + 1) RT.carrier x) → Tendsto (fun k => ∫ x in RT.carrier, (RT.mult x : ℝ) * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b}, (RT.mult x : ℝ) * (-(b - a)⁻¹ * inner ℝ (g x) (W x)) ∂μHE[n + 1])))",
+  "lean_name": "dor_lmbsf_tangential_gradient",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-c1d8721df1-a1"
+}
