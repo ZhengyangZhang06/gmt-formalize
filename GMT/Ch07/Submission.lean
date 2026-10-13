@@ -451,6 +451,178 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Choice of a good slicing level (Simon 7.2.4 (3)–(5), the choice of `α` and of the
+subsequence).  Let `A = {a < f < b}` with `νⱼ(A) < ∞`, `νⱼ(A) → 0` and `κⱼ(A) < ∞`.  Some
+`t ∈ (a, b)` has `κⱼ{f = t} = 0` and `Dⱼ(t) < ∞` for every `j`, and `D_{φ(j)}(t) → 0` along a
+subsequence `φ`, where `Dⱼ(t) = liminf_{h ↓ 0} h⁻¹ νⱼ{t − h < f < t}`.  For `ρⱼ = f_#(νⱼ⌞A)`,
+Tonelli gives `∫ ρⱼ((s − c, s)) ds = c νⱼ(A)`, so `Gⱼ(s) = liminf_k (k + 1) ρⱼ((s − 1/(k+1), s))`
+has `∫ Gⱼ ≤ νⱼ(A)` (Fatou) and `Dⱼ ≤ Gⱼ` on `(a, b)`.  Fatou in `j` and the countability of the
+atoms of `κⱼ⌞A` then give `t`. -/
+theorem Submission.lcmp_exists_good_slice_level : ∀ (P : ℕ) (ν κ : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (a b : ℝ), Measurable f → a < b → (∀ j, ν j {x | a < f x ∧ f x < b} < ∞) → Tendsto (fun j => ν j {x | a < f x ∧ f x < b}) atTop (𝓝 0) → (∀ j, κ j {x | a < f x ∧ f x < b} < ∞) → ∃ t ∈ Ioo a b, ∃ φ : ℕ → ℕ, StrictMono φ ∧ (∀ j, κ j {x | f x = t} = 0) ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν j {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) < ∞) ∧ Tendsto (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (φ j) {x | t - h < f x ∧ f x < t}) (𝓝[>] 0)) atTop (𝓝 0) := by
+  intro P ν κ f a b hf hab hνfin hνlim hκfin
+  obtain ⟨A, hA⟩ : ∃ A : Set (Euclid P), A = {x | a < f x ∧ f x < b} := ⟨_, rfl⟩
+  rw [← hA] at hνfin hνlim hκfin
+  -- Step 2: `ρⱼ = f_#(νⱼ⌞A)` is a finite measure on `ℝ`, `ρⱼ(B) = νⱼ(f⁻¹(B) ∩ A)`
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℕ → Measure ℝ, ρ = fun j => ((ν j).restrict A).map f := ⟨_, rfl⟩
+  have hρapp : ∀ j (s : Set ℝ), MeasurableSet s → ρ j s = ν j (f ⁻¹' s ∩ A) := by
+    intro j s hs
+    rw [hρ, Measure.map_apply hf hs, Measure.restrict_apply (hf hs)]
+  have hρuniv : ∀ j, ρ j univ = ν j A := by
+    intro j
+    rw [hρapp j univ MeasurableSet.univ, preimage_univ, univ_inter]
+  have hρfin : ∀ j, IsFiniteMeasure (ρ j) := fun j => ⟨by rw [hρuniv]; exact hνfin j⟩
+  -- Step 3: Tonelli on `S_c = {(s, y) : s − c < y < s}`: `∫ ρⱼ((s − c, s)) ds = c νⱼ(A)`
+  have hSm : ∀ c : ℝ, MeasurableSet {p : ℝ × ℝ | p.1 - c < p.2 ∧ p.2 < p.1} := fun c =>
+    (measurableSet_lt (measurable_fst.sub_const c) measurable_snd).inter
+      (measurableSet_lt measurable_snd measurable_fst)
+  have hsec : ∀ c t : ℝ,
+      Prod.mk t ⁻¹' {p : ℝ × ℝ | p.1 - c < p.2 ∧ p.2 < p.1} = Ioo (t - c) t := by
+    intro c t
+    ext y
+    simp [mem_Ioo]
+  have hsec' : ∀ c y : ℝ,
+      (fun t => (t, y)) ⁻¹' {p : ℝ × ℝ | p.1 - c < p.2 ∧ p.2 < p.1} = Ioo y (y + c) := by
+    intro c y
+    ext t
+    simp only [mem_preimage, mem_ofPred_eq, mem_Ioo]
+    constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+  have hmeasF : ∀ j (c : ℝ), Measurable fun t : ℝ => ρ j (Ioo (t - c) t) := by
+    intro j c
+    have := hρfin j
+    have := measurable_measure_prodMk_left (ν := ρ j) (hSm c)
+    simpa only [hsec] using this
+  have hTon : ∀ j (c : ℝ), ∫⁻ t, ρ j (Ioo (t - c) t) = ENNReal.ofReal c * ν j A := by
+    intro j c
+    have := hρfin j
+    have h1 := Measure.prod_apply (μ := (volume : Measure ℝ)) (ν := ρ j) (hSm c)
+    have h2 := Measure.prod_apply_symm (μ := (volume : Measure ℝ)) (ν := ρ j) (hSm c)
+    simp only [hsec, hsec', Real.volume_Ioo, add_sub_cancel_left] at h1 h2
+    rw [← h1, h2, lintegral_const, hρuniv]
+  -- Step 4: `Fⱼₖ(s) = (k + 1) ρⱼ((s − 1/(k+1), s))` has `∫ Fⱼₖ = νⱼ(A)`, so the majorant
+  -- `Gⱼ = liminf_k Fⱼₖ` has `∫ Gⱼ ≤ νⱼ(A)` (Fatou)
+  have hFm : ∀ j (k : ℕ),
+      Measurable fun t : ℝ => ((k : ℝ≥0∞) + 1) * ρ j (Ioo (t - 1 / ((k : ℝ) + 1)) t) :=
+    fun j k => (hmeasF j _).const_mul _
+  have hcancel : ∀ k : ℕ, ((k : ℝ≥0∞) + 1) * ENNReal.ofReal (1 / ((k : ℝ) + 1)) = 1 := by
+    intro k
+    have hk : ENNReal.ofReal ((k : ℝ) + 1) = (k : ℝ≥0∞) + 1 := by
+      rw [ENNReal.ofReal_add (by positivity) zero_le_one, ENNReal.ofReal_natCast,
+        ENNReal.ofReal_one]
+    rw [one_div, ENNReal.ofReal_inv_of_pos (by positivity), hk,
+      ENNReal.mul_inv_cancel (by simp) (by simp)]
+  have hFint : ∀ j (k : ℕ),
+      ∫⁻ t, ((k : ℝ≥0∞) + 1) * ρ j (Ioo (t - 1 / ((k : ℝ) + 1)) t) = ν j A := by
+    intro j k
+    rw [lintegral_const_mul _ (hmeasF j _), hTon j, ← mul_assoc, hcancel, one_mul]
+  obtain ⟨G, hG⟩ : ∃ G : ℕ → ℝ → ℝ≥0∞, G = fun j t =>
+      liminf (fun k : ℕ => ((k : ℝ≥0∞) + 1) * ρ j (Ioo (t - 1 / ((k : ℝ) + 1)) t)) atTop :=
+    ⟨_, rfl⟩
+  have hGm : ∀ j, Measurable (G j) := fun j => by
+    rw [hG]
+    exact Measurable.liminf (hFm j)
+  have hGint : ∀ j, ∫⁻ t, G j t ≤ ν j A := by
+    intro j
+    rw [hG]
+    calc ∫⁻ t, liminf (fun k : ℕ => ((k : ℝ≥0∞) + 1) * ρ j (Ioo (t - 1 / ((k : ℝ) + 1)) t)) atTop
+        ≤ liminf (fun k : ℕ => ∫⁻ t, ((k : ℝ≥0∞) + 1) * ρ j (Ioo (t - 1 / ((k : ℝ) + 1)) t))
+          atTop := lintegral_liminf_le (hFm j)
+      _ = ν j A := by simp only [hFint, liminf_const]
+  have hGfin : ∀ᵐ t, ∀ j, G j t < ∞ :=
+    ae_all_iff.2 fun j => ae_lt_top (hGm j) ((hGint j).trans_lt (hνfin j)).ne
+  -- Step 5: Fatou in `j`: `∫ liminf_j Gⱼ ≤ liminf_j νⱼ(A) = 0`, so `liminf_j Gⱼ = 0` a.e.
+  have hHm : Measurable fun t => liminf (fun j => G j t) atTop := Measurable.liminf hGm
+  have hHint : ∫⁻ t, liminf (fun j => G j t) atTop = 0 := by
+    refine le_antisymm ?_ zero_le
+    calc ∫⁻ t, liminf (fun j => G j t) atTop ≤ liminf (fun j => ∫⁻ t, G j t) atTop :=
+          lintegral_liminf_le hGm
+      _ ≤ liminf (fun j => ν j A) atTop := liminf_le_liminf (Eventually.of_forall hGint)
+      _ = 0 := hνlim.liminf_eq
+  have hH0 : ∀ᵐ t, liminf (fun j => G j t) atTop = 0 :=
+    ((lintegral_eq_zero_iff hHm).1 hHint).mono fun t ht => ht
+  -- Step 6: only countably many levels are atoms of the finite measure `κⱼ⌞A`
+  have hatomsAE : ∀ᵐ s : ℝ, ∀ j, (κ j).restrict A {x | f x = s} = 0 := by
+    rw [ae_all_iff]
+    intro j
+    have : IsFiniteMeasure ((κ j).restrict A) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact hκfin j⟩
+    have hc := Measure.countable_meas_level_set_pos (μ := (κ j).restrict A) hf
+    filter_upwards [hc.ae_notMem (volume : Measure ℝ)] with s hs
+    simp only [not_lt, nonpos_iff_eq_zero] at hs
+    exact hs
+  -- Step 7: a.e. level in the interval `(a, b)` of positive length is good
+  have hIoo : volume (Ioo a b) ≠ 0 := by
+    rw [Real.volume_Ioo]
+    simpa using hab
+  have : (ae (volume.restrict (Ioo a b))).NeBot :=
+    ae_neBot.2 (by rw [Ne, Measure.restrict_eq_zero]; exact hIoo)
+  have hgood : ∀ᵐ s ∂(volume.restrict (Ioo a b)), s ∈ Ioo a b ∧
+      liminf (fun j => G j s) atTop = 0 ∧ (∀ j, G j s < ∞) ∧
+      ∀ j, (κ j).restrict A {x | f x = s} = 0 := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioo, ae_restrict_of_ae hH0,
+      ae_restrict_of_ae hGfin, ae_restrict_of_ae hatomsAE] with s h1 h2 h3 h4
+    exact ⟨h1, h2, h3, h4⟩
+  obtain ⟨t, ht, hHt, hGt, hκt⟩ := hgood.exists
+  -- Step 9: `Dⱼ(t) ≤ Gⱼ(t)`, along `hₖ = 1/(k + 1)` with `{t − hₖ < f < t} ⊆ A` for large `k`
+  have hlink : ∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν j {x | t - h < f x ∧ f x < t})
+      (𝓝[>] 0) ≤ G j t := by
+    intro j
+    have hseq : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+        Eventually.of_forall fun k => ?_⟩
+      show (0 : ℝ) < 1 / ((k : ℝ) + 1)
+      positivity
+    have hle := liminf_le_liminf_of_le
+      (u := fun h : ℝ => ENNReal.ofReal h⁻¹ * ν j {x | t - h < f x ∧ f x < t}) hseq
+    refine hle.trans (le_of_eq ?_)
+    rw [hG]
+    show liminf ((fun h : ℝ => ENNReal.ofReal h⁻¹ * ν j {x | t - h < f x ∧ f x < t}) ∘
+      fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop = _
+    apply liminf_congr
+    have hsmall : ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < t - a :=
+      tendsto_one_div_add_atTop_nhds_zero_nat.eventually (gt_mem_nhds (sub_pos.2 ht.1))
+    filter_upwards [hsmall] with k hk
+    simp only [Function.comp_apply]
+    have h1 : ENNReal.ofReal (1 / ((k : ℝ) + 1))⁻¹ = (k : ℝ≥0∞) + 1 := by
+      rw [one_div, inv_inv, ENNReal.ofReal_add (by positivity) zero_le_one,
+        ENNReal.ofReal_natCast, ENNReal.ofReal_one]
+    have h2 : ν j {x | t - 1 / ((k : ℝ) + 1) < f x ∧ f x < t} =
+        ρ j (Ioo (t - 1 / ((k : ℝ) + 1)) t) := by
+      rw [hρapp j _ measurableSet_Ioo]
+      congr 1
+      ext x
+      simp only [mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_Ioo, hA]
+      constructor
+      · rintro ⟨h3, h4⟩
+        refine ⟨⟨h3, h4⟩, ?_, ?_⟩ <;> linarith [ht.2]
+      · rintro ⟨⟨h3, h4⟩, -⟩
+        exact ⟨h3, h4⟩
+    rw [h1, h2]
+  -- Step 11: `liminf_j Gⱼ(t) = 0` gives `φ` strictly increasing with `G_{φ(n)}(t) < 1/(n + 1)`
+  have hfreq : ∀ n : ℕ, ∃ᶠ j in atTop, G j t < ((n : ℝ≥0∞) + 1)⁻¹ := by
+    intro n
+    refine frequently_lt_of_liminf_lt (by isBoundedDefault) ?_
+    rw [hHt]
+    exact ENNReal.inv_pos.2 (by simp)
+  obtain ⟨φ, hφ, hφlt⟩ := extraction_forall_of_frequently hfreq
+  refine ⟨t, ht, φ, hφ, fun j => ?_, fun j => (hlink j).trans_lt (hGt j), ?_⟩
+  -- Step 8: (i), as `{f = t} ⊆ A`
+  · have hsubA : {x | f x = t} ⊆ A := by
+      intro x hx
+      rw [hA]
+      simp only [mem_ofPred_eq] at hx ⊢
+      rw [hx]
+      exact ht
+    have h := hκt j
+    rwa [Measure.restrict_apply (measurableSet_eq_fun hf measurable_const),
+      inter_eq_left.2 hsubA] at h
+  -- Step 11: (iii), `0 ≤ D_{φ(n)}(t) ≤ G_{φ(n)}(t) < 1/(n + 1)`
+  · have hinv : Tendsto (fun n : ℕ => ((n : ℝ≥0∞) + 1)⁻¹) atTop (𝓝 0) := by
+      have := ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)
+      refine this.congr fun n => ?_
+      simp [Function.comp_apply, Nat.cast_add, Nat.cast_one]
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hinv (fun _ => zero_le)
+      (fun n => (hlink (φ n)).trans (hφlt n).le)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
