@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "230d8cae36573eab8ebfe30249036e8cb42ca7a935b652a39c1ba0d60fa26a32",
+  "git_delta": {
+    "base_commit": "3ca57279850b7e589c0c58251212b5f13b57b74d",
+    "candidate_commit": "1128000aea5594562fbe0397d8b73d956d0e5d63",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_ce_normal_average_lower",
+    "diff_sha256": "284c3228ec42c097a1af125478c50281361547e464bc8d471ba21c1c50efc04d",
+    "source_sha256": "21a3bba32763a433812d90ce3d0f77afe7e730424a9ba2e4ac1431ad7ab902fe",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_ce_normal_average_lower",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₀ : ℝ), 0 < ρ₀ → μ (closedBall y ρ₀) ≠ ∞ → Measurable ν → (∀ z, ‖ν z‖ ≤ 1) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∃ ρ₂ : ℝ, 0 < ρ₂ ∧ ρ₂ ≤ ρ₀ ∧ ∀ r : ℝ, 0 < r → r < ρ₂ → (1 / 2 : ℝ) * (μ (closedBall y r)).toReal ≤ ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
