@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|map_euclideanHausdorffMeasure|isAddHaarMeasure_euclideanHausdorffMeasure",
+        "integral_pos_iff_support_of_nonneg|integrable_of_hasCompactSupport|mem_support_iff_forall|theorem restrict_apply |class Regular|closed_of_finiteDimensional",
+        "dsmc_att_",
+        "sed -n '1,265p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-approx-tangent-scoped-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-approx-tangent-scoped-audit/Verified.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.md",
+        "/tmp/atts-decomp/Final2.lean",
+        "/tmp/gmt-approx-tangent-scoped-audit/Challenges.lean",
+        "/tmp/gmt-approx-tangent-scoped-audit/Verified.lean"
+      ],
+      "conclusion": "The split appropriately separates measure positivity, preservation of null sets, extraction of blow-up points, and the closed-range argument. The first two children feed blowup_points; secant_range is independent. Together with the existing chart_tangent_space dependency, they establish exactly the selected frozen parent contract. The resulting dependency graph is acyclic. All four names are bare identifiers with no reservation matches in the inspected DAG or issue registry. Each exact one-line proposition elaborates before any child implementation exists. Inferred geometry uses the Euclidean PiLp 2 norm and Borel structure; no matrix-unit constructions occur. Snapshot and workspace contracts are byte-identical, and dependency revisions match the pins. Independently compiled all four supplied child proofs and parent assembly parameterized by the sibling's exact frozen type: only propext, Classical.choice, and Quot.sound occur. Parent completion remains conditional on the declared chart sibling, currently decomposing."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_integral_pos",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including dimension, compact support, nonnegativity, and positivity at a plane point. The proof establishes finite measure on compact sets and integrability before invoking integral positivity. The open nonzero locus has positive restricted measure by the support theorem. The argument includes n = 0 and has no circular dependency."
+    },
+    {
+      "key": "blowup_null_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose for arbitrary sets and every nonzero real scale. Translation invariance and nonzero-scalar Hausdorff scaling prove nullity without measurability assumptions. Absolute values correctly handle negative scales, and n = 0 is covered."
+    },
+    {
+      "key": "blowup_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The supplied tent function has the stated continuity, support, and positivity properties. The two declared dependencies provide a positive limiting integral and null exceptional image. Eventual positivity, restriction on the measurable ball, and the explicit covering argument yield witnesses in M ∩ N at every sufficiently small positive scale. No measurability or local-finiteness hypothesis on M or N is silently used."
+    },
+    {
+      "key": "secant_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both approximation hypotheses and the continuous-linear-map range conclusion match exactly. The explicit positive constants and scale place the chosen point within the secant estimate, producing a range point within every prescribed tolerance. Finite-dimensional closedness completes the argument. No injectivity, x ∈ N, or nonzero-vector assumption is needed; zero-dimensional cases are covered."
+    }
+  ],
+  "required_changes": []
+}

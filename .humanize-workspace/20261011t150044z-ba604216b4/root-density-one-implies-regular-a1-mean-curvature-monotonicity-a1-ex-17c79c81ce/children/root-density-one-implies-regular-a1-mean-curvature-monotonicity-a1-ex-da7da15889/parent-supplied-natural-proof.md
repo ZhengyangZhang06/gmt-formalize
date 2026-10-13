@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1.cutoff_ball_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 6(a)–(c) of the parent proof. These are the cutoffs g((1 − t)/ε_j) with ε_j = 1/(j + 2) and g = Mathlib's Real.smoothTransition, which the parent proof explicitly allows. Here they are applied to the squared radius ratio u = |x − z|²/s². Open balls appear because the cutoffs increase to the indicator of (−∞, 1).
+1. Definition. Let g := Real.smoothTransition. It is C^∞ and monotone, satisfies 0 ≤ g ≤ 1, g(t) = 0 for t ≤ 0 and g(t) = 1 for t ≥ 1. Put η_j(u) := g((j + 2)·(1 − u)).
+2. C¹. η_j is the composition of the C^∞ function g with the affine map u ↦ (j + 2)(1 − u), hence C¹.
+3. Nonnegativity: η_j ≥ 0 because g ≥ 0.
+4. Sign of the derivative. Since j + 2 > 0, u ↦ (j + 2)(1 − u) is antitone; g is monotone, so η_j is antitone. The derivative of an antitone function ℝ → ℝ is ≤ 0 at every point (Antitone.deriv_nonpos), so deriv η_j ≤ 0 everywhere.
+5. Vanishing. If u ≥ 1, then (j + 2)(1 − u) ≤ 0, so η_j(u) = g((j + 2)(1 − u)) = 0.
+6. Convergence. Fix P, μ, z and s > 0 with μ(B_s(z)) < ∞, and put u(x) := |x − z|²/s².
+ (a) Domination. 0 ≤ η_j(u(x)) ≤ 1 for all x, and if x ∉ B_s(z) then u(x) ≥ 1 (because |x − z| ≥ s > 0), so η_j(u(x)) = 0 by step 5. Hence |η_j(u(x))| ≤ 1_{B_s(z)}(x) for all j and x, and 1_{B_s(z)} is μ-integrable because μ(B_s(z)) < ∞. Each x ↦ η_j(u(x)) is continuous, hence AEStronglyMeasurable.
+ (b) Pointwise limit. If x ∈ B_s(z), then u(x) < 1. Choose N ∈ ℕ with N ≥ 1/(1 − u(x)). For j ≥ N, (j + 2)(1 − u(x)) ≥ 1, so η_j(u(x)) = 1. Thus η_j(u(x)) → 1 = 1_{B_s(z)}(x). If x ∉ B_s(z), then η_j(u(x)) = 0 = 1_{B_s(z)}(x) for every j.
+ (c) By dominated convergence (tendsto_integral_of_dominated_convergence) with the bound 1_{B_s(z)}, ∫ η_j(u) dμ → ∫ 1_{B_s(z)} dμ = μ.real(B_s(z)) (integral_indicator_one).
+Lean remark (optional aid; the proof above is complete without it): during decomposition, a warning-free, kernel-checked proof of exactly this frozen type was written. It uses only the axioms propext, Classical.choice and Quot.sound, and it follows steps 1–6. Scratch copies, which may no longer exist: /tmp/dsmc-em-decomp/C4.lean, and /tmp/dsmc-em-decomp/Full.lean (all four children plus the parent assembly).
+
+## Key steps
+
+1. η_j(u) := Real.smoothTransition((j + 2)(1 − u)) is C¹, nonnegative, antitone (so deriv ≤ 0), and vanishes for u ≥ 1.
+2. For s > 0, 0 ≤ η_j(|x − z|²/s²) ≤ 1_{B_s(z)}(x), integrable since μ(B_s(z)) < ∞.
+3. η_j(|x − z|²/s²) → 1_{B_s(z)}(x) for every x: eventually (j + 2)(1 − u) ≥ 1 when u < 1, and the value is 0 when u ≥ 1.
+4. Dominated convergence gives ∫η_j(|x − z|²/s²) dμ → ∫1_{B_s(z)} dμ = μ.real(B_s(z)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.json}`
+- `python3 -I over dag.json: list every node id, lean_name and status; print statements and lean_statements of the siblings under mean_curvature_monotonicity-a1 and of the related monotonicity nodes (dimred monotonicity, dorag monotonicity, dtc cone monotonicity_identity, regcomp monotonicity_mass_bound)`
+- `cat GMT/Ch07/Submission.lean (IMRep, IMRep.measure, approxTangentPlane, tangentialDivergence, IMRep.firstVariation)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -n 'smoothTransition|monotoneOn_of_deriv_nonneg|hasDerivAt_integral_of_dominated|exp_monotone|cutoff' local-references/123e8435b4a2469b/project --glob '*.lean' (no match: the snapshot project contains only the frozen contract)`
+- `rg -n 'ofReal_measureReal|monotoneOn_of_deriv_nonneg|continuousOn_of_dominated|hasDerivAt_integral_of_dominated_loc_of_deriv_le|Antitone.deriv_nonpos|Monotone.deriv_nonneg|interior_Ioc|tendsto_integral_of_dominated_convergence' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'theorem integral_indicator_one|theorem integral_withDensity_eq_integral_smul|theorem starProjection_eq_sum_rankOne' local-references/123e8435b4a2469b/mathlib/Mathlib; rg the smoothTransition API (zero_of_nonpos, one_of_one_le, nonneg, le_one, contDiff, monotone) in Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `grep -n 'def HasApproximateTangentSpaceAt' -A 25 simongmt Chapter03/Rectifiable.lean (finrank = n conjunct, .finrank_eq, .unique)`
+- `grep -n '^theorem' simongmt Chapter04/MeanCurvature.lean; sed -n 1,130p (RectifiableVarifold monotonicity; module not imported by the contract)`
+- `sed -n 452,1105p .swarm-worktrees/5a60867de71e532024b6/gmt-ch07/GMT/Ch07/Submission.lean (accepted Submission.regcomp_monotonicity_mass_bound at commit 67f6a7b)`
+- `sed -n 200,440p book/chapter-04.txt (Simon Ch. 4, 3.1–3.17)`
+- `python3 -I: verifier/gmt-compare.py contract_scope + child_modules to generate the exact NodeChallenge/NodeSolution text for the four child types`
+- `lake env lean /tmp/dsmc-em-decomp/{Stmts,Assembly,C1,C2,C3,C4,Full,FullSol,AllChallenges}.lean, each with #print axioms`
+- `rg -l --fixed-strings dsmc_em_ in dag.json, GMT/, .swarm-worktrees (*.lean) and lake-packages simongmt (name-collision check: no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/DenselyOrdered.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/5a60867de71e532024b6/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dsmc-em-decomp/Stmts.lean`
+- `/tmp/dsmc-em-decomp/Assembly.lean`
+- `/tmp/dsmc-em-decomp/C1.lean`
+- `/tmp/dsmc-em-decomp/C2.lean`
+- `/tmp/dsmc-em-decomp/C3.lean`
+- `/tmp/dsmc-em-decomp/C4.lean`
+- `/tmp/dsmc-em-decomp/Full.lean`
+- `/tmp/dsmc-em-decomp/FullSol.lean`
+- `/tmp/dsmc-em-decomp/AllChallenges.lean`
+- `/tmp/dsmc-em-decomp/statements.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+The snapshot project holds only the frozen contract, so it contains no declaration for any child; no rg match. Mathlib in the snapshot provides every library fact the children use:
+- monotoneOn_of_deriv_nonneg, interior_Ioc;
+- continuousOn_of_dominated, hasDerivAt_integral_of_dominated_loc_of_deriv_le, tendsto_integral_of_dominated_convergence;
+- Antitone.deriv_nonpos, the Real.smoothTransition API;
+- integral_indicator_one, integral_withDensity_eq_integral_smul, OrthonormalBasis.starProjection_eq_sum_rankOne, ofReal_measureReal.
+
+SimonGMT supplies the following:
+- HasApproximateTangentSpaceAt includes finrank = n, and approximate tangent spaces are unique (.unique).
+- Chapter04/MeanCurvature.lean has the same monotonicity, but only for its RectifiableVarifold and not imported by the contract, so it was used only as a reference.
+
+The accepted proof of Submission.regcomp_monotonicity_mass_bound provided proven tactic patterns: the a.e. frame from R.orients, trace of ∑ rankOne, Bessel, the withDensity integral conversion, and smoothTransition cutoffs.
+
+Results in Lean:
+- All four proposed child types elaborate in the exact comparator scope. The challenge modules were generated by the verifier's own code.
+- Each child type was fully proved in scratch files.
+- The parent's frozen type dsmc_exp_ball_mass_monotone was proved from the four children.
+- #print axioms shows only propext, Classical.choice and Quot.sound.
+- The bare names dsmc_em_* do not collide with any DAG node, worktree or library declaration.
