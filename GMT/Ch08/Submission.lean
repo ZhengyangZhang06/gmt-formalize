@@ -479,45 +479,6 @@ theorem Submission.intcpt_fli_weight_integral_tendsto :
     rfl
   -- Step 7: substitute steps 5 and 6 into step 4.
   simpa only [hleft, hright] using hlim
-/-- `H^n` of the balls of an `n`-plane centred on the plane (step 0(c) of the flat-limit step of
-Simon Ch. 8, 5.9): for `T ∈ G(N,n)`, `a ∈ T` and `r > 0`, both `T ∩ B_r(a)` and `T ∩ B°_r(a)`
-have `H^n`-measure `ω_n r^n`. -/
-theorem Submission.intcpt_fli_plane_ball_measure :
-    ∀ (N n : ℕ) (T : Grassmannian N n) (a : Euclidean N) (r : ℝ), a ∈ T.plane → 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall a r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball a r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
-  intro N n T a r ha hr
-  -- Step 1: an orthonormal basis `B` of `T.plane` indexed by `Fin n` (`dim T.plane = n`) gives a
-  -- linear isometry `L : ℝ^n → ℝ^N` with values in `T.plane` and `L (B.repr v) = v`.
-  let B : OrthonormalBasis (Fin n) ℝ T.plane :=
-    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr (Grassmannian.finrank_plane T))
-  let L : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
-    T.plane.subtypeₗᵢ.comp B.repr.symm.toLinearIsometry
-  have hLrepr : ∀ v : T.plane, L (B.repr v) = v := fun v ↦ by simp [L]
-  -- Step 2: `ι x = a + L x` is an isometry with `ι 0 = a`.
-  let ι : EuclideanSpace ℝ (Fin n) → Euclidean N := fun x ↦ a + L x
-  have hι : Isometry ι := Isometry.of_dist_eq fun x y ↦ by
-    simp only [ι, dist_eq_norm, add_sub_add_left_eq_sub, ← map_sub, L.norm_map]
-  have hι0 : ι 0 = a := by simp [ι]
-  -- Step 3: `ι` maps onto `T.plane` (`y = ι (B.repr (y - a))` for `y ∈ T.plane`), so it maps
-  -- `B_r(0) = ι⁻¹(B_r(a))` onto `T.plane ∩ B_r(a)`, and likewise for open balls.
-  have hrange : range ι = (T.plane : Set (Euclidean N)) := by
-    ext y
-    refine ⟨?_, fun hy ↦ ⟨B.repr ⟨y - a, T.plane.sub_mem hy ha⟩, by simp [ι, hLrepr]⟩⟩
-    rintro ⟨x, rfl⟩
-    exact T.plane.add_mem ha (B.repr.symm x).2
-  -- Step 4: `μHE[n]` is isometry invariant and equals `volume` on `ℝ^n`.
-  have hvol : ∀ S : Set (EuclideanSpace ℝ (Fin n)),
-      (μHE[n] : Measure (Euclidean N)) (ι '' S) = volume S := fun S ↦ by
-    rw [hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-  -- Steps 5–6: Haar scaling of balls in `ℝ^n` (no nontriviality is needed, so `n = 0` is
-  -- included) and `ofReal (r ^ n) = (ofReal r) ^ n`.
-  constructor
-  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_closedBall,
-      hvol, Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin, unitBallVolume,
-      ENNReal.ofReal_pow hr.le, mul_comm]
-  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_ball, hvol,
-      Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin, unitBallVolume,
-      ENNReal.ofReal_pow hr.le, mul_comm]
-
 /-- Mass bounds on compact sets under flat convergence (Simon Ch. 8, proof of 5.9, step 0(a),
 pp. 218–219): if `θ₀ > 0` and `∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c(ℝ^N × G(N,n))` with
 `spt f ⊆ B°_5(0) × G(N,n)`, then `μ_{W_k}(K) < c` for all large `k` whenever `K ⊆ O ⊆ B°_5(0)` with
