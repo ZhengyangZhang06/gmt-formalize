@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74b02ca86c60202641d88904d2b1f09fe5cff6846ac7a5fbeb9f3ab86c3b39a3",
+  "git_delta": {
+    "base_commit": "6b1809391aa031df68c3bf51548693e8f3bcf1f2",
+    "candidate_commit": "da8da23e49ee5732f5ff77bb4ad5777df83e6cc7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cwv_action_dilation_invariant",
+    "diff_sha256": "3b05b0a98fb0f26447218a7335b36e4db670d3819f5854bf6917d742b7e75417",
+    "source_sha256": "be05ef82c884e71b74481e6b60605ee2ed13d34557639a10cc78a8265a422c53",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cwv_action_dilation_invariant",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → R.action (γ : DifferentialForm (Euclid P) n) = 0) → ∀ lam : ℝ, 0 < lam → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) → R.action (ω' : DifferentialForm (Euclid P) n) = R.action (ω : DifferentialForm (Euclid P) n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
