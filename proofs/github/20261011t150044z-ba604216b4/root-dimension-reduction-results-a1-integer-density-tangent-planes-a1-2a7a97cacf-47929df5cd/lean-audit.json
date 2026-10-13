@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cc435965bc35c78605e2eb07532fc8d82d3443bbd31750de8def039545c53660",
+  "git_delta": {
+    "base_commit": "0e39207b9748575a12260f38ff1335029d91f4d7",
+    "candidate_commit": "da054059e43efa1d89534bf83d5f3d1e9beec2e2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_nipp_local_comparison",
+    "diff_sha256": "38aaa3c288ad7cb0098df3fc1e1d790da51d43f9db90a73b9be8fbcdefa312e9",
+    "source_sha256": "07cab6804be386bc68c742570d9f9c2929fdaad861d28f644aabdb9e5eee0247",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_nipp_local_comparison",
+      "statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (D : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → MeasurableSet D → (∀ w ∈ D, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) → ν D ≤ μ D",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
