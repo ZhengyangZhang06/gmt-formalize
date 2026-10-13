@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.hausdorff_identification-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "Identification μ = H^m⌞B with approximate tangent planes ν^⊥, given rectifiable density one (Simon 4.3 first part)",
+  "statement": "Let m ≥ 1, let D ⊆ ℝ^{m+1} be open, μ a Borel measure on ℝ^{m+1} with μ(ℝ^{m+1} \\ D) = 0 and μ(K) < ∞ for every compact K ⊆ D, and ν : ℝ^{m+1} → ℝ^{m+1} Borel with |ν(y)| = 1 for every y. Assume that for μ-a.e. y and every continuous compactly supported f : ℝ^{m+1} → ℝ, r^{-m} ∫ f(r^{-1}(z − y)) dμ(z) → ∫_{(span{ν(y)})^⊥} f dH^m as r ↓ 0 (H^m = μHE[m]). Assume also (RD): for every Borel countably m-rectifiable S ⊆ ℝ^{m+1} with H^m(S) < ∞, H^m(S ∩ B_t(w))/(ω_m t^m) → 1 as t ↓ 0 for H^m-a.e. w ∈ S (ω_m = unitBallVolume m). Then there is a Borel, countably m-rectifiable B ⊆ D with μ = H^m⌞B (as measures) such that for H^m-a.e. y ∈ B the approximate tangent space of B at y (Simon Ch. 3, 1.4) is (span{ν(y)})^⊥.",
+  "lean_statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → (∀ S : Set (Euclid (m + 1)), MeasurableSet S → CountablyRectifiable m S → μHE[m] S ≠ ∞ → ∀ᵐ w ∂(μHE[m].restrict S), Tendsto (fun t : ℝ => μHE[m] (S ∩ ball w t) / (unitBallVolume m * ENNReal.ofReal (t ^ m))) (𝓝[>] 0) (𝓝 1)) → ∃ B : Set (Euclid (m + 1)), MeasurableSet B ∧ B ⊆ D ∧ CountablyRectifiable m B ∧ μ = μHE[m].restrict B ∧ ∀ᵐ y ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B y (Submodule.span ℝ {ν y})ᗮ",
+  "lean_name": "codim1_rdo_dg_measure_eq_hausdorff",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4abe9c6216-a1"
+}

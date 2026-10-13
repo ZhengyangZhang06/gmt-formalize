@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.gauss_green_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon Ch. 2, 2.1–2.2 (chapter-02.txt lines 477–505) and Ch. 3, 4.1 (chapter-03.txt lines 555–575), with the Riesz Representation Theorem Ch. 1, 4.14 (chapter-01.txt line 1654; SimonGMT `simon_theorem_4_14`, `simon_theorem_4_14_caratheodory` in Chapter01/RadonPolarRepresentation.lean). This is steps 1–2 of the parent proof. Erratum: the OCR of 4.1 drops the minus sign; for the inward normal ν the identity reads ∫_F div g = −∫⟨g, ν⟩ dμ.
+
+Notation. E := ℝ^{m+1}, L := L^{m+1}, div φ := trace Dφ, ‖g‖_∞ := sup|g|. For compact K and d > 0, K^d := {x : dist(x, K) ≤ d} (compact). As D is open, every compact K ⊆ D has some d_K > 0 with K^{2d_K} ⊆ D.
+
+1. Two-sided bound. Fix a compact K ⊆ D and C_K from the hypothesis. φ = 0 is admissible, so C_K ≥ 0. If φ is C^∞, compactly supported, tsupport φ ⊆ K and φ ≠ 0, then ±φ/‖φ‖_∞ are admissible and div is linear, so |∫_F div φ dL| ≤ C_K ‖φ‖_∞; this also holds for φ = 0. (div φ is continuous with compact support, hence L-integrable on F.)
+
+2. Mollification. Fix ρ ∈ C_c^∞(E) with ρ ≥ 0, ∫ρ = 1, spt ρ ⊆ B_1(0) (Mathlib `ContDiffBump.normed` for a bump centred at 0 with outer radius 1), and ρ_ε(x) := ε^{-(m+1)} ρ(x/ε). For g : E → E continuous with compact support put g_ε := ρ_ε * g (componentwise). Then g_ε is C^∞ (HasCompactSupport.contDiff_convolution_left); tsupport g_ε ⊆ (tsupport g)^ε; |g_ε(x)| ≤ ∫ρ_ε(x − z)|g(z)| dz ≤ ‖g‖_∞; and g_ε → g uniformly as ε ↓ 0 (g is uniformly continuous). If g is C¹, then D(g_ε) = ρ_ε * Dg, hence div g_ε = ρ_ε * div g → div g uniformly.
+
+3. Extension. Let 𝒞 := {g : E → E continuous, compactly supported, tsupport g ⊆ D}. For g ∈ 𝒞, K := tsupport g and 0 < ε, ε′ < d_K, the field g_ε − g_{ε′} is C^∞ with tsupport in K^{d_K}, so by step 1 |∫_F div g_ε − ∫_F div g_{ε′}| ≤ C_{K^{d_K}} ‖g_ε − g_{ε′}‖_∞ → 0. Hence Λ(g) := −lim_{ε↓0} ∫_F div g_ε dL exists. Properties:
+ (a) Λ is linear on 𝒞 (for g, h ∈ 𝒞 use the compact set tsupport g ∪ tsupport h; (g + h)_ε = g_ε + h_ε and (cg)_ε = c g_ε).
+ (b) If g ∈ 𝒞 is C¹ then Λ(g) = −∫_F div g dL: div g_ε → div g uniformly and all these functions vanish outside the compact set K^{d_K}, of finite L-measure.
+ (c) Local bound: if K ⊆ D is compact, g ∈ 𝒞, tsupport g ⊆ K and |g| ≤ 1, then |g_ε| ≤ 1 and tsupport g_ε ⊆ K^{d_K} for ε < d_K, so |Λ(g)| ≤ C_{K^{d_K}}.
+
+4. Riesz representation on D. Regard D (an open subspace of E) as a locally compact Hausdorff space. For h ∈ C_c(D; E) its extension by zero h̃ lies in 𝒞: h̃ is continuous on the open set D and vanishes on the open set E \ tsupport_D h (a compact subset of D is closed in E), and these open sets cover E. Define L(h) := Λ(h̃); it is linear by 3(a), and for every compact K ⊆ D, L(h) ≤ C_{K^{d_K}} whenever |h| ≤ 1 and supp h ⊆ K, by 3(c). By Simon Ch. 1, 4.14 (X = D, H = E; SimonGMT `simon_theorem_4_14_caratheodory`) there are a Radon measure μ_D on D and a μ_D-measurable ν_D : D → E with |ν_D| = 1 μ_D-a.e. and L(h) = ∫_D ⟨h, ν_D⟩ dμ_D for all h ∈ C_c(D; E).
+
+5. Transfer to E. Define the Borel measure μ(A) := μ_D(A ∩ D): the Borel restriction of the Carathéodory measure of μ_D (SimonGMT `opensMeasurableSpace_radonCaratheodoryMeasure`, `IsBorelRegularOuterMeasure.toBorelMeasure`) pushed forward along the inclusion D ↪ E. Then μ(E \ D) = 0 and μ(K) = μ_D(K) < ∞ for compact K ⊆ D. The Riesz field ν_D is measurable for the Carathéodory σ-algebra of μ_D; as μ_D is Borel regular and open σ-finite (D is σ-compact and μ_D is finite on compacts), each coordinate of ν_D is μ_D-a.e. equal to a Borel function (SimonGMT `IsBorelRegularOuterMeasure.aemeasurable_of_caratheodory`, applied coordinatewise; E is finite-dimensional). Hence ν_D agrees μ_D-a.e. with a Borel map ν₁ : E → E (on D), and integrals against the Carathéodory measure of μ_D and against μ coincide for such integrands. Fix a unit vector e ∈ E (E ≠ {0}) and set ν(y) := ν₁(y) if |ν₁(y)| = 1, ν(y) := e otherwise. Then ν is Borel, |ν(y)| = 1 for every y, and ν = ν_D μ-a.e. on D. Hence for g ∈ 𝒞: Λ(g) = L(g|_D) = ∫_D ⟨g, ν_D⟩ dμ_D = ∫_E ⟨g, ν⟩ dμ (the integrand is bounded and vanishes off the compact set tsupport g ⊆ D, which has finite μ-measure, so it is μ-integrable).
+
+6. Gauss–Green. Let φ be C¹ with compact support and tsupport φ ⊆ D. Then φ ∈ 𝒞, and by 3(b) and step 5, −∫_F div φ dL = Λ(φ) = ∫⟨φ, ν⟩ dμ. With step 5 this gives every assertion: μ(E \ D) = 0, μ(K) < ∞ for compact K ⊆ D, ν Borel with |ν| ≡ 1, and ∫_F div φ dL = −∫⟨φ, ν⟩ dμ. ∎
+
+## Key steps
+
+1. Hypothesis applied to ±φ/sup|φ| gives |∫_F div φ| ≤ C_K sup|φ| for smooth φ supported in K.
+2. Mollification gives smooth approximants supported in K^d with sup bound preserved and uniformly convergent divergence for C¹ fields.
+3. Λ := −lim ∫_F div g_ε is a locally bounded linear functional on continuous compactly supported fields in D and equals −∫_F div g on C¹ fields.
+4. Simon Ch. 1, 4.14 on the locally compact space D yields a Radon μ_D and a unit polar field ν_D.
+5. Push μ_D forward to ℝ^{m+1}; take a Borel representative of ν_D and make it unit everywhere.
+6. Gauss–Green identity for C¹ fields from 3(b) and the representation.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `python3 scans of dag.json: statements/status of all region_density_one-a1 children (incl. rectifiable_density_one frozen type); accepted nodes whose type mentions HasApproximateTangentSpaceAt; collision check of the 12 codim1_rdo_dg_* names (0 hits among 680 nodes)`
+- `git show 376e5f48:GMT/Ch07/Submission.lean | grep namespace/theorem Submission.  (placement of child declarations inside namespace GMT.Ch07)`
+- `grep -n "^theorem|^def|^structure" in SimonGMT Chapter01/{RadonPolarRepresentation,RadonRepresentation,VectorFunctionalEnvelope,DensityComparison,LowerDensityComparison,RelativeDensityComparison,RadonNikodymDensity,GeneralDifferentiation,Densities,Hausdorff,EuclideanNormalization}.lean, Chapter02/BV.lean, Chapter03/{FinitePerimeter,Rectifiable}.lean`
+- `rg in snapshot mathlib: "theorem ae_tendsto_average ", "theorem ae_tendsto_rnDeriv", "theorem ae_tendsto_measure_inter_div", "lintegral_pow_le_pow_lintegral_fderiv", "theorem eLpNorm_le_eLpNorm_fderiv", "LipschitzOnWith.extend_real", "theorem exists_disjoint_subfamily_covering_enlargement_closedBall", "integral_lineDeriv_mul_eq", "theorem tendsto_filterAt", "contDiff_convolution_left", "exists_isCompact_lt_add", "theorem withDensity_rnDeriv_eq", "measurePreserving_repr", "theorem addHaar_preimage_smul", "theorem ae_eq_of_integral_contDiff_smul_eq", "def normed", "μHE\["`
+- `sed -n of book chapter-03.txt 1-330 and 540-746, chapter-02.txt 470-640, chapter-01.txt 570-640, 1063-1145, 1654-1672`
+- `lake env lean -DautoImplicit=false /tmp/dg-split-check/Types.lean (all 12 child types; sorry warnings only)`
+- `lake env lean -DautoImplicit=false /tmp/dg-split-check/Assembly.lean (parent frozen type from the children + uncle stub; #print axioms)`
+- `sed -n runtime.py _decompose/_solve_children/_existing_lean_name_problem; cat swarm-project.json (max_depth 6, max_children 12)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-90bfaf373f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/GeneralDifferentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonNikodymDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/dg-split-check/Types.lean`
+- `/tmp/dg-split-check/Assembly.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+
+Pins: snapshot manifest project b4d606db / Mathlib 25730c7c equal workspace HEAD and .lake/packages/mathlib; simongmt 2b366308; snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…). Library: SimonGMT already proves Simon Ch. 1, 4.14 for any locally compact Hausdorff X (simon_theorem_4_14_caratheodory, RadonPolarRepresentation.lean:150) and Borel versions of Carathéodory-measurable functions (IsBorelRegularOuterMeasure.aemeasurable_of_caratheodory, GeneralDifferentiation.lean:286), used by gauss_green_measure; it defines CountablyRectifiable, HasApproximateTangentSpaceAt and blowUpMap (Chapter03/Rectifiable.lean) and only the data of 4.1–4.2 (Chapter03/FinitePerimeter.lean), whose header states that existence of the representation and De Giorgi's theorem are not provided. Snapshot Mathlib supplies Besicovitch differentiation (Besicovitch.lean:1078 ae_tendsto_rnDeriv, :1105 ae_tendsto_measure_inter_div; Differentiation.lean:855 ae_tendsto_average), GNS (SobolevInequality.lean:439 eLpNorm_le_eLpNorm_fderiv_one), McShane extension (Lipschitz.lean:308), Vitali 5r covering (Vitali.lean:158), withDensity_rnDeriv_eq, OrthonormalBasis.measurePreserving_repr, ae_eq_of_integral_contDiff_smul_eq and μHE (Geometry/Euclidean/Volume/Measure.lean). No local declaration states the Gauss–Green measure, BV compactness, the BV Sobolev inequality, half-space rigidity, the blow-up theorem or the rectifiability criterion, so these become children. DAG: no accepted node has an identical type to any child, so no reuse; the 12 codim1_rdo_dg_* names occur nowhere in dag.json (680 nodes) or SimonGMT; the uncle rectifiable_density_one (frozen type ∀ P n M, 1 ≤ n → … → ∀ᵐ w, Tendsto (μHE[n] (M ∩ ball w t)/(unitBallVolume n * ofReal (t^n))) …) is used only through hypothesis (RD) of hausdorff_identification, which is its exact instance at P := m+1, n := m. Lean: Types.lean elaborates all 12 child types after import GMT.Ch07.Submission inside namespace GMT.Ch07 with the contract opens (exit 0, sorry warnings only); Assembly.lean proves the parent's frozen type from gauss_green_measure, tangent_measure_ae, measure_eq_hausdorff and the uncle (stubs), #print axioms = propext, sorryAx, Classical.choice, Quot.sound. Runtime: max_depth 6 (children at depth 5 may split once more), max_children 12.
