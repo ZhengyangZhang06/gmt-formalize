@@ -3449,6 +3449,263 @@ theorem lgc_density_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (
       (div_le_div_of_nonneg_left hD0 (half_pos ht) hτ0.le)) hx (abs_nonneg _)
       (div_nonneg hD0 (half_pos ht).le)
 
+/-- **Height bound and cone condition** (Simon Ch. 5, 2.6 (3)–(4) and the proof of 2.7: "the set
+`G` ... includes all of `spt μ ∩ B_{σ₀/2}(0)`", with `βL` replaced by any `τ ≥ δ^{1/(2n+2)}`).
+Assume `AffineApproximationLemma`.  There are `δ₁, C₁ > 0`, depending only on `n, ℓ, p`, such that
+if 2.3 holds with `0 < δ ≤ δ₁`, `T₀ = q(ℝⁿ × {0})`, `δ^{1/(2n+2)} ≤ τ` and `E(ξ, σ, T₀) ≤ τ²` for
+all `ξ ∈ spt V ∩ B_{δρ/2}(0)` and `σ ∈ (0, δρ/2]`, then
+(1) `dist(x, T₀) ≤ C₁ τ δρ` for `x ∈ spt V ∩ B_{δρ}(0)`, and
+(2) `dist(y − z, T₀) ≤ C₁ τ |y − z|` for `y, z ∈ spt V ∩ B_{δρ/2}(0)`.
+
+Proof.  Take `δ₁ = δ₀ ≤ 1/8` from `lgc_density_monotonicity`, `C_A = max{C, 1}` for the constant
+`C` of the affine approximation lemma, and `C₁ = C_A + C₂` with
+`C₂ = (4 (1 + 2ⁿ C_A² (C_A + 1)²)/ω_n)^{1/2}`.  Fix a scale `(ξ, σ)` with
+`ξ ∈ spt V ∩ B_{δρ/2}(0)` and `σ ∈ (0, δρ]`.  The plane `T` of 2.5 at `(ξ, σ)` has height
+`≤ C_A τ σ` on `spt V ∩ B_σ(ξ)` and `∫_{B_{σ/2}(ξ)} |p_x − p_T|² dμ_V ≤ (C_A (C_A + 1))² τ² σⁿ`,
+because the curvature term is `≤ δ ≤ δ^{1/(2n+2)} ≤ τ` on `B_σ(ξ) ⊆ B_ρ(0)`.  Integrating
+`|p_T − p_{T₀}|² ≤ 2|p_x − p_T|² + 2|p_x − p_{T₀}|²` over `B_{σ/2}(ξ)` (the integrands are
+integrable since `x ↦ p_x` is `μ_V`-a.e. strongly measurable by `lgc_tangent_plane_ae`) and using
+the tilt hypothesis at `(ξ, σ/2)` and the mass bound `μ_V(B_{σ/2}(ξ)) ≥ ω_n (σ/2)ⁿ/2` of
+`lgc_density_monotonicity` (ii) gives `|p_T − p_{T₀}| ≤ C₂ τ`, so
+`dist(x − ξ, T₀) ≤ dist(x − ξ, T) + |p_T − p_{T₀}| |x − ξ| ≤ (C_A + C₂) τ σ` on
+`spt V ∩ B_σ(ξ)`.  (1) is this estimate at `(0, δρ)`, and (2), for `y ≠ z`, is this estimate at
+`(z, |y − z|)`.  Since `|y − z| ≤ δρ` and the tilt hypothesis holds at every scale `≤ δρ/2`, the
+small-scale argument covers every pair, so no separate large-scale case is needed. -/
+theorem lgc_height_cone : AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ 0 < C₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (τ : ℝ), δ ^ (1 / (2 * (n : ℝ) + 2)) ≤ τ → (∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ / 2), ∀ σ : ℝ, 0 < σ → σ ≤ δ * ρ / 2 → V.tiltExcess ξ σ (rotatedPlane q) ≤ τ ^ 2) → (∀ x ∈ V.support ∩ closedBall 0 (δ * ρ), infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ C₁ * τ * (δ * ρ)) ∧ (∀ y ∈ V.support ∩ closedBall 0 (δ * ρ / 2), ∀ z ∈ V.support ∩ closedBall 0 (δ * ρ / 2), infDist (y - z) (rotatedPlane q : Set (Amb n ℓ)) ≤ C₁ * τ * ‖y - z‖) := by
+  intro hAAL n ℓ hn p hp
+  -- (Aff): the constant `C` of the affine approximation lemma, enlarged to `C_A = max{C, 1}`.
+  obtain ⟨C, hC, hAff⟩ := hAAL n ℓ hn p hp
+  -- (D): `δ₀ ≤ 1/8` and the lower mass bound (ii) of `lgc_density_monotonicity`.
+  obtain ⟨δ₀, C₀, hδ₀, hδ₀8, -, hdens⟩ := Submission.lgc_density_monotonicity n ℓ hn p hp
+  obtain ⟨CA, hCA⟩ : ∃ CA : ℝ, CA = max C 1 := ⟨_, rfl⟩
+  have hCA1 : 1 ≤ CA := hCA ▸ le_max_right _ _
+  have hCCA : C ≤ CA := hCA ▸ le_max_left _ _
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- Step 1 (constants): `δ₁ = δ₀`, `C₁ = C_A + C₂` with `C₂ = (4 (1 + 2ⁿ C_A² (C_A + 1)²)/ω_n)^{1/2}`.
+  obtain ⟨C₂, hC₂⟩ : ∃ C₂ : ℝ,
+      C₂ = Real.sqrt (4 * (1 + 2 ^ n * (CA * (CA + 1)) ^ 2) / unitBallVolume n) := ⟨_, rfl⟩
+  have hC₂0 : 0 ≤ C₂ := hC₂ ▸ Real.sqrt_nonneg _
+  have hC₂sq : C₂ ^ 2 = 4 * (1 + 2 ^ n * (CA * (CA + 1)) ^ 2) / unitBallVolume n := by
+    rw [hC₂, Real.sq_sqrt (by positivity)]
+  refine ⟨δ₀, CA + C₂, hδ₀, by linarith, ?_⟩
+  intro U hU V H δ ρ hδ hδδ₀ hA q τ hτ htilt
+  -- Step 2: `σ₀ = δρ ≤ ρ/4`, `δ ≤ δ^α ≤ τ` (`α = 1/(2n+2)`), so `τ > 0`.
+  have hρ : 0 < ρ := hA.1
+  have hδ4 : δ ≤ 1 / 4 := by linarith
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδρ4 : δ * ρ ≤ ρ / 4 := by
+    have := mul_le_mul_of_nonneg_right hδ4 hρ.le
+    linarith
+  have hd0 : 0 < δ ^ (1 / (2 * (n : ℝ) + 2)) := Real.rpow_pos_of_pos hδ _
+  have hτ0 : 0 < τ := hd0.trans_le hτ
+  have hδd : δ ≤ δ ^ (1 / (2 * (n : ℝ) + 2)) := by
+    have hα1 : 1 / (2 * (n : ℝ) + 2) ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+    have := Real.rpow_le_rpow_of_exponent_ge hδ (by linarith) hα1
+    rwa [Real.rpow_one] at this
+  have hCdτ : C * δ ^ (1 / (2 * (n : ℝ) + 2)) ≤ CA * τ :=
+    mul_le_mul hCCA hτ hd0.le (by linarith)
+  -- (F1): `x ↦ p_x` is `μ_V`-a.e. strongly measurable (`lgc_tangent_plane_ae`) and `‖p_x‖ ≤ 1`.
+  have hmeas := (Submission.lgc_tangent_plane_ae n ℓ hn U hU V).1
+  have hpx : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  -- The Hilbert–Schmidt norm: `|A|² ≥ 0`, `|A w| ≤ |A| |w|` (Cauchy–Schwarz on `w = Σᵢ wᵢ eᵢ`),
+  -- `|A|² ≤ (n + ℓ) ‖A‖²` and `|A₁ − A₂|² ≤ 2|P − A₁|² + 2|P − A₂|²` (column by column).
+  have hhs0 : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, 0 ≤ hsNormSq A := fun A =>
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hhsapply : ∀ (A : Amb n ℓ →L[ℝ] Amb n ℓ) (w : Amb n ℓ),
+      ‖A w‖ ≤ Real.sqrt (hsNormSq A) * ‖w‖ := by
+    intro A w
+    have hw : w = ∑ i, w i • EuclideanSpace.single i (1 : ℝ) := by
+      ext j
+      simp [Pi.single_apply]
+    calc ‖A w‖ = ‖∑ i, w i • A (EuclideanSpace.single i 1)‖ := by
+          conv_lhs => rw [hw]
+          simp [map_sum, map_smul]
+      _ ≤ ∑ i, ‖w i • A (EuclideanSpace.single i 1)‖ := norm_sum_le _ _
+      _ = ∑ i, |w i| * ‖A (EuclideanSpace.single i 1)‖ := by simp [norm_smul]
+      _ ≤ Real.sqrt (∑ i, |w i| ^ 2) * Real.sqrt (∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = ‖w‖ * Real.sqrt (hsNormSq A) := by
+          rw [EuclideanSpace.norm_eq]
+          simp [hsNormSq, sq_abs]
+      _ = _ := mul_comm _ _
+  have hhsop : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq A ≤ (n + ℓ : ℕ) * ‖A‖ ^ 2 := by
+    intro A
+    unfold hsNormSq
+    calc ∑ i : Fin (n + ℓ), ‖A (EuclideanSpace.single i 1)‖ ^ 2
+        ≤ ∑ _i : Fin (n + ℓ), ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = (n + ℓ : ℕ) * ‖A‖ ^ 2 := by simp
+  have hhssub : ∀ A₁ A₂ P : Amb n ℓ →L[ℝ] Amb n ℓ,
+      hsNormSq (A₁ - A₂) ≤ 2 * hsNormSq (P - A₁) + 2 * hsNormSq (P - A₂) := by
+    intro A₁ A₂ P
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    gcongr with i
+    have h : (A₁ - A₂) (EuclideanSpace.single i 1) =
+        (P - A₂) (EuclideanSpace.single i 1) - (P - A₁) (EuclideanSpace.single i 1) := by simp
+    rw [h]
+    exact (pow_le_pow_left₀ (norm_nonneg _) (norm_sub_le _ _) 2).trans
+      (add_sq_le.trans_eq (by ring))
+  -- Step 3 (comparison of planes): if `0 < m ≤ μ_V(B) < ∞`, `∫_B |p_x − A₁|² dμ_V ≤ a` and
+  -- `∫_B |p_x − A₂|² dμ_V ≤ b`, then `|A₁ − A₂|² ≤ 2(a + b)/m`.
+  have hcmp : ∀ (B : Set (Amb n ℓ)) (A₁ A₂ : Amb n ℓ →L[ℝ] Amb n ℓ) (m a b : ℝ), 0 < m →
+      ENNReal.ofReal m ≤ V.weight B → V.weight B ≠ ∞ →
+      ∫ x in B, hsNormSq (V.tangentProj x - A₁) ∂V.weight ≤ a →
+      ∫ x in B, hsNormSq (V.tangentProj x - A₂) ∂V.weight ≤ b →
+      hsNormSq (A₁ - A₂) ≤ 2 * (a + b) / m := by
+    intro B A₁ A₂ m a b hm hmB hBfin ha hb
+    have : IsFiniteMeasure (V.weight.restrict B) := isFiniteMeasure_restrict.2 hBfin
+    -- (F1): `|p_x − A|² ≤ (n + ℓ)(1 + ‖A‖)²` is bounded and a.e. strongly measurable.
+    have hint : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ,
+        Integrable (fun x => hsNormSq (V.tangentProj x - A)) (V.weight.restrict B) := by
+      intro A
+      have hcont : Continuous (fun P : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (P - A)) := by
+        unfold hsNormSq
+        fun_prop
+      refine Integrable.of_bound (hcont.comp_aestronglyMeasurable hmeas.restrict)
+        ((n + ℓ : ℕ) * (1 + ‖A‖) ^ 2) (ae_of_all _ fun x => ?_)
+      rw [Real.norm_eq_abs, abs_of_nonneg (hhs0 _)]
+      refine (hhsop _).trans ?_
+      gcongr
+      exact (norm_sub_le _ _).trans (by linarith [hpx x])
+    have hle : ∫ _ in B, hsNormSq (A₁ - A₂) ∂V.weight ≤ ∫ x in B,
+        (2 * hsNormSq (V.tangentProj x - A₁) + 2 * hsNormSq (V.tangentProj x - A₂)) ∂V.weight :=
+      integral_mono (integrable_const _) (((hint A₁).const_mul 2).add ((hint A₂).const_mul 2))
+        fun x => hhssub A₁ A₂ (V.tangentProj x)
+    rw [integral_add ((hint A₁).const_mul 2) ((hint A₂).const_mul 2), integral_const_mul,
+      integral_const_mul, setIntegral_const, smul_eq_mul] at hle
+    have hmreal : m ≤ V.weight.real B := by
+      rw [Measure.real]
+      exact (ENNReal.ofReal_le_iff_le_toReal hBfin).1 hmB
+    have h0 := hhs0 (A₁ - A₂)
+    rw [le_div_iff₀ hm]
+    calc hsNormSq (A₁ - A₂) * m ≤ V.weight.real B * hsNormSq (A₁ - A₂) := by
+          rw [mul_comm]; exact mul_le_mul_of_nonneg_right hmreal h0
+      _ ≤ 2 * (a + b) := by linarith
+  -- Steps 4–5 at one scale.  For `ξ ∈ spt V ∩ B_{δρ/2}(0)` and `σ ∈ (0, δρ]`, the plane `T` of (Aff)
+  -- at `(ξ, σ)` and the tilt hypothesis at `(ξ, σ/2)` give `|p_T − p_{T₀}| ≤ C₂ τ` by step 3 and (D),
+  -- hence `dist(x − ξ, T₀) ≤ (C_A + C₂) τ σ` on `spt V ∩ B_σ(ξ)`.
+  have key : ∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ / 2), ∀ σ : ℝ, 0 < σ → σ ≤ δ * ρ →
+      ∀ x ∈ V.support ∩ closedBall ξ σ,
+        infDist (x - ξ) (rotatedPlane q : Set (Amb n ℓ)) ≤ (CA + C₂) * τ * σ := by
+    intro ξ hξ σ hσ hσδρ x hx
+    have hξ' : ‖ξ‖ ≤ δ * ρ / 2 := mem_closedBall_zero_iff.1 hξ.2
+    have hξ1 : ξ ∈ V.support ∩ closedBall 0 (δ * ρ) :=
+      ⟨hξ.1, mem_closedBall_zero_iff.2 (by linarith)⟩
+    obtain ⟨T, -, hT1, hT2⟩ := hAff U hU V H δ ρ hδ hδ4 hA ξ hξ1 σ hσ (by linarith)
+    have hball : closedBall ξ σ ⊆ closedBall 0 ρ := by
+      apply closedBall_subset_closedBall'
+      rw [dist_zero_right]
+      linarith
+    -- (K): the curvature term on `B_σ(ξ) ⊆ B_ρ(0)` is at most `δ` (`p > n`, `σ ≤ ρ`).
+    have hK : V.scaledLpNorm H p ξ σ ≤ ENNReal.ofReal δ := by
+      refine le_trans ?_ hA.2.2.2.2.2.2
+      unfold RectifiableVarifold.scaledLpNorm
+      have hpn : 0 ≤ p - n := (sub_pos.2 hp).le
+      have hp0 : 0 ≤ 1 / p := (one_div_pos.2 ((Nat.cast_nonneg n).trans_lt hp)).le
+      have hσρ : σ ≤ ρ := by linarith
+      gcongr
+    have hCd : 0 ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) := by positivity
+    -- (Extraction), height: `dist(x − ξ, T) ≤ σ ⋅ σ⁻¹ h(ξ, σ, T) ≤ C δ^α σ ≤ C_A τ σ`.
+    have hheight : infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ CA * τ * σ := by
+      have h1 : ENNReal.ofReal (infDist (x - ξ) (T : Set (Amb n ℓ))) ≤ V.heightSup ξ σ T := by
+        unfold RectifiableVarifold.heightSup
+        exact le_iSup₂ (f := fun x (_ : x ∈ V.support ∩ closedBall ξ σ) =>
+          ENNReal.ofReal (infDist (x - ξ) (T : Set (Amb n ℓ)))) x hx
+      have h2 : ENNReal.ofReal (σ⁻¹ * infDist (x - ξ) (T : Set (Amb n ℓ))) ≤
+          ENNReal.ofReal (C * δ ^ (1 / (2 * (n : ℝ) + 2))) := by
+        rw [ENNReal.ofReal_mul (inv_nonneg.2 hσ.le)]
+        calc ENNReal.ofReal σ⁻¹ * ENNReal.ofReal (infDist (x - ξ) (T : Set (Amb n ℓ)))
+            ≤ ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T := by gcongr
+          _ ≤ _ := hT2
+      rw [ENNReal.ofReal_le_ofReal_iff hCd, inv_mul_le_iff₀ hσ] at h2
+      calc infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ σ * (C * δ ^ (1 / (2 * (n : ℝ) + 2))) := h2
+        _ ≤ σ * (CA * τ) := mul_le_mul_of_nonneg_left hCdτ hσ.le
+        _ = CA * τ * σ := by ring
+    -- (Extraction), tilt: `(σ⁻ⁿ X)^{1/2} ≤ C (C δ^α + δ) ≤ C_A (C_A + 1) τ` by (K), where
+    -- `X = ∫_{B_{σ/2}(ξ)} |p_x − p_T|² dμ_V`; hence `X ≤ (C_A (C_A + 1))² τ² σⁿ`.
+    have hσn : 0 < σ ^ n := pow_pos hσ n
+    have hX : ∫ x in closedBall ξ (σ / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight
+        ≤ (CA * (CA + 1)) ^ 2 * τ ^ 2 * σ ^ n := by
+      have h1 : ENNReal.ofReal (C⁻¹ * Real.sqrt ((σ ^ n)⁻¹ * ∫ x in closedBall ξ (σ / 2),
+            hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight)) ≤
+          ENNReal.ofReal (C * δ ^ (1 / (2 * (n : ℝ) + 2)) + δ) := by
+        rw [ENNReal.ofReal_add hCd hδ.le]
+        exact hT1.trans (add_le_add hT2 hK)
+      rw [ENNReal.ofReal_le_ofReal_iff (by positivity), inv_mul_le_iff₀ hC] at h1
+      have h2 : Real.sqrt ((σ ^ n)⁻¹ * ∫ x in closedBall ξ (σ / 2),
+          hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight) ≤ CA * (CA + 1) * τ :=
+        calc _ ≤ C * (C * δ ^ (1 / (2 * (n : ℝ) + 2)) + δ) := h1
+          _ ≤ CA * (CA * τ + τ) :=
+            mul_le_mul hCCA (by linarith) (by positivity) (by linarith)
+          _ = CA * (CA + 1) * τ := by ring
+      have h3 := (Real.sqrt_le_left (by positivity)).1 h2
+      rw [inv_mul_le_iff₀ hσn] at h3
+      exact h3.trans_eq (by ring)
+    -- The tilt hypothesis at `(ξ, σ/2)`: `∫_{B_{σ/2}(ξ)} |p_x − p_{T₀}|² dμ_V ≤ (σ/2)ⁿ τ²`.
+    have hσ2n : 0 < (σ / 2) ^ n := pow_pos (half_pos hσ) n
+    have hY := (inv_mul_le_iff₀ hσ2n).1 (htilt ξ hξ (σ / 2) (half_pos hσ) (by linarith))
+    -- (D) at `(ξ, σ/2)` and step 3 on `B_{σ/2}(ξ) ⊆ B_ρ(0)`.
+    have hmass := (hdens U hU V H δ ρ hδ hδδ₀ hA).2.1 ξ hξ.1 (by linarith) (σ / 2) (half_pos hσ)
+      (by linarith)
+    have hBfin : V.weight (closedBall ξ (σ / 2)) ≠ ∞ :=
+      ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+        ((measure_mono ((closedBall_subset_closedBall (by linarith)).trans hball)).trans
+          hA.2.2.2.2.2.1)
+    have hc := hcmp _ T.starProjection (rotatedPlane q).starProjection _ _ _
+      (by positivity) hmass hBfin hX hY
+    -- `|p_T − p_{T₀}|² ≤ 2 (C_A²(C_A+1)² τ² σⁿ + (σ/2)ⁿ τ²) / (ω_n (σ/2)ⁿ/2) = C₂² τ²`.
+    have hc' : hsNormSq (T.starProjection - (rotatedPlane q).starProjection) ≤ (C₂ * τ) ^ 2 := by
+      refine hc.trans (le_of_eq ?_)
+      rw [mul_pow C₂ τ 2, hC₂sq]
+      have : σ ^ n = 2 ^ n * (σ / 2) ^ n := by rw [← mul_pow]; ring_nf
+      rw [this]
+      field_simp
+      ring
+    have hsq : Real.sqrt (hsNormSq (T.starProjection - (rotatedPlane q).starProjection)) ≤ C₂ * τ :=
+      Real.sqrt_le_iff.2 ⟨by positivity, hc'⟩
+    have hxξ : ‖x - ξ‖ ≤ σ := by rw [← dist_eq_norm]; exact hx.2
+    -- `dist(v, T₀) = |v − p_{T₀} v| ≤ |v − p_T v| + |(p_T − p_{T₀}) v| ≤ dist(v, T) + |p_T − p_{T₀}| |v|`.
+    rw [← (rotatedPlane q).dist_starProjection_eq_infDist, dist_eq_norm]
+    rw [← T.dist_starProjection_eq_infDist, dist_eq_norm] at hheight
+    calc ‖x - ξ - (rotatedPlane q).starProjection (x - ξ)‖
+        ≤ ‖x - ξ - T.starProjection (x - ξ)‖ +
+            ‖T.starProjection (x - ξ) - (rotatedPlane q).starProjection (x - ξ)‖ :=
+          norm_sub_le_norm_sub_add_norm_sub _ _ _
+      _ ≤ CA * τ * σ + C₂ * τ * σ := by
+          gcongr
+          calc ‖T.starProjection (x - ξ) - (rotatedPlane q).starProjection (x - ξ)‖
+              ≤ Real.sqrt (hsNormSq (T.starProjection - (rotatedPlane q).starProjection)) *
+                  ‖x - ξ‖ := by
+                simpa using hhsapply (T.starProjection - (rotatedPlane q).starProjection) (x - ξ)
+            _ ≤ C₂ * τ * σ := by gcongr
+      _ = (CA + C₂) * τ * σ := by ring
+  have h0 : (0 : Amb n ℓ) ∈ V.support := hA.2.2.2.1
+  refine ⟨fun x hx => ?_, fun y hy z hz => ?_⟩
+  · -- (1): step 4, i.e. the one-scale estimate at `ξ = 0`, `σ = σ₀ = δρ`.
+    have h := key 0 ⟨h0, mem_closedBall_self (by positivity)⟩ (δ * ρ) hδρ le_rfl x hx
+    rwa [sub_zero] at h
+  · -- (2): for `y ≠ z`, the one-scale estimate at `ξ = z`, `σ = |y − z| ≤ δρ`.
+    rcases eq_or_ne y z with rfl | hyz
+    · rw [sub_self, norm_zero, mul_zero]
+      exact (infDist_zero_of_mem (Submodule.zero_mem _)).le
+    have hs : 0 < ‖y - z‖ := norm_pos_iff.2 (sub_ne_zero.2 hyz)
+    have hy' : ‖y‖ ≤ δ * ρ / 2 := mem_closedBall_zero_iff.1 hy.2
+    have hz' : ‖z‖ ≤ δ * ρ / 2 := mem_closedBall_zero_iff.1 hz.2
+    have hsle : ‖y - z‖ ≤ δ * ρ := (norm_sub_le y z).trans (by linarith)
+    exact key z hz ‖y - z‖ hs hsle y ⟨hy.1, by rw [mem_closedBall, dist_eq_norm]⟩
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
