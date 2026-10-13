@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`Hᵐ` of a ball in an `m`-plane** (Simon Ch. 2, §1 and Ch. 3: `Hᵐ = Lᵐ` on `ℝᵐ`): if
+`H₀ ⊆ ℝᴾ` is an `m`-dimensional linear subspace and `ρ > 0`, then `Hᵐ(H₀ ∩ B_ρ(0)) = ωₘρᵐ`.
+An orthonormal basis of `H₀` gives a linear isometry `ι : ℝᵐ → ℝᴾ` onto `H₀` with
+`ι(B_ρ(0)) = H₀ ∩ B_ρ(0)`; `μHE[m]` is preserved by isometries and equals `volume` on `ℝᵐ`, where
+`volume (B_ρ(0)) = ρᵐ ωₘ`. -/
+theorem Submission.codim1_subspace_ball_euclideanHausdorff : ∀ (P m : ℕ) (H₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ H₀ = m → ∀ ρ : ℝ, 0 < ρ → μHE[m] ((H₀ : Set (Euclid P)) ∩ ball 0 ρ) = unitBallVolume m * ENNReal.ofReal (ρ ^ m) := by
+  intro P m H₀ hm ρ hρ
+  -- an orthonormal basis of `H₀` indexed by `Fin m` gives `e : H₀ ≃ₗᵢ ℝᵐ`, and
+  -- `ι = e⁻¹ : ℝᵐ → H₀ ⊆ ℝᴾ` is a linear isometry onto `H₀`
+  let e : H₀ ≃ₗᵢ[ℝ] Euclid m := ((stdOrthonormalBasis ℝ H₀).reindex (finCongr hm)).repr
+  let ι : Euclid m →ₗᵢ[ℝ] Euclid P := H₀.subtypeₗᵢ.comp e.symm.toLinearIsometry
+  have hι : ∀ a, ι a = (e.symm a : Euclid P) := fun a => rfl
+  -- `ι(B_ρ(0)) = H₀ ∩ B_ρ(0)`
+  have himage : ι '' ball 0 ρ = (H₀ : Set (Euclid P)) ∩ ball 0 ρ := by
+    ext z
+    constructor
+    · rintro ⟨a, ha, rfl⟩
+      refine ⟨by rw [hι]; exact (e.symm a).2, ?_⟩
+      rw [mem_ball_zero_iff] at ha ⊢
+      rwa [LinearIsometry.norm_map]
+    · rintro ⟨hz, hzρ⟩
+      refine ⟨e ⟨z, hz⟩, ?_, by rw [hι, LinearIsometryEquiv.symm_apply_apply]⟩
+      rw [mem_ball_zero_iff] at hzρ ⊢
+      rwa [LinearIsometryEquiv.norm_map]
+  -- isometry invariance of `μHE[m]`, `μHE[m] = volume` on `ℝᵐ`, and Haar scaling of balls
+  rw [← himage, ι.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos (volume : Measure (Euclid m)) 0 hρ, finrank_euclideanSpace_fin,
+    unitBallVolume]
+  exact mul_comm _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
