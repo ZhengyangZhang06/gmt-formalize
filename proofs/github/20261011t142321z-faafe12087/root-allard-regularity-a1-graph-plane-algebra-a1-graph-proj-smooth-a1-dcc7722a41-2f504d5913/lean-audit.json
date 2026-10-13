@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c685b43f8d2f33ef637c8aae0f639e7ceb70f5600255ec74235d2eedf71dac08",
+  "git_delta": {
+    "base_commit": "93cad390c87044f4266f71dba98c03daba1c5bed",
+    "candidate_commit": "d0c5e5e4f79611803d9dc97165a75b8288638136",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gps_contDiff",
+    "diff_sha256": "ddb5180f9f53a46d0eb035483eb01c894c3bbb7df90274d3b08d8a7cf1d890d5",
+    "source_sha256": "c4dc5b014ec995291c534e07fcbe85efa4cfbb2d0192e77928ecc56bde6ff23e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gps_contDiff",
+      "statement": "∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
