@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`C¹` local inverse with surjective inverse derivative** (inverse function theorem on `ℝᵈ`;
+local inverse step of the stationary-cone sheet argument).  If `Φ : ℝᵈ → ℝᵈ` is `C¹` on an open
+`V ∋ v₀` and `DΦ(v₀)` is injective, there are open sets `V₁` and `O` with `v₀ ∈ V₁ ⊆ V` and
+`Φ(v₀) ∈ O`, and a map `H`, `C¹` on `O`, with `H(O) = V₁`, `Φ(H w) = w` and `DH(w)` surjective
+for every `w ∈ O`.  `DΦ` is continuous on `V`, so `V₁′ = {v ∈ V : DΦ(v) invertible}` is open and
+contains `v₀`; the strict-derivative inverse function theorem gives an open partial homeomorphism
+`Φ̃ = Φ` with `v₀ ∈ Φ̃.source`; restrict it to `V₁′` and take `V₁ = source`, `O = target` and
+`H = Φ̃.symm`, which is `C¹` with derivative `DΦ(H w)⁻¹` at every `w ∈ O`. -/
+theorem Submission.idtp_ccd_scsp_li_c1_inverse : ∀ (d : ℕ) (Φ : Euclid d → Euclid d) (V : Set (Euclid d)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 Φ V → Injective (fderiv ℝ Φ v₀) → ∃ (V₁ O : Set (Euclid d)) (H : Euclid d → Euclid d), IsOpen V₁ ∧ IsOpen O ∧ v₀ ∈ V₁ ∧ V₁ ⊆ V ∧ Φ v₀ ∈ O ∧ ContDiffOn ℝ 1 H O ∧ H '' O = V₁ ∧ (∀ w ∈ O, Φ (H w) = w) ∧ ∀ w ∈ O, Surjective (fderiv ℝ H w) := by
+  intro d Φ V v₀ hV hv₀ hΦ hinj
+  -- step 1: `Φ` is `C¹` and differentiable at every point of `V`
+  have hC1 : ∀ v ∈ V, ContDiffAt ℝ 1 Φ v := fun v hv => hΦ.contDiffAt (hV.mem_nhds hv)
+  have hdiff : ∀ v ∈ V, HasFDerivAt Φ (fderiv ℝ Φ v) v := fun v hv =>
+    ((hC1 v hv).differentiableAt one_ne_zero).hasFDerivAt
+  -- step 2: `DΦ(v₀)` is the coercion of a continuous linear equivalence `E₀`
+  set E₀ : Euclid d ≃L[ℝ] Euclid d := (LinearEquiv.ofInjectiveEndo
+    (fderiv ℝ Φ v₀ : Euclid d →ₗ[ℝ] Euclid d) hinj).toContinuousLinearEquiv
+  have hE₀ : (E₀ : Euclid d →L[ℝ] Euclid d) = fderiv ℝ Φ v₀ := by ext x; rfl
+  -- step 3: `V₁′ = V ∩ DΦ⁻¹(invertible maps)` is open and contains `v₀`
+  set V₁' := V ∩ fderiv ℝ Φ ⁻¹' range ((↑) : (Euclid d ≃L[ℝ] Euclid d) → Euclid d →L[ℝ] Euclid d)
+  have hV₁' : IsOpen V₁' := (hΦ.continuousOn_fderiv_of_isOpen hV le_rfl).isOpen_inter_preimage hV
+    ContinuousLinearEquiv.isOpen
+  have hv₀' : v₀ ∈ V₁' := ⟨hv₀, E₀, hE₀⟩
+  -- step 4: the inverse function theorem at `v₀`, restricted to `V₁′`
+  have hstrict : HasStrictFDerivAt Φ (E₀ : Euclid d →L[ℝ] Euclid d) v₀ := by
+    rw [hE₀]; exact (hC1 v₀ hv₀).hasStrictFDerivAt one_ne_zero
+  set Φ₁ := (hstrict.toOpenPartialHomeomorph Φ).restrOpen V₁' hV₁'
+  have hsrc : Φ₁.source = (hstrict.toOpenPartialHomeomorph Φ).source ∩ V₁' :=
+    OpenPartialHomeomorph.restrOpen_source _ _ _
+  have hv₀₁ : v₀ ∈ Φ₁.source := by
+    rw [hsrc]; exact ⟨hstrict.mem_toOpenPartialHomeomorph_source, hv₀'⟩
+  have hsub : Φ₁.source ⊆ V₁' := by rw [hsrc]; exact inter_subset_right
+  refine ⟨Φ₁.source, Φ₁.target, Φ₁.symm, Φ₁.open_source, Φ₁.open_target, hv₀₁,
+    fun v hv => (hsub hv).1, Φ₁.map_source hv₀₁, ?_, Φ₁.symm_image_target_eq_source,
+    fun w hw => Φ₁.right_inv hw, ?_⟩
+  -- step 5: at `w ∈ O`, `v = H w ∈ V₁′`, so `DΦ(v) = E_v` is invertible and `Φ` is `C¹` at `v`
+  · intro w hw
+    have hv : Φ₁.symm w ∈ V₁' := hsub (Φ₁.map_target hw)
+    obtain ⟨E, hE⟩ := hv.2
+    apply ContDiffAt.contDiffWithinAt
+    apply Φ₁.contDiffAt_symm hw
+    · rw [hE]; exact hdiff _ hv.1
+    · exact hC1 _ hv.1
+  · intro w hw
+    have hv : Φ₁.symm w ∈ V₁' := hsub (Φ₁.map_target hw)
+    obtain ⟨E, hE⟩ := hv.2
+    have hH : HasFDerivAt Φ₁.symm (E.symm : Euclid d →L[ℝ] Euclid d) w :=
+      Φ₁.hasFDerivAt_symm hw (by rw [hE]; exact hdiff _ hv.1)
+    rw [hH.fderiv]
+    exact E.symm.surjective
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
