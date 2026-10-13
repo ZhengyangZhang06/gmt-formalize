@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d6bca22c5fc8d06e99f042e45c2e04cd91fc3874a6e8157c43ce983b2eb2d53f",
+  "git_delta": {
+    "base_commit": "f626419f20aa01822a193713af72fdfba359826a",
+    "candidate_commit": "81485ceb96999b3c8eabac3c5b058488a2bdc059",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_level_cutoff",
+    "diff_sha256": "49c55023e7ad83548bca8bf9042105eae89c29e57fa91a1c7e209a9b634f63ea",
+    "source_sha256": "73c811bebfe4aea7bffa4449f3997e53f3c76995659083de9aefdc2be51bb9c5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_level_cutoff",
+      "statement": "∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (t h : ℝ), LipschitzWith L f → 0 < h → h < 1 → ∃ g : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g ∧ (∀ x, |g x| ≤ 2) ∧ (∀ x, ‖fderiv ℝ g x‖ ≤ L / (h * (1 - h / 2))) ∧ (∀ x, fderiv ℝ g x ≠ 0 → t - h < f x ∧ f x < t) ∧ (∀ x, f x ≤ t - h → g x = 1) ∧ (∀ x, t ≤ f x → g x = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
