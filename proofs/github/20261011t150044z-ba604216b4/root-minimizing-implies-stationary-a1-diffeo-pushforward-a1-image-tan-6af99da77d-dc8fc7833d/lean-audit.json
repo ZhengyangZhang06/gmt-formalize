@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bccd0a2b6dd9438be78d3303a476586827fed2d1189eb9be9142cb0b96e88c40",
+  "git_delta": {
+    "base_commit": "eb98c8be4da42c6330d7e3171e6a48d4137b0785",
+    "candidate_commit": "c6d92ed48de42ad17aa36fbd966554bc616a7571",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_itt_comp_bilipschitz_piece",
+    "diff_sha256": "dc7d8e7e9db7a177ef406d3fea12fdb80cb0ae1842833411d47c8189ddabc7a2",
+    "source_sha256": "ddb37635503b6b703a72735fcfe8f573b97343c5dd5cbe345e60cd5b3b6a676d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_itt_comp_bilipschitz_piece",
+      "statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (φ : Euclid P → Euclid P) (B : Set (Euclid n)) (L Λ Λ' : NNReal) (m : ℝ), LipschitzWith L F → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → Differentiable ℝ φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → LipschitzWith (Λ * L) (φ ∘ F) ∧ (∃ m' : ℝ, 0 < m' ∧ ∀ a ∈ B, ∀ a' ∈ B, m' * ‖a - a'‖ ≤ ‖(φ ∘ F) a - (φ ∘ F) a'‖) ∧ (∀ a ∈ B, DifferentiableAt ℝ (φ ∘ F) a ∧ Injective (fderiv ℝ (φ ∘ F) a)) ∧ ∀ a ∈ B, LinearMap.range (fderiv ℝ (φ ∘ F) a : Euclid n →ₗ[ℝ] Euclid P) = Submodule.map (fderiv ℝ φ (F a) : Euclid P →ₗ[ℝ] Euclid P) (LinearMap.range (fderiv ℝ F a : Euclid n →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
