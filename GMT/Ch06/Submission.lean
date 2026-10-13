@@ -585,6 +585,33 @@ theorem Submission.ind_top_dim_integer_density :
           funext x
           by_cases hx : x ∈ M <;> simp [hx]
 
+/-- A constant multiple `c [[U]]` of a nonempty open `U ⊆ ℝⁿ` is integer multiplicity only if
+`c ∈ ℤ` (Simon Ch. 6, end of the proof of 8.2, p. 179: "`θ ≡ θ(x)` in `B₁ⁿ(0)`; thus
+`θ(x) ∈ ℤ`").  An integer multiplicity `X ∈ 𝒟ₙ(U)` acts as `X(ω) = ∫_U u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ`
+with `u` a.e. integer-valued and integrable on compact subsets of `U`; the constant `c` is a
+second such density of `X`, so `c = u` a.e. on `U`, and `Lⁿ(U) > 0`. -/
+theorem Submission.ind_const_multiple_integer :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (c : ℝ) (X : GeometricCurrentOn U (m + 1)), IsOpen U →
+      U.Nonempty → IsIntegerMultiplicity X →
+      (∀ ω : TestFormOn U (m + 1),
+        X ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ k : ℤ, c = k := by
+  intro m U c X hU hne hX hXc
+  -- `X(ω) = ∫_U u ω(e) dx` with `u` a.e. integer-valued and integrable on compacts of `U`.
+  obtain ⟨u, hu_int, hu_loc, hu_rep⟩ := Submission.ind_top_dim_integer_density m U X hX
+  -- The constant `c` is another density of `X`, hence `c = u` a.e. on `U`.
+  have hcu : ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → c = u x :=
+    Submission.ind_top_form_density_ae_unique m U (fun _ => c) u hU
+      (fun K hK _ => integrableOn_const hK.measure_ne_top) hu_loc
+      (fun ω => by rw [integral_const_mul, ← hXc]; exact hu_rep ω)
+  -- If `c ∉ ℤ`, a.e. point lies outside `U`, contradicting `Lⁿ(U) > 0` for open `U ≠ ∅`.
+  by_contra hc
+  have hnull : (volume : Measure (Eucl (m + 1))) U = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hcu, hu_int] with x hx ⟨k, hk⟩ hxU
+    exact hc ⟨k, (hx hxU).trans hk⟩
+  exact (hU.measure_pos volume hne).ne' hnull
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
