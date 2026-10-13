@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d650a3e14c6fe6d235ea31d32e6adae9456b5c632e70b752c49a292d4fac6b2",
+  "git_delta": {
+    "base_commit": "2bd895f27469b327179cb1b4c09119b5c8526e5b",
+    "candidate_commit": "493589396f764fe4188e236e4a99686eee7b2614",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_rc_order_zero_current",
+    "diff_sha256": "c34e19a959ca02dfec0c2aa89e028d63789876b3c921ac2f2a3c85f03c777a7e",
+    "source_sha256": "30d7d5e455befa0a34e7820e9ee46e96b86a184d5b61012ae167a16bf3a2016d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_rc_order_zero_current",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ c : ℝ, ∀ (ω : TestFormOn U n) (M : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ M) → |L ω| ≤ c * M) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = L ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
