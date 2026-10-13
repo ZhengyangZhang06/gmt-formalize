@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "depth": 4,
+  "title": "Area formula for C¹ graphs over an m-plane (Simon Ch. 2, 3.1–3.3)",
+  "statement": "Let m, k ∈ ℕ, let ι : ℝ^m → ℝ^{m+k} and ι' : ℝ^k → ℝ^{m+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let D ⊆ ℝ^m be open, g : ℝ^m → ℝ^k a map that is C¹ on D, A ⊆ D a measurable set and f : ℝ^{m+k} → ℝ an arbitrary function. Put G(w) := ιw + ι'g(w) and J(w) := √det(DG(w)*∘DG(w)) (DG(w) = fderiv ℝ G w, DG(w)* its adjoint). Then ∫_{G(A)} f dH^m = ∫_A J(w)·f(G(w)) dw, where H^m = μHE[m] on ℝ^{m+k}, dw is Lebesgue measure on ℝ^m, and both sides are Bochner integrals (a non-integrable function has integral 0).",
+  "lean_statement": "∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D A : Set (Euclid m)) (f : Euclid (m + k) → ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → MeasurableSet A → A ⊆ D → ∫ y in (fun w => ι w + ι' (g w)) '' A, f y ∂μHE[m] = ∫ w in A, Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det) * f (ι w + ι' (g w))",
+  "lean_name": "codim1_zsl_graph_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-df95e3f55f-a1"
+}
