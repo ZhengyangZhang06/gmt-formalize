@@ -2308,6 +2308,42 @@ theorem Submission.ind_md_ae_closedBall_growth : ∀ (P n : ℕ) (ν : Measure (
     ENNReal.ofReal_toReal hωtop, mul_assoc]
   exact hq
 
+/-- **Subsequential mass density bound** (the bound behind "(8) remains valid with `T_{j′}`" in
+the proof of Simon Ch. 6, 8.2, p. 178).  If `sup_j M(T_j) < ∞`, then along a subsequence
+`T_{φ(j)}`, for `Hⁿ`-a.e. `x` there are `C` and `r₀ > 0` with `M_{B_r(x)}(T_{φ(j)}) ≤ C rⁿ` for
+every `r ∈ (0, r₀)` and all large `j`.  The mass measures `μ_j` of the `T_j` have a diagonal
+subsequence whose closed-set limsups on every `B̄_R(0)` are bounded by finite measures `ν_R`
+(Simon Ch. 1, 4.16), and `ν_R(B̄_r(x)) < C rⁿ` for small `r` at `Hⁿ`-a.e. `x` (Ch. 1, 3.3). -/
+theorem Submission.ind_mass_density_bound : ∀ (P n : ℕ) (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) n), (⨆ j, (Tj j).mass) < ∞ → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ r ∈ Ioo (0 : ℝ) r₀, ∀ᶠ j in atTop, (Tj (φ j)).massOn (ball x r) ≤ ENNReal.ofReal (C * r ^ n) := by
+  intro P n Tj hTj
+  -- Step 1: mass measures `μ j` with `μ j (B_r(x)) = M_{B_r(x)}(T_j)` and `μ j ℝ^P ≤ M(T_j)`.
+  choose μ hμ_univ hμ_ball using fun j => Submission.ind_md_mass_measure_balls P n (Tj j)
+    ((le_iSup (fun j => (Tj j).mass) j).trans_lt hTj)
+  -- Steps 2–3: diagonal subsequence `φ` with `limsup_j μ_{φ j}(F) ≤ ν_R(F)`, `F ⊆ B̄_R(0)` closed.
+  obtain ⟨φ, ν, hφ, hν_fin, hν⟩ :=
+    Submission.ind_md_diagonal_weak_subseq P μ ((iSup_mono hμ_univ).trans_lt hTj)
+  refine ⟨φ, hφ, ?_⟩
+  -- Step 4: off one `Hⁿ`-null set, every `ν R` has `n`-dimensional growth on small closed balls.
+  have hgrowth : ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ∀ R : ℕ, ∃ C r₀ : ℝ, 0 < r₀ ∧
+      ∀ r ∈ Ioo (0 : ℝ) r₀, ν R (closedBall x r) < ENNReal.ofReal (C * r ^ n) :=
+    ae_all_iff.2 fun R => Submission.ind_md_ae_closedBall_growth P n (ν R) (hν_fin R)
+  filter_upwards [hgrowth] with x hx
+  -- Step 5: with `R = ⌈‖x‖⌉₊ + 1` and `r < 1`, `B̄_r(x) ⊆ B̄_R(0)`.
+  obtain ⟨C, r₁, hr₁, hC⟩ := hx (⌈‖x‖⌉₊ + 1)
+  refine ⟨C, min r₁ 1, lt_min hr₁ one_pos, fun r hr => ?_⟩
+  have hsub : closedBall x r ⊆ closedBall (0 : Eucl P) ((⌈‖x‖⌉₊ + 1 : ℕ) : ℝ) := by
+    refine closedBall_subset_closedBall' ?_
+    have hx_le : ‖x‖ ≤ ⌈‖x‖⌉₊ := Nat.le_ceil ‖x‖
+    have hr_lt : r < 1 := hr.2.trans_le (min_le_right r₁ 1)
+    rw [dist_zero_right]
+    push_cast
+    linarith
+  have hlt : limsup (fun j => μ (φ j) (closedBall x r)) atTop < ENNReal.ofReal (C * r ^ n) :=
+    (hν _ _ isClosed_closedBall hsub).trans_lt (hC r ⟨hr.1, hr.2.trans_le (min_le_left r₁ 1)⟩)
+  filter_upwards [eventually_lt_of_limsup_lt hlt] with j hj
+  rw [← hμ_ball]
+  exact (measure_mono ball_subset_closedBall).trans hj.le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
