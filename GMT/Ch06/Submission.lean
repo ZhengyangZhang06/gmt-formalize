@@ -16649,7 +16649,415 @@ theorem Submission.deformation_pushforward_homotopy : (∀ (P Q k : ℕ) (X : Ge
           ⟨N₁, hN₁, by rw [hcyl]; exact hcN₁, hη'N⟩ ⟨N₂, hN₂, by rw [hcyl]; exact hcN₂, hθN⟩
       rw [GeometricCurrentOn.boundary_apply]
       exact tendsto_nhds_unique_of_eventuallyEq (tendsto_const_nhds.sub l1) (l2.add l3) heq
+/-- Simon Ch. 6, §5, proof of 5.1 (p. 164), the inclusion `⊆` of the identity printed after (5):
+the `σ`-neighbourhood of `L(a)` lies in the union of the periodic coordinate cylinders
+`p_J⁻¹(B_σ(p_J(a) + z))`, `|J| = k`, `z ∈ ℤ^J`.  `L(a)` contains `a` (as `k ≤ d`), so
+`dist(x, L(a)) < σ` gives `y ∈ L(a)` with `|x − y| < σ`; for the `J` and the integers
+`z_i = y_i − a_i` (`i ∈ J`) witnessing `y ∈ L(a)`,
+`∑_{i∈J} (x_i − a_i − z_i)² = ∑_{i∈J} (x_i − y_i)² ≤ |x − y|² < σ²`. -/
+theorem Submission.dgc_tube_cover :
+    ∀ (d k : ℕ), k ≤ d → ∀ (a : Eucl d) (La : Set (Eucl d)), La = {y | ∃ J : Finset (Fin d), J.card = k ∧ ∀ i ∈ J, ∃ n : ℤ, y i - a i = n} → ∀ (σ : ℝ) (x : Eucl d), infDist x La < σ → ∃ J : Finset (Fin d), J.card = k ∧ ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2 := by
+  classical
+  intro d k hkd a La hLa σ x hx
+  subst hLa
+  -- `L(a)` is nonempty: `a ∈ L(a)` for any `k` of the `d` coordinates.
+  have hne : {y : Eucl d | ∃ J : Finset (Fin d), J.card = k ∧
+      ∀ i ∈ J, ∃ n : ℤ, y i - a i = n}.Nonempty := by
+    obtain ⟨J₀, -, hJ₀⟩ :=
+      Finset.exists_subset_card_eq (s := (Finset.univ : Finset (Fin d))) (by simpa using hkd)
+    exact ⟨a, J₀, hJ₀, fun i _ => ⟨0, by simp⟩⟩
+  -- A point `y ∈ L(a)` with `|x − y| < σ`, and its lattice coordinates `z_i = y_i − a_i`.
+  obtain ⟨y, ⟨J, hJ, hy⟩, hxy⟩ := (infDist_lt_iff hne).1 hx
+  choose n hn using hy
+  refine ⟨J, hJ, fun i => n i.1 i.2, ?_⟩
+  calc ∑ i : J, (x i - a i - (n i.1 i.2 : ℝ)) ^ 2 = ∑ i ∈ J, (x i - y i) ^ 2 := by
+        rw [← Finset.sum_coe_sort J]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [← hn i.1 i.2]
+        ring
+    _ ≤ ∑ i, (x i - y i) ^ 2 :=
+        Finset.sum_le_univ_sum_of_nonneg fun i => sq_nonneg _
+    _ = dist x y ^ 2 := by
+        rw [EuclideanSpace.dist_sq_eq]
+        simp [Real.dist_eq, sq_abs]
+    _ < σ ^ 2 := by gcongr
+/-- Ball-volume bound used in step 8 of the proof of Simon Ch. 6, 5.1 (pp. 163–164), with the
+erratum `ω_k ≤ 2^k`: a closed Euclidean ball of radius `r ≥ 0` in `ℝ^ι` has Lebesgue measure at
+most `(2r)^k`, `k = card ι`.  Each coordinate is `1`-Lipschitz, so `B̄_r(c)` lies in the preimage
+under the measure-preserving coordinate map `ofLp` of the sup-metric cube `∏_i [c_i - r, c_i + r]`,
+whose volume is `(2r)^k`. -/
+theorem Submission.dgc_pm_ball_volume_le :
+    ∀ (ι : Type) [Fintype ι] (c : EuclideanSpace ℝ ι) (r : ℝ), 0 ≤ r →
+      volume (closedBall c r) ≤ ENNReal.ofReal ((2 * r) ^ Fintype.card ι) := by
+  intro ι _ c r hr
+  -- `|w_i - c_i| ≤ |w - c| ≤ r`, so `B̄_r(c) ⊆ ofLp⁻¹(Q)`, `Q` the sup-metric ball about `ofLp c`.
+  have hsub : closedBall c r ⊆ WithLp.ofLp ⁻¹' closedBall (WithLp.ofLp c) r := fun w hw =>
+    (dist_pi_le_iff hr).2 fun i => (PiLp.dist_apply_le w c i).trans (mem_closedBall.1 hw)
+  -- `ofLp` is measure preserving and `Q` is closed, so `L^k(ofLp⁻¹(Q)) = volume(Q) = (2r)^k`.
+  calc volume (closedBall c r)
+      ≤ volume (WithLp.ofLp ⁻¹' closedBall (WithLp.ofLp c) r) := measure_mono hsub
+    _ = volume (closedBall (WithLp.ofLp c) r) :=
+        (PiLp.volume_preserving_ofLp ι).measure_preimage measurableSet_closedBall.nullMeasurableSet
+    _ = ENNReal.ofReal ((2 * r) ^ Fintype.card ι) := Real.volume_pi_closedBall _ hr
+/-- Simon Ch. 6, proof of 5.1 (p. 164): `{p_j⁻¹ B_{σ_ℓ}(b_ℓ + z)}_{ℓ = 1, 2, …, z ∈ ℤ^{n+ℓ} ∩ S_j}`
+is a pairwise disjoint collection.  Stated for the periodic open sets before pulling back by `p_j`:
+if `|b - g₀|, |b' - g₀| < 1/4`, `0 < σ, σ' < 1/4` and `B̄_σ(b) ∩ B̄_σ'(b') = ∅`, then
+`⋃_{z ∈ ℤ^ι} B_σ(b + z)` and `⋃_{z ∈ ℤ^ι} B_σ'(b' + z)` are disjoint. -/
+theorem Submission.dgc_pm_lattice_tubes_disjoint :
+    ∀ (ι : Type) [Fintype ι] (g₀ b b' : EuclideanSpace ℝ ι) (σ σ' : ℝ), dist b g₀ < 1 / 4 → dist b' g₀ < 1 / 4 → 0 < σ → σ < 1 / 4 → 0 < σ' → σ' < 1 / 4 → Disjoint (closedBall b σ) (closedBall b' σ') → Disjoint {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - b i - z i) ^ 2 < σ ^ 2} {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - b' i - z i) ^ 2 < σ' ^ 2} := by
+  intro ι _ g₀ b b' σ σ' hb hb' hσ hσ4 hσ' hσ'4 hbb'
+  rw [Set.disjoint_left]
+  rintro y ⟨z, hz⟩ ⟨z', hz'⟩
+  -- The translate `w z = y - z` of `y` by a lattice point `z ∈ ℤ^ι`.
+  obtain ⟨w, hw⟩ : ∃ w : (ι → ℤ) → EuclideanSpace ℝ ι, ∀ z i, w z i = y i - z i :=
+    ⟨fun z => WithLp.toLp 2 fun i => y i - z i, fun _ _ => rfl⟩
+  -- `|(y - z) - c|² = ∑ᵢ (yᵢ - cᵢ - zᵢ)²`, so the defining inequality gives `|(y - z) - c| < τ`.
+  have hdist : ∀ (c : EuclideanSpace ℝ ι) (z : ι → ℤ) (τ : ℝ), 0 < τ →
+      ∑ i, (y i - c i - z i) ^ 2 < τ ^ 2 → dist (w z) c < τ := by
+    intro c z τ hτ h
+    refine lt_of_pow_lt_pow_left₀ 2 hτ.le ?_
+    rw [EuclideanSpace.dist_sq_eq]
+    refine lt_of_eq_of_lt (Finset.sum_congr rfl fun i _ => ?_) h
+    rw [Real.dist_eq, sq_abs, hw]
+    ring
+  have h1 := hdist b z σ hσ hz
+  have h2 := hdist b' z' σ' hσ' hz'
+  by_cases hzz : z = z'
+  · -- If `z = z'`, then `y - z ∈ B̄_σ(b) ∩ B̄_σ'(b')`.
+    subst hzz
+    exact Set.disjoint_left.1 hbb' (mem_closedBall.2 h1.le) (mem_closedBall.2 h2.le)
+  · -- If `z ≠ z'`, then `|z - z'| < 1` (both `y - z` and `y - z'` are `1/2`-close to `g₀`),
+    -- while `|zⱼ - z'ⱼ| ≥ 1` for some `j`.
+    obtain ⟨j, hj⟩ := Function.ne_iff.1 hzz
+    have hint : (1 : ℝ) ≤ |(z j : ℝ) - z' j| := by
+      exact_mod_cast Int.one_le_abs (sub_ne_zero.2 hj)
+    have hcoord : |(z j : ℝ) - z' j| ≤ dist (w z') (w z) := by
+      have h := PiLp.dist_apply_le (w z') (w z) j
+      rw [Real.dist_eq, hw, hw] at h
+      convert h using 2
+      ring
+    have hg : dist (w z) g₀ < 1 / 2 := by
+      calc dist (w z) g₀ ≤ dist (w z) b + dist b g₀ := dist_triangle _ _ _
+        _ < 1 / 4 + 1 / 4 := add_lt_add (h1.trans hσ4) hb
+        _ = 1 / 2 := by norm_num
+    have hg' : dist (w z') g₀ < 1 / 2 := by
+      calc dist (w z') g₀ ≤ dist (w z') b' + dist b' g₀ := dist_triangle _ _ _
+        _ < 1 / 4 + 1 / 4 := add_lt_add (h2.trans hσ'4) hb'
+        _ = 1 / 2 := by norm_num
+    have hzz' : dist (w z') (w z) < 1 := by
+      calc dist (w z') (w z) ≤ dist (w z') g₀ + dist (w z) g₀ := dist_triangle_right _ _ _
+        _ < 1 / 2 + 1 / 2 := add_lt_add hg' hg
+        _ = 1 := by norm_num
+    linarith
+
+/-- Vitali volume bound (Simon Ch. 6, §5, proof of 5.1, printed (4), pp. 163–164): if
+`0 < r(b) ≤ R` on `S ⊆ ℝᵏ` and every `u ⊆ S` with pairwise disjoint closed balls
+`B̄_{r(b)}(b)` is countable with `∑_{b ∈ u} r(b)ᵏ ≤ M`, then `Lᵏ(S) ≤ 10ᵏ M`.
+The 5-times covering lemma (closed balls, `τ = 5`) gives such a `u` with
+`S ⊆ ⋃_{b ∈ u} B̄_{5r(b)}(b)`, and `Lᵏ(B̄_{5r(b)}(b)) ≤ (10 r(b))ᵏ`.  Only monotonicity and
+countable subadditivity of the outer measure are used, so `S` need not be measurable. -/
+theorem Submission.dgc_pm_vitali_volume_bound :
+    ∀ (ι : Type) [Fintype ι] (S : Set (EuclideanSpace ℝ ι)) (r : EuclideanSpace ℝ ι → ℝ)
+      (R M : ℝ), (∀ b ∈ S, 0 < r b ∧ r b ≤ R) →
+      (∀ u ⊆ S, u.PairwiseDisjoint (fun b => closedBall b (r b)) →
+        u.Countable ∧ ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) ≤ ENNReal.ofReal M) →
+      volume S ≤ ENNReal.ofReal (10 ^ Fintype.card ι * M) := by
+  intro ι _ S r R M hr hpack
+  -- 5-times covering: a disjoint subfamily `u ⊆ S` whose enlargements `B̄_{5r(b)}(b)` cover `S`.
+  obtain ⟨u, huS, hdisj, hcov⟩ :=
+    Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall S (fun b => b) r R
+      (fun a ha => (hr a ha).2) 5 (by norm_num)
+  obtain ⟨hcount, hsum⟩ := hpack u huS hdisj
+  have hSsub : S ⊆ ⋃ b ∈ u, closedBall b (5 * r b) := by
+    intro a ha
+    obtain ⟨b, hb, hsub⟩ := hcov a ha
+    exact mem_biUnion hb (hsub (mem_closedBall_self (hr a ha).1.le))
+  -- `Lᵏ(B̄_{5r(b)}(b)) ≤ (2 · 5r(b))ᵏ = 10ᵏ r(b)ᵏ`.
+  have hball : ∀ b ∈ u, volume (closedBall b (5 * r b)) ≤
+      ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal (r b ^ Fintype.card ι) := by
+    intro b hb
+    have hrb := (hr b (huS hb)).1
+    calc volume (closedBall b (5 * r b))
+        ≤ ENNReal.ofReal ((2 * (5 * r b)) ^ Fintype.card ι) :=
+          Submission.dgc_pm_ball_volume_le ι b _ (by positivity)
+      _ = ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal (r b ^ Fintype.card ι) := by
+        rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow]
+        ring_nf
+  calc volume S ≤ volume (⋃ b ∈ u, closedBall b (5 * r b)) := measure_mono hSsub
+    _ ≤ ∑' b : u, volume (closedBall (b : EuclideanSpace ℝ ι) (5 * r b)) :=
+        measure_biUnion_le _ hcount _
+    _ ≤ ∑' b : u, ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal (r b ^ Fintype.card ι) :=
+        ENNReal.tsum_le_tsum fun b => hball b b.2
+    _ = ENNReal.ofReal (10 ^ Fintype.card ι) * ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) :=
+        ENNReal.tsum_mul_left
+    _ ≤ ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal M := by gcongr
+    _ = ENNReal.ofReal (10 ^ Fintype.card ι * M) := (ENNReal.ofReal_mul (by positivity)).symm
+
+/-- Periodic maximal estimate (Simon Ch. 6, §5, proof of the Deformation Theorem, printed (3),
+(4) and `L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1}`, pp. 163–164), for a finite measure `μ` on `X` and a
+measurable `p : X → ℝ^ι`, `k = card ι`: the centres `g` with `|g − g₀| < 1/4` at which some
+`σ ∈ (0, 1/4)` has `μ(p⁻¹ ⋃_{z ∈ ℤ^ι} B_σ(g + z)) > βσ^k μ(X)` have outer Lebesgue measure at
+most `10^k/β`.  Choosing such a `σ_b` for every bad centre `b`, the periodic tubes of a subfamily
+with disjoint balls `B̄_{σ_b}(b)` are disjoint, so the subfamily is countable and
+`Σ σ_b^k ≤ 1/β`; the `5`-times covering bound then gives `10^k/β`. -/
+theorem Submission.dgc_periodic_maximal :
+    ∀ (ι : Type) [Fintype ι] (X : Type) [MeasurableSpace X] (μ : Measure X), IsFiniteMeasure μ →
+      ∀ p : X → EuclideanSpace ℝ ι, Measurable p → ∀ (g₀ : EuclideanSpace ℝ ι) (β : ℝ), 0 < β →
+        volume {g : EuclideanSpace ℝ ι | dist g g₀ < 1 / 4 ∧ ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧
+          ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ <
+            μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2}} ≤
+          ENNReal.ofReal (10 ^ Fintype.card ι / β) := by
+  intro ι _ X _ μ hμ p hp g₀ β hβ
+  set Bad := {g : EuclideanSpace ℝ ι | dist g g₀ < 1 / 4 ∧ ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧
+    ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ <
+      μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2}}
+  -- The tubes `T(g, σ) = p⁻¹ ⋃_z B_σ(g + z)` are measurable.
+  have hmeas : ∀ (g : EuclideanSpace ℝ ι) (σ : ℝ),
+      MeasurableSet {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2} := by
+    intro g σ
+    have hopen : IsOpen
+        {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - g i - z i) ^ 2 < σ ^ 2} := by
+      simp only [ofPred_exists]
+      exact isOpen_iUnion fun z => isOpen_lt (continuous_finsetSum _ fun i _ =>
+        (((PiLp.continuous_apply 2 _ i).sub continuous_const).sub continuous_const).pow 2)
+        continuous_const
+    exact hp hopen.measurableSet
+  -- If `μ(X) = 0`, no centre is bad.
+  rcases eq_or_ne (μ univ) 0 with h0 | h0
+  · have hempty : Bad = ∅ := by
+      refine eq_empty_iff_forall_notMem.2 fun g hg => ?_
+      obtain ⟨σ, -, -, hlt⟩ := hg.2
+      rw [h0, mul_zero] at hlt
+      exact hlt.ne' (measure_mono_null (subset_univ _) h0)
+    rw [hempty, measure_empty]
+    exact zero_le
+  -- Choose a radius `σ_b` for every bad centre `b` (printed (3)).
+  have hex : ∀ b : EuclideanSpace ℝ ι, ∃ σ : ℝ, b ∈ Bad → 0 < σ ∧ σ < 1 / 4 ∧
+      ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ <
+        μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - b i - z i) ^ 2 < σ ^ 2} := by
+    intro b
+    by_cases hb : b ∈ Bad
+    · obtain ⟨σ, hσ⟩ := hb.2
+      exact ⟨σ, fun _ => hσ⟩
+    · exact ⟨0, fun h => absurd h hb⟩
+  choose r hr using hex
+  have key := Submission.dgc_pm_vitali_volume_bound ι Bad r (1 / 4) (1 / β)
+    (fun b hb => ⟨(hr b hb).1, (hr b hb).2.1.le⟩) ?_
+  · rwa [mul_one_div] at key
+  -- Packing: a subfamily `u` with disjoint balls `B̄_{σ_b}(b)` has disjoint tubes.
+  intro u hu hdisj
+  set A : u → Set X := fun b =>
+    {x | ∃ z : ι → ℤ, ∑ i, (p x i - (b : EuclideanSpace ℝ ι) i - z i) ^ 2 < r b ^ 2}
+  have hAm : ∀ b, MeasurableSet (A b) := fun b => hmeas _ _
+  have hAd : Pairwise (Function.onFun Disjoint A) := by
+    intro b b' hne
+    exact (Submission.dgc_pm_lattice_tubes_disjoint ι g₀ b b' (r b) (r b') (hu b.2).1 (hu b'.2).1
+      (hr b (hu b.2)).1 (hr b (hu b.2)).2.1 (hr b' (hu b'.2)).1 (hr b' (hu b'.2)).2.1
+      (hdisj b.2 b'.2 (Subtype.coe_injective.ne hne))).preimage p
+  have hApos : ∀ b : u, 0 < μ (A b) := fun b => zero_le.trans_lt (hr b (hu b.2)).2.2
+  -- Disjoint sets of positive measure: `u` is countable.
+  have hcount : u.Countable := by
+    have h : (univ : Set u).Countable :=
+      (Measure.countable_meas_pos_of_disjoint_iUnion hAm hAd).mono fun b _ => hApos b
+    exact countable_coe_iff.1 (countable_univ_iff.1 h)
+  refine ⟨hcount, ?_⟩
+  -- Summing (3): `β Σ σ_b^k μ(X) ≤ Σ μ(T(b, σ_b)) ≤ μ(X)`.
+  have hsum : (∑' b : u, ENNReal.ofReal (β * r b ^ Fintype.card ι)) * μ univ ≤ 1 * μ univ := by
+    rw [← ENNReal.tsum_mul_right, one_mul]
+    calc ∑' b : u, ENNReal.ofReal (β * r b ^ Fintype.card ι) * μ univ
+        ≤ ∑' b : u, μ (A b) := ENNReal.tsum_le_tsum fun b => (hr b (hu b.2)).2.2.le
+      _ ≤ μ (⋃ b, A b) := tsum_meas_le_meas_iUnion_of_disjoint μ hAm hAd
+      _ ≤ μ univ := measure_mono (subset_univ _)
+  have h1 := (ENNReal.mul_le_mul_iff_left h0 (measure_ne_top μ univ)).1 hsum
+  simp_rw [ENNReal.ofReal_mul hβ.le, ENNReal.tsum_mul_left] at h1
+  rw [one_div, ENNReal.ofReal_inv_of_pos hβ, ENNReal.le_inv_iff_mul_le, mul_comm]
+  exact h1
+/-- Fubini bound for the cylinder over a set of centres (corrected (5) in the proof of Simon
+Ch. 6, 5.1): for `J ⊆ ι` and any `B ⊆ ℝ^J`,
+`L^ι({a ∈ [0,1]^ι : (a_i)_{i ∈ J} ∈ B}) ≤ L^J(B)`.  The set lies in the preimage of
+`B × [0,1]^{ι∖J}` under the measure-preserving equivalence `ℝ^ι ≃ ℝ^J × ℝ^{ι∖J}`, and the
+product measure of a rectangle of arbitrary sets is the product of the measures. -/
+theorem Submission.dgc_cylinder_volume :
+    ∀ (ι : Type) [Fintype ι] (J : Finset ι) (B : Set (EuclideanSpace ℝ J)),
+      volume {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧
+        WithLp.toLp 2 (fun i : J => a i) ∈ B} ≤ volume B := by
+  intro ι _ J B
+  classical
+  -- `e : E_ι → ℝ^J × ℝ^{ι∖J}` (coordinates, then restriction to `J` and to `ι∖J`) is a
+  -- measure-preserving measurable equivalence.  (`convert` identifies the two `Fintype ↥J`
+  -- instances underlying the product measures.)
+  let e := (MeasurableEquiv.toLp 2 (ι → ℝ)).symm.trans
+    (MeasurableEquiv.piEquivPiSubtypeProd (fun _ : ι => ℝ) (· ∈ J))
+  have he : MeasurePreserving e := by
+    convert (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp ι).trans
+      (volume_preserving_piEquivPiSubtypeProd (fun _ : ι => ℝ) (· ∈ J))
+  -- The set lies in `e⁻¹(B' × C)`, `B'` the coordinate copy of `B` and `C = [0,1]^{ι∖J}`.
+  let B' : Set (J → ℝ) := MeasurableEquiv.toLp 2 (J → ℝ) ⁻¹' B
+  let C : Set ({i // i ∉ J} → ℝ) := univ.pi fun _ => Icc 0 1
+  have hsub : {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧
+      WithLp.toLp 2 (fun i : J => a i) ∈ B} ⊆ e ⁻¹' (B' ×ˢ C) :=
+    fun a ha => ⟨ha.2, fun i _ => ha.1 i⟩
+  -- The two factors: `L^J(B') = L^J(B)` and `L^{ι∖J}(C) = ∏ L¹([0,1]) = 1`.
+  have hB' : volume B' = volume B :=
+    (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp J).symm.measure_preimage_equiv B
+  have hC : volume C = 1 := by
+    simp only [C, volume_pi_pi, Real.volume_Icc, sub_zero, ENNReal.ofReal_one,
+      Finset.prod_const_one]
+  -- Monotonicity and the rectangle formula for product measures.
+  calc volume {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧
+        WithLp.toLp 2 (fun i : J => a i) ∈ B}
+      ≤ volume (e ⁻¹' (B' ×ˢ C)) := measure_mono hsub
+    _ = volume B' * volume C := by
+      rw [he.measure_preimage_equiv, Measure.volume_eq_prod, Measure.prod_prod]
+    _ = volume B := by rw [hB', hC, mul_one]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
+
+/-- **Choice of a good centre** (Simon Ch. 6, proof of the Deformation Theorem 5.1, printed
+(1)–(7)).  Let `d = m + 1 + ℓ`, `𝒥` the `N` index sets `J ⊆ {1, …, d}` with `|J| = m + 2`,
+`q = (1/2, …, 1/2)`, `V = L^d(B_{1/4}(q)) ∈ (0, ∞)` and `β = (2 N 10^{m+2} + 1) / V`, so that
+`2 N 10^{m+2} / β < V`; the constant is `c = N β`.  For `J ∈ 𝒥`, `p_J x = (x_i)_{i ∈ J}` and a
+finite measure `μ`, `Bad J μ` is the set of centres `g` with `|g - p_J q| < 1/4` such that some
+`σ ∈ (0, 1/4)` has `μ(T_J(g, σ)) > β σ^{m+2} μ(ℝ^d)`, where
+`T_J(g, σ) = {x : |p_J x - g - z| < σ for some z ∈ ℤ^J}`.  By `dgc_cylinder_volume` and
+`dgc_periodic_maximal`, `A J μ = {a ∈ [0,1]^d : p_J a ∈ Bad J μ}` has `L^d(A J μ) ≤ 10^{m+2} / β`,
+so the `2N` sets `A J μᵢ` miss a point `a` of `B_{1/4}(q) ⊆ [0,1]^d`.  Then
+`Σᵢ (aᵢ - 1/2)² < 1/16` and `|p_J a - p_J q| < 1/4`, hence `μᵢ(T_J(p_J a, σ)) ≤ β σ^{m+2} μᵢ(ℝ^d)`
+for every `J ∈ 𝒥` and `σ ∈ (0, 1/4)`.  By `dgc_tube_cover`,
+`{dist(·, La) < σ} ⊆ ⋃_{J ∈ 𝒥} T_J(p_J a, σ)`, and summing over the `N` sets `J` gives
+`μᵢ{dist(·, La) < σ} ≤ N β σ^{m+2} μᵢ(ℝ^d)`. -/
+theorem Submission.deformation_good_center : ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ c : ℝ≥0, ∀ μ₁ μ₂ : Measure (Eucl (m + 1 + ℓ)), IsFiniteMeasure μ₁ → IsFiniteMeasure μ₂ → ∃ a : Eucl (m + 1 + ℓ), ∑ i, (a i - 1 / 2) ^ 2 < 1 / 16 ∧ ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ σ : ℝ, 0 < σ → σ < 1 / 4 → μ₁ {x | infDist x La < σ} ≤ c * ENNReal.ofReal (σ ^ (m + 2)) * μ₁ univ ∧ μ₂ {x | infDist x La < σ} ≤ c * ENNReal.ofReal (σ ^ (m + 2)) * μ₂ univ := by
+  intro m ℓ hℓ
+  have hkd : m + 2 ≤ m + 1 + ℓ := by omega
+  generalize m + 1 + ℓ = d at hkd ⊢
+  -- `𝒥`: the `N` coordinate sets `J ⊆ {1, …, d}` with `|J| = m + 2`.
+  set 𝒥 : Finset (Finset (Fin d)) := Finset.univ.filter (fun J => J.card = m + 2)
+  set N : ℕ := 𝒥.card
+  -- `q = (1/2, …, 1/2)` and `V = L^d(B_{1/4}(q)) ∈ (0, ∞)`.
+  set q : Eucl d := WithLp.toLp 2 (fun _ => (1 / 2 : ℝ))
+  have hball_pos : 0 < volume (ball q (1 / 4 : ℝ)) := measure_ball_pos _ _ (by norm_num)
+  have hball_lt : volume (ball q (1 / 4 : ℝ)) < ∞ := measure_ball_lt_top
+  set V : ℝ := (volume (ball q (1 / 4 : ℝ))).toReal
+  have hV : 0 < V := ENNReal.toReal_pos hball_pos.ne' hball_lt.ne
+  have hVball : ENNReal.ofReal V = volume (ball q (1 / 4 : ℝ)) := ENNReal.ofReal_toReal hball_lt.ne
+  -- `β = (2 N 10^{m+2} + 1) / V`, so that `2 N 10^{m+2} / β < V`.
+  set β : ℝ := (2 * N * 10 ^ (m + 2) + 1) / V with hβ_def
+  have hβ : 0 < β := by positivity
+  have hβV : 2 * N * (10 ^ (m + 2) / β) < V := by
+    rw [hβ_def, div_div_eq_mul_div, ← mul_div_assoc, div_lt_iff₀ (by positivity)]
+    nlinarith
+  refine ⟨Real.toNNReal (N * β), ?_⟩
+  intro μ₁ μ₂ h₁ h₂
+  -- `p_J x = (x_i)_{i ∈ J}`; the bad set `Bad J μ` of centres `g` near `p_J q` and the set
+  -- `A J μ` of `a ∈ [0,1]^d` with `p_J a ∈ Bad J μ`.
+  let Bad : ∀ J : Finset (Fin d), Measure (Eucl d) → Set (EuclideanSpace ℝ J) := fun J μ =>
+    {g : EuclideanSpace ℝ J | dist g (WithLp.toLp 2 (fun i : J => q i)) < 1 / 4 ∧
+      ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧ ENNReal.ofReal (β * σ ^ Fintype.card J) * μ univ <
+        μ {x | ∃ z : J → ℤ, ∑ i, ((WithLp.toLp 2 (fun i : J => x i) : EuclideanSpace ℝ J) i -
+          g i - z i) ^ 2 < σ ^ 2}}
+  let A : Finset (Fin d) → Measure (Eucl d) → Set (Eucl d) := fun J μ =>
+    {a : Eucl d | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧ WithLp.toLp 2 (fun i : J => a i) ∈ Bad J μ}
+  -- Cylinder bound followed by the maximal estimate: `L^d(A J μ) ≤ 10^{m+2} / β`.
+  have hA : ∀ J ∈ 𝒥, ∀ μ : Measure (Eucl d), IsFiniteMeasure μ →
+      volume (A J μ) ≤ ENNReal.ofReal (10 ^ (m + 2) / β) := by
+    intro J hJ μ hμ
+    have hJc : J.card = m + 2 := (Finset.mem_filter.mp hJ).2
+    have hp : Measurable
+        (fun x : Eucl d => (WithLp.toLp 2 (fun i : J => x i) : EuclideanSpace ℝ J)) :=
+      Continuous.measurable (by fun_prop)
+    have h1 := Submission.dgc_cylinder_volume (Fin d) J (Bad J μ)
+    have h2 := Submission.dgc_periodic_maximal J (Eucl d) μ hμ
+      (fun x : Eucl d => (WithLp.toLp 2 (fun i : J => x i) : EuclideanSpace ℝ J)) hp
+      (WithLp.toLp 2 (fun i : J => q i)) β hβ
+    have h3 : ENNReal.ofReal (10 ^ Fintype.card J / β) = ENNReal.ofReal (10 ^ (m + 2) / β) := by
+      rw [Fintype.card_coe, hJc]
+    exact h1.trans (h2.trans_eq h3)
+  -- The union of the `2N` sets `A J μᵢ` has measure `< L^d(B_{1/4}(q))`.
+  have hU : volume (⋃ J ∈ 𝒥, (A J μ₁ ∪ A J μ₂)) < volume (ball q (1 / 4 : ℝ)) := by
+    calc volume (⋃ J ∈ 𝒥, (A J μ₁ ∪ A J μ₂))
+        ≤ ∑ J ∈ 𝒥, volume (A J μ₁ ∪ A J μ₂) := measure_biUnion_finset_le _ _
+      _ ≤ ∑ J ∈ 𝒥, (ENNReal.ofReal (10 ^ (m + 2) / β) + ENNReal.ofReal (10 ^ (m + 2) / β)) :=
+          Finset.sum_le_sum fun J hJ =>
+            (measure_union_le _ _).trans (add_le_add (hA J hJ μ₁ h₁) (hA J hJ μ₂ h₂))
+      _ = ENNReal.ofReal (2 * N * (10 ^ (m + 2) / β)) := by
+          rw [Finset.sum_const, nsmul_eq_mul, ← ENNReal.ofReal_add (by positivity) (by positivity),
+            ← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          ring
+      _ < ENNReal.ofReal V := (ENNReal.ofReal_lt_ofReal_iff hV).mpr hβV
+      _ = volume (ball q (1 / 4 : ℝ)) := hVball
+  -- Hence some `a ∈ B_{1/4}(q)` lies in no `A J μᵢ`.
+  obtain ⟨a, haball, haA⟩ : ∃ a ∈ ball q (1 / 4 : ℝ), a ∉ ⋃ J ∈ 𝒥, (A J μ₁ ∪ A J μ₂) := by
+    by_contra h
+    push Not at h
+    exact absurd (measure_mono (μ := volume) h) (not_le.mpr hU)
+  have hdist : dist a q < 1 / 4 := mem_ball.mp haball
+  have hqi : ∀ i, q i = 1 / 2 := fun i => rfl
+  -- `a ∈ [0,1]^d`, since `|a_i - 1/2| ≤ |a - q| < 1/4`.
+  have hcube : ∀ i, 0 ≤ a i ∧ a i ≤ 1 := by
+    intro i
+    have h := (PiLp.dist_apply_le a q i).trans_lt hdist
+    rw [Real.dist_eq, hqi] at h
+    have h' := abs_lt.mp h
+    constructor <;> linarith [h'.1, h'.2]
+  -- `|p_J a - p_J q| ≤ |a - q| < 1/4`.
+  have hdistJ : ∀ J : Finset (Fin d), dist (WithLp.toLp 2 (fun i : J => a i) : EuclideanSpace ℝ J)
+      (WithLp.toLp 2 (fun i : J => q i)) < 1 / 4 := by
+    intro J
+    refine lt_of_le_of_lt ?_ hdist
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    apply Real.sqrt_le_sqrt
+    rw [Finset.sum_coe_sort J (fun i => dist (a i) (q i) ^ 2)]
+    exact Finset.sum_le_univ_sum_of_nonneg (fun i => sq_nonneg _)
+  -- Good centres: `p_J a ∉ Bad J μ` gives the tube estimate for every `σ ∈ (0, 1/4)`.
+  have hgood : ∀ J ∈ 𝒥, ∀ μ : Measure (Eucl d), a ∉ A J μ → ∀ σ : ℝ, 0 < σ → σ < 1 / 4 →
+      μ {x | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2} ≤
+        ENNReal.ofReal (β * σ ^ (m + 2)) * μ univ := by
+    intro J hJ μ haJ σ hσ hσ'
+    have hJc : J.card = m + 2 := (Finset.mem_filter.mp hJ).2
+    by_contra hlt
+    push Not at hlt
+    apply haJ
+    refine ⟨hcube, hdistJ J, σ, hσ, hσ', ?_⟩
+    rw [Fintype.card_coe, hJc]
+    exact hlt
+  have hnot : ∀ J ∈ 𝒥, a ∉ A J μ₁ ∧ a ∉ A J μ₂ := fun J hJ =>
+    ⟨fun h => haA (mem_iUnion₂.mpr ⟨J, hJ, Or.inl h⟩),
+      fun h => haA (mem_iUnion₂.mpr ⟨J, hJ, Or.inr h⟩)⟩
+  -- Tube cover and summation over the `N` sets `J`.
+  have hfinal : ∀ μ : Measure (Eucl d), (∀ J ∈ 𝒥, a ∉ A J μ) →
+      ∀ La : Set (Eucl d), La = {y | ∃ J : Finset (Fin d), J.card = m + 2 ∧
+        ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ σ : ℝ, 0 < σ → σ < 1 / 4 →
+      μ {x | infDist x La < σ} ≤
+        (Real.toNNReal (N * β) : ℝ≥0∞) * ENNReal.ofReal (σ ^ (m + 2)) * μ univ := by
+    intro μ hμa La hLa σ hσ hσ'
+    have hsub : {x | infDist x La < σ} ⊆
+        ⋃ J ∈ 𝒥, {x : Eucl d | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2} := by
+      intro x hx
+      obtain ⟨J, hJ, z, hz⟩ := Submission.dgc_tube_cover d (m + 2) hkd a La hLa σ x hx
+      exact mem_iUnion₂.mpr ⟨J, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩, z, hz⟩
+    calc μ {x | infDist x La < σ}
+        ≤ μ (⋃ J ∈ 𝒥, {x : Eucl d | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2}) :=
+          measure_mono hsub
+      _ ≤ ∑ J ∈ 𝒥, μ {x : Eucl d | ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2} :=
+          measure_biUnion_finset_le _ _
+      _ ≤ ∑ J ∈ 𝒥, ENNReal.ofReal (β * σ ^ (m + 2)) * μ univ :=
+          Finset.sum_le_sum fun J hJ => hgood J hJ μ (hμa J hJ) σ hσ hσ'
+      _ = (Real.toNNReal (N * β) : ℝ≥0∞) * ENNReal.ofReal (σ ^ (m + 2)) * μ univ := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+          change (N : ℝ≥0∞) * _ = ENNReal.ofReal (N * β) * _ * _
+          rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity),
+            ENNReal.ofReal_natCast]
+          ring
+  -- Conclusion.
+  have hsum : ∑ i, (a i - 1 / 2) ^ 2 < 1 / 16 := by
+    have h := hdist
+    rw [EuclideanSpace.dist_eq, Real.sqrt_lt' (by norm_num)] at h
+    simp only [Real.dist_eq, sq_abs, hqi] at h
+    norm_num at h ⊢
+    exact h
+  exact ⟨a, hsum, fun La hLa σ hσ hσ' =>
+    ⟨hfinal μ₁ (fun J hJ => (hnot J hJ).1) La hLa σ hσ hσ',
+      hfinal μ₂ (fun J hJ => (hnot J hJ).2) La hLa σ hσ hσ'⟩⟩
 
 end GMT.Ch06

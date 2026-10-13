@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1.ball_volume-a1",
+  "parent_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1",
+  "depth": 4,
+  "title": "Closed Euclidean balls have Lebesgue measure at most (2r)^k (printed ω_k r^k, erratum ω_k ≤ 2^k)",
+  "statement": "Let ι be a finite index set with k := |ι| elements and E := ℝ^ι = EuclideanSpace ℝ ι with its Euclidean distance |w − c| = (Σ_{i∈ι}(w_i − c_i)²)^{1/2} and Lebesgue measure L^k (Mathlib's volume on E). For every c ∈ E and every real r ≥ 0, the closed ball B̄_r(c) = {w ∈ E : |w − c| ≤ r} satisfies L^k(B̄_r(c)) ≤ (2r)^k, as an inequality in [0, ∞], i.e. L^k(B̄_r(c)) ≤ ofReal((2r)^k).",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] (c : EuclideanSpace ℝ ι) (r : ℝ), 0 ≤ r → volume (closedBall c r) ≤ ENNReal.ofReal ((2 * r) ^ Fintype.card ι)",
+  "lean_name": "dgc_pm_ball_volume_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-good-center-a1-periodic-maximal-a1-ball-volume-a1-a1"
+}

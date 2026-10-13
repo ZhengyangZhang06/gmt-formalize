@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall|volume_pi_closedBall|volume_preserving_ofLp|volume_preserving_symm_measurableEquiv_toLp|countable_meas_pos_of_disjoint_iUnion|tsum_meas_le_meas_iUnion_of_disjoint|theorem measure_biUnion_le|theorem dist_apply_le|theorem EuclideanSpace.dist_eq",
+        "sed -n '135,185p' mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "sed -n '250,290p' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "sed -n '65,145p' mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "dgc_pm_ball_volume_le|dgc_pm_lattice_tubes_disjoint|dgc_pm_vitali_volume_bound",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/periodic-maximal-audit-aeabys4f/IndependentTypes.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/pm-split-7c41/Final.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-good-center-a1-periodic-maximal-a1/parent-child-handoff.json",
+        "/tmp/periodic-maximal-audit-aeabys4f/IndependentTypes.lean",
+        "/tmp/pm-split-7c41/Final.lean"
+      ],
+      "conclusion": "Confirmed pinned revisions and byte compatibility of the contract and inspected Mathlib sources. The references supply precisely the required covering, coordinate-volume, countability and outer-measure results. All proposed names are bare identifiers with no current DAG reservation; the accepted Fin n, centre-zero ball lemma has a different frozen type and is not reused. All four exact types independently elaborate as propositions in comparator scope with their declarations absent. Independently rerunning the supplied proofs and comparator-style targets succeeded; their axioms are only propext, Classical.choice and Quot.sound. Euclidean metric and volume instances are appropriate; no Matrix/IsUnit construction occurs. The split is appropriate and its sole child dependency, vitali_bound on ball_volume, is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree, including arbitrary finite ι, arbitrary centre and r ≥ 0. Coordinate domination gives inclusion in the sup-metric cube; the measure-preserving coordinate map and product-volume formula yield the stated ENNReal bound. The proof handles r = 0 and dimension zero, is complete, and uses no child or parent conclusion."
+    },
+    {
+      "key": "tubes_disjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every centre, radius and disjointness hypothesis is present in both statements and used correctly. Positive radii convert the squared inequalities into distance bounds. Equal lattice translates contradict base-ball disjointness; unequal translates force lattice distance both below 1 and at least 1. This proves exactly the stated disjointness without circular reliance or a missing dimensional assumption."
+    },
+    {
+      "key": "vitali_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The packing quantifier, countability requirement and ENNReal sum match the prose exactly. Bounded-radius closed-ball Vitali covering with factor 5, ball_volume at radius 5r, and outer-measure subadditivity prove the conclusion. Neither measurability of S nor M ≥ 0 is missing. The proof uses only its declared sibling dependency. For the selected parent, measurable positive disjoint tubes establish the packing condition for every disjoint subfamily; cancellation of positive finite μ(univ) gives M = 1/β. Together with the zero-mass case, this yields exactly dgc_periodic_maximal."
+    }
+  ],
+  "required_changes": []
+}

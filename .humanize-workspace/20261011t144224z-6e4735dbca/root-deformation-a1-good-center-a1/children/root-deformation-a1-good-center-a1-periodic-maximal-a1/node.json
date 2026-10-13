@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1",
+  "parent_id": "root.deformation-a1.good_center-a1",
+  "depth": 3,
+  "title": "The bad set of centres has small Lebesgue measure (printed (1)–(4) of 5.1, 5-times covering)",
+  "statement": "Let ι be a finite index set with k := |ι| elements, E := ℝ^ι = EuclideanSpace ℝ ι with its Euclidean distance and Lebesgue measure L^k, (X, 𝒜) a measurable space, μ a finite measure on X, p : X → E measurable, g₀ ∈ E and β > 0. For g ∈ E and σ ∈ ℝ let T(g, σ) := {x ∈ X : there is z ∈ ℤ^ι with Σ_{i∈ι}(p(x)_i − g_i − z_i)² < σ²} (for σ > 0 this equals p⁻¹(⋃_{z∈ℤ^ι} B_σ(g + z))). Let Bad be the set of g ∈ E with |g − g₀| < 1/4 for which some σ with 0 < σ < 1/4 satisfies βσ^k·μ(X) < μ(T(g, σ)) (in [0, ∞]). Then L^k(Bad) ≤ 10^k/β, where L^k(Bad) is the outer Lebesgue measure (Bad is not assumed measurable).",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] (X : Type) [MeasurableSpace X] (μ : Measure X), IsFiniteMeasure μ → ∀ p : X → EuclideanSpace ℝ ι, Measurable p → ∀ (g₀ : EuclideanSpace ℝ ι) (β : ℝ), 0 < β → volume {g : EuclideanSpace ℝ ι | dist g g₀ < 1 / 4 ∧ ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧ ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ < μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2}} ≤ ENNReal.ofReal (10 ^ Fintype.card ι / β)",
+  "lean_name": "dgc_periodic_maximal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-good-center-a1-periodic-maximal-a1-a1"
+}

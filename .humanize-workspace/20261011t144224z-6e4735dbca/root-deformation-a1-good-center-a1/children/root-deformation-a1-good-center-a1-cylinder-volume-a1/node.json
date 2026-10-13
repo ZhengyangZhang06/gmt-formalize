@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.good_center-a1.cylinder_volume-a1",
+  "parent_id": "root.deformation-a1.good_center-a1",
+  "depth": 3,
+  "title": "Fubini bound for the cylinder over a set of centres (corrected printed (5) of 5.1)",
+  "statement": "Let ι be a finite index set and J ⊆ ι, let E_ι := EuclideanSpace ℝ ι and E_J := EuclideanSpace ℝ J carry their Lebesgue measures L^ι and L^J, and let π_J : E_ι → E_J, π_J(a) := (a_i)_{i∈J}. Then for every set B ⊆ E_J (not necessarily measurable), L^ι({a ∈ E_ι : 0 ≤ a_i ≤ 1 for all i ∈ ι, and π_J(a) ∈ B}) ≤ L^J(B), both sides being outer Lebesgue measures.",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] (J : Finset ι) (B : Set (EuclideanSpace ℝ J)), volume {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧ WithLp.toLp 2 (fun i : J => a i) ∈ B} ≤ volume B",
+  "lean_name": "dgc_cylinder_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-good-center-a1-cylinder-volume-a1-a1"
+}

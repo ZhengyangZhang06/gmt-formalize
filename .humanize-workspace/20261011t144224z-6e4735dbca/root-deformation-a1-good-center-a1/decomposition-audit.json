@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dgc_tube_cover|dgc_periodic_maximal|dgc_cylinder_volume",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall|volume_preserving_symm_measurableEquiv_toLp|volume_preserving_piEquivPiSubtypeProd|theorem prod_prod |theorem measure_preimage_equiv|theorem infDist_lt_iff|theorem EuclideanSpace.dist_eq|theorem dist_apply_le|countable_meas_pos_of_disjoint_iUnion|tsum_meas_le_meas_iUnion_of_disjoint",
+        "exists_subset_card_eq|abbrev Eucl",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/goodcenter-a1-scratch/AllProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/goodcenter-a1-scratch/stmts/NC_tube_cover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/goodcenter-a1-scratch/stmts/NC_periodic_maximal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/goodcenter-a1-scratch/stmts/NC_cylinder_volume.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-good-center-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/goodcenter-a1-scratch/AllProofs.lean",
+        "/tmp/goodcenter-a1-scratch/stmts/NC_tube_cover.lean",
+        "/tmp/goodcenter-a1-scratch/stmts/NC_periodic_maximal.lean",
+        "/tmp/goodcenter-a1-scratch/stmts/NC_cylinder_volume.lean"
+      ],
+      "conclusion": "Confirmed pinned revisions and byte compatibility of the contract and inspected Mathlib sources. No proposed name occurs in the searched libraries or the current 532-node DAG; all three names are valid bare identifiers. Each one-line proposition passes validation and independently elaborates in the exact comparator challenge scope, without its implementation. Independently recompiled all three supplied proofs and the exact frozen deformation_good_center assembly: all four use only [propext, Classical.choice, Quot.sound]. The split is appropriate and acyclic: the children have no interdependencies or reliance on the parent. Their conclusions establish the selected parent using β = (2N·10^(m+2)+1)/V and c = Nβ. Euclidean metrics, volume normalization, and WithLp.toLp 2 constructions are correct; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tube_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. The proof uses k ≤ d to establish La.Nonempty before applying infDist_lt_iff. The resulting distance inequality implies σ > 0, so restricting the sum of squares and then squaring preserves the required strict inequality. Integer witnesses, zero-dimensional cases, and all hypotheses are handled without circularity."
+    },
+    {
+      "key": "periodic_maximal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract includes every required hypothesis and matches the prose. All nine proof steps are sound: measurable tubes, the zero-mass case, bounded-radius five-times covering, lattice-based disjointness, countability, cancellation of positive finite total mass, and the cube-volume estimate yield exactly 10^card(ι)/β. No measurability of Bad or positive-dimensional assumption is needed. The proof is complete and non-circular."
+    },
+    {
+      "key": "cylinder_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the arbitrary-set outer-volume statement, and WithLp.toLp 2 constructs the intended Euclidean projection. The pinned measurable-equivalence and product-rectangle results apply to arbitrary sets, justifying the nonmeasurable B case. The complementary unit cube has volume one, including empty complements. The supplied proof establishes the bound completely without other children."
+    }
+  ],
+  "required_changes": []
+}
