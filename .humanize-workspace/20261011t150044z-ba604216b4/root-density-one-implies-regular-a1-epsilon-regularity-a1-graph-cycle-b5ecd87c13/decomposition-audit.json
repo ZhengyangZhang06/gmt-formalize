@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def HasApproximateTangentSpaceAt|def blowUpMap|HasApproximateTangentSpaceAt.finrank_eq|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule",
+        "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "class Regular|theorem restrict_apply |lemma mem_support_iff_forall",
+        "integral_pos_iff_support_of_nonneg|theorem Continuous.integrable_of_hasCompactSupport",
+        "IsClosed.notMem_iff_infDist_pos|finrank_range_of_inj|theorem norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero|theorem eq_of_le_of_finrank_eq|theorem ContDiffOn.differentiableOn\\b",
+        "HasFDerivAt.isLittleO|theorem hasFDerivAt_iff_isLittleO|HasFDerivAt.const_add",
+        "python3 -I /tmp/atg-independent-audit/make_checks.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atg-independent-audit/approx_tangent_le_flat.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atg-independent-audit/graph_image_flat.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atg-independent-audit/graph_tangent_finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/atg-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b5ecd87c13/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b5ecd87c13/decomposition-v1.json",
+        "/tmp/atg-work/All.lean",
+        "/tmp/atg-independent-audit/make_checks.py",
+        "/tmp/atg-independent-audit/approx_tangent_le_flat.lean",
+        "/tmp/atg-independent-audit/graph_image_flat.lean",
+        "/tmp/atg-independent-audit/graph_tangent_finrank.lean",
+        "/tmp/atg-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "The snapshot matches project b4d606d and Mathlib 25730c7c; simongmt matches its 2b36630 pin. The cited definitions and lemmas support the supplied arguments, including restriction without measurability of A and finiteness on compact sets. Independently validated all exact one-line types and compiled each supplied child proof in isolation in comparator scope. The parent assembly also compiled using only the three exact child contracts as hypotheses. All four checks used only propext, Classical.choice and Quot.sound. A recursive scan of 3260 DAG/node JSON files found no proposed-name reservation outside this node. All names are bare identifiers; no accepted declaration is being reused. The split is appropriate: graph flatness supplies the containment lemma, and the dimension lemma turns containment into the selected parent's equality. Empty child dependency lists are accurate and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "approx_tangent_le_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition include exactly the required local nullity, flatness and approximate-tangent hypotheses. The separating bump, quantitative blow-up inclusion, Lipschitz null-image estimate and restricted-integral argument are valid without measurability of A or S. Limit uniqueness contradicts positivity on the n-plane. Every step is supplied, non-circular and sufficient for formalization; the isolated exact-contract proof compiles."
+    },
+    {
+      "key": "graph_image_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including arbitrary D and no requirement that v₀ belong to D. Orthogonality gives global coercivity, which converts ambient closeness into parameter closeness. Differentiability then provides the stated estimate with t = DΦ(v₀)(v − v₀). The derivative-to-linear-map coercion elaborates correctly. The proof is complete, independent of the other children and compiles in isolation."
+    },
+    {
+      "key": "graph_tangent_finrank",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition match all hypotheses and the dimension conclusion. Sum and chain rules identify the derivative; Pythagoras proves its kernel trivial; injective-range dimension gives n, including zero-dimensional cases. The range and finrank constructions elaborate with the intended instances. The supplied proof is complete, non-circular and compiles independently."
+    }
+  ],
+  "required_changes": []
+}
