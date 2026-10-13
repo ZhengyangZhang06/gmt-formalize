@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `n! · β(u) = ∑_I β(e_I) · det(⟨e_{I(b)}, u_a⟩)_{a,b}` for an `n`-covector `β` on `ℝᴾ`, an
+orthonormal basis `e` of `ℝᴾ` and `u ∈ (ℝᴾ)ⁿ`, the sum running over all index maps
+`I : Fin n → Fin P` (the expansion of `β` in the basis dual to `e`, used for the projection
+reduction of constant plane currents in the integer multiplicity part of Simon 7.2.4, Remark
+7.2.5(1)).  Expanding every argument in the basis `e` gives
+`β(v) = ∑_I (∏_a ⟨e_{I(a)}, v_a⟩) β(e_I)`; as `β` is alternating,
+`n! · β(u) = ∑_σ sign(σ) β(u ∘ σ)`; the Leibniz formula collects the sums over `σ` into the
+determinants. -/
+theorem Submission.cbr_ci_cp_pr_factorial_mul_eq_sum_det : ∀ (P n : ℕ) (e : OrthonormalBasis (Fin P) ℝ (Euclid P)) (β : Covector (Euclid P) n) (u : Fin n → Euclid P), (n.factorial : ℝ) * β u = ∑ I : Fin n → Fin P, β (fun a => e (I a)) * Matrix.det (Matrix.of fun a b => inner ℝ (e (I b)) (u a)) := by
+  intro P n e β u
+  classical
+  -- multilinear expansion of `β` in the orthonormal basis `e`
+  have hexp : ∀ v : Fin n → Euclid P, β v =
+      ∑ I : Fin n → Fin P, (∏ a, inner ℝ (e (I a)) (v a)) * β (fun a => e (I a)) := by
+    intro v
+    have hv : v = fun a => ∑ m, inner ℝ (e m) (v a) • e m := by
+      funext a
+      exact (e.sum_repr' (v a)).symm
+    conv_lhs => rw [hv]
+    rw [β.map_sum]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    rw [β.map_smul_univ (fun a => inner ℝ (e (I a)) (v a)) (fun a => e (I a)), smul_eq_mul]
+  -- alternation: `sign(σ) β(u ∘ σ) = sign(σ)² β(u) = β(u)`, and there are `n!` permutations
+  have halt : (n.factorial : ℝ) * β u =
+      ∑ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℝ) * β (u ∘ σ) := by
+    have : ∀ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℝ) * β (u ∘ σ) = β u := by
+      intro σ
+      rw [show β (u ∘ σ) = Equiv.Perm.sign σ • β u from β.toAlternatingMap.map_perm u σ]
+      rw [Units.smul_def, zsmul_eq_mul, ← mul_assoc]
+      have hs : ((Equiv.Perm.sign σ : ℤ) : ℝ) * ((Equiv.Perm.sign σ : ℤ) : ℝ) = 1 := by
+        rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self, Units.val_one, Int.cast_one]
+      rw [hs, one_mul]
+    rw [Finset.sum_congr rfl fun σ _ => this σ, Finset.sum_const, Finset.card_univ,
+      Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  rw [halt]
+  -- expand only `β (u ∘ σ)` (the right side of `hexp` contains `β` again), then swap the sums
+  have h2 : ∀ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℝ) * β (u ∘ σ) =
+      ∑ I : Fin n → Fin P, (Equiv.Perm.sign σ : ℝ) *
+        ((∏ a, inner ℝ (e (I a)) ((u ∘ σ) a)) * β (fun a => e (I a))) := by
+    intro σ
+    rw [hexp (u ∘ σ), Finset.mul_sum]
+  rw [Finset.sum_congr rfl fun σ _ => h2 σ, Finset.sum_comm]
+  -- for fixed `I`, the sum over `σ` is the Leibniz formula for the determinant
+  refine Finset.sum_congr rfl fun I _ => ?_
+  rw [Matrix.det_apply', Finset.mul_sum]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  simp only [Matrix.of_apply, Function.comp_apply]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
