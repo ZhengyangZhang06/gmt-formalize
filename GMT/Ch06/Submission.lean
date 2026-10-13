@@ -578,6 +578,180 @@ theorem Submission.fiw_tl_ald_local_differentiation :
     indicator_of_mem hx.1 _
   rw [hgx] at hL
   exact ⟨hL, hD⟩
+/-- Relative `L¹` estimate at a point.  Let `θᵢ > 0` on `Mᵢ` be `Hⁿ`-integrable on
+`Mᵢ ∩ B̄_ρ(x)`, `x ∈ M₁ ∩ M₂`, `c = θ₂(x)/θ₁(x)` and `g = 1_{M₁ ∩ M₂} θ₂/θ₁`.  If, as `s ↓ 0`,
+(L) `∫_{M₁ ∩ B̄_s(x)} θ₁ |g − c| dHⁿ / ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ → 0` and
+(D) `∫_{M₁ ∩ M₂ ∩ B̄_s(x)} θ₂ dHⁿ / ∫_{M₂ ∩ B̄_s(x)} θ₂ dHⁿ → 1`, then for every `ε > 0` and all
+small `s > 0`, `∫_{B̄_s(x)} |1_{M₂} θ₂ − c 1_{M₁} θ₁| dHⁿ ≤ ε ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ`.
+Pointwise `|1_{M₂} θ₂ − c 1_{M₁} θ₁| = 1_{M₁} θ₁ |g − c| + 1_{M₂ ∖ M₁} θ₂`.  With
+`bᵢ = ∫_{Mᵢ ∩ B̄_s(x)} θᵢ dHⁿ`, (L) bounds the first part by `δ b₁` and (D) bounds the second by
+`δ b₂ ≤ 2δ(c + δ) b₁`. -/
+theorem Submission.fiw_tl_ald_pointwise_estimate :
+    ∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (x : Eucl P),
+      NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) →
+      (∀ z ∈ M₁, 0 < θ₁ z) → (∀ z ∈ M₂, 0 < θ₂ z) → x ∈ M₁ ∩ M₂ →
+      (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧
+        IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) →
+      Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) *
+          ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - θ₂ x / θ₁ x‖ₑ
+            ∂(μHE[n] : Measure (Eucl P))) /
+        (∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))))
+        (𝓝[>] 0) (𝓝 0) →
+      Tendsto (fun s : ℝ => (∫⁻ z in M₁ ∩ M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z)
+            ∂(μHE[n] : Measure (Eucl P))) /
+        (∫⁻ z in M₂ ∩ closedBall x s, ENNReal.ofReal (θ₂ z) ∂(μHE[n] : Measure (Eucl P))))
+        (𝓝[>] 0) (𝓝 1) →
+      ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ),
+        ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - θ₂ x / θ₁ x * M₁.indicator θ₁ z‖ₑ
+            ∂(μHE[n] : Measure (Eucl P)) ≤
+          ENNReal.ofReal ε *
+            ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n M₁ M₂ θ₁ θ₂ x hM₁ hM₂ hθ₁ hθ₂ hx hint hL hD ε hε
+  obtain ⟨ρ, hρ, hi₁, hi₂⟩ := hint
+  generalize (μHE[n] : Measure (Eucl P)) = H at hM₁ hM₂ hi₁ hi₂ hL hD ⊢
+  have hc : 0 < θ₂ x / θ₁ x := div_pos (hθ₂ x hx.2) (hθ₁ x hx.1)
+  generalize θ₂ x / θ₁ x = c at hc hL ⊢
+  -- `δ = min(1/2, ε/(3c+3))`: `0 < δ ≤ 1/2` and `δ(3c+3) ≤ ε`.
+  obtain ⟨δ, hδ, hδ2, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 2 ∧ δ * (3 * c + 3) ≤ ε :=
+    ⟨min (1 / 2) (ε / (3 * c + 3)), lt_min (by norm_num) (div_pos hε (by linarith)),
+      min_le_left _ _, (le_div_iff₀ (by linarith)).1 (min_le_right _ _)⟩
+  -- Eventually `s < ρ`, `a₂/b₂ > 1 − δ` (by (D)) and `I/b₁ < δ` (by (L)).
+  filter_upwards [Ioo_mem_nhdsGT hρ,
+    (tendsto_order.1 hD).1 (ENNReal.ofReal (1 - δ)) (ENNReal.ofReal_lt_one.2 (by linarith)),
+    (tendsto_order.1 hL).2 (ENNReal.ofReal δ) (ENNReal.ofReal_pos.2 hδ)] with s hs hs2 hs3
+  have hBρ : closedBall x s ⊆ closedBall x ρ := closedBall_subset_closedBall hs.2.le
+  have hi₁s : IntegrableOn θ₁ (M₁ ∩ closedBall x s) H :=
+    hi₁.mono_set (inter_subset_inter_right _ hBρ)
+  have hi₂s : IntegrableOn θ₂ (M₂ ∩ closedBall x s) H :=
+    hi₂.mono_set (inter_subset_inter_right _ hBρ)
+  have hBm : MeasurableSet (closedBall x s) := measurableSet_closedBall
+  set B := closedBall x s with hB_def
+  set b₁ := ∫⁻ z in M₁ ∩ B, ENNReal.ofReal (θ₁ z) ∂H with hb₁_def
+  set I := ∫⁻ z in M₁ ∩ B, ENNReal.ofReal (θ₁ z) *
+    ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ ∂H with hI_def
+  set a₂ := ∫⁻ z in M₁ ∩ M₂ ∩ B, ENNReal.ofReal (θ₂ z) ∂H with ha₂_def
+  set b₂ := ∫⁻ z in M₂ ∩ B, ENNReal.ofReal (θ₂ z) ∂H with hb₂_def
+  set d₂ := ∫⁻ z in (M₂ \ M₁) ∩ B, ENNReal.ofReal (θ₂ z) ∂H with hd₂_def
+  have hb₁ : b₁ ≠ ∞ := hi₁s.setLIntegral_lt_top.ne
+  have hb₂ : b₂ ≠ ∞ := hi₂s.setLIntegral_lt_top.ne
+  -- `b₂ = a₂ + d₂`: split `M₂ ∩ B` along `M₁`.
+  have hsplit : b₂ = a₂ + d₂ := by
+    have e : M₁ ∩ M₂ ∩ B = M₂ ∩ B ∩ M₁ := by
+      ext z; simp only [mem_inter_iff]; tauto
+    rw [hb₂_def, ha₂_def, hd₂_def, e, sdiff_inter_right_comm, ← lintegral_add_measure,
+      Measure.restrict_inter_add_sdiff₀ _ hM₁]
+  have ha₂ : a₂ ≠ ∞ := ne_top_of_le_ne_top hb₂ (by rw [hsplit]; exact le_self_add)
+  have hd₂ : d₂ ≠ ∞ := ne_top_of_le_ne_top hb₂ (by rw [hsplit]; exact le_add_self)
+  -- `(1 − δ) b₂ ≤ a₂` and `I ≤ δ b₁`.
+  have h2 : ENNReal.ofReal (1 - δ) * b₂ ≤ a₂ :=
+    ((ENNReal.lt_div_iff_mul_lt (Or.inr ENNReal.ofReal_ne_top) (Or.inl hb₂)).1 hs2).le
+  have h3 : I ≤ ENNReal.ofReal δ * b₁ := by
+    rcases eq_or_ne I 0 with h0 | h0
+    · rw [h0]; exact zero_le
+    · exact ((ENNReal.div_lt_iff (Or.inr h0) (Or.inl hb₁)).1 hs3).le
+  have hI : I ≠ ∞ := ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁) h3
+  -- `a₂ ≤ c b₁ + I`, since `θ₂ ≤ c θ₁ + θ₁ |g − c|` on `M₁ ∩ M₂`.
+  have h4 : a₂ ≤ ENNReal.ofReal c * b₁ + I := by
+    have hA : NullMeasurableSet (M₁ ∩ M₂ ∩ B) H := (hM₁.inter hM₂).inter hBm.nullMeasurableSet
+    have hm : AEMeasurable (fun z => ENNReal.ofReal c * ENNReal.ofReal (θ₁ z))
+        (H.restrict (M₁ ∩ B)) :=
+      hi₁s.aestronglyMeasurable.aemeasurable.ennreal_ofReal.const_mul _
+    calc a₂ ≤ ∫⁻ z in M₁ ∩ M₂ ∩ B, (ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) +
+          ENNReal.ofReal (θ₁ z) * ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) ∂H := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀ hA] with z hz
+          have h1z : 0 < θ₁ z := hθ₁ z hz.1.1
+          have e : θ₁ z * (θ₂ z / θ₁ z) = θ₂ z := mul_div_cancel₀ _ h1z.ne'
+          rw [indicator_of_mem hz.1]
+          calc ENNReal.ofReal (θ₂ z)
+              = ENNReal.ofReal (c * θ₁ z + θ₁ z * (θ₂ z / θ₁ z - c)) := by
+                congr 1; rw [mul_sub, e]; ring
+            _ ≤ ENNReal.ofReal (c * θ₁ z) + ENNReal.ofReal (θ₁ z * (θ₂ z / θ₁ z - c)) :=
+                ENNReal.ofReal_add_le
+            _ ≤ ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) + ‖θ₁ z * (θ₂ z / θ₁ z - c)‖ₑ := by
+                rw [ENNReal.ofReal_mul hc.le]; gcongr; exact Real.ofReal_le_enorm _
+            _ = ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) +
+                ENNReal.ofReal (θ₁ z) * ‖θ₂ z / θ₁ z - c‖ₑ := by
+                rw [enorm_mul, Real.enorm_of_nonneg h1z.le]
+      _ ≤ ∫⁻ z in M₁ ∩ B, (ENNReal.ofReal c * ENNReal.ofReal (θ₁ z) +
+          ENNReal.ofReal (θ₁ z) * ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) ∂H :=
+          lintegral_mono_set fun z hz => ⟨hz.1.1, hz.2⟩
+      _ = ENNReal.ofReal c * b₁ + I := by
+          rw [lintegral_add_left' hm, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  -- Pointwise, `|1_{M₂} θ₂ − c 1_{M₁} θ₁| = 1_{M₁} θ₁ |g − c| + 1_{M₂ ∖ M₁} θ₂`.
+  have hpt : ∀ z, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ≤
+      M₁.indicator (fun z => ENNReal.ofReal (θ₁ z) *
+        ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) z +
+      (M₂ \ M₁).indicator (fun z => ENNReal.ofReal (θ₂ z)) z := by
+    intro z
+    by_cases h1 : z ∈ M₁ <;> by_cases h2 : z ∈ M₂
+    · have h1z : 0 < θ₁ z := hθ₁ z h1
+      have e : θ₁ z * (θ₂ z / θ₁ z) = θ₂ z := mul_div_cancel₀ _ h1z.ne'
+      have hn : z ∉ M₂ \ M₁ := fun h => h.2 h1
+      simp only [indicator_of_mem h1, indicator_of_mem h2, indicator_of_mem (mem_inter h1 h2),
+        indicator_of_notMem hn, add_zero]
+      refine le_of_eq ?_
+      rw [show θ₂ z - c * θ₁ z = θ₁ z * (θ₂ z / θ₁ z - c) by rw [mul_sub, e]; ring, enorm_mul,
+        Real.enorm_of_nonneg h1z.le]
+    · have h1z : 0 < θ₁ z := hθ₁ z h1
+      have hn : z ∉ M₂ \ M₁ := fun h => h.2 h1
+      have hn' : z ∉ M₁ ∩ M₂ := fun h => h2 h.2
+      simp only [indicator_of_mem h1, indicator_of_notMem h2, indicator_of_notMem hn',
+        indicator_of_notMem hn, add_zero]
+      refine le_of_eq ?_
+      rw [show (0 : ℝ) - c * θ₁ z = θ₁ z * (0 - c) by ring, enorm_mul,
+        Real.enorm_of_nonneg h1z.le]
+    · have h2z : 0 < θ₂ z := hθ₂ z h2
+      simp only [indicator_of_notMem h1, indicator_of_mem h2,
+        indicator_of_mem (show z ∈ M₂ \ M₁ from ⟨h2, h1⟩), mul_zero, sub_zero, zero_add]
+      exact (Real.enorm_of_nonneg h2z.le).le
+    · simp only [indicator_of_notMem h1, indicator_of_notMem h2,
+        indicator_of_notMem (show z ∉ M₂ \ M₁ from fun h => h2 h.1), mul_zero, sub_zero,
+        enorm_zero, add_zero, le_refl]
+  -- Hence `∫_B |1_{M₂} θ₂ − c 1_{M₁} θ₁| dH ≤ I + d₂`.
+  have h5 : ∫⁻ z in B, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂H ≤ I + d₂ := by
+    have hGm : AEMeasurable ((M₂ \ M₁).indicator fun z => ENNReal.ofReal (θ₂ z))
+        (H.restrict B) := by
+      rw [aemeasurable_indicator_iff₀ ((hM₂.diff hM₁).mono Measure.restrict_le_self),
+        Measure.restrict_restrict' hBm]
+      exact hi₂s.aestronglyMeasurable.aemeasurable.ennreal_ofReal.mono_set
+        (inter_subset_inter_left _ sdiff_subset)
+    calc ∫⁻ z in B, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂H
+        ≤ ∫⁻ z in B, (M₁.indicator (fun z => ENNReal.ofReal (θ₁ z) *
+            ‖(M₁ ∩ M₂).indicator (fun w => θ₂ w / θ₁ w) z - c‖ₑ) z +
+          (M₂ \ M₁).indicator (fun z => ENNReal.ofReal (θ₂ z)) z) ∂H := lintegral_mono hpt
+      _ = I + d₂ := by
+        rw [lintegral_add_right' _ hGm,
+          setLIntegral_indicator₀ _ (hM₁.mono Measure.restrict_le_self),
+          setLIntegral_indicator₀ _ ((hM₂.diff hM₁).mono Measure.restrict_le_self)]
+  -- Real arithmetic: `I + d₂ ≤ δ b₁ + δ b₂ ≤ δ (1 + 2c + 2δ) b₁ ≤ ε b₁`.
+  have hfin : I + d₂ ≤ ENNReal.ofReal ε * b₁ := by
+    have hcb : ENNReal.ofReal c * b₁ ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁
+    have r1 : b₂.toReal = a₂.toReal + d₂.toReal := by rw [hsplit, ENNReal.toReal_add ha₂ hd₂]
+    have r2 : (1 - δ) * b₂.toReal ≤ a₂.toReal := by
+      have := ENNReal.toReal_mono ha₂ h2
+      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by linarith)] at this
+    have r3 : I.toReal ≤ δ * b₁.toReal := by
+      have := ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁) h3
+      rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal hδ.le] at this
+    have r4 : a₂.toReal ≤ c * b₁.toReal + I.toReal := by
+      have := ENNReal.toReal_mono (ENNReal.add_ne_top.2 ⟨hcb, hI⟩) h4
+      rwa [ENNReal.toReal_add hcb hI, ENNReal.toReal_mul, ENNReal.toReal_ofReal hc.le] at this
+    have hB₁ : 0 ≤ b₁.toReal := ENNReal.toReal_nonneg
+    have hB₂ : 0 ≤ b₂.toReal := ENNReal.toReal_nonneg
+    have e1 : 0 ≤ (1 / 2 - δ) * b₂.toReal := mul_nonneg (by linarith) hB₂
+    have hB2 : b₂.toReal ≤ 2 * (c + δ) * b₁.toReal := by linarith
+    have e2 : δ * b₂.toReal ≤ δ * (2 * (c + δ) * b₁.toReal) :=
+      mul_le_mul_of_nonneg_left hB2 hδ.le
+    have e3 : δ * (3 * c + 3) * b₁.toReal ≤ ε * b₁.toReal := mul_le_mul_of_nonneg_right hδε hB₁
+    have e4 : 0 ≤ δ * b₁.toReal * (c + 2 - 2 * δ) :=
+      mul_nonneg (mul_nonneg hδ.le hB₁) (by linarith)
+    rw [← ENNReal.toReal_le_toReal (ENNReal.add_ne_top.2 ⟨hI, hd₂⟩)
+        (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hb₁), ENNReal.toReal_add hI hd₂,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal hε.le]
+    linarith
+  exact h5.trans hfin
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
