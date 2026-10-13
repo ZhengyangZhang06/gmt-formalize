@@ -458,6 +458,62 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Zero mean of a linear form of `Dζ`** (step (1a) of the Schauder estimate in the elliptic
+bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).  For a continuous linear form `c` on
+`L(ℝⁿ, ℝ^ℓ)` and a compactly supported `C¹` map `ζ : ℝⁿ → ℝ^ℓ`, `∫ c(Dζ(x)) dx = 0`.
+Proof: `Dζ` is continuous with compact support, hence integrable, and `∫ c(Dζ) = c(∫ Dζ)`.
+By translation invariance of Lebesgue measure, `y ↦ ∫ ζ(x + y) dx` is constant; differentiating
+it at `0` under the integral sign (the derivatives `Dζ(x + y)`, `|y| < 1`, are bounded by a
+constant times the indicator of a fixed ball) gives `∫ Dζ = 0`. -/
+theorem dohr_eb_sch_integral_clm_fderiv_eq_zero : ∀ (n ℓ : ℕ) (c : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, c (fderiv ℝ ζ x) = 0 := by
+  intro n ℓ c ζ hζ hcs
+  -- Step 1: `Dζ` is continuous with compact support, hence integrable.
+  have hcont : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hcsD : HasCompactSupport (fderiv ℝ ζ) := hcs.fderiv ℝ
+  have hint : Integrable (fderiv ℝ ζ) := hcont.integrable_of_hasCompactSupport hcsD
+  -- Step 2: pull `c` out of the integral; it suffices that `∫ Dζ = 0`.
+  rw [ContinuousLinearMap.integral_comp_comm c hint]
+  suffices h : ∫ x, fderiv ℝ ζ x = 0 by rw [h, map_zero]
+  -- Step 3: `‖Dζ‖ ≤ C` everywhere and `tsupport Dζ ⊆ B_R(0)`.
+  obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hcsD
+  obtain ⟨R, hR⟩ := hcsD.isCompact.isBounded.subset_closedBall (0 : Rn n)
+  -- Step 4: differentiate `y ↦ ∫ ζ(x + y) dx` at `0` under the integral sign.
+  have hderiv : HasFDerivAt (fun y : Rn n => ∫ x, ζ (x + y)) (∫ x, fderiv ℝ ζ (x + 0)) 0 := by
+    refine hasFDerivAt_integral_of_dominated_of_fderiv_le (s := ball (0 : Rn n) 1)
+      (F' := fun y x => fderiv ℝ ζ (x + y))
+      (bound := (closedBall (0 : Rn n) (R + 1)).indicator fun _ => C)
+      (ball_mem_nhds 0 one_pos) ?_ ?_ ?_ ?_ ?_ ?_
+    · exact Eventually.of_forall fun y =>
+        (hζ.continuous.comp (continuous_add_const y)).aestronglyMeasurable
+    · simpa using hζ.continuous.integrable_of_hasCompactSupport hcs
+    · exact (hcont.comp (continuous_add_const 0)).aestronglyMeasurable
+    · refine Eventually.of_forall fun x y hy => ?_
+      show ‖fderiv ℝ ζ (x + y)‖ ≤ (closedBall (0 : Rn n) (R + 1)).indicator (fun _ => C) x
+      by_cases hx : x ∈ closedBall (0 : Rn n) (R + 1)
+      · rw [indicator_of_mem hx]
+        exact hC _
+      · have hxy : x + y ∉ tsupport (fderiv ℝ ζ) := fun h => hx (by
+          have h1 := hR h
+          rw [mem_closedBall_zero_iff] at h1 ⊢
+          rw [mem_ball_zero_iff] at hy
+          calc ‖x‖ = ‖(x + y) - y‖ := by rw [add_sub_cancel_right]
+            _ ≤ ‖x + y‖ + ‖y‖ := norm_sub_le _ _
+            _ ≤ R + 1 := by linarith)
+        rw [indicator_of_notMem hx, image_eq_zero_of_notMem_tsupport hxy, norm_zero]
+    · exact (integrableOn_const measure_closedBall_lt_top.ne).integrable_indicator
+        measurableSet_closedBall
+    · exact Eventually.of_forall fun x y _ =>
+        (hasFDerivAt_comp_add_left x).2 ((hζ.differentiable one_ne_zero (x + y)).hasFDerivAt)
+  -- Step 5: by translation invariance that function is constant, so its derivative is `0`.
+  have hzero : HasFDerivAt (fun y : Rn n => ∫ x, ζ (x + y)) (0 : Rn n →L[ℝ] Rn ℓ) 0 :=
+    (hasFDerivAt_const (∫ x, ζ x) (0 : Rn n)).congr_of_eventuallyEq
+      (Eventually.of_forall fun y => integral_add_right_eq_self ζ y)
+  simpa using hderiv.unique hzero
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
