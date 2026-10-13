@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5309891d5cbcc437a43c2823ccdba2bc754cb6667a8eb17759b105fa68d6e1b4",
+  "git_delta": {
+    "base_commit": "e7b0e13b707f5b0ad0c165705c47ef47f977b51a",
+    "candidate_commit": "d8da7cb336aa26ff1e018869e26f9b684a5838a5",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1a913600c731a7be63e38f793c130ab9839fdf170e305682403d7299b51e295a",
+    "source_sha256": "89b818da526efd139d89ec5c9568e53c4c08a7185ba69186a0555f93904e07d0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_constant_multiplicity_reduction",
+      "statement": "∀ (P n : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (z₀ : Euclid P) (r : ℝ) (N₀ : ℕ), IsOpen U → IsMinimizingIn T (U ∩ N) → T.support ⊆ N → BoundaryVanishes T → R.Represents T → 0 < r → ball z₀ r ⊆ U → 0 < N₀ → (∀ᵐ x ∂R.measure, x ∈ ball z₀ r → R.mult x = N₀) → z₀ ∈ T.support → HasMassDensity T z₀ N₀ → ∃ T₀ : GeometricCurrentOn (ball z₀ r) n, IsMinimizingIn T₀ (ball z₀ r ∩ N) ∧ T₀.support ⊆ N ∧ BoundaryVanishes T₀ ∧ (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W (ball z₀ r) → T₀.massOn W < ∞) ∧ z₀ ∈ T₀.support ∧ HasMassDensity T₀ z₀ 1 ∧ (z₀ ∈ regularSet T₀ → z₀ ∈ regularSet T)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
