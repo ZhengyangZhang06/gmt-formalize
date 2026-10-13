@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+        "rg -n 'abbrev Eucl|^theorem main_theorem|^namespace|^open' project/GMT/Ch06/Contract.lean (snapshot)",
+        "rg -n '^noncomputable def extDeriv |theorem sign_cycleRange|theorem cycleRange_symm_zero|theorem cycleRange_symm_succ|theorem det_permute \\(|theorem det_zero_of_row_eq|lemma exists_succAbove_eq \\{|theorem sign_symm \\(|lemma alternatizeUncurryFinCLM_apply|theorem alternatizeUncurryFin_add \\(|theorem alternatizeUncurryFin_smul \\{|theorem HasFDerivAt.sum \\(|theorem HasFDerivAt.smul_const \\(|theorem HasFDerivAt.const_mul \\(|theorem HasFDerivAt.mul \\(|theorem basisFun_apply|theorem basisFun_repr|abbrev EuclideanSpace.proj ' on the snapshot's mathlib/Mathlib files listed",
+        "rg -ln 'def wedgeCovectors' in the snapshot (no match: SimonGMT is not in the snapshot; used the pinned lake package instead)",
+        "grep -n 'wedgeCovectors' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "grep -n 'Covector|DifferentialForm|exteriorDerivative' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "python3 scan of dag.json lean_statements for wedgeCovectors/extDeriv/alternatizeUncurryFin/Fin.cons/succAbove/cycleRange (no accepted node with a reusable identical type)",
+        "python3 reserved-name scan of dag.json and nodes/*/decomposition-v*.json (467 names; no collision with rpn_pfd_*)",
+        "python3 verifier/lean_contract.py validate_lean_statement on the 4 child statements (all valid)",
+        "python3 verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') to replay the child comparator header",
+        "lake env lean /tmp/pfd_decomp/T1.lean (glue proves the frozen parent type from the four child types; exit 0)",
+        "lake env lean /tmp/pfd_decomp/T2.lean, T3.lean (child proofs; fixed coe_zero and explicit smul_const argument)",
+        "lake env lean /tmp/pfd_decomp/EndToEnd.lean (4 children + glue + comparator challenge/solution forms; #print axioms = [propext, Classical.choice, Quot.sound]; exit 0)",
+        "python3 read of nodes/root-rectifiability-a1-projection-null-a1*/decomposition-v*.json and decomposition-audit-v3.json (sibling split precedents)"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/GroupTheory/Perm/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/GroupTheory/Perm/Sign.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/SuccPred.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1/decomposition-v1.json",
+        "/tmp/pfd_decomp/T1.lean",
+        "/tmp/pfd_decomp/EndToEnd.lean"
+      ],
+      "conclusion": "Snapshot: project d8d46c95, Mathlib 25730c7c. Mathlib defines extDeriv ω x := alternatizeUncurryFin (fderiv ω x) (DifferentialForm/Basic.lean:72).\n\nLemmas the children use, all present in the snapshot:\n- signs: Fin.sign_cycleRange, cycleRange_symm_zero, cycleRange_symm_succ (Perm/Fin.lean:225,258,262); Equiv.Perm.sign_symm (Perm/Sign.lean:385);\n- determinants: Matrix.det_permute, det_zero_of_row_eq (Determinant/Basic.lean:216,373);\n- Fin.exists_succAbove_eq (Data/Fin/SuccPred.lean:661);\n- linearity of Alt: alternatizeUncurryFinCLM_apply, alternatizeUncurryFin_add, alternatizeUncurryFin_smul (Alternating/Uncurry/Fin.lean:129,149,160);\n- calculus: HasFDerivAt.sum, smul_const, mul, const_mul (FDeriv/Add.lean:418; FDeriv/Mul.lean:126,205,352);\n- coordinates: EuclideanSpace.proj, basisFun_apply, basisFun_repr (PiL2.lean:285,806,810).\n\nSimonGMT is absent from the snapshot (no match). In the pinned simongmt package, FormsDuality.lean:115 defines wedgeCovectors (n+1) α = alternatizeUncurryFin ((α 0).smulRight (wedgeCovectors n (Fin.tail α))), and :127 proves wedgeCovectors_apply_det.\n\nNo accepted DAG node has an identical reusable type, so all four children are new. Each child type elaborates in the replayed comparator scope. All four children and the parent glue are proved end to end with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+  "child_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.extderiv_sum_wedge-a1",
+  "subproblem": {
+    "key": "extderiv_sum_wedge",
+    "title": "Exterior derivative of a sum of scalar functions times constant wedges",
+    "statement": "Let P, m ∈ ℕ and let ι be a finite type. For j ∈ ι let g_j : ℝ^P → ℝ and β_j : Fin m → (ℝ^P)^*, and let x ∈ ℝ^P. Assume every g_j is differentiable at x. Let Φ be the m-form Φ(z) := Σ_{j∈ι} g_j(z)·wedgeCovectors m β_j; the covectors are constant and only the coefficients vary. Then Mathlib's exterior derivative of Φ at x is\nextDeriv Φ x = Σ_{j∈ι} wedgeCovectors (m+1) (Fin.cons (Dg_j(x)) β_j),\nthat is, dΦ(x) = Σ_j Dg_j(x)∧β_{j,0}∧⋯∧β_{j,m−1}, where Dg_j(x) = fderiv ℝ (g j) x.",
+    "lean_statement": "∀ (P m : ℕ) (ι : Type) [Fintype ι] (g : ι → Eucl P → ℝ) (β : ι → Fin m → (Eucl P →L[ℝ] ℝ)) (x : Eucl P), (∀ j, DifferentiableAt ℝ (g j) x) → extDeriv (fun z => ∑ j : ι, g j z • wedgeCovectors m (β j)) x = ∑ j : ι, wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ (g j) x) (β j) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))",
+    "lean_name": "rpn_pfd_extDeriv_sum_smul_wedge",
+    "depends_on": [],
+    "natural_proof": "Source: second half of Step 3 of the parent proof (dΦ(x) = Alt(DΦ(x)) = Σ_j wedge(Fin.cons Dg_j(x) β_j)), stated for an arbitrary finite index type.\n\nNotation.\n- Alt := ContinuousAlternatingMap.alternatizeUncurryFin.\n- For j ∈ ι, θ_j := wedgeCovectors m (β j), a fixed m-covector.\n- Φ(z) := Σ_{j∈ι} g_j(z)•θ_j, a map ℝ^P → Covector(ℝ^P, m).\n- Dg_j(x) := fderiv ℝ (g j) x.\n\n1. Derivative of one summand. g_j is differentiable at x, so it has Fréchet derivative Dg_j(x) at x (DifferentiableAt.hasFDerivAt). Multiplying the scalar function g_j by the constant vector θ_j, the map z ↦ g_j(z)•θ_j has derivative Dg_j(x).smulRight θ_j at x, the continuous linear map v ↦ Dg_j(x)(v)•θ_j. This is Mathlib HasFDerivAt.smul_const with the constant θ_j.\n\n2. Derivative of the sum. A finite sum of maps that have derivatives at x has as its derivative the sum of those derivatives (Mathlib HasFDerivAt.fun_sum over Finset.univ). Hence Φ has derivative Σ_j Dg_j(x).smulRight θ_j at x. By uniqueness of the Fréchet derivative (HasFDerivAt.fderiv), fderiv ℝ Φ x = Σ_j Dg_j(x).smulRight θ_j.\n\n3. Exterior derivative. Mathlib defines extDeriv Φ x := Alt(fderiv ℝ Φ x). Alt is the continuous linear map alternatizeUncurryFinCLM (alternatizeUncurryFinCLM_apply), so it maps finite sums to finite sums (map_sum). By Step 2,\n extDeriv Φ x = Alt(Σ_j Dg_j(x).smulRight θ_j) = Σ_j Alt(Dg_j(x).smulRight θ_j).\n\n4. Each term. SimonGMT defines wedgeCovectors (m+1) α = Alt((α 0).smulRight (wedgeCovectors m (Fin.tail α))). Take α := Fin.cons (Dg_j(x)) (β j). Then α 0 = Dg_j(x) (Fin.cons_zero) and Fin.tail α = β j (Fin.tail_cons). Hence\n wedgeCovectors (m+1) (Fin.cons (Dg_j(x)) (β j)) = Alt(Dg_j(x).smulRight (wedgeCovectors m (β j))) = Alt(Dg_j(x).smulRight θ_j).\n\n5. Substitute Step 4 into each term of Step 3 (Finset.sum_congr). This gives\n extDeriv Φ x = Σ_{j∈ι} wedgeCovectors (m+1) (Fin.cons (fderiv ℝ (g j) x) (β j)),\n which is the claim. ∎",
+    "proof_key_steps": [
+      "z ↦ g_j(z)•θ_j has derivative Dg_j(x).smulRight θ_j at x (HasFDerivAt.smul_const with the constant θ_j = wedgeCovectors m (β j)).",
+      "By the sum rule and uniqueness, fderiv Φ x = Σ_j Dg_j(x).smulRight θ_j (HasFDerivAt.fun_sum, HasFDerivAt.fderiv).",
+      "extDeriv Φ x = Alt(fderiv Φ x), and Alt = alternatizeUncurryFinCLM is linear, so it commutes with the finite sum (map_sum).",
+      "Alt(Dg_j(x).smulRight (wedgeCovectors m β_j)) = wedgeCovectors (m+1) (Fin.cons Dg_j(x) β_j), by the definition of wedgeCovectors with Fin.cons_zero and Fin.tail_cons."
+    ]
+  },
+  "audit": {
+    "key": "extderiv_sum_wedge",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The finite index type, constant covector families, and pointwise differentiability hypotheses match the Lean proposition. Differentiating each scalar multiple, summing derivatives, applying linear alternatization, and unfolding the successor wedge definition proves the exact identity. No neighborhood smoothness or additional hypothesis is needed; empty index types are covered."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-7ce573defd/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-7ce573defd/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-7ce573defd/parent-supplied-natural-proof.json"
+}

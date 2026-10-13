@@ -1,0 +1,827 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-rectifiability-a1-projection-null-a1-potential-estimate-a1",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.convolution_smooth-a1",
+      "key": "convolution_smooth",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.convolution_smooth-a1",
+        "subproblem": {
+          "key": "convolution_smooth",
+          "title": "Convolution of a locally integrable kernel with a C_c^∞ function: smoothness and D(K⋆a)v = K⋆(Da·v) (Step 3)",
+          "statement": "Let n ∈ ℕ, let K : ℝⁿ → ℝ be locally integrable for Lebesgue measure on ℝⁿ = Eucl n, and let a : ℝⁿ → ℝ be C^∞ with compact support. Put ψ(y) := ∫ K(t)·a(y − t) dt. Then ψ is C^∞. Moreover, for all y, v ∈ ℝⁿ the function t ↦ K(t)·Da(y − t)v is integrable and Dψ(y)v = ∫ K(t)·Da(y − t)v dt.",
+          "lean_statement": "∀ (n : ℕ) (K a : Eucl n → ℝ), LocallyIntegrable K → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y => ∫ t, K t * a (y - t)) ∧ ∀ y v : Eucl n, Integrable (fun t => K t * fderiv ℝ a (y - t) v) ∧ fderiv ℝ (fun y => ∫ t, K t * a (y - t)) y v = ∫ t, K t * fderiv ℝ a (y - t) v",
+          "lean_name": "rpn_pe_convolution_contDiff_fderiv",
+          "depends_on": [],
+          "natural_proof": "Source: Step 3 of the parent proof. Let L := ContinuousLinearMap.lsmul ℝ ℝ, the scalar multiplication pairing ℝ × ℝ → ℝ. Write ⋆ for Mathlib's convolution with respect to L and Lebesgue measure.\n\n1. ψ is a convolution. By convolution_lsmul (the definition of convolution), (K ⋆ a)(y) = ∫ K(t) • a(y − t) dt = ∫ K(t)·a(y − t) dt = ψ(y). So ψ = K ⋆ a.\n\n2. Smoothness. K is locally integrable, and a is C^∞ with compact support. So HasCompactSupport.contDiff_convolution_right, at order ∞ = ((⊤ : ℕ∞) : WithTop ℕ∞), shows that K ⋆ a = ψ is C^∞.\n\n3. The derivative integrand. a is in particular C¹ (ContDiff.of_le), so Da is continuous (ContDiff.continuous_fderiv). Fix v. The function z ↦ Da(z)v is continuous (apply the continuous map Da, then evaluate at the constant v), and it has compact support (HasCompactSupport.fderiv_apply). Apply HasCompactSupport.convolutionExists_right to K (locally integrable) and z ↦ Da(z)v: the convolution of K and z ↦ Da(z)v exists at y. By definition of ConvolutionExistsAt, t ↦ K(t)·Da(y − t)v is integrable.\n\n4. The derivative. K is locally integrable, and a is C¹ with compact support. So HasCompactSupport.hasFDerivAt_convolution_right shows that ψ = K ⋆ a has Fréchet derivative (K ⋆_{L.precompR} Da)(y) at y. Hence Dψ(y) = (K ⋆_{L.precompR} Da)(y). Da is continuous with compact support (HasCompactSupport.fderiv). So convolution_precompR_apply gives (K ⋆_{L.precompR} Da)(y) v = (K ⋆ (z ↦ Da(z)v))(y), and by convolution_lsmul this equals ∫ K(t)·Da(y − t)v dt. This is the stated formula. ∎",
+          "proof_key_steps": [
+            "ψ = K ⋆ a for the scalar multiplication pairing (convolution_lsmul). It is C^∞ by HasCompactSupport.contDiff_convolution_right.",
+            "z ↦ Da(z)v is continuous with compact support, so t ↦ K(t)Da(y−t)v is integrable (HasCompactSupport.convolutionExists_right).",
+            "hasFDerivAt_convolution_right and convolution_precompR_apply give Dψ(y)v = ∫ K(t)Da(y−t)v dt."
+          ]
+        },
+        "audit": {
+          "key": "convolution_smooth",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type includes exactly the stated smoothness, derivative-integrand integrability, and derivative formula. The pinned convolution theorems apply with the supplied hypotheses; continuity and compact support of the derivative and its evaluations are justified. No sibling or parent conclusion is assumed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.polar_integral-a1",
+      "key": "polar_integral",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.polar_integral-a1",
+        "subproblem": {
+          "key": "polar_integral",
+          "title": "Polar coordinates for integrable functions on ℝ^{m+1} (formula (P) of Step 1)",
+          "statement": "Let m ∈ ℕ and n := m + 1. Let S := {θ ∈ ℝⁿ : |θ| = 1} be the unit sphere of ℝⁿ = Eucl n, and let σ := (Lⁿ).toSphere be the measure on S induced by Lebesgue measure Lⁿ = volume (Mathlib's Measure.toSphere; σ(A) = n·Lⁿ({rθ : 0 < r < 1, θ ∈ A}) for measurable A ⊆ S, by Measure.toSphere_apply'). Then for every Lebesgue-integrable g : ℝⁿ → ℝ, ∫_{ℝⁿ} g(x) dx = ∫_S (∫_{(0,∞)} r^m·g(rθ) dr) dσ(θ).",
+          "lean_statement": "∀ (m : ℕ) (g : Eucl (m + 1) → ℝ), Integrable g → ∫ x, g x = ∫ θ : sphere (0 : Eucl (m + 1)) 1, (∫ r in Ioi (0 : ℝ), r ^ m * g (r • (θ : Eucl (m + 1)))) ∂(volume : Measure (Eucl (m + 1))).toSphere",
+          "lean_name": "rpn_pe_integral_eq_polar",
+          "depends_on": [],
+          "natural_proof": "Source: formula (P) in Step 1 of the parent proof. The argument is Mathlib's proof of integral_fun_norm_addHaar (HaarToSphere.lean), with the radial integrand replaced by a general integrable g. Notation: E := Eucl n. finrank ℝ E = m + 1 (finrank_euclideanSpace_fin), so finrank ℝ E − 1 = m. Let ν := Measure.volumeIoiPow m. This is the measure on the subtype (0,∞) = Ioi 0 obtained from Lebesgue measure by comap along the inclusion, with density r ↦ ENNReal.ofReal(r^m).\n\n1. The polar homeomorphism. Let Φ := homeomorphUnitSphereProd E : E∖{0} → S × (0,∞), Φ(x) = (|x|⁻¹x, |x|), with inverse (θ, r) ↦ rθ. By Measure.measurePreserving_homeomorphUnitSphereProd, after rewriting finrank ℝ E − 1 = m, Φ is measure preserving from λ₀ := (Lⁿ).comap Subtype.val (Lebesgue measure transported to the subtype E∖{0}) to σ ⊗ ν. As a homeomorphism, Φ is a measurable embedding.\n\n2. The transported integrand. Define G : S × (0,∞) → ℝ by G(θ, r) := g(rθ). For x ∈ E∖{0}, G(Φ(x)) = g(|x|·(|x|⁻¹x)) = g(x), because |x| ≠ 0 (smul_smul, mul_inv_cancel₀, one_smul).\n\n3. Removing the origin. The set {0}ᶜ is measurable and {0} is Lⁿ-null. So ∫_E g dLⁿ = ∫_{{0}ᶜ} g dLⁿ = ∫_{x ∈ E∖{0}} g(x) dλ₀(x), by integral_subtype_comap for the measurable set {0}ᶜ and restrict_compl_singleton.\n\n4. Change of variables. MeasurePreserving.integral_comp, applied to the measurable embedding Φ, gives ∫ G(Φ(x)) dλ₀(x) = ∫ G d(σ ⊗ ν). By Step 2 the left side is ∫ g(x) dλ₀(x). With Step 3, ∫_E g = ∫ G d(σ ⊗ ν).\n\n5. Integrability on the product. g is integrable on {0}ᶜ, so g ∘ Subtype.val is λ₀-integrable (integrableOn_iff_comap_subtypeVal). Since G ∘ Φ = g ∘ Subtype.val by Step 2, MeasurePreserving.integrable_comp_emb shows that G is (σ ⊗ ν)-integrable.\n\n6. Fubini. σ is a finite measure and ν is σ-finite (Mathlib instances). So integral_prod gives ∫ G d(σ ⊗ ν) = ∫_S (∫_{(0,∞)} g(rθ) dν(r)) dσ(θ).\n\n7. Unfolding ν. Fix θ ∈ S. ENNReal.ofReal(r^m) is the coercion of the measurable ℝ≥0-valued function r ↦ Real.toNNReal(r^m). Hence integral_withDensity_eq_integral_smul gives ∫ g(rθ) dν(r) = ∫_{r ∈ Ioi 0} Real.toNNReal(r^m) • g(rθ) d((volume).comap Subtype.val). Then integral_subtype_comap with measurableSet_Ioi turns this into the set integral ∫_{(0,∞)} Real.toNNReal(r^m) • g(rθ) dr. For r > 0 we have r^m ≥ 0, so Real.toNNReal(r^m) • g(rθ) = r^m·g(rθ) (NNReal.smul_def, Real.coe_toNNReal). By setIntegral_congr_fun on the measurable set (0,∞), the inner integral equals ∫_{(0,∞)} r^m·g(rθ) dr, for every θ ∈ S.\n\n8. Steps 3–7 together give ∫_E g(x) dx = ∫_S (∫_{(0,∞)} r^m·g(rθ) dr) dσ(θ). ∎",
+          "proof_key_steps": [
+            "Φ = homeomorphUnitSphereProd carries Lebesgue measure on ℝⁿ∖{0} to σ ⊗ volumeIoiPow m (measurePreserving_homeomorphUnitSphereProd, with finrank − 1 = m), and G∘Φ = g for G(θ, r) = g(rθ).",
+            "∫ g = ∫_{ℝⁿ∖{0}} g = ∫ G d(σ⊗ν): remove the null point, then change variables; G is integrable by integrable_comp_emb.",
+            "Apply Fubini (integral_prod). For every θ, unfold ν = r^m dr on (0,∞) (integral_withDensity_eq_integral_smul, integral_subtype_comap)."
+          ]
+        },
+        "audit": {
+          "key": "polar_integral",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and standalone Lean proposition agree. Removing the null origin, transporting integrability through the polar homeomorphism, applying Fubini, and unfolding the radial density prove the exact formula. The proof supplies the necessary measurability and integrability justifications without circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1",
+      "key": "radial_ball_integral",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1",
+        "subproblem": {
+          "key": "radial_ball_integral",
+          "title": "The radial integral ∫_{B_ρ(0)} |w|^{1−n} dw = nωρ (formula (R) of Step 1)",
+          "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), taken as a real number ((volume (ball 0 1)).toReal). Here B_ρ(0) ⊆ ℝⁿ = Eucl n is the open ball and Lⁿ = volume. For every ρ > 0, the function w ↦ (|w|^m)⁻¹ is Lebesgue integrable on B_ρ(0), and ∫_{B_ρ(0)} (|w|^m)⁻¹ dw = (m + 1)·ω·ρ. The function is |w|^{1−n}; since 0⁻¹ = 0, its value at w = 0 is 0 if m ≥ 1 and 1 if m = 0.",
+          "lean_statement": "∀ (m : ℕ) (ρ : ℝ), 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (ball (0 : Eucl (m + 1)) ρ) ∧ ∫ t in ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ = ((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ρ",
+          "lean_name": "rpn_pe_inv_norm_pow_ball",
+          "depends_on": [],
+          "natural_proof": "Source: formula (R) in Step 1 of the parent proof. Notation: E := Eucl n and Lⁿ = volume. finrank ℝ E = m + 1 (finrank_euclideanSpace_fin), so finrank ℝ E − 1 = m.\n\n1. Integrability. Mathlib's integrableOn_fun_norm_addHaar (HaarToSphere.lean) says, for f : ℝ → ℝ: w ↦ f(|w|) is integrable on B_ρ(0) iff r ↦ r^{finrank E − 1}·f(r) = r^m·f(r) is integrable on the interval (0, ρ). Take f(r) := (r^m)⁻¹. For r ∈ (0, ρ), r^m ≠ 0, so r^m·(r^m)⁻¹ = 1. A constant is integrable on (0, ρ), which has finite measure. By integrableOn_congr_fun on the measurable set (0, ρ), r ↦ r^m·(r^m)⁻¹ is integrable there. Hence w ↦ (|w|^m)⁻¹ is integrable on B_ρ(0).\n\n2. Indicator form. Let h := 1_{(−∞,ρ)}·(r ↦ (r^m)⁻¹), i.e. h(r) = (r^m)⁻¹ for r < ρ and h(r) = 0 otherwise. Since w ∈ B_ρ(0) iff |w| < ρ, we get 1_{B_ρ(0)}(w)·(|w|^m)⁻¹ = h(|w|) for all w. B_ρ(0) is measurable, so integral_indicator gives ∫_{B_ρ(0)} (|w|^m)⁻¹ dw = ∫_E h(|w|) dw.\n\n3. Radial formula. integral_fun_norm_addHaar gives ∫_E h(|w|) dw = (finrank E)·Lⁿ(B_1(0))·∫_{(0,∞)} r^{finrank E − 1}·h(r) dr = (m + 1)·ω·∫_{(0,∞)} r^m·h(r) dr. Here the scalar actions are multiplications, and Lⁿ.real(B_1(0)) = ω.\n\n4. The one-dimensional integral. Let r > 0. If r < ρ, then r^m·h(r) = r^m·(r^m)⁻¹ = 1. If r ≥ ρ, then r^m·h(r) = 0. So r^m·h(r) = 1_{(−∞,ρ)}(r) on (0,∞). By setIntegral_congr_fun and integral_indicator, ∫_{(0,∞)} r^m·h(r) dr = L¹((0,∞) ∩ (−∞,ρ)) = L¹((0,ρ)) = ρ, using ρ > 0.\n\n5. Hence ∫_{B_ρ(0)} (|w|^m)⁻¹ dw = (m + 1)·ω·ρ. No case distinction on m is needed. For m = 0 the integrand is 1 and the formula reads L¹(B_ρ(0)) = 2ρ, with ω = 2. ∎",
+          "proof_key_steps": [
+            "integrableOn_fun_norm_addHaar reduces integrability on B_ρ(0) to integrability of r^m·(r^m)⁻¹ = 1 on (0, ρ).",
+            "Write the ball integral as ∫ h(|w|) dw with h = 1_{(−∞,ρ)}·(r^m)⁻¹. Then integral_fun_norm_addHaar gives (m+1)·ω·∫_{(0,∞)} r^m h(r) dr.",
+            "For r > 0, r^m h(r) = 1_{(0,ρ)}(r), so the radial integral is ρ."
+          ]
+        },
+        "audit": {
+          "key": "radial_ball_integral",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The positive-radius hypothesis and both conclusions match the type. The radial integrability criterion reduces the integrand to 1 on (0,ρ); the indicator calculation gives the stated integral. The argument correctly includes m = 0 and the specified value at the origin."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.ray_ftc-a1",
+      "key": "ray_ftc",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.ray_ftc-a1",
+        "subproblem": {
+          "key": "ray_ftc",
+          "title": "Fundamental theorem of calculus along a ray: ∫_0^∞ Da(y − rθ)θ dr = a(y) (Step 4(a))",
+          "statement": "Let n ∈ ℕ, let a : ℝⁿ → ℝ (ℝⁿ = Eucl n) be C¹ with compact support, and let y, θ ∈ ℝⁿ with θ ≠ 0. Then ∫_{(0,∞)} Da(y − rθ)θ dr = a(y).",
+          "lean_statement": "∀ (n : ℕ) (a : Eucl n → ℝ), ContDiff ℝ 1 a → HasCompactSupport a → ∀ y θ : Eucl n, θ ≠ 0 → ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • θ) θ = a y",
+          "lean_name": "rpn_pe_ray_ftc",
+          "depends_on": [],
+          "natural_proof": "Source: Step 4(a) of the parent proof. There θ is a unit vector; only θ ≠ 0 is used. Let h(r) := a(y − rθ) for r ∈ ℝ.\n\n1. Derivative. The map r ↦ y − rθ has derivative −θ, and a is differentiable with derivative Da. By the chain rule (HasFDerivAt.comp_hasDerivAt), h has derivative h′(r) = Da(y − rθ)(−θ) = −Da(y − rθ)θ at every r ∈ ℝ. Moreover h is C¹, as the composition of the C¹ function a with the affine map r ↦ y − rθ.\n\n2. Compact support of h. tsupport a is compact, hence bounded, so tsupport a ⊆ B̄_R(0) for some R ∈ ℝ. Put r₀ := (|R| + |y|)/|θ|, using |θ| > 0. If |r| > r₀, then |y − rθ| ≥ |r|·|θ| − |y| > |R| ≥ R. So y − rθ ∉ tsupport a, and h(r) = 0. Thus h vanishes outside the compact interval [−r₀, r₀], and h has compact support.\n\n3. FTC on (0,∞). h is C¹ with compact support, so Mathlib's HasCompactSupport.integral_Ioi_deriv_eq applies. (It is a special case of integral_Ioi_of_hasDerivAt_of_tendsto, with h(r) → 0 as r → ∞.) It gives ∫_{(0,∞)} h′(r) dr = −h(0) = −a(y).\n\n4. By Step 1, ∫_{(0,∞)} −Da(y − rθ)θ dr = −a(y). Pulling out the sign (integral_neg) gives ∫_{(0,∞)} Da(y − rθ)θ dr = a(y). ∎",
+          "proof_key_steps": [
+            "h(r) = a(y − rθ) is C¹ with h′(r) = −Da(y − rθ)θ (chain rule).",
+            "Since θ ≠ 0 and tsupport a ⊆ B̄_R(0), h vanishes for |r| > (|R| + |y|)/|θ|. So h has compact support.",
+            "HasCompactSupport.integral_Ioi_deriv_eq gives ∫_{(0,∞)} h′ = −h(0) = −a(y)."
+          ]
+        },
+        "audit": {
+          "key": "ray_ftc",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The C¹, compact-support, and nonzero-direction hypotheses match. The explicit escape-radius estimate proves compact support of the affine pullback. The chain-rule sign and compact-support FTC then give exactly the claimed positive-sign integral."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_local_integrable-a1",
+      "key": "kernel_local_integrable",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_local_integrable-a1",
+        "subproblem": {
+          "key": "kernel_local_integrable",
+          "title": "The kernels w_j/(c·|w|ⁿ) are locally integrable (Step 2)",
+          "statement": "Let m ∈ ℕ, n := m + 1, j ∈ Fin n and c ∈ ℝ. Define K(w) := w_j/(c·|w|^{m+1}) on ℝⁿ = Eucl n, where w_j is the j-th coordinate and division by 0 gives 0 (so K(0) = 0, and K ≡ 0 if c = 0). Then K is locally integrable with respect to Lebesgue measure: every point has a neighbourhood on which K is integrable.",
+          "lean_statement": "∀ (m : ℕ) (j : Fin (m + 1)) (c : ℝ), LocallyIntegrable (fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1)))",
+          "lean_name": "rpn_pe_kernel_locallyIntegrable",
+          "depends_on": [
+            "radial_ball_integral"
+          ],
+          "natural_proof": "Source: Step 2 of the parent proof, which applies it with c = nω_n.\n\n1. Measurability. w ↦ w_j is continuous (it is the continuous linear map EuclideanSpace.proj j), and w ↦ c·|w|^{m+1} is continuous. Hence K is Borel measurable (Measurable.div), so it is a.e. strongly measurable for every measure.\n\n2. Domination. We show |K(w)| ≤ |c|⁻¹·(|w|^m)⁻¹ for every w ∈ ℝⁿ. If c = 0, then K(w) = w_j/0 = 0. If w = 0, then w_j = 0, so K(w) = 0, while the right side is ≥ 0. Otherwise |c| > 0 and |w| > 0, and |w_j| ≤ |w| (PiLp.norm_apply_le). So |K(w)| = |w_j|/(|c|·|w|^{m+1}) ≤ |w|/(|c|·|w|^{m+1}) = |c|⁻¹·(|w|^m)⁻¹.\n\n3. Local integrability. Fix x ∈ ℝⁿ and put R := |x| + 1 > 0. The open ball B_R(0) contains x, so it is a neighbourhood of x. By radial_ball_integral, w ↦ (|w|^m)⁻¹ is integrable on B_R(0), and so is w ↦ |c|⁻¹·(|w|^m)⁻¹. By Steps 1–2 and domination (Integrable.mono'), K is integrable on B_R(0). As x was arbitrary, K is integrable at the neighbourhood filter of every point. That is, K is locally integrable (LocallyIntegrable). ∎",
+          "proof_key_steps": [
+            "K is Borel measurable, and |K(w)| ≤ |c|⁻¹(|w|^m)⁻¹ for all w (cases c = 0 and w = 0; otherwise |w_j| ≤ |w|).",
+            "Around x use the ball B_{|x|+1}(0). There (|w|^m)⁻¹ is integrable by radial_ball_integral, so K is integrable by domination."
+          ]
+        },
+        "audit": {
+          "key": "kernel_local_integrable",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The arbitrary real constant c is handled correctly, including c = 0 and negative c. Borel measurability and the explicit domination bound, including t = 0, yield integrability on a neighbourhood of every point using radial_ball_integral."
+        },
+        "resolved_dependencies": [
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1",
+      "key": "set_integral_bound",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1",
+        "subproblem": {
+          "key": "set_integral_bound",
+          "title": "Potential estimate over a set of finite measure: ∫_S |w|^{1−n} ≤ (n+1)·ω^{1−1/n}·Lⁿ(S)^{1/n} (radius split of Step 5)",
+          "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), as a real number. Let S ⊆ ℝⁿ = Eucl n be a Borel-measurable set (MeasurableSet S) with Lⁿ(S) < ∞, and write L := Lⁿ(S) ∈ [0,∞), as a real number. Then w ↦ (|w|^m)⁻¹ is integrable on S, and ∫_S (|w|^m)⁻¹ dw ≤ (m + 2)·ω^{m/(m+1)}·L^{1/(m+1)} (real powers).",
+          "lean_statement": "∀ (m : ℕ) (S : Set (Eucl (m + 1))), MeasurableSet S → volume S ≠ ⊤ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S ∧ ∫ t in S, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 2) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal ^ ((m : ℝ) / ((m : ℝ) + 1)) * (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+          "lean_name": "rpn_pe_inv_norm_pow_set_bound",
+          "depends_on": [
+            "radial_ball_integral"
+          ],
+          "natural_proof": "Source: the radius split in Step 5 of the parent proof. This is the elementary form of the potential estimate of Gilbarg–Trudinger §7.8 (proof of Lemma 7.12), with the cruder constant n + 1 in place of n. Write f(w) := (|w|^m)⁻¹ = |w|^{1−n}.\n\n1. Preliminaries. f ≥ 0, and f is Borel measurable (norm, power, inverse). ω > 0 because B_1(0) is a nonempty open set (measure_ball_pos), and ω < ∞ (measure_ball_lt_top).\n\n2. Bound away from the origin. Let ρ > 0 and w ∈ S ∖ B_ρ(0). Then |w| ≥ ρ > 0, so |w|^m ≥ ρ^m > 0 and f(w) ≤ (ρ^m)⁻¹ (pow_le_pow_left₀, inv_anti₀). Also Lⁿ(S ∖ B_ρ(0)) ≤ Lⁿ(S) < ∞. Since f is measurable and bounded by (ρ^m)⁻¹ on S ∖ B_ρ(0), it is integrable there (Measure.integrableOn_of_bounded).\n\n3. Integrability on S. Fix ρ > 0. By radial_ball_integral, f is integrable on B_ρ(0), hence on S ∩ B_ρ(0) ⊆ B_ρ(0). With Step 2, f is integrable on (S ∩ B_ρ(0)) ∪ (S ∖ B_ρ(0)) = S. Taking ρ = 1 proves the first claim.\n\n4. Case L = 0. Lⁿ(S) is finite and L = 0, so Lⁿ(S) = 0. Then the restriction of Lⁿ to S is the zero measure, and ∫_S f = 0. The right-hand side is (m + 2)·ω^{m/(m+1)}·0^{1/(m+1)} = 0, because 1/(m+1) ≠ 0 (Real.zero_rpow). So the inequality reads 0 ≤ 0.\n\n5. Case L > 0: the radius. Let p := 1/(m+1) and ρ := (L/ω)^p > 0. Then ρ^{m+1} = (L/ω)^{p·(m+1)} = L/ω (Real.rpow_natCast, Real.rpow_mul). That is, L = ω·ρ^{m+1}.\n\n6. Split. B_ρ(0) is measurable and f is integrable on S (Step 3). So ∫_S f = ∫_{S∩B_ρ(0)} f + ∫_{S∖B_ρ(0)} f (integral_inter_add_sdiff).\n\n7. Near part. f ≥ 0 is integrable on B_ρ(0), and S ∩ B_ρ(0) ⊆ B_ρ(0). So setIntegral_mono_set and radial_ball_integral give ∫_{S∩B_ρ(0)} f ≤ ∫_{B_ρ(0)} f = (m + 1)·ω·ρ.\n\n8. Far part. f and the constant (ρ^m)⁻¹ are both integrable on the measurable set S∖B_ρ(0), which has finite measure. By Step 2 and setIntegral_mono_on, ∫_{S∖B_ρ(0)} f ≤ ∫_{S∖B_ρ(0)} (ρ^m)⁻¹ = Lⁿ(S∖B_ρ(0))·(ρ^m)⁻¹ ≤ L·(ρ^m)⁻¹ = ω·ρ^{m+1}/ρ^m = ω·ρ.\n\n9. Hence ∫_S f ≤ (m + 1)·ω·ρ + ω·ρ = (m + 2)·ω·ρ.\n\n10. Rewriting. (L/ω)^p = L^p/ω^p (Real.div_rpow; L, ω ≥ 0). Also ω/ω^p = ω^{1−p} (Real.rpow_sub, ω > 0), and 1 − p = m/(m+1). So (m + 2)·ω·ρ = (m + 2)·ω^{m/(m+1)}·L^{1/(m+1)}, which is the claimed bound. ∎",
+          "proof_key_steps": [
+            "f = |w|^{1−n} ≤ ρ^{−m} off B_ρ(0), so f is integrable on S∖B_ρ(0). With radial_ball_integral, f is integrable on S.",
+            "If Lⁿ(S) = 0, both sides vanish. Otherwise take ρ = (L/ω)^{1/(m+1)}, so that L = ω·ρ^{m+1}.",
+            "∫_{S∩B_ρ} f ≤ ∫_{B_ρ} f = (m+1)ωρ and ∫_{S∖B_ρ} f ≤ ρ^{−m}·L = ωρ. The sum is (m+2)ωρ = (m+2)·ω^{m/(m+1)}·L^{1/(m+1)}."
+          ]
+        },
+        "audit": {
+          "key": "set_integral_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Borel measurability, finite measure, integrability, and the real-power bound match exactly. The proof establishes integrability before splitting the integral, handles zero measure, and justifies the optimized radius and power identities for positive measure. Its only sibling dependency is radial_ball_integral."
+        },
+        "resolved_dependencies": [
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_sup_bound-a1",
+      "key": "kernel_sup_bound",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_sup_bound-a1",
+        "subproblem": {
+          "key": "kernel_sup_bound",
+          "title": "Sup bound |∫ K_j(t)·a(y − t) dt| ≤ C·M·Lⁿ(spt a)^{1/n} for the kernel potentials (Step 5)",
+          "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), as a real number. For j ∈ Fin n let K_j(t) := t_j/((m + 1)·ω·|t|^{m+1}) on ℝⁿ = Eucl n, with K_j(0) = 0. Then there is a constant C ∈ ℝ, depending only on m, with the following property. Let a : ℝⁿ → ℝ have compact support, and let M ∈ ℝ satisfy |a(z)| ≤ M for all z. Then for every j ∈ Fin n and every y ∈ ℝⁿ, |∫ K_j(t)·a(y − t) dt| ≤ C·M·Lⁿ(tsupport a)^{1/(m+1)}. Here Lⁿ(tsupport a) is taken as a real number ((volume (tsupport a)).toReal). No measurability of a is assumed: ∫ denotes Mathlib's (Bochner) integral, which is 0 when the integrand is not integrable.",
+          "lean_statement": "∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ (j : Fin (m + 1)) (y : Eucl (m + 1)), |∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * a (y - t)| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+          "lean_name": "rpn_pe_kernel_sup_bound",
+          "depends_on": [
+            "set_integral_bound"
+          ],
+          "natural_proof": "Source: Step 5 of the parent proof. Let c := (m + 1)·ω, and let f(t) := (|t|^m)⁻¹. Here c > 0, because ω > 0 (B_1(0) is a nonempty open set) and ω < ∞.\n\n1. The constant. Put C := (m + 2)·ω^{m/(m+1)}/c. Since ω^{m/(m+1)}/ω = ω^{−1/(m+1)}, this is C = ((n+1)/n)·ω^{−1/n}, the constant of the parent proof. It depends only on m. Now fix a, M, j and y as in the statement.\n\n2. Sign of M. M ≥ |a(0)| ≥ 0.\n\n3. The translated support. Let S := tsupport a, which is closed, and compact by hypothesis. Let S_y := {t : y − t ∈ S}, the preimage of S under the continuous map t ↦ y − t. S_y is closed, hence measurable. The map t ↦ y − t preserves Lebesgue measure (Measure.measurePreserving_sub_left), so Lⁿ(S_y) = Lⁿ(S). Also Lⁿ(S) < ∞ because S is compact.\n\n4. Apply set_integral_bound to S_y, and use Lⁿ(S_y) = Lⁿ(S). Then f is integrable on S_y, and ∫_{S_y} f ≤ (m + 2)·ω^{m/(m+1)}·Lⁿ(S)^{1/(m+1)}.\n\n5. Pointwise domination. We show |K_j(t)·a(y − t)| ≤ (M/c)·1_{S_y}(t)·f(t) for every t.\n – If t ∈ S_y: first, |K_j(t)| ≤ f(t)/c. For t = 0 this holds since K_j(0) = 0 ≤ f(0)/c. For t ≠ 0, |t_j| ≤ |t| (PiLp.norm_apply_le), so |K_j(t)| = |t_j|/(c·|t|^{m+1}) ≤ |t|/(c·|t|^{m+1}) = f(t)/c. Next, |a(y − t)| ≤ M. Multiplying these two inequalities between nonnegative quantities gives |K_j(t)·a(y − t)| ≤ (f(t)/c)·M = (M/c)·f(t).\n – If t ∉ S_y: then y − t ∉ tsupport a, so a(y − t) = 0 (image_eq_zero_of_notMem_tsupport). Both sides are 0.\n\n6. Integration. The dominating function (M/c)·1_{S_y}·f is integrable: use Step 4, integrable_indicator_iff, and a constant multiple. By norm_integral_le_of_norm_le, which needs no measurability of the integrand,\n |∫ K_j(t)·a(y − t) dt| ≤ ∫ (M/c)·1_{S_y}(t)·f(t) dt = (M/c)·∫_{S_y} f\n(integral_const_mul, integral_indicator).\n\n7. Conclusion. M/c ≥ 0, so by Step 4, |∫ K_j(t)·a(y − t) dt| ≤ (M/c)·(m + 2)·ω^{m/(m+1)}·Lⁿ(S)^{1/(m+1)} = C·M·Lⁿ(tsupport a)^{1/(m+1)}. ∎",
+          "proof_key_steps": [
+            "C := (m+2)ω^{m/(m+1)}/((m+1)ω) = ((n+1)/n)ω^{−1/n}; and M ≥ |a(0)| ≥ 0.",
+            "S_y = {t : y − t ∈ tsupport a} is closed, and Lⁿ(S_y) = Lⁿ(tsupport a) < ∞ (t ↦ y − t preserves Lebesgue measure).",
+            "|K_j(t)a(y−t)| ≤ (M/((m+1)ω))·1_{S_y}(t)·|t|^{−m}. Integrate, then apply set_integral_bound to S_y."
+          ]
+        },
+        "audit": {
+          "key": "kernel_sup_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The stronger compact-support-only statement explicitly matches Mathlib's totalized integral. The proof derives M ≥ 0, preserves support measure under reflection and translation, and constructs an integrable pointwise majorant using set_integral_bound. The cited domination theorem needs no measurability of a, and the chosen constant depends only on m."
+        },
+        "resolved_dependencies": [
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.representation-a1",
+      "key": "representation",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c95; mathlib_commit 25730c7c)",
+              "sha256sum GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean; diff (both ea3ee0dd…, identical)",
+              "python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') (replayed header: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end)",
+              "grep -n 'theorem\\|lemma\\|def \\|abbrev ' Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              "grep -rn 'homeomorphUnitSphereProd\\|toSphere' Mathlib --include=*.lean (matches only HaarToSphere.lean and Analysis/Normed/Module/Ball/RadialEquiv.lean)",
+              "grep -n 'contDiff_convolution_right\\|hasFDerivAt_convolution_right\\|convolutionExists_right\\|convolution_precompR_apply\\|convolution_lsmul\\|def ConvolutionExistsAt' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              "grep -n 'theorem integral_Ioi_of_hasDerivAt_of_tendsto\\|integral_Ioi_deriv_eq' Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "grep -rn 'setIntegral_mono_set\\|setIntegral_mono_on\\|setIntegral_const\\|integral_inter_add_sdiff\\|integrableOn_of_bounded\\|norm_integral_le_of_norm_le\\|measurePreserving_div_left\\|setIntegral_congr_fun\\|integral_indicator' Mathlib/MeasureTheory",
+              "grep -n 'norm_apply_le' Mathlib/Analysis/Normed/Lp/PiLp.lean; grep -n 'sum_repr\\|basisFun_apply\\|basisFun_repr' Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n 'HasCompactSupport.fderiv\\|continuous_fderiv' Mathlib/Analysis/Calculus/FDeriv/Const.lean Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "python3 verifier/lean_contract.py validate_lean_statement on the 8 lean_statements",
+              "lean AllChildren.lean, Assembly.lean, Short.lean, Short2.lean, C1.lean, C3.lean, C7.lean, C8.lean, EndToEnd.lean, Solutions.lean (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean)",
+              "python3 lean_name scan of dag.json and nodes/*/decomposition-v*.json (477 reserved names; none starts with rpn_pe)",
+              "ls /tmp/rpn_v3_nmhI8O1x /tmp/rpn_v2_Yfpb0s4j; find /tmp -maxdepth 4 -name '*.lean' | grep C1Rev (the handoff's witness files: no match)"
+            ],
+            "files": [
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-plan.md",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-supplied-natural-proof.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-scope-v3.json",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-audit-v3.json",
+              "GMT/Ch06/Contract.lean",
+              "GMT/Ch06/Submission.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+              ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/pe-decomp-ch06/AllChildren.lean",
+              "/tmp/pe-decomp-ch06/Assembly.lean",
+              "/tmp/pe-decomp-ch06/Short.lean",
+              "/tmp/pe-decomp-ch06/Short2.lean",
+              "/tmp/pe-decomp-ch06/C1.lean",
+              "/tmp/pe-decomp-ch06/C3.lean",
+              "/tmp/pe-decomp-ch06/C7.lean",
+              "/tmp/pe-decomp-ch06/C8.lean",
+              "/tmp/pe-decomp-ch06/EndToEnd.lean",
+              "/tmp/pe-decomp-ch06/Solutions.lean"
+            ],
+            "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…), which define Eucl P := EuclideanSpace ℝ (Fin P) in namespace GMT.Ch06. Before each child type the comparator replays: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; three opens; noncomputable section; end.\nThe pinned Mathlib supplies every tool the children use:\n – polar coordinates: Measure.toSphere, toSphere_real_apply_univ, volumeIoiPow, measurePreserving_homeomorphUnitSphereProd, integrableOn_fun_norm_addHaar, integral_fun_norm_addHaar (HaarToSphere.lean:51,92,113,142,273,296) and homeomorphUnitSphereProd (RadialEquiv.lean:67);\n – convolution calculus: convolution_lsmul, HasCompactSupport.convolutionExists_right, convolution_precompR_apply (Convolution.lean:423,316,970); HasCompactSupport.hasFDerivAt_convolution_right and contDiff_convolution_right (ContDiff/Convolution.lean:61,420); HasCompactSupport.fderiv and fderiv_apply (FDeriv/Const.lean:389); ContDiff.continuous_fderiv (ContDiff/Defs.lean:1271);\n – ray FTC: integral_Ioi_of_hasDerivAt_of_tendsto and HasCompactSupport.integral_Ioi_deriv_eq (IntegralEqImproper.lean:786,820);\n – set integrals: integral_inter_add_sdiff, setIntegral_mono_set, setIntegral_mono_on, setIntegral_const, integral_indicator, setIntegral_congr_fun (Bochner/Set.lean); Measure.integrableOn_of_bounded (IntegrableOn.lean:716); norm_integral_le_of_norm_le and integral_const (Bochner/Basic.lean:985,992);\n – measure invariance: measurePreserving_div_left, whose additive form is measurePreserving_sub_left (Group/Measure.lean:393);\n – coordinates and bases: PiLp.norm_apply_le (PiLp.lean:713); OrthonormalBasis.sum_repr, EuclideanSpace.basisFun_apply and basisFun_repr (PiL2.lean:494,806,810).\nNo match: Mathlib has no polar-coordinate formula for non-radial integrands. homeomorphUnitSphereProd and toSphere are used only in HaarToSphere.lean, so polar_integral is a genuine obligation. The handoff's witness files (/tmp/rpn_v3_nmhI8O1x, /tmp/rpn_v2_Yfpb0s4j) are not present on this machine.\nLean evidence. It is a formalization aid, not part of any natural proof, and is in /tmp/pe-decomp-ch06 on this machine.\n – AllChildren.lean: the 8 child types elaborate.\n – Assembly.lean: the frozen parent type follows from the 8 child types.\n – Short2.lean, C3.lean, Short.lean, C1.lean, C7.lean, C8.lean: sorry-free proofs of each child; each file stubs only its declared siblings.\n – EndToEnd.lean: all 8 proofs plus the parent with no sorry; its only axioms are propext, Classical.choice and Quot.sound.\n – Solutions.lean: the comparator-style exact checks pass for 9 targets.\nThe scratch proofs use the deprecated aliases Set.diff_subset and Set.inter_union_diff (warnings only).\nAll 8 lean_names are free among the 477 reserved names."
+          }
+        ],
+        "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+        "child_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.representation-a1",
+        "subproblem": {
+          "key": "representation",
+          "title": "Representation formula Σ_j ∫ K_j(t)·∂_j a(y − t) dt = a(y) (Step 4; Gilbarg–Trudinger, proof of Lemma 7.14)",
+          "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), as a real number. For j ∈ Fin n let K_j(t) := t_j/((m + 1)·ω·|t|^{m+1}) on ℝⁿ = Eucl n; K_j(0) = 0 because division by 0 gives 0. Let a : ℝⁿ → ℝ be C^∞ with compact support, and let y ∈ ℝⁿ. Then Σ_{j ∈ Fin n} ∫ K_j(t)·∂_j a(y − t) dt = a(y). Here ∂_j a(z) := Da(z)e_j, and e_j = EuclideanSpace.single j 1 is the j-th standard basis vector.",
+          "lean_statement": "∀ (m : ℕ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ y : Eucl (m + 1), ∑ j : Fin (m + 1), ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) = a y",
+          "lean_name": "rpn_pe_kernel_representation",
+          "depends_on": [
+            "polar_integral",
+            "kernel_local_integrable",
+            "convolution_smooth",
+            "ray_ftc"
+          ],
+          "natural_proof": "Source: Step 4 of the parent proof. This is the representation formula in Gilbarg–Trudinger's proof of Lemma 7.14, u(x) = (nω_n)⁻¹∫ Σ_i (x_i − y_i)D_iu(y)|x − y|^{−n} dy for u ∈ C¹₀, written in the variable t = y − (integration variable). Let c := (m + 1)·ω, so K_j(t) = t_j/(c·|t|^{m+1}).\n\n1. Constants. ω > 0 because B_1(0) is nonempty and open (measure_ball_pos), and ω < ∞. So c > 0. Also a is C¹.\n\n2. Integrability of each term. By kernel_local_integrable (with this j and c), K_j is locally integrable. By convolution_smooth (with K = K_j, the given a, and v = e_j), t ↦ K_j(t)·∂_j a(y − t) is integrable for each j.\n\n3. Sum inside. By Step 2 and linearity of the integral over a finite sum (integral_finsetSum, formerly integral_finset_sum), Σ_j ∫ K_j(t)·∂_j a(y − t) dt = ∫ Σ_j K_j(t)·∂_j a(y − t) dt.\n\n4. Pointwise identity. For every linear functional Λ : ℝⁿ → ℝ and every v ∈ ℝⁿ we have v = Σ_j v_j·e_j. This is OrthonormalBasis.sum_repr for EuclideanSpace.basisFun, whose vectors are the e_j and whose coordinates are the v_j. Hence Λv = Σ_j v_j·Λe_j. Apply this with Λ = Da(y − t) and v = t. For every t ∈ ℝⁿ (including t = 0, where both sides are 0) this gives\n Σ_j K_j(t)·∂_j a(y − t) = Σ_j t_j·Da(y − t)e_j/(c·|t|^{m+1}) = Da(y − t)t/(c·|t|^{m+1}) =: G(t).\n\n5. So G is integrable, as a finite sum of the integrable functions of Step 2 (integrable_finsetSum). The left side of the claim equals ∫ G(t) dt.\n\n6. Polar coordinates. Apply polar_integral to G: ∫ G = ∫_S (∫_{(0,∞)} r^m·G(rθ) dr) dσ(θ), where S is the unit sphere and σ = (Lⁿ).toSphere.\n\n7. Inner integrals. Fix θ ∈ S. Then |θ| = 1, so θ ≠ 0. For r > 0 we have |rθ| = r and Da(y − rθ)(rθ) = r·Da(y − rθ)θ. Hence\n r^m·G(rθ) = r^m·r·Da(y − rθ)θ/(c·r^{m+1}) = Da(y − rθ)θ/c.\nNow use setIntegral_congr_fun on (0,∞), pull out 1/c (integral_div), and apply ray_ftc (a is C¹ with compact support, θ ≠ 0):\n ∫_{(0,∞)} r^m·G(rθ) dr = (1/c)·∫_{(0,∞)} Da(y − rθ)θ dr = a(y)/c.\n\n8. Outer integral. The inner integral is the constant a(y)/c, so ∫_S a(y)/c dσ = σ(S)·a(y)/c (integral_const). By Measure.toSphere_real_apply_univ and finrank_euclideanSpace_fin, σ(S) = (finrank ℝ ℝⁿ)·Lⁿ(B_1(0)) = (m + 1)·ω = c. Since c > 0, the result is c·a(y)/c = a(y).\n\n9. Steps 3–8 together give Σ_j ∫ K_j(t)·∂_j a(y − t) dt = ∫ G = a(y). ∎",
+          "proof_key_steps": [
+            "Each t ↦ K_j(t)∂_j a(y−t) is integrable (kernel_local_integrable + convolution_smooth), so the sum moves inside the integral.",
+            "Expanding t in the standard basis gives Σ_j K_j(t)∂_j a(y−t) = G(t) := Da(y−t)t/((m+1)ω|t|^{m+1}).",
+            "polar_integral gives ∫G = ∫_S ∫_0^∞ r^m G(rθ) dr dσ, and r^m G(rθ) = Da(y−rθ)θ/((m+1)ω) for r > 0, |θ| = 1.",
+            "By ray_ftc each inner integral is a(y)/((m+1)ω), and σ(S) = (m+1)ω gives a(y)."
+          ]
+        },
+        "audit": {
+          "key": "representation",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The kernel normalization and coordinate derivatives match the Lean type. The four declared dependencies justify termwise integrability, polar integration, and ray evaluation. The basis expansion holds also at zero, and the sphere's total mass cancels the positive normalization constant. This proves the exact representation without using the parent."
+        },
+        "resolved_dependencies": [
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.polar_integral-a1",
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_local_integrable-a1",
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.convolution_smooth-a1",
+          "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.ray_ftc-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/decomposition.json": "da8f92a9032d87288be2b0292c0aa28b7dc1039a9b562f2796ade0fa239aefbd",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/decomposition-audit.json": "1d67f41b88376bd605f618ebc5dc83e8139f0e42f52e5ed81f0a53167847862c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-child-handoff.json": "60e14fc476cc27b3c5ca0af617c8e0aaca6568a4b4c732848d4b0e8ec345dfff",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-supplied-plan.md": "fcb3d7f0d8120ffdbe059acb3a109d7d26f236a758a8de58bd494817526af89d",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-supplied-natural-proof.md": "93fc1d84a6c8e13faf9038d605a5f2c0b60973c6d613db2b3703769168485eea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/parent-supplied-natural-proof.json": "02513b810ec5e6c4bfad953278f34c59f7b3e852c9ebc667ad1c91ea655a28b9",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-convo-c921561884/node.json": "94a7595956349f9031de30a0d787339e014eb805091b6c867d11468411d0d283",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-child-handoff.json": "04dfa3bd48227c388dff77b85c9ce4803092f07f72d68bbcf6b6202486e25133",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-supplied-plan.md": "6f9bb39639f8be10770759cf447b4c5fec4ed087f708ba299c7b45315e15dd8d",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-supplied-natural-proof.md": "6022d7b62b847b7667a891ef3c0104f465d9d96f7b54911e7d5e28dd9323b483",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/parent-supplied-natural-proof.json": "4258b751ba739e3aac5c7e894ddedd634886808d045796a505687e589b200f38",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17/node.json": "59dc7f10e0c294f550c42ccbf8eda275a5c532157d6ef414cf0b381762be4af6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-child-handoff.json": "169487729af46a621c56be67cbdedb9070509c4b899d78cc9ff0423daa215745",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-supplied-plan.md": "b3c29bcd43dc364bc0aa0daf989a434841d39289bbfaa3c678200f91152b2d2d",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-supplied-natural-proof.md": "9b7d0324221e9377a36c3424346517fc7a5fedd65a858ac92d8553d96122fa6b",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/parent-supplied-natural-proof.json": "3e1d7745333782e6cfa940b5e7f6e24806ddb9a95658d79fd94540e88fa1d7a5",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b/node.json": "179ee7833463426adf1cf84bb64791eab8c6771774cbbc56cf6d65c48d90d6b9",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-child-handoff.json": "679bed2e0fa7f015fb055b48791b19b23a8c6f680533b60aa4880339c9cbe416",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-supplied-plan.md": "ff9fd5d3dd179b856527bd32add45c3f8ec1cdbc43a91f4a521cf9bc7b5f4ba0",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-supplied-natural-proof.md": "cb1b3e6623b58bf4870755c20a9b6638764e72c898acda1c9bf3347cd4467fc4",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/parent-supplied-natural-proof.json": "0b83d7c2553e7fdedec030c629290e323f0d3ba5f6fc5735d1c06401cfc160f1",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1/node.json": "698cc4f620aa515f8c027686057bf80e1b508c3d0b9ac1b078bdd9a2d19031ee",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-child-handoff.json": "20ba902b914e8a254fa31c3b4401318008214941a00eeef529de57cd66d52484",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-supplied-plan.md": "5a32965d9fce674c6d8d1030573e3861c88084b6ab4e6e0fef96f3a5cdf74e25",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-supplied-natural-proof.md": "4605cc3a40b2a79e4ce05124b0b3238ff11037c32a137a6bcb5e0413cf7d2070",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/parent-supplied-natural-proof.json": "6e58e971cd5089dc07e1b848ebf71ff522412d29a05a7e614b5e43cfd7a0e13e",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19/node.json": "381b19bbb41ced2ed6e5c3a39d9acf4715fa67d1cd95d3431685e0efdeef5835",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-child-handoff.json": "e8447ecd000ae711df8b0e4e0f0f67499c3d9fa5fab67db67a43caea74b6b379",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-supplied-plan.md": "abed783dea10b01333811655cd1f4e6de3541ad209825ca8aea70a332773e2e1",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-supplied-natural-proof.md": "178fb96c14d2afbeb64e1ba6e95bcb00dcf668cacd31edcbe8d2ae1a5735b934",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/parent-supplied-natural-proof.json": "5895a0b613d21e0e80c6ce30d18dc34bb8461b22374adf1a73d27693b7ed04fe",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f/node.json": "8932c9876db39c91b04c1154d54921dfc471e0c3f47af7f619ef3fb366b04a58",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-child-handoff.json": "f1b67139547467ec593d2e9d669d0260ffeac42f1c4ca20e6447aa62bca37625",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-supplied-plan.md": "fab787738e53d222d9ba1611950ba048f09b0b5426d7dcc6d653a9d63ce07f6a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-supplied-natural-proof.md": "c86e84796da803d41557a89c7cbf4032220657494ccd37c5221ad60b03d19b33",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/parent-supplied-natural-proof.json": "ab72d6bbc36ce7351f33a802269918ae9b409426d7fce54f12b51c646d1444a5",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299/node.json": "7ec494037b04f6093e99dcf08d11da10af6669a24225065b9073188ffe9c195e",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-child-handoff.json": "05d237224c6d1852faeb63c1feb38cb7f8d58bd36e477b5350ccfbe234d1160e",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-supplied-plan.md": "168ca9da60f3d6ea6bd83104f543b634267d14e33b20d3d337c1e554e28e95fc",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-supplied-natural-proof.md": "772e9528c2e28c361725d4370d50dea949f0c786a3a337863a2659308207ace0",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/parent-supplied-natural-proof.json": "cf2603f170be1ba00fe1bca915d3f82797fc42a633f9b7c4d17836497319e01d",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/children/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26/node.json": "b59b92708986a9c1be6d7dcc6d08fe5c281cf1b26476e197153ea2f8650cd46c"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Newtonian-potential solution of div ψ = a with a support-volume sup bound (replaces Simon 6, Remark 2.35)",
+  "statement": "Let m ∈ ℕ and n := m + 1. There is a constant C ∈ ℝ, depending only on m, with the following property. Let a : ℝⁿ → ℝ be C^∞ with compact support, and let M ∈ ℝ satisfy |a(y)| ≤ M for every y ∈ ℝⁿ. Then there are C^∞ functions ψ_j : ℝⁿ → ℝ (j ∈ Fin n) such that Σ_j ∂_jψ_j(y) = a(y) for every y, where ∂_jψ_j(y) := Dψ_j(y)e_j and e_j is the j-th standard basis vector, and |ψ_j(y)| ≤ C·M·Lⁿ(spt a)^{1/n} for every j and y. Here spt a = tsupport a is the closed support of a and Lⁿ is Lebesgue measure (volume) on ℝⁿ = Eucl n.",
+  "lean_statement": "∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∃ ψ : Fin (m + 1) → Eucl (m + 1) → ℝ, (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ j)) ∧ (∀ y, ∑ j : Fin (m + 1), fderiv ℝ (ψ j) y (EuclideanSpace.single j (1 : ℝ)) = a y) ∧ ∀ j y, |ψ j y| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+  "lean_name": "rpn_potential_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-a1"
+}

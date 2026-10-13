@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_mass_bounds-a1.repr_bound-a1`
+- Child DAG node: `root.compactness_mass_bounds-a1.repr_bound-a1.coeff_integrable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Steps 2–3: the cutoff χ equal to 1 on the relevant compact set, and the test forms χ·dx^β.
+
+1. (Intermediate open set.) ℝ^P is locally compact and regular, K is compact, W is open and K ⊆ W. By exists_open_between_and_isCompact_closure there is an open V₂ with K ⊆ V₂, closure(V₂) ⊆ W and closure(V₂) compact.
+2. (Cutoff.) K is compact in the Hausdorff space ℝ^P, hence closed. Apply exists_contDiff_support_eq_eq_one_iff to the open set V₂ and the closed set K ⊆ V₂, with smoothness order ∞; ℝ^P is a finite-dimensional real normed space. In Lean, ∞ is obtained by setting the lemma's named smoothness argument to ⊤ : ℕ∞; that argument has nothing to do with the form degree n. This gives χ : ℝ^P → ℝ with:
+- χ is C^∞, i.e. ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ;
+- range χ ⊆ [0,1] and support χ = V₂;
+- χ(x) = 1 ⇔ x ∈ K for every x.
+3. (Test form.) Let dx^β := wedgeCovectors n (fun j ↦ EuclideanSpace.proj (β j)) ∈ Covector (Eucl P) n and ψ(x) := χ(x)·dx^β.
+- ψ is C^∞ as the product of the C^∞ scalar function χ with a constant (ContDiff.smul, contDiff_const). IsSmoothForm means ContDiff ℝ ∞ with ∞ = ↑(⊤ : ℕ∞), which matches Step 2.
+- By tsupport_smul_subset_left, tsupport ψ ⊆ tsupport χ = closure(support χ) = closure(V₂). tsupport ψ is closed and lies in the compact set closure(V₂), so it is compact (IsCompact.of_isClosed_subset); that is, ψ has compact support.
+- tsupport ψ ⊆ closure(V₂) ⊆ W ⊆ U.
+Hence ψ ∈ TestFormOn U n, whose membership condition is (ContDiff ℝ ∞ ψ ∧ HasCompactSupport ψ) ∧ tsupport ψ ⊆ U.
+4. (Integrability from the representation.) By IsMeasureRepresentation T μ v applied to ψ, g(x) := v(x)(ψ(x)) is μ-integrable. In particular g is μ-integrable on K (Integrable.integrableOn).
+5. (Identification on K.) For x ∈ K, χ(x) = 1 by Step 2, so ψ(x) = 1·dx^β = dx^β. Hence g(x) = v(x)(dx^β) = euclideanNVectorCoordinate (v x) β, by the definition of euclideanNVectorCoordinate. K is closed, hence a Borel measurable set. If two functions agree on a measurable set and one is integrable on it, so is the other (IntegrableOn.congr_fun). So x ↦ euclideanNVectorCoordinate (v x) β is μ-integrable on K. ∎
+
+## Key steps
+
+1. Choose an open V₂ with K ⊆ V₂, closure V₂ compact and closure V₂ ⊆ W.
+2. Take a smooth cutoff χ with values in [0,1], support χ = V₂ and χ = 1 exactly on K.
+3. ψ := χ·dx^β ∈ TestFormOn U n: it is smooth and tsupport ψ ⊆ closure V₂, which is compact and ⊆ W ⊆ U.
+4. IsMeasureRepresentation makes x ↦ v(x)(ψ(x)) μ-integrable, hence integrable on K.
+5. On the closed (measurable) set K, v(x)(ψ(x)) = v(x)(dx^β), so IntegrableOn transfers to the coefficient function.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (project_commit d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch06/{Contract,Submission}.lean (both ea3ee0ddd08be5db60dced2b002e9f60fd87091910069abcfcbd7e34db89853d)`
+- `rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib`
+- `rg -n 'theorem exists_contDiff_support_eq_eq_one_iff' mathlib/Mathlib`
+- `rg -n '^theorem Integrable.bdd_mul\b' mathlib/Mathlib`
+- `rg -n 'theorem integrableOn_iff_integrable_of_support_subset|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem IntegrableOn.congr_fun\b' mathlib/Mathlib`
+- `rg -n 'theorem EuclideanSpace.norm_eq|theorem EuclideanSpace.basisFun_apply' mathlib/Mathlib`
+- `rg -n 'covectorEuclideanNorm|euclideanCovectorCoordinate' simongmt/Poincare`
+- `rg -n 'covectorEuclideanNorm_add|covectorEuclideanNorm_le|abs_euclideanCovectorCoordinate|euclideanCovectorCoordinate_le|integrableOn_coeff|IntegrableOn.*euclideanNVectorCoordinate' project simongmt/Poincare (no match)`
+- `#check exists_contDiff_support_eq_eq_one_iff / Integrable.bdd_mul / integral_finsetSum / integrable_finsetSum / ContinuousAlternatingMap.apply / WithLp.toLp after import GMT.Ch06.Submission`
+- `python3 -I: dag.json lean_name scan and nodes/*/decomposition-v*.json scan for the four proposed names (no collision)`
+- `python3 -I: verifier lean_contract.validate_lean_statement and gmt-compare.contract_scope/child_modules (mode contract) for the 4 child statements`
+- `lake env lean Scratch/AB.lean, Scratch/C1.lean, Scratch/C2P.lean, Gen/*__NodeChallenge.lean, Scratch/Sol_0..4.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1/decomposition-v1.json`
+- `/tmp/rb_decomp_XjqsL7/Scratch/AB.lean`
+- `/tmp/rb_decomp_XjqsL7/Scratch/C1.lean`
+- `/tmp/rb_decomp_XjqsL7/Scratch/C2P.lean`
+- `/tmp/rb_decomp_sol_P93Ver/GMT/Ch06/Submission.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. The frozen Contract and Submission are byte-identical (sha256 ea3ee0dd…).
+
+SimonGMT provides:
+- covectorEuclideanNorm, with only the lemmas _zero, _nonneg and _neg;
+- euclideanCovectorCoordinate, euclideanNVectorCoordinate and wedgeCovectors;
+- TestFormOn, whose membership is (ContDiff ℝ ∞ ∧ HasCompactSupport) ∧ tsupport ⊆ U.
+It has no coordinate bound, triangle inequality or coefficient-integrability lemma (rg: no match in the project or in SimonGMT).
+
+The pinned Mathlib provides, all usable after `import GMT.Ch06.Submission`:
+- exists_open_between_and_isCompact_closure (Topology/Separation/Regular.lean:364);
+- exists_contDiff_support_eq_eq_one_iff (Geometry/Manifold/PartitionOfUnity.lean:789);
+- Integrable.bdd_mul (L1Space/Integrable.lean:1067);
+- IntegrableOn.congr_fun and integrableOn_iff_integrable_of_support_subset (Integral/IntegrableOn.lean);
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486);
+- EuclideanSpace.norm_eq (PiL2.lean:145);
+- integral_finsetSum and integrable_finsetSum.
+
+In scratch builds of the frozen project:
+- all 4 child statements validate and elaborate as comparator NodeChallenge modules;
+- each child is proved with axioms [propext, Classical.choice, Quot.sound];
+- the selected frozen type follows from the 4 children plus the frozen sibling types of mass_bound, mollify and covector_expansion, with the same axioms.
+
+The proposed cmb_rb_ names are unreserved.

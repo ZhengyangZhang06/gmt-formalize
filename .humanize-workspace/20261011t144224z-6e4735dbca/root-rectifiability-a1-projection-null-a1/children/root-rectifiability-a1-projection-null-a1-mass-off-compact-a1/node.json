@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "M_W(T) ≤ C·μ(W∖K) for a compact K with null rotated projections (Simon 6, proof of 2.36, displays (1)–(3))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P, and T ∈ D_n(U) with M_W(T) + M_W(∂T) < ∞ for every open W ⊂⊂ U. Let μ be a Borel measure on ℝ^P and ξ : ℝ^P → Λ_n(ℝ^P) be such that (IsMeasureRepresentation T μ ξ) for every ω ∈ Dⁿ(U) the function x ↦ ⟨ω(x), ξ(x)⟩ = ξ(x)(ω(x)) is μ-integrable and T(ω) = ∫⟨ω(x), ξ(x)⟩ dμ(x). Assume also that Σ_{β∈I(n,P)} ξ(x)(dx^β)² = 1 for μ-a.e. x. Let Q be a linear isometry of ℝ^P, and let K ⊆ ℝ^P be compact with Lⁿ(π_α(K)) = 0 for every α ∈ I(n,P), where π_α(x) := ((Qx)_{α(0)}, …, (Qx)_{α(m)}). Then there is a constant C ≥ 0 such that M_W(T) ≤ C·μ(W∖K) for every open W ⊂⊂ U.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ (μ : Measure (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ ξ → (∀ᵐ x ∂μ, ∑ β : SimonMultiIndex (m + 1) P, (euclideanNVectorCoordinate (ξ x) β) ^ 2 = 1) → ∀ (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (K : Set (Eucl P)), IsCompact K → (∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' K) = 0) → ∃ C : ℝ≥0, ∀ W, CompactlyContainedOpen W U → T.massOn W ≤ (C : ℝ≥0∞) * μ (W \\ K)",
+  "lean_name": "rpn_massOn_le_mul_measure_diff",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.pullback_top_form_bound-a1",
+    "root.rectifiability-a1.projection_null-a1.covector_rotated_expansion-a1",
+    "root.rectifiability-a1.projection_null-a1.null_compact_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.pullback_top_form_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.covector_rotated_expansion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.null_compact_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-mass-off-compact-a1-a1"
+}

@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "^(import|open|namespace|abbrev Eucl)|def CompactlyContainedOpen|def IsMeasureRepresentation|main_theorem",
+        "abbrev Covector|abbrev NVector|abbrev DifferentialForm|def IsSmoothForm|def IsTestForm|def testFormOnSubmodule|abbrev TestFormOn|structure GeometricCurrentOn|def wedgeCovectors|wedgeCovectors_apply_det|abbrev SimonMultiIndex|def euclideanNVectorCoordinate|def euclideanCovectorCoordinate|def covectorEuclideanNorm|def massOn|def massAdmissibleOn",
+        "cmb_covector_eq_sum_coord_smul_wedge|cmb_rb_abs_euclideanCovectorCoordinate_le|rpn_moc_abs_covector_apply_le|rpn_moc_abs_nvector_apply_le|rpn_moc_exists_testForm_smul|rpn_moc_abs_apply_le_mul_measure_diff|rpn_moc_abs_apply_top_form_le",
+        "git show 6c6b4b2753e8214a3e45619bb0b65d8d553557a5:GMT/Ch06/Submission.lean",
+        "git show bc4ced0777075cca0b2e8f7beba5ba914fae595c:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/moc-independent-audit-5ui0mreo/ParentImplication.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/moc-independent-audit-5ui0mreo/Challenges.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-mass-off-compact-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-mass-off-compact-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-covector-expansion-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1-coord-bound-a1/accepted-candidate.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/tmp/moc-independent-audit-5ui0mreo/ParentImplication.lean",
+        "/tmp/moc-independent-audit-5ui0mreo/Challenges.lean",
+        "/tmp/moc-independent-audit-5ui0mreo/Challenges.log"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen/workspace contracts. Local definitions confirm the coefficient norm, pairing, smoothness order, test-form support conditions, representation integrability and mass supremum used throughout. The declaration-name search found no matches in snapshot project/GMT; the two reuses instead have comparator-accepted, identical frozen types and compatible accepted proofs. All names are bare identifiers; the five new names have no conflicting reservations. The prospective dependency graph is acyclic. The split is appropriate: every child contributes to the selected mass estimate, and H1/H2 are supplied by its existing dependencies. Independently read all seven natural proofs. Fresh Lean verification proved all seven exact child types and the exact selected conclusion under its three explicit sibling hypotheses, using only propext, Classical.choice and Quot.sound. Separately, all seven challenge propositions elaborated without child implementations, with only expected challenge-sorry warnings. Inline scalar actions, projections and real powers have the intended types; no matrix-unit construction occurs. The assembly handles infinite measure and empty index sets and obtains a constant independent of W."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "std_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The determinant Kronecker identity, sorting of injective tuples and basis extensionality prove the expansion without invoking the parent or rotated expansion. Zero degree and empty index sets are covered."
+    },
+    {
+      "key": "coord_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The selected coordinate square is a nonnegative summand of the defining norm square; square-root monotonicity gives precisely the stated bound. No dimension hypothesis is missing."
+    },
+    {
+      "key": "covector_eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean agree for arbitrary tuples. Evaluation of std_expansion, the triangle inequality and coord_bound yield the stated finite constant. Both dependencies are necessary inputs in the supplied proof and correctly directed."
+    },
+    {
+      "key": "nvector_pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalization bounds each vector coordinate by one. Applying the linear functional to std_expansion and estimating the finite sum proves the exact conclusion, including the vacuous empty-index case."
+    },
+    {
+      "key": "scalar_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit construction f(x)•θ has the required smoothness, compact support and support inclusion. These establish membership in TestFormOn for arbitrary U, with no unstated openness assumption."
+    },
+    {
+      "key": "remainder_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The proof derives c ≥ 0, constructs an integrable indicator bound on measurable W∖K, checks domination on and off that set, and applies the representation integral estimate. No additional sign assumption on c′ or global finiteness of μ is needed."
+    },
+    {
+      "key": "top_form_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "H1 and H2 are explicit, non-circular hypotheses matching the parent’s sibling outputs. The cutoff choice δ=(ε/(|C|+1))^(m+1), test-form construction, remainder estimate and ε-limit prove the exact conclusion. Positivity of m+1 and all support and sign conditions are addressed."
+    }
+  ],
+  "required_changes": []
+}

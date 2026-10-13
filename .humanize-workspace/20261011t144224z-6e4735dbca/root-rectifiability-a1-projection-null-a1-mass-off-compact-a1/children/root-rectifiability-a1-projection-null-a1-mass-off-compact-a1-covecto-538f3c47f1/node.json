@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1.covector_eval_bound-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1",
+  "depth": 4,
+  "title": "Evaluation bound for a covector at any tuple: |φ(v)| ≤ (Σ_β |dx^β(v)|)·|φ| (Step 4(a) of the parent proof)",
+  "statement": "Let P, n ∈ ℕ, let φ ∈ Covector (Eucl P) n be an n-covector on ℝ^P and let v : Fin n → Eucl P be an n-tuple of vectors of ℝ^P. Then |φ(v)| ≤ (Σ_{β ∈ I(n,P)} |dx^β(v)|)·|φ|. Here I(n,P) = SimonMultiIndex n P is the finite type of order embeddings Fin n ↪o Fin P, dx^β := wedgeCovectors n (fun j => EuclideanSpace.proj (β j)), and |φ| := covectorEuclideanNorm φ is Simon's Euclidean coefficient norm.",
+  "lean_statement": "∀ (P n : ℕ) (φ : Covector (Eucl P) n) (v : Fin n → Eucl P), |φ v| ≤ (∑ β : SimonMultiIndex n P, |wedgeCovectors n (fun j => (EuclideanSpace.proj (β j) : Eucl P →L[ℝ] ℝ)) v|) * covectorEuclideanNorm φ",
+  "lean_name": "rpn_moc_abs_covector_apply_le",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.covector_expansion-a1",
+    "root.compactness_mass_bounds-a1.repr_bound-a1.coord_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.covector_expansion-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-covector-expansion-a1-a1",
+      "result_commit": "6c6b4b2753e8214a3e45619bb0b65d8d553557a5",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_mass_bounds-a1.repr_bound-a1.coord_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-repr-bound-a1-coord-bound-a1-a1",
+      "result_commit": "bc4ced0777075cca0b2e8f7beba5ba914fae595c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-mass-off-compact-a1-covecto-538f3c47f1-a1"
+}

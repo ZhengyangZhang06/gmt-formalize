@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.compact_null-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Shrinking neighbourhoods: μ(W) ≤ C·μ(W∖K) for all W ⊂⊂ U forces μ(K) = 0 (Simon 6, proof of 2.36 after (4))",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open, let K ⊆ U be compact, let μ be a measure on ℝ^P with μ(W) < ∞ for every open W ⊂⊂ U, and let C ∈ [0, ∞) be such that μ(W) ≤ C·μ(W∖K) for every open W ⊂⊂ U. Then μ(K) = 0.",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Eucl P)) (μ : Measure (Eucl P)) (C : ℝ≥0), IsOpen U → IsCompact K → K ⊆ U → (∀ W, CompactlyContainedOpen W U → μ W < ∞) → (∀ W, CompactlyContainedOpen W U → μ W ≤ (C : ℝ≥0∞) * μ (W \\ K)) → μ K = 0",
+  "lean_name": "rpn_compact_null_of_le_mul_diff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-compact-null-a1-a1"
+}

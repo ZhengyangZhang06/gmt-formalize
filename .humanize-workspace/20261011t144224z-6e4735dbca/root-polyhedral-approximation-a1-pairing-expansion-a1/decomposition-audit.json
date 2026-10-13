@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "abbrev Covector|abbrev NVector|abbrev SimonMultiIndex|def wedgeCovectors|theorem wedgeCovectors_apply_det|def euclideanCovectorCoordinate|def covectorEuclideanNorm",
+        "theorem map_perm|ext_alternating",
+        "def sort|theorem monotone_sort",
+        "range_inj_of_wellFoundedLT",
+        "theorem det_eq_zero_of_row_eq_zero|theorem det_one",
+        "ncard_range_of_injective|eq_of_subset_of_ncard_le",
+        "toAlternatingMap_injective|theorem sum_apply|theorem smul_apply",
+        "polyhedral_approx_pairing_wedge_kronecker|polyhedral_approx_pairing_covector_ext|polyhedral_approx_pairing_coordinate_bound",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pairing_decomp_audit_4cupichj/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pairing_decomp_audit_4cupichj/VerifiedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-pairing-expansion-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-pairing-expansion-a1/decomposition-v1.json",
+        "/tmp/pairing_decomp_audit_4cupichj/Contracts.lean",
+        "/tmp/pairing_decomp_audit_4cupichj/VerifiedProofs.lean"
+      ],
+      "conclusion": "The compiler inputs match the frozen project and pinned dependencies; 13 inspected Mathlib files are byte-identical to the snapshot. All three frozen child types pass statement validation and independently elaborate as propositions in the comparator scope before any child implementation. All names are bare identifiers, with no reservations found in the DAG or other branch decompositions. Recompiled scratch proofs following the supplied natural proofs establish every child and the exact selected parent, using only propext, Classical.choice and Quot.sound. Fintype synthesis and the real scalar action were checked; determinant constructions use Matrix.of. The split is appropriate and acyclic: Kronecker duality and coordinate extensionality establish the expansion, linearity establishes the pairing identity, and coordinate_bound supplies the second conjunct. No unaccepted declaration from another branch is reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "wedge_kronecker",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches both prose conclusions and includes all parameters. The determinant formula gives the identity matrix on I. For J ≠ I, finite equal-cardinality ranges and uniqueness of increasing enumeration force a missing row index, yielding a zero row and determinant zero. Matrix.of ensures the intended matrix operations. The proof is complete, non-circular, and covers n = 0 and n > P."
+    },
+    {
+      "key": "covector_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition includes the full coordinate-equality hypothesis. Sorting an injective tuple produces I = v ∘ σ; composition with σ⁻¹ and the permutation-sign rule transfer coordinate equality to every injective basis tuple. Basis extensionality and injectivity of the underlying-alternating-map projection then prove α = β. Every step is justified, including degenerate dimensions, without relying on the parent or siblings."
+    },
+    {
+      "key": "coordinate_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches the prose and uses the specified Euclidean coefficient norm. Strict monotonicity of I identifies c_I² as one summand; all summands are nonnegative. Finset.single_le_sum, square-root monotonicity, and sqrt(c_I²) = |c_I| prove the precise inequality. The supplied proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

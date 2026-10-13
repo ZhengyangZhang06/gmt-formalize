@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "def (Covector|NVector|euclideanCovectorCoordinate|euclideanNVectorCoordinate|covectorEuclideanNorm|IsMeasureRepresentation)|structure GeometricCurrentOn|def TestFormOn|def IsSmoothForm|def CompactlyContainedOpen|abbrev SimonMultiIndex|def SimonMultiIndex",
+        "theorem exists_open_between_and_isCompact_closure|theorem exists_contDiff_support_eq_eq_one_iff|theorem Integrable.bdd_mul\\b|theorem integrableOn_iff_integrable_of_support_subset|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem IntegrableOn.congr_fun\\b|theorem EuclideanSpace.norm_eq|theorem EuclideanSpace.basisFun_apply|def apply\\b",
+        "covectorEuclideanNorm_add|abs_euclideanCovectorCoordinate|euclideanCovectorCoordinate_le|integrableOn_coeff|IntegrableOn.*euclideanNVectorCoordinate",
+        "basisFun_apply|toLp_add",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Proofs.lean > Checks/Proofs-final.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Parent.lean > Checks/Parent-final.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/parent-child-handoff.json",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/Instances.lean",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/Proofs.lean",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/Parent.lean",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/coord_bound_challenge.lean",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/norm_add_le_challenge.lean",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/coeff_integrable_challenge.lean",
+        "/tmp/rb_independent_audit_ohdvjhro/Checks/pairing_bound_challenge.lean"
+      ],
+      "conclusion": "Verified the frozen project and pinned library definitions and source compatibility. No existing coordinate-bound, triangle-inequality, or coefficient-integrability lemma matched the searched project/SimonGMT names. All four unchanged child types passed validation and elaborated in independently generated comparator challenge modules importing only the frozen Submission. Independent formalizations of the supplied proofs, and the selected parent composition from the frozen child and sibling hypotheses, compiled with only propext, Classical.choice, and Quot.sound. The split is appropriate: coefficient integrability and pairing_bound supply a fixed nonnegative error constant on closure V, and norm_add_le supports the mollification estimate yielding the exact selected conclusion. Dependencies are correctly directed and acyclic. All names are bare identifiers, with no collisions among 119 current DAG nodes or other branches' proposed decompositions. The EuclideanSpace annotation selects the intended L² norm; no matrix-unit constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coord_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose. Strict monotonicity identifies the squared coordinate as one nonnegative summand of the defining sum; basisFun_apply and square-root monotonicity finish the bound. The proof is complete, non-circular, and valid for all stated degrees."
+    },
+    {
+      "key": "norm_add_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose without additional hypotheses. The explicitly typed Euclidean coefficient vector has exactly covectorEuclideanNorm as its norm and is additive. Its triangle inequality proves the claim, including empty-index cases, without relying on another proposed theorem."
+    },
+    {
+      "key": "coeff_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are present in both statements. Compactness and openness provide the collar and smooth cutoff; W ⊆ U gives an admissible test form. Representation integrability transfers to the coefficient on the closed, measurable K. The specified smoothness parameter is correct, and no extra assumptions on μ or v are needed."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated integrability and restricted-integral estimate. Continuous evaluation and coord_bound justify bounded multiplication under μ.restrict K. Vanishing off K gives global integrability and equality of integrals; the finite-sum majorant proves the bound. Only the declared coord_bound dependency is used. MeasurableSet K is harmlessly redundant."
+    }
+  ],
+  "required_changes": []
+}
