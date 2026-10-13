@@ -451,6 +451,87 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
+
+/-- A measure `m` on `ℝᴾ` carried by an `n`-dimensional linear subspace `V`, finite on compact
+sets and invariant under the translations by `V`, is a constant multiple of `Hⁿ⌞V` (used for the
+product structure of translation invariant measures in the integer multiplicity part of Simon
+7.2.4, Remark 7.2.5(1)).  The orthogonal projection `π : ℝᴾ → V` pushes `m` forward to a
+translation invariant measure on `V`, finite on compact sets, hence `c • vol_V` by uniqueness of
+Haar measure.  As `m` is carried by `V`, it is the image of `π_# m` under the inclusion
+`V → ℝᴾ`, an isometry, and `μHE[n] = vol_V` on `V`. -/
+theorem Submission.cbr_ci_cp_prod_subspace_haar : ∀ (P n : ℕ) (m : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → m (V : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → m K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → m ((fun x => v + x) ⁻¹' A) = m A) → ∃ c : ℝ≥0∞, m = c • (μHE[n]).restrict (V : Set (Euclid P)) := by
+  intro P n m V hn hVc hcpt hinv
+  subst hn
+  -- the orthogonal projection `π` onto `V` fixes `V` pointwise
+  have hπ : ∀ x ∈ V, ((V.orthogonalProjectionOnto x : V) : Euclid P) = x := fun x hx => by
+    simpa using congrArg Subtype.val (V.orthogonalProjectionOnto_mem_subspace_eq_self ⟨x, hx⟩)
+  have hπm : Measurable V.orthogonalProjectionOnto :=
+    V.orthogonalProjectionOnto.continuous.measurable
+  -- invariance of `m` under the translations by `V`, as an identity of measures
+  have htr : ∀ v ∈ V, m.map (fun x => v + x) = m := fun v hv => by
+    ext A hA
+    rw [Measure.map_apply (measurable_const_add v) hA, hinv v hv A hA]
+  -- `m' = π_# m` is translation invariant on `V`, as `(g + ·) ∘ π = π ∘ (g + ·)` for `g ∈ V`
+  set m' : Measure V := m.map V.orthogonalProjectionOnto with hm'
+  have hinv' : m'.IsAddLeftInvariant := ⟨fun g => by
+    have hcomm : (fun x : V => g + x) ∘ V.orthogonalProjectionOnto =
+        V.orthogonalProjectionOnto ∘ (fun x => (g : Euclid P) + x) := by
+      funext x; simp
+    rw [hm', Measure.map_map (measurable_const_add g) hπm, hcomm,
+      ← Measure.map_map hπm (measurable_const_add _), htr _ g.2]⟩
+  -- `m'` is finite on compact sets, as `π⁻¹ K ⊆ ι K ∪ Vᶜ` and `m Vᶜ = 0`
+  have hfin' : IsFiniteMeasureOnCompacts m' := ⟨fun K hK => by
+    rw [hm', Measure.map_apply hπm hK.isClosed.measurableSet]
+    calc m (V.orthogonalProjectionOnto ⁻¹' K)
+        ≤ m (Subtype.val '' K ∪ (V : Set (Euclid P))ᶜ) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxV : x ∈ V
+          · exact Or.inl ⟨_, hx, hπ x hxV⟩
+          · exact Or.inr hxV
+      _ ≤ m (Subtype.val '' K) + m (V : Set (Euclid P))ᶜ := measure_union_le _ _
+      _ < ∞ := by
+          rw [hVc, add_zero]
+          exact hcpt _ (hK.image continuous_subtype_val)⟩
+  -- uniqueness of Haar measure on `V`
+  obtain ⟨c, hc⟩ : ∃ c : NNReal, m' = c • (volume : Measure V) :=
+    ⟨_, Measure.isAddLeftInvariant_eq_smul m' volume⟩
+  -- `m = ι_# m'` for the inclusion `ι : V → ℝᴾ`, as `ι ∘ π = id` on `V`, which carries `m`
+  have hm : m = m'.map Subtype.val := by
+    rw [hm', Measure.map_map continuous_subtype_val.measurable hπm]
+    conv_lhs => rw [← Measure.map_id (μ := m)]
+    refine Measure.map_congr (measure_mono_null (fun x hx => ?_) hVc)
+    exact fun hxV => hx (hπ x hxV).symm
+  -- `ι_# vol_V = Hⁿ⌞V`, as `μHE[n] = vol_V` on `V` and `ι` is an isometry with range `V`
+  have hvol : (volume : Measure V).map Subtype.val =
+      (μHE[Module.finrank ℝ V]).restrict (V : Set (Euclid P)) := by
+    rw [← InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+      isometry_subtype_coe.map_euclideanHausdorffMeasure, Subtype.range_coe]
+  refine ⟨c, ?_⟩
+  rw [hm, hc, Measure.map_smul _ continuous_subtype_val.aemeasurable, hvol,
+    Measure.coe_nnreal_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
