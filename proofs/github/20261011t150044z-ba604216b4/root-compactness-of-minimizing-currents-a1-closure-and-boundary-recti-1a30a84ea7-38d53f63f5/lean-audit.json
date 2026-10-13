@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2eddb62b6f8da780a09ad19ee46507f7c4cba3747ecc8c7dfbfb936f52e39fd8",
+  "git_delta": {
+    "base_commit": "7669b9158ce9f226c1f8dbd35a350d8015aba57f",
+    "candidate_commit": "a4787115ca215d54479819ca858dd332ca61eb0e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrldvc_setIntegral_le_sub_of_subset",
+    "diff_sha256": "a11be8a6bd44f120e203ae99f30acfd2edc9f8e3840237623d548415badda9fc",
+    "source_sha256": "b7ef60280f176bb851a4bfa4599f9f5e5e4d23530ec5c28de44e4c0aa8226b16",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrldvc_setIntegral_le_sub_of_subset",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (V W : Set (Euclid P)), AEStronglyMeasurable g μ → (∀ᵐ x ∂μ, |g x| ≤ 1) → MeasurableSet V → V ⊆ W → μ W < ∞ → ∫ y in V, g y ∂μ ≤ θ * (μ V).toReal → ∫ y in W, g y ∂μ ≤ (μ W).toReal - (1 - θ) * (μ V).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
