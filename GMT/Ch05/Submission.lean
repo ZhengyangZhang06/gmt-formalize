@@ -666,6 +666,30 @@ theorem dohr_eb_ail_opNorm_sq_le : ∀ m k : ℕ, ∀ Q : Rn m →L[ℝ] Rn k, �
         pow_le_pow_left₀ (norm_nonneg _) hQ 2
     _ = ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 :=
         Real.sq_sqrt (Finset.sum_nonneg (fun a _ => sq_nonneg _))
+/-- Local uniform continuity of the Hessian.  For a `C²` function `F : E → ℝ` and `δ > 0` there is
+`ε > 0` with `|D²F(x)(Q, Q') - D²F(x₀)(Q, Q')| ≤ δ ‖Q‖ ‖Q'‖` whenever `‖x - x₀‖ ≤ ε`.
+`D²F = fderiv ℝ (fderiv ℝ F)` is continuous (`ContDiff.fderiv_right`, `ContDiff.continuous_fderiv`),
+so `‖D²F(x) - D²F(x₀)‖ < δ` near `x₀`, and the bilinear bound `ContinuousLinearMap.le_opNorm₂`
+finishes. -/
+theorem dohr_eb_ail_hessian_local_unif : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x₀ : E, ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ x : E, ‖x - x₀‖ ≤ ε → ∀ Q Q' : E, |fderiv ℝ (fderiv ℝ F) x Q Q' - fderiv ℝ (fderiv ℝ F) x₀ Q Q'| ≤ δ * (‖Q‖ * ‖Q'‖) := by
+  intro E _ _ F hF x₀ δ hδ
+  have hc : Continuous (fderiv ℝ (fderiv ℝ F)) :=
+    (hF.fderiv_right (m := 1) (by norm_num)).continuous_fderiv one_ne_zero
+  obtain ⟨r, hr, hball⟩ :=
+    (Metric.continuousAt_iff (f := fderiv ℝ (fderiv ℝ F)) (a := x₀)).mp hc.continuousAt δ hδ
+  refine ⟨r / 2, half_pos hr, fun x hx Q Q' => ?_⟩
+  have hdist : dist x x₀ < r := by
+    rw [dist_eq_norm]
+    linarith
+  have hlt : ‖fderiv ℝ (fderiv ℝ F) x - fderiv ℝ (fderiv ℝ F) x₀‖ < δ :=
+    lt_of_eq_of_lt (@dist_eq_norm (E →L[ℝ] E →L[ℝ] ℝ) _ _ _).symm (hball hdist)
+  have key := (fderiv ℝ (fderiv ℝ F) x - fderiv ℝ (fderiv ℝ F) x₀).le_opNorm₂ Q Q'
+  simp only [sub_apply, Real.norm_eq_abs] at key
+  calc |fderiv ℝ (fderiv ℝ F) x Q Q' - fderiv ℝ (fderiv ℝ F) x₀ Q Q'|
+      ≤ ‖fderiv ℝ (fderiv ℝ F) x - fderiv ℝ (fderiv ℝ F) x₀‖ * ‖Q‖ * ‖Q'‖ := key
+    _ ≤ δ * (‖Q‖ * ‖Q'‖) := by
+      rw [mul_assoc]
+      exact mul_le_mul_of_nonneg_right hlt.le (by positivity)
 
 end Submission
 
