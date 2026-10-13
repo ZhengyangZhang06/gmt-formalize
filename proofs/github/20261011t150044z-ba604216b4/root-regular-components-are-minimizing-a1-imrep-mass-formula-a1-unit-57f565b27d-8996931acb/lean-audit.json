@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "245e07ca837dd2b6d2ce191fd9719e56f2be7a27505d17fd2fb88bd920ca08ee",
+  "git_delta": {
+    "base_commit": "fb71a03dfa286b76249669f63da2560b33720846",
+    "candidate_commit": "2a16c5a8c0e472a729a36dcbf1d2746c4af759d9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_unit_orientation_pairing",
+    "diff_sha256": "e239b548d3a003f4e96a6e8e16efbc9575e4d402cf103ac05e69c254c2b44c34",
+    "source_sha256": "0ddb952a3892a932a23641a67090564fc3d65a3d040a15e5c51e272786dc62a2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_unit_orientation_pairing",
+      "statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ β = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
