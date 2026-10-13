@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "69cecb299aeede3643be81990fc810034f18a74da7762c093b43fae7af0422ea",
+  "git_delta": {
+    "base_commit": "42f472fb275b3afe0353ec33b194886a3997c4cb",
+    "candidate_commit": "0d407cfb409849d13f4cf15dc8707e93c99c3193",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_tg_weak_limit_gluing",
+    "diff_sha256": "a728698eb429d38aef6009a9e41ca11f427e7d005507b5532667db770ab87cbb",
+    "source_sha256": "efe318c172bc1c748b72c66b5e15c093d1e5a9ab1f938feb292cfccbb3ebde81",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_tg_weak_limit_gluing",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (M E : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (u : ℕ → Euclid P → ℝ) (v D : Euclid P → ℝ), MeasurableSet M → MeasurableSet E → (∀ j, MeasurableSet (S j)) → Pairwise (fun i j => Disjoint (S i) (S j)) → (∀ j, S j ⊆ M) → μ (M \\ ⋃ j, S j) = 0 → IntegrableOn D M μ → (∀ k, AEStronglyMeasurable (u k) (μ.restrict M)) → (∀ k, ∀ᵐ x ∂(μ.restrict M), ‖u k x‖ ≤ D x) → IntegrableOn v (M ∩ E) μ → (∀ j, Tendsto (fun k => ∫ x in S j, u k x ∂μ) atTop (𝓝 (∫ x in S j ∩ E, v x ∂μ))) → Tendsto (fun k => ∫ x in M, u k x ∂μ) atTop (𝓝 (∫ x in M ∩ E, v x ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
