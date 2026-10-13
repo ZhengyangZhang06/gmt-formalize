@@ -1,0 +1,15 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1.ball_formula-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4714",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "7067bb86183fe1048d94c9a1f2584532c106ce7f",
+  "integrated_commit": "",
+  "proof_base_commit": "4cbff0f7aedf9a69292f3a299bb8a94148f1761a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1",
+  "requires": []
+}

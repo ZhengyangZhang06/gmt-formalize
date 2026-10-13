@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14f0dd79fb50274fd35a09c487ca59766a01503bcb46d7fc723c5f1479e8bd65",
+  "git_delta": {
+    "base_commit": "4cbff0f7aedf9a69292f3a299bb8a94148f1761a",
+    "candidate_commit": "7067bb86183fe1048d94c9a1f2584532c106ce7f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_psd_ball_formula",
+    "diff_sha256": "f72b48b9bf3edf45bd6959aee870c9ba625dca6ab77d8acab3fa390d52286e93",
+    "source_sha256": "0b9a43914d3104a5d164e39d2a24502afbf41598ee144483fefb8807d49a2b85",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_psd_ball_formula",
+      "statement": "∀ (P : ℕ) (L : Submodule ℝ (Euclid P)) (μ μ₀ : Measure (Euclid P)), μ₀ (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → μ A = ∫⁻ t in (L : Set (Euclid P)), μ₀ ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ ρ : ℝ, 0 < ρ → μ (ball (t + y) ρ) = ∫⁻ σ : Euclid (Module.finrank ℝ L), μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
