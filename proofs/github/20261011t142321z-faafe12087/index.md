@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/2280 | this PR | root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_of_contdiff_succ-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_bilinear-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.cover_holder_one-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1, root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.holder_loc_sub_sum-a1 |
