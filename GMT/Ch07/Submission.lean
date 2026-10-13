@@ -471,6 +471,31 @@ theorem Submission.cbrldvc_exists_disjoint_closedBall_cover : ∀ (P : ℕ) (μ 
   obtain ⟨t, r, ht, htE, hr, hμ, hdisj⟩ := Besicovitch.exists_disjoint_closedBall_covering_ae μ
     (fun x => {ρ | closedBall x ρ ⊆ W ∧ Q x ρ}) E hf (fun _ => 1) fun _ _ => zero_lt_one
   exact ⟨t, r, ht, htE, fun x hx => ⟨(hr x hx).2.1, (hr x hx).1.1, (hr x hx).1.2⟩, hdisj, hμ⟩
+/-- **Summation over disjoint sets** (step 5 of the lower density bound used for Simon 7.2.4):
+if `B(x)`, `x ∈ t`, are countably many disjoint measurable sets with `V = ⋃_{x ∈ t} B(x)` of finite
+measure, `g` is integrable on `V` and `∫_{B(x)} g dμ ≤ θ μ(B(x))` for every `x ∈ t`, then
+`∫_V g dμ ≤ θ μ(V)`.  Reindex by the countable subtype `↥t`; countable additivity gives
+`∑ᵢ ∫_{B(i)} g dμ = ∫_V g dμ` and `∑ᵢ μ(B(i)) = μ(V) < ∞`, so the real series `∑ᵢ θ μ(B(i))`
+converges to `θ μ(V)`, and the two series compare term by term (no sign condition on `θ`). -/
+theorem Submission.cbrldvc_setIntegral_biUnion_le_mul_measure : ∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (t : Set (Euclid P)) (B : Euclid P → Set (Euclid P)), t.Countable → (∀ x ∈ t, MeasurableSet (B x)) → t.PairwiseDisjoint B → μ (⋃ x ∈ t, B x) < ∞ → IntegrableOn g (⋃ x ∈ t, B x) μ → (∀ x ∈ t, ∫ y in B x, g y ∂μ ≤ θ * (μ (B x)).toReal) → ∫ y in ⋃ x ∈ t, B x, g y ∂μ ≤ θ * (μ (⋃ x ∈ t, B x)).toReal := by
+  intro P μ g θ t B ht hB hd hfin hg hle
+  -- reindex `⋃ x ∈ t, B x` as `⋃ i : t, B i` over the countable subtype
+  have : Countable t := ht.to_subtype
+  have hBi : ∀ i : t, MeasurableSet (B i) := fun i => hB i i.2
+  have hdi : Pairwise (Disjoint on fun i : t => B i) :=
+    fun i j hij => hd i.2 j.2 (Subtype.coe_injective.ne hij)
+  rw [biUnion_eq_iUnion] at hfin hg ⊢
+  -- countable additivity of the integral
+  have hint : HasSum (fun i : t => ∫ y in B i, g y ∂μ) (∫ y in ⋃ i : t, B i, g y ∂μ) :=
+    hasSum_integral_iUnion hBi hdi hg
+  -- countable additivity of the measure, read in `ℝ`
+  have hμ : μ (⋃ i : t, B i) = ∑' i : t, μ (B i) := measure_iUnion hdi hBi
+  have hfin' : ∑' i : t, μ (B i) ≠ ∞ := hμ ▸ hfin.ne
+  have hmeas : HasSum (fun i : t => (μ (B i)).toReal) (μ (⋃ i : t, B i)).toReal := by
+    rw [hμ, ENNReal.tsum_toReal_eq fun i => ENNReal.ne_top_of_tsum_ne_top hfin' i]
+    exact ENNReal.hasSum_toReal hfin'
+  -- compare the two series term by term
+  exact hasSum_le (fun i : t => hle i i.2) hint (hmeas.mul_left θ)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
