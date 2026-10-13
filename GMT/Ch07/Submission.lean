@@ -563,6 +563,61 @@ theorem Submission.rsd_cmr_ir_blowUp_image_measure : ∀ (P n : ℕ) (x : Euclid
   congr 2
   simp [abs_of_pos hr]
 
+/-- **Small-scale upper bound at an approximate tangent point**: if `Q` is the approximate tangent
+space of `M` at `x` (Simon Ch. 3, 1.4), `Hⁿ(M) < ∞`, and `f ∈ C_c(ℝᴾ)` satisfies `f ≥ 0` and
+`f ≥ 1` on the measurable set `U`, then `Hⁿ(M ∩ η_{x,r}⁻¹(U)) ≤ t rⁿ` for all small `r > 0`
+whenever `∫_Q f dHⁿ < t`.  Indeed `Hⁿ(η_{x,r}(M) ∩ U) ≤ ∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ`, and
+`η_{x,r}(M) ∩ U = η_{x,r}(M ∩ η_{x,r}⁻¹(U))` has measure `r⁻ⁿ Hⁿ(M ∩ η_{x,r}⁻¹(U))`. -/
+theorem Submission.cbrr_tcd_blowUp_preimage_le_of_testFunction : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (U : Set (Euclid P)) (f : CompactlySupportedContinuousMap (Euclid P) ℝ), μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → MeasurableSet U → (∀ y, 0 ≤ f y) → (∀ y ∈ U, 1 ≤ f y) → ∀ t : ℝ≥0∞, ENNReal.ofReal (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]) < t → ∀ᶠ r in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' U) ≤ t * ENNReal.ofReal (r ^ n) := by
+  intro P n M x Q U f hM hT hU hf0 hfU t ht
+  -- `t = ∞`: the right-hand side is `∞` for every `r > 0`.
+  rcases eq_or_ne t ∞ with rfl | htop
+  · filter_upwards [self_mem_nhdsWithin] with r hr
+    rw [ENNReal.top_mul (ENNReal.ofReal_pos.2 (pow_pos hr n)).ne']
+    exact le_top
+  -- `∫_Q f dHⁿ < t`, and `∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ`, so eventually `∫_{η_{x,r}(M)} f < t`.
+  have hL : ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] < t.toReal :=
+    (ENNReal.ofReal_lt_iff_lt_toReal (integral_nonneg hf0) htop).1 ht
+  filter_upwards [self_mem_nhdsWithin, (hT.2 f).eventually (gt_mem_nhds hL)] with r hr hI
+  have hr0 : (0 : ℝ) < r := hr
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r
+  -- `Hⁿ(η_{x,r}(M)) = r⁻ⁿ Hⁿ(M) < ∞`, so `f` is integrable for `Hⁿ⌞η_{x,r}(M)`.
+  have hfin : μHE[n] (η '' M) ≠ ∞ := by
+    rw [Submission.rsd_cmr_ir_blowUp_image_measure P n x r M hr0]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hM
+  have : IsFiniteMeasure (μHE[n].restrict (η '' M)) := isFiniteMeasure_restrict.2 hfin
+  have hint : Integrable f (μHE[n].restrict (η '' M)) := f.integrable
+  -- `Hⁿ(η_{x,r}(M) ∩ U) = ∫ 1_U d(Hⁿ⌞η_{x,r}(M)) ≤ ∫_{η_{x,r}(M)} f dHⁿ ≤ t`.
+  have hle : μHE[n] (η '' M ∩ U) ≤ t := by
+    calc μHE[n] (η '' M ∩ U) = μHE[n].restrict (η '' M) U := by
+          rw [Measure.restrict_apply hU, Set.inter_comm]
+      _ = ∫⁻ y, U.indicator 1 y ∂(μHE[n].restrict (η '' M)) := (lintegral_indicator_one hU).symm
+      _ ≤ ∫⁻ y, ENNReal.ofReal (f y) ∂(μHE[n].restrict (η '' M)) := by
+          refine lintegral_mono fun y => ?_
+          by_cases hy : y ∈ U
+          · rw [Set.indicator_of_mem hy, Pi.one_apply]
+            exact ENNReal.one_le_ofReal.2 (hfU y hy)
+          · rw [Set.indicator_of_notMem hy]
+            exact zero_le
+      _ = ENNReal.ofReal (∫ y in η '' M, f y ∂μHE[n]) :=
+          (ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall hf0)).symm
+      _ ≤ ENNReal.ofReal t.toReal := ENNReal.ofReal_le_ofReal hI.le
+      _ = t := ENNReal.ofReal_toReal htop
+  -- `η_{x,r}(M) ∩ U = η_{x,r}(M ∩ η_{x,r}⁻¹(U))`, whose measure is `r⁻ⁿ Hⁿ(M ∩ η_{x,r}⁻¹(U))`.
+  have hscale : μHE[n] (η '' M ∩ U) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] (M ∩ η ⁻¹' U) := by
+    rw [← Set.image_inter_preimage]
+    exact Submission.rsd_cmr_ir_blowUp_image_measure P n x r _ hr0
+  have hcancel : ENNReal.ofReal (r ^ n) * ENNReal.ofReal (r⁻¹ ^ n) = 1 := by
+    rw [← ENNReal.ofReal_mul (pow_nonneg hr0.le n), ← mul_pow, mul_inv_cancel₀ hr0.ne', one_pow,
+      ENNReal.ofReal_one]
+  calc μHE[n] (M ∩ η ⁻¹' U)
+      = ENNReal.ofReal (r ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] (M ∩ η ⁻¹' U)) := by
+        rw [← mul_assoc, hcancel, one_mul]
+    _ ≤ ENNReal.ofReal (r ^ n) * t := by
+        rw [← hscale]
+        gcongr
+    _ = t * ENNReal.ofReal (r ^ n) := mul_comm _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
