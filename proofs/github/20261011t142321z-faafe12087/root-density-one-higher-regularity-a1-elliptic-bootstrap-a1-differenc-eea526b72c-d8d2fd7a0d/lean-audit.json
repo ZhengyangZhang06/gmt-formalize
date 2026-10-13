@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc6e25b6997051c0aeefca678100dc27aeb79d993bbad377b61ee7534ee89ab6",
+  "git_delta": {
+    "base_commit": "e027ea66a89a90c610635dcdbfe65a2d6844d614",
+    "candidate_commit": "0f7c3e9b2104c096d6abe17564e3f5fb68bb436c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_dql_interpolation_fderiv_bound",
+    "diff_sha256": "9f53f7e701341519eb933a80710c43386191ed60ac4692089b6710031a783ce3",
+    "source_sha256": "6eae8ed78542cf675d7f24e8097cadf9f1d12939d3e4310b45513314ab8453bf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_dql_interpolation_fderiv_bound",
+      "statement": "∀ (n ℓ : ℕ) (h : Rn n → Rn ℓ) (x : Rn n) (r t α L S : ℝ), 0 < t → t ≤ r → 0 < α → 0 ≤ L → (∀ y ∈ closedBall x (2 * r), DifferentiableAt ℝ h y) → (∀ y ∈ closedBall x (2 * r), ∀ y' ∈ closedBall x (2 * r), ‖fderiv ℝ h y - fderiv ℝ h y'‖ ≤ L * ‖y - y'‖ ^ α) → (∀ y ∈ closedBall x (2 * r), ‖h y‖ ≤ S) → ∀ y ∈ closedBall x r, ‖fderiv ℝ h y‖ ≤ 2 * S / t + L * t ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
