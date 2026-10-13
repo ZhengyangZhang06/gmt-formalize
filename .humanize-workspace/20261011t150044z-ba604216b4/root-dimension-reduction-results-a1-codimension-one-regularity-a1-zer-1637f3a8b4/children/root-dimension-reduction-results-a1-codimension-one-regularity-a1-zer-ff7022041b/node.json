@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1.divergence_lift-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+  "depth": 5,
+  "title": "Divergence fields lift to normalised test forms near a flat graph: dω(G(v))(DG(v)e) = K⁻¹·div φ(v) with |ω| ≤ 1 (parent Part A)",
+  "statement": "Let n, k ∈ ℕ, P := n + 1 + k, and let ι : ℝ^{n+1} → ℝ^P and ι' : ℝ^k → ℝ^P be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w and such that every y ∈ ℝ^P equals ιv + ι'w for some v, w (ℝ^d = Euclid d). Then there is a constant K > 0 with the following property. For all real h > 0 and R, and every C^∞ vector field φ : ℝ^{n+1} → ℝ^{n+1} (ContDiff ℝ (⊤ : ℕ∞) φ) with compact support, tsupport φ ⊆ ball(0, R) and |φ(v)| ≤ 1 for all v, there is a test form ω ∈ 𝒟^n(ℝ^P) (ω : TestFormOn univ n, i.e. a C^∞ n-form on ℝ^P with compact support) such that: (i) tsupport ω ⊆ ball(0, R + 2h) ⊆ ℝ^P; (ii) covectorEuclideanNorm(ω(y)) ≤ 1 for every y ∈ ℝ^P; (iii) for every map g : ℝ^{n+1} → ℝ^k and every v ∈ ℝ^{n+1} such that g is differentiable at v and |g(v)| < h, dω(ιv + ι'g(v))(DG(v)e_0, …, DG(v)e_n) = K⁻¹·div φ(v), where G(w) := ιw + ι'g(w), DG(v) := fderiv ℝ G v, e_j := EuclideanSpace.single j 1, dω := exteriorDerivative ω and div φ(v) := trace Dφ(v) (LinearMap.trace of (fderiv ℝ φ v)).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → ∃ K : ℝ, 0 < K ∧ ∀ h R : ℝ, 0 < h → ∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 R → (∀ v, ‖φ v‖ ≤ 1) → ∃ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 (R + 2 * h) ∧ (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (n + 1 + k)) n) y) ≤ 1) ∧ ∀ (g : Euclid (n + 1) → Euclid k) (v : Euclid (n + 1)), DifferentiableAt ℝ g v → ‖g v‖ < h → exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι v + ι' (g v)) (fun j => fderiv ℝ (fun w => ι w + ι' (g w)) v (EuclideanSpace.single j (1 : ℝ))) = K⁻¹ * LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ v).toLinearMap",
+  "lean_name": "codim1_zsl_fl_divergence_lift",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.coordinate_covector-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.graph_pullback_extderiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.coordinate_covector-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5474b3f56d-a1",
+      "result_commit": "dcc3f4b7fc0f6beb359e7585fbca8b266cc0f38f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.graph_pullback_extderiv-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-3b2bcbaf8e-a1",
+      "result_commit": "42e24164cfdc5445c7426ab7ee11003f8faee961",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-ff7022041b-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.cube_average-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Cube-average approximation under a translation estimate (Kolmogorov–Riesz averaging step; parent step 5)",
+  "statement": "Let m ∈ ℕ. There is K ≥ 0 with the following property. Let F ⊆ ℝ^m be measurable and R, C, δ ∈ ℝ with C ≥ 0, δ > 0 and δ√m ≤ 1. Suppose L^m(((F − h) Δ F) ∩ B_R(0)) ≤ C|h| for every h ∈ ℝ^m with |h| ≤ 1, where F − h := {v : v + h ∈ F}. Then ∫⁻_{B_R(0)} |1_F(v) − L^m(F ∩ Q_δ(v))/δ^m| dv ≤ KCδ. Here Q_δ(v) := {w : ⌊w_j/δ⌋ = ⌊v_j/δ⌋ for all j} is the half-open grid cube of side δ containing v, the average uses toReal, and the right side is ofReal(KCδ).",
+  "lean_statement": "∀ (m : ℕ), ∃ K : ℝ, 0 ≤ K ∧ ∀ (F : Set (Euclid m)) (R C δ : ℝ), MeasurableSet F → 0 ≤ C → 0 < δ → δ * Real.sqrt m ≤ 1 → (∀ h : Euclid m, ‖h‖ ≤ 1 → volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal (C * ‖h‖)) → ∫⁻ v in ball (0 : Euclid m) R, ‖F.indicator (fun _ => (1 : ℝ)) v - (volume (F ∩ {w : Euclid m | ∀ j, ⌊w j / δ⌋ = ⌊v j / δ⌋})).toReal / δ ^ m‖ₑ ≤ ENNReal.ofReal (K * C * δ)",
+  "lean_name": "codim1_zsl_pc_cube_average_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-712a939051-a1"
+}

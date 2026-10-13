@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollify_field-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Mollifying a test field: ρ̌ ⋆ ψ is admissible in a slightly larger ball and ∫(ρ ⋆ 1_F)·div ψ = ∫_F div(ρ̌ ⋆ ψ) (Simon Ch. 2, 2.5)",
+  "statement": "Let m ∈ ℕ and r, ε ∈ ℝ, and let F ⊆ ℝ^m be measurable. Let ρ : ℝ^m → ℝ be C^∞ with ρ ≥ 0, ρ(z) = 0 for |z| > ε, and ∫ρ = 1. Let ψ : ℝ^m → ℝ^m be C^∞ with compact support, tsupport ψ ⊆ B_r(0) and |ψ| ≤ 1. Then there is a C^∞ vector field ψ' with compact support, tsupport ψ' ⊆ B_{r+ε}(0) and |ψ'| ≤ 1, such that ∫ (∫ρ(z)1_F(v − z) dz)·div ψ(v) dv = ∫_F div ψ'(w) dw. Here div = trace ∘ D.",
+  "lean_statement": "∀ (m : ℕ) (F : Set (Euclid m)) (ρ : Euclid m → ℝ) (ψ : Euclid m → Euclid m) (r ε : ℝ), MeasurableSet F → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → (∀ z, ε < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid m) r → (∀ v, ‖ψ v‖ ≤ 1) → ∃ ψ' : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) ψ' ∧ HasCompactSupport ψ' ∧ tsupport ψ' ⊆ ball (0 : Euclid m) (r + ε) ∧ (∀ v, ‖ψ' v‖ ≤ 1) ∧ ∫ v, (∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap = ∫ w in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ' w).toLinearMap",
+  "lean_name": "codim1_zsl_pc_mollify_test_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-720dd6caae-a1"
+}
