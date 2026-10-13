@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -704,6 +705,85 @@ theorem Submission.pit_integral_closedBall_rescale_tendsto : ∀ (n : ℕ) (h : 
   refine hlim'.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact (key r hr).symm
+
+/-- **Approximate tangent planes of a bi-Lipschitz piece image** (Simon Ch. 3, 1.4, by the density
+argument of Theorem 1.6): if `g : ℝⁿ → ℝᴾ` is `L`-Lipschitz, `A` is Borel,
+`c‖a − a'‖ ≤ ‖g(a) − g(a')‖` on `A` (`c > 0`) and `g` is differentiable with injective derivative
+on `A`, then for a.e. `b ∈ A`, `g(A)` has approximate tangent space `range Dg(b)` at `g(b)`.
+At a density point `b` of `A` that is a Lebesgue point of the Jacobian `0 ≤ J_g ≤ Lⁿ`, the
+injective area formula turns the blow-up integrals into
+`∫ 1_A(b + rv) J_g(b + rv) f(r⁻¹(g(b + rv) − g(b))) dv`, which tends to
+`J_g(b) ∫ f(Dg(b)v) dv = ∫_{range Dg(b)} f dHⁿ`. -/
+theorem Submission.idtp_caf_piece_image_approxTangent_ae : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → ∀ᵐ a ∂(volume.restrict A), HasApproximateTangentSpaceAt n (g '' A) (g a) (LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n g A L c _ hg hA hc hco hdiff
+  -- the area Jacobian `J = J_g` is Borel and nonnegative
+  set J : Euclid n → ℝ := Poincare.SimonGMT.Chapter02.areaJacobianAt g with hJ_def
+  have hJm : Measurable J := Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt g
+  have hJ0 : ∀ a, 0 ≤ J a := Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg g
+  -- `Hⁿ(Dg(a)(S)) = J(a) λ(S)` for every `a` and every `S`
+  have hlin : ∀ (a : Euclid n) (S : Set (Euclid n)),
+      μHE[n] (fderiv ℝ g a '' S) = ENNReal.ofReal (J a) * volume S := by
+    intro a S
+    have h := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
+      (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P) S
+    rw [finrank_euclideanSpace_fin, ContinuousLinearMap.coe_coe] at h
+    rw [h, hJ_def, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+  -- `J ≤ Lⁿ`: `Dg(a)` is `L`-Lipschitz, so `J(a) λ(B̄₁(0)) = Hⁿ(Dg(a)(B̄₁(0))) ≤ Lⁿ λ(B̄₁(0))`
+  have hJL : ∀ a, J a ≤ (L : ℝ) ^ n := by
+    intro a
+    have hTL : LipschitzWith L (fderiv ℝ g a) :=
+      (fderiv ℝ g a).lipschitzWith.weaken (by
+        rw [← NNReal.coe_le_coe, coe_nnnorm]
+        exact norm_fderiv_le_of_lipschitz ℝ hg)
+    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hTL.lipschitzOnWith (s := closedBall (0 : Euclid n) 1))
+    rw [hlin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at hle
+    have hle' := (ENNReal.mul_le_mul_iff_left
+      (measure_closedBall_pos volume (0 : Euclid n) one_pos).ne' measure_closedBall_lt_top.ne).1 hle
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_pow NNReal.zero_le_coe,
+      ENNReal.ofReal_le_ofReal_iff (pow_nonneg NNReal.zero_le_coe n)] at hle'
+    exact hle'
+  -- `g` is injective on `A`, so the injective Lipschitz area formula holds on `A`
+  have hinj : InjOn g A := by
+    intro a ha a' ha' h
+    have h1 := hco a ha a' ha'
+    rw [h, sub_self, norm_zero, ← mul_zero c] at h1
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (le_of_mul_le_mul_left h1 hc))
+  have harea : ∀ φ : Euclid P → ℝ≥0∞,
+      ∫⁻ y in g '' A, φ y ∂μHE[n] = ∫⁻ x in A, ENNReal.ofReal (J x) * φ (g x) ∂volume := by
+    intro φ
+    have h := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hg hA hinj φ
+    rw [finrank_euclideanSpace_fin] at h
+    exact h
+  -- a.e. point of `A` is a density point of `A` and a Lebesgue point of the bounded Borel `J`
+  have hdens := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (Euclid n)) A
+  have hJloc : LocallyIntegrable J volume :=
+    (locallyIntegrable_const ((L : ℝ) ^ n)).mono hJm.aestronglyMeasurable
+      (Eventually.of_forall fun a => by
+        rw [Real.norm_of_nonneg (hJ0 a), Real.norm_of_nonneg (pow_nonneg NNReal.zero_le_coe n)]
+        exact hJL a)
+  have hleb : ∀ᵐ b ∂(volume : Measure (Euclid n)),
+      Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [(Besicovitch.vitaliFamily
+      (volume : Measure (Euclid n))).ae_tendsto_average_norm_sub hJloc] with b hb
+    exact hb.comp (Besicovitch.tendsto_filterAt volume b)
+  filter_upwards [ae_restrict_mem hA, hdens, ae_restrict_of_ae hleb] with b hbA hbdens hbleb
+  obtain ⟨hgb, hinjb⟩ := hdiff b hbA
+  have hcob : ∀ a ∈ A, c * ‖a - b‖ ≤ ‖g a - g b‖ := fun a ha => hco a ha b hbA
+  -- at a density point, `c‖v‖ ≤ ‖Dg(b)v‖`
+  have hγ := Submission.pit_fderiv_lower_bound_of_density P n g A c b hc hcob hgb hbdens
+  refine ⟨?_, fun f => ?_⟩
+  · rw [LinearMap.finrank_range_of_inj hinjb, finrank_euclideanSpace_fin]
+  · -- `∫_{range Dg(b)} f dHⁿ = J(b) ∫ f(Dg(b)v) dv`
+    rw [Submission.pit_setIntegral_range_linear P n (fderiv ℝ g b) (J b) f (hJ0 b) (hlin b)
+      (map_continuous f)]
+    -- the rescaled area integrals converge to it, and equal the blow-up integrals for `r > 0`
+    refine (Submission.idtp_caf_rescaled_integral_tendsto P n g A J ((L : ℝ) ^ n) c b f
+      hg.continuous hA hJm (fun a => ⟨hJ0 a, hJL a⟩) hc hcob hgb hγ hbdens hbleb
+      (map_continuous f) f.hasCompactSupport).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n g A J b r f hg.continuous hA
+      hJm hJ0 harea hr (map_continuous f)).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
