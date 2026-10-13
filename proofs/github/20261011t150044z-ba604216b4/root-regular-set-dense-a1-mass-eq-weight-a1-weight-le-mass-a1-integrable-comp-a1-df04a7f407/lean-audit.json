@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d24d97a2876bc5fc3a77b5fd063338a9df8427d9a29b5ac1cf99295b1501747f",
+  "git_delta": {
+    "base_commit": "3193cd9eb7c6d3f466d04fa3e5e033b517260b4f",
+    "candidate_commit": "5eeccfeeb46de8d05fcbb6904c1bab6beaf146d1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_wlm_integrable_clm_comp",
+    "diff_sha256": "416fae796f84bd43d6ea0e55314708e743923ffb4e8f518632c67d17b2d5a3a8",
+    "source_sha256": "ac41ac14c01d94372a1a85f1e25a926ee90ed39bb6f195f5117ac51dc30bdc78",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_wlm_integrable_clm_comp",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (J : MultiVector P n →L[ℝ] Covector (Euclid P) n), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → (∀ᵐ x ∂ν, ‖ξ x‖ ≤ 1) → Integrable (fun x => J (ξ x)) ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
