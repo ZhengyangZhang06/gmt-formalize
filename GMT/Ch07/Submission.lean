@@ -919,6 +919,255 @@ theorem Submission.dorag_gc_graph_tangent_ae : ∀ (n k : ℕ) (U W : Set (Eucli
   have hΦW : Φ v ∈ W := (hgeo v hvB).2
   obtain ⟨hdiff, hT⟩ := htv hΦW v rfl
   exact ⟨hdiff, hT, fun S s₀ K hs₀ hS => (hdv hΦW S s₀ K hs₀ hS).trans hT⟩
+theorem Submission.dorag_gc_graph_slope_le_projection : ∀ (n k P : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (A₁ A₂ : Euclid n →L[ℝ] Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ‖A₁‖ ≤ 1 / 4 → ‖A₂‖ ≤ 1 / 4 → ∑ i : Fin n, ‖(A₁ - A₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * ∑ j : Fin P, ‖(LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₁.toLinearMap)).starProjection (EuclideanSpace.single j (1 : ℝ)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₂.toLinearMap)).starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+  intro n k P ι ι' A₁ A₂ horth hA₁ hA₂
+  set T₁ := LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₁.toLinearMap) with hT₁
+  set T₂ := LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₂.toLinearMap) with hT₂
+  set X : Euclid P →L[ℝ] Euclid P := T₁.starProjection - T₂.starProjection with hX
+  have pyth : ∀ (v : Euclid n) (b : Euclid k), ‖ι v + ι' b‖ ^ 2 = ‖v‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro v b
+    rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]; ring
+  have hXsa : ∀ u u' : Euclid P, inner ℝ (X u) u' = inner ℝ u (X u') := by
+    intro u u'
+    simp only [hX, sub_apply, inner_sub_left, inner_sub_right,
+      Submodule.inner_starProjection_left_eq_right]
+  set q : Euclid n → Euclid P := fun x => ι x + ι' (A₁ x) with hq
+  -- pointwise estimate
+  have hpt : ∀ x, ‖(A₁ - A₂) x‖ ^ 2 ≤ 17 / 16 * ‖X (q x)‖ ^ 2 := by
+    intro x
+    have hqT₁ : q x ∈ T₁ := ⟨x, by simp [hq]⟩
+    have hP₁ : T₁.starProjection (q x) = q x := (Submodule.starProjection_eq_self_iff).2 hqT₁
+    have hmem : T₂.starProjection (q x) ∈ T₂ := Submodule.starProjection_apply_mem _ _
+    obtain ⟨w, hw⟩ := hmem
+    have hw' : T₂.starProjection (q x) = ι w + ι' (A₂ w) := by
+      rw [← hw]; simp
+    have hXq : X (q x) = ι (x - w) + ι' (A₁ x - A₂ w) := by
+      rw [hX, sub_apply, hP₁, hw']
+      simp only [hq, map_sub]; abel
+    have hnorm : ‖X (q x)‖ ^ 2 = ‖x - w‖ ^ 2 + ‖A₁ x - A₂ w‖ ^ 2 := by rw [hXq, pyth]
+    have htri : ‖(A₁ - A₂) x‖ ≤ ‖A₁ x - A₂ w‖ + 1 / 4 * ‖x - w‖ := by
+      have hsplit : (A₁ - A₂) x = (A₁ x - A₂ w) + A₂ (w - x) := by
+        simp only [sub_apply, map_sub]; abel
+      rw [hsplit]
+      calc ‖(A₁ x - A₂ w) + A₂ (w - x)‖ ≤ ‖A₁ x - A₂ w‖ + ‖A₂ (w - x)‖ := norm_add_le _ _
+        _ ≤ ‖A₁ x - A₂ w‖ + ‖A₂‖ * ‖w - x‖ := by gcongr; exact A₂.le_opNorm _
+        _ ≤ ‖A₁ x - A₂ w‖ + 1 / 4 * ‖x - w‖ := by
+            rw [norm_sub_rev w x]; gcongr
+    rw [hnorm]
+    have h0 := norm_nonneg ((A₁ - A₂) x)
+    nlinarith [norm_nonneg (A₁ x - A₂ w), norm_nonneg (x - w),
+      sq_nonneg (‖A₁ x - A₂ w‖ / 4 - ‖x - w‖), mul_self_le_mul_self h0 htri]
+  -- frame bound
+  have hframe : ∀ y : Euclid P, ∑ i : Fin n, (inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) y) ^ 2
+      ≤ 17 / 16 * ‖y‖ ^ 2 := by
+    intro y
+    set a : Euclid n := (ι.toContinuousLinearMap.adjoint) y with ha
+    set b : Euclid k := (ι'.toContinuousLinearMap.adjoint) y with hb
+    set c : Euclid n := (A₁.adjoint) b with hc
+    have hcoord : ∀ i, inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) y = (a + c) i := by
+      intro i
+      have e1 : inner ℝ (ι (EuclideanSpace.single i (1 : ℝ))) y =
+          inner ℝ (EuclideanSpace.single i (1 : ℝ)) a := by
+        rw [ha, ContinuousLinearMap.adjoint_inner_right]; rfl
+      have e2 : inner ℝ (ι' (A₁ (EuclideanSpace.single i (1 : ℝ)))) y =
+          inner ℝ (EuclideanSpace.single i (1 : ℝ)) c := by
+        rw [hc, ContinuousLinearMap.adjoint_inner_right, hb,
+          ContinuousLinearMap.adjoint_inner_right]; rfl
+      simp only [hq, inner_add_left, e1, e2, EuclideanSpace.inner_single_left, map_one,
+        one_mul, PiLp.add_apply]
+    have hsum : ∑ i : Fin n, (inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) y) ^ 2 = ‖a + c‖ ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [hcoord i, Real.norm_eq_abs, sq_abs]
+    have hcb : ‖c‖ ≤ 1 / 4 * ‖b‖ := by
+      calc ‖c‖ ≤ ‖A₁.adjoint‖ * ‖b‖ := ContinuousLinearMap.le_opNorm _ _
+        _ ≤ 1 / 4 * ‖b‖ := by
+            gcongr
+            rw [LinearIsometryEquiv.norm_map]; exact hA₁
+    have hab : ‖a‖ ^ 2 + ‖b‖ ^ 2 ≤ ‖y‖ ^ 2 := by
+      set u := ι a + ι' b with hu
+      have hu2 : ‖u‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := pyth a b
+      have huy : inner ℝ u y = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+        rw [hu, inner_add_left]
+        have e1 : inner ℝ (ι a) y = inner ℝ a a := by
+          rw [show inner ℝ (ι a) y = inner ℝ (ι.toContinuousLinearMap a) y from rfl,
+            ← ContinuousLinearMap.adjoint_inner_right]
+        have e2 : inner ℝ (ι' b) y = inner ℝ b b := by
+          rw [show inner ℝ (ι' b) y = inner ℝ (ι'.toContinuousLinearMap b) y from rfl,
+            ← ContinuousLinearMap.adjoint_inner_right]
+        rw [e1, e2, real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+      have hle : ‖u‖ ^ 2 ≤ ‖u‖ * ‖y‖ := by
+        rw [hu2, ← huy]; exact real_inner_le_norm u y
+      have hu0 := norm_nonneg u
+      have hy0 := norm_nonneg y
+      have : ‖u‖ ≤ ‖y‖ := by
+        rcases hu0.lt_or_eq with h | h
+        · nlinarith
+        · rw [← h]; exact hy0
+      rw [← hu2]; nlinarith
+    rw [hsum]
+    have hn := norm_add_le a c
+    nlinarith [norm_nonneg a, norm_nonneg b, norm_nonneg c, norm_nonneg (a + c),
+      sq_nonneg (‖a‖ / 4 - ‖b‖), mul_self_le_mul_self (norm_nonneg (a + c)) hn]
+  -- summation
+  have hpar : ∀ v : Euclid P, ‖v‖ ^ 2 = ∑ j : Fin P, (inner ℝ v (EuclideanSpace.single j (1 : ℝ))) ^ 2 := by
+    intro v
+    rw [EuclideanSpace.norm_sq_eq]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [EuclideanSpace.inner_single_right]; simp
+  calc ∑ i : Fin n, ‖(A₁ - A₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+      ≤ ∑ i : Fin n, 17 / 16 * ‖X (q (EuclideanSpace.single i (1 : ℝ)))‖ ^ 2 :=
+        Finset.sum_le_sum fun i _ => hpt _
+    _ = 17 / 16 * ∑ j : Fin P, ∑ i : Fin n,
+          (inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) (X (EuclideanSpace.single j (1 : ℝ)))) ^ 2 := by
+        rw [← Finset.mul_sum, Finset.sum_comm]
+        congr 1
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [hpar]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hXsa]
+    _ ≤ 17 / 16 * ∑ j : Fin P, 17 / 16 * ‖X (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+        gcongr with j
+        exact hframe _
+    _ ≤ 4 * ∑ j : Fin P, ‖T₁.starProjection (EuclideanSpace.single j (1 : ℝ)) -
+          T₂.starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+        rw [← Finset.mul_sum, ← mul_assoc]
+        have hs : 0 ≤ ∑ j : Fin P, ‖X (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+          Finset.sum_nonneg fun j _ => sq_nonneg _
+        have : ∑ j : Fin P, ‖X (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 = ∑ j : Fin P,
+            ‖T₁.starProjection (EuclideanSpace.single j (1 : ℝ)) -
+              T₂.starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+          simp [hX]
+        rw [← this]
+        nlinarith
+
+theorem Submission.dorag_gc_graph_slope_campanato : ∀ (n k : ℕ) (U W : Set (Euclid (n + k))) (R : IMRep U n) (κ : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (z : Euclid (n + k)) (a s₀ K : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t)) → μHE[n] ((R.measure.support ∩ W) \ R.carrier) = 0 → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), ∀ v : Euclid n, x = z + ι v + ι' (f v) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ 1 / 4 * ‖v - w‖) → f 0 = 0 → 0 < a → 0 < s₀ → closedBall z a ⊆ W → R.measure.support ∩ closedBall z a = range (fun v => z + ι v + ι' (f v)) ∩ closedBall z a → (∀ ξ ∈ R.measure.support ∩ closedBall z a, ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ ∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall ξ s, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (K * s ^ (n + 1))) → ∃ C s₁ : ℝ, 0 ≤ C ∧ 0 < s₁ ∧ ∀ᵐ v ∂volume, v ∈ ball (0 : Euclid n) (a / 2) → DifferentiableAt ℝ f v ∧ ∀ s : ℝ, 0 < s → s ≤ s₁ → ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal (C * s ^ (n + 1)) := by
+  intro n k U W R κ ι ι' f z a s₀ K hW hWU hP hdens hnull htan horth hfL hf0 ha hs₀ hball hspt hdecay
+  set Φ : Euclid n → Euclid (n + k) := fun v => z + ι v + ι' (f v) with hΦdef
+  have hLip : LipschitzWith (1 / 4 : NNReal) f := by
+    refine LipschitzWith.of_dist_le_mul fun v w => ?_
+    simpa [dist_eq_norm] using hfL v w
+  have hfc : Continuous f := hLip.continuous
+  have hΦc : Continuous Φ := by
+    simp only [hΦdef]; fun_prop
+  -- `|Φ(v) − Φ(w)|² = |v − w|² + |f(v) − f(w)|² ≤ (17/16)|v − w|²`
+  have hsq : ∀ v w, ‖Φ v - Φ w‖ ^ 2 = ‖v - w‖ ^ 2 + ‖f v - f w‖ ^ 2 := by
+    intro v w
+    have : Φ v - Φ w = ι (v - w) + ι' (f v - f w) := by
+      simp only [hΦdef, map_sub]; abel
+    rw [this, norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
+    ring
+  have hΦlip : ∀ v w, ‖Φ v - Φ w‖ ^ 2 ≤ 17 / 16 * ‖v - w‖ ^ 2 := by
+    intro v w
+    rw [hsq]
+    have h2 : ‖f v - f w‖ ^ 2 ≤ (1 / 4 * ‖v - w‖) ^ 2 := by gcongr; exact hfL v w
+    nlinarith
+  -- for `|v| < 4a/5`, `Φ(v) ∈ spt μ ∩ W` and `Φ(v) ∈ B_a(z)`
+  have hgeo : ∀ v ∈ ball (0 : Euclid n) (4 * a / 5),
+      Φ v ∈ R.measure.support ∩ W ∧ Φ v ∈ closedBall z a := by
+    intro v hv
+    have hv' : ‖v‖ < 4 * a / 5 := by simpa using hv
+    have hΦ0 : Φ 0 = z := by simp [hΦdef, hf0]
+    have h1 : ‖Φ v - z‖ ^ 2 ≤ a ^ 2 := by
+      have := hΦlip v 0
+      rw [hΦ0, sub_zero] at this
+      have h3 : ‖v‖ ^ 2 ≤ (4 * a / 5) ^ 2 := by gcongr
+      nlinarith [norm_nonneg v]
+    have hle : ‖Φ v - z‖ ≤ a := by
+      nlinarith [norm_nonneg (Φ v - z), sq_nonneg (‖Φ v - z‖ - a), sq_nonneg (‖Φ v - z‖ + a)]
+    have hcb : Φ v ∈ closedBall z a := by simpa [dist_eq_norm] using hle
+    have hmem : Φ v ∈ range Φ ∩ closedBall z a := ⟨⟨v, rfl⟩, hcb⟩
+    rw [← hspt] at hmem
+    exact ⟨⟨hmem.1, hball hmem.2⟩, hcb⟩
+  -- good parameters: a.e. `v` with `|v| < 4a/5` (graph_tangent_ae)
+  have hT := Submission.dorag_gc_graph_tangent_ae n k U W R κ ι ι' f z a hW hWU hP hdens hnull htan
+    horth hfL hf0 ha hball hspt
+  refine ⟨2 ^ (n + 3) * max K 0, min (s₀ / 2) (a / 8), by positivity, by positivity, ?_⟩
+  filter_upwards [hT] with v hv hvball
+  have hv' : ‖v‖ < a / 2 := by simpa using hvball
+  have hvΩ : v ∈ ball (0 : Euclid n) (4 * a / 5) := by
+    simp only [mem_ball, dist_zero_right]; linarith
+  obtain ⟨hdiff, -, hSv⟩ := hv hvΩ
+  refine ⟨hdiff, fun s hs hs₁ => ?_⟩
+  have hs2 : s ≤ s₀ / 2 := le_trans hs₁ (min_le_left _ _)
+  have hs8 : s ≤ a / 8 := le_trans hs₁ (min_le_right _ _)
+  obtain ⟨hξ, hξball⟩ := hgeo v hvΩ
+  -- the decay plane at `ξ = Φ(v)` is `graph Df(v)`
+  obtain ⟨S, -, hS⟩ := hdecay (Φ v) ⟨hξ.1, hξball⟩
+  have hSeq := hSv S s₀ K hs₀ hS
+  have hsub : ball v s ⊆ ball (0 : Euclid n) (4 * a / 5) := by
+    intro w hw
+    simp only [mem_ball, dist_zero_right] at hw ⊢
+    rw [dist_eq_norm] at hw
+    calc ‖w‖ ≤ ‖w - v‖ + ‖v‖ := by
+            simpa using norm_add_le (w - v) v
+      _ < s + a / 2 := by linarith
+      _ < 4 * a / 5 := by linarith
+  set wt : Euclid (n + k) → ℝ≥0∞ := fun x => ENNReal.ofReal (∑ i : Fin (n + k),
+    ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+      S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) with hwt
+  -- pointwise: `|Df(w) − Df(v)|² ≤ 4|p_{Φ(w)} − p_S|²` for a.e. `w ∈ B̆ⁿ_s(v)` (graph_projection)
+  have hae : ∀ᵐ w ∂(volume.restrict (ball v s)),
+      ENNReal.ofReal (∑ i : Fin n, ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)
+        ≤ 4 * wt (Φ w) := by
+    have h1 : ∀ᵐ w ∂(volume.restrict (ball v s)), w ∈ ball (0 : Euclid n) (4 * a / 5) →
+        DifferentiableAt ℝ f w ∧ approxTangentPlane n R.carrier (Φ w) =
+          LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f w).toLinearMap) ∧ _ :=
+      ae_restrict_of_ae hT
+    filter_upwards [h1, ae_restrict_mem measurableSet_ball] with w hw hwb
+    obtain ⟨-, htw, -⟩ := hw (hsub hwb)
+    have hA := Submission.dorag_gc_graph_slope_le_projection n k (n + k) ι ι' (fderiv ℝ f w)
+      (fderiv ℝ f v) horth (by simpa using norm_fderiv_le_of_lipschitz ℝ hLip)
+      (by simpa using norm_fderiv_le_of_lipschitz ℝ hLip)
+    -- `starProjection` depends on the submodule through its instance, so rewrite via congruence
+    have key : ∀ (K₁ K₂ : Submodule ℝ (Euclid (n + k))) [K₁.HasOrthogonalProjection]
+        [K₂.HasOrthogonalProjection], K₁ = K₂ → K₁.starProjection = K₂.starProjection := by
+      intro K₁ K₂ _ _ h; subst h; rfl
+    rw [key _ _ htw.symm, key _ _ hSeq.symm] at hA
+    rw [hwt]
+    simp only
+    rw [← ENNReal.ofReal_ofNat 4, ← ENNReal.ofReal_mul (by norm_num)]
+    exact ENNReal.ofReal_le_ofReal hA
+  -- `Φ(B̆ⁿ_s(v)) ⊆ B_{2s}(ξ)`
+  have himage : Φ '' ball v s ⊆ closedBall (Φ v) (2 * s) := by
+    rintro _ ⟨w, hw, rfl⟩
+    rw [mem_ball, dist_eq_norm] at hw
+    rw [mem_closedBall, dist_eq_norm]
+    have h1 := hΦlip w v
+    have h2 : ‖w - v‖ ^ 2 ≤ s ^ 2 := by gcongr
+    nlinarith [norm_nonneg (Φ w - Φ v), norm_nonneg (w - v)]
+  -- `Φ_#(Lⁿ⌞B̆ⁿ_s(v)) ≤ μ⌞Φ(B̆ⁿ_s(v))` (graph_pushforward)
+  have hmap := Submission.dorag_gc_graph_map_volume_le_measure n k (n + k) U W R ι ι' f z
+    (ball v s) horth hfc hnull (fun w hw => (hgeo w (hsub hw)).1)
+  have hwtm : AEMeasurable wt R.measure := by
+    have hc : Continuous (fun T : Euclid (n + k) →L[ℝ] Euclid (n + k) => ENNReal.ofReal (∑ i : Fin (n + k),
+        ‖T (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) :=
+      ENNReal.continuous_ofReal.comp (by fun_prop)
+    exact hc.measurable.comp_aemeasurable hP.aemeasurable
+  have hwtm' : AEMeasurable wt (Measure.map Φ (volume.restrict (ball v s))) :=
+    hwtm.mono_measure (hmap.trans Measure.restrict_le_self)
+  calc ∫⁻ w in ball v s, ENNReal.ofReal (∑ i : Fin n,
+          ‖(fderiv ℝ f w - fderiv ℝ f v) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)
+        ≤ ∫⁻ w in ball v s, 4 * wt (Φ w) := lintegral_mono_ae hae
+    _ = 4 * ∫⁻ w in ball v s, wt (Φ w) := by
+        rw [lintegral_const_mul' _ _ (by norm_num : (4 : ℝ≥0∞) ≠ ∞)]
+    _ = 4 * ∫⁻ x, wt x ∂(Measure.map Φ (volume.restrict (ball v s))) := by
+        rw [lintegral_map' hwtm' hΦc.measurable.aemeasurable]
+    _ ≤ 4 * ∫⁻ x, wt x ∂(R.measure.restrict (closedBall (Φ v) (2 * s))) := by
+        gcongr
+        exact hmap.trans (Measure.restrict_mono himage le_rfl)
+    _ ≤ 4 * ENNReal.ofReal (K * (2 * s) ^ (n + 1)) := by
+        gcongr
+        exact hS (2 * s) (by positivity) (by linarith)
+    _ ≤ ENNReal.ofReal (2 ^ (n + 3) * max K 0 * s ^ (n + 1)) := by
+        rw [← ENNReal.ofReal_ofNat 4, ← ENNReal.ofReal_mul (by norm_num)]
+        apply ENNReal.ofReal_le_ofReal
+        have hsp : 0 ≤ s ^ (n + 1) := by positivity
+        have : 4 * (K * (2 * s) ^ (n + 1)) = 2 ^ (n + 3) * K * s ^ (n + 1) := by
+          rw [mul_pow, pow_succ 2 (n + 2), pow_succ 2 (n + 1)]; ring
+        rw [this]
+        gcongr
+        exact le_max_left _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
