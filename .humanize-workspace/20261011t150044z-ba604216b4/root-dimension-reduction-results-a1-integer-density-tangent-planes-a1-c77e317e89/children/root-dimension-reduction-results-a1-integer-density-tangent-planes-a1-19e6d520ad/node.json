@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.blowup_translation_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "depth": 4,
+  "title": "Mass-measure limits of blow-ups of a cone at p are invariant under translations along ℝp",
+  "statement": "For all P, n ∈ ℕ, all C, C' ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, ℝ^P := Euclid P), every p ∈ ℝ^P and every sequence λ_j > 0 with λ_j → 0: if C is integer multiplicity and a cone (IsConeCurrent C), and the mass measures of the blow-ups blowUp C p λ_j converge to that of C' (MassMeasuresConverge (fun j => blowUp C p λ_j) C'), then for every integer multiplicity representation R' of C' (R' : IMRep univ n with R'.Represents C'), every v ∈ span{p} and every Borel set A ⊆ ℝ^P: μ'((· + v)^{-1}(A)) = μ'(A), where μ' := R'.measure = mult·H^n⌞carrier.",
+  "lean_statement": "∀ (P n : ℕ) (C C' : GeometricCurrentOn (univ : Set (Euclid P)) n) (p : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), IsIntegerMultiplicity C → IsConeCurrent C → Tendsto lams atTop (𝓝 0) → MassMeasuresConverge (fun j => blowUp C p (lams j) (hlams j).ne') C' → ∀ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents C' → ∀ v ∈ Submodule.span ℝ {p}, ∀ A : Set (Euclid P), MeasurableSet A → R'.measure ((fun x => x + v) ⁻¹' A) = R'.measure A",
+  "lean_name": "idtp_cttp_blowup_limit_translation_invariant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-19e6d520ad-a1"
+}

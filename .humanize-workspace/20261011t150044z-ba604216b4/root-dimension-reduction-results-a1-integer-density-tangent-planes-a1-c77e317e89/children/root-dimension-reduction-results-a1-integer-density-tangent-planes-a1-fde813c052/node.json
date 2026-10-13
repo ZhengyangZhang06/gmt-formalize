@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "depth": 4,
+  "title": "Tangent cones of minimizing cycles in ℝ^P are minimizing cone cycles with density ≥ 1",
+  "statement": "For all P, n ∈ ℕ with n ≥ 1, every C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, ℝ^P := Euclid P) that is minimizing in ℝ^P (IsMinimizingIn C univ) with ∂C = 0 (BoundaryVanishes C), every p ∈ spt C and every sequence λ_j > 0 with λ_j → 0, there are a strictly increasing φ : ℕ → ℕ, C' ∈ 𝒟_n(ℝ^P) and θ ∈ ℝ such that blowUp C p λ_{φ(j)} ⇀ C' in ℝ^P (ConvergesWeakly), the mass measures of these blow-ups converge to that of C' for all integer multiplicity representations (MassMeasuresConverge), C' is minimizing in ℝ^P (IsMinimizingIn C' univ), C' is a cone (IsConeCurrent C'), ∂C' = 0 (BoundaryVanishes C'), θ ≥ 1, Θ^n(μ_C, p) = θ (HasMassDensity C p θ) and Θ^n(μ_{C'}, 0) = θ (HasMassDensity C' 0 θ).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), 1 ≤ n → IsMinimizingIn C univ → BoundaryVanishes C → ∀ p ∈ C.support, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) n) (θ : ℝ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ IsMinimizingIn C' univ ∧ IsConeCurrent C' ∧ BoundaryVanishes C' ∧ 1 ≤ θ ∧ HasMassDensity C p θ ∧ HasMassDensity C' 0 θ",
+  "lean_name": "idtp_cttp_cycle_tangent_cone",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fde813c052-a1"
+}

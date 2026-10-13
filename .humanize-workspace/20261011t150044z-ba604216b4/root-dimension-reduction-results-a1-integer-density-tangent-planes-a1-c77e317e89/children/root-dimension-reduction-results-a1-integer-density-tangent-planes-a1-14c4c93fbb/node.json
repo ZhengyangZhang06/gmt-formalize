@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cone_density_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "depth": 4,
+  "title": "A cone with L-translation-invariant mass measure has density invariant under w ↦ y + λw (y ∈ L)",
+  "statement": "For all P, n ∈ ℕ, every S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, ℝ^P := Euclid P), every integer multiplicity representation R of S (R : IMRep univ n, R.Represents S) and every linear subspace L ⊆ ℝ^P: if S is a cone (IsConeCurrent S) and R.measure((· + v)^{-1}(A)) = R.measure(A) for every v ∈ L and every Borel A, then for all y ∈ L, λ > 0, w ∈ ℝ^P and θ ∈ ℝ, HasMassDensity S w θ implies HasMassDensity S (y + λw) θ.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), R.Represents S → IsConeCurrent S → (∀ v ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => x + v) ⁻¹' A) = R.measure A) → ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ",
+  "lean_name": "idtp_cttp_cone_density_translation_invariant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-14c4c93fbb-a1"
+}

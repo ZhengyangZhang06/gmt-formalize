@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.planar_support_splitting-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "depth": 4,
+  "title": "A 2-dimensional minimizing cycle with ℝp-invariant density and density ≥ 1 at 0 is supported in a plane through p",
+  "statement": "For every P ∈ ℕ, every S ∈ 𝒟_2(ℝ^P) (GeometricCurrentOn univ 2, ℝ^P := Euclid P), every p ∈ ℝ^P and every θ ∈ ℝ: if p ≠ 0, S is minimizing in ℝ^P (IsMinimizingIn S univ), ∂S = 0 (BoundaryVanishes S), HasMassDensity S w θ' implies HasMassDensity S (y + λw) θ' for all y ∈ span{p}, λ > 0, w ∈ ℝ^P and θ' ∈ ℝ, 1 ≤ θ and Θ²(μ_S, 0) = θ (HasMassDensity S 0 θ), then there is an orthonormal pair τ = (τ_1, τ_2) in ℝ^P (Orthonormal ℝ τ, τ : Fin 2 → ℝ^P) with p ∈ span{τ_1, τ_2} and spt S ⊆ span{τ_1, τ_2}.",
+  "lean_statement": "∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 2) (p : Euclid P) (θ : ℝ), p ≠ 0 → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ Submodule.span ℝ {p}, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ' : ℝ), HasMassDensity S w θ' → HasMassDensity S (y + lam • w) θ') → 1 ≤ θ → HasMassDensity S 0 θ → ∃ τ : Fin 2 → Euclid P, Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+  "lean_name": "idtp_cttp_planar_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-41bc9573cd-a1"
+}
