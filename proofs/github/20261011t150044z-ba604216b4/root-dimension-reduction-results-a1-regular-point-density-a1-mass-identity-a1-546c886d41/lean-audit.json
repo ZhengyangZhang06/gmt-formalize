@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eb98fe265f9c2306231021779643828f833edf732748b0d8fea20f6f6ca5ab7a",
+  "git_delta": {
+    "base_commit": "a6abeb82d79817ba565d1354c8f7b4c0d2e878a1",
+    "candidate_commit": "5fcaddaa05c1f91fbc4bc02e501a16a8818b9724",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_rpd_massOn_eq_mult_measure",
+    "diff_sha256": "793e010bb2dfb6a5397e86b248eeeea062fe3382f2f1447ab2b603ebdcba6f82",
+    "source_sha256": "885a4c1961ac5538980112ac71756ad0cd3762737c1b1741dfe3ffe9682e7df3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_rpd_massOn_eq_mult_measure",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (M W : Set (Euclid P)) (m₀ : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen W → W ⊆ U → MeasurableSet M → ContinuousOn ξ M → (∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ x) Q) → μHE[n] (M ∩ W) ≠ ∞ → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → T ω = m₀ * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → T.massOn W = (m₀.natAbs : ℝ≥0∞) * μHE[n] (M ∩ W)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
