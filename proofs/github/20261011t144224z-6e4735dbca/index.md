@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_sup_bound-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/3343 | this PR | root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1 |
