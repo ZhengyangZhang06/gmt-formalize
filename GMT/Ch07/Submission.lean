@@ -451,6 +451,64 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Shrinking a local inverse chart to a coordinate square.**  Choose `ε > 0` with
+`B_ε(F p) ⊆ O` and put `s = min(ε, r₀)/4`, so `0 < s < r₀`.  The open square
+`R_s = (r₀ - s, r₀ + s) × (-s, s)` lies in `B_ε((r₀, 0)) ⊆ O`, since every `w ∈ R_s` has
+`|w - (r₀, 0)|² < 2s² < ε²`.  `N = N₀ ∩ (U ∩ F⁻¹(R_s))` is open because `F` is continuous on the
+open set `U`, and it contains `p`; as `G(O) = M ∩ N₀` and `F ∘ G = id` on `O`, `M ∩ N = G(R_s)`. -/
+theorem Submission.idtp_ccd_scsp_cc_square_shrink : ∀ (P : ℕ) (M U N₀ : Set (Euclid P)) (O : Set (Euclid 2)) (F : Euclid P → Euclid 2) (G : Euclid 2 → Euclid P) (p : Euclid P) (r₀ : ℝ), 0 < r₀ → IsOpen U → ContinuousOn F U → IsOpen O → IsOpen N₀ → F p = !₂[r₀, 0] → F p ∈ O → p ∈ N₀ → N₀ ⊆ U → G '' O = M ∩ N₀ → (∀ w ∈ O, F (G w) = w) → ∃ (s : ℝ) (N : Set (Euclid P)), 0 < s ∧ s < r₀ ∧ IsOpen N ∧ p ∈ N ∧ N ⊆ U ∧ {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} ⊆ O ∧ M ∩ N = G '' {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} := by
+  intro P M U N₀ O F G p r₀ hr₀ hU hF hO hN₀ hFp hFpO hpN₀ hN₀U hGO hFG
+  -- Step 1: a ball `B_ε(F p) ⊆ O`
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hO (F p) hFpO
+  -- Step 2: `s = min(ε, r₀)/4`, so `0 < s < r₀` and `s ≤ ε/4`
+  set s := min ε r₀ / 4 with hs_def
+  have hs : 0 < s := div_pos (lt_min hε hr₀) four_pos
+  have hsr : s < r₀ := by linarith [min_le_right ε r₀]
+  have hsε : s ≤ ε / 4 := by linarith [min_le_left ε r₀]
+  set R : Set (Euclid 2) := {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s}
+    with hR_def
+  -- Step 3: `R_s ⊆ B_ε(F p) ⊆ O`, since `(w₀ - r₀)² + w₁² < 2s² ≤ ε²/8 < ε²` on `R_s`
+  have hRO : R ⊆ O := by
+    rintro w ⟨⟨h0l, h0r⟩, h1l, h1r⟩
+    apply hball
+    rw [Metric.mem_ball, EuclideanSpace.dist_eq, hFp, Real.sqrt_lt' hε]
+    simp only [Real.dist_eq, sq_abs, Fin.sum_univ_two, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one, sub_zero]
+    have h0 : (w 0 - r₀) ^ 2 < s ^ 2 := sq_lt_sq' (by linarith) (by linarith)
+    have h1 : w 1 ^ 2 < s ^ 2 := sq_lt_sq' (by linarith) (by linarith)
+    have h2 : s ^ 2 ≤ (ε / 4) ^ 2 := pow_le_pow_left₀ hs.le hsε 2
+    nlinarith [pow_pos hε 2]
+  -- Step 4: `R_s` is open (preimages of open intervals under the coordinate maps)
+  have hRopen : IsOpen R :=
+    (isOpen_Ioo.preimage (PiLp.continuous_apply 2 _ 0)).inter
+      (isOpen_Ioo.preimage (PiLp.continuous_apply 2 _ 1))
+  -- Step 5: `N = N₀ ∩ (U ∩ F⁻¹(R_s))` is open and lies in `U`
+  refine ⟨s, N₀ ∩ (U ∩ F ⁻¹' R), hs, hsr, hN₀.inter (hF.isOpen_inter_preimage hU hRopen), ?_,
+    fun x hx => hx.2.1, hRO, ?_⟩
+  -- Step 6: `p ∈ N`, as `F p = (r₀, 0) ∈ R_s`
+  · refine ⟨hpN₀, hN₀U hpN₀, ?_⟩
+    show F p ∈ R
+    rw [hFp, hR_def]
+    simp only [Fin.isValue, mem_Ioo, mem_ofPred_eq, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one]
+    exact ⟨⟨by linarith, by linarith⟩, by linarith, hs⟩
+  · ext x
+    constructor
+    -- Step 7: `M ∩ N ⊆ G(R_s)`: `x = G w` with `w ∈ O`, and `w = F x ∈ R_s`
+    · rintro ⟨hxM, hxN₀, -, hxR⟩
+      obtain ⟨w, hwO, rfl⟩ : x ∈ G '' O := hGO ▸ ⟨hxM, hxN₀⟩
+      refine ⟨w, ?_, rfl⟩
+      rw [← hFG w hwO]
+      exact hxR
+    -- Step 8: `G(R_s) ⊆ M ∩ N`: `w ∈ O`, so `G w ∈ M ∩ N₀ ⊆ U` and `F (G w) = w ∈ R_s`
+    · rintro ⟨w, hwR, rfl⟩
+      have hwO := hRO hwR
+      have hmem : G w ∈ M ∩ N₀ := hGO ▸ mem_image_of_mem G hwO
+      refine ⟨hmem.1, hmem.2, hN₀U hmem.2, ?_⟩
+      show F (G w) ∈ R
+      rw [hFG w hwO]
+      exact hwR
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
