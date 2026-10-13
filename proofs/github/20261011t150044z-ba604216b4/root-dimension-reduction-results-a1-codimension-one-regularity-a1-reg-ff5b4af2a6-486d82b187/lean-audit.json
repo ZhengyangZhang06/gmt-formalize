@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cad77a8d9ff1681d762a36ae0d31e69a54e4ebcc2f0d93c7ad811c946767b446",
+  "git_delta": {
+    "base_commit": "25e9b4467994455d0013bcc8d24e05e95d79caa5",
+    "candidate_commit": "76f040457f45e5cebcfa0be6f50f67822a1787f3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_hr_ae_translate_monotone",
+    "diff_sha256": "95a77871adeb8ed630dffa417fbea22f4c69f4bba130aecbfbbaa32dd84bbe19",
+    "source_sha256": "8042f71e6f9ea7e43859837d9148ca150cf54c8e9f85c9b65529e2fe634a9b83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_hr_ae_translate_monotone",
+      "statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∫ z in F, fderiv ℝ ζ z v ≤ 0) → ∀ t : ℝ, 0 ≤ t → ∀ᵐ z ∂volume, z ∈ F → z + t • v ∈ F",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
