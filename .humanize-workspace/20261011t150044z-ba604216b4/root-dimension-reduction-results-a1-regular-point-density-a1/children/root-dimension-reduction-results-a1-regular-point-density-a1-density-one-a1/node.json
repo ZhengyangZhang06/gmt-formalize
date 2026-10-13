@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+  "parent_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+  "depth": 3,
+  "title": "An embedded C¹ n-submanifold has n-dimensional density one at each of its points",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P satisfy IsEmbeddedSubmanifold 1 n M, and let z ∈ M. Then Hⁿ(M ∩ B_s(z))/(ω_n sⁿ) → 1 as s ↓ 0, computed in [0, ∞], where Hⁿ = μHE[n], B_s(z) is the open ball, and ω_n = unitBallVolume n is the Lebesgue measure of the unit ball of ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (z : Euclid P), IsEmbeddedSubmanifold 1 n M → z ∈ M → Tendsto (fun s : ℝ => μHE[n] (M ∩ ball z s) / (unitBallVolume n * ENNReal.ofReal (s ^ n))) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "dimred_rpd_submanifold_density_one",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.regular_point_density-a1.near_isometric_chart-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.near_isometric_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1-a1"
+}
