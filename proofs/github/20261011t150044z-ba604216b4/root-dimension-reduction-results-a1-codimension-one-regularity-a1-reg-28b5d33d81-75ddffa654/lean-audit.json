@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a955f42a44515a69a7c5ab4c3b7d24296bf4e86b252a6647571e8ded76d43bf6",
+  "git_delta": {
+    "base_commit": "2fe52dbc121d28f2489db54df87c6146d36c1c14",
+    "candidate_commit": "5efe5d12abdf7acf3884aadab9e197ab7a6702bc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_sp_gns_real_of_lintegral",
+    "diff_sha256": "3666dc0cc607f39e7b7dd726d99cf2aa3286d91d4506134adfa37f3b68116638",
+    "source_sha256": "86bc43fdd7b6876c6847265c377d4171dec977da16230a78bb25ac6957a2167e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_sp_gns_real_of_lintegral",
+      "statement": "∀ (P : ℕ) (p : ℝ) (C : NNReal), 0 < p → (∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → ∫⁻ x, ‖w x‖ₑ ^ p ≤ (C : ℝ≥0∞) * (∫⁻ x, ‖fderiv ℝ w x‖ₑ) ^ p) → ∃ c : ℝ, 0 < c ∧ ∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → (∫ z, |w z| ^ p) ^ p⁻¹ ≤ c * ∫ z, ‖fderiv ℝ w z‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
