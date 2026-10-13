@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_field-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "A C¹ field of self-adjoint projections extending the tangent projection of a C² submanifold near a point",
+  "statement": "Let P, d ∈ ℕ, U ⊆ ℝ^P open, N an embedded C² d-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 2 d N), and y₀ ∈ N ∩ U. Then there are r > 0, β ≥ 0 and a map Pt : ℝ^P → L(ℝ^P, ℝ^P) with the following properties:\n- B̄_{3r}(y₀) ⊆ U;\n- Pt is C¹ on B_{3r}(y₀);\n- Pt(y) is self-adjoint, ⟨Pt(y)u, w⟩ = ⟨u, Pt(y)w⟩, for every y ∈ B_{3r}(y₀);\n- ‖DPt(y)‖ ≤ β for every y ∈ B_{2r}(y₀);\n- for every q ∈ N ∩ B_{3r}(y₀), Pt(q)u ∈ T_qN for all u ∈ ℝ^P, and Pt(q)u = u for all u ∈ T_qN, where T_qN = tangentSpace N q.\nIn particular, Pt(q) is the orthogonal projection onto T_qN for q ∈ N ∩ B_{3r}(y₀).",
+  "lean_statement": "∀ (P d : ℕ) (U N : Set (Euclid P)) (y₀ : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → y₀ ∈ N ∩ U → ∃ (r β : ℝ) (Pt : Euclid P → (Euclid P →L[ℝ] Euclid P)), 0 < r ∧ 0 ≤ β ∧ closedBall y₀ (3 * r) ⊆ U ∧ ContDiffOn ℝ 1 Pt (ball y₀ (3 * r)) ∧ (∀ y ∈ ball y₀ (3 * r), ∀ u w : Euclid P, inner ℝ (Pt y u) w = inner ℝ u (Pt y w)) ∧ (∀ y ∈ ball y₀ (2 * r), ‖fderiv ℝ Pt y‖ ≤ β) ∧ (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u : Euclid P, Pt q u ∈ tangentSpace N q) ∧ (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u ∈ tangentSpace N q, Pt q u = u)",
+  "lean_name": "dsmc_tangent_projection_field",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-372e469b49-a1"
+}

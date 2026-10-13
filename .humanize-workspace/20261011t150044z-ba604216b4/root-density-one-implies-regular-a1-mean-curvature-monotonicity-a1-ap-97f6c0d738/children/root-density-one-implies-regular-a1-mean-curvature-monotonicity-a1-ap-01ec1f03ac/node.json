@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_null_image-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1",
+  "depth": 4,
+  "title": "Blow-up maps preserve Hⁿ-null sets",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, λ ∈ ℝ with λ ≠ 0, and E ⊆ ℝ^P with Hⁿ(E) = 0, where Hⁿ = μHE[n]. Then Hⁿ(η_{x,λ}(E)) = 0. Here η_{x,λ}(y) = λ⁻¹(y − x) is SimonGMT's blowUpMap x λ (Poincare.SimonGMT.Chapter03.blowUpMap).",
+  "lean_statement": "∀ (P n : ℕ) (E : Set (Euclid P)) (x : Euclid P) (lam : ℝ), lam ≠ 0 → μHE[n] E = 0 → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' E) = 0",
+  "lean_name": "dsmc_att_blowUpMap_image_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-01ec1f03ac-a1"
+}
