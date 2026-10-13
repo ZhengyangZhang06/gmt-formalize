@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c3ef018cb17575afaee544fa39d6966e61e031200fb99ae87d059ad61813fb9",
+  "git_delta": {
+    "base_commit": "f002b9f0e50e983e0e10f0494817676396b4af44",
+    "candidate_commit": "fdb3ca81abeabcd1a3d9f742812014e8947c5440",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ovr_embedded_submanifold_local",
+    "diff_sha256": "4a1bd4199ccc3c903656a61605525907608c17ed9772b7223231abe95b1875d2",
+    "source_sha256": "39a4c9dcf6ae3e89f7fe31ec190c0686ecf669c1a379abaee240f783e8e1c396",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ovr_embedded_submanifold_local",
+      "statement": "∀ (P r d : ℕ) (M : Set (Euclid P)), 1 ≤ r → (∀ y ∈ M, ∃ O : Set (Euclid P), IsOpen O ∧ y ∈ O ∧ IsEmbeddedSubmanifold r d (M ∩ O)) → IsEmbeddedSubmanifold r d M ∧ ∀ O : Set (Euclid P), IsOpen O → IsEmbeddedSubmanifold r d (M ∩ O) ∧ ∀ w ∈ M ∩ O, tangentSpace (M ∩ O) w = tangentSpace M w",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
