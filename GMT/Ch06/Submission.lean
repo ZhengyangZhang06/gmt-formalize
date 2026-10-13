@@ -359,6 +359,59 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, (2.7) (p. 136) for a constant `n`-vector: if `μ` is finite on compact sets and
+`w ∈ Λₙ(ℝ^P)`, then `T(ω) = ∫ ⟨ω(x), w⟩ dμ(x)` defines a current `T ∈ 𝒟ₙ(U)` with
+representation `(μ, w)`. -/
+theorem Submission.ind_pi_constant_vector_current :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (w : NVector (Eucl P) n),
+      (∀ K : Set (Eucl P), IsCompact K → μ K < ∞) →
+      ∃ T : GeometricCurrentOn U n, IsMeasureRepresentation T μ (fun _ => w) := by
+  intro P n U μ w hμ
+  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => hμ K hK⟩
+  -- `x ↦ ⟨ω(x), w⟩` is continuous with compact support (`w 0 = 0`), hence `μ`-integrable.
+  have hint : ∀ ω : TestFormOn U n,
+      Integrable (fun x => w ((ω : DifferentialForm (Eucl P) n) x)) μ := fun ω =>
+    (w.continuous.comp ω.property.1.1.continuous).integrable_of_hasCompactSupport
+      (ω.property.1.2.comp_left (map_zero w))
+  -- The linear functional `L(ω) = ∫ ⟨ω, w⟩ dμ`.
+  let L : CurrentOn U n :=
+    { toFun := fun ω => ∫ x, w ((ω : DifferentialForm (Eucl P) n) x) ∂μ
+      map_add' := fun ω η => by
+        simp only [Submodule.coe_add, Pi.add_apply, map_add]
+        exact integral_add (hint ω) (hint η)
+      map_smul' := fun c ω => by
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul, RingHom.id_apply]
+        exact integral_const_mul c _ }
+  refine ⟨⟨L, fun ωs hωs => ?_⟩, fun ω => ⟨hint ω, rfl⟩⟩
+  -- Sequential continuity: the `ω_j` are supported in one compact `K` and `ω_j → 0` uniformly
+  -- on `K`, so `|L(ω_j)| ≤ ‖w‖ · sup_K ‖ω_j‖ · μ(K) → 0`.
+  obtain ⟨K, hK, -, hsupp, -, hderiv⟩ := hωs
+  have hunif := Metric.tendstoUniformlyOn_iff.1 (hderiv 0)
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hm : 0 ≤ μ.real K := measureReal_nonneg
+  have hC : 0 < ‖w‖ * μ.real K + 1 := by positivity
+  obtain ⟨N, hN⟩ := eventually_atTop.1 (hunif (ε / (‖w‖ * μ.real K + 1)) (div_pos hε hC))
+  refine ⟨N, fun j hj => ?_⟩
+  rw [dist_zero_right]
+  change ‖∫ x, w ((ωs j : DifferentialForm (Eucl P) n) x) ∂μ‖ < ε
+  -- The integrand vanishes off `K ⊇ tsupport ω_j`.
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := K) fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h), map_zero]]
+  -- On `K`, `|⟨ω_j(x), w⟩| ≤ ‖w‖ ‖ω_j(x)‖ ≤ ‖w‖ · ε / (‖w‖ μ(K) + 1)`.
+  have hbound : ∀ x ∈ K, ‖w ((ωs j : DifferentialForm (Eucl P) n) x)‖ ≤
+      ‖w‖ * (ε / (‖w‖ * μ.real K + 1)) := by
+    intro x hx
+    have h := (hN j hj x hx).le
+    rw [iteratedFDeriv_zero_eq_comp, iteratedFDeriv_zero_eq_comp, Function.comp_apply,
+      Function.comp_apply, LinearIsometryEquiv.dist_map, ZeroMemClass.coe_zero, Pi.zero_apply,
+      dist_zero_left] at h
+    exact (w.le_opNorm _).trans (mul_le_mul_of_nonneg_left h (norm_nonneg w))
+  refine (norm_setIntegral_le_of_norm_le_const (hμ K hK) hbound).trans_lt ?_
+  rw [show ‖w‖ * (ε / (‖w‖ * μ.real K + 1)) * μ.real K =
+      ε * (‖w‖ * μ.real K / (‖w‖ * μ.real K + 1)) by ring]
+  exact mul_lt_of_lt_one_right hε ((div_lt_one hC).2 (lt_add_one _))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
