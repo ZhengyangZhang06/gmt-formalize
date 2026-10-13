@@ -1974,6 +1974,45 @@ theorem Submission.dimred_cs_mi_density_eq_mult_ae : ∀ (P n : ℕ) (S : Geomet
   exact (withDensity_absolutelyContinuous'
     (measurable_from_nat.comp R.measurable_mult).aemeasurable hθ).ae_le hμ
 
+/-- **`μ_R = Θ Hⁿ`** (step 5 of the measure invariance of a cone with invariant density, in the
+cone splitting of the dimension reduction argument; Simon Ch. 4, 3.12, chapter-04.txt
+lines 350–354, the canonical representative `θ_V(x) = Θⁿ(V, x)` of `V = v(M, θ)`).  Let
+`S = τ(M, θ, ξ)` in `ℝᴾ`, and let `Θⁿ(μ_S, x) = Θ(x)` at every `x`.  Then `θ Hⁿ⌞M = Θ Hⁿ`, i.e.
+`μ_R(A) = ∫⁻_A Θ dHⁿ` for every Borel `A`.  Split `∫⁻_A Θ dHⁿ` along the Borel carrier `M`:
+* on `A ∩ M`, `Θ = θ` `Hⁿ`-a.e. (`Submission.dimred_cs_mi_density_eq_mult_ae`), so this part is
+  `∫⁻_{A∩M} θ dHⁿ = μ_R(A)`;
+* on `A \ M`, `Θ ≤ 0` off the `Hⁿ`-null set `{x ∉ M, Θ(x) > 0}`
+  (`Submission.dimred_cs_mi_density_null_off_carrier`), so `ofReal Θ = 0` there `Hⁿ`-a.e.
+
+No measurability of `Θ` is needed: a.e.-equal functions have equal lower integrals. -/
+theorem Submission.dimred_cs_mi_measure_eq_withDensity : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Θ : Euclid P → ℝ), R.Represents S → (∀ x : Euclid P, HasMassDensity S x (Θ x)) → R.measure = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (Θ x)) := by
+  intro P n S R Θ hR hΘ
+  -- Step 1: compare both measures on a Borel set `A`
+  ext A hA
+  -- Steps 2–3: `μ_R(A) = ∫⁻_{A∩M} θ dHⁿ`, and split `∫⁻_A Θ dHⁿ` along `M`
+  rw [IMRep.measure, withDensity_apply _ hA, withDensity_apply _ hA, Measure.restrict_restrict hA,
+    ← lintegral_inter_add_sdiff _ A R.measurableSet_carrier]
+  -- Step 4: on `A ∩ M`, `ofReal Θ = θ` `Hⁿ`-a.e.
+  have hM : ∫⁻ x in A ∩ R.carrier, ENNReal.ofReal (Θ x) ∂μHE[n] =
+      ∫⁻ x in A ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    have hae := ae_restrict_of_ae_restrict_of_subset
+      (inter_subset_right : A ∩ R.carrier ⊆ R.carrier)
+      (Submission.dimred_cs_mi_density_eq_mult_ae P n S R Θ hR hΘ)
+    refine lintegral_congr_ae ?_
+    filter_upwards [hae] with x hx
+    rw [hx, ENNReal.ofReal_natCast]
+  -- Step 5: on `A \ M`, `ofReal Θ = 0` `Hⁿ`-a.e., since `{x ∉ M, Θ(x) > 0}` is `Hⁿ`-null
+  have hMc : ∫⁻ x in A \ R.carrier, ENNReal.ofReal (Θ x) ∂μHE[n] = 0 := by
+    have hnull := Submission.dimred_cs_mi_density_null_off_carrier P n S R Θ hR hΘ
+    have hae : ∀ᵐ x ∂μHE[n], x ∈ A \ R.carrier → ENNReal.ofReal (Θ x) = 0 := by
+      refine ae_iff.2 (measure_mono_null (fun x hx => ?_) hnull)
+      obtain ⟨hxAM, hx0⟩ := not_imp.1 hx
+      exact ⟨hxAM.2, ENNReal.ofReal_pos.1 (pos_iff_ne_zero.2 hx0)⟩
+    rw [lintegral_congr_ae ((ae_restrict_iff' (hA.diff R.measurableSet_carrier)).2 hae)]
+    exact lintegral_zero
+  -- Step 6: `∫⁻_A Θ dHⁿ = ∫⁻_{A∩M} θ dHⁿ + 0 = μ_R(A)`
+  rw [hM, hMc, add_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
