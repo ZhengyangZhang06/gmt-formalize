@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9f36a58fa8d8b054059cec68ab956d5fff389c835823cadd77e521bc40236b07",
+  "git_delta": {
+    "base_commit": "292b4bfc7c4e3e8f1f7f42917b5673051fc20448",
+    "candidate_commit": "73ff8998b43f1fa5e864f5d79fab2288370231eb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_elc2_hessian_bounds",
+    "diff_sha256": "294cf15d5550341f1c073d5fa2bc3ac841915b275de9022e4bde18df26fcddc3",
+    "source_sha256": "e6df167b83ce81ff07aab542115839194d1c2c286674988b57588ad1eeecc7f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_elc2_hessian_bounds",
+      "statement": "∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ), ContDiff ℝ 3 Ψ → ∀ ε : ℝ, ∃ MB LB : ℝ, 0 ≤ MB ∧ 0 ≤ LB ∧ (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) ∧ ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
