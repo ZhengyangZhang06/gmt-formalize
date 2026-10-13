@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+  "depth": 3,
+  "title": "A unit orientation of a subspace has operator norm at most 1",
+  "statement": "Let P, n ∈ ℕ, let Q be a linear subspace of ℝ^P (Euclid P), and let ξ ∈ Λ_n(ℝ^P) = MultiVector P n, i.e. a continuous linear functional on the normed space Covector (Euclid P) n of continuous alternating n-linear forms on ℝ^P (operator norms throughout). If ξ is a unit orientation of Q (IsUnitOrientationOf ξ Q: there is an orthonormal family τ = (τ_1,…,τ_n) in ℝ^P spanning Q such that ξ(α) = α(τ_1,…,τ_n) for every n-covector α, or ξ(α) = −α(τ_1,…,τ_n) for every n-covector α), then ‖ξ‖ ≤ 1.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1",
+  "lean_name": "unit_orientation_norm_le_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1"
+}
