@@ -1,0 +1,15 @@
+{
+  "node_id": "root.rectifiability-a1.bf_trichotomy-a1.witness_set_measurable-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4583",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "79eed5da6c76bc8f14609bfe2fe08102ba036348",
+  "integrated_commit": "",
+  "proof_base_commit": "1f50dff69b857fccd015abd6785ba90365763069",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.rectifiability-a1.bf_trichotomy-a1",
+  "requires": []
+}
