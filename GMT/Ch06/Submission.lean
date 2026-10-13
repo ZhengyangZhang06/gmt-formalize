@@ -1222,4 +1222,18 @@ theorem Submission.cmb_exists_weakly_convergent_subseq : ∀ (P n : ℕ) (U : Se
   rw [Real.dist_eq, sub_zero]
   exact hle.trans_lt hlt
 
+/-- **Simon Ch. 6, Lemma 2.15 (p. 137).**  Take a weakly convergent subsequence
+`T_{φ(q)} ⇀ T₀` (`cmb_exists_weakly_convergent_subseq`).  Since
+`sup_q M_W(T_{φ(q)}) ≤ sup_q M_W(T_q) < ∞` for every `W ⊂⊂ U`, it also converges on continuous
+compactly supported forms for all measure representations
+(`cmb_tendsto_integral_of_weaklyConvergesOn`). -/
+theorem Submission.compactness_under_mass_bounds : CompactnessUnderMassBounds := by
+  intro P n U hU T hT
+  obtain ⟨φ, T₀, hφ, hconv⟩ := Submission.cmb_exists_weakly_convergent_subseq P n U hU T hT
+  -- The local mass bounds pass to the subsequence.
+  have hTφ : ∀ W, CompactlyContainedOpen W U → (⨆ q, (T (φ q)).massOn W) < ∞ :=
+    fun W hW => (iSup_comp_le (fun q => (T q).massOn W) φ).trans_lt (hT W hW)
+  exact ⟨φ, T₀, hφ, hconv,
+    Submission.cmb_tendsto_integral_of_weaklyConvergesOn P n U hU (fun q => T (φ q)) T₀ hTφ hconv⟩
+
 end GMT.Ch06
