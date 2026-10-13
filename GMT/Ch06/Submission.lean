@@ -660,6 +660,81 @@ theorem Submission.iwl_cr_ip_wt_blowup_mass_bound :
   filter_upwards [hlim.eventually_lt_const (lt_add_one _), self_mem_nhdsWithin] with r hrB hr C g hgC hg0
   have hr0 : (0 : ℝ) < r := hr
   -- `θ` is a.e. strongly measurable and a.e. nonnegative for `Hᵐ ⌞ M`.
+  have hθae : AEStronglyMeasurable θ ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ n : ℕ, M ∩ closedBall (0 : Eucl P) n := by
+      ext u
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hu => ⟨⌈‖u‖⌉₊, hu, Nat.le_ceil _⟩, fun ⟨_, hu, _⟩ => hu⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  have hθpos : ∀ᵐ u ∂((μHE[m] : Measure (Eucl P)).restrict M), 0 ≤ θ u :=
+    (ae_restrict_mem₀ hMmeas).mono fun u hu => hθnn u hu
+  -- Undo the blow-up for any integrand.
+  have hcov : ∀ h : Eucl P → ℝ, ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+      h w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P)) = (r ^ m)⁻¹ * ∫ u in M,
+        h (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u ∂(μHE[m] : Measure (Eucl P)) := by
+    intro h
+    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => h w * θ (x + r • w)) hr0]
+    congr 1
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul,
+      add_sub_cancel]
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    show Continuous fun u : Eucl P => r⁻¹ • (u - x)
+    fun_prop
+  have hηnorm : ∀ u, ‖Poincare.SimonGMT.Chapter03.blowUpMap x r u‖ = r⁻¹ * ‖u - x‖ := by
+    intro u
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hr0]
+  -- Integrability of `u ↦ g₀(η u) θ(u)` on `M`.
+  have hint₀ : Integrable (fun u => g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u)
+      ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    refine Integrable.mono' (g := (closedBall x (r * (R + 1))).indicator fun u => |θ u|) ?_
+      ((hg₀c.comp hηc).aestronglyMeasurable.mul hθae) (Filter.Eventually.of_forall fun u => ?_)
+    · rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact (hθint _ (isCompact_closedBall x (r * (R + 1)))).norm.congr
+        (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
+    · by_cases hu : u ∈ closedBall x (r * (R + 1))
+      · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ u), Real.norm_eq_abs]
+        exact mul_le_of_le_one_left (abs_nonneg _)
+          ((abs_of_nonneg (hg₀nn _)).trans_le (hg₀le _))
+      · rw [indicator_of_notMem hu, hg₀0, zero_mul, norm_zero]
+        rw [mem_closedBall, dist_eq_norm, not_le] at hu
+        rw [hηnorm, lt_inv_mul_iff₀ hr0]
+        exact hu
+  -- `C ≥ 0`, and `|g(η u)| θ(u) ≤ C g₀(η u) θ(u)` on `M`.
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hgC 0)
+  have hpt : ∀ w, |g w| ≤ C * g₀ w := by
+    intro w
+    by_cases hw : ‖w‖ ≤ R
+    · rw [hg₀1 w hw, mul_one]
+      exact hgC w
+    · rw [hg0 w (not_le.1 hw), abs_zero]
+      exact mul_nonneg hC (hg₀nn w)
+  have hkey : |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+      ∂(μHE[m] : Measure (Eucl P))| ≤
+      C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P)) := by
+    rw [← integral_const_mul]
+    refine (Real.norm_eq_abs _ ▸ norm_integral_le_integral_norm _).trans ?_
+    refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun u => norm_nonneg _)
+      (hint₀.const_mul C) ?_
+    filter_upwards [hθpos] with u hu
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hu, ← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (hpt _) hu
+  rw [hcov g, abs_mul, abs_of_pos (inv_pos.2 (pow_pos hr0 m))]
+  have hb := hcov g₀
+  calc (r ^ m)⁻¹ * |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P))|
+      ≤ (r ^ m)⁻¹ * (C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P))) :=
+        mul_le_mul_of_nonneg_left hkey (inv_nonneg.2 (pow_nonneg hr0.le m))
+    _ = C * ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g₀ w * θ (x + r • w)
+        ∂(μHE[m] : Measure (Eucl P)) := by rw [hb]; ring
+    _ ≤ C * (θ x * ∫ y in (T : Set (Eucl P)), g₀ y ∂(μHE[m] : Measure (Eucl P)) + 1) :=
+        mul_le_mul_of_nonneg_left hrB.le hC
 /-- Blow-ups of the product `(0, 1) × M ⊆ ℝ^{P+1}` slice into blow-ups of `M` (Simon Ch. 6, 3.2(2)).
 With `Φ(s, u) = (s, u)`, `π(y) = (y₁, …, y_P)`, `y* = Φ(s₀, x)` and `r > 0`, and assuming the
 product formula `H^{m+1}⌞π⁻¹(A) = Φ_#(L¹ ⊗ Hᵐ⌞A)` for countably `m`-rectifiable `A`:
@@ -738,18 +813,6 @@ theorem Submission.iwl_cr_ip_wt_slice_identity :
     rw [hM, aestronglyMeasurable_iUnion_iff]
     intro n
     exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
-  have hθpos : ∀ᵐ u ∂((μHE[m] : Measure (Eucl P)).restrict M), 0 ≤ θ u :=
-    (ae_restrict_mem₀ hMmeas).mono fun u hu => hθnn u hu
-  -- Undo the blow-up for any integrand.
-  have hcov : ∀ h : Eucl P → ℝ, ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
-      h w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P)) = (r ^ m)⁻¹ * ∫ u in M,
-        h (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u ∂(μHE[m] : Measure (Eucl P)) := by
-    intro h
-    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => h w * θ (x + r • w)) hr0]
-    congr 1
-    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
-    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul,
-      add_sub_cancel]
   -- Blow-up maps.
   have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
     show Continuous fun u : Eucl P => r⁻¹ • (u - x)
@@ -757,55 +820,6 @@ theorem Submission.iwl_cr_ip_wt_slice_identity :
   have hηnorm : ∀ u, ‖Poincare.SimonGMT.Chapter03.blowUpMap x r u‖ = r⁻¹ * ‖u - x‖ := by
     intro u
     simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
-      abs_of_pos hr0]
-  -- Integrability of `u ↦ g₀(η u) θ(u)` on `M`.
-  have hint₀ : Integrable (fun u => g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u)
-      ((μHE[m] : Measure (Eucl P)).restrict M) := by
-    refine Integrable.mono' (g := (closedBall x (r * (R + 1))).indicator fun u => |θ u|) ?_
-      ((hg₀c.comp hηc).aestronglyMeasurable.mul hθae) (Filter.Eventually.of_forall fun u => ?_)
-    · rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
-        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
-      exact (hθint _ (isCompact_closedBall x (r * (R + 1)))).norm.congr
-        (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
-    · by_cases hu : u ∈ closedBall x (r * (R + 1))
-      · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ u), Real.norm_eq_abs]
-        exact mul_le_of_le_one_left (abs_nonneg _)
-          ((abs_of_nonneg (hg₀nn _)).trans_le (hg₀le _))
-      · rw [indicator_of_notMem hu, hg₀0, zero_mul, norm_zero]
-        rw [mem_closedBall, dist_eq_norm, not_le] at hu
-        rw [hηnorm, lt_inv_mul_iff₀ hr0]
-        exact hu
-  -- `C ≥ 0`, and `|g(η u)| θ(u) ≤ C g₀(η u) θ(u)` on `M`.
-  have hC : 0 ≤ C := (abs_nonneg _).trans (hgC 0)
-  have hpt : ∀ w, |g w| ≤ C * g₀ w := by
-    intro w
-    by_cases hw : ‖w‖ ≤ R
-    · rw [hg₀1 w hw, mul_one]
-      exact hgC w
-    · rw [hg0 w (not_le.1 hw), abs_zero]
-      exact mul_nonneg hC (hg₀nn w)
-  have hkey : |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
-      ∂(μHE[m] : Measure (Eucl P))| ≤
-      C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
-        ∂(μHE[m] : Measure (Eucl P)) := by
-    rw [← integral_const_mul]
-    refine (Real.norm_eq_abs _ ▸ norm_integral_le_integral_norm _).trans ?_
-    refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun u => norm_nonneg _)
-      (hint₀.const_mul C) ?_
-    filter_upwards [hθpos] with u hu
-    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hu, ← mul_assoc]
-    exact mul_le_mul_of_nonneg_right (hpt _) hu
-  rw [hcov g, abs_mul, abs_of_pos (inv_pos.2 (pow_pos hr0 m))]
-  have hb := hcov g₀
-  calc (r ^ m)⁻¹ * |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
-        ∂(μHE[m] : Measure (Eucl P))|
-      ≤ (r ^ m)⁻¹ * (C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
-        ∂(μHE[m] : Measure (Eucl P))) :=
-        mul_le_mul_of_nonneg_left hkey (inv_nonneg.2 (pow_nonneg hr0.le m))
-    _ = C * ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g₀ w * θ (x + r • w)
-        ∂(μHE[m] : Measure (Eucl P)) := by rw [hb]; ring
-    _ ≤ C * (θ x * ∫ y in (T : Set (Eucl P)), g₀ y ∂(μHE[m] : Measure (Eucl P)) + 1) :=
-        mul_le_mul_of_nonneg_left hrB.le hC
       abs_of_pos hr]
   -- Blow-ups of the product are products of blow-ups.
   have hprod : ∀ s u, Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r (Φ s u) =
