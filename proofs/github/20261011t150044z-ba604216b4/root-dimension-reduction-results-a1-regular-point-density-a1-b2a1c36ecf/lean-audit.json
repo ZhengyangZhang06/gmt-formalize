@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e8287f26267f66852057263a1f5e2af09d743d94f0b1b4b3c1d58a252970ac9b",
+  "git_delta": {
+    "base_commit": "a3d3f732a934c798660f19dff20f3a01b6db5ac4",
+    "candidate_commit": "428db72e1193239539dd7db69ca6e5efbf4472c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9440f147663ba742ac6b27471fe7d05d64c91f49169bd312e49d0ead21b134e9",
+    "source_sha256": "0128274a7291f09823cfd146f744722a8460c9318f5e64816e42065f6602c372",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_regular_point_density",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P), IsOpen U → y ∈ regularSet T → ∃ (m : ℕ) (ρ : ℝ), 1 ≤ m ∧ 0 < ρ ∧ ∀ z ∈ T.support ∩ ball y ρ, HasMassDensity T z m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
