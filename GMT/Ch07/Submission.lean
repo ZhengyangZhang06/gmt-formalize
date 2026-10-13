@@ -2635,6 +2635,101 @@ theorem Submission.dpf_unitOrientation_map_gramNormalized : ∀ (P n : ℕ) (Q :
     · exact Or.inr fun α => by rw [hζ, hξτ, hατ]; linear_combination -α σ * hs
     · exact Or.inl fun α => by rw [hζ, hξτ, hατ]; linear_combination -α σ * hs
 
+/-- Simon 6.3.6–3.9 and 6.2.24(3) for a `C¹` bi-Lipschitz bijection `φ` with `φ⁻¹(U) = U`
+(step 9 of the push-forward proof): `ω ↦ ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ⟩ dHⁿ` is the action of the
+integer multiplicity triple `R' = (φ(M), θ ∘ φ⁻¹, η ∘ φ⁻¹)`, where `η = J⁻¹ ξ(· ∘ Dφ)` and `J` is
+the Gram Jacobian of `Dφ` on `TₓM`.  A.e. on `M`, `0 < J` and `η(x)` orients
+`Dφ(x)TₓM = T_{φ(x)}φ(M)`; the area formula then transfers the action from `φ(M)` to `M`. -/
+theorem Submission.dpf_imrep_bilipschitz_image_rep : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, R'.action (ω : DifferentialForm (Euclid P) n) = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+  intro P n U R φ Λ hU hφ hbij hinj hlip hanti hpre hproj
+  -- Step 2: `θ ≥ 1` on `M`, so `M` has locally finite `Hⁿ`-measure in `U`
+  have hfin : ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (R.carrier ∩ C) ≠ ∞ := by
+    intro C hC hCU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult C hC hCU) ?_
+    calc μHE[n] (R.carrier ∩ C) = ∫⁻ _ in R.carrier ∩ C, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+        setLIntegral_mono' (R.measurableSet_carrier.inter hC.isClosed.measurableSet)
+          fun x hx => Nat.one_le_cast.2 (R.mult_pos x hx.1)
+  have hφc : Continuous φ := hφ.continuous
+  have hDφ : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv one_ne_zero
+  -- Step 3 (I): the Gram Jacobian `J` of `Dφ` on `TₓM` is a.e. strongly measurable
+  obtain ⟨J, hJ⟩ : ∃ J : Euclid P → ℝ, J = fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n R.carrier x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n R.carrier x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n R.carrier x) j)))) :=
+    ⟨_, rfl⟩
+  have hJm : AEStronglyMeasurable J (μHE[n].restrict R.carrier) := by
+    rw [hJ]
+    exact Submission.dpf_aestronglyMeasurable_gramJacobian P (μHE[n].restrict R.carrier)
+      (approxTangentPlane n R.carrier) (fderiv ℝ φ) hproj hDφ.aestronglyMeasurable
+  -- Step 4: the orientation `η = J⁻¹ ζ`, `ζ(x)(β) = ξ(x)(β ∘ Dφ(x))`, in source coordinates
+  set η : Euclid P → MultiVector P n := fun x => (J x)⁻¹ •
+    (R.orient x).comp (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ φ x))
+  have hηm : AEStronglyMeasurable η (μHE[n].restrict R.carrier) := by
+    have hζ : AEStronglyMeasurable (fun x => (R.orient x).comp
+        (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ φ x)))
+        (μHE[n].restrict R.carrier) :=
+      (continuous_fst.clm_comp continuous_snd).comp_aestronglyMeasurable
+        (R.aestronglyMeasurable_orient.prodMk
+          (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp_aestronglyMeasurable
+            hDφ.aestronglyMeasurable))
+    exact hJm.aemeasurable.inv.aestronglyMeasurable.smul hζ
+  -- Step 3: a.e. on `M`, `0 < J` and `η` orients `Dφ(x)TₓM`, the approximate tangent plane of
+  -- `φ(M)` at `φ(x)` (`ξ(x)` orients `TₓM` by uniqueness of approximate tangent planes)
+  have hgood : ∀ᵐ x ∂(μHE[n].restrict R.carrier), 0 < J x ∧ ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (φ '' R.carrier) (φ x) Q ∧ IsUnitOrientationOf (η x) Q := by
+    filter_upwards [Submission.dpf_approxTangent_bilipschitz_image_ae P n U R.carrier φ Λ hU
+      R.measurableSet_carrier R.carrier_subset R.rectifiable hfin hφ hinj hlip hanti hpre,
+      R.orients] with x hx hξ
+    obtain ⟨Q, hQ, hξQ⟩ := hξ
+    rw [hQ.unique hx.1] at hξQ
+    obtain ⟨hJpos, -, hηQ⟩ := Submission.dpf_unitOrientation_map_gramNormalized P n
+      (approxTangentPlane n R.carrier x) (R.orient x) (fderiv ℝ φ x) (J x) hξQ (hinj x)
+      (by rw [hJ])
+    exact ⟨hJpos, _, hx.2, hηQ⟩
+  -- Step 5: `R' = (φ(M), θ ∘ φ⁻¹, η ∘ φ⁻¹)` is an integer multiplicity triple in `U`
+  obtain ⟨R', hR'c, hR'⟩ := Submission.dpfir_bilipschitz_image_imrep_exists P n U R φ Λ η hbij
+    hlip hanti hpre hηm (hgood.mono fun x hx => hx.2)
+  refine ⟨R', fun ω => ?_⟩
+  obtain ⟨w, ⟨hws, hwc⟩, hwU⟩ := ω
+  show R'.action w = ∫ x in R.carrier,
+    (R.mult x : ℝ) * R.orient x ((w (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]
+  have hwcont : Continuous w := ContDiff.continuous hws
+  -- Step 6(b): `β(x) = ω(φ(x)) ∘ Dφ(x)` is continuous with compact support `⊆ φ⁻¹(spt ω) ⊆ U`
+  set β : Euclid P → Covector (Euclid P) n :=
+    fun x => (w (φ x)).compContinuousLinearMap (fderiv ℝ φ x) with hβ
+  have hβc : Continuous β :=
+    (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp hDφ).clm_apply
+      (hwcont.comp hφc)
+  have hβsupp : tsupport β ⊆ φ ⁻¹' tsupport w := by
+    refine closure_minimal (fun x hx => subset_tsupport w fun h0 => hx ?_)
+      ((isClosed_tsupport w).preimage hφc)
+    ext v
+    simp [hβ, h0]
+  have hβcs : HasCompactSupport β :=
+    (Metric.isCompact_of_isClosed_isBounded ((isClosed_tsupport w).preimage hφc)
+      (hanti.isBounded_preimage hwc.isCompact.isBounded)).of_isClosed_subset
+      (isClosed_tsupport β) hβsupp
+  have hβU : tsupport β ⊆ U := hβsupp.trans ((preimage_mono hwU).trans hpre.subset)
+  -- Step 6(a): `J(x) h(φ(x)) = g_ω(x)` a.e. on `M`, where `h = θ'⟨ω, ξ'⟩` and `g_ω = θ⟨β, ξ⟩`
+  have hJh : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      J x * ((R'.mult (φ x) : ℝ) * R'.orient (φ x) (w (φ x))) =
+        (R.mult x : ℝ) * R.orient x (β x) := by
+    filter_upwards [hgood] with x hx
+    obtain ⟨hmult, horient⟩ := hR' x
+    have hηx : η x (w (φ x)) = (J x)⁻¹ * R.orient x (β x) := rfl
+    rw [hmult, horient, hηx, mul_left_comm, mul_inv_cancel_left₀ hx.1.ne']
+  -- Step 6(c)–(d): the area formula on `φ(M)` transfers integrability and the integral
+  have harea : ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y, g y ∂(μHE[n].restrict R'.carrier) =
+      ∫⁻ x, ENNReal.ofReal (J x) * g (φ x) ∂(μHE[n].restrict R.carrier) := by
+    intro g
+    rw [hR'c, hJ]
+    exact Submission.dpf_area_formula_bilipschitz_rectifiable P n U R.carrier φ Λ hU
+      R.measurableSet_carrier R.carrier_subset R.rectifiable hfin hφ hlip hbij.1 g
+  exact (Submission.dpfir_integral_eq_of_area_lintegral P (μHE[n].restrict R.carrier)
+    (μHE[n].restrict R'.carrier) φ J (fun y => (R'.mult y : ℝ) * R'.orient y (w y))
+    (fun x => (R.mult x : ℝ) * R.orient x (β x)) (fun x => by rw [hJ]; exact Real.sqrt_nonneg _)
+    harea (Submission.dpfir_imrep_pairing_continuous_integrable P n U R' w hwcont hwc
+      hwU).aestronglyMeasurable
+    (Submission.dpfir_imrep_pairing_continuous_integrable P n U R β hβc hβcs hβU) hJh).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
