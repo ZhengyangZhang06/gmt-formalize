@@ -1,0 +1,28 @@
+{
+  "node_id": "root.rectifiability-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/340",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ba8a5544bc7633cd7d49b78fc41062f4d09fac93",
+  "integrated_commit": "",
+  "proof_base_commit": "e48d1bc73d07c8dc0241837af86260437b98ac5f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.rectifiability-a1.mass_measure_representation-a1",
+    "root.rectifiability-a1.projection_null-a1",
+    "root.rectifiability-a1.mass_measure_abs_continuous-a1",
+    "root.rectifiability-a1.density_comparison-a1",
+    "root.rectifiability-a1.bf_cone_density-a1",
+    "root.rectifiability-a1.mickle_rado-a1",
+    "root.rectifiability-a1.bf_trichotomy-a1",
+    "root.rectifiability-a1.bf_projection_null_ae-a1",
+    "root.rectifiability-a1.structure_projection-a1",
+    "root.rectifiability-a1.weighted_tangent_ae-a1",
+    "root.rectifiability-a1.orientation-a1",
+    "root.rectifiability-a1.mass_measure_rectifiable-a1"
+  ]
+}

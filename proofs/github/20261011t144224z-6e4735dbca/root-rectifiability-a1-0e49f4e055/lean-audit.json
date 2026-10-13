@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ae8aaec80b929552bf298e5085aed79af6ecea4dab52b309e6ddc0ec01a2319c",
+  "git_delta": {
+    "base_commit": "13d56cd3d5580b1be713598e9bf182e16d5f8f62",
+    "candidate_commit": "ba8a5544bc7633cd7d49b78fc41062f4d09fac93",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "6132d169e98d4ee4703879942138d5986917b6cf85c1fd84924639ea8fa7d912",
+    "source_sha256": "f10484a20def437470b314a48bd5ac7b0481bb14ded8df93f6c222f9979b5a6e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_theorem",
+      "statement": "RectifiabilityTheorem",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
