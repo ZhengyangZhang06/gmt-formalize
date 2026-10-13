@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.monotonicity-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Monotonicity inequalities for L^p mean curvature under the Allard hypotheses (fact M)",
+  "statement": "Let n >= 1, l, p > n, U open, V a contract rectifiable varifold in U with generalized mean curvature H, delta > 0 and rho such that 2.3 (AllardHypotheses H p delta rho) holds, and Lambda with 4 p delta/(p - n) <= Lambda <= 1. Let y in R^(n+l), R > 0 with B_R(y) contained in B_rho(0), and 0 < s <= r < R. With mu = V.weight and closed balls: (I) s^-n mu(B_s(y)) <= e^(2 Lambda) r^-n mu(B_r(y)) + 2 e^Lambda Lambda; (II) r^-n mu(B_r(y)) <= e^(2 Lambda) s^-n mu(B_s(y)) + 2 e^Lambda Lambda + e^(2 Lambda) integral over B_r(y) minus B_s(y) of |(x - y) - p_x(x - y)|^2 |x - y|^(-n-2) dmu(x); (III) if y in spt V then e^(-Lambda)(omega_n - Lambda) <= s^-n mu(B_s(y)).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ Λ : ℝ), 0 < δ → V.AllardHypotheses H p δ ρ → 4 * p * δ / (p - n) ≤ Λ → Λ ≤ 1 → ∀ (y : Amb n ℓ) (R : ℝ), 0 < R → closedBall y R ⊆ closedBall 0 ρ → ∀ s r : ℝ, 0 < s → s ≤ r → r < R → V.weight.real (closedBall y s) / s ^ n ≤ Real.exp (2 * Λ) * (V.weight.real (closedBall y r) / r ^ n) + 2 * Real.exp Λ * Λ ∧ V.weight.real (closedBall y r) / r ^ n ≤ Real.exp (2 * Λ) * (V.weight.real (closedBall y s) / s ^ n) + 2 * Real.exp Λ * Λ + Real.exp (2 * Λ) * ∫ x in closedBall y r \\ closedBall y s, ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight ∧ (y ∈ V.support → Real.exp (-Λ) * (unitBallVolume n - Λ) ≤ V.weight.real (closedBall y s) / s ^ n)",
+  "lean_name": "lip_approx_monotonicity",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.tangent_structure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-monotonicity-a1-a1"
+}

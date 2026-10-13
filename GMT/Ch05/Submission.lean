@@ -458,6 +458,265 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Weight of a ball as an integral of the multiplicity** (Simon Ch. 4, 1.1).  If
+`B_r(x) ⊆ U`, then `μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ`.  By definition
+`μ_V(B_r(x)) = ∫⁻_{M ∩ B_r(x)} θ dHⁿ`; as `B_r(x)` is compact, `θ` is `Hⁿ`-integrable on
+`M ∩ B_r(x)`, and `θ > 0` on `M`, so this lower integral is the (real) integral. -/
+theorem rsod_weight_closedBall_eq_ofReal_integral : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r : ℝ), closedBall x r ⊆ U → V.weight (closedBall x r) = ENNReal.ofReal (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) := by
+  intro n ℓ U V x r hU
+  -- `θ` is integrable on `M ∩ B_r(x)` (the closed ball is compact and lies in `U`) ...
+  have hint : IntegrableOn V.mult (V.carrier ∩ closedBall x r) (μHE[n] : Measure (Amb n ℓ)) :=
+    V.integrableOn_mult _ (isCompact_closedBall x r) hU
+  -- ... and nonnegative a.e. there, since a.e. point of `M ∩ B_r(x)` lies in `M`.
+  have hnn : 0 ≤ᵐ[(μHE[n] : Measure (Amb n ℓ)).restrict (V.carrier ∩ closedBall x r)] V.mult := by
+    filter_upwards [ae_restrict_mem₀
+      (V.nullMeasurableSet_carrier.inter measurableSet_closedBall.nullMeasurableSet)] with z hz
+    exact (V.mult_pos z hz.1).le
+  rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+    Measure.restrict_restrict measurableSet_closedBall, inter_comm (closedBall x r) V.carrier,
+    ofReal_integral_eq_lintegral_ofReal hint.integrable hnn]
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
+`ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
+`ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
+(i) `(a, b) − (a', b') = (a − a', b − b')`; (ii) `|(a, b)|² = |a|² + |b|²`; (iii) every
+`z ∈ ℝ^{n+ℓ}` is some `(a, b)`; (iv) `p_{T₀}(q(a, b)) = q(a, 0)`.
+The coordinate of `(a, b)` at `castAdd ℓ i` is `a_i` and at `natAdd n j` is `b_j`, and every index
+of `Fin (n + ℓ)` has one of these forms (`Fin.addCases`); this gives (i) and (iii), and (ii) by
+splitting `Σ_k z_k²` with `Fin.sum_univ_add`. For (iv), `(a, 0) = Σ_i a_i e_{castAdd ℓ i}` lies in
+`ℝⁿ × {0}`, `(0, b)` is orthogonal to every `e_{castAdd ℓ i}` and hence to `ℝⁿ × {0}`, and `q`
+preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, b) ⊥ T₀`, which
+characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
+theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
+  intro n ℓ q
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- (i): subtraction is coordinatewise
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  refine ⟨hsub, ?_, ?_, ?_⟩
+  -- (ii): split `‖z‖² = Σ_k ‖z_k‖²` over the two blocks of indices
+  · intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- (iii): read off `a` and `b` from the two blocks of coordinates of `z`
+  · intro z
+    refine ⟨WithLp.toLp 2 (fun i => z (Fin.castAdd ℓ i)),
+      WithLp.toLp 2 (fun j => z (Fin.natAdd n j)), ?_⟩
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · rw [hl]
+    · rw [hr]
+  -- (iv)
+  · intro a b
+    -- `graphPoint a 0 = Σ_i a_i e_{castAdd ℓ i}` lies in `ℝⁿ × {0}`
+    have hmem : graphPoint a 0 ∈ horizontalPlane n ℓ := by
+      have e : graphPoint a 0 =
+          ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+        ext k
+        refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+        · rw [hl]
+          simp only [WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single, Finset.sum_apply,
+            Pi.smul_apply, Pi.single_apply, Fin.castAdd_inj, smul_eq_mul, mul_ite, mul_one,
+            mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
+        · rw [hr]
+          simp only [PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, PiLp.ofLp_single,
+            Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+          refine (Finset.sum_eq_zero fun x _ => ?_).symm
+          have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+            intro h
+            have h' := congrArg Fin.val h
+            simp only [Fin.val_natAdd, Fin.val_castAdd] at h'
+            have := x.isLt
+            omega
+          rw [Pi.single_eq_of_ne hne, mul_zero]
+      rw [e]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    -- `graphPoint 0 b` is orthogonal to every `e_{castAdd ℓ i}`, hence to `ℝⁿ × {0}`
+    have horth : ∀ h ∈ horizontalPlane n ℓ, inner ℝ (graphPoint 0 b) h = 0 := by
+      have hle : horizontalPlane n ℓ ≤ (ℝ ∙ graphPoint 0 b)ᗮ := by
+        refine Submodule.span_le.mpr ?_
+        rintro _ ⟨i, rfl⟩
+        rw [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right,
+          EuclideanSpace.inner_single_right, hl]
+        simp
+      intro h hh
+      exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp (hle hh)
+    -- `q(a, 0) ∈ T₀`, and `q(a, b) - q(a, 0) = q(0, b)` is orthogonal to `T₀ = q(ℝⁿ × {0})`
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Submodule.mem_map_of_mem hmem) ?_
+    intro w hw
+    obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
+    rw [← map_sub, hsub, sub_self, sub_zero]
+    exact (q.inner_map_map _ _).trans (horth h hh)
+/-- **Tilt-excess as a lower integral** (Simon Ch. 5, 4.1; proof of 5.2, (10)).  If
+`y ↦ p_{T_y M}` is `μ_V`-a.e. strongly measurable and `μ_V(B_s(ζ)) < ∞`, then
+`∫⁻_{B_s(ζ)} |p_{T_y M} − p_T|² dμ_V = sⁿ E(ζ, s, T)`.  Both projections have operator norm
+`≤ 1`, so the integrand lies in `[0, 4(n + ℓ)]`; it is therefore integrable on the ball, and its
+lower integral is the real integral `∫_{B_s(ζ)} |p_{T_y M} − p_T|² dμ_V = sⁿ E(ζ, s, T)`. -/
+theorem allard52_cft_tilt_lintegral_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (s : ℝ) (T : Submodule ℝ (Amb n ℓ)), 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T) := by
+  intro n ℓ U V hmeas ζ s T hs hfin
+  -- every tangent projection is an orthogonal projection or `0`, so has operator norm `≤ 1`
+  have hp : ∀ y, ‖V.tangentProj y‖ ≤ 1 := by
+    intro y
+    rw [RectifiableVarifold.tangentProj]
+    split
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  -- pointwise bounds `0 ≤ |p_y - p_T|² ≤ 4 (n + ℓ)`, from `‖p_y - p_T‖ ≤ 2` and `|eᵢ| = 1`
+  have hbd : ∀ y, 0 ≤ hsNormSq (V.tangentProj y - T.starProjection) ∧
+      hsNormSq (V.tangentProj y - T.starProjection) ≤ ∑ _i : Fin (n + ℓ), (2 : ℝ) ^ 2 := by
+    intro y
+    have hA : ‖V.tangentProj y - T.starProjection‖ ≤ 2 := by
+      calc ‖V.tangentProj y - T.starProjection‖
+          ≤ ‖V.tangentProj y‖ + ‖T.starProjection‖ := norm_sub_le _ _
+        _ ≤ 1 + 1 := add_le_add (hp y) T.starProjection_norm_le
+        _ = 2 := by norm_num
+    refine ⟨Finset.sum_nonneg fun i _ => sq_nonneg _, Finset.sum_le_sum fun i _ => ?_⟩
+    have h1 := (V.tangentProj y - T.starProjection).le_opNorm (EuclideanSpace.single i 1)
+    rw [PiLp.norm_single, norm_one, mul_one] at h1
+    exact pow_le_pow_left₀ (norm_nonneg _) (h1.trans hA) 2
+  -- `A ↦ |A - p_T|²` is continuous, so `y ↦ |p_y - p_T|²` is a.e. strongly measurable; being
+  -- bounded on the ball of finite measure, it is integrable there
+  have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (A - T.starProjection) := by
+    unfold hsNormSq
+    fun_prop
+  have hint : IntegrableOn (fun y => hsNormSq (V.tangentProj y - T.starProjection))
+      (closedBall ζ s) V.weight :=
+    Measure.integrableOn_of_bounded hfin.ne (hcont.comp_aestronglyMeasurable hmeas)
+      (Eventually.of_forall fun y => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hbd y).1]
+        exact (hbd y).2)
+  -- `sⁿ E(ζ, s, T) = ∫_{B_s(ζ)} |p_y - p_T|² dμ_V`, and the integrand is nonnegative
+  rw [RectifiableVarifold.tiltExcess, mul_inv_cancel_left₀ (pow_ne_zero n hs.ne'),
+    ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun y => (hbd y).1)]
+
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11): for `f` `1`-Lipschitz on `D ⊆ ℝⁿ` and a linear
+isometry `q` of `ℝ^{n+ℓ}`, the graph map `F(x) = q(x, f(x))` is `√2`-Lipschitz on `D`, and
+`|F(x)| ≤ √2 |x|` on `D` when `f(0) = 0` and `0 ∈ D`. By the graph coordinates
+(`lip_approx_graph_coordinates` (i), (ii)) and since `q` is a linear isometry,
+`|F(x) − F(x')|² = |x − x'|² + |f(x) − f(x')|² ≤ 2 |x − x'|²`; and `F(0) = q(0, 0) = 0`. -/
+theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)), LipschitzOnWith 1 f D → (∀ x ∈ D, ∀ x' ∈ D, ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖) ∧ (f 0 = 0 → (0 : Rn n) ∈ D → ∀ x ∈ D, ‖q (graphPoint x (f x))‖ ≤ Real.sqrt 2 * ‖x‖) := by
+  intro n ℓ q f D hf
+  obtain ⟨hsub, hnorm, -, -⟩ := lip_approx_graph_coordinates n ℓ q
+  have hlip : ∀ x ∈ D, ∀ x' ∈ D,
+      ‖q (graphPoint x (f x)) - q (graphPoint x' (f x'))‖ ≤ Real.sqrt 2 * ‖x - x'‖ := by
+    intro x hx x' hx'
+    -- `|f(x) − f(x')| ≤ |x − x'|`
+    have hf' : ‖f x - f x'‖ ≤ ‖x - x'‖ := by
+      have h := hf.dist_le_mul x hx x' hx'
+      rwa [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at h
+    -- `|F(x) − F(x')| = |(x − x', f(x) − f(x'))|`, whose square is at most `2 |x − x'|²`
+    rw [← map_sub, q.norm_map, hsub]
+    have hsq : ‖graphPoint (x - x') (f x - f x')‖ ^ 2 ≤ (Real.sqrt 2 * ‖x - x'‖) ^ 2 := by
+      rw [hnorm, mul_pow, Real.sq_sqrt zero_le_two, two_mul]
+      exact add_le_add le_rfl (pow_le_pow_left₀ (norm_nonneg _) hf' 2)
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _)
+      (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) two_ne_zero).mp hsq
+  refine ⟨hlip, fun hf0 h0 x hx => ?_⟩
+  -- `(0, 0) = (0, 0) − (0, 0) = 0`, so `F(0) = 0`; compare `F(x)` with `F(0)`
+  have hzero : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    have h := hsub 0 0 0 0
+    rw [sub_self, sub_self, sub_self] at h
+    exact h.symm
+  have h := hlip x hx 0 h0
+  rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
+
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11) (pp. 123–124): tilt-excess decay gives the
+Campanato estimate for the tangent planes `G(x) = p_{q(graph Df(x))}` of the Lipschitz graph. Fix
+`z ∈ Bⁿ_{R/4}(0)`, `0 < s ≤ R/4`, and put `ζ = q(z, f(z))`, `P = p_{S(ζ)}`, `D = Bⁿ_{s/2}(z)`,
+`B = B_s(ζ)`. As `x ↦ q(x, f(x))` is `√2`-Lipschitz on `Bⁿ_R(0)` and vanishes at `0`:
+`ζ ∈ spt V ∩ B_{R/2}(0)` (by the graph representation of `spt V`), `D ⊆ B̆ⁿ_{R/2}(0)`,
+`q(x, f(x)) ∈ B` for `x ∈ D`, and `B ⊆ B_R(0) ⊆ U`, so `μ_V(B) < ∞` and
+`∫⁻_B |p_{T_y M} − P|² dμ_V = sⁿ E(ζ, s, S(ζ)) ≤ A sⁿ (s/R)^e`. The comparison hypothesis with
+`Φ(w, T) = 1_B(w) |T − P|²` bounds `∫⁻_D |G(x) − P|² dx` by
+`∫⁻_{q(graph f|_D)} Φ(y, p_{T_y M}) dμ_V`, which is at most `∫⁻_B |p_{T_y M} − P|² dμ_V`. -/
+theorem allard52_campanato_from_tilt : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (S : Amb n ℓ → Submodule ℝ (Amb n ℓ)) (R A e : ℝ), 0 < R → closedBall (0 : Amb n ℓ) R ⊆ U → f 0 = 0 → LipschitzOnWith 1 f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → AEStronglyMeasurable V.tangentProj V.weight → (∀ Φ : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ) → ℝ≥0∞, Measurable (Function.uncurry Φ) → ∀ D : Set (Rn n), MeasurableSet D → D ⊆ ball 0 (R / 2) → ∫⁻ x in D, Φ (q (graphPoint x (f x))) ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection ≤ ∫⁻ y in q '' graphOver f D, Φ y (V.tangentProj y) ∂V.weight) → (∀ ζ ∈ V.support ∩ closedBall 0 (R / 2), ∀ s : ℝ, 0 < s → s ≤ R / 2 → V.tiltExcess ζ s (S ζ) ≤ A * (s / R) ^ e) → ∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection - (S (q (graphPoint z (f z)))).starProjection)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ e) := by
+  intro n ℓ U V q f S R A e hR hRU hf0 hlip hspt hae hcomp htilt z hz s hs hsR
+  set ζ : Amb n ℓ := q (graphPoint z (f z))
+  -- the graph map `x ↦ q(x, f(x))` is `√2`-Lipschitz on `Bⁿ_R(0)` and `|q(x, f(x))| ≤ √2 |x|`
+  obtain ⟨hlipF, hnormF⟩ :=
+    Submission.allard52_cft_graph_map_sqrt_two n ℓ q f (closedBall 0 R) hlip
+  have h2 : Real.sqrt 2 ≤ 2 := by
+    nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]
+  have hzn : ‖z‖ ≤ R / 4 := mem_closedBall_zero_iff.mp hz
+  have hzR : z ∈ closedBall (0 : Rn n) R := mem_closedBall_zero_iff.mpr (by linarith)
+  -- `|ζ| ≤ √2 |z| ≤ R/2`
+  have hζn : ‖ζ‖ ≤ R / 2 :=
+    calc ‖ζ‖ ≤ Real.sqrt 2 * ‖z‖ := hnormF hf0 (mem_closedBall_self hR.le) z hzR
+      _ ≤ 2 * (R / 4) := mul_le_mul h2 hzn (norm_nonneg z) (by norm_num)
+      _ = R / 2 := by ring
+  -- `ζ ∈ spt V ∩ B_{R/2}(0)`, as `spt V ∩ B_R(0) = q(graph f) ∩ B_R(0)`
+  have hζspt : ζ ∈ V.support ∩ closedBall 0 (R / 2) := by
+    have hmem : ζ ∈ q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R :=
+      ⟨Set.mem_image_of_mem q (Set.mem_image_of_mem (fun x => graphPoint x (f x)) hzR),
+        mem_closedBall_zero_iff.mpr (by linarith)⟩
+    rw [← hspt] at hmem
+    exact ⟨hmem.1, mem_closedBall_zero_iff.mpr hζn⟩
+  -- `D = Bⁿ_{s/2}(z) ⊆ B̆ⁿ_{R/2}(0)` and `D ⊆ Bⁿ_R(0)`
+  have hDball : closedBall z (s / 2) ⊆ ball (0 : Rn n) (R / 2) :=
+    closedBall_subset_ball' (by rw [dist_zero_right]; linarith)
+  have hDR : closedBall z (s / 2) ⊆ closedBall (0 : Rn n) R :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  -- `q(x, f(x)) ∈ B = B_s(ζ)` for `x ∈ D`
+  have hFB : ∀ x ∈ closedBall z (s / 2), q (graphPoint x (f x)) ∈ closedBall ζ s := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm]
+    have hxz : ‖x - z‖ ≤ s / 2 := by rw [← dist_eq_norm]; exact hx
+    calc ‖q (graphPoint x (f x)) - ζ‖ ≤ Real.sqrt 2 * ‖x - z‖ := hlipF x (hDR hx) z hzR
+      _ ≤ 2 * (s / 2) := mul_le_mul h2 hxz (norm_nonneg _) (by norm_num)
+      _ = s := by ring
+  -- `B ⊆ B_R(0) ⊆ U`, hence `μ_V(B) < ∞`
+  have hBR : closedBall ζ s ⊆ closedBall (0 : Amb n ℓ) R :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  have hBfin : V.weight (closedBall ζ s) < ⊤ := by
+    rw [rsod_weight_closedBall_eq_ofReal_integral n ℓ U V ζ s (hBR.trans hRU)]
+    exact ENNReal.ofReal_lt_top
+  -- `∫⁻_B |p_{T_y M} − P|² dμ_V = sⁿ E(ζ, s, S(ζ)) ≤ A sⁿ (s/R)^e`
+  have hBbound : ∫⁻ y in closedBall ζ s,
+      ENNReal.ofReal (hsNormSq (V.tangentProj y - (S ζ).starProjection)) ∂V.weight ≤
+      ENNReal.ofReal (A * s ^ n * (s / R) ^ e) := by
+    rw [Submission.allard52_cft_tilt_lintegral_eq n ℓ U V hae ζ s (S ζ) hs hBfin]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc s ^ n * V.tiltExcess ζ s (S ζ) ≤ s ^ n * (A * (s / R) ^ e) :=
+          mul_le_mul_of_nonneg_left (htilt ζ hζspt s hs (by linarith)) (pow_pos hs n).le
+      _ = A * s ^ n * (s / R) ^ e := by ring
+  -- the test function `Φ(w, T) = 1_B(w) |T − P|²` is measurable
+  have hg : Measurable fun T : Amb n ℓ →L[ℝ] Amb n ℓ =>
+      ENNReal.ofReal (hsNormSq (T - (S ζ).starProjection)) := by
+    refine ENNReal.measurable_ofReal.comp (Continuous.measurable ?_)
+    unfold hsNormSq
+    refine continuous_finsetSum _ fun i _ => ?_
+    exact ((continuous_id.sub continuous_const).clm_apply continuous_const).norm.pow 2
+  have hΦ : Measurable (Function.uncurry fun (w : Amb n ℓ) (T : Amb n ℓ →L[ℝ] Amb n ℓ) =>
+      (closedBall ζ s).indicator
+        (fun _ => ENNReal.ofReal (hsNormSq (T - (S ζ).starProjection))) w) :=
+    (hg.comp measurable_snd).indicator (measurable_fst measurableSet_closedBall)
+  have hcmp := hcomp _ hΦ (closedBall z (s / 2)) measurableSet_closedBall hDball
+  refine le_trans (le_of_eq ?_) (hcmp.trans ((setLIntegral_le_lintegral _ _).trans
+    (le_trans (le_of_eq ?_) hBbound)))
+  -- on `D` the indicator is `1`, since the graph over `D` lies in `B`
+  · exact setLIntegral_congr_fun measurableSet_closedBall fun x hx => by
+      rw [Set.indicator_of_mem (hFB x hx)]
+  -- `∫⁻ 1_B |p_{T_y M} − P|² dμ_V = ∫⁻_B |p_{T_y M} − P|² dμ_V`
+  · refine (lintegral_congr fun y => ?_).trans (lintegral_indicator measurableSet_closedBall _)
+    by_cases hy : y ∈ closedBall ζ s
+    · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy]
+    · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
