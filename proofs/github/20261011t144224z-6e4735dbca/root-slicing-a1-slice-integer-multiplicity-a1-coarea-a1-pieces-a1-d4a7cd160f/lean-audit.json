@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d0f21c8ff9dccf1ac0021755c788b335bef981e7fa3cdf62eed95160363246a",
+  "git_delta": {
+    "base_commit": "552fe3366b4a4bd4b5df00c57bcd905fef6b287e",
+    "candidate_commit": "e3cb17916c0da55b1a9779a07a4d830794389805",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_pieces",
+    "diff_sha256": "60168c665eed56e415274639911cc34bb4f3f24ce6c4062f5490ca60d4f0879e",
+    "source_sha256": "e75a3f1ff84f8d610a9a275cbec089e9383ccdf398c4334d34275830631384c6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_pieces",
+      "statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∃ (Φ : ℕ → Eucl (m + 1) → Eucl P) (Ω : ℕ → Set (Eucl (m + 1))) (h : ℕ → Eucl (m + 1) → ℝ) (W : ℕ → Set (Eucl P)), (∀ i, IsOpen (Ω i)) ∧ (∀ i, ContDiff ℝ 1 (Φ i)) ∧ (∀ i, ∃ K : ℝ≥0, LipschitzOnWith K (Φ i) (Ω i)) ∧ (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω i, ∀ w' ∈ Ω i, c * ‖w - w'‖ ≤ ‖Φ i w - Φ i w'‖) ∧ (∀ i, ContDiff ℝ 1 (h i)) ∧ (∀ i, MeasurableSet (W i)) ∧ (∀ i, W i ⊆ M) ∧ (∀ i, W i ⊆ Φ i '' Ω i) ∧ Pairwise (Function.onFun Disjoint W) ∧ (μHE[m + 1] : Measure (Eucl P)) (M \\ ⋃ i, W i) = 0 ∧ ∀ i, ∀ w ∈ Ω i, Φ i w ∈ W i → f (Φ i w) = h i w ∧ G (Φ i w) ∈ LinearMap.range (fderiv ℝ (Φ i) w).toLinearMap ∧ ∀ u, inner ℝ (G (Φ i w)) (fderiv ℝ (Φ i) w u) = fderiv ℝ (h i) w u",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
