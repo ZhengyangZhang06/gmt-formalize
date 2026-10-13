@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d04d5115484589551888a35a515be54aeb508cb6bca7800a379111a9504992c2",
+  "git_delta": {
+    "base_commit": "c4a77966446510ea21fad5ba713d9d730cb9fef4",
+    "candidate_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_rpd_embedded_locally_closed",
+    "diff_sha256": "6445d0abf58a99763174aa6278be1df9540504bc40571ddb26673afbd15a2936",
+    "source_sha256": "ae08f0f2d4e80520d1242dc47e385f3d3851491acb965b894c38901bd701c605",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_rpd_embedded_locally_closed",
+      "statement": "∀ (P r d : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → MeasurableSet M ∧ ∀ y ∈ M, ∃ ε : ℝ, 0 < ε ∧ IsCompact (M ∩ closedBall y ε)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
