@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Steiner symmetrization does not increase the diameter** (Simon 2.10, proof of the
+isodiametric inequality).  For compact `A ⊆ ℝᵈ` and `j < d`, write `y[j↦t]` for `y` with its `j`-th
+coordinate replaced by `t`, `A^j_y = {t : y[j↦t] ∈ A}`, `λ(y) = L¹(A^j_y)` and
+`S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ λ(y)/2}`; then `ediam S_j(A) ≤ ediam A`.  Each slice `A^j_y` is
+compact, so it contains `a_y = inf A^j_y` and `b_y = sup A^j_y`, and `λ(y) ≤ b_y - a_y`.  For
+`x, y ∈ S_j(A)`, `|x_j - y_j| ≤ (λ(x) + λ(y))/2 ≤ max(b_y - a_x, b_x - a_y)`, and replacing the
+`j`-th coordinates of `x, y` by the matching endpoints gives two points of `A` at distance at least
+`|x - y|`. -/
+theorem Submission.cbr_ci_iso_steiner_ediam_le : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ediam {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} ≤ ediam A := by
+  intro d j A hA
+  -- (1) every slice `A^j_y` is compact: closed, and contained in the compact image of `A`
+  -- under the `j`-th coordinate
+  have hslice : ∀ y : Euclid d,
+      IsCompact {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} := by
+    intro y
+    have hf : Continuous fun t : ℝ => WithLp.toLp 2 (Function.update y.ofLp j t) :=
+      (PiLp.continuous_toLp 2 _).comp (continuous_const.update j continuous_id)
+    refine (hA.image (PiLp.continuous_apply 2 _ j)).of_isClosed_subset
+      (hA.isClosed.preimage hf) fun t ht => ⟨_, ht, by simp⟩
+  -- (2) a nonempty compact `P ⊆ ℝ` contains `inf P` and `sup P`, and `L¹(P) ≤ sup P - inf P`
+  have hlen : ∀ P : Set ℝ, IsCompact P → P.Nonempty →
+      sInf P ∈ P ∧ sSup P ∈ P ∧ (volume P).toReal ≤ sSup P - sInf P := by
+    intro P hP hne
+    refine ⟨hP.sInf_mem hne, hP.sSup_mem hne, ?_⟩
+    refine ENNReal.toReal_le_of_le_ofReal
+      (sub_nonneg.mpr (csInf_le_csSup hne hP.bddBelow hP.bddAbove)) ?_
+    calc volume P ≤ volume (Icc (sInf P) (sSup P)) :=
+          measure_mono fun t ht => ⟨csInf_le hP.bddBelow ht, le_csSup hP.bddAbove ht⟩
+      _ = ENNReal.ofReal (sSup P - sInf P) := Real.volume_Icc
+  -- (3) two-point estimate: replacing the `j`-th coordinates by `a, b` with
+  -- `|x_j - y_j| ≤ |a - b|` does not decrease the distance
+  have hpt : ∀ (x y : Euclid d) (a b : ℝ), WithLp.toLp 2 (Function.update x.ofLp j a) ∈ A →
+      WithLp.toLp 2 (Function.update y.ofLp j b) ∈ A → |x j - y j| ≤ |a - b| →
+      edist x y ≤ ediam A := by
+    intro x y a b ha hb hab
+    refine le_trans ?_ (edist_le_ediam_of_mem ha hb)
+    rw [edist_dist, edist_dist]
+    refine ENNReal.ofReal_le_ofReal ?_
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt (Finset.sum_le_sum fun i _ => ?_)
+    by_cases hi : i = j
+    · subst hi
+      simp only [Function.update_self, Real.dist_eq]
+      exact pow_le_pow_left₀ (abs_nonneg _) hab 2
+    · simp only [Function.update_of_ne hi, le_refl]
+  -- (4) for `x, y ∈ S_j(A)`, `|x_j - y_j| ≤ (λ(x) + λ(y))/2` is realised by a pair of points of `A`
+  refine ediam_le ?_
+  rintro x ⟨hxne, hxj⟩ y ⟨hyne, hyj⟩
+  obtain ⟨hax, hbx, hlx⟩ := hlen _ (hslice x) hxne
+  obtain ⟨hay, hby, hly⟩ := hlen _ (hslice y) hyne
+  have hx := abs_le.mp hxj
+  have hy := abs_le.mp hyj
+  rcases le_total
+      (sSup {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp j t) ∈ A} -
+        sInf {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A})
+      (sSup {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} -
+        sInf {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp j t) ∈ A}) with h | h
+  · refine hpt x y _ _ hax hby ?_
+    rw [abs_sub_comm _ (sSup _)]
+    exact (abs_le.mpr ⟨by linarith, by linarith⟩).trans (le_abs_self _)
+  · refine hpt x y _ _ hbx hay ?_
+    exact (abs_le.mpr ⟨by linarith, by linarith⟩).trans (le_abs_self _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
