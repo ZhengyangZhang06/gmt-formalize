@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "08010d0168366b2412e27cfef7078ea9dd57fb0276d59bd1d205cd425b6cc3b8",
+  "git_delta": {
+    "base_commit": "e08c3f414c615a93db14e7343c291c3539867419",
+    "candidate_commit": "a666044019f702cc093d459a45a2180308cf02a9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_nc_local_inverse",
+    "diff_sha256": "7de7f404c8f20aa66803f47958bc19d3a04e5cfb19627b4d56dc891a916eb425",
+    "source_sha256": "daee6a7b3cb9036107e4f3fc20f99234e04a6a7c409b699522fadf2a58d35816",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_nc_local_inverse",
+      "statement": "∀ (X Y : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X] [NormedAddCommGroup Y] [NormedSpace ℝ Y] (Φ : X → Y) (U : Set X) (z₀ : X) (Λ : X ≃L[ℝ] Y), IsOpen U → z₀ ∈ U → ContDiffOn ℝ 1 Φ U → HasFDerivAt Φ (Λ : X →L[ℝ] Y) z₀ → ∃ ρ : ℝ, 0 < ρ ∧ ball z₀ ρ ⊆ U ∧ ∃ G : Y → X, (∀ z ∈ ball z₀ ρ, G (Φ z) = z) ∧ ∀ W : Set X, W ⊆ ball z₀ ρ → IsOpen W → IsOpen (Φ '' W) ∧ ContDiffOn ℝ 1 G (Φ '' W)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

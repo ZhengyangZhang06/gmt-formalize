@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`C¹` local inverse at a point with invertible derivative** (steps 6–7 of
+`dor_lmb_ret_normal_coordinates`).  If `Φ` is `C¹` on an open `U ∋ z₀` and `DΦ(z₀) = Λ` is a
+continuous linear equivalence (`X` complete), then on some ball `B_ρ(z₀) ⊆ U` the map `Φ` has a
+left inverse `G`, and for every open `W ⊆ B_ρ(z₀)` the image `Φ(W)` is open and `G` is `C¹` on it.
+`G` is the inverse of the inverse function theorem's open partial homeomorphism `H` (`H = Φ`), and
+`ρ` is small enough that `B_ρ(z₀)` lies in the source of `H` and `DΦ` is invertible on it. -/
+theorem Submission.dor_lmb_ret_nc_local_inverse : ∀ (X Y : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X] [NormedAddCommGroup Y] [NormedSpace ℝ Y] (Φ : X → Y) (U : Set X) (z₀ : X) (Λ : X ≃L[ℝ] Y), IsOpen U → z₀ ∈ U → ContDiffOn ℝ 1 Φ U → HasFDerivAt Φ (Λ : X →L[ℝ] Y) z₀ → ∃ ρ : ℝ, 0 < ρ ∧ ball z₀ ρ ⊆ U ∧ ∃ G : Y → X, (∀ z ∈ ball z₀ ρ, G (Φ z) = z) ∧ ∀ W : Set X, W ⊆ ball z₀ ρ → IsOpen W → IsOpen (Φ '' W) ∧ ContDiffOn ℝ 1 G (Φ '' W) := by
+  intro X Y _ _ _ _ _ Φ U z₀ Λ hU hz₀ hΦ hΦ'
+  have hUz₀ : U ∈ 𝓝 z₀ := hU.mem_nhds hz₀
+  -- Step 1: the inverse function theorem at `z₀` gives an open partial homeomorphism `H` with
+  -- underlying function `Φ` and `z₀ ∈ H.source`.
+  have hstrict : HasStrictFDerivAt Φ (Λ : X →L[ℝ] Y) z₀ :=
+    (hΦ.contDiffAt hUz₀).hasStrictFDerivAt' hΦ' one_ne_zero
+  obtain ⟨H, hHΦ, hz₀S⟩ : ∃ H : OpenPartialHomeomorph X Y, (H : X → Y) = Φ ∧ z₀ ∈ H.source :=
+    ⟨hstrict.toOpenPartialHomeomorph Φ, hstrict.toOpenPartialHomeomorph_coe,
+      hstrict.mem_toOpenPartialHomeomorph_source⟩
+  -- Step 2: `DΦ` is continuous at `z₀` with `DΦ(z₀) = Λ`, and the invertible maps form an open
+  -- set, so `DΦ` is invertible near `z₀`.
+  have hB : fderiv ℝ Φ ⁻¹' range ((↑) : (X ≃L[ℝ] Y) → X →L[ℝ] Y) ∈ 𝓝 z₀ := by
+    refine ((hΦ.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt hUz₀).preimage_mem_nhds ?_
+    rw [hΦ'.fderiv]
+    exact Λ.nhds
+  -- Step 3: choose `ρ` with `B_ρ(z₀) ⊆ H.source ∩ U ∩ {DΦ invertible}` and put `G = H⁻¹`.
+  obtain ⟨ρ, hρ, hball⟩ :=
+    Metric.mem_nhds_iff.1 (inter_mem (inter_mem (H.open_source.mem_nhds hz₀S) hUz₀) hB)
+  refine ⟨ρ, hρ, fun z hz => (hball hz).1.2, H.symm, fun z hz => ?_, fun W hW hWo => ?_⟩
+  · -- Step 4: `G (Φ z) = z` on the ball, which lies in the source of `H`.
+    rw [← hHΦ]
+    exact H.left_inv (hball hz).1.1
+  · -- Step 5: `W` lies in the source of `H`, so `Φ '' W = H '' W` is open.
+    have hWS : W ⊆ H.source := fun z hz => (hball (hW hz)).1.1
+    rw [← hHΦ]
+    refine ⟨H.isOpen_image_of_subset_source hWo hWS, ?_⟩
+    -- Step 6: at `y = H z`, `z ∈ W`, the map `H = Φ` is `C¹` with invertible derivative
+    -- `DΦ(z) = e`, so `H⁻¹` is `C¹` at `y`.
+    rintro _ ⟨z, hzW, rfl⟩
+    obtain ⟨⟨hzS, hzU⟩, e, he⟩ := hball (hW hzW)
+    have hΦz : ContDiffAt ℝ 1 Φ z := hΦ.contDiffAt (hU.mem_nhds hzU)
+    have hd : HasFDerivAt Φ (e : X →L[ℝ] Y) z := by
+      rw [show (e : X →L[ℝ] Y) = fderiv ℝ Φ z from he]
+      exact (hΦz.differentiableAt one_ne_zero).hasFDerivAt
+    rw [← hHΦ] at hΦz hd
+    have h₁ : HasFDerivAt (H : X → Y) (e : X →L[ℝ] Y) (H.symm (H z)) := by
+      rwa [H.left_inv hzS]
+    have h₂ : ContDiffAt ℝ 1 (H : X → Y) (H.symm (H z)) := by
+      rwa [H.left_inv hzS]
+    exact (H.contDiffAt_symm (H.map_source hzS) h₁ h₂).contDiffWithinAt
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
