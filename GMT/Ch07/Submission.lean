@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Smooth normal cutoff (step 1 of the boundary computation for graph cycles in the
+ε-regularity proof of Simon 7.4.3): for compact `K ⊆ B_h(0) ⊆ ℝᵏ` there is a `C^∞` function `η`
+with compact support in `B_h(0)` and `η = 1` near every point of `K`.  Take `r' < h` with
+`K ⊆ B_{r'}(0)`, put `r = max r' (h/2) ∈ (0, h)`, and let `η` be the `ContDiffBump` at `0` with
+radii `r < (r + h)/2`: `η = 1` on `closedBall 0 r` and `tsupport η = closedBall 0 ((r + h)/2)`. -/
+theorem Submission.dgcr_bwd_normal_cutoff : ∀ (k : ℕ) (K : Set (Euclid k)) (h : ℝ), 0 < h → IsCompact K → K ⊆ ball (0 : Euclid k) h → ∃ η : Euclid k → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ ball (0 : Euclid k) h ∧ ∀ w ∈ K, ∀ᶠ y in 𝓝 w, η y = 1 := by
+  intro k K h hh hK hKh
+  -- `K ⊆ B_{r'}(0)` for some `r' < h`; enlarge to `r = max r' (h/2) ∈ (0, h)`
+  obtain ⟨r', hr'h, hKr'⟩ := exists_lt_subset_ball hK.isClosed hKh
+  set r : ℝ := max r' (h / 2)
+  have hr0 : 0 < r := lt_max_of_lt_right (by linarith)
+  have hrh : r < h := max_lt hr'h (by linarith)
+  have hKr : K ⊆ ball (0 : Euclid k) r := hKr'.trans (ball_subset_ball (le_max_left _ _))
+  -- the bump at `0` with radii `r < (r + h)/2`
+  let f : ContDiffBump (0 : Euclid k) := ⟨r, (r + h) / 2, hr0, by linarith⟩
+  refine ⟨f, f.contDiff, f.hasCompactSupport, ?_, ?_⟩
+  · rw [f.tsupport_eq]
+    exact closedBall_subset_ball (show (r + h) / 2 < h by linarith)
+  · intro w hw
+    filter_upwards [isOpen_ball.mem_nhds (hKr hw)] with y hy
+    exact f.one_of_mem_closedBall (ball_subset_closedBall hy)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
