@@ -7,6 +7,7 @@ import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter01.RadonCaratheodoryIntegral
+import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -2373,6 +2374,74 @@ theorem Submission.ind_ab_rescaled_tangent_limit :
         (fun z => x + z) '' ((fun z => r • z) '' B) := by
       ext y
       simp only [mem_preimage, mem_image, Poincare.SimonGMT.Chapter03.blowUpMap]
+/-- `Hⁿ` scaling law for the dilation `η(y) = r⁻¹(y − x)`, `r > 0`: `η` is a measurable
+embedding and pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, i.e. `Hⁿ(η⁻¹(B)) = rⁿ Hⁿ(B)`. -/
+theorem Submission.ind_rs_dilation_measurePreserving :
+    ∀ (P n : ℕ) (x : Eucl P) (r : ℝ), 0 < r →
+      MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) ∧
+        MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x))
+          (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P)))
+          (μHE[n] : Measure (Eucl P)) := by
+  intro P n x r hr
+  -- `η` is a homeomorphism of `ℝ^P`: translation by `-x`, then dilation by `r⁻¹`.
+  let e : Eucl P ≃ₜ Eucl P :=
+    (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : (e : Eucl P → Eucl P) = fun y : Eucl P => r⁻¹ • (y - x) := by
+    funext y
+    simp [e, sub_eq_add_neg]
+  have hemb : MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) :=
+    he ▸ e.measurableEmbedding
+  refine ⟨hemb, hemb.measurable, ?_⟩
+  -- `η⁻¹(B) = x + r • B`, and `Hⁿ(x + r • B) = ‖r‖₊ⁿ Hⁿ(B)`.
+  ext B hB
+  rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+  have hpre : (fun y : Eucl P => r⁻¹ • (y - x)) ⁻¹' B =
+      (fun z => x + z) '' ((fun z => r • z) '' B) := by
+    ext y
+    simp only [mem_preimage, mem_image]
+    constructor
+    · intro hy
+      exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
+        rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+    · rintro ⟨z, ⟨b, hb, rfl⟩, rfl⟩
+      rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+  rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+    Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+    smul_eq_mul, ← mul_assoc]
+  have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+      coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+      ENNReal.ofReal_one]
+  rw [hc, one_mul]
+
+/-- `τ(M, θ, ξ)` tested against `(rⁿ)⁻¹ ω ∘ η`, `η(y) = r⁻¹(y − x)`, `r > 0`, equals
+`τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` tested against `ω`: `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ` and
+`ξ(y)` is linear. -/
+theorem Submission.ind_rs_tauAction_dilation :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (x : Eucl P) (r : ℝ) (ω : DifferentialForm (Eucl P) n), 0 < r →
+      tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) =
+        tauAction n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z))
+          (fun z => ξ (x + r • z)) ω := by
+  intro P n M θ ξ x r ω hr
+  -- `η(y) = r⁻¹ • (y - x)` is a homeomorphism of `ℝ^P`, hence a measurable embedding.
+  let e : Eucl P ≃ₜ Eucl P :=
+    (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : (e : Eucl P → Eucl P) = fun y : Eucl P => r⁻¹ • (y - x) := by
+    funext y
+    simp [e, sub_eq_add_neg]
+  have hemb : MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) :=
+    he ▸ e.measurableEmbedding
+  -- `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η⁻¹(B) = x + r • B`.
+  have hmp : MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x))
+      (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) (μHE[n] : Measure (Eucl P)) := by
+    refine ⟨hemb.measurable, ?_⟩
+    ext B hB
+    rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+    have hpre : (fun y : Eucl P => r⁻¹ • (y - x)) ⁻¹' B =
+        (fun z => x + z) '' ((fun z => r • z) '' B) := by
+      ext y
+      simp only [mem_preimage, mem_image]
       constructor
       · intro hy
         exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
@@ -2822,6 +2891,269 @@ theorem Submission.ind_ae_blowup_limit :
   refine integral_congr_ae (Eventually.of_forall fun y => ?_)
   simp only [map_smul, smul_eq_mul]
   ring
+  -- Change variables on the right; on the left, pull `(rⁿ)⁻¹` out of the linear `ξ(y)`.
+  simp only [tauAction]
+  rw [hmp.setIntegral_image_emb hemb (fun z => θ (x + r • z) * ξ (x + r • z) (ω z)) M,
+    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+    smul_eq_mul, ← integral_const_mul]
+  congr 1
+  funext y
+  simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, map_smul, smul_eq_mul]
+  ring
+
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
+`η(w) = r⁻¹(w − x)`, `r > 0`: if `Q` is the approximate tangent space of `(M, θ)` at `y`, it is
+the approximate tangent space of `(η(M), θ ∘ η⁻¹)` at `η(y)`.  The blow-up of `η(M)` at `η(y)`
+with ratio `s` is the blow-up of `M` at `y` with ratio `r s`, and `s ↦ r s` preserves `𝓝[>] 0`. -/
+theorem Submission.ind_rs_weightedTangent_dilation :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x y : Eucl P) (r : ℝ)
+      (Q : Submodule ℝ (Eucl P)), 0 < r → HasWeightedApproximateTangentSpaceAt n M θ y Q →
+        HasWeightedApproximateTangentSpaceAt n ((fun w => r⁻¹ • (w - x)) '' M)
+          (fun z => θ (x + r • z)) (r⁻¹ • (y - x)) Q := by
+  intro P n M θ x y r Q hr hQ
+  -- The new multiplicity at `η(y)` is `θ(y)`.
+  have hval : θ (x + r • r⁻¹ • (y - x)) = θ y := by
+    rw [smul_inv_smul₀ hr.ne', add_sub_cancel]
+  -- Blow-ups of `η(M)` at `η(y)` are blow-ups of `M` at `y` with the ratio multiplied by `r`.
+  have hset : ∀ s : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap (r⁻¹ • (y - x)) s '' ((fun w => r⁻¹ • (w - x)) '' M) =
+        Poincare.SimonGMT.Chapter03.blowUpMap y (r * s) '' M := by
+    intro s
+    rw [Set.image_image]
+    refine Set.image_congr fun w _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+    rw [← smul_sub, sub_sub_sub_cancel_right, smul_smul, mul_inv_rev]
+  have hweight : ∀ (s : ℝ) (u : Eucl P),
+      θ (x + r • (r⁻¹ • (y - x) + s • u)) = θ (y + (r * s) • u) := by
+    intro s u
+    rw [smul_add, smul_inv_smul₀ hr.ne', smul_smul, ← add_assoc, add_sub_cancel]
+  -- `s ↦ r s` maps `𝓝[>] 0` to itself.
+  have hlim : Tendsto (fun s : ℝ => r * s) (𝓝[>] 0) (𝓝[>] 0) := by
+    have h0 : Tendsto (fun s : ℝ => r * s) (𝓝 0) (𝓝 (r * 0)) := (continuous_const_mul r).tendsto 0
+    rw [mul_zero] at h0
+    exact tendsto_nhdsWithin_iff.2 ⟨h0.mono_left nhdsWithin_le_nhds,
+      eventually_nhdsWithin_of_forall fun s hs => mul_pos hr hs⟩
+  refine ⟨hQ.1, fun f => ?_⟩
+  show Tendsto _ _ (𝓝 (θ (x + r • r⁻¹ • (y - x)) * _))
+  rw [hval]
+  refine ((hQ.2 f).comp hlim).congr fun s => ?_
+  simp only [Function.comp_apply, hset, hweight]
+
+/-- Rectifiable triples are invariant under the dilations `η(y) = r⁻¹(y − x)`, `r > 0`:
+`(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` is again a rectifiable triple, where `η⁻¹(z) = x + r z`.
+`η` is a measurable embedding pushing `c Hⁿ`, `c = (rⁿ)⁻¹`, forward to `Hⁿ`, so
+`Hⁿ(η(S)) = c Hⁿ(S)` for every `S` and `Hⁿ ⌞ η(M) = η_#(c Hⁿ ⌞ M)`; the weighted approximate
+tangent spaces of `(η(M), θ ∘ η⁻¹)` at `η(y)` are those of `(M, θ)` at `y`. -/
+theorem Submission.ind_rs_rectifiableTriple_dilation :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (x : Eucl P) (r : ℝ), 0 < r → IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ →
+      IsRectifiableTriple (univ : Set (Eucl P)) n ((fun y => r⁻¹ • (y - x)) '' M)
+        (fun z => θ (x + r • z)) (fun z => ξ (x + r • z)) := by
+  intro P n M θ ξ x r hr hT
+  obtain ⟨hemb, hmp⟩ := Submission.ind_rs_dilation_measurePreserving P n x r hr
+  set η : Eucl P → Eucl P := fun y => r⁻¹ • (y - x)
+  set c : ℝ≥0∞ := ENNReal.ofReal ((r ^ n)⁻¹)
+  -- `x + r • η(y) = y`, so `θ(x + r • ·) ∘ η = θ` and `ξ(x + r • ·) ∘ η = ξ`.
+  have hinv : ∀ y, x + r • η y = y := fun y => by
+    show x + r • r⁻¹ • (y - x) = y
+    rw [smul_inv_smul₀ hr.ne', add_sub_cancel]
+  -- `Hⁿ(η(S)) = c Hⁿ(S)` for every `S`; in particular `η` maps `Hⁿ`-null sets to null sets.
+  have hnull : ∀ S : Set (Eucl P), (μHE[n] : Measure (Eucl P)) S = 0 →
+      (μHE[n] : Measure (Eucl P)) (η '' S) = 0 := by
+    intro S hS
+    rw [← hmp.map_eq, hemb.map_apply, preimage_image_eq _ hemb.injective, Measure.smul_apply, hS,
+      smul_zero]
+  -- `Hⁿ ⌞ η(M) = η_#(c Hⁿ ⌞ M)`.
+  have hres : MeasurePreserving η (c • (μHE[n] : Measure (Eucl P)).restrict M)
+      ((μHE[n] : Measure (Eucl P)).restrict (η '' M)) := by
+    rw [← Measure.restrict_smul]
+    exact hmp.restrict_image_emb hemb M
+  refine ⟨subset_univ _, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `η(M) =ᵐ η(B)` for the measurable hull `B` of `M`.
+    have hB := hT.nullMeasurableSet.toMeasurable_ae_eq
+    rw [ae_eq_set] at hB
+    refine (hemb.measurableSet_image.2
+      (measurableSet_toMeasurable (μHE[n] : Measure (Eucl P)) M)).nullMeasurableSet.congr ?_
+    rw [ae_eq_set, ← image_sdiff hemb.injective, ← image_sdiff hemb.injective]
+    exact ⟨hnull _ hB.1, hnull _ hB.2⟩
+  · -- `η(M) ⊆ η(M₀) ∪ ⋃ⱼ range (η ∘ Fⱼ)` with `η` Lipschitz.
+    obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hT.countablyRectifiable
+    have hηL : LipschitzWith ‖r⁻¹‖₊ η := LipschitzWith.of_dist_le_mul fun a b => by
+      show dist (r⁻¹ • (a - x)) (r⁻¹ • (b - x)) ≤ ‖r⁻¹‖₊ * dist a b
+      rw [dist_smul₀, dist_sub_right, coe_nnnorm]
+    refine ⟨η '' M₀, hnull M₀ hM₀, fun j => η ∘ F j, fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖r⁻¹‖₊ * K, hηL.comp hK⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      rcases hMF hy with hy₀ | hy₁
+      · exact Or.inl (mem_image_of_mem η hy₀)
+      · obtain ⟨j, w, rfl⟩ := mem_iUnion.1 hy₁
+        exact Or.inr (mem_iUnion.2 ⟨j, w, rfl⟩)
+  · rintro _ ⟨y, hy, rfl⟩
+    show 0 < θ (x + r • η y)
+    rw [hinv]
+    exact hT.pos y hy
+  · -- `η(M) ∩ K = η(M ∩ η⁻¹(K))` with `η⁻¹(K)` compact, and `η_#(c Hⁿ) = Hⁿ`.
+    intro K hK _
+    let e : Eucl P ≃ₜ Eucl P :=
+      (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+    have he : (e : Eucl P → Eucl P) = η := by
+      funext y
+      simp [e, η, sub_eq_add_neg]
+    have hK' : IsCompact (η ⁻¹' K) := by
+      rw [← he]
+      exact e.isCompact_preimage.2 hK
+    have hθ : (fun z => θ (x + r • z)) ∘ η = θ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← image_inter_preimage, hmp.integrableOn_image hemb, hθ, IntegrableOn,
+      Measure.restrict_smul]
+    exact Integrable.smul_measure (hT.integrableOn _ hK' (subset_univ _)) ENNReal.ofReal_ne_top
+  · have hξ : (fun z => ξ (x + r • z)) ∘ η = ξ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← hres.map_eq, hemb.aestronglyMeasurable_map_iff, hξ]
+    exact hT.aestronglyMeasurable.smul_measure c
+  · -- At `η(y)` the frame `τ` of `(M, θ, ξ)` at `y` still orients `(η(M), θ', ξ')`.
+    rw [← hres.map_eq, hemb.ae_map_iff]
+    filter_upwards [Measure.ae_smul_measure hT.orients c] with y hy
+    obtain ⟨τ, hτ, htan, hξy⟩ := hy
+    refine ⟨τ, hτ, Submission.ind_rs_weightedTangent_dilation P n M θ x y r _ hr htan, ?_⟩
+    show ξ (x + r • η y) = _ ∨ ξ (x + r • η y) = _
+    rw [hinv]
+    exact hξy
+
+/-- Mass bound for a current `Y` obtained from `X` by pull-back along the dilation
+`φ(y) = r⁻¹(y − x)`, `r > 0`: if every test form `ω` has a test form `η = (rⁿ)⁻¹ ω ∘ φ` and
+`Y ω = X η` for all such pairs, then `M_W(Y) ≤ (rⁿ)⁻¹ M_{φ⁻¹(W)}(X)` for every `W`, since
+`rⁿ η = ω ∘ φ` is admissible for `M_{φ⁻¹(W)}(X)` whenever `ω` is admissible for `M_W(Y)`. -/
+theorem Submission.ind_rs_massOn_dilation_le :
+    ∀ (P n : ℕ) (X Y : GeometricCurrentOn (univ : Set (Eucl P)) n) (x : Eucl P) (r : ℝ), 0 < r →
+      (∀ ω : TestFormOn (univ : Set (Eucl P)) n, ∃ η : TestFormOn (univ : Set (Eucl P)) n,
+        ∀ y, (η : DifferentialForm (Eucl P) n) y =
+          (r ^ n)⁻¹ • (ω : DifferentialForm (Eucl P) n) (r⁻¹ • (y - x))) →
+      (∀ ω η : TestFormOn (univ : Set (Eucl P)) n,
+        (∀ y, (η : DifferentialForm (Eucl P) n) y =
+          (r ^ n)⁻¹ • (ω : DifferentialForm (Eucl P) n) (r⁻¹ • (y - x))) → Y ω = X η) →
+      ∀ W : Set (Eucl P),
+        Y.massOn W ≤ ENNReal.ofReal ((r ^ n)⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W} := by
+  intro P n X Y x r hr hA hB W
+  have hrn : r ^ n ≠ 0 := pow_ne_zero n hr.ne'
+  apply sSup_le
+  rintro _ ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (Y ω) ≤ _
+  obtain ⟨η, hη⟩ := hA ω
+  -- `rⁿ η = ω ∘ φ` with `φ y = r⁻¹ • (y - x)`.
+  have hcomp : (((r ^ n) • η : TestFormOn (univ : Set (Eucl P)) n) :
+      DifferentialForm (Eucl P) n) =
+        (ω : DifferentialForm (Eucl P) n) ∘ fun y : Eucl P => r⁻¹ • (y - x) := by
+    funext y
+    rw [Submodule.coe_smul, Pi.smul_apply, hη y, smul_smul, mul_inv_cancel₀ hrn, one_smul,
+      Function.comp_apply]
+  -- `rⁿ η` is admissible for `M_{φ⁻¹(W)}(X)`.
+  have hadm : (r ^ n) • η ∈ massAdmissibleOn univ n {y | r⁻¹ • (y - x) ∈ W} := by
+    refine ⟨?_, fun y => ?_⟩
+    · rw [hcomp]
+      exact (tsupport_comp_subset_preimage _ (by fun_prop)).trans (preimage_mono hω.1)
+    · rw [hcomp]
+      exact hω.2 _
+  -- `Y ω = X η = (rⁿ)⁻¹ X (rⁿ η)`.
+  have hY : Y ω = (r ^ n)⁻¹ * X ((r ^ n) • η) := by
+    rw [hB ω η hη, map_smul, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hrn, one_mul]
+  rw [hY, ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg hr.le n))]
+  exact mul_le_mul_right (X.le_massOn hadm) _
+
+/-- Rescaling about `x` by `r > 0`: `Y = η_# X` for the dilation `η(y) = r⁻¹(y − x)`, the
+push-forward along the proper affine map `η = b + L` with `L = r⁻¹ • id`, `b = −(r⁻¹ • x)`
+(`GeometricCurrentOn.affinePushforward`).  The pull-back of `ω` is `η^# ω = r⁻ⁿ ω ∘ η`, so
+`Y(ω) = X(η^# ω)`; `∂Y = η_#(∂X)`; `Y = τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` if `X = τ(M, θ, ξ)`; and
+`M_W(Y) ≤ r⁻ⁿ M_{η⁻¹(W)}(X)`. -/
+theorem Submission.ind_rescaled_current :
+    ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P) (r : ℝ),
+      0 < r → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1),
+        (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+          ∃ η : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y,
+            (η : DifferentialForm (Eucl P) (m + 1)) y =
+              (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) ∧
+        (∀ ω η : TestFormOn (univ : Set (Eucl P)) (m + 1),
+          (∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y =
+            (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) →
+          Y ω = X η) ∧
+        (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧
+        (X.boundary = 0 → Y.boundary = 0) ∧
+        ∀ W : Set (Eucl P),
+          Y.massOn W ≤ ENNReal.ofReal ((r ^ (m + 1))⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W} := by
+  have hrect := @Submission.ind_rs_rectifiableTriple_dilation
+  have htau := @Submission.ind_rs_tauAction_dilation
+  have hmass := @Submission.ind_rs_massOn_dilation_le
+  intro P m X x r hr
+  -- `η(y) = b + L y = r⁻¹ • (y - x)`.
+  let L : Eucl P →L[ℝ] Eucl P := r⁻¹ • ContinuousLinearMap.id ℝ (Eucl P)
+  let b : Eucl P := -(r⁻¹ • x)
+  have hbL : ∀ y, b + L y = r⁻¹ • (y - x) := by
+    intro y
+    simp only [b, L, smul_apply, ContinuousLinearMap.id_apply, smul_sub]
+    abel
+  -- `η` is a homeomorphism, hence proper.
+  have hproper : IsProperMap (fun y => b + L y) := by
+    have he : (fun y => b + L y) = ⇑((Homeomorph.addRight (-x)).trans
+        (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))) := by
+      funext y
+      simp [hbL, sub_eq_add_neg]
+    rw [he]
+    exact Homeomorph.isProperMap _
+  -- `α ∘ L = r⁻ⁿ α` for every `n`-covector `α`.
+  have hcov : ∀ α : Covector (Eucl P) (m + 1),
+      α.compContinuousLinearMap L = (r ^ (m + 1))⁻¹ • α := by
+    intro α
+    ext v
+    have hv : L ∘ v = fun i => r⁻¹ • v i := by
+      funext i
+      simp [L]
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hv, α.map_smul_univ,
+      ContinuousAlternatingMap.smul_apply, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
+      inv_pow]
+  -- The pull-back `η^# ω ∈ 𝒟ⁿ(ℝ^P)` (`affinePullbackTestOn`) is `r⁻ⁿ ω ∘ η`.
+  have hpb : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y,
+      (affinePullbackTestOn L b hproper univ (m + 1) ω : DifferentialForm (Eucl P) (m + 1)) y =
+        (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x)) := by
+    intro ω y
+    rw [affinePullbackTestOn_coe]
+    simp only [affinePullbackForm, hbL, hcov]
+  -- `Y = η_# X`, i.e. `Y(ω) = X(η^# ω)`, regarding `X` as a current on `η⁻¹(ℝ^P) = ℝ^P`.
+  let X' : GeometricCurrentOn ((fun y => b + L y) ⁻¹' (univ : Set (Eucl P))) (m + 1) := X
+  let Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1) :=
+    GeometricCurrentOn.affinePushforward L b hproper X'
+  have hA : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      ∃ η : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y,
+        (η : DifferentialForm (Eucl P) (m + 1)) y =
+          (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x)) :=
+    fun ω => ⟨affinePullbackTestOn L b hproper univ (m + 1) ω, hpb ω⟩
+  have hB : ∀ ω η : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      (∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y =
+        (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) →
+      Y ω = X η := by
+    intro ω η hη
+    change X (affinePullbackTestOn L b hproper univ (m + 1) ω) = X η
+    congr 1
+    exact Subtype.ext (funext fun y => (hpb ω y).trans (hη y).symm)
+  refine ⟨Y, hA, hB, ?_, ?_, hmass P (m + 1) X Y x r hr hA hB⟩
+  · -- `X = τ(M, θ, ξ)` gives `Y = τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)`.
+    rintro ⟨M, θ, ξ, hT, hθ, hX⟩
+    refine ⟨(fun y => r⁻¹ • (y - x)) '' M, fun z => θ (x + r • z), fun z => ξ (x + r • z),
+      hrect P (m + 1) M θ ξ x r hr hT, ?_, fun ω => ?_⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨k, hk⟩ := hθ y hy
+      exact ⟨k, by simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, hk]⟩
+    · obtain ⟨η, hη⟩ := hA ω
+      rw [hB ω η hη, hX η, ← htau P (m + 1) M θ ξ x r ω hr]
+      congr 1
+      exact funext hη
+  · -- `∂Y = η_#(∂X) = 0`.
+    intro hX0
+    have hX0' : X'.boundary = 0 := hX0
+    change (GeometricCurrentOn.affinePushforward L b hproper X').boundary = 0
+    rw [GeometricCurrentOn.boundary_affinePushforward, hX0']
+    ext ω
+    rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
