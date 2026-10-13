@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'iwl_cr_hp|dph_hausdorff|hausdorff_product' -g '*.lean' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_zero",
+        "lintegral_prod_right.|theorem lintegral_prod|theorem prod_restrict",
+        "def Matrix|def of|abbrev of",
+        "git show 0bfba9891418f887822d6878214d8c1c46326aaa:GMT/Ch06/Submission.lean",
+        "python3 /tmp/dphhp-independent-review-qpcm0aii/run_checks.py frozen",
+        "python3 /tmp/dphhp-independent-review-qpcm0aii/run_checks.py full"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-hausdorf-b758ffe4e7/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-hausdorf-b758ffe4e7/decomposition-v1.json",
+        "/tmp/dphhp-independent-review-qpcm0aii/records.json",
+        "/tmp/dphhp-independent-review-qpcm0aii/run_checks.py",
+        "/tmp/dphhp-independent-review-qpcm0aii/full/GMT/Ch06/Submission.lean",
+        "/tmp/dphhp-independent-review-qpcm0aii/full_source.log",
+        "/tmp/dphhp-independent-review-qpcm0aii/frozen_assembly.log"
+      ],
+      "conclusion": "Independently verified the pinned revisions and recomputed the requested parent digest. The snapshot search returned no matching product-formula declaration names; the cited covering, partition, area-formula and integration inputs are present. All four bare names have unique accepted DAG owners, matching passing comparator receipts and byte-identical frozen types. Every child and parent type elaborated in fresh comparator challenge modules importing only the frozen submission. The supplied assembly compiled against the frozen child contracts. Rebuilding the accepted child bodies with that assembly, without the previously accepted whole product formula, succeeded; all five declarations use only propext, Classical.choice and Quot.sound. All corresponding solution modules compiled. The split is appropriate and sufficient for this exact parent, with the sole dependency piece_product → lift_gram_det and no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cylinder_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose and the parent's first conjunct, without a measurability assumption on N. The proof correctly handles m = 0, transfers nullity through normalization, and constructs countable strip covers with arbitrarily small total diameter power. The inflation and summation bounds are valid. No circular reliance or undeclared dependency occurs."
+    },
+    {
+      "key": "injective_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes both hypotheses and every conjunct of the exact Lean conclusion. The proof obtains injectivity from regular-set partitions, proves Borel images, accounts for the null exceptional images, and disjointifies while preserving differentiability and coverage. It works also for m = 0 and requires no sibling or parent theorem."
+    },
+    {
+      "key": "lift_gram_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen proposition exactly includes the lift identity, b = tl(w), and differentiability at b. The chain rule and basis calculations yield diag(1, Gram(DG)); determinant expansion proves the conclusion, including the empty-matrix case. Both inline matrices use Matrix.of and the ordinary Matrix.det construction. The proof is independent of the product formula."
+    },
+    {
+      "key": "piece_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all hypotheses and both conclusions. The area formula expresses the parameter integral using the s-finite measure volume.restrict B, proving measurability. The lifted map is Lipschitz and injective on the stated Borel domain; the declared Gram dependency supplies its Jacobian identity. Coordinate measure preservation and Tonelli establish the equality. This also supplies the parent's summation measurability, so leaving its preserved local-finiteness hypothesis unused is sound."
+    }
+  ],
+  "required_changes": []
+}
