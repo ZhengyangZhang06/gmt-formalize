@@ -359,6 +359,329 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The coordinate wedge covectors are dual to the increasing basis tuples: the `J`-th coordinate
+of `∑_I c_I dx^I` is `c_J`, i.e. `dx^I(e_{J(0)}, …, e_{J(k-1)}) = δ_{IJ}`. -/
+theorem Submission.smr_ci_coord_sum_smul_wedge :
+    ∀ (P k : ℕ) (c : SimonMultiIndex k P → ℝ) (J : SimonMultiIndex k P),
+      euclideanCovectorCoordinate (∑ I : SimonMultiIndex k P,
+        c I • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) k) J = c J := by
+  intro P k c J
+  classical
+  -- Kronecker property: `dx^I (e_J) = δ_{IJ}`.
+  have hK : ∀ I : SimonMultiIndex k P, wedgeCovectors k (fun j => EuclideanSpace.proj (I j))
+      (fun j => EuclideanSpace.single (J j) (1 : ℝ)) = if I = J then 1 else 0 := by
+    intro I
+    rw [wedgeCovectors_apply_det]
+    split_ifs with hIJ
+    · -- the matrix `[δ_{I i, I j}]` is the identity
+      subst hIJ
+      convert Matrix.det_one (n := Fin k) (R := ℝ)
+      ext i j
+      simp [Matrix.one_apply, PiLp.single_apply, I.injective.eq_iff]
+    · -- some `I i` is not among the `J j`, so row `i` vanishes
+      obtain ⟨i, hi⟩ : ∃ i, ∀ j, I i ≠ J j := by
+        by_contra! h
+        apply hIJ
+        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
+        have hsub : Set.range I ⊆ Set.range J := by
+          rintro _ ⟨i, rfl⟩
+          obtain ⟨j, hj⟩ := h i
+          exact ⟨j, hj.symm⟩
+        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range J)
+        rw [Set.ncard_range_of_injective J.injective, Set.ncard_range_of_injective I.injective]
+      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [PiLp.single_apply, hi j]
+  -- Evaluation at `e_J` is linear, so only the term `I = J` survives.
+  rw [euclideanCovectorCoordinate, ContinuousAlternatingMap.sum_apply]
+  simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+/-- A `k`-covector on `ℝ^P` whose coordinates `α(e_{I(0)}, …, e_{I(k-1)})` vanish for every
+increasing multi-index `I` is zero. -/
+theorem Submission.smr_ci_covector_eq_zero_of_coord :
+    ∀ (P k : ℕ) (α : Covector (Eucl P) k),
+      (∀ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I = 0) → α = 0 := by
+  intro P k α hα
+  classical
+  -- By extensionality on the standard basis it suffices to treat injective index tuples `v`.
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap, ContinuousAlternatingMap.toAlternatingMap_zero,
+    AlternatingMap.zero_apply]
+  -- Sorting `v` gives an increasing multi-index `I` with `e_I = e_v ∘ σ`, `σ := Tuple.sort v`.
+  have hsm : StrictMono (v ∘ Tuple.sort v) :=
+    (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+  have h := hα (OrderEmbedding.ofStrictMono _ hsm)
+  have heq : (fun j => EuclideanSpace.single (OrderEmbedding.ofStrictMono _ hsm j) (1 : ℝ)) =
+      (fun i => EuclideanSpace.single (v i) (1 : ℝ)) ∘ Tuple.sort v := rfl
+  -- `α(e_I) = sign σ • α(e_v)`, and the sign is a unit.
+  rw [euclideanCovectorCoordinate, heq, ← ContinuousAlternatingMap.coe_toAlternatingMap α,
+    AlternatingMap.map_perm] at h
+  exact (smul_eq_zero_iff_eq _).mp h
+/-- The Euclidean coefficient norm of a `k`-covector on `ℝ^P` is the `ℓ²`-norm of its coordinates
+`α(e_{I(0)}, …, e_{I(k-1)})` over the increasing multi-indices `I : Fin k ↪o Fin P`. -/
+theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
+    ∀ (P k : ℕ) (α : Covector (Eucl P) k), covectorEuclideanNorm α =
+      Real.sqrt (∑ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I ^ 2) := by
+  intro P k α
+  unfold covectorEuclideanNorm
+  congr 1
+  -- Drop the tuples that are not strictly increasing; their terms vanish.
+  rw [← Finset.sum_filter]
+  -- Reindex the strictly increasing tuples by the order embeddings, `I ↦ ⇑I`.
+  symm
+  refine Finset.sum_bij' (fun I _ => ⇑I)
+    (fun f hf => OrderEmbedding.ofStrictMono f (Finset.mem_filter.1 hf).2)
+    (fun I _ => Finset.mem_filter.2 ⟨Finset.mem_univ _, I.strictMono⟩)
+    (fun _ _ => Finset.mem_univ _) (fun I _ => ?_) (fun f _ => ?_) (fun I _ => ?_)
+  · exact RelEmbedding.ext fun _ => rfl
+  · exact OrderEmbedding.coe_ofStrictMono _
+  · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
+    simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
+
+/-- Simon (6.1.2)–(6.1.5): listing the coefficients `α(e_{I(0)}, …, e_{I(k-1)})` over the
+increasing multi-indices `I` is a linear isomorphism `J` of the `k`-covectors on `ℝ^P` onto `ℝ^N`
+with `|α| = ‖J α‖` for the Euclidean coefficient norm `|α| = covectorEuclideanNorm α`. -/
+theorem Submission.smr_covector_coord_isometry :
+    ∀ (P k : ℕ), ∃ (N : ℕ) (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)),
+      ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖ := by
+  intro P k
+  -- Enumerate the increasing multi-indices `I : Fin k ↪o Fin P` by `Fin N`.
+  let σ : Fin (Fintype.card (SimonMultiIndex k P)) ≃ SimonMultiIndex k P :=
+    (Fintype.equivFin (SimonMultiIndex k P)).symm
+  -- The coordinate map `J α = (α(e_{σ n}))_n`, linear because evaluation is.
+  obtain ⟨J, hJ⟩ : ∃ J : Covector (Eucl P) k →ₗ[ℝ]
+      EuclideanSpace ℝ (Fin (Fintype.card (SimonMultiIndex k P))),
+      ∀ α n, J α n = euclideanCovectorCoordinate α (σ n) :=
+    ⟨{ toFun := fun α => WithLp.toLp 2 fun n => euclideanCovectorCoordinate α (σ n)
+       map_add' := fun α β => by
+         ext n
+         simp [euclideanCovectorCoordinate]
+       map_smul' := fun c α => by
+         ext n
+         simp [euclideanCovectorCoordinate] }, fun _ _ => rfl⟩
+  have hbij : Function.Bijective J := by
+    refine ⟨(injective_iff_map_eq_zero J).2 fun α hα => ?_, fun y => ?_⟩
+    · -- injective: a covector whose coordinates all vanish is zero
+      refine Submission.smr_ci_covector_eq_zero_of_coord P k α fun I => ?_
+      rw [← σ.apply_symm_apply I, ← hJ, hα, PiLp.zero_apply]
+    · -- surjective: `∑_I y_{σ⁻¹ I} dx^I` has coordinates `y`
+      refine ⟨∑ I : SimonMultiIndex k P,
+        y (σ.symm I) • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)), ?_⟩
+      ext n
+      rw [hJ, Submission.smr_ci_coord_sum_smul_wedge, σ.symm_apply_apply]
+  refine ⟨_, LinearEquiv.ofBijective J hbij, fun α => ?_⟩
+  -- Both norms are square roots of the same sum of squares, reindexed along `σ`.
+  rw [Submission.smr_ci_norm_eq_sqrt_sum_coord_sq, LinearEquiv.ofBijective_apply,
+    EuclideanSpace.norm_eq, ← σ.sum_comp]
+  simp only [hJ, Real.norm_eq_abs, sq_abs]
+/-- **Mollification step of Simon Ch. 6, 2.7–2.9 (pp. 136–137).**  A continuous compactly
+supported `k`-form `φ` with `tsupport φ ⊆ V`, `V` open, is a uniform limit, in the Euclidean
+coefficient norm, of test forms supported in `V`.  As `|α| ≤ √M ‖α‖` (`M = #(Fin k → Fin P)`,
+`‖α‖` the operator norm), it suffices to approximate in `‖·‖`.  The approximant is `χ • (ψ ⋆ φ)`:
+`ψ ⋆ φ` is the convolution of `φ` with a normalized smooth bump `ψ` supported in a ball whose
+radius is a uniform-continuity modulus of `φ`, and `χ` is a smooth cutoff with values in `[0, 1]`,
+equal to `1` exactly on `tsupport φ`, whose support `V'` has compact closure in `V`. -/
+theorem Submission.smr_exists_testForm_uniform_approx : ∀ (P k : ℕ) (U V : Set (Eucl P)) (φ : Eucl P → Covector (Eucl P) k), IsOpen V → V ⊆ U → Continuous φ → HasCompactSupport φ → tsupport φ ⊆ V → ∀ ε : ℝ, 0 < ε → ∃ η : TestFormOn U k, tsupport (η : DifferentialForm (Eucl P) k) ⊆ V ∧ ∀ x, covectorEuclideanNorm (φ x - (η : DifferentialForm (Eucl P) k) x) ≤ ε := by
+  intro P k U V φ hV hVU hφ hφc hφV ε hε
+  -- Step 1: `|α| ≤ C ‖α‖` with `C = √M`, since every coefficient satisfies
+  -- `|α(e_I)| ≤ ‖α‖ ∏ ‖e_{I j}‖ = ‖α‖`.
+  set C : ℝ := Real.sqrt (Fintype.card (Fin k → Fin P)) with hC_def
+  have hC : 0 ≤ C := Real.sqrt_nonneg _
+  have hcmp : ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ C * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hC_def, ← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin k → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin k → Fin P, ‖α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h := α.le_opNorm fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)
+            simp only [EuclideanSpace.basisFun_apply, PiLp.norm_single, norm_one,
+              Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+            exact sq_le_sq.mpr (by simpa [abs_of_nonneg (norm_nonneg α)] using h)
+          · positivity
+      _ = (Fintype.card (Fin k → Fin P) : ℝ) * ‖α‖ ^ 2 := by simp
+  have hC1 : 0 < C + 1 := by linarith
+  set ε' : ℝ := ε / (C + 1) with hε'_def
+  have hε' : 0 < ε' := div_pos hε hC1
+  -- Step 2: an open `V'` with `tsupport φ ⊆ V'` and `closure V' ⊆ V` compact.
+  obtain ⟨V', hV'o, hKV', hV'V, hV'c⟩ :=
+    exists_open_between_and_isCompact_closure hφc.isCompact hV hφV
+  -- Step 3: a smooth cutoff `χ : ℝ^P → [0, 1]` with `support χ = V'` and `χ = 1` exactly on
+  -- `tsupport φ`.
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hV'o (isClosed_tsupport φ) hKV'
+  -- Step 4: mollification.  `φ` is uniformly continuous with modulus `δ` at accuracy `ε'`; `ψ` is
+  -- a smooth bump `≥ 0` with `∫ ψ = 1` and `support ψ ⊆ ball 0 δ`, so `g = ψ ⋆ φ` is smooth and
+  -- `dist (g x) (φ x) ≤ ε'`.
+  obtain ⟨δ, hδ, hφδ⟩ :=
+    Metric.uniformContinuous_iff.mp (hφc.uniformContinuous_of_continuous hφ) ε' hε'
+  obtain ⟨b, hbs, hbc, hbd, hbr, hb0⟩ :=
+    exists_contDiff_tsupport_subset (n := ⊤) (ball_mem_nhds (0 : Eucl P) hδ)
+  have hbnn : ∀ y, 0 ≤ b y := fun y => (hbr (mem_range_self y)).1
+  have hbint : 0 < ∫ y, b y :=
+    hbd.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hbc (fun y => hbnn y)
+      (hb0.symm ▸ one_ne_zero : b 0 ≠ 0)
+  set ψ : Eucl P → ℝ := fun y => (∫ z, b z)⁻¹ * b y with hψ_def
+  have hψd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ := contDiff_const.mul hbd
+  have hψc : HasCompactSupport ψ := hbc.mul_left
+  have hψnn : ∀ y, 0 ≤ ψ y := fun y => mul_nonneg (inv_nonneg.mpr hbint.le) (hbnn y)
+  have hψs : Function.support ψ ⊆ ball 0 δ :=
+    (Function.support_mul_subset_right _ _).trans ((subset_tsupport b).trans hbs)
+  have hψ1 : ∫ y, ψ y = 1 := by
+    rw [hψ_def, integral_const_mul, inv_mul_cancel₀ hbint.ne']
+  obtain ⟨g, hg, hgd⟩ : ∃ g : Eucl P → Covector (Eucl P) k,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ ∀ x, dist (g x) (φ x) ≤ ε' :=
+    ⟨convolution ψ φ (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+      hψc.contDiff_convolution_left _ hψd hφ.locallyIntegrable,
+      fun x => dist_convolution_le hε'.le hψs hψnn hψ1 hφ.aestronglyMeasurable
+        fun y hy => (hφδ (mem_ball.mp hy)).le⟩
+  -- Step 5: `η = χ • g` is a test form with `tsupport η ⊆ closure V' ⊆ V ⊆ U`.
+  have hη_supp : tsupport (fun x => χ x • g x) ⊆ closure V' := by
+    refine (tsupport_smul_subset_left χ g).trans ?_
+    rw [tsupport, hχs]
+  have hη_cpt : HasCompactSupport (fun x => χ x • g x) :=
+    hV'c.of_isClosed_subset (isClosed_tsupport _) hη_supp
+  refine ⟨⟨fun x => χ x • g x, ⟨⟨hχ.smul hg, hη_cpt⟩, hη_supp.trans (hV'V.trans hVU)⟩⟩,
+    hη_supp.trans hV'V, fun x => ?_⟩
+  -- Step 6: `‖φ x - η x‖ ≤ ε'` (on `tsupport φ`, `η = g`; off it, `φ = 0` and `0 ≤ χ ≤ 1`),
+  -- hence `|φ x - η x| ≤ C ε' ≤ ε`.
+  have hle : ‖φ x - χ x • g x‖ ≤ ε' := by
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hχ1 x).1 hx, one_smul, ← dist_eq_norm, dist_comm]
+      exact hgd x
+    · have h0 : φ x = 0 := image_eq_zero_of_notMem_tsupport hx
+      have hχx := hχr (mem_range_self x)
+      have hgx : ‖g x‖ ≤ ε' := by simpa [h0, dist_eq_norm] using hgd x
+      rw [h0, zero_sub, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_nonneg hχx.1]
+      exact (mul_le_of_le_one_left (norm_nonneg _) hχx.2).trans hgx
+  calc covectorEuclideanNorm (φ x - χ x • g x) ≤ C * ‖φ x - χ x • g x‖ := hcmp _
+    _ ≤ C * ε' := mul_le_mul_of_nonneg_left hle hC
+    _ ≤ ε := by
+      rw [hε'_def, mul_div_assoc', div_le_iff₀ hC1]
+      nlinarith
+
+/-- **Simon Ch. 6, 2.7–2.9 (p. 136)**, step P6(v) of `slicing_mass_representation`.  If
+`S(ω) = ∫_A ⟨ω, v⟩ dμ` for every `ω ∈ 𝒟ᵏ(U)`, where `|⟨α, v(x)⟩| ≤ |α|` and `μ` is finite on
+compact subsets of `U`, then `∫_A ⟨φ, v⟩ dμ ≤ M_W(S)` for every continuous compactly supported
+`k`-form `φ` with `spt φ ⊆ W ⊆ U`, `W` open, and `|φ| ≤ 1`.
+
+Take an open `V ⊇ spt φ` whose closure is a compact subset of `W`.  The smooth approximants
+`η_j ∈ 𝒟ᵏ(U)` of `smr_exists_testForm_uniform_approx` (`spt η_j ⊆ V`, `|φ - η_j| ≤ δ_j → 0`),
+rescaled to `ζ_j = (1 + δ_j)⁻¹ η_j`, are admissible for `M_W(S)` and satisfy
+`|ζ_j - φ| ≤ 2 δ_j`; the triangle inequality and homogeneity of `|·|` come from
+`smr_covector_coord_isometry`.  Dominated convergence on `μ ⌞ A` with the bound `1_{closure V}`
+gives `S(ζ_j) → ∫_A ⟨φ, v⟩ dμ`, and `ofReal (S(ζ_j)) ≤ M_W(S)` passes to the limit. -/
+theorem Submission.smr_ofReal_integral_le_massOn : ∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U k), (∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ W → (∀ x, covectorEuclideanNorm (φ x) ≤ 1) → ENNReal.ofReal (∫ x in A, v x (φ x) ∂μ) ≤ S.massOn W := by
+  intro P k U μ v hint hfin hv A S hS W hW hWU φ hφc hφs hφW hφ1
+  -- `|α| = ‖J α‖` for a linear `J`, so `|·|` is subadditive and absolutely homogeneous.
+  obtain ⟨N, J, hJ⟩ := Submission.smr_covector_coord_isometry P k
+  have hadd : ∀ α β : Covector (Eucl P) k,
+      covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β := by
+    intro α β
+    rw [hJ, hJ, hJ, map_add]
+    exact norm_add_le _ _
+  have hsmul : ∀ (c : ℝ) (α : Covector (Eucl P) k),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    rw [hJ, hJ, map_smul, norm_smul, Real.norm_eq_abs]
+  -- Step 1: an open `V ⊇ tsupport φ` whose closure is a compact subset of `W ⊆ U`.
+  obtain ⟨V, hVo, hφV, hVW, hVc⟩ := exists_open_between_and_isCompact_closure hφs hW hφW
+  have hKU : closure V ⊆ U := hVW.trans hWU
+  have hμK : μ (closure V) < ∞ := hfin _ hVc hKU
+  have hVU : V ⊆ U := subset_closure.trans hKU
+  -- Step 2: test forms `η j` supported in `V` with `|φ - η j| ≤ δ j → 0`, and
+  -- `ζ j = (1 + δ j)⁻¹ • η j`.
+  obtain ⟨δ, hδpos, hδlim⟩ : ∃ δ : ℕ → ℝ, (∀ j, 0 < δ j) ∧ Tendsto δ atTop (𝓝 0) :=
+    ⟨fun j => 1 / ((j : ℝ) + 1), fun j => by positivity, tendsto_one_div_add_atTop_nhds_zero_nat⟩
+  have hη : ∀ j : ℕ, ∃ η : TestFormOn U k, tsupport (η : DifferentialForm (Eucl P) k) ⊆ V ∧
+      ∀ x, covectorEuclideanNorm (φ x - (η : DifferentialForm (Eucl P) k) x) ≤ δ j := fun j =>
+    Submission.smr_exists_testForm_uniform_approx P k U V φ hVo hVU hφc hφs hφV (δ j) (hδpos j)
+  choose η hηV hηφ using hη
+  obtain ⟨ζ, hζx⟩ : ∃ ζ : ℕ → TestFormOn U k, ∀ j x,
+      (ζ j : DifferentialForm (Eucl P) k) x = (1 + δ j)⁻¹ • (η j : DifferentialForm (Eucl P) k) x :=
+    ⟨fun j => (1 + δ j)⁻¹ • η j, fun j x => rfl⟩
+  have hpos : ∀ j, 0 < 1 + δ j := fun j => by linarith [hδpos j]
+  have hηle : ∀ j x, covectorEuclideanNorm ((η j : DifferentialForm (Eucl P) k) x) ≤ 1 + δ j := by
+    intro j x
+    calc covectorEuclideanNorm ((η j : DifferentialForm (Eucl P) k) x)
+        = covectorEuclideanNorm (φ x + -(φ x - (η j : DifferentialForm (Eucl P) k) x)) := by
+          congr 1
+          abel
+      _ ≤ covectorEuclideanNorm (φ x) +
+            covectorEuclideanNorm (-(φ x - (η j : DifferentialForm (Eucl P) k) x)) := hadd _ _
+      _ ≤ 1 + δ j := by
+          rw [covectorEuclideanNorm_neg]
+          exact add_le_add (hφ1 x) (hηφ j x)
+  -- Step 3: every `ζ j` is admissible for `M_W(S)`, so `ofReal (S (ζ j)) ≤ M_W(S)`.
+  have hadm : ∀ j, ζ j ∈ massAdmissibleOn U k W := by
+    intro j
+    refine ⟨?_, fun x => ?_⟩
+    · have hfun : (ζ j : DifferentialForm (Eucl P) k) =
+          fun x => (1 + δ j)⁻¹ • (η j : DifferentialForm (Eucl P) k) x := funext (hζx j)
+      rw [hfun]
+      exact (tsupport_smul_subset_right (fun _ => (1 + δ j)⁻¹) _).trans
+        ((hηV j).trans (subset_closure.trans hVW))
+    · rw [hζx, hsmul, abs_of_pos (inv_pos.mpr (hpos j))]
+      calc (1 + δ j)⁻¹ * covectorEuclideanNorm ((η j : DifferentialForm (Eucl P) k) x)
+          ≤ (1 + δ j)⁻¹ * (1 + δ j) :=
+            mul_le_mul_of_nonneg_left (hηle j x) (inv_nonneg.mpr (hpos j).le)
+        _ = 1 := inv_mul_cancel₀ (hpos j).ne'
+  -- Step 4: `|ζ j - φ| ≤ 2 δ j` everywhere, and `ζ j` vanishes off `V`.
+  have hclose : ∀ j x,
+      covectorEuclideanNorm ((ζ j : DifferentialForm (Eucl P) k) x - φ x) ≤ 2 * δ j := by
+    intro j x
+    have e : (ζ j : DifferentialForm (Eucl P) k) x - φ x =
+        ((1 + δ j)⁻¹ - 1) • (η j : DifferentialForm (Eucl P) k) x +
+          -(φ x - (η j : DifferentialForm (Eucl P) k) x) := by
+      rw [hζx]
+      module
+    have habs : |(1 + δ j)⁻¹ - 1| = δ j / (1 + δ j) := by
+      have h : (1 + δ j)⁻¹ - 1 = -(δ j / (1 + δ j)) := by
+        linear_combination mul_inv_cancel₀ (hpos j).ne'
+      rw [h, abs_neg, abs_of_pos (div_pos (hδpos j) (hpos j))]
+    have h2 : δ j / (1 + δ j) * covectorEuclideanNorm ((η j : DifferentialForm (Eucl P) k) x)
+        ≤ δ j :=
+      calc δ j / (1 + δ j) * covectorEuclideanNorm ((η j : DifferentialForm (Eucl P) k) x)
+          ≤ δ j / (1 + δ j) * (1 + δ j) :=
+            mul_le_mul_of_nonneg_left (hηle j x) (div_pos (hδpos j) (hpos j)).le
+        _ = δ j := div_mul_cancel₀ _ (hpos j).ne'
+    rw [e]
+    refine (hadd _ _).trans ?_
+    rw [covectorEuclideanNorm_neg, hsmul, habs]
+    linarith [hηφ j x]
+  have hζ0 : ∀ j x, x ∉ V → (ζ j : DifferentialForm (Eucl P) k) x = 0 := fun j x hx => by
+    rw [hζx, image_eq_zero_of_notMem_tsupport fun h => hx (hηV j h), smul_zero]
+  -- Steps 5–6: dominated convergence on `μ ⌞ A`, with the integrable bound `1_{closure V}`
+  -- (`μ (closure V) < ∞`), gives `S (ζ j) → ∫_A ⟨φ, v⟩ dμ`.
+  have hlim : Tendsto (fun j => S (ζ j)) atTop (𝓝 (∫ x in A, v x (φ x) ∂μ)) := by
+    simp only [hS]
+    refine tendsto_integral_of_dominated_convergence
+      (F := fun j x => v x ((ζ j : DifferentialForm (Eucl P) k) x)) (f := fun x => v x (φ x))
+      ((closure V).indicator fun _ => (1 : ℝ))
+      (fun j => (hint (ζ j)).aestronglyMeasurable.restrict)
+      ((integrable_indicator_iff isClosed_closure.measurableSet).mpr
+        (integrableOn_const ((Measure.restrict_apply_le A (closure V)).trans_lt hμK).ne))
+      (fun j => Eventually.of_forall fun x => ?_) (Eventually.of_forall fun x => ?_)
+    · by_cases hx : x ∈ V
+      · rw [indicator_of_mem (subset_closure hx), Real.norm_eq_abs]
+        exact (hv x _).trans ((hadm j).2 x)
+      · rw [hζ0 j x hx, map_zero, norm_zero]
+        exact indicator_nonneg (fun _ _ => zero_le_one) x
+    · have h2δ : Tendsto (fun j => 2 * δ j) atTop (𝓝 0) := by
+        simpa using hδlim.const_mul 2
+      have h0 : Tendsto (fun j => v x ((ζ j : DifferentialForm (Eucl P) k) x) - v x (φ x))
+          atTop (𝓝 0) := by
+        refine squeeze_zero_norm (fun j => ?_) h2δ
+        rw [← map_sub, Real.norm_eq_abs]
+        exact (hv x _).trans (hclose j x)
+      simpa using h0.add_const (v x (φ x))
+  -- Step 7: pass to the limit in `ofReal (S (ζ j)) ≤ M_W(S)`.
+  exact le_of_tendsto' (ENNReal.tendsto_ofReal hlim) fun j => S.le_massOn (hadm j)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
