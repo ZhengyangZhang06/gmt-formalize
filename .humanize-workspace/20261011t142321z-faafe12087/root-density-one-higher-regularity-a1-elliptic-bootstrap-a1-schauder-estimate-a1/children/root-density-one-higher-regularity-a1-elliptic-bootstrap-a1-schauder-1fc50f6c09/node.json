@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.zero_mean-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+  "depth": 4,
+  "title": "Zero mean of a constant linear form applied to the derivative of a compactly supported C^1 map",
+  "statement": "Let n, l be natural numbers and L := L(R^n, R^l) with the operator norm. Let c : L -> R be a continuous linear form and zeta : R^n -> R^l a C^1 map with compact support. Then the Lebesgue integral over R^n of c(Dzeta(x)) is 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (c : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, c (fderiv ℝ ζ x) = 0",
+  "lean_name": "dohr_eb_sch_integral_clm_fderiv_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-1fc50f6c09-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1.localized_integral-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1",
+  "depth": 6,
+  "title": "Localization of integrals of functions continuous on an open set and vanishing off a compact subset",
+  "statement": "Let n be a natural number; integrals are Bochner integrals for Lebesgue measure on R^n. Let f : R^n -> R, and let O and T be subsets of R^n such that O is open, T is compact and T is contained in O. Assume that f is continuous on O (as a map restricted to O) and that f(z) = 0 for every z not in T. Then (a) f is continuous on all of R^n, (b) f is Lebesgue integrable on R^n, and (c) the integral of f over O equals the integral of f over R^n.",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (O T : Set (Rn n)), IsOpen O → IsCompact T → T ⊆ O → ContinuousOn f O → (∀ z, z ∉ T → f z = 0) → Continuous f ∧ Integrable f ∧ ∫ z in O, f z = ∫ z, f z",
+  "lean_name": "dohr_eb_sch_bu_wel_localized_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-240154921d-a1"
+}
