@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.im_sub-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Simon 6.3.2(1): integer multiplicity currents are closed under subtraction",
+  "statement": "Let P ∈ ℕ, n ≥ 1, U ⊆ ℝ^P open, and S, T ∈ 𝒟_n(U) integer multiplicity (each represented by some IMRep in U, Simon 6.3.1). Then the difference S − T (the contract's pointwise subtraction) is integer multiplicity.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), IsOpen U → 0 < n → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsIntegerMultiplicity (S - T)",
+  "lean_name": "dtc_isIntegerMultiplicity_sub",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-im-sub-a1-a1"
+}
