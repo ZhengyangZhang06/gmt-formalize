@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "341160bd1542f6ffc72c266852c66869ad822c603ec0a28204349b2fbd67eeff",
+  "git_delta": {
+    "base_commit": "abdf4230d35b79c3fbc57269092e2989dfa9c965",
+    "candidate_commit": "702f05894c2b233847ad89068a2a86f3fffcb13f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_rlim_smooth_cutoff",
+    "diff_sha256": "f27cea1b16c1b92e1fe662c844854a71fb8d86760449fa39f2d026e1b2044ddb",
+    "source_sha256": "34e688cfa584934a255b6a02202462e98814fce6260c8497c6a4150cf476c7cd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_rlim_smooth_cutoff",
+      "statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k) (f : Euclid P → ℝ) (t ε : ℝ), Continuous f → 0 < ε → ∃ (χ : Euclid P → ℝ) (η : TestFormOn U k), (∀ x, (η : DifferentialForm (Euclid P) k) x = χ x • (ω : DifferentialForm (Euclid P) k) x) ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ (∀ x, f x ≤ t - ε → χ x = 1) ∧ (∀ x, t ≤ f x → χ x = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
