@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.diagonal_blowup-a1.dense_family_tendsto-a1",
+  "parent_id": "root.integral_compactness-a1.diagonal_blowup-a1",
+  "depth": 3,
+  "title": "Convergence on a dense family plus uniform mass bounds gives convergence on all tests supported in O × G (step 7)",
+  "statement": "Let N, n ∈ ℕ, O ⊆ ℝ^N measurable, A := O × G(N,n), and g_m ∈ C_c(ℝ^N × G(N,n)) (m ∈ ℕ) with tsupport g_m ⊆ A such that for every f ∈ C_c(ℝ^N × G(N,n)) with tsupport f ⊆ A and every η > 0 there is m with |f − g_m| ≤ η everywhere. Let μ_k, ν_k (k ∈ ℕ) be measures on ℝ^N × G(N,n) and C ∈ [0,∞) such that μ_k(A) ≤ C and ν_k(A) ≤ C for all sufficiently large k and ∫ g_m dμ_k − ∫ g_m dν_k → 0 for every m. Then ∫ f dμ_k − ∫ f dν_k → 0 for every f ∈ C_c(ℝ^N × G(N,n)) with tsupport f ⊆ A.",
+  "lean_statement": "∀ (N n : ℕ) (O : Set (Euclidean N)) (g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ)) (μ ν : ℕ → Measure (Euclidean N × Grassmannian N n)) (C : ℝ≥0∞), MeasurableSet O → C ≠ ∞ → (∀ m, tsupport (g m) ⊆ O ×ˢ (univ : Set (Grassmannian N n))) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η) → (∀ᶠ k in atTop, μ k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → (∀ᶠ k in atTop, ν k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → (∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(μ k) - ∫ z, g m z ∂(ν k)) atTop (𝓝 0)) → ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(μ k) - ∫ z, f z ∂(ν k)) atTop (𝓝 0)",
+  "lean_name": "intcpt_diag_dense_family_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-diagonal-blowup-a1-dense-family-tendsto-a1-a1"
+}

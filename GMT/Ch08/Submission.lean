@@ -2059,6 +2059,605 @@ theorem Submission.intcpt_variation_liminf_density_bound :
         exact hC ρ hρ (hρr.trans_le (min_le_right _ _))
     _ = ENNReal.ofReal (c * C * ρ ^ n) := by
         rw [mul_assoc, ENNReal.ofReal_mul (Nat.cast_nonneg c), ENNReal.ofReal_natCast]
+/-- Blow-ups preserve Radon convergence (Simon Ch. 8, proof of 5.9: "`V_i → V`, and hence
+`η_{ξ,λ#}V_i → η_{ξ,λ#}V` for each fixed `λ > 0`").  If `V_i → V` as Radon measures on `Gₙ(U)`,
+`t > 0` and `F ∈ C_c(ℝ^N × G(N,n))` has `ξ + t y ∈ U` for every `(y, S) ∈ spt F`, then
+`∫ F dV_{i,ξ,t} → ∫ F dV_{ξ,t}`. -/
+theorem Submission.intcpt_diag_rescaled_radon_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+      (ξ : Euclidean N) (t : ℝ) (F : C_c(Euclidean N × Grassmannian N n, ℝ)),
+      Varifold.RadonConverges Vi V → 0 < t → (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) →
+      Tendsto (fun i ↦ ∫ z, F z ∂(rescaledMeasure (Vi i) ξ t)) atTop
+        (𝓝 (∫ z, F z ∂(rescaledMeasure V ξ t))) := by
+  intro N n U Vi V ξ t F hconv ht hF
+  -- The dilation `Φ (y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism with inverse `(ξ + t y, S)`.
+  let Φ : Euclidean N × Grassmannian N n ≃ₜ Euclidean N × Grassmannian N n :=
+    { toFun := fun z ↦ (t⁻¹ • (z.1 - ξ), z.2)
+      invFun := fun z ↦ (ξ + t • z.1, z.2)
+      left_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      right_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      continuous_toFun := by fun_prop
+      continuous_invFun := by fun_prop }
+  -- The pulled-back test function `H = F ∘ Φ` is supported in `U × G(N,n)`.
+  let H : C_c(Euclidean N × Grassmannian N n, ℝ) := F.comp Φ.toCocompactMap
+  have hHsupp : tsupport H ⊆ U ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro z hz
+    have hz' : Φ z ∈ tsupport F := tsupport_comp_subset_preimage F Φ.continuous hz
+    refine ⟨?_, trivial⟩
+    have := hF _ hz'
+    simpa [Φ, smul_smul, ht.ne'] using this
+  -- Rescaling formula: `∫ F dV'_{ξ,t} = t⁻ⁿ ∫ H dV'`.
+  have hresc : ∀ V' : Varifold N n U,
+      ∫ z, F z ∂(rescaledMeasure V' ξ t) = t⁻¹ ^ n * ∫ z, H z ∂V'.measure := by
+    intro V'
+    have hm : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) := by
+      fun_prop
+    rw [rescaledMeasure, integral_smul_measure,
+      integral_map hm.measurable.aemeasurable (map_continuous F).aestronglyMeasurable,
+      ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+    rfl
+  -- The restriction `h` of `H` to Simon's open product `Gₙ(U)` is a test function there.
+  let Ω := U ×ˢ (univ : Set (Grassmannian N n))
+  let h : C_c(Ω, ℝ) :=
+    { toFun := fun w ↦ H w.1
+      continuous_toFun := H.continuous.comp continuous_subtype_val
+      hasCompactSupport' := by
+        have hK : IsCompact ((Subtype.val : Ω → Euclidean N × Grassmannian N n) ⁻¹' tsupport H) :=
+          Topology.IsInducing.subtypeVal.isCompact_preimage' H.hasCompactSupport.isCompact (by
+            intro z hz
+            exact ⟨⟨z, hHsupp hz⟩, rfl⟩)
+        exact hK.of_isClosed_subset (isClosed_tsupport _)
+          (tsupport_comp_subset_preimage H continuous_subtype_val) }
+  have hdom : ∀ V' : Varifold N n U, ∫ w, h w ∂V'.domainMeasure = ∫ z, H z ∂V'.measure := by
+    intro V'
+    rw [← V'.map_domainMeasure, (MeasurableEmbedding.subtype_coe
+      (V'.isOpen_domain.measurableSet.prod MeasurableSet.univ)).integral_map]
+    rfl
+  have := (hconv h).const_mul (t⁻¹ ^ n)
+  simp only [hdom] at this
+  simpa only [hresc] using this
+/-- Test functions are integrable for the blow-up `V_{ξ,t} = η_{ξ,t #} V` (Simon Ch. 8, 1.1 and
+5.1) when the blow-up of their support stays in `U`: if `t > 0` and `ξ + t y ∈ U` for every
+`(y, S) ∈ spt F`, then `F ∈ C_c(ℝ^N × G(N,n))` is `rescaledMeasure V ξ t`-integrable. -/
+theorem Submission.intcpt_diag_rescaled_integrable :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ)
+      (F : C_c(Euclidean N × Grassmannian N n, ℝ)), 0 < t →
+      (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Integrable (fun z ↦ F z) (rescaledMeasure V ξ t) := by
+  intro N n U V ξ t F ht hF
+  -- The blow-up `Φ(y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism of `ℝ^N × G(N,n)`.
+  let Φ : Euclidean N × Grassmannian N n ≃ₜ Euclidean N × Grassmannian N n :=
+    { toFun := fun z ↦ (t⁻¹ • (z.1 - ξ), z.2)
+      invFun := fun z ↦ (ξ + t • z.1, z.2)
+      left_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      right_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      continuous_toFun := by fun_prop
+      continuous_invFun := by fun_prop }
+  -- The pull-back `H = F ∘ Φ` is compactly supported in `U × G(N,n)`.
+  let H : C_c(Euclidean N × Grassmannian N n, ℝ) := F.comp Φ.toCocompactMap
+  have hHsupp : tsupport H ⊆ U ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro z hz
+    have hz' : Φ z ∈ tsupport F := tsupport_comp_subset_preimage F Φ.continuous hz
+    refine ⟨?_, trivial⟩
+    simpa [Φ, smul_smul, ht.ne'] using hF _ hz'
+  -- `K = π(spt H)` is a compact subset of `U`, so `V(K × G(N,n)) < ∞`.
+  let K : Set (Euclidean N) := Prod.fst '' tsupport H
+  have hKc : IsCompact K := H.hasCompactSupport.isCompact.image continuous_fst
+  have hKU : K ⊆ U := by
+    rintro _ ⟨z, hz, rfl⟩
+    exact (hHsupp hz).1
+  have hfin := V.finite_on_compact K hKc hKU
+  have hsuppK : Function.support H ⊆ K ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro z hz
+    exact ⟨⟨z, subset_tsupport _ hz, rfl⟩, trivial⟩
+  -- `H` is bounded and vanishes off `K × G(N,n)`, hence `V`-integrable.
+  obtain ⟨M, hM⟩ := H.hasCompactSupport.exists_bound_of_continuous H.continuous
+  have hHint : Integrable (fun z ↦ H z) V.measure := by
+    have hOn : IntegrableOn (fun z ↦ H z) (K ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
+      Measure.integrableOn_of_bounded (M := M) hfin H.continuous.aestronglyMeasurable
+        (Eventually.of_forall hM)
+    exact (integrableOn_iff_integrable_of_support_subset hsuppK).mp hOn
+  -- Transfer along `Φ`, then scale by `t^{-n}`.
+  have hmap : Integrable (fun z ↦ F z) (V.measure.map Φ) :=
+    (integrable_map_measure (map_continuous F).aestronglyMeasurable
+      Φ.continuous.measurable.aemeasurable).mpr hHint
+  exact hmap.smul_measure ENNReal.ofReal_ne_top
+/-- A countable sup-dense family of test functions on `B°_R(0) × G(N,n)` (Simon Ch. 8, proof of
+5.9, printed (3)–(4), step 1 of the diagonal blow-up): for `R > 0` there are
+`g_m ∈ C_c(ℝ^N × G(N,n))` with `spt g_m ⊆ B°_R(0) × G(N,n)` such that every
+`f ∈ C_c(ℝ^N × G(N,n))` with `spt f ⊆ B°_R(0) × G(N,n)` is a uniform limit of the `g_m`. -/
+theorem Submission.intcpt_diag_ball_cc_dense_seq :
+    ∀ (N n : ℕ) (R : ℝ), 0 < R → ∃ g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ),
+      (∀ m, tsupport (g m) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧
+      ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+        tsupport f ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) →
+        ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η := by
+  intro N n R hR
+  -- Step 1: `C(Z, ℝ)` (compact-open) is second countable (inlined, as in the accepted
+  -- `Submission.radon_compactlySupported_countable_approx`).
+  set X := Euclidean N × Grassmannian N n
+  set S : Set (Set X) :=
+    closure '' {B | B ∈ TopologicalSpace.countableBasis X ∧ IsCompact (closure B)}
+  set T : Set (Set ℝ) := TopologicalSpace.countableBasis ℝ
+  have hT : TopologicalSpace.IsTopologicalBasis T := TopologicalSpace.isBasis_countableBasis ℝ
+  have hS₁ : ∀ K ∈ S, IsCompact K := by
+    rintro _ ⟨B, hB, rfl⟩
+    exact hB.2
+  have hS₂ : ∀ f : C(X, ℝ), ∀ x, ∀ V ∈ T, f x ∈ V → ∃ K ∈ S, K ∈ 𝓝 x ∧ MapsTo f K V := by
+    intro f x V hV hxV
+    have hpre : f ⁻¹' V ∈ 𝓝 x := ((hT.isOpen hV).preimage f.continuous).mem_nhds hxV
+    obtain ⟨C, hCx, hCV, hC⟩ := local_compact_nhds hpre
+    obtain ⟨B, hB, hxB, hBC⟩ := (TopologicalSpace.isBasis_countableBasis X).mem_nhds_iff.1 hCx
+    have hBC' : closure B ⊆ C := closure_minimal hBC hC.isClosed
+    refine ⟨closure B, ⟨B, ⟨hB, hC.of_isClosed_subset isClosed_closure hBC'⟩, rfl⟩, ?_, ?_⟩
+    · exact mem_of_superset
+        ((TopologicalSpace.isOpen_of_mem_countableBasis hB).mem_nhds hxB) subset_closure
+    · exact fun y hy => hCV (hBC' hy)
+  have hkey : (ContinuousMap.compactOpen : TopologicalSpace C(X, ℝ)) =
+      TopologicalSpace.generateFrom (Set.image2 (fun K t ↦
+        {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}) := by
+    apply le_antisymm
+    · apply_rules [TopologicalSpace.generateFrom_anti, image2_subset_iff.mpr]
+      intro K hK t ht
+      exact mem_image2_of_mem (hS₁ K hK) (isOpen_sUnion fun _ h ↦ hT.isOpen <| ht.2 h)
+    · refine le_of_nhds_le_nhds fun f ↦ ?_
+      simp only [ContinuousMap.nhds_compactOpen, le_iInf_iff, le_principal_iff]
+      intro K (hK : IsCompact K) U (hU : IsOpen U) hfKU
+      simp only [TopologicalSpace.nhds_generateFrom]
+      obtain ⟨t, htT, htf, hTU, hKT⟩ :
+          ∃ t ⊆ T, t.Finite ∧ (∀ V ∈ t, V ⊆ U) ∧ f '' K ⊆ ⋃₀ t := by
+        rw [hT.open_eq_sUnion' hU, mapsTo_iff_image_subset, sUnion_eq_biUnion] at hfKU
+        obtain ⟨t, ht, hfin, htK⟩ :=
+          (hK.image (map_continuous f)).elim_finite_subcover_image (fun V hV ↦ hT.isOpen hV.1)
+            hfKU
+        refine ⟨t, fun _ h ↦ (ht h).1, hfin, fun _ h ↦ (ht h).2, ?_⟩
+        rwa [sUnion_eq_biUnion]
+      rw [image_subset_iff] at hKT
+      obtain ⟨s, hsS, hsf, hKs, hst⟩ :
+          ∃ s ⊆ S, s.Finite ∧ K ⊆ ⋃₀ s ∧ MapsTo f (⋃₀ s) (⋃₀ t) := by
+        have : ∀ x ∈ K, ∃ L ∈ S, L ∈ 𝓝 x ∧ MapsTo f L (⋃₀ t) := by
+          intro x hx
+          rcases hKT hx with ⟨V, hVt, hxV⟩
+          rcases hS₂ f x V (htT hVt) hxV with ⟨L, hLS, hLx, hLV⟩
+          exact ⟨L, hLS, hLx, hLV.mono_right <| subset_sUnion_of_mem hVt⟩
+        choose! L hLS hLmem hLt using this
+        rcases hK.elim_nhds_subcover L hLmem with ⟨s, hsK, hs⟩
+        refine ⟨L '' s, image_subset_iff.2 fun x hx ↦ hLS x <| hsK x hx, s.finite_toSet.image _,
+          by rwa [sUnion_image], ?_⟩
+        rw [mapsTo_sUnion, forall_mem_image]
+        exact fun x hx ↦ hLt x <| hsK x hx
+      have hsub : (⋂ L ∈ s, {g : C(X, ℝ) | MapsTo g L (⋃₀ t)}) ⊆ {g | MapsTo g K U} := by
+        simp only [← ofPred_forall, ← mapsTo_iUnion, ← sUnion_eq_biUnion]
+        exact fun g hg ↦ hg.mono hKs (sUnion_subset hTU)
+      refine mem_of_superset ((biInter_mem hsf).2 fun L hL ↦ ?_) hsub
+      refine mem_iInf_of_mem _ <| mem_iInf_of_mem ?_ <| mem_principal_self _
+      exact ⟨hst.mono_left (subset_sUnion_of_mem hL), mem_image2_of_mem (hsS hL) ⟨htf, htT⟩⟩
+  have hcount : (Set.image2 (fun K t ↦ {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S
+      {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}).Countable :=
+    (((TopologicalSpace.countable_countableBasis X).mono fun _ hB => hB.1).image _).image2
+      (countable_ofPred_finite_subset (TopologicalSpace.countable_countableBasis ℝ)) _
+  have : SecondCountableTopology C(X, ℝ) := ⟨⟨_, hcount, hkey⟩⟩
+  -- Step 2: dense sequence, uniform approximation on compact sets.
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → C(X, ℝ), DenseRange d :=
+    ⟨TopologicalSpace.denseSeq C(X, ℝ), TopologicalSpace.denseRange_denseSeq C(X, ℝ)⟩
+  have happrox : ∀ (h : C(X, ℝ)) (L : Set X), IsCompact L → ∀ η : ℝ, 0 < η →
+      ∃ i, ∀ x ∈ L, |h x - d i x| < η := by
+    intro h L hL η hη
+    have hW : {p : C(X, ℝ) × C(X, ℝ) | ∀ x ∈ L,
+        (p.1 x, p.2 x) ∈ {q : ℝ × ℝ | dist q.1 q.2 < η}} ∈ uniformity C(X, ℝ) :=
+      ContinuousMap.hasBasis_compactConvergenceUniformity.mem_of_mem
+        (i := (L, {q : ℝ × ℝ | dist q.1 q.2 < η})) ⟨hL, Metric.dist_mem_uniformity hη⟩
+    obtain ⟨_, ⟨i, rfl⟩, hi⟩ := hd.inter_nhds_nonempty (UniformSpace.ball_mem_nhds h hW)
+    exact ⟨i, fun x hx => by simpa [Real.dist_eq] using hi x hx⟩
+  -- Step 3: exhaustion of the ball and cutoffs.
+  set r : ℕ → ℝ := fun m ↦ R * ((m + 1 : ℝ) / (m + 2)) with hr
+  have hrpos : ∀ m, 0 < r m := fun m ↦ by positivity
+  have hrlt : ∀ m, r m < R := by
+    intro m
+    have : ((m : ℝ) + 1) / (m + 2) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    calc r m = R * (((m : ℝ) + 1) / (m + 2)) := rfl
+      _ < R * 1 := mul_lt_mul_of_pos_left this hR
+      _ = R := mul_one R
+  have hrmono : ∀ m, r m < r (m + 1) := by
+    intro m
+    have h1 : ((m : ℝ) + 1) / (m + 2) < ((m + 1 : ℕ) + 1 : ℝ) / ((m + 1 : ℕ) + 2) := by
+      push_cast
+      rw [div_lt_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    exact mul_lt_mul_of_pos_left h1 hR
+  have hrlim : ∀ y : Euclidean N, ‖y‖ < R → ∃ m, ‖y‖ < r m := by
+    intro y hy
+    have ht : Tendsto r atTop (𝓝 R) := by
+      have h1 : Tendsto (fun m : ℕ ↦ ((m : ℝ) + 1) / (m + 2)) atTop (𝓝 1) := by
+        have := tendsto_natCast_div_add_atTop (𝕜 := ℝ) (1 : ℝ)
+        have h2 : Tendsto (fun m : ℕ ↦ ((m + 1 : ℕ) : ℝ) / ((m + 1 : ℕ) + 1)) atTop (𝓝 1) :=
+          this.comp (tendsto_add_atTop_nat 1)
+        refine h2.congr (fun m ↦ ?_)
+        push_cast; ring_nf
+      simpa using h1.const_mul R
+    exact (ht.eventually (lt_mem_nhds hy)).exists
+  set E : ℕ → Set X := fun m ↦ closedBall (0 : Euclidean N) (r m) ×ˢ (univ : Set (Grassmannian N n))
+  have hEc : ∀ m, IsCompact (E m) := fun m ↦ (isCompact_closedBall _ _).prod isCompact_univ
+  choose χ hχ1 hχ0 hχc hχI using fun m => exists_continuous_one_zero_of_isCompact (X := X)
+    (hEc m)
+    ((isOpen_ball (x := (0 : Euclidean N)) (ε := r (m + 1))).prod isOpen_univ).isClosed_compl
+    (by
+      rw [disjoint_compl_right_iff_subset]
+      exact prod_mono (closedBall_subset_ball (hrmono m)) subset_rfl)
+  have hχsupp : ∀ m,
+      tsupport (χ m) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro m
+    have hcl : IsClosed (closedBall (0 : Euclidean N) (r (m + 1)) ×ˢ
+        (univ : Set (Grassmannian N n))) := isClosed_closedBall.prod isClosed_univ
+    refine (closure_minimal ?_ hcl).trans ?_
+    · intro x hx
+      by_contra hxE
+      apply hx
+      apply hχ0 m
+      intro hxb
+      exact hxE (prod_mono ball_subset_closedBall subset_rfl hxb)
+    · exact prod_mono (closedBall_subset_ball (hrlt (m + 1))) subset_rfl
+  -- Step 4: the family.
+  let g : ℕ → C_c(X, ℝ) := fun k =>
+    ⟨χ (Nat.unpair k).1 * d (Nat.unpair k).2, (hχc (Nat.unpair k).1).mul_right⟩
+  have hgx : ∀ k x, g k x = χ (Nat.unpair k).1 x * d (Nat.unpair k).2 x := fun _ _ => rfl
+  have hgsupp : ∀ k, tsupport (g k) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) :=
+    fun k => (tsupport_mul_subset_left (f := χ (Nat.unpair k).1) (g := d (Nat.unpair k).2)).trans
+      (hχsupp _)
+  clear_value g
+  refine ⟨g, hgsupp, fun f hf η hη => ?_⟩
+  -- Step 5: approximation.
+  obtain ⟨m, hm⟩ : ∃ m, tsupport f ⊆ E m := by
+    have hcov : tsupport f ⊆
+        ⋃ m, ball (0 : Euclidean N) (r m) ×ˢ (univ : Set (Grassmannian N n)) := by
+      intro z hz
+      have hz1 := (hf hz).1
+      rw [mem_ball, dist_zero_right] at hz1
+      obtain ⟨m, hm⟩ := hrlim z.1 hz1
+      exact mem_iUnion.mpr ⟨m, ⟨by rw [mem_ball, dist_zero_right]; exact hm, trivial⟩⟩
+    have hmono :
+        Monotone (fun m ↦ ball (0 : Euclidean N) (r m) ×ˢ (univ : Set (Grassmannian N n))) := by
+      intro a b hab
+      apply prod_mono _ subset_rfl
+      apply ball_subset_ball
+      exact (strictMono_nat_of_lt_succ hrmono).monotone hab
+    obtain ⟨m, hm⟩ := f.hasCompactSupport.isCompact.elim_directed_cover _
+      (fun m ↦ isOpen_ball.prod isOpen_univ) hcov hmono.directed_le
+    exact ⟨m, hm.trans (prod_mono ball_subset_closedBall subset_rfl)⟩
+  obtain ⟨i, hi⟩ := happrox f (E (m + 1)) (hEc _) η hη
+  refine ⟨Nat.pair m i, fun x => ?_⟩
+  have hfx : f x = χ m x * f x := by
+    by_cases hx : x ∈ E m
+    · rw [hχ1 m hx, Pi.one_apply, one_mul]
+    · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hm h)), mul_zero]
+  rw [hgx, Nat.unpair_pair, hfx, ← mul_sub, abs_mul, abs_of_nonneg (hχI m x).1]
+  by_cases hx : x ∈ E (m + 1)
+  · calc χ m x * |f x - d i x| ≤ 1 * η :=
+          mul_le_mul (hχI m x).2 (hi x hx).le (abs_nonneg _) zero_le_one
+      _ = η := one_mul η
+  · have hx' : x ∈ (ball (0 : Euclidean N) (r (m + 1)) ×ˢ (univ : Set (Grassmannian N n)))ᶜ := by
+      intro hb
+      exact hx (prod_mono ball_subset_closedBall subset_rfl hb)
+    rw [hχ0 m hx', Pi.zero_apply, zero_mul]
+    exact hη.le
+/-- One blow-up of the diagonal argument in Simon Ch. 8, proof of 5.9 (printed (4): "(by (2))
+`‖δW_i‖(B_R(0)) → 0`").  If `V` has locally bounded first variation in `U`, `t, R > 0` and
+`ξ + t y ∈ U` for every `y ∈ B°_R(0)`, then `W = V_{ξ,t} ⌞ (B°_R(0) × G(N,n))` is an `n`-varifold on
+`B°_R(0)` with locally bounded first variation, and `‖δW‖(B°_R(0)) ≤ t^{-n} t ‖δV‖(B_{tR}(ξ))`. -/
+theorem Submission.intcpt_diag_blowup_variation_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t R : ℝ),
+      V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R →
+      (∀ y ∈ ball (0 : Euclidean N) R, ξ + t • y ∈ U) →
+      ∃ W : Varifold N n (ball (0 : Euclidean N) R),
+        W.measure = (rescaledMeasure V ξ t).restrict
+          (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧
+        W.HasLocallyBoundedFirstVariation ∧
+        variationMeasure W (ball (0 : Euclidean N) R) ≤
+          ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R)) := by
+  intro N n U V ξ t R hV ht hR hσU
+  set O : Set (Euclidean N) := ball (0 : Euclidean N) R with hOdef
+  have hOm : MeasurableSet O := measurableSet_ball
+  -- the homeomorphism `σ(y) = ξ + t • y`, with inverse `η(z) = t⁻¹ • (z - ξ)`
+  let σ : Euclidean N ≃ₜ Euclidean N :=
+    { toFun := fun y ↦ ξ + t • y
+      invFun := fun z ↦ t⁻¹ • (z - ξ)
+      left_inv := by intro y; simp [smul_smul, ht.ne']
+      right_inv := by intro z; simp [smul_smul, ht.ne']
+      continuous_toFun := by fun_prop
+      continuous_invFun := by fun_prop }
+  have hσ : ∀ y, σ y = ξ + t • y := fun _ ↦ rfl
+  have hσO : σ '' O ⊆ U := by
+    rintro _ ⟨y, hy, rfl⟩
+    exact hσU y hy
+  have hσball : σ '' O ⊆ closedBall ξ (t * R) := by
+    rintro _ ⟨y, hy, rfl⟩
+    rw [hσ, mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos ht]
+    rw [hOdef, mem_ball, dist_zero_right] at hy
+    exact mul_le_mul_of_nonneg_left hy.le ht.le
+  have hΦc : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) := by
+    fun_prop
+  -- Step 1: the varifold `W`
+  let W : Varifold N n O :=
+    { isOpen_domain := isOpen_ball
+      measure := (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n)))
+      supported := by
+        rw [Measure.restrict_apply (hOm.compl.prod MeasurableSet.univ)]
+        have : (Oᶜ ×ˢ (univ : Set (Grassmannian N n))) ∩ (O ×ˢ (univ : Set (Grassmannian N n))) =
+            ∅ := by
+          ext z; simp
+        rw [this, measure_empty]
+      finite_on_compact := by
+        intro K hK hKO
+        apply ne_top_of_le_ne_top _ (Measure.restrict_apply_le _ _)
+        rw [rescaledMeasure, Measure.smul_apply,
+          Measure.map_apply hΦc.measurable (hK.measurableSet.prod MeasurableSet.univ), smul_eq_mul]
+        apply ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+        have he : (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) ⁻¹'
+            (K ×ˢ (univ : Set (Grassmannian N n))) =
+              (σ '' K) ×ˢ (univ : Set (Grassmannian N n)) := by
+          ext z
+          simp only [mem_preimage, mem_prod, mem_univ, and_true]
+          rw [σ.image_eq_preimage_symm]
+          rfl
+        rw [he]
+        exact V.finite_on_compact _ (hK.image σ.continuous) ((image_mono hKO).trans hσO) }
+  have hWmeas :
+      W.measure = (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n))) := rfl
+  refine ⟨W, rfl, ?_⟩
+  -- Steps 3-4: pulled-back test fields and the first-variation scaling `δW(X) = t^{-n} t δV(Y)`
+  have hη : ContDiff ℝ 1 (fun z : Euclidean N ↦ t⁻¹ • (z - ξ)) := by fun_prop
+  have hfd : ∀ z : Euclidean N, fderiv ℝ (fun z : Euclidean N ↦ t⁻¹ • (z - ξ)) z =
+      t⁻¹ • ContinuousLinearMap.id ℝ (Euclidean N) :=
+    fun z ↦ (((hasFDerivAt_id z).sub_const ξ).const_smul t⁻¹).fderiv
+  have hpull : ∀ X : Varifold.TestVectorField (N := N) O, ∃ Y : Varifold.TestVectorField (N := N) U,
+      (∀ z, Y z = X (t⁻¹ • (z - ξ))) ∧ tsupport Y.toFun ⊆ σ '' tsupport X.toFun ∧
+      W.firstVariation X = t⁻¹ ^ n * t * V.firstVariation Y := by
+    intro X
+    let Yf : Euclidean N → Euclidean N := fun z ↦ X (t⁻¹ • (z - ξ))
+    have hYsupp : tsupport Yf ⊆ σ '' tsupport X.toFun := by
+      rw [σ.image_eq_preimage_symm]
+      exact tsupport_comp_subset_preimage X.toFun σ.symm.continuous
+    let Y : Varifold.TestVectorField (N := N) U :=
+      { toFun := Yf
+        contDiff := X.contDiff.comp hη
+        compactSupport :=
+          (X.compactSupport.isCompact.image σ.continuous).of_isClosed_subset (isClosed_tsupport _)
+            hYsupp
+        support_subset := hYsupp.trans ((image_mono X.support_subset).trans hσO) }
+    refine ⟨Y, fun z ↦ rfl, hYsupp, ?_⟩
+    have hdiv : ∀ z (S : Grassmannian N n), Varifold.tangentialDivergence Y z S =
+        t⁻¹ * Varifold.tangentialDivergence X (t⁻¹ • (z - ξ)) S := by
+      intro z S
+      have hX' : DifferentiableAt ℝ X.toFun (t⁻¹ • (z - ξ)) :=
+        (X.contDiff.differentiable one_ne_zero) _
+      have hcomp : fderiv ℝ Yf z = t⁻¹ • fderiv ℝ X.toFun (t⁻¹ • (z - ξ)) := by
+        have h1 : fderiv ℝ (X.toFun ∘ fun z ↦ t⁻¹ • (z - ξ)) z =
+            (fderiv ℝ X.toFun (t⁻¹ • (z - ξ))).comp (fderiv ℝ (fun z ↦ t⁻¹ • (z - ξ)) z) :=
+          fderiv_comp z hX' ((hη.differentiable one_ne_zero) z)
+        rw [show Yf = X.toFun ∘ fun z ↦ t⁻¹ • (z - ξ) from rfl, h1, hfd]
+        ext v
+        simp
+      change Matrix.trace (S.1 * Varifold.clmToMatrix (fderiv ℝ Yf z)) =
+        t⁻¹ * Matrix.trace (S.1 * Varifold.clmToMatrix (fderiv ℝ X.toFun (t⁻¹ • (z - ξ))))
+      rw [hcomp, map_smul, Matrix.mul_smul, Matrix.trace_smul, smul_eq_mul]
+    have hdivX_cont := Varifold.continuous_tangentialDivergence (n := n) X.contDiff
+    have hvanish : ∀ z ∉ O ×ˢ (univ : Set (Grassmannian N n)),
+        Varifold.tangentialDivergence X.toFun z.1 z.2 = 0 := by
+      intro z hz
+      by_contra hne
+      exact hz (prod_mono X.support_subset subset_rfl
+        (Varifold.support_tangentialDivergence_subset X.toFun hne))
+    calc W.firstVariation X = ∫ z, Varifold.tangentialDivergence X.toFun z.1 z.2 ∂W.measure := rfl
+      _ = ∫ z, Varifold.tangentialDivergence X.toFun z.1 z.2 ∂(rescaledMeasure V ξ t) := by
+          rw [hWmeas]; exact setIntegral_eq_integral_of_forall_compl_eq_zero hvanish
+      _ = t⁻¹ ^ n *
+            ∫ z, Varifold.tangentialDivergence X.toFun (t⁻¹ • (z.1 - ξ)) z.2 ∂V.measure := by
+          rw [rescaledMeasure, integral_smul_measure,
+            integral_map hΦc.measurable.aemeasurable hdivX_cont.aestronglyMeasurable,
+            ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+      _ = t⁻¹ ^ n * ∫ z, t * Varifold.tangentialDivergence Y z.1 z.2 ∂V.measure := by
+          congr 1
+          apply integral_congr_ae
+          filter_upwards with z
+          rw [hdiv]
+          field_simp
+      _ = t⁻¹ ^ n * t * V.firstVariation Y := by
+          rw [integral_const_mul, mul_assoc]
+          rfl
+  -- Step 5: comparison of the first-variation norms
+  have hc0 : (0 : ℝ) ≤ t⁻¹ ^ n * t := by positivity
+  have hcmp : ∀ O' : Set (Euclidean N), W.firstVariationNormOn O' ≤
+      ENNReal.ofReal (t⁻¹ ^ n * t) * V.firstVariationNormOn (σ '' O') := by
+    intro O'
+    classical
+    generalize hB : V.firstVariationNormOn (σ '' O') = B
+    unfold Varifold.firstVariationNormOn
+    refine iSup_le fun X ↦ ?_
+    split_ifs with hX
+    · obtain ⟨Y, hYz, hYsupp, hδ⟩ := hpull X
+      have hY : Y.UnitSupportedIn (σ '' O') := by
+        refine ⟨hYsupp.trans (image_mono hX.1), fun z ↦ ?_⟩
+        rw [hYz]
+        exact hX.2 _
+      have hle := Varifold.le_firstVariationNormOn V (σ '' O') Y hY
+      rw [hB] at hle
+      rw [hδ, abs_mul, abs_of_nonneg hc0, ENNReal.ofReal_mul hc0]
+      exact mul_le_mul_of_nonneg_left hle zero_le
+    · exact zero_le
+  -- Step 6: `W` has locally bounded first variation
+  have hW : W.HasLocallyBoundedFirstVariation := by
+    intro O' hO' hO'c
+    have hσO' : IsOpen (σ '' O') := σ.isOpenMap _ hO'
+    have hcl : closure (σ '' O') = σ '' closure O' := (σ.image_closure O').symm
+    have hfin := hV (σ '' O') hσO'
+      ⟨by rw [hcl]; exact hO'c.1.image σ.continuous,
+       by rw [hcl]; exact (image_mono hO'c.2).trans hσO⟩
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin) (hcmp O')
+  refine ⟨hW, ?_⟩
+  -- Steps 7-8: the Riesz measures and the exhaustion of `O` by the balls `B°_{r_j}(0)`
+  have hvW : variationMeasure W = W.firstVariationRieszMeasure hW := by
+    simp [variationMeasure, hW]
+  have hvV : variationMeasure V = V.firstVariationRieszMeasure hV := by
+    simp [variationMeasure, hV]
+  have hpolar : ∀ A, V.firstVariationNormOn A ≤ variationMeasure V A := by
+    intro A
+    rw [hvV]
+    exact V.firstVariationNormOn_le_of_polarRepresentation
+      (V.isFirstVariationPolarRepresentation_riesz hV) A
+  set r : ℕ → ℝ := fun j ↦ R * (((j : ℝ) + 1) / ((j : ℝ) + 2)) with hr
+  have hrpos : ∀ j, 0 < r j := fun j ↦ by positivity
+  have hrlt : ∀ j, r j < R := by
+    intro j
+    have : ((j : ℝ) + 1) / ((j : ℝ) + 2) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    calc r j = R * (((j : ℝ) + 1) / ((j : ℝ) + 2)) := rfl
+      _ < R * 1 := mul_lt_mul_of_pos_left this hR
+      _ = R := mul_one R
+  have hrmono : Monotone r := by
+    apply monotone_nat_of_le_succ
+    intro j
+    apply mul_le_mul_of_nonneg_left _ hR.le
+    push_cast
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  have hrlim : Tendsto r atTop (𝓝 R) := by
+    have h1 : Tendsto (fun m : ℕ ↦ ((m : ℝ) + 1) / ((m : ℝ) + 2)) atTop (𝓝 1) := by
+      have := tendsto_natCast_div_add_atTop (𝕜 := ℝ) (1 : ℝ)
+      have h2 : Tendsto (fun m : ℕ ↦ ((m + 1 : ℕ) : ℝ) / ((m + 1 : ℕ) + 1)) atTop (𝓝 1) :=
+        this.comp (tendsto_add_atTop_nat 1)
+      refine h2.congr (fun m ↦ ?_)
+      push_cast
+      ring_nf
+    simpa using h1.const_mul R
+  have hunion : O = ⋃ j, ball (0 : Euclidean N) (r j) := by
+    ext y
+    simp only [hOdef, mem_iUnion, mem_ball, dist_zero_right]
+    constructor
+    · intro hy
+      exact (hrlim.eventually (lt_mem_nhds hy)).exists
+    · rintro ⟨j, hj⟩
+      exact hj.trans (hrlt j)
+  have hmono : Monotone (fun j ↦ ball (0 : Euclidean N) (r j)) :=
+    fun a b hab ↦ ball_subset_ball (hrmono hab)
+  have hOj : ∀ j, variationMeasure W (ball (0 : Euclidean N) (r j)) ≤
+      ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R)) := by
+    intro j
+    have hclj : closure (ball (0 : Euclidean N) (r j)) = closedBall 0 (r j) :=
+      closure_ball _ (hrpos j).ne'
+    rw [hvW, Varifold.firstVariationRieszMeasure_eq_norm W hW _ isOpen_ball
+      ⟨by rw [hclj]; exact isCompact_closedBall _ _,
+       by rw [hclj]; exact closedBall_subset_ball (hrlt j)⟩]
+    refine (hcmp _).trans (mul_le_mul_of_nonneg_left ((hpolar _).trans (measure_mono ?_)) zero_le)
+    exact (image_mono (ball_subset_ball (hrlt j).le)).trans hσball
+  calc variationMeasure W O = variationMeasure W (⋃ j, ball (0 : Euclidean N) (r j)) :=
+        congrArg _ hunion
+    _ = ⨆ j, variationMeasure W (ball (0 : Euclidean N) (r j)) := hmono.measure_iUnion
+    _ ≤ _ := iSup_le hOj
+/-- Convergence on a dense family of test functions extends to all of them under a uniform mass
+bound (Simon Ch. 8, proof of 5.9, printed (3): the diagonal blow-up converges against every test
+function once it does against a countable dense family).  Let `A = O × G(N,n)`, let the
+`g_m ∈ C_c(ℝ^N × G(N,n))` with `spt g_m ⊆ A` be uniformly dense among the `f ∈ C_c(ℝ^N × G(N,n))`
+with `spt f ⊆ A`, and let `μ_k(A) ≤ C` and `ν_k(A) ≤ C < ∞` for all large `k`.  If
+`∫ g_m dμ_k - ∫ g_m dν_k → 0` for every `m`, then `∫ f dμ_k - ∫ f dν_k → 0` for every such `f`. -/
+theorem Submission.intcpt_diag_dense_family_tendsto :
+    ∀ (N n : ℕ) (O : Set (Euclidean N)) (g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ))
+      (μ ν : ℕ → Measure (Euclidean N × Grassmannian N n)) (C : ℝ≥0∞), MeasurableSet O →
+      C ≠ ∞ → (∀ m, tsupport (g m) ⊆ O ×ˢ (univ : Set (Grassmannian N n))) →
+      (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+        tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) →
+        ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η) →
+      (∀ᶠ k in atTop, μ k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) →
+      (∀ᶠ k in atTop, ν k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) →
+      (∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(μ k) - ∫ z, g m z ∂(ν k)) atTop (𝓝 0)) →
+      ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+        tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) →
+        Tendsto (fun k ↦ ∫ z, f z ∂(μ k) - ∫ z, f z ∂(ν k)) atTop (𝓝 0) := by
+  intro N n O g μ ν C _hO hC hgsupp hdense hμ hν hconv f hf
+  set A : Set (Euclidean N × Grassmannian N n) := O ×ˢ (univ : Set (Grassmannian N n))
+  set C₀ : ℝ := C.toReal
+  have hC₀nn : 0 ≤ C₀ := ENNReal.toReal_nonneg
+  -- Step 1: a test function supported in `A` is integrable for any measure with `μ'(A) ≤ C`.
+  have hintegr : ∀ (μ' : Measure (Euclidean N × Grassmannian N n))
+      (h : C_c(Euclidean N × Grassmannian N n, ℝ)),
+      μ' A ≤ C → tsupport h ⊆ A → Integrable (fun z ↦ h z) μ' := by
+    intro μ' h hμ' hh
+    obtain ⟨M, hM⟩ := h.hasCompactSupport.exists_bound_of_continuous h.continuous
+    have hOn : IntegrableOn (fun z ↦ h z) A μ' :=
+      Measure.integrableOn_of_bounded (M := M) (ne_top_of_le_ne_top hC hμ')
+        h.continuous.aestronglyMeasurable (Eventually.of_forall hM)
+    exact (integrableOn_iff_integrable_of_support_subset ((subset_tsupport _).trans hh)).mp hOn
+  -- Step 2: if `|h| ≤ η` and `h = 0` off `A`, then `|∫ h dμ'| ≤ η μ'(A) ≤ η C₀`.
+  have hest : ∀ (μ' : Measure (Euclidean N × Grassmannian N n))
+      (h : Euclidean N × Grassmannian N n → ℝ) (η : ℝ),
+      0 ≤ η → μ' A ≤ C → (∀ z, z ∉ A → h z = 0) → (∀ z, |h z| ≤ η) →
+      |∫ z, h z ∂μ'| ≤ η * C₀ := by
+    intro μ' h η hηnn hμ' h0 hη
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero h0]
+    have hlt : μ' A < ∞ := lt_of_le_of_lt hμ' (lt_top_iff_ne_top.mpr hC)
+    have h1 := norm_setIntegral_le_of_norm_le_const (μ := μ') (s := A) (f := h) (C := η) hlt
+      (fun z _ ↦ by simpa [Real.norm_eq_abs] using hη z)
+    rw [Real.norm_eq_abs] at h1
+    refine h1.trans (mul_le_mul_of_nonneg_left ?_ hηnn)
+    exact ENNReal.toReal_mono hC hμ'
+  -- Step 3: approximate `f` by `g m` within `η = ε / (4 (C₀ + 1))`, and take `k` so large that
+  -- both mass bounds hold and `|∫ g m dμ_k - ∫ g m dν_k| < ε / 2`.
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  set η : ℝ := ε / (4 * (C₀ + 1)) with hηdef
+  have hηpos : 0 < η := by positivity
+  obtain ⟨m, hm⟩ := hdense f hf η hηpos
+  obtain ⟨K₁, hK₁⟩ := Metric.tendsto_atTop.mp (hconv m) (ε / 2) (by positivity)
+  obtain ⟨K₂, hK₂⟩ := eventually_atTop.mp hμ
+  obtain ⟨K₃, hK₃⟩ := eventually_atTop.mp hν
+  refine ⟨max K₁ (max K₂ K₃), fun k hk ↦ ?_⟩
+  have hk1 : K₁ ≤ k := le_of_max_le_left hk
+  have hk2 : K₂ ≤ k := le_trans (le_max_left _ _) (le_of_max_le_right hk)
+  have hk3 : K₃ ≤ k := le_trans (le_max_right _ _) (le_of_max_le_right hk)
+  have hμk := hK₂ k hk2
+  have hνk := hK₃ k hk3
+  have hgk := hK₁ k hk1
+  rw [Real.dist_eq, sub_zero] at hgk ⊢
+  have hfμ := hintegr (μ k) f hμk hf
+  have hgμ := hintegr (μ k) (g m) hμk (hgsupp m)
+  have hfν := hintegr (ν k) f hνk hf
+  have hgν := hintegr (ν k) (g m) hνk (hgsupp m)
+  -- Step 4: `f - g m` vanishes off `A` and is bounded by `η`, so Step 2 applies to both measures.
+  have h0 : ∀ z, z ∉ A → f z - g m z = 0 := by
+    intro z hz
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hz (hf h)),
+      image_eq_zero_of_notMem_tsupport (fun h ↦ hz (hgsupp m h)), sub_zero]
+  have e1 := hest (μ k) (fun z ↦ f z - g m z) η hηpos.le hμk h0 hm
+  have e2 := hest (ν k) (fun z ↦ f z - g m z) η hηpos.le hνk h0 hm
+  rw [integral_sub hfμ hgμ] at e1
+  rw [integral_sub hfν hgν] at e2
+  -- Step 5: the triangle inequality, with `2 η C₀ = (ε / 2) C₀ / (C₀ + 1) < ε / 2`.
+  have hsmall : 2 * (η * C₀) < ε / 2 := by
+    have h4 : 0 < C₀ + 1 := by linarith
+    have hrw : η * C₀ = ε / 4 * (C₀ / (C₀ + 1)) := by
+      rw [hηdef]; field_simp
+    have hfrac : C₀ / (C₀ + 1) < 1 := by rw [div_lt_one h4]; linarith
+    have hfrac0 : 0 ≤ C₀ / (C₀ + 1) := div_nonneg hC₀nn h4.le
+    rw [hrw]; nlinarith
+  have a1 := abs_le.mp e1
+  have a2 := abs_le.mp e2
+  have a3 := abs_lt.mp hgk
+  rw [abs_lt]
+  constructor <;> linarith [a1.1, a1.2, a2.1, a2.2, a3.1, a3.2]
 /-- `H^n ⌞ σ(A) = t^n σ_# (H^n ⌞ A)` for the similarity `σ(y) = ξ + t y`, `t > 0`, and every
 set `A` (measurable or not): `σ = (ξ + ·) ∘ (t • ·)` scales `H^n` of every set by `t^n`, and on a
 Borel set `B` both sides evaluate to `H^n(B ∩ σ(A)) = H^n(σ(σ⁻¹(B) ∩ A))`. -/
@@ -2297,6 +2896,245 @@ theorem Submission.intcpt_rescaled_restriction_integral :
     rw [image_preimage_eq M hσsurj] at h
     rw [h, Measure.ae_ennreal_smul_measure_iff hc0, hσemb.ae_map_iff] at hθnat
     exact ae_restrict_of_ae_restrict_of_subset inter_subset_right hθnat
+
+/-- The diagonal blow-up in the proof of **Simon Ch. 8, 5.9** (printed steps (3)–(4); node
+`diagonal_blowup` of `integral_compactness`), restricted to the fixed ball `B°_5(0)`.  Let
+`V_i → V` with each `V_i` integral of locally bounded first variation, let `V` have tangent plane
+`P` with multiplicity `θ₀` at `ξ`, and let `liminf_i ‖δV_i‖(B_ρ(ξ)) ≤ c ρ^n` for `0 < ρ < r`.
+For scales `λ_k ↓ 0` and well-chosen indices `i_k`, the blow-ups
+`W_k = (V_{i_k})_{ξ,λ_k} ⌞ (B°_5(0) × G)` are integral varifolds on `B°_5(0)` with locally bounded
+first variation, `‖δW_k‖(B°_5(0)) ≤ 2 max(c,1) 5^n λ_k → 0`, and `W_k → θ₀ v(P)` on
+`B°_5(0) × G`. -/
+theorem Submission.intcpt_diagonal_integral_blowup :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+      (ξ : Euclidean N) (P : Grassmannian N n) (θ₀ c r : ℝ), Varifold.RadonConverges Vi V →
+      (∀ i, IsIntegral (Vi i)) → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) →
+      HasTangentPlane V ξ P θ₀ → 0 < r →
+      (∀ ρ : ℝ, 0 < ρ → ρ < r →
+        liminf (fun i ↦ variationMeasure (Vi i) (closedBall ξ ρ)) atTop ≤
+          ENNReal.ofReal (c * ρ ^ n)) →
+      ∃ W : ℕ → Varifold N n (ball (0 : Euclidean N) 5), (∀ k, IsIntegral (W k)) ∧
+        (∀ k, (W k).HasLocallyBoundedFirstVariation) ∧
+        Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) ∧
+        ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+          tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) →
+          Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop
+            (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P))) := by
+  intro N n U Vi V ξ P θ₀ c r hconv hint hlbfv htan hr hlim
+  obtain ⟨hξU, -, htanf⟩ := htan
+  set O : Set (Euclidean N) := ball (0 : Euclidean N) 5 with hO
+  -- A ball `B°_ε(ξ) ⊆ U`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp V.isOpen_domain ξ hξU
+  -- The scales `λ_k = δ₀ / (k + 1)`: `5 λ_k < r`, `6 λ_k < ε` and `λ_k → 0⁺`.
+  set δ₀ : ℝ := min r ε / 7 with hδ₀
+  have hδ₀pos : 0 < δ₀ := by positivity
+  set lam : ℕ → ℝ := fun k ↦ δ₀ * (1 / ((k : ℝ) + 1)) with hlam
+  have hlampos : ∀ k, 0 < lam k := fun k ↦ by positivity
+  have hlamle : ∀ k, lam k ≤ δ₀ := by
+    intro k
+    have h1 : 1 / ((k : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+    calc lam k = δ₀ * (1 / ((k : ℝ) + 1)) := rfl
+      _ ≤ δ₀ * 1 := mul_le_mul_of_nonneg_left h1 hδ₀pos.le
+      _ = δ₀ := mul_one _
+  have hlamr : ∀ k, lam k * 5 < r := by
+    intro k
+    have : δ₀ * 5 < r := by
+      have := min_le_left r ε
+      rw [hδ₀]; nlinarith
+    nlinarith [hlamle k]
+  have hlamε : ∀ k, lam k * 6 < ε := by
+    intro k
+    have : δ₀ * 6 < ε := by
+      have := min_le_right r ε
+      rw [hδ₀]; nlinarith
+    nlinarith [hlamle k]
+  have hlamlim : Tendsto lam atTop (𝓝 0) := by
+    have := (tendsto_one_div_add_atTop_nhds_zero_nat).const_mul δ₀
+    simpa [hlam] using this
+  have hlamwithin : Tendsto lam atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.mpr ⟨hlamlim, Eventually.of_forall hlampos⟩
+  -- Points of `B_6(0)` blow down into `U`.
+  have hinU : ∀ k (y : Euclidean N), ‖y‖ ≤ 6 → ξ + lam k • y ∈ U := by
+    intro k y hy
+    apply hεU
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (hlampos k)]
+    calc lam k * ‖y‖ ≤ lam k * 6 := mul_le_mul_of_nonneg_left hy (hlampos k).le
+      _ < ε := hlamε k
+  have hballU : ∀ k, ∀ y ∈ O, ξ + lam k • y ∈ U := by
+    intro k y hy
+    apply hinU
+    rw [hO, mem_ball, dist_zero_right] at hy
+    linarith
+  -- A cut-off `χ ∈ C_c` with `0 ≤ χ ≤ 1`, `χ = 1` on `B_5(0) × G` and `χ = 0` off `B°_6(0) × G`.
+  obtain ⟨χ0, hχ1, hχ0, hχc, hχI⟩ := exists_continuous_one_zero_of_isCompact
+    (X := Euclidean N × Grassmannian N n)
+    (s := closedBall (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)))
+    (t := (ball (0 : Euclidean N) 6)ᶜ ×ˢ (univ : Set (Grassmannian N n)))
+    ((isCompact_closedBall _ _).prod isCompact_univ)
+    (isOpen_ball.isClosed_compl.prod isClosed_univ)
+    (by
+      rw [Set.disjoint_left]
+      rintro z ⟨hz, -⟩ ⟨hz', -⟩
+      exact hz' (closedBall_subset_ball (by norm_num) hz))
+  let χ : C_c(Euclidean N × Grassmannian N n, ℝ) := ⟨χ0, hχc⟩
+  have hχnn : ∀ z, 0 ≤ χ z := fun z ↦ (hχI z).1
+  have hχone : ∀ z ∈ O ×ˢ (univ : Set (Grassmannian N n)), χ z = 1 := by
+    intro z hz
+    exact hχ1 ⟨ball_subset_closedBall hz.1, trivial⟩
+  have hχsupp : ∀ z ∈ tsupport χ, ‖z.1‖ ≤ 6 := by
+    have hsub : tsupport χ ⊆
+        closedBall (0 : Euclidean N) 6 ×ˢ (univ : Set (Grassmannian N n)) := by
+      apply closure_minimal _ (isClosed_closedBall.prod isClosed_univ)
+      intro z hz
+      refine ⟨?_, trivial⟩
+      by_contra h
+      apply hz
+      exact hχ0 ⟨fun h' ↦ h (ball_subset_closedBall h'), trivial⟩
+    intro z hz
+    simpa using (hsub hz).1
+  have hχU : ∀ k, ∀ z ∈ tsupport χ, ξ + lam k • z.1 ∈ U :=
+    fun k z hz ↦ hinU k z.1 (hχsupp z hz)
+  -- The countable dense family `g` of tests supported in `B°_5(0) × G` (step 1).
+  obtain ⟨g, hgsupp, hgdense⟩ := Submission.intcpt_diag_ball_cc_dense_seq N n 5 (by norm_num)
+  have hgU : ∀ k m, ∀ z ∈ tsupport (g m), ξ + lam k • z.1 ∈ U := by
+    intro k m z hz
+    apply hinU
+    have := (hgsupp m hz).1
+    rw [mem_ball, dist_zero_right] at this
+    linarith
+  set c' : ℝ := max c 1 with hc'
+  have hc'pos : 0 < c' := lt_of_lt_of_le one_pos (le_max_right c 1)
+  -- Choice of the indices `i_k` (step 3): (v) the variation bound holds frequently in `i`, while
+  -- (vi) and the mass bound (vii) hold eventually in `i`, because blow-ups preserve the
+  -- convergence `V_i → V`.
+  have hsel : ∀ k, ∃ i, variationMeasure (Vi i) (closedBall ξ (lam k * 5)) <
+        ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) ∧
+      (∀ m ∈ Finset.range (k + 1), |∫ z, g m z ∂(rescaledMeasure (Vi i) ξ (lam k)) -
+          ∫ z, g m z ∂(rescaledMeasure V ξ (lam k))| < 1 / ((k : ℝ) + 1)) ∧
+      ∫ z, χ z ∂(rescaledMeasure (Vi i) ξ (lam k)) <
+        ∫ z, χ z ∂(rescaledMeasure V ξ (lam k)) + 1 := by
+    intro k
+    have hρ : 0 < lam k * 5 := by have := hlampos k; positivity
+    have hv : ∃ᶠ i in atTop, variationMeasure (Vi i) (closedBall ξ (lam k * 5)) <
+        ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by
+      have hp : 0 < c' * (lam k * 5) ^ n := by positivity
+      have hlt : liminf (fun i ↦ variationMeasure (Vi i) (closedBall ξ (lam k * 5))) atTop <
+          ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by
+        refine lt_of_le_of_lt (hlim _ hρ (hlamr k)) ?_
+        calc ENNReal.ofReal (c * (lam k * 5) ^ n) ≤ ENNReal.ofReal (c' * (lam k * 5) ^ n) :=
+              ENNReal.ofReal_le_ofReal
+                (mul_le_mul_of_nonneg_right (le_max_left c 1) (by positivity))
+          _ < ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by
+              rw [ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+              nlinarith
+      exact frequently_lt_of_liminf_lt (by isBoundedDefault) hlt
+    have hvi : ∀ᶠ i in atTop, ∀ m ∈ Finset.range (k + 1),
+        |∫ z, g m z ∂(rescaledMeasure (Vi i) ξ (lam k)) -
+          ∫ z, g m z ∂(rescaledMeasure V ξ (lam k))| < 1 / ((k : ℝ) + 1) := by
+      rw [Filter.eventually_all_finset]
+      intro m _
+      have ht := Submission.intcpt_diag_rescaled_radon_tendsto N n U Vi V ξ (lam k) (g m) hconv
+        (hlampos k) (hgU k m)
+      have := Metric.tendsto_nhds.mp ht (1 / ((k : ℝ) + 1)) (by positivity)
+      filter_upwards [this] with i hi
+      simpa [Real.dist_eq] using hi
+    have hvii : ∀ᶠ i in atTop, ∫ z, χ z ∂(rescaledMeasure (Vi i) ξ (lam k)) <
+        ∫ z, χ z ∂(rescaledMeasure V ξ (lam k)) + 1 := by
+      have ht := Submission.intcpt_diag_rescaled_radon_tendsto N n U Vi V ξ (lam k) χ hconv
+        (hlampos k) (hχU k)
+      exact ht.eventually_lt_const (lt_add_one _)
+    exact (hv.and_eventually (hvi.and hvii)).exists
+  choose i hi using hsel
+  -- The varifolds `W_k = (V_{i_k})_{ξ,λ_k} ⌞ (B°_5(0) × G)` (steps 4 and 6).
+  have hD : ∀ k, ∃ W : Varifold N n O,
+      W.measure = (rescaledMeasure (Vi (i k)) ξ (lam k)).restrict
+        (O ×ˢ (univ : Set (Grassmannian N n))) ∧ W.HasLocallyBoundedFirstVariation ∧
+      variationMeasure W O ≤ ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k) *
+        variationMeasure (Vi (i k)) (closedBall ξ (lam k * 5)) :=
+    fun k ↦ Submission.intcpt_diag_blowup_variation_bound N n U (Vi (i k)) ξ (lam k) 5
+      (hlbfv _) (hlampos k) (by norm_num) (hballU k)
+  choose W hWmeas hWlbfv hWvar using hD
+  refine ⟨W, fun k ↦ ?_, hWlbfv, ?_, ?_⟩
+  · -- Integrality (step 5).
+    exact Submission.intcpt_rescaled_restriction_integral N n U O (Vi (i k)) (W k) ξ (lam k)
+      (hlampos k) (hballU k) (hint _) (hWmeas k)
+  · -- `‖δW_k‖(B°_5(0)) ≤ 2 c' 5^n λ_k → 0` (step 6(b)).
+    have hbound : ∀ k, variationMeasure (W k) O ≤ ENNReal.ofReal (2 * c' * 5 ^ n * lam k) := by
+      intro k
+      refine (hWvar k).trans ?_
+      calc ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k) *
+            variationMeasure (Vi (i k)) (closedBall ξ (lam k * 5))
+          ≤ ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k) *
+            ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by gcongr; exact (hi k).1.le
+        _ = ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k * (2 * c' * (lam k * 5) ^ n)) :=
+            (ENNReal.ofReal_mul (p := (lam k)⁻¹ ^ n * lam k)
+              (q := 2 * c' * (lam k * 5) ^ n) (by have := hlampos k; positivity)).symm
+        _ = ENNReal.ofReal (2 * c' * 5 ^ n * lam k) := by
+            congr 1
+            have hl := (hlampos k).ne'
+            rw [mul_pow, inv_pow]
+            field_simp
+    have hupper : Tendsto (fun k ↦ ENNReal.ofReal (2 * c' * 5 ^ n * lam k)) atTop (𝓝 0) := by
+      have := ENNReal.tendsto_ofReal (hlamlim.const_mul (2 * c' * 5 ^ n))
+      simpa using this
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hupper
+      (fun _ ↦ zero_le) hbound
+  · -- Convergence to `θ₀ v(P)` (step 7): compare `W_k` with `V_{ξ,λ_k}` on the dense family,
+    -- extend to all admissible tests by the uniform mass bound, and use the tangent plane.
+    intro f hf
+    set A : ℝ := θ₀ * ∫ z, χ z ∂(planeVarifoldMeasure P) with hA
+    have hχtan : ∀ᶠ k in atTop, ∫ z, χ z ∂(rescaledMeasure V ξ (lam k)) < A + 1 :=
+      ((htanf χ).comp hlamwithin).eventually_lt_const (lt_add_one _)
+    -- The mass of `B°_5(0) × G` under a blow-up is at most the `χ`-integral.
+    have hmass : ∀ (V' : Varifold N n U) (k : ℕ),
+        rescaledMeasure V' ξ (lam k) (O ×ˢ (univ : Set (Grassmannian N n))) ≤
+          ENNReal.ofReal (∫ z, χ z ∂(rescaledMeasure V' ξ (lam k))) := by
+      intro V' k
+      have hint' :=
+        Submission.intcpt_diag_rescaled_integrable N n U V' ξ (lam k) χ (hlampos k) (hχU k)
+      rw [ofReal_integral_eq_lintegral_ofReal hint' (Eventually.of_forall hχnn),
+        ← lintegral_indicator_one (measurableSet_ball.prod MeasurableSet.univ)]
+      apply lintegral_mono
+      intro z
+      by_cases hz : z ∈ O ×ˢ (univ : Set (Grassmannian N n))
+      · show (O ×ˢ (univ : Set (Grassmannian N n))).indicator 1 z ≤ ENNReal.ofReal (χ z)
+        rw [indicator_of_mem hz, hχone z hz]; simp
+      · show (O ×ˢ (univ : Set (Grassmannian N n))).indicator 1 z ≤ ENNReal.ofReal (χ z)
+        rw [indicator_of_notMem hz]; exact zero_le
+    have hmassμ : ∀ᶠ k in atTop,
+        (W k).measure (O ×ˢ (univ : Set (Grassmannian N n))) ≤ ENNReal.ofReal (A + 2) := by
+      filter_upwards [hχtan] with k hk
+      rw [hWmeas k, Measure.restrict_apply_self]
+      refine (hmass (Vi (i k)) k).trans (ENNReal.ofReal_le_ofReal ?_)
+      linarith [(hi k).2.2]
+    have hmassν : ∀ᶠ k in atTop,
+        rescaledMeasure V ξ (lam k) (O ×ˢ (univ : Set (Grassmannian N n))) ≤
+          ENNReal.ofReal (A + 2) := by
+      filter_upwards [hχtan] with k hk
+      refine (hmass V k).trans (ENNReal.ofReal_le_ofReal ?_)
+      linarith
+    have hrestrict : ∀ (h : C_c(Euclidean N × Grassmannian N n, ℝ)),
+        tsupport h ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → ∀ k,
+        ∫ z, h z ∂(W k).measure = ∫ z, h z ∂(rescaledMeasure (Vi (i k)) ξ (lam k)) := by
+      intro h hh k
+      rw [hWmeas k]
+      exact setIntegral_eq_integral_of_forall_compl_eq_zero
+        (fun z hz ↦ image_eq_zero_of_notMem_tsupport (fun h' ↦ hz (hh h')))
+    have hconvg : ∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(W k).measure -
+        ∫ z, g m z ∂(rescaledMeasure V ξ (lam k))) atTop (𝓝 0) := by
+      intro m
+      apply squeeze_zero_norm' _ tendsto_one_div_add_atTop_nhds_zero_nat
+      filter_upwards [eventually_ge_atTop m] with k hk
+      rw [hrestrict (g m) (hgsupp m) k, Real.norm_eq_abs]
+      exact ((hi k).2.1 m (Finset.mem_range.mpr (by omega))).le
+    have hdiff := Submission.intcpt_diag_dense_family_tendsto N n O g (fun k ↦ (W k).measure)
+      (fun k ↦ rescaledMeasure V ξ (lam k)) (ENNReal.ofReal (A + 2)) measurableSet_ball
+      ENNReal.ofReal_ne_top hgsupp hgdense hmassμ hmassν hconvg f hf
+    have hb := (htanf f).comp hlamwithin
+    have := hdiff.add hb
+    simpa using this
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
