@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pushforward_formula-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+  "depth": 3,
+  "title": "The Lipschitz push-forward of 3.6 is the classical push-forward for differentiable maps",
+  "statement": "Let P, Q, n ∈ ℕ, U ⊆ ℝ^P, V ⊆ ℝ^Q, X ∈ D_n(U), S ∈ D_n(V), and let f : ℝ^P → ℝ^Q be differentiable at every point. Suppose IsLipschitzPushforward X f S holds, i.e. there are M, θ, ξ, L : ℝ^P → (ℝ^P →L ℝ^Q) such that:\n- IsRectifiableTriple U n M θ ξ;\n- X(ψ) = τ(M, θ, ξ)(ψ) for all ψ ∈ Dⁿ(U);\n- for Hⁿ⌞M-a.e. x, every weighted approximate tangent space T_x of (M, θ) at x and every v ∈ T_x, the map t ↦ f(x + tv) has derivative L(x)v at t = 0;\n- S(ω) = ∫_M θ(x)·(L(x)_#ξ(x))(ω(f(x))) dHⁿ(x) for all ω ∈ Dⁿ(V).\nThen S(ω) = X(η) for all ω ∈ Dⁿ(V) and η ∈ Dⁿ(U) for which there is an open set N ⊇ spt X with η(x) = Df(x)^#ω(f(x)) := ω(f(x)).compContinuousLinearMap (Df(x)) for every x ∈ N.",
+  "lean_statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (X : GeometricCurrentOn U n) (S : GeometricCurrentOn V n) (f : Eucl P → Eucl Q), Differentiable ℝ f → IsLipschitzPushforward X f S → ∀ (ω : TestFormOn V n) (η : TestFormOn U n), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) n) x = ((ω : DifferentialForm (Eucl Q) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η",
+  "lean_name": "iwl_sp_lipschitzPushforward_apply_eq",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pushforward-formula-a1-a1"
+}

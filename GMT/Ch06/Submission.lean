@@ -359,6 +359,83 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, 2.23 (p. 139), cut-off construction: if `f` is `C^∞` and proper on `A ⊆ U`, every
+`ω ∈ 𝒟ʲ(V)` has a pull-back `η = ζ f^#ω ∈ 𝒟ʲ(U)` with `0 ≤ ζ ≤ 1`, `η = f^#ω` on an open
+`N ⊇ A`, and `spt η ⊆ f⁻¹(spt ω)`. -/
+theorem Submission.iwl_sp_exists_compatible_testForm :
+    ∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (f : Eucl P → Eucl Q),
+      IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) →
+      ∀ ω : TestFormOn V j, ∃ (η : TestFormOn U j) (ζ : Eucl P → ℝ) (N : Set (Eucl P)),
+        IsOpen N ∧ A ⊆ N ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧
+        (∀ x, (η : DifferentialForm (Eucl P) j) x =
+          ζ x • ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap
+            (fderiv ℝ f x)) ∧
+        (∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x =
+          ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧
+        tsupport (η : DifferentialForm (Eucl P) j) ⊆
+          f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) := by
+  intro P Q j U V A f hU hAU hf hprop ω
+  obtain ⟨⟨hωs, hωc⟩, hωV⟩ := ω.property
+  have hωs' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl Q) j) := hωs
+  -- 1. `K = f⁻¹(spt ω) ∩ A` is compact, by properness.
+  have hK : IsCompact (f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A) :=
+    hprop _ hωc.isCompact hωV
+  set K := f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A
+  -- 2. A closed `δ`-thickening of `K` lies in `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU fun x hx => hAU hx.2
+  -- 3. Smooth Urysohn: `support ζ = thickening δ K`, and `ζ = 1` exactly on `cthickening (δ/2) K`.
+  obtain ⟨ζ, hζs, hζr, hζsupp, hζone⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K)) (isClosed_cthickening (δ := δ / 2) (E := K))
+    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  have hζt : tsupport ζ ⊆ cthickening δ K := by
+    rw [tsupport, hζsupp]
+    exact closure_thickening_subset_cthickening δ K
+  -- 4. The pull-back `p = f^# ω` is smooth, since `B ↦ B^#` is analytic.
+  set p : DifferentialForm (Eucl P) j := fun x =>
+    ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)
+  have hp : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p := by
+    have hD : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right (by simp)
+    have hC : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun x => ContinuousAlternatingMap.compContinuousLinearMapCLM (ι := Fin j) (F := ℝ)
+          (fderiv ℝ f x)) :=
+      (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff.comp hD
+    exact hC.clm_apply (hωs'.comp hf)
+  -- `p` vanishes wherever `ω ∘ f` does.
+  have hp0 : ∀ x, f x ∉ tsupport (ω : DifferentialForm (Eucl Q) j) → p x = 0 := by
+    intro x hx
+    show ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x) = 0
+    rw [image_eq_zero_of_notMem_tsupport hx,
+      ← ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, map_zero]
+  -- 5. The test form `η = ζ p`.
+  have hηs : IsSmoothForm (fun x => ζ x • p x) := hζs.smul hp
+  have hηt : tsupport (fun x => ζ x • p x) ⊆ U :=
+    (tsupport_smul_subset_left ζ p).trans (hζt.trans hδU)
+  have hηc : HasCompactSupport (fun x => ζ x • p x) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport _)
+      ((tsupport_smul_subset_left ζ p).trans hζt)
+  let η : TestFormOn U j := ⟨fun x => ζ x • p x, ⟨hηs, hηc⟩, hηt⟩
+  refine ⟨η, ζ, thickening (δ / 2) K ∪ f ⁻¹' (tsupport (ω : DifferentialForm (Eucl Q) j))ᶜ,
+    isOpen_thickening.union ((isClosed_tsupport _).isOpen_compl.preimage hf.continuous), ?_,
+    fun x => hζr (mem_range_self x), fun x => rfl, ?_, ?_⟩
+  · -- 7. `A ⊆ N`.
+    intro x hx
+    by_cases hfx : f x ∈ tsupport (ω : DifferentialForm (Eucl Q) j)
+    · exact Or.inl (self_subset_thickening (half_pos hδ) K ⟨hfx, hx⟩)
+    · exact Or.inr hfx
+  · -- 8. `η = p` on `N`.
+    rintro x (hx | hx)
+    · have h1 : ζ x = 1 := (hζone x).1 (thickening_subset_cthickening _ _ hx)
+      show ζ x • p x = p x
+      rw [h1, one_smul]
+    · show ζ x • p x = p x
+      rw [hp0 x hx, smul_zero]
+  · -- 6. `spt η ⊆ f⁻¹(spt ω)`, a closed set.
+    refine closure_minimal ?_ ((isClosed_tsupport _).preimage hf.continuous)
+    intro x hx
+    by_contra hfx
+    exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
