@@ -3477,6 +3477,126 @@ theorem ted_tangent_plane_facts : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
       rw [ContinuousLinearMap.coe_coe, hDGv]
     rw [hfun, ← LinearMap.coe_range, Submodule.span_eq]
 
+/-- **Simon Ch. 4, 3.2–3.6 and 4.1–4.8** (monotonicity with `Lᵖ` mean curvature, `p > n`).  Let `V`
+have generalized mean curvature `H` in `U`, `0 < R < S`, `B_S(y) ⊆ U`, `∫_{B_S(y)} |H|ᵖ dμ_V < ∞`
+and `(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ_V)^{1/p} ≤ κΛ`, `κ = (p − n)/(4p)`, `Λ > 0`.  Then some `F` has
+`e^{−Λ} ≤ F(r) ≤ e^Λ`, `|F(r) − 1| ≤ ½ e^{Λ/2} Λ (r/R)^{1−n/p}` (`≤ Λ (r/R)^{1−n/p}` if `Λ ≤ 1`)
+for `0 < r ≤ R`, and `F(t) t⁻ⁿ μ_V(B_t(y)) + F(t) − 1` is nondecreasing on `(0, R]`.
+Proof: `B_S(y)` is a compact subset of `U`, so `μ_V(B_S(y)) < ∞` and `H` is integrable there.  For
+a `C¹` nonincreasing cutoff `φ`, the first variation of `φ(r/ρ)(x − y)`
+(`aal_radial_first_variation_identity`) together with `φ' ≤ 0` and `|p_{T_x M} ν|² ∈ [0, 1]`
+`μ_V`-a.e. (`ted_tangent_plane_facts`) gives
+`∫ [n φ(r/ρ) + (r/ρ) φ'(r/ρ)] dμ_V ≤ −∫ φ(r/ρ) (x − y) · H dμ_V`; the cutoff limit, Hölder bound
+and integrating factor for an abstract measure are `ted_lpm_abstract_monotonicity`. -/
+theorem ted_lp_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → closedBall y S ⊆ U → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂V.weight < ⊤ → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ F : ℝ → ℝ, (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ ∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1) ≤ F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1) := by
+  intro n ℓ hn p hp U hU V H hH y R S Λ hR hRS hΛ hSU hHp hscaled
+  -- Step 0(a): `p_x` is `μ_V`-a.e. the projection onto an `n`-plane, and `x ↦ p_x` is
+  -- `μ_V`-a.e. strongly measurable (Simon Ch. 3, 1.9).
+  obtain ⟨-, hP, hPm, -, -⟩ := ted_tangent_plane_facts n ℓ hn U hU V
+  -- Step 0(b): `B_S(y)` is a compact subset of `U`, so `μ_V(B_S(y)) < ∞` and `H` is
+  -- `μ_V`-integrable on `B_S(y)`.
+  have hμS : V.weight (closedBall y S) < ⊤ := by
+    rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact (V.integrableOn_mult _ (isCompact_closedBall y S) hSU).setLIntegral_lt_top
+  have hHint : IntegrableOn H (closedBall y S) V.weight :=
+    hH.1.integrableOn_compact_subset hSU (isCompact_closedBall y S)
+  -- Step 2: the radial first-variation inequality (2.1), integrated.  Let `φ` be a `C¹`
+  -- nonincreasing cutoff with `φ = 1` on `(-∞, 1]`, `φ = 0` on `[T, ∞)`, and `Tρ < S`.  The
+  -- first-variation identity gives `∫ G dμ_V = -∫ φ(r/ρ) (x - y) · H dμ_V`, where
+  -- `G = n φ(r/ρ) + (r/ρ) φ'(r/ρ) (1 - w)`, `w = |(x - y) - p_x(x - y)|²/r²`; since `φ' ≤ 0`
+  -- and `0 ≤ w ≤ 1` `μ_V`-a.e., `n φ(r/ρ) + (r/ρ) φ'(r/ρ) ≤ G ≤ n φ(r/ρ)` `μ_V`-a.e.
+  have hrad : ∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → Antitone φ →
+      (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ < S →
+      ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ)) ∂V.weight ≤
+        -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂V.weight := by
+    intro φ T ρ hφ hφa hφ1 hφT hρ hTρ
+    have hBU : closedBall y (T * ρ) ⊆ U := (closedBall_subset_closedBall hTρ.le).trans hSU
+    -- `φ` and `φ'` vanish on `(T, ∞)`, so the integrands vanish off `B_{Tρ}(y)`.
+    have hφ'T : ∀ t, T < t → deriv φ t = 0 := by
+      intro t ht
+      rw [Filter.EventuallyEq.deriv_eq (f := fun _ => (0 : ℝ))
+        (by filter_upwards [Ioi_mem_nhds ht] with s hs using hφT s hs.le)]
+      exact deriv_const t 0
+    have hfar : ∀ x : Amb n ℓ, T * ρ < ‖x - y‖ →
+        φ (‖x - y‖ / ρ) = 0 ∧ deriv φ (‖x - y‖ / ρ) = 0 := by
+      intro x hx
+      have hT : T < ‖x - y‖ / ρ := by rw [lt_div_iff₀ hρ]; exact hx
+      exact ⟨hφT _ hT.le, hφ'T _ hT⟩
+    -- A continuous function vanishing off `B_{Tρ}(y) ⊆ B_S(y)` is `μ_V`-integrable.
+    have hint : ∀ g : Amb n ℓ → ℝ, Continuous g → (∀ x, T * ρ < ‖x - y‖ → g x = 0) →
+        Integrable g V.weight := by
+      intro g hg hg0
+      obtain ⟨C, hC⟩ := (isCompact_closedBall y (T * ρ)).exists_bound_of_continuousOn
+        hg.continuousOn
+      have hgB : IntegrableOn g (closedBall y (T * ρ)) V.weight :=
+        IntegrableOn.of_bound ((measure_mono (closedBall_subset_closedBall hTρ.le)).trans_lt hμS)
+          hg.aestronglyMeasurable.restrict C
+          ((ae_restrict_iff' measurableSet_closedBall).2 (ae_of_all _ hC))
+      refine hgB.integrable_of_forall_notMem_eq_zero fun x hx => hg0 x ?_
+      simpa [mem_closedBall, dist_eq_norm] using hx
+    have hφc : Continuous φ := hφ.continuous
+    have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+    have hrc : Continuous fun x : Amb n ℓ => ‖x - y‖ / ρ :=
+      (continuous_sub_right y).norm.div_const ρ
+    have hfint : Integrable (fun x => (n : ℝ) * φ (‖x - y‖ / ρ) +
+        ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ)) V.weight :=
+      hint _ ((continuous_const.mul (hφc.comp hrc)).add (hrc.mul (hφ'c.comp hrc)))
+        fun x hx => by simp [(hfar x hx).1, (hfar x hx).2]
+    have hnint : Integrable (fun x => (n : ℝ) * φ (‖x - y‖ / ρ)) V.weight :=
+      hint _ (continuous_const.mul (hφc.comp hrc)) fun x hx => by simp [(hfar x hx).1]
+    -- The integrand `G` of the first-variation identity is `μ_V`-a.e. strongly measurable.
+    have hev : Continuous fun q : (Amb n ℓ →L[ℝ] Amb n ℓ) × Amb n ℓ => q.1 q.2 :=
+      isBoundedBilinearMap_apply.continuous
+    have hpv : AEStronglyMeasurable (fun x => V.tangentProj x (x - y)) V.weight :=
+      hev.comp_aestronglyMeasurable (hPm.prodMk (continuous_sub_right y).aestronglyMeasurable)
+    have hGm : AEStronglyMeasurable (fun x => (n : ℝ) * φ (‖x - y‖ / ρ) +
+        ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+          (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) V.weight := by
+      have hpv' := hpv.aemeasurable
+      have hφm : Measurable φ := hφc.measurable
+      have hφ'm : Measurable (deriv φ) := hφ'c.measurable
+      apply AEMeasurable.aestronglyMeasurable
+      fun_prop
+    -- `(r/ρ) φ'(r/ρ) ≤ 0` and `w ≥ 0` everywhere, so the lower bound holds everywhere.
+    have hlow : ∀ x : Amb n ℓ, (n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) ≤
+        (n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+          (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2) := by
+      intro x
+      have hc : ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (div_nonneg (norm_nonneg _) hρ.le) hφa.deriv_nonpos
+      have hw0 : 0 ≤ ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2 := by positivity
+      have := mul_nonpos_of_nonpos_of_nonneg hc hw0
+      rw [mul_sub, mul_one]
+      linarith
+    -- Where `p_x = p_P` (`μ_V`-a.e.), `(x - y) - p_x(x - y) = p_{P⊥}(x - y)`, so `w ≤ 1`.
+    have hupp : ∀ᵐ x ∂V.weight, (n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+        (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2) ≤
+        (n : ℝ) * φ (‖x - y‖ / ρ) := by
+      filter_upwards [hP] with x hx
+      obtain ⟨P, -, hPx⟩ := hx
+      have hc : ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (div_nonneg (norm_nonneg _) hρ.le) hφa.deriv_nonpos
+      have hperp : (x - y) - P.starProjection (x - y) = Pᗮ.starProjection (x - y) := by
+        rw [Submodule.starProjection_orthogonal']
+        rfl
+      have hw1 : ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2 ≤ 1 := by
+        rw [hPx, hperp]
+        exact div_le_one_of_le₀
+          (pow_le_pow_left₀ (norm_nonneg _) (Pᗮ.norm_starProjection_apply_le _) 2) (sq_nonneg _)
+      have := mul_nonpos_of_nonpos_of_nonneg hc (sub_nonneg.2 hw1)
+      linarith
+    have hGint : Integrable (fun x => (n : ℝ) * φ (‖x - y‖ / ρ) +
+        ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+          (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) V.weight :=
+      integrable_of_le_of_le hGm (ae_of_all _ hlow) hupp hfint hnint
+    exact (integral_mono_ae hfint hGint (ae_of_all _ hlow)).trans_eq
+      (aal_radial_first_variation_identity n ℓ U V H hH hP y φ T ρ hφ hφ1 hφT hρ hBU)
+  -- Steps 1 and 3–5: the abstract monotonicity for `μ = μ_V`; `V.scaledLpNorm H p y R` is
+  -- `(R^{p-n} ∫_{B_R(y)} |H|ᵖ dμ_V)^{1/p}` by definition.
+  exact Submission.ted_lpm_abstract_monotonicity n ℓ hn p hp V.weight H y R S Λ hR hRS hΛ hμS
+    hHint hHp hscaled hrad
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
