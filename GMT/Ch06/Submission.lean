@@ -703,83 +703,6 @@ theorem Submission.iwl_cr_ci_slice_testForm :
     change L ((η : DifferentialForm (Eucl (P + 1)) (m + 1)) (s • e₀ + ι x)) v = _
     rw [hL, hΦ s x]
     simp only [hι]
-/-- Simon Ch. 6, 2.23 (p. 139), cut-off construction: if `f` is `C^∞` and proper on `A ⊆ U`, every
-`ω ∈ 𝒟ʲ(V)` has a pull-back `η = ζ f^#ω ∈ 𝒟ʲ(U)` with `0 ≤ ζ ≤ 1`, `η = f^#ω` on an open
-`N ⊇ A`, and `spt η ⊆ f⁻¹(spt ω)`. -/
-theorem Submission.iwl_sp_exists_compatible_testForm :
-    ∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (f : Eucl P → Eucl Q),
-      IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f →
-      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) →
-      ∀ ω : TestFormOn V j, ∃ (η : TestFormOn U j) (ζ : Eucl P → ℝ) (N : Set (Eucl P)),
-        IsOpen N ∧ A ⊆ N ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧
-        (∀ x, (η : DifferentialForm (Eucl P) j) x =
-          ζ x • ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap
-            (fderiv ℝ f x)) ∧
-        (∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x =
-          ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧
-        tsupport (η : DifferentialForm (Eucl P) j) ⊆
-          f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) := by
-  intro P Q j U V A f hU hAU hf hprop ω
-  obtain ⟨⟨hωs, hωc⟩, hωV⟩ := ω.property
-  have hωs' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl Q) j) := hωs
-  -- 1. `K = f⁻¹(spt ω) ∩ A` is compact, by properness.
-  have hK : IsCompact (f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A) :=
-    hprop _ hωc.isCompact hωV
-  set K := f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A
-  -- 2. A closed `δ`-thickening of `K` lies in `U`.
-  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU fun x hx => hAU hx.2
-  -- 3. Smooth Urysohn: `support ζ = thickening δ K`, and `ζ = 1` exactly on `cthickening (δ/2) K`.
-  obtain ⟨ζ, hζs, hζr, hζsupp, hζone⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
-    (isOpen_thickening (δ := δ) (E := K)) (isClosed_cthickening (δ := δ / 2) (E := K))
-    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
-  have hζt : tsupport ζ ⊆ cthickening δ K := by
-    rw [tsupport, hζsupp]
-    exact closure_thickening_subset_cthickening δ K
-  -- 4. The pull-back `p = f^# ω` is smooth, since `B ↦ B^#` is analytic.
-  set p : DifferentialForm (Eucl P) j := fun x =>
-    ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)
-  have hp : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p := by
-    have hD : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right (by simp)
-    have hC : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-        (fun x => ContinuousAlternatingMap.compContinuousLinearMapCLM (ι := Fin j) (F := ℝ)
-          (fderiv ℝ f x)) :=
-      (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff.comp hD
-    exact hC.clm_apply (hωs'.comp hf)
-  -- `p` vanishes wherever `ω ∘ f` does.
-  have hp0 : ∀ x, f x ∉ tsupport (ω : DifferentialForm (Eucl Q) j) → p x = 0 := by
-    intro x hx
-    show ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x) = 0
-    rw [image_eq_zero_of_notMem_tsupport hx,
-      ← ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, map_zero]
-  -- 5. The test form `η = ζ p`.
-  have hηs : IsSmoothForm (fun x => ζ x • p x) := hζs.smul hp
-  have hηt : tsupport (fun x => ζ x • p x) ⊆ U :=
-    (tsupport_smul_subset_left ζ p).trans (hζt.trans hδU)
-  have hηc : HasCompactSupport (fun x => ζ x • p x) :=
-    hK.cthickening.of_isClosed_subset (isClosed_tsupport _)
-      ((tsupport_smul_subset_left ζ p).trans hζt)
-  let η : TestFormOn U j := ⟨fun x => ζ x • p x, ⟨hηs, hηc⟩, hηt⟩
-  refine ⟨η, ζ, thickening (δ / 2) K ∪ f ⁻¹' (tsupport (ω : DifferentialForm (Eucl Q) j))ᶜ,
-    isOpen_thickening.union ((isClosed_tsupport _).isOpen_compl.preimage hf.continuous), ?_,
-    fun x => hζr (mem_range_self x), fun x => rfl, ?_, ?_⟩
-  · -- 7. `A ⊆ N`.
-    intro x hx
-    by_cases hfx : f x ∈ tsupport (ω : DifferentialForm (Eucl Q) j)
-    · exact Or.inl (self_subset_thickening (half_pos hδ) K ⟨hfx, hx⟩)
-    · exact Or.inr hfx
-  · -- 8. `η = p` on `N`.
-    rintro x (hx | hx)
-    · have h1 : ζ x = 1 := (hζone x).1 (thickening_subset_cthickening _ _ hx)
-      show ζ x • p x = p x
-      rw [h1, one_smul]
-    · show ζ x • p x = p x
-      rw [hp0 x hx, smul_zero]
-  · -- 6. `spt η ⊆ f⁻¹(spt ω)`, a closed set.
-    refine closure_minimal ?_ ((isClosed_tsupport _).preimage hf.continuous)
-    intro x hx
-    by_contra hfx
-    exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
-
 /-- Horizontal slices for the product `[[0,1]] × X`: for `ψ ∈ 𝒟^q(ℝ^{m+1})` and `s ∈ ℝ`, the
 pull-backs `j_s^# ψ` and `j_s^# ∂_s ψ` along `j_s(x) = (s, x)`, i.e. `x ↦ ψ(s, x)(ι ·)` and
 `x ↦ Dψ(s, x)(e₀)(ι ·)` with `ι v = (0, v)`, are test forms in `𝒟^q(ℝ^m)`. -/
@@ -888,67 +811,6 @@ theorem Submission.dph_iprod_horizontal_slices :
     rfl
   · rw [hΨ' s x v, hψ']
     rfl
-/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
-(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
-theorem Submission.cmb_abs_apply_le_of_massOn_le :
-    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
-      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
-      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
-      |T ω| ≤ B * C := by
-  intro P n U W T ω B C hB hM hW hC
-  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
-  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
-      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
-    intro t α
-    unfold covectorEuclideanNorm
-    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
-    congr 1
-    refine Finset.sum_congr rfl fun I _ => ?_
-    split_ifs
-    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
-    · simp
-  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
-  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
-  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
-  have key : ∀ c, C < c → |T ω| ≤ B * c := by
-    intro c hc
-    have hc0 : 0 < c := hC0.trans_lt hc
-    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
-      intro s hs
-      have hadm : s • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
-        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
-        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
-        exact (hC x).trans hc.le
-      have hle := (T.le_massOn hadm).trans hM
-      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
-      have hlin : T (s • ω) = s * T ω := by
-        rw [map_smul, smul_eq_mul]
-      rwa [hlin] at hle
-    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
-    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
-    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
-    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
-    rw [abs_le]
-    constructor
-    · have := mul_le_mul_of_nonneg_left h2 hc0.le
-      rw [e2] at this
-      linarith
-    · have := mul_le_mul_of_nonneg_left h1 hc0.le
-      rw [e1] at this
-      linarith
-  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  have hB1 : 0 < B + 1 := by linarith
-  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
-  have hBδ : B * (ε / (B + 1)) ≤ ε := by
-    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
-          mul_le_mul_of_nonneg_right (by linarith) hδ.le
-      _ = ε := by field_simp
-  have := key (C + ε / (B + 1)) (by linarith)
-  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
-    _ = B * C + B * (ε / (B + 1)) := by ring
-    _ ≤ B * C + ε := by linarith
 /-- Euclidean coefficient norms `|γ| = covectorEuclideanNorm γ` of slices of covectors, with
 `ι(v) = (0, v) ∈ ℝ^{m+1}` and `e₀ = EuclideanSpace.single 0 1`: (C1) if `γ'(v) = γ(e₀, ι ∘ v)`
 then `|γ'| ≤ |γ|`; (C2) if `γ'(v) = γ(ι ∘ v)` then `|γ'| ≤ |γ|`; (C3) `|α| ≤ √(P^n) · ‖α‖`.
@@ -2161,6 +2023,170 @@ theorem Submission.dph_sh_affine_estimate :
         (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m),
           (φ s : DifferentialForm (Eucl m) k) x v =
             (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₀ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₁ →
+      IsOpen O → X.support ⊆ O → (∀ x ∈ O, dist (F₁ x) (F₀ x) ≤ s) →
+      (∀ x ∈ O, ‖fderiv ℝ F₀ x‖ ≤ L) → (∀ x ∈ O, ‖fderiv ℝ F₁ x‖ ≤ L) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (F₀ ⁻¹' K ∩ X.support)) →
+      ∀ (ψ : TestFormOn (univ : Set (Eucl m')) (k + 1)) (C : ℝ)
+        (η' : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)),
+        (∀ y, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl m') (k + 1)) y) ≤ C) →
+        (∃ N : Set (Eucl (m + 1)), IsOpen N ∧
+          {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+            (EuclideanSpace.equiv (Fin m) ℝ).symm
+              (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N ∧
+          ∀ x ∈ N, (η' : DifferentialForm (Eucl (m + 1)) (k + 1)) x =
+            ((ψ : DifferentialForm (Eucl m') (k + 1))
+              ((fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+                  (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) +
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) •
+                  (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) -
+                    F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)))))
+                x)).compContinuousLinearMap
+              (fderiv ℝ (fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+                  (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) +
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) •
+                  (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) -
+                    F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) x)) →
+        |Z η'| ≤ c * s * L ^ k * B * C := by
+  intro m m' k
+  refine ⟨Real.sqrt ((k : ℝ) + 1), Real.sqrt_nonneg _, ?_⟩
+  intro X Z F₀ F₁ O s L B hs hL hB hXB hZ hF₀ hF₁ hO hXO hdist hDF₀ hDF₁ hprop ψ C η' hψC hη'
+  obtain ⟨N', hN', hAN', hη'N'⟩ := hη'
+  -- `spt X = ℝ^m \ zeroRegion X` is closed.
+  have hXcl : IsClosed X.support := isClosed_univ.sdiff X.isOpen_zeroRegion
+  -- 1. `G` is smooth, `DG(s₀, x) e₀ = F₁ x - F₀ x`, `DG(s₀, x) (0, v) = (1 - s₀) DF₀(x) v +
+  -- s₀ DF₁(x) v`, and `G` is proper on the cylinder `cyl(spt X) = [0,1] × spt X`.
+  obtain ⟨hG, hGd⟩ :=
+    Submission.dph_sh_ae_affine_homotopy_contDiff_fderiv m m' F₀ F₁ hF₀ hF₁
+  have hGprop := Submission.dph_sh_ae_affine_homotopy_isCompact_preimage_cyl m m' F₀ F₁
+    X.support s hF₀.continuous hF₁.continuous hXcl (fun x hx => hdist x (hXO hx)) hprop
+  set G : Eucl (m + 1) → Eucl m' := fun y : Eucl (m + 1) =>
+    F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) +
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) •
+        (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) -
+          F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))
+  -- The tail projection `tl` is continuous, and `tl(s₀, x) = x`.
+  have htail : Continuous (Fin.tail : (Fin (m + 1) → ℝ) → Fin m → ℝ) :=
+    continuous_pi fun i => continuous_apply i.succ
+  have htl : Continuous fun y : Eucl (m + 1) =>
+      (EuclideanSpace.equiv (Fin m) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.continuous.comp
+      (htail.comp (EuclideanSpace.equiv (Fin (m + 1)) ℝ).continuous)
+  have htl_cons : ∀ (s₀ : ℝ) (x : Eucl m), (EuclideanSpace.equiv (Fin m) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x))))) = x := by
+    intro s₀ x
+    rw [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  -- 2. Cut-off: `η = ζ G^#ψ` with `0 ≤ ζ ≤ 1`, `η = G^#ψ` near `cyl(spt X)` and
+  -- `spt η ⊆ tl⁻¹(O)`; it is also a test form `η₁` on all of `ℝ^{m+1}`.
+  obtain ⟨η, ζ, N, hN, hAN, hζ, hη, hηN, -⟩ :=
+    Submission.iwl_sp_exists_compatible_testForm (m + 1) m' (k + 1)
+      ((fun y : Eucl (m + 1) => (EuclideanSpace.equiv (Fin m) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) ⁻¹' O) univ
+      {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+        (EuclideanSpace.equiv (Fin m) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support}
+      G (hO.preimage htl) (fun y hy => hXO hy.2) hG (fun K hK _ => hGprop K hK) ψ
+  obtain ⟨η₁, hη₁⟩ : ∃ η₁ : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1),
+      (η₁ : DifferentialForm (Eucl (m + 1)) (k + 1)) = η :=
+    ⟨⟨η, η.2.1, subset_univ _⟩, rfl⟩
+  -- 3. `Z(η') = Z(η₁)`: both forms equal `G^#ψ` on the open set `N' ∩ N ⊇ cyl(spt X)`.
+  have hZη : Z η' = Z η₁ :=
+    Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl m k X Z hZ η' η₁ (N' ∩ N) (hN'.inter hN)
+      (subset_inter hAN' hAN) fun y hy => by rw [hη₁, hη'N' y hy.1, hηN y hy.2]
+  -- 4. The `dt`-slices `φ` of `η₁`, and `Z(η₁) = ∫₀¹ X(φ(s₀)) ds₀`.
+  obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm m k η₁
+  have hZφ : Z η₁ = ∫ s₀ in (0 : ℝ)..1, X (φ s₀) := hZ η₁ φ fun s₀ _ x v => hφ s₀ x v
+  have hC : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hψC 0)
+  -- 5. Pointwise bound `|φ(s₀)(x)| ≤ √(k+1) s L^k C` for `s₀ ∈ [0,1]`.
+  have hbound : ∀ s₀ ∈ Icc (0 : ℝ) 1, ∀ x, covectorEuclideanNorm
+      ((φ s₀ : DifferentialForm (Eucl m) k) x) ≤ Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C := by
+    intro s₀ hs₀ x
+    have hφx := hφ s₀ x
+    obtain ⟨hGe₀, hGι₀⟩ := hGd s₀ x
+    have htl₀ := htl_cons s₀ x
+    generalize (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+      (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x)) = y at hφx hGe₀ hGι₀ htl₀
+    rw [hη₁] at hφx
+    by_cases hx : x ∈ O
+    · -- Over `O`: `φ(s₀)(x)(v) = ζ(y) ψ(G y)(F₁ x - F₀ x, T v₁, …, T v_k)`, where
+      -- `T = (1 - s₀) DF₀(x) + s₀ DF₁(x)` has `‖T‖ ≤ L`.
+      have hβ : ∀ v : Fin k → Eucl m, (φ s₀ : DifferentialForm (Eucl m) k) x v =
+          ζ y * (ψ : DifferentialForm (Eucl m') (k + 1)) (G y) (Fin.cons (F₁ x - F₀ x)
+            fun i => ((1 - s₀) • fderiv ℝ F₀ x + s₀ • fderiv ℝ F₁ x) (v i)) := by
+        intro v
+        rw [hφx, hη y, ContinuousAlternatingMap.smul_apply,
+          ContinuousAlternatingMap.compContinuousLinearMap_apply, smul_eq_mul, Fin.comp_cons,
+          hGe₀]
+        congr 3
+        funext i
+        exact hGι₀ (v i)
+      have hT : ‖(1 - s₀) • fderiv ℝ F₀ x + s₀ • fderiv ℝ F₁ x‖ ≤ L := by
+        calc _ ≤ ‖(1 - s₀) • fderiv ℝ F₀ x‖ + ‖s₀ • fderiv ℝ F₁ x‖ := norm_add_le _ _
+          _ = (1 - s₀) * ‖fderiv ℝ F₀ x‖ + s₀ * ‖fderiv ℝ F₁ x‖ := by
+            rw [norm_smul, norm_smul, Real.norm_of_nonneg (sub_nonneg.2 hs₀.2),
+              Real.norm_of_nonneg hs₀.1]
+          _ ≤ (1 - s₀) * L + s₀ * L :=
+            add_le_add (mul_le_mul_of_nonneg_left (hDF₀ x hx) (sub_nonneg.2 hs₀.2))
+              (mul_le_mul_of_nonneg_left (hDF₁ x hx) hs₀.1)
+          _ = L := by ring
+      have hw : ‖F₁ x - F₀ x‖ ≤ s := by
+        rw [← dist_eq_norm]
+        exact hdist x hx
+      have hζy : |ζ y| ≤ 1 := by
+        rw [abs_of_nonneg (hζ y).1]
+        exact (hζ y).2
+      have hψy := covectorEuclideanNorm_nonneg ((ψ : DifferentialForm (Eucl m') (k + 1)) (G y))
+      calc covectorEuclideanNorm ((φ s₀ : DifferentialForm (Eucl m) k) x)
+          ≤ |ζ y| * Real.sqrt ((k : ℝ) + 1) * ‖F₁ x - F₀ x‖ *
+              ‖(1 - s₀) • fderiv ℝ F₀ x + s₀ • fderiv ℝ F₁ x‖ ^ k *
+              covectorEuclideanNorm ((ψ : DifferentialForm (Eucl m') (k + 1)) (G y)) :=
+            Submission.dph_sh_covectorEuclideanNorm_interior_le m m' k _ _ _ _ _ hβ
+        _ ≤ 1 * Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C := by
+            gcongr
+            exact hψC (G y)
+        _ = Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C := by ring
+    · -- Off `O`: `y ∉ tl⁻¹(O) ⊇ spt η`, so `φ(s₀)(x) = 0`.
+      have hy : y ∉ tsupport (η : DifferentialForm (Eucl (m + 1)) (k + 1)) := by
+        intro hy
+        have hyO : (EuclideanSpace.equiv (Fin m) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ O := η.2.2 hy
+        rw [htl₀] at hyO
+        exact hx hyO
+      have h0 : (φ s₀ : DifferentialForm (Eucl m) k) x = 0 := by
+        ext v
+        simp only [hφx, image_eq_zero_of_notMem_tsupport hy, ContinuousAlternatingMap.coe_zero,
+          Pi.zero_apply]
+      rw [h0, covectorEuclideanNorm_zero]
+      exact mul_nonneg (mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hs) (pow_nonneg hL k)) hC
+  -- 6. Mass bound for each slice, then the interval-integral bound.
+  have hint : ‖∫ s₀ in (0 : ℝ)..1, X (φ s₀)‖ ≤
+      B * (Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C) * |1 - 0| := by
+    refine intervalIntegral.norm_integral_le_of_norm_le_const fun s₀ hs₀ => ?_
+    rw [Set.uIoc_of_le zero_le_one] at hs₀
+    rw [Real.norm_eq_abs]
+    exact Submission.cmb_abs_apply_le_of_massOn_le m k univ univ X (φ s₀) B _ hB hXB
+      (subset_univ _) (hbound s₀ (Ioc_subset_Icc_self hs₀))
+  rw [hZη, hZφ, ← Real.norm_eq_abs]
+  calc _ ≤ _ := hint
+    _ = Real.sqrt ((k : ℝ) + 1) * s * L ^ k * B * C := by
+      rw [sub_zero, abs_one, mul_one]
+      ring
 /-- The product `[[0, 1]] × X` of a finite-mass current `X` on `ℝ^m`: with chosen `dt`-slices
 `φ^η s x = η(s, x)(e₀, ι ·)`, the functional `η ↦ ∫₀¹ X(φ^η s) ds` is linear and bounded by
 `M(X) · sup |η|`, hence a current `Z` with `M(Z) ≤ M(X)`; the integral does not depend on the
@@ -2873,164 +2899,72 @@ theorem Submission.dph_interval_product :
                 (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
                   (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
         Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
-      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₀ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₁ →
-      IsOpen O → X.support ⊆ O → (∀ x ∈ O, dist (F₁ x) (F₀ x) ≤ s) →
-      (∀ x ∈ O, ‖fderiv ℝ F₀ x‖ ≤ L) → (∀ x ∈ O, ‖fderiv ℝ F₁ x‖ ≤ L) →
-      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (F₀ ⁻¹' K ∩ X.support)) →
-      ∀ (ψ : TestFormOn (univ : Set (Eucl m')) (k + 1)) (C : ℝ)
-        (η' : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)),
-        (∀ y, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl m') (k + 1)) y) ≤ C) →
-        (∃ N : Set (Eucl (m + 1)), IsOpen N ∧
-          {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
-            (EuclideanSpace.equiv (Fin m) ℝ).symm
-              (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N ∧
-          ∀ x ∈ N, (η' : DifferentialForm (Eucl (m + 1)) (k + 1)) x =
-            ((ψ : DifferentialForm (Eucl m') (k + 1))
-              ((fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-                  (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) +
-                (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) •
-                  (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) -
-                    F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)))))
-                x)).compContinuousLinearMap
-              (fderiv ℝ (fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-                  (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) +
-                (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) •
-                  (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) -
-                    F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-                      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) x)) →
-        |Z η'| ≤ c * s * L ^ k * B * C := by
-  intro m m' k
-  refine ⟨Real.sqrt ((k : ℝ) + 1), Real.sqrt_nonneg _, ?_⟩
-  intro X Z F₀ F₁ O s L B hs hL hB hXB hZ hF₀ hF₁ hO hXO hdist hDF₀ hDF₁ hprop ψ C η' hψC hη'
-  obtain ⟨N', hN', hAN', hη'N'⟩ := hη'
-  -- `spt X = ℝ^m \ zeroRegion X` is closed.
-  have hXcl : IsClosed X.support := isClosed_univ.sdiff X.isOpen_zeroRegion
-  -- 1. `G` is smooth, `DG(s₀, x) e₀ = F₁ x - F₀ x`, `DG(s₀, x) (0, v) = (1 - s₀) DF₀(x) v +
-  -- s₀ DF₁(x) v`, and `G` is proper on the cylinder `cyl(spt X) = [0,1] × spt X`.
-  obtain ⟨hG, hGd⟩ :=
-    Submission.dph_sh_ae_affine_homotopy_contDiff_fderiv m m' F₀ F₁ hF₀ hF₁
-  have hGprop := Submission.dph_sh_ae_affine_homotopy_isCompact_preimage_cyl m m' F₀ F₁
-    X.support s hF₀.continuous hF₁.continuous hXcl (fun x hx => hdist x (hXO hx)) hprop
-  set G : Eucl (m + 1) → Eucl m' := fun y : Eucl (m + 1) =>
-    F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) +
-      (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) •
-        (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) -
-          F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm
-            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))
-  -- The tail projection `tl` is continuous, and `tl(s₀, x) = x`.
-  have htail : Continuous (Fin.tail : (Fin (m + 1) → ℝ) → Fin m → ℝ) :=
-    continuous_pi fun i => continuous_apply i.succ
-  have htl : Continuous fun y : Eucl (m + 1) =>
-      (EuclideanSpace.equiv (Fin m) ℝ).symm
-        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) :=
-    (EuclideanSpace.equiv (Fin m) ℝ).symm.continuous.comp
-      (htail.comp (EuclideanSpace.equiv (Fin (m + 1)) ℝ).continuous)
-  have htl_cons : ∀ (s₀ : ℝ) (x : Eucl m), (EuclideanSpace.equiv (Fin m) ℝ).symm
-      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-        (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x))))) = x := by
-    intro s₀ x
-    rw [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
-      ContinuousLinearEquiv.symm_apply_apply]
-  -- 2. Cut-off: `η = ζ G^#ψ` with `0 ≤ ζ ≤ 1`, `η = G^#ψ` near `cyl(spt X)` and
-  -- `spt η ⊆ tl⁻¹(O)`; it is also a test form `η₁` on all of `ℝ^{m+1}`.
-  obtain ⟨η, ζ, N, hN, hAN, hζ, hη, hηN, -⟩ :=
-    Submission.iwl_sp_exists_compatible_testForm (m + 1) m' (k + 1)
-      ((fun y : Eucl (m + 1) => (EuclideanSpace.equiv (Fin m) ℝ).symm
-        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) ⁻¹' O) univ
-      {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
-        (EuclideanSpace.equiv (Fin m) ℝ).symm
-          (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support}
-      G (hO.preimage htl) (fun y hy => hXO hy.2) hG (fun K hK _ => hGprop K hK) ψ
-  obtain ⟨η₁, hη₁⟩ : ∃ η₁ : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1),
-      (η₁ : DifferentialForm (Eucl (m + 1)) (k + 1)) = η :=
-    ⟨⟨η, η.2.1, subset_univ _⟩, rfl⟩
-  -- 3. `Z(η') = Z(η₁)`: both forms equal `G^#ψ` on the open set `N' ∩ N ⊇ cyl(spt X)`.
-  have hZη : Z η' = Z η₁ :=
-    Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl m k X Z hZ η' η₁ (N' ∩ N) (hN'.inter hN)
-      (subset_inter hAN' hAN) fun y hy => by rw [hη₁, hη'N' y hy.1, hηN y hy.2]
-  -- 4. The `dt`-slices `φ` of `η₁`, and `Z(η₁) = ∫₀¹ X(φ(s₀)) ds₀`.
-  obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm m k η₁
-  have hZφ : Z η₁ = ∫ s₀ in (0 : ℝ)..1, X (φ s₀) := hZ η₁ φ fun s₀ _ x v => hφ s₀ x v
-  have hC : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hψC 0)
-  -- 5. Pointwise bound `|φ(s₀)(x)| ≤ √(k+1) s L^k C` for `s₀ ∈ [0,1]`.
-  have hbound : ∀ s₀ ∈ Icc (0 : ℝ) 1, ∀ x, covectorEuclideanNorm
-      ((φ s₀ : DifferentialForm (Eucl m) k) x) ≤ Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C := by
-    intro s₀ hs₀ x
-    have hφx := hφ s₀ x
-    obtain ⟨hGe₀, hGι₀⟩ := hGd s₀ x
-    have htl₀ := htl_cons s₀ x
-    generalize (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-      (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x)) = y at hφx hGe₀ hGι₀ htl₀
-    rw [hη₁] at hφx
-    by_cases hx : x ∈ O
-    · -- Over `O`: `φ(s₀)(x)(v) = ζ(y) ψ(G y)(F₁ x - F₀ x, T v₁, …, T v_k)`, where
-      -- `T = (1 - s₀) DF₀(x) + s₀ DF₁(x)` has `‖T‖ ≤ L`.
-      have hβ : ∀ v : Fin k → Eucl m, (φ s₀ : DifferentialForm (Eucl m) k) x v =
-          ζ y * (ψ : DifferentialForm (Eucl m') (k + 1)) (G y) (Fin.cons (F₁ x - F₀ x)
-            fun i => ((1 - s₀) • fderiv ℝ F₀ x + s₀ • fderiv ℝ F₁ x) (v i)) := by
-        intro v
-        rw [hφx, hη y, ContinuousAlternatingMap.smul_apply,
-          ContinuousAlternatingMap.compContinuousLinearMap_apply, smul_eq_mul, Fin.comp_cons,
-          hGe₀]
-        congr 3
-        funext i
-        exact hGι₀ (v i)
-      have hT : ‖(1 - s₀) • fderiv ℝ F₀ x + s₀ • fderiv ℝ F₁ x‖ ≤ L := by
-        calc _ ≤ ‖(1 - s₀) • fderiv ℝ F₀ x‖ + ‖s₀ • fderiv ℝ F₁ x‖ := norm_add_le _ _
-          _ = (1 - s₀) * ‖fderiv ℝ F₀ x‖ + s₀ * ‖fderiv ℝ F₁ x‖ := by
-            rw [norm_smul, norm_smul, Real.norm_of_nonneg (sub_nonneg.2 hs₀.2),
-              Real.norm_of_nonneg hs₀.1]
-          _ ≤ (1 - s₀) * L + s₀ * L :=
-            add_le_add (mul_le_mul_of_nonneg_left (hDF₀ x hx) (sub_nonneg.2 hs₀.2))
-              (mul_le_mul_of_nonneg_left (hDF₁ x hx) hs₀.1)
-          _ = L := by ring
-      have hw : ‖F₁ x - F₀ x‖ ≤ s := by
-        rw [← dist_eq_norm]
-        exact hdist x hx
-      have hζy : |ζ y| ≤ 1 := by
-        rw [abs_of_nonneg (hζ y).1]
-        exact (hζ y).2
-      have hψy := covectorEuclideanNorm_nonneg ((ψ : DifferentialForm (Eucl m') (k + 1)) (G y))
-      calc covectorEuclideanNorm ((φ s₀ : DifferentialForm (Eucl m) k) x)
-          ≤ |ζ y| * Real.sqrt ((k : ℝ) + 1) * ‖F₁ x - F₀ x‖ *
-              ‖(1 - s₀) • fderiv ℝ F₀ x + s₀ • fderiv ℝ F₁ x‖ ^ k *
-              covectorEuclideanNorm ((ψ : DifferentialForm (Eucl m') (k + 1)) (G y)) :=
-            Submission.dph_sh_covectorEuclideanNorm_interior_le m m' k _ _ _ _ _ hβ
-        _ ≤ 1 * Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C := by
-            gcongr
-            exact hψC (G y)
-        _ = Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C := by ring
-    · -- Off `O`: `y ∉ tl⁻¹(O) ⊇ spt η`, so `φ(s₀)(x) = 0`.
-      have hy : y ∉ tsupport (η : DifferentialForm (Eucl (m + 1)) (k + 1)) := by
-        intro hy
-        have hyO : (EuclideanSpace.equiv (Fin m) ℝ).symm
-            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ O := η.2.2 hy
-        rw [htl₀] at hyO
-        exact hx hyO
-      have h0 : (φ s₀ : DifferentialForm (Eucl m) k) x = 0 := by
-        ext v
-        simp only [hφx, image_eq_zero_of_notMem_tsupport hy, ContinuousAlternatingMap.coe_zero,
-          Pi.zero_apply]
-      rw [h0, covectorEuclideanNorm_zero]
-      exact mul_nonneg (mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hs) (pow_nonneg hL k)) hC
-  -- 6. Mass bound for each slice, then the interval-integral bound.
-  have hint : ‖∫ s₀ in (0 : ℝ)..1, X (φ s₀)‖ ≤
-      B * (Real.sqrt ((k : ℝ) + 1) * s * L ^ k * C) * |1 - 0| := by
-    refine intervalIntegral.norm_integral_le_of_norm_le_const fun s₀ hs₀ => ?_
-    rw [Set.uIoc_of_le zero_le_one] at hs₀
-    rw [Real.norm_eq_abs]
-    exact Submission.cmb_abs_apply_le_of_massOn_le m k univ univ X (φ s₀) B _ hB hXB
-      (subset_univ _) (hbound s₀ (Ioc_subset_Icc_self hs₀))
-  rw [hZη, hZφ, ← Real.norm_eq_abs]
-  calc _ ≤ _ := hint
-    _ = Real.sqrt ((k : ℝ) + 1) * s * L ^ k * B * C := by
-      rw [sub_zero, abs_one, mul_one]
-      ring
+      ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0)
+        (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) 0),
+        (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+          (ψ₀ : DifferentialForm (Eucl m) 0) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) 0)
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
+          (ψ₁ : DifferentialForm (Eucl m) 0) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) 0)
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z.boundary ψ = X ψ₁ - X ψ₀) ∧
+    (∀ (m j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1))
+        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)), X.mass < ∞ →
+      (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) ((j + 1) + 1))
+          (φ : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1)),
+        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+          (φ s : DifferentialForm (Eucl m) (j + 1)) x v =
+            (η : DifferentialForm (Eucl (m + 1)) ((j + 1) + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+      ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1))
+        (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) (j + 1))
+        (φ : ℝ → TestFormOn (univ : Set (Eucl m)) j),
+        (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+          (ψ₀ : DifferentialForm (Eucl m) (j + 1)) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
+          (ψ₁ : DifferentialForm (Eucl m) (j + 1)) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin j → Eucl m),
+          (φ s : DifferentialForm (Eucl m) j) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z.boundary ψ = X ψ₁ - X ψ₀ - ∫ s in (0 : ℝ)..1, X.boundary (φ s)) := by
+  -- (II) and (III) are the first two conjuncts of `product_boundary`.
+  refine ⟨?_, Submission.dph_iprod_boundary.1, Submission.dph_iprod_boundary.2.1⟩
+  -- (I): `product_exists` gives the characterization, uniqueness, mass bound and support of `Z`;
+  -- continuity of `s ↦ X(φ_s)` is the first half of (D1) in `slice_continuity`, and normality
+  -- is the conjunct (N) of `product_boundary`, applied to this `Z` and its characterization.
+  intro m k X hX
+  obtain ⟨Z, hZ, huniq, hmass, hsupp⟩ := Submission.dph_iprod_exists m k X hX
+  exact ⟨Z, hZ, huniq, hmass, hsupp,
+    fun η φ hφ => (Submission.dph_iprod_slice_continuity.1 m k X hX η φ hφ).1,
+    Submission.dph_iprod_boundary.2.2 m k X Z hX hZ⟩
 /-- Supports of boundaries, weak limits and linear combinations: `spt ∂Z ⊆ spt Z`; a weak limit of
 currents supported in a closed `K` is supported in `K`; `spt Z ⊆ spt Z₁ ∪ spt Z₂` when
 `Z = a Z₁ + b Z₂`.  In each case a point outside the claimed support lies in an open `W ⊂⊂ U` on
@@ -3100,72 +3034,6 @@ theorem Submission.iwl_cr_support_lemmas :
           (Set.disjoint_left.2 fun y hy hyS => hyS.2 (hcl (subset_closure (hω hy))).1.2)
       rw [hZ ω, e1, e2]
       ring
-      ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0)
-        (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) 0),
-        (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
-          (ψ₀ : DifferentialForm (Eucl m) 0) x v =
-            (ψ : DifferentialForm (Eucl (m + 1)) 0)
-              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
-              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-        (∀ (x : Eucl m) (v : Fin 0 → Eucl m),
-          (ψ₁ : DifferentialForm (Eucl m) 0) x v =
-            (ψ : DifferentialForm (Eucl (m + 1)) 0)
-              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
-              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-        Z.boundary ψ = X ψ₁ - X ψ₀) ∧
-    (∀ (m j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1))
-        (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)), X.mass < ∞ →
-      (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) ((j + 1) + 1))
-          (φ : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1)),
-        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
-          (φ s : DifferentialForm (Eucl m) (j + 1)) x v =
-            (η : DifferentialForm (Eucl (m + 1)) ((j + 1) + 1))
-              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
-              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
-                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-        Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
-      ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1))
-        (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) (j + 1))
-        (φ : ℝ → TestFormOn (univ : Set (Eucl m)) j),
-        (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
-          (ψ₀ : DifferentialForm (Eucl m) (j + 1)) x v =
-            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
-              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))
-              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-        (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m),
-          (ψ₁ : DifferentialForm (Eucl m) (j + 1)) x v =
-            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
-              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))
-              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin j → Eucl m),
-          (φ s : DifferentialForm (Eucl m) j) x v =
-            (ψ : DifferentialForm (Eucl (m + 1)) (j + 1))
-              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
-              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
-                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
-                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
-        Z.boundary ψ = X ψ₁ - X ψ₀ - ∫ s in (0 : ℝ)..1, X.boundary (φ s)) := by
-  -- (II) and (III) are the first two conjuncts of `product_boundary`.
-  refine ⟨?_, Submission.dph_iprod_boundary.1, Submission.dph_iprod_boundary.2.1⟩
-  -- (I): `product_exists` gives the characterization, uniqueness, mass bound and support of `Z`;
-  -- continuity of `s ↦ X(φ_s)` is the first half of (D1) in `slice_continuity`, and normality
-  -- is the conjunct (N) of `product_boundary`, applied to this `Z` and its characterization.
-  intro m k X hX
-  obtain ⟨Z, hZ, huniq, hmass, hsupp⟩ := Submission.dph_iprod_exists m k X hX
-  exact ⟨Z, hZ, huniq, hmass, hsupp,
-    fun η φ hφ => (Submission.dph_iprod_slice_continuity.1 m k X hX η φ hφ).1,
-    Submission.dph_iprod_boundary.2.2 m k X Z hX hZ⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
