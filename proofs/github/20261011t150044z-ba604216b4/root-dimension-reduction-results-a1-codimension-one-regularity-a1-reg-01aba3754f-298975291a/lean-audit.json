@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9ae54bd73273fe0d00bae8a2d5f5cc4d7c1b962a284c535b690f43d7028bd9cf",
+  "git_delta": {
+    "base_commit": "3e2fba5eafb4ef038f917f47eac81723bd15fdb2",
+    "candidate_commit": "499364f8f0693f6ced4a76af65e562d0f14d5e75",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bvc_l1_le_of_tests",
+    "diff_sha256": "202241eb12f990d297775cfc071bc3a32fa3ee93ab0a6cd282c57a9a05477305",
+    "source_sha256": "255d681314c7450395bd3af8fe9f9a9c5096d41b31419068471d976e1be63a9a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bvc_l1_le_of_tests",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (R A M : ℝ), Measurable f → (∀ z, |f z| ≤ M) → (∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid n) R → (∀ z, |φ z| ≤ 1) → ∫ z, f z * φ z ≤ A) → ∫ z in ball (0 : Euclid n) R, |f z| ≤ A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
