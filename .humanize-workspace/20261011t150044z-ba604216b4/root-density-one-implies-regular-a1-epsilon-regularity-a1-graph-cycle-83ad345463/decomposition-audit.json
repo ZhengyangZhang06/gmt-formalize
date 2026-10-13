@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "withDensity_apply|measure_compl_support|isClosed_support|restrict_restrict|ae_restrict_iff\\x27|ae_restrict_of_ae_restrict_of_subset|ae_restrict_mem",
+        "setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_congr_ae",
+        "aestronglyMeasurable_indicator_iff|comp_aemeasurable|mono_measure|mono_set|comp_aestronglyMeasurable₂",
+        "adjoint_inner_left|inner_map_map",
+        "dgid_|carrier.*sdiff.*support|imrep_signed_density|dominated_pullback_integer",
+        "sed -n '175,198p' Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/integer-density-audit-ehnynqy1/assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/integer-density-audit-ehnynqy1/instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-83ad345463/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-83ad345463/decomposition-v1.json",
+        "/tmp/integer-density-audit-ehnynqy1/support_null.lean",
+        "/tmp/integer-density-audit-ehnynqy1/cylinder_open.lean",
+        "/tmp/integer-density-audit-ehnynqy1/signed_density.lean",
+        "/tmp/integer-density-audit-ehnynqy1/dominated_pullback.lean",
+        "/tmp/integer-density-audit-ehnynqy1/assembly.lean",
+        "/tmp/integer-density-audit-ehnynqy1/instances.lean"
+      ],
+      "conclusion": "The recomputed parent contract digest matches the requested binding. The pinned contract is byte-identical to the workspace Contract and Submission; project and package revisions match, and inspected Mathlib sources match the snapshot. No proposed declaration was found in the project snapshot or reserved by another DAG branch. All four names are bare identifiers, and all types are standalone one-line propositions elaborating before their implementations. Independently extracted supplied proofs and comparator-style targets compile separately with only propext, Classical.choice and Quot.sound; each supplied declaration also passes the source-delta check. Instance checks confirm the intended volume, real extended norm, multivector negation, density measure and real Bochner integrand; no matrix-unit construction occurs. The four-child split is appropriate and acyclic. The supplied assembly proves the exact selected parent type conditional on precisely its four frozen prerequisite contracts, with no additional assumptions or circular dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Positive natural multiplicity gives Hⁿ(S ∩ M) ≤ R.measure S for measurable S. The support complement is measurable and measure-null in Euclidean space, yielding the exact conclusion. The supplied proof is complete, independent of the parent and other children, and establishes the concentration fact needed by the assembly."
+    },
+    {
+      "key": "cylinder_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including the coordinate decomposition, occur in both prose and Lean. The adjoint identities identify the cylinder with an intersection of strict sublevel sets of continuous functions. This proves openness for all stated dimensions and real radii. The parent supplies the decomposition through DEC; the child itself has no undeclared dependency."
+    },
+    {
+      "key": "signed_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit indicator witness gives integrality, the extended-norm bound and the pairing identity from the sign hypothesis. Measurability is correctly transferred through M ∩ S. The representation proof removes only regions where the integrand vanishes almost everywhere, using lemmas valid without integrability assumptions. Neither measurability of W nor S ⊆ W is needed. The proof establishes every conjunct of the exact contract without circular reliance."
+    },
+    {
+      "key": "dominated_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurable indicators establish push-forward domination using only a.e. measurability of Φ on D. The direction of domination correctly transfers integrality, the norm bound and strong measurability. The compact-set estimate gives finite integral, and the locally closed criterion yields local integrability. Every required hypothesis is explicit. Domination and the properties of g are hypotheses, so the empty dependency list is correct."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "dgce_|left_inverse_chart|left_inverse_tangentSpace|graph_contDiffOn_left_inverse|def tangentSpace|def IsEmbeddedSubmanifold",
+        "adjoint_inner_left",
+        "differentiableOn_one",
+        "preimage_isClosed_of_isClosed",
+        "exists_isMaxOn",
+        "theorem (HasFDerivAt.comp_hasDerivAt|HasDerivAt.unique|HasDerivAt.congr_of_eventuallyEq|hasDerivAt_sin|contDiff_sin)",
+        "lean_name",
+        "lake env lean /tmp/dgce-decomp/Full.lean",
+        "lake env lean /tmp/dgce-decomp/Instances.lean",
+        "lake env lean /tmp/dgce-independent-audit-h1goc668/IndependentTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-df090c7f1c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-df090c7f1c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/dgce-decomp/Full.lean",
+        "/tmp/dgce-decomp/Instances.lean",
+        "/tmp/dgce-independent-audit-h1goc668/IndependentTypes.lean"
+      ],
+      "conclusion": "Confirmed project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot contract is byte-identical to the workspace Contract and Submission. Ch07 lines 221–231 give exactly the chart/properness and curve-based tangent definitions used. No matching graph/affine-left-inverse helper was found in the pinned project. The cited Mathlib lemmas support the supplied arguments; Simon Ch02 §4 supplies their geometric context. All three one-line types pass lexical validation and independently elaborate as Prop in the replayed comparator scope without child implementations. The independent conditional assembly and supplied complete proofs compile with the pinned toolchain; their axiom reports contain only propext, Classical.choice and Quot.sound. Instance checks confirm Euclidean balls and inner products, the derivative-range set coercion, and the regularity-order cast. Scanning the DAG and node JSON files found no proposed name reserved by another branch; all names are bare identifiers, and no accepted declaration is reused. The split appropriately separates projection algebra, chart properness, and tangent identification. Its independently proved children imply every conjunct of the exact selected parent. Empty dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_left_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, with all hypotheses explicit. Smooth composition and addition establish C¹ regularity on the ball. Taking the continuous adjoint of ι, inner-product preservation and orthogonality prove the left-inverse identity for every v, including outside the ball. The proof is complete, non-circular, and supplies exactly the interface needed by the parent."
+    },
+    {
+      "key": "left_inverse_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all three prose conclusions. Differentiating the left-inverse identity on the open ball rigorously proves derivative injectivity. The proposed chart meets every frozen contract condition. For nonempty compact K, the maximum projection norm gives t < s; the preimage equals a closed subset of the compact closed ball of radius t. Empty K and arbitrary radii are handled correctly. No sibling or parent theorem is assumed."
+    },
+    {
+      "key": "left_inverse_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated curve-based tangent-space equality. Projecting a witness curve, applying the chain rule, and using local equality and derivative uniqueness prove the first inclusion. The constant curve handles a = 0; for a ≠ 0, the positive sine scale keeps κ inside the ball and gives κ′(0) = a, establishing every required witness condition for the reverse inclusion. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

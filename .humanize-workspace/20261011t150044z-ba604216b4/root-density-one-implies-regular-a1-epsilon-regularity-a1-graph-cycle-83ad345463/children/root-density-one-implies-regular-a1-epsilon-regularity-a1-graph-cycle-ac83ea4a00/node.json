@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1.signed_density-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1",
+  "depth": 5,
+  "title": "An integer multiplicity triple oriented by ±ξ on S is represented on W by an integer density times ξ on S",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P (ℝ^P = Euclid P), Hⁿ := μHE[n], and let R = (M, θ, ξ_R) : IMRep U n (M = R.carrier Borel, θ = R.mult : ℝ^P → ℕ measurable with θ > 0 on M, ξ_R = R.orient a.e.-strongly measurable for Hⁿ⌞M), whose action on an n-form ω is R.action ω = ∫_M θ(x)·ξ_R(x)(ω(x)) dHⁿ(x) (IMRep.action). Let W, S ⊆ ℝ^P with S Borel and Hⁿ((M ∩ W) ∖ S) = 0. Let ξ : ℝ^P → Λₙ(ℝ^P) (MultiVector P n) and β : ℝ^P → Λⁿ(ℝ^P) (Covector (Euclid P) n) be such that β is a.e.-strongly measurable for Hⁿ⌞S, ξ(x)(β(x)) = 1 for every x ∈ S, and for Hⁿ⌞(M ∩ S)-a.e. x either ξ_R(x) = ξ(x) or ξ_R(x) = −ξ(x). Then there is g : ℝ^P → ℝ such that (i) g is a.e.-strongly measurable for Hⁿ⌞S; (ii) for Hⁿ⌞S-a.e. x, g(x) is an integer and ‖g(x)‖ₑ ≤ 1_M(x)·θ(x) in [0, ∞]; (iii) for every n-form ω : ℝ^P → Λⁿ(ℝ^P) (DifferentialForm (Euclid P) n) with tsupport ω ⊆ W, R.action ω = ∫_S g(x)·ξ(x)(ω(x)) dHⁿ(x) (Bochner integrals).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (W S : Set (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), MeasurableSet S → μHE[n] ((R.carrier ∩ W) \\ S) = 0 → AEStronglyMeasurable β (μHE[n].restrict S) → (∀ x ∈ S, ξ x (β x) = 1) → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ S)), R.orient x = ξ x ∨ R.orient x = -ξ x) → ∃ g : Euclid P → ℝ, AEStronglyMeasurable g (μHE[n].restrict S) ∧ (∀ᵐ x ∂(μHE[n].restrict S), (∃ m : ℤ, g x = m) ∧ ‖g x‖ₑ ≤ R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) x) ∧ ∀ ω : DifferentialForm (Euclid P) n, tsupport ω ⊆ W → R.action ω = ∫ x in S, g x * ξ x (ω x) ∂μHE[n]",
+  "lean_name": "dgid_imrep_signed_density_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-ac83ea4a00-a1"
+}
