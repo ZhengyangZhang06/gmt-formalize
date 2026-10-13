@@ -661,6 +661,48 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **Simon Ch. 3, 1.4 (locality of approximate tangent spaces)**: if `S ∩ B_δ(x) = S' ∩ B_δ(x)`
+for some `δ > 0` and `Q` is the approximate tangent space of `S'` at `x`, then `Q` is also the
+approximate tangent space of `S` at `x`; no measurability of `S`, `S'` is needed.  For
+`f ∈ C_c(ℝᴾ)` with `spt f ⊆ B_R(0)`, `∫_T f dHⁿ = ∫_{B_R(0) ∩ T} f dHⁿ` for every set `T`, and for
+`0 < r < δ / R`, `B_R(0) ∩ η_{x,r}(T) = B_R(0) ∩ η_{x,r}(T ∩ B_δ(x))`; so the blown-up integrals
+over `S` and `S'` agree for all small `r > 0` and have the same limit `∫_Q f dHⁿ`. -/
+theorem Submission.codim1_ac_sat_approxTangent_of_local_eq : ∀ (P n : ℕ) (S S' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → S ∩ ball x δ = S' ∩ ball x δ → HasApproximateTangentSpaceAt n S' x Q → HasApproximateTangentSpaceAt n S x Q := by
+  intro P n S S' x Q δ hδ hSS' hQ
+  -- Step 1: the dimension conjunct `dim Q = n` does not involve the set
+  refine ⟨hQ.1, fun f => ?_⟩
+  -- Step 2: `spt f ⊆ B_R(0)` for some `R > 0`, so `f` vanishes off `B_R(0)`
+  obtain ⟨R₀, hR₀⟩ := (isBounded_iff_subset_ball (0 : Euclid P)).1 f.hasCompactSupport.isBounded
+  obtain ⟨R, hR, hf0⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y, y ∉ ball (0 : Euclid P) R → f y = 0 :=
+    ⟨max R₀ 1, lt_max_of_lt_right one_pos, fun y hy => image_eq_zero_of_notMem_tsupport
+      fun h => hy (ball_subset_ball (le_max_left _ _) (hR₀ h))⟩
+  -- Step 3: `∫_T f dHⁿ = ∫_{B_R(0) ∩ T} f dHⁿ` for every set `T`, as `B_R(0)` is Borel
+  have hcut : ∀ T : Set (Euclid P),
+      ∫ y in T, f y ∂μHE[n] = ∫ y in ball 0 R ∩ T, f y ∂μHE[n] := by
+    intro T
+    rw [← Measure.restrict_restrict measurableSet_ball]
+    exact (setIntegral_eq_integral_of_forall_compl_eq_zero hf0).symm
+  -- Step 6: it suffices that the blown-up integrals over `S'` and `S` agree for `0 < r < δ / R`
+  refine (hQ.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+  -- Step 4: `B_R(0) ∩ η_{x,r}(T) = B_R(0) ∩ η_{x,r}(T ∩ B_δ(x))`, as `|t − x| = r |η_{x,r}(t)|`
+  have hloc : ∀ T : Set (Euclid P),
+      ball 0 R ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' T =
+        ball 0 R ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' (T ∩ ball x δ) := by
+    intro T
+    refine Subset.antisymm ?_ (inter_subset_inter_right _ (image_mono inter_subset_left))
+    rintro _ ⟨hy, t, ht, rfl⟩
+    refine ⟨hy, t, ⟨ht, mem_ball.2 ?_⟩, rfl⟩
+    have hy' : ‖r⁻¹ • (t - x)‖ < R := mem_ball_zero_iff.1 hy
+    calc dist t x = ‖t - x‖ := dist_eq_norm t x
+      _ = r * ‖r⁻¹ • (t - x)‖ := by
+        rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.1.le), ← mul_assoc,
+          mul_inv_cancel₀ hr.1.ne', one_mul]
+      _ < r * R := mul_lt_mul_of_pos_left hy' hr.1
+      _ < δ := (lt_div_iff₀ hR).1 hr.2
+  -- Step 5: hence, by `S ∩ B_δ(x) = S' ∩ B_δ(x)`, the two blown-up integrals coincide
+  rw [hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S'),
+    hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S), hloc S', hloc S, hSS']
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
