@@ -741,6 +741,101 @@ theorem Submission.codim1_rdo_dg_ce_signed_layer_cake : ∀ (X : Type) [Measurab
     _ = ∫ x, ∫ t, H x t ∂ν ∂(μ.restrict S) := (integral_integral_swap hHint).symm
     _ = ∫ x, ζ x * g x ∂μ := hleft.symm
 
+/-- Annular bound behind De Giorgi's cut-off estimates (Simon Ch. 3, 4.3 (3)–(6), in
+finite-difference form, as used for 7.5.8).  Suppose `F` satisfies the Gauss–Green identity
+`∫_F div φ dLᴾ = -∫ ⟨φ, ν⟩ dμ` for `C¹` fields `φ` with compact support in `D ⊇ B̄_{ρ₂}(y)`
+(`|ν| ≤ 1`, `μ(B̄_{ρ₂}(y)) < ∞`), and `½ μ(B̄_r(y)) ≤ ∫_{B̄_r(y)} ⟨ν, v⟩ dμ` for `0 < r < ρ₂`
+(`|v| ≤ 1`).  Then `δ μ(B̄_ρ(y)) ≤ 3 Lᴾ(F ∩ (B_{ρ+δ}(y) \ B̄_ρ(y)))` whenever `ρ, δ > 0` and
+`ρ + δ < ρ₂`.  Test the identity with `φ = ζ v`, `ζ` the radial cut-off
+`Submission.codim1_rdo_dg_ce_radial_cutoff`: `div φ = Dζ v` vanishes off the annulus and is
+bounded by `3/(2δ)`, while the signed layer-cake formula
+`Submission.codim1_rdo_dg_ce_signed_layer_cake` over the superlevel balls `{ζ ≥ t} = B̄_r(y)`
+gives `∫ ζ ⟨v, ν⟩ dμ ≥ ½ μ(B̄_ρ(y))`. -/
+theorem Submission.codim1_rdo_dg_ce_annular_bound : ∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₂ : ℝ), MeasurableSet F → closedBall y ρ₂ ⊆ D → μ (closedBall y ρ₂) ≠ ∞ → Measurable ν → (∀ z, ‖ν z‖ ≤ 1) → ‖v‖ ≤ 1 → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → (∀ r : ℝ, 0 < r → r < ρ₂ → (1 / 2 : ℝ) * (μ (closedBall y r)).toReal ≤ ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ) → ∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₂ → ENNReal.ofReal δ * μ (closedBall y ρ) ≤ ENNReal.ofReal 3 * volume (F ∩ (ball y (ρ + δ) \ closedBall y ρ)) := by
+  intro P D F μ ν y v ρ₂ _hF hD hfin hν hν1 hv hGG h1' ρ δ hρ hδ hρδ
+  set A := ball y (ρ + δ) \ closedBall y ρ
+  -- Step 1: `μ(B̄_ρ) ≤ μ(B̄_{ρ+δ}) ≤ μ(B̄_{ρ₂}) < ∞` and `Lᴾ(F ∩ A) ≤ Lᴾ(B_{ρ+δ}) < ∞`.
+  have hSsub : closedBall y (ρ + δ) ⊆ closedBall y ρ₂ := closedBall_subset_closedBall hρδ.le
+  have hSfin : μ (closedBall y (ρ + δ)) ≠ ∞ := ne_top_of_le_ne_top hfin (measure_mono hSsub)
+  have hBfin : μ (closedBall y ρ) ≠ ∞ :=
+    ne_top_of_le_ne_top hSfin (measure_mono (closedBall_subset_closedBall (by linarith)))
+  have hAmeas : MeasurableSet A := measurableSet_ball.diff measurableSet_closedBall
+  have hAfin : volume A ≠ ∞ :=
+    ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono sdiff_subset)
+  have hFAfin : volume (F ∩ A) ≠ ∞ := ne_top_of_le_ne_top hAfin (measure_mono inter_subset_right)
+  -- Step 2: the radial cut-off `ζ`, `= 1` on `B̄_ρ`, supported in `B̄_{ρ+δ}`, `|Dζ| ≤ 3/(2δ)`.
+  obtain ⟨ζ, hζC, hζc, hζ01, hζ1, hζsupp, hζgrad, hζzero, hζlevel⟩ :=
+    Submission.codim1_rdo_dg_ce_radial_cutoff P y ρ δ hρ hδ
+  -- Step 3: Gauss–Green for `φ = ζ v`, whose divergence is the trace `Dζ v` of the rank-one
+  -- map `Dφ = Dζ ⊗ v`: `∫ ζ ⟨v, ν⟩ dμ = -∫_F Dζ v dLᴾ`.
+  have hφD : tsupport (fun z => ζ z • v) ⊆ D :=
+    (tsupport_smul_subset_left _ _).trans (hζsupp.trans (hSsub.trans hD))
+  have htrace : ∀ z, LinearMap.trace ℝ (Euclid P)
+      (fderiv ℝ (fun z => ζ z • v) z : Euclid P →ₗ[ℝ] Euclid P) = fderiv ℝ ζ z v := by
+    intro z
+    rw [fderiv_smul_const ((hζC.differentiable one_ne_zero) z) v]
+    exact LinearMap.trace_smulRight _ _
+  have hGGζ : ∫ z, ζ z * inner ℝ v (ν z) ∂μ = -∫ z in F, fderiv ℝ ζ z v := by
+    have h := hGG (fun z => ζ z • v) (hζC.smul contDiff_const) hζc.smul_right hφD
+    simp only [htrace, real_inner_smul_left] at h
+    rw [h, neg_neg]
+  -- Step 4: `|Dζ v| ≤ (3/(2δ)) 𝟙_A`, so `-∫_F Dζ v dLᴾ ≤ (3/(2δ)) Lᴾ(F ∩ A)`.
+  have hpt : ∀ z, ‖fderiv ℝ ζ z v‖ ≤ A.indicator (fun _ => 3 / (2 * δ)) z := by
+    intro z
+    by_cases hz : z ∈ A
+    · rw [indicator_of_mem hz]
+      calc ‖fderiv ℝ ζ z v‖ ≤ ‖fderiv ℝ ζ z‖ * ‖v‖ := (fderiv ℝ ζ z).le_opNorm v
+        _ ≤ 3 / (2 * δ) * 1 := mul_le_mul (hζgrad z) hv (norm_nonneg _) (by positivity)
+        _ = 3 / (2 * δ) := mul_one _
+    · rw [indicator_of_notMem hz, hζzero z hz]
+      simp
+  have hup : -∫ z in F, fderiv ℝ ζ z v ≤ 3 / (2 * δ) * (volume (F ∩ A)).toReal := by
+    have hint : Integrable (A.indicator (fun _ => 3 / (2 * δ))) (volume.restrict F) :=
+      ((integrableOn_const hAfin).integrable_indicator hAmeas).restrict
+    have heq : ∫ z in F, A.indicator (fun _ => 3 / (2 * δ)) z =
+        3 / (2 * δ) * (volume (F ∩ A)).toReal := by
+      rw [integral_indicator_const _ hAmeas, smul_eq_mul, mul_comm]
+      congr 1
+      simp only [Measure.real, Measure.restrict_apply hAmeas, inter_comm]
+    calc -∫ z in F, fderiv ℝ ζ z v ≤ ‖∫ z in F, fderiv ℝ ζ z v‖ := by
+          rw [Real.norm_eq_abs]; exact neg_le_abs _
+      _ ≤ ∫ z in F, A.indicator (fun _ => 3 / (2 * δ)) z :=
+          norm_integral_le_of_norm_le hint (Eventually.of_forall hpt)
+      _ = 3 / (2 * δ) * (volume (F ∩ A)).toReal := heq
+  -- Step 5: the signed layer-cake formula with `g = ⟨v, ν⟩`, `S = B̄_{ρ+δ}`, `B = B̄_ρ`, `c = ½`;
+  -- each `{ζ ≥ t} = B̄_r` has `0 < ρ ≤ r < ρ + δ < ρ₂`, where `(1′)` applies.
+  have hg : Measurable (fun z => inner ℝ v (ν z)) :=
+    (continuous_const.inner continuous_id).measurable.comp hν
+  have hlow : (1 / 2 : ℝ) * (μ (closedBall y ρ)).toReal ≤ ∫ z, ζ z * inner ℝ v (ν z) ∂μ := by
+    refine Submission.codim1_rdo_dg_ce_signed_layer_cake (Euclid P) μ ζ (fun z => inner ℝ v (ν z))
+      (closedBall y (ρ + δ)) (closedBall y ρ) (1 / 2) hζC.continuous.measurable hg hζ01 ?_
+      measurableSet_closedBall hSfin ?_ hζ1 (by norm_num) ?_
+    · intro z
+      calc |inner ℝ v (ν z)| ≤ ‖v‖ * ‖ν z‖ := abs_real_inner_le_norm _ _
+        _ ≤ 1 * 1 := mul_le_mul hv (hν1 z) (norm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    · intro z hz
+      exact image_eq_zero_of_notMem_tsupport (fun h => hz (hζsupp h))
+    · intro t ht0 ht1
+      obtain ⟨r, hr1, hr2, hrset⟩ := hζlevel t ht0 ht1
+      rw [hrset]
+      simpa only [real_inner_comm] using h1' r (by linarith) (by linarith)
+  -- Step 6: `½ μ(B̄_ρ) ≤ (3/(2δ)) Lᴾ(F ∩ A)`; multiply by `2δ > 0`.
+  have hreal : δ * (μ (closedBall y ρ)).toReal ≤ 3 * (volume (F ∩ A)).toReal := by
+    have key : (1 / 2 : ℝ) * (μ (closedBall y ρ)).toReal ≤
+        3 / (2 * δ) * (volume (F ∩ A)).toReal := by
+      linarith
+    have h3 : 3 / (2 * δ) * (volume (F ∩ A)).toReal * (2 * δ) = 3 * (volume (F ∩ A)).toReal := by
+      field_simp
+    nlinarith [key, hδ]
+  -- Step 7: back to `[0, ∞]`, both measures being finite by step 1.
+  calc ENNReal.ofReal δ * μ (closedBall y ρ)
+      = ENNReal.ofReal (δ * (μ (closedBall y ρ)).toReal) := by
+        rw [ENNReal.ofReal_mul hδ.le, ENNReal.ofReal_toReal hBfin]
+    _ ≤ ENNReal.ofReal (3 * (volume (F ∩ A)).toReal) := ENNReal.ofReal_le_ofReal hreal
+    _ = ENNReal.ofReal 3 * volume (F ∩ A) := by
+        rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_toReal hFAfin]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
