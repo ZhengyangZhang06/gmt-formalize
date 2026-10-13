@@ -541,6 +541,39 @@ theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b 
     rfl
   rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
 
+/-- Step (6c) of the graph chart in the codimension-one regularity theorem (Simon 7.5.8; unit
+orientations as in Simon 6.2.2): for linearly independent `b₁, …, bₘ` in `ℝᴾ` the Gram determinant
+`Γ = det(⟨bᵢ, bⱼ⟩)` is positive, and an `m`-vector `ξ` with `⟨α, ξ⟩ √Γ = α(b₁, …, bₘ)` for every
+`m`-covector `α` is a unit orientation of `span b`.  For the Gram–Schmidt frame `σ` of `span b` and
+`A = (⟨σᵢ, bⱼ⟩)`, `Γ = (det A)²`, `√Γ = |det A|` and `α(b) = det A · α(σ)`, so
+`ξ = ±σ₁ ∧ ⋯ ∧ σₘ`. -/
+theorem Submission.codim1_rdo_gc_gram_unitOrientation : ∀ (P m : ℕ) (b : Fin m → Euclid P), LinearIndependent ℝ b → 0 < Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j)) ∧ ∀ ξ : MultiVector P m, (∀ α : Covector (Euclid P) m, ξ α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j))) = α b) → IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range b)) := by
+  intro P m b hb
+  obtain ⟨σ, hσ, hspan, hgram, hA, -⟩ := Submission.dpf_exists_orthonormal_frame_det_gram P m b hb
+  set A := Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (b j)) with hAeq
+  have hpos : 0 < Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j)) := by
+    rw [hgram]; positivity
+  refine ⟨hpos, fun ξ hξ => ?_⟩
+  have hmem : ∀ j, b j ∈ Submodule.span ℝ (Set.range σ) := fun j => by
+    rw [hspan]; exact Submodule.subset_span ⟨j, rfl⟩
+  have hcov := Submission.dgoj_covector_eq_det_mul_of_mem_span P m σ b hσ hmem
+  have hsqrt : Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j))) = |A| := by
+    rw [hgram, Real.sqrt_sq_eq_abs]
+  refine ⟨σ, hσ, hspan, ?_⟩
+  rcases lt_or_gt_of_ne hA with hneg | hpos'
+  · right
+    intro α
+    have h1 := hξ α
+    rw [hsqrt, abs_of_neg hneg, hcov α] at h1
+    have h2 : A * ξ α = A * (-α σ) := by linarith
+    exact mul_left_cancel₀ hA h2
+  · left
+    intro α
+    have h1 := hξ α
+    rw [hsqrt, abs_of_pos hpos', hcov α] at h1
+    have h2 : A * ξ α = A * α σ := by linarith
+    exact mul_left_cancel₀ hA h2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
