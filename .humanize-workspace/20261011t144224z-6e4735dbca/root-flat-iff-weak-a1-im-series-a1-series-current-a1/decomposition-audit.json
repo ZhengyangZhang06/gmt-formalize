@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "covectorEuclideanNorm|massAdmissibleOn|massOn|le_massOn|structure GeometricCurrentOn|def TestFormOnConverges|abbrev TestFormOn|def testFormOnSubmodule|abbrev Covector|abbrev DifferentialForm|def IsSmoothForm|def IsTestForm|CoeFun",
+        "fiw_ims_sc_|covectorEuclideanNorm.*‖|covectorEuclideanNorm.*opNorm|converges_zero_small|continuous_of_bound|series_bound|testForm_bounded",
+        "exists_open_between_and_isCompact_closure|exists_bound_of_continuous|theorem le_opNorm|basisFun_apply|norm_iteratedFDeriv_zero|iteratedFDeriv_fun_zero|tendstoUniformlyOn_iff|summable_toReal|tsum_mul_left|ofReal_tsum_of_nonneg|norm_tsum_le_tsum_norm|theorem Summable.of_abs",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/series-current-audit-krh6ohiv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/series-current-audit-krh6ohiv/ProofsAndContracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/decomposition-v2.json",
+        "/tmp/sc_v2.rJJTMk/Scratch/Proofs.lean",
+        "/tmp/series-current-audit-krh6ohiv/Types.lean",
+        "/tmp/series-current-audit-krh6ohiv/ProofsAndContracts.lean"
+      ],
+      "conclusion": "The five-child split appropriately establishes the selected series-current contract. The pinned definitions confirm the coefficient norm, test-form hypotheses, sequential continuity at zero, and mass supremum over arbitrary sets. Searches found no proposed declarations or matching norm-comparison helpers in the pinned project/Chapter06 sources. Compiler packages match the recorded revisions; inspected Mathlib files and scratch project inputs match the snapshot. Independently rerun Lean checks successfully elaborate every frozen type before any child implementation, then check exact proofs against all five types. The covector norm instance is ContinuousAlternatingMap.instNormedAddCommGroup.toNorm; no matrix-unit construction occurs. The proofs and exact parent assembly, with the existing mass_bound dependency passed explicitly, use only propext, Classical.choice and Quot.sound. The assembly proves unconditional sums, linearity, continuity, and the mass bound for every set, including the infinite-bound case. Dependencies are correctly directed and acyclic. Scanning 207 DAG nodes and 204 proposal files found no competing reservation; only this node's own proposals use these bare names, with identical frozen types."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Unit basis vectors and the operator-norm bound control every squared coefficient; counting P^n indices and taking square roots gives the exact inequality. The proof covers zero dimensions and degree zero without circular dependencies."
+    },
+    {
+      "key": "testform_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes precisely the hypotheses encoded by TestFormOn; openness is unnecessary. Smoothness gives continuity, compact support gives a global operator-norm bound, and covector_norm supplies the positive coefficient-norm bound. The supplied proof is complete."
+    },
+    {
+      "key": "converges_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof retains the common compact support required by the exact type. Zeroth-derivative uniform convergence controls the operator norm on that compact set; vanishing outside it gives global control. Applying covector_norm with ε/(√(P^n)+1) proves the stated eventual bound."
+    },
+    {
+      "key": "continuity_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type both allow arbitrary functions L and arbitrary real bounds A. Using converges_small and δ = ε/(|A|+1) proves the required strict ε estimate without assuming linearity or positivity of A. Its sole child dependency is correctly declared."
+    },
+    {
+      "key": "series_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The integer-cast identity, monotone ENNReal multiplication, and finite weighted sum establish absolute summability, then the exact tsum estimate. Zero coefficients, infinite individual masses, and nonpositive C are handled correctly. No parent or child theorem is assumed."
+    }
+  ],
+  "required_changes": []
+}

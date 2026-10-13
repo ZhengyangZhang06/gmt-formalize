@@ -359,6 +359,151 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The Euclidean coefficient norm of an `n`-covector on `ℝ^P` is at most `√(P^n)` times its
+operator norm: each of the `P^n` coefficients `α(b_{I(0)}, …, b_{I(n-1)})` (`b` the standard
+orthonormal basis) is bounded by `‖α‖ · ∏ ‖b_{I(i)}‖ = ‖α‖`. -/
+theorem Submission.fiw_ims_sc_covectorNorm_le_opNorm :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+  intro P n α
+  -- Every coefficient is at most `‖α‖`, since the standard basis vectors are unit vectors.
+  have hcoef : ∀ I : Fin n → Fin P,
+      |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
+    intro I
+    have h := ContinuousAlternatingMap.le_opNorm α
+      (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+    simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+      Real.norm_eq_abs] at h
+    exact h
+  rw [covectorEuclideanNorm]
+  calc Real.sqrt _ ≤ Real.sqrt ((P : ℝ) ^ n * ‖α‖ ^ 2) := by
+        apply Real.sqrt_le_sqrt
+        -- The sum has `P ^ n` terms, each at most `‖α‖ ^ 2`.
+        calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+              apply Finset.sum_le_sum
+              intro I _
+              split_ifs
+              · rw [← sq_abs]
+                exact pow_le_pow_left₀ (abs_nonneg _) (hcoef I) 2
+              · positivity
+          _ = (P : ℝ) ^ n * ‖α‖ ^ 2 := by simp [Finset.card_univ]
+    _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+
+/-- **Test forms have bounded Euclidean coefficient norm**: Simon's
+`|ω| = sup_x √⟨ω(x), ω(x)⟩` (Ch. 6, 1.15, p. 134) is finite, with a positive bound.
+A test form is smooth, hence continuous, and has compact support, so `‖ω(x)‖ ≤ B` for its
+operator norm; `|α| ≤ √(Pⁿ) ‖α‖` (`fiw_ims_sc_covectorNorm_le_opNorm`) then gives the bound
+`C = √(Pⁿ) B + 1 > 0`. -/
+theorem Submission.fiw_ims_sc_testForm_bounded : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C := by
+  intro P n U ω
+  -- `ω` is smooth, hence continuous, and has compact support, so `‖ω(x)‖ ≤ B` for all `x`.
+  have hω : Continuous (ω : DifferentialForm (Eucl P) n) := ω.property.1.1.continuous
+  obtain ⟨B, hB⟩ := ω.property.1.2.exists_bound_of_continuous hω
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  have hD0 : 0 ≤ Real.sqrt ((P : ℝ) ^ n) := Real.sqrt_nonneg _
+  refine ⟨Real.sqrt ((P : ℝ) ^ n) * B + 1, by positivity, fun x => ?_⟩
+  calc covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)
+      ≤ Real.sqrt ((P : ℝ) ^ n) * ‖(ω : DifferentialForm (Eucl P) n) x‖ :=
+        Submission.fiw_ims_sc_covectorNorm_le_opNorm P n _
+    _ ≤ Real.sqrt ((P : ℝ) ^ n) * B := mul_le_mul_of_nonneg_left (hB x) hD0
+    _ ≤ Real.sqrt ((P : ℝ) ^ n) * B + 1 := by linarith
+/-- **A null sequence of test forms is uniformly small (Simon Ch. 6, 2.1).**  If `ω_q → 0` in
+`𝒟ⁿ(U)`, then all `ω_q` are supported in one compact `K ⊆ U` and, for every `ε > 0`, eventually
+`|ω_q(x)| ≤ ε` for every `x`, in the Euclidean coefficient norm of Remark 2.6.  The `k = 0` part
+of the convergence makes the operator norm `‖ω_q(x)‖` uniformly small on `K`, and `ω_q = 0` off
+`K`; `Submission.fiw_ims_sc_covectorNorm_le_opNorm` gives `|α| ≤ √(P^n) ‖α‖`. -/
+theorem Submission.fiw_ims_sc_converges_zero_small : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : ℕ → TestFormOn U n), TestFormOnConverges ω 0 → ∃ K : Set (Eucl P), IsCompact K ∧ K ⊆ U ∧ (∀ q, tsupport ((ω q : DifferentialForm (Eucl P) n)) ⊆ K) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ q in atTop, ∀ x, covectorEuclideanNorm ((ω q : DifferentialForm (Eucl P) n) x) ≤ ε := by
+  intro P n U ω hω
+  obtain ⟨K, hK, hKU, hsupp, -, hconv⟩ := hω
+  refine ⟨K, hK, hKU, hsupp, fun ε hε => ?_⟩
+  set D := Real.sqrt ((P : ℝ) ^ n)
+  have hD : 0 ≤ D := Real.sqrt_nonneg _
+  have hδ : 0 < ε / (D + 1) := by positivity
+  -- `k = 0`: eventually `‖ω_q(x) - 0‖ < ε / (D + 1)` for all `x ∈ K`.
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hconv 0) _ hδ] with q hq x
+  have hx : ‖(ω q : DifferentialForm (Eucl P) n) x‖ ≤ ε / (D + 1) := by
+    by_cases hxK : x ∈ K
+    · have h := hq x hxK
+      rw [Submodule.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left,
+        norm_iteratedFDeriv_zero] at h
+      exact h.le
+    · -- off `K ⊇ tsupport ω_q` the form vanishes
+      rw [image_eq_zero_of_notMem_tsupport fun h => hxK (hsupp q h), norm_zero]
+      exact hδ.le
+  calc covectorEuclideanNorm ((ω q : DifferentialForm (Eucl P) n) x)
+      ≤ D * ‖(ω q : DifferentialForm (Eucl P) n) x‖ :=
+        Submission.fiw_ims_sc_covectorNorm_le_opNorm P n _
+    _ ≤ D * (ε / (D + 1)) := mul_le_mul_of_nonneg_left hx hD
+    _ ≤ ε := by
+        rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+        nlinarith
+
+/-- **Continuity criterion on `𝒟ⁿ(U)`** (the topology of Simon Ch. 6, §1, p. 134, and the
+continuity required in 2.1): if for each compact `K ⊆ U` there is `A` with `|L(ω)| ≤ A·C`
+whenever `spt ω ⊆ K` and `|ω(x)| ≤ C` for all `x` (the Euclidean coefficient norm of 1.15), then
+`L(ω_q) → 0` for every null sequence `ω_q → 0` of test forms.  By
+`fiw_ims_sc_converges_zero_small` all `spt ω_q` lie in one compact `K ⊆ U` and
+`sup_x |ω_q(x)| → 0`; for `ε > 0` and `δ = ε / (|A| + 1)`, eventually
+`|L(ω_q)| ≤ A·δ ≤ |A|·δ < ε`.  Neither linearity of `L` nor a sign of `A` is used. -/
+theorem Submission.fiw_ims_sc_continuous_of_bound : ∀ (P n : ℕ) (U : Set (Eucl P)) (L : TestFormOn U n → ℝ), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ A : ℝ, ∀ (ω : TestFormOn U n) (C : ℝ), 0 < C → tsupport ((ω : DifferentialForm (Eucl P) n)) ⊆ K → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → |L ω| ≤ A * C) → ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 → Tendsto (fun q => L (ωs q)) atTop (𝓝 0) := by
+  intro P n U L hL ωs hωs
+  -- One compact `K ⊆ U` carries every `spt ω_q`, and `sup_x |ω_q(x)| → 0`.
+  obtain ⟨K, hK, hKU, hsupp, hsmall⟩ :=
+    Submission.fiw_ims_sc_converges_zero_small P n U ωs hωs
+  -- The hypothesis on `K`: `|L(ω)| ≤ A·C` whenever `spt ω ⊆ K` and `|ω| ≤ C`.
+  obtain ⟨A, hA⟩ := hL K hK hKU
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hA1 : 0 < |A| + 1 := by positivity
+  have hδ : 0 < ε / (|A| + 1) := div_pos hε hA1
+  -- Eventually `|ω_q| ≤ δ = ε / (|A| + 1)`, hence `|L(ω_q)| ≤ A·δ ≤ |A|·δ < ε`.
+  filter_upwards [hsmall _ hδ] with q hq
+  rw [Real.dist_eq, sub_zero]
+  calc |L (ωs q)| ≤ A * (ε / (|A| + 1)) := hA (ωs q) _ hδ (hsupp q) hq
+    _ ≤ |A| * (ε / (|A| + 1)) := mul_le_mul_of_nonneg_right (le_abs_self A) hδ.le
+    _ < ε := by
+      rw [mul_div_assoc', div_lt_iff₀ hA1]
+      nlinarith [abs_nonneg A]
+/-- **Integer-weighted series estimate** (behind the `M`-absolutely convergent integer series
+`∑_r c_r T_r` of currents, Simon Ch. 6, 3.13, pp. 149–150, used in the proof of 7.2).  If
+`ofReal |a_r| ≤ m_r · ofReal C` for every `r` and `∑' r, |c_r| m_r < ∞` in `[0, ∞]`, then
+`r ↦ c_r a_r` is summable and `ofReal |∑' r, c_r a_r| ≤ ofReal C · ∑' r, |c_r| m_r`.
+Termwise `ofReal |c_r a_r| = |c_r| · ofReal |a_r| ≤ ofReal C · (|c_r| m_r)`, so
+`∑' r, ofReal |c_r a_r|` is finite; this gives absolute summability, and the estimate follows
+from `|∑' r, x_r| ≤ ∑' r, |x_r|`. -/
+theorem Submission.fiw_ims_sc_series_bound : ∀ (a : ℕ → ℝ) (c : ℕ → ℤ) (m : ℕ → ℝ≥0∞) (C : ℝ), (∀ r, ENNReal.ofReal |a r| ≤ m r * ENNReal.ofReal C) → (∑' r, ((c r).natAbs : ℝ≥0∞) * m r) < ∞ → Summable (fun r => (c r : ℝ) * a r) ∧ ENNReal.ofReal |∑' r, (c r : ℝ) * a r| ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := by
+  intro a c m C ha hsum
+  -- `ofReal |(c_r : ℝ)| = |c_r|` in `[0, ∞]`.
+  have hc : ∀ r, ENNReal.ofReal |(c r : ℝ)| = ((c r).natAbs : ℝ≥0∞) := fun r => by
+    rw [← Int.cast_abs, ← Int.natCast_natAbs, Int.cast_natCast, ENNReal.ofReal_natCast]
+  -- Termwise bound `ofReal |c_r a_r| ≤ ofReal C · (|c_r| m_r)`.
+  have hterm : ∀ r, ENNReal.ofReal |(c r : ℝ) * a r| ≤
+      ENNReal.ofReal C * (((c r).natAbs : ℝ≥0∞) * m r) := fun r => by
+    rw [abs_mul, ENNReal.ofReal_mul (abs_nonneg _), hc]
+    calc ((c r).natAbs : ℝ≥0∞) * ENNReal.ofReal |a r|
+        ≤ ((c r).natAbs : ℝ≥0∞) * (m r * ENNReal.ofReal C) := by gcongr; exact ha r
+      _ = ENNReal.ofReal C * (((c r).natAbs : ℝ≥0∞) * m r) := by ring
+  -- Summing: `∑' ofReal |c_r a_r| ≤ ofReal C · ∑' |c_r| m_r < ∞`.
+  have hle : ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| ≤
+      ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := by
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum hterm
+  have hfin : ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| ≠ ∞ :=
+    (hle.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hsum)).ne
+  -- Absolute summability, hence summability.
+  have habs : Summable fun r => |(c r : ℝ) * a r| :=
+    (ENNReal.summable_toReal hfin).congr fun r => ENNReal.toReal_ofReal (abs_nonneg _)
+  refine ⟨habs.of_abs, ?_⟩
+  -- `|∑' x_r| ≤ ∑' |x_r|`, and `ofReal` commutes with the nonnegative sum.
+  have hnorm : Summable fun r => ‖(c r : ℝ) * a r‖ := by simpa only [Real.norm_eq_abs] using habs
+  have htri : |∑' r, (c r : ℝ) * a r| ≤ ∑' r, |(c r : ℝ) * a r| := by
+    simpa only [Real.norm_eq_abs] using norm_tsum_le_tsum_norm hnorm
+  calc ENNReal.ofReal |∑' r, (c r : ℝ) * a r|
+      ≤ ENNReal.ofReal (∑' r, |(c r : ℝ) * a r|) := ENNReal.ofReal_le_ofReal htri
+    _ = ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| :=
+        ENNReal.ofReal_tsum_of_nonneg (fun r => abs_nonneg _) habs
+    _ ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := hle
 /-- Mass bound: if `η` is supported in `V` and `|η(x)| ≤ C` everywhere (Euclidean covector
 norm) with `C > 0`, then `|X(η)| ≤ M_V(X) · C` in `[0, ∞]`. -/
 theorem Submission.fiw_ims_mass_bound :
@@ -398,6 +543,79 @@ theorem Submission.fiw_ims_mass_bound :
     _ = ENNReal.ofReal (C⁻¹ * |X η|) * ENNReal.ofReal C :=
         ENNReal.ofReal_mul (mul_nonneg (inv_nonneg.mpr hC.le) (abs_nonneg _))
     _ ≤ X.massOn V * ENNReal.ofReal C := by gcongr
+
+/-- Series of currents: if `∑' r, |c_r| M_W(T_r) < ∞` for every `W ⊂⊂ U`, then `∑ c_r T_r`
+converges unconditionally on every test form to a current `S` with
+`M_W(S) ≤ ∑' r, |c_r| M_W(T_r)` for every set `W`. -/
+theorem Submission.fiw_ims_series_current :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : ℕ → GeometricCurrentOn U n) (c : ℕ → ℤ),
+      (∀ W, CompactlyContainedOpen W U →
+        (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) < ∞) →
+      ∃ S : GeometricCurrentOn U n, (∀ ω, HasSum (fun r => (c r : ℝ) * T r ω) (S ω)) ∧
+        ∀ W, S.massOn W ≤ ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W := by
+  intro P n U hU T c hT
+  -- Every compact `K ⊆ U` lies in some `W ⊂⊂ U`.
+  have hW : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      ∃ W, CompactlyContainedOpen W U ∧ K ⊆ W := by
+    intro K hK hKU
+    obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+    exact ⟨W, ⟨hWo, hWc, hWU⟩, hKW⟩
+  -- Core estimate: for `ω` supported in `V` with `|ω| ≤ C`, the series converges and
+  -- `|∑' r, c_r T_r(ω)| ≤ C ∑' r, |c_r| M_V(T_r)` in `[0, ∞]`.
+  have hcore : ∀ (V : Set (Eucl P)) (ω : TestFormOn U n) (C : ℝ), 0 < C →
+      tsupport (ω : DifferentialForm (Eucl P) n) ⊆ V →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn V) < ∞ →
+      Summable (fun r => (c r : ℝ) * T r ω) ∧
+        ENNReal.ofReal |∑' r, (c r : ℝ) * T r ω| ≤
+          ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn V :=
+    fun V ω C hC hV hω hfin =>
+      Submission.fiw_ims_sc_series_bound (fun r => T r ω) c (fun r => (T r).massOn V) C
+        (fun r => Submission.fiw_ims_mass_bound P n U (T r) V ω C hC hV hω) hfin
+  -- The series converges on every test form: `tsupport ω` is a compact subset of `U`.
+  have hsum : ∀ ω : TestFormOn U n, Summable (fun r => (c r : ℝ) * T r ω) := by
+    intro ω
+    obtain ⟨C, hC, hω⟩ := Submission.fiw_ims_sc_testForm_bounded P n U ω
+    obtain ⟨W, hWU, hKW⟩ := hW (tsupport (ω : DifferentialForm (Eucl P) n))
+      ω.property.1.2 ω.property.2
+    exact (hcore W ω C hC hKW hω (hT W hWU)).1
+  -- The sum `S₀(ω) = ∑' r, c_r T_r(ω)` is linear in `ω`.
+  let S₀ : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑' r, (c r : ℝ) * T r ω
+      map_add' := fun ω η => by
+        simp only [map_add, mul_add]
+        exact (hsum ω).tsum_add (hsum η)
+      map_smul' := fun a ω => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        rw [← tsum_mul_left]
+        exact tsum_congr fun r => mul_left_comm _ _ _ }
+  -- Sequential continuity: on forms supported in a compact `K ⊆ U` with `|ω| ≤ C`,
+  -- `|S₀(ω)| ≤ A C` with `A = ∑' r, |c_r| M_W(T_r)` for some `W ⊂⊂ U` containing `K`.
+  have hcont : ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 →
+      Tendsto (fun q => S₀ (ωs q)) atTop (𝓝 0) := by
+    refine Submission.fiw_ims_sc_continuous_of_bound P n U S₀ fun K hK hKU => ?_
+    obtain ⟨W, hWU, hKW⟩ := hW K hK hKU
+    have hA := hT W hWU
+    refine ⟨(∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W).toReal,
+      fun ω C hC hω hωC => ?_⟩
+    have h : ENNReal.ofReal |S₀ ω| ≤
+        ENNReal.ofReal (C * (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W).toReal) := by
+      rw [ENNReal.ofReal_mul hC.le, ENNReal.ofReal_toReal hA.ne]
+      exact (hcore W ω C hC (hω.trans hKW) hωC hA).2
+    rw [mul_comm]
+    exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hC.le ENNReal.toReal_nonneg)).1 h
+  refine ⟨⟨S₀, hcont⟩, fun ω => (hsum ω).hasSum, fun W => ?_⟩
+  -- Mass bound: test the admissible forms of `M_W` with `C = 1`.
+  rcases eq_top_or_lt_top (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) with hA | hA
+  · rw [hA]
+    exact le_top
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  calc ENNReal.ofReal (S₀ ω) ≤ ENNReal.ofReal |S₀ ω| := ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ENNReal.ofReal 1 * ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W :=
+      (hcore W ω 1 one_pos hω.1 hω.2 hA).2
+    _ = ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W := by
+      rw [ENNReal.ofReal_one, one_mul]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
