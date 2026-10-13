@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a33ba5f601405810fa6ad98f9e091b64db7d3b94bae1751199a7aeb1fb8a3fed",
+  "git_delta": {
+    "base_commit": "9a97d1f273c014cade31b640b0456e5eedf5ef5b",
+    "candidate_commit": "417be912f27f01021b2cd189bd274b9ce74e6fb7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_ims_common_orientation",
+    "diff_sha256": "ce5bbd48fff02605c032ca526d1edcaa8b11f732c60608f76f98d17a96fb1c5f",
+    "source_sha256": "da71be1897b88d175de37e36e8dc21a421e87635cd6e00374efc9467adbe6c9b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_ims_common_orientation",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] ((⋃ i, (R i).carrier) ∩ K) ≠ ∞) → ∃ (η : Euclid P → MultiVector P n) (s : ℕ → Euclid P → ℝ), StronglyMeasurable η ∧ (∀ i, Measurable (s i)) ∧ (∀ i x, s i x = 1 ∨ s i x = -1) ∧ (∀ᵐ x ∂(μHE[n].restrict (⋃ i, (R i).carrier)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (⋃ i, (R i).carrier) x Q ∧ IsUnitOrientationOf (η x) Q) ∧ ∀ i, ∀ᵐ x ∂(μHE[n].restrict (R i).carrier), (R i).orient x = s i x • η x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
