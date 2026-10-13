@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1",
+  "depth": 5,
+  "title": "An embedded submanifold that is C^r for every r has C^∞ charts (graph representation over the tangent plane, Simon Ch. 2, 4.4)",
+  "statement": "C^∞ charts. Data: P, m ∈ ℕ; M ⊆ ℝ^P. Hypothesis: for every r ∈ ℕ, M is an embedded C^r m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold r m M); the charts may depend on r. Conclusion: every y ∈ M has a C^∞ local representation: there are open sets V ⊆ ℝ^m and W ⊆ ℝ^P with y ∈ W and a map ψ : ℝ^m → ℝ^P that is C^∞ on V (ContDiffOn ℝ (⊤ : ℕ∞) ψ V, i.e. of class C^n on V for every n ∈ ℕ), injective on V, with ψ(V) = W ∩ M, V ∩ ψ^{-1}(K) compact for every compact K ⊆ W, and Dψ(z) = fderiv ℝ ψ z injective for every z ∈ V.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)), (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → ∀ y ∈ M, ∃ (V : Set (Euclid m)) (W : Set (Euclid P)) (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ (⊤ : ℕ∞) ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧ ∀ z ∈ V, Injective (fderiv ℝ ψ z)",
+  "lean_name": "codim1_hcp_smooth_charts",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6231a88a5f-a1"
+}

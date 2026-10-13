@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1",
+  "depth": 5,
+  "title": "Smooth unit normal in A₀ of an oriented smooth stationary hypersurface, with zero mean curvature (parent steps 2 and 3)",
+  "statement": "Unit normal and minimality. Data: P, m ∈ ℕ; U ⊆ ℝ^P; a linear subspace A₀ ⊆ ℝ^P; M ⊆ ℝ^P. Hypotheses: U is open; M ⊆ U; dim A₀ = m + 1; M ⊆ A₀; M is an embedded C^r m-dimensional submanifold of ℝ^P for every r ∈ ℕ; M has an orientation (IsOrientation m M ξ for some ξ : ℝ^P → Λ_m(ℝ^P): ξ is continuous on M and ξ(x) = ±τ_1∧⋯∧τ_m for an orthonormal basis τ of tangentSpace M x); H^m(M ∩ K) < ∞ for every compact K ⊆ U; and M is stationary in U: ∫_M div_M X dH^m = 0 for every C¹ X : ℝ^P → ℝ^P with compact support and tsupport X ⊆ U (div_M X(x) := trace(P_x∘DX(x)), P_x the orthogonal projection onto span(tangentSpace M x), H^m = μHE[m]). Conclusion: there are ν : ℝ^P → ℝ^P and an open set O ⊇ M such that ν is C^∞ on O (ContDiffOn ℝ (⊤ : ℕ∞) ν O) and, for every x ∈ M: ν(x) ∈ A₀, |ν(x)| = 1, ν(x)·v = 0 for every v ∈ tangentSpace M x, and trace(P_x∘Dν(x)) = 0, where Dν(x) = fderiv ℝ ν x (that is, div_M ν = 0: the mean curvature of M vanishes).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → ∃ (ν : Euclid P → Euclid P) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) ∧ ∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0",
+  "lean_name": "codim1_hcp_minimal_unit_normal",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1-a1",
+      "result_commit": "e8842d90b78f15ebdbe728429ce98fccfaa6665c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-342a5e032a-a1"
+}

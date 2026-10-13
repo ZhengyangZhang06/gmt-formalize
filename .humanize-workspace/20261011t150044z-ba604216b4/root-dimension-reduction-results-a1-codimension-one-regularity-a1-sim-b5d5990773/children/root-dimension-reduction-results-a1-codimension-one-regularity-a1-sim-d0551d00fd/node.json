@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1",
+  "depth": 5,
+  "title": "A C¹ hypercone of A₀ whose unit normal has zero tangential derivative is a punctured m-plane (parent step 10)",
+  "statement": "Flat cones are planes. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P; M ⊆ ℝ^P; ν : ℝ^P → ℝ^P. Hypotheses: m ≥ 2; dim A₀ = m + 1; M ≠ ∅; M ⊆ A₀; 0 ∉ M; M is an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m M); closure(M) ⊆ M ∪ {0}; tx ∈ M for every x ∈ M and t > 0; ν is differentiable at every x ∈ M; for every x ∈ M, ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for every v ∈ tangentSpace M x; and Dν(x)v = 0 (fderiv ℝ ν x v = 0) for every x ∈ M and v ∈ tangentSpace M x. Conclusion: there is a linear subspace H₀ ⊆ ℝ^P with dim H₀ = m (Module.finrank ℝ H₀ = m) and M = H₀ ∖ {0}.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → IsEmbeddedSubmanifold 1 m M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \\ {0}",
+  "lean_name": "codim1_hcp_flat_cone_is_plane",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-d0551d00fd-a1"
+}
