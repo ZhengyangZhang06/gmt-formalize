@@ -609,6 +609,144 @@ theorem dohr_eb_dql_interpolation_fderiv_bound : ∀ (n ℓ : ℕ) (h : Rn n →
   calc ‖fderiv ℝ h y v‖ ≤ (L * t ^ α * t + 2 * S) / c := key
     _ = (2 * S / t + L * t ^ α) * ‖v‖ := by
       rw [hc]; field_simp; ring
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): `C^{1,α}` bounds pass to limits.**
+Let `B = B̆_ρ(x₀)` and let `F_i → G` uniformly on every compact `K ⊆ B` along a filter `l ≠ ⊥`.
+If eventually in `l` each `F_i` is differentiable on `B` with `‖DF_i‖ ≤ M` and
+`‖DF_i(x) − DF_i(y)‖ ≤ M ‖x − y‖^α` on `B` (`α > 0`), then `G` is `C¹` on `B` with the same bounds.
+Proof: for `x ∈ B` choose `r > 0` with `B_{2r}(x) ⊆ B`.  Given `η > 0`, pick `t ∈ (0, r]` with
+`2M t^α < η/2`; once `‖G − F_i‖ < ηt/8` on `B_{2r}(x)`, the interpolation inequality
+(`dohr_eb_dql_interpolation_fderiv_bound`) applied to `F_i − F_j` (Hölder constant `2M`, sup bound
+`ηt/4`) gives `‖DF_i − DF_j‖ ≤ η/2 + 2M t^α < η` on `B_r(x)`.  So `DF_i` is uniformly Cauchy on
+`B_r(x)` and, `L(ℝⁿ, ℝ^ℓ)` being complete, converges uniformly there to `V := lim DF_i`.  The limit
+`V` inherits the bound `M` and the Hölder constant `M`, hence is continuous on `B`, and the theorem
+on uniform limits of derivatives gives `DG = V` on `B`; thus `G` is `C¹` on `B`. -/
+theorem dohr_eb_dql_c1Holder_of_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (ι : Type) (l : Filter ι), l.NeBot → ∀ (F : ι → Rn n → Rn ℓ) (G : Rn n → Rn ℓ) (x₀ : Rn n) (ρ α M : ℝ), 0 < α → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, DifferentiableAt ℝ (F i) x) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x‖ ≤ M) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x - fderiv ℝ (F i) y‖ ≤ M * ‖x - y‖ ^ α) → (∀ K : Set (Rn n), IsCompact K → K ⊆ ball x₀ ρ → TendstoUniformlyOn F G l K) → ContDiffOn ℝ 1 G (ball x₀ ρ) ∧ (∀ x ∈ ball x₀ ρ, ‖fderiv ℝ G x‖ ≤ M) ∧ ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ G x - fderiv ℝ G y‖ ≤ M * ‖x - y‖ ^ α := by
+  intro n ℓ ι l hl F G x₀ ρ α M hα hD hB hH hU
+  have := hl
+  -- The good indices: eventually all three hypotheses hold at once.
+  have hE := hD.and (hB.and hH)
+  -- The candidate derivative of `G`: the (chosen) pointwise limit of the `DF_i`.
+  set V : Rn n → (Rn n →L[ℝ] Rn ℓ) := fun y => limUnder l (fun i => fderiv ℝ (F i) y)
+  -- Step 1: radii with `B_{2r}(x) ⊆ B`, and `M ≥ 0`.
+  have hrad : ∀ x ∈ ball x₀ ρ, ∃ r > 0, closedBall x (2 * r) ⊆ ball x₀ ρ := by
+    intro x hx
+    rw [mem_ball] at hx
+    refine ⟨(ρ - dist x x₀) / 4, by linarith, fun z hz => ?_⟩
+    rw [mem_closedBall] at hz
+    rw [mem_ball]
+    calc dist z x₀ ≤ dist z x + dist x x₀ := dist_triangle _ _ _
+      _ < ρ := by linarith
+  have hM : ∀ x ∈ ball x₀ ρ, 0 ≤ M := by
+    intro x hx
+    obtain ⟨i, hi⟩ := hB.exists
+    exact (norm_nonneg _).trans (hi x hx)
+  -- Steps 2–3: on `B_r(x)` the `DF_i` are uniformly Cauchy, hence converge uniformly to `V`.
+  have hconv : ∀ x ∈ ball x₀ ρ, ∀ r > 0, closedBall x (2 * r) ⊆ ball x₀ ρ →
+      TendstoUniformlyOn (fun i => fderiv ℝ (F i)) V l (closedBall x r) := by
+    intro x hx r hr hsub
+    have hM0 := hM x hx
+    have hUC : UniformCauchySeqOn (fun i => fderiv ℝ (F i)) l (closedBall x r) := by
+      intro u hu
+      obtain ⟨η, hη, hηu⟩ := Metric.mem_uniformity_dist.1 hu
+      -- (a) a scale `t ∈ (0, r]` with `2M t^α < η/2`.
+      have ht_ev : ∀ᶠ t in 𝓝[>] (0 : ℝ), 2 * M * t ^ α < η / 2 := by
+        have hc : Tendsto (fun t : ℝ => 2 * M * t ^ α) (𝓝 0) (𝓝 (2 * M * (0 : ℝ) ^ α)) :=
+          ((continuousAt_id.rpow_const (Or.inr hα.le)).tendsto).const_mul _
+        rw [Real.zero_rpow hα.ne', mul_zero] at hc
+        exact nhdsWithin_le_nhds (hc.eventually (gt_mem_nhds (by linarith)))
+      have hIoc : ∀ᶠ t in 𝓝[>] (0 : ℝ), t ∈ Ioc 0 r := Ioc_mem_nhdsGT hr
+      obtain ⟨t, ht1, ht2⟩ := (ht_ev.and hIoc).exists
+      have htpos : 0 < t := ht2.1
+      have htr : t ≤ r := ht2.2
+      -- (b) eventually `‖G − F_i‖ < ηt/8` on the compact set `B_{2r}(x) ⊆ B`.
+      have hTU := hU (closedBall x (2 * r)) (isCompact_closedBall x _) hsub
+      rw [Metric.tendstoUniformlyOn_iff] at hTU
+      have hP := hE.and (hTU (η * t / 8) (by positivity))
+      filter_upwards [hP.prod_mk hP] with ij hij y hy
+      obtain ⟨⟨hDi, hBi, hHi⟩, hGi⟩ := hij.1
+      obtain ⟨⟨hDj, hBj, hHj⟩, hGj⟩ := hij.2
+      apply hηu
+      rw [dist_eq_norm]
+      have hyB : y ∈ closedBall x (2 * r) := closedBall_subset_closedBall (by linarith) hy
+      -- (c) `h = F_i − F_j` has Hölder constant `2M` and sup bound `ηt/4` on `B_{2r}(x)`.
+      set h : Rn n → Rn ℓ := fun z => F ij.1 z - F ij.2 z
+      have hdh : ∀ z ∈ closedBall x (2 * r), DifferentiableAt ℝ h z := fun z hz =>
+        (hDi z (hsub hz)).sub (hDj z (hsub hz))
+      have hfd : ∀ z ∈ closedBall x (2 * r),
+          fderiv ℝ h z = fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.2) z := fun z hz =>
+        fderiv_sub (hDi z (hsub hz)) (hDj z (hsub hz))
+      -- (d) the interpolation inequality on `B_r(x)`.
+      have hbd := Submission.dohr_eb_dql_interpolation_fderiv_bound n ℓ h x r t α (2 * M)
+        (η * t / 4) htpos htr hα (by linarith) hdh
+        (fun z hz z' hz' => by
+          rw [hfd z hz, hfd z' hz']
+          calc ‖fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.2) z -
+                (fderiv ℝ (F ij.1) z' - fderiv ℝ (F ij.2) z')‖
+              = ‖(fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.1) z') -
+                  (fderiv ℝ (F ij.2) z - fderiv ℝ (F ij.2) z')‖ := by congr 1; abel
+            _ ≤ ‖fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.1) z'‖ +
+                  ‖fderiv ℝ (F ij.2) z - fderiv ℝ (F ij.2) z'‖ := norm_sub_le _ _
+            _ ≤ M * ‖z - z'‖ ^ α + M * ‖z - z'‖ ^ α :=
+                add_le_add (hHi z (hsub hz) z' (hsub hz')) (hHj z (hsub hz) z' (hsub hz'))
+            _ = 2 * M * ‖z - z'‖ ^ α := by ring)
+        (fun z hz => by
+          have h1 := hGi z hz
+          have h2 := hGj z hz
+          rw [dist_eq_norm] at h1 h2
+          calc ‖h z‖ = ‖(G z - F ij.2 z) - (G z - F ij.1 z)‖ := by
+                show ‖F ij.1 z - F ij.2 z‖ = _; congr 1; abel
+            _ ≤ ‖G z - F ij.2 z‖ + ‖G z - F ij.1 z‖ := norm_sub_le _ _
+            _ ≤ η * t / 4 := by linarith)
+        y hy
+      rw [hfd y hyB] at hbd
+      calc ‖fderiv ℝ (F ij.1) y - fderiv ℝ (F ij.2) y‖
+          ≤ 2 * (η * t / 4) / t + 2 * M * t ^ α := hbd
+        _ = η / 2 + 2 * M * t ^ α := by field_simp; ring
+        _ < η := by linarith
+    -- (e)/(3) completeness: pointwise limits exist, and the convergence is uniform.
+    refine hUC.tendstoUniformlyOn_of_tendsto (fun y hy => ?_)
+    obtain ⟨L, hL⟩ := cauchy_map_iff_exists_tendsto.1 (hUC.cauchy_map hy)
+    exact tendsto_nhds_limUnder ⟨L, hL⟩
+  have hpt : ∀ y ∈ ball x₀ ρ, Tendsto (fun i => fderiv ℝ (F i) y) l (𝓝 (V y)) := by
+    intro y hy
+    obtain ⟨r, hr, hsub⟩ := hrad y hy
+    exact (hconv y hy r hr hsub).tendsto_at (mem_closedBall_self hr.le)
+  -- Step 5: the uniform-limit theorem for derivatives gives `DG = V` on `B`.
+  have hG : ∀ x ∈ ball x₀ ρ, HasFDerivAt G (V x) x := by
+    intro x hx
+    obtain ⟨r, hr, hsub⟩ := hrad x hx
+    refine hasFDerivAt_of_tendstoUniformlyOnFilter (l := l) (f := F)
+      (f' := fun i => fderiv ℝ (F i)) ?_ ?_ ?_
+    · exact (tendstoUniformlyOn_iff_tendstoUniformlyOnFilter.1 (hconv x hx r hr hsub)).mono_right
+        (le_principal_iff.2 (closedBall_mem_nhds x hr))
+    · filter_upwards [hD.prod_mk (isOpen_ball.mem_nhds hx)] with p hp
+      exact (hp.1 p.2 hp.2).hasFDerivAt
+    · filter_upwards [isOpen_ball.mem_nhds hx] with y hy
+      exact (hU {y} isCompact_singleton (singleton_subset_iff.2 hy)).tendsto_at rfl
+  have hfG : ∀ x ∈ ball x₀ ρ, fderiv ℝ G x = V x := fun x hx => (hG x hx).fderiv
+  -- Step 4: `V` inherits both bounds, so it is continuous on `B`.
+  have hVb : ∀ x ∈ ball x₀ ρ, ‖V x‖ ≤ M := fun x hx =>
+    le_of_tendsto (hpt x hx).norm (hB.mono fun i hi => hi x hx)
+  have hVh : ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖V x - V y‖ ≤ M * ‖x - y‖ ^ α := fun x hx y hy =>
+    le_of_tendsto ((hpt x hx).sub (hpt y hy)).norm (hH.mono fun i hi => hi x hx y hy)
+  have hVc : ContinuousOn V (ball x₀ ρ) := by
+    intro y hy
+    rw [ContinuousWithinAt, tendsto_iff_norm_sub_tendsto_zero]
+    have hlim : Tendsto (fun z => M * ‖z - y‖ ^ α) (𝓝 y) (𝓝 (M * ‖y - y‖ ^ α)) :=
+      (((continuous_id.sub continuous_const).norm.continuousAt).rpow_const
+        (Or.inr hα.le)).tendsto.const_mul M
+    rw [sub_self, norm_zero, Real.zero_rpow hα.ne', mul_zero] at hlim
+    refine squeeze_zero' (Eventually.of_forall fun z => norm_nonneg _) ?_
+      (hlim.mono_left nhdsWithin_le_nhds)
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    exact hVh z hz y hy
+  -- Step 6: conclusion.
+  refine ⟨?_, fun x hx => by rw [hfG x hx]; exact hVb x hx, fun x hx y hy => by
+    rw [hfG x hx, hfG y hy]; exact hVh x hx y hy⟩
+  rw [show (1 : WithTop ℕ∞) = 0 + 1 by simp, contDiffOn_succ_iff_fderiv_of_isOpen isOpen_ball]
+  refine ⟨fun x hx => (hG x hx).differentiableAt.differentiableWithinAt, by simp, ?_⟩
+  rw [contDiffOn_zero]
+  exact hVc.congr hfG
 
 end Submission
 
