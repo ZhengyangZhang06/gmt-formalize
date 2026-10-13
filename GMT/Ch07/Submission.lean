@@ -451,6 +451,89 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Approximate tangential gradient of the cut-off `γ ∘ f`** (Simon Ch. 6, chain rule (4) in the
+proof of 4.5(2)).  Let `a < b`, `f` continuous and `γ(s) = min{1, max{0, (b − s)/(b − a)}}`.  If
+`G` is an approximate tangential gradient of `f` `Hᴺ`-a.e. on `M`, and `G = 0` `Hᴺ`-a.e. on
+`M ∩ {f = a}` and on `M ∩ {f = b}`, then `H` is one of `γ ∘ f` `Hᴺ`-a.e. on `M`, where
+`H = −(b − a)⁻¹ G` on `{a < f < b}` and `H = 0` elsewhere.  At such a point `x` and for `y` near
+`x`, `|γ(f y) − γ(f x) − ⟨H x, y − x⟩| ≤ (b − a)⁻¹ |f y − f x − ⟨G x, y − x⟩|`: with equality if
+`a < f x < b`; the left side is `0` if `f x < a` or `f x > b`; and if `f x ∈ {a, b}`, then
+`G x = H x = 0` and `γ` is `(b − a)⁻¹`-Lipschitz.  So the exceptional sets of `γ ∘ f` for `ε` lie
+in those of `f` for `(b − a) ε`. -/
+theorem Submission.dtc_bc_lc_sl_sf_cutoff_gradient : ∀ (P N : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (a b : ℝ), a < b → Continuous f → (∀ᵐ x ∂(μHE[N].restrict M), HasApproximateTangentSpaceAt N M x (approxTangentPlane N M x) ∧ G x ∈ approxTangentPlane N M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → (∀ᵐ x ∂(μHE[N].restrict M), f x = a → G x = 0) → (∀ᵐ x ∂(μHE[N].restrict M), f x = b → G x = 0) → ∀ᵐ x ∂(μHE[N].restrict M), HasApproximateTangentSpaceAt N M x (approxTangentPlane N M x) ∧ (if a < f x ∧ f x < b then -(b - a)⁻¹ • G x else 0) ∈ approxTangentPlane N M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |min 1 (max 0 ((b - f y) / (b - a))) - min 1 (max 0 ((b - f x) / (b - a))) - inner ℝ (if a < f x ∧ f x < b then -(b - a)⁻¹ • G x else 0) (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0) := by
+  intro P N M f G a b hab hf hi ha hb
+  have hba : 0 < b - a := sub_pos.2 hab
+  -- Step 5(a): `u ↦ min 1 (max 0 u)` is 1-Lipschitz
+  have hγ : ∀ u v : ℝ, |min 1 (max 0 u) - min 1 (max 0 v)| ≤ |u - v| := fun u v =>
+    calc |min 1 (max 0 u) - min 1 (max 0 v)| ≤ max |1 - 1| |max 0 u - max 0 v| :=
+          abs_min_sub_min_le_max _ _ _ _
+      _ = |max u 0 - max v 0| := by
+          rw [sub_self, abs_zero, max_eq_right (abs_nonneg _), max_comm 0 u, max_comm 0 v]
+      _ ≤ |u - v| := abs_max_sub_max_le_abs _ _ _
+  -- Step 1: good points
+  filter_upwards [hi, ha, hb] with x ⟨hT, hG, hlim⟩ hxa hxb
+  -- Steps 2 and 3: `TₓM` exists, and `H x` is a multiple of `G x ∈ TₓM` or `0`
+  refine ⟨hT, ?_, fun ε hε => ?_⟩
+  · split_ifs
+    · exact Submodule.smul_mem _ _ hG
+    · exact Submodule.zero_mem _
+  -- Steps 4–10: near `x`, `|h y - h x - ⟨H x, y - x⟩| ≤ (b - a)⁻¹ |f y - f x - ⟨G x, y - x⟩|`
+  have hbound : ∀ᶠ y in 𝓝 x,
+      |min 1 (max 0 ((b - f y) / (b - a))) - min 1 (max 0 ((b - f x) / (b - a))) -
+          inner ℝ (if a < f x ∧ f x < b then -(b - a)⁻¹ • G x else 0) (y - x)| ≤
+        (b - a)⁻¹ * |f y - f x - inner ℝ (G x) (y - x)| := by
+    by_cases hmid : a < f x ∧ f x < b
+    · -- Step 6: `a < f < b` near `x`, where `h = (b - f)/(b - a)`
+      have hlin : ∀ s, a < s → s < b → min 1 (max 0 ((b - s) / (b - a))) = (b - s) / (b - a) :=
+        fun s hs₁ hs₂ => by
+          rw [max_eq_right (div_nonneg (by linarith) hba.le),
+            min_eq_right ((div_le_one hba).2 (by linarith))]
+      filter_upwards [(hf.tendsto x).eventually (Ioo_mem_nhds hmid.1 hmid.2)] with y hy
+      rw [ite_eq_left hmid, hlin _ hy.1 hy.2, hlin _ hmid.1 hmid.2, real_inner_smul_left,
+        show (b - f y) / (b - a) - (b - f x) / (b - a) - -(b - a)⁻¹ * inner ℝ (G x) (y - x) =
+          -((b - a)⁻¹ * (f y - f x - inner ℝ (G x) (y - x))) by ring,
+        abs_neg, abs_mul, abs_of_pos (inv_pos.2 hba)]
+    simp only [ite_eq_right hmid, inner_zero_left, sub_zero]
+    rcases lt_or_ge (f x) a with hlt | hge
+    · -- Step 7: `f < a` near `x`, where `h = 1`
+      have h1 : ∀ s, s < a → min 1 (max 0 ((b - s) / (b - a))) = 1 := fun s hs => by
+        rw [max_eq_right (div_nonneg (by linarith) hba.le),
+          min_eq_left ((one_le_div hba).2 (by linarith))]
+      filter_upwards [(hf.tendsto x).eventually (Iio_mem_nhds hlt)] with y hy
+      rw [h1 _ hy, h1 _ hlt, sub_self, abs_zero]
+      exact mul_nonneg (inv_nonneg.2 hba.le) (abs_nonneg _)
+    rcases lt_or_ge b (f x) with hgt | hle
+    · -- Step 8: `f > b` near `x`, where `h = 0`
+      have h0 : ∀ s, b < s → min 1 (max 0 ((b - s) / (b - a))) = 0 := fun s hs => by
+        rw [max_eq_left (div_nonpos_of_nonpos_of_nonneg (by linarith) hba.le),
+          min_eq_right zero_le_one]
+      filter_upwards [(hf.tendsto x).eventually (Ioi_mem_nhds hgt)] with y hy
+      rw [h0 _ hy, h0 _ hgt, sub_self, abs_zero]
+      exact mul_nonneg (inv_nonneg.2 hba.le) (abs_nonneg _)
+    -- Step 9: `f x ∈ {a, b}`, so `G x = 0`, and `γ` is `(b - a)⁻¹`-Lipschitz
+    have hG0 : G x = 0 := by
+      rcases hge.eq_or_lt with h | h
+      · exact hxa h.symm
+      · exact hxb (le_antisymm hle (not_lt.1 fun h' => hmid ⟨h, h'⟩))
+    refine Eventually.of_forall fun y => ?_
+    rw [hG0, inner_zero_left, sub_zero]
+    calc _ ≤ |(b - f y) / (b - a) - (b - f x) / (b - a)| := hγ _ _
+      _ = (b - a)⁻¹ * |f y - f x| := by
+          rw [show (b - f y) / (b - a) - (b - f x) / (b - a) = -((b - a)⁻¹ * (f y - f x)) by ring,
+            abs_neg, abs_mul, abs_of_pos (inv_pos.2 hba)]
+  -- Step 11: compare the exceptional sets for `0 < r < r₁` and squeeze
+  obtain ⟨r₁, hr₁, hball⟩ := Metric.eventually_nhds_iff_ball.1 hbound
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
+    (hlim ((b - a) * ε) (mul_pos hba hε)) (Eventually.of_forall fun _ => zero_le) ?_
+  filter_upwards [Ioo_mem_nhdsGT hr₁] with r hr
+  refine ENNReal.div_le_div_right (measure_mono ?_) _
+  rintro y ⟨⟨hyM, hyr⟩, hyε⟩
+  refine ⟨⟨hyM, hyr⟩, ?_⟩
+  have hy := (show ε * ‖y - x‖ < _ from hyε).trans_le (hball y (ball_subset_ball hr.2.le hyr))
+  rw [lt_inv_mul_iff₀ hba] at hy
+  show (b - a) * ε * ‖y - x‖ < _
+  rwa [mul_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
