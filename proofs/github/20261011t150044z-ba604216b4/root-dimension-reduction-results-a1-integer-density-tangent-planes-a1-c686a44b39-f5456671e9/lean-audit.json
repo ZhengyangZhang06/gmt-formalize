@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "847d526c73689705392934b97ce640f0c7fa5492ca0f7c4c6102ebc55b53c100",
+  "git_delta": {
+    "base_commit": "9b62b3e97f1ec8bc6844f68dfdb6564b754d2a51",
+    "candidate_commit": "487175dde799d7add156f7253cd4376be8a33698",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_sfv_mult_ae_eq_density",
+    "diff_sha256": "e29bf6b911acb8848d73711f2aaf876aa39a6610980ba19d668e33d36635116d",
+    "source_sha256": "ea1ca04ddf3fa9ab8c351e0262bbdd495bcd1257207095f5c95cb2a75c46bbb7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_sfv_mult_ae_eq_density",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → (∀ᵐ x ∂R.measure, x ∈ ball p ρ → R.mult x = k) ∧ ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ ball p ρ)), R.mult x = k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
