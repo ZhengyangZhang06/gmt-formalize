@@ -3204,6 +3204,91 @@ theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν 
     refine lt_of_le_of_lt ?_ hρ
     gcongr
     exact ball_subset_closedBall
+/-- **Step 1 of Corollary 7.5.11** (`k ≥ 1`, Simon 7.5; Ch. 2, §4, (4.1)).  A nonempty embedded
+`d`-dimensional `Cʳ` submanifold `M` of `ℝᴾ` has `d ≤ P`: for `y ∈ M` and a chart `ψ : V → W` at
+`y`, `y ∈ W ∩ M = ψ(V)` gives `z ∈ V`, and the injective linear map `Dψ(z) : ℝᵈ → ℝᴾ` gives
+`d = dim ℝᵈ ≤ dim ℝᴾ = P`. -/
+theorem Submission.regcomp_cop_dim_le_of_embedded : ∀ (P d r : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → M.Nonempty → d ≤ P := by
+  intro P d r M hM ⟨y, hy⟩
+  -- a chart `ψ : V → W` of `M` at `y`
+  obtain ⟨V, W, ψ, -, -, hyW, -, -, hψV, -, hDψ⟩ := hM y hy
+  -- `y ∈ W ∩ M = ψ(V)`, so `y = ψ(z)` for some `z ∈ V`
+  obtain ⟨z, hz, -⟩ : y ∈ ψ '' V := hψV ▸ ⟨hyW, hy⟩
+  -- `Dψ(z) : ℝᵈ → ℝᴾ` is injective, so `d = dim ℝᵈ ≤ dim ℝᴾ = P`
+  simpa using LinearMap.finrank_le_finrank_of_injective
+    (f := (fderiv ℝ ψ z : Euclid d →ₗ[ℝ] Euclid P)) (hDψ z hz)
+/-- **Simon 7.5** (`T = ∂[[E]]` with `E ⊆ N`): if `(N̄ \ N) ∩ U = ∅`, `E ⊆ N` and
+`T(ω) = ∫_E ⟨dω, ξN⟩ dH^{n+1}` for `ω ∈ 𝒟ⁿ(U)`, then `spt T ⊆ N`.  A point `x ∈ spt T \ N` lies
+outside `N̄`, so `B_ε(x) ⊆ U \ N̄` for some `ε > 0`.  `W = B_{ε/2}(x)` is open with `W̄` compact
+in `U`, and every `ω` with `spt ω ⊆ W` has `spt dω ⊆ spt ω` disjoint from `E`.  So the integrand
+vanishes on `E`, `T(ω) = 0`, and `x ∈ W` lies in the zero region of `T`. -/
+theorem Submission.regcomp_cop_region_support_subset : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → (closure N \ N) ∩ U = ∅ → E ⊆ N → IsBoundaryOfRegion T E ξN → T.support ⊆ N := by
+  intro P n U N E ξN T hU hN hEN hT x hx
+  obtain ⟨hxU, hxZ⟩ := hx
+  by_contra hxN
+  -- `x ∉ N̄`, since `(N̄ \ N) ∩ U = ∅`
+  have hxN' : x ∉ closure N := fun h => hN.subset ⟨⟨h, hxN⟩, hxU⟩
+  -- a ball `B_ε(x) ⊆ U \ N̄`
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff isClosed_closure) x ⟨hxU, hxN'⟩
+  -- `W = B_{ε/2}(x)` is open, and `W̄ ⊆ B̄_{ε/2}(x)` is compact and contained in `B_ε(x) ⊆ U`
+  have hcl : closure (ball x (ε / 2)) ⊆ ball x ε :=
+    closure_ball_subset_closedBall.trans (closedBall_subset_ball (by linarith))
+  refine hxZ ⟨ball x (ε / 2), ⟨isOpen_ball,
+    (isCompact_closedBall x (ε / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, hcl.trans (hball.trans sdiff_subset), ?_⟩,
+    mem_ball_self (half_pos hε)⟩
+  -- `T` vanishes on `W`: for `spt ω ⊆ W`, `dω = 0` on `E ⊆ N`, so the integrand vanishes on `E`
+  intro ω hω
+  rw [hT ω]
+  refine setIntegral_eq_zero_of_forall_eq_zero fun z hz => ?_
+  have hzω : z ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) n)) := fun h =>
+    (hball (ball_subset_ball (by linarith) (hω (tsupport_exteriorDerivative_subset _ h)))).2
+      (subset_closure (hEN hz))
+  rw [image_eq_zero_of_notMem_tsupport hzω, map_zero]
+/-- **`∂[[E]]` is a cycle**: Simon 7.5.1 (`T = ∂[[E]]`, chapter-07.txt line 752) with (6.1.12)
+`d²ω = 0` (chapter-06.txt line 150) and the boundary (6.2.3) `∂T(ω) = T(dω)`, `∂T = 0` if `n = 0`
+(chapter-06.txt lines 216–220).  If `T(ω) = ∫_E ⟨dω, ξ_N⟩ dH^{n+1}` for every `ω ∈ 𝒟ⁿ(U)`, then
+`∂T = 0` in `U`: for `n = m + 1` and `φ ∈ 𝒟ᵐ(U)`, `∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξ_N⟩ dH^{m+2} = 0`,
+since `d(dφ) = 0` for the smooth form `φ`.  No hypothesis on `U`, `E` or `ξ_N` is needed. -/
+theorem Submission.regcomp_cop_region_boundary_vanishes : ∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsBoundaryOfRegion T E ξN → BoundaryVanishes T := by
+  intro P n
+  cases n with
+  | zero =>
+    -- Degree `0`: `BoundaryVanishes T` is `True` (Simon's convention `∂T = 0`, 6.2.3).
+    intro U E ξN T _
+    trivial
+  | succ m =>
+    -- Degree `m + 1`: show `∂T = 0` by testing on every `φ ∈ 𝒟ᵐ(U)`.
+    intro U E ξN T hT
+    show T.boundary = 0
+    apply GeometricCurrentOn.ext
+    intro φ
+    -- `∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξ_N⟩ dH^{m+2}`: (6.2.3) and the hypothesis at `dφ ∈ 𝒟^{m+1}(U)`.
+    rw [GeometricCurrentOn.boundary_apply, hT (exteriorDerivativeTestOn U m φ),
+      GeometricCurrentOn.zero_apply]
+    -- `d(dφ) = 0` for the smooth form `φ` (6.1.12), so the integrand is `ξ_N(x)(0) = 0`.
+    have hdd : exteriorDerivative ((exteriorDerivativeTestOn U m φ : TestFormOn U (m + 1)) :
+        DifferentialForm (Euclid P) (m + 1)) = 0 :=
+      exteriorDerivative_sq φ.property.1.1
+    simp only [hdd, Pi.zero_apply, map_zero, integral_zero]
+
+/-- **Simon 7.5.1** (`T = ∂[[E]]` in `U`, `N ∈ 𝒪`, `E ⊆ N ∩ U`; Ch. 6, 2.3 and 2.11; Ch. 2, §4).
+If `U` is open, `N ∈ 𝒪` is oriented by `ξN`, `E ⊆ N ∩ U` and `T(ω) = ∫_E ⟨dω, ξN⟩ dH^{n+1}` for
+`ω ∈ 𝒟ⁿ(U)`, then `n + 1 ≤ P`, `spt T ⊆ U ∩ N` and `∂T = 0` in `U`.  A chart of `N` at a point
+of `N ∩ U ≠ ∅` has injective derivative `ℝ^{n+1} → ℝᴾ`, so `n + 1 ≤ P`; `spt T ⊆ U` by
+definition and `spt T ⊆ N` because `(N̄ \ N) ∩ U = ∅` and `E ⊆ N`; and
+`∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξN⟩ dH^{n+1} = 0`.  Minimality of `T` is not needed. -/
+theorem Submission.codim1_region_support_cycle : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → InClassO n U N ξN → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → n + 1 ≤ P ∧ T.support ⊆ U ∩ N ∧ BoundaryVanishes T := by
+  intro P n U N E ξN T hU hO hE hT
+  obtain ⟨hN, -, hNU, hne⟩ := hO
+  refine ⟨?_, fun x hx => ⟨T.support_subset_domain hx, ?_⟩, ?_⟩
+  · -- `n + 1 ≤ P`: `N` is a nonempty embedded `(n + 1)`-dimensional submanifold of `ℝᴾ`
+    exact Submission.regcomp_cop_dim_le_of_embedded P (n + 1) 2 N hN (hne.mono inter_subset_left)
+  · -- `spt T ⊆ N`, since `(N̄ \ N) ∩ U = ∅` and `E ⊆ N`
+    exact Submission.regcomp_cop_region_support_subset P n U N E ξN T hU hNU
+      (hE.trans inter_subset_left) hT hx
+  · -- `∂T = 0`: `∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξN⟩ dH^{n+1} = 0`
+    exact Submission.regcomp_cop_region_boundary_vanishes P n U E ξN T hT
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

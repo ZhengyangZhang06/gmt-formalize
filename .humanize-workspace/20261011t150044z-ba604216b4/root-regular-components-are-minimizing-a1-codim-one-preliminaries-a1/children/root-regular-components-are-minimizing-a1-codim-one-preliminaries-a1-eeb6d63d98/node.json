@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.region_boundary_vanishes-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1",
+  "depth": 3,
+  "title": "∂[[E]] is a cycle: ∂∂[[E]] = 0",
+  "statement": "Let P, n ∈ ℕ, let U, E ⊆ ℝ^P, let ξ_N : ℝ^P → Λ_{n+1}(ℝ^P) be arbitrary, and let T ∈ 𝒟_n(U) satisfy T(ω) = ∫_E ⟨dω, ξ_N⟩ dH^{n+1} for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N). Then ∂T = 0 in U (BoundaryVanishes T; for n = 0 this is Simon's convention ∂T = 0).",
+  "lean_statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsBoundaryOfRegion T E ξN → BoundaryVanishes T",
+  "lean_name": "regcomp_cop_region_boundary_vanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-eeb6d63d98-a1"
+}
