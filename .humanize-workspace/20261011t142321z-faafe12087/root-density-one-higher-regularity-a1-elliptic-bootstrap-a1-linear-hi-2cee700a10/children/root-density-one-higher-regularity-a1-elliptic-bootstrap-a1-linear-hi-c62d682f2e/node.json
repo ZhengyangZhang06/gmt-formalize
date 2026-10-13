@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.bilinear_family_continuity-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1",
+  "depth": 5,
+  "title": "Continuity of a bilinear-form family evaluated along continuous data",
+  "statement": "Let n, ℓ be natural numbers and L := L(R^n, R^ℓ). Let U ⊆ R^n be open and a : R^n → L(L, L(L, R)) (continuous bilinear forms on L) be such that x ↦ a(x)[P][Q] is continuous on U for all P, Q ∈ L. Let s : R^n → R^n, A, B : R^n → L and x₀ ∈ R^n with s(x₀) ∈ U and s, A, B continuous at x₀. Then x ↦ a(s(x))[A(x)][B(x)] is continuous at x₀.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (A B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => a x P Q) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt A x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => a (s x) (A x) (B x)) x₀",
+  "lean_name": "dohr_eb_lhr_dqwe_bilinear_family_continuousAt",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.linear_family_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.linear_family_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-c62d682f2e-a1"
+}
