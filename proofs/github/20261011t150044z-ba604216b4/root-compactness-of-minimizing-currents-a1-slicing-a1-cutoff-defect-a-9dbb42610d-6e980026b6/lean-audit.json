@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "09491885e0a0fa6152db4c8281987c25f19e62a77cae05fb9d1b88034a5627ca",
+  "git_delta": {
+    "base_commit": "e049e60a72cd31e63b0a897588b668ab2087ccbc",
+    "candidate_commit": "19f5e1986c50f3aea0edcade3d15ca618e3f6763",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_cd_extDeriv_smul_leibniz",
+    "diff_sha256": "b0f69fe6cc6a15cffc2c05465172e7867d43c034628c8c7e2646ad21a31c88b8",
+    "source_sha256": "87398f2191397742b8c607b19de8f201cf767451d20df234a3c7f617cec4d75f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_cd_extDeriv_smul_leibniz",
+      "statement": "∀ (P k : ℕ) (g : Euclid P → ℝ) (η : DifferentialForm (Euclid P) k) (x : Euclid P), DifferentiableAt ℝ g x → DifferentiableAt ℝ η x → exteriorDerivative (fun y => g y • η y) x = g x • exteriorDerivative η x + ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight (η x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
