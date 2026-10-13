@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.exhaustion-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1",
+  "depth": 6,
+  "title": "Exhausting the ball by concentric balls for a nonnegative continuous integrand",
+  "statement": "Let n ∈ ℕ, R > 0, E ∈ ℝ, and B := B̆_R(0) ⊆ ℝⁿ (ℝⁿ = Euclid n). Let f : ℝⁿ → ℝ be continuous on B with f ≥ 0 on B. If ∫_{B̆_r(0)} f ≤ E for every r with 0 < r < R, then f is integrable on B and ∫_B f ≤ E.",
+  "lean_statement": "∀ (n : ℕ) (R E : ℝ) (f : Euclid n → ℝ), 0 < R → ContinuousOn f (ball (0 : Euclid n) R) → (∀ x ∈ ball (0 : Euclid n) R, 0 ≤ f x) → (∀ r, 0 < r → r < R → ∫ x in ball (0 : Euclid n) r, f x ≤ E) → IntegrableOn f (ball (0 : Euclid n) R) ∧ ∫ x in ball (0 : Euclid n) R, f x ≤ E",
+  "lean_name": "dorag_ha_lsc_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f87091675c-a1"
+}
