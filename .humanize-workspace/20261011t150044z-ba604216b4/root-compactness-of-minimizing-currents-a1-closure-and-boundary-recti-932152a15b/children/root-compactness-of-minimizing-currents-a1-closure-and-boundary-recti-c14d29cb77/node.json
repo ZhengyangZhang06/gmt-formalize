@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1",
+  "depth": 4,
+  "title": "Extension of currents from U to ℝ^P by a smooth cutoff equal to 1 near a compact K ⊆ U",
+  "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P open and K ⊆ U compact. Then there is a map E : 𝒟_{m+1}(U) → 𝒟_{m+1}(ℝ^P) (GeometricCurrentOn U (m+1) → GeometricCurrentOn univ (m+1)) such that: (i) for every X ∈ 𝒟_{m+1}(U) and every ω ∈ 𝒟^{m+1}(U) with tsupport ω ⊆ K, (E X)(ω) = X(ω), where ω is regarded as a test form on ℝ^P (testFormOnInclusion); (ii) if X_j ⇀ X in U then E X_j ⇀ E X in ℝ^P; (iii) M(E X) ≤ M(X) for every X (total masses: massOn ℝ^P and massOn U, Simon 6.2.4–6.2.5); (iv) if X(ω) = 0 for every ω ∈ 𝒟^{m+1}(U) whose topological support is disjoint from K, then spt(E X) ⊆ K and M(∂(E X)) ≤ M(∂X); (v) if some IMRep R in U represents X and R.carrier ⊆ K, then E X is integer multiplicity in ℝ^P. (In the proof E X(ω) = X(ζω) for one fixed smooth cutoff ζ.)",
+  "lean_statement": "∀ (P m : ℕ) (U K : Set (Euclid P)), IsOpen U → IsCompact K → K ⊆ U → ∃ E : GeometricCurrentOn U (m + 1) → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ (X : GeometricCurrentOn U (m + 1)) (ω : TestFormOn U (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ K → E X (testFormOnInclusion (subset_univ U) (m + 1) ω) = X ω) ∧ (∀ (Xs : ℕ → GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn U (m + 1)), WeaklyConvergesOn Xs X → WeaklyConvergesOn (fun j => E (Xs j)) (E X)) ∧ (∀ X : GeometricCurrentOn U (m + 1), (E X).mass ≤ X.mass) ∧ (∀ X : GeometricCurrentOn U (m + 1), (∀ ω : TestFormOn U (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → X ω = 0) → (E X).support ⊆ K ∧ (E X).boundary.mass ≤ X.boundary.mass) ∧ (∀ (X : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)), R.Represents X → R.carrier ⊆ K → IsIntegerMultiplicity (E X))",
+  "lean_name": "cbrcs_cutoff_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c14d29cb77-a1"
+}
