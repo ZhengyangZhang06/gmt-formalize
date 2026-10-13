@@ -458,6 +458,150 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): chain rule and Schwarz symmetry.**
+If `Ψ : L(ℝⁿ, ℝ^ℓ) → ℝ` is `C²` and `u` is `C²` on the open set `U ⊆ ℝⁿ`, then for every direction
+`e` and every `y ∈ U`, `D(DΨ ∘ Du)(y) e = D²Ψ(Du(y))[Dv_e(y)]`, where `v_e(z) = Du(z) e`.
+Proof: the chain rule gives `D(DΨ ∘ Du)(y) e = D²Ψ(Du(y))[D²u(y) e]`, and
+`Dv_e(y) w = D²u(y)[w][e]`; these agree because `D²u(y)` is symmetric (Schwarz).  Given `ε > 0`,
+pick `δ > 0` with `B̆_δ(y) ⊆ U` and `‖D²u(z) − D²u(y)‖ < ε` on `B̆_δ(y)`.  For
+`h = δ/(2(|v| + |w| + 1))` the mean value inequality for `z ↦ u(z + hw) − u(z)` on `[y, y + hv]`
+bounds the second difference `Δ = u(y + hv + hw) − u(y + hv) − u(y + hw) + u(y)` by
+`|Δ − h² D²u(y)[w][v]| ≤ ε h² |v| |w|`, and swapping `v` and `w` gives
+`|Δ − h² D²u(y)[v][w]| ≤ ε h² |v| |w|`.  Hence `|D²u(y)[v][w] − D²u(y)[w][v]| ≤ 2ε |v| |w|` for
+every `ε > 0`. -/
+theorem dohr_eb_ehs_del_chain_symm : ∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ∀ (e y : Rn n), y ∈ U → fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) y e = fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y) (fderiv ℝ (fun z => fderiv ℝ u z e) y) := by
+  intro n ℓ Ψ U u hU hΨ hu e y hy
+  have hUy : U ∈ 𝓝 y := hU.mem_nhds hy
+  -- Step 1: `u` and `Du` are differentiable on `U`, and `D²u` is continuous on `U`.
+  have hDu : ContDiffOn ℝ 1 (fun z => fderiv ℝ u z) U := hu.fderiv_of_isOpen hU (by norm_num)
+  have hdu : ∀ z ∈ U, DifferentiableAt ℝ u z := fun z hz =>
+    (hu.differentiableOn two_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hdDu : ∀ z ∈ U, DifferentiableAt ℝ (fderiv ℝ u) z := fun z hz =>
+    (hDu.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hDuy : DifferentiableAt ℝ (fderiv ℝ u) y := hdDu y hy
+  have hD2 : ContinuousOn (fderiv ℝ (fderiv ℝ u)) U :=
+    hDu.continuousOn_fderiv_of_isOpen hU le_rfl
+  -- Step 2: `DΨ` is `C¹`, hence differentiable at `Du(y)`.
+  have hDΨ : ContDiff ℝ 1 (fderiv ℝ Ψ) := hΨ.fderiv_right (by norm_num)
+  have hDΨd : DifferentiableAt ℝ (fderiv ℝ Ψ) (fderiv ℝ u y) :=
+    hDΨ.differentiable one_ne_zero _
+  -- Step 3: chain rule, `D(DΨ ∘ Du)(y) = D²Ψ(Du(y)) ∘ D²u(y)`.
+  have h1 : fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) y =
+      (fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y)).comp (fderiv ℝ (fderiv ℝ u) y) :=
+    fderiv_fun_comp (𝕜 := ℝ) (x := y) (g := fderiv ℝ Ψ) (f := fun z => fderiv ℝ u z)
+      hDΨd hDuy
+  -- Step 4: `Dv_e(y) w = D²u(y)[w][e]`.
+  have h2 : fderiv ℝ (fun z => fderiv ℝ u z e) y = (fderiv ℝ (fderiv ℝ u) y).flip e := by
+    rw [fderiv_clm_apply hDuy (differentiableAt_const e)]
+    simp
+  -- Step 5: Schwarz symmetry of `A = D²u(y)`, via the mean value inequality for `Du`.
+  have hsymm : ∀ v w : Rn n,
+      fderiv ℝ (fderiv ℝ u) y v w = fderiv ℝ (fderiv ℝ u) y w v := by
+    intro v w
+    set A := fderiv ℝ (fderiv ℝ u) y
+    have hbound : ∀ ε > 0, ‖A v w - A w v‖ ≤ 2 * ε * (‖v‖ * ‖w‖) := by
+      intro ε hε
+      -- `δ = min r δ'`: `B̆_δ(y) ⊆ U` and `‖D²u(z) − A‖ < ε` on `B̆_δ(y)`
+      obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU y hy
+      obtain ⟨δ', hδ', hδ'A⟩ := (NormedAddCommGroup.tendsto_nhds_nhds (E := Rn n)
+        (F := Rn n →L[ℝ] Rn n →L[ℝ] Rn ℓ)).mp (hD2.continuousAt hUy) ε hε
+      have hδ : 0 < min r δ' := lt_min hr hδ'
+      have hball : ball y (min r δ') ⊆ U := (ball_subset_ball (min_le_left _ _)).trans hrU
+      -- mean value inequality for `Du` on `B̆_δ(y)` with the fixed linear map `A`
+      have hmvt : ∀ a ∈ ball y (min r δ'), ∀ b ∈ ball y (min r δ'),
+          ‖fderiv ℝ u b - fderiv ℝ u a - A (b - a)‖ ≤ ε * ‖b - a‖ := by
+        intro a ha b hb
+        refine (convex_ball y (min r δ')).norm_image_sub_le_of_norm_fderiv_le'
+          (fun z hz => hdDu z (hball hz)) (fun z hz => ?_) ha hb
+        have hzy : ‖z - y‖ < δ' := by
+          rw [← dist_eq_norm]
+          exact lt_of_lt_of_le (mem_ball.mp hz) (min_le_right _ _)
+        exact (hδ'A z hzy).le
+      -- second difference estimate: `z ↦ u(z + h b) − u(z)` on the segment `[y, y + h a]`
+      have hsecond : ∀ (h : ℝ) (a b : Rn n), |h| * (‖a‖ + ‖b‖) < min r δ' →
+          ‖(u (y + h • a + h • b) - u (y + h • a) - (u (y + h • b) - u y)) - (h ^ 2) • A b a‖
+            ≤ ε * (|h| * ‖b‖) * (|h| * ‖a‖) := by
+        intro h a b hab
+        have hseg : ∀ z ∈ segment ℝ y (y + h • a),
+            z ∈ ball y (min r δ') ∧ z + h • b ∈ ball y (min r δ') := by
+          intro z hz
+          have hz' : z ∈ closedBall y (|h| * ‖a‖) := by
+            refine (convex_closedBall y _).segment_subset
+              (mem_closedBall_self (by positivity)) ?_ hz
+            rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+          rw [mem_closedBall, dist_eq_norm] at hz'
+          have hb0 : 0 ≤ |h| * ‖b‖ := by positivity
+          constructor
+          · rw [mem_ball, dist_eq_norm]
+            linarith
+          · rw [mem_ball, dist_eq_norm]
+            calc ‖z + h • b - y‖ = ‖(z - y) + h • b‖ := by congr 1; abel
+              _ ≤ ‖z - y‖ + ‖h • b‖ := norm_add_le _ _
+              _ ≤ |h| * ‖a‖ + |h| * ‖b‖ := by rw [norm_smul, Real.norm_eq_abs]; linarith
+              _ = |h| * (‖a‖ + ‖b‖) := by ring
+              _ < min r δ' := hab
+        have hφd : ∀ z ∈ segment ℝ y (y + h • a),
+            DifferentiableAt ℝ (fun x => u (x + h • b) - u x) z := fun z hz =>
+          ((differentiableAt_comp_add_right (h • b)).mpr (hdu _ (hball (hseg z hz).2))).sub
+            (hdu z (hball (hseg z hz).1))
+        have hφ := (convex_segment y (y + h • a)).norm_image_sub_le_of_norm_fderiv_le'
+          (φ := h • A b) (C := ε * (|h| * ‖b‖)) hφd (fun z hz => ?_)
+          (left_mem_segment ℝ _ _) (right_mem_segment ℝ _ _)
+        · simp only [add_sub_cancel_left, smul_apply, map_smul, smul_smul,
+            norm_smul, Real.norm_eq_abs] at hφ
+          rw [pow_two]
+          convert hφ using 2
+        · rw [fderiv_fun_sub ((differentiableAt_comp_add_right (h • b)).mpr
+            (hdu _ (hball (hseg z hz).2))) (hdu z (hball (hseg z hz).1)), fderiv_comp_add_right]
+          have := hmvt z (hseg z hz).1 (z + h • b) (hseg z hz).2
+          rwa [add_sub_cancel_left, map_smul, norm_smul, Real.norm_eq_abs] at this
+      -- a small step `h > 0`; compare the estimates for `(v, w)` and `(w, v)`
+      set h : ℝ := min r δ' / (2 * (‖v‖ + ‖w‖ + 1)) with hh
+      have hvw : 0 ≤ ‖v‖ + ‖w‖ := by positivity
+      have hpos : 0 < h := by positivity
+      have hsmall : ∀ a b : Rn n, ‖a‖ + ‖b‖ = ‖v‖ + ‖w‖ → |h| * (‖a‖ + ‖b‖) < min r δ' := by
+        intro a b hab
+        rw [hab, abs_of_pos hpos, hh, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+        nlinarith
+      have e1 := hsecond h v w (hsmall v w rfl)
+      have e2 := hsecond h w v (hsmall w v (add_comm _ _))
+      rw [add_right_comm y (h • w) (h • v)] at e2
+      have hdiff : (h ^ 2) • (A v w - A w v) =
+          ((u (y + h • v + h • w) - u (y + h • v) - (u (y + h • w) - u y)) - (h ^ 2) • A w v) -
+          ((u (y + h • v + h • w) - u (y + h • w) - (u (y + h • v) - u y)) - (h ^ 2) • A v w) := by
+        rw [smul_sub]; abel
+      have hle : h ^ 2 * ‖A v w - A w v‖ ≤ h ^ 2 * (2 * ε * (‖v‖ * ‖w‖)) := by
+        have := norm_sub_le
+          ((u (y + h • v + h • w) - u (y + h • v) - (u (y + h • w) - u y)) - (h ^ 2) • A w v)
+          ((u (y + h • v + h • w) - u (y + h • w) - (u (y + h • v) - u y)) - (h ^ 2) • A v w)
+        rw [← hdiff, norm_smul, Real.norm_eq_abs, abs_of_nonneg (by positivity)] at this
+        rw [abs_of_pos hpos] at e1 e2
+        nlinarith
+      exact le_of_mul_le_mul_left hle (by positivity)
+    -- let `ε → 0`
+    refine eq_of_forall_dist_le fun ε hε => ?_
+    rw [dist_eq_norm]
+    have hK : 0 ≤ ‖v‖ * ‖w‖ := by positivity
+    calc ‖A v w - A w v‖ ≤ 2 * (ε / (2 * (‖v‖ * ‖w‖ + 1))) * (‖v‖ * ‖w‖) :=
+          hbound _ (by positivity)
+      _ = ε * ((‖v‖ * ‖w‖) / (‖v‖ * ‖w‖ + 1)) := by field_simp
+      _ ≤ ε * 1 := by
+          gcongr
+          rw [div_le_one (by positivity)]
+          linarith
+      _ = ε := mul_one ε
+  -- Step 6: `Dv_e(y) = D²u(y) e`; substitute into the chain rule.
+  have h3 : (fderiv ℝ (fderiv ℝ u) y).flip e = fderiv ℝ (fderiv ℝ u) y e := by
+    ext w : 1
+    rw [ContinuousLinearMap.flip_apply]
+    exact hsymm w e
+  rw [h1, h2, h3]
+  rfl
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
