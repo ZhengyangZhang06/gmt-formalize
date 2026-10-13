@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_sup_bound-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "Sup bound |∫ K_j(t)·a(y − t) dt| ≤ C·M·Lⁿ(spt a)^{1/n} for the kernel potentials (Step 5)",
+  "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), as a real number. For j ∈ Fin n let K_j(t) := t_j/((m + 1)·ω·|t|^{m+1}) on ℝⁿ = Eucl n, with K_j(0) = 0. Then there is a constant C ∈ ℝ, depending only on m, with the following property. Let a : ℝⁿ → ℝ have compact support, and let M ∈ ℝ satisfy |a(z)| ≤ M for all z. Then for every j ∈ Fin n and every y ∈ ℝⁿ, |∫ K_j(t)·a(y − t) dt| ≤ C·M·Lⁿ(tsupport a)^{1/(m+1)}. Here Lⁿ(tsupport a) is taken as a real number ((volume (tsupport a)).toReal). No measurability of a is assumed: ∫ denotes Mathlib's (Bochner) integral, which is 0 when the integrand is not integrable.",
+  "lean_statement": "∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ (j : Fin (m + 1)) (y : Eucl (m + 1)), |∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * a (y - t)| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+  "lean_name": "rpn_pe_kernel_sup_bound",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-a332e93299-a1"
+}

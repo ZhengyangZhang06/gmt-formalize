@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.continuity_criterion-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "depth": 4,
+  "title": "A functional on test forms with local coefficient-sup-norm bounds is sequentially continuous at zero",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set and L : TestFormOn U n → ℝ any function. Assume that for every compact K ⊆ U there is A ∈ ℝ such that |L(ω)| ≤ A·C for every ω ∈ TestFormOn U n and every C > 0 with tsupport ω ⊆ K and covectorEuclideanNorm(ω(x)) ≤ C for all x ∈ ℝ^P. Then for every sequence (ω_q) in TestFormOn U n with TestFormOnConverges ω 0, L(ω_q) → 0 as q → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (L : TestFormOn U n → ℝ), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ A : ℝ, ∀ (ω : TestFormOn U n) (C : ℝ), 0 < C → tsupport ((ω : DifferentialForm (Eucl P) n)) ⊆ K → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → |L ω| ≤ A * C) → ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 → Tendsto (fun q => L (ωs q)) atTop (𝓝 0)",
+  "lean_name": "fiw_ims_sc_continuous_of_bound",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.series_current-a1.converges_small-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.converges_small-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-continuity-criterion-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Mass estimate |T(ω)| ≤ M_W(T)·sup|ω| for test forms supported in W",
+  "statement": "Let P, n ∈ ℕ and let U, W ⊆ ℝ^P be arbitrary sets. Let T ∈ GeometricCurrentOn U n, ω ∈ TestFormOn U n and B, C ∈ ℝ, and assume:\n- B ≥ 0 and T.massOn W ≤ ENNReal.ofReal B;\n- tsupport ω ⊆ W;\n- |ω(x)| ≤ C for every x ∈ ℝ^P, where |·| = covectorEuclideanNorm.\nThen |T(ω)| ≤ B·C.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ), 0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → |T ω| ≤ B * C",
+  "lean_name": "cmb_abs_apply_le_of_massOn_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mass-bound-a1-a1"
+}

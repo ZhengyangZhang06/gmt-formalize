@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1.covector_ext-a1",
+  "parent_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+  "depth": 3,
+  "title": "An n-covector on ℝ^P is determined by its increasing-basis coordinates (Simon 6.1.2)",
+  "statement": "Let P, n ∈ ℕ and let α, β ∈ Λ^n(ℝ^P) be n-covectors, i.e. continuous alternating n-linear maps (ℝ^P)^n → ℝ (Covector (Eucl P) n). For k ∈ Fin P let e_k := EuclideanSpace.single k 1. Suppose α(e_{I(0)}, …, e_{I(n−1)}) = β(e_{I(0)}, …, e_{I(n−1)}), i.e. euclideanCovectorCoordinate α I = euclideanCovectorCoordinate β I, for every strictly increasing multi-index I ∈ SimonMultiIndex n P (an order embedding Fin n ↪o Fin P). Then α = β.",
+  "lean_statement": "∀ (P n : ℕ) (α β : Covector (Eucl P) n), (∀ I : SimonMultiIndex n P, euclideanCovectorCoordinate α I = euclideanCovectorCoordinate β I) → α = β",
+  "lean_name": "polyhedral_approx_pairing_covector_ext",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-pairing-expansion-a1-covector-ext-a1-a1"
+}

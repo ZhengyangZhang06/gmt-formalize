@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Exterior derivative of the pulled-back potential form (Simon 6, 1.14 and the divergence identity of 2.35)",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let L : ℝ^P → ℝⁿ be a continuous linear map, f : ℝ^P → ℝ, ψ_j : ℝⁿ → ℝ for j ∈ Fin n, and x ∈ ℝ^P, such that f is differentiable at x and every ψ_j is differentiable at Lx. Let λ_i := y^i∘L for i ∈ Fin n, where y^i = EuclideanSpace.proj i is the i-th coordinate function of ℝⁿ. Let λ := λ_0∧⋯∧λ_m = wedgeCovectors n λ, and for j ∈ Fin n let θ_j := wedgeCovectors m (λ∘j.succAbove), the wedge of the λ_i with λ_j omitted. Let Φ be the (n−1)-form Φ(z) := Σ_j (−1)^j f(z) ψ_j(Lz) θ_j. Then its exterior derivative (Mathlib extDeriv) at x is dΦ(x) = f(x)(Σ_j ∂_jψ_j(Lx)) λ + Σ_j (−1)^j ψ_j(Lx)·wedgeCovectors n (Fin.cons (Df(x)) (λ∘j.succAbove)). Here ∂_jψ_j(Lx) := Dψ_j(Lx)e_j, and wedgeCovectors n (Fin.cons γ β) is the wedge γ∧β_0∧⋯∧β_{m−1}.",
+  "lean_statement": "∀ (P m : ℕ) (L : Eucl P →L[ℝ] Eucl (m + 1)) (f : Eucl P → ℝ) (ψ : Fin (m + 1) → Eucl (m + 1) → ℝ) (x : Eucl P), DifferentiableAt ℝ f x → (∀ j, DifferentiableAt ℝ (ψ j) (L x)) → extDeriv (fun z => ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * (f z * ψ j (L z))) • wedgeCovectors m (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L)) x = (f x * ∑ j : Fin (m + 1), fderiv ℝ (ψ j) (L x) (EuclideanSpace.single j (1 : ℝ))) • wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L) + ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * ψ j (L x)) • wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ f x) (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))",
+  "lean_name": "rpn_extDeriv_potential_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a1-a1"
+}
