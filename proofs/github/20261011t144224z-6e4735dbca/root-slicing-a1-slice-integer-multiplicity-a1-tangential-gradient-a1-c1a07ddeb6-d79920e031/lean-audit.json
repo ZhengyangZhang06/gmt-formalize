@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "07a15c8f2e3ca2c48f29b1fb923614f8bf20c70234fb9d2dd4383891189e5bdb",
+  "git_delta": {
+    "base_commit": "df43cd1364f40d98b9fc3b5deb98a2bb5820947a",
+    "candidate_commit": "659bd72cb30ae7aca9767f8b46de507550811b5c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_tg_cg_gram_field",
+    "diff_sha256": "74c540d81fe2516f4b0fb56a9e092b9fe26c99a758837773f1fee37595525913",
+    "source_sha256": "f1eca289a1142b6a45038518776ddab952b63e472917d8661deb243e67cd039b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_tg_cg_gram_field",
+      "statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (h : Eucl n → ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w)) → ∃ γ : Eucl n → Eucl P, Measurable γ ∧ ∀ w ∈ Ω, γ w ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u : Eucl n, inner ℝ (γ w) (fderiv ℝ Φ w u) = fderiv ℝ h w u",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
