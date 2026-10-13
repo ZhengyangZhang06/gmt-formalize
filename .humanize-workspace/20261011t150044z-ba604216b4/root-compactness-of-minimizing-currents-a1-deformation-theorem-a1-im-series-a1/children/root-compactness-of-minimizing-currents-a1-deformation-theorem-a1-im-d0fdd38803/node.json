@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.common_orientation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+  "depth": 4,
+  "title": "A common Borel reference orientation for countably many IMReps",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and R_i = (M_i, θ_i, ξ_i) (i ∈ ℕ) IMReps in U. Put N := ⋃_i M_i and assume Hⁿ(N ∩ K) < ∞ for every compact K ⊆ U. Then there are a strongly measurable η : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) and measurable s_i : ℝ^P → ℝ (i ∈ ℕ) with s_i(x) ∈ {1, −1} for all i and x, such that: (a) for Hⁿ-a.e. x ∈ N there is a linear subspace Q with HasApproximateTangentSpaceAt n N x Q and IsUnitOrientationOf (η(x)) Q; (b) for every i, ξ_i(x) = s_i(x)·η(x) for Hⁿ-a.e. x ∈ M_i.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] ((⋃ i, (R i).carrier) ∩ K) ≠ ∞) → ∃ (η : Euclid P → MultiVector P n) (s : ℕ → Euclid P → ℝ), StronglyMeasurable η ∧ (∀ i, Measurable (s i)) ∧ (∀ i x, s i x = 1 ∨ s i x = -1) ∧ (∀ᵐ x ∂(μHE[n].restrict (⋃ i, (R i).carrier)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (⋃ i, (R i).carrier) x Q ∧ IsUnitOrientationOf (η x) Q) ∧ ∀ i, ∀ᵐ x ∂(μHE[n].restrict (R i).carrier), (R i).orient x = s i x • η x",
+  "lean_name": "cmcdt_ims_common_orientation",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-imrep-tangent-transfer-a1-a1",
+      "result_commit": "a02fee1b895fd5361bd0d6d2865e4b0d85f5d08a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-d0fdd38803-a1"
+}
