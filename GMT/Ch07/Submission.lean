@@ -451,6 +451,141 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Rescaled Gauss–Green identity** (Simon Ch. 3, 4.3 (8), for a general field and centre).
+Let `F ⊆ ℝ^{m+1}` be Borel and suppose `∫_F div φ = −∫ ⟨φ, ν⟩ dμ` for every `C¹` compactly
+supported `φ` with `tsupport φ ⊆ D`.  If `r > 0` and `B̄_{rR}(y) ⊆ D`, then for every `C¹`
+compactly supported `g` with `tsupport g ⊆ B_R(0)` the blow-up `F_{y,r} = {w : y + rw ∈ F}`
+satisfies `∫_{F_{y,r}} div g = −(r^m)⁻¹ ∫ ⟨g(r⁻¹(z − y)), ν(z)⟩ dμ(z)`.  Apply the hypothesis to
+`φ = g ∘ S`, `S z = r⁻¹(z − y)`: `div φ = r⁻¹ (div g) ∘ S` by the chain rule,
+`tsupport φ ⊆ S⁻¹(tsupport g) ⊆ B̄_{rR}(y)`, and the substitution `z = y + rw` (Jacobian
+`r^{m+1}`) gives `∫_F div φ = r^m ∫_{F_{y,r}} div g`. -/
+theorem Submission.codim1_rdo_dg_bh_rescaled_gauss_green : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r R : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → closedBall y (r * R) ⊆ D → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -(r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by
+  intro m D F μ ν y r R hF hGG hr hball g hg hgc hgs
+  have hr0 : r ≠ 0 := hr.ne'
+  -- Step 1: the affine map `S z = r⁻¹(z − y)`, inverse to `w ↦ y + rw`.
+  set S : Euclid (m + 1) → Euclid (m + 1) := fun z => r⁻¹ • (z - y) with hS_def
+  have hS_cont : Continuous S := (continuous_id.sub continuous_const).const_smul r⁻¹
+  have hS_deriv : ∀ z, HasFDerivAt S (r⁻¹ • ContinuousLinearMap.id ℝ (Euclid (m + 1))) z :=
+    fun z => ((hasFDerivAt_id (𝕜 := ℝ) z).sub_const y).const_smul r⁻¹
+  -- Step 2: `φ = g ∘ S` is `C¹` and `div φ = r⁻¹ (div g) ∘ S`.
+  have hφ : ContDiff ℝ 1 (fun z => g (S z)) :=
+    hg.comp ((contDiff_id.sub contDiff_const).const_smul r⁻¹)
+  have hdiv : ∀ z, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ (fun z => g (S z)) z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) =
+      r⁻¹ * LinearMap.trace ℝ (Euclid (m + 1))
+        (fderiv ℝ g (S z) : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) := by
+    intro z
+    have hgd : HasFDerivAt g (fderiv ℝ g (S z)) (S z) :=
+      ((hg.differentiable one_ne_zero) (S z)).hasFDerivAt
+    rw [show (fun z => g (S z)) = g ∘ S from rfl, (hgd.comp z (hS_deriv z)).fderiv]
+    have : (fderiv ℝ g (S z)).comp (r⁻¹ • ContinuousLinearMap.id ℝ (Euclid (m + 1))) =
+        r⁻¹ • fderiv ℝ g (S z) := by
+      ext x; simp
+    rw [this, ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul]
+  -- Step 3: `φ` has compact support and `tsupport φ ⊆ S⁻¹(tsupport g) ⊆ B̄_{rR}(y) ⊆ D`.
+  let e : Euclid (m + 1) ≃ₜ Euclid (m + 1) :=
+    (Homeomorph.subRight y).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr0))
+  have he : ⇑e = S := by funext z; rfl
+  have hφc : HasCompactSupport (fun z => g (S z)) := by
+    have := hgc.comp_homeomorph e
+    rwa [he] at this
+  have hφs : tsupport (fun z => g (S z)) ⊆ D := by
+    intro z hz
+    have hmem := hgs (tsupport_comp_subset_preimage g hS_cont hz)
+    rw [mem_ball_zero_iff, hS_def, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at hmem
+    apply hball
+    rw [mem_closedBall, dist_eq_norm]
+    have := (inv_mul_lt_iff₀ hr).mp hmem
+    linarith
+  -- Step 4: the Gauss–Green hypothesis for `φ`.
+  have hGGφ := hGG (fun z => g (S z)) hφ hφc hφs
+  -- Step 5: the substitution `z = y + rw`: `∫_F div φ = r^m ∫_{F_{y,r}} div g`.
+  set Tg : Euclid (m + 1) → ℝ := fun w => LinearMap.trace ℝ (Euclid (m + 1))
+    (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1))
+  have hpre : MeasurableSet ((fun w => y + r • w) ⁻¹' F) :=
+    (measurable_const.add (measurable_id.const_smul r)) hF
+  have hcv : ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ (fun z => g (S z)) z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) =
+      r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w := by
+    simp_rw [hdiv]
+    rw [← integral_indicator hF, ← integral_indicator hpre]
+    have h1 : ∫ z, F.indicator (fun z => r⁻¹ * Tg (S z)) z =
+        ∫ u, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + u) :=
+      (integral_add_left_eq_self _ y).symm
+    have h2 := Measure.integral_comp_smul (μ := volume)
+      (fun u => F.indicator (fun z => r⁻¹ * Tg (S z)) (y + u)) r
+    rw [finrank_euclideanSpace_fin] at h2
+    have h3 : ∫ u, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + u) =
+        r ^ (m + 1) * ∫ x, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + r • x) := by
+      rw [h2, smul_eq_mul, ← mul_assoc, abs_inv, abs_of_pos (pow_pos hr _),
+        mul_inv_cancel₀ (pow_ne_zero _ hr0), one_mul]
+    rw [h1, h3]
+    have h4 : ∀ x, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + r • x) =
+        r⁻¹ * ((fun w => y + r • w) ⁻¹' F).indicator Tg x := by
+      intro x
+      by_cases hx : y + r • x ∈ F
+      · have hx' : x ∈ (fun w => y + r • w) ⁻¹' F := hx
+        rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx']
+        simp [hS_def, smul_smul, inv_mul_cancel₀ hr0]
+      · have hx' : x ∉ (fun w => y + r • w) ⁻¹' F := hx
+        rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx', mul_zero]
+    simp_rw [h4]
+    rw [integral_const_mul, ← mul_assoc, pow_succ, mul_assoc (r ^ m), mul_inv_cancel₀ hr0, mul_one]
+  -- Step 6: divide by `r^m > 0`.
+  rw [hcv] at hGGφ
+  calc ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w
+      = (r ^ m)⁻¹ * (r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w) := by field_simp
+    _ = -(r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by rw [hGGφ]; ring
+
+/-- **Uniform perimeter bound for the blow-ups** (Simon Ch. 3, 4.3 (6)–(8): the bound that lets
+the compactness theorem Ch. 2, 2.6 select an `L¹_loc`-convergent sequence of blow-ups).  Let
+`∫_F div φ = -∫ ⟨φ, ν⟩ dμ` for `φ ∈ C¹_c` with `spt φ ⊆ D`, where `|ν| = 1`, and let
+`B̄_{ρ₁}(y) ⊆ D` and `μ(B̄_ρ(y)) ≤ C₁ρᵐ` for `0 < ρ < ρ₁`.  If `rR < ρ₁`, `g ∈ C¹_c(B_R(0))` and
+`|g| ≤ 1`, then `∫_{F_{y,r}} div g ≤ C₁Rᵐ`, where `F_{y,r} = {w : y + rw ∈ F}`.  As
+`B̄_{rR}(y) ⊆ D`, the rescaled Gauss–Green identity gives `∫_{F_{y,r}} div g = -r⁻ᵐ ∫ h dμ` with
+`h(z) = ⟨g(r⁻¹(z - y)), ν(z)⟩`; `|h| ≤ 1` and `h` vanishes off `K = B̄_{rR}(y)`, so
+`|∫ h dμ| ≤ μ(K) ≤ C₁(rR)ᵐ` and `-r⁻ᵐ ∫ h dμ ≤ C₁Rᵐ`. -/
+theorem Submission.codim1_rdo_dg_bh_perimeter_bound : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ R r : ℝ, 0 < R → 0 < r → r * R < ρ₁ → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C₁ * R ^ m := by
+  intro m D F μ ν y ρ₁ C₁ hF hν hν1 hGG hρ₁ hC₁ hball hmass R r hR hr hrR g hg hgc hgs hg1
+  -- Step 1: `B̄_{rR}(y) ⊆ B̄_{ρ₁}(y) ⊆ D`, so the rescaled Gauss–Green identity applies to `g`
+  have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall hrR.le).trans hball
+  rw [Submission.codim1_rdo_dg_bh_rescaled_gauss_green m D F μ ν y r R hF hGG hr hsub g hg hgc hgs]
+  -- Step 2: `h(z) = ⟨g(r⁻¹(z - y)), ν(z)⟩` vanishes off `B̄_{rR}(y)`, as `spt g ⊆ B_R(0)`
+  have hzero : ∀ z, z ∉ closedBall y (r * R) → inner ℝ (g (r⁻¹ • (z - y))) (ν z) = 0 := by
+    intro z hz
+    have hgz : g (r⁻¹ • (z - y)) = 0 := by
+      by_contra hne
+      apply hz
+      have hmem : r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) R := hgs (subset_tsupport _ hne)
+      rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+        inv_mul_lt_iff₀ hr] at hmem
+      rw [mem_closedBall, dist_eq_norm]
+      exact hmem.le
+    rw [hgz, inner_zero_left]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+  -- Step 3: `μ(B̄_{rR}(y)) ≤ C₁(rR)ᵐ < ∞` and `|h| ≤ |g| |ν| ≤ 1`, so `|∫ h dμ| ≤ C₁(rR)ᵐ`
+  have hK : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) :=
+    hmass _ (mul_pos hr hR) hrR
+  have hbound : ‖∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ‖ ≤
+      1 * μ.real (closedBall y (r * R)) := by
+    refine norm_setIntegral_le_of_norm_le_const (hK.trans_lt ENNReal.ofReal_lt_top) fun z _ => ?_
+    calc ‖inner ℝ (g (r⁻¹ • (z - y))) (ν z)‖ = |inner ℝ (g (r⁻¹ • (z - y))) (ν z)| :=
+          Real.norm_eq_abs _
+      _ ≤ ‖g (r⁻¹ • (z - y))‖ * ‖ν z‖ := abs_real_inner_le_norm _ _
+      _ ≤ 1 := by rw [hν1, mul_one]; exact hg1 _
+  have hμK : μ.real (closedBall y (r * R)) ≤ C₁ * (r * R) ^ m :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hK
+  rw [Real.norm_eq_abs, one_mul] at hbound
+  have hneg := (abs_le.mp hbound).1
+  -- Step 4: `-r⁻ᵐ ∫ h dμ ≤ r⁻ᵐ C₁(rR)ᵐ = C₁Rᵐ`
+  have hrm : 0 < r ^ m := pow_pos hr m
+  calc -(r ^ m)⁻¹ * ∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ
+      = (r ^ m)⁻¹ * -∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by
+        ring
+    _ ≤ (r ^ m)⁻¹ * (C₁ * (r * R) ^ m) :=
+        mul_le_mul_of_nonneg_left (by linarith) (inv_nonneg.mpr hrm.le)
+    _ = C₁ * R ^ m := by rw [mul_pow]; field_simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
