@@ -5337,20 +5337,6 @@ theorem liptsp_planeMeasure_closedBall {n ℓ : ℕ} (hn : 1 ≤ n) {P : Submodu
     ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) =
       ENNReal.ofReal (unitBallVolume n * s ^ n) := by
   have : Nontrivial P := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
-/-- **`Hⁿ ⌞ P` on balls about `0`** (the normalization `Hⁿ = Lⁿ` on `n`-planes, Simon's Notation
-p. ix, with scaling).  If `P ⊆ ℝ^{n+ℓ}` is an `n`-dimensional subspace and `s ≥ 0`, then
-`Hⁿ(P ∩ B_s(0)) = ω_n sⁿ`.  The inclusion `P → ℝ^{n+ℓ}` is an isometry, so `Hⁿ ⌞ P` is the image
-of `Hⁿ` on `P`, which is Lebesgue measure of the `n`-dimensional inner product space `P`; there
-`|B_s(0)| = sⁿ |B_1(0)|`.  Mathlib's value of `|B_1(0)|` lies outside the frozen import closure, so
-it is computed here by evaluating `I = ∫_P e^{-|x|²} dx` twice: in orthonormal coordinates
-`I = (∫_ℝ e^{-t²} dt)ⁿ = π^{n/2}` (Fubini), while the layer-cake formula with
-`{e^{-|x|²} > t} = B_{√(-log t)}(0)` and the substitution `t = e^{-u}` give
-`I = |B_1(0)| ∫_0^∞ u^{n/2} e^{-u} du = |B_1(0)| Γ(n/2 + 1)`. -/
-theorem rsod_planeMeasure_closedBall : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n → ∀ s : ℝ, 0 ≤ s → ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) = ENNReal.ofReal (unitBallVolume n * s ^ n) := by
-  intro n ℓ hn P hP s hs
-  have : Nontrivial P := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
-  -- `Hⁿ ⌞ P` is the image of `Hⁿ` on `P` under the isometric inclusion `ι : P → ℝ^{n+ℓ}`, and
-  -- `ι⁻¹(B_s(0))` is the closed ball `B_s(0)` of `P`.
   have hrange : range (P.subtypeₗᵢ : P → Amb n ℓ) = (P : Set (Amb n ℓ)) := by ext x; simp
   rw [← hrange, ← P.subtypeₗᵢ.isometry.map_euclideanHausdorffMeasure,
     Measure.map_apply P.subtypeₗᵢ.continuous.measurable measurableSet_closedBall]
@@ -8679,6 +8665,27 @@ theorem lip_approx_hole_estimate : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (
     rw [hM_def, Measure.real, ENNReal.ofReal_toReal hMfin]
   rw [hMeq, ← ENNReal.ofReal_add hM0 ht0, ← ENNReal.ofReal_mul (by positivity)]
   exact ENNReal.ofReal_le_ofReal g5
+
+/-- **`Hⁿ ⌞ P` on balls about `0`** (the normalization `Hⁿ = Lⁿ` on `n`-planes, Simon's Notation
+p. ix, with scaling).  If `P ⊆ ℝ^{n+ℓ}` is an `n`-dimensional subspace and `s ≥ 0`, then
+`Hⁿ(P ∩ B_s(0)) = ω_n sⁿ`.  The inclusion `P → ℝ^{n+ℓ}` is an isometry, so `Hⁿ ⌞ P` is the image
+of `Hⁿ` on `P`, which is Lebesgue measure of the `n`-dimensional inner product space `P`; there
+`|B_s(0)| = sⁿ |B_1(0)|`.  Mathlib's value of `|B_1(0)|` lies outside the frozen import closure, so
+it is computed here by evaluating `I = ∫_P e^{-|x|²} dx` twice: in orthonormal coordinates
+`I = (∫_ℝ e^{-t²} dt)ⁿ = π^{n/2}` (Fubini), while the layer-cake formula with
+`{e^{-|x|²} > t} = B_{√(-log t)}(0)` and the substitution `t = e^{-u}` give
+`I = |B_1(0)| ∫_0^∞ u^{n/2} e^{-u} du = |B_1(0)| Γ(n/2 + 1)`. -/
+theorem rsod_planeMeasure_closedBall : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n → ∀ s : ℝ, 0 ≤ s → ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) = ENNReal.ofReal (unitBallVolume n * s ^ n) := by
+  intro n ℓ hn P hP s hs
+  have : Nontrivial P := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
+  -- `Hⁿ ⌞ P` is the image of `Hⁿ` on `P` under the isometric inclusion `ι : P → ℝ^{n+ℓ}`, and
+  -- `ι⁻¹(B_s(0))` is the closed ball `B_s(0)` of `P`.
+  have hrange : range (P.subtypeₗᵢ : P → Amb n ℓ) = (P : Set (Amb n ℓ)) := by ext x; simp
+  rw [← hrange, ← P.subtypeₗᵢ.isometry.map_euclideanHausdorffMeasure,
+    Measure.map_apply P.subtypeₗᵢ.continuous.measurable measurableSet_closedBall]
+  have hpre : (P.subtypeₗᵢ : P → Amb n ℓ) ⁻¹' closedBall (0 : Amb n ℓ) s =
+      closedBall (0 : P) s := by
+    ext x; simp [mem_closedBall, dist_eq_norm]
   -- On the `n`-dimensional inner product space `P`, `Hⁿ` is Lebesgue measure.
   have hvol : (μHE[n] : Measure P) = volume := by
     have h := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := P); rwa [hP] at h
