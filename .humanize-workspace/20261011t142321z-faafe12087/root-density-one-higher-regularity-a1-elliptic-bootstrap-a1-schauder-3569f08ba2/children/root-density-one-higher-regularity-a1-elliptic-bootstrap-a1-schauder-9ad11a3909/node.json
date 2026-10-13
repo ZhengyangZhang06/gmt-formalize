@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.chain_vanish-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "depth": 5,
+  "title": "Iterated Caccioppoli decay: a chain of n+2 directional derivatives vanishes in a Caccioppoli class with C^{0,alpha} gradient growth",
+  "statement": "Let n, l be natural numbers, 0 < alpha < 1, K >= 0 and C >= 0. For g : R^n -> R^l and u in R^n write d_u g := (z -> Dg(z)u). Let S be a set of maps R^n -> R^l such that (S1) every V in S is C^1; (S2) d_v V is in S for all V in S and v in R^n; (S3) for every V in S, rho > 0 and c in R^l, the lower Lebesgue integral over the open ball B_rho(0) of ||DV||^2 is at most (C / rho^2) times the lower Lebesgue integral over B_{2 rho}(0) of |V - c|^2 (values in [0, infinity]). Let W in S satisfy ||DW(x) - DW(0)|| <= K |x|^alpha for all x. Then for all u, w, y in R^n the derivative at y of the n-fold iterate (d_u)^n (d_w W) is 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α K C : ℝ) (S : Set (Rn n → Rn ℓ)) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 ≤ K → 0 ≤ C → (∀ V ∈ S, ContDiff ℝ 1 V) → (∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S) → (∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ, ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2) → W ∈ S → (∀ x : Rn n, ‖fderiv ℝ W x - fderiv ℝ W 0‖ ≤ K * ‖x‖ ^ α) → ∀ u w y : Rn n, fderiv ℝ ((fun g : Rn n → Rn ℓ => fun z => fderiv ℝ g z u)^[n] (fun z => fderiv ℝ W z w)) y = 0",
+  "lean_name": "dohr_eb_sch_liou_chain_vanish",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-9ad11a3909-a1"
+}
