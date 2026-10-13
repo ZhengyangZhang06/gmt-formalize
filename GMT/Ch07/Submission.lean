@@ -609,6 +609,109 @@ theorem Submission.codim1_zsl_blowUp_isBoundaryOfRegion : ∀ (P n : ℕ) (U E :
   simp only [hcov, hdω', map_smul, smul_eq_mul, integral_const_mul]
   ring
 
+/-- **Zero-scale blow-up centres lie within `O(λᵢ)` of `N`, and `x ∈ N`** (towards "by definition
+of `𝒯`, `spt S ⊂` some `(n+1)`-dimensional subspace" in the proof of Simon 7.5.8,
+chapter-07.txt lines 965–966, for the limits with `λ = 0` of the class `𝒯` of the proof of 7.4.4,
+lines 646–649; `spt` is Simon 6.2.11, chapter-06.txt line 299).  Let `T = ∂[[E]]` in `U` with
+`E ⊆ N` and `(N̄ \ N) ∩ U = ∅`, `xᵢ → x ∈ U`, `λᵢ > 0`, `λᵢ → 0`, and `η_{xᵢ,λᵢ#}T ⇀ S` in `ℝᴾ`
+with `spt S ≠ ∅`.  Then `x ∈ N`, and for some `C₀ > 0` each `xᵢ` has a `p ∈ N` with
+`|p − xᵢ| ≤ C₀λᵢ`.  By the blow-up region identity, `η_{xᵢ,λᵢ#}T(ω)` is
+`∫_{η_{xᵢ,λᵢ}(E)} ⟨dω, ξ_N(xᵢ + λᵢ·)⟩ dH^{n+1}`, which vanishes when `spt ω` misses
+`η_{xᵢ,λᵢ}(N)`; were `dist(xᵢ, N)/λᵢ` unbounded, then along a subsequence every test form would
+eventually miss `η_{xᵢ,λᵢ}(N)`, so `S = 0` and `spt S = ∅`. -/
+theorem Submission.codim1_zsl_blowUp_centres_near : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n), (closure N \ N) ∩ U = ∅ → E ⊆ N → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → S.support.Nonempty → x ∈ N ∧ ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i := by
+  intro P n U N E ξN T x xs lams hlams S hNU hEN hT hxU hxs hlam hconv hS
+  -- Step 1: write `ηᵢ := η_{xᵢ,λᵢ}`.  If `tsupport ω` misses `ηᵢ(N)`, then `ηᵢ#T(ω) = 0`: either
+  -- `tsupport ω ⊄ ηᵢ(U)` (`currentEval` is `0`), or by the blow-up region identity `ηᵢ#T(ω)` is
+  -- `∫_{ηᵢ(E)} ⟨dω, ξ_N(xᵢ + λᵢ·)⟩ dH^{n+1}`, with `ηᵢ(E) ⊆ ηᵢ(N)` and `tsupport dω ⊆ tsupport ω`.
+  have hvanish : ∀ (i : ℕ) (ω : DifferentialForm (Euclid P) n),
+      (∀ p ∈ N, dilation (xs i) (lams i) p ∉ tsupport ω) →
+        currentEval (blowUp T (xs i) (lams i) (hlams i).ne') ω = 0 := by
+    intro i ω hω
+    rw [currentEval]
+    split_ifs with h
+    · rw [Submission.codim1_zsl_blowUp_isBoundaryOfRegion P n U E ξN T (xs i) (lams i) (hlams i)
+        hT ⟨ω, h⟩]
+      refine setIntegral_eq_zero_of_forall_eq_zero ?_
+      rintro _ ⟨p, hp, rfl⟩
+      have hd : dilation (xs i) (lams i) p ∉ tsupport (exteriorDerivative ω) :=
+        fun hd => hω p (hEN hp) (tsupport_exteriorDerivative_subset ω hd)
+      show ξN (xs i + lams i • dilation (xs i) (lams i) p)
+        (exteriorDerivative ω (dilation (xs i) (lams i) p)) = 0
+      rw [image_eq_zero_of_notMem_tsupport hd, map_zero]
+    · rfl
+  -- Step 2: `|ηᵢ(p)| = λᵢ⁻¹ |p − xᵢ|`.
+  have hdil : ∀ (i : ℕ) (p : Euclid P),
+      dist (dilation (xs i) (lams i) p) 0 = (lams i)⁻¹ * dist p (xs i) := by
+    intro i p
+    have h : dilation (xs i) (lams i) p = (lams i)⁻¹ • (p - xs i) := by
+      rw [smul_sub, sub_eq_neg_add]
+      rfl
+    rw [h, dist_zero_right, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr (hlams i)),
+      dist_eq_norm]
+  -- Steps 3–4: suppose that along a subsequence `σ`, for each `R`, eventually every `p ∈ N` has
+  -- `|p − x_{σ j}| > λ_{σ j} R`.  A test form `ω` has `tsupport ω ⊆ B̄_R(0)` for some `R`, so it
+  -- eventually misses `η_{σ j}(N)` and `S(ω) = lim η_{σ j}#T(ω) = 0`.  Then `S = 0` vanishes on
+  -- `B_1(z)` for every `z`, contradicting `spt S ≠ ∅`.
+  have hkey : ∀ σ : ℕ → ℕ, StrictMono σ →
+      (∀ R : ℝ, ∀ᶠ j in atTop, ∀ p ∈ N, lams (σ j) * R < dist p (xs (σ j))) → False := by
+    intro σ hσ hfar
+    obtain ⟨z, hz⟩ := hS
+    refine hz.2 (mem_sUnion.mpr ⟨ball z 1, ⟨isOpen_ball, isBounded_ball.isCompact_closure,
+      subset_univ _, fun ω _ => ?_⟩, mem_ball_self one_pos⟩)
+    obtain ⟨⟨-, hcompact⟩, -⟩ := ω.property
+    obtain ⟨R, hR⟩ := hcompact.isCompact.isBounded.subset_closedBall 0
+    refine tendsto_nhds_unique ((hconv ω).comp hσ.tendsto_atTop) (tendsto_const_nhds.congr' ?_)
+    filter_upwards [hfar R] with j hj
+    refine (hvanish (σ j) (ω : DifferentialForm (Euclid P) n) fun p hp hpω => ?_).symm
+    have h := mem_closedBall.mp (hR hpω)
+    rw [hdil, inv_mul_le_iff₀ (hlams (σ j))] at h
+    exact (hj p hp).not_ge h
+  -- Step 5: `N ≠ ∅`, since otherwise the hypothesis of `hkey` holds vacuously for `σ = id`.
+  have hNne : N.Nonempty := by
+    by_contra hN0
+    exact hkey id strictMono_id fun R => Eventually.of_forall fun j p hp => (hN0 ⟨p, hp⟩).elim
+  -- Step 6: `dist(xᵢ, N)/λᵢ` is bounded above; otherwise there is `σ` with
+  -- `dist(x_{σ j}, N) > jλ_{σ j}` for every `j`, and `hkey` applies.
+  have hbdd : BddAbove (range fun i => infDist (xs i) N / lams i) := by
+    by_contra hnb
+    have hfreq : ∀ j : ℕ, ∃ᶠ i in atTop, (j : ℝ) < infDist (xs i) N / lams i := by
+      intro j
+      by_contra hj
+      exact hnb (isBoundedUnder_of_eventually_le
+        ((not_frequently.mp hj).mono fun i hi => not_lt.mp hi)).bddAbove_range
+    obtain ⟨σ, hσ, hσr⟩ := extraction_forall_of_frequently hfreq
+    refine hkey σ hσ fun R => ?_
+    obtain ⟨J, hJ⟩ := exists_nat_ge R
+    filter_upwards [eventually_ge_atTop J] with j hj p hp
+    have h1 := (lt_div_iff₀ (hlams (σ j))).mp (hσr j)
+    have h2 : infDist (xs (σ j)) N ≤ dist p (xs (σ j)) := by
+      rw [dist_comm]
+      exact infDist_le_dist_of_mem hp
+    have h3 : R ≤ (j : ℝ) := hJ.trans (Nat.cast_le.mpr hj)
+    calc lams (σ j) * R ≤ lams (σ j) * j := mul_le_mul_of_nonneg_left h3 (hlams (σ j)).le
+      _ = j * lams (σ j) := mul_comm _ _
+      _ < infDist (xs (σ j)) N := h1
+      _ ≤ dist p (xs (σ j)) := h2
+  obtain ⟨M, hM⟩ := hbdd
+  have hdist : ∀ i, infDist (xs i) N ≤ M * lams i := fun i =>
+    (div_le_iff₀ (hlams i)).mp (hM (mem_range_self i))
+  -- Step 7: `C₀ := max M 0 + 1`, and `dist(xᵢ, N) ≤ Mλᵢ < C₀λᵢ` gives `p ∈ N`.
+  refine ⟨?_, max M 0 + 1, add_pos_of_nonneg_of_pos (le_max_right M 0) one_pos, fun i => ?_⟩
+  · -- Step 8: `dist(x, N) ≤ dist(xᵢ, N) + |x − xᵢ| ≤ Mλᵢ + |x − xᵢ| → 0`, so `x ∈ N̄ ∩ U ⊆ N`.
+    have hlim : Tendsto (fun i => M * lams i + dist x (xs i)) atTop (𝓝 (M * 0 + dist x x)) :=
+      (hlam.const_mul M).add (tendsto_const_nhds.dist hxs)
+    rw [mul_zero, dist_self, add_zero] at hlim
+    have h0 : infDist x N ≤ 0 := ge_of_tendsto' hlim fun i =>
+      infDist_le_infDist_add_dist.trans (add_le_add (hdist i) le_rfl)
+    have hcl : x ∈ closure N :=
+      (mem_closure_iff_infDist_zero hNne).mpr (le_antisymm h0 infDist_nonneg)
+    by_contra hxN
+    exact hNU.subset ⟨⟨hcl, hxN⟩, hxU⟩
+  · obtain ⟨p, hp, hpd⟩ := (infDist_lt_iff hNne).mp ((hdist i).trans_lt
+      (mul_lt_mul_of_pos_right ((le_max_left M 0).trans_lt (lt_add_one _)) (hlams i)))
+    exact ⟨p, hp, (dist_comm p (xs i)).trans_le hpd.le⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
