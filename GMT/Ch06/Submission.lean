@@ -359,6 +359,29 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Support of a current vanishing off a closed set (Simon Ch. 6, 2.11).**  If `Z ∈ 𝒟_q(V)`,
+`V` open, kills every test form whose support misses the closed set `K`, then `spt Z ⊆ K`.  A point
+`x ∈ V \ K` has a ball `B_ε(x) ⊆ V \ K`; `W = B_{ε/2}(x)` is open with compact closure
+`closure W ⊆ B_ε(x) ⊆ V`, and `Z` vanishes on `W`, so `x` lies in the zero region of `Z`. -/
+theorem Submission.fiw_tb_ext_support_subset : ∀ (P q : ℕ) (V K : Set (Eucl P)) (Z : GeometricCurrentOn V q), IsOpen V → IsClosed K → (∀ ω : TestFormOn V q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.support ⊆ K := by
+  intro P q V K Z hV hK hZ x hx
+  by_contra hxK
+  obtain ⟨hxV, hxz⟩ := hx
+  -- `V \ K` is an open neighbourhood of `x`: pick `B_ε(x) ⊆ V \ K`.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp (hV.sdiff hK) x ⟨hxV, hxK⟩
+  -- `W = B_{ε/2}(x)` is one of the open sets whose union is the zero region of `Z`.
+  apply hxz
+  refine ⟨ball x (ε / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (half_pos hε)⟩
+  · exact (isCompact_closedBall x (ε / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  · exact (closure_ball_subset_closedBall.trans
+      (closedBall_subset_ball (half_lt_self hε))).trans (hball.trans sdiff_subset)
+  · -- a test form supported in `W ⊆ B_ε(x)` has support disjoint from `K`
+    intro ω hω
+    apply hZ
+    rw [Set.disjoint_left]
+    intro y hy hyK
+    exact (hball (ball_subset_ball (half_le_self hε.le) (hω hy))).2 hyK
 /-- A current kills every test form whose support misses `spt T`: `tsupport ω` is a compact subset
 of the zero region, so finitely many open `W ⊂⊂ U` on which `T` vanishes cover it, and a smooth
 partition of unity `ψᵢ` on `tsupport ω` subordinate to them splits `ω = ∑ᵢ ψᵢ ω` into test forms
@@ -418,6 +441,65 @@ theorem Submission.isoperimetric_apply_eq_zero_of_disjoint_support :
   change T.toCurrent ω = 0
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => hη i
+
+/-- Slices of a form supported off `Φ([0, 1] × B̄_R(0))`, `Φ(s, x) = (s, x) ∈ ℝ^{P+1}`, are
+annihilated by `X`: for `s ∈ [0, 1]`, `tsupport (φ s)` lies in the closed set
+`{x | Φ(s, x) ∈ tsupport η}`, which misses `B̄_R(0) ⊇ spt X`, so `X (φ s) = 0` and the integral
+over `[0, 1]` vanishes. -/
+theorem Submission.iwl_cr_ci_ps_slice_integral_eq_zero :
+    ∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m)
+      (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1))
+      (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m),
+      X.support ⊆ closedBall 0 R →
+      Disjoint (tsupport (η : DifferentialForm (Eucl (P + 1)) (m + 1)))
+        ((fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ''
+          (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : Eucl P) R)) →
+      (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P),
+        (φ s : DifferentialForm (Eucl P) m) x v =
+          (η : DifferentialForm (Eucl (P + 1)) (m + 1))
+            ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)))
+            (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+              (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) →
+      ∫ s in (0 : ℝ)..1, X (φ s) = 0 := by
+  intro P m R X η φ hX hdisj hφ
+  have hzero : ∀ s ∈ Icc (0 : ℝ) 1, X (φ s) = 0 := by
+    intro s hs
+    -- `C_s = {x | Φ(s, x) ∈ tsupport η}` is closed, as `x ↦ Φ(s, x)` is continuous.
+    have hΦ : Continuous fun x : Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)) :=
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+        (continuous_const.finCons (EuclideanSpace.equiv (Fin P) ℝ).continuous)
+    have hC := (isClosed_tsupport (η : DifferentialForm (Eucl (P + 1)) (m + 1))).preimage hΦ
+    -- `φ s` vanishes off `C_s` by the slice identity, so `tsupport (φ s) ⊆ C_s`.
+    have hsupp : tsupport (φ s : DifferentialForm (Eucl P) m) ⊆
+        (fun x : Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ⁻¹'
+          tsupport (η : DifferentialForm (Eucl (P + 1)) (m + 1)) := by
+      refine closure_minimal ?_ hC
+      intro x hx
+      by_contra hxC
+      have hxC' : (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)) ∉
+          tsupport (η : DifferentialForm (Eucl (P + 1)) (m + 1)) := hxC
+      refine Function.mem_support.1 hx ?_
+      ext v
+      rw [hφ s hs x v, image_eq_zero_of_notMem_tsupport hxC']
+      rfl
+    -- `spt X ⊆ B̄_R(0)` misses `C_s`: `Φ(s, x) ∈ Φ([0, 1] × B̄_R(0))` lies off `tsupport η`.
+    refine Submission.isoperimetric_apply_eq_zero_of_disjoint_support P m univ X (φ s) ?_
+    rw [Set.disjoint_left]
+    intro x hx hxX
+    exact Set.disjoint_left.1 hdisj (Set.mem_preimage.1 (hsupp hx))
+      ⟨(s, x), Set.mk_mem_prod hs (hX hxX), rfl⟩
+  -- The integrand vanishes on `uIcc 0 1 = [0, 1]`.
+  have hcongr : EqOn (fun s => X (φ s)) (fun _ => (0 : ℝ)) (uIcc 0 1) := by
+    intro s hs
+    rw [uIcc_of_le zero_le_one] at hs
+    exact hzero s hs
+  rw [intervalIntegral.integral_congr hcongr, intervalIntegral.integral_zero]
 /-- Slices of a test form `η` on `ℝ^{P+1} = ℝ × ℝ^P` across the first coordinate: with
 `e₀ = (1, 0)` and `ι w = (0, w)`, the form `φ s x = η(s, x)(e₀, ι ·)` is the continuous linear
 contraction `α ↦ α(e₀, ι ·)` applied to `η` along the affine map `x ↦ (s, x) = s • e₀ + ι x`, hence
@@ -516,6 +598,26 @@ theorem Submission.iwl_cr_ci_slice_testForm :
     change L ((η : DifferentialForm (Eucl (P + 1)) (m + 1)) (s • e₀ + ι x)) v = _
     rw [hL, hΦ s x]
     simp only [hι]
+
+/-- **Support of the product current `[[(0,1)]] × X`.**  With `Φ(s, x) = (s, x)`, the set
+`L = Φ([0, 1] × B̄_R(0))` is compact as a continuous image of a compact set, hence closed.  If
+`tsupport η` misses `L`, the slices `φ s = η(Φ(s, ·))(e₀, ι ·)` are annihilated by `X` (whose
+support lies in `B̄_R(0)`), so `Z η = ∫₀¹ X (φ s) ds = 0`; by the support criterion, `spt Z ⊆ L`. -/
+theorem Submission.iwl_cr_ci_product_support : ∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P), (φ s : DifferentialForm (Eucl P) m) x v = (η : DifferentialForm (Eucl (P + 1)) (m + 1)) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → IsCompact ((fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) '' (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : Eucl P) R)) ∧ Z.support ⊆ ((fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) '' (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : Eucl P) R)) := by
+  intro P m R X Z hX hProd
+  -- `L = Φ([0, 1] × B̄_R(0))` is compact, being a continuous image of a compact set.
+  have hΦ : Continuous fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)) := by
+    fun_prop
+  have hL := ((isCompact_Icc (a := (0 : ℝ)) (b := 1)).prod
+    (isCompact_closedBall (0 : Eucl P) R)).image hΦ
+  -- `L` is closed, so it contains `spt Z` once `Z` kills every test form supported off `L`.
+  refine ⟨hL, Submission.fiw_tb_ext_support_subset (P + 1) (m + 1) univ _ Z isOpen_univ
+    hL.isClosed fun η hη => ?_⟩
+  -- `Z η = ∫₀¹ X (φ s) ds` for the slices `φ s` of `η`, and that integral vanishes.
+  obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm P m η
+  exact (hProd η φ fun s _ x v => hφ s x v).trans
+    (Submission.iwl_cr_ci_ps_slice_integral_eq_zero P m R X η φ hX hη fun s _ x v => hφ s x v)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
