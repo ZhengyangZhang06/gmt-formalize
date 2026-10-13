@@ -695,6 +695,36 @@ theorem Submission.codim1_rdo_c1cov_regular_ball_cover : ∀ (P n : ℕ) (G : Eu
     show x ∈ ball (ctr (Nat.pair q p)) (if good (Nat.pair q p) then rad (Nat.pair q p) else 0)
     rw [ite_eq_left hgood]
     simpa only [ctr, rad, hk, mem_ball] using hq
+/-- **Simon Ch. 3, proof of Lemma 1.2** (properties (ii), (iii) of the pieces `g(B_r(c))`): the
+image of an open ball under a `C¹` map `g : ℝⁿ → ℝᴾ` is Borel and has finite `Hⁿ`-measure.
+`B_r(c) = ⋃ₜ closedBall(c, r − 1/(t+1))`, so `g(B_r(c))` is a countable union of compact sets;
+`g` is Lipschitz on the compact convex `closedBall(c, r)`, so by Simon Ch. 2, 1.8(i)
+`Hⁿ(g(B_r(c))) ≤ Λⁿ Lⁿ(B_r(c)) < ∞`. -/
+theorem Submission.codim1_rdo_c1cov_image_ball_borel_finite : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r : ℝ), ContDiff ℝ 1 g → MeasurableSet (g '' ball c r) ∧ μHE[n] (g '' ball c r) ≠ ∞ := by
+  intro P n g c r hg
+  refine ⟨?_, ?_⟩
+  · -- `B_r(c)` is the union of the compact balls `closedBall(c, r − 1/(t+1))`
+    have hball : ball c r = ⋃ t : ℕ, closedBall c (r - 1 / ((t : ℝ) + 1)) := by
+      ext y
+      simp only [mem_ball, mem_iUnion, mem_closedBall]
+      constructor
+      · intro hy
+        obtain ⟨t, ht⟩ := exists_nat_one_div_lt (sub_pos.mpr hy)
+        exact ⟨t, by linarith⟩
+      · rintro ⟨t, ht⟩
+        have : (0 : ℝ) < 1 / ((t : ℝ) + 1) := by positivity
+        linarith
+    rw [hball, image_iUnion]
+    exact MeasurableSet.iUnion fun t =>
+      ((isCompact_closedBall c _).image hg.continuous).isClosed.measurableSet
+  · -- `g` is Lipschitz on the compact convex `closedBall c r`, hence on `ball c r`
+    obtain ⟨K, hK⟩ := (hg.contDiffOn (s := closedBall c r)).exists_lipschitzOnWith one_ne_zero
+      (convex_closedBall c r) (isCompact_closedBall c r)
+    refine ne_top_of_le_ne_top ?_
+      (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+        (hK.mono ball_subset_closedBall))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) measure_ball_lt_top.ne
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
