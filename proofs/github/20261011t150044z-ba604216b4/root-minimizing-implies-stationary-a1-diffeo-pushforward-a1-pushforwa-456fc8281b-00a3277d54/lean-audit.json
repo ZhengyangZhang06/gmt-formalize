@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "21ad8e873b537e1fa4e8332dd9b57cbd454f205606e5494b85db17a41501a9d1",
+  "git_delta": {
+    "base_commit": "e402436da01b2f74514afe11aa446d6a1e509b06",
+    "candidate_commit": "8d68dfd93a5a51671384c6648f0ebabf56bd95bd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_pfc_testFormOnConverges_zero_uniform",
+    "diff_sha256": "9a9face654ada0ab84e71f10d1078733f67b6e0b522ba2675b238193895acd72",
+    "source_sha256": "e425a167da12b84dbdcf4b1ccf3311322d4010ce08fb2eb5e988f23008c0ce11",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_pfc_testFormOnConverges_zero_uniform",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
