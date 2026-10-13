@@ -451,6 +451,90 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.11, 6.2.13** (supports of weak limits, as in the proof of 7.3.3(2)).  If
+`Tⱼ ⇀ S` in `ℝᴾ` and, for all large `j`, the open set `W` lies in the domain of `Tⱼ` and misses
+`spt Tⱼ`, then `W` misses `spt S`.  A test form `ω` with `spt ω ⊆ W` has `Tⱼ(ω) = 0` for large `j`
+(a current vanishes off its support: finitely many open sets on which `Tⱼ` vanishes cover `spt ω`,
+and a smooth partition of unity splits `ω` along them), so `S(ω) = lim Tⱼ(ω) = 0`.  Each `v ∈ W`
+then has a ball `B_{r/2}(v) ⊆ W` with compact closure on which `S` vanishes, so `v ∉ spt S`. -/
+theorem Submission.idtp_tpf_weak_limit_support_disjoint : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (W : Set (Euclid P)), ConvergesWeakly Ts S → IsOpen W → (∀ᶠ j in atTop, W ⊆ Us j ∧ Disjoint W (Ts j).support) → Disjoint W S.support := by
+  intro P n Us Ts S W hconv hW hev
+  classical
+  -- a current `T ∈ 𝒟ₙ(U)` vanishes on every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ spt T = ∅` (Simon 6.2.11)
+  have hvanish : ∀ (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) T.support → T ω = 0 := by
+    intro U T ω hdisj
+    -- `K = spt ω` is a compact subset of `U`
+    set K := tsupport (ω : DifferentialForm (Euclid P) n)
+    have hKc : IsCompact K := ω.property.1.2
+    have hKU : K ⊆ U := ω.property.2
+    -- `K` lies in the zero region `⋃₀ 𝒱`, hence in finitely many members of `𝒱`
+    let 𝒱 : Set (Set (Euclid P)) :=
+      {V | IsOpen V ∧ IsCompact (closure V) ∧ closure V ⊆ U ∧ T.VanishesOn V}
+    have hKZ : K ⊆ ⋃ V : 𝒱, (V : Set (Euclid P)) := by
+      intro x hx
+      have hxZ : x ∈ T.zeroRegion := by
+        by_contra hxZ
+        exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+      rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+    obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun V : 𝒱 => (V : Set (Euclid P)))
+      (fun V => V.2.1) hKZ
+    let Vt : t → Set (Euclid P) := fun i => ((i : 𝒱) : Set (Euclid P))
+    have hKt : K ⊆ ⋃ i, Vt i := by
+      intro x hx
+      obtain ⟨V, hV, hxV⟩ := Set.mem_iUnion₂.mp (ht hx)
+      exact Set.mem_iUnion.mpr ⟨⟨V, hV⟩, hxV⟩
+    -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Vᵢ`
+    obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+      (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Vt (fun i => (i : 𝒱).2.1) hKt
+    -- each `ψᵢω` is a test form in `U` supported in `Vᵢ`
+    have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+        tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Vt i := by
+      intro i
+      have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+        tsupport_smul_subset_right _ _
+      refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+      · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+      · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+    let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+    -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+    have hsum : ω = ∑ i, ωi i := by
+      apply Subtype.ext
+      funext x
+      rw [Submodule.coe_sum, Finset.sum_apply]
+      change (ω : DifferentialForm (Euclid P) n) x =
+        ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+      by_cases hx : x ∈ K
+      · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+      · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+          image_eq_zero_of_notMem_tsupport hx
+        simp [h0]
+    -- linearity: `T(ω) = Σᵢ T(ψᵢω) = 0`
+    change T.toCurrent ω = 0
+    rw [hsum, map_sum]
+    exact Finset.sum_eq_zero fun i _ => (i : 𝒱).2.2.2.2 (ωi i) (hmem i).2
+  -- Step 1: `S(ω) = lim Tⱼ(ω) = 0` for every `ω ∈ 𝒟ⁿ(ℝᴾ)` with `spt ω ⊆ W`
+  have hSW : S.VanishesOn W := by
+    intro ω hωW
+    have hzero : (fun j => currentEval (Ts j) (ω : DifferentialForm (Euclid P) n)) =ᶠ[atTop]
+        fun _ => (0 : ℝ) := by
+      filter_upwards [hev] with j hj
+      have hωj : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+          tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us j := ⟨ω.property.1, hωW.trans hj.1⟩
+      rw [currentEval, dite_eq_left hωj]
+      exact hvanish (Us j) (Ts j) ⟨(ω : DifferentialForm (Euclid P) n), hωj⟩
+        (hj.2.mono_left hωW)
+    exact tendsto_nhds_unique_of_eventuallyEq (hconv ω) tendsto_const_nhds hzero
+  -- Step 2: each `v ∈ W` lies in the zero region of `S`, via `B_{r/2}(v)` with `B_r(v) ⊆ W`
+  refine Set.disjoint_left.mpr fun v hvW hvS => hvS.2 ?_
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hW v hvW
+  refine Set.mem_sUnion.mpr ⟨ball v (r / 2), ⟨isOpen_ball, ?_, subset_univ _, ?_⟩,
+    mem_ball_self (half_pos hr)⟩
+  · exact (isCompact_closedBall v (r / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  · intro ω hω
+    exact hSW ω (hω.trans ((ball_subset_ball (half_le_self hr.le)).trans hball))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

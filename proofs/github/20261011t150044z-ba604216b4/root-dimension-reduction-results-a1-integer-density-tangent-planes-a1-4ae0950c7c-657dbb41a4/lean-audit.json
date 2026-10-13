@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7cc0b00cf86837dbceec5ec43cb00fb7fd7467a4f09139983aac1b1e96325575",
+  "git_delta": {
+    "base_commit": "d231af2a56ead24217d62dbc2ffd0cce13ea192f",
+    "candidate_commit": "729a116db7f0ccc9bf90b3ac29171cba649f7db4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tpf_weak_limit_support_disjoint",
+    "diff_sha256": "828b0648d0cb74337d2296fdd03e24135e91eaadec443a8ba162e62a9b89d7b0",
+    "source_sha256": "088850f5281e1b25eb1f46c149403f8c6c197d1d3ffd14def982999b04264562",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_weak_limit_support_disjoint",
+      "statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (W : Set (Euclid P)), ConvergesWeakly Ts S → IsOpen W → (∀ᶠ j in atTop, W ⊆ Us j ∧ Disjoint W (Ts j).support) → Disjoint W S.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
