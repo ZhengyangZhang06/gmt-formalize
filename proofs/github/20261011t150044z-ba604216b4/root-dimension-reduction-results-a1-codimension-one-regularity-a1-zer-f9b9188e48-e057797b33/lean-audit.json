@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7602c1effa900de12bdfaf4ff75eabd3bd640c219c004b5a7f02feb16010ba0c",
+  "git_delta": {
+    "base_commit": "20d3b0404875b9c99f49adc798e73e70908b64e0",
+    "candidate_commit": "da20543be5bd0798b1dea94ae403b5b6e9a40b71",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_pc_translate_tendsto_zero",
+    "diff_sha256": "be8ac3293715e5268af373b98b21668d66f8accd765eb6194290ffddc5949c50",
+    "source_sha256": "c39eaae22048f2002dd2c8d240e666e1885d502e4574b0bce604a2a3e57150c2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_pc_translate_tendsto_zero",
+      "statement": "∀ (m : ℕ) (F : Set (Euclid m)) (R : ℝ), MeasurableSet F → Tendsto (fun z : Euclid m => volume (symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R)) (𝓝 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
