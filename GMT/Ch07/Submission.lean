@@ -451,6 +451,205 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 1.4** (approximate tangent planes of flat sets): if `Hⁿ((A ∩ B_r(x)) \ S) = 0`
+and `S` is flat at `x` along `T` (points `y ∈ S` near `x` lie within `ε‖y - x‖` of `x + T`), then an
+approximate tangent plane `Q` of `A` at `x` lies in `T`.  For `y ∈ Q \ T` put `δ = dist(y, T)` and
+test with `f = max(0, δ/2 - dist(·, y))`.  For small `λ > 0`, `η_{x,λ}(A) ∩ B̄_{δ/2}(y)` lies in the
+`Hⁿ`-null set `η_{x,λ}((A ∩ B_r(x)) \ S)` (points of `S` blow up to within `δ/4` of `T`), so
+`∫_{η_{x,λ}(A)} f dHⁿ = 0`.  In the limit `∫_Q f dHⁿ = 0`, contradicting `y ∈ spt Hⁿ⌞Q`. -/
+theorem Submission.dgcr_atg_approxTangent_le_of_flat : ∀ (P n : ℕ) (S A : Set (Euclid P)) (x : Euclid P) (r : ℝ) (Q T : Submodule ℝ (Euclid P)), 0 < r → μHE[n] ((A ∩ ball x r) \ S) = 0 → (∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ y ∈ S, dist y x < ρ → ∃ t ∈ T, ‖y - x - t‖ ≤ ε * ‖y - x‖) → HasApproximateTangentSpaceAt n A x Q → Q ≤ T := by
+  intro P n S A x r Q T hr hN hflat hQ y hyQ
+  by_contra hyT
+  -- `δ = infDist(y, T) > 0`, `T` being closed
+  have hδ : 0 < infDist y (T : Set (Euclid P)) :=
+    (T.closed_of_finiteDimensional.notMem_iff_infDist_pos ⟨0, T.zero_mem⟩).1 hyT
+  obtain ⟨δ, hδdef⟩ : ∃ δ, infDist y (T : Set (Euclid P)) = δ := ⟨_, rfl⟩
+  rw [hδdef] at hδ
+  -- `R = ‖y‖ + δ` and `ε = δ/(4R)`
+  obtain ⟨R, hRdef⟩ : ∃ R : ℝ, ‖y‖ + δ = R := ⟨_, rfl⟩
+  have hR : 0 < R := by rw [← hRdef]; exact add_pos_of_nonneg_of_pos (norm_nonneg y) hδ
+  obtain ⟨ε, hε, hεR⟩ : ∃ ε : ℝ, 0 < ε ∧ ε * R = δ / 4 :=
+    ⟨δ / (4 * R), div_pos hδ (mul_pos four_pos hR), by field_simp⟩
+  -- the test function `f = max(0, δ/2 - dist(·, y))`, supported in `B̄_{δ/2}(y)`
+  have hf0 : ∀ w ∉ closedBall y (δ / 2), max 0 (δ / 2 - dist w y) = 0 := fun w hw =>
+    max_eq_left (by rw [mem_closedBall, not_le] at hw; linarith)
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+    ⟨⟨fun w => max 0 (δ / 2 - dist w y), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall y (δ / 2)) hf0⟩
+  have hf : ∀ w, f w = max 0 (δ / 2 - dist w y) := fun w => rfl
+  -- flatness at `ε` gives `ρ`
+  obtain ⟨ρ, hρ, hS⟩ := hflat ε hε
+  have hlam₀ : 0 < min ρ r / R := div_pos (lt_min hρ hr) hR
+  -- for `0 < λ < min(ρ, r)/R` the blow-up integral vanishes
+  have hzero : ∀ lam ∈ Ioo 0 (min ρ r / R),
+      ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x lam '' A, f w ∂μHE[n] = 0 := by
+    rintro lam ⟨hlam, hlamR⟩
+    -- `η_λ(A) ∩ B̄_{δ/2}(y) ⊆ η_λ((A ∩ B_r(x)) \ S)`
+    have hsub : closedBall y (δ / 2) ∩ Poincare.SimonGMT.Chapter03.blowUpMap x lam '' A ⊆
+        Poincare.SimonGMT.Chapter03.blowUpMap x lam '' ((A ∩ ball x r) \ S) := by
+      rintro _ ⟨hw, a, ha, rfl⟩
+      have hwa : a - x = lam • Poincare.SimonGMT.Chapter03.blowUpMap x lam a :=
+        (smul_inv_smul₀ hlam.ne' (a - x)).symm
+      obtain ⟨w, hw_def⟩ : ∃ w, Poincare.SimonGMT.Chapter03.blowUpMap x lam a = w := ⟨_, rfl⟩
+      rw [hw_def] at hw hwa
+      rw [mem_closedBall] at hw
+      -- `‖w‖ < R`, so `‖a - x‖ = λ‖w‖ < min(ρ, r)`
+      have hwR : ‖w‖ < R := by
+        have := norm_sub_norm_le w y
+        rw [← dist_eq_norm] at this
+        linarith
+      have hax : ‖a - x‖ = lam * ‖w‖ := by rw [hwa, norm_smul_of_nonneg hlam.le]
+      have haxlt : ‖a - x‖ < min ρ r := by
+        rw [hax]
+        exact (mul_lt_mul_of_pos_left hwR hlam).trans ((lt_div_iff₀ hR).1 hlamR)
+      refine ⟨a, ⟨⟨ha, ?_⟩, fun haS => ?_⟩, rfl⟩
+      · rw [mem_ball, dist_eq_norm]
+        exact haxlt.trans_le (min_le_right _ _)
+      · -- a point of `S` would put `w` within `δ/4` of `T`
+        obtain ⟨t, ht, hat⟩ :=
+          hS a haS (by rw [dist_eq_norm]; exact haxlt.trans_le (min_le_left _ _))
+        have hwt : dist w (lam⁻¹ • t) = lam⁻¹ * ‖a - x - t‖ := by
+          rw [hwa, dist_eq_norm, ← norm_smul_of_nonneg (inv_nonneg.2 hlam.le), smul_sub,
+            inv_smul_smul₀ hlam.ne']
+        have h1 : infDist w (T : Set (Euclid P)) < δ / 4 :=
+          calc infDist w (T : Set (Euclid P)) ≤ dist w (lam⁻¹ • t) :=
+                infDist_le_dist_of_mem (T.smul_mem lam⁻¹ ht)
+            _ = lam⁻¹ * ‖a - x - t‖ := hwt
+            _ ≤ lam⁻¹ * (ε * ‖a - x‖) := mul_le_mul_of_nonneg_left hat (inv_nonneg.2 hlam.le)
+            _ = ε * ‖w‖ := by rw [hax]; field_simp
+            _ < ε * R := mul_lt_mul_of_pos_left hwR hε
+            _ = δ / 4 := hεR
+        have h2 : infDist y (T : Set (Euclid P)) ≤ infDist w (T : Set (Euclid P)) + dist y w :=
+          infDist_le_infDist_add_dist
+        rw [hδdef, dist_comm] at h2
+        linarith
+    -- `η_λ` is `λ⁻¹`-Lipschitz, so `η_λ((A ∩ B_r(x)) \ S)` is `Hⁿ`-null
+    have hlip : LipschitzWith ‖lam⁻¹‖₊ (Poincare.SimonGMT.Chapter03.blowUpMap x lam) :=
+      LipschitzWith.of_dist_le_mul fun a b => by
+        show dist (lam⁻¹ • (a - x)) (lam⁻¹ • (b - x)) ≤ _
+        rw [dist_smul₀, dist_sub_right, coe_nnnorm]
+    have hnull :
+        μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' ((A ∩ ball x r) \ S)) = 0 := by
+      have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+        (A := (A ∩ ball x r) \ S) n hlip.lipschitzOnWith
+      rw [hN, mul_zero] at h
+      exact le_antisymm h zero_le
+    -- so `f = 0` a.e. for `Hⁿ ⌞ η_λ(A)`
+    have hball : ((μHE[n] : Measure (Euclid P)).restrict
+        (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' A)) (closedBall y (δ / 2)) = 0 := by
+      rw [Measure.restrict_apply measurableSet_closedBall]
+      exact measure_mono_null hsub hnull
+    apply integral_eq_zero_of_ae
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hball] with w hw
+    rw [hf]
+    exact hf0 w hw
+  -- hence `∫_Q f dHⁿ = 0`
+  have hlim : Tendsto (fun lam : ℝ =>
+      ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x lam '' A, f w ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hlam₀] with lam hlam
+    exact (hzero lam hlam).symm
+  have hQ0 : ∫ w in (Q : Set (Euclid P)), f w ∂μHE[n] = 0 := tendsto_nhds_unique (hQ.2 f) hlim
+  -- but `∫_Q f dHⁿ > 0`: `Hⁿ ⌞ Q` is locally finite with support `Q ∋ y`, and `f > 0` near `y`
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ.1
+  have hnn : 0 ≤ ⇑f := fun w => by
+    show (0 : ℝ) ≤ f w
+    rw [hf]
+    exact le_max_left _ _
+  have hfi : Integrable (⇑f) ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))) :=
+    (map_continuous f).integrable_of_hasCompactSupport f.hasCompactSupport
+  have hy : y ∈ ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).support := by
+    rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ.1]
+    exact hyQ
+  have hpos : 0 < ∫ w in (Q : Set (Euclid P)), f w ∂μHE[n] := by
+    rw [integral_pos_iff_support_of_nonneg hnn hfi]
+    refine (Measure.mem_support_iff_forall y).1 hy _
+      (mem_of_superset (ball_mem_nhds y (half_pos hδ)) fun w hw => ?_)
+    rw [mem_ball] at hw
+    rw [Function.mem_support, hf]
+    exact (lt_max_of_lt_right (by linarith)).ne'
+  exact hpos.ne' hQ0
+/-- **Simon 7.4.3** (proof, via Allard's Theorem 5.2 of Ch. 5): the graph `Σ = Φ(D)`,
+`Φ(v) = z + ιv + ι'u(v)` with orthogonal linear isometries `ι`, `ι'`, is flat at `Φ(v₀)` along
+`range DΦ(v₀)` (the step identifying its approximate tangent plane, Ch. 3, 1.4).  Pythagoras gives
+`‖v − v₀‖ ≤ ‖Φ(v) − Φ(v₀)‖`, so points of `Φ(D)` near `Φ(v₀)` come from `v` near `v₀`, where
+`t = DΦ(v₀)(v − v₀)` has `‖Φ(v) − Φ(v₀) − t‖ ≤ ε‖v − v₀‖ ≤ ε‖Φ(v) − Φ(v₀)‖`. -/
+theorem Submission.dgcr_atg_graph_image_flat : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (D : Set (Euclid n)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ y ∈ (fun v => z + ι v + ι' (u v)) '' D, dist y (z + ι v₀ + ι' (u v₀)) < ρ → ∃ t ∈ LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k)), ‖y - (z + ι v₀ + ι' (u v₀)) - t‖ ≤ ε * ‖y - (z + ι v₀ + ι' (u v₀))‖ := by
+  intro n k ι ι' u z D v₀ horth hu ε hε
+  set Φ : Euclid n → Euclid (n + k) := fun v => z + ι v + ι' (u v) with hΦ
+  -- coercivity: `‖Φ v − Φ v₀‖² = ‖v − v₀‖² + ‖u v − u v₀‖²` by Pythagoras
+  have hcoer : ∀ v, ‖v - v₀‖ ≤ ‖Φ v - Φ v₀‖ := by
+    intro v
+    have hsplit : Φ v - Φ v₀ = ι (v - v₀) + ι' (u v - u v₀) := by
+      simp only [hΦ, map_sub]
+      abel
+    have hpyth : ‖Φ v - Φ v₀‖ * ‖Φ v - Φ v₀‖ =
+        ‖v - v₀‖ * ‖v - v₀‖ + ‖u v - u v₀‖ * ‖u v - u v₀‖ := by
+      rw [hsplit, ← ι.norm_map (v - v₀), ← ι'.norm_map (u v - u v₀)]
+      exact norm_add_sq_eq_norm_sq_add_norm_sq_real (horth _ _)
+    exact (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2
+      (hpyth ▸ le_add_of_nonneg_right (mul_self_nonneg _))
+  -- `Φ = z + ι + ι' ∘ u` is differentiable at `v₀`
+  have hΦd : HasFDerivAt Φ (fderiv ℝ Φ v₀) v₀ :=
+    (((differentiableAt_const z).add ι.toContinuousLinearMap.differentiableAt).add
+      (ι'.toContinuousLinearMap.differentiableAt.comp v₀ hu)).hasFDerivAt
+  -- little-o: `‖Φ v − Φ v₀ − DΦ(v₀)(v − v₀)‖ ≤ ε‖v − v₀‖` whenever `dist v v₀ < ρ`
+  obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.1 (hΦd.isLittleO.bound hε)
+  refine ⟨ρ, hρ, ?_⟩
+  -- `y = Φ v` with `‖v − v₀‖ ≤ ‖y − Φ v₀‖ < ρ`; take `t = DΦ(v₀)(v − v₀)`
+  rintro y ⟨v, -, rfl⟩ hy
+  refine ⟨fderiv ℝ Φ v₀ (v - v₀), LinearMap.mem_range_self _ _, ?_⟩
+  have hv : dist v v₀ < ρ := by
+    rw [dist_eq_norm] at hy ⊢
+    exact (hcoer v).trans_lt hy
+  calc ‖Φ v - Φ v₀ - fderiv ℝ Φ v₀ (v - v₀)‖ ≤ ε * ‖v - v₀‖ := hball hv
+    _ ≤ ε * ‖Φ v - Φ v₀‖ := mul_le_mul_of_nonneg_left (hcoer v) hε.le
+/-- Step 1 of identifying the approximate tangent plane of a `C¹` graph (used for Simon 7.4.3):
+for linear isometries `ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}` with `⟨ιv, ι'w⟩ = 0` and `u`
+differentiable at `v₀`, the graph map `Φ(v) = z + ιv + ι'u(v)` has `DΦ(v₀) = ι + ι' ∘ Du(v₀)`.
+By Pythagoras `‖DΦ(v₀)h‖² = ‖h‖² + ‖Du(v₀)h‖²`, so `DΦ(v₀)` is injective and its range is
+`n`-dimensional. -/
+theorem Submission.dgcr_atg_graph_tangent_finrank : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → Module.finrank ℝ (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k))) = n := by
+  intro n k ι ι' u z v₀ horth hu
+  -- `DΦ(v₀) = ι + ι' ∘ Du(v₀)` by the sum and chain rules
+  have hΦ : HasFDerivAt (fun v => z + ι v + ι' (u v))
+      (ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ u v₀) v₀ :=
+    (ι.toContinuousLinearMap.hasFDerivAt.const_add z).add
+      (ι'.toContinuousLinearMap.hasFDerivAt.comp v₀ hu.hasFDerivAt)
+  rw [hΦ.fderiv]
+  -- injectivity: `ιh + ι'(Du(v₀)h) = 0` gives `0 = ‖h‖² + ‖Du(v₀)h‖²`, so `h = 0`
+  have hinj : Function.Injective ((ι.toContinuousLinearMap +
+      ι'.toContinuousLinearMap ∘L fderiv ℝ u v₀ : Euclid n →L[ℝ] Euclid (n + k)) :
+        Euclid n →ₗ[ℝ] Euclid (n + k)) := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro h hh
+    have h0 : ι h + ι' (fderiv ℝ u v₀ h) = 0 := by simpa using hh
+    have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (𝕜 := ℝ) (ι h)
+      (ι' (fderiv ℝ u v₀ h)) (horth _ _)
+    rw [h0, norm_zero, ι.norm_map, ι'.norm_map] at hpyth
+    have hh0 : ‖h‖ * ‖h‖ = 0 := by
+      linarith [mul_self_nonneg ‖h‖, mul_self_nonneg ‖fderiv ℝ u v₀ h‖]
+    simpa using hh0
+  -- `dim range DΦ(v₀) = dim ℝⁿ = n`
+  rw [LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+
+/-- **Simon Ch. 3, 1.4–1.5** on a `C¹` graph (used for 7.4.3, via Allard's Theorem 5.2 of Ch. 5):
+let `Φ(v) = z + ιv + ι'u(v)` with `u` of class `C¹` on `D = B_s(0) ∋ v₀`.  If `Hⁿ`-almost all of
+`A ∩ B_r(Φ(v₀))` lies on the graph `Φ(D)`, then an approximate tangent plane `Q` of `A` at
+`Φ(v₀)` is the graph's tangent plane `range DΦ(v₀)`.  The graph is flat at `Φ(v₀)` along
+`range DΦ(v₀)`, which therefore contains `Q`, and both planes are `n`-dimensional. -/
+theorem Submission.dgcr_approxTangent_eq_graph_tangent : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s r : ℝ) (A : Set (Euclid (n + k))) (v₀ : Euclid n) (Q : Submodule ℝ (Euclid (n + k))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → v₀ ∈ ball (0 : Euclid n) s → 0 < r → μHE[n] ((A ∩ ball (z + ι v₀ + ι' (u v₀)) r) \ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)) = 0 → HasApproximateTangentSpaceAt n A (z + ι v₀ + ι' (u v₀)) Q → Q = LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k)) := by
+  intro n k ι ι' u z s r A v₀ Q horth hu hv₀ hr hnull hQ
+  -- `u` is `C¹` on the open ball `D ∋ v₀`, hence differentiable at `v₀`
+  have hdiff : DifferentiableAt ℝ u v₀ :=
+    (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hv₀)
+  -- `Φ(D)` is flat at `Φ(v₀)` along `L = range DΦ(v₀)`, so `Q ≤ L`
+  have hle := Submission.dgcr_atg_approxTangent_le_of_flat (n + k) n _ A _ r Q _ hr hnull
+    (Submission.dgcr_atg_graph_image_flat n k ι ι' u z (ball (0 : Euclid n) s) v₀ horth hdiff) hQ
+  -- `dim Q = n = dim L`
+  have hL := Submission.dgcr_atg_graph_tangent_finrank n k ι ι' u z v₀ horth hdiff
+  exact Submodule.eq_of_le_of_finrank_eq hle (hQ.finrank_eq.trans hL.symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
