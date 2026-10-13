@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "starProjection_eq_self_iff|starProjection_orthogonal_val|inner_starProjection_left_eq_right|starProjection_apply_eq_zero_iff|dist_starProjection_eq_infDist",
+        "mem_orthogonal\\x27|mem_orthogonal_singleton_iff_inner_right",
+        "finAddEquivProd|real_norm_sq_eq|inner_single_left|inner_single_right|def basisFun|def map |map_apply",
+        "toDual_symm_apply",
+        "theorem trace_eq_matrix_trace",
+        "norm_apply_le|def proj",
+        "\"lean_name\"\\s*:\\s*\"gwe_gta_(proj_inner_defect|vertical_trace_sum|graph_row_orthogonal|row_bounds)\"",
+        "git -C ../../lake-packages-25730c7c/mathlib rev-parse HEAD",
+        "python3 -I /tmp/gta-independent-audit-20261013-nmg6x0sp/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tilt-algebra-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tilt-algebra-a1/decomposition-v1.json",
+        "/tmp/gta-independent-audit-20261013-nmg6x0sp/gen/Assembly.lean",
+        "/tmp/gta-independent-audit-20261013-nmg6x0sp/gen/AttachedProofs.lean",
+        "/tmp/gta-independent-audit-20261013-nmg6x0sp/gen/Inst.lean",
+        "/tmp/gta-independent-audit-20261013-nmg6x0sp/results.json"
+      ],
+      "conclusion": "The split is appropriate: four distinct new obligations and five valid accepted reuses establish exactly gwe_graph_tilt_algebra. All dependencies are correctly directed and acyclic, including existing prerequisite chains. The five reused frozen types are byte-identical to their accepted contracts; no competing reservations were found for the four new names. All nine names are bare identifiers, and all nine types are standalone one-line propositions matching their prose. Snapshot definitions and compiler revisions match. Independently regenerated checks against a fresh contract-only olean passed in all 27 files: nine comparator challenges, nine name wrappers, declaration types, instance checks, parent assembly, supplied proof bodies, and five accepted implementations. Proof axiom reports contain only propext, Classical.choice, and Quot.sound. Euclidean, operator-norm, projection, and Hilbert–Schmidt instances are correct; no matrix-unit construction occurs. Each natural proof is complete and non-circular, including zero-dimensional cases."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "projection_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted contract. Coordinate Cauchy–Schwarz proves the norm bound, orthogonal decomposition proves the distance identity, and the equal-rank trace calculation proves the third clause. Parts (i) and (iii) supply the required dependencies."
+    },
+    {
+      "key": "graph_coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate split proves every stated coordinate, linearity, norm, and inner-product identity, including empty index sets. Prose and frozen type match the accepted declaration exactly."
+    },
+    {
+      "key": "rotated_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Using graph_coords, the horizontal component has the required membership and orthogonal residual, proving the projection formula. Distance minimization and the independent horizontal basis establish the remaining clauses. The sole dependency is correct."
+    },
+    {
+      "key": "graph_point_linear_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Comparing both coordinate blocks proves equality with finAddEquivProd.symm directly. No parent or sibling theorem is assumed. The identical accepted type supplies the linear representation needed by graph_plane_finrank."
+    },
+    {
+      "key": "graph_plane_finrank",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof identifies the span with the range of q composed with E.symm and (id,A), proves injectivity, and obtains finrank n. It uses precisely graph_point_linear_equiv and requires no norm restriction on A."
+    },
+    {
+      "key": "proj_inner_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "For u,w in T, self-adjointness and idempotence give the defect as minus the inner product of (p-P)u and (p-P)w. Cauchy–Schwarz and projection_algebra(i) yield exactly the stated bound, without an equal-dimension assumption."
+    },
+    {
+      "key": "vertical_trace_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rotated orthonormal basis separates the trace into zero horizontal terms and the stated vertical squared norms. The hypothesis finrank S=n and rotated_plane establish equal dimensions, so projection_algebra(iii) gives the exact factor 1/2. All prerequisites are declared."
+    },
+    {
+      "key": "graph_row_orthogonal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The row identity makes q(graphPoint (-r) eps_j) orthogonal to every graph generator. Orthogonality extends to their span, and projection annihilates the difference. This proves the exact equality using only graph_coords."
+    },
+    {
+      "key": "row_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation at r proves the operator-norm bound with the zero case handled. Riesz representatives provide the rows, and coordinate identities plus exchanged finite sums prove the exact Hilbert–Schmidt identity. No sibling or parent result is assumed."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "Area Jacobian of the graph of a linear map: 1 <= J(D), and J(D) <= 1 + (e^{n/2}/2)|D|^2 when ||D|| <= 1",
+  "statement": "For all n, l and every linear map D : R^n -> R^l, let e_a := EuclideanSpace.single a 1 (a in Fin n) be the standard basis of R^n, G the n x n Gram matrix G_ab := <D e_a, D e_b>, and J(D) := sqrt(det(I_n + G)) (the area Jacobian of v |-> (v, Dv)). Then (i) 1 <= J(D); (ii) if the operator norm satisfies ||D|| <= 1, then J(D) <= 1 + (exp(n/2)/2) |D|^2, where |D|^2 := hsNormSq D = sum_a |D e_a|^2.",
+  "lean_statement": "∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), 1 ≤ Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ))))) ∧ (‖D‖ ≤ 1 → Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ))))) ≤ 1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq D)",
+  "lean_name": "gwe_graph_jacobian_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-jacobian-bounds-a1-a1"
+}

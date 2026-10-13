@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "gwe_vgt_",
+        "structure RectifiableVarifold|def weight|def graphPoint|def graphOver|namespace Submission|theorem main_theorem|sorry|axiom",
+        "lintegral_withDensity_eq_lintegral_mul_non_measurable₀|theorem restrict_withDensity|theorem withDensity_apply ",
+        "theorem aemeasurable_indicator_iff₀",
+        "theorem ContinuousOn.measurable_piecewise",
+        "theorem MeasurableSet.image_of_continuousOn_injOn",
+        "theorem integral_withDensity_eq_integral_toReal_smul ",
+        "theorem integral_map ",
+        "#print axioms gwe_vgt_weight_density",
+        "#print axioms gwe_vgt_graph_measurability",
+        "#print axioms gwe_vgt_transfer_consequences",
+        "#print axioms parent_assembly"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-transfer-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-transfer-a1/decomposition-v1.json",
+        "/tmp/vgt-independent-audit-32ihz50w/Proof1.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Proof2.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Proof3.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Assembly.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Instances.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Challenge1.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Challenge2.lean",
+        "/tmp/vgt-independent-audit-32ihz50w/Challenge3.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract sources. The cited measure-theory lemmas support arbitrary lower-integral integrands and the stated non-integrable Bochner convention. No proposed name occurs in the snapshot project, current DAG, or 497 other decomposition proposals. All names are bare identifiers; no accepted declaration is reused. Each exact one-line child proposition elaborates independently against a freshly compiled contract-only Submission. The inspected child proofs and conditional parent assembly recompile with only propext, Classical.choice and Quot.sound. Matrix identity, addition and the zero-derivative Jacobian checks pass. Splitting is appropriate: the three independent obligations isolate substantive steps, while the parent retains AREA/JB-dependent glue. Dependency directions are acyclic, and the children together with those existing prerequisite contracts prove the exact selected parent statement."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type match. Positivity and a.e. measurability give the nonnegative Borel representative. The finite a.e.-measurable density, restriction interchange and null-measurable indicator identities establish the formula for arbitrary phi without hidden measurability or sigma-finiteness assumptions. Every step is supplied and non-circular."
+    },
+    {
+      "key": "graph_measurability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type match. Coordinate continuity and injectivity justify Lusin–Souslin on Borel subsets of the closed ball. The piecewise extension requires no regularity outside that ball. Global Jacobian measurability follows from measurable_fderiv and continuity of the Gram-determinant expression. The Borel and matrix instances were independently verified. The proof is complete and non-circular."
+    },
+    {
+      "key": "transfer_consequences",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type match, including arbitrary S and non-integrable Bochner integrals. Borel indicators establish the pushforward identity; integral_map and the finite-density integral formula prove (i). A Borel null superset and the measurable zero-integral criterion prove (ii). The parent establishes the assumed lower-integral identity before applying this child, so there is no circularity or missing obligation."
+    }
+  ],
+  "required_changes": []
+}

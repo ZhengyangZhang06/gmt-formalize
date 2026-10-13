@@ -1,0 +1,141 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Context. This is fact (Jac) of the parent proof (Simon 4.5 p. 119: 1 <= J_F <= 1 + C|grad f|^2), with the explicit constant c_n := exp(n/2)/2. The parent uses it for W = J_f theta(F) in [1, (1 + kappa)(1 + c_n|Df|^2)]; gwe_varifold_graph_transfer uses (i) to get L^n(B) <= H^n(F(B)). In Lean, J(D) is Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) R) + Matrix.of fun a b => inner R (D e_a) (D e_b))), where 1 is the identity matrix and + is entrywise matrix addition.
+
+Notation. e_a := EuclideanSpace.single a 1, G := (<D e_a, D e_b>)_{a,b}, A := I + G (a real n x n matrix), |D|^2 := hsNormSq D = sum_a ||D e_a||^2.
+
+1. A is symmetric. G_ab = <D e_a, D e_b> = <D e_b, D e_a> = G_ba (real_inner_comm), and I is symmetric. Over R the conjugate transpose is the transpose, so A is Hermitian (Matrix.IsHermitian).
+2. Quadratic form. For c in R^n, sum_{a,b} c_a A_ab c_b = sum_a c_a^2 + sum_{a,b} c_a c_b <D e_a, D e_b> = ||c||^2 + ||D(sum_a c_a e_a)||^2 >= ||c||^2. This uses bilinearity of the inner product and linearity of D.
+3. Eigenvalues are at least 1. By the spectral theorem for Hermitian matrices (Matrix.IsHermitian.eigenvalues, eigenvectorBasis), A has real eigenvalues lambda_1, ..., lambda_n and an orthonormal basis of eigenvectors u_i with A u_i = lambda_i u_i. Step 2 with c = u_i gives lambda_i = lambda_i ||u_i||^2 = u_i^T A u_i >= ||u_i||^2 = 1. Hence lambda_i >= 1 > 0 for every i. (Equivalently, G = A - I is positive semidefinite, so its eigenvalues are >= 0, and the eigenvalues of A are 1 plus those of G.)
+4. Determinant and trace. det A = prod_i lambda_i (Matrix.IsHermitian.det_eq_prod_eigenvalues) and trace A = sum_i lambda_i (Matrix.IsHermitian.trace_eq_sum_eigenvalues).
+5. Part (i). Each factor lambda_i is >= 1, so det A = prod_i lambda_i >= 1. Hence J(D) = sqrt(det A) >= sqrt 1 = 1 (Real.sqrt_le_sqrt, Real.sqrt_one). No hypothesis on D is needed.
+6. trace A = sum_a A_aa = sum_a (1 + <D e_a, D e_a>) = n + sum_a ||D e_a||^2 = n + |D|^2 (real_inner_self_eq_norm_sq).
+7. For each i, lambda_i <= exp(lambda_i - 1) (Real.add_one_le_exp at lambda_i - 1). All factors are positive, so by Finset.prod_le_prod
+ det A = prod_i lambda_i <= prod_i exp(lambda_i - 1) = exp(sum_i (lambda_i - 1)) = exp(trace A - n) = exp(|D|^2)
+ (Real.exp_sum, steps 4 and 6).
+8. Hence J(D) = sqrt(det A) <= sqrt(exp |D|^2) = exp(|D|^2/2), since exp |D|^2 = (exp(|D|^2/2))^2 and exp > 0.
+9. Part (ii): assume ||D|| <= 1. Then ||D e_a|| <= ||D|| ||e_a|| <= 1 for each a (ContinuousLinearMap.le_opNorm, ||e_a|| = 1). So |D|^2 = sum_a ||D e_a||^2 <= n. Put t := |D|^2/2, so 0 <= t <= n/2.
+10. For t >= 0 we have exp t <= 1 + t exp t. Indeed 1 - t <= exp(-t) (Real.add_one_le_exp at -t). Multiplying by exp t > 0 gives (1 - t) exp t <= 1, i.e. exp t <= 1 + t exp t.
+11. Since t >= 0 and exp t <= exp(n/2) (Real.exp_le_exp, t <= n/2), we get exp t <= 1 + t exp(n/2) = 1 + (exp(n/2)/2)|D|^2. With step 8:
+ J(D) <= exp(|D|^2/2) = exp t <= 1 + (Real.exp ((n : R)/2) / 2) * hsNormSq D.
+ This is part (ii).
+(For n = 0 all matrices are empty, det A = 1 and |D|^2 = 0, so both parts read 1 <= 1. The argument above covers this case, since all sums are 0 and all products are 1.) QED
+
+## Key steps
+
+1. G = (<D e_a, D e_b>) is symmetric positive semidefinite, so A = I + G is Hermitian with x^T A x >= |x|^2.
+2. Spectral theorem: the eigenvalues lambda_i of A are >= 1; det A = prod lambda_i, trace A = n + |D|^2.
+3. (i) det A >= 1, so J = sqrt(det A) >= 1.
+4. lambda_i <= exp(lambda_i - 1) gives det A <= exp(|D|^2), so J <= exp(|D|^2/2).
+5. (ii) If ||D|| <= 1 then |D|^2 <= n. With t = |D|^2/2 in [0, n/2], exp t <= 1 + t exp t <= 1 + t exp(n/2).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean; cmp GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean (both identical)`
+- `cat <snapshot>/manifest.json; python3 -I: workspace lake-manifest.json revs; git -C lake-packages-25730c7c/{mathlib,simongmt} rev-parse HEAD vs .lake/packages/{mathlib,simongmt}`
+- `python3 -I: dag.json lean_name census for gwe_* and for hsNorm_starProjection_trace_identities, lip_approx_graph_coordinates, exists_smooth_cutoff_half_ball_grad_le (status, lean_statement/title/statement equality, depends_on); regex scan of every nodes/**/*.json for "lean_name": "gwe_`
+- `grep -rn gwe_ <snapshot>/project/GMT (no match)`
+- `grep -rl -i varifold --include=*.lean <snapshot>/mathlib/Mathlib (0 files)`
+- `grep -n -A14 'theorem weighted_area_formula_lipschitz_injOn' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n 'theorem areaJacobianAt_sq_eq_det_gram' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean; sed -n 15,40p Chapter02/Area.lean`
+- `sed -n 1,80p <snapshot>/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean | grep -n 'instance|borel|BorelSpace'`
+- `grep -n -A4 'theorem MeasurableSet.image_of_continuousOn_injOn' <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `grep -rn -A6 'theorem lintegral_withDensity_eq_lintegral_mul_non_measurable₀|theorem integral_withDensity_eq_integral_toReal_smul ' <snapshot>/mathlib/Mathlib`
+- `grep -n 'theorem integral_map ' MeasureTheory/Integral/Bochner/Basic.lean; 'theorem addHaar_sphere ' MeasureTheory/Measure/Lebesgue/EqHaar.lean; 'theorem volume_ball ' MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean; 'theorem norm_fderiv_le_of_lipschitzOn ' Analysis/Calculus/FDeriv/Basic.lean; 'measurableSet_of_differentiableAt|measurable_fderiv' Analysis/Calculus/FDeriv/Measurable.lean; 'ae_differentiableWithinAt_of_mem' Analysis/Calculus/Rademacher.lean; 'LipschitzOnWith.extend_real' Topology/MetricSpace/Lipschitz.lean; 'restrict_withDensity' WithDensity.lean; 'measure_compl_support' Support.lean; 'exists_measurable_superset_of_null' MeasureSpaceDef.lean; 'aemeasurable_indicator_iff₀' AEMeasurable.lean; 'lintegral_indicator₀' Integral/Lebesgue/Basic.lean; 'det_eq_prod_eigenvalues|trace_eq_sum_eigenvalues' Analysis/Matrix/Spectrum.lean (all under <snapshot>/mathlib/Mathlib)`
+- `sed -n 540,612p verifier/gmt-compare.py (contract_scope / child_modules: comparator replays the contract scope at main_theorem)`
+- `grep -n '4.5 Theorem|(14)|(16)' book/chapter-05.txt; sed -n 780,800p book/chapter-05.txt`
+- `lean -o /tmp/gwe-decomp-v2-20261012/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (contract-only)`
+- `python3 -I /tmp/gwe-decomp-v2-20261012/scripts/build_v2.py decomposition-v1.json out/subproblems_v2.json (prose-only edits; asserts lean fields unchanged)`
+- `python3 -I /tmp/gwe-decomp-v2-20261012/scripts/gen_checks.py verifier/gmt-compare.py GMT/Ch05/Contract.lean out/subproblems_v2.json checks`
+- `lean checks/challenge/<X>.lean for all 10 children; lean checks/TypesSubmission.lean (10 sorry warnings, no errors)`
+- `lean checks/Assembly.lean (#print axioms parent_check); lean checks/TangWiring.lean (#print axioms tang_check); lean checks/TransferWiring.lean (#print axioms transfer_check); lean checks/Inst.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/gwe-decomp-v2-20261012/scripts/build_v2.py`
+- `/tmp/gwe-decomp-v2-20261012/scripts/gen_checks.py`
+- `/tmp/gwe-decomp-v2-20261012/checks/TypesSubmission.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/Defs.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/Assembly.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/TangWiring.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/TransferWiring.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/Inst.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/challenge/gwe_lipschitz_graph_area_formula.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/challenge/gwe_varifold_graph_transfer.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/challenge/gwe_weighted_energy_weak_equation.lean`
+
+Revisions. Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The workspace pins simongmt 2b3663083f3fe399b6296fb8eaee52169170e197. The lake-packages used for compilation are at the same Mathlib and simongmt commits.
+
+Names and reuse.
+- No gwe_ name occurs in dag.json, in any other node's JSON, or in the snapshot's project sources. The seven new names are free.
+- The three reused declarations are 'accepted' in dag.json with byte-identical lean_statement, title and statement, and empty depends_on: hsNorm_starProjection_trace_identities (164f08e), lip_approx_graph_coordinates (e291574), exists_smooth_cutoff_half_ball_grad_le (cfec068).
+- No-match: Mathlib has no varifold file (0 matches), so the varifold transfer and first-variation steps are proved in the children from the contract's definitions.
+
+Borel correction, confirmed in the snapshot.
+- WithLp.measurableSpace (Analysis/Normed/Lp/MeasurableSpace.lean:26) is the comap of the product structure, and the PiLp.borelSpace instance (line 52) makes it Borel on EuclideanSpace R (Fin n) = PiLp 2 (fun _ => R). So MeasurableSet A on Rn n means Borel A, which is what the corrected prose of the area and transfer children now says.
+- SimonGMT weighted_area_formula_lipschitz_injOn (Chapter02/AreaLipschitz.lean:101) takes MeasurableSet s under [BorelSpace E] and an arbitrary g : F -> ENNReal. areaJacobianAt_sq_eq_det_gram is at Chapter02/AreaParametrization.lean:22.
+- Lusin-Souslin, MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821), needs a Borel source set.
+
+Other Mathlib items located:
+- lintegral_withDensity_eq_lintegral_mul_non_measurable₀ (WithDensity.lean:508) and integral_withDensity_eq_integral_toReal_smul (Bochner/ContinuousLinearMap.lean:318). Neither needs sigma-finiteness or integrability.
+- integral_map (Bochner/Basic.lean:1081).
+- addHaar_sphere (EqHaar.lean:527), for every radius in a nontrivial space.
+- EuclideanSpace.volume_ball (VolumeOfBalls.lean:307).
+- norm_fderiv_le_of_lipschitzOn (FDeriv/Basic.lean:939).
+- measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean:372, 378).
+- LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher.lean:361).
+- LipschitzOnWith.extend_real (Topology/MetricSpace/Lipschitz.lean:308).
+- restrict_withDensity (WithDensity.lean:215).
+- measure_compl_support (Support.lean:202).
+- exists_measurable_superset_of_null (MeasureSpaceDef.lean:219).
+- aemeasurable_indicator_iff₀ (AEMeasurable.lean:323).
+- lintegral_indicator₀ (Lebesgue/Basic.lean:518).
+- Matrix.IsHermitian.det_eq_prod_eigenvalues and trace_eq_sum_eigenvalues (Analysis/Matrix/Spectrum.lean:192, 239).
+
+Source. Simon's proof of Theorem 4.5 is at book/chapter-05.txt lines 747-930, displays (1)-(16). This node covers displays (5)-(16).
+
+Fresh Lean checks against a newly compiled contract-only Submission olean.
+- All 10 exact comparator challenges elaborate. They were generated by the verifier's own contract_scope/child_modules code: namespace GMT.Ch05, opens MeasureTheory Metric Set Filter Topology, scoped ENNReal NNReal, RectifiableVarifold.
+- All 10 elaborate as theorem Submission.X.
+- The matrix and coordinate instances are as intended.
+- Sorry-free parent_check proves the frozen parent type from the child propositions. tang_check and transfer_check prove the two internal dependency derivations.
+- All three use only propext, Classical.choice and Quot.sound.

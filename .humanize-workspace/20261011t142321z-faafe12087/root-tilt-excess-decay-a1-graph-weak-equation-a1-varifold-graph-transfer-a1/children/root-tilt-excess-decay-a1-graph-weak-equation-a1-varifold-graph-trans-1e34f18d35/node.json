@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1.weight_density-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1",
+  "depth": 4,
+  "title": "Density of the varifold weight with respect to H^n (Borel representative and lintegral formula)",
+  "statement": "Let n, l be natural numbers, U a subset of R^{n+l}, and V = v(M, theta) a rectifiable n-varifold in U (the contract structure RectifiableVarifold), with M := V.carrier, theta := V.mult, H^n := muHE[n] on R^{n+l} and weight mu := V.weight = (H^n restricted to M).withDensity (ofReal o theta). Put g := M.indicator theta : R^{n+l} -> R, so g = theta on M and g = 0 off M. Then:\n(i) there is a Borel function g2 : R^{n+l} -> R with g2(y) >= 0 for every y and g2 = g H^n-almost everywhere;\n(ii) for every Borel set S of R^{n+l} (MeasurableSet S) and every function phi : R^{n+l} -> [0, infinity] (not necessarily measurable), int_S phi dmu = int_S ofReal(g(y)) phi(y) dH^n(y).\nHere int_S is the lower (ENNReal-valued) Lebesgue integral against the restriction of the measure to S.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∃ g : Amb n ℓ → ℝ, Measurable g ∧ (∀ y, 0 ≤ g y) ∧ g =ᵐ[(μHE[n] : Measure (Amb n ℓ))] V.carrier.indicator V.mult) ∧ ∀ S : Set (Amb n ℓ), MeasurableSet S → ∀ φ : Amb n ℓ → ℝ≥0∞, ∫⁻ y in S, φ y ∂V.weight = ∫⁻ y in S, ENNReal.ofReal (V.carrier.indicator V.mult y) * φ y ∂(μHE[n] : Measure (Amb n ℓ))",
+  "lean_name": "gwe_vgt_weight_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-trans-1e34f18d35-a1"
+}
