@@ -491,6 +491,31 @@ theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s
   rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
   exact hpos.ne' hkey.symm
 
+/-- **Smooth cutoff near a compact set** (step 3 of the parent proof).  Take `δ > 0` with
+`cthickening δ K ⊆ N`.  The smooth Urysohn lemma for the closed set `cthickening (δ / 4) K`
+inside the open set `thickening (δ / 2) K` gives a `C¹` function `ζ` with
+`support ζ = thickening (δ / 2) K` and `ζ = 1` exactly on `cthickening (δ / 4) K`.  Then
+`tsupport ζ ⊆ cthickening (δ / 2) K ⊆ N` is a closed subset of a compact set, and
+`V = thickening (δ / 4) K` is an open plateau around `K`. -/
+theorem Submission.idtp_ccd_scsp_tf_cutoff : ∀ (P : ℕ) (K N : Set (Euclid P)), IsCompact K → IsOpen N → K ⊆ N → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ N ∧ ∃ V : Set (Euclid P), IsOpen V ∧ K ⊆ V ∧ ∀ y ∈ V, ζ y = 1 := by
+  intro P K N hK hN hKN
+  -- a margin: `cthickening δ K ⊆ N` for some `δ > 0`
+  obtain ⟨δ, hδ, hδN⟩ := hK.exists_cthickening_subset_open hN hKN
+  -- smooth Urysohn: `ζ = 1` exactly on `cthickening (δ / 4) K`, `support ζ = thickening (δ / 2) K`
+  obtain ⟨ζ, hζ, -, hsupp, hone⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+    (isOpen_thickening (δ := δ / 2) (E := K)) (isClosed_cthickening (δ := δ / 4) (E := K))
+    (cthickening_subset_thickening' (by positivity) (by linarith) K)
+  have hts : tsupport ζ ⊆ cthickening (δ / 2) K := by
+    rw [tsupport, hsupp]
+    exact closure_thickening_subset_cthickening _ _
+  -- the plateau `V = thickening (δ / 4) K ⊆ cthickening (δ / 4) K`
+  refine ⟨ζ, by exact_mod_cast hζ, ?_, ?_, thickening (δ / 4) K, isOpen_thickening,
+    self_subset_thickening (by positivity) K,
+    fun y hy => (hone y).1 (thickening_subset_cthickening _ _ hy)⟩
+  -- `tsupport ζ` is closed inside the compact set `cthickening (δ / 2) K` (`Euclid P` is proper)
+  · exact hK.cthickening.of_isClosed_subset (isClosed_tsupport ζ) hts
+  · exact hts.trans ((cthickening_mono (by linarith) K).trans hδN)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
