@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1.rectifiable_image-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1",
+  "depth": 5,
+  "title": "Lipschitz images of countably n-rectifiable sets are countably n-rectifiable",
+  "statement": "Let P, n ∈ ℕ, Λ ≥ 0, E := ℝ^P (Euclid P) and H^n := μHE[n]. Let φ : E → E be Λ-Lipschitz, and let M ⊆ E be any set, not assumed measurable. Suppose M is countably n-rectifiable in the sense of Simon Ch. 3, Definition 1.1 (CountablyRectifiable n M): there are M₀ ⊆ E with H^n(M₀) = 0 and maps F_j : ℝ^n → E (j ∈ ℕ), each Lipschitz with some constant, such that M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n). Then φ(M) is countably n-rectifiable.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith Λ φ → CountablyRectifiable n M → CountablyRectifiable n (φ '' M)",
+  "lean_name": "dpfir_ii_countablyRectifiable_image_of_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-2dd4d31d26-a1"
+}
