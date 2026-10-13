@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ddbab530097c650c2fc6d1a134704d6567c8354dc114723eedf8c5b81ad39fa9",
+  "git_delta": {
+    "base_commit": "e34f64b72db0c7ebc11ca02c2c6293b70d3288d7",
+    "candidate_commit": "c737f1b8555ec54f4c3c5c673c73c6678d2366d6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_regularSet_meets_ball",
+    "diff_sha256": "aa18a4a8f16895f4f990cf82f6d89c6ffd53719df6ec24e428307dccb9959268",
+    "source_sha256": "037dad4800a96db1dd9bde076a760064b5b777411a8bf4994eb4a366f18d9504",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_regularSet_meets_ball",
+      "statement": "AllardRegularityTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) → ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r → (V.regularSet ∩ ball ξ r).Nonempty",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
