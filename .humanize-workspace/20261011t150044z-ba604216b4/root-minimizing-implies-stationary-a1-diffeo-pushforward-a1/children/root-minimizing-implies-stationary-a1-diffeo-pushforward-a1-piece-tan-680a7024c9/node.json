@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes of a locally H^n-finite set along a bi-Lipschitz piece",
+  "statement": "Let U ⊆ ℝ^P be open and Y ⊆ U Borel with H^n(Y ∩ C) < ∞ for every compact C ⊆ U. Let F : ℝ^n → ℝ^P be L-Lipschitz, B ⊆ ℝ^n Borel and m > 0 with m|a − a'| ≤ |F(a) − F(a')| for a, a' ∈ B, F differentiable with injective derivative at every point of B, and F(B) ⊆ Y. Then for Lebesgue-a.e. b ∈ B, Y has the approximate tangent space range DF(b) at F(b) (HasApproximateTangentSpaceAt n Y (F b) (range DF(b))).",
+  "lean_statement": "∀ (P n : ℕ) (U Y : Set (Euclid P)) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), IsOpen U → MeasurableSet Y → Y ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (Y ∩ C) ≠ ∞) → LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → F '' B ⊆ Y → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n Y (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "dpf_approxTangent_ae_bilipschitz_piece",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1"
+}

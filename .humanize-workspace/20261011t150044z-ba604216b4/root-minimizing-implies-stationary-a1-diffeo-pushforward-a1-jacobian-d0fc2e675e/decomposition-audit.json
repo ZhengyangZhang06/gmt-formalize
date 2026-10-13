@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dpf_jm_gram_det_eq_det_compression|dpf_jm_aestronglyMeasurable_sqrt_det_compression",
+        "theorem det_eq_det_mul_det|theorem det_toMatrix|theorem continuous_det|abbrev det|def starProjection|starProjection_eq_self_iff|starProjection_apply_mem|inner_starProjection_left_eq_right|adjoint_inner_right|theorem.*comp_aestronglyMeasurable|theorem prodMk|theorem clm_comp",
+        "Continuous.clm_comp|lemma clm_comp|theorem clm_comp",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jm-independent-audit-a5ufjkq_/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jm-independent-audit-a5ufjkq_/ProofsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jm-independent-audit-a5ufjkq_/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-jacobian-d0fc2e675e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-jacobian-d0fc2e675e/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        "/tmp/jm-independent-audit-a5ufjkq_/Types.lean",
+        "/tmp/jm-independent-audit-a5ufjkq_/ProofsAndAssembly.lean",
+        "/tmp/jm-independent-audit-a5ufjkq_/Instances.lean"
+      ],
+      "conclusion": "Verified the frozen handoff and compatibility with project b4d606db and Mathlib 25730c7c. The inspected determinant, projection, adjoint, continuity and measurability APIs support the supplied proofs. Both exact child types elaborate independently before implementation. Freshly extracted proof scripts and their assembly into the exact frozen parent compile successfully in the comparator's replayed scope; all three proofs use only propext, Classical.choice and Quot.sound. Separate Lean checks confirm the intended inner products, projection instances, operator norm, composition parsing and LinearMap determinant. Neither proposed bare name conflicts with the 518-node DAG, workers, other nodes' stored proposals, or searched Lean sources. The split appropriately separates the algebraic identity from continuity/measurability; both children have empty dependencies, and their conclusions establish this selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_det_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line standalone proposition exactly matches the prose, including the finite decidable index type and orthonormal basis. Step-by-step verification confirms invariance of V, identity on the quotient, determinant factorization, and identification of the restricted matrix with the Gram matrix using projection self-adjointness and the adjoint identity. Finite-dimensional instance requirements are satisfied, including zero-dimensional cases. Matrix.of and the endomorphism determinant have the intended meanings. The complete supplied script compiles without circular reliance or undeclared child dependencies; the bare declaration name is unreserved."
+    },
+    {
+      "key": "compression_det_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line standalone proposition exactly matches the prose and both a.e. strong measurability hypotheses. The supplied proof establishes continuity of every operation in the stated composition, forms the measurable pair, and applies continuous composition. Arbitrary p is valid: no projection assumption or determinant nonnegativity is needed because Real.sqrt is continuous on all real inputs. Composition parsing and operator instances were independently checked. The complete supplied script compiles independently of the other child and parent; the bare declaration name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
