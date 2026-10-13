@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f7fca0f1031df676ff6d4adf77dcb010e2b01e791fa95dee52e0097a3b5d24b9",
+  "git_delta": {
+    "base_commit": "4eda269fbcfe2e5c6ae1cb377b564da2bd97d9e3",
+    "candidate_commit": "ff0a127d0194729b3801f7154389155e113957cd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmrc_measure_le_of_compactlyContained",
+    "diff_sha256": "b1c1a5228a75da3fd0cc8c9f433df75848bac9614c433566d6b165f1f0f16e1f",
+    "source_sha256": "ed6a92d8b76057533b617904bc96791a12b48edb467373be1d3c07c09f29f90e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmrc_measure_le_of_compactlyContained",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (U W : Set (Euclid P)) (m : ℝ≥0∞), IsOpen U → IsOpen W → μ Uᶜ = 0 → (∀ W' : Set (Euclid P), IsOpen W' → CompactlyContained W' U → W' ⊆ W → μ W' ≤ m) → μ W ≤ m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
