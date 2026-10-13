@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.glue_triples-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "Gluing compatible integer multiplicity triples along a countable open cover",
+  "statement": "Let P, k ∈ ℕ and U ⊆ ℝ^P. Write Hᵏ := μHE[k].\n\nAssume (TL): for all A, A' ⊆ ℝ^P, ϑ, ϑ' : ℝ^P → ℝ, x ∈ ℝ^P and open W ⊆ ℝ^P with x ∈ W, if Hᵏ((A Δ A') ∩ W) = 0, ϑ = ϑ' holds Hᵏ⌞(A ∩ W)-a.e., and ϑ(x) = ϑ'(x), then every linear subspace L with HasWeightedApproximateTangentSpaceAt k A ϑ x L also satisfies HasWeightedApproximateTangentSpaceAt k A' ϑ' x L.\n\nLet V_i (i ∈ ℕ) be open sets with U ⊆ ⋃_i V_i. Let (M_i, θ_i, ξ_i) (i ∈ ℕ) satisfy IsRectifiableTriple U k M_i θ_i ξ_i, with θ_i(x) ∈ ℕ for x ∈ M_i. Suppose that for all i, j: Hᵏ((M_i Δ M_j) ∩ (V_i ∩ V_j)) = 0, and θ_i = θ_j and ξ_i = ξ_j hold Hᵏ⌞(M_i ∩ (V_i ∩ V_j))-a.e.\n\nThen there is (M₀, θ₀, ξ₀) with IsRectifiableTriple U k M₀ θ₀ ξ₀ and θ₀(x) ∈ ℕ for x ∈ M₀, such that for every i: Hᵏ((M_i Δ M₀) ∩ V_i) = 0, and θ_i = θ₀ and ξ_i = ξ₀ hold Hᵏ⌞(M_i ∩ V_i)-a.e.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), (∀ (A A' : Set (Eucl P)) (ϑ ϑ' : Eucl P → ℝ) (x : Eucl P) (W : Set (Eucl P)), IsOpen W → x ∈ W → (μHE[k] : Measure (Eucl P)) (symmDiff A A' ∩ W) = 0 → (∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (A ∩ W)), ϑ y = ϑ' y) → ϑ x = ϑ' x → ∀ L : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k A ϑ x L → HasWeightedApproximateTangentSpaceAt k A' ϑ' x L) → ∀ (V M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (ξ : ℕ → Eucl P → NVector (Eucl P) k), (∀ i, IsOpen (V i)) → U ⊆ ⋃ i, V i → (∀ i, IsRectifiableTriple U k (M i) (θ i) (ξ i)) → (∀ i, ∀ x ∈ M i, ∃ n : ℕ, θ i x = n) → (∀ i j, (μHE[k] : Measure (Eucl P)) (symmDiff (M i) (M j) ∩ (V i ∩ V j)) = 0 ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M i ∩ (V i ∩ V j))), θ i x = θ j x ∧ ξ i x = ξ j x) → ∃ (M₀ : Set (Eucl P)) (θ₀ : Eucl P → ℝ) (ξ₀ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M₀ θ₀ ξ₀ ∧ (∀ x ∈ M₀, ∃ n : ℕ, θ₀ x = n) ∧ ∀ i, (μHE[k] : Measure (Eucl P)) (symmDiff (M i) M₀ ∩ V i) = 0 ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M i ∩ V i)), θ i x = θ₀ x ∧ ξ i x = ξ₀ x",
+  "lean_name": "ltg_glue_triples",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-glue-triples-a1-a1"
+}
