@@ -574,6 +574,53 @@ theorem Submission.iwl_cr_cest_radial_coeff_bound : ∀ (P m : ℕ) (ω : Differ
   · rw [Real.sqrt_sq (mul_nonneg (pow_nonneg (Nat.cast_nonneg P) m) hK0), hK]
     ring
 
+/-- **Cut-off radial form** (cone construction, Simon Ch. 6, 2.30–2.32 (pp. 141–142), as used in
+the proof of 8.2).  Let `ψ₀(x)(v) = ∫₀¹ tᵐ ω(t x)(x, v) dt` be smooth and `0 < r < s`.  For the
+bump function `ζ` equal to `1` on `B̄_r(0)` with support `B_s(0)`, `ψ = ζ ψ₀` is a test form
+agreeing with `ψ₀` on `B_r(0)`.  If `|ω| ≤ 1`, then `|ψ(x)| = ζ(x) |ψ₀(x)|`, which is at most
+`P^{2m+1} ‖x‖ ≤ P^{2m+1} s` for `‖x‖ < s` and `0` otherwise. -/
+theorem Submission.iwl_cr_cest_cutoff_radial_form : ∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (ψ₀ : DifferentialForm (Eucl P) m) (r s : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ₀ → (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ₀ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → 0 < r → r < s → ∃ ψ : TestFormOn (univ : Set (Eucl P)) m, (∀ x ∈ ball (0 : Eucl P) r, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ((∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) m) x) ≤ (P : ℝ) ^ (2 * m + 1) * s) := by
+  intro P m ω ψ₀ r s hψ₀ hrad hr hrs
+  -- Step 1: the bump function `ζ = 1` on `B̄_r(0)`, `support ζ = B_s(0)`, `0 ≤ ζ ≤ 1`.
+  obtain ⟨ζ, hζr, hζs⟩ : ∃ ζ : ContDiffBump (0 : Eucl P), ζ.rIn = r ∧ ζ.rOut = s :=
+    ⟨⟨r, s, hr, hrs⟩, rfl, rfl⟩
+  -- Step 2: `ζ ψ₀` is smooth with compact support, i.e. a test form on `ℝ^P`.
+  have hmem : (ζ : Eucl P → ℝ) • ψ₀ ∈ testFormOnSubmodule (univ : Set (Eucl P)) m :=
+    ⟨⟨ζ.contDiff.smul hψ₀, ζ.hasCompactSupport.smul_right⟩, subset_univ _⟩
+  refine ⟨⟨(ζ : Eucl P → ℝ) • ψ₀, hmem⟩, fun x hx v => ?_, fun hω x => ?_⟩
+  -- Step 3: `ζ = 1` on `B_r(0)`, so there `ψ = ψ₀` satisfies the radial formula.
+  · have hζx : ζ x = 1 := ζ.one_of_mem_closedBall (by rw [hζr]; exact ball_subset_closedBall hx)
+    change ((ζ : Eucl P → ℝ) • ψ₀) x v = _
+    rw [Pi.smul_apply', ContinuousAlternatingMap.smul_apply, hζx, one_smul, hrad]
+  -- Step 4: homogeneity `|a α| = |a| |α|` of the Euclidean coefficient norm.
+  · have hsmul : ∀ (a : ℝ) (α : Covector (Eucl P) m),
+        covectorEuclideanNorm (a • α) = |a| * covectorEuclideanNorm α := by
+      intro a α
+      unfold covectorEuclideanNorm
+      rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg a), Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+      · rw [mul_zero]
+    -- Step 5: `|ψ(x)| = ζ(x) |ψ₀(x)|`; bound it on `B_s(0)` and note it vanishes outside.
+    change covectorEuclideanNorm (((ζ : Eucl P → ℝ) • ψ₀) x) ≤ _
+    rw [Pi.smul_apply', hsmul, abs_of_nonneg ζ.nonneg]
+    have hc : 0 ≤ (P : ℝ) ^ (2 * m + 1) := pow_nonneg (Nat.cast_nonneg P) _
+    by_cases hxs : ‖x‖ < s
+    · have hψ₀x : covectorEuclideanNorm (ψ₀ x) ≤ (P : ℝ) ^ (2 * m + 1) * ‖x‖ :=
+        Submission.iwl_cr_cest_radial_coeff_bound P m ω x (ψ₀ x) hω (hrad x)
+      calc ζ x * covectorEuclideanNorm (ψ₀ x) ≤ 1 * ((P : ℝ) ^ (2 * m + 1) * ‖x‖) :=
+            mul_le_mul ζ.le_one hψ₀x (covectorEuclideanNorm_nonneg _) zero_le_one
+        _ ≤ (P : ℝ) ^ (2 * m + 1) * s := by
+            rw [one_mul]
+            exact mul_le_mul_of_nonneg_left hxs.le hc
+    · have hζx : ζ x = 0 := by
+        rw [← Function.notMem_support, ζ.support_eq, hζs, mem_ball_zero_iff]
+        exact hxs
+      rw [hζx, zero_mul]
+      exact mul_nonneg hc (hr.trans hrs).le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
