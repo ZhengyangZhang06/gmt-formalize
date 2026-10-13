@@ -40909,6 +40909,54 @@ theorem allard_regularity_theorem : AllardRegularityTheorem := by
 end Submission
 end_elaborate_without_info_trees
 
+namespace Submission
+
+/-- **Simon Ch. 5, Theorem 7.1, first assertion** (printed proof, p. 127): at a scale `r` where the
+hypotheses 5.1 hold at `ξ`, Theorem 5.2 applied to `V` translated by `-ξ` makes
+`(spt V - ξ) ∩ B_{γr}(0)` a rotated `C^{1,1−n/p}` graph over `Bⁿ_{γr}(0)`; on the open ball this
+graph is `graph_W u` for an open `W ∋ 0`, and `Hⁿ(M ∆ spt V) = 0` because `Θⁿ(μ_V, ·) ≥ 1` on
+`spt V`. -/
+theorem density_one_regularity : DensityOneRegularity := by
+  intro n ℓ hn U hU V H p hp hH hLp hθ ξ hξU hξ
+  obtain ⟨δ₀, γ, C, hδ₀, -, hγ, -, hallard⟩ := Submission.allard_regularity_theorem n ℓ hn p hp
+  -- Step 1: a scale `r` at which 5.1 holds at `ξ` with `δ = δ₀`.
+  obtain ⟨hξspt, r, hr, hrU, hmass, hHr⟩ :=
+    Submission.density_one_allard_scale V H p ξ δ₀ hU hp hLp hξU hξ hδ₀
+  -- Step 2: Theorem 5.2 for `V` translated by `-ξ`.
+  obtain ⟨V', -, -, -, hV'spt, -, hV'allard⟩ :=
+    Submission.exists_translated_varifold_allardHypotheses V ξ
+  obtain ⟨q, u, hu, hu0, hDu0, hgraph, hnorm⟩ :=
+    hallard _ (isOpenMap_sub_right ξ U hU) V' (fun x => H (x + ξ)) δ₀ r hδ₀ le_rfl
+      (hV'allard H p δ₀ r hH hθ hξspt hr hrU hmass hHr)
+  have hs : 0 < γ * r := mul_pos hγ hr
+  -- Step 3: the open domain `W` with `q⁻¹(spt V - ξ) ∩ B̆_{γr}(0) = graph_W u`.
+  obtain ⟨W, hWo, hW0, hWs, hW⟩ := Submission.exists_open_graph_domain_of_closedBall_graph
+    V'.support q u (γ * r) hs hu.continuousOn hu0 hgraph
+  refine ⟨γ * r, hs, q.symm, W, u, hWo, hW0, ?_, hu0, ?_, ?_⟩
+  · -- Step 4: the finite scaled `C^{1,1−n/p}` norm gives the Hölder class on `W`.
+    have hα : 0 < 1 - (n : ℝ) / p := by
+      rw [sub_pos, div_lt_one ((Nat.cast_nonneg n).trans_lt hp)]
+      exact hp
+    exact Submission.isHolderCk_one_of_scaledC1AlphaNorm_ne_top u (closedBall 0 (γ * r)) W _ r hα
+      hr hu (hWs.trans ball_subset_interior_closedBall)
+      (ne_top_of_le_ne_top ENNReal.ofReal_ne_top hnorm)
+  · rw [← fderivWithin_of_mem_nhds (closedBall_mem_nhds (0 : Rn n) hs)]
+    exact hDu0
+  · -- Steps 5–6: `Hⁿ(M ∆ spt V) = 0`, transported by the isometry `x ↦ q⁻¹(x - ξ)`.
+    have hnull := Submission.hausdorff_carrier_symmDiff_support_null V fun x hx => by
+      obtain ⟨t, ht, hxt⟩ :=
+        Submission.one_le_density_on_support_of_locallyLp V H p hn hU hp hH hLp hθ x hx
+      exact ⟨t, zero_lt_one.trans_le ht, hxt⟩
+    have hτ : Isometry fun x : Amb n ℓ => x - ξ :=
+      Isometry.of_dist_eq fun x y => dist_sub_right x y ξ
+    rw [← hW, hV'spt, ← Set.inter_symmDiff_distrib_right]
+    refine measure_mono_null Set.inter_subset_left ?_
+    rw [← Set.image_symmDiff q.symm.injective, ← Set.image_symmDiff hτ.injective,
+      q.symm.isometry.euclideanHausdorffMeasure_image, hτ.euclideanHausdorffMeasure_image]
+    exact hnull
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
