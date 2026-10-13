@@ -1825,6 +1825,50 @@ theorem dohr_eb_lhr_differentiated_system : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (
     have hn₂ : ¬ IntegrableOn (fun x => fderiv ℝ Φ x e (fderiv ℝ ζ x) - c x) U :=
       fun h => hcI ((hF₂.sub h).congr_fun (fun x _ => sub_sub_cancel _ _) hU')
     rw [integral_undef hn₁, integral_undef hn₂]
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1 (pp. 127–128): local `C^{j,α}`
+classes are closed under `h - ∑ᵢ fᵢ` and under modification outside the open set `U`.  If `h` and
+every `fᵢ` are `C^j` on `U` with `Dʲ` `α`-Hölder on every compact `K ⊆ U`, and `g = h - ∑ᵢ fᵢ` on
+`U`, then `g` is `C^j` on `U`; as `U` is open, `Dʲg = Dʲh - ∑ᵢ Dʲfᵢ` on `U`
+(`Filter.EventuallyEq.iteratedFDeriv`), so the triangle inequality turns Hölder constants `C_h`,
+`Cᵢ` on `K` into the constant `max C_h 0 + ∑ᵢ max Cᵢ 0` for `Dʲg`. -/
+theorem dohr_eb_lhr_holder_loc_sub_sum : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (j N : ℕ) (α : ℝ) (U : Set (Rn n)) (h g : Rn n → E) (f : Fin N → Rn n → E), IsOpen U → ContDiffOn ℝ j h U → (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ j h x - iteratedFDeriv ℝ j h y‖ ≤ C * ‖x - y‖ ^ α) → (∀ i : Fin N, ContDiffOn ℝ j (f i) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ j (f i) x - iteratedFDeriv ℝ j (f i) y‖ ≤ C * ‖x - y‖ ^ α) → (∀ x ∈ U, g x = h x - ∑ i, f i x) → ContDiffOn ℝ j g U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ j g x - iteratedFDeriv ℝ j g y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro n E _ _ j N α U h g f hU hh hhol hf hg
+  -- Step 1: `G := h - ∑ i, f i` is `C^j` on `U`.
+  have hG : ContDiffOn ℝ j (fun x => h x - ∑ i, f i x) U :=
+    hh.sub (ContDiffOn.sum fun i _ => (hf i).1)
+  -- Step 2: on the open set `U`, `g = G` near each point, so `Dʲg = Dʲh - ∑ i, Dʲfᵢ` there.
+  have hiter : ∀ x ∈ U, iteratedFDeriv ℝ j g x
+      = iteratedFDeriv ℝ j h x - ∑ i, iteratedFDeriv ℝ j (f i) x := by
+    intro x hx
+    have hxU : U ∈ 𝓝 x := hU.mem_nhds hx
+    have heq : g =ᶠ[𝓝 x] fun z => h z - ∑ i, f i z := Filter.eventually_of_mem hxU hg
+    have hfx : ∀ i ∈ (Finset.univ : Finset (Fin N)), ContDiffAt ℝ j (f i) x :=
+      fun i _ => (hf i).1.contDiffAt hxU
+    rw [(heq.iteratedFDeriv ℝ j).eq_of_nhds,
+      fun_iteratedFDeriv_sub_apply (hh.contDiffAt hxU) (ContDiffAt.sum hfx),
+      iteratedFDeriv_fun_sum_apply hfx]
+  refine ⟨hG.congr hg, fun K hK hKU => ?_⟩
+  -- Step 3: Hölder constants of `Dʲh` and of every `Dʲfᵢ` on `K`, made nonnegative.
+  obtain ⟨Ch, hCh⟩ := hhol K hK hKU
+  choose Cf hCf using fun i => (hf i).2 K hK hKU
+  refine ⟨max Ch 0 + ∑ i, max (Cf i) 0, fun x hx y hy => ?_⟩
+  have hr : 0 ≤ ‖x - y‖ ^ α := Real.rpow_nonneg (norm_nonneg _) α
+  -- Step 4: the triangle inequality.
+  rw [hiter x (hKU hx), hiter y (hKU hy)]
+  calc ‖(iteratedFDeriv ℝ j h x - ∑ i, iteratedFDeriv ℝ j (f i) x)
+        - (iteratedFDeriv ℝ j h y - ∑ i, iteratedFDeriv ℝ j (f i) y)‖
+      = ‖(iteratedFDeriv ℝ j h x - iteratedFDeriv ℝ j h y)
+          - ∑ i, (iteratedFDeriv ℝ j (f i) x - iteratedFDeriv ℝ j (f i) y)‖ := by
+        rw [Finset.sum_sub_distrib]; congr 1; abel
+    _ ≤ ‖iteratedFDeriv ℝ j h x - iteratedFDeriv ℝ j h y‖
+          + ∑ i, ‖iteratedFDeriv ℝ j (f i) x - iteratedFDeriv ℝ j (f i) y‖ :=
+        (norm_sub_le _ _).trans (add_le_add le_rfl (norm_sum_le _ _))
+    _ ≤ max Ch 0 * ‖x - y‖ ^ α + ∑ i, max (Cf i) 0 * ‖x - y‖ ^ α := by
+        gcongr with i
+        · exact (hCh x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hr)
+        · exact (hCf i x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hr)
+    _ = (max Ch 0 + ∑ i, max (Cf i) 0) * ‖x - y‖ ^ α := by
+        rw [add_mul, Finset.sum_mul]
 
 end Submission
 
