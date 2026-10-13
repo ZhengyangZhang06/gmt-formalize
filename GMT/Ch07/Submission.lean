@@ -1100,6 +1100,51 @@ theorem Submission.cbrld_vitali_setIntegral_le : ∀ (P : ℕ) (μ : Measure (Eu
         sub_le_sub_left (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hVfin.ne hEV)
           (sub_nonneg.2 hθ)) _
 
+/-- **Comparison with a small filling** (Simon Ch. 6, proof of Theorem 8.2, (4)–(6), pp. 177–178,
+for a single test form).  Suppose `∂S = ∂A` in `ℝᴾ`, `M(A) ≤ m < ∞`, `M(S) ≤ κm`,
+`spt A, spt S ⊆ B̄_R(x)`, `|ω| ≤ 1`, and `ω` satisfies the cone inequality `|X(ω)| ≤ cϱM(X)` for
+every cycle `X` of finite mass supported in a closed ball of radius `ϱ`.  Then `X = S − A` is such
+a cycle, with `M(X) ≤ M(S) + M(A) ≤ (1 + κ)m` and `spt X ⊆ spt S ∪ spt A ⊆ B̄_R(x)`, so
+`|X(ω)| ≤ cR(1 + κ)m`; and `S(ω) ≤ M(S) ≤ κm` because `ω` is admissible.  Hence
+`A(ω) = S(ω) − X(ω) ≤ (κ + cR(1 + κ))m`. -/
+theorem Submission.cbrld_ns_eval_le_of_small_filling : ∀ (P d : ℕ) (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (ω : TestFormOn (univ : Set (Euclid P)) (d + 1)) (m : ℝ≥0∞) (x : Euclid P) (c κ R : ℝ), 0 ≤ c → 0 ≤ κ → 0 < R → m < ∞ → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (d + 1)) y) ≤ 1) → (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (x₀ : Euclid P) (ϱ : ℝ), 0 < ϱ → X.boundary = 0 → X.mass < ∞ → X.support ⊆ closedBall x₀ ϱ → |X ω| ≤ c * ϱ * X.mass.toReal) → S.boundary = A.boundary → A.mass ≤ m → S.mass ≤ ENNReal.ofReal κ * m → A.support ⊆ closedBall x R → S.support ⊆ closedBall x R → A ω ≤ (κ + c * R * (1 + κ)) * m.toReal := by
+  intro P d A S ω m x c κ R hc hκ hR hm hω hcone hbd hA hS hsptA hsptS
+  -- Step 1: the comparison current `X = S − A`, with `X(η) = S(η) − A(η)`.
+  set X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1) := S - A
+  have hXapp : ∀ η, X η = S η - A η := fun _ => rfl
+  -- Step 2: `∂X(η) = S(dη) − A(dη) = ∂S(η) − ∂A(η) = 0`.
+  have hXbd : X.boundary = 0 := by
+    ext η
+    rw [GeometricCurrentOn.boundary_apply, hXapp, ← GeometricCurrentOn.boundary_apply,
+      ← GeometricCurrentOn.boundary_apply, hbd, sub_self, GeometricCurrentOn.zero_apply]
+  -- Step 3: `M(X) ≤ M(S) + M(A) ≤ κm + m < ∞`, hence `M(X) ≤ (1 + κ)m` as real numbers.
+  have hκm : ENNReal.ofReal κ * m < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hm
+  have hsum : ENNReal.ofReal κ * m + m < ∞ := ENNReal.add_lt_top.2 ⟨hκm, hm⟩
+  have hXmass : X.mass ≤ ENNReal.ofReal κ * m + m :=
+    (Submission.cbrld_ns_massOn_sub_le P (d + 1) univ univ S A).trans (add_le_add hS hA)
+  have hXfin : X.mass < ∞ := hXmass.trans_lt hsum
+  have hXreal : X.mass.toReal ≤ (1 + κ) * m.toReal := by
+    have h := ENNReal.toReal_mono hsum.ne hXmass
+    rw [ENNReal.toReal_add hκm.ne hm.ne, ENNReal.toReal_mul, ENNReal.toReal_ofReal hκ] at h
+    linarith
+  -- Step 4: `spt X ⊆ spt S ∪ spt A ⊆ B̄_R(x)`.
+  have hXspt : X.support ⊆ closedBall x R :=
+    (Submission.cbrld_ns_support_sub_subset P (d + 1) univ S A).trans (union_subset hsptS hsptA)
+  -- Step 5: the cone inequality at `(x, R)`: `|X(ω)| ≤ cR·M(X) ≤ cR(1 + κ)m`.
+  have hXω : |X ω| ≤ c * R * ((1 + κ) * m.toReal) :=
+    (hcone X x R hR hXbd hXfin hXspt).trans
+      (mul_le_mul_of_nonneg_left hXreal (mul_nonneg hc hR.le))
+  -- Step 6: `ω` is `ℝᴾ`-admissible, so `S(ω) ≤ M(S) ≤ κm`.
+  have hSω : S ω ≤ κ * m.toReal := by
+    have hadm : ω ∈ massAdmissibleOn (univ : Set (Euclid P)) (d + 1) univ :=
+      ⟨subset_univ _, hω⟩
+    have h := (ENNReal.ofReal_le_iff_le_toReal hκm.ne).1 ((S.le_massOn hadm).trans hS)
+    rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal hκ] at h
+  -- Step 7: `A(ω) = S(ω) − X(ω) ≤ S(ω) + |X(ω)| ≤ κm + cR(1 + κ)m`.
+  have hAω : A ω = S ω - X ω := by rw [hXapp]; ring
+  rw [hAω]
+  linarith [neg_le_abs (X ω)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
