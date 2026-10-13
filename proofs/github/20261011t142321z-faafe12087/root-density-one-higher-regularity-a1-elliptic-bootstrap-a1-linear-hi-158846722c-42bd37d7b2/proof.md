@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.bilin_leibniz-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1, 2 and 6 of the parent proof: the basis expansion a(z)[Q][P] = Σ_r π_r(Q) · a(z)[E_r][P], and the add-and-subtract decomposition of the derivative of a(y)[Dv(y)][P] into a(y)[D(Dv)(y)e][P] + D(a(·)[Dv(y)][P])(y)e. No imports may be added (contDiffOn_clm_apply is not in the frozen closure). No algebraic instances on the bilinear-form type L →L[ℝ] L →L[ℝ] ℝ are used: only the L*-valued maps z ↦ a(z)[E_r] are differentiated.
+1. Basis. As in clm_family, fix a basis E_1, ..., E_N of L with continuous coordinate functionals π_r, so Q = Σ_r π_r(Q) E_r. By linearity of a(z), for all z and Q, a(z)[Q] = Σ_r π_r(Q) · a(z)[E_r] in L*. Evaluating at P: a(z)[Q][P] = Σ_r π_r(Q) · a(z)[E_r][P].
+2. Coefficient families. For each r, the L*-valued map z ↦ a(z)[E_r] has C^1 components z ↦ a(z)[E_r][P] (hypothesis). By clm_family (Submission.dohr_eb_lhr_ds_clm_family applied to fun z => a z (b r)), it is C^1 on U, and for x ∈ U: (D(a(·)[E_r])(x) e)[P] = D(a(·)[E_r][P])(x) e.
+3. C^1. For each r, z ↦ π_r(w(z)) is C^1 on U (a continuous linear map after the C^1 map w). So z ↦ π_r(w(z)) · a(z)[E_r] is C^1 on U (ContDiffOn.smul), and so is the finite sum over r (ContDiffOn.sum). By step 1 with Q := w(z), this sum equals a(z)[w(z)] for every z. Hence z ↦ a(z)[w(z)] is C^1 on U (ContDiffOn.congr).
+4. Derivative of the expansion. Fix x ∈ U. Since U is open, w and each z ↦ a(z)[E_r] are differentiable at x, and z ↦ π_r(w(z)) has derivative π_r ∘ Dw(x) at x (chain rule). By the product rule (HasFDerivAt.smul) and the sum rule (HasFDerivAt.fun_sum), z ↦ a(z)[w(z)] = Σ_r π_r(w(z)) · a(z)[E_r] has derivative Σ_r [π_r(w(x)) · D(a(·)[E_r])(x) + (π_r ∘ Dw(x)) ⊗ a(x)[E_r]] at x, where (λ ⊗ ψ)(h) := λ(h) · ψ. Applying this to e and evaluating at P:
+(D(a(·)[w(·)])(x) e)[P] = Σ_r π_r(w(x)) · (D(a(·)[E_r])(x) e)[P] + Σ_r π_r(Dw(x)e) · a(x)[E_r][P].
+5. Second sum. By step 1 with z := x and Q := Dw(x)e, Σ_r π_r(Dw(x)e) · a(x)[E_r][P] = a(x)[Dw(x)e][P].
+6. First sum. By step 2, it equals Σ_r π_r(w(x)) · D(a(·)[E_r][P])(x) e. Freeze Q := w(x). By step 1, the scalar function z ↦ a(z)[Q][P] equals z ↦ Σ_r π_r(Q) · a(z)[E_r][P], a finite sum of constant multiples of functions differentiable at x (each is C^1 on U). The sum and constant-multiple rules (HasFDerivAt.fun_sum, HasFDerivAt.const_mul) give D(a(·)[Q][P])(x) e = Σ_r π_r(Q) · D(a(·)[E_r][P])(x) e. Hence the first sum equals D(a(·)[w(x)][P])(x) e.
+7. Combining steps 4–6: (D(a(·)[w(·)])(x) e)[P] = a(x)[Dw(x)e][P] + D(a(·)[w(x)][P])(x) e. QED
+Lean notes:
+- Derive the two derivatives as HasFDerivAt statements and conclude with HasFDerivAt.fderiv, after `convert ... using 1` and funext with the expansion of step 1. This is more robust than rewriting fderiv of lambda-sums.
+- Expand Q = Σ_r b.repr Q r • b r with rw [b.sum_repr] on an explicit equation; plain simp folds it back.
+- The smul and product rules into L* need IsBoundedSMul ℝ ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ). Wrap the proof in the tactic-level `set_option maxSynthPendingDepth 3 in` followed by a `·` block.
+- The proof is a single theorem that uses Submission.dohr_eb_lhr_ds_clm_family.
+
+## Key steps
+
+1. expansion a(z)[Q] = Σ_r π_r(Q) a(z)[E_r] in L* via a basis of L
+2. clm_family: z ↦ a(z)[E_r] is C^1 on U and (D(a(·)[E_r])(x)e)[P] = D(a(·)[E_r][P])(x)e
+3. C^1 of z ↦ Σ_r π_r(w(z)) a(z)[E_r] = a(z)[w(z)]
+4. product and sum rules: derivative = Σ_r π_r(w(x))(D(a(·)[E_r])(x)e)[P] + Σ_r π_r(Dw(x)e) a(x)[E_r][P]
+5. identify the sums as D(a(·)[w(x)][P])(x)e and a(x)[Dw(x)e][P]
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `rg -n -i 'weak (equation|solution)|difference quotient|isSymmSndFDerivAt|translat' <snapshot>/project`
+- `rg -n in <snapshot>/mathlib/Mathlib for: hasDerivAt_integral_of_dominated_loc_of_deriv_le, hasFDerivAt_of_tendstoUniformlyOnFilter, hasFDerivAt_of_tendstoLocallyUniformlyOn, ContDiffAt.isSymmSndFDerivAt, contDiffOn_clm_apply, continuousOn_clm_apply, setIntegral_eq_integral_of_forall_compl_eq_zero, integral_mul_right_eq_self (to_additive integral_add_right_eq_self), fderiv_comp_sub, fderiv_clm_apply, HasFDerivAt.clm_apply, HasDerivAt.clm_apply, HasDerivAt.tendsto_slope_zero, tsupport_fderiv_subset, IsCompact.exists_cthickening_subset_open, IsCompact.uniformContinuousOn_of_continuous, norm_image_sub_le_of_norm_fderiv_le', ContDiffOn.fderiv_of_isOpen, ContDiffOn.continuousOn_fderiv_of_isOpen, Continuous.integrable_of_hasCompactSupport, fderiv_smul, ContDiffOn.smul, ContDiffOn.sum, Module.Basis.sum_repr`
+- `python3 scan of dag.json: statuses and lean_statements of linear_higher_regularity-a1 children and of difference_quotient_limit-a1.diffquot_uniform-a1; grep -c dohr_eb_lhr_ds in dag.json, nodes/ and the snapshot project`
+- `git show 33d90ae6 (accepted dohr_eb_dql_diffQuot_tendstoUniformlyOn proof); git show a9fe7dd1 (leaf rejected for an added import); git log --all -G '^import ' -- GMT/Ch05/Submission.lean; scan of set_option usage in accepted workspace_result_commits`
+- `read nodes/root-allard-any-radius-a1-patching-a1-global-graph-a1-local-c1-a1/rlcr-plan-v1.md and rlcr-config-v1.json (leaf gate rules)`
+- `lake build GMT.Ch05.Submission in scratch copy /tmp/ds-decomp-igeL4K/proj (frozen header); lake env lean Checks/Names*.lean, Checks/OptTest.lean, Checks/InstTest.lean (lemma availability and instance depth at the frozen imports)`
+- `lake env lean Checks/Six.lean, Checks/ChildDE2.lean, Checks/Assembly.lean, Checks/AssemblyAx.lean; lake build of Submission with six children and parent inserted (imports unchanged); gmt-compare.py child_modules NodeChallenge/NodeSolution files S0..S6 with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-global-graph-a1-local-c1-a1/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-global-graph-a1-local-c1-a1/rlcr-config-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The project contains no weak-solution, difference-quotient or symmetry lemma; the only rg hit is an unrelated Ch08 README line about the constancy theorem.
+
+Mathlib at the pin contains every lemma used, but two of them sit outside the frozen import closure of Submission. ContDiffAt.isSymmSndFDerivAt (FDeriv/Symmetric.lean:533) and contDiffOn_clm_apply (ContDiff/FiniteDimension.lean:52) both report 'Unknown identifier' after importing the frozen Submission. The leaf gate forbids adding imports or helper declarations (rlcr-plan rules; commit a9fe7dd1 was rejected for an added import).
+
+These are available at the frozen imports:
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286)
+- hasFDerivAt_of_tendstoUniformlyOnFilter (UniformLimitsDeriv.lean:308)
+- continuousOn_clm_apply (Normed/Module/FiniteDimension.lean:518)
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)
+- integral_add_right_eq_self (to_additive of Group/Integral.lean:101)
+- fderiv_clm_apply (CompCLM.lean:143), fderiv_comp_sub (FDeriv/Add.lean:892)
+- tsupport_fderiv_subset, IsCompact.exists_cthickening_subset_open (Thickening.lean:426), IsCompact.uniformContinuousOn_of_continuous (HeineCantor.lean:49)
+- Convex.norm_image_sub_le_of_norm_fderiv_le' (MeanValue.lean:549), ContDiffOn.fderiv_of_isOpen and ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:907/916).
+
+Instances on the bilinear-form type, on Rn n →L (L →L ℝ), and IsBoundedSMul ℝ (L →L ℝ) need maxSynthPendingDepth 3. Supplying them locally with haveI/letI fails on instance-path mismatches, so the proofs use a tactic-level set_option; accepted leaves already use set_option … in.
+
+The accepted sibling-branch lemma dohr_eb_dql_diffQuot_tendstoUniformlyOn covers only Rn ℓ-valued maps, and its proof is codomain-generic. The child diffquot_uniform generalizes it to an arbitrary normed E, needed for L-valued Dv. No dohr_eb_lhr_ds_* name exists in dag.json, the node directories or the snapshot.
+
+In the scratch build with the frozen header unchanged, all six children and the selected theorem were proven. The verifier-generated challenge and solution files pass with axioms propext, Classical.choice and Quot.sound only.
