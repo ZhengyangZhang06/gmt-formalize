@@ -1564,6 +1564,96 @@ theorem Submission.dimred_rpd_massOn_eq_mult_measure : ∀ (P n : ℕ) (U : Set 
             hcast]
       _ ≤ T.massOn W := hge
 
+/-- **Support of a locally represented current** (Simon Ch. 6, 2.11, for `T = k[[M]]` as in Simon
+7.4.1): let `W ⊆ U` be open, `k ≠ 0`, and `M` an embedded `C¹` submanifold oriented by `ξ`,
+relatively closed in `W`, with `Hᵐ(M ∩ K) < ∞` for compact `K ⊆ W`.  If `T(ω) = k ∫_M ⟨ω, ξ⟩ dHᵐ`
+whenever `spt ω ⊆ W`, then `spt T ∩ W = M ∩ W`.  A point of `W \ M` is the center of a ball with
+compact closure in `W` that misses `M`, and `T` vanishes on that ball.  If `T` vanished near
+`w ∈ M ∩ W`, a small ball `B` about `w` would have `M_B(T) = 0`, whereas the mass identity and
+density one give `M_B(T) = |k| Hᵐ(M ∩ B) > 0`. -/
+theorem Submission.codim1_dolr_rep_support_inter : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (W M : Set (Euclid P)) (k : ℤ) (ξ : Euclid P → MultiVector P m), IsOpen W → W ⊆ U → k ≠ 0 → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → closure M ∩ W ⊆ M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ W → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → T.support ∩ W = M ∩ W := by
+  intro P m U T W M k ξ hW hWU hk hMemb hξ hcl hfin hrep
+  -- Step 0: `M` is Borel, and `ξ(x)` is a unit orientation of a subspace for every `x ∈ M`
+  obtain ⟨hMmeas, -⟩ := Submission.dimred_rpd_embedded_locally_closed P 1 m M hMemb
+  have hunit : ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ x) Q := by
+    intro x hx
+    obtain ⟨Q, -, hQ⟩ := hξ.2 x hx
+    exact ⟨Q, hQ⟩
+  ext x
+  constructor
+  -- Step 1 (`spt T ∩ W ⊆ M`): for `x ∈ W \ M`, `T` vanishes on a ball about `x` whose closure is
+  -- compact, lies in `W` and misses `closure M`; so `x ∈ T.zeroRegion`
+  · rintro ⟨hxS, hxW⟩
+    refine ⟨?_, hxW⟩
+    by_contra hxM
+    have hxcl : x ∉ closure M := fun h => hxM (hcl ⟨h, hxW⟩)
+    obtain ⟨r₁, hr₁, hr₁s⟩ := Metric.isOpen_iff.mp isClosed_closure.isOpen_compl x hxcl
+    obtain ⟨r₂, hr₂, hr₂s⟩ := Metric.isOpen_iff.mp hW x hxW
+    have hr : 0 < min r₁ r₂ / 2 := half_pos (lt_min hr₁ hr₂)
+    have hcb : closedBall x (min r₁ r₂ / 2) ⊆ ball x (min r₁ r₂) :=
+      closedBall_subset_ball (half_lt_self (lt_min hr₁ hr₂))
+    have hb1 : ball x (min r₁ r₂) ⊆ ball x r₁ := ball_subset_ball (min_le_left _ _)
+    have hb2 : ball x (min r₁ r₂) ⊆ ball x r₂ := ball_subset_ball (min_le_right _ _)
+    apply hxS.2
+    refine Set.mem_sUnion.mpr ⟨ball x (min r₁ r₂ / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self hr⟩
+    · rw [closure_ball x hr.ne']
+      exact isCompact_closedBall x _
+    · rw [closure_ball x hr.ne']
+      exact hcb.trans (hb2.trans (hr₂s.trans hWU))
+    -- a test form supported in the ball vanishes on `M`, so `T(ω) = k ∫_M 0 = 0`
+    · intro ω hω
+      have hωb : tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball x (min r₁ r₂) :=
+        hω.trans (ball_subset_closedBall.trans hcb)
+      rw [hrep ω (hωb.trans (hb2.trans hr₂s)), setIntegral_eq_zero_of_forall_eq_zero, mul_zero]
+      intro z hz
+      have hz' : z ∉ tsupport (ω : DifferentialForm (Euclid P) m) := by
+        intro h
+        exact hr₁s (hb1 (hωb h)) (subset_closure hz)
+      rw [image_eq_zero_of_notMem_tsupport hz']
+      simp
+  -- Step 2 (`M ∩ W ⊆ spt T`): suppose `x ∈ M ∩ W` lies in an open `O` on which `T` vanishes, and
+  -- take the ball `B = B_{r₁/2}(x)` with `closedBall x (r₁ / 2) ⊆ O ∩ W`
+  · rintro ⟨hxM, hxW⟩
+    refine ⟨⟨hWU hxW, ?_⟩, hxW⟩
+    intro hz
+    obtain ⟨O, ⟨hO, -, -, hvan⟩, hxO⟩ := Set.mem_sUnion.mp hz
+    obtain ⟨r₁, hr₁, hr₁s⟩ := Metric.isOpen_iff.mp (hO.inter hW) x ⟨hxO, hxW⟩
+    have hr : 0 < r₁ / 2 := half_pos hr₁
+    have hcb : closedBall x (r₁ / 2) ⊆ O ∩ W :=
+      (closedBall_subset_ball (half_lt_self hr₁)).trans hr₁s
+    have hballW : ball x (r₁ / 2) ⊆ W := ball_subset_closedBall.trans (hcb.trans inter_subset_right)
+    -- every admissible `ω` has `spt ω ⊆ B ⊆ O`, so `T(ω) = 0` and `M_B(T) = 0`
+    have hzero : T.massOn (ball x (r₁ / 2)) = 0 := by
+      refine nonpos_iff_eq_zero.mp ?_
+      unfold GeometricCurrentOn.massOn
+      refine sSup_le ?_
+      rintro _ ⟨ω, hω, rfl⟩
+      dsimp only
+      rw [hvan ω (hω.1.trans (ball_subset_closedBall.trans (hcb.trans inter_subset_left)))]
+      simp
+    -- the mass identity on `B`: `M_B(T) = |k| Hᵐ(M ∩ B)`, where `Hᵐ(M ∩ B) < ∞` because
+    -- `closedBall x (r₁ / 2) ⊆ W` is compact
+    have hmass := Submission.dimred_rpd_massOn_eq_mult_measure P m U T M (ball x (r₁ / 2)) k ξ
+      isOpen_ball (hballW.trans hWU) hMmeas hξ.1 hunit
+      (ne_top_of_le_ne_top (hfin _ (isCompact_closedBall x _) (hcb.trans inter_subset_right))
+        (measure_mono (inter_subset_inter_right _ ball_subset_closedBall)))
+      (fun ω hω => hrep ω (hω.trans hballW))
+    -- density one at `x`: `Hᵐ(M ∩ B_s(x)) / (ωₘsᵐ) > 0` for some `s ∈ (0, r₁/2)`, so
+    -- `Hᵐ(M ∩ B) ≠ 0`
+    have hpos : μHE[m] (M ∩ ball x (r₁ / 2)) ≠ 0 := by
+      have hlim := Submission.dimred_rpd_submanifold_density_one P m M x hMemb hxM
+      obtain ⟨s, hs1, hs2⟩ :=
+        ((hlim.eventually (lt_mem_nhds zero_lt_one)).and (Ioo_mem_nhdsGT hr)).exists
+      intro h0
+      have : μHE[m] (M ∩ ball x s) = 0 :=
+        measure_mono_null (inter_subset_inter_right _ (ball_subset_ball hs2.2.le)) h0
+      rw [this, ENNReal.zero_div] at hs1
+      exact lt_irrefl _ hs1
+    -- `|k| ≠ 0`, so `|k| Hᵐ(M ∩ B) ≠ 0`, contradicting `M_B(T) = 0`
+    have hk' : (k.natAbs : ℝ≥0∞) ≠ 0 := by simpa using hk
+    rw [hmass] at hzero
+    exact mul_ne_zero hk' hpos hzero
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
