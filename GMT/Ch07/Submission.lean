@@ -522,7 +522,6 @@ theorem dorag_ha_rb_line_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal)
     exact (hFd b).tendsto_slope_zero_right.sub (hFd a).tendsto_slope_zero_right
   exact tendsto_nhds_unique hlim2 hlim1
 
-end Submission
 
 /-- FTC along rays through the origin: for an `L`-Lipschitz `u` and a.e. `x`,
 `u(x) − u(tx) = ∫_t^1 Du(σx)x dσ` for every `t`.  By Rademacher the differentiability set `D` of
