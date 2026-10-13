@@ -2134,4 +2134,204 @@ theorem Submission.dgcr_bwd_graph_pullback_extDeriv : ∀ (m k : ℕ) (ι : Eucl
   · funext i
     simp [hD, hLι, hLι']
 
+theorem Submission.codim1_zsl_fl_divergence_lift : ∀ (n k : ℕ) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → ∃ K : ℝ, 0 < K ∧ ∀ h R : ℝ, 0 < h → ∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 R → (∀ v, ‖φ v‖ ≤ 1) → ∃ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 (R + 2 * h) ∧ (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (n + 1 + k)) n) y) ≤ 1) ∧ ∀ (g : Euclid (n + 1) → Euclid k) (v : Euclid (n + 1)), DifferentiableAt ℝ g v → ‖g v‖ < h → exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι v + ι' (g v)) (fun j => fderiv ℝ (fun w => ι w + ι' (g w)) v (EuclideanSpace.single j (1 : ℝ))) = K⁻¹ * LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ v).toLinearMap := by
+  intro n k ι ι' hperp hspan
+  classical
+  set π : Euclid (n + 1 + k) →L[ℝ] Euclid (n + 1) :=
+    ContinuousLinearMap.adjoint ι.toContinuousLinearMap with hπeq
+  set π' : Euclid (n + 1 + k) →L[ℝ] Euclid k :=
+    ContinuousLinearMap.adjoint ι'.toContinuousLinearMap with hπ'eq
+  have hπι : ∀ v, π (ι v) = v := by
+    intro v
+    apply ext_inner_right ℝ
+    intro y
+    rw [hπeq, ContinuousLinearMap.adjoint_inner_left]
+    exact ι.inner_map_map v y
+  have hπι' : ∀ w, π (ι' w) = 0 := by
+    intro w
+    apply ext_inner_right ℝ
+    intro y
+    rw [hπeq, ContinuousLinearMap.adjoint_inner_left, inner_zero_left, real_inner_comm]
+    exact hperp y w
+  have hπ'ι' : ∀ w, π' (ι' w) = w := by
+    intro w
+    apply ext_inner_right ℝ
+    intro y
+    rw [hπ'eq, ContinuousLinearMap.adjoint_inner_left]
+    exact ι'.inner_map_map w y
+  have hπ'ι : ∀ v, π' (ι v) = 0 := by
+    intro v
+    apply ext_inner_right ℝ
+    intro y
+    rw [hπ'eq, ContinuousLinearMap.adjoint_inner_left, inner_zero_left]
+    exact hperp v y
+  have hnorm_le : ∀ y, ‖y‖ ≤ ‖π y‖ + ‖π' y‖ := by
+    intro y
+    obtain ⟨v, w, rfl⟩ := hspan y
+    simp only [map_add, hπι, hπι', hπ'ι', hπ'ι, add_zero, zero_add]
+    calc ‖ι v + ι' w‖ ≤ ‖ι v‖ + ‖ι' w‖ := norm_add_le _ _
+      _ = ‖v‖ + ‖w‖ := by rw [LinearIsometry.norm_map, LinearIsometry.norm_map]
+  choose β hβ using Submission.dgcr_bwd_coordinate_covector n
+  let Θ : Euclid (n + 1) →L[ℝ] Covector (Euclid (n + 1)) n :=
+    ∑ j : Fin (n + 1), (EuclideanSpace.proj j : Euclid (n + 1) →L[ℝ] ℝ).smulRight (β j)
+  have hΘe : ∀ (z : Euclid (n + 1)) (i : Fin (n + 1)),
+      Θ z (i.removeNth (fun l : Fin (n + 1) => EuclideanSpace.single l (1 : ℝ))) =
+        (-1 : ℝ) ^ (i : ℕ) * z i := by
+    intro z i
+    have hΘz : Θ z = ∑ j, z j • β j := by simp [Θ]
+    rw [hΘz, ContinuousAlternatingMap.sum_apply]
+    simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    rw [Finset.sum_eq_single i]
+    · rw [hβ i i, ite_eq_left rfl]
+      ring
+    · intro j _ hji
+      rw [hβ j i, ite_eq_right (Ne.symm hji), mul_zero]
+    · intro hi
+      exact absurd (Finset.mem_univ i) hi
+  set N : ℝ := (Fintype.card (Fin n → Fin (n + 1 + k)) : ℝ) with hN
+  set K : ℝ := Real.sqrt N * ‖Θ‖ * ‖π‖ ^ n + 1 with hK
+  have hKpos : 0 < K := by positivity
+  refine ⟨K, hKpos, ?_⟩
+  intro h R hh φ hφ hφc hφs hφn
+  let f : ContDiffBump (0 : Euclid k) := ⟨h, 2 * h, hh, by linarith⟩
+  let α : DifferentialForm (Euclid (n + 1)) n := fun v => Θ (φ v)
+  have hαsmooth : IsSmoothForm α := Θ.contDiff.comp hφ
+  let ω₀ : DifferentialForm (Euclid (n + 1 + k)) n := fun y =>
+    (K⁻¹ * f (π' y)) • affinePullbackForm π (-(π 0)) α y
+  have hω₀smooth : IsSmoothForm ω₀ := by
+    have h1 : ContDiff ℝ (⊤ : ℕ∞) (fun y => K⁻¹ * f (π' y)) :=
+      contDiff_const.mul (f.contDiff.comp π'.contDiff)
+    have h2 : ContDiff ℝ (⊤ : ℕ∞) (affinePullbackForm π (-(π 0)) α) :=
+      affinePullbackForm_isSmoothForm π _ hαsmooth
+    exact h1.smul h2
+  set Q : Set (Euclid (n + 1 + k)) := {y | π y ∈ tsupport φ ∧ ‖π' y‖ ≤ 2 * h} with hQ
+  have hQclosed : IsClosed Q :=
+    ((isClosed_tsupport φ).preimage π.continuous).inter
+      (isClosed_le (continuous_norm.comp π'.continuous) continuous_const)
+  have hsuppQ : support ω₀ ⊆ Q := by
+    intro y hy
+    by_contra hyQ
+    apply hy
+    simp only [hQ, Set.mem_ofPred_eq, not_and_or, not_le] at hyQ
+    rcases hyQ with h1 | h1
+    · have h0 : φ (π y) = 0 := image_eq_zero_of_notMem_tsupport h1
+      have hP : affinePullbackForm π (-(π 0)) α y = 0 := by
+        ext m
+        simp [affinePullbackForm, α, h0]
+      show (K⁻¹ * f (π' y)) • affinePullbackForm π (-(π 0)) α y = 0
+      rw [hP, smul_zero]
+    · have h0 : f (π' y) = 0 := by
+        rw [← Function.notMem_support, f.support_eq]
+        simp only [mem_ball, dist_zero_right, not_lt]
+        exact h1.le
+      simp [ω₀, h0]
+  have htsuppQ : tsupport ω₀ ⊆ Q := closure_minimal hsuppQ hQclosed
+  have hQball : Q ⊆ ball 0 (R + 2 * h) := by
+    rintro y ⟨hy1, hy2⟩
+    have := hφs hy1
+    rw [mem_ball, dist_zero_right] at this ⊢
+    linarith [hnorm_le y]
+  have hcpt : HasCompactSupport ω₀ :=
+    (isCompact_closedBall (0 : Euclid (n + 1 + k)) (R + 2 * h)).of_isClosed_subset
+      (isClosed_tsupport _) (htsuppQ.trans (hQball.trans ball_subset_closedBall))
+  let ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n := ⟨ω₀, ⟨hω₀smooth, hcpt⟩, subset_univ _⟩
+  refine ⟨ω, htsuppQ.trans hQball, ?_, ?_⟩
+  · -- comass bound
+    intro y
+    change covectorEuclideanNorm (ω₀ y) ≤ 1
+    have hM : ∀ I : Fin n → Fin (n + 1 + k),
+        |ω₀ y (fun i => EuclideanSpace.basisFun (Fin (n + 1 + k)) ℝ (I i))| ≤
+          K⁻¹ * (‖Θ‖ * ‖π‖ ^ n) := by
+      intro I
+      simp only [ω₀, ContinuousAlternatingMap.smul_apply, smul_eq_mul, affinePullbackForm,
+        ContinuousAlternatingMap.compContinuousLinearMap_apply]
+      rw [abs_mul]
+      have hζ : |K⁻¹ * f (π' y)| ≤ K⁻¹ := by
+        rw [abs_of_nonneg (mul_nonneg (inv_nonneg.2 hKpos.le) f.nonneg)]
+        exact mul_le_of_le_one_right (inv_nonneg.2 hKpos.le) f.le_one
+      have hα : |α (-(π 0) + π y) (π ∘ fun i => EuclideanSpace.basisFun (Fin (n + 1 + k)) ℝ (I i))| ≤
+          ‖Θ‖ * ‖π‖ ^ n := by
+        rw [← Real.norm_eq_abs]
+        calc _ ≤ ‖α (-(π 0) + π y)‖ *
+              ∏ i, ‖(π ∘ fun i => EuclideanSpace.basisFun (Fin (n + 1 + k)) ℝ (I i)) i‖ :=
+              ContinuousAlternatingMap.le_opNorm _ _
+          _ ≤ ‖Θ‖ * ∏ _i : Fin n, ‖π‖ := by
+              gcongr with i
+              · calc ‖Θ (φ (-(π 0) + π y))‖ ≤ ‖Θ‖ * ‖φ (-(π 0) + π y)‖ := Θ.le_opNorm _
+                  _ ≤ ‖Θ‖ * 1 := by gcongr; exact hφn _
+                  _ = ‖Θ‖ := mul_one _
+              · calc ‖π (EuclideanSpace.basisFun (Fin (n + 1 + k)) ℝ (I i))‖
+                    ≤ ‖π‖ * ‖EuclideanSpace.basisFun (Fin (n + 1 + k)) ℝ (I i)‖ := π.le_opNorm _
+                  _ = ‖π‖ := by simp
+          _ = ‖Θ‖ * ‖π‖ ^ n := by simp
+      exact mul_le_mul hζ hα (abs_nonneg _) (inv_nonneg.2 hKpos.le)
+    have hsum : (∑ I : Fin n → Fin (n + 1 + k), if StrictMono I then
+        (ω₀ y (fun i => EuclideanSpace.basisFun (Fin (n + 1 + k)) ℝ (I i))) ^ 2 else 0) ≤ 1 := by
+      calc _ ≤ ∑ _I : Fin n → Fin (n + 1 + k), (K⁻¹ * (‖Θ‖ * ‖π‖ ^ n)) ^ 2 := by
+            apply Finset.sum_le_sum
+            intro I _
+            split_ifs
+            · exact sq_le_sq' (abs_le.1 (hM I)).1 (abs_le.1 (hM I)).2
+            · positivity
+        _ = (Real.sqrt N * (K⁻¹ * (‖Θ‖ * ‖π‖ ^ n))) ^ 2 := by
+            rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, ← hN, mul_pow (Real.sqrt N),
+              Real.sq_sqrt (by positivity)]
+        _ ≤ 1 ^ 2 := by
+            gcongr
+            rw [← mul_assoc, mul_comm (Real.sqrt N), mul_assoc, ← mul_assoc (Real.sqrt N),
+              inv_mul_le_one₀ hKpos]
+            linarith
+        _ = 1 := one_pow 2
+    unfold covectorEuclideanNorm
+    calc _ ≤ Real.sqrt 1 := Real.sqrt_le_sqrt hsum
+      _ = 1 := Real.sqrt_one
+  · -- key identity
+    intro g v hg hgv
+    have hy₀ : π' (ι v + ι' (g v)) = g v := by simp [map_add, hπ'ι, hπ'ι']
+    have hev : ω₀ =ᶠ[𝓝 (ι v + ι' (g v))] K⁻¹ • affinePullbackForm π (-(π 0)) α := by
+      have hopen : IsOpen {y : Euclid (n + 1 + k) | ‖π' y‖ < h} :=
+        isOpen_lt (continuous_norm.comp π'.continuous) continuous_const
+      have hmem : ι v + ι' (g v) ∈ {y : Euclid (n + 1 + k) | ‖π' y‖ < h} := by
+        simpa [hy₀] using hgv
+      filter_upwards [hopen.mem_nhds hmem] with y hy
+      have h1 : f (π' y) = 1 :=
+        f.one_of_mem_closedBall (by simpa [mem_closedBall, dist_zero_right] using hy.le)
+      simp [ω₀, h1]
+    change exteriorDerivative ω₀ (ι v + ι' (g v)) _ = _
+    rw [show exteriorDerivative ω₀ (ι v + ι' (g v)) =
+        exteriorDerivative (K⁻¹ • affinePullbackForm π (-(π 0)) α) (ι v + ι' (g v)) from
+        hev.extDeriv_eq, exteriorDerivative_smul]
+    simp only [Pi.smul_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    congr 1
+    have h3 := Submission.dgcr_bwd_graph_pullback_extDeriv n k ι ι' g 0 α v hperp hαsmooth hg
+    simp only [zero_add] at h3
+    rw [h3]
+    have hφd : DifferentiableAt ℝ φ v := (hφ.differentiable (by simp)).differentiableAt
+    rw [exteriorDerivative_apply (hαsmooth.differentiable (by simp)).differentiableAt]
+    have hfun : ∀ i : Fin (n + 1), (fun x => α x (i.removeNth
+        (fun l : Fin (n + 1) => EuclideanSpace.single l (1 : ℝ)))) =
+          fun x => (-1 : ℝ) ^ (i : ℕ) * φ x i := by
+      intro i
+      funext x
+      exact hΘe (φ x) i
+    simp only [hfun]
+    have hder : ∀ i : Fin (n + 1), fderiv ℝ (fun x => (-1 : ℝ) ^ (i : ℕ) * φ x i) v
+        (EuclideanSpace.single i (1 : ℝ)) =
+          (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ φ v (EuclideanSpace.single i (1 : ℝ))) i := by
+      intro i
+      have hp : HasFDerivAt (fun x => φ x i)
+          ((EuclideanSpace.proj i : Euclid (n + 1) →L[ℝ] ℝ).comp (fderiv ℝ φ v)) v :=
+        (EuclideanSpace.proj i : Euclid (n + 1) →L[ℝ] ℝ).hasFDerivAt.comp v hφd.hasFDerivAt
+      rw [(hp.const_mul ((-1 : ℝ) ^ (i : ℕ))).fderiv]
+      simp
+    simp only [hder]
+    rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (n + 1)) ℝ)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe,
+      EuclideanSpace.inner_single_left]
+    rw [zsmul_eq_mul]
+    push_cast
+    rw [← mul_assoc, ← pow_add, ← two_mul, pow_mul]
+    simp
+
 end GMT.Ch07
