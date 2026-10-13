@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.continuous_covector_eval-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "Evaluation of n-covectors at an n-family is a continuous map into n-vectors",
+  "statement": "For all P, n ∈ ℕ there is a continuous map ev : (Fin n → ℝᴾ) → MultiVector P n (MultiVector P n = continuous linear functionals on the n-covectors Covector (Euclid P) n, with the operator-norm topology; Fin n → ℝᴾ with the product topology) such that ev(c)(α) = α(c) for every family c = (c₁, …, cₙ) and every n-covector α.",
+  "lean_statement": "∀ (P n : ℕ), ∃ ev : (Fin n → Euclid P) → MultiVector P n, Continuous ev ∧ ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c",
+  "lean_name": "dgoj_exists_continuous_covector_eval",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-ea8963379b-a1"
+}

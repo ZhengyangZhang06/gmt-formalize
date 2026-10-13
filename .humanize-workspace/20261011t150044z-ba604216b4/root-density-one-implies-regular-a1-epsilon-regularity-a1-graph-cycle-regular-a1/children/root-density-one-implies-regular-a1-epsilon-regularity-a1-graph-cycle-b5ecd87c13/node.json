@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "depth": 4,
+  "title": "An approximate tangent plane of a set lying a.e. in a C¹ graph is the graph's tangent plane",
+  "statement": "Let n, k ∈ ℕ, ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0, s ∈ ℝ, z ∈ ℝ^{n+k}, u : ℝⁿ → ℝ^k of class C¹ on D = B_s(0), Φ(v) := z + ιv + ι'u(v), Σ := Φ(D). Let A ⊆ ℝ^{n+k}, v₀ ∈ D, x₀ := Φ(v₀), r > 0 with Hⁿ((A ∩ B_r(x₀)) ∖ Σ) = 0, and let Q be a subspace of ℝ^{n+k} such that A has approximate tangent space Q at x₀ (HasApproximateTangentSpaceAt n A x₀ Q, Simon Ch. 3, 1.4). Then Q = range DΦ(v₀).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s r : ℝ) (A : Set (Euclid (n + k))) (v₀ : Euclid n) (Q : Submodule ℝ (Euclid (n + k))), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → v₀ ∈ ball (0 : Euclid n) s → 0 < r → μHE[n] ((A ∩ ball (z + ι v₀ + ι' (u v₀)) r) \\ ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s)) = 0 → HasApproximateTangentSpaceAt n A (z + ι v₀ + ι' (u v₀)) Q → Q = LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k))",
+  "lean_name": "dgcr_approxTangent_eq_graph_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b5ecd87c13-a1"
+}
