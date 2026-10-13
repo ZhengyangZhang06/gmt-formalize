@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fee5ccc3a32e9c71979b598762b0a7344e0f4380a8be121fc373d322cfe23730",
+  "git_delta": {
+    "base_commit": "2a43d760ce99fdcfe26ae8d2ae6b6e4e65a51726",
+    "candidate_commit": "05d75fad7a3c67315485a6418e8d7be346afcfc5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cidc_dilation_integral_rep",
+    "diff_sha256": "484f94854a7705946fd8cb3393f4b1cbb239a96fea8d425edbefa8378996b3eb",
+    "source_sha256": "2538b4e1296e9931e161e972e03fbdf5771a69bcdf68e735f89c1f172e91cd5b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cidc_dilation_integral_rep",
+      "statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ (X X' : GeometricCurrentOn (univ : Set (Euclid P)) m) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P m), (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μ) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, X' ω = ∫ y, ξ (a + lam • y) ((ω : DifferentialForm (Euclid P) m) y) ∂(ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
