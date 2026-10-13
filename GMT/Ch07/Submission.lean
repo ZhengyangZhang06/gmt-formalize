@@ -451,6 +451,570 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The ball and cone masses are Borel functions of the centre.**  This is the measurability
+that Simon's proof of Ch. 3, 1.6 "⇐" does not check when it applies Egoroff's theorem to `f_k`
+and `q_k`, which are built from `μ(B_ρ(x))` and `μ(X_{1/2}(P_x^⊥, x) ∩ B_ρ(x))`.  For an s-finite
+`μ` on `E = ℝ^{m+1}`, a Borel `ν : E → E` and `α, q ∈ ℝ`, the maps `x ↦ μ(B̄_q(x))` and
+`x ↦ μ({z : α|z - x| ≤ |⟨z - x, ν(x)⟩|} ∩ B̄_q(x))` are measurable.  Each is `x ↦ μ(S_x)` for a
+measurable `S ⊆ E × E`, namely `S = A = {(x, z) : |z - x| ≤ q}` or `S = B ∩ A` with
+`B = {(x, z) : α|z - x| ≤ |⟨z - x, ν(x)⟩|}`, so the section lemma of Tonelli's theorem applies. -/
+theorem Submission.codim1_rdo_dg_rc_ball_cone_measurable : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (α q : ℝ), SFinite μ → Measurable ν → Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) ∧ Measurable (fun x : Euclid (m + 1) => μ ({z | α * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q)) := by
+  intro m μ ν α q hμ hν
+  -- `A = {(x, z) : |z - x| ≤ q}` is measurable, with sections `B̄_q(x)`
+  have hA : MeasurableSet {p : Euclid (m + 1) × Euclid (m + 1) | dist p.2 p.1 ≤ q} :=
+    measurableSet_le (continuous_dist.comp (continuous_snd.prodMk continuous_fst)).measurable
+      measurable_const
+  -- `B = {(x, z) : α|z - x| ≤ |⟨z - x, ν(x)⟩|}` is measurable since `ν` is
+  have hB : MeasurableSet {p : Euclid (m + 1) × Euclid (m + 1) |
+      α * ‖p.2 - p.1‖ ≤ |inner ℝ (p.2 - p.1) (ν p.1)|} := by
+    refine measurableSet_le ?_ ?_
+    · exact (continuous_const.mul (continuous_norm.comp
+        (continuous_snd.sub continuous_fst))).measurable
+    · exact continuous_abs.measurable.comp (Continuous.measurable2 continuous_inner
+        (measurable_snd.sub measurable_fst) (hν.comp measurable_fst))
+  -- for s-finite `μ`, `x ↦ μ(S_x)` is measurable for every measurable `S ⊆ E × E`
+  refine ⟨?_, ?_⟩
+  · have h := measurable_measure_prodMk_left (ν := μ) hA
+    convert h using 2 with x
+    rfl
+  · have h := measurable_measure_prodMk_left (ν := μ) (hB.inter hA)
+    convert h using 2 with x
+    rfl
+
+/-- **Uniform density and cone bounds on a large compact set** (Simon Ch. 3, proof of 1.6 "⇐",
+(4) and (7)–(9), chapter-03.txt lines 162–213).  Let `μ` be a finite measure on `ℝ^{m+1}`,
+`C(x) = {z : ¼|z − x| ≤ |⟨z − x, ν(x)⟩|}`, and suppose that for `μ`-a.e. `y`,
+`μ(B̄_r(y))/(ωₘrᵐ) → 1` and `μ(C(y) ∩ B̄_r(y))/rᵐ → 0` as `r ↓ 0`.  Then for `ε, η > 0` there are
+a compact `K` with `μ(Kᶜ) ≤ η` and `δ > 0` such that `(1 − ε)⁺ωₘρᵐ ≤ μ(B̄_ρ(x))` and
+`μ(C(x) ∩ B̄_ρ(x)) ≤ εωₘρᵐ` for all `x ∈ K`, `0 < ρ < δ`.  Egoroff's theorem is replaced by the
+Borel sets `G_k` of points where both bounds hold at every rational radius `0 < q < 1/(k + 1)`
+(Borel by `codim1_rdo_dg_rc_ball_cone_measurable`): they increase to a set of full measure, so
+`μ(G_kᶜ) < η/2` for some `k` by continuity from above, and inner regularity gives a compact
+`K ⊆ G_k` with `μ(G_k \ K) < η/2`.  The bounds pass from rational to real radii by monotonicity
+in the radius and continuity of `ρ ↦ cρᵐ`. -/
+theorem Submission.codim1_rdo_dg_rc_uniform_compact : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (ε : ℝ) (η : ℝ≥0∞), IsFiniteMeasure μ → Measurable ν → 0 < ε → 0 < η → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∃ K : Set (Euclid (m + 1)), ∃ δ : ℝ, IsCompact K ∧ 0 < δ ∧ μ Kᶜ ≤ η ∧ (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) ∧ (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) := by
+  intro m μ ν ε η hfin hν hε hη hae
+  have hω0 : unitBallVolume m ≠ 0 := by
+    unfold unitBallVolume; exact (measure_ball_pos _ _ one_pos).ne'
+  have hωtop : unitBallVolume m ≠ ∞ := by
+    unfold unitBallVolume; exact measure_ball_lt_top.ne
+  -- step 2: for each radius `q` both `x ↦ μ(B̄_q(x))` and `x ↦ μ(C(x) ∩ B̄_q(x))` are Borel
+  have hball : ∀ q : ℝ, Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) :=
+    fun q => (Submission.codim1_rdo_dg_rc_ball_cone_measurable m μ ν (1 / 4) q inferInstance hν).1
+  have hcone : ∀ q : ℝ, Measurable (fun x : Euclid (m + 1) =>
+      μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q)) :=
+    fun q => (Submission.codim1_rdo_dg_rc_ball_cone_measurable m μ ν (1 / 4) q inferInstance hν).2
+  -- monotonicity and continuity of `ρ ↦ c * ofReal (ρ ^ m)`
+  have hmono : ∀ (c : ℝ≥0∞) (s t : ℝ), 0 ≤ s → s ≤ t →
+      c * ENNReal.ofReal (s ^ m) ≤ c * ENNReal.ofReal (t ^ m) := by
+    intro c s t hs hst
+    exact mul_le_mul_right (ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ hs hst m)) c
+  have hcont : ∀ c : ℝ≥0∞, c ≠ ∞ → Continuous (fun s : ℝ => c * ENNReal.ofReal (s ^ m)) :=
+    fun c hc => (ENNReal.continuous_const_mul hc).comp
+      (ENNReal.continuous_ofReal.comp (continuous_pow m))
+  -- the argument for general constants `A`, `B` and a general family of sets `C x`
+  have main : ∀ (C : Euclid (m + 1) → Set (Euclid (m + 1))) (A B : ℝ≥0∞), A ≠ ∞ → B ≠ ∞ →
+      (∀ q : ℝ, Measurable (fun x => μ (C x ∩ closedBall x q))) →
+      (∀ᵐ y ∂μ, ∃ r₁ : ℝ, 0 < r₁ ∧ ∀ r : ℝ, 0 < r → r < r₁ →
+        A * ENNReal.ofReal (r ^ m) ≤ μ (closedBall y r) ∧
+          μ (C y ∩ closedBall y r) ≤ B * ENNReal.ofReal (r ^ m)) →
+      ∃ K : Set (Euclid (m + 1)), ∃ δ : ℝ, IsCompact K ∧ 0 < δ ∧ μ Kᶜ ≤ η ∧
+        (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → A * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) ∧
+        (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ →
+          μ (C x ∩ closedBall x ρ) ≤ B * ENNReal.ofReal (ρ ^ m)) := by
+    intro C A B hA hB hCmeas hgood
+    -- step 1: the good sets `G k`, bounds at rational radii `q < 1/(k + 1)`
+    let G : ℕ → Set (Euclid (m + 1)) := fun k => {x | ∀ q : ℚ, 0 < (q : ℝ) →
+      (q : ℝ) < 1 / ((k : ℝ) + 1) →
+      A * ENNReal.ofReal ((q : ℝ) ^ m) ≤ μ (closedBall x q) ∧
+        μ (C x ∩ closedBall x q) ≤ B * ENNReal.ofReal ((q : ℝ) ^ m)}
+    -- step 2: each `G k` is Borel
+    have hGmeas : ∀ k, MeasurableSet (G k) := by
+      intro k
+      refine Measurable.setOf (Measurable.forall fun q => ?_)
+      refine Measurable.imp measurable_const (Measurable.imp measurable_const
+        (Measurable.and ?_ ?_))
+      · exact measurableSet_setOfPred.1 (measurableSet_le measurable_const (hball q))
+      · exact measurableSet_setOfPred.1 (measurableSet_le (hCmeas q) measurable_const)
+    -- step 3: `G` is increasing
+    have hGmono : Monotone G := by
+      intro k l hkl x hx q hq0 hql
+      refine hx q hq0 (lt_of_lt_of_le hql ?_)
+      have hkl' : (k : ℝ) ≤ l := Nat.cast_le.mpr hkl
+      exact one_div_le_one_div_of_le (by positivity) (by linarith)
+    -- step 4: `μ`-a.e. point lies in some `G k`
+    have hGae : ∀ᵐ x ∂μ, x ∈ ⋃ k, G k := by
+      filter_upwards [hgood] with y hy
+      obtain ⟨r₁, hr₁, hy⟩ := hy
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt hr₁
+      exact mem_iUnion.mpr ⟨k, fun q hq0 hqk => hy q hq0 (hqk.trans hk)⟩
+    have hnull : μ (⋂ k, (G k)ᶜ) = 0 := by
+      rw [← compl_iUnion]
+      exact mem_ae_iff.mp hGae
+    -- step 5: continuity from above gives `μ (G k)ᶜ < η / 2` for some `k`
+    have htend : Tendsto (fun k => μ (G k)ᶜ) atTop (𝓝 0) := by
+      have := tendsto_measure_iInter_atTop (μ := μ) (s := fun k => (G k)ᶜ)
+        (fun k => (hGmeas k).compl.nullMeasurableSet)
+        (fun k l hkl => compl_subset_compl.mpr (hGmono hkl)) ⟨0, measure_ne_top μ _⟩
+      rw [hnull] at this
+      exact this
+    have hη2 : 0 < η / 2 := ENNReal.half_pos hη.ne'
+    obtain ⟨k, hk⟩ := (htend.eventually_lt_const hη2).exists
+    -- step 6: inner regularity gives a compact `K ⊆ G k` with `μ (G k \ K) < η / 2`
+    obtain ⟨K, hKG, hKc, hKμ⟩ :=
+      (hGmeas k).exists_isCompact_sdiff_lt (measure_ne_top μ _) hη2.ne'
+    refine ⟨K, 1 / ((k : ℝ) + 1), hKc, by positivity, ?_, ?_, ?_⟩
+    · calc μ Kᶜ ≤ μ ((G k)ᶜ ∪ (G k \ K)) := by
+            apply measure_mono
+            intro x hx
+            by_cases h : x ∈ G k
+            · exact Or.inr ⟨h, hx⟩
+            · exact Or.inl h
+        _ ≤ μ (G k)ᶜ + μ (G k \ K) := measure_union_le _ _
+        _ ≤ η / 2 + η / 2 := add_le_add hk.le hKμ.le
+        _ = η := ENNReal.add_halves η
+    -- step 7(a): lower bound at real radii, approximating `ρ` from below by rationals
+    · intro x hxK ρ hρ hρδ
+      have hxG := hKG hxK
+      have key : ∀ s ∈ Ioo 0 ρ, A * ENNReal.ofReal (s ^ m) ≤ μ (closedBall x ρ) := by
+        intro s hs
+        obtain ⟨q, hsq, hqρ⟩ := exists_rat_btwn hs.2
+        have hq0 : 0 < (q : ℝ) := hs.1.trans hsq
+        calc A * ENNReal.ofReal (s ^ m) ≤ A * ENNReal.ofReal ((q : ℝ) ^ m) :=
+              hmono A s q hs.1.le hsq.le
+          _ ≤ μ (closedBall x q) := (hxG q hq0 (hqρ.trans hρδ)).1
+          _ ≤ μ (closedBall x ρ) := measure_mono (closedBall_subset_closedBall hqρ.le)
+      exact le_of_tendsto (((hcont A hA).tendsto ρ).mono_left nhdsWithin_le_nhds)
+        (eventually_of_mem (Ioo_mem_nhdsLT hρ) key)
+    -- step 7(b): cone bound at real radii, approximating `ρ` from above by rationals
+    · intro x hxK ρ hρ hρδ
+      have hxG := hKG hxK
+      have key : ∀ s ∈ Ioo ρ (1 / ((k : ℝ) + 1)),
+          μ (C x ∩ closedBall x ρ) ≤ B * ENNReal.ofReal (s ^ m) := by
+        intro s hs
+        obtain ⟨q, hρq, hqs⟩ := exists_rat_btwn hs.1
+        have hq0 : 0 < (q : ℝ) := hρ.trans hρq
+        calc μ (C x ∩ closedBall x ρ) ≤ μ (C x ∩ closedBall x q) :=
+              measure_mono (inter_subset_inter_right _ (closedBall_subset_closedBall hρq.le))
+          _ ≤ B * ENNReal.ofReal ((q : ℝ) ^ m) := (hxG q hq0 (hqs.trans hs.2)).2
+          _ ≤ B * ENNReal.ofReal (s ^ m) := hmono B q s hq0.le hqs.le
+      exact ge_of_tendsto (((hcont B hB).tendsto ρ).mono_left nhdsWithin_le_nhds)
+        (eventually_of_mem (Ioo_mem_nhdsGT hρδ) key)
+  -- step 4 for the actual constants: where both limits hold, the bounds hold for small `r`
+  have hA1 : ENNReal.ofReal (1 - ε) < 1 := ENNReal.ofReal_lt_one.mpr (by linarith)
+  have hB0 : 0 < ENNReal.ofReal ε * unitBallVolume m :=
+    ENNReal.mul_pos (ENNReal.ofReal_pos.mpr hε).ne' hω0
+  refine main (fun x => {z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|})
+    (ENNReal.ofReal (1 - ε) * unitBallVolume m) (ENNReal.ofReal ε * unitBallVolume m)
+    (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop)
+    (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop) hcone ?_
+  filter_upwards [hae] with y hy
+  obtain ⟨h1, h2⟩ := hy
+  have e1 := h1.eventually_const_lt hA1
+  have e2 := h2.eventually_lt_const hB0
+  obtain ⟨r₁, hr₁, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp (e1.and e2)
+  refine ⟨r₁, hr₁, fun r hr0 hr1 => ?_⟩
+  obtain ⟨hlow, hup⟩ := hsub ⟨hr0, hr1⟩
+  have hpow0 : ENNReal.ofReal (r ^ m) ≠ 0 := (ENNReal.ofReal_pos.mpr (pow_pos hr0 m)).ne'
+  have hpowtop : ENNReal.ofReal (r ^ m) ≠ ∞ := ENNReal.ofReal_ne_top
+  constructor
+  · have := (ENNReal.le_div_iff_mul_le (Or.inl (mul_ne_zero hω0 hpow0))
+      (Or.inl (ENNReal.mul_ne_top hωtop hpowtop))).mp hlow.le
+    rw [mul_assoc]
+    exact this
+  · exact (ENNReal.div_le_iff hpow0 hpowtop).mp hup.le
+/-- **Simon Ch. 3, proof of 1.6 "⇐", claim (10)** (cone exclusion), in codimension one: let
+`μ(B̄_ρ(y)) ≥ (1 − ε) ωₘ ρᵐ` and `μ(C(y) ∩ B̄_ρ(y)) ≤ ε ωₘ ρᵐ` for `y ∈ K`, `0 < ρ < δ`, where
+`C(y) = {z : |z − y| ≤ 4 |⟨z − y, ν(y)⟩|}`, and let `(1 + 16ᵐ) ε < 1`.  Then
+`|⟨x' − x, v⟩| ≤ |x' − x| / 2` for `x, x' ∈ K` with `|x' − x| < δ / 2` and `|ν(x) − v| ≤ 1/16`.
+Otherwise `B̄_{ρ/8}(x') ⊆ C(x) ∩ B̄_{2ρ}(x)` for `ρ = |x' − x|`, and the two bounds give
+`(1 − ε) ωₘ (ρ/8)ᵐ ≤ ε ωₘ (2ρ)ᵐ`, i.e. `1 − ε ≤ 16ᵐ ε`. -/
+theorem Submission.codim1_rdo_dg_rc_cone_exclusion : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∀ x ∈ K, ∀ x' ∈ K, ∀ v : Euclid (m + 1), ‖ν x - v‖ ≤ 1 / 16 → ‖x' - x‖ < δ / 2 → |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2 := by
+  intro m μ ν K δ ε hν1 hε0 hε1 hlow hup x hx x' hx' v hv hxx'
+  by_contra hcon
+  push Not at hcon
+  set w := x' - x with hw
+  set ρ := ‖w‖ with hρ
+  have hρ0 : 0 < ρ := by
+    rcases (norm_nonneg w).lt_or_eq with h | h
+    · exact h
+    · exfalso
+      have hw0 : w = 0 := norm_eq_zero.1 h.symm
+      rw [hw0] at hcon
+      simp at hcon
+      linarith [h, hρ]
+  have hδ : 0 < δ := by linarith
+  -- `|⟨w, ν x⟩| > 7ρ/16`, since `|⟨w, v⟩| > ρ/2` and `|ν x - v| ≤ 1/16`
+  have h2 : 7 * ρ / 16 < |inner ℝ w (ν x)| := by
+    have e1 : |inner ℝ w (v - ν x)| ≤ ρ * ‖ν x - v‖ := by
+      calc |inner ℝ w (v - ν x)| ≤ ‖w‖ * ‖v - ν x‖ := abs_real_inner_le_norm _ _
+        _ = ρ * ‖ν x - v‖ := by rw [norm_sub_rev v (ν x)]
+    have e2 : inner ℝ w v = inner ℝ w (ν x) + inner ℝ w (v - ν x) := by
+      rw [inner_sub_right]; ring
+    have e3 : |inner ℝ w v| ≤ |inner ℝ w (ν x)| + |inner ℝ w (v - ν x)| := by
+      rw [e2]; exact abs_add_le _ _
+    have e4 : ρ * ‖ν x - v‖ ≤ ρ * (1 / 16) := mul_le_mul_of_nonneg_left hv hρ0.le
+    linarith
+  -- `B̄_{ρ/8}(x') ⊆ C(x) ∩ B̄_{2ρ}(x)`: on the small ball `|z - x| ≤ 9ρ/8` and
+  -- `|⟨z - x, ν x⟩| > 7ρ/16 - ρ/8 = 5ρ/16`
+  have hsub : closedBall x' (ρ / 8) ⊆
+      {z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x (2 * ρ) := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm] at hz
+    have hzx : z - x = w + (z - x') := by rw [hw]; abel
+    have hnorm : ‖z - x‖ ≤ 9 * ρ / 8 := by
+      calc ‖z - x‖ = ‖w + (z - x')‖ := by rw [hzx]
+        _ ≤ ‖w‖ + ‖z - x'‖ := norm_add_le _ _
+        _ ≤ ρ + ρ / 8 := by linarith
+        _ = 9 * ρ / 8 := by ring
+    have hin : |inner ℝ (z - x') (ν x)| ≤ ρ / 8 := by
+      calc |inner ℝ (z - x') (ν x)| ≤ ‖z - x'‖ * ‖ν x‖ := abs_real_inner_le_norm _ _
+        _ = ‖z - x'‖ := by rw [hν1 x, mul_one]
+        _ ≤ ρ / 8 := hz
+    have hinner : inner ℝ (z - x) (ν x) = inner ℝ w (ν x) + inner ℝ (z - x') (ν x) := by
+      rw [hzx, inner_add_left]
+    have hbig : 5 * ρ / 16 < |inner ℝ (z - x) (ν x)| := by
+      rw [hinner]
+      have h' : |inner ℝ w (ν x)| ≤
+          |inner ℝ w (ν x) + inner ℝ (z - x') (ν x)| + |inner ℝ (z - x') (ν x)| := by
+        have := abs_sub (inner ℝ w (ν x) + inner ℝ (z - x') (ν x)) (inner ℝ (z - x') (ν x))
+        simpa using this
+      linarith
+    refine ⟨?_, ?_⟩
+    · show (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|
+      linarith
+    · rw [mem_closedBall, dist_eq_norm]; linarith
+  -- `(1 - ε) ωₘ (ρ/8)ᵐ ≤ μ(B̄_{ρ/8}(x')) ≤ μ(C(x) ∩ B̄_{2ρ}(x)) ≤ ε ωₘ (2ρ)ᵐ`
+  have hlow' := hlow x' hx' (ρ / 8) (by positivity) (by linarith)
+  have hup' := hup x hx (2 * ρ) (by positivity) (by linarith)
+  have hchain : ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal ((ρ / 8) ^ m) ≤
+      ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal ((2 * ρ) ^ m) :=
+    hlow'.trans ((measure_mono hsub).trans hup')
+  -- cancelling `ωₘ (ρ/8)ᵐ ∈ (0, ∞)` gives `1 - ε ≤ 16ᵐ ε`, contradicting `(1 + 16ᵐ) ε < 1`
+  have hω0 : unitBallVolume m ≠ 0 := by
+    unfold unitBallVolume; exact (measure_ball_pos _ _ one_pos).ne'
+  have hωt : unitBallVolume m ≠ ∞ := by
+    unfold unitBallVolume; exact measure_ball_lt_top.ne
+  set a := (unitBallVolume m).toReal with ha_def
+  have ha : 0 < a := ENNReal.toReal_pos hω0 hωt
+  have hωeq : unitBallVolume m = ENNReal.ofReal a := (ENNReal.ofReal_toReal hωt).symm
+  have h1ε : 0 ≤ 1 - ε := by
+    have : 0 ≤ (16 : ℝ) ^ m * ε := by positivity
+    nlinarith
+  have hL : ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal ((ρ / 8) ^ m) =
+      ENNReal.ofReal ((1 - ε) * a * (ρ / 8) ^ m) := by
+    rw [hωeq, ← ENNReal.ofReal_mul h1ε, ← ENNReal.ofReal_mul (by positivity)]
+  have hR : ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal ((2 * ρ) ^ m) =
+      ENNReal.ofReal (ε * a * (2 * ρ) ^ m) := by
+    rw [hωeq, ← ENNReal.ofReal_mul hε0, ← ENNReal.ofReal_mul (by positivity)]
+  rw [hL, hR, ENNReal.ofReal_le_ofReal_iff (by positivity)] at hchain
+  have hpow : (2 * ρ) ^ m = 16 ^ m * (ρ / 8) ^ m := by
+    rw [← mul_pow]; congr 1; ring
+  rw [hpow] at hchain
+  have hpos : 0 < a * (ρ / 8) ^ m := by positivity
+  have h16 : (1 - ε) * (a * (ρ / 8) ^ m) ≤ (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by
+    calc (1 - ε) * (a * (ρ / 8) ^ m) = (1 - ε) * a * (ρ / 8) ^ m := by ring
+      _ ≤ ε * a * (16 ^ m * (ρ / 8) ^ m) := hchain
+      _ = (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by ring
+  have h17 : 1 - ε ≤ ε * 16 ^ m := le_of_mul_le_mul_right h16 hpos
+  nlinarith
+/-- **Simon Ch. 3, proof of 1.6 "⇐"** (Lipschitz graph step, codimension one): if `‖v‖ = 1` and
+`|⟨x' − x, v⟩| ≤ ‖x' − x‖/2` on `S`, then `S` lies in a closed countably `m`-rectifiable set.
+With `t(z) = ⟨z, v⟩` and `p(z) = z − t(z)v`, the hypothesis gives `|t(x') − t(x)| ≤ ‖p(x') − p(x)‖`
+on `S`, so `p(x) ↦ t(x)` is 1-Lipschitz on `p(S)`; its McShane extension `τ` makes
+`Γ = {z | τ(p(z)) = t(z)}` closed, and `Γ` lies in the range of the Lipschitz map
+`y ↦ ι(y) + τ(ι(y))v`, where `ι : ℝᵐ ≃ v^⊥` is a linear isometry. -/
+theorem Submission.codim1_rdo_dg_rc_closed_graph_cover : ∀ (m : ℕ) (v : Euclid (m + 1)) (S : Set (Euclid (m + 1))), ‖v‖ = 1 → (∀ x ∈ S, ∀ x' ∈ S, |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ S ⊆ Γ := by
+  intro m v S hv hS
+  -- Step 1: height `t` and orthogonal projection `p` onto `vᗮ`.
+  obtain ⟨t, ht⟩ : ∃ t : Euclid (m + 1) → ℝ, ∀ z, t z = inner ℝ z v := ⟨_, fun _ => rfl⟩
+  obtain ⟨p, hp⟩ : ∃ p : Euclid (m + 1) → Euclid (m + 1), ∀ z, p z = z - t z • v :=
+    ⟨_, fun _ => rfl⟩
+  have hvv : inner ℝ v v = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hv]; norm_num
+  have hpv : ∀ z, inner ℝ (p z) v = (0 : ℝ) := by
+    intro z
+    rw [hp, inner_sub_left, real_inner_smul_left, hvv, ht, mul_one, sub_self]
+  have hpmem : ∀ z, p z ∈ (ℝ ∙ v)ᗮ := by
+    intro z
+    rw [Submodule.mem_orthogonal_singleton_iff_inner_left]
+    exact hpv z
+  have hdecomp : ∀ z, p z + t z • v = z := by
+    intro z
+    rw [hp, sub_add_cancel]
+  -- Step 2: the key inequality `|t x' - t x| ≤ ‖p x' - p x‖` on `S`.
+  have key : ∀ x ∈ S, ∀ x' ∈ S, |t x' - t x| ≤ ‖p x' - p x‖ := by
+    intro x hx x' hx'
+    have h1 := hS x hx x' hx'
+    have h2 : inner ℝ (x' - x) v = t x' - t x := by
+      rw [inner_sub_left, ht, ht]
+    have h3 : x' - x = (p x' - p x) + (t x' - t x) • v := by
+      rw [hp, hp, sub_smul]
+      abel
+    have h4 : ‖x' - x‖ ≤ ‖p x' - p x‖ + |t x' - t x| := by
+      calc ‖x' - x‖ = ‖(p x' - p x) + (t x' - t x) • v‖ := by rw [← h3]
+        _ ≤ ‖p x' - p x‖ + ‖(t x' - t x) • v‖ := norm_add_le _ _
+        _ = ‖p x' - p x‖ + |t x' - t x| := by
+          rw [norm_smul, hv, mul_one, Real.norm_eq_abs]
+    rw [h2] at h1
+    linarith
+  -- Step 3: the height as a function of the projection, and its McShane extension.
+  obtain ⟨τ, hτ⟩ : ∃ τ : Euclid (m + 1) → ℝ, ∀ x ∈ S, τ (p x) = t x := by
+    refine ⟨fun y => t (Function.invFunOn p S y), ?_⟩
+    intro x hx
+    have hex : ∃ a ∈ S, p a = p x := ⟨x, hx, rfl⟩
+    have hmem := Function.invFunOn_mem hex
+    have heq := Function.invFunOn_eq hex
+    have h := key x hx _ hmem
+    rw [heq, sub_self, norm_zero] at h
+    have h0 : t (Function.invFunOn p S (p x)) - t x = 0 := abs_nonpos_iff.mp h
+    show t (Function.invFunOn p S (p x)) = t x
+    linarith
+  have hτLip : LipschitzOnWith 1 τ (p '' S) := by
+    apply LipschitzOnWith.mk_one
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨x', hx', rfl⟩
+    rw [hτ x hx, hτ x' hx', Real.dist_eq, dist_eq_norm]
+    exact key x' hx' x hx
+  obtain ⟨τ', hτ'Lip, hτ'eq⟩ := hτLip.extend_real
+  -- Step 4: an isometry `ι : ℝᵐ ≃ vᗮ` and the Lipschitz graph map `F`.
+  have : Fact (Module.finrank ℝ (Euclid (m + 1)) = m + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hv0 : v ≠ 0 := by
+    intro h; rw [h, norm_zero] at hv; exact zero_ne_one hv
+  let ι := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) m hv0).repr.symm
+  let F : Euclid m → Euclid (m + 1) := fun y => ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1)) +
+    τ' ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1)) • v
+  have hFLip : ∃ K, LipschitzWith K F := by
+    have h1 : LipschitzWith (1 * 1)
+        (fun y : Euclid m => ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1))) :=
+      (Submodule.subtypeₗᵢ (ℝ ∙ v)ᗮ).lipschitzWith.comp ι.lipschitzWith
+    have hsm : LipschitzWith 1 (fun r : ℝ => r • v) := by
+      apply LipschitzWith.mk_one
+      intro r s
+      rw [dist_eq_norm, ← sub_smul, norm_smul, hv, mul_one, Real.dist_eq, Real.norm_eq_abs]
+    exact ⟨_, h1.add (hsm.comp (hτ'Lip.comp h1))⟩
+  obtain ⟨K, hK⟩ := hFLip
+  -- Step 5: the closed graph `Γ = {z | τ' (p z) = t z}`.
+  have htc : Continuous t := by
+    rw [show t = fun z => inner ℝ z v from funext ht]
+    fun_prop
+  have hpc : Continuous p := by
+    rw [show p = fun z => z - t z • v from funext hp]
+    fun_prop
+  refine ⟨{z | τ' (p z) = t z}, ?_, ?_, ?_⟩
+  · exact isClosed_eq (hτ'Lip.continuous.comp hpc) htc
+  · apply (Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK).mono
+    intro z hz
+    simp only [mem_ofPred_eq] at hz
+    refine ⟨ι.symm ⟨p z, hpmem z⟩, ?_⟩
+    simp only [F, LinearIsometryEquiv.apply_symm_apply]
+    rw [hz]
+    exact hdecomp z
+  · intro x hx
+    simp only [mem_ofPred_eq]
+    rw [← hτ'eq (mem_image_of_mem p hx)]
+    exact hτ x hx
+
+/-- **Compact cover** of Simon Ch. 3, proof of Theorem 1.6 "⇐": the choice of `π₁, …, π_N` with
+`E = ⋃ⱼ Eⱼ` and the selection `E ⊆ ⋃ⱼ Qⱼ(graph fⱼ)`, in codimension one, where the subspaces `πⱼ`
+become unit directions `v`.  Cover the unit sphere by finitely many balls `B_{1/16}(v)` and `K` by
+finitely many balls `B_{δ/4}(c)`, `c ∈ K`.  Two points of
+`S_{v,c} = {x ∈ K : |ν(x) − v| < 1/16} ∩ B_{δ/4}(c)` are less than `δ/2` apart, so
+`codim1_rdo_dg_rc_cone_exclusion` gives `|⟨x' − x, v⟩| ≤ ½|x' − x|` on `S_{v,c}`, and
+`codim1_rdo_dg_rc_closed_graph_cover` gives a closed countably `m`-rectifiable `Γ_{v,c} ⊇ S_{v,c}`.
+The finite union of the `Γ_{v,c}` contains `K`, since `|ν(x)| = 1`. -/
+theorem Submission.codim1_rdo_dg_rc_compact_cover : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → IsCompact K → 0 < δ → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ K ⊆ Γ := by
+  intro m μ ν K δ ε hν1 hK hδ hε0 hε1 hlow hup
+  -- step 1: a finite `1/16`-net `V` of the unit sphere
+  obtain ⟨V, hVs, hVfin, hVcov⟩ :=
+    (isCompact_sphere (0 : Euclid (m + 1)) 1).finite_cover_balls (e := 1 / 16) (by norm_num)
+  -- step 2: a finite `δ/4`-net `C ⊆ K` of `K`
+  obtain ⟨C, -, hCfin, hCcov⟩ := hK.finite_cover_balls (e := δ / 4) (by positivity)
+  -- step 3: on `S_{v,c}` the cone condition holds in direction `v`, so `S_{v,c}` lies in a closed
+  -- countably `m`-rectifiable `Γ_{v,c}`
+  have hS : ∀ v ∈ V, ∀ c ∈ C, ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧
+      {x | x ∈ K ∧ dist (ν x) v < 1 / 16} ∩ ball c (δ / 4) ⊆ Γ := by
+    intro v hv c _
+    have hv1 : ‖v‖ = 1 := by simpa using hVs hv
+    apply Submission.codim1_rdo_dg_rc_closed_graph_cover m v _ hv1
+    rintro x ⟨⟨hxK, hxv⟩, hxc⟩ x' ⟨⟨hx'K, -⟩, hx'c⟩
+    apply Submission.codim1_rdo_dg_rc_cone_exclusion m μ ν K δ ε hν1 hε0 hε1 hlow hup
+      x hxK x' hx'K v
+    · rw [← dist_eq_norm]
+      exact hxv.le
+    · calc ‖x' - x‖ = dist x' x := (dist_eq_norm _ _).symm
+        _ ≤ dist x' c + dist c x := dist_triangle _ _ _
+        _ < δ / 4 + δ / 4 := add_lt_add (mem_ball.1 hx'c) (mem_ball'.1 hxc)
+        _ = δ / 2 := by ring
+  choose! Γ hΓc hΓr hΓS using hS
+  -- step 4: `⋃_{v,c} Γ_{v,c}` is closed (a finite union) and countably `m`-rectifiable (a
+  -- countable union)
+  refine ⟨⋃ v ∈ V, ⋃ c ∈ C, Γ v c, ?_, ?_, ?_⟩
+  · exact hVfin.isClosed_biUnion fun v hv => hCfin.isClosed_biUnion fun c hc => hΓc v hv c hc
+  · rw [← sUnion_image2 Γ V C]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+      (hVfin.image2 Γ hCfin).countable (forall_mem_image2.2 hΓr)
+  -- step 5: `x ∈ K` lies in `S_{v,c}` for a `v ∈ V` with `|ν(x) − v| < 1/16` and a `c ∈ C` with
+  -- `x ∈ B_{δ/4}(c)`
+  · intro x hxK
+    have hνx : ν x ∈ sphere (0 : Euclid (m + 1)) 1 := by simpa using hν1 x
+    obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.1 (hVcov hνx)
+    obtain ⟨c, hc, hxc⟩ := mem_iUnion₂.1 (hCcov hxK)
+    exact mem_iUnion₂.2 ⟨v, hv, mem_iUnion₂.2 ⟨c, hc, hΓS v hv c hc ⟨⟨hxK, mem_ball.1 hxv⟩, hxc⟩⟩⟩
+
+/-- **Halving step (★)** of Simon Ch. 3, proof of Theorem 1.6 "⇐":
+`μ(ℝ^{n+ℓ} \ ⋃ⱼ Qⱼ(graph fⱼ)) ≤ ½ μ(ℝ^{n+ℓ})`, obtained there from (4) and (8).  If `Ū` is a
+compact subset of `D`, then `λ = μ⌞U` is finite and, since `λ = μ` on closed balls inside the open
+set `U`, inherits the a.e. density and cone limits.  `codim1_rdo_dg_rc_uniform_compact` with
+`ε = 1/(2(1 + 16ᵐ))` and `η = μ(U)/2` gives a compact `K` with `λ(Kᶜ) ≤ μ(U)/2` and uniform bounds
+on `K`, and `codim1_rdo_dg_rc_compact_cover` gives a closed countably `m`-rectifiable `Γ ⊇ K`; then
+`μ(U \ Γ) = λ(U \ Γ) ≤ λ(Kᶜ) ≤ μ(U)/2`. -/
+theorem Submission.codim1_rdo_dg_rc_halving_step : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \ Γ) ≤ μ U / 2 := by
+  intro m D μ ν hfin hν hν1 hae U hU hUc hUD
+  -- step 1: `μ(U) ≤ μ(Ū) < ∞`; if `μ(U) = 0`, then `Γ = ∅` works
+  have hUfin : μ U ≠ ∞ := ne_top_of_le_ne_top (hfin _ hUc hUD) (measure_mono subset_closure)
+  by_cases h0 : μ U = 0
+  · refine ⟨∅, isClosed_empty,
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero (by simp), ?_⟩
+    simp [h0]
+  -- step 2: `λ = μ⌞U` is finite and has the same limits as `μ` at every `y ∈ U`, because the two
+  -- functions of `r` agree for `0 < r < r_y`, where `B_{r_y}(y) ⊆ U`
+  set lam := μ.restrict U with hlam
+  have : IsFiniteMeasure lam := isFiniteMeasure_restrict.2 hUfin
+  have haeL : ∀ᵐ y ∂lam,
+      Tendsto (fun r : ℝ => lam (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m)))
+        (𝓝[>] 0) (𝓝 1) ∧
+      Tendsto (fun r : ℝ => lam ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩
+        closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [ae_restrict_mem hU.measurableSet, ae_restrict_of_ae hae] with y hyU hy
+    obtain ⟨h1, h2⟩ := hy
+    obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU y hyU
+    have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), s < r := by
+      filter_upwards [Ioo_mem_nhdsGT hr] with s hs using hs.2
+    constructor
+    · refine h1.congr' ?_
+      filter_upwards [hev] with s hs
+      rw [hlam, Measure.restrict_apply' hU.measurableSet,
+        inter_eq_left.2 ((closedBall_subset_ball hs).trans hrU)]
+    · refine h2.congr' ?_
+      filter_upwards [hev] with s hs
+      rw [hlam, Measure.restrict_apply' hU.measurableSet,
+        inter_eq_left.2 (inter_subset_right.trans ((closedBall_subset_ball hs).trans hrU))]
+  -- step 3: `ε = 1/(2(1 + 16ᵐ)) > 0` with `(1 + 16ᵐ)ε = 1/2 < 1`, and `η = μ(U)/2 > 0`
+  set ε : ℝ := 1 / (2 * (1 + 16 ^ m)) with hε
+  have hεpos : 0 < ε := by positivity
+  have hε1 : (1 + 16 ^ m) * ε < 1 := by
+    have : (0 : ℝ) < 1 + 16 ^ m := by positivity
+    rw [hε, mul_one_div, div_lt_one (by positivity)]
+    linarith
+  -- step 4: a compact `K` with `λ(Kᶜ) ≤ η` on which the density and cone bounds are uniform
+  obtain ⟨K, δ, hK, hδ, hKc, hlow, hup⟩ := Submission.codim1_rdo_dg_rc_uniform_compact m lam ν ε
+    (μ U / 2) inferInstance hν hεpos (ENNReal.half_pos h0) haeL
+  -- step 5: a closed countably `m`-rectifiable `Γ ⊇ K`
+  obtain ⟨Γ, hΓc, hΓr, hKΓ⟩ :=
+    Submission.codim1_rdo_dg_rc_compact_cover m lam ν K δ ε hν1 hK hδ hεpos.le hε1 hlow hup
+  -- step 6: `μ(U \ Γ) = λ(U \ Γ) ≤ λ(Kᶜ) ≤ μ(U)/2`, as `U \ Γ ⊆ U` and `U \ Γ ⊆ Kᶜ`
+  refine ⟨Γ, hΓc, hΓr, ?_⟩
+  calc μ (U \ Γ) = lam (U \ Γ) := by
+        rw [hlam, Measure.restrict_apply' hU.measurableSet, inter_eq_left.2 sdiff_subset]
+    _ ≤ lam Kᶜ := measure_mono fun x hx hxK => hx.2 (hKΓ hxK)
+    _ ≤ μ U / 2 := hKc
+/-- Iterated halving on a countable ball cover (Simon Ch. 3, proof of 1.6 "⇐", final iteration):
+let `D ⊆ ℝ^{m+1}` be open, `μ(ℝ^{m+1} \ D) = 0` and `μ(K) < ∞` for compact `K ⊆ D`.  If every
+open `U` with compact closure `Ū ⊆ D` has a closed countably `m`-rectifiable `Γ` with
+`μ(U \ Γ) ≤ μ(U)/2`, then `μ` is carried by a Borel countably `m`-rectifiable set `R`.
+For an open `W` with compact closure in `D`, applying the hypothesis to `W \ Γᵢ` gives closed
+countably `m`-rectifiable sets `Γᵢ` with `μ(W \ Γᵢ) ≤ 2⁻ⁱ μ(W)`, so `μ(W \ ⋃ᵢ Γᵢ) = 0`; `D` is
+covered by countably many balls `B_{r/2}(x)` with `B_r(x) ⊆ D` (Lindelöf), and `R` is the union
+of the corresponding sets `⋃ᵢ Γᵢ`. -/
+theorem Submission.codim1_rdo_dg_rc_of_halving : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))), IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → (∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \ Γ) ≤ μ U / 2) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0 := by
+  intro m D μ hDo hDc hfin hhalf
+  -- Steps 2–3: on an open set `W` with compact closure in `D`, iterate the halving hypothesis.
+  have key : ∀ W : Set (Euclid (m + 1)), IsOpen W → IsCompact (closure W) → closure W ⊆ D →
+      ∃ R' : Set (Euclid (m + 1)), MeasurableSet R' ∧ CountablyRectifiable m R' ∧
+        μ (W \ R') = 0 := by
+    intro W hWo hWc hWD
+    have hWfin : μ W ≠ ∞ := ne_top_of_le_ne_top (hfin _ hWc hWD) (measure_mono subset_closure)
+    have step : ∀ i : ℕ, ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧
+        μ (W \ Γ) ≤ μ W * (2⁻¹ : ℝ≥0∞) ^ i := by
+      intro i
+      induction i with
+      | zero =>
+        refine ⟨∅, isClosed_empty,
+          Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty, ?_⟩
+        simp
+      | succ i ih =>
+        obtain ⟨Γ, hΓc, hΓr, hΓμ⟩ := ih
+        have hUo : IsOpen (W \ Γ) := hWo.sdiff hΓc
+        have hUcl : closure (W \ Γ) ⊆ closure W := closure_mono sdiff_subset
+        obtain ⟨Γ', hΓ'c, hΓ'r, hΓ'μ⟩ :=
+          hhalf (W \ Γ) hUo (hWc.of_isClosed_subset isClosed_closure hUcl) (hUcl.trans hWD)
+        refine ⟨Γ ∪ Γ', hΓc.union hΓ'c, ?_, ?_⟩
+        · rw [← sUnion_pair]
+          refine Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+            (Set.toFinite _).countable ?_
+          rintro S (rfl | rfl)
+          · exact hΓr
+          · exact hΓ'r
+        · rw [← Set.sdiff_sdiff]
+          calc μ ((W \ Γ) \ Γ') ≤ μ (W \ Γ) / 2 := hΓ'μ
+            _ = μ (W \ Γ) * 2⁻¹ := div_eq_mul_inv _ _
+            _ ≤ μ W * (2⁻¹ : ℝ≥0∞) ^ i * 2⁻¹ := by gcongr
+            _ = μ W * (2⁻¹ : ℝ≥0∞) ^ (i + 1) := by rw [pow_succ, mul_assoc]
+    choose Γ hΓc hΓr hΓμ using step
+    refine ⟨⋃ i, Γ i, MeasurableSet.iUnion (fun i => (hΓc i).measurableSet),
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion Γ hΓr, ?_⟩
+    have hlim : Tendsto (fun i : ℕ => μ W * (2⁻¹ : ℝ≥0∞) ^ i) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun i : ℕ => (2⁻¹ : ℝ≥0∞) ^ i) atTop (𝓝 0) :=
+        ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one ENNReal.one_half_lt_one
+      simpa using ENNReal.Tendsto.const_mul h1 (Or.inr hWfin)
+    refine nonpos_iff_eq_zero.1 ?_
+    refine ge_of_tendsto' hlim (fun i => ?_)
+    exact (measure_mono (sdiff_subset_sdiff_right (subset_iUnion Γ i))).trans (hΓμ i)
+  -- Step 1: a countable cover of `D` by balls with compact closure inside `D`.
+  have hr : ∀ x : Euclid (m + 1), ∃ r : ℝ, 0 < r ∧ (x ∈ D → ball x r ⊆ D) := by
+    intro x
+    by_cases hx : x ∈ D
+    · obtain ⟨r, hr0, hrD⟩ := Metric.isOpen_iff.1 hDo x hx
+      exact ⟨r, hr0, fun _ => hrD⟩
+    · exact ⟨1, one_pos, fun h => absurd h hx⟩
+  choose r hr0 hrD using hr
+  let W : Euclid (m + 1) → Set (Euclid (m + 1)) := fun x => ball x (r x / 2)
+  have hWcl : ∀ x ∈ D, closure (W x) ⊆ D := fun x hx =>
+    closure_ball_subset_closedBall.trans
+      ((closedBall_subset_ball (half_lt_self (hr0 x))).trans (hrD x hx))
+  have hWcpt : ∀ x, IsCompact (closure (W x)) := fun x =>
+    (isCompact_closedBall x (r x / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  have hR : ∀ x : Euclid (m + 1), ∃ R' : Set (Euclid (m + 1)), MeasurableSet R' ∧
+      CountablyRectifiable m R' ∧ (x ∈ D → μ (W x \ R') = 0) := by
+    intro x
+    by_cases hx : x ∈ D
+    · obtain ⟨R', h1, h2, h3⟩ := key (W x) isOpen_ball (hWcpt x) (hWcl x hx)
+      exact ⟨R', h1, h2, fun _ => h3⟩
+    · exact ⟨∅, MeasurableSet.empty,
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty,
+        fun h => absurd h hx⟩
+  choose Rx hRxm hRxr hRxμ using hR
+  obtain ⟨T, hTD, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable D W (fun x _ => isOpen_ball)
+  have hDcov : D ⊆ ⋃ x ∈ T, W x := by
+    rw [hTU]
+    intro y hy
+    exact mem_biUnion hy (mem_ball_self (half_pos (hr0 y)))
+  -- Step 4: glue.
+  refine ⟨⋃ x ∈ T, Rx x, MeasurableSet.biUnion hTc (fun x _ => hRxm x), ?_, ?_⟩
+  · rw [← sUnion_image]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (hTc.image Rx)
+      (by rintro S ⟨x, -, rfl⟩; exact hRxr x)
+  · have hsub : (⋃ x ∈ T, Rx x)ᶜ ⊆ Dᶜ ∪ ⋃ x ∈ T, (W x \ Rx x) := by
+      intro y hy
+      by_cases hyD : y ∈ D
+      · right
+        obtain ⟨x, hxT, hyW⟩ := mem_iUnion₂.1 (hDcov hyD)
+        exact mem_iUnion₂.2 ⟨x, hxT, hyW, fun hyR => hy (mem_iUnion₂.2 ⟨x, hxT, hyR⟩)⟩
+      · exact Or.inl hyD
+    refine measure_mono_null hsub (measure_union_null hDc ?_)
+    exact (measure_biUnion_null_iff hTc).2 (fun x hx => hRxμ x (hTD hx))
 /-- **`Hᵐ` of a ball in an `m`-dimensional subspace** (Simon Ch. 3, Remark 1.5(3): `Hᵐ` on an
 `m`-plane is `m`-dimensional Lebesgue measure): if `Q ⊆ ℝᴺ` is a linear subspace with
 `dim Q = m` and `s > 0`, then `Hᵐ(Q ∩ B_s(0)) = ωₘsᵐ`.  An orthonormal basis of `Q` gives a
@@ -917,6 +1481,32 @@ theorem Submission.codim1_rdo_dg_flat_tangent_density_cone : ∀ (m : ℕ) (μ :
   obtain ⟨hclosed, hopen⟩ := Submission.codim1_rdo_dg_ftd_ball_density m μ y v hm hv hfin hconv
   -- Step 3: for every `α > 0` the cone `{α|z − y| ≤ |⟨z − y, v⟩|}` has density `0`
   exact ⟨hclosed, hopen, Submission.codim1_rdo_dg_ftd_cone_density m μ y v hm hv hfin hconv⟩
+
+/-- **Rectifiability from flat tangent measures** (Simon Ch. 3, 1.6 "⇐" in codimension one).
+Let `μ` be carried by the open set `D` and finite on its compact subsets. Suppose that at
+`μ`-a.e. `y` the blow-ups `r⁻ᵐ μ(y + r ·)` converge to `Hᵐ⌞ν(y)^⊥`, for a Borel unit vector
+field `ν`. Then `μ` is carried by a Borel countably `m`-rectifiable set.
+Almost every `y` lies in `D`, so `μ(B̄_{r/2}(y)) < ∞` for any ball `B_r(y) ⊆ D`. Hence
+`flat_tangent_density` gives (5) density one and (6) `μ(X_{1/4}(ν(y), y) ∩ B̄_ρ(y)) = o(ρᵐ)`.
+These are the hypotheses of the halving step (★), and iterating (★) (`of_halving`) gives `R`. -/
+theorem Submission.codim1_rdo_dg_rectifiable_of_flat_tangent : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0 := by
+  intro m D μ ν hm hD hDc hK hν hν1 hflat
+  -- step 1: (5) and (6) at `μ`-a.e. `y`; such `y` lie in `D`, where `μ` is finite on small balls
+  have hdens : ∀ᵐ y ∂μ,
+      Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m)))
+        (𝓝[>] 0) (𝓝 1) ∧
+      Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩
+        closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [hflat, mem_ae_iff.2 hDc] with y hy hyD
+    obtain ⟨r, hr, hrD⟩ := Metric.isOpen_iff.1 hD y hyD
+    have hfin : μ (closedBall y (r / 2)) ≠ ∞ :=
+      hK _ (isCompact_closedBall y (r / 2)) ((closedBall_subset_ball (half_lt_self hr)).trans hrD)
+    obtain ⟨h5, -, h6⟩ := Submission.codim1_rdo_dg_flat_tangent_density_cone m μ y (ν y) hm
+      (hν1 y) ⟨r / 2, half_pos hr, hfin⟩ hy
+    exact ⟨h5, h6 (1 / 4) (by norm_num)⟩
+  -- steps 2–6: the halving step (★) for open `U ⋐ D`; step 0: iterate (★) over balls in `D`
+  exact Submission.codim1_rdo_dg_rc_of_halving m D μ hD hDc hK
+    (Submission.codim1_rdo_dg_rc_halving_step m D μ ν hK hν hν1 hdens)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
