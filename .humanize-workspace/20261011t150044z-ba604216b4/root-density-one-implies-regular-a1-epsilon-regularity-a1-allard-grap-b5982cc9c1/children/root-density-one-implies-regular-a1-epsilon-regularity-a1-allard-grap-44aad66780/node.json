@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1.projection_trace-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+  "depth": 5,
+  "title": "Projection trace identity trace(p_T(I − p_S)) = ½|p_T − p_S|²",
+  "statement": "Let P ∈ ℕ and let T, S be linear subspaces of ℝ^P with dim T = dim S; let p_T, p_S be the orthogonal projections onto T and S (Submodule.starProjection), I the identity and e_1, …, e_P the standard basis (EuclideanSpace.single i 1). Then trace(p_T ∘ (I − p_S)) = ½ Σ_{i=1}^{P} |p_T e_i − p_S e_i|², i.e. trace(p_T(I − p_S)) = ½|p_T − p_S|² for the Hilbert–Schmidt norm.",
+  "lean_statement": "∀ (P : ℕ) (T S : Submodule ℝ (Euclid P)), Module.finrank ℝ T = Module.finrank ℝ S → LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (ContinuousLinearMap.id ℝ (Euclid P) - S.starProjection).toLinearMap) = 1 / 2 * ∑ i : Fin P, ‖T.starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2",
+  "lean_name": "dorag_th_trace_proj_comp_compl",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-44aad66780-a1"
+}
