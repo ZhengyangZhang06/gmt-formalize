@@ -789,6 +789,83 @@ theorem Submission.rectifiability_bf_limsup_sup_measurable :
     exact hsupq z _ (by positivity)
   rw [funext hform]
   exact Measurable.iInf fun n => Measurable.iSup fun q => Measurable.iSup fun hq => hFm q hq.1
+/-- The parameter set of fibre witnesses (alternative T3 of the Besicovitch–Federer trichotomy in
+the proof of Simon Ch. 6, 8.1) is Borel.  For `E ⊆ ℝ^N` σ-compact, `δ ∈ ℝ` and
+`L_v x = (⟨v₁, x⟩, …, ⟨v_k, x⟩)` (`k = m + 1`), the set `W` of `(a, v)` admitting `x ∈ E` with
+`x ≠ a`, `|x − a| < δ` and `L_v x = L_v a` is measurable.  With `E = ⋃ₙ Kₙ`, `Kₙ` compact,
+`W = ⋃_{n,l} π(C_{n,l})`, where `π(x, (a, v)) = (a, v)` and `C_{n,l}` is the compact set of
+`(x, (a, v))` with `x ∈ Kₙ`, `‖(a, v)‖ ≤ l`, `1/(l+1) ≤ |x − a| ≤ δ − 1/(l+1)` and
+`L_v x = L_v a`. -/
+theorem Submission.rectifiability_bf_witness_set_measurable : (∀ (N m : ℕ) (E : Set (Eucl N)) (δ : ℝ), IsSigmaCompact E → MeasurableSet {p : Eucl N × (Fin (m + 1) → Eucl N) | ∃ x ∈ E, x ≠ p.1 ∧ dist x p.1 < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) p.1) : Eucl (m + 1))}) := by
+  intro N m E δ hE
+  -- `E = ⋃ₙ Kₙ` with every `Kₙ` compact.
+  obtain ⟨K, hK, hKE⟩ := hE
+  -- `(x, (a, v)) ↦ L_v x` and `(x, (a, v)) ↦ L_v a` are continuous.
+  have hLc : Continuous (fun q : Eucl N × (Eucl N × (Fin (m + 1) → Eucl N)) =>
+      (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (q.2.2 i) q.1) : Eucl (m + 1))) := by
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+    exact ((continuous_apply i).comp (continuous_snd.comp continuous_snd)).inner continuous_fst
+  have hLc' : Continuous (fun q : Eucl N × (Eucl N × (Fin (m + 1) → Eucl N)) =>
+      (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (q.2.2 i) q.2.1) : Eucl (m + 1))) := by
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+    exact ((continuous_apply i).comp (continuous_snd.comp continuous_snd)).inner
+      (continuous_fst.comp continuous_snd)
+  -- `C_{n,l}`: `x ∈ Kₙ`, `‖(a, v)‖ ≤ l`, `1/(l+1) ≤ |x − a| ≤ δ − 1/(l+1)`, `L_v x = L_v a`.
+  let C : ℕ → ℕ → Set (Eucl N × (Eucl N × (Fin (m + 1) → Eucl N))) := fun n l =>
+    (K n ×ˢ closedBall (0 : Eucl N × (Fin (m + 1) → Eucl N)) l) ∩
+      ({q | 1 / ((l : ℝ) + 1) ≤ dist q.1 q.2.1} ∩ {q | dist q.1 q.2.1 ≤ δ - 1 / ((l : ℝ) + 1)} ∩
+        {q | (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (q.2.2 i) q.1) : Eucl (m + 1)) =
+          (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (q.2.2 i) q.2.1) : Eucl (m + 1))})
+  -- A compact set intersected with closed conditions is compact.
+  have hCc : ∀ n l, IsCompact (C n l) := by
+    intro n l
+    refine ((hK n).prod (isCompact_closedBall _ _)).inter_right ?_
+    refine ((isClosed_le continuous_const ?_).inter (isClosed_le ?_ continuous_const)).inter
+      (isClosed_eq hLc hLc')
+    · exact continuous_fst.dist (continuous_fst.comp continuous_snd)
+    · exact continuous_fst.dist (continuous_fst.comp continuous_snd)
+  -- `W = ⋃_{n,l} π(C_{n,l})`, choosing `l` by the Archimedean property.
+  have key : {p : Eucl N × (Fin (m + 1) → Eucl N) | ∃ x ∈ E, x ≠ p.1 ∧ dist x p.1 < δ ∧
+      (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) x) : Eucl (m + 1)) =
+        (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) p.1) : Eucl (m + 1))} =
+      ⋃ n, ⋃ l : ℕ, Prod.snd '' C n l := by
+    ext p
+    simp only [mem_ofPred_eq, mem_iUnion, mem_image]
+    constructor
+    · rintro ⟨x, hxE, hxa, hxδ, hL⟩
+      rw [← hKE, mem_iUnion] at hxE
+      obtain ⟨n, hn⟩ := hxE
+      have hd0 : 0 < dist x p.1 := dist_pos.2 hxa
+      have hmin : 0 < min (dist x p.1) (δ - dist x p.1) := lt_min hd0 (by linarith)
+      obtain ⟨l₁, hl₁⟩ := exists_nat_one_div_lt hmin
+      obtain ⟨l₂, hl₂⟩ := exists_nat_ge ‖p‖
+      refine ⟨n, max l₁ l₂, (x, p), ?_, rfl⟩
+      have hle : 1 / ((max l₁ l₂ : ℕ) + 1 : ℝ) ≤ 1 / ((l₁ : ℝ) + 1) := by
+        apply one_div_le_one_div_of_le (by positivity)
+        have : (l₁ : ℝ) ≤ ((max l₁ l₂ : ℕ) : ℝ) := by exact_mod_cast le_max_left l₁ l₂
+        linarith
+      have h1 := lt_of_le_of_lt hle hl₁
+      refine ⟨⟨hn, ?_⟩, ⟨?_, ?_⟩, hL⟩
+      · rw [mem_closedBall, dist_zero_right]
+        exact hl₂.trans (by exact_mod_cast le_max_right l₁ l₂)
+      · exact (h1.trans_le (min_le_left _ _)).le
+      · have := h1.trans_le (min_le_right _ _)
+        simp only [mem_ofPred_eq]
+        linarith
+    · rintro ⟨n, l, q, ⟨⟨hq1, -⟩, ⟨hd1, hd2⟩, hL⟩, rfl⟩
+      refine ⟨q.1, ?_, ?_, ?_, hL⟩
+      · rw [← hKE]; exact mem_iUnion.2 ⟨n, hq1⟩
+      · intro h
+        have : (0 : ℝ) < 1 / ((l : ℝ) + 1) := by positivity
+        simp only [mem_ofPred_eq, h, dist_self] at hd1
+        linarith
+      · have : (0 : ℝ) < 1 / ((l : ℝ) + 1) := by positivity
+        simp only [mem_ofPred_eq] at hd2
+        linarith
+  -- Each `π(C_{n,l})` is compact, hence Borel; so is the countable union.
+  rw [key]
+  exact MeasurableSet.iUnion fun n => MeasurableSet.iUnion fun l =>
+    ((hCc n l).image continuous_snd).measurableSet
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
