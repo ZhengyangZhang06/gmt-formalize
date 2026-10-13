@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1218e05066fb56f1697c6e019b0cad5d5a1aa6e2db1c7af5153f57c632b56022",
+  "git_delta": {
+    "base_commit": "f177ec242f450c42a6edfbd20593d92f27b32c1f",
+    "candidate_commit": "44d3b5c6bd906ed23838e893215231d2eef08afb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1cov_image_ball_borel_finite",
+    "diff_sha256": "1635f7dfe2aa6733772d06aa2aaf66531619e3d5643ff61bd854e347357ec8a3",
+    "source_sha256": "92981ebf32ede38010b148fa7ea881930a535fef4f6c3cef4b419e3649fb7558",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1cov_image_ball_borel_finite",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r : ℝ), ContDiff ℝ 1 g → MeasurableSet (g '' ball c r) ∧ μHE[n] (g '' ball c r) ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
