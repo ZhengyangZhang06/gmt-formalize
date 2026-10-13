@@ -1564,40 +1564,6 @@ theorem Submission.allard_tc_cone_rescaling_invariance :
     congr 2
     ext x
     simp only [mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true]
-    constructor
-    · rintro ⟨hx, S, hS, hxB⟩
-      exact ⟨⟨hx, S, hS⟩, hxB⟩
-    · rintro ⟨⟨hx, S, hS⟩, hxB⟩
-      exact ⟨hx, S, hS, hxB⟩
-  -- `μ_C = θ H^n ⌞ M`: `H^n ⌞ M` is σ-finite and `θ(x)` is the density of `μ_C` at `x ∈ M`.
-  have hW : ∀ B : Set (Euclidean N), MeasurableSet B →
-      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
-    have := Submission.allard_tc_tpr_rectifiable_sigmaFinite N n M hMrect
-    refine Submission.allard_tc_tpr_weight_eq_restrict N n C.weight M E θ
-      (fun K hK ↦ C.weight_finite_on_compact K hK (subset_univ K)) inferInstance hEM
-      (fun x hx ↦ ⟨hθpos x hx, ?_⟩) hE
-    obtain ⟨T, hTx⟩ := hT x hx
-    exact Submission.allard_tc_tangent_plane_density N n univ C x T (θ x) hTx
-  -- Hence at `x ∈ M` the approximate tangent planes are exactly the tangent planes of `C` with
-  -- multiplicity `θ(x)`.
-  have hiff : ∀ x : Euclidean N, ∀ T : Grassmannian N n, HasTangentPlane C x T (θ x) →
-      ∀ S : Grassmannian N n,
-        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T :=
-    fun x T hTx ↦ Submission.allard_tc_tpr_weighted_approx_tangent_iff N n univ C M θ x T
-      hMmeas hθpos (fun K hK ↦ hθint K hK (subset_univ K)) hW hTx
-  intro A hA
-  rw [hrep A hA]
-  congr 2
-  ext x
-  simp only [mem_ofPred_eq]
-  constructor
-  · rintro ⟨hx, S, hS, hxS⟩
-    obtain ⟨T, hTx⟩ := hT x hx
-    refine ⟨hx, S, ?_, hxS⟩
-    rw [(hiff x T hTx S).1 hS]
-    exact hTx
-  · rintro ⟨hx, T, hTx, hxT⟩
-    exact ⟨hx, T, (hiff x T hTx T).2 rfl, hxT⟩
     exact ⟨fun ⟨hxM, _, _, hxB⟩ ↦ ⟨hxM, hxB⟩,
       fun ⟨hxM, hxB⟩ ↦ ⟨hxM, (htan x hxM).choose, (htan x hxM).choose_spec, hxB⟩⟩
   -- Step 2: child `carrier_dilation_null` for `μ = μ_C`: `M ∖ s⁻¹ M` and `s⁻¹ M ∖ M` are null.
