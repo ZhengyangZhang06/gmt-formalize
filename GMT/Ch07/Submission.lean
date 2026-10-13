@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Local-to-global comparison of measures on `ℝᴾ` (a step of the proof of Simon 7.3.3, for
+two-dimensional minimizing cones): if `μ` is finite on compact sets, `D` is Borel and every
+`w ∈ D` is the centre of a ball `B_ε(w)` on whose open subsets `ν ≤ μ`, then `ν(D) ≤ μ(D)`.
+On each such ball the finite measure `μ⌞B_ε(w)` is outer regular, so `ν ≤ μ` also holds on the
+Borel subsets of the ball; countably many of the balls cover `D` (Lindelöf), and the disjointed
+pieces of `D` add up by countable additivity. -/
+theorem Submission.idtp_tdc_nipp_local_comparison : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (D : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → MeasurableSet D → (∀ w ∈ D, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) → ν D ≤ μ D := by
+  intro P μ ν D hμ hD hloc
+  -- (2) if `ν ≤ μ` on the open subsets of `B = B_ε(w)`, then `ν ≤ μ` on the Borel subsets of `B`:
+  -- `μ⌞B` is a finite measure by (1), hence outer regular
+  have hball : ∀ (w : Euclid P) (ε : ℝ),
+      (∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) →
+      ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ ball w ε → ν E ≤ μ E := by
+    intro w ε hW E hE hEB
+    -- (1) `μ(B_ε(w)) ≤ μ(closedBall w ε) < ∞`, closed balls being compact
+    have : IsFiniteMeasure (μ.restrict (ball w ε)) := ⟨by
+      rw [Measure.restrict_apply_univ]
+      exact (measure_mono ball_subset_closedBall).trans_lt
+        (hμ _ (isCompact_closedBall w ε)).lt_top⟩
+    refine le_of_forall_gt fun t ht => ?_
+    have hEt : μ.restrict (ball w ε) E < t := by
+      rwa [Measure.restrict_apply hE, inter_eq_left.mpr hEB]
+    obtain ⟨O, hEO, hO, hOt⟩ := Set.exists_isOpen_lt_of_lt E t hEt
+    rw [Measure.restrict_apply hO.measurableSet] at hOt
+    calc ν E ≤ ν (O ∩ ball w ε) := measure_mono (subset_inter hEO hEB)
+      _ ≤ μ (O ∩ ball w ε) := hW _ (hO.inter isOpen_ball) inter_subset_right
+      _ < t := hOt
+  -- (3) the case `D = ∅`
+  rcases D.eq_empty_or_nonempty with rfl | ⟨x, hx⟩
+  · simp
+  -- (4) countably many of the balls `B_{ε_w}(w)`, `w ∈ D`, cover `D`; enumerate them as `B_l`
+  choose! ε hεpos hε using hloc
+  obtain ⟨T, hTD, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable D
+    (fun w => ball w (ε w)) fun w _ => isOpen_ball
+  have hDT : D ⊆ ⋃ w ∈ T, ball w (ε w) := by
+    rw [hTU]
+    exact fun y hy => mem_biUnion hy (mem_ball_self (hεpos y hy))
+  obtain ⟨w, hwT, -⟩ := mem_iUnion₂.mp (hDT hx)
+  obtain ⟨c, rfl⟩ := hTc.exists_eq_range ⟨w, hwT⟩
+  set B : ℕ → Set (Euclid P) := fun l => ball (c l) (ε (c l))
+  have hDB : D ⊆ ⋃ l, B l := by rwa [biUnion_range] at hDT
+  -- (5) the Borel pieces `E_l = D ∩ (B_l \ ⋃_{l' < l} B_{l'})`, pairwise disjoint with union `D`
+  have hEm : ∀ l, MeasurableSet (D ∩ disjointed B l) := fun l =>
+    hD.inter (MeasurableSet.disjointed (fun l => isOpen_ball.measurableSet) l)
+  have hEd : Pairwise (Disjoint on fun l => D ∩ disjointed B l) := fun i j hij =>
+    (disjoint_disjointed B hij).mono inter_subset_right inter_subset_right
+  have hEU : ⋃ l, D ∩ disjointed B l = D := by
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left.mpr hDB]
+  -- (6) `ν(E_l) ≤ μ(E_l)` by (2), since `E_l ⊆ B_l`; sum over `l`
+  have hEle : ∀ l, ν (D ∩ disjointed B l) ≤ μ (D ∩ disjointed B l) := fun l =>
+    hball (c l) (ε (c l)) (hε (c l) (hTD (mem_range_self l))) _ (hEm l)
+      (inter_subset_right.trans (disjointed_subset B l))
+  calc ν D = ∑' l, ν (D ∩ disjointed B l) := by rw [← measure_iUnion hEd hEm, hEU]
+    _ ≤ ∑' l, μ (D ∩ disjointed B l) := ENNReal.tsum_le_tsum hEle
+    _ = μ D := by rw [← measure_iUnion hEd hEm, hEU]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
