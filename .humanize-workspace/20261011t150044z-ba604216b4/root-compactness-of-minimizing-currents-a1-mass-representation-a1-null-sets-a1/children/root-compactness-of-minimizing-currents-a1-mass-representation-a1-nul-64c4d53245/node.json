@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1.compact_to_general-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1",
+  "depth": 4,
+  "title": "Null sets: from compact subsets of U to arbitrary sets (parent step 9)",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, and μ, ν measures on ℝ^P (Euclid P) such that μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, and μ(C) = 0 for every compact C ⊆ U with ν(C) = 0. Then μ(E) = 0 for every E ⊆ ℝ^P with ν(E) = 0.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ν C = 0 → μ C = 0) → ∀ E : Set (Euclid P), ν E = 0 → μ E = 0",
+  "lean_name": "cmr_null_of_compact_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-nul-64c4d53245-a1"
+}

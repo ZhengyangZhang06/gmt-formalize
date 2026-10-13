@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Coordinate projections of `Hⁿ`-null sets are Lebesgue-null** (parent step 3).  For
+injective `I : Fin n → Fin P` the coordinate projection `q x = (x (I k))ₖ : ℝᴾ → ℝⁿ` is
+`1`-Lipschitz (the squares summed over `image I` are among those summed over `Fin P`), so
+`μH[n] (q '' C) ≤ μH[n] C`.  `μHE[n] = c • μH[n]` with one nonzero constant `c` on every space,
+and `μHE[n] = volume` on `ℝⁿ`; hence `μHE[n] C = 0` gives `volume (q '' C) = 0`.  No compactness
+of `C` is needed. -/
+theorem Submission.cmr_volume_coordProj_image_null : ∀ (P n : ℕ) (I : Fin n → Fin P) (C : Set (Euclid P)), Function.Injective I → μHE[n] C = 0 → volume ((fun x : Euclid P => (WithLp.toLp 2 (fun k => x (I k)) : Euclid n)) '' C) = 0 := by
+  intro P n I C hI hC
+  set q : Euclid P → Euclid n := fun x => WithLp.toLp 2 (fun k => x (I k))
+  -- `q` is 1-Lipschitz: the squares summed over `image I` are among those summed over `Fin P`
+  have hq : LipschitzWith 1 q := by
+    refine LipschitzWith.mk_one fun x y => ?_
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ k, dist ((q x).ofLp k) ((q y).ofLp k) ^ 2
+        = ∑ k, dist (x.ofLp (I k)) (y.ofLp (I k)) ^ 2 := rfl
+      _ = ∑ l ∈ Finset.univ.image I, dist (x.ofLp l) (y.ofLp l) ^ 2 := by
+        rw [Finset.sum_image fun _ _ _ _ h => hI h]
+      _ ≤ ∑ l, dist (x.ofLp l) (y.ofLp l) ^ 2 :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun _ _ _ => sq_nonneg _
+  -- `μHE[n] = c • μH[n]` with `c ≠ 0`, so `μH[n] C = 0`
+  have hc : (Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin n)))
+      μH[(n : ℝ)] : ℝ≥0∞) ≠ 0 :=
+    ENNReal.coe_ne_zero.mpr (Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n)
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+    smul_eq_mul] at hC
+  have hC' : μH[(n : ℝ)] C = 0 := (mul_eq_zero.mp hC).resolve_left hc
+  -- `μH[n] (q '' C) ≤ 1 ^ n * μH[n] C = 0`
+  have hqC : μH[(n : ℝ)] (q '' C) = 0 := by
+    have h := hq.hausdorffMeasure_image_le (Nat.cast_nonneg n) C
+    rw [hC', mul_zero] at h
+    exact nonpos_iff_eq_zero.mp h
+  -- on `ℝⁿ`, `volume = μHE[n] = c • μH[n]`
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume n,
+    Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hqC, smul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
