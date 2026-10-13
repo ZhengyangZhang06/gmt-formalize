@@ -2001,4 +2001,71 @@ theorem Submission.fiw_tb_translation_estimate :
     _ = ENNReal.ofReal ‖h‖ * X.boundary.mass := by
       rw [ENNReal.ofReal_mul (norm_nonneg h), ENNReal.ofReal_toReal hM]
 
+/-- **Top-dimensional approximation by a lattice chain (Simon Ch. 6, proof of 5.1, (27)–(37) with
+`Q := X`, `R := 0`).**  An integer multiplicity `X ∈ 𝒟ₙ(ℝⁿ)` (`n = m + 1`) with `M(X), M(∂X) < ∞`
+has an integer `L¹` density `u`: `X(ω) = ∫ u ω(e)`, `∫ |u| = M(X)` and `u = 0` a.e. off `spt X`.
+Integer medians `β_F` of `u` on the cubes `F ∈ 𝓛ₙ(ρ)` give the lattice chain `Pc = ∑ β_F [[F]]`,
+integer multiplicity with density `v = β_F` on `F`.  `S = X − Pc` is integer multiplicity (LC) and
+`M(S) ≤ ∫ |u − v| = ∑_F ∫_F |u − β_F| ≤ ∑_F ρ⁻ⁿ ∫_F ∫_F |u(x) − u(y)| ≤ c ρ M(∂X)` by the
+translation estimate `∫ |u(· + h) − u| ≤ ‖h‖ M(∂X)`.  A cube with `β_F ≠ 0` meets `{u ≠ 0}` in
+positive measure, hence meets `spt X`, and has diameter `√n ρ`. -/
+theorem Submission.fiw_tb_top_dim_approx : (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) → ∀ m : ℕ, ∃ c : ℝ≥0, ∀ X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∀ ρ : ℝ, 0 < ρ → ∃ (β : LatticeFaceIndex (m + 1) (m + 1) → ℝ) (Pc S : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), IsLatticeChain ρ β Pc ∧ (∀ F, ∃ k : ℤ, β F = k) ∧ (∀ F, β F ≠ 0 → latticeFace ρ F ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ) X.support) ∧ (∀ F, ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ 2 * X.mass) ∧ IsIntegerMultiplicity S ∧ (∀ ω, X ω - Pc ω = S ω) ∧ S.mass ≤ c * ENNReal.ofReal ρ * X.boundary.mass := by
+  intro hMF hLC m
+  -- `c` is the constant of the summed cube Poincaré inequality.
+  obtain ⟨c, hc⟩ := Submission.fiw_tb_tda_poincare_sum m
+  refine ⟨c, fun X hX hXm hXb ρ hρ => ?_⟩
+  -- The integer `L¹` density `u` of `X`; its hypothesis is MF with `U = W = univ` together with
+  -- `Hⁿ(M ∖ spt X) = 0` (support_null).
+  obtain ⟨u, hum, huZ, huint, humass, husupp, hXu⟩ :=
+    Submission.fiw_tb_tda_density m X hX hXm fun M θ ξ hM hXM => by
+      refine ⟨?_, Submission.fiw_tb_rectifiable_support_null hMF (m + 1) (m + 1) univ isOpen_univ
+        X M θ ξ hM hXM⟩
+      have h := hMF (m + 1) (m + 1) univ isOpen_univ X M θ ξ hM hXM univ isOpen_univ
+      rwa [inter_univ] at h
+  -- The cubes `F ∈ 𝓛ₙ(ρ)` are measurable, of volume `ρⁿ` and diameter `√n ρ`, and `∫⁻` splits
+  -- over them.
+  obtain ⟨-, -, hFmeas, hFvol, hFdiam, -, hFsum, -⟩ := Submission.fiw_tb_tda_lattice_cubes m ρ hρ
+  -- Integer medians `b F` of `u` on the cubes, with (M1), (M2) and (M4).
+  choose b hb1 hb2 hb3 using fun F : LatticeFaceIndex (m + 1) (m + 1) =>
+    Submission.fiw_tb_tda_integer_median volume (latticeFace ρ F) (ρ ^ (m + 1)) u (hFmeas F)
+      (pow_pos hρ _) (hFvol F) hum huZ huint.integrableOn
+  -- (M1): `|b F| ρⁿ ≤ 2 ∫_F |u| ≤ 2 M(X)`; summed over the cubes, `≤ 2 M(X) < ∞`.
+  have hcoef : ∀ F, ENNReal.ofReal (|(b F : ℝ)| * ρ ^ (m + 1)) ≤ 2 * X.mass := fun F =>
+    (hb1 F).trans (by rw [← humass]; exact mul_le_mul_right (setLIntegral_le_lintegral _ _) 2)
+  have hsum : (∑' F, ENNReal.ofReal (|(b F : ℝ)| * ρ ^ (m + 1))) < ∞ :=
+    calc (∑' F, ENNReal.ofReal (|(b F : ℝ)| * ρ ^ (m + 1)))
+        ≤ ∑' F, 2 * ∫⁻ x in latticeFace ρ F, ENNReal.ofReal |u x| := ENNReal.tsum_le_tsum hb1
+      _ = 2 * X.mass := by
+        rw [ENNReal.tsum_mul_left, ← hFsum fun x => ENNReal.ofReal |u x|, humass]
+      _ < ∞ := ENNReal.mul_lt_top ENNReal.ofNat_ne_top.lt_top hXm
+  -- The lattice chain `Pc = ∑ b F [[F]]`: integer multiplicity, with density `v = b F` a.e. on `F`.
+  obtain ⟨Pc, v, hPc, hPcim, hvint, hvF, hPcv⟩ :=
+    Submission.fiw_tb_tda_lattice_chain m ρ hρ (fun F => (b F : ℝ)) (fun F => ⟨b F, rfl⟩) hsum
+  -- `S = X − Pc` with `M(S) ≤ ∫ |u − v|`; `S` is integer multiplicity by LC (`a = 1`, `b = −1`).
+  obtain ⟨S, hS, hSmass⟩ := Submission.fiw_tb_tda_sub_mass m X Pc u v huint hvint hXu hPcv
+  have hSim : IsIntegerMultiplicity S :=
+    hLC (m + 1) (m + 1) univ isOpen_univ X Pc S 1 (-1) hX hPcim fun ω => by
+      rw [← hS ω]; push_cast; ring
+  refine ⟨fun F => (b F : ℝ), Pc, S, hPc, fun F => ⟨b F, rfl⟩, fun F hF => ?_, hcoef, hSim, hS, ?_⟩
+  · -- (M2): `F ∩ {u ≠ 0}` is not null and `u = 0` a.e. off `spt X`, so `F` meets `spt X`, and
+    -- every point of `F` lies within `diam F = √n ρ` of that point.
+    obtain ⟨p, hpF, hpX⟩ : (latticeFace ρ F ∩ X.support).Nonempty := by
+      by_contra hne
+      refine hb2 F (Int.cast_ne_zero.1 hF) (measure_mono_null (fun x hx => ?_) (ae_iff.1 husupp))
+      exact fun h => hx.2 (h fun hxX => hne ⟨x, hx.1, hxX⟩)
+    exact fun x hx => mem_cthickening_of_dist_le x p _ _ hpX (hFdiam F x hx p hpF)
+  · -- (M4) on every cube, summed, then the summed Poincaré inequality fed by the translation
+    -- estimate `∫ |u(· + h) − u| ≤ ‖h‖ M(∂X)`.
+    calc S.mass ≤ ∫⁻ x, ENNReal.ofReal |u x - v x| := hSmass
+      _ = ∑' F, ∫⁻ x in latticeFace ρ F, ENNReal.ofReal |u x - v x| := hFsum _
+      _ = ∑' F, ∫⁻ x in latticeFace ρ F, ENNReal.ofReal |u x - b F| := by
+        refine tsum_congr fun F => lintegral_congr_ae ?_
+        filter_upwards [hvF F] with x hx
+        rw [hx]
+      _ ≤ ∑' F, ENNReal.ofReal (ρ ^ (m + 1))⁻¹ *
+          ∫⁻ x in latticeFace ρ F, ∫⁻ y in latticeFace ρ F, ENNReal.ofReal |u x - u y| :=
+        ENNReal.tsum_le_tsum hb3
+      _ ≤ c * ENNReal.ofReal ρ * X.boundary.mass :=
+        hc ρ hρ u _ hum (Submission.fiw_tb_translation_estimate m X u huint hXu)
+
 end GMT.Ch06
