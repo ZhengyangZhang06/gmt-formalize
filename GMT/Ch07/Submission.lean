@@ -474,6 +474,34 @@ theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodu
     Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
   rfl
 
+/-- If `σ` is finite on compact sets and `f(r) ≤ ωₙrⁿσ(B_r(z))` for every `r > 0`, then
+`liminf_{r↓0} f(r)/(ωₙrⁿ) ≤ σ({z})` (used in the closure step of the proof of Simon 7.2.4,
+p. 184, to show that the transversal measure of a measure invariant along a plane is atomic).
+For `r > 0`, `f(r)/(ωₙrⁿ) ≤ σ(B_r(z))` in `[0, ∞]`; and `σ(B_r(z)) → σ({z})` as `r ↓ 0` by
+continuity from above, the balls decreasing to `{z}` and `σ(B_1(z)) ≤ σ(B̄_1(z)) < ∞`. -/
+theorem Submission.cbr_ci_cp_atm_liminf_density_le_atom : ∀ (P n : ℕ) (σ : Measure (Euclid P)) (z : Euclid P) (f : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ r : ℝ, 0 < r → f r ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball z r)) → liminf (fun r : ℝ => f r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ σ {z} := by
+  intro P n σ z f hσ hf
+  -- the balls `B_r(z)` decrease to `{z}` as `r ↓ 0`
+  have hinter : (⋂ r > (0 : ℝ), ball z r) = {z} := by
+    ext y
+    simp only [mem_iInter, mem_ball, mem_singleton_iff]
+    refine ⟨fun hy => ?_, fun hy r hr => by rwa [hy, dist_self]⟩
+    by_contra hne
+    exact lt_irrefl _ (hy (dist y z) (dist_pos.2 hne))
+  -- continuity from above, with `σ(B_1(z)) ≤ σ(B̄_1(z)) < ∞`
+  have hlim : Tendsto (fun r : ℝ => σ (ball z r)) (𝓝[>] 0) (𝓝 (σ {z})) := by
+    rw [← hinter]
+    exact tendsto_measure_biInter_gt (fun r _ => measurableSet_ball.nullMeasurableSet)
+      (fun i j _ hij => ball_subset_ball hij)
+      ⟨1, one_pos, ((measure_mono ball_subset_closedBall).trans_lt
+        (hσ _ (isCompact_closedBall z 1))).ne⟩
+  -- `f(r)/(ωₙrⁿ) ≤ σ(B_r(z))` for `r > 0`, then monotonicity of `liminf`
+  calc liminf (fun r : ℝ => f r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)
+      ≤ liminf (fun r : ℝ => σ (ball z r)) (𝓝[>] 0) :=
+        liminf_le_liminf (eventually_mem_nhdsWithin.mono fun r hr =>
+          ENNReal.div_le_of_le_mul' (hf r hr))
+    _ = σ {z} := hlim.liminf_eq
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
