@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.smooth_identity-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1",
+  "depth": 4,
+  "title": "Smooth Leibniz identity for τ(M, θ, ξ) with measure representations of T and ∂T (Simon Ch. 6, proof of 4.5(2), (2))",
+  "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P, M ⊆ ℝ^P, θ : ℝ^P → ℝ, ξ : ℝ^P → Λ_{m+1}(ℝ^P) (NVector (Eucl P) (m+1)) and T ∈ D_{m+1}(U) (GeometricCurrentOn U (m+1)) with T(η) = tauAction (m+1) M θ ξ η = ∫_M θ(x)ξ(x)(η(x)) dH^{m+1}(x) for every η ∈ D^{m+1}(U). Let (μ, v) be a measure representation of T and (μ', v') one of ∂T (IsMeasureRepresentation). Let ω ∈ D^m(U) and ψ : ℝ^P → ℝ be C^∞. Then ∫_M θ(x)·ξ(x)(alternatizeUncurryFin((Dψ(x)).smulRight(ω(x)))) dH^{m+1}(x) = ∫ ψ(x)v'(x)(ω(x)) dμ'(x) − ∫ ψ(x)v(x)(dω(x)) dμ(x), where Dψ(x) = fderiv ℝ ψ x and dω = exteriorDerivative ω.",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ η : TestFormOn U (m + 1), T η = tauAction (m + 1) M θ ξ η) → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)) (μ' : Measure (Eucl P)) (v' : Eucl P → NVector (Eucl P) m), IsMeasureRepresentation T μ v → IsMeasureRepresentation T.boundary μ' v' → ∀ (ω : TestFormOn U m) (ψ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ ψ x).smulRight ((ω : DifferentialForm (Eucl P) m) x))) ∂(μHE[m + 1] : Measure (Eucl P)) = (∫ x, ψ x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ') - (∫ x, ψ x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ)",
+  "lean_name": "slicing_im_ll_smooth_leibniz",
+  "depends_on": [
+    "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.extderiv_leibniz-a1",
+    "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.smul_test_form-a1",
+    "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.wedge_test_form-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.extderiv_leibniz-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1-extderiv-leibniz-a1-a1",
+      "result_commit": "d90a235b0e2f1e6dc56f7403a10da148651efa8e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.smul_test_form-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1-smul-test-form-a1-a1",
+      "result_commit": "1faaa7c7259bb155f74661c6ff80276b4faaa290",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.wedge_test_form-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1-wedge-test-form-a1-a1",
+      "result_commit": "1c55ec485bf93542968e584ff39ce06b41600d04",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-sm-9d4b939639-a1"
+}

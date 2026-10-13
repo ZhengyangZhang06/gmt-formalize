@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "IsRectifiableTriple|def tauAction|def IsMeasureRepresentation|^import",
+        "slicing_im_ll|slicing_mb_lb_(extDeriv_smul|smul_testForm|wedge_testForm)",
+        "integral_lineDeriv_mul_eq|exist_eLpNorm_sub_le|exists_contDiff_support_eq_eq_one_iff",
+        "CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|weighted_area_formula_lipschitz_injOn|normDet_sq_eq_det_gram",
+        "ae_tendsto_lintegral_enorm_sub_div|def vitaliFamily|theorem tendsto_filterAt|lemma tendsto_filterAt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lleib_independent_audit_45vlxaiv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lleib_independent_audit_45vlxaiv/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lleib_independent_audit_45vlxaiv/Reused.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lleib_independent_audit_45vlxaiv/APIAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/lleib_independent_audit_45vlxaiv/Types.lean",
+        "/tmp/lleib_independent_audit_45vlxaiv/Assembly.lean",
+        "/tmp/lleib_independent_audit_45vlxaiv/Reused.lean",
+        "/tmp/lleib_independent_audit_45vlxaiv/APIAxioms.lean",
+        "/tmp/lleib_split/check/C1.lean",
+        "/tmp/lleib_split/check/C2.lean",
+        "/tmp/lleib_split/check/C3.lean",
+        "/tmp/lleib_split/check/C4.lean"
+      ],
+      "conclusion": "Splitting is appropriate. All nine exact one-line propositions independently elaborate in the frozen comparator scope, and the proposed children imply the exact selected parent; the assembly was independently compiled. Dependencies are correctly directed and acyclic. All names are bare identifiers. The final 460-node DAG check found no collisions for the six new names; the three reused declarations have accepted comparator receipts and byte-identical frozen types. No proposed names were found in the reference libraries. Project and library revisions match the pins. Recompiled reused proofs, supplied C1–C4 checks, conditional assembly, and checked analytic APIs use only propext, Classical.choice and Quot.sound. No frozen child contains a problematic matrix-unit construction. The two analytic limit proofs were independently reviewed in prose; their complete Lean implementations were not claimed or checked."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "extderiv_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree. Pointwise differentiability supplies the scalar product rule; linearity of alternatization gives exactly the stated identity. Accepted reuse has an identical type and a clean axiom check."
+    },
+    {
+      "key": "smul_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Smoothness, compact support and support containment are all established without requiring U to be open or ψ to have compact support. The existential test-form contract matches the prose and accepted declaration exactly."
+    },
+    {
+      "key": "wedge_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuous bilinearity followed by continuous linear alternatization proves smoothness. Vanishing wherever ω vanishes proves both support obligations. The accepted frozen type is identical and independently usable."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized compactly supported mollifiers give smooth convolutions, preserve the Lipschitz constant, and yield the global error bound L/(k+1). This proves the exact uniform-convergence contract, including degenerate dimensions."
+    },
+    {
+      "key": "multiplier_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support of F and continuity of each multiplier justify integrability for arbitrary ν. The explicit ε/(∫|F|+1) estimate proves the claimed convergence without an unstated finiteness assumption."
+    },
+    {
+      "key": "smooth_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared dependencies construct the required test forms and their derivative identity. Boundary evaluation, current linearity and the supplied representations give the correct subtraction order. No rectifiability or integrability hypothesis beyond its frozen contract is used."
+    },
+    {
+      "key": "tangent_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Riesz construction gives the global functional identity. Compact-support localization supplies measurability and integrability despite θ having only local integrability. The orientation clause, positivity and weighted-tangent uniqueness prove membership in every claimed tangent plane."
+    },
+    {
+      "key": "gradient_weak_star",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The derivative bound and measurability justify every integral. McShane extension, Rademacher and Lipschitz integration by parts establish convergence against smooth compactly supported fields. The supplied cutoff-density construction and uniform L¹ estimate extend this to arbitrary integrable c. No differentiability assumption is silently added."
+    },
+    {
+      "key": "tangential_weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles n=0 and n>P, constructs chart pieces, transports null sets, and proves weighted tangent identification using localized density and differentiation estimates. The integrable coefficient field and chain-rule identities reduce exactly to gradient_weak_star; summable domination restores the full integral. The classical covering and density inputs agree with [Simon, Chapters 1 and 3](https://web.stanford.edu/class/math285/ts-gmt.pdf). No parent theorem or speculative DAG declaration is assumed."
+    }
+  ],
+  "required_changes": []
+}

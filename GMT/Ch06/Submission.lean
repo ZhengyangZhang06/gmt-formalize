@@ -406,6 +406,75 @@ theorem Submission.slicing_mb_lb_wedge_testForm :
   -- `alternatizeUncurryFin` is the continuous linear map `alternatizeUncurryFinCLM`.
   exact (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).contDiff.comp
     (hα.smulRight hωs)
+/-- Global smooth approximation of a Lipschitz function by mollification: `g k = ρ_k ⋆ h` with a
+normalized smooth bump `ρ_k ≥ 0`, `∫ ρ_k = 1`, supported in `B(0, 1/(k+1))`.  Each `g k` is `C^∞`,
+`L`-Lipschitz, and `|g k - h| ≤ L/(k+1)` uniformly. -/
+theorem Submission.slicing_im_ll_mollify :
+    ∀ (P : ℕ) (h : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L h → ∃ g : ℕ → Eucl P → ℝ,
+      (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (g k)) ∧ (∀ k, LipschitzWith L (g k)) ∧
+        TendstoUniformly g h atTop := by
+  intro P h L hL
+  -- Step 1: normalized smooth bumps `ρ k ≥ 0` with `∫ ρ k = 1`, supported in `B(0, 1/(k+1))`.
+  have hbump : ∀ k : ℕ, ∃ ρ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ρ ∧
+      HasCompactSupport ρ ∧ (∀ y, 0 ≤ ρ y) ∧
+      Function.support ρ ⊆ ball (0 : Eucl P) (1 / ((k : ℝ) + 1)) ∧ ∫ y, ρ y = 1 := by
+    intro k
+    have hσ : (0 : ℝ) < 1 / ((k : ℝ) + 1) := by positivity
+    let φ : ContDiffBump (0 : Eucl P) :=
+      ⟨1 / ((k : ℝ) + 1) / 2, 1 / ((k : ℝ) + 1), half_pos hσ, half_lt_self hσ⟩
+    have hint : Integrable φ := φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+    have hpos : 0 < ∫ y, φ y := by
+      refine (integral_pos_iff_support_of_nonneg φ.nonneg' hint).mpr ?_
+      rw [φ.support_eq]
+      exact measure_ball_pos _ _ hσ
+    have hsupp : Function.support (fun y => φ y / ∫ y, φ y) ⊆ Function.support φ :=
+      fun y hy h0 => hy (by simp [h0])
+    refine ⟨fun y => φ y / ∫ y, φ y, φ.contDiff.div_const _, φ.hasCompactSupport.mono hsupp,
+      fun y => div_nonneg φ.nonneg hpos.le, φ.support_eq ▸ hsupp, ?_⟩
+    simp_rw [div_eq_mul_inv]
+    rw [integral_mul_const]
+    exact mul_inv_cancel₀ hpos.ne'
+  choose ρ hρs hρc hρn hρsupp hρi using hbump
+  have hρint : ∀ k, Integrable (ρ k) := fun k => integrable_of_integral_eq_one (hρi k)
+  -- Step 2: `g k = ρ k ⋆ h`; the convolution exists everywhere.
+  have hex : ∀ k, ConvolutionExists (ρ k) h (ContinuousLinearMap.lsmul ℝ ℝ) volume := fun k =>
+    (hρc k).convolutionExists_left _ (hρs k).continuous hL.continuous.locallyIntegrable
+  refine ⟨fun k => convolution (ρ k) h (ContinuousLinearMap.lsmul ℝ ℝ) volume, ?_, ?_, ?_⟩
+  -- Step 3: smoothness.
+  · intro k
+    exact (hρc k).contDiff_convolution_left _ (hρs k) hL.continuous.locallyIntegrable
+  -- Step 4: the Lipschitz constant is preserved.
+  · intro k
+    refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+    have hx := (hex k x).integrable
+    have hx' := (hex k x').integrable
+    simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul] at hx hx' ⊢
+    rw [dist_eq_norm, ← integral_sub hx hx']
+    refine (norm_integral_le_of_norm_le ((hρint k).mul_const ((L : ℝ) * dist x x'))
+      (Eventually.of_forall fun t => ?_)).trans ?_
+    · rw [← mul_sub, norm_mul, Real.norm_of_nonneg (hρn k t), ← dist_eq_norm]
+      gcongr
+      · exact hρn k t
+      · calc dist (h (x - t)) (h (x' - t)) ≤ L * dist (x - t) (x' - t) := hL.dist_le_mul _ _
+          _ = L * dist x x' := by rw [dist_sub_right]
+    · rw [integral_mul_const, hρi k, one_mul]
+  -- Steps 5–6: `|g k - h| ≤ L/(k+1)` everywhere, hence uniform convergence.
+  · have hbound : ∀ k x, dist (convolution (ρ k) h (ContinuousLinearMap.lsmul ℝ ℝ) volume x) (h x)
+        ≤ L * (1 / ((k : ℝ) + 1)) := by
+      intro k x
+      refine dist_convolution_le (by positivity) (hρsupp k) (hρn k) (hρi k)
+        hL.continuous.aestronglyMeasurable fun y hy => ?_
+      calc dist (h y) (h x) ≤ L * dist y x := hL.dist_le_mul _ _
+        _ ≤ L * (1 / ((k : ℝ) + 1)) := by
+          gcongr
+          exact (mem_ball.mp hy).le
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    have hlim : Tendsto (fun k : ℕ => (L : ℝ) * (1 / ((k : ℝ) + 1))) atTop (𝓝 0) := by
+      simpa using tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (L : ℝ)
+    filter_upwards [hlim.eventually (gt_mem_nhds hε)] with k hk x
+    rw [dist_comm]
+    exact (hbound k x).trans_lt hk
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
