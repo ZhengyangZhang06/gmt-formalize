@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "densityRatio|HasDensity|unitBallVolume|MonotonicityFormula|intcpt_allard|namespace|^import|^open",
+        "theorem mul_inv|theorem ofReal_div_of_pos|theorem add_div|theorem sum_div|theorem toReal_pos|theorem ofReal_toReal",
+        "norm_add_sq_real|theorem measure_ball_pos|theorem measure_ball_lt_top|theorem card_eq_one|theorem one_lt_card |theorem mem_offDiag|exists_min_image",
+        "intcpt_allard_fdsb_|density_cylinder_bound|one_point_bound|separated_sum_bound",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fdsb-independent-audit-kwgbduuw/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fdsb-independent-audit-kwgbduuw/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fdsb-independent-audit-kwgbduuw/AcceptedReuse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-a1/decomposition-v1.json",
+        "/tmp/fdsb-independent-audit-kwgbduuw/Types.lean",
+        "/tmp/fdsb-independent-audit-kwgbduuw/Full.lean",
+        "/tmp/fdsb-independent-audit-kwgbduuw/AcceptedReuse.lean"
+      ],
+      "conclusion": "Verified pinned project, Mathlib and SimonGMT revisions and identical Contract/Submission contents. The inspected definitions and lemmas support the projection estimate, exponential bounds and ENNReal algebra. No matching proposed declarations exist in the snapshot project; no name collisions were found in the DAG, other decompositions or 599 git refs. All three names are bare identifiers. Independent checks with autoImplicit disabled passed: the types elaborate without child implementations, all child proofs and comparator-form targets compile using only propext, Classical.choice and Quot.sound, and the exact selected parent follows under its three frozen sibling contracts. Accepted good_point_monotonicity has the identical frozen type and independently passed its axiom check. The dependency graph is acyclic, and the three-way split is appropriate. No problematic inline Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_cylinder_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose and includes every hypothesis. Projection contraction justifies both ball inclusions. The two radius cases exhaust the possibilities; applying (C) at 2τ gives the required 4τ cylinder, and nonnegativity together with exp ε ≤ 2 bounds the error. The ENNReal rearrangements are valid. The supplied proof is complete, independent and non-circular."
+    },
+    {
+      "key": "one_point_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose. The proof establishes the admissible radius 1−ε, ball inclusion, exponential and inverse estimates, and the power inequality by explicit induction. These yield the coefficient bound 1+δ. Positive finite radial denominators justify the ENNReal conversion, including n=0 and infinite mass. No additional obligation or circular reliance is hidden."
+    },
+    {
+      "key": "separated_sum_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all stated hypotheses. Minimal separation gives admissible scales τ=d/16 and σ=d/(8δ²); applying CB at thickness d/4 satisfies every separation condition. Summation and Aδ≤1 establish both required coefficient bounds, and positive finite unitBallVolume permits cancellation. The cylinder and cluster estimates are explicit hypotheses discharged by the parent, so the empty child dependency list is correct. The proof is complete and covers infinite mass."
+    }
+  ],
+  "required_changes": []
+}

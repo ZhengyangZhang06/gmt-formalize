@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem (measure_biUnion_finset|exp_bound_div_one_sub_of_interval|mul_div_mul_left|div_le_div_left|div_le_div_right|mul_div_right_comm|ofReal_div_of_pos|sum_div)|prod_fiberwise_of_maps_to|continuous_of_finiteDimensional",
+        "one_lt_card|mem_offDiag",
+        "intcpt_allard_ccb_",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ccb-independent-audit-v1/AllChecks.lean > /tmp/ccb-independent-audit-v1/AllChecks.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a1/decomposition-v1.json",
+        "/tmp/ccb-independent-audit-v1/AllChecks.lean",
+        "/tmp/ccb-independent-audit-v1/AllChecks.log"
+      ],
+      "conclusion": "Verified snapshot revisions, byte-identical Contract/Submission files, and compatible pinned packages. The inspected lemmas support measurability, finite grouping, exponential estimates and ENNReal arithmetic without finiteness assumptions. No proposed name occurs in the snapshot GMT declarations, DAG reservations or 101 other decomposition files; all four names are bare identifiers. Independent Lean checking exited successfully: all frozen propositions elaborate before any child declaration; Borel instances, sum parentheses and exact CS dependency equality check. All four supplied child implementations use only propext, Classical.choice and Quot.sound. The exact selected parent assembles from them with only its existing cluster_selection dependency provisionally assumed. The four-way split is appropriate, its dependencies are acyclic and correctly directed, and every child contributes to the selected contract. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cylinder_grouping",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and standalone Lean type agree, including every hypothesis. The proof establishes measurable disjoint cylinders, representative inclusions, finite grouping and the precise rescaling factor. It derives u ≥ 0 and a finite positive cancellation factor, so the ENNReal argument also covers infinite mass. No circular reliance or missing construction remains."
+    },
+    {
+      "key": "one_point_ball_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match exactly. Both comparison radii lie in (0,1); the ball inclusion and explicit exponential/power estimates yield the stated 2^(n+2) coefficient. Positivity conditions and infinite-measure arithmetic are handled correctly. The proof is complete and independent."
+    },
+    {
+      "key": "reduction_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit CS hypothesis is definitionally identical to the frozen cluster_selection dependency at N. The proof supplies the attained minimum distance, admissible comparison scales, error bound, smaller representative set and every required witness inequality. Its only child dependency is cylinder_grouping; it invokes neither the parent theorem nor an induction hypothesis. The resulting conclusion supports the exact parent induction."
+    },
+    {
+      "key": "affine_combine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All prose assumptions and the conclusion match the standalone Lean proposition. The two coefficient estimates follow from 0 ≤ δ² ≤ 1, and every ofReal product/addition rewrite has the required nonnegativity. Distribution and monotonicity remain valid for M = ∞. The supplied proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
