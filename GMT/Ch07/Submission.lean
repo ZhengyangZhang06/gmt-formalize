@@ -1490,6 +1490,31 @@ theorem Submission.codim1_rdo_gc_orientation_along_graph : ∀ (P n : ℕ) (N : 
   rw [hpos]
   exact hηJ v hv α
 
+/-- **Oriented graph chart** (Simon Ch. 2, §4 and 6.2.2).  Let `N` be an embedded `C²`
+`(n+1)`-submanifold oriented by `ξN`, and `x ∈ N ∩ U`.  Near `x`, `N` is the graph
+`G(v) = x + ιv + u(v)`, `v ∈ B_{δ₁}(0)`, of a `C²` map `u ⊥ ι(ℝⁿ⁺¹)` over the tangent plane
+`T_xN = ι(ℝⁿ⁺¹)` (`ι` a linear isometry), with `u(0) = 0`, `‖Du‖ ≤ 1` and `‖u‖ < δ₂/2`; a point
+`x + ιv + h ∈ N` with `|v| < δ₁`, `|h| < δ₂`, `h ⊥ ι(ℝⁿ⁺¹)` has `h = u(v)`; and
+`ξN(G(v)) · J(v) = DG(v)e₁ ∧ ⋯ ∧ DG(v)eₙ₊₁` with `J(v) = det(⟨DG(v)eᵢ, DG(v)eⱼ⟩)^{1/2}`.
+`ξN(x)` is a unit orientation of `T_xN`, so `ξN(x) = ιe₁ ∧ ⋯ ∧ ιeₙ₊₁` for some `ι` onto `T_xN`;
+the inverse function theorem gives the graph over `ι(ℝⁿ⁺¹)` with `Du(0) = 0`; and the
+orientation identity, true at `v = 0`, is transported over the connected ball `B_{δ₁}(0)`. -/
+theorem Submission.codim1_rdo_graph_chart : ∀ (P n : ℕ) (U N : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (x : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 (n + 1) N → IsOrientation (n + 1) N ξN → x ∈ N ∩ U → ∃ (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ), 0 < δ₁ ∧ 0 < δ₂ ∧ closedBall x (δ₁ + δ₂) ⊆ U ∧ u 0 = 0 ∧ ContDiffOn ℝ 2 u (ball 0 δ₁) ∧ (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, (∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) ∧ ‖fderiv ℝ u v‖ ≤ 1 ∧ ‖u v‖ < δ₂ / 2 ∧ x + ι v + u v ∈ N ∧ ∀ α : Covector (Euclid P) (n + 1), ξN (x + ι v + u v) α * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) (ι (EuclideanSpace.single j 1) + fderiv ℝ u v (EuclideanSpace.single j 1)))) = α (fun i => ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1))) ∧ ∀ (v : Euclid (n + 1)) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid (n + 1), inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v := by
+  intro P n U N ξN x hU hN hξ hx
+  -- `ξN(x)` orients `Q = T_xN`; write it as `ξN(x) = ιe₁ ∧ ⋯ ∧ ιeₙ₊₁` with `ι(ℝⁿ⁺¹) = Q`
+  obtain ⟨Q, hQ, hQξ⟩ := hξ.2 x hx.1
+  obtain ⟨ι, hιQ, hιξ⟩ := Submission.codim1_rdo_gc_unitOrientation_isometry P n (ξN x) Q hQξ
+  -- near `x`, `N` is the `C²` graph of `u ⊥ ι(ℝⁿ⁺¹)` over `ι(ℝⁿ⁺¹) = T_xN`, and `Du(0) = 0`
+  obtain ⟨u, δ₁, δ₂, hδ₁, hδ₂, hball, hu0, hDu0, hu, hgraph, huniq⟩ :=
+    Submission.codim1_rdo_gc_graph_over_tangent P (n + 1) U N x ι hU hN hx (hιQ.trans hQ)
+  -- the orientation identity at `v = 0` propagates over `B_{δ₁}(0)` along the graph
+  have horient := Submission.codim1_rdo_gc_orientation_along_graph P n N ξN x ι u δ₁ hξ hιξ hδ₁
+    hu0 hDu0 (hu.of_le (by norm_num)) (fun v hv => (hgraph v hv).1)
+    (fun v hv => (hgraph v hv).2.2.2)
+  exact ⟨ι, u, δ₁, δ₂, hδ₁, hδ₂, hball, hu0, hu, fun v hv =>
+    ⟨(hgraph v hv).1, (hgraph v hv).2.1, (hgraph v hv).2.2.1, (hgraph v hv).2.2.2, horient v hv⟩,
+    huniq⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
