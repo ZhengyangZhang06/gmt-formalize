@@ -359,6 +359,60 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A translation estimate `∫ |u(x + h) − u(x)| dx ≤ ‖h‖ Λ` bounds the double integral over
+`r`-balls: `∫_x ∫_{closedBall(x, r)} |u(x) − u(y)| dy dx ≤ r Λ |closedBall(0, r)|`.
+Substituting `y = x + h` turns the inner integral into `∫ 1_B(h) |u(x + h) − u(x)| dh` with
+`B = closedBall(0, r)`; Tonelli swaps the integrals, and on `B` the hypothesis and `‖h‖ ≤ r`
+bound the inner `x`-integral by `r Λ`. -/
+theorem Submission.fiw_tb_tda_ps_translation_ball :
+    ∀ (n : ℕ) (u : Eucl n → ℝ) (Λ : ℝ≥0∞) (r : ℝ), Measurable u →
+      (∀ h : Eucl n, ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) →
+      ∫⁻ x, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y| ≤
+        ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r) := by
+  intro n u Λ r hu hΛ
+  set B : Set (Eucl n) := closedBall 0 r
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  -- `x + h ∈ closedBall x r ↔ h ∈ closedBall 0 r`.
+  have hmem : ∀ x h : Eucl n, x + h ∈ closedBall x r ↔ h ∈ B := by
+    intro x h
+    simp [B, mem_closedBall, dist_eq_norm]
+  -- Substituting `y = x + h` in the inner integral.
+  have hsub : ∀ x : Eucl n, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y| =
+      ∫⁻ h, B.indicator 1 h * ENNReal.ofReal |u (x + h) - u x| := by
+    intro x
+    rw [← lintegral_indicator measurableSet_closedBall, ← lintegral_add_left_eq_self
+      ((closedBall x r).indicator fun y => ENNReal.ofReal |u x - u y|) x]
+    refine lintegral_congr fun h => ?_
+    by_cases hh : h ∈ B
+    · rw [indicator_of_mem ((hmem x h).2 hh), indicator_of_mem hh, Pi.one_apply, one_mul,
+        abs_sub_comm]
+    · rw [indicator_of_notMem (fun h' => hh ((hmem x h).1 h')), indicator_of_notMem hh, zero_mul]
+  -- The integrand is jointly measurable.
+  have hk : Measurable fun p : Eucl n × Eucl n =>
+      B.indicator 1 p.2 * ENNReal.ofReal |u (p.1 + p.2) - u p.1| :=
+    ((measurable_one.indicator hBm).comp measurable_snd).mul
+      (ENNReal.measurable_ofReal.comp
+        (continuous_abs.measurable.comp ((hu.comp measurable_add).sub (hu.comp measurable_fst))))
+  calc ∫⁻ x, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y|
+      = ∫⁻ x, ∫⁻ h, B.indicator 1 h * ENNReal.ofReal |u (x + h) - u x| :=
+        lintegral_congr fun x => hsub x
+    _ = ∫⁻ h, ∫⁻ x, B.indicator 1 h * ENNReal.ofReal |u (x + h) - u x| :=
+        lintegral_lintegral_swap hk.aemeasurable
+    _ = ∫⁻ h, B.indicator 1 h * ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| :=
+        lintegral_congr fun h => lintegral_const_mul _
+          (ENNReal.measurable_ofReal.comp
+            (continuous_abs.measurable.comp ((hu.comp (measurable_add_const h)).sub hu)))
+    _ ≤ ∫⁻ h, B.indicator (fun _ => ENNReal.ofReal r * Λ) h := by
+        refine lintegral_mono fun h => ?_
+        by_cases hh : h ∈ B
+        · rw [indicator_of_mem hh, indicator_of_mem hh, Pi.one_apply, one_mul]
+          refine (hΛ h).trans ?_
+          gcongr
+          exact mem_closedBall_zero_iff.1 hh
+        · rw [indicator_of_notMem hh, indicator_of_notMem hh, zero_mul]
+    _ = ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r) :=
+        lintegral_indicator_const hBm _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
