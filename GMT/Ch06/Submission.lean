@@ -642,6 +642,83 @@ theorem Submission.iwl_cr_ci_cutoff_pullback_testForm :
     (hpull.comp hDf).clm_apply (hω.comp hf)
   exact ⟨⟨fun y => χ y • (ω (f y)).compContinuousLinearMap (fderiv ℝ f y),
     ⟨hχ.smul hp, hχc.smul_right⟩, subset_univ _⟩, fun y => rfl⟩
+/-- The cone map `h(y) = y₀ • π(y)`, `π(y) = (y₁, …, y_P)`, is a product of continuous linear maps,
+hence smooth, and `h(Φ(s, x)) = s • x` for `Φ(s, x) = (s, x)`.  By the product rule
+`Dh(y)(w) = y₀ • π(w) + w₀ • π(y)`, so `Dh(Φ(s, x))` maps `e₀ ↦ x` and `ι(w) = Φ(0, w) ↦ s • w`;
+multilinearity then gives `α(x, s • v₁, …, s • vₘ) = s ^ m * α(x, v₁, …, vₘ)`. -/
+theorem Submission.iwl_cr_ci_cone_map :
+    ∀ (P m : ℕ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : Eucl (P + 1) =>
+      y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ∧
+    ∀ (s : ℝ) (x : Eucl P), (fun y : Eucl (P + 1) =>
+      y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) =
+      s • x ∧
+    ∀ (α : Covector (Eucl P) (m + 1)) (v : Fin m → Eucl P),
+      (α.compContinuousLinearMap (fderiv ℝ (fun y : Eucl (P + 1) =>
+        y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+        ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)))))
+        (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) =
+      s ^ m * α (Fin.cons x v) := by
+  intro P m
+  -- `p₀(y) = y₀` and `π(y) = (y₁, …, y_P)` are continuous linear maps, and `h(y) = p₀(y) • π(y)`.
+  let p₀ : Eucl (P + 1) →L[ℝ] ℝ := EuclideanSpace.proj 0
+  let π : Eucl (P + 1) →L[ℝ] Eucl P :=
+    (EuclideanSpace.equiv (Fin P) ℝ).symm.toContinuousLinearMap ∘L
+      (ContinuousLinearMap.pi fun j : Fin P => ContinuousLinearMap.proj j.succ) ∘L
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).toContinuousLinearMap
+  have hh : (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) = fun y => p₀ y • π y := rfl
+  -- Values on `Φ(t, z)`: `p₀(Φ(t, z)) = t` and `π(Φ(t, z)) = z`.
+  have hp₀Φ : ∀ (t : ℝ) (z : Eucl P), p₀ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons t (EuclideanSpace.equiv (Fin P) ℝ z))) = t := fun t z => rfl
+  have hπΦ : ∀ (t : ℝ) (z : Eucl P), π ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons t (EuclideanSpace.equiv (Fin P) ℝ z))) = z := fun t z => rfl
+  refine ⟨?_, fun s x => ⟨?_, fun α v => ?_⟩⟩
+  · rw [hh]
+    exact p₀.contDiff.smul π.contDiff
+  · rw [hh]
+    show p₀ _ • π _ = s • x
+    rw [hp₀Φ, hπΦ]
+  · -- Product rule: `Dh(Φ(s, x)) = s • π + p₀.smulRight x`.
+    have hD : fderiv ℝ (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+        ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) = s • π + p₀.smulRight x := by
+      have hd := (p₀.hasFDerivAt (x := (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)))).smul π.hasFDerivAt
+      rw [hp₀Φ, hπΦ] at hd
+      rw [hh]
+      exact hd.fderiv
+    -- `Dh(Φ(s, x)) e₀ = s • 0 + 1 • x = x` and `Dh(Φ(s, x)) (ι w) = s • w + 0 • x = s • w`.
+    have he₀ : (s • π + p₀.smulRight x) (EuclideanSpace.single 0 1) = x := by
+      have h1 : p₀ (EuclideanSpace.single 0 1) = 1 := by simp [p₀]
+      have h2 : π (EuclideanSpace.single 0 1) = 0 := by
+        ext j
+        simp [π, Fin.succ_ne_zero]
+      rw [add_apply, smul_apply, ContinuousLinearMap.smulRight_apply, h1, h2, smul_zero,
+        one_smul, zero_add]
+    have hι : ∀ w : Eucl P, (s • π + p₀.smulRight x) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ w))) = s • w := by
+      intro w
+      rw [add_apply, smul_apply, ContinuousLinearMap.smulRight_apply, hp₀Φ, hπΦ, zero_smul,
+        add_zero]
+    rw [hD, ContinuousAlternatingMap.compContinuousLinearMap_apply, Fin.comp_cons, he₀]
+    have hcomp : (⇑(s • π + p₀.smulRight x) ∘ fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) = fun i => s • v i :=
+      funext fun i => hι (v i)
+    rw [hcomp]
+    -- Multilinearity: `α(x, s • v₁, …, s • vₘ) = (1 * s ^ m) • α(x, v₁, …, vₘ)`.
+    have key : (Fin.cons x (fun i => s • v i) : Fin (m + 1) → Eucl P) =
+        fun j => (Fin.cons (1 : ℝ) (fun _ : Fin m => s) : Fin (m + 1) → ℝ) j •
+          (Fin.cons x v : Fin (m + 1) → Eucl P) j := by
+      funext j
+      refine Fin.cases ?_ (fun i => ?_) j
+      · simp only [Fin.cons_zero, one_smul]
+      · simp only [Fin.cons_succ]
+    rw [key, ContinuousAlternatingMap.map_smul_univ, Fin.prod_univ_succ, smul_eq_mul]
+    simp only [Fin.cons_zero, Fin.cons_succ, one_mul, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
