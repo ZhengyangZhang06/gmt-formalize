@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.implicit_chart-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+  "depth": 3,
+  "title": "Implicit-function chart Φ = (G, π) at a regular point (parent step 2, L2)",
+  "statement": "Let m, k ∈ ℕ, n := m + k and P := WithLp 2 (ℝᵐ × ℝᵏ). Let G : ℝⁿ → ℝᵐ be of class C¹, D ⊆ ℝⁿ open, and u₀ ∈ D with DG(u₀) surjective. Then there is an open partial homeomorphism Φ from ℝⁿ to P (Mathlib OpenPartialHomeomorph: a homeomorphism from its open source onto its open target, with inverse Φ.symm) such that:\n- u₀ ∈ source(Φ) ⊆ D;\n- Φ is C¹ on source(Φ);\n- Φ.symm is C¹ on target(Φ);\n- the first component of Φ(u) is G(u) for every u ∈ source(Φ).\nNotation as in the parent: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); DG(u₀) = fderiv ℝ G u₀; 'of class C¹' means ContDiff ℝ 1 (on all of ℝⁿ) or ContDiffOn ℝ 1 (on the indicated set).",
+  "lean_statement": "∀ (m k : ℕ) (G : Rn (m + k) → Rn m) (D : Set (Rn (m + k))) (u₀ : Rn (m + k)), IsOpen D → u₀ ∈ D → ContDiff ℝ 1 G → Function.Surjective (fderiv ℝ G u₀) → ∃ Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k)), u₀ ∈ Φ.source ∧ Φ.source ⊆ D ∧ ContDiffOn ℝ 1 Φ Φ.source ∧ ContDiffOn ℝ 1 Φ.symm Φ.target ∧ ∀ u ∈ Φ.source, (Φ u).fst = G u",
+  "lean_name": "pcoarea_implicit_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-implicit-chart-a1-a1"
+}

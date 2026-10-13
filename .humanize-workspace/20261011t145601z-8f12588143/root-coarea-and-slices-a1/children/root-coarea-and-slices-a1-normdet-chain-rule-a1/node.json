@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "Chain rule for the co-area factor: normDet(L*)·normDet(A) = normDet(A∘ι_{ker Γ})·normDet(Γ*)",
+  "statement": "Let n, N, m ∈ ℕ, T a linear subspace of ℝ^N (with the induced inner product), A : ℝⁿ → ℝ^N an injective linear map with range A = T, L : T → ℝᵐ linear, and Γ : ℝⁿ → ℝᵐ linear with Γv = L(Av) for every v. Let K := ker Γ and ι_K : K → ℝⁿ the inclusion. Then normDet(L*)·normDet(A) = normDet(A ∘ ι_K)·normDet(Γ*). Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "∀ (n N m : ℕ) (T : Submodule ℝ (Rn N)) (A : Rn n →ₗ[ℝ] Rn N) (L : T →ₗ[ℝ] Rn m) (Γ : Rn n →ₗ[ℝ] Rn m), Function.Injective A → LinearMap.range A = T → (∀ (v : Rn n) (hv : A v ∈ T), Γ v = L ⟨A v, hv⟩) → (LinearMap.adjoint L).normDet * A.normDet = (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet",
+  "lean_name": "coarea_normDet_chain_rule",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-normdet-chain-rule-a1-a1"
+}

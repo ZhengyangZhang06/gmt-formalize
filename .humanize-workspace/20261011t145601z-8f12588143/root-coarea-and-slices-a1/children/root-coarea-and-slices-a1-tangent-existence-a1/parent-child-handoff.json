@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n \"^def CoareaFormula|^def SlicesAreRectifiable|^noncomputable def coareaJacobian|^noncomputable def approxTangentPlane|^def HasTangentialDifferentialAt\" project/GMT/Ch03/Contract.lean",
+        "rg -l -i \"coarea\" mathlib/Mathlib",
+        "rg -l -i \"\\bsard\\b\" mathlib/Mathlib",
+        "rg -n \"theorem MeasurableSet.image_of_continuousOn_injOn|theorem ContinuousOn.measurableEmbedding|theorem Measurable.measurableEmbedding\" mathlib/Mathlib",
+        "rg -n \"theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul\" mathlib/Mathlib",
+        "rg -n \"^theorem lintegral_iUnion |^theorem lintegral_tsum|^theorem lintegral_liminf_le\" mathlib/Mathlib",
+        "rg -n \"theorem HasLineDerivAt.unique|theorem lintegral_withDensity_eq_lintegral_mul_non_measurable|theorem isOpen_iUnion_countable\" mathlib/Mathlib",
+        "grep -n \"theorem hausdorffMeasure_le_liminf_sum|theorem hausdorffMeasure_le_liminf_tsum\" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "grep -n \"def MeasureTheory.Measure.euclideanHausdorffMeasure|euclideanHausdorffMeasure_zero\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep -n \"^theorem|^noncomputable def\" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean (normDet, normDet_comp, normDet_of_subsingleton, normDet_eq_zero_iff_ker_ne_bot, normDet_sq)",
+        "grep -n \"toOpenPartialHomeomorph|implicitToOpenPartialHomeomorph|contDiffAt_symm\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean mathlib/Mathlib/Analysis/Calculus/Implicit.lean mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "grep -rn \"ContDiffOn.exists_lipschitzOnWith|LipschitzOnWith.extend_pi|measurableSet_of_differentiableAt|measurable_fderiv|LipschitzWith.ae_differentiableAt|WithLp.volume_preserving_toLp|measurableSet_eq_fun|AEMeasurable.ennreal_tsum|Measurable.lintegral_prod_right'\" mathlib/Mathlib",
+        "grep -n \"^theorem|^def|^noncomputable def\" (SimonGMT) Chapter03/Rectifiable.lean Chapter03/SubmanifoldCover.lean Chapter02/AreaDomain.lean Chapter02/CoareaLinear.lean Chapter02/CoareaLinearAlgebra.lean Chapter02/CoareaProjection.lean",
+        "grep -rn \"countablyRectifiable_image_contDiffOn_open|map_withDensity_areaJacobian_eq|weighted_area_formula_volume_of_injective_derivative|euclideanHausdorffMeasure_image_le_of_lipschitzOn|exists_lipschitz_extension_finiteDimensional|ae_fderivWithin_eq_of_lipschitz_extension|HasWeightedApproximateTangentSpaceAt.unique\" Poincare/SimonGMT",
+        "lake env lean on the ten frozen child types in the comparator's replayed Contract scope (gmt-compare.py contract_scope + lean_contract.validate_lean_statement), and on a parent-assembly test file with the ten child types and the four sibling frozen types as stubs"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Implicit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaProjection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean"
+      ],
+      "conclusion": "Snapshot project d09bc8a / Mathlib 25730c7c plus the pinned simongmt package. No match: Mathlib has no co-area formula (rg 'coarea': no file) and only a fixed-dimension Sard lemma (MeasureTheory/Function/Jacobian.lean), no C¹ Sard-type slice theorem and no countable rectifiability; SimonGMT has no nonlinear co-area formula. Hence the C¹ critical-slice estimate, the C¹ parametric co-area formula and the level-set rectifiability are supplied as children. Available and cited in the children: SimonGMT linear/projection co-area (CoareaLinear.lean, CoareaProjection.lean), Lipschitz and injective area formulas (AreaDomain.lean weighted_area_formula_lipschitzOn_fiberSum, injective_area_formula_lipschitzOn, ae_fderivWithin_eq_of_lipschitz_extension, exists_lipschitz_extension_finiteDimensional; WeightedArea.lean map_withDensity_areaJacobian_eq and weighted_area_formula_volume_of_injective_derivative for arbitrary integrands), Lipschitz image bound euclideanHausdorffMeasure_image_le_of_lipschitzOn, countablyRectifiable_image_contDiffOn_open / _iUnion / _of_measure_zero / CountablyRectifiable.mono, HasWeightedApproximateTangentSpaceAt.unique (needs only θ x ≠ 0); Mathlib normDet (normDet_comp, normDet_of_subsingleton, normDet_eq_zero_iff_ker_ne_bot, normDet_sq), μHE[d] = c_d·μH[d] with hausdorffMeasure_le_liminf_sum, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, inverse/implicit function theorem (ContDiffAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, HasStrictFDerivAt.implicitToOpenPartialHomeomorph), change of variables lintegral_image_eq_lintegral_abs_det_fderiv_mul, Lusin-Souslin MeasurableSet.image_of_continuousOn_injOn / ContinuousOn.measurableEmbedding, lintegral_iUnion (arbitrary integrand), lintegral_tsum, lintegral_liminf_le, HasLineDerivAt.unique, Rademacher LipschitzWith.ae_differentiableAt, WithLp.volume_preserving_toLp. The README marks SimonGMT Chapter03 tangentialDifferential/tangentialJacobian (Differential.lean) as unfaithful; they are not used. All ten child types elaborate in the comparator's replayed Contract scope, the sibling antecedents are byte-identical to dag.json, and the parent assembly type-checks against stubs without sorry."
+    }
+  ],
+  "parent_id": "root.coarea_and_slices-a1",
+  "child_id": "root.coarea_and_slices-a1.tangent_existence-a1",
+  "subproblem": {
+    "key": "tangent_existence",
+    "title": "Existence of T_xM and d^Mf_x for Hⁿ-a.e. x ∈ M (conclusion (a))",
+    "statement": "Assume SubmanifoldCoverCharacterization, the C¹ approximation theorem (C1) in the frozen form of lipschitz_c1_approximation, and the chart lemma (CT) in the frozen form of chart_approx_tangent_and_differential. Let n, ℓ, p ∈ ℕ, M ⊆ ℝ^{n+ℓ} Hⁿ-measurable and countably n-rectifiable, θ a positive locally Hⁿ-integrable weight on M, U ⊇ M open and f : ℝ^{n+ℓ} → ℝᵖ locally Lipschitz on U. Then for Hⁿ-a.e. x ∈ M there are a subspace P and a continuous linear L : P → ℝᵖ with HasWeightedApproximateTangentSpaceAt n M θ x P and HasTangentialDifferentialAt P f x L. Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+    "lean_statement": "SubmanifoldCoverCharacterization → (∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) → (∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧ DifferentiableAt ℝ (f ∘ ψ) u ∧ ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) → ∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p), NullMeasurableSet M μHE[n] → CountablyRectifiable n M → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M → ∃ (P : Submodule ℝ (Rn (n + ℓ))) (L : P →L[ℝ] Rn p), HasWeightedApproximateTangentSpaceAt n M θ x P ∧ HasTangentialDifferentialAt P f x L",
+    "lean_name": "coarea_tangent_existence",
+    "depends_on": [
+      "chart_pieces",
+      "jacobian_identification"
+    ],
+    "natural_proof": "Source: parent proof, Part 1.2, conclusion (a) (Simon Ch. 3, 2.1-2.2, chapter-03.txt lines 335-360, with Remark 1.3 and Lemma 1.2).\n1. (Charts.) Apply the sibling rectifiable_c1_chart_pieces (with the hypotheses SubmanifoldCoverCharacterization and (C1), target dimension p) to n, ℓ, M, U, f: we get D_j, ψ_j, G_j, E_j (j ∈ ℕ) with D_j open, ψ_j C¹ and injective on D_j, Lipschitz on D_j with constant K_j, Dψ_j injective on D_j, E_j ⊆ D_j, and Hⁿ(M \\ ⋃_j ψ_j(E_j)) = 0. In particular Hⁿ(M \\ ⋃_j ψ_j(D_j)) = 0.\n2. (Chart lemma.) For each j apply (CT) with V := D_j and ψ := ψ_j (D_j open, ψ_j C¹ on D_j with injective derivative; M null-measurable, θ, U, f as given): there is an Lⁿ-null set Z_j ⊆ ℝⁿ (the exceptional set of the almost-everywhere statement) such that for every u ∈ D_j \\ Z_j with ψ_j(u) ∈ M, HasWeightedApproximateTangentSpaceAt n M θ (ψ_j u) (range Dψ_j(u)) and HasLineDerivAt ℝ f (D(f∘ψ_j)(u)w) (ψ_j u) (Dψ_j(u)w) for all w.\n3. (Tangential differential.) For such u and x := ψ_j(u) ∈ M (so θ(x) > 0), part (ii) of the sibling chart_coarea_jacobian_identification with A := Dψ_j(u), Γ := D(f∘ψ_j)(u) gives L with HasTangentialDifferentialAt (range Dψ_j(u)) f x L; so x satisfies the conclusion with P := range Dψ_j(u).\n4. (Exceptional set.) By steps 2-3, every x ∈ M failing the conclusion lies in (M \\ ⋃_j ψ_j(D_j)) ∪ ⋃_j ψ_j(D_j ∩ Z_j). Since ψ_j is K_j-Lipschitz on D_j and Hⁿ = Lⁿ on ℝⁿ, Hⁿ(ψ_j(D_j ∩ Z_j)) ≤ K_jⁿ·Lⁿ(Z_j) = 0 (SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn). So the set of x ∈ M failing the conclusion is Hⁿ-null, which is the claim. ∎",
+    "proof_key_steps": [
+      "Charts covering M up to an Hⁿ-null set from the sibling rectifiable_c1_chart_pieces.",
+      "The chart lemma (CT) gives the weighted tangent plane range Dψ_j(u) and line derivatives off an Lⁿ-null set Z_j.",
+      "The sibling identification (ii) builds the tangential differential L.",
+      "Lipschitz images of the null sets Z_j are Hⁿ-null."
+    ]
+  },
+  "audit": {
+    "key": "tangent_existence",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The declared chart-cover child supplies coverage and Lipschitz bounds. CT and the identification child give both required witnesses outside parameter-null sets, whose chart images are Hausdorff-null. The resulting exceptional set proves the exact ambient almost-everywhere implication."
+  },
+  "resolved_dependencies": [
+    "root.coarea_and_slices-a1.chart_pieces-a1",
+    "root.coarea_and_slices-a1.jacobian_identification-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-tangent-existence-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-tangent-existence-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-tangent-existence-a1/parent-supplied-natural-proof.json"
+}

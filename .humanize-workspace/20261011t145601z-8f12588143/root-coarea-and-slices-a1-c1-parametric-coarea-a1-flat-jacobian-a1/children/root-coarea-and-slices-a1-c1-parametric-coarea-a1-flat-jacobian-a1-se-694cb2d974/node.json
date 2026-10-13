@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1.section_normdet-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.flat_jacobian-a1",
+  "depth": 4,
+  "title": "Section identity normDet(A∘E)·normDet(S∘ι_K) = normDet(A∘ι_K) (parent steps 2–4, parent (i) and (iv))",
+  "statement": "Let n, k, N ∈ ℕ, and let A : ℝⁿ → ℝᴺ, S : ℝⁿ → ℝᵏ and E : ℝᵏ → ℝⁿ be linear maps between Euclidean spaces (ℝʲ = EuclideanSpace ℝ (Fin j)). Let K ⊆ ℝⁿ be a linear subspace with finrank K = k, with the induced inner product and inclusion ι_K : K → ℝⁿ. Assume E z ∈ K and S(E z) = z for every z ∈ ℝᵏ. Then normDet(A∘E)·normDet(S∘ι_K) = normDet(A∘ι_K), where normDet = LinearMap.normDet.",
+  "lean_statement": "∀ (n k N : ℕ) (A : Rn n →ₗ[ℝ] Rn N) (K : Submodule ℝ (Rn n)) (S : Rn n →ₗ[ℝ] Rn k) (E : Rn k →ₗ[ℝ] Rn n), Module.finrank ℝ K = k → (∀ z, E z ∈ K) → (∀ z, S (E z) = z) → (A ∘ₗ E).normDet * (S ∘ₗ K.subtype).normDet = (A ∘ₗ K.subtype).normDet",
+  "lean_name": "pcoarea_flat_normDet_section",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-flat-jacobian-a1-se-694cb2d974-a1"
+}
