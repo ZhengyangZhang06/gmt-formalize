@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.testform_determining-a1.seq_dense-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.testform_determining-a1",
+  "depth": 4,
+  "title": "Countable sequentially dense families of test forms supported in a fixed compact set",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P (= Eucl P) be an arbitrary set and let K ⊆ ℝ^P be compact with K ⊆ U. Then there is a countable set E ⊆ D^k(U) (= TestFormOn U k: C^∞ forms ℝ^P → Covector (Eucl P) k with compact support and tsupport ⊆ U) with the following property. For every ω ∈ D^k(U) with tsupport ω ⊆ K there is a sequence (e_l)_{l∈ℕ} with e_l ∈ E for all l and TestFormOnConverges e ω. That is, there is a compact K' ⊆ U with tsupport e_l ⊆ K' for every l and tsupport ω ⊆ K', and for every i ∈ ℕ, iteratedFDeriv ℝ i e_l → iteratedFDeriv ℝ i ω uniformly on K' as l → ∞.",
+  "lean_statement": "∀ (P k : ℕ) (U K : Set (Eucl P)), IsCompact K → K ⊆ U → ∃ E : Set (TestFormOn U k), E.Countable ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ K → ∃ e : ℕ → TestFormOn U k, (∀ l, e l ∈ E) ∧ TestFormOnConverges e ω",
+  "lean_name": "slicing_im_td_countable_seq_dense",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-testform-determining-a1-2c59dae3a5-a1"
+}

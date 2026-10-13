@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "countably_rectifiable_c1_cover|c1_cover|lipschitz_c1_immersion|area_image_compl_regularSet_eq_zero|areaRegularSet",
+        "^(def ApproximatesLinearOn|theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem addHaar_image_continuousLinearMap|theorem det_one_add_replicateCol_mul_replicateRow|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume)",
+        "slicing_im_st_cd_c1c_(singular_compression|critical_image_null)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1cover-independent-audit-7vhxkwp0/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1cover-independent-audit-7vhxkwp0/ProofsAndComposition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1cover-independent-audit-7vhxkwp0/AcceptedSibling.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1cover-independent-audit-7vhxkwp0/MissingArea.lean",
+        "python3 -I /tmp/c1cover-nosplit-scripts/delta_check.py /runtime/flows/gmt-claude-d253855dab51/_recursive_lean /tmp/c1cover-nosplit-kFnB5j"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/SchurComplement.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-d-fbaf41bab5/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "/tmp/c1cover-independent-audit-7vhxkwp0/Types.lean",
+        "/tmp/c1cover-independent-audit-7vhxkwp0/ProofsAndComposition.lean",
+        "/tmp/c1cover-independent-audit-7vhxkwp0/AcceptedSibling.lean",
+        "/tmp/c1cover-independent-audit-7vhxkwp0/MissingArea.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the inspected Mathlib sources. Snapshot searches found no existing cover or critical-image declaration under the searched names. The cited partition, determinant, arbitrary-set volume transport, and Hausdorff image estimates support both proofs. Both frozen child propositions elaborate before either child is declared. Independently compiled both supplied implementations and the composition yielding the selected parent's exact type; all use only propext, Classical.choice, and Quot.sound. The accepted immersion-pieces dependency also passes exact-type and axiom checks. Neither proposed name is reserved, and the dependency graph is acyclic. The split isolates genuine analytic obligations: critical_image_null depends on singular_compression and supplies precisely the critical-image step needed by this parent. The missing-area-lemma and leaf-import restriction checks confirm the stated implementation rationale."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "singular_compression",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every stated hypothesis and the ENNReal conclusion; its bare declaration name is unreserved. The proof correctly constructs a unit kernel vector, establishes the compression's left inverse and determinant t, transports volume for arbitrary S, and obtains the stated Lipschitz image bound. Positivity and t ≤ 1 are used correctly. The matrix calculation uses ordinary matrix multiplication. The n = 0 case is vacuous, and there is no circular reliance or missing measurability hypothesis."
+    },
+    {
+      "key": "critical_image_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly expresses the stated Lipschitz critical-image theorem, with a fresh bare name. The partition theorem supplies the claimed derivative representatives, so non-injectivity and the derivative norm bound justify applying singular_compression. Countable additivity is applied to the measurable disjoint sets B(0,m) ∩ T_i; measurability of the critical set is unnecessary. Finite ball volume justifies the ENNReal limit. Bounded exhaustion completes the proof, including n = 0. Its sole child dependency is correctly directed and directly establishes the selected parent's critical-image step."
+    }
+  ],
+  "required_changes": []
+}

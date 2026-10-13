@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangent_field-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1",
+  "depth": 4,
+  "title": "The L¹ tangent vector field Y dual to θ·ξ⌞ω on a rectifiable triple",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, and ω ∈ D^m(U). Then there is Y : ℝ^P → ℝ^P such that (a) Y is Hⁿ⌞M-integrable; (b) for every x ∈ ℝ^P and every continuous linear functional φ on ℝ^P, φ(Y(x)) = θ(x)·ξ(x)(alternatizeUncurryFin(φ.smulRight(ω(x)))) (i.e. φ(Y(x)) = θ(x)⟨φ∧ω(x), ξ(x)⟩); (c) for Hⁿ-a.e. x ∈ M, Y(x) ∈ Q for every subspace Q which is a weighted approximate tangent plane of (M, θ) at x (HasWeightedApproximateTangentSpaceAt n M θ x Q).",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)), IsRectifiableTriple U (m + 1) M θ ξ → ∀ ω : TestFormOn U m, ∃ Y : Eucl P → Eucl P, Integrable Y ((μHE[m + 1] : Measure (Eucl P)).restrict M) ∧ (∀ (x : Eucl P) (φ : Eucl P →L[ℝ] ℝ), φ (Y x) = θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin (φ.smulRight ((ω : DifferentialForm (Eucl P) m) x)))) ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → Y x ∈ Q",
+  "lean_name": "slicing_im_ll_tangent_dual_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-0cf2aa97e2-a1"
+}

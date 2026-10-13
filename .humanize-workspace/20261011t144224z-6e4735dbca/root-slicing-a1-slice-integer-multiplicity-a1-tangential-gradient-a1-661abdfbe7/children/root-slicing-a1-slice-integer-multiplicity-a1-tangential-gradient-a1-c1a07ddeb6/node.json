@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1.gram_field-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1",
+  "depth": 5,
+  "title": "Borel Gram representative γ(w) = A(A*A)⁻¹∇h(w) ∈ range A of a differential along an injective C¹ chart differential A = DΦ(w)",
+  "statement": "Let P, n ∈ ℕ (ℝᵏ = EuclideanSpace ℝ (Fin k) with inner product ⟨·,·⟩), let Ω ⊆ ℝⁿ be open, let Φ : ℝⁿ → ℝ^P be of class C¹ such that DΦ(w) := fderiv ℝ Φ w is injective for every w ∈ Ω, and let h : ℝⁿ → ℝ be an arbitrary function, with Dh(w) := fderiv ℝ h w (Mathlib's Fréchet derivative, 0 where h is not differentiable). Then there is a Borel measurable γ : ℝⁿ → ℝ^P such that for every w ∈ Ω: γ(w) ∈ DΦ(w)(ℝⁿ) = LinearMap.range (fderiv ℝ Φ w), and ⟨γ(w), DΦ(w)u⟩ = Dh(w)u for every u ∈ ℝⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (h : Eucl n → ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w)) → ∃ γ : Eucl n → Eucl P, Measurable γ ∧ ∀ w ∈ Ω, γ w ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u : Eucl n, inner ℝ (γ w) (fderiv ℝ Φ w u) = fderiv ℝ h w u",
+  "lean_name": "slicing_im_tg_cg_gram_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-c1a07ddeb6-a1"
+}

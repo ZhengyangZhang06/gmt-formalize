@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_tangent-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "depth": 4,
+  "title": "Weighted approximate tangent planes on a C¹ antilipschitz chart image (Simon Ch. 3, Remark 1.5(2), proof of 1.6 and Remark 1.8(1))",
+  "statement": "Let Q, n ∈ ℕ, V ⊆ ℝ^Q open, M ⊆ V Hⁿ-null-measurable, θ : ℝ^Q → ℝ with θ > 0 on M and θ Hⁿ-integrable on M ∩ K for every compact K ⊆ V, Ω ⊆ ℝⁿ open and Φ : ℝⁿ → ℝ^Q of class C¹ such that c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω and some c > 0. Then for Hⁿ-a.e. y ∈ M ∩ Φ(Ω) (a.e. for Hⁿ restricted to M ∩ Φ(Ω)) and every w ∈ Ω with Φ(w) = y, the subspace range DΦ(w) is a weighted approximate tangent space of (M, θ) at y, i.e. HasWeightedApproximateTangentSpaceAt n M θ y (range DΦ(w)).",
+  "lean_statement": "∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt n M θ y (LinearMap.range (fderiv ℝ Φ w).toLinearMap)",
+  "lean_name": "slicing_im_coarea_chart_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-tangent-a1-a1"
+}

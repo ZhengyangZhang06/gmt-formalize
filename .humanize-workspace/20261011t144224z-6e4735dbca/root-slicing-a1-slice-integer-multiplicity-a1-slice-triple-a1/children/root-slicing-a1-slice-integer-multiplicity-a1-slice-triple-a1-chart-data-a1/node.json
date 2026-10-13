@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "depth": 4,
+  "title": "C¹ charts of M on which f agrees with C¹ functions whose gradients are given by the tangential gradient G",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ L-Lipschitz, and G : ℝ^P → ℝ^P any map with the tangential-gradient property: for Hⁿ-a.e. x ∈ M (Hᵏ := μHE[k]) and every weighted approximate tangent plane Q of (M, θ) at x (HasWeightedApproximateTangentSpaceAt n M θ x Q), G(x) ∈ Q and s ↦ f(x + su) has derivative ⟨G(x), u⟩ at s = 0 for all u ∈ Q. Then there are, for j ∈ ℕ, open Ω_j ⊆ ℝⁿ, C¹ maps Φ_j : ℝⁿ → ℝ^P with c_j|w − w′| ≤ |Φ_j(w) − Φ_j(w′)| for w, w′ ∈ Ω_j and some c_j > 0, sets A_j ⊆ Ω_j and C¹ functions h_j : ℝⁿ → ℝ, such that: f(Φ_j(w)) = h_j(w) for w ∈ A_j; Hⁿ(M ∖ ⋃_j Φ_j(A_j)) = 0; and for Hⁿ-a.e. x ∈ M, for every j and every w ∈ A_j with Φ_j(w) = x, the subspace T := DΦ_j(w)(ℝⁿ) is a weighted approximate tangent plane of (M, θ) at x, G(x) ∈ T, and ⟨G(x), DΦ_j(w)u⟩ = Dh_j(w)u for all u ∈ ℝⁿ.",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∃ (Φ : ℕ → Eucl (m + 1) → Eucl P) (Ω A : ℕ → Set (Eucl (m + 1))) (h : ℕ → Eucl (m + 1) → ℝ), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (∀ j, A j ⊆ Ω j) ∧ (∀ j, ContDiff ℝ 1 (h j)) ∧ (∀ j, ∀ w ∈ A j, f (Φ j w) = h j w) ∧ (μHE[m + 1] : Measure (Eucl P)) (M \\ ⋃ j, Φ j '' A j) = 0 ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ j, ∀ w ∈ A j, Φ j w = x → HasWeightedApproximateTangentSpaceAt (m + 1) M θ x (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) ∧ G x ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap ∧ ∀ u : Eucl (m + 1), inner ℝ (G x) (fderiv ℝ (Φ j) w u) = fderiv ℝ (h j) w u",
+  "lean_name": "slicing_im_st_chart_data",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.weighted_tangent_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.weighted_tangent_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-data-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "depth": 4,
+  "title": "Regular level sets on a C¹ antilipschitz chart are covered by countably many C¹ bi-Lipschitz m-charts",
+  "statement": "Let P, m ∈ ℕ, Φ : ℝ^{m+1} → ℝ^P of class C¹, Ω ⊆ ℝ^{m+1} open with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω (some c > 0), h : ℝ^{m+1} → ℝ of class C¹ and t ∈ ℝ. Then there are C¹ maps Ψ_i : ℝ^m → ℝ^P and open sets V_i ⊆ ℝ^m (i ∈ ℕ) such that each Ψ_i is Lipschitz on V_i and c_i-antilipschitz on V_i for some c_i > 0; for every w ∈ Ω with h(w) = t and Dh(w) ≠ 0 there are i and v ∈ V_i with Ψ_i(v) = Φ(w); and for every i and v ∈ V_i there is w ∈ Ω with h(w) = t, Ψ_i(v) = Φ(w) and DΨ_i(v)(ℝ^m) = DΦ(w)(ker Dh(w)).",
+  "lean_statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (t : ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → ∃ (Ψ : ℕ → Eucl m → Eucl P) (V : ℕ → Set (Eucl m)), (∀ i, IsOpen (V i)) ∧ (∀ i, ContDiff ℝ 1 (Ψ i)) ∧ (∀ i, ∃ K : ℝ≥0, LipschitzOnWith K (Ψ i) (V i)) ∧ (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ v ∈ V i, ∀ v' ∈ V i, c * ‖v - v'‖ ≤ ‖Ψ i v - Ψ i v'‖) ∧ (∀ w ∈ Ω, h w = t → fderiv ℝ h w ≠ 0 → ∃ i, ∃ v ∈ V i, Ψ i v = Φ w) ∧ ∀ i, ∀ v ∈ V i, ∃ w ∈ Ω, h w = t ∧ Ψ i v = Φ w ∧ LinearMap.range (fderiv ℝ (Ψ i) v).toLinearMap = Submodule.map (fderiv ℝ Φ w).toLinearMap (LinearMap.ker (fderiv ℝ h w).toLinearMap)",
+  "lean_name": "slicing_im_st_level_set_charts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-level-s-aee3915817-a1"
+}

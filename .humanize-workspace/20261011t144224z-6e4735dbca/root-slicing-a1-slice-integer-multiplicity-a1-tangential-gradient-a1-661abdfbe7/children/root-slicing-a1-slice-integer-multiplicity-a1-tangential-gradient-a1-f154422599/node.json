@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1.borel_transfer-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1",
+  "depth": 5,
+  "title": "Borel push-forward of a Borel field through a continuous map injective on a Borel set (Lusin–Souslin)",
+  "statement": "Let n, P, Q ∈ ℕ (ℝᵏ = EuclideanSpace ℝ (Fin k) with its Borel σ-algebra), let D ⊆ ℝⁿ be a Borel set, let Φ : ℝⁿ → ℝ^P be continuous on D and injective on D, and let γ : ℝⁿ → ℝ^Q be Borel measurable. Then there is a Borel measurable g : ℝ^P → ℝ^Q with g(Φ(w)) = γ(w) for every w ∈ D and g(y) = 0 for every y ∈ ℝ^P ∖ Φ(D).",
+  "lean_statement": "∀ (n P Q : ℕ) (Φ : Eucl n → Eucl P) (D : Set (Eucl n)) (γ : Eucl n → Eucl Q), MeasurableSet D → ContinuousOn Φ D → InjOn Φ D → Measurable γ → ∃ g : Eucl P → Eucl Q, Measurable g ∧ (∀ w ∈ D, g (Φ w) = γ w) ∧ ∀ y, y ∉ Φ '' D → g y = 0",
+  "lean_name": "slicing_im_tg_cg_borel_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-f154422599-a1"
+}

@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "tendsto_slope_zero_right|tendsto_integral_filter_of_dominated_convergence|integral_comp_smul_of_nonneg",
+        "continuous_fderiv|matrix_det|finrank_range_of_inj|comp_homeomorph",
+        "lpf_wtc_cat_(fderiv_lower_bound|rescaled_integral_tendsto|gram_jacobian_continuous)",
+        "python3 /tmp/cat_independent_audit_1b9c156f/run_check.py fderiv_lower_bound",
+        "python3 /tmp/cat_independent_audit_1b9c156f/run_check.py rescaled_integral_tendsto",
+        "python3 /tmp/cat_independent_audit_1b9c156f/run_check.py gram_jacobian_continuous",
+        "python3 /tmp/cat_independent_audit_1b9c156f/run_check.py challenges",
+        "python3 /tmp/cat_independent_audit_1b9c156f/run_check.py assembly"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8ee6679021/parent-child-handoff.json",
+        "/tmp/cat_independent_audit_1b9c156f/fderiv_lower_bound.lean",
+        "/tmp/cat_independent_audit_1b9c156f/rescaled_integral_tendsto.lean",
+        "/tmp/cat_independent_audit_1b9c156f/gram_jacobian_continuous.lean",
+        "/tmp/cat_independent_audit_1b9c156f/Assembly.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen contract. The pinned sources support the cited calculus, Haar substitution, dominated-convergence, and matrix-continuity steps. All three exact comparator-generated challenge types elaborate without their implementations. Each supplied child proof independently compiles using only propext, Classical.choice, and Quot.sound. The exact parent conclusion also kernel-checks from these proofs with BLOWUP and AREA supplied as explicit parameters of their frozen types. This appropriately separates the analytic work from the parent assembly; acceptance of those existing dependencies remains required. The DAG has no dependency cycles or missing references. All proposed names are bare identifiers, with no reservations found in the DAG or worker records. No previously accepted declaration is being reused under a changed type."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, including the absence of a sign condition on c. Openness gives eventual membership along the line; division uses only t > 0. The derivative slope limit, continuity of norm, and nontrivial right-hand filter yield precisely the claimed bound. The proof is complete, independent of the parent and other children, and independently compiles with standard axioms."
+    },
+    {
+      "key": "rescaled_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and volume integrals match the prose. Haar scaling and translation give the exact inverse-power factor without an unstated integrability assumption. Compact support and c > 0 yield a fixed compact dominator using |J|, so no positivity of J is needed. Measurability, eventual membership in Ω, the derivative slope limit, and filter dominated convergence prove the exact conclusion, including n = 0. The complete supplied proof independently compiles without either sibling dependency."
+    },
+    {
+      "key": "gram_jacobian_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone proposition exactly expresses the stated Gram-Jacobian continuity and matches AREA's Jacobian. Matrix.of constructs the intended real square matrix; no problematic function-valued IsUnit expression occurs. Continuity of the derivative, evaluation, inner product, determinant, and Real.sqrt proves the conclusion without needing determinant positivity. The supplied proof is complete, non-circular, and independently compiles with standard axioms."
+    }
+  ],
+  "required_changes": []
+}
