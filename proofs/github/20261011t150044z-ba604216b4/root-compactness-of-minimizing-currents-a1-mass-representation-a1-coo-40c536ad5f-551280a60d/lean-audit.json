@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "41dba21ee2b5eb948b350e61cc3f771f43a2dc8c96212bd17bcc3ad4c33d1457",
+  "git_delta": {
+    "base_commit": "547e13f2284ca8cdb900e91aebf02adcdc6f4106",
+    "candidate_commit": "00788882fbd65dbb75a03979d0bd554cf094da31",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_cc_det_covector_basis_kronecker",
+    "diff_sha256": "784836ee4426e96b75e5f434386316e4e474e808bc759fd97472e185ce232ba8",
+    "source_sha256": "ab0275da83dedea7881ddce78428608b0ab9152f07f282bfde86b3ab93ac5366",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_cc_det_covector_basis_kronecker",
+      "statement": "∀ (P n : ℕ) (I J : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → StrictMono J → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → θ (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = if I = J then 1 else 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
