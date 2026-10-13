@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "IsEmbeddedSubmanifold|IsUnitOrientationOf|IsOrientation|structure IMRep|def Represents|def action|IsMinimizingIn|SameBoundary|BoundaryVanishes|regularSet|InClassO|IsBoundaryOfRegion|CompactlyContained|import |namespace|Sub ",
+        "covectorEuclideanNorm|massAdmissibleOn|def GeometricCurrentOn.massOn|le_massOn",
+        "tsupport_exteriorDerivative_subset|exteriorDerivative_sq|TestFormConvergesToZeroOn|structure GeometricCurrentOn|boundary_apply|theorem GeometricCurrentOn.ext",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|def CountablyRectifiable|CountablyRectifiable.mono",
+        "theorem setIntegral_eq_zero_of_forall_eq_zero|setIntegral_inter_support|setIntegral_inter|integral_indicator",
+        "euclideanHausdorffMeasure_zero",
+        "hausdorffMeasure_zero_singleton|hausdorffMeasure_zero|count",
+        "finrank_le_finrank_of_injective",
+        "regcomp_cop_|IsEmbeddedSubmanifold.*finrank|finrank_le_of_.*embedded",
+        ". GMT/Scratch/regcomp_cop_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cop-independent-audit-f934xe42/Audit.lean",
+        ". GMT/Scratch/regcomp_cop_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/regcomp_cop_decomposition/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/regcomp_cop_decomposition/Full.lean",
+        "/tmp/cop-independent-audit-f934xe42/Audit.lean"
+      ],
+      "conclusion": "The four-way split appropriately establishes the selected parent. The snapshot contract is byte-identical to Submission.lean; project, mathlib and SimonGMT revisions match the pinned configuration. Relevant support, exterior-derivative, integral, dimension and degree-zero normalization facts were verified. The search found no existing regcomp_cop_ declarations or embedded-submanifold dimension lemma. DAG and decomposition-record scans found no competing name reservations. All four names are bare identifiers, and all four one-line propositions independently elaborate without their implementations. An independently written assembly proves the exact frozen parent from the four child hypotheses; sibling dependencies are unnecessary and acyclic. The supplied full development also recompiles successfully. Both checks use only propext, Classical.choice and Quot.sound. Its six copied accepted helpers match their frozen DAG types and accepted source proofs. No typeclass-sensitive construction changes the intended operations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dim_le_of_embedded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including nonemptiness and arbitrary regularity r. A chart at a carrier point supplies a nonempty parameter domain and an injective differential; finrank monotonicity gives d ≤ P. The proof is complete and non-circular."
+    },
+    {
+      "key": "region_support_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the exact type. The closure condition and openness provide a relatively compact neighborhood disjoint from N. Exterior differentiation preserves the required support bound, making the integrand zero on E. The cited integral lemma requires no measurability of E. The zero-region contradiction proves the conclusion without sibling or parent reliance."
+    },
+    {
+      "key": "region_boundary_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose, including arbitrary U and E. Degree zero is definitionally True; in successor degree, testing the boundary and applying d² = 0 proves equality with the zero current. No openness, measurability or unstated hypothesis is needed."
+    },
+    {
+      "key": "zero_dim_regular_empty",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The generalization to arbitrary A exactly matches the Lean type. Independently checked all steps: degree-zero normalization, localization despite possibly nonmeasurable M, carrier finiteness, pointwise orientation, isolation by bump forms, continuity of the atom current, every field of the deleted-carrier representation, approximate-tangent preservation, integrability, compact competitor support, and both mass estimates. These establish a valid minimality contradiction. The supplied proof is complete; optional helper reuse or inlining does not defer a missing argument."
+    }
+  ],
+  "required_changes": []
+}

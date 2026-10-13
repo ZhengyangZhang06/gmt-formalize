@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1",
+  "depth": 3,
+  "title": "A 0-current minimizing in A with support in A has empty regular set",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open, let A ⊆ ℝ^P, and let T ∈ 𝒟_0(U) be minimizing in A in the sense of the contract (IsMinimizingIn T A, Simon 7.1.1: T is integer multiplicity, and M_W(T) ≤ M_W(S) for every open W with closure W compact and ⊆ U and every integer multiplicity S ∈ 𝒟_0(U) with spt(S − T) a compact subset of A ∩ W; the condition ∂S = ∂T is vacuous in degree 0). If spt T ⊆ A, then reg T = ∅ (regularSet T = ∅, Simon 7.4.1 as frozen in the contract).",
+  "lean_statement": "∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → regularSet T = ∅",
+  "lean_name": "regcomp_cop_zero_dim_regularSet_empty",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-454e30a387-a1"
+}
