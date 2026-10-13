@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1.gram_symm_psd_trace-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1",
+  "depth": 4,
+  "title": "Gram matrix of a linear map: symmetric, positive semidefinite, with trace |D|^2",
+  "statement": "For all natural numbers n, l and every continuous linear map D : R^n -> R^l (D : Rn n →L[ℝ] Rn ℓ), let e_a := EuclideanSpace.single a 1 (a in Fin n) be the standard basis of R^n and let G be the real n x n matrix G_ab := <D e_a, D e_b> (Matrix.of fun a b => inner ℝ (D e_a) (D e_b)). Then (i) G is symmetric, G^T = G (Matrix.IsSymm G); (ii) for every x : Fin n -> R the quadratic form x . (G x) = sum_a x_a sum_b G_ab x_b (dotProduct x (Matrix.mulVec G x)) is >= 0; (iii) trace G = sum_a G_aa equals hsNormSq D = sum_a |D e_a|^2.",
+  "lean_statement": "∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), Matrix.IsSymm (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) ∧ (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) x)) ∧ Matrix.trace (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) = hsNormSq D",
+  "lean_name": "gwe_gjb_gram_symm_psd_trace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-jacobian-bound-f4497c5a1e-a1"
+}
