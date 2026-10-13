@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.lipschitz_extension-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "depth": 4,
+  "title": "Componentwise McShane extension into ℝ^P with constant √P·K",
+  "statement": "Lipschitz extension into Euclidean space (componentwise McShane). Let P ∈ ℕ, S ⊆ ℝ^P, ψ : ℝ^P → ℝ^P and K ∈ ℝ≥0 such that ψ is K-Lipschitz on S (LipschitzOnWith K ψ S: ‖ψ(x) − ψ(y)‖ ≤ K‖x − y‖ for x, y ∈ S). Then there is φ : ℝ^P → ℝ^P which is (√P·K)-Lipschitz on all of ℝ^P (LipschitzWith (NNReal.sqrt P * K) φ, where P is cast to ℝ≥0) and agrees with ψ on S (EqOn φ ψ S).",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (ψ : Euclid P → Euclid P) (K : NNReal), LipschitzOnWith K ψ S → ∃ φ : Euclid P → Euclid P, LipschitzWith (NNReal.sqrt P * K) φ ∧ EqOn φ ψ S",
+  "lean_name": "cmcsd_lipschitz_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-6233fee967-a1"
+}
