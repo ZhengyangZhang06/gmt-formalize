@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e4fc842336e0711615ba4ec7bb080653c4720d88dabc5a1b7d98f25c347c1be",
+  "git_delta": {
+    "base_commit": "c41220806ce5c78b76f5f2547d6ed3bb7d972229",
+    "candidate_commit": "d596f85ab9a9c39c0c4c596dec42ece0e9d97b0a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lura_gram_det_comp_orthonormal",
+    "diff_sha256": "d8f92a73868cea6725995bf18e8a6dd954ae84841e867fe4daa7f3e7418f0a19",
+    "source_sha256": "d082837bac3d8f2cf819614fe2ea6021746d50992fe870cfe7f79981a54d9240",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lura_gram_det_comp_orthonormal",
+      "statement": "∀ (m d P : ℕ) (Λ : Euclid m →L[ℝ] Euclid d), (Injective Λ → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1)) (Λ (EuclideanSpace.single l 1)))) ∧ ∀ (Γ : Euclid d →L[ℝ] Euclid P) (σ : Fin m → Euclid d), Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = LinearMap.range (Λ : Euclid m →ₗ[ℝ] Euclid d) → Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Γ (Λ (EuclideanSpace.single k 1))) (Γ (Λ (EuclideanSpace.single l 1)))) = Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (Γ (σ i)) (Γ (σ j))) * Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1)) (Λ (EuclideanSpace.single l 1)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
