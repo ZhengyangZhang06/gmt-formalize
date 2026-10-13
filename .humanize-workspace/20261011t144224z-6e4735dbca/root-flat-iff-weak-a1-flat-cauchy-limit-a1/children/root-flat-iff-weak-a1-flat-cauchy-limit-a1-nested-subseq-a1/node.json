@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.flat_cauchy_limit-a1.nested_subseq-a1",
+  "parent_id": "root.flat_iff_weak-a1.flat_cauchy_limit-a1",
+  "depth": 3,
+  "title": "Diagonal extraction from nested infinite index sets (Simon 7.2 proof, choice of the subsequence j_r)",
+  "statement": "Let Q(r, i, j) (r, i, j ∈ ℕ) be an arbitrary relation. Assume that for every r ∈ ℕ and every infinite set J ⊆ ℕ there is an infinite set J' ⊆ J such that Q(r, i, j) holds for all i, j ∈ J'. Then there is a strictly increasing map φ : ℕ → ℕ such that Q(r, φ(r), φ(r+1)) holds for every r ∈ ℕ.",
+  "lean_statement": "∀ (Q : ℕ → ℕ → ℕ → Prop), (∀ r : ℕ, ∀ J : Set ℕ, J.Infinite → ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', Q r i j) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r : ℕ, Q r (φ r) (φ (r + 1))",
+  "lean_name": "fiw_fcl_nested_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-flat-cauchy-limit-a1-nested-subseq-a1-a1"
+}
