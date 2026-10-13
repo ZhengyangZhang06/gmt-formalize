@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.lift_gram_det-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1",
+  "depth": 4,
+  "title": "Gram determinant of the cylinder lift v ↦ (v_0, G(v_1, …, v_m))",
+  "statement": "Let P, m ∈ ℕ and G : ℝ^m → ℝ^P. For v ∈ ℝ^{m+1} write v_0 := (EuclideanSpace.equiv (Fin (m+1)) ℝ v) 0 and tl(v) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ v)) = (v_1, …, v_m). Let G̃ : ℝ^{m+1} → ℝ^{P+1} satisfy G̃(v) = (v_0, G(tl v)) for all v (Lean: Gt v = (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons (EuclideanSpace.equiv (Fin (m+1)) ℝ v 0) (EuclideanSpace.equiv (Fin P) ℝ (G (tl v))))). Let w ∈ ℝ^{m+1} and b = tl(w), and suppose G is differentiable at b. Then the Gram determinants of the derivatives on the standard bases agree:\ndet(⟨DG̃(w)e_i, DG̃(w)e_j⟩)_{i,j<m+1} = det(⟨DG(b)e′_i, DG(b)e′_j⟩)_{i,j<m},\nwhere D = fderiv ℝ, e_i = EuclideanSpace.single i 1 ∈ ℝ^{m+1} and e′_i = EuclideanSpace.single i 1 ∈ ℝ^m.",
+  "lean_statement": "∀ (P m : ℕ) (G : Eucl m → Eucl P) (Gt : Eucl (m + 1) → Eucl (P + 1)) (w : Eucl (m + 1)) (b : Eucl m), (∀ v : Eucl (m + 1), Gt v = (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons (EuclideanSpace.equiv (Fin (m + 1)) ℝ v 0) (EuclideanSpace.equiv (Fin P) ℝ (G ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ v))))))) → b = (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ w)) → DifferentiableAt ℝ G b → (Matrix.of fun i j : Fin (m + 1) => inner ℝ (fderiv ℝ Gt w (EuclideanSpace.single i 1)) (fderiv ℝ Gt w (EuclideanSpace.single j 1))).det = (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G b (EuclideanSpace.single i 1)) (fderiv ℝ G b (EuclideanSpace.single j 1))).det",
+  "lean_name": "iwl_cr_hp_lift_gram_det",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-97503d2128-a1"
+}

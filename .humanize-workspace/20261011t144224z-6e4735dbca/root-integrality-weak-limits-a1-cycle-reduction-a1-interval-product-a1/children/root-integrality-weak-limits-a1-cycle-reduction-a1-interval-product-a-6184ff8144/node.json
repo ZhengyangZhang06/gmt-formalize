@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1",
+  "depth": 4,
+  "title": "The product triple ((0,1) × M, θ∘π, e₀ ∧ ξ∘π) is a rectifiable triple",
+  "statement": "Let P, m ∈ ℕ, Hᵏ := μHE[k], with Φ, π, Φ′, y₀, e₀ = EuclideanSpace.single 0 1 and ι(v) = Φ(0, v) as in the parent, and assume (MP): for every A ⊆ ℝ^P that is Hᵐ-null-measurable, countably m-rectifiable and has Hᵐ(A ∩ K) < ∞ for every compact K, H^{m+1}⌞{y : π(y) ∈ A} = Φ′_*(L¹ ⊗ Hᵐ⌞A). Let (M, θ, ξ) satisfy IsRectifiableTriple univ m M θ ξ in ℝ^P (Simon Ch. 6, 3.1, as in the frozen contract) with θ ≥ 1 on M. Then there is ξ′ : ℝ^{P+1} → Λ_{m+1}(ℝ^{P+1}) (NVector (Eucl (P+1)) (m+1)) such that IsRectifiableTriple univ (m+1) M̃ θ̃ ξ′ holds for M̃ := {y : π(y) ∈ M ∧ y₀ ∈ (0, 1)} and θ̃ := θ ∘ π, and such that ξ′(Φ(s, x))(α) = ξ(x)(β) for all s ∈ ℝ, x ∈ ℝ^P, α ∈ Λ^{m+1}(ℝ^{P+1}) and β ∈ Λ^m(ℝ^P) with β(v) = α(e₀, ιv_1, …, ιv_m) for every v ∈ (ℝ^P)^m (i.e. ξ′ = e₀ ∧ ξ∘π, Simon 3.2(2)).",
+  "lean_statement": "∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m), IsRectifiableTriple (univ : Set (Eucl P)) m M θ ξ → (∀ x ∈ M, 1 ≤ θ x) → ∃ ξ' : Eucl (P + 1) → NVector (Eucl (P + 1)) (m + 1), IsRectifiableTriple (univ : Set (Eucl (P + 1))) (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ξ' ∧ ∀ (s : ℝ) (x : Eucl P) (α : Covector (Eucl (P + 1)) (m + 1)) (β : Covector (Eucl P) m), (∀ v : Fin m → Eucl P, β v = α (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → ξ' ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) α = ξ x β",
+  "lean_name": "iwl_cr_ip_product_triple",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-6184ff8144-a1"
+}
