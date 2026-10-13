@@ -359,6 +359,115 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of Theorem 2.34 (p. 143): a closed current kills `(D_j a) dx¹ ∧ ⋯ ∧ dxⁿ`.
+The test form `η = a · ι_{e_j} dx` (the book's `ω_j = (−1)^{j−1} a dx¹ ∧ ⋯ ∧ dx̂ʲ ∧ ⋯ ∧ dxⁿ`) has
+`dη(x)(e) = D_j a(x) = ω(x)(e)`.  Top-degree covectors are determined by their value on the
+standard basis `e`, so `dη = ω` and `T ω = T (dη) = ∂T η = 0`. -/
+theorem Submission.constancy_closed_kills_partial_derivatives :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (T : GeometricCurrentOn U (m + 1)), T.boundary = 0 →
+      ∀ (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a →
+      tsupport a ⊆ U → ∀ (j : Fin (m + 1)) (ω : TestFormOn U (m + 1)),
+      (∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) →
+      T ω = 0 := by
+  classical
+  intro m U T hT a ha hac haU j ω hω
+  -- The volume covector `dx`, with `dx(e) = det 1 = 1`.
+  set e : Fin (m + 1) → Eucl (m + 1) := fun k => EuclideanSpace.single k (1 : ℝ) with he
+  set dx : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) (fun i => EuclideanSpace.proj i) with hdx
+  have hdx_e : dx e = 1 := by
+    rw [hdx, wedgeCovectors_apply_det]
+    have : (Matrix.of fun i k : Fin (m + 1) =>
+        (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ) (e k)) = 1 := by
+      ext i k
+      simp [he, Matrix.one_apply]
+    rw [this, Matrix.det_one]
+  -- Top-degree covectors agreeing on `e` are equal: both are multiples of the determinant.
+  have htop : ∀ α β : Covector (Eucl (m + 1)) (m + 1), α e = β e → α = β := by
+    intro α β h
+    let b : Module.Basis (Fin (m + 1)) ℝ (Eucl (m + 1)) :=
+      (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis
+    have hb : (⇑b) = e := by
+      funext i
+      simp [b, he]
+    apply ContinuousAlternatingMap.toAlternatingMap_injective
+    rw [AlternatingMap.eq_smul_basis_det b α.toAlternatingMap,
+      AlternatingMap.eq_smul_basis_det b β.toAlternatingMap]
+    congr 1
+    simp only [ContinuousAlternatingMap.coe_toAlternatingMap, hb]
+    exact h
+  -- `ι = ι_{e_j} dx` takes the value `(−1)^j δ_{ij}` on `e` with the `i`-th vector removed
+  -- (0-based indices).
+  set ι : Covector (Eucl (m + 1)) m := dx.curryLeft (e j) with hι
+  have hι_val : ∀ i : Fin (m + 1),
+      ι (i.removeNth e) = if i = j then ((-1 : ℤ) ^ (j : ℕ) : ℤ) else 0 := by
+    intro i
+    rw [hι, ContinuousAlternatingMap.curryLeft_apply_apply]
+    split_ifs with hij
+    · subst hij
+      have hcons : (Matrix.vecCons (e i) (i.removeNth e) : Fin (m + 1) → Eucl (m + 1)) =
+          e ∘ ⇑(Equiv.symm i.cycleRange) :=
+        Fin.cons_removeNth_eq_comp_cycleRange_symm e i
+      rw [hcons]
+      have hperm := dx.toAlternatingMap.map_perm e (Equiv.symm i.cycleRange)
+      simp only [ContinuousAlternatingMap.coe_toAlternatingMap] at hperm
+      rw [hperm, Equiv.Perm.sign_symm, Fin.sign_cycleRange, hdx_e, Units.smul_def]
+      push_cast
+      simp
+    · obtain ⟨k, hk⟩ := Fin.exists_succAbove_eq (x := j) (y := i) (Ne.symm hij)
+      rw [Int.cast_zero]
+      apply dx.map_eq_zero_of_eq _ (i := 0) (j := k.succ)
+      · simp [Matrix.vecCons, Fin.removeNth_apply, hk]
+      · exact (Fin.succ_ne_zero k).symm
+  -- The test form `η = a ι ∈ 𝒟ᵐ(U)`.
+  have hsmooth : IsSmoothForm (fun x => a x • ι) := ha.smul contDiff_const
+  have hcs : HasCompactSupport (fun x => a x • ι) := hac.smul_right
+  have hsupp : tsupport (fun x => a x • ι) ⊆ U :=
+    (tsupport_smul_subset_left a (fun _ => ι)).trans haU
+  let η : TestFormOn U m := ⟨fun x => a x • ι, ⟨⟨hsmooth, hcs⟩, hsupp⟩⟩
+  -- `dη(x)(e) = ∑ᵢ (−1)^i D_i a(x) ι(ê_i) = D_j a(x)`.
+  have hda : Differentiable ℝ a := ha.differentiable (by simp)
+  have hdη_e : ∀ x, exteriorDerivative (fun y => a y • ι) x e =
+      fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) := by
+    intro x
+    rw [exteriorDerivative_apply ((hda x).smul_const ι)]
+    have hterm : ∀ i : Fin (m + 1),
+        (fderiv ℝ (fun y => (a y • ι) (i.removeNth e)) x) (e i) =
+          fderiv ℝ a x (e i) * ι (i.removeNth e) := by
+      intro i
+      have hfun : (fun y => (a y • ι) (i.removeNth e)) =
+          fun y => a y * ι (i.removeNth e) := by
+        funext y
+        simp
+      rw [hfun, fderiv_mul_const (hda x)]
+      simp [mul_comm]
+    simp only [hterm, hι_val]
+    rw [Finset.sum_eq_single j]
+    · simp only [ite_true, zsmul_eq_mul]
+      push_cast
+      have hsq : ((-1 : ℝ) ^ (j : ℕ)) * ((-1 : ℝ) ^ (j : ℕ)) = 1 := by
+        rw [← mul_pow]; norm_num
+      calc ((-1 : ℝ) ^ (j : ℕ)) * (fderiv ℝ a x (e j) * (-1 : ℝ) ^ (j : ℕ))
+          = (((-1 : ℝ) ^ (j : ℕ)) * ((-1 : ℝ) ^ (j : ℕ))) * fderiv ℝ a x (e j) := by ring
+        _ = fderiv ℝ a x (e j) := by rw [hsq, one_mul]
+    · intro i _ hij
+      simp [hij]
+    · intro h
+      exact absurd (Finset.mem_univ j) h
+  -- `dη = ω` as test forms.
+  have hdη : exteriorDerivativeTestOn U m η = ω := by
+    apply Subtype.ext
+    funext x
+    apply htop
+    rw [hω x]
+    exact hdη_e x
+  -- `T ω = T (dη) = ∂T η = 0`.
+  have h1 : T ω = T.boundary η := by
+    rw [GeometricCurrentOn.boundary_apply, hdη]
+  rw [h1, hT]
+  rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
