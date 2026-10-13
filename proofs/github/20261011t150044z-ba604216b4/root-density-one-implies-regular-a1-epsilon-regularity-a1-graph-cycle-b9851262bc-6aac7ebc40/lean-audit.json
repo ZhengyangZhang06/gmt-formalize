@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c0f64b1653d6cd821ff6a50597b5954af01b73378ccdf13adf68b4a4fd568cda",
+  "git_delta": {
+    "base_commit": "9f7f41cda774bfc0046c3a5f40779b3d3154b7f0",
+    "candidate_commit": "91b706ae4a3a1866649b6071266160153fa66474",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgid_dominated_pullback_integer_locallyIntegrable",
+    "diff_sha256": "107b6bb64010e1b5652c7c724aa9c39ab76e6f4afd63be30384b449282ca82ac",
+    "source_sha256": "4e6aa242f8286f344a8a3a9b02d414585d49ca255e0d8ece8b6c569b86792d75",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgid_dominated_pullback_integer_locallyIntegrable",
+      "statement": "∀ (n P : ℕ) (Φ : Euclid n → Euclid P) (D : Set (Euclid n)) (g : Euclid P → ℝ) (F : Euclid P → ℝ≥0∞), IsOpen D → ContinuousOn Φ D → (∀ (A : Set (Euclid n)) (f : Euclid P → ℝ≥0∞), MeasurableSet A → A ⊆ D → Measurable f → ∫⁻ v in A, f (Φ v) ≤ ∫⁻ x in Φ '' A, f x ∂μHE[n]) → Measurable F → (∀ K : Set (Euclid n), IsCompact K → K ⊆ D → ∫⁻ x in Φ '' K, F x ∂μHE[n] ≠ ∞) → AEStronglyMeasurable g (μHE[n].restrict (Φ '' D)) → (∀ᵐ x ∂(μHE[n].restrict (Φ '' D)), (∃ m : ℤ, g x = m) ∧ ‖g x‖ₑ ≤ F x) → LocallyIntegrableOn (fun v => g (Φ v)) D volume ∧ ∀ᵐ v ∂(volume.restrict D), ∃ m : ℤ, g (Φ v) = m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
