@@ -1817,6 +1817,17 @@ theorem Submission.constancy_of_local_constancy : ∀ (m : ℕ) (U : Set (Eucl (
   have hci : c i = c₀ := congrFun hc₀ i
   rw [hc i (η i) (hηV i hi), hci]
 
+/-- **Simon Ch. 6, Theorem 2.34 (Constancy Theorem, p. 142).**  The printed proof in three parts:
+`∂T = 0` makes `T` kill every `(D_j a) dx¹ ∧ ⋯ ∧ dxⁿ` (display (2)); such a `T` is
+`c_{x₀} [[B_r(x₀)]]` near each `x₀ ∈ U` (Riesz representation of the mollified functional,
+`θ_ε` constant, `ε ↓ 0`); on connected `U` these local constants agree, and a partition of
+unity gives `T = c [[U]]`. -/
+theorem Submission.constancy_theorem : ConstancyTheorem := by
+  intro m U hU hconn T hT
+  exact Submission.constancy_of_local_constancy m U hU hconn T
+    (Submission.constancy_local_on_balls m U hU T
+      (Submission.constancy_closed_kills_partial_derivatives m U T hT))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
