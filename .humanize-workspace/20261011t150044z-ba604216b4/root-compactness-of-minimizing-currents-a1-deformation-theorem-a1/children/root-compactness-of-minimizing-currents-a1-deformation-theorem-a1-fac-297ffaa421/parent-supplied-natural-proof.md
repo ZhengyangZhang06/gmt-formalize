@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, proof of 5.1, displays (26)–(37) (chapter-06.txt lines 1405–1928), as written out in steps E6–E7 and the finite-set part of E0 of the parent proof. The BV facts used by Simon on the faces are replaced by the sibling cmcdt_cube_bv_median (CB) (parent departure (ii)). The parent bounds its V_F by μ_{∂Q₀}(F̆); here the corresponding number is Var_F := M_{N_F}(∂Q₀) for explicit pairwise disjoint open neighbourhoods N_F, which needs no measure representation of ∂Q₀ (below, V_F denotes the coordinate n-plane of F).
+
+Notation. n := m + 1. (VO), (MR), (IMC) are the three displayed hypotheses (frozen types of Submission.dtc_vanish_off_support, cmc_massOn_eq_imRep_measure, cmc_imRep_locality_restrict_sub). Currents are on univ in ℝ^P; |·| is the Euclidean coefficient norm, ‖ω‖ := sup|ω(x)|, and |X(ω)| ≤ M(X)‖ω‖. Support facts: spt(A − B) ⊆ spt A ∪ spt B, spt ∂A ⊆ spt A, spt 0 = ∅, and a current vanishing on all test forms supported off a closed set E has support in E. Hⁿ := μHE[n], Lⁿ is Lebesgue measure, Q₁ := (0,1)ⁿ.
+
+1. Trivial case n > P. Every n-covector on ℝ^P vanishes (n vectors in ℝ^P are linearly dependent), so every n-current is 0. Take c := 1 and 𝒬₀ := {0}; for Q₀ = 0 take Pc := 0 (0 and ∂0 = 0 are integer multiplicity, all masses are 0, spt 0 = ∅). From now on n ≤ P; let c_B be CB's constant and c := max(2, 1 + c_B).
+
+2. Faces. For I = {i_1 < ⋯ < i_n} ⊆ {1,…,P} and b ∈ ℤ^P, F = F(b, I) := {x : b_i ≤ x_i ≤ b_i + 1 (i ∈ I), x_i = b_i (i ∉ I)} is an n-face; distinct pairs (b|_{all}, I) give distinct faces. Further notation:
+ - F̆ := {b_i < x_i < b_i + 1 (i ∈ I), x_i = b_i (i ∉ I)}, Π_F := {x : x_i = b_i (i ∉ I)}, V_F := span{e_i : i ∈ I};
+ - e_F is the n-vector α ↦ α(e_{i_1},…,e_{i_n}) (a unit orientation of V_F);
+ - φ_F(y) := b + Σ_j y_j e_{i_j} is an affine isometric embedding ℝⁿ → ℝ^P with φ_F(Q₁) = F̆ and φ_F([0,1]ⁿ) = F;
+ - p̃_F(x) := (x_{i_j} − b_{i_j})_j and p_F := φ_F ∘ p̃_F (orthogonal projection onto Π_F);
+ - δ_F(y) := dist(y, F ∖ F̆) = min_j min(y_{i_j} − b_{i_j}, b_{i_j} + 1 − y_{i_j}) for y ∈ F̆.
+ Hⁿ⌞Π_F is the image of Lⁿ under φ_F (Mathlib Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume), so Hⁿ(F̆) = Hⁿ(F) = 1 and Hⁿ(F ∖ F̆) = 0; diam F = √n. The union of the n-faces is L_n = {x : at least P − n integer coordinates}. L_{n−1} (at least P − n + 1 integer coordinates) is the union of the (n−1)-faces and has Hⁿ(L_{n−1}) = 0 (each (n−1)-face is covered by k^{n−1} sets of diameter √n/k, so its Hⁿ measure is ≤ C k^{n−1}k^{−n} → 0). L_n ∖ L_{n−1} is the disjoint union of the F̆ (for x with exactly P − n integer coordinates, I := the others, b_i := ⌊x_i⌋ (i ∈ I), b_i := x_i (i ∉ I)). Face currents: [[F]](ω) := ∫_F ⟨ω, e_F⟩ dHⁿ = ∫_{[0,1]ⁿ} ω(φ_F y)(e_{i_1},…,e_{i_n}) dy is a current (|[[F]](ω)| ≤ ‖ω‖) with spt [[F]] ⊆ F.
+ Lemma 2.1: if y ∈ F̆ and G ≠ F is an n-face, then dist(y, G) ≥ δ_F(y). (The same statement and proof hold verbatim for distinct j-faces of any common dimension j; it is used for j = n − 1 in 8.) Proof: let z ∈ G. Then |y − z| ≥ |y − p_F(z)|. If p_F(z) ∉ F̆ then |y − p_F(z)| ≥ δ_F(y). Otherwise the coordinates z_i (i ∈ I) are non-integers, so they are free coordinates of G. As G has exactly n free coordinates, they are I, and z_i ∈ (b_i, b_i + 1) forces G = F(b', I) with b'_i = b_i (i ∈ I). G ≠ F gives b'_k ≠ b_k for some k ∉ I, and |y − z| ≥ |b_k − b'_k| ≥ 1 ≥ δ_F(y).
+ Neighbourhoods: N_F := {x : p_F(x) ∈ F̆, |x − p_F(x)| < δ_F(p_F(x))/2} is open.
+ (i) N_F ∩ L_n ⊆ F̆: if x ∈ N_F ∩ G for an n-face G ≠ F, then y := p_F(x) ∈ F̆ satisfies |x − y| < δ_F(y)/2 ≤ dist(y, G)/2 ≤ |x − y|/2, which is impossible. So x ∈ F ⊆ Π_F and p_F(x) = x ∈ F̆.
+ (ii) N_F ∩ N_{F'} = ∅ for F ≠ F': with y := p_F(x), y' := p_{F'}(x), Lemma 2.1 gives |y − y'| ≥ max(δ_F(y), δ_{F'}(y')), while |y − y'| < (δ_F(y) + δ_{F'}(y'))/2.
+ Finite family. Given K (compact) and Λ, let 𝔉_K be the set of n-faces contained in cthickening(√P, K), a finite set (a bounded set contains finitely many unit faces), and 𝒬₀ := {Σ_{F∈𝔉_K} β_F[[F]] : β : 𝔉_K → ℤ, Σ_F|β_F| ≤ 2Λ}, where Σβ_F[[F]] is the current ω ↦ Σβ_F[[F]](ω). 𝒬₀ is finite (the image of a finite set of coefficient vectors) and does not depend on Q₀.
+
+3. Decomposition on open faces (parent E6; Simon (33)). Let Q₀ be as in the statement, R = (M, θ, ξ) an IMRep and μ := R.measure. By (MR), μ(W) = M_W(Q₀) for open W, so μ(ℝ^P) = M(Q₀). By (VO), μ(ℝ^P ∖ spt Q₀) = 0, hence μ(ℝ^P ∖ L_n) = 0; and μ(L_{n−1}) = 0 as Hⁿ(L_{n−1}) = 0. Thus Hⁿ(M ∖ ⋃_F F̆) = 0 (θ ≥ 1 on M). Let 𝔉 := {F : F̆ ∩ spt Q₀ ≠ ∅}. Since spt Q₀ ⊆ K is compact, 𝔉 is finite; every F ∈ 𝔉 lies in cthickening(√n, spt Q₀) ⊆ cthickening(√P, K) (so 𝔉 ⊆ 𝔉_K); and μ(F̆) = 0 for F ∉ 𝔉. For F ∈ 𝔉, (IMC)(b) with E := F̆ (Borel) gives a current A_F represented by R_F := (M ∩ F̆, θ, ξ). For every test form ω, the function θξ(ω) is Hⁿ-integrable on M (|ξ(x)(ω(x))| ≤ ‖ω‖ a.e. by (IMC)(d), and ∫_M θ dHⁿ = μ(ℝ^P) = M(Q₀) < ∞). Splitting the representing integral over the disjoint sets M ∩ F̆ (F ∈ 𝔉) and the Hⁿ-null remainder gives Q₀(ω) = Σ_{F∈𝔉} A_F(ω) for all ω, and M(Q₀) = Σ_{F∈𝔉} μ(F̆).
+
+4. Orientation on faces (parent E7(a); Simon (26)). Fix F ∈ 𝔉. For Hⁿ-a.e. x ∈ M ∩ F̆ there is Q_x with HasApproximateTangentSpaceAt n (M ∩ F̆) x Q_x and ξ(x) a unit orientation of Q_x (R_F is an IMRep). Since M ∩ F̆ ⊆ Π_F ∋ x, blowUpMap x r '' (M ∩ F̆) ⊆ V_F for all r > 0. Suppose Q_x ≠ V_F; pick q ∈ Q_x ∖ V_F, ε := dist(q, V_F)/2 and f(y) := max(0, ε − |y − q|). Then ∫_{blowUpMap x r''(M∩F̆)} f dHⁿ = 0 for all r, while ∫_{Q_x} f dHⁿ ≥ (ε/2)Hⁿ(Q_x ∩ B_{ε/2}(q)) > 0, contradicting the definition. So Q_x = V_F and, by the sign rule (two unit orientations of one n-plane differ by a sign: the transition between orthonormal bases has determinant ±1), ξ(x) = ±e_F. Let α_F be the n-covector with α_F(v_1,…,v_n) := det((v_j)_{i_k})_{j,k}, so e_F(α_F) = 1, and s_F(x) := ξ(x)(α_F) (a.e. ±1). Define u_F := s_Fθ on {x ∈ M ∩ F̆ : s_F(x) ∈ {±1}} and u_F := 0 elsewhere (Borel after modification of ξ on a null set; integer-valued). Then A_F(ω) = ∫_{F̆} u_F ⟨ω, e_F⟩ dHⁿ and ∫_{F̆}|u_F| dHⁿ = μ(F̆). With ũ_F := u_F ∘ φ_F (integer-valued on ℝⁿ, integrable on Q₁, ∫_{Q₁}|ũ_F| = μ(F̆)): A_F(ω) = ∫_{Q₁} ũ_F(y) ω(φ_F y)(e_{i_1},…,e_{i_n}) dy.
+
+5. Boundary variation on a face (parent E7(b); Simon (27)–(33)). For F ∈ 𝔉 let Var_F := M_{N_F}(∂Q₀) ≤ M(∂Q₀) < ∞ (a number; not to be confused with the plane V_F). Claim: ∫_{Q₁} ũ_F div g ≤ Var_F for every smooth g : ℝⁿ → ℝⁿ with compact support in Q₁ and |g| ≤ 1.
+ Let ε_j := (−1)^{j−1} dx^{i_1} ∧ ⋯ ∧ dx^{i_{j−1}} ∧ dx^{i_{j+1}} ∧ ⋯ ∧ dx^{i_n}. Choose χ ∈ C_c^∞(N_F), 0 ≤ χ ≤ 1, with χ = 1 on a neighbourhood of the compact set φ_F(spt g) ⊆ F̆ ⊆ N_F, and put γ(x) := χ(x) Σ_j g_j(p̃_F x) ε_j. Then γ is a test (n−1)-form with tsupport γ ⊆ N_F and |γ(x)| = χ(x)|g(p̃_F x)| ≤ 1. For x ∈ F̆, ⟨dγ(x), e_F⟩ = Σ_j ∂_{i_j}(χ·g_j∘p̃_F)(x) = div g(p̃_F x): where g∘p̃_F ≠ 0 near x, χ = 1 near x; elsewhere both sides vanish; and derivatives in directions k ∉ I do not pair with e_F. For an n-face G ∈ 𝔉, G ≠ F, the integrand of A_G(dγ) vanishes, because tsupport dγ ⊆ N_F and N_F ∩ Ğ ⊆ N_F ∩ L_n ∩ Ğ ⊆ F̆ ∩ Ğ = ∅. Hence ∂Q₀(γ) = Q₀(dγ) = A_F(dγ) = ∫_{Q₁} ũ_F div g. Since γ is admissible for M_{N_F}(∂Q₀), ∫_{Q₁} ũ_F div g ≤ Var_F.
+ Moreover Σ_{F∈𝔉} Var_F ≤ M(∂Q₀). For ε > 0 choose admissible γ_F with tsupport γ_F ⊆ N_F and ∂Q₀(γ_F) ≥ Var_F − ε. Since the N_F are pairwise disjoint, Σ_F γ_F is admissible (at each point at most one term is nonzero), so M(∂Q₀) ≥ Σ_F Var_F − |𝔉|ε.
+
+6. Integer medians (parent E7(c); CB). For F ∈ 𝔉 apply CB to ũ_F and the real number V := Var_F (finite, as Var_F ≤ M(∂Q₀) < ∞; CB's hypothesis is the claim of 5). There is β_F ∈ ℤ with (1) ∫_{Q₁}|ũ_F − β_F| ≤ c_B Var_F, (2) |β_F| ≤ 2∫_{Q₁}|ũ_F| = 2μ(F̆), and (3) |∫_{Q₁}(ũ_F − β_F) div G| ≤ c_B Var_F for every smooth G : ℝⁿ → ℝⁿ with |G| ≤ 1. Put β_F := 0 for F ∉ 𝔉.
+
+7. The polyhedral current (parent E7(d); Simon (34)–(37)). Pc := Σ_{F∈𝔉} β_F[[F]]. Σ_F|β_F| ≤ 2Σ_F μ(F̆) = 2M(Q₀) ≤ 2Λ and 𝔉 ⊆ 𝔉_K, so Pc ∈ 𝒬₀. Since Hⁿ(F ∖ F̆) = 0,
+ (Q₀ − Pc)(ω) = Σ_{F∈𝔉} ∫_{Q₁} (ũ_F − β_F)(y) ω(φ_F y)(e_{i_1},…,e_{i_n}) dy.
+ (34a) For admissible ω, |ω(x)(e_{i_1},…,e_{i_n})| ≤ |ω(x)| ≤ 1 (one coefficient), so M(Q₀ − Pc) ≤ Σ_F ∫|ũ_F − β_F| ≤ c_B Σ_F Var_F ≤ c_B M(∂Q₀).
+ (34b) For an admissible (n−1)-form γ', let α := φ_F^#γ' and G_F(y)_j := (−1)^{j−1} α(y)(e_1,…,ê_j,…,e_n) = (−1)^{j−1} γ'(φ_F y)(e_{i_1},…,ê_{i_j},…,e_{i_n}). G_F is smooth and |G_F(y)|² ≤ |γ'(φ_F y)|² ≤ 1 (distinct coefficients of γ'). By the coordinate formula for d (SimonGMT exteriorDerivative_apply) and the chain rule, dγ'(φ_F y)(e_{i_1},…,e_{i_n}) = div G_F(y). Hence ∂(Q₀ − Pc)(γ') = (Q₀ − Pc)(dγ') = Σ_F ∫_{Q₁}(ũ_F − β_F) div G_F, which has absolute value ≤ c_B Σ_F Var_F ≤ c_B M(∂Q₀) by (3). So M(∂(Q₀ − Pc)) ≤ c_B M(∂Q₀).
+ (36), (37) M(Pc) ≤ Σ_F|β_F| ≤ 2M(Q₀) (indeed M(Pc) = Σ|β_F|, see 8). ∂Pc = ∂Q₀ − ∂(Q₀ − Pc), so M(∂Pc) ≤ (1 + c_B)M(∂Q₀).
+
+8. Integrality and the mass dichotomy (parent E7(e)). Pc is represented by the IMRep with carrier C_P := ⋃_{β_F≠0} F̆ (Borel, and countably n-rectifiable as a finite union of subsets of the affine images φ_F(ℝⁿ)), multiplicity |β_F| on F̆ (the F̆ are disjoint) and orientation sign(β_F)e_F. Approximate tangent space: for x ∈ F̆ and δ < δ_F(x), Π_F ∩ B_δ(x) ⊆ F̆ (points of Π_F within δ_F(x) of x have their free coordinates strictly inside (b_i, b_i + 1)), and by Lemma 2.1 no other open face meets B_δ(x). So C_P ∩ B_δ(x) = Π_F ∩ B_δ(x), and for f ∈ C_c(ℝ^P) with spt f ⊆ B_ρ(0) and r < δ/ρ, ∫_{blowUpMap x r '' C_P} f dHⁿ = ∫_{V_F} f dHⁿ. That is, V_F is the approximate tangent space, oriented by sign(β_F)e_F. The action is Σ_F ∫_{F̆}|β_F| sign(β_F)⟨ω, e_F⟩ dHⁿ = Pc(ω). By (MR), M(Pc) = Σ_F |β_F| Hⁿ(F̆) = Σ_F |β_F|; hence either all β_F = 0 and Pc = 0, or M(Pc) ≥ 1.
+ Boundary: for an (n−1)-form γ, Fubini and the fundamental theorem of calculus on [0,1]ⁿ give [[F]](dγ) = Σ_j (−1)^{j−1}([[G_j^1]](γ) − [[G_j^0]](γ)). Here G_j^ε is the (n−1)-face of F with x_{i_j} = b_{i_j} + ε, and [[G]](γ) := ∫_G ⟨γ, e_G⟩ dH^{n−1} with its coordinate orientation e_G (for n = 1, [[G]](γ) = γ(v) at the vertex G = {v}). So ∂Pc = Σ_G γ_G[[G]], a finite sum over (n−1)-faces with γ_G ∈ ℤ. It is integer multiplicity by the same construction in degree n − 1 (for n − 1 = 0: finite carrier of vertices, multiplicity |γ_v|, orientation sign(γ_v), approximate tangent space {0} at isolated points, H⁰ the counting measure).
+
+9. Supports (parent E7(e)).
+ - spt Pc ⊆ ⋃_{β_F≠0} F. β_F ≠ 0 gives F ∈ 𝔉 (μ(F̆) ≥ |β_F|/2 > 0 by (2)), so F̆ meets spt Q₀ and F ⊆ cthickening(√n, spt Q₀) ⊆ cthickening(√P, spt Q₀).
+ - spt(Q₀ − Pc) ⊆ ⋃{F ∈ 𝔉 : ∫_{Q₁}|ũ_F − β_F| > 0}. For such F, (1) gives Var_F = M_{N_F}(∂Q₀) > 0, so some γ with tsupport γ ⊆ N_F has ∂Q₀(γ) ≠ 0; by (VO), N_F meets spt ∂Q₀. As spt ∂Q₀ ⊆ spt Q₀ ⊆ L_n and N_F ∩ L_n ⊆ F̆, F̆ meets spt ∂Q₀ and F ⊆ cthickening(√n, spt ∂Q₀). Hence spt(Q₀ − Pc) ⊆ cthickening(√P, spt ∂Q₀).
+ - spt ∂Pc ⊆ spt ∂Q₀ ∪ spt ∂(Q₀ − Pc) ⊆ spt ∂Q₀ ∪ spt(Q₀ − Pc) ⊆ cthickening(√P, spt ∂Q₀).
+
+10. With c = max(2, 1 + c_B) ≥ 1 and the finite set 𝒬₀ of 2 (fixed before Q₀), Pc satisfies every conclusion: Pc ∈ 𝒬₀ (7), Pc and ∂Pc integer multiplicity (8), Pc = 0 or M(Pc) ≥ 1 (8), the mass bounds (7), and the support inclusions (9). ∎
+
+## Key steps
+
+1. Trivial case n > P; unit grid n-faces, face currents [[F]], the finite family of integer chains on faces in cthickening(√P, K) with Σ|β_F| ≤ 2Λ.
+2. Disjoint open neighbourhoods N_F with N_F ∩ L_n ⊆ F̆ (distance lemma for distinct faces).
+3. Q₀ = Σ_F Q₀⌞F̆ (MR, VO, Hⁿ(L_{n−1}) = 0, IMC(b)); approximate tangent planes of subsets of Π_F are V_F, so Q₀⌞F̆ = ũ_F[[F̆]] with integer ũ_F.
+4. Testing ∂Q₀ with forms built from fields g on the face gives ∫ũ_F div g ≤ Var_F := M_{N_F}(∂Q₀), and Σ_F Var_F ≤ M(∂Q₀).
+5. CB yields integer medians β_F; Pc := Σβ_F[[F]] ∈ 𝒬₀ with M(Q₀ − Pc), M(∂(Q₀ − Pc)) ≤ c_B M(∂Q₀), M(Pc) ≤ 2M(Q₀), M(∂Pc) ≤ (1 + c_B)M(∂Q₀).
+6. IMReps of Pc and ∂Pc (Stokes on cubes), M(Pc) = Σ|β_F| so Pc = 0 or M(Pc) ≥ 1; supports via spt Q₀ and Var_F > 0 ⇒ F̆ meets spt ∂Q₀.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n -i 'deformation theorem|federer|polyhedral|cubical|skeleton' project/GMT -g '*.lean'`
+- `rg -n -i 'homotopy|lipschitz.*push|pushforward' project/GMT -g '*.lean'`
+- `rg -n 'cmcdt_' project mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n -i 'federer.?fleming|deformation theorem|flat norm|polyhedral chain' mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'theorem (cthickening_smul|smul_cthickening|thickening_smul|infEDist_smul₀|infDist_smul₀)' mathlib/Mathlib`
+- `rg -n 'theorem (exists_disjoint_subfamily_covering_enlargement|ae_differentiableAt|integral_divergence_of_hasFDerivAt_off_countable)' mathlib/Mathlib`
+- `grep in lake-packages-25730c7c for the declarations cited by the child proofs: countablyRectifiable_iUnion, HasApproximateTangentSpaceAt.unique, countablyRectifiable_of_measure_zero, CountablyRectifiable.mono, area_image_criticalSet_eq_zero, injective_area_formula_lipschitzOn, weighted_area_formula_lipschitzOn_fiberSum, exteriorDerivativeOn_pullbackFormWithin, GeometricCurrentOn.boundary_affinePushforward, exteriorDerivative_affinePullbackForm, WeaklyConvergesOn.massOn_le_liminf, WeaklyConvergesOn.boundary, exteriorDerivative_apply, GeometricCurrentOn.boundary_boundary, euclideanHausdorffMeasure_smul₀, LipschitzOnWith.extend_real, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, LinearMap.exists_antilipschitzWith, MeasurableSet.image_of_continuousOn_injOn, MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc, Monotone.ae_differentiableAt, LipschitzWith.ae_differentiableAt, LipschitzOnWith.hausdorffMeasure_image_le, LipschitzWith.integral_lineDeriv_mul_eq, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, cthickening_cthickening_subset, cthickening_subset_thickening', IsCompact.cthickening, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measurable_deriv (all found)`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json (681 nodes): lean_name collisions for the eight proposed names (none), frozen types of the five resolved dependencies, statuses; verbatim antecedent check of the child types`
+- `lake env lean /tmp/cmcdt2/lean/V1Types.lean (eight child types elaborate); lake env lean /tmp/cmcdt2/lean/AssemblySkeleton.lean; lake env lean /tmp/cmcdt2/lean/Assembly.lean (assembly proof, #print axioms: propext, Classical.choice, Quot.sound); lake env lean /tmp/cmcdt2/lean/InstCheck.lean (ContDiff ℝ (⊤ : ℕ∞) = C^∞ ≠ ω; pointwise Sub by rfl; trace coercion)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v1.json`
+- `/tmp/cmcdt2/lean/V1Types.lean`
+- `/tmp/cmcdt2/lean/Assembly.lean`
+- `/tmp/cmcdt2/lean/InstCheck.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same contract as the workspace Contract.lean and Submission.lean. The project holds only a separate, unsolved Ch06 specification of the deformation theorem and Lipschitz push-forward (project/GMT/Ch06/Contract.lean: DeformationTheorem, LipschitzPushforwardIntegerMultiplicity, IsLatticeChain; main_theorem := by sorry). It uses incompatible types (Eucl, IsLatticeChain) and cannot be imported into Ch07, so it is not reusable. Mathlib has no deformation, flat-norm or polyhedral-chain results (no match). It does provide every tool cited by the child proofs: Vitali covering, Rademacher, the divergence theorem, integrability of monotone derivatives, infEDist_smul₀, cthickening lemmas, and Hausdorff measure scaling and isometry. Every cited SimonGMT declaration exists. No declaration or DAG node uses the cmcdt_ prefix. All eight child types elaborate. The assembly from the five dependency types and three child types to the selected frozen type compiles with only propext, Classical.choice and Quot.sound.

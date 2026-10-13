@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Part C (C1, C2) of the parent proof, which replaces Simon's appeal to the BV facts Ch. 6, 2.35–2.37 and Ch. 2, 2.7, 2.9 in displays (26)–(33) of the proof of 5.1. Conclusion (3) is C1(ii) written without currents: the boundary mass of u[[Q₁]] tested on the field G that represents an (n − 1)-form.
+
+Notation. n := m + 1 ≥ 1, Q₁ := (0,1)ⁿ ⊆ ℝⁿ (Lebesgue measure Lⁿ, Lⁿ(Q₁) = 1), div G := trace DG. For 0 < δ < 1/8, Q_δ := (δ, 1 − δ)ⁿ (side s = 1 − 2δ ∈ [3/4, 1]). φ ∈ C_c^∞(B_1(0)), φ ≥ 0, ∫φ = 1, φ_σ(z) := σ^{−n}φ(z/σ), φ̌_σ(z) := φ_σ(−z). ū := u·1_{Q₁} ∈ L¹(ℝⁿ), u_σ := ū ∗ φ_σ ∈ C^∞(ℝⁿ). Let u, V be as in the statement.
+
+0. Preliminaries. Taking g = 0 gives V ≥ 0. Applying the hypothesis to g and −g gives |∫_{Q₁} u div g| ≤ V for every admissible g (smooth, compact support in Q₁, |g| ≤ 1). For every constant β and admissible g, ∫_{Q₁} β div g = 0 (integrate each ∂_i g_i along lines; g has compact support in Q₁). Hence v := u − β is integrable on Q₁ and satisfies the same hypothesis with the same V.
+
+1. Gradient bound: for 0 < σ < δ < 1/8, ∫_{Q_δ} |∇u_σ| ≤ V. For g ∈ C_c^∞(Q_δ; ℝⁿ) with |g| ≤ 1, Fubini and differentiation under the convolution give ∫ ∇u_σ · g = −∫ u_σ div g = −∫ ū (φ̌_σ ∗ div g) = −∫_{Q₁} u div(φ̌_σ ∗ g). Here φ̌_σ ∗ g is smooth with compact support in Q_δ + B_σ(0) ⊆ Q₁ and |φ̌_σ ∗ g| ≤ 1, so the right side is ≤ V by 0. The supremum of ∫ ∇u_σ · g over such g equals ∫_{Q_δ}|∇u_σ|: take g_k := χ_k ∇u_σ/(|∇u_σ|² + 1/k)^{1/2} with smooth cut-offs 0 ≤ χ_k ≤ 1, χ_k ↑ 1_{Q_δ}, and use monotone convergence. This proves the bound.
+
+2. Smooth Poincaré inequality. For a cube Q' of side s ∈ [1/2, 1] and v ∈ C¹(closure Q'), ∫_{Q'} |v − v_{Q'}| ≤ 2^{n+1}√n ∫_{Q'} |∇v|, where v_{Q'} is the mean. Indeed |v(x) − v(y)| ≤ √n s ∫_0^1 |∇v(x + t(y − x))| dt for x, y ∈ Q'. Integrate over Q' × Q'; for t ≤ 1/2 substitute x ↦ (1 − t)x + ty (Jacobian (1 − t)ⁿ ≥ 2^{−n}, image ⊆ Q' by convexity), and for t ≥ 1/2 substitute y ↦ (1 − t)x + ty (Jacobian tⁿ ≥ 2^{−n}). This gives ∫∫ |v(x) − v(y)| dx dy ≤ √n s · 2ⁿ sⁿ ∫_{Q'} |∇v|. Since |v(x) − v_{Q'}| ≤ s^{−n}∫_{Q'}|v(x) − v(y)| dy, ∫_{Q'} |v − v_{Q'}| ≤ √n s 2ⁿ ∫_{Q'}|∇v| ≤ 2^{n+1}√n ∫_{Q'}|∇v|.
+
+3. Poincaré inequality for u: ∫_{Q₁} |u − u_{Q₁}| ≤ 2^{n+1}√n V. By 1 and 2 (Q' = Q_δ), ∫_{Q_δ}|u_σ − (u_σ)_{Q_δ}| ≤ 2^{n+1}√n V for σ < δ. As σ ↓ 0, u_σ → ū in L¹(ℝⁿ) (continuity of translation in L¹), so ∫_{Q_δ}|u − u_{Q_δ}| ≤ 2^{n+1}√n V. As δ ↓ 0, u_{Q_δ} → u_{Q₁} and ∫_{Q_δ}|u − u_{Q_δ}| → ∫_{Q₁}|u − u_{Q₁}| by dominated convergence.
+
+4. Integer median (C2). Since u is real-valued and integrable, Lⁿ(Q₁ ∩ {u ≤ c}) → 1 as c → +∞ and → 0 as c → −∞. Let β be the least integer c with Lⁿ(Q₁ ∩ {u ≤ c}) ≥ 1/2. Then Lⁿ(Q₁ ∩ {u ≤ β}) ≥ 1/2 and, since u is integer-valued, Lⁿ(Q₁ ∩ {u ≥ β}) = 1 − Lⁿ(Q₁ ∩ {u ≤ β − 1}) > 1/2.
+ (a) β minimizes c ↦ ∫_{Q₁}|u − c|. For c > β, |u − c| − |u − β| ≥ c − β on {u ≤ β} and ≥ −(c − β) on {u > β}, so ∫(|u − c| − |u − β|) ≥ (c − β)(Lⁿ{u ≤ β} − Lⁿ{u > β}) ≥ 0. The case c < β is symmetric, using Lⁿ{u ≥ β} ≥ 1/2. With c = u_{Q₁} and 3: ∫_{Q₁}|u − β| ≤ 2^{n+1}√n V.
+ (b) If β > 0 then u ≥ β on a set of measure ≥ 1/2, so ∫_{Q₁}|u| ≥ β/2. If β < 0 then u ≤ β on a set of measure ≥ 1/2, so ∫_{Q₁}|u| ≥ |β|/2. Hence |β| ≤ 2∫_{Q₁}|u|.
+
+5. Trace estimate. Let G : ℝⁿ → ℝⁿ be smooth with |G| ≤ 1, and let w ∈ L¹(Q₁) satisfy the hypothesis of the statement with the constant V. Then |∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫_{Q₁}|w|.
+ Proof. Let w_σ := (w 1_{Q₁}) ∗ φ_σ, σ < δ. Apply the divergence theorem on the box Q_δ to the smooth field w_σG, whose divergence is ∇w_σ · G + w_σ div G. (By Fubini and the fundamental theorem of calculus in each coordinate, ∫_{Q_δ} ∂_i(w_σG_i) = ∫ over the two faces {x_i = 1 − δ}, {x_i = δ} of ±w_σG_i; alternatively use Mathlib MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable, transported from Fin n → ℝ to Euclid n.) This gives ∫_{Q_δ} w_σ div G = −∫_{Q_δ} ∇w_σ · G + ∫_{∂Q_δ} w_σ G · ν dH^{n−1}, so |∫_{Q_δ} w_σ div G| ≤ ∫_{Q_δ}|∇w_σ| + ∫_{∂Q_δ}|w_σ|. On the face {x₁ = δ}, |w_σ(δ, x')| ≤ |w_σ(x₁, x')| + ∫_δ^{1−δ}|∂₁w_σ(t, x')| dt for x₁ ∈ (δ, 1 − δ). Averaging over x₁ (length s ≥ 1/2) and integrating in x' gives ∫_{face}|w_σ| ≤ 2∫_{Q_δ}|w_σ| + ∫_{Q_δ}|∇w_σ|; the same holds for all 2n faces. With 1 applied to w: |∫_{Q_δ} w_σ div G| ≤ (2n + 1)V + 4n∫_{Q_δ}|w_σ|. Let σ ↓ 0 (w_σ → w 1_{Q₁} in L¹, and div G is bounded on closure Q₁), then δ ↓ 0 (dominated convergence): |∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫_{Q₁}|w|.
+
+6. Conclusion. Put c := 2^{n+1}√n + (2n + 1) + 4n·2^{n+1}√n > 0 (depending only on m). By 4(a), ∫_{Q₁}|u − β| ≤ 2^{n+1}√n V ≤ cV, which is (1); 4(b) is (2). By 0, w := u − β satisfies the hypothesis with V, so by 5 and 4(a), for every smooth G with |G| ≤ 1, |∫_{Q₁}(u − β) div G| ≤ (2n + 1)V + 4n·2^{n+1}√n V ≤ cV, which is (3). ∎
+
+## Key steps
+
+1. V ≥ 0, |∫u div g| ≤ V, and u − β satisfies the same hypothesis.
+2. Mollified u_σ satisfies ∫_{Q_δ}|∇u_σ| ≤ V (duality with fields φ̌_σ ∗ g supported in Q₁).
+3. Smooth Poincaré on cubes of side in [1/2, 1] and the limits σ ↓ 0, δ ↓ 0 give ∫_{Q₁}|u − u_{Q₁}| ≤ 2^{n+1}√n V.
+4. The least integer β with Lⁿ{u ≤ β} ≥ 1/2 is a median (integer values), minimizes c ↦ ∫|u − c| and satisfies |β| ≤ 2∫|u|.
+5. Divergence theorem and the elementary trace inequality on Q_δ give |∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫|w|; apply to w = u − β.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n -i 'deformation theorem|federer|polyhedral|cubical|skeleton' project/GMT -g '*.lean'`
+- `rg -n -i 'homotopy|lipschitz.*push|pushforward' project/GMT -g '*.lean'`
+- `rg -n 'cmcdt_' project mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n -i 'federer.?fleming|deformation theorem|flat norm|polyhedral chain' mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'theorem (cthickening_smul|smul_cthickening|thickening_smul|infEDist_smul₀|infDist_smul₀)' mathlib/Mathlib`
+- `rg -n 'theorem (exists_disjoint_subfamily_covering_enlargement|ae_differentiableAt|integral_divergence_of_hasFDerivAt_off_countable)' mathlib/Mathlib`
+- `grep in lake-packages-25730c7c for the declarations cited by the child proofs: countablyRectifiable_iUnion, HasApproximateTangentSpaceAt.unique, countablyRectifiable_of_measure_zero, CountablyRectifiable.mono, area_image_criticalSet_eq_zero, injective_area_formula_lipschitzOn, weighted_area_formula_lipschitzOn_fiberSum, exteriorDerivativeOn_pullbackFormWithin, GeometricCurrentOn.boundary_affinePushforward, exteriorDerivative_affinePullbackForm, WeaklyConvergesOn.massOn_le_liminf, WeaklyConvergesOn.boundary, exteriorDerivative_apply, GeometricCurrentOn.boundary_boundary, euclideanHausdorffMeasure_smul₀, LipschitzOnWith.extend_real, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, LinearMap.exists_antilipschitzWith, MeasurableSet.image_of_continuousOn_injOn, MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc, Monotone.ae_differentiableAt, LipschitzWith.ae_differentiableAt, LipschitzOnWith.hausdorffMeasure_image_le, LipschitzWith.integral_lineDeriv_mul_eq, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, cthickening_cthickening_subset, cthickening_subset_thickening', IsCompact.cthickening, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measurable_deriv (all found)`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json (681 nodes): lean_name collisions for the eight proposed names (none), frozen types of the five resolved dependencies, statuses; verbatim antecedent check of the child types`
+- `lake env lean /tmp/cmcdt2/lean/V1Types.lean (eight child types elaborate); lake env lean /tmp/cmcdt2/lean/AssemblySkeleton.lean; lake env lean /tmp/cmcdt2/lean/Assembly.lean (assembly proof, #print axioms: propext, Classical.choice, Quot.sound); lake env lean /tmp/cmcdt2/lean/InstCheck.lean (ContDiff ℝ (⊤ : ℕ∞) = C^∞ ≠ ω; pointwise Sub by rfl; trace coercion)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v1.json`
+- `/tmp/cmcdt2/lean/V1Types.lean`
+- `/tmp/cmcdt2/lean/Assembly.lean`
+- `/tmp/cmcdt2/lean/InstCheck.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same contract as the workspace Contract.lean and Submission.lean. The project holds only a separate, unsolved Ch06 specification of the deformation theorem and Lipschitz push-forward (project/GMT/Ch06/Contract.lean: DeformationTheorem, LipschitzPushforwardIntegerMultiplicity, IsLatticeChain; main_theorem := by sorry). It uses incompatible types (Eucl, IsLatticeChain) and cannot be imported into Ch07, so it is not reusable. Mathlib has no deformation, flat-norm or polyhedral-chain results (no match). It does provide every tool cited by the child proofs: Vitali covering, Rademacher, the divergence theorem, integrability of monotone derivatives, infEDist_smul₀, cthickening lemmas, and Hausdorff measure scaling and isometry. Every cited SimonGMT declaration exists. No declaration or DAG node uses the cmcdt_ prefix. All eight child types elaborate. The assembly from the five dependency types and three child types to the selected frozen type compiles with only propext, Classical.choice and Quot.sound.
