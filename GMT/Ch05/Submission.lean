@@ -1135,6 +1135,98 @@ theorem any_radius_gr_tilt_integral_facts : ∀ (n ℓ : ℕ) (U : Set (Amb n �
 
 end Submission
 
+/-- **Campanato input on one graph piece** (Simon 5.2, proof steps (10)–(11)).  Let
+`F x = q (x, u x)` with `u` continuous on `Ω`, transferring integrals of Borel `g ≥ 0` over Borel
+`A ⊆ Ω` to `μ_V`-integrals over `F(A)` (E1), with `p_{T_{F x}} = P_{Du x}` a.e. on `Ω` (E2).  If
+`B_r(z) ⊆ Ω`, `|Du| ≤ 1/4` and `|F x − F z| ≤ s` on `B_r(z)`, and `P_{Du z} = p_S`, then
+`∫_{B_r(z)} |Du x − Du z|² dx ≤ sⁿ E(F z, s, S)`: pointwise `|Du x − Du z| ≤ |p_{T_{F x}} − p_S|`,
+and the tilt integrand is pushed forward to `μ_V` through a Borel representative of `p`. -/
+theorem Submission.any_radius_gr_campanato_input : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), AEStronglyMeasurable V.tangentProj V.weight → ContinuousOn u Ω → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂V.weight) → (∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) → ∀ (S : Submodule ℝ (Amb n ℓ)) (z : Rn n) (r s : ℝ), 0 < s → closedBall z r ⊆ Ω → (∀ x ∈ closedBall z r, hsNorm (fderiv ℝ u x) ≤ 1 / 4) → (∀ x ∈ closedBall z r, ‖q (graphPoint x (u x)) - q (graphPoint z (u z))‖ ≤ s) → (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u z v)))).starProjection = S.starProjection → V.weight (closedBall (q (graphPoint z (u z))) s) < ⊤ → ∫⁻ x in closedBall z r, ENNReal.ofReal (hsNormSq (fderiv ℝ u x - fderiv ℝ u z)) ≤ ENNReal.ofReal (s ^ n * V.tiltExcess (q (graphPoint z (u z))) s S) := by
+  intro n ℓ U V q u Ω hp hu hE1 hE2 S z r s hs hBΩ hDu hFs hPz hfin
+  -- Step 1: for `r < 0` the ball is empty; otherwise `z ∈ B := closedBall z r`, and `B` is Borel.
+  rcases lt_or_ge r 0 with hr | hr
+  · rw [Metric.closedBall_eq_empty.2 hr, Measure.restrict_empty, lintegral_zero_measure]
+    exact zero_le
+  have hzB : z ∈ closedBall z r := mem_closedBall_self hr
+  have hBm : MeasurableSet (closedBall z r) := measurableSet_closedBall
+  -- Step 2: a Borel representative `p̃` of `p`, and a Borel `μ`-null set `N' ⊇ {p ≠ p̃}`.
+  obtain ⟨pt, hptm, hppt⟩ : ∃ pt : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ,
+      StronglyMeasurable pt ∧ V.tangentProj =ᵐ[V.weight] pt :=
+    ⟨hp.mk _, hp.stronglyMeasurable_mk, hp.ae_eq_mk⟩
+  obtain ⟨N', hN'sub, hN'm, hN'0⟩ : ∃ N', {y | V.tangentProj y ≠ pt y} ⊆ N' ∧
+      MeasurableSet N' ∧ V.weight N' = 0 :=
+    exists_measurable_superset_of_null (ae_iff.1 hppt)
+  -- Step 3: `F x = q (x, u x)` is continuous on `B`, and (E1) for the indicator of `N'` shows
+  -- `F x ∉ N'`, i.e. `p (F x) = p̃ (F x)`, for a.e. `x ∈ B`.
+  have hgp : Continuous fun p : Rn n × Rn ℓ => graphPoint p.1 p.2 := by
+    unfold graphPoint
+    exact (PiLp.continuous_toLp 2 _).comp ((Fin.continuous_append n ℓ).comp
+      ((PiLp.continuous_ofLp 2 _).prodMap (PiLp.continuous_ofLp 2 _)))
+  have hFm : AEMeasurable (fun x => q (graphPoint x (u x))) (volume.restrict (closedBall z r)) :=
+    (q.continuous.comp_continuousOn
+      (hgp.comp_continuousOn (continuousOn_id.prodMk (hu.mono hBΩ)))).aemeasurable hBm
+  have hN'ind : Measurable (N'.indicator (1 : Amb n ℓ → ℝ≥0∞)) := measurable_one.indicator hN'm
+  have hnot : ∀ᵐ x ∂(volume.restrict (closedBall z r)), q (graphPoint x (u x)) ∉ N' := by
+    have h0 : ∫⁻ x in closedBall z r, N'.indicator 1 (q (graphPoint x (u x))) = 0 := by
+      refine le_antisymm ?_ zero_le
+      calc ∫⁻ x in closedBall z r, N'.indicator 1 (q (graphPoint x (u x)))
+          ≤ ∫⁻ y in q '' graphOver u (closedBall z r), N'.indicator 1 y ∂V.weight :=
+            hE1 _ hBm hBΩ _ hN'ind
+        _ = V.weight.restrict (q '' graphOver u (closedBall z r)) N' :=
+            lintegral_indicator_one hN'm
+        _ ≤ V.weight N' := Measure.restrict_apply_le _ _
+        _ = 0 := hN'0
+    filter_upwards [(lintegral_eq_zero_iff' (hN'ind.comp_aemeasurable hFm)).1 h0] with x hx hxN
+    simp [Set.indicator_of_mem hxN] at hx
+  -- Step 4: for a.e. `x ∈ B`, (E2) and (P4) give
+  -- `|Du x − Du z| ≤ |P_{Du x} − P_{Du z}| = |p̃ (F x) − p_S|`; square both sides with (L8b).
+  have hpw : ∀ᵐ x ∂(volume.restrict (closedBall z r)),
+      ENNReal.ofReal (hsNormSq (fderiv ℝ u x - fderiv ℝ u z)) ≤
+        ENNReal.ofReal (hsNormSq (pt (q (graphPoint x (u x))) - S.starProjection)) := by
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset hBΩ hE2, ae_restrict_mem hBm, hnot]
+      with x hx hxB hxN
+    have hpx : V.tangentProj (q (graphPoint x (u x))) = pt (q (graphPoint x (u x))) := by
+      by_contra hne
+      exact hxN (hN'sub hne)
+    have h1 := (Submission.any_radius_gr_graph_plane_projections n ℓ q).2.2.2 (fderiv ℝ u x)
+      (fderiv ℝ u z) (hDu x hxB) (hDu z hzB)
+    rw [← hx, hPz, hpx] at h1
+    have hsq := fun (m k : ℕ) (M : Rn m →L[ℝ] Rn k) =>
+      ((Submission.any_radius_gr_linear_algebra_basics n ℓ q).2.2.2.2.2.2.2.1 m k M 0).2.1
+    apply ENNReal.ofReal_le_ofReal
+    rw [← hsq n ℓ, ← hsq (n + ℓ) (n + ℓ)]
+    exact pow_le_pow_left₀ (Real.sqrt_nonneg _) h1 2
+  -- `G y = ofReal |p̃ y − p_S|²` is Borel: `p̃` is strongly measurable, `M ↦ |M − p_S|²` is
+  -- continuous.
+  have hGm : Measurable fun y => ENNReal.ofReal (hsNormSq (pt y - S.starProjection)) := by
+    have hc : Continuous fun M : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (M - S.starProjection) := by
+      unfold hsNormSq
+      fun_prop
+    exact (hc.comp_stronglyMeasurable hptm).measurable.ennreal_ofReal
+  -- Step 5: integrate (a), transfer by (E1) (b), enlarge `F(B)` to `B_s(F z)` (c),
+  -- replace `p̃` by `p` (d), and evaluate with (T1) (e).
+  calc ∫⁻ x in closedBall z r, ENNReal.ofReal (hsNormSq (fderiv ℝ u x - fderiv ℝ u z))
+      ≤ ∫⁻ x in closedBall z r,
+          ENNReal.ofReal (hsNormSq (pt (q (graphPoint x (u x))) - S.starProjection)) :=
+        lintegral_mono_ae hpw
+    _ ≤ ∫⁻ y in q '' graphOver u (closedBall z r),
+          ENNReal.ofReal (hsNormSq (pt y - S.starProjection)) ∂V.weight :=
+        hE1 _ hBm hBΩ _ hGm
+    _ ≤ ∫⁻ y in closedBall (q (graphPoint z (u z))) s,
+          ENNReal.ofReal (hsNormSq (pt y - S.starProjection)) ∂V.weight := by
+        refine lintegral_mono_set ?_
+        rintro _ ⟨_, ⟨x, hxB, rfl⟩, rfl⟩
+        rw [mem_closedBall, dist_eq_norm]
+        exact hFs x hxB
+    _ = ∫⁻ y in closedBall (q (graphPoint z (u z))) s,
+          ENNReal.ofReal (hsNormSq (V.tangentProj y - S.starProjection)) ∂V.weight := by
+        refine lintegral_congr_ae ?_
+        filter_upwards [ae_restrict_of_ae hppt] with y hy
+        rw [hy]
+    _ = ENNReal.ofReal (s ^ n * V.tiltExcess (q (graphPoint z (u z))) s S) :=
+        (Submission.any_radius_gr_tilt_integral_facts n ℓ U V hp (q (graphPoint z (u z))) S).1
+          s hs hfin
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
