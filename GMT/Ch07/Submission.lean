@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Simon 7.2.4 (3) and Ch. 6, 4.5(2): by cancellation `X = D + Q` acts as
+`ω ↦ ∫_{M̂∩B_t(y)} θ̂⟨dω, ξ̂⟩ dH^{n+1}` (informally `∂(R⌞B_t(y))`), so `∂X = 0` by `d² = 0`,
+`X(ω) = 0` if `spt ω` misses `B̄_t(y)`, and `X(ω) = R(dω) = ∂R(ω)` if `spt ω ⊆ B_t(y)`. -/
+theorem Submission.dor_lmb_glc_cut_cycle : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (n + 1)) (RR : IMRep U (n + 1)) (RB : IMRep U n) (D Q : GeometricCurrentOn U n) (y : Euclid P) (t : ℝ), RR.Represents R → (∀ ω : TestFormOn U n, D ω = ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ ω : TestFormOn U n, Q ω = (∫ x in RR.carrier ∩ ball y t, (RR.mult x : ℝ) * RR.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = D ω + Q ω) ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y t → X ω = R.boundary ω := by
+  intro P n U R RR RB D Q y t hR hD hQ
+  -- `X := D + Q` is a current, as the sum of two continuous functionals
+  let X : GeometricCurrentOn U n :=
+    { toCurrent := D.toCurrent + Q.toCurrent
+      continuous' := fun ωs h => by
+        simpa using (D.continuous' ωs h).add (Q.continuous' ωs h) }
+  have hXDQ : ∀ ω : TestFormOn U n, X ω = D ω + Q ω := fun _ => rfl
+  -- (‡) `X(ω) = ∫_{M̂∩B} θ̂⟨dω, ξ̂⟩ dH^{n+1}`, by cancellation
+  have hX : ∀ ω : TestFormOn U n, X ω = ∫ x in RR.carrier ∩ ball y t,
+      (RR.mult x : ℝ) * RR.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x)
+        ∂μHE[n + 1] := fun ω => by
+    rw [hXDQ, hD, hQ]
+    ring
+  clear_value X
+  refine ⟨X, hXDQ, ?_, fun ω hω => ?_, fun ω hω => ?_⟩
+  · -- `∂X(η) = X(dη) = ∫ θ̂⟨d(dη), ξ̂⟩ = 0` as `d² = 0` (vacuous for `n = 0`)
+    cases n with
+    | zero => trivial
+    | succ m =>
+      show X.boundary = 0
+      refine GeometricCurrentOn.ext fun η => ?_
+      rw [GeometricCurrentOn.boundary_apply, hX, GeometricCurrentOn.zero_apply]
+      refine setIntegral_eq_zero_of_forall_eq_zero fun x _ => ?_
+      change (RR.mult x : ℝ) * RR.orient x
+        (exteriorDerivative (exteriorDerivative (η : DifferentialForm (Euclid P) m)) x) = 0
+      rw [exteriorDerivative_sq η.property.1.1, Pi.zero_apply, map_zero, mul_zero]
+  · -- `dω` vanishes on `B ⊆ B̄`, which misses `spt ω ⊇ spt dω`
+    have hdω : ∀ x ∈ ball y t, exteriorDerivative (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      fun x hx => image_eq_zero_of_notMem_tsupport fun hx' =>
+        hω.notMem_of_mem_right (ball_subset_closedBall hx)
+          (tsupport_exteriorDerivative_subset _ hx')
+    rw [hX]
+    exact setIntegral_eq_zero_of_forall_eq_zero fun x hx => by rw [hdω x hx.2, map_zero, mul_zero]
+  · -- `∂R(ω) = R(dω) = ∫_{M̂} θ̂⟨dω, ξ̂⟩`, and `dω` vanishes on `M̂ \ B` as `spt dω ⊆ spt ω ⊆ B`
+    have hdω : ∀ x ∉ ball y t, exteriorDerivative (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      fun x hx => image_eq_zero_of_notMem_tsupport fun hx' =>
+        hx (hω (tsupport_exteriorDerivative_subset _ hx'))
+    rw [hX, GeometricCurrentOn.boundary_apply, hR (exteriorDerivativeTestOn U n ω), IMRep.action]
+    refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero RR.measurableSet_carrier
+      inter_subset_left fun x hx => ?_).symm
+    show (RR.mult x : ℝ) * RR.orient x
+      (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) = 0
+    rw [hdω x fun hxB => hx.2 ⟨hx.1, hxB⟩, map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
