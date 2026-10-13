@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f6053729ae07f55fc25e1bc7196b47911f58b0ce01627ad4c63763cdfa5eae6e",
+  "git_delta": {
+    "base_commit": "38bd17383b2c64463789862ddbb3531133221124",
+    "candidate_commit": "a71cb172ee21f32afd2e7dfdad83295e97492b6a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_gta_graph_row_orthogonal",
+    "diff_sha256": "db064edf53b1f669235f2c62e73aa6c58c8a9c10731c665b363f26e139a7de39",
+    "source_sha256": "2432b559548b57761c2c79a57002c7b36237a60e664ddf379b51c4fdea31f67a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_gta_graph_row_orthogonal",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Rn n →L[ℝ] Rn ℓ) (j : Fin ℓ) (r : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))) = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint r 0))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
