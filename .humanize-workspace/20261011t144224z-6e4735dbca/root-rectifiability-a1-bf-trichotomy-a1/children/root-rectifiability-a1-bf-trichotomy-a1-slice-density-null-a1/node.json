@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_trichotomy-a1.slice_density_null-a1",
+  "parent_id": "root.rectifiability-a1.bf_trichotomy-a1",
+  "depth": 3,
+  "title": "Mickle–Radó on k-dimensional slices: 0 < ϑ_j < ∞ without a fibre witness only for Lebesgue-null parameters",
+  "statement": "Let N, m ∈ ℕ, k := m + 1, μ an s-finite measure on ℝ^N (= Eucl N), E ⊆ ℝ^N σ-compact with μ(ℝ^N ∖ E) = 0, δ ∈ ℝ, a ∈ ℝ^N and j ∈ {1, …, N} (Fin N). For u ∈ (ℝ^N)^k let L_u(y) := (⟨u₁,y⟩, …, ⟨u_k,y⟩) ∈ ℝᵏ (= Eucl k), u ⊕_j c := (u₁ + c₁e_j, …, u_k + c_ke_j) for c ∈ ℝᵏ (e_j = EuclideanSpace.single j 1), K_{j,u}(t) := {x ∈ ℝ^N : x ≠ a and L_{u⊕_jc}(x − a) = 0 for some c ∈ ℝᵏ with |c| < t}, and ϑ_j(u) := limsup_{t→0⁺} sup_{0<r<δ} μ(B(a,r) ∩ K_{j,u}(t))/(rt)ᵏ ∈ [0,∞] (B open balls, (rt)ᵏ := ENNReal.ofReal((rt)ᵏ), quotient in [0,∞], limsup along 𝓝[>]0). Say that (T3) holds at u if some x ∈ E has x ≠ a, |x − a| < δ and L_u x = L_u a. Then the set {u ∈ (ℝ^N)^k : (T3) fails at u and 0 < ϑ_j(u) < ∞} has Lebesgue measure zero (volume on Fin k → Eucl N, the product of the Lebesgue measures of the factors).",
+  "lean_statement": "∀ (N m : ℕ) (μ : Measure (Eucl N)) (E : Set (Eucl N)) (δ : ℝ) (a : Eucl N) (j : Fin N), SFinite μ → IsSigmaCompact E → μ Eᶜ = 0 → (volume : Measure (Fin (m + 1) → Eucl N)) {u : Fin (m + 1) → Eucl N | ¬ (∃ x ∈ E, x ≠ a ∧ dist x a < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) a) : Eucl (m + 1))) ∧ 0 < limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) ∧ limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) < ⊤} = 0",
+  "lean_name": "rectifiability_bf_slice_density_null",
+  "depends_on": [
+    "root.rectifiability-a1.mickle_rado-a1",
+    "root.rectifiability-a1.bf_trichotomy-a1.limsup_sup_measurable-a1",
+    "root.rectifiability-a1.bf_trichotomy-a1.witness_set_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.mickle_rado-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-a1",
+      "result_commit": "751505bb80698c2cb140348e42263479a3537d60",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.bf_trichotomy-a1.limsup_sup_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.bf_trichotomy-a1.witness_set_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-trichotomy-a1-slice-density-null-a1-a1"
+}
