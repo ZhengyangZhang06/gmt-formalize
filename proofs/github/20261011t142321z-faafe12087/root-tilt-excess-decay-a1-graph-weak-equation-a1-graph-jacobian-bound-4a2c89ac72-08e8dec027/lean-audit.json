@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3ae75e1f665eff339d12015a66dff5c43570d938db0b98878c934f3dcce13080",
+  "git_delta": {
+    "base_commit": "bad0934817c7c91e7374db6cfc12262a93497dee",
+    "candidate_commit": "3fe81c7dda4a341982841244ae079139dec4b916",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_gjb_det_one_add_bounds",
+    "diff_sha256": "c19315fd040504fc276735486e450a0d8a14f3f9bea06b2db1ed5f8bce633b67",
+    "source_sha256": "75a905f2116e4de2ff8a18438542b2be35c5dd8c559407b1ea7e227f32de84d2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_gjb_det_one_add_bounds",
+      "statement": "∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) ℝ), Matrix.IsSymm G → (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec G x)) → 1 ≤ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ∧ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ≤ Real.exp (Matrix.trace G)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
