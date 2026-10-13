@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.weight_blowup-a1",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "depth": 2,
+  "title": "Weight blow-ups at a tangent point converge to θ·H^n on the tangent plane (Def. 8.1.1 tested with functions of position only)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U (Varifold N n U), x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ with HasTangentPlane V x T θ (Simon Ch. 8, Def. 1.1). Then for every g ∈ C_c(ℝ^N, ℝ): t^{−n} ∫ g(t^{−1}(y − x)) dμ_V(y) → θ ∫_{T.plane} g dH^n as t ↓ 0 (t > 0), where μ_V = V.weight and H^n = μHE[n] on ℝ^N.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ y, g (t⁻¹ • (y - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂(μHE[n] : Measure (Euclidean N))))",
+  "lean_name": "tgc_weight_blowup_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-weight-blowup-a1-a1"
+}

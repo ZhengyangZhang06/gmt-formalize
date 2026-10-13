@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1.null_of_ball_bound-a1",
+  "parent_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1",
+  "depth": 3,
+  "title": "Hausdorff-null sets with a uniform small-ball mass bound are μ-null",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N (Borel σ-algebra), let A ⊆ ℝ^N be an arbitrary set, let c ∈ [0, ∞) and δ > 0. Suppose H^n(A) = 0, where H^n = μHE[n], and suppose μ(B_ρ(x)) ≤ c · ENNReal.ofReal(ρ)^n for every x ∈ A and every real ρ with 0 < ρ ≤ δ, where B_ρ(x) is the closed ball. Then μ(A) = 0. Here μ(A) is the outer measure of A; A need not be measurable.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (A : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), c ≠ ∞ → 0 < δ → μHE[n] A = 0 → (∀ x ∈ A, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → μ (closedBall x ρ) ≤ c * ENNReal.ofReal ρ ^ n) → μ A = 0",
+  "lean_name": "frt_measure_null_of_hausdorff_null_ball_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-null-of-hausdorff-null-a1-null-of-f8ca35777b-a1"
+}

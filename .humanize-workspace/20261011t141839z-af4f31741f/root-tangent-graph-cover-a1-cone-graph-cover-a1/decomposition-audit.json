@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "tgc_local_graph_closed_cover|tgc_eventual_density_bounds_uniform",
+        "def denseSeq|theorem denseRange_denseSeq|theorem DenseRange.exists_dist_lt|theorem closure_prod_eq|theorem closure_minimal|theorem isClosed_le|theorem continuous_of_finiteDimensional",
+        "theorem exists_inv_nat_lt|theorem ofReal_inv_of_pos|theorem inv_le_inv|theorem ofReal_le_ofReal_iff|theorem ofReal_mul |theorem ofReal_pow|theorem mem_nhdsGT_iff_exists_Ioo_subset|theorem exists_nat_one_div_lt|theorem unpair_pair|DenseRange.exists_dist_lt|continuous_of_finiteDimensional",
+        "sed -n '68,124p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cgc-decomp/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Constructions/SumProd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Closure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Nat/Pairing.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/cgc-decomp/Full.lean",
+        "/tmp/cone-graph-independent-audit/local_graph_closed_cover_NodeChallenge.lean",
+        "/tmp/cone-graph-independent-audit/density_bounds_uniform_NodeChallenge.lean",
+        "/tmp/cone-graph-independent-audit/TypeInstances.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical contract and inspected Mathlib sources, and compatible SimonGMT projection definition. Neither proposed name occurs in the snapshot, the 112-node DAG, or another branch's JSON. Both one-line propositions pass the validator and independently generated comparator challenges elaborate without either child implementation. Euclidean separability, nonemptiness, finite dimensionality, and projection continuity were independently checked. After reading both supplied proofs step by step, I reran the exact-type scratch proofs and parent assembly: all compile, with only propext, Classical.choice, and Quot.sound. The assembly uses exactly the two proposed child types and the frozen cone-inclusion dependency as an explicit hypothesis. The split appropriately separates uniformization and topology; the retained cone argument and enumeration establish this selected parent. Dependencies are correctly directed and acyclic. No matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_graph_closed_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches the prose, including arbitrary real L and the sole radius hypothesis r > 0. The proof supplies every step: dense localization gives pieces of diameter at most r; projection continuity makes the graph relation closed; closure_prod_eq and closure_minimal extend the inequality to both closure variables; density proves covering. No measurability, dimension restriction, or additional sign assumption is needed. The bare name is unreserved, and the proof has no child or parent reliance. Applying it to each uniform class with r = 1/(2(k+1)) gives precisely the parent's required closed pieces."
+    },
+    {
+      "key": "density_bounds_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches all hypotheses, quantifiers, constants, and the closed upper radius endpoint. The supplied proof correctly chooses a positive reciprocal below c, including c = infinity; selects finite positive epsilon = ofReal(a beta); intersects the eventual bounds; and chooses 1/(k+1) strictly below the common open radius. The stated nonnegativity conditions justify every ofReal multiplication and power conversion, also for n = 0. The bare name is unreserved and dependencies are empty. Substituting ball mass, cone mass, and beta = (L/16)^n/2 establishes the parent's uniform-class covering without circularity or further proof planning."
+    }
+  ],
+  "required_changes": []
+}

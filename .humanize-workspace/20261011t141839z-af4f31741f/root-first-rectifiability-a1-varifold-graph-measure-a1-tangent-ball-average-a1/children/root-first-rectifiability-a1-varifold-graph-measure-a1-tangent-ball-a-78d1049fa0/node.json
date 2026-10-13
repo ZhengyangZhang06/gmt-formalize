@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_ball-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1",
+  "depth": 4,
+  "title": "Hausdorff measure of a closed ball of an n-plane: H^n(T ∩ B_r(0)) = ω_n r^n",
+  "statement": "Let N, n ∈ ℕ, T ∈ G(N,n) (T : Grassmannian N n, with n-dimensional linear subspace T.plane ⊆ ℝ^N = Euclidean N) and r ∈ ℝ with r ≥ 0. Then μHE[n](T.plane ∩ closedBall 0 r) = unitBallVolume n · ENNReal.ofReal(r)^n in [0, ∞], i.e. H^n(T ∩ B_r(0)) = ω_n r^n, where H^n = μHE[n] is Mathlib's Euclidean Hausdorff measure on ℝ^N, B_r(0) is the closed ball and ω_n = unitBallVolume n = volume(ball (0 : EuclideanSpace ℝ (Fin n)) 1).",
+  "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+  "lean_name": "frt_vgm_tba_plane_closedBall_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-a-78d1049fa0-a1"
+}

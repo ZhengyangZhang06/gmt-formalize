@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1.grassmannian_limit_selection-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1",
+  "depth": 4,
+  "title": "A measurable G(N,n)-valued selection of entrywise limits of measurable matrix sequences",
+  "statement": "Let X be a measurable space and N, n ∈ ℕ with G(N,n) = Grassmannian N n nonempty (G(N,n) is the subtype of real N × N matrices P with P symmetric, P P = P and trace P = n, with the induced σ-algebra). Let a : ℕ → X → (Fin N → Fin N → ℝ) be such that every entry map x ↦ a_k(x)_{ij} is measurable (k ∈ ℕ, i, j ∈ Fin N). Then there is a measurable τ : X → G(N,n) such that for every x ∈ X and T ∈ G(N,n): if a_k(x)_{ij} → T_{ij} as k → ∞ for all i, j, then τ(x) = T.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (N n : ℕ), Nonempty (Grassmannian N n) → ∀ (a : ℕ → X → Fin N → Fin N → ℝ), (∀ (k : ℕ) (i j : Fin N), Measurable (fun x ↦ a k x i j)) → ∃ τ : X → Grassmannian N n, Measurable τ ∧ ∀ (x : X) (T : Grassmannian N n), (∀ i j : Fin N, Tendsto (fun k ↦ a k x i j) atTop (𝓝 (T.1 i j))) → τ x = T",
+  "lean_name": "frt_vgm_mps_limit_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-measurable-pla-9c0bd2936e-a1"
+}
