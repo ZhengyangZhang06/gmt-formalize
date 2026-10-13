@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8945386055264df15d53c7d20722bc1399ab7353eee6183228c9374f03d5f3b6",
+  "git_delta": {
+    "base_commit": "f27566d453ec7eebec294d9b806d037fbabb8465",
+    "candidate_commit": "0f4b69849fe2d83225f594a0af232539b742e0c6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_op_translate_isEmbeddedSubmanifold",
+    "diff_sha256": "a96d62f77ef4315a1db4036448c4c717b83668bbb74bd3b4fc1344494920f3fe",
+    "source_sha256": "349e74f201a3adb8e623d2cb68e504eacd80be600d85188aac5a3be37408e1e1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_op_translate_isEmbeddedSubmanifold",
+      "statement": "∀ (P d r : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin d → Euclid P) (a : Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → IsEmbeddedSubmanifold r d {y | y + a ∈ Q}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
