@@ -759,6 +759,32 @@ theorem Submission.cmr_tdn_null_of_average_bound : ∀ (n : ℕ) (X : Type) [Mea
   rw [zero_add]
   exact le_of_tendsto_of_tendsto' hlim.abs hR fun k => hC (a k) (ha k) (hac k) (ha0 k) (ha1 k)
 
+/-- **Lemma TD for `m = q_#(h ν)`** (top-dimensional step of the absolute continuity of normal
+currents, Simon Ch. 6, 2.36): if `|∫ h · div g(q) dν| ≤ Λ` for all smooth compactly supported
+fields `g` with `‖g‖ ≤ 1`, then `∫_{q⁻¹K} h dν = 0` for every compact Lebesgue-null `K ⊆ ℝⁿ`.
+Testing with `g = 0` gives `Λ ≥ 0`, and `Submission.cmr_tdn_directional_bound` gives
+`|∫ h (a(q + z) − a(q)) dν| ≤ Λ‖z‖` for smooth compactly supported `|a| ≤ 1`.  For `ε > 0`,
+averaging over `B_r` with `rΛ ≤ ε` (`Submission.cmr_tdn_ball_average_bound`) gives
+`|∫ h a(q) dν| ≤ ε + |B_r|⁻¹ ‖h‖₁ ∫ a` for smooth compactly supported `0 ≤ a ≤ 1`, and
+`Submission.cmr_tdn_null_of_average_bound` turns these bounds into the claim. -/
+theorem Submission.cmr_null_of_div_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ K : Set (Euclid n), IsCompact K → volume K = 0 → ∫ x in q ⁻¹' K, h x ∂ν = 0 := by
+  intro n X _ ν q h Λ hν hq hh hdiv
+  -- `Λ ≥ 0`: the field `g = 0` has divergence `0`
+  have hΛ : 0 ≤ Λ := by
+    simpa using hdiv (fun _ => 0) contDiff_const HasCompactSupport.zero fun _ => by simp
+  -- the translation estimate `|∫ h (a(q + z) − a(q)) dν| ≤ Λ‖z‖`
+  have hdir := Submission.cmr_tdn_directional_bound n X ν q h Λ hν hq hh hdiv
+  refine Submission.cmr_tdn_null_of_average_bound n X ν q h hq hh fun ε hε => ?_
+  -- average over `B_r` with `r = ε / (Λ + 1)`, so that `rΛ ≤ ε`
+  obtain ⟨r, hr, hrΛ⟩ : ∃ r : ℝ, 0 < r ∧ r * Λ ≤ ε := by
+    refine ⟨ε / (Λ + 1), div_pos hε (by linarith), ?_⟩
+    rw [div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+    nlinarith
+  refine ⟨(volume (ball (0 : Euclid n) r)).toReal⁻¹ * ∫ x, |h x| ∂ν, fun a ha hac ha0 ha1 => ?_⟩
+  have hB := Submission.cmr_tdn_ball_average_bound n X ν q h Λ a r hν hq hh hΛ ha.continuous hac
+    ha0 ha1 (hdir a ha hac fun y => abs_le.2 ⟨by linarith [ha0 y], ha1 y⟩) hr
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
