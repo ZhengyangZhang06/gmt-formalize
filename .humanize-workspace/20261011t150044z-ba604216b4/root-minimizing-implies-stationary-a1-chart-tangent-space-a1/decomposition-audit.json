@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def tangentSpace|dsmc_|chart_tangentSpace' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "injective_iff_antilipschitz|theorem bound_of_antilipschitz|theorem Submodule.closed_of_finiteDimensional|theorem Tendsto.isCompact_insert_range|theorem IsCompact.tendsto_subseq|theorem hasDerivAt_iff_tendsto_slope|theorem slope_def_module|mem_iff_infDist_zero|theorem continuous_infDist_pt|theorem HasFDerivAt.comp_hasDerivAt_of_eq",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show 8f402cb9186dec35e39aea49d7ea887fd87109ae:GMT/Ch07/Submission.lean",
+        "git show 5e4b215846243d699169f3e42b95b8e007ea2d70:GMT/Ch07/Submission.lean",
+        "git show 2d60fe36525b7553445c881a6d8c965837c795a1:GMT/Ch07/Submission.lean",
+        "git show ec0da64354623241a7e40d6b3ec87acd1d1d54e3:GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/chart-tangent-independent-1hibm03y/run_check.py Contracts.lean",
+        "python3 -I /tmp/chart-tangent-independent-1hibm03y/run_check.py Reuse.lean",
+        "python3 -I /tmp/chart-tangent-independent-1hibm03y/run_check.py Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/decomposition-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-40ea3a7fae/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-992de505d1/accepted-candidate.json",
+        "/tmp/chart-tangent-independent-1hibm03y/Contracts.lean",
+        "/tmp/chart-tangent-independent-1hibm03y/Reuse.lean",
+        "/tmp/chart-tangent-independent-1hibm03y/Instances.lean",
+        "/tmp/chart-tangent-independent-1hibm03y/run_check.py"
+      ],
+      "conclusion": "The four-child split is appropriate for the selected chart_tangentSpace_eq_range_fderiv contract. The pinned Ch07 tangentSpace is exactly the curve-velocity set; the snapshot contains no dsmc_* or chart_tangentSpace declaration. Independently verified all four comparator-accepted candidate commits, source hashes, identical frozen types, and unique bare names. Empty dependency lists are correct: inverse continuity and the secant estimate are explicit hypotheses, supplied during parent assembly. No dependency reaches the parent. Fresh Lean 4.35.0-rc3 checks against inlined frozen definitions and pinned dependencies succeeded: the child contracts alone imply the exact parent type, and the verbatim accepted proofs compile together. All four children and the assembled parent use only propext, Classical.choice and Quot.sound. Separate checks confirmed Euclidean metric instances, continuous-linear-map coercions and ranges, differentiability-order coercions, and nontrivial limit filters. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "range_subset_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the prose and hypotheses. Every proof step is valid: openness supplies the derivative and a chart ball; the rational reparametrisation has derivative one and the stated uniform bound; composition gives the required C¹ curve and velocity. The constant-curve case covers a = 0 and d = 0. The proof is complete, non-circular, and establishes the parent's reverse inclusion."
+    },
+    {
+      "key": "inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the stated relative inverse-continuity assertion, without requiring openness. The contradiction sequence has compact image-plus-limit contained in W. Properness gives a compact preimage containing the sequence, so a subsequential limit lies in V. Continuity on V, uniqueness of limits and injectivity force that limit to be v, contradicting the fixed positive separation. No hidden hypothesis or theorem dependency is used."
+    },
+    {
+      "key": "secant_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes openness of W, the image identity, v ∈ V, the specified derivative, injectivity and inverse continuity. Positive coercivity holds also in dimension zero. The choice η = min(1, ε)/(2K), the two radius restrictions, lifting through the image identity and remainder absorption correctly yield the claimed relative error bound. Inverse continuity is an explicit hypothesis, so no sibling dependency is missing."
+    },
+    {
+      "key": "tangent_subset_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches the prose; neither injectivity of A nor an additional q ∈ N assumption is needed. The range is a closed nonempty subspace. For sufficiently small punctured parameters, the curve lies in N and the secant estimate bounds the distance of its difference quotient to the range. Passing to the derivative limit, then letting ε decrease to zero, proves membership. Both limit passages are justified, including w = 0. This supplies the parent's forward inclusion without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
