@@ -1795,6 +1795,85 @@ theorem Submission.lpf_lipschitz_c1_immersion_pieces :
     simp only [E', O, hk, ite_eq_left hgood]
     exact ⟨hwj, hwm, hwi⟩
 
+/-- Simon Ch. 3, Lemma 1.2 ("only if", p. 70) and Remark 1.3: a countably `n`-rectifiable
+`M ⊆ ℝ^P` is covered, up to an `Hⁿ`-null set, by the images `Φ_j(Ω_j)` of countably many `C¹` maps
+`Φ_j : ℝⁿ → ℝ^P` on open sets `Ω_j ⊆ ℝⁿ`, each Lipschitz and antilipschitz on `Ω_j`.  With
+`M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` (Ch. 3, 1.1), `lpf_lipschitz_c1_immersion_pieces` for `F_j` gives `C¹` maps
+`G_{j,k}`, antilipschitz on open `O_{j,k}`; Rademacher and the critical-image lemma
+`slicing_im_st_cd_c1c_critical_image_null` show `Hⁿ(F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k})) = 0`; the
+charts are `G_{j,k}` on `O_{j,k} ∩ B_r(0)`, `r ∈ ℕ`. -/
+theorem Submission.slicing_im_st_cd_c1_cover : ∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \ ⋃ j, Φ j '' Ω j) = 0 := by
+  intro P n M hM
+  -- `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and `F_j` `K_j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hM
+  choose K hK using hF
+  -- The sibling lemma with `Ω = ℝⁿ`, `u = F_j`: `C¹` maps `G j k`, antilipschitz on the open
+  -- `O j k`, with `F_j = G j k` on `E j k ⊆ O j k`; `Lⁿ`-a.e. point at which `F_j` has an injective
+  -- derivative lies in `⋃_k E j k`.
+  have hpieces := fun j => Submission.lpf_lipschitz_c1_immersion_pieces n P univ (F j) isOpen_univ
+    (hK j).locallyLipschitz.locallyLipschitzOn
+  choose G O E hOo hG hGc _ hEO _ hFG hae using hpieces
+  -- `Hⁿ(F_j(ℝⁿ) ∖ ⋃_k G j k (O j k)) = 0`.
+  have hnull : ∀ j, (μHE[n] : Measure (Eucl P)) (range (F j) \ ⋃ k, G j k '' O j k) = 0 := by
+    intro j
+    -- An `Lⁿ`-null `N` containing the points where `F_j` is not differentiable (Rademacher) and
+    -- those where `F_j` has an injective derivative but which lie in no `E j k`.
+    obtain ⟨N, hN0, hNd, hNE⟩ : ∃ N : Set (Eucl n), (volume : Measure (Eucl n)) N = 0 ∧
+        (∀ w, ¬ DifferentiableAt ℝ (F j) w → w ∈ N) ∧
+        (∀ w, DifferentiableAt ℝ (F j) w → Function.Injective (fderiv ℝ (F j) w) →
+          w ∉ ⋃ k, E j k → w ∈ N) :=
+      ⟨_, measure_union_null (ae_iff.1 ((hK j).ae_differentiableAt (μ := volume)))
+        (ae_iff.1 (hae j)), fun w hw => Or.inl hw,
+        fun w hd hi hwE => Or.inr fun h => hwE (h (mem_univ w) ⟨_, hd.hasFDerivAt, hi⟩)⟩
+    -- `Hⁿ(F_j(N)) ≤ K_jⁿ Hⁿ(N) = K_jⁿ Lⁿ(N) = 0`.
+    have hFN : (μHE[n] : Measure (Eucl P)) (F j '' N) = 0 := by
+      refine nonpos_iff_eq_zero.1 ?_
+      calc (μHE[n] : Measure (Eucl P)) (F j '' N)
+          ≤ (K j : ℝ≥0∞) ^ n * (μHE[n] : Measure (Eucl n)) N :=
+            Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+              (hK j).lipschitzOnWith
+        _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hN0, mul_zero]
+    -- `F_j(ℝⁿ) ∖ ⋃_k G j k (O j k) ⊆ F_j(N) ∪ F_j(C_j)`, `C_j` the critical set of `F_j`, whose
+    -- image is `Hⁿ`-null.
+    refine measure_mono_null ?_ (measure_union_null hFN
+      (Submission.slicing_im_st_cd_c1c_critical_image_null n P (F j) (K j) (hK j)))
+    rintro _ ⟨⟨w, rfl⟩, hw⟩
+    -- `w ∉ ⋃_k E j k`, since otherwise `F_j(w) = G j k (w) ∈ G j k (O j k)`.
+    have hwE : w ∉ ⋃ k, E j k := fun hwE => by
+      obtain ⟨k, hk⟩ := mem_iUnion.1 hwE
+      exact hw (mem_iUnion.2 ⟨k, w, (hEO j k hk).1, (hFG j k w hk).1.symm⟩)
+    by_cases hd : DifferentiableAt ℝ (F j) w
+    · by_cases hi : Function.Injective (fderiv ℝ (F j) w)
+      · exact Or.inl (mem_image_of_mem _ (hNE w hd hi hwE))
+      · exact Or.inr (mem_image_of_mem _ ⟨hd, hi⟩)
+    · exact Or.inl (mem_image_of_mem _ (hNd w hd))
+  -- The charts: `Φ_l = G j k` on `Ω_l = O j k ∩ B_r(0)` for `l ↔ (j, k, r)`.
+  let idx : ℕ → ℕ × ℕ × ℕ := fun l => ((Nat.unpair l).1, Nat.unpair (Nat.unpair l).2)
+  refine ⟨fun l => G (idx l).1 (idx l).2.1,
+    fun l => O (idx l).1 (idx l).2.1 ∩ ball (0 : Eucl n) ((idx l).2.2 : ℝ),
+    fun l => (hOo _ _).inter isOpen_ball, fun l => hG _ _, fun l => ?_, fun l => ?_, ?_⟩
+  · -- `G j k` is `C¹`, hence Lipschitz on the compact convex `B̄_r(0) ⊇ Ω_l`.
+    obtain ⟨C, hC⟩ := (hG (idx l).1 (idx l).2.1).contDiffOn.exists_lipschitzOnWith
+      (s := closedBall (0 : Eucl n) ((idx l).2.2 : ℝ)) one_ne_zero (convex_closedBall _ _)
+      (isCompact_closedBall _ _)
+    exact ⟨C, hC.mono fun w hw => ball_subset_closedBall hw.2⟩
+  · -- `G j k` is antilipschitz on `O j k ⊇ Ω_l`.
+    obtain ⟨c, hc, hcO⟩ := hGc (idx l).1 (idx l).2.1
+    exact ⟨c, hc, fun w hw w' hw' => hcO w hw.1 w' hw'.1⟩
+  · -- `M ∖ ⋃_l Φ_l(Ω_l) ⊆ M₀ ∪ ⋃_j (F_j(ℝⁿ) ∖ ⋃_k G j k (O j k))`, a countable union of null sets.
+    refine measure_mono_null ?_ (measure_union_null hM₀ (measure_iUnion_null hnull))
+    rintro x ⟨hxM, hx⟩
+    rcases hMF hxM with hx0 | hxF
+    · exact Or.inl hx0
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 hxF
+      refine Or.inr (mem_iUnion.2 ⟨j, hj, fun hxG => hx ?_⟩)
+      -- `x = G j k (w)` with `w ∈ O j k`; for `r ∈ ℕ` with `|w| < r`, `w ∈ Ω_l`, `l ↔ (j, k, r)`.
+      obtain ⟨k, w, hwO, rfl⟩ := mem_iUnion.1 hxG
+      obtain ⟨r, hr⟩ := exists_nat_gt ‖w‖
+      refine mem_iUnion.2 ⟨Nat.pair j (Nat.pair k r), w, ?_, ?_⟩ <;>
+        simp only [idx, Nat.unpair_pair]
+      exact ⟨hwO, mem_ball_zero_iff.2 hr⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
