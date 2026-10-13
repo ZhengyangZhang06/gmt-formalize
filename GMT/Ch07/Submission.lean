@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Passage to the limit** (Simon Ch. 2, proof of Theorem 1.9, "letting `i → ∞`").  If the
+`δ_k`-scale Hausdorff contents of `S t` are majorized by Borel functions `ψ_k` with
+`∫ ψ_k ≤ B + ε_k`, where `δ_k → 0` and `ε_k → 0`, then `φ = liminf_k ψ_k` is a Borel majorant
+of `t ↦ μH[d] (S t)` with `∫ φ ≤ B`: at a scale `r > 0` the content is eventually below
+`ψ_k t` (coarser scales have smaller content), and Fatou's lemma bounds `∫ φ`. -/
+theorem Submission.dtc_bc_lc_sl_eil_limit : ∀ (P : ℕ) (d : ℝ) (S : ℝ → Set (Euclid P)) (ψ : ℕ → ℝ → ℝ≥0∞) (δ ε : ℕ → ℝ≥0∞) (B : ℝ≥0∞), (∀ k, Measurable (ψ k)) → Tendsto δ atTop (𝓝 0) → Tendsto ε atTop (𝓝 0) → (∀ k t, (⨅ (c : ℕ → Set (Euclid P)) (_ : S t ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ k), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ d) ≤ ψ k t) → (∀ k, ∫⁻ t, ψ k t ≤ B + ε k) → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μH[d] (S t) ≤ φ t) ∧ ∫⁻ t, φ t ≤ B := by
+  intro P d S ψ δ ε B hψ hδ hε hcontent hint
+  refine ⟨fun t => liminf (fun k => ψ k t) atTop, Measurable.liminf hψ, fun t => ?_, ?_⟩
+  · -- `μH[d] (S t)` is the supremum over scales `r > 0` of the content at scale `r`
+    rw [Measure.hausdorffMeasure_apply]
+    refine iSup₂_le fun r hr => le_liminf_of_le (h := ?_)
+    -- eventually `δ_k ≤ r`, and a cover with diameters `≤ δ_k` is admissible at scale `r`
+    filter_upwards [hδ.eventually_le_const hr] with k hk
+    refine le_trans ?_ (hcontent k t)
+    exact le_iInf fun c => le_iInf fun hc => le_iInf fun hcδ =>
+      iInf_le_of_le c <| iInf_le_of_le hc <| iInf_le_of_le (fun i => (hcδ i).trans hk) le_rfl
+  · -- Fatou's lemma, then `B + ε_k → B`
+    calc ∫⁻ t, liminf (fun k => ψ k t) atTop ≤ liminf (fun k => ∫⁻ t, ψ k t) atTop :=
+          lintegral_liminf_le hψ
+      _ ≤ liminf (fun k => B + ε k) atTop := liminf_le_liminf (Eventually.of_forall hint)
+      _ = B := by rw [(tendsto_const_nhds.add hε).liminf_eq, add_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
