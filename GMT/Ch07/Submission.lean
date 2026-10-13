@@ -1466,6 +1466,19 @@ theorem Submission.regcomp_imrep_measure_le_massOn : ∀ (P n : ℕ) (U : Set (E
   rw [← measure_inter_conull hUc]
   exact hWU
 
+/-- **The mass formula for integer multiplicity currents** (Simon Ch. 6, Remark 3.2(3); mass
+(6.2.5)): if `U ⊆ ℝᴾ` is open and `T = τ(C, θ, ξ)` in `U`, then for every open `W ⊆ ℝᴾ`
+`M_W(T) = μ_T(W) = ∫_{C ∩ W} θ dHⁿ`, with the Euclidean coefficient norm `|·|_E` in `M_W`.
+
+Step 2 of the proof gives `M_W(T) ≤ μ_T(W)` (`regcomp_imrep_massOn_le_measure`, which needs no
+openness), and step 3 gives `μ_T(W) ≤ M_W(T)` for open `U`, `W`
+(`regcomp_imrep_measure_le_massOn`).  Both values lie in `[0, ∞]`, so they are equal. -/
+theorem Submission.regcomp_imrep_mass_formula : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W := by
+  intro P n U T R hU hR W hW
+  -- step 2 `M_W(T) ≤ μ_T(W)` and step 3 `μ_T(W) ≤ M_W(T)`
+  exact le_antisymm (Submission.regcomp_imrep_massOn_le_measure P n U T R hR W)
+    (Submission.regcomp_imrep_measure_le_massOn P n U T R hU hR W hW)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
