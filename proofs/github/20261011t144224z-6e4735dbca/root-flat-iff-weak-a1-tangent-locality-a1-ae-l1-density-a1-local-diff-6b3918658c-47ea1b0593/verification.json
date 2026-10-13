@@ -1,0 +1,15 @@
+{
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1.local_differentiation-a1.weighted_lebesgue_point-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3622",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "19e517b0daf07c14f961047d74cb914c2e77dbc7",
+  "integrated_commit": "",
+  "proof_base_commit": "659272af1e56bf9878e668baa6e5233c4f17c2c4",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1.local_differentiation-a1",
+  "requires": []
+}

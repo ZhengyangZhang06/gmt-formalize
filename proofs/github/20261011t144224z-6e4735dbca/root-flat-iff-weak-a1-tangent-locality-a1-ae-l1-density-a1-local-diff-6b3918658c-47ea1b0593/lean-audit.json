@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1c7849d80e138aef6064ec8daad7fd61e2264133740b581c481e84cb0a9c145e",
+  "git_delta": {
+    "base_commit": "659272af1e56bf9878e668baa6e5233c4f17c2c4",
+    "candidate_commit": "19e517b0daf07c14f961047d74cb914c2e77dbc7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_ald_ld_weighted_lebesgue_point",
+    "diff_sha256": "740f0f9a52cae599ed827270978a430249bc68fe9d30838da2a1de8370efc92e",
+    "source_sha256": "267610cde74320a270b727085e822f190396aa3ba4ba0739a15150937fb56c25",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_ald_ld_weighted_lebesgue_point",
+      "statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (M : Set (Eucl P)) (θ f : Eucl P → ℝ) (y : Eucl P) (r : ℝ), NullMeasurableSet M μ → (∀ z ∈ M, 0 < θ z) → IntegrableOn θ (M ∩ closedBall y r) μ → IntegrableOn (fun z => θ z * f z) (M ∩ closedBall y r) μ → ∀ᵐ x ∂(μ.restrict (M ∩ ball y r)), Tendsto (fun s : ℝ => (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) * ‖f z - f x‖ₑ ∂μ) / (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
