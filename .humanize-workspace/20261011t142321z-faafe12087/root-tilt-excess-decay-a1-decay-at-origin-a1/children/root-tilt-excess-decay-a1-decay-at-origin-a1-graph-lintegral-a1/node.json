@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Hausdorff integrals over a rotated Lipschitz graph",
+  "statement": "Let n, l be natural numbers, q a linear isometry equivalence of R^{n+l}, D a measurable subset of R^n, L >= 0, and f : R^n -> R^l L-Lipschitz on D. Put F(x') := q(graphPoint(x', f(x'))), so that q '' graphOver f D = F(D). Then for every measurable g : R^{n+l} -> [0, infinity], the integral of g over q '' graphOver f D with respect to H^n = μHE[n] is at most (1 + L^2)^{n/2} = sqrt(1 + L^2)^n times the Lebesgue integral of g(F(x')) over x' in D.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), MeasurableSet D → LipschitzOnWith L f D → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in q '' graphOver f D, g x ∂(μHE[n] : Measure (Amb n ℓ)) ≤ ENNReal.ofReal (Real.sqrt (1 + (L : ℝ) ^ 2) ^ n) * ∫⁻ x' in D, g (q (graphPoint x' (f x')))",
+  "lean_name": "tdo_graph_lintegral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-lintegral-a1-a1"
+}

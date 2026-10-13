@@ -458,6 +458,42 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Every `n`-dimensional subspace `T ⊆ ℝ^{n+ℓ}` is a rotated horizontal plane `q(ℝⁿ × {0})`.
+Reindex an orthonormal basis of `T` (`stdOrthonormalBasis`) to `u : Fin n → ℝ^{n+ℓ}`, place it
+at the indices `Fin.castAdd ℓ i` (`Fin.append u 0`) and extend it to an orthonormal basis `b` of
+`ℝ^{n+ℓ}` (`Orthonormal.exists_orthonormalBasis_extension_of_card_eq`).  Then `q := b.repr.symm`
+sends `e_{castAdd ℓ i}` to `b (castAdd ℓ i) = u i` (`OrthonormalBasis.repr_symm_single`), so
+`q(span {e_{castAdd ℓ i}}) = span {u i} = T` (`Submodule.map_span`). -/
+theorem tdo_exists_isometry_rotatedPlane : ∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)),
+    Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T := by
+  intro n ℓ T hT
+  set bT : OrthonormalBasis (Fin n) ℝ T := (stdOrthonormalBasis ℝ T).reindex (finCongr hT)
+  set u : Fin n → Amb n ℓ := fun i => (bT i : Amb n ℓ)
+  have hu : Orthonormal ℝ u := bT.orthonormal.comp_linearIsometry T.subtypeₗᵢ
+  set v : Fin (n + ℓ) → Amb n ℓ := Fin.append u fun _ => 0
+  have hv : Orthonormal ℝ ((Set.range (Fin.castAdd ℓ)).domRestrict v) := by
+    rw [orthonormal_iff_ite]
+    rintro ⟨_, i, rfl⟩ ⟨_, j, rfl⟩
+    simp only [Set.domRestrict_apply, v, Fin.append_left]
+    rw [orthonormal_iff_ite.mp hu i j]
+    simp [Subtype.ext_iff]
+  obtain ⟨b, hb⟩ := hv.exists_orthonormalBasis_extension_of_card_eq (by simp)
+  refine ⟨b.repr.symm, ?_⟩
+  have hq : (fun i : Fin n => b.repr.symm (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ))) =
+      u := by
+    funext i
+    rw [OrthonormalBasis.repr_symm_single, hb _ ⟨i, rfl⟩]
+    simp [v]
+  rw [rotatedPlane, horizontalPlane, Submodule.map_span, ← Set.range_comp]
+  change Submodule.span ℝ (Set.range fun i : Fin n =>
+    b.repr.symm (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ))) = T
+  rw [hq, show u = T.subtype ∘ bT from rfl, Set.range_comp, Submodule.span_image,
+    ← bT.coe_toBasis, bT.toBasis.span_eq, Submodule.map_subtype_top]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
