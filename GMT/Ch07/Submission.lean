@@ -631,6 +631,30 @@ theorem Submission.codim1_lur_no_covector_eq_det_cons : ∀ (n : ℕ) (β : Cove
     Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [ContinuousAlternatingMap.coe_toAlternatingMap, he]
   rw [mul_comm, ← mul_assoc, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul]
+/-- **Normal decomposition of a column determinant** (the determinant step of the normal
+orientation of a codimension-one current).  If `‖ν‖ = 1` and `σ₀, …, σₙ₋₁` span `ν^⊥`, then
+`det[w, σ] = ⟨w, ν⟩ det[ν, σ]`.  The column determinant is the standard-basis determinant of
+`(x, σ)`, linear in the first column `x`, and `w - ⟨w, ν⟩ν ∈ ν^⊥ = span σ`, so the columns
+`(w - ⟨w, ν⟩ν, σ)` are linearly dependent and contribute `0`.  Orthonormality of `σ` is not
+used. -/
+theorem Submission.codim1_lur_no_det_cons_normal_decomp : ∀ (n : ℕ) (ν w : Euclid (n + 1)) (σ : Fin n → Euclid (n + 1)), ‖ν‖ = 1 → Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ → Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons w σ : Fin (n + 1) → Euclid (n + 1)) c r) = inner ℝ w ν * Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r) := by
+  intro n ν w σ hν hspan
+  -- `det[x, σ]` is the standard-basis determinant of the columns `(x, σ)`
+  have hD : ∀ x : Euclid (n + 1), Matrix.det (Matrix.of fun r c : Fin (n + 1) =>
+      (Fin.cons x σ : Fin (n + 1) → Euclid (n + 1)) c r) =
+        (PiLp.basisFun 2 ℝ (Fin (n + 1))).det (Matrix.vecCons x σ) := fun _ => rfl
+  -- `q = w - ⟨w, ν⟩ν` lies in `ν^⊥ = span σ`, so the columns `(q, σ)` are linearly dependent
+  have hq : w - inner ℝ w ν • ν ∈ Submodule.span ℝ (Set.range σ) := by
+    rw [hspan, Submodule.mem_orthogonal_singleton_iff_inner_right, inner_sub_right,
+      real_inner_smul_right, real_inner_self_eq_norm_sq, hν, real_inner_comm w ν]
+    ring
+  have h0 : (PiLp.basisFun 2 ℝ (Fin (n + 1))).det (Matrix.vecCons (w - inner ℝ w ν • ν) σ) = 0 :=
+    AlternatingMap.map_linearDependent _ _ fun h => (linearIndependent_finCons.mp h).2 hq
+  -- linearity in the first column along `w = q + ⟨w, ν⟩ν`
+  have hw : Matrix.vecCons w σ = Matrix.vecCons (w - inner ℝ w ν • ν + inner ℝ w ν • ν) σ := by
+    rw [sub_add_cancel]
+  rw [hD, hD, hw, AlternatingMap.map_vecCons_add, h0, zero_add, AlternatingMap.map_vecCons_smul,
+    smul_eq_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
