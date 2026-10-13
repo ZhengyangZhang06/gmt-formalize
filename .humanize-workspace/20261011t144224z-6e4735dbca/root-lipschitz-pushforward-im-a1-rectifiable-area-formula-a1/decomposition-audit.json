@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'lpf_raf_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "normDet_sq_eq_det_gram|normDet_nonneg|def normDet",
+        "weighted_area_formula_lipschitzOn_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitzOn|ae_fderivWithin_eq_of_lipschitz_extension|exists_lipschitz_extension_finiteDimensional|def areaJacobianWithin",
+        "continuous_compContinuousLinearMapCLM|compContinuousLinearMapCLM",
+        "lintegral_iUnion₀|lintegral_tsum|restrict_apply₀.|image_of_continuousOn_injOn",
+        "theorem HasWeightedApproximateTangentSpaceAt.unique|def HasWeightedApproximateTangentSpaceAt|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o AuditFrozen.olean AuditFrozen.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o AuditProofs.olean AuditProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1/parent-child-handoff.json",
+        "/tmp/raf-independent-audit-mfsaop_8/AuditFrozen.lean",
+        "/tmp/raf-independent-audit-mfsaop_8/AuditProofs.lean",
+        "/tmp/raf-independent-audit-mfsaop_8/AuditProofs.log"
+      ],
+      "conclusion": "The eight-way split appropriately separates obligations in the selected proof. The sibling graph and upstream dependency closure are acyclic, with correctly directed dependencies. No lpf_raf_ reservation was found in the current DAG; every proposed name is a bare identifier. All eight one-line propositions independently elaborate without child implementations. Importing AreaDomain preserves their elaborated types, the selected parent type, and the four upstream contracts by definitional equality. Matrix constructions use Matrix.of; there is no raw-function IsUnit construction. Independent compilation of the supplied child proof bodies, connected through exactly their declared siblings, succeeds. The assembly proves the exact selected parent conditional on its four exact authorized upstream contracts. All checked proofs and reused library results depend only on propext, Classical.choice, and Quot.sound. Inspected sources agree with the pinned project, Mathlib, and SimonGMT revisions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fiber_sum_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. Disjoint fibre reindexing off the null image gives the target a.e. identity. Source restrictions agree a.e., and lintegral_iUnion₀ handles arbitrary F without an omitted measurability assumption. Both conclusions follow non-circularly."
+    },
+    {
+      "key": "local_lipschitz_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. The countable Lipschitz cover, null-measurable pieces, pinned weighted area formula and measurability companion establish both claims. Extensions agreeing on open balls justify the derivative replacement; normDet matches the stated Gram root. Only the declared gluing sibling is used."
+    },
+    {
+      "key": "chart_preimage_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. Positive antilipschitzness gives an inverse Lipschitz map. Its Hausdorff image bound and Hⁿ = volume on Eucl n prove the pullback is null. No additional measurability of Ω, Φ, or Z is needed."
+    },
+    {
+      "key": "chart_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. Borel representatives and null pullbacks establish both measurability conclusions. Applying the declared local area formula and identifying singleton or empty fibres gives the stated integral equality. All hypotheses are accounted for."
+    },
+    {
+      "key": "jacobian_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The algebra antecedent exactly matches the frozen upstream conjunction and is explicitly stated in prose. Coefficient expansion, pushforward linearity, sign invariance and operator-norm scaling prove the identity. The argument also covers singular A and n = 0 without an unstated invertibility assumption."
+    },
+    {
+      "key": "chart_jacobian_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match, including global C¹ regularity and the assumed a.e. chain rule. Null pullbacks transfer orientation to parameters; membership in M supplies θ > 0 for tangent uniqueness. The declared algebra sibling and chain rule yield precisely the ENNReal identity under the stated restricted measure."
+    },
+    {
+      "key": "chart_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. Source change of variables and the assumed Jacobian identity reduce the integral to the local area formula on the open set Ω ∩ Φ⁻¹(U). The chart bijection transports fibre sums pointwise, establishing both conclusions using only declared siblings."
+    },
+    {
+      "key": "pushforward_enorm_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. Continuous covector pullback and continuous linear-map composition establish joint continuity. Composition with the a.e. strongly measurable pair, followed by the norm and ENNReal.ofReal, proves the required extended-norm measurability. The relevant topology and norm instances are compatible."
+    }
+  ],
+  "required_changes": []
+}

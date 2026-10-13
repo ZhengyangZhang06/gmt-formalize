@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1.weighted_transfer-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1",
+  "depth": 6,
+  "title": "Bochner change of variables through a Jacobian-weighted pushforward, from its nonnegative lintegral form",
+  "statement": "Let X and Y be measurable spaces (types with σ-algebras), E a real Banach space, μ a measure on X and ν a measure on Y. Let Φ : X → Y be μ-a.e. measurable and J : X → ℝ μ-a.e. measurable with J(x) ≥ 0 for every x ∈ X. Assume that for every measurable g : Y → [0, ∞], ∫⁻ g dν = ∫⁻ g(Φ(x))·ofReal(J(x)) dμ(x). Then for every ν-integrable F : Y → E, the function x ↦ J(x)·F(Φ(x)) is μ-integrable and ∫ F dν = ∫ J(x)·F(Φ(x)) dμ(x). No σ-finiteness of μ or ν is assumed.",
+  "lean_statement": "∀ (X Y E : Type) [MeasurableSpace X] [MeasurableSpace Y] [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (μ : Measure X) (ν : Measure Y) (Φ : X → Y) (J : X → ℝ) (F : Y → E), AEMeasurable Φ μ → AEMeasurable J μ → (∀ x, 0 ≤ J x) → (∀ g : Y → ℝ≥0∞, Measurable g → ∫⁻ y, g y ∂ν = ∫⁻ x, g (Φ x) * ENNReal.ofReal (J x) ∂μ) → Integrable F ν → Integrable (fun x => J x • F (Φ x)) μ ∧ ∫ y, F y ∂ν = ∫ x, J x • F (Φ x) ∂μ",
+  "lean_name": "slicing_im_ll_twl_cie_weighted_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-24d92287e3-a1"
+}
