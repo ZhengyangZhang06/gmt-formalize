@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "leibniz|smulRight|extDeriv_smul|alternatizeUncurryFin|cmcs_cd_",
+        "theorem fderiv_fun_smul\\b|theorem alternatizeUncurryFin_add\\b|theorem alternatizeUncurryFin_smul\\b|def alternatizeUncurryFin\\b|def extDeriv\\b|theorem extDeriv_smul\\b|theorem extDeriv_fun_smul\\b",
+        "theorem ContDiff.smul\\b|theorem tsupport_smul_subset_right\\b|theorem IsCompact.of_isClosed_subset\\b|theorem integral_congr_ae\\b|theorem enorm_integral_le_lintegral_enorm\\b|theorem enorm_eq_ofReal_abs\\b|theorem lintegral_mono_ae\\b",
+        "smul|leibniz",
+        "cmcs_cd_extDeriv_smul_leibniz|cmcs_cd_smul_mem_testFormOn|cmcs_cd_defect_identity",
+        ". GMT/Scratch/cmcs_cutoff_defect_decomposition/env.sh && /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cutoff_defect_independent_audit_v2qkxq39/Review.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_cutoff_defect_decomposition_a2/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_cutoff_defect_decomposition_a2/Instances.lean",
+        "/tmp/cutoff_defect_independent_audit_v2qkxq39/Review.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected cutoff-defect bound. Verified the pinned revisions, byte-identical contract, and compatibility of inspected package sources. The snapshot project has no relevant Leibniz or proposed-name declarations; Mathlib's existing exterior-derivative scalar rules concern constants. Independent Lean verification passed: every exact child type elaborates before any child declaration; scalar-action, submodule-membership and C∞-order checks pass; all three supplied proof implementations depend only on propext, Classical.choice and Quot.sound. A separate example, preceding child declarations and containing no placeholders, proves the exact frozen parent from the exact defect-identity and scheduled wedge contracts as explicit hypotheses. Dependencies are correctly directed and acyclic, including the existing wedge dependency. All three names are bare identifiers, with no reservations or identical-type reuse candidates in the scanned 695-node DAG; other branch records contain no matching names."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including differentiability of both maps at x. Unfolding exteriorDerivative, applying fderiv_fun_smul, and using additivity and real homogeneity of alternatization proves the stated formula. The supplied proof is complete and non-circular; independent Lean and axiom checks passed."
+    },
+    {
+      "key": "smul_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition correctly expresses membership in the test-form submodule. Smoothness follows from ContDiff.smul; support containment gives both compactness, via closedness of topological support, and containment in U. No openness of U or compact support of g is needed. The supplied proof is complete; the intended scalar action and C∞ order were independently verified."
+    },
+    {
+      "key": "defect_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type include both representations, arbitrary measures, smooth g and the test form η. The proof constructs the required test forms using the two declared dependencies, identifies D_T pointwise by Leibniz, and obtains the sign from current linearity. Integral equalities use pointwise congruence and representations, so no integrability assumption is hidden. The proof is complete and non-circular. Together with the existing wedge bound and unconditional integral-norm estimate, it yields the selected parent's exact inequality."
+    }
+  ],
+  "required_changes": []
+}

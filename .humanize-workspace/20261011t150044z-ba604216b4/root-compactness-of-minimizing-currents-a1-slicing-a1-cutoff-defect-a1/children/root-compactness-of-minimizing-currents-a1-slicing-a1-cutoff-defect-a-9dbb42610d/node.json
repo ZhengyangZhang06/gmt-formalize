@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.leibniz-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1",
+  "depth": 4,
+  "title": "Leibniz rule for the exterior derivative of a function times a form: d(gη) = g dη + dg∧η",
+  "statement": "Let P, k ∈ ℕ, let g : ℝ^P → ℝ be a function, and let η : ℝ^P → Λ^k(ℝ^P) be a k-form, i.e. a map into the continuous alternating k-linear real forms on ℝ^P (DifferentialForm (Euclid P) k). Let x ∈ ℝ^P be a point at which both g and η are Fréchet differentiable. Then d(gη)(x) = g(x)·dη(x) + alternatizeUncurryFin((Dg(x)).smulRight(η(x))), where:\n- gη is the k-form y ↦ g(y)·η(y);\n- d = exteriorDerivative is Mathlib's extDeriv, so dθ(x) = alternatizeUncurryFin(fderiv ℝ θ x);\n- Dg(x) = fderiv ℝ g x;\n- (Dg(x)).smulRight(η(x)) is the continuous linear map v ↦ Dg(x)(v)·η(x).\nThe last term is dg∧η at x.",
+  "lean_statement": "∀ (P k : ℕ) (g : Euclid P → ℝ) (η : DifferentialForm (Euclid P) k) (x : Euclid P), DifferentiableAt ℝ g x → DifferentiableAt ℝ η x → exteriorDerivative (fun y => g y • η y) x = g x • exteriorDerivative η x + ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight (η x))",
+  "lean_name": "cmcs_cd_extDeriv_smul_leibniz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a-9dbb42610d-a1"
+}
