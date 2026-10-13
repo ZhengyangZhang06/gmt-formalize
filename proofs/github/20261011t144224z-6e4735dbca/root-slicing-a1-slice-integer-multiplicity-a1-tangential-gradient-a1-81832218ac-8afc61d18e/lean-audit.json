@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d9220aa39399b31714cdf6f740ef423c1e5ca352a4761430086ac67148a5d95d",
+  "git_delta": {
+    "base_commit": "51b1a601891196481ac0e77b97ed43f3bb114ec9",
+    "candidate_commit": "db66a30d9176da72b72c9c29de11eed5f0a693e5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_tg_cc_lipschitz_range_c1_cover",
+    "diff_sha256": "cf3f4981a31566b81ac8ed8cae8120f799c90cfb68f6ca70ed9fed7856703b93",
+    "source_sha256": "038342c8a749bd5a8473ca8f01963729696e2565fc8f76dfbe0f62c4d6011b77",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_tg_cc_lipschitz_range_c1_cover",
+      "statement": "∀ (n P : ℕ) (F : Eucl n → Eucl P) (K : ℝ≥0), LipschitzWith K F → ∃ G : ℕ → Eucl n → Eucl P, (∀ i, ContDiff ℝ 1 (G i)) ∧ (μHE[n] : Measure (Eucl P)) (range F \\ ⋃ i, range (G i)) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
