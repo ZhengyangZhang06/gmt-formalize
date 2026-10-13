@@ -451,6 +451,91 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Open pieces of an embedded `Cʳ` submanifold (Simon Ch. 2, §4, 4.1–4.3).  If `N ⊆ ℝᴾ` is a
+`d`-dimensional embedded `Cʳ` submanifold and `O ⊆ ℝᴾ` is open, then `N ∩ O` is one too: a chart
+`(V, W, ψ)` of `N` restricts to the chart `(V ∩ ψ⁻¹(O), W ∩ O, ψ)` of `N ∩ O`.  At every `w ∈ O`
+the two tangent spaces agree: a witness curve `γ` into `N` is reparametrized as
+`γ ∘ (t ↦ ε sin (t / ε))`, which stays in a small ball about `0` where `γ` lies in `O`, keeps
+`γ(0) = w` and has the same derivative at `0`. -/
+theorem Submission.codim1_dolr_embedded_inter_open : ∀ (P r d : ℕ) (N O : Set (Euclid P)), IsEmbeddedSubmanifold r d N → IsOpen O → IsEmbeddedSubmanifold r d (N ∩ O) ∧ ∀ w ∈ O, tangentSpace (N ∩ O) w = tangentSpace N w := by
+  intro P r d N O hN hO
+  constructor
+  · -- step 1: restrict a chart `(V, W, ψ)` of `N` at `w` to `(V ∩ ψ⁻¹(O), W ∩ O, ψ)`
+    intro w hw
+    obtain ⟨V, W, ψ, hV, hW, hwW, hψ, hinj, himg, hprop, hder⟩ := hN w hw.1
+    refine ⟨V ∩ ψ ⁻¹' O, W ∩ O, ψ, hψ.continuousOn.isOpen_inter_preimage hV hO, hW.inter hO,
+      ⟨hwW, hw.2⟩, hψ.mono inter_subset_left, hinj.mono inter_subset_left, ?_, ?_, ?_⟩
+    · -- (1d): `ψ(V ∩ ψ⁻¹(O)) = ψ(V) ∩ O = (W ∩ O) ∩ (N ∩ O)`
+      rw [image_inter_preimage, himg]
+      ext z
+      simp only [mem_inter_iff]
+      tauto
+    · -- (1e): for compact `K ⊆ W ∩ O`, `V ∩ ψ⁻¹(O) ∩ ψ⁻¹(K) = V ∩ ψ⁻¹(K)`
+      intro K hK hKc
+      have : V ∩ ψ ⁻¹' O ∩ ψ ⁻¹' K = V ∩ ψ ⁻¹' K := by
+        ext z
+        constructor
+        · rintro ⟨⟨h1, _⟩, h3⟩
+          exact ⟨h1, h3⟩
+        · rintro ⟨h1, h3⟩
+          exact ⟨⟨h1, (hK h3).2⟩, h3⟩
+      rw [this]
+      exact hprop K (hK.trans inter_subset_left) hKc
+    · -- (1f): `Dψ(z)` is injective on `V ⊇ V ∩ ψ⁻¹(O)`
+      intro z hz
+      exact hder z hz.1
+  · intro w hwO
+    ext v
+    constructor
+    · -- step 2: a witness curve into `N ∩ O` is a witness curve into `N`
+      rintro ⟨γ, hγ, hmaps, h0, hd⟩
+      exact ⟨γ, hγ, fun t ht => (hmaps ht).1, h0, hd⟩
+    · rintro ⟨γ, hγ, hmaps, h0, hd⟩
+      -- step 3: `γ(t) ∈ O` for `|t| < δ`, and `ε := min (δ / 2) (1 / 2)`
+      have hcont : ContinuousAt γ 0 := hd.continuousAt
+      have hO' : γ ⁻¹' O ∈ 𝓝 (0 : ℝ) := hcont.preimage_mem_nhds (hO.mem_nhds (h0 ▸ hwO))
+      obtain ⟨δ, hδ, hδs⟩ := Metric.mem_nhds_iff.mp hO'
+      set ε : ℝ := min (δ / 2) (1 / 2) with hε_def
+      have hε : 0 < ε := lt_min (half_pos hδ) (by norm_num)
+      have hεδ : ε < δ := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hδ)
+      have hε1 : ε < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+      -- step 4: the reparametrization `h(t) = ε sin (t / ε)`
+      set h : ℝ → ℝ := fun t => ε * Real.sin (t / ε) with hh_def
+      have hbound : ∀ t, |h t| ≤ ε := by
+        intro t
+        simp only [hh_def, abs_mul, abs_of_pos hε]
+        exact mul_le_of_le_one_right hε.le (Real.abs_sin_le_one _)
+      have hmapsI : MapsTo h (Ioo (-1) 1) (Ioo (-1) 1) := by
+        intro t _
+        have h1 := abs_le.mp (hbound t)
+        rw [mem_Ioo]
+        constructor <;> linarith [h1.1, h1.2]
+      have hh0 : h 0 = 0 := by simp [hh_def]
+      have hh' : HasDerivAt h 1 0 := by
+        have h2 : HasDerivAt (fun t : ℝ => ε * Real.sin (t / ε))
+            (ε * (Real.cos (0 / ε) * (1 / ε))) 0 :=
+          (((hasDerivAt_id' (0 : ℝ)).div_const ε).sin).const_mul ε
+        have h3 : ε * (Real.cos (0 / ε) * (1 / ε)) = 1 := by
+          rw [zero_div, Real.cos_zero, one_mul]
+          field_simp
+        rw [h3] at h2
+        exact h2
+      -- step 5: `γ ∘ h` witnesses `v ∈ tangentSpace (N ∩ O) w`
+      refine ⟨γ ∘ h, ?_, ?_, ?_, ?_⟩
+      · have hhd : ContDiff ℝ 1 h := by
+          simp only [hh_def]
+          fun_prop
+        exact hγ.comp hhd.contDiffOn hmapsI
+      · intro t ht
+        refine ⟨hmaps (hmapsI ht), ?_⟩
+        have : h t ∈ ball (0 : ℝ) δ := by
+          rw [mem_ball, dist_zero_right, Real.norm_eq_abs]
+          exact lt_of_le_of_lt (hbound t) hεδ
+        exact hδs this
+      · simp [hh0, h0]
+      · have hd' : HasDerivAt γ v (h 0) := by rw [hh0]; exact hd
+        simpa using hd'.scomp 0 hh'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
