@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1.test_field_divergence-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+  "depth": 5,
+  "title": "Divergence of the tilt test field ζ²·p_S^⊥(x − ξ)",
+  "statement": "Let P ∈ ℕ, let T, S be linear subspaces of ℝ^P with orthogonal projections p_T, p_S, let ξ, x ∈ ℝ^P, and let ζ : ℝ^P → ℝ be differentiable at x. Put X(y) := ζ(y)²·((y − ξ) − p_S(y − ξ)). Then trace(p_T ∘ DX(x)) = ζ(x)²·trace(p_T ∘ (I − p_S)) + 2ζ(x)·Dζ(x)[p_T((x − ξ) − p_S(x − ξ))], where DX(x) = fderiv ℝ X x and Dζ(x) = fderiv ℝ ζ x. For T = T_xM = approxTangentPlane n M x the left side is tangentialDivergence n M X x = div_M X(x).",
+  "lean_statement": "∀ (P : ℕ) (T S : Submodule ℝ (Euclid P)) (ζ : Euclid P → ℝ) (ξ x : Euclid P), DifferentiableAt ℝ ζ x → LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun y => ζ y ^ 2 • ((y - ξ) - S.starProjection (y - ξ))) x).toLinearMap) = ζ x ^ 2 * LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (ContinuousLinearMap.id ℝ (Euclid P) - S.starProjection).toLinearMap) + 2 * ζ x * fderiv ℝ ζ x (T.starProjection ((x - ξ) - S.starProjection (x - ξ)))",
+  "lean_name": "dorag_th_trace_comp_fderiv_test_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-284335b3b0-a1"
+}
