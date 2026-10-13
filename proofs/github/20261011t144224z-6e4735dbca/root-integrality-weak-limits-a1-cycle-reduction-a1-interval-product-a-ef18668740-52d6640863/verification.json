@@ -1,0 +1,15 @@
+{
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.slab_measure-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4380",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "fddc02f5137161bd8abb9b107e37e38e3200b542",
+  "integrated_commit": "",
+  "proof_base_commit": "138d01ccb96c036d96422445a576be827eb71bd4",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1",
+  "requires": []
+}
