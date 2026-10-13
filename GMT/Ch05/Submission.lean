@@ -458,6 +458,23 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Derivative of a difference quotient (difference-quotient step of the linear higher-regularity
+argument in the elliptic bootstrap of Simon Ch. 5, Theorem 7.1): if `v : ℝⁿ → ℝ^ℓ` is
+differentiable at `x` and at `x + d e`, then the derivative at `x` of
+`z ↦ d⁻¹ (v(z + d e) − v(z))` is `d⁻¹ (Dv(x + d e) − Dv(x))`.  For `d = 0` both sides vanish,
+as `0⁻¹ = 0`.  By the chain rule `g(z) = v(z + d e)` is differentiable at `x` with
+`Dg(x) = Dv(x + d e)`; the derivative of `d⁻¹ (g − v)` is then `d⁻¹ (Dg(x) − Dv(x))`. -/
+theorem dohr_eb_lhr_dqwe_fderiv_diff_quot : ∀ (n ℓ : ℕ) (v : Rn n → Rn ℓ) (e x : Rn n) (d : ℝ), DifferentiableAt ℝ v x → DifferentiableAt ℝ v (x + d • e) → fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x = d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x) := by
+  intro n ℓ v e x d hx hxd
+  have hg : DifferentiableAt ℝ (fun z => v (z + d • e)) x :=
+    hxd.comp x (differentiableAt_id.add_const (d • e))
+  rw [fderiv_fun_const_smul (hg.fun_sub hx) d⁻¹, fderiv_fun_sub hg hx,
+    fderiv_comp_add_right (d • e)]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
