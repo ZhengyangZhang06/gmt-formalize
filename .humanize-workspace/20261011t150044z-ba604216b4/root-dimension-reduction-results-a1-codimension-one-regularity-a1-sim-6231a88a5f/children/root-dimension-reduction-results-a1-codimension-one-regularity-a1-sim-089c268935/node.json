@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.graph_regularity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+  "depth": 6,
+  "title": "A C¹ graph chart of a C^r embedded submanifold is C^r (compatibility of the charts for different r)",
+  "statement": "Let P, d, r ∈ ℕ with r ≥ 1 and let M ⊆ ℝ^P be an embedded C^r d-dimensional submanifold (IsEmbeddedSubmanifold r d M). Let D ⊆ ℝ^d and W₀ ⊆ ℝ^P be open and let G : ℝ^d → ℝ^P be a C¹ local representation of M: G is C¹ on D and injective on D, G(D) = W₀ ∩ M, D ∩ G^{-1}(K) is compact for every compact K ⊆ W₀, and DG(a) is injective for every a ∈ D. Let π : ℝ^P → ℝ^d be a continuous linear map and c ∈ ℝ^P with π(G(a) − c) = a for every a ∈ D. Then G is of class C^r on D.",
+  "lean_statement": "∀ (P d r : ℕ) (M W₀ : Set (Euclid P)) (D : Set (Euclid d)) (G : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P), 1 ≤ r → IsEmbeddedSubmanifold r d M → IsOpen D → IsOpen W₀ → ContDiffOn ℝ 1 G D → InjOn G D → G '' D = W₀ ∩ M → (∀ K ⊆ W₀, IsCompact K → IsCompact (D ∩ G ⁻¹' K)) → (∀ a ∈ D, Injective (fderiv ℝ G a)) → (∀ a ∈ D, π (G a - c) = a) → ContDiffOn ℝ r G D",
+  "lean_name": "codim1_hcp_sc_graph_contDiffOn",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.left_inverse_immersion-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.graph_reparam-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.left_inverse_immersion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.graph_reparam-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-089c268935-a1"
+}

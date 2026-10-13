@@ -1,0 +1,83 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.graph_reparam-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 2, 4.4 (local graphical representation: the inverse function theorem applied to a projection of the local representation ψ; there the projection is onto n coordinates, here it is any continuous linear π with π∘Dψ(v₀) invertible, e.g. the orthogonal projection π = ι* of the parent proof) together with Simon Ch. 2, 4.2 (a local representation is an open map onto its image); in the parent proof this is step 2 (G := ψ₁∘φ₁^{-1}, G(D) = W₀ ∩ M, π(G(a) − y) = a), fact (a) and fact (b) of step 1, and the injectivity/properness items of step 4, here for an arbitrary chart and an arbitrary r ≥ 1 so that it can be used both at y (r = 1) and in step 3. Dependencies: local_inverse_cr (Submission.codim1_hcp_sc_local_inverse_cr), chart_image_nhds (Submission.dtc_bc_lr_chart_image_nhds), left_inverse_immersion (Submission.codim1_hcp_sc_left_inverse_immersion).
+1. (Projected chart.) Put φ(v) := π(ψ(v) − c). φ is C^r on V, since ψ − c is C^r on V and π is continuous linear (ContinuousLinearMap.contDiff composed with ContDiffOn.sub). As V is open, v₀ ∈ V and r ≥ 1, ψ is differentiable at v₀, and the chain rule gives Dφ(v₀) = π ∘ Dψ(v₀), which is injective by hypothesis.
+2. (Local inverse.) Apply local_inverse_cr to φ, V, z₀ := v₀ (r ≥ 1, V open, φ C^r on V, Dφ(v₀) injective). This gives open S, D ⊆ ℝ^d and χ : ℝ^d → ℝ^d with v₀ ∈ S ⊆ V, χ C^r on D, χ(D) ⊆ S, φ(χ(a)) = a for a ∈ D, and φ(z) ∈ D, χ(φ(z)) = z for z ∈ S. In particular χ(D) = S: each z ∈ S equals χ(φ(z)) with φ(z) ∈ D.
+3. (The graph map.) Put g := ψ ∘ χ. Since χ is C^r on D, χ maps D into S ⊆ V, and ψ is C^r on V, g is C^r on D (ContDiffOn.comp). For a ∈ D, π(g(a) − c) = φ(χ(a)) = a. Moreover g(D) = ψ(χ(D)) = ψ(S).
+4. (ψ(S) is relatively open in N; Simon 4.2.) ψ is continuous on V (a C^r map is continuous). For every v ∈ S apply chart_image_nhds to N, W, V, V₀ := S, ψ and the point v; its hypotheses are W open, ψ continuous and injective on V, ψ(V) = W ∩ N, properness over W, S open, S ⊆ V and v ∈ S. It gives ρ_v > 0 with N ∩ B(ψ(v), ρ_v) ⊆ ψ(S). Put O := W ∩ ⋃_{v ∈ S} B(ψ(v), ρ_v). Then O is open and O ⊆ W. Claim: ψ(S) = O ∩ N. If v ∈ S, then ψ(v) ∈ ψ(V) = W ∩ N and ψ(v) ∈ B(ψ(v), ρ_v), so ψ(v) ∈ O ∩ N. Conversely, if x ∈ O ∩ N, then x ∈ B(ψ(v), ρ_v) for some v ∈ S, so x ∈ N ∩ B(ψ(v), ρ_v) ⊆ ψ(S). Hence g(D) = ψ(S) = O ∩ N, and ψ(v₀) ∈ ψ(S) ⊆ O because v₀ ∈ S.
+5. (Injectivity of g and of Dg.) g is C^r with r ≥ 1 on the open set D, hence differentiable on D, and π(g(a) − c) = a on D by step 3. By left_inverse_immersion, g is injective on D and Dg(a) is injective for every a ∈ D.
+6. (Compact slices of N; parent fact (b).) Let K ⊆ O be compact. Since K ⊆ O ⊆ W we have N ∩ K = ψ(V ∩ ψ^{-1}(K)): if x ∈ N ∩ K then x ∈ W ∩ N = ψ(V), so x = ψ(v) with v ∈ V ∩ ψ^{-1}(K); conversely, for v ∈ V ∩ ψ^{-1}(K), ψ(v) ∈ ψ(V) = W ∩ N ⊆ N and ψ(v) ∈ K. The set V ∩ ψ^{-1}(K) is compact by the properness hypothesis (K ⊆ W), and ψ is continuous on it, so N ∩ K is compact (IsCompact.image_of_continuousOn).
+7. (Properness of g.) Let K ⊆ O be compact and p(x) := π(x − c), a continuous map ℝ^P → ℝ^d. Claim: D ∩ g^{-1}(K) = p(N ∩ K). If a ∈ D and g(a) ∈ K, then g(a) ∈ g(D) = O ∩ N, so g(a) ∈ N ∩ K, and p(g(a)) = a by step 3. Conversely, if x ∈ N ∩ K then x ∈ O ∩ N = g(D) (because K ⊆ O), so x = g(b) with b ∈ D; then p(x) = π(g(b) − c) = b ∈ D and g(b) = x ∈ K. By step 6, D ∩ g^{-1}(K) is a continuous image of a compact set, hence compact.
+8. (Conclusion.) D and O are open, ψ(v₀) ∈ O ⊆ W (step 4), g is C^r on D (step 3), g is injective on D (step 5), g(D) = O ∩ N (step 4), D ∩ g^{-1}(K) is compact for every compact K ⊆ O (step 7), Dg(a) is injective for a ∈ D (step 5), and π(g(a) − c) = a for a ∈ D (step 3). ∎
+
+## Key steps
+
+1. φ = π∘(ψ − c) is C^r on V with Dφ(v₀) = π∘Dψ(v₀) injective; local_inverse_cr gives open S ∋ v₀ (S ⊆ V), open D and a C^r inverse χ : D → S with χ(D) = S.
+2. g := ψ∘χ is C^r on D, π(g(a) − c) = a on D, and g(D) = ψ(S).
+3. chart_image_nhds at every point of S gives O := W ∩ ⋃_{v∈S} B(ψ(v), ρ_v), open, with ψ(S) = O ∩ N (Simon 4.2); so g(D) = O ∩ N and ψ(v₀) ∈ O.
+4. left_inverse_immersion gives injectivity of g and of Dg(a); for compact K ⊆ O, N ∩ K = ψ(V ∩ ψ⁻¹K) is compact and D ∩ g⁻¹(K) = π((N ∩ K) − c) is compact.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 210,240p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace)`
+- `grep -rn 'toOpenPartialHomeomorph|contDiffAt_symm|ContinuousLinearEquiv.isOpen|ContinuousLinearMap.isOpen_injective|continuousOn_fderiv_of_isOpen|contDiffOn_infty|exists_leftInverse_of_injective|injective_iff_surjective|restrOpen|symm_image_target_eq_source|ContinuousOn.isOpen_inter_preimage|IsCompact.image_of_continuousOn|ContDiffAt.differentiableAt|ContDiffAt.hasStrictFDerivAt|ContDiffOn.comp' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `python3 scans of dag.json: selected node; parent hypercone_plane children and decomposition-v1.json; lean_statements mentioning charts, IsEmbeddedSubmanifold, ≃L and local inverses (codim1_zsl_gc_local_inverse, codim1_rdo_gc_local_inverse_c2, dtc_bc_lr_local_inverse, dor_lmb_ret_nc_local_inverse, dgce_left_inverse_chart_embedded, dtc_bc_lr_chart_image_nhds, dor_lmb_ret_chart_localization, dsmc_chart_inverse_continuity)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for chart_tangentSpace_eq_range_fderiv (d626082a69a0), dtc_bc_lr_chart_image_nhds (fe444362e7b3), dor_lmb_ret_chart_localization, dgce_left_inverse_chart_embedded, dsmc_chart_inverse_continuity, codim1_rdo_gc_local_inverse_c2 (bdc225a7f750); declared types compared with dag.json; grep sorry/axiom`
+- `grep -c codim1_hcp_sc_ dag.json (0); grep -rln codim1_hcp_sc_ nodes/ GMT/ simongmt (none); git for-each-ref (2625 objects) | xargs git grep -l codim1_hcp_sc_ -- 'GMT/*.lean' (none)`
+- `runtime.py of flow gmt-claude-252c8df06c56: _decompose (max_depth), _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint, _reference_use_problem; store.py ensure`
+- `book/chapter-02.txt lines 846-905 (Simon Ch. 2 §4: 4.1 local representation, 4.2 open map onto the image, 4.3 tangent space, 4.4 local graphical representation via the inverse function theorem)`
+- `lean -DautoImplicit=false /tmp/sc-split/check/{Types,Proofs,Inst,FromJson}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/IsImage.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/VectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6231a88a5f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/sc-split/check/Types.lean`
+- `/tmp/sc-split/check/Proofs.lean`
+- `/tmp/sc-split/check/Inst.lean`
+- `/tmp/sc-split/check/FromJson.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot Contract.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library. The snapshot Mathlib has everything the children need:
+- the C^r inverse function theorem: ContDiffAt.toOpenPartialHomeomorph (InverseFunctionTheorem/ContDiff.lean:31) and HasStrictFDerivAt.toOpenPartialHomeomorph (FDeriv.lean:117);
+- inverse regularity: OpenPartialHomeomorph.contDiffAt_symm (ContDiff/Operations.lean:881);
+- openness of injective maps and of invertible maps: ContinuousLinearMap.isOpen_injective (FiniteDimension.lean:263) and ContinuousLinearEquiv.isOpen (BoundedLinearMaps.lean:543);
+- ContDiffOn.continuousOn_fderiv_of_isOpen (Defs.lean:916), contDiffOn_infty (Defs.lean:548), ContDiffOn.comp (Comp.lean:125), restrOpen and symm_image_target_eq_source;
+- LinearMap.exists_leftInverse_of_injective (VectorSpace.lean:240) and LinearMap.injective_iff_surjective (FiniteDimensional/Basic.lean:308).
+Simon Ch. 2, 4.1–4.4 (chapter-02.txt 846–905) is the source of 4.2, 4.3 and 4.4.
+
+DAG reuse. chart_tangentSpace_eq_range_fderiv (d626082a69a0) and dtc_bc_lr_chart_image_nhds (fe444362e7b3) are accepted, and their candidate declarations have the DAG types. The runtime reuses accepted nodes by identical name and type. Accepted C¹/C² local inverses exist (codim1_zsl_gc_local_inverse, codim1_rdo_gc_local_inverse_c2); their proof generalizes verbatim to the new C^r child. dgce_left_inverse_chart_embedded needs a ball domain and gives no π∘Dg = id, so it is not used. The 4 codim1_hcp_sc_ names are free everywhere.
+
+Lean. All child types elaborate. The selected frozen type and all 4 new children are fully proved in Proofs.lean, with only the two reused accepted declarations as non-standard axioms. Inline casts and instances were checked by rfl (Inst.lean).
