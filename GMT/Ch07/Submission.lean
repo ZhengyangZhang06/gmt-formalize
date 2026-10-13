@@ -3082,6 +3082,85 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Monotonicity, densities and `Θ ≥ 1` for minimizing cycles in `N`** (Simon Ch. 4,
+3.1–3.17, through 7.1.2).  Take `T = τ(M, θ, ξ)` and `μ_R = θHⁿ⌞M`.  By 7.1.2 (with `P = n + k`
+and `d = n + ℓ`) the varifold `v(M, θ)` is stationary in `N ∩ U` and has mean curvature bounded
+on compact subsets of `U`, and `M_W(T) = μ_R(W)` for open `W ⊆ U`.  (i) On a compact `K ⊆ U`
+the mean curvature may be taken bounded by `Λ` everywhere, and `e^{Λρ}ρ⁻ⁿμ_R(B_ρ(y))` is
+nondecreasing for `B̄_R(y) ⊆ K` (3.17).  (ii) If `N = ℝᴾ`, every vector is tangent to `N`, so
+`δV = 0` in `U`, and the same argument with `H = 0`, `Λ = 0` on `B̄_{(ρ+R)/2}(y) ⊆ B_R(y)`
+applies.  (iii) The masses of small balls are finite, so monotone limits give `Θ`, upper
+semicontinuous on `U` (3.8–3.11).  (iv) `Θ ≥ 1` `μ_R`-a.e. and upper semicontinuity give
+`Θ ≥ 1` on `spt T` (3.13). -/
+theorem Submission.dimred_minimizing_monotonicity : ∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ := by
+  intro P n d U N T _ hnd hdP hU hN hcl hmin hspt hbd
+  -- Step 0.  `T = τ(M, θ, ξ)`; by 7.1.2 in `ℝ^{n+k}`, `N` of dimension `n + ℓ`, `v(M, θ)` is
+  -- stationary in `N ∩ U` and has locally bounded mean curvature in `U`
+  obtain ⟨R, hR⟩ := hmin.1
+  have hstat : R.IsStationaryAlong N ∧ R.HasLocallyBoundedMeanCurvature := by
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le (hnd.trans hdP)
+    obtain ⟨ℓ, rfl⟩ := Nat.exists_eq_add_of_le hnd
+    exact Submission.minimizing_implies_stationary n k ℓ (by omega) U N T hU hN hcl
+      (hspt.trans inter_subset_right) (by rw [inter_comm]; exact hmin) hbd R hR
+  -- `M_W(T) = μ_R(W)` for open `W ⊆ U`; `x ∈ spt T` iff `μ_R(B_ε(x)) > 0` for all `ε > 0`
+  obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P n U T R hU hR
+  have hp := Submission.dsmc_approxTangentPlane_starProjection_aemeasurable P n U R hU
+  -- (i) on `K`, `δV(X) = -∫ X · H dμ_R` with `|H| ≤ Λ` everywhere, so 3.17 applies on `B_r(y)`
+  have hi : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧
+      ∀ (y : Euclid P) (r : ℝ), closedBall y r ⊆ K → MonotoneOn (fun ρ : ℝ =>
+        ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 r) := by
+    intro K hK hKU
+    obtain ⟨Λ, hΛ, H, hHm, hHΛ, hfv⟩ :=
+      Submission.dimred_mono_truncated_mean_curvature P n U R hstat.2 K hK hKU
+    refine ⟨Λ, hΛ, fun y r hyr => ?_⟩
+    intro σ hσ ρ hρ hσρ
+    have hBU : ∀ s, s ≤ r → ball y s ⊆ U := fun s hs =>
+      (ball_subset_ball hs).trans (ball_subset_closedBall.trans (hyr.trans hKU))
+    dsimp only
+    rw [hmass _ isOpen_ball (hBU σ hσ.2.le), hmass _ isOpen_ball (hBU ρ hρ.2.le)]
+    exact Submission.dsmc_exp_ball_mass_monotone P n U R H Λ y r (hyr.trans hKU) hp hHm hHΛ
+      (fun X hX hXc hXs => hfv X hX hXc (hXs.trans (ball_subset_closedBall.trans hyr)))
+      σ ρ hσ.1 hσρ hρ.2.le
+  -- (ii) if `N = ℝᴾ`, then `TₓN = ℝᴾ` (`γ(t) = x + tv`), so `δV = 0` in `U`: take `H = 0`
+  have hii : N = univ → ∀ (y : Euclid P) (r : ℝ), ball y r ⊆ U → MonotoneOn (fun ρ : ℝ =>
+      ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 r) := by
+    rintro rfl y r hyr σ hσ ρ hρ hσρ
+    have hfv : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
+        tsupport X ⊆ U → R.firstVariation X = 0 := fun X hX hXc hXU =>
+      hstat.1 X hX hXc hXU fun x _ => ⟨fun t => x + t • X x,
+        (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn, mapsTo_univ _ _,
+        by simp, by simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X x)).const_add x⟩
+    -- 3.17 with `H = 0` and `κ = 0` on `B̄_{(ρ+r)/2}(y) ⊆ B_r(y)`
+    have hr : closedBall y ((ρ + r) / 2) ⊆ U :=
+      (closedBall_subset_ball (by linarith [hρ.2])).trans hyr
+    have h := Submission.dsmc_exp_ball_mass_monotone P n U R 0 0 y ((ρ + r) / 2) hr hp
+      aestronglyMeasurable_zero (fun _ => by simp) (fun X hX hXc hXs => by
+        rw [hfv X hX hXc (hXs.trans (ball_subset_closedBall.trans hr))]
+        simp) σ ρ hσ.1 hσρ (by linarith [hρ.2])
+    simp only [zero_mul, Real.exp_zero] at h
+    dsimp only
+    rw [hmass _ isOpen_ball ((ball_subset_ball hσ.2.le).trans hyr),
+      hmass _ isOpen_ball ((ball_subset_ball hρ.2.le).trans hyr)]
+    exact h
+  -- (iii) `M_{B_{ε/2}(y)}(T) ≤ μ_R(B̄_{ε/2}(y)) = ∫_{M ∩ B̄_{ε/2}(y)} θ dHⁿ < ∞` when
+  -- `B_ε(y) ⊆ U`; monotone limits then give `Θ`, upper semicontinuous on `U`
+  have hfin : ∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ T.massOn (ball y r) ≠ ∞ := by
+    intro y hy
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU y hy
+    have hcU : closedBall y (ε / 2) ⊆ U := (closedBall_subset_ball (half_lt_self hε)).trans hεU
+    refine ⟨ε / 2, half_pos hε, ?_⟩
+    rw [hmass _ isOpen_ball (ball_subset_closedBall.trans hcU)]
+    refine ne_top_of_le_ne_top ?_ (measure_mono ball_subset_closedBall)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall y (ε / 2)) hcU
+  obtain ⟨Θ, hΘ, hΘusc⟩ := Submission.dimred_mono_density_usc_of_monotone P n U T hU hfin hi
+  -- (iv) `Θ ≥ 1` `μ_R`-a.e. and `Θ` is upper semicontinuous, so `Θ ≥ 1` on `spt T`
+  refine ⟨hi, hii, ⟨Θ, hΘ, hΘusc⟩, ?_⟩
+  exact Submission.dimred_mono_support_density_ge_one_of_usc P n U T R.measure Θ hU hmass
+    (fun x hx => (hsupp x (hspt hx).1).1 hx)
+    (Submission.dimred_mono_ae_ball_density_ge_one P n U R hU) hΘ hΘusc
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
