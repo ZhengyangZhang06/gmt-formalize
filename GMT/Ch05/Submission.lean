@@ -1125,7 +1125,6 @@ theorem dohr_eb_sch_liou_chain_vanish : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Se
   rw [← ofReal_norm, ENNReal.ofReal_eq_zero, norm_le_zero_iff] at this
   exact this
 
-end Submission
 
 /-- Abstract Liouville theorem.  Let `S` be a class of `C¹` maps `ℝⁿ → ℝ^ℓ` that is closed under
 directional derivatives and satisfies the Caccioppoli inequality on balls centred at `0`.  If
