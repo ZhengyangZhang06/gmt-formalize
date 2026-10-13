@@ -1498,6 +1498,42 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- **Simon 7.2.4, local comparison: `f` fixes `T` near `spt T`.**  Let `T = τ(M, θ, ξ)` in `U`,
+`O` open and `f` differentiable on `O` with `f = id` on `spt T ∩ O`.  Then for `Hⁿ`-a.e.
+`x ∈ M ∩ O`, `f(x) = x` and `⟨α ∘ ΛⁿDf(x), ξ(x)⟩ = ⟨α, ξ(x)⟩` for every `n`-covector `α`.
+Since `Hⁿ(M ∖ spt T) = 0`, a.e. `x ∈ M ∩ O` lies in `A = M ∩ (spt T ∩ O)`, and `ξ(x)` orients an
+approximate tangent plane `Q` of `M` at `x` (Simon 6.3.1).  As `(M ∖ A) ∩ O` is `Hⁿ`-null and
+`x ∈ O`, `Q` is also one of `A` (Ch. 3, 1.4).  `f` fixes `A` and is differentiable at `x`, so
+`Df(x)` fixes `Q`, and hence `ΛⁿDf(x)` fixes `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ`. -/
+theorem Submission.dtc_bc_lc_orient_fixed : ∀ (P n : ℕ) (U O : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsOpen O → R.Represents T → DifferentiableOn ℝ f O → (∀ y ∈ T.support ∩ O, f y = y) → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), f x = x ∧ ∀ α : Covector (Euclid P) n, R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α := by
+  intro P n U O T R f hU hO hRT hf hfix
+  -- `Hⁿ(M ∖ spt T) = 0`, so the good set `A = M ∩ (spt T ∩ O)` has `Hⁿ((M ∖ A) ∩ O) = 0`
+  have hnull : μHE[n] (R.carrier \ T.support) = 0 :=
+    Submission.imrep_carrier_sdiff_support_null P n U T R hU hRT
+  have hAnull : μHE[n] ((R.carrier \ (R.carrier ∩ (T.support ∩ O))) ∩ O) = 0 := by
+    refine measure_mono_null (fun y hy => ?_) hnull
+    exact ⟨hy.1.1, fun hyS => hy.1.2 ⟨hy.1.1, hyS, hy.2⟩⟩
+  have hMO : MeasurableSet (R.carrier ∩ O) := R.measurableSet_carrier.inter hO.measurableSet
+  -- `Hⁿ`-a.e. `x ∈ M ∩ O` lies in `spt T`, and `ξ(x)` orients an approximate tangent plane of `M`
+  have hS : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), x ∈ T.support := by
+    rw [ae_iff, Measure.restrict_apply' hMO]
+    refine measure_mono_null (fun y hy => ?_) hnull
+    exact ⟨hy.2.1, hy.1⟩
+  have hor : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q :=
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left R.orients
+  filter_upwards [ae_restrict_mem hMO, hS, hor] with x hx hxS ⟨Q, hQ, hξ⟩
+  have hfx : f x = x := hfix x ⟨hxS, hx.2⟩
+  -- `Q` is an approximate tangent plane of `A` at `x ∈ O`, and `Df(x)` fixes it
+  have hQA : HasApproximateTangentSpaceAt n (R.carrier ∩ (T.support ∩ O)) x Q :=
+    Submission.dtc_approxTangent_of_null_diff P n R.carrier _ O x Q inter_subset_left hO hx.2
+      hAnull hQ
+  have hDf : ∀ v ∈ Q, fderiv ℝ f x v = v :=
+    Submission.dtc_bc_lc_fderiv_apply_eq_of_approxTangent P n _ f x Q hQA
+      (hf.differentiableAt (hO.mem_nhds hx.2)) hfx fun y hy => hfix y hy.2
+  -- so `ΛⁿDf(x)` fixes the unit orientation `ξ(x)` of `Q`
+  exact ⟨hfx, Submission.dtc_bc_lc_unitOrientation_comp_eq P n (R.orient x) Q (fderiv ℝ f x) hξ hDf⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
