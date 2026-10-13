@@ -1740,6 +1740,81 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon A.4** (proof, p. 228; chapter-A.txt lines 125–131), moving test functions: if every
+`μⱼ` is finite on compact sets, `∫ g dμⱼ → ∫ g dμ` for every `g ∈ C_c(ℝᴾ)` and `sⱼ → 1`, then
+`∫ f(sⱼ y) dμⱼ(y) → ∫ f dμ` for every `f ∈ C_c(ℝᴾ)`.  If `f = 0` off `B̄_R(0)`, then for large `j`
+both `f` and `f(sⱼ ·)` vanish off `K = B̄_{2R}(0)` and `f(sⱼ ·) → f` uniformly; an Urysohn
+function `g ∈ C_c` with `0 ≤ g ≤ 1` and `g = 1` on `K` gives `|f(sⱼ ·) - f| ≤ δ g`, so
+`|∫ f(sⱼ ·) dμⱼ - ∫ f dμⱼ| ≤ δ ∫ g dμⱼ`, and `∫ g dμⱼ` is bounded for large `j`. -/
+theorem Submission.idtp_cttp_bti_rescaled_tests_tendsto : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (s : ℕ → ℝ) (f : Euclid P → ℝ), (∀ j, ∀ K : Set (Euclid P), IsCompact K → μs j K < ∞) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ))) → Tendsto s atTop (𝓝 1) → Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ y, f (s j • y) ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P μs μ s f hfin hconv hs hf hfc
+  have : ∀ j, IsFiniteMeasureOnCompacts (μs j) := fun j => ⟨fun K hK => hfin j K hK⟩
+  -- `f = 0` off `B̄_R(0)`, `R ≥ 0`
+  obtain ⟨R, hR, hfR⟩ : ∃ R : ℝ, 0 ≤ R ∧ ∀ w : Euclid P, R < ‖w‖ → f w = 0 := by
+    obtain ⟨R₀, hR₀⟩ :=
+      (show IsCompact (tsupport f) from hfc).isBounded.subset_closedBall (0 : Euclid P)
+    refine ⟨max R₀ 0, le_max_right _ _, fun w hw => image_eq_zero_of_notMem_tsupport fun hw' => ?_⟩
+    linarith [le_max_left R₀ 0, mem_closedBall_zero_iff.1 (hR₀ hw')]
+  have hKc : IsCompact (closedBall (0 : Euclid P) (2 * R)) := isCompact_closedBall _ _
+  -- for large `j`, `sⱼ > 1/2`, so `f(sⱼ ·) = 0` off `K = B̄_{2R}(0)`
+  have hvan : ∀ᶠ j in atTop, ∀ w ∉ closedBall (0 : Euclid P) (2 * R), f (s j • w) = 0 := by
+    filter_upwards [hs.eventually (lt_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1))] with j hj w hw
+    rw [mem_closedBall_zero_iff, not_le] at hw
+    apply hfR
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (show (0 : ℝ) < s j by linarith)]
+    nlinarith
+  -- Urysohn: `g ∈ C_c`, `0 ≤ g ≤ 1`, `g = 1` on `K`
+  obtain ⟨g, hgK, -, hgc, hg01⟩ :=
+    exists_continuous_one_zero_of_isCompact hKc isClosed_empty (disjoint_empty _)
+  -- uniform continuity of `f`: for large `j`, `|f(sⱼ ·) - f| ≤ δ g`
+  have key : ∀ δ > 0, ∀ᶠ j in atTop, ∀ w, ‖f (s j • w) - f w‖ ≤ δ * g w := by
+    intro δ hδ
+    obtain ⟨η, hη, hfη⟩ :=
+      Metric.uniformContinuous_iff.1 (hfc.uniformContinuous_of_continuous hf) δ hδ
+    have hR1 : 0 < 2 * R + 1 := by linarith
+    filter_upwards [hvan, Metric.tendsto_nhds.1 hs (η / (2 * R + 1)) (div_pos hη hR1)]
+      with j hjv hj w
+    by_cases hw : w ∈ closedBall (0 : Euclid P) (2 * R)
+    · rw [hgK hw, Pi.one_apply, mul_one, ← dist_eq_norm]
+      refine (hfη ?_).le
+      rw [Real.dist_eq] at hj
+      have hw' := mem_closedBall_zero_iff.1 hw
+      calc dist (s j • w) w = |s j - 1| * ‖w‖ := by
+            rw [dist_eq_norm, ← Real.norm_eq_abs, ← norm_smul, sub_smul, one_smul]
+        _ ≤ |s j - 1| * (2 * R + 1) := mul_le_mul_of_nonneg_left (by linarith) (abs_nonneg _)
+        _ < η / (2 * R + 1) * (2 * R + 1) := mul_lt_mul_of_pos_right hj hR1
+        _ = η := div_mul_cancel₀ _ hR1.ne'
+    · have hw' : 2 * R < ‖w‖ := by rwa [mem_closedBall_zero_iff, not_le] at hw
+      rw [hjv w hw, hfR w (by linarith), sub_zero, norm_zero]
+      exact mul_nonneg hδ.le (hg01 w).1
+  -- `∫ g dμⱼ ≤ M` for large `j`
+  obtain ⟨M, hM, hgM⟩ : ∃ M : ℝ, 0 < M ∧ ∀ᶠ j in atTop, ∫ x, g x ∂(μs j) ≤ M :=
+    ⟨max (∫ x, g x ∂μ + 1) 1, lt_max_of_lt_right one_pos,
+      ((hconv g g.continuous hgc).eventually (gt_mem_nhds (lt_add_one _))).mono
+        fun j hj => hj.le.trans (le_max_left _ _)⟩
+  -- `∫ f(sⱼ ·) dμⱼ - ∫ f dμⱼ → 0`
+  have hdiff : Tendsto (fun j => ∫ y, f (s j • y) ∂(μs j) - ∫ y, f y ∂(μs j)) atTop (𝓝 0) := by
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hδ : 0 < ε / (2 * M) := div_pos hε (mul_pos two_pos hM)
+    filter_upwards [key _ hδ, hvan, hgM] with j hj hjv hjM
+    have hfj : Integrable (fun y => f (s j • y)) (μs j) :=
+      (hf.comp (continuous_const_smul (s j))).integrable_of_hasCompactSupport
+        (HasCompactSupport.intro hKc hjv)
+    rw [dist_zero_right, ← integral_sub hfj (hf.integrable_of_hasCompactSupport hfc)]
+    calc ‖∫ y, (f (s j • y) - f y) ∂(μs j)‖ ≤ ∫ y, ε / (2 * M) * g y ∂(μs j) :=
+          norm_integral_le_of_norm_le
+            ((g.continuous.integrable_of_hasCompactSupport hgc).const_mul _)
+            (Eventually.of_forall hj)
+      _ = ε / (2 * M) * ∫ y, g y ∂(μs j) := integral_const_mul _ _
+      _ ≤ ε / (2 * M) * M := mul_le_mul_of_nonneg_left hjM hδ.le
+      _ = ε / 2 := by field_simp
+      _ < ε := half_lt_self hε
+  -- `∫ f(sⱼ ·) dμⱼ = ∫ f dμⱼ + (∫ f(sⱼ ·) dμⱼ - ∫ f dμⱼ) → ∫ f dμ + 0`
+  have hlim := (hconv f hf hfc).add hdiff
+  rw [add_zero] at hlim
+  exact hlim.congr fun j => add_sub_cancel _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
