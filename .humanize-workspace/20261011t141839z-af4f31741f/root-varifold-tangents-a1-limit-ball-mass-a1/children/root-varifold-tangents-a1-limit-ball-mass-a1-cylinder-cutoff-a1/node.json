@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.limit_ball_mass-a1.cylinder_cutoff-a1",
+  "parent_id": "root.varifold_tangents-a1.limit_ball_mass-a1",
+  "depth": 3,
+  "title": "A C_c cut-off on ℝ^N × G(N,n) sandwiching closed-ball cylinder masses",
+  "statement": "Let N, n ∈ ℕ, G := Grassmannian N n (SimonGMT's projection-matrix Grassmannian), and for r ∈ ℝ let K_r := closedBall (0 : ℝ^N) r ×ˢ univ ⊆ ℝ^N × G. For all real a < b there is a single F ∈ C_c(ℝ^N × G, ℝ), chosen before the measure, such that every measure ν on ℝ^N × G with ν(K_b) ≠ ∞ satisfies ν(K_a) ≤ ofReal(∫ F dν) and ofReal(∫ F dν) ≤ ν(K_b). (∫ is the Bochner integral, which is 0 for non-integrable integrands, as in Lean.)",
+  "lean_statement": "∀ (N n : ℕ) (a b : ℝ), a < b → ∃ F : C_c(Euclidean N × Grassmannian N n, ℝ), ∀ ν : Measure (Euclidean N × Grassmannian N n), ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → ν (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ ENNReal.ofReal (∫ z, F z ∂ν) ∧ ENNReal.ofReal (∫ z, F z ∂ν) ≤ ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))",
+  "lean_name": "varifold_tangents_lbm_exists_cylinder_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-limit-ball-mass-a1-cylinder-cutoff-a1-a1"
+}
