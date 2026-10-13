@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4c9f03ff8d9186f90abe7714a84997957aaa22c26c3863fc03faccba7e660927",
+  "git_delta": {
+    "base_commit": "6050bb529400c6b05f6c893447ce8b263366fdd9",
+    "candidate_commit": "ee3c255ce8881965e90f957865a41b683a835ae8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_cp_chart_c1_pieces",
+    "diff_sha256": "c1b74d2fc68d3207850a6a39738b6feac199f1f28de7ab327bfb1f6e905c4d92",
+    "source_sha256": "9c5eb4ab92e8e55357e22dc6d0712391d16a9507ce69dbc9d98264797ae55a4d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_cp_chart_c1_pieces",
+      "statement": "(∀ (m : ℕ) (u : Euclid m → ℝ) (K : NNReal), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧ volume {y | u y ≠ G y} < ε) → ∀ (m P : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (f : Euclid P → ℝ) (L : NNReal), IsOpen V → ContDiffOn ℝ 1 ψ V → LipschitzWith L f → ∃ (C C' : ℕ → Set (Euclid m)) (F : ℕ → Euclid m → ℝ), (∀ k, IsCompact (C k) ∧ IsCompact (C' k) ∧ Convex ℝ (C' k) ∧ C k ⊆ interior (C' k) ∧ C' k ⊆ V ∧ ContDiff ℝ 1 (F k) ∧ ∀ y ∈ C k, f (ψ y) = F k y) ∧ volume (V \\ ⋃ k, C k) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
