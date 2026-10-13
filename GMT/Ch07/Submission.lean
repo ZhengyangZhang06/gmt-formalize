@@ -741,6 +741,62 @@ theorem Submission.idtp_ccd_scsp_li_chart_image_open : ∀ (P d : ℕ) (M W : Se
     have h : ψ v ∈ W ∩ M := hVM ▸ mem_image_of_mem ψ (hV₁V hv)
     exact ⟨h.2, v, hv, h.1, mem_ball_self (hδ v hv)⟩
 
+/-- **Local inversion of a transversal `C¹` map on an embedded `C¹` surface** (Simon Ch. 2, §4,
+(4.1)–(4.3), with the inverse function theorem).  Let `ψ : V₀ → W₀ ∩ M` be a chart at
+`p = ψ(v₀)`.  On the open set `V₀ ∩ ψ⁻¹(U) ∋ v₀`, `Φ = F ∘ ψ` is `C¹`, and
+`DΦ(v₀) = DF(p) ∘ Dψ(v₀)` is injective because `Dψ(v₀)(ℝ²) = T_pM` and `DF(p)` is injective on
+`span T_pM`.  The `C¹` inverse function theorem gives `H : O → V₁` with `Φ ∘ H = id` on `O`,
+`H(O) = V₁` and `DH` onto.  `G = ψ ∘ H` then satisfies `F ∘ G = id` on `O` and
+`DG(w)(ℝ²) = Dψ(H w)(ℝ²) = T_{G w}M`.  Finally `ψ(V₁) = M ∩ N₀` for an open `N₀`, so
+`N = N₀ ∩ U` has `G(O) = ψ(V₁) = M ∩ N`, since `ψ(V₁) ⊆ U`. -/
+theorem Submission.idtp_ccd_scsp_local_inverse : ∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (U : Set (Euclid P)) (F : Euclid P → Euclid 2), IsEmbeddedSubmanifold 1 2 M → p ∈ M → IsOpen U → p ∈ U → ContDiffOn ℝ 1 F U → (∀ v ∈ Submodule.span ℝ (tangentSpace M p), fderiv ℝ F p v = 0 → v = 0) → ∃ (O : Set (Euclid 2)) (N : Set (Euclid P)) (G : Euclid 2 → Euclid P), IsOpen O ∧ IsOpen N ∧ F p ∈ O ∧ p ∈ N ∧ N ⊆ U ∧ ContDiffOn ℝ 1 G O ∧ G '' O = M ∩ N ∧ (∀ w ∈ O, F (G w) = w) ∧ ∀ w ∈ O, tangentSpace M (G w) = Set.range (fderiv ℝ G w) := by
+  intro P M p U F hM hp hU hpU hF htr
+  -- Step 1: a chart `ψ : V₀ → W₀ ∩ M` at `p = ψ(v₀)`, with `T_{ψ(v)}M = Dψ(v)(ℝ²)` on `V₀`
+  obtain ⟨V₀, W₀, ψ, hV₀, hW₀, hpW₀, hψ, hinj, hψV₀, hproper, hDψ⟩ := hM p hp
+  obtain ⟨v₀, hv₀, rfl⟩ : p ∈ ψ '' V₀ := hψV₀ ▸ ⟨hpW₀, hp⟩
+  have hψ1 : ContDiffOn ℝ 1 ψ V₀ := by exact_mod_cast hψ
+  have hT : ∀ v ∈ V₀, tangentSpace M (ψ v) = Set.range (fderiv ℝ ψ v) := fun v hv =>
+    Submission.chart_tangentSpace_eq_range_fderiv P 2 1 M W₀ V₀ ψ v le_rfl hV₀ hW₀ hψ hinj
+      hψV₀ hproper hDψ hv
+  -- Step 2: `ψ` is differentiable on the open set `V₀`, and `F` on the open set `U`
+  have hψd : ∀ v ∈ V₀, DifferentiableAt ℝ ψ v := fun v hv =>
+    (hψ1.differentiableOn one_ne_zero).differentiableAt (hV₀.mem_nhds hv)
+  have hFd : DifferentiableAt ℝ F (ψ v₀) :=
+    (hF.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds hpU)
+  -- Step 3: `Φ = F ∘ ψ` is `C¹` on the open set `V₀ ∩ ψ⁻¹(U) ∋ v₀`, and `DΦ(v₀)` is injective:
+  -- if `DF(p)(Dψ(v₀) z) = 0`, then `Dψ(v₀) z ∈ T_pM` gives `Dψ(v₀) z = 0`, so `z = 0`
+  have hV₀U : IsOpen (V₀ ∩ ψ ⁻¹' U) := hψ1.continuousOn.isOpen_inter_preimage hV₀ hU
+  have hΦinj : Injective (fderiv ℝ (F ∘ ψ) v₀) := by
+    rw [fderiv_comp v₀ hFd (hψd v₀ hv₀)]
+    refine (injective_iff_map_eq_zero _).2 fun z hz => ?_
+    have hzT : fderiv ℝ ψ v₀ z ∈ tangentSpace M (ψ v₀) := by
+      rw [hT v₀ hv₀]
+      exact mem_range_self z
+    exact (injective_iff_map_eq_zero _).1 (hDψ v₀ hv₀) z (htr _ (Submodule.subset_span hzT) hz)
+  -- Steps 4–6: the `C¹` inverse function theorem for `Φ` at `v₀`
+  obtain ⟨V₁, O, H, hV₁, hO, hv₀V₁, hV₁U, hΦO, hH, hHO, hΦH, hDH⟩ :=
+    Submission.idtp_ccd_scsp_li_c1_inverse 2 (F ∘ ψ) (V₀ ∩ ψ ⁻¹' U) v₀ hV₀U ⟨hv₀, hpU⟩
+      (hF.comp_inter hψ1) hΦinj
+  have hV₁V₀ : V₁ ⊆ V₀ := hV₁U.trans inter_subset_left
+  have hHV₀ : ∀ w ∈ O, H w ∈ V₀ := fun w hw => hV₁V₀ (hHO ▸ mem_image_of_mem H hw)
+  -- Step 8: `ψ(V₁)` is relatively open in `M`, and `ψ(V₁) ⊆ U`
+  obtain ⟨N₀, hN₀, hMN₀⟩ := Submission.idtp_ccd_scsp_li_chart_image_open P 2 M W₀ V₀ V₁ ψ hW₀
+    hψ1.continuousOn hinj hψV₀ hproper hV₁ hV₁V₀
+  have hψV₁U : ψ '' V₁ ⊆ U := image_subset_iff.2 fun v hv => (hV₁U hv).2
+  have hpN₀ : ψ v₀ ∈ M ∩ N₀ := by
+    rw [hMN₀]
+    exact mem_image_of_mem ψ hv₀V₁
+  -- Steps 7 and 9: `G = ψ ∘ H`, `N = N₀ ∩ U`
+  refine ⟨O, N₀ ∩ U, ψ ∘ H, hO, hN₀.inter hU, hΦO, ⟨hpN₀.2, hpU⟩, inter_subset_right,
+    hψ1.comp hH fun w hw => hHV₀ w hw, ?_, hΦH, fun w hw => ?_⟩
+  · -- `G(O) = ψ(H(O)) = ψ(V₁) = (M ∩ N₀) ∩ U`
+    rw [image_comp, hHO, ← inter_assoc, hMN₀, inter_eq_left.2 hψV₁U]
+  · -- `DG(w)(ℝ²) = Dψ(H w)(DH(w)(ℝ²)) = Dψ(H w)(ℝ²) = T_{G w}M`, as `DH(w)` is onto
+    have hHd : DifferentiableAt ℝ H w :=
+      (hH.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds hw)
+    rw [Function.comp_apply, hT (H w) (hHV₀ w hw), fderiv_comp w (hψd _ (hHV₀ w hw)) hHd,
+      ContinuousLinearMap.coe_comp, (hDH w hw).range_comp]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
