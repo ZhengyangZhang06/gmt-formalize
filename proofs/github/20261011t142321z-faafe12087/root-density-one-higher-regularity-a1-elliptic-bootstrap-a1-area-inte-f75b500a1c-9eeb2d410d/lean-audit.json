@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0dbea183c2973a26db9a9273eb2ed1e2f027a2a9790dd9a34e720867200d86e2",
+  "git_delta": {
+    "base_commit": "9a8a03041411292a5b3c1e46effb42b6a8a0e80b",
+    "candidate_commit": "c30e595509133a7fccbe3bdc179f6cf6d5908b0e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_opNorm_sq_le",
+    "diff_sha256": "0bd464103bc7b3663d80bb976dbd14202a55486a504fac86ab6d21d1330f43d2",
+    "source_sha256": "a7971fcf3a96d4b23fca0f2c3ee8509c398782e9877865335b73c913425d8321",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_opNorm_sq_le",
+      "statement": "∀ m k : ℕ, ∀ Q : Rn m →L[ℝ] Rn k, ‖Q‖ ^ 2 ≤ ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
