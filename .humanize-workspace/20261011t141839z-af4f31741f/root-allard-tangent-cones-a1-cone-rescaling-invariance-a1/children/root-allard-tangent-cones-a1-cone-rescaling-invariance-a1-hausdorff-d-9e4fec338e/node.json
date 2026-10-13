@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.hausdorff_dilation_lintegral-a1",
+  "parent_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+  "depth": 3,
+  "title": "Change of variables for H^n under a dilation",
+  "statement": "Let N, n ∈ ℕ and H = H^n = μHE[n], a measure on ℝ^N = Euclidean N. Let s > 0, let D ⊆ ℝ^N be an arbitrary set and let f : ℝ^N → [0,∞] be an arbitrary function. Then ∫⁻_D f dH = s^n · ∫⁻_{w : s·w ∈ D} f(s·w) dH(w). The integrals are lower Lebesgue integrals, s^n means ENNReal.ofReal s ^ n, and neither D nor f is assumed measurable.",
+  "lean_statement": "∀ (N n : ℕ) (s : ℝ) (D : Set (Euclidean N)) (f : Euclidean N → ℝ≥0∞), 0 < s → ∫⁻ x in D, f x ∂(μHE[n] : Measure (Euclidean N)) = ENNReal.ofReal s ^ n * ∫⁻ w in {w : Euclidean N | s • w ∈ D}, f (s • w) ∂(μHE[n] : Measure (Euclidean N))",
+  "lean_name": "allard_tc_cri_hausdorff_dilation_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1-hausdorff-d-9e4fec338e-a1"
+}

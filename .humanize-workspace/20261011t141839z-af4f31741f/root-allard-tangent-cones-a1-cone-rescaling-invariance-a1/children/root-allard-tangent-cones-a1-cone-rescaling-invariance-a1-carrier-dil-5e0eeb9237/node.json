@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.carrier_dilation_null-a1",
+  "parent_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+  "depth": 3,
+  "title": "The carrier of a dilation-homogeneous measure θH^n⌞M is dilation-invariant up to H^n-null sets",
+  "statement": "Let N, n ∈ ℕ and H = H^n = μHE[n] on ℝ^N = Euclidean N. Let μ be a measure on ℝ^N, M ⊆ ℝ^N and θ : ℝ^N → ℝ. Assume:\n- M is H-null-measurable;\n- θ(x) > 0 for every x ∈ M;\n- θ is H-integrable on M ∩ K for every compact K ⊆ ℝ^N;\n- μ(B) = ∫⁻_{M ∩ B} ofReal(θ) dH for every Borel B ⊆ ℝ^N;\n- μ(s·A) = s^n μ(A) for every s > 0 and every set A ⊆ ℝ^N.\nThen for every s > 0, H({w : w ∈ M, s·w ∉ M}) = 0 and H({w : s·w ∈ M, w ∉ M}) = 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Euclidean N))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N))) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → μ (s • A) = ENNReal.ofReal s ^ n * μ A) → ∀ s : ℝ, 0 < s → (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | w ∈ M ∧ s • w ∉ M} = 0 ∧ (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | s • w ∈ M ∧ w ∉ M} = 0",
+  "lean_name": "allard_tc_cri_carrier_dilation_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1-carrier-dil-5e0eeb9237-a1"
+}
