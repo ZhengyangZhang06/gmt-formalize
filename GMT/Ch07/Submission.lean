@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.5** (mass of a restricted, positively scaled current; proof of 7.4.2, step 5).  If
+`W ⊆ V ⊆ U`, `c ≥ 0`, and `T ∈ 𝒟ₙ(U)`, `T₀ ∈ 𝒟ₙ(V)` satisfy `T(ι ω) = c T₀(ω)` for every
+`ω ∈ 𝒟ⁿ(V)` (`ι` = `testFormOnInclusion`), then `M_W(T) = c M_W(T₀)`.  A form admissible for
+`M_W` has `spt ω ⊆ W ⊆ V`, so `ι` is a bijection from the admissible forms in `V` onto those in
+`U`; the two value sets therefore agree after scaling by `c`, and `c` pulls out of the supremum
+in `[0, ∞]`. -/
+theorem Submission.rsd_cmr_massOn_eq_ofReal_mul : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℝ), 0 ≤ c → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = c * T₀ ω) → ∀ W : Set (Euclid P), W ⊆ V → T.massOn W = ENNReal.ofReal c * T₀.massOn W := by
+  intro P n U V hVU T T₀ c hc hT W hWV
+  -- the values `ofReal (T ω)` over admissible `ω ∈ 𝒟ⁿ(U)` are the scaled values of `T₀`
+  have hvalues : (fun ω ↦ ENNReal.ofReal (T ω)) '' massAdmissibleOn U n W =
+      (fun ω' ↦ ENNReal.ofReal c * ENNReal.ofReal (T₀ ω')) '' massAdmissibleOn V n W := by
+    ext r
+    constructor
+    · -- an admissible `ω ∈ 𝒟ⁿ(U)` has `spt ω ⊆ W ⊆ V`, so it is an admissible `ω' ∈ 𝒟ⁿ(V)`
+      rintro ⟨ω, hω, rfl⟩
+      let ω' : TestFormOn V n := ⟨ω, ω.property.1, hω.1.trans hWV⟩
+      have hincl : testFormOnInclusion hVU n ω' = ω := Subtype.ext rfl
+      refine ⟨ω', hω, ?_⟩
+      dsimp only
+      rw [← ENNReal.ofReal_mul hc, ← hT ω', hincl]
+    · -- an admissible `ω' ∈ 𝒟ⁿ(V)` is admissible in `U` after inclusion
+      rintro ⟨ω', hω', rfl⟩
+      refine ⟨testFormOnInclusion hVU n ω', hω', ?_⟩
+      dsimp only
+      rw [hT ω', ENNReal.ofReal_mul hc]
+  -- `ofReal c` pulls out of the supremum in `[0, ∞]`
+  unfold GeometricCurrentOn.massOn
+  rw [hvalues, ENNReal.mul_sSup, sSup_image, iSup_image]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

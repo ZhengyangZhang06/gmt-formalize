@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.zero_extension-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "Extension by zero of an integer multiplicity current carried by a compact set",
+  "statement": "Let P, n ∈ ℕ and B ⊆ U ⊆ ℝ^P with B open, let K ⊆ B be compact, and let X ∈ 𝒟_n(B) be represented by an IMRep R = (M, θ, ξ) in B. Assume that the weight μ_X = R.measure = θHⁿ⌞M vanishes near every point of B ∖ K: for each y ∈ B with y ∉ K there is ρ > 0 with μ_X(B_ρ(y)) = 0. Then there is E ∈ 𝒟_n(U) such that E is integer multiplicity in U, E(ι ω) = X(ω) for every ω ∈ 𝒟^n(B) (ι = testFormOnInclusion), and E(ω) = 0 for every ω ∈ 𝒟^n(U) whose topological support is disjoint from K.",
+  "lean_statement": "∀ (P n : ℕ) (U B K : Set (Euclid P)) (hBU : B ⊆ U) (X : GeometricCurrentOn B n) (R : IMRep B n), IsOpen B → IsCompact K → K ⊆ B → R.Represents X → (∀ y ∈ B, y ∉ K → ∃ ρ : ℝ, 0 < ρ ∧ R.measure (ball y ρ) = 0) → ∃ E : GeometricCurrentOn U n, IsIntegerMultiplicity E ∧ (∀ ω : TestFormOn B n, E (testFormOnInclusion hBU n ω) = X ω) ∧ ∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → E ω = 0",
+  "lean_name": "rsd_cmr_zero_extension",
+  "depends_on": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-zero-extension-a1-a1"
+}
