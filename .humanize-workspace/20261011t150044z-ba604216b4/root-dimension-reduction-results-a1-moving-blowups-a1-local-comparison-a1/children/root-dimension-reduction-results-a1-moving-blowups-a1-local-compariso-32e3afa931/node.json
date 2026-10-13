@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Local comparison at a single good index (Simon 7.2.4 (9)–(11); steps 7–8 of the parent)",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, A, W, F ⊆ ℝ^P, T ∈ 𝒟_n(U) minimizing in A (IsMinimizingIn T A) with spt T ⊆ A, R an integer multiplicity representation of T in U (IMRep, R.Represents T), C, S, Ŷ, Sr ∈ 𝒟_n(ℝ^P), π : ℝ^P → ℝ^P, G, G₃, L ∈ ℝ and e ∈ [0, ∞]. Assume: 0 < G, 2G ≤ G₃, closedBall(0, G₃) ⊆ U, M_{B_{G₃}(0)}(T) < ∞ and 1 ≤ L; either A ∩ B_{2G}(0) = ∅, or π is C¹ on B_{2G}(0), maps B_{2G}(0) into A ∩ B_{G₃}(0), satisfies π(y) = y for every y ∈ A ∩ B_{2G}(0) and ‖Dπ(y)‖ ≤ L for every y ∈ B_{2G}(0); W is open, F is compact, W ⊆ F ⊆ B_G(0) and μ_R(F ∖ W) = 0 (μ_R = R.measure); C and S are integer multiplicity, ∂S = ∂C and spt(S − C) ⊆ W; Ŷ is integer multiplicity, ∂Ŷ = 0, spt Ŷ ⊆ F and μ_{R′}(F ∖ W) ≤ e for every integer multiplicity representation R′ of Ŷ in ℝ^P; M(Sr) ≤ e; and C(ω) = currentEval(T, ω) + Ŷ(ω) + Sr(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ W. Assume the push-forward theorem (PF) for (P, m): for every open O ⊆ ℝ^P, every f : ℝ^P → ℝ^P that is C¹ on O and every c ∈ ℝ with ‖Df(y)‖ ≤ c for y ∈ O, there is a map push : 𝒟_n(ℝ^P) → 𝒟_n(ℝ^P) such that (A) for every X ∈ 𝒟_n(ℝ^P) with spt X compact and contained in O and every IMRep R = (M, θ, ξ) of X in ℝ^P: (i) push X(ω) = ∫_M θ(x)·ξ(x)(ω(f(x)) ∘ Λⁿ Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(ℝ^P), (ii) push X is integer multiplicity, (iii) spt(push X) ⊆ f(spt X), (iv) M(push X) ≤ cⁿ·M(X) (ENNReal.ofReal(cⁿ)), (v) ∂X = 0 implies ∂(push X) = 0, (vi) if f(y) = y for every y ∈ spt X then push X = X; and (B) push(X₁ − X₂) = push X₁ − push X₂ for all integer multiplicity X₁, X₂ ∈ 𝒟_n(ℝ^P) with compact supports contained in O. Then M_W(T) ≤ Lⁿ·(M_W(S) + 2e) + (Lⁿ − 1)·M_{B_{G₃}(0)}(T) in [0, ∞] (with Lⁿ and Lⁿ − 1 read as ENNReal.ofReal(Lⁿ), ENNReal.ofReal(Lⁿ − 1)).",
+  "lean_statement": "∀ (P m : ℕ) (U A W F : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (C S Ŷ Sr : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (π : Euclid P → Euclid P) (G G₃ L : ℝ) (e : ℝ≥0∞), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → R.Represents T → 0 < G → 2 * G ≤ G₃ → closedBall (0 : Euclid P) G₃ ⊆ U → T.massOn (ball 0 G₃) ≠ ∞ → 1 ≤ L → (A ∩ ball 0 (2 * G) = ∅ ∨ (ContDiffOn ℝ 1 π (ball 0 (2 * G)) ∧ MapsTo π (ball 0 (2 * G)) (A ∩ ball 0 G₃) ∧ (∀ y ∈ A ∩ ball 0 (2 * G), π y = y) ∧ ∀ y ∈ ball (0 : Euclid P) (2 * G), ‖fderiv ℝ π y‖ ≤ L)) → IsOpen W → IsCompact F → W ⊆ F → F ⊆ ball 0 G → R.measure (F \\ W) = 0 → IsIntegerMultiplicity C → IsIntegerMultiplicity S → S.boundary = C.boundary → (S - C).support ⊆ W → IsIntegerMultiplicity Ŷ → Ŷ.boundary = 0 → Ŷ.support ⊆ F → (∀ R' : IMRep (univ : Set (Euclid P)) (m + 1), R'.Represents Ŷ → R'.measure (F \\ W) ≤ e) → Sr.mass ≤ e → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W → C ω = currentEval T (ω : DifferentialForm (Euclid P) (m + 1)) + Ŷ ω + Sr ω) → (∀ (O : Set (Euclid P)) (f : Euclid P → Euclid P) (c : ℝ), IsOpen O → ContDiffOn ℝ 1 f O → (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ c) → ∃ push : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents X → IsCompact X.support → X.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push X ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (push X) ∧ (push X).support ⊆ f '' X.support ∧ (push X).mass ≤ ENNReal.ofReal (c ^ (m + 1)) * X.mass ∧ (X.boundary = 0 → (push X).boundary = 0) ∧ ((∀ y ∈ X.support, f y = y) → push X = X)) ∧ ∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → T.massOn W ≤ ENNReal.ofReal (L ^ (m + 1)) * (S.massOn W + 2 * e) + ENNReal.ofReal (L ^ (m + 1) - 1) * T.massOn (ball 0 G₃)",
+  "lean_name": "dimred_mbl_lc_index_comparison",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1-a1",
+      "result_commit": "8f3bacb2e7f68423e88b488e5939a0d419c646fb",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1",
+      "result_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-32e3afa931-a1"
+}

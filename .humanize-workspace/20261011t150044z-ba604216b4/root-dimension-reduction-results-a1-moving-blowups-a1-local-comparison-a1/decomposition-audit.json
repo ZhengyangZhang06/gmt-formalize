@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep|def IsIntegerMultiplicity|def IsMinimizingIn|def SameBoundary|currentEval|namespace Submission|^import|^open|^end",
+        "dimred_mbl_lc_(slice_decomposition|retraction_comparison|index_comparison)|lcmp_exists_good_slice_level",
+        "integral_withDensity_eq_integral_smul|integrable_withDensity_iff|withDensity_absolutelyContinuous|restrict_withDensity",
+        "norm_fderiv_le_of_lip.|countable_meas_level_set_pos|measurable_measure_prodMk_left|liminf_comp|integral_liminf",
+        "axiom|sorry|lean4checker|kernel|child_modules|contract_scope",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lc_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lc_independent_audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/lc_independent_audit/reuse-evidence.json",
+        "/tmp/lc_independent_audit/Types.lean",
+        "/tmp/lc_independent_audit/Types.log",
+        "/tmp/lc_independent_audit/Assembly.lean",
+        "/tmp/lc_independent_audit/Assembly.log"
+      ],
+      "conclusion": "The split is appropriate for the selected local-comparison theorem. The snapshot matches the frozen contract. All nine reused declarations have identical frozen types and retained passing comparator records permitting only propext, Classical.choice and Quot.sound. The three new names have no DAG collision or declaration match in the searched project snapshot. Proposed dependencies and reused dependency closures are acyclic and do not depend on the selected parent. All twelve standalone propositions independently elaborated; none contains a self-reference, declaration, placeholder, alias, or matrix-instance ambiguity. The supplied conditional assembly was checked against the exact child and prerequisite types, compiled successfully, and proves the exact selected parent type using only the three permitted axioms. The proof structure is also consistent with [Simon, Chapter 7 §2](https://math.stanford.edu/~lms/ntu-gmt-text.pdf), with the supplied sign correction retained."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type and valid bare name. The finite open cover and subordinate smooth partition preserve admissible compact supports and prove vanishing without requiring U to be open."
+    },
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type matching both prose conclusions. Orientation duality, local integrability, smooth approximation and the zero-region argument establish the mass formula and relative support equality without circularity."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conjuncts match the prose and accepted declaration. The density-zero argument proves tangent locality; restriction and difference representations verify every required field, including orientation and local integrability."
+    },
+    {
+      "key": "restrict_open_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type; openness is required only for V. Eventual equality of blow-up integrals transfers tangent spaces, and vanishing outside V proves the restricted representation."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Absolute continuity and restriction-with-density identities establish every conclusion. The pinned Bochner identity permits arbitrary integrands, so the absence of regularity assumptions on ω is justified."
+    },
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Admissibility of −ω controls absolute evaluations, and |c| ≤ 1 gives the required supremum bound for arbitrary U and G."
+    },
+    {
+      "key": "compact_outer_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Decreasing relatively compact thickenings and the stated local finiteness of ν justify continuity from above. No finiteness assumption on μ or c is needed."
+    },
+    {
+      "key": "mass_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. The cutoff equals one near C, preserves the coefficient-norm bound and localizes each test evaluation. The empty-set case and arbitrary G are covered."
+    },
+    {
+      "key": "good_slice_level",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Finite pushforward measures justify Tonelli and Fatou; countably many atoms can be excluded simultaneously. The filter comparison has the correct direction, and subsequence extraction proves the stated liminf convergence."
+    },
+    {
+      "key": "slice_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type includes FL′, SL′, BR′ and eventual κ-finiteness exactly as stated. The proof handles empty K, correctly uses φ′(i) = φ(i + j₁), and establishes the cycle, support, remainder and every-representation measure bounds. W and φ′ are fixed independently of competitors; all dependencies are available."
+    },
+    {
+      "key": "retraction_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all hypotheses, including PF and the explicit domain-inclusion evaluation. The proof constructs an admissible retracted competitor, cancels only a finite mass term, eliminates sphere mass using compact_outer_bound, and compares admissible forms to obtain the exact conclusion."
+    },
+    {
+      "key": "index_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, including the empty-intersection alternative and both error bounds. The constructed cycle satisfies retraction_comparison; the three-region estimates and finite cancellation yield precisely the stated 2e inequality. No integer-multiplicity assumption on Sr is needed."
+    }
+  ],
+  "required_changes": []
+}
