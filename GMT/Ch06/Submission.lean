@@ -764,4 +764,53 @@ theorem Submission.fiw_tb_te_l1_le_of_smooth_dual : ∀ (n : ℕ) (w : Eucl n �
   have h2 := H g hg hgc hg1
   linarith
 
+/-- Translation estimate (Simon Ch. 6, proof of 7.2, used for the summed form of 5.1 (32)): if the
+top-dimensional current `X ∈ 𝒟ₙ(ℝⁿ)` is `X(ω) = ∫ u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` with `u ∈ L¹`, then
+`∫ |u(x + h) − u(x)| dx ≤ |h| M(∂X)` for every `h ∈ ℝⁿ`. -/
+theorem Submission.fiw_tb_translation_estimate :
+    ∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1))
+      (u : Eucl (m + 1) → ℝ), Integrable u →
+      (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = ∫ x, u x *
+        (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ))) →
+      ∀ h : Eucl (m + 1),
+        ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * X.boundary.mass := by
+  intro m X u hu hX h
+  -- Trivial cases: `h = 0` (the left side vanishes) and `M(∂X) = ∞` (the right side is `∞`).
+  rcases eq_or_ne h 0 with rfl | hh
+  · simp
+  have hpos : 0 < ‖h‖ := norm_pos_iff.mpr hh
+  by_cases hM : X.boundary.mass = ∞
+  · rw [hM, ENNReal.mul_top (ENNReal.ofReal_pos.mpr hpos).ne']
+    exact le_top
+  -- For `φ ∈ C_c^∞` with `|φ| ≤ 1`, the directional form `ω` has `dω(e) = Dφ(h)` and
+  -- `|ω| ≤ ‖h‖`, so `|∫ u Dφ(h)| = |X(dω)| = |∂X(ω)| ≤ ‖h‖ M(∂X)`.
+  have hdiv : ∀ φ : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ →
+      HasCompactSupport φ → (∀ x, |φ x| ≤ 1) →
+        |∫ x, u x * fderiv ℝ φ x h| ≤ ‖h‖ * X.boundary.mass.toReal := by
+    intro φ hφ hφc hφ1
+    obtain ⟨ω, hω, hdω⟩ := Submission.fiw_tb_te_directional_form m φ h hφ hφc
+    have hval : X.boundary ω = ∫ x, u x * fderiv ℝ φ x h := by
+      rw [GeometricCurrentOn.boundary_apply, hX]
+      exact integral_congr_ae (ae_of_all _ fun x => congrArg (u x * ·) (hdω x))
+    rw [← hval]
+    refine Submission.fiw_tb_te_abs_apply_le_mul_mass (m + 1) m univ X.boundary ω ‖h‖ hpos
+      (fun x => ?_) hM
+    calc covectorEuclideanNorm ((ω : DifferentialForm (Eucl (m + 1)) m) x)
+        ≤ ‖h‖ * |φ x| := hω x
+      _ ≤ ‖h‖ * 1 := by gcongr; exact hφ1 x
+      _ = ‖h‖ := mul_one _
+  -- Weak estimate `|∫ (u(· + h) − u) g| ≤ ‖h‖ M(∂X)`, then `L¹` duality.
+  have hweak := Submission.fiw_tb_te_translation_dual (m + 1) u h _ hu hdiv
+  have hw : Integrable (fun x => u (x + h) - u x) := (hu.comp_add_right h).sub hu
+  have hL1 : ∫ x, |u (x + h) - u x| ≤ ‖h‖ * X.boundary.mass.toReal :=
+    Submission.fiw_tb_te_l1_le_of_smooth_dual (m + 1) (fun x => u (x + h) - u x) _ hw
+      fun g hg hgc hg1 => (le_abs_self _).trans (hweak g hg hgc hg1)
+  calc ∫⁻ x, ENNReal.ofReal |u (x + h) - u x|
+      = ENNReal.ofReal (∫ x, |u (x + h) - u x|) :=
+        (ofReal_integral_eq_lintegral_ofReal hw.abs (ae_of_all _ fun x => abs_nonneg _)).symm
+    _ ≤ ENNReal.ofReal (‖h‖ * X.boundary.mass.toReal) := ENNReal.ofReal_le_ofReal hL1
+    _ = ENNReal.ofReal ‖h‖ * X.boundary.mass := by
+      rw [ENNReal.ofReal_mul (norm_nonneg h), ENNReal.ofReal_toReal hM]
+
 end GMT.Ch06
