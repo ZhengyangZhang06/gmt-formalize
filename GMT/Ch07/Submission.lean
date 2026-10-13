@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Finite separated net** (Simon Ch. 5, proof of Lemma 2.5, (2)–(3)).  Let `0 < s`, `0 < a`,
+`μ(A) < ∞`, and let every `y ∈ K` satisfy `B̄_{s/2}(y) ⊆ A` and `a ≤ μ(B̄_{s/2}(y))`.  If the points
+of a finite `G ⊆ K` are pairwise more than `s` apart, the balls `B̄_{s/2}(y)`, `y ∈ G`, are disjoint
+subsets of `A`, so `#G · a ≤ μ(A)`; since `μ(A) < N₀ a` for some `N₀ ∈ ℕ`, `#G < N₀`.  Such a `G` of
+the greatest cardinality (`Nat.findGreatest`) is an `s`-net of `K`: a point of `K` more than `s`
+from every point of `G` could be added to `G`. -/
+theorem Submission.dorag_aa_finite_separated_net : ∀ (P : ℕ) (μ : Measure (Euclid P)) (K A : Set (Euclid P)) (s : ℝ) (a : ℝ≥0∞), 0 < s → 0 < a → μ A ≠ ∞ → (∀ y ∈ K, closedBall y (s / 2) ⊆ A) → (∀ y ∈ K, a ≤ μ (closedBall y (s / 2))) → ∃ F : Finset (Euclid P), (↑F : Set (Euclid P)) ⊆ K ∧ (F.card : ℝ≥0∞) * a ≤ μ A ∧ ∀ x ∈ K, ∃ y ∈ F, dist x y ≤ s := by
+  intro P μ K A s a hs ha hA hKA hKa
+  classical
+  -- if the points of a finite `G ⊆ K` are pairwise more than `s` apart, the balls `B̄_{s/2}(y)`,
+  -- `y ∈ G`, are disjoint, have measure `≥ a` and lie in `A`, so `#G · a ≤ μ(A)`
+  have hcount : ∀ G : Finset (Euclid P), (↑G : Set (Euclid P)) ⊆ K →
+      (↑G : Set (Euclid P)).Pairwise (fun y y' => s < dist y y') → (G.card : ℝ≥0∞) * a ≤ μ A := by
+    intro G hGK hG
+    have hdisj : (↑G : Set (Euclid P)).PairwiseDisjoint fun y => closedBall y (s / 2) := by
+      intro y hy y' hy' hne
+      have h1 : s < dist y y' := hG hy hy' hne
+      refine Set.disjoint_left.mpr fun w hw hw' => ?_
+      have h2 : dist w y ≤ s / 2 := hw
+      have h3 : dist w y' ≤ s / 2 := hw'
+      linarith [dist_triangle_left y y' w]
+    calc (G.card : ℝ≥0∞) * a = ∑ y ∈ G, a := by rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ ∑ y ∈ G, μ (closedBall y (s / 2)) := Finset.sum_le_sum fun y hy => hKa y (hGK hy)
+      _ = μ (⋃ y ∈ G, closedBall y (s / 2)) :=
+        (measure_biUnion_finset hdisj fun y _ => measurableSet_closedBall).symm
+      _ ≤ μ A := measure_mono (iUnion₂_subset fun y hy => hKA y (hGK hy))
+  -- `μ(A) < N₀ · a`, so such a `G` has fewer than `N₀` points
+  obtain ⟨N₀, hN₀⟩ := ENNReal.exists_nat_mul_gt ha.ne' hA
+  have hlt : ∀ G : Finset (Euclid P), (↑G : Set (Euclid P)) ⊆ K →
+      (↑G : Set (Euclid P)).Pairwise (fun y y' => s < dist y y') → G.card < N₀ := by
+    intro G hGK hG
+    by_contra h
+    have hN : (N₀ : ℝ≥0∞) * a ≤ G.card * a := by gcongr; exact_mod_cast not_lt.mp h
+    exact (hN₀.trans_le (hN.trans (hcount G hGK hG))).false
+  -- `F`: such a set of the greatest cardinality `m ≤ N₀`
+  obtain ⟨F, hFK, hF, hFmax⟩ : ∃ F : Finset (Euclid P), (↑F : Set (Euclid P)) ⊆ K ∧
+      (↑F : Set (Euclid P)).Pairwise (fun y y' => s < dist y y') ∧
+      ∀ G : Finset (Euclid P), (↑G : Set (Euclid P)) ⊆ K →
+        (↑G : Set (Euclid P)).Pairwise (fun y y' => s < dist y y') → G.card ≤ F.card := by
+    obtain ⟨F, hFK, hF, hFm⟩ := Nat.findGreatest_spec (P := fun m => ∃ G : Finset (Euclid P),
+      (↑G : Set (Euclid P)) ⊆ K ∧ (↑G : Set (Euclid P)).Pairwise (fun y y' => s < dist y y') ∧
+        G.card = m) (Nat.zero_le N₀) ⟨∅, by simp, by simp, rfl⟩
+    refine ⟨F, hFK, hF, fun G hGK hG => ?_⟩
+    rw [hFm]
+    exact Nat.le_findGreatest (hlt G hGK hG).le ⟨G, hGK, hG, rfl⟩
+  refine ⟨F, hFK, hcount F hFK hF, fun x hx => ?_⟩
+  -- a point `x ∈ K` more than `s` from every point of `F` would give the larger set `F ∪ {x}`
+  by_contra hfar'
+  have hfar : ∀ y ∈ F, s < dist x y := fun y hy => not_le.mp fun h => hfar' ⟨y, hy, h⟩
+  have hxF : x ∉ F := fun h => by
+    have h1 := hfar x h
+    rw [dist_self] at h1
+    linarith
+  have hK' : (↑(insert x F) : Set (Euclid P)) ⊆ K := by
+    rw [Finset.coe_insert]
+    exact insert_subset hx hFK
+  have hG' : (↑(insert x F) : Set (Euclid P)).Pairwise (fun y y' => s < dist y y') := by
+    rw [Finset.coe_insert]
+    exact hF.insert fun y hy _ => ⟨hfar y hy, by rw [dist_comm]; exact hfar y hy⟩
+  have hle := hFmax _ hK' hG'
+  rw [Finset.card_insert_of_notMem hxF] at hle
+  omega
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
