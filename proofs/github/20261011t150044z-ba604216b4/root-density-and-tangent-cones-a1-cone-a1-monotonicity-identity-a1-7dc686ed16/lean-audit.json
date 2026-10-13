@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f7987d3b87d25dadbe07ebc06cbc3bb7276e74a263ef6eb856a85376be1f6467",
+  "git_delta": {
+    "base_commit": "9a3440afd601b5c21190633c7f62cd6cf02de55c",
+    "candidate_commit": "4d61ba7a2f0f196353bbfd45451335c9f03a2b1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cone_monotonicity_identity",
+    "diff_sha256": "145f7991bfb93d6ae4ef18a76b92231ac1f73659cb2e978e4315d0d0c6831577",
+    "source_sha256": "57b0a9d53488b00511a1ae5d4ed4192528ac3ad210b36fcb6aced3aba56e040b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cone_monotonicity_identity",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → ∀ (z : Euclid P) (σ ρ : ℝ), 0 < σ → σ ≤ ρ → R.measure (closedBall z σ) / ENNReal.ofReal (σ ^ n) + ∫⁻ x in closedBall z ρ \\ closedBall z σ, ENNReal.ofReal (‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 / ‖x - z‖ ^ (n + 2)) ∂R.measure = R.measure (closedBall z ρ) / ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
