@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "Hausdorff-measure scaling under the blow-up map η_{x,r}",
+  "statement": "Let n, ℓ ∈ ℕ, x ∈ ℝ^{n+ℓ}, r > 0 and η_{x,r}(y) := r⁻¹(y − x) (Chapter03.blowUpMap x r); write Hⁿ := μHE[n] on ℝ^{n+ℓ}. Then for every set B ⊆ ℝ^{n+ℓ} (no measurability assumed): (i) rⁿ·Hⁿ(η_{x,r}(B)) = Hⁿ(B) in [0, ∞]; (ii) the push-forward of the restricted measure Hⁿ⌞B under η_{x,r} equals rⁿ·(Hⁿ⌞η_{x,r}(B)).",
+  "lean_statement": "∀ (n ℓ : ℕ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∀ B : Set (Amb n ℓ), ENNReal.ofReal (r ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B) = (μHE[n] : Measure (Amb n ℓ)) B ∧ ((μHE[n] : Measure (Amb n ℓ)).restrict B).map (Poincare.SimonGMT.Chapter03.blowUpMap x r) = ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B)",
+  "lean_name": "rsod_blowUpMap_measure_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-blowup-scaling-a1-a1"
+}

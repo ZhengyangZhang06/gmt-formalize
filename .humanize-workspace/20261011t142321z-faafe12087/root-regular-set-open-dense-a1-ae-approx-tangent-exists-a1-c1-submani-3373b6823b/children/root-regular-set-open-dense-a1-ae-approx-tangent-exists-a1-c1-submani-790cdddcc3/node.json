@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1.blowup_chart_reparam-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+  "depth": 4,
+  "title": "The rescaled chart is an injective parametrization of the blow-up with the same derivative",
+  "statement": "Let m, N ∈ ℕ, V ⊆ ℝᵐ open, φ : ℝᵐ → ℝ^N differentiable on V and injective on V, v₀ ∈ ℝᵐ and r ∈ ℝ with r ≠ 0. Put U_r := {u ∈ ℝᵐ : v₀ + ru ∈ V} and ψ_r(u) := r⁻¹(φ(v₀ + ru) − φ(v₀)). Then (i) U_r is open; (ii) ψ_r is injective on U_r; (iii) ψ_r(U_r) = η_{φ(v₀),r}(φ(V)), where η_{x,r}(y) = r⁻¹(y − x) is Chapter03.blowUpMap x r; (iv) for every u ∈ U_r, ψ_r has Fréchet derivative fderiv ℝ φ (v₀ + ru) at u (HasFDerivAt).",
+  "lean_statement": "∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (r : ℝ), IsOpen V → DifferentiableOn ℝ φ V → InjOn φ V → r ≠ 0 → IsOpen {u : Rn m | v₀ + r • u ∈ V} ∧ InjOn (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) {u : Rn m | v₀ + r • u ∈ V} ∧ (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) '' {u : Rn m | v₀ + r • u ∈ V} = Poincare.SimonGMT.Chapter03.blowUpMap (φ v₀) r '' (φ '' V) ∧ ∀ u ∈ {u : Rn m | v₀ + r • u ∈ V}, HasFDerivAt (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) (fderiv ℝ φ (v₀ + r • u)) u",
+  "lean_name": "rsod_c1tan_blowUp_chart_reparam",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-790cdddcc3-a1"
+}
