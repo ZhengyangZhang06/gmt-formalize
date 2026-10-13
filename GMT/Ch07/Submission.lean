@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Differential of the polar angle `arctan (⟨y, e⟩ / ⟨y, a⟩)`** (the calculus step of the
+rotation argument for cone sectors in Simon 7.3).  If `⟨x, a⟩ ≠ 0`, then
+`f(y) = arctan (⟨y, e⟩ / ⟨y, a⟩)` is `C¹` near `x` and, for every `v`,
+`Df(x) v = ⟨⟨x, a⟩ e - ⟨x, e⟩ a, v⟩ / (⟨x, a⟩² + ⟨x, e⟩²)`.
+* `y ↦ ⟨y, a⟩ = innerSL ℝ a y` and `y ↦ ⟨y, e⟩` are continuous linear, hence smooth and their
+  own derivatives; the quotient is `C¹` at `x` because `⟨x, a⟩ ≠ 0`, and so is its `arctan`.
+* With `α = ⟨x, a⟩` and `β = ⟨x, e⟩`, the inverse, product and `arctan` chain rules give
+  `Df(x) v = (1 + (β / α)²)⁻¹ (β (-(α²)⁻¹ ⟨a, v⟩) + α⁻¹ ⟨e, v⟩)`, which equals
+  `(α ⟨e, v⟩ - β ⟨a, v⟩) / (α² + β²)` since `α² + β² ≥ α² > 0`. -/
+theorem Submission.idtp_cse_rc_af_polar_angle_fderiv : ∀ (P : ℕ) (a e x : Euclid P), inner ℝ x a ≠ 0 → ContDiffAt ℝ 1 (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x ∧ ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x v = inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / (inner ℝ x a ^ 2 + inner ℝ x e ^ 2) := by
+  intro P a e x hx
+  -- Step 1: `y ↦ ⟨y, a⟩` and `y ↦ ⟨y, e⟩` are the continuous linear maps `innerSL ℝ a`, `innerSL ℝ e`
+  have hLa : (fun y : Euclid P => inner ℝ y a) = innerSL ℝ a := by
+    funext y; rw [innerSL_apply_apply, real_inner_comm]
+  have hLe : (fun y : Euclid P => inner ℝ y e) = innerSL ℝ e := by
+    funext y; rw [innerSL_apply_apply, real_inner_comm]
+  have hda : HasFDerivAt (fun y : Euclid P => inner ℝ y a) (innerSL ℝ a) x :=
+    hLa ▸ (innerSL ℝ a).hasFDerivAt
+  have hde : HasFDerivAt (fun y : Euclid P => inner ℝ y e) (innerSL ℝ e) x :=
+    hLe ▸ (innerSL ℝ e).hasFDerivAt
+  -- Step 2: the quotient `q = ⟨·, e⟩ / ⟨·, a⟩` is `C¹` at `x`, and so is `arctan ∘ q`
+  have hq : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y e / inner ℝ y a) x := by
+    have hca : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y a) x :=
+      hLa ▸ (innerSL ℝ a).contDiff.contDiffAt
+    have hce : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y e) x :=
+      hLe ▸ (innerSL ℝ e).contDiff.contDiffAt
+    exact hce.fun_div hca hx
+  refine ⟨hq.arctan, fun v => ?_⟩
+  -- Step 3: `y ↦ ⟨y, a⟩⁻¹` has derivative `-(α²)⁻¹ ⟨a, ·⟩` at `x`
+  have hdinv : HasFDerivAt (fun y : Euclid P => (inner ℝ y a)⁻¹)
+      (-(inner ℝ x a ^ 2)⁻¹ • innerSL ℝ a) x :=
+    (hasDerivAt_inv hx).comp_hasFDerivAt x hda
+  -- Step 4: the product rule for `q = ⟨·, e⟩ ⬝ ⟨·, a⟩⁻¹`
+  have hdq : HasFDerivAt (fun y : Euclid P => inner ℝ y e / inner ℝ y a)
+      (inner ℝ x e • (-(inner ℝ x a ^ 2)⁻¹ • innerSL ℝ a) + (inner ℝ x a)⁻¹ • innerSL ℝ e) x := by
+    simp only [div_eq_mul_inv]
+    exact hde.fun_mul hdinv
+  -- Step 5: the `arctan` chain rule and uniqueness of the derivative
+  have hdf : HasFDerivAt (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a))
+      ((1 / (1 + (inner ℝ x e / inner ℝ x a) ^ 2)) •
+        (inner ℝ x e • (-(inner ℝ x a ^ 2)⁻¹ • innerSL ℝ a) + (inner ℝ x a)⁻¹ • innerSL ℝ e)) x :=
+    hdq.arctan
+  rw [hdf.fderiv]
+  -- Step 6: algebra, with `α ≠ 0` and `α² + β² ≥ α² > 0`
+  simp only [smul_apply, add_apply, innerSL_apply_apply, smul_eq_mul, inner_sub_left,
+    real_inner_smul_left]
+  have hden : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 ≠ 0 := by positivity
+  field_simp
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
