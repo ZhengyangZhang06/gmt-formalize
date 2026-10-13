@@ -451,6 +451,286 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
+If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
+theorem Submission.unit_orientation_norm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
+  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
+  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
+  have hbound : ‖α τ‖ ≤ ‖α‖ := by
+    simpa [hτ.1] using α.le_opNorm τ
+  rcases hξ with h | h
+  · rw [h, one_mul]
+    exact hbound
+  · rw [h, norm_neg, one_mul]
+    exact hbound
+
+/-- Differentiation under the integral sign for the dilations `y ↦ s y` (steps 0(a), 0(b), 2 and 3
+of the proof of Simon Ch. 6, Lemma 2.33, with `c(s) = s`): for `t > 0`, `s ↦ τ(M, θ, ξ)(sⁿ ω(s ·))`
+has derivative `τ(M, θ, ξ)(n tⁿ⁻¹ ω(t ·) + tⁿ Dω(t ·)[·])` at `t`.  For `s ∈ (t/2, 2t)` the
+integrands vanish off `B = B̄_{2r/t}(0)`, where `spt ω ⊆ B̄_r(0)`, and are dominated by `K θ 1_B`,
+`K` bounding the continuous integrand on `[t/2, 2t] × B` (as `‖ξ‖ ≤ 1` a.e.); `θ 1_B` is
+integrable since `θ` is locally `Hⁿ`-integrable. -/
+theorem Submission.dtc_cwv_scaled_action_hasDerivAt : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (t : ℝ), 0 < t → HasDerivAt (fun s : ℝ => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))) (R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) + (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y)) t := by
+  intro P n R ω t ht
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n) with hw_def
+  -- Step 1: ‖ξ(x)‖ ≤ 1 for Hⁿ⌞M-a.e. x (sibling `orientation_norm`).
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ‖R.orient x‖ ≤ 1 := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact Submission.unit_orientation_norm_le_one P n Q _ hQ
+  -- Step 2: a support radius, a bound for ω; ω and Dω vanish off spt ω.
+  have hwcont : Continuous w := hws.continuous
+  have hDw : Continuous (fderiv ℝ w) := hws.continuous_fderiv (by simp)
+  obtain ⟨K0, hK0⟩ := hwcont.bounded_above_of_compact_support hwc
+  obtain ⟨r, hr⟩ : ∃ r, tsupport w ⊆ closedBall (0 : Euclid P) r :=
+    hwc.isCompact.isBounded.subset_closedBall 0
+  have hvan : ∀ z, z ∉ tsupport w → w z = 0 ∧ fderiv ℝ w z = 0 := fun z hz =>
+    ⟨image_eq_zero_of_notMem_tsupport hz,
+      image_eq_zero_of_notMem_tsupport (fun h => hz (tsupport_fderiv_subset ℝ h))⟩
+  -- Step 5: measurability of the integrands (Φ jointly continuous).
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hmeas : ∀ φ : Euclid P → Covector (Euclid P) n, Continuous φ →
+      AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y (φ y)) (μHE[n].restrict R.carrier) :=
+    fun φ hφ => hθm.aestronglyMeasurable.mul
+      (happly.comp_aestronglyMeasurable (R.aestronglyMeasurable_orient.prodMk hφ.aestronglyMeasurable))
+  have hcF : ∀ s : ℝ, Continuous (fun y => (s ^ n) • w (s • y)) := by
+    intro s
+    have h1 : Continuous (fun y : Euclid P => w (s • y)) := hwcont.comp (continuous_const_smul s)
+    exact h1.const_smul (s ^ n)
+  have hΦ : Continuous (fun p : ℝ × Euclid P => ((n : ℝ) * p.1 ^ (n - 1)) • w (p.1 • p.2) +
+      (p.1 ^ n) • fderiv ℝ w (p.1 • p.2) p.2) := by
+    have hsy : Continuous (fun p : ℝ × Euclid P => p.1 • p.2) := continuous_fst.smul continuous_snd
+    exact (((continuous_const.mul (continuous_fst.pow _))).smul (hwcont.comp hsy)).add
+      ((continuous_fst.pow _).smul ((hDw.comp hsy).clm_apply continuous_snd))
+  have hcF' : ∀ s : ℝ, Continuous (fun y => ((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+      (s ^ n) • fderiv ℝ w (s • y) y) := fun s =>
+    hΦ.comp (continuous_const.prodMk continuous_id)
+  -- Steps 6–8: localization in B = B̄_ρ(0), the bound K for Φ on [t/2, 2t] × B, integrability.
+  set ρ : ℝ := 2 * r / t with hρ
+  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  obtain ⟨K, hK⟩ := (isCompact_Icc (a := t / 2) (b := 2 * t)).prod (isCompact_closedBall (0 : Euclid P) ρ)
+    |>.exists_bound_of_continuousOn hΦ.continuousOn
+  have hθB : IntegrableOn (fun x => (R.mult x : ℝ)) B (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
+    simpa only [Real.enorm_natCast] using
+      (R.locallyIntegrable_mult B (isCompact_closedBall 0 ρ) (subset_univ _)).lt_top
+  -- membership: if s • y ∈ spt ω with s > t/2 then y ∈ B
+  have hmemB : ∀ s : ℝ, t / 2 < s → ∀ y : Euclid P, s • y ∈ tsupport w → y ∈ B := by
+    intro s hs y hy
+    have h1 : ‖s • y‖ ≤ r := by simpa using hr hy
+    have hs0 : 0 < s := by linarith
+    rw [norm_smul, Real.norm_of_nonneg hs0.le] at h1
+    simp only [hB, mem_closedBall, dist_zero_right, hρ]
+    rw [le_div_iff₀ ht]
+    nlinarith [norm_nonneg y]
+  -- Steps 7–9: hypotheses of the dominated differentiation theorem (step 4 is `h_diff`).
+  have hs : Ioo (t / 2) (2 * t) ∈ 𝓝 t := Ioo_mem_nhds (by linarith) (by linarith)
+  have hF_meas : ∀ᶠ s in 𝓝 t, AEStronglyMeasurable
+      (fun y => (R.mult y : ℝ) * R.orient y ((s ^ n) • w (s • y))) (μHE[n].restrict R.carrier) :=
+    Eventually.of_forall fun s => hmeas _ (hcF s)
+  have hF'_meas : AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y
+      (((n : ℝ) * t ^ (n - 1)) • w (t • y) + (t ^ n) • fderiv ℝ w (t • y) y))
+      (μHE[n].restrict R.carrier) := hmeas _ (hcF' t)
+  have hF_int : Integrable (fun y => (R.mult y : ℝ) * R.orient y ((t ^ n) • w (t • y)))
+      (μHE[n].restrict R.carrier) := by
+    refine ((hθB.integrable_indicator hBm).const_mul (t ^ n * K0)).mono' (hmeas _ (hcF t)) ?_
+    filter_upwards [hξ] with y hy
+    by_cases hty : t • y ∈ tsupport w
+    · have hyB := hmemB t (by linarith) y hty
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      calc (R.mult y : ℝ) * ‖R.orient y ((t ^ n) • w (t • y))‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖(t ^ n) • w (t • y)‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * (t ^ n * K0)) := by
+            gcongr
+            rw [norm_smul, Real.norm_of_nonneg (by positivity)]
+            gcongr
+            exact hK0 _
+        _ = t ^ n * K0 * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hty).1, smul_zero, map_zero, mul_zero, norm_zero]
+      have hK0n : 0 ≤ K0 := le_trans (norm_nonneg _) (hK0 0)
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]; positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_bound : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t / 2) (2 * t),
+      ‖(R.mult y : ℝ) * R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+        (s ^ n) • fderiv ℝ w (s • y) y)‖ ≤ K * B.indicator (fun x => (R.mult x : ℝ)) y := by
+    filter_upwards [hξ] with y hy s hs
+    obtain ⟨hs1, hs2⟩ := hs
+    by_cases hsy : s • y ∈ tsupport w
+    · have hyB := hmemB s hs1 y hsy
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      have hnorm := hK (s, y) ⟨⟨hs1.le, hs2.le⟩, hyB⟩
+      calc (R.mult y : ℝ) * ‖R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+            (s ^ n) • fderiv ℝ w (s • y) y)‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+            (s ^ n) • fderiv ℝ w (s • y) y‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * K) := by gcongr
+        _ = K * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hsy).1, (hvan _ hsy).2, smul_zero, zero_apply, smul_zero,
+        add_zero, map_zero, mul_zero, norm_zero]
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]
+        have hKn : 0 ≤ K := le_trans (norm_nonneg _)
+          (hK (t, y) ⟨⟨by linarith, by linarith⟩, hyB⟩)
+        positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_diff : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t / 2) (2 * t),
+      HasDerivAt (fun s => (R.mult y : ℝ) * R.orient y ((s ^ n) • w (s • y)))
+        ((R.mult y : ℝ) * R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+          (s ^ n) • fderiv ℝ w (s • y) y)) s := by
+    refine Eventually.of_forall fun y s _ => ?_
+    have h1 : HasDerivAt (fun s : ℝ => s • y) y s := by
+      simpa using (hasDerivAt_id s).smul_const y
+    have h2 : HasDerivAt (fun s : ℝ => w (s • y)) (fderiv ℝ w (s • y) y) s :=
+      ((hws.differentiable (by simp)).differentiableAt (x := s • y)).hasFDerivAt.comp_hasDerivAt s h1
+    have h3 : HasDerivAt (fun s : ℝ => (s ^ n) • w (s • y))
+        ((s ^ n) • fderiv ℝ w (s • y) y + ((n : ℝ) * s ^ (n - 1)) • w (s • y)) s :=
+      (hasDerivAt_pow n s).smul h2
+    have h4 := ((R.orient y).hasFDerivAt.comp_hasDerivAt s h3).const_mul (R.mult y : ℝ)
+    rw [add_comm] at h4
+    exact h4
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound
+    ((hθB.integrable_indicator hBm).const_mul K) h_diff
+  exact key.2
+
+/-- Dilation invariance of `R.action` (Simon Ch. 6, Lemma 2.33 for the dilations `y ↦ sy`; the
+step "`C` is a cone" in the proof of 7.3.1).  Suppose `R.action` annihilates every `L_X β`, where
+`L_X β(y) = nβ(y) + Dβ(y)[y]` is the Lie derivative of `β` along the Euler field `X(y) = y`.
+Put `β_s(y) = sⁿω(sy)` and `G(s) = R.action β_s`.  For `t > 0`, the derivative
+`G'(t) = R.action(y ↦ nt^{n−1}ω(ty) + tⁿDω(ty)[y])` (`Submission.dtc_cwv_scaled_action_hasDerivAt`)
+is `t⁻¹ R.action(L_X β_t) = 0`.  So `G` is constant on `(0, ∞)`, and
+`R.action ω' = G(λ⁻¹) = G(1) = R.action ω`. -/
+theorem Submission.dtc_cwv_action_dilation_invariant : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → R.action (γ : DifferentialForm (Euclid P) n) = 0) → ∀ lam : ℝ, 0 < lam → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) → R.action (ω' : DifferentialForm (Euclid P) n) = R.action (ω : DifferentialForm (Euclid P) n) := by
+  intro P n R hL lam hlam ω ω' hω'
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  -- `R.action` is homogeneous under constant rescaling of the form
+  have hsmul : ∀ (c : ℝ) (φ : DifferentialForm (Euclid P) n),
+      R.action (fun y => c • φ y) = c * R.action φ := by
+    intro c φ
+    unfold IMRep.action
+    rw [← integral_const_mul]
+    congr 1
+    funext x
+    rw [map_smul, smul_eq_mul]
+    ring
+  -- `β_t(y) = tⁿ ω(t y)` is a test form for `t ≠ 0`
+  have hβs : ∀ t : ℝ, ContDiff ℝ (⊤ : ℕ∞)
+      (fun y => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) := fun t =>
+    (hws.comp (contDiff_const_smul t)).const_smul (t ^ n)
+  have hβc : ∀ t : ℝ, t ≠ 0 → HasCompactSupport
+      (fun y => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) := by
+    intro t ht
+    refine (hwc.comp_smul ht).mono ?_
+    intro y hy
+    simp only [mem_support] at hy ⊢
+    intro h0
+    apply hy
+    rw [h0, smul_zero]
+  -- chain rule: `Dβ_t(y)[y] = tⁿ⁺¹ Dω(t y)[y]`
+  have hfd : ∀ (t : ℝ) (y : Euclid P),
+      fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y =
+        (t ^ n * t) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y := by
+    intro t y
+    have h1 : HasFDerivAt (fun z : Euclid P => t • z) (t • ContinuousLinearMap.id ℝ (Euclid P)) y :=
+      (hasFDerivAt_id y).const_smul t
+    have h2 : HasFDerivAt (fun z : Euclid P => (ω : DifferentialForm (Euclid P) n) (t • z))
+        ((fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y)).comp
+          (t • ContinuousLinearMap.id ℝ (Euclid P))) y :=
+      ((hws.differentiable (by simp)).differentiableAt (x := t • y)).hasFDerivAt.comp y h1
+    have h3 : HasFDerivAt (fun z : Euclid P => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z))
+        ((t ^ n) • (fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y)).comp
+          (t • ContinuousLinearMap.id ℝ (Euclid P))) y :=
+      h2.const_smul (t ^ n)
+    rw [h3.fderiv]
+    simp [smul_smul]
+  -- `γ_t(y) = nβ_t(y) + Dβ_t(y)[y]` is a test form for `t ≠ 0`
+  have hγs : ∀ t : ℝ, ContDiff ℝ (⊤ : ℕ∞)
+      (fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y) := by
+    intro t
+    have hd : ContDiff ℝ (⊤ : ℕ∞)
+        (fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z))) :=
+      (hβs t).fderiv_right (by simp)
+    exact ((hβs t).const_smul (n : ℝ)).add (hd.clm_apply contDiff_id)
+  have hγc : ∀ t : ℝ, t ≠ 0 → HasCompactSupport
+      (fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y) := by
+    intro t ht
+    have h1 : HasCompactSupport
+        (fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y))) := by
+      refine (hβc t ht).mono ?_
+      intro y hy
+      simp only [mem_support] at hy ⊢
+      intro h0
+      apply hy
+      rw [h0, smul_zero]
+    have h2 : HasCompactSupport
+        (fun y => fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y) := by
+      refine ((hβc t ht).fderiv ℝ).mono ?_
+      intro y hy
+      simp only [mem_support] at hy ⊢
+      intro h0
+      apply hy
+      rw [h0]
+      rfl
+    exact h1.add h2
+  -- `G(s) = R.action β_s` has derivative `t⁻¹ R.action γ_t = 0` at every `t > 0`
+  let G : ℝ → ℝ := fun s => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))
+  have hG : ∀ t : ℝ, 0 < t → HasDerivAt G 0 t := by
+    intro t ht
+    have hD := Submission.dtc_cwv_scaled_action_hasDerivAt P n R ω t ht
+    let β : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨fun y => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y), ⟨hβs t, hβc t ht.ne'⟩,
+        subset_univ _⟩
+    let γ : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨fun y => (n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y,
+        ⟨hγs t, hγc t ht.ne'⟩, subset_univ _⟩
+    have hγ0 : R.action (γ : DifferentialForm (Euclid P) n) = 0 := hL β γ (fun y => rfl)
+    have heq : (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) +
+        (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y) =
+        fun y => t⁻¹ • (γ : DifferentialForm (Euclid P) n) y := by
+      funext y
+      change _ = t⁻¹ • ((n : ℝ) • ((t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • y)) +
+        fderiv ℝ (fun z => (t ^ n) • (ω : DifferentialForm (Euclid P) n) (t • z)) y y)
+      rw [hfd t y, smul_add, smul_smul, smul_smul, smul_smul]
+      congr 2
+      · rcases Nat.eq_zero_or_pos n with hn | hn
+        · subst hn; simp
+        · obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+          field_simp
+          simp [pow_succ]
+      · field_simp
+    have h0 : R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) +
+        (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y) = 0 := by
+      rw [heq, hsmul, hγ0, mul_zero]
+    rw [h0] at hD
+    exact hD
+  -- `G` is constant on the connected open set `(0, ∞)`
+  have hconst : G lam⁻¹ = G 1 :=
+    isOpen_Ioi.is_const_of_deriv_eq_zero (convex_Ioi (0 : ℝ)).isPreconnected
+      (fun t ht => (hG t ht).differentiableAt.differentiableWithinAt)
+      (fun t ht => (hG t ht).deriv) (inv_pos.2 hlam) (show (0 : ℝ) < 1 from one_pos)
+  have hG1 : G 1 = R.action (ω : DifferentialForm (Euclid P) n) := by
+    simp [G]
+  have hGl : G lam⁻¹ = R.action (ω' : DifferentialForm (Euclid P) n) := by
+    simp only [G]
+    congr 1
+    funext y
+    rw [hω' y]
+  rw [← hGl, hconst, hG1]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
