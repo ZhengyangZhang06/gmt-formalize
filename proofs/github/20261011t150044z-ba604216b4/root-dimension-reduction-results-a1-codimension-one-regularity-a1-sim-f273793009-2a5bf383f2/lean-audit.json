@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "743a282c4199f7db939943d5bd8e3a958cc78e89c8edc0746baea1f304da7417",
+  "git_delta": {
+    "base_commit": "e4dc6ffd728e136524c849d1f1f98b5c09322b6e",
+    "candidate_commit": "fe70b9722cc94cf0feb7e2bf2749c094a661b1f7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_pp_setIntegral_transfer",
+    "diff_sha256": "4cac3473b073d07f8865cda54cdcac91f4c29240fa6ef0c847c8bd1e13b57652",
+    "source_sha256": "6f9e3b20f605ed9db456b4541301bb97aaff0cbbf597d7c5ca0ab402d1d60b19",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_pp_setIntegral_transfer",
+      "statement": "∀ (α β : Type) [MeasurableSpace α] [MeasurableSpace β] (μ : Measure α) (ν : Measure β) (Φ : α → β) (A : Set α) (B : Set β) (J : α → ℝ) (f : β → ℝ), (∀ x, 0 ≤ J x) → (∀ g : β → ℝ≥0∞, ∫⁻ y in B, g y ∂ν = ∫⁻ x in A, ENNReal.ofReal (J x) * g (Φ x) ∂μ) → Integrable f (ν.restrict B) → AEStronglyMeasurable (fun x => J x * f (Φ x)) (μ.restrict A) → Integrable (fun x => J x * f (Φ x)) (μ.restrict A) ∧ ∫ y in B, f y ∂ν = ∫ x in A, J x * f (Φ x) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
