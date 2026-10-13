@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3daf2fa955d4c27ca1afb44df8794367cf80db6c2be2bb78d0e68d3f1086c0ba",
+  "git_delta": {
+    "base_commit": "9281fd9660775f6a607084769944a20c1cddfd3e",
+    "candidate_commit": "81f1c23cd9605dc17f50244f194b2cc4d427f7f5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cwv_scaled_action_hasDerivAt",
+    "diff_sha256": "b952e0831abb3b13b00bd269f03fccc164991db7a8b53afd5ca91fbc4f6bbc65",
+    "source_sha256": "f3da6a3d0597a874b7ff2858d42fa119072d423a6d47f5f05125c107a6fcc00d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cwv_scaled_action_hasDerivAt",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (t : ℝ), 0 < t → HasDerivAt (fun s : ℝ => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))) (R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) + (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y)) t",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
