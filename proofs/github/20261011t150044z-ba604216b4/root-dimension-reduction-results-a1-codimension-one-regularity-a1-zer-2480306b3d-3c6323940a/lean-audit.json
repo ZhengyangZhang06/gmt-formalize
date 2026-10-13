@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6261b7afb0c187ccd4c1d05cd1d264aa5a8171d4829f04c5961865632c83478b",
+  "git_delta": {
+    "base_commit": "0f78e0ed138a43446ae2e076f22072766a2bb329",
+    "candidate_commit": "d25d2377e19ed3ca45d577187262c010630879ff",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_pc_mollify_indicator_l1",
+    "diff_sha256": "d6f10ee6a6f906a2ef9c8907822ab3dd3ca5791275368b3ee29c6b7e0a937042",
+    "source_sha256": "5aeda09dbd8f4e451b787315b5c92d7a67d1978ebb842dd4b31537dcffd23415",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_pc_mollify_indicator_l1",
+      "statement": "∀ (m : ℕ) (F : Set (Euclid m)) (R η : ℝ), MeasurableSet F → 0 < η → ∃ δ : ℝ, 0 < δ ∧ ∀ ρ : Euclid m → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → (∀ z, δ < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → ∫⁻ v in ball (0 : Euclid m) R, ‖(∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ ≤ ENNReal.ofReal η",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
