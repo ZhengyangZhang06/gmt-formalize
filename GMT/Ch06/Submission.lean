@@ -725,6 +725,30 @@ theorem Submission.slicing_im_si_slice_ae_transfer :
   simp only [mem_ofPred_eq, Classical.not_imp] at hx
   obtain ⟨⟨⟨hxM₁, hxt⟩, hxS⟩, hne⟩ := hx
   exact ⟨Or.inl ⟨fun h => hne (h hxS), hM₁M hxM₁⟩, hxt⟩
+/-- One-sided Lebesgue points: for locally integrable `φ : ℝ → ℝ` and a.e. `t`, the left averages
+`ε⁻¹ ∫_{(t - ε, t)} φ` tend to `φ t` as `ε → 0+` (Lebesgue differentiation along the Vitali
+family of `volume`; Simon Ch. 6, Remark 4.2 and the proof of 4.5(2)). -/
+theorem Submission.slicing_im_si_left_lebesgue_point :
+    ∀ φ : ℝ → ℝ, LocallyIntegrable φ (volume : Measure ℝ) → ∀ᵐ t ∂(volume : Measure ℝ), Tendsto (fun ε : ℝ => ε⁻¹ * ∫ r in Ioo (t - ε) t, φ r) (𝓝[>] 0) (𝓝 (φ t)) := by
+  intro φ hφ
+  -- Lebesgue differentiation along the Vitali family of `volume`, restricted to left intervals.
+  filter_upwards [(IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure ℝ) 1).ae_tendsto_average hφ]
+    with t ht
+  have hleft := ht.comp (Real.tendsto_Icc_vitaliFamily_left t)
+  -- `ε ↦ t - ε` maps `𝓝[>] 0` to `𝓝[<] t`.
+  have hsub : Tendsto (fun ε : ℝ => t - ε) (𝓝[>] 0) (𝓝[<] t) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have : Tendsto (fun ε : ℝ => t - ε) (𝓝 0) (𝓝 (t - 0)) := tendsto_const_nhds.sub tendsto_id
+      simpa using this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε)
+      simp only [mem_Iio]; linarith
+  -- For `ε > 0` the average over `Icc (t - ε) t` is `ε⁻¹ ∫_{(t - ε, t)} φ`.
+  refine (hleft.comp hsub).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with ε (hε : 0 < ε)
+  simp only [Function.comp_apply, average, Measure.restrict_apply MeasurableSet.univ, univ_inter,
+    Real.volume_Icc]
+  rw [integral_smul_measure, integral_Icc_eq_integral_Ioo, show t - (t - ε) = ε by ring,
+    ENNReal.toReal_inv, ENNReal.toReal_ofReal hε.le, smul_eq_mul]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
