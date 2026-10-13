@@ -1706,6 +1706,32 @@ theorem Submission.cmcs_slice_mass_integral : ∀ (P : ℕ) (μ : Measure (Eucli
         mul_le_mul_right (Submission.cmcs_smi_lintegral_left_density_le ν a b) _
     _ = (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}) := by rw [hνI]
 
+/-- **Simon Ch. 6, 4.6–4.11** (slicing by a Lipschitz function), with restrictions taken w.r.t.
+the given representations `(μ, ξ)` of `T` and `(μ', ξ')` of `∂T`: `A_t = T⌞{f < t}` and
+`B_t = (∂T)⌞{f < t}` are currents (`cmcs_restrict_current`); `∂A_t = B_t` on forms supported away
+from `{f = t}` (`cmcs_slice_support`, `f` being continuous); the slice `⟨T, f, t₋⟩ = ∂A_t − B_t`
+has `M_W ≤ L · liminf_{h↓0} h⁻¹ μ(W ∩ {t − h < f < t})` (`cmcs_slice_mass_pointwise`); integrating
+this bound over `t ∈ (a, b)` gives `L · μ(W ∩ {a < f < b})` (`cmcs_slice_mass_integral`, `f`
+measurable and `W` open). -/
+theorem Submission.dimred_mbl_slice_mass_bounds : ∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b})) := by
+  intro P k U T μ μ' ξ ξ' f L _hU hμ hμ' hξm hξ'm hξ hξ' hT hbT hf
+  -- `A_t = T⌞{f < t}` and `B_t = (∂T)⌞{f < t}`
+  choose A hA using fun t : ℝ =>
+    Submission.cmcs_restrict_current P (k + 1) U μ ξ {x | f x < t} hμ hξm hξ
+  choose B hB using fun t : ℝ =>
+    Submission.cmcs_restrict_current P k U μ' ξ' {x | f x < t} hμ' hξ'm hξ'
+  -- the pointwise slice-mass bound holds for every `W` and `t`
+  have hpt : ∀ (W : Set (Euclid P)) (t : ℝ), ((A t).boundary - B t).massOn W ≤
+      (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t}))
+        (𝓝[>] 0) := fun W t =>
+    Submission.cmcs_slice_mass_pointwise P k U T μ μ' ξ ξ' f L t (A t) (B t) W hμ hμ' hξm hξ'm
+      hξ hξ' hT hbT hf (hA t) (hB t)
+  refine ⟨A, B, hA, hB, fun t η hη => ?_, fun W t _ => hpt W t, fun W a b hW => ?_⟩
+  · exact Submission.cmcs_slice_support P k U T μ μ' ξ ξ' f t (A t) (B t) hf.continuous hT hbT
+      (hA t) (hB t) η hη
+  · exact Submission.cmcs_slice_mass_integral P μ f W L (fun t => ((A t).boundary - B t).massOn W)
+      a b hf.continuous.measurable hW.measurableSet fun t _ => hpt W t
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
