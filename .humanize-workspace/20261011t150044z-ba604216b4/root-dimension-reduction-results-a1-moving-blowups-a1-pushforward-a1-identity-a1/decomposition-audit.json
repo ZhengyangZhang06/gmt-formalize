@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|def blowUpMap|regular_euclideanHausdorffMeasure_restrict_submodule|support_euclideanHausdorffMeasure_restrict_submodule",
+        "IsUnitOrientationOf|structure IMRep|IMRep.action|IMRep.Represents|namespace Submission|end GMT",
+        "theorem ae_restrict_iff'|theorem restrict_apply |theorem restrict_restrict |theorem restrict_congr_set",
+        "theorem integral_congr_ae|theorem integral_pos_iff_support_of_nonneg|setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "ContDiffOn.differentiableOn|DifferentiableOn.differentiableAt|HasFDerivAt.isLittleO",
+        "dsmc_att_blowUp_points_of_approxTangent",
+        "dtc_approxTangent_of_null_diff",
+        "dtc_bc_lc_fderiv_apply_eq_of_approxTangent",
+        "python3 /tmp/identity-independent-audit/build_audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/identity-independent-audit/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/identity-independent-audit/AcceptedAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-identity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-identity-a1/decomposition-v1.json",
+        "/tmp/identity-independent-audit/blowup_points_candidate.lean",
+        "/tmp/identity-independent-audit/tangent_local_candidate.lean",
+        "/tmp/identity-independent-audit/fderiv_fixes_tangent_candidate.lean",
+        "/tmp/identity-independent-audit/IndependentTypes.lean",
+        "/tmp/identity-independent-audit/AcceptedAndAssembly.lean"
+      ],
+      "conclusion": "The pinned definitions and compiler sources are compatible. All child propositions elaborate independently, include their prose hypotheses, and exactly match their comparator-accepted frozen types and candidate declarations. Each bare name has exactly one accepted owner; acceptance records and candidate source hashes agree. The proposed dependency closure is acyclic. Independent compilation verifies all three reused proofs and an assembly of the exact selected parent type, conditional only on its existing carrier_facts and orient_comp dependencies. Their axiom sets are exclusively propext, Classical.choice and Quot.sound. The split appropriately reuses substantive analytic obligations: locality transfers the tangent plane to the fixed set, derivative fixation yields orientation invariance, and almost-everywhere integral equality proves Z = Y. No problematic inline matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Steps 0–8 prove the exact quantified conclusion. The auxiliary plane-integral positivity and null-image facts are justified; tangent convergence makes the tent integral positive at every sufficiently small scale. Removing the null exceptional image then supplies a point of M ∩ N in the required ball. The restriction arguments permit arbitrary M and N. The proof is complete, non-circular, and supports the derivative child. Accepted reuse has the identical frozen type and a valid bare name."
+    },
+    {
+      "key": "tangent_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Steps 1–7 correctly combine openness at x with bounded test-function support. For sufficiently small positive scales, the relevant difference lies in the blow-up of the locally null discarded set. The restricted measures and integrals therefore agree, while the dimension condition remains unchanged. No measurability assumption on M or M' is missing. The exact accepted proposition is independently usable and supplies the parent’s tangent plane on R.carrier ∩ Y.support."
+    },
+    {
+      "key": "fderiv_fixes_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Steps 1–7 give a complete epsilon proof. All constants and the chosen scale are positive; blowup_points supplies y ∈ A with controlled displacement. Differentiability, f(x) = x, and pointwise fixation of A give the scaled error estimate, and the operator-norm bound yields ‖Df(x)v − v‖ ≤ ε. This covers zero vectors and n = 0. The dependency on blowup_points is correctly directed and acyclic; the proposition and bare name exactly match the accepted declaration."
+    }
+  ],
+  "required_changes": []
+}
