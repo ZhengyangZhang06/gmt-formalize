@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6ffbf147fbe39d5e13944ed74574f29c6b31bf191ee6add53aef7bb51bade4c",
+  "git_delta": {
+    "base_commit": "fbe9309ea00830e81138e8048b3ff936ab8cd50f",
+    "candidate_commit": "3ca4b60601072a36343df8aa1b20293d2db7c91d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrg_exists_countable_disjoint_refinement",
+    "diff_sha256": "77610ac4f1995c8871ced92864b1be63bf11883a9fa86630bb7b968e432c4d08",
+    "source_sha256": "7e1b05bc97394229bb8889548dbe819c8685c5de5b3c094135fe25eeeba20d36",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrg_exists_countable_disjoint_refinement",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (p : Set (Euclid P) → Prop), (∀ x ∈ U, ∃ W : Set (Euclid P), IsOpen W ∧ x ∈ W ∧ W ⊆ U ∧ p W) → ∃ (ι : Type) (_ : Countable ι) (W A : ι → Set (Euclid P)), (∀ i, IsOpen (W i)) ∧ (∀ i, W i ⊆ U) ∧ (∀ i, p (W i)) ∧ (∀ i, MeasurableSet (A i)) ∧ (∀ i, A i ⊆ W i) ∧ Pairwise (fun i j => Disjoint (A i) (A j)) ∧ ⋃ i, A i = U",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
