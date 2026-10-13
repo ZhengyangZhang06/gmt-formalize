@@ -359,6 +359,28 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Borel transfer through a chart (Lusin–Souslin, Kechris, *Classical Descriptive Set Theory*,
+Thm. 15.1): if `D ⊆ ℝⁿ` is Borel and `Φ` is continuous and injective on `D`, then `Φ|_D` is a
+measurable embedding, so a Borel `γ` factors as `γ = g ∘ Φ` on `D` through the Borel map
+`g = extend (Φ|_D) (γ|_D) 0`, which vanishes off `Φ(D)`. -/
+theorem Submission.slicing_im_tg_cg_borel_transfer :
+    ∀ (n P Q : ℕ) (Φ : Eucl n → Eucl P) (D : Set (Eucl n)) (γ : Eucl n → Eucl Q), MeasurableSet D → ContinuousOn Φ D → InjOn Φ D → Measurable γ → ∃ g : Eucl P → Eucl Q, Measurable g ∧ (∀ w ∈ D, g (Φ w) = γ w) ∧ ∀ y, y ∉ Φ '' D → g y = 0 := by
+  intro n P Q Φ D γ hD hc hi hγ
+  -- Lusin–Souslin: `Φ|_D : D → ℝ^P` is a measurable embedding.
+  have hE := hc.measurableEmbedding hD hi
+  -- `g = extend (Φ|_D) (γ|_D) 0` is Borel because `γ|_D` and `0` are.
+  refine ⟨Function.extend (D.domRestrict Φ) (D.domRestrict γ) 0,
+    hE.measurable_extend (hγ.comp measurable_subtype_coe) measurable_const, ?_, ?_⟩
+  -- On `Φ(D)`: `g (Φ w) = γ w` since `Φ|_D` is injective.
+  · intro w hw
+    exact hE.injective.extend_apply (D.domRestrict γ) 0 ⟨w, hw⟩
+  -- Off `Φ(D)`: no `w ∈ D` has `Φ w = y`, so `g y = 0`.
+  · intro y hy
+    rw [Function.extend_apply']
+    · rfl
+    rintro ⟨⟨w, hw⟩, hwy⟩
+    exact hy ⟨w, hw, hwy⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
