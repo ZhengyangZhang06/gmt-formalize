@@ -483,6 +483,108 @@ theorem Submission.ind_top_form_density_ae_unique :
   filter_upwards [key] with x hx hxU
   exact sub_eq_zero.mp (hx hxU)
 
+/-- A top-dimensional integer multiplicity current has an integer density (Simon Ch. 6, 2.35 (∗),
+`T(ω) = ∫ aθ dLⁿ` for `ω = a dx¹ ∧ ⋯ ∧ dxⁿ`, with `θ` integer-valued as at the end of the Proof of
+8.2, p. 179).  Write `X = τ(M, θ, ξ)` in `U ⊆ ℝⁿ`, `n = m + 1`, and `e = (e₁, …, eₙ)`; on `ℝⁿ`,
+`Hⁿ = μHE[n]` is Lebesgue measure.  By `Submission.ind_top_orthonormal_frame_sign`,
+`ξ = ±e₁ ∧ ⋯ ∧ eₙ` a.e. on `M`, so `ξ(x)(α) = σ(x) α(e)` with the sign
+`σ(x) = ξ(x)(dx¹ ∧ ⋯ ∧ dxⁿ) = ±1`.  The density is `u = θσ` on `M` and `u = 0` off `M`. -/
+theorem Submission.ind_top_dim_integer_density :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (X : GeometricCurrentOn U (m + 1)),
+      IsIntegerMultiplicity X → ∃ u : Eucl (m + 1) → ℝ,
+        (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∃ k : ℤ, u x = k) ∧
+        (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) ∧
+        ∀ ω : TestFormOn U (m + 1), X ω = ∫ x in U, u x *
+          (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+            (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume := by
+  intro m U X hX
+  -- Step 1: `X = τ(M, θ, ξ)` with `θ` integer-valued on `M`; `μHE[m + 1]` is `volume`.
+  obtain ⟨M, θ, ξ, hT, hθ, hXω⟩ := hX
+  have hvol : (μHE[m + 1] : Measure (Eucl (m + 1))) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume (m + 1)
+  have hM : NullMeasurableSet M volume := by
+    simpa only [hvol] using hT.nullMeasurableSet
+  have hξ : AEStronglyMeasurable ξ (volume.restrict M) := by
+    simpa only [hvol] using hT.aestronglyMeasurable
+  have horients := hT.orients
+  rw [hvol] at horients
+  set e : Fin (m + 1) → Eucl (m + 1) := fun i => EuclideanSpace.single i (1 : ℝ) with he
+  -- Step 2: the volume covector `vol = dx¹ ∧ ⋯ ∧ dxⁿ` has `vol(e) = det 1 = 1`.
+  set vol : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) fun j => EuclideanSpace.proj j with hvol_def
+  have hvol_e : vol e = 1 := by
+    rw [hvol_def, wedgeCovectors_apply_det]
+    convert Matrix.det_one (n := Fin (m + 1)) (R := ℝ)
+    ext i j
+    simp [he, Matrix.one_apply]
+  -- Step 3: `ξ = ±e₁ ∧ ⋯ ∧ eₙ` a.e. on `M`.
+  have hsign : ∀ᵐ x ∂volume.restrict M, ξ x = simpleNVector e ∨ ξ x = -simpleNVector e := by
+    filter_upwards [horients] with x hx
+    obtain ⟨τ, hτ, -, hξτ⟩ := hx
+    rcases Submission.ind_top_orthonormal_frame_sign (m + 1) τ hτ with h | h <;>
+      rcases hξτ with hξτ | hξτ
+    · exact Or.inl (hξτ.trans h)
+    · exact Or.inr (by rw [hξτ, h])
+    · exact Or.inr (hξτ.trans h)
+    · refine Or.inl (ContinuousLinearMap.ext fun α => ?_)
+      rw [hξτ, _root_.neg_apply, h, _root_.neg_apply, neg_neg]
+  -- Step 4: the sign `σ(x) = ξ(x)(vol)`; a.e. on `M`, `σ = ±1` and `ξ(x)(α) = σ(x) α(e)`.
+  set σ : Eucl (m + 1) → ℝ := fun x => ξ x vol
+  have hσm : AEStronglyMeasurable σ (volume.restrict M) :=
+    (continuous_eval_const vol).comp_aestronglyMeasurable hξ
+  have hσ : ∀ᵐ x ∂volume.restrict M, (σ x = 1 ∨ σ x = -1) ∧
+      ∀ α : Covector (Eucl (m + 1)) (m + 1), ξ x α = σ x * α e := by
+    filter_upwards [hsign] with x hx
+    rcases hx with hx | hx
+    · have h1 : σ x = 1 := by
+        show ξ x vol = 1
+        rw [hx, simpleNVector_apply, hvol_e]
+      exact ⟨Or.inl h1, fun α => by rw [h1, one_mul, hx, simpleNVector_apply]⟩
+    · have h1 : σ x = -1 := by
+        show ξ x vol = -1
+        rw [hx, _root_.neg_apply, simpleNVector_apply, hvol_e]
+      exact ⟨Or.inr h1, fun α => by
+        rw [h1, neg_one_mul, hx, _root_.neg_apply, simpleNVector_apply]⟩
+  -- Step 5: `u = θσ` on `M` and `u = 0` off `M`.
+  refine ⟨M.indicator fun x => θ x * σ x, ?_, ?_, ?_⟩
+  · -- Step 6: `u` is integer-valued a.e.
+    filter_upwards [(ae_restrict_iff'₀ hM).1 hσ] with x hx
+    by_cases hxM : x ∈ M
+    · obtain ⟨k, hk⟩ := hθ x hxM
+      rcases (hx hxM).1 with h1 | h1
+      · exact ⟨k, by simp [Set.indicator_of_mem hxM, hk, h1]⟩
+      · exact ⟨-k, by simp [Set.indicator_of_mem hxM, hk, h1]⟩
+    · exact ⟨0, by simp [Set.indicator_of_notMem hxM]⟩
+  · -- Step 7: `θ` is integrable on `M ∩ K` and `|σ| ≤ 1`, so `u` is integrable on `K`.
+    intro K hK hKU
+    rw [integrableOn_indicator_iff hM]
+    have hθK : IntegrableOn θ (M ∩ K) volume := by
+      simpa only [hvol] using hT.integrableOn K hK hKU
+    refine Integrable.mul_bdd (c := 1) hθK
+      (hσm.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl)) ?_
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset
+      (Set.inter_subset_left : M ∩ K ⊆ M) hσ] with x hx
+    rcases hx.1 with h1 | h1 <;> simp [h1]
+  · -- Step 8: `X(ω) = ∫_M θσ ω(e) dx = ∫_U u ω(e) dx`.
+    intro ω
+    have hMU : NullMeasurableSet M (volume.restrict U) := hM.mono Measure.restrict_le_self
+    rw [hXω ω, tauAction, hvol]
+    calc ∫ x in M, θ x * ξ x ((ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x) ∂volume
+        = ∫ x in M, θ x * σ x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e ∂volume := by
+          refine integral_congr_ae ?_
+          filter_upwards [hσ] with x hx
+          rw [hx.2]
+          ring
+      _ = ∫ x in U, M.indicator (fun x =>
+            θ x * σ x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e) x ∂volume := by
+          rw [integral_indicator₀ hMU, Measure.restrict_restrict₀ hMU,
+            Set.inter_eq_left.2 hT.subset]
+      _ = ∫ x in U, M.indicator (fun x => θ x * σ x) x *
+            (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e ∂volume := by
+          congr 1
+          funext x
+          by_cases hx : x ∈ M <;> simp [hx]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
