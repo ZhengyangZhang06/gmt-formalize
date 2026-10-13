@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.ball_mass_positive-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "depth": 6,
+  "title": "Converging normal averages force positive mass on every ball",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, ν : ℝ^P → ℝ^P and y, v ∈ ℝ^P with v ≠ 0. Let A(ρ) := μ(B̄_ρ(y))_ℝ^{-1} ∫_{B̄_ρ(y)} ν dμ, where μ(·)_ℝ = ENNReal.toReal, 0^{-1} = 0 and the integral is the Bochner integral. Suppose A(ρ) → v as ρ → 0⁺ (filter 𝓝[>] 0). Then μ(B̄_r(y)) ≠ 0 for every r > 0.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P), v ≠ 0 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0",
+  "lean_name": "codim1_rdo_dg_vdl_measure_closedBall_ne_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e52dbfce56-a1"
+}

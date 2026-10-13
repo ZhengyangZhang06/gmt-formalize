@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.discrete_growth-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "depth": 6,
+  "title": "Discrete integration of the isoperimetric difference inequality",
+  "statement": "Let m ∈ ℕ, K ∈ ℝ with K > 0, ρ₁ ∈ ℝ and V : ℝ → ℝ. Assume (i) V(r) > 0 for every r with 0 < r < ρ₁, and (ii) V(ρ)^{m/(m+1)} ≤ (K/δ)·(V(ρ+δ) − V(ρ)) for all ρ > 0, δ > 0 with ρ + δ < ρ₁, where x^{m/(m+1)} is the real power (Real.rpow). Then (ρ/(2K(m+1)))^{m+1} ≤ V(ρ) (natural power m+1) for every ρ with 0 < ρ < ρ₁.",
+  "lean_statement": "∀ (m : ℕ) (K ρ₁ : ℝ) (V : ℝ → ℝ), 0 < K → (∀ r : ℝ, 0 < r → r < ρ₁ → 0 < V r) → (∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → V ρ ^ ((m : ℝ) / (m + 1)) ≤ K / δ * (V (ρ + δ) - V ρ)) → ∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → (ρ / (2 * K * (m + 1))) ^ (m + 1) ≤ V ρ",
+  "lean_name": "codim1_rdo_dg_vdl_discrete_growth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c16f795a32-a1"
+}
