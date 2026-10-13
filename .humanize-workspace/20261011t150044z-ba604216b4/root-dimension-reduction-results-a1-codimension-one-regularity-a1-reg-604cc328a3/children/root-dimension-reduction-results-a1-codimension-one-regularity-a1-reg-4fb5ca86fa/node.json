@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.image_ball_borel_finite-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "The image of an open ball under a C¹ map is Borel and has finite H^n measure",
+  "statement": "Let P, n ∈ ℕ, let g : ℝ^n → ℝ^P be a C¹ map, c ∈ ℝ^n and r ∈ ℝ. Then the image g(B_r(c)) of the open ball, which is empty if r ≤ 0, is a Borel subset of ℝ^P, and H^n(g(B_r(c))) < ∞, where H^n = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r : ℝ), ContDiff ℝ 1 g → MeasurableSet (g '' ball c r) ∧ μHE[n] (g '' ball c r) ≠ ∞",
+  "lean_name": "codim1_rdo_c1cov_image_ball_borel_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4fb5ca86fa-a1"
+}
