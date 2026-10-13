@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1153976268dea953631807441150e41d46a68a0d254cb1bb37baa936cebf7975",
+  "git_delta": {
+    "base_commit": "9a8a03041411292a5b3c1e46effb42b6a8a0e80b",
+    "candidate_commit": "116835ef2e810b9f079cad18ee40b0a8f84f4b64",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_gram_det_pos",
+    "diff_sha256": "e7309a6426bee2f5fd3d19dd798ae95bab446174a303b653a6718fdfacb7f47d",
+    "source_sha256": "cdb6366ef552ba3fd6c1e86f71bae02ad87d5f3a86817b9564338d942f06c465",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_gram_det_pos",
+      "statement": "∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
