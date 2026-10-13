@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "^(import|namespace|open|abbrev|def|structure)|IsLocallyHolderCkα|HasGeneralizedMeanCurvature|graphPoint|tangentProj|def support|def divM",
+        "dohr_vel_|dohr_vertical_euler_lagrange",
+        "\"lean_name\": \"dohr_vel_",
+        "theorem addHaar_image_linearMap|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|theorem hausdorffMeasure_image_le|theorem inv_def|det_one_add_smul|theorem MeasurableSet.image_of_continuousOn_injOn|theorem ContinuousOn.measurableEmbedding|setIntegral_withDensity_eq_setIntegral_smul|theorem MeasurableEmbedding.integral_map|theorem measurable_fderiv",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 -I GMT/Scratch/dohr_vel/v3/comparator_modules.py.txt .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/decomposition-v3.json /tmp/dohr-vel-independent-audit-jmfneknk/comparator",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean --root=/tmp/dohr-vel-independent-audit-jmfneknk/src -o /tmp/dohr-vel-independent-audit-jmfneknk/build/GMT/Ch05/Submission.olean /tmp/dohr-vel-independent-audit-jmfneknk/src/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env python3 /tmp/dohr-vel-independent-audit-jmfneknk/run_followups.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/NonsingularInverse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-euler-lagrange-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_linear_graph_area.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_fderiv.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_holder_rigid_transport.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_area_integrand_fderiv.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_projection_trace.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_area_formula.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_graph_area_transport.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/children/dohr_vel_vertical_test_field.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_vel/v3/parent_assembly_dohr_vertical_euler_lagrange.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/dohr-vel-independent-audit-jmfneknk/IndependentTypes.lean",
+        "/tmp/dohr-vel-independent-audit-jmfneknk/submission.log",
+        "/tmp/dohr-vel-independent-audit-jmfneknk/Parent.log",
+        "/tmp/dohr-vel-independent-audit-jmfneknk/ComparatorSolutions.log",
+        "/tmp/dohr-vel-independent-audit-jmfneknk/leaf-insertion.log",
+        "/tmp/dohr-vel-independent-audit-jmfneknk/ImportProbe-direct.log"
+      ],
+      "conclusion": "Verified the pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; workspace contract/submission match the snapshot. The split is appropriate for the selected Euler–Lagrange theorem: the children establish rigid transport, graph calculus, area transport and admissible vertical variations. The cited area-formula theorem, normDet and PosDef are unavailable under the frozen imports. Snapshot lemmas confirm arbitrary-set linear measure scaling, measurable-embedding integral transport for arbitrary integrands, and the derivative identities used. All eight frozen types independently elaborate against Contract without child implementations; their ordinary matrix identity, addition and nonsingular inverse were independently checked. All supplied child proofs compile unchanged with only propext, Classical.choice and Quot.sound, and pass single-theorem insertion checks. Comparator solution terms compile. The supplied parent assembly has exactly the handoff type and compiles using only these children and the exact pre-existing tangent-plane sibling contract. Dependencies are correctly directed and acyclic. Names are bare, distinct and unreserved; snapshot searches found no matching declarations, and other branch records reserve none. Each prose proof was independently checked rather than accepted from prior audit results."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "linear_graph_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary sets and zero dimensions. The injective graph map factors through orthonormal range coordinates; the Gram determinant is a nonzero determinant squared. Isometry invariance and arbitrary-set Haar scaling then prove the stated measure identity without a hidden measurability hypothesis."
+    },
+    {
+      "key": "graph_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sole differentiability hypothesis suffices. The proof constructs the continuous linear pairing map, applies the product and composition derivative rules, and uses derivative uniqueness to obtain both exact conclusions. No additional regularity or dependency is assumed."
+    },
+    {
+      "key": "holder_rigid_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the frozen local Hölder definition for every q and real alpha. The inverse affine isometry proves openness; composition proves C^q regularity. The cited iterated-derivative identities hold without additional smoothness assumptions, and norm preservation transports the compact-set Hölder bound exactly."
+    },
+    {
+      "key": "area_integrand_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses only its declared dependency for determinant positivity. Polynomial differentiability, the determinant expansion, the square-root chain rule and inverse symmetry give the exact indexed formula with the correct factor. The inline inverse is independently verified as the ordinary matrix inverse."
+    },
+    {
+      "key": "graph_projection_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the rotation direction match the Lean type. The Gram projection formula follows from range membership and orthogonality; conjugation by Q.symm and the rank-one trace identity give the stated sum. Determinant positivity comes solely from the declared linear-area dependency."
+    },
+    {
+      "key": "graph_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof establishes the full set-level formula: local derivative control gives two-sided Lipschitz comparisons, Jacobian continuity controls the density, measurable disjointification permits countable additivity, and the extended-real limit removes the error factor. Open-domain C^1 regularity supplies every needed hypothesis; no area-formula or parent circularity occurs."
+    },
+    {
+      "key": "graph_area_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose explicitly matches the arbitrary-integrand Bochner contract. The graph identity identifies the image domain, the area dependency proves the pushforward measure identity, and measurable-embedding and finite-density integral identities apply without integrand measurability or integrability. Neither positivity of s nor openness of U is silently required."
+    },
+    {
+      "key": "vertical_test_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact graph image admits the stated interior cutoff, yielding C^1 regularity and compact support strictly inside the ambient ball. The separate support and complement cases prove the value and derivative identities for every x, including outside the parameter ball, without assuming regularity of u there. All quantified hypotheses match."
+    }
+  ],
+  "required_changes": []
+}

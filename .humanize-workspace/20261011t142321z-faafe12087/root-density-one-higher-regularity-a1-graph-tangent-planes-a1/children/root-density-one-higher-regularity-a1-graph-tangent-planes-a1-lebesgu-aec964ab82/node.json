@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.lebesgue_point_growth-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "Lebesgue points for a measure with n-dimensional growth (Besicovitch differentiation)",
+  "statement": "Let n, l be natural numbers, nu a measure on the Borel sets of R^(n+l), f : R^(n+l) -> R nu-integrable, and C real with nu(B_r(z)) <= C r^n for every z and every r > 0 (B_r closed balls; the inequality is in [0, infinity] via ENNReal.ofReal). Then for nu-a.e. y, ENNReal.ofReal (r^{-n}) * (lintegral over B_r(y) of the extended norm |f(w) - f(y)|_e dnu(w)) tends to 0 in [0, infinity] as r -> 0+.",
+  "lean_statement": "∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ) (C : ℝ), Integrable f ν → (∀ (z : Amb n ℓ) (r : ℝ), 0 < r → ν (closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)) → ∀ᵐ y ∂ν, Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dohr_tp_ae_lebesgue_point_of_growth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-lebesgu-aec964ab82-a1"
+}

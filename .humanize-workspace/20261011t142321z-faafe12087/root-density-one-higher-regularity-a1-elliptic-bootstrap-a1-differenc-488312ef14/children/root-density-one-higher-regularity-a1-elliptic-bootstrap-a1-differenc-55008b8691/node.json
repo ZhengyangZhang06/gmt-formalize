@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1.c1holder_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1",
+  "depth": 4,
+  "title": "Uniform C^{1,alpha} bounds pass to limits that are uniform on compact subsets of a ball",
+  "statement": "Let n, l be natural numbers, iota a type with a filter l ≠ ⊥, F : iota -> (R^n -> R^l), G : R^n -> R^l, x0 ∈ R^n, and rho, alpha, M real with alpha > 0; let B := B_rho(x0) be the open ball, and write DF_i := fderiv ℝ (F i). Assume three eventual properties (each for l-eventually all i): F_i is differentiable at every point of B; ‖DF_i(x)‖ ≤ M for all x ∈ B; ‖DF_i(x) - DF_i(y)‖ ≤ M |x - y|^alpha for all x, y ∈ B. Assume also that F_i -> G uniformly on every compact K ⊆ B along l. Then G is C^1 on B, ‖DG(x)‖ ≤ M for all x ∈ B, and ‖DG(x) - DG(y)‖ ≤ M |x - y|^alpha for all x, y ∈ B, where DG := fderiv ℝ G.",
+  "lean_statement": "∀ (n ℓ : ℕ) (ι : Type) (l : Filter ι), l.NeBot → ∀ (F : ι → Rn n → Rn ℓ) (G : Rn n → Rn ℓ) (x₀ : Rn n) (ρ α M : ℝ), 0 < α → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, DifferentiableAt ℝ (F i) x) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x‖ ≤ M) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x - fderiv ℝ (F i) y‖ ≤ M * ‖x - y‖ ^ α) → (∀ K : Set (Rn n), IsCompact K → K ⊆ ball x₀ ρ → TendstoUniformlyOn F G l K) → ContDiffOn ℝ 1 G (ball x₀ ρ) ∧ (∀ x ∈ ball x₀ ρ, ‖fderiv ℝ G x‖ ≤ M) ∧ ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ G x - fderiv ℝ G y‖ ≤ M * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_dql_c1Holder_of_tendstoUniformlyOn",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1.interpolation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1.interpolation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-differenc-55008b8691-a1"
+}

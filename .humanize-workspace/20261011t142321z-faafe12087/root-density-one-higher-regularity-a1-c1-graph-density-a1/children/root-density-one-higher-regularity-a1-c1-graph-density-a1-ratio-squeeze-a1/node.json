@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1.ratio_squeeze-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.c1_graph_density-a1",
+  "depth": 3,
+  "title": "Squeeze lemma for [0, ∞]-valued ratios as r decreases to 0",
+  "statement": "Let f : R → [0, ∞] and g : R → R. Suppose that for every δ > 0, for all r in some right neighbourhood of 0 (a set in the filter 𝓝[>] 0), g(r) > 0 and ENNReal.ofReal((1-δ) g(r)) <= f(r) <= ENNReal.ofReal((1+δ) g(r)). Then f(r)/ENNReal.ofReal(g(r)) → 1 in [0, ∞] as r → 0 with r > 0.",
+  "lean_statement": "∀ (f : ℝ → ℝ≥0∞) (g : ℝ → ℝ), (∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < g r ∧ ENNReal.ofReal ((1 - δ) * g r) ≤ f r ∧ f r ≤ ENNReal.ofReal ((1 + δ) * g r)) → Tendsto (fun r => f r / ENNReal.ofReal (g r)) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "dohr_ratio_tendsto_one_of_pinching",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-c1-graph-density-a1-ratio-squeeze-a1-a1"
+}

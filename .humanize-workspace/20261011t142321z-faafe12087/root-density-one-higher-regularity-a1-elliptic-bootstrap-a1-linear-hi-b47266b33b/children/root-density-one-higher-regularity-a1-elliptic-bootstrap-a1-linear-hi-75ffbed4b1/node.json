@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.cover_holder_one-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1",
+  "depth": 4,
+  "title": "Local ball-wise C^{1,alpha} bounds give C^{1,alpha} on compact subsets (covering argument)",
+  "statement": "Let n be a natural number, E a real normed space, alpha > 0, U an open subset of R^n and F : R^n -> E. Assume every x in U has a radius R > 0 such that the open ball B_R(x) is contained in U, F is C^1 on B_R(x), and for some constant C, ||DF(y) - DF(z)|| <= C |y - z|^alpha for all y, z in B_R(x) (DF = fderiv). Then F is C^1 on U, and for every compact K contained in U there is C with ||D^1F(x) - D^1F(y)|| <= C |x - y|^alpha for all x, y in K, where D^1F = iteratedFDeriv R 1 F.",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (α : ℝ) (U : Set (Rn n)) (F : Rn n → E), 0 < α → IsOpen U → (∀ x ∈ U, ∃ R : ℝ, 0 < R ∧ ball x R ⊆ U ∧ ContDiffOn ℝ 1 F (ball x R) ∧ ∃ C : ℝ, ∀ y ∈ ball x R, ∀ z ∈ ball x R, ‖fderiv ℝ F y - fderiv ℝ F z‖ ≤ C * ‖y - z‖ ^ α) → ContDiffOn ℝ 1 F U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 F x - iteratedFDeriv ℝ 1 F y‖ ≤ C * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_lhr_cover_holder_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-75ffbed4b1-a1"
+}

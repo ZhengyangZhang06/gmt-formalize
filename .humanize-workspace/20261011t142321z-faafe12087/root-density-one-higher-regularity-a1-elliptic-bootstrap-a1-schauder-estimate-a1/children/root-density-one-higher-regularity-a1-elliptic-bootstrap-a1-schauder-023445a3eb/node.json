@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+  "depth": 4,
+  "title": "Caccioppoli inequality for C^1 weak solutions of constant-coefficient Legendre-elliptic systems",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l), lam > 0 and Lam real. There is a constant C >= 0 with the following property. Let A be a continuous bilinear form on L with A[P][P] >= lam ||P||^2 and |A[P][Q]| <= Lam ||P|| ||Q|| for all P, Q in L. Let V : R^n -> R^l, y in R^n, rho > 0 and c in R^l. Assume V is C^1 on B_{2 rho}(y), and the integral over R^n of A[DV(x)][Dzeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l with tsupport zeta in B_{2 rho}(y). Then the lower Lebesgue integral over B_rho(y) of ||DV||^2 is at most (C / rho^2) times the lower Lebesgue integral over B_{2 rho}(y) of |V - c|^2 (values in [0, infinity]; the right side may be infinite).",
+  "lean_statement": "∀ (n ℓ : ℕ) (lam Lam : ℝ), 0 < lam → ∃ C : ℝ, 0 ≤ C ∧ ∀ (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (y : Rn n) (ρ : ℝ) (c : Rn ℓ), (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → 0 < ρ → ContDiffOn ℝ 1 V (ball y (2 * ρ)) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball y (2 * ρ) → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2",
+  "lean_name": "dohr_eb_sch_caccioppoli_const_coeff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-023445a3eb-a1"
+}

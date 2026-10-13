@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_comp-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "Composition preserves the local Hoelder class C^{m,alpha}_loc",
+  "statement": "Let E1, E2, E3 be real normed spaces, m in N, 0 < alpha <= 1, U in E1 and V in E2 open, f : E1 -> E2 with f(U) contained in V, h : E2 -> E3, and assume 1 <= m or f is C^1 on U or h is C^1 on V. If f is C^m on U with D^m f alpha-Hoelder on every compact subset of U, and h is C^m on V with D^m h alpha-Hoelder on every compact subset of V, then h o f is C^m on U and D^m(h o f) is alpha-Hoelder on every compact subset of U (D^j = iteratedFDeriv R j).",
+  "lean_statement": "∀ (E₁ E₂ E₃ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃] (m : ℕ) (α : ℝ) (f : E₁ → E₂) (h : E₂ → E₃) (U : Set E₁) (V : Set E₂), 0 < α → α ≤ 1 → IsOpen U → IsOpen V → MapsTo f U V → (1 ≤ m ∨ ContDiffOn ℝ 1 f U ∨ ContDiffOn ℝ 1 h V) → ContDiffOn ℝ m f U → (∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m f x - iteratedFDeriv ℝ m f y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m h V → (∀ K : Set E₂, IsCompact K → K ⊆ V → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m h x - iteratedFDeriv ℝ m h y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m (h ∘ f) U ∧ ∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (h ∘ f) x - iteratedFDeriv ℝ m (h ∘ f) y‖ ≤ C * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_holder_comp",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_of_contdiff_succ-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_of_contdiff_succ-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-comp-a1-a1"
+}

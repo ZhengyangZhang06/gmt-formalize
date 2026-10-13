@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.area_integrand_fderiv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Jacobi formula for the derivative of the graph area integrand",
+  "statement": "Let n, l be natural numbers and e_a = EuclideanSpace.single a 1 the standard basis of R^n. For P in L(R^n, R^l) let g(P) be the n x n matrix g(P)_{ab} := delta_{ab} + <P e_a, P e_b> (the matrix 1 + Matrix.of (fun a b => inner (P e_a) (P e_b))) and J(P) := sqrt(det g(P)) (the area integrand of the graph). Then for every P in L(R^n, R^l), J is Frechet differentiable at P, and for every Psi in L(R^n, R^l), DJ(P)[Psi] = J(P) * sum_{a,c} (g(P)^{-1})_{ac} <P e_c, Psi e_a>, where g(P)^{-1} is the matrix inverse.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, DifferentiableAt ℝ (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))))) P ∧ ∀ Ψ : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))))) P Ψ = Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))) * ∑ a : Fin n, ∑ c : Fin n, ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))⁻¹ a c * inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ)))",
+  "lean_name": "dohr_vel_area_integrand_fderiv",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-area-integrand-fderiv-a1-a1"
+}

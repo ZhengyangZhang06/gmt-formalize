@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+  "depth": 4,
+  "title": "Liouville theorem: C^{1,alpha} entire weak solutions of constant-coefficient Legendre systems have constant gradient",
+  "statement": "Let n, l be natural numbers, 0 < alpha < 1, lam > 0, Lam and K real. Let A be a continuous bilinear form on L := L(R^n, R^l) with A[P][P] >= lam ||P||^2 and |A[P][Q]| <= Lam ||P|| ||Q|| for all P, Q. Let W : R^n -> R^l be C^1 with ||DW(x) - DW(y)|| <= K |x - y|^alpha for all x, y. Assume the integral over R^n of A[DW(x)][Dzeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l. Then DW(x) = DW(y) for all x, y in R^n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α lam Lam K : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 < lam → (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∀ x y : Rn n, fderiv ℝ W x = fderiv ℝ W y",
+  "lean_name": "dohr_eb_sch_liouville_const_coeff",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-3569f08ba2-a1"
+}

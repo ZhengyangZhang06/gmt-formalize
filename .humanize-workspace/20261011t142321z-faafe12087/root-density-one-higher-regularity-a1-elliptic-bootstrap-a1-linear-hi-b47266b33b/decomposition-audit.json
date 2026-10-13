@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "schauder|campanato|caccioppoli|difference quotient|dohr_eb_lhr_",
+        "campanato|caccioppoli|legendre.hadamard|schauder",
+        "contDiffOn_of_locally_contDiffOn|continuousOn_fderiv_of_isOpen|lebesgue_number_lemma_of_metric|norm_image_sub_le_of_norm_fderiv_le|norm_image_sub_le_of_norm_hasDerivWithin_le|iteratedFDeriv_one_apply|norm_iteratedFDeriv_one|EventuallyEq.iteratedFDeriv|iteratedFDeriv_sub_apply|iteratedFDeriv_sum_apply",
+        "tsupport_fderiv_subset|fderiv_comp_add_right|fderiv_comp_sub|isSymmSndFDerivAt|exists_cthickening_subset_open|uniformContinuousOn_of_continuous|theorem IsCompact.cthickening|def coord|theorem sum_repr|coe_toContinuousLinearMap",
+        "integral_mul_right_eq_self|integral_add_right_eq_self|Continuous.integrable_of_hasCompactSupport|setIntegral_eq_integral_of_forall_compl_eq_zero|exists_bound_of_continuousOn|contDiffOn_clm_apply",
+        "python3 /tmp/lhr-independent-audit-hfbj8fnv/Audit/run_check.py ChallengesStandalone.lean",
+        "python3 /tmp/lhr-independent-audit-hfbj8fnv/Audit/run_check.py AssemblyStandalone.lean",
+        "python3 /tmp/lhr-independent-audit-hfbj8fnv/Audit/run_check.py Instances.lean",
+        "python3 /tmp/lhr-independent-audit-hfbj8fnv/Audit/run_check.py InlineConstructions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-b47266b33b/parent-child-handoff.json",
+        "/tmp/lhr-independent-audit-hfbj8fnv/Audit/ChallengesStandalone.lean",
+        "/tmp/lhr-independent-audit-hfbj8fnv/Audit/AssemblyStandalone.lean",
+        "/tmp/lhr-independent-audit-hfbj8fnv/Audit/Instances.lean",
+        "/tmp/lhr-independent-audit-hfbj8fnv/Audit/InlineConstructions.lean"
+      ],
+      "conclusion": "Confirmed project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Searches found no matching elliptic-regularity declaration; Schauder matches concern bases or project commentary. All six exact one-line propositions elaborate independently in the frozen Contract scope. Continuous-linear-map instances, the quotient functional formula, and the first-derivative norm-difference conversion pass independent Lean checks; no Matrix/IsUnit construction occurs. All six names are fresh bare identifiers. Empty child dependency lists are justified, and the selected parent's dependency closure is acyclic. The accepted Hölder-lowering sibling retains its identical frozen type and successful comparator evidence. The split is appropriate: with the six child and five inherited sibling contracts assumed, the supplied assembly proves the exact selected parent type by induction. Its axiom closure contains precisely those eleven obligations plus propext, Classical.choice and Quot.sound, with no sorryAx or selected-parent axiom."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cover_holder_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. Locality establishes C¹ regularity and continuity of DF; compactness bounds DF. The finite cover and Lebesgue number handle near pairs, the derivative bound handles far pairs, and the curry isometry transfers the estimate to iteratedFDeriv. No extra hypothesis or circular reliance is needed."
+    },
+    {
+      "key": "coeff_uniform_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. Finite-dimensional coordinates give simultaneous component and derivative bounds. Convexity supports the mean-value estimate, and bounded diameter converts Lipschitz bounds to α-Hölder bounds. Summation gives one constant for all P,Q. Empty sets, zero-dimensional L and α=1 introduce no gap."
+    },
+    {
+      "key": "dq_weak_equation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The globally defined continuous-linear-functional expression gives the exact required Ψ formula. The proof establishes support containment, continuity and integrability before translating and subtracting the weak identities. The derivative formula is used only where v is differentiable. Coefficient continuity suffices; no undeclared child result is used."
+    },
+    {
+      "key": "dq_uniform_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five conclusions match the prose and are proved. Compact component bounds are chosen before d; the scalar mean-value argument handles either sign of d. The product expansion yields a d-independent constant for the new data. Only the qualitative Hölder constant for Dw_d depends on d, as the type permits."
+    },
+    {
+      "key": "differentiated_system",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The basis-defined Ψ satisfies the exact on-U formula with Dv(x) frozen. C² symmetry identifies Dv_e with D(Dv)e. Translated test functions remain admissible, and the detailed uniform-convergence argument on a compact thickening justifies passing to the integral limit. The required symmetry import is explicitly identified; no circular dependence occurs."
+    },
+    {
+      "key": "holder_loc_sub_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match, including arbitrary α, j=0 and an empty finite sum. Openness makes equality on U into neighborhood equality, justifying equality of global iterated derivatives despite modifications outside U. Derivative linearity and the finite-sum triangle inequality prove the compact Hölder estimate without additional assumptions."
+    }
+  ],
+  "required_changes": []
+}

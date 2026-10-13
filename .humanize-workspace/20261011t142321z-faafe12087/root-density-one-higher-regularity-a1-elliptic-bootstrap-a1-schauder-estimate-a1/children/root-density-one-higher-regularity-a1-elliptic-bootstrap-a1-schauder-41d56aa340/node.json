@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.interpolation-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+  "depth": 4,
+  "title": "Interpolation bound for the gradient from sup|w| and the Hoelder seminorm of Dw",
+  "statement": "Let n, l be natural numbers, w : R^n -> R^l, x in R^n, and rho, t, alpha, S, K real numbers with alpha >= 0, K >= 0 and 0 < t < rho. Assume w is C^1 on the open ball B_rho(x), |w(y)| <= S for all y in B_rho(x), and ||Dw(y) - Dw(z)|| <= K |y - z|^alpha for all y, z in B_rho(x). Then ||Dw(x)|| <= 2S/t + t^alpha K (operator norm).",
+  "lean_statement": "∀ (n ℓ : ℕ) (w : Rn n → Rn ℓ) (x : Rn n) (ρ t α S K : ℝ), 0 ≤ α → 0 ≤ K → 0 < t → t < ρ → ContDiffOn ℝ 1 w (ball x ρ) → (∀ y ∈ ball x ρ, ‖w y‖ ≤ S) → (∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖fderiv ℝ w y - fderiv ℝ w z‖ ≤ K * ‖y - z‖ ^ α) → ‖fderiv ℝ w x‖ ≤ 2 * S / t + t ^ α * K",
+  "lean_name": "dohr_eb_sch_fderiv_norm_interpolation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-41d56aa340-a1"
+}

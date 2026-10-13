@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1.bilinear_basis_bound-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1",
+  "depth": 5,
+  "title": "Continuous bilinear forms on a finite-dimensional normed space are controlled by their values on a basis",
+  "statement": "Let L be a finite-dimensional real normed space. There are a natural number N, vectors E_0, ..., E_{N-1} in L and a real constant c >= 0 such that the following hold for all continuous bilinear forms B, B' : L x L -> R and all P, Q in L:\n(i) |B(P,Q)| <= c (sum_{r,t} |B(E_r,E_t)|) ||P|| ||Q||;\n(ii) |B(P,Q) - B'(P,Q)| <= c (sum_{r,t} |B(E_r,E_t) - B'(E_r,E_t)|) ||P|| ||Q||.\nHere r and t range over 0, ..., N-1, and continuous bilinear forms are elements of L →L[ℝ] L →L[ℝ] ℝ.",
+  "lean_statement": "∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (E : Fin N → L) (c : ℝ), 0 ≤ c ∧ (∀ (B : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t)|) * ‖P‖ * ‖Q‖) ∧ ∀ (B B' : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q - B' P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t) - B' (E r) (E t)|) * ‖P‖ * ‖Q‖",
+  "lean_name": "dohr_eb_lhr_cub_bilinear_basis_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-ff53a35ecd-a1"
+}

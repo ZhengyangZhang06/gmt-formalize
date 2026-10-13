@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Where spt V is a C^1 graph, the approximate tangent planes of V are the graph tangent planes",
+  "statement": "Let n >= 1, U open in R^(n+l), V = v(M, theta) a rectifiable n-varifold in U, xi in R^(n+l), 0 < s <= R with the closed ball B_s(xi) contained in U, Q a linear isometry, and u : R^n -> R^l C^1 on the open ball of radius R about 0 with Q(spt V - xi) cap (open B_R(0)) = graph of u over the open ball cap (open B_R(0)). Then y -> V.tangentProj y is a.e.-strongly measurable for mu_V restricted to the open ball B_s(xi), and for mu_V-a.e. y in that ball and every x in the open ball of radius R with Q(y - xi) = (x, u(x)), V.tangentProj y is the orthogonal projection onto Q^{-1}(range DG(x)), G(z) := (z, u(z)), i.e. onto the rotated tangent plane of the graph at (x, u(x)).",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (s R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), 0 < s → s ≤ R → closedBall ξ s ⊆ U → ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → AEStronglyMeasurable (fun y => V.tangentProj y) (V.weight.restrict (ball ξ s)) ∧ ∀ᵐ y ∂V.weight, y ∈ ball ξ s → ∀ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) → V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection",
+  "lean_name": "dohr_graph_tangent_planes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-a1"
+}

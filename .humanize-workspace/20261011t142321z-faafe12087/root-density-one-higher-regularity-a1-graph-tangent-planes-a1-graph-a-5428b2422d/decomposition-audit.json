@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "finAddEquivProd|finAddEquivProd_symm_apply|real_norm_sq_eq",
+        "norm_image_sub_le_of_norm_hasFDerivWithin_le|norm_image_sub_le_of_norm_fderiv_le",
+        "continuousOn_fderiv_of_isOpen|theorem ContDiffOn.differentiableOn",
+        "hausdorffMeasure_image_le",
+        "euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume",
+        "integral_indicator|integral_map|integral_mono_measure|integral_smul_measure|norm_integral_le_of_norm_le_const",
+        "theorem ContinuousOn.aemeasurable|lemma ContinuousOn.aemeasurable|theorem ContinuousOn.aestronglyMeasurable|lemma ContinuousOn.aestronglyMeasurable",
+        "def HasApproximateTangentSpaceAt|def blowUpMap",
+        "dohr_tp_gat_|rsod_graphPoint_eq_finAddEquivProd_symm|rsod_norm_graphPoint_sq",
+        "git show 18a457c495d0ee5b9257b1656886d4da963c6fd8:GMT/Ch05/Submission.lean",
+        "git show a2b4772332bc9c27da8217e3494b043a4d2dec4c:GMT/Ch05/Submission.lean",
+        "#print axioms GMT.Ch05.Submission.dohr_tp_graph_approx_tangent"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-5428b2422d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-poi-152c2738dc/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-norm-grap-4075ba9057/isolated-comparator-result.json",
+        "/tmp/gat-independent-audit-sa53m8th/Reuse.log",
+        "/tmp/gat-independent-audit-sa53m8th/ChildSmall.log",
+        "/tmp/gat-independent-audit-sa53m8th/ChildBig.log",
+        "/tmp/gat-independent-audit-sa53m8th/ParentAssembly.lean",
+        "/tmp/gat-independent-audit-sa53m8th/ParentAssembly.log"
+      ],
+      "conclusion": "The installed sources match the pinned project and Mathlib revisions; the frozen SimonGMT dependency is compatible and its measure-comparison lemma has only standard axioms. The inspected files support all calculus, measure, measurability and localization steps. The snapshot project search found no proposed names; the DAG contains only the two expressly reused, comparator-accepted declarations, with identical frozen types. All three new names remain unreserved. Independently generated challenge modules for all five children and the selected parent elaborate against a fresh frozen Submission without child implementations. Recompiled all five proofs and the exact parent assembly; their axioms are only propext, Classical.choice and Quot.sound. Every name is bare and every statement is a standalone one-line proposition. Euclidean norms and continuous-linear-map operator norms are used correctly. The split is appropriate: its independent, acyclic obligations establish dimension, blow-up estimates, integral convergence and localization for this exact selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_point_linear_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. The two coordinate cases prove the identity for all dimensions, including zero. The equivalence is used as a continuous linear equivalence. Reuse matches the exact comparator-accepted frozen type at commit 18a457c495d0ee5b9257b1656886d4da963c6fd8; its proof recompiles independently."
+    },
+    {
+      "key": "norm_graph_point_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Euclidean squared-norm formula and Fin.sum_univ_add prove exactly the stated identity without additional hypotheses or dependencies. Reuse matches the exact comparator-accepted frozen type at commit a2b4772332bc9c27da8217e3494b043a4d2dec4c; its proof recompiles independently."
+    },
+    {
+      "key": "blowup_two_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The positive scale bound ensures domain membership and derivative control; t > 0 justifies derivative cancellation. The convex mean-value inequality then gives the exact two-point estimate. Arbitrary radii, including empty negative-radius balls, are covered. The proof is complete and independent of the parent and siblings."
+    },
+    {
+      "key": "bilip_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The general compact-set contract matches its prose. H2 supplies continuity on K, the left-inverse hypotheses justify both measure comparisons, and the normalized Hausdorff image bound supplies finite mass. Restricted measurability, integrability, signed-function estimates and parameter choices are justified. H3 controls the remaining integrand error. No global regularity of F or circular tangent theorem is assumed."
+    },
+    {
+      "key": "setintegral_localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the full stated generality. Measurability of B suffices for integral_indicator and the required order of restrict_restrict; neither integrability nor measurability of S and T is needed. The two inclusions imply equality of their intersections with B, completing the exact integral identity."
+    }
+  ],
+  "required_changes": []
+}

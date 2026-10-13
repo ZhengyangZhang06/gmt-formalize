@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "sed -n '1,205p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "sed -n '430,455p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "rg -l 'dohr_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project GMT .lake/packages/simongmt/Poincare .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "rg -l 'Schauder|Campanato|Legendre.Hadamard|difference quotient|[Vv]arifold|dohr_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "sed -n '1060,1098p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "sed -n '285,375p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '130,190p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dohr-independent-audit/Check.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dohr-independent-audit/Axioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1/decomposition-v1.json",
+        "/tmp/dohr-check/final/Assembly.lean",
+        "/tmp/dohr-independent-audit/Check.lean",
+        "/tmp/dohr-independent-audit/Axioms.lean"
+      ],
+      "conclusion": "The pinned project and Mathlib revisions match the manifest; workspace Contract and Submission are byte-identical to their snapshots. Besicovitch differentiation, support conullness, Hausdorff invariance, the domain area formula, and weighted tangent uniqueness support the cited arguments. Their checked axiom sets contain only propext, Classical.choice and Quot.sound. The search found no relevant Schauder PDE theorem; Schauder matches concern bases, and the difference-quotient match concerns differentiation of limits. Chapter04 uses a stronger varifold structure, justifying the explicit local tangent and monotonicity obligations. All nine exact one-line propositions independently elaborate using the frozen definitions, without prior child declarations. Matrix entry checks confirm the identity matrix and intended Gram expression. A conditional assembly with the children and Allard theorem as hypotheses proves exactly DensityOneHigherRegularity, with only the standard logical axioms. All names are bare identifiers and unreserved across other DAG branches and proposals. Dependencies match the proofs and are acyclic. The split is appropriate for the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "locally_lp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U and every real p > 0. Compact-set finiteness follows from integrableOn_mult; continuity bounds h, and almost-everywhere replacement followed by the constant integral estimate proves exactly LocallyLp."
+    },
+    {
+      "key": "translate_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All structure fields and five conclusions are addressed. Translation preserves null measurability, rectifiability, multiplicity integrability and weight. Equality of weighted blow-up predicates justifies transport of the chosen tangent projection; change of variables then transfers support, local integrability and first variation. No openness hypothesis is silently required."
+    },
+    {
+      "key": "allard_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit Allard hypothesis makes this an independent obligation using the permitted inherited result. Density and local Lp control supply the scale. Translation, inversion of the isometry, passage to open balls, equality of interior derivatives, and the Hilbert–Schmidt-to-operator-norm estimate establish every stated conclusion."
+    },
+    {
+      "key": "c1_graph_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ellipsoid sandwich and localized injective area formula prove the normalized closed-ball limit at every graph point. The Jacobian cancels against the ellipsoid volume, giving limit one with the contract's Hausdorff normalization. Membership in the open parameter ball supplies the necessary positive local radius."
+    },
+    {
+      "key": "graph_tangent_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite graph restrictions justify Besicovitch differentiation of theta times the carrier indicator. The weighted blow-up calculation and dominated convergence establish the exact approximate-tangent predicate; positivity and uniqueness identify tangentProj. The continuous projection representative supplies the separate AEStronglyMeasurable conclusion. No multiplicity-one or mean-curvature result is assumed."
+    },
+    {
+      "key": "local_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated rank and measurability hypotheses suffice for the radial first-variation argument. The curvature estimate gives the claimed integrating-factor bounds with kappa = (p-n)/(4p). Passing through open-ball limits and right limits yields closed-ball monotonicity; local finiteness and the monotone limit yield the finite nonnegative density and both asserted limits."
+    },
+    {
+      "key": "local_multiplicity_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five conclusions match the Lean type and are proved. Local differentiation establishes density equals multiplicity; nearby-point monotonicity establishes the support lower bound without circularity. The estimate retains Lambda/omega_n, and integrality forces multiplicity one. Null-set transfer then gives the measure identity, density at every nearby support point, and the symmetric-difference statement for every smaller radius."
+    },
+    {
+      "key": "euler_lagrange",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Affine-isometry transport proves the exact local Hölder assertion. The compactly supported vertical field is admissible, and the declared tangent-plane dependency justifies its tangential divergence. Jacobi's formula and the area formula produce the stated derivative of J and the correct negative curvature integral. The inline matrix construction was independently checked."
+    },
+    {
+      "key": "elliptic_bootstrap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Small-gradient coercivity, Hölder data estimates, and the explicit inhomogeneous difference-quotient calculation justify the differentiated system. The regularity applications match [Giaquinta–Martinazzi, Theorems 5.19–5.20 and Proposition 8.6](https://www2.karlin.mff.cuni.cz/~kaplicky/pages/pages/2020z/gm.pdf). Induction reaches q+2 derivatives, and restriction to a smaller compactly contained ball supplies every global bound required by IsHolderCkα."
+    }
+  ],
+  "required_changes": []
+}

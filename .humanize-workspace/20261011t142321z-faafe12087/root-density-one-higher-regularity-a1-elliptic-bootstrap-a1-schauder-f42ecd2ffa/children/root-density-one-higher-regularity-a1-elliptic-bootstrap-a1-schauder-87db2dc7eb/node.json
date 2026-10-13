@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1.holder_improvement-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1",
+  "depth": 5,
+  "title": "One-step improvement of a scale-weighted Hoelder bound (steps 3-5 of the absorption argument)",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, g : R^n -> L, and reals alpha, M, A, Q with 0 < alpha <= 1, M >= 0, A >= 0 and Q >= 0. Call (y, rho) (y in R^n, rho real) admissible if rho > 0 and |y| + rho <= 1. Assume: (P1) for every admissible (y, rho) and all x, x' in B_{rho/2}(y): rho^{1+alpha} ||g(x) - g(x')|| <= Q |x - x'|^alpha; (P2) for every admissible (y, rho) and every real K such that ||g(x) - g(x')|| <= K |x - x'|^alpha for all x, x' in B_rho(y): rho^{1+alpha} ||g(x) - g(x')|| <= ((1/16) rho^{1+alpha} K + A) |x - x'|^alpha for all x, x' in B_{rho/2}(y); (P3) for every x in R^n and reals r, t, K with |x| + r <= 1, K >= 0, 0 < t < r and ||g(z) - g(z')|| <= K |z - z'|^alpha for all z, z' in B_r(x): ||g(x)|| <= 2M/t + t^alpha K. Then for every admissible (y, rho): (a) rho ||g(x)|| <= 32 M + Q/4 + 16 A for all x in B_{rho/2}(y); and (b) rho^{1+alpha} ||g(x) - g(x')|| <= (Q/2 + 512 M + 32 A) |x - x'|^alpha for all x, x' in B_{rho/2}(y).",
+  "lean_statement": "∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (α M A Q : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → 0 ≤ Q → (∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ Q * ‖x - x'‖ ^ α) → (∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖g x - g x'‖ ≤ K * ‖x - x'‖ ^ α) → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (1 / 16 * ρ ^ (1 + α) * K + A) * ‖x - x'‖ ^ α) → (∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r → (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖g z - g z'‖ ≤ K * ‖z - z'‖ ^ α) → ‖g x‖ ≤ 2 * M / t + t ^ α * K) → ∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y (ρ / 2), ρ * ‖g x‖ ≤ 32 * M + Q / 4 + 16 * A) ∧ ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α",
+  "lean_name": "dohr_eb_sch_ube_holder_improvement",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-87db2dc7eb-a1"
+}

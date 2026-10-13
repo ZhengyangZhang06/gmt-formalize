@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_half_ball-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "Local C^{j,alpha} on a ball gives global C^{j,alpha} (IsHolderCkα) on the half ball",
+  "statement": "For m, k, j in N, alpha in R, u : R^m -> R^k, x0 in R^m and r in R: if IsLocallyHolderCkα j alpha u (ball x0 r) then IsHolderCkα j alpha u (ball x0 (r/2)), i.e. u is C^j on the half ball, all derivatives of order <= j are bounded there by one constant, and D^j u is alpha-Hoelder there with one constant.",
+  "lean_statement": "∀ (m k j : ℕ) (α : ℝ) (u : Rn m → Rn k) (x₀ : Rn m) (r : ℝ), IsLocallyHolderCkα j α u (ball x₀ r) → IsHolderCkα j α u (ball x₀ (r / 2))",
+  "lean_name": "dohr_eb_isHolderCk_half_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-half-ball-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.graph_projection_trace-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Trace of a vertical map composed with the projection onto a rotated graph plane",
+  "statement": "Let n, l be natural numbers, e_a = EuclideanSpace.single a 1, P, Psi in L(R^n, R^l), L in L(R^n, R^(n+l)) with L v = graphPoint v (P v) for all v, Q a linear isometry equivalence of R^(n+l), and D in L(R^(n+l), R^(n+l)) with D(Q^{-1}(graphPoint v w)) = Q^{-1}(graphPoint 0 (Psi v)) for all v in R^n, w in R^l. Let p be the orthogonal projection of R^(n+l) onto the subspace Q^{-1}(range L) (Submodule.map Q.symm (LinearMap.range L)). Then trace(D o p) = sum_{a,c} (g^{-1})_{ac} <P e_c, Psi e_a>, where g is the n x n matrix g_{ab} = delta_{ab} + <P e_a, P e_b> and g^{-1} its matrix inverse.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (P Ψ : Rn n →L[ℝ] Rn ℓ) (L : Rn n →L[ℝ] Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Amb n ℓ →L[ℝ] Amb n ℓ), (∀ v : Rn n, L v = graphPoint v (P v)) → (∀ (v : Rn n) (w : Rn ℓ), D (Q.symm (graphPoint v w)) = Q.symm (graphPoint 0 (Ψ v))) → LinearMap.trace ℝ (Amb n ℓ) (D.toLinearMap ∘ₗ (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range L.toLinearMap)).starProjection.toLinearMap) = ∑ a : Fin n, ∑ c : Fin n, ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))⁻¹ a c * inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ)))",
+  "lean_name": "dohr_vel_graph_projection_trace",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-graph-project-33548acb88-a1"
+}

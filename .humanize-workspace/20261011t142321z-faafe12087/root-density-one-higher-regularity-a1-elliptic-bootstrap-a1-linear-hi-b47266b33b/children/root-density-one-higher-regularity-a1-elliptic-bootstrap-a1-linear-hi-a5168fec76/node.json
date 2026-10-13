@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1",
+  "depth": 4,
+  "title": "Uniform bound and uniform alpha-Hoelder bound for a bilinear-form field with C^1 components on a compact convex set",
+  "statement": "Let n, l be natural numbers, 0 < alpha <= 1, U an open subset of R^n, K a compact convex subset of U, L := L(R^n, R^l) with the operator norm, and a : R^n -> (continuous bilinear forms on L) such that for all P, Q in L the scalar function x ↦ a(x)[P][Q] is C^1 on U. Then there is M with |a(x)[P][Q]| <= M ||P|| ||Q|| and |a(x)[P][Q] - a(y)[P][Q]| <= M |x - y|^alpha ||P|| ||Q|| for all x, y in K and all P, Q in L.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α : ℝ) (U K : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ), 0 < α → α ≤ 1 → IsOpen U → IsCompact K → Convex ℝ K → K ⊆ U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → ∃ M : ℝ, ∀ x ∈ K, ∀ y ∈ K, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖ ∧ |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖",
+  "lean_name": "dohr_eb_lhr_coeff_uniform_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-a5168fec76-a1"
+}

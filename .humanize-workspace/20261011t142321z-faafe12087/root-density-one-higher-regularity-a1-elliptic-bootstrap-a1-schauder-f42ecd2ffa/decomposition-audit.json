@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "schauder|campanato|absorption|holder|hölder",
+        "campanato|schauder estimate|interior estimate|weighted.*holder|holder.*absorp",
+        "^(def Holder|theorem (le_csSup|csSup_le)|theorem (div_rpow|mul_rpow|rpow_add|rpow_pos_of_pos|rpow_le_one|rpow_le_rpow|one_le_rpow))",
+        "instNorm|norm_def|def opNorm|norm_apply_le",
+        "python3 /tmp/ube-independent-audit-3agoe35r/run_lean.py Checks/AllChallenges.lean",
+        "python3 /tmp/ube-independent-audit-3agoe35r/run_lean.py Checks/SuppliedProofs.lean",
+        "python3 /tmp/ube-independent-audit-3agoe35r/run_lean.py Checks/Assembly.lean",
+        "python3 /tmp/ube-independent-audit-3agoe35r/run_lean.py Checks/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Holder.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/ConditionallyCompleteLattice/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/UnifTight.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-f42ecd2ffa/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-f42ecd2ffa/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ube-independent-audit-3agoe35r/Checks/AllChallenges.lean",
+        "/tmp/ube-independent-audit-3agoe35r/Checks/SuppliedProofs.lean",
+        "/tmp/ube-independent-audit-3agoe35r/Checks/Assembly.lean",
+        "/tmp/ube-independent-audit-3agoe35r/Checks/Instances.lean"
+      ],
+      "conclusion": "The four-child split appropriately isolates obligations used by the selected unit-ball estimate. Snapshot pins and relevant build dependencies agree. Searches found no matching analytic absorption or Schauder estimate; the interior-estimate hit in UnifTight concerns Lp convergence. The inspected supremum and real-power lemmas support the supplied arguments. All four names are bare identifiers and unreserved across 486 DAG nodes. Dependencies, including the retained sibling dependency closure, are acyclic; sibling frozen types agree with their handoffs. Every child type is a standalone one-line proposition matching its prose and elaborates before child implementations exist. Independently compiling the supplied proofs, exact frozen-type solution targets, and parent assembly succeeded. Their axiom reports contain only propext, Classical.choice and Quot.sound. The parent assembly is conditional on the three existing sibling contracts. Reflexivity checks confirm operator norms, continuous-linear-map scalar actions and Real.rpow instances."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "holder_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Positive rho gives the stated bijection of open balls and permits cancellation of rho^alpha in both directions. The proof covers arbitrary r, alpha and c, including empty balls, without extra assumptions or circular reliance."
+    },
+    {
+      "key": "rescaled_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and five conclusions match. Admissibility maps the unit ball into itself and gives rho <= 1. H1, H2 and H5 transfer directly; H3 and H4 acquire factors rho^alpha and rho^(1+alpha), correctly bounded using alpha >= 0 and M >= 0. The scalar action has the intended instance."
+    },
+    {
+      "key": "holder_improvement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "P1 and P2 yield the local weighted constant H = Q/4 + 16A. P3 gives rho ||g(x)|| <= 32M + H/16^alpha. The two distance cases then prove both exact conclusions. All domain, positivity and exponent requirements are stated and justified, including alpha = 1; no undeclared dependency is used."
+    },
+    {
+      "key": "absorption",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Including zero makes T nonempty, and H7' bounds it by max(K0,0), including degenerate dimensions. P1 is established before invoking the sole dependency holder_improvement. The resulting supremum inequality gives Q <= 1024M + 64A and both claimed bounds. With g = Dw and A = 2C_delta M, the supplied assembly proves the selected parent's exact frozen conclusion."
+    }
+  ],
+  "required_changes": []
+}
