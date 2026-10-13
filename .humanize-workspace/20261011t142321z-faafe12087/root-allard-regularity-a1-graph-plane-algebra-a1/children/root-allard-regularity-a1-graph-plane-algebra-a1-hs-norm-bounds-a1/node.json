@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.hs_norm_bounds-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "Hilbert-Schmidt norm: comparison with the operator norm and triangle inequality",
+  "statement": "For all natural numbers m, k and all continuous linear maps A, B : R^m -> R^k (Rn m ->L[R] Rn k), writing hsNormSq A = sum_{i<m} |A e_i|^2 (e_i = EuclideanSpace.single i 1 the standard basis of R^m), hsNorm A = sqrt(hsNormSq A), and ||A|| for the operator norm: (i) ||A|| <= hsNorm A; (ii) hsNorm A <= sqrt(m) * ||A||; (iii) hsNorm (A + B) <= hsNorm A + hsNorm B.",
+  "lean_statement": "∀ (m k : ℕ) (A B : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt m * ‖A‖ ∧ hsNorm (A + B) ≤ hsNorm A + hsNorm B",
+  "lean_name": "allard52_gpa_hsNorm_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-hs-norm-bounds-a1-a1"
+}

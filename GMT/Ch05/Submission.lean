@@ -458,6 +458,46 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the Hilbert–Schmidt norm
+`|A| = (Σᵢ |A eᵢ|²)^{1/2}` of `A : ℝᵐ → ℝᵏ` is comparable with the operator norm,
+`‖A‖ ≤ |A| ≤ √m ‖A‖`, and satisfies the triangle inequality `|A + B| ≤ |A| + |B|`. -/
+theorem allard52_gpa_hsNorm_bounds : ∀ (m k : ℕ) (A B : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt m * ‖A‖ ∧ hsNorm (A + B) ≤ hsNorm A + hsNorm B := by
+  intro m k A B
+  refine ⟨?_, ?_, ?_⟩
+  · -- (i) `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- (ii) `|A eᵢ| ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` unit vectors, so `|A|² ≤ m ‖A‖²`.
+    have h1 : hsNormSq A ≤ m * ‖A‖ ^ 2 := by
+      calc hsNormSq A = ∑ i : Fin m, ‖A (EuclideanSpace.single i 1)‖ ^ 2 := rfl
+        _ ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+            refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+            simpa using A.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+        _ = m * ‖A‖ ^ 2 := by simp
+    calc hsNorm A = √(hsNormSq A) := rfl
+      _ ≤ √(m * ‖A‖ ^ 2) := Real.sqrt_le_sqrt h1
+      _ = Real.sqrt m * ‖A‖ := by
+          rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  · -- (iii) `|X|` is the norm of `(X eᵢ)ᵢ` in `L²(Fin m; ℝᵏ)`, and `X ↦ (X eᵢ)ᵢ` is additive.
+    let F : (Rn m →L[ℝ] Rn k) → PiLp 2 (fun _ : Fin m => Rn k) :=
+      fun X => WithLp.toLp 2 fun i => X (EuclideanSpace.single i 1)
+    have hF : ∀ X, hsNorm X = ‖F X‖ := fun X => by
+      rw [PiLp.norm_eq_of_L2]; rfl
+    rw [hF, hF, hF]
+    exact norm_add_le (F A) (F B)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
