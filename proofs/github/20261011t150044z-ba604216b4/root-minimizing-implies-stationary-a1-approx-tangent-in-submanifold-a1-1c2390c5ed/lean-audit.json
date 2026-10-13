@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2f1eced58a262a677f325c4bea0f1b876344d1604901223d697543653dffed74",
+  "git_delta": {
+    "base_commit": "3b4f96fe2459cf26487211f536157538d566158f",
+    "candidate_commit": "00b610c29ac1b1983a994a8a632b23db24cfb40e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "266f5b588373890a1bd7550a709503d4aacee35497cc46c408fffc65c1e15166",
+    "source_sha256": "9c86005181f6b99a9a2c2e9b93f190f21f24fb8cbfae6a2103fb18baf6e34c4e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.approxTangent_le_submanifold_tangentSpace",
+      "statement": "∀ (P n d : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), IsEmbeddedSubmanifold 1 d N → x ∈ N → μHE[n] (M \\ N) = 0 → HasApproximateTangentSpaceAt n M x Q → (Q : Set (Euclid P)) ⊆ tangentSpace N x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
