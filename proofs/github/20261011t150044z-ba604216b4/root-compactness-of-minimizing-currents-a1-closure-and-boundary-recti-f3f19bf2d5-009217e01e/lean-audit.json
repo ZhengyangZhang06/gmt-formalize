@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec9cfd178e0d54e09a118b302ddc3232d149a3c7bcaddd20adeba2f8b339cde7",
+  "git_delta": {
+    "base_commit": "0e43f129ada5fb8f445e89b1b7991bc261daed5d",
+    "candidate_commit": "634def8f61da104d4038b4dcc989435ee6a2149e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_ipf_coord_covector",
+    "diff_sha256": "610c7d515ef590b74c2fa8e585c68e5c56e741a79b61a2d87cceed03a2173207",
+    "source_sha256": "91bea5dacc8792045c73a74f76248d4fc5b2422234e0d0d1a731136e3bf4c55a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_ipf_coord_covector",
+      "statement": "∀ (d : ℕ) (z : Euclid (d + 1)), ∃ ε : Covector (Euclid (d + 1)) d, ∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
