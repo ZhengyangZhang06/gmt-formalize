@@ -521,6 +521,69 @@ theorem Submission.dtc_bc_rc_limsup_lintegral_le : ∀ (P : ℕ) (μs : ℕ → 
         rw [limsup_nat_add (fun j => μs j {x | t ≤ g x}) j₁]
         exact hlim _ (hcpt t ht)
 
+/-- **Radon convergence from the compact/open semicontinuity bounds** (the "standard approximation
+argument" ending Simon's proof of 7.2.4, p. 187).  Let `μ`, `μⱼ` be Borel measures on `ℝᴾ` with
+(a) `μ(K) < ∞` and (b) `limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)`
+for bounded open `G`.  Then `∫ f dμⱼ → ∫ f dμ` for continuous `f` with compact support.  For
+such `g ≥ 0`, `∫⁻ g dμⱼ → ∫⁻ g dμ < ∞` by the Fatou bound `dtc_bc_rc_lintegral_le_liminf` (from
+(c)) and the reverse Fatou bound `dtc_bc_rc_limsup_lintegral_le` (from (a), (b)), so the Bochner
+integrals `∫ g = (∫⁻ g).toReal` converge.  By (a), (b), `μⱼ(spt f) < ∞` for large `j`; then
+`f⁺ = max(f, 0)` and `f⁻ = max(−f, 0)` are `μⱼ`-integrable and `∫ f = ∫ f⁺ − ∫ f⁻`. -/
+theorem Submission.dtc_bc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P μs μ ha hb hc f hf hfc
+  -- `K₀ = spt f` is compact, and `μⱼ(K₀) < ∞` for `j ≥ j₁` by (a) and (b)
+  have hK₀ : IsCompact (tsupport f) := hfc.isCompact
+  obtain ⟨j₁, hj₁⟩ : ∃ j₁, ∀ j ≥ j₁, μs j (tsupport f) < ∞ :=
+    eventually_atTop.1 (eventually_lt_of_limsup_lt ((hb _ hK₀).trans_lt (ha _ hK₀)))
+  -- a continuous function vanishing off `K₀` is `ν`-integrable whenever `ν(K₀) < ∞`
+  have hint : ∀ ν : Measure (Euclid P), ν (tsupport f) < ∞ → ∀ g : Euclid P → ℝ,
+      Continuous g → support g ⊆ tsupport f → Integrable g ν := by
+    intro ν hν g hg hgs
+    have : IsFiniteMeasure (ν.restrict (tsupport f)) := isFiniteMeasure_restrict.2 hν.ne
+    exact (integrableOn_iff_integrable_of_support_subset hgs).1
+      (hg.integrable_of_hasCompactSupport (hfc.mono' hgs))
+  -- continuous `g ≥ 0` with compact support: `∫⁻ g dμⱼ → ∫⁻ g dμ < ∞`, then take `toReal`
+  have key : ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) →
+      Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ)) := by
+    intro g hg hgc hg0
+    have hT : Tendsto (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop
+        (𝓝 (∫⁻ x, ENNReal.ofReal (g x) ∂μ)) :=
+      tendsto_of_le_liminf_of_limsup_le
+        (Submission.dtc_bc_rc_lintegral_le_liminf P μs μ hc g hg hgc hg0)
+        (Submission.dtc_bc_rc_limsup_lintegral_le P μs μ ha hb g hg hgc hg0)
+    have hfin : ∫⁻ x, ENNReal.ofReal (g x) ∂μ ≠ ∞ := by
+      have : IsFiniteMeasureOnCompacts μ := ⟨ha⟩
+      exact (hg.integrable_of_hasCompactSupport hgc).lintegral_lt_top.ne
+    have hconv : ∀ ν : Measure (Euclid P),
+        ∫ x, g x ∂ν = (∫⁻ x, ENNReal.ofReal (g x) ∂ν).toReal := fun ν =>
+      integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hg0) hg.aestronglyMeasurable
+    rw [hconv μ]
+    exact ((ENNReal.tendsto_toReal hfin).comp hT).congr fun j => (hconv (μs j)).symm
+  -- `f = f⁺ − f⁻` with `f⁺ = max(f, 0)`, `f⁻ = max(−f, 0)` continuous, `≥ 0`, supported in `K₀`
+  have hcp : Continuous fun x => max (f x) 0 := hf.max continuous_const
+  have hcn : Continuous fun x => max (-f x) 0 := hf.neg.max continuous_const
+  have hsp : support (fun x => max (f x) 0) ⊆ support f := by
+    intro x hx
+    rw [mem_support] at hx ⊢
+    contrapose! hx
+    simp [hx]
+  have hsn : support (fun x => max (-f x) 0) ⊆ support f := by
+    intro x hx
+    rw [mem_support] at hx ⊢
+    contrapose! hx
+    simp [hx]
+  have hsplit : ∀ ν : Measure (Euclid P), ν (tsupport f) < ∞ →
+      ∫ x, f x ∂ν = ∫ x, max (f x) 0 ∂ν - ∫ x, max (-f x) 0 ∂ν := by
+    intro ν hν
+    rw [← integral_sub (hint ν hν _ hcp (hsp.trans (subset_tsupport f)))
+      (hint ν hν _ hcn (hsn.trans (subset_tsupport f)))]
+    simp only [max_zero_sub_max_neg_zero_eq_self]
+  rw [hsplit μ (ha _ hK₀)]
+  refine ((key _ hcp (hfc.mono hsp) fun x => le_max_right _ _).sub
+    (key _ hcn (hfc.mono hsn) fun x => le_max_right _ _)).congr' ?_
+  filter_upwards [eventually_ge_atTop j₁] with j hj
+  exact (hsplit (μs j) (hj₁ j hj)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
