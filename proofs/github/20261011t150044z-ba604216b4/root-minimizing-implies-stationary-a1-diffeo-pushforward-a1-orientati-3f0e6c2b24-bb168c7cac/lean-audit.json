@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c7c49490774c7f9e8fe1509a004f7112286a5618cfced7132b3b46253533194",
+  "git_delta": {
+    "base_commit": "2fec20fb9fb29b5d8dcdf037571adcfd8909cc17",
+    "candidate_commit": "5ac0181ccf6907e2bf7e44738dbb0c64a7582b66",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_det_gram_stdOrthonormalBasis_eq",
+    "diff_sha256": "744182740949e205a84c8a9c2bf21579e6e700ab45d4b1ee59d56c811f063167",
+    "source_sha256": "6187a128b07028e5822fd4df4e088c44598ad36214a5b90d75e5a4f13df36b0e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_det_gram_stdOrthonormalBasis_eq",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j))) = Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (L (τ i)) (L (τ j)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
