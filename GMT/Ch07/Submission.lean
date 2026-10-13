@@ -839,6 +839,133 @@ theorem Submission.dorag_ha_pb_slice_bound : ∀ (n : ℕ) (g : Euclid n → ℝ
           rw [setLIntegral_const]
           ring
 
+/-- **Poincaré inequality on the unit ball, double-integral step** (the convex-domain argument of
+Gilbarg–Trudinger, Lemma 7.16, cited in Simon's proof of Lemma 5.3.1).  For Lipschitz `u` on
+`ℝⁿ` and `B = B₁(0)`, `∫_B ∫_B (u(x) - u(y))² ≤ 2ⁿ⁺² ωₙ ∫_B ‖Du‖²`.  For a.e. `x, y ∈ B`,
+`dorag_ha_pb_pair_sq_bound` and `‖x - y‖ < 2` give
+`(u(x) - u(y))² ≤ 4 ∫₀¹ ‖Du((1 - t)y + tx)‖² dt`.  Integrate over `B × B` and move the
+`t`-integral outside (Tonelli); then `dorag_ha_pb_slice_bound` bounds each slice by
+`2ⁿ ωₙ ∫_B ‖Du‖²`.  As `‖Du‖ ≤ Lip(u)`, the bound is finite, so it passes from `ℝ≥0∞` to `ℝ`. -/
+theorem Submission.dorag_ha_pb_double_integral_bound : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∫ x in ball (0 : Euclid n) 1, ∫ y in ball (0 : Euclid n) 1, (u x - u y) ^ 2 ≤ 2 ^ (n + 2) * (volume (ball (0 : Euclid n) 1)).toReal * ∫ z in ball (0 : Euclid n) 1, ‖fderiv ℝ u z‖ ^ 2 := by
+  intro n u L hu
+  have hpair := Submission.dorag_ha_pb_pair_sq_bound n u L hu
+  have hslice := Submission.dorag_ha_pb_slice_bound n
+  have hcont : Continuous u := hu.continuous
+  -- Step 1: `g = ofReal ‖Du‖²` is measurable, and `∫_B g < ∞` since `‖Du‖ ≤ L`
+  have hD : Measurable fun z => ‖fderiv ℝ u z‖ ^ 2 := (measurable_fderiv ℝ u).norm.pow_const 2
+  obtain ⟨g, hg_def⟩ : ∃ g : Euclid n → ℝ≥0∞, g = fun z => ENNReal.ofReal (‖fderiv ℝ u z‖ ^ 2) :=
+    ⟨_, rfl⟩
+  have hgx : ∀ z, g z = ENNReal.ofReal (‖fderiv ℝ u z‖ ^ 2) := fun z => congrFun hg_def z
+  have hg : Measurable g := hg_def ▸ hD.ennreal_ofReal
+  have hJ : ∫⁻ z in ball (0 : Euclid n) 1, g z ≠ ∞ := by
+    have h1 : ∫⁻ z in ball (0 : Euclid n) 1, g z ≤
+        ∫⁻ _ in ball (0 : Euclid n) 1, ENNReal.ofReal ((L : ℝ) ^ 2) :=
+      lintegral_mono fun z => by
+        rw [hgx]
+        gcongr
+        exact norm_fderiv_le_of_lipschitz ℝ hu
+    rw [setLIntegral_const] at h1
+    exact (h1.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top measure_ball_lt_top)).ne
+  -- Step 2: for a.e. `x, y ∈ B`, `(u x - u y)² ≤ 4 ∫_(0,1] ‖Du((1 - t) y + t x)‖² dt`
+  have hae : ∀ᵐ x ∂(volume.restrict (ball (0 : Euclid n) 1)),
+      ∀ᵐ y ∂(volume.restrict (ball (0 : Euclid n) 1)),
+        ENNReal.ofReal ((u x - u y) ^ 2) ≤ 4 * ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) := by
+    filter_upwards [ae_restrict_of_ae (Measure.ae_ae_of_ae_prod hpair),
+      ae_restrict_mem measurableSet_ball] with x hx hxB
+    filter_upwards [ae_restrict_of_ae hx, ae_restrict_mem measurableSet_ball] with y hy hyB
+    rw [mem_ball_zero_iff] at hxB hyB
+    set G := ∫ t in (0 : ℝ)..1, ‖fderiv ℝ u ((1 - t) • y + t • x)‖ ^ 2 with hG_def
+    have hG : 0 ≤ G := intervalIntegral.integral_nonneg zero_le_one fun t _ => sq_nonneg _
+    have hxy : ‖x - y‖ ^ 2 ≤ 4 := by
+      have h2 : ‖x - y‖ < 2 := by linarith [norm_sub_le x y]
+      nlinarith [norm_nonneg (x - y)]
+    have h4 : (u x - u y) ^ 2 ≤ 4 * G := hy.trans (mul_le_mul_of_nonneg_right hxy hG)
+    -- `G` is the integral over `(0, 1]` of a nonnegative function
+    have hmt : AEStronglyMeasurable (fun t : ℝ => ‖fderiv ℝ u ((1 - t) • y + t • x)‖ ^ 2)
+        (volume.restrict (Ioc 0 1)) := by
+      have h : Continuous fun t : ℝ => (1 - t) • y + t • x := by fun_prop
+      exact (hD.comp h.measurable).aestronglyMeasurable
+    have hGle : ENNReal.ofReal G ≤ ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) := by
+      rw [hG_def, intervalIntegral.integral_of_le zero_le_one,
+        integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun t => sq_nonneg _) hmt]
+      simp only [hgx]
+      exact ENNReal.ofReal_toReal_le
+    calc ENNReal.ofReal ((u x - u y) ^ 2) ≤ ENNReal.ofReal (4 * G) := ENNReal.ofReal_le_ofReal h4
+      _ = 4 * ENNReal.ofReal G := by rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat]
+      _ ≤ 4 * ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) := by gcongr
+  -- Step 3: integrate over `B × B`, move the `t`-integral outside (Tonelli), apply the slice bound
+  have hmeas_yt : ∀ x : Euclid n,
+      Measurable (uncurry fun (y : Euclid n) (t : ℝ) => g ((1 - t) • y + t • x)) := fun x =>
+    hg.comp (by fun_prop : Continuous fun p : Euclid n × ℝ => (1 - p.2) • p.1 + p.2 • x).measurable
+  have hmeas_xt : Measurable (uncurry fun (x : Euclid n) (t : ℝ) =>
+      ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x)) :=
+    Measurable.lintegral_prod_right'
+      (f := fun q : (Euclid n × ℝ) × Euclid n => g ((1 - q.1.2) • q.2 + q.1.2 • q.1.1))
+      (hg.comp (by fun_prop : Continuous fun q : (Euclid n × ℝ) × Euclid n =>
+        (1 - q.1.2) • q.2 + q.1.2 • q.1.1).measurable)
+  have hswap : ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1,
+        ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) =
+      ∫⁻ t in Ioc (0 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1,
+        g ((1 - t) • y + t • x) := by
+    calc _ = ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ t in Ioc (0 : ℝ) 1, ∫⁻ y in ball (0 : Euclid n) 1,
+          g ((1 - t) • y + t • x) :=
+          lintegral_congr fun x => lintegral_lintegral_swap (hmeas_yt x).aemeasurable
+      _ = _ := lintegral_lintegral_swap hmeas_xt.aemeasurable
+  have hI : ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1,
+        ENNReal.ofReal ((u x - u y) ^ 2) ≤
+      2 ^ (n + 2) * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+    calc ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1,
+          ENNReal.ofReal ((u x - u y) ^ 2)
+        ≤ ∫⁻ x in ball (0 : Euclid n) 1, ∫⁻ y in ball (0 : Euclid n) 1,
+          4 * ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) :=
+          lintegral_mono_ae (hae.mono fun x hx => lintegral_mono_ae hx)
+      _ = 4 * ∫⁻ t in Ioc (0 : ℝ) 1, ∫⁻ x in ball (0 : Euclid n) 1,
+          ∫⁻ y in ball (0 : Euclid n) 1, g ((1 - t) • y + t • x) := by
+          simp only [lintegral_const_mul' (4 : ℝ≥0∞) _ (by norm_num)]
+          rw [hswap]
+      _ ≤ 4 * ∫⁻ _ in Ioc (0 : ℝ) 1,
+          2 ^ n * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          gcongr 4 * ?_
+          exact setLIntegral_mono' measurableSet_Ioc fun t ht =>
+            hslice g hg t (Ioc_subset_Icc_self ht)
+      _ = 2 ^ (n + 2) * volume (ball (0 : Euclid n) 1) * ∫⁻ z in ball (0 : Euclid n) 1, g z := by
+          rw [setLIntegral_const, Real.volume_Ioc, sub_zero, ENNReal.ofReal_one, mul_one, pow_add]
+          ring
+  -- Step 4: back to Bochner integrals; the bound is finite since `∫_B g < ∞`
+  have hK : Measurable fun x : Euclid n =>
+      ∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal ((u x - u y) ^ 2) := by
+    have h : Continuous fun p : Euclid n × Euclid n => (u p.1 - u p.2) ^ 2 := by fun_prop
+    exact Measurable.lintegral_prod_right'
+      (f := fun p : Euclid n × Euclid n => ENNReal.ofReal ((u p.1 - u p.2) ^ 2))
+      h.measurable.ennreal_ofReal
+  have hinner : ∀ x : Euclid n, ∫ y in ball (0 : Euclid n) 1, (u x - u y) ^ 2 =
+      (∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal ((u x - u y) ^ 2)).toReal := fun x =>
+    integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun y => sq_nonneg _)
+      (by fun_prop : Continuous fun y => (u x - u y) ^ 2).aestronglyMeasurable
+  have hrhs : ∫ z in ball (0 : Euclid n) 1, ‖fderiv ℝ u z‖ ^ 2 =
+      (∫⁻ z in ball (0 : Euclid n) 1, g z).toReal := by
+    rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun z => sq_nonneg _)
+      hD.aestronglyMeasurable]
+    simp only [hgx]
+  have hfin : (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Euclid n) 1) *
+      ∫⁻ z in ball (0 : Euclid n) 1, g z ≠ ∞ :=
+    ENNReal.mul_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.ofNat_ne_top)
+      measure_ball_lt_top.ne) hJ
+  calc ∫ x in ball (0 : Euclid n) 1, ∫ y in ball (0 : Euclid n) 1, (u x - u y) ^ 2
+      = ∫ x in ball (0 : Euclid n) 1,
+          (∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal ((u x - u y) ^ 2)).toReal := by
+        simp only [hinner]
+    _ = (∫⁻ x in ball (0 : Euclid n) 1, ENNReal.ofReal
+          (∫⁻ y in ball (0 : Euclid n) 1, ENNReal.ofReal ((u x - u y) ^ 2)).toReal).toReal :=
+        integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun x => ENNReal.toReal_nonneg)
+          hK.ennreal_toReal.aestronglyMeasurable
+    _ ≤ (2 ^ (n + 2) * volume (ball (0 : Euclid n) 1) *
+          ∫⁻ z in ball (0 : Euclid n) 1, g z).toReal :=
+        ENNReal.toReal_mono hfin ((lintegral_mono fun x => ENNReal.ofReal_toReal_le).trans hI)
+    _ = 2 ^ (n + 2) * (volume (ball (0 : Euclid n) 1)).toReal *
+          ∫ z in ball (0 : Euclid n) 1, ‖fderiv ℝ u z‖ ^ 2 := by
+        rw [hrhs, ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.toReal_ofNat]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
