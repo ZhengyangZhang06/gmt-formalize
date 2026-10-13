@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.null_set_cutoffs-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1",
+  "depth": 4,
+  "title": "Smooth cut-offs of a compact Lebesgue-null set (parent steps 4 and 5(ii))",
+  "statement": "Let n ∈ ℕ and let K ⊆ ℝⁿ (Euclid n) be compact with Lebesgue measure λ(K) = 0. Then there are functions a_k : ℝⁿ → ℝ (k ∈ ℕ) such that: each a_k is C^∞ with compact support and 0 ≤ a_k ≤ 1; a_k = 1 on K for every k; for every y ∉ K, a_k(y) = 0 for all sufficiently large k; and ∫ a_k dλ → 0 as k → ∞.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Euclid n)), IsCompact K → volume K = 0 → ∃ a : ℕ → Euclid n → ℝ, (∀ k, ContDiff ℝ (⊤ : ℕ∞) (a k)) ∧ (∀ k, HasCompactSupport (a k)) ∧ (∀ k y, 0 ≤ a k y) ∧ (∀ k y, a k y ≤ 1) ∧ (∀ k, ∀ y ∈ K, a k y = 1) ∧ (∀ y, y ∉ K → ∀ᶠ k in atTop, a k y = 0) ∧ Tendsto (fun k => ∫ y, a k y) atTop (𝓝 0)",
+  "lean_name": "cmr_tdn_null_set_cutoffs",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-f9f7bc952a-a1"
+}

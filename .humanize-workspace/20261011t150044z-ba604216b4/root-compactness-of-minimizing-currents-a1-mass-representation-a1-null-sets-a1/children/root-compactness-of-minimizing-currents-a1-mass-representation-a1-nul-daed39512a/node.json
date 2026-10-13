@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1.orient_zero_null-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1",
+  "depth": 4,
+  "title": "The mass measure vanishes where the orientation vanishes (parent step 8)",
+  "statement": "Let P, n ∈ ℕ, U, W, C ⊆ ℝ^P with W and C measurable and C ⊆ W, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), μ a measure on ℝ^P with μ(W) < ∞ and T.massOn W = μ(W), and ξ : ℝ^P → Λ_n (MultiVector P n) with |ξ(x)(α)| ≤ covectorEuclideanNorm α for all x and α and T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟ⁿ(U). If ξ(x) = 0 for μ-a.e. x ∈ C, then μ(C) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U W C : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), MeasurableSet W → MeasurableSet C → C ⊆ W → μ W < ∞ → T.massOn W = μ W → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → (∀ᵐ x ∂μ, x ∈ C → ξ x = 0) → μ C = 0",
+  "lean_name": "cmr_measure_null_of_orient_ae_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-nul-daed39512a-a1"
+}
