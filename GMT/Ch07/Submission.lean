@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Differentiation of the unit normal** (Simon Ch. 3, (4.2); Ch. 1, 3.23): if `μ` is carried
+by the open set `D` and is finite on compact subsets of `D`, then for `μ`-a.e. `y` the averages of
+the bounded Borel field `ν` over `B̄_ρ(y)` tend to `ν(y)` as `ρ ↓ 0`.  Exhaust `D` by the compact
+sets `K a b = B̄_a(0) \ U_{1/(b+1)}(Dᶜ)`; for the finite measure `μ⌞K a b` this is Mathlib's
+Lebesgue–Besicovitch differentiation theorem along closed balls (`ae_tendsto_average` for
+`Besicovitch.vitaliFamily`, with `Besicovitch.tendsto_filterAt`), and near a point of `D` the
+averages for `μ` and for `μ⌞K a b` coincide. -/
+theorem Submission.codim1_rdo_dg_normal_average_ae : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → ∀ᵐ y ∂μ, y ∈ D ∧ Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 (ν y)) := by
+  intro m D μ ν hD hDc hK hν hν1
+  -- the compact sets `K a b = B̄_a(0) \ U_{1/(b+1)}(Dᶜ) ⊆ D`
+  let K : ℕ → ℕ → Set (Euclid (m + 1)) := fun a b =>
+    closedBall 0 a \ thickening (1 / ((b : ℝ) + 1)) Dᶜ
+  have hKc : ∀ a b, IsCompact (K a b) := fun a b =>
+    (isCompact_closedBall _ _).diff isOpen_thickening
+  have hKD : ∀ a b, K a b ⊆ D := fun a b x hx => by
+    by_contra hxD
+    exact hx.2 (self_subset_thickening (by positivity) _ hxD)
+  -- Besicovitch differentiation of `ν` for the finite measures `μ⌞K a b`
+  have hdiff : ∀ a b, ∀ᵐ y ∂μ, y ∈ K a b → Tendsto
+      (fun ρ : ℝ => ⨍ z in closedBall y ρ, ν z ∂(μ.restrict (K a b))) (𝓝[>] 0) (𝓝 (ν y)) := by
+    intro a b
+    have : IsFiniteMeasure (μ.restrict (K a b)) :=
+      isFiniteMeasure_restrict.2 (hK _ (hKc a b) (hKD a b))
+    have hint : Integrable ν (μ.restrict (K a b)) :=
+      Integrable.of_bound hν.aestronglyMeasurable 1 (Eventually.of_forall fun y => (hν1 y).le)
+    have h := (Besicovitch.vitaliFamily (μ.restrict (K a b))).ae_tendsto_average
+      hint.locallyIntegrable
+    rw [ae_restrict_iff' (hKc a b).isClosed.measurableSet] at h
+    filter_upwards [h] with y hy hyK
+    exact (hy hyK).comp (Besicovitch.tendsto_filterAt _ y)
+  -- `μ`-a.e. point lies in `D`
+  have hDae : ∀ᵐ y ∂μ, y ∈ D := by
+    have h := compl_mem_ae_iff.2 hDc
+    rwa [compl_compl] at h
+  filter_upwards [hDae, ae_all_iff.2 fun a => ae_all_iff.2 (hdiff a)] with y hyD hy
+  refine ⟨hyD, ?_⟩
+  obtain ⟨ε, hε, hεD⟩ := Metric.isOpen_iff.1 hD y hyD
+  obtain ⟨a, ha⟩ := exists_nat_ge (‖y‖ + 1)
+  obtain ⟨b, hb⟩ := exists_nat_one_div_lt (half_pos hε)
+  -- `B̄_ρ(y) ⊆ K a b` for `ρ < min 1 (ε / 2)`
+  have hsub : ∀ ρ : ℝ, ρ < 1 → ρ < ε / 2 → closedBall y ρ ⊆ K a b := by
+    intro ρ hρ1 hρε z hz
+    refine ⟨?_, fun hzt => ?_⟩
+    · rw [mem_closedBall_zero_iff]
+      have := norm_le_of_mem_closedBall hz
+      linarith
+    · obtain ⟨w, hwD, hzw⟩ := mem_thickening_iff.1 hzt
+      apply hwD
+      apply hεD
+      rw [mem_ball]
+      have hzy := mem_closedBall.1 hz
+      rw [dist_comm] at hzw
+      calc dist w y ≤ dist w z + dist z y := dist_triangle _ _ _
+        _ < ε := by linarith
+  have hyK : y ∈ K a b := hsub 0 one_pos (half_pos hε) (mem_closedBall_self le_rfl)
+  -- for small `ρ` the averages for `μ⌞K a b` and for `μ` over `B̄_ρ(y)` coincide
+  refine (hy a b hyK).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (lt_min one_pos (half_pos hε))] with ρ hρ
+  have hρK := hsub ρ (hρ.2.trans_le (min_le_left _ _)) (hρ.2.trans_le (min_le_right _ _))
+  rw [setAverage_eq, measureReal_def, Measure.restrict_apply measurableSet_closedBall,
+    inter_eq_left.2 hρK, Measure.restrict_restrict measurableSet_closedBall, inter_eq_left.2 hρK]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
