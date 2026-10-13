@@ -503,6 +503,42 @@ theorem any_radius_gr_la_graphPoint_algebra : ∀ (n ℓ : ℕ), (∀ (a : Rn n)
     rw [PiLp.inner_apply, PiLp.inner_apply, PiLp.inner_apply, Fin.sum_univ_add]
     simp only [hC1, hC2]
 
+/-- Graph orthogonality behind Simon Ch. 5, Theorem 4.5 (p. 116), proof step (7):
+`e_{n+j} − (∇f^j, 0)` is normal to the graph.  If `r` is the `j`-th row of `D`
+(`⟨r, v⟩ = (D v)_j` for all `v`), then `q(0, e_j) − q(r, 0) = q(−r, e_j)` and
+`⟨(−r, e_j), (v, D v)⟩ = −⟨r, v⟩ + (D v)_j = 0`, so this difference is orthogonal to every generator
+`q(v, D v)` of `S`, hence lies in `Sᗮ`, and the orthogonal projection onto `S` takes the same value
+at `q(0, e_j)` and at `q(r, 0)`. -/
+theorem gwe_gta_graph_row_orthogonal : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Rn n →L[ℝ] Rn ℓ) (j : Fin ℓ) (r : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))) = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint r 0)) := by
+  have hGA := any_radius_gr_la_graphPoint_algebra
+  intro n ℓ q D j r hr
+  -- the difference `q(0, e_j) − q(r, 0) = q(0 − r, e_j − 0)`, by linearity of `q` and (L2)
+  have hdiff : q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))) - q (graphPoint r 0) =
+      q (graphPoint (0 - r) (EuclideanSpace.single j (1 : ℝ) - 0)) := by
+    rw [← map_sub, (hGA n ℓ).2.2.2.1]
+  -- it is orthogonal to every generator `q(v, D v)`: by (IP), `⟪·, ·⟫ = −⟪r, v⟫ + (D v)_j = 0`
+  have hgen : ∀ v : Rn n, inner ℝ (q (graphPoint (0 - r) (EuclideanSpace.single j (1 : ℝ) - 0)))
+      (q (graphPoint v (D v))) = 0 := by
+    intro v
+    rw [LinearIsometryEquiv.inner_map_map, (hGA n ℓ).2.2.2.2.2.2, zero_sub, sub_zero,
+      inner_neg_left, hr v, EuclideanSpace.inner_single_left]
+    simp
+  -- hence it lies in `Sᗮ`: the span `S` of the generators lies in `(ℝ ∙ x)ᗮ`
+  have hmem : q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))) - q (graphPoint r 0) ∈
+      (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v))))ᗮ := by
+    rw [hdiff]
+    have hle : Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v))) ≤
+        (ℝ ∙ q (graphPoint (0 - r) (EuclideanSpace.single j (1 : ℝ) - 0)))ᗮ := by
+      rw [Submodule.span_le]
+      rintro _ ⟨v, rfl⟩
+      exact Submodule.mem_orthogonal_singleton_iff_inner_right.mpr (hgen v)
+    refine (Submodule.mem_orthogonal' _ _).mpr (fun u hu => ?_)
+    exact Submodule.mem_orthogonal_singleton_iff_inner_right.mp (hle hu)
+  -- the orthogonal projection onto `S` vanishes on `Sᗮ`
+  have h0 := (Submodule.starProjection_apply_eq_zero_iff _).mpr hmem
+  rw [map_sub, sub_eq_zero] at h0
+  exact h0
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
