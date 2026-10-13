@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d7536bc58ba0c27fb82bd761ddd8fdb7ee971fcfa8cdfdfebcec4eb2c577885d",
+  "git_delta": {
+    "base_commit": "1dec33e42f2384cdc6d77c3bd55cc330deb68377",
+    "candidate_commit": "4bfd305a3b1406ddf431f60f0f78f8fafafb0089",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "67f70e8ad85dead49117cbc4c75d7cddf2ecc6190d7b55f6758fba5dc3de203b",
+    "source_sha256": "a18086c2921c08d6124653c97dece92344885a71999fd3d4fc9b2858af151678",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_c1_approx",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (K : NNReal), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

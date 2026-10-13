@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.sub_imrep-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: this is stated once for an arbitrary Borel C' ⊆ C and multiplicity 0 < θ' ≤ θ, and covers two passages of the parent proof:
+- Step 2, the verification that R₁ = (A ∩ C, 1, ξ) is an IMRep: 'A ∩ C is Borel and ⊆ U; it is countably n-rectifiable as a subset of C; the constant multiplicity 1 is measurable and positive; ∫_{A∩C∩K} 1 dHⁿ ≤ ∫_{C∩K} θ dHⁿ < ∞; ξ is a.e. strongly measurable for Hⁿ⌞(A ∩ C), a restriction of Hⁿ⌞C', together with the orientation argument.
+- Step 3: 'R₂ := (C₂, θ₂, ξ) is an IMRep in U by the verifications of step 2'.
+The parent obtains tangent-space inheritance from approx_tangent_locality (Simon Ch. 3, Remark 1.5(2), chapter-03.txt lines 86–90). Here it is a hypothesis. The definition is Simon Ch. 6, 3.1 (chapter-06.txt lines 733–745).
+
+Notation: μ := μHE[n], C := R.carrier, θ := R.mult, ξ := R.orient. We verify the fields of IMRep for (C', θ', ξ).
+
+1. measurableSet_carrier: C' is measurable by hypothesis.
+
+2. carrier_subset: C' ⊆ C ⊆ U, by hypothesis and R.carrier_subset.
+
+3. rectifiable: CountablyRectifiable n C' follows from R.rectifiable by CountablyRectifiable.mono, since C' ⊆ C.
+
+4. measurable_mult: θ' is measurable by hypothesis.
+
+5. mult_pos: 0 < θ'(x) for x ∈ C', by hypothesis.
+
+6. locallyIntegrable_mult: let K ⊆ U be compact.
+   - θ'(x) ≤ θ(x) for x ∈ C' ∩ K, and x ↦ (θ(x) : ℝ≥0∞) is measurable (measurable_from_nat composed with R.measurable_mult). So setLIntegral_mono gives ∫⁻_{C'∩K} θ' dμ ≤ ∫⁻_{C'∩K} θ dμ.
+   - C' ∩ K ⊆ C ∩ K, so lintegral_mono_set gives ∫⁻_{C'∩K} θ dμ ≤ ∫⁻_{C∩K} θ dμ.
+   - ∫⁻_{C∩K} θ dμ ≠ ∞ by R.locallyIntegrable_mult K.
+   Hence ∫⁻_{C'∩K} θ' dμ ≠ ∞ (ne_top_of_le_ne_top).
+
+7. aestronglyMeasurable_orient: μ⌞C' ≤ μ⌞C (Measure.restrict_mono, since C' ⊆ C). ξ is a.e. strongly measurable for μ⌞C (R.aestronglyMeasurable_orient), hence for μ⌞C' (AEStronglyMeasurable.mono_measure).
+
+8. orients:
+   - R.orients holds μ⌞C-a.e., hence μ⌞C'-a.e. (ae_restrict_of_ae_restrict_of_subset, since C' ⊆ C).
+   - Take x in the intersection of this full-measure set with the full-measure set of the inheritance hypothesis (filter_upwards).
+   - R.orients gives Q with HasApproximateTangentSpaceAt n C x Q and IsUnitOrientationOf (ξ x) Q.
+   - The inheritance hypothesis turns the first into HasApproximateTangentSpaceAt n C' x Q.
+   So for μ⌞C'-a.e. x there is Q with HasApproximateTangentSpaceAt n C' x Q ∧ IsUnitOrientationOf (ξ x) Q.
+
+9. (Conclusion.) R' := IMRep.mk C' θ' ξ, with the proofs of steps 1–8, is an IMRep in U. Its carrier, mult and orient are C', θ' and ξ by definition (rfl). ∎
+   Formalization note: build R' with positional IMRep.mk arguments. A multi-line structure instance with trailing commas failed to parse in the scratch check.
+
+## Key steps
+
+1. Measurability of C' and C' ⊆ U are hypotheses or inherited, rectifiability comes from CountablyRectifiable.mono, and measurability and positivity of θ' are hypotheses.
+2. Local integrability: ∫⁻_{C'∩K} θ' ≤ ∫⁻_{C'∩K} θ ≤ ∫⁻_{C∩K} θ < ∞.
+3. Measurability of the orientation: AEStronglyMeasurable.mono_measure along μ⌞C' ≤ μ⌞C.
+4. Orientation condition: restrict R.orients to C', then transfer the tangent space using the inheritance hypothesis.
+5. Assemble with IMRep.mk; carrier, mult and orient hold by rfl.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Submission.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (identical; manifest project b4d606d, mathlib 25730c7c)`
+- `python3 summary of lean_name / lean_statement fields in dag.json (sibling frozen types regcomp_approx_tangent_locality, regcomp_imrep_mass_formula; all reserved names)`
+- `grep -rl 'regcomp_rim_' over workspaces/ and lake-packages-25730c7c/simongmt (no match)`
+- `grep -n 'abbrev Covector|abbrev DifferentialForm|def IsTestForm|abbrev TestFormOn|structure GeometricCurrentOn|CoeFun' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Chapter06/Currents.lean`
+- `sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter06/Mass.lean (covectorEuclideanNorm, massAdmissibleOn, GeometricCurrentOn.massOn)`
+- `grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, CountablyRectifiable.mono, HasApproximateTangentSpaceAt)`
+- `grep -rn 'aestronglyMeasurable_comp₂|bounded_above_of_compact_support|setIntegral_congr_fun|setIntegral_indicator|integrable_indicator_iff|hasFiniteIntegral_iff_enorm|Integrable.mono|def apply' Mathlib (snapshot)`
+- `#check ContinuousAlternatingMap.le_opNorm, setIntegral_indicator, withDensity_indicator, withDensity_add_left, withDensity_congr_ae, Measure.restrict_congr_set, ae_restrict_of_ae_restrict_of_subset, AEStronglyMeasurable.mono_measure, IntegrableOn.integrable_indicator (Scratch/Check1.lean)`
+- `lake build GMT.Ch07.Submission in scratch copy /tmp/regcomp-rim-scratch; lake env lean Scratch/Check1.lean, Scratch/Children.lean, Scratch/Assembly.lean, Scratch/Full.lean with #print axioms`
+- `sed -n 975,1030p book/chapter-07.txt (7.5.11 and proof); sed -n 724,770p book/chapter-06.txt (6.3.1, 6.3.2); sed -n 60,100p book/chapter-03.txt (3.1.4, 3.1.5)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-restriction-integer-multiplicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/regcomp-rim-scratch/Scratch/Check1.lean`
+- `/tmp/regcomp-rim-scratch/Scratch/Children.lean`
+- `/tmp/regcomp-rim-scratch/Scratch/Assembly.lean`
+- `/tmp/regcomp-rim-scratch/Scratch/Full.lean`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Submission.lean. No reserved DAG name, workspace file or simongmt declaration uses regcomp_rim_*.
+
+The proofs use these library facts:
+- From the contract: IMRep fields and IMRep.measure/action. (S − T)ω = Sω − Tω holds by rfl for the contract's Sub instance.
+- From simongmt: CountablyRectifiable.mono (Chapter03/Rectifiable.lean).
+- From Mathlib: ContinuousAlternatingMap.le_opNorm, Continuous.bounded_above_of_compact_support, Continuous.clm_apply with Continuous.comp_aestronglyMeasurable, Integrable.mono', IntegrableOn.integrable_indicator, hasFiniteIntegral_iff_enorm, setLIntegral_mono, lintegral_mono_set, AEStronglyMeasurable.mono_measure, ae_restrict_of_ae_restrict_of_subset, withDensity_congr_ae, withDensity_add_left, withDensity_indicator, Measure.restrict_restrict, setIntegral_congr_fun, integral_add, setIntegral_indicator, Measure.restrict_congr_set.
+
+Applying ContinuousLinearMap.aestronglyMeasurable_comp₂ to ContinuousLinearMap.apply fails to unify the topology instance on MultiVector, so the proofs compose with the continuous evaluation map instead.
+
+The three child proofs compile using only propext, Classical.choice and Quot.sound. The parent assembly from the children compiles, with sorryAx only from the stubbed sibling dependencies regcomp_approx_tangent_locality and regcomp_imrep_mass_formula.
