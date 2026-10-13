@@ -1,0 +1,153 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1.remainder_sup_control-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Introduction to Geometric Measure Theory, Ch. 2, proof of Theorem 1.5 (p. 44): “For each k = 1, 2, … let η_k(x) = sup{|R(x, y)| : y ∈ C ∩ B_{1/k}(x) \ {x}}. Then η_k ↓ 0 pointwise in C …”.
+
+This is exactly steps 2–7 of the parent's supplied proof. As there, the supremum runs over a countable dense subset Q of C, which makes η_k Borel, and the window radius is 1/(k+1). Continuity of Df on C is not used. The parent feeds (i) and (ii) to Egoroff and uses (iii) in its final uniform estimate.
+
+Notation and tools:
+- |·| is the Euclidean norm (absolute value on ℝ) and ‖·‖ the operator norm on L(ℝⁿ, ℝ). Df(x) := fderiv ℝ f x.
+- norm_fderiv_le_of_lipschitz: ‖Df(x)‖ ≤ K for every x ∈ ℝⁿ.
+- Separability: TopologicalSpace.IsSeparable.of_separableSpace and IsSeparable.exists_countable_dense_subset.
+- Measurability: measurable_fderiv; ContinuousLinearMap.measurable_apply₂; Measurable.ite; Measurable.iSup (countable index, real values); Measurable.indicator.
+- Real suprema: Real.iSup_le (if every member is ≤ a and 0 ≤ a, then the supremum is ≤ a); Real.iSup_nonneg; le_ciSup for families bounded above. The supremum of the empty family of reals is 0.
+- Differentiability: HasFDerivAt.isLittleO. Limits: le_of_tendsto along the filter 𝓝[Q] y.
+
+Let n, K, f and C be as in the statement.
+
+1. Remainder bound. Let x, y ∈ ℝⁿ.
+- |f(y) − f(x)| ≤ K|y − x|, since f is K-Lipschitz.
+- |Df(x)(y − x)| ≤ ‖Df(x)‖|y − x| ≤ K|y − x|.
+By the triangle inequality, |f(y) − f(x) − Df(x)(y − x)| ≤ 2K|y − x|.
+
+2. Countable dense subset. ℝⁿ is a separable metric space, so C is separable. Fix a countable Q ⊆ C with C ⊆ closure(Q); Q = ∅ if C = ∅.
+
+3. Definitions.
+- For k ∈ ℕ and q, x ∈ ℝⁿ put ψ_{k,q}(x) := |f(q) − f(x) − Df(x)(q − x)|/|q − x| if 0 < |q − x| < 1/(k+1), and ψ_{k,q}(x) := 0 otherwise.
+- Put η_k(x) := sup_{q∈Q} ψ_{k,q}(x) if x ∈ C, and η_k(x) := 0 if x ∉ C. The supremum over the empty family (Q = ∅) is 0.
+- Thus η_k = 1_C · (x ↦ sup_{q∈Q} ψ_{k,q}(x)).
+
+4. Elementary bounds.
+- In the first case of the definition, dividing step 1 by |q − x| > 0 gives 0 ≤ ψ_{k,q}(x) ≤ 2K. In the second case ψ_{k,q}(x) = 0. So 0 ≤ ψ_{k,q}(x) ≤ 2K always.
+- Hence for fixed k and x, the family (ψ_{k,q}(x))_{q∈Q} is bounded above by 2K.
+- So for x ∈ C and q ∈ Q, ψ_{k,q}(x) ≤ sup_{q'∈Q} ψ_{k,q'}(x) = η_k(x) (le_ciSup).
+- For x ∈ C, η_k(x) ≥ 0, as a supremum of nonnegative reals (or 0 when Q = ∅).
+
+5. Claim (i): each η_k is Borel. Fix k and q.
+- U := {x : 0 < |q − x| < 1/(k+1)} is the preimage of an open interval under the continuous map x ↦ |q − x|. So U is open, hence Borel.
+- x ↦ Df(x)(q − x) is Borel. The map x ↦ (Df(x), q − x) into L(ℝⁿ, ℝ) × ℝⁿ is Borel: x ↦ Df(x) is Borel (measurable_fderiv) and x ↦ q − x is continuous. Evaluation (L, v) ↦ L v is Borel (ContinuousLinearMap.measurable_apply₂; ℝⁿ is second countable). Compose the two.
+- f is continuous, being Lipschitz. So x ↦ f(q) − f(x) − Df(x)(q − x) is Borel, and so is its absolute value. Dividing by the continuous function x ↦ |q − x| gives a Borel function.
+- ψ_{k,q} equals this function on U and 0 off U, so ψ_{k,q} is Borel (Measurable.ite).
+- Q is countable, so x ↦ sup_{q∈Q} ψ_{k,q}(x) is Borel (Measurable.iSup).
+- C is closed, hence Borel. So η_k, the product of this function with the indicator of C, is Borel.
+
+6. Claim (ii): η_k(x) → 0 for every x ∈ C. Let x ∈ C and ε > 0.
+- f is differentiable at x with derivative Df(x), so f(y) − f(x) − Df(x)(y − x) = o(|y − x|) as y → x. With the constant ε/2 > 0, there is r > 0 such that |f(y) − f(x) − Df(x)(y − x)| ≤ (ε/2)|y − x| whenever |y − x| < r.
+- Choose k₀ ∈ ℕ with 1/(k₀+1) < r. Let k ≥ k₀ and q ∈ Q.
+- If 0 < |q − x| < 1/(k+1), then |q − x| < 1/(k+1) ≤ 1/(k₀+1) < r. Dividing by |q − x| > 0 gives ψ_{k,q}(x) ≤ ε/2.
+- Otherwise ψ_{k,q}(x) = 0 ≤ ε/2.
+- Since ε/2 ≥ 0, Real.iSup_le gives η_k(x) = sup_{q∈Q} ψ_{k,q}(x) ≤ ε/2. This also covers Q = ∅.
+- Together with η_k(x) ≥ 0 from step 4, |η_k(x) − 0| ≤ ε/2 < ε for all k ≥ k₀.
+As ε > 0 was arbitrary, η_k(x) → 0 as k → ∞.
+
+7. Claim (iii): the remainder bound. Let k ∈ ℕ and x, y ∈ C with 0 < |y − x| < 1/(k+1).
+- φ(q) := |f(q) − f(x) − Df(x)(q − x)|/|q − x| is continuous at q = y. Its numerator is continuous, since f is continuous and Df(x) is a fixed continuous linear map. Its denominator is continuous and nonzero at y.
+- W := {q : 0 < |q − x| < 1/(k+1)} is open and contains y, so it is a neighbourhood of y.
+- y ∈ C ⊆ closure(Q), so the filter 𝓝[Q] y of neighbourhoods of y within Q is nontrivial. Eventually in this filter, q ∈ W and q ∈ Q.
+- For such q, φ(q) = ψ_{k,q}(x) by definition, since q ∈ W. Then ψ_{k,q}(x) ≤ η_k(x) by step 4, since x ∈ C and q ∈ Q.
+- φ(q) → φ(y) as q → y within Q. Non-strict inequalities pass to the limit along a nontrivial filter, so φ(y) ≤ η_k(x).
+- Multiplying by |y − x| > 0 gives |f(y) − f(x) − Df(x)(y − x)| ≤ η_k(x)·|y − x|.
+
+Steps 5–7 prove (i)–(iii) for the functions η_k of step 3. ∎
+
+Lean note: a sorry-free Lean proof following exactly these steps compiled in scratch against the frozen Submission. It uses only propext, Classical.choice and Quot.sound. There:
+- ψ is fun k q x => if 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1) then |f q - f x - fderiv ℝ f x (q - x)| / ‖q - x‖ else 0;
+- η is fun k => C.indicator (fun x => ⨆ q : Q, ψ k q x);
+- step 5 uses ContinuousLinearMap.measurable_apply₂.comp ((measurable_fderiv ℝ f).prodMk (measurable_const.sub measurable_id)), continuous_abs.measurable.comp, Measurable.ite, Measurable.iSup and .indicator hC.measurableSet;
+- step 6 uses (hdiff x hx).hasFDerivAt.isLittleO.def (half_pos hε), Metric.eventually_nhds_iff, exists_nat_one_div_lt, Real.iSup_le and Real.iSup_nonneg;
+- step 7 uses mem_closure_iff_nhdsWithin_neBot, le_ciSup and le_of_tendsto along 𝓝[Q] y.
+
+## Key steps
+
+1. Remainder bound |f(y) − f(x) − Df(x)(y − x)| ≤ 2K|y − x| from the Lipschitz bound and ‖Df(x)‖ ≤ K
+2. Countable dense Q ⊆ C; ψ_{k,q}(x) = |R(x, q)| on the window 0 < |q − x| < 1/(k+1), else 0; η_k = 1_C · sup_{q∈Q} ψ_{k,q}
+3. 0 ≤ ψ_{k,q} ≤ 2K, so ψ_{k,q}(x) ≤ η_k(x) and η_k(x) ≥ 0 for x ∈ C and q ∈ Q
+4. Borel measurability via measurable_fderiv with measurable_apply₂, Measurable.ite, countable Measurable.iSup and the indicator of the closed set C
+5. Differentiability at x ∈ C gives r with remainder ≤ (ε/2)|y − x| on B_r(x), hence η_k(x) ≤ ε/2 for k ≥ k₀, so η_k(x) → 0
+6. Density of Q in C and continuity of q ↦ |R(x, q)| at y give |R(x, y)| ≤ η_k(x); multiply by |y − x| > 0
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean; git show 8b2f4313db5e6c64defff96bee12176c7f86d922:GMT/Ch05/Submission.lean | cmp - GMT/Ch05/Submission.lean; cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `rg -n 'theorem tendstoUniformlyOn_of_ae_tendsto' <snapshot>/mathlib/Mathlib -A 12; sed -n 1,40p and 170,186p <snapshot>/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `rg -n 'theorem _root_.MeasurableSet.exists_isClosed_sdiff_lt|theorem _root_.MeasurableSet.exists_isClosed_diff_lt|exists_isClosed_lt_add|theorem _root_.MeasurableSet.exists_lt_isClosed' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean -A 6`
+- `rg -n 'theorem IsSeparable.exists_countable_dense_subset|theorem IsSeparable.of_separableSpace|theorem measurable_fderiv |theorem measurable_apply₂|theorem norm_fderiv_le_of_lipschitz|theorem Real.iSup_le|theorem iSup_le |theorem Real.iSup_nonneg|protected theorem iSup_le|theorem add_lt_add_of_le_of_lt|theorem measurable_fderiv_apply_const' <snapshot>/mathlib/Mathlib -A 4`
+- `rg -n '^(protected )?(lemma|theorem) (Real\.)?iSup_le\b' -g '*.lean' <snapshot>/mathlib/Mathlib; sed -n 225,240p <snapshot>/mathlib/Mathlib/Algebra/Order/Archimedean/Real/Basic.lean; sed -n 900,915p <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `rg -l 'TendstoUniformlyOn' <snapshot>/mathlib/Mathlib/MeasureTheory; rg -n 'IsClosed.*TendstoUniformlyOn|TendstoUniformlyOn.*IsClosed' <snapshot>/mathlib/Mathlib/MeasureTheory; rg -n 'theorem stronglyMeasurable_const|theorem ae_of_all' (StronglyMeasurable/Basic.lean, OuterMeasure/AE.lean)`
+- `grep -rn -i 'egorof\|egorov\|tendstoUniformlyOn_of_ae' lake-packages-25730c7c/simongmt/Poincare --include=*.lean; sed -n 120,175p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `python3 scan of dag.json (parent/sibling nodes, lean_name uniqueness, statements mentioning egoroff/egorov/tendstoUniformlyOn/uniformly); grep -rl 'rsod_c1ab_utr\|utr_closed_egoroff\|utr_remainder_sup_control' <run dir> GMT; git log --all --oneline -S'rsod_c1ab_utr'`
+- `python3: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch05.main_theorem'); lean_contract.validate_lean_statement(each child type)`
+- `LEAN_PATH=/tmp/utr-decomp-73392/build:<shared package oleans> lean -o .../GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean Split.lean, ChildA.lean, ChildB.lean, All2.lean; lean cmp3/Chal_*.lean against the frozen Submission and cmp3/Sol_*.lean against a scratch Submission extended with the child theorems (#print axioms)`
+- `sed -n 160,185p and sed -n 240,285p book/chapter-02.txt (Simon Thm 1.5/1.6 statements and printed proof of Thm 1.5)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Archimedean/Real/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-b52c4c1082/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/utr-decomp-73392/test/All2.lean`
+- `/tmp/utr-decomp-73392/cmp3/Chal_rsod_c1ab_utr_closed_egoroff.lean`
+- `/tmp/utr-decomp-73392/cmp3/Sol_rsod_c1ab_utr_remainder_sup_control.lean`
+- `/tmp/utr-decomp-73392/cmp3/Sol_rsod_c1ab_uniform_taylor_remainder.lean`
+
+Pins and identity:
+- The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- The frozen Submission at proof-base commit 8b2f4313 is byte-identical to Contract.lean and to the snapshot copy.
+
+Snapshot declarations used, all verified by compilation:
+- tendstoUniformlyOn_of_ae_tendsto (MeasureTheory/Function/Egorov.lean:205). The tolerance is ε : ℝ≥0∞ with 0 < ε, and it returns μ t ≤ ε.
+- MeasurableSet.exists_isClosed_sdiff_lt (MeasureTheory/Measure/Regular.lean:1036).
+- ContinuousLinearMap.measurable_apply₂ and measurable_fderiv (Analysis/Calculus/FDeriv/Measurable.lean:95, 378).
+- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947).
+- IsSeparable.exists_countable_dense_subset (Topology/Metrizable/Basic.lean:185) and IsSeparable.of_separableSpace (Topology/Bases.lean:599).
+- Measurable.iSup (BorelSpace/Order.lean:909).
+- Real.iSup_le (Algebra/Order/Archimedean/Real/Basic.lean:230).
+- stronglyMeasurable_const (StronglyMeasurable/Basic.lean:108) and ae_of_all (OuterMeasure/AE.lean:148).
+
+No-match results:
+- Snapshot MeasureTheory has no closed-set Egoroff lemma. TendstoUniformlyOn occurs only in Egorov.lean, DominatedConvergence.lean, CircleIntegral.lean and PeakFunction.lean, and no statement combines IsClosed with TendstoUniformlyOn.
+- No DAG node states an Egoroff or uniform-convergence lemma.
+- 'rsod_c1ab_utr' occurs nowhere in the run directory, GMT/ or git history. All 359 DAG lean_names are unique.
+
+Outside the snapshot, the pinned simongmt Chapter01/Lusin.lean:127 repeats the Egoroff + inner-regularity step inline. This supports making it a reusable child.
+
+Lean results:
+- Both child types pass validate_lean_statement.
+- Both child types elaborate as comparator challenges in the replayed contract scope: open MeasureTheory Metric Set Filter Topology; open scoped ENNReal NNReal; namespace GMT.Ch05; open RectifiableVarifold.
+- Both children have sorry-free proofs.
+- The exact frozen parent type is proved from them.
+- Comparator-style solution files compile, with axioms [propext, Classical.choice, Quot.sound] only.

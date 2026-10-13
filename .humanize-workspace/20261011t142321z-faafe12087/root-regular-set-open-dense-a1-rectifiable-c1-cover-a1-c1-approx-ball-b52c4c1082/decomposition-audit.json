@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^theorem tendstoUniformlyOn_of_ae_tendsto |^theorem _root_.MeasurableSet.exists_isClosed_sdiff_lt|^theorem measurable_fderiv |^theorem measurable_apply₂|^theorem norm_fderiv_le_of_lipschitz|^theorem IsSeparable.exists_countable_dense_subset|^theorem IsSeparable.of_separableSpace|^protected theorem Measurable.iSup|^theorem iSup_le|^theorem iSup_nonneg' Mathlib/MeasureTheory/Function/Egorov.lean Mathlib/MeasureTheory/Measure/Regular.lean Mathlib/Analysis/Calculus/FDeriv/Measurable.lean Mathlib/Analysis/Calculus/FDeriv/Basic.lean Mathlib/Topology/Metrizable/Basic.lean Mathlib/Topology/Bases.lean Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean Mathlib/Algebra/Order/Archimedean/Real/Basic.lean -A 6 -B 2",
+        "sed -n '990,1047p' Mathlib/MeasureTheory/Measure/Regular.lean",
+        "sed -n '1,115p;350,395p' Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "sed -n '205,250p' Mathlib/Algebra/Order/Archimedean/Real/Basic.lean",
+        "sed -n '870,945p' Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "rg -n 'IsClosed.*TendstoUniformlyOn|TendstoUniformlyOn.*IsClosed|rsod_c1ab_utr_closed_egoroff|rsod_c1ab_utr_remainder_sup_control' mathlib/Mathlib/MeasureTheory project/GMT",
+        "rg -n 'TendstoUniformlyOn' Mathlib/MeasureTheory -l",
+        "sed -n '1,330p' /tmp/utr-decomp-73392/test/All2.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Archimedean/Real/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-b52c4c1082/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-b52c4c1082/decomposition-v1.json",
+        "/tmp/utr-decomp-73392/test/All2.lean",
+        "/tmp/utr-independent-audit-txf__4ys/Types.log",
+        "/tmp/utr-independent-audit-txf__4ys/Proofs.log"
+      ],
+      "conclusion": "Verified the project and Mathlib pins, frozen Submission identity, and compatibility of the inspected snapshot sources with the build packages. The library declarations support the supplied arguments, including real countable suprema and Egoroff's non-strict exceptional-set bound. The combined closed/uniform-convergence search returned no match. Neither proposed name occurs in the current 361-node DAG. Both names are valid bare identifiers. Independently validated and elaborated both exact one-line propositions against a freshly compiled frozen Submission before declaring either child; regularity, Borel, evaluation, and empty-supremum checks also passed. Recompiled the supplied proofs unchanged, including the exact selected parent assembly. All three proofs depend only on propext, Classical.choice, and Quot.sound. The split is appropriate: its independent analytic and measure-theoretic obligations are acyclic and jointly establish the selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "closed_egoroff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree on all hypotheses and conclusions, including measurable C, finite volume, pointwise convergence everywhere on C, and possibly infinite δ. The proof correctly uses δ' = min(δ, 1), converts Borel measurability to strong measurability, applies Egoroff, and obtains a closed subset by inner regularity. The finite non-strict exceptional-set bound plus the strict inner-regularity bound gives the required strict loss. Uniform convergence restricts to A. Every step is supplied, with no child or parent reliance; the exact generalized measurable-C statement independently compiled."
+    },
+    {
+      "key": "remainder_sup_control",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the Lean proposition. The Lipschitz and derivative bounds ensure the real suprema are bounded; the proof handles empty index sets. Measurable derivative evaluation, countable suprema, and the closed-set indicator establish Borel measurability with valid instances. Differentiability and ε/2 establish pointwise convergence. Density gives a nontrivial neighborhood-within filter, and continuity in the second variable transfers the bound to every permitted y. No derivative continuity or finite-measure hypothesis is assumed. The proof is complete and independent. Together with closed_egoroff, uniform convergence and ρ = 1/(k+1), treating diagonal pairs separately, prove the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
