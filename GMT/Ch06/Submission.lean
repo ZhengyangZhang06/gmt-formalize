@@ -374,6 +374,68 @@ theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl 
   rcases hw with rfl | rfl
   · exact h1
   · simpa [abs_neg] using h1
+/-- **Null-set consequences of the co-area identity (Simon Ch. 6, proof of 4.5(2)).**  Assume
+(CA): for every Borel `g ≥ 0`, `t ↦ ∫_{M ∩ f⁻¹{t}} g dν` is a.e.-measurable and
+`∫_ℝ ∫_{M ∩ f⁻¹{t}} g dν dt = ∫_M |G| g dμ`.  Then (i) `G = 0` `μ⌞M`-a.e. on each level set
+`{f = c}` (test (CA) with `g = 1_{f = c}`: the slice integrals vanish for `t ≠ c`); and (ii) a
+`μ`-null `Z ⊆ M` has `ν`-null slices `Z ∩ f⁻¹{t}` for a.e. `t` (test (CA) with `g = 1_{Z'}`,
+`Z' ⊇ Z` a measurable `μ`-null hull). -/
+theorem Submission.slicing_im_si_coarea_null_sets : ∀ (P : ℕ) (μ ν : Measure (Eucl P)) (M : Set (Eucl P)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P), Measurable f → Measurable G → (∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂μ) → (∀ c : ℝ, ∀ᵐ x ∂(μ.restrict M), f x = c → G x = 0) ∧ ∀ Z : Set (Eucl P), Z ⊆ M → μ Z = 0 → ∀ᵐ t ∂(volume : Measure ℝ), ν (Z ∩ f ⁻¹' {t}) = 0 := by
+  intro P μ ν M f G hf hG CA
+  constructor
+  · intro c
+    have hmc : MeasurableSet (f ⁻¹' {c}) := hf (measurableSet_singleton c)
+    obtain ⟨-, hCA⟩ := CA ((f ⁻¹' {c}).indicator 1) (measurable_one.indicator hmc)
+    -- The slice integrals `ν(f⁻¹{c} ∩ M ∩ f⁻¹{t})` vanish for `t ≠ c`.
+    have hslice : ∀ t, t ≠ c → ∫⁻ x in M ∩ f ⁻¹' {t}, (f ⁻¹' {c}).indicator 1 x ∂ν = 0 := by
+      intro t ht
+      rw [lintegral_indicator_one hmc, Measure.restrict_apply hmc]
+      convert measure_empty (μ := ν)
+      ext x
+      simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, mem_empty_iff_false, iff_false,
+        not_and]
+      intro hxc _ hxt
+      exact ht (hxt.symm.trans hxc)
+    -- `{c}` is Lebesgue-null, so the left side of (CA) is `0`.
+    have hL : ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, (f ⁻¹' {c}).indicator 1 x ∂ν)
+        ∂(volume : Measure ℝ) = 0 := by
+      have : (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, (f ⁻¹' {c}).indicator 1 x ∂ν) =ᵐ[volume] 0 := by
+        have hne : ∀ᵐ t ∂(volume : Measure ℝ), t ≠ c := by
+          simp [ae_iff, measure_singleton]
+        filter_upwards [hne] with t ht
+        exact hslice t ht
+      rw [lintegral_congr_ae this]
+      simp
+    -- Hence `|G| 1_{f = c} = 0` `μ⌞M`-a.e.
+    rw [hL] at hCA
+    have hmeas : AEMeasurable (fun x => ‖G x‖ₑ * (f ⁻¹' {c}).indicator 1 x) (μ.restrict M) :=
+      (hG.enorm.mul (measurable_one.indicator hmc)).aemeasurable
+    have h0 := (lintegral_eq_zero_iff' hmeas).1 hCA.symm
+    filter_upwards [h0] with x hx hfx
+    have hxc : x ∈ f ⁻¹' {c} := hfx
+    simp only [Pi.zero_apply, indicator_of_mem hxc, Pi.one_apply, mul_one, enorm_eq_zero] at hx
+    exact hx
+  · intro Z hZM hZ
+    -- A measurable `μ`-null hull `Z' = toMeasurable μ Z ⊇ Z`.
+    have hZ'm : MeasurableSet (toMeasurable μ Z) := measurableSet_toMeasurable μ Z
+    have hZ'0 : μ (toMeasurable μ Z) = 0 := by rw [measure_toMeasurable]; exact hZ
+    obtain ⟨hae, hCA⟩ := CA ((toMeasurable μ Z).indicator 1) (measurable_one.indicator hZ'm)
+    -- The right side of (CA) vanishes, since `1_{Z'} = 0` `μ`-a.e.
+    have hR : ∫⁻ x in M, ‖G x‖ₑ * (toMeasurable μ Z).indicator 1 x ∂μ = 0 := by
+      have hnull : ∀ᵐ x ∂μ, x ∉ toMeasurable μ Z := measure_eq_zero_iff_ae_notMem.1 hZ'0
+      have : (fun x => ‖G x‖ₑ * (toMeasurable μ Z).indicator 1 x) =ᵐ[μ.restrict M] 0 := by
+        filter_upwards [ae_restrict_of_ae hnull] with x hx
+        simp [indicator_of_notMem hx]
+      rw [lintegral_congr_ae this]
+      simp
+    -- So `ν(Z' ∩ (M ∩ f⁻¹{t})) = 0` for a.e. `t`, and `Z ∩ f⁻¹{t} ⊆ Z' ∩ (M ∩ f⁻¹{t})`.
+    rw [hR] at hCA
+    have h0 := (lintegral_eq_zero_iff' hae).1 hCA
+    filter_upwards [h0] with t ht
+    simp only [Pi.zero_apply] at ht
+    rw [lintegral_indicator_one hZ'm, Measure.restrict_apply hZ'm] at ht
+    refine measure_mono_null (fun x hx => ?_) ht
+    exact ⟨subset_toMeasurable μ Z hx.1, hZM hx.1, hx.2⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
