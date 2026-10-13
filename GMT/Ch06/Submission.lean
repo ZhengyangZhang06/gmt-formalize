@@ -6899,6 +6899,125 @@ theorem Submission.slicing_im_lipschitz_leibniz :
     dsimp only
     rw [← hYφ x (innerSL ℝ (Gh x)), innerSL_apply_apply])
 
+/-- **Slice identity (Simon Ch. 6, Remark 4.2 and the proof of Lemma 4.5(2)).**  For
+`T = τ(M, θ, ξ)`, `f` Lipschitz with tangential gradient `G` on `M` and `ω ∈ 𝒟^m(U)`: for a.e. `t`,
+every slice `S` of `T` by `f` at `t` has `S(ω) = τ(M_t, θ, ξ_t)(ω)`, where
+`M_t = {x ∈ M : f x = t, G x ≠ 0}` and `ξ_t = ξ ⌞ (G/|G|)`.
+
+With `φ(r) = ∫_{M ∩ f⁻¹{r}} g dH^m` (`θ ⟨G♭∧ω, ξ⟩ = |G| g`), the Leibniz identity for the cut-off
+`h_ε = ψ_ε ∘ f` (tangential gradient `-ε⁻¹ 1_{t-ε<f<t} G`) and the co-area formula give
+`∫ h_ε ⟨ω, v'⟩ dμ' - ∫ h_ε ⟨dω, v⟩ dμ = -ε⁻¹ ∫_{t-ε}^t φ`; let `ε ↓ 0` at a Lebesgue point `t`. -/
+theorem Submission.slicing_im_slice_identity : ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → (∀ η : TestFormOn U (m + 1), T η = tauAction (m + 1) M θ ξ η) → LipschitzWith L f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∀ ω : TestFormOn U m, ∀ᵐ t ∂(volume : Measure ℝ), ∀ S : GeometricCurrentOn U m, IsSlice T f t S → S ω = tauAction m {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} θ (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ω := by
+  intro P m U M θ ξ T f L G hU hM hT hf hGm hGL hTG ω
+  have hfm : Measurable f := hf.continuous.measurable
+  -- Co-area formula on `M` for `f` and its tangential gradient `G` (Simon 4.1).
+  have hCA := Submission.slicing_im_coarea P m U M θ ξ f L G hU hM hf hGm hGL hTG
+  -- `G = 0` a.e. on every level set of `f`, and null subsets of `M` have null slices.
+  obtain ⟨hlev, hNT⟩ := Submission.slicing_im_si_coarea_null_sets P
+    (μHE[m + 1] : Measure (Eucl P)) (μHE[m] : Measure (Eucl P)) M f G hfm hGm hCA
+  -- Borel density `g ∈ L¹(Hⁿ⌞M)`: `θ ⟨G♭∧ω, ξ⟩ = |G| g`, and `g = θ ⟨ω, ξ_t⟩` where `G ≠ 0`.
+  obtain ⟨g, hgm, hgi, hg0, hgae⟩ :=
+    Submission.slicing_im_si_borel_density P m U M θ ξ G ω hM hGm
+  have hGg : Integrable (fun x => ‖G x‖ * g x) ((μHE[m + 1] : Measure (Eucl P)).restrict M) :=
+    hgi.bdd_mul (c := (L : ℝ)) hGm.norm.aestronglyMeasurable
+      (Eventually.of_forall fun x => by rw [norm_norm]; exact hGL x)
+  -- Remark 4.2: `φ(r) = ∫_{M ∩ f⁻¹{r}} g dH^m` is integrable and integrates `|G| g` over bands.
+  obtain ⟨hφi, hφab⟩ := Submission.slicing_im_si_signed_coarea P
+    (μHE[m + 1] : Measure (Eucl P)) (μHE[m] : Measure (Eucl P)) M f G g hfm hGm hgm hGg hCA
+  -- For a.e. `t`, `φ(t)` is the action of the slice triple `(M_t, θ, ξ_t)` on `ω`.
+  have htr := Submission.slicing_im_si_slice_ae_transfer P (μHE[m + 1] : Measure (Eucl P))
+    (μHE[m] : Measure (Eucl P)) M {x | G x ≠ 0} f g
+    (fun x => θ x *
+      (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)
+          (innerSL ℝ (‖G x‖⁻¹ • G x)))) ((ω : DifferentialForm (Eucl P) m) x))
+    hM.nullMeasurableSet (hGm (measurableSet_singleton 0).compl) hfm hNT
+    (fun x hx => hg0 x (not_not.mp hx)) (hgae.mono fun x hx hxS => hx.1 hxS)
+  -- Almost every `t` is a left Lebesgue point of `φ`.
+  have hleb := Submission.slicing_im_si_left_lebesgue_point
+    (fun r => ∫ x in M ∩ f ⁻¹' {r}, g x ∂(μHE[m] : Measure (Eucl P))) hφi.locallyIntegrable
+  -- The exceptional set depends only on `ω`, not on the slice `S`.
+  filter_upwards [htr, hleb] with t ht ht'
+  intro S hS
+  obtain ⟨A, B, ⟨-, μ₁, v₁, hrep₁, hA⟩, ⟨-, μ₂, v₂, hrep₂, hB⟩, hSAB⟩ := hS
+  -- `(c w)♭∧α = c (w♭∧α)`.
+  have hsmul : ∀ (c : ℝ) (w : Eucl P) (α : Covector (Eucl P) m),
+      ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (c • w)).smulRight α) =
+        c • ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ w).smulRight α) := by
+    intro c w α
+    rw [← ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+    congr 1
+    ext v u
+    simp [mul_assoc]
+  -- Leibniz identity for `h_ε = ψ_ε ∘ f`, whose tangential gradient is `-ε⁻¹ 1_{t-ε<f<t} G`
+  -- (Simon (2)–(4) in the proof of 4.5(2)).
+  have hkey : ∀ ε : ℝ, 0 < ε →
+      (∫ x, max 0 (min 1 ((t - f x) / ε)) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+          (∫ x, max 0 (min 1 ((t - f x) / ε)) *
+            v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁) =
+        -(ε⁻¹ * ∫ r in Ioo (t - ε) t, ∫ x in M ∩ f ⁻¹' {r}, g x ∂(μHE[m] : Measure (Eucl P))) := by
+    intro ε hε
+    obtain ⟨K, hKlip, hGεm, hGεK, hGεTG⟩ := Submission.slicing_im_si_cutoff_tangential_gradient P
+      ((μHE[m + 1] : Measure (Eucl P)).restrict M)
+      (HasWeightedApproximateTangentSpaceAt (m + 1) M θ) f L G t ε hε hf hGm hGL hTG
+      (hlev (t - ε)) (hlev t)
+    rw [Submission.slicing_im_lipschitz_leibniz P m U M θ ξ T hU hM hT μ₁ v₁ μ₂ v₂ hrep₁ hrep₂
+      (fun x => max 0 (min 1 ((t - f x) / ε))) K
+      ((f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y)) hKlip hGεm hGεK hGεTG ω]
+    -- On the band `t - ε < f < t` the integrand is `-ε⁻¹ |G| g`; off the band it vanishes.
+    have hpt : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M),
+        θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ
+          ((f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x)).smulRight
+            ((ω : DifferentialForm (Eucl P) m) x))) =
+          (f ⁻¹' Ioo (t - ε) t).indicator (fun y => -ε⁻¹ * (‖G y‖ * g y)) x := by
+      filter_upwards [hgae] with x hx
+      by_cases hxs : x ∈ f ⁻¹' Ioo (t - ε) t
+      · rw [indicator_of_mem hxs, indicator_of_mem hxs, hsmul, ← hx.2, map_smul, smul_eq_mul]
+        ring
+      · have h0 := hsmul 0 0 ((ω : DifferentialForm (Eucl P) m) x)
+        rw [zero_smul, zero_smul] at h0
+        rw [indicator_of_notMem hxs, indicator_of_notMem hxs, h0, map_zero, mul_zero]
+    rw [integral_congr_ae hpt, setIntegral_indicator (hfm measurableSet_Ioo), integral_const_mul,
+      hφab]
+    ring
+  -- `ψ_ε(s) = max 0 (min 1 ((t - s) / ε))` cuts off `{s < t}`.
+  have hχm : ∀ ε : ℝ, 0 < ε → Measurable fun s : ℝ => max 0 (min 1 ((t - s) / ε)) :=
+    fun ε _ => by fun_prop
+  have hχb : ∀ ε s : ℝ, 0 < ε → |max 0 (min 1 ((t - s) / ε))| ≤ 1 := by
+    intro ε s _
+    rw [abs_of_nonneg (le_max_left _ _)]
+    exact max_le zero_le_one (min_le_left _ _)
+  have hχ1 : ∀ ε s : ℝ, 0 < ε → s ≤ t - ε → max 0 (min 1 ((t - s) / ε)) = 1 := by
+    intro ε s hε hs
+    rw [min_eq_left ((one_le_div hε).mpr (by linarith)), max_eq_right zero_le_one]
+  have hχ0 : ∀ ε s : ℝ, 0 < ε → t ≤ s → max 0 (min 1 ((t - s) / ε)) = 0 := fun ε s hε hs =>
+    max_eq_left ((min_le_right _ _).trans (div_nonpos_of_nonpos_of_nonneg (by linarith) hε.le))
+  -- Dominated convergence for both cut-off integrals (`ω` and `dω` vanish off `U`).
+  have hlim₂ := Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf.lipschitzOnWith μ₂
+    (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) (hrep₂ ω).1
+    (fun x hx => by simp [image_eq_zero_of_notMem_tsupport fun h => hx (ω.property.2 h)])
+    t (fun ε s => max 0 (min 1 ((t - s) / ε))) hχm hχb hχ1 hχ0
+  have hlim₁ := Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf.lipschitzOnWith μ₁
+    (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x))
+    (hrep₁ (exteriorDerivativeTestOn U m ω)).1
+    (fun x hx => by
+      simp [image_eq_zero_of_notMem_tsupport fun h =>
+        hx (ω.property.2 (tsupport_exteriorDerivative_subset _ h))])
+    t (fun ε s => max 0 (min 1 ((t - s) / ε))) hχm hχb hχ1 hχ0
+  -- Both sides of the Leibniz identity converge as `ε ↓ 0`; the limits agree.
+  have hBA := tendsto_nhds_unique
+    ((hlim₂.sub hlim₁).congr' (eventually_nhdsWithin_of_forall (s := Ioi 0) fun ε hε => hkey ε hε))
+    ht'.neg
+  have hAω : A.boundary ω = ∫ x in {x | x ∈ U ∧ f x < t},
+      v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁ :=
+    hA (exteriorDerivativeTestOn U m ω)
+  have hφt : A.boundary ω - B ω = ∫ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)) := by
+    rw [hAω, hB ω]
+    beta_reduce at hBA
+    linarith
+  rw [hSAB ω, hφt, ht]
+  rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
