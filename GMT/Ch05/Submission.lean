@@ -540,6 +540,147 @@ theorem dohr_eb_ehs_del_diffquot_uniform : ∀ (n : ℕ) (E : Type) [NormedAddCo
       gcongr
       rw [div_lt_one he1]; linarith
     _ = η := mul_one η
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): limit of the left side of the
+differenced Euler–Lagrange equation.**
+Let `F : ℝⁿ → L*`, `L* = L(L(ℝⁿ, ℝ^ℓ), ℝ)`, be `C¹` on an open `U`, and let
+`τ : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` be continuous with compact support `K = spt τ ⊆ U`.  Then for every
+direction `e`, `∫_U F(x)[h⁻¹ (τ(x) − τ(x − h e))] dx → −∫_U DF(x)e[τ(x)] dx` as `h → 0`, `h ≠ 0`.
+Proof: choose `δ > 0` with `cthickening δ K ⊆ U`.  For `|h| < δ/(|e| + 1)` the integrand vanishes
+off `U`, every piece is continuous on a compact set and vanishes off it (hence integrable), and the
+translation `x = y + h e` (Lebesgue measure is translation invariant) gives
+`∫_U F(x)[h⁻¹ (τ(x) − τ(x − h e))] dx = −∫_K Q_h(y)[τ(y)] dy`, `Q_h(y) = h⁻¹ (F(y + h e) − F(y))`.
+By `dohr_eb_ehs_del_diffquot_uniform`, `Q_h → DF(·)e` uniformly on `K`, so the integrands are
+eventually bounded by `(sup_K |DF(·)e| + 1) sup |τ|` on the finite-measure set `K`, and dominated
+convergence gives `∫_K Q_h[τ] → ∫_K DF(·)e[τ] = ∫_U DF(·)e[τ]`. -/
+theorem dohr_eb_ehs_del_lhs_tendsto : ∀ n ℓ : ℕ, ∀ (F : Rn n → ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)) (τ : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 F U → Continuous τ → HasCompactSupport τ → tsupport τ ⊆ U → Tendsto (fun h : ℝ => ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e)))) (𝓝[≠] 0) (𝓝 (-∫ x in U, fderiv ℝ F x e (τ x))) := by
+  intro n ℓ F τ U e hU hF hτ hτc hτU
+  -- Step 1: `K = tsupport τ` is compact and has a closed thickening `cthickening δ K ⊆ U`.
+  have hK : IsCompact (tsupport τ) := hτc
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hτU
+  -- Step 2: `F` and `DF(·)e` are continuous on `U`; `‖τ‖ ≤ Cτ` everywhere, `‖DF(·)e‖ ≤ CD` on `K`.
+  have hFc : ContinuousOn F U := hF.continuousOn
+  have hDFe : ContinuousOn (fun y => fderiv ℝ F y e) U :=
+    (hF.continuousOn_fderiv_of_isOpen hU le_rfl).clm_apply continuousOn_const
+  obtain ⟨Cτ, hCτ⟩ := hτ.bounded_above_of_compact_support hτc
+  obtain ⟨CD, hCD⟩ := hK.exists_bound_of_continuousOn (f := fun y => fderiv ℝ F y e)
+    (hDFe.mono hτU)
+  -- Step 3: `h⁻¹ (F(y + h e) − F(y)) → DF(y)e` uniformly on `K` (sibling, with `E = L*`).
+  have hUC := Submission.dohr_eb_ehs_del_diffquot_uniform n _ F U (tsupport τ) e hU hF hK hτU
+  -- Step 1 (cont.): for `|h| < δ/(‖e‖ + 1)` and `y ∈ K`, `y + h e ∈ cthickening δ K ⊆ U`.
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hpos : 0 < δ / (‖e‖ + 1) := div_pos hδ he1
+  have hev : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < δ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with h hh
+    simpa [Real.dist_eq] using hh
+  have hshift : ∀ h : ℝ, |h| < δ / (‖e‖ + 1) → ∀ y ∈ tsupport τ,
+      y + h • e ∈ cthickening δ (tsupport τ) := by
+    intro h hh y hy
+    apply mem_cthickening_of_dist_le (y + h • e) y δ (tsupport τ) hy
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+    calc |h| * ‖e‖ ≤ |h| * (‖e‖ + 1) := by gcongr; linarith
+      _ ≤ δ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = δ := div_mul_cancel₀ _ he1.ne'
+  have hτ0 : ∀ y, y ∉ tsupport τ → τ y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport hy
+  -- Step 5: the limit integral over `U` is the integral over `K`.
+  have hRHS : ∫ x in U, fderiv ℝ F x e (τ x) = ∫ x in tsupport τ, fderiv ℝ F x e (τ x) :=
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hU.measurableSet hτU
+      (fun x hx => by rw [hτ0 x hx.2, map_zero])
+  -- Step 4: for `0 < |h| < δ/(‖e‖ + 1)` the left side is `−∫_K h⁻¹ (F(y + h e) − F(y))[τ(y)] dy`.
+  have hEq : (fun h : ℝ => ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e)))) =ᶠ[𝓝[≠] 0]
+      (fun h : ℝ => -∫ y in tsupport τ, (h⁻¹ • (F (y + h • e) - F y)) (τ y)) := by
+    filter_upwards [hev] with h hh
+    -- (b) `F(·)[τ]` and `F(· + h e)[τ]` are continuous on `K` and vanish off `K`.
+    have hI1 : Integrable (fun x => F x (τ x)) := by
+      apply IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport τ)
+      · exact ((hFc.mono hτU).clm_apply hτ.continuousOn).integrableOn_compact hK
+      · intro x hx; rw [hτ0 x hx, map_zero]
+    have hI2 : Integrable (fun x => F (x + h • e) (τ x)) := by
+      apply IntegrableOn.integrable_of_forall_notMem_eq_zero (s := tsupport τ)
+      · apply ContinuousOn.integrableOn_compact hK
+        apply ContinuousOn.clm_apply _ hτ.continuousOn
+        exact hFc.comp (continuousOn_id.add continuousOn_const)
+          (fun y hy => hδU (hshift h hh y hy))
+      · intro x hx; rw [hτ0 x hx, map_zero]
+    -- (a) the integrand vanishes off `U`, so `∫_U = ∫_{ℝⁿ}`.
+    have hL : ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e))) =
+        ∫ x, F x (h⁻¹ • (τ x - τ (x - h • e))) := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hxU
+      have h1 : τ x = 0 := hτ0 x (fun hx => hxU (hτU hx))
+      have h2 : τ (x - h • e) = 0 := by
+        apply hτ0
+        intro hx
+        apply hxU
+        have := hshift h hh (x - h • e) hx
+        rw [sub_add_cancel] at this
+        exact hδU this
+      simp [h1, h2]
+    -- (d) translation invariance: `∫ F(x)[τ(x − h e)] dx = ∫ F(y + h e)[τ(y)] dy`.
+    have hT : ∫ x, F x (τ (x - h • e)) = ∫ y, F (y + h • e) (τ y) := by
+      rw [← integral_add_right_eq_self (fun x => F x (τ (x - h • e))) (h • e)]
+      simp only [add_sub_cancel_right]
+    have hI3 : Integrable (fun x => F x (τ (x - h • e))) := by
+      have := hI2.comp_sub_right (h • e)
+      simpa only [sub_add_cancel] using this
+    -- (c), (e) linearity of `F(x)` and of the integral.
+    have hW : ∫ x, F x (h⁻¹ • (τ x - τ (x - h • e))) =
+        -∫ y, (h⁻¹ • (F (y + h • e) - F y)) (τ y) := by
+      calc ∫ x, F x (h⁻¹ • (τ x - τ (x - h • e)))
+          = ∫ x, h⁻¹ * (F x (τ x) - F x (τ (x - h • e))) := by
+            congr 1; ext x; rw [map_smul, map_sub, smul_eq_mul]
+        _ = h⁻¹ * ((∫ x, F x (τ x)) - ∫ x, F x (τ (x - h • e))) := by
+            rw [integral_const_mul, integral_sub hI1 hI3]
+        _ = h⁻¹ * ((∫ y, F y (τ y)) - ∫ y, F (y + h • e) (τ y)) := by rw [hT]
+        _ = -∫ y, (h⁻¹ • (F (y + h • e) - F y)) (τ y) := by
+            rw [← integral_sub hI1 hI2, ← integral_const_mul, ← integral_neg]
+            congr 1; ext y
+            simp only [_root_.smul_apply, _root_.sub_apply, smul_eq_mul]
+            ring
+    have hS : ∫ y, (h⁻¹ • (F (y + h • e) - F y)) (τ y) =
+        ∫ y in tsupport τ, (h⁻¹ • (F (y + h • e) - F y)) (τ y) := by
+      symm
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro y hy; rw [hτ0 y hy, map_zero]
+    rw [hL, hW, hS]
+  -- Step 6: dominated convergence on `K`, with the bound `(CD + 1) Cτ` for small `h`.
+  have hev1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), ∀ y ∈ tsupport τ,
+      ‖h⁻¹ • (F (y + h • e) - F y) - fderiv ℝ F y e‖ < 1 := by
+    filter_upwards [(Metric.tendstoUniformlyOn_iff.mp hUC) 1 one_pos] with h hh y hy
+    have := hh y hy
+    rw [dist_comm, dist_eq_norm] at this
+    exact this
+  have hlim : Tendsto (fun h : ℝ => ∫ y in tsupport τ, (h⁻¹ • (F (y + h • e) - F y)) (τ y))
+      (𝓝[≠] 0) (𝓝 (∫ y in tsupport τ, fderiv ℝ F y e (τ y))) := by
+    apply tendsto_integral_filter_of_dominated_convergence (fun _ => (CD + 1) * Cτ)
+    · filter_upwards [hev] with h hh
+      apply ContinuousOn.aestronglyMeasurable _ hK.measurableSet
+      apply ContinuousOn.clm_apply _ hτ.continuousOn
+      -- `ContinuousSub L*` is only found with a larger pending-instance depth.
+      set_option maxSynthPendingDepth 3 in
+      exact ContinuousOn.smul (f := fun _ => (h⁻¹ : ℝ)) continuousOn_const
+        ((hFc.comp (continuousOn_id.add continuousOn_const)
+          (fun y hy => hδU (hshift h hh y hy))).sub (hFc.mono hτU))
+    · filter_upwards [hev1] with h hh
+      apply ae_restrict_of_forall_mem hK.measurableSet
+      intro y hy
+      have hQ : ‖h⁻¹ • (F (y + h • e) - F y)‖ ≤ CD + 1 := by
+        have h1 := norm_le_insert' (E := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+          (h⁻¹ • (F (y + h • e) - F y)) (fderiv ℝ F y e)
+        linarith [hh y hy, hCD y hy]
+      calc ‖(h⁻¹ • (F (y + h • e) - F y)) (τ y)‖
+          ≤ ‖h⁻¹ • (F (y + h • e) - F y)‖ * ‖τ y‖ := ContinuousLinearMap.le_opNorm _ _
+        _ ≤ (CD + 1) * Cτ := by
+            gcongr
+            · linarith [norm_nonneg (fderiv ℝ F y e), hCD y hy]
+            · exact hCτ y
+    · exact integrableOn_const hK.measure_lt_top.ne
+    · apply ae_restrict_of_forall_mem hK.measurableSet
+      intro y hy
+      exact ((ContinuousLinearMap.apply ℝ ℝ (τ y)).continuous.tendsto _).comp (hUC.tendsto_at hy)
+  -- Step 7: conclusion.
+  rw [hRHS]
+  exact hlim.neg.congr' hEq.symm
 
 end Submission
 
