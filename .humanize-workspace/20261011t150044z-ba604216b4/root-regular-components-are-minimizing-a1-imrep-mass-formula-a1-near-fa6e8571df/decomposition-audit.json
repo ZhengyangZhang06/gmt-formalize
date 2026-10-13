@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev (Euclid|MultiVector)|def (Euclid|MultiVector)|abbrev Covector|def covectorEuclideanNorm|covectorEuclideanNorm_zero",
+        "ext_multilinear",
+        "of_injective",
+        "proper_real",
+        "secondCountable_of_proper",
+        "of_separableSpace",
+        "exists_countable_dense_subset",
+        "Countable.exists_eq_range",
+        "measurable_find",
+        "preimage_find_eq_disjointed_setOf",
+        "of_discrete",
+        "comp_measurable",
+        "ae_eq_mk",
+        "theorem mem_closure_iff",
+        "rg -l '\"lean_name\": \"regcomp_covector_(unit_ball_dense_seq|first_hit_selection)\"' -g 'decomposition-*.json' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/near-max-independent-audit/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Disjointed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Closure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-near-fa6e8571df/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-near-fa6e8571df/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees",
+        "/tmp/near-max-independent-audit/Audit.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen contract. The workspace contract and inspected Mathlib sources match the pinned snapshot. Neither proposed bare name is reserved by another branch; no identical accepted child type was found. Both one-line propositions elaborate before their implementations. Fresh Lean proofs following the supplied arguments, and their assembly into the exact selected parent type, compile using only propext, Classical.choice and Quot.sound. Covector topology and Euclid Borel instances were independently checked. The split is appropriate: its children are independent and acyclic. Density and η > 0 ensure an almost-everywhere hit among the measurable evaluation sets; selection gives the everywhere norm bound and required almost-everywhere inequality."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_ball_dense_seq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree for all P and n. Injective basis evaluation establishes finite dimensionality, then separability supplies a countable dense subset inside the ball. Zero proves nonemptiness, permitting enumeration. Every step is justified, including degenerate dimensions; neither closedness nor norm equivalence is needed. The proof is complete and non-circular, and the bare declaration name is unreserved."
+    },
+    {
+      "key": "first_hit_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes exactly the Lean hypotheses and pointwise alternatives. The augmented measurable cover makes Nat.find total and measurable. Composing its index with the countable sequence gives strong measurability, and Nat.find_spec proves both alternatives. No measure assumptions or dependence on the other child are needed. The proof is complete and non-circular, and the bare declaration name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

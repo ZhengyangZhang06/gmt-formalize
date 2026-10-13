@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.continuous_l1_approx-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+  "depth": 4,
+  "title": "Continuous compactly supported L¹(ν)-approximation of a covector field keeping |·|_E ≤ 1 and support in O",
+  "statement": "Let P, n ∈ ℕ, ν a finite measure on ℝ^P, O ⊆ ℝ^P open, K ⊆ O compact, and g : ℝ^P → Covector (Euclid P) n ν-integrable (Bochner integrable for the operator norm) with |g(x)|_E ≤ 1 for all x and g(x) = 0 for all x ∉ K (|·|_E = covectorEuclideanNorm). Then for every ε > 0 there is a continuous f : ℝ^P → Covector (Euclid P) n with compact support, tsupport f ⊆ O, |f(z)|_E ≤ 1 for all z, and ∫⁻ ofReal(|f(x) − g(x)|_E) dν(x) ≤ ofReal(ε).",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (O K : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen O → IsCompact K → K ⊆ O → Integrable g ν → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → (∀ x, x ∉ K → g x = 0) → ∀ ε : ℝ, 0 < ε → ∃ f : Euclid P → Covector (Euclid P) n, Continuous f ∧ HasCompactSupport f ∧ tsupport f ⊆ O ∧ (∀ z, covectorEuclideanNorm (f z) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (f x - g x)) ∂ν ≤ ENNReal.ofReal ε",
+  "lean_name": "regcomp_exists_continuous_unit_form_approx",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-b142463c2e-a1"
+}

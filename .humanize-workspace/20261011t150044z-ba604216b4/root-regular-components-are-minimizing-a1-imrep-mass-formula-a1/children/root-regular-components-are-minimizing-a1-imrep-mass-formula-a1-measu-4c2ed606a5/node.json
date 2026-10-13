@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.measure_le_mass-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "Lower mass bound for an integer multiplicity current: ∫_{M∩W} θ dHⁿ ≤ M_W(τ(M, θ, ξ)) for open W",
+  "statement": "Let U ⊆ ℝ^P be open, T ∈ GeometricCurrentOn U n and R = (C, θ, ξ) an IMRep in U with R.Represents T. Then for every open W ⊆ ℝ^P, R.measure W = (θ Hⁿ⌞C)(W) ≤ M_W(T) = T.massOn W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → R.measure W ≤ T.massOn W",
+  "lean_name": "regcomp_imrep_measure_le_massOn",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1",
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1",
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-measu-4c2ed606a5-a1"
+}

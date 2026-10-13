@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1.unit_ball_dense_seq-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1",
+  "depth": 4,
+  "title": "Countable dense sequence in the Euclidean unit ball of n-covectors",
+  "statement": "For all natural numbers P and n there is a sequence (b_k)_{k∈ℕ} in Λ^n = Covector (Euclid P) n (the continuous alternating n-linear forms on ℝ^P) with |b_k|_E ≤ 1 for every k, such that every β ∈ Λ^n with |β|_E ≤ 1 lies in the closure of {b_k : k ∈ ℕ} for the canonical normed topology of Λ^n. Here |α|_E = covectorEuclideanNorm α = √(Σ_{I strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²), with e the standard basis of ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ), ∃ b : ℕ → Covector (Euclid P) n, (∀ k, covectorEuclideanNorm (b k) ≤ 1) ∧ ∀ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 → β ∈ closure (Set.range b)",
+  "lean_name": "regcomp_covector_unit_ball_dense_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-near-5872a83231-a1"
+}
