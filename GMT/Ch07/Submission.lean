@@ -913,6 +913,39 @@ theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Ty
     · exact (hCA k hxC).2
     · exact absurd hxD' hxD
 
+/-- Uniform version of an eventual property on a set of finite measure (Simon Ch. 3, proof of 1.6
+“⇐”, (7)–(9): Egoroff's theorem carried out on sets).  If `μ(F) < ∞`, every `T ρ` with `ρ > 0`
+is closed and each `x ∈ F` lies in `T ρ` for all small `ρ > 0`, then for `η ≠ 0` there are
+`E ⊆ F` with `μ(F \ E) < η` and `δ > 0` such that `E ⊆ T ρ` whenever `0 < ρ < δ`.  The Borel
+sets `G_k = F ∩ ⋂_{0 < ρ < 1/(k+1)} T ρ` increase to `F`, so `μ(F \ G_k) → 0` by continuity
+from above; take `E = G_k` and `δ = 1/(k+1)` for a large `k`. -/
+theorem Submission.cbrr_ud_uniformize_eventually : ∀ (P : ℕ) (μ : Measure (Euclid P)) (F : Set (Euclid P)) (T : ℝ → Set (Euclid P)), MeasurableSet F → μ F ≠ ∞ → (∀ ρ : ℝ, 0 < ρ → IsClosed (T ρ)) → (∀ x ∈ F, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), x ∈ T ρ) → ∀ η : ℝ≥0∞, η ≠ 0 → ∃ (E : Set (Euclid P)) (δ : ℝ), E ⊆ F ∧ 0 < δ ∧ μ (F \ E) < η ∧ ∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → x ∈ T ρ := by
+  intro P μ F T hF hμF hT hev η hη
+  -- `G_k = F ∩ ⋂_{0 < ρ < 1/(k+1)} T ρ` is Borel, each `T ρ` with `ρ > 0` being closed
+  let G : ℕ → Set (Euclid P) := fun k => F ∩ ⋂ ρ ∈ Ioo (0 : ℝ) (1 / ((k : ℝ) + 1)), T ρ
+  have hG : ∀ k, MeasurableSet (G k) := fun k =>
+    hF.inter (isClosed_biInter fun ρ hρ => hT ρ hρ.1).measurableSet
+  -- `G_k` increases with `k`, so `F \ G_k` decreases
+  have hanti : Antitone fun k => F \ G k := fun i j hij =>
+    sdiff_subset_sdiff_right (inter_subset_inter_right F
+      (biInter_subset_biInter_left (Ioo_subset_Ioo_right (Nat.one_div_le_one_div hij))))
+  -- `⋃_k G_k = F`: a point of `F` lies in `T ρ` for `0 < ρ < r`, and `1/(k+1) < r` for some `k`
+  have hempty : ⋂ k, F \ G k = ∅ := by
+    refine eq_empty_of_forall_notMem fun x hx => ?_
+    have hxF : x ∈ F := (mem_iInter.mp hx 0).1
+    obtain ⟨r, hr, hrT⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.mp (hev x hxF)
+    obtain ⟨k, hk⟩ := exists_nat_one_div_lt hr
+    exact (mem_iInter.mp hx k).2 ⟨hxF, mem_iInter₂.mpr fun ρ hρ => hrT ⟨hρ.1, hρ.2.trans hk⟩⟩
+  -- continuity from above: `μ (F \ G_k) → μ ∅ = 0`
+  have hlim : Tendsto (fun k => μ (F \ G k)) atTop (𝓝 0) := by
+    have h := tendsto_measure_iInter_atTop (μ := μ) (fun k => (hF.diff (hG k)).nullMeasurableSet)
+      hanti ⟨0, measure_ne_top_of_subset sdiff_subset hμF⟩
+    rwa [hempty, measure_empty] at h
+  -- some `k` has `μ (F \ G_k) < η`; take `E = G_k` and `δ = 1/(k+1)`
+  obtain ⟨k, hk⟩ := (hlim.eventually (gt_mem_nhds (pos_iff_ne_zero.mpr hη))).exists
+  exact ⟨G k, 1 / ((k : ℝ) + 1), inter_subset_left, Nat.one_div_pos_of_nat, hk,
+    fun x hx ρ hρ hρk => mem_iInter₂.mp hx.2 ρ ⟨hρ, hρk⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
