@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "de9d80dfee219d2b5ef31af16cf97496179f680fc2cffed3f928fb9073ea3cb6",
+  "git_delta": {
+    "base_commit": "164325eb5419cc1593fe336907322caaec9897fa",
+    "candidate_commit": "c46b5887b6a062b1eb8e31712647b2efa7c3b65d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_jm_gram_det_eq_det_compression",
+    "diff_sha256": "892af4645a30b9c585988f917ef1571e8ff0a7918c8bd7c01c84cd5dd43b04a1",
+    "source_sha256": "c93632a813bbba774d03166d6d1fadbda0795e1b44027ba4407c211c318754c2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_jm_gram_det_eq_det_compression",
+      "statement": "∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) {ι : Type} [Fintype ι] [DecidableEq ι] (e : OrthonormalBasis ι ℝ V) (A : Euclid P →L[ℝ] Euclid P), Matrix.det (Matrix.of fun i j : ι => inner ℝ (A (e i)) (A (e j))) = (V.starProjection ∘L (A.adjoint ∘L A) ∘L V.starProjection + (ContinuousLinearMap.id ℝ (Euclid P) - V.starProjection)).det",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
