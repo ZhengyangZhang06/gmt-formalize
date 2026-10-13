@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5d1a4e4eaf5f0972fc0671bbf8f7a8429f4b8653a65ba018f791322539de342",
+  "git_delta": {
+    "base_commit": "739de92ed9c1c966a024107e882db5b7c5000276",
+    "candidate_commit": "a029156d2b71053da5c6d27b9abcc46011c9cfac",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_subspace_ball_measure",
+    "diff_sha256": "d84fb641b54b1d3e74c0016f87801778f3f3bea777b1c8cbe8f36ae2f9260cd7",
+    "source_sha256": "66652a94bef7938341265319a398711c70a18233f06f305314a6aa836130fdae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_subspace_ball_measure",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
