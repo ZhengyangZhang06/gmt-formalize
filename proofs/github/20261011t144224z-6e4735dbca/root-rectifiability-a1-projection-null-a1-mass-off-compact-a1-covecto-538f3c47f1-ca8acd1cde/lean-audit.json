@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "01073985c44bfcb543d22013672cd4b2aa18b51dddb46333b208d6c0e69fabac",
+  "git_delta": {
+    "base_commit": "46fd9d7f441dfda22b8f0e8f8492b8b1eca71eb7",
+    "candidate_commit": "cc8052a37b59fec37c5f9eac49e340c84e59054d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_moc_abs_covector_apply_le",
+    "diff_sha256": "5447bdcc872c73f06e24ed72164f5069b253e391657b96d04ec22f7d2548a41d",
+    "source_sha256": "c348f81e7ea5d89271e16a03659be7f42dda25f6ffa9bcee85a880f3bb1f6324",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_moc_abs_covector_apply_le",
+      "statement": "∀ (P n : ℕ) (φ : Covector (Eucl P) n) (v : Fin n → Eucl P), |φ v| ≤ (∑ β : SimonMultiIndex n P, |wedgeCovectors n (fun j => (EuclideanSpace.proj (β j) : Eucl P →L[ℝ] ℝ)) v|) * covectorEuclideanNorm φ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
