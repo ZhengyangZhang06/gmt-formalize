@@ -4327,6 +4327,134 @@ theorem Submission.iwl_cr_interval_product_im : ∀ (P m : ℕ) (X : GeometricCu
     (fun s => (φ s : DifferentialForm (Eucl P) m)) hint hφ]
   exact intervalIntegral.integral_congr fun s _ => (hXτ (φ s)).symm
 
+/-- The cone `0 ⨯ X` over an integer multiplicity `X` with `spt X ⊆ B̄_R(0)` is integer
+multiplicity.  `Z = [[(0,1)]] × X` is integer multiplicity with compact support, so `H_push` gives
+its integer multiplicity push-forward `S` by the cone map `h(y) = y₀ • π(y)`.  Testing with
+`η = ϑ(y₀) ζ(π y) • h^# ω`, which agrees with `h^# ω` near `spt Z`, the slices of `η` are
+`ζ(x) sᵐ ω(s x)(x, ·)`, so `S(ω) = Z(η) = ∫₀¹ X(η_s) ds = X(ζ ψ_ω) = C(ω)` for the radial integral
+`ψ_ω(x)(v) = ∫₀¹ tᵐ ω(t x)(x, v) dt`. -/
+theorem Submission.iwl_cr_cone_integer_multiplicity :
+    ∀ (P m : ℕ),
+      (∀ (Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1)) (f : Eucl (P + 1) → Eucl P),
+        IsIntegerMultiplicity Z → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f →
+        (∀ K : Set (Eucl P), IsCompact K → IsCompact (f ⁻¹' K ∩ Z.support)) →
+        ∃ S : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), IsIntegerMultiplicity S ∧
+          ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1))
+            (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)),
+            (∃ N : Set (Eucl (P + 1)), IsOpen N ∧ Z.support ⊆ N ∧ ∀ y ∈ N,
+              (η : DifferentialForm (Eucl (P + 1)) (m + 1)) y =
+                ((ω : DifferentialForm (Eucl P) (m + 1)) (f y)).compContinuousLinearMap
+                  (fderiv ℝ f y)) →
+            S ω = Z η) →
+      ∀ (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m)
+        (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)),
+        IsIntegerMultiplicity X → X.support ⊆ closedBall 0 R →
+        (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m),
+          (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P,
+            (ψ : DifferentialForm (Eucl P) m) x v =
+              ∫ t in (0 : ℝ)..1,
+                t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) →
+          C ω = X ψ) →
+        IsIntegerMultiplicity C := by
+  intro P m hpush R X C hX hXR hcone
+  -- `Z = [[(0,1)]] × X` is integer multiplicity, `Z(η) = ∫₀¹ X(η_s) ds` for the slices
+  -- `η_s = η(Φ(s, ·))(e₀, ι ·)`, and `spt Z` lies in the compact set `L = Φ([0,1] × B̄_R(0))`.
+  obtain ⟨Z, hZ, hZη⟩ := Submission.iwl_cr_interval_product_im P m X hX
+  obtain ⟨hLc, hZL⟩ := Submission.iwl_cr_ci_product_support P m R X Z hXR hZη
+  -- The cone map `h(y) = y₀ • π(y)` is `C^∞` and proper on the closed set `spt Z ⊆ L`, so `Z`
+  -- pushes forward to an integer multiplicity `S = τ(M, θ, ξ)`.
+  obtain ⟨hh, hhΦ⟩ := Submission.iwl_cr_ci_cone_map P m
+  have hZc : IsClosed Z.support := isClosed_univ.sdiff Z.isOpen_zeroRegion
+  obtain ⟨S, ⟨M, θ, ξ, hMθξ, hθ, hSτ⟩, hSZ⟩ := hpush Z _ hZ hh fun K hK =>
+    hLc.of_isClosed_subset ((hK.isClosed.preimage hh.continuous).inter hZc)
+      (inter_subset_right.trans hZL)
+  -- It remains to show `C(ω) = S(ω)` for every `ω`.
+  refine ⟨M, θ, ξ, hMθξ, hθ, fun ω => ?_⟩
+  rw [← hSτ ω]
+  -- Cut-offs `ϑ = 1` on `[-1, 2]` and `ζ = 1` on `B̄_r(0)`, where `R < r`.
+  obtain ⟨r, hr0, hRr⟩ : ∃ r : ℝ, 0 < r ∧ R < r :=
+    ⟨max R 0 + 1, by linarith [le_max_right R 0], by linarith [le_max_left R 0]⟩
+  obtain ⟨ϑ, hϑs, hϑc, hϑ1⟩ : ∃ ϑ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ϑ ∧
+      HasCompactSupport ϑ ∧ ∀ s ∈ Icc (-1 : ℝ) 2, ϑ s = 1 := by
+    let b : ContDiffBump (1 / 2 : ℝ) := ⟨3 / 2, 2, by norm_num, by norm_num⟩
+    refine ⟨b, b.contDiff, b.hasCompactSupport, fun s hs => b.one_of_mem_closedBall ?_⟩
+    show dist s (1 / 2) ≤ 3 / 2
+    rw [Real.dist_eq, abs_le]
+    constructor <;> linarith [hs.1, hs.2]
+  obtain ⟨ζ, hζs, hζc, hζ1⟩ : ∃ ζ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ ∧
+      HasCompactSupport ζ ∧ ∀ x ∈ closedBall (0 : Eucl P) r, ζ x = 1 := by
+    let b : ContDiffBump (0 : Eucl P) := ⟨r, r + 1, hr0, by linarith⟩
+    exact ⟨b, b.contDiff, b.hasCompactSupport, fun x hx => b.one_of_mem_closedBall hx⟩
+  -- The test form `η = χ • h^# ω` on `ℝ^{P+1}`, `χ(y) = ϑ(y₀) ζ(π y)`.
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) (m + 1)) :=
+    ω.property.1.1
+  obtain ⟨hχs, hχc⟩ := Submission.iwl_cr_ci_product_cutoff P ϑ ζ hϑs hϑc hζs hζc
+  obtain ⟨η, hη⟩ :=
+    Submission.iwl_cr_ci_cutoff_pullback_testForm (P + 1) P (m + 1) _ _ _ hh hχs hχc hωs
+  -- `χ = 1` on the open set `N = {y : y₀ ∈ (-1, 2), π y ∈ B_r(0)} ⊇ L ⊇ spt Z`, so `S(ω) = Z(η)`.
+  have hSη : S ω = Z η := by
+    refine hSZ ω η ⟨(fun y : Eucl (P + 1) => y 0) ⁻¹' Ioo (-1) 2 ∩
+      (fun y : Eucl (P + 1) => (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ⁻¹' ball 0 r,
+      (isOpen_Ioo.preimage (by fun_prop)).inter (isOpen_ball.preimage (by fun_prop)), ?_, ?_⟩
+    · intro _ hy
+      obtain ⟨⟨s, x⟩, ⟨hs, hx⟩, rfl⟩ := hZL hy
+      refine ⟨⟨?_, ?_⟩, ?_⟩
+      · show -1 < s
+        linarith [hs.1]
+      · show s < 2
+        linarith [hs.2]
+      · show x ∈ ball (0 : Eucl P) r
+        exact mem_ball.2 ((mem_closedBall.1 hx).trans_lt hRr)
+    · intro y hy
+      have hy0 : y 0 ∈ Icc (-1 : ℝ) 2 := ⟨hy.1.1.le, hy.1.2.le⟩
+      have hyπ : (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ closedBall (0 : Eucl P) r :=
+        ball_subset_closedBall hy.2
+      rw [hη y, hϑ1 _ hy0, hζ1 _ hyπ, one_mul, one_smul]
+  -- The slices `φ(s)` of `η`: `Z(η) = ∫₀¹ X(φ(s)) ds`, and `φ(s)(x)(v) = ζ(x) sᵐ ω(s x)(x, v)` for
+  -- `s ∈ [0, 1]`, because `Dh(Φ(s, x))` maps `e₀ ↦ x` and `ι v ↦ s v`.
+  obtain ⟨φ, hφc, hφ⟩ := Submission.iwl_cr_ci_slice_testForm P m η
+  have hZφ : Z η = ∫ s in (0 : ℝ)..1, X (φ s) := hZη η φ fun s _ x v => hφ s x v
+  have hφv : ∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P),
+      (φ s : DifferentialForm (Eucl P) m) x v =
+        ζ x * (s ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (s • x) (Fin.cons x v)) := by
+    intro s hs x v
+    have hΦ0 : ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)) : Eucl (P + 1)) 0 = s := rfl
+    have hπΦ : (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))))) = x := rfl
+    rw [hφ, hη, ContinuousAlternatingMap.smul_apply, smul_eq_mul, (hhΦ s x).2, hΦ0, hπΦ,
+      hϑ1 s ⟨by linarith [hs.1], by linarith [hs.2]⟩, one_mul]
+  -- `ψ = ζ ψ_ω` with `ψ_ω(x)(v) = ∫₀¹ tᵐ ω(t x)(x, v) dt` is a test form, and `C(ω) = X(ψ)` by
+  -- the cone property, since `ζ = 1` on the open ball `B_r(0) ⊇ B̄_R(0) ⊇ spt X`.
+  obtain ⟨ψω, hψωs, hψω, -⟩ :=
+    Submission.iwl_cr_radial_operator P m m (ω : DifferentialForm (Eucl P) (m + 1)) hωs
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : TestFormOn (univ : Set (Eucl P)) m,
+      ∀ x, (ψ : DifferentialForm (Eucl P) m) x = ζ x • ψω x :=
+    ⟨⟨fun x => ζ x • ψω x, ⟨⟨hζs.smul hψωs, hζc.smul_right⟩, subset_univ _⟩⟩, fun _ => rfl⟩
+  have hCψ : C ω = X ψ := by
+    refine hcone ω ψ ⟨ball 0 r, isOpen_ball,
+      fun x hx => mem_ball.2 ((mem_closedBall.1 (hXR hx)).trans_lt hRr), fun x hx v => ?_⟩
+    rw [hψ, ContinuousAlternatingMap.smul_apply, smul_eq_mul, hζ1 x (ball_subset_closedBall hx),
+      one_mul, hψω]
+  -- `∫₀¹ X(φ(s)) ds = X(ψ)`: every `φ(s)`, `s ∈ [0, 1]`, is supported in `tsupport ζ`, and
+  -- `ψ(x)(v) = ∫₀¹ φ(s)(x)(v) ds`.
+  have hXψ : ∫ s in (0 : ℝ)..1, X (φ s) = X ψ := by
+    refine Submission.iwl_cr_ci_integral_exchange P m X (tsupport ζ) φ ψ hX hζc hφc
+      (fun s hs => closure_mono fun x hx => ?_) fun x v => ?_
+    · rw [Function.mem_support] at hx ⊢
+      contrapose! hx
+      ext v
+      rw [hφv s hs x v, hx, zero_mul, ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+    · rw [hψ, ContinuousAlternatingMap.smul_apply, smul_eq_mul, hψω,
+        ← intervalIntegral.integral_const_mul]
+      refine intervalIntegral.integral_congr fun s hs => ?_
+      rw [uIcc_of_le (zero_le_one : (0 : ℝ) ≤ 1)] at hs
+      exact (hφv s hs x v).symm
+  rw [hSη, hZφ, hXψ, hCψ]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
