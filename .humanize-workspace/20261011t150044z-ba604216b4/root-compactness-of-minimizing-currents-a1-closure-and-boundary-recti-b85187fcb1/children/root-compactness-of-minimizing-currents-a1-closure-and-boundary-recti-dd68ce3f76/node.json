@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1.compact_exhaustion-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1",
+  "depth": 5,
+  "title": "Compact exhaustion of an open subset of ℝ^P",
+  "statement": "Let P ∈ ℕ and let U ⊆ ℝ^P be open. Then there is a sequence (K_i)_{i∈ℕ} of compact subsets of ℝ^P with K_i ⊆ U for every i ∈ ℕ, such that every compact set C ⊆ ℝ^P with C ⊆ U satisfies C ⊆ K_i for some i ∈ ℕ.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ K : ℕ → Set (Euclid P), (∀ i, IsCompact (K i)) ∧ (∀ i, K i ⊆ U) ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ∃ i, C ⊆ K i",
+  "lean_name": "cbr_ct_vs_compact_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-dd68ce3f76-a1"
+}
