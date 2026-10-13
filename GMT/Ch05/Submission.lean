@@ -636,6 +636,104 @@ theorem exists_smooth_cutoff_half_ball_grad_le : ∀ (m : ℕ) (ξ : Rn m) (ρ :
   · -- The profile is `3`-Lipschitz, so `|Dζ(x)| ≤ 3/ρ`.
     have h := Submission.norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφ_lip x
     rwa [NNReal.coe_ofNat] at h
+/-- Simon Ch. 5, proof of Theorem 4.5, the identity before (6) (p. 117): the defining identity 3.14
+of the generalized mean curvature, localized to `B_s(0)`.  If `φ ∈ C¹`, `2r ≤ R`, `r ≤ s ≤ R`,
+`B_R(0) ⊆ U` and `spt V ∩ B_R(0) ∩ spt φ ⊆ B̆_r(0)`, then
+`∫_{B_s(0)} div_M(φ e) dμ_V = −∫_{B_s(0)} φ e · H dμ_V`.  Test 3.14 with `X = χ φ e ∈ C¹_c(U)`,
+where the cutoff `χ` (`ρ = 2r` in `exists_smooth_cutoff_half_ball_grad_le`) is `1` on `B_r(0)`
+and `0` off `B̆_{2r}(0)`.  As `div_M` is local (`Filter.EventuallyEq.fderiv_eq`),
+`div_M X = 1_{B_s(0)} div_M(φ e)` and `X · H = 1_{B_s(0)} φ e · H` on `spt V`: near `x`, `χ = 1`
+if `|x| < r`, `φ = 0` if `r ≤ |x| ≤ R`, and `χ = 0` if `|x| > R`.  Finally `spt V` is
+`μ_V`-conull (`tdo_ghe_ae_mem_support`). -/
+theorem gwe_vfv_localized_first_variation : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (φ : Amb n ℓ → ℝ) (e : Amb n ℓ) (r s R : ℝ), ContDiff ℝ 1 φ → 0 < r → 2 * r ≤ R → r ≤ s → s ≤ R → closedBall (0 : Amb n ℓ) R ⊆ U → (∀ x ∈ V.support ∩ closedBall 0 R, x ∈ tsupport φ → ‖x‖ < r) → ∫ x in closedBall (0 : Amb n ℓ) s, V.divM (fun y => φ y • e) x ∂V.weight = -∫ x in closedBall (0 : Amb n ℓ) s, φ x * inner ℝ e (H x) ∂V.weight := by
+  intro n ℓ U V H hH φ e r s R hφ hr h2r hrs hsR hRU hspt
+  -- The cutoff `χ ∈ C^∞` with `χ = 1` on `B_r(0)` and `χ = 0` where `|y| ≥ 2r`.
+  obtain ⟨χ, hχ, -, hχ1, hχ0, -⟩ :=
+    Submission.exists_smooth_cutoff_half_ball_grad_le (n + ℓ) 0 (2 * r) (by positivity)
+  have hχ1' : ∀ y : Amb n ℓ, ‖y‖ ≤ r → χ y = 1 := fun y hy =>
+    hχ1 y (by rw [mem_closedBall, dist_zero_right]; linarith)
+  have hχ0' : ∀ y : Amb n ℓ, 2 * r ≤ ‖y‖ → χ y = 0 := fun y hy =>
+    hχ0 y (by rwa [dist_zero_right])
+  -- The test field `X = χ φ e ∈ C¹_c(U)`, supported in `B_{2r}(0) ⊆ B_R(0) ⊆ U`.
+  set X : Amb n ℓ → Amb n ℓ := fun y => (χ y * φ y) • e with hX_def
+  have hX : ContDiff ℝ 1 X :=
+    ((hχ.of_le (by exact_mod_cast le_top)).mul hφ).smul contDiff_const
+  have hX_supp : tsupport X ⊆ closedBall 0 (2 * r) := by
+    refine closure_minimal (fun y hy => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_zero_right]
+    by_contra h
+    exact hy (by simp only [hX_def, hχ0' y (by linarith), zero_mul, zero_smul])
+  have hXc : HasCompactSupport X :=
+    (isCompact_closedBall 0 (2 * r)).of_isClosed_subset (isClosed_tsupport X) hX_supp
+  have hXU : tsupport X ⊆ U :=
+    hX_supp.trans ((closedBall_subset_closedBall (by linarith)).trans hRU)
+  -- The first variation formula 3.14 for `X`.
+  have hfv := hH.2 X hX hXc hXU
+  -- `div_M Y (x)` only depends on `Y` near `x`, and `div_M 0 = 0`.
+  have hloc : ∀ (Y Z : Amb n ℓ → Amb n ℓ) (x : Amb n ℓ), Y =ᶠ[𝓝 x] Z →
+      V.divM Y x = V.divM Z x := fun Y Z x h => by
+    simp only [RectifiableVarifold.divM, h.fderiv_eq (𝕜 := ℝ)]
+  have hzero : ∀ x : Amb n ℓ, V.divM (fun _ => 0) x = 0 := fun x => by
+    simp [RectifiableVarifold.divM]
+  -- On `spt V`: `div_M X = 1_{B_s(0)} div_M(φ e)` and `X · H = 1_{B_s(0)} φ e · H`.
+  have hpt : ∀ x ∈ V.support,
+      V.divM X x =
+        (closedBall (0 : Amb n ℓ) s).indicator (fun x => V.divM (fun y => φ y • e) x) x ∧
+      inner ℝ (X x) (H x) =
+        (closedBall (0 : Amb n ℓ) s).indicator (fun x => φ x * inner ℝ e (H x)) x := by
+    intro x hx
+    rcases lt_or_ge ‖x‖ r with h1 | h1
+    · -- `|x| < r`: `X = φ e` on the neighbourhood `B̆_r(0)` of `x`, and `x ∈ B_s(0)`.
+      have hxs : x ∈ closedBall (0 : Amb n ℓ) s := by
+        rw [mem_closedBall, dist_zero_right]; linarith
+      have hev : X =ᶠ[𝓝 x] fun y => φ y • e := by
+        have hxr : x ∈ ball (0 : Amb n ℓ) r := by rwa [mem_ball, dist_zero_right]
+        filter_upwards [isOpen_ball.mem_nhds hxr] with y hy
+        rw [mem_ball, dist_zero_right] at hy
+        simp only [hX_def, hχ1' y hy.le, one_mul]
+      rw [indicator_of_mem hxs, indicator_of_mem hxs]
+      refine ⟨hloc _ _ x hev, ?_⟩
+      simp only [hX_def, hχ1' x h1.le, one_mul, real_inner_smul_left]
+    · rcases le_or_gt ‖x‖ R with h2 | h2
+      · -- `r ≤ |x| ≤ R`: `x ∉ spt φ`, so `φ = 0` near `x`.
+        have hφx : x ∉ tsupport φ := fun h =>
+          absurd (hspt x ⟨hx, by rwa [mem_closedBall, dist_zero_right]⟩ h) (not_lt.2 h1)
+        have hφ0 : φ =ᶠ[𝓝 x] 0 := notMem_tsupport_iff_eventuallyEq.1 hφx
+        have hX0 : X =ᶠ[𝓝 x] fun _ => 0 := hφ0.mono fun y hy => by simp [hX_def, hy]
+        have hφe0 : (fun y => φ y • e) =ᶠ[𝓝 x] fun _ => 0 := hφ0.mono fun y hy => by simp [hy]
+        have hφx0 : φ x = 0 := hφ0.self_of_nhds
+        refine ⟨?_, ?_⟩
+        · rw [hloc _ _ x hX0, hzero]
+          by_cases hxs : x ∈ closedBall (0 : Amb n ℓ) s
+          · rw [indicator_of_mem hxs, hloc _ _ x hφe0, hzero]
+          · rw [indicator_of_notMem hxs]
+        · rw [indicator_apply_eq_zero.2 fun _ => by simp only [hφx0, zero_mul]]
+          simp [hX_def, hφx0]
+      · -- `|x| > R ≥ 2r`: `χ = 0` near `x`, and `x ∉ B_s(0)`.
+        have hxs : x ∉ closedBall (0 : Amb n ℓ) s := by
+          rw [mem_closedBall, dist_zero_right]; linarith
+        have hX0 : X =ᶠ[𝓝 x] fun _ => 0 := by
+          have hxR : x ∈ {y : Amb n ℓ | R < ‖y‖} := h2
+          filter_upwards [(isOpen_lt continuous_const continuous_norm).mem_nhds hxR] with y hy
+          have hy' : R < ‖y‖ := hy
+          simp [hX_def, hχ0' y (by linarith)]
+        rw [indicator_of_notMem hxs, indicator_of_notMem hxs]
+        refine ⟨by rw [hloc _ _ x hX0, hzero], ?_⟩
+        simp [hX_def, hχ0' x (by linarith)]
+  -- `μ_V`-a.e. point lies in `spt V`; integrate the pointwise identities.
+  have hae := Submission.tdo_ghe_ae_mem_support n ℓ U V
+  calc ∫ x in closedBall (0 : Amb n ℓ) s, V.divM (fun y => φ y • e) x ∂V.weight
+      = ∫ x, (closedBall (0 : Amb n ℓ) s).indicator
+          (fun x => V.divM (fun y => φ y • e) x) x ∂V.weight :=
+        (integral_indicator measurableSet_closedBall).symm
+    _ = ∫ x, V.divM X x ∂V.weight :=
+        integral_congr_ae (hae.mono fun x hx => (hpt x hx).1.symm)
+    _ = -∫ x, inner ℝ (X x) (H x) ∂V.weight := hfv
+    _ = -∫ x, (closedBall (0 : Amb n ℓ) s).indicator
+          (fun x => φ x * inner ℝ e (H x)) x ∂V.weight := by
+        rw [integral_congr_ae (hae.mono fun x hx => (hpt x hx).2)]
+    _ = -∫ x in closedBall (0 : Amb n ℓ) s, φ x * inner ℝ e (H x) ∂V.weight := by
+        rw [integral_indicator measurableSet_closedBall]
 
 end Submission
 
