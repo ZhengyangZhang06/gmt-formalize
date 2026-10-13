@@ -2325,7 +2325,6 @@ theorem dohr_eb_sch_liou_poly_sublinear_const : ∀ (ℓ m : ℕ) (α C : ℝ) (
   · have := hall m j (by omega) hpos hj
     simp only [ha] at this
     simp [this]
-namespace Submission
 
 /-- **Blow-up Hölder estimate on the unit ball** (L. Simon's scaling argument; step 5 of the
 Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).
