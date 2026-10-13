@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lgc_|LipschitzGraphCorollary|HasGeneralizedMeanCurvature|tangentProj",
+        "simon_theorem_1_17|simon_theorem_3_6",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|tendsto_integral_of_dominated_convergence",
+        "rg -n '\"lean_name\": \"lgc_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "rg -n '\"lean_name\": \"lgc_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes -g 'decomposition-v*.json'",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 /tmp/lgc-independent-audit/run_check.py Types",
+        "python3 /tmp/lgc-independent-audit/run_check.py Assembly",
+        "python3 /tmp/lgc-independent-audit/run_check.py Axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/lgc-independent-audit/Types.lean",
+        "/tmp/lgc-independent-audit/Assembly.lean",
+        "/tmp/lgc-independent-audit/Axioms.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the snapshot and workspace contracts. All five frozen propositions independently elaborate as Prop without declaring the children. Their bare names have no reservation in another branch; dependency and child-obligation edges are acyclic. The five-way split is appropriate for the selected LipschitzGraphCorollary. An independently checked assembly, using explicitly marked child and sibling assumptions, proves exactly GMT.Ch05.LipschitzGraphCorollary without using the unsolved root theorem or sorryAx. The checked tangent-uniqueness, Lusin, density-comparison, differentiation, dominated-convergence and McShane declarations depend only on propext, Classical.choice and Quot.sound. The revised radial sign agrees with the pinned first-variation convention. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_plane_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Localization supplies finite weighted measures; Lusin compact sets, the C¹ cover and vanishing off-piece densities establish weighted tangents on a common conull set. Positivity permits uniqueness to identify the chosen tangentProj. Continuous projection fields on the countable pieces give the required Borel representative. The proof establishes measurability without assuming it or invoking the parent."
+    },
+    {
+      "key": "density_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and three conclusions match the Lean type. Independently checked the positive curvature pairing, negative exponential cancellation, integrable coefficient bound and Tonelli squeeze. Dominated convergence yields precisely the closed-ball annulus. Good-point approximation and continuity from above justify the support lower bound. The constants give the claimed 13/7 upper and 49/64 lower estimates, and C₀δ in the annular inequality. Integrability is established, and only the declared tangent child is used."
+    },
+    {
+      "key": "height_cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The affine-approximation premise is explicit and supplied by the selected parent's existing dependency. Tangent measurability and lower density justify integrating the plane-comparison inequality. Extraction from the extended-real height bounds is valid at positive scales. The height comparison and the two separation cases prove both exact conclusions with constants independent of the remaining data. Dependencies are correctly directed."
+    },
+    {
+      "key": "cone_graph_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including arbitrary dimensions and nonnegative parameters. Euclidean coordinate splitting gives injectivity and the 2ε Lipschitz bound. Componentwise McShane extension accounts for √ℓ; the nonexpansive closed-ball retraction preserves the prescribed values and height bound. The final coordinates give the stated graph representation and norm bound. Empty S and zero-dimensional cases are covered."
+    },
+    {
+      "key": "hole_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match the frozen proposition. The closest point in the ambient measure support lies in U, hence in V.support. All required balls lie within the density estimates' range. Annular monotonicity, lower mass, graph slope and tilt bounds give the displayed inequality, with both absorption conditions verified. The parent's path argument supplies an admissible hole point; uniform tilt then contradicts this estimate and establishes the required reverse inclusion."
+    }
+  ],
+  "required_changes": []
+}

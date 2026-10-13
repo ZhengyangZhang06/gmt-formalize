@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_|Campanato|radial.*height|AllardRegularityTheorem",
+        "weighted|def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt.unique|simon_remark_1_3|simon_theorem_1_9|simon_theorem_1_6",
+        "uniqueDiffOn_convex|norm_fderiv_le_of_lipschitzOn|integrableOn_isCompact|integrableOn_compact_subset|range_starProjection",
+        "simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|simonHausdorff.*(pos|zero|ne_zero|lt_top)|simon.*(Factor|factor)|normalization.*(pos|zero)",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/allard-independent-audit-3y5cgpp7/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/allard-independent-audit-3y5cgpp7/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/allard-independent-audit-3y5cgpp7/NormalizationAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/TangentCone/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1/decomposition-v2.json",
+        "/tmp/allard-independent-audit-3y5cgpp7/Types.lean",
+        "/tmp/allard-independent-audit-3y5cgpp7/Axioms.lean",
+        "/tmp/allard-independent-audit-3y5cgpp7/NormalizationAxioms.lean"
+      ],
+      "conclusion": "Confirmed the pinned project and Mathlib revisions and the selected handoff. No allard52_ declaration occurs in the snapshot; the current DAG reserves none of the eight proposed names. Every name is a bare identifier, and the dependency graph is acyclic. All eight exact one-line propositions independently elaborate using the frozen definitions, without the root theorem or any child implementation. Projection, exponent and measurable-space constructions infer the intended instances; no Matrix/IsUnit ambiguity occurs. Checked library axioms are only propext, Classical.choice and Quot.sound. The weighted area formula uses the contract's μHE normalization; Simon density null-set conclusions transfer through the checked positive finite normalization factor. The weighted tangent and density argument also agrees with [Simon's Chapter 3](https://math.stanford.edu/~lms/ntu-gmt-text.pdf). Splitting is appropriate: the eight conclusions, together with the three authorized sibling contracts, establish this selected AllardRegularityTheorem, including the true δ-rate at fixed γ = δ₁/2048 and the closed-ball conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all three assertions and the local hypotheses. Localization, the rectifiable-cover/Lusin argument, density squeezing, and Borel second-moment approximants establish the exact conclusions without assuming Allard regularity."
+    },
+    {
+      "key": "density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Constants are correctly quantified before codimension. The radial first-variation calculation uses κ = (p−n)/(4p); the density argument and annular limit establish all three closed-ball bounds, including the extended conical integral."
+    },
+    {
+      "key": "tilt_height_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The admissible cutoff field, projection trace identity and absorption estimate prove the inequality. Compact containment and local integrability justify the Bochner integrals; the common constant C = 144 suffices."
+    },
+    {
+      "key": "graph_plane_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six conjuncts match the prose. The graph-projection formula and derivative estimate justify the stated comparison constants; the normal-distance, norm and rotation arguments prove the remaining conclusions. Inline projections are ordinary continuous linear operators."
+    },
+    {
+      "key": "excess_iteration",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "TiltExcessDecayTheorem is an explicit hypothesis. Finite measurable tilt integrals, density bounds, geometric-series convergence of projections and interpolation between scales prove the exact limit-plane estimates using only the declared dependencies."
+    },
+    {
+      "key": "graph_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The uniform δ₂ quantifier and all graph hypotheses match. The proof establishes carrier–graph agreement modulo null sets, identifies weighted tangents by blow-up, and applies the weighted area formula with J_F ≥ 1 and θ ≥ 1. Measurability is justified."
+    },
+    {
+      "key": "graph_campanato",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Choosing δ₃ = min{δ₂, 1/8} supplies the required compact containment and finite tilt integrals. Parameter-domain differentiation and midpoint averaging give the Hölder estimate; the continuous derivative extension proves C¹ regularity and identifies every asserted plane without assuming continuity of S."
+    },
+    {
+      "key": "radial_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the analytic statement. Polar integration, the small-radius derivative bound, radial Cauchy–Schwarz and the spherical-cap estimate give the claimed exponent. The proof handles n = 1 explicitly; δ = 1 is covered by the small-radius case."
+    }
+  ],
+  "required_changes": []
+}
