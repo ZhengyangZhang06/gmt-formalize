@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4b7940d980611a3d75eb440d2bc1112e7c30dc9a7a5a9ad466aa45c038ed2fa4",
+  "git_delta": {
+    "base_commit": "53b0008fb85649ca385cdaa1e7780fdcc82c4093",
+    "candidate_commit": "90018ab87993e053b9082bfdd1f85053de9d43fb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pc_gram_det_succ_eq",
+    "diff_sha256": "786a30bd01935b83e879440db62838c78018e054b1b36915fa5c95649c04728a",
+    "source_sha256": "be179f6cf1d28d4ed25f53fd7572bb9111dd8a4014593959891745c5986cd266",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pc_gram_det_succ_eq",
+      "statement": "∀ (P n : ℕ) (a : Fin (n + 1) → Euclid P) (u : Euclid P), u ∈ Submodule.span ℝ (Set.range a) → inner ℝ u (a 0) = 1 → (∀ k : Fin n, inner ℝ u (a k.succ) = 0) → Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i.succ) (a j.succ)) = ‖u‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (a i) (a j))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gram cofactor identity** (the Jacobian identity `|G ∘ Φ| · JΦ = JΦₛ` of the co-area formula
+for one straightened piece, Simon Ch. 3, 2.8–2.9).  If `u ∈ span{a₀, …, aₙ}`, `⟨u, a₀⟩ = 1` and
+`⟨u, a_{k+1}⟩ = 0` for all `k`, then `det[⟨a_{i+1}, a_{j+1}⟩]_{i,j<n} = ‖u‖² · det[⟨aᵢ, aⱼ⟩]_{i,j≤n}`.
+Write `u = ∑ cₗ aₗ`.  The Gram matrix `A = [⟨aᵢ, aⱼ⟩]` satisfies `A c = e₀` and `‖u‖² = c₀`, so
+`adj(A) e₀ = adj(A) A c = det A · c`; the `(0, 0)` entry of `adj(A)` is the cofactor
+`det[⟨a_{i+1}, a_{j+1}⟩]` (Cramer's rule).  No linear independence is needed. -/
+theorem Submission.dor_lmbsf_pc_gram_det_succ_eq : ∀ (P n : ℕ) (a : Fin (n + 1) → Euclid P) (u : Euclid P), u ∈ Submodule.span ℝ (Set.range a) → inner ℝ u (a 0) = 1 → (∀ k : Fin n, inner ℝ u (a k.succ) = 0) → Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i.succ) (a j.succ)) = ‖u‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (a i) (a j)) := by
+  intro P n a u hu h0 hk
+  classical
+  -- `u = ∑ cₗ aₗ`
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hu
+  set A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ := Matrix.of fun i j => inner ℝ (a i) (a j)
+  -- `⟨u, aᵢ⟩ = δᵢ₀`
+  have hua : ∀ i, inner ℝ u (a i) = (Pi.single 0 1 : Fin (n + 1) → ℝ) i := by
+    intro i
+    refine Fin.cases ?_ (fun k => ?_) i
+    · simp [h0]
+    · simp [hk k, Fin.succ_ne_zero]
+  -- `A c = e₀`
+  have hAc : A.mulVec c = Pi.single 0 1 := by
+    ext i
+    simp only [Matrix.mulVec, dotProduct, A, Matrix.of_apply]
+    have : ∑ j, inner ℝ (a i) (a j) * c j = inner ℝ (a i) u := by
+      rw [← hc, inner_sum]
+      refine Finset.sum_congr rfl (fun j _ => ?_)
+      rw [real_inner_smul_right]; ring
+    rw [this, real_inner_comm, hua]
+  -- `‖u‖² = c₀`
+  have hnorm : ‖u‖ ^ 2 = c 0 := by
+    rw [← real_inner_self_eq_norm_sq]
+    calc inner ℝ u u = inner ℝ (∑ l, c l • a l) u := by rw [hc]
+      _ = ∑ l, c l * inner ℝ (a l) u := by
+          rw [sum_inner]; refine Finset.sum_congr rfl (fun l _ => ?_); rw [real_inner_smul_left]
+      _ = c 0 := by
+          have hl : ∀ l, inner ℝ (a l) u = (Pi.single 0 1 : Fin (n + 1) → ℝ) l := fun l => by
+            rw [real_inner_comm, hua]
+          simp_rw [hl]
+          simp [Pi.single_apply]
+  -- `adj(A) e₀ = adj(A) A c = det A · c`, read off at the `0`-th entry
+  have hadj : A.adjugate.mulVec (A.mulVec c) = A.det • c := by
+    rw [Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec]
+  rw [hAc] at hadj
+  have h00 := congrFun hadj 0
+  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, Pi.smul_apply, smul_eq_mul] at h00
+  -- the `(0, 0)` cofactor of `A` is the Gram determinant of `a₁, …, aₙ`
+  rw [Matrix.adjugate_fin_succ_eq_det_submatrix] at h00
+  simp only [Fin.val_zero, add_zero, pow_zero, one_mul, Fin.succAbove_zero] at h00
+  rw [hnorm, mul_comm, ← h00]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
