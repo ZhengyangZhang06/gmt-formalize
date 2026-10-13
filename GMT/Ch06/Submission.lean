@@ -467,6 +467,267 @@ theorem Submission.constancy_closed_kills_partial_derivatives :
     rw [GeometricCurrentOn.boundary_apply, hdη]
   rw [h1, hT]
   rfl
+/-- **Bounded density of a dominated finitely additive set function** (the Radon–Nikodym step of
+`(L¹)* = L^∞`, used without proof in Simon Ch. 6, Theorem 2.34, p. 142; cf. Folland, *Real
+Analysis*, Thm 6.15).  Let `μ` be finite, `C ≥ 0`, and `ν` additive on disjoint measurable sets
+with `|ν(A)| ≤ C μ(A)`.  Then `ρ = ν + C μ` is a finite measure: `ν(∅) = 0`, `ρ` is finitely
+additive, and `ρ(⋃ sᵢ) - ρ(⋃_{i<N} sᵢ) = ρ(⋃ sᵢ \ ⋃_{i<N} sᵢ) ≤ 2C μ(⋃ sᵢ \ ⋃_{i<N} sᵢ) → 0`.
+Also `ρ ≪ μ`, so `ρ = f μ` for `f = dρ/dμ` (zero singular part), and `0 ≤ f ≤ 2C` `μ`-a.e.  The
+truncation `θ = min(f, 2C) - C` is measurable, `|θ| ≤ C` everywhere, and `θ = f - C` `μ`-a.e.,
+so `ν(A) = ρ(A) - C μ(A) = ∫_A θ dμ`. -/
+theorem Submission.constancy_riesz_bounded_density_of_dominated_additive : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (ν : Set α → ℝ) (C : ℝ), 0 ≤ C → (∀ A B : Set α, MeasurableSet A → MeasurableSet B → Disjoint A B → ν (A ∪ B) = ν A + ν B) → (∀ A : Set α, MeasurableSet A → |ν A| ≤ C * μ.real A) → ∃ θ : α → ℝ, Measurable θ ∧ (∀ x, |θ x| ≤ C) ∧ ∀ A : Set α, MeasurableSet A → ν A = ∫ x in A, θ x ∂μ := by
+  intro α _ μ hμ ν C hC hadd hdom
+  -- Step 1: `ν(∅) = 0`, since `|ν(∅)| ≤ C μ(∅) = 0`.
+  have hν0 : ν ∅ = 0 := by
+    have h := hdom ∅ MeasurableSet.empty
+    rw [measureReal_empty, mul_zero] at h
+    exact abs_nonpos_iff.mp h
+  -- `g = ν + C μ` is nonnegative, bounded by `2C μ` and additive on measurable sets.
+  set g : Set α → ℝ := fun A => ν A + C * μ.real A with hg_def
+  have hg_nonneg : ∀ A, MeasurableSet A → 0 ≤ g A := fun A hA => by
+    have h := hdom A hA
+    have := neg_abs_le (ν A)
+    simp only [hg_def]; linarith
+  have hg_le : ∀ A, MeasurableSet A → g A ≤ 2 * C * μ.real A := fun A hA => by
+    have h := hdom A hA
+    have := le_abs_self (ν A)
+    simp only [hg_def]; linarith
+  have hg_add : ∀ A B, MeasurableSet A → MeasurableSet B → Disjoint A B →
+      g (A ∪ B) = g A + g B := by
+    intro A B hA hB hAB
+    simp only [hg_def]
+    rw [hadd A B hA hB hAB, measureReal_union hAB hB]; ring
+  -- Step 2: finite additivity, `g(⋃_{i<N} sᵢ) = ∑_{i<N} g(sᵢ)`, by induction on `N`.
+  have hfin : ∀ s : ℕ → Set α, (∀ i, MeasurableSet (s i)) → Pairwise (Function.onFun Disjoint s) →
+      ∀ N, g (⋃ i ∈ Finset.range N, s i) = ∑ i ∈ Finset.range N, g (s i) := by
+    intro s hs hd N
+    induction N with
+    | zero => simp [hg_def, hν0]
+    | succ N ih =>
+      rw [Finset.range_add_one, Finset.set_biUnion_insert,
+        Finset.sum_insert Finset.notMem_range_self,
+        hg_add _ _ (hs N) (Finset.measurableSet_biUnion _ fun i _ => hs i), ih]
+      rw [Set.disjoint_iUnion₂_right]
+      intro i hi
+      exact hd (Finset.mem_range.mp hi).ne'
+  -- Step 3: countable additivity.  With `A = ⋃ sᵢ` and `S_N = ⋃_{i<N} sᵢ ↑ A`,
+  -- `g(A) - 2C (μ(A) - μ(S_N)) ≤ g(S_N) ≤ g(A)` and `μ(S_N) → μ(A)`.
+  have hcount : ∀ s : ℕ → Set α, (∀ i, MeasurableSet (s i)) →
+      Pairwise (Function.onFun Disjoint s) → HasSum (fun i => g (s i)) (g (⋃ i, s i)) := by
+    intro s hs hd
+    rw [hasSum_iff_tendsto_nat_of_nonneg (fun i => hg_nonneg _ (hs i))]
+    set S : ℕ → Set α := fun N => ⋃ i ∈ Finset.range N, s i with hS_def
+    have hSm : ∀ N, MeasurableSet (S N) := fun N =>
+      Finset.measurableSet_biUnion _ fun i _ => hs i
+    have hA : MeasurableSet (⋃ i, s i) := MeasurableSet.iUnion hs
+    have hSA : ∀ N, S N ⊆ ⋃ i, s i := fun N => Set.iUnion₂_subset fun i _ => Set.subset_iUnion s i
+    have hmono : Monotone S := by
+      intro a b hab x hx
+      simp only [hS_def, Set.mem_iUnion, Finset.mem_range] at hx ⊢
+      obtain ⟨i, hi, hx⟩ := hx
+      exact ⟨i, by omega, hx⟩
+    have hU : ⋃ N, S N = ⋃ i, s i := by
+      ext x
+      simp only [hS_def, Set.mem_iUnion, Finset.mem_range]
+      constructor
+      · rintro ⟨N, i, _, hx⟩; exact ⟨i, hx⟩
+      · rintro ⟨i, hx⟩; exact ⟨i + 1, i, by omega, hx⟩
+    have hlim : Tendsto (fun N => μ.real (S N)) atTop (𝓝 (μ.real (⋃ i, s i))) := by
+      have h := tendsto_measure_iUnion_atTop (μ := μ) hmono
+      rw [hU] at h
+      exact (ENNReal.tendsto_toReal (measure_ne_top μ _)).comp h
+    have hdiff : ∀ N, g (⋃ i, s i) = g (S N) + g ((⋃ i, s i) \ S N) := fun N => by
+      rw [← hg_add _ _ (hSm N) (hA.diff (hSm N)) disjoint_sdiff_right,
+        Set.union_sdiff_cancel (hSA N)]
+    have hS : Tendsto (fun N => g (S N)) atTop (𝓝 (g (⋃ i, s i))) := by
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+        (g := fun N => g (⋃ i, s i) - 2 * C * (μ.real (⋃ i, s i) - μ.real (S N)))
+        (h := fun _ => g (⋃ i, s i)) ?_ tendsto_const_nhds ?_ ?_
+      · have h := tendsto_const_nhds (x := g (⋃ i, s i)) |>.sub
+          (tendsto_const_nhds (x := 2 * C) |>.mul
+            (tendsto_const_nhds (x := μ.real (⋃ i, s i)) |>.sub hlim))
+        simpa using h
+      · intro N
+        have h1 := hdiff N
+        have h2 := hg_le _ (hA.diff (hSm N))
+        rw [measureReal_sdiff (hSA N) (hSm N)] at h2
+        dsimp only
+        linarith
+      · intro N
+        have h1 := hdiff N
+        have h2 := hg_nonneg _ (hA.diff (hSm N))
+        dsimp only
+        linarith
+    exact hS.congr fun N => hfin s hs hd N
+  -- Step 4: the finite measure `ρ = ν + C μ`.
+  let ρ : Measure α := Measure.ofMeasurable (fun A _ => ENNReal.ofReal (g A))
+    (by simp [hg_def, hν0]) (fun s hs hd => by
+      rw [← ENNReal.ofReal_tsum_of_nonneg (fun i => hg_nonneg _ (hs i)) (hcount s hs hd).summable,
+        (hcount s hs hd).tsum_eq])
+  have hρ : ∀ A, MeasurableSet A → ρ A = ENNReal.ofReal (g A) := fun A hA =>
+    Measure.ofMeasurable_apply A hA
+  have : IsFiniteMeasure ρ := ⟨by rw [hρ _ MeasurableSet.univ]; exact ENNReal.ofReal_lt_top⟩
+  -- Step 5: `ρ ≪ μ`, since `μ(A) = 0` forces `0 ≤ g(A) ≤ 2C μ(A) = 0`.
+  have hρμ : ρ ≪ μ := by
+    refine Measure.AbsolutelyContinuous.mk fun A hA h0 => ?_
+    have hr : μ.real A = 0 := by rw [measureReal_def, h0, ENNReal.toReal_zero]
+    rw [hρ A hA, ENNReal.ofReal_eq_zero]
+    have := hg_le A hA
+    rwa [hr, mul_zero] at this
+  -- Step 6: Radon–Nikodym.  The singular part of `ρ ≪ μ` vanishes, so `ρ = f μ`, `f = dρ/dμ`.
+  have hρ_eq : μ.withDensity (ρ.rnDeriv μ) = ρ := by
+    have h := Measure.haveLebesgueDecomposition_add ρ μ
+    rw [Measure.singularPart_eq_zero_of_ac hρμ, zero_add] at h
+    exact h.symm
+  set f := ρ.rnDeriv μ with hf_def
+  have hf_meas : Measurable f := Measure.measurable_rnDeriv ρ μ
+  have hf_lint : ∀ A, MeasurableSet A → ∫⁻ x in A, f x ∂μ = ENNReal.ofReal (g A) := fun A hA => by
+    rw [← withDensity_apply _ hA, hρ_eq, hρ A hA]
+  -- Step 7: `f ≤ 2C` `μ`-a.e., since `∫_A f dμ = g(A) ≤ 2C μ(A)` for every measurable `A`.
+  have hf_le : f ≤ᵐ[μ] fun _ => ENNReal.ofReal (2 * C) := by
+    refine ae_le_of_forall_setLIntegral_le_of_sigmaFinite hf_meas fun A hA _ => ?_
+    rw [hf_lint A hA, setLIntegral_const, ← ENNReal.ofReal_toReal (measure_ne_top μ A),
+      ← ENNReal.ofReal_mul (by linarith)]
+    exact ENNReal.ofReal_le_ofReal (hg_le A hA)
+  -- Step 8: truncation `θ = min(f, 2C) - C`, equal to `f - C` `μ`-a.e.
+  refine ⟨fun x => min (f x).toReal (2 * C) - C,
+    (hf_meas.ennreal_toReal.min measurable_const).sub_const C, ?_, ?_⟩
+  · intro x
+    rw [abs_le]
+    have h1 : 0 ≤ min (f x).toReal (2 * C) := le_min ENNReal.toReal_nonneg (by linarith)
+    have h2 : min (f x).toReal (2 * C) ≤ 2 * C := min_le_right _ _
+    constructor <;> linarith
+  · intro A hA
+    have hfin_int : ∫⁻ x in A, f x ∂μ ≠ ∞ := by rw [hf_lint A hA]; exact ENNReal.ofReal_ne_top
+    have hint : Integrable (fun x => (f x).toReal) (μ.restrict A) :=
+      integrable_toReal_of_lintegral_ne_top hf_meas.aemeasurable hfin_int
+    have h1 : ∫ x in A, (min (f x).toReal (2 * C) - C) ∂μ = ∫ x in A, ((f x).toReal - C) ∂μ := by
+      refine setIntegral_congr_ae hA ?_
+      filter_upwards [hf_le] with x hx _
+      rw [min_eq_left (ENNReal.toReal_le_of_le_ofReal (by linarith) hx)]
+    rw [h1, integral_sub hint (integrable_const C), setIntegral_const,
+      integral_toReal hf_meas.aemeasurable ?_, hf_lint A hA, ENNReal.toReal_ofReal (hg_nonneg A hA)]
+    · simp only [hg_def, smul_eq_mul]; ring
+    · exact ae_restrict_of_ae (hf_le.mono fun x hx => lt_of_le_of_lt hx ENNReal.ofReal_lt_top)
+/-- Extension from indicators for the duality `(L¹(μ))* = L^∞(μ)` (Riesz), used in Simon Ch. 6,
+proof of Theorem 2.34 (p. 142).  Let `μ` be finite and let `F` be additive and homogeneous with
+`|F f| ≤ C ∫ |f| dμ` on `μ`-integrable functions.  Let `θ` be measurable with `|θ| ≤ M`, and
+suppose `F (1_A) = ∫_A θ dμ` for every measurable `A`.  Then `F f = ∫ f θ dμ` for every integrable
+`f`.  Both sides are additive and `L¹`-Lipschitz, hence continuous on `α →₁[μ] ℝ`, so
+`Integrable.induction` extends the identity from multiples of indicators to all of `L¹(μ)`. -/
+theorem Submission.constancy_riesz_eq_integral_mul_of_indicator_eq : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∀ (θ : α → ℝ) (M : ℝ), Measurable θ → (∀ x, |θ x| ≤ M) → (∀ A : Set α, MeasurableSet A → F (A.indicator 1) = ∫ x in A, θ x ∂μ) → ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ := by
+  intro α _ μ _ F C hadd hsmul hbound θ M hθ hθM hind f hf
+  -- Step 2: `F (g - h) = F g - F h`, since `g - h = g + (-1) • h`.
+  have hsub : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ → F (g - h) = F g - F h := by
+    intro g h hg hh
+    have e : g - h = g + (-1 : ℝ) • h := by rw [neg_one_smul, sub_eq_add_neg]
+    rw [e, hadd _ _ hg (hh.smul _), hsmul _ _ hh]
+    ring
+  -- Step 3: `|F g - F h| = |F (g - h)| ≤ C * ∫ |g - h| dμ`.
+  have hFlip : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ →
+      |F g - F h| ≤ C * ∫ x, |g x - h x| ∂μ := by
+    intro g h hg hh
+    rw [← hsub g h hg hh]
+    exact hbound _ (hg.sub hh)
+  -- Step 4: `F` respects `μ`-a.e. equality.
+  have hFae : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ → g =ᵐ[μ] h → F g = F h := by
+    intro g h hg hh hgh
+    have h0 : ∫ x, |g x - h x| ∂μ = 0 := integral_eq_zero_of_ae (by
+      filter_upwards [hgh] with x hx
+      simp [hx])
+    have hle := hFlip g h hg hh
+    rw [h0, mul_zero] at hle
+    exact sub_eq_zero.mp (abs_nonpos_iff.mp hle)
+  -- Step 5: `g θ` is integrable for integrable `g`, since `θ` is measurable and `|θ| ≤ M`.
+  have hθbd : ∀ᵐ x ∂μ, ‖θ x‖ ≤ M := Eventually.of_forall fun x => by
+    rw [Real.norm_eq_abs]
+    exact hθM x
+  have hint : ∀ g : α → ℝ, Integrable g μ → Integrable (fun x => g x * θ x) μ :=
+    fun g hg => hg.mul_bdd hθ.aestronglyMeasurable hθbd
+  -- Step 6: `|∫ g θ dμ - ∫ h θ dμ| ≤ ∫ |g - h| |θ| dμ ≤ M * ∫ |g - h| dμ`.
+  have hIlip : ∀ g h : α → ℝ, Integrable g μ → Integrable h μ →
+      |∫ x, g x * θ x ∂μ - ∫ x, h x * θ x ∂μ| ≤ M * ∫ x, |g x - h x| ∂μ := by
+    intro g h hg hh
+    rw [← integral_sub (hint g hg) (hint h hh), ← integral_const_mul]
+    refine abs_integral_le_integral_abs.trans (integral_mono ((hint g hg).sub (hint h hh)).abs
+      ((hg.sub hh).abs.const_mul _) fun x => ?_)
+    show |g x * θ x - h x * θ x| ≤ M * |g x - h x|
+    rw [← sub_mul, abs_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_right (hθM x) (abs_nonneg _)
+  -- Step 7: if `|Φ g - Φ h| ≤ K * ∫ |g - h| dμ`, then `u ↦ Φ u` is `K⁺`-Lipschitz, hence
+  -- continuous, on `α →₁[μ] ℝ`, because `‖u - v‖ = ∫ |u - v| dμ`.
+  have hcont : ∀ (Φ : (α → ℝ) → ℝ) (K : ℝ),
+      (∀ g h : α → ℝ, Integrable g μ → Integrable h μ →
+        |Φ g - Φ h| ≤ K * ∫ x, |g x - h x| ∂μ) →
+      Continuous fun u : α →₁[μ] ℝ => Φ u := by
+    intro Φ K hΦ
+    refine LipschitzWith.continuous (LipschitzWith.of_dist_le' (K := K) fun u v => ?_)
+    rw [Real.dist_eq, dist_eq_norm, L1.norm_eq_integral_norm]
+    refine (hΦ _ _ (L1.integrable_coeFn u) (L1.integrable_coeFn v)).trans_eq ?_
+    congr 1
+    refine integral_congr_ae ?_
+    filter_upwards [Lp.coeFn_sub u v] with x hx
+    rw [hx, Pi.sub_apply, Real.norm_eq_abs]
+  -- Step 8: `Integrable.induction` for `F g = ∫ g θ dμ`.
+  refine Integrable.induction (fun g => F g = ∫ x, g x * θ x ∂μ) ?_ ?_ ?_ ?_ hf
+  · -- (a) multiples of indicators of measurable sets
+    intro c s hs _
+    have hs1 : Integrable (s.indicator (1 : α → ℝ)) μ := (integrable_const (1 : ℝ)).indicator hs
+    have e : (s.indicator fun _ => c) = c • s.indicator (1 : α → ℝ) := by
+      ext x
+      by_cases hx : x ∈ s <;> simp [hx]
+    rw [e, hsmul c _ hs1, hind s hs, ← integral_const_mul, ← integral_indicator hs]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    by_cases hx : x ∈ s <;> simp [hx]
+  · -- (b) sums
+    intro g h _ hg hh hPg hPh
+    rw [hadd g h hg hh, hPg, hPh, ← integral_add (hint g hg) (hint h hh)]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [Pi.add_apply, add_mul]
+  · -- (c) the set where the two continuous maps on `α →₁[μ] ℝ` agree is closed
+    exact isClosed_eq (hcont F C hFlip) (hcont (fun g => ∫ x, g x * θ x ∂μ) M hIlip)
+  · -- (d) `μ`-a.e. congruence
+    intro g h hgh hg hPg
+    have hh : Integrable h μ := hg.congr hgh
+    rw [← hFae g h hg hh hgh, hPg]
+    refine integral_congr_ae ?_
+    filter_upwards [hgh] with x hx
+    rw [hx]
+
+/-- **Riesz representation `(L¹(μ))* = L^∞(μ)`** for a finite measure `μ`, used without proof in
+Simon Ch. 6, proof of Theorem 2.34 (p. 142; cf. Folland, *Real Analysis*, Thm 6.15).  Put
+`C' = max(C, 0)` and `ν(A) = F(1_A)`.  Since `1_{A ∪ B} = 1_A + 1_B` for disjoint `A, B` and
+`∫ |1_A| dμ = μ(A)`, `ν` is additive with `|ν(A)| ≤ C' μ(A)`.  The bounded density lemma gives a
+measurable `θ` with `|θ| ≤ C'` everywhere and `F(1_A) = ∫_A θ dμ`, and the extension from
+indicators gives `F f = ∫ f θ dμ` for every integrable `f`. -/
+theorem Submission.constancy_riesz_l1_dual_bounded_density : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∃ θ : α → ℝ, Measurable θ ∧ (∃ M : ℝ, ∀ x, |θ x| ≤ M) ∧ ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ := by
+  intro α _ μ hμ F C hadd hsmul hbound
+  -- Indicators of measurable sets are integrable, since `μ` is finite.
+  have hind : ∀ A : Set α, MeasurableSet A → Integrable (A.indicator (1 : α → ℝ)) μ :=
+    fun A hA => (integrable_const (1 : ℝ)).indicator hA
+  -- Step 1: `ν(A) = F(1_A)` is additive, since `1_{A ∪ B} = 1_A + 1_B` for disjoint `A, B`.
+  have hνadd : ∀ A B : Set α, MeasurableSet A → MeasurableSet B → Disjoint A B →
+      F ((A ∪ B).indicator 1) = F (A.indicator 1) + F (B.indicator 1) := by
+    intro A B hA hB hAB
+    rw [Set.indicator_union_of_disjoint hAB]
+    exact hadd _ _ (hind A hA) (hind B hB)
+  -- Step 2: `|ν(A)| ≤ C ∫ |1_A| dμ = C μ(A) ≤ max(C, 0) μ(A)`.
+  have hνdom : ∀ A : Set α, MeasurableSet A → |F (A.indicator 1)| ≤ max C 0 * μ.real A := by
+    intro A hA
+    have h1 : ∫ x, |A.indicator (1 : α → ℝ) x| ∂μ = μ.real A := by
+      rw [← integral_indicator_one hA]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      exact abs_of_nonneg (Set.indicator_nonneg (fun _ _ => zero_le_one) x)
+    calc |F (A.indicator 1)| ≤ C * μ.real A := by
+          rw [← h1]
+          exact hbound _ (hind A hA)
+      _ ≤ max C 0 * μ.real A := mul_le_mul_of_nonneg_right (le_max_left C 0) measureReal_nonneg
+  -- Step 3: a measurable `θ` with `|θ| ≤ max(C, 0)` everywhere and `F(1_A) = ∫_A θ dμ`.
+  obtain ⟨θ, hθ, hθC, hθν⟩ := Submission.constancy_riesz_bounded_density_of_dominated_additive μ hμ
+    (fun A => F (A.indicator 1)) (max C 0) (le_max_right C 0) hνadd hνdom
+  -- Step 4: extension from indicators to every integrable `f`.
+  exact ⟨θ, hθ, ⟨max C 0, hθC⟩, Submission.constancy_riesz_eq_integral_mul_of_indicator_eq μ hμ F C
+    hadd hsmul hbound θ (max C 0) hθ hθC hθν⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
