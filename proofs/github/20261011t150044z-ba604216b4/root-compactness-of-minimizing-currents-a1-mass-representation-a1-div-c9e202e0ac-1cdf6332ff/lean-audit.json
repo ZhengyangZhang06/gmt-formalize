@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "77b69aff15a21035757a43fa3917ddbf58fb04d8342c8187d714c8a757294383",
+  "git_delta": {
+    "base_commit": "a9f7659e47aada7798e7abf250ee67774f28857c",
+    "candidate_commit": "342b91b447e8774ebb38917b9e0600f62807bd61",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_df_cons_sum_trace",
+    "diff_sha256": "031c6be61492c0c7aa0e96e79479fb3c8f82ae6e2156cdbb768e38be036d8a32",
+    "source_sha256": "2fcad821fc20265a55147c31853872a912dc2571773596ae81058d58132a0388",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_df_cons_sum_trace",
+      "statement": "∀ (P m : ℕ) (I : Fin (m + 1) → Fin P) (θ : Covector (Euclid P) (m + 1)) (A : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) (L : Euclid P → Euclid P), (∀ v : Fin (m + 1) → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → (∀ (v : Euclid P) (k : Fin (m + 1)), L v (I k) = A (WithLp.toLp 2 (fun k' => v (I k'))) k) → ∀ w : Fin (m + 1) → Euclid P, ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * θ (Fin.cons (L (w i)) (i.removeNth w)) = LinearMap.trace ℝ (Euclid (m + 1)) A * θ w",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
