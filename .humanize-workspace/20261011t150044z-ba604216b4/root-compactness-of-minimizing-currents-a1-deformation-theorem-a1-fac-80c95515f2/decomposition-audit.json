@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cmcdtfrsd_|imrep_carrier_sdiff_support_null|regcomp_rim_action_integrable' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "rg -n -A7 -B2 'theorem (Isometry.map_euclideanHausdorffMeasure|EuclideanSpace.euclideanHausdorffMeasure_eq_volume)' Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n -A8 -B2 'MeasurableEmbedding.integral_map' Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "rg -n -A4 -B2 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "rg -n -A4 -B2 'theorem (orderEmbOfFin_mem|range_orderEmbOfFin)' Mathlib/Data/Finset/Sort.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/skeleton-independent-audit-binqau9p/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/skeleton-independent-audit-binqau9p/Replay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-80c95515f2/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-80c95515f2/decomposition-v1.json",
+        "/tmp/skeleton-independent-audit-binqau9p/Types.lean",
+        "/tmp/skeleton-independent-audit-binqau9p/Replay.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected Submission.cmcdtfr_skeleton_decomposition. The pinned contract matches the workspace; Mathlib and SimonGMT revisions match their pins. The declaration search found no matches in the snapshot. Independently scanning the DAG found no reservations for the four new names and confirmed comparator-accepted, byte-identical types for both reused declarations. All names are bare identifiers. The proposed dependency closure is acyclic. All six one-line propositions elaborate without child implementations. An independent replay, incorporating the accepted implementations from d15b5cf and f1339f9, compiled proofs at every exact child type and assembled the exact selected parent type using its authorized sibling contracts. Axiom checks reported only propext, Classical.choice and Quot.sound. The explicit multivector topology construction also compiled; no matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "skeleton_point_on_open_face",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including both skeleton hypotheses. The cardinality argument gives exactly m+1 noninteger coordinates; their increasing enumeration and the floor/fractional-part construction prove the exact coordinate identity. The proof is complete and independent."
+    },
+    {
+      "key": "faces_meeting_compact_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly permits arbitrary direction maps. Bounding each coordinate shift between 0 and k bounds the integer base points in a finite box. The finite-product argument proves the stated finiteness without an omitted injectivity hypothesis."
+    },
+    {
+      "key": "coordinate_plane_orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both universal antecedents and all local hypotheses match the prose. Restriction supplies tangent orientations, PO gives the two signs, and a strongly measurable representative yields a Borel integer-valued sign. The proof preserves the simultaneous quantifier over all covectors and handles coincident sign cases. The supplied topology instance was independently validated."
+    },
+    {
+      "key": "face_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sole child dependency is correctly directed to coordinate_plane_orientation_sign. The proof establishes the restricted pushforward identity, constructs an everywhere integer-valued density, proves integrability and the ENNReal bound using compact-face local integrability, and derives the exact test-form integral identity. Its measure transformations require no missing hypotheses."
+    },
+    {
+      "key": "carrier_off_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the accepted imrep_carrier_sdiff_support_null with an identical frozen type. Independently checked: countable reduction of the zero region, smooth scalar testing, the fundamental lemma, and a finite covector basis force the carrier measure there to vanish, since unit orientations are nonzero. No reliance on the selected parent occurs."
+    },
+    {
+      "key": "action_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the accepted regcomp_rim_action_integrable with an identical frozen type. The orthonormal orientation bound and continuous evaluation give measurable domination by a compactly supported multiple of the multiplicity. Local integrability applies because the test-form support lies in U; openness of U is unnecessary. The supplied proof establishes the exact integral contract."
+    }
+  ],
+  "required_changes": []
+}

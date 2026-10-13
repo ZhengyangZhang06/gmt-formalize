@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1.skeleton_point_on_open_face-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1",
+  "depth": 5,
+  "title": "A point of the (m+1)-skeleton off the m-skeleton lies on an open unit lattice (m+1)-face (parent step 4)",
+  "statement": "Let P, m ∈ ℕ and x ∈ ℝ^P (Euclid P). Assume (i) x ∈ L_{m+1}: there is a set s of coordinate indices with P ≤ m + 1 + |s| and x_i ∈ ℤ for every i ∈ s; and (ii) x ∉ L_m: there is no set s of coordinate indices with P ≤ m + |s| and x_i ∈ ℤ for every i ∈ s. Then x lies on an open unit lattice (m+1)-face: there are a strictly increasing ι : Fin (m+1) → Fin P, b ∈ ℤ^P and y ∈ ℝ^{m+1} with 0 < y_j < 1 for every j such that x = b + Σ_j y_j e_{ι(j)} (in Lean: WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) 1 = x, with p = (ι, b)).",
+  "lean_statement": "∀ (P m : ℕ) (x : Euclid P), (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → (¬ ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → ∃ (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (y : Euclid (m + 1)), StrictMono p.1 ∧ (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) = x",
+  "lean_name": "cmcdtfrsd_skeleton_point_on_open_face",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-1db6258ad7-a1"
+}
