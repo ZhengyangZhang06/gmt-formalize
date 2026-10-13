@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_isp-a1.pushforward_pair-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_isp-a1",
+  "depth": 5,
+  "title": "Admissibility and change of variables for the dilated pair (λ^{−m}η_*μ, ξ(a + λ·))",
+  "statement": "Let P, m ∈ ℕ, a ∈ ℝ^P (Euclid P) and λ > 0, and let η := dilation a λ, η(y) = −λ⁻¹a + λ⁻¹y = λ⁻¹(y − a). Let μ be a measure on ℝ^P (Borel σ-algebra) with μ(K) < ∞ for every compact K ⊆ ℝ^P. Let ξ : ℝ^P → Λ_m(ℝ^P) (MultiVector P m, the continuous linear functionals on m-covectors) be μ-a.e. strongly measurable with |ξ(x)(α)| ≤ |α| (|α| = covectorEuclideanNorm α) for μ-a.e. x and every m-covector α. Put μ₂ := ofReal(λ^{−m})·η_*μ (Lean: ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ) and ξ₂(y) := ξ(a + λy). Then: (a) μ₂(K) < ∞ for every compact K ⊆ ℝ^P; (b) ξ₂ is μ₂-a.e. strongly measurable; (c) for μ₂-a.e. y, |ξ(a + λy)(α)| ≤ |α| for every m-covector α; (d) for every set S ⊆ ℝ^P and every map ω : ℝ^P → Λ^m(ℝ^P) (a DifferentialForm; no regularity assumed), ∫_S ξ(a + λy)(ω(y)) dμ₂(y) = λ^{−m}·∫_{η⁻¹(S)} ξ(x)(ω(η(x))) dμ(x) (Bochner integrals).",
+  "lean_statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P m), 0 < lam → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ K : Set (Euclid P), IsCompact K → (ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ) K < ∞) ∧ AEStronglyMeasurable (fun y => ξ (a + lam • y)) (ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ) ∧ (∀ᵐ y ∂(ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ), ∀ α : Covector (Euclid P) m, |ξ (a + lam • y) α| ≤ covectorEuclideanNorm α) ∧ ∀ (S : Set (Euclid P)) (ω : DifferentialForm (Euclid P) m), ∫ y in S, ξ (a + lam • y) (ω y) ∂(ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ) = lam⁻¹ ^ m * ∫ x in dilation a lam ⁻¹' S, ξ x (ω (dilation a lam x)) ∂μ",
+  "lean_name": "cbr_ci_dsp_pushforward_pair",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-36d85accd9-a1"
+}
