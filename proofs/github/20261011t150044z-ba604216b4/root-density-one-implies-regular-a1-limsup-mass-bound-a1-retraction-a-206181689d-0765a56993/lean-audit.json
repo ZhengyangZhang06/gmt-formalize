@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1932891d408408f12f1d8df7007d6677f1ca46aa1a458621d39e913a449662a6",
+  "git_delta": {
+    "base_commit": "e08c3f414c615a93db14e7343c291c3539867419",
+    "candidate_commit": "052d1e3a60dd91cd1045dabec25d0ebedb165ac5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_nc_map_calculus",
+    "diff_sha256": "aebab62a7d0b0d2b8a2cedd2d4286fc6b0517f3d856e66edd84a58975d3d9b02",
+    "source_sha256": "838ffc71f2a76c25a9a90d4ea8988a4166df0a85e46a38f3409b532f14c96f83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_nc_map_calculus",
+      "statement": "∀ (P d : ℕ) (E : Submodule ℝ (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 ψ V → ContDiffOn ℝ 1 Q V → (∀ k ∈ E, Q v₀ k = 0) → ContDiffOn ℝ 1 (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) (V ×ˢ univ) ∧ HasFDerivAt (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) ((fderiv ℝ ψ v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E) + E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)) (v₀, 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
