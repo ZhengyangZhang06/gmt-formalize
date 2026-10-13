@@ -567,6 +567,222 @@ theorem Submission.deGiorgiTM_blowUp_defect_tendsto_zero : ∀ (N n : ℕ) (μ :
     _ = M * R ^ n * (((r * R) ^ n)⁻¹ * ∫ y in Metric.ball x (r * R), ‖ν y - e‖ ∂μ) := by
         rw [integral_indicator hBmeas, integral_const_mul, mul_pow, mul_inv]
         field_simp
+/-- **Uniform `C¹_c` approximation with support control**: the smoothing step that extends the
+blow-up convergence for `C¹_c` test functions to all of `C_c` (the approximation left implicit at
+the end of the proof of Simon Ch. 3, Thm. 4.3, `chapter-03.txt` lines 739–746). A continuous
+compactly supported `f` vanishing off `B_{R-1}(0)` is uniformly `δ`-approximated by a `C¹_c`
+function `φ` vanishing off `B_R(0)`: `φ = κ ⋆ f` with `κ ≥ 0` a `C¹_c` bump of integral `1`
+supported in `B_ε(0)`, where `ε ≤ 1/2` is a modulus of uniform continuity of `f` for `δ`. -/
+theorem Submission.deGiorgiTM_cc_contDiff_approx : ∀ (N : ℕ) (f : Rn N → ℝ) (R δ : ℝ),
+    Continuous f → HasCompactSupport f → (∀ z, f z ≠ 0 → ‖z‖ < R - 1) → 0 < δ →
+    ∃ φ : Rn N → ℝ, ContDiff ℝ 1 φ ∧ HasCompactSupport φ ∧ (∀ z, |φ z - f z| ≤ δ) ∧
+      ∀ z, φ z ≠ 0 → ‖z‖ < R := by
+  intro N f R δ hfc hfs hfR hδ
+  -- Step 1: `f` is uniformly continuous; `ε = min ε₀ (1/2)` for a modulus `ε₀` at `δ`.
+  obtain ⟨ε₀, hε₀, hε₀f⟩ :=
+    Metric.uniformContinuous_iff.mp (hfs.uniformContinuous_of_continuous hfc) δ hδ
+  set ε : ℝ := min ε₀ (1 / 2) with hεdef
+  have hεpos : 0 < ε := lt_min hε₀ (by norm_num)
+  have hεle₀ : ε ≤ ε₀ := min_le_left _ _
+  have hεhalf : ε ≤ 1 / 2 := min_le_right _ _
+  -- Step 2: a normalized `C¹` bump `κ = c⁻¹ ψ`, `c = ∫ ψ > 0`, supported in `B_ε(0)`.
+  obtain ⟨ψ, hψt, hψcs, hψd, hψr, hψ0⟩ :=
+    exists_contDiff_tsupport_subset (n := 1) (Metric.ball_mem_nhds (0 : Rn N) hεpos)
+  have hψnn : ∀ t, 0 ≤ ψ t := fun t => (hψr (mem_range_self t)).1
+  have hc : 0 < ∫ t, ψ t := hψd.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hψcs
+    (fun t => hψnn t) (x := 0) (by rw [hψ0]; exact one_ne_zero)
+  set κ : Rn N → ℝ := fun t => (∫ t, ψ t)⁻¹ * ψ t with hκdef
+  have hκd : ContDiff ℝ 1 κ := contDiff_const.mul hψd
+  have hκsupp' : Function.support κ ⊆ Function.support ψ := fun t ht h0 => ht (by simp [hκdef, h0])
+  have hκcs : HasCompactSupport κ := hψcs.mono hκsupp'
+  have hκnn : ∀ t, 0 ≤ κ t := fun t => mul_nonneg (inv_nonneg.mpr hc.le) (hψnn t)
+  have hκint : ∫ t, κ t = 1 := by
+    simp only [hκdef]
+    rw [integral_const_mul]
+    exact inv_mul_cancel₀ hc.ne'
+  have hκsupp : Function.support κ ⊆ Metric.ball (0 : Rn N) ε :=
+    fun t ht => hψt (subset_tsupport _ (hκsupp' ht))
+  -- Step 3: the mollification `φ = κ ⋆ f` is `C¹` with compact support.
+  set φ : Rn N → ℝ := convolution κ f (ContinuousLinearMap.lsmul ℝ ℝ) volume with hφdef
+  have hφd : ContDiff ℝ 1 φ := hκcs.contDiff_convolution_left _ hκd hfc.locallyIntegrable
+  have hφcs : HasCompactSupport φ := hκcs.convolution _ hfs
+  -- Step 4: averaging estimate: `|f - w| ≤ η` on `B_ε(z)` implies `|φ z - w| ≤ η`.
+  have avg : ∀ (z : Rn N) (w η : ℝ), 0 ≤ η → (∀ z' ∈ Metric.ball z ε, dist (f z') w ≤ η) →
+      dist (φ z) w ≤ η := fun z w η hη h =>
+    dist_convolution_le (μ := (volume : Measure (Rn N))) hη hκsupp hκnn hκint
+      hfc.aestronglyMeasurable h
+  refine ⟨φ, hφd, hφcs, fun z => ?_, fun z hz => ?_⟩
+  · -- Step 5: uniform approximation (`w = f z`, `η = δ`).
+    have h := avg z (f z) δ hδ.le fun z' hz' =>
+      (hε₀f (lt_of_lt_of_le (Metric.mem_ball.mp hz') hεle₀)).le
+    rwa [Real.dist_eq] at h
+  · -- Step 6: support control: for `‖z‖ ≥ R`, `f = 0` on `B_ε(z)` (there `‖z'‖ > R - 1/2`).
+    by_contra hzR
+    push Not at hzR
+    apply hz
+    have h0 : ∀ z' ∈ Metric.ball z ε, dist (f z') 0 ≤ 0 := by
+      intro z' hz'
+      have hfz' : f z' = 0 := by
+        by_contra hne
+        have h1 := hfR z' hne
+        have h2 := norm_sub_norm_le z z'
+        rw [Metric.mem_ball, dist_eq_norm, norm_sub_rev] at hz'
+        linarith
+      simp [hfz']
+    exact dist_le_zero.mp (avg z 0 0 le_rfl h0)
+/-- **Integral bound for a bounded continuous function supported in a ball** (the integrability
+and estimate step of the proof of Simon Ch. 3, Theorem 4.3, passing from `C¹_c` to `C_c` test
+functions). If `ν(B_ρ(a)) < ∞`, `g` is continuous with `|g| ≤ M` and `g` vanishes off
+`B_ρ(a)`, then `g` is `ν`-integrable and `|∫ g dν| ≤ M ν(B_ρ(a))`: a bounded continuous function
+is integrable on the finite-measure ball, hence on the whole space as its support lies in the
+ball, and `∫ g dν = ∫_{B_ρ(a)} g dν` is bounded by `M ν(B_ρ(a))`. -/
+theorem Submission.deGiorgiTM_integral_bound_of_ball : ∀ (N : ℕ) (ν : Measure (Rn N)) (a : Rn N) (ρ M : ℝ) (g : Rn N → ℝ), ν (Metric.ball a ρ) < ∞ → Continuous g → (∀ y, |g y| ≤ M) → (∀ y, g y ≠ 0 → y ∈ Metric.ball a ρ) → Integrable g ν ∧ |∫ y, g y ∂ν| ≤ M * ν.real (Metric.ball a ρ) := by
+  intro N ν a ρ M g hball hg hM hsupp
+  -- `‖g y‖ = |g y| ≤ M` everywhere.
+  have hnorm : ∀ y, ‖g y‖ ≤ M := fun y => (Real.norm_eq_abs (g y)).le.trans (hM y)
+  -- `g` vanishes off the ball `B_ρ(a)`.
+  have hzero : ∀ y, y ∉ Metric.ball a ρ → g y = 0 := fun y hy => by
+    by_contra h
+    exact hy (hsupp y h)
+  -- `g` is bounded and continuous, hence integrable on the finite-measure ball, hence on the
+  -- whole space since its support lies in the ball.
+  have hint : Integrable g ν :=
+    (integrableOn_iff_integrable_of_support_subset fun y hy => hsupp y hy).1
+      (Measure.integrableOn_of_bounded hball.ne hg.aestronglyMeasurable
+        (Eventually.of_forall hnorm))
+  refine ⟨hint, ?_⟩
+  -- `∫ g dν = ∫_{B_ρ(a)} g dν`, and `|∫_{B_ρ(a)} g dν| ≤ M ν(B_ρ(a))`.
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero, ← Real.norm_eq_abs]
+  exact norm_setIntegral_le_of_norm_le_const hball fun y _ => hnorm y
+
+/-- **Mass bound for the blow-ups** (Step 3 of the proof of
+`Submission.deGiorgiTM_blowUp_tendsto_of_contDiff`: the estimate
+`|r⁻ⁿ ∫ (f - φ)(η_{x,r}(y)) dμ(y)| ≤ δ r⁻ⁿ μ(B_{rR}(x)) ≤ δ C Rⁿ`, with the mass bound of
+Simon Ch. 3, proof of Theorem 4.3, display (6), `chapter-03.txt` line 648, at `ρ = rR`). Let
+`r, R > 0` with `μ(B_{rR}(x)) ≤ C (rR)ⁿ`, and let `h` be continuous with `|h| ≤ M` and `|z| < R`
+whenever `h z ≠ 0`. Then `g = h ∘ η_{x,r}` is continuous, bounded by `M` and vanishes off
+`B_{rR}(x)`, so by `Submission.deGiorgiTM_integral_bound_of_ball` it is `μ`-integrable with
+`|∫ g dμ| ≤ M μ(B_{rR}(x)) ≤ M max(C, 0) (rR)ⁿ` (`C` may be negative); dividing by `rⁿ > 0`
+gives `|r⁻ⁿ ∫ g dμ| ≤ M max(C, 0) Rⁿ`. -/
+theorem Submission.deGiorgiTM_blowUp_integral_bound : ∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (C R r M : ℝ) (h : Rn N → ℝ), 0 < r → 0 < R → μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) → Continuous h → (∀ z, |h z| ≤ M) → (∀ z, h z ≠ 0 → ‖z‖ < R) → Integrable (fun y ↦ h (blowUpMap x r y)) μ ∧ |(r ^ n)⁻¹ * ∫ y, h (blowUpMap x r y) ∂μ| ≤ M * max C 0 * R ^ n := by
+  intro N n μ x C R r M h hr hR hμ hh hM hsupp
+  -- Step 1: `g = h ∘ η_{x,r}` is continuous, as `η_{x,r}(y) = r⁻¹ • (y - x)` is affine.
+  have hη : Continuous (blowUpMap x r) := (continuous_sub_right x).const_smul r⁻¹
+  -- Step 2: `g y ≠ 0` gives `r⁻¹ ‖y - x‖ = ‖η_{x,r}(y)‖ < R`, i.e. `y ∈ B_{rR}(x)`.
+  have hgsupp : ∀ y, h (blowUpMap x r y) ≠ 0 → y ∈ Metric.ball x (r * R) := by
+    intro y hy
+    have hlt := hsupp _ hy
+    rw [blowUpMap, norm_smul_of_nonneg (inv_nonneg.2 hr.le), inv_mul_lt_iff₀ hr] at hlt
+    exact mem_ball_iff_norm.2 hlt
+  -- Step 3: `μ(B_{rR}(x)) ≤ ofReal (C (rR)ⁿ) < ∞`.
+  have hfin : μ (Metric.ball x (r * R)) < ∞ := hμ.trans_lt ENNReal.ofReal_lt_top
+  -- Step 4: the ball bound gives integrability and `|∫ g dμ| ≤ M μ.real(B_{rR}(x))`.
+  obtain ⟨hint, hbound⟩ := Submission.deGiorgiTM_integral_bound_of_ball N μ x (r * R) M
+    (fun y ↦ h (blowUpMap x r y)) hfin (hh.comp hη) (fun _ ↦ hM _) hgsupp
+  refine ⟨hint, ?_⟩
+  -- Step 5: `μ.real(B_{rR}(x)) ≤ max (C (rR)ⁿ) 0 = max C 0 * (rR)ⁿ`, as `(rR)ⁿ ≥ 0`.
+  have hreal : μ.real (Metric.ball x (r * R)) ≤ max C 0 * (r * R) ^ n := by
+    rw [measureReal_def, max_mul_of_nonneg _ _ (pow_nonneg (mul_pos hr hR).le n), zero_mul,
+      ← ENNReal.toReal_ofReal']
+    exact ENNReal.toReal_mono ENNReal.ofReal_ne_top hμ
+  -- Step 6: `M ≥ |h 0| ≥ 0`, so `|∫ g dμ| ≤ M max C 0 (rR)ⁿ = rⁿ (M max C 0 Rⁿ)`.
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- Step 7: `(rⁿ)⁻¹ > 0` (also for `n = 0`), and multiplying by it cancels `rⁿ`.
+  have hrn : 0 < r ^ n := pow_pos hr n
+  rw [abs_mul, abs_of_pos (inv_pos.2 hrn)]
+  calc (r ^ n)⁻¹ * |∫ y, h (blowUpMap x r y) ∂μ|
+      ≤ (r ^ n)⁻¹ * (r ^ n * (M * max C 0 * R ^ n)) := by
+        gcongr
+        calc |∫ y, h (blowUpMap x r y) ∂μ| ≤ M * μ.real (Metric.ball x (r * R)) := hbound
+          _ ≤ M * (max C 0 * (r * R) ^ n) := by gcongr
+          _ = r ^ n * (M * max C 0 * R ^ n) := by ring
+    _ = M * max C 0 * R ^ n := inv_mul_cancel_left₀ hrn.ne' _
+
+/-- **From `C¹_c` to `C_c` test functions** (the last step of Simon Ch. 3, proof of Thm. 4.3,
+`chapter-03.txt` lines 739–746, with the mass bound (6′)): if `μ(B_ρ(x)) ≤ Cρⁿ` for
+`0 < ρ < ρ₁`, `σ` is finite on balls, and `(rⁿ)⁻¹ ∫ φ(η_{x,r}(y)) dμ(y) → ∫ φ dσ` as `r ↓ 0` for
+every `φ ∈ C¹_c(ℝᴺ)`, then the same convergence holds for every `f ∈ C_c(ℝᴺ)`. Take `R > 0` with
+`f = 0` off `B_{R-1}(0)` and, given `ε > 0`, a `C¹_c` function `φ` with `|φ - f| ≤ δ` and `φ = 0`
+off `B_R(0)`, where `δ(C⁺Rⁿ + σ(B_R(0))) < ε/2` and `C⁺ = max(C, 0)`. For `0 < r < ρ₁/R` the
+error `d = f - φ` changes the blow-up integral by at most `δC⁺Rⁿ` and `∫ f dσ` by at most
+`δσ(B_R(0))`, while the hypothesis for `φ` bounds the remaining error by `ε/2` for small `r`. -/
+theorem Submission.deGiorgiTM_blowUp_tendsto_of_contDiff : ∀ (N n : ℕ) (μ σ : Measure (Rn N)) (x : Rn N) (ρ₁ C : ℝ), 0 < ρ₁ → (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ R : ℝ, σ (Metric.ball 0 R) < ∞) → (∀ φ : Rn N → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ) (𝓝[>] 0) (𝓝 (∫ y, φ y ∂σ))) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, f (blowUpMap x r y) ∂μ) (𝓝[>] 0) (𝓝 (∫ y, f y ∂σ)) := by
+  intro N n μ σ x ρ₁ C hρ₁ hμ hσ hC1 f
+  have hfc : Continuous f := map_continuous f
+  -- Step 1: a radius `R > 0` with `f = 0` off `B_{R-1}(0)`.
+  obtain ⟨R, hRpos, hfR⟩ : ∃ R : ℝ, 0 < R ∧ ∀ z, f z ≠ 0 → ‖z‖ < R - 1 := by
+    obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball 0
+    refine ⟨max R₀ 0 + 1, by positivity, fun z hz ↦ ?_⟩
+    rw [add_sub_cancel_right]
+    exact (mem_ball_zero_iff.mp (hR₀ (subset_tsupport f hz))).trans_le (le_max_left R₀ 0)
+  have hS : 0 ≤ σ.real (Metric.ball 0 R) := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Step 5: `δ > 0` with `δ (C⁺Rⁿ + σ(B_R(0))) < ε / 2`, `C⁺ = max C 0`.
+  obtain ⟨δ, hδ, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧
+      δ * (max C 0 * R ^ n + σ.real (Metric.ball 0 R)) < ε / 2 := by
+    have hA : 0 ≤ max C 0 * R ^ n + σ.real (Metric.ball 0 R) := by positivity
+    generalize max C 0 * R ^ n + σ.real (Metric.ball 0 R) = A at hA ⊢
+    refine ⟨ε / (2 * (A + 1)), by positivity, ?_⟩
+    calc ε / (2 * (A + 1)) * A < ε / (2 * (A + 1)) * (A + 1) :=
+          mul_lt_mul_of_pos_left (lt_add_one A) (by positivity)
+      _ = ε / 2 := by field_simp
+  -- Step 2: a `C¹_c` function `φ` with `|φ - f| ≤ δ`, and the error `d = f - φ`; both vanish
+  -- off `B_R(0)`.
+  obtain ⟨φ, hφ, hφc, hφf, hφR⟩ :=
+    Submission.deGiorgiTM_cc_contDiff_approx N f R δ hfc f.hasCompactSupport hfR hδ
+  obtain ⟨M, hM⟩ := hφ.continuous.bounded_above_of_compact_support hφc
+  have hφM : ∀ z, |φ z| ≤ M := fun z ↦ by simpa only [Real.norm_eq_abs] using hM z
+  set d : Rn N → ℝ := fun z ↦ f z - φ z with hd
+  have hdc : Continuous d := hfc.sub hφ.continuous
+  have hdδ : ∀ z, |d z| ≤ δ := fun z ↦ (abs_sub_comm (f z) (φ z)).trans_le (hφf z)
+  have hdR : ∀ z, d z ≠ 0 → ‖z‖ < R := by
+    intro z hz
+    by_contra hzR
+    have hf0 : f z = 0 := by
+      by_contra h
+      exact hzR ((hfR z h).trans (sub_lt_self R one_pos))
+    have hφ0 : φ z = 0 := by
+      by_contra h
+      exact hzR (hφR z h)
+    exact hz (show f z - φ z = 0 by rw [hf0, hφ0, sub_zero])
+  have hfdφ : ∀ z, f z = d z + φ z := fun z ↦ (sub_add_cancel (f z) (φ z)).symm
+  -- Step 4: `d` and `φ` are `σ`-integrable and `|∫ d dσ| ≤ δ σ(B_R(0))`.
+  obtain ⟨hdσ, hdσb⟩ := Submission.deGiorgiTM_integral_bound_of_ball N σ 0 R δ d (hσ R) hdc
+    hdδ fun y hy ↦ mem_ball_zero_iff.mpr (hdR y hy)
+  obtain ⟨hφσ, -⟩ := Submission.deGiorgiTM_integral_bound_of_ball N σ 0 R M φ (hσ R)
+    hφ.continuous hφM fun y hy ↦ mem_ball_zero_iff.mpr (hφR y hy)
+  have hsplitσ : ∫ y, f y ∂σ = ∫ y, d y ∂σ + ∫ y, φ y ∂σ := by
+    rw [← integral_add hdσ hφσ]
+    congr 1
+    ext y
+    exact hfdφ y
+  -- Step 5: for `0 < r < ρ₁ / R` close to `0`, combine the hypothesis for `φ` with the bounds.
+  filter_upwards [Metric.tendsto_nhds.mp (hC1 φ hφ hφc) (ε / 2) (half_pos hε),
+    Ioo_mem_nhdsGT (div_pos hρ₁ hRpos)] with r hr hrI
+  have hr0 : 0 < r := hrI.1
+  have hμr : μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) :=
+    hμ (r * R) ⟨mul_pos hr0 hRpos, (lt_div_iff₀ hRpos).mp hrI.2⟩
+  -- Step 3: `d ∘ η_{x,r}` and `φ ∘ η_{x,r}` are `μ`-integrable and
+  -- `|(rⁿ)⁻¹ ∫ d(η_{x,r}(y)) dμ(y)| ≤ δ C⁺ Rⁿ`.
+  obtain ⟨hdμ, hdμb⟩ :=
+    Submission.deGiorgiTM_blowUp_integral_bound N n μ x C R r δ d hr0 hRpos hμr hdc hdδ hdR
+  obtain ⟨hφμ, -⟩ := Submission.deGiorgiTM_blowUp_integral_bound N n μ x C R r M φ hr0 hRpos hμr
+    hφ.continuous hφM hφR
+  have hsplitμ : ∫ y, f (blowUpMap x r y) ∂μ =
+      ∫ y, d (blowUpMap x r y) ∂μ + ∫ y, φ (blowUpMap x r y) ∂μ := by
+    rw [← integral_add hdμ hφμ]
+    congr 1
+    ext y
+    exact hfdφ _
+  have hr' : |(r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ - ∫ y, φ y ∂σ| < ε / 2 := by
+    simpa only [Real.dist_eq] using hr
+  show dist ((r ^ n)⁻¹ * ∫ y, f (blowUpMap x r y) ∂μ) (∫ y, f y ∂σ) < ε
+  rw [Real.dist_eq, hsplitμ, hsplitσ, abs_lt]
+  obtain ⟨h₁, h₂⟩ := abs_le.mp hdμb
+  obtain ⟨h₃, h₄⟩ := abs_lt.mp hr'
+  obtain ⟨h₅, h₆⟩ := abs_le.mp hdσb
+  constructor <;> linarith
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
