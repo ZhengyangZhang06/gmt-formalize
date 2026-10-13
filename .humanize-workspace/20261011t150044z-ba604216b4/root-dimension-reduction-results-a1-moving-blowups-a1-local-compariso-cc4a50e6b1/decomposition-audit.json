@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep.measure|def IMRep.action|def IsIntegerMultiplicity|def CompactlyContained|def IMRep.Represents",
+        "dimred_mbl_lc_sd|level_decomposition|slice_decomposition",
+        "integral_withDensity_eq_integral_smul|withDensity_absolutelyContinuous\\x27|setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_eq_zero_of_forall_eq_zero",
+        "exists_cthickening_subset_open|theorem IsCompact.cthickening|mem_thickening_iff_infDist_lt|closure_thickening_subset_cthickening",
+        "lean_name",
+        "lean_statement",
+        "candidate_commit",
+        "depends_on",
+        "permitted_axioms",
+        "lean_kernel_accepted",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_slice_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_slice_independent_audit/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-cc4a50e6b1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-cc4a50e6b1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/gmt_slice_independent_audit/Types.lean",
+        "/tmp/gmt_slice_independent_audit/Proofs.lean"
+      ],
+      "conclusion": "Pinned revisions and contract files match. No slice-decomposition declaration was found in the searched snapshot. All eleven child propositions and the frozen parent type elaborate independently with autoImplicit disabled. The new-child proof, parent assembly, and their composition compile using only propext, Classical.choice and Quot.sound. All ten reused types match both DAG records and accepted comparator challenge inputs; candidate hashes and comparator axiom policies were checked. The new name is unreserved, every name is a bare identifier, and the dependency closure is acyclic without reliance on the selected parent. The split appropriately isolates its per-index construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "level_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches every hypothesis and conclusion. Restrictions, localization, BR′, support, the corrected remainder sign, and the bound for every representation are proved without circularity. Its eight dependencies suffice, and its conclusions establish the selected parent through the supplied assembly."
+    },
+    {
+      "key": "lipschitz_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. The proof handles empty K separately and establishes the Lipschitz bound, positivity-set containment, and compact closure inside U."
+    },
+    {
+      "key": "imrep_measure_basic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. The density argument proves all seven conjuncts. The pinned Bochner identity permits arbitrary forms without an integrability hypothesis, as required."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Relatively compact balls establish support inclusion; expressing the support as K minus the open zero region establishes compactness."
+    },
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. The orientation bound gives the upper mass estimate; Lusin approximation, extension, and mollification give the lower estimate. The zero-region argument then proves the exact relative support formula."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Density locality, restriction continuity, the signed multiplicity construction on overlaps, and Cauchy–Binet prove all four conjuncts. Internal dependencies are correctly directed and non-circular."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Absolute continuity transfers measurability; restriction commutes with density and gives both the measure and arbitrary-form action identities. No openness assumption is introduced."
+    },
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Admissibility of the negative form bounds the absolute evaluation; the coefficient bound and supremum argument prove the claim for arbitrary G."
+    },
+    {
+      "key": "compact_outer_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Decreasing measurable thickenings lie in one finite-measure compact neighborhood and intersect in E. Continuity from above proves the inequality, including the stated extended-real cases."
+    },
+    {
+      "key": "mass_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. The smooth cutoff equals one near C, preserves admissibility, and leaves a test form supported away from C. The argument requires no unstated openness of U."
+    },
+    {
+      "key": "good_slice_level",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Tonelli and Fatou provide finite majorants with zero index liminf; removing countably many atomic levels gives the common level. The continuous-filter liminf comparison has the correct direction, and increasing extraction proves convergence."
+    }
+  ],
+  "required_changes": []
+}
