@@ -523,6 +523,159 @@ theorem Submission.lpf_c1r_egoroff_closed : ∀ (n : ℕ) (C : Set (Eucl n)) (f 
     have h2 : ‖x‖ ≤ R := mem_closedBall_zero_iff.1 hx.2
     exact_mod_cast (h1.trans h2).trans (Nat.le_ceil R)
 
+/-- Simon Ch. 2, proof of Theorem 1.5 (C¹ Approximation Theorem, p. 44), the `η_k` step.  Let
+`g : ℝⁿ → ℝ` be Lipschitz and `C` closed, with `g` differentiable at every point of `C` and `Dg`
+continuous on `C`.  Then there is a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε` on which the remainder
+`R(x, y) = (g(y) − g(x) − Dg(x)(y − x)) / |y − x|` tends to `0` as `y → x` in `A`, uniformly for
+`x` in each compact `L ⊆ A` (Whitney's condition 1.6 (‡)).  The functions
+`η_k(x) = sup ({0} ∪ {|R(x, y)| : y ∈ C, 0 < |y − x| < 1/(k+1)})` (`η_k = 0` off `C`) are Borel
+and tend to `0` on `C`, so Egoroff (`lpf_c1r_egoroff_closed`) makes the convergence uniform on the
+bounded parts of a closed `A ⊆ C`. -/
+theorem Submission.lpf_c1r_uniform_remainder :
+    ∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ C : Set (Eucl n), IsClosed C →
+      (∀ x ∈ C, DifferentiableAt ℝ g x) → ContinuousOn (fderiv ℝ g) C → ∀ ε : ℝ≥0∞, 0 < ε →
+      ∃ A : Set (Eucl n), IsClosed A ∧ A ⊆ C ∧ (volume : Measure (Eucl n)) (C \ A) < ε ∧
+        ∀ L : Set (Eucl n), IsCompact L → L ⊆ A → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧
+          ∀ x ∈ L, ∀ y ∈ A, dist x y < ρ → ‖g y - g x - fderiv ℝ g x (y - x)‖ ≤ δ * ‖y - x‖ := by
+  intro n g K hg C hC hdiff hDg ε hε
+  -- `q x y = |R(x, y)|`.
+  obtain ⟨q, hq⟩ : ∃ q : Eucl n → Eucl n → ℝ,
+      ∀ x y, q x y = ‖g y - g x - fderiv ℝ g x (y - x)‖ / ‖y - x‖ := ⟨_, fun _ _ => rfl⟩
+  -- Step 2: `|R(x, y)| ≤ 2K`, as `‖Dg(x)‖ ≤ K`.
+  have hq_le : ∀ x y, q x y ≤ 2 * K := by
+    intro x y
+    have h1 : ‖g y - g x‖ ≤ K * ‖y - x‖ := by simpa only [dist_eq_norm] using hg.dist_le_mul y x
+    have h2 : ‖fderiv ℝ g x (y - x)‖ ≤ K * ‖y - x‖ :=
+      ((fderiv ℝ g x).le_opNorm _).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hg) (norm_nonneg _))
+    rw [hq]
+    refine div_le_of_le_mul₀ (norm_nonneg _) (by positivity) ?_
+    calc ‖g y - g x - fderiv ℝ g x (y - x)‖ ≤ ‖g y - g x‖ + ‖fderiv ℝ g x (y - x)‖ :=
+          norm_sub_le _ _
+      _ ≤ K * ‖y - x‖ + K * ‖y - x‖ := add_le_add h1 h2
+      _ = 2 * K * ‖y - x‖ := by ring
+  -- Step 1: `σ r x = sup ({0} ∪ {|R(x, y)| : y ∈ C, 0 < |y − x| < r})`, a real number in
+  -- `[0, 2K]`, so that `η_k = 1_C · σ (1/(k+1))`.
+  obtain ⟨σ, hσ⟩ : ∃ σ : ℝ → Eucl n → ℝ, ∀ r x,
+      σ r x = sSup (insert 0 (q x '' {y | y ∈ C ∧ 0 < ‖y - x‖ ∧ ‖y - x‖ < r})) :=
+    ⟨_, fun _ _ => rfl⟩
+  have hbdd : ∀ r x,
+      BddAbove (insert (0 : ℝ) (q x '' {y | y ∈ C ∧ 0 < ‖y - x‖ ∧ ‖y - x‖ < r})) := by
+    refine fun r x => ⟨2 * (K : ℝ), ?_⟩
+    rintro a (rfl | ⟨y, -, rfl⟩)
+    · positivity
+    · exact hq_le x y
+  have hσ_nonneg : ∀ r x, 0 ≤ σ r x := by
+    intro r x
+    rw [hσ]
+    exact le_csSup (hbdd r x) (Set.mem_insert _ _)
+  have hσ_ge : ∀ r x y, y ∈ C → 0 < ‖y - x‖ → ‖y - x‖ < r → q x y ≤ σ r x := by
+    intro r x y hy h0 hr
+    rw [hσ]
+    exact le_csSup (hbdd r x) (Or.inr ⟨y, ⟨hy, h0, hr⟩, rfl⟩)
+  have hσ_le : ∀ r x c, 0 ≤ c → (∀ y, y ∈ C → 0 < ‖y - x‖ → ‖y - x‖ < r → q x y ≤ c) →
+      σ r x ≤ c := by
+    intro r x c hc h
+    rw [hσ]
+    refine csSup_le ⟨0, Set.mem_insert _ _⟩ ?_
+    rintro a (rfl | ⟨y, ⟨hy, h0, hr⟩, rfl⟩)
+    · exact hc
+    · exact h y hy h0 hr
+  have hσ_lt : ∀ r x t, 0 ≤ t → t < σ r x →
+      ∃ y, y ∈ C ∧ 0 < ‖y - x‖ ∧ ‖y - x‖ < r ∧ t < q x y := by
+    intro r x t ht h
+    rw [hσ] at h
+    obtain ⟨a, ha, hta⟩ := exists_lt_of_lt_csSup ⟨0, Set.mem_insert _ _⟩ h
+    rcases ha with rfl | ⟨y, ⟨hy, h0, hr⟩, rfl⟩
+    · exact absurd hta (not_lt.mpr ht)
+    · exact ⟨y, hy, h0, hr, hta⟩
+  -- Step 3: `σ (1/(k+1)) x → 0` for `x ∈ C`, since `g` is differentiable at `x`.
+  have htend : ∀ x ∈ C, Tendsto (fun k : ℕ => σ (1 / ((k : ℝ) + 1)) x) atTop (𝓝 0) := by
+    intro x hx
+    rw [Metric.tendsto_atTop]
+    intro γ hγ
+    obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.mp
+      (Asymptotics.isLittleO_iff.mp (hdiff x hx).hasFDerivAt.isLittleO (half_pos hγ))
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hρ
+    refine ⟨N, fun k hk => ?_⟩
+    have hkN : 1 / ((k : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := by gcongr
+    have hle : σ (1 / ((k : ℝ) + 1)) x ≤ γ / 2 := by
+      refine hσ_le _ x _ (half_pos hγ).le fun y _ _ hr => ?_
+      rw [hq]
+      exact div_le_of_le_mul₀ (norm_nonneg _) (half_pos hγ).le
+        (hball (by rw [dist_eq_norm]; linarith))
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (hσ_nonneg _ x)]
+    linarith
+  -- Step 4 (Route 1): `1_C · σ r` is Borel.  For `t ≥ 0`, `{1_C · σ r > t}` is
+  -- `C ∩ ⋃_{y ∈ C} (U_y ∩ O_y)`, where `U_y = {x : 0 < |y − x| < r}` and `O_y` is open with
+  -- `O_y ∩ C ∩ U_y = {x ∈ C ∩ U_y : |R(x, y)| > t}`; `O_y` exists because `x ↦ |R(x, y)|` is
+  -- continuous on `C ∩ U_y` (`Dg` is continuous on `C`).
+  have hmeas : ∀ r, Measurable (C.indicator (σ r)) := by
+    intro r
+    let U : Eucl n → Set (Eucl n) := fun y => {x | 0 < ‖y - x‖ ∧ ‖y - x‖ < r}
+    have hU : ∀ y, IsOpen (U y) := fun y =>
+      (isOpen_lt continuous_const (continuous_const.sub continuous_id).norm).inter
+        (isOpen_lt (continuous_const.sub continuous_id).norm continuous_const)
+    have hcont : ∀ y, ContinuousOn (fun x => q x y) (C ∩ U y) := by
+      intro y
+      simp only [hq]
+      refine ContinuousOn.div ?_ (continuous_const.sub continuous_id).norm.continuousOn
+        fun x hx => hx.2.1.ne'
+      exact ((continuous_const.sub hg.continuous).continuousOn.sub
+        ((hDg.mono Set.inter_subset_left).clm_apply
+          (continuous_const.sub continuous_id).continuousOn)).norm
+    refine measurable_of_Ioi fun t => ?_
+    rcases lt_or_ge t 0 with ht | ht
+    · have huniv : C.indicator (σ r) ⁻¹' Ioi t = univ := Set.eq_univ_of_forall fun x =>
+        ht.trans_le (Set.indicator_nonneg (fun x _ => hσ_nonneg r x) x)
+      rw [huniv]
+      exact MeasurableSet.univ
+    · choose O hOo hOeq using fun y => _root_.continuousOn_iff'.mp (hcont y) (Ioi t) isOpen_Ioi
+      have hset : C.indicator (σ r) ⁻¹' Ioi t = C ∩ ⋃ y ∈ C, (U y ∩ O y) := by
+        ext x
+        constructor
+        · intro hx
+          by_cases hxC : x ∈ C
+          · rw [Set.mem_preimage, Set.indicator_of_mem hxC, Set.mem_Ioi] at hx
+            obtain ⟨y, hyC, h0, hr, hty⟩ := hσ_lt r x t ht hx
+            have hxO : x ∈ (fun x => q x y) ⁻¹' Ioi t ∩ (C ∩ U y) := ⟨hty, hxC, h0, hr⟩
+            rw [hOeq y] at hxO
+            exact ⟨hxC, Set.mem_biUnion hyC ⟨⟨h0, hr⟩, hxO.1⟩⟩
+          · rw [Set.mem_preimage, Set.indicator_of_notMem hxC, Set.mem_Ioi] at hx
+            exact absurd hx (not_lt.mpr ht)
+        · rintro ⟨hxC, hx⟩
+          obtain ⟨y, hyC, hxU, hxO⟩ := Set.mem_iUnion₂.mp hx
+          have hxO' : x ∈ O y ∩ (C ∩ U y) := ⟨hxO, hxC, hxU⟩
+          rw [← hOeq y] at hxO'
+          rw [Set.mem_preimage, Set.indicator_of_mem hxC, Set.mem_Ioi]
+          exact hxO'.1.trans_le (hσ_ge r x y hyC hxU.1 hxU.2)
+      rw [hset]
+      exact hC.measurableSet.inter (isOpen_biUnion fun y _ => (hU y).inter (hOo y)).measurableSet
+  -- Step 5: Egoroff on `C` (sibling `egoroff_closed`) for `η_k = 1_C · σ (1/(k+1)) → 0`.
+  obtain ⟨η, hη⟩ : ∃ η : ℕ → Eucl n → ℝ, ∀ k, η k = C.indicator (σ (1 / ((k : ℝ) + 1))) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨A, hAc, hAC, hCA, hunif⟩ := Submission.lpf_c1r_egoroff_closed n C η 0
+    hC.measurableSet (fun k => by rw [hη]; exact hmeas _) measurable_const
+    (fun x hx => (htend x hx).congr fun k => by rw [hη, Set.indicator_of_mem hx]) ε hε
+  refine ⟨A, hAc, hAC, hCA, fun L hL hLA δ hδ => ?_⟩
+  -- Step 6: `L ⊆ A ∩ B̄_R(0)` for some `R`, so `η_k < δ` on `L` for some `k`; take `ρ = 1/(k+1)`.
+  obtain ⟨R, hR⟩ := hL.isBounded.subset_closedBall 0
+  obtain ⟨k, hk⟩ := (Metric.tendstoUniformlyOn_iff.mp
+    ((hunif R).mono (fun x hx => ⟨hLA hx, hR hx⟩ : L ⊆ A ∩ closedBall 0 R)) δ hδ).exists
+  refine ⟨1 / ((k : ℝ) + 1), by positivity, fun x hxL y hyA hxy => ?_⟩
+  rcases eq_or_ne y x with rfl | hyx
+  · simp
+  have hxC : x ∈ C := hAC (hLA hxL)
+  have h0 : 0 < ‖y - x‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hyx)
+  have hr : ‖y - x‖ < 1 / ((k : ℝ) + 1) := by rwa [← dist_eq_norm, dist_comm]
+  have hσδ : σ (1 / ((k : ℝ) + 1)) x < δ := by
+    have hkx := hk x hxL
+    rw [Pi.zero_apply, hη, Set.indicator_of_mem hxC, dist_zero_left, Real.norm_eq_abs] at hkx
+    exact (le_abs_self _).trans_lt hkx
+  have hqδ := (hσ_ge _ x y (hAC hyA) h0 hr).trans_lt hσδ
+  rw [hq, div_lt_iff₀ h0] at hqδ
+  exact hqδ.le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
