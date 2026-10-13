@@ -700,6 +700,29 @@ theorem Submission.doraggt_ae_rescaled_lebesgue_point : ∀ (n : ℕ) (g : Eucli
   filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
   exact (key r hr).symm
 
+/-- **Weighted blow-ups of a Lipschitz graph** (Simon Ch. 2, Theorem 1.4 (Rademacher) and Ch. 1,
+Corollary 3.17).  Let `ι : ℝⁿ → ℝ^{n+k}` and `ι' : ℝᵏ → ℝ^{n+k}` be linear isometries with
+orthogonal ranges, `f : ℝⁿ → ℝᵏ` Lipschitz and `G : ℝⁿ → ℝ` measurable with `|G| ≤ C`.  Then for
+`Lⁿ`-a.e. `v`, `f` is differentiable at `v` and, for every continuous compactly supported `ψ`,
+`∫ ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v)))) G(v + rw) dw → G(v) ∫ ψ(ιw + ι'(Df(v)w)) dw` as `r ↓ 0`.
+The bounded measurable weight `G` is locally integrable, so Rademacher's theorem and the rescaled
+Lebesgue-point property of `G` hold simultaneously at a.e. `v`; at every such `v` the convergence
+is the blow-up limit at a differentiability point that is a rescaled Lebesgue point of `G`. -/
+theorem Submission.doraggt_ae_weighted_graph_blowup_tendsto : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (L : NNReal) (G : Euclid n → ℝ) (C : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L f → Measurable G → (∀ u, |G u| ≤ C) → ∀ᵐ v ∂(volume : Measure (Euclid n)), DifferentiableAt ℝ f v ∧ ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ → Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w)))) := by
+  intro n k ι ι' f L G C horth hf hG hGC
+  -- `G` is bounded and measurable, hence integrable on every compact set
+  have hloc : LocallyIntegrable G volume := by
+    rw [locallyIntegrable_iff]
+    intro K hK
+    exact Measure.integrableOn_of_bounded hK.measure_lt_top.ne hG.aestronglyMeasurable (M := C)
+      (Eventually.of_forall fun u => (Real.norm_eq_abs (G u)).trans_le (hGC u))
+  -- Rademacher and the rescaled Lebesgue-point property of `G` hold simultaneously a.e.
+  filter_upwards [hf.ae_differentiableAt (μ := volume),
+    Submission.doraggt_ae_rescaled_lebesgue_point n G hloc] with v hv hleb
+  -- at such `v`, the blow-up limit holds for every test function `ψ`
+  exact ⟨hv, Submission.dorwbl_weighted_blowup_tendsto_at_point n k ι ι' f G C v horth
+    hf.continuous hG hGC hv hleb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
