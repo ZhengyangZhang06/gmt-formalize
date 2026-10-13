@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1",
+  "depth": 2,
+  "title": "mu_V-a.e. tangent planes and measurability of tangentProj (Simon Ch. 3, Thm 1.9)",
+  "statement": "Let n >= 1 and l >= 0 be integers, U ⊆ R^{n+l} open, and V = v(M, θ) a rectifiable n-varifold in U in the sense of the contract structure RectifiableVarifold:\n- M = V.carrier ⊆ U is H^n-null-measurable and countably n-rectifiable;\n- θ = V.mult is positive on M and H^n⌞M-measurable;\n- ∫_{M∩K} θ dH^n < ∞ for every compact K ⊆ U.\nLet μ := V.weight = H^n⌞θ. Then:\n(a) for μ-a.e. x, the approximate tangent space of M with respect to θ (Simon Ch. 3, Def. 1.7; SimonGMT HasWeightedApproximateTangentSpaceAt) exists, so V.tangentProj x is the orthogonal projection p_P onto some n-dimensional subspace P;\n(b) the map x ↦ V.tangentProj x, with values in the continuous linear endomorphisms of R^{n+l}, is μ-a.e. strongly measurable.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ MeasureTheory.AEStronglyMeasurable V.tangentProj V.weight",
+  "lean_name": "rectifiableVarifold_ae_tangentProj_starProjection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-a1"
+}
