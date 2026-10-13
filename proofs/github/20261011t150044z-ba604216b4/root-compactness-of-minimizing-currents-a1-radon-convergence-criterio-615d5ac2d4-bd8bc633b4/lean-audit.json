@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e64c7e1d5529372ebee7a07e22bd268538a9e86591499ea6b8534deef94be539",
+  "git_delta": {
+    "base_commit": "e302f13a53ddb360d2ecc92d3cdedc52b50a26b0",
+    "candidate_commit": "ab2351a5c428e965b12f9bd1b94a73d09a656fb0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_rcc_ae_tendsto_measure_superlevel",
+    "diff_sha256": "1f2c4c098a20b65ac23db7695bd30c246c9530d4ac222c3e3333d4194d29d1bb",
+    "source_sha256": "419174fd7c605b879a852e12d43f2ba3bfa5b53554e750449f7f6fb249521517",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_rcc_ae_tendsto_measure_superlevel",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x}))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
