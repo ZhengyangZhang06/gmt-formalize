@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1.tubes_disjoint-a1",
+  "parent_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1",
+  "depth": 4,
+  "title": "Periodic lattice tubes about nearby centres with disjoint base balls are disjoint (printed 'pairwise disjoint collection')",
+  "statement": "Let ι be a finite index set and E := ℝ^ι = EuclideanSpace ℝ ι with its Euclidean distance |·|. For g ∈ E and τ ∈ ℝ let U(g, τ) := {y ∈ E : there is z ∈ ℤ^ι with Σ_{i∈ι}(y_i − g_i − z_i)² < τ²}. Let g₀, b, b′ ∈ E and σ, σ′ ∈ ℝ satisfy |b − g₀| < 1/4, |b′ − g₀| < 1/4, 0 < σ < 1/4 and 0 < σ′ < 1/4. Assume the closed balls B̄_σ(b) = {w ∈ E : |w − b| ≤ σ} and B̄_{σ′}(b′) = {w ∈ E : |w − b′| ≤ σ′} are disjoint. Then U(b, σ) and U(b′, σ′) are disjoint.",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] (g₀ b b' : EuclideanSpace ℝ ι) (σ σ' : ℝ), dist b g₀ < 1 / 4 → dist b' g₀ < 1 / 4 → 0 < σ → σ < 1 / 4 → 0 < σ' → σ' < 1 / 4 → Disjoint (closedBall b σ) (closedBall b' σ') → Disjoint {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - b i - z i) ^ 2 < σ ^ 2} {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - b' i - z i) ^ 2 < σ' ^ 2}",
+  "lean_name": "dgc_pm_lattice_tubes_disjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-good-center-a1-periodic-maximal-a1-tubes-disjoint-a1-a1"
+}
