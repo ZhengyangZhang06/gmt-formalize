@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.density_gap-a1.high_degree_zero-a1",
+  "parent_id": "root.dimension_reduction_results-a1.density_gap-a1",
+  "depth": 3,
+  "title": "Currents of degree above the ambient dimension vanish",
+  "statement": "Let P, j ∈ ℕ with P < j, let U ⊆ ℝ^P (= Euclid P) be an arbitrary set and let T ∈ 𝒟_j(U) (GeometricCurrentOn U j: a linear functional on the test j-forms supported in U satisfying the SimonGMT sequential continuity axiom). Then T = 0.",
+  "lean_statement": "∀ (P j : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U j), P < j → T = 0",
+  "lean_name": "dimred_cdg_eq_zero_of_lt_degree",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-density-gap-a1-high-degree-zero-a1-a1"
+}

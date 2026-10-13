@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.density_gap-a1.origin_regularity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.density_gap-a1",
+  "depth": 3,
+  "title": "ε-regularity at the origin for minimizing currents in ℝ^P (Allard 5.2 via Simon 7.1.2)",
+  "statement": "Let P, j ∈ ℕ with 1 ≤ j ≤ P. Then there is a real δ > 0 with the following property. Let C ∈ 𝒟_j(ℝ^P) (GeometricCurrentOn (univ : Set (Euclid P)) j) be minimizing in ℝ^P (IsMinimizingIn C univ, Simon 7.1.1; in particular C is integer multiplicity), with ∂C = 0 (BoundaryVanishes C) and 0 ∈ spt C (C.support), and suppose M_{B_ρ(0)}(C) ≤ (1 + δ)·ω_j·ρ^j in [0, ∞] for every real ρ with 0 < ρ ≤ 1, i.e. C.massOn (ball 0 ρ) ≤ ofReal(1 + δ)·unitBallVolume j·ofReal(ρ^j); here B_ρ(0) is the open ball, M_W = massOn (Simon 6.2.5) and ω_j = unitBallVolume j is the Lebesgue measure of the unit ball of ℝ^j. Then 0 ∈ reg C (regularSet C, Simon 7.4.1 as in the contract: 0 ∈ spt C and there are ρ' > 0, m ∈ ℤ ∖ {0} and an embedded oriented C¹ j-submanifold M ∋ 0 of locally finite Hʲ-measure in B_{ρ'}(0) with C = m[[M]] in B_{ρ'}(0)).",
+  "lean_statement": "∀ (P j : ℕ), 1 ≤ j → j ≤ P → ∃ δ : ℝ, 0 < δ ∧ ∀ C : GeometricCurrentOn (univ : Set (Euclid P)) j, IsMinimizingIn C univ → BoundaryVanishes C → (0 : Euclid P) ∈ C.support → (∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 → C.massOn (ball 0 ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume j * ENNReal.ofReal (ρ ^ j)) → (0 : Euclid P) ∈ regularSet C",
+  "lean_name": "dimred_cdg_minimizing_origin_regular",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.dimension_reduction_results-a1.density_gap-a1.c1_pushforward-a1",
+    "root.dimension_reduction_results-a1.density_gap-a1.first_variation_bound-a1",
+    "root.dimension_reduction_results-a1.density_gap-a1.allard_graph-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.density_gap-a1.c1_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.density_gap-a1.first_variation_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.density_gap-a1.allard_graph-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1-a1",
+      "result_commit": "8a6855aa8803ff6f7de32b5a809497f6953347c4",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-density-gap-a1-origin-regularity-a1-a1"
+}

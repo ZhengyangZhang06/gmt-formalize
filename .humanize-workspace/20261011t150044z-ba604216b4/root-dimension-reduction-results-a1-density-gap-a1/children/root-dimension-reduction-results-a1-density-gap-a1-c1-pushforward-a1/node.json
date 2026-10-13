@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.density_gap-a1.c1_pushforward-a1",
+  "parent_id": "root.dimension_reduction_results-a1.density_gap-a1",
+  "depth": 3,
+  "title": "Push-forward of an integer multiplicity current by a C¹ diffeomorphism that is the identity off a compact set",
+  "statement": "Let U ⊆ ℝ^P be open, R = (M, θ, ξ) an integer multiplicity triple representing T ∈ 𝒟_n(U), K ⊆ U compact, and φ : ℝ^P → ℝ^P a C¹ bijection with Dφ(x) injective for every x and φ(x) = x for x ∉ K. Then there is an integer multiplicity S ∈ 𝒟_n(U) with S(ω) = ∫_M θ(x)·ξ(x)(φ^#ω(x)) dH^n(x) for all ω ∈ 𝒟^n(U), where φ^#ω(x) = ω(φ(x))∘Dφ(x) is the pulled-back covector (so S = φ_#T), and ∂S = 0 whenever ∂T = 0 (BoundaryVanishes; vacuous for n = 0). (The frozen Lean type is character-identical to that of DAG node root.minimizing_implies_stationary-a1.diffeo_pushforward-a1, not yet comparator-accepted; it is declared here under the fresh name Submission.dimred_cdg_c1_diffeo_pushforward_im.)",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, IsIntegerMultiplicity S ∧ (BoundaryVanishes T → BoundaryVanishes S) ∧ ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]",
+  "lean_name": "dimred_cdg_c1_diffeo_pushforward_im",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1-a1",
+      "result_commit": "36b2d372040645171f355c68541910ce3ab4bab8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-density-gap-a1-c1-pushforward-a1-a1"
+}
