@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "ext_alternating|theorem map_perm|toAlternatingMap_injective|map_eq_zero_of_not_injective|def sort|theorem monotone_sort|exists_antilipschitzWith|proper_real|IsCompact.sSup_mem|of_le_add_mul|of_dist_le_mul|pi_norm_le_iff_of_nonneg",
+        "le_opNorm|instNormedAddCommGroup|norm_eq|isCompact_of_isClosed_isBounded|units_eq_one_or",
+        "FiniteDimensional|Module.Finite",
+        "cbr_ci_dr_dn_covector_eq_zero_of_coords|cbr_ci_dr_dn_norm_le_mul_covectorEuclideanNorm|dor_ims_lusin_covector_finiteDimensional|rsd_mw_tfa_norm_props",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b c9c005d1f0bc7c9b936d9d01037d132158020f22 -- GMT/Ch07/Submission.lean",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b f492ba4a003c8f1324077e050d48667ae23c7100 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dual-norm-independent-audit-2q25zoej/TypesAndInstances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dual-norm-independent-audit-2q25zoej/VerifiedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8f5edb5104/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8f5edb5104/decomposition-v1.json",
+        "/tmp/dual-norm-independent-audit-2q25zoej/TypesAndInstances.lean",
+        "/tmp/dual-norm-independent-audit-2q25zoej/VerifiedAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected dual-norm theorem. The children establish the coordinate algebra and norm comparison needed for the supplied compact-unit-ball, supremum, rescaling and Lipschitz argument. Their dependencies are correctly directed and acyclic. The parent binding digest independently matches the requested digest. The snapshot contract and inspected Mathlib files match the build sources. Searches found no finite-dimensionality declaration in the inspected continuous-alternating-map directories and no fresh-name collisions. Both reused declarations are accepted, dependency-free nodes with identical frozen types; their candidate proof bodies were independently checked. All four child types elaborate as Prop in the comparator scope before any child implementation. Compiled instance checks confirm operator norms on covectors and multivectors, the sup norm on the coordinate-map target, and the Euclidean norm on the WithLp coefficient vector. The supplied proofs and exact parent assembly compile; every child and the parent depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coord_definite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match, with all hypotheses explicit. Basis extensionality reduces to injective tuples; sorting makes them strictly increasing, and alternation followed by sign cancellation proves vanishing. The argument covers zero degree and degenerate dimensions without circularity. The bare declaration name is unused."
+    },
+    {
+      "key": "finite_dim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match exactly. Evaluation on all basis tuples defines a linear injection into a finite-dimensional function space; multilinear expansion establishes injectivity independently of the other children. Reuse of dor_ims_lusin_covector_finiteDimensional is valid: its accepted frozen type is identical, and its proof passes the axiom check."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four prose conclusions match the standalone Lean proposition. The linear Euclidean coefficient vector proves triangle inequality and homogeneity; the operator-norm coordinate bound gives C = sqrt(card), and the resulting difference estimate proves continuity. The extra conjuncts are fully proved. The WithLp construction selects the intended Euclidean norm. The reused accepted declaration has the identical frozen type and permitted axioms."
+    },
+    {
+      "key": "norm_compare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including positivity and uniformity of K. The single-summand estimate bounds coordinates; coord_definite gives trivial kernel, and finite_dim permits the positive antilipschitz bound. The verified sup-norm estimate completes the inequality, including degenerate cases. Exactly the declared dependencies are used, with no circular reliance. The bare declaration name is unused."
+    }
+  ],
+  "required_changes": []
+}

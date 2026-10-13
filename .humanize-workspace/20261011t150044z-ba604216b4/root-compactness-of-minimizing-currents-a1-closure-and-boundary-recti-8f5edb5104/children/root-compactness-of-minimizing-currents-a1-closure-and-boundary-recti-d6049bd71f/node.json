@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1.coord_definite-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1",
+  "depth": 6,
+  "title": "A covector vanishing on all strictly increasing standard-basis tuples is zero",
+  "statement": "For all P, n ∈ ℕ and every n-covector α ∈ Covector (Euclid P) n (a continuous alternating n-linear form on ℝ^P = EuclideanSpace ℝ (Fin P)): if α(e_{I(0)}, …, e_{I(n−1)}) = 0 for every strictly increasing I : Fin n → Fin P, where (e_j)_{j ∈ Fin P} = EuclideanSpace.basisFun (Fin P) ℝ is the standard orthonormal basis of ℝ^P, then α = 0.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n), (∀ I : Fin n → Fin P, StrictMono I → α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) = 0) → α = 0",
+  "lean_name": "cbr_ci_dr_dn_covector_eq_zero_of_coords",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d6049bd71f-a1"
+}
