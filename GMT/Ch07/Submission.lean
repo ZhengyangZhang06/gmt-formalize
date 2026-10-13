@@ -1158,6 +1158,74 @@ theorem Submission.rsd_mw_exists_testForm_approx : ∀ (P n : ℕ) (ν : Measure
           ← ENNReal.ofReal_add (by positivity) (by positivity)]
         exact ENNReal.ofReal_le_ofReal (by linarith)
 
+/-- **Simon Ch. 6, Remark 3.2(3), `≥` half** (with 2.5 and Remark 2.6(a)–(b)): `μ_T(W) ≤ M_W(T)`
+for `T = τ(M, θ, ξ)` and open `W ⊆ U`.  Given `c < μ_T(W)`, take an open `V ⊆ W` with
+`c < μ_T(V) < ∞` and put `ν = μ_T⌞V`.  With `J` as in `Submission.rsd_mw_unit_orientation_dual`,
+`β = J ∘ ξ` is `ν`-integrable, and `ν`-a.e. `|β| = 1`, `⟨β, ξ⟩ = 1` and `|⟨α, ξ⟩| ≤ |α|`.  A test
+form `ω` with `spt ω ⊆ V`, `|ω| ≤ 1` and `∫ |ω − β| dν < ε = (μ_T(V) − c)/2` is admissible for
+`M_W(T)`, and `T(ω) = ∫ ⟨ω, ξ⟩ dν > ν(ℝᴾ) − ε = (μ_T(V) + c)/2 > c`. -/
+theorem Submission.rsd_mw_measure_le_massOn : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → R.measure W ≤ T.massOn W := by
+  intro P n U T R hT W hW hWU
+  obtain ⟨J, hJ⟩ := Submission.rsd_mw_unit_orientation_dual P n
+  -- it suffices to show `c < M_W(T)` for every `c < μ_T(W)`
+  refine le_of_forall_lt fun c hcW => ?_
+  -- an open `V ⊆ W` with `c < μ_T(V) < ∞`
+  obtain ⟨V, hV, hVW, hcV, hVfin⟩ :=
+    Submission.rsd_mw_wlm_exists_open_measure_between P n U R W hW hWU c hcW
+  -- `ν = μ_T⌞V` is finite, vanishes off `V`, and `ν ≪ μ_T ≪ Hⁿ⌞M`
+  set ν := R.measure.restrict V with hν
+  have hνfin : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 hVfin.ne
+  have hνVc : ν Vᶜ = 0 := by
+    rw [hν, Measure.restrict_apply' hV.measurableSet, compl_inter_self, measure_empty]
+  have hμac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hνac : ν ≪ μHE[n].restrict R.carrier :=
+    Measure.restrict_le_self.absolutelyContinuous.trans hμac
+  -- `ν`-a.e. `ξ(x)` is a unit orientation
+  have hG : ∀ᵐ x ∂ν, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (R.orient x) Q := by
+    filter_upwards [hνac.ae_le R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact ⟨Q, hQ⟩
+  have hξ : AEStronglyMeasurable R.orient ν := R.aestronglyMeasurable_orient.mono_ac hνac
+  -- `β = J ∘ ξ` is `ν`-integrable, as `‖ξ‖ ≤ 1` `ν`-a.e., and `|β| ≤ 1` `ν`-a.e.
+  have hβ : Integrable (fun x => J (R.orient x)) ν := by
+    refine Submission.rsd_mw_wlm_integrable_clm_comp P n ν R.orient J hνfin hξ ?_
+    filter_upwards [hG] with x hx
+    obtain ⟨Q, hQ⟩ := hx
+    exact Submission.rsd_mw_wlm_orient_opNorm_le_one P n Q (R.orient x) hQ
+  have hβ1 : ∀ᵐ x ∂ν, covectorEuclideanNorm (J (R.orient x)) ≤ 1 := by
+    filter_upwards [hG] with x hx
+    obtain ⟨Q, hQ⟩ := hx
+    exact (hJ _ Q hQ).2.1.le
+  -- `c < ∞`, and `ε = (μ_T(V) − c)/2 > 0` in `ℝ`
+  have hctop : c ≠ ∞ := ne_top_of_lt hcV
+  have hcV' : c.toReal < (R.measure V).toReal := (ENNReal.toReal_lt_toReal hctop hVfin.ne).2 hcV
+  set ε := ((R.measure V).toReal - c.toReal) / 2 with hε
+  have hε0 : 0 < ε := by linarith
+  -- a test form `ω` with `spt ω ⊆ V`, `|ω| ≤ 1` and `∫ |ω − β| dν < ε`
+  obtain ⟨ω, hωt, hωV, hω1, hωβ⟩ := Submission.rsd_mw_exists_testForm_approx P n ν V
+    (fun x => J (R.orient x)) hνfin hV hνVc hβ hβ1 ε hε0
+  -- `ω` is admissible for `M_W(T)`
+  let ω' : TestFormOn U n := ⟨ω, hωt, hωV.trans (hVW.trans hWU)⟩
+  have hadm : ω' ∈ massAdmissibleOn U n W := ⟨hωV.trans hVW, hω1⟩
+  -- `T(ω) = ∫ ⟨ω, ξ⟩ dν > ν(ℝᴾ) − ε`, where `ν(ℝᴾ) = μ_T(V)`
+  have hTω : T ω' = ∫ x, R.orient x (ω x) ∂ν :=
+    Submission.rsd_mw_wlm_eval_eq_integral_restrict P n U T R hT V ω' hωV
+  have hest := Submission.rsd_mw_wlm_sub_lt_integral P n ν R.orient (fun x => J (R.orient x)) ω
+    ε hνfin hξ (ContDiff.continuous hωt.1) hω1 (by
+      filter_upwards [hG] with x hx
+      obtain ⟨Q, hQ⟩ := hx
+      exact ⟨(hJ _ Q hQ).1, (hJ _ Q hQ).2.2⟩) hωβ
+  have hνuniv : ν univ = R.measure V := Measure.restrict_apply_univ V
+  rw [hνuniv] at hest
+  have hlt : c.toReal < T ω' := by
+    rw [hTω]
+    linarith
+  -- `c = ofReal c.toReal < ofReal T(ω) ≤ M_W(T)`
+  calc c = ENNReal.ofReal c.toReal := (ENNReal.ofReal_toReal hctop).symm
+    _ < ENNReal.ofReal (T ω') :=
+        (ENNReal.ofReal_lt_ofReal_iff_of_nonneg ENNReal.toReal_nonneg).2 hlt
+    _ ≤ T.massOn W := T.le_massOn hadm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
