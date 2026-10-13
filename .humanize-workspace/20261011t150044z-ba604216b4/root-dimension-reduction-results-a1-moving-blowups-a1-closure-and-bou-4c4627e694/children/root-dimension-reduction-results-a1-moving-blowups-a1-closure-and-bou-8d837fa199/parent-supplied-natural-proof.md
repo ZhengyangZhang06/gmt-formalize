@@ -1,0 +1,78 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.restrict_unique-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: paragraphs (Z) and (R) and step V4(o) of the parent proof (coordinatewise, a finite signed Radon measure annihilating C_c^∞ is zero). Notation: |α| is the Euclidean coefficient norm of a k-covector, ‖ω‖_∞ := sup_x |ω(x)| for a test form ω, and ξ_i(ω) denotes x ↦ ξ_i(x)(ω(x)).
+
+1. Integrability. Let ω ∈ 𝒟^k(U) and C := tsupport ω, a compact subset of U; ‖ω‖_∞ < ∞ since ω is continuous with compact support. For each i, x ↦ ξ_i(x)(ω(x)) is μ_i-a.e. strongly measurable (ξ_i is μ_i-a.e. strongly measurable, ω is continuous and the evaluation map (ζ, β) ↦ ζ(β) is continuous), and for μ_i-a.e. x, |ξ_i(x)(ω(x))| ≤ |ω(x)| ≤ ‖ω‖_∞ 1_C(x). Since μ_i(C) < ∞, ξ_i(ω) and ψ·ξ_i(ω) are μ_i-integrable for every bounded Borel ψ : ℝ^P → ℝ; in particular all integrals in the statement (over ℝ^P or over a Borel set B) are finite and well defined.
+
+2. Coefficients. The space Λ^k of k-covectors on ℝ^P (Covector (Euclid P) k) is finite-dimensional (it embeds linearly and injectively into the finite-dimensional space of k-linear maps (ℝ^P)^k → ℝ, Mathlib Module.Finite.multilinearMap; Mathlib has no ready-made instance for continuous alternating maps, but the accepted DAG declaration lcn_covector_finiteDimensional states exactly FiniteDimensional ℝ (Covector (Euclid P) n)). If it is {0} (this happens exactly when k > P, since an alternating k-linear map vanishes on k linearly dependent vectors, Mathlib AlternatingMap.map_linearDependent) then ω = 0, all integrands vanish and the conclusion reads 0 = 0 + 0. Otherwise fix a basis (β_I)_{I ∈ ℐ} of Λ^k with dual coordinate functionals c_I (continuous linear maps Λ^k → ℝ). For ω ∈ 𝒟^k(U) put ω_I := c_I ∘ ω; ω_I is C^∞ with tsupport ω_I ⊆ tsupport ω, a compact subset of U, and ω(x) = Σ_I ω_I(x) β_I. Put g_{i,I}(x) := ξ_i(x)(β_I); it is μ_i-a.e. strongly measurable with |g_{i,I}| ≤ |β_I| μ_i-a.e., and ξ_i(x)(ω(x)) = Σ_I ω_I(x) g_{i,I}(x) by linearity of ξ_i(x). Replacing each g_{i,I} by a Borel function equal to it μ_i-a.e. (and bounded by |β_I|) changes none of the integrals below, so we may and do assume the g_{i,I} are Borel.
+
+3. Test identities. For I ∈ ℐ and φ ∈ C_c^∞(U) (smooth, compact support inside U), the form φβ_I belongs to 𝒟^k(U), and the hypothesis applied to it gives
+   ∫ φ g_{1,I} dμ₁ = ∫ φ g_{2,I} dμ₂ + ∫ φ g_{3,I} dμ₃.   (∗)
+
+4. A signed measure. Fix I ∈ ℐ and ψ ∈ C_c^∞(U) and let S := tsupport ψ (compact ⊆ U). The functions h_i := ψ g_{i,I} are bounded by ‖ψ‖_∞|β_I| 1_S μ_i-a.e., so the two finite Borel measures
+   ν₊ := (h₁)⁺μ₁ + (h₂)⁻μ₂ + (h₃)⁻μ₃,   ν₋ := (h₁)⁻μ₁ + (h₂)⁺μ₂ + (h₃)⁺μ₃
+(withDensity measures; total masses ≤ ‖ψ‖_∞|β_I|(μ₁(S) + μ₂(S) + μ₃(S)) < ∞) satisfy ∫ φ dν₊ − ∫ φ dν₋ = ∫ φψ g_{1,I} dμ₁ − ∫ φψ g_{2,I} dμ₂ − ∫ φψ g_{3,I} dμ₃ for bounded Borel φ. For φ ∈ C_c^∞(ℝ^P) the product φψ lies in C_c^∞(U), hence by (∗) ∫ φ dν₊ = ∫ φ dν₋ for all φ ∈ C_c^∞(ℝ^P).
+
+5. Two finite Borel measures ν₊, ν₋ on ℝ^P with ∫ φ dν₊ = ∫ φ dν₋ for all φ ∈ C_c^∞(ℝ^P) are equal. (a) For φ ∈ C_c(ℝ^P) the mollifications φ_ε := φ ∗ ρ_ε are in C_c^∞(ℝ^P), satisfy |φ_ε| ≤ ‖φ‖_∞ and φ_ε → φ uniformly; dominated convergence for the finite measures ν_± gives ∫ φ dν₊ = ∫ φ dν₋. (b) For an open set G ⊆ ℝ^P choose φ_m ∈ C_c(ℝ^P) with 0 ≤ φ_m ≤ 1, φ_m = 0 off G and φ_m ↑ 1_G pointwise (for G ≠ ℝ^P, φ_m := min(1, m·dist(·, ℝ^P ∖ G))·max(0, min(1, m + 1 − |·|)); for G = ℝ^P the second factor alone); monotone convergence gives ν₊(G) = ν₋(G). (c) The open sets form a π-system (Mathlib isPiSystem_isOpen) generating the Borel σ-algebra of ℝ^P (BorelSpace.measurable_eq and the definition of borel), and ν₊(ℝ^P) = ν₋(ℝ^P) < ∞ by (b) with G := ℝ^P; by uniqueness of finite measures agreeing on a generating π-system (Mathlib MeasureTheory.ext_of_generate_finite), ν₊ = ν₋. (Alternatively: extend (a) to bounded continuous functions by cutoffs and apply Mathlib MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure.)
+
+6. Conclusion. Let B be Borel and ω ∈ 𝒟^k(U). For each I apply steps 4–5 with ψ := ω_I and evaluate ν₊(B) = ν₋(B): ∫_B ω_I g_{1,I} dμ₁ = ∫_B ω_I g_{2,I} dμ₂ + ∫_B ω_I g_{3,I} dμ₃ (all integrals finite by step 1). Summing over the finitely many I ∈ ℐ and using ξ_i(x)(ω(x)) = Σ_I ω_I(x) g_{i,I}(x) (step 2) yields ∫_B ξ₁(ω) dμ₁ = ∫_B ξ₂(ω) dμ₂ + ∫_B ξ₃(ω) dμ₃. ∎
+
+## Key steps
+
+1. All integrands are integrable: |ξ_i(ω)| ≤ ‖ω‖_∞ 1_{tsupport ω} a.e. and μ_i(tsupport ω) < ∞.
+2. Expand ω in a basis β_I of k-covectors: ξ_i(ω) = Σ_I ω_I g_{i,I} with g_{i,I} := ξ_i(β_I); the case Λ^k = 0 (k > P) is trivial.
+3. Testing the hypothesis with φβ_I, φ ∈ C_c^∞(U), gives ∫φ g_{1,I}dμ₁ = ∫φ g_{2,I}dμ₂ + ∫φ g_{3,I}dμ₃.
+4. For ψ ∈ C_c^∞(U) the finite measures ν_± built from the positive/negative parts of ψg_{i,I} have equal integrals against C_c^∞(ℝ^P).
+5. Mollification, approximation of indicators of open sets from below and uniqueness on the π-system of open sets give ν₊ = ν₋.
+6. Evaluate at B with ψ := ω_I and sum over I.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean; cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean`
+- `python3 scans of RUN/dag.json: selected node, frozen types and status of its five dependencies, lean_name matches for cbr_isoperimetric_filling (accepted, other parent) and for the prefix dmcbr_ (none among 937 nodes), byte comparison of the child types with the children of root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `rg -c dmcbr SNAPSHOT (no match, exit 1); rg -n -i 'isoperimetric|closure theorem|FedererFleming|DeformationTheorem' SNAPSHOT/project/GMT -g '*.lean'`
+- `rg -n -F over SNAPSHOT/mathlib/Mathlib, found: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image, MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀, euclideanHausdorffMeasure_zero, euclideanHausdorffMeasure_zero_or_top, exists_disjoint_closedBall_covering_ae, ae_tendsto_average_norm_sub, tendsto_filterAt, tendstoUniformlyOn_of_ae_tendsto, lintegral_liminf_le, countable_meas_level_set_pos, measure_inter_add_sdiff, ext_of_generate_finite, isPiSystem_isOpen, MonotoneOn.intervalIntegral_deriv_mem_uIcc, MonotoneOn.intervalIntegrable_deriv, Monotone.ae_differentiableAt, measurable_deriv, rieszMeasure, LipschitzOnWith.extend_real, LipschitzOnWith.extend_pi, finite_approx_of_totallyBounded, hausdorffMeasure_zero_singleton, one_le_hausdorffMeasure_zero_of_nonempty, IsOpen.locallyCompactSpace, ext_of_forall_integral_eq_of_IsFiniteMeasure; not found as literal 'theorem X' headers but located as to_additive/namespace/alias/instance declarations: isAddLeftInvariant_eq_smul, AlternatingMap.map_linearDependent, MeasurableSet.exists_isClosed_diff_lt, Module.Finite.multilinearMap; no match: measure_inter_add_diff (the cited name is measure_inter_add_sdiff)`
+- `rg -n over .lake/packages/simongmt/Poincare, all found: simon_theorem_4_16_compact_metrizable, simon_theorem_3_3, simon_theorem_3_26_i, exists_isClosed_continuousOn_of_measurable, simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, realUnitBallVolume_nat_eq, measure_toOuterMeasure_isBorelRegular, exteriorDerivative_affinePullbackForm, GeometricCurrentOn.boundary_affinePushforward, WeaklyConvergesOn.massOn_le_liminf, WeaklyConvergesOn.boundary, GeometricCurrentOn.boundary_boundary, countablyRectifiable_of_measure_zero, countablyRectifiable_range, countablyRectifiable_iUnion, CountablyRectifiable.mono; sed on the massOn, support, restrictDomain, HasApproximateTangentSpaceAt and blowUpMap definitions`
+- `lake env lean (v4.35.0-rc3) on /tmp/dimred_cbr2/lean/AllTypes.lean (12 types, sorry warnings only), /tmp/dimred_cbr2/lean/Assembly.lean (#print axioms: propext, Classical.choice, Quot.sound) and /tmp/dimred_cbr2/lean/InstCheck.lean; lean_contract.validate_lean_statement on all 12 types`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-4c4627e694/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-4c4627e694/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba6febc1b9/decomposition-audit-v1.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dimred_cbr2/lean/AllTypes.lean`
+- `/tmp/dimred_cbr2/lean/Assembly.lean`
+- `/tmp/dimred_cbr2/lean/InstCheck.lean`
+
+Pins match (HEAD b4d606d = snapshot project commit, Mathlib 25730c7c, SimonGMT 2b366308), and Submission.lean is byte-identical to the frozen contract and to the snapshot copy. The snapshot has no dmcbr declaration and no proved closure, deformation or isoperimetric theorem; its Chapter 6 matches are contract definitions only. Every Mathlib and SimonGMT name cited by the child proofs exists in the pinned sources. The five dependency types in dag.json are unchanged since attempt 1. cbr_isoperimetric_filling is accepted but owned by another parent and was reported reserved, so it is not reused; dmcbr_isoperimetric_filling and the other dmcbr_ names match no DAG node. All 12 child types elaborate, and the sorry-free conditional assembly proves the exact parent type with axioms propext, Classical.choice, Quot.sound.
