@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.WeightedArea
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Area formula for an injective immersion, Gram form** (Simon Ch. 2, (3.3)–(3.5); step (1b)
+of the chart divergence formula in the proof of Simon 7.5.2).  Let `G : ℝᵐ → ℝᴾ` be
+differentiable with injective derivative at every point of the Borel set `F` and injective on `F`.
+With `eᵢ` the standard basis of `ℝᵐ`, every `h : ℝᴾ → ℝ` has
+`∫_{G(F)} h dHᵐ = ∫_F √det(⟨DG(v)eᵢ, DG(v)eⱼ⟩) h(G(v)) dv`.  Apply the Bochner area formula with
+the metric Jacobian `normDet DG(v)`; on `ℝᵐ`, `μHE[m]` is Lebesgue measure, and
+`normDet L ^ 2 = det(⟨L eᵢ, L eⱼ⟩)` for the standard orthonormal basis (Gram), with `normDet L ≥ 0`. -/
+theorem Submission.codim1_lur_cd_injective_area_formula_gram : ∀ (P m : ℕ) (G : Euclid m → Euclid P) (F : Set (Euclid m)), MeasurableSet F → (∀ v ∈ F, DifferentiableAt ℝ G v) → (∀ v ∈ F, Function.Injective (fderiv ℝ G v)) → InjOn G F → ∀ h : Euclid P → ℝ, ∫ w in G '' F, h w ∂μHE[m] = ∫ v in F, Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G v (EuclideanSpace.single i 1)) (fderiv ℝ G v (EuclideanSpace.single j 1)))) * h (G v) := by
+  intro P m G F hF hG hreg hinj h
+  -- Simon (3.5) with Jacobian `areaJacobianAt G v = normDet DG(v)`; `finrank ℝᵐ = m`, `μHE[m] = λ`
+  have harea := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative hF hG
+    hreg hinj h
+  rw [InnerProductSpace.euclideanHausdorffMeasure_eq_volume, finrank_euclideanSpace_fin] at harea
+  rw [harea]
+  refine setIntegral_congr_fun hF fun v _ => ?_
+  rw [smul_eq_mul, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+  congr 1
+  -- Gram identity `normDet L ^ 2 = det(⟨L eᵢ, L eⱼ⟩)`, `eᵢ = EuclideanSpace.basisFun`, `normDet ≥ 0`
+  have hgram := (fderiv ℝ G v : Euclid m →ₗ[ℝ] Euclid P).normDet_sq_eq_det_gram
+    (EuclideanSpace.basisFun (Fin m) ℝ)
+  rw [RCLike.ofReal_real_eq_id, id] at hgram
+  rw [← Real.sqrt_sq (LinearMap.normDet_nonneg _), hgram]
+  congr 2
+  ext i j
+  simp [Matrix.gram_apply, EuclideanSpace.basisFun_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
