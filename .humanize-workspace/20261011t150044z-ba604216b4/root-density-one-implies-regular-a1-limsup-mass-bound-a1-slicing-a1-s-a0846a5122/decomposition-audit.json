@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def HasApproximateTangentSpaceAt|def blowUpMap",
+        "integral_area_formula_of_injective_derivative",
+        "one_of_mem_closedBall|tsupport_eq|protected theorem contDiff|hasContDiffBump_of_innerProductSpace",
+        "theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero",
+        "injective_iff_antilipschitz",
+        "tendsto_integral_filter_of_dominated_convergence",
+        "rg -n 'dor_lmbsf_cit|c1_local_extension|approxTangent_of_subset' project/GMT mathlib/Mathlib",
+        "git show 9ff76906722dcb8bcc007644718f45ab2b7ad407:GMT/Ch07/Submission.lean",
+        "git show 12e74edc2f87670883f4d67e2d52fc0830d265e7:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/dor-cit-independent-audit-0e89ijae/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/dor-cit-independent-audit-0e89ijae/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/dor-cit-independent-audit-0e89ijae/Combined.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-a0846a5122/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-a0846a5122/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/comparator-v1.log",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/comparator-v1.log",
+        "/tmp/dor-cit-independent-audit-0e89ijae/Types.lean",
+        "/tmp/dor-cit-independent-audit-0e89ijae/Assembly.lean",
+        "/tmp/dor-cit-independent-audit-0e89ijae/Combined.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt"
+      ],
+      "conclusion": "The split is appropriate and proves the selected compact-image tangent theorem. The cutoff preserves χ and its derivative near y; the lower bound enables the ball-image theorem; compactness and injectivity supply the separation required by localization. Verified the pinned revisions, unchanged contract, and byte compatibility of eight inspected Mathlib files. All four frozen types independently elaborate as propositions and match their prose, including every hypothesis. All names are bare identifiers; the two new names have no DAG collision or snapshot match. Both reused declarations have comparator-accepted, byte-identical frozen types and matching candidate proofs. Their transitive dependencies are acyclic and do not depend on this parent. The four proposed children require no sibling dependencies. Independently reran the assembly and combined proof: all children and the exact parent use only propext, Classical.choice and Quot.sound. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. The bump has closed support inside W and equals one on the smaller ball. Its product with χ is C¹ on W and locally zero outside W, proving global C¹ regularity without assuming regularity of χ elsewhere. The proof is complete, non-circular, and valid also for k = 0."
+    },
+    {
+      "key": "lower_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration at 12e74edc. Injectivity gives a positive coercivity constant; C¹ regularity and the mean-value estimate control the remainder; the triangle inequality gives μ = c/2. The zero-dimensional case is covered. The supplied proof independently establishes the exact statement."
+    },
+    {
+      "key": "c1_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration at 9ff76906. The supplied proof establishes derivative injectivity and dimension, verifies the rescaled area formula, confines the integrands to a fixed compact ball, checks domination and measurability, and identifies the limit by the linear area formula. Ball membership supplies any needed positive radius. Zero dimensions are covered, with no parent or sibling reliance."
+    },
+    {
+      "key": "localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree exactly. Separation from the closure gives a positive exclusion radius; compact support then makes the blown-up integrals equal eventually. The larger blown-up set is Borel by the explicit inverse affine map. The pinned set-integral lemma requires neither measurability of M' nor an additional integrability hypothesis. Dimension and convergence therefore transfer in the stated direction."
+    }
+  ],
+  "required_changes": []
+}

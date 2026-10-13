@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1.c1_extension-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1",
+  "depth": 6,
+  "title": "Local globalization of a map that is C¹ on an open set (bump-function cutoff)",
+  "statement": "Let P, k ∈ ℕ, W ⊆ ℝ^k open, χ : ℝ^k → ℝ^P of class C¹ on W (ContDiffOn ℝ 1 χ W), and y ∈ W. Then there exist g : ℝ^k → ℝ^P and ε > 0 such that the open ball B_ε(y) is contained in W, g is of class C¹ on all of ℝ^k (ContDiff ℝ 1 g), and g = χ on B_ε(y).",
+  "lean_statement": "∀ (P k : ℕ) (W : Set (Euclid k)) (χ : Euclid k → Euclid P) (y : Euclid k), IsOpen W → ContDiffOn ℝ 1 χ W → y ∈ W → ∃ (g : Euclid k → Euclid P) (ε : ℝ), 0 < ε ∧ ball y ε ⊆ W ∧ ContDiff ℝ 1 g ∧ EqOn g χ (ball y ε)",
+  "lean_name": "dor_lmbsf_cit_c1_local_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-156708e486-a1"
+}
