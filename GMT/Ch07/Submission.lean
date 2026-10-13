@@ -451,6 +451,64 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A Lipschitz map `ℝᵐ → ℝᴾ` agrees with countably many `C¹` maps off a set with `Hᵐ`-null
+image** (Simon Ch. 3, proof of Lemma 1.2), given the scalar `C¹` approximation (H) of Ch. 2,
+Theorem 1.5.  Apply (H) to each `K`-Lipschitz coordinate `Fᵖ` with `ε = 1/i` and put
+`Gᵢ = (g_{ip})_p`, so `Lᵐ({F ≠ Gᵢ}) ≤ Σ_p Lᵐ({Fᵖ ≠ g_{ip}}) ≤ P/i`.  Hence `Z = ⋂ᵢ {F ≠ Gᵢ}` is
+`Lᵐ`-null, `E = F(Z)` has `Hᵐ(E) ≤ Kᵐ Hᵐ(Z) = Kᵐ Lᵐ(Z) = 0`, and off `Z`, `F = Gᵢ` for some `i`. -/
+theorem Submission.dor_lmbsf_c1c_lipschitz_range_c1_pieces : ∀ (P m : ℕ) (F : Euclid m → Euclid P) (K : NNReal), LipschitzWith K F → (∀ (u : Euclid m → ℝ) (L : NNReal), LipschitzWith L u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid m → ℝ, ContDiff ℝ 1 g ∧ volume {y | u y ≠ g y} < ε) → ∃ (E : Set (Euclid P)) (G : ℕ → Euclid m → Euclid P), μHE[m] E = 0 ∧ (∀ i, ContDiff ℝ 1 (G i)) ∧ Set.range F ⊆ E ∪ ⋃ i, Set.range (G i) := by
+  intro P m F K hF H
+  -- the coordinates `Fᵖ` are `K`-Lipschitz, since `|a_p| ≤ |a|`
+  have hcoord : ∀ p : Fin P, LipschitzWith K fun y => F y p := by
+    intro p
+    refine LipschitzWith.of_dist_le_mul fun a b => ?_
+    calc dist (F a p) (F b p) = ‖(F a - F b) p‖ := by
+          rw [PiLp.sub_apply, Real.dist_eq, Real.norm_eq_abs]
+      _ ≤ ‖F a - F b‖ := PiLp.norm_apply_le _ _
+      _ = dist (F a) (F b) := (dist_eq_norm _ _).symm
+      _ ≤ K * dist a b := hF.dist_le_mul a b
+  -- (H) for each coordinate with `ε = 1/i`: `Lᵐ({Fᵖ ≠ g_{ip}}) < 1/i`
+  choose g hg hgvol using fun (i : ℕ) (p : Fin P) =>
+    H (fun y => F y p) K (hcoord p) (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
+  -- `Gᵢ = (g_{ip})_p` is `C¹`
+  obtain ⟨G, hGp⟩ : ∃ G : ℕ → Euclid m → Euclid P, ∀ i y p, G i y p = g i p y :=
+    ⟨fun i y => WithLp.toLp 2 fun p => g i p y, fun _ _ _ => rfl⟩
+  have hGc : ∀ i, ContDiff ℝ 1 (G i) := fun i =>
+    (contDiff_piLp 2).2 fun p => by simpa only [hGp] using hg i p
+  -- `Z = ⋂ᵢ {F ≠ Gᵢ}`: `Lᵐ(Z) ≤ Lᵐ({F ≠ Gᵢ}) ≤ Σ_p Lᵐ({Fᵖ ≠ g_{ip}}) ≤ P/i`
+  set Z : Set (Euclid m) := ⋂ i, {y | F y ≠ G i y} with hZ_def
+  have hZi : ∀ i : ℕ, volume Z ≤ (P : ℝ≥0∞) * (i : ℝ≥0∞)⁻¹ := by
+    intro i
+    calc volume Z ≤ volume (⋃ p : Fin P, {y | F y p ≠ g i p y}) := by
+          refine measure_mono fun y hy => ?_
+          have hne : F y ≠ G i y := mem_iInter.1 hy i
+          by_contra hcon
+          simp only [mem_iUnion, mem_ofPred_eq, not_exists, not_not] at hcon
+          exact hne (PiLp.ext fun p => by rw [hGp, hcon p])
+      _ ≤ ∑ p : Fin P, volume {y | F y p ≠ g i p y} := measure_iUnion_fintype_le _ _
+      _ ≤ ∑ _p : Fin P, (i : ℝ≥0∞)⁻¹ := Finset.sum_le_sum fun p _ => (hgvol i p).le
+      _ = (P : ℝ≥0∞) * (i : ℝ≥0∞)⁻¹ := by simp
+  -- `P/i → 0`, so `Lᵐ(Z) = 0`
+  have hZ0 : volume Z = 0 := by
+    have ht := ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+      (Or.inr (ENNReal.natCast_ne_top P))
+    rw [mul_zero] at ht
+    exact le_antisymm (ge_of_tendsto' ht hZi) zero_le
+  refine ⟨F '' Z, G, ?_, hGc, ?_⟩
+  · -- `Hᵐ(F(Z)) ≤ Kᵐ Hᵐ(Z) = Kᵐ Lᵐ(Z) = 0`
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m
+      (hF.lipschitzOnWith (s := Z))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume m, hZ0, mul_zero] at h
+    exact le_antisymm h zero_le
+  · -- `F z ∈ F(Z)` if `z ∈ Z`, otherwise `F z = Gᵢ z` for some `i`
+    rintro _ ⟨z, rfl⟩
+    by_cases hz : z ∈ Z
+    · exact Or.inl ⟨z, hz, rfl⟩
+    · rw [hZ_def] at hz
+      simp only [mem_iInter, mem_ofPred_eq, not_forall, not_not] at hz
+      obtain ⟨i, hi⟩ := hz
+      exact Or.inr (mem_iUnion.2 ⟨i, z, hi.symm⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
