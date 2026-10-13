@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bff9e13a9be035ac7cf5727dc4cb83cd967cc7a44e71b4efca02b18c4e86af49",
+  "git_delta": {
+    "base_commit": "cfe813f6b15287d7ced34dd502fb96fd1bcd3942",
+    "candidate_commit": "b6539fa1429757b85cc062fc80420150d5b919ee",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ce24499e6bf4219084c7833795779d1b26df1dbae06f820a3059194a10e8a5c1",
+    "source_sha256": "126b23237d5ef8bbbabbf09251557b83a7caba201d5de6dc64f5a68dc0fc4b96",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_measure_eq_zero_of_small_fillings",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P d : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (κ lam : ℝ) (E : Set (Euclid P)), 0 ≤ κ → κ < 1 → 1 ≤ lam → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ μ (sphere x ρ) = 0 ∧ ∃ (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ y in ball x ρ, ξ y ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂μ) ∧ S.boundary = A.boundary ∧ S.mass ≤ ENNReal.ofReal κ * μ (ball x ρ) ∧ S.support ⊆ closedBall x (lam * δ)) → μ E = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
