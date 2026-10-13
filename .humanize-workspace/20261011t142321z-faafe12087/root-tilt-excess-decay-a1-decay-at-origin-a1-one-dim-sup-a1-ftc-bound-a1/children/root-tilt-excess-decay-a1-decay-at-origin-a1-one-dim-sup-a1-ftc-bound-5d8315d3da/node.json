@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.ae_deriv_inner_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+  "depth": 5,
+  "title": "A.e. bound |(<u, W>)'| <= ||W'|| on (-a, a) via Rademacher, for ||u|| <= 1",
+  "statement": "Let l be a natural number, W : R -> R^l (R^l = EuclideanSpace R (Fin l)), a a real number, K >= 0 and u in R^l with ||u|| <= 1, and suppose W is K-Lipschitz on the closed interval [-a, a]. Then for Lebesgue-almost every real r: if -a < r < a, then |deriv phi r| <= ||deriv W r||, where phi(x) = <u, W(x)> is the real Euclidean inner product. Here deriv is Mathlib's derivative (0 at points where the function is not differentiable).",
+  "lean_statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0) (u : Rn ℓ), LipschitzOnWith K W (Icc (-a) a) → ‖u‖ ≤ 1 → ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |deriv (fun x => inner ℝ u (W x)) r| ≤ ‖deriv W r‖",
+  "lean_name": "tdo_ods_ae_abs_deriv_inner_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-5d8315d3da-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.lintegral_holder-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1",
+  "depth": 4,
+  "title": "Hoelder bound for lower integrals of arbitrary [0,∞]-valued functions on a set",
+  "statement": "Let X be a type with a measurable-space structure, μ a measure on X, B ⊆ X an arbitrary subset, g : X → [0, ∞] an arbitrary function (no measurability assumed), and p, q real numbers with 0 < q ≤ p. Then, with Mathlib's lower Lebesgue integral ∫⁻_B f dμ := ∫⁻ f d(μ.restrict B) and real powers in [0, ∞] (ENNReal.rpow), ∫⁻_B g^q dμ ≤ (∫⁻_B g^p dμ)^{q/p} · μ(B)^{1-q/p}.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (B : Set X) (g : X → ℝ≥0∞) (p q : ℝ), 0 < q → q ≤ p → ∫⁻ x in B, g x ^ q ∂μ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p)",
+  "lean_name": "tdo_slb_setLIntegral_rpow_le_holder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-lint-d97d658907-a1"
+}

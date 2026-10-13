@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "eigenvalues_eq|def eigenvectorBasis|mulVec_eigenvectorBasis|det_eq_prod_eigenvalues|trace_eq_sum_eigenvalues",
+        "norm_sq_eq|norm_single|inner_eq_star_dotProduct",
+        "gwe_gjb_|lgc_hsNormSq_bounds",
+        "\"lean_name\": \"(gwe_gjb_gram_symm_psd_trace|gwe_gjb_det_one_add_bounds|gwe_gjb_exp_half_le|lgc_hsNormSq_bounds)\"",
+        "git show 7372f81c6640dd17bd99bd3c9bbe79675f27d126:GMT/Ch05/Submission.lean",
+        "python3 -I /tmp/gjb-independent-audit-f5f2zbg2/run_lean.py /tmp/gjb-independent-audit-f5f2zbg2/checks/Assembly.lean",
+        "python3 -I /tmp/gjb-independent-audit-f5f2zbg2/run_lean.py /tmp/gjb-independent-audit-f5f2zbg2/checks/Spectral.lean",
+        "python3 -I /tmp/gjb-independent-audit-f5f2zbg2/run_lean.py /tmp/gjb-independent-audit-f5f2zbg2/checks/Reuse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Exp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-jacobian-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-jacobian-bounds-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1/accepted-candidate.json",
+        "/tmp/gjb-independent-audit-f5f2zbg2/checks/Assembly.lean",
+        "/tmp/gjb-independent-audit-f5f2zbg2/checks/Instances.lean",
+        "/tmp/gjb-independent-audit-f5f2zbg2/checks/Gram.lean",
+        "/tmp/gjb-independent-audit-f5f2zbg2/checks/Spectral.lean",
+        "/tmp/gjb-independent-audit-f5f2zbg2/checks/Scalar.lean",
+        "/tmp/gjb-independent-audit-f5f2zbg2/checks/Reuse.lean"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Contract and compilation compatibility were checked. The spectral, exponential, Euclidean-norm and nonnegative-product APIs support the supplied arguments. No proposed declaration names occur in the snapshot project; DAG and node-artifact searches found no conflicting reservations. The reused declaration is comparator-accepted with a byte-identical frozen type. Independently generated comparator challenges for all four children and the selected parent elaborate against a freshly compiled contract-only Submission. Independent proof transcriptions, the reused proof, and parent assembly compile using only propext, Classical.choice and Quot.sound. Instance checks confirm the intended matrix identity, multiplication, quadratic form and Euclidean norm. The split appropriately isolates three independent mathematical obligations and reuses the norm bound; their conclusions imply exactly the selected parent. Empty dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_symm_psd_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all three prose conclusions. Symmetry follows entrywise; expanding the quadratic form identifies it with the nonnegative self-inner-product of the stated finite sum; diagonal summation gives hsNormSq. Matrix.of preserves the intended construction. The proof covers empty index sets, needs no sibling or parent theorem, and is sufficiently explicit for formalization. The bare declaration name is unreserved."
+    },
+    {
+      "key": "det_one_add_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both symmetry and quadratic-form nonnegativity are explicitly present in prose and Lean. They imply that I + G is Hermitian with every eigenvalue at least one. Determinant and trace identities then give both bounds through valid nonnegative product comparisons and the exponential inequality. The proof covers n = 0 and invokes no sibling theorem. The additional spectral import is compatible with the frozen contract. The bare name is unreserved."
+    },
+    {
+      "key": "exp_half_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose, including both hypotheses. Multiplication by exp(s/2) is justified by positivity; multiplication of the exponential comparison by s/2 uses its nonnegativity. Rearrangement yields precisely the stated coefficient. No separate assumption on T is missing, and there is no circular dependency. The bare name is unreserved."
+    },
+    {
+      "key": "hs_norm_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse is valid: the frozen type is identical to comparator-accepted lgc_hsNormSq_bounds at commit 7372f81c6640dd17bd99bd3c9bbe79675f27d126. Independently reviewing the proof verifies continuity, nonnegativity, the operator-norm comparison, and the vector estimate by coordinate expansion and Cauchy–Schwarz, including dimension zero. Its nonnegativity and upper-bound conjuncts supply the parent's required interval bound. It has no dependencies, and the reused proof passes the permitted-axiom check."
+    }
+  ],
+  "required_changes": []
+}
