@@ -872,4 +872,27 @@ theorem Submission.idtp_ccd_scsp_ca_prod_area_formula : ∀ (P : ℕ) (G : ℝ �
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+/-- **Area formula on the cone sheet** (step 9 of the parent proof; Simon Ch. 2, §3).  On
+`R = (r₀ − s, r₀ + s) × (−s, s)` the sibling `cone_map` shows that `G(t, α) = t γ(α)` is injective
+on `R` with injective derivative, `∂₁G = γ(α)` and `∂₂G = t γ′(α)`.  The sibling `prod_area` then
+gives `∫_{G(R)} h dH² = ∫_R √(‖∂₁G‖² ‖∂₂G‖² − ⟨∂₁G, ∂₂G⟩²) h(G)`.  Since `‖γ‖ = 1`, `⟨γ, γ′⟩ = 0`
+and `t > r₀ − s > 0`, the radicand is `(t ‖γ′(α)‖)²`, so the Jacobian is `t ‖γ′(α)‖`. -/
+theorem Submission.idtp_ccd_scsp_cone_area : ∀ (P : ℕ) (r₀ s : ℝ) (γ : ℝ → Euclid P) (h : Euclid P → ℝ), 0 < s → s < r₀ → ContDiffOn ℝ 1 γ (Ioo (-s) s) → InjOn γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ inner ℝ (γ α) (deriv γ α) = 0 ∧ deriv γ α ≠ 0) → ∫ x in (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s), h x ∂μHE[2] = ∫ q in Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s, q.1 * ‖deriv γ q.2‖ * h (q.1 • γ q.2) := by
+  intro P r₀ s γ h hs hsr hγ hγinj hγ'
+  obtain ⟨hinj, hreg⟩ :=
+    Submission.idtp_ccd_scsp_ca_cone_map_regular P r₀ s γ hs hsr hγ hγinj hγ'
+  have hR : MeasurableSet (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  refine (Submission.idtp_ccd_scsp_ca_prod_area_formula P (fun q : ℝ × ℝ => q.1 • γ q.2) _ h hR
+    (fun z hz => (hreg z hz).1) (fun z hz => (hreg z hz).2.1) hinj).trans
+    (setIntegral_congr_fun hR fun z hz => ?_)
+  -- `∂₁G = γ(α)` and `∂₂G = t γ′(α)`, with `‖γ(α)‖ = 1`, `⟨γ(α), γ′(α)⟩ = 0` and `t > 0`
+  obtain ⟨-, -, h10, h01⟩ := hreg z hz
+  obtain ⟨hnorm, horth, -⟩ := hγ' z.2 hz.2
+  have hz1 : 0 < z.1 := by linarith [hz.1.1]
+  have hJ : (1 : ℝ) ^ 2 * (z.1 * ‖deriv γ z.2‖) ^ 2 - (z.1 * 0) ^ 2 =
+      (z.1 * ‖deriv γ z.2‖) ^ 2 := by ring
+  rw [h10, h01, hnorm, norm_smul, Real.norm_eq_abs, abs_of_pos hz1, real_inner_smul_right, horth,
+    hJ, Real.sqrt_sq (mul_nonneg hz1.le (norm_nonneg _))]
+
 end GMT.Ch07
