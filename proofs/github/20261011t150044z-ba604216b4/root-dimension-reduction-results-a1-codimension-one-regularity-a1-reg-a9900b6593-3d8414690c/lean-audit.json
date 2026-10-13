@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "62561fac4ff3e61d033b66380cd647e60857027f2a904d0c17c1e5e1bca00e11",
+  "git_delta": {
+    "base_commit": "2fe52dbc121d28f2489db54df87c6146d36c1c14",
+    "candidate_commit": "ae0277d4bed94a51b60fb4c7470fe259ed625e37",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_sp_mollifier_adjoint",
+    "diff_sha256": "ff34f8b55662c4c950afb47092d1c98743ae99bf6f2156656f7a8504526a7062",
+    "source_sha256": "edfd08d62b15aad67de4bfd942507b2c94e26d9ee0afc84169bf25353150313c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_sp_mollifier_adjoint",
+      "statement": "∀ (P : ℕ) (η u : Euclid P → ℝ) (s : Euclid P → Euclid P), ContDiff ℝ 1 η → HasCompactSupport η → (∀ z, η (-z) = η z) → Integrable u → Integrable s → ∫ x, fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) x (s x) = -∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ (convolution η s (ContinuousLinearMap.lsmul ℝ ℝ) volume) z : Euclid P →ₗ[ℝ] Euclid P)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
