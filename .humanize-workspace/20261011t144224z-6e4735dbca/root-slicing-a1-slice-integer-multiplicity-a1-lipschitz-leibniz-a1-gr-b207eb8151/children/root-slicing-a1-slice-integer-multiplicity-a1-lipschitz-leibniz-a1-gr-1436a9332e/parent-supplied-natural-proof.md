@@ -1,0 +1,72 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1.pairing_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝⁿ = Eucl n = EuclideanSpace ℝ (Fin n) with Euclidean norm |·|. Lⁿ = volume and Lⁿ⌞Ω = volume.restrict Ω. Df(w) := fderiv ℝ f w is the Fréchet derivative of f at w if f is differentiable at w, and 0 otherwise. ‖A‖ is the operator norm of A ∈ L(ℝⁿ, ℝ). All integrals are Bochner integrals. Source: parent proof, steps 1–2.
+1. (Pointwise derivative bound.) Let w ∈ Ω. Since Ω is open, it is a neighbourhood of w, and f is C-Lipschitz on Ω, so ‖Df(w)‖ ≤ C (Mathlib `norm_fderiv_le_of_lipschitzOn ℝ (hΩ.mem_nhds hw) hf`). Directly: if f is differentiable at w, then for every v ∈ ℝⁿ, Df(w)v = lim_{t→0} (f(w+tv) − f(w))/t. For small |t| we have w + tv ∈ Ω, so |f(w+tv) − f(w)| ≤ C|t||v|, which gives |Df(w)v| ≤ C|v|. If f is not differentiable at w, then Df(w) = 0. Consequently, for every map v : ℝⁿ → ℝⁿ and every w ∈ Ω, |Df(w)(v(w))| ≤ ‖Df(w)‖·|v(w)| ≤ C|v(w)|.
+2. (Measurability.) The map w ↦ Df(w), from ℝⁿ to L(ℝⁿ, ℝ), is Borel measurable (Mathlib `measurable_fderiv ℝ f`). Its target is finite-dimensional, so it is also a.e. strongly measurable for Lⁿ⌞Ω. Let v be integrable on Ω; then v is Lⁿ⌞Ω-a.e. strongly measurable. The evaluation (A, s) ↦ A(s) is a continuous bilinear map L(ℝⁿ, ℝ) × ℝⁿ → ℝ. Hence w ↦ Df(w)(v(w)) is Lⁿ⌞Ω-a.e. strongly measurable (Mathlib `(ContinuousLinearMap.apply ℝ ℝ).aestronglyMeasurable_comp₂ hv.aestronglyMeasurable (measurable_fderiv ℝ f).aestronglyMeasurable`).
+3. (Integrability.) Let v be integrable on Ω. By step 2, w ↦ Df(w)(v(w)) is Lⁿ⌞Ω-a.e. strongly measurable. By step 1 its absolute value is at most C|v(w)| for every w ∈ Ω, hence Lⁿ⌞Ω-a.e., since Ω is open and therefore measurable. As C|v| is integrable on Ω, w ↦ Df(w)(v(w)) is integrable on Ω (`Integrable.mono'`). In particular this holds for v = b and for v = b'.
+4. (Linearity.) By step 3 and linearity of the integral (`integral_sub`), ∫_Ω Df(w)(b(w)) dw − ∫_Ω Df(w)(b'(w)) dw = ∫_Ω [Df(w)(b(w)) − Df(w)(b'(w))] dw. Since each Df(w) is linear, the integrand equals Df(w)(b(w) − b'(w)).
+5. (Estimate.) The field b − b' is integrable on Ω, so C|b − b'| is integrable on Ω. By step 1 with v = b − b', |Df(w)(b(w) − b'(w))| ≤ C|b(w) − b'(w)| for all w ∈ Ω, hence Lⁿ⌞Ω-a.e. Therefore |∫_Ω Df(w)(b(w) − b'(w)) dw| ≤ ∫_Ω C|b(w) − b'(w)| dw = C·∫_Ω |b(w) − b'(w)| dw (`norm_integral_le_of_norm_le`, `integral_const_mul`). Together with step 4, this is the claimed inequality. ∎
+
+## Key steps
+
+1. For w ∈ Ω, Ω is a neighbourhood of w, so ‖Df(w)‖ ≤ C (norm_fderiv_le_of_lipschitzOn); hence |Df(w)(v(w))| ≤ C|v(w)| on Ω.
+2. w ↦ Df(w)(v(w)) is a.e. strongly measurable (measurable_fderiv composed with the continuous evaluation) and dominated on Ω by C|v|, so it is integrable on Ω for v = b and v = b'.
+3. By linearity, ∫_Ω Df(b) − ∫_Ω Df(b') = ∫_Ω Df(w)(b(w) − b'(w)) dw.
+4. |∫_Ω Df(w)(b(w) − b'(w)) dw| ≤ ∫_Ω C|b − b'| = C∫_Ω |b − b'|.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `python3 -I: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and child_modules(..., 'contract'). Replay: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06 / Chapter03 (...) / Chapter01 (...); noncomputable section; end`
+- `python3 scan of dag.json (544 nodes): lean_statements containing fderiv with LipschitzOnWith/LipschitzWith, ContDiff with HasCompactSupport and IntegrableOn, or lineDeriv; lean_names containing gws/ibp/dense/weak_star (only the selected node itself)`
+- `rg -n 'slicing_im_ll_gws' over local-references/197bdd4b88278494, lake-packages-25730c7c/simongmt, GMT/, dag.json (no match)`
+- `grep -n 'theorem' mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean (MemLp.exist_eLpNorm_sub_le, HasCompactSupport.exist_eLpNorm_sub_le_of_continuous, Lp.dense_hasCompactSupport_contDiff)`
+- `sed -n 1,240p mathlib/Mathlib/Analysis/Calculus/Rademacher.lean (memLp_lineDeriv, integral_lineDeriv_mul_eq, ae_lineDeriv_sum_eq); grep LipschitzWith.ae_differentiableAt`
+- `grep ContinuousMapDense.lean (Integrable.exists_hasCompactSupport_integral_sub_le); grep PartitionOfUnity.lean (exists_contDiff_support_eq_eq_one_iff)`
+- `#check after import GMT.Ch06.Submission: LipschitzWith.integral_lineDeriv_mul_eq, LipschitzWith.ae_differentiableAt, LipschitzOnWith.extend_real, norm_fderiv_le_of_lipschitzOn, measurable_fderiv, ContDiff.lipschitzWith_of_hasCompactSupport, DifferentiableAt.lineDeriv_eq_fderiv, IsOpen.exists_iUnion_isClosed, exists_compact_between, tendsto_setIntegral_of_monotone, tsupport_fderiv_subset, EuclideanSpace.basisFun_apply, setIntegral_eq_integral_of_forall_compl_eq_zero (all available); MemLp.exist_eLpNorm_sub_le, Integrable.exists_hasCompactSupport_integral_sub_le and ContDiffBump.dist_normed_convolution_le are unknown without an extra import`
+- `grep API names: ContinuousLinearMap.aestronglyMeasurable_comp₂, Integrable.bdd_mul, norm_fderiv_le_of_lipschitz, EuclideanSpace.proj, PiLp CoeFun, tsupport_smul_subset_left, HasCompactSupport.smul_right, setIntegral_indicator, setIntegral_sdiff, Set.indicator_compl, eLpNorm_one_eq_lintegral_enorm, integral_norm_eq_lintegral_enorm, ENNReal.toReal_le_of_le_ofReal`
+- `git show <candidate_commit>:GMT/Ch06/Submission.lean for accepted nodes: layout is theorem Submission.X inside namespace GMT.Ch06; accepted candidates add SimonGMT imports`
+- `grep candidate_inputs/relevant in verifier/gmt-compare.py (no import restriction on Submission.lean); ls shared lake-packages-25730c7c Mathlib oleans for SmoothApprox and Rademacher`
+- `cmp snapshot mathlib/<file> vs workspace .lake/packages/mathlib/<file> for every cited file, and snapshot project/GMT/Ch06/Contract.lean vs workspace Contract.lean (all identical)`
+- `lake env lean /tmp/gws_split/NodeChallenges.lean, Stmts.lean, Assembly.lean, C1.lean, C2.lean, C4.lean, EndToEnd.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Group/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-b207eb8151/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-b207eb8151/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-gr-b207eb8151/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/gws_split/NodeChallenges.lean`
+- `/tmp/gws_split/Stmts.lean`
+- `/tmp/gws_split/Assembly.lean`
+- `/tmp/gws_split/C1.lean`
+- `/tmp/gws_split/C2.lean`
+- `/tmp/gws_split/C4.lean`
+- `/tmp/gws_split/EndToEnd.lean`
+
+The snapshot is project d8d46c95 with Mathlib 25730c7c, byte-identical to the shared package tree for every cited file and for Contract.lean. It supplies every tool the four children need: Rademacher (LipschitzWith.ae_differentiableAt), integration by parts for Lipschitz functions (LipschitzWith.integral_lineDeriv_mul_eq), McShane extension (LipschitzOnWith.extend_real), the derivative bound (norm_fderiv_le_of_lipschitzOn / norm_fderiv_le_of_lipschitz), measurability (measurable_fderiv, ContinuousLinearMap.aestronglyMeasurable_comp₂), Lipschitz bounds for C¹ functions with compact support (ContDiff.lipschitzWith_of_hasCompactSupport), density of C_c^∞ in L¹ (MemLp.exist_eLpNorm_sub_le, which needs import Mathlib.Analysis.Normed.Lp.SmoothApprox), a smooth Urysohn function (exists_contDiff_support_eq_eq_one_iff), and exhaustion lemmas (IsOpen.exists_iUnion_isClosed, exists_compact_between). No accepted DAG node or SimonGMT lemma already states integration by parts for Lipschitz-on-Ω functions, convergence against test fields, or density of C_c^∞(Ω) in L¹(Ω), so nothing is reused. The new names slicing_im_ll_gws_{pairing_bound,lipschitz_ibp,smooth_tendsto,smooth_dense} occur nowhere in the snapshot, SimonGMT, GMT sources or dag.json. Scratch Lean checks in the exact comparator scope show: all four child types elaborate; the parent follows from three of them and smooth_tendsto from lipschitz_ibp; complete proofs of all four children and an end-to-end Submission-style file compile using only propext, Classical.choice and Quot.sound.
