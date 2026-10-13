@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_am_|allard52_annular_monotonicity|aal_curvature_pairing_holder_bound",
+        "theorem integral_integral_swap|\\[SigmaFinite|section|sfinite",
+        "starProjection_orthogonal_val|norm_starProjection_apply_le|trace_smulRight|trace.*[Pp]rojection|trace_eq_finrank",
+        "integral_rpow|intervalIntegrable_rpow|Gamma_pos_of_pos|integrableOn_compact_subset",
+        "git show a86f40226e595267d72cfbfaf8d5fdbfa472219b:GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/annular-audit-a90iymz5/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/annular-audit-a90iymz5/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/annular-audit-a90iymz5/HolderFromCommit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/annular-audit-a90iymz5/APIs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-curvature-holder-a1/accepted-candidate.json",
+        "/tmp/annular-audit-a90iymz5/Types.lean",
+        "/tmp/annular-audit-a90iymz5/Assembly.lean",
+        "/tmp/annular-audit-a90iymz5/HolderFromCommit.lean",
+        "/tmp/annular-audit-a90iymz5/APIs.lean"
+      ],
+      "conclusion": "Verified project pin ea5607598f3133b40a13241f2e51517a8c6423cd and mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d; workspace Contract and Submission match the snapshot. The name search found no matches in the snapshot project or Mathlib. In the current 324-node DAG, all seven new names are unreserved; the reused Hölder declaration is comparator-accepted with a byte-identical frozen type. Its proof, independently extracted from the accepted commit, recompiles using only propext, Classical.choice and Quot.sound. All eight types independently elaborate and pass the one-line contract validator. The exact frozen parent assembly recompiles under only radial_identity, cutoff_limit and center_density, plus standard axioms, without sorryAx or ancestor-theorem reliance. The split is appropriate; dependencies are acyclic and correctly directed. Pinned differentiation, FTC, dominated-convergence, Fatou, exponential and monotone-limit APIs support the supplied arguments. Finite restriction supplies the Fubini typeclass requirements. All names are bare identifiers; no implementation-dependent types or Matrix/IsUnit constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. The proof handles inconsistent T ≤ 1, establishes the radial field's C¹ regularity and compact support, and computes divergence using tangency only inside ball y R. Almost-everywhere equality transfers the first-variation identity without an additional integrability assumption."
+    },
+    {
+      "key": "holder_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the accepted declaration and the prose. Support and finite-mass hypotheses justify integrability; Cauchy–Schwarz, Hölder with conjugate exponent p/(p−1), and ψ^q ≤ ψ prove the stated estimate, including t = 0. Reuse passes compatibility and axiom checks."
+    },
+    {
+      "key": "cutoff_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all three conclusions and hypotheses. The chosen parameter neighbourhood stays positive and keeps supports inside B_S. The supplied measurable, integrable bounds justify both continuity claims and differentiation under the integral, with the correct derivative sign and factor."
+    },
+    {
+      "key": "integrating_factor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact identity follows from the supplied proof. Nonnegative I keeps the denominator positive; β < 1 gives integrability at zero, including arbitrary M via |M|. The first-variation sign, integrating-factor cancellation and FTC application are correct. No positivity assumption on Q is needed."
+    },
+    {
+      "key": "annular_tonelli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type specify the same annulus, including its inner boundary. The measurable replacement preserves all relevant integrals. Established finite spatial support permits Fubini after restriction to B. The FTC kernel calculation gives h(c) ≥ c⁻ⁿ throughout [(1+ε)s,r], and the nonnegative-integral conversion proves the conclusion."
+    },
+    {
+      "key": "fixed_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four declared dependencies are used with their exact hypotheses. The proof establishes integrability, regularity and the radial differential identity, extracts the correctly scaled Lᵖ bound, and obtains |a| ≤ b. The identity 2κ/(1−n/p)=1/2 yields the integrating-factor and annular bounds without requiring Λ ≤ 1."
+    },
+    {
+      "key": "cutoff_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. Explicit cutoffs and eventual uniform domination justify both limit passages. The exponential estimate gives the required decay, and monotonicity passes to the limit. Fatou applies to measurable annular indicators converging to B_r minus B_s, retaining the outer boundary. Only fixed_cutoff is required."
+    },
+    {
+      "key": "center_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact density limit and lower bound. It derives Λ ≥ 0 from the hypotheses, proves F → 1, and obtains a finite infimum limit of Φ. The mass-ratio limit is nonnegative; positivity of unitBallVolume and finite ball masses justify the ENNReal normalization. The argument also covers n = 0."
+    }
+  ],
+  "required_changes": []
+}
