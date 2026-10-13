@@ -1052,6 +1052,33 @@ theorem Submission.codim1_rdo_dg_vdl_integral_divergence_eq_zero : ∀ (P : ℕ)
   simp only [innerSL_apply_apply] at h
   rw [h, key, inner_zero_right]
 
+/-- **Simon Ch. 3, proof of 4.3, (11)** ("repeating the same argument with `U ∖ E` in place of
+`E`", l. 729–732 of the chapter text): the Gauss–Green identity for `F` with normal `ν` gives the
+one for `Fᶜ` with normal `−ν`.  The divergence `trace Dφ` of a `C¹` field with compact support is
+continuous with compact support, hence integrable, and has integral `0`
+(`codim1_rdo_dg_vdl_integral_divergence_eq_zero`).  So
+`∫_{Fᶜ} trace Dφ = −∫_F trace Dφ = ∫ ⟨φ, ν⟩ dμ = −∫ ⟨φ, −ν⟩ dμ`. -/
+theorem Submission.codim1_rdo_dg_vdl_gauss_green_compl : ∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P), MeasurableSet F → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in Fᶜ, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (-ν z) ∂μ := by
+  intro P D F μ ν hF hGG φ hφ hφc hφD
+  -- Step 2: `z ↦ trace Dφ(z)` is continuous with compact support, hence integrable
+  have hf_int : Integrable fun z =>
+      LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) := by
+    -- `A ↦ trace A` is linear on the finite-dimensional space `ℝᴾ →L[ℝ] ℝᴾ`, hence continuous
+    have htr : Continuous fun A : Euclid P →L[ℝ] Euclid P =>
+        LinearMap.trace ℝ (Euclid P) (A : Euclid P →ₗ[ℝ] Euclid P) :=
+      (LinearMap.trace ℝ (Euclid P) ∘ₗ
+        ContinuousLinearMap.coeLM ℝ).continuous_of_finiteDimensional
+    exact (htr.comp (hφ.continuous_fderiv one_ne_zero)).integrable_of_hasCompactSupport
+      ((hφc.fderiv ℝ).comp_left (by simp))
+  -- Step 3: `∫_F trace Dφ + ∫_{Fᶜ} trace Dφ = ∫ trace Dφ = 0`
+  have hsplit := integral_add_compl hF hf_int
+  have hdiv : ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0 :=
+    Submission.codim1_rdo_dg_vdl_integral_divergence_eq_zero P φ hφ hφc
+  have hF_GG := hGG φ hφ hφc hφD
+  -- Step 4: `⟨φ, −ν⟩ = −⟨φ, ν⟩` and `∫ −g dμ = −∫ g dμ`
+  simp only [inner_neg_right, integral_neg, neg_neg]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
