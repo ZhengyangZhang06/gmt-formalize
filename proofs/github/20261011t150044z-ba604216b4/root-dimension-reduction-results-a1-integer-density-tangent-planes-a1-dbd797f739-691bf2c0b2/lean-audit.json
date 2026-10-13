@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1bb06bedbd69c2a3457c2cc2b4165b529670b7b1902816571d487ca883c40e39",
+  "git_delta": {
+    "base_commit": "0b7f651a599e19bac792a947d7185b7c1e126f61",
+    "candidate_commit": "a29d85c0f19b21f05a942a9ea5f7c18f07bd08c0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_sfv_support_sdiff_carrier_null",
+    "diff_sha256": "9148179ee4611091510dca730656fe10d023355c920e1df0360c63780a816b52",
+    "source_sha256": "13c073308df5480d166766624fcb279cddf16f3098fed9787a0042b22acf883c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_sfv_support_sdiff_carrier_null",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → ball p ρ ⊆ U → 1 ≤ k → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → μHE[n] ((T.support ∩ ball p ρ) \\ R.carrier) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
