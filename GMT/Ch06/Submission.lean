@@ -6,7 +6,6 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
-import Mathlib.Analysis.Calculus.ImplicitContDiff
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -466,7 +465,8 @@ for integer multiplicity slices, Simon Ch. 6, §4): if `h` is `C¹`, `U` is open
 into `U ∩ {h = h(w₀), Dh ≠ 0}` and onto the level set inside an open `W ∋ w₀`.  With the frame
 `(ι, p, e)` of `Dh(w₀)` (`slicing_im_st_lsc_kernel_frame`), `ψ v = w₀ + ι v + g̃ v • e`, where
 `g̃` is a `C¹` extension (`slicing_im_st_lsc_c1_extension`) of the implicit function `g` of
-`H (v, s) = h (w₀ + ι v + s • e)`. -/
+`H (v, s) = h (w₀ + ι v + s • e)`, obtained from the inverse function theorem for
+`Φ (v, s) = (v, H (v, s))`. -/
 theorem Submission.slicing_im_st_lsc_local_graph :
     ∀ (m : ℕ) (h : Eucl (m + 1) → ℝ) (U : Set (Eucl (m + 1))) (w₀ : Eucl (m + 1)), ContDiff ℝ 1 h → IsOpen U → w₀ ∈ U → fderiv ℝ h w₀ ≠ 0 → ∃ (ψ : Eucl m → Eucl (m + 1)) (r : ℝ) (W : Set (Eucl (m + 1))), ContDiff ℝ 1 ψ ∧ 0 < r ∧ IsOpen W ∧ w₀ ∈ W ∧ (∀ v v' : Eucl m, ‖v - v'‖ ≤ ‖ψ v - ψ v'‖) ∧ (∀ v ∈ ball (0 : Eucl m) r, ψ v ∈ U ∧ h (ψ v) = h w₀ ∧ fderiv ℝ h (ψ v) ≠ 0) ∧ ∀ w ∈ W, h w = h w₀ → ∃ v ∈ ball (0 : Eucl m) r, ψ v = w := by
   have hKF := Submission.slicing_im_st_lsc_kernel_frame
@@ -475,7 +475,7 @@ theorem Submission.slicing_im_st_lsc_local_graph :
   -- Frame of `ℓ := Dh(w₀)`: `ℓ e = 1`, `ι` isometric, `ι v ⟂ e` and `ι (p u) + ℓ u • e = u`.
   obtain ⟨ι, p, e, hℓe, hιn, hιe, hdec⟩ := hKF m (fderiv ℝ h w₀) hdh
   set ℓ := fderiv ℝ h w₀ with hℓdef
-  -- `A (v, s) = w₀ + ι v + s • e` and `H := h ∘ A`; `∂ₛH(0, 0) = s ↦ s • ℓ e` is the identity.
+  -- `A (v, s) = w₀ + ι v + s • e` and `H := h ∘ A`, with `DH(0, 0) = ℓ ∘ L`.
   let L : Eucl m × ℝ →L[ℝ] Eucl (m + 1) :=
     ι.comp (ContinuousLinearMap.fst ℝ (Eucl m) ℝ) +
       (ContinuousLinearMap.snd ℝ (Eucl m) ℝ).smulRight e
@@ -494,22 +494,70 @@ theorem Submission.slicing_im_st_lsc_local_graph :
       (hAd (0, 0))
     rw [hA0] at h1
     exact h1
-  have hcomp : fderiv ℝ H ((0 : Eucl m), (0 : ℝ)) ∘L ContinuousLinearMap.inr ℝ (Eucl m) ℝ =
-      ContinuousLinearMap.id ℝ ℝ := by
-    rw [hHd.fderiv]
-    ext
-    simp [L, hℓe]
-  have hinv : (fderiv ℝ H ((0 : Eucl m), (0 : ℝ)) ∘L
-      ContinuousLinearMap.inr ℝ (Eucl m) ℝ).IsInvertible := by
-    rw [hcomp]
-    exact ⟨ContinuousLinearEquiv.refl ℝ ℝ, rfl⟩
-  -- Implicit function `g`: `g 0 = 0`, `g` is `C¹` at `0` and, on `B((0, 0), ε)`,
-  -- `H (v, s) = H (0, 0) ↔ g v = s`.
-  have hHat : ContDiffAt ℝ 1 H ((0 : Eucl m), (0 : ℝ)) := hH.contDiffAt
-  set g := hHat.implicitFunction one_ne_zero hinv with hgdef
-  have hg0 : g 0 = 0 := hHat.implicitFunction_apply_self one_ne_zero hinv
-  have hgC1 : ContDiffAt ℝ 1 g 0 := hHat.contDiffAt_implicitFunction one_ne_zero hinv
-  have hiff := hHat.eventually_apply_eq_iff_implicitFunction one_ne_zero hinv
+  -- `Φ (v, s) := (v, H (v, s))` has derivative `Φ₀ (v, s) = (v, ℓ (ι v) + s)` at `(0, 0)`, an
+  -- equivalence with inverse `Ψ₀ (v, t) = (v, t - ℓ (ι v))`.
+  let Φ : Eucl m × ℝ → Eucl m × ℝ := fun q => (q.1, H q)
+  have hΦC : ContDiff ℝ 1 Φ := contDiff_fst.prodMk hH
+  let Φ₀ : (Eucl m × ℝ) →L[ℝ] Eucl m × ℝ :=
+    (ContinuousLinearMap.fst ℝ (Eucl m) ℝ).prod (ℓ.comp L)
+  let Ψ₀ : (Eucl m × ℝ) →L[ℝ] Eucl m × ℝ :=
+    (ContinuousLinearMap.fst ℝ (Eucl m) ℝ).prod
+      (ContinuousLinearMap.snd ℝ (Eucl m) ℝ - (ℓ.comp ι).comp (ContinuousLinearMap.fst ℝ (Eucl m) ℝ))
+  have hleft : Function.LeftInverse Ψ₀ Φ₀ := by
+    rintro ⟨v, s⟩
+    simp [Φ₀, Ψ₀, L, hℓe]
+  have hright : Function.RightInverse Ψ₀ Φ₀ := by
+    rintro ⟨v, t⟩
+    simp [Φ₀, Ψ₀, L, hℓe]
+  let Φ₀e : (Eucl m × ℝ) ≃L[ℝ] Eucl m × ℝ := ContinuousLinearEquiv.equivOfInverse Φ₀ Ψ₀ hleft hright
+  have hΦd : HasFDerivAt Φ (Φ₀e : (Eucl m × ℝ) →L[ℝ] Eucl m × ℝ) ((0 : Eucl m), (0 : ℝ)) :=
+    hasFDerivAt_fst.prodMk hHd
+  have hΦs : HasStrictFDerivAt Φ (Φ₀e : (Eucl m × ℝ) →L[ℝ] Eucl m × ℝ) ((0 : Eucl m), (0 : ℝ)) := by
+    have h1 := hΦC.contDiffAt.hasStrictFDerivAt (x := ((0 : Eucl m), (0 : ℝ))) one_ne_zero
+    rwa [hΦd.fderiv] at h1
+  -- Inverse function theorem: `Φ` is a local homeomorphism `T` near `(0, 0)` with `C¹` inverse.
+  let T := hΦs.toOpenPartialHomeomorph Φ
+  have hsrc : ((0 : Eucl m), (0 : ℝ)) ∈ T.source := hΦs.mem_toOpenPartialHomeomorph_source
+  have htgt : ((0 : Eucl m), H ((0 : Eucl m), (0 : ℝ))) ∈ T.target :=
+    hΦs.image_mem_toOpenPartialHomeomorph_target
+  have hT0 : T.symm ((0 : Eucl m), H ((0 : Eucl m), (0 : ℝ))) = ((0 : Eucl m), (0 : ℝ)) :=
+    T.left_inv hsrc
+  have hTC : ContDiffAt ℝ 1 T.symm ((0 : Eucl m), H ((0 : Eucl m), (0 : ℝ))) := by
+    refine T.contDiffAt_symm (f₀' := Φ₀e) htgt ?_ ?_
+    · rw [hT0]
+      exact hΦd
+    · rw [hT0]
+      exact hΦC.contDiffAt
+  -- Implicit function `g v := (T⁻¹ (v, H (0, 0))).2`: `g 0 = 0`, `g` is `C¹` at `0` and, near
+  -- `(0, 0)`, `H (v, s) = H (0, 0) ↔ g v = s`.
+  let g : Eucl m → ℝ := fun v => (T.symm (v, H ((0 : Eucl m), (0 : ℝ)))).2
+  have hg0 : g 0 = 0 := by
+    simp only [g, hT0]
+  have hgC1 : ContDiffAt ℝ 1 g 0 := by
+    have hin : ContDiffAt ℝ 1 (fun v : Eucl m => (v, H ((0 : Eucl m), (0 : ℝ)))) 0 :=
+      contDiffAt_id.prodMk contDiffAt_const
+    exact contDiffAt_snd.comp (0 : Eucl m)
+      (ContDiffAt.comp (f := fun v : Eucl m => (v, H ((0 : Eucl m), (0 : ℝ)))) (0 : Eucl m) hTC hin)
+  have hiff : ∀ᶠ q in 𝓝 ((0 : Eucl m), (0 : ℝ)), H q = H ((0 : Eucl m), (0 : ℝ)) ↔ g q.1 = q.2 := by
+    have hsrc' : ∀ᶠ q in 𝓝 ((0 : Eucl m), (0 : ℝ)), q ∈ T.source := T.open_source.mem_nhds hsrc
+    have htgt' : ∀ᶠ q in 𝓝 ((0 : Eucl m), (0 : ℝ)),
+        (q.1, H ((0 : Eucl m), (0 : ℝ))) ∈ T.target :=
+      (continuous_fst.prodMk continuous_const).continuousAt.preimage_mem_nhds
+        (T.open_target.mem_nhds htgt)
+    filter_upwards [hsrc', htgt'] with q hq1 hq2
+    constructor
+    · intro hq
+      have hΦq : T q = (q.1, H ((0 : Eucl m), (0 : ℝ))) := Prod.ext rfl hq
+      show (T.symm (q.1, H ((0 : Eucl m), (0 : ℝ)))).2 = q.2
+      rw [← hΦq, T.left_inv hq1]
+    · intro hq
+      have hr : Φ (T.symm (q.1, H ((0 : Eucl m), (0 : ℝ)))) = (q.1, H ((0 : Eucl m), (0 : ℝ))) :=
+        T.right_inv hq2
+      have hr1 := congrArg Prod.fst hr
+      have hr2 := congrArg Prod.snd hr
+      have hq' : T.symm (q.1, H ((0 : Eucl m), (0 : ℝ))) = q := Prod.ext hr1 hq
+      rw [hq'] at hr2
+      exact hr2
   obtain ⟨ε, hε, hεball⟩ := Metric.mem_nhds_iff.1 hiff
   -- `g' = g` on `B(0, ρ)` is `C¹` on `ℝ^m`, and `ψ v := w₀ + ι v + g' v • e`.
   obtain ⟨ρ, hρ, g', hg'C, hg'eq⟩ := hC1E m g 0 hgC1
