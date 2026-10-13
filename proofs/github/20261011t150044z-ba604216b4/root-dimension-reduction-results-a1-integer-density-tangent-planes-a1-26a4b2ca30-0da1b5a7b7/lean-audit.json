@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2bf475713ed8edb0bb12bed76cc66d4aa0d98dd8d6b70e6f43fac35de0e866e1",
+  "git_delta": {
+    "base_commit": "0ad773172e8d5f983d3dcfec4e12f3934d547dc5",
+    "candidate_commit": "0bd00695dec06fdead31c87616dbdf996ebb57ec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_caf_null_image",
+    "diff_sha256": "36aea3c413d84b1b887eaa236a76782a85e1f9b35a9e49e8246c2b7b3965a035",
+    "source_sha256": "5e1bce64c436f609288560de601ce162703625f8ce73896314431f547d72718d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_caf_null_image",
+      "statement": "∀ (P n : ℕ) (Z S : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → S ⊆ Z → μHE[n] S = 0 → volume (F '' S) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
