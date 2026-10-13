@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dmcbr_sl_|boundaryMassOn|CompactlyContained",
+        "dmcbr_sl_|cbrsl_isIntegerMultiplicity_of_local_liminf_bounds|cbrsl_slice_boundary_mass_bound",
+        "extraction_of_frequently_atTop|liminf_eq_iSup_iInf|biSup_add_biSup_le|countable_meas_level_set_pos|theorem ae_lt_top|lemma ae_lt_top",
+        "def massOn|def massAdmissibleOn|massOn_le_liminf|massOn_mono|le_massOn|boundary_boundary|def restrictDomain|def testFormOnInclusion|def WeaklyConvergesOn|theorem WeaklyConvergesOn.boundary|structure GeometricCurrentOn",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/tmp/lean-tc-local/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice_limit_dec/lean/FullCheck.lean",
+        "/tmp/lean-tc-local/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-limit-independent-audit-8j3xxy8v/ChallengeTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-eedf328651/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-eedf328651/decomposition-v1.json",
+        "/tmp/slice_limit_dec/lean/FullCheck.lean",
+        "/tmp/slice-limit-independent-audit-8j3xxy8v/ChallengeTypes.lean"
+      ],
+      "conclusion": "The split appropriately isolates three substantive obligations for the selected parent. Project, mathlib and SimonGMT revisions match the frozen pins; the inspected definitions support the supplied arguments. No proposed names occur in the DAG or searched snapshot sources. Names are bare identifiers, and dependencies are acyclic. All three exact one-line propositions independently elaborate without child implementations and pass lexical validation. Independently rerunning the combined Lean proof succeeds: each child uses only propext, Classical.choice and Quot.sound. The byte-identical frozen parent type follows using precisely the two declared sibling contracts as additional axioms; their types also match the DAG byte-for-byte. No unproved extra obligation or namespace/typeclass mismatch was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition include matching CL(d), IML(d), convergence, integer-multiplicity and ballwise liminf hypotheses. The proof correctly extracts bounded subsequences, transfers mass and boundary bounds through domain restriction, applies CL(d) locally, establishes locally finite limit mass, and applies IML(d). Neither the child nor parent conclusion is assumed. The argument is complete and guides formalization directly."
+    },
+    {
+      "key": "slice_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact SL premise and representation hypotheses match the prose. The second slicing application correctly uses the zero representation of the double boundary when d is positive; degree zero is handled separately. Equality of currents follows from their test-form values, negation preserves mass, and the supplied supremum/infimum argument proves ENNReal liminf superadditivity, including infinite values. These steps establish the required combined bound for the same slice families without circular reliance."
+    },
+    {
+      "key": "ae_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The MM premise and all remaining hypotheses match the prose and frozen sibling conjunct. Uniform ball mass bounds make each measurable majorant integrable on (-m,m). Almost-everywhere finiteness, countable intersection over k and m, and choosing m greater than |t| prove exactly the conclusion. No measurability assumption on Z is silently introduced, and no further proof construction or search is deferred."
+    }
+  ],
+  "required_changes": []
+}

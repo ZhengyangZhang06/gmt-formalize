@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.ae_finite-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1",
+  "depth": 5,
+  "title": "For almost every level, slice masses have finite liminf on every ball",
+  "statement": "Assume (MM), the third part of the conclusion of the parent's sibling theorem dmcbr_measure_convergence_tools (verbatim; the parent discharges it with that theorem): for every P, measures μ_j (j ∈ ℕ) on ℝ^P, continuous f : ℝ^P → ℝ, G ⊆ ℝ^P, a, b ∈ ℝ, L ∈ ℝ≥0 and Z_j : ℝ → [0, ∞] with μ_j(G ∩ {a < f < b}) < ∞ for every j and Z_j(t) ≤ L·liminf_{h→0+} h⁻¹μ_j(G ∩ {t − h < f < t}) for all j and all t ∈ (a, b), there is a measurable g : ℝ → [0, ∞] with liminf_{j→∞} Z_j(t) ≤ g(t) for L¹-a.e. t ∈ (a, b) and ∫_{(a,b)} g dL¹ ≤ L·liminf_{j→∞} μ_j(G ∩ {a < f < b}). Let P ∈ ℕ, μ_i (i ∈ ℕ) measures on ℝ^P, f : ℝ^P → ℝ continuous, L ∈ ℝ≥0 and Z_i(t, k) ∈ [0, ∞] (i, k ∈ ℕ, t ∈ ℝ) such that sup_i μ_i(B_k(0)) < ∞ for every k ∈ ℕ (B_k(0) the open ball of radius k about 0) and Z_i(t, k) ≤ L·liminf_{h→0+} h⁻¹μ_i(B_k(0) ∩ {t − h < f < t}) for all i, t, k (h⁻¹ meaning ENNReal.ofReal h⁻¹). Then for L¹-a.e. t ∈ ℝ, liminf_{i→∞} Z_i(t, k) < ∞ for every k ∈ ℕ.",
+  "lean_statement": "(∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (Z : ℕ → ℝ → ℕ → ℝ≥0∞), Continuous f → (∀ k : ℕ, ⨆ i, μs i (ball (0 : Euclid P) k) < ∞) → (∀ (i : ℕ) (t : ℝ) (k : ℕ), Z i t k ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs i (ball (0 : Euclid P) k ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ k : ℕ, liminf (fun i => Z i t k) atTop < ∞",
+  "lean_name": "dmcbr_sl_ae_liminf_slice_mass_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-abab86cbc8-a1"
+}

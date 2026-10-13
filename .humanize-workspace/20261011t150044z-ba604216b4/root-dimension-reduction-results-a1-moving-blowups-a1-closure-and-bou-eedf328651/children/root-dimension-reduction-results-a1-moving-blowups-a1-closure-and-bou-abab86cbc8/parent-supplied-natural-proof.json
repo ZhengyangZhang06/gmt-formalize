@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean SNAPSHOT/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean SNAPSHOT/project/GMT/Ch07/Contract.lean; python3 read of lake-manifest.json revs (mathlib, simongmt) and git rev-parse HEAD in .lake/packages/{mathlib,simongmt}",
+        "python3 scans of RUN/dag.json: selected node (depth 4, no children), frozen lean_statement of siblings convergence_tools-a1 and im_local-a1 (byte-compared with the handoff), lean_name collision check for dmcbr_sl_isIntegerMultiplicity_of_liminf_bounded, dmcbr_sl_slice_and_boundary_mass_bound, dmcbr_sl_ae_liminf_slice_mass_finite (no match), twin node root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1 and its children cbrsl_isIntegerMultiplicity_of_local_liminf_bounds / cbrsl_slice_boundary_mass_bound (decomposing/queued, not accepted)",
+        "grep -n 'depends_on|_existing_lean_name_problem|_dependency_problem|_overlay_accepted_children' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "rg -c dmcbr_sl SNAPSHOT (no match, exit 1)",
+        "rg -n over SNAPSHOT/mathlib/Mathlib: extraction_of_frequently_atTop, frequently_lt_of_liminf_lt, liminf_le_of_frequently_le', biSup_add_biSup_le', liminf_eq_iSup_iInf, aestronglyMeasurable_zero_measure, ae_zero, ae_lt_top, ae_restrict_iff', ae_all_iff, countable_meas_level_set_pos, limsup_comp, limsup_le_limsup_of_le, iSup_comp_le, closure_ball_subset_closedBall, exists_nat_ge, exists_nat_gt, measure_eq_zero_iff_ae_notMem, Countable.measure_zero, le_liminf_add; getModuleIdxFor? for tsupport_neg, Filter.frequently_lt_of_liminf_lt, Filter.liminf_eq_iSup_iInf, Filter.liminf_le_of_frequently_le'",
+        "rg -n over .lake/packages/simongmt/Poincare/SimonGMT/Chapter06: WeaklyConvergesOn.massOn_le_liminf, WeaklyConvergesOn.boundary, GeometricCurrentOn.boundary_boundary, GeometricCurrentOn.ext, GeometricCurrentOn.massOn_mono, GeometricCurrentOn.le_massOn, covectorEuclideanNorm_neg, testFormOnInclusion, GeometricCurrentOn.restrictDomain, exteriorDerivativeTestOn; sed on the GeometricCurrentOn, WeaklyConvergesOn, boundary, massOn, massAdmissibleOn and restrictDomain definitions",
+        "lake env lean (v4.35.0-rc3) on /tmp/slice_limit_dec/lean/Types.lean, AssemblyAx.lean, LC.lean, SC.lean, GP.lean, FullCheck.lean (#print axioms); lean_contract.validate_lean_statement on the three child types"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-eedf328651/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-eedf328651/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-eedf328651/parent-supplied-natural-proof.md",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/slice_limit_dec/lean/Types.lean",
+        "/tmp/slice_limit_dec/lean/AssemblyAx.lean",
+        "/tmp/slice_limit_dec/lean/LC.lean",
+        "/tmp/slice_limit_dec/lean/SC.lean",
+        "/tmp/slice_limit_dec/lean/GP.lean",
+        "/tmp/slice_limit_dec/lean/FullCheck.lean"
+      ],
+      "conclusion": "Pins match. HEAD b4d606d equals the snapshot project commit; Mathlib 25730c7c and SimonGMT 2b366308 match in lake-manifest.json and the checked-out packages. Submission.lean and Contract.lean are byte-identical to the snapshot contract. The snapshot has no dmcbr_sl declaration and no proved local-closure, slice-boundary or a.e.-finiteness lemma. Every Mathlib and SimonGMT name the child proofs use exists at the pinned revisions; the to_dual/to_additive-generated names were checked by elaboration. Mathlib has le_liminf_add only for AddCommGroup orders and EReal, not ENNReal, so the slice_bound proof derives superadditivity from liminf_eq_iSup_iInf and ENNReal.biSup_add_biSup_le'. The runtime lets a child see only its sibling keys, so the parent-level sibling conclusions enter the children as hypotheses. The three new names collide with no DAG node. The twin lineage's analogous children are not accepted, so they cannot be reused. Lean checks: all child types elaborate and validate. Complete child proofs use only propext, Classical.choice and Quot.sound. The exact frozen parent type is proved from the three children plus the two sibling declarations."
+    }
+  ],
+  "proof": "Source: the (MM) part of step 7 of the parent proof (good parameters), with the measures μ_i + μ'_i, the balls W_k and the summed slice majorants of that step abstracted to μ_i, B_k(0) and Z_i(t, k).\n1. Fix k, m ∈ ℕ and put G := B_k(0), a := −m, b := m and Λ_k := sup_i μ_i(G) < ∞. For every j, μ_j(G ∩ {a < f < b}) ≤ μ_j(G) ≤ Λ_k < ∞, and by hypothesis Z_j(t, k) ≤ L·liminf_{h→0+} h⁻¹μ_j(G ∩ {t − h < f < t}) for all t, in particular for t ∈ (a, b). So (MM), applied with these μ_j, f, G, a, b, L and with the functions t ↦ Z_j(t, k) in the role of its Z_j, gives a measurable g : ℝ → [0, ∞] with liminf_j Z_j(t, k) ≤ g(t) for a.e. t ∈ (a, b), and ∫_{(a,b)} g ≤ L·liminf_j μ_j(G ∩ {a < f < b}) ≤ L·Λ_k < ∞ (a liminf of terms that are all ≤ Λ_k is ≤ Λ_k, and L, Λ_k are finite).\n2. A measurable [0, ∞]-valued function with finite integral is finite almost everywhere (Mathlib ae_lt_top); applied to L¹ restricted to the measurable set (a, b), this says: for a.e. t ∈ ℝ, t ∈ (a, b) implies g(t) < ∞. Together with step 1: for a.e. t, t ∈ (−m, m) implies liminf_i Z_i(t, k) ≤ g(t) < ∞.\n3. Countably many full-measure statements hold simultaneously almost everywhere (Mathlib ae_all_iff over k and over m): for a.e. t, for all k, m ∈ ℕ, t ∈ (−m, m) implies liminf_i Z_i(t, k) < ∞.\n4. Fix such a t and any k ∈ ℕ. Choose m ∈ ℕ with m > |t|; then −m < t < m, so liminf_i Z_i(t, k) < ∞ by step 3. ∎",
+  "key_steps": [
+    "For each k, m ∈ ℕ apply (MM) with G = B_k(0), (a, b) = (−m, m): ∫_{(−m,m)} g ≤ L·sup_i μ_i(B_k(0)) < ∞.",
+    "A finite integral forces g < ∞ a.e. on (−m, m), so liminf_i Z_i(t, k) < ∞ for a.e. t ∈ (−m, m).",
+    "Intersect over the countably many pairs (k, m) and take m > |t|."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
