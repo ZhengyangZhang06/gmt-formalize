@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lower_volume_bound-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Lower volume bound L^N(G ∩ B_ρ(x)) ≥ cρ^{n+1} from the half-average condition (Simon (10), (11); parent Step 8)",
+  "statement": "Let n ∈ ℕ and N := n + 1. There is c > 0 such that the following holds for every open U ⊆ ℝ^N, Lebesgue null-measurable G ⊆ ℝ^N, Gauss-Green pair (μ, ν) for (U, G), x, w ∈ ℝ^N with |w| ≤ 1, and ρ₁ ∈ ℝ with B_{ρ₁}(x) ⊆ U such that, for every ρ ∈ (0, ρ₁), μ(B_ρ(x)) > 0 and μ(B_ρ(x)).toReal ≤ 2∫_{B_ρ(x)} ⟨ν(y), w⟩ dμ(y): ENNReal.ofReal(c ρ^{n+1}) ≤ L^N(G ∩ B_ρ(x)) for every ρ ∈ (0, ρ₁).",
+  "lean_statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x w : Rn (n + 1)) (ρ₁ : ℝ), ‖w‖ ≤ 1 → Metric.ball x ρ₁ ⊆ U → (∀ ρ ∈ Ioo 0 ρ₁, 0 < μ (Metric.ball x ρ) ∧ (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ) → ∀ ρ ∈ Ioo 0 ρ₁, ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (G ∩ Metric.ball x ρ)",
+  "lean_name": "deGiorgiDens_ball_volume_ge",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.first_variation_bound-a1",
+    "root.de_giorgi-a1.density_estimates-a1.ball_isoperimetric-a1",
+    "root.de_giorgi-a1.density_estimates-a1.ode_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.first_variation_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.ball_isoperimetric-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.ode_lower_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lower-volume-bound-a1-a1"
+}

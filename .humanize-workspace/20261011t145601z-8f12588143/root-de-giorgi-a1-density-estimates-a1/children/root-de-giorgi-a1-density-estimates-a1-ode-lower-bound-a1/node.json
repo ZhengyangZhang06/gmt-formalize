@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.ode_lower_bound-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Integration of the differential inequality V^{n/(n+1)} ≤ K V' for a non-decreasing V (Simon p. 83: 'Integration ... then implies (10)')",
+  "statement": "Let n ∈ ℕ, K > 0, ρ₁ ∈ ℝ, and V : ℝ → ℝ non-decreasing on (0, ρ₁) with V > 0 on (0, ρ₁). Assume that for Lebesgue-a.e. ρ ∈ (0, ρ₁) there is d ∈ ℝ such that V has derivative d at ρ and V(ρ)^{n/(n+1)} ≤ K d (real power). Then (ρ/((n + 1)K))^{n+1} ≤ V(ρ) for every ρ ∈ (0, ρ₁).",
+  "lean_statement": "∀ (n : ℕ) (K ρ₁ : ℝ) (V : ℝ → ℝ), 0 < K → MonotoneOn V (Ioo 0 ρ₁) → (∀ ρ ∈ Ioo 0 ρ₁, 0 < V ρ) → (∀ᵐ ρ ∂(volume : Measure ℝ), ρ ∈ Ioo 0 ρ₁ → ∃ d : ℝ, HasDerivAt V d ρ ∧ V ρ ^ ((n : ℝ) / (n + 1)) ≤ K * d) → ∀ ρ ∈ Ioo 0 ρ₁, (ρ / ((n + 1) * K)) ^ (n + 1) ≤ V ρ",
+  "lean_name": "deGiorgiDens_lower_bound_of_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-ode-lower-bound-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1.excess_cauchy_schwarz-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1",
+  "depth": 4,
+  "title": "Cauchy–Schwarz bound for the normal excess on a set of finite measure: ∫_S |ν − e| dμ ≤ μ(S)·(2(1 − average of ⟨ν, e⟩ over S))^{1/2} (Simon (2); parent Steps 3 and 7)",
+  "statement": "Let N ∈ ℕ, μ a measure on ℝ^N, ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e., e ∈ ℝ^N with |e| = 1, and S ⊆ ℝ^N any set with μ(S) < ∞. Put m := μ(S).toReal and I := ∫_S ⟨ν(y), e⟩ dμ(y). Then ∫_S |ν(y) − e| dμ(y) ≤ m · √(2(1 − m⁻¹ I)), where √ = Real.sqrt and m⁻¹ := 0 when m = 0.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (e : Rn N) (S : Set (Rn N)), μ S < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → ∫ y in S, ‖ν y - e‖ ∂μ ≤ (μ S).toReal * Real.sqrt (2 * (1 - (μ S).toReal⁻¹ * ∫ y in S, inner ℝ (ν y) e ∂μ))",
+  "lean_name": "deGiorgiNAB_excess_le_sqrt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-normal-average-bounds-a1-exces-2d34e07f2f-a1"
+}
