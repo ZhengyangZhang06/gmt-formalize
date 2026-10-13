@@ -623,6 +623,243 @@ theorem Submission.codim1_rdo_dg_rc_uniform_compact : ∀ (m : ℕ) (μ : Measur
     rw [mul_assoc]
     exact this
   · exact (ENNReal.div_le_iff hpow0 hpowtop).mp hup.le
+/-- **Simon Ch. 3, proof of 1.6 "⇐", claim (10)** (cone exclusion), in codimension one: let
+`μ(B̄_ρ(y)) ≥ (1 − ε) ωₘ ρᵐ` and `μ(C(y) ∩ B̄_ρ(y)) ≤ ε ωₘ ρᵐ` for `y ∈ K`, `0 < ρ < δ`, where
+`C(y) = {z : |z − y| ≤ 4 |⟨z − y, ν(y)⟩|}`, and let `(1 + 16ᵐ) ε < 1`.  Then
+`|⟨x' − x, v⟩| ≤ |x' − x| / 2` for `x, x' ∈ K` with `|x' − x| < δ / 2` and `|ν(x) − v| ≤ 1/16`.
+Otherwise `B̄_{ρ/8}(x') ⊆ C(x) ∩ B̄_{2ρ}(x)` for `ρ = |x' − x|`, and the two bounds give
+`(1 − ε) ωₘ (ρ/8)ᵐ ≤ ε ωₘ (2ρ)ᵐ`, i.e. `1 − ε ≤ 16ᵐ ε`. -/
+theorem Submission.codim1_rdo_dg_rc_cone_exclusion : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∀ x ∈ K, ∀ x' ∈ K, ∀ v : Euclid (m + 1), ‖ν x - v‖ ≤ 1 / 16 → ‖x' - x‖ < δ / 2 → |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2 := by
+  intro m μ ν K δ ε hν1 hε0 hε1 hlow hup x hx x' hx' v hv hxx'
+  by_contra hcon
+  push Not at hcon
+  set w := x' - x with hw
+  set ρ := ‖w‖ with hρ
+  have hρ0 : 0 < ρ := by
+    rcases (norm_nonneg w).lt_or_eq with h | h
+    · exact h
+    · exfalso
+      have hw0 : w = 0 := norm_eq_zero.1 h.symm
+      rw [hw0] at hcon
+      simp at hcon
+      linarith [h, hρ]
+  have hδ : 0 < δ := by linarith
+  -- `|⟨w, ν x⟩| > 7ρ/16`, since `|⟨w, v⟩| > ρ/2` and `|ν x - v| ≤ 1/16`
+  have h2 : 7 * ρ / 16 < |inner ℝ w (ν x)| := by
+    have e1 : |inner ℝ w (v - ν x)| ≤ ρ * ‖ν x - v‖ := by
+      calc |inner ℝ w (v - ν x)| ≤ ‖w‖ * ‖v - ν x‖ := abs_real_inner_le_norm _ _
+        _ = ρ * ‖ν x - v‖ := by rw [norm_sub_rev v (ν x)]
+    have e2 : inner ℝ w v = inner ℝ w (ν x) + inner ℝ w (v - ν x) := by
+      rw [inner_sub_right]; ring
+    have e3 : |inner ℝ w v| ≤ |inner ℝ w (ν x)| + |inner ℝ w (v - ν x)| := by
+      rw [e2]; exact abs_add_le _ _
+    have e4 : ρ * ‖ν x - v‖ ≤ ρ * (1 / 16) := mul_le_mul_of_nonneg_left hv hρ0.le
+    linarith
+  -- `B̄_{ρ/8}(x') ⊆ C(x) ∩ B̄_{2ρ}(x)`: on the small ball `|z - x| ≤ 9ρ/8` and
+  -- `|⟨z - x, ν x⟩| > 7ρ/16 - ρ/8 = 5ρ/16`
+  have hsub : closedBall x' (ρ / 8) ⊆
+      {z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x (2 * ρ) := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm] at hz
+    have hzx : z - x = w + (z - x') := by rw [hw]; abel
+    have hnorm : ‖z - x‖ ≤ 9 * ρ / 8 := by
+      calc ‖z - x‖ = ‖w + (z - x')‖ := by rw [hzx]
+        _ ≤ ‖w‖ + ‖z - x'‖ := norm_add_le _ _
+        _ ≤ ρ + ρ / 8 := by linarith
+        _ = 9 * ρ / 8 := by ring
+    have hin : |inner ℝ (z - x') (ν x)| ≤ ρ / 8 := by
+      calc |inner ℝ (z - x') (ν x)| ≤ ‖z - x'‖ * ‖ν x‖ := abs_real_inner_le_norm _ _
+        _ = ‖z - x'‖ := by rw [hν1 x, mul_one]
+        _ ≤ ρ / 8 := hz
+    have hinner : inner ℝ (z - x) (ν x) = inner ℝ w (ν x) + inner ℝ (z - x') (ν x) := by
+      rw [hzx, inner_add_left]
+    have hbig : 5 * ρ / 16 < |inner ℝ (z - x) (ν x)| := by
+      rw [hinner]
+      have h' : |inner ℝ w (ν x)| ≤
+          |inner ℝ w (ν x) + inner ℝ (z - x') (ν x)| + |inner ℝ (z - x') (ν x)| := by
+        have := abs_sub (inner ℝ w (ν x) + inner ℝ (z - x') (ν x)) (inner ℝ (z - x') (ν x))
+        simpa using this
+      linarith
+    refine ⟨?_, ?_⟩
+    · show (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|
+      linarith
+    · rw [mem_closedBall, dist_eq_norm]; linarith
+  -- `(1 - ε) ωₘ (ρ/8)ᵐ ≤ μ(B̄_{ρ/8}(x')) ≤ μ(C(x) ∩ B̄_{2ρ}(x)) ≤ ε ωₘ (2ρ)ᵐ`
+  have hlow' := hlow x' hx' (ρ / 8) (by positivity) (by linarith)
+  have hup' := hup x hx (2 * ρ) (by positivity) (by linarith)
+  have hchain : ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal ((ρ / 8) ^ m) ≤
+      ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal ((2 * ρ) ^ m) :=
+    hlow'.trans ((measure_mono hsub).trans hup')
+  -- cancelling `ωₘ (ρ/8)ᵐ ∈ (0, ∞)` gives `1 - ε ≤ 16ᵐ ε`, contradicting `(1 + 16ᵐ) ε < 1`
+  have hω0 : unitBallVolume m ≠ 0 := by
+    unfold unitBallVolume; exact (measure_ball_pos _ _ one_pos).ne'
+  have hωt : unitBallVolume m ≠ ∞ := by
+    unfold unitBallVolume; exact measure_ball_lt_top.ne
+  set a := (unitBallVolume m).toReal with ha_def
+  have ha : 0 < a := ENNReal.toReal_pos hω0 hωt
+  have hωeq : unitBallVolume m = ENNReal.ofReal a := (ENNReal.ofReal_toReal hωt).symm
+  have h1ε : 0 ≤ 1 - ε := by
+    have : 0 ≤ (16 : ℝ) ^ m * ε := by positivity
+    nlinarith
+  have hL : ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal ((ρ / 8) ^ m) =
+      ENNReal.ofReal ((1 - ε) * a * (ρ / 8) ^ m) := by
+    rw [hωeq, ← ENNReal.ofReal_mul h1ε, ← ENNReal.ofReal_mul (by positivity)]
+  have hR : ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal ((2 * ρ) ^ m) =
+      ENNReal.ofReal (ε * a * (2 * ρ) ^ m) := by
+    rw [hωeq, ← ENNReal.ofReal_mul hε0, ← ENNReal.ofReal_mul (by positivity)]
+  rw [hL, hR, ENNReal.ofReal_le_ofReal_iff (by positivity)] at hchain
+  have hpow : (2 * ρ) ^ m = 16 ^ m * (ρ / 8) ^ m := by
+    rw [← mul_pow]; congr 1; ring
+  rw [hpow] at hchain
+  have hpos : 0 < a * (ρ / 8) ^ m := by positivity
+  have h16 : (1 - ε) * (a * (ρ / 8) ^ m) ≤ (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by
+    calc (1 - ε) * (a * (ρ / 8) ^ m) = (1 - ε) * a * (ρ / 8) ^ m := by ring
+      _ ≤ ε * a * (16 ^ m * (ρ / 8) ^ m) := hchain
+      _ = (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by ring
+  have h17 : 1 - ε ≤ ε * 16 ^ m := le_of_mul_le_mul_right h16 hpos
+  nlinarith
+/-- **Simon Ch. 3, proof of 1.6 "⇐"** (Lipschitz graph step, codimension one): if `‖v‖ = 1` and
+`|⟨x' − x, v⟩| ≤ ‖x' − x‖/2` on `S`, then `S` lies in a closed countably `m`-rectifiable set.
+With `t(z) = ⟨z, v⟩` and `p(z) = z − t(z)v`, the hypothesis gives `|t(x') − t(x)| ≤ ‖p(x') − p(x)‖`
+on `S`, so `p(x) ↦ t(x)` is 1-Lipschitz on `p(S)`; its McShane extension `τ` makes
+`Γ = {z | τ(p(z)) = t(z)}` closed, and `Γ` lies in the range of the Lipschitz map
+`y ↦ ι(y) + τ(ι(y))v`, where `ι : ℝᵐ ≃ v^⊥` is a linear isometry. -/
+theorem Submission.codim1_rdo_dg_rc_closed_graph_cover : ∀ (m : ℕ) (v : Euclid (m + 1)) (S : Set (Euclid (m + 1))), ‖v‖ = 1 → (∀ x ∈ S, ∀ x' ∈ S, |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ S ⊆ Γ := by
+  intro m v S hv hS
+  -- Step 1: height `t` and orthogonal projection `p` onto `vᗮ`.
+  obtain ⟨t, ht⟩ : ∃ t : Euclid (m + 1) → ℝ, ∀ z, t z = inner ℝ z v := ⟨_, fun _ => rfl⟩
+  obtain ⟨p, hp⟩ : ∃ p : Euclid (m + 1) → Euclid (m + 1), ∀ z, p z = z - t z • v :=
+    ⟨_, fun _ => rfl⟩
+  have hvv : inner ℝ v v = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hv]; norm_num
+  have hpv : ∀ z, inner ℝ (p z) v = (0 : ℝ) := by
+    intro z
+    rw [hp, inner_sub_left, real_inner_smul_left, hvv, ht, mul_one, sub_self]
+  have hpmem : ∀ z, p z ∈ (ℝ ∙ v)ᗮ := by
+    intro z
+    rw [Submodule.mem_orthogonal_singleton_iff_inner_left]
+    exact hpv z
+  have hdecomp : ∀ z, p z + t z • v = z := by
+    intro z
+    rw [hp, sub_add_cancel]
+  -- Step 2: the key inequality `|t x' - t x| ≤ ‖p x' - p x‖` on `S`.
+  have key : ∀ x ∈ S, ∀ x' ∈ S, |t x' - t x| ≤ ‖p x' - p x‖ := by
+    intro x hx x' hx'
+    have h1 := hS x hx x' hx'
+    have h2 : inner ℝ (x' - x) v = t x' - t x := by
+      rw [inner_sub_left, ht, ht]
+    have h3 : x' - x = (p x' - p x) + (t x' - t x) • v := by
+      rw [hp, hp, sub_smul]
+      abel
+    have h4 : ‖x' - x‖ ≤ ‖p x' - p x‖ + |t x' - t x| := by
+      calc ‖x' - x‖ = ‖(p x' - p x) + (t x' - t x) • v‖ := by rw [← h3]
+        _ ≤ ‖p x' - p x‖ + ‖(t x' - t x) • v‖ := norm_add_le _ _
+        _ = ‖p x' - p x‖ + |t x' - t x| := by
+          rw [norm_smul, hv, mul_one, Real.norm_eq_abs]
+    rw [h2] at h1
+    linarith
+  -- Step 3: the height as a function of the projection, and its McShane extension.
+  obtain ⟨τ, hτ⟩ : ∃ τ : Euclid (m + 1) → ℝ, ∀ x ∈ S, τ (p x) = t x := by
+    refine ⟨fun y => t (Function.invFunOn p S y), ?_⟩
+    intro x hx
+    have hex : ∃ a ∈ S, p a = p x := ⟨x, hx, rfl⟩
+    have hmem := Function.invFunOn_mem hex
+    have heq := Function.invFunOn_eq hex
+    have h := key x hx _ hmem
+    rw [heq, sub_self, norm_zero] at h
+    have h0 : t (Function.invFunOn p S (p x)) - t x = 0 := abs_nonpos_iff.mp h
+    show t (Function.invFunOn p S (p x)) = t x
+    linarith
+  have hτLip : LipschitzOnWith 1 τ (p '' S) := by
+    apply LipschitzOnWith.mk_one
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨x', hx', rfl⟩
+    rw [hτ x hx, hτ x' hx', Real.dist_eq, dist_eq_norm]
+    exact key x' hx' x hx
+  obtain ⟨τ', hτ'Lip, hτ'eq⟩ := hτLip.extend_real
+  -- Step 4: an isometry `ι : ℝᵐ ≃ vᗮ` and the Lipschitz graph map `F`.
+  have : Fact (Module.finrank ℝ (Euclid (m + 1)) = m + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hv0 : v ≠ 0 := by
+    intro h; rw [h, norm_zero] at hv; exact zero_ne_one hv
+  let ι := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) m hv0).repr.symm
+  let F : Euclid m → Euclid (m + 1) := fun y => ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1)) +
+    τ' ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1)) • v
+  have hFLip : ∃ K, LipschitzWith K F := by
+    have h1 : LipschitzWith (1 * 1)
+        (fun y : Euclid m => ((ι y : (ℝ ∙ v)ᗮ) : Euclid (m + 1))) :=
+      (Submodule.subtypeₗᵢ (ℝ ∙ v)ᗮ).lipschitzWith.comp ι.lipschitzWith
+    have hsm : LipschitzWith 1 (fun r : ℝ => r • v) := by
+      apply LipschitzWith.mk_one
+      intro r s
+      rw [dist_eq_norm, ← sub_smul, norm_smul, hv, mul_one, Real.dist_eq, Real.norm_eq_abs]
+    exact ⟨_, h1.add (hsm.comp (hτ'Lip.comp h1))⟩
+  obtain ⟨K, hK⟩ := hFLip
+  -- Step 5: the closed graph `Γ = {z | τ' (p z) = t z}`.
+  have htc : Continuous t := by
+    rw [show t = fun z => inner ℝ z v from funext ht]
+    fun_prop
+  have hpc : Continuous p := by
+    rw [show p = fun z => z - t z • v from funext hp]
+    fun_prop
+  refine ⟨{z | τ' (p z) = t z}, ?_, ?_, ?_⟩
+  · exact isClosed_eq (hτ'Lip.continuous.comp hpc) htc
+  · apply (Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK).mono
+    intro z hz
+    simp only [mem_ofPred_eq] at hz
+    refine ⟨ι.symm ⟨p z, hpmem z⟩, ?_⟩
+    simp only [F, LinearIsometryEquiv.apply_symm_apply]
+    rw [hz]
+    exact hdecomp z
+  · intro x hx
+    simp only [mem_ofPred_eq]
+    rw [← hτ'eq (mem_image_of_mem p hx)]
+    exact hτ x hx
+
+/-- **Compact cover** of Simon Ch. 3, proof of Theorem 1.6 "⇐": the choice of `π₁, …, π_N` with
+`E = ⋃ⱼ Eⱼ` and the selection `E ⊆ ⋃ⱼ Qⱼ(graph fⱼ)`, in codimension one, where the subspaces `πⱼ`
+become unit directions `v`.  Cover the unit sphere by finitely many balls `B_{1/16}(v)` and `K` by
+finitely many balls `B_{δ/4}(c)`, `c ∈ K`.  Two points of
+`S_{v,c} = {x ∈ K : |ν(x) − v| < 1/16} ∩ B_{δ/4}(c)` are less than `δ/2` apart, so
+`codim1_rdo_dg_rc_cone_exclusion` gives `|⟨x' − x, v⟩| ≤ ½|x' − x|` on `S_{v,c}`, and
+`codim1_rdo_dg_rc_closed_graph_cover` gives a closed countably `m`-rectifiable `Γ_{v,c} ⊇ S_{v,c}`.
+The finite union of the `Γ_{v,c}` contains `K`, since `|ν(x)| = 1`. -/
+theorem Submission.codim1_rdo_dg_rc_compact_cover : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → IsCompact K → 0 < δ → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ K ⊆ Γ := by
+  intro m μ ν K δ ε hν1 hK hδ hε0 hε1 hlow hup
+  -- step 1: a finite `1/16`-net `V` of the unit sphere
+  obtain ⟨V, hVs, hVfin, hVcov⟩ :=
+    (isCompact_sphere (0 : Euclid (m + 1)) 1).finite_cover_balls (e := 1 / 16) (by norm_num)
+  -- step 2: a finite `δ/4`-net `C ⊆ K` of `K`
+  obtain ⟨C, -, hCfin, hCcov⟩ := hK.finite_cover_balls (e := δ / 4) (by positivity)
+  -- step 3: on `S_{v,c}` the cone condition holds in direction `v`, so `S_{v,c}` lies in a closed
+  -- countably `m`-rectifiable `Γ_{v,c}`
+  have hS : ∀ v ∈ V, ∀ c ∈ C, ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧
+      {x | x ∈ K ∧ dist (ν x) v < 1 / 16} ∩ ball c (δ / 4) ⊆ Γ := by
+    intro v hv c _
+    have hv1 : ‖v‖ = 1 := by simpa using hVs hv
+    apply Submission.codim1_rdo_dg_rc_closed_graph_cover m v _ hv1
+    rintro x ⟨⟨hxK, hxv⟩, hxc⟩ x' ⟨⟨hx'K, -⟩, hx'c⟩
+    apply Submission.codim1_rdo_dg_rc_cone_exclusion m μ ν K δ ε hν1 hε0 hε1 hlow hup
+      x hxK x' hx'K v
+    · rw [← dist_eq_norm]
+      exact hxv.le
+    · calc ‖x' - x‖ = dist x' x := (dist_eq_norm _ _).symm
+        _ ≤ dist x' c + dist c x := dist_triangle _ _ _
+        _ < δ / 4 + δ / 4 := add_lt_add (mem_ball.1 hx'c) (mem_ball'.1 hxc)
+        _ = δ / 2 := by ring
+  choose! Γ hΓc hΓr hΓS using hS
+  -- step 4: `⋃_{v,c} Γ_{v,c}` is closed (a finite union) and countably `m`-rectifiable (a
+  -- countable union)
+  refine ⟨⋃ v ∈ V, ⋃ c ∈ C, Γ v c, ?_, ?_, ?_⟩
+  · exact hVfin.isClosed_biUnion fun v hv => hCfin.isClosed_biUnion fun c hc => hΓc v hv c hc
+  · rw [← sUnion_image2 Γ V C]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+      (hVfin.image2 Γ hCfin).countable (forall_mem_image2.2 hΓr)
+  -- step 5: `x ∈ K` lies in `S_{v,c}` for a `v ∈ V` with `|ν(x) − v| < 1/16` and a `c ∈ C` with
+  -- `x ∈ B_{δ/4}(c)`
+  · intro x hxK
+    have hνx : ν x ∈ sphere (0 : Euclid (m + 1)) 1 := by simpa using hν1 x
+    obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.1 (hVcov hνx)
+    obtain ⟨c, hc, hxc⟩ := mem_iUnion₂.1 (hCcov hxK)
+    exact mem_iUnion₂.2 ⟨v, hv, mem_iUnion₂.2 ⟨c, hc, hΓS v hv c hc ⟨⟨hxK, mem_ball.1 hxv⟩, hxc⟩⟩⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
