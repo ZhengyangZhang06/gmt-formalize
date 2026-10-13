@@ -451,6 +451,226 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.5** (codimension one, oriented normal frame): for a unit vector `ν ∈ ℝ^{n+1}`,
+`n ≥ 1`, some orthonormal basis `σ` of `ν^⊥` has `det[ν, σ] = −1`, where `[ν, σ]` is the matrix
+with columns `ν, σ₀, …, σₙ₋₁`.  For an orthonormal basis `τ` of `ν^⊥`, `W = [ν, τ]` has
+orthonormal columns, so `WᵀW = 1` and `d = det W` has `d² = 1`; `σ` replaces `τ₀` by `−d τ₀`,
+which keeps the frame orthonormal with the same span and gives `det[ν, σ] = −d² = −1`. -/
+theorem Submission.codim1_lur_no_oriented_normal_frame : ∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r) = -1 := by
+  intro n ν hn hν
+  -- `Q = ν^⊥` has dimension `n`
+  have hν0 : ν ≠ 0 := by
+    rintro rfl
+    simp at hν
+  have : Fact (Module.finrank ℝ (Euclid (n + 1)) = n + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hQn : Module.finrank ℝ (Submodule.span ℝ {ν})ᗮ = n :=
+    Submodule.finrank_orthogonal_span_singleton hν0
+  -- an orthonormal basis `τ` of `Q` indexed by `Fin n`: it spans `Q` and is orthogonal to `ν`
+  let b : OrthonormalBasis (Fin n) ℝ (Submodule.span ℝ {ν})ᗮ :=
+    (stdOrthonormalBasis ℝ (Submodule.span ℝ {ν})ᗮ).reindex (finCongr hQn)
+  let τ : Fin n → Euclid (n + 1) := fun k => (b k : Euclid (n + 1))
+  have hτo : Orthonormal ℝ τ :=
+    b.orthonormal.comp_linearIsometry (Submodule.span ℝ {ν})ᗮ.subtypeₗᵢ
+  have hτs : Submodule.span ℝ (Set.range τ) = (Submodule.span ℝ {ν})ᗮ := by
+    have hr : Set.range τ = (Submodule.span ℝ {ν})ᗮ.subtype '' Set.range b := by
+      rw [← Set.range_comp]
+      rfl
+    have hb : Submodule.span ℝ (Set.range b) = ⊤ := by
+      rw [← b.coe_toBasis]
+      exact b.toBasis.span_eq
+    rw [hr, Submodule.span_image, hb, Submodule.map_top, Submodule.range_subtype]
+  have hτν : ∀ k, inner ℝ ν (τ k) = 0 := fun k =>
+    Submodule.mem_orthogonal_singleton_iff_inner_right.mp (b k).2
+  -- `u = (ν, τ₀, …, τₙ₋₁)` is orthonormal
+  let u : Fin (n + 1) → Euclid (n + 1) := Fin.cons ν τ
+  have hu : Orthonormal ℝ u := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    induction i using Fin.cases with
+    | zero =>
+      induction j using Fin.cases with
+      | zero => simp [u, hν]
+      | succ j => simp [u, hτν, (Fin.succ_ne_zero j).symm]
+    | succ i =>
+      induction j using Fin.cases with
+      | zero => simp [u, real_inner_comm, hτν, Fin.succ_ne_zero]
+      | succ j => simp [u, (orthonormal_iff_ite.mp hτo) i j]
+  -- `W = [ν, τ]` has `WᵀW = 1`, so `d = det W` satisfies `d * d = 1`
+  let W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ := Matrix.of fun r c => u c r
+  have hWW : W.transpose * W = 1 := by
+    ext c c'
+    rw [Matrix.mul_apply, Matrix.one_apply, ← (orthonormal_iff_ite.mp hu) c c']
+    simp [W, PiLp.inner_apply, mul_comm]
+  set d := W.det with hd_def
+  have hd : d * d = 1 := by
+    calc d * d = (W.transpose * W).det := by rw [Matrix.det_mul, Matrix.det_transpose]
+      _ = 1 := by rw [hWW, Matrix.det_one]
+  -- `σ` replaces `τ i₀` by `(-d) • τ i₀` (`i₀ = 0`, as `n ≥ 1`)
+  let i0 : Fin n := ⟨0, hn⟩
+  let σ : Fin n → Euclid (n + 1) := Function.update τ i0 ((-d) • τ i0)
+  have hσo : Orthonormal ℝ σ := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    have hτ := orthonormal_iff_ite.mp hτo
+    by_cases hi : i = i0 <;> by_cases hj : j = i0
+    · subst hi hj
+      simp only [σ, Function.update_self, real_inner_smul_left, real_inner_smul_right, hτ,
+        ↓reduceIte, mul_one]
+      linear_combination hd
+    · subst hi
+      simp [σ, real_inner_smul_left, Function.update_of_ne hj, hτ, Ne.symm hj]
+    · subst hj
+      simp [σ, real_inner_smul_right, hτ, hi]
+    · simp [σ, Function.update_of_ne hi, Function.update_of_ne hj, hτ]
+  have hσs : Submodule.span ℝ (Set.range σ) = Submodule.span ℝ (Set.range τ) := by
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      by_cases hi : i = i0
+      · subst hi
+        simp only [σ, Function.update_self]
+        exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i0, rfl⟩)
+      · simp only [σ, Function.update_of_ne hi]
+        exact Submodule.subset_span ⟨i, rfl⟩
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      by_cases hi : i = i0
+      · subst hi
+        have h : τ i0 = (-d) • σ i0 := by
+          simp only [σ, Function.update_self, smul_smul, neg_mul_neg, hd, one_smul]
+        rw [h]
+        exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i0, rfl⟩)
+      · have h : τ i = σ i := by simp only [σ, Function.update_of_ne hi]
+        rw [h]
+        exact Submodule.subset_span ⟨i, rfl⟩
+  refine ⟨σ, hσo, hσs.trans hτs, ?_⟩
+  -- `[ν, σ]` is `W` with column `i₀ + 1` multiplied by `-d`, so its determinant is `-d * d`
+  have hM : (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r)
+      = W.updateCol i0.succ ((-d) • fun r => W r i0.succ) := by
+    ext r c
+    simp only [σ, Fin.cons_update, Matrix.of_apply, Matrix.updateCol_apply, Function.update_apply,
+      W, u]
+    split_ifs with h
+    · subst h
+      simp
+    · rfl
+  rw [hM, Matrix.det_updateCol_smul, Matrix.updateCol_eq_self, ← hd_def, neg_mul, hd]
+/-- **An `n`-covector on `ℝ^{n+1}` is a determinant with first column `φ_β`** (linear algebra
+for the normal orientation of `T = ∂[[E]]`, Simon §7.5).  With `b_j = β(e ∘ j.succAbove)` and
+`φ_β = ∑ⱼ (-1)ʲ b_j e_j`, `β a = det[φ_β, a]`, the matrix with columns `φ_β, a₀, …, a_{n-1}`.
+Both sides are alternating in `a`, so it suffices to compare them on injective basis tuples
+`e ∘ v` (`Module.Basis.ext_alternating`).  An injective `v` misses an index `m` and equals
+`m.succAbove ∘ σ` for a permutation `σ`, so both sides acquire the factor `sign σ`.  At the
+sorted tuple `e ∘ m.succAbove` only the column term `j = m` survives (for `j ≠ m`, `e_j` is
+repeated), and `det[e_m, e ∘ m.succAbove] = sign (cycleRange m)⁻¹ = (-1)ᵐ`, so both sides equal
+`(-1)ᵐ (-1)ᵐ b_m = b_m`. -/
+theorem Submission.codim1_lur_no_covector_eq_det_cons : ∀ (n : ℕ) (β : Covector (Euclid (n + 1)) n) (a : Fin n → Euclid (n + 1)), β a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons (∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • EuclideanSpace.single j (1 : ℝ)) a : Fin (n + 1) → Euclid (n + 1)) c r) := by
+  intro n β a
+  -- the standard basis `e` of `ℝ^{n+1}`, `e j = EuclideanSpace.single j 1`
+  set e : Module.Basis (Fin (n + 1)) ℝ (Euclid (n + 1)) :=
+    (EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis with he_def
+  have he : ∀ j, e j = EuclideanSpace.single j (1 : ℝ) := fun j => by
+    rw [he_def, OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+  set φ : Euclid (n + 1) := ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) *
+    β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • EuclideanSpace.single j (1 : ℝ)
+    with hφ
+  -- Step 0: the matrix determinant is `e.det` of the column family `[φ, a]`
+  have hdet : ∀ w : Fin (n + 1) → Euclid (n + 1),
+      Matrix.det (Matrix.of fun r c : Fin (n + 1) => w c r) = e.det w := by
+    intro w
+    rw [Module.Basis.det_apply]
+    congr 1
+  rw [hdet]
+  -- Step 1: both sides are alternating in `a`; compare `β` with `e.det.curryLeft φ`
+  suffices hFG : β.toAlternatingMap = e.det.curryLeft φ from DFunLike.congr_fun hFG a
+  refine Module.Basis.ext_alternating e fun v hv => ?_
+  -- Step 2: an injective `v` misses some index `m`
+  obtain ⟨m, hm⟩ : ∃ m : Fin (n + 1), ∀ l, v l ≠ m := by
+    by_contra h
+    have hs : Function.Surjective v := fun m => by
+      by_contra hm
+      exact h ⟨m, fun l hl => hm ⟨l, hl⟩⟩
+    have := Fintype.card_le_of_surjective v hs
+    simp at this
+  -- `v = m.succAbove ∘ σ` for a permutation `σ` of `Fin n`
+  choose ρ hρ using fun l => Fin.exists_succAbove_eq (hm l)
+  have hρinj : Function.Injective ρ := fun l l' h => hv (by rw [← hρ l, ← hρ l', h])
+  set σ : Equiv.Perm (Fin n) := Equiv.ofBijective ρ (Finite.injective_iff_bijective.mp hρinj)
+  have hvσ : (fun i => e (v i)) = (fun k => e (m.succAbove k)) ∘ σ := by
+    funext i
+    simp [σ, hρ]
+  -- both sides change by `sign σ`
+  rw [hvσ, AlternatingMap.map_perm, AlternatingMap.map_perm]
+  congr 1
+  -- Step 3: the sorted tuple `e ∘ m.succAbove`; only the column term `j = m` survives
+  have hcol : ∀ j : Fin (n + 1), e.det.curryLeft (e j) (fun k => e (m.succAbove k)) =
+      if j = m then (-1 : ℝ) ^ (m : ℕ) else 0 := by
+    intro j
+    rw [AlternatingMap.curryLeft_apply_apply]
+    split_ifs with hjm
+    · subst hjm
+      have hcyc : (Matrix.vecCons (e j) fun k => e (j.succAbove k)) = e ∘ ⇑j.cycleRange.symm := by
+        funext i
+        refine Fin.cases ?_ (fun k => ?_) i <;> simp
+      rw [hcyc, AlternatingMap.map_perm, Module.Basis.det_self, Equiv.Perm.sign_symm,
+        Fin.sign_cycleRange]
+      simp [Units.smul_def]
+    · obtain ⟨l, hl⟩ := Fin.exists_succAbove_eq hjm
+      refine AlternatingMap.map_eq_zero_of_eq _ _ (i := 0) (j := l.succ) ?_ (Fin.succ_ne_zero l).symm
+      simp [hl]
+  have hφe : φ = ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) *
+      β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • e j := by
+    simp only [hφ, he]
+  -- evaluation at a tuple is additive
+  have hsum : ∀ (g : Fin (n + 1) → Euclid (n + 1) [⋀^Fin n]→ₗ[ℝ] ℝ) (w : Fin n → Euclid (n + 1)),
+      (∑ j, g j) w = ∑ j, g j w := fun g w =>
+    map_sum (AddMonoidHom.mk' (fun f : Euclid (n + 1) [⋀^Fin n]→ₗ[ℝ] ℝ => f w) fun _ _ => rfl) g
+      Finset.univ
+  rw [hφe, map_sum, hsum]
+  simp only [map_smul, AlternatingMap.smul_apply, hcol, smul_eq_mul, mul_ite, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  simp only [ContinuousAlternatingMap.coe_toAlternatingMap, he]
+  rw [mul_comm, ← mul_assoc, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul]
+/-- **Normal decomposition of a column determinant** (the determinant step of the normal
+orientation of a codimension-one current).  If `‖ν‖ = 1` and `σ₀, …, σₙ₋₁` span `ν^⊥`, then
+`det[w, σ] = ⟨w, ν⟩ det[ν, σ]`.  The column determinant is the standard-basis determinant of
+`(x, σ)`, linear in the first column `x`, and `w - ⟨w, ν⟩ν ∈ ν^⊥ = span σ`, so the columns
+`(w - ⟨w, ν⟩ν, σ)` are linearly dependent and contribute `0`.  Orthonormality of `σ` is not
+used. -/
+theorem Submission.codim1_lur_no_det_cons_normal_decomp : ∀ (n : ℕ) (ν w : Euclid (n + 1)) (σ : Fin n → Euclid (n + 1)), ‖ν‖ = 1 → Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ → Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons w σ : Fin (n + 1) → Euclid (n + 1)) c r) = inner ℝ w ν * Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r) := by
+  intro n ν w σ hν hspan
+  -- `det[x, σ]` is the standard-basis determinant of the columns `(x, σ)`
+  have hD : ∀ x : Euclid (n + 1), Matrix.det (Matrix.of fun r c : Fin (n + 1) =>
+      (Fin.cons x σ : Fin (n + 1) → Euclid (n + 1)) c r) =
+        (PiLp.basisFun 2 ℝ (Fin (n + 1))).det (Matrix.vecCons x σ) := fun _ => rfl
+  -- `q = w - ⟨w, ν⟩ν` lies in `ν^⊥ = span σ`, so the columns `(q, σ)` are linearly dependent
+  have hq : w - inner ℝ w ν • ν ∈ Submodule.span ℝ (Set.range σ) := by
+    rw [hspan, Submodule.mem_orthogonal_singleton_iff_inner_right, inner_sub_right,
+      real_inner_smul_right, real_inner_self_eq_norm_sq, hν, real_inner_comm w ν]
+    ring
+  have h0 : (PiLp.basisFun 2 ℝ (Fin (n + 1))).det (Matrix.vecCons (w - inner ℝ w ν • ν) σ) = 0 :=
+    AlternatingMap.map_linearDependent _ _ fun h => (linearIndependent_finCons.mp h).2 hq
+  -- linearity in the first column along `w = q + ⟨w, ν⟩ν`
+  have hw : Matrix.vecCons w σ = Matrix.vecCons (w - inner ℝ w ν • ν + inner ℝ w ν • ν) σ := by
+    rw [sub_add_cancel]
+  rw [hD, hD, hw, AlternatingMap.map_vecCons_add, h0, zero_add, AlternatingMap.map_vecCons_smul,
+    smul_eq_mul]
+
+/-- **Orienting `∂[[E]]` by the unit normal** (Simon 7.5.2 (∗), the orientation computation of
+the local unit representation).  For a unit vector `ν ∈ ℝ^{n+1}`, `n ≥ 1`, some orthonormal frame
+`σ` of `ν^⊥` has `β(σ) = −⟨φ_β, ν⟩` for every `n`-covector `β`, where
+`φ_β = Σⱼ (−1)ʲ β(e_{j.succAbove 0}, …, e_{j.succAbove (n−1)}) eⱼ`: take `σ` with
+`det[ν, σ] = −1`; then `β(σ) = det[φ_β, σ] = ⟨φ_β, ν⟩ det[ν, σ]`. -/
+theorem Submission.codim1_lur_normal_covector_orientation : ∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ ∀ β : Covector (Euclid (n + 1)) n, β σ = -∑ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) ν := by
+  intro n ν hn hν
+  obtain ⟨σ, hσ, hspan, hdet⟩ := Submission.codim1_lur_no_oriented_normal_frame n ν hn hν
+  refine ⟨σ, hσ, hspan, fun β => ?_⟩
+  -- `β(σ) = det[φ_β, σ] = ⟨φ_β, ν⟩ det[ν, σ] = −⟨φ_β, ν⟩`, then expand `⟨φ_β, ν⟩` linearly
+  rw [Submission.codim1_lur_no_covector_eq_det_cons n β σ,
+    Submission.codim1_lur_no_det_cons_normal_decomp n ν _ σ hν hspan, hdet, sum_inner]
+  simp only [real_inner_smul_left]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

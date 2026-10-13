@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1.covector_det_rep-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–4 of the parent proof (multilinear expansion of β, Laplace expansion along the first column, and their combination), organized as a comparison of two alternating maps on basis tuples.
+
+Notation. x_r is the r-th coordinate of x ∈ ℝ^{n+1}, so (e_i)_r = 1 if r = i and 0 otherwise. For a map s : Fin n → Fin (n+1), e_s := (e_{s(0)}, …, e_{s(n−1)}); in particular e_{j.succAbove} := (e_{j.succAbove 0}, …, e_{j.succAbove(n−1)}), so b_j = β(e_{j.succAbove}). Write φ := φ_β; its j-th coordinate is φ_j = (−1)^j b_j. In Lean, e_j = EuclideanSpace.single j 1 = EuclideanSpace.basisFun (Fin (n+1)) ℝ j (EuclideanSpace.basisFun_apply) and [x, a] = Matrix.of fun r c => (Fin.cons x a : Fin (n + 1) → Euclid (n + 1)) c r; for v : Fin (n+1) → ℝ^{n+1}, det(Matrix.of fun r c => v c r) = det_std(v), the determinant with respect to the standard basis (Module.Basis.det_apply).
+
+1. (Laplace expansion; parent step 3.) For x ∈ ℝ^{n+1} and a ∈ (ℝ^{n+1})^n, expansion along column 0 (Matrix.det_succ_column_zero) gives
+   det[x, a] = Σ_{i=0}^{n} (−1)^i x_i det M_i(a),  where M_i(a)_{k,l} := (a_l)_{i.succAbove k} for k, l ∈ Fin n,
+   because the entry of [x, a] in row i and column 0 is x_i, and deleting row i and column 0 leaves the entries [x, a]_{i.succAbove k, l+1} = (a_l)_{i.succAbove k}.
+2. (Both sides are alternating n-linear in a.) F(a) := β(a) is alternating and n-linear by hypothesis. G(a) := det[φ, a] is n-linear in a, because a_l occupies only column l+1 and the determinant is linear in each column; it is alternating, because a_l = a_{l'} with l ≠ l' produces two equal columns and hence determinant 0. (In Lean, G = (det_std).curryLeft φ by AlternatingMap.curryLeft_apply_apply.)
+3. (Reduction to injective basis tuples; parent step 2.) Expanding a_l = Σ_r (a_l)_r e_r in every argument and using multilinearity, every n-linear map H satisfies H(a) = Σ_{s : Fin n → Fin (n+1)} (Π_l (a_l)_{s(l)}) H(e_s). Hence F = G as soon as F(e_s) = G(e_s) for every s : Fin n → Fin (n+1). If s is not injective, e_s has two equal entries, so F(e_s) = 0 = G(e_s) because F and G are alternating. Therefore it suffices to prove F(e_s) = G(e_s) for every injective s. (This reduction is Module.Basis.ext_alternating for the standard basis.)
+4. (An injective tuple is a permuted sorted tuple; parent step 2.) Let s : Fin n → Fin (n+1) be injective. Some j ∈ Fin (n+1) is not a value of s: otherwise s would map the n-element set Fin n onto the (n+1)-element set Fin (n+1), which is impossible (Fintype.card_le_of_surjective). For each l we have s(l) ≠ j, so s(l) = j.succAbove(ρ(l)) for some ρ(l) ∈ Fin n (Fin.exists_succAbove_eq). If ρ(l) = ρ(l'), then s(l) = s(l') and hence l = l'; so ρ is an injective self-map of the finite set Fin n and therefore a permutation of Fin n (Finite.injective_iff_bijective, Equiv.ofBijective). Consequently e_s = e_{j.succAbove} ∘ ρ.
+5. (Sign bookkeeping.) For every alternating map H and permutation ρ, H(v ∘ ρ) = sign(ρ)·H(v) (AlternatingMap.map_perm). Hence F(e_s) = sign(ρ)·F(e_{j.succAbove}) and G(e_s) = sign(ρ)·G(e_{j.succAbove}). Since F(e_{j.succAbove}) = b_j by definition, it remains to show G(e_{j.succAbove}) = det[φ, e_{j.succAbove}] = b_j for every j ∈ Fin (n+1).
+6. (The sorted tuple; parent steps 3–4.) Fix j and put a := e_{j.succAbove}. By step 1, det[φ, a] = Σ_i (−1)^i φ_i det M_i(a), where M_i(a)_{k,l} = (e_{j.succAbove l})_{i.succAbove k} equals 1 if i.succAbove k = j.succAbove l and 0 otherwise.
+   (a) i = j: j.succAbove is injective, so M_j(a)_{k,l} = 1 exactly when k = l; M_j(a) is the identity matrix and det M_j(a) = 1.
+   (b) i ≠ j: then i = j.succAbove(l₀) for some l₀ ∈ Fin n (Fin.exists_succAbove_eq). The entries of column l₀ of M_i(a) are (e_i)_{i.succAbove k}, and these are all 0 because i.succAbove k ≠ i for every k (Fin.succAbove_ne). A matrix with a zero column has determinant 0, so det M_i(a) = 0.
+   Therefore det[φ, a] = (−1)^j φ_j = (−1)^j (−1)^j b_j = ((−1)^2)^j b_j = b_j.
+   (Equivalent computation using linearity in column 0 instead of minors: det[φ, a] = Σ_i (−1)^i b_i det[e_i, a]. For i ≠ j, with l₀ as in (b), columns 0 and l₀+1 of [e_i, a] are both e_i, so det[e_i, a] = 0 (AlternatingMap.map_eq_zero_of_eq). For i = j, the tuple (e_j, e_{j.succAbove 0}, …, e_{j.succAbove(n−1)}) is the standard basis composed with the permutation π := (Fin.cycleRange j)^{−1}, because π(0) = j and π(l+1) = j.succAbove l (Fin.cycleRange_symm_zero, Fin.cycleRange_symm_succ); hence det[e_j, a] = sign(π)·det_std(e_0, …, e_n) = sign(Fin.cycleRange j) = (−1)^j (AlternatingMap.map_perm, Module.Basis.det_self, Equiv.Perm.sign_symm, Fin.sign_cycleRange). Either way det[φ, a] = (−1)^j(−1)^j b_j = b_j.)
+7. By steps 4–6, F(e_s) = G(e_s) for every injective s : Fin n → Fin (n+1); by step 3, F = G, i.e. β(a) = det[φ_β, a] for every a ∈ (ℝ^{n+1})^n. (For n = 0 the argument applies verbatim: the only s is the empty map, j = 0, ρ is the empty permutation, and det[φ] = φ_0 = b_0 = β of the empty tuple.) ∎
+
+## Key steps
+
+1. Laplace expansion along column 0: det[x, a] = Σ_i (−1)^i x_i det M_i(a) with M_i(a)_{k,l} = (a_l)_{i.succAbove k}; both β and a ↦ det[φ_β, a] are alternating n-linear in a.
+2. By multilinear expansion (Module.Basis.ext_alternating) it suffices to compare them on injective standard-basis tuples e_s; an injective s equals j.succAbove ∘ ρ for a missed index j and a permutation ρ, and both sides scale by sign ρ.
+3. At the sorted tuple e_{j.succAbove} only the i = j Laplace term survives, so det[φ_β, e_{j.succAbove}] = (−1)^j(−1)^j b_j = b_j = β(e_{j.succAbove}).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib rev-parse HEAD; git -C /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt rev-parse HEAD; sha256sum GMT/Ch07/Submission.lean <snapshot>/project/GMT/Ch07/Contract.lean`
+- `grep -rn 'Covector' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `python3 scans of dag.json: selected-node record (depth 5, status decomposing); lean_statements containing 'succAbove', 'Matrix.det' or 'Covector'+'Orthonormal'; lean_name/lean_statement lookup of codim1_lur_no_oriented_normal_frame, codim1_lur_no_covector_eq_det_cons, codim1_lur_no_det_cons_normal_decomp (no hits in 936 nodes)`
+- `git for-each-ref --format='%(objectname)' | sort -u | xargs -n 100 sh -c 'git grep -l -E "codim1_lur_no_(oriented_normal_frame|covector_eq_det_cons|det_cons_normal_decomp)" "$@" -- "GMT/*.lean"' _   (1662 tips, no match; sanity pattern dor_ims_massOn_le_measure does match)`
+- `rg -n 'theorem det_to_matrix_orthonormalBasis|theorem finrank_orthogonal_span_singleton|theorem Orthonormal.comp_linearIsometry|span_eq_top_of_card_eq_finrank|theorem linearIndependent_finCons|theorem cons_update|theorem map_update_smul|theorem orthonormal_iff_ite|def mk \(hon|theorem sign_cycleRange|theorem cycleRange_symm_zero|theorem cycleRange_symm_succ|theorem ext_alternating|theorem det_succ_column_zero|theorem map_perm|theorem map_linearDependent|theorem curryLeft_apply_apply|theorem finrank_euclideanSpace_fin' <snapshot>/mathlib/Mathlib`
+- `rg -n 'det_apply' <snapshot>/mathlib/Mathlib/LinearAlgebra/Determinant.lean; rg -n 'ext_alternating' <snapshot>/mathlib/Mathlib; rg -n 'lemma exists_succAbove_eq|theorem map_update_sum|map_vecCons_add|map_vecCons_smul' <snapshot>/mathlib/Mathlib; rg -n 'theorem det_updateCol_smul|theorem det_updateColumn_smul' <snapshot>/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean; rg -n 'det_to_matrix_orthonormalBasis_real|theorem coe_mk|theorem basisFun_apply' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `lean -DautoImplicit=false /tmp/no-split/{Types,Assembly,ChildA,ChildB,ChildC,All,Inst,Names}.lean with LEAN_PATH taken from .lake/build/lib/lean/GMT/Ch07/Submission.trace; #print axioms on the parent and the three children`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/LinearIndependent/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/GroupTheory/Perm/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/GroupTheory/Perm/Sign.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/SuccPred.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/tmp/no-split/Types.lean`
+- `/tmp/no-split/Assembly.lean`
+- `/tmp/no-split/ChildA.lean`
+- `/tmp/no-split/ChildB.lean`
+- `/tmp/no-split/ChildC.lean`
+- `/tmp/no-split/All.lean`
+- `/tmp/no-split/Inst.lean`
+- `/tmp/no-split/Names.lean`
+
+Pins match.
+- Snapshot manifest: project b4d606db and Mathlib 25730c7c, equal to workspace HEAD, .lake/packages/mathlib and the compiled lake-packages-25730c7c/mathlib.
+- SimonGMT is at 2b366308.
+- Submission.lean is byte-identical to the snapshot Contract.lean (sha256 e4148e7f…).
+
+Library.
+- Covector E n is E [⋀^Fin n]→L[ℝ] ℝ (SimonGMT Chapter06/Forms.lean:31).
+- Everything needed exists in the snapshot Mathlib:
+  - Matrix.det_succ_column_zero (Matrix/Determinant/Basic.lean:734) and Matrix.det_updateCol_smul (:404).
+  - Module.Basis.det_apply and det_self (Determinant.lean:607, 610).
+  - Module.Basis.ext_alternating, AlternatingMap.map_perm, map_linearDependent and map_vecCons_add/smul (Alternating/Basic.lean:907, 672, 784, 804/809); curryLeft_apply_apply (Alternating/Curry.lean:43).
+  - OrthonormalBasis.det_to_matrix_orthonormalBasis_real and OrthonormalBasis.mk (PiL2.lean:992, 712).
+  - Submodule.finrank_orthogonal_span_singleton (Projection/FiniteDimensional.lean:125); orthonormal_iff_ite and Orthonormal.comp_linearIsometry (Orthonormal.lean:82, 315).
+  - Fin.sign_cycleRange and cycleRange_symm_zero/succ (Perm/Fin.lean:225, 258, 262); Fin.exists_succAbove_eq (Data/Fin/SuccPred.lean:661); Fin.cons_update (Fin/Tuple/Basic.lean:143); linearIndependent_finCons (LinearIndependent/Lemmas.lean:677).
+- No Mathlib or SimonGMT lemma states the n-covector = det[φ_β, ·] identity or the oriented normal frame directly.
+
+DAG.
+- No node has any of the three child types. The closest accepted nodes (dgoj_covector_eq_det_mul_of_mem_span, cmr_cc_det_covector_exists, cmr_cc_det_covector_basis_kronecker) have different types, so nothing is reused.
+- The three new names appear in none of the 936 dag.json nodes and in no GMT/*.lean file at any of the 1662 ref tips.
+
+Lean.
+- Types.lean elaborates the three child types.
+- Assembly.lean proves the byte-identical frozen parent type from the three children taken as axioms. `#print axioms` gives only those three plus propext, Classical.choice and Quot.sound.
+- All.lean contains complete proofs of all three children and the parent; every one depends only on propext, Classical.choice and Quot.sound.
+- Inst.lean confirms the matrix layout and instances: the constructed object is a genuine Matrix (Fin (n+1)) (Fin (n+1)) ℝ, its det agrees with Module.Basis.det, the Laplace layout holds by rfl, `.ofLp` gives coordinates, and `inner ℝ` is the dot product.
+- Names.lean confirms that all 41 lemma names cited in the child proofs exist.
