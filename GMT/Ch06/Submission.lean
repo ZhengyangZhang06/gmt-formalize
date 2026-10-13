@@ -558,6 +558,193 @@ theorem Submission.ind_pi_constant_vector_current :
   rw [show ‖w‖ * (ε / (‖w‖ * μ.real K + 1)) * μ.real K =
       ε * (‖w‖ * μ.real K / (‖w‖ * μ.real K + 1)) by ring]
   exact mul_lt_of_lt_one_right hε ((div_lt_one hC).2 (lt_add_one _))
+/-- **Restriction of an integer multiplicity current to an open set** (Simon Ch. 6, (2.9) and 3.1,
+pp. 136, 146; used for the restrictions to open sets in the proof of 8.2, pp. 176–179).  If
+`X = τ(M, θ, ξ)` is integer multiplicity and `R = X ⌞ A` with `A` open, then
+`R = τ(M ∩ A, θ, ξ)` is integer multiplicity.  With smooth cutoffs `φ_j → 1_A` pointwise,
+`X(φ_j ω)` tends both to `∫_A ⟨ω, v⟩ dμ = R(ω)` and to `τ(M ∩ A, θ, ξ)(ω)` (dominated
+convergence); and the weighted tangent planes of `(M, θ)` at `x ∈ A` are those of `(M ∩ A, θ)`,
+since the blow-ups of `M` and `M ∩ A` agree near the origin. -/
+theorem Submission.ind_pi_restriction_open_im :
+    ∀ (P k : ℕ) (U A : Set (Eucl P)) (X R : GeometricCurrentOn U k), IsOpen U → IsOpen A →
+      IsIntegerMultiplicity X → IsRestriction X A R → IsIntegerMultiplicity R := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P k U A X R hU hA hX hR
+  obtain ⟨M, θ, ξ, hT, hθN, hXτ⟩ := hX
+  obtain ⟨hAm, μ, v, hrep, hRv⟩ := hR
+  -- `|⟨α, ξ(x)⟩| ≤ ‖α‖` for `Hᵏ⌞M`-a.e. `x`, since `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ` orthonormal.
+  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) k, ‖ξ x α‖ ≤ ‖α‖ := by
+    filter_upwards [hT.orients] with x hx α
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ α‖ ≤ ‖α‖ :=
+      calc ‖simpleNVector τ α‖ = ‖α τ‖ := rfl
+        _ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by simp [hτ.norm_eq_one]
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- `θ ⟨ω, ξ⟩` is `Hᵏ`-integrable on `M` for every test form `ω`: on `M ∩ spt ω` it is `θ` times
+  -- a measurable function bounded by `sup ‖ω‖`, and it vanishes on `M \ spt ω`.
+  have hint : ∀ ω : TestFormOn U k, IntegrableOn
+      (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x)) M
+      (μHE[k] : Measure (Eucl P)) := by
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Eucl P) k) := ContDiff.continuous ω.2.1.1
+    have hωs : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
+    obtain ⟨C, hC⟩ := hωc.bounded_above_of_compact_support hωs
+    have hle : (μHE[k] : Measure (Eucl P)).restrict
+        (M ∩ tsupport (ω : DifferentialForm (Eucl P) k)) ≤
+        (μHE[k] : Measure (Eucl P)).restrict M :=
+      Measure.restrict_mono Set.inter_subset_left le_rfl
+    have hmeas : AEStronglyMeasurable (fun x => ξ x ((ω : DifferentialForm (Eucl P) k) x))
+        ((μHE[k] : Measure (Eucl P)).restrict M) :=
+      (continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable
+        (hT.aestronglyMeasurable.prodMk hωc.aestronglyMeasurable)
+    have hK : IntegrableOn (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x))
+        (M ∩ tsupport (ω : DifferentialForm (Eucl P) k)) (μHE[k] : Measure (Eucl P)) := by
+      refine (hT.integrableOn _ hωs ω.2.2).mul_bdd (c := C) (hmeas.mono_measure hle) ?_
+      filter_upwards [ae_mono hle hunit] with x hx
+      exact (hx _).trans (hC x)
+    refine hK.of_ae_sdiff_eq_zero hT.nullMeasurableSet
+      (Filter.Eventually.of_forall fun x hx => ?_)
+    have hx' : x ∉ tsupport (ω : DifferentialForm (Eucl P) k) := fun h => hx.2 ⟨hx.1, h⟩
+    rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+  -- Smooth cutoffs `φ_j → 1_A` pointwise, `0 ≤ φ_j ≤ 1`: `φ_j = s(j f)` with `f ≥ 0` smooth,
+  -- `{f ≠ 0} = A`, and `s` the smooth transition (`s = 0` on `(-∞, 0]`, `s = 1` on `[1, ∞)`).
+  obtain ⟨φ, hφs, hφb, hφlim⟩ : ∃ φ : ℕ → Eucl P → ℝ,
+      (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (φ j)) ∧
+      (∀ j x, ‖φ j x‖ ≤ 1) ∧ ∀ (g : Eucl P → ℝ) (x : Eucl P),
+        Tendsto (fun j => φ j x * g x) atTop (𝓝 (A.indicator g x)) := by
+    obtain ⟨f, hfA, hfs, hfr⟩ := hA.exists_contDiff_support_eq (n := ⊤)
+    refine ⟨fun j x => Real.smoothTransition (j * f x), fun j =>
+      Real.smoothTransition.contDiff.comp (contDiff_const.mul hfs), fun j x => ?_, fun g x => ?_⟩
+    · rw [Real.norm_eq_abs, abs_of_nonneg (Real.smoothTransition.nonneg _)]
+      exact Real.smoothTransition.le_one _
+    by_cases hx : x ∈ A
+    · have hfx : 0 < f x := by
+        have hne : f x ≠ 0 := by rw [← Function.mem_support, hfA]; exact hx
+        exact lt_of_le_of_ne (hfr ⟨x, rfl⟩).1 (Ne.symm hne)
+      rw [Set.indicator_of_mem hx]
+      apply tendsto_const_nhds.congr'
+      filter_upwards [eventually_ge_atTop ⌈(f x)⁻¹⌉₊] with j hj
+      rw [Real.smoothTransition.one_of_one_le, one_mul]
+      calc (1 : ℝ) = (f x)⁻¹ * f x := (inv_mul_cancel₀ hfx.ne').symm
+        _ ≤ j * f x :=
+          mul_le_mul_of_nonneg_right ((Nat.le_ceil _).trans (by exact_mod_cast hj)) hfx.le
+    · have hfx : f x = 0 := by rw [← Function.notMem_support, hfA]; exact hx
+      rw [Set.indicator_of_notMem hx]
+      simp only [hfx, mul_zero, Real.smoothTransition.zero, zero_mul]
+      exact tendsto_const_nhds
+  -- `R = τ(M ∩ A, θ, ξ)`: with `ω_j = φ_j ω`, `X(ω_j) → ∫_A ⟨ω, v⟩ dμ = R(ω)` and
+  -- `X(ω_j) = τ(M, θ, ξ)(ω_j) → τ(M ∩ A, θ, ξ)(ω)` by dominated convergence.
+  have hRτ : ∀ ω : TestFormOn U k, R ω = tauAction k (M ∩ A) θ ξ ω := by
+    intro ω
+    have hωsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) k) := ω.2.1.1
+    have hωcs : HasCompactSupport (ω : DifferentialForm (Eucl P) k) := ω.2.1.2
+    have hωU : tsupport (ω : DifferentialForm (Eucl P) k) ⊆ U := ω.2.2
+    have hcut : ∀ j : ℕ, ∃ ω' : TestFormOn U k, (ω' : DifferentialForm (Eucl P) k) =
+        fun x => φ j x • (ω : DifferentialForm (Eucl P) k) x := by
+      intro j
+      have hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+          (fun x => φ j x • (ω : DifferentialForm (Eucl P) k) x) := (hφs j).smul hωsm
+      have hcs : HasCompactSupport (fun x => φ j x • (ω : DifferentialForm (Eucl P) k) x) :=
+        hωcs.mono fun x hx h0 => hx (by simp only [h0, smul_zero])
+      have hsU : tsupport (fun x => φ j x • (ω : DifferentialForm (Eucl P) k) x) ⊆ U :=
+        (tsupport_smul_subset_right _ _).trans hωU
+      exact ⟨⟨_, ⟨⟨hsm, hcs⟩, hsU⟩⟩, rfl⟩
+    choose ωj hωj using hcut
+    have hval : ∀ j x, (ωj j : DifferentialForm (Eucl P) k) x =
+        φ j x • (ω : DifferentialForm (Eucl P) k) x := fun j x => congrFun (hωj j) x
+    have h1 : Tendsto (fun j => X (ωj j)) atTop (𝓝 (R ω)) := by
+      rw [hRv ω, ← integral_indicator hAm]
+      have hX1 : (fun j => X (ωj j)) =
+          fun j => ∫ x, v x ((ωj j : DifferentialForm (Eucl P) k) x) ∂μ :=
+        funext fun j => (hrep (ωj j)).2
+      rw [hX1]
+      refine tendsto_integral_of_dominated_convergence
+        (fun x => ‖v x ((ω : DifferentialForm (Eucl P) k) x)‖)
+        (fun j => (hrep (ωj j)).1.aestronglyMeasurable) (hrep ω).1.norm
+        (fun j => Filter.Eventually.of_forall fun x => ?_)
+        (Filter.Eventually.of_forall fun x => ?_)
+      · rw [hval, map_smul, smul_eq_mul, norm_mul]
+        exact mul_le_of_le_one_left (norm_nonneg _) (hφb j x)
+      · refine (hφlim (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) x).congr
+          (fun j => ?_)
+        rw [hval, map_smul, smul_eq_mul]
+    have h2 : Tendsto (fun j => X (ωj j)) atTop (𝓝 (tauAction k (M ∩ A) θ ξ ω)) := by
+      have hX2 : (fun j => X (ωj j)) = fun j => ∫ x in M,
+          θ x * ξ x ((ωj j : DifferentialForm (Eucl P) k) x) ∂(μHE[k] : Measure (Eucl P)) :=
+        funext fun j => hXτ (ωj j)
+      rw [hX2, tauAction, ← setIntegral_indicator hAm]
+      refine tendsto_integral_of_dominated_convergence
+        (fun x => ‖θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x)‖)
+        (fun j => (hint (ωj j)).aestronglyMeasurable) (hint ω).norm
+        (fun j => Filter.Eventually.of_forall fun x => ?_)
+        (Filter.Eventually.of_forall fun x => ?_)
+      · rw [hval, map_smul, smul_eq_mul, mul_left_comm, norm_mul]
+        exact mul_le_of_le_one_left (norm_nonneg _) (hφb j x)
+      · refine (hφlim (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x)) x).congr
+          (fun j => ?_)
+        rw [hval, map_smul, smul_eq_mul, mul_left_comm]
+    exact tendsto_nhds_unique h1 h2
+  -- Locality of weighted tangent planes (Simon Ch. 3, 1.7): for `x ∈ A`, if `g = 0` off
+  -- `B_ρ(0)` and `B_δ(x) ⊆ A`, then for `0 < r < δ / ρ` the blow-up integrands vanish off
+  -- `W = η_{x,r}(A)`, and `W ∩ η_{x,r}(M) = W ∩ η_{x,r}(M ∩ A)`.
+  have htan : ∀ x ∈ A, ∀ L : Submodule ℝ (Eucl P),
+      HasWeightedApproximateTangentSpaceAt k M θ x L →
+        HasWeightedApproximateTangentSpaceAt k (M ∩ A) θ x L := by
+    intro x hxA L hL
+    refine ⟨hL.1, fun g => (hL.2 g).congr' ?_⟩
+    obtain ⟨ρ, hρ, hgρ⟩ := g.hasCompactSupport.exists_pos_le_norm
+    obtain ⟨δ, hδ, hδA⟩ := Metric.isOpen_iff.mp hA x hxA
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hρ)] with r hr
+    obtain ⟨hr0, hrρ⟩ := hr
+    have hcont : Continuous fun y : Eucl P => x + r • y :=
+      continuous_const.add (continuous_const_smul r)
+    set W : Set (Eucl P) := (fun y => x + r • y) ⁻¹' A with hW
+    have hWm : MeasurableSet W := (hA.preimage hcont).measurableSet
+    have hvan : ∀ y, y ∉ W → g y * θ (x + r • y) = 0 := by
+      intro y hy
+      have hgy : g y = 0 := by
+        apply hgρ
+        have h1 : x + r • y ∉ ball x δ := fun h => hy (hδA h)
+        rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+          abs_of_pos hr0, not_lt] at h1
+        rw [lt_div_iff₀ hρ] at hrρ
+        exact le_of_lt (lt_of_mul_lt_mul_left (hrρ.trans_le h1) hr0.le)
+      rw [hgy, zero_mul]
+    have hcutW : ∀ S : Set (Eucl P),
+        ∫ y in blowUpMap x r '' S, g y * θ (x + r • y) ∂(μHE[k] : Measure (Eucl P)) =
+          ∫ y in W ∩ blowUpMap x r '' S, g y * θ (x + r • y) ∂(μHE[k] : Measure (Eucl P)) := by
+      intro S
+      rw [← Measure.restrict_restrict hWm, setIntegral_eq_integral_of_forall_compl_eq_zero hvan]
+    have hset : W ∩ blowUpMap x r '' M = W ∩ blowUpMap x r '' (M ∩ A) := by
+      ext y
+      constructor
+      · rintro ⟨hyW, z, hzM, rfl⟩
+        refine ⟨hyW, z, ⟨hzM, ?_⟩, rfl⟩
+        have hz : x + r • blowUpMap x r z = z := by
+          simp only [blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul, add_sub_cancel]
+        have hzW : x + r • blowUpMap x r z ∈ A := hyW
+        rwa [hz] at hzW
+      · rintro ⟨hyW, z, ⟨hzM, -⟩, rfl⟩
+        exact ⟨hyW, z, hzM, rfl⟩
+    rw [hcutW M, hcutW (M ∩ A), hset]
+  -- `(M ∩ A, θ, ξ)` is a rectifiable triple with integer multiplicity representing `R`.
+  refine ⟨M ∩ A, θ, ξ, ⟨Set.inter_subset_left.trans hT.subset,
+    hT.nullMeasurableSet.inter hAm.nullMeasurableSet,
+    hT.countablyRectifiable.mono Set.inter_subset_left,
+    fun x hx => hT.pos x hx.1,
+    fun K hK hKU => (hT.integrableOn K hK hKU).mono_set
+      (Set.inter_subset_inter_left K Set.inter_subset_left),
+    hT.aestronglyMeasurable.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl),
+    ?_⟩, fun x hx => hθN x hx.1, hRτ⟩
+  filter_upwards [ae_restrict_of_ae_restrict_of_subset Set.inter_subset_left hT.orients,
+    ae_restrict_of_ae_restrict_of_subset Set.inter_subset_right (ae_restrict_mem hAm)]
+    with x hx hxA
+  obtain ⟨τ, hτ, hτL, hξ⟩ := hx
+  exact ⟨τ, hτ, htan x hxA _ hτL, hξ⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
