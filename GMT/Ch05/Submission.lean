@@ -770,6 +770,20 @@ theorem exists_smooth_cutoff_half_ball_grad_le : ∀ (m : ℕ) (ξ : Rn m) (ρ :
   · -- The profile is `3`-Lipschitz, so `|Dζ(x)| ≤ 3/ρ`.
     have h := Submission.norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφ_lip x
     rwa [NNReal.coe_ofNat] at h
+/-- Simon Ch. 5, proof of Theorem 4.5, step (1a): the weight `μ_V = (Hⁿ ⌞ M) ⌞ θ` of a
+rectifiable varifold is concentrated on `spt V = U ∩ spt μ_V`. The support of a measure on the
+second countable space `ℝ^{n+ℓ}` is conull (`Measure.support_mem_ae`), and `μ_V ≪ Hⁿ ⌞ M`
+(`withDensity_absolutelyContinuous`), where `Hⁿ ⌞ M` is concentrated on the `Hⁿ`-null-measurable
+carrier `M ⊆ U` (`ae_restrict_mem₀`). -/
+theorem tdo_ghe_ae_mem_support : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∀ᵐ x ∂V.weight, x ∈ V.support := by
+  intro n ℓ U V
+  -- `μ_V`-a.e. point lies in `spt μ_V`
+  have h1 : ∀ᵐ x ∂V.weight, x ∈ V.weight.support := Measure.support_mem_ae
+  -- `μ_V`-a.e. point lies in `M`, since `Hⁿ ⌞ M`-a.e. point does and `μ_V ≪ Hⁿ ⌞ M`
+  have h2 : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  filter_upwards [h1, h2] with x hx1 hx2
+  exact ⟨V.carrier_subset hx2, hx1⟩
 
 end Submission
 
