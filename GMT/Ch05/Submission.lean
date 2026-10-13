@@ -4926,6 +4926,176 @@ theorem dohr_eb_schauder_interior_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α
             (Real.rpow_nonneg (norm_nonneg _) _)
           exact le_add_of_nonneg_left (inv_nonneg.2 hR.le)
 
+/-- **`C^{2,α}` regularity of `C^{1,α}` weak solutions of an Euler–Lagrange system** (first step
+of the elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, p. 128; [GM] Proposition 8.6
+and Theorem 5.19).  Let `Ψ` be smooth with `λ‖Q‖² ≤ D²Ψ(P)[Q, Q]` for `‖P‖ ≤ ε`, `g` be
+`C^{0,α}_loc(U)` and `u ∈ C^{1,α}_loc(U)` with `‖Du‖ ≤ ε` solve `div DΨ(Du) = g` weakly in the open
+set `U`.  Then `u ∈ C^{2,α}_loc(U)`.  The difference quotients `w_d = d⁻¹ (u(· + d e_k) − u)`
+solve linear systems with averaged coefficients that satisfy the hypotheses of the Schauder
+estimate uniformly in `d`; the resulting uniform `C^{1,α}` bounds pass to the limit `d → 0`, so
+every `D_k u` is `C^{1,α}_loc(U)`. -/
+theorem dohr_eb_el_c2alpha_regularity : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε : ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), 0 < lam → IsOpen U → ContDiff ℝ (⊤ : ℕ∞) Ψ → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → IsLocallyHolderCkα 1 α u U → (∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε) → IsLocallyHolderCkα 0 α g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → IsLocallyHolderCkα 2 α u U := by
+  intro n ℓ hn α hα0 hα1 Ψ lam ε U u g hlam hU hΨ hLeg hu hDu hg hweak
+  -- Step 0: `Ψ` is `C³`, `u` is `C¹` and `g` is continuous on `U`.
+  have hΨ3 : ContDiff ℝ 3 Ψ := hΨ.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hΨ2 : ContDiff ℝ 2 Ψ := hΨ.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hu1 : ContDiffOn ℝ 1 u U := by simpa using hu.1
+  have hg0 : ContinuousOn g U := by
+    have h0 : ContDiffOn ℝ 0 g U := by simpa using hg.1
+    exact contDiffOn_zero.mp h0
+  -- Step 0: the Hölder differences of `D¹u` and `D⁰g` are those of `Du` and `g`, since
+  -- `continuousMultilinearCurryFin1` and `continuousMultilinearCurryFin0` are linear isometries.
+  have hconv1 : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ 1 u x - iteratedFDeriv ℝ 1 u y‖ = ‖fderiv ℝ u x - fderiv ℝ u y‖ := by
+    intro x y
+    set c := continuousMultilinearCurryFin1 ℝ (Rn n) (Rn ℓ)
+    have hc : ∀ z, c (iteratedFDeriv ℝ 1 u z) = fderiv ℝ u z := by
+      intro z; ext v; simp [c, iteratedFDeriv_one_apply]
+    rw [← c.norm_map, c.map_sub, hc, hc]
+  have hconv0 : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ 0 g x - iteratedFDeriv ℝ 0 g y‖ = ‖g x - g y‖ := by
+    intro x y
+    set c := continuousMultilinearCurryFin0 ℝ (Rn n) (Rn ℓ)
+    have hc : ∀ z, c (iteratedFDeriv ℝ 0 g z) = g z := by
+      intro z; simp [c]
+    rw [← c.norm_map, c.map_sub, hc, hc]
+  -- Step 1: the bound `M_B` and the Lipschitz constant `L_B` of `D²Ψ` on the `ε`-ball.
+  obtain ⟨MB, LB, hMB0, hLB0, hMB, hLB⟩ := Submission.dohr_eb_elc2_hessian_bounds n ℓ Ψ hΨ3 ε
+  -- Steps 2–7: every partial derivative `D_k u = Du(·) e_k` is `C^{1,α}_loc(U)`.
+  have hcol : ∀ k : Fin n,
+      IsLocallyHolderCkα 1 α (fun x => fderiv ℝ u x (EuclideanSpace.single k (1 : ℝ))) U := by
+    intro k
+    set e : Rn n := EuclideanSpace.single k (1 : ℝ)
+    have he : ‖e‖ = 1 := by simp [e]
+    -- Step 7: it suffices to show that `D_k u` is `C¹` with `α`-Hölder derivative on a ball
+    -- around each point of `U`.
+    apply Submission.dohr_eb_elc2_local_to_global_holder n ℓ α _ U hα0 hU
+    intro xb hxb
+    -- Step 2: localization to `K₀ = B̄_{4R}(xb) ⊆ U`, where `Du` and `g` have the Hölder
+    -- constants `H1` and `H2`.
+    obtain ⟨r0, hr0, hr0U⟩ := Metric.isOpen_iff.mp hU xb hxb
+    set R := r0 / 5 with hR_def
+    have hR : 0 < R := by positivity
+    have hK0U : closedBall xb (4 * R) ⊆ U :=
+      (closedBall_subset_ball (by rw [hR_def]; linarith)).trans hr0U
+    obtain ⟨C1, hC1⟩ := hu.2 _ (isCompact_closedBall xb (4 * R)) hK0U
+    obtain ⟨C2, hC2⟩ := hg.2 _ (isCompact_closedBall xb (4 * R)) hK0U
+    set H1 := max C1 0
+    set H2 := max C2 0
+    have hH1 : ∀ x ∈ closedBall xb (4 * R), ∀ y ∈ closedBall xb (4 * R),
+        ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ H1 * ‖x - y‖ ^ α := by
+      intro x hx y hy
+      rw [← hconv1]
+      exact (hC1 x hx y hy).trans
+        (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
+    have hH2 : ∀ x ∈ closedBall xb (4 * R), ∀ y ∈ closedBall xb (4 * R),
+        ‖g x - g y‖ ≤ H2 * ‖x - y‖ ^ α := by
+      intro x hx y hy
+      rw [← hconv0]
+      exact (hC2 x hx y hy).trans
+        (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
+    -- Step 5: one constant `M` for all hypotheses of the Schauder estimate on `B_{2R}(xb)`, and
+    -- the Schauder constant `C`, independent of `d`.
+    set M := max (max MB (LB * H1)) (max H2 (max ε 0))
+    have hMB_M : MB ≤ M := le_max_of_le_left (le_max_left _ _)
+    have hLB_M : LB * H1 ≤ M := le_max_of_le_left (le_max_right _ _)
+    have hH2_M : H2 ≤ M := le_max_of_le_right (le_max_left _ _)
+    have hε_M : ε ≤ M := le_max_of_le_right (le_max_of_le_right (le_max_left _ _))
+    obtain ⟨C, hC⟩ := Submission.dohr_eb_schauder_interior_estimate n ℓ hn α hα0 hα1 lam M
+      (2 * R) hlam (by positivity)
+    -- For `|d| < R`, the segments `x + [0, d] e` with `x ∈ B_{2R}(xb)` lie in `K₀`.
+    have hseg : ∀ d : ℝ, |d| < R → ∀ x ∈ ball xb (2 * R), ∀ t ∈ Icc (0 : ℝ) 1,
+        x + (t * d) • e ∈ closedBall xb (4 * R) := by
+      intro d hd x hx t ht
+      rw [mem_closedBall, dist_eq_norm]
+      rw [mem_ball, dist_eq_norm] at hx
+      have h1 : ‖(t * d) • e‖ ≤ R := by
+        rw [norm_smul, he, mul_one, Real.norm_eq_abs, abs_mul, abs_of_nonneg ht.1]
+        calc t * |d| ≤ 1 * |d| := by gcongr; exact ht.2
+          _ ≤ R := by linarith
+      calc ‖x + (t * d) • e - xb‖ = ‖(x - xb) + (t * d) • e‖ := by congr 1; abel
+        _ ≤ ‖x - xb‖ + ‖(t * d) • e‖ := norm_add_le _ _
+        _ ≤ 4 * R := by linarith
+    -- Steps 3–5: the difference quotients `w_d = d⁻¹ (u(· + d e) − u)`, `0 < |d| < R`, are
+    -- bounded in `C^{1,α}(B_R(xb))` uniformly in `d`.
+    have hd_est : ∀ d : ℝ, d ≠ 0 → |d| < R →
+        (∀ x ∈ ball xb R, ‖d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)‖ ≤ C) ∧
+        (∀ x ∈ ball xb R, ∀ y ∈ ball xb R,
+          ‖d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x) -
+            d⁻¹ • (fderiv ℝ u (y + d • e) - fderiv ℝ u y)‖ ≤ C * ‖x - y‖ ^ α) := by
+      intro d hd0 hdR
+      have hsegK := hseg d hdR
+      have hsegU : ∀ x ∈ ball xb (2 * R), ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U :=
+        fun x hx t ht => hK0U (hsegK x hx t ht)
+      have hxK : ∀ x ∈ ball xb (2 * R), x ∈ closedBall xb (4 * R) := by
+        intro x hx
+        simpa using hsegK x hx 0 (by simp)
+      have hxdK : ∀ x ∈ ball xb (2 * R), x + d • e ∈ closedBall xb (4 * R) := by
+        intro x hx
+        simpa using hsegK x hx 1 (by simp)
+      -- Step 3, (H5)–(H7): `w_d` is `C¹` on `B_{2R}(xb)`, `Dw_d = d⁻¹ (Du(· + d e) − Du)`,
+      -- `‖w_d‖ ≤ ε` and `Dw_d` is `α`-Hölder.
+      obtain ⟨hw1, hwD, hwB, hwH⟩ := Submission.dohr_eb_elc2_dq_basic n ℓ u U (ball xb (2 * R))
+        (closedBall xb (4 * R)) e d ε H1 α hU hu1 hK0U hd0 hsegK (fun x hx => hDu x (hK0U hx))
+        hH1
+      -- Step 4, (H1)–(H3): the averaged coefficients `a_d(x) = ∫₀¹ D²Ψ(P_t(x)) dt`.
+      obtain ⟨a, ha_eq, ha1, ha2, ha3⟩ := Submission.dohr_eb_elc2_averaged_hessian n ℓ Ψ lam ε
+        MB LB H1 α (ball xb (2 * R)) (fderiv ℝ u) (fun x => fderiv ℝ u (x + d • e)) hΨ2 hLB0
+        hLeg hMB hLB (fun x hx => hDu x (hK0U (hxK x hx)))
+        (fun x hx => hDu _ (hK0U (hxdK x hx))) (fun x hx y hy => hH1 x (hxK x hx) y (hxK y hy))
+        (fun x hx y hy => by simpa using hH1 _ (hxdK x hx) _ (hxdK y hy))
+      -- Step 4, (H4): the averaged right-hand side `Φ_d(x)[P] = ⟪∫₀¹ g(x + t d e) dt, P e⟫`.
+      obtain ⟨Φ, hΦ_eq, hΦH⟩ := Submission.dohr_eb_elc2_averaged_forcing n ℓ α H2 d g
+        (ball xb (2 * R)) (closedBall xb (4 * R)) e hα0 hsegK hH2
+      -- Step 4, (H8): `w_d` solves the linear system with coefficients `a_d` and right side `Φ_d`.
+      have hweq := Submission.dohr_eb_elc2_dq_weak_equation n ℓ Ψ U (ball xb (2 * R)) u g e d
+        hΨ2 hU isOpen_ball hu1 hg0 hd0 hsegU hweak
+      -- Step 5: the Schauder estimate on `B_{2R}(xb)`.
+      have hS := hC xb a Φ (fun z => d⁻¹ • (u (z + d • e) - u z)) ha1
+        (fun x hx P Q => (ha2 x hx P Q).trans (by gcongr))
+        (fun x hx y hy P Q => (ha3 x hx y hy P Q).trans (by
+          rw [show LB * H1 * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ =
+              (LB * H1) * (‖x - y‖ ^ α * ‖P‖ * ‖Q‖) by ring,
+            show M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ = M * (‖x - y‖ ^ α * ‖P‖ * ‖Q‖) by ring]
+          gcongr))
+        (fun x hx y hy P => (hΦH x hx y hy P).trans (by rw [he, mul_one]; gcongr))
+        (fun x hx => (hwB x hx).trans (by rw [he, mul_one]; exact hε_M))
+        hw1 ⟨2 * |d|⁻¹ * H1, hwH⟩
+        (by
+          intro ζ hζ1 hζc hζs
+          have e1 : ∫ x in ball xb (2 * R),
+                a x (fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x) (fderiv ℝ ζ x) =
+              ∫ x in ball xb (2 * R), (∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ)
+                (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x))
+                (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x)) := by
+            apply setIntegral_congr_fun measurableSet_ball
+            intro x hx
+            simp only [hwD x hx, ha_eq]
+          have e2 : ∫ x in ball xb (2 * R), Φ x (fderiv ℝ ζ x) =
+              ∫ x in ball xb (2 * R), inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e))
+                (fderiv ℝ ζ x e) := by
+            simp only [hΦ_eq]
+          rw [e1, e2]
+          exact hweq ζ hζ1 hζc hζs)
+      rw [show 2 * R / 2 = R by ring] at hS
+      refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+      · rw [← hwD x (ball_subset_ball (by linarith) hx)]
+        exact hS.1 x hx
+      · rw [← hwD x (ball_subset_ball (by linarith) hx),
+          ← hwD y (ball_subset_ball (by linarith) hy)]
+        exact hS.2 x hx y hy
+    -- Step 6: letting `d → 0`, `D_k u` is `C¹` on `B_R(xb)` with `α`-Hölder derivative.
+    have hu2R : ContDiffOn ℝ 1 u (ball xb (R + R * ‖e‖)) := by
+      rw [he, mul_one]
+      exact hu1.mono ((ball_subset_ball (by linarith)).trans (ball_subset_closedBall.trans hK0U))
+    obtain ⟨hv1, -, hvH⟩ := Submission.dohr_eb_difference_quotient_limit n ℓ α u xb e R R C hα0
+      hα1.le hR hu2R (fun d hd0 hdR => (hd_est d hd0 hdR).1)
+      (fun d hd0 hdR => (hd_est d hd0 hdR).2)
+    exact ⟨R, hR, hv1, C, hvH⟩
+  -- Step 8: `u` is `C¹` on `U` and every `D_k u` is `C^{1,α}_loc(U)`, so `u` is `C^{2,α}_loc(U)`.
+  exact (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) 1 α u U hU).2.2
+    ⟨hu1, fun k => ⟨(hcol k).1, (hcol k).2⟩⟩
+
 end Submission
 
 end GMT.Ch05
