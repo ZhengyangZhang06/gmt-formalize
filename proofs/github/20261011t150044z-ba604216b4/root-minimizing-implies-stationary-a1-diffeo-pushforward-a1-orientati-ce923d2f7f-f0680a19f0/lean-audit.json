@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8fada039ba3afb07737f2851d72f39e7554fb982bc0c2b4a5970bc0b5ed43f58",
+  "git_delta": {
+    "base_commit": "2fec20fb9fb29b5d8dcdf037571adcfd8909cc17",
+    "candidate_commit": "93ec31ab686fa25a7af150db4f17b9bcc26da7df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_exists_orthonormal_frame_det_gram",
+    "diff_sha256": "536e84e58318c5bcae1c61b39cda922fb3918c6ee1d3e1ff1cbe05ad6036f509",
+    "source_sha256": "b1319693a75c282d183bceee152ccbe5b4799234b5dfa8297b8e1a546abddcb0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_exists_orthonormal_frame_det_gram",
+      "statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), LinearIndependent ℝ v → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Submodule.span ℝ (Set.range v) ∧ Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) = Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) ^ 2 ∧ Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) ≠ 0 ∧ |Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j))| ≤ ∏ i, ‖v i‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
