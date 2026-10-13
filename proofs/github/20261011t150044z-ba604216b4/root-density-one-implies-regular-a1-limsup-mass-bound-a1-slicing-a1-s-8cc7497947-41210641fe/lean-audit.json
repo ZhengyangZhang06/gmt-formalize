@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3c2a921ae93ba9b2c2dbb790ec991c4b608252cef404f0e8c28ce0f055d5a111",
+  "git_delta": {
+    "base_commit": "f13fa77ec4297af3973af71cd259ac1c00b5895f",
+    "candidate_commit": "0fdebb686481baa56fdb58436fae14ed344d35e0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_c1c_lipschitz_range_c1_pieces",
+    "diff_sha256": "1530374eea936c2423c79c579e67446416f545e7bc640b6e107936dfb27b2821",
+    "source_sha256": "db585bf2778e08513efdabc36bb44b820f175f7ef44a95a965671eadc0fd8a17",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_c1c_lipschitz_range_c1_pieces",
+      "statement": "∀ (P m : ℕ) (F : Euclid m → Euclid P) (K : NNReal), LipschitzWith K F → (∀ (u : Euclid m → ℝ) (L : NNReal), LipschitzWith L u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid m → ℝ, ContDiff ℝ 1 g ∧ volume {y | u y ≠ g y} < ε) → ∃ (E : Set (Euclid P)) (G : ℕ → Euclid m → Euclid P), μHE[m] E = 0 ∧ (∀ i, ContDiff ℝ 1 (G i)) ∧ Set.range F ⊆ E ∪ ⋃ i, Set.range (G i)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
