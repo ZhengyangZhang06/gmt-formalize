@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp <snapshot>/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (IDENTICAL)",
+        "rg -n 'theorem Integrable.exists_hasCompactSupport_lintegral_sub_le' mathlib/Mathlib",
+        "rg -n 'theorem Continuous.exists_contDiff_approx ' mathlib/Mathlib",
+        "rg -n 'theorem dist_normed_convolution_le|theorem _root_.HasCompactSupport.contDiff_convolution_left' mathlib/Mathlib",
+        "rg -n 'theorem support_convolution_subset|HasCompactSupport.convolution' mathlib/Mathlib/Analysis/Convolution.lean",
+        "rg -n 'theorem opNorm_le_bound|theorem map_eq_zero_of_not_injective|lemma Integrable.of_bound' mathlib/Mathlib",
+        "rg -n 'theorem exists_compact_between|theorem exists_continuous_one_zero_of_isCompact|exists_cthickening_subset_open|uniformContinuous_of_continuous' mathlib/Mathlib",
+        "rg -n 'theorem norm_sub_sq_real|theorem real_inner_le_norm|theorem norm_apply_le|theorem EuclideanSpace.norm_eq|theorem basisFun_repr|protected def equiv' mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "rg -n 'Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "rg -n 'theorem map_sum|theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'def apply' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "rg -n 'theorem nonneg_normed|theorem contDiff_normed|theorem integral_normed|theorem support_normed_eq|theorem hasCompactSupport_normed' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "rg -ln 'covectorEuclideanNorm' project/ ; rg -n 'radial|retraction|max 1' project/GMT (no reusable project lemma; definition lives in simongmt Chapter06/Mass.lean)",
+        "grep -n 'covectorEuclideanNorm|massAdmissibleOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; grep -n 'abbrev Covector|abbrev DifferentialForm|def IsTestForm' .../Chapter06/Forms.lean",
+        "python3 -I scans of dag.json for lean_name and normalized lean_statement collisions with the five proposed children (final: 278 nodes, none) and for related nodes (dor_ims_sua_*, rsd_mw_exists_testForm_approx, covectorEuclideanNorm_gram_bounds)",
+        "grep of .swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean for the five proposed names (no hits) and for extra imports / helper modules",
+        "lake env lean /tmp/smooth-form-split/{Stmts,C13,C2,C4,C4conv,C5,Assembly,Full,Full2,Assembly2,Assembly2Base,Assembly2Exact}.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-6b0404974b/parent-child-handoff.json",
+        "/tmp/smooth-form-split/Full2.lean",
+        "/tmp/smooth-form-split/Assembly2Exact.lean",
+        "/tmp/smooth-form-split/C4conv.lean",
+        "/tmp/smooth-form-split/review/children2.json"
+      ],
+      "conclusion": "Snapshot and contract. The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Submission.lean. The snapshot project has no reusable lemma about covectorEuclideanNorm (only the Ch07 contract mentions it). The definition is in simongmt Chapter06/Mass.lean, which provides only _zero, _nonneg and _neg.\n\nMathlib support. The snapshot Mathlib supplies everything the children cite:\n- Integrable.exists_hasCompactSupport_lintegral_sub_le (ContinuousMapDense.lean:211; needs NormedSpace ℝ E but no separability of E).\n- The Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure instance (Regular.lean:1183).\n- Continuous.exists_contDiff_approx, which also gives support g ⊆ support f (Geometry/Manifold/SmoothApprox.lean:132).\n- Bump-convolution lemmas (BumpFunction/Convolution.lean:71, ContDiff/Convolution.lean:427, Convolution.lean:568/670).\n- ContinuousAlternatingMap.opNorm_le_bound, map_eq_zero_of_not_injective, map_sum and ContinuousAlternatingMap.apply.\n- ContinuousMultilinearMap.map_smul_univ.\n- EuclideanSpace.norm_eq, equiv and basisFun_repr; PiLp.norm_apply_le; norm_sub_sq_real and real_inner_le_norm.\n- exists_compact_between, exists_continuous_one_zero_of_isCompact, IsCompact.exists_cthickening_subset_open, HasCompactSupport.uniformContinuous_of_continuous and Integrable.of_bound.\nCompleteSpace and NormedSpace instances for Covector (Euclid P) n resolve. ContinuousMapDense and SmoothApprox are outside the contract import closure; other worktrees do add imports.\n\nReuse and collisions. No comparator-accepted declaration with an identical type exists to reuse. The near-duplicates found mid-session (dor_ims_sua_coeff_norm_rep, dor_ims_sua_mollify_unit_field) are only decomposing; they were avoided by restating the two affected children. Final scans found no name or statement collisions and no hits in the worktrees.\n\nLean checks. The five children are fully proved in Full2.lean using only standard axioms. The frozen parent type is proved from them plus regcomp_covector_eval_orthonormal_le with only the contract import (Assembly2Exact.lean). An independent reviewer re-ran these checks and accepted the revised split."
+    }
+  ],
+  "proof": "Source: step 0(d) of the parent proof of regcomp_exists_smooth_unit_form_approx. There the computation is carried out in the inner product space EuclideanSpace ℝ N with x := Φ(v), y := Φ(b); here it is stated for an arbitrary real inner product space E. Write ⟨·,·⟩ for the real inner product.\n\n1. (Case ‖x‖ ≤ 1.) Then max 1 ‖x‖ = 1, so (max 1 ‖x‖)⁻¹ • x = 1 • x = x and both sides are equal.\n\n2. (Case s := ‖x‖ > 1: expansion.) Then max 1 ‖x‖ = s and s > 0, and the claim reads ‖s⁻¹ • x − y‖ ≤ ‖x − y‖. By norm_sub_sq_real (‖a − b‖² = ‖a‖² − 2⟨a, b⟩ + ‖b‖²), norm_smul and inner_smul_left (with |s⁻¹| = s⁻¹ and s⁻¹·s = 1):\n ‖x − y‖² = s² − 2⟨x, y⟩ + ‖y‖²,\n ‖s⁻¹ • x − y‖² = (s⁻¹s)² − 2s⁻¹⟨x, y⟩ + ‖y‖² = 1 − 2s⁻¹⟨x, y⟩ + ‖y‖².\n\n3. (Difference.) Subtracting, ‖x − y‖² − ‖s⁻¹ • x − y‖² = s² − 1 − 2(1 − s⁻¹)⟨x, y⟩.\n\n4. (Sign.) By Cauchy–Schwarz (real_inner_le_norm) and ‖y‖ ≤ 1, ⟨x, y⟩ ≤ ‖x‖‖y‖ ≤ s. Since s > 1, s⁻¹ < 1 (inv_lt_one_of_one_lt₀), i.e. 1 − s⁻¹ > 0. Multiplying, 2(1 − s⁻¹)⟨x, y⟩ ≤ 2(1 − s⁻¹)s = 2s − 2. Hence the difference in step 3 is at least s² − 1 − (2s − 2) = (s − 1)² ≥ 0 (nlinarith with these facts closes this).\n\n5. (Conclusion.) Thus ‖s⁻¹ • x − y‖² ≤ ‖x − y‖², and as both norms are nonnegative, ‖s⁻¹ • x − y‖ ≤ ‖x − y‖ (sq_le_sq₀). ∎",
+  "key_steps": [
+    "If ‖x‖ ≤ 1 the retraction is the identity and equality holds.",
+    "If s = ‖x‖ > 1, expand both squared distances (norm_sub_sq_real): their difference is s² − 1 − 2(1 − 1/s)⟨x, y⟩.",
+    "Cauchy–Schwarz ⟨x, y⟩ ≤ s and 1 − 1/s > 0 give difference ≥ (s − 1)² ≥ 0; take square roots."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
