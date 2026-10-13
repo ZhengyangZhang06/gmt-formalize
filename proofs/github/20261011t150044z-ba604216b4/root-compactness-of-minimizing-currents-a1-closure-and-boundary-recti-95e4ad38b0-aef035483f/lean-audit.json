@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf718a5edd23ebb0da6af705b35a9d35568c37748832d2f55c82ccab5fee2e65",
+  "git_delta": {
+    "base_commit": "39881d282394c0ba4811cc49ef9a6e725035cc44",
+    "candidate_commit": "a89c3c3c84913a69c16dd030a9b91c2338b76b79",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_ud_isClosed_closedBall_mass_ge",
+    "diff_sha256": "f86520debe0349be967c7e337ee68a591ffec5280f31cae7af1e84748042135d",
+    "source_sha256": "8ea0ba6e88c4a861d078d53c2bbf5234374560fa6fb89af2e707c534bb4b4380",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_ud_isClosed_closedBall_mass_ge",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) [IsFiniteMeasure μ] (ρ : ℝ) (s : ℝ≥0∞), IsClosed {y : Euclid P | s ≤ μ (closedBall y ρ)}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

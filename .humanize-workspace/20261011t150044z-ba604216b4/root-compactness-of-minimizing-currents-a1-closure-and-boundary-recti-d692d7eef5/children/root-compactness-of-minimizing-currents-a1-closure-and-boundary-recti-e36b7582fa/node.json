@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1.plane_ball-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1",
+  "depth": 5,
+  "title": "Hⁿ-measure of a closed ball in an n-dimensional linear subspace",
+  "statement": "Let P, n ∈ ℕ and let Q be a linear subspace of ℝ^P with dim Q = n. Then for every real r ≥ 0, Hⁿ(Q ∩ B̄_r(0)) = rⁿ ωₙ, where Hⁿ = μHE[n] (Mathlib's Euclidean Hausdorff measure) and ωₙ = unitBallVolume n = Lⁿ(B₁(0) ⊂ ℝⁿ); in ℝ≥0∞: μHE[n](Q ∩ closedBall 0 r) = ENNReal.ofReal (rⁿ) · unitBallVolume n.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ r : ℝ, 0 ≤ r → μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 r) = ENNReal.ofReal (r ^ n) * unitBallVolume n",
+  "lean_name": "cbrr_tcd_plane_closedBall_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e36b7582fa-a1"
+}
