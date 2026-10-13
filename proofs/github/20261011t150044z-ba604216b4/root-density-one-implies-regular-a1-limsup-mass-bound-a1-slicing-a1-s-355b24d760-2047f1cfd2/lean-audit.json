@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30673278909821f1ba640d0ab816188264f8609c5749f76f39b667869ca073e1",
+  "git_delta": {
+    "base_commit": "f13fa77ec4297af3973af71cd259ac1c00b5895f",
+    "candidate_commit": "d068a25ddad0e6f63c4492363c7ae17481c7084f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_c1c_injOn_closedBall_chart",
+    "diff_sha256": "99d4ed08d3747f9c7c3274f05f0bcf4b057c42e3a44c238c905b7138f85e0614",
+    "source_sha256": "3e7629adbc6ca6e2029af9b61c9162fac505290707f5d19e95613f93a9df2506",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_c1c_injOn_closedBall_chart",
+      "statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m) (r : ℝ), ContDiff ℝ 1 G → Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective (fderiv ℝ G z)) → IsEmbeddedSubmanifold 1 m (G '' Metric.ball x r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
