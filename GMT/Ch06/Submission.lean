@@ -384,6 +384,42 @@ theorem Submission.deformation_ipl_mwc_mil_abs_det_le :
     _ = (n.factorial : ℝ) * c ^ n := by
         simp [Fintype.card_perm]
 
+/-- **Dominated convergence for `h_m · det A_m`.**  If the entries of `A_m(x)` are bounded by
+`C`, `|h_m| ≤ H` with `H` integrable for all large `m`, and `h_m → h₀`, `A_m → A₀` entrywise
+`μ`-a.e., then `∫ h_m det A_m dμ → ∫ h₀ det A₀ dμ`.  Dominated convergence with the bound
+`H · n! Cⁿ` (`deformation_ipl_mwc_mil_abs_det_le`); `det A_m` is a.e.-strongly measurable by
+the Leibniz formula and `det` is continuous in the entries. -/
+theorem Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (n : ℕ) (C : ℝ) (A : ℕ → Fin n → Fin n → α → ℝ) (A₀ : Fin n → Fin n → α → ℝ) (h : ℕ → α → ℝ) (h₀ H : α → ℝ), (∀ m t s, AEStronglyMeasurable (A m t s) μ) → (∀ m, AEStronglyMeasurable (h m) μ) → Integrable H μ → (∀ m t s x, |A m t s x| ≤ C) → (∀ᶠ m in atTop, ∀ x, |h m x| ≤ H x) → (∀ᵐ x ∂μ, Tendsto (fun m => h m x) atTop (𝓝 (h₀ x))) → (∀ᵐ x ∂μ, ∀ t s, Tendsto (fun m => A m t s x) atTop (𝓝 (A₀ t s x))) → Tendsto (fun m => ∫ x, h m x * Matrix.det (Matrix.of fun t s => A m t s x) ∂μ) atTop (𝓝 (∫ x, h₀ x * Matrix.det (Matrix.of fun t s => A₀ t s x) ∂μ)) := by
+  intro α _ μ n C A A₀ h h₀ H hAm hhm hH hAb hhb hhl hAl
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun x => H x * ((n.factorial : ℝ) * C ^ n)) ?_ ?_ (hH.mul_const _) ?_
+  · -- Leibniz: `det A_m(x) = ∑_σ sgn σ ∏_i A_m(σ i, i, x)`, finite sums and products of
+    -- a.e.-strongly measurable functions.
+    refine Eventually.of_forall fun m => (hhm m).mul ?_
+    have hdet : (fun x => Matrix.det (Matrix.of fun t s => A m t s x)) =
+        fun x => ∑ σ : Equiv.Perm (Fin n), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, A m (σ i) i x := by
+      funext x
+      rw [Matrix.det_apply]
+      refine Finset.sum_congr rfl fun σ _ => ?_
+      rw [Units.smul_def, zsmul_eq_mul]
+      rfl
+    rw [hdet]
+    refine Finset.aestronglyMeasurable_fun_sum _ fun σ _ => ?_
+    exact aestronglyMeasurable_const.mul
+      (Finset.aestronglyMeasurable_fun_prod _ fun i _ => hAm m _ _)
+  · -- `|h_m(x) det A_m(x)| ≤ H(x) · n! Cⁿ` for every `x`, once `|h_m| ≤ H`.
+    filter_upwards [hhb] with m hm
+    refine Eventually.of_forall fun x => ?_
+    rw [Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul (hm x)
+      (Submission.deformation_ipl_mwc_mil_abs_det_le n C _ fun t s => hAb m t s x)
+      (abs_nonneg _) ((abs_nonneg _).trans (hm x))
+  · -- Entrywise convergence gives `A_m(x) → A₀(x)` in the product topology; `det` is continuous.
+    filter_upwards [hhl, hAl] with x hx1 hx2
+    refine hx1.mul ?_
+    have hc : Continuous (Matrix.det : Matrix (Fin n) (Fin n) ℝ → ℝ) := continuous_id.matrix_det
+    exact (hc.tendsto _).comp (tendsto_pi_nhds.2 fun t => tendsto_pi_nhds.2 fun s => hx2 t s)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
