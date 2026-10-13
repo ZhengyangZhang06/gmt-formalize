@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1",
+  "depth": 5,
+  "title": "Dual coefficient norm on n-vectors: continuous, nonnegative, dominating, and attained on the unit covector ball",
+  "statement": "For all P, n ∈ ℕ there is a function N from n-vectors to ℝ with the following properties. Here n-vectors are the continuous linear functionals ζ on the space Λⁿ(ℝ^P) of n-covectors (MultiVector P n, with the operator-norm topology), and |α| = covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_{I(1)},…,e_{I(n)})²)^{1/2} with (e_i) the standard basis of ℝ^P. (i) N is continuous; (ii) N(ζ) ≥ 0 for every ζ; (iii) |ζ(α)| ≤ N(ζ)·|α| for every n-vector ζ and every n-covector α; (iv) for every n-vector ζ there is an n-covector β with |β| ≤ 1 and ζ(β) = N(ζ).",
+  "lean_statement": "∀ (P n : ℕ), ∃ N : MultiVector P n → ℝ, Continuous N ∧ (∀ ζ : MultiVector P n, 0 ≤ N ζ) ∧ (∀ (ζ : MultiVector P n) (α : Covector (Euclid P) n), |ζ α| ≤ N ζ * covectorEuclideanNorm α) ∧ (∀ ζ : MultiVector P n, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ β = N ζ)",
+  "lean_name": "cbr_ci_dr_multivector_dual_norm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8f5edb5104-a1"
+}
