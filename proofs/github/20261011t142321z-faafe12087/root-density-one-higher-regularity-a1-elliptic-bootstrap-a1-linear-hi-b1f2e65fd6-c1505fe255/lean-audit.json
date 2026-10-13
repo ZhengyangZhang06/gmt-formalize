@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "09060c5e9430941722fa26311ff59a4f1269b1896ec898c3faa5ca77d4d8e439",
+  "git_delta": {
+    "base_commit": "526e969d846ac441610902de957b9b8678de7b0f",
+    "candidate_commit": "3d75956a4ed0c83895af7a3c3fab247065bcd443",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_dqwe_fderiv_diff_quot",
+    "diff_sha256": "2a26922c83d9b2caa52662adfba16b2bf5c02649101c1763a0621d197f81c54a",
+    "source_sha256": "4640befbb93ecdad8e42f77d8b58c04dd7cce9767333c5878bccb8f2386f42c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_dqwe_fderiv_diff_quot",
+      "statement": "∀ (n ℓ : ℕ) (v : Rn n → Rn ℓ) (e x : Rn n) (d : ℝ), DifferentiableAt ℝ v x → DifferentiableAt ℝ v (x + d • e) → fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x = d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
