@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Convergence of superlevel-set measures at almost every level** (the "standard
+approximation argument" ending Simon's proof of 7.2.4, from (13) and (14)).  Let `μ` be finite
+on compact subsets of `U`, with `limsup μⱼ(K) ≤ μ(K)` for compact `K ⊆ U` and
+`μ(G) ≤ liminf μⱼ(G)` for open `G ⊆ U`.  If `g` is continuous with compact support in `U`,
+then `μⱼ{g > t} → μ{g > t}` for a.e. `t > 0`.  Only countably many levels `{g = t}` carry
+positive mass for the finite measure `μ⌞tsupport g`.  For any other `t > 0`, `{g > t}` is open,
+`{g ≥ t}` is compact, both lie in `tsupport g ⊆ U`, and they have the same `μ`-measure. -/
+theorem Submission.cmc_rcc_ae_tendsto_measure_superlevel : ∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x})) := by
+  intro P U μs μ hfin hsup hinf g hg hgc hgU
+  -- step 1: `μ⌞tsupport g` is a finite measure
+  have : IsFiniteMeasure (μ.restrict (tsupport g)) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hfin _ hgc.isCompact hgU⟩
+  -- step 2: only countably many levels `{g = s}` have positive `μ⌞tsupport g`-measure
+  have hD := Measure.countable_meas_level_set_pos (μ := μ.restrict (tsupport g)) hg.measurable
+  -- step 3: a.e. `t` is positive and outside that countable set
+  filter_upwards [hD.ae_notMem _, ae_restrict_mem measurableSet_Ioi] with t htD ht
+  have ht0 : (0 : ℝ) < t := ht
+  -- step 4: `G = {g > t}` is open, `K = {g ≥ t}` is compact, `G ⊆ K ⊆ tsupport g ⊆ U`
+  have hKC : {x | t ≤ g x} ⊆ tsupport g := fun x (hx : t ≤ g x) =>
+    subset_tsupport g (show g x ≠ 0 from (ht0.trans_le hx).ne')
+  have hGK : {x | t < g x} ⊆ {x | t ≤ g x} := fun x (hx : t < g x) => hx.le
+  have hGo : IsOpen {x | t < g x} := isOpen_lt continuous_const hg
+  have hKc : IsCompact {x | t ≤ g x} :=
+    hgc.isCompact.of_isClosed_subset (isClosed_le continuous_const hg) hKC
+  -- step 5: `μ K = μ G`, because `K \ G = {g = t}` is `μ`-null
+  have hLC : {x | g x = t} ⊆ tsupport g := fun x (hx : g x = t) =>
+    subset_tsupport g (show g x ≠ 0 by rw [hx]; exact ht0.ne')
+  have hlev : μ {x | g x = t} = 0 := by
+    rw [← Measure.restrict_eq_self μ hLC]
+    exact nonpos_iff_eq_zero.1 (not_lt.1 htD)
+  have hKG : μ {x | t ≤ g x} = μ {x | t < g x} := by
+    refine le_antisymm ?_ (measure_mono hGK)
+    calc μ {x | t ≤ g x} ≤ μ ({x | t < g x} ∪ {x | g x = t}) :=
+          measure_mono fun x (hx : t ≤ g x) => hx.lt_or_eq.imp id Eq.symm
+      _ ≤ μ {x | t < g x} + μ {x | g x = t} := measure_union_le _ _
+      _ = μ {x | t < g x} := by rw [hlev, add_zero]
+  -- step 6: squeeze `limsup μⱼ G ≤ limsup μⱼ K ≤ μ K = μ G ≤ liminf μⱼ G`
+  refine tendsto_of_le_liminf_of_limsup_le (hinf _ hGo (hGK.trans (hKC.trans hgU))) ?_
+  calc limsup (fun j => μs j {x | t < g x}) atTop
+      ≤ limsup (fun j => μs j {x | t ≤ g x}) atTop :=
+        limsup_le_limsup (Eventually.of_forall fun j => measure_mono hGK)
+    _ ≤ μ {x | t ≤ g x} := hsup _ hKc (hKC.trans hgU)
+    _ = μ {x | t < g x} := hKG
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
