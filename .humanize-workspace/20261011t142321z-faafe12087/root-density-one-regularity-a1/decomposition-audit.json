@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "DensityOneRegularity|ae_weightedApproximateTangent_density_eq_mult|one_le_density_on_support_of_locallyLp|hausdorff_carrier_symmDiff_support_null",
+        "ae_.*[Tt]angent|[Tt]angent.*ae_|simon_theorem_1_9",
+        "simon_theorem_3_6|simon_theorem_3_3|BorelRegular|measurable",
+        "euclideanHausdorffMeasure|hausdorffMeasure",
+        "theorem fderivWithin_of_mem_nhds|theorem ball_subset_interior_closedBall|theorem closedBall_mem_nhds",
+        "rg -n '\\bsorry\\b|^axiom ' .lake/packages/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/density-one-independent-audit-nzyc57uc/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/density-one-independent-audit-nzyc57uc/FourChildren.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1/decomposition-v1.json",
+        "/tmp/density-one-independent-audit-nzyc57uc/TypesAndAssembly.lean",
+        "/tmp/density-one-independent-audit-nzyc57uc/FourChildren.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected DensityOneRegularity contract. Snapshot revisions match the pinned project and Mathlib revisions; Contract.lean and README.md match the workspace copies. All seven exact one-line propositions elaborate before introducing child declarations. Their names are bare identifiers with no reservations in other DAG branches. Adding the proposed obligations leaves the dependency graph acyclic. No matrix-instance ambiguity occurs.\n\nAn independently reconstructed check compiles the parent assembly with the children and AllardRegularityTheorem as explicit hypotheses, without sorry. The four supplied auxiliary proofs also recompile against the frozen definitions and exact child types. Their axiom lists, and the assembly's, contain only propext, Classical.choice and Quot.sound.\n\nThe source search found no general weighted tangent-existence theorem in Chapter03. Chapter04's density theorem requires the stronger stored-tangent structure, so direct reuse would be inappropriate. DensityComparison supplies the upper-density theorem, including dimension zero; Basic supplies Borel regularity for measure outer measures. The SimonGMT source scan found no sorry or axiom declarations. A broader compiled reference-import check stalled and was stopped; it is not counted as verification.\n\nThe mathematical source checks agree with [Simon's text, Chapter 1 §3 and Chapter 3 §1](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "allard_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including the permitted n = 0 case. Positive density gives support membership; compact-ball integrability and p > n give decay of the scaled extended-real integral. Intersecting the two small-radius conditions proves every asserted conclusion without assuming mean curvature or measurability of H."
+    },
+    {
+      "key": "translate_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every structure field, pushforward weight, relative support, curvature identity and Allard hypothesis for arbitrary U. Equality of the entire tangent predicates justifies equality of the chosen projections even where uniqueness is unavailable. Measurable-equivalence transport handles integrability and the integral identities correctly."
+    },
+    {
+      "key": "open_graph_domain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The specified W is open by relative continuity on the open ball and contains zero. The Euclidean coordinate norm inequality and both set inclusions prove exactly the inverse-isometry image identity in the Lean proposition."
+    },
+    {
+      "key": "holder_class",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive scaling coefficients make all three suprema finite. Interior containment identifies within-derivatives with ordinary derivatives. The Hilbert–Schmidt bound and canonical first-derivative identification establish every boundedness and Hölder clause, including coincident points. No openness assumption on W is needed by the frozen definition."
+    },
+    {
+      "key": "tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies an actual argument: C¹ covering, localized Lusin pieces, two finite-measure upper-density applications, and controlled weighted blow-ups. Exceptional sets are independent of the test function. Cutoff squeezing proves the exact density limit; uniqueness and measurable gluing prove strong measurability. Localization respects the contract's integrability only on compact subsets of U."
+    },
+    {
+      "key": "density_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sole child dependency, tangent_ae, is correctly directed. Its conclusions transfer to the weight measure. The radial variation calculation, Hölder estimate, integrating factor and closed-ball limit yield finite density and upper semicontinuity. Approximating support points by almost-everywhere good points then gives density at least one. All integrability and center-point issues are addressed."
+    },
+    {
+      "key": "carrier_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger global conclusion is justified without openness of U. Positivity of multiplicity proves the carrier-minus-support direction. Positive finite density supplies finite-mass neighborhoods; the upper-density theorem and a countable subcover prove the reverse direction, including n = 0. Density is an explicit hypothesis, so no dependency on density_ge_one is required."
+    }
+  ],
+  "required_changes": []
+}

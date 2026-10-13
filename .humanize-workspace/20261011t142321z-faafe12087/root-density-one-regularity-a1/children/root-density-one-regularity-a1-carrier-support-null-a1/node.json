@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.carrier_support_null-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "Carrier and support agree up to H^n-null sets when spt V has positive density (Simon 4.10(1), Ch. 1 3.6)",
+  "statement": "Let U be any subset of R^(n+l) and V = v(M, theta) a rectifiable n-varifold in U (contract structure) with weight mu. Suppose every xi in spt V = U cap spt mu has a positive density: there is a real t > 0 with mu(B_r(xi))/(omega_n r^n) -> t as r -> 0+ (V.HasDensity xi t). Then H^n(M symmetric-difference spt V) = 0, where H^n = muHE[n].",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (∀ x ∈ V.support, ∃ t : ℝ, 0 < t ∧ V.HasDensity x t) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff V.carrier V.support) = 0",
+  "lean_name": "hausdorff_carrier_symmDiff_support_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-carrier-support-null-a1-a1"
+}
