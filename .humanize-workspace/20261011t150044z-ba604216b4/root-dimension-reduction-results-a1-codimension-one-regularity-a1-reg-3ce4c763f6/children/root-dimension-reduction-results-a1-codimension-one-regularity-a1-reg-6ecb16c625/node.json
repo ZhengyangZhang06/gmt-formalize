@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.signed_layer_cake-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+  "depth": 6,
+  "title": "Signed layer-cake lower bound: ∫ζg dμ ≥ c·μ(B) from lower bounds on the superlevel sets of ζ (parent step 4)",
+  "statement": "Let X be a type with a σ-algebra and μ a measure on X. Let ζ, g : X → ℝ be measurable with 0 ≤ ζ(x) ≤ 1 and |g(x)| ≤ 1 for all x. Let S ⊆ X be measurable with μ(S) < ∞ and ζ(x) = 0 for every x ∉ S. Let B ⊆ X be any set with ζ(x) = 1 for every x ∈ B, and let c ≥ 0. Suppose that c·μ({x : t ≤ ζ(x)})_ℝ ≤ ∫_{{x : t ≤ ζ(x)}} g dμ for every t with 0 < t ≤ 1. Then c·μ(B)_ℝ ≤ ∫_X ζ g dμ. Here μ(·)_ℝ = ENNReal.toReal and the integrals are Bochner integrals.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (ζ g : X → ℝ) (S B : Set X) (c : ℝ), Measurable ζ → Measurable g → (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) → (∀ x, |g x| ≤ 1) → MeasurableSet S → μ S ≠ ∞ → (∀ x, x ∉ S → ζ x = 0) → (∀ x ∈ B, ζ x = 1) → 0 ≤ c → (∀ t : ℝ, 0 < t → t ≤ 1 → c * (μ {x | t ≤ ζ x}).toReal ≤ ∫ x in {x | t ≤ ζ x}, g x ∂μ) → c * (μ B).toReal ≤ ∫ x, ζ x * g x ∂μ",
+  "lean_name": "codim1_rdo_dg_ce_signed_layer_cake",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6ecb16c625-a1"
+}

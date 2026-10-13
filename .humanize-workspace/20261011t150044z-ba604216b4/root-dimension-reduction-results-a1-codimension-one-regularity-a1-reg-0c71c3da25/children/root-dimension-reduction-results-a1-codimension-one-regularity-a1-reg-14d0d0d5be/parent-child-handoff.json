@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); git status / git log in the workspace (clean, HEAD b4d606db = snapshot project commit)",
+        "python3 scans of dag.json: frozen types of de_giorgi-a1 children (cutoff_estimates-a1, sobolev_perimeter-a1, selected volume_density_lower-a1); regex scan for trace/fderiv/cutoff/bump/rpow statements; collision check of the 7 proposed codim1_rdo_dg_vdl_* names and 5 scratch helper names (0 hits among 974 nodes)",
+        "git show bc0bc2b9 -- GMT/Ch07/Submission.lean (accepted Submission.dorag_th_radial_cutoff technique and type)",
+        "rg in snapshot mathlib: integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable, integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable, tendsto_integral_filter_of_dominated_convergence, integral_add_compl, trace_eq_sum_inner, geom_mean_le_arith_mean_weighted, norm_fderiv_le_of_lipschitz, HasCompactSupport.fderiv, hasDerivAt_iff_tendsto_slope_zero, contDiff_one_iff_deriv, Continuous.integral_hasStrictDerivAt",
+        "lake env lean -DautoImplicit=false /tmp/vdl-split-check/Avail.lean (#check of the above inside the frozen import closure of GMT.Ch07.Submission)",
+        "sed -n 640,760p book/chapter-03.txt (Simon Ch. 3, 4.3, (10)-(11))",
+        "sed of runtime.py (_decompose, _solve_children, _existing_lean_name_problem), prompts.py (DECOMPOSITION_AUDIT, RLCR_LEAN_TASK), verifier/gmt-compare.py header; cat swarm-project.json (max_depth 6, max_children 12)",
+        "lake env lean -DautoImplicit=false on /tmp/vdl-split-check/Assembly.lean, /tmp/vdl-split-check/EndToEnd.lean and /tmp/vdl-split-check/{A,B,C,D,E,F,G}/Proof.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0c71c3da25/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/prompts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/vdl-split-check/Assembly.lean",
+        "/tmp/vdl-split-check/EndToEnd.lean",
+        "/tmp/vdl-split-check/A/Proof.lean",
+        "/tmp/vdl-split-check/B/Proof.lean",
+        "/tmp/vdl-split-check/C/Proof.lean",
+        "/tmp/vdl-split-check/D/Proof.lean",
+        "/tmp/vdl-split-check/E/Proof.lean",
+        "/tmp/vdl-split-check/F/Proof.lean",
+        "/tmp/vdl-split-check/G/Proof.lean"
+      ],
+      "conclusion": "Pins: the snapshot manifest (project b4d606db, Mathlib 25730c7c) matches the clean workspace HEAD. Library: Mathlib's integration-by-parts lemmas exist in the snapshot (IntegrationByParts.lean:179-226) but are NOT in the frozen import closure of GMT.Ch07.Submission (Lean reports Unknown identifier). divergence_integral_zero therefore uses integral_add_right_eq_self, tendsto_integral_filter_of_dominated_convergence (DominatedConvergence.lean:67) and LinearMap.trace_eq_sum_inner (InnerProductSpace/Trace.lean:25). All of the following are available: AM-GM (MeanInequalities.lean:129), integral_add_compl (Bochner/Set.lean:158), norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), HasCompactSupport.fderiv (FDeriv/Const.lean:389), hasDerivAt_iff_tendsto_slope_zero (Deriv/Slope.lean:82), contDiff_one_iff_deriv (ContDiff/Deriv.lean:98), Continuous.integral_hasStrictDerivAt (FundThmCalculus.lean:656) and Real.smoothTransition. No local or accepted DAG declaration states any of the following: the thin-annulus C1 cut-off with O(1/delta) gradient, the discrete integration lemma, the finite-difference inequality, int div phi = 0, or the complement Gauss-Green identity. The accepted dorag_th_radial_cutoff (commit bc0bc2b9) has a fixed r/2-to-r ratio, and doragm_sab_cutoff_profile has no gradient bound, so no identical-type reuse is possible. DAG: the 7 proposed codim1_rdo_dg_vdl_* names and the 5 scratch helper names occur in none of the 974 nodes. Lean: all 7 child types elaborate in the contract scope. Assembly.lean proves the parent's exact frozen type from the 7 children plus stubs of the 2 resolved sibling dependencies. EndToEnd.lean compiles real proofs of all 7 children (#print axioms: propext, Classical.choice, Quot.sound for each) together with the assembly (parent axioms: propext, sorryAx, Classical.choice, Quot.sound, where sorryAx comes only from the two sibling stubs). Runtime: depth 5 < max_depth 6, so the children are leaves. The child comparator elaborates the frozen type in the contract scope and checks it with exact Submission.<lean_name>."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.annular_cutoff-a1",
+  "subproblem": {
+    "key": "annular_cutoff",
+    "title": "C¹ radial cut-off across a thin annulus with gradient O(1/δ)",
+    "statement": "There is a constant C₀ > 0 such that, for every P ∈ ℕ, every y ∈ ℝ^P (= Euclid P) and all ρ > 0, δ > 0, there is ζ : ℝ^P → ℝ with all of the following properties: ζ is C¹ (ContDiff ℝ 1); ζ has compact support; tsupport ζ ⊆ B̄_{ρ+δ}(y); 0 ≤ ζ(z) ≤ 1 for all z; ζ(z) = 1 for z ∈ B̄_ρ(y); ‖Dζ(z)‖ ≤ C₀/δ for all z (operator norm of fderiv ℝ ζ z); and Dζ(z) = 0 for every z ∉ B_{ρ+δ}(y) ∖ B̄_ρ(y).",
+    "lean_statement": "∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ C₀ / δ) ∧ ∀ z, z ∉ ball y (ρ + δ) \\ closedBall y ρ → fderiv ℝ ζ z = 0",
+    "lean_name": "codim1_rdo_dg_vdl_annular_cutoff",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof step 3, the cut-off ζ(z) = h((|z − y| − ρ)/δ). Its profile h equals 1 on (−∞, 0], 1 − 3t² + 2t³ on [0, 1] and 0 on [1, ∞), with |h′| ≤ 3/2 and h′(0) = h′(1) = 0 (Simon Ch. 3, 4.3, chapter-03.txt l. 690-733). We prove the statement with C₀ := 3/2.\n1. Profile. Let g(s) := 6·max(0, s(1 − s)). g is continuous; 0 ≤ g ≤ 3/2 because s(1 − s) ≤ 1/4; g(s) = 0 for s ≤ 0 and for s ≥ 1; and g(s) = 6s(1 − s) on [0, 1], so ∫_0^1 g = 6(1/2 − 1/3) = 1. Put h(t) := 1 − ∫_0^t g(s) ds. By the fundamental theorem of calculus, h is differentiable with h′ = −g, which is continuous, so h is C¹ (contDiff_one_iff_deriv). For t ≤ 0, g = 0 on [t, 0], so h(t) = 1. For t ≥ 1, ∫_0^t g = ∫_0^1 g + ∫_1^t g = 1, so h(t) = 0. For 0 ≤ t ≤ 1, 0 ≤ ∫_0^t g ≤ ∫_0^1 g = 1 since g ≥ 0. Hence 0 ≤ h ≤ 1 everywhere (and h(t) = 1 − 3t² + 2t³ on [0, 1]). Moreover h′(t) = −g(t) = 0 for t ≤ 0 and for t ≥ 1, and |h′| ≤ 3/2, so h is (3/2)-Lipschitz by the mean value inequality.\n2. Given P, y, ρ > 0 and δ > 0, let u(z) := (‖z − y‖ − ρ)/δ and ζ(z) := h(u(z)).\n3. Values. 0 ≤ ζ ≤ 1. If ‖z − y‖ ≤ ρ, then u(z) ≤ 0 and ζ(z) = 1; so ζ = 1 on B̄_ρ(y), and ζ ≡ 1 on the open ball B_ρ(y). If ‖z − y‖ ≥ ρ + δ, then u(z) ≥ 1 and ζ(z) = 0.\n4. Support. support ζ ⊆ B_{ρ+δ}(y), so tsupport ζ ⊆ closure B_{ρ+δ}(y) ⊆ B̄_{ρ+δ}(y). This closed ball is compact (ℝ^P is proper) and tsupport ζ is closed, so ζ has compact support.\n5. C¹. By contDiff_iff_contDiffAt it suffices to treat each point z₀. If z₀ = y: since ρ > 0, B_ρ(y) is a neighbourhood of y on which ζ ≡ 1, so ζ is C¹ at y (congruence with a constant). If z₀ ≠ y: z ↦ ‖z − y‖ is C^∞ at z₀ (the Euclidean norm is smooth away from 0), hence u is C^∞ at z₀ and ζ = h ∘ u is C¹ at z₀.\n6. Gradient bound. By the reverse triangle inequality |‖z − y‖ − ‖z′ − y‖| ≤ ‖z − z′‖, u is (1/δ)-Lipschitz, so ζ = h ∘ u is (3/(2δ))-Lipschitz. The derivative of a differentiable L-Lipschitz map has operator norm ≤ L at every point (norm_fderiv_le_of_lipschitz), so ‖Dζ(z)‖ ≤ 3/(2δ) = C₀/δ for all z.\n7. Vanishing. Let z ∉ B_{ρ+δ}(y) ∖ B̄_ρ(y), i.e. ‖z − y‖ ≤ ρ or ‖z − y‖ ≥ ρ + δ; then u(z) ≤ 0 or u(z) ≥ 1. If z = y, ζ is constant near y, so Dζ(y) = 0. If z ≠ y, u is differentiable at z, and the chain rule gives Dζ(z) = h′(u(z))·Du(z) = 0, because h′(u(z)) = 0 by step 1. This includes the spheres ‖z − y‖ = ρ and ‖z − y‖ = ρ + δ. ∎\nRemark (any such profile works). Steps 2-7 only use that h is C¹ and L-Lipschitz, 0 ≤ h ≤ 1, h = 1 on (−∞, 0], h = 0 on [1, ∞), and h′ = 0 on (−∞, 0] ∪ [1, ∞); they then give the statement with C₀ := L. For example, let S := Real.smoothTransition and g(t) := S(4t)·S(4(1 − t)). This g is C^∞, 0 ≤ g ≤ 1, g = 0 off (0, 1) and g = 1 on [1/4, 3/4], so c := ∫_0^1 g ≥ 1/2. Then h(t) := 1 − c^{-1}∫_0^t g has these properties with L = c^{-1} ≤ 2, giving C₀ := 2.\nValidation note (not part of the proof): a Lean proof of exactly this frozen statement via the Remark (C₀ := 2) compiled against the frozen import closure with axioms propext, Classical.choice, Quot.sound (scratch file /tmp/vdl-split-check/B/Proof.lean, outside the repository).",
+    "proof_key_steps": [
+      "C¹ profile h(t) = 1 − ∫_0^t 6·max(0, s(1−s)) ds: h = 1 on (−∞,0] and 0 on [1,∞), values in [0,1], h′ = 0 off (0,1), and h is (3/2)-Lipschitz.",
+      "ζ(z) := h((‖z − y‖ − ρ)/δ) equals 1 on B̄_ρ(y) and 0 off B_{ρ+δ}(y), so tsupport ζ ⊆ B̄_{ρ+δ}(y), which is compact.",
+      "ζ is C¹: locally constant near y, and a composition with the smooth norm away from y.",
+      "ζ is (3/(2δ))-Lipschitz, hence ‖Dζ‖ ≤ 3/(2δ).",
+      "Dζ = 0 off the open annulus: by local constancy at y, and elsewhere by the chain rule with h′ = 0 where u ≤ 0 or u ≥ 1."
+    ]
+  },
+  "audit": {
+    "key": "annular_cutoff",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The dimension-uniform contract matches the prose. The explicit profile has the asserted values, regularity and derivative bound. Local constancy handles the centre; composition handles other points. Compact support, the operator-norm estimate and derivative vanishing on both boundary spheres are proved, including dimension zero."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-14d0d0d5be/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-14d0d0d5be/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-14d0d0d5be/parent-supplied-natural-proof.json"
+}
