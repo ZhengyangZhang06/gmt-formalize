@@ -1,0 +1,18 @@
+{
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5039",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e342d53ce5e1aec2e178594e2ce454f68ef2a8e6",
+  "integrated_commit": "",
+  "proof_base_commit": "6dd24d38ad12e890f25774fa790b18c8be366631",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+  "requires": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1.dominating_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1.density_representation-a1"
+  ]
+}

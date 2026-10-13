@@ -451,6 +451,109 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Common dominating measure (the common density step of the vector Riesz representation behind
+the mass representation of currents, Simon Ch. 6, 2.7–2.8, used for Simon 7.2.4): if every `aᵢ`
+and `bᵢ` (`i ∈ Fin m`) is finite on compact sets, then so is `μ₀ := ∑ᵢ (aᵢ + bᵢ)`, and
+`aᵢ ≪ μ₀`, `bᵢ ≪ μ₀`.  Indeed `μ₀(s) = ∑ᵢ (aᵢ(s) + bᵢ(s))` for every set `s`, so `μ₀(K)` is a
+finite sum of finite terms for compact `K`, and `μ₀(s) = 0` forces `aᵢ(s) = bᵢ(s) = 0`. -/
+theorem Submission.cmr_vr_cd_dominating_measure : ∀ (X : Type) [TopologicalSpace X] [MeasurableSpace X] (m : ℕ) (a b : Fin m → Measure X), (∀ i, IsFiniteMeasureOnCompacts (a i)) → (∀ i, IsFiniteMeasureOnCompacts (b i)) → ∃ μ₀ : Measure X, IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, a i ≪ μ₀) ∧ ∀ i, b i ≪ μ₀ := by
+  intro X _ _ m a b ha hb
+  -- Step 1: `μ₀ := ∑ᵢ (aᵢ + bᵢ)` has `μ₀(s) = ∑ᵢ (aᵢ(s) + bᵢ(s))` for every set `s`
+  have hμ₀ : ∀ s : Set X, (∑ i, (a i + b i)) s = ∑ i, (a i s + b i s) := fun s => by
+    simp only [Measure.finsetSum_apply, Measure.add_apply]
+  refine ⟨∑ i, (a i + b i), ⟨fun K hK => ?_⟩, fun i s hs => ?_, fun i s hs => ?_⟩
+  -- Step 2: for compact `K`, `μ₀(K)` is a finite sum of finite terms
+  · rw [hμ₀, ENNReal.sum_lt_top]
+    exact fun i _ =>
+      ENNReal.add_lt_top.2 ⟨(ha i).lt_top_of_isCompact hK, (hb i).lt_top_of_isCompact hK⟩
+  -- Step 3: if `μ₀(s) = 0`, every summand `aᵢ(s) + bᵢ(s)` vanishes
+  · rw [hμ₀, Finset.sum_eq_zero_iff] at hs
+    exact (add_eq_zero.1 (hs i (Finset.mem_univ i))).1
+  · rw [hμ₀, Finset.sum_eq_zero_iff] at hs
+    exact (add_eq_zero.1 (hs i (Finset.mem_univ i))).2
+/-- **Radon–Nikodym density on `C_c`.**  If `μ₀`, `ξ` are finite on compact subsets of a locally
+compact second countable space and `ξ ≪ μ₀`, then `ξ` has a measurable density `g`, `μ₀`-integrable
+on compact sets, with `f·g` `μ₀`-integrable and `∫ f dξ = ∫ f g dμ₀` for every `f ∈ C_c(X, ℝ)`.
+`X` is σ-compact, so `μ₀`, `ξ` are σ-finite and `ξ = μ₀.withDensity δ` for `δ = ξ.rnDeriv μ₀`
+(the singular part vanishes since `ξ ≪ μ₀`), with `δ < ∞` `μ₀`-a.e.  Take `g = δ.toReal`: on a
+compact `K`, `∫⁻_K δ dμ₀ < ∞` because `ξ(K) < ∞`.  A bounded `f` with compact support times `g` is
+integrable on `tsupport f` and vanishes outside it.  The `T2Space` hypothesis is not used. -/
+theorem Submission.cmr_vr_cd_density_representation : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ₀ ξ : Measure X), IsFiniteMeasureOnCompacts μ₀ → IsFiniteMeasureOnCompacts ξ → ξ ≪ μ₀ → ∃ g : X → ℝ, Measurable g ∧ (∀ K : Set X, IsCompact K → IntegrableOn g K μ₀) ∧ ∀ f : CompactlySupportedContinuousMap X ℝ, Integrable (fun x => f x * g x) μ₀ ∧ ∫ x, f x ∂ξ = ∫ x, f x * g x ∂μ₀ := by
+  intro X _ _ _ _ _ _ μ₀ ξ hμ₀ hξ hac
+  -- `X` is σ-compact, so both measures are σ-finite and `(ξ, μ₀)` has a Lebesgue decomposition
+  have : SigmaCompactSpace X := sigmaCompactSpace_of_locallyCompact_secondCountable
+  have : SigmaFinite μ₀ := SigmaFinite.of_isFiniteMeasureOnCompacts μ₀
+  have : SigmaFinite ξ := SigmaFinite.of_isFiniteMeasureOnCompacts ξ
+  -- `ξ = μ₀.withDensity δ` with `δ = dξ/dμ₀` measurable and `μ₀`-a.e. finite
+  set δ : X → ℝ≥0∞ := ξ.rnDeriv μ₀
+  have hδm : Measurable δ := Measure.measurable_rnDeriv ξ μ₀
+  have hξδ : ξ = μ₀.withDensity δ := by
+    have h := Measure.haveLebesgueDecomposition_add ξ μ₀
+    rwa [Measure.singularPart_eq_zero_of_ac hac, zero_add] at h
+  have hδlt : ∀ᵐ x ∂μ₀, δ x < ∞ := Measure.rnDeriv_lt_top ξ μ₀
+  -- `g = δ.toReal` is integrable on compact sets: `∫⁻_K δ dμ₀ < ∞` since `ξ(K) < ∞`
+  have hgK : ∀ K : Set X, IsCompact K → IntegrableOn (fun x => (δ x).toReal) K μ₀ := by
+    intro K hK
+    have hlin : ∫⁻ x in K, δ x ∂μ₀ < ∞ :=
+      Measure.lintegral_rnDeriv_lt_top_of_measure_ne_top μ₀ hK.measure_lt_top.ne
+    exact integrable_toReal_of_lintegral_ne_top hδm.aemeasurable hlin.ne
+  refine ⟨fun x => (δ x).toReal, hδm.ennreal_toReal, hgK, fun f => ⟨?_, ?_⟩⟩
+  -- `f` is bounded, so `f·g` is integrable on `tsupport f`, and it vanishes outside
+  · obtain ⟨C, hC⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+    have hon : IntegrableOn (fun x => f x * (δ x).toReal) (tsupport f) μ₀ :=
+      Integrable.bdd_mul (c := C) (hgK _ f.hasCompactSupport.isCompact)
+        (map_continuous f).measurable.aestronglyMeasurable (Eventually.of_forall hC)
+    refine hon.integrable_of_forall_notMem_eq_zero fun x hx => ?_
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  -- `∫ f dξ = ∫ δ.toReal • f dμ₀`
+  · rw [hξδ, integral_withDensity_eq_integral_toReal_smul hδm hδlt]
+    congr 1
+    funext x
+    exact (smul_eq_mul _ _).trans (mul_comm _ _)
+
+/-- Common dominating measure and densities for finitely many pairs of positive functionals
+(Riesz–Markov–Kakutani; Rudin, *Real and Complex Analysis*, Thm 2.14 and 6.10).  Let `X` be
+locally compact, Hausdorff and second countable with its Borel σ-algebra, and let `Λ₁ᵢ, Λ₂ᵢ`
+(`i ∈ Fin m`) be positive linear functionals on `C_c(X, ℝ)`.  Then there are a measure `μ₀`,
+finite on compact sets, and measurable `ρᵢ`, `μ₀`-integrable on compact sets, with
+`Λ₁ᵢ f - Λ₂ᵢ f = ∫ f ρᵢ dμ₀` for all `f ∈ C_c(X, ℝ)`.
+
+Proof sketch:
+* `bᵢ := rieszMeasure Λ₁ᵢ` and `aᵢ := rieszMeasure Λ₂ᵢ` are regular, hence finite on compact
+  sets, and `∫ f dbᵢ = Λ₁ᵢ f`, `∫ f daᵢ = Λ₂ᵢ f`.
+* `cmr_vr_cd_dominating_measure` gives a compact-finite `μ₀` with `aᵢ ≪ μ₀` and `bᵢ ≪ μ₀`.
+* `cmr_vr_cd_density_representation` gives locally integrable densities `gaᵢ`, `gbᵢ` with
+  `∫ f daᵢ = ∫ f gaᵢ dμ₀`, `∫ f dbᵢ = ∫ f gbᵢ dμ₀`, both integrands integrable.
+* With `ρᵢ := gbᵢ - gaᵢ`, linearity of the integral gives the representation. -/
+theorem Submission.cmr_vr_common_density : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (Λ₁ Λ₂ : Fin m → (CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ)), ∃ (μ₀ : Measure X) (ρ : Fin m → X → ℝ), IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, Measurable (ρ i)) ∧ (∀ i, ∀ K : Set X, IsCompact K → IntegrableOn (ρ i) K μ₀) ∧ ∀ (i : Fin m) (f : CompactlySupportedContinuousMap X ℝ), Λ₁ i f - Λ₂ i f = ∫ x, f x * ρ i x ∂μ₀ := by
+  intro X _ _ _ _ _ _ m Λ₁ Λ₂
+  -- Step 1 (RMK): the Riesz measures are regular, hence finite on compact sets
+  have ha : ∀ i, IsFiniteMeasureOnCompacts (RealRMK.rieszMeasure (Λ₂ i)) :=
+    fun _ => inferInstance
+  have hb : ∀ i, IsFiniteMeasureOnCompacts (RealRMK.rieszMeasure (Λ₁ i)) :=
+    fun _ => inferInstance
+  -- Step 2: a common compact-finite measure `μ₀` with `aᵢ ≪ μ₀` and `bᵢ ≪ μ₀`
+  obtain ⟨μ₀, hμ₀, hac_a, hac_b⟩ := Submission.cmr_vr_cd_dominating_measure X m
+    (fun i => RealRMK.rieszMeasure (Λ₂ i)) (fun i => RealRMK.rieszMeasure (Λ₁ i)) ha hb
+  -- Step 3: locally integrable densities `gaᵢ`, `gbᵢ` of `aᵢ`, `bᵢ` with respect to `μ₀`
+  choose ga hga_meas hga_int hga_rep using fun i =>
+    Submission.cmr_vr_cd_density_representation X μ₀ (RealRMK.rieszMeasure (Λ₂ i)) hμ₀ (ha i)
+      (hac_a i)
+  choose gb hgb_meas hgb_int hgb_rep using fun i =>
+    Submission.cmr_vr_cd_density_representation X μ₀ (RealRMK.rieszMeasure (Λ₁ i)) hμ₀ (hb i)
+      (hac_b i)
+  -- Step 4: `ρᵢ := gbᵢ - gaᵢ` and linearity of the integral
+  refine ⟨μ₀, fun i => gb i - ga i, hμ₀, fun i => (hgb_meas i).sub (hga_meas i),
+    fun i K hK => (hgb_int i K hK).sub (hga_int i K hK), fun i f => ?_⟩
+  obtain ⟨hgb_f, hgb_eq⟩ := hgb_rep i f
+  obtain ⟨hga_f, hga_eq⟩ := hga_rep i f
+  calc Λ₁ i f - Λ₂ i f
+      = ∫ x, f x ∂(RealRMK.rieszMeasure (Λ₁ i)) - ∫ x, f x ∂(RealRMK.rieszMeasure (Λ₂ i)) := by
+        rw [RealRMK.integral_rieszMeasure, RealRMK.integral_rieszMeasure]
+    _ = ∫ x, f x * gb i x ∂μ₀ - ∫ x, f x * ga i x ∂μ₀ := by rw [hgb_eq, hga_eq]
+    _ = ∫ x, (f x * gb i x - f x * ga i x) ∂μ₀ := (integral_sub hgb_f hga_f).symm
+    _ = ∫ x, f x * (gb i - ga i) x ∂μ₀ := by simp only [Pi.sub_apply, mul_sub]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
