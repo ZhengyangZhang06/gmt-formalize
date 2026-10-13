@@ -453,6 +453,72 @@ theorem Submission.slicing_im_coarea_eil_cover_majorant :
     · simp only [iSup_pos h, ENNReal.rpow_natCast]
       exact le_of_eq (by ring)
 
+/-- Eilenberg's inequality for the unnormalized Hausdorff measures on an extended metric space:
+if `f : X → ℝ` is `L`-Lipschitz on `A`, some Borel `ψ` majorizes `t ↦ μH[m](A ∩ f⁻¹{t})` with
+`∫ ψ ≤ 2 L μH[m+1](A)`.  For `L = 0` take `∞ · 1_{f(A)}` (`f(A)` has at most one point), and for
+`μH[m+1](A) = ∞` the constant `∞`.  Otherwise `ψ = liminf_k ψ_k`, where `ψ_k` is the majorant
+(`slicing_im_coarea_eil_cover_majorant`) of a near-optimal cover of `A` at scale `(k + 1)⁻¹`
+(`slicing_im_coarea_eil_near_optimal_cover`): the pointwise bound is
+`slicing_im_coarea_eil_liminf_cover_bound` and the integral bound is Fatou's lemma. -/
+theorem Submission.slicing_im_coarea_eil_unnormalized : ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X), LipschitzOnWith L f A → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, (μH[(m : ℝ)] : Measure X) (A ∩ f ⁻¹' {t}) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A := by
+  intro X _ _ _ m f L A hf
+  -- `L = 0`: `f` is constant on `A`, so `∞ · 1_{f(A)}` works (`f(A)` is countable, hence null).
+  rcases eq_or_ne L 0 with rfl | hL
+  · have hc : (f '' A).Countable := Set.Subsingleton.countable <| by
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+      simpa using hf hx hy
+    refine ⟨(f '' A).indicator fun _ => ∞, measurable_const.indicator hc.measurableSet,
+      fun t => ?_, ?_⟩
+    · by_cases ht : t ∈ f '' A
+      · simp [indicator_of_mem ht]
+      · have h : A ∩ f ⁻¹' {t} = ∅ :=
+          eq_empty_of_forall_notMem fun x hx => ht ⟨x, hx.1, hx.2⟩
+        simp [h]
+    · rw [lintegral_indicator_const hc.measurableSet, hc.measure_zero, mul_zero]
+      exact zero_le
+  have h2L : 2 * (L : ℝ≥0∞) ≠ 0 := mul_ne_zero two_ne_zero (ENNReal.coe_ne_zero.2 hL)
+  -- `μH[m+1](A) = ∞`: the constant `∞` works.
+  by_cases hA : (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A = ∞
+  · refine ⟨fun _ => ∞, measurable_const, fun _ => le_top, ?_⟩
+    rw [hA, ENNReal.mul_top h2L]
+    exact le_top
+  -- Scales `ρ_k = (k + 1)⁻¹ → 0`.
+  obtain ⟨ρ, hρpos, hρlim⟩ : ∃ ρ : ℕ → ℝ≥0∞, (∀ k, 0 < ρ k) ∧ Tendsto ρ atTop (𝓝 0) :=
+    ⟨fun k => ((k + 1 : ℕ) : ℝ≥0∞)⁻¹, fun k => ENNReal.inv_pos.2 (ENNReal.natCast_ne_top _),
+      ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)⟩
+  -- Near-optimal covers `S k` of `A` at scale `ρ k` and their majorants `φ k`.
+  choose S hSA hAS hSd hSsum using fun k =>
+    Submission.slicing_im_coarea_eil_near_optimal_cover X ((m + 1 : ℕ) : ℝ) A (ρ k) (ρ k)
+      (Nat.cast_nonneg _) (hρpos k) (hρpos k) hA
+  choose φ hφm hφt hφi using fun k =>
+    Submission.slicing_im_coarea_eil_cover_majorant X m f L A (S k) hf (hSA k)
+  refine ⟨fun t => liminf (fun k => φ k t) atTop, Measurable.liminf hφm, fun t => ?_, ?_⟩
+  · -- The pieces `S k i ∩ (A ∩ f⁻¹{t})` cover the level set at scale `ρ k`.
+    calc (μH[(m : ℝ)] : Measure X) (A ∩ f ⁻¹' {t})
+        ≤ liminf (fun k => ∑' i, ⨆ (_ : (S k i ∩ (A ∩ f ⁻¹' {t})).Nonempty),
+            ediam (S k i ∩ (A ∩ f ⁻¹' {t})) ^ (m : ℝ)) atTop :=
+          Submission.slicing_im_coarea_eil_liminf_cover_bound X (m : ℝ) (A ∩ f ⁻¹' {t}) ρ
+            (fun k i => S k i ∩ (A ∩ f ⁻¹' {t})) hρlim
+            (fun k i => (ediam_mono inter_subset_left).trans (hSd k i))
+            (fun k x hx => by
+              obtain ⟨i, hi⟩ := mem_iUnion.1 (hAS k hx.1)
+              exact mem_iUnion.2 ⟨i, hi, hx⟩)
+      _ ≤ liminf (fun k => φ k t) atTop := liminf_le_liminf (.of_forall fun k => hφt k t)
+  · -- Fatou, then `2L (μH[m+1](A) + ρ k) → 2L μH[m+1](A)`.
+    have hlim : Tendsto (fun k => 2 * (L : ℝ≥0∞) *
+        ((μH[((m + 1 : ℕ) : ℝ)] : Measure X) A + ρ k)) atTop
+        (𝓝 (2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A)) := by
+      have h := ENNReal.Tendsto.const_mul (a := 2 * (L : ℝ≥0∞))
+        (hρlim.const_add ((μH[((m + 1 : ℕ) : ℝ)] : Measure X) A))
+        (Or.inr (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top))
+      rwa [add_zero] at h
+    calc ∫⁻ t, liminf (fun k => φ k t) atTop
+        ≤ liminf (fun k => ∫⁻ t, φ k t) atTop := lintegral_liminf_le hφm
+      _ ≤ liminf (fun k => 2 * (L : ℝ≥0∞) *
+            ((μH[((m + 1 : ℕ) : ℝ)] : Measure X) A + ρ k)) atTop :=
+          liminf_le_liminf (.of_forall fun k => (hφi k).trans (by gcongr; exact hSsum k))
+      _ = 2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A := hlim.liminf_eq
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
