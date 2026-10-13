@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74dc97f100ef9510def2de1d169279bb0a48f52829895f986cca3af96e2a072b",
+  "git_delta": {
+    "base_commit": "a586985c1e435b9fa1e6037cc96d47ecdebc626d",
+    "candidate_commit": "5fd19bdbf54654b11d04a0abf2fa6ab50d20fabb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_tr_smooth_approx_of_continuous",
+    "diff_sha256": "1e1e687063393f2f772fcbd2eff1c643755fbccb60e4370ced2df15a9bc96832",
+    "source_sha256": "81f31e5db0acefbe2991e2c8f7410376a55f4c824a0f7245808b1672fe751497",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_tr_smooth_approx_of_continuous",
+      "statement": "∀ (P : ℕ) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclid P)) (C : ℝ) (u : ℕ → Euclid P → ℝ), IsCompact K ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (u k)) ∧ (∀ k x, x ∉ K → u k x = 0) ∧ (∀ k x, |u k x| ≤ C) ∧ ∀ x, Tendsto (fun k => u k x) atTop (𝓝 (g x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
