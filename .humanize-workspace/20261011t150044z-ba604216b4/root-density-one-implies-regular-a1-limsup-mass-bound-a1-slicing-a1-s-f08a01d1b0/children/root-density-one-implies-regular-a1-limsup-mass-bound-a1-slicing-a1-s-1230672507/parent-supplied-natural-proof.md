@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.patch_tangent_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step 4, bullets 1–2 and 6–7 (Σ_k compact with finite Hⁿ-measure, A_k Borel, two applications of (TL)), and Step 5 (countable union of null sets), stated for an arbitrary sequence of compact C¹ patches. Notation: Hⁿ = μHE[n] and Hⁿ⌞A := μHE[n].restrict A; for each k, K_k := B̄_{ρ_k}(c_k), B_k := B_{ρ_k}(c_k), Σ_k := χ_k(K_k), A_k := S ∩ χ_k(B_k).
+
+1. Σ_k is compact and Borel. K_k is a closed ball in the finite-dimensional space ℝⁿ, hence compact (isCompact_closedBall). χ_k is continuous on D_k ⊇ K_k (C¹ implies continuous), so Σ_k = χ_k(K_k) is compact (IsCompact.image_of_continuousOn), hence closed and Borel.
+
+2. Hⁿ(Σ_k) < ∞. For each z ∈ K_k ⊆ D_k, χ_k is C¹ at z (D_k is open), so it is Lipschitz on a neighbourhood of z (ContDiffAt.exists_lipschitzOnWith); thus χ_k is locally Lipschitz on K_k, and since K_k is compact it is L-Lipschitz on K_k for some L ≥ 0 (LocallyLipschitzOn.exists_lipschitzOnWith_of_compact). By the Lipschitz image bound (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn), Hⁿ(Σ_k) ≤ Lⁿ·Hⁿ(K_k). On ℝⁿ, Hⁿ = μHE[n] is Lebesgue measure (EuclideanSpace.euclideanHausdorffMeasure_eq_volume), which is finite on the compact set K_k. Hence Hⁿ(Σ_k) < ∞.
+
+3. A_k is Borel. B_k is open, hence Borel; χ_k is continuous on B_k ⊆ K_k and injective on B_k ⊆ K_k; so χ_k(B_k) is Borel by the Lusin–Souslin theorem (MeasurableSet.image_of_continuousOn_injOn; ℝⁿ is Polish). As S is Borel, A_k = S ∩ χ_k(B_k) is Borel.
+
+4. Inclusions. A_k ⊆ Σ_k because B_k ⊆ K_k, and A_k ⊆ S.
+
+5. First application of (TL), with (P, n, U, A, B) := (P, n, ℝ^P, A_k, Σ_k). U = ℝ^P is open; A_k and Σ_k are Borel (steps 1, 3); A_k ⊆ Σ_k ⊆ ℝ^P; and for every compact K, Hⁿ(Σ_k ∩ K) ≤ Hⁿ(Σ_k) < ∞ (monotonicity and step 2). Hence for Hⁿ-a.e. x ∈ A_k and every Q: Σ_k has approximate tangent space Q at x iff A_k does.
+
+6. Second application of (TL), with (U, A, B) := (ℝ^P, A_k, S). S is Borel, A_k ⊆ S ⊆ ℝ^P, and Hⁿ(S ∩ K) ≤ Hⁿ(S) < ∞ for every compact K. Hence for Hⁿ-a.e. x ∈ A_k and every Q: S has approximate tangent space Q at x iff A_k does.
+
+7. Combining. Intersecting the two full-measure sets, for Hⁿ⌞A_k-a.e. x and every Q: if Σ_k has approximate tangent space Q at x, then so does A_k (step 5), hence so does S (step 6). Since A_k is Borel, this says (ae_restrict_iff') that for Hⁿ-a.e. x ∈ ℝ^P, x ∈ A_k implies [∀ Q, Σ_k tangent Q at x ⇒ S tangent Q at x]; a fortiori this holds for Hⁿ⌞S-a.e. x (Hⁿ⌞S ≤ Hⁿ; ae_restrict_of_ae).
+
+8. Countably many patches. A countable intersection of full-measure sets has full measure (ae_all_iff over k ∈ ℕ), so for Hⁿ⌞S-a.e. x: for every k, if x ∈ A_k then for every Q, Σ_k tangent Q at x implies S tangent Q at x. Also x ∈ S for Hⁿ⌞S-a.e. x (ae_restrict_mem, S Borel).
+
+9. Conclusion. Take such an x, any k, z ∈ B_k with χ_k(z) = x, and Q such that Σ_k = χ_k(B̄_{ρ_k}(c_k)) has approximate tangent space Q at x. Then x ∈ S ∩ χ_k(B_k) = A_k, so by step 8 S has approximate tangent space Q at x. ∎
+
+## Key steps
+
+1. Σ_k = χ_k(B̄_k) is compact and has finite Hⁿ-measure (Lipschitz image of a compact ball).
+2. A_k = S ∩ χ_k(B_k) is Borel by Lusin–Souslin, with A_k ⊆ Σ_k and A_k ⊆ S.
+3. (TL) for (A_k, Σ_k) and for (A_k, S) with U = ℝ^P: a.e. on A_k, Σ_k-tangent Q ⇒ A_k-tangent Q ⇒ S-tangent Q.
+4. Move to Hⁿ⌞S via ae_restrict_iff', intersect over k (ae_all_iff), and apply at x = χ_k(z) ∈ A_k.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat parent-child-handoff.json, parent-supplied-plan.md of node root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f08a01d1b0; slice_family decomposition-v1.json (node ...-e999363692)`
+- `python3 -I scan of dag.json: sibling nodes under slice_family-a1 (image_tangent frozen type), depth/status counts, regex 'implicit function|level set|implicitFunction|regular level|inverse function|toOpenPartialHomeomorph|Lindel' over statements, overlapping lean_statement scan ('ᗮ'+'Submodule.map', 'ker (fderiv', 'closedBall (c k)')`
+- `grep -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem countablyRectifiable|theorem HasApproximateTangentSpaceAt' -r simongmt/Poincare/SimonGMT`
+- `grep -rln 'implicitFunction|toOpenPartialHomeomorph|localInverse|implicit function|level set' simongmt/Poincare`
+- `grep -rn 'theorem.*image.*le|euclideanHausdorffMeasure_image_le' simongmt/Poincare/SimonGMT`
+- `ls mathlib/Mathlib/Analysis/Calculus/{Implicit.lean,ImplicitContDiff.lean,ImplicitFunction,InverseFunctionTheorem}; grep -n 'theorem|def' ImplicitContDiff.lean InverseFunctionTheorem/ContDiff.lean`
+- `grep -rn 'μHE\[' and theorem list of mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep hausdorffMeasure_image_le mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep coe_comp/toLinearMap_comp mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `#check probes in contract scope: MeasurableSet.image_of_continuousOn_injOn, ContDiffAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.hasFDerivAt_symm, OpenPartialHomeomorph.restrOpen, ContinuousLinearEquiv.isOpen, ContinuousLinearMap.prodₗᵢ, LinearMap.exists_extend, LinearEquiv.ofFinrankEq, TopologicalSpace.isOpen_iUnion_countable, ball_subset_interior_closedBall, countablyRectifiable_image_contDiffOn_open, euclideanHausdorffMeasure_image_le_of_lipschitzOn, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, ae_restrict_iff', ae_all_iff`
+- `git for-each-ref refs/heads | xargs git grep -l dor_lmbsf_pst (no match); survey of extra imports added to Submission.lean in proof branches`
+- `python3 -I verifier lean_contract.validate_lean_statement + gmt-compare.child_modules(contract mode) on the 4 child statements; lake env lean on generated challenge modules and on /tmp/pst-decomp/{Assembly,Children,IFT,All}.lean with #print axioms`
+- `book: sed chapter-06.txt 1150-1185 (Lemma 4.1), chapter-03.txt 20-60 (Lemma 1.2), 100-140 (Theorem 1.6), 437-445 (2.10), chapter-02.txt 1470-1495 (IFT remark, 6.4)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f08a01d1b0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ImplicitContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/pst-decomp/All.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. No existing declaration states a regular-level-set chart (implicit function theorem), a countable chart cover, or the patch tangent-plane transfer. SimonGMT has no implicit-function or level-set chart lemma; Chapter08/ConstancyNormalCharts only does local inverses of normal coordinates.
+
+No DAG node or branch uses dor_lmbsf_pst_* and no node has an overlapping statement, so all 4 children get fresh names.
+
+Reusable library facts for the child proofs:
+- Mathlib inverse function theorem: ContDiffAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.hasFDerivAt_symm and restrOpen. These need import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff, which is built.
+- ContinuousLinearEquiv.isOpen, LinearMap.exists_extend, LinearEquiv.ofFinrankEq, TopologicalSpace.isOpen_iUnion_countable.
+- Lusin–Souslin: MeasurableSet.image_of_continuousOn_injOn.
+- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn, reachable from Submission.
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume.
+- Chapter03.countablyRectifiable_image_contDiffOn_open (import Poincare.SimonGMT.Chapter03.SubmanifoldCover, built) and countablyRectifiable_iUnion.
+
+Lean checks:
+- All 4 child types pass validate_lean_statement and elaborate in the exact comparator scope.
+- All 4 children have complete scratch proofs depending only on propext, Classical.choice and Quot.sound.
+- The exact frozen parent type is proved from the children plus the sibling dor_lmbsf_c1_image_approxTangent; its only sorryAx is the stub for that sibling (/tmp/pst-decomp/All.lean).
