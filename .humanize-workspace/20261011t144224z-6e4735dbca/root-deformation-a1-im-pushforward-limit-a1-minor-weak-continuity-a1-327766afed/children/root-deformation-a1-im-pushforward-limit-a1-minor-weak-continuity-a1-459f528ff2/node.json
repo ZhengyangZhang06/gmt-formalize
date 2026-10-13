@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1.det_contdiff-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1",
+  "depth": 5,
+  "title": "The determinant of a square matrix of C^m functions is C^m (Leibniz formula; parent Step 2)",
+  "statement": "Let k, n ∈ ℕ and let m ∈ WithTop ℕ∞ be any smoothness order in the sense of Mathlib's ContDiff: a finite order, m = ∞ (C^∞), or m = ω (real analytic). For t, s ∈ Fin n let M_{t,s} : ℝ^k → ℝ (M : Fin n → Fin n → Eucl k → ℝ) be functions, each of class C^m. Then the function w ↦ det(M_{t,s}(w))_{t,s ∈ Fin n}, the determinant of the n×n real matrix Matrix.of (fun t s => M t s w), is of class C^m on ℝ^k = Eucl k. For n = 0 this function is the constant 1.",
+  "lean_statement": "∀ (k n : ℕ) (m : WithTop ℕ∞) (M : Fin n → Fin n → Eucl k → ℝ), (∀ t s, ContDiff ℝ m (M t s)) → ContDiff ℝ m (fun w => Matrix.det (Matrix.of fun t s : Fin n => M t s w))",
+  "lean_name": "deformation_ipl_mwc_mis_det_contDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-459f528ff2-a1"
+}

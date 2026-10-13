@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1.hessian_symm-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1",
+  "depth": 5,
+  "title": "Schwarz symmetry of mixed directional second derivatives of a C² function (parent Step 1)",
+  "statement": "Let k ∈ ℕ and let f : ℝ^k → ℝ (ℝ^k = Eucl k = EuclideanSpace ℝ (Fin k)) be of class C² (ContDiff ℝ 2 f). For u ∈ ℝ^k write ∂_u f(y) := Df(y)u = fderiv ℝ f y u. Then for all x, u, v ∈ ℝ^k the derivative at x in direction v of y ↦ ∂_u f(y) equals the derivative at x in direction u of y ↦ ∂_v f(y): fderiv ℝ (fun y => fderiv ℝ f y u) x v = fderiv ℝ (fun y => fderiv ℝ f y v) x u.",
+  "lean_statement": "∀ (k : ℕ) (f : Eucl k → ℝ), ContDiff ℝ 2 f → ∀ x u v : Eucl k, fderiv ℝ (fun y : Eucl k => fderiv ℝ f y u) x v = fderiv ℝ (fun y : Eucl k => fderiv ℝ f y v) x u",
+  "lean_name": "deformation_ipl_mwc_pi_hessian_symm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-1958a2a21a-a1"
+}

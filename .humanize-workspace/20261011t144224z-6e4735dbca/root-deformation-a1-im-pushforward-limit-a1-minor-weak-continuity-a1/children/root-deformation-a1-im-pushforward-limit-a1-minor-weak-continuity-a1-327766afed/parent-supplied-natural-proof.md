@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1`
+- Child DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step (3.2)(ii) of the parent proof (“By (i), M_{a,b}(v) = Σ_q[∂_{b(q)}v^{a(0)}·C_q(v) + v^{a(0)}·∂_{b(q)}C_q(v)] = Σ_q ∂_{b(q)}(v^{a(0)}C_q(v)) near K. Multiplying by φ and integrating by parts in the direction e_{b(q)} … gives (P)”), for C² rows V_t (in the parent V_t = v^{a(t)}) defined on all of ℝ^k. The integration by parts is performed on the compactly supported function V_0·φ·C_q, so no boundary terms occur.
+
+Notation. λ = Lebesgue measure on ℝ^k = Eucl k (volume); e_i := EuclideanSpace.single i 1; ∂_i f(w) := fderiv ℝ f w (e_i); K := tsupport φ, a compact set.
+
+1. (Laplace expansion.) For every w, Mathlib Matrix.det_succ_row_zero gives det A(w) = Σ_q (−1)^q A_{0q}(w) det(A(w).submatrix Fin.succ q.succAbove), and the submatrix has entries A_{t.succ, q.succAbove s}(w) = ∂_{b(q.succAbove s)}V_{t.succ}(w). Since A_{0q} = ∂_{b(q)}V_0, this reads det A(w) = Σ_q ∂_{b(q)}V_0(w)·C_q(w).
+
+2. (Regularity.) Since V_t is C², each entry w ↦ ∂_iV_t(w) is C¹ (fderiv ℝ V_t is C¹; evaluate at the constant vector e_i). By the Leibniz formula (Matrix.det_apply), C_q is a finite sum of ± products of such entries, hence C¹. V_0 is C² and φ is C¹, so ∂_iφ is continuous.
+
+3. (Supports and integrability.) φ vanishes outside K, and so does each ∂_iφ: if w ∉ K, then φ vanishes on the open neighbourhood Kᶜ of w, so fderiv ℝ φ w = 0 (Mathlib support_fderiv_subset). Hence each of the functions φ·det A, V_0·C_q·∂_{b(q)}φ, ∂_{b(q)}V_0·φ·C_q and V_0·φ·∂_{b(q)}C_q (where ∂_{b(q)}C_q(w) = fderiv ℝ C_q w (e_{b(q)})) is continuous and vanishes outside the compact set K; so each has compact support and is λ-integrable (Continuous.integrable_of_hasCompactSupport).
+
+4. (A directional derivative of a compactly supported C¹ function has integral 0.) Let h : ℝ^k → ℝ be C¹ with compact support and e ∈ ℝ^k. Then ∫ fderiv ℝ h w (e) dλ(w) = 0.
+ Proof. h is Lipschitz (Mathlib ContDiff.lipschitzWith_of_hasCompactSupport, with n = 1 ≠ 0). The constant function f :≡ 1 is Lipschitz with constant 0. Mathlib's integration by parts for Lipschitz functions (LipschitzWith.integral_lineDeriv_mul_eq in the Rademacher file; λ is an additive Haar measure on the finite-dimensional space ℝ^k) gives ∫ lineDeriv ℝ f w e · h(w) dλ = ∫ lineDeriv ℝ h w (−e) · f(w) dλ. The left side is 0, because the line derivative of a constant function is 0 (unfold lineDeriv: the derivative of the constant t ↦ 1 is 0). On the right, h is differentiable, so lineDeriv ℝ h w (−e) = fderiv ℝ h w (−e) = −fderiv ℝ h w (e) (DifferentiableAt.lineDeriv_eq_fderiv and linearity). Hence −∫ fderiv ℝ h w (e) dλ = 0. [Equivalent route: ∫ h(w + te) dλ(w) = ∫ h dλ for all t by translation invariance (integral_add_right_eq_self); differentiating at t = 0 under the integral sign (hasDerivAt_integral_of_dominated_loc_of_deriv_le) gives the claim.]
+
+5. (One integration by parts for each q.) Fix q and put h_q := V_0·φ·C_q. It is C¹ (Step 2) and vanishes outside K, so it has compact support. By the product rule, fderiv ℝ h_q w (e_{b(q)}) = ∂_{b(q)}V_0(w)·φ(w)·C_q(w) + V_0(w)·∂_{b(q)}φ(w)·C_q(w) + V_0(w)·φ(w)·∂_{b(q)}C_q(w). Integrating over ℝ^k, using Step 4 for h_q and e = e_{b(q)}, and linearity of the integral (all three terms are integrable by Step 3):
+ ∫ ∂_{b(q)}V_0·φ·C_q dλ = −∫ V_0·C_q·∂_{b(q)}φ dλ − ∫ V_0·φ·∂_{b(q)}C_q dλ.
+
+6. (Summation and the Piola identity.) By Step 1 and linearity (finite sum of integrable functions, Step 3),
+ ∫ φ det A dλ = Σ_q ∫ ∂_{b(q)}V_0·φ·C_q dλ = −Σ_q ∫ V_0·C_q·∂_{b(q)}φ dλ − ∫ V_0·φ·(Σ_q ∂_{b(q)}C_q) dλ.
+ The sibling piola_identity, applied to the C² rows W_t := V_{t.succ} (t ∈ Fin r) and the same b, states Σ_q fderiv ℝ C_q w (e_{b(q)}) = 0 for every w (its c_q is exactly our C_q, since W t = V t.succ). So the last integrand vanishes identically and
+ ∫ φ(w)·det A(w) dλ(w) = −Σ_q ∫ V_0(w)·C_q(w)·∂_{b(q)}φ(w) dλ(w),
+ which is the claim; in Lean the right-hand integrand is V 0 w * ((-1 : ℝ) ^ (q : ℕ) * Matrix.det (…)) * fderiv ℝ φ w (EuclideanSpace.single (b q) 1). ∎ (For k = 0 there is no b : Fin (r+1) → Fin 0, so the statement is vacuous.)
+
+Formalization notes. Available under the frozen import (checked; do not add imports): Matrix.det_succ_row_zero, Matrix.det_apply, support_fderiv_subset, HasCompactSupport.fderiv, Continuous.integrable_of_hasCompactSupport, ContDiff.lipschitzWith_of_hasCompactSupport, LipschitzWith.integral_lineDeriv_mul_eq, DifferentiableAt.lineDeriv_eq_fderiv, hasDerivAt_integral_of_dominated_loc_of_deriv_le, integral_add_right_eq_self, integral_finsetSum, HasFDerivAt.mul. NOT available: integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable and the rest of Mathlib's LineDeriv/IntegrationByParts file (it is not in the import closure).
+
+## Key steps
+
+1. Laplace expansion along row 0: det A = Σ_q ∂_{b(q)}V_0·C_q.
+2. All integrands are continuous and supported in tsupport φ (fderiv φ vanishes off tsupport φ), hence integrable.
+3. ∫ ∂_e h = 0 for C¹ compactly supported h (LipschitzWith.integral_lineDeriv_mul_eq with f ≡ 1).
+4. Apply it to h_q = V_0·φ·C_q in direction e_{b(q)} and expand by the product rule.
+5. Sum over q; the sibling piola_identity (W_t := V_{t.succ}) kills Σ_q ∂_{b(q)}C_q, leaving −Σ_q ∫ V_0·C_q·∂_{b(q)}φ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886 = git HEAD; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (both byte-identical)`
+- `python3 -I over dag.json: this node (depth 3, status decomposing, attempt 1, depends_on root.compactness_mass_bounds-a1.covector_expansion-a1) and the parent's decomposition-v3.json (format of reused children)`
+- `python3 -I regex over dag.json titles/statements/lean statements: mollif|Piola|dense in|density of|C_c|integration by parts|weak-*|weak star|cofactor|convolution|minors|smooth approximation|ContDiffBump`
+- `python3 -I over dag.json: status, candidate_commit, title/statement/lean_statement equality with the handoff for constancy_mdc_smooth_approx_identity_ae_tendsto, slicing_mb_sa_mollify_lipschitz_hasFDerivAt, slicing_mb_sa_mollify_lipschitz_close, cmb_covector_eq_sum_coord_smul_wedge (all accepted, equal); lean_name collisions for deformation_ipl_mwc_* (none)`
+- `grep -rn deformation_ipl_mwc over GMT/, the snapshot project, simongmt/Poincare and the snapshot Mathlib (no match)`
+- `rg -n 'abbrev Covector|SimonMultiIndex|def wedgeCovectors|theorem wedgeCovectors_apply_det|def euclideanCovectorCoordinate' simongmt/Poincare/SimonGMT`
+- `rg -n 'theorem norm_fderiv_le_of_lipschitzOn|LipschitzOnWith.extend_real|extend_finite_dimension|lipschitzExtensionConstant' snapshot Mathlib`
+- `rg -n '^theorem' Mathlib/Analysis/Calculus/Rademacher.lean and Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean; sed ContinuousMapDense.lean 135-240, LineDeriv/IntegrationByParts.lean 215-245, ContDiff/Convolution.lean 50-100 and 415-435, Matrix/AbsoluteValue.lean det_le, ContDiff/RCLike.lean lipschitzWith_of_hasCompactSupport, FDeriv/Mul.lean finsetProd`
+- `git log --all -G'^import' -- GMT/Ch06/Submission.lean; git show cdfc95dc (leaf gate rejects added imports); git show 2219dd32 (accepted ae-mollifier proof uses IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub)`
+- `lake env lean /tmp/mwc_decomp/build/Avail.lean, build_v2/Avail2.lean, build_v2/Avail3.lean, build_v2/Small2.lean (#check availability under import GMT.Ch06.Submission)`
+- `python3 -I /tmp/mwc_decomp/gen.py (verifier lean_contract.validate_lean_statement + gmt-compare child_modules, contract mode) and lake env lean on the eleven /tmp/mwc_decomp/build_final/*_challenge.lean (all exit 0, sorry warnings only)`
+- `lake env lean /tmp/mwc_decomp/build/Assembly.lean, build_v2/F_from_E.lean, build_v2/E_from_AD.lean, build_v2/RefImpl.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `grep 'Your solution is okay' in comparator-v1.log and isolated-comparator-result.json (passed: true) of the four reused nodes`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1/speculative-prompt-v4.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-covector-expansion-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-fderiv-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-close-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/mwc_decomp/build_final`
+- `/tmp/mwc_decomp/build/Assembly.lean`
+- `/tmp/mwc_decomp/build_v2/F_from_E.lean`
+- `/tmp/mwc_decomp/build_v2/E_from_AD.lean`
+- `/tmp/mwc_decomp/build_v2/RefImpl.lean`
+- `/tmp/mwc_decomp/build/Avail.lean`
+- `/tmp/mwc_decomp/build_v2/Avail2.lean`
+- `/tmp/mwc_decomp/build_v2/Avail3.lean`
+
+Pinned revisions are confirmed (HEAD = project_commit), and Contract = Submission = the snapshot Contract byte-for-byte.
+No existing proof: neither Mathlib, SimonGMT nor any accepted DAG node proves weak continuity of Jacobian minors, the Piola identity or L¹-density by smooth functions. (The r = 1 analogue slicing_im_ll_gradient_weak_star and the density node slicing_im_ll_gws_smooth_dense are not accepted.) Hence seven new children; their names deformation_ipl_mwc_* collide with nothing.
+Reused, with byte-identical types and comparator-passed: cmb_covector_eq_sum_coord_smul_wedge, constancy_mdc_smooth_approx_identity_ae_tendsto, slicing_mb_sa_mollify_lipschitz_hasFDerivAt, slicing_mb_sa_mollify_lipschitz_close.
+Import closure: the leaf gate forbids new imports (commit cdfc95dc).
+- Available in the frozen closure: SimonGMT wedgeCovectors_apply_det; Mathlib norm_fderiv_le_of_lipschitzOn, LipschitzOnWith.extend_real, extend_finite_dimension, LipschitzOnWith.ae_differentiableWithinAt_of_mem, LipschitzWith.integral_lineDeriv_mul_eq, HasCompactSupport.contDiff_convolution_left/right, ContDiffAt.isSymmSndFDerivAt, HasFDerivAt.finsetProd, Matrix.det_succ_row_zero, Matrix.det_apply, measurable_fderiv(_apply_const), tendsto_integral_filter_of_dominated_convergence, IsCompact.exists_cthickening_subset_open, ContDiff.lipschitzWith_of_hasCompactSupport.
+- Not available: ContDiffBump.normed and BumpFunction/Convolution, ContinuousMapDense, LineDeriv/IntegrationByParts, Matrix.det_le. The children replace them by the reused siblings or by short arguments.
+Lean checks:
+- All eleven statements validate and elaborate in the exact comparator scope.
+- Three links compile with only propext, Classical.choice and Quot.sound: parent ⇐ coeff_minor_continuity + covector expansion; coeff_minor_continuity ⇐ minor_weak_star; minor_weak_star ⇐ test_density + minor_ibp_lipschitz.
