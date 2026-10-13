@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6f9557323b6b2236d30f48289e1eeb9876ac2f126187afa857af96ede046e072",
+  "git_delta": {
+    "base_commit": "6fa3589851ea00d7e77df248a17df5f564b61f26",
+    "candidate_commit": "f2bdf1e59b90b958fe972ac9311289ac2fa6a482",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_mlb_exists_form_lintegral_coordNorm_le",
+    "diff_sha256": "646a9a756c44b62365a93c9c3c94d83c084363eb70ea4ccfb1a6fbadda05fe23",
+    "source_sha256": "1bc5af4621450e0b3466e46f6e3b7f2c4cd95b1c22bca25e78fdb1d223d9e2f8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_mlb_exists_form_lintegral_coordNorm_le",
+      "statement": "∀ (N k : ℕ) (μ : Measure (Eucl N)) (κ : Eucl N → NVector (Eucl N) k) (R : ℝ), (∀ γ : SimonMultiIndex k N, IntegrableOn (fun x => euclideanNVectorCoordinate (κ x) γ) (ball (0 : Eucl N) R) μ) → ∀ ε : ℝ, 0 < ε → ∃ ω : Eucl N → Covector (Eucl N) k, Continuous ω ∧ tsupport ω ⊆ ball (0 : Eucl N) R ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ Integrable (fun x => κ x (ω x)) μ ∧ ∫⁻ x in ball (0 : Eucl N) R, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ ≤ ENNReal.ofReal (∫ x, κ x (ω x) ∂μ + ε)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
