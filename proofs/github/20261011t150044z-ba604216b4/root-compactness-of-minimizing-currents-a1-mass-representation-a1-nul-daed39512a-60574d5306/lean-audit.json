@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "304be3aa20ee29a2fe7ff268e0d6fd47d1388cc8939a88a08150d471d85ef542",
+  "git_delta": {
+    "base_commit": "5f22c59eefa552dbd6fc880d5bf468ca71a5a64b",
+    "candidate_commit": "abe6c20addec56e62a5550b61bf4c205ffb42e42",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_measure_null_of_orient_ae_zero",
+    "diff_sha256": "253b139cf7881bd190fba4b453f37bad13e0dd5a22ea7eac7b55c150b2890e84",
+    "source_sha256": "c4762697aa254e8ef0f2281b0b71fb3060f398aefe7dfde9915484486df94aa0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_measure_null_of_orient_ae_zero",
+      "statement": "∀ (P n : ℕ) (U W C : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), MeasurableSet W → MeasurableSet C → C ⊆ W → μ W < ∞ → T.massOn W = μ W → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → (∀ᵐ x ∂μ, x ∈ C → ξ x = 0) → μ C = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
