@@ -815,4 +815,61 @@ theorem dohr_eb_sch_liou_poly_sublinear_const : ∀ (ℓ m : ℕ) (α C : ℝ) (
 
 end Submission
 
+/-- Abstract Liouville theorem.  Let `S` be a class of `C¹` maps `ℝⁿ → ℝ^ℓ` that is closed under
+directional derivatives and satisfies the Caccioppoli inequality on balls centred at `0`.  If
+`W ∈ S` satisfies `‖DW(x) - DW(0)‖ ≤ K |x|^α` with `0 < α < 1`, then `DW` is constant. -/
+theorem Submission.dohr_eb_sch_liou_abstract : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Set (Rn n → Rn ℓ)) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 ≤ K → 0 ≤ C → (∀ V ∈ S, ContDiff ℝ 1 V) → (∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S) → (∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ, ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2) → W ∈ S → (∀ x : Rn n, ‖fderiv ℝ W x - fderiv ℝ W 0‖ ≤ K * ‖x‖ ^ α) → ∀ x : Rn n, fderiv ℝ W x = fderiv ℝ W 0 := by
+  intro n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS hgrowth x
+  -- It suffices to show `DW(x) w = DW(0) w` for every `w`.
+  ext1 w
+  -- `D g = (z ↦ Dg(z) x)` is the directional derivative along `x`.
+  set D : (Rn n → Rn ℓ) → (Rn n → Rn ℓ) := fun g z => fderiv ℝ g z x with hD
+  -- `U_j := D^[j] (z ↦ DW(z) w)` lies in `S` by (S2), hence is `C¹` by (S1).
+  have hUS : ∀ j : ℕ, (D^[j] (fun z => fderiv ℝ W z w)) ∈ S := by
+    intro j
+    induction j with
+    | zero => exact hS2 W hWS w
+    | succ j ih =>
+      rw [Function.iterate_succ_apply']
+      exact hS2 _ ih x
+  -- `G_j(t) := U_j(t x)`; by the chain rule `G_j' = G_{j+1}`.
+  let G : ℕ → ℝ → Rn ℓ := fun j t => (D^[j] (fun z => fderiv ℝ W z w)) (t • x)
+  have hderiv : ∀ j < n + 1, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t := by
+    intro j _ t
+    have hdiff : DifferentiableAt ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) :=
+      ((hS1 _ (hUS j)).differentiable one_ne_zero) _
+    have h1 : HasDerivAt (fun s : ℝ => s • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    have h2 := hdiff.hasFDerivAt.comp_hasDerivAt t h1
+    have h3 : G (j + 1) t = fderiv ℝ (D^[j] (fun z => fderiv ℝ W z w)) (t • x) x := by
+      simp only [G]
+      rw [Function.iterate_succ_apply']
+    rw [h3]
+    exact h2
+  -- `G_{n+1}(t) = DU_n(t x) x = 0` by `chain_vanish` with `u := x`.
+  have hzero : ∀ t : ℝ, G (n + 1) t = 0 := by
+    intro t
+    simp only [G]
+    rw [Function.iterate_succ_apply']
+    have := Submission.dohr_eb_sch_liou_chain_vanish n ℓ α K C S W hα hα1 hK hC hS1 hS2 hS3 hWS
+      hgrowth x w (t • x)
+    simp only [hD] at this ⊢
+    rw [this]
+    rfl
+  -- Growth: `|G_0(t) - G_0(0)| ≤ (K |x|^α |w|) |t|^α`.
+  have hgrow : ∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
+    intro t
+    simp only [G, Function.iterate_zero, id, zero_smul]
+    calc ‖fderiv ℝ W (t • x) w - fderiv ℝ W 0 w‖
+        = ‖(fderiv ℝ W (t • x) - fderiv ℝ W 0) w‖ := by simp
+      _ ≤ ‖fderiv ℝ W (t • x) - fderiv ℝ W 0‖ * ‖w‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ (K * ‖t • x‖ ^ α) * ‖w‖ := by gcongr; exact hgrowth _
+      _ = (K * ‖x‖ ^ α * ‖w‖) * |t| ^ α := by
+        rw [norm_smul, Real.norm_eq_abs, Real.mul_rpow (abs_nonneg _) (norm_nonneg _)]
+        ring
+  -- `poly_sublinear_const` with `m := n + 1` gives `G_0(1) = G_0(0)`, i.e. `DW(x) w = DW(0) w`.
+  have := Submission.dohr_eb_sch_liou_poly_sublinear_const ℓ (n + 1) α (K * ‖x‖ ^ α * ‖w‖) G
+    hα1 hderiv hzero hgrow 1
+  simpa [G] using this
+
 end GMT.Ch05
