@@ -1,0 +1,606 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1",
+      "key": "ball_rescale",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+              "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+              "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+              "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+              "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+              "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+              "/tmp/dorag-ha-approx-split/Types.lean",
+              "/tmp/dorag-ha-approx-split/Names.lean",
+              "/tmp/dorag-ha-approx-split/Assembly.lean",
+              "/tmp/dorag-ha-approx-split/Checks.lean",
+              "/tmp/dorag-ha-approx-split/Checks2.lean",
+              "/tmp/dorag-ha-approx-split/Checks3.lean",
+              "/tmp/dorag-ha-approx-split/Checks4.lean",
+              "/tmp/dorag-ha-approx-split/Checks5.lean",
+              "/tmp/dorag-ha-approx-split/Full.lean"
+            ],
+            "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1",
+        "subproblem": {
+          "key": "ball_rescale",
+          "title": "Change of variables between the unit ball and the ball of radius r",
+          "statement": "Let n ∈ ℕ, F : ℝⁿ → ℝ (ℝⁿ = Euclid n) arbitrary, and r > 0. Then y ↦ F(r·y) is integrable on B̆_1(0) if and only if F is integrable on B̆_r(0), and ∫_{B̆_1(0)} F(r·y) dy = r^{−n}·∫_{B̆_r(0)} F(x) dx (Lebesgue/Bochner integrals, with the convention that the integral of a non-integrable function is 0).",
+          "lean_statement": "∀ (n : ℕ) (F : Euclid n → ℝ) (r : ℝ), 0 < r → (IntegrableOn (fun y => F (r • y)) (ball (0 : Euclid n) 1) ↔ IntegrableOn F (ball (0 : Euclid n) r)) ∧ ∫ y in ball (0 : Euclid n) 1, F (r • y) = (r ^ n)⁻¹ * ∫ x in ball (0 : Euclid n) r, F x",
+          "lean_name": "dorag_haa_ball_rescale_integral",
+          "depends_on": [],
+          "natural_proof": "Source: the change of variables x = R₀y of step B1 of the parent proof, isolated with r in place of R₀. Fix n, F and r > 0, and write B_ρ := ball (0 : Euclid n) ρ.\n1. (Balls.) r·B_1 = B_r (smul_unitBall_of_pos; pointwise scalar action on sets, open scoped Pointwise). Moreover, for every y, r·y ∈ B_r if and only if y ∈ B_1, because ‖r·y‖ = r‖y‖ and r > 0.\n2. (Dimension and measure.) finrank ℝ (Euclid n) = n (finrank_euclideanSpace_fin), and Lebesgue measure on Euclid n is an additive Haar measure.\n3. (Integral identity.) Measure.setIntegral_comp_smul_of_pos (Haar measure volume, function F, set B_1, r > 0) states ∫_{B_1} F(r·y) dy = (r^{finrank ℝ (Euclid n)})⁻¹ • ∫_{r·B_1} F(x) dx, and it holds for every F because non-integrable functions have integral 0 on both sides. By steps 1–2 the right side equals r^{−n}·∫_{B_r} F(x) dx.\n4. (Integrability.) For a measurable set s, a function is integrable on s if and only if its indicator function on s is integrable on ℝⁿ (integrable_indicator_iff; balls are measurable). By step 1, for every y, the indicator of y ↦ F(r·y) on B_1, evaluated at y, equals H(r·y), where H is the indicator of F on B_r (both equal F(r·y) if y ∈ B_1 and 0 otherwise). By integrable_comp_smul_iff (Haar measure, r ≠ 0), y ↦ H(r·y) is integrable if and only if H is integrable. Chaining these equivalences: y ↦ F(r·y) is integrable on B_1 if and only if F is integrable on B_r. ∎",
+          "proof_key_steps": [
+            "r·B̆_1(0) = B̆_r(0), and y ∈ B̆_1(0) ⟺ r·y ∈ B̆_r(0).",
+            "Measure.setIntegral_comp_smul_of_pos with finrank ℝ (Euclid n) = n gives the integral identity for every F.",
+            "Integrability: pass to indicator functions and use integrable_comp_smul_iff."
+          ]
+        },
+        "audit": {
+          "key": "ball_rescale",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The arbitrary-function proposition matches the prose. The pinned Haar theorem gives the integral identity without measurability or integrability assumptions. The indicator argument independently proves integrability equivalence, validating both the integrable and non-integrable cases. Positive-radius and dimension factors are correct."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.l2_pairing-a1",
+      "key": "l2_pairing",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+              "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+              "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+              "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+              "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+              "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+              "/tmp/dorag-ha-approx-split/Types.lean",
+              "/tmp/dorag-ha-approx-split/Names.lean",
+              "/tmp/dorag-ha-approx-split/Assembly.lean",
+              "/tmp/dorag-ha-approx-split/Checks.lean",
+              "/tmp/dorag-ha-approx-split/Checks2.lean",
+              "/tmp/dorag-ha-approx-split/Checks3.lean",
+              "/tmp/dorag-ha-approx-split/Checks4.lean",
+              "/tmp/dorag-ha-approx-split/Checks5.lean",
+              "/tmp/dorag-ha-approx-split/Full.lean"
+            ],
+            "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.l2_pairing-a1",
+        "subproblem": {
+          "key": "l2_pairing",
+          "title": "Strong L²(B_R) convergence implies convergence of the pairings with a fixed L² function",
+          "statement": "Let n ∈ ℕ, R ∈ ℝ and μ := Lebesgue measure restricted to B_R := B̆_R(0) ⊆ ℝⁿ (ℝⁿ = Euclid n). Let f_j : ℝⁿ → ℝ (j ∈ ℕ), W : ℝⁿ → ℝ and g : ℝⁿ → ℝ all belong to L²(μ) (MemLp · 2 μ), and suppose ∫_{B_R} (f_j − W)² → 0 as j → ∞. Then ∫_{B_R} f_j·g → ∫_{B_R} W·g as j → ∞.",
+          "lean_statement": "∀ (n : ℕ) (R : ℝ) (f : ℕ → Euclid n → ℝ) (W g : Euclid n → ℝ), (∀ j, MemLp (f j) 2 (volume.restrict (ball (0 : Euclid n) R))) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → MemLp g 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, f j x * g x) atTop (𝓝 (∫ x in ball (0 : Euclid n) R, W x * g x))",
+          "lean_name": "dorag_haa_l2_pairing_tendsto",
+          "depends_on": [],
+          "natural_proof": "Source: the Cauchy–Schwarz bullet of step A3 of the parent proof, stated for a general L² test function. Notation: μ := volume.restrict (ball (0 : Euclid n) R); all integrals are with respect to μ, i.e. over B_R (no sign condition on R is needed). Put a_j := ∫ (f_j − W)² and b := ∫ g².\n1. (Integrability and linearity.) For each j, f_j − W ∈ L²(μ) (MemLp.sub). The product of two L²(μ) functions is μ-integrable (Hölder with exponents 2, 2, 1: MemLp.integrable_mul; note that MemLp.integrable_sq lives in Mathlib.MeasureTheory.Function.L2Space, which the frozen contract does not import). Hence f_j·g and W·g are integrable and, by linearity of the integral (integral_sub), ∫ f_j g − ∫ W g = ∫ (f_j − W)·g.\n2. (Cauchy–Schwarz.) The functions |f_j − W| and |g| are nonnegative and lie in L²(μ) (MemLp.abs). Hölder's inequality for nonnegative functions with p = q = 2 (integral_mul_le_Lp_mul_Lq_of_nonneg with Real.HolderConjugate.two_two; note ENNReal.ofReal 2 = 2) gives, together with |∫φ| ≤ ∫|φ| and |xy| = |x||y|,\n   |∫ (f_j − W)·g| ≤ ∫ |f_j − W|·|g| ≤ (∫ |f_j − W|²)^{1/2}·(∫ |g|²)^{1/2} = √(a_j)·√b,\n   where |x|² = x² and x^{1/2} = √x (Real.sqrt_eq_rpow) were used.\n3. (Limit of the bound.) a_j → 0 by hypothesis, and √ is continuous with √0 = 0, so √(a_j) → 0 and √(a_j)·√b → 0.\n4. (Conclusion.) By steps 1–2, 0 ≤ |∫ f_j g − ∫ W g| ≤ √(a_j)·√b for every j, so by step 3 and the squeeze theorem ∫ f_j g − ∫ W g → 0, i.e. ∫_{B_R} f_j·g → ∫_{B_R} W·g. ∎",
+          "proof_key_steps": [
+            "f_j − W ∈ L²; products of L² functions are integrable (MemLp.integrable_mul), so ∫f_jg − ∫Wg = ∫(f_j − W)g.",
+            "Hölder/Cauchy–Schwarz with p = q = 2: |∫(f_j − W)g| ≤ (∫(f_j − W)²)^{1/2}(∫g²)^{1/2}.",
+            "The bound tends to 0 because ∫(f_j − W)² → 0 and √ is continuous at 0; squeeze."
+          ]
+        },
+        "audit": {
+          "key": "l2_pairing",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type exactly expresses the prose assumptions and conclusion. L² membership justifies products and integral subtraction; Hölder supplies the stated square-root bound, whose convergence follows by continuity and squeezing. The supplied argument is complete and independent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.lipschitz_ibp-a1",
+      "key": "lipschitz_ibp",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+              "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+              "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+              "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+              "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+              "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+              "/tmp/dorag-ha-approx-split/Types.lean",
+              "/tmp/dorag-ha-approx-split/Names.lean",
+              "/tmp/dorag-ha-approx-split/Assembly.lean",
+              "/tmp/dorag-ha-approx-split/Checks.lean",
+              "/tmp/dorag-ha-approx-split/Checks2.lean",
+              "/tmp/dorag-ha-approx-split/Checks3.lean",
+              "/tmp/dorag-ha-approx-split/Checks4.lean",
+              "/tmp/dorag-ha-approx-split/Checks5.lean",
+              "/tmp/dorag-ha-approx-split/Full.lean"
+            ],
+            "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.lipschitz_ibp-a1",
+        "subproblem": {
+          "key": "lipschitz_ibp",
+          "title": "Integration by parts for a Lipschitz function against a C² test function on a ball (Step 0, first identity)",
+          "statement": "Let n ∈ ℕ and R ∈ ℝ, let u : ℝⁿ → ℝ (ℝⁿ = Euclid n) be Lipschitz with constant L, and let ζ : ℝⁿ → ℝ be of class C² with compact support and tsupport ζ ⊆ B_R := B̆_R(0). Then ∫_{B_R} Σ_{i<n} Du(y)e_i·Dζ(y)e_i dy = −∫_{B_R} u(y)·Σ_{i<n} D²ζ(y)(e_i, e_i) dy, where D = fderiv ℝ (so Du(y) = 0 wherever u is not differentiable), e_i = EuclideanSpace.single i 1, D²ζ(y)(a, b) = iteratedFDeriv ℝ 2 ζ y ![a, b], and integrals are Lebesgue integrals over the open ball.",
+          "lean_statement": "∀ (n : ℕ) (R : ℝ) (u ζ : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ y (EuclideanSpace.single i (1 : ℝ)) = -∫ y in ball (0 : Euclid n) R, u y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+          "lean_name": "dorag_haa_lipschitz_ibp",
+          "depends_on": [],
+          "natural_proof": "Source: Step 0 of the parent proof (the integration by parts used in Simon, Ch. 5, Lemma 3.1, made explicit for Lipschitz functions via Rademacher's theorem). Notation: ℝⁿ = Euclid n with Lebesgue measure (an additive Haar measure); B_ρ := B̆_ρ(0) = ball (0 : Euclid n) ρ (open ball); e_i := EuclideanSpace.single i 1 (so ‖e_i‖ = 1); D := fderiv ℝ (Df(y) = 0 wherever f is not differentiable); D²ζ(y)(a, b) := iteratedFDeriv ℝ 2 ζ y ![a, b]; Δζ(y) := Σ_{i<n} D²ζ(y)(e_i, e_i). ∂_v f(y) := lineDeriv ℝ f y v. No sign condition on R is needed. Fix u (Lipschitz constant L) and ζ as in the statement.\n1. (Both integrands vanish off B_R.) Let y ∉ tsupport ζ. Then ζ ≡ 0 on the open neighbourhood ℝⁿ \\ tsupport ζ of y, so Dζ(y) = 0 and D²ζ(y) = 0 (Mathlib: support_fderiv_subset and support_iteratedFDeriv_subset say that the supports of fderiv ℝ ζ and iteratedFDeriv ℝ 2 ζ lie in tsupport ζ). Since tsupport ζ ⊆ B_R, for every y ∉ B_R both Σ_i Du(y)e_i·Dζ(y)e_i = 0 and u(y)·Σ_i D²ζ(y)(e_i, e_i) = 0. Hence each of the two integrals over B_R equals the same integral over ℝⁿ (setIntegral_eq_integral_of_forall_compl_eq_zero), and it suffices to prove\n   (∗) ∫_{ℝⁿ} Σ_i Du(y)e_i·Dζ(y)e_i dy = −∫_{ℝⁿ} u(y)·Σ_i D²ζ(y)(e_i, e_i) dy.\n2. (Coordinate functions.) Fix i, write e := e_i and g(y) := Dζ(y)e. Because ζ is C², Dζ is C¹ (ContDiff.fderiv_right), so g, the composition of Dζ with the continuous linear evaluation T ↦ T e, is C¹; in particular g is differentiable everywhere. Since support g ⊆ support Dζ ⊆ tsupport ζ, g has compact support (HasCompactSupport.fderiv_apply). A C¹ function with compact support is Lipschitz (ContDiff.lipschitzWith_of_hasCompactSupport); fix such a constant C for g.\n3. (Rademacher integration by parts.) LipschitzWith.integral_lineDeriv_mul_eq, applied to the Lipschitz functions u and g (g compactly supported), the direction e and Lebesgue measure, gives\n   ∫ ∂_e u(y)·g(y) dy = ∫ ∂_{−e} g(y)·u(y) dy.\n4. (Left side.) By Rademacher's theorem (LipschitzWith.ae_differentiableAt) u is differentiable at almost every y, and at such y we have ∂_e u(y) = Du(y)e (DifferentiableAt.lineDeriv_eq_fderiv). Hence Du(y)e·g(y) = ∂_e u(y)·g(y) for a.e. y, so ∫ Du(y)e·Dζ(y)e dy = ∫ ∂_e u(y)·g(y) dy (integral_congr_ae).\n5. (Right side.) As g is differentiable at y, ∂_{−e} g(y) = Dg(y)(−e) = −Dg(y)e. Since Dζ is differentiable at y, the chain rule for evaluation at the constant vector e (fderiv_clm_apply) gives Dg(y)a = D(Dζ)(y)(a)(e) for all a, so Dg(y)e = D(Dζ)(y)(e)(e) = D²ζ(y)(e, e) by iteratedFDeriv_two_apply. Hence ∂_{−e} g(y)·u(y) = −u(y)·D²ζ(y)(e, e) for every y, and steps 3–4 give\n   (∗_i) ∫ Du(y)e_i·Dζ(y)e_i dy = −∫ u(y)·D²ζ(y)(e_i, e_i) dy.\n6. (Integrability.) (a) y ↦ Du(y)e is measurable (measurable_fderiv_apply_const; the derivative of an arbitrary function is measurable) and |Du(y)e| ≤ ‖Du(y)‖·‖e‖ ≤ L for every y, because ‖Du(y)‖ ≤ L everywhere (norm_fderiv_le_of_lipschitz). g is continuous with compact support, hence integrable. So y ↦ Du(y)e·g(y) is integrable (bounded measurable factor times an integrable one: Integrable.bdd_mul). (b) y ↦ u(y)·D²ζ(y)(e, e) is continuous (u is Lipschitz; y ↦ iteratedFDeriv ℝ 2 ζ y is continuous because ζ is C², and evaluation at the fixed pair ![e, e] is continuous) and has compact support (iteratedFDeriv ℝ 2 ζ has compact support by HasCompactSupport.iteratedFDeriv, hence so do its evaluation at ![e, e] and the product with u), so it is integrable.\n7. (Summation.) By step 6, the integral of each finite sum over i is the sum of the integrals (integral_finsetSum), and u(y)·Σ_i D²ζ(y)(e_i, e_i) = Σ_i u(y)·D²ζ(y)(e_i, e_i). Summing (∗_i) over i ∈ Fin n gives (∗) (for n = 0 both sides are 0). By step 1 this is the claimed identity on B_R. ∎",
+          "proof_key_steps": [
+            "Both integrands vanish off tsupport ζ ⊆ B_R (supports of Dζ and D²ζ lie in tsupport ζ), so the ball integrals equal integrals over ℝⁿ.",
+            "For each i, g_i := Dζ(·)e_i is C¹ with compact support, hence Lipschitz.",
+            "LipschitzWith.integral_lineDeriv_mul_eq: ∫ ∂_{e_i}u·g_i = ∫ ∂_{−e_i}g_i·u.",
+            "Rademacher: ∂_{e_i}u = Du(·)e_i a.e.; and ∂_{−e_i}g_i(y) = −Dg_i(y)e_i = −D²ζ(y)(e_i, e_i) by fderiv_clm_apply and iteratedFDeriv_two_apply.",
+            "Each term is integrable (bounded measurable × compactly supported continuous; continuous with compact support), so sum the identities over i."
+          ]
+        },
+        "audit": {
+          "key": "lipschitz_ibp",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact type agree. Support localization, compactly supported C¹ coordinate derivatives, Rademacher's theorem and signed line-derivative integration by parts establish each coordinate identity. The proof separately justifies integrability before summation. It covers arbitrary R and n, without circular reliance or missing hypotheses."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.rescale_conclusion-a1",
+      "key": "rescale_conclusion",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+              "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+              "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+              "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+              "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+              "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+              "/tmp/dorag-ha-approx-split/Types.lean",
+              "/tmp/dorag-ha-approx-split/Names.lean",
+              "/tmp/dorag-ha-approx-split/Assembly.lean",
+              "/tmp/dorag-ha-approx-split/Checks.lean",
+              "/tmp/dorag-ha-approx-split/Checks2.lean",
+              "/tmp/dorag-ha-approx-split/Checks3.lean",
+              "/tmp/dorag-ha-approx-split/Checks4.lean",
+              "/tmp/dorag-ha-approx-split/Checks5.lean",
+              "/tmp/dorag-ha-approx-split/Full.lean"
+            ],
+            "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.rescale_conclusion-a1",
+        "subproblem": {
+          "key": "rescale_conclusion",
+          "title": "Rescaling a unit-scale harmonic approximant to scale R₀ (step B3)",
+          "statement": "Let n ∈ ℕ, ε ∈ ℝ, R₀ > 0 and w, h₁ : ℝⁿ → ℝ (ℝⁿ = Euclid n). Suppose h₁ is C^m on B_1 for every m ∈ ℕ, Σ_{i<n} iteratedFDeriv ℝ 2 h₁ y ![e_i, e_i] = 0 for every y ∈ B_1, ‖Dh₁‖² is integrable on B_1 with ∫_{B_1} ‖Dh₁‖² ≤ 1, and y ↦ (h₁(y) − R₀⁻¹·w(R₀·y))² is integrable on B_1 with ∫_{B_1} (h₁(y) − R₀⁻¹·w(R₀·y))² dy ≤ ε (B_ρ := B̆_ρ(0), D := fderiv ℝ, e_i := EuclideanSpace.single i 1). Then there is h : ℝⁿ → ℝ (namely h(x) = R₀·h₁(R₀⁻¹x)) such that h is C^m on B_{R₀} for every m ∈ ℕ, Σ_{i<n} iteratedFDeriv ℝ 2 h y ![e_i, e_i] = 0 for every y ∈ B_{R₀}, ‖Dh‖² is integrable on B_{R₀} with ∫_{B_{R₀}} ‖Dh‖² ≤ R₀ⁿ, and (h − w)² is integrable on B_{R₀} with ∫_{B_{R₀}} (h − w)² ≤ ε·R₀^{n+2}.",
+          "lean_statement": "∀ (n : ℕ) (ε R₀ : ℝ) (w h₁ : Euclid n → ℝ), 0 < R₀ → (∀ m : ℕ, ContDiffOn ℝ m h₁ (ball (0 : Euclid n) 1)) → (∀ y ∈ ball (0 : Euclid n) 1, ∑ i : Fin n, iteratedFDeriv ℝ 2 h₁ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun y => ‖fderiv ℝ h₁ y‖ ^ 2) (ball (0 : Euclid n) 1) → ∫ y in ball (0 : Euclid n) 1, ‖fderiv ℝ h₁ y‖ ^ 2 ≤ 1 → IntegrableOn (fun y => (h₁ y - R₀⁻¹ * w (R₀ • y)) ^ 2) (ball (0 : Euclid n) 1) → ∫ y in ball (0 : Euclid n) 1, (h₁ y - R₀⁻¹ * w (R₀ • y)) ^ 2 ≤ ε → ∃ h : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R₀)) ∧ (∀ y ∈ ball (0 : Euclid n) R₀, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ IntegrableOn (fun y => ‖fderiv ℝ h y‖ ^ 2) (ball (0 : Euclid n) R₀) ∧ ∫ y in ball (0 : Euclid n) R₀, ‖fderiv ℝ h y‖ ^ 2 ≤ R₀ ^ n ∧ IntegrableOn (fun y => (h y - w y) ^ 2) (ball (0 : Euclid n) R₀) ∧ ∫ y in ball (0 : Euclid n) R₀, (h y - w y) ^ 2 ≤ ε * R₀ ^ (n + 2)",
+          "lean_name": "dorag_haa_rescale_conclusion",
+          "depends_on": [
+            "ball_rescale"
+          ],
+          "natural_proof": "Source: step B3 of the parent proof. Notation: ℝⁿ = Euclid n with Lebesgue measure (an additive Haar measure); B_ρ := B̆_ρ(0) = ball (0 : Euclid n) ρ (open ball); e_i := EuclideanSpace.single i 1 (so ‖e_i‖ = 1); D := fderiv ℝ (Df(y) = 0 wherever f is not differentiable); D²ζ(y)(a, b) := iteratedFDeriv ℝ 2 ζ y ![a, b]; Δζ(y) := Σ_{i<n} D²ζ(y)(e_i, e_i). Fix n, ε, R₀ > 0, w and h₁ as in the statement, and put h(x) := R₀·h₁(R₀⁻¹x); we verify the six properties for this h. Note R₀ⁿ > 0.\n0. (The rescaling map.) The linear map x ↦ R₀⁻¹x sends B_{R₀} into B_1, since ‖R₀⁻¹x‖ = R₀⁻¹‖x‖ < 1 when ‖x‖ < R₀.\n1. (Smoothness.) For every m, h₁ ∘ (R₀⁻¹·) is C^m on B_{R₀}: it is the composition of a function that is C^m on B_1 with a smooth linear map sending B_{R₀} into B_1 (ContDiffOn.comp with step 0). Multiplying by the constant R₀ preserves this, so h is C^m on B_{R₀}.\n2. (First derivative.) For every x ∈ ℝⁿ, Dh(x) = Dh₁(R₀⁻¹x), with no differentiability hypothesis: h = R₀·(h₁ ∘ (R₀⁻¹·)), the derivative commutes with multiplication by a constant scalar (fderiv_const_smul_field), and D(h₁ ∘ (R₀⁻¹·))(x) = R₀⁻¹·Dh₁(R₀⁻¹x) (fderiv_comp_smul; it holds unconditionally because x ↦ R₀⁻¹x is a linear isomorphism: if h₁ is not differentiable at R₀⁻¹x then neither is h₁ ∘ (R₀⁻¹·) at x, and both sides are 0). So Dh(x) = R₀·R₀⁻¹·Dh₁(R₀⁻¹x) = Dh₁(R₀⁻¹x).\n3. (Laplacian.) By step 2, Dh = Dh₁ ∘ (R₀⁻¹·) as functions ℝⁿ → (ℝⁿ →L[ℝ] ℝ), so fderiv_comp_smul (applied to the vector-valued function Dh₁) gives D(Dh)(y) = R₀⁻¹·D(Dh₁)(R₀⁻¹y) for every y. By iteratedFDeriv_two_apply, D²h(y)(a, b) = D(Dh)(y)(a)(b) = R₀⁻¹·D²h₁(R₀⁻¹y)(a, b). Hence Σ_i D²h(y)(e_i, e_i) = R₀⁻¹·Σ_i D²h₁(R₀⁻¹y)(e_i, e_i) = 0 for y ∈ B_{R₀}, since R₀⁻¹y ∈ B_1 (step 0).\n4. (Energy.) Let F(x) := ‖Dh(x)‖² = ‖Dh₁(R₀⁻¹x)‖² (step 2). Then F(R₀y) = ‖Dh₁(y)‖² because R₀⁻¹·(R₀·y) = y. By the sibling lemma ball_rescale (dorag_haa_ball_rescale_integral) with r = R₀: F is integrable on B_{R₀} if and only if y ↦ ‖Dh₁(y)‖² is integrable on B_1, which holds by hypothesis; and ∫_{B_1} ‖Dh₁‖² = R₀^{−n}·∫_{B_{R₀}} F. Hence ∫_{B_{R₀}} ‖Dh‖² = R₀ⁿ·∫_{B_1} ‖Dh₁‖² ≤ R₀ⁿ.\n5. (L² error.) Let F(x) := (h(x) − w(x))² = (R₀h₁(R₀⁻¹x) − w(x))². Then F(R₀y) = (R₀h₁(y) − w(R₀y))² = R₀²·(h₁(y) − R₀⁻¹w(R₀y))². The right side is integrable on B_1 (a constant multiple of an integrable function), so by ball_rescale F is integrable on B_{R₀}; and ball_rescale also gives R₀^{−n}·∫_{B_{R₀}} F = ∫_{B_1} F(R₀y) dy = R₀²·∫_{B_1} (h₁(y) − R₀⁻¹w(R₀y))² dy. Hence ∫_{B_{R₀}} (h − w)² = R₀ⁿ·R₀²·∫_{B_1} (h₁ − R₀⁻¹w(R₀·))² ≤ R₀^{n+2}·ε = ε·R₀^{n+2}.\n6. Steps 1–5 are the six required properties of h. ∎",
+          "proof_key_steps": [
+            "h(x) := R₀h₁(x/R₀); x ↦ x/R₀ maps B_{R₀} into B_1, so h is C^m on B_{R₀}.",
+            "Unconditional scaling: Dh(x) = Dh₁(x/R₀) and D²h(y)(a, b) = R₀⁻¹D²h₁(y/R₀)(a, b), so Δh = 0 on B_{R₀}.",
+            "ball_rescale: ‖Dh‖² is integrable on B_{R₀} and ∫_{B_{R₀}}‖Dh‖² = R₀ⁿ∫_{B_1}‖Dh₁‖² ≤ R₀ⁿ.",
+            "ball_rescale with (h − w)²(R₀y) = R₀²(h₁ − w₁)²(y): integrability and ∫_{B_{R₀}}(h − w)² ≤ εR₀^{n+2}."
+          ]
+        },
+        "audit": {
+          "key": "rescale_conclusion",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and type agree, including arbitrary w and ε. The explicit rescaled h satisfies local smoothness and harmonicity through the verified first- and second-derivative identities. ball_rescale transfers both integrability assertions and gives precisely the R₀ⁿ and R₀^(n+2) bounds. No global smoothness assumption or undeclared child dependency is introduced."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.rescale_hypotheses-a1",
+      "key": "rescale_hypotheses",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+              "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+              "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+              "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+              "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+              "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+              "/tmp/dorag-ha-approx-split/Types.lean",
+              "/tmp/dorag-ha-approx-split/Names.lean",
+              "/tmp/dorag-ha-approx-split/Assembly.lean",
+              "/tmp/dorag-ha-approx-split/Checks.lean",
+              "/tmp/dorag-ha-approx-split/Checks2.lean",
+              "/tmp/dorag-ha-approx-split/Checks3.lean",
+              "/tmp/dorag-ha-approx-split/Checks4.lean",
+              "/tmp/dorag-ha-approx-split/Checks5.lean",
+              "/tmp/dorag-ha-approx-split/Full.lean"
+            ],
+            "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.rescale_hypotheses-a1",
+        "subproblem": {
+          "key": "rescale_hypotheses",
+          "title": "The rescaled function R₀⁻¹w(R₀·) satisfies the unit-scale hypotheses (steps B1–B2)",
+          "statement": "Let n ∈ ℕ, δ ∈ ℝ, R₀ > 0, and let w : ℝⁿ → ℝ (ℝⁿ = Euclid n) be Lipschitz with constant Lw, with ∫_{B_{R₀}} ‖Dw‖² ≤ R₀ⁿ, and such that |∫_{B_{R₀}} Σ_{i<n} Dw(v)e_i·Dζ(v)e_i dv| ≤ δ·R₀ⁿ·G for every C¹ function ζ : ℝⁿ → ℝ with compact support and tsupport ζ ⊆ B_{R₀} and every G ∈ ℝ with ‖Dζ(v)‖ ≤ G for all v (B_ρ := B̆_ρ(0), D := fderiv ℝ, e_i := EuclideanSpace.single i 1). Put w₁(y) := R₀⁻¹·w(R₀·y). Then (a) w₁ is Lipschitz with the same constant Lw; (b) ∫_{B_1} ‖Dw₁‖² ≤ 1; (c) |∫_{B_1} Σ_{i<n} Dw₁(v)e_i·Dζ₁(v)e_i dv| ≤ δ·G for every C¹ function ζ₁ : ℝⁿ → ℝ with compact support and tsupport ζ₁ ⊆ B_1 and every G ∈ ℝ with ‖Dζ₁(v)‖ ≤ G for all v.",
+          "lean_statement": "∀ (n : ℕ) (δ R₀ : ℝ) (w : Euclid n → ℝ) (Lw : NNReal), 0 < R₀ → LipschitzWith Lw w → ∫ v in ball (0 : Euclid n) R₀, ‖fderiv ℝ w v‖ ^ 2 ≤ R₀ ^ n → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R₀ → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R₀, ∑ i : Fin n, fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ * R₀ ^ n * G) → LipschitzWith Lw (fun y : Euclid n => R₀⁻¹ * w (R₀ • y)) ∧ ∫ v in ball (0 : Euclid n) 1, ‖fderiv ℝ (fun y : Euclid n => R₀⁻¹ * w (R₀ • y)) v‖ ^ 2 ≤ 1 ∧ ∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) 1 → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) 1, ∑ i : Fin n, fderiv ℝ (fun y : Euclid n => R₀⁻¹ * w (R₀ • y)) v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ * G",
+          "lean_name": "dorag_haa_rescale_hypotheses",
+          "depends_on": [
+            "ball_rescale"
+          ],
+          "natural_proof": "Source: steps B1 and B2 of the parent proof. Notation: ℝⁿ = Euclid n with Lebesgue measure (an additive Haar measure); B_ρ := B̆_ρ(0) = ball (0 : Euclid n) ρ (open ball); e_i := EuclideanSpace.single i 1 (so ‖e_i‖ = 1); D := fderiv ℝ (Df(y) = 0 wherever f is not differentiable); D²ζ(y)(a, b) := iteratedFDeriv ℝ 2 ζ y ![a, b]; Δζ(y) := Σ_{i<n} D²ζ(y)(e_i, e_i). Fix n, δ, R₀ > 0 and w as in the statement; w₁(y) := R₀⁻¹·w(R₀·y). Note R₀ⁿ > 0.\n0. (Scaling of first derivatives.) For every f : ℝⁿ → ℝ, c ≠ 0 and x ∈ ℝⁿ: D(y ↦ c⁻¹·f(c·y))(x) = Df(c·x), with no differentiability hypothesis. Indeed y ↦ c⁻¹·f(c·y) is the scalar multiple c⁻¹·(f ∘ (c·)); the derivative commutes with multiplication by a constant scalar (fderiv_const_smul_field), and D(f ∘ (c·))(x) = c·Df(c·x) (fderiv_comp_smul). The latter holds without hypotheses: if f is differentiable at c·x it is the chain rule; otherwise f ∘ (c·) is not differentiable at x either (else f = (f ∘ (c·)) ∘ (c⁻¹·) would be differentiable at c·x), and both sides are 0. Hence D(y ↦ c⁻¹f(c·y))(x) = c⁻¹·c·Df(c·x) = Df(c·x).\n1. (a: Lipschitz.) For y, y' ∈ ℝⁿ: |w₁(y) − w₁(y')| = R₀⁻¹·|w(R₀y) − w(R₀y')| ≤ R₀⁻¹·Lw·‖R₀y − R₀y'‖ = R₀⁻¹·Lw·R₀·‖y − y'‖ = Lw·‖y − y'‖ (LipschitzWith.of_dist_le_mul).\n2. (b: energy.) By step 0 with c = R₀, Dw₁(v) = Dw(R₀v) for every v. The sibling lemma ball_rescale (dorag_haa_ball_rescale_integral) with F(x) := ‖Dw(x)‖² and r = R₀ gives ∫_{B_1} ‖Dw₁(v)‖² dv = ∫_{B_1} F(R₀v) dv = R₀^{−n}·∫_{B_{R₀}} ‖Dw‖² ≤ R₀^{−n}·R₀ⁿ = 1.\n3. (c: the test-function bound.) Let ζ₁ (C¹, compact support, tsupport ζ₁ ⊆ B_1) and G with ‖Dζ₁(v)‖ ≤ G for all v be given. Put ζ(x) := R₀·ζ₁(R₀⁻¹x).\n   3a. ζ is C¹: it is a constant times the composition of the C¹ function ζ₁ with the linear map x ↦ R₀⁻¹x.\n   3b. ζ has compact support: x ↦ ζ₁(R₀⁻¹x) has compact support (HasCompactSupport.comp_smul, R₀⁻¹ ≠ 0), and multiplying by the constant R₀ keeps the support compact (HasCompactSupport.mul_left).\n   3c. tsupport ζ ⊆ B_{R₀}: tsupport ζ ⊆ tsupport(x ↦ ζ₁(R₀⁻¹x)) (tsupport_mul_subset_right), and since x ↦ R₀⁻¹x is a homeomorphism, tsupport(x ↦ ζ₁(R₀⁻¹x)) = {x : R₀⁻¹x ∈ tsupport ζ₁} (tsupport_comp_eq_preimage). If R₀⁻¹x ∈ tsupport ζ₁ ⊆ B_1 then R₀⁻¹‖x‖ < 1, i.e. ‖x‖ < R₀.\n   3d. By step 0 with c = R₀⁻¹ (so c⁻¹ = R₀): Dζ(x) = Dζ₁(R₀⁻¹x) for every x, hence ‖Dζ(x)‖ ≤ G for all x.\n   3e. By 3a–3d the hypothesis applies to (ζ, G): |∫_{B_{R₀}} F| ≤ δ·R₀ⁿ·G, where F(x) := Σ_i Dw(x)e_i·Dζ(x)e_i.\n   3f. For every v, F(R₀v) = Σ_i Dw(R₀v)e_i·Dζ₁(R₀⁻¹R₀v)e_i = Σ_i Dw₁(v)e_i·Dζ₁(v)e_i, by 3d, R₀⁻¹·(R₀·v) = v and Dw₁(v) = Dw(R₀v) (step 0). Hence ball_rescale (with this F and r = R₀) gives ∫_{B_1} Σ_i Dw₁(v)e_i·Dζ₁(v)e_i dv = ∫_{B_1} F(R₀v) dv = R₀^{−n}·∫_{B_{R₀}} F.\n   3g. Therefore |∫_{B_1} Σ_i Dw₁e_i·Dζ₁e_i| = R₀^{−n}·|∫_{B_{R₀}} F| ≤ R₀^{−n}·δ·R₀ⁿ·G = δ·G. ∎",
+          "proof_key_steps": [
+            "Unconditional derivative scaling: D(y ↦ c⁻¹f(cy))(x) = Df(cx) for c ≠ 0 (fderiv_const_smul_field, fderiv_comp_smul).",
+            "w₁ is Lipschitz with constant Lw.",
+            "Energy: ∫_{B_1}‖Dw₁‖² = R₀^{−n}∫_{B_{R₀}}‖Dw‖² ≤ 1 by ball_rescale.",
+            "Given ζ₁, the function ζ(x) = R₀ζ₁(x/R₀) is C¹, compactly supported, tsupport ζ ⊆ B_{R₀}, and Dζ(x) = Dζ₁(x/R₀).",
+            "ball_rescale turns ∫_{B_1}∇w₁·∇ζ₁ into R₀^{−n}∫_{B_{R₀}}∇w·∇ζ, which is bounded by δG."
+          ]
+        },
+        "audit": {
+          "key": "rescale_hypotheses",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact type preserves every hypothesis and the same Lipschitz constant. The unconditional derivative identities are valid at nondifferentiability points. The transformed test function satisfies all smoothness, support and derivative-bound requirements; ball_rescale then gives both quantitative bounds. The proof uses only its declared dependency and requires no additional sign assumption on δ."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.weakly_harmonic_limit-a1",
+      "key": "weakly_harmonic_limit",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+              "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+              "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+              "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+              "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+              "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+              "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+              "/tmp/dorag-ha-approx-split/Types.lean",
+              "/tmp/dorag-ha-approx-split/Names.lean",
+              "/tmp/dorag-ha-approx-split/Assembly.lean",
+              "/tmp/dorag-ha-approx-split/Checks.lean",
+              "/tmp/dorag-ha-approx-split/Checks2.lean",
+              "/tmp/dorag-ha-approx-split/Checks3.lean",
+              "/tmp/dorag-ha-approx-split/Checks4.lean",
+              "/tmp/dorag-ha-approx-split/Checks5.lean",
+              "/tmp/dorag-ha-approx-split/Full.lean"
+            ],
+            "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.weakly_harmonic_limit-a1",
+        "subproblem": {
+          "key": "weakly_harmonic_limit",
+          "title": "L² limits of almost-harmonic Lipschitz functions satisfy ∫WΔζ = 0 (step A3, before Weyl's lemma)",
+          "statement": "Let n ∈ ℕ, R ∈ ℝ, B := B̆_R(0) ⊆ ℝⁿ (ℝⁿ = Euclid n), e_i := EuclideanSpace.single i 1, D := fderiv ℝ and Δζ(y) := Σ_{i<n} iteratedFDeriv ℝ 2 ζ y ![e_i, e_i]. Let (u_j)_{j∈ℕ} be Lipschitz functions ℝⁿ → ℝ (each with its own constant), (c_j) and (δ_j) real sequences with δ_j → 0, and W : ℝⁿ → ℝ in L²(B) (MemLp W 2 for Lebesgue measure restricted to B) with ∫_B (u_j − c_j − W)² → 0. Assume that for every j, every C¹ function ζ : ℝⁿ → ℝ with compact support and tsupport ζ ⊆ B, and every G ∈ ℝ with ‖Dζ(v)‖ ≤ G for all v, |∫_B Σ_{i<n} Du_j(v)e_i·Dζ(v)e_i dv| ≤ δ_j·G. Then ∫_B W·Δζ = 0 for every ζ : ℝⁿ → ℝ of class C² with compact support and tsupport ζ ⊆ B.",
+          "lean_statement": "∀ (n : ℕ) (R : ℝ) (u : ℕ → Euclid n → ℝ) (c δ : ℕ → ℝ) (W : Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → Tendsto δ atTop (𝓝 0) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (u j x - c j - W x) ^ 2) atTop (𝓝 0) → (∀ (j : ℕ) (ζ : Euclid n → ℝ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ (u j) v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ j * G) → ∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0",
+          "lean_name": "dorag_haa_weakly_harmonic_limit",
+          "depends_on": [
+            "lipschitz_ibp",
+            "l2_pairing"
+          ],
+          "natural_proof": "Source: step A3 of the parent proof, which replaces the weak convergence of gradients in Simon, Ch. 5, Lemma 3.1. Notation as in the statement; μ := volume.restrict B. Unlike the parent's step A3 (which integrates by parts against w_k and then uses ∫Δζ = 0), integration by parts is applied below directly to the Lipschitz function u_j − c_j, whose derivative equals Du_j, so ∫_B Δζ = 0 is not needed. The proof is self-contained apart from the two sibling lemmas named in steps 4 and 6.\n1. (Fix the test function.) Fix ζ of class C² with compact support and tsupport ζ ⊆ B. The function Δζ is continuous: y ↦ iteratedFDeriv ℝ 2 ζ y is continuous because ζ is C² (ContDiff.continuous_iteratedFDeriv), evaluation of a continuous multilinear map at the fixed pair ![e_i, e_i] is continuous, and a finite sum of continuous functions is continuous.\n2. (Continuous functions lie in L²(B).) Let f : ℝⁿ → ℝ be continuous. The closed ball closedBall 0 R is compact and contains B, so |f| ≤ K on B for some K (IsCompact.exists_bound_of_continuousOn); B has finite Lebesgue measure (measure_ball_lt_top), so μ is a finite measure; and f is a.e.-strongly measurable. Hence f ∈ L²(μ) (MemLp.of_bound). In particular Δζ ∈ L²(μ), and for each j, v_j := u_j − c_j ∈ L²(μ) (v_j is continuous because u_j is Lipschitz).\n3. (Gradient bound for ζ.) ζ is C¹ (C² implies C¹). Dζ is continuous and has compact support, because its support lies in tsupport ζ (HasCompactSupport.fderiv). So there is G_ζ ∈ ℝ with ‖Dζ(v)‖ ≤ G_ζ for all v (HasCompactSupport.exists_bound_of_continuous).\n4. (Integration by parts.) Fix j and let L_j be a Lipschitz constant of u_j. Then v_j = u_j − c_j is Lipschitz (constant L_j + 0) and Dv_j(y) = Du_j(y) for every y (fderiv_sub_const). The sibling lemma lipschitz_ibp (dorag_haa_lipschitz_ibp), applied to v_j and ζ, gives\n   ∫_B Σ_i Du_j(y)e_i·Dζ(y)e_i dy = −∫_B v_j(y)·Δζ(y) dy.\n   The hypothesis, applied to this j, the C¹ test function ζ (compact support, tsupport ζ ⊆ B, step 3) and G := G_ζ, gives |∫_B Σ_i Du_j e_i·Dζ e_i| ≤ δ_j·G_ζ. Since |−x| = |x|,\n   |∫_B v_j·Δζ| ≤ δ_j·G_ζ for every j.\n5. (The pairings tend to 0.) δ_j → 0, so δ_j·G_ζ → 0. Since 0 ≤ |∫_B v_j·Δζ| ≤ δ_j·G_ζ, the squeeze theorem gives ∫_B v_j·Δζ → 0.\n6. (The pairings tend to ∫_B W·Δζ.) The sibling lemma l2_pairing (dorag_haa_l2_pairing_tendsto) applies with f_j := v_j, the given W and g := Δζ: all lie in L²(μ) by step 2 and the hypothesis on W, and ∫_B (v_j − W)² = ∫_B (u_j − c_j − W)² → 0 by hypothesis. It gives ∫_B v_j·Δζ → ∫_B W·Δζ.\n7. (Conclusion.) Limits in ℝ are unique (tendsto_nhds_unique), so steps 5 and 6 give ∫_B W·Δζ = 0. As ζ was arbitrary, the claim follows. ∎",
+          "proof_key_steps": [
+            "Δζ and every v_j := u_j − c_j are continuous, hence bounded on the bounded ball and in L²(B).",
+            "Dζ is continuous with compact support, so G_ζ := sup‖Dζ‖ < ∞.",
+            "lipschitz_ibp for v_j (Dv_j = Du_j): ∫_B v_jΔζ = −∫_B ∇u_j·∇ζ, so |∫_B v_jΔζ| ≤ δ_jG_ζ → 0.",
+            "l2_pairing with f_j := v_j, g := Δζ: ∫_B v_jΔζ → ∫_B WΔζ.",
+            "Uniqueness of limits: ∫_B WΔζ = 0."
+          ]
+        },
+        "audit": {
+          "key": "weakly_harmonic_limit",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The contract matches the prose, including arbitrary centering constants and no positivity requirement on R or δ. Compact closed-ball bounds establish the required L² memberships. Applying lipschitz_ibp to u_j−c_j gives pairings tending to zero; l2_pairing and uniqueness of limits give the exact distributional identity. Only the two declared children are used, with no Weyl or parent-theorem reliance."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.lipschitz_ibp-a1",
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.l2_pairing-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/decomposition.json": "89d9efd90d1f7500be6b7429b9954083c21f91aafeadfbd4e415599bc2b445ac",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/decomposition-audit.json": "c4235fa4f8f94523e19c57fbf79839c8ec730fdff4a8c4552dc73b0ff93d824f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-child-handoff.json": "db47f151680b5d3324fa86b7ae98e0861d27ba37c7ca13078b7c64022078c354",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-supplied-plan.md": "258f30f6c2cf8f7fd9f5431f7fc576d79f76ef37a28dde79c90da0c04f944387",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-supplied-natural-proof.md": "ade0394a578f11ae1f2d3fac05db1ea4e43226c65e49d1b6095dc419412eacd5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/parent-supplied-natural-proof.json": "ec134673216881f687e700cf675b55bf61572416e8bc7b4a0764e32e7a8aa1c5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76/node.json": "78f58a02ecb64db5f6ab201114e83c9fafda5712e8f0ecd248dbb5da873526e4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-child-handoff.json": "e7620be9a5276ca305620fd69e7c7ccf77c27f6339c6525e7552d0f9c5bce4fa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-supplied-plan.md": "ad59bede11d3eb28ea553c5f25b7f21aaca2a32f82dc3fdbfffa12643b0e8eee",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-supplied-natural-proof.md": "cf8b841b6d4d0a2723e2783bc2103684453e9159938e9bc0b335a1e26508285d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/parent-supplied-natural-proof.json": "3b6f4718e6c335355f6cce4f8d4b3ae70d2e5187cccf13ad8b6f4213e3bdce3b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-75fc199de3/node.json": "c944ae1746113ae61def75cf66744555179a353044d7141f86fe6f9b10480d01",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-child-handoff.json": "d8912cc2cd51facf3876c5b4667d9e5532e418243b9a0e4caa36333aacf77d07",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-supplied-plan.md": "0656d30781c32622e5f9e88176d4fb22305fe1d37e63af9b9f8de7d310a0d94a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-supplied-natural-proof.md": "7ea0d3e6117f795b4b3d78bca20fecc7b317758ce452277f94d4f39356b0b730",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/parent-supplied-natural-proof.json": "f94f4d748488f2f522461656417c17d313874915018ad4cc51fe85fe80329810",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a/node.json": "65915d5ae277ea146ba3e03cdbd4064277ae0a0a9289c4d3d14a82fbe4648ad3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-child-handoff.json": "355ceb87f477ba35a77a591d743ed9e3ebf16721496bb36229a0d8d4158cffef",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-supplied-plan.md": "28e8c69401107580a200a29dc33679fcd166466a8d920b3643ac8670a4fbd876",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-supplied-natural-proof.md": "f99cb94c84131cf139e2a9c1ee63a587a819d5f85ab24363019cb1e7b3c26f3b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/parent-supplied-natural-proof.json": "521f2b2ba37ebb89d7f7964514cfc63cf9f7c43c045a2627c18a302c61777f10",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-54292bc45f/node.json": "f160484741f30ce376040dfc447f516dcaaaabc80c647cb8148a08e6cfa7ec81",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-child-handoff.json": "b5c1bb0802824b04fda5aef0f85564820bd4a59cab6fb7eb93cea4edbadb265d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-supplied-plan.md": "2f01ff21dfe70dd6e7cd2c0050c48c1a91aa667f30717c0b558023056a56a192",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-supplied-natural-proof.md": "5eb1f47f2ca99219604d26bb0f87b266c2c3f4cb3ddac65ec8e1857093cee88f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/parent-supplied-natural-proof.json": "4496431e315d61bd3003e1175108771f0257256e7b754365bed38baaaf147bfe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5ff93f9d57/node.json": "58d2f69766bc75705c1bf24156a500ca71bf9bd6ebabdcf7ce65e12862a05162",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-child-handoff.json": "570bed8838bf81467eabee0f8b292ac568153c6ae2d5e7cf6d6e48f959a3963d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-supplied-plan.md": "f4829d33d99d4d2537703b21ca64286243705bcc998e4408cb94dbed5c735f3b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-supplied-natural-proof.md": "696570422fe56f8b8b8825365a9ebf210fa110e64b626be459e2c49c8b5aa429",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/parent-supplied-natural-proof.json": "e38d1bf43d48257d33bc4beeabf483d1c91e84c16beb14b6f90c8926eff60a23",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4cc16165a0/node.json": "73f11d4226a38e9bff0b2527787bb09f81d28359b216e047fb85a09dd831c3f5"
+  }
+}
