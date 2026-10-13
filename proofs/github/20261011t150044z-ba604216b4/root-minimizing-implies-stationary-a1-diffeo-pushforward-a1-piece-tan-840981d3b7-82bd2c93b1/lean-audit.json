@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2353d63884f10a61283cfa9624ecceda909bccfc5b3385c018b4505522afcd1e",
+  "git_delta": {
+    "base_commit": "6b8ecf454740c145678cea99fb787d0d18da9d8f",
+    "candidate_commit": "a6d02d0bab72c42846a72ac6dfd67b74a4f6c92b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ptd_tl_tangent_iff_of_density_zero",
+    "diff_sha256": "8f974dec0ca3923567d8b21131747dfab8358360c7643d2bfe3e8cfa546c1585",
+    "source_sha256": "1de9ca881bccde0b574ea765ef9f63c09bac808067e923adc0cf93305ba52be1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ptd_tl_tangent_iff_of_density_zero",
+      "statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
