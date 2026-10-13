@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cc08fe4c6b518529d04bca38cfb5bb17aeaa69cef60ccd24b6f17c8c604bccc5",
+  "git_delta": {
+    "base_commit": "d72d3ea95abc40f0a1607614d12e1e062652d9e4",
+    "candidate_commit": "a0fcc1579138e9ce73512406ca2c1d0c9ecdb433",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_nipp_disjoint_packing",
+    "diff_sha256": "ec77fa1206401dd0cc9990be51cff98dc0a2894b3aadeacfd58c45e17a019f7c",
+    "source_sha256": "d2784f62fd697457276464c605a0c47fdbb73478317da3200fea71750db76c0b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_nipp_disjoint_packing",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (D : ℕ → Set (Euclid P)) (r : ℝ) (c : ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → c ≠ 0 → (∀ i, MeasurableSet (D i)) → (∀ i j, i ≠ j → Disjoint (D i) (D j)) → (∀ i, D i ⊆ ball 0 r) → (∀ i, c ≤ μ (D i)) → False",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
