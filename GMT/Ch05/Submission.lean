@@ -3570,6 +3570,727 @@ theorem allard52_tangent_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n
     filter_upwards [hallμ, hmem] with x hx hxM
     obtain ⟨m, j, k, i, -, ⟨P, hP⟩, -⟩ := hx
     exact density_of_tangent x hxM P hP
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the Hilbert–Schmidt norm
+`|A| = (Σᵢ |A eᵢ|²)^{1/2}` of `A : ℝᵐ → ℝᵏ` is comparable with the operator norm,
+`‖A‖ ≤ |A| ≤ √m ‖A‖`, and satisfies the triangle inequality `|A + B| ≤ |A| + |B|`. -/
+theorem allard52_gpa_hsNorm_bounds : ∀ (m k : ℕ) (A B : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt m * ‖A‖ ∧ hsNorm (A + B) ≤ hsNorm A + hsNorm B := by
+  intro m k A B
+  refine ⟨?_, ?_, ?_⟩
+  · -- (i) `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- (ii) `|A eᵢ| ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` unit vectors, so `|A|² ≤ m ‖A‖²`.
+    have h1 : hsNormSq A ≤ m * ‖A‖ ^ 2 := by
+      calc hsNormSq A = ∑ i : Fin m, ‖A (EuclideanSpace.single i 1)‖ ^ 2 := rfl
+        _ ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+            refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+            simpa using A.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+        _ = m * ‖A‖ ^ 2 := by simp
+    calc hsNorm A = √(hsNormSq A) := rfl
+      _ ≤ √(m * ‖A‖ ^ 2) := Real.sqrt_le_sqrt h1
+      _ = Real.sqrt m * ‖A‖ := by
+          rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  · -- (iii) `|X|` is the norm of `(X eᵢ)ᵢ` in `L²(Fin m; ℝᵏ)`, and `X ↦ (X eᵢ)ᵢ` is additive.
+    let F : (Rn m →L[ℝ] Rn k) → PiLp 2 (fun _ : Fin m => Rn k) :=
+      fun X => WithLp.toLp 2 fun i => X (EuclideanSpace.single i 1)
+    have hF : ∀ X, hsNorm X = ‖F X‖ := fun X => by
+      rw [PiLp.norm_eq_of_L2]; rfl
+    rw [hF, hF, hF]
+    exact norm_add_le (F A) (F B)
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): every `n`-dimensional subspace `T` of `ℝ^{n+ℓ}` is
+a rotated coordinate plane `T = q(ℝⁿ × {0})` for some linear isometry `q` of `ℝ^{n+ℓ}`. -/
+theorem allard52_gpa_exists_rotatedPlane_eq : ∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T := by
+  intro n ℓ T hT
+  -- An orthonormal basis `u₀, …, u_{n-1}` of `T`.
+  let u : OrthonormalBasis (Fin n) ℝ T := (stdOrthonormalBasis ℝ T).reindex (finCongr hT)
+  -- Put `uᵢ` at the first `n` indices and extend to an orthonormal basis `b` of `ℝ^{n+ℓ}`.
+  let v : Fin (n + ℓ) → Amb n ℓ := Fin.addCases (fun i => (u i : Amb n ℓ)) fun _ => 0
+  have hv : Orthonormal ℝ ((Set.range (Fin.castAdd ℓ)).domRestrict v) := by
+    rw [orthonormal_iff_ite]
+    intro x y
+    obtain ⟨i, hi⟩ := x.2
+    obtain ⟨j, hj⟩ := y.2
+    have hxy : x = y ↔ i = j := by
+      rw [Subtype.ext_iff, ← hi, ← hj, Fin.castAdd_inj]
+    simp only [Set.domRestrict_apply, ← hi, ← hj, v, Fin.addCases_left, hxy]
+    rw [← Submodule.coe_inner, orthonormal_iff_ite.mp u.orthonormal i j]
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hv
+  -- `q = b.repr.symm` sends `e_{castAdd i}` to `b (castAdd i) = uᵢ`, so `q(ℝⁿ × {0}) = span{uᵢ} = T`.
+  refine ⟨b.repr.symm, ?_⟩
+  have hq : ∀ i : Fin n,
+      b.repr.symm (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) = (u i : Amb n ℓ) := by
+    intro i
+    rw [b.repr_symm_single, hb _ (Set.mem_range_self i)]
+    simp [v]
+  rw [rotatedPlane, horizontalPlane, Submodule.map_span, ← Set.range_comp]
+  have hcomp : (b.repr.symm.toLinearEquiv.toLinearMap ∘ fun i : Fin n =>
+      EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) = T.subtype ∘ u := by
+    funext i
+    exact hq i
+  rw [hcomp, Set.range_comp, Submodule.span_image, ← u.coe_toBasis, u.toBasis.span_eq,
+    Submodule.map_subtype_top]
+/-- Simon Ch. 5, proof of Theorem 5.2 (pp. 123–124), estimate (Nor): for a linear isometry `q` of
+`ℝ^{n+ℓ}` and a linear map `A : ℝⁿ → ℝ^ℓ` with `‖A‖ ≤ 1`, the vertical deviation `|y − A x|` of
+`(x, y)` from the graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is at most twice the distance from
+`q(x, y)` to `q(Γ_A)`.  Since `Γ_A` is the range of the linear map `v ↦ (v, A v)`, the projection
+of `q(x, y)` onto `q(Γ_A)` is `q(v, A v)` for some `v`, so (as `q` is an isometry) this distance
+is `d = |(x − v, y − A v)|` with `d² = |x − v|² + |y − A v|²` (`Fin.append_left`/`right`,
+`Fin.sum_univ_add`).  Then `|y − A x| ≤ |y − A v| + |A (v − x)| ≤ |y − A v| + |x − v| ≤ √2 d ≤ 2 d`,
+using `‖A‖ ≤ 1` and `2 a c ≤ a² + c²`. -/
+theorem allard52_gpa_graph_normal_bound : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖ := by
+  intro n ℓ q A x y hA
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `graphPoint` is jointly linear
+  have hadd : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b' := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.add_apply, hl]
+    · simp only [PiLp.add_apply, hr]
+  have hsmul : ∀ (c : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (c • a) (c • b) = c • graphPoint a b := by
+    intro c a b
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.smul_apply, hl]
+    · simp only [PiLp.smul_apply, hr]
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  -- Pythagoras: `|(a, b)|² = |a|² + |b|²`
+  have hnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- the graph plane is the range of the linear map `J v = (v, A v)`
+  let J : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun v => graphPoint v (A v)
+      map_add' := fun a a' => by
+        simp only [map_add]
+        exact hadd a a' (A a) (A a')
+      map_smul' := fun c a => by
+        simp only [map_smul, RingHom.id_apply]
+        exact hsmul c a (A a) }
+  have hspan : Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)) =
+      LinearMap.range J := by
+    rw [← Submodule.span_eq (LinearMap.range J), LinearMap.coe_range]
+    rfl
+  -- the projection of `q (x, y)` onto `q(Γ_A)` is `q (v, A v)` for some `v`
+  obtain ⟨z, hz, hzw⟩ := Submodule.mem_map.mp
+    (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map
+      q.toLinearEquiv.toLinearMap).starProjection_apply_mem (q (graphPoint x y)))
+  rw [hspan] at hz
+  obtain ⟨v, rfl⟩ := LinearMap.mem_range.mp hz
+  rw [← hzw]
+  -- its distance to `q (x, y)` is `|(x − v, y − A v)|`, since `q` is an isometry
+  have hd : ‖q (graphPoint x y) - q.toLinearEquiv.toLinearMap (J v)‖ =
+      ‖graphPoint (x - v) (y - A v)‖ := by
+    change ‖q (graphPoint x y) - q (graphPoint v (A v))‖ = _
+    rw [← map_sub, LinearIsometryEquiv.norm_map, hsub]
+  rw [hd]
+  -- `|y − A x| ≤ |y − A v| + |A (v − x)| ≤ |y − A v| + |x − v|` as `‖A‖ ≤ 1`
+  have h1 : ‖y - A x‖ ≤ ‖y - A v‖ + ‖x - v‖ := by
+    have e : y - A x = (y - A v) + A (v - x) := by
+      rw [map_sub]
+      abel
+    calc ‖y - A x‖ = ‖(y - A v) + A (v - x)‖ := by rw [e]
+      _ ≤ ‖y - A v‖ + ‖A (v - x)‖ := norm_add_le _ _
+      _ ≤ ‖y - A v‖ + ‖x - v‖ := by
+        gcongr
+        calc ‖A (v - x)‖ ≤ ‖A‖ * ‖v - x‖ := A.le_opNorm _
+          _ ≤ 1 * ‖v - x‖ := by gcongr
+          _ = ‖x - v‖ := by rw [one_mul, norm_sub_rev]
+  -- `c + a ≤ 2 d` from `d² = a² + c²` and `2 a c ≤ a² + c²`
+  have h2 : ‖y - A v‖ + ‖x - v‖ ≤ 2 * ‖graphPoint (x - v) (y - A v)‖ := by
+    have hsq := hnorm (x - v) (y - A v)
+    have ha := norm_nonneg (x - v)
+    have hc := norm_nonneg (y - A v)
+    have hdn := norm_nonneg (graphPoint (x - v) (y - A v))
+    nlinarith [sq_nonneg (‖x - v‖ - ‖y - A v‖)]
+  linarith
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): for a linear isometry `q` of `ℝ^{n+ℓ}`, the
+orthogonal projection onto `q(K)` is `q ∘ p_K ∘ q⁻¹`, and conjugation by `q` preserves the
+Hilbert–Schmidt norm.  With the rows `w_j = Xᵀ e_j = Σ_k ⟨X e_k, e_j⟩ e_k` of `X`, Parseval gives
+`Σ_i |X b_i|² = Σ_i Σ_j ⟨w_j, b_i⟩² = Σ_j |w_j|²` for every orthonormal basis `b`; apply this to
+`b = q⁻¹ e` and to `b = e`. -/
+theorem allard52_gpa_isometry_conj : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ K : Submodule ℝ (Amb n ℓ), (K.map q.toLinearEquiv.toLinearMap).starProjection = q.toLinearIsometry.toContinuousLinearMap ∘L K.starProjection ∘L q.symm.toLinearIsometry.toContinuousLinearMap) ∧ ∀ X : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq (q.toLinearIsometry.toContinuousLinearMap ∘L X ∘L q.symm.toLinearIsometry.toContinuousLinearMap) = hsNormSq X := by
+  intro n ℓ q
+  -- `p_{q(K)} z = q (p_K (q⁻¹ z))` for every `z`.
+  refine ⟨fun K => ContinuousLinearMap.ext fun z => Submodule.starProjection_map_apply q K z, ?_⟩
+  intro X
+  -- The standard basis `e` and the rows `w j = Xᵀ e_j = Σ_k ⟨X e_k, e_j⟩ e_k` of `X`.
+  let e := EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ
+  let w : Fin (n + ℓ) → Amb n ℓ := fun j => ∑ k, inner ℝ (X (e k)) (e j) • e k
+  have hw : ∀ j v, inner ℝ (X v) (e j) = inner ℝ (w j) v := by
+    intro j v
+    conv_lhs => rw [← e.sum_repr' v]
+    simp only [w, map_sum, map_smul, sum_inner, real_inner_smul_left]
+    exact Finset.sum_congr rfl fun k _ => mul_comm _ _
+  -- Parseval twice: `Σ_i |X b_i|² = Σ_j |w_j|²` for every orthonormal basis `b`.
+  have key : ∀ b : OrthonormalBasis (Fin (n + ℓ)) ℝ (Amb n ℓ),
+      ∑ i, ‖X (b i)‖ ^ 2 = ∑ j, ‖w j‖ ^ 2 := by
+    intro b
+    calc ∑ i, ‖X (b i)‖ ^ 2 = ∑ i, ∑ j, inner ℝ (w j) (b i) ^ 2 := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [← e.sum_sq_inner_left]
+          simp only [hw]
+      _ = ∑ j, ∑ i, inner ℝ (w j) (b i) ^ 2 := Finset.sum_comm
+      _ = ∑ j, ‖w j‖ ^ 2 := Finset.sum_congr rfl fun j _ => b.sum_sq_inner_left (w j)
+  -- `|q X q⁻¹ e_i| = |X (q⁻¹ e_i)|`, and `q⁻¹ e` is again an orthonormal basis.
+  have h1 : hsNormSq (q.toLinearIsometry.toContinuousLinearMap ∘L X ∘L
+      q.symm.toLinearIsometry.toContinuousLinearMap) = ∑ i, ‖X (e.map q.symm i)‖ ^ 2 := by
+    simp only [hsNormSq, ContinuousLinearMap.comp_apply, LinearIsometry.coe_toContinuousLinearMap,
+      LinearIsometryEquiv.coe_toLinearIsometry, LinearIsometryEquiv.norm_map,
+      OrthonormalBasis.map_apply, EuclideanSpace.basisFun_apply, e]
+  have h2 : hsNormSq X = ∑ i, ‖X (e i)‖ ^ 2 := by
+    simp only [hsNormSq, EuclideanSpace.basisFun_apply, e]
+  rw [h1, h2, key, key]
+/-- The graph of the zero map `ℝⁿ → ℝ^ℓ` spans the coordinate plane `ℝⁿ × {0}`.  Comparing
+coordinates (`Fin.addCases`; `Fin.append_left`/`Fin.append_right`),
+`graphPoint v 0 = Σᵢ vᵢ e_{castAdd ℓ i}`: at `castAdd ℓ j` both sides equal `v j` (`castAdd ℓ` is
+injective), at `natAdd n j` both vanish (`castAdd ℓ i < n ≤ natAdd n j`).  So every generator of the
+left span lies in `horizontalPlane n ℓ`, and conversely `e_{castAdd ℓ i} = graphPoint eᵢ 0` is a
+generator of the left span; conclude by `Submodule.span_le` and antisymmetry. -/
+theorem allard52_gpa_span_graph_zero : ∀ (n ℓ : ℕ),
+    Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v ((0 : Rn n →L[ℝ] Rn ℓ) v)) =
+      horizontalPlane n ℓ := by
+  intro n ℓ
+  have hsum : ∀ v : Rn n, graphPoint v ((0 : Rn n →L[ℝ] Rn ℓ) v) =
+      ∑ i : Fin n, v i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+    intro v
+    ext k
+    refine Fin.addCases (fun j => ?_) (fun j => ?_) k
+    · simp [graphPoint, Pi.single_apply]
+    · have hne : ∀ i : Fin n, Fin.natAdd n j ≠ Fin.castAdd ℓ i := by
+        intro i h
+        have := congrArg Fin.val h
+        simp only [Fin.val_natAdd, Fin.val_castAdd] at this
+        omega
+      simp [graphPoint, hne]
+  apply le_antisymm
+  · rw [Submodule.span_le]
+    rintro _ ⟨v, rfl⟩
+    dsimp only
+    rw [hsum v]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  · rw [horizontalPlane, Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    refine Submodule.subset_span ⟨EuclideanSpace.single i 1, ?_⟩
+    dsimp only
+    rw [hsum]
+    simp
+/-- `graphPoint` is linear in the pair `(x, y)`: `(x, y) = ι x + κ y` in `ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ`, with
+`ι = Φ ∘ inl`, `κ = Φ ∘ inr` and `Φ` the inverse of Mathlib's `EuclideanSpace.finAddEquivProd`.
+Coordinatewise (`Fin.addCases`), `graphPoint x y = Φ (x, y)`; then `(x, y) = (x, 0) + (0, y)`. -/
+theorem allard52_gfz_graphPoint_split : ∀ (n ℓ : ℕ), ∃ (ι : Rn n →L[ℝ] Amb n ℓ) (κ : Rn ℓ →L[ℝ] Amb n ℓ), ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y = ι x + κ y := by
+  intro n ℓ
+  let Φ : Rn n × Rn ℓ →L[ℝ] Amb n ℓ :=
+    ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm :
+      Rn n × Rn ℓ →L[ℝ] Amb n ℓ)
+  refine ⟨Φ ∘L ContinuousLinearMap.inl ℝ (Rn n) (Rn ℓ),
+    Φ ∘L ContinuousLinearMap.inr ℝ (Rn n) (Rn ℓ), fun x y => ?_⟩
+  have hΦ : graphPoint x y = Φ (x, y) := by
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp [graphPoint, Φ]
+    · simp [graphPoint, Φ]
+  rw [hΦ, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.inl_apply, ContinuousLinearMap.inr_apply, ← map_add, Prod.mk_add_mk,
+    add_zero, zero_add]
+/-- Inner product of graph points: `⟨(x, y), (x', y')⟩ = ⟨x, x'⟩ + ⟨y, y'⟩` in `ℝ^{n+ℓ}`.  Each inner
+product of `EuclideanSpace` is the coordinate sum (`PiLp.inner_apply`); split the sum over
+`Fin (n + ℓ)` into its `Fin.castAdd ℓ` and `Fin.natAdd n` parts (`Fin.sum_univ_add`), where the
+coordinates of `graphPoint x y` are `x i`, resp. `y j` (`Fin.append_left`/`Fin.append_right`). -/
+theorem allard52_gfz_graphPoint_inner : ∀ (n ℓ : ℕ) (x x' : Rn n) (y y' : Rn ℓ),
+    inner ℝ (graphPoint x y) (graphPoint x' y') = inner ℝ x x' + inner ℝ y y' := by
+  intro n ℓ x x' y y'
+  simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right]
+/-- Derivative at `0` of the Gram-formula projection `F(A) = J_A (τ(J_A) J_A)⁻¹ τ(J_A)`, where
+`J_A = ι + κ ∘ A`, `τ` is an abstract transpose (`⟪τ L w, v⟫ = ⟪w, L v⟫`), `ι` is isometric and
+`κ` has range orthogonal to that of `ι`.  Testing against every `u` (`ext_inner_right`) gives, for
+`π = τ ι`: `π ∘ ι = 1`, `π ∘ κ = 0` and `τ(κ ∘ H') ∘ ι = 0`.  As `A ↦ J_A` has derivative
+`compL κ`, the product rule (`HasFDerivAt.clm_comp`) shows that the Gram map `G_A = τ(J_A) ∘ J_A`
+has derivative `H' ↦ π ∘ κ ∘ H' + τ(κ ∘ H') ∘ ι = 0` at `0`, and `G_0 = 1`.  `Ring.inverse` is
+differentiable at the unit `1` (`differentiableAt_inverse`), so `A ↦ G_A⁻¹` has derivative `0`
+and value `1` at `0`; the product rule twice gives `ι ∘ τ(κ ∘ H) + κ ∘ H ∘ π`. -/
+theorem allard52_gfz_gram_fderiv_zero : ∀ (n ℓ : ℕ) (ι : Rn n →L[ℝ] Amb n ℓ)
+    (κ : Rn ℓ →L[ℝ] Amb n ℓ) (τ : (Rn n →L[ℝ] Amb n ℓ) →L[ℝ] (Amb n ℓ →L[ℝ] Rn n)),
+    (∀ (L : Rn n →L[ℝ] Amb n ℓ) (w : Amb n ℓ) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v)) →
+    (∀ v u : Rn n, inner ℝ (ι v) (ι u) = inner ℝ v u) →
+    (∀ (v : Rn n) (z : Rn ℓ), inner ℝ (ι v) (κ z) = 0) → ∀ H : Rn n →L[ℝ] Rn ℓ,
+    fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ =>
+      (ι + κ ∘L A) ∘L Ring.inverse (τ (ι + κ ∘L A) ∘L (ι + κ ∘L A)) ∘L τ (ι + κ ∘L A)) 0 H =
+      ι ∘L τ (κ ∘L H) + κ ∘L H ∘L τ ι := by
+  intro n ℓ ι κ τ hT hI hO H
+  have hπι : τ ι ∘L ι = 1 := by
+    ext1 v
+    refine ext_inner_right ℝ fun u => ?_
+    rw [ContinuousLinearMap.comp_apply, hT, hI, ContinuousLinearMap.one_def,
+      ContinuousLinearMap.id_apply]
+  have hπκ : ∀ z : Rn ℓ, τ ι (κ z) = 0 := fun z =>
+    ext_inner_right ℝ fun u => by rw [hT, real_inner_comm, hO, inner_zero_left]
+  have hτκι : ∀ (H' : Rn n →L[ℝ] Rn ℓ) (v : Rn n), τ (κ ∘L H') (ι v) = 0 := fun H' v =>
+    ext_inner_right ℝ fun u => by rw [hT, ContinuousLinearMap.comp_apply, hO, inner_zero_left]
+  set K := ContinuousLinearMap.compL ℝ (Rn n) (Rn ℓ) (Amb n ℓ) κ with hK
+  have hJ : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ => ι + κ ∘L A) K 0 :=
+    K.hasFDerivAt.const_add ι
+  have hτJ : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ => τ (ι + κ ∘L A)) (τ ∘L K) 0 :=
+    τ.hasFDerivAt.comp (0 : Rn n →L[ℝ] Rn ℓ) hJ
+  have hG : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ => τ (ι + κ ∘L A) ∘L (ι + κ ∘L A))
+      (0 : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] Rn n →L[ℝ] Rn n) 0 := by
+    convert hτJ.clm_comp hJ using 1
+    ext H' v
+    simp [hK, hπκ, hτκι]
+  have hG0 : τ (ι + κ ∘L (0 : Rn n →L[ℝ] Rn ℓ)) ∘L (ι + κ ∘L 0) = 1 := by
+    rw [ContinuousLinearMap.comp_zero, add_zero, hπι]
+  have hR : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ =>
+      Ring.inverse (τ (ι + κ ∘L A) ∘L (ι + κ ∘L A)))
+      (0 : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] Rn n →L[ℝ] Rn n) 0 := by
+    have hinv : DifferentiableAt ℝ (Ring.inverse : (Rn n →L[ℝ] Rn n) → (Rn n →L[ℝ] Rn n))
+        (τ (ι + κ ∘L (0 : Rn n →L[ℝ] Rn ℓ)) ∘L (ι + κ ∘L 0)) := by
+      rw [hG0]
+      exact differentiableAt_inverse isUnit_one
+    have := hinv.hasFDerivAt.comp (0 : Rn n →L[ℝ] Rn ℓ) hG
+    rwa [ContinuousLinearMap.comp_zero] at this
+  have hF := hJ.clm_comp (hR.clm_comp hτJ)
+  rw [hF.fderiv]
+  ext v
+  simp [hK, hπι]
+/-- Coordinate formula for a transpose (step 6(b) of the derivative of the graph-plane projection
+at `0`, Simon Ch. 5, p. 123, for an arbitrary `L` in place of `κ ∘ H`): if `T : ℝᵐ → ℝⁿ` satisfies
+`⟨T w, v⟩ = ⟨w, L v⟩` for all `w`, `v`, then `T w = Σᵢ ⟨L eᵢ, w⟩ eᵢ`.  By nondegeneracy of the inner
+product (`ext_inner_right`) pair both sides with `u = Σᵢ uᵢ eᵢ` (`OrthonormalBasis.sum_repr` for
+`EuclideanSpace.basisFun`): the left side is `⟨w, L u⟩ = Σᵢ uᵢ ⟨w, L eᵢ⟩`, the right side is
+`Σᵢ ⟨L eᵢ, w⟩ ⟨eᵢ, u⟩ = Σᵢ ⟨L eᵢ, w⟩ uᵢ` (`EuclideanSpace.inner_single_left`), and the two sums agree
+termwise by `real_inner_comm`. -/
+theorem allard52_gfz_transpose_eq_sum : ∀ (n m : ℕ) (L : Rn n →L[ℝ] Rn m) (T : Rn m →L[ℝ] Rn n), (∀ (w : Rn m) (v : Rn n), inner ℝ (T w) v = inner ℝ w (L v)) → ∀ w : Rn m, T w = ∑ i : Fin n, inner ℝ (L (EuclideanSpace.single i 1)) w • EuclideanSpace.single i 1 := by
+  intro n m L T hT w
+  refine ext_inner_right ℝ fun u => ?_
+  have hu : u = ∑ i, u i • EuclideanSpace.single i (1 : ℝ) := by
+    simpa using ((EuclideanSpace.basisFun (Fin n) ℝ).sum_repr u).symm
+  rw [hT]
+  conv_lhs => rw [hu]
+  simp only [map_sum, map_smul, inner_sum, sum_inner, real_inner_smul_left, real_inner_smul_right,
+    EuclideanSpace.inner_single_left, map_one, one_mul]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [real_inner_comm]
+  ring
+/-- Simon Ch. 5, p. 123 (the matrix of `p_{T G(f)}` in the proof of Theorem 5.2), step 1 of the
+graph-projection computation: the transpose `Lᵀ w = Σᵢ ⟨L eᵢ, w⟩ eᵢ` of `L : ℝⁿ → ℝᵐ`, built from
+the standard basis `eᵢ` of `ℝⁿ` (`ContinuousLinearMap.adjoint` is outside the import closure).
+`L ↦ Lᵀ` is linear because `⟨L eᵢ, w⟩` is linear in `L`, hence continuous since `L(ℝⁿ, ℝᵐ)` is
+finite-dimensional, and expanding `v = Σᵢ vᵢ eᵢ` gives `⟨Lᵀ w, v⟩ = Σᵢ ⟨L eᵢ, w⟩ vᵢ = ⟨w, L v⟩`. -/
+theorem allard52_gps_transpose_exists : ∀ (n m : ℕ), ∃ τ : (Rn n →L[ℝ] Rn m) →L[ℝ] (Rn m →L[ℝ] Rn n), ∀ (L : Rn n →L[ℝ] Rn m) (w : Rn m) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v) := by
+  intro n m
+  -- The standard basis `e i` of `ℝⁿ`.
+  let e : Fin n → Rn n := fun i => EuclideanSpace.single i (1 : ℝ)
+  -- `τ₀ L = Lᵀ`, linear in `L` since `⟨L eᵢ, w⟩` is.
+  let τ₀ : (Rn n →L[ℝ] Rn m) →ₗ[ℝ] (Rn m →L[ℝ] Rn n) :=
+    { toFun := fun L => ∑ i, (innerSL ℝ (L (e i))).smulRight (e i)
+      map_add' := fun L L' => by
+        ext1 w
+        simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c L => by
+        ext1 w
+        simp [smul_smul, Finset.smul_sum] }
+  -- `L(ℝⁿ, ℝᵐ)` is finite-dimensional, so `τ₀` is continuous.
+  refine ⟨LinearMap.toContinuousLinearMap τ₀, fun L w v => ?_⟩
+  have hv : v = ∑ i, v i • e i := by
+    simpa [e] using ((EuclideanSpace.basisFun (Fin n) ℝ).sum_repr v).symm
+  have hτ : LinearMap.toContinuousLinearMap τ₀ L w = ∑ i, inner ℝ (L (e i)) w • e i := by
+    simp [τ₀]
+  rw [hτ]
+  conv_rhs => rw [hv]
+  simp only [sum_inner, inner_sum, map_sum, map_smul, real_inner_smul_left,
+    real_inner_smul_right, e, EuclideanSpace.inner_single_left, one_mul, map_one]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [real_inner_comm]
+  ring
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the orthogonal projection onto the graph plane
+`Γ_A = span {(v, A v) : v ∈ ℝⁿ}` is the Gram formula `J (T J)⁻¹ T`, for any parametrization
+`J v = (v, A v)` of `Γ_A` and any transpose `T` of `J` (`⟨T w, v⟩ = ⟨w, J v⟩`).  `J` is injective
+(the first `n` coordinates of `J v` are those of `v`), so `T J` is a unit of `End(ℝⁿ)` because
+`⟨T J v, v⟩ = |J v|²`.  With `R = (T J)⁻¹`, `J R T w ∈ Γ_A` and `⟨w − J R T w, J v⟩ =
+⟨T w − T J R T w, v⟩ = 0`, so `J R T w = p_{Γ_A} w` (`eq_starProjection_of_mem_of_inner_eq_zero`). -/
+theorem allard52_gps_starProjection_eq_gram : ∀ (n ℓ : ℕ) (A : Rn n →L[ℝ] Rn ℓ) (J : Rn n →L[ℝ] Amb n ℓ) (T : Amb n ℓ →L[ℝ] Rn n), (∀ v : Rn n, J v = graphPoint v (A v)) → (∀ (w : Amb n ℓ) (v : Rn n), inner ℝ (T w) v = inner ℝ w (J v)) → IsUnit (T ∘L J) ∧ (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection = J ∘L Ring.inverse (T ∘L J) ∘L T := by
+  intro n ℓ A J T hJ hT
+  -- `J` is injective: the coordinate of `graphPoint v (A v)` at `Fin.castAdd ℓ i` is `v i`.
+  have hJinj : Function.Injective J := by
+    intro v v' h
+    rw [hJ, hJ] at h
+    ext i
+    simpa [graphPoint] using congrArg (fun z : Amb n ℓ => z (Fin.castAdd ℓ i)) h
+  -- `T ∘L J` is a unit: `T (J v) = 0` gives `|J v|² = ⟨T (J v), v⟩ = 0`, so `v = 0`.
+  have hU : IsUnit (T ∘L J) := by
+    rw [ContinuousLinearMap.isUnit_iff_isUnit_toLinearMap, LinearMap.isUnit_iff_ker_eq_bot,
+      LinearMap.ker_eq_bot']
+    intro v hv
+    have h0 : T (J v) = 0 := hv
+    have h1 : inner ℝ (J v) (J v) = 0 := by
+      rw [← hT, h0, inner_zero_left]
+    exact hJinj (by rw [inner_self_eq_zero.mp h1, map_zero])
+  refine ⟨hU, ?_⟩
+  -- `T (J (R u)) = u` for `R = Ring.inverse (T ∘L J)`.
+  have hTJR : ∀ u : Rn n, T (J (Ring.inverse (T ∘L J) u)) = u := by
+    intro u
+    simpa using congrArg (fun S : Rn n →L[ℝ] Rn n => S u) (Ring.mul_inverse_cancel _ hU)
+  -- `Γ_A ⊆ J(ℝⁿ)`: every element of the span has the form `J v`.
+  have hle : Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)) ≤
+      LinearMap.range J.toLinearMap := by
+    rw [Submodule.span_le]
+    rintro _ ⟨v, rfl⟩
+    exact ⟨v, hJ v⟩
+  -- `p = J (R (T w)) ∈ Γ_A` and `w - p ⊥ J v` for all `v`, so `p` is the projection of `w`.
+  ext1 w
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+  · exact Submodule.subset_span ⟨Ring.inverse (T ∘L J) (T w), (hJ _).symm⟩
+  · intro z hz
+    obtain ⟨v, rfl⟩ := hle hz
+    rw [inner_sub_left, ContinuousLinearMap.coe_coe, ← hT, ← hT]
+    simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
+    rw [hTJR, sub_self]
+/-- Simon Ch. 5, p. 123 (smooth dependence of `p_{T G(f)}` on `Df`): the orthogonal projection
+`Π(A)` onto the graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is a `C²` function of `A ∈ L(ℝⁿ, ℝ^ℓ)`
+(operator norms).  With `Φ = finAddEquivProd⁻¹ : ℝⁿ × ℝ^ℓ → ℝ^{n+ℓ}`, `ι = Φ ∘ inl` and
+`κ = Φ ∘ inr` we have `graphPoint x y = ι x + κ y`, so `J_A = ι + κ ∘ A` parametrizes `Γ_A`.  For
+the transpose `τ` of `allard52_gps_transpose_exists`, `allard52_gps_starProjection_eq_gram` gives
+`Π(A) = J_A (τ(J_A) J_A)⁻¹ τ(J_A)` with `τ(J_A) J_A` a unit.  `A ↦ J_A` is affine, `τ` is
+continuous linear, operator composition is bounded bilinear and `Ring.inverse` is `C²` at every
+unit (`contDiffAt_ringInverse`), so this formula is `C²` in `A`. -/
+theorem allard52_gps_contDiff : ∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) := by
+  intro n ℓ
+  -- Step 1: `graphPoint x y = Φ (x, y) = ι x + κ y`.
+  let Φ : (Rn n × Rn ℓ) ≃L[ℝ] Amb n ℓ :=
+    (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm
+  let ι : Rn n →L[ℝ] Amb n ℓ :=
+    (Φ : (Rn n × Rn ℓ) →L[ℝ] Amb n ℓ).comp (ContinuousLinearMap.inl ℝ (Rn n) (Rn ℓ))
+  let κ : Rn ℓ →L[ℝ] Amb n ℓ :=
+    (Φ : (Rn n × Rn ℓ) →L[ℝ] Amb n ℓ).comp (ContinuousLinearMap.inr ℝ (Rn n) (Rn ℓ))
+  have hΦ : ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y = Φ (x, y) := by
+    intro x y
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp [graphPoint, Φ]
+    · simp [graphPoint, Φ]
+  have hgp : ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y = ι x + κ y := by
+    intro x y
+    have hxy : ((x, y) : Rn n × Rn ℓ) = (x, 0) + (0, y) := by simp
+    rw [hΦ, hxy, map_add]
+    rfl
+  -- Step 2: the transpose `τ`, for `m = n + ℓ` (`Amb n ℓ` is `Rn (n + ℓ)`).
+  obtain ⟨τ, hτ⟩ := Submission.allard52_gps_transpose_exists n (n + ℓ)
+  -- Step 3: the parametrization `J_A = ι + κ ∘ A` of `Γ_A`, and `T_A = τ(J_A)`.
+  let J : (Rn n →L[ℝ] Rn ℓ) → (Rn n →L[ℝ] Amb n ℓ) := fun A => ι + κ.comp A
+  let T : (Rn n →L[ℝ] Rn ℓ) → (Amb n ℓ →L[ℝ] Rn n) := fun A => τ (J A)
+  have hJ : ∀ (A : Rn n →L[ℝ] Rn ℓ) (v : Rn n), J A v = graphPoint v (A v) := by
+    intro A v
+    rw [hgp]
+    rfl
+  -- Step 4: `Π(A) = J_A (T_A J_A)⁻¹ T_A` with `T_A J_A` a unit, by the Gram projection child.
+  have hP : ∀ A : Rn n →L[ℝ] Rn ℓ, IsUnit (T A ∘L J A) ∧
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection =
+        J A ∘L Ring.inverse (T A ∘L J A) ∘L T A :=
+    fun A => Submission.allard52_gps_starProjection_eq_gram n ℓ A (J A) (T A) (hJ A)
+      (fun w v => hτ (J A) w v)
+  -- Step 5: `A ↦ J_A`, `A ↦ T_A` and `A ↦ G_A = T_A J_A` are `C²`.
+  have hJc : ContDiff ℝ 2 J := contDiff_const.add (contDiff_const.clm_comp contDiff_id)
+  have hTc : ContDiff ℝ 2 T := τ.contDiff.comp hJc
+  have hGc : ContDiff ℝ 2 fun A => T A ∘L J A := hTc.clm_comp hJc
+  -- Step 6: `A ↦ G_A⁻¹` is `C²`, since `Ring.inverse` is `C²` at the unit `G_A`.
+  have hIc : ContDiff ℝ 2 fun A => Ring.inverse (T A ∘L J A) := by
+    rw [contDiff_iff_contDiffAt]
+    intro A
+    obtain ⟨u, hu⟩ := (hP A).1
+    have h := contDiffAt_ringInverse ℝ (n := 2) u
+    rw [hu] at h
+    exact h.comp A hGc.contDiffAt
+  -- Step 7: `F(A) = J_A (G_A⁻¹ T_A)` is `C²`, and `Π = F`.
+  have hF : ContDiff ℝ 2 fun A => J A ∘L Ring.inverse (T A ∘L J A) ∘L T A :=
+    hJc.clm_comp (hIc.clm_comp hTc)
+  have hPF : (fun A : Rn n →L[ℝ] Rn ℓ =>
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) =
+        fun A => J A ∘L Ring.inverse (T A ∘L J A) ∘L T A :=
+    funext fun A => (hP A).2
+  rw [hPF]
+  exact hF
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the derivative at `A = 0` of the projection
+`Π(A) = p_{Γ_A}` onto the graph plane `Γ_A = span {(v, A v) : v ∈ ℝⁿ}` is
+`DΠ(0)[H] (x, y) = (Hᵀ y, H x)` with `Hᵀ y = Σᵢ ⟨H eᵢ, y⟩ eᵢ`, i.e. `DΠ(0)[H] = [[0, Hᵀ], [H, 0]]`.
+Write `(x, y) = ι x + κ y` and take a transpose `τ`.  Then `Π(A) = J_A (τ(J_A) J_A)⁻¹ τ(J_A)` for
+`J_A = ι + κ ∘ A`, so `DΠ(0)[H] = ι ∘ τ(κ ∘ H) + κ ∘ H ∘ τ(ι)`, and on `(x, y)` one has
+`τ(ι) (x, y) = x` and `τ(κ ∘ H) (x, y) = Hᵀ y` by `⟨(x, y), (x', y')⟩ = ⟨x, x'⟩ + ⟨y, y'⟩`. -/
+theorem allard52_gps_fderiv_zero_apply : ∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H (graphPoint x y) = graphPoint (∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y • EuclideanSpace.single i 1) (H x) := by
+  intro n ℓ H x y
+  -- Step 1: `graphPoint x y = ι x + κ y`, so `ι v = (v, 0)` and `κ z = (0, z)`.
+  obtain ⟨ι, κ, hgp⟩ := Submission.allard52_gfz_graphPoint_split n ℓ
+  have hι : ∀ v : Rn n, ι v = graphPoint v 0 := fun v => by
+    rw [hgp, map_zero, add_zero]
+  have hκ : ∀ z : Rn ℓ, κ z = graphPoint 0 z := fun z => by
+    rw [hgp, map_zero, zero_add]
+  -- Step 2: `ι` is isometric and `ι ⊥ κ`, since `⟨(x, y), (x', y')⟩ = ⟨x, x'⟩ + ⟨y, y'⟩`.
+  have hI : ∀ v u : Rn n, inner ℝ (ι v) (ι u) = inner ℝ v u := fun v u => by
+    rw [hι, hι, Submission.allard52_gfz_graphPoint_inner, inner_zero_left, add_zero]
+  have hO : ∀ (v : Rn n) (z : Rn ℓ), inner ℝ (ι v) (κ z) = 0 := fun v z => by
+    rw [hι, hκ, Submission.allard52_gfz_graphPoint_inner, inner_zero_right, inner_zero_left,
+      add_zero]
+  -- Step 3: a transpose `τ`, for `m = n + ℓ` (`Amb n ℓ` is `Rn (n + ℓ)`).
+  obtain ⟨τ, hτ⟩ : ∃ τ : (Rn n →L[ℝ] Amb n ℓ) →L[ℝ] (Amb n ℓ →L[ℝ] Rn n),
+      ∀ (L : Rn n →L[ℝ] Amb n ℓ) (w : Amb n ℓ) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v) :=
+    allard52_gps_transpose_exists n (n + ℓ)
+  -- Step 4: `Π(A) = J_A (τ(J_A) J_A)⁻¹ τ(J_A)` with `J_A = ι + κ ∘ A`, by the Gram formula.
+  have hP : (fun A : Rn n →L[ℝ] Rn ℓ =>
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) =
+        fun A => (ι + κ ∘L A) ∘L Ring.inverse (τ (ι + κ ∘L A) ∘L (ι + κ ∘L A)) ∘L
+          τ (ι + κ ∘L A) :=
+    funext fun A => (allard52_gps_starProjection_eq_gram n ℓ A (ι + κ ∘L A) (τ (ι + κ ∘L A))
+      (fun v => (hgp v (A v)).symm) (hτ (ι + κ ∘L A))).2
+  -- Step 5: `DΠ(0)[H] = ι ∘ τ(κ ∘ H) + κ ∘ H ∘ τ(ι)`.
+  rw [hP, Submission.allard52_gfz_gram_fderiv_zero n ℓ ι κ τ hτ hI hO H]
+  -- Step 6: on `(x, y)`, `τ(ι) (x, y) = x` and `τ(κ ∘ H) (x, y) = Σᵢ ⟨H eᵢ, y⟩ eᵢ = Hᵀ y`.
+  have hπ : τ ι (graphPoint x y) = x := ext_inner_right ℝ fun u => by
+    rw [hτ, hι, Submission.allard52_gfz_graphPoint_inner, inner_zero_right, add_zero]
+  have hHt : τ (κ ∘L H) (graphPoint x y) =
+      ∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y • EuclideanSpace.single i 1 := by
+    rw [Submission.allard52_gfz_transpose_eq_sum n (n + ℓ) (κ ∘L H) (τ (κ ∘L H)) (hτ (κ ∘L H))]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [ContinuousLinearMap.comp_apply, hκ, Submission.allard52_gfz_graphPoint_inner,
+      inner_zero_left, zero_add]
+  simp only [add_apply, ContinuousLinearMap.comp_apply]
+  rw [hπ, hHt, hgp]
+/-- Hilbert–Schmidt norm of the block operator `D = [[0, Hᵀ], [H, 0]]` on `ℝ^{n+ℓ}`:
+`|D|² = 2|H|²`.  Since `‖graphPoint x y‖² = ‖x‖² + ‖y‖²` and the standard basis vectors of
+`ℝ^{n+ℓ}` are `E_{castAdd i} = graphPoint eᵢ 0`, `E_{natAdd j} = graphPoint 0 f_j`
+(`Fin.addCases`; `castAdd ℓ i ≠ natAdd n j` by comparing values), split `hsNormSq D` over the
+`castAdd`/`natAdd` indices (`Fin.sum_univ_add`).  The column `D E_{castAdd i} = graphPoint 0 (H eᵢ)`
+contributes `‖H eᵢ‖²`; the column `D E_{natAdd j} = graphPoint (∑ᵢ (H eᵢ)_j eᵢ) 0` contributes
+`∑ᵢ (H eᵢ)_j²` (`EuclideanSpace.inner_single_right`).  Exchanging the finite sums
+(`Finset.sum_comm`) gives `hsNormSq H + hsNormSq H`. -/
+theorem allard52_gps_hsNormSq_swap : ∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn ℓ)
+    (D : Amb n ℓ →L[ℝ] Amb n ℓ), (∀ (x : Rn n) (y : Rn ℓ), D (graphPoint x y) =
+      graphPoint (∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y •
+        EuclideanSpace.single i 1) (H x)) → hsNormSq D = 2 * hsNormSq H := by
+  intro n ℓ H D hD
+  have hnorm : ∀ (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+    intro x y
+    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+      EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+    simp [graphPoint]
+  have hE₁ : ∀ i : Fin n, (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) : Amb n ℓ) =
+      graphPoint (EuclideanSpace.single i 1) 0 := by
+    intro i
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j' => ?_) k
+    · simp [graphPoint, Pi.single_apply]
+    · have h : Fin.natAdd n j' ≠ Fin.castAdd ℓ i := by
+        rw [Ne, Fin.ext_iff, Fin.val_natAdd, Fin.val_castAdd]
+        have := i.isLt
+        omega
+      simp [graphPoint, h]
+  have hE₂ : ∀ j : Fin ℓ, (EuclideanSpace.single (Fin.natAdd n j) (1 : ℝ) : Amb n ℓ) =
+      graphPoint 0 (EuclideanSpace.single j 1) := by
+    intro j
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j' => ?_) k
+    · have h : Fin.castAdd ℓ i' ≠ Fin.natAdd n j := by
+        rw [Ne, Fin.ext_iff, Fin.val_natAdd, Fin.val_castAdd]
+        have := i'.isLt
+        omega
+      simp [graphPoint, h]
+    · simp [graphPoint, Pi.single_apply]
+  have hcol₁ : ∀ i : Fin n, ‖D (EuclideanSpace.single (Fin.castAdd ℓ i) 1)‖ ^ 2 =
+      ‖H (EuclideanSpace.single i 1)‖ ^ 2 := by
+    intro i
+    rw [hE₁, hD, hnorm]
+    simp
+  have hcol₂ : ∀ j : Fin ℓ, ‖D (EuclideanSpace.single (Fin.natAdd n j) 1)‖ ^ 2 =
+      ∑ i : Fin n, (H (EuclideanSpace.single i 1) j) ^ 2 := by
+    intro j
+    rw [hE₂, hD, hnorm, map_zero, norm_zero, EuclideanSpace.real_norm_sq_eq]
+    simp [EuclideanSpace.inner_single_right, Pi.single_apply]
+  unfold hsNormSq
+  rw [Fin.sum_univ_add]
+  simp_rw [hcol₁, hcol₂]
+  rw [Finset.sum_comm]
+  simp_rw [← EuclideanSpace.real_norm_sq_eq]
+  ring
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the orthogonal projection `Π(A) = p_{Γ_A}` onto the
+graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is a `C²` function of `A ∈ L(ℝⁿ, ℝ^ℓ)`, and
+`|DΠ(0)[H]|² = 2|H|²` (Hilbert–Schmidt norms).  Smoothness is `allard52_gps_contDiff`
+(`Π(A) = J_A (J_Aᵀ J_A)⁻¹ J_Aᵀ` with `J_A v = (v, A v)`, and inversion is smooth at units).
+By `allard52_gps_fderiv_zero_apply`, `DΠ(0)[H] (x, y) = (Hᵀ y, H x)`, i.e. `DΠ(0)[H]` is the block
+operator `[[0, Hᵀ], [H, 0]]`, whose squared Hilbert–Schmidt norm is `|Hᵀ|² + |H|² = 2|H|²` by
+`allard52_gps_hsNormSq_swap`. -/
+theorem allard52_gpa_graphProj_smooth : ∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) ∧ ∀ H : Rn n →L[ℝ] Rn ℓ, hsNormSq (fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H) = 2 * hsNormSq H := by
+  intro n ℓ
+  exact ⟨Submission.allard52_gps_contDiff n ℓ, fun H =>
+    Submission.allard52_gps_hsNormSq_swap n ℓ H _ (Submission.allard52_gps_fderiv_zero_apply n ℓ H)⟩
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123), (Gp) with `q = id`: for `|A|, |B| ≤ L₀` the
+orthogonal projections `p_{Γ_A}`, `p_{Γ_B}` onto the graph planes satisfy
+`|A − B|² ≤ |p_{Γ_A} − p_{Γ_B}|² ≤ 3 |A − B|²` (Hilbert–Schmidt norms), `L₀ = L₀(n, ℓ) ∈ (0, 1/4]`. -/
+theorem allard52_gpa_graphProj_bilipschitz : ∀ (n ℓ : ℕ), ∃ L₀ : ℝ, 0 < L₀ ∧ L₀ ≤ 1 / 4 ∧ ∀ (A B : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNorm B ≤ L₀ → hsNormSq (A - B) ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ∧ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ≤ 3 * hsNormSq (A - B) := by
+  -- Steps 1 and 4 for any `C²` map: `‖f X - f Y - Df(0)(X - Y)‖ ≤ K r ‖X - Y‖` on `B_r(0)`, `r ≤ 1`
+  -- (`Df` is `K`-Lipschitz on the compact convex `B_1(0)`; mean value inequality on `B_r(0)`).
+  have remainder : ∀ {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+      [NormedAddCommGroup F] [NormedSpace ℝ F] (f : E → F), ContDiff ℝ 2 f → ∃ K : ℝ, 0 ≤ K ∧
+      ∀ r : ℝ, r ≤ 1 → ∀ X Y : E, ‖X‖ ≤ r → ‖Y‖ ≤ r →
+        ‖f X - f Y - fderiv ℝ f 0 (X - Y)‖ ≤ K * r * ‖X - Y‖ := by
+    intro E F _ _ _ _ _ f hf
+    have hf' : ContDiff ℝ 1 (fderiv ℝ f) := hf.fderiv_right (by norm_num)
+    obtain ⟨K, hK⟩ := (hf'.contDiffOn (s := closedBall (0 : E) 1)).exists_lipschitzOnWith
+      one_ne_zero (convex_closedBall 0 1) (isCompact_closedBall 0 1)
+    refine ⟨K, K.coe_nonneg, fun r hr X Y hX hY => ?_⟩
+    have hdiff : ∀ x ∈ closedBall (0 : E) r, DifferentiableAt ℝ f x :=
+      fun x _ => hf.differentiable (by norm_num) x
+    have hbound : ∀ x ∈ closedBall (0 : E) r, ‖fderiv ℝ f x - fderiv ℝ f 0‖ ≤ K * r := fun x hx =>
+      hK.norm_sub_le_of_le (closedBall_subset_closedBall hr hx)
+        (mem_closedBall_self zero_le_one) (by simpa using hx)
+    exact (convex_closedBall (0 : E) r).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound
+      (mem_closedBall_zero_iff.2 hY) (mem_closedBall_zero_iff.2 hX)
+  -- Steps 0 and 6–8: `|X|² = 2|Z|²` and `|Y| ≤ (√3 - √2)|Z|` give `|Z|² ≤ |X + Y|² ≤ 3|Z|²`,
+  -- since `(2√2 - √3)|Z| ≤ |X + Y| ≤ √3 |Z|` and `2√2 - √3 ≥ 1`.
+  have perturb : ∀ (m k p q : ℕ) (X Y : Rn m →L[ℝ] Rn k) (Z : Rn p →L[ℝ] Rn q),
+      hsNormSq X = 2 * hsNormSq Z → hsNorm Y ≤ (Real.sqrt 3 - Real.sqrt 2) * hsNorm Z →
+        hsNormSq Z ≤ hsNormSq (X + Y) ∧ hsNormSq (X + Y) ≤ 3 * hsNormSq Z := by
+    intro m k p q X Y Z hX hY
+    have hsq : ∀ {a b : ℕ} (T : Rn a →L[ℝ] Rn b), hsNorm T ^ 2 = hsNormSq T :=
+      fun T => Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)
+    have hneg : hsNorm (-Y) = hsNorm Y := by simp [hsNorm, hsNormSq]
+    have hz : 0 ≤ hsNorm Z := Real.sqrt_nonneg _
+    have hx : hsNorm X = Real.sqrt 2 * hsNorm Z := by
+      rw [hsNorm, hX, Real.sqrt_mul (by norm_num)]; rfl
+    have tri1 := (allard52_gpa_hsNorm_bounds m k X Y).2.2
+    have tri2 := (allard52_gpa_hsNorm_bounds m k (X + Y) (-Y)).2.2
+    rw [add_neg_cancel_right, hneg] at tri2
+    have ha : 0 ≤ hsNorm (X + Y) := Real.sqrt_nonneg _
+    have s2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+    have s3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
+    have s3le : Real.sqrt 3 ≤ 2 := by
+      rw [Real.sqrt_le_left (by norm_num)]; norm_num
+    have key : 1 ≤ 2 * Real.sqrt 2 - Real.sqrt 3 := by
+      nlinarith [Real.sqrt_nonneg 2, Real.sqrt_nonneg 3]
+    have up : hsNorm (X + Y) ≤ Real.sqrt 3 * hsNorm Z := by linarith
+    have low : hsNorm Z ≤ hsNorm (X + Y) := by nlinarith
+    rw [← hsq (X + Y), ← hsq Z]
+    exact ⟨pow_le_pow_left₀ hz low 2, (pow_le_pow_left₀ ha up 2).trans_eq (by rw [mul_pow, s3])⟩
+  intro n ℓ
+  -- [S2]: `Π` is `C²` and `|DΠ(0) H|² = 2 |H|²`.
+  obtain ⟨hC2, hD⟩ := Submission.allard52_gpa_graphProj_smooth n ℓ
+  obtain ⟨K, hK0, hK⟩ := remainder _ hC2
+  set D := fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ =>
+    (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 with hDdef
+  -- Step 2: `C_g = 1 + √(n + ℓ) K` and `L₀ = min {1/4, (√3 - √2)/C_g}`.
+  have h23 : Real.sqrt 2 < Real.sqrt 3 := Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  set Cg : ℝ := 1 + Real.sqrt ((n + ℓ : ℕ) : ℝ) * K with hCg
+  have hCg1 : 1 ≤ Cg := by
+    have := mul_nonneg (Real.sqrt_nonneg ((n + ℓ : ℕ) : ℝ)) hK0
+    linarith
+  set L₀ : ℝ := min (1 / 4) ((Real.sqrt 3 - Real.sqrt 2) / Cg) with hL₀
+  have hL₀pos : 0 < L₀ := lt_min (by norm_num) (div_pos (by linarith) (by linarith))
+  have hL₀1 : L₀ ≤ 1 := (min_le_left _ _).trans (by norm_num)
+  have hCgL : Cg * L₀ ≤ Real.sqrt 3 - Real.sqrt 2 := by
+    have := mul_le_mul_of_nonneg_left (min_le_right (1 / 4 : ℝ) ((Real.sqrt 3 - Real.sqrt 2) / Cg))
+      (show (0 : ℝ) ≤ Cg by linarith)
+    rwa [mul_div_cancel₀ _ (by linarith : Cg ≠ 0)] at this
+  refine ⟨L₀, hL₀pos, min_le_left _ _, fun A B hA hB => ?_⟩
+  -- Step 3: `‖A‖ ≤ |A| ≤ L₀` and `‖B‖ ≤ L₀` [S1].
+  have hA' : ‖A‖ ≤ L₀ := (allard52_gpa_hsNorm_bounds n ℓ A B).1.trans hA
+  have hB' : ‖B‖ ≤ L₀ := (allard52_gpa_hsNorm_bounds n ℓ B A).1.trans hB
+  -- Step 4: the remainder `R = Π(A) - Π(B) - D(A - B)` has `‖R‖ ≤ K L₀ ‖A - B‖`.
+  have hR := hK L₀ hL₀1 A B hA' hB'
+  set R : Amb n ℓ →L[ℝ] Amb n ℓ :=
+    (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection -
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection - D (A - B)
+    with hRdef
+  -- Step 5: `|R| ≤ √(n + ℓ) ‖R‖ ≤ √(n + ℓ) K L₀ |A - B| ≤ (√3 - √2) |A - B|` [S1].
+  have hRb : hsNorm R ≤ (Real.sqrt 3 - Real.sqrt 2) * hsNorm (A - B) := by
+    have hs0 : 0 ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) := Real.sqrt_nonneg _
+    have hh0 : 0 ≤ hsNorm (A - B) := Real.sqrt_nonneg _
+    calc hsNorm R ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) * ‖R‖ :=
+          (allard52_gpa_hsNorm_bounds (n + ℓ) (n + ℓ) R R).2.1
+      _ ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) * (K * L₀ * ‖A - B‖) := by gcongr
+      _ ≤ Real.sqrt ((n + ℓ : ℕ) : ℝ) * (K * L₀ * hsNorm (A - B)) := by
+          gcongr; exact (allard52_gpa_hsNorm_bounds n ℓ (A - B) (A - B)).1
+      _ = (Real.sqrt ((n + ℓ : ℕ) : ℝ) * K) * L₀ * hsNorm (A - B) := by ring
+      _ ≤ Cg * L₀ * hsNorm (A - B) := by gcongr; linarith
+      _ ≤ (Real.sqrt 3 - Real.sqrt 2) * hsNorm (A - B) := by gcongr
+  -- Steps 6–8: `Π(A) - Π(B) = D(A - B) + R` with `|D(A - B)|² = 2|A - B|²` [S2].
+  have hsum : (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection -
+      (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection =
+      D (A - B) + R := by
+    rw [hRdef]; abel
+  rw [hsum]
+  exact perturb (n + ℓ) (n + ℓ) n ℓ (D (A - B)) R (A - B) (hD (A - B)) hRb
+/-- Simon Ch. 5, proof of Theorem 5.2 (pp. 123–124): the linear algebra of graph planes.  For
+`n ≥ 1` there is `L₀ = L₀(n, ℓ) ∈ (0, 1/4]` such that, with `P_q(A)` the orthogonal projection onto
+`q(Γ_A)`, `Γ_A = {(v, A v) : v ∈ ℝⁿ}`, `|·|` the Hilbert–Schmidt norm and `‖·‖` the operator norm:
+(1) (Gp) `|A − B|² ≤ |P_q(A) − P_q(B)|² ≤ 3 |A − B|²` if `|A|, |B| ≤ L₀`;
+(2) `|A|² ≤ |P_q(A) − p_{q(ℝⁿ × {0})}|²` if `|A| ≤ L₀`;
+(3) (Nor) `|y − A x| ≤ 2 |w − P_q(A) w|` for `w = q(x, y)` if `‖A‖ ≤ 1`;
+(4) `‖A‖ ≤ |A| ≤ √n ‖A‖`; (5) every `n`-plane is `q(ℝⁿ × {0})` for some `q`;
+(6) `A ↦ P_q(A)` is continuous.
+`L₀` is the constant of the bi-Lipschitz estimate for the unrotated projection `Π(A) = p_{Γ_A}`.
+Since `P_q(A) = q Π(A) q⁻¹` and conjugation by `q` preserves `|·|`, that estimate gives (1), and
+(2) is its case `B = 0`, as `Γ_0 = ℝⁿ × {0}`; (6) holds because `Π` is `C²`. -/
+theorem allard52_graph_plane_algebra : ∀ (n ℓ : ℕ), 1 ≤ n → ∃ L₀ : ℝ, 0 < L₀ ∧ L₀ ≤ 1 / 4 ∧ (∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A B : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNorm B ≤ L₀ → hsNormSq (A - B) ≤ hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).map q.toLinearEquiv.toLinearMap).starProjection) ∧ hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).map q.toLinearEquiv.toLinearMap).starProjection) ≤ 3 * hsNormSq (A - B)) ∧ (∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNormSq A ≤ hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection - (rotatedPlane q).starProjection)) ∧ (∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖) ∧ (∀ A : Rn n →L[ℝ] Rn ℓ, ‖A‖ ≤ hsNorm A ∧ hsNorm A ≤ Real.sqrt n * ‖A‖) ∧ (∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T) ∧ (∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, Continuous fun A : Rn n →L[ℝ] Rn ℓ => ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection) := by
+  intro n ℓ _
+  -- `L₀` from the bi-Lipschitz estimate for the unrotated graph projection `Π(A) = p_{Γ_A}`.
+  obtain ⟨L₀, hL₀, hL₀le, hbil⟩ := Submission.allard52_gpa_graphProj_bilipschitz n ℓ
+  -- `p_{q(K)} − p_{q(K')} = q (p_K − p_{K'}) q⁻¹` has the Hilbert–Schmidt norm of `p_K − p_{K'}`.
+  have hconj : ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (K K' : Submodule ℝ (Amb n ℓ)),
+      hsNormSq ((K.map q.toLinearEquiv.toLinearMap).starProjection -
+        (K'.map q.toLinearEquiv.toLinearMap).starProjection) =
+      hsNormSq (K.starProjection - K'.starProjection) := by
+    intro q K K'
+    obtain ⟨hmap, hhs⟩ := Submission.allard52_gpa_isometry_conj n ℓ q
+    rw [hmap, hmap, ← ContinuousLinearMap.comp_sub, ← ContinuousLinearMap.sub_comp, hhs]
+  refine ⟨L₀, hL₀, hL₀le, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- (1) (Gp) for `P_q`, from (Gp) for `Π`.
+    intro q A B hA hB
+    rw [hconj]
+    exact hbil A B hA hB
+  · -- (2) `q(ℝⁿ × {0}) = q(Γ_0)` and `|0| = 0 ≤ L₀`, so this is (Gp) with `B = 0`.
+    intro q A hA
+    have h0 : hsNorm (0 : Rn n →L[ℝ] Rn ℓ) ≤ L₀ := by
+      simpa [hsNorm, hsNormSq] using hL₀.le
+    have h := (hbil A 0 hA h0).1
+    rw [sub_zero] at h
+    rw [rotatedPlane, ← Submission.allard52_gpa_span_graph_zero n ℓ, hconj]
+    exact h
+  · -- (3) (Nor)
+    exact Submission.allard52_gpa_graph_normal_bound n ℓ
+  · -- (4) `‖A‖ ≤ |A| ≤ √n ‖A‖`
+    intro A
+    obtain ⟨h1, h2, -⟩ := Submission.allard52_gpa_hsNorm_bounds n ℓ A 0
+    exact ⟨h1, h2⟩
+  · -- (5) every `n`-plane is a rotated coordinate plane
+    exact Submission.allard52_gpa_exists_rotatedPlane_eq n ℓ
+  · -- (6) `P_q(A) = q Π(A) q⁻¹`, and `Π` is continuous (indeed `C²`).
+    intro q
+    obtain ⟨hmap, -⟩ := Submission.allard52_gpa_isometry_conj n ℓ q
+    exact (continuous_const.clm_comp
+      ((Submission.allard52_gpa_graphProj_smooth n ℓ).1.continuous.clm_comp continuous_const)).congr
+      fun A => (hmap _).symm
 
 end Submission
 

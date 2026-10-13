@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_gps|gps_transpose_exists|starProjection_eq_gram|hsNormSq_swap|gps_fderiv_zero_apply",
+        "theorem contDiffAt_ringInverse|theorem hasFDerivAt_ringInverse|theorem HasFDerivAt.clm_comp|theorem ContDiff.clm_comp|theorem contDiff_iff_contDiffAt",
+        "theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem isUnit_iff_isUnit_toLinearMap|theorem isUnit_iff_ker_eq_bot|theorem ext_inner_right|finAddEquivProd|real_norm_sq_eq|inner_single_left|inner_single_right|def basisFun|theorem sum_repr",
+        "mul_def|mul_apply|instance.*[Mm]ul|instance.*[Rr]ing",
+        "def toContinuousLinearMap",
+        "ContinuousLinearMap.adjoint|def adjoint",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean ChallengeAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean FullAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1/decomposition-v1.json",
+        "/tmp/gps-independent-audit-z74bknbz/ChallengeAudit.lean",
+        "/tmp/gps-independent-audit-z74bknbz/FullAudit.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected contract allard52_gpa_graphProj_smooth. The pinned definitions match the prose, and inspected supporting Mathlib files match the compiler sources. No proposed name matches the snapshot searches or reservations in the inspected 434-node DAG; all five names are distinct bare identifiers, and no accepted declaration is reused. Dependencies are correctly directed and acyclic: proj_contdiff and proj_fderiv_zero use exactly transpose_clm and gram_projection; the other children are leaves. Independently compiled all five raw types in the comparator scope with the proposed declarations absent, verified the parent assembly from child hypotheses, and confirmed by rfl that endomorphism multiplication is composition and the Gram IsUnit expression uses continuous-linear-map units. Recompiled the supplied complete proofs against a freshly built frozen Submission: every child and the exact parent type compile with only propext, Classical.choice, and Quot.sound. Each natural proof was independently reviewed step by step and supplies a complete formalization route."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "transpose_clm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the fully quantified prose. The finite basis construction proves real linearity, finite-dimensional continuity, and the stated transpose identity. It uses neither siblings nor the parent and covers zero dimensions."
+    },
+    {
+      "key": "gram_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both hypotheses and conclusions match the Lean type. Coordinate injectivity and the transpose identity prove Gram invertibility in the composition ring. Range identification and residual orthogonality then prove the projection formula without assuming the parent or any sibling."
+    },
+    {
+      "key": "proj_contdiff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly the parent's first conjunct. Both declared dependencies are applied with their required hypotheses. Affine parametrization, continuous linear transpose, operator composition, and smooth inversion at every Gram unit establish global C² regularity without a gap."
+    },
+    {
+      "key": "proj_fderiv_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The quantified evaluation formula exactly matches the prose. Orthogonality proves DG(0)=0, inversion gives DR(0)=0, and the product rule yields the block derivative. Basis expansion identifies its transpose block using only the declared siblings; no reliance on proj_contdiff or the parent is hidden."
+    },
+    {
+      "key": "hs_block_swap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The operator hypothesis and norm conclusion match exactly. The proof derives both standard-basis block contributions and exchanges finite sums to obtain the factor 2. It is independent of the derivative theorem, whose conclusion supplies its hypothesis precisely in the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

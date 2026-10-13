@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.transpose_clm-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+  "depth": 4,
+  "title": "Hand-built continuous linear transpose between Euclidean spaces",
+  "statement": "For all natural numbers n, m there is a continuous linear map tau : L(R^n, R^m) -> L(R^m, R^n) (both spaces of continuous linear maps with the operator norm) such that for every continuous linear L : R^n -> R^m and all w in R^m, v in R^n: <tau(L) w, v> = <w, L v>. Here R^k = EuclideanSpace R (Fin k) = Rn k with its standard inner product.",
+  "lean_statement": "∀ (n m : ℕ), ∃ τ : (Rn n →L[ℝ] Rn m) →L[ℝ] (Rn m →L[ℝ] Rn n), ∀ (L : Rn n →L[ℝ] Rn m) (w : Rn m) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v)",
+  "lean_name": "allard52_gps_transpose_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-1190b83f44-a1"
+}
