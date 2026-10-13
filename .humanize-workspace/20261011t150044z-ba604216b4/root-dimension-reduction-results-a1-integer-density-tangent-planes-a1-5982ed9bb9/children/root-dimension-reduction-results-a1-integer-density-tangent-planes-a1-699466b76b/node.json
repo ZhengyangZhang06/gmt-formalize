@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.density_representation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1",
+  "depth": 5,
+  "title": "(F9) Under (DEM), the weight of a locally finite IMRep is Hⁿ with density equal to its upper n-density",
+  "statement": "Assume (DEM). (DEM) is the frozen statement of Submission.idtp_imrep_measure_density_ae: for all P, n ∈ ℕ with n ≥ 1, every U ⊆ ℝ^P and every R ∈ IMRep U n (carrier M, multiplicity θ : ℝ^P → ℕ) whose weight R.measure = (Hⁿ⌞M).withDensity θ satisfies R.measure(K) ≠ ∞ for every compact K ⊆ ℝ^P, for μHE[n]-a.e. x the ratio R.measure(B_ρ(x))/(ω_n·ofReal(ρ^n)) (in [0, ∞], ω_n = unitBallVolume n) tends to 1_M(x)·θ(x) as ρ → 0⁺. Then for all P, n ∈ ℕ with n ≥ 1, every U ⊆ ℝ^P and every R ∈ IMRep U n with R.measure(K) ≠ ∞ for every compact K ⊆ ℝ^P: R.measure = μHE[n].withDensity(x ↦ ofReal(d(x))), where d(x) := (limsup_{ρ→0⁺} R.measure(B_ρ(x))/(unitBallVolume n·ofReal(ρ^n))).toReal (limsup in [0, ∞] along 𝓝[>]0).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x))) → ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → R.measure = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal ((limsup (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal))",
+  "lean_name": "idtp_fons_cc_density_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-699466b76b-a1"
+}

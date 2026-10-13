@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.monotonicity_bounds-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1",
+  "depth": 5,
+  "title": "Consequences of (MON): lower density bounds at measure-support points of T, and the weight of a minimizing cycle of ℝ^P (bound ω_nρ^n, total mass 0 or ∞, density identification)",
+  "statement": "Assume (MON). (MON) is the frozen type of Submission.idtp_fons_minimizing_monotonicity: for all P, n, d ∈ ℕ with 1 ≤ n ≤ d ≤ P, all U, N ⊆ ℝ^P with U open, N an embedded C² d-dimensional submanifold (IsEmbeddedSubmanifold 2 d N) with (closure N ∖ N) ∩ U = ∅, and every T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U: (i) for every compact K ⊆ U there is Λ ≥ 0 such that for all y ∈ ℝ^P and R with closedBall y R ⊆ K the function ρ ↦ ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(y)}(T) is nondecreasing on (0, R); (ii) if N = ℝ^P, then for all y, R with B_R(y) ⊆ U the function ρ ↦ ofReal(1/ρ^n)·M_{B_ρ(y)}(T) is nondecreasing on (0, R); (iii) there is Θ : ℝ^P → ℝ with HasMassDensity T y (Θ y) for every y ∈ U and Θ upper semicontinuous on U; (iv) if y ∈ spt T and HasMassDensity T y θ, then 1 ≤ θ. Then: (A) for all P, n, d ∈ ℕ with 1 ≤ n ≤ d ≤ P, all U, N ⊆ ℝ^P with U open, N an embedded C² d-dimensional submanifold with (closure N ∖ N) ∩ U = ∅, every T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U, every IMRep R of T in U and every compact K ⊆ U, there is Λ ≥ 0 such that for every p ∈ ℝ^P with R.measure(B_ε(p)) ≠ 0 for all ε > 0 and all σ, ρ ∈ ℝ with closedBall p ρ ⊆ K and 0 < σ < ρ: ofReal(e^{−(Λσ)})·(ω_n·ofReal(σ^n)) ≤ R.measure(B_σ(p)), where ω_n = unitBallVolume n; (B) for all P, n ∈ ℕ with 1 ≤ n ≤ P, every S ∈ 𝒟_n(ℝ^P) minimizing in ℝ^P with ∂S = 0, and every IMRep R of S in ℝ^P: (B1) if w ∈ ℝ^P has R.measure(B_ε(w)) ≠ 0 for all ε > 0, then ω_n·ofReal(ρ^n) ≤ R.measure(B_ρ(w)) for every ρ > 0; (B2) R.measure(ℝ^P) = 0 or R.measure(ℝ^P) = ∞; (B3) for all w ∈ ℝ^P and θ ∈ ℝ: HasMassDensity S w θ ⟺ θ = (limsup_{ρ→0⁺} R.measure(B_ρ(w))/(ω_n·ofReal(ρ^n))).toReal.",
+  "lean_statement": "(∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (K : Set (Euclid P)), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ p : Euclid P, (∀ ε : ℝ, 0 < ε → R.measure (ball p ε) ≠ 0) → ∀ σ ρ : ℝ, closedBall p ρ ⊆ K → 0 < σ → σ < ρ → ENNReal.ofReal (Real.exp (-(Λ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ R.measure (ball p σ)) ∧ ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 1 ≤ n → n ≤ P → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → (∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → R.measure (ball w ε) ≠ 0) → ∀ ρ : ℝ, 0 < ρ → unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≤ R.measure (ball w ρ)) ∧ (R.measure univ = 0 ∨ R.measure univ = ∞) ∧ ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ ↔ θ = (limsup (fun ρ : ℝ => R.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal",
+  "lean_name": "idtp_fons_cc_monotonicity_bounds",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8bcfcf93a4-a1"
+}

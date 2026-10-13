@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.cycle_rescale-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1",
+  "depth": 5,
+  "title": "Blow-ups of minimizing cycles of ℝ^P are minimizing cycles of ℝ^P with rescaled weight (parent step 4(d), with (F1) and (F2))",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, let S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be minimizing in ℝ^P (IsMinimizingIn S univ) with ∂S = 0 (BoundaryVanishes S), and let R be an integer multiplicity triple in ℝ^P (IMRep univ n) representing S. Let y ∈ ℝ^P and t > 0. Then there are S' ∈ 𝒟_n(ℝ^P) and an IMRep R' in ℝ^P such that S' is minimizing in ℝ^P, ∂S' = 0, R' represents S', and R'.measure = ofReal(t^{−n})•R.measure.map(dilation y t), i.e. μ_{S'} = (μ_S)^{y,t}.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (y : Euclid P) (t : ℝ), 1 ≤ n → 0 < t → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → ∃ (S' : GeometricCurrentOn (univ : Set (Euclid P)) n) (R' : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn S' univ ∧ BoundaryVanishes S' ∧ R'.Represents S' ∧ R'.measure = ENNReal.ofReal (t⁻¹ ^ n) • R.measure.map (dilation y t)",
+  "lean_name": "idtp_fons_cc_cycle_rescale",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-a1",
+      "result_commit": "a94d596c81cfb78de36a706eb0e81f430f835418",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9820912c8b-a1"
+}
