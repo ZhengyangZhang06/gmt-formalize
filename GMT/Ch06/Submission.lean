@@ -470,6 +470,45 @@ theorem Submission.iwl_cr_ip_pt_slab_transfer : ∀ (P m : ℕ), (∀ A : Set (E
   let Φh : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
     { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
         (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0,
+        (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      left_inv := fun p => by
+        rcases p with ⟨s, x⟩
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+          ContinuousLinearEquiv.symm_apply_apply]
+      continuous_toFun := by
+        refine (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp ?_
+        exact Continuous.finCons continuous_fst
+          ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+      continuous_invFun := by
+        refine Continuous.prodMk ?_ ?_
+        · exact (continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+        · refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+          exact continuous_pi fun i =>
+            (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous }
+  have hΦ : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
+  -- `π ∘ Φ' = Prod.snd`.
+  have hπΦ : ∀ p : ℝ × Eucl P, (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))))) = p.2 := by
+    intro p
+    simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  refine ⟨fun f hf => ?_, fun g hg => ?_⟩
+  · -- (a) `f ∘ Prod.snd` is integrable for the product, `L¹ ⌞ (0, 1)` being finite.
+    rw [IntegrableOn, hD, hΦ.integrable_map_iff]
+    refine (Integrable.comp_snd hf ((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1))).congr
+      (Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hπΦ]
+  · -- (b) `Prod.snd` is quasi-measure-preserving from the product onto `Hᵐ ⌞ A`.
+    rw [hD, hΦ.aestronglyMeasurable_map_iff]
+    refine (hg.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_snd).congr
+      (Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hπΦ]
 /-- **Slice formula for the product `[[(0, 1)]] × τ(M, θ, ξ)` (Simon Ch. 6, 2.17 and 3.2(2),
 pp. 138, 146).**  Write `Φ(s, x) = (s, x) ∈ ℝ^{P+1}` and `π(y) = (y₁, …, y_P)`, and assume the
 product formula `H^{m+1}⌞{π ∈ A} = Φ_#(L¹ × Hᵐ⌞A)` for every `Hᵐ`-measurable, countably
@@ -525,26 +564,49 @@ theorem Submission.iwl_cr_ip_slice_formula : ∀ (P m : ℕ), (∀ A : Set (Eucl
         · refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
           exact continuous_pi fun i =>
             (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous }
-  have hΦ : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+  have hΦm : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
       (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
-  -- `π ∘ Φ' = Prod.snd`.
-  have hπΦ : ∀ p : ℝ × Eucl P, (EuclideanSpace.equiv (Fin P) ℝ).symm
-      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
-        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))))) = p.2 := by
-    intro p
+  -- Step 2: `H^{m+1}⌞M̃ = Φ_#(L¹⌞(0, 1) × Hᵐ⌞M)`, restricting the product formula for `M` to the
+  -- open slab `{y₀ ∈ (0, 1)}`, whose preimage under `Φ` is `(0, 1) × ℝ^P`.
+  have hOm : MeasurableSet {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹'
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} = Ioo (0 : ℝ) 1 ×ˢ univ := by
+    ext ⟨s, x⟩
+    simp only [mem_preimage, Set.mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero,
+      mem_prod, mem_univ, and_true]
+  have hset : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+      EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} ∩
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+    ext y
+    simp only [Set.mem_ofPred_eq, mem_inter_iff]
+    exact and_comm
+  have hMt : (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+      {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+        (((volume : Measure ℝ).restrict (Ioo 0 1)).prod ((μHE[m] : Measure (Eucl P)).restrict M)) := by
+    rw [hset, ← Measure.restrict_restrict hOm, hS, Measure.restrict_map hΦm.measurable hOm, hpre,
+      ← Measure.prod_restrict, Measure.restrict_univ]
+  -- Step 4: the integrand composed with `Φ` is integrable for `L¹⌞(0, 1) × Hᵐ⌞M`.
+  have hint' := hint
+  rw [IntegrableOn, hMt, hΦm.integrable_map_iff] at hint'
+  -- Steps 3, 5 and 7: transport the integral along `Φ`, apply Fubini, and write `∫₀¹` as the
+  -- set integral over `(0, 1]`, equivalently over `(0, 1)`.
+  simp only [tauAction]
+  rw [hMt, hΦm.integral_map, integral_prod, intervalIntegral.integral_of_le zero_le_one,
+    integral_Ioc_eq_integral_Ioo]
+  · -- Step 6: for `s ∈ (0, 1)`, `π(Φ(s, x)) = x` and `⟨η(Φ(s, x)), ξ'(Φ(s, x))⟩ = ⟨φ(s)(x), ξ(x)⟩`.
+    refine setIntegral_congr_fun measurableSet_Ioo (fun s hs => ?_)
+    refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
       ContinuousLinearEquiv.symm_apply_apply]
-  refine ⟨fun f hf => ?_, fun g hg => ?_⟩
-  · -- (a) `f ∘ Prod.snd` is integrable for the product, `L¹ ⌞ (0, 1)` being finite.
-    rw [IntegrableOn, hD, hΦ.integrable_map_iff]
-    refine (Integrable.comp_snd hf ((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1))).congr
-      (Eventually.of_forall fun p => ?_)
-    simp only [Function.comp_apply, hπΦ]
-  · -- (b) `Prod.snd` is quasi-measure-preserving from the product onto `Hᵐ ⌞ A`.
-    rw [hD, hΦ.aestronglyMeasurable_map_iff]
-    refine (hg.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_snd).congr
-      (Eventually.of_forall fun p => ?_)
-    simp only [Function.comp_apply, hπΦ]
+    rw [hchar s x _ _ (fun v => hφ s (Ioo_subset_Icc_self hs) x v)]
+  · exact hint'
 /-- Cylinders over null-measurable sets: let `π(y) = (y_1, …, y_P)` for `y ∈ ℝ^{P+1}`.  If
 `π⁻¹(N)` is `H^{m+1}`-null for every `Hᵐ`-null `N ⊆ ℝ^P`, then `π⁻¹(M)` is `H^{m+1}`-null-measurable
 for every `Hᵐ`-null-measurable `M ⊆ ℝ^P`.  `π` is continuous, hence Borel, and the hypothesis makes
@@ -1567,49 +1629,6 @@ theorem Submission.iwl_cr_ip_product_triple : ∀ (P m : ℕ), (∀ A : Set (Euc
       rw [h, hsimple]
     · right
       rw [h, ContinuousLinearMap.neg_comp, hsimple]
-  have hΦm : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
-      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
-  -- Step 2: `H^{m+1}⌞M̃ = Φ_#(L¹⌞(0, 1) × Hᵐ⌞M)`, restricting the product formula for `M` to the
-  -- open slab `{y₀ ∈ (0, 1)}`, whose preimage under `Φ` is `(0, 1) × ℝ^P`.
-  have hOm : MeasurableSet {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
-    measurableSet_Ioo.preimage
-      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
-  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
-      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹'
-      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} = Ioo (0 : ℝ) 1 ×ˢ univ := by
-    ext ⟨s, x⟩
-    simp only [mem_preimage, Set.mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero,
-      mem_prod, mem_univ, and_true]
-  have hset : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
-      EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
-      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} ∩
-        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
-    ext y
-    simp only [Set.mem_ofPred_eq, mem_inter_iff]
-    exact and_comm
-  have hMt : (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
-      {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
-        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
-      Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
-        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
-        (((volume : Measure ℝ).restrict (Ioo 0 1)).prod ((μHE[m] : Measure (Eucl P)).restrict M)) := by
-    rw [hset, ← Measure.restrict_restrict hOm, hS, Measure.restrict_map hΦm.measurable hOm, hpre,
-      ← Measure.prod_restrict, Measure.restrict_univ]
-  -- Step 4: the integrand composed with `Φ` is integrable for `L¹⌞(0, 1) × Hᵐ⌞M`.
-  have hint' := hint
-  rw [IntegrableOn, hMt, hΦm.integrable_map_iff] at hint'
-  -- Steps 3, 5 and 7: transport the integral along `Φ`, apply Fubini, and write `∫₀¹` as the
-  -- set integral over `(0, 1]`, equivalently over `(0, 1)`.
-  simp only [tauAction]
-  rw [hMt, hΦm.integral_map, integral_prod, intervalIntegral.integral_of_le zero_le_one,
-    integral_Ioc_eq_integral_Ioo]
-  · -- Step 6: for `s ∈ (0, 1)`, `π(Φ(s, x)) = x` and `⟨η(Φ(s, x)), ξ'(Φ(s, x))⟩ = ⟨φ(s)(x), ξ(x)⟩`.
-    refine setIntegral_congr_fun measurableSet_Ioo (fun s hs => ?_)
-    refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-    simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
-      ContinuousLinearEquiv.symm_apply_apply]
-    rw [hchar s x _ _ (fun v => hφ s (Ioo_subset_Icc_self hs) x v)]
-  · exact hint'
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
