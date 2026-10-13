@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c2fde83000d2a498cc3e0e978fd6862baea2f7dc2235ba06a731d576fe6c0f3",
+  "git_delta": {
+    "base_commit": "0a60fd50f9813a11d08772ae89ba8b7ffc99c161",
+    "candidate_commit": "b59dbf93abbab37e4d13519ae2ffc6f0ad71f4c9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mono_ae_ball_density_ge_one",
+    "diff_sha256": "f58b8b59252ea03bc36135c697c0ffb520454755c672c2d4a183c5cee8864f4f",
+    "source_sha256": "7bdfbb9d966883a69629d874d852b4c29cf7d42441e557659c6d2d2bc68b0bcb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mono_ae_ball_density_ge_one",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → ∀ᵐ x ∂R.measure, ∀ θ : ℝ, Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → 1 ≤ θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

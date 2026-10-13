@@ -1,0 +1,18 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.ae_density_lower_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4450",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b59dbf93abbab37e4d13519ae2ffc6f0ad71f4c9",
+  "integrated_commit": "",
+  "proof_base_commit": "0ae66d749a8ac236d45e8ad53ef871722a24803b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.monotonicity-a1",
+  "requires": [
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1"
+  ]
+}
