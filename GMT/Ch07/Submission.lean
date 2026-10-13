@@ -18614,6 +18614,185 @@ theorem Submission.dor_stationary_mean_curvature_monotonicity : ∀ (n k ℓ : �
     ((closedBall_subset_closedBall' (by linarith)).trans hcl) hpm hHm hHb
     (fun X hX hXc hXs => hHfv X hX hXc (hXs.trans (ball_subset_ball' (by linarith)))) σ ρ hσ hσρ hρ
 
+/-- **ε-regularity for stationary cycles**, the book's appeal to Allard's theorem in Simon 7.4.3
+(chapter-07.txt lines 624–631; Allard's theorem is Ch. 5, 5.2).  Near `y₀ ∈ N ∩ U`, the varifold
+`v(M, θ)` of a cycle `T = τ(M, θ, ξ)` stationary in `U ∩ N` has generalized mean curvature
+`|H| ≤ κ` in `B_{2r_c}(y₀)` (Ch. 4, 2.7).  If `z ∈ spt T` is near `y₀` and
+`M_{B_ρ(z)}(T) ≤ (1 + δ)ωₙρⁿ`, then `μ_R(B̄_{ρ'}(z)) ≤ (1 + δ₁)ωₙρ'ⁿ` for a slightly smaller
+`ρ'`, because `M_W(T) = μ_R(W)` and `z ∈ spt μ_R`.  Allard's theorem (gradient bound `1/4`) then
+makes `spt μ_R ∩ B_{γρ'}(z)` the graph of a `C¹` map `u` over an `n`-plane through `z`.  In the
+cylinder of radius `γρ'/4` about `z`, `spt μ_R` is exactly that graph, so `z ∈ reg T` by the
+Constancy Theorem argument (Ch. 6, 2.34). -/
+theorem Submission.dor_stationary_cycle_epsilon_regularity : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n →
+    ∀ (U N : Set (Euclid (n + k))) (y₀ : Euclid (n + k)), IsOpen U →
+    IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → y₀ ∈ N ∩ U →
+    ∃ r₀ δ : ℝ, 0 < r₀ ∧ 0 < δ ∧ ∀ (T : GeometricCurrentOn U n) (R : IMRep U n),
+      R.Represents T → T.support ⊆ N → BoundaryVanishes T → R.IsStationaryAlong N →
+      ∀ z ∈ T.support, dist z y₀ < r₀ → ∀ ρ : ℝ, 0 < ρ → ρ ≤ r₀ →
+        T.massOn (ball z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) →
+        z ∈ regularSet T := by
+  intro n k ℓ hℓk hn U N y₀ hU hN hNcl hy₀
+  -- The mean curvature bound `κ` and the first variation formula on `B_{2r_c}(y₀)`.
+  obtain ⟨rc, κ, hrc, hκ, hrcU, hmc⟩ :=
+    Submission.dor_stationary_mean_curvature_monotonicity n k ℓ hℓk hn U N y₀ hU hN hNcl hy₀
+  -- Allard's constants `δ₁`, `γ` for the gradient bound `1/4`.
+  obtain ⟨δ₁, γ, hδ₁, hγ, hγ1, hallard⟩ :=
+    Submission.dor_allard_bounded_curvature_graph n k hn (1 / 4) (by norm_num)
+  have hκ1 : 0 < κ + 1 := by linarith
+  refine ⟨min (rc / 2) (δ₁ / (κ + 1)), δ₁ / 2, lt_min (half_pos hrc) (div_pos hδ₁ hκ1),
+    half_pos hδ₁, ?_⟩
+  intro T R hR hTN hTb hstat z hz hzy ρ hρ hρr₀ hmass
+  obtain ⟨hρrc, hρδ⟩ := le_min_iff.1 hρr₀
+  have hzy' : dist z y₀ < rc / 2 := (lt_min_iff.1 hzy).1
+  -- `M_W(T) = μ_R(W)` for open `W`, and `spt T = U ∩ spt μ_R`; so `z ∈ spt μ_R`.
+  obtain ⟨hmassEq, hsupp⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support (n + k) n U T R hU hR
+  have hzR : z ∈ R.measure.support := by
+    have h := hz
+    rw [hsupp] at h
+    exact h.2
+  obtain ⟨⟨H, hHm, hHκ, hHfv⟩, -⟩ := hmc T R hR hTN hstat
+  -- A smaller radius `ρ' = tρ`, `t = 1 - d/n`, with `(1 + δ₁/2)ρⁿ ≤ (1 + δ₁)ρ'ⁿ` (Bernoulli).
+  set d : ℝ := δ₁ / (2 * (1 + δ₁)) with hd
+  have hd0 : 0 < d := div_pos hδ₁ (by linarith)
+  have hd1 : d < 1 := by
+    rw [hd, div_lt_one (by linarith)]
+    linarith
+  have hδd : (1 + δ₁) * (1 - d) = 1 + δ₁ / 2 := by
+    rw [hd]
+    field_simp
+    ring
+  have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  set t : ℝ := 1 - d / n with ht
+  have hdn : d / n ≤ d := div_le_self hd0.le hnR
+  have hdn0 : 0 < d / n := div_pos hd0 (by linarith)
+  have ht0 : 0 < t := by linarith
+  have ht1 : t < 1 := by linarith
+  have hbern : 1 - d ≤ t ^ n := by
+    have h := one_add_mul_le_pow (show (-2 : ℝ) ≤ -(d / n) by linarith) n
+    have e1 : (n : ℝ) * -(d / n) = -d := by
+      field_simp
+    have e2 : (1 : ℝ) + -(d / n) = t := by
+      rw [ht]
+      ring
+    rw [e1, e2] at h
+    linarith
+  set ρ' : ℝ := t * ρ with hρ'
+  have hρ'0 : 0 < ρ' := mul_pos ht0 hρ
+  have hρ'ρ : ρ' < ρ := mul_lt_of_lt_one_left hρ ht1
+  have hreal : (1 + δ₁ / 2) * ρ ^ n ≤ (1 + δ₁) * ρ' ^ n := by
+    have hρn : 0 ≤ ρ ^ n := pow_nonneg hρ.le n
+    calc (1 + δ₁ / 2) * ρ ^ n = (1 + δ₁) * ((1 - d) * ρ ^ n) := by
+          rw [← hδd]
+          ring
+      _ ≤ (1 + δ₁) * (t ^ n * ρ ^ n) := by
+          gcongr
+      _ = (1 + δ₁) * ρ' ^ n := by
+          rw [hρ', mul_pow]
+  -- Allard's mass hypothesis on the closed ball `B̄_{ρ'}(z) ⊆ B_ρ(z)`.
+  have hmass' : R.measure (closedBall z ρ') ≤
+      ENNReal.ofReal (1 + δ₁) * unitBallVolume n * ENNReal.ofReal (ρ' ^ n) := by
+    calc R.measure (closedBall z ρ') ≤ R.measure (ball z ρ) :=
+          measure_mono (closedBall_subset_ball hρ'ρ)
+      _ = T.massOn (ball z ρ) := (hmassEq _ isOpen_ball).symm
+      _ ≤ ENNReal.ofReal (1 + δ₁ / 2) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := hmass
+      _ ≤ ENNReal.ofReal (1 + δ₁) * unitBallVolume n * ENNReal.ofReal (ρ' ^ n) := by
+          rw [mul_right_comm, mul_right_comm (ENNReal.ofReal (1 + δ₁)),
+            ← ENNReal.ofReal_mul (show (0 : ℝ) ≤ 1 + δ₁ / 2 by linarith),
+            ← ENNReal.ofReal_mul (show (0 : ℝ) ≤ 1 + δ₁ by linarith)]
+          gcongr
+  -- Allard's curvature hypothesis `κρ' ≤ δ₁`.
+  have hκρ' : κ * ρ' ≤ δ₁ := by
+    have h1 : ρ' * (κ + 1) ≤ δ₁ := (le_div_iff₀ hκ1).1 (hρ'ρ.le.trans hρδ)
+    have h2 : ρ' * (κ + 1) = κ * ρ' + ρ' := by ring
+    linarith
+  -- `B̄_{ρ'}(z) ⊆ W := B_{2r_c}(y₀) ⊆ U`.
+  have hWU : ball y₀ (2 * rc) ⊆ U :=
+    (ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))).trans hrcU
+  have hBW : closedBall z ρ' ⊆ ball y₀ (2 * rc) := by
+    intro x hx
+    rw [mem_closedBall] at hx
+    rw [mem_ball]
+    calc dist x y₀ ≤ dist x z + dist z y₀ := dist_triangle _ _ _
+      _ < 2 * rc := by linarith
+  -- Allard: `spt μ_R ∩ B_{γρ'}(z)` is the graph of `u` over `ι(ℝⁿ)`, with `‖Du‖ ≤ 1/4`.
+  obtain ⟨ι, ι', u, horth, hu0, hu, hDu, hgraph⟩ :=
+    hallard U (ball y₀ (2 * rc)) R H κ ρ' z isOpen_ball hWU hρ'0 hBW hHm hHκ hHfv hzR hmass'
+      hκρ'
+  -- The cylinder `{z + ι v + ι' w : |v|, |w| < s}`, `s = γρ'/4`, lies in `B_{γρ'}(z) ⊆ U`.
+  set s : ℝ := γ * ρ' / 4 with hs
+  have hγρ' : 0 < γ * ρ' := mul_pos hγ hρ'0
+  have hs0 : 0 < s := by linarith
+  have hsγ : s < γ * ρ' := by linarith
+  have hγρ'ρ' : γ * ρ' ≤ ρ' := mul_le_of_le_one_left hρ'0.le hγ1
+  have hnorm : ∀ (v : Euclid n) (w : Euclid k), dist (z + ι v + ι' w) z ≤ ‖v‖ + ‖w‖ := by
+    intro v w
+    rw [dist_eq_norm, add_assoc, add_sub_cancel_left]
+    calc ‖ι v + ι' w‖ ≤ ‖ι v‖ + ‖ι' w‖ := norm_add_le _ _
+      _ = ‖v‖ + ‖w‖ := by rw [ι.norm_map, ι'.norm_map]
+  have hcyl : {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) s,
+      x = z + ι v + ι' w} ⊆ ball z (γ * ρ') := by
+    rintro x ⟨v, hv, w, hw, rfl⟩
+    rw [mem_ball_zero_iff] at hv hw
+    rw [mem_ball]
+    calc dist (z + ι v + ι' w) z ≤ ‖v‖ + ‖w‖ := hnorm v w
+      _ < γ * ρ' := by linarith
+  have hcylU : {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) s,
+      x = z + ι v + ι' w} ⊆ U :=
+    hcyl.trans ((ball_subset_ball hγρ'ρ').trans (ball_subset_closedBall.trans (hBW.trans hWU)))
+  -- `|u(v)| ≤ |v|/4` on `B_{γρ'}(0)` (mean value inequality, `u(0) = 0`).
+  have hu_le : ∀ v ∈ ball (0 : Euclid n) (γ * ρ'), ‖u v‖ ≤ 1 / 4 * ‖v‖ := by
+    intro v hv
+    have h := (convex_ball (0 : Euclid n) (γ * ρ')).norm_image_sub_le_of_norm_fderiv_le
+      (fun x hx => (hu.differentiableOn_one x hx).differentiableAt (isOpen_ball.mem_nhds hx))
+      hDu (mem_ball_self hγρ') hv
+    simpa [hu0] using h
+  -- In the cylinder, `spt μ_R` is exactly the graph over `B_s(0)`: the ranges of `ι`, `ι'` are
+  -- orthogonal, so a graph point `z + ι v' + ι' u(v')` equal to `z + ι v + ι' w` has `v' = v`.
+  have hsupp_eq : R.measure.support ∩ {x | ∃ v ∈ ball (0 : Euclid n) s,
+      ∃ w ∈ ball (0 : Euclid k) s, x = z + ι v + ι' w} =
+      (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s := by
+    ext x
+    constructor
+    · rintro ⟨hxR, hxC⟩
+      have hxB := hcyl hxC
+      obtain ⟨v, hv, w, -, rfl⟩ := hxC
+      have hx : z + ι v + ι' w ∈ R.measure.support ∩ ball z (γ * ρ') := ⟨hxR, hxB⟩
+      rw [hgraph] at hx
+      obtain ⟨⟨v', -, hv'⟩, -⟩ := hx
+      have hsum : ι v' + ι' (u v') = ι v + ι' w := by
+        simpa only [add_assoc, add_right_inj] using hv'
+      have hdiff : ι (v' - v) = ι' (w - u v') := by
+        rw [map_sub, map_sub, sub_eq_sub_iff_add_eq_add, hsum, add_comm (ι v)]
+      have hzero : ι (v' - v) = 0 := by
+        rw [← inner_self_eq_zero (𝕜 := ℝ)]
+        nth_rewrite 2 [hdiff]
+        exact horth _ _
+      have hvv : v' = v := by
+        have h0 : ‖v' - v‖ = 0 := by
+          rw [← ι.norm_map, hzero, norm_zero]
+        exact sub_eq_zero.1 (norm_eq_zero.1 h0)
+      subst hvv
+      exact ⟨v', hv, hv'⟩
+    · rintro ⟨v, hv, rfl⟩
+      have hvs : ‖v‖ < s := mem_ball_zero_iff.1 hv
+      have hvγ : v ∈ ball (0 : Euclid n) (γ * ρ') := ball_subset_ball hsγ.le hv
+      have huv : ‖u v‖ < s := by
+        have h := hu_le v hvγ
+        linarith [norm_nonneg v]
+      have hxB : z + ι v + ι' (u v) ∈ ball z (γ * ρ') := by
+        rw [mem_ball]
+        calc dist (z + ι v + ι' (u v)) z ≤ ‖v‖ + ‖u v‖ := hnorm v (u v)
+          _ < γ * ρ' := by linarith
+      have hx : z + ι v + ι' (u v) ∈
+          ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) (γ * ρ')) ∩ ball z (γ * ρ') :=
+        ⟨⟨v, hvγ, rfl⟩, hxB⟩
+      rw [← hgraph] at hx
+      exact ⟨hx.1, v, hv, u v, mem_ball_zero_iff.2 huv, rfl⟩
+  -- Constancy over the base disc (`dor_graph_supported_cycle_regular`): `z ∈ reg T`.
+  exact Submission.dor_graph_supported_cycle_regular n k U T R ι ι' u z s s hn hU hR hTb horth
+    hs0 hs0 (hu.mono (ball_subset_ball hsγ.le)) hu0 hcylU hsupp_eq hz
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
