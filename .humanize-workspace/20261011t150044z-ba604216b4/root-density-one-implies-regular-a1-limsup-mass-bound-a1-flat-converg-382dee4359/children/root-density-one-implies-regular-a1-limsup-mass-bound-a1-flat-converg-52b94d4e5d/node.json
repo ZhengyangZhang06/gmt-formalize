@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.tangent_transport-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1",
+  "depth": 6,
+  "title": "Linear isometric embeddings transport approximate tangent spaces: T_{Lx}L(M) = L(T_xM) (parent step 3)",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For x ∈ ℝ^P and r ∈ ℝ, blowUpMap x r (y) = r⁻¹(y − x) (SimonGMT; Simon's η_{x,r}). A linear subspace S ⊆ ℝ^P is a d-dimensional approximate tangent space of M ⊆ ℝ^P at x (HasApproximateTangentSpaceAt d M x S, Simon Ch. 3, 1.4) when dim S = d and, for every continuous compactly supported f : ℝ^P → ℝ, ∫_{blowUpMap x r '' M} f dHᵈ → ∫_S f dHᵈ as r → 0⁺.\nLet P, Q, d ∈ ℕ and let L : ℝ^P → ℝ^Q be a continuous linear map which is an isometry. Let M ⊆ ℝ^P be arbitrary, x ∈ ℝ^P, and S a linear subspace of ℝ^P with HasApproximateTangentSpaceAt d M x S. Then the image subspace L(S) = S.map L is a d-dimensional approximate tangent space of L(M) at Lx: HasApproximateTangentSpaceAt d (L(M)) (Lx) (S.map L).",
+  "lean_statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (M : Set (Euclid P)) (x : Euclid P) (S : Submodule ℝ (Euclid P)), Isometry L → HasApproximateTangentSpaceAt d M x S → HasApproximateTangentSpaceAt d (L '' M) (L x) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid Q) S)",
+  "lean_name": "dor_lmb_fc_dtop_ip_approxTangent_isometry",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-52b94d4e5d-a1"
+}

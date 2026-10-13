@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.image_imrep-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1",
+  "depth": 6,
+  "title": "Image IMRep of a linear isometric push-forward: (L(M), θ∘L*, (ξ∘L*)∘L^*) represents L#T and μ_{R'} = L_#μ_R (parent steps 2, 5, 6, 7)",
+  "statement": "Conventions as in the parent: ℝ^P = Euclid P and Hᵈ = μHE[d]; 𝒟^d(U) = TestFormOn U d and 𝒟_d(U) = GeometricCurrentOn U d. An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d:\n- a Borel, countably d-rectifiable carrier M ⊆ U;\n- a measurable ℕ-valued multiplicity θ, positive on M and with finite lower integral over M ∩ K for compact K ⊆ U;\n- an orientation ξ : ℝ^P → MultiVector P d that is Hᵈ⌞M-a.e. strongly measurable and, for Hᵈ⌞M-a.e. x, is a unit orientation of some approximate tangent space of M at x.\nR represents X ∈ 𝒟_d(U) when X(ω) = ∫_M θ(x) ξ(x)(ω(x)) dHᵈ(x) for every ω ∈ 𝒟^d(U). Its measure is μ_R = R.measure = (Hᵈ⌞M).withDensity θ.\nLet P, Q, d ∈ ℕ and let L : ℝ^P → ℝ^Q be a continuous linear map which is an isometry. Let hL be a proof that x ↦ 0 + Lx is proper. Let T ∈ 𝒟_d(ℝ^P) (domain univ), and let R be an IMRep in ℝ^P (U = univ) representing T. Let L#T := GeometricCurrentOn.affinePushforward L 0 hL T ∈ 𝒟_d(ℝ^Q) (domain univ), i.e. L#T(ω) = T(L^#ω) with L^#ω(x) = ω(Lx)(L·, …, L·).\nThen there is an IMRep R' in ℝ^Q (U = univ) that represents L#T and satisfies μ_{R'}(s) = μ_R(L⁻¹(s)) for every Borel s ⊆ ℝ^Q.",
+  "lean_statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (hL : IsProperMap (fun x => (0 : Euclid Q) + L x)) (T : GeometricCurrentOn (univ : Set (Euclid P)) d) (R : IMRep (univ : Set (Euclid P)) d), Isometry L → R.Represents T → ∃ R' : IMRep (univ : Set (Euclid Q)) d, R'.Represents (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ∧ ∀ s : Set (Euclid Q), MeasurableSet s → R'.measure s = R.measure (L ⁻¹' s)",
+  "lean_name": "dor_lmb_fc_dtop_ip_image_imrep",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.change_of_variables-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.tangent_transport-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.orientation_transport-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.tangent_transport-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.orientation_transport-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ba4ac6905c-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.change_of_variables-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1",
+  "depth": 6,
+  "title": "Change of variables for an isometric embedding ℝ^P → ℝ^Q under μHE[d] (parent step 1)",
+  "statement": "Conventions: ℝ^P = Euclid P, and Hᵈ = μHE[d] is Mathlib's normalized Euclidean Hausdorff measure on ℝ^P and on ℝ^Q. Let P, Q, d ∈ ℕ and let f : ℝ^P → ℝ^Q be an isometry: |f(x) − f(x')| = |x − x'| for all x, x'. Linearity is not assumed. Then:\n(i) f is a measurable embedding: injective, Borel measurable, and f(B) is Borel for every Borel B ⊆ ℝ^P.\n(ii) For every set A ⊆ ℝ^P, with no measurability assumed, the push-forward under f of Hᵈ restricted to A is Hᵈ restricted to f(A): f_#(Hᵈ⌞A) = Hᵈ⌞f(A).\n(iii) For every A ⊆ ℝ^P and every function g : ℝ^Q → ℝ, with no measurability or integrability assumed, ∫_{f(A)} g dHᵈ = ∫_A g∘f dHᵈ as Bochner integrals.\n(iv) For every A ⊆ ℝ^P and every g : ℝ^Q → [0, ∞], ∫⁻_{f(A)} g dHᵈ = ∫⁻_A g∘f dHᵈ.",
+  "lean_statement": "∀ (P Q d : ℕ) (f : Euclid P → Euclid Q), Isometry f → MeasurableEmbedding f ∧ (∀ A : Set (Euclid P), Measure.map f ((μHE[d] : Measure (Euclid P)).restrict A) = (μHE[d] : Measure (Euclid Q)).restrict (f '' A)) ∧ (∀ (A : Set (Euclid P)) (g : Euclid Q → ℝ), ∫ y in f '' A, g y ∂μHE[d] = ∫ x in A, g (f x) ∂μHE[d]) ∧ ∀ (A : Set (Euclid P)) (g : Euclid Q → ℝ≥0∞), ∫⁻ y in f '' A, g y ∂μHE[d] = ∫⁻ x in A, g (f x) ∂μHE[d]",
+  "lean_name": "dor_lmb_fc_dtop_ip_isometry_change_of_variables",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-d99d8fb641-a1"
+}

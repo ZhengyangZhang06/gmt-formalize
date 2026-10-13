@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp <snapshot>/project/GMT/Ch07/Contract.lean <workspace>/GMT/Ch07/Submission.lean (identical)",
+        "rg -n \"dtop_ip_|isometry_change_of_variables|approxTangent_isometry|unitOrientation_isometry|image_imrep\" <snapshot>/project .lake/packages/simongmt --glob '*.lean' (no match)",
+        "rg -n -i \"isometr\" and rg -n \"affinePushforward\" <snapshot>/project/GMT --glob '*.lean' (only Ch05 rotated-plane docstrings and the Ch07 contract's blowUp)",
+        "read SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt), Chapter06/AffineCurrentPushforward.lean (affinePullbackForm, affinePullbackTestOn, affinePushforward_apply rfl), Chapter06/Mass.lean (massOn, mass = massOn U), Chapter06/Forms.lean and Currents.lean",
+        "rg Isometry.map_euclideanHausdorffMeasure / Isometry.euclideanHausdorffMeasure_image in <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (lines 131, 141)",
+        "rg MeasurableEmbedding.restrict_map, ae_map_iff, restrict_restrict_of_subset, integral_map, lintegral_map, aestronglyMeasurable_map_iff, IsClosedEmbedding.measurableEmbedding, Isometry.isClosedEmbedding, Isometry.lipschitzWith, IsClosedEmbedding.isProperMap, HasCompactSupport.comp_isClosedEmbedding, Orthonormal.comp_linearIsometry, adjoint_inner_left, span_image, equivMapOfInjective, Continuous.clm_comp, withDensity_apply, setIntegral_congr_fun, image_inter_preimage in <snapshot>/mathlib/Mathlib",
+        "python3 -I scans of the run's dag.json (1552 nodes): HasApproximateTangentSpaceAt / IsUnitOrientationOf / Isometry / affinePushforward statements and the types of dtc_blowUp_imrep, dtc_hausdorff_dilation, dtc_approxTangent_dilation, dpfir_bilipschitz_image_imrep_exists, dpf_approxTangent_bilipschitz_image_ae, dpf_unitOrientation_map_gramNormalized, codim1_rdo_gc_unitOrientation_isometry, dor_imrep_massOn_eq_measure_and_support; collision check of the four new lean_names",
+        "git show 047b3402ecebcae7b968f8ca435cbbb0b9ed036f:GMT/Ch07/Submission.lean (lines 455-740, accepted dtc_blowUp_imrep template)",
+        "sed -n 395,440p and 765,880p book/chapter-06.txt (Simon 6.2.23-2.24, 6.3.3-3.9)",
+        "python3 -I gen.py: gmt-compare.py child_modules (contract scope) + lean_contract.validate_lean_statement on the four types; lake env lean /tmp/isopf-decomp/challenges/Challenge_*.lean and /tmp/isopf-decomp/lean/{Stmts,Assembly,Full,SolutionCheck,Names}.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-382dee4359/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/isopf-decomp/lean/Full.lean",
+        "/tmp/isopf-decomp/lean/SolutionCheck.lean"
+      ],
+      "conclusion": "Snapshot: project b4d606db and Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Submission.lean.\n\nNo-match results:\n- No snapshot or SimonGMT declaration transports Hausdorff measure, approximate tangent spaces, unit orientations or IMReps along a linear isometric embedding ℝ^P → ℝ^Q.\n- Accepted DAG lemmas only treat self-maps of ℝ^P (dilations, bi-Lipschitz/C¹ diffeomorphisms) or plane parametrisations, so none can be reused for P ≠ Q.\n- None of the four new names occurs in dag.json, the snapshot or SimonGMT.\n\nThe children use only snapshot Mathlib:\n- Isometry.map_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image, Isometry.isClosedEmbedding;\n- the MeasurableEmbedding API (restrict_map, integral_map, lintegral_map, ae_map_iff, aestronglyMeasurable_map_iff);\n- HasCompactSupport.comp_isClosedEmbedding, Orthonormal.comp_linearIsometry, Submodule.span_image, ContinuousLinearMap.adjoint.\n\nFrom SimonGMT they use affinePullbackForm, affinePullbackTestOn and affinePushforward_apply.\n\nThe accepted dtc_blowUp_imrep is the structural template.\n\nLean results:\n- All four child types compile as the exact comparator challenges.\n- Full proofs of all four children check with only propext, Classical.choice and Quot.sound.\n- The exact selected type follows in 7 lines from image_imrep and the accepted dor_imrep_massOn_eq_measure_and_support."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1",
+  "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.orientation_transport-a1",
+  "subproblem": {
+    "key": "orientation_transport",
+    "title": "Linear isometric embeddings transport unit orientations: ξ∘L^* orients L(S) (parent step 4)",
+    "statement": "Conventions: ℝ^P = Euclid P. A d-covector of ℝ^P is a continuous alternating d-linear form on ℝ^P (Covector (Euclid P) d). MultiVector P d is the space of continuous linear functionals on d-covectors of ℝ^P. For ξ ∈ MultiVector P d and a linear subspace S of ℝ^P, IsUnitOrientationOf ξ S means: there is an orthonormal family τ = (τ₀, …, τ_{d−1}) in ℝ^P with span(range τ) = S such that either ξ(α) = α(τ) for every d-covector α, or ξ(α) = −α(τ) for every d-covector α.\nLet P, Q, d ∈ ℕ and let L : ℝ^P → ℝ^Q be a continuous linear map which is an isometry. Let ξ ∈ MultiVector P d and let S be a linear subspace of ℝ^P with IsUnitOrientationOf ξ S. Let L^* = ContinuousAlternatingMap.compContinuousLinearMapCLM L be the continuous linear map β ↦ β(L·, …, L·) from d-covectors of ℝ^Q to d-covectors of ℝ^P, and put (∧L)ξ := ξ ∘ L^* ∈ MultiVector Q d. Then IsUnitOrientationOf ((∧L)ξ) (S.map L).",
+    "lean_statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (ξ : MultiVector P d) (S : Submodule ℝ (Euclid P)), Isometry L → IsUnitOrientationOf ξ S → IsUnitOrientationOf (ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid Q) S)",
+    "lean_name": "dor_lmb_fc_dtop_ip_unitOrientation_isometry",
+    "depends_on": [],
+    "natural_proof": "Source: step 4 of the parent-supplied proof (unit orientations are transported). This is the Jacobian-one case of Simon Ch. 6, 3.4–3.5 and 3.7 (book/chapter-06.txt lines 785–835): for an isometric L, L_#(τ₁ ∧ ⋯ ∧ τ_d) = Lτ₁ ∧ ⋯ ∧ Lτ_d is again a unit simple d-vector.\n1. L preserves norms and inner products. L is linear, so L0 = 0, and the isometry property gives |Lx| = |x| for all x (Isometry.norm_map_of_map_zero). Therefore L is a linear isometry ℝ^P →ₗᵢ ℝ^Q, and ⟨Lx, Ly⟩ = ⟨x, y⟩ for all x, y by polarization (LinearIsometry.inner_map_map).\n2. Unpack the hypothesis. IsUnitOrientationOf ξ S gives τ : Fin d → ℝ^P with τ orthonormal and span(range τ) = S. Moreover either (+) ξ(α) = α(τ) for every d-covector α of ℝ^P, or (−) ξ(α) = −α(τ) for every such α.\n3. The new frame. Let τ' := L∘τ = (Lτ₀, …, Lτ_{d−1}). By step 1, ⟨Lτ_i, Lτ_j⟩ = ⟨τ_i, τ_j⟩ = δ_ij, so τ' is orthonormal (Orthonormal.comp_linearIsometry).\n4. The new span. range τ' = L(range τ) (Set.range_comp). The span of the image of a set under a linear map is the image of its span (Submodule.span_image). Hence span(range τ') = (span(range τ)).map L = S.map L.\n5. The sign identity. Let β be a d-covector of ℝ^Q. By definition of composition of continuous linear maps (ContinuousLinearMap.comp_apply) and of L^* (ContinuousAlternatingMap.compContinuousLinearMapCLM_apply), ((∧L)ξ)(β) = ξ(L^*β) with L^*β = β.compContinuousLinearMap L. Also (L^*β)(v) = β(L∘v) for every v : Fin d → ℝ^P (ContinuousAlternatingMap.compContinuousLinearMap_apply), so (L^*β)(τ) = β(τ').\n In case (+), the hypothesis with α = L^*β gives ((∧L)ξ)(β) = (L^*β)(τ) = β(τ') for every β.\n In case (−) it gives ((∧L)ξ)(β) = −(L^*β)(τ) = −β(τ') for every β.\n6. Conclusion. By steps 3–5, τ' is orthonormal, spans S.map L, and satisfies the same sign alternative for (∧L)ξ. This is IsUnitOrientationOf ((∧L)ξ) (S.map L). The argument is uniform in d; for d = 0, τ and τ' are empty and both spans are {0}. ∎",
+    "proof_key_steps": [
+      "L preserves norms and hence inner products: it is a linear isometry.",
+      "τ' = L∘τ is orthonormal and span(range τ') = span(L(range τ)) = S.map L.",
+      "((∧L)ξ)(β) = ξ(β∘L) = ±(β∘L)(τ) = ±β(τ'), with the same sign as for ξ."
+    ]
+  },
+  "audit": {
+    "key": "orientation_transport",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The pullback composition has the intended continuous-linear-map type. The proof transports the orthonormal frame, its span, and the global sign alternative, including degree zero. All hypotheses match the prose, with no circular dependency."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-dc6bb25d31/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-dc6bb25d31/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-dc6bb25d31/parent-supplied-natural-proof.json"
+}

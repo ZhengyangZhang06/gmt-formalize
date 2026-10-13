@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1.change_of_variables-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent-supplied proof (Hᵈ⌞L(A) = L_#(Hᵈ⌞A) and the resulting change of variables), i.e. the Jacobian-one case of the area formula behind Simon Ch. 6, 2.24(3) and 3.3–3.9 (book/chapter-06.txt lines 414–436 and 765–870). Here it is stated for an arbitrary isometry f : ℝ^P → ℝ^Q; linearity is not used.
+1. f is a measurable embedding. An isometry is injective and continuous. Since ℝ^P is complete, an isometry defined on it is a closed embedding: a homeomorphism onto its image, and the image is closed because it is complete (Mathlib Isometry.isClosedEmbedding). A closed embedding between Borel spaces is a measurable embedding (Topology.IsClosedEmbedding.measurableEmbedding): f is measurable, injective, and f(B) is Borel for every Borel B ⊆ ℝ^P. This is (i).
+2. Push-forward of Hᵈ. For an isometry f, f_#Hᵈ = Hᵈ⌞range f (Mathlib Isometry.map_euclideanHausdorffMeasure). This holds because Hᵈ(f⁻¹(B)) = Hᵈ(f(f⁻¹(B))) = Hᵈ(B ∩ range f): isometries preserve Hᵈ of images (Isometry.euclideanHausdorffMeasure_image).
+3. Restriction. For a measurable embedding f, every measure μ on ℝ^P and every set s ⊆ ℝ^Q, (f_#μ)⌞s = f_#(μ⌞f⁻¹(s)) (MeasurableEmbedding.restrict_map; s need not be measurable). Take μ = Hᵈ and s = f(A). By injectivity f⁻¹(f(A)) = A (Function.Injective.preimage_image), so f_#(Hᵈ⌞A) = (f_#Hᵈ)⌞f(A) = (Hᵈ⌞range f)⌞f(A) by step 2. Since f(A) ⊆ range f (Set.image_subset_range), (Hᵈ⌞range f)⌞f(A) = Hᵈ⌞f(A) (Measure.restrict_restrict_of_subset, valid for arbitrary sets). Hence f_#(Hᵈ⌞A) = Hᵈ⌞f(A) for every A ⊆ ℝ^P. This is (ii).
+4. Bochner integrals. By definition ∫_{f(A)} g dHᵈ = ∫ g d(Hᵈ⌞f(A)), which equals ∫ g d(f_#(Hᵈ⌞A)) by (ii). For a measurable embedding f and any measure ν, ∫ g d(f_#ν) = ∫ g∘f dν for every function g (MeasurableEmbedding.integral_map). No measurability or integrability of g is needed: g is a.e.-strongly measurable and integrable for f_#ν exactly when g∘f is for ν, and otherwise both integrals are 0. With ν = Hᵈ⌞A this gives ∫_{f(A)} g dHᵈ = ∫_A g∘f dHᵈ. This is (iii).
+5. Lower integrals. In the same way, ∫⁻_{f(A)} g dHᵈ = ∫⁻ g d(f_#(Hᵈ⌞A)) = ∫⁻ g∘f d(Hᵈ⌞A) = ∫⁻_A g∘f dHᵈ for every g : ℝ^Q → [0, ∞] (MeasurableEmbedding.lintegral_map, valid for every g). This is (iv). ∎
+
+## Key steps
+
+1. An isometry from the complete space ℝ^P is a closed embedding, hence a measurable embedding.
+2. Isometry.map_euclideanHausdorffMeasure: f_#Hᵈ = Hᵈ⌞range f.
+3. MeasurableEmbedding.restrict_map with s = f(A), f⁻¹(f(A)) = A and Measure.restrict_restrict_of_subset give f_#(Hᵈ⌞A) = Hᵈ⌞f(A).
+4. MeasurableEmbedding.integral_map and lintegral_map turn this measure identity into the integral identities for arbitrary g.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean <workspace>/GMT/Ch07/Submission.lean (identical)`
+- `rg -n "dtop_ip_|isometry_change_of_variables|approxTangent_isometry|unitOrientation_isometry|image_imrep" <snapshot>/project .lake/packages/simongmt --glob '*.lean' (no match)`
+- `rg -n -i "isometr" and rg -n "affinePushforward" <snapshot>/project/GMT --glob '*.lean' (only Ch05 rotated-plane docstrings and the Ch07 contract's blowUp)`
+- `read SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt), Chapter06/AffineCurrentPushforward.lean (affinePullbackForm, affinePullbackTestOn, affinePushforward_apply rfl), Chapter06/Mass.lean (massOn, mass = massOn U), Chapter06/Forms.lean and Currents.lean`
+- `rg Isometry.map_euclideanHausdorffMeasure / Isometry.euclideanHausdorffMeasure_image in <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (lines 131, 141)`
+- `rg MeasurableEmbedding.restrict_map, ae_map_iff, restrict_restrict_of_subset, integral_map, lintegral_map, aestronglyMeasurable_map_iff, IsClosedEmbedding.measurableEmbedding, Isometry.isClosedEmbedding, Isometry.lipschitzWith, IsClosedEmbedding.isProperMap, HasCompactSupport.comp_isClosedEmbedding, Orthonormal.comp_linearIsometry, adjoint_inner_left, span_image, equivMapOfInjective, Continuous.clm_comp, withDensity_apply, setIntegral_congr_fun, image_inter_preimage in <snapshot>/mathlib/Mathlib`
+- `python3 -I scans of the run's dag.json (1552 nodes): HasApproximateTangentSpaceAt / IsUnitOrientationOf / Isometry / affinePushforward statements and the types of dtc_blowUp_imrep, dtc_hausdorff_dilation, dtc_approxTangent_dilation, dpfir_bilipschitz_image_imrep_exists, dpf_approxTangent_bilipschitz_image_ae, dpf_unitOrientation_map_gramNormalized, codim1_rdo_gc_unitOrientation_isometry, dor_imrep_massOn_eq_measure_and_support; collision check of the four new lean_names`
+- `git show 047b3402ecebcae7b968f8ca435cbbb0b9ed036f:GMT/Ch07/Submission.lean (lines 455-740, accepted dtc_blowUp_imrep template)`
+- `sed -n 395,440p and 765,880p book/chapter-06.txt (Simon 6.2.23-2.24, 6.3.3-3.9)`
+- `python3 -I gen.py: gmt-compare.py child_modules (contract scope) + lean_contract.validate_lean_statement on the four types; lake env lean /tmp/isopf-decomp/challenges/Challenge_*.lean and /tmp/isopf-decomp/lean/{Stmts,Assembly,Full,SolutionCheck,Names}.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-382dee4359/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/isopf-decomp/lean/Full.lean`
+- `/tmp/isopf-decomp/lean/SolutionCheck.lean`
+
+Snapshot: project b4d606db and Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Submission.lean.
+
+No-match results:
+- No snapshot or SimonGMT declaration transports Hausdorff measure, approximate tangent spaces, unit orientations or IMReps along a linear isometric embedding ℝ^P → ℝ^Q.
+- Accepted DAG lemmas only treat self-maps of ℝ^P (dilations, bi-Lipschitz/C¹ diffeomorphisms) or plane parametrisations, so none can be reused for P ≠ Q.
+- None of the four new names occurs in dag.json, the snapshot or SimonGMT.
+
+The children use only snapshot Mathlib:
+- Isometry.map_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image, Isometry.isClosedEmbedding;
+- the MeasurableEmbedding API (restrict_map, integral_map, lintegral_map, ae_map_iff, aestronglyMeasurable_map_iff);
+- HasCompactSupport.comp_isClosedEmbedding, Orthonormal.comp_linearIsometry, Submodule.span_image, ContinuousLinearMap.adjoint.
+
+From SimonGMT they use affinePullbackForm, affinePullbackTestOn and affinePushforward_apply.
+
+The accepted dtc_blowUp_imrep is the structural template.
+
+Lean results:
+- All four child types compile as the exact comparator challenges.
+- Full proofs of all four children check with only propext, Classical.choice and Quot.sound.
+- The exact selected type follows in 7 lines from image_imrep and the accepted dor_imrep_massOn_eq_measure_and_support.
