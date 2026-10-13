@@ -543,6 +543,41 @@ theorem Submission.cbr_vl_riesz_measure_on_open : ∀ (P : ℕ) (U : Set (Euclid
       _ = ΛU g := RealRMK.integral_rieszMeasure ΛU g
       _ = Λ f := congrArg Λ hfg
 
+/-- **Simon 1.4.16, last step** (the vague limit is a Radon measure on `U`): if every `ν_j` is
+finite on compact subsets of the open set `U ⊆ ℝᴾ` and `∫ f dν_j` converges for every continuous
+`f` with compact support in `U`, then `Λ(f) = lim_j ∫ f dν_j` is additive, homogeneous and
+non-negative on these `f` (such `f` are `ν_j`-integrable; uniqueness of limits), so Simon 1.4.12
+on `U` gives `μ` with `μ(ℝᴾ \ U) = 0`, finite on compact subsets of `U`, and
+`∫ f dμ = Λ(f) = lim_j ∫ f dν_j`. -/
+theorem Submission.cbr_vague_limit_measure : ∀ (P : ℕ) (U : Set (Euclid P)) (νs : ℕ → Measure (Euclid P)), IsOpen U → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → K ⊆ U → νs j K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 c)) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P U νs hU hν hlim
+  -- the limit functional `Λ(f) = lim_j ∫ f dν_j`
+  let Λ : (Euclid P → ℝ) → ℝ := fun f => limUnder atTop fun j => ∫ x, f x ∂(νs j)
+  have hΛ : ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U →
+      Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (Λ f)) :=
+    fun f hf hfc hfU => tendsto_nhds_limUnder (hlim f hf hfc hfU)
+  -- such `f` are `ν_j`-integrable, so `∫ · dν_j` is linear on them
+  have hint : ∀ (j : ℕ) (f : Euclid P → ℝ), Continuous f → HasCompactSupport f →
+      tsupport f ⊆ U → Integrable f (νs j) :=
+    fun j f => Submission.cbr_vl_integrable_of_tsupport_subset P U (νs j) f (hν j)
+  -- `Λ` is additive, homogeneous and non-negative, so it is integration against some `μ`
+  obtain ⟨μ, hμU, hμK, hμΛ⟩ := Submission.cbr_vl_riesz_measure_on_open P U Λ hU
+    (fun f g hf hfc hfU hg hgc hgU => by
+      refine tendsto_nhds_unique (hΛ _ (hf.add hg) (hfc.add hgc)
+        ((tsupport_add f g).trans (union_subset hfU hgU))) ?_
+      refine ((hΛ f hf hfc hfU).add (hΛ g hg hgc hgU)).congr fun j => ?_
+      exact (integral_add (hint j f hf hfc hfU) (hint j g hg hgc hgU)).symm)
+    (fun c f hf hfc hfU => by
+      have hcf : support (c • f) ⊆ support f := support_const_smul_subset c f
+      refine tendsto_nhds_unique (hΛ _ (hf.const_smul c) (hfc.mono hcf)
+        ((closure_mono hcf).trans hfU)) ?_
+      refine ((hΛ f hf hfc hfU).const_mul c).congr fun j => ?_
+      exact (integral_smul c f).symm)
+    (fun f hf hfc hfU hf0 => ge_of_tendsto' (hΛ f hf hfc hfU) fun j => integral_nonneg hf0)
+  refine ⟨μ, hμU, hμK, fun f hf hfc hfU => ?_⟩
+  rw [hμΛ f hf hfc hfU]
+  exact hΛ f hf hfc hfU
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
