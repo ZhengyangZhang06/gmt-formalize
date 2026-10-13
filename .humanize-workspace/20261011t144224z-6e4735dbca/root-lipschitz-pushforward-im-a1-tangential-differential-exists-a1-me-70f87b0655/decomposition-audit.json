@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "theorem Measurable.find|theorem measurable_fderiv |theorem ContinuousOn.measurable_piecewise|theorem MeasurableSet.image_of_continuousOn_injOn|theorem invFunOn_mem|theorem invFunOn_eq|theorem Continuous.measurable2|theorem Measurable.stronglyMeasurable|theorem ContDiff.continuous_fderiv|isBoundedBilinearMap_comp|instMeasurableSpace|instBorelSpace",
+        "continuous_fderiv|stronglyMeasurable \\(|tendsto_slope_zero_right|comp_hasDerivAt_of_eq|^variable",
+        "Measurable.stronglyMeasurable|namespace Measurable",
+        "lpf_tde_mcd_single_chart",
+        "lpf_tde_mcd_countable_glue",
+        "git show 8cfbc487a3d10545b0ea005ad58122242bbcc072:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mcd-independent-audit-20261012/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mcd-independent-audit-20261012/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mcd-independent-audit-20261012/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Function.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-me-70f87b0655/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-me-70f87b0655/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9/isolated-comparator-result.json",
+        "/tmp/mcd-independent-audit-20261012/StandaloneTypes.lean",
+        "/tmp/mcd-independent-audit-20261012/Children.lean",
+        "/tmp/mcd-independent-audit-20261012/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and matching contract files. The cited APIs support every proof step, including measurable_fderiv for arbitrary functions. All three exact one-line propositions independently elaborate before their declarations exist; the required Borel, second-countability, completeness and Polish instances compile. The accepted reused implementation and both new child implementations compile using only propext, Classical.choice and Quot.sound. A separate conditional assembly derives the exact frozen parent proposition from the child contracts and the declared continuous_left_inverse dependency, without placeholders. The split appropriately separates derivative injectivity, single-chart construction and measurable gluing. Dependency edges remain acyclic and correctly directed. All names are bare identifiers; the two new names have no matches in the DAG or 1191 searched Git refs. The reused declaration has an identical accepted frozen type. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including arbitrary real c. Reuse is valid: the frozen type is byte-identical to the comparator-accepted declaration. The proof establishes the directional derivative, eventual containment in Ω, the slope inequality after division by positive t, and passage to the limit along a nontrivial filter. It requires no sign assumption on c and contains no circular reliance."
+    },
+    {
+      "key": "single_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both identities with the same witness w match the Lean proposition. The proof supplies injectivity, a Borel image, a continuous inverse chart, derivative injectivity using the declared lower-bound dependency, and measurable composition with Λ. The arbitrary-f use of measurable_fderiv is valid. Choosing s = Λ(DΦ(w))v proves the norm bound and final identity. Λ is explicitly hypothesized, so no undeclared theorem dependency is needed. The proof is complete and directly formalizable."
+    },
+    {
+      "key": "countable_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated measurable-space hypotheses with only Zero Y. The proof makes each piece zero outside its set, constructs measurable selection predicates, applies Measurable.find, and verifies both conclusions using Nat.find_spec. It needs neither overlap compatibility nor measurable singletons. Together with single_chart and measurable-to-strongly-measurable conversion, it supplies precisely the selected parent's remaining obligations."
+    }
+  ],
+  "required_changes": []
+}

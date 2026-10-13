@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '1,230p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "IsRectifiableTriple|IsLipschitzPushforward|LipschitzPushforwardIntegerMultiplicity|def NVector|def simpleNVector|def nVectorPushforward|theorem nVectorPushforward_simple|def covectorPullback|theorem HasWeightedApproximateTangentSpaceAt.unique",
+        "theorem measurable_fderiv |continuous_compContinuousLinearMapCLM|ae_convolution_tendsto_right_of_locallyIntegrable|theorem LipschitzOnWith.extend_real|ae_differentiableWithinAt_of_mem|ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem integral_iUnion_ae|lemma tendsto_tsum_of_dominated_convergence",
+        "deformation_ipl_",
+        "weak.{0,30}(minors|jacobian)|piola",
+        "python3 -I /tmp/ipl-independent-audit/metadata.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ipl-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ipl-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ipl-independent-audit/Measurability.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyPiola.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1/decomposition-v3.json",
+        "/tmp/ipl-independent-audit/metadata.py",
+        "/tmp/ipl-independent-audit/metadata-results.json",
+        "/tmp/ipl-independent-audit/Types.lean",
+        "/tmp/ipl-independent-audit/Assembly.lean",
+        "/tmp/ipl-independent-audit/Measurability.lean"
+      ],
+      "conclusion": "The split appropriately separates the selected consistency theorem's analytic and representation-comparison obligations. All twelve frozen types independently elaborate in the comparator scope without implementing the children. Names are bare identifiers; nine reuses have byte-identical accepted types, compatible pinned revisions, and verified comparator axiom gates. The three new names have no DAG reservation or source-search match. Dependencies, including reused prerequisite graphs, are acyclic and do not return to the selected parent. The supplied parent assembly was independently recompiled against its exact frozen target and four child types; the measurability proof was recompiled against its three declared dependencies. Both use only propext, Classical.choice and Quot.sound. The library search found a specialized chart Piola identity, not a replacement for the proposed weak-continuity obligation. Matrix constructions use Matrix.of; no problematic IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "simple_nvector_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both quantified identities match the prose and accepted frozen type. Leibniz expansion proves change of frame; the orthonormal norm calculation and Gram–Schmidt prove the Gram identity, including dependent and empty families. Matrix.of gives the intended Gram matrix."
+    },
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact coordinate expansion follows from the determinant Kronecker identity, permutation signs and alternating-map basis extensionality. Zero degree and degrees exceeding the ambient dimension are covered. Accepted reuse has an identical type."
+    },
+    {
+      "key": "c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted immersion-piece prerequisite, Rademacher theorem and critical-image nullity establish coverage. Countable shrinking supplies both chart bounds while preserving global C¹ regularity. No additional measurability hypothesis on M is needed."
+    },
+    {
+      "key": "chart_chain_rule",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Antilipschitz inverse charts transfer exceptional null sets. The accepted tangent-identification prerequisite and Rademacher theorem provide good parameters; the explicit o(t) comparison and derivative uniqueness prove the stated Fréchet derivative for arbitrary admissible L."
+    },
+    {
+      "key": "chart_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches all three conclusions and the nonnegative extended-valued integral. Null-preimage transfer proves the measurability claims, and the accepted area formula reduces to singleton fibres by chart injectivity. The Jacobian uses the correct Matrix.of Gram determinant."
+    },
+    {
+      "key": "measurable_chart_differential",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuous left inverse, measurable fderiv and countable Borel gluing prove strong measurability and both pointwise identities. The pinned measurable_fderiv theorem supports arbitrary f, so no unstated regularity assumption is introduced."
+    },
+    {
+      "key": "tau_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local integrability and smooth scalar tests justify the fundamental lemma. Finite covector separation and positive unit-orientation rigidity then give carrier, multiplicity and orientation agreement. Neither integer-valued multiplicities nor openness of U is silently assumed."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable zero-region cover, finite weighted-measure argument and unit norm of orientations prove support-nullity. Positivity transfers weighted nullity back to Hausdorff nullity. The proof works for the stated arbitrary U and uses its declared algebra dependency correctly."
+    },
+    {
+      "key": "tangent_congr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Blow-up preserves null sets, and compactly supported tests localize inside V for small radii. Restricted-measure congruence equates the blow-up integrals; equality of the weights at x identifies their limits. No extra measurability assumptions are required."
+    },
+    {
+      "key": "minor_weak_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof closes the obligation: bounded minors, the explicit Piola cancellation, mollification, induction and L¹ density establish weak-* convergence; coordinate expansion and uniform continuity handle the varying covector field. Degenerate degrees are covered. The cited [Fonseca–Leoni–Malý paper](https://link.springer.com/article/10.1007/s00205-005-0377-2) is relevant background; acceptance rests on the supplied complete argument."
+    },
+    {
+      "key": "pushforward_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A countable union of chart exceptional images is Hausdorff-null. Tangent uniqueness, using θ > 0, identifies the pushed vector with that of the strongly measurable comparison map. Joint continuity of push-forward completes the proof. Independent Lean recompilation succeeds from exactly the three declared sibling types."
+    },
+    {
+      "key": "chart_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies a common integrable envelope and measurability, then derives signed chart formulas with an L¹ weight using the positive Jacobian bound. The minor-continuity child gives convergence on each chart, and Tannery sums them. Only tangential bounds on L are used. Together with representation uniqueness, tangent locality and support-nullity, this establishes the exact selected parent for one fixed S and every admissible sequence."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "Multiplying test forms by a smooth function supported in W is a linear map D^q(V) → D^q(W)",
+  "statement": "Let P, q ∈ ℕ, let V, W ⊆ ℝ^P be arbitrary sets, and let χ : ℝ^P → ℝ be C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ) with tsupport χ ⊆ W. Then there is an ℝ-linear map L : D^q(V) → D^q(W) (TestFormOn V q →ₗ[ℝ] TestFormOn W q) such that (Lω)(x) = χ(x)·ω(x) for every ω ∈ D^q(V) and every x ∈ ℝ^P. This is an identity of underlying forms; χ(x)·ω(x) is the scalar multiple of the covector ω(x).",
+  "lean_statement": "∀ (P q : ℕ) (V W : Set (Eucl P)) (χ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → tsupport χ ⊆ W → ∃ L : TestFormOn V q →ₗ[ℝ] TestFormOn W q, ∀ (ω : TestFormOn V q) (x : Eucl P), (L ω : DifferentialForm (Eucl P) q) x = χ x • (ω : DifferentialForm (Eucl P) q) x",
+  "lean_name": "fiw_tb_ext_smul_testForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-smul-testform-a1-a1"
+}

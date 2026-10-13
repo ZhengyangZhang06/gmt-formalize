@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "extend_finite_dimension|contDiff_convolution_left|norm_fderiv_le_of_lipschitzOn|eq_smul_basis_det",
+        "dph_sa_|mollify_lipschitz|covector_comp_eq_zero",
+        "mollif|Lipschitz.*convol|convol.*Lipschitz",
+        "git show 9735e2124d87ab3acc03bb8f199805df921599c5:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dphsa-independent-audit-hrer_ioo/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dphsa/lean/Combined2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dphsa-review/lean/IfaceNoExt.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-approx-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-approx-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollifier-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollifier-a1/isolated-comparator-result.json",
+        "/tmp/dphsa-independent-audit-hrer_ioo/Types.lean",
+        "/tmp/dphsa/lean/Combined2.lean",
+        "/tmp/dphsa-review/lean/IfaceNoExt.lean"
+      ],
+      "conclusion": "Verified pinned project/mathlib revisions and SimonGMT compatibility. Relevant library results support the supplied arguments; searches found no existing declarations with the two proposed new names, and neither name is reserved in the 662-node DAG. The mollifier reuse has an identical frozen type and passed comparator. All three fresh Lean checks exited 0: types elaborate with the child declarations absent, supplied proofs compile, and the exact selected parent follows from the new child contracts as hypotheses. Axiom reports contain only propext, Classical.choice and Quot.sound. Splitting is appropriate: mollify depends only on mollifier, covector_vanish is independent, and the supplied assembly proves every parent clause without circularity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and standalone one-line Lean type agree. The bare name legitimately reuses the comparator-accepted declaration with an identical frozen type. The proof establishes integrability and positive mass of the bump, then verifies every property after normalization, including dimension zero. No circular dependency."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and five conclusions match the Lean proposition. The proof supplies integrability, convolution smoothness, global and local estimates, the derivative bound and coordinate locality. The support radius σ/2 validates every ball inclusion. Scalar multiplication, Euclidean coordinates and smoothness order are correctly typed. Its sole prerequisite is mollifier; the fresh bare name is unreserved."
+    },
+    {
+      "key": "covector_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match exactly. Injectivity of α and the normal-coordinate hypothesis establish the stated factorization of T. The determinant identity annihilates the restricted alternating form, and extensionality gives the required pullback equality, also for k = 0. The proof is complete and independent; the fresh bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

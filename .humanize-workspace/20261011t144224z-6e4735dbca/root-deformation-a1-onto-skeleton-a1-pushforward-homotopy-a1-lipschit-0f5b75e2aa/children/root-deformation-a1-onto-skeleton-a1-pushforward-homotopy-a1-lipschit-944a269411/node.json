@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.comparison-a1.affine_homotopy-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.comparison-a1",
+  "depth": 6,
+  "title": "The affine homotopy H[F₀, F₁] restricts to F₀ at t = 0 and to F₁ at t = 1, and is C^∞ when F₀ and F₁ are (supplied step 0(v))",
+  "statement": "Notation (as in the frozen statement of the sibling smooth_homotopy): ℝ^p := Eucl p; for m ∈ ℕ, s ∈ ℝ and x ∈ ℝ^m, cons(s, x) := (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ ℝ^{m+1}; for y ∈ ℝ^{m+1}, t(y) := EuclideanSpace.equiv (Fin (m+1)) ℝ y 0 and tl(y) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ y)). For maps F₀, F₁ : ℝ^m → ℝ^{m′} the affine homotopy is H[F₀, F₁] : ℝ^{m+1} → ℝ^{m′}, H[F₀, F₁](y) := F₀(tl(y)) + t(y)·(F₁(tl(y)) − F₀(tl(y))) (the map G of (Aff) in smooth_homotopy, written as the same explicit lambda). C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞). Claim: for all m, m′ ∈ ℕ, all maps F₀, F₁ : ℝ^m → ℝ^{m′} and every map G : ℝ^{m+1} → ℝ^{m′} with G = H[F₀, F₁]: (a) the map x ↦ G(cons(0, x)) is equal to F₀; (b) the map x ↦ G(cons(1, x)) is equal to F₁; (c) if F₀ and F₁ are C^∞, then G is C^∞.",
+  "lean_statement": "∀ (m m' : ℕ) (F₀ F₁ : Eucl m → Eucl m') (G : Eucl (m + 1) → Eucl m'), G = (fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) → (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x)))) = F₀ ∧ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x)))) = F₁ ∧ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₀ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F₁ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G)",
+  "lean_name": "dph_lpf_cmp_affine_homotopy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-944a269411-a1"
+}

@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "HasWeightedApproximateTangentSpaceAt|countablyRectifiable_range|regular_euclideanHausdorffMeasure_restrict_submodule|def blowUpMap|def CountablyRectifiable",
+        "tendsto_integral_filter_of_dominated_convergence|continuous_of_dominated|integral_mono_of_nonneg|norm_integral_le_integral_norm|MeasurableEmbedding.integral_map|integral_comp_mul_add|theorem integral_prod|lemma integral_prod|prod.instIsFiniteMeasureOnCompacts",
+        "iwl_cr_ip_wt_|fiw_tl_blowup_setIntegral|abbrev Eucl|namespace GMT.Ch06|open .*Chapter03",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "git show 91a22d1bfc9063820dd1583526d3d097beffd0ec:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/product_tangent_independent_audit/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-b1e58acdf8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-b1e58acdf8/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/product_tangent_independent_audit/Full.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and compatibility of the inspected sources. The split appropriately separates obligations needed for this selected weighted-product-tangent theorem. All seven types are standalone one-line propositions matching their prose; each elaborated in the comparator's frozen contract scope without its implementation. The six new bare names have no conflicting DAG or decomposition reservations. The reused blow-up declaration is comparator-accepted with an identical frozen type. Dependencies are acyclic and agree with actual proof use. Independently reviewed every supplied natural proof, compiled each proof with only its declared dependencies, and compiled the supplied assembly against the exact selected parent type. All proofs use only propext, Classical.choice and Quot.sound. The inline constructions use Euclidean inner products and L² norms; the scalar integrals use Lebesgue volume."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "product_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all three stated conclusions. Coordinate calculations establish orthonormality, linear independence gives the dimension, and the explicit finite-span decomposition proves both subspace inclusions. The proof is complete and independent of sibling or parent conclusions."
+    },
+    {
+      "key": "plane_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The proof verifies the plane's measurability, rectifiability and local Hausdorff finiteness before applying MP. The coordinate homeomorphism preserves compact support, establishing product integrability and justifying Fubini without undeclared dependencies."
+    },
+    {
+      "key": "product_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The precise slab measure identity matches the prose. Local finiteness supplies σ-finiteness; restriction to the measurable slab, transport through the coordinate map and product restriction establish the conclusion. No measurability of the entire cylinder is silently assumed."
+    },
+    {
+      "key": "blowup_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the stated uniform bound for every real radius and arbitrary bounded, supported g. The cutoff, tangent convergence, local integrability and almost-everywhere nonnegativity justify the estimate. The pinned total Bochner-integral inequalities require no measurability of g. Its sole dependency is correctly declared."
+    },
+    {
+      "key": "slice_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including arbitrary s₀ and signed θ. The proof establishes product integrability, undoes both blow-ups, applies the declared product-measure identity and Fubini, and performs interval substitution with the correct scaling factors and endpoint convention. Both dependencies are correctly directed."
+    },
+    {
+      "key": "slice_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weaker hypotheses are sufficient exactly as stated. Compact exhaustion gives restricted almost-everywhere measurability even for arbitrary M. After blow-up transport, a parameter-independent integrable bound and pointwise continuity justify continuous_of_dominated. Only blowup_cov is used."
+    },
+    {
+      "key": "blowup_cov",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type exactly matches the comparator-accepted fiw_tl_blowup_setIntegral declaration. The supplied proof establishes the homeomorphism, Hausdorff scaling and restricted push-forward identity, then applies measurable-embedding change of variables and divides by the positive scaling factor. It covers arbitrary sets and functions without circularity."
+    }
+  ],
+  "required_changes": []
+}

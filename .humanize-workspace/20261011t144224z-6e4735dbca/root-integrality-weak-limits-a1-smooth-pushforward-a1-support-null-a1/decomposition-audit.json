@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IsRectifiableTriple|def tauAction|orients :|integrableOn :|aestronglyMeasurable :|pos :|nullMeasurableSet :|subset :",
+        "theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem isOpen_sUnion_countable",
+        "ext_multilinear|of_injective|def finBasis|theorem ext |le_opNorm|orthonormal_iff_ite|innerSL_apply_apply|theorem det_one",
+        "Integrable.mul_bdd|measure_biUnion_null_iff|ae_restrict_mem₀|ae_restrict_of_ae_restrict_of_subset|theorem restrict_restrict |IntegrableOn.locallyIntegrableOn|tsupport_smul_subset_left|HasCompactSupport.smul_right",
+        "Submission\\.|iwl_sp_sn_",
+        "python3 '/tmp/support-null-independent-audit-y2wjltll/run_checks.py' candidate compile",
+        "python3 '/tmp/support-null-independent-audit-y2wjltll/run_checks.py' baseline challenges",
+        "python3 '/tmp/support-null-independent-audit-y2wjltll/run_checks.py' candidate solutions",
+        "python3 '/tmp/support-null-independent-audit-y2wjltll/run_checks.py' baseline sufficiency"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1/decomposition-v1.json",
+        "/tmp/support-null-independent-audit-y2wjltll/candidate/GMT/Ch06/Submission.lean",
+        "/tmp/support-null-independent-audit-y2wjltll/checks/Challenges.lean",
+        "/tmp/support-null-independent-audit-y2wjltll/checks/Solutions.lean",
+        "/tmp/support-null-independent-audit-y2wjltll/checks/Sufficiency.lean"
+      ],
+      "conclusion": "The five-child split is appropriate and proves exactly the selected parent. The dependency graph is acyclic and matches actual proof usage. All names are bare identifiers, with no reservations found in the 362-node DAG or declarations in the frozen Contract/Submission. Identical accepted contracts under other names are not invoked. Verified pinned revisions and source compatibility. Independently compiled all five supplied proof aids unchanged and the exact parent assembly. Every frozen type elaborates against pristine definitions without child implementations; solution checks also pass. Hypothesis-only checks establish local_null from its three dependencies and the parent from support_cover and local_null. Operator-norm, smoothness-order and matrix-identity checks pass. All checked proofs use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree. M ⊆ U places the difference inside zeroRegion; second countability supplies a countable cover, and outer-measure null-union and monotonicity arguments finish. No openness of U or measurability of M is silently assumed."
+    },
+    {
+      "key": "covector_basis",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact finite-separation statement follows from the injective coordinate map, multilinear basis extensionality, finite-dimensionality and basis expansion. The proof covers zero-dimensional and empty-index cases and has no sibling or parent dependence."
+    },
+    {
+      "key": "signed_simple_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The operator-norm bound follows from unit frame norms. The wedge of inner-product covectors evaluates to determinant 1, proving nonvanishing for either sign, including n = 0. Matrix.of selects the intended matrix construction. Prose, type and complete proof agree."
+    },
+    {
+      "key": "weighted_fundamental_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction identities and the bounded-product lemma establish the required integrability. The pinned fundamental lemma permits arbitrary measures. Null measurability supplies membership in M almost everywhere, allowing positivity to remove the weight. No missing sign condition on C or measure-finiteness hypothesis is needed."
+    },
+    {
+      "key": "local_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All stated hypotheses match the type. Compact closure supplies integrability; smooth scalar multiples of covectors are legitimate test forms. The three declared dependencies yield vanishing coefficients, finite separation and the nonvanishing contradiction, hence the exact null-measure conclusion. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

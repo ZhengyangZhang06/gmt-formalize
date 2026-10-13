@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.skeleton_mem-a1",
+  "parent_id": "root.deformation-a1.retraction-a1",
+  "depth": 3,
+  "title": "Points with ℓ integer coordinates lie on the lattice (m+1)-skeleton",
+  "statement": "Let m, ℓ ∈ ℕ, d := m + 1 + ℓ and x ∈ ℝ^d = Eucl d. If there is a set I of exactly ℓ coordinate indices with x_i ∈ ℤ for all i ∈ I, then x ∈ ⋃_{F ∈ LatticeFaceIndex (m+1) d} latticeFace 1 F, i.e. x lies in a closed (m+1)-face {y : z_i ≤ y_i ≤ z_i + 1 (i ∈ range α), y_i = z_i (i ∉ range α)} of the unit cubical lattice (z ∈ ℤ^d, α : Fin (m+1) ↪o Fin d).",
+  "lean_statement": "∀ (m ℓ : ℕ) (x : Eucl (m + 1 + ℓ)), (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ∃ k : ℤ, x i = k) → x ∈ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F",
+  "lean_name": "deformation_retraction_skeleton_mem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-skeleton-mem-a1-a1"
+}

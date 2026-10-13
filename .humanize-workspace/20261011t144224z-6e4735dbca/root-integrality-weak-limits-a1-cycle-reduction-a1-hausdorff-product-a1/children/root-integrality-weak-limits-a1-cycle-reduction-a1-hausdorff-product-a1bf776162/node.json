@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.injective_pieces-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1",
+  "depth": 4,
+  "title": "Disjoint injective Lipschitz pieces of a Borel countably m-rectifiable set",
+  "statement": "Let P, m ∈ ℕ and let A ⊆ ℝ^P be a Borel set (MeasurableSet A) that is countably m-rectifiable (Simon Ch. 3, 1.1 as in SimonGMT CountablyRectifiable: A ⊆ M₀ ∪ ⋃_j F_j(ℝ^m) with H^m(M₀) = 0 and each F_j : ℝ^m → ℝ^P Lipschitz), where H^k := μHE[k]. Then there are maps G_p : ℝ^m → ℝ^P and sets B_p ⊆ ℝ^m (p ∈ ℕ) with the following properties:\n- each G_p is Lipschitz and each B_p is Borel;\n- G_p is injective on B_p and differentiable at every point of B_p;\n- each image G_p(B_p) is a Borel subset of A, and the images are pairwise disjoint;\n- H^m(A ∖ ⋃_p G_p(B_p)) = 0.",
+  "lean_statement": "∀ (P m : ℕ) (A : Set (Eucl P)), MeasurableSet A → CountablyRectifiable m A → ∃ (G : ℕ → Eucl m → Eucl P) (B : ℕ → Set (Eucl m)), (∀ p, ∃ K : ℝ≥0, LipschitzWith K (G p)) ∧ (∀ p, MeasurableSet (B p)) ∧ (∀ p, InjOn (G p) (B p)) ∧ (∀ p, ∀ b ∈ B p, DifferentiableAt ℝ (G p) b) ∧ (∀ p, G p '' B p ⊆ A) ∧ (∀ p, MeasurableSet (G p '' B p)) ∧ Pairwise (Function.onFun Disjoint fun p => G p '' B p) ∧ (μHE[m] : Measure (Eucl P)) (A \\ ⋃ p, G p '' B p) = 0",
+  "lean_name": "iwl_cr_hp_injective_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-a1bf776162-a1"
+}

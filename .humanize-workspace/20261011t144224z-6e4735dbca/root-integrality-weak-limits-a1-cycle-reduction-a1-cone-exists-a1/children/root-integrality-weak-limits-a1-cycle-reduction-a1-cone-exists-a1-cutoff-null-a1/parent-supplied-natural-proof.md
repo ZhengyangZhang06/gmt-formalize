@@ -1,0 +1,108 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.cutoff_null-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P := Eucl P. Λ_k := Covector (ℝ^P) k, with its operator norm. D^j := iteratedFDeriv ℝ j, with the operator norm ‖·‖ of continuous multilinear maps. C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞). D^k(U) := TestFormOn U k. TestFormOnConverges φ 0 means: there is a compact K ⊆ U such that tsupport φ_l ⊆ K for all l, tsupport 0 ⊆ K, and for every j, D^jφ_l → D^j0 uniformly on K as l → ∞.
+
+Source: Step 5 of the parent proof (the Leibniz estimate for ζψ), isolated for an arbitrary cut-off ζ and sequence (ψ_l).
+
+1. (The compact set.) Put K := tsupport ζ. It is compact because ζ has compact support, and K ⊆ U by hypothesis.
+2. (Supports.) For each l, φ_l = (x ↦ ζ(x)•ψ_l(x)) as functions (funext of the hypothesis). If ζ(x) = 0 then φ_l(x) = 0, so support φ_l ⊆ support ζ. Taking closures, tsupport φ_l ⊆ tsupport ζ = K (`tsupport_smul_subset_left`). The zero test form is the zero function, whose tsupport is ∅ ⊆ K (`tsupport_zero`).
+3. (The limit.) The iterated derivatives of the zero function vanish: D^j0 = 0 for every j (`iteratedFDeriv_fun_zero`). So for each fixed j ∈ ℕ it remains to show: for every ε > 0 there is l₀ with ‖D^jφ_l(x)‖ < ε for all l ≥ l₀ and all x ∈ K. This is uniform convergence to 0 on K (`Metric.tendstoUniformlyOn_iff`, using dist(0, y) = ‖y‖). Fix j and ε > 0.
+4. (Bounds for ζ.) Let i ∈ ℕ. D^iζ is continuous because ζ is C^∞ (`ContDiff.continuous_iteratedFDeriv`). It has compact support, since support D^iζ ⊆ tsupport ζ (`HasCompactSupport.iteratedFDeriv`). A continuous function with compact support is bounded, so there is Z_i ∈ ℝ with ‖D^iζ(x)‖ ≤ Z_i for all x (`Continuous.bounded_above_of_compact_support`). Moreover Z_i ≥ ‖D^iζ(0)‖ ≥ 0.
+5. Put A := Σ_{i=0}^{j} C(j,i)·Z_i ≥ 0 and δ := ε/(2(A+1)) > 0.
+6. (Smallness of ψ_l.) Let i ∈ {0, …, j}. The hypothesis with order j − i and tolerance δ gives l_i such that ‖D^{j−i}ψ_l(x)‖ ≤ δ for all l ≥ l_i and x ∈ K. There are finitely many i, so l₀ := max_i l_i works for all of them (`Filter.eventually_all_finset`): for l ≥ l₀, every i ≤ j and every x ∈ K, ‖D^{j−i}ψ_l(x)‖ ≤ δ.
+7. (Leibniz bound.) ζ and ψ_l are C^∞ and j ≤ ∞, so for every x:
+   ‖D^j(y ↦ ζ(y)•ψ_l(y))(x)‖ ≤ Σ_{i=0}^{j} C(j,i)·‖D^iζ(x)‖·‖D^{j−i}ψ_l(x)‖.
+   In Lean this is `norm_iteratedFDeriv_smul_le` from Mathlib.Analysis.Calculus.ContDiff.Bounds; add `import Mathlib.Analysis.Calculus.ContDiff.Bounds` to Submission.lean.
+8. (The estimate.) Let l ≥ l₀ and x ∈ K. All factors in step 7 are nonnegative, so steps 2, 4, 6 and 7 give
+   ‖D^jφ_l(x)‖ ≤ Σ_{i=0}^{j} C(j,i)·Z_i·δ = Aδ = Aε/(2(A+1)) < ε.
+   The last inequality holds because Aε < 2(A+1)ε, as A ≥ 0 and ε > 0.
+9. Steps 1–3 and 8 are exactly TestFormOnConverges φ 0, with the compact set K ⊆ U. ∎
+
+## Key steps
+
+1. K := tsupport ζ is compact and ⊆ U, and it contains tsupport φ_l = tsupport(ζψ_l) for every l, as well as tsupport 0 = ∅.
+2. Each D^iζ is continuous with compact support, hence bounded by some Z_i.
+3. For fixed j and ε, choose l₀ so that ‖D^{j−i}ψ_l‖ ≤ δ := ε/(2(A+1)) on K for all i ≤ j and l ≥ l₀.
+4. Leibniz bound on K: ‖D^j(ζψ_l)‖ ≤ Σ C(j,i)‖D^iζ‖‖D^{j−i}ψ_l‖ ≤ Aδ < ε.
+5. Hence D^jφ_l → 0 = D^j0 uniformly on K for every j, i.e. TestFormOnConverges φ 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean and Submission.lean; sha256sum GMT/Ch06/Contract.lean`
+- `python3: dag.json statuses and frozen lean_statements of the cycle_reduction-a1 children (iwl_cr_*), isoperimetric_apply_eq_zero_of_disjoint_support and iwl_cr_radial_operator; scan of dag.json and nodes/*/decomposition-v*.json for TestFormOnConverges, open-neighbourhood locality statements, cutoff lemmas and lean_name collisions (iwl_cr_ce_*)`
+- `python3: nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json (reused child record vanish_off_support); nodes/root-boundary-rectifiability-a1-localization-a1/decomposition-v1.json (precedent for reusing accepted declarations); nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json`
+- `git show 3ccbe082:GMT/Ch06/Submission.lean (accepted isoperimetric_apply_eq_zero_of_disjoint_support); git show a46aa05:GMT/Ch06/Submission.lean (node proof base = contract copy); grep '^import' over accepted candidate commits and all local branches`
+- `grep -n '^def|^structure|^theorem|^abbrev' simongmt Chapter06/{Forms,Currents,CurrentLocalEquality,FixedSupportCurrentTopology,AffineCurrentPushforward,CurrentDistributionEquivalence}.lean; grep -rn TestFormOnConverges simongmt`
+- `rg -n 'theorem norm_iteratedFDeriv_smul_le|theorem support_iteratedFDeriv_subset|theorem HasCompactSupport.iteratedFDeriv|theorem tsupport_eq|theorem one_of_mem_closedBall|hasCompactSupport|iteratedFDeriv_fun_zero|bounded_above_of_compact_support|hasContDiffBump_of_innerProductSpace|continuous_eval_const|theorem integral_add|theorem integral_const_mul|tendstoUniformlyOn_iff' mathlib/Mathlib (snapshot)`
+- `grep -n -i 'cone|homotopy' book/chapter-06.txt (Simon 2.23, 2.25, 2.30–2.32)`
+- `python3 -I /tmp/ce-decomp/scripts/gen.py (verifier gmt-compare.py child_modules + lean_contract.validate_lean_statement); lake env lean /tmp/ce-decomp/gen/*__NodeChallenge.lean`
+- `lake env lean /tmp/ce-decomp/Scratch/{Avail,Assembly,Locality,Cutoff,Radial,Full,FullSol}.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/ce-decomp/children.json`
+- `/tmp/ce-decomp/scripts/gen.py`
+- `/tmp/ce-decomp/scripts/build.py`
+- `/tmp/ce-decomp/Scratch/Assembly.lean`
+- `/tmp/ce-decomp/Scratch/FullSol.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. The snapshot's Ch06 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…853d), and the node's proof base a46aa05 is that clean copy.
+
+DAG:
+- isoperimetric_apply_eq_zero_of_disjoint_support is accepted (commit 3ccbe082) with exactly the reused frozen type.
+- iwl_cr_radial_operator is decomposing and reserved by the sibling branch, so it cannot be reused. Hence the hypothesis (H) in cutoff_radial.
+- No accepted declaration states locality or cut-off continuity. fiw_tb_ext_apply_eq_of_eqOn (decomposing, flat_iff_weak branch) has a different statement. The accepted fiw_ims_sc_* lemmas only give sup-norm continuity criteria.
+- No iwl_cr_ce_* name exists anywhere.
+
+Libraries: the snapshot Mathlib provides every input:
+- norm_iteratedFDeriv_smul_le (ContDiff/Bounds.lean:250);
+- ContDiffBump.tsupport_eq, one_of_mem_closedBall, hasCompactSupport and contDiff (BumpFunction/Basic.lean:157, 137, 166, 203);
+- hasContDiffBump_of_innerProductSpace (InnerProduct.lean:57);
+- support_iteratedFDeriv_subset and HasCompactSupport.iteratedFDeriv (FTaylorSeries.lean:868, 871);
+- iteratedFDeriv_fun_zero (ContDiff/Basic.lean:80);
+- Continuous.bounded_above_of_compact_support (Normed/Group/Bounded.lean:153);
+- intervalIntegral.integral_add and integral_const_mul (IntervalIntegral/Basic.lean:774, 817).
+SimonGMT supplies the definitions (TestFormOnConverges, GeometricCurrentOn.continuous', support = U ∖ zeroRegion) but no cut-off or locality lemma.
+
+Lean (in /tmp scratch):
+- All child challenge modules elaborate in the contract scope.
+- The parent assembly compiles from exactly the four child types plus iwl_cr_radial_operator.
+- Trial proofs of the three new children use only propext, Classical.choice and Quot.sound. The parent's only extra axiom is sorryAx, coming from the external radial operator.
+- An independent reviewer agent reproduced these checks and accepted the split.
+
+Source: Simon Ch. 6, 2.23 and 2.30 (local book copy).

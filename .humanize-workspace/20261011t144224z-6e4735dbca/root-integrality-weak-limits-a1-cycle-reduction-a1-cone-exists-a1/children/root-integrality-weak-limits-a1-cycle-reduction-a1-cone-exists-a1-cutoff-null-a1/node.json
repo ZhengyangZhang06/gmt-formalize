@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.cutoff_null-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1",
+  "depth": 4,
+  "title": "Multiplying by a fixed cut-off turns C^∞-null sequences into null sequences of test forms",
+  "statement": "Let P, k ∈ ℕ and U ⊆ ℝ^P. Let ζ : ℝ^P → ℝ be C^∞ with compact support and tsupport ζ ⊆ U. Let (ψ_l)_{l ∈ ℕ} be C^∞ k-forms ψ_l : ℝ^P → Λ_k, and (φ_l)_{l ∈ ℕ} test forms in D^k(U) (TestFormOn U k) with φ_l(x) = ζ(x)ψ_l(x) for all l and x. Suppose that for every j ∈ ℕ and every ε > 0 there is l₀ with ‖D^jψ_l(x)‖ ≤ ε for all l ≥ l₀ and all x ∈ tsupport ζ. Then TestFormOnConverges φ 0. That is, there is a compact K ⊆ U with tsupport φ_l ⊆ K for every l and tsupport 0 ⊆ K, such that D^jφ_l → D^j0 = 0 uniformly on K for every j ∈ ℕ.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (ζ : Eucl P → ℝ) (ψs : ℕ → DifferentialForm (Eucl P) k) (φs : ℕ → TestFormOn U k), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → (∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψs l)) → (∀ l x, (φs l : DifferentialForm (Eucl P) k) x = ζ x • ψs l x) → (∀ (j : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ, ‖iteratedFDeriv ℝ j (ψs l) x‖ ≤ ε) → TestFormOnConverges φs 0",
+  "lean_name": "iwl_cr_ce_cutoff_converges_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-cutoff-null-a1-a1"
+}

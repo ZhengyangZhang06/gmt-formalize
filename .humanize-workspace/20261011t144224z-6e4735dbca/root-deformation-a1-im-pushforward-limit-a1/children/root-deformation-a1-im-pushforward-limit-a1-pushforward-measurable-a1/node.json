@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.pushforward_measurable-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1",
+  "depth": 3,
+  "title": "Measurability of the tangential push-forward k-vector field for an arbitrary admissible L (measurability claim of parent step (c))",
+  "statement": "Let P, Q, k ∈ ℕ, H^k := μHE[k] on ℝ^P, U ⊆ ℝ^P open, and let (M, θ, ξ) satisfy IsRectifiableTriple U k M θ ξ. Let f : ℝ^P → ℝ^Q be locally Lipschitz on U and let L : ℝ^P → L(ℝ^P, ℝ^Q) be any map (no measurability is assumed) such that for H^k-a.e. x ∈ M, for every linear subspace T_x that is a weighted approximate tangent space of (M, θ) at x (HasWeightedApproximateTangentSpaceAt k M θ x T_x) and every v ∈ T_x, the map t ↦ f(x + t v) has derivative L(x)v at t = 0. Then the k-vector field x ↦ L(x)_#ξ(x) = nVectorPushforward k (L x) (ξ x) is H^k⌞M-a.e. strongly measurable.",
+  "lean_statement": "∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U k M θ ξ → LocallyLipschitzOn U f → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → AEStronglyMeasurable (fun x => nVectorPushforward k (L x) (ξ x)) ((μHE[k] : Measure (Eucl P)).restrict M)",
+  "lean_name": "deformation_ipl_tangential_pushforward_aestronglyMeasurable",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+    "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1-a1",
+      "result_commit": "4f96ac6781102d9a8ef81672a6a983280054017e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-a1",
+      "result_commit": "a42b48e8b29b5398bef36299f264f7c1ba3aaa98",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-me-70f87b0655-a1",
+      "result_commit": "e23946e21500d09924e1851603a3047afe085117",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-pushforward-measurable-a1-a1"
+}

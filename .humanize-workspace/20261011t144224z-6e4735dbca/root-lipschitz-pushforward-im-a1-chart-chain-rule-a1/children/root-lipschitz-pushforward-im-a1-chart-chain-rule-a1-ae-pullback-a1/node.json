@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+  "depth": 3,
+  "title": "Pulling Hⁿ-a.e. properties of M ∩ Φ(Ω) back to Lⁿ-a.e. parameters of an antilipschitz chart",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be Hⁿ-null-measurable (Hⁿ = μHE[n]), let Ω ⊆ ℝⁿ be (Borel) measurable, and let Φ : ℝⁿ → ℝ^P be (Borel) measurable with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω, for some c > 0. Let p be any property of points of ℝ^P that holds at Hⁿ-a.e. point of M ∩ Φ(Ω) (∀ᵐ x for Hⁿ⌞(M ∩ Φ(Ω))). Then Ω ∩ Φ⁻¹(M) is Lⁿ-null-measurable (Lⁿ = volume), and p(Φ(w)) holds for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M) (∀ᵐ w for Lⁿ⌞(Ω ∩ Φ⁻¹(M))).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (p : Eucl P → Prop), MeasurableSet Ω → Measurable Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ Φ '' Ω)), p x) → NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) ∧ ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), p (Φ w)",
+  "lean_name": "lpf_ccr_ae_pullback",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-pr-b8935c5987-a1",
+      "result_commit": "9080c178c7e23350ae33476f7bfa68f0965fe15e",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-ae-pullback-a1-a1"
+}

@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "IsRectifiableTriple|CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|abbrev Eucl|abbrev NVector|abbrev Covector|namespace|^open|^import",
+        "prod_restrict|quasiMeasurePreserving_snd|prod_zero",
+        "Integrable.comp_snd|integrable_map_iff|aestronglyMeasurable_map_iff|NullMeasurableSet.preimage|AbsolutelyContinuous.mk|restrict_map|restrict_restrict|restrict_eq_zero|of_isFiniteMeasureOnCompacts",
+        "iwl_cr_ip_pt_(slab_restrict_eq_map|slab_transfer|cylinder_nullMeasurableSet|cylinder_countablyRectifiable|frame_orthonormal)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/product-triple-independent-audit-lf2bynjo/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-6184ff8144/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-6184ff8144/decomposition-v1.json",
+        "/tmp/product-triple-independent-audit-lf2bynjo/Full.lean",
+        "/tmp/product-triple-independent-audit-lf2bynjo/Full.log"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen contract. The split is appropriate: the five children establish distinct obligations in Submission.iwl_cr_ip_product_triple. All names are bare identifiers with no competing DAG reservations; the name search matched only this proposal and its review artifact. No accepted declaration is reused. The only inter-child dependency is slab_transfer → slab_measure; the existing product_tangent dependency has no return path. All five one-line types elaborate independently in comparator challenge scope and contain no implementation-dependent aliases. Each supplied proof also compiled with only its declared dependencies. The supplied assembly proves the exact frozen parent with the exact recorded product_tangent contract as a hypothesis. Children and assembly use only propext, Classical.choice and Quot.sound. Required finiteness, product-measure and Euclidean-space instances were checked."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slab_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including MP and all admissibility hypotheses. Compact finiteness supplies σ-finiteness; the measurable strip, restriction-map identity and product restriction prove the exact conclusion. The complete supplied proof compiled independently."
+    },
+    {
+      "key": "slab_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions and their hypotheses match exactly. The proof correctly uses slab_measure, the coordinate homeomorphism, the finite interval measure and the quasi-measure-preserving second projection. Its sole declared dependency is correctly directed, and the supplied proof compiled with that dependency alone."
+    },
+    {
+      "key": "cylinder_null_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "NT is explicitly present in both statements. Continuity of π and NT establish quasi-measure-preservation, which transports null-measurability without additional finiteness assumptions. The proof is complete, non-circular and independently compiled."
+    },
+    {
+      "key": "cylinder_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statements agree on NT and countable rectifiability. The proof constructs Lipschitz maps from Eucl (m+1), transports the exceptional null set and explicitly covers every cylinder point. The product norm is handled correctly through continuous linear maps and prodMk. The supplied proof compiled independently."
+    },
+    {
+      "key": "frame_orthonormal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The precise extended frame and orthonormality hypothesis match the prose. The Euclidean inner-product computation and four Fin-index cases prove the conclusion, including zero-dimensional cases. No additional hypotheses or circular dependencies are used; the supplied proof compiled independently."
+    }
+  ],
+  "required_changes": []
+}

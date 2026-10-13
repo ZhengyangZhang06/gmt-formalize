@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.cube_core-a1",
+  "parent_id": "root.deformation-a1.retraction-a1",
+  "depth": 3,
+  "title": "Lemma 5.4 core: the radial retraction ψ₀ of C ∖ L_{ℓ−1}(a) onto the n-faces of C",
+  "statement": "Let m, ℓ ∈ ℕ with ℓ ≥ 1, n := m + 1, d := n + ℓ, C := [0,1]^d ⊂ ℝ^d = Eucl d. There is c₁ = c₁(m,ℓ) ∈ [0,∞) such that for every a ∈ ℝ^d with 1/4 < a_i < 3/4 for all i, writing La := {y ∈ ℝ^d : there is a set J of m + 2 coordinate indices with y_i − a_i ∈ ℤ for all i ∈ J}, there is a map ψ₀ : ℝ^d → ℝ^d such that (α) for every x ∈ C ∖ La, ψ₀(x) ∈ C and there is a set I of exactly ℓ indices with ψ₀(x)_i ∈ {0,1} for i ∈ I; (β) for all x, x′ ∈ C ∖ La with x′_i − x_i ∈ ℤ for all i, ψ₀(x′)_i − ψ₀(x)_i = x′_i − x_i for all i; (γ) for every x ∈ C ∖ La and every ε > 0 there is δ > 0 such that |ψ₀(x′) − ψ₀(x)| ≤ (c₁/dist(x, La) + ε)|x′ − x| for all x′ ∈ C ∖ La with |x′ − x| < δ (dist(x, La) = infDist x La, Euclidean distances).",
+  "lean_statement": "∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ c₁ : ℝ, 0 ≤ c₁ ∧ ∀ a : Eucl (m + 1 + ℓ), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∃ ψ₀ : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ), (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → (∀ i, 0 ≤ ψ₀ x i ∧ ψ₀ x i ≤ 1) ∧ ∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ψ₀ x i = 0 ∨ ψ₀ x i = 1) ∧ (∀ x x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La → (∀ i, ∃ k : ℤ, x' i - x i = k) → ∀ i, ψ₀ x' i - ψ₀ x i = x' i - x i) ∧ ∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La → dist x' x < δ → dist (ψ₀ x') (ψ₀ x) ≤ (c₁ / infDist x La + ε) * dist x' x",
+  "lean_name": "deformation_retraction_cube_core",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-cube-core-a1-a1"
+}

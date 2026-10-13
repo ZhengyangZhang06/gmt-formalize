@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.simple_unit_rigidity-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "Rigidity of nonnegative multiples of unit simple k-vectors",
+  "statement": "Let P, k ∈ ℕ and let τ, τ' : Fin k → ℝ^P be orthonormal families. Let w, w' be k-vectors with w = simpleNVector τ or w = −simpleNVector τ, and w' = simpleNVector τ' or w' = −simpleNVector τ'. Let a, a' ∈ ℝ with a ≥ 0, a' ≥ 0 and a·w = a'·w'. Then a = a', and if a ≠ 0 then w = w'.",
+  "lean_statement": "∀ (P k : ℕ) (τ τ' : Fin k → Eucl P) (w w' : NVector (Eucl P) k) (a a' : ℝ), Orthonormal ℝ τ → Orthonormal ℝ τ' → (w = simpleNVector τ ∨ w = -simpleNVector τ) → (w' = simpleNVector τ' ∨ w' = -simpleNVector τ') → 0 ≤ a → 0 ≤ a' → a • w = a' • w' → a = a' ∧ (a ≠ 0 → w = w')",
+  "lean_name": "ltg_simple_unit_rigidity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-simple-unit-rigidity-a1-a1"
+}

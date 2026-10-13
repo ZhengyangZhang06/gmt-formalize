@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1",
+  "depth": 3,
+  "title": "Blow-up change of variables for μHE[n] under η_{x,r}",
+  "statement": "Let P, n ∈ ℕ, H := μHE[n] on ℝ^P = Eucl P, x ∈ ℝ^P, r > 0, S ⊆ ℝ^P an arbitrary set and g : ℝ^P → ℝ an arbitrary function. Let η := η_{x,r} = blowUpMap x r, so η(z) = r⁻¹(z − x). Then the Bochner integrals satisfy ∫_{η(S)} g dH = (rⁿ)⁻¹ · ∫_S g(η(z)) dH(z). No measurability or integrability assumption is made; a non-integrable integrand has integral 0 on either side.",
+  "lean_statement": "∀ (P n : ℕ) (x : Eucl P) (r : ℝ) (S : Set (Eucl P)) (g : Eucl P → ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) = (r ^ n)⁻¹ * ∫ z in S, g (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P))",
+  "lean_name": "fiw_tl_blowup_setIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1-a1"
+}
