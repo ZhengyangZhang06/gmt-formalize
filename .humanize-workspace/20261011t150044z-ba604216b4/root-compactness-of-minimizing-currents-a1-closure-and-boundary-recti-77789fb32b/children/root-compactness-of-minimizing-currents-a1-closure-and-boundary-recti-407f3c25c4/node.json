@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1.disjoint_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1",
+  "depth": 5,
+  "title": "Summing a set-integral bound over a countable disjoint family of measurable sets",
+  "statement": "Let P ∈ ℕ, let μ be a measure on the Borel σ-algebra of ℝ^P, and let g : ℝ^P → ℝ and θ ∈ ℝ. Let t ⊆ ℝ^P be a countable set and B : ℝ^P → 𝒫(ℝ^P) a family of sets, and put V := ⋃_{x∈t} B(x). Assume:\n- B(x) is measurable for every x ∈ t;\n- the sets B(x), x ∈ t, are pairwise disjoint, i.e. B(x) ∩ B(y) = ∅ for distinct x, y ∈ t;\n- μ(V) < ∞;\n- g is μ-integrable on V.\nIf ∫_{B(x)} g dμ ≤ θ·μ(B(x)) for every x ∈ t, then ∫_V g dμ ≤ θ·μ(V). All measures are read as real numbers via ENNReal.toReal.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (t : Set (Euclid P)) (B : Euclid P → Set (Euclid P)), t.Countable → (∀ x ∈ t, MeasurableSet (B x)) → t.PairwiseDisjoint B → μ (⋃ x ∈ t, B x) < ∞ → IntegrableOn g (⋃ x ∈ t, B x) μ → (∀ x ∈ t, ∫ y in B x, g y ∂μ ≤ θ * (μ (B x)).toReal) → ∫ y in ⋃ x ∈ t, B x, g y ∂μ ≤ θ * (μ (⋃ x ∈ t, B x)).toReal",
+  "lean_name": "cbrldvc_setIntegral_biUnion_le_mul_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-407f3c25c4-a1"
+}
