@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '1,190p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n -i 'allard|tilt.?excess|harmonic.?approx|lipschitz.?approx' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "rg -l -i \"rellich|kondrachov|weyl.s lemma|weakly harmonic\" .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "python3 /tmp/allard-independent-audit-zmvmt_j8/audit_structure.py",
+        "python3 /tmp/allard-independent-audit-zmvmt_j8/finish.py",
+        "#print axioms Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn",
+        "#print axioms VitaliFamily.ae_tendsto_average_norm_sub",
+        "#print axioms AllardAsmV3.assembly"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/allard-independent-audit-zmvmt_j8/audit_structure.py",
+        "/tmp/allard-independent-audit-zmvmt_j8/AllChallenges.lean",
+        "/tmp/allard-independent-audit-zmvmt_j8/AllChallenges.log",
+        "/tmp/allard-independent-audit-zmvmt_j8/Assembly.lean",
+        "/tmp/allard-independent-audit-zmvmt_j8/Assembly.log",
+        "/tmp/allard-independent-audit-zmvmt_j8/ReferenceAxioms.lean",
+        "/tmp/allard-independent-audit-zmvmt_j8/ReferenceAxioms.log"
+      ],
+      "conclusion": "The split is appropriate for this selected Allard graph theorem. The snapshot contract matches the workspace contract and Submission byte-for-byte; Mathlib and SimonGMT revisions match their pins. The Allard chapter supplies propositions behind a sorry-backed theorem, not reusable proofs. The Rellich/Kondrachov/Weyl search found no matching declarations. All twelve child propositions and the frozen parent proposition independently elaborate in the contract scope. Every child type is a standalone one-line proposition with the intended projections, norms, measures and quantifiers. Dependencies are acyclic and correctly directed. All names are bare identifiers; scans of eight DAGs found no collisions, and 47 accepted-wiki pages contained no identical child type. The supplied conditional assembly was independently compiled: its five hypotheses are the exact child types, its conclusion is the exact selected parent type, and its axioms are only propext, Classical.choice and Quot.sound. Checks of the cited tangent, density, area-formula and Mathlib declarations found the same standard axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The compact-frame quotient constructs the required Borel projection map; IMRep.orients identifies it almost everywhere. The proof handles n = 0 and transfers measurability through absolute continuity without circularity."
+    },
+    {
+      "key": "monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both annular inequalities and the support-point density conclusion match the type. The cutoff identity, closed-ball limits, approximate-tangent density and upper-semicontinuity argument establish them, with local finiteness and measurability justified."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact null-set conclusion follows from the sibling density bound, localized outer regularity and density comparison. The exhaustion handles possibly infinite total mass, and the normalization discussion suffices for the null-set conclusion."
+    },
+    {
+      "key": "graph_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated restricted almost-everywhere quantifier and linear-map range match Lean. Rademacher, the area-formula blow-up and vanishing densities of both set differences establish the claimed tangent plane; the implication is correctly vacuous off the graph."
+    },
+    {
+      "key": "tilt_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integral inequality matches the prose, including n = 0. The explicit cutoff, projection trace identity and Young estimates give C = 146. Integrability and conversion to the lower-integral formulation are justified."
+    },
+    {
+      "key": "harmonic_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactness contradiction, scaling and harmonic derivative estimates prove the exact affine-output bounds with one pair of witnesses for every θ'. Integrability is addressed. The supplied argument agrees with [Simon, Chapter 5 §3](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=61), rather than deferring proof construction."
+    },
+    {
+      "key": "density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conclusions and their center/radius ranges match. The sharp normalized mass bound proves the first three; the localized upper-density argument gives lower density at least the integer multiplicity, forcing multiplicity one."
+    },
+    {
+      "key": "affine_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The packing and Chebyshev estimates select an actual n-dimensional tangent plane. The identity 1/2 − αn = α gives the stated height bound, and tilt_height yields the correctly normalized second estimate. All dependency hypotheses and radius restrictions hold."
+    },
+    {
+      "key": "lipschitz_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches both conclusions and the coordinate witnesses. The good-set covering, cone estimate and coordinate extension prove 5A; the off-support estimate excludes holes for 5B. The corrected radii and constant choices are sufficient."
+    },
+    {
+      "key": "tilt_excess_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact max-excess contraction. It handles zero excess, derives the graph equation, controls missing graph points and multiplicity, applies the affine harmonic approximation, and chooses θ', ε', then δ₂ in a non-circular order."
+    },
+    {
+      "key": "tilt_excess_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Iteration uses only the preceding one-step theorem and density bounds. Projection convergence preserves self-adjointness, idempotence and rank; geometric-series estimates and interpolation give both exact conclusions for every permitted scale."
+    },
+    {
+      "key": "graph_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The revised prose correctly interprets ENNReal.ofReal using K⁺, including negative K. Tangent identification, the projection estimate for slopes at most 1/4, Campanato control and mollification prove C¹ regularity on exactly ball 0 (a/2). The proof uses only its stated dependencies."
+    }
+  ],
+  "required_changes": []
+}

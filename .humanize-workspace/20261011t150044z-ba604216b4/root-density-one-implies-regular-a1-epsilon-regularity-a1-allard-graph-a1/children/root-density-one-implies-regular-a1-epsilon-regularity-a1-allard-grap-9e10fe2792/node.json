@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "Affine approximation lemma (Simon 5.2.5)",
+  "statement": "For n ≥ 1 and k ≥ 0 there are δ₃ ∈ (0, 1/8] and C₃ ≥ 1 such that for every δ ∈ (0, δ₃] and all data satisfying (SA_δ): U, W ⊆ ℝ^{n+k} with W open and W ⊆ U; R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n; ξ_R = R.orient is its orientation, and ξ below denotes a point) with μ := R.measure = θHⁿ⌞M; H : ℝ^{n+k} → ℝ^{n+k} μ-a.e. strongly measurable with |H(x)| ≤ κ for all x; R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X with tsupport X ⊆ W; ρ > 0 with the closed ball B_ρ(z) ⊆ W; z ∈ spt μ; μ(B_ρ(z)) ≤ (1 + δ)ω_nρⁿ (ω_n = unitBallVolume n); κρ ≤ δ, for every ξ ∈ spt μ ∩ B_{2δρ}(z) and r ∈ (0, 2δρ] there is an n-dimensional subspace S with (4a) |(x − ξ) − p_S(x − ξ)| ≤ C₃δ^αr for all x ∈ spt μ ∩ B_r(ξ) and (4b) ∫_{B_{r/2}(ξ)} |p_x − p_S|² dμ ≤ C₃δ^{2α}(r/2)ⁿ, where α := 1/(2n+2). Here p_x is the orthogonal projection onto approxTangentPlane n M x, p_x^⊥ := I − p_x, p_S the orthogonal projection onto a subspace S, |A|² := Σ_i |Ae_i|² the Hilbert–Schmidt norm (the Lean sum over EuclideanSpace.single i 1), B_t(y) the closed ball, and integrals of nonnegative functions are lower Lebesgue integrals in [0, ∞] (Lean ∫⁻ of ENNReal.ofReal).",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∃ δ₃ C₃ : ℝ, 0 < δ₃ ∧ δ₃ ≤ 1 / 8 ∧ 1 ≤ C₃ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₃ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (2 * δ * ρ), ∀ r : ℝ, 0 < r → r ≤ 2 * δ * ρ → ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ (∀ x ∈ R.measure.support ∩ closedBall ξ r, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ C₃ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * r) ∧ ∫⁻ x in closedBall ξ (r / 2), ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (C₃ * (δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * (r / 2) ^ n)",
+  "lean_name": "dorag_affine_approximation",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9e10fe2792-a1"
+}
