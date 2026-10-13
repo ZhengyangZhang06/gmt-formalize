@@ -669,6 +669,21 @@ theorem Submission.dgce_left_inverse_tangentSpace_eq_range : ∀ (d P : ℕ) (Φ
       fun t _ => mem_image_of_mem Φ (hκD t), by simp [hκ0], ?_⟩
     exact hΦv₀.comp_hasDerivAt_of_eq 0 hκ_deriv hκ0.symm
 
+/-- Simon Ch. 2, §4, 4.1 and 4.3 for graphs (cf. Remark 4.4): for linear isometries
+`ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}` with `⟨ιv, ι'w⟩ = 0` and `u` of class `C¹` on
+`D = B_s(0)`, the graph map `Φ(v) = z + ιv + ι'u(v)` is injective on `D` with injective derivative,
+`Σ = Φ(D)` is an embedded `n`-dimensional `C¹` submanifold, and `T_{Φ(v)}Σ = range DΦ(v)` for
+`v ∈ D`. -/
+theorem Submission.dgcr_graph_chart_embedded : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → ContDiffOn ℝ 1 u (ball 0 s) → InjOn (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) ∧ (∀ v ∈ ball (0 : Euclid n) s, DifferentiableAt ℝ (fun v => z + ι v + ι' (u v)) v ∧ Injective (fderiv ℝ (fun v => z + ι v + ι' (u v)) v)) ∧ IsEmbeddedSubmanifold 1 n ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∧ ∀ v ∈ ball (0 : Euclid n) s, tangentSpace ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) (z + ι v + ι' (u v)) = (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v : Euclid n →ₗ[ℝ] Euclid (n + k)) : Set (Euclid (n + k))) := by
+  intro n k ι ι' u z s horth _hs hu
+  -- `Φ` is `C¹` on `D`, and `Pr(x) = L(x − z)` inverts it on the left: `Pr ∘ Φ = id`
+  obtain ⟨hΦ, L, hL⟩ := Submission.dgce_graph_contDiffOn_left_inverse n k ι ι' u z s horth hu
+  -- (i)–(iii) and (iv) hold for any `C¹` map on `D` with a continuous affine left inverse
+  obtain ⟨hinj, hdiff, hemb⟩ := Submission.dgce_left_inverse_chart_embedded n (n + k)
+    (fun v => z + ι v + ι' (u v)) L z s hΦ fun v _ => hL v
+  exact ⟨hinj, hdiff, hemb, Submission.dgce_left_inverse_tangentSpace_eq_range n (n + k)
+    (fun v => z + ι v + ι' (u v)) L z s hΦ fun v _ => hL v⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
