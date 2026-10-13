@@ -515,7 +515,7 @@ theorem Submission.dimred_rpd_near_isometric_chart : ∀ (P n : ℕ) (M : Set (E
     have h2 : HasStrictFDerivAt ψ A (v₀ + L 0) := by simpa using hstrict
     exact h2.comp (0 : Euclid n) h1
   -- two-point estimate
-  have h1 := (hasStrictFDerivAt_iff_isLittleO.1 hχstrict).def hε
+  have h1 := (hasStrictFDerivAt_iff_isLittleO.1 hχstrict).bound hε
   have h2 : ∀ᶠ w in 𝓝 (0 : Euclid n), v₀ + L w ∈ V := by
     have hc : Continuous (fun w : Euclid n => v₀ + L w) := continuous_const.add L.continuous
     have : (fun w : Euclid n => v₀ + L w) 0 ∈ V := by simpa using hv₀V
