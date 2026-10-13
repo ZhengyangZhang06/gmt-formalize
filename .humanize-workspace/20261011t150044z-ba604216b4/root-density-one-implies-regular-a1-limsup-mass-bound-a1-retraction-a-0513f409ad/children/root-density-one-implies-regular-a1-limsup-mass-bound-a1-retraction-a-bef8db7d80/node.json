@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1.local_inverse-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1",
+  "depth": 5,
+  "title": "C¹ local inverse on open images near a point where the derivative is invertible",
+  "statement": "Let X and Y be real normed spaces with X complete. Let U ⊆ X be open, z₀ ∈ U, and Φ : X → Y be C¹ on U. Suppose Φ has Fréchet derivative Λ at z₀, where Λ : X → Y is a continuous linear equivalence. Then there are ρ > 0 and a map G : Y → X such that: the open ball B_ρ(z₀) ⊆ U; G(Φ(z)) = z for every z ∈ B_ρ(z₀); and for every open set W ⊆ B_ρ(z₀), the image Φ(W) is open and G is C¹ on Φ(W).",
+  "lean_statement": "∀ (X Y : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X] [NormedAddCommGroup Y] [NormedSpace ℝ Y] (Φ : X → Y) (U : Set X) (z₀ : X) (Λ : X ≃L[ℝ] Y), IsOpen U → z₀ ∈ U → ContDiffOn ℝ 1 Φ U → HasFDerivAt Φ (Λ : X →L[ℝ] Y) z₀ → ∃ ρ : ℝ, 0 < ρ ∧ ball z₀ ρ ⊆ U ∧ ∃ G : Y → X, (∀ z ∈ ball z₀ ρ, G (Φ z) = z) ∧ ∀ W : Set X, W ⊆ ball z₀ ρ → IsOpen W → IsOpen (Φ '' W) ∧ ContDiffOn ℝ 1 G (Φ '' W)",
+  "lean_name": "dor_lmb_ret_nc_local_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-bef8db7d80-a1"
+}

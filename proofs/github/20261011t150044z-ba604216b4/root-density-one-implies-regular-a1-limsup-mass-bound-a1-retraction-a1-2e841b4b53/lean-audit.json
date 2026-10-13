@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8bff88dc6223e393b6eb6dabb90c3b6a369c544402e9e0f4c1135f47fe618e13",
+  "git_delta": {
+    "base_commit": "41bfaf00aa5a2d691fd0ed7878e1c64872bc4fce",
+    "candidate_commit": "719de746fc675ae67f3e3f82a506d023f582af62",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a670f1e7328def3e9ea2f25dbf0a21a3786ea19ca0e3434c7b63162e851decf2",
+    "source_sha256": "33fc882b040f94194d96b907f44b36d67323cb52f882452dde62b113c00c61da",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_c1_retraction",
+      "statement": "∀ (P d : ℕ) (U N : Set (Euclid P)) (y : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → y ∈ N ∩ U → ∃ (r c : ℝ) (proj : Euclid P → Euclid P), 0 < r ∧ 0 ≤ c ∧ closedBall y r ⊆ U ∧ ContDiffOn ℝ 1 proj (ball y r) ∧ MapsTo proj (ball y r) N ∧ (∀ x ∈ N ∩ ball y r, proj x = x) ∧ (∀ x ∈ N ∩ ball y r, ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v) ∧ ∀ x ∈ ball y r, ‖fderiv ℝ proj x‖ ≤ 1 + c * dist x y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
