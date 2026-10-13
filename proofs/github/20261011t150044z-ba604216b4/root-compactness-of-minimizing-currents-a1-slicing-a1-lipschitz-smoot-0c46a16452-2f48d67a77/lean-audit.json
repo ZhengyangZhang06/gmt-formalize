@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bdc086777a516a58491d492545413dd92885a11cec1b2c0c290dbbb7ba4e381f",
+  "git_delta": {
+    "base_commit": "c2665ab832affe022128200cfd9845cc97ba8fc8",
+    "candidate_commit": "52b9c39c17163ce7232935d7cc8c5d62382f63a6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_ls_mollify_lipschitz",
+    "diff_sha256": "c9aea6898598cb9f005ba66a5d66356e273013e17ec093c3f9e6da1342a7426f",
+    "source_sha256": "cc2283723a3b7de5d93f0e5776eb0de5bf8f4c6219de7906c23c46cc6262cb07",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_ls_mollify_lipschitz",
+      "statement": "∀ (P : ℕ) (ψ g : Euclid P → ℝ) (K : NNReal), Continuous ψ → HasCompactSupport ψ → (∀ x, 0 ≤ ψ x) → ∫ x, ψ x = 1 → LipschitzWith K g → LipschitzWith K (fun x => ∫ y, ψ y * g (x - y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
