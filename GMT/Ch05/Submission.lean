@@ -505,6 +505,121 @@ theorem dohr_eb_elc2_hessian_bounds : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn
     exact hL.norm_sub_le (mem_closedBall_zero_iff.2 hP) (mem_closedBall_zero_iff.2 hP')
 
 end Submission
+/-- **Averaged Hessian coefficient** (Steps 4–5 of the `C^{2,α}` regularity proof for uniformly
+convex Euler–Lagrange systems, in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second
+assertion).  Let `Ψ` be `C²` on `L = L(ℝⁿ, ℝ^ℓ)` and `B = D²Ψ`.  Assume that on the closed `ε`-ball
+`B` satisfies `λ|Q|² ≤ B(P)[Q][Q]`, `|B(P)[Q][Q']| ≤ M_B|Q||Q'|` and a Lipschitz bound with constant
+`L_B ≥ 0`, and that `P₀, P₁ : ℝⁿ → L` take values in that ball and are `(H, α)`-Hölder on `S`.  Then
+`a(x)[P][Q] = ∫₀¹ B(P₀(x) + t(P₁(x) - P₀(x)))[P][Q] dt` defines continuous bilinear forms that are
+coercive, bounded by `M_B` and `L_B H`-Hölder in `x` on `S`.
+Proof: `P_t(x) = (1 - t)P₀(x) + tP₁(x)` stays in the `ε`-ball, so the bounds on `B` hold for each
+`t ∈ [0, 1]` and pass to the integral.  For the Hölder bound, `‖P_t(x) - P_t(y)‖ ≤ H‖x - y‖^α` as a
+convex combination of the two Hölder bounds. -/
+theorem Submission.dohr_eb_elc2_averaged_hessian : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε MB LB H α : ℝ) (S : Set (Rn n)) (P₀ P₁ : Rn n → Rn n →L[ℝ] Rn ℓ), ContDiff ℝ 2 Ψ → 0 ≤ LB → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) → (∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖) → (∀ x ∈ S, ‖P₀ x‖ ≤ ε) → (∀ x ∈ S, ‖P₁ x‖ ≤ ε) → (∀ x ∈ S, ∀ y ∈ S, ‖P₀ x - P₀ y‖ ≤ H * ‖x - y‖ ^ α) → (∀ x ∈ S, ∀ y ∈ S, ‖P₁ x - P₁ y‖ ≤ H * ‖x - y‖ ^ α) → ∃ a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P Q : Rn n →L[ℝ] Rn ℓ), a x P Q = ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (P₀ x + t • (P₁ x - P₀ x)) P Q) ∧ (∀ x ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) ∧ (∀ x ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ MB * ‖P‖ * ‖Q‖) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
+  intro n ℓ Ψ lam ε MB LB H α S P₀ P₁ hΨ hLB hLeg hMB hLip hP₀ hP₁ hH₀ hH₁
+  -- Step 1: `B = D²Ψ` is continuous since `Ψ` is `C²`, so each scalar integrand
+  -- `t ↦ B(P_t(x))[P][Q]` is continuous, hence interval integrable on `[0, 1]`.
+  have hB := (hΨ.fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)
+  set B := fderiv ℝ (fderiv ℝ Ψ)
+  set Pt : Rn n → ℝ → (Rn n →L[ℝ] Rn ℓ) := fun x t => P₀ x + t • (P₁ x - P₀ x) with hPt
+  have hint : ∀ (x : Rn n) (P Q : Rn n →L[ℝ] Rn ℓ),
+      IntervalIntegrable (fun t : ℝ => B (Pt x t) P Q) volume 0 1 := fun x P Q =>
+    Continuous.intervalIntegrable (by simp only [hPt]; fun_prop) 0 1
+  -- Step 2: for fixed `x`, `(P, Q) ↦ ∫₀¹ B(P_t(x))[P][Q] dt` is bilinear; it is continuous
+  -- because `L(ℝⁿ, ℝ^ℓ)` is finite-dimensional.
+  let φ : Rn n → (Rn n →L[ℝ] Rn ℓ) → (Rn n →L[ℝ] Rn ℓ) →ₗ[ℝ] ℝ := fun x P =>
+    { toFun := fun Q => ∫ t in (0 : ℝ)..1, B (Pt x t) P Q
+      map_add' := fun Q Q' => by
+        simp only [map_add]
+        exact intervalIntegral.integral_add (hint x P Q) (hint x P Q')
+      map_smul' := fun c Q => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        exact intervalIntegral.integral_const_mul c _ }
+  let ψ : Rn n → (Rn n →L[ℝ] Rn ℓ) →ₗ[ℝ] ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) := fun x =>
+    { toFun := fun P => LinearMap.toContinuousLinearMap (φ x P)
+      map_add' := fun P P' => by
+        ext Q
+        change (∫ t in (0 : ℝ)..1, B (Pt x t) (P + P') Q)
+          = (∫ t in (0 : ℝ)..1, B (Pt x t) P Q) + ∫ t in (0 : ℝ)..1, B (Pt x t) P' Q
+        simp only [map_add, add_apply]
+        exact intervalIntegral.integral_add (hint x P Q) (hint x P' Q)
+      map_smul' := fun c P => by
+        ext Q
+        change (∫ t in (0 : ℝ)..1, B (Pt x t) (c • P) Q) = c * ∫ t in (0 : ℝ)..1, B (Pt x t) P Q
+        simp only [map_smul, smul_apply, smul_eq_mul]
+        exact intervalIntegral.integral_const_mul c _ }
+  -- Step 3: for `x ∈ S` and `t ∈ [0, 1]`, `P_t(x)` is a convex combination of `P₀(x)` and `P₁(x)`,
+  -- so it stays in the closed `ε`-ball.
+  have hball : ∀ x ∈ S, ∀ t ∈ Icc (0 : ℝ) 1, ‖Pt x t‖ ≤ ε := by
+    intro x hx t ht
+    have : Pt x t = (1 - t) • P₀ x + t • P₁ x := by simp only [hPt]; module
+    rw [this]
+    calc ‖(1 - t) • P₀ x + t • P₁ x‖ ≤ ‖(1 - t) • P₀ x‖ + ‖t • P₁ x‖ := norm_add_le _ _
+      _ = (1 - t) * ‖P₀ x‖ + t * ‖P₁ x‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+            abs_of_nonneg (by linarith [ht.2]), abs_of_nonneg ht.1]
+      _ ≤ (1 - t) * ε + t * ε := by
+          gcongr
+          · linarith [ht.2]
+          · exact hP₀ x hx
+          · exact ht.1
+          · exact hP₁ x hx
+      _ = ε := by ring
+  -- `a(x)` is `ψ x` as a continuous linear map.  The type arguments are explicit so that the
+  -- instances on `L(L, ℝ)` are synthesized directly rather than during unification.
+  refine ⟨fun x => LinearMap.toContinuousLinearMap (𝕜 := ℝ) (E := Rn n →L[ℝ] Rn ℓ)
+    (F' := (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ψ x), ?_, ?_, ?_, ?_⟩
+  -- The formula holds by definition.
+  · intro x P Q
+    rfl
+  -- Step 4: coercivity, by monotonicity of the integral.
+  · intro x hx P
+    change lam * ‖P‖ ^ 2 ≤ ∫ t in (0 : ℝ)..1, B (Pt x t) P P
+    have := intervalIntegral.integral_mono_on (a := 0) (b := 1) zero_le_one
+      intervalIntegrable_const (hint x P P) (fun t ht => hLeg _ (hball x hx t ht) P)
+    simpa using this
+  -- Step 5: the bound, from the pointwise bound on `(0, 1]`.
+  · intro x hx P Q
+    change |∫ t in (0 : ℝ)..1, B (Pt x t) P Q| ≤ MB * ‖P‖ * ‖Q‖
+    rw [← Real.norm_eq_abs]
+    have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+      (C := MB * ‖P‖ * ‖Q‖) (f := fun t => B (Pt x t) P Q) (by
+        intro t ht
+        rw [uIoc_of_le zero_le_one] at ht
+        rw [Real.norm_eq_abs]
+        exact hMB _ (hball x hx t ⟨ht.1.le, ht.2⟩) P Q)
+    simpa using this
+  -- Step 6: Hölder continuity, from `‖P_t(x) - P_t(y)‖ ≤ H‖x - y‖^α` and the Lipschitz bound on `B`.
+  · intro x hx y hy P Q
+    change |(∫ t in (0 : ℝ)..1, B (Pt x t) P Q) - ∫ t in (0 : ℝ)..1, B (Pt y t) P Q| ≤ _
+    rw [← intervalIntegral.integral_sub (hint x P Q) (hint y P Q), ← Real.norm_eq_abs]
+    have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+      (C := LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) (f := fun t => B (Pt x t) P Q - B (Pt y t) P Q) (by
+        intro t ht
+        rw [uIoc_of_le zero_le_one] at ht
+        have ht' : t ∈ Icc (0 : ℝ) 1 := ⟨ht.1.le, ht.2⟩
+        rw [Real.norm_eq_abs]
+        have hdiff : ‖Pt x t - Pt y t‖ ≤ H * ‖x - y‖ ^ α := by
+          have : Pt x t - Pt y t = (1 - t) • (P₀ x - P₀ y) + t • (P₁ x - P₁ y) := by
+            simp only [hPt]; module
+          rw [this]
+          calc ‖(1 - t) • (P₀ x - P₀ y) + t • (P₁ x - P₁ y)‖
+              ≤ ‖(1 - t) • (P₀ x - P₀ y)‖ + ‖t • (P₁ x - P₁ y)‖ := norm_add_le _ _
+            _ = (1 - t) * ‖P₀ x - P₀ y‖ + t * ‖P₁ x - P₁ y‖ := by
+                rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+                  abs_of_nonneg (by linarith [ht'.2]), abs_of_nonneg ht'.1]
+            _ ≤ (1 - t) * (H * ‖x - y‖ ^ α) + t * (H * ‖x - y‖ ^ α) := by
+                gcongr
+                · linarith [ht'.2]
+                · exact hH₀ x hx y hy
+                · exact ht'.1
+                · exact hH₁ x hx y hy
+            _ = H * ‖x - y‖ ^ α := by ring
+        calc |B (Pt x t) P Q - B (Pt y t) P Q| ≤ LB * ‖Pt x t - Pt y t‖ * ‖P‖ * ‖Q‖ :=
+              hLip _ _ (hball x hx t ht') (hball y hy t ht') P Q
+          _ ≤ LB * (H * ‖x - y‖ ^ α) * ‖P‖ * ‖Q‖ := by gcongr
+          _ = LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by ring)
+    simpa using this
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
