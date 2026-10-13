@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables onto a Borel sub-image.**  Let `B′ ⊆ B ⊆ ℝᵈ` be Borel and let
+`G : ℝᵈ → ℝᴾ` be continuous and injective on `B`, with the area formula
+`∫_{G(B)} f dHᵐ = ∫_B J · (f ∘ G) dHᵐ` for every `f : ℝᴾ → ℝ`.  If `h = 1_{B′} · J · (g ∘ G)`
+`Hᵐ⌞B`-a.e., then `∫_B h dHᵐ = ∫_{G(B′)} g dHᵐ`.  Proof: `M′ = G(B′) ⊆ G(B)` is Borel
+(Lusin–Souslin); by injectivity, `f = 1_{M′} · g` pulls back to `J · (f ∘ G) = 1_{B′} · J · (g ∘ G)`
+on `B`; the area formula for this `f` and `(Hᵐ⌞G(B))⌞M′ = Hᵐ⌞M′` finish.  No integrability is
+used (Bochner integrals of non-integrable functions are `0`). -/
+theorem Submission.codim1_pfr_setIntegral_image_transfer : ∀ (m d P : ℕ) (B B' : Set (Euclid d)) (G : Euclid d → Euclid P) (J h : Euclid d → ℝ) (g : Euclid P → ℝ), MeasurableSet B → MeasurableSet B' → B' ⊆ B → ContinuousOn G B → InjOn G B → (∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μHE[m] = ∫ v in B, J v * f (G v) ∂μHE[m]) → (∀ᵐ v ∂(μHE[m].restrict B), h v = B'.indicator (fun y => J y * g (G y)) v) → ∫ v in B, h v ∂μHE[m] = ∫ w in G '' B', g w ∂μHE[m] := by
+  intro m d P B B' G J h g hB hB' hB'B hGc hGi harea hh
+  -- Step 1: `M′ = G(B′)` is Borel by Lusin–Souslin (`ℝᵈ` is Polish and `G` is continuous and
+  -- injective on `B′ ⊆ B`), and `M′ ⊆ G(B)`.
+  have hM' : MeasurableSet (G '' B') :=
+    hB'.image_of_continuousOn_injOn (hGc.mono hB'B) (hGi.mono hB'B)
+  have hM'B : G '' B' ⊆ G '' B := image_mono hB'B
+  -- Step 2: for `f = 1_{M′} · g`, `J(v) f(G(v)) = 1_{B′}(v) J(v) g(G(v))` for every `v ∈ B`.  If
+  -- `v ∉ B′` then `G(v) ∉ M′`: `G(v′) = G(v)` with `v′ ∈ B′ ⊆ B` forces `v′ = v` by injectivity.
+  have hpull : ∀ v ∈ B,
+      J v * (G '' B').indicator g (G v) = B'.indicator (fun y => J y * g (G y)) v := by
+    intro v hv
+    by_cases hvB' : v ∈ B'
+    · rw [indicator_of_mem (mem_image_of_mem G hvB'), indicator_of_mem hvB']
+    · have hGv : G v ∉ G '' B' := by
+        rintro ⟨v', hv', hGv'⟩
+        exact hvB' (hGi (hB'B hv') hv hGv' ▸ hv')
+      rw [indicator_of_notMem hGv, indicator_of_notMem hvB', mul_zero]
+  -- Step 3: `Hᵐ⌞B`-a.e. `v` lies in `B`, so `h = J · (f ∘ G)` `Hᵐ⌞B`-a.e.
+  have hstep3 : ∫ v in B, h v ∂μHE[m] = ∫ v in B, J v * (G '' B').indicator g (G v) ∂μHE[m] := by
+    refine integral_congr_ae ?_
+    filter_upwards [hh, ae_restrict_mem hB] with v hv hvB
+    rw [hv, hpull v hvB]
+  -- Step 4: the area formula for `f = 1_{M′} · g`.  Step 5: `integral_indicator` and
+  -- `restrict_restrict` give `∫_{G(B)} 1_{M′} · g dHᵐ = ∫ g d(Hᵐ⌞(M′ ∩ G(B))) = ∫_{M′} g dHᵐ`.
+  rw [hstep3, ← harea ((G '' B').indicator g), integral_indicator hM',
+    Measure.restrict_restrict hM', inter_eq_left.mpr hM'B]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
