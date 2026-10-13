@@ -513,6 +513,49 @@ theorem Submission.slicing_im_ll_multiplier_tendsto :
         rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
         nlinarith
 
+/-- Simon Ch. 6, proof of 4.5(2), (2), for a `C^∞` multiplier `ψ`: the Leibniz rule
+`∂T(ψ ω) = T(ψ dω) + T(Dψ ∧ ω)`, with `∂T` and `T` evaluated through their measure
+representations and `T(Dψ ∧ ω) = τ(M, θ, ξ)(Dψ ∧ ω)`. -/
+theorem Submission.slicing_im_ll_smooth_leibniz :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ η : TestFormOn U (m + 1), T η = tauAction (m + 1) M θ ξ η) → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)) (μ' : Measure (Eucl P)) (v' : Eucl P → NVector (Eucl P) m), IsMeasureRepresentation T μ v → IsMeasureRepresentation T.boundary μ' v' → ∀ (ω : TestFormOn U m) (ψ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ ψ x).smulRight ((ω : DifferentialForm (Eucl P) m) x))) ∂(μHE[m + 1] : Measure (Eucl P)) = (∫ x, ψ x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ') - (∫ x, ψ x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ) := by
+  intro P m U M θ ξ T hT μ v μ' v' hv hv' ω ψ hψ
+  -- The test forms `η₁ = ψ ω ∈ 𝒟ᵐ(U)`, `η₂ = ψ dω ∈ 𝒟ᵐ⁺¹(U)` and `η₃ = Dψ ∧ ω ∈ 𝒟ᵐ⁺¹(U)`.
+  have hdω : ((exteriorDerivativeTestOn U m ω : TestFormOn U (m + 1)) :
+      DifferentialForm (Eucl P) (m + 1)) = exteriorDerivative (ω : DifferentialForm (Eucl P) m) :=
+    rfl
+  obtain ⟨η₁, hη₁⟩ := Submission.slicing_mb_lb_smul_testForm P m U ω ψ hψ
+  obtain ⟨η₂, hη₂⟩ :=
+    Submission.slicing_mb_lb_smul_testForm P (m + 1) U (exteriorDerivativeTestOn U m ω) ψ hψ
+  obtain ⟨η₃, hη₃⟩ :=
+    Submission.slicing_mb_lb_wedge_testForm P m U ω (fderiv ℝ ψ) (hψ.fderiv_right (by simp))
+  -- Leibniz rule `d(ψ ω) = ψ dω + Dψ ∧ ω`: the exterior derivative of `η₁` is `η₂ + η₃`.
+  have hd : exteriorDerivativeTestOn U m η₁ = η₂ + η₃ := by
+    have hω : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl P) m) := ω.2.1.1
+    have h₁ : (η₁ : DifferentialForm (Eucl P) m) =
+        fun y => ψ y • (ω : DifferentialForm (Eucl P) m) y := funext hη₁
+    apply Subtype.ext
+    funext x
+    change exteriorDerivative (η₁ : DifferentialForm (Eucl P) m) x =
+      (η₂ : DifferentialForm (Eucl P) (m + 1)) x + (η₃ : DifferentialForm (Eucl P) (m + 1)) x
+    rw [h₁, hη₂, hη₃, hdω, Submission.slicing_mb_lb_extDeriv_smul P m ψ _ x
+      (hψ.differentiable (by simp) x) (hω.differentiable (by simp) x)]
+  -- Hence `∂T(η₁) = T(dη₁) = T(η₂) + T(η₃)`.
+  have hb : T.boundary η₁ = T η₂ + T η₃ := by
+    rw [GeometricCurrentOn.boundary_apply, hd]
+    exact map_add T.toCurrent η₂ η₃
+  -- `∂T(η₁)` and `T(η₂)` through the measure representations, `T(η₃)` through `τ(M, θ, ξ)`.
+  have h₁ : T.boundary η₁ = ∫ x, ψ x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ' := by
+    simp only [(hv' η₁).2, hη₁, map_smul, smul_eq_mul]
+  have h₂ : T η₂ =
+      ∫ x, ψ x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ := by
+    simp only [(hv η₂).2, hη₂, hdω, map_smul, smul_eq_mul]
+  have h₃ : T η₃ = ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin
+      ((fderiv ℝ ψ x).smulRight ((ω : DifferentialForm (Eucl P) m) x)))
+      ∂(μHE[m + 1] : Measure (Eucl P)) := by
+    simp only [hT η₃, tauAction, hη₃]
+  rw [← h₁, ← h₂, ← h₃, hb]
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
