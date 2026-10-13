@@ -6588,6 +6588,57 @@ theorem dohr_eb_linear_higher_regularity : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α :
       (fun P Q => ⟨(ha P Q).1.of_le hmm, Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n) ℝ m α
         _ U hα hα1.le hU (ha P Q).1⟩) hΨm (hvs s) hΨweak
 
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): one
+Schauder step for the Euler–Lagrange system `∫_U DΨ(Du)[Dφ] = -∫_U ⟨φ, g⟩`.  Let `Ψ` be smooth
+with `D²Ψ(P)` `lam`-Legendre for `‖P‖ ≤ ε`, `u ∈ C^{m+1,α}_loc(U)` with `‖Du‖ ≤ ε` on `U`
+(`m ≥ 1`) and `g ∈ C^{m,α}_loc(U)`.  Each column `v_k = Du(·) e_k` is `C^{m,α}_loc` and solves the
+differentiated system `∫_U D²Ψ(Du)[Dv_k][Dζ] = ∫_U ⟨g, Dζ e_k⟩`, whose coefficient `D²Ψ(Du)` is
+`lam`-Legendre and `C^{m,α}_loc` (a smooth function of `Du`) and whose right side is a linear image
+of `g`.  Linear Schauder theory gives `v_k ∈ C^{m+1,α}_loc` for every `k`, so
+`u ∈ C^{m+2,α}_loc`. -/
+theorem dohr_eb_el_higher_regularity_step : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ m : ℕ, 1 ≤ m → ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε : ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), 0 < lam → IsOpen U → ContDiff ℝ (⊤ : ℕ∞) Ψ → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → IsLocallyHolderCkα (m + 1) α u U → (∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε) → IsLocallyHolderCkα m α g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → IsLocallyHolderCkα (m + 2) α u U := by
+  intro n ℓ hn α hα0 hα1 m hm Ψ lam ε U u g hlam hU hΨ hLeg hu hDu hg hEL
+  -- Steps 0 and 5: `u` is `C¹` on `U` and every column `v_k = Du(·) e_k` is `C^{m,α}_loc`;
+  -- moreover `Du` is `C^m` on `U` with `Dᵐ(Du)` `α`-Hölder on compact subsets of `U`.
+  obtain ⟨hu1, hcols⟩ := (dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α u U hU).2.1 hu
+  obtain ⟨-, hDuC, hDuH⟩ := (dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α u U hU).1.1 hu
+  -- Step 1: `Ψ` is `C²` and `u` is `C²` on `U` (`m + 1 ≥ 2`), so the weak Euler–Lagrange
+  -- system can be differentiated in every direction `e`.
+  have hΨ2 : ContDiff ℝ 2 Ψ := hΨ.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hu2 : ContDiffOn ℝ 2 u U := hu.1.of_le (by exact_mod_cast (by omega : 2 ≤ m + 1))
+  have hD := dohr_eb_ehs_differentiated_el n ℓ Ψ U u g hU hΨ2 hu2 hg.1.continuousOn hEL
+  -- Step 6: linear Schauder theory for `v_k`, with coefficient `a(x) = D²Ψ(Du(x))` and right
+  -- side `Φ_k(x) = ⟨g(x), (·) e_k⟩`.
+  have hk : ∀ k : Fin n, IsLocallyHolderCkα (m + 1) α
+      (fun z => fderiv ℝ u z (EuclideanSpace.single k (1 : ℝ))) U := by
+    intro k
+    refine dohr_eb_linear_higher_regularity n ℓ hn α hα0 hα1 m hm U lam
+      (fun x => fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x))
+      (fun x => (innerSL ℝ (g x)).comp
+        (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single k (1 : ℝ))))
+      (fun z => fderiv ℝ u z (EuclideanSpace.single k (1 : ℝ))) hU hlam ?_ ?_ ?_ (hcols k) ?_
+    · -- Step 4: the Legendre condition holds on `U`, where `‖Du‖ ≤ ε`.
+      intro x hx P
+      exact hLeg _ (hDu x hx) P
+    · -- Step 2: `x ↦ D²Ψ(Du(x))[P][Q]` is a smooth function of `Du`, hence `C^{m,α}_loc`.
+      intro P Q
+      have hsm := dohr_eb_ehs_hessian_apply_contDiff n ℓ Ψ hΨ P Q
+      exact dohr_eb_holder_comp (Rn n) (Rn n →L[ℝ] Rn ℓ) ℝ m α (fderiv ℝ u)
+        (fun R : Rn n →L[ℝ] Rn ℓ => fderiv ℝ (fderiv ℝ Ψ) R P Q) U univ hα0 hα1.le hU
+        isOpen_univ (mapsTo_univ _ _) (Or.inl hm) hDuC hDuH
+        (hsm.contDiffOn.of_le (by exact_mod_cast le_top))
+        (dohr_eb_holder_of_contDiffOn_succ (Rn n →L[ℝ] Rn ℓ) ℝ m α _ univ hα0 hα1.le
+          isOpen_univ (hsm.contDiffOn.of_le (by exact_mod_cast le_top)))
+    · -- Step 3: `x ↦ Φ_k(x)[P] = ⟨g(x), P e_k⟩` is a linear image of `g`, hence `C^{m,α}_loc`.
+      intro P
+      simpa using
+        dohr_eb_ehs_inner_right_holder n ℓ m α U g (P (EuclideanSpace.single k (1 : ℝ))) hU hg
+    · -- Step 1 with `e = e_k`: `v_k` solves the system with coefficient `a` and right side `Φ_k`.
+      intro ζ hζ1 hζc hζU
+      simpa using hD (EuclideanSpace.single k (1 : ℝ)) ζ hζ1 hζc hζU
+  -- Step 7: `u` is `C¹` on `U` and every `v_k` is `C^{m+1,α}_loc`, so `u` is `C^{m+2,α}_loc`.
+  exact (dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) (m + 1) α u U hU).2.2 ⟨hu1, hk⟩
+
 end Submission
 
 end GMT.Ch05
