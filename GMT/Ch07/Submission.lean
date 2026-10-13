@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Coordinate slicing (Fubini in the `i`-th coordinate) on the open cube
+`Q = {z : a < z_j < b ∀ j}` of `ℝ^{m+1}`.  Write `ι(t, y) = toLp 2 (Fin.insertNth i t y)` (the
+point with `i`-th coordinate `t` and remaining coordinates `y`) and `Q' = {y : a < y_k < b ∀ k}`
+in `ℝ^m`.  If `a ≤ b` and `h` is integrable on `Q`, then `y ↦ ∫_a^b h(ι(t, y)) dt` is integrable
+on `Q'` and `∫_Q h = ∫_{Q'} ∫_a^b h(ι(t, y)) dt dy`.  `(t, y) ↦ ι(t, y)` is the inverse of
+`MeasurableEquiv.piFinSuccAbove` followed by `toLp 2`, a measure-preserving equivalence
+`ℝ × ℝ^m ≃ ℝ^{m+1}` that maps `(a, b) × Q'` onto `Q`; then use Fubini with outer variable `y`. -/
+theorem Submission.cmcdt_cbm_st_slice_integral : ∀ (m : ℕ) (i : Fin (m + 1)) (a b : ℝ) (h : Euclid (m + 1) → ℝ), a ≤ b → IntegrableOn h {z : Euclid (m + 1) | ∀ j, a < z j ∧ z j < b} → IntegrableOn (fun y : Fin m → ℝ => ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y))) {y : Fin m → ℝ | ∀ j, a < y j ∧ y j < b} ∧ ∫ x in {z : Euclid (m + 1) | ∀ j, a < z j ∧ z j < b}, h x = ∫ y in {y : Fin m → ℝ | ∀ j, a < y j ∧ y j < b}, ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y)) := by
+  intro m i a b h hab hint
+  set Q : Set (Euclid (m + 1)) := {z | ∀ j, a < z j ∧ z j < b} with hQ
+  set Q' : Set (Fin m → ℝ) := {y | ∀ j, a < y j ∧ y j < b} with hQ'
+  -- `E (t, y) = toLp 2 (insertNth i t y)`: a measure-preserving equivalence `ℝ × ℝ^m ≃ ℝ^{m+1}`
+  let E : ℝ × (Fin m → ℝ) ≃ᵐ Euclid (m + 1) :=
+    (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) i).symm.trans
+      (MeasurableEquiv.toLp 2 (Fin (m + 1) → ℝ))
+  have hE : MeasurePreserving E (volume.prod volume) volume :=
+    (PiLp.volume_preserving_toLp (Fin (m + 1))).comp
+      (volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) i).symm
+  have hEapply : ∀ p : ℝ × (Fin m → ℝ), E p = WithLp.toLp 2 (Fin.insertNth i p.1 p.2) :=
+    fun p => rfl
+  -- `E⁻¹(Q) = (a, b) × Q'`
+  have hpre : E ⁻¹' Q = Ioo a b ×ˢ Q' := by
+    ext ⟨t, y⟩
+    simp only [Set.mem_preimage, hEapply, Q, Q', Set.mem_prod, Set.mem_Ioo, Set.mem_ofPred_eq]
+    rw [Fin.forall_iff_succAbove i]
+    simp
+  have hint' : Integrable (fun p => h (E p))
+      ((volume.restrict (Ioo a b)).prod (volume.restrict Q')) := by
+    rw [Measure.prod_restrict, ← hpre]
+    exact (hE.integrableOn_comp_preimage E.measurableEmbedding).2 hint
+  -- for `a ≤ b` the inner integral over `(a, b)` is the interval integral `∫_a^b`
+  have hinner : ∀ y : Fin m → ℝ, ∫ t in Ioo a b, h (E (t, y)) =
+      ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y)) := by
+    intro y
+    rw [intervalIntegral.integral_of_le hab, integral_Ioc_eq_integral_Ioo]
+    rfl
+  refine ⟨?_, ?_⟩
+  · have := hint'.integral_prod_right
+    simp only [hinner] at this
+    exact this
+  · calc ∫ x in Q, h x = ∫ p in E ⁻¹' Q, h (E p) ∂(volume.prod volume) :=
+          (hE.setIntegral_preimage_emb E.measurableEmbedding h Q).symm
+      _ = ∫ p, h (E p) ∂((volume.restrict (Ioo a b)).prod (volume.restrict Q')) := by
+          rw [hpre, Measure.prod_restrict]
+      _ = ∫ y in Q', ∫ t in Ioo a b, h (E (t, y)) := integral_prod_symm _ hint'
+      _ = ∫ y in Q', ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y)) := by
+          simp only [hinner]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
