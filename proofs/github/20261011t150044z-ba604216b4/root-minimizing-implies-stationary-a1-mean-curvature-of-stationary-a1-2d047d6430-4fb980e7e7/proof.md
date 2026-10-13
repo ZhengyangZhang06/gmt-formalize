@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1.first_variation_additive-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 9 of the parent proof ("as DX = DX^T + DY and the trace is linear, R.firstVariation X = R.firstVariation X^T + ∫_M θ div_M Y dH^n", with the integrability justification given there); Simon Ch. 4, 2.2–2.3 (chapter-04.txt lines 132–147: δV(X) = ∫_M div_M X dμ_V, div_M X = Σ_j e_j·∇^M X^j), which is linear in X. Notation: M := R.carrier, θ := R.mult, μ := H^n restricted to M (μHE[n].restrict R.carrier), p(x) := orthogonal projection onto approxTangentPlane n M x, div_M Z(x) := tangentialDivergence n M Z x = trace(p(x)∘DZ(x)), so that R.firstVariation Z = ∫ θ(x) div_M Z(x) dμ(x).
+1. The trace functional. Let tr : L(ℝ^P, ℝ^P) → ℝ, tr(A) := trace(A). It is linear on a finite-dimensional space, hence continuous (LinearMap.continuous_of_finiteDimensional), and div_M Z(x) = tr(p(x)∘DZ(x)) by definition. Moreover |tr(A)| ≤ P·‖A‖: expanding in the standard orthonormal basis (LinearMap.trace_eq_sum_inner), tr(A) = Σ_j ⟨e_j, Ae_j⟩, and |⟨e_j, Ae_j⟩| ≤ ‖e_j‖·‖Ae_j‖ ≤ ‖A‖ because ‖e_j‖ = 1.
+2. Integrability claim: if Z : ℝ^P → ℝ^P is C¹ with compact support and tsupport Z ⊆ U, then f_Z(x) := θ(x)·div_M Z(x) is μ-integrable.
+ (a) Measurability. DZ is continuous (ContDiff.continuous_fderiv), hence μ-a.e. strongly measurable (Continuous.aestronglyMeasurable); together with the hypothesis that p is μ-a.e. strongly measurable, x ↦ (p(x), DZ(x)) is μ-a.e. strongly measurable (AEStronglyMeasurable.prodMk). The map (q, A) ↦ tr(q∘A) is continuous (composition of operators is continuous, Continuous.clm_comp, followed by the continuous tr). Hence div_M Z is μ-a.e. strongly measurable (Continuous.comp_aestronglyMeasurable). The function x ↦ (θ(x) : ℝ) is measurable (R.measurable_mult composed with the cast ℕ → ℝ), so f_Z is μ-a.e. strongly measurable.
+ (b) Pointwise bound. DZ is continuous with compact support (HasCompactSupport.fderiv), so there is C with ‖DZ(x)‖ ≤ C for all x (Continuous.bounded_above_of_compact_support). If x ∈ K := tsupport Z, then |div_M Z(x)| ≤ P·‖p(x)∘DZ(x)‖ ≤ P·‖p(x)‖·‖DZ(x)‖ ≤ P·C, because ‖p(x)‖ ≤ 1 for an orthogonal projection (Submodule.starProjection_norm_le) and by ContinuousLinearMap.opNorm_comp_le. If x ∉ K, then DZ(x) = 0 (support_fderiv_subset: the support of DZ is contained in tsupport Z), so div_M Z(x) = tr(0) = 0. Since θ ≥ 0, |f_Z(x)| ≤ P·C·θ(x)·1_K(x) for every x.
+ (c) Dominating function. K is compact (HasCompactSupport Z), closed and contained in U, so by R.locallyIntegrable_mult the lower integral of θ over M ∩ K with respect to H^n is finite. Since K is measurable, the lower integral of |θ·1_K| with respect to μ equals the lower integral of θ over K ∩ M with respect to H^n (Measure.restrict_restrict, then K ∩ M = M ∩ K), so θ is integrable for μ restricted to K (θ is measurable and nonnegative with finite lower integral there: integrable_toReal_of_lintegral_ne_top), hence θ·1_K is μ-integrable (integrable_indicator_iff), and so is P·C·θ·1_K (Integrable.const_mul). By (a), (b) and Integrable.mono', f_Z is μ-integrable.
+3. Pointwise additivity. X and Y are C¹, hence differentiable at every x, so D(X + Y)(x) = DX(x) + DY(x) (fderiv_add). Composition with p(x) and the trace are linear, so div_M(X + Y)(x) = div_M X(x) + div_M Y(x), and therefore θ(x)·div_M(X + Y)(x) = θ(x)·div_M X(x) + θ(x)·div_M Y(x) for every x.
+4. Conclusion. By step 3 and additivity of the Bochner integral for integrable functions (integral_add, applicable by step 2 for Z = X and for Z = Y), R.firstVariation (X + Y) = ∫ (θ div_M X + θ div_M Y) dμ = ∫ θ div_M X dμ + ∫ θ div_M Y dμ = R.firstVariation X + R.firstVariation Y.
+
+## Key steps
+
+1. div_M Z(x) = trace(p(x)∘DZ(x)) with |trace A| ≤ P‖A‖ and ‖p(x)‖ ≤ 1.
+2. For Z ∈ C¹_c with tsupport Z ⊆ U: θ·div_M Z is a.e. strongly measurable (measurable p, continuous DZ) and bounded by P·C·θ·1_{tsupport Z}, which is integrable by R.locallyIntegrable_mult; so it is integrable.
+3. div_M(X + Y) = div_M X + div_M Y pointwise by linearity of the derivative, composition and trace.
+4. Integrate and use integral_add: R.firstVariation (X + Y) = R.firstVariation X + R.firstVariation Y.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); git -C .lake/packages/mathlib rev-parse HEAD (25730c7c)`
+- `rg -n 'mcs_trace_normal_part_eq_neg_inner|mcs_exists_c1_field_eq_proj_near|mcs_firstVariation_add|mcs_exists_meanCurvature_field' local-references/123e8435b4a2469b (no match)`
+- `rg -n 'def tangentialDivergence|def IMRep.firstVariation|def IMRep.IsStationaryAlong|def IMRep.HasLocallyBoundedMeanCurvature|def approxTangentPlane|locallyIntegrable_mult|def tangentSpace' local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `rg -n -F in local-references/123e8435b4a2469b/mathlib/Mathlib: measurable_fderiv, exists_contDiff_support_eq_eq_one_iff, exists_compact_closed_between, exists_open_between_and_isCompact_closure, ContDiffOn.continuousOn_fderiv_of_isOpen, trace_eq_sum_inner, trace_comp_comm', starProjection_apply_mem, starProjection_norm_le, starProjection_eq_self_iff, inner_starProjection_left_eq_right, adjoint_inner_left, fderiv_clm_apply, fderiv_fun_sub, integral_withDensity_eq_integral_toReal_smul, withDensity_absolutelyContinuous, integrable_toReal_of_lintegral_ne_top, fderiv_of_notMem_tsupport, tsupport_smul_subset_left, exists_bound_of_continuousOn, continuous_finsetSum, notMem_mulTSupport_iff_eventuallyEq, image_eq_one_of_notMem_mulTSupport, isBoundedBilinearMap_comp, comp_aestronglyMeasurable₂, bounded_above_of_compact_support, span_eq, restrict_apply'`
+- `python3 -I: dag.json (451 nodes, 451 distinct lean_names; this node decomposing, attempt 4, children []; the four sibling lean_statements; nodes whose lean_statement mentions firstVariation|tangentialDivergence|HasLocallyBoundedMeanCurvature|adjoint|IsStationaryAlong)`
+- `python3 -I: nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/{parent-child-handoff.json,parent-supplied-plan.md,decomposition-scope-v3.json,decomposition-v1.json,decomposition-v2.json,decomposition-v3.json,decomposition-audit-v1..v3.json,decomposition-review-receipt-v1..v3.json}; sha256(handoff natural_proof) = 3abf40da7d4e…`
+- `grep -rl 'mcs_trace_normal_part_eq_neg_inner|mcs_exists_c1_field_eq_proj_near|mcs_firstVariation_add|mcs_exists_meanCurvature_field' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/ (only this node's directory)`
+- `git log --all --format=%H -G '<four lean_names>' -- '*.lean' (no commit); positive control git log --all -G 'dsmc_firstVariation_eq_integral' -- '*.lean' (6c199bd2, 583a6f2b)`
+- `git show 2a7a318dbd3c29d1ba9b898d70abb5b1f0a6dcb8:GMT/Ch07/Submission.lean | sed -n 455,726p (accepted dsmc_firstVariation_eq_integral, dsmc_firstVariation_eq_neg_meanCurvature)`
+- `sed -n 1320,1350p book/chapter-02.txt; sed -n 128,150p, 180,212p, 362,392p book/chapter-04.txt; sed -n 18,42p book/chapter-07.txt; grep -n '^5.9|^2.2|^2.7|3.14 Definition|^3.15'`
+- `python3 -I /tmp/mcs-decomp-v4/py/gen.py verifier/ workspaces/gmt-ch07 out/children-v3.json lean (verifier validate_lean_statement + gmt-compare contract_scope/child_modules)`
+- `lake env lean /tmp/mcs-decomp-v4/lean/NodeChallenge_{normal_trace_identity,tangential_cutoff_field,first_variation_additive,mean_curvature_field,parent}.lean`
+- `lake env lean /tmp/mcs-decomp-v4/lean/Assembly.lean (#print axioms GMT.Ch07.mcsAssemblyCheck)`
+- `lake env lean /tmp/mcs-decomp-v4/lean/Final.lean (four child proofs + assembly + mcsParentFromSiblings; #print axioms)`
+- `lake env lean /tmp/mcs-decomp-v4/lean/Comparator.lean; lake env lean /tmp/mcs-decomp-v4/lean/Instances.lean; lake env lean /tmp/mcs-decomp-v4/lean/CitedNames.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Monoid.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/run.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/decomposition-scope-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/mcs-decomp-v4/py/gen.py`
+- `/tmp/mcs-decomp-v4/out/children-v4.json`
+- `/tmp/mcs-decomp-v4/lean/NodeChallenge_normal_trace_identity.lean`
+- `/tmp/mcs-decomp-v4/lean/NodeChallenge_tangential_cutoff_field.lean`
+- `/tmp/mcs-decomp-v4/lean/NodeChallenge_first_variation_additive.lean`
+- `/tmp/mcs-decomp-v4/lean/NodeChallenge_mean_curvature_field.lean`
+- `/tmp/mcs-decomp-v4/lean/NodeChallenge_parent.lean`
+- `/tmp/mcs-decomp-v4/lean/Assembly.lean`
+- `/tmp/mcs-decomp-v4/lean/Child_normal_trace_identity.lean`
+- `/tmp/mcs-decomp-v4/lean/Child_tangential_cutoff_field.lean`
+- `/tmp/mcs-decomp-v4/lean/Child_first_variation_additive.lean`
+- `/tmp/mcs-decomp-v4/lean/Child_mean_curvature_field.lean`
+- `/tmp/mcs-decomp-v4/lean/Final.lean`
+- `/tmp/mcs-decomp-v4/lean/Comparator.lean`
+- `/tmp/mcs-decomp-v4/lean/Instances.lean`
+- `/tmp/mcs-decomp-v4/lean/CitedNames.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) matches the compiler environment: its Contract.lean is byte-identical to the workspace contract and submission, and .lake/packages/mathlib is at 25730c7c. Neither the snapshot nor the 451-node DAG has a declaration of any of the four child types. The nearest, the accepted dsmc_firstVariation_eq_integral and dsmc_firstVariation_eq_neg_meanCurvature, have different types (the latter is ball-local), so the four children are new, and no lean_name collides with any DAG node, other node record, snapshot file or historical .lean file. Every library fact cited in the child proofs exists at the pinned revision (rg in the snapshot; #check in CitedNames.lean). The book citations are at the stated lines: Ch. 2, 5.9 at chapter-02.txt 1326–1347; Ch. 4, 2.2–2.3 at 132–147, 2.7 at 185–209, 3.14 at 366–381, 3.15 at 385. The four exact one-line child types elaborate in the verifier-generated comparator scope and are provable with only propext, Classical.choice and Quot.sound (Final.lean). Together with the four frozen sibling types they imply the exact selected parent type with no other assumptions (mcsAssemblyCheck, mcsParentFromSiblings).
