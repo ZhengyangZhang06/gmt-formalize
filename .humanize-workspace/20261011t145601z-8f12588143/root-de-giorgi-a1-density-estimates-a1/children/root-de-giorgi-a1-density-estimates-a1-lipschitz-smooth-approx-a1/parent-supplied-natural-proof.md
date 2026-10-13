@@ -1,0 +1,130 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.de_giorgi-a1.density_estimates-a1`
+- Child DAG node: `root.de_giorgi-a1.density_estimates-a1.lipschitz_smooth_approx-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+(Implementation note: ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable lives in Mathlib.Analysis.Calculus.BumpFunction.Convolution, and the convolution smoothness lemmas in Mathlib.Analysis.Calculus.ContDiff.Convolution; these modules must be imported.)
+Source: the mollification arguments of the parent proof, Step 3 ('g_σ := φ_σ * g ... D g_σ(·)w = φ_σ * (Dg(·)w) ... converge a.e.') and Step 7 ('Both extend to Lipschitz w with compact support: apply them to φ_τ * w ...'), isolated as one lemma. Notation: T := tsupport u (compact); Du(y) := fderiv ℝ u y; L^N = volume; cthickening(δ, T) := {y : infEdist(y, T) ≤ δ} (closed; empty if T = ∅; compact if T is compact, as ℝ^N is proper); for σ > 0, φ_σ is the normalized smooth bump function at 0 with inner radius σ/2 and outer radius σ (Mathlib ContDiffBump.normed): φ_σ is C^∞, φ_σ ≥ 0, spt φ_σ ⊆ B̄_σ(0) and ∫ φ_σ dL^N = 1.
+
+0. (N = 0.) ℝ^0 is a single point. Take v_j := u for all j: every function on a point is C¹, has compact support, satisfies tsupport u ⊆ cthickening(δ, tsupport u) for every δ ≥ 0, and has Du ≡ 0, so |Dv_j| = 0 ≤ K; the convergence statements are trivial. Assume N ≥ 1 from now on.
+
+1. (Definition.) Put σ_j := 1/(j + 2) ∈ (0, 1/(j + 1)) and v_j(y) := ∫ φ_{σ_j}(z) u(y − z) dz = ∫ φ_{σ_j}(y − z) u(z) dz (the convolution φ_{σ_j} ⋆ u).
+
+2. (Smoothness and support.) v_j is C^∞, in particular C¹: it is the convolution of the C^∞ compactly supported kernel φ_{σ_j} with the continuous, hence locally integrable, function u (Mathlib HasCompactSupport.contDiff_convolution_left). If v_j(y) ≠ 0, then u(y − z) ≠ 0 for some z with |z| ≤ σ_j, so infEdist(y, T) ≤ σ_j; hence support v_j ⊆ cthickening(σ_j, T), which is closed, so tsupport v_j ⊆ cthickening(σ_j, T) ⊆ cthickening(1/(j + 1), T). The latter set is compact, so v_j has compact support. (If T = ∅ then u ≡ 0, v_j ≡ 0, and all thickenings of ∅ are empty.)
+
+3. (Lipschitz bound and uniform convergence.) For all y, y': |v_j(y) − v_j(y')| ≤ ∫ φ_{σ_j}(z) |u(y − z) − u(y' − z)| dz ≤ K|y − y'|, so v_j is K-Lipschitz and |Dv_j(y)| ≤ K for every y (Mathlib norm_fderiv_le_of_lipschitz). Also |v_j(y) − u(y)| ≤ ∫ φ_{σ_j}(z) |u(y − z) − u(y)| dz ≤ Kσ_j for every y, and σ_j → 0, so v_j → u uniformly.
+
+4. (Derivative of the mollification.) By Rademacher's theorem (Mathlib LipschitzWith.ae_differentiableAt) u is differentiable at L^N-a.e. point; |Du(y)| ≤ K for every y, and Du : ℝ^N → (ℝ^N →L[ℝ] ℝ) is Borel measurable (Mathlib measurable_fderiv) and bounded, hence locally integrable. Claim: Dv_j(y) = ∫ φ_{σ_j}(y − z) Du(z) dz (Bochner integral in the finite-dimensional space ℝ^N →L[ℝ] ℝ), i.e. Dv_j = φ_{σ_j} ⋆ Du. Fix y and h ∈ ℝ^N. For t ≠ 0, substituting z ↦ z + th in the first integral (translation invariance of L^N),
+ (v_j(y + th) − v_j(y))/t = ∫ φ_{σ_j}(y − z) (u(z + th) − u(z))/t dz.
+ The integrands are dominated by K|h| φ_{σ_j}(y − z), which is integrable in z, and converge as t → 0 to φ_{σ_j}(y − z) Du(z)h at every z where u is differentiable, i.e. for a.e. z. By dominated convergence (along any sequence t_k → 0 with t_k ≠ 0) the right side tends to ∫ φ_{σ_j}(y − z) Du(z)h dz, while the left side tends to Dv_j(y)h because v_j is differentiable at y. Hence Dv_j(y)h = (∫ φ_{σ_j}(y − z) Du(z) dz) h for every h, which proves the claim.
+
+5. (A.e. convergence of the derivatives.) The bumps defining φ_{σ_j} have outer radius σ_j → 0 and ratio of outer to inner radius equal to 2. By the Lebesgue differentiation theorem for mollifiers (Mathlib ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, valid for locally integrable functions with values in a complete normed space, here ℝ^N →L[ℝ] ℝ), (φ_{σ_j} ⋆ Du)(y) → Du(y) for L^N-a.e. y. By step 4 this means Dv_j(y) → Du(y) for L^N-a.e. y. ∎
+
+## Key steps
+
+1. N = 0 is trivial (v_j := u); for N ≥ 1 put v_j := φ_{σ_j} ⋆ u with the normalized bump φ_{σ_j} of radius σ_j = 1/(j+2).
+2. v_j is C^∞ with tsupport v_j ⊆ cthickening(σ_j, tsupport u) (compact).
+3. v_j is K-Lipschitz, so |Dv_j| ≤ K, and |v_j − u| ≤ Kσ_j gives uniform convergence.
+4. Dv_j = φ_{σ_j} ⋆ Du, via difference quotients, Rademacher and dominated convergence.
+5. Lebesgue differentiation for mollifiers (ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable) gives Dv_j → Du a.e.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean`
+- `cmp <snapshot>/project/GMT/Ch03/Submission.lean GMT/Ch03/Submission.lean`
+- `rg -n -i "gauss.?green|lipschitz.*divergence|divergence.*lipschitz" <snapshot>/project`
+- `rg -n -i "gauss.?green|reducedBoundary|reduced_boundary|perimeter" .lake/packages/simongmt/Poincare`
+- `rg -n -i "isoperimetric|density_estimate|densityEstimate|relative isoperimetric" <snapshot>/mathlib/Mathlib .lake/packages/simongmt/Poincare`
+- `rg -n -i "cutoff|cut-off|radial" .lake/packages/simongmt/Poincare`
+- `rg -n -i "sobolev|eLpNorm_le_eLpNorm_fderiv" .lake/packages/simongmt/Poincare`
+- `rg -n -i "integral_divergence|divergence_theorem" <snapshot>/mathlib/Mathlib`
+- `grep -n euclideanDivergence .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `grep 'theorem eLpNorm_le_eLpNorm_fderiv_of_eq|theorem eLpNorm_le_eLpNorm_fderiv_one|def SNormLESNormFDerivOfEqConst' <snapshot>/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `grep 'theorem Monotone.ae_differentiableAt|MonotoneOn.intervalIntegral_deriv_mem_uIcc|MonotoneOn.intervalIntegrable_deriv|hasDerivAt_iff_tendsto_slope|HasDerivAt.tendsto_slope_zero_left|LipschitzWith.ae_differentiableAt|tendsto_integral_filter_of_dominated_convergence|addHaar_ball|addHaar_sphere' <snapshot>/mathlib/Mathlib`
+- `grep "eLpNorm_indicator_const'|eLpNormEssSup_indicator_const_eq|eLpNorm_mono|integral_indicator_one|integrableOn_const|integrable_indicator_iff" <snapshot>/mathlib/Mathlib/MeasureTheory`
+- `grep 'measurable_fderiv|norm_fderiv_le_of_lipschitz|fderiv_of_notMem_tsupport|AEStronglyMeasurable.inner|integral_inner|Filter.Tendsto.limUnder_eq|HasDerivAt.rpow_const|integral_mul_le_Lp_mul_Lq_of_nonneg' <snapshot>/mathlib/Mathlib`
+- `rg -n 'ae_convolution_tendsto_right_of_locallyIntegrable|HasCompactSupport.contDiff_convolution_left|hasFDerivAt_convolution_left|eLpNorm_lim_le_liminf_eLpNorm|IsCompact.exists_cthickening_subset_open|cthickening_empty|PiLp.volume_preserving_toLp|volume_preserving_funUnique' <snapshot>/mathlib/Mathlib`
+- `python3 -I scope.py (importlib of verifier/gmt-compare.py; contract_scope(Contract.lean, 'GMT.Ch03.main_theorem')) -> NodeChallenge prefix`
+- `lake env lean on GMT/Scratch/DensityEstimatesSplit{AllStatements,Statements,StatementsJL,Instances,Assembly,GlueB,GlueD,GlueF,GlueH,GlueI,LeafA,LeafC,LeafG}.lean`
+- `python3 -I dag.json lean_name collision check and stub/frozen statement byte-identity check (extract.py)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialCutoffDifferentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/AffineSpace/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitAllStatements.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitInstances.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitAssembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueB.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueD.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueF.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueH.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueI.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitLeafA.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitLeafC.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitLeafG.lean`
+
+The snapshot Contract.lean and Submission.lean are byte-identical to the workspace (project d09bc8a, Mathlib 25730c7c).
+
+Not in the library (so these become children): Mathlib and the pinned SimonGMT contain no Gauss–Green identity for Lipschitz test functions, no BV/indicator Sobolev inequality for Gauss–Green pairs, no radial cut-off coarea identity, no density estimate, and no isoperimetric differential inequality. Within SimonGMT, Chapter03/FinitePerimeter.lean has only the §4 definitions; Chapter04/Sobolev.lean is the varifold (Michael–Simon) inequality; the Chapter08 radial cut-offs are smooth varifold cut-offs, not applicable here. No DAG node overlaps; the accepted gauss_green-a1 children concern existence and uniqueness of the pair, not these lemmas.
+
+Library facts located for the child proofs:
+- GNS: eLpNorm_le_eLpNorm_fderiv_one / _of_eq; applicability at exponent (n+1)/n was confirmed in Lean.
+- Rademacher: LipschitzWith.ae_differentiableAt; Lebesgue: Monotone.ae_differentiableAt.
+- MonotoneOn.intervalIntegral_deriv_mem_uIcc and MonotoneOn.intervalIntegrable_deriv.
+- ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (values in any complete normed space) and HasCompactSupport.contDiff_convolution_left.
+- eLpNorm_indicator_const' (every p ≠ 0, including ⊤) and eLpNorm_lim_le_liminf_eLpNorm (every p).
+- Measure.addHaar_ball / addHaar_sphere; measurable_fderiv; norm_fderiv_le_of_lipschitz; fderiv_of_notMem_tsupport.
+- IsCompact.exists_cthickening_subset_open and cthickening_empty.
+- PiLp.volume_preserving_toLp with volume_preserving_funUnique; integral_inner; HasDerivAt.rpow_const; Filter.Tendsto.limUnder_eq.
+
+Several of these lie outside the contract's import closure; the child proofs carry implementation notes naming the modules to import.
+
+Lean evidence: listed in the rationale; all checks use only standard axioms apart from the stubs' sorryAx.
