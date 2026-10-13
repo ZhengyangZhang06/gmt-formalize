@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.height_transfer-a1.pointwise_height-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.height_transfer-a1",
+  "depth": 4,
+  "title": "Pointwise conical height bound at a graph point of small slope (steps 4-5 of the height transfer)",
+  "statement": "Let n, l >= 0 and write graphPoint(a, c) for the point of R^(n+l) = Amb n l whose first n coordinates are those of a in R^n and whose last l coordinates are those of c in R^l. Let q be a linear isometric equivalence of R^(n+l), P : R^(n+l) -> R^(n+l) a continuous linear map, A : R^n -> R^l a continuous linear map with operator norm ||A|| <= 1/7, x in R^n and b in R^l with |b| <= |x|/7. Assume (H1) P(q(graphPoint(x, A x))) = q(graphPoint(x, A x)); (H2) |w| <= (1 + ||A||^2)^(1/2) |q(graphPoint(0, w)) - P(q(graphPoint(0, w)))| for every w in R^l. Put Y := q(graphPoint(x, b)). Then |b - A x|^2 / |x|^(n+2) <= 2^(n+4) (|Y - P Y|^2 / |Y|^(n+2)), where real division by 0 gives 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (P : Amb n ℓ →L[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (b : Rn ℓ), ‖A‖ ≤ 1 / 7 → ‖b‖ ≤ ‖x‖ / 7 → P (q (graphPoint x (A x))) = q (graphPoint x (A x)) → (∀ w : Rn ℓ, ‖w‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖q (graphPoint (0 : Rn n) w) - P (q (graphPoint (0 : Rn n) w))‖) → ‖b - A x‖ ^ 2 / ‖x‖ ^ (n + 2) ≤ 2 ^ (n + 4) * (‖q (graphPoint x b) - P (q (graphPoint x b))‖ ^ 2 / ‖q (graphPoint x b)‖ ^ (n + 2))",
+  "lean_name": "any_radius_gr_ht_pointwise_height",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-height-transfer-a1-pointwise-height-a1-a1"
+}
