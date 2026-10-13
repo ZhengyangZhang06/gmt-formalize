@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "structure IMRep|def IMRep.Represents|def IsUnitOrientationOf|def approxTangentPlane",
+        "dimred_cdg_c1_diffeo_pushforward_im|imrep_c1_diffeo_pushforward_im|dpf_c1_compact_perturbation_bilipschitz|dpf_pushforward_formula_current_exists|dpf_smooth_approx_compact_perturbation|dpf_pushforward_formula_boundaryVanishes|dpf_rectifiable_bilipschitz_pieces|dpf_approxTangent_ae_bilipschitz_piece|dpf_approxTangent_bilipschitz_image_ae|dpf_area_formula_bilipschitz_rectifiable|dpf_aestronglyMeasurable_gramJacobian|dpf_unitOrientation_map_gramNormalized|dpf_imrep_bilipschitz_image_rep|imrep_approxTangent_starProjection_aesm",
+        "convolution_tendsto_right_of_continuous|hasFDerivAt_convolution_right|contDiff_convolution_left|extDerivWithin_pullback",
+        "git show 5421ddc5760929ebba606f5add48ec853f8ba334:GMT/Ch07/Submission.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin lake env lean /tmp/c1pf_independent_review_a8gzh_x2/ContractsAndAssembly.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin lake env lean /tmp/c1pf_independent_review_a8gzh_x2/AcceptedChildrenAndAssembly.lean > /tmp/c1pf_independent_review_a8gzh_x2/AcceptedChildrenAndAssembly.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-c1-pushforward-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-c1-pushforward-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/accepted-candidate.json",
+        "/tmp/c1pf_independent_review_a8gzh_x2/ContractsAndAssembly.lean",
+        "/tmp/c1pf_independent_review_a8gzh_x2/AcceptedChildrenAndAssembly.lean",
+        "/tmp/c1pf_independent_review_a8gzh_x2/AcceptedChildrenAndAssembly.log"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; the frozen contract matches the workspace definitions. Snapshot searches found none of the proposed declaration names. The cited partition, density, area, determinant and convolution results support the supplied arguments. Each child has exactly one accepted DAG owner, a character-identical frozen type, and a passing isolated comparator record; its candidate preserves the frozen definitions. All eleven types elaborate independently from the frozen source. Dependencies are correctly directed and acyclic, with neither parent reachable as a prerequisite. The split appropriately separates current existence, boundary preservation and integer representation. The exact selected parent was successfully assembled from the children and its authorized projection-measurability prerequisite, after removing the other parent's theorem and the unrelated root placeholder from the scratch source. Every reused child and the assembled theorem depends only on propext, Classical.choice and Quot.sound. Operator norms, the C∞ coercion and Matrix.of Gram expressions were checked; no prohibited pointwise IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_diffeo",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all hypotheses and conclusions. Properness gives a homeomorphism, the inverse function theorem supplies a C¹ inverse, and compact derivative bounds give both Lipschitz estimates. Fixing the complement of K proves the required preimage identity without assuming U open."
+    },
+    {
+      "key": "pushforward_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly requires neither openness nor bijectivity. The proof establishes measurability, integrability, linearity and precisely the sequential continuity required by GeometricCurrentOn, using support in tsupport ω ∪ K. It proves the stated action formula in every degree."
+    },
+    {
+      "key": "smooth_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type expresses C∞ smoothness and the stated pointwise limits exactly. The compact margin, normalized mollifiers, convolution derivative formula and derivative bound establish every conclusion, including empty support and dimension zero."
+    },
+    {
+      "key": "pushforward_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. Its sole sibling dependency supplies exactly the approximants needed. Smooth pullbacks have a common compact support; exterior differentiation commutes with these pullbacks, and the explicit integrable bound justifies dominated convergence. Degree zero is correctly vacuous."
+    },
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract includes all regularity, measurability, disjointness and null-remainder conclusions. Removing nonregular images, applying the partition theorem with a positive radius, and disjointizing Borel images proves them. Empty pieces and both n = 0 and n > P are covered."
+    },
+    {
+      "key": "piece_tangent_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly states the conclusion almost everywhere for volume restricted to B. Finite-measure localization, Besicovitch density and the bi-Lipschitz O(r^n) estimate control the remainder. The detailed rescaled area-integral argument and null-set transfer establish the exact approximate-tangent predicate, including dimension zero."
+    },
+    {
+      "key": "image_tangent_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both tangent conclusions match the type. The two declared siblings suffice: apply the density lemma to each original and composed parametrization, then use uniqueness, the chain rule and null-image bounds. Compactness of preimages follows from antilipschitzness; surjectivity is unnecessary."
+    },
+    {
+      "key": "rectifiable_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Matrix.of Gram determinant and unrestricted ENNReal weight match the prose. Tangent identification, normDet_comp and the injective Lipschitz area formula prove the equality on each piece. The inspected library statements permit arbitrary weights and summation over measurable disjoint pieces without an omitted measurability hypothesis."
+    },
+    {
+      "key": "jacobian_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type imposes only the two stated almost-everywhere strong-measurability assumptions. The adapted-basis determinant calculation identifies the Gram determinant with det(pL*Lp + I − p). Continuous composition then proves measurability even when the plane dimension varies."
+    },
+    {
+      "key": "orientation_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches positivity, the operator-norm bound and the normalized orientation conclusion. Basis independence and Gram–Schmidt give J = |det A|, the bound, and a single consistent orientation sign. The empty-frame case correctly gives J = 1."
+    },
+    {
+      "key": "image_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including projection measurability, appear in the matching type. The four declared siblings supply the required geometric and Jacobian facts. The proof verifies every IMRep field, including composition measurability through quasi-measure-preservation, and proves the exact action identity by integrable positive and negative parts without relying on the parent theorem."
+    }
+  ],
+  "required_changes": []
+}
