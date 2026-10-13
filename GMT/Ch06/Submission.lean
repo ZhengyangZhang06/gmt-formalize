@@ -359,6 +359,65 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Weighted density points (for the locality of weighted approximate tangent spaces, Simon
+Ch. 3, 1.5(2), 1.8(1)).  Let `M, E ⊆ ℝ^P` be `μ`-null-measurable with `E ⊆ M`, `θ > 0` on `M` and
+`θ` `μ`-integrable on `M ∩ B̄_r(y)`.  Then for `μ`-a.e. `x ∈ E ∩ B_r(y)`,
+`∫_{E ∩ B̄_s(x)} θ dμ / ∫_{M ∩ B̄_s(x)} θ dμ → 1` as `s ↓ 0`.  The measure
+`ν = θ⁺ μ ⌞ (M ∩ B̄_r(y))` is finite and `μ ⌞ (M ∩ B̄_r(y)) ≪ ν` as `θ > 0` on `M`, so
+`μ ⌞ (E ∩ B_r(y)) ≪ ν ⌞ E` and the Besicovitch density theorem for `ν` and `E`
+(`Besicovitch.ae_tendsto_measure_inter_div`) applies; for `0 < s < r - |x - y|`,
+`B̄_s(x) ⊆ B̄_r(y)`, so `ν(E ∩ B̄_s(x))` and `ν(B̄_s(x))` are the two integrals. -/
+theorem Submission.fiw_tl_ald_ld_weighted_density_point :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (M E : Set (Eucl P)) (θ : Eucl P → ℝ) (y : Eucl P) (r : ℝ),
+      NullMeasurableSet M μ → NullMeasurableSet E μ → E ⊆ M → (∀ z ∈ M, 0 < θ z) →
+      IntegrableOn θ (M ∩ closedBall y r) μ →
+      ∀ᵐ x ∂(μ.restrict (E ∩ ball y r)),
+        Tendsto (fun s : ℝ => (∫⁻ z in E ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ) /
+          (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ)) (𝓝[>] 0) (𝓝 1) := by
+  intro P μ M E θ y r hM hE hEM hθ hint
+  -- Step 1: null-measurability of `S = M ∩ B̄_r(y)` and of `E` for `μ ⌞ S`.
+  have hS : NullMeasurableSet (M ∩ closedBall y r) μ :=
+    hM.inter measurableSet_closedBall.nullMeasurableSet
+  have hES : NullMeasurableSet E (μ.restrict (M ∩ closedBall y r)) :=
+    hE.mono Measure.restrict_le_self
+  -- Step 2: `ν = (μ ⌞ S).withDensity θ⁺` is finite, since `θ` is integrable on `S`.
+  have : IsFiniteMeasure ((μ.restrict (M ∩ closedBall y r)).withDensity
+      fun z => ENNReal.ofReal (θ z)) :=
+    isFiniteMeasure_withDensity_ofReal hint.2
+  -- Step 3: `μ ⌞ S ≪ ν`, since `θ > 0` on `M`.
+  have hac : μ.restrict (M ∩ closedBall y r) ≪ (μ.restrict (M ∩ closedBall y r)).withDensity
+      fun z => ENNReal.ofReal (θ z) := by
+    refine withDensity_absolutelyContinuous' hint.1.aemeasurable.ennreal_ofReal ?_
+    filter_upwards [ae_restrict_mem₀ hS] with z hz
+    exact (ENNReal.ofReal_pos.2 (hθ z hz.1)).ne'
+  -- Step 4: `μ ⌞ (E ∩ B_r(y)) ≤ (μ ⌞ S) ⌞ E ≪ ν ⌞ E`.
+  have hle : μ.restrict (E ∩ ball y r) ≤ (μ.restrict (M ∩ closedBall y r)).restrict E := by
+    rw [Measure.restrict_restrict₀ hES]
+    refine Measure.restrict_mono ?_ le_rfl
+    intro z hz
+    exact ⟨hz.1, hEM hz.1, ball_subset_closedBall hz.2⟩
+  have hlam : μ.restrict (E ∩ ball y r) ≪ ((μ.restrict (M ∩ closedBall y r)).withDensity
+      fun z => ENNReal.ofReal (θ z)).restrict E :=
+    (Measure.absolutelyContinuous_of_le hle).trans (hac.restrict E)
+  -- Step 5: the Besicovitch density theorem for `ν` and `E`, transferred to `μ ⌞ (E ∩ B_r(y))`.
+  filter_upwards [hlam.ae_le (Besicovitch.ae_tendsto_measure_inter_div _ E),
+    ae_restrict_mem₀ (hE.inter measurableSet_ball.nullMeasurableSet)] with x hx hxE
+  -- Step 6: for `0 < s < r - dist x y`, `B̄_s(x) ⊆ B̄_r(y)` and the two quotients agree.
+  refine hx.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 (mem_ball.1 hxE.2))] with s hs
+  have hsub : closedBall x s ⊆ closedBall y r :=
+    closedBall_subset_closedBall' (by linarith [hs.2])
+  have hEs : NullMeasurableSet (E ∩ closedBall x s) (μ.restrict (M ∩ closedBall y r)) :=
+    hES.inter measurableSet_closedBall.nullMeasurableSet
+  have hE' : E ∩ closedBall x s ∩ (M ∩ closedBall y r) = E ∩ closedBall x s :=
+    inter_eq_left.2 fun z hz => ⟨hEM hz.1, hsub hz.2⟩
+  have hM' : closedBall x s ∩ (M ∩ closedBall y r) = M ∩ closedBall x s := by
+    ext z
+    exact ⟨fun hz => ⟨hz.2.1, hz.1⟩, fun hz => ⟨hz.2, hz.1, hsub hz.2⟩⟩
+  rw [withDensity_apply₀ _ hEs, Measure.restrict_restrict₀ hEs, hE',
+    withDensity_apply _ measurableSet_closedBall,
+    Measure.restrict_restrict measurableSet_closedBall, hM']
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
