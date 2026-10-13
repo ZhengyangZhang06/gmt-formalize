@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f9b9b90dd8133319923ac2468d33852210e990bfbd849089c52ed2bb1588e87d",
+  "git_delta": {
+    "base_commit": "3b17b61b3ee3c13dda23ae3ae5aea4f7fe5b9c7f",
+    "candidate_commit": "8eb2f9c26c58a95ea3f0193745830278e331c7af",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ro_intervalIntegral_contDiff",
+    "diff_sha256": "3c5bb9b63003acd761512fd043c6a97ccefebe2edc20bec55c6efcb4fad81c67",
+    "source_sha256": "7ff06028073ab220d85013df48c1a425302528befe9054641acdd5df656d97cd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ro_intervalIntegral_contDiff",
+      "statement": "∀ (P : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (G : ℝ × Eucl P → V) (a b : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x : Eucl P => ∫ t in a..b, G (t, x)) ∧ (∀ j : ℕ, Continuous (fun p : ℝ × Eucl P => iteratedFDeriv ℝ j (fun z : Eucl P => G (p.1, z)) p.2)) ∧ ∀ (j : ℕ) (x : Eucl P), iteratedFDeriv ℝ j (fun y : Eucl P => ∫ t in a..b, G (t, y)) x = ∫ t in a..b, iteratedFDeriv ℝ j (fun z : Eucl P => G (t, z)) x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
