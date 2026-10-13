@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eb9974aa52c92b373fc798a9f582596d1812679600f89be5fcee2ef5557c3c03",
+  "git_delta": {
+    "base_commit": "dace1b319bfd7bd809d7c63d6a18f28433d977a6",
+    "candidate_commit": "e2092c874f8429f1741512b6612382a55e5b0132",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_rbi_abs_arctan_sub_self_le",
+    "diff_sha256": "87381bd0e2d117b2c59df3793710874cfb3718f2f7f99a3791d41fbb5c6a3b48",
+    "source_sha256": "32b75bd8915b0c3582879766ca5088ee96a26f0d864b1ef02f71afa31c49f5d1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_rbi_abs_arctan_sub_self_le",
+      "statement": "∀ z : ℝ, |Real.arctan z - z| ≤ |z| ^ 3",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
