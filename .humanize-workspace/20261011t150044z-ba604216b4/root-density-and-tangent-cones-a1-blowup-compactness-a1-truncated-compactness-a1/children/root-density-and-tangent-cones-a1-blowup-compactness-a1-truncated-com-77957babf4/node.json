@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1",
+  "depth": 4,
+  "title": "Radial slicing bound: a radius t ∈ (R/4, R/2) at which the truncated integral ∫_{M∩B_t} θ⟨dβ, ξ⟩ dHⁿ is bounded by σ·sup|β|",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and Rp = (M, θ, ξ) an integer multiplicity representation of S in U (IMRep U n with Rp.Represents S, i.e. S(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U), Hⁿ = μHE[n]). Let R ∈ ℝ with R > 0 and closedBall(0, R) ⊆ U, and assume ∂S(ω) = 0 for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_R(0) (open ball). Then there are t, σ ∈ ℝ with R/4 < t < R/2 such that |∫_{M ∩ B_t(0)} θ(x)·⟨dβ(x), ξ(x)⟩ dHⁿ(x)| ≤ σ·s for every β ∈ 𝒟^m(ℝ^P) (TestFormOn univ m) and every s ∈ ℝ with |β(x)| ≤ s for all x, where d is the exterior derivative (SimonGMT exteriorDerivative = Mathlib extDeriv), ⟨dβ(x), ξ(x)⟩ = Rp.orient x (dβ x) and |·| is the Euclidean coefficient norm covectorEuclideanNorm.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (R : ℝ), IsOpen U → 0 < R → closedBall (0 : Euclid P) R ⊆ U → Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → ∃ t σ : ℝ, R / 4 < t ∧ t < R / 2 ∧ ∀ (β : TestFormOn (univ : Set (Euclid P)) m) (s : ℝ), (∀ x, covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x) ≤ s) → |∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]| ≤ σ * s",
+  "lean_name": "dtc_bc_tc_radial_slice_bound",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1-a1",
+      "result_commit": "2fd8f6ff9db8d5c94835632a4abd3e7d37106715",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-77957babf4-a1"
+}

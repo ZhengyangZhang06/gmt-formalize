@@ -1,0 +1,81 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the parent proof (Simon Ch. 6, Theorem 3.11), whose subsequence part is "a consequence of the elementary 2.15" (chapter-06.txt lines 888–891). Simon's Lemma 2.15 (lines 318–331) is obtained from the uniform bounds sup_q M_W(T_q) < ∞ by "applying the standard Banach–Alaoglu theorem" to the functionals T_q. The proof below is that argument written out for U = ℝ^P: the sequential Banach–Alaoglu theorem for functionals that are uniformly bounded in the sup norm is proved by a diagonal subsequence on a countable sup-norm-dense family of test forms (steps 2–4), applied directly on the test forms (so the extension to continuous forms through the Riesz representation 2.7 is not needed). No sibling is used.
+
+Notation. 𝒟ⁿ := 𝒟ⁿ(ℝ^P) = TestFormOn univ n; Λⁿ := Covector(ℝ^P, n) (a finite-dimensional normed space); for α ∈ Λⁿ, |α| := covectorEuclideanNorm α and ‖α‖ is the operator norm. Let N ≥ 0 be the square root of the number of strictly increasing I : Fin n → Fin P; since |α(e_{I(1)}, …, e_{I(n)})| ≤ ‖α‖ (ContinuousMultilinearMap.le_opNorm, |e_i| = 1), |α| ≤ N‖α‖ for all α. B_k := ball(0, k) and K_k := closedBall(0, k) (k ∈ ℕ). B_k is open and bounded, so by hypothesis c_k := (⨆_j M_{B_k}(T_j)).toReal satisfies M_{B_k}(T_j) ≤ ENNReal.ofReal c_k for all j.
+
+1. (Evaluation bound.) Let T ∈ 𝒟_n(ℝ^P), W ⊆ ℝ^P, ω ∈ 𝒟ⁿ with tsupport ω ⊆ W, and s > 0 with |ω(x)| ≤ s for all x. The forms s⁻¹ω and −s⁻¹ω lie in massAdmissibleOn univ n W: their topological supports are contained in tsupport ω ⊆ W, and |c·α| = |c|·|α| (each coefficient scales by c). Hence ENNReal.ofReal(s⁻¹T(ω)) ≤ M_W(T) and ENNReal.ofReal(−s⁻¹T(ω)) ≤ M_W(T) (GeometricCurrentOn.le_massOn and linearity of T), so |T(ω)| ≤ s·M_W(T).toReal whenever M_W(T) < ∞. In particular, for every k and j:
+ |T_j(ω)| ≤ c_k·s whenever ω ∈ 𝒟ⁿ, tsupport ω ⊆ B_k, s > 0 and |ω(x)| ≤ s for all x.   (1.1)
+2. (Countable approximating families.) Fix k and let A_k := {ω ∈ 𝒟ⁿ : tsupport ω ⊆ B_k}. The space C(K_k, Λⁿ) of continuous maps on the compact metric space K_k (with the compact-open topology, which is the topology of uniform convergence because K_k is compact) is separable and metrizable (Mathlib ContinuousMap.instSeparableSpace: K_k is second countable and locally compact, Λⁿ is second countable). The restriction map r_k : A_k → C(K_k, Λⁿ), ω ↦ ω|_{K_k}, therefore has a separable image (a subset of a separable metric space is separable), so there is a countable D_k ⊆ A_k with r_k(D_k) dense in r_k(A_k). Consequently, for ω ∈ A_k and ε > 0 there is δ ∈ D_k with ‖ω(x) − δ(x)‖ < ε for x ∈ K_k, and ω(x) = δ(x) = 0 for x ∉ K_k (both topological supports lie in B_k ⊆ K_k); hence |ω(x) − δ(x)| ≤ Nε for all x. Put D := ⋃_k D_k (countable).
+3. (Diagonal subsequence.) For δ ∈ D choose k(δ) with δ ∈ D_{k(δ)} and s_δ > 0 with |δ(x)| ≤ s_δ for all x (x ↦ |δ(x)| is continuous with compact support, hence bounded). By (1.1), |T_j(δ)| ≤ b_δ := c_{k(δ)}·s_δ for all j. Thus the points X_j := (T_j(δ))_{δ∈D} of ℝ^D lie in the set Π_{δ∈D}[−b_δ, b_δ], which is compact (Tychonoff, isCompact_univ_pi), and ℝ^D is first countable because D is countable. By IsCompact.tendsto_subseq there are a strictly increasing φ : ℕ → ℕ and (L_δ)_{δ∈D} with X_{φ(i)} → (L_δ) in the product topology, i.e. T_{φ(i)}(δ) → L_δ for every δ ∈ D (tendsto_pi_nhds).
+4. (Convergence on every test form.) Let ω ∈ 𝒟ⁿ. tsupport ω is compact, hence bounded, so tsupport ω ⊆ B_k for some k ∈ ℕ, i.e. ω ∈ A_k. Let ε > 0 and put s₀ := ε/(3(c_k + 1)) > 0. By step 2 (with ε replaced by s₀/(N + 1)) there is δ ∈ D_k with |ω(x) − δ(x)| ≤ s₀ for all x. The form ω − δ ∈ 𝒟ⁿ has tsupport ⊆ B_k, so (1.1) gives |T_j(ω) − T_j(δ)| = |T_j(ω − δ)| ≤ c_k·s₀ < ε/3 for all j. Since (T_{φ(i)}(δ))_i converges, there is I with |T_{φ(i)}(δ) − T_{φ(l)}(δ)| < ε/3 for all i, l ≥ I. Hence |T_{φ(i)}(ω) − T_{φ(l)}(ω)| < ε for i, l ≥ I. So (T_{φ(i)}(ω))_i is a Cauchy sequence of reals and converges; define C(ω) := lim_i T_{φ(i)}(ω).
+5. (C is a current in ℝ^P.) Linearity: for a, b ∈ ℝ and ω, η ∈ 𝒟ⁿ, T_{φ(i)}(aω + bη) = aT_{φ(i)}(ω) + bT_{φ(i)}(η) → aC(ω) + bC(η), so by uniqueness of limits C(aω + bη) = aC(ω) + bC(η); thus C is a linear map 𝒟ⁿ → ℝ. Bound: if tsupport ω ⊆ B_k, s > 0 and |ω(x)| ≤ s for all x, then |C(ω)| ≤ c_k·s (limit of (1.1)). Sequential continuity (the field continuous' of GeometricCurrentOn): let ω_l → 0 in the sense of TestFormOnConverges, i.e. there is a compact K with tsupport ω_l ⊆ K for all l and, in particular (derivative order 0), iteratedFDeriv ℝ 0 ω_l → 0 uniformly on K. Choose k with K ⊆ B_k. Given ε > 0, for all large l we have ‖ω_l(x)‖ = ‖iteratedFDeriv ℝ 0 ω_l x‖ < ε for x ∈ K (norm_iteratedFDeriv_zero) and ω_l(x) = 0 for x ∉ K, so |ω_l(x)| ≤ Nε < (N + 1)ε for all x, and the bound gives |C(ω_l)| ≤ c_k(N + 1)ε. Hence C(ω_l) → 0, and C ∈ GeometricCurrentOn univ n.
+6. (Conclusion.) By construction T_{φ(i)}(ω) → C(ω) for every ω ∈ 𝒟ⁿ, i.e. WeaklyConvergesOn (fun i => T_{φ(i)}) C, and φ is strictly increasing. ∎
+
+## Key steps
+
+1. Mass bounds give |T_j(ω)| ≤ c_k·s for all j whenever tsupport ω ⊆ B_k(0) and |ω| ≤ s.
+2. Separability of C(closedBall(0, k), Λⁿ) yields countable families D_k of test forms supported in B_k(0) that are dense in the sup norm.
+3. Tychonoff and first countability of ℝ^D (D := ⋃D_k countable) give a subsequence φ with T_{φ(i)}(δ) convergent for every δ ∈ D.
+4. Density plus the uniform bound make (T_{φ(i)}(ω)) Cauchy for every test form; the limit C is linear and bounded by c_k·sup|ω| on B_k(0), hence a current, and T_{φ(i)} ⇀ C.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c); cmp workspace GMT/Ch07/Contract.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n -i 'federer|fleming|deformation|closure theorem|weak.*compact' local-references/123e8435b4a2469b/project/GMT`
+- `sed -n 225,300p local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `rg -n 'theorem extraction_forall_of_eventually|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|lemma isMulLeftInvariant_eq_smul|instance instSeparableSpace|theorem lintegral_liminf_le|theorem lintegral_lintegral_swap|theorem exists_disjoint_closedBall_covering_ae|theorem ae_tendsto_average_norm_sub|theorem LipschitzOnWith.extend_pi|theorem tendstoUniformlyOn_of_ae_tendsto' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'def massAdmissibleOn|def GeometricCurrentOn.massOn|def GeometricCurrentOn.mass|massOn_mono|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; grep -n 'structure GeometricCurrentOn|TestFormOnConverges|WeaklyConvergesOn|GeometricCurrentOn.ext|GeometricCurrentOn.zero_apply|exteriorDerivativeTestOn|GeometricCurrentOn.boundary_apply' simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `grep -rn 'theorem simon_theorem_4_16_compact_metrizable|theorem simon_theorem_3_3|theorem simon_theorem_3_26_i|theorem exists_isClosed_continuousOn_of_measurable|theorem countablyRectifiable_of_measure_zero' simongmt/Poincare`
+- `python3 -I over dag.json: lean_name, lean_statement, status and candidate_commit of rsd_cmr_imrep_restrict, dtc_imrep_current, cmc_massOn_eq_imRep_measure, covectorEuclideanNorm_gram_bounds, cmc_imRep_locality_restrict_sub, dtc_vanish_off_support, cmc_closure_and_boundary_rectifiability and the accepted cmcs_/lcmp_/cmr_ helpers; prefix search dtc_bc_tc_ (902 nodes)`
+- `git cat-file -t <candidate>; git show <candidate>:GMT/Ch07/Submission.lean | grep 'theorem Submission.<name>'; git log --all -S dtc_bc_tc_`
+- `python3 -I: verifier/gmt-compare.py contract_scope + child_modules (contract mode) and verifier/lean_contract.py validate_lean_statement on the 11 types`
+- `lake env lean /tmp/tc3/challenges/Challenge_<key>.lean (11 files) and /tmp/tc3/check/{Types,Parse,Assembly,TruncAssembly,ClosureFromCmc}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-compactness-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-compactness-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-compactness-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-compactness-a1/decomposition-review-receipt-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/03a1fcac808347a1bd64e0507e57e08b.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/tc3/check/Assembly.lean`
+- `/tmp/tc3/check/TruncAssembly.lean`
+- `/tmp/tc3/check/ClosureFromCmc.lean`
+- `/tmp/tc3/check/Types.lean`
+- `/tmp/tc3/check/Parse.lean`
+
+The snapshot (mode local-project; project b4d606db, Mathlib 25730c7c) has a Ch07 Contract.lean that is byte-identical to the workspace Contract.lean and Submission.lean. Its Ch06 contract states FedererFlemingCompactness, SlicingTheorem and DeformationTheorem (1 ≤ ℓ, i.e. positive codimension) only as Props under a sorry main_theorem, so no proved Federer–Fleming, slicing or deformation theorem can be reused. The DAG node cmc_closure_and_boundary_rectifiability is unaccepted, which is why the closure child remains a new obligation. Every Mathlib lemma named in the children's proofs exists in the snapshot Mathlib (isAddLeftInvariant_eq_smul is the to_additive form of isMulLeftInvariant_eq_smul), and every cited SimonGMT theorem exists in the pinned library. The six reused declarations are accepted with identical frozen types and are present in their candidate commits. All eleven types elaborate in comparator contract scope. The parent assembly, the truncation assembly and the closure-from-cmc derivation compile using only propext, Classical.choice and Quot.sound. No dtc_bc_tc_ name occurs anywhere else.
