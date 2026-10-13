@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cea006711c6e92e3957e67a6a2657670a76aba3e51de9032d34b8138a73dc149",
+  "git_delta": {
+    "base_commit": "052956edffa3d18e017a2883436a77850a5a4dc5",
+    "candidate_commit": "a3152bb94953121c99e80459c189572000f295b6",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e96d2bba9d4ed805e3a160e39f6c13f4ff3671c72d390d7c29d7c50cb1f31fcc",
+    "source_sha256": "a553d56c8fe1dfad8c8998e66bf48f27952871c86ee09f48ced3c3f5470a7df5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_ae_blowup_limit",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → Tendsto (fun r : ℝ => tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))) (𝓝[>] 0) (𝓝 (θ x * ∫ z in (Q : Set (Eucl P)), ξ x (ω z) ∂(μHE[n] : Measure (Eucl P))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
