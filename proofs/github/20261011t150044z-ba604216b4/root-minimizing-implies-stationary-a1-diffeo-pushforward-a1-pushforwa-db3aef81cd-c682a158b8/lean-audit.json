@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "931dbe568cb57b342762d9903e8d0c1d35d84aa2b66cc92357d3b30be96bb647",
+  "git_delta": {
+    "base_commit": "11797289814bb60cfb3c442ca2d9356bf6d34704",
+    "candidate_commit": "3de784c0d8f0b1958b4654727bdadb33fc1c77ea",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "757a0d8d8c8b521be8b7dd7dfc95f71fa3abbf7f004e56a6b83b76bcf9e8aace",
+    "source_sha256": "481c2e574eb0f7bfbf00694c22efcbe7cb8cc147ac136116054a673a9cd3cc25",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_pushforward_formula_current_exists",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
