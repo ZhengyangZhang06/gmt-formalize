@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.prod_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1",
+  "depth": 6,
+  "title": "Product bound 1 ≤ Π(1+λᵢ) ≤ 1 + 2^m Σλᵢ for λᵢ ∈ [0,1]",
+  "statement": "For every m ∈ ℕ and every λ : Fin m → ℝ (Lean: lam) with 0 ≤ λ_i ≤ 1 for all i: 1 ≤ Π_i (1 + λ_i) and Π_i (1 + λ_i) ≤ 1 + 2^m Σ_i λ_i. The empty product is 1 and the empty sum is 0.",
+  "lean_statement": "∀ (m : ℕ) (lam : Fin m → ℝ), (∀ i, 0 ≤ lam i) → (∀ i, lam i ≤ 1) → 1 ≤ ∏ i, (1 + lam i) ∧ ∏ i, (1 + lam i) ≤ 1 + 2 ^ m * ∑ i, lam i",
+  "lean_name": "dorag_tes_ga_prod_one_add_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-0d06e36d48-a1"
+}

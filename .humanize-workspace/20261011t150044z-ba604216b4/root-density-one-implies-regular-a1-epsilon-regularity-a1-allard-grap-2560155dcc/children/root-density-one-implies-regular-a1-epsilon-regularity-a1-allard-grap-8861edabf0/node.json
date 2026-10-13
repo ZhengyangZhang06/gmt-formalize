@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1.bounded_transfer-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1",
+  "depth": 6,
+  "title": "Bounded-function transfer from a two-sided lower-integral comparison",
+  "statement": "Setting:\n- X, Y are measurable spaces with X nonempty (Lean: X Y : Type with MeasurableSpace instances and [Nonempty X]); m is a measure on X and ν a measure on Y.\n- D, Z ⊆ X are measurable, S ⊆ Y is an arbitrary set, and φ : Y → X is measurable.\n- s : X → ℝ satisfies s(v) ≥ 0 for all v and is integrable on D w.r.t. m.\n- a, c ∈ ℝ with a ≥ 0 and c ≥ 0.\nAssume m(D) ≠ ∞, ν(S) ≠ ∞ and m(Z) ≤ ENNReal.ofReal a. Assume also that for every measurable h : X → [0, ∞] (lower Lebesgue integrals):\n- ∫⁻_{D∖Z} h dm ≤ ∫⁻_S h∘φ dν, and\n- ∫⁻_S h∘φ dν ≤ ∫⁻_{D∖Z} ENNReal.ofReal(1 + c·s(v))·h(v) dm(v).\nThen:\n(a) for every measurable g : X → ℝ and G ∈ ℝ with 0 ≤ g ≤ G everywhere, (∫⁻_D ENNReal.ofReal(g) dm) ≤ (∫⁻_S ENNReal.ofReal(g∘φ) dν) + ENNReal.ofReal(G·a);\n(b) for every measurable g : X → ℝ and G ∈ ℝ with |g| ≤ G everywhere, |(∫_D g dm) − (∫_S g∘φ dν)| ≤ G·(a + c·∫_D s dm). Here the integrals are Bochner integrals, each computed separately before subtracting.",
+  "lean_statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Nonempty X] (m : Measure X) (ν : Measure Y) (D Z : Set X) (S : Set Y) (φ : Y → X) (s : X → ℝ) (a c : ℝ), MeasurableSet D → MeasurableSet Z → Measurable φ → m D ≠ ∞ → ν S ≠ ∞ → m Z ≤ ENNReal.ofReal a → 0 ≤ a → 0 ≤ c → (∀ v, 0 ≤ s v) → IntegrableOn s D m → (∀ h : X → ℝ≥0∞, Measurable h → (∫⁻ v in D \\ Z, h v ∂m) ≤ (∫⁻ y in S, h (φ y) ∂ν) ∧ (∫⁻ y in S, h (φ y) ∂ν) ≤ ∫⁻ v in D \\ Z, ENNReal.ofReal (1 + c * s v) * h v ∂m) → (∀ (g : X → ℝ) (G : ℝ), Measurable g → (∀ v, 0 ≤ g v) → (∀ v, g v ≤ G) → (∫⁻ v in D, ENNReal.ofReal (g v) ∂m) ≤ (∫⁻ y in S, ENNReal.ofReal (g (φ y)) ∂ν) + ENNReal.ofReal (G * a)) ∧ ∀ (g : X → ℝ) (G : ℝ), Measurable g → (∀ v, |g v| ≤ G) → |(∫ v in D, g v ∂m) - (∫ y in S, g (φ y) ∂ν)| ≤ G * (a + c * (∫ v in D, s v ∂m))",
+  "lean_name": "dorag_tes_gt_bounded_transfer_of_lintegral_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8861edabf0-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.graph_map_basics-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "depth": 5,
+  "title": "Metric and Hausdorff-measure properties of a Lipschitz graph map",
+  "statement": "Let n, k ∈ ℕ, let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let b ∈ ℝ^{n+k}, L ≥ 0, g : ℝⁿ → ℝᵏ L-Lipschitz, and Ψ(u) := b + ιu + ι'(g u). Then (i) |u − u'| ≤ |Ψ(u) − Ψ(u')| for all u, u' ∈ ℝⁿ; (ii) Ψ is (1 + L)-Lipschitz; (iii) Ψ(ℝⁿ) is closed; (iv) Hⁿ(Ψ(ℝⁿ) ∩ K) < ∞ for every compact K ⊆ ℝ^{n+k}; (v) Hⁿ(Ψ(N)) = 0 for every N ⊆ ℝⁿ with Lⁿ(N) = 0. Here Hⁿ = μHE[n] and Lⁿ = volume on ℝⁿ = Euclid n.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (b : Euclid (n + k)) (g : Euclid n → Euclid k) (L : NNReal), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L g → (∀ u u' : Euclid n, dist u u' ≤ dist (b + ι u + ι' (g u)) (b + ι u' + ι' (g u'))) ∧ LipschitzWith (1 + L) (fun u => b + ι u + ι' (g u)) ∧ IsClosed (Set.range fun u => b + ι u + ι' (g u)) ∧ (∀ K : Set (Euclid (n + k)), IsCompact K → μHE[n] (Set.range (fun u => b + ι u + ι' (g u)) ∩ K) ≠ ∞) ∧ ∀ N : Set (Euclid n), volume N = 0 → μHE[n] ((fun u => b + ι u + ι' (g u)) '' N) = 0",
+  "lean_name": "doraggt_lipschitz_graph_map_basics",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db4db12cbd-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.cutoff_extension-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+  "depth": 6,
+  "title": "C¹ cutoff extension of a test function along a projection",
+  "statement": "Let n ≥ 1 and m ∈ ℕ, ξ ∈ ℝᵐ, r > 0, P : ℝᵐ → ℝⁿ continuous linear, ζ : ℝⁿ → ℝ of class C¹ with compact support and tsupport ζ ⊆ B̆ⁿ_{r/2}(0) (open ball), and G ∈ ℝ with ‖Dζ(v)‖ ≤ G for all v. Then there is ψ : ℝᵐ → ℝ of class C¹ with compact support such that tsupport ψ ⊆ B_r(ξ) (closed ball), |ψ(x)| ≤ G·(r/2) for all x, and Dψ(x) = Dζ(P(x − ξ)) ∘ P for every x with |x − ξ|² ≤ |P(x − ξ)|² + r²/16.",
+  "lean_statement": "∀ (n m : ℕ), 0 < n → ∀ (ξ : Euclid m) (r : ℝ) (P : Euclid m →L[ℝ] Euclid n) (ζ : Euclid n → ℝ) (G : ℝ), 0 < r → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) (r / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → ∃ ψ : Euclid m → ℝ, ContDiff ℝ 1 ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ closedBall ξ r ∧ (∀ x, |ψ x| ≤ G * (r / 2)) ∧ ∀ x, ‖x - ξ‖ ^ 2 ≤ ‖P (x - ξ)‖ ^ 2 + r ^ 2 / 16 → fderiv ℝ ψ x = (fderiv ℝ ζ (P (x - ξ))).comp P",
+  "lean_name": "dorag_tes_gv_cutoff_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-20c6a9975e-a1"
+}
