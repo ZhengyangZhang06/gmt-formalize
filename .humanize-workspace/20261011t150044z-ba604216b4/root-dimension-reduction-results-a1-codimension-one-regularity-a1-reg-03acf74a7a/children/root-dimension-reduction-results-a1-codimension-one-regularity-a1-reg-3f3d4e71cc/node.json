@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+  "depth": 6,
+  "title": "Translation identity for set integrals of C¹_c functions (FTC + Fubini)",
+  "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set, ζ : ℝⁿ → ℝ a C¹ function with compact support, w ∈ ℝⁿ and t ∈ ℝ. Then ∫_F ζ(z − t w) dLⁿ(z) = ∫_F ζ(z) dLⁿ(z) − ∫_0^t ( ∫_F Dζ(z − s w)(w) dLⁿ(z) ) ds, where ∫_0^t is the oriented interval integral (∫_0^t = −∫_t^0 when t < 0).",
+  "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (ζ : EuclideanSpace ℝ (Fin n) → ℝ) (w : EuclideanSpace ℝ (Fin n)) (t : ℝ), MeasurableSet F → ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, ζ (z - t • w) = (∫ z in F, ζ z) - ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w",
+  "lean_name": "codim1_rdo_dg_hr_translate_integral_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc-a1"
+}
