@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "covectorEuclideanNorm|slicing_mb_wn_|sq_sum_eq_factorial_mul|sq_sum_onb_invariant|norm_sq_eq_onb_sum|adapted_onb|adapted_sum_le",
+        "covectorEuclideanNorm|abbrev Covector|OrthonormalBasis|norm_covectorWedge_le",
+        "lemma OrthonormalBasis.norm_dual|theorem toDual_symm_apply",
+        "theorem Orthonormal.exists_orthonormalBasis_extension_of_card_eq",
+        "theorem alternatizeUncurryFin_apply",
+        "theorem monotone_sort|theorem sort_eq_refl_iff_monotone|theorem comp_perm_comp_sort_eq_comp_sort",
+        "theorem map_perm |theorem map_eq_zero_of_not_injective|theorem curryLeft_apply_apply|def apply \\(m",
+        "rg -n 'slicing_mb_wn_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wedge_independent_audit_junw0k5a/ContractChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wedge_independent_audit_junw0k5a/AssemblyChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wedge_split_trCfMb/check/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/wedge_independent_audit_junw0k5a/ContractChecks.lean",
+        "/tmp/wedge_independent_audit_junw0k5a/AssemblyChecks.lean",
+        "/tmp/wedge_split_trCfMb/check/EndToEnd.lean"
+      ],
+      "conclusion": "The split appropriately separates counting, basis invariance, adapted-basis construction, and the coefficient estimate for the exact selected wedge-norm theorem. The pinned contract matches the workspace Submission byte-for-byte; package revisions and inspected library sources agree with the snapshot. Forms.lean:31 and Mass.lean:30 confirm the covector and coefficient-norm definitions; the inspected Mathlib lemmas support the supplied arguments. All five frozen types independently elaborate as Prop in comparator scope without child implementations. Checks confirm the operator norm, wedge degree, and intended StrictMono coefficient sums. The independently compiled dependency assembly proves the exact parent using only propext, Classical.choice, and Quot.sound; the supplied scratch child proofs also compile without sorryAx. The dependencies are acyclic and correctly directed. All five names are bare identifiers, absent from the snapshot project and current 226-node DAG; no accepted declaration is reused. Each supplied natural proof is complete and requires no further proof-planning pass."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "count_sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches the prose for arbitrary families. Repeated indices contribute zero; the proved permutation/increasing-enumeration bijection and sign-square identity give exactly k!. The proof covers k = 0 and k > P and uses no parent or sibling result."
+    },
+    {
+      "key": "parseval_sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both arbitrary orthonormal bases and matches the prose. Fixing the other slots produces a continuous linear functional; Parseval and the explicit finite reindexing justify each hybrid-sum equality. Empty and degree-zero cases are covered. The argument is independent and non-circular."
+    },
+    {
+      "key": "onb_norm_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the coefficient-norm identity. Nonnegativity justifies squaring the defining square root. The two declared dependencies identify the factorial-weighted sums, and the nonzero real cast of k! permits cancellation. No additional dependency or circular basis-invariance assumption is used."
+    },
+    {
+      "key": "adapted_onb",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The zero-functional case includes P = 0. Otherwise the Riesz vector forces P > 0; extending its normalization at index zero and applying orthogonality gives all required values. The natural-number index test in Lean correctly expresses the prose without requiring an inhabitant of Fin 0. No hypothesis is missing."
+    },
+    {
+      "key": "adapted_sum_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the stated hypothesis and estimate for arbitrary u and real c. The verified wedge formula leaves only the initial-index-zero contribution. Deleting that index is injective on the restricted tuples, and nonnegative square sums give the inequality. No orthonormality or sign condition on c is needed; the degenerate cases are covered."
+    }
+  ],
+  "required_changes": []
+}
