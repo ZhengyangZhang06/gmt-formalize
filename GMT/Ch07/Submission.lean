@@ -490,6 +490,58 @@ theorem Submission.mcs_trace_normal_part_eq_neg_inner : ∀ (P : ℕ) (Q S : Sub
   rw [hDY, inner_sub_right, inner_sub_right, ← Submodule.inner_starProjection_left_eq_right, huS,
     sub_self, zero_sub, ← ContinuousLinearMap.adjoint_inner_left (fderiv ℝ pr x u) (X x) u,
     real_inner_comm]
+/-- **Simon Ch. 4, 2.7** (the tangential part `Xᵀ = χ · pr · X`): let `U, O ⊆ ℝᴾ` be open,
+`N ⊆ O` with `(N̄ \ N) ∩ U = ∅`, `pr` of class `C¹` on `O` and `X ∈ C¹_c(U; ℝᴾ)`.  Then some
+`Xᵀ ∈ C¹_c(U; ℝᴾ)` equals `y ↦ pr(y) X(y)` near every point of `N`.  The compact set
+`K = spt X ∩ N̄` lies in `N` (as `(N̄ \ N) ∩ U = ∅`), hence in `O ∩ U`; take a `C¹` cutoff `χ` with
+compact support in `O ∩ U` and `χ = 1` near `K`.  Near `x ∈ N`, `χ = 1` if `x ∈ spt X`, and
+`X = 0` otherwise. -/
+theorem Submission.mcs_exists_c1_field_eq_proj_near : ∀ (P : ℕ) (U N O : Set (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X : Euclid P → Euclid P), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \ N) ∩ U = ∅ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∃ XT : Euclid P → Euclid P, ContDiff ℝ 1 XT ∧ HasCompactSupport XT ∧ tsupport XT ⊆ U ∧ ∀ x ∈ N, XT =ᶠ[𝓝 x] (fun y => pr y (X y)) := by
+  intro P U N O pr X hU hO hNO hpr hN hX hXc hXU
+  -- Step 1: `K = spt X ∩ N̄` is compact and `K ⊆ N`, hence `K ⊆ W = O ∩ U`
+  have hKc : IsCompact (tsupport X ∩ closure N) := hXc.isCompact.inter_right isClosed_closure
+  have hKW : tsupport X ∩ closure N ⊆ O ∩ U := by
+    rintro z ⟨hzX, hzN⟩
+    have hz : z ∈ N := by
+      by_contra hz
+      exact eq_empty_iff_forall_notMem.1 hN z ⟨⟨hzN, hz⟩, hXU hzX⟩
+    exact ⟨hNO hz, hXU hzX⟩
+  -- Step 2: a `C¹` cutoff `χ` with `spt χ = V̄ ⊆ W` compact and `χ = 1` on `L`, `K ⊆ int L`
+  obtain ⟨L, hLc, hLcl, hKL, hLW⟩ := exists_compact_closed_between hKc (hO.inter hU) hKW
+  obtain ⟨V, hVo, hLV, hVW, hVc⟩ :=
+    exists_open_between_and_isCompact_closure hLc (hO.inter hU) hLW
+  obtain ⟨χ, hχ, -, hχV, hχL⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1) hVo hLcl hLV
+  have hχ1 : ContDiff ℝ 1 χ := by exact_mod_cast hχ
+  have hχt : tsupport χ = closure V := by rw [tsupport, hχV]
+  -- Step 3: `Xᵀ = χ · pr · X`
+  refine ⟨fun y => χ y • pr y (X y), ?_, ?_, ?_, ?_⟩
+  -- Step 4: `Xᵀ` is `C¹`: product rule at points of `O`; `Xᵀ = 0` near `y ∉ O`, as `spt χ ⊆ O`
+  · rw [contDiff_iff_contDiffAt]
+    intro y
+    by_cases hy : y ∈ O
+    · exact hχ1.contDiffAt.smul ((hpr.contDiffAt (hO.mem_nhds hy)).clm_apply hX.contDiffAt)
+    · have hyχ : χ =ᶠ[𝓝 y] 0 := by
+        rw [← notMem_tsupport_iff_eventuallyEq, hχt]
+        exact fun h => hy (hVW h).1
+      refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+      filter_upwards [hyχ] with z hz
+      simp [hz]
+  -- Step 5: `Xᵀ` vanishes off the compact set `V̄`, and `spt Xᵀ ⊆ spt χ = V̄ ⊆ W ⊆ U`
+  · refine HasCompactSupport.intro' hVc isClosed_closure fun y hy => ?_
+    have hχy : χ y = 0 := by
+      rw [← notMem_support, hχV]
+      exact fun h => hy (subset_closure h)
+    simp [hχy]
+  · refine (tsupport_smul_subset_left χ fun y => pr y (X y)).trans ?_
+    rw [hχt]
+    exact fun z hz => (hVW hz).2
+  -- Step 6: `Xᵀ = pr · X` near `x ∈ N`: `χ = 1` near `x` if `x ∈ spt X`, else `X = 0` near `x`
+  · intro x hx
+    by_cases hxX : x ∈ tsupport X
+    · filter_upwards [isOpen_interior.mem_nhds (hKL ⟨hxX, subset_closure hx⟩)] with y hy
+      rw [(hχL y).1 (interior_subset hy), one_smul]
+    · filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxX] with y hy
+      simp [hy]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
