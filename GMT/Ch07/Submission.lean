@@ -451,6 +451,130 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 6.1 (Isoperimetric Theorem)**, from the scaled deformation theorem 5.3 in the
+frozen form (DT), with constant `c ≥ 1` for `(P, m)`.  Let `Z ∈ 𝒟_{m+1}(ℝᴾ)` be integer
+multiplicity with `spt Z` compact, `∂Z = 0` and `z = M(Z) < ∞`.  Apply (DT) to `T = Z` with
+`K = spt Z`, `Λ = z` and `ρ = (2cz)^{1/(m+1)}` (`ρ = 1` if `z = 0`).  A current of zero mass is
+zero (test `±sω` with `s‖ω‖_∞ ≤ 1`), so `M(S) ≤ cρ M(∂Z) = 0` gives `S = 0`, and
+`M(Q) ≤ cz < ρ^{m+1}` excludes the second alternative, so `Q = 0` and `Z = ∂R`.  Then `Y = R` has
+the mass and support bounds of (DT); if `z = 0`, also `M(R) = 0`, so `spt R = ∅`. -/
+theorem Submission.cbr_isoperimetric_filling : (∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (Λ : NNReal), 0 < ρ → IsCompact K → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → T.support ⊆ K → T.mass ≤ Λ → T.boundary.mass < ∞ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support) → ∀ (P m : ℕ), ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support := by
+  intro hDT P m
+  obtain ⟨c, hc1, hDT⟩ := hDT P m
+  refine ⟨(c : ℝ), by exact_mod_cast hc1, ?_⟩
+  intro Z hZ hZc hZb hZm
+  -- `M(0) = 0` and `spt 0 = ∅`
+  have hmass0 : ∀ k : ℕ, (0 : GeometricCurrentOn (univ : Set (Euclid P)) k).mass = 0 := by
+    intro k
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, -, rfl⟩
+    simp
+  have hsupp0 : ∀ k : ℕ, (0 : GeometricCurrentOn (univ : Set (Euclid P)) k).support = ∅ := by
+    intro k
+    refine eq_empty_of_forall_notMem fun x hx => hx.2 ?_
+    exact ⟨ball x 1, ⟨isOpen_ball, isBounded_ball.isCompact_closure, subset_univ _,
+      fun ω _ => rfl⟩, mem_ball_self one_pos⟩
+  -- the Euclidean coefficient norm is absolutely homogeneous
+  have hhom : ∀ (k : ℕ) (t : ℝ) (α : Covector (Euclid P) k),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro k t α
+    simp only [covectorEuclideanNorm]
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs <;> simp [mul_pow]
+  -- a current of zero mass is zero: test `±sω` with `s‖ω‖_∞ ≤ 1`
+  have hzero : ∀ (k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), X.mass = 0 →
+      X = 0 := by
+    intro k X hX
+    ext ω
+    have hω : Continuous (ω : DifferentialForm (Euclid P) k) := ω.property.1.1.continuous
+    have hfc : Continuous (covectorEuclideanNorm ∘ (ω : DifferentialForm (Euclid P) k)) := by
+      simp only [Function.comp_def, covectorEuclideanNorm]
+      refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+      exact continuous_if_const _ (fun _ => ((continuous_eval_const _).comp hω).pow 2)
+        fun _ => continuous_const
+    have hcs : HasCompactSupport (covectorEuclideanNorm ∘ (ω : DifferentialForm (Euclid P) k)) :=
+      ω.property.1.2.comp_left (covectorEuclideanNorm_zero P k)
+    obtain ⟨C, hC⟩ := hfc.bounded_above_of_compact_support hcs
+    obtain ⟨s, hs, hsC⟩ : ∃ s : ℝ, 0 < s ∧ s * (|C| + 1) = 1 :=
+      ⟨(|C| + 1)⁻¹, by positivity, inv_mul_cancel₀ (by positivity)⟩
+    have hadm : ∀ t : ℝ, |t| ≤ s → t • ω ∈ massAdmissibleOn (univ : Set (Euclid P)) k univ := by
+      intro t ht
+      refine ⟨subset_univ _, fun x => ?_⟩
+      show covectorEuclideanNorm (t • (ω : DifferentialForm (Euclid P) k) x) ≤ 1
+      rw [hhom]
+      have h0 := covectorEuclideanNorm_nonneg ((ω : DifferentialForm (Euclid P) k) x)
+      have h1 : covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ |C| + 1 := by
+        have := hC x
+        rw [Function.comp_apply, Real.norm_of_nonneg h0] at this
+        linarith [le_abs_self C]
+      calc |t| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x)
+          ≤ s * (|C| + 1) := mul_le_mul ht h1 h0 hs.le
+        _ = 1 := hsC
+    have hX' : X.massOn univ = 0 := hX
+    have h1 := X.le_massOn (hadm s (abs_of_pos hs).le)
+    have h2 := X.le_massOn (hadm (-s) (by rw [abs_neg, abs_of_pos hs]))
+    rw [hX', nonpos_iff_eq_zero, ENNReal.ofReal_eq_zero] at h1 h2
+    have e1 : X (s • ω) = s * X ω := map_smul X.toCurrent s ω
+    have e2 : X ((-s) • ω) = -(s * X ω) := by
+      rw [show X ((-s) • ω) = -s * X ω from map_smul X.toCurrent (-s) ω]
+      ring
+    rw [e1] at h1
+    rw [e2] at h2
+    have h3 : s * X ω = 0 := by linarith
+    rw [GeometricCurrentOn.zero_apply]
+    exact (mul_eq_zero.1 h3).resolve_left hs.ne'
+  -- the scale `ρ`
+  set z : ℝ := Z.mass.toReal
+  have hz0 : 0 ≤ z := ENNReal.toReal_nonneg
+  have hZmz : Z.mass = ENNReal.ofReal z := (ENNReal.ofReal_toReal hZm.ne).symm
+  have hc0 : (0 : ℝ) ≤ c := c.coe_nonneg
+  have hc0' : (0 : ℝ) < c := by exact_mod_cast zero_lt_one.trans_le hc1
+  have hcz0 : 0 ≤ (c : ℝ) * z := mul_nonneg hc0 hz0
+  obtain ⟨ρ, hρ0, hρlt, hρ⟩ : ∃ ρ : ℝ, 0 < ρ ∧ (c : ℝ) * z < ρ ^ (m + 1) ∧
+      (z = 0 ∨ ρ = (2 * (c : ℝ) * z) ^ ((1 : ℝ) / (m + 1))) := by
+    rcases hz0.eq_or_lt with h | h
+    · exact ⟨1, one_pos, by rw [← h]; simp, Or.inl h.symm⟩
+    · have hcz : 0 < 2 * (c : ℝ) * z := mul_pos (mul_pos two_pos hc0') h
+      refine ⟨_, Real.rpow_pos_of_pos hcz _, ?_, Or.inr rfl⟩
+      have hpow : ((2 * (c : ℝ) * z) ^ ((1 : ℝ) / (m + 1))) ^ (m + 1) = 2 * (c : ℝ) * z := by
+        rw [one_div, ← Nat.cast_succ]
+        exact Real.rpow_inv_natCast_pow hcz.le (Nat.succ_ne_zero m)
+      rw [hpow]
+      have : 0 < (c : ℝ) * z := mul_pos hc0' h
+      linarith
+  have hcρ : 0 ≤ (c : ℝ) * ρ := mul_nonneg hc0 hρ0.le
+  -- apply (DT) to `T = Z`
+  obtain ⟨𝒬, -, hDT⟩ := hDT ρ Z.support Z.mass.toNNReal hρ0 hZc
+  obtain ⟨Q, -, R, S, -, -, hR, hZQS, hQ, hQm, -, hRm, hSm, hQR, -⟩ :=
+    hDT Z hZ subset_rfl (ENNReal.coe_toNNReal hZm.ne).ge
+      (by rw [hZb, hmass0]; exact ENNReal.zero_lt_top)
+  -- `M(S) ≤ cρ M(∂Z) = 0`, so `S = 0`
+  rw [hZb, hmass0, mul_zero, nonpos_iff_eq_zero] at hSm
+  obtain rfl : S = 0 := hzero _ S hSm
+  -- `M(Q) ≤ cz < ρ^{m+1}`, so `Q = 0`
+  obtain rfl : Q = 0 := by
+    refine hQ.resolve_right fun h => ?_
+    have h' := h.trans hQm
+    rw [hZmz, ← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul hc0,
+      ENNReal.ofReal_le_ofReal_iff hcz0] at h'
+    linarith
+  -- hence `Z = ∂R`
+  have hRZ : R.boundary = Z := by
+    rw [← hZQS]
+    ext ω
+    show Z ω - 0 - 0 = Z ω
+    ring
+  rcases hρ with h | rfl
+  · -- `z = 0`: `M(R) ≤ cρ · 0 = 0`, so `R = 0`
+    rw [hZmz, h, ENNReal.ofReal_zero, mul_zero, nonpos_iff_eq_zero] at hRm
+    refine ⟨R, hR, hRZ, hRm.trans_le zero_le, ?_⟩
+    rw [hzero _ R hRm, hsupp0]
+    exact empty_subset _
+  · refine ⟨R, hR, hRZ, hRm.trans (le_of_eq ?_), subset_union_right.trans hQR⟩
+    rw [ENNReal.ofReal_mul hcρ, ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal, hZmz]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
