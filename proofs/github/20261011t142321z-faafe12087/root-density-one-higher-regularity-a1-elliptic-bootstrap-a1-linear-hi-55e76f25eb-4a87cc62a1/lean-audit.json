@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74627986ae9f6dd0a3a075cdcd8adc688ee35892b7cdc5f25b3d6bb73ef7d0b6",
+  "git_delta": {
+    "base_commit": "6bec5c1aac32aafd613f0fd876adc7ff52360a24",
+    "candidate_commit": "586cab49483859d73b8fa3dce934e82183fa2545",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_ds_translate_weak_eq",
+    "diff_sha256": "0619d0d801182e25fd755ad48481001c81a86176d1b8056d4e874f2b024ab22a",
+    "source_sha256": "f00aa5ba464f21f7371fcdad85fb4e967c93f9613d96b24bc8e76695a0354eb6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_ds_translate_weak_eq",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n) (s : ℝ) (ζ : Rn n → Rn ℓ), (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y ∈ tsupport ζ, y + s • e ∈ U) → ∫ y, ω₁ (y + s • e) (fderiv ℝ ζ y) = ∫ y, ω₂ (y + s • e) (fderiv ℝ ζ y)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
