@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e2528c6844e8ffec7c6c5fa91457035d666df02ff1264e5e90e80e7d080628df",
+  "git_delta": {
+    "base_commit": "6050bb529400c6b05f6c893447ce8b263366fdd9",
+    "candidate_commit": "73d8e560abfc7bd06b7f7a48660a5a9092c8defe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_cp_submanifold_chart_cover",
+    "diff_sha256": "45eafdf1d304fce6bed633c144b5e0e251824fc0ceca76ecc985ee4b60350f78",
+    "source_sha256": "84ce9544fd320d37b7e4c21e9b321daf173238f1d99356ed38c77683643e7637",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_cp_submanifold_chart_cover",
+      "statement": "∀ (P m : ℕ) (U M N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), IsOpen U → M ⊆ U → (∀ l, IsEmbeddedSubmanifold 1 m (N l)) → M ⊆ N₀ ∪ ⋃ l, N l → ∃ (V : ℕ → Set (Euclid m)) (ψ : ℕ → Euclid m → Euclid P), (∀ s, IsOpen (V s) ∧ ContDiffOn ℝ 1 (ψ s) (V s) ∧ InjOn (ψ s) (V s) ∧ (∀ y ∈ V s, Injective (fderiv ℝ (ψ s) y)) ∧ ψ s '' V s ⊆ U) ∧ M ⊆ N₀ ∪ ⋃ s, ψ s '' V s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
