@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Integral varifolds with vanishing first variation converging to θ₀ v(P) force θ₀ ∈ ℕ (step B6, repaired conclusion of 5.9)",
+  "statement": "Assume AllardRectifiabilityTheorem, FirstRectifiabilityTheorem, MonotonicityFormula (frozen contract statements) and the tangent-graph-cover statement: for 0 < L ≤ 1, every varifold V on any U and every P ∈ G(N,n) there are closed sets Γ_i, each an L-Lipschitz graph over P, containing every point at which V has a tangent plane T with |p_T v − p_P v| ≤ (L/4)|v| for all v. Let N, n ∈ ℕ, P ∈ G(N,n), θ₀ > 0, and W_k (k ∈ ℕ) n-varifolds on the open ball B°_5(0) such that each W_k is integral with locally bounded first variation, ‖δW_k‖(B°_5(0)) → 0, and ∫ f dW_k → θ₀∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,n)) with tsupport f ⊆ B°_5(0) × G(N,n). Then θ₀ is a natural number.",
+  "lean_statement": "AllardRectifiabilityTheorem → FirstRectifiabilityTheorem → MonotonicityFormula → (∀ (N n : ℕ) (L : ℝ), 0 < L → L ≤ 1 → ∀ (U : Set (Euclidean N)) (V : Varifold N n U) (P : Grassmannian N n), ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i) → ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ k, (W k).HasLocallyBoundedFirstVariation) → Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ m : ℕ, θ₀ = m",
+  "lean_name": "intcpt_flat_limit_integer_multiplicity",
+  "depends_on": [
+    "root.integral_compactness-a1.integral_density-a1",
+    "root.integral_compactness-a1.canonical_representation-a1",
+    "root.integral_compactness-a1.allard_lemma-a1",
+    "root.integral_compactness-a1.graph_fibre_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.integral_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.canonical_representation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.graph_fibre_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-a1"
+}

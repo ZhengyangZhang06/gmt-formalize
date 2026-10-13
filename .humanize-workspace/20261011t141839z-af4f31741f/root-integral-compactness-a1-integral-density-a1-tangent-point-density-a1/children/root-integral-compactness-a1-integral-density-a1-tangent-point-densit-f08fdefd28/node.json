@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_cutoff-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "depth": 4,
+  "title": "Radial cutoff f ∈ C_c with 1_{B̄_a} ≤ f ≤ 1_{B̄_R} and ω_n a^n ≤ ∫_P f dH^n ≤ ω_n R^n",
+  "statement": "Let N, n ∈ ℕ, P a linear subspace of ℝ^N = Euclidean N with dim P = n, and a, R ∈ ℝ with 0 < a < R. Write H^n := μHE[n] and ω_n := (unitBallVolume n).toReal. Then there is f ∈ C_c(ℝ^N, ℝ) such that: 0 ≤ f ≤ 1; f(y) = 1 whenever ‖y‖ ≤ a; f(y) = 0 whenever ‖y‖ > R; and ω_n a^n ≤ ∫_P f dH^n ≤ ω_n R^n.",
+  "lean_statement": "∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)) (a R : ℝ), Module.finrank ℝ P = n → 0 < a → a < R → ∃ f : C_c(Euclidean N, ℝ), (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y, ‖y‖ ≤ a → f y = 1) ∧ (∀ y, R < ‖y‖ → f y = 0) ∧ (unitBallVolume n).toReal * a ^ n ≤ ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] ∧ ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] ≤ (unitBallVolume n).toReal * R ^ n",
+  "lean_name": "intcpt_id_tpd_plane_cutoff",
+  "depends_on": [
+    "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-f08fdefd28-a1"
+}

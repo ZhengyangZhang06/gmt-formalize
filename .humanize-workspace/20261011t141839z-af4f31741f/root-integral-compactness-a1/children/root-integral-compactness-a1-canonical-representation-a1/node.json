@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.canonical_representation-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Canonical tangent-plane representation and null-set transfer for varifolds with positive density (step B2)",
+  "statement": "Assume AllardRectifiabilityTheorem and FirstRectifiabilityTheorem (frozen contract statements). Let N, n ∈ ℕ, U ⊆ ℝ^N and V an n-varifold on U with locally bounded first variation such that Θ^n(μ_V, x) exists and is > 0 for μ_V-a.e. x. Let M := {x ∈ spt μ_V : HasTangentPlane V x T θ' for some T ∈ G(N,n), θ' ∈ ℝ}. Then there is θ : ℝ^N → ℝ such that (i) IsVarifoldOf V M θ; (ii) for every x ∈ M there is T with HasTangentPlane V x T (θ(x)), and Θ^n(μ_V, x) = θ(x) (HasDensity n μ_V x (ofReal θ(x))); (iii) every Z ⊆ M with μ_V(Z) = 0 has H^n(Z) = 0.",
+  "lean_statement": "AllardRectifiabilityTheorem → FirstRectifiabilityTheorem → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) → ∃ θ : Euclidean N → ℝ, IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} θ ∧ (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) ∧ ∀ Z ⊆ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, V.weight Z = 0 → (μHE[n] : Measure (Euclidean N)) Z = 0",
+  "lean_name": "intcpt_canonical_tangent_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-canonical-representation-a1-a1"
+}
