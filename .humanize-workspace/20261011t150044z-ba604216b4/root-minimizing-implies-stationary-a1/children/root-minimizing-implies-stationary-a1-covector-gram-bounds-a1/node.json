@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Euclidean coefficient norm of covectors versus Gram determinants (Cauchy–Binet)",
+  "statement": "For all P, n: (1) for every n-covector α on ℝ^P and v_1, …, v_n ∈ ℝ^P, |α(v_1, …, v_n)| ≤ |α|_E·(det(v_i·v_j)_{i,j})^{1/2}, where |α|_E = covectorEuclideanNorm α = (Σ_{i_1<⋯<i_n} α(e_{i_1}, …, e_{i_n})²)^{1/2} is the Euclidean coefficient norm of Simon 6.1.15; (2) for every orthonormal family τ_1, …, τ_n in ℝ^P there is an n-covector α with |α|_E ≤ 1 and α(τ_1, …, τ_n) = 1.",
+  "lean_statement": "∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1",
+  "lean_name": "covectorEuclideanNorm_gram_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1-a1"
+}
