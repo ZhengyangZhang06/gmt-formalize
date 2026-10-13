@@ -802,6 +802,43 @@ theorem Submission.cbr_setIntegral_eq_of_integral_eq : ∀ (P k : ℕ) (U : Set 
           (hasSum_integral_iUnion hfm hfd hi₃.integrableOn)).congr_fun fun n => hf n)
   exact hall B hB
 
+/-- **Integer multiplicity is local** (Simon Ch. 6, 3.1 and 6.3.1; localization remark 8.3(1)).
+Assume (IMC)(a).  Let `X(ω) = ∫ ⟨ω, ξ⟩ dμ` for `ω ∈ 𝒟ᵏ(U)`, where `μ(ℝᴾ \ U) = 0`, `μ` is finite
+on compact subsets of `U` and `ξ` is `μ`-measurable.  If each `x ∈ U` has an open neighbourhood
+`W ⊆ U` with an integer multiplicity triple `R = (M, θ, ξ_R)` in `W` such that `μ⌞W = θHᵏ⌞M` and
+`ξ = ξ_R` `μ`-a.e. on `W`, then `X` is integer multiplicity.  By Lindelöf, countably many such
+`Wᵢ` cover `U`, and there are disjoint Borel pieces `Aᵢ ⊆ Wᵢ` covering `U`; then
+`μ⌞Aᵢ = (θᵢHᵏ⌞Mᵢ)⌞Aᵢ`, and `ξ = ξᵢ` `Hᵏ`-a.e. on `Mᵢ ∩ Aᵢ` because `Hᵏ⌞Mᵢ ≪ θᵢHᵏ⌞Mᵢ`.  Gluing
+the `Rᵢ` along the `Aᵢ` gives a triple in `U` with orientation `ξ` and weight `μ`, and it
+represents `X`. -/
+theorem Submission.cbr_isIntegerMultiplicity_of_local_reps : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ ω : TestFormOn U k, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) → (∀ x ∈ U, ∃ (W : Set (Euclid P)) (R : IMRep W k), IsOpen W ∧ x ∈ W ∧ W ⊆ U ∧ μ.restrict W = R.measure ∧ ∀ᵐ y ∂μ, y ∈ W → ξ y = R.orient y) → IsIntegerMultiplicity X := by
+  intro hIMC P k U X μ ξ hU hμU hμK hξ hX hloc
+  -- Step 1: countably many neighbourhoods `Wᵢ` carrying local triples `Rᵢ`, and disjoint Borel
+  -- pieces `Aᵢ ⊆ Wᵢ` covering `U` (Lindelöf)
+  obtain ⟨ι, _, W, A, hWo, hWU, hpW, hAm, hAW, hAd, hAU⟩ :=
+    Submission.cbrg_exists_countable_disjoint_refinement P U
+      (fun W => ∃ R : IMRep W k, μ.restrict W = R.measure ∧ ∀ᵐ y ∂μ, y ∈ W → ξ y = R.orient y)
+      fun x hx => by
+        obtain ⟨W, R, hWo, hxW, hWU, hRμ, hRξ⟩ := hloc x hx
+        exact ⟨W, hWo, hxW, hWU, R, hRμ, hRξ⟩
+  choose R hRμ hRξ using hpW
+  -- Step 2: `ξ = ξᵢ` holds `μ⌞Wᵢ`-a.e., i.e. `θᵢHᵏ⌞Mᵢ`-a.e., hence `Hᵏ⌞Mᵢ`-a.e. and so
+  -- `Hᵏ`-a.e. on `Mᵢ ∩ Aᵢ`
+  have hξR : ∀ i, ∀ᵐ y ∂(μHE[k].restrict ((R i).carrier ∩ A i)), ξ y = (R i).orient y := by
+    intro i
+    have h : ∀ᵐ y ∂(R i).measure, ξ y = (R i).orient y := by
+      rw [← hRμ i, ae_restrict_iff' (hWo i).measurableSet]
+      exact hRξ i
+    exact ae_restrict_of_ae_restrict_of_subset inter_subset_left
+      ((Submission.cbr_imRep_measure_basic P k (W i) (R i)).2.1.ae_le h)
+  -- Step 3: glue the `Rᵢ` along the `Aᵢ`; `μ⌞Aᵢ = (μ⌞Wᵢ)⌞Aᵢ = (θᵢHᵏ⌞Mᵢ)⌞Aᵢ` as `Aᵢ ⊆ Wᵢ`
+  obtain ⟨R', -, hR'o, hR'μ⟩ := Submission.cbrg_imRep_glue_disjoint hIMC ι P k U W A R μ ξ hU
+    hWo hWU hAm hAd (by rw [hAU]; exact hμU)
+    (fun i => by rw [← Measure.restrict_restrict_of_subset (μ := μ) (hAW i), hRμ i]) hμK hξ hξR
+  -- Step 4: the glued triple represents `X`: `R'.action ω = ∫ ⟨ω, ξ⟩ dμ = X(ω)`
+  refine ⟨R', fun ω => ?_⟩
+  rw [hX ω, (Submission.cbr_imRep_measure_basic P k U R').2.2.2.2.2.2, hR'o, hR'μ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
