@@ -1101,6 +1101,93 @@ theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Se
     · exact measure_mono_null hsub hnullimg
   rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
 
+/-- **Approximate tangent planes of a cone are dilation invariant** (Simon Ch. 3, 1.4, for the cone
+`C` of 7.3.1(2) in the proof of 7.3.3).  If the cone `C` is represented by `R = (M, θ, ξ)` with
+weight `μ = θHⁿ⌞M` and `r > 0`, then `T_{rx}M = TₓM` for `μ`-a.e. `x`.  As `μ(λA) = λⁿ μ(A)`,
+`μ`-a.e. statements survive `x ↦ λx`; since `θ ≥ 1` on `M`, this gives
+`Hⁿ(M \ rM) = Hⁿ(rM \ M) = 0`.  For `μ`-a.e. `x` both `TₓM` and `T_{rx}M` exist; `TₓM` is the
+approximate tangent plane of `η_{0,r⁻¹}(M) = rM` at `rx`, so both are approximate tangent planes
+of `M ∩ rM` at `rx`, and approximate tangent planes are unique. -/
+theorem Submission.idtp_cse_cone_approxTangent_smul : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ r : ℝ, 0 < r → ∀ᵐ x ∂R.measure, approxTangentPlane n R.carrier (r • x) = approxTangentPlane n R.carrier x := by
+  intro P n C R hC hR r hr
+  -- Step 1: `μ`-a.e. statements survive `x ↦ λx`, `λ > 0`: if `p` fails only on a `μ`-null Borel
+  -- set `E`, then `p(λ·)` fails only on `λ⁻¹E`, and `μ(λ⁻¹E) = λ⁻ⁿ μ(E) = 0`
+  have hscale : ∀ lam : ℝ, 0 < lam → ∀ p : Euclid P → Prop, (∀ᵐ x ∂R.measure, p x) →
+      ∀ᵐ x ∂R.measure, p (lam • x) := by
+    intro lam hlam p hp
+    obtain ⟨E, hpE, hE, hμE⟩ := exists_measurable_superset_of_null (ae_iff.1 hp)
+    rw [ae_iff]
+    refine measure_mono_null (t := (fun x => lam⁻¹ • x) '' E) (fun x hx =>
+      ⟨lam • x, hpE (show lam • x ∈ {y | ¬p y} from hx), inv_smul_smul₀ hlam.ne' x⟩) ?_
+    rw [Submission.cone_current_imrep_measure_smul_image P n C R hC hR lam⁻¹ (inv_pos.2 hlam) E
+      hE, hμE, mul_zero]
+  -- `μ = θHⁿ⌞M` and `Hⁿ⌞M` have the same null sets, as `θ ≥ 1` on `M`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hac' : μHE[n].restrict R.carrier ≪ R.measure := by
+    refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact_mod_cast (R.mult_pos x hx).ne'
+  -- Step 2: `μ`-a.e. `x` lies in `M` and `M` has an approximate tangent space at `x`
+  have hgood : ∀ᵐ x ∂R.measure,
+      x ∈ R.carrier ∧ ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := by
+    have h : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+        x ∈ R.carrier ∧ ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := by
+      filter_upwards [R.orients, ae_restrict_mem R.measurableSet_carrier] with x ⟨Q, hQ, _⟩ hx
+      exact ⟨hx, Q, hQ⟩
+    exact hac.ae_le h
+  -- Step 3: `Hⁿ(M \ λM) = 0`: `μ`-a.e., hence `Hⁿ⌞M`-a.e., `λ⁻¹x ∈ M`
+  have hnull₁ : ∀ lam : ℝ, 0 < lam →
+      μHE[n] (R.carrier \ (fun y => lam • y) '' R.carrier) = 0 := by
+    intro lam hlam
+    have h : ∀ᵐ x ∂(μHE[n].restrict R.carrier), lam⁻¹ • x ∈ R.carrier :=
+      hac'.ae_le (hscale lam⁻¹ (inv_pos.2 hlam) (· ∈ R.carrier) (hgood.mono fun x hx => hx.1))
+    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff] at h
+    have hsub : R.carrier \ (fun y => lam • y) '' R.carrier ⊆
+        {x | ¬(x ∈ R.carrier → lam⁻¹ • x ∈ R.carrier)} :=
+      fun x hx himp => hx.2 ⟨lam⁻¹ • x, himp hx.1, smul_inv_smul₀ hlam.ne' x⟩
+    exact measure_mono_null hsub h
+  -- `Hⁿ(λM \ M) ≤ Hⁿ(λ(M \ λ⁻¹M)) = λⁿ Hⁿ(M \ λ⁻¹M) = 0`
+  have hnull₂ : ∀ lam : ℝ, 0 < lam →
+      μHE[n] ((fun y => lam • y) '' R.carrier \ R.carrier) = 0 := by
+    intro lam hlam
+    refine measure_mono_null
+      (t := (fun y => lam • y) '' (R.carrier \ (fun y => lam⁻¹ • y) '' R.carrier)) ?_ ?_
+    · rintro _ ⟨⟨y, hy, rfl⟩, hyM⟩
+      refine ⟨y, ⟨hy, ?_⟩, rfl⟩
+      rintro ⟨w, hw, rfl⟩
+      apply hyM
+      show lam • lam⁻¹ • w ∈ R.carrier
+      rwa [smul_inv_smul₀ hlam.ne']
+    · rw [Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n hlam.ne',
+        hnull₁ lam⁻¹ (inv_pos.2 hlam), smul_zero]
+  -- `η_{0,r⁻¹}(y) = ry`
+  have hdil : dilation (0 : Euclid P) r⁻¹ = fun y => r • y := by
+    funext y
+    simp [dilation, dilationCLM]
+  -- `TₓM` is an approximate tangent space of `M` at `x` whenever one exists
+  have hspec : ∀ z, (∃ Q, HasApproximateTangentSpaceAt n R.carrier z Q) →
+      HasApproximateTangentSpaceAt n R.carrier z (approxTangentPlane n R.carrier z) := by
+    intro z hz
+    rw [approxTangentPlane, dite_eq_left hz]
+    exact hz.choose_spec
+  -- Step 4: compare `TₓM` and `T_{rx}M` at the `μ`-a.e. `x` where both exist
+  filter_upwards [hgood, hscale r hr _ hgood] with x hx hrx
+  -- (i) `TₓM` is the approximate tangent space of `η_{0,r⁻¹}(M) = rM` at `rx`
+  have h1 := Submission.dtc_approxTangent_dilation P n R.carrier 0 x r⁻¹ _ (inv_pos.2 hr)
+    (hspec x hx.2)
+  rw [hdil] at h1
+  -- (ii) and of `M ∩ rM`, as `Hⁿ(rM \ M) = 0`
+  have h2 := Submission.dtc_approxTangent_of_null_diff P n _
+    (R.carrier ∩ (fun y => r • y) '' R.carrier) univ (r • x) _ inter_subset_right isOpen_univ
+    (mem_univ _) (by rw [inter_univ, sdiff_inter_self_eq_sdiff]; exact hnull₂ r hr) h1
+  -- (iii) `T_{rx}M` is the approximate tangent space of `M ∩ rM` at `rx`, as `Hⁿ(M \ rM) = 0`
+  have h3 := Submission.dtc_approxTangent_of_null_diff P n R.carrier
+    (R.carrier ∩ (fun y => r • y) '' R.carrier) univ (r • x) _ inter_subset_left isOpen_univ
+    (mem_univ _) (by rw [inter_univ, sdiff_self_inter]; exact hnull₁ r hr) (hspec (r • x) hrx.2)
+  -- (iv) uniqueness of approximate tangent spaces
+  exact (h2.unique h3).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
