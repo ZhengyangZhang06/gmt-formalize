@@ -451,6 +451,164 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Steps 1–2 of the local comparison for a graph (Simon 7.5, codimension one regularity): for
+linear isometries `ι : ℝᵐ → ℝ^{m+k}`, `ι' : ℝᵏ → ℝ^{m+k}` with `⟨ιv, ι'w⟩ = 0` and `g`
+differentiable at `w₀`, the graph map `G(w) = ιw + ι'g(w)` has `DG(w₀) = ι + ι' ∘ Dg(w₀)`, and
+`|h| ≤ |DG(w₀)h|` because `|DG(w₀)h|² = |h|² + |Dg(w₀)h|²`. -/
+theorem Submission.codim1_zsl_ga_lc_graph_fderiv : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ g w₀ → fderiv ℝ (fun w => ι w + ι' (g w)) w₀ = ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ g w₀ ∧ ∀ h : Euclid m, ‖h‖ ≤ ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h‖ := by
+  intro m k ι ι' g w₀ horth hg
+  -- (1) sum and chain rules, then uniqueness: `DG(w₀) = ι + ι' ∘ Dg(w₀)`
+  have hder : fderiv ℝ (fun w => ι w + ι' (g w)) w₀ =
+      ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ g w₀ :=
+    (ι.toContinuousLinearMap.hasFDerivAt.add
+      (ι'.toContinuousLinearMap.hasFDerivAt.comp w₀ hg.hasFDerivAt)).fderiv
+  refine ⟨hder, fun h => ?_⟩
+  -- (2) Pythagoras: `|ιh + ι'(Dg(w₀)h)|² = |h|² + 2 ⟨ιh, ι'(Dg(w₀)h)⟩ + |Dg(w₀)h|²`, where the
+  -- middle term vanishes by orthogonality and `ι`, `ι'` preserve norms
+  have hsq : ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h‖ ^ 2 =
+      ‖h‖ ^ 2 + ‖fderiv ℝ g w₀ h‖ ^ 2 := by
+    have happly : fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h = ι h + ι' (fderiv ℝ g w₀ h) := by
+      rw [hder]; rfl
+    rw [happly, norm_add_sq_real, horth, ι.norm_map, ι'.norm_map]
+    ring
+  -- (3) `|h|² ≤ |DG(w₀)h|²`, and both norms are nonnegative
+  refine (pow_le_pow_iff_left₀ (norm_nonneg h) (norm_nonneg _) two_ne_zero).1 ?_
+  rw [hsq]
+  exact le_add_of_nonneg_right (sq_nonneg _)
+/-- Choice of the tolerance in the local comparison for the area of a `C¹` graph (Simon 2.3.2,
+by the approximation argument from the linear case 2.3.1): for `m ∈ ℕ` and `t > 1` there is
+`ε ∈ (0, 1)` with `(1 + ε)^m ≤ t(1 - ε)` and `1 + ε ≤ t(1 - ε)^m`.  By continuity at `0`, pick
+`ε ∈ (0, 1)` with `q^{m+1} < t` for `q = (1 + ε)/(1 - ε)`; since `1 + ε ≤ q` and
+`1/(1 - ε) ≤ q`, both `(1 + ε)^m/(1 - ε)` and `(1 + ε)/(1 - ε)^m` are at most `q^{m+1}`. -/
+theorem Submission.codim1_zsl_ga_lc_eps_choice : ∀ (m : ℕ) (t : ℝ), 1 < t → ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1 + ε) ^ m ≤ t * (1 - ε) ∧ 1 + ε ≤ t * (1 - ε) ^ m := by
+  intro m t ht
+  -- (1) `φ(ε) = ((1 + ε)/(1 - ε))^{m+1}` is continuous at `0` and `φ(0) = 1 < t`
+  have hφ : ContinuousAt (fun ε : ℝ => ((1 + ε) / (1 - ε)) ^ (m + 1)) 0 :=
+    ((continuousAt_const.add continuousAt_id).div (continuousAt_const.sub continuousAt_id)
+      (by norm_num)).pow (m + 1)
+  have hφt : ∀ᶠ ε in 𝓝 (0 : ℝ), ((1 + ε) / (1 - ε)) ^ (m + 1) < t :=
+    hφ.eventually_lt continuousAt_const (by simpa using ht)
+  -- (2) `(0, 1) ∈ 𝓝[>] 0`, so some `ε ∈ (0, 1)` has `φ(ε) < t`
+  have hφt' : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ((1 + ε) / (1 - ε)) ^ (m + 1) < t :=
+    hφt.filter_mono nhdsWithin_le_nhds
+  have hIoo : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ε ∈ Ioo 0 1 := Ioo_mem_nhdsGT zero_lt_one
+  obtain ⟨ε, hεt, hε0, hε1⟩ := (hφt'.and hIoo).exists
+  have h1 : 0 < 1 - ε := by linarith
+  have h2 : 0 < 1 + ε := by linarith
+  -- (3) with `q = (1 + ε)/(1 - ε)`: `1 + ε ≤ q` and `1/(1 - ε) ≤ q`
+  have hq1 : 1 + ε ≤ (1 + ε) / (1 - ε) := by
+    rw [le_div_iff₀ h1]; nlinarith
+  have hq2 : 1 / (1 - ε) ≤ (1 + ε) / (1 - ε) := div_le_div_of_nonneg_right (by linarith) h1.le
+  have hq0 : 0 ≤ (1 + ε) / (1 - ε) := h2.le.trans hq1
+  have hinv0 : 0 ≤ 1 / (1 - ε) := (one_div_pos.mpr h1).le
+  refine ⟨ε, hε0, hε1, ?_, ?_⟩
+  -- (4) `(1 + ε)^m/(1 - ε) ≤ q^m · q = q^{m+1} < t`; multiply by `1 - ε > 0`
+  · have h : (1 + ε) ^ m * (1 / (1 - ε)) ≤ ((1 + ε) / (1 - ε)) ^ (m + 1) := by
+      rw [pow_succ]
+      exact mul_le_mul (pow_le_pow_left₀ h2.le hq1 m) hq2 hinv0 (pow_nonneg hq0 m)
+    have h' : (1 + ε) ^ m / (1 - ε) ≤ t := by
+      rw [div_eq_mul_one_div]; linarith
+    rwa [div_le_iff₀ h1] at h'
+  -- (5) `(1 + ε)/(1 - ε)^m ≤ q · q^m = q^{m+1} < t`; multiply by `(1 - ε)^m > 0`
+  · have h : (1 + ε) * (1 / (1 - ε)) ^ m ≤ ((1 + ε) / (1 - ε)) ^ (m + 1) := by
+      rw [pow_succ']
+      exact mul_le_mul hq1 (pow_le_pow_left₀ hinv0 hq2 m) (pow_nonneg hinv0 m) hq0
+    have h' : (1 + ε) / (1 - ε) ^ m ≤ t := by
+      rw [div_eq_mul_one_div, ← one_div_pow]; linarith
+    rwa [div_le_iff₀ (pow_pos h1 m)] at h'
+
+/-- Local `(1 ± ε)`-bi-Lipschitz comparison of a `C¹` graph map with its linearization (Simon 2.3.2,
+by the approximation argument from the linear case 2.3.1): for linear isometries
+`ι : ℝᵐ → ℝ^{m+k}`, `ι' : ℝᵏ → ℝ^{m+k}` with `⟨ιv, ι'w⟩ = 0`, `g` of class `C¹` on the open set
+`D ∋ w₀`, `G(w) = ιw + ι'g(w)` and `L₀ = DG(w₀)`, there is `r > 0` with `B_r(w₀) ⊆ D` and
+`(1 - ε)|L₀x - L₀y| ≤ |G(x) - G(y)| ≤ (1 + ε)|L₀x - L₀y|` for `x, y ∈ B_r(w₀)`.  With
+`B₀ = Dg(w₀)` and `‖Dg(w) - B₀‖ < ε` on `B_r(w₀)`, the mean value inequality bounds
+`e = g(x) - g(y) - B₀(x - y)` by `ε|x - y| ≤ ε|L₀(x - y)|`, and
+`G(x) - G(y) = (L₀x - L₀y) + ι'e`. -/
+theorem Submission.codim1_zsl_ga_lc_local_bilipschitz : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (ε : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 0 < ε → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ x ∈ ball w₀ r, ∀ y ∈ ball w₀ r, (1 - ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖ ≤ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ∧ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ≤ (1 + ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖ := by
+  intro m k ι ι' g D ε w₀ horth hD hg hε hw₀
+  -- Step 1: `g` is differentiable at every point of the open set `D`
+  have hdiff : ∀ w ∈ D, DifferentiableAt ℝ g w := fun w hw =>
+    (hg.differentiableOn one_ne_zero).differentiableAt (hD.mem_nhds hw)
+  -- Step 2: `L₀ = ι + ι' ∘ B₀` and `|h| ≤ |L₀h|` (sibling `graph_fderiv`)
+  obtain ⟨hL₀, hlow⟩ :=
+    Submission.codim1_zsl_ga_lc_graph_fderiv m k ι ι' g w₀ horth (hdiff w₀ hw₀)
+  set L₀ := fderiv ℝ (fun w => ι w + ι' (g w)) w₀
+  set B₀ := fderiv ℝ g w₀
+  have hL₀app : ∀ h, L₀ h = ι h + ι' (B₀ h) := fun h => by rw [hL₀]; rfl
+  -- Step 3: `r = min(r₁, r₂)` with `B_{r₁}(w₀) ⊆ D` and `‖Dg(w) - B₀‖ < ε` on `B_{r₂}(w₀)`
+  obtain ⟨r₁, hr₁, hr₁D⟩ := Metric.isOpen_iff.mp hD w₀ hw₀
+  obtain ⟨r₂, hr₂, hr₂B⟩ := Metric.continuousAt_iff.mp
+    ((hg.continuousOn_fderiv_of_isOpen hD le_rfl).continuousAt (hD.mem_nhds hw₀)) ε hε
+  have hrD : ball w₀ (min r₁ r₂) ⊆ D := (ball_subset_ball (min_le_left _ _)).trans hr₁D
+  refine ⟨min r₁ r₂, lt_min hr₁ hr₂, hrD, fun x hx y hy => ?_⟩
+  -- Step 4: mean value inequality for `g - B₀` on the convex ball
+  have hmvi : ‖g x - g y - B₀ (x - y)‖ ≤ ε * ‖x - y‖ :=
+    (convex_ball w₀ (min r₁ r₂)).norm_image_sub_le_of_norm_fderiv_le'
+      (fun z hz => hdiff z (hrD hz))
+      (fun z hz => by
+        rw [← dist_eq_norm]
+        exact (hr₂B ((mem_ball.mp hz).trans_le (min_le_right _ _))).le) hy hx
+  -- Step 5: `G(x) - G(y) = (L₀x - L₀y) + ι'e` with `e = g(x) - g(y) - B₀(x - y)`
+  have hdecomp : ι x + ι' (g x) - (ι y + ι' (g y)) =
+      (L₀ x - L₀ y) + ι' (g x - g y - B₀ (x - y)) := by
+    rw [hL₀app, hL₀app]
+    simp only [map_sub]
+    abel
+  -- Step 6: `|ι'e| = |e| ≤ ε|x - y| ≤ ε|L₀(x - y)| = ε|L₀x - L₀y|`
+  have herr : ‖ι' (g x - g y - B₀ (x - y))‖ ≤ ε * ‖L₀ x - L₀ y‖ := by
+    rw [ι'.norm_map, ← map_sub L₀ x y]
+    exact hmvi.trans (mul_le_mul_of_nonneg_left (hlow (x - y)) hε.le)
+  -- Step 7: the triangle inequality in both directions
+  have h1 := norm_add_le (L₀ x - L₀ y) (ι' (g x - g y - B₀ (x - y)))
+  have h2 := norm_sub_le (L₀ x - L₀ y + ι' (g x - g y - B₀ (x - y))) (ι' (g x - g y - B₀ (x - y)))
+  rw [add_sub_cancel_right] at h2
+  rw [hdecomp]
+  constructor <;> linarith
+/-- Continuity of the Jacobian in the local comparison for the area formula of `C¹` graphs
+(Simon Ch. 2, 3.1–3.3, used for the zero-scale limit plane of 7.5): if `F : ℝᵐ → ℝᴾ` is `C¹` on
+the open set `D`, then `w ↦ √det(DF(w)* ∘ DF(w))` is continuous on `D`, being `Φ ∘ DF` with `DF`
+continuous on `D` and `Φ(T) = √det(T* ∘ T)` continuous on `ℝᵐ →L ℝᴾ`. -/
+theorem Submission.codim1_zsl_ga_lc_jacobian_continuousOn : ∀ (m P : ℕ) (F : Euclid m → Euclid P) (D : Set (Euclid m)), IsOpen D → ContDiffOn ℝ 1 F D → ContinuousOn (fun w => Real.sqrt (((fderiv ℝ F w).adjoint ∘L fderiv ℝ F w).det)) D := by
+  intro m P F D hD hF
+  -- (1) `F` is `C¹` on the open set `D`, so `DF` is continuous on `D`
+  have hDF : ContinuousOn (fderiv ℝ F) D := hF.continuousOn_fderiv_of_isOpen hD le_rfl
+  -- (2) `Φ(T) = √det(T* ∘ T)` is continuous: the adjoint is a linear isometric equivalence,
+  -- composition is jointly continuous, `det` is continuous in finite dimension, and so is `√`
+  have hΦ : Continuous fun T : Euclid m →L[ℝ] Euclid P => Real.sqrt ((T.adjoint ∘L T).det) :=
+    Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      (ContinuousLinearMap.adjoint.continuous.clm_comp continuous_id))
+  -- (3) the Jacobian is `Φ ∘ DF`
+  exact hΦ.comp_continuousOn hDF
+/-- Final step of the local comparison of `Hᵐ` on a `C¹` graph with the integral of its Jacobian
+(Simon 7.5.8 via Ch. 2, 3.2–3.3): with `ε < 1`, `c ≥ 0`, `(1 + ε)ᵐ ≤ t(1 − ε)` and
+`1 + ε ≤ t(1 − ε)ᵐ`, the `(1 ± ε)`-sandwiches `(1 − ε)ᵐ c X ≤ H ≤ (1 + ε)ᵐ c X` and
+`(1 − ε) c X ≤ I ≤ (1 + ε) c X` in `[0, ∞]` give `H ≤ t I` and `I ≤ t H`. -/
+theorem Submission.codim1_zsl_ga_lc_sandwich : ∀ (m : ℕ) (t ε c : ℝ) (X H I : ℝ≥0∞), ε < 1 → 0 ≤ c → (1 + ε) ^ m ≤ t * (1 - ε) → 1 + ε ≤ t * (1 - ε) ^ m → ENNReal.ofReal ((1 - ε) ^ m) * (ENNReal.ofReal c * X) ≤ H → H ≤ ENNReal.ofReal ((1 + ε) ^ m) * (ENNReal.ofReal c * X) → ENNReal.ofReal ((1 - ε) * c) * X ≤ I → I ≤ ENNReal.ofReal ((1 + ε) * c) * X → H ≤ ENNReal.ofReal t * I ∧ I ≤ ENNReal.ofReal t * H := by
+  intro m t ε c X H I hε hc h1 h2 hHlo hHhi hIlo hIhi
+  -- (1) `1 − ε > 0`, so `(1 − ε) c ≥ 0` and `(1 − ε)ᵐ c ≥ 0`
+  have hpos : 0 < 1 - ε := sub_pos.mpr hε
+  have hc1 : 0 ≤ (1 - ε) * c := mul_nonneg hpos.le hc
+  have hcm : 0 ≤ (1 - ε) ^ m * c := mul_nonneg (pow_nonneg hpos.le m) hc
+  -- (2) multiply both hypotheses on `t` by `c ≥ 0`
+  have h1' : (1 + ε) ^ m * c ≤ t * ((1 - ε) * c) := by
+    rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right h1 hc
+  have h2' : (1 + ε) * c ≤ t * ((1 - ε) ^ m * c) := by
+    rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right h2 hc
+  constructor
+  -- (3) `H ≤ (1 + ε)ᵐ c X ≤ t ((1 − ε) c) X ≤ t I`
+  · calc H ≤ ENNReal.ofReal ((1 + ε) ^ m) * (ENNReal.ofReal c * X) := hHhi
+      _ = ENNReal.ofReal ((1 + ε) ^ m * c) * X := by rw [ENNReal.ofReal_mul' hc, mul_assoc]
+      _ ≤ ENNReal.ofReal (t * ((1 - ε) * c)) * X := by gcongr ENNReal.ofReal ?_ * X
+      _ = ENNReal.ofReal t * (ENNReal.ofReal ((1 - ε) * c) * X) := by
+        rw [ENNReal.ofReal_mul' hc1, mul_assoc]
+      _ ≤ ENNReal.ofReal t * I := by gcongr
+  -- (4) `I ≤ (1 + ε) c X ≤ t ((1 − ε)ᵐ c) X ≤ t H`
+  · calc I ≤ ENNReal.ofReal ((1 + ε) * c) * X := hIhi
+      _ ≤ ENNReal.ofReal (t * ((1 - ε) ^ m * c)) * X := by gcongr ENNReal.ofReal ?_ * X
+      _ = ENNReal.ofReal t * (ENNReal.ofReal ((1 - ε) ^ m) * (ENNReal.ofReal c * X)) := by
+        rw [ENNReal.ofReal_mul' hcm, ENNReal.ofReal_mul' hc, mul_assoc, mul_assoc]
+      _ ≤ ENNReal.ofReal t * H := by gcongr
 /-- **Simon Ch. 2, 3.1** (linear area formula): for an injective linear `L : ℝⁿ → ℝᴾ`,
 `det(L*L) > 0` and `Hⁿ(L(S)) = √det(L*L) · Lⁿ(S)` for every `S ⊆ ℝⁿ`.  An orthonormal basis of
 `range L` gives a linear isometry `κ : ℝⁿ → ℝᴾ` onto `range L`.  Then `L = κ ∘ M` with
@@ -567,6 +725,65 @@ theorem Submission.codim1_zsl_ga_relative_lipschitz_measure : ∀ (n P : ℕ) (F
       ≤ ENNReal.ofReal (a ^ n) * (((Real.toNNReal a⁻¹ : NNReal) : ℝ≥0∞) ^ n * μHE[n] (F '' S)) :=
         mul_le_mul_of_nonneg_left hlo zero_le
     _ = μHE[n] (F '' S) := by rw [← mul_assoc, ha', one_mul]
+
+/-- **Local comparison** for the `C¹` graph map `G(w) = ιw + ι'g(w)` (Simon Ch. 2, 3.2–3.3, by the
+approximation argument based on the linear case 3.1): for `t > 1` and `w₀ ∈ D` there is a ball
+`B_r(w₀) ⊆ D` on which `Hᵐ(G(B)) ≤ t ∫_B J` and `∫_B J ≤ t Hᵐ(G(B))` for every measurable `B`,
+where `J(w) = √det(DG(w)*DG(w))`.  `L₀ = DG(w₀)` is injective, so `J₀ = J(w₀) > 0` and
+`Hᵐ(L₀(B)) = J₀ Lᵐ(B)`.  On a small ball, `G` is `(1 ± ε)`-bi-Lipschitz relative to `L₀` and
+`(1 − ε)J₀ ≤ J ≤ (1 + ε)J₀`, with `ε` chosen so that both sandwiches give the factor `t`. -/
+theorem Submission.codim1_zsl_ga_local_comparison : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (t : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 1 < t → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ B : Set (Euclid m), MeasurableSet B → B ⊆ ball w₀ r → μHE[m] ((fun w => ι w + ι' (g w)) '' B) ≤ ENNReal.ofReal t * ∫⁻ w in B, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) ∧ ∫⁻ w in B, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) ≤ ENNReal.ofReal t * μHE[m] ((fun w => ι w + ι' (g w)) '' B) := by
+  intro m k ι ι' g D t w₀ hperp hD hg ht hw₀
+  -- step 1: `ε ∈ (0, 1)` with `(1 + ε)ᵐ ≤ t(1 − ε)` and `1 + ε ≤ t(1 − ε)ᵐ`
+  obtain ⟨ε, hε0, hε1, hεm, hε1m⟩ := Submission.codim1_zsl_ga_lc_eps_choice m t ht
+  -- step 2: `‖h‖ ≤ ‖L₀ h‖` for `L₀ = DG(w₀)`, so `L₀` is injective, `J₀ = J(w₀) > 0` and
+  -- `Hᵐ(L₀(S)) = J₀ Lᵐ(S)`
+  have hgw₀ : DifferentiableAt ℝ g w₀ :=
+    (hg.differentiableOn one_ne_zero).differentiableAt (hD.mem_nhds hw₀)
+  set L₀ := fderiv ℝ (fun w => ι w + ι' (g w)) w₀
+  have hL₀ : Function.Injective L₀ := by
+    intro x y hxy
+    have h : ‖x - y‖ ≤ ‖L₀ (x - y)‖ :=
+      (Submission.codim1_zsl_ga_lc_graph_fderiv m k ι ι' g w₀ hperp hgw₀).2 (x - y)
+    rw [map_sub, hxy, sub_self, norm_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  obtain ⟨hdet, harea⟩ := Submission.codim1_zsl_ga_linear_area m (m + k) L₀ hL₀
+  set J : Euclid m → ℝ := fun w => Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L
+    fderiv ℝ (fun w => ι w + ι' (g w)) w).det)
+  have hJ₀ : 0 < J w₀ := Real.sqrt_pos.mpr hdet
+  -- step 3: `G` is `C¹` on `D`, so `J` is continuous at `w₀`: `|J − J₀| < εJ₀` on `B_δ(w₀)`
+  have hG : ContDiffOn ℝ 1 (fun w => ι w + ι' (g w)) D :=
+    ι.contDiff.contDiffOn.add (ι'.contDiff.comp_contDiffOn hg)
+  obtain ⟨δ, hδ, hJδ⟩ := Metric.continuousAt_iff.mp
+    ((Submission.codim1_zsl_ga_lc_jacobian_continuousOn m (m + k) _ D hD hG).continuousAt
+      (hD.mem_nhds hw₀)) (ε * J w₀) (mul_pos hε0 hJ₀)
+  -- step 4: `G` is `(1 ± ε)`-bi-Lipschitz relative to `L₀` on `B_{r₁}(w₀) ⊆ D`
+  obtain ⟨r₁, hr₁, hr₁D, hbil⟩ :=
+    Submission.codim1_zsl_ga_lc_local_bilipschitz m k ι ι' g D ε w₀ hperp hD hg hε0 hw₀
+  refine ⟨min r₁ δ, lt_min hr₁ hδ, (Metric.ball_subset_ball (min_le_left _ _)).trans hr₁D,
+    fun B hB hBr => ?_⟩
+  -- step 5: `(1 − ε)ᵐ J₀ Lᵐ(B) ≤ Hᵐ(G(B)) ≤ (1 + ε)ᵐ J₀ Lᵐ(B)`
+  have hB₁ : B ⊆ ball w₀ r₁ := hBr.trans (Metric.ball_subset_ball (min_le_left _ _))
+  obtain ⟨hHlo, hHhi⟩ := Submission.codim1_zsl_ga_relative_lipschitz_measure m (m + k)
+    (fun w => ι w + ι' (g w)) L₀ B (1 - ε) (1 + ε) (by linarith) (by linarith)
+    fun x hx y hy => hbil x (hB₁ hx) y (hB₁ hy)
+  rw [harea B] at hHlo hHhi
+  -- step 6: `(1 − ε) J₀ Lᵐ(B) ≤ ∫_B J ≤ (1 + ε) J₀ Lᵐ(B)`
+  have hJB : ∀ w ∈ B, (1 - ε) * J w₀ ≤ J w ∧ J w ≤ (1 + ε) * J w₀ := by
+    intro w hw
+    have h : |J w - J w₀| < ε * J w₀ :=
+      hJδ ((Metric.mem_ball.mp (hBr hw)).trans_le (min_le_right _ _))
+    rw [abs_sub_lt_iff] at h
+    constructor <;> linarith
+  have hIlo : ENNReal.ofReal ((1 - ε) * J w₀) * volume B ≤ ∫⁻ w in B, ENNReal.ofReal (J w) :=
+    (setLIntegral_const B _).symm.trans_le
+      (setLIntegral_mono' hB fun w hw => ENNReal.ofReal_le_ofReal (hJB w hw).1)
+  have hIhi : ∫⁻ w in B, ENNReal.ofReal (J w) ≤ ENNReal.ofReal ((1 + ε) * J w₀) * volume B :=
+    (setLIntegral_mono' hB fun w hw => ENNReal.ofReal_le_ofReal (hJB w hw).2).trans_eq
+      (setLIntegral_const B _)
+  -- step 7: the two sandwiches and the choice of `ε` give the factor `t`
+  exact Submission.codim1_zsl_ga_lc_sandwich m t ε (J w₀) (volume B) _ _ hε1 hJ₀.le hεm hε1m
+    hHlo hHhi hIlo hIhi
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
