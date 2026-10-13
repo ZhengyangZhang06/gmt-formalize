@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_cone_approxTangent_smul|cone_current_imrep_measure_smul_image|dtc_approxTangent_dilation|dtc_approxTangent_of_null_diff",
+        "def CountablyRectifiable|def blowUpMap|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique",
+        "theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem exists_measurable_superset_of_null|theorem withDensity_absolutelyContinuous|theorem euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|theorem restrict_congr_set|theorem ae_eq_set|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem integral_map_equiv|theorem lintegral_map_equiv",
+        "hausdorffMeasure_image_le|const_smul_of_ne_zero",
+        "git show e183b985f8baf48aa0fe07ee8e978c1474ec9d0a:GMT/Ch07/Submission.lean",
+        "git show 2b0c51405c3f7d305798214e74d0447c1d210ae1:GMT/Ch07/Submission.lean",
+        "git show 022bd01bf7500f65a1cfbba033ecf91be9652452:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tangent_decomposition_audit_djerewss/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tangent_decomposition_audit_djerewss/VerifiedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5f6464840d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-approx-tangent-local-a1/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-44ad5d9baeee/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-44ad5d9baeee/_recursive_lean/store.py",
+        "/tmp/tangent_decomposition_audit_djerewss/IndependentTypes.lean",
+        "/tmp/tangent_decomposition_audit_djerewss/VerifiedAssembly.lean"
+      ],
+      "conclusion": "The reuse split is appropriate: it supplies exactly the three accepted prerequisites cited by the selected proof but absent from its frozen base and current dependency edges. Snapshot files and package pins match; the four Submission names have no matches in the snapshot project. Each proposed name has one accepted owner and an identical frozen type. Dependency traversal found no cycles or paths back to the selected node or its ancestors; reuse preserves existing internal prerequisites. All child types independently elaborate as propositions before implementation. A fresh assembly using the actual accepted proofs and the supplied parent theorem compiled successfully at the exact selected type. All four declarations depend only on propext, Classical.choice and Quot.sound. Homogeneity, transported exceptional sets, the two null-difference comparisons and tangent uniqueness establish this selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_homogeneity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. The bare name reuses its comparator-accepted identical type. Independently checked steps 1–6: Hausdorff change of variables has the correct factors; every rescaled IMRep field is justified; the pullback identity proves representation of C; accepted representation uniqueness identifies the measures; positivity permits cancellation even for infinite set measure. Its prerequisite closure is accepted and non-circular. This supplies the parent's carrier-null-difference and exceptional-set arguments."
+    },
+    {
+      "key": "tangent_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line type agree, and the bare name is an exact accepted reuse. The proof preserves dimension, establishes the blow-up image identity for every radius, and transfers the defining limit through r ↦ λr using λ > 0. No measurability or integrability assumption is hidden. It has no prerequisites and does not invoke the parent. Applied at base point zero with scale r⁻¹, it supplies exactly parent step 4(i)."
+    },
+    {
+      "key": "tangent_null_diff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both prose and the standalone one-line type; the bare name validly reuses its accepted identical declaration. Independently checked steps 1–7: compact support and openness give a positive cutoff radius, restriction to the Borel ball works for arbitrary underlying sets, Lipschitz dilation preserves Hausdorff-null sets, and subset inclusion gives equality of the restricted measures and eventual equality of integrals. No extra measurability or integrability is needed. Its two applications to M ∩ rM have the correct directions and enable uniqueness at rx."
+    }
+  ],
+  "required_changes": []
+}
