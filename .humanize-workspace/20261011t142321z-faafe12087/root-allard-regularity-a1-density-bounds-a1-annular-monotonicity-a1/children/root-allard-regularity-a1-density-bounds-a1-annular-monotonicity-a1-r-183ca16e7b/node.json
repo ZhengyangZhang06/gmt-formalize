@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.radial_identity-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+  "depth": 4,
+  "title": "Radial first-variation identity with the conical term under local tangent-plane hypotheses",
+  "statement": "Let n and l be natural numbers, U a subset of R^(n+l), V a rectifiable n-varifold in U (contract structure RectifiableVarifold n l U) with weight mu := V.weight and p_x := V.tangentProj x, and H : R^(n+l) -> R^(n+l) with V.HasGeneralizedMeanCurvature H. Let y be in R^(n+l) and R real with closedBall y R contained in U. Assume (T1): for mu-a.e. x, if x lies in the open ball ball y R, then p_x = P.starProjection for some subspace P with finrank P = n. Let phi : R -> R be C^1 with phi(t) = 1 for t <= 1 and phi(t) = 0 for t >= T, and let rho > 0 with T rho < R. Write r_x := |x - y|, phi' := deriv phi and nu(x) := |(x - y) - p_x(x - y)|^2 / |x - y|^2. Real division by 0 is 0, so nu(y) = 0. Then the Bochner integrals satisfy: integral (n phi(r_x/rho) + (r_x/rho) phi'(r_x/rho) (1 - nu(x))) dmu = - integral phi(r_x/rho) (x - y).H(x) dmu. No integrability is assumed.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R : ℝ), closedBall y R ⊆ U → (∀ᵐ x ∂V.weight, x ∈ ball y R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ < R → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) ∂V.weight = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂V.weight",
+  "lean_name": "allard52_am_radial_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-r-183ca16e7b-a1"
+}

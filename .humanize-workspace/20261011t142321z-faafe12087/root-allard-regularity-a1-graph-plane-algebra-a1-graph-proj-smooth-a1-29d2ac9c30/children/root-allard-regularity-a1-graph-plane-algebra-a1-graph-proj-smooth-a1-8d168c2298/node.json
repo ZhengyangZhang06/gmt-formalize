@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1.transpose_eq_sum-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1",
+  "depth": 5,
+  "title": "Coordinate formula for a transpose",
+  "statement": "For natural numbers n, m and continuous linear maps L : R^n -> R^m and T : R^m -> R^n (R^k = EuclideanSpace R (Fin k) = Rn k) such that <T w, v> = <w, L v> for all w in R^m and v in R^n: T w = sum_{i<n} <L e_i, w> e_i for every w in R^m, where e_i = EuclideanSpace.single i 1 is the i-th standard basis vector of R^n.",
+  "lean_statement": "∀ (n m : ℕ) (L : Rn n →L[ℝ] Rn m) (T : Rn m →L[ℝ] Rn n), (∀ (w : Rn m) (v : Rn n), inner ℝ (T w) v = inner ℝ w (L v)) → ∀ w : Rn m, T w = ∑ i : Fin n, inner ℝ (L (EuclideanSpace.single i 1)) w • EuclideanSpace.single i 1",
+  "lean_name": "allard52_gfz_transpose_eq_sum",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-8d168c2298-a1"
+}

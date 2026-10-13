@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1.holder_extension-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1",
+  "depth": 4,
+  "title": "Continuous extension, with the same Hoelder modulus, of an operator-valued map from a dense subset",
+  "statement": "Let n, m, k >= 0, let F : R^n -> L(R^m, R^k) be any map into the continuous linear maps R^m -> R^k (operator-norm topology), let S and Z be subsets of R^n, and let M, R, alpha be reals with M >= 0, R > 0 and alpha > 0. Assume S is contained in the closure of Z, and hsNorm(F(x) - F(y)) <= M (||x - y||/R)^alpha for all x, y in Z, where hsNorm is the Hilbert-Schmidt norm. Then there is g : R^n -> L(R^m, R^k) with three properties: g is continuous on S; g(x) = F(x) for every x in Z; and hsNorm(g(x) - g(y)) <= M (||x - y||/R)^alpha for all x, y in S.",
+  "lean_statement": "∀ (n m k : ℕ) (F : Rn n → (Rn m →L[ℝ] Rn k)) (S Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → S ⊆ closure Z → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (F x - F y) ≤ M * (‖x - y‖ / R) ^ α) → ∃ g : Rn n → (Rn m →L[ℝ] Rn k), ContinuousOn g S ∧ (∀ x ∈ Z, g x = F x) ∧ ∀ x ∈ S, ∀ y ∈ S, hsNorm (g x - g y) ≤ M * (‖x - y‖ / R) ^ α",
+  "lean_name": "allard52_c1h_holder_extension",
+  "depends_on": [
+    "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1.hs_norm_basics-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.graph_campanato-a1.c1_holder_extension-a1.hs_norm_basics-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-c1-holder-extension-a1-h-047960399b-a1"
+}
