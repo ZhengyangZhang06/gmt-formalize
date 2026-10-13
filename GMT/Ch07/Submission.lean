@@ -451,6 +451,59 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Mass of a difference** (Simon (6.2.5), chapter-06.txt line 231; this subadditivity makes the
+flat distances `d_W` of 7.1 (lines 2018–2022) pseudometrics and is used in the proof of 7.2):
+`M_G(A − B) ≤ M_G(A) + M_G(B)` for every set `G`.  If `ω` is admissible for `M_G` then so is `−ω`
+(same support, same coefficient norm), and `(A − B)(ω) = A(ω) + B(−ω)`, so
+`ofReal ((A − B)(ω)) ≤ ofReal (A(ω)) + ofReal (B(−ω)) ≤ M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: it suffices to bound `ofReal ((A − B)(ω))` for each admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible: same support, same coefficient norm
+  have hneg : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
+  have hsplit : (A - B) ω = A ω + B (-ω) := by
+    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    change A ω - B ω = A ω + B (-ω)
+    rw [hB, sub_eq_add_neg]
+  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
+
+/-- **Close pairs** (Simon Ch. 6, 7.2, step 2 of the proof).  Assume differences of integer
+multiplicity currents in an open `U` are integer multiplicity.  If `Y − Q − S₁ = ∂R₁` and
+`Z − Q − S₂ = ∂R₂` in `U` with `R₁, S₁, R₂, S₂` integer multiplicity, then `R = R₁ − R₂` and
+`S = S₁ − S₂` are integer multiplicity, `Y − Z − S = ∂R` (the common `Q` cancels), and
+`M(R) + M(S) ≤ (M(R₁) + M(S₁)) + (M(R₂) + M(S₂))` by `M(A − B) ≤ M(A) + M(B)`. -/
+theorem Submission.cmc_fc_cs_close_of_common_center : (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (Y Z Q S₁ S₂ : GeometricCurrentOn U (m + 1)) (R₁ R₂ : GeometricCurrentOn U (m + 2)), IsOpen U → IsIntegerMultiplicity R₁ → IsIntegerMultiplicity S₁ → IsIntegerMultiplicity R₂ → IsIntegerMultiplicity S₂ → Y - Q - S₁ = R₁.boundary → Z - Q - S₂ = R₂.boundary → ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ Y - Z - S = R.boundary ∧ R.mass + S.mass ≤ (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass) := by
+  intro hIS P m U Y Z Q S₁ S₂ R₁ R₂ hU hR₁ hS₁ hR₂ hS₂ h₁ h₂
+  -- `R = R₁ − R₂` and `S = S₁ − S₂` are integer multiplicity by (IS)
+  refine ⟨R₁ - R₂, S₁ - S₂, hIS P (m + 2) U R₁ R₂ hU hR₁ hR₂, hIS P (m + 1) U S₁ S₂ hU hS₁ hS₂,
+    ?_, ?_⟩
+  · -- evaluate both hypotheses at `ω`, using `∂T(ω) = T(dω)`; the `Q(ω)` terms cancel
+    ext ω
+    have e₁ : Y ω - Q ω - S₁ ω = R₁ (exteriorDerivativeTestOn U (m + 1) ω) :=
+      congrArg (fun T : GeometricCurrentOn U (m + 1) => T ω) h₁
+    have e₂ : Z ω - Q ω - S₂ ω = R₂ (exteriorDerivativeTestOn U (m + 1) ω) :=
+      congrArg (fun T : GeometricCurrentOn U (m + 1) => T ω) h₂
+    change Y ω - Z ω - (S₁ ω - S₂ ω) =
+      R₁ (exteriorDerivativeTestOn U (m + 1) ω) - R₂ (exteriorDerivativeTestOn U (m + 1) ω)
+    linarith
+  · -- `M(R₁ − R₂) ≤ M(R₁) + M(R₂)` and `M(S₁ − S₂) ≤ M(S₁) + M(S₂)`, with `M = M_U`
+    calc (R₁ - R₂).mass + (S₁ - S₂).mass
+        ≤ (R₁.mass + R₂.mass) + (S₁.mass + S₂.mass) :=
+          add_le_add (Submission.cmc_fc_cs_massOn_sub_le P (m + 2) U U R₁ R₂)
+            (Submission.cmc_fc_cs_massOn_sub_le P (m + 1) U U S₁ S₂)
+      _ = (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass) := add_add_add_comm _ _ _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
