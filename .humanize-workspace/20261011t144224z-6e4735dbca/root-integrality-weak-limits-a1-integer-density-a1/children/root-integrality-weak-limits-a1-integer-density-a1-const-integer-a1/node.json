@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "depth": 3,
+  "title": "A constant multiple c[[U]] of an open subset of ℝⁿ is integer multiplicity only if c ∈ ℤ",
+  "statement": "Let m ∈ ℕ, n := m+1, U ⊆ ℝⁿ open and nonempty, c ∈ ℝ, and X ∈ D_n(U) integer multiplicity with X(ω) = c∫_U ω(x)(e_1,…,e_n) dx for every ω ∈ D^n(U), where e_i = EuclideanSpace.single i 1 and dx is Lebesgue measure. Then c ∈ ℤ.",
+  "lean_statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (c : ℝ) (X : GeometricCurrentOn U (m + 1)), IsOpen U → U.Nonempty → IsIntegerMultiplicity X → (∀ ω : TestFormOn U (m + 1), X ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ k : ℤ, c = k",
+  "lean_name": "ind_const_multiple_integer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-const-integer-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "depth": 3,
+  "title": "Push-forward of a current by the dilation η_{x,r} (fact (F5) for the blow-up maps)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, X ∈ D_n(ℝ^P), x ∈ ℝ^P and r > 0. Then: (a) for every ω ∈ D^n(ℝ^P) there is a test form η ∈ D^n(ℝ^P) with η(y) = r^{−n}·ω(r⁻¹(y − x)) for all y. Moreover there is Y ∈ D_n(ℝ^P) such that: (b) Y(ω) = X(η) whenever η(y) = r^{−n}·ω(r⁻¹(y − x)) for all y; (c) if X is integer multiplicity, so is Y; (d) if ∂X = 0 then ∂Y = 0; (e) M_W(Y) ≤ ENNReal.ofReal(r^{−n})·M_{{y : r⁻¹(y−x) ∈ W}}(X) for every W ⊆ ℝ^P.",
+  "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P) (r : ℝ), 0 < r → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), ∃ η : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y = (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) ∧ (∀ ω η : TestFormOn (univ : Set (Eucl P)) (m + 1), (∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y = (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) → Y ω = X η) ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ (X.boundary = 0 → Y.boundary = 0) ∧ ∀ W : Set (Eucl P), Y.massOn W ≤ ENNReal.ofReal ((r ^ (m + 1))⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W}",
+  "lean_name": "ind_rescaled_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "depth": 3,
+  "title": "Uniform small-ball mass bounds along a subsequence (finite upper density of the limit mass measure)",
+  "statement": "Let P, n ∈ ℕ and let T_j ∈ D_n(ℝ^P) (j ∈ ℕ; GeometricCurrentOn univ n) with sup_j M(T_j) < ∞. Then there is a strictly increasing φ : ℕ → ℕ such that for Hⁿ-a.e. x ∈ ℝ^P (Hⁿ = μHE[n]) there are C ∈ ℝ and r₀ > 0 with the following property: for every r ∈ (0, r₀), M_{B_r(x)}(T_{φ(j)}) ≤ ENNReal.ofReal(C·rⁿ) for all sufficiently large j.",
+  "lean_statement": "∀ (P n : ℕ) (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) n), (⨆ j, (Tj j).mass) < ∞ → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ r ∈ Ioo (0 : ℝ) r₀, ∀ᶠ j in atTop, (Tj (φ j)).massOn (ball x r) ≤ ENNReal.ofReal (C * r ^ n)",
+  "lean_name": "ind_mass_density_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-a1"
+}

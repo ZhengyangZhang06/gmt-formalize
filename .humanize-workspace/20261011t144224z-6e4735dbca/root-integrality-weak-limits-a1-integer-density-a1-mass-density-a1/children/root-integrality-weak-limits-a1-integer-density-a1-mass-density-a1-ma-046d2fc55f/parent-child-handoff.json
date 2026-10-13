@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp snapshot project/GMT/Ch06/{Contract,Submission}.lean against workspace GMT/Ch06/{Contract,Submission}.lean (identical); cmp snapshot mathlib Portmanteau/HasOuterApproxClosed/Embedding/Comap/Sequences/LiminfLimsup/Geometry/Euclidean/Volume/Measure.lean against .lake copies (identical)",
+        "python3 scan of dag.json: lean_name/status/lean_statement of all 360 nodes; ind_* names; frozen types of iwl_restriction_theory, rectifiability_density_comparison, rectifiability_mass_measure_representation (all accepted); statements containing dimensionalUpperDensity|IsMassMeasure|closedBall x r|limsup (fun",
+        "git grep 'ind_md_' over all refs; grep -rn 'ind_md_|closedBall_weak_subseq|diagonal_weak_subseq|ae_closedBall_growth|mass_measure_balls' snapshot project + mathlib/Mathlib + simongmt (no match)",
+        "git show afac113:GMT/Ch06/Submission.lean | grep 'theorem Submission.|import|namespace' (Submission.X declared inside namespace GMT.Ch06; accepted versions add SimonGMT imports)",
+        "grep -n 'def massOn|def mass|massOn_mono|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "grep -n 'finiteMeasure_tendsto_subseq_of_compact_metrizable|simon_theorem_4_16_compact_metrizable|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+        "grep -rn 'limsup_measure_closed_le_of_tendsto|class HasOuterApproxClosed|instance|notation \"μHE\\[\"|theorem comap_apply|theorem subtype_coe|IsCompact.tendsto_subseq|limsup_eq_iInf_iSup_of_nat' mathlib/Mathlib",
+        "python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements and the parent",
+        "lake env lean /tmp/mdb-decomp/{Stmts,Api,Assembly,Feas1,Feas2,Feas3,Feas4,Final,Final2}.lean with #print axioms",
+        "sed -n 2400,2445p book/chapter-06.txt (printed Proof of 8.2, display (8)); grep -n '3.3 Theorem|4.16 Theorem' book/chapter-01.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/HasOuterApproxClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Comap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/mdb-decomp/Stmts.lean",
+        "/tmp/mdb-decomp/Assembly.lean",
+        "/tmp/mdb-decomp/Final.lean",
+        "/tmp/mdb-decomp/Final2.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract and a byte-identical Submission. Both are identical to the workspace copies compiled against.\n\nThe supplied proof is fully supported by local declarations:\n- SimonGMT GeometricCurrentOn.mass = massOn univ and massOn_mono (Chapter06/Mass.lean).\n- finiteMeasure_tendsto_subseq_of_compact_metrizable (Chapter01/CompactMetrizableCompactness.lean; normalizes masses, so no metrizability of FiniteMeasure is needed).\n- dimensionalUpperDensity / dimensionalDensityQuotient (Chapter01/Densities.lean) and realUnitBallVolume (Chapter01/Hausdorff.lean).\n- Mathlib FiniteMeasure.limsup_measure_closed_le_of_tendsto, with HasOuterApproxClosed for pseudo-metrizable spaces.\n- MeasurableEmbedding.subtype_coe and comap_apply, Monotone.measure_iUnion, iUnion_ball_nat, limsup_eq_iInf_iSup_of_nat, eventually_lt_of_limsup_lt, mem_nhdsGT_iff_exists_Ioo_subset, and the μHE notation.\n\nThe accepted DAG declarations iwl_restriction_theory (R2) and rectifiability_density_comparison are reused with byte-identical frozen types. No ind_md_* name exists anywhere.\n\nScratch Lean checks (/tmp/mdb-decomp):\n- All 4 child statements elaborate in the comparator's contract scope, and `exact Submission.<name>` resolves for each.\n- parent_of_children proves the exact frozen parent type from children 1, 3 and 4, and diag_of_single proves child 3 from child 2.\n- Complete proofs of children 1, 2 and 4 compile.\n- Every check uses only the axioms propext, Classical.choice and Quot.sound.\n\nThe printed Proof of 8.2 (chapter-06.txt lines 2420–2435) asserts that (8) remains valid for T_{j′} without proof; the supplied corrected argument fills this gap. Simon Ch. 1 3.3 and 4.16 are at chapter-01.txt lines 602 and 1750."
+    }
+  ],
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1",
+  "child_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.mass_measure_balls-a1",
+  "subproblem": {
+    "key": "mass_measure_balls",
+    "title": "Finite mass measure of a finite-mass current, agreeing with local mass on open balls",
+    "statement": "Let P, n ∈ ℕ and let T ∈ D_n(ℝ^P) (T : GeometricCurrentOn univ n on ℝ^P = Eucl P) have finite mass M(T) = T.mass < ∞. Then there is a measure μ on ℝ^P with μ(ℝ^P) ≤ M(T) and μ(B_r(x)) = M_{B_r(x)}(T) (= T.massOn (ball x r)) for every x ∈ ℝ^P and every r ∈ ℝ, where B_r(x) is the open ball (empty when r ≤ 0).",
+    "lean_statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n), T.mass < ∞ → ∃ μ : Measure (Eucl P), μ univ ≤ T.mass ∧ ∀ (x : Eucl P) (r : ℝ), μ (ball x r) = T.massOn (ball x r)",
+    "lean_name": "ind_md_mass_measure_balls",
+    "depends_on": [],
+    "natural_proof": "Source: Step 1, (1a) and (1b), of the parent proof of ind_mass_density_bound, specialized to one current.\n\nConventions. ℝ^P := Eucl P. M_W(T) := T.massOn W for W ⊆ ℝ^P. M(T) := T.mass, which by definition (GeometricCurrentOn.mass) is M_{ℝ^P}(T) = T.massOn univ. For W ⊆ ℝ^P, 'W ⊂⊂ ℝ^P' means CompactlyContainedOpen W univ: W is open, closure W is compact, and closure W ⊆ univ.\n\n1. Local finiteness. Let W ⊆ ℝ^P. Since W ⊆ univ, monotonicity of the local mass in the support region (GeometricCurrentOn.massOn_mono) gives M_W(T) ≤ M_{univ}(T) = M(T) < ∞. In particular M_W(T) < ∞ for every W ⊂⊂ ℝ^P.\n\n2. Mass measure. Apply the third conjunct (R2) of the comparator-accepted declaration Submission.iwl_restriction_theory with P, k := n, U := univ (open by isOpen_univ), X := T and the local finiteness from step 1. It gives a measure μ on ℝ^P with IsMassMeasure T μ. The two further conclusions, about restrictions, are not needed. By the second component of IsMassMeasure, μ(W) = M_W(T) for every W ⊂⊂ ℝ^P.\n\n3. Balls. Fix x ∈ ℝ^P and r ∈ ℝ.\n - The open ball B_r(x) = ball x r is open (isOpen_ball).\n - Its closure lies in the closed ball B̄_r(x) (closure_ball_subset_closedBall). B̄_r(x) is compact because ℝ^P is a proper metric space (isCompact_closedBall).\n - A closed subset of a compact set is compact (IsCompact.of_isClosed_subset with isClosed_closure), so closure(ball x r) is compact.\n - closure(ball x r) ⊆ univ trivially.\n Hence ball x r ⊂⊂ ℝ^P; this also holds when r ≤ 0, where the ball is empty. Step 2 gives μ(ball x r) = M_{ball x r}(T). This is the second conclusion.\n\n4. Total mass. The balls B_k(0), k ∈ ℕ, increase with k (ball_subset_ball, since k ≤ k′ implies (k : ℝ) ≤ k′), and their union is ℝ^P (iUnion_ball_nat). By continuity of measure along monotone unions (Monotone.measure_iUnion), μ(ℝ^P) = μ(⋃_k B_k(0)) = sup_k μ(B_k(0)). For each k, steps 3 and 1 give μ(B_k(0)) = M_{B_k(0)}(T) ≤ M(T). Hence μ(ℝ^P) ≤ M(T), the first conclusion.\n Lean remark: rewrite only the measured set, for example with calc μ univ = μ (⋃ k : ℕ, ball (0 : Eucl P) k) := by rw [iUnion_ball_nat]. A global rewrite of univ also hits the current's domain inside T.mass and fails with a motive error.\n\n5. By steps 3 and 4, μ has both required properties. ∎",
+    "proof_key_steps": [
+      "For every W, M_W(T) ≤ M(T) < ∞ (massOn_mono), so T has locally finite mass.",
+      "Submission.iwl_restriction_theory (R2) with U = univ gives μ with IsMassMeasure T μ, i.e. μ(W) = M_W(T) for every W ⊂⊂ ℝ^P.",
+      "Every open ball is ⊂⊂ ℝ^P (its closure lies in a compact closed ball), so μ(ball x r) = M_{ball x r}(T).",
+      "μ(ℝ^P) = sup_k μ(B_k(0)) = sup_k M_{B_k(0)}(T) ≤ M(T) (continuity from below along iUnion_ball_nat)."
+    ]
+  },
+  "audit": {
+    "key": "mass_measure_balls",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and Lean type agree, including arbitrary real radii. Mass monotonicity supplies local finiteness for the accepted restriction theorem; compact containment gives equality on every open ball, and monotone exhaustion proves the total-mass bound. The supplied proof is complete and non-circular."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ma-046d2fc55f/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ma-046d2fc55f/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ma-046d2fc55f/parent-supplied-natural-proof.json"
+}

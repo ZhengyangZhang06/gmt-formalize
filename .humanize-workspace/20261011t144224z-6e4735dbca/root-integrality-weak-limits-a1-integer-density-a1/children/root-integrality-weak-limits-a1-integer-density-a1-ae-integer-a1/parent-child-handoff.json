@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "diff GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean (identical; imports Densities, Rectifiable, Mass, FormsDuality, CurrentLocalEquality only)",
+        "python3 scans of dag.json: lean_name/status/depends_on of all nodes (262 now); no ind_* names; statuses of iwl_*, br_weightedTangent_congr, br_restrictDomain_isIntegerMultiplicity, cmb_*, rectifiability_density_comparison, slicing_representation_unique, ltg_tau_integrable, lpf_wtc_blowup_setIntegral_image, fiw_ims_tt_unit_bound",
+        "grep -n 'def \\|theorem ' simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward,FormsDuality,FormSupNorm}.lean",
+        "sed -n 1,130p; 270,370p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasWeightedApproximateTangentSpaceAt)",
+        "grep dimensionalUpperDensity|dimensionalDensityQuotient|realUnitBallVolume|simon_theorem_4_16_compact_metrizable|finiteMeasure_tendsto_subseq_of_compact_metrizable|simon_theorem_3_3 simongmt/Poincare/SimonGMT/Chapter01",
+        "grep -rn ae_tendsto_average_norm_sub|Besicovitch.tendsto_filterAt|vitaliFamily mathlib/Mathlib/MeasureTheory/Covering",
+        "grep -n euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_smul₀|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|Isometry.map_euclideanHausdorffMeasure mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep -rn isCompact_setOfPred_finiteMeasure_le_of_isCompact|FiniteMeasure.limsup_measure_closed_le_of_tendsto|lintegral_liminf_le|IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|norm_fderiv_le_of_lipschitz|AlternatingMap.eq_smul_basis_det|exists_contDiff_zero_iff_one_iff_of_isClosed|IsCompact.exists_cthickening_subset_open|setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|extraction_of_frequently_atTop|frequently_lt_of_liminf_lt|OrthonormalBasis.det_to_matrix_orthonormalBasis_real|MeasurableEmbedding.integrable_map_iff|aestronglyMeasurable_iUnion_iff|ae_restrict_iff'₀ mathlib/Mathlib",
+        "sed -n 2400,2500p book/chapter-06.txt (printed Proof of 8.2, displays (7)-(10))",
+        "verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') + lean_contract.validate_lean_statement on the 7 child statements",
+        "lake env lean /tmp/ind-decomp-scratch/{Stmts,ScopeCheck,Assembly}.lean (#print axioms IndAssemblyCheck.parent)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prokhorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ind-decomp-scratch/Stmts.lean",
+        "/tmp/ind-decomp-scratch/ScopeCheck.lean",
+        "/tmp/ind-decomp-scratch/Assembly_checked.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) has the frozen Ch06 Contract and a byte-identical Submission. Its imports are Mass, FormsDuality, CurrentLocalEquality, Densities and Rectifiable, but not AffineCurrentPushforward. So no child statement mentions affinePushforward; the child ind_rescaled_current states the push-forward through its action on pulled-back test forms.\n\nScratch Lean checks of the frozen project:\n- All 7 child statements pass the comparator's validate_lean_statement and elaborate in the contract_scope replay at main_theorem.\n- `exact Submission.<name>` resolves for each child.\n- IndAssemblyCheck.parent derives the exact frozen iwl_integer_density type from the child types plus the frozen types of iwl_restriction_weak_limit, iwl_smooth_pushforward and iwl_top_dim_integrality. Its only axioms are propext, Classical.choice and Quot.sound.\n\nSimonGMT supplies GeometricCurrentOn.affinePushforward (with boundary_affinePushforward, affinePullbackForm_isTestForm, TestFormOnConverges.affinePullback), restrictDomain, massOn_mono and le_massOn, blowUpMap, the definition of HasWeightedApproximateTangentSpaceAt, dimensionalUpperDensity with realUnitBallVolume, and finiteMeasure_tendsto_subseq_of_compact_metrizable / simon_theorem_4_16_compact_metrizable.\n\nMathlib supplies Besicovitch.vitaliFamily, VitaliFamily.ae_tendsto_average_norm_sub, Besicovitch.tendsto_filterAt, euclideanHausdorffMeasure_homothety_image, euclideanHausdorffMeasure_eq_volume, Isometry.map_euclideanHausdorffMeasure, FiniteMeasure.limsup_measure_closed_le_of_tendsto, lintegral_liminf_le, IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, norm_fderiv_le_of_lipschitz, AlternatingMap.eq_smul_basis_det, exists_contDiff_zero_iff_one_iff_of_isClosed, IsCompact.exists_cthickening_subset_open, setIntegral_eq_of_subset_of_ae_sdiff_eq_zero and extraction_of_frequently_atTop. Mathlib proves metrizability of the weak topology only for probability measures.\n\nAccepted DAG declarations reused by the child proofs: iwl_restriction_theory, rectifiability_density_comparison, br_weightedTangent_congr, br_restrictDomain_isIntegerMultiplicity, cmb_exists_countable_dense_testForms, cmb_abs_apply_le_of_massOn_le, slicing_representation_unique, ltg_tau_integrable and lpf_wtc_blowup_setIntegral_image. iwl_restriction_weak_limit, iwl_smooth_pushforward and iwl_top_dim_integrality are unaccepted and enter only as hypotheses.\n\nThe printed Proof of 8.2 (book chapter-06 lines 2400–2500) matches the supplied Step 11. No ind_* names exist in the DAG or the libraries. These checks do not certify the analytic child proofs."
+    }
+  ],
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "child_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_integer-a1",
+  "subproblem": {
+    "key": "ae_integer",
+    "title": "A rectifiable current with almost everywhere integer multiplicity is integer multiplicity",
+    "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ D_n(U), and let (M, θ, ξ) satisfy IsRectifiableTriple U n M θ ξ with T(ω) = τ(M,θ,ξ)(ω) = tauAction n M θ ξ ω for all ω ∈ D^n(U). If θ(x) is a natural number for Hⁿ⌞M-a.e. x (Hⁿ = μHE[n]), then T is integer multiplicity.",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∃ k : ℕ, θ x = k) → IsIntegerMultiplicity T",
+    "lean_name": "ind_ae_integer_multiplicity",
+    "depends_on": [],
+    "natural_proof": "Source: Step 9 of the parent proof (conclusion: remove the Hⁿ-null set where θ ∉ ℕ), stated for an arbitrary domain U.\n\nConventions.\n- Hⁿ := μHE[n] on ℝ^P := Eucl P.\n- η_{x,r}(y) := r⁻¹(y − x) = blowUpMap x r y.\n\n1. The exceptional set. M is Hⁿ-null-measurable, so by Mathlib ae_restrict_iff'₀ the hypothesis says Hⁿ(N) = 0, where N := {x ∈ M : ¬∃ k ∈ ℕ, θ(x) = k}. Put M′ := M ∖ N.\n - θ(x) ∈ ℕ for every x ∈ M′, by construction.\n - M′ is Hⁿ-null-measurable, since M is and N is null.\n\n2. Same current. M′ ⊆ M and Hⁿ(M ∖ M′) = Hⁿ(N) = 0, so M =ᵐ M′ for Hⁿ. Hence ∫_M h dHⁿ = ∫_{M′} h dHⁿ for every h (Mathlib setIntegral_congr_set). So tauAction n M θ ξ ω = tauAction n M′ θ ξ ω, and T(ω) = tauAction n M′ θ ξ ω for every ω ∈ D^n(U).\n\n3. Same weighted tangent spaces. Let x ∈ ℝ^P, Q a subspace and r > 0.\n - η_{x,r} is injective, so η_{x,r}(M) ∖ η_{x,r}(M′) = η_{x,r}(N).\n - Hⁿ(η_{x,r}(N)) = r^{−n}Hⁿ(N) = 0, by scaling and translation invariance of Hⁿ (Mathlib MeasureTheory.euclideanHausdorffMeasure_homothety_image).\n - Hence the sets η_{x,r}(M) and η_{x,r}(M′) are Hⁿ-a.e. equal. So for every f ∈ C_c(ℝ^P, ℝ),\n  ∫_{η_{x,r}(M)} f(y)θ(x + ry) dHⁿ(y) = ∫_{η_{x,r}(M′)} f(y)θ(x + ry) dHⁿ(y).\n - The finrank condition does not involve M. So HasWeightedApproximateTangentSpaceAt n M θ x Q ⟺ HasWeightedApproximateTangentSpaceAt n M′ θ x Q, for every x and Q.\n (Alternatively apply the comparator-accepted Submission.br_weightedTangent_congr with V := ℝ^P, θ′ := θ: Hⁿ(M Δ M′) = Hⁿ(N) = 0.)\n\n4. Rectifiable triple. IsRectifiableTriple U n M′ θ ξ holds:\n - subset: M′ ⊆ M ⊆ U;\n - null-measurable: step 1;\n - countably rectifiable: CountablyRectifiable.mono with M′ ⊆ M;\n - positivity: θ > 0 on M′ ⊆ M;\n - integrability: θ is integrable on M′ ∩ K ⊆ M ∩ K for compact K ⊆ U (IntegrableOn.mono_set);\n - measurability: ξ is AE-strongly measurable for Hⁿ⌞M′ ≤ Hⁿ⌞M;\n - orients: (Hⁿ⌞M′)-a.e. x satisfies the orients property of (M, θ, ξ), because Hⁿ⌞M′ ≤ Hⁿ⌞M. For such x the frame τ, the equation ξ(x) = ±simpleNVector τ and, by step 3, the weighted tangent space span τ of (M′, θ) at x are as required.\n\n5. Conclusion. By steps 1, 2 and 4, (M′, θ, ξ) witnesses IsIntegerMultiplicity T. ∎\n\nSelf-contained, using Mathlib scaling of μHE. The accepted Submission.br_weightedTangent_congr is an optional alternative for step 3.",
+    "proof_key_steps": [
+      "N := {x ∈ M : θ(x) ∉ ℕ} is Hⁿ-null (ae_restrict_iff'₀); set M′ := M ∖ N.",
+      "τ(M′,θ,ξ) = τ(M,θ,ξ) = T, since M′ =ᵐ M.",
+      "η_{x,r}(M) and η_{x,r}(M′) differ by the null set η_{x,r}(N), so the weighted tangent spaces of (M,θ) and (M′,θ) coincide.",
+      "(M′,θ,ξ) is a rectifiable triple with θ ∈ ℕ on M′, so T is integer multiplicity."
+    ]
+  },
+  "audit": {
+    "key": "ae_integer",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Removing the null exceptional set preserves the current action and every rectifiable-triple field. Hausdorff-null preservation under blow-ups verifies tangent-space invariance explicitly, including the unchanged pointwise weight. The resulting carrier has natural-valued multiplicity everywhere, exactly as IsIntegerMultiplicity requires."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-ae-integer-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-ae-integer-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-ae-integer-a1/parent-supplied-natural-proof.json"
+}

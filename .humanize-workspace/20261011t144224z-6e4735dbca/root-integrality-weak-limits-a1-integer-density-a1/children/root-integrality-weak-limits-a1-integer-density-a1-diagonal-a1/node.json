@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.diagonal-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1",
+  "depth": 3,
+  "title": "Diagonal selection of a weakly convergent sequence with a mass bound",
+  "statement": "Let P, n ∈ ℕ, U, W ⊆ ℝ^P with closure W compact, X_{k,j} ∈ D_n(U) (k, j ∈ ℕ), functions Z_k, L : D^n(U) → ℝ, and C ∈ ℝ. Assume that for every ω ∈ D^n(U) with tsupport ω ⊆ W, X_{k,j}(ω) → Z_k(ω) as j → ∞ (for each k) and Z_k(ω) → L(ω) as k → ∞; and that for each k, M_W(X_{k,j}) ≤ ENNReal.ofReal C for all sufficiently large j. Then there is a strictly increasing φ with M_W(X_{k,φ(k)}) ≤ ENNReal.ofReal C for all k and X_{k,φ(k)}(ω) → L(ω) for every ω ∈ D^n(U) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (X : ℕ → ℕ → GeometricCurrentOn U n) (Z : ℕ → TestFormOn U n → ℝ) (L : TestFormOn U n → ℝ) (C : ℝ), IsCompact (closure W) → (∀ (k : ℕ) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → Tendsto (fun j => X k j ω) atTop (𝓝 (Z k ω))) → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → Tendsto (fun k => Z k ω) atTop (𝓝 (L ω))) → (∀ k, ∀ᶠ j in atTop, (X k j).massOn W ≤ ENNReal.ofReal C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ (∀ k, (X k (φ k)).massOn W ≤ ENNReal.ofReal C) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → Tendsto (fun k => X k (φ k) ω) atTop (𝓝 (L ω))",
+  "lean_name": "ind_diagonal_weak_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-diagonal-a1-a1"
+}
