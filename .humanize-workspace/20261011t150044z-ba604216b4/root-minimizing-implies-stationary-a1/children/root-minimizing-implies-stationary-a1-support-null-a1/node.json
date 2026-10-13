@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "An integer multiplicity representation carries no H^n-mass off the support of the current",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) (a GeometricCurrentOn U n) and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) representing T, i.e. T(ω) = ∫_M θ ⟨ω, ξ⟩ dH^n for every ω ∈ 𝒟^n(U). Then H^n(M ∖ spt T) = 0, where spt T = U ∖ ⋃{W : W open, closure W compact, closure W ⊆ U, T vanishes on W} (Simon 6.2.11).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → μHE[n] (R.carrier \\ T.support) = 0",
+  "lean_name": "imrep_carrier_sdiff_support_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-a1"
+}

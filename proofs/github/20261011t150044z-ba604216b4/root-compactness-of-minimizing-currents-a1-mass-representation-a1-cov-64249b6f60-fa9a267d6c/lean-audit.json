@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "baab42d9fdb9a608b54039dbf6d96689b8f57e11ba4a0fedf9caec5aa37fa393",
+  "git_delta": {
+    "base_commit": "1d447c892160bfafa734903585727a99e67e2f62",
+    "candidate_commit": "b7f4cfc754eab8dd4e248fef575abd1043b7ac4c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_covector_euclidean_equiv",
+    "diff_sha256": "9bec328cadefdc3c4e00055bdd43f5a6f93018633746283873de4a92278ff1f7",
+    "source_sha256": "43d184a5b4d52d5119dc92d5ed5ad12090680c67bc0fdd5aef3936afb4baf1c2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_covector_euclidean_equiv",
+      "statement": "∀ (P n : ℕ), ∃ (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
