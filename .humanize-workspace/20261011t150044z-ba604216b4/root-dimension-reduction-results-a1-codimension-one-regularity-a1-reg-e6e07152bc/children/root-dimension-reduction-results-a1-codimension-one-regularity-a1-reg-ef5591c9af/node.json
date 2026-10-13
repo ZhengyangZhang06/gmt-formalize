@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.orientation_along_graph-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "Transport of the orientation ξN along the graph chart (parent step 6)",
+  "statement": "Let P, n ∈ ℕ, N ⊆ ℝ^P, ξN : ℝ^P → Λ_{n+1}(ℝ^P) an orientation of N (IsOrientation (n+1) N ξN), x ∈ ℝ^P, and ι : ℝ^{n+1} → ℝ^P a linear isometry with ξN(x)(α) = α(ιe_0, …, ιe_n) for every (n+1)-covector α (e_i = EuclideanSpace.single i 1). Let δ > 0 and u : ℝ^{n+1} → ℝ^P with u(0) = 0, Du(0) = 0, u of class C¹ on D := ball(0, δ), ⟨ιw, u(v)⟩ = 0 for all v ∈ D and w ∈ ℝ^{n+1}, and x + ιv + u(v) ∈ N for all v ∈ D. Then for every v ∈ D and every (n+1)-covector α, ξN(x + ιv + u(v))(α)·J(v) = α(a_0(v), …, a_n(v)), where a_i(v) := ιe_i + Du(v)e_i and J(v) := √det(⟨a_i(v), a_j(v)⟩)_{i,j}.",
+  "lean_statement": "∀ (P n : ℕ) (N : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ : ℝ), IsOrientation (n + 1) N ξN → (∀ α : Covector (Euclid P) (n + 1), ξN x α = α (fun i => ι (EuclideanSpace.single i 1))) → 0 < δ → u 0 = 0 → fderiv ℝ u 0 = 0 → ContDiffOn ℝ 1 u (ball 0 δ) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ, x + ι v + u v ∈ N) → ∀ v ∈ ball (0 : Euclid (n + 1)) δ, ∀ α : Covector (Euclid P) (n + 1), ξN (x + ι v + u v) α * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) (ι (EuclideanSpace.single j 1) + fderiv ℝ u v (EuclideanSpace.single j 1)))) = α (fun i => ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1))",
+  "lean_name": "codim1_rdo_gc_orientation_along_graph",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.gram_unit_orientation-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.range_subset_tangent-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.continuous_covector_eval-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.gram_unit_orientation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.range_subset_tangent-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b-a1",
+      "result_commit": "8f402cb9186dec35e39aea49d7ea887fd87109ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.continuous_covector_eval-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-ea8963379b-a1",
+      "result_commit": "05029c89c57ac9977d75f9a5152418dc3ceb1e73",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ef5591c9af-a1"
+}

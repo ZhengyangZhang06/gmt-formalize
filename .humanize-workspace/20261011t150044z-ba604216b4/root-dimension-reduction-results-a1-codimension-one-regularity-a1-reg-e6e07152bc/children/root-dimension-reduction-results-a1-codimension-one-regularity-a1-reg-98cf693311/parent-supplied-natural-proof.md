@@ -1,0 +1,162 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.unit_orientation_isometry-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 1 (1a) of the parent proof of codim1_rdo_graph_chart: choose an orthonormal basis τ of Π = T_xN with ξN(x) = +τ_1∧…∧τ_{n+1} (replacing τ_1 by −τ_1 if necessary) and let ι be the linear isometry with ι(e_i) = τ_i. Here this is stated for an arbitrary unit orientation ξ of a subspace Q in degree m+1 ≥ 1 (the parent uses m = n, ξ = ξN(x), Q = Π). No sibling is used.
+
+Notation. e_0, …, e_m is the standard orthonormal basis of ℝ^{m+1} (EuclideanSpace.basisFun, e_i = EuclideanSpace.single i 1). For a family c = (c_0, …, c_m), α(c) is the value of the covector α at c.
+
+Proof.
+1. (Unfolding.) By IsUnitOrientationOf ξ Q there is an orthonormal τ : Fin (m+1) → ℝ^P with span(range τ) = Q such that either (+) ξ(α) = α(τ) for all α, or (−) ξ(α) = −α(τ) for all α.
+2. (Normalizing the sign.) We produce an orthonormal τ' with span(range τ') = Q and ξ(α) = α(τ') for all α.
+ (a) In case (+) take τ' := τ.
+ (b) In case (−) take τ' := update(τ, 0, (−1)·τ_0), i.e. τ'_0 = −τ_0 and τ'_i = τ_i for i ≠ 0. The index 0 exists because m + 1 ≥ 1.
+  - τ' is orthonormal: ⟨τ'_0, τ'_0⟩ = (−1)²⟨τ_0, τ_0⟩ = 1; for j ≠ 0, ⟨τ'_0, τ'_j⟩ = −⟨τ_0, τ_j⟩ = 0 and ⟨τ'_j, τ'_0⟩ = −⟨τ_j, τ_0⟩ = 0; for i, j ≠ 0, ⟨τ'_i, τ'_j⟩ = ⟨τ_i, τ_j⟩.
+  - span(range τ') = span(range τ): every τ'_i is τ_i or (−1)·τ_0, hence lies in span(range τ); conversely τ_0 = (−1)·τ'_0 and τ_i = τ'_i (i ≠ 0) lie in span(range τ'). So span(range τ') = span(range τ) = Q.
+  - For every α, multilinearity of α in slot 0 (ContinuousAlternatingMap.map_update_smul) gives α(τ') = α(update(τ, 0, (−1)·τ_0)) = (−1)·α(update(τ, 0, τ_0)) = −α(τ), since update(τ, 0, τ_0) = τ. Hence ξ(α) = −α(τ) = α(τ').
+3. (The isometry.) Let f : ℝ^{m+1} → ℝ^P be the linear map with f(e_i) = τ'_i (Module.Basis.constr), i.e. f(v) = Σ_i v_i τ'_i. The family f∘e = τ' is orthonormal and e is an orthonormal basis, so for all v, w: ⟨f v, f w⟩ = Σ_{i,j} v_i w_j ⟨τ'_i, τ'_j⟩ = Σ_i v_i w_i = ⟨v, w⟩. Thus f is a linear isometry; call it ι (LinearMap.isometryOfOrthonormal).
+4. (Range.) range ι = range f = span{f(e_0), …, f(e_m)} (Module.Basis.constr_range) = span(range τ') = Q.
+5. (Orientation.) ι(e_i) = τ'_i for every i, so α(ι e_0, …, ι e_m) = α(τ') = ξ(α) for every (m+1)-covector α by step 2. ∎
+
+Formalization note (verified). The following Lean proof was compiled against the frozen import closure of GMT/Ch07/Submission.lean (Lean 4.35.0-rc3, Mathlib 25730c7c) as a single appended declaration inside namespace GMT.Ch07 before main_theorem; #print axioms gives propext, Classical.choice, Quot.sound; it passes the runtime leaf-delta check (check_source_delta). It may be used verbatim:
+
+theorem Submission.codim1_rdo_gc_unitOrientation_isometry : ∀ (P m : ℕ) (ξ : MultiVector P (m + 1)) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid P, Set.range ι = (Q : Set (Euclid P)) ∧ ∀ α : Covector (Euclid P) (m + 1), ξ α = α (fun i => ι (EuclideanSpace.single i 1)) := by
+  intro P m ξ Q ⟨τ, hτ, hspan, hsign⟩
+  obtain ⟨τ', hτ', hspan', hξ'⟩ : ∃ τ' : Fin (m + 1) → Euclid P, Orthonormal ℝ τ' ∧
+      Submodule.span ℝ (Set.range τ') = Q ∧ ∀ α : Covector (Euclid P) (m + 1), ξ α = α τ' := by
+    rcases hsign with h | h
+    · exact ⟨τ, hτ, hspan, h⟩
+    · refine ⟨Function.update τ 0 ((-1 : ℝ) • τ 0), ?_, ?_, ?_⟩
+      · rw [orthonormal_iff_ite] at hτ ⊢
+        intro i j
+        rcases eq_or_ne i 0 with rfl | hi <;> rcases eq_or_ne j 0 with rfl | hj
+        · simp only [Function.update_self, inner_smul_left, inner_smul_right, hτ 0 0]
+          norm_num
+        · simp [Function.update_of_ne hj, hτ 0 j, hj.symm]
+        · simp [hτ i 0, hi]
+        · simp only [Function.update_of_ne hi, Function.update_of_ne hj, hτ i j]
+      · rw [← hspan]
+        apply le_antisymm
+        · rw [Submodule.span_le]
+          rintro _ ⟨i, rfl⟩
+          rcases eq_or_ne i 0 with rfl | hi
+          · simp only [Function.update_self]
+            exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩)
+          · rw [Function.update_of_ne hi]; exact Submodule.subset_span ⟨i, rfl⟩
+        · rw [Submodule.span_le]
+          rintro _ ⟨i, rfl⟩
+          rcases eq_or_ne i 0 with rfl | hi
+          · have h0 : Function.update τ 0 ((-1 : ℝ) • τ 0) 0 ∈
+                Submodule.span ℝ (Set.range (Function.update τ 0 ((-1 : ℝ) • τ 0))) :=
+              Submodule.subset_span ⟨0, rfl⟩
+            have h1 := Submodule.smul_mem _ (-1 : ℝ) h0
+            simpa using h1
+          · have h0 : Function.update τ 0 ((-1 : ℝ) • τ 0) i ∈
+                Submodule.span ℝ (Set.range (Function.update τ 0 ((-1 : ℝ) • τ 0))) :=
+              Submodule.subset_span ⟨i, rfl⟩
+            rwa [Function.update_of_ne hi] at h0
+      · intro α
+        rw [h α, α.map_update_smul, Function.update_eq_self]
+        simp
+  let B := EuclideanSpace.basisFun (Fin (m + 1)) ℝ
+  let f : Euclid (m + 1) →ₗ[ℝ] Euclid P := B.toBasis.constr ℝ τ'
+  have hfB : ∀ i, f (B i) = τ' i := fun i => by
+    have := B.toBasis.constr_basis ℝ τ' i
+    rwa [OrthonormalBasis.coe_toBasis] at this
+  have hf : Orthonormal ℝ (f ∘ B.toBasis) := by
+    convert hτ' using 1; funext i; exact hfB i
+  let ι := f.isometryOfOrthonormal (v := B.toBasis) (by simp [B.orthonormal]) hf
+  refine ⟨ι, ?_, ?_⟩
+  · have : Set.range ι = Set.range f := rfl
+    rw [this, ← LinearMap.coe_range, ← hspan']
+    congr 1
+    rw [Module.Basis.constr_range]
+  · intro α
+    rw [hξ' α]
+    congr 1
+    funext i
+    have : (EuclideanSpace.single i 1 : Euclid (m + 1)) = B i := by simp [B]
+    rw [this]
+    exact (hfB i).symm
+
+## Key steps
+
+1. Unfold IsUnitOrientationOf: orthonormal τ spanning Q with ξ = ±(α ↦ α(τ)).
+2. If the sign is −, replace τ_0 by −τ_0: still orthonormal with the same span, and α(τ') = −α(τ) by multilinearity in slot 0.
+3. The linear map e_i ↦ τ'_i sends an orthonormal basis to an orthonormal family, so it is a linear isometry ι.
+4. range ι = span τ' = Q and α(ι e) = α(τ') = ξ(α).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `python3 scans of dag.json: accepted lean_statements containing tangentSpace, IsEmbeddedSubmanifold, IsOrientation, IsUnitOrientationOf, Matrix.det, .det, InjOn, fderiv; lean_name lookups chart_tangentSpace_eq_range_fderiv, dsmc_chart_tangentSpace_eq_range, dsmc_chart_inverse_continuity, dsmc_chart_range_subset_tangentSpace, dgoj_unitOrientation_of_injective, dgoj_exists_continuous_covector_eval, dgoj_exists_det_covector, dgoj_covector_eq_det_mul_of_mem_span, dgoj_det_adjoint_comp_eq_det_sq, dpf_exists_orthonormal_frame_det_gram, rsdic_unitOrientation_eq_or_eq_neg, dor_ims_unitOrientation_dual, dgcr_graph_orientation_jacobian, regcomp_unit_orientation_pairing, unit_orientations_common_unit_covector; collision check for the five codim1_rdo_gc_* names`
+- `grep in snapshot mathlib: to_localInverse, toOpenPartialHomeomorph, contDiffAt_symm, isOpen_injective, isometryOfOrthonormal, coe_toBasis, constr_range, norm_image_sub_le, ContinuousAlternatingMap.apply`
+- `grep -rln 'toOpenPartialHomeomorph|localInverse|InverseFunctionTheorem|contDiffAt_symm' simongmt (--include=*.lean); import lines of simongmt Chapter03/Rectifiable.lean and Chapter06/{Mass,CurrentLocalEquality,AffineCurrentPushforward}.lean`
+- `lean -DautoImplicit=false /tmp/gc-split-check/Probe.lean and Probe2.lean (#print Covector, MultiVector; #check ContDiffAt.to_localInverse, HasStrictFDerivAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, ContDiffAt.hasStrictFDerivAt', ContinuousLinearMap.isOpen_injective, ContDiffOn.continuousOn_fderiv_of_isOpen, Convex.isPreconnected, ContinuousAlternatingMap.map_update_smul, LinearMap.det_toMatrix)`
+- `lean -DautoImplicit=false /tmp/gc-split-check/Types.lean (all 12 child types plus the parent assembly; #print axioms)`
+- `lean -DautoImplicit=false /tmp/gc-split-check/{Prove124b,Prove1,Prove3,Prove5}.lean (new child proofs against stubs of their prerequisites)`
+- `git show <commit>:GMT/Ch07/Submission.lean for fe95347b, 9c8432cb, 44afba4d, 8f402cb9, 05029c89, 93ec31ab, 73310ec9; git merge-base --is-ancestor 8f402cb9 44afba4d; lean -DautoImplicit=false /tmp/gc-split-check/FullCheck.lean with #print axioms`
+- `python3: _recursive_lean.leaf_verification.check_source_delta on each new proof and the assembly; _recursive_lean.lean_contract.validate_lean_statement on all 12 types; acyclicity and byte-identity of reused types against dag.json`
+- `sed -n of /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (_decompose, _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _overlay_accepted_children, _accepted_checkpoint), __init__.py limits, swarm-project.json (max_depth 6, max_children 12, max_nodes 1000), verifier/gmt-compare.py header`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e6e07152bc/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e6e07152bc/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-ea8963379b/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/gc-split-check/Types.lean`
+- `/tmp/gc-split-check/Prove124b.lean`
+- `/tmp/gc-split-check/Prove3.lean`
+- `/tmp/gc-split-check/Prove5.lean`
+- `/tmp/gc-split-check/FullCheck.lean`
+
+Pins match:
+- manifest project b4d606db and Mathlib 25730c7c equal workspace HEAD and .lake/packages/mathlib; simongmt is 2b366308;
+- the snapshot Contract.lean, workspace Contract.lean and Submission.lean share sha256 e4148e7f9503aa28….
+
+Library (import closure of GMT.Ch07.Submission):
+- Present: HasStrictFDerivAt.toOpenPartialHomeomorph (InverseFunctionTheorem/FDeriv.lean:117), OpenPartialHomeomorph.contDiffAt_symm (ContDiff/Operations.lean:881), ContinuousLinearMap.isOpen_injective (Normed/Module/FiniteDimension.lean:263), LinearMap.isometryOfOrthonormal (InnerProductSpace/Orthonormal.lean:330), Module.Basis.constr_range (Basis/Defs.lean:547), ContinuousAlternatingMap.map_update_smul.
+- Missing: ContDiffAt.to_localInverse (InverseFunctionTheorem/ContDiff.lean). #check reports an unknown constant; SimonGMT uses it only in Chapter08/ConstancyNormalCharts.lean, which the contract does not import. It also gives C² only at the image point, so the neighbourhood inverse function theorem becomes the new child local_inverse_c2.
+
+DAG (683 nodes):
+- 7 accepted declarations are reused with byte-identical frozen types and non-empty candidate commits: dsmc_chart_tangentSpace_eq_range 44afba4d, dsmc_chart_range_subset_tangentSpace 8f402cb9 (an ancestor of 44afba4d), dgoj_exists_continuous_covector_eval 05029c89, dpf_exists_orthonormal_frame_det_gram 93ec31ab, dgoj_covector_eq_det_mul_of_mem_span 73310ec9, rsdic_unitOrientation_eq_or_eq_neg fe95347b, dor_ims_unitOrientation_dual 9c8432cb.
+- The runtime allows reusing accepted checkpoints with an identical type (_existing_lean_name_problem, _accepted_checkpoint) and merges prerequisite candidate commits (_overlay_accepted_children).
+- The five codim1_rdo_gc_* names occur nowhere in dag.json.
+- No accepted node gives a neighbourhood C² inverse function theorem, the Gram-matrix form of the unit-orientation lemma (dgoj_unitOrientation_of_injective uses det(F*∘F)), or the orientation normal form of step 1.
+
+Lean:
+- All 12 child types elaborate after import GMT.Ch07.Submission in the contract scope.
+- FullCheck.lean compiles; it contains the frozen Submission, the accepted reused proofs taken from their candidate commits, the 5 new child proofs and the parent assembly.
+- #print axioms for Submission.codim1_rdo_graph_chart and all five new children gives [propext, Classical.choice, Quot.sound].
+- Each new proof and the assembly pass check_source_delta, and every type passes validate_lean_statement.
