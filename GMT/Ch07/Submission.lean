@@ -3503,6 +3503,68 @@ theorem Submission.codim1_zsl_fl_isometry_image_setIntegral : ∀ (m P : ℕ) (�
       preimage_image_eq A hemb.injective]
   rw [hres, hemb.integral_map]
 
+/-- **Blow-ups of `∂[[E]]` along a `C¹` graph flatten to `∂[[F]]` in a plane** (Simon 7.5.3 and
+7.5.5, chapter-07.txt lines 790–901).  Near `x` the carrier `N` is the graph
+`Γ(v) = x + ιv + ι'u(v)` of a `C¹` map `u` with `Du(0) = 0`, oriented by `ξN`.  If `T = ∂[[E]]`
+has local mass bounds, `xᵢ → x` lie within `C₀λᵢ` of `N`, `λᵢ → 0` and `η_{xᵢ,λᵢ#}T ⇀ S`, then
+`S = ∂[[F]]` with the constant orientation `ξN(x)`, for a measurable `F` in a plane
+`{ιw + ι'b}`.  In chart coordinates `xᵢ = x + ιsᵢ + ι'tᵢ` the blow-ups live on the rescaled graphs
+of `gᵢ(w) = λᵢ⁻¹(u(sᵢ + λᵢw) − tᵢ)`, which flatten in `C¹` to the constant `b` along a
+subsequence; the flat limit lemma then identifies `S`. -/
+theorem Submission.codim1_zsl_graph_blowup_limit : ∀ (n k : ℕ) (U N E : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid (n + 1 + k)) (xs : ℕ → Euclid (n + 1 + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid (n + 1 + k))) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ₁ δ₂ C₀ : ℝ), IsOpen U → MeasurableSet E → E ⊆ N → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → ContDiffOn ℝ 1 u (ball 0 δ₁) → u 0 = 0 → fderiv ℝ u 0 = 0 → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, u v ∈ ball (0 : Euclid k) δ₂) → N ∩ {y | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid (n + 1)) δ₁ → (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξN x α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α) → ∃ (b : Euclid k) (F : Set (Euclid (n + 1 + k))), MeasurableSet F ∧ F ⊆ {y | ∃ w, y = ι w + ι' b} ∧ IsBoundaryOfRegion S F (fun _ => ξN x) := by
+  intro n k U N E ξN T x xs lams hlams S ι ι' u δ₁ δ₂ C₀ hU hE hEN hT hxU hxs hlams0 hmass hconv
+    hnear horth hspan hδ₁ hδ₂ hu _hu0 hDu0 _huδ₂ hchart hξx hξ
+  -- Steps 1 and 3 (centre_offsets): `xᵢ = x + ι sᵢ + ι' tᵢ` with `sᵢ, tᵢ → 0`, and the points of
+  -- `N` within `C₀λᵢ` of `xᵢ` give bounded offsets on the graph of `u`.
+  obtain ⟨s, t, hst, hs, ht, hoff⟩ := Submission.codim1_zsl_gbl_centre_chart_offsets (n + 1) k
+    (n + 1 + k) N x xs lams ι ι' u δ₁ δ₂ C₀ hxs hlams0 hlams hnear horth hspan hδ₁ hδ₂ hchart
+  -- Steps 2, 4 and 5 (graph_flattening): along a subsequence `σ` the rescaled graph maps
+  -- `gᵢ(w) = λᵢ⁻¹(u(sᵢ + λᵢw) − tᵢ)` converge in `C¹` on every ball to a constant `b`.
+  obtain ⟨σ, b, hσ, hdiff, hflat⟩ := Submission.codim1_zsl_gbl_rescaled_graph_flattening (n + 1) k
+    u δ₁ C₀ s t lams hδ₁ hu hDu0 hlams hs hlams0 hoff
+  have hσt : Tendsto σ atTop atTop := hσ.tendsto_atTop
+  -- Step 8 (graph_representation, fed by blowup_region and graph_area): at every scale `λᵢ` the
+  -- parameter set `F'ᵢ` is measurable, and the blow-up is represented on the rescaled graph over
+  -- every ball `B_R` satisfying the scale conditions.
+  have hrep := fun i => Submission.codim1_zsl_gbl_blowUp_graph_representation n k U N E ξN T x
+    (xs i) (lams i) (hlams i) ι ι' u δ₁ δ₂ (s i) (t i) hE hEN
+    (Submission.codim1_zsl_blowUp_isBoundaryOfRegion (n + 1 + k) n U E ξN T (xs i) (lams i)
+      (hlams i) hT)
+    (fun g D A f hD hg hA hAD =>
+      Submission.codim1_zsl_graph_area_formula (n + 1) k ι ι' g D A f horth hD hg hA hAD)
+    horth hspan hu hchart hξ (hst i)
+  -- Step 6: for every `R` the scale conditions hold for all large `i`, because `sᵢ, tᵢ, λᵢ → 0`,
+  -- `xᵢ → x` and `ball(x, r) ⊆ U`.
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU x hxU
+  have hscale : ∀ R : ℝ, ∀ᶠ i in atTop, ‖s i‖ + lams i * R < δ₁ ∧ ‖t i‖ + lams i * R < δ₂ ∧
+      ball (xs i) (lams i * R) ⊆ U := by
+    intro R
+    have h₁ : Tendsto (fun i => ‖s i‖ + lams i * R) atTop (𝓝 0) := by
+      simpa using (tendsto_norm_zero.comp hs).add (hlams0.mul_const R)
+    have h₂ : Tendsto (fun i => ‖t i‖ + lams i * R) atTop (𝓝 0) := by
+      simpa using (tendsto_norm_zero.comp ht).add (hlams0.mul_const R)
+    have h₃ : Tendsto (fun i => lams i * R + dist (xs i) x) atTop (𝓝 0) := by
+      simpa using (hlams0.mul_const R).add (tendsto_iff_dist_tendsto_zero.1 hxs)
+    filter_upwards [h₁.eventually_lt_const hδ₁, h₂.eventually_lt_const hδ₂,
+      h₃.eventually_lt_const hr] with i hi₁ hi₂ hi₃
+    exact ⟨hi₁, hi₂, (ball_subset_ball' hi₃.le).trans hrU⟩
+  -- Step 9 (flat_limit) along `σ`: weak convergence passes to the subsequence; (H1)–(H2) are the
+  -- `C¹` flattening, (H3) the graph representation and (H4) the mass bound of step 7.
+  obtain ⟨F, hFmeas, hFplane, hFS⟩ := Submission.codim1_zsl_flat_graph_limit n k
+    (fun i => dilation (xs (σ i)) (lams (σ i)) '' U)
+    (fun i => blowUp T (xs (σ i)) (lams (σ i)) (hlams (σ i)).ne') S ι ι' (ξN x) b
+    (fun i w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i)))
+    (fun i => {w : Euclid (n + 1) | s (σ i) + lams (σ i) • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι (s (σ i) + lams (σ i) • w) + ι' (u (s (σ i) + lams (σ i) • w)) ∈ E})
+    horth hspan hξx (fun ω => (hconv ω).comp hσt) (fun i => (hrep (σ i)).1) hdiff hflat
+    (fun R _ => (hσt.eventually (hscale R)).mono fun i hi ω hω =>
+      (hrep (σ i)).2 R hi.1 hi.2.1 hi.2.2 ω hω)
+    (fun R hR => by
+      obtain ⟨c, hc⟩ := Submission.codim1_zsl_gbl_blowUp_mass_bound (n + 1 + k) n U T x xs lams
+        hlams hxs hlams0 hmass R hR
+      exact ⟨c, hσt.eventually hc⟩)
+  exact ⟨b, F, hFmeas, hFplane, hFS⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
