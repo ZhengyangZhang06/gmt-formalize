@@ -628,6 +628,54 @@ theorem Submission.cmr_measure_null_of_orient_ae_zero : ∀ (P n : ℕ) (U W C :
   refine nonpos_iff_eq_zero.mp ((ENNReal.add_le_add_iff_left hfin).mp ?_)
   rw [hsplit, add_zero, ← hmass]
   exact hle
+/-- Null sets from compact null sets (last step of the proof that the mass measure `μ_T` of a
+locally normal current vanishes on `Hⁿ`-null sets, Simon 6.2.36, used for 7.2.4): let `U ⊆ ℝᴾ` be
+open and `μ`, `ν` measures on `ℝᴾ` with `μ(ℝᴾ \ U) = 0`, `μ(K) < ∞` for compact `K ⊆ U`, and
+`μ(C) = 0` for every compact `C ⊆ U` with `ν(C) = 0`.  Then every `ν`-null set is `μ`-null.
+Take a measurable `ν`-null hull `E' ⊇ E` and exhaust `U` by the compact sets `Fᵢ ∩ B̄ⱼ(0)`,
+`Fᵢ ⊆ U` closed.  Each `μ⌞(Fᵢ ∩ B̄ⱼ(0))` is finite, hence inner regular, so `μ(E' ∩ Fᵢ ∩ B̄ⱼ(0)) > 0`
+would give a compact `C ⊆ E'` with `μ(C ∩ Fᵢ ∩ B̄ⱼ(0)) > 0`, contradicting the hypothesis. -/
+theorem Submission.cmr_null_of_compact_null : ∀ (P : ℕ) (U : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ν C = 0 → μ C = 0) → ∀ E : Set (Euclid P), ν E = 0 → μ E = 0 := by
+  intro P U μ ν hU hUc hfin hnull E hE
+  -- Step 1: a measurable `ν`-null hull `E' ⊇ E`
+  obtain ⟨E', hEE', hE'm, hE'⟩ := exists_measurable_superset_of_null hE
+  -- Step 2: `U = ⋃ₚ Kₚ` with `K_{(i,j)} = Fᵢ ∩ B̄ⱼ(0)` compact, `Fᵢ ⊆ U` closed
+  obtain ⟨F, hFc, hFU, hFun, -⟩ := hU.exists_iUnion_isClosed
+  have hK : ∀ p : ℕ × ℕ, IsCompact (F p.1 ∩ closedBall (0 : Euclid P) p.2) := fun p =>
+    (isCompact_closedBall _ _).inter_left (hFc p.1)
+  have hKU : ∀ p : ℕ × ℕ, F p.1 ∩ closedBall (0 : Euclid P) p.2 ⊆ U := fun p =>
+    inter_subset_left.trans (hFU p.1)
+  have hcover : U ⊆ ⋃ p : ℕ × ℕ, F p.1 ∩ closedBall (0 : Euclid P) p.2 := by
+    intro x hx
+    rw [← hFun] at hx
+    obtain ⟨i, hi⟩ := mem_iUnion.1 hx
+    obtain ⟨j, hj⟩ := exists_nat_ge (dist x 0)
+    exact mem_iUnion.2 ⟨(i, j), hi, mem_closedBall.2 hj⟩
+  -- Step 3: `μ(E' ∩ Kₚ) = 0` for every `p`, by inner regularity of the finite `μ⌞Kₚ`
+  have hpiece : ∀ p : ℕ × ℕ, μ (E' ∩ (F p.1 ∩ closedBall (0 : Euclid P) p.2)) = 0 := by
+    intro p
+    set K := F p.1 ∩ closedBall (0 : Euclid P) p.2
+    have : IsFiniteMeasure (μ.restrict K) :=
+      isFiniteMeasure_restrict.2 (hfin K (hK p) (hKU p)).ne
+    by_contra hne
+    have hpos : 0 < μ.restrict K E' := by
+      rw [Measure.restrict_apply hE'm]
+      exact pos_iff_ne_zero.2 hne
+    obtain ⟨C, hCE', hCc, hCpos⟩ := hE'm.exists_lt_isCompact_of_ne_top (measure_ne_top _ _) hpos
+    rw [Measure.restrict_apply hCc.isClosed.measurableSet] at hCpos
+    have hC0 : μ (C ∩ K) = 0 :=
+      hnull (C ∩ K) (hCc.inter_right (hK p).isClosed) (inter_subset_right.trans (hKU p))
+        (measure_mono_null (inter_subset_left.trans hCE') hE')
+    exact hCpos.ne' hC0
+  -- Step 4: `E ⊆ E' ⊆ Uᶜ ∪ ⋃ₚ (E' ∩ Kₚ)`, a `μ`-null set
+  refine measure_mono_null hEE' (measure_mono_null (t := Uᶜ ∪
+    ⋃ p : ℕ × ℕ, E' ∩ (F p.1 ∩ closedBall (0 : Euclid P) p.2)) ?_
+    (measure_union_null hUc (measure_iUnion_null hpiece)))
+  intro x hx
+  by_cases hxU : x ∈ U
+  · obtain ⟨p, hp⟩ := mem_iUnion.1 (hcover hxU)
+    exact Or.inr (mem_iUnion.2 ⟨p, hx, hp⟩)
+  · exact Or.inl hxU
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
