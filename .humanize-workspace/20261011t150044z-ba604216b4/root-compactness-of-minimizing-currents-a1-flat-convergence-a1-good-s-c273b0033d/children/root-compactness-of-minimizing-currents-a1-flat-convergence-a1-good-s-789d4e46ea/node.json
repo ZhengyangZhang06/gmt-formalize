@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1.ae_seq_liminf_finite-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1",
+  "depth": 5,
+  "title": "Double Fatou: the iterated liminf of sequential left window quotients is finite a.e.",
+  "statement": "Let ν_j (j ∈ ℕ) be Borel measures on ℝ, and let Λ ∈ [0, ∞) satisfy ν_j(ℝ) ≤ Λ for every j. For j, n ∈ ℕ and t ∈ ℝ let Q_{j,n}(t) := (n + 1)·ν_j((t − 1/(n + 1), t)) ∈ [0, ∞]. Here n + 1 is read in [0, ∞] and 1/(n + 1) in ℝ. Then for Lebesgue-almost every t ∈ ℝ, liminf_{j→∞} liminf_{n→∞} Q_{j,n}(t) ≠ ∞. Both limits inferior are taken in [0, ∞] along atTop in ℕ.",
+  "lean_statement": "∀ (ν : ℕ → Measure ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, ν j univ ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), liminf (fun j => liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * ν j (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop) atTop ≠ ∞",
+  "lean_name": "cmc_fc_gs_aqf_ae_seq_liminf_finite",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1.window_lintegral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1.window_lintegral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-789d4e46ea-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1.liminf_le_seq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1",
+  "depth": 5,
+  "title": "The lower left quotient is at most the sequential quotient of the restriction to [a, b]",
+  "statement": "Let μ be a Borel measure on ℝ, and let a, b, t ∈ ℝ with a < t < b. Put S(t) := liminf_{h→0+} ENNReal.ofReal(h⁻¹)·μ((t − h, t)) ∈ [0, ∞], the limit inferior in [0, ∞] along the filter 𝓝[>] 0. Let μ⌞[a, b] be the restriction of μ to [a, b], i.e. (μ⌞[a, b])(E) = μ(E ∩ [a, b]) for Borel E. Then S(t) ≤ liminf_{n→∞} (n + 1)·(μ⌞[a, b])((t − 1/(n + 1), t)). The right side is a limit inferior in [0, ∞] along atTop in ℕ, with n + 1 read in [0, ∞] and 1/(n + 1) in ℝ.",
+  "lean_statement": "∀ (μ : Measure ℝ) (a b t : ℝ), t ∈ Ioo a b → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (Ioo (t - h) t)) (𝓝[>] 0) ≤ liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * (μ.restrict (Icc a b)) (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop",
+  "lean_name": "cmc_fc_gs_aqf_liminf_le_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-dad220f236-a1"
+}
