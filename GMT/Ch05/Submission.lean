@@ -4886,96 +4886,6 @@ theorem lip_approx_pinched_density : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ,
     refine ENNReal.ofReal_le_of_le_toReal ?_
     rw [← measureReal_def]
     linarith
-/-! ### Simon 2.6, (3)–(4): the good set is flat
-
-Auxiliary facts for `lip_approx_good_set_flat`: the Hilbert–Schmidt inequalities
-`|S − T|² ≤ 2|X − S|² + 2|X − T|²` and `|A v| ≤ |A| |v|`, `dist(v, T) = |v − p_T v|`, and the
-comparison of two planes on a set of finite measure through their tilt integrals. -/
-
-namespace LipApproxGoodSetFlat
-
-/-- `|A|² ≥ 0`. -/
-theorem hsNormSq_nonneg {m k : ℕ} (A : Rn m →L[ℝ] Rn k) : 0 ≤ hsNormSq A :=
-  Finset.sum_nonneg fun _ _ => sq_nonneg _
-
-/-- `|S − T|² ≤ 2|X − S|² + 2|X − T|²` (triangle inequality and `(a + b)² ≤ 2a² + 2b²`). -/
-theorem hsNormSq_sub_le {m k : ℕ} (X S T : Rn m →L[ℝ] Rn k) :
-    hsNormSq (S - T) ≤ 2 * hsNormSq (X - S) + 2 * hsNormSq (X - T) := by
-  unfold hsNormSq
-  rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun i _ => ?_
-  set e : Rn m := EuclideanSpace.single i 1
-  have h1 : ‖(S - T) e‖ ≤ ‖(X - T) e‖ + ‖(X - S) e‖ := by
-    have h : (S - T) e = (X - T) e - (X - S) e := by
-      simp only [sub_apply]
-      abel
-    rw [h]
-    exact norm_sub_le _ _
-  have h2 := pow_le_pow_left₀ (norm_nonneg _) h1 2
-  nlinarith [sq_nonneg (‖(X - T) e‖ - ‖(X - S) e‖)]
-
-/-- The operator norm is dominated by the Hilbert–Schmidt norm: `|A v| ≤ |A| |v|`
-(expand `v` in the standard basis and apply Cauchy–Schwarz). -/
-theorem norm_apply_le_hsNorm {m k : ℕ} (A : Rn m →L[ℝ] Rn k) (v : Rn m) :
-    ‖A v‖ ≤ hsNorm A * ‖v‖ := by
-  have hv : v = ∑ i, v i • EuclideanSpace.single i (1 : ℝ) := by
-    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v]
-    simp
-  have hAv : A v = ∑ i, v i • A (EuclideanSpace.single i 1) := by
-    conv_lhs => rw [hv]
-    rw [map_sum]
-    simp only [map_smul]
-  have hS0 : 0 ≤ ∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖ :=
-    Finset.sum_nonneg fun i _ => mul_nonneg (abs_nonneg _) (norm_nonneg _)
-  have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖ := by
-    rw [hAv]
-    refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun i _ => ?_))
-    rw [norm_smul, Real.norm_eq_abs]
-  have h2 : (∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖) ^ 2 ≤
-      (∑ i, |v i| ^ 2) * ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 :=
-    Finset.sum_mul_sq_le_sq_mul_sq _ _ _
-  have h3 : ∑ i, |v i| ^ 2 = ‖v‖ ^ 2 := by
-    rw [EuclideanSpace.real_norm_sq_eq]
-    exact Finset.sum_congr rfl fun i _ => sq_abs _
-  rw [h3] at h2
-  have hb : 0 ≤ hsNorm A * ‖v‖ := mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)
-  have hA2 : hsNorm A ^ 2 = hsNormSq A := Real.sq_sqrt (hsNormSq_nonneg A)
-  refine h1.trans ((sq_le_sq₀ hS0 hb).1 ?_)
-  rw [mul_pow, hA2]
-  calc _ ≤ ‖v‖ ^ 2 * ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 := h2
-    _ = hsNormSq A * ‖v‖ ^ 2 := by unfold hsNormSq; ring
-
-/-- `dist(v, T) = |v − p_T v|`. -/
-theorem infDist_eq_norm_sub_starProjection {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] (T : Submodule ℝ E) [T.HasOrthogonalProjection] (v : E) :
-    infDist v (T : Set E) = ‖v - T.starProjection v‖ := by
-  rw [← T.dist_starProjection_eq_infDist v, dist_eq_norm]
-
-/-- `a ≤ c b²` with `b ≥ 0` gives `√a ≤ √c · b`. -/
-theorem sqrt_le_sqrt_mul_of_le {a b c : ℝ} (hb : 0 ≤ b) (h : a ≤ c * b ^ 2) :
-    Real.sqrt a ≤ Real.sqrt c * b := by
-  calc Real.sqrt a ≤ Real.sqrt (c * b ^ 2) := Real.sqrt_le_sqrt h
-    _ = Real.sqrt c * b := by rw [Real.sqrt_mul' c (sq_nonneg b), Real.sqrt_sq hb]
-
-/-- Comparison of two planes on a set `B` of finite measure: integrate
-`|S − T|² ≤ 2|f(x) − S|² + 2|f(x) − T|²` over `B`. -/
-theorem hsNormSq_mul_measureReal_le {α : Type*} [MeasurableSpace α] {m k : ℕ}
-    {μ : Measure α} {B : Set α} (hB : MeasurableSet B) (hμB : μ B ≠ ∞)
-    (f : α → (Rn m →L[ℝ] Rn k)) (S T : Rn m →L[ℝ] Rn k)
-    (hS : IntegrableOn (fun x => hsNormSq (f x - S)) B μ)
-    (hT : IntegrableOn (fun x => hsNormSq (f x - T)) B μ) :
-    hsNormSq (S - T) * μ.real B ≤
-      2 * ∫ x in B, hsNormSq (f x - S) ∂μ + 2 * ∫ x in B, hsNormSq (f x - T) ∂μ := by
-  have hS2 : IntegrableOn (fun x => 2 * hsNormSq (f x - S)) B μ := Integrable.const_mul hS 2
-  have hT2 : IntegrableOn (fun x => 2 * hsNormSq (f x - T)) B μ := Integrable.const_mul hT 2
-  have h : hsNormSq (S - T) * μ.real B ≤
-      ∫ x in B, (2 * hsNormSq (f x - S) + 2 * hsNormSq (f x - T)) ∂μ :=
-    setIntegral_ge_of_const_le_real hB hμB (fun x _ => hsNormSq_sub_le (f x) S T)
-      (hS2.add hT2)
-  rwa [integral_add hS2 hT2, integral_const_mul, integral_const_mul] at h
-
-end LipApproxGoodSetFlat
-
 /-- **Simon Ch. 5, proof of Lemma 2.6, (3)–(4)**, with `T₀ = q(ℝⁿ × {0})`, `P = p_{T₀}` and
 `σ₀ = δρ`.  If `∫_{B_{σ₀}(0)} |p_{T_x M} − P|² dμ_V ≤ β²L²σ₀ⁿ`, then
 (1) `dist(x, T₀) ≤ C₀βLσ₀` on `spt V ∩ B_{2σ₀}(0)`, and
@@ -4986,30 +4896,74 @@ Write `D = δ^{1/(2n+2)} ≤ βL`.  Lemma 2.5 at `(ξ, σ)` gives a plane `T` wi
 `≤ C D σ` on `spt V ∩ B_σ(ξ)` and tilt `∫_{B_{σ/2}(ξ)} |p_{T_x M} − p_T|² ≤ C²(C + 1)²D²σⁿ`
 (its `H`-term is `≤ δ ≤ D`).  Comparing that plane with `T₀` on a ball whose mass is bounded below
 by the pinched density (`lip_approx_pinched_density`; tilt integrability is
-`lip_approx_tangent_structure`) shows `|p_T − P| ≤ C'βL`; the plane `T*` at `(0, 2σ₀)` gives (1),
-the plane at `(y₁, |y₂ − y₁|)` gives (2) for `|y₂ − y₁| ≤ σ₀/2`, and longer pairs follow
-from (1). -/
-theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ n →
-    ∀ p : ℝ, (n : ℝ) < p → ∃ C₀ δ₀ : ℝ, 0 < C₀ ∧ 0 < δ₀ ∧ ∀ β L : ℝ, 0 < β → 0 < L → L ≤ 1 →
-    ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ)
-    (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → δ ≤ (β * L) ^ (2 * n + 2) → V.AllardHypotheses H p δ ρ →
-    ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, ∫ x in closedBall 0 (δ * ρ),
-      hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤
-        β ^ 2 * L ^ 2 * (δ * ρ) ^ n →
-    (∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)),
-      infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ C₀ * β * L * (δ * ρ)) ∧
-    ∀ y₁ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4),
-    ∀ y₂ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4),
-      (∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 → ∫ x in closedBall y₁ (s / 2),
-        hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤
-          β ^ 2 * L ^ 2 * s ^ n) →
-      ‖(y₂ - y₁) - (rotatedPlane q).starProjection (y₂ - y₁)‖ ≤ C₀ * β * L * ‖y₂ - y₁‖ := by
+`lip_approx_tangent_structure`), through `|S − T|² ≤ 2|X − S|² + 2|X − T|²` for the
+Hilbert–Schmidt norm, shows `|p_T − P| ≤ C'βL`; with `|A v| ≤ |A| |v|` and
+`dist(v, T) = |v − p_T v|`, the plane `T*` at `(0, 2σ₀)` gives (1), the plane at
+`(y₁, |y₂ − y₁|)` gives (2) for `|y₂ − y₁| ≤ σ₀/2`, and longer pairs follow from (1). -/
+theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C₀ δ₀ : ℝ, 0 < C₀ ∧ 0 < δ₀ ∧ ∀ β L : ℝ, 0 < β → 0 < L → L ≤ 1 → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → δ ≤ (β * L) ^ (2 * n + 2) → V.AllardHypotheses H p δ ρ → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, ∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ β ^ 2 * L ^ 2 * (δ * ρ) ^ n → (∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ C₀ * β * L * (δ * ρ)) ∧ ∀ y₁ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4), ∀ y₂ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4), (∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 → ∫ x in closedBall y₁ (s / 2), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ β ^ 2 * L ^ 2 * s ^ n) → ‖(y₂ - y₁) - (rotatedPlane q).starProjection (y₂ - y₁)‖ ≤ C₀ * β * L * ‖y₂ - y₁‖ := by
   intro hAAL n ℓ hn p hp
   have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
   have hω : 0 < unitBallVolume n :=
     div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- Step 1(c)–(e): Hilbert–Schmidt facts and `dist(v, T) = |v − p_T v|`.
+  have hHS0 : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, 0 ≤ hsNormSq A :=
+    fun A => Finset.sum_nonneg fun _ _ => sq_nonneg _
+  -- `|S − T|² ≤ 2|X − S|² + 2|X − T|²` (triangle inequality and `(a + b)² ≤ 2a² + 2b²`).
+  have hHSsub : ∀ X S T : Amb n ℓ →L[ℝ] Amb n ℓ,
+      hsNormSq (S - T) ≤ 2 * hsNormSq (X - S) + 2 * hsNormSq (X - T) := by
+    intro X S T
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    set e : Amb n ℓ := EuclideanSpace.single i 1
+    have h1 : ‖(S - T) e‖ ≤ ‖(X - T) e‖ + ‖(X - S) e‖ := by
+      have h : (S - T) e = (X - T) e - (X - S) e := by
+        simp only [sub_apply]
+        abel
+      rw [h]
+      exact norm_sub_le _ _
+    have h2 := pow_le_pow_left₀ (norm_nonneg _) h1 2
+    nlinarith [sq_nonneg (‖(X - T) e‖ - ‖(X - S) e‖)]
+  -- `|A v| ≤ |A| |v|`: expand `v` in the standard basis and apply Cauchy–Schwarz.
+  have hHSapply : ∀ (A : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ), ‖A v‖ ≤ hsNorm A * ‖v‖ := by
+    intro A v
+    have hv : v = ∑ i, v i • EuclideanSpace.single i (1 : ℝ) := by
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ).sum_repr v]
+      simp
+    have hAv : A v = ∑ i, v i • A (EuclideanSpace.single i 1) := by
+      conv_lhs => rw [hv]
+      rw [map_sum]
+      simp only [map_smul]
+    have hS0 : 0 ≤ ∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖ :=
+      Finset.sum_nonneg fun i _ => mul_nonneg (abs_nonneg _) (norm_nonneg _)
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖ := by
+      rw [hAv]
+      refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun i _ => ?_))
+      rw [norm_smul, Real.norm_eq_abs]
+    have h2 : (∑ i, |v i| * ‖A (EuclideanSpace.single i 1)‖) ^ 2 ≤
+        (∑ i, |v i| ^ 2) * ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ∑ i, |v i| ^ 2 = ‖v‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      exact Finset.sum_congr rfl fun i _ => sq_abs _
+    rw [h3] at h2
+    have hb : 0 ≤ hsNorm A * ‖v‖ := mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)
+    have hA2 : hsNorm A ^ 2 = hsNormSq A := Real.sq_sqrt (hHS0 A)
+    refine h1.trans ((sq_le_sq₀ hS0 hb).1 ?_)
+    rw [mul_pow, hA2]
+    calc _ ≤ ‖v‖ ^ 2 * ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 := h2
+      _ = hsNormSq A * ‖v‖ ^ 2 := by unfold hsNormSq; ring
+  -- `dist(v, T) = |v − p_T v|`.
+  have hdist : ∀ (T : Submodule ℝ (Amb n ℓ)) (v : Amb n ℓ),
+      infDist v (T : Set (Amb n ℓ)) = ‖v - T.starProjection v‖ := fun T v => by
+    rw [← T.dist_starProjection_eq_infDist v, dist_eq_norm]
+  -- `a ≤ c b²` with `b ≥ 0` gives `√a ≤ √c · b`.
+  have hsqrt : ∀ a b c : ℝ, 0 ≤ b → a ≤ c * b ^ 2 → Real.sqrt a ≤ Real.sqrt c * b := by
+    intro a b c hb h
+    calc Real.sqrt a ≤ Real.sqrt (c * b ^ 2) := Real.sqrt_le_sqrt h
+      _ = Real.sqrt c * b := by rw [Real.sqrt_mul' c (sq_nonneg b), Real.sqrt_sq hb]
   obtain ⟨C, hC, hAA⟩ := hAAL n ℓ hn p hp
-  obtain ⟨δP, hδP, -, hPD⟩ := Submission.lip_approx_pinched_density n ℓ hn p hp
+  obtain ⟨δP, hδP, -, hPD⟩ := lip_approx_pinched_density n ℓ hn p hp
   -- The constants of the natural-language proof.  Its normalisation `C_A = max{C, 1}` is not
   -- needed: every step below only uses `C > 0`, so we take `C_A = C`.
   obtain ⟨C₁, hC₁_def⟩ : ∃ C₁ : ℝ, C₁ = 2 ^ n * C ^ 2 * (C + 1) ^ 2 := ⟨_, rfl⟩
@@ -5064,8 +5018,27 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
       closedBall z t ⊆ closedBall 0 ρ →
       IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) (closedBall z t)
         V.weight :=
-    fun T z t hsub => (Submission.lip_approx_tangent_structure n ℓ hn U hU V).2.1 T _
+    fun T z t hsub => (lip_approx_tangent_structure n ℓ hn U hU V).2.1 T _
       (isCompact_closedBall z t) (hsub.trans hBU)
+  -- Step 1(c), integrated: two planes compared on a set `B` of finite mass.
+  have hcmp : ∀ (B : Set (Amb n ℓ)) (S T : Submodule ℝ (Amb n ℓ)), MeasurableSet B →
+      V.weight B ≠ ∞ →
+      IntegrableOn (fun x => hsNormSq (V.tangentProj x - S.starProjection)) B V.weight →
+      IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) B V.weight →
+      hsNormSq (S.starProjection - T.starProjection) * V.weight.real B ≤
+        2 * ∫ x in B, hsNormSq (V.tangentProj x - S.starProjection) ∂V.weight +
+          2 * ∫ x in B, hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight := by
+    intro B S T hB hμB hS hT
+    have hS2 : IntegrableOn (fun x => 2 * hsNormSq (V.tangentProj x - S.starProjection)) B
+        V.weight := Integrable.const_mul hS 2
+    have hT2 : IntegrableOn (fun x => 2 * hsNormSq (V.tangentProj x - T.starProjection)) B
+        V.weight := Integrable.const_mul hT 2
+    have h : hsNormSq (S.starProjection - T.starProjection) * V.weight.real B ≤
+        ∫ x in B, (2 * hsNormSq (V.tangentProj x - S.starProjection) +
+          2 * hsNormSq (V.tangentProj x - T.starProjection)) ∂V.weight :=
+      setIntegral_ge_of_const_le_real hB hμB
+        (fun x _ => hHSsub (V.tangentProj x) S.starProjection T.starProjection) (hS2.add hT2)
+    rwa [integral_add hS2 hT2, integral_const_mul, integral_const_mul] at h
   -- Step 1(g): the output of the affine approximation lemma at `(ξ, σ)`.
   have hAff : ∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ), ∀ σ : ℝ, 0 < σ → σ ≤ 2 * δ * ρ →
       ∃ T : Submodule ℝ (Amb n ℓ),
@@ -5100,7 +5073,7 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
       rw [inv_mul_le_iff₀ hC] at h4
       have hI0 : 0 ≤ ∫ x in closedBall ξ (σ / 2),
           hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight :=
-        integral_nonneg fun x => LipApproxGoodSetFlat.hsNormSq_nonneg _
+        integral_nonneg fun x => hHS0 _
       generalize (∫ x in closedBall ξ (σ / 2),
         hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight) = I at hI0 h4 ⊢
       have h5 : Real.sqrt ((σ ^ n)⁻¹ * I) ≤ C * (C + 1) * D :=
@@ -5136,9 +5109,8 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
         (unitBallVolume n * (δ * ρ) ^ n / 2) ≤ 2 * (1 + C₁) * (β * L) ^ 2 * (δ * ρ) ^ n :=
       calc _ ≤ hsNormSq (Ts.starProjection - (rotatedPlane q).starProjection) *
             V.weight.real (closedBall 0 (δ * ρ)) :=
-          mul_le_mul_of_nonneg_left hmeas0 (LipApproxGoodSetFlat.hsNormSq_nonneg _)
-        _ ≤ _ := LipApproxGoodSetFlat.hsNormSq_mul_measureReal_le measurableSet_closedBall hne0
-            V.tangentProj Ts.starProjection (rotatedPlane q).starProjection
+          mul_le_mul_of_nonneg_left hmeas0 (hHS0 _)
+        _ ≤ _ := hcmp _ Ts (rotatedPlane q) measurableSet_closedBall hne0
             (hint Ts 0 (δ * ρ) hsub0) (hint (rotatedPlane q) 0 (δ * ρ) hsub0)
         _ ≤ 2 * (C₁ * (β * L) ^ 2 * (δ * ρ) ^ n) + 2 * (β ^ 2 * L ^ 2 * (δ * ρ) ^ n) := by
           gcongr
@@ -5150,7 +5122,7 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
         ring
   have hTs_norm : hsNorm (Ts.starProjection - (rotatedPlane q).starProjection) ≤ C₂ * (β * L) := by
     rw [hC₂_def, hsNorm]
-    exact LipApproxGoodSetFlat.sqrt_le_sqrt_mul_of_le hβL.le hTs_hs
+    exact hsqrt _ _ _ hβL.le hTs_hs
   -- The height bound relative to `T₀`.
   have hstep2 : ∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)),
       ‖x - (rotatedPlane q).starProjection x‖ ≤ C₃ * (β * L) * (δ * ρ) := by
@@ -5158,11 +5130,10 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
     have hxn : ‖x‖ ≤ 2 * (δ * ρ) := mem_closedBall_zero_iff.1 hx.2
     have h1 : ‖x - Ts.starProjection x‖ ≤ C * D * (2 * (δ * ρ)) := by
       have := hTs_height x hx
-      rwa [sub_zero, LipApproxGoodSetFlat.infDist_eq_norm_sub_starProjection] at this
+      rwa [sub_zero, hdist] at this
     have h2 : ‖(Ts.starProjection - (rotatedPlane q).starProjection) x‖ ≤
         C₂ * (β * L) * (2 * (δ * ρ)) :=
-      (LipApproxGoodSetFlat.norm_apply_le_hsNorm _ _).trans
-        (mul_le_mul hTs_norm hxn (norm_nonneg _) (mul_nonneg hC₂ hβL.le))
+      (hHSapply _ _).trans (mul_le_mul hTs_norm hxn (norm_nonneg _) (mul_nonneg hC₂ hβL.le))
     have hdecomp : x - (rotatedPlane q).starProjection x =
         (x - Ts.starProjection x) + (Ts.starProjection - (rotatedPlane q).starProjection) x := by
       rw [sub_apply]
@@ -5177,7 +5148,7 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
       _ = C₃ * (β * L) * (δ * ρ) := by rw [hC₃_def]; ring
   refine ⟨fun x hx => ?_, ?_⟩
   · -- Conclusion (1).
-    rw [LipApproxGoodSetFlat.infDist_eq_norm_sub_starProjection]
+    rw [hdist]
     calc ‖x - (rotatedPlane q).starProjection x‖ ≤ C₃ * (β * L) * (δ * ρ) := hstep2 x hx
       _ ≤ max C₆ (4 * C₃) * (β * L) * (δ * ρ) := by
           gcongr
@@ -5193,15 +5164,15 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
       rw [norm_eq_zero.1 hs0.symm]
       simp
     -- Step 3(a): short pairs, `0 < s = |y₂ − y₁| ≤ σ₀/2`; the plane `T₁` at `(y₁, s)`.
-    set s := ‖y₂ - y₁‖
+    set s := ‖y₂ - y₁‖ with hs_def
     obtain ⟨T₁, hT₁_height, hT₁_tilt⟩ :=
       hAff y₁ ⟨hy₁.1, mem_closedBall_zero_iff.2 (by linarith)⟩ s hs0 (by linarith)
     have h1 : ‖(y₂ - y₁) - T₁.starProjection (y₂ - y₁)‖ ≤ C * D * s := by
       have := hT₁_height y₂ ⟨hy₂.1, by rw [mem_closedBall, dist_eq_norm]⟩
-      rwa [LipApproxGoodSetFlat.infDist_eq_norm_sub_starProjection] at this
+      rwa [hdist] at this
     have hsub1 : closedBall y₁ (s / 2) ⊆ closedBall 0 ρ := hball y₁ (s / 2) (by linarith)
     obtain ⟨hup1, hlow1⟩ := hPD U hU V H δ ρ hδ hδδP hA y₁ (by linarith) (s / 2)
-      (by positivity) (by linarith)
+      (half_pos hs0) (by linarith)
     have hne1 : V.weight (closedBall y₁ (s / 2)) ≠ ∞ :=
       ne_top_of_le_ne_top ENNReal.ofReal_ne_top hup1
     have hmeas1 : unitBallVolume n * (s / 2) ^ n / 2 ≤ V.weight.real (closedBall y₁ (s / 2)) := by
@@ -5222,9 +5193,8 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
           (unitBallVolume n * (s / 2) ^ n / 2) ≤ 2 * (1 + C₁) * (β * L) ^ 2 * s ^ n :=
         calc _ ≤ hsNormSq (T₁.starProjection - (rotatedPlane q).starProjection) *
               V.weight.real (closedBall y₁ (s / 2)) :=
-            mul_le_mul_of_nonneg_left hmeas1 (LipApproxGoodSetFlat.hsNormSq_nonneg _)
-          _ ≤ _ := LipApproxGoodSetFlat.hsNormSq_mul_measureReal_le measurableSet_closedBall hne1
-              V.tangentProj T₁.starProjection (rotatedPlane q).starProjection
+            mul_le_mul_of_nonneg_left hmeas1 (hHS0 _)
+          _ ≤ _ := hcmp _ T₁ (rotatedPlane q) measurableSet_closedBall hne1
               (hint T₁ y₁ (s / 2) hsub1) (hint (rotatedPlane q) y₁ (s / 2) hsub1)
           _ ≤ 2 * (C₁ * (β * L) ^ 2 * s ^ n) + 2 * (β ^ 2 * L ^ 2 * s ^ n) := by
             gcongr
@@ -5239,11 +5209,10 @@ theorem lip_approx_good_set_flat : AffineApproximationLemma → ∀ (n ℓ : ℕ
     have hT₁_norm : hsNorm (T₁.starProjection - (rotatedPlane q).starProjection) ≤
         C₅ * (β * L) := by
       rw [hC₅_def, hsNorm]
-      exact LipApproxGoodSetFlat.sqrt_le_sqrt_mul_of_le hβL.le hT₁_hs
+      exact hsqrt _ _ _ hβL.le hT₁_hs
     have h2 : ‖(T₁.starProjection - (rotatedPlane q).starProjection) (y₂ - y₁)‖ ≤
         C₅ * (β * L) * s :=
-      (LipApproxGoodSetFlat.norm_apply_le_hsNorm _ _).trans
-        (mul_le_mul_of_nonneg_right hT₁_norm (norm_nonneg _))
+      (hHSapply _ _).trans (mul_le_mul_of_nonneg_right hT₁_norm (norm_nonneg _))
     have hdecomp : (y₂ - y₁) - (rotatedPlane q).starProjection (y₂ - y₁) =
         ((y₂ - y₁) - T₁.starProjection (y₂ - y₁)) +
           (T₁.starProjection - (rotatedPlane q).starProjection) (y₂ - y₁) := by
