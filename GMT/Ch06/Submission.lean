@@ -359,6 +359,67 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Measure identity on the slab over `A` (fact (D2) in the proof of the product triple): for
+`Φ(s, x) = (s, x₁, …, x_P)` and `π(y) = (y₁, …, y_P)`, the cylinder identity
+`Hᵐ⁺¹ ⌞ {π ∈ A} = Φ_#(L¹ × Hᵐ ⌞ A)` restricts to the slab `{π ∈ A, 0 < y₀ < 1}`.  Restricting
+both sides to the Borel set `{0 < y₀ < 1}`, whose `Φ`-preimage is `(0, 1) × ℝ^P`, gives
+`Φ_#((L¹ ⌞ (0, 1)) × Hᵐ ⌞ A)`; `Hᵐ ⌞ A` is finite on compact sets, hence s-finite. -/
+theorem Submission.iwl_cr_ip_pt_slab_restrict_eq_map :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} =
+        Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+          ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) →
+    ∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧
+            EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+        Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+          (((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod
+            ((μHE[m] : Measure (Eucl P)).restrict A)) := by
+  intro P m hMP A hA hArect hAfin
+  -- `Hᵐ ⌞ A` is finite on compact sets, hence σ-finite (`ℝ^P` is σ-compact).
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hAfin K hK⟩
+  -- `Φ` is continuous and `O = {0 < y₀ < 1}` is open, so both are Borel.
+  have hΦ : Measurable (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) :=
+    ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp (Continuous.finCons
+      continuous_fst ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))).measurable
+  have hO : MeasurableSet
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  -- `Φ(s, x)₀ = s`, so `Φ⁻¹(O) = (0, 1) × ℝ^P`.
+  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹'
+        {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      Ioo (0 : ℝ) 1 ×ˢ univ := by
+    ext ⟨s, x⟩
+    simp only [mem_preimage, mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply,
+      Fin.cons_zero, mem_prod, mem_univ, and_true]
+  -- The slab is `O ∩ {π ∈ A}`.
+  have hslab : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} ∩
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} := by
+    ext y
+    exact and_comm
+  rw [hslab, ← Measure.restrict_restrict hO, hMP A hA hArect hAfin, Measure.restrict_map hΦ hO,
+    hpre, ← Measure.prod_restrict, Measure.restrict_univ]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
