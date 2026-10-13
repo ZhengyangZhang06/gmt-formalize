@@ -139,7 +139,8 @@ comparator's export), and everything is local to the section: after `end
 AcceptedChildDeclarations` the builtin elaborator is the only one for declarations and
 `Elab.async` is back at its default, so `main_theorem` is elaborated with the default settings
 (both facts checked with a probe on a test slice). On a 5.8k-line slice the peak anonymous memory
-drops from 986 MB to 412 MB (import baseline 257 MB); on the full file from 2.67 GB to 0.69 GB.
+drops from 986 MB to 412 MB (import baseline 257 MB); on the full file from 2.67 GB to
+0.6–0.7 GB (694 MB and 615 MB in two runs).
 
 ## 4. Proof of each conjunct (the accepted children)
 
@@ -381,12 +382,24 @@ All reused library results are existing, pinned declarations, used with their ow
 
 ## 8. Verification
 
-* `lake build GMT.Ch03.Submission` (local, this worktree): succeeded; `GMT.Ch03.Submission` built
-  in 1035 s with no errors and no `sorry` (only the module-system import warnings that the frozen
-  contract itself produces).
+All results below are for the final Lean file (`GMT/Ch03/Submission.lean`, sha256
+`52570fbc08aa2426aea30dfe5cd74b81fb93039497c9e7ae4d0c2bca3a601ebf`, first committed in
+`57b4774c`).
+
+* Exact configured comparator (`gmt-compare.py … --frozen-commit d09bc8a18ce6… root`) on
+  candidate `57b4774cbad5f63e80eab4fbba49a6f1a8ef72e7`: **passed** — "GMT comparator: comparator
+  and Lean kernel accepted GMT.Ch03.main_theorem", "Your solution is okay!", exit 0; checks
+  `exit_zero`, `lean_kernel_accepted`, `final_marker` all true; evidence
+  `cluster-state/verification/results/hoa43/20261013T033609Z-ch03-root-a05df1dl`, verdict key
+  `d63da00fc3d55975a3e30dedbaa37185eaf61e7fc5e7f37cd6847300efe93384`. (The earlier run on
+  `33bd0e72`, before the memory change, was killed by the OOM killer: evidence
+  `…/20261013T020812Z-ch03-root-ae40ge3k`.)
+* Local `lake build GMT.Ch03.Submission` with `LEAN_NUM_THREADS=4`: succeeded; the module built in
+  542 s with peak anonymous memory 615 MB; no errors, no `sorry`, and no diagnostics from
+  `Submission.lean` other than the four module-system import notes that the frozen contract itself
+  produces.
 * `#print axioms GMT.Ch03.main_theorem`: `[propext, Classical.choice, Quot.sound]`.
 * Child interfaces: all 226 accepted children's frozen `lean_statement`s (from the run's
   `dag.json`, normalized by the workflow validator `lean_contract.py`) were elaborated in the
   comparator's replayed contract scope after `import GMT.Ch03.Submission` and closed by
   `exact Submission.<lean_name>`: 226/226 succeed, 0 errors.
-* Comparator: COMPARATOR_PENDING
