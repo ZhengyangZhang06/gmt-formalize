@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "28fa0b0b4bc25e88b690acdc127e5a18267a431fa75bb20115cb62cbfb9b520b",
+  "git_delta": {
+    "base_commit": "b4f6d7b272d341944a0ce6d7cd52395554642289",
+    "candidate_commit": "d3a1d765294517b54cc208cd2b36e6a98f948a6e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_mil_abs_det_le",
+    "diff_sha256": "4b016bbf61cd8571089b1c506520ba68bad97eb8cfa8b95d1220a6800e7de664",
+    "source_sha256": "4cc2f9847783c7a3ddbbe62743c556719173eeab54c19a8d44aa09d8a6ea0227",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_mil_abs_det_le",
+      "statement": "∀ (n : ℕ) (c : ℝ) (A : Matrix (Fin n) (Fin n) ℝ), (∀ i j, |A i j| ≤ c) → |Matrix.det A| ≤ (n.factorial : ℝ) * c ^ n",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
