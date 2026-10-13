@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbrld_|dmcbrld_",
+        "theorem exists_disjoint_closedBall_covering_ae",
+        "theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc",
+        "theorem MonotoneOn.intervalIntegrable_deriv",
+        "theorem Monotone.ae_differentiableAt",
+        "theorem countable_meas_pos_of_disjoint_iUnion",
+        "alternatizeUncurryFin_curryLeft|alternatizeUncurryFin_smul|euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton",
+        "def massAdmissibleOn|def massOn|def mass |theorem le_massOn|def zeroRegion|def support",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_lower_density_audit_10m8l9ef/ContractsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-f72d9d736e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-f72d9d736e/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8ea6d63a05/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-77789fb32b/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8525b020e6/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-431a500905/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/gmt_lower_density_audit_10m8l9ef/ContractsAndAssembly.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the snapshot. The required covering, differentiation, primitive-form and singleton-measure results support the supplied arguments; no cbrld_ or dmcbrld_ declaration occurs in the frozen project. All seven exact propositions independently elaborate with autoImplicit disabled, and lexical validation passes. The four reused names have comparator-accepted, byte-identical frozen types; their verification records enforce the propext/Quot.sound/Classical.choice axiom whitelist. The three fresh names have no reservations. Dependencies are correctly directed and acyclic. The seven-way split is appropriate: the supplied proofs establish useful intermediate obligations, and an independently compiled conditional assembly establishes this selected parent's exact type from its declared isoperimetric dependency and the proposed children, using only the three permitted axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, including positive degree, finite mass and uniformity in the current, centre and radius. Mass rescaling, the constant-form primitive and cutoff locality prove the estimate with a constant depending only on the fixed form. No representation theorem or circular dependency is needed. Exact-type reuse is verified."
+    },
+    {
+      "key": "covering",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness supplies sigma-finiteness and the required integrability. The cited Besicovitch theorem permits arbitrary E. Disjoint-ball summation and the complement estimate prove the stated outer-measure inequality, with theta ≤ 1 supplying the correct inequality direction. Exact-type reuse is verified."
+    },
+    {
+      "key": "radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The monotone-root derivative integral yields a positive-measure set of good radii. Removing the prescribed null set, nondifferentiability points and countably many positive-mass spheres is valid. Differentiating F = G^n and comparing annulus quotients proves the exact ENNReal liminf bound, including n = 1 and F = 0. The necessary additional import is explicitly identified."
+    },
+    {
+      "key": "mass_gap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MR identifies total mass with the representation measure. Every carrier point contributes its positive integer multiplicity because normalized zero-dimensional Hausdorff measure assigns mass one to a singleton. Mass below one therefore forces an empty carrier and the zero current. The assumptions and exact-type reuse are correct."
+    },
+    {
+      "key": "slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The zero measure and zero field correctly represent the vanishing boundary. ISP supplies the exceptional null set; SL supplies restriction currents, sphere locality and the exact mass bound. Extensionality eliminates B, and the zero-region argument proves the support inclusion. No mass-measure identity is silently required. Exact-type reuse is verified."
+    },
+    {
+      "key": "local_filling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SL, MR and ISO are explicit hypotheses, and the three declared sibling dependencies suffice. The constants are positive and uniform in the current and measure. The good-radius estimate gives both the half-mass filling bound and the stated support radius; the degree-zero slice case is correctly discharged by mass_gap. The proof handles zero mass without invalid power identities."
+    },
+    {
+      "key": "null_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary E and the bounds on kappa and lam. The proof establishes the necessary mass, boundary and support estimates before applying cone and covering. Taking the small-scale limit separately for each admissible form justifies the subsequent mass supremum despite the form-dependent cone constant. Bounded-piece exhaustion proves the exact null-set conclusion without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
