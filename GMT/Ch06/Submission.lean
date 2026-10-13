@@ -734,6 +734,83 @@ theorem Submission.slicing_im_st_lsc_tangent_range :
   show LinearMap.range ((fderiv ℝ Φ (ψ v)).toLinearMap.comp (fderiv ℝ ψ v).toLinearMap) = _
   rw [LinearMap.range_comp, heq]
 
+/-- Level-set charts (implicit-function step of the slice-triple argument for Simon Ch. 6, §4):
+the regular points `w ∈ Ω`, `h w = t`, `Dh(w) ≠ 0` of a level set of a `C¹` function are covered,
+after applying the `C¹` map `Φ` (antilipschitz on the open set `Ω`), by countably many `C¹`
+charts `Ψ i` that are Lipschitz and antilipschitz on open sets `V i`, with tangent range
+`DΦ(w)(ker Dh(w))`.  Take the implicit-function chart `ψ x` of `local_graph` at every regular
+point `x`, keep countably many of the open sets `W x`, enumerated as `W (xs i)` (second
+countability), and set `Ψ i := Φ ∘ ψ (xs i)`, `V i := B(0, r (xs i))`; the tangent range is
+`tangent_range` with `c := 1`. -/
+theorem Submission.slicing_im_st_level_set_charts :
+    ∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (t : ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → ∃ (Ψ : ℕ → Eucl m → Eucl P) (V : ℕ → Set (Eucl m)), (∀ i, IsOpen (V i)) ∧ (∀ i, ContDiff ℝ 1 (Ψ i)) ∧ (∀ i, ∃ K : ℝ≥0, LipschitzOnWith K (Ψ i) (V i)) ∧ (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ v ∈ V i, ∀ v' ∈ V i, c * ‖v - v'‖ ≤ ‖Ψ i v - Ψ i v'‖) ∧ (∀ w ∈ Ω, h w = t → fderiv ℝ h w ≠ 0 → ∃ i, ∃ v ∈ V i, Ψ i v = Φ w) ∧ ∀ i, ∀ v ∈ V i, ∃ w ∈ Ω, h w = t ∧ Ψ i v = Φ w ∧ LinearMap.range (fderiv ℝ (Ψ i) v).toLinearMap = Submodule.map (fderiv ℝ Φ w).toLinearMap (LinearMap.ker (fderiv ℝ h w).toLinearMap) := by
+  have hLG := Submission.slicing_im_st_lsc_local_graph
+  have hTR := Submission.slicing_im_st_lsc_tangent_range
+  intro P m Φ Ω h t hΩ hΦ hΦanti hh
+  obtain ⟨c, hc, hcΦ⟩ := hΦanti
+  -- `R` is the type of regular points of the level set `{h = t}` in `Ω`.
+  let R := {w : Eucl (m + 1) // w ∈ Ω ∧ h w = t ∧ fderiv ℝ h w ≠ 0}
+  rcases isEmpty_or_nonempty R with hR | hR
+  · -- No regular point: empty chart domains.
+    refine ⟨fun _ _ => 0, fun _ => ∅, fun _ => isOpen_empty, fun _ => contDiff_const,
+      fun _ => ⟨0, lipschitzOnWith_empty _ _⟩,
+      fun _ => ⟨1, one_pos, fun v hv => absurd hv (notMem_empty v)⟩, ?_,
+      fun _ v hv => absurd hv (notMem_empty v)⟩
+    intro w hw hhw hdw
+    exact hR.elim ⟨w, hw, hhw, hdw⟩
+  -- The implicit-function chart `(ψ x, r x, W x)` of `local_graph` at each regular point `x`.
+  have hloc : ∀ x : R, ∃ (ψ : Eucl m → Eucl (m + 1)) (r : ℝ) (W : Set (Eucl (m + 1))),
+      ContDiff ℝ 1 ψ ∧ 0 < r ∧ IsOpen W ∧ x.1 ∈ W ∧ (∀ v v' : Eucl m, ‖v - v'‖ ≤ ‖ψ v - ψ v'‖) ∧
+      (∀ v ∈ ball (0 : Eucl m) r, ψ v ∈ Ω ∧ h (ψ v) = h x.1 ∧ fderiv ℝ h (ψ v) ≠ 0) ∧
+      ∀ w ∈ W, h w = h x.1 → ∃ v ∈ ball (0 : Eucl m) r, ψ v = w :=
+    fun x => hLG m h Ω x.1 hh hΩ x.2.1 x.2.2.2
+  choose ψ r W hψ hr hWo hxW hanti hgood hcover using hloc
+  -- Countably many of the open sets `W x` cover all regular points; enumerate them as `W (xs i)`.
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable W hWo
+  have hcovT : ∀ x : R, ∃ y ∈ T, x.1 ∈ W y := by
+    intro x
+    have hx : x.1 ∈ ⋃ y ∈ T, W y := by
+      rw [hTU]
+      exact mem_iUnion.2 ⟨x, hxW x⟩
+    obtain ⟨y, hyT, hxy⟩ := mem_iUnion₂.1 hx
+    exact ⟨y, hyT, hxy⟩
+  have hTne : T.Nonempty := by
+    obtain ⟨y, hyT, -⟩ := hcovT hR.some
+    exact ⟨y, hyT⟩
+  obtain ⟨xs, hxs⟩ := hTc.exists_eq_range hTne
+  refine ⟨fun i => Φ ∘ ψ (xs i), fun i => ball (0 : Eucl m) (r (xs i)), fun _ => isOpen_ball,
+    fun i => hΦ.comp (hψ (xs i)), ?_, ?_, ?_, ?_⟩
+  · -- Lipschitz on `V i`: `Φ ∘ ψ (xs i)` is `C¹` on the compact convex closed ball.
+    intro i
+    obtain ⟨K, hK⟩ := ((hΦ.comp (hψ (xs i))).contDiffOn
+      (s := closedBall (0 : Eucl m) (r (xs i)))).exists_lipschitzOnWith one_ne_zero
+      (convex_closedBall _ _) (isCompact_closedBall _ _)
+    exact ⟨K, hK.mono ball_subset_closedBall⟩
+  · -- Antilipschitz on `V i`: `ψ (xs i)` is `1`-antilipschitz with values in `Ω`.
+    intro i
+    refine ⟨c, hc, fun v hv v' hv' => ?_⟩
+    calc c * ‖v - v'‖ ≤ c * ‖ψ (xs i) v - ψ (xs i) v'‖ :=
+          mul_le_mul_of_nonneg_left (hanti (xs i) v v') hc.le
+      _ ≤ ‖Φ (ψ (xs i) v) - Φ (ψ (xs i) v')‖ :=
+          hcΦ _ (hgood (xs i) v hv).1 _ (hgood (xs i) v' hv').1
+  · -- Covering: a regular point `w` lies in some `W (xs i)`, on which the level set is
+    -- `ψ (xs i) (V i)`.
+    intro w hw hhw hdw
+    obtain ⟨y, hyT, hwy⟩ := hcovT ⟨w, hw, hhw, hdw⟩
+    rw [hxs] at hyT
+    obtain ⟨i, rfl⟩ := hyT
+    obtain ⟨v, hv, hψv⟩ := hcover (xs i) w hwy (hhw.trans (xs i).2.2.1.symm)
+    exact ⟨i, v, hv, congrArg Φ hψv⟩
+  · -- Tangent range: `tangent_range` on `V i` with `c := 1`.
+    intro i v hv
+    obtain ⟨hvΩ, hvh, hvd⟩ := hgood (xs i) v hv
+    refine ⟨ψ (xs i) v, hvΩ, hvh.trans (xs i).2.2.1, rfl, ?_⟩
+    exact hTR P m (ψ (xs i)) Φ h (ball (0 : Eucl m) (r (xs i))) 1 v isOpen_ball hv one_pos
+      ((hψ (xs i)).differentiable one_ne_zero v) (hΦ.differentiable one_ne_zero _)
+      (hh.differentiable one_ne_zero _) hvd
+      (fun v' _ v'' _ => (one_mul ‖v' - v''‖).symm ▸ hanti (xs i) v' v'')
+      (fun v' hv' => (hgood (xs i) v' hv').2.1.trans hvh.symm)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
