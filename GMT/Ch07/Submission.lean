@@ -1306,6 +1306,90 @@ theorem Submission.cmc_fc_extend_to_univ : (∀ (P n : ℕ) (U : Set (Euclid P))
   obtain ⟨hm, hbm⟩ := Submission.cmc_fc_eu_cutoff_mass_le P m U K X Y hU hK hKU hres hsupp
   exact ⟨Y, hYIM, hres, hsupp, hm, hbm⟩
 
+/-- **Simon Ch. 6, 7.2, (1)–(3)** (total boundedness in `U`), from the deformation theorem (DF),
+boundary rectifiability (BR), restriction (IR) and differences (IS) of integer multiplicity
+currents and the mass formula (ME).  Choose `ρ > 0` with `2cρΛ < η` and let `𝒬` be the
+restrictions to `U` of the finite family `𝒬̂` of (DF) for `(ρ, K, Λ)`.  Extend `X` to `Y` on `ℝᴾ`
+(`cmc_fc_extend_to_univ`) and deform: `Y − Q̂ − Ŝ = ∂R̂`.  As
+`M(∂R̂) ≤ M(Y) + M(Q̂) + M(Ŝ) < ∞`, (BR) makes `∂R̂` integer multiplicity, hence so is
+`Ŝ = (Y − Q̂) − ∂R̂` by (IS).  Restriction to `U` keeps integer multiplicity, the identity
+`X − Q − S = ∂R` and the bound `M(R) + M(S) ≤ M(R̂) + M(Ŝ) ≤ 2cρΛ ≤ η`. -/
+theorem Submission.cmc_fc_total_bounded : (∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (Λ : NNReal), 0 < ρ → IsCompact K → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → T.support ⊆ K → T.mass ≤ Λ → T.boundary.mass < ∞ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support) → (∀ (P d : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) → (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (Λ : NNReal) (η : ℝ≥0∞), IsOpen U → IsCompact K → K ⊆ U → 0 < η → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ X : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity X → X.support ⊆ K → X.mass ≤ Λ → X.boundary.mass ≤ Λ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X - Q - S = R.boundary ∧ R.mass + S.mass ≤ η := by
+  intro DF BR IR IS ME P m U K Λ η hU hK hKU hη
+  -- Step 1: the constant `c ≥ 1` of (DF) and a scale `ρ = r > 0` with `r · 2cΛ < η`
+  obtain ⟨c, -, hDF⟩ := DF P m
+  obtain ⟨r, hr, hrη⟩ := ENNReal.exists_nnreal_pos_mul_lt (a := 2 * (c : ℝ≥0∞) * Λ)
+    (ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top)
+      ENNReal.coe_ne_top) hη.ne'
+  have hρη : (c : ℝ≥0∞) * ENNReal.ofReal r * Λ + c * ENNReal.ofReal r * Λ ≤ η := by
+    rw [ENNReal.ofReal_coe_nnreal]
+    calc (c : ℝ≥0∞) * r * Λ + c * r * Λ = r * (2 * c * Λ) := by ring
+      _ ≤ η := hrη.le
+  -- Step 2: the finite family `𝒬̂` of (DF) for `(ρ, K, Λ)`; `𝒬` is its image under `Z ↦ Z|_U`
+  obtain ⟨QF, hQF, hdef⟩ := hDF r K Λ (NNReal.coe_pos.mpr hr) hK
+  refine ⟨(fun Q => Q.restrictDomain (subset_univ U)) '' QF, hQF.image _, ?_⟩
+  -- (F2): `M_U(Z|_U) = M_U(Z) ≤ M(Z)`
+  have hres : ∀ (d : ℕ) (Z : GeometricCurrentOn (univ : Set (Euclid P)) d),
+      (Z.restrictDomain (subset_univ U)).mass ≤ Z.mass := fun d Z =>
+    (Submission.dtc_massOn_eq_of_agreeOn P d univ U U (subset_univ U) Z
+      (Z.restrictDomain (subset_univ U)) subset_rfl fun _ _ => rfl).symm.le.trans
+      (Z.massOn_mono (subset_univ U))
+  intro X hX hXK hXm hXb
+  -- Step 3: extend `X` to `Y` on `ℝᴾ` and deform: `Y − Q̂ − Ŝ = ∂R̂`
+  obtain ⟨Y, hY, hYX, hYK, hYm, hYb⟩ :=
+    Submission.cmc_fc_extend_to_univ IR ME P m U K X hU hK hKU hX hXK
+  have hYm' : Y.mass < ∞ := (hYm.trans hXm).trans_lt ENNReal.coe_lt_top
+  have hYb' : Y.boundary.mass < ∞ := (hYb.trans hXb).trans_lt ENNReal.coe_lt_top
+  obtain ⟨Qh, hQh, Rh, Sh, hQhIM, -, hRhIM, hYQS, -, hQhm, -, hRhm, hShm, -, -⟩ :=
+    hdef Y hY hYK (hYm.trans hXm) hYb'
+  -- Step 4: `M(∂R̂) ≤ M(Y) + M(Q̂) + M(Ŝ) < ∞`, so `∂R̂` is integer multiplicity by (BR)
+  have hbR : Rh.boundary.mass < ∞ := by
+    rw [← hYQS]
+    calc (Y - Qh - Sh).mass ≤ (Y - Qh).mass + Sh.mass :=
+          Submission.cmc_fc_tb_massOn_sub_le P (m + 1) univ univ (Y - Qh) Sh
+      _ ≤ Y.mass + Qh.mass + Sh.mass := by
+          gcongr
+          exact Submission.cmc_fc_tb_massOn_sub_le P (m + 1) univ univ Y Qh
+      _ < ∞ := ENNReal.add_lt_top.2 ⟨ENNReal.add_lt_top.2 ⟨hYm',
+          hQhm.trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top hYm')⟩,
+          hShm.trans_lt (ENNReal.mul_lt_top (ENNReal.mul_lt_top ENNReal.coe_lt_top
+            ENNReal.ofReal_lt_top) hYb')⟩
+  have hbRIM : IsIntegerMultiplicity Rh.boundary :=
+    BR P (m + 1) univ Rh isOpen_univ hRhIM fun W _ _ =>
+      (Rh.boundary.massOn_mono (subset_univ W)).trans_lt hbR
+  -- `Ŝ = (Y − Q̂) − ∂R̂` is integer multiplicity by (IS) applied twice
+  have hSh : Sh = Y - Qh - Rh.boundary := by
+    ext ω
+    have h := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) => T ω) hYQS
+    change Y ω - Qh ω - Sh ω = Rh.boundary ω at h
+    change Sh ω = Y ω - Qh ω - Rh.boundary ω
+    linarith
+  have hShIM : IsIntegerMultiplicity Sh := by
+    rw [hSh]
+    exact IS P (m + 1) univ (Y - Qh) Rh.boundary isOpen_univ
+      (IS P (m + 1) univ Y Qh isOpen_univ hY hQhIM) hbRIM
+  -- Step 5: `Q := Q̂|_U ∈ 𝒬`, `R := R̂|_U`, `S := Ŝ|_U`, integer multiplicity by (F2)
+  refine ⟨Qh.restrictDomain (subset_univ U), mem_image_of_mem _ hQh,
+    Rh.restrictDomain (subset_univ U), Sh.restrictDomain (subset_univ U),
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 2) univ U (subset_univ U) Rh hU
+      hRhIM,
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) univ U (subset_univ U) Sh hU
+      hShIM, ?_, ?_⟩
+  · -- `(X − Q − S)(ω) = (Y − Q̂ − Ŝ)(ιω) = ∂R̂(ιω) = R̂(ι dω) = ∂R(ω)`, using `Y|_U = X`
+    ext ω
+    rw [← hYX]
+    exact congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) =>
+      T (testFormOnInclusion (subset_univ U) (m + 1) ω)) hYQS
+  · -- Step 6: `M(R) + M(S) ≤ M(R̂) + M(Ŝ) ≤ cρM(Y) + cρM(∂Y) ≤ 2cρΛ ≤ η`
+    calc (Rh.restrictDomain (subset_univ U)).mass + (Sh.restrictDomain (subset_univ U)).mass
+        ≤ Rh.mass + Sh.mass := add_le_add (hres _ Rh) (hres _ Sh)
+      _ ≤ c * ENNReal.ofReal r * Y.mass + c * ENNReal.ofReal r * Y.boundary.mass :=
+          add_le_add hRhm hShm
+      _ ≤ c * ENNReal.ofReal r * Λ + c * ENNReal.ofReal r * Λ := by
+          gcongr
+          exacts [hYm.trans hXm, hYb.trans hXb]
+      _ ≤ η := hρη
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
