@@ -1126,6 +1126,48 @@ theorem Submission.iwl_cr_radial_operator :
     have h := intervalIntegral.norm_integral_le_of_norm_le_const hle
     rwa [sub_zero, abs_one, mul_one] at h
 
+/-- **Cone estimates** (items 3–4 of the cycle reduction; cf. the cone 2.30 and the mass bound
+2.27 of Simon Ch. 6).  With `c = P^{2m+1}` and `R ≥ 0`: if `spt X ⊆ B̄_R(0)` and `C` is a cone
+over `X`, i.e. `C(ω) = X(ψ)` whenever `ψ(x)(v) = ∫₀¹ t^m ω(tx)(x, v) dt` near `spt X`, then
+`spt C ⊆ B̄_R(0)` and `M(C) ≤ c R M(X)`; and if `X_j ⇀ X` (all supported in `B̄_R(0)`), the
+cones `C_j` over `X_j` converge weakly to `C`.  Each `ω` is tested through one cut-off radial
+form `ψ = ζ ψ_ω`, with `ζ = 1` near `B̄_R(0)`. -/
+theorem Submission.iwl_cr_cone_estimates : ∀ (P m : ℕ), ∃ c : ℝ, 0 ≤ c ∧ ∀ R : ℝ, 0 ≤ R → (∀ (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → C.support ⊆ closedBall 0 R ∧ (X.mass < ∞ → C.mass ≤ ENNReal.ofReal (c * R) * X.mass)) ∧ (∀ (Xj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) m) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (Cj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, (Xj j).support ⊆ closedBall 0 R) → X.support ⊆ closedBall 0 R → (∀ j, (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ (Xj j).support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → (Cj j) ω = (Xj j) ψ)) → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → WeaklyConvergesOn Xj X → WeaklyConvergesOn Cj C) := by
+  intro P m
+  -- Step 1: for `0 < r < s`, `ω` has a cut-off radial form `ψ`, satisfying the radial formula on
+  -- `B_r(0)` and `|ψ| ≤ P^{2m+1} s` if `|ω| ≤ 1`.
+  have hcut : ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (r s : ℝ), 0 < r → r < s →
+      ∃ ψ : TestFormOn (univ : Set (Eucl P)) m,
+        (∀ x ∈ ball (0 : Eucl P) r, ∀ v : Fin m → Eucl P,
+          (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1,
+            t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) ∧
+        ((∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) (m + 1)) y) ≤ 1) →
+          ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) m) x) ≤
+            (P : ℝ) ^ (2 * m + 1) * s) := by
+    intro ω r s hr hrs
+    obtain ⟨ψ₀, hψ₀, hψ₀eq, -⟩ :=
+      Submission.iwl_cr_radial_operator P m m (ω : DifferentialForm (Eucl P) (m + 1))
+        ω.property.1.1
+    exact Submission.iwl_cr_cest_cutoff_radial_form P m ω ψ₀ r s hψ₀ hψ₀eq hr hrs
+  refine ⟨(P : ℝ) ^ (2 * m + 1), by positivity, fun R hR => ⟨?_, ?_⟩⟩
+  · -- Step 2 (a): support, and mass with `ψ` cut off between `B_{R+δ/2}(0)` and `B_{R+δ}(0)`.
+    intro X C hX hcone
+    refine ⟨Submission.iwl_cr_cest_cone_support P m R X C hX hcone, fun hXm => ?_⟩
+    refine Submission.iwl_cr_cest_mass_le_of_forms P m (m + 1) X C ((P : ℝ) ^ (2 * m + 1)) R
+      (by positivity) hR hXm fun ω hω δ hδ => ?_
+    obtain ⟨ψ, hψeq, hψle⟩ := hcut ω (R + δ / 2) (R + δ) (by linarith) (by linarith)
+    exact ⟨ψ, hcone ω ψ ⟨ball 0 (R + δ / 2), isOpen_ball,
+      hX.trans (closedBall_subset_ball (by linarith)), hψeq⟩, hψle hω.2⟩
+  · -- Step 3 (b): one `ψ`, cut off between `B_{R+1}(0)` and `B_{R+2}(0)`, serves every `j`, so
+    -- `C_j(ω) = X_j(ψ) → X(ψ) = C(ω)`.
+    intro Xj X Cj C hXj hX hconej hcone hconv ω
+    obtain ⟨ψ, hψeq, -⟩ := hcut ω (R + 1) (R + 2) (by linarith) (by linarith)
+    have hj : ∀ j, Cj j ω = Xj j ψ := fun j => hconej j ω ψ ⟨ball 0 (R + 1), isOpen_ball,
+      (hXj j).trans (closedBall_subset_ball (by linarith)), hψeq⟩
+    rw [hcone ω ψ ⟨ball 0 (R + 1), isOpen_ball,
+      hX.trans (closedBall_subset_ball (by linarith)), hψeq⟩]
+    exact (hconv ψ).congr fun j => (hj j).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
