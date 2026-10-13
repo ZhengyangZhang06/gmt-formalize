@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "24c31be9afef209db2992e0ef3536524be46f77deeab5359105f01dc5b949940",
+  "git_delta": {
+    "base_commit": "77d9714b896dc40ba013f2db6c49bc0a89521dd4",
+    "candidate_commit": "af347fccdcd0320eea92fa708bf037903eebb1b0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idod_local_uniform_ball_mass_bound",
+    "diff_sha256": "b3d4d73c7bf99df04414e43986041480f503035690192d9d322b5aa62760fa6f",
+    "source_sha256": "958da09042bddca601a527c865a6954b3206f0fdd8f7425d8472bfd50cae5cff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idod_local_uniform_ball_mass_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (K'' : Set (Euclid P)) (y : Euclid P) (Λ σ₀ θ θ₁ θ₂ : ℝ), 0 ≤ Λ → 0 < σ₀ → θ < θ₁ → θ₁ < θ₂ → HasMassDensity T y θ → closedBall y (2 * σ₀) ⊆ K'' → (∀ (z : Euclid P) (R : ℝ), closedBall z R ⊆ K'' → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ)) (Ioo 0 R)) → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ ball y δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
