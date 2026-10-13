@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6ddd3bda4602cd519f89f0a2c977535784215ae88ec6c9c7cb24a19cb03f792",
+  "git_delta": {
+    "base_commit": "0e4a209c9fe41671c12a988e10b2ded4d11c399e",
+    "candidate_commit": "140fa0b840bf0146693d46e7db78681f2a474722",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_vr_cd_density_representation",
+    "diff_sha256": "a0d5f52f701ae61b4a519dda7bf002bacc20cfb57d5738053df30dbeeb8fb0ab",
+    "source_sha256": "9755fa434ac0cd40d2e002b9f9f8789055ad179d32fc8c3a440d191a9c68ed86",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_vr_cd_density_representation",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ₀ ξ : Measure X), IsFiniteMeasureOnCompacts μ₀ → IsFiniteMeasureOnCompacts ξ → ξ ≪ μ₀ → ∃ g : X → ℝ, Measurable g ∧ (∀ K : Set X, IsCompact K → IntegrableOn g K μ₀) ∧ ∀ f : CompactlySupportedContinuousMap X ℝ, Integrable (fun x => f x * g x) μ₀ ∧ ∫ x, f x ∂ξ = ∫ x, f x * g x ∂μ₀",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
