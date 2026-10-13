@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d5602e09c23ef6d398e061fff0a355b1626557f2135c2a4842e646a00a5a26e9",
+  "git_delta": {
+    "base_commit": "716822cf0b1f63be2c458379faec1c9bc4ae6648",
+    "candidate_commit": "d328c22df65a3bcc5bb690f9e815e585e82b5d76",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ovr_extend_rep_across_vertex",
+    "diff_sha256": "26aa4f2d128af60756915b2a8ca2991480494d9cdd617381e7250dcf0fcd38fb",
+    "source_sha256": "329cd68714993b7f67b1c37e21904f642335f491d28cf608052c26715c357ab1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ovr_extend_rep_across_vertex",
+      "statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 1 ≤ m → IsIntegerMultiplicity C → MeasurableSet M → (0 : Euclid P) ∉ M → ContinuousOn ξ M → (∀ x ∈ M, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (0 : Euclid P) ∉ tsupport (ω : DifferentialForm (Euclid P) m) → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
