@@ -560,6 +560,117 @@ theorem Submission.lpf_wtc_blowup_setIntegral_image :
   rw [hmp.setIntegral_image_emb hemb g S, Measure.restrict_smul, integral_smul_measure,
     ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
 
+/-- Locality of approximate tangent spaces (Simon Ch. 3, Def. 1.4): if `E ⊆ E'` are
+`Hᵏ`-null-measurable and `Hᵏ(E' ∩ K) < ∞` for every compact `K`, then for `Hᵏ`-a.e. `x ∈ E`
+and every subspace `Q`, `Q` is the approximate tangent space of `E` at `x` iff it is that of
+`E'` at `x`.  By the Upper Density Theorem `Hᵏ((E' \ E) ∩ B̄_ρ(x)) = o(ρᵏ)` at such `x`, and by
+the dilation identity the blow-up integrals of `E` and `E'` then differ by `o(1)`. -/
+theorem Submission.imc_approxTangent_iff_of_subset :
+    ∀ (N k : ℕ) (E E' : Set (Eucl N)), E ⊆ E' → NullMeasurableSet E (μHE[k] : Measure (Eucl N)) →
+      NullMeasurableSet E' (μHE[k] : Measure (Eucl N)) →
+      (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E' ∩ K) < ∞) →
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N),
+        Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E x Q ↔
+          Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E' x Q := by
+  intro N k E E' hEE' hE hE' hfin
+  -- Step 1: `Hᵏ((E' \ E) ∩ B̄_ρ(x)) / ρᵏ → 0` as `ρ → 0+`, for `Hᵏ`-a.e. `x ∈ E`.
+  have hS : NullMeasurableSet (E' \ E) (μHE[k] : Measure (Eucl N)) := hE'.diff hE
+  have hSfin : ∀ K : Set (Eucl N), IsCompact K →
+      ∫⁻ _ in (E' \ E) ∩ K, (1 : ℝ≥0∞) ∂(μHE[k] : Measure (Eucl N)) < ∞ := by
+    intro K hK
+    rw [setLIntegral_one]
+    exact (measure_mono (inter_subset_inter_left K sdiff_subset)).trans_lt (hfin K hK)
+  filter_upwards [ae_restrict_of_ae
+      (Submission.imc_ae_zero_density_off_set N k (E' \ E) (fun _ => 1) hS hSfin),
+    ae_restrict_mem₀ hE] with x hx hxE Q
+  have hdens := hx fun h => h.2 hxE
+  simp only [setLIntegral_one] at hdens
+  -- Steps 2–3: for every `f ∈ C_c(ℝᴺ)` the blow-up integrals of `E'` and `E` differ by `o(1)`.
+  have key : ∀ f : CompactlySupportedContinuousMap (Eucl N) ℝ, Tendsto (fun r : ℝ =>
+      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' E', f y ∂(μHE[k] : Measure (Eucl N))) -
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' E, f y ∂(μHE[k] : Measure (Eucl N)))
+      (𝓝[>] 0) (𝓝 0) := by
+    intro f
+    obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+    obtain ⟨R, hR, hRf⟩ :=
+      f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 (0 : Eucl N)
+    -- `f ∘ η_{x,r}` vanishes off `B̄_{Rr}(x)`.
+    have hvan : ∀ r : ℝ, 0 < r → ∀ z, z ∉ closedBall x (R * r) →
+        f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) = 0 := by
+      intro r hr z hz
+      by_contra hne
+      have hmem := hRf (subset_tsupport f hne)
+      rw [mem_closedBall, dist_zero_right, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul,
+        norm_inv, Real.norm_of_nonneg hr.le, inv_mul_le_iff₀ hr] at hmem
+      rw [mem_closedBall, dist_eq_norm, not_le] at hz
+      linarith [mul_comm R r]
+    -- For `r > 0`: `|I_{E'}(r) - I_E(r)| ≤ C Rᵏ Hᵏ((E' \ E) ∩ B̄_{Rr}(x)) / (Rr)ᵏ`.
+    have hbound : ∀ r : ℝ, 0 < r →
+        ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' E', f y
+            ∂(μHE[k] : Measure (Eucl N))) -
+          ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' E, f y
+            ∂(μHE[k] : Measure (Eucl N))‖ ≤
+        C * R ^ k * ((μHE[k] : Measure (Eucl N)) ((E' \ E) ∩ closedBall x (R * r)) /
+          ENNReal.ofReal ((R * r) ^ k)).toReal := by
+      intro r hr
+      have hcont : Continuous fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) := by
+        refine f.continuous.comp ?_
+        unfold Poincare.SimonGMT.Chapter03.blowUpMap
+        fun_prop
+      -- `f ∘ η_{x,r}` is continuous with compact support, and `Hᵏ ⌞ E'` is finite on compacts.
+      have hint : IntegrableOn (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)) E'
+          (μHE[k] : Measure (Eucl N)) := by
+        have : IsFiniteMeasureOnCompacts ((μHE[k] : Measure (Eucl N)).restrict E') := by
+          refine ⟨fun K hK => ?_⟩
+          rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+          exact hfin K hK
+        exact hcont.integrable_of_hasCompactSupport
+          (HasCompactSupport.intro (isCompact_closedBall x (R * r)) (hvan r hr))
+      have hsplit : (∫ z in E', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+            ∂(μHE[k] : Measure (Eucl N))) -
+          ∫ z in E, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+            ∂(μHE[k] : Measure (Eucl N)) =
+          ∫ z in (E' \ E) ∩ closedBall x (R * r), f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+            ∂(μHE[k] : Measure (Eucl N)) := by
+        rw [← setIntegral_sdiff₀ hE hint hEE']
+        exact setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hS inter_subset_left
+          (Eventually.of_forall fun z hz => hvan r hr z fun h => hz.2 ⟨hz.1, h⟩)
+      have hfinB : (μHE[k] : Measure (Eucl N)) ((E' \ E) ∩ closedBall x (R * r)) < ∞ :=
+        (measure_mono (inter_subset_inter_left _ sdiff_subset)).trans_lt
+          (hfin _ (isCompact_closedBall x (R * r)))
+      rw [Submission.lpf_wtc_blowup_setIntegral_image N k x r E' f hr,
+        Submission.lpf_wtc_blowup_setIntegral_image N k x r E f hr, ← mul_sub, hsplit, norm_mul,
+        norm_inv, norm_pow, Real.norm_of_nonneg hr.le, ENNReal.toReal_div,
+        ENNReal.toReal_ofReal (by positivity), ← measureReal_def]
+      calc (r ^ k)⁻¹ * ‖∫ z in (E' \ E) ∩ closedBall x (R * r),
+            f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[k] : Measure (Eucl N))‖
+          ≤ (r ^ k)⁻¹ *
+              (C * (μHE[k] : Measure (Eucl N)).real ((E' \ E) ∩ closedBall x (R * r))) :=
+            mul_le_mul_of_nonneg_left
+              (norm_setIntegral_le_of_norm_le_const hfinB fun z _ => hC _) (by positivity)
+        _ = C * R ^ k * ((μHE[k] : Measure (Eucl N)).real ((E' \ E) ∩ closedBall x (R * r)) /
+              (R * r) ^ k) := by
+            rw [mul_pow]
+            field_simp
+    -- `ρ = R r → 0+` as `r → 0+`, so the bound tends to `0` by Step 1.
+    have hlin : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have h0 : Tendsto (fun r : ℝ => R * r) (𝓝 0) (𝓝 (R * 0)) := tendsto_id.const_mul R
+        rw [mul_zero] at h0
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos hR hr
+    have hlim := ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp
+      (hdens.comp hlin)).const_mul (C * R ^ k)
+    rw [ENNReal.toReal_zero, mul_zero] at hlim
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [self_mem_nhdsWithin] with r hr using hbound r hr
+  -- Step 4: the blow-up integrals of `E` and `E'` have the same limits.
+  constructor
+  · rintro ⟨hdim, hlim⟩
+    exact ⟨hdim, fun f => by simpa using (hlim f).add (key f)⟩
+  · rintro ⟨hdim, hlim⟩
+    exact ⟨hdim, fun f => by simpa using (hlim f).sub (key f)⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
