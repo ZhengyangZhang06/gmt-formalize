@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "da7945e670f7421feb2b891eba6e85429ef45817290d89ecc512558358c93d02",
+  "git_delta": {
+    "base_commit": "a2ee6047e98437f5ed1345e0934c22c407ebd2d0",
+    "candidate_commit": "b8d781ad32ad33348e04fd0d9a5dc087da5b3366",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bvc_limit_of_fast_cauchy",
+    "diff_sha256": "1b7da0e4865a1bdff47fb928671fa85c3e3a9d4ed012cd6103ac9c3669b35655",
+    "source_sha256": "9411674e0df9f0dfa82988efb0a5ac779979857d41678b30932c6ec466ad97f8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bvc_limit_of_fast_cauchy",
+      "statement": "∀ (n : ℕ) (Gs : ℕ → Set (Euclid n)), (∀ j, MeasurableSet (Gs j)) → (∀ i : ℕ, volume (symmDiff (Gs (i + 1)) (Gs i) ∩ ball (0 : Euclid n) ((i : ℝ) + 1)) ≤ (2⁻¹ : ℝ≥0∞) ^ i) → ∃ F₀ : Set (Euclid n), MeasurableSet F₀ ∧ ∀ R : ℝ, Tendsto (fun j => volume (symmDiff (Gs j) F₀ ∩ ball (0 : Euclid n) R)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
