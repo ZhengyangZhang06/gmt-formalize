@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.pushforward_rep-a1.normal_field_measurable-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.pushforward_rep-a1",
+  "depth": 6,
+  "title": "The normal multivector field ξ̃(v)(α) = −Σ_j (−1)^j α(DG(v)e_{j.succAbove ·})⟨e_j, ν(v)⟩ is strongly measurable",
+  "statement": "Let P, n ∈ ℕ, let G : ℝ^{n+1} → ℝ^P be an arbitrary map and let ν : ℝ^{n+1} → ℝ^{n+1} be Borel measurable. Notation:\n- DG(v) := fderiv ℝ G v is the Fréchet derivative of G at v where it exists, and 0 otherwise.\n- e_0, …, e_n is the standard basis of ℝ^{n+1}, and j.succAbove is the increasing enumeration of {0, …, n} ∖ {j}.\n- Λ_n(ℝ^P) = MultiVector P n is the space of continuous linear functionals on the normed space Covector(ℝ^P, n) of continuous alternating n-linear forms on ℝ^P.\nThen there is a map ξ̃ : ℝ^{n+1} → Λ_n(ℝ^P), strongly measurable for the Borel σ-algebra of ℝ^{n+1}, such that for every v ∈ ℝ^{n+1} and every n-covector α on ℝ^P:\nξ̃(v)(α) = −Σ_{j=0}^{n} (−1)^j α(DG(v)e_{j.succAbove 0}, …, DG(v)e_{j.succAbove(n−1)})·⟨e_j, ν(v)⟩.",
+  "lean_statement": "∀ (P n : ℕ) (G : Euclid (n + 1) → Euclid P) (ν : Euclid (n + 1) → Euclid (n + 1)), Measurable ν → ∃ ξ : Euclid (n + 1) → MultiVector P n, StronglyMeasurable ξ ∧ ∀ (v : Euclid (n + 1)) (α : Covector (Euclid P) n), ξ v α = -∑ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * α (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) (1 : ℝ))) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) (ν v)",
+  "lean_name": "codim1_pfr_normal_multivector_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-716bded54d-a1"
+}
