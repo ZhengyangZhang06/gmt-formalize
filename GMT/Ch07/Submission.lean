@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The blow-up half-space passes through the origin** (Simon Ch. 3, 4.3: "(10) and (11)
+evidently tell us that `λ = 0` in (9)").  If `F₀` and its complement have positive measure in
+every `B_s(0)`, and `F₀` is null, conull, or a.e. equal to `{⟨z, v⟩ > c}` with `|v| = 1`, then
+`F₀ = {⟨z, v⟩ > 0}` a.e.  Since `|⟨z, v⟩| ≤ |z|`, `B_c(0)` misses `{⟨z, v⟩ > c}` if `c > 0`, and
+`B_{−c}(0)` lies inside it if `c < 0`. -/
+theorem Submission.codim1_rdo_dg_bh_offset_zero : ∀ (m : ℕ) (F₀ : Set (Euclid (m + 1))) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ s : ℝ, 0 < s → 0 < volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ∧ 0 < volume (ball (0 : Euclid (m + 1)) s \ F₀)) → (volume F₀ = 0 ∨ volume F₀ᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F₀ {z | c < inner ℝ z v}) = 0) → volume (symmDiff F₀ {z | 0 < inner ℝ z v}) = 0 := by
+  intro m F₀ v hv hpos htri
+  rcases htri with h | h | ⟨c, hc⟩
+  -- `L(F₀) = 0` would give `L(F₀ ∩ B_1(0)) = 0`
+  · exact ((hpos 1 one_pos).1.ne' (measure_mono_null Set.inter_subset_left h)).elim
+  -- `L(F₀ᶜ) = 0` would give `L(B_1(0) \ F₀) = 0`
+  · exact ((hpos 1 one_pos).2.ne' (measure_mono_null (fun x hx => hx.2) h)).elim
+  · rcases lt_trichotomy c 0 with hneg | rfl | hcpos
+    -- `c < 0`: `⟨z, v⟩ ≥ −|z| > c` on `B_{−c}(0)`, so `B_{−c}(0) \ F₀ ⊆ F₀ Δ {⟨z, v⟩ > c}`
+    · have hsub : ball (0 : Euclid (m + 1)) (-c) \ F₀ ⊆ symmDiff F₀ {z | c < inner ℝ z v} := by
+        intro z hz
+        refine Set.mem_symmDiff.mpr (Or.inr ⟨?_, hz.2⟩)
+        have h1 : |inner ℝ z v| ≤ ‖z‖ * ‖v‖ := abs_real_inner_le_norm z v
+        have h2 := mem_ball_zero_iff.mp hz.1
+        rw [hv, mul_one] at h1
+        show c < inner ℝ z v
+        linarith [neg_abs_le (inner ℝ z v)]
+      exact ((hpos (-c) (neg_pos.mpr hneg)).2.ne' (measure_mono_null hsub hc)).elim
+    · exact hc
+    -- `c > 0`: `⟨z, v⟩ ≤ |z| < c` on `B_c(0)`, so `F₀ ∩ B_c(0) ⊆ F₀ Δ {⟨z, v⟩ > c}`
+    · have hsub : F₀ ∩ ball (0 : Euclid (m + 1)) c ⊆ symmDiff F₀ {z | c < inner ℝ z v} := by
+        intro z hz
+        refine Set.mem_symmDiff.mpr (Or.inl ⟨hz.1, ?_⟩)
+        have h1 : |inner ℝ z v| ≤ ‖z‖ * ‖v‖ := abs_real_inner_le_norm z v
+        have h2 := mem_ball_zero_iff.mp hz.2
+        rw [hv, mul_one] at h1
+        show ¬ c < inner ℝ z v
+        linarith [le_abs_self (inner ℝ z v)]
+      exact ((hpos c hcpos).1.ne' (measure_mono_null hsub hc)).elim
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
