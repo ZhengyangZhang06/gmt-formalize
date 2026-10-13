@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ce0b19bc9880d54ac9e49bb1384c2592f28aa9d6fffc721297e0f9b003475245",
+  "git_delta": {
+    "base_commit": "701fd6d6c99fa65494dc7fe530580e553c64c952",
+    "candidate_commit": "daef6f49c0496af65776eccd8b98c4e8aebc0c02",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_caf_paf_fiber_side",
+    "diff_sha256": "d2cdb77534972723e5401fc50062a372fb529bf32948573da7c6da078fc367fb",
+    "source_sha256": "85cbacd3ac86d067bee47519ef2719b7fff6611ed22cb7eb88207084c472ffe1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_caf_paf_fiber_side",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (F : Euclid P → Euclid n) (Φ : Euclid n → Euclid n) (LΦ : NNReal) (h : Euclid P → ℝ≥0∞), Continuous g → MeasurableSet A → InjOn g A → LipschitzWith LΦ Φ → (∀ a ∈ A, F (g a) = Φ a) → Measurable h → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ Φ a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
