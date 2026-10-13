@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f85c9e0cf2c73563db7ca6f8b8d6537bf484e8b7dffa1221ababf2bc2547f91",
+  "git_delta": {
+    "base_commit": "4ce5ae0c06994b768b0a17fb5c37f1e694311845",
+    "candidate_commit": "3749f3dcadb9b6fe2f5a9be7d71f91dd58efa900",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ehs_del_lhs_tendsto",
+    "diff_sha256": "5e016680bb18743c3c8e9f79415085d7c5ca8447af3a6681191e4a52c9477043",
+    "source_sha256": "78944e55028f22ec0e057e42396b63a982a58f49df7b167a2d185716e08e4b87",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ehs_del_lhs_tendsto",
+      "statement": "∀ n ℓ : ℕ, ∀ (F : Rn n → ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)) (τ : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 F U → Continuous τ → HasCompactSupport τ → tsupport τ ⊆ U → Tendsto (fun h : ℝ => ∫ x in U, F x (h⁻¹ • (τ x - τ (x - h • e)))) (𝓝[≠] 0) (𝓝 (-∫ x in U, fderiv ℝ F x e (τ x)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
