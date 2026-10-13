@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ce8842ea49eb9acadb3180ae5e5eee271f5e6f4dbb9b6c17fa809afcfd41255",
+  "git_delta": {
+    "base_commit": "a89196ffabf905d6e89fd18130f3f80ac6e4fcde",
+    "candidate_commit": "fa5254f15a2243d84e4813906cfb4948c8b46b14",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_segment_ftc",
+    "diff_sha256": "7db0751958302c58e9edaa6e0aa79ca7b5112a919f1c9104abc53b919f5ece80",
+    "source_sha256": "c5bb45f9c21a73219156ea9ead1e0b2550457a0c3efcd324cd5e9b5784f0b71c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_segment_ftc",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (z : Euclid n), LipschitzWith L u → ∀ᵐ p : Euclid n, u (p + z) - u p = ∫ τ in (0 : ℝ)..1, fderiv ℝ u (p + τ • z) z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
