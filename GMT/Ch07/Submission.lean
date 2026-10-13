@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Integrability of the pairing `x ↦ ⟨ω(x), ξ(x)⟩`: if `μ` is finite on compact subsets of `U`,
+`ξ` is `μ`-a.e. strongly measurable with `|⟨α, ξ(x)⟩| ≤ |α|` (Euclidean coefficient norm) for
+`μ`-a.e. `x`, and `ω ∈ 𝒟ⁿ(U)`, then `x ↦ ⟨ω(x), ξ(x)⟩` is `μ`-integrable.  The coefficient norm
+`|ω(x)|` is continuous with compact support, hence bounded by some `M`, so the pairing is
+dominated by `M` times the indicator of `spt ω`, which is integrable as `μ(spt ω) < ∞`. -/
+theorem Submission.cmcs_smp_pairing_integrable : ∀ (P n : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (ω : TestFormOn U n), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) μ := by
+  intro P n U μ ξ ω hμ hξm hξ
+  obtain ⟨w, ⟨hws, hwcs⟩, hwU⟩ := ω
+  change Integrable (fun x => ξ x (w x)) μ
+  have hwc : Continuous w := hws.continuous
+  -- `x ↦ |w(x)|` is continuous with compact support, hence bounded by some `M`
+  have hnc : Continuous fun x => covectorEuclideanNorm (w x) := by
+    unfold covectorEuclideanNorm
+    refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ _).continuous.comp hwc).pow 2
+    · exact continuous_const
+  have hcs : HasCompactSupport fun x => covectorEuclideanNorm (w x) := by
+    refine HasCompactSupport.intro hwcs fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport hx, covectorEuclideanNorm_zero]
+  obtain ⟨M, hM⟩ := hnc.bounded_above_of_compact_support hcs
+  -- `(Λ, α) ↦ Λ α` is continuous, so the pairing is a.e. strongly measurable
+  have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    isBoundedBilinearMap_apply.continuous
+  have hmeas : AEStronglyMeasurable (fun x => ξ x (w x)) μ :=
+    hev.comp_aestronglyMeasurable₂ hξm hwc.aestronglyMeasurable
+  -- domination by `M` times the indicator of `spt w`, integrable as `μ(spt w) < ∞`
+  refine Integrable.mono' ((integrable_indicator_iff (isClosed_tsupport w).measurableSet).2
+    (integrableOn_const (hμ _ hwcs hwU).ne)) hmeas ?_
+  filter_upwards [hξ] with x hx
+  rw [Real.norm_eq_abs]
+  by_cases hxK : x ∈ tsupport w
+  · rw [indicator_of_mem hxK]
+    exact (hx (w x)).trans ((Real.le_norm_self _).trans (hM x))
+  · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK]
+    simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
