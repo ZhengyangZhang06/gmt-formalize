@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1.compact_to_general-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 9, with μHE[n] replaced by an arbitrary measure ν; only monotonicity of ν and the existence of measurable null hulls are used.
+Hypotheses: (U) U is open; (1) μ(Uᶜ) = 0; (2) μ(K) < ∞ for every compact K ⊆ U; (C) μ(C) = 0 for every compact C ⊆ U with ν(C) = 0.
+1. (Null hull.) Let E ⊆ ℝ^P with ν(E) = 0. By exists_measurable_superset_of_null there is a measurable E' ⊇ E with ν(E') = 0.
+2. (Compact exhaustion of U.) By IsOpen.exists_iUnion_isClosed there are closed sets F_i ⊆ U (i ∈ ℕ) with ⋃_i F_i = U. For p = (i, j) ∈ ℕ × ℕ put K_p := F_i ∩ closedBall(0, j).
+ - K_p is compact: it is a closed subset of the compact ball closedBall(0, j) in the proper space ℝ^P (isCompact_closedBall, IsCompact.inter_left).
+ - K_p ⊆ F_i ⊆ U.
+ - If x ∈ U, pick i with x ∈ F_i and a natural number j ≥ dist(x, 0) (exists_nat_ge). Then x ∈ K_{(i,j)}. Hence U ⊆ ⋃_p K_p.
+3. (Each piece is null.) Fix p and write K := K_p.
+ - By (2), μ(K) < ∞, so μ⌞K := μ.restrict K is a finite measure on ℝ^P (isFiniteMeasure_restrict).
+ - A finite measure on ℝ^P is locally finite, hence regular (instance Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure), hence inner regular by compact sets on measurable sets of finite measure (Measure.InnerRegularCompactLTTop, found by instance search).
+ - Suppose μ(E' ∩ K) ≠ 0. As E' is measurable, (μ⌞K)(E') = μ(E' ∩ K) > 0 (Measure.restrict_apply), and (μ⌞K)(E') < ∞.
+ - MeasurableSet.exists_lt_isCompact_of_ne_top with r = 0 gives a compact C ⊆ E' with (μ⌞K)(C) > 0. C is closed, hence measurable, so (μ⌞K)(C) = μ(C ∩ K) > 0.
+ - But C ∩ K is compact (C compact, K closed), C ∩ K ⊆ K ⊆ U, and ν(C ∩ K) ≤ ν(E') = 0 (measure_mono_null). So μ(C ∩ K) = 0 by (C), a contradiction.
+ Therefore μ(E' ∩ K_p) = 0 for every p.
+4. (Conclusion.) By step 2, E' ⊆ Uᶜ ∪ ⋃_p (E' ∩ K_p): a point of E' either lies outside U or lies in some K_p. By (1), step 3 and countable subadditivity over the countable index set ℕ × ℕ (measure_iUnion_null, measure_union_null), this union is μ-null. Hence μ(E) ≤ μ(E') = 0 (measure_mono_null), i.e. μ(E) = 0.
+
+## Key steps
+
+1. Replace E by a measurable ν-null hull E'.
+2. Exhaust U by countably many compact sets K_{i,j} = F_i ∩ closedBall(0, j).
+3. Each μ⌞K_{i,j} is finite, hence inner regular; a compact C ⊆ E' of positive μ(C ∩ K_{i,j}) would contradict the compact-set hypothesis, so μ(E' ∩ K_{i,j}) = 0.
+4. μ(E) ≤ μ(Uᶜ) + Σ μ(E' ∩ K_{i,j}) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/{Contract,Submission}.lean against workspace GMT/Ch07/{Contract,Submission}.lean (both identical); git rev-parse HEAD (b4d606db = manifest project_commit)`
+- `rg -n 'euclideanHausdorffMeasure' mathlib/Mathlib -g '*.lean'; sed -n 55,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem exists_open_between_and_isCompact_closure|theorem LipschitzOnWith.hausdorffMeasure_image_le|theorem exists_measurable_superset_of_null|theorem MeasurableSet.exists_lt_isCompact_of_ne_top|theorem IsOpen.exists_iUnion_isCompact_eq_set|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem norm_integral_le_of_norm_le|theorem Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|theorem integral_indicator_one|theorem hausdorffMeasure_zero_singleton' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'hausdorffMeasure_image_le|exists_lt_isCompact_of_ne_top|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|exists_iUnion_isCompact|IsOpen.isSigmaCompact|exists_iUnion_isClosed|compactCovering|InnerRegularCompactLTTop' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'Integrable.of_bound|bounded_above_of_compact_support|measure_sdiff_add_inter|EuclideanSpace.dist_eq|of_dist_le_mul|theorem integral_indicator' mathlib/Mathlib -g '*.lean'`
+- `grep -n 'def massOn|def massAdmissibleOn|def covectorEuclideanNorm|def exteriorDerivativeTestOn|abbrev TestFormOn|def IsTestForm|structure GeometricCurrentOn|boundary_apply|le_massOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `python3 scan of dag.json: lean_name prefix cmr (no collision with the five proposed names) and lean_statement patterns 'μHE[n] C = 0 → volume', 'ν C = 0 → μ C = 0', 'massAdmissibleOn', 'toLp 2 (fun k => x (I k))', 'x ∈ C → ξ x = 0' (no accepted equivalent declaration)`
+- `lake env lean /tmp/null-sets-split/T0.lean and T1.lean (#check / inferInstance availability after import GMT.Ch07.Submission)`
+- `python3 -I gen.py using verifier/gmt-compare.py child_modules to generate comparator challenges; lake env lean /tmp/null-sets-split/challenges/*.lean`
+- `lake env lean /tmp/null-sets-split/Assembly.lean (parent assembly from 5 child + 4 sibling frozen types); lake env lean /tmp/null-sets-split/AllChildren.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-null-sets-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-17702f4d24/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-9a560aab97/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-abe89aabd1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/tmp/null-sets-split/Assembly.lean`
+- `/tmp/null-sets-split/AllChildren.lean`
+- `/tmp/null-sets-split/challenges/cmr_volume_coordProj_image_null.lean`
+- `/tmp/null-sets-split/challenges/cmr_abs_integral_div_le_mass.lean`
+- `/tmp/null-sets-split/challenges/cmr_ae_zero_of_div_bounds.lean`
+- `/tmp/null-sets-split/challenges/cmr_measure_null_of_orient_ae_zero.lean`
+- `/tmp/null-sets-split/challenges/cmr_null_of_compact_null.lean`
+
+Snapshot. The manifest pins project b4d606db and mathlib 25730c7c. The snapshot Contract.lean and Submission.lean are byte-identical to the workspace files at HEAD b4d606db.
+
+Lemmas found in the snapshot, all reachable from import GMT.Ch07.Submission:
+- euclideanHausdorffMeasure_def and the scalar-factor-nonzero lemma (Geometry/Euclidean/Volume/Measure.lean:74, :96)
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume (same file, :187)
+- LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:745)
+- IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:205)
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)
+- integral_indicator and integral_indicator_one (Bochner/Set.lean:185, :533)
+- norm_integral_le_of_norm_le (Bochner/Basic.lean:985)
+- MeasurableSet.exists_lt_isCompact_of_ne_top (Regular.lean:874)
+- Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure (Regular.lean:1183)
+- IsOpen.exists_iUnion_isClosed (HausdorffDistance.lean:207)
+- exists_measurable_superset_of_null (MeasureSpaceDef.lean:219)
+- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364)
+- Integrable.of_bound (IntegrableOn.lean:171)
+- measure_sdiff_add_inter (Measure/Basic.lean:88)
+- SimonGMT massOn, massAdmissibleOn, le_massOn, boundary_apply (rfl) and exteriorDerivativeTestOn
+
+Not reachable. The general instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace (RegularityCompacts.lean:186) is outside the import closure, so the step 9 child uses finite restrictions; that route was confirmed by instance search. No IsOpen.exists_iUnion_isCompact_eq_set exists; F_i ∩ closedBall(0, j) is used instead.
+
+Names and reuse. No accepted DAG declaration is equivalent to any proposed child, and the five names are globally fresh. The four siblings are not accepted. The runtime's _existing_lean_name_problem and _overlay_accepted_children therefore forbid reusing or overlaying them in children, so their content enters as hypotheses.
+
+Lean checks.
+- All five child types elaborate in the exact comparator challenge scope.
+- The parent assembly of the selected frozen type compiles from the five child types plus the four sibling frozen types.
+- All five children are fully proved in scratch with only propext, Classical.choice and Quot.sound.

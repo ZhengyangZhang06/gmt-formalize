@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_eq_volume|hausdorffMeasure_image_le|norm_integral_le_of_norm_le|setIntegral_eq_integral_of_forall_compl_eq_zero|ae_eq_zero_of_integral_contDiff_smul_eq_zero|exists_lt_isCompact_of_ne_top|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|exists_iUnion_isClosed|exists_measurable_superset_of_null",
+        "rg -n 'cmr_volume_coordProj_image_null|cmr_abs_integral_div_le_mass|cmr_ae_zero_of_div_bounds|cmr_measure_null_of_orient_ae_zero|cmr_null_of_compact_null' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "rg -n 'bounded_above_of_compact_support' Mathlib -g '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmr-null-independent-audit/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmr-null-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-null-sets-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-null-sets-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-null-sets-a1/decomposition-scope-v1.json",
+        "/tmp/cmr-null-independent-audit/ChallengeTypes.lean",
+        "/tmp/cmr-null-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "Verified pinned project b4d606db, mathlib 25730c7c and SimonGMT 2b366308; workspace Contract and Submission match their snapshots. The cited sources support the measure normalization, Lipschitz image bound, localization, integral estimates and finite-measure regularity used by the proofs. No proposed declaration name occurs in the searched project or current DAG; no identical frozen child type was found in the DAG. All names are bare identifiers. All five unchanged one-line propositions independently elaborate in the comparator's replayed scope. A fresh, placeholder-free Lean assembly proves the exact selected parent type from these five contracts and the four frozen sibling contracts. The assembly and checked library lemmas use only propext, Classical.choice and Quot.sound. The split is appropriate: each child supplies a genuine obligation, explicit sibling-content hypotheses avoid undeclared dependencies, and the reachable dependency graph is acyclic. No prohibited matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "proj_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including injectivity and the absence of compactness assumptions. The proof establishes the coordinate projection's one-Lipschitz bound, cancels the nonzero Hausdorff normalization factor, applies the image estimate to an arbitrary set, and converts target Hausdorff measure to Euclidean volume. No circular reliance or missing hypothesis."
+    },
+    {
+      "key": "div_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including EB and the supplied forms, occur in both statements. Support inclusions produce valid test forms; linearity and boundary_apply identify their difference; EB supplies both bounds. The representation and support restriction give the exact integral. The restriction lemma requires neither measurable W nor an extra integrability hypothesis, so the stated generality is sound."
+    },
+    {
+      "key": "localize_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "TD and DB are explicit, non-circular hypotheses matching the prose. The proof correctly establishes measurability of the preimage, finiteness of the restricted measure, and integrability of the bounded functions. Indicator identities turn TD's conclusion into vanishing against every supported smooth test function; the verified localization theorem yields precisely the stated almost-everywhere implication. The parent discharges TD using the compact null projection."
+    },
+    {
+      "key": "orient_zero_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statements match, and the proof covers points in C, in W minus C, and outside W. The integrable indicator dominates each admissible evaluation almost everywhere. The cited norm-integral inequality requires integrability only of the dominating function, so no measurability assumption on ξ is missing. Taking the mass supremum and cancelling a finite measure proves μ C = 0."
+    },
+    {
+      "key": "compact_to_general",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary auxiliary measure ν and all support and compact-finiteness hypotheses match exactly. The proof supplies a measurable null hull and a valid countable compact exhaustion. Finite restrictions have the required regularity instances; positive mass would yield a compact intersection contradicting the compact-null hypothesis. Countable subadditivity and μ Uᶜ = 0 complete the argument without assuming global finiteness."
+    }
+  ],
+  "required_changes": []
+}
