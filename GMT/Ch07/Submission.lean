@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Borel gluing over pairwise disjoint injective images (Lusin–Souslin; the Borel field `g` on
+the chart pieces in the slicing step of the proof of Simon 7.4.3): if `ψⱼ` is continuous and
+injective and `Φⱼ` continuous on the Borel set `Yⱼ ⊆ ℝᵐ`, and the images `Mⱼ = ψⱼ(Yⱼ)` are
+pairwise disjoint, then some Borel `g : ℝᴾ → ℝᴾ` has `g(ψⱼ(y)) = Φⱼ(y)` for `y ∈ Yⱼ` and `g = 0`
+off `⋃ⱼ Mⱼ`.  `ψⱼ|_{Yⱼ}` is a measurable embedding, so the extension `gⱼ` of `Φⱼ|_{Yⱼ}` along it
+by `0` is Borel; `g(x) = gₙ(x)` for the least `n` with `x ∈ Mₙ ∪ (⋃ⱼ Mⱼ)ᶜ`. -/
+theorem Submission.dor_lmbsf_cp_measurable_glue : ∀ (m P : ℕ) (Y : ℕ → Set (Euclid m)) (ψ Φ : ℕ → Euclid m → Euclid P), (∀ j, MeasurableSet (Y j) ∧ ContinuousOn (ψ j) (Y j) ∧ InjOn (ψ j) (Y j) ∧ ContinuousOn (Φ j) (Y j)) → Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) → ∃ g : Euclid P → Euclid P, Measurable g ∧ (∀ j, ∀ y ∈ Y j, g (ψ j y) = Φ j y) ∧ ∀ x, (∀ j, x ∉ ψ j '' Y j) → g x = 0 := by
+  classical
+  intro m P Y ψ Φ hY hdisj
+  -- Lusin–Souslin: `Mⱼ = ψⱼ(Yⱼ)` is Borel
+  have hM : ∀ j, MeasurableSet (ψ j '' Y j) := fun j =>
+    (hY j).1.image_of_continuousOn_injOn (hY j).2.1 (hY j).2.2.1
+  -- `gⱼ`: the extension of `Φⱼ|_{Yⱼ}` by `0` along the measurable embedding `ψⱼ|_{Yⱼ}`
+  obtain ⟨gj, hgj, hgj_val, hgj_zero⟩ : ∃ gj : ℕ → Euclid P → Euclid P,
+      (∀ j, Measurable (gj j)) ∧ (∀ j, ∀ y ∈ Y j, gj j (ψ j y) = Φ j y) ∧
+        ∀ j x, x ∉ ψ j '' Y j → gj j x = 0 := by
+    have hemb : ∀ j, MeasurableEmbedding ((Y j).domRestrict (ψ j)) := fun j =>
+      (hY j).2.1.measurableEmbedding (hY j).1 (hY j).2.2.1
+    refine ⟨fun j => Function.extend ((Y j).domRestrict (ψ j)) ((Y j).domRestrict (Φ j)) 0,
+      fun j => (hemb j).measurable_extend (hY j).2.2.2.domRestrict.measurable measurable_const,
+      fun j y hy => (hemb j).injective.extend_apply _ _ ⟨y, hy⟩, fun j x hx => ?_⟩
+    refine Function.extend_apply' _ _ x ?_
+    rintro ⟨y, hy⟩
+    exact hx ⟨y, y.2, hy⟩
+  -- glue by least index: `g(x) = gₙ(x)` for the least `n` with `x ∈ Mₙ ∪ (⋃ⱼ Mⱼ)ᶜ`
+  have hp : ∀ x, ∃ n, x ∈ ψ n '' Y n ∪ (⋃ j, ψ j '' Y j)ᶜ := fun x => by
+    by_cases hx : x ∈ ⋃ j, ψ j '' Y j
+    · obtain ⟨j, hj⟩ := Set.mem_iUnion.1 hx
+      exact ⟨j, Set.mem_union_left _ hj⟩
+    · exact ⟨0, Set.mem_union_right _ (Set.mem_compl hx)⟩
+  refine ⟨fun x => gj (Nat.find (hp x)) x,
+    Measurable.find (p := fun n x => x ∈ ψ n '' Y n ∪ (⋃ j, ψ j '' Y j)ᶜ) hgj
+      (fun n => (hM n).union (MeasurableSet.iUnion hM).compl) hp, ?_, ?_⟩
+  · -- at `ψⱼ(y)` the least index is `j`, by disjointness
+    intro j y hy
+    have hx : ψ j y ∈ ψ j '' Y j := Set.mem_image_of_mem _ hy
+    have hfind : Nat.find (hp (ψ j y)) = j := by
+      rcases Nat.find_spec (hp (ψ j y)) with h | h
+      · by_contra hne
+        exact Set.disjoint_left.1 (hdisj hne) h hx
+      · exact absurd (Set.mem_iUnion.2 ⟨j, hx⟩) h
+    show gj (Nat.find (hp (ψ j y))) (ψ j y) = Φ j y
+    rw [hfind]
+    exact hgj_val j y hy
+  · -- off `⋃ⱼ Mⱼ` every `gₙ` vanishes
+    intro x hx
+    exact hgj_zero _ x (hx _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
