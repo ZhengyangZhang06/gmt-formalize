@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1",
+  "depth": 3,
+  "title": "A.e. relative L¹-density of 1_{M₂}θ₂ against (θ₂(x)/θ₁(x))·1_{M₁}θ₁ via Besicovitch and Lebesgue points",
+  "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P. Let U ⊆ ℝ^P be open and M₁, M₂ ⊆ U H-null-measurable. Let θ₁, θ₂ : ℝ^P → ℝ with θ_i > 0 on M_i and θ_i H-integrable on M_i ∩ K for every compact K ⊆ U (i = 1, 2). Then for H⌞(M₁ ∩ M₂)-almost every x the following holds: for every ε > 0 and all sufficiently small s > 0, ∫⁻_{B̄_s(x)} ‖1_{M₂}θ₂ − (θ₂(x)/θ₁(x))·1_{M₁}θ₁‖ₑ dH ≤ ofReal(ε)·∫⁻_{M₁∩B̄_s(x)} ofReal(θ₁) dH.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ), M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M₁, 0 < θ₁ x) → (∀ x ∈ M₂, 0 < θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₁ (M₁ ∩ K) (μHE[n] : Measure (Eucl P))) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₂ (M₂ ∩ K) (μHE[n] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - θ₂ x / θ₁ x * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal ε * ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))",
+  "lean_name": "fiw_tl_ae_l1_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1-a1"
+}
