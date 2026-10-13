@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e5e5eb6f36afc4422f9eaf4cfde493ebcc4c38103dd5717c7e715a987164c69f",
+  "git_delta": {
+    "base_commit": "d59d612c4fbfa44adbd105df35fa80820eb4a81a",
+    "candidate_commit": "7641ef3557de159fa5b6fd5df7dbf9ff9425ba75",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_cd_pullback_field_regularity",
+    "diff_sha256": "cb7166c0d104a398ba7db8ca40a1c623289d3cc74fe2fcde3d3d83b3d8a5e46b",
+    "source_sha256": "c85526278cf1bb7fdf6bb0d6a452fe7c706befe7c6361b3787ac60a1aa282503",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_cd_pullback_field_regularity",
+      "statement": "∀ (P n : ℕ) (D : Set (Euclid (n + 1))) (G : Euclid (n + 1) → Euclid P) (ω : DifferentialForm (Euclid P) n) (Φ : Euclid (n + 1) → Euclid (n + 1)), IsOpen D → ContDiffOn ℝ 2 G D → ContDiff ℝ (⊤ : ℕ∞) ω → IsCompact (D ∩ G ⁻¹' tsupport ω) → Φ = D.indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (G v) (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) → ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ D",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
