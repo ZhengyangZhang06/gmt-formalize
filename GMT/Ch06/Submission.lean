@@ -1594,13 +1594,6 @@ of `∂X`.  For a reference sequence `Gₙ` of (RS) on `(spt X)_{r/2}` and forms
 `(Gₙ, φ)` near `spt X`, `dθₙ` is compatible with `(Gₙ, dφ)` since `d` commutes with pull-back, so
 `S_∂(φ) = lim ∂X(θₙ) = lim X(dθₙ) = S(dφ) = ∂S(φ)`. -/
 theorem Submission.dph_lpf_boundary :
-
-/-- Linearity of the Lipschitz push-forward in the current (Part (III)).  With
-`F = spt X ∪ spt X₁ ⊇ spt X₂`, one reference sequence `G_n` for `F` (with `O = F_{r/2}`, `L = Λ`)
-and one sequence `η_n`, compatible with `(G_n, ω)` near `F` once `G_n` is proper on `F`, are
-admissible for all three push-forwards; so `X₂(η_n) = a X(η_n) + a₁ X₁(η_n)` tends both to
-`S₂(ω)` and to `a S(ω) + a₁ S₁(ω)`. -/
-theorem Submission.dph_lpf_linearity :
     (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (F : Set (Eucl m)), 0 < r →
       IsClosed F → LipschitzOnWith Λ G (thickening r F) →
       (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) →
@@ -1727,6 +1720,20 @@ theorem Submission.dph_lpf_linearity :
           (hGns n).contDiffAt (by simp))
   -- 7. `∂X (θ n) = X (dθ n)`, so the two limits agree.
   exact tendsto_nhds_unique h1 h2
+
+/-- Linearity of the Lipschitz push-forward in the current (Part (III)).  With
+`F = spt X ∪ spt X₁ ⊇ spt X₂`, one reference sequence `G_n` for `F` (with `O = F_{r/2}`, `L = Λ`)
+and one sequence `η_n`, compatible with `(G_n, ω)` near `F` once `G_n` is proper on `F`, are
+admissible for all three push-forwards; so `X₂(η_n) = a X(η_n) + a₁ X₁(η_n)` tends both to
+`S₂(ω)` and to `a S(ω) + a₁ S₁(ω)`. -/
+theorem Submission.dph_lpf_linearity :
+    (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (F : Set (Eucl m)), 0 < r →
+      IsClosed F → LipschitzOnWith Λ G (thickening r F) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) →
+      ∃ Gj : ℕ → Eucl m → Eucl m', (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) ∧
+        (∀ n, ∀ x ∈ thickening (r / 2) F, ‖fderiv ℝ (Gj n) x‖ ≤ Λ) ∧
+        TendstoUniformlyOn Gj G atTop (thickening (r / 2) F) ∧
+        ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ F)) →
     (∀ (m m' k : ℕ) (X X₁ X₂ : GeometricCurrentOn (univ : Set (Eucl m)) k)
       (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ)
       (S S₁ S₂ : GeometricCurrentOn (univ : Set (Eucl m')) k) (a a₁ : ℝ),
