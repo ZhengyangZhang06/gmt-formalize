@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.1** (proof, display (1)).  If `μ(B_r(x))/(ωₙrⁿ) → θ` as `r ↓ 0`, `λⱼ > 0`,
+`λⱼ → 0`, and `μⱼ(s) = λⱼ⁻ⁿ μ(η_{x,λⱼ}⁻¹(s))` for measurable `s`, then `μⱼ(B_ρ(0)) → ωₙρⁿθ` for
+every `ρ > 0`.  As `η_{x,λ}⁻¹(B_ρ(0)) = B_{λρ}(x)` and `0 < ωₙ < ∞`, cancelling `ωₙ` in `[0, ∞]`
+gives `μⱼ(B_ρ(0)) = ωₙρⁿ · μ(B_{λⱼρ}(x))/(ωₙ(λⱼρ)ⁿ)`, and `λⱼρ ↓ 0`. -/
+theorem Submission.dtc_rescaled_ball_measure_tendsto : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (x : Euclid P) (θ : ℝ) (lams : ℕ → ℝ), (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → Tendsto (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → (∀ (j : ℕ) (s : Set (Euclid P)), MeasurableSet s → μs j s = ENNReal.ofReal ((lams j)⁻¹ ^ n) * μ (dilation x (lams j) ⁻¹' s)) → ∀ ρ : ℝ, 0 < ρ → Tendsto (fun j => μs j (ball 0 ρ)) atTop (𝓝 (unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ)) := by
+  intro P n μ μs x θ lams hpos hlim hdens hscale ρ hρ
+  -- Step 1: `0 < ωₙ < ∞`, so `K = ωₙρⁿ ≠ ∞`
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : Euclid n) zero_lt_one).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hKtop : unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≠ ∞ :=
+    ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+  -- Step 2: `η_{x,λ}⁻¹(B_ρ(0)) = B_{λρ}(x)`, since `η_{x,λ}(y) = λ⁻¹(y - x)`
+  have hpre : ∀ lam : ℝ, 0 < lam → dilation x lam ⁻¹' ball 0 ρ = ball x (lam * ρ) := by
+    intro lam hlam
+    ext y
+    have hy : dilation x lam y = lam⁻¹ • (y - x) := by
+      simp [dilation, dilationCLM, smul_sub, neg_add_eq_sub]
+    simp only [mem_preimage, mem_ball, dist_eq_norm, sub_zero, hy, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hlam)]
+    exact inv_mul_lt_iff₀ hlam
+  -- Steps 3–4: `μⱼ(B_ρ(0)) = λⱼ⁻ⁿ μ(B_{λⱼρ}(x)) = K · q(λⱼρ)`, cancelling `ωₙ` in `[0, ∞]`
+  have heq : ∀ j, μs j (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) *
+      (μ (ball x (lams j * ρ)) / (unitBallVolume n * ENNReal.ofReal ((lams j * ρ) ^ n))) := by
+    intro j
+    have hr : 0 < (lams j * ρ) ^ n := pow_pos (mul_pos (hpos j) hρ) n
+    rw [hscale j _ measurableSet_ball, hpre _ (hpos j), ← ENNReal.mul_comm_div,
+      ENNReal.mul_div_mul_left _ _ hω0 hωtop, ← ENNReal.ofReal_div_of_pos hr]
+    congr 2
+    rw [mul_pow, inv_pow]
+    field_simp [(pow_pos (hpos j) n).ne', (pow_pos hρ n).ne']
+  -- Step 5: `λⱼρ → 0` in `𝓝[>] 0`
+  have hlimr : Tendsto (fun j => lams j * ρ) atTop (𝓝[>] 0) := by
+    rw [tendsto_nhdsWithin_iff]
+    exact ⟨by simpa using hlim.mul_const ρ, Eventually.of_forall fun j => mul_pos (hpos j) hρ⟩
+  -- Step 6: multiply `q(λⱼρ) → θ` by the finite constant `K`
+  have h := ENNReal.Tendsto.const_mul (hdens.comp hlimr) (Or.inr hKtop)
+  simp only [Function.comp_def] at h
+  simp only [heq]
+  exact h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

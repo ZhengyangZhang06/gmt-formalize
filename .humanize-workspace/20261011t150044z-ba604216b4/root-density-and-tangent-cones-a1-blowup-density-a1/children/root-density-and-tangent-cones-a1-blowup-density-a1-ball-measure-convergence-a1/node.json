@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_density-a1.ball_measure_convergence-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_density-a1",
+  "depth": 3,
+  "title": "Vague convergence gives convergence of ball measures at μ-null spheres (Simon 7.3.1 proof, display (4))",
+  "statement": "Let P ∈ ℕ, let μ_j (j ∈ ℕ) and μ be measures on the Borel sets of ℝ^P (Measure (Euclid P)), and let ρ > 0. Assume:\n(H2) μ(B_r(0)) < ∞ for every r > 0;\n(H3) for every r > 0, μ_j(B_r(0)) < ∞ for all sufficiently large j;\n(H4) ∫ f dμ_j → ∫ f dμ (Bochner integrals) for every continuous f : ℝ^P → ℝ with compact support;\n(H5) μ(sphere(0, ρ)) = 0, where sphere(0, ρ) = {y : |y| = ρ} = ∂B_ρ(0).\nThen μ_j(B_ρ(0)) → μ(B_ρ(0)) in [0, ∞].",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (ρ : ℝ), 0 < ρ → (∀ r : ℝ, 0 < r → μ (ball 0 r) ≠ ∞) → (∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, μs j (ball 0 r) ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ y, f y ∂(μs j)) atTop (𝓝 (∫ y, f y ∂μ))) → μ (sphere 0 ρ) = 0 → Tendsto (fun j => μs j (ball 0 ρ)) atTop (𝓝 (μ (ball 0 ρ)))",
+  "lean_name": "dtc_tendsto_measure_ball_of_vague",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-density-a1-ball-measure-convergence-a1-a1"
+}

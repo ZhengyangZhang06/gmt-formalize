@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def MassMeasuresConverge|def unitBallVolume|def HasMassDensity|def dilation|structure IMRep|locallyIntegrable_mult|def IMRep.measure|^import|^open|^namespace",
+        "theorem countable_meas_level_set_pos|theorem countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top",
+        "theorem integral_eq_lintegral_of_nonneg_ae",
+        "theorem mul_div_mul_left|theorem mul_comm_div|theorem mul_div_cancel_right|ofReal_div_of_pos",
+        "Tendsto.const_mul|theorem const_mul|lemma const_mul",
+        "vague|liminf|limsup|null.*sphere|sphere.*null|measure_ball",
+        "dtc_rescaled_ball_measure_tendsto|dtc_tendsto_measure_ball_of_vague|dtc_measure_ball_eq_of_null_sphere",
+        "python3 /tmp/blowup-density-audit-874c1153/run_check.py Types",
+        "python3 /tmp/blowup-density-audit-874c1153/run_check.py Assembly",
+        "python3 /tmp/blowup-density-audit-874c1153/run_check.py rescaled_ball_limit",
+        "python3 /tmp/blowup-density-audit-874c1153/run_check.py ball_measure_convergence",
+        "python3 /tmp/blowup-density-audit-874c1153/run_check.py null_sphere_extension"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/blowup-density-audit-874c1153/Types.lean",
+        "/tmp/blowup-density-audit-874c1153/Assembly.lean",
+        "/tmp/blowup-density-audit-874c1153/rescaled_ball_limit.lean",
+        "/tmp/blowup-density-audit-874c1153/ball_measure_convergence.lean",
+        "/tmp/blowup-density-audit-874c1153/null_sphere_extension.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected dtc_blowUp_density contract. The snapshot revisions match the compiler dependencies, and Contract.lean and Submission.lean are byte-identical to their frozen copies. The inspected mathlib results support the ENNReal algebra, nonnegative integral comparisons and countability argument; no matching analytic lemma was found in the searched Ch07 project files. All three exact one-line types elaborate before their declarations exist. Independently recompiled proofs of those exact types use only propext, Classical.choice and Quot.sound. A separately generated conditional assembly, taking precisely the three children and two frozen sibling propositions as parameters, proves the exact selected parent type with the same axiom list and no sorryAx. The parent supplies eventual finiteness from the finite scaling limits and limit-measure finiteness from local integrability. All names are bare, distinct and unreserved; the dependency closure is acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rescaled_ball_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently elaborated proposition. The proof establishes positive finite unit-ball volume, computes the dilation preimage, and justifies ENNReal cancellation even for infinite ball masses. Positivity and convergence of the scales give convergence in the right-neighborhood filter without assuming monotonicity. Finite-constant multiplication completes the argument. No parent or sibling theorem is used."
+    },
+    {
+      "key": "ball_measure_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated finiteness, test-function convergence and null-sphere hypotheses. The explicit cutoffs and integral comparisons correctly handle non-integrable Bochner integrals. Eventual finiteness is used precisely for the upper comparison; limit-measure finiteness justifies continuity from above. Increasing closed balls give the lower bound, and the null sphere closes the liminf/limsup sandwich. The proof is complete and independent."
+    },
+    {
+      "key": "null_sphere_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including arbitrary natural dimensions and finite ENNReal coefficient. Finite restrictions establish countability of charged spheres, and Lebesgue-nullness supplies good radii in every interval. The proof correctly separates the possibly nonmonotone good radii from the monotone auxiliary radii used for continuity from below. Both inequalities follow with all hypotheses justified and no circular reliance."
+    }
+  ],
+  "required_changes": []
+}
