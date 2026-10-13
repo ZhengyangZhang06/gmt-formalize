@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.pairing_error-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1",
+  "depth": 6,
+  "title": "L1 error estimate for the pairing with a constant n-vector",
+  "statement": "Let P, n ∈ ℕ. Write Λⁿ := Covector (Euclid P) n (continuous alternating n-linear forms on ℝ^P) with its operator norm ‖·‖. Write Λ_n := MultiVector P n = Λⁿ →L[ℝ] ℝ with its operator norm ‖·‖ and the [0,∞]-valued version ‖·‖ₑ. Let ν' be a measure on ℝ^P, τ : ℝ^P → Λ_n a ν'-a.e. strongly measurable map, ζ₀ ∈ Λ_n, w : ℝ^P → Λⁿ a continuous map, and A, R ∈ ℝ. Assume ‖w(x)‖ ≤ A for every x, and w(x) = 0 for every x ∉ B̄_R(0) := closedBall 0 R. Suppose x ↦ ζ₀(w(x)) is ν'-integrable and E := ofReal(A)·∫⁻_{B̄_R(0)} ‖τ(x) − ζ₀‖ₑ dν'(x) ≠ ∞. Then |∫ τ(x)(w(x)) dν'(x) − ∫ ζ₀(w(x)) dν'(x)| ≤ E.toReal.",
+  "lean_statement": "∀ (P n : ℕ) (ν' : Measure (Euclid P)) (τ : Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n) (A R : ℝ), AEStronglyMeasurable τ ν' → Continuous w → (∀ x, ‖w x‖ ≤ A) → (∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0) → Integrable (fun x => ζ₀ (w x)) ν' → ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' ≠ ∞ → |∫ x, τ x (w x) ∂ν' - ∫ x, ζ₀ (w x) ∂ν'| ≤ (ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν').toReal",
+  "lean_name": "cbr_ci_bl_cvl_pairing_error_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9403cfe70e-a1"
+}

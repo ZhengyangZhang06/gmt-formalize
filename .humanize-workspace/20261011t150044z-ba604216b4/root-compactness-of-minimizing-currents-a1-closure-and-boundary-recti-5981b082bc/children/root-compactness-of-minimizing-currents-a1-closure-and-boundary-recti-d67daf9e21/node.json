@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.limsup_thickening-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1",
+  "depth": 6,
+  "title": "Limsup bound on a compact set via closed thickenings",
+  "statement": "Let P ∈ ℕ, a : ℕ → [0,∞], ν_k (k ∈ ℕ) and ν measures on ℝ^P, c ∈ [0,∞] with c ≠ ∞, and K ⊆ ℝ^P compact. Assume ν(K') < ∞ and limsup_k ν_k(K') ≤ ν(K') for every compact K' ⊆ ℝ^P. Assume also that for every r > 0 there is v : ℕ → [0,∞] with v_k → 0 and a_k ≤ c·ν_k(cthickening r K) + v_k for all k, where cthickening r K is the closed r-thickening of K. Then limsup_k a_k ≤ c·ν(K).",
+  "lean_statement": "∀ (P : ℕ) (a : ℕ → ℝ≥0∞) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (c : ℝ≥0∞) (K : Set (Euclid P)), IsCompact K → c ≠ ∞ → (∀ K' : Set (Euclid P), IsCompact K' → ν K' < ∞) → (∀ K' : Set (Euclid P), IsCompact K' → limsup (fun k => νs k K') atTop ≤ ν K') → (∀ r : ℝ, 0 < r → ∃ v : ℕ → ℝ≥0∞, Tendsto v atTop (𝓝 0) ∧ ∀ k, a k ≤ c * νs k (cthickening r K) + v k) → limsup a atTop ≤ c * ν K",
+  "lean_name": "cbr_ci_bl_cvl_limsup_le_of_cthickening",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d67daf9e21-a1"
+}

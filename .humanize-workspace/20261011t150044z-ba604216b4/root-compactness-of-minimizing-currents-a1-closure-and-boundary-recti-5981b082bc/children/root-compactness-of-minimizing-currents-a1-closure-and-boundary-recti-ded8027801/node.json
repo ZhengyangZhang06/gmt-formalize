@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.mass_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1",
+  "depth": 6,
+  "title": "Mass bound for a current L1-close to a constant n-vector",
+  "statement": "Let P, n ∈ ℕ. Let |·| = covectorEuclideanNorm on Λⁿ := Covector (Euclid P) n, let ‖·‖ be the operator norm on Λⁿ and on Λ_n := MultiVector P n = Λⁿ →L[ℝ] ℝ, and ‖·‖ₑ its [0,∞]-valued version. Let X ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), ν' a measure on ℝ^P that is finite on compact sets, τ : ℝ^P → Λ_n ν'-a.e. strongly measurable, ζ₀ ∈ Λ_n, s, B, R ∈ ℝ and G ⊆ ℝ^P. Assume: s ≥ 0 and |ζ₀(α)| ≤ s|α| for every α ∈ Λⁿ; B ≥ 0 and ‖α‖ ≤ B|α| for every α ∈ Λⁿ; X(ω) = ∫ τ(x)(ω̂(x)) dν'(x) for every test form ω ∈ 𝒟ⁿ(ℝ^P), where ω̂ is its underlying form; and G is open with G ⊆ B̄_R(0) = closedBall 0 R. Then M_G(X) = X.massOn G ≤ ofReal(s)·ν'(G) + ofReal(B)·∫⁻_{B̄_R(0)} ‖τ(x) − ζ₀‖ₑ dν'(x).",
+  "lean_statement": "∀ (P n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) n) (ν' : Measure (Euclid P)) (τ : Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (s B R : ℝ) (G : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν' K < ∞) → AEStronglyMeasurable τ ν' → 0 ≤ s → (∀ α : Covector (Euclid P) n, |ζ₀ α| ≤ s * covectorEuclideanNorm α) → 0 ≤ B → (∀ α : Covector (Euclid P) n, ‖α‖ ≤ B * covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, X ω = ∫ x, τ x ((ω : DifferentialForm (Euclid P) n) x) ∂ν') → IsOpen G → G ⊆ closedBall (0 : Euclid P) R → X.massOn G ≤ ENNReal.ofReal s * ν' G + ENNReal.ofReal B * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν'",
+  "lean_name": "cbr_ci_bl_cvl_massOn_le",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.pairing_error-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.pairing_error-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ded8027801-a1"
+}
