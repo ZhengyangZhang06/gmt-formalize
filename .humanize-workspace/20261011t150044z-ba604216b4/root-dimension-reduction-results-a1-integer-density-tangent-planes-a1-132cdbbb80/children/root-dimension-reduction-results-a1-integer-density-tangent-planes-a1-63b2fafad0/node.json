@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.countable_separating_tests-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "A countable family of C¹ test functions separating integrable functions on an interval",
+  "statement": "For all real numbers c, d there is a sequence (F_n)_{n∈ℕ} of C¹ functions ℝ → ℝ with tsupport F_n ⊆ (c, d) for every n, with the following property: every function w : ℝ → ℝ that is integrable on (c, d) and satisfies ∫_ℝ F_n(α)·w(α) dα = 0 for all n vanishes almost everywhere on (c, d).",
+  "lean_statement": "∀ c d : ℝ, ∃ F : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 1 (F n)) ∧ (∀ n, tsupport (F n) ⊆ Ioo c d) ∧ ∀ w : ℝ → ℝ, IntegrableOn w (Ioo c d) → (∀ n, ∫ α, F n α * w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0",
+  "lean_name": "idtp_cse_ah_countable_separating_tests",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-63b2fafad0-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.antiderivative_test-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "The antiderivative of a mean-zero continuous test function is a C¹ test function",
+  "statement": "Let c, d ∈ ℝ and let g : ℝ → ℝ be continuous with tsupport g ⊆ (c, d) and ∫_ℝ g = 0. Then there is ψ : ℝ → ℝ of class C¹ with tsupport ψ ⊆ (c, d) and deriv ψ = g (equality of functions).",
+  "lean_statement": "∀ (c d : ℝ) (g : ℝ → ℝ), Continuous g → tsupport g ⊆ Ioo c d → ∫ α, g α = 0 → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ tsupport ψ ⊆ Ioo c d ∧ deriv ψ = g",
+  "lean_name": "idtp_cse_ah_antiderivative_test",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7d8c226245-a1"
+}

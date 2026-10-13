@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.slice_integral_ae_zero-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "Fubini and the fundamental lemma: product-tested vanishing forces a.e. vanishing of slice integrals",
+  "statement": "Let a, b, c, d ∈ ℝ, I := (a, b), J := (c, d), and let H : ℝ × ℝ → ℝ be Lebesgue integrable on I × J. Let g : ℝ → ℝ be continuous with tsupport g ⊆ J. Assume ∫_{ℝ×ℝ} g(α)·l(t)·H(t, α) d(t, α) = 0 for every l ∈ C¹(ℝ) with tsupport l ⊆ I. Then ∫_J g(α)·H(t, α) dα = 0 for almost every t ∈ I.",
+  "lean_statement": "∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ) (g : ℝ → ℝ), IntegrableOn H (Ioo a b ×ˢ Ioo c d) → Continuous g → tsupport g ⊆ Ioo c d → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, g p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∫ α in Ioo c d, g α * H (t, α) = 0",
+  "lean_name": "idtp_cse_ah_slice_integral_ae_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ebad834fd4-a1"
+}

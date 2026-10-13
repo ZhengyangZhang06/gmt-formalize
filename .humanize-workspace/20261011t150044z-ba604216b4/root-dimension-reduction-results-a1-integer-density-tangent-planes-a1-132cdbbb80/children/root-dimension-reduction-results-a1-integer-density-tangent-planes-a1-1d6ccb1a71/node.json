@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.ae_eq_slice_average-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "Fibrewise a.e. constancy gives the product form H(t, α) = slice average",
+  "statement": "Let a, b, c, d ∈ ℝ with c < d, I := (a, b), J := (c, d), and let H : ℝ × ℝ → ℝ be Lebesgue integrable on I × J. Assume that for almost every t ∈ I there is k ∈ ℝ with H(t, α) = k for almost every α ∈ J. Then H(t, α) = (d − c)⁻¹·∫_J H(t, β) dβ for almost every (t, α) ∈ I × J.",
+  "lean_statement": "∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = (d - c)⁻¹ * ∫ α in Ioo c d, H (p.1, α)",
+  "lean_name": "idtp_cse_ah_ae_eq_slice_average",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1d6ccb1a71-a1"
+}
