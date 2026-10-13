@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cone supports are dilation invariant** (Simon 7.3.1(2), `η_{0,λ#}C = C`; step 8 of the
+flat-point argument in the proof of 7.3.3(2)): if `C ∈ 𝒟ₙ(ℝᴾ)` is a cone, `λ > 0` and
+`v ∈ spt C`, then `λv ∈ spt C`.  If `C` vanishes on an open `W ∋ λv` with compact closure, it
+vanishes on `λ⁻¹W = {w : λw ∈ W} ∋ v`: for `spt ω ⊆ λ⁻¹W` the cone identity gives
+`C(ω) = (η_{0,λ#}C)(ω) = C(η_{0,λ}^#ω)` (the domain `η_{0,λ}(ℝᴾ)` is all of `ℝᴾ`), and
+`spt η_{0,λ}^#ω ⊆ η_{0,λ}⁻¹(spt ω) ⊆ W` because `η_{0,λ}(w) = λ⁻¹w`. -/
+theorem Submission.idtp_tpf_cone_support_smul : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ lam : ℝ, 0 < lam → ∀ v ∈ C.support, lam • v ∈ C.support := by
+  intro P n C hC lam hlam v hv
+  rw [GeometricCurrentOn.support, Set.mem_sdiff] at hv ⊢
+  refine ⟨mem_univ _, fun hzero => hv.2 ?_⟩
+  rw [GeometricCurrentOn.zeroRegion, mem_sUnion] at hzero ⊢
+  obtain ⟨W, ⟨hWo, hWc, -, hWv⟩, hvW⟩ := hzero
+  refine ⟨(fun w => lam • w) ⁻¹' W,
+    ⟨hWo.preimage (continuous_const_smul lam), ?_, subset_univ _, ?_⟩, hvW⟩
+  · -- `closure (λ⁻¹W) = λ⁻¹ closure W` is compact
+    have e : (fun w : Euclid P => lam • w) ⁻¹' closure W = closure ((fun w => lam • w) ⁻¹' W) :=
+      (Homeomorph.smulOfNeZero lam hlam.ne' (α := Euclid P)).preimage_closure W
+    rw [← e]
+    exact (Homeomorph.smulOfNeZero lam hlam.ne' (α := Euclid P)).isCompact_preimage.mpr hWc
+  · intro ω hω
+    -- the domain `η_{0,λ}(ℝᴾ)` of the blow-up is all of `ℝᴾ`
+    have hdom : tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation 0 lam '' univ := by
+      intro z _
+      exact ⟨lam • z, mem_univ _, by simp [dilation, dilationCLM, smul_smul, hlam.ne']⟩
+    -- `C(ω) = (η_{0,λ#}C)(ω) = C(η_{0,λ}^#ω)`
+    rw [← hC lam hlam ω, currentEval, dite_eq_left ⟨ω.2.1, hdom⟩, blowUp,
+      GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply]
+    apply hWv
+    -- `spt η_{0,λ}^#ω ⊆ η_{0,λ}⁻¹(spt ω) ⊆ W`
+    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+    refine (tsupport_affinePullbackForm_subset _ _ _).trans fun x hx => ?_
+    simpa [dilationCLM, smul_smul, hlam.ne'] using hω hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
