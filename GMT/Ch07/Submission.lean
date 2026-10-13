@@ -6477,6 +6477,50 @@ theorem Submission.minimizing_implies_stationary : MinimizingImpliesStationary :
   exact ⟨hstat, Submission.meanCurvature_bounded_of_stationaryAlong (n + k) n (n + ℓ) U N R hU hN
     hNcl hnull hstat⟩
 
+/-- **Simon Ch. 3, 2.3–2.6 (area formula, 2.6)** (chapter-03.txt lines 362–411) for an injective
+Lipschitz `C¹` map `φ` on a countably `n`-rectifiable `M`, with the tangential Jacobian
+`J(x) = (det(Dφ(x)eₐ · Dφ(x)e_b))^{1/2}`, `e` the standard orthonormal basis of `TₓM`:
+`∫_{φ(M)} g dHⁿ = ∫_M J (g ∘ φ) dHⁿ` for every `g ≥ 0`, measurable or not.  Proved through
+bi-Lipschitz pieces instead of Simon's `C¹` pieces: `M` is, up to an `Hⁿ`-null set, the disjoint
+union of Borel pieces `Pᵢ = Fᵢ(Bᵢ)`; for a.e. `b ∈ Bᵢ`, `T_{Fᵢ b}M = range DFᵢ(b)` (density lemma
+and uniqueness of approximate tangent planes).  Both sides split along the pieces (for `φ`, and
+for `id`), and on each piece the Lipschitz area formula for `φ ∘ Fᵢ` and for `Fᵢ` together with
+`normDet (S ∘ T) = normDet (S|_{range T}) · normDet T` and the Gram identity match the terms. -/
+theorem Submission.codim1_ldr_dpf_area_formula_bilipschitz_rectifiable : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * g (φ x) ∂μHE[n] := by
+  intro P n U M φ Λ hU hM hMU hrect hloc hφ1 hφ hφinj g
+  -- Step 1: disjoint Borel bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M`, covering `M` up to an `Hⁿ`-null set
+  obtain ⟨F, B, m, hF, hB, hm, hlow, hdiff, hFBm, hFB, hdisj, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  -- `Fᵢ` is injective on `Bᵢ`: `mᵢ‖a - a'‖ ≤ ‖Fᵢ a - Fᵢ a'‖` with `mᵢ > 0`
+  have hinj : ∀ i, InjOn (F i) (B i) := by
+    intro i a ha a' ha' h
+    have h1 := hlow i a ha a' ha'
+    rw [h, sub_self, norm_zero] at h1
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp (nonpos_of_mul_nonpos_right h1 (hm i)))
+  -- Step 2: `Q(Fᵢ b) = range DFᵢ(b)` for a.e. `b ∈ Bᵢ`: by the density lemma `M` has approximate
+  -- tangent space `range DFᵢ(b)` at `Fᵢ b`, and approximate tangent spaces are unique
+  have htan : ∀ i, ∀ᵐ b ∂(volume.restrict (B i)), approxTangentPlane n M (F i b) =
+      LinearMap.range (fderiv ℝ (F i) b : Euclid n →ₗ[ℝ] Euclid P) := by
+    intro i
+    obtain ⟨L, hL⟩ := hF i
+    filter_upwards [Submission.codim1_ldr_dpf_approxTangent_ae_bilipschitz_piece P n U M (F i)
+      (B i) L (m i) hU hM hMU hloc hL (hB i) (hm i) (hlow i) (hdiff i) (hFB i)] with b hb
+    have hex : ∃ Q, HasApproximateTangentSpaceAt n M (F i b) Q := ⟨_, hb⟩
+    rw [approxTangentPlane, dite_eq_left hex]
+    exact hex.choose_spec.unique hb
+  -- Step 4: split both sides along the pieces (`φ`, resp. `id`, is Lipschitz and injective)
+  have hsplit : ∀ w : Euclid P → ℝ≥0∞,
+      ∫⁻ x in M, w x ∂μHE[n] = ∑' i, ∫⁻ x in F i '' B i, w x ∂μHE[n] := fun w => by
+    simpa only [image_id] using Submission.dpf_raf_lintegral_image_eq_tsum_pieces P n M
+      (fun i => F i '' B i) id 1 hFBm hFB hdisj hnull LipschitzWith.id injective_id w
+  rw [Submission.dpf_raf_lintegral_image_eq_tsum_pieces P n M (fun i => F i '' B i) φ Λ hFBm hFB
+    hdisj hnull hφ hφinj g, hsplit]
+  -- Steps 3, 5 and 6: the area identity on each piece, with `Q = approxTangentPlane n M`, summed
+  refine tsum_congr fun i => ?_
+  obtain ⟨L, hL⟩ := hF i
+  exact Submission.dpf_raf_piece_area_formula_gram P n (approxTangentPlane n M) φ Λ (F i) L (B i)
+    (hφ1.differentiable one_ne_zero) hφ hL (hB i) (hinj i) hφinj.injOn (htan i) g
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
