@@ -1933,6 +1933,46 @@ theorem Submission.dimred_cs_psd_radial_density : ∀ (d m : ℕ) (f : ℝ → �
           ENNReal.div_le_div_right hint _
       _ = b' := ENNReal.mul_div_cancel_right (hc0 _ _ hρ.1) (hct _ _)
       _ < b := hb'b
+/-- For a nondecreasing `f : ℝ → [0, ∞]`, `∫_{ℝᵈ} f(√(ε² − |σ|²)) dσ ≠ 0` for every `ε > 0` iff
+`f(ε) ≠ 0` for every `ε > 0`.  Every radius `√(ε² − |σ|²)` lies in `[0, ε]`, so `f(ε) = 0` kills
+the integrand; conversely the integrand is `≥ f(ε/2)` on `B_{ε/2}(0)`, a ball of positive
+Lebesgue measure. -/
+theorem Submission.dimred_cs_psd_radial_support : ∀ (d : ℕ) (f : ℝ → ℝ≥0∞), Monotone f → ((∀ ε : ℝ, 0 < ε → (∫⁻ σ : Euclid d, f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2))) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → f ε ≠ 0) := by
+  intro d f hf
+  constructor
+  · -- (⇒) if `f(ε) = 0`, then `0 ≤ f(√(ε² − |σ|²)) ≤ f(ε) = 0` for every `σ`
+    intro h ε hε hfε
+    apply h ε hε
+    have hz : ∀ σ : Euclid d, f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2)) = 0 := by
+      intro σ
+      refine le_antisymm ?_ zero_le
+      calc f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2)) ≤ f ε := by
+            apply hf
+            calc Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2) ≤ Real.sqrt (ε ^ 2) :=
+                  Real.sqrt_le_sqrt (by nlinarith [norm_nonneg σ])
+              _ = ε := Real.sqrt_sq hε.le
+        _ = 0 := hfε
+    simp [hz]
+  · -- (⇐) the integral is `≥ f(ε/2) · Lᵈ(B_{ε/2}(0))`, a product of nonzero factors
+    intro h ε hε h0
+    have hε2 : 0 < ε / 2 := by linarith
+    have hle : ∀ σ : Euclid d, (ball (0 : Euclid d) (ε / 2)).indicator (fun _ => f (ε / 2)) σ ≤
+        f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2)) := by
+      intro σ
+      by_cases hσ : σ ∈ ball (0 : Euclid d) (ε / 2)
+      · rw [indicator_of_mem hσ]
+        apply hf
+        rw [mem_ball_zero_iff] at hσ
+        rw [Real.le_sqrt hε2.le (by nlinarith [norm_nonneg σ])]
+        nlinarith [norm_nonneg σ]
+      · rw [indicator_of_notMem hσ]
+        exact zero_le
+    have hint := lintegral_mono (μ := (volume : Measure (Euclid d))) hle
+    rw [h0, lintegral_indicator_const measurableSet_ball] at hint
+    have hprod : f (ε / 2) * volume (ball (0 : Euclid d) (ε / 2)) = 0 := le_antisymm hint zero_le
+    rcases mul_eq_zero.1 hprod with hf0 | hv0
+    · exact h _ hε2 hf0
+    · exact (measure_ball_pos volume (0 : Euclid d) hε2).ne' hv0
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
