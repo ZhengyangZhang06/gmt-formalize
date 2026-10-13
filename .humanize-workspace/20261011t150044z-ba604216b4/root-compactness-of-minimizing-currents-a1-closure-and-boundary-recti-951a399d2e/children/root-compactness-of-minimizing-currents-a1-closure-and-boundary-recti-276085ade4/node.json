@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.isolate_plane-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "A 1-Lipschitz function isolating one of finitely many parallel planes",
+  "statement": "Let P, n, N ∈ ℕ, let v = (v_0, …, v_{n−1}) be orthonormal in ℝ^P, V₀ := span(v), w_0, …, w_{N−1} ∈ ℝ^P pairwise distinct with ⟨w_i, v_j⟩ = 0 for all i, j, α_0, …, α_{N−1} ∈ ℝ, Π_i := {y : y − w_i ∈ V₀}, ν := Σ_i ofReal(α_i)·Hⁿ⌞Π_i (Hⁿ = μHE[n]), pL : ℝ^P → ℝⁿ continuous linear with (pL x)_i = ⟨v_i, x⟩, and i₀ ∈ Fin N. Then there are g : ℝ^P → ℝ and δ > 0 such that g is 1-Lipschitz, g = 0 on Π_{i₀}, ν⌞{g < 3δ} = ofReal(α_{i₀})·Hⁿ⌞Π_{i₀}, and for all real t, r the set {g ≤ t} ∩ pL⁻¹(closedBall(0, r)) is compact.",
+  "lean_statement": "∀ (P n N : ℕ) (v : Fin n → Euclid P) (w : Fin N → Euclid P) (α : Fin N → ℝ) (ν : Measure (Euclid P)) (pL : Euclid P →L[ℝ] Euclid n) (i₀ : Fin N), Orthonormal ℝ v → Injective w → (∀ (i : Fin N) (j : Fin n), inner ℝ (w i) (v j) = 0) → ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ Submodule.span ℝ (Set.range v)} → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → ∃ (g : Euclid P → ℝ) (δ : ℝ), 0 < δ ∧ LipschitzWith 1 g ∧ (∀ y : Euclid P, y - w i₀ ∈ Submodule.span ℝ (Set.range v) → g y = 0) ∧ ν.restrict {x | g x < 3 * δ} = ENNReal.ofReal (α i₀) • (μHE[n]).restrict {y : Euclid P | y - w i₀ ∈ Submodule.span ℝ (Set.range v)} ∧ ∀ t r : ℝ, IsCompact ({x | g x ≤ t} ∩ pL ⁻¹' closedBall 0 r)",
+  "lean_name": "cbr_ci_pw_isolate_plane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-276085ade4-a1"
+}

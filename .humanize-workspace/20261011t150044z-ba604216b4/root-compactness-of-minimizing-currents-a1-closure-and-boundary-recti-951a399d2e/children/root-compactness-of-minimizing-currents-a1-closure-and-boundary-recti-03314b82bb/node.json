@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "Mollifications of weakly converging, L¹-bounded densities converge uniformly on a smaller ball",
+  "statement": "Let n ∈ ℕ, R > 0, 0 < s < R, c, Λ ∈ ℝ, φ : ℝⁿ → ℝ smooth (ContDiff ℝ ⊤) with tsupport φ ⊆ B_s(0), and u_k : ℝⁿ → ℝ (k ∈ ℕ) Lebesgue integrable on B_{2R}(0) with ∫_{B_{2R}(0)}|u_k| ≤ Λ for all sufficiently large k. Assume ∫_{B_{2R}(0)}u_k b → c∫_{ℝⁿ}b for every smooth compactly supported b with tsupport b ⊆ B_{2R}(0). Then w_k(x) := ∫_{B_{2R}(0)}u_k(y)φ(x − y)dy converges to c∫_{ℝⁿ}φ uniformly on closedBall(0, R).",
+  "lean_statement": "∀ (n : ℕ) (R s c Λ : ℝ) (φ : Euclid n → ℝ) (u : ℕ → Euclid n → ℝ), 0 < R → 0 < s → s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → (∀ᶠ k in atTop, ∫ y in ball 0 (2 * R), |u k y| ≤ Λ) → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ ball 0 (2 * R) → Tendsto (fun k => ∫ y in ball 0 (2 * R), u k y * b y) atTop (𝓝 (c * ∫ y, b y))) → TendstoUniformlyOn (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (fun _ => c * ∫ y, φ y) atTop (closedBall 0 R)",
+  "lean_name": "cbr_ci_pw_mollified_tendstoUniformlyOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03314b82bb-a1"
+}

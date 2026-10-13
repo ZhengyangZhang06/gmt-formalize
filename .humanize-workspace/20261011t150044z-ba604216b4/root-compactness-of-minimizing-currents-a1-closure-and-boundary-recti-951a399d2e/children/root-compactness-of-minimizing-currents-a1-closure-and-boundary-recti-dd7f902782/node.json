@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.top_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "Top-dimensional currents with finite mass and locally finite boundary mass have L¹ densities",
+  "statement": "Hypothesis name: (REP) is the exact frozen statement of cmc_exists_massRepresentation, copied verbatim as the first hypothesis of the Lean statement. In words: for P, n ∈ ℕ, U ⊆ ℝ^P open and T ∈ 𝒟_n(U) with M_W(T) < ∞ for every open W ⊂⊂ U there are a Borel measure μ and ξ : ℝ^P → Λ_n(ℝ^P) with μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for compact K ⊆ U, μ(W) = M_W(T) for every open W, ξ μ-a.e. strongly measurable, |ξ(x)(α)| ≤ |α| for all x and α, T(ω) = ∫ξ(x)(ω(x))dμ(x) for every ω ∈ 𝒟ⁿ(U), and, provided also boundaryMassOn T W < ∞ (i.e. M_W(∂T) < ∞ in positive degree) for every open W ⊂⊂ U, μ(E) = 0 whenever Hⁿ(E) = 0. Assume (REP). Let d ∈ ℕ, n := d + 1, U ⊆ ℝⁿ open and Y ∈ 𝒟_n(U) with M_U(Y) < ∞ and M_W(∂Y) < ∞ for every open W ⊂⊂ U (closure W compact and contained in U). Then there is u : ℝⁿ → ℝ, Lebesgue integrable on U, with ofReal(∫_U|u|dy) ≤ M_U(Y) and Y(ω) = ∫_U u(y)·ω(y)(e_0, …, e_d)dy for every ω ∈ 𝒟ⁿ(U), where e_i = EuclideanSpace.single i 1.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (d : ℕ) (U : Set (Euclid (d + 1))) (Y : GeometricCurrentOn U (d + 1)), IsOpen U → Y.massOn U < ∞ → (∀ W : Set (Euclid (d + 1)), IsOpen W → CompactlyContained W U → Y.boundary.massOn W < ∞) → ∃ u : Euclid (d + 1) → ℝ, IntegrableOn u U ∧ ENNReal.ofReal (∫ y in U, |u y|) ≤ Y.massOn U ∧ ∀ ω : TestFormOn U (d + 1), Y ω = ∫ y in U, u y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "cbr_ci_pw_top_current_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-dd7f902782-a1"
+}
