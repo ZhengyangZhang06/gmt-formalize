@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1.cover_refine-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1",
+  "depth": 5,
+  "title": "Countable disjoint Borel refinement of a local open cover (Lindelöf)",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P (Euclid P) be any set, and let p be any property of subsets of ℝ^P. Suppose every x ∈ U lies in an open set W ⊆ ℝ^P with x ∈ W, W ⊆ U and p(W). Then there are a countable index type ι (ι : Type with Countable ι; ι may be empty) and families (W_i)_{i∈ι}, (A_i)_{i∈ι} of subsets of ℝ^P with the following properties: every W_i is open, W_i ⊆ U and p(W_i) holds; every A_i is a Borel set with A_i ⊆ W_i; the A_i are pairwise disjoint; and ⋃_i A_i = U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (p : Set (Euclid P) → Prop), (∀ x ∈ U, ∃ W : Set (Euclid P), IsOpen W ∧ x ∈ W ∧ W ⊆ U ∧ p W) → ∃ (ι : Type) (_ : Countable ι) (W A : ι → Set (Euclid P)), (∀ i, IsOpen (W i)) ∧ (∀ i, W i ⊆ U) ∧ (∀ i, p (W i)) ∧ (∀ i, MeasurableSet (A i)) ∧ (∀ i, A i ⊆ W i) ∧ Pairwise (fun i j => Disjoint (A i) (A j)) ∧ ⋃ i, A i = U",
+  "lean_name": "cbrg_exists_countable_disjoint_refinement",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-92fe8158c5-a1"
+}
