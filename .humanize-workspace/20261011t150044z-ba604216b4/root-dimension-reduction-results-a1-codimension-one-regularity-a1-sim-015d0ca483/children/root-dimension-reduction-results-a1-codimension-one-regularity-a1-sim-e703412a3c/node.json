@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.chart_area-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Area formula for a C¹ map on a Borel subset of one chart of an embedded C¹ submanifold (Simon Ch. 2, 4.11–4.13; steps 4–8 of the supplied proof)",
+  "statement": "Let P, m ∈ ℕ, M, E, W ⊆ ℝ^P, V ⊆ ℝ^m, ψ : ℝ^m → ℝ^P and Φ : ℝ^P → ℝ^P. Assume (V, W, ψ) is a chart of M: V and W are open, ψ is C¹ on V and injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(z) is injective for every z ∈ V. Assume further that E is Borel with E ⊆ W ∩ M, that Φ is C¹ on ℝ^P, that Φ is injective on E, and that DΦ(x) = fderiv ℝ Φ x is injective for every x ∈ E. For x ∈ ℝ^P let T_x := span(tangentSpace M x) with the inner product of ℝ^P, ι_x : T_x → ℝ^P the inclusion and J^MΦ(x) := √det((DΦ(x)∘ι_x)*(DΦ(x)∘ι_x)) (* the adjoint for the inner products of T_x and ℝ^P, det of an endomorphism of T_x, √ = Real.sqrt). Then H^m(Φ(E)) = ∫⁻_E ENNReal.ofReal(J^MΦ(x)) dH^m(x) in [0, ∞], where H^m := μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (M E W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Φ : Euclid P → Euclid P), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → MeasurableSet E → E ⊆ W ∩ M → ContDiff ℝ 1 Φ → InjOn Φ E → (∀ x ∈ E, Injective (fderiv ℝ Φ x)) → μHE[m] (Φ '' E) = ∫⁻ x in E, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m]",
+  "lean_name": "codim1_hcp_af_chart_area_formula",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.chart_jacobian-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.chart_jacobian-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e703412a3c-a1"
+}

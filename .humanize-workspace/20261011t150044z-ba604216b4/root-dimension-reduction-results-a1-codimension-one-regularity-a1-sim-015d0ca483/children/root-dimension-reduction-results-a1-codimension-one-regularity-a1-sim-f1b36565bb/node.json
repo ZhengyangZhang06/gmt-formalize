@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.chart_partition-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Borel partition of a Borel subset of an embedded C¹ submanifold subordinate to countably many charts",
+  "statement": "Let P, m ∈ ℕ, let M ⊆ ℝ^P be an embedded C¹ submanifold of dimension m (IsEmbeddedSubmanifold 1 m M), and let E ⊆ M be Borel. Then there are sequences (E_k)_{k∈ℕ} of subsets of ℝ^P, (V_k)_{k∈ℕ} of subsets of ℝ^m, (W_k)_{k∈ℕ} of subsets of ℝ^P and maps ψ_k : ℝ^m → ℝ^P (k ∈ ℕ) such that: every E_k is Borel; the E_k are pairwise disjoint; ⋃_k E_k = E; and for every k, V_k and W_k are open, ψ_k is C¹ on V_k and injective on V_k, ψ_k(V_k) = W_k ∩ M, V_k ∩ ψ_k⁻¹(K) is compact for every compact K ⊆ W_k, Dψ_k(z) = fderiv ℝ ψ_k z is injective for every z ∈ V_k, and E_k ⊆ W_k ∩ M.",
+  "lean_statement": "∀ (P m : ℕ) (M E : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → MeasurableSet E → E ⊆ M → ∃ (Es : ℕ → Set (Euclid P)) (Vs : ℕ → Set (Euclid m)) (Ws : ℕ → Set (Euclid P)) (ψs : ℕ → Euclid m → Euclid P), (∀ k, MeasurableSet (Es k)) ∧ Pairwise (fun i j => Disjoint (Es i) (Es j)) ∧ (⋃ k, Es k) = E ∧ ∀ k, IsOpen (Vs k) ∧ IsOpen (Ws k) ∧ ContDiffOn ℝ 1 (ψs k) (Vs k) ∧ InjOn (ψs k) (Vs k) ∧ ψs k '' Vs k = Ws k ∩ M ∧ (∀ K ⊆ Ws k, IsCompact K → IsCompact (Vs k ∩ ψs k ⁻¹' K)) ∧ (∀ z ∈ Vs k, Injective (fderiv ℝ (ψs k) z)) ∧ Es k ⊆ Ws k ∩ M",
+  "lean_name": "codim1_hcp_af_chart_partition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f1b36565bb-a1"
+}
