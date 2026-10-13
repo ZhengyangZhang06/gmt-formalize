@@ -995,6 +995,114 @@ theorem Submission.iwl_cr_ip_wt_slice_continuous :
   · refine Filter.Eventually.of_forall fun u => ?_
     exact (hfc.comp (hΦc.comp (continuous_id.prodMk continuous_const))).mul continuous_const
 
+/-- Simon Ch. 3, 1.7 for the product of the unit interval with `(M, θ)`: if `span τ` is a weighted
+approximate tangent space of `(M, θ)` at `x`, then `span (e₀, ιτ)` is one of
+`(M̃, θ ∘ π)`, `M̃ = {y : π y ∈ M, y₀ ∈ (0, 1)}`, at `Φ(s₀, x)` for `0 < s₀ < 1`.
+By the slice identity the blow-up integrals at `Φ(s₀, x)` are
+`∫_ℝ 1_{(-s₀/r, (1-s₀)/r]}(σ) a_r(σ) dσ`, where `a_r(σ)` is the blow-up integral of `(M, θ)` at `x`
+against `f(Φ(σ, ·))`.  Dominated convergence in `σ` (uniform blow-up mass bound, continuity in
+`σ`) and Fubini on the plane `π⁻¹(span τ) = span (e₀, ιτ)` give the limit
+`θ(x) ∫_{span (e₀, ιτ)} f dH^{m+1}`. -/
+theorem Submission.iwl_cr_ip_product_weighted_tangent :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (τ : Fin m → Eucl P) (s₀ : ℝ), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m M → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ z ∈ M, 0 ≤ θ z) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → Orthonormal ℝ τ → HasWeightedApproximateTangentSpaceAt m M θ x (Submodule.span ℝ (range τ)) → s₀ ∈ Ioo (0 : ℝ) 1 → HasWeightedApproximateTangentSpaceAt (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) (Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)))) := by
+  have h_plane := Submission.iwl_cr_ip_wt_product_plane
+  have h_fubini := Submission.iwl_cr_ip_wt_plane_fubini
+  have h_bound := Submission.iwl_cr_ip_wt_blowup_mass_bound
+  have h_slice := Submission.iwl_cr_ip_wt_slice_identity
+  have h_cont := Submission.iwl_cr_ip_wt_slice_continuous
+  intro P m hMP M θ x τ s₀ hMmeas hMrect hMfin hθnn hθint hτ hT hs₀
+  -- Steps 1–2 (`product_plane`): `finrank Q = m + 1` and `Q = π⁻¹(span τ)` as sets.
+  obtain ⟨-, hQrank, hQset⟩ := h_plane P m τ hτ
+  refine And.intro hQrank (fun f => ?_)
+  have hfc : Continuous f := f.continuous
+  have hfs : HasCompactSupport f := f.hasCompactSupport
+  -- Coordinates: `‖Φ(σ, w)‖² = σ² + ‖w‖²`, hence `|σ| ≤ ‖Φ(σ, w)‖` and `‖w‖ ≤ ‖Φ(σ, w)‖`.
+  have hnsq : ∀ (σ : ℝ) (w : Eucl P), ‖(EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))‖ ^ 2 = σ ^ 2 + ‖w‖ ^ 2 := by
+    intro σ w
+    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_succ]
+    simp
+  have hN0 : ∀ (σ : ℝ) (w : Eucl P), |σ| ≤ ‖(EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))‖ := fun σ w =>
+    le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _)
+      (by rw [hnsq, sq_abs]; nlinarith [sq_nonneg ‖w‖])
+  have hN1 : ∀ (σ : ℝ) (w : Eucl P), ‖w‖ ≤ ‖(EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))‖ := fun σ w =>
+    le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _) (by rw [hnsq]; nlinarith [sq_nonneg σ])
+  -- Step 5: `f` vanishes outside `B̄(0, R)` and `|f| ≤ C`.
+  obtain ⟨R, hR⟩ := hfs.isCompact.isBounded.subset_closedBall (0 : Eucl (P + 1))
+  have hfz : ∀ z : Eucl (P + 1), R < ‖z‖ → f z = 0 := fun z hz =>
+    image_eq_zero_of_notMem_tsupport fun h => (not_le.2 hz) (mem_closedBall_zero_iff.1 (hR h))
+  obtain ⟨C, hC⟩ := hfc.bounded_above_of_compact_support hfs
+  -- Step 15: the limit is `θ(x) ∫_ℝ ∫_{span τ} f(Φ(σ, w)) dHᵐ(w) dσ`, since
+  -- `θ̃(Φ(s₀, x)) = θ(x)`, `Q = π⁻¹(span τ)` and by `plane_fubini`.
+  have hθc : θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ
+      ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x)))))) = θ x := by
+    rw [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  beta_reduce
+  rw [hθc, hQset, h_fubini P m hMP τ hτ f hfc hfs, ← integral_const_mul]
+  -- Steps 7–10 (`slice_identity`): for `r > 0` the blow-up integral equals
+  -- `∫_ℝ 1_{(-s₀/r, (1-s₀)/r]}(σ) a_r(σ) dσ`.
+  refine Tendsto.congr' ?_ (?_ : Tendsto (fun r : ℝ => ∫ σ : ℝ,
+    (Ioc (-s₀ / r) ((1 - s₀) / r)).indicator (fun σ : ℝ =>
+      ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+        f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) *
+          θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))) σ) (𝓝[>] 0) _)
+  · filter_upwards [self_mem_nhdsWithin] with r hr
+    exact (h_slice P m hMP M θ x s₀ hMmeas hMrect hMfin hθint f hfc hfs r hr).symm
+  -- Step 14: dominated convergence in the interval variable.
+  obtain ⟨B, hB⟩ := h_bound P m M θ x (Submodule.span ℝ (range τ)) hMmeas hθnn hθint hT R
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun σ => (Icc (-R) R).indicator (fun _ => C * B) σ) ?_ ?_ ?_ ?_
+  · -- Step 13 (`slice_continuous`): measurability in `σ`.
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact (h_cont P m M θ x hθint f hfc hfs r hr).aestronglyMeasurable.indicator measurableSet_Ioc
+  · -- Step 12 (`blowup_mass_bound`): `|a_r(σ)| ≤ C B`, and `a_r(σ) = 0` for `|σ| > R`.
+    filter_upwards [hB] with r hr
+    refine ae_of_all _ fun σ => (norm_indicator_le_norm_self _ _).trans ?_
+    rw [Real.norm_eq_abs]
+    by_cases hσ : σ ∈ Icc (-R) R
+    · rw [indicator_of_mem hσ]
+      exact hr C (fun w => f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))))
+        (fun w => by rw [← Real.norm_eq_abs]; exact hC _)
+        (fun w hw => hfz _ (hw.trans_le (hN1 σ w)))
+    · rw [indicator_of_notMem hσ]
+      have hRσ : R < |σ| := not_le.1 fun h => hσ (abs_le.1 h)
+      have h0 : ∀ w : Eucl P, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) = 0 :=
+        fun w => hfz _ (hRσ.trans_le (hN0 σ w))
+      simpa using hr 0 (fun w => f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))))
+        (fun w => by rw [h0]; simp) (fun w _ => h0 w)
+  · exact (integrableOn_const measure_Icc_lt_top.ne).integrable_indicator measurableSet_Icc
+  · -- Step 11: pointwise convergence from the tangent hypothesis for `f(Φ(σ, ·))`.
+    refine ae_of_all _ fun σ => ?_
+    have hmem : ∀ᶠ r in 𝓝[>] (0 : ℝ), σ ∈ Ioc (-s₀ / r) ((1 - s₀) / r) := by
+      have hε : 0 < min s₀ (1 - s₀) / (|σ| + 1) :=
+        div_pos (lt_min hs₀.1 (sub_pos.2 hs₀.2)) (by positivity)
+      filter_upwards [Ioo_mem_nhdsGT hε] with r hr
+      obtain ⟨hr0, hrε⟩ := hr
+      have h1 : r * (|σ| + 1) < min s₀ (1 - s₀) := (lt_div_iff₀ (by positivity)).1 hrε
+      have h2 := min_le_left s₀ (1 - s₀)
+      have h3 := min_le_right s₀ (1 - s₀)
+      constructor
+      · rw [div_lt_iff₀ hr0]
+        nlinarith [neg_abs_le σ, abs_nonneg σ]
+      · rw [le_div_iff₀ hr0]
+        nlinarith [le_abs_self σ, abs_nonneg σ]
+    let fσ : CompactlySupportedContinuousMap (Eucl P) ℝ :=
+      ⟨⟨fun w => f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))), by fun_prop⟩,
+        HasCompactSupport.intro (isCompact_closedBall (0 : Eucl P) R) fun w hw =>
+          hfz _ ((not_le.1 fun h => hw (mem_closedBall_zero_iff.2 h)).trans_le (hN1 σ w))⟩
+    refine (hT.2 fσ).congr' ?_
+    filter_upwards [hmem] with r hr
+    refine Eq.symm ?_
+    exact indicator_of_mem hr _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
