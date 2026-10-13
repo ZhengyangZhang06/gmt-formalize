@@ -458,6 +458,64 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): if `ρ > 0` and `|y₀| + ρ ≤ 1`, the rescaled data `a(y₀ + ρ z)`, `ρ Φ(y₀ + ρ z)` and
+`w(y₀ + ρ z)` on `B̆₁(0)` satisfy the structure conditions of `a`, `Φ`, `w` with the same
+constants.  The map `z ↦ y₀ + ρ z` sends `B̆₁(0)` into itself and multiplies distances by
+`ρ ≤ 1`, so the Hölder quotients acquire the factors `ρ^α ≤ 1` and `ρ ρ^α ≤ 1`. -/
+theorem dohr_eb_sch_ube_rescaled_structure : ∀ (n ℓ : ℕ) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ) (y₀ : Rn n) (ρ α lam M : ℝ), 0 < ρ → ‖y₀‖ + ρ ≤ 1 → 0 ≤ α → 0 ≤ M → (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ M) → (∀ z ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a (y₀ + ρ • z) P P) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a (y₀ + ρ • z) P Q| ≤ M * ‖P‖ * ‖Q‖) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a (y₀ + ρ • z) P Q - a (y₀ + ρ • z') P Q| ≤ M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |(ρ • Φ (y₀ + ρ • z)) P - (ρ • Φ (y₀ + ρ • z')) P| ≤ M * ‖z - z'‖ ^ α * ‖P‖) ∧ ∀ z ∈ ball (0 : Rn n) 1, ‖w (y₀ + ρ • z)‖ ≤ M := by
+  intro n ℓ a Φ w y₀ ρ α lam M hρ hyρ hα hM h1 h2 h3 h4 h5
+  -- Step 1: `0 < ρ ≤ 1`, hence `ρ^α ≤ 1`.
+  have hρ1 : ρ ≤ 1 := by linarith [norm_nonneg y₀]
+  have hρα : ρ ^ α ≤ 1 := Real.rpow_le_one hρ.le hρ1 hα
+  have hρα0 : 0 ≤ ρ ^ α := Real.rpow_nonneg hρ.le α
+  -- Step 2: `z ↦ y₀ + ρ z` maps `B̆₁(0)` into `B̆₁(0)`.
+  have hmap : ∀ z ∈ ball (0 : Rn n) 1, y₀ + ρ • z ∈ ball (0 : Rn n) 1 := by
+    intro z hz
+    rw [mem_ball_zero_iff] at hz ⊢
+    calc ‖y₀ + ρ • z‖ ≤ ‖y₀‖ + ‖ρ • z‖ := norm_add_le _ _
+      _ = ‖y₀‖ + ρ * ‖z‖ := by rw [norm_smul, Real.norm_eq_abs, abs_of_pos hρ]
+      _ < ‖y₀‖ + ρ * 1 := by gcongr
+      _ ≤ 1 := by linarith
+  -- Step 3: `|(y₀ + ρ z) − (y₀ + ρ z')|^α = ρ^α |z − z'|^α`.
+  have hdiff : ∀ z z' : Rn n, ‖(y₀ + ρ • z) - (y₀ + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
+      Real.mul_rpow hρ.le (norm_nonneg _)]
+  -- Step 4: (i), (ii), (v) hold pointwise at `y₀ + ρ z ∈ B̆₁(0)`.
+  refine ⟨fun z hz P => h1 _ (hmap z hz) P, fun z hz P Q => h2 _ (hmap z hz) P Q, ?_, ?_,
+    fun z hz => h5 _ (hmap z hz)⟩
+  -- Step 5: (iii), discarding the factor `ρ^α ≤ 1` as `M ≥ 0`.
+  · intro z hz z' hz' P Q
+    have h := h3 _ (hmap z hz) _ (hmap z' hz') P Q
+    rw [hdiff] at h
+    have hX : 0 ≤ M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ :=
+      mul_nonneg (mul_nonneg (mul_nonneg hM (Real.rpow_nonneg (norm_nonneg _) _))
+        (norm_nonneg _)) (norm_nonneg _)
+    calc |a (y₀ + ρ • z) P Q - a (y₀ + ρ • z') P Q|
+        ≤ M * (ρ ^ α * ‖z - z'‖ ^ α) * ‖P‖ * ‖Q‖ := h
+      _ = ρ ^ α * (M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) := by ring
+      _ ≤ 1 * (M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) := mul_le_mul_of_nonneg_right hρα hX
+      _ = M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ := one_mul _
+  -- Step 6: (iv), as `(ρ Φ(u))[P] = ρ Φ(u)[P]`, discarding the factor `ρ ρ^α ≤ 1`.
+  · intro z hz z' hz' P
+    have h := h4 _ (hmap z hz) _ (hmap z' hz') P
+    rw [hdiff] at h
+    have hX : 0 ≤ M * ‖z - z'‖ ^ α * ‖P‖ :=
+      mul_nonneg (mul_nonneg hM (Real.rpow_nonneg (norm_nonneg _) _)) (norm_nonneg _)
+    simp only [smul_apply, smul_eq_mul]
+    rw [← mul_sub, abs_mul, abs_of_pos hρ]
+    have hρρ : ρ * ρ ^ α ≤ 1 := by nlinarith
+    calc ρ * |Φ (y₀ + ρ • z) P - Φ (y₀ + ρ • z') P|
+        ≤ ρ * (M * (ρ ^ α * ‖z - z'‖ ^ α) * ‖P‖) := by gcongr
+      _ = (ρ * ρ ^ α) * (M * ‖z - z'‖ ^ α * ‖P‖) := by ring
+      _ ≤ 1 * (M * ‖z - z'‖ ^ α * ‖P‖) := mul_le_mul_of_nonneg_right hρρ hX
+      _ = M * ‖z - z'‖ ^ α * ‖P‖ := one_mul _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
