@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "Density one of H^n on a set covered by closed Lipschitz graphs of arbitrarily small slope",
+  "statement": "Let A ⊆ ℝ^N with H^n(A) < ∞ and A H^n-null-measurable, and suppose that for every L ∈ (0,1] there is a countable set C_L ⊆ G(N,n) × 2^{ℝ^N} such that every (P, Γ) ∈ C_L has Γ closed and an L-graph over P (|q_P(y − z)| ≤ L|p_P(y − z)| on Γ), and A ⊆ ⋃_{(P,Γ) ∈ C_L} Γ. Let λ := H^n⌞A. Then for λ-a.e. x, λ(B_r(x))/(ω_n r^n) → 1 as r ↓ 0, i.e. HasDensity n λ x 1.",
+  "lean_statement": "∀ (N n : ℕ) (A : Set (Euclidean N)), μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → (∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ A ⊆ ⋃ c ∈ C, c.2) → ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict A, HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict A) x 1",
+  "lean_name": "frt_hausdorff_density_one_of_flat_covers",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-density-one-flat-covers-a1-a1"
+}

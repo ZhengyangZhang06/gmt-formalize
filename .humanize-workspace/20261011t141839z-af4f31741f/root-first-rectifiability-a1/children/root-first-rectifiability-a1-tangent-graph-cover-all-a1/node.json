@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.tangent_graph_cover_all-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "All tangent points lie on countably many closed L-graphs (net-of-planes step of Ch. 3, 1.6 ⇐)",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N. Suppose that for every L ∈ (0,1] and every P ∈ G(N,n) there are closed sets Γ_0, Γ_1, … ⊆ ℝ^N, each an L-graph over P (|q_P(y − z)| ≤ L|p_P(y − z)| for y, z ∈ Γ_i, where p_P = Grassmannian.project P and q_P = I − p_P), such that every x with HasTangentPlane V x T θ and |p_T v − p_P v| ≤ (L/4)|v| for all v lies in some Γ_i (the conclusion of the sibling tangent_points_lipschitz_graph_cover for V). Then for every L ∈ (0,1] there is a countable set C of pairs (P, Γ) ∈ G(N,n) × 2^{ℝ^N}, each Γ closed and an L-graph over P, whose sets cover {x : ∃ T θ, HasTangentPlane V x T θ}.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), (∀ L : ℝ, 0 < L → L ≤ 1 → ∀ P : Grassmannian N n, ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i) → ∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ} ⊆ ⋃ c ∈ C, c.2",
+  "lean_name": "frt_tangent_points_flat_graph_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-tangent-graph-cover-all-a1-a1"
+}
