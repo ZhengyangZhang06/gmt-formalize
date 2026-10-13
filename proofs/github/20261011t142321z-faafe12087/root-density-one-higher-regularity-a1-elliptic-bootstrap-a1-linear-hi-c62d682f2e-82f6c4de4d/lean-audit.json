@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4af2df5a50b886da49a34168891c5c53f5e2684be2e23f14728c13913d644311",
+  "git_delta": {
+    "base_commit": "18c5c5172c446df0a26d172f6a98ac879417b4e6",
+    "candidate_commit": "a5ac9a4c8ecd8600d6a37ec16f03e3cafd02c252",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_dqwe_bilinear_family_continuousAt",
+    "diff_sha256": "f569478dc7de17bb0d062b604294c67ece9e8247e0375eb14262143e9d78c1a4",
+    "source_sha256": "6148032a4205bead6009bab82bcc52ae632812d52569297ea895d3b0c3a504a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_dqwe_bilinear_family_continuousAt",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (A B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => a x P Q) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt A x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => a (s x) (A x) (B x)) x₀",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
