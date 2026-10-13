@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Splitting `∫_{φ(M)}` along a Borel decomposition of `M`.**  Let `Aᵢ ⊆ M` (`i ∈ ℕ`) be
+pairwise disjoint Borel sets with `Hⁿ(M \ ⋃ᵢ Aᵢ) = 0`, and let `φ : ℝᴾ → ℝᴾ` be injective and
+`Λ`-Lipschitz.  Then `∫_{φ(M)} g dHⁿ = Σᵢ ∫_{φ(Aᵢ)} g dHⁿ` for every `g : ℝᴾ → [0, ∞]`.  The
+`φ(Aᵢ)` are Borel (Lusin–Souslin) and pairwise disjoint, `⋃ᵢ φ(Aᵢ) ⊆ φ(M)`, and
+`φ(M) \ ⋃ᵢ φ(Aᵢ) ⊆ φ(M \ ⋃ᵢ Aᵢ)` has `Hⁿ`-measure `≤ Λⁿ · 0` (Simon Ch. 2, 1.8(i)). -/
+theorem Submission.dpf_raf_lintegral_image_eq_tsum_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (A : ℕ → Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n] (M \ ⋃ i, A i) = 0 → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∑' i, ∫⁻ y in φ '' A i, g y ∂μHE[n] := by
+  intro P n M A φ Λ hA hAM hdisj hnull hφ hinj g
+  -- each `φ(Aᵢ)` is Borel: `φ` is continuous and injective (Lusin–Souslin)
+  have hmeas : ∀ i, MeasurableSet (φ '' A i) := fun i =>
+    (hA i).image_of_continuousOn_injOn hφ.continuous.continuousOn hinj.injOn
+  -- the `φ(Aᵢ)` are pairwise disjoint, as `φ` is injective
+  have hdisj' : Pairwise (Disjoint on fun i => φ '' A i) := fun i j hij =>
+    (disjoint_image_iff hinj).mpr (hdisj hij)
+  -- `⋃ᵢ φ(Aᵢ) ⊆ φ(M)`
+  have hsub : (⋃ i, φ '' A i) ⊆ φ '' M := iUnion_subset fun i => image_mono (hAM i)
+  -- `φ(M) \ ⋃ᵢ φ(Aᵢ) ⊆ φ(M \ ⋃ᵢ Aᵢ)`, which is `Hⁿ`-null by the Lipschitz image bound
+  have hdiff : φ '' M \ ⋃ i, φ '' A i ⊆ φ '' (M \ ⋃ i, A i) := by
+    rintro y ⟨⟨x, hxM, rfl⟩, hy⟩
+    refine ⟨x, ⟨hxM, fun hx => hy ?_⟩, rfl⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+    exact mem_iUnion.mpr ⟨i, mem_image_of_mem φ hi⟩
+  have hnull' : μHE[n] (φ '' M \ ⋃ i, φ '' A i) = 0 := by
+    refine measure_mono_null hdiff (le_antisymm ?_ zero_le)
+    calc μHE[n] (φ '' (M \ ⋃ i, A i)) ≤ (Λ : ℝ≥0∞) ^ n * μHE[n] (M \ ⋃ i, A i) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            hφ.lipschitzOnWith
+      _ = 0 := by rw [hnull, mul_zero]
+  -- so `φ(M) = ⋃ᵢ φ(Aᵢ)` `Hⁿ`-a.e., and the integral is countably additive over the `φ(Aᵢ)`
+  have hae : φ '' M =ᵐ[μHE[n]] ⋃ i, φ '' A i :=
+    ae_eq_set.mpr ⟨hnull', by rw [sdiff_eq_empty.mpr hsub, measure_empty]⟩
+  rw [setLIntegral_congr hae, lintegral_iUnion hmeas hdisj' g]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

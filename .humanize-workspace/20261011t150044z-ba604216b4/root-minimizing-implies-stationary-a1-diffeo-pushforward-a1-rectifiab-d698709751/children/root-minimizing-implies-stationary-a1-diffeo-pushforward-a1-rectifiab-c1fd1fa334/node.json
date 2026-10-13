@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1.piece_area-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1",
+  "depth": 4,
+  "title": "Weighted area identity for φ on one injective Lipschitz piece with the Gram tangential Jacobian",
+  "statement": "Let P, n ∈ ℕ, E := ℝ^P, H^n := μHE[n], and λ := Lebesgue measure on ℝ^n. Let Q : E → {linear subspaces of E} be an arbitrary map. Let φ : E → E be differentiable and Λ-Lipschitz, and F : ℝ^n → E be L-Lipschitz. Let B ⊆ ℝ^n be Borel, with F injective on B and φ injective on F(B). Assume Q(F(b)) = range DF(b) for λ-a.e. b ∈ B. For x ∈ E let e = (e_a) be the standard orthonormal basis of Q(x) (stdOrthonormalBasis), and let J(x) := (det(Dφ(x)e_a · Dφ(x)e_b)_{a,b})^{1/2}. Then for every g : E → [0, ∞] (no measurability required), ∫⁻_{φ(F(B))} g dH^n = ∫⁻_{F(B)} J(x) g(φ(x)) dH^n(x).",
+  "lean_statement": "∀ (P n : ℕ) (Q : Euclid P → Submodule ℝ (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal) (F : Euclid n → Euclid P) (L : NNReal) (B : Set (Euclid n)), Differentiable ℝ φ → LipschitzWith Λ φ → LipschitzWith L F → MeasurableSet B → InjOn F B → InjOn φ (F '' B) → (∀ᵐ b ∂(volume.restrict B), Q (F b) = LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' (F '' B), g y ∂μHE[n] = ∫⁻ x in F '' B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (φ x) ∂μHE[n]",
+  "lean_name": "dpf_raf_piece_area_formula_gram",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-c1fd1fa334-a1"
+}
