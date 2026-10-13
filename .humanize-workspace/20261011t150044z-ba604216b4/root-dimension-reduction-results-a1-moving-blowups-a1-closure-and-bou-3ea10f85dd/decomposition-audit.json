@@ -1,0 +1,101 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dmcbr|cbrr_|ApproximateTangentCharacterization",
+        "def (CountablyRectifiable|HasApproximateTangentSpaceAt|blowUpMap)|theorem (countablyRectifiable|CountablyRectifiable|regular_euclideanHausdorffMeasure_restrict_submodule)",
+        "euclideanHausdorffMeasure_zero|euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_eq_volume",
+        "extend_pi|extend_real",
+        "_existing_lean_name_problem|_accepted_checkpoint|async def _solve_children|def _solve_children",
+        "git -C .lake/packages/mathlib diff --name-only HEAD -- '*.lean'",
+        "git -C .lake/packages/simongmt diff --name-only HEAD -- '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_rect_decomp_audit_jv6wcqrm/FreshContextChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_rect_decomp_audit_jv6wcqrm/uniform_density.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_rect_decomp_audit_jv6wcqrm/uniform_to_rectifiable.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-3ea10f85dd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-3ea10f85dd/decomposition-v1.json",
+        "/tmp/gmt_rect_decomp_audit_jv6wcqrm/FreshContextChecks.lean",
+        "/tmp/gmt_rect_decomp_audit_jv6wcqrm/records.json",
+        "/tmp/gmt_rect_decomp_audit_jv6wcqrm/uniform_density.lean",
+        "/tmp/gmt_rect_decomp_audit_jv6wcqrm/uniform_to_rectifiable.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected rectifiability theorem. The conditional assembly independently compiles with the exact parent conclusion. Dependencies are correctly directed and acyclic; no child depends on the parent or its twin. Every name is a bare identifier with exactly one comparator-accepted DAG match and a byte-identical frozen type. Candidate source hashes match their acceptance records, and their additions preserve the frozen definitions and imports. Fresh compilation of all ten candidate sources, exact-type checks, and transitive axiom checks passed; each declaration uses only propext, Classical.choice, and Quot.sound. All frozen types also elaborate independently as propositions without child declarations. Projection constructions resolve to continuous linear maps with operator norms. Project and dependency revisions match the pins; dependency Lean sources have no tracked modifications. The snapshot's Chapter 3 characterization is statement-only with a sorry main theorem, not a reusable proof. Supplemental mathematical cross-check: [Simon, Chapter 3, Theorem 1.6](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dim_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including absence of measurability assumptions. Arbitrarily large finite subsets contradict finite H⁰-measure; constant maps and countable union closure then prove the exact conclusion."
+    },
+    {
+      "key": "lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff, plane-measure normalization, tangent convergence, and substitution ρ = rA prove the stated eventual closed-ball bound. The proof correctly handles arbitrary M and the nonintegrable Bochner-integral case."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation invariance and positive homothety scaling establish the exact identity for arbitrary sets. Positivity of r justifies the inverse and norm conversions; no measurability hypothesis is missing."
+    },
+    {
+      "key": "cone_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit cutoff majorizes the cone indicator and has arbitrarily small plane integral. Finite Hⁿ(M) ensures blow-up integrability, and the declared scaling dependency yields the exact estimate. The t = ∞ case is covered."
+    },
+    {
+      "key": "lusin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Regularity of the finite restriction μ⌞A and summable compact approximations produce the required compact K. The countable-base argument proves continuity using exactly the stated codomain assumptions."
+    },
+    {
+      "key": "uniform_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel good-set selection, Lusin restriction, closed-ball upper semicontinuity, open-cone lower semicontinuity, and increasing closed sets establish every conclusion. The proof handles negative a and uses the three declared dependencies without circularity."
+    },
+    {
+      "key": "plane_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Projection norm bounds give total boundedness in the finite-dimensional operator space. A finite net with centers inside the projection set yields actual n-planes, including the vacuous N = 0 case."
+    },
+    {
+      "key": "cone_claim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The strict projection bounds justify the closed-ball inclusion. The density comparison forces a ≤ b·16ⁿ, contradicting the stated hypothesis. No unstated positivity assumption on b or δ is needed."
+    },
+    {
+      "key": "lipschitz_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Replacing C by max(C,0), taking the inverse projection chart, and extending coordinates proves the exact covering statement. The norm conversion is valid, including empty and zero-dimensional cases."
+    },
+    {
+      "key": "uniform_to_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The projection net and countable ball cover produce pieces satisfying cone_claim. Lipschitz_cover parametrizes each piece; countable unions and subset closure give precisely CountablyRectifiable n E. All dependency applications match their contracts."
+    }
+  ],
+  "required_changes": []
+}
