@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lemma 7.2.1: existence of a mass-minimizing integral filling",
+  "statement": "Let m, ℓ ≥ 0, P = m+2+ℓ, and S ∈ 𝒟_{m+1}(ℝ^P) integer multiplicity with spt S compact and ∂S = 0. Then there is an integer multiplicity T ∈ 𝒟_{m+2}(ℝ^P) with spt T compact, ∂T = S, and M(T) ≤ M(R) for every integer multiplicity R ∈ 𝒟_{m+2}(ℝ^P) with spt R compact and ∂R = S.",
+  "lean_statement": "ExistenceOfMinimizingFilling",
+  "lean_name": "existence_of_minimizing_filling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-a1"
+}

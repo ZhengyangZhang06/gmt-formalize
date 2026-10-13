@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_basis_invariance-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1",
+  "depth": 4,
+  "title": "Gram determinant of a linear map on a subspace is independent of the orthonormal basis",
+  "statement": "Let P, n ∈ ℕ, let Q be a linear subspace of ℝ^P (Q : Submodule ℝ (Euclid P)), let L : ℝ^P → ℝ^P be a continuous linear map, and let τ = (τ_1, …, τ_n) (indexed by Fin n) be an orthonormal family in ℝ^P with span{τ_1, …, τ_n} = Q. Let e = (e_1, …, e_m), m = finrank Q, be Mathlib's standard orthonormal basis of Q (stdOrthonormalBasis ℝ Q, indexed by Fin (finrank ℝ Q)), its vectors regarded in ℝ^P. Then det(⟨L e_i, L e_j⟩)_{i,j ∈ Fin m} = det(⟨L τ_a, L τ_b⟩)_{a,b ∈ Fin n}, where ⟨·,·⟩ is the Euclidean inner product. L need not be injective.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j))) = Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (L (τ i)) (L (τ j)))",
+  "lean_name": "dpf_det_gram_stdOrthonormalBasis_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-3f0e6c2b24-a1"
+}

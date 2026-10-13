@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 7.3.1: existence and upper semicontinuity of densities; existence of minimizing tangent cones",
+  "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-submanifold with (N̄∖N) ∩ U = ∅, and T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N. Then (1) there is Θ: ℝ^{n+k} → ℝ such that Θ^n(μ_T, x) = Θ(x) (limit of M_{B_ρ(x)}(T)/(ω_nρ^n) as ρ ↓ 0, with Θ(x) ≥ 0) for every x ∈ U ∖ spt ∂T, and Θ is upper semicontinuous on U ∖ spt ∂T; (2) for every x ∈ spt T ∖ spt ∂T and every sequence λ_j > 0, λ_j → 0, there are a subsequence λ_{j'} and an integer multiplicity C ∈ 𝒟_n(ℝ^{n+k}), minimizing in ℝ^{n+k}, with η_{x,λ_{j'}#}T ⇀ C in ℝ^{n+k}, μ_{η_{x,λ_{j'}#}T} → μ_C (for all representations), η_{0,λ#}C = C for all λ > 0, and Θ^n(μ_C, 0) = Θ^n(μ_T, x).",
+  "lean_statement": "DensityAndTangentCones",
+  "lean_name": "density_and_tangent_cones",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-a1"
+}

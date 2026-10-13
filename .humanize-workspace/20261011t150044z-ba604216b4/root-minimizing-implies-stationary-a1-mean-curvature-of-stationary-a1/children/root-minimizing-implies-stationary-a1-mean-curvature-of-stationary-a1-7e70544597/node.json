@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1.tangential_cutoff_field-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1",
+  "depth": 3,
+  "title": "Simon Ch. 4, 2.7: a C¹_c(U) field equal to pr·X near N (the tangential part X^T)",
+  "statement": "Let U and O be open subsets of ℝ^P, N ⊆ O with (closure(N) ∖ N) ∩ U = ∅, pr : ℝ^P → L(ℝ^P, ℝ^P) of class C¹ on O, and X : ℝ^P → ℝ^P of class C¹ with compact support and tsupport X ⊆ U. Then there is X^T : ℝ^P → ℝ^P of class C¹ with compact support and tsupport X^T ⊆ U such that, for every x ∈ N, X^T(y) = pr(y)(X(y)) for all y in some neighbourhood of x.",
+  "lean_statement": "∀ (P : ℕ) (U N O : Set (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X : Euclid P → Euclid P), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \\ N) ∩ U = ∅ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∃ XT : Euclid P → Euclid P, ContDiff ℝ 1 XT ∧ HasCompactSupport XT ∧ tsupport XT ⊆ U ∧ ∀ x ∈ N, XT =ᶠ[𝓝 x] (fun y => pr y (X y))",
+  "lean_name": "mcs_exists_c1_field_eq_proj_near",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1-7e70544597-a1"
+}

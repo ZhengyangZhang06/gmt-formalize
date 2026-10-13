@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1.first_variation_additive-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1",
+  "depth": 3,
+  "title": "Simon Ch. 4, 2.2: the first variation of v(M, θ) is additive on C¹_c(U; ℝ^P)",
+  "statement": "Let U ⊆ ℝ^P and let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n), and assume that x ↦ p_{T_xM}, the orthogonal projection onto approxTangentPlane n M x, is a.e. strongly measurable for H^n restricted to M. If X, Y : ℝ^P → ℝ^P are of class C¹ with compact supports and tsupport X, tsupport Y ⊆ U, then δV(X + Y) = δV(X) + δV(Y), where δV(Z) = R.firstVariation Z = ∫_M θ div_M Z dH^n.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (X Y : Euclid P → Euclid P), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ContDiff ℝ 1 Y → HasCompactSupport Y → tsupport Y ⊆ U → R.firstVariation (X + Y) = R.firstVariation X + R.firstVariation Y",
+  "lean_name": "mcs_firstVariation_add",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1-2d047d6430-a1"
+}
