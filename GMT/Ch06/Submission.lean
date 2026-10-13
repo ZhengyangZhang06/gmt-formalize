@@ -952,6 +952,94 @@ theorem Submission.iwl_cr_hp_injective_pieces : ∀ (P m : ℕ) (A : Set (Eucl P
     · exfalso
       obtain ⟨p, hp⟩ := mem_iUnion.1 hxG
       exact hxU (mem_iUnion.2 ⟨p, hxA, hp⟩)
+/-- Gram determinant of the cylinder lift `G̃(v) = (v₀, G(v₁, …, v_m))` (the Jacobian step of the
+Hausdorff product formula).  With `Λ(s, x) = (s, x)`, `pr₀ v = v₀` and `tl v = (v₁, …, v_m)`,
+the chain rule gives `DG̃(w) = Λ ∘ (pr₀, DG(b) ∘ tl)`; as `⟨Λ(s, x), Λ(s', x')⟩ = s s' + ⟨x, x'⟩`,
+the Gram matrix of `DG̃(w)` on the standard basis is `diag(1, Gram(DG(b)))`, and Laplace
+expansion along row `0` gives `det Gram(DG̃(w)) = det Gram(DG(b))`. -/
+theorem Submission.iwl_cr_hp_lift_gram_det : ∀ (P m : ℕ) (G : Eucl m → Eucl P) (Gt : Eucl (m + 1) → Eucl (P + 1)) (w : Eucl (m + 1)) (b : Eucl m), (∀ v : Eucl (m + 1), Gt v = (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons (EuclideanSpace.equiv (Fin (m + 1)) ℝ v 0) (EuclideanSpace.equiv (Fin P) ℝ (G ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ v))))))) → b = (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ w)) → DifferentiableAt ℝ G b → (Matrix.of fun i j : Fin (m + 1) => inner ℝ (fderiv ℝ Gt w (EuclideanSpace.single i 1)) (fderiv ℝ Gt w (EuclideanSpace.single j 1))).det = (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G b (EuclideanSpace.single i 1)) (fderiv ℝ G b (EuclideanSpace.single j 1))).det := by
+  intro P m G Gt w b hGt hb hd
+  -- the linear lift `Λ(s, x) = (s, x₁, …, x_P)` and the tail map, as continuous linear maps
+  let Λ : (ℝ × Eucl P) →L[ℝ] Eucl (P + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun q => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons q.1 (EuclideanSpace.equiv (Fin P) ℝ q.2))
+      map_add' := by
+        intro q q'
+        ext k
+        refine Fin.cases ?_ (fun j => ?_) k <;> simp
+      map_smul' := by
+        intro c q
+        ext k
+        refine Fin.cases ?_ (fun j => ?_) k <;> simp }
+  have hΛ : ∀ (s : ℝ) (x : Eucl P), Λ (s, x) = (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)) := fun s x => rfl
+  have hinnerΛ : ∀ (s s' : ℝ) (x x' : Eucl P),
+      inner ℝ (Λ (s, x)) (Λ (s', x')) = s * s' + inner ℝ x x' := by
+    intro s s' x x'
+    rw [hΛ, hΛ]
+    simp only [EuclideanSpace.inner_eq_star_dotProduct]
+    simp [dotProduct, Fin.sum_univ_succ, mul_comm]
+  let tl : Eucl (m + 1) →L[ℝ] Eucl m := LinearMap.toContinuousLinearMap
+    { toFun := fun v => (EuclideanSpace.equiv (Fin m) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ v))
+      map_add' := by intro v v'; ext k; simp [Fin.tail]
+      map_smul' := by intro c v; ext k; simp [Fin.tail] }
+  have htl : ∀ v : Eucl (m + 1), tl v = (EuclideanSpace.equiv (Fin m) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ v)) := fun v => rfl
+  set L := fderiv ℝ G b with hLdef
+  set pr0 : Eucl (m + 1) →L[ℝ] ℝ := EuclideanSpace.proj (0 : Fin (m + 1)) with hpr0
+  have hGt' : Gt = fun v => Λ (pr0 v, G (tl v)) := by
+    funext v; rw [hGt]; rfl
+  have hb' : tl w = b := by rw [hb]; rfl
+  -- the derivative of the lift
+  have hinner : HasFDerivAt (fun v => (pr0 v, G (tl v))) (pr0.prod (L.comp tl)) w := by
+    refine pr0.hasFDerivAt.prodMk ?_
+    have hG : HasFDerivAt G L (tl w) := by rw [hb']; exact hd.hasFDerivAt
+    exact hG.comp w tl.hasFDerivAt
+  have hD : fderiv ℝ Gt w = Λ.comp (pr0.prod (L.comp tl)) := by
+    rw [hGt']
+    exact (Λ.hasFDerivAt.comp w hinner).fderiv
+  rw [hD]
+  -- values on the standard basis
+  have hpr0_zero : pr0 (EuclideanSpace.single 0 1) = 1 := by simp [hpr0]
+  have hpr0_succ : ∀ j : Fin m, pr0 (EuclideanSpace.single j.succ 1) = 0 := by
+    intro j; simp [hpr0, Fin.succ_ne_zero]
+  have htl_zero : tl (EuclideanSpace.single 0 1) = 0 := by
+    ext k; simp [htl, Fin.tail, Fin.succ_ne_zero]
+  have htl_succ : ∀ j : Fin m, tl (EuclideanSpace.single j.succ 1) = EuclideanSpace.single j 1 := by
+    intro j; ext k
+    rw [htl]
+    by_cases hk : k = j
+    · subst hk; simp [Fin.tail]
+    · simp [Fin.tail, hk]
+  have hentry : ∀ i j : Fin (m + 1),
+      inner ℝ ((Λ.comp (pr0.prod (L.comp tl))) (EuclideanSpace.single i 1))
+        ((Λ.comp (pr0.prod (L.comp tl))) (EuclideanSpace.single j 1)) =
+      pr0 (EuclideanSpace.single i 1) * pr0 (EuclideanSpace.single j 1) +
+        inner ℝ (L (tl (EuclideanSpace.single i 1))) (L (tl (EuclideanSpace.single j 1))) := by
+    intro i j
+    simp only [ContinuousLinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.prod_apply]
+    exact hinnerΛ _ _ _ _
+  -- Laplace expansion along the first row of the block-diagonal Gram matrix
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+  have hrest : ∀ k : Fin m, (-1 : ℝ) ^ (k.succ : ℕ) *
+      (Matrix.of fun i j : Fin (m + 1) => inner ℝ ((Λ.comp (pr0.prod (L.comp tl)))
+        (EuclideanSpace.single i 1)) ((Λ.comp (pr0.prod (L.comp tl))) (EuclideanSpace.single j 1)))
+        0 k.succ *
+      ((Matrix.of fun i j : Fin (m + 1) => inner ℝ ((Λ.comp (pr0.prod (L.comp tl)))
+        (EuclideanSpace.single i 1)) ((Λ.comp (pr0.prod (L.comp tl))) (EuclideanSpace.single j 1)))
+        |>.submatrix Fin.succ k.succ.succAbove).det = 0 := by
+    intro k
+    rw [Matrix.of_apply, hentry, hpr0_zero, hpr0_succ, htl_zero, map_zero, inner_zero_left]
+    ring
+  rw [Finset.sum_eq_zero (fun k _ => hrest k), add_zero]
+  rw [Matrix.of_apply, hentry, hpr0_zero, htl_zero, map_zero, inner_zero_left, Fin.succAbove_zero]
+  simp only [pow_zero, Fin.val_zero, mul_one, add_zero, one_mul]
+  congr 1
+  ext i j
+  simp only [Matrix.submatrix_apply, Matrix.of_apply]
+  rw [hentry, hpr0_succ, hpr0_succ, htl_succ, htl_succ]
+  ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
