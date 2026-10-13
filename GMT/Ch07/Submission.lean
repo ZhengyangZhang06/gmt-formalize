@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Dilation invariance of the support of a cone** (preliminary (K) of the proof that a cone of
+constant density is planar).  If `C ∈ 𝒟ₙ(ℝᴾ)` is a cone and `t > 0`, then `t x ∈ spt C` for every
+`x ∈ spt C`.  By contraposition: if `t x` lies in an open `W` with compact closure on which `C`
+vanishes, then `x` lies in `W' = {y : t y ∈ W}`, which is open with closure inside the compact set
+`t⁻¹ W̄`, and `C` vanishes on `W'`: for `spt ω ⊆ W'` the cone identity gives
+`C(ω) = η_{0,t#}C(ω) = C(η_{0,t}^# ω)`, and `spt η_{0,t}^# ω ⊆ {z : t⁻¹ z ∈ spt ω} ⊆ W`.  The
+integer multiplicity hypothesis is not needed. -/
+theorem Submission.idtp_ccd_cone_support_smul : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity C → IsConeCurrent C → ∀ t : ℝ, 0 < t → ∀ x ∈ C.support, t • x ∈ C.support := by
+  intro P n C _ hC t ht x hx
+  -- `spt C = ℝᴾ \ zeroRegion C`, so it suffices that `t x ∈ zeroRegion C → x ∈ zeroRegion C`
+  simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_univ, true_and] at hx ⊢
+  intro htx
+  apply hx
+  obtain ⟨W, ⟨hWo, hWc, -, hWv⟩, htxW⟩ := mem_sUnion.1 htx
+  -- `x` lies in `W' = {y : t y ∈ W}`
+  refine mem_sUnion.2 ⟨(fun y => t • y) ⁻¹' W, ⟨?_, ?_, subset_univ _, ?_⟩, htxW⟩
+  · -- `W'` is open
+    exact hWo.preimage (continuous_const_smul t)
+  · -- `closure W'` is closed in the compact set `{y : t y ∈ closure W} = t⁻¹ closure W`
+    have hK : IsCompact ((fun y : Euclid P => t • y) ⁻¹' closure W) := by
+      rw [preimage_smul₀ ht.ne']
+      exact hWc.smul _
+    exact hK.of_isClosed_subset isClosed_closure
+      (closure_minimal (preimage_mono subset_closure)
+        (isClosed_closure.preimage (continuous_const_smul t)))
+  · -- `C` vanishes on `W'`: `C(ω) = η_{0,t#}C(ω) = C(η_{0,t}^# ω)`, as `η_{0,t}(ℝᴾ) = ℝᴾ`
+    intro ω hω
+    rw [← hC t ht ω]
+    have hdom : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+        tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation 0 t '' univ := by
+      refine ⟨ω.property.1, fun z _ => ⟨t • z, mem_univ _, ?_⟩⟩
+      simp [dilation, dilationCLM, ht.ne']
+    rw [currentEval, dite_eq_left hdom]
+    unfold blowUp
+    rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply]
+    apply hWv
+    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+    -- `z ∈ spt η_{0,t}^# ω` gives `t⁻¹ z ∈ spt ω ⊆ W'`, i.e. `z = t (t⁻¹ z) ∈ W`
+    refine (tsupport_affinePullbackForm_subset _ _ _).trans fun z hz => ?_
+    simpa [dilationCLM, ht.ne'] using hω hz
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
