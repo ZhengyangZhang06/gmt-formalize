@@ -451,6 +451,180 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Simon Ch. 5, proof of Theorem 5.2, (3)–(5) (p. 123: "(4) evidently implies that there is
+`S(ξ) = lim S_ℓ` such that (5)"), in a complete metric space: if `dist(v_j, v_{j+1})² ≤ a q^j` with
+`0 ≤ q ≤ 1/4`, then `v_j → w` and `dist(v_j, w)² ≤ 4 a q^j`.  With `h = √q ≤ 1/2` the consecutive
+distances are `≤ √a h^j`, so `(v_j)` is Cauchy and `dist(v_j, w) ≤ √a h^j / (1 − h) ≤ 2 √a h^j`. -/
+theorem Submission.dorag_ted_pl_geometric_limit : ∀ (X : Type) [MetricSpace X] [CompleteSpace X] (v : ℕ → X) (a q : ℝ), 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, dist (v j) (v (j + 1)) ^ 2 ≤ a * q ^ j) → ∃ w : X, Tendsto v atTop (𝓝 w) ∧ ∀ j : ℕ, dist (v j) w ^ 2 ≤ 4 * a * q ^ j := by
+  intro X _ _ v a q hq hq4 hv
+  -- Step 1: `a ≥ 0` (take `j = 0`)
+  have ha : 0 ≤ a := by
+    have hv0 := hv 0
+    rw [pow_zero, mul_one] at hv0
+    exact (sq_nonneg _).trans hv0
+  -- Step 2: `h = √q` has `0 ≤ h ≤ 1/2` and `(√a h^j)² = a q^j`
+  set h := Real.sqrt q
+  have h0 : 0 ≤ h := Real.sqrt_nonneg q
+  have h2 : h ^ 2 = q := Real.sq_sqrt hq
+  have hhalf : h ≤ 1 / 2 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num; linarith)
+  have h1 : h < 1 := by linarith
+  have hC : ∀ j : ℕ, 0 ≤ Real.sqrt a * h ^ j := fun j =>
+    mul_nonneg (Real.sqrt_nonneg a) (pow_nonneg h0 j)
+  have hCsq : ∀ j : ℕ, (Real.sqrt a * h ^ j) ^ 2 = a * q ^ j := fun j => by
+    rw [mul_pow, Real.sq_sqrt ha, ← pow_mul, mul_comm j 2, pow_mul, h2]
+  -- Step 3: `dist(v_j, v_{j+1}) ≤ √a h^j`
+  have hstep : ∀ j : ℕ, dist (v j) (v (j + 1)) ≤ Real.sqrt a * h ^ j := fun j => by
+    rw [← pow_le_pow_iff_left₀ dist_nonneg (hC j) two_ne_zero, hCsq j]
+    exact hv j
+  -- Step 4: `(v_j)` is Cauchy, so it converges in the complete space `X`
+  obtain ⟨w, hw⟩ :=
+    cauchySeq_tendsto_of_complete (cauchySeq_of_le_geometric h (Real.sqrt a) h1 hstep)
+  refine ⟨w, hw, fun j => ?_⟩
+  -- Step 5: `dist(v_j, w) ≤ √a h^j / (1 − h) ≤ 2 √a h^j`
+  have htail : dist (v j) w ≤ 2 * (Real.sqrt a * h ^ j) := by
+    refine (dist_le_of_le_geometric_of_tendsto h (Real.sqrt a) h1 hstep hw j).trans ?_
+    rw [div_le_iff₀ (by linarith)]
+    nlinarith [hC j]
+  -- Step 6: square
+  calc dist (v j) w ^ 2 ≤ (2 * (Real.sqrt a * h ^ j)) ^ 2 := pow_le_pow_left₀ dist_nonneg htail 2
+    _ = 4 * a * q ^ j := by rw [mul_pow, hCsq j]; ring
+/-- **Limits of orthogonal projections onto `n`-planes** (Simon Ch. 5, proof of Theorem 5.2:
+"(4) evidently implies that there is `S(ξ) (= lim S_ℓ)` such that (5)").  If every `S_j` is an
+`n`-dimensional subspace of `ℝᴾ` and `p_{S_j} eᵢ → wᵢ` for every standard basis vector `eᵢ`, then
+`wᵢ = p_{S'} eᵢ` for an `n`-dimensional subspace `S'`: the operator `L` with `L eᵢ = wᵢ` is the
+pointwise limit of the `p_{S_j}`, hence idempotent and self-adjoint, hence the orthogonal
+projection onto `S' = range L`, and `dim S' = trace p_{S'} = lim trace p_{S_j} = n`. -/
+theorem Submission.dorag_ted_pl_proj_limit_rank : ∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (w : Fin P → Euclid P), (∀ j, Module.finrank ℝ (S j) = n) → (∀ i : Fin P, Tendsto (fun j => (S j).starProjection (EuclideanSpace.single i (1 : ℝ))) atTop (𝓝 (w i))) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ i : Fin P, S'.starProjection (EuclideanSpace.single i (1 : ℝ)) = w i := by
+  intro P n S w hS hw
+  -- the standard orthonormal basis `eᵢ = EuclideanSpace.single i 1`
+  obtain ⟨b, hb⟩ : ∃ b : OrthonormalBasis (Fin P) ℝ (Euclid P),
+      ∀ i, b i = EuclideanSpace.single i (1 : ℝ) :=
+    ⟨EuclideanSpace.basisFun (Fin P) ℝ, EuclideanSpace.basisFun_apply (Fin P) ℝ⟩
+  -- Step 1: column expansion `A x = ∑ᵢ xᵢ • A eᵢ`
+  have hcol : ∀ (A : Euclid P →L[ℝ] Euclid P) (x : Euclid P),
+      A x = ∑ i, inner ℝ (b i) x • A (b i) := by
+    intro A x
+    conv_lhs => rw [← b.sum_repr' x]
+    simp only [map_sum, map_smul]
+  -- Step 2: the limit operator, `L eᵢ = wᵢ`
+  obtain ⟨L, hLb⟩ : ∃ L : Euclid P →L[ℝ] Euclid P, ∀ i, L (b i) = w i :=
+    ⟨LinearMap.toContinuousLinearMap (b.toBasis.constr ℝ w), fun i => by
+      rw [LinearMap.coe_toContinuousLinearMap', ← b.coe_toBasis, b.toBasis.constr_basis]⟩
+  -- Step 3: `p_{S_j} x → L x` for every `x`
+  have hconv : ∀ x, Tendsto (fun j => (S j).starProjection x) atTop (𝓝 (L x)) := by
+    intro x
+    have h1 : (fun j => (S j).starProjection x) =
+        fun j => ∑ i, inner ℝ (b i) x • (S j).starProjection (b i) :=
+      funext fun j => hcol _ x
+    rw [h1, hcol L x]
+    refine tendsto_finsetSum _ fun i _ => ?_
+    rw [hLb i, hb i]
+    exact (hw i).const_smul _
+  -- Step 4: `L` is idempotent
+  have hidem : ∀ x, L (L x) = L x := by
+    intro x
+    -- `p_{S_j} (p_{S_j} x) = p_{S_j} x → L x`
+    have h1 : Tendsto (fun j => (S j).starProjection ((S j).starProjection x)) atTop
+        (𝓝 (L x)) := by
+      have : (fun j => (S j).starProjection ((S j).starProjection x)) =
+          fun j => (S j).starProjection x :=
+        funext fun j => Submodule.starProjection_eq_self_iff.mpr
+          (Submodule.starProjection_apply_mem _ _)
+      rw [this]
+      exact hconv x
+    -- `p_{S_j} (p_{S_j} x) = p_{S_j} (p_{S_j} x - L x) + p_{S_j} (L x) → 0 + L (L x)`
+    have h2 : Tendsto (fun j => (S j).starProjection ((S j).starProjection x)) atTop
+        (𝓝 (L (L x))) := by
+      have hsplit : (fun j => (S j).starProjection ((S j).starProjection x)) =
+          fun j => (S j).starProjection ((S j).starProjection x - L x) +
+            (S j).starProjection (L x) :=
+        funext fun j => by rw [← map_add, sub_add_cancel]
+      rw [hsplit, ← zero_add (L (L x))]
+      refine Tendsto.add ?_ (hconv (L x))
+      have h0 : Tendsto (fun j => (S j).starProjection x - L x) atTop (𝓝 0) := by
+        simpa using (hconv x).sub_const (L x)
+      exact squeeze_zero_norm (fun j => Submodule.norm_starProjection_apply_le _ _)
+        (by simpa using h0.norm)
+    exact tendsto_nhds_unique h2 h1
+  -- Step 5: `L` is symmetric
+  have hsymm : ∀ x y, inner ℝ (L x) y = inner ℝ x (L y) := by
+    intro x y
+    have h1 : Tendsto (fun j => inner ℝ ((S j).starProjection x) y) atTop
+        (𝓝 (inner ℝ (L x) y)) := (hconv x).inner tendsto_const_nhds
+    have h2 : Tendsto (fun j => inner ℝ ((S j).starProjection x) y) atTop
+        (𝓝 (inner ℝ x (L y))) := by
+      simp_rw [Submodule.inner_starProjection_left_eq_right]
+      exact tendsto_const_nhds.inner (hconv y)
+    exact tendsto_nhds_unique h1 h2
+  -- Step 6: `L` is the orthogonal projection onto `S' := range L`
+  have hL : IsStarProjection L :=
+    ⟨ContinuousLinearMap.ext hidem, ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr hsymm⟩
+  obtain ⟨_, hLeq⟩ := isStarProjection_iff_eq_starProjection_range.mp hL
+  -- Steps 7–8: `dim K = trace p_K = ∑ᵢ ⟪eᵢ, p_K eᵢ⟫`
+  have htr : ∀ K : Submodule ℝ (Euclid P),
+      (Module.finrank ℝ K : ℝ) = ∑ i, inner ℝ (b i) (K.starProjection (b i)) := by
+    intro K
+    have hproj : LinearMap.IsProj K (K.starProjection : Euclid P →ₗ[ℝ] Euclid P) :=
+      ⟨fun x => K.starProjection_apply_mem x,
+        fun x hx => Submodule.starProjection_eq_self_iff.mpr hx⟩
+    rw [← hproj.trace, LinearMap.trace_eq_sum_inner _ b]
+    rfl
+  -- Step 9: `dim S' = lim_j dim S_j = n`
+  have hlim : Tendsto (fun j => ∑ i, inner ℝ (b i) ((S j).starProjection (b i))) atTop
+      (𝓝 (∑ i, inner ℝ (b i) (w i))) := by
+    refine tendsto_finsetSum _ fun i _ => ?_
+    rw [hb i]
+    exact tendsto_const_nhds.inner (hw i)
+  have hsum : ∑ i, inner ℝ (b i) (w i) = (n : ℝ) := by
+    refine tendsto_nhds_unique hlim ?_
+    have : (fun j => ∑ i, inner ℝ (b i) ((S j).starProjection (b i))) = fun _ => (n : ℝ) :=
+      funext fun j => by rw [← htr, hS j]
+    rw [this]
+    exact tendsto_const_nhds
+  refine ⟨LinearMap.range (L : Euclid P →ₗ[ℝ] Euclid P), ?_, fun i => ?_⟩
+  · have : (Module.finrank ℝ (LinearMap.range (L : Euclid P →ₗ[ℝ] Euclid P)) : ℝ) = n := by
+      rw [htr, ← hsum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← hLeq, hLb i]
+    exact_mod_cast this
+  · rw [← hb i, ← hLeq]
+    exact hLb i
+
+/-- **Limit of geometrically converging `n`-planes** (Simon Ch. 5, proof of Theorem 5.2, (4)–(5):
+"(4) evidently implies that there is `S(ξ)` (`= lim S_ℓ`) such that (5)").  With the squared
+Hilbert–Schmidt distance `d(A, B) = Σᵢ |A eᵢ − B eᵢ|²`, if `dim Sⱼ = n`, `0 ≤ q ≤ 1/4` and
+`d(p_{S_{j+1}}, p_{S_j}) ≤ a qʲ`, then some `n`-plane `S'` has `d(p_{S'}, p_{S_j}) ≤ 4 a qʲ`.
+The vectors `vⱼ = (p_{S_j} eᵢ)ᵢ` of the complete `ℓ²`-product `PiLp 2` satisfy
+`dist(vⱼ, vₖ)² = d(p_{S_j}, p_{S_k})`, so they converge to some `w` with `dist(vⱼ, w)² ≤ 4 a qʲ`;
+the columns `p_{S_j} eᵢ` then converge to `wᵢ`, and `wᵢ = p_{S'} eᵢ` for an `n`-plane `S'`. -/
+theorem Submission.dorag_ted_planes_limit : ∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (a q : ℝ), (∀ j, Module.finrank ℝ (S j) = n) → 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, ∑ i : Fin P, ‖(S (j + 1)).starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ a * q ^ j) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ j : ℕ, ∑ i : Fin P, ‖S'.starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * a * q ^ j := by
+  intro P n S a q hS hq0 hq1 hstep
+  -- the Hilbert–Schmidt vectors `vⱼ = (p_{S_j} eᵢ)ᵢ` in the complete `ℓ²`-product
+  let v : ℕ → PiLp 2 (fun _ : Fin P => Euclid P) := fun j =>
+    WithLp.toLp 2 fun i => (S j).starProjection (EuclideanSpace.single i (1 : ℝ))
+  -- `dist(u, u')² = Σᵢ |uᵢ − u'ᵢ|²`
+  have hdist : ∀ u u' : PiLp 2 (fun _ : Fin P => Euclid P),
+      dist u u' ^ 2 = ∑ i : Fin P, ‖u i - u' i‖ ^ 2 := fun u u' => by
+    rw [PiLp.dist_sq_eq_of_L2]
+    simp only [dist_eq_norm]
+  -- `vⱼ → w` with `dist(vⱼ, w)² ≤ 4 a qʲ`, since `dist(vⱼ, vⱼ₊₁)² = d(p_{S_{j+1}}, p_{S_j})`
+  obtain ⟨w, hw, hvw⟩ := Submission.dorag_ted_pl_geometric_limit
+    (PiLp 2 (fun _ : Fin P => Euclid P)) v a q hq0 hq1 fun j => by
+      rw [dist_comm, hdist]
+      exact hstep j
+  -- the columns converge, `p_{S_j} eᵢ → wᵢ`, so `wᵢ = p_{S'} eᵢ` for an `n`-plane `S'`
+  obtain ⟨S', hS', hS'w⟩ := Submission.dorag_ted_pl_proj_limit_rank P n S (fun i => w i) hS
+    fun i => ((PiLp.continuous_apply 2 _ i).tendsto w).comp hw
+  refine ⟨S', hS', fun j => ?_⟩
+  -- `d(p_{S'}, p_{S_j}) = dist(vⱼ, w)²`
+  calc ∑ i : Fin P, ‖S'.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+      = dist (v j) w ^ 2 := by
+        rw [dist_comm, hdist]
+        simp only [hS'w]
+        rfl
+    _ ≤ 4 * a * q ^ j := hvw j
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
