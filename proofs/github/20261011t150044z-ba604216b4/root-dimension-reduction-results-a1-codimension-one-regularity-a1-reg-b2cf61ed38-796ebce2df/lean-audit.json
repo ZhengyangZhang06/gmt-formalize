@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "42ac9bdcb138fc37be34228feada0833bf8abd5f6e46e1113bc1ea54cba8b749",
+  "git_delta": {
+    "base_commit": "d083876a42435528d651262f9c9279218cccba0a",
+    "candidate_commit": "b931df8dafdf91078f4f459936c8e9d932cd233d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_vdl_gauss_green_compl",
+    "diff_sha256": "0085aa7de96e2b6c554dfcd7c6bfc7b5b27fc0ffab9289738fdd2dda9fa29a25",
+    "source_sha256": "5e2daccb1cfb3c7f39ab47af940f5d004704e8d6178cb0b67352ea6ee0b5958d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_vdl_gauss_green_compl",
+      "statement": "∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P), MeasurableSet F → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in Fᶜ, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (-ν z) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
