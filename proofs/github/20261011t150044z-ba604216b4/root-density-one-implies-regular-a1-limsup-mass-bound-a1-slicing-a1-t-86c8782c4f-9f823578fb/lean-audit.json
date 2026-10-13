@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea1021b060b3cefaf60b3df95dc056cae9e62cc2d5f4299a579501bf78a32666",
+  "git_delta": {
+    "base_commit": "493b306258d7f91ada7584746aea2da4928ba203",
+    "candidate_commit": "a4b8679722f69d8b788059fe56f8bfa7a043b571",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbs_tfa_compact_exhaustion",
+    "diff_sha256": "a607d4748f7e69646854a4bb3a8cec82e07a3f46120b1b19510a6e0f484c3a4d",
+    "source_sha256": "1be3ee6fd848f4611e937a3ba390113efc6b3ada741ca8fd5b5cf28b1fd7d154",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbs_tfa_compact_exhaustion",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ K : ℕ → Set (Euclid P), (∀ i, IsCompact (K i)) ∧ (∀ i, K i ⊆ U) ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → ∃ i, C ⊆ K i",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
