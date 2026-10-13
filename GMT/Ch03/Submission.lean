@@ -4317,6 +4317,136 @@ theorem Submission.deGiorgi_halfSpace_rigidity : ∀ (N : ℕ) (G : Set (Rn N)) 
   · exact ⟨fun hxS ↦ absurd hxS (hA x hxZ hlt), fun h ↦ absurd h (not_lt.2 hlt.le)⟩
   · exact ⟨fun _ ↦ hgt, fun _ ↦ hB x hxZ hgt⟩
 
+/-- **The blow-ups `η_{x,r}(E)` converge to the half-space** (Simon Ch. 3, Theorem 4.3 (‡‡) and
+its proof, `chapter-03.txt` lines 653–739, with (9) and the last display read as
+`{x^{n+1} > λ}`, `{x^{n+1} > 0}`): for a Gauss–Green pair `(μ, ν)` of `(U, E)` and `x ∈ ∂*E`,
+`η_{x,r}(E) → H = {y : y · ν_E(x) > 0}` in `L¹_loc(ℝ^{n+1})` as `r ↓ 0`. By the density estimates
+and the blow-up identity, on `B_R(0)` the blow-ups have perimeter `≤ C Rⁿ`, satisfy
+`∫ D_v ζ → 0` for `v ⊥ ν_E(x)` and `∫ D_{ν_E(x)} ζ ≤ o(1)` for `ζ ≥ 0`, and they and their
+complements have volume `≥ c R^{n+1}`. So every sequence `r_k ↓ 0` has a subsequence along which
+they converge in `L¹_loc` (compactness), the limit inherits these properties and is `H` up to a
+null set (half-space rigidity), and hence the whole family converges. -/
+theorem Submission.deGiorgi_blowUp_tendsto_halfSpace : ∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, ∀ K : Set (Rn (n + 1)), IsCompact K → Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E) {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0) := by
+  intro n U E μ ν hU hE hGG x hx K hK
+  -- Step 0: `e = ν_E(x)` is the limit of the normal averages, so it is a unit vector.
+  have he : ‖reducedNormal μ ν x‖ = 1 := by
+    obtain ⟨-, v, hv, hv1⟩ := hx
+    rw [reducedNormal, hv.limUnder_eq]
+    exact hv1
+  set e := reducedNormal μ ν x
+  -- Step 1: `ρ₁` with `B_{ρ₁}(x) ⊆ U`, `μ(B_ρ(x)) ≤ C ρⁿ` and
+  -- `L(E ∩ B_ρ(x)), L(B_ρ(x) ∖ E) ≥ c ρ^{n+1}` for `ρ < ρ₁`, and `ρ⁻ⁿ ∫_{B_ρ(x)} |ν - e| dμ → 0`.
+  obtain ⟨ρ₁, hρ₁, hballU, C, c, hc, hbounds, hexc⟩ :=
+    Submission.deGiorgi_density_estimates n U E μ ν hU hE hGG x hx
+  -- Step 2: the blow-up identity for `tsupport g ⊆ B_R(0)` and `r R < ρ₁`; here
+  -- `B_R(0) ∖ η_{x,r}(U) = η_{x,r}(B_{rR}(x) ∖ U) = ∅`.
+  have hId : ∀ r R : ℝ, 0 < r → 0 < R → r * R < ρ₁ → ∀ g : Rn (n + 1) → Rn (n + 1),
+      ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R →
+      ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z =
+        -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ) := by
+    intro r R hr _ hrR g hg hgc hgs
+    refine Submission.deGiorgi_blowUp_gaussGreen_identity n U E μ ν x r hU hE hGG hr g hg hgc
+      (hgs.trans ?_)
+    have h := (((Submission.deGiorgiHS_blowUpMap_image_volume (n + 1) x r U).2 hr).2 R).2
+    rw [sdiff_eq_empty.2 ((Metric.ball_subset_ball hrR.le).trans hballU), image_empty,
+      sdiff_eq_empty] at h
+    exact h
+  have hfin : ∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) < ∞ := fun ρ hρ ↦
+    (hbounds ρ hρ).1.trans_lt ENNReal.ofReal_lt_top
+  -- Step 2(a): `∫_{η_{x,r}(E)} div g ≤ max C 0 Rⁿ` for `|g| ≤ 1`, `tsupport g ⊆ B_R(0)`.
+  have hdiv := Submission.deGiorgiHS_blowUp_divergence_bound (n + 1) n E μ ν x ρ₁ C hGG.2.2.2.1
+    (fun ρ hρ ↦ (hbounds ρ hρ).1) hId
+  -- Step 2(b): `∫_{η_{x,r}(E)} D_v ζ → 0` for `v ⊥ e`, and `∫_{η_{x,r}(E)} D_e ζ ≤ o(1)` for
+  -- `ζ ≥ 0`.
+  obtain ⟨hHor, hVert⟩ := Submission.deGiorgiHS_blowUp_directional_limits (n + 1) n E μ ν x e ρ₁
+    hGG.2.2.1 hGG.2.2.2.1 he hρ₁ hfin hexc hId
+  -- For fixed `R > 0`, eventually `0 < r < ρ₁ / R` as `r ↓ 0`.
+  have hwin : ∀ R : ℝ, 0 < R → ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < r ∧ r * R < ρ₁ := by
+    intro R hR
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hρ₁ hR)] with r hr
+    exact ⟨hr.1, (lt_div_iff₀ hR).1 hr.2⟩
+  -- Step 6: it suffices that every sequence `r_k → 0⁺` has a subsequence along which the
+  -- measures tend to `0`.
+  apply tendsto_of_subseq_tendsto
+  intro rs hrs
+  set F : ℕ → Set (Rn (n + 1)) := fun k ↦ blowUpMap x (rs k) '' E
+  have hFm : ∀ k, NullMeasurableSet (F k) volume := fun k ↦
+    (Submission.deGiorgiHS_blowUpMap_image_volume (n + 1) x (rs k) E).1 hE
+  -- Step 3: by Step 2(a) and compactness, `F (φ k) → G` in `L¹_loc` for some `φ` and `G`.
+  have hbd : ∀ R : ℝ, 0 < R → ∃ C' : ℝ, ∀ᶠ k in atTop, ∀ g : Rn (n + 1) → Rn (n + 1),
+      ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R →
+      (∀ y, ‖g y‖ ≤ 1) →
+      ∫ y in F k, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C' := by
+    intro R hR
+    refine ⟨max C 0 * R ^ n, ?_⟩
+    filter_upwards [hrs.eventually (hwin R hR)] with k hk
+    exact hdiv (rs k) R hk.1 hR hk.2
+  obtain ⟨φ, hφ, G, hGm, hconv⟩ := Submission.deGiorgi_indicator_compactness (n + 1) F hFm hbd
+  have hrsφ : Tendsto (fun k ↦ rs (φ k)) atTop (𝓝[>] 0) := hrs.comp hφ.tendsto_atTop
+  obtain ⟨hint, hvol⟩ := Submission.deGiorgiHS_L1loc_limit_transfer (n + 1) (fun k ↦ F (φ k)) G
+    (fun k ↦ hFm (φ k)) hGm.nullMeasurableSet hconv
+  -- Step 4 (H): `∫_G D_v ζ = lim_k ∫_{F (φ k)} D_v ζ = 0` for `v ⊥ e`.
+  have hH : ∀ (ζ : Rn (n + 1) → ℝ) (v : Rn (n + 1)), ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      inner ℝ v e = 0 → ∫ y in G, fderiv ℝ ζ y v = 0 := by
+    intro ζ v hζ hζc hv
+    exact tendsto_nhds_unique (hint _ ((hζ.continuous_fderiv one_ne_zero).clm_apply
+      continuous_const) (hζc.fderiv_apply ℝ v)) ((hHor ζ v hζ hζc hv).comp hrsφ)
+  -- Step 4 (M): `∫_G D_e ζ = lim_k ∫_{F (φ k)} D_e ζ ≤ δ` for every `δ > 0`, when `ζ ≥ 0`.
+  have hM : ∀ ζ : Rn (n + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) →
+      ∫ y in G, fderiv ℝ ζ y e ≤ 0 := by
+    intro ζ hζ hζc hζ0
+    refine le_of_forall_pos_le_add fun δ hδ ↦ ?_
+    rw [zero_add]
+    exact le_of_tendsto (hint _ ((hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const)
+      (hζc.fderiv_apply ℝ e)) (hrsφ.eventually (hVert ζ hζ hζc hζ0 δ hδ))
+  -- Step 4 (P): `L(G ∩ B_R(0)), L(B_R(0) ∖ G) ≥ c R^{n+1} > 0`, as limits of the same quantities
+  -- for `F (φ k)`.
+  have hP : ∀ R : ℝ, 0 < R →
+      0 < volume (G ∩ Metric.ball 0 R) ∧ 0 < volume (Metric.ball 0 R \ G) := by
+    intro R hR
+    obtain ⟨h1, h2⟩ := hvol (Metric.ball 0 R) Metric.isBounded_ball
+    have hpos : 0 < ENNReal.ofReal (c * R ^ (n + 1)) :=
+      ENNReal.ofReal_pos.2 (mul_pos hc (pow_pos hR _))
+    have hev : ∀ᶠ k in atTop,
+        ENNReal.ofReal (c * R ^ (n + 1)) ≤ volume (F (φ k) ∩ Metric.ball 0 R) ∧
+        ENNReal.ofReal (c * R ^ (n + 1)) ≤ volume (Metric.ball 0 R \ F (φ k)) := by
+      filter_upwards [hrsφ.eventually (hwin R hR)] with k hk
+      obtain ⟨hr, hrR⟩ := hk
+      obtain ⟨-, hlow1, hlow2⟩ := hbounds _ ⟨mul_pos hr hR, hrR⟩
+      obtain ⟨hs1, hs2⟩ :=
+        ((Submission.deGiorgiHS_blowUpMap_image_volume (n + 1) x (rs (φ k)) E).2 hr).2 R
+      -- Step 2(c): `L(η_{x,r}(A)) = r^{-(n+1)} L(A) ≥ c R^{n+1}` when `L(A) ≥ c (rR)^{n+1}`.
+      have key : ∀ A : Set (Rn (n + 1)),
+          ENNReal.ofReal (c * (rs (φ k) * R) ^ (n + 1)) ≤ volume A →
+          ENNReal.ofReal (c * R ^ (n + 1)) ≤ volume (blowUpMap x (rs (φ k)) '' A) := by
+        intro A hA
+        rw [((Submission.deGiorgiHS_blowUpMap_image_volume (n + 1) x (rs (φ k)) A).2 hr).1]
+        calc ENNReal.ofReal (c * R ^ (n + 1))
+            = ENNReal.ofReal ((rs (φ k) ^ (n + 1))⁻¹) *
+                ENNReal.ofReal (c * (rs (φ k) * R) ^ (n + 1)) := by
+              rw [← ENNReal.ofReal_mul (inv_nonneg.2 (pow_nonneg hr.le _))]
+              congr 1
+              rw [mul_pow]
+              field_simp
+          _ ≤ _ := by gcongr
+      exact ⟨hs1 ▸ key _ hlow1, hs2 ▸ key _ hlow2⟩
+    exact ⟨hpos.trans_le (ge_of_tendsto h1 (hev.mono fun k hk ↦ hk.1)),
+      hpos.trans_le (ge_of_tendsto h2 (hev.mono fun k hk ↦ hk.2))⟩
+  -- Step 5: by rigidity `L(G Δ H) = 0`, so `L(K ∩ (F (φ k) Δ H)) ≤ L(K ∩ (F (φ k) Δ G)) → 0`.
+  have hGH : volume (symmDiff G {y | 0 < inner ℝ y e}) = 0 :=
+    Submission.deGiorgi_halfSpace_rigidity (n + 1) G e hGm.nullMeasurableSet he hH hM hP
+  refine ⟨φ, tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hconv K hK)
+    (fun _ ↦ zero_le) fun k ↦ ?_⟩
+  calc volume (K ∩ symmDiff (blowUpMap x (rs (φ k)) '' E) {y | 0 < inner ℝ y e})
+      ≤ volume ((K ∩ symmDiff (F (φ k)) G) ∪ symmDiff G {y | 0 < inner ℝ y e}) := by
+        refine measure_mono fun y hy ↦ ?_
+        rcases symmDiff_triangle (F (φ k)) G {y | 0 < inner ℝ y e} hy.2 with h | h
+        · exact Or.inl ⟨hy.1, h⟩
+        · exact Or.inr h
+    _ ≤ volume (K ∩ symmDiff (F (φ k)) G) + volume (symmDiff G {y | 0 < inner ℝ y e}) :=
+        measure_union_le _ _
+    _ = volume (K ∩ symmDiff (F (φ k)) G) := by rw [hGH, add_zero]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
