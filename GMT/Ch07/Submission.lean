@@ -2219,6 +2219,24 @@ theorem Submission.dor_lmb_approx_tangent_locality : ∀ (P n : ℕ) (U A B : Se
   exact Submission.regcomp_atl_tangent_iff_of_density_zero P n A B x (ε / 2) hA hB hAB
     (half_pos hε) (hfin _ (isCompact_closedBall x (ε / 2)) hsub) (hx hxU fun h => h.2 hxA)
 
+/-- **Simon Ch. 6, Remark 3.2(1)**, with a mass bound (chapter-06.txt lines 755–757): if
+`T₁ = τ(M₁, θ₁, ξ₁)` and `T₂ = τ(M₂, θ₂, ξ₂)` in the open set `U` and `S = p₁T₁ + p₂T₂` with
+`p₁, p₂ ∈ ℤ`, then `S = τ(M, θ, ξ)` for an integer multiplicity triple `R = (M, θ, ξ)` in `U` with
+`μ_R ≤ |p₁| μ_{R₁} + |p₂| μ_{R₂}`.  Tangent locality and the sign of the orientations on
+`M₁ ∩ M₂` give `R` with `1_M θ ξ = p₁ 1_{M₁} θ₁ ξ₁ + p₂ 1_{M₂} θ₂ ξ₂` `Hⁿ`-a.e.  Integrating this
+identity against `ω ∈ 𝒟ⁿ(U)` gives `τ(R)(ω) = p₁T₁(ω) + p₂T₂(ω) = S(ω)`.  Evaluating it at a
+covector norming `ξ` gives `θ 1_M ≤ |p₁| θ₁ 1_{M₁} + |p₂| θ₂ 1_{M₂}` a.e., hence the mass bound. -/
+theorem Submission.dor_lmb_int_combination_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ S : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n) (p₁ p₂ : ℤ), IsOpen U → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn U n, S ω = (p₁ : ℝ) * T₁ ω + (p₂ : ℝ) * T₂ ω) → ∃ R : IMRep U n, R.Represents S ∧ R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure := by
+  intro P n U T₁ T₂ S R₁ R₂ p₁ p₂ hU h₁ h₂ hS
+  -- Steps 2–6: an IMRep `R = (M, θ, ξ)` in `U` with
+  -- `1_M θ ξ = p₁ 1_{M₁} θ₁ ξ₁ + p₂ 1_{M₂} θ₂ ξ₂` `Hⁿ`-a.e. (the identity (†) of step 5)
+  obtain ⟨R, hR⟩ := Submission.rsdic_exists_imrep_int_combination P n U R₁ R₂ p₁ p₂ hU
+  -- Steps 5 and 8: (†) bounds `θ 1_M` a.e., so `μ_R ≤ |p₁| μ_{R₁} + |p₂| μ_{R₂}`
+  refine ⟨R, fun ω => ?_,
+    Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq P n U R₁ R₂ R p₁ p₂ hR⟩
+  -- Step 7: integrating (†) against `ω` gives `τ(R)(ω) = p₁T₁(ω) + p₂T₂(ω) = S(ω)`
+  rw [hS ω, h₁ ω, h₂ ω, Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R p₁ p₂ hR ω]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
