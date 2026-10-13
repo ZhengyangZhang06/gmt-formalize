@@ -451,6 +451,177 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cube averages under a translation estimate** (Kolmogorov–Riesz averaging step): if
+`Lᵐ(((F − h) Δ F) ∩ B_R(0)) ≤ C|h|` for `|h| ≤ 1`, then `1_F` is `KCδ`-close in `L¹(B_R(0))` to its
+averages over the grid cubes `Q_δ(v)` of side `δ`, `δ√m ≤ 1`.  `Q_δ(v)` is a box of volume `δᵐ`
+inside `B̄_{√m δ}(v)`, so `|1_F(v) − a(v)| ≤ δ⁻ᵐ ∫_{|h| ≤ √m δ} |1_F(v) − 1_F(v + h)| dh`; Tonelli
+over `v ∈ B_R(0)` and `Lᵐ(B̄_{√m δ}(0)) = (√m δ)ᵐ Lᵐ(B₁(0))` give `K = (√m)^{m+1} Lᵐ(B₁(0))`. -/
+theorem Submission.codim1_zsl_pc_cube_average_bound : ∀ (m : ℕ), ∃ K : ℝ, 0 ≤ K ∧ ∀ (F : Set (Euclid m)) (R C δ : ℝ), MeasurableSet F → 0 ≤ C → 0 < δ → δ * Real.sqrt m ≤ 1 → (∀ h : Euclid m, ‖h‖ ≤ 1 → volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal (C * ‖h‖)) → ∫⁻ v in ball (0 : Euclid m) R, ‖F.indicator (fun _ => (1 : ℝ)) v - (volume (F ∩ {w : Euclid m | ∀ j, ⌊w j / δ⌋ = ⌊v j / δ⌋})).toReal / δ ^ m‖ₑ ≤ ENNReal.ofReal (K * C * δ) := by
+  intro m
+  refine ⟨Real.sqrt m ^ (m + 1) * (volume (ball (0 : Euclid m) 1)).toReal, by positivity, ?_⟩
+  intro F R C δ hF hC hδ hδm hsd
+  have hu_meas : Measurable (F.indicator (fun _ => (1 : ℝ))) := measurable_const.indicator hF
+  have hs0 : 0 ≤ Real.sqrt m * δ := by positivity
+  have hs1 : Real.sqrt m * δ ≤ 1 := by rw [mul_comm]; exact hδm
+  have hδm0 : 0 < δ ^ m := pow_pos hδ m
+  -- Step 1: the cube `Q v` is (the preimage of) a half-open box of side `δ`
+  have hQbox : ∀ v : Euclid m, {w : Euclid m | ∀ j, ⌊w j / δ⌋ = ⌊v j / δ⌋} =
+      (WithLp.ofLp : Euclid m → (Fin m → ℝ)) ⁻¹'
+        (Set.pi univ fun j => Ico ((⌊v j / δ⌋ : ℝ) * δ) (((⌊v j / δ⌋ : ℝ) + 1) * δ)) := by
+    intro v
+    ext w
+    simp only [Set.mem_ofPred_eq, mem_preimage, Set.mem_pi, mem_univ, true_implies, mem_Ico]
+    refine forall_congr' fun j => ?_
+    rw [Int.floor_eq_iff, le_div_iff₀ hδ, div_lt_iff₀ hδ]
+  have hbox_meas : ∀ v : Euclid m,
+      MeasurableSet (Set.pi univ fun j => Ico ((⌊v j / δ⌋ : ℝ) * δ) (((⌊v j / δ⌋ : ℝ) + 1) * δ)) :=
+    fun v => MeasurableSet.univ_pi fun j => measurableSet_Ico
+  have hQvol : ∀ v : Euclid m,
+      volume {w : Euclid m | ∀ j, ⌊w j / δ⌋ = ⌊v j / δ⌋} = ENNReal.ofReal (δ ^ m) := by
+    intro v
+    rw [hQbox v, (PiLp.volume_preserving_ofLp (Fin m)).measure_preimage
+      (hbox_meas v).nullMeasurableSet, Real.volume_pi_Ico]
+    have : ∀ j : Fin m, ((⌊v j / δ⌋ : ℝ) + 1) * δ - (⌊v j / δ⌋ : ℝ) * δ = δ := fun j => by ring
+    simp only [this, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
+      ENNReal.ofReal_pow hδ.le]
+  -- Step 2: the cube lies in the closed ball of radius `√m δ` about `v`
+  have hQball : ∀ v : Euclid m,
+      {w : Euclid m | ∀ j, ⌊w j / δ⌋ = ⌊v j / δ⌋} ⊆ closedBall v (Real.sqrt m * δ) := by
+    intro v w hw
+    rw [hQbox v] at hw
+    simp only [mem_preimage, Set.mem_pi, mem_univ, true_implies, mem_Ico] at hw
+    rw [mem_closedBall, EuclideanSpace.dist_eq]
+    have hcoord : ∀ j, dist (w j) (v j) ^ 2 ≤ δ ^ 2 := by
+      intro j
+      have hwj := hw j
+      have h1 := Int.floor_le (v j / δ)
+      have h2 := Int.lt_floor_add_one (v j / δ)
+      rw [le_div_iff₀ hδ] at h1
+      rw [div_lt_iff₀ hδ] at h2
+      have hab : |w j - v j| ≤ δ := by
+        rw [abs_le]; constructor <;> nlinarith [hwj.1, hwj.2]
+      rw [Real.dist_eq]
+      exact pow_le_pow_left₀ (abs_nonneg _) hab 2
+    calc Real.sqrt (∑ j, dist (w j) (v j) ^ 2) ≤ Real.sqrt (∑ _j : Fin m, δ ^ 2) :=
+          Real.sqrt_le_sqrt (Finset.sum_le_sum fun j _ => hcoord j)
+      _ = Real.sqrt m * δ := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+          Real.sqrt_mul (Nat.cast_nonneg m), Real.sqrt_sq hδ.le]
+  -- Step 3: pointwise bound by an average of differences over the closed ball
+  have hpt : ∀ (v : Euclid m) (Q : Set (Euclid m)), volume Q = ENNReal.ofReal (δ ^ m) →
+      Q ⊆ closedBall v (Real.sqrt m * δ) →
+      ‖F.indicator (fun _ => (1 : ℝ)) v - (volume (F ∩ Q)).toReal / δ ^ m‖ₑ ≤
+        ENNReal.ofReal ((δ ^ m)⁻¹) * ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+          ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ := by
+    intro v Q hQv hQb
+    have hQfin : volume Q ≠ ∞ := by rw [hQv]; exact ENNReal.ofReal_ne_top
+    have : IsFiniteMeasure (volume.restrict Q) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact hQfin.lt_top⟩
+    have hint_c : Integrable (fun _ : Euclid m => F.indicator (fun _ => (1 : ℝ)) v)
+        (volume.restrict Q) := integrable_const _
+    have hint_u : Integrable (F.indicator (fun _ => (1 : ℝ))) (volume.restrict Q) :=
+      (integrable_const (1 : ℝ)).indicator hF
+    have h1 : ∫ w in Q, F.indicator (fun _ => (1 : ℝ)) w = (volume (F ∩ Q)).toReal := by
+      rw [integral_indicator_const (1 : ℝ) hF, smul_eq_mul, mul_one,
+        measureReal_restrict_apply hF, measureReal_def]
+    have h2 : F.indicator (fun _ => (1 : ℝ)) v - (volume (F ∩ Q)).toReal / δ ^ m =
+        (δ ^ m)⁻¹ * ∫ w in Q, (F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) w) := by
+      rw [integral_sub hint_c hint_u, setIntegral_const, h1, measureReal_def, hQv,
+        ENNReal.toReal_ofReal hδm0.le, smul_eq_mul, mul_sub, ← mul_assoc,
+        inv_mul_cancel₀ hδm0.ne', one_mul, div_eq_inv_mul]
+    have h3 : ‖F.indicator (fun _ => (1 : ℝ)) v - (volume (F ∩ Q)).toReal / δ ^ m‖ₑ ≤
+        ENNReal.ofReal ((δ ^ m)⁻¹) *
+          ∫⁻ w in Q, ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) w‖ₑ := by
+      rw [h2, enorm_mul, Real.enorm_eq_ofReal (inv_nonneg.2 hδm0.le)]
+      exact mul_le_mul' le_rfl (enorm_integral_le_lintegral_enorm _)
+    have h4 : ∫⁻ w in Q, ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) w‖ₑ ≤
+        ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+          ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ := by
+      calc ∫⁻ w in Q, ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) w‖ₑ
+          ≤ ∫⁻ w in closedBall v (Real.sqrt m * δ),
+              ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) w‖ₑ :=
+            lintegral_mono_set hQb
+        _ = ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+              ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ := by
+          rw [← lintegral_indicator measurableSet_closedBall,
+            ← lintegral_indicator measurableSet_closedBall,
+            ← lintegral_add_left_eq_self ((closedBall v (Real.sqrt m * δ)).indicator fun w =>
+              ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) w‖ₑ) v]
+          refine lintegral_congr fun h => ?_
+          have hmem : v + h ∈ closedBall v (Real.sqrt m * δ) ↔
+              h ∈ closedBall (0 : Euclid m) (Real.sqrt m * δ) := by
+            rw [mem_closedBall, mem_closedBall, dist_eq_norm, dist_eq_norm, add_sub_cancel_left,
+              sub_zero]
+          by_cases hh : h ∈ closedBall (0 : Euclid m) (Real.sqrt m * δ)
+          · rw [indicator_of_mem (hmem.2 hh), indicator_of_mem hh]
+          · rw [indicator_of_notMem (mt hmem.1 hh), indicator_of_notMem hh]
+    exact h3.trans (mul_le_mul' le_rfl h4)
+  -- Step 4: integrate, swap the order of integration, and use the hypothesis
+  have hind : ∀ v h : Euclid m,
+      ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ =
+        (symmDiff ((fun v => v + h) ⁻¹' F) F).indicator 1 v := by
+    intro v h
+    by_cases h1 : v ∈ F <;> by_cases h2 : v + h ∈ F <;>
+      simp [h1, h2, Set.mem_symmDiff]
+  have hinner : ∀ h ∈ closedBall (0 : Euclid m) (Real.sqrt m * δ),
+      ∫⁻ v in ball (0 : Euclid m) R,
+          ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ ≤
+        ENNReal.ofReal (C * (Real.sqrt m * δ)) := by
+    intro h hh
+    have hh' : ‖h‖ ≤ Real.sqrt m * δ := mem_closedBall_zero_iff.1 hh
+    calc ∫⁻ v in ball (0 : Euclid m) R,
+          ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ
+        = ∫⁻ v in ball (0 : Euclid m) R, (symmDiff ((fun v => v + h) ⁻¹' F) F).indicator 1 v :=
+          lintegral_congr fun v => hind v h
+      _ ≤ (volume.restrict (ball (0 : Euclid m) R)) (symmDiff ((fun v => v + h) ⁻¹' F) F) :=
+          lintegral_indicator_one_le _
+      _ = volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R) :=
+          Measure.restrict_apply' measurableSet_ball
+      _ ≤ ENNReal.ofReal (C * ‖h‖) := hsd h (hh'.trans hs1)
+      _ ≤ ENNReal.ofReal (C * (Real.sqrt m * δ)) :=
+          ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hh' hC)
+  have hmeas2 : Measurable (uncurry fun (v h : Euclid m) =>
+      ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ) := by
+    have : Measurable fun p : Euclid m × Euclid m =>
+        F.indicator (fun _ => (1 : ℝ)) p.1 - F.indicator (fun _ => (1 : ℝ)) (p.1 + p.2) :=
+      (hu_meas.comp measurable_fst).sub (hu_meas.comp (measurable_fst.add measurable_snd))
+    exact this.enorm
+  have hV1fin : volume (ball (0 : Euclid m) 1) ≠ ∞ := measure_ball_lt_top.ne
+  calc ∫⁻ v in ball (0 : Euclid m) R, ‖F.indicator (fun _ => (1 : ℝ)) v -
+        (volume (F ∩ {w : Euclid m | ∀ j, ⌊w j / δ⌋ = ⌊v j / δ⌋})).toReal / δ ^ m‖ₑ
+      ≤ ∫⁻ v in ball (0 : Euclid m) R, ENNReal.ofReal ((δ ^ m)⁻¹) *
+          ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+            ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ :=
+        lintegral_mono fun v => hpt v _ (hQvol v) (hQball v)
+    _ = ENNReal.ofReal ((δ ^ m)⁻¹) * ∫⁻ v in ball (0 : Euclid m) R,
+          ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+            ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ = ENNReal.ofReal ((δ ^ m)⁻¹) * ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+          ∫⁻ v in ball (0 : Euclid m) R,
+            ‖F.indicator (fun _ => (1 : ℝ)) v - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ := by
+        rw [lintegral_lintegral_swap (μ := volume.restrict (ball (0 : Euclid m) R))
+          (ν := volume.restrict (closedBall (0 : Euclid m) (Real.sqrt m * δ)))
+          hmeas2.aemeasurable]
+    _ ≤ ENNReal.ofReal ((δ ^ m)⁻¹) * ∫⁻ h in closedBall (0 : Euclid m) (Real.sqrt m * δ),
+          ENNReal.ofReal (C * (Real.sqrt m * δ)) :=
+        mul_le_mul' le_rfl (setLIntegral_mono measurable_const hinner)
+    _ = ENNReal.ofReal ((δ ^ m)⁻¹) * (ENNReal.ofReal (C * (Real.sqrt m * δ)) *
+          (ENNReal.ofReal ((Real.sqrt m * δ) ^ m) * volume (ball (0 : Euclid m) 1))) := by
+        rw [setLIntegral_const, Measure.addHaar_closedBall _ _ hs0, finrank_euclideanSpace_fin]
+    _ = ENNReal.ofReal (Real.sqrt m ^ (m + 1) * (volume (ball (0 : Euclid m) 1)).toReal * C * δ) := by
+        have e1 : Real.sqrt m ^ (m + 1) * (volume (ball (0 : Euclid m) 1)).toReal * C * δ =
+            ((δ ^ m)⁻¹ * (C * (Real.sqrt m * δ)) * (Real.sqrt m * δ) ^ m) *
+              (volume (ball (0 : Euclid m) 1)).toReal := by
+          rw [mul_pow]
+          field_simp
+          ring
+        rw [e1, ENNReal.ofReal_mul (p := (δ ^ m)⁻¹ * (C * (Real.sqrt m * δ)) * (Real.sqrt m * δ) ^ m)
+            (by positivity), ENNReal.ofReal_toReal hV1fin,
+          ENNReal.ofReal_mul (p := (δ ^ m)⁻¹ * (C * (Real.sqrt m * δ))) (by positivity),
+          ENNReal.ofReal_mul (p := (δ ^ m)⁻¹) (by positivity)]
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
