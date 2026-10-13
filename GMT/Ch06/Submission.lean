@@ -359,6 +359,40 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- `C¹` germ extension (steps 1–2 of the level-set chart construction for Simon Ch. 6, 4.6): if
+`g` is `C¹` at `x`, then some `g'` that is `C¹` on all of `ℝ^m` agrees with `g` on a ball
+`B(x, ρ)`.  Take `ε` with `g` `C¹` on `B(x, ε)`, `ρ = ε / 3`, a bump `χ` with `χ = 1` on
+`B̄(x, ρ)` and `χ = 0` off `B(x, 2ρ)`, and `g' = χ g`. -/
+theorem Submission.slicing_im_st_lsc_c1_extension :
+    ∀ (m : ℕ) (g : Eucl m → ℝ) (x : Eucl m), ContDiffAt ℝ 1 g x → ∃ ρ : ℝ, 0 < ρ ∧ ∃ g' : Eucl m → ℝ, ContDiff ℝ 1 g' ∧ ∀ v ∈ ball x ρ, g' v = g v := by
+  intro m g x hg
+  -- `g` is `C¹` at every point of some ball `B(x, ε)` (`ContDiffAt.eventually`); `ρ := ε / 3`.
+  have hev := hg.eventually (by simp)
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.1 hev
+  set ρ := ε / 3 with hρdef
+  have hρ : 0 < ρ := by positivity
+  -- Bump `χ` with `χ = 1` on `closedBall x ρ` and `χ = 0` off `ball x (2ρ)`; `g' := χ * g`.
+  let χ : ContDiffBump x := ⟨ρ, 2 * ρ, hρ, by linarith⟩
+  refine ⟨ρ, hρ, fun y => χ y * g y, ?_, ?_⟩
+  · rw [contDiff_iff_contDiffAt]
+    intro y
+    by_cases hy : dist y x < ε
+    · exact χ.contDiffAt.mul (hball hy)
+    · -- Off `B(x, ε)`, `g'` vanishes on the open neighbourhood `{z | 2ρ < |z - x|}` of `y`.
+      have hopen : IsOpen {z : Eucl m | 2 * ρ < dist z x} :=
+        isOpen_lt continuous_const (continuous_id.dist continuous_const)
+      have hy2 : 2 * ρ < dist y x := by
+        have := not_lt.1 hy
+        linarith
+      have hzero : (fun y => χ y * g y) =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+        filter_upwards [hopen.mem_nhds hy2] with z hz
+        have : χ z = 0 := χ.zero_of_le_dist (le_of_lt hz)
+        simp [this]
+      exact contDiffAt_const.congr_of_eventuallyEq hzero
+  · intro v hv
+    have : χ v = 1 := χ.one_of_mem_closedBall (ball_subset_closedBall hv)
+    simp [this]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
