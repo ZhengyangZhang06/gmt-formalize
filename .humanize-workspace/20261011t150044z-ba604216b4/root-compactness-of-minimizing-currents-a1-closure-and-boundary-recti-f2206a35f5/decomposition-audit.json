@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbr_ci_|cmrc_|rsd_mw_exists' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "covectorEuclideanNorm|massAdmissibleOn|def massOn|theorem le_massOn",
+        "theorem UniformContinuous.exists_contDiff_dist_le",
+        "theorem Integrable.exists_hasCompactSupport_integral_sub_le",
+        "theorem exists_contDiff_support_eq_eq_one_iff",
+        "of_sigmaCompactSpace_of_isLocallyFiniteMeasure",
+        "continuous_infEDist|mem_closure_iff_infEDist_zero|infEDist_zero_of_mem|theorem exists_inv_nat_lt|Monotone.measure_iUnion|tendsto_measure_iInter_atTop|toReal_lt_of_lt_ofReal|theorem lintegral_indicator_one",
+        "git show 94c7dd6a25905cc777011f79dd6f649f0ee3d4ba:GMT/Ch07/Submission.lean",
+        "git show bc8485e31491a6762e3f3e385086f4a502e7e036:GMT/Ch07/Submission.lean",
+        "git show c8a45015ae89460d63183d6cc075b0b57fea553e:GMT/Ch07/Submission.lean",
+        "git show ff0a127d0194729b3801f7154389155e113957cd:GMT/Ch07/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -j4 /tmp/cvm-independent-audit/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -j4 /tmp/cvm-independent-audit/ReuseAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f2206a35f5/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f2206a35f5/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-951d596491/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-1955ca3d37/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-345cd07fb7/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/tmp/cvm-independent-audit/FrozenTypes.lean",
+        "/tmp/cvm-independent-audit/ReuseAndAssembly.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected frozen contract cbr_ci_const_vector_massOn. The snapshot contract and workspace Contract/Submission are byte-identical; package revisions match the pins. No proposed declaration occurs in the frozen project. Each proposed bare identifier has exactly one comparator-accepted DAG owner, with a byte-identical frozen and implemented type. Dependency closures are acyclic and do not reach the selected parent. All four child types independently elaborate as propositions without implementation references. Fresh compilation of the immutable accepted proof closure and supplied parent assembly succeeded; every checked theorem uses only propext, Classical.choice and Quot.sound. Rescaling supplies every child hypothesis, including the zero-measure norming condition when s = 0. The cited continuous-density and smooth-approximation convenience lemmas exist in the snapshot but are outside the frozen import scope; the accepted dependency implementations supply their constructions using available lemmas, so reuse requires no additional imports or planning."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_upper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes exactly the Lean hypotheses and allows arbitrary W and nonmeasurable ξ. The support-indicator estimate and unconditional Bochner integral norm inequality correctly prove the bound even for nonintegrable integrands. Taking the defining supremum establishes the exact conclusion. No circular dependency or missing measurability assumption occurs."
+    },
+    {
+      "key": "testform_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-measure, openness, concentration, integrability and almost-everywhere unit-bound hypotheses match the Lean type. The proof establishes the required seminorm estimates, compact core, continuous approximation, radial retraction, smooth rescaling and cutoff. Its three error contributions give the strict requested bound while preserving compact support and the pointwise unit bound. The argument remains valid in degenerate dimensions and for the zero measure."
+    },
+    {
+      "key": "norming_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All eight hypotheses and the precise conditions on W and W′ appear in both statements. Restriction gives a finite measure and integrable β; the declared testform_approx dependency supplies admissible forms. Localization, measurable evaluation, integrability and the almost-everywhere norming identity justify the integral estimate. The ENNReal conversion and epsilon limit prove the exact lower bound. The dependency is correctly directed and non-circular."
+    },
+    {
+      "key": "open_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, without any unstated finiteness assumption. The constructed open sets increase to W ∩ U and have compact closures contained in U. Extended distance correctly handles an empty complement. Continuity from below gives the bound on W ∩ U, and μ(Uᶜ) = 0 transfers it to W, including infinite-measure cases."
+    }
+  ],
+  "required_changes": []
+}
