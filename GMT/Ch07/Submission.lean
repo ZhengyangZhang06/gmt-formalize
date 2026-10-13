@@ -451,6 +451,70 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, proof of 8.2, (1)–(2)** (slices 4.6–4.9 by `f = |· − x₁|`, `Lip f = 1`): for a
+cycle `C`, represent `∂C = 0` by the zero measure.  (SL) gives `A_ρ = C⌞B_ρ(x₁)` and `B_ρ = 0`,
+`∂A_ρ` vanishes off `∂B_ρ(x₁)` (4.8) and `M(∂A_ρ) ≤ liminf_{h↓0} h⁻¹μ{ρ − h < |x − x₁| < ρ}` (4.9);
+(ISP) makes `∂A_ρ` integer multiplicity for `ρ` outside a Lebesgue-null set. -/
+theorem Submission.cbrld_sphere_slice_isIntegerMultiplicity : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P d : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (x₁ : Euclid P), C.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∃ N : Set ℝ, volume N = 0 ∧ ∀ ρ : ℝ, 0 < ρ → ρ ∉ N → ∃ A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in ball x₁ ρ, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) ∧ IsIntegerMultiplicity A.boundary ∧ A.boundary.support ⊆ sphere x₁ ρ ∧ A.boundary.mass ≤ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) := by
+  intro hSL P d C μ ξ x₁ hCb hμ hξm hξb hC hISP
+  -- step 1: `∂C = 0` is represented by the zero measure and the zero field of `d`-vectors
+  have hμ0 : ∀ K : Set (Euclid P), IsCompact K → (0 : Measure (Euclid P)) K < ∞ :=
+    fun K _ => by simp
+  have hξ0m : AEStronglyMeasurable (0 : Euclid P → MultiVector P d) (0 : Measure (Euclid P)) :=
+    aestronglyMeasurable_zero_measure _
+  have hξ0b : ∀ᵐ x ∂(0 : Measure (Euclid P)), ∀ α : Covector (Euclid P) d,
+      |(0 : Euclid P → MultiVector P d) x α| ≤ covectorEuclideanNorm α := by
+    simp [ae_zero]
+  have hCb0 : ∀ η : TestFormOn (univ : Set (Euclid P)) d,
+      C.boundary η = ∫ x, (0 : Euclid P → MultiVector P d) x
+        ((η : DifferentialForm (Euclid P) d) x) ∂(0 : Measure (Euclid P)) := by
+    intro η
+    rw [hCb, integral_zero_measure]
+    rfl
+  -- the slicing function `f = |· − x₁|` is `1`-Lipschitz
+  have hf : LipschitzWith 1 (fun x : Euclid P => dist x x₁) := LipschitzWith.dist_left x₁
+  -- step 3: (SL) for `C`, `f` and `L = 1`
+  obtain ⟨A, B, hA, hB, hAB, hmass, -⟩ := hSL P d univ C μ 0 ξ 0 (fun x => dist x x₁) 1
+    isOpen_univ (fun K hK _ => hμ K hK) (fun K hK _ => hμ0 K hK) hξm hξ0m hξb hξ0b hC hCb0 hf
+  -- step 2: the exceptional set of (ISP) is Lebesgue-null
+  have hISP' := hISP μ 0 ξ 0 hμ hμ0 hξm hξ0m hξb hξ0b hC hCb0 (fun x => dist x x₁) 1 hf
+  refine ⟨_, ae_iff.mp hISP', fun ρ _ hρN => ?_⟩
+  simp only [Set.mem_ofPred_eq, not_not] at hρN
+  -- step 4: `B_ρ = 0`, so `∂A_ρ − B_ρ = ∂A_ρ`
+  have hB0 : ∀ η, B ρ η = 0 := by
+    intro η
+    rw [hB ρ η, Measure.restrict_zero, integral_zero_measure]
+  have hsub : (A ρ).boundary - B ρ = (A ρ).boundary := by
+    ext η
+    show (A ρ).boundary η - B ρ η = (A ρ).boundary η
+    rw [hB0, sub_zero]
+  refine ⟨A ρ, fun ω => hA ρ ω, ?_, ?_, ?_⟩
+  · -- step 5: integer multiplicity
+    rw [← hsub]
+    exact hρN (A ρ) (B ρ) (hA ρ) (hB ρ)
+  · -- step 6: `∂A_ρ` vanishes on a ball around every point off `∂B_ρ(x₁)`
+    intro y hy
+    by_contra hy'
+    rw [Metric.mem_sphere] at hy'
+    have hr : 0 < |dist y x₁ - ρ| / 2 := half_pos (abs_pos.mpr (sub_ne_zero.mpr hy'))
+    apply hy.2
+    refine Set.mem_sUnion_of_mem (mem_ball_self hr) ⟨isOpen_ball, ?_, subset_univ _, ?_⟩
+    · exact (isCompact_closedBall y _).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · intro η hη
+      rw [hAB ρ η ?_, hB0]
+      refine Set.disjoint_left.mpr fun z hz hz' => ?_
+      have h1 : dist z y < |dist y x₁ - ρ| / 2 := hη hz
+      have h2 : dist z x₁ = ρ := hz'
+      have h3 := abs_dist_sub_le z y x₁
+      rw [h2, abs_sub_comm] at h3
+      linarith
+  · -- step 7: the mass bound with `W = ℝᴾ`
+    have h := hmass univ ρ isOpen_univ
+    rw [hsub] at h
+    simp only [ENNReal.coe_one, one_mul, univ_inter] at h
+    exact h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
