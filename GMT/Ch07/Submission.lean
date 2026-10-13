@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Uniform injectivity on a compact set (step 2(b) of the nearest point retraction used in the
+proof of Simon 7.4.3): if `L : ℝᵈ → L(ℝᵈ, ℝᴾ)` is continuous on the compact set `K` and `L(v)` is
+injective for every `v ∈ K`, then some `b ≥ 0` has `|w| ≤ b |L(v)w|` for all `v ∈ K`, `w ∈ ℝᵈ`.
+The continuous function `(v, w) ↦ |L(v)w|` attains its minimum `m` on the compact set
+`S := K × {|w| = 1}`; `m > 0` by injectivity, and `b := m⁻¹` works since
+`m ≤ |L(v)(w / |w|)| = |L(v)w| / |w|` for `w ≠ 0`.  If `S = ∅` (`K = ∅` or `d = 0`), every `w` is
+`0` for `v ∈ K`, and `b := 0` works. -/
+theorem Submission.dor_lmb_ret_uniform_injectivity : ∀ (P d : ℕ) (K : Set (Euclid d)) (L : Euclid d → (Euclid d →L[ℝ] Euclid P)), IsCompact K → ContinuousOn L K → (∀ v ∈ K, Injective (L v)) → ∃ b : ℝ, 0 ≤ b ∧ ∀ v ∈ K, ∀ w : Euclid d, ‖w‖ ≤ b * ‖L v w‖ := by
+  intro P d K L hK hL hinj
+  -- `w / |w|` is a unit vector for `w ≠ 0`
+  have hunit : ∀ w : Euclid d, w ≠ 0 → ‖w‖⁻¹ • w ∈ sphere (0 : Euclid d) 1 := by
+    intro w hw
+    rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm,
+      inv_mul_cancel₀ (norm_ne_zero_iff.2 hw)]
+  rcases (K ×ˢ sphere (0 : Euclid d) 1).eq_empty_or_nonempty with hS | hS
+  · -- `S = ∅`: for `v ∈ K` every `w` is `0`, so `b := 0` works
+    refine ⟨0, le_rfl, fun v hv w => ?_⟩
+    have hw : w = 0 := by
+      by_contra hw
+      have hmem : (v, ‖w‖⁻¹ • w) ∈ K ×ˢ sphere (0 : Euclid d) 1 := ⟨hv, hunit w hw⟩
+      rw [hS] at hmem
+      exact hmem
+    rw [hw, norm_zero, zero_mul]
+  · -- `(v, w) ↦ |L(v)w|` attains its minimum `m = |L(v₁)w₁|` on the compact set `S`
+    obtain ⟨⟨v₁, w₁⟩, ⟨hv₁, hw₁⟩, hmin⟩ := (hK.prod (isCompact_sphere _ _)).exists_isMinOn hS
+      ((hL.comp continuousOn_fst fun _ hp => hp.1).clm_apply continuousOn_snd).norm
+    -- `m > 0`, since `w₁ ≠ 0` and `L(v₁)` is injective
+    have hw₁0 : w₁ ≠ 0 := ne_zero_of_mem_unit_sphere ⟨w₁, hw₁⟩
+    have hm : 0 < ‖L v₁ w₁‖ :=
+      norm_pos_iff.2 fun h => hw₁0 (hinj v₁ hv₁ (by rw [h, map_zero]))
+    refine ⟨‖L v₁ w₁‖⁻¹, inv_nonneg.2 (norm_nonneg _), fun v hv w => ?_⟩
+    rcases eq_or_ne w 0 with rfl | hw
+    · rw [norm_zero, map_zero, norm_zero, mul_zero]
+    -- `m ≤ |L(v)(w / |w|)| = |L(v)w| / |w|`, i.e. `m |w| ≤ |L(v)w|`
+    have hle : ‖L v₁ w₁‖ ≤ ‖w‖⁻¹ * ‖L v w‖ :=
+      calc ‖L v₁ w₁‖ ≤ ‖L v (‖w‖⁻¹ • w)‖ := isMinOn_iff.1 hmin (v, ‖w‖⁻¹ • w) ⟨hv, hunit w hw⟩
+        _ = ‖w‖⁻¹ * ‖L v w‖ := by rw [map_smul, norm_smul, norm_inv, norm_norm]
+    exact (le_inv_mul_iff₀ hm).2 ((le_inv_mul_iff₀' (norm_pos_iff.2 hw)).1 hle)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

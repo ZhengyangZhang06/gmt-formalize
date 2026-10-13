@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "573b5dded4a05d120a2dc7ea1aca4d2ac85f66463c016ceb82d3027e67e003e1",
+  "git_delta": {
+    "base_commit": "a59808a784efc602484977049b93727d558ebec7",
+    "candidate_commit": "ce34e428140448b960ba662411d0a1fa58ada550",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_uniform_injectivity",
+    "diff_sha256": "be7d4cd423030768028d3610f775436b49fcbfca305a5fbbe3f6b78f28ca66df",
+    "source_sha256": "ab02e1501be96326748a96347926f6048fa6b72e4cefe6268e3089afc8ffc0cf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_uniform_injectivity",
+      "statement": "∀ (P d : ℕ) (K : Set (Euclid d)) (L : Euclid d → (Euclid d →L[ℝ] Euclid P)), IsCompact K → ContinuousOn L K → (∀ v ∈ K, Injective (L v)) → ∃ b : ℝ, 0 ≤ b ∧ ∀ v ∈ K, ∀ w : Euclid d, ‖w‖ ≤ b * ‖L v w‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
