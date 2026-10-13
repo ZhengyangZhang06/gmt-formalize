@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2cf02919028de2a4db9cad1237e8466970c5d3d4bfe467fb25c357cda7adbbb0",
+  "git_delta": {
+    "base_commit": "d59d612c4fbfa44adbd105df35fa80820eb4a81a",
+    "candidate_commit": "90109696238a85aa871b45dd20ec305dafa9395d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_cd_pullback_field_trace",
+    "diff_sha256": "982e705983be9d2550e02d71f8467a232c6c6d216ae2c79112779816306ab62c",
+    "source_sha256": "6441b8ea41b33f6c308a307fd6c147b3a60e2e68fc668abe05100911e5a93467",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_cd_pullback_field_trace",
+      "statement": "∀ (P n : ℕ) (D : Set (Euclid (n + 1))) (G : Euclid (n + 1) → Euclid P) (ω : DifferentialForm (Euclid P) n) (Φ : Euclid (n + 1) → Euclid (n + 1)), IsOpen D → ContDiffOn ℝ 2 G D → ContDiff ℝ (⊤ : ℕ∞) ω → Φ = D.indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (G v) (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) → ∀ v ∈ D, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ Φ v : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) = exteriorDerivative ω (G v) (fun i => fderiv ℝ G v (EuclideanSpace.single i 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

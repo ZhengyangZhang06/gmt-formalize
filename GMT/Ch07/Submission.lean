@@ -451,6 +451,46 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Divergence of the field of a pulled-back form** (Simon 7.5.2 with Ch. 6, 2.34–2.35).  Let
+`G : ℝⁿ⁺¹ → ℝᴾ` be `C²` on the open set `D`, `ω` a smooth `n`-form on `ℝᴾ`, `e` the standard basis
+and `Φ = 1_D · Σⱼ (-1)ʲ ω(G)(DG e_{j.succAbove 0}, …, DG e_{j.succAbove (n-1)}) eⱼ`.  Then
+`trace DΦ(v) = dω(G v)(DG(v) e₀, …, DG(v) eₙ)` on `D`.  Near `v ∈ D`, `Φ = Σⱼ (-1)ʲ β(·)(ê_j) eⱼ`
+for the pull-back `β(y) = ω(G y) ∘ DG(y)` and `ê_j = j.removeNth e`, so
+`trace DΦ(v) = Σⱼ (-1)ʲ Dβ(v)(eⱼ)(ê_j) = dβ(v)(e)`; and `dβ(v) = dω(G v) ∘ DG(v)` since `G` is
+`C²` (`extDeriv_pullback`). -/
+theorem Submission.codim1_lur_cd_pullback_field_trace : ∀ (P n : ℕ) (D : Set (Euclid (n + 1))) (G : Euclid (n + 1) → Euclid P) (ω : DifferentialForm (Euclid P) n) (Φ : Euclid (n + 1) → Euclid (n + 1)), IsOpen D → ContDiffOn ℝ 2 G D → ContDiff ℝ (⊤ : ℕ∞) ω → Φ = D.indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (G v) (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) → ∀ v ∈ D, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ Φ v : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) = exteriorDerivative ω (G v) (fun i => fderiv ℝ G v (EuclideanSpace.single i 1)) := by
+  intro P n D G ω Φ hD hG hω hΦ v hv
+  -- `e` is the standard basis and `β(y) = ω(G y) ∘ DG(y)` the pulled-back form
+  let e : Fin (n + 1) → Euclid (n + 1) := fun i => EuclideanSpace.single i 1
+  let β : Euclid (n + 1) → Covector (Euclid (n + 1)) n :=
+    fun y => (ω (G y)).compContinuousLinearMap (fderiv ℝ G y)
+  -- `G` is `C²` at `v`, so `β` is differentiable at `v`
+  have hGv : ContDiffAt ℝ 2 G v := hG.contDiffAt (hD.mem_nhds hv)
+  have hωd : DifferentiableAt ℝ ω (G v) := (hω.differentiable (by simp)).differentiableAt
+  have hβd : DifferentiableAt ℝ β v :=
+    (hωd.comp v (hGv.differentiableAt (by norm_num))).continuousAlternatingMapCompContinuousLinearMap
+      ((hGv.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num))
+  -- near `v`, `Φ = Σⱼ cⱼ eⱼ` with `cⱼ(y) = (-1)ʲ β(y)(j.removeNth e)`
+  have hΦd : HasFDerivAt Φ (∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) •
+      (ContinuousAlternatingMap.apply ℝ (Euclid (n + 1)) ℝ (j.removeNth e)).comp
+        (fderiv ℝ β v)).smulRight (e j)) v := by
+    refine (HasFDerivAt.fun_sum (u := Finset.univ) fun (j : Fin (n + 1)) _ =>
+      ((((ContinuousAlternatingMap.apply ℝ (Euclid (n + 1)) ℝ (j.removeNth e)).hasFDerivAt.comp v
+        hβd.hasFDerivAt).const_mul ((-1 : ℝ) ^ (j : ℕ))).smul_const (e j))).congr_of_eventuallyEq ?_
+    filter_upwards [hD.mem_nhds hv] with y hy
+    rw [hΦ, Set.indicator_of_mem hy]
+    rfl
+  -- pull-back commutes with `d`: `dβ(v) = dω(G v) ∘ DG(v)`
+  have hR : exteriorDerivative ω (G v) (fun i => fderiv ℝ G v (EuclideanSpace.single i 1)) =
+      extDeriv β v e := by
+    rw [extDeriv_pullback (x := v) hωd hGv (by simp)]
+    rfl
+  -- `trace (Σⱼ c'ⱼ ⊗ eⱼ) = Σⱼ c'ⱼ(eⱼ)`, the coordinate formula for `dβ(v)(e)`
+  rw [hR, extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply, hΦd.fderiv,
+    ContinuousLinearMap.toLinearMap_sum, map_sum]
+  refine Finset.sum_congr rfl fun j _ => (LinearMap.trace_smulRight _ (e j)).trans ?_
+  simp [ContinuousAlternatingMap.apply_apply, zsmul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
