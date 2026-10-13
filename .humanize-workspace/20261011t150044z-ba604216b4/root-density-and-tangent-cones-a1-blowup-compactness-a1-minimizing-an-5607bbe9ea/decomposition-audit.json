@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_thickening_subset_open|theorem IsCompact.cthickening|thickening_subset_cthickening",
+        "tendsto_measure_thickening_of_isClosed",
+        "extraction_of_frequently_atTop",
+        "frequently_lt_of_lt_limsup|le_limsup_of_frequently_le|liminf_le_limsup|limsup_le_limsup",
+        "Tendsto.liminf_eq|Tendsto.limsup_eq",
+        "IsTestForm|testFormOnSubmodule|abbrev TestFormOn",
+        "dtc_bc_mm_massOn_le_liminf|dtc_bc_mm_limsup_le_of_subseq|dtc_bc_mm_isMinimizingIn_univ|dtc_bc_mm_measure_bounds",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-mm-independent-audit-_7zvjdvz/ExactTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-mm-independent-audit-_7zvjdvz/ConditionalChildren.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-mm-independent-audit-_7zvjdvz/Reused.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-mm-independent-audit-_7zvjdvz/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-minimizing-an-5607bbe9ea/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-minimizing-an-5607bbe9ea/decomposition-v2.json",
+        "/tmp/gmt-mm-independent-audit-_7zvjdvz/ExactTypes.lean",
+        "/tmp/gmt-mm-independent-audit-_7zvjdvz/ConditionalChildren.lean",
+        "/tmp/gmt-mm-independent-audit-_7zvjdvz/Reused.lean",
+        "/tmp/gmt-mm-independent-audit-_7zvjdvz/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected theorem. The frozen contract and pinned revisions match; the binding digest recomputes correctly. All nine types are standalone one-line propositions matching their prose and elaborate without child implementations. Five reused declarations have identical accepted types; their reconstructed proofs compile using only propext, Classical.choice and Quot.sound. The four new proofs compile with only their listed dependencies supplied as parameters. The dependency closure is acyclic, every name is bare, and no new name is reserved by another branch. The exact parent follows from minimality, measure_bounds and its existing RADON dependency, without assuming the parent or an ancestor. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted contract. Unit-orientation duality proves the upper bound; compact exhaustion, Lusin, extension and mollification prove the lower bound. Carrier containment correctly handles open W not contained in U."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact support lies in the zero region. A finite subcover and subordinate smooth partition split the form into annihilated test forms. This proves the exact statement for arbitrary U."
+    },
+    {
+      "key": "mass_agree_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both masses use the same admissible forms. The declared vanish_off_support dependency gives equality of evaluations, hence equality of their suprema. No additional hypotheses are needed."
+    },
+    {
+      "key": "measure_agree_on_borel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The relatively compact open exhaustion gives finite restrictions of both measures. Agreement on opens implies equality of these restrictions; continuity from below proves equality on every Borel subset of O."
+    },
+    {
+      "key": "imrep_local_finiteness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The withDensity restriction formula identifies the weight with the finite multiplicity integral. Positivity of integer multiplicity bounds the unweighted Hausdorff measure by that integral, proving both conclusions."
+    },
+    {
+      "key": "mass_lsc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Each test form has compact support eventually contained in the exhausting domains, including along the subsequence. Weak convergence, continuity of ofReal and eventual liminf monotonicity prove the bound. The generalization to arbitrary O and U_j is justified."
+    },
+    {
+      "key": "limsup_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bad-subsequence extraction and sub-subsequence comparison establish every thickening bound. Compactness supplies a finite thickening, permitting continuity from above. Only measure monotonicity is used on W, so no measurability assumption is missing."
+    },
+    {
+      "key": "minimality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local comparison and lower semicontinuity give the inequality near the difference support. The declared locality components identify the measures on the remaining Borel region; additivity extends the inequality to W without subtracting infinite quantities."
+    },
+    {
+      "key": "measure_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all three exact RADON hypotheses. R witnesses integer multiplicity of C; boundary reflexivity and the ball-based zero-support argument make C an admissible competitor. The declared dependencies then yield both limit bounds."
+    }
+  ],
+  "required_changes": []
+}

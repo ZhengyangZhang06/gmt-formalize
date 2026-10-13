@@ -1,0 +1,73 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.minimality_localizes-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.minimality_localizes-a1.mass_agree_off_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–3 of the supplied proof of the parent node root.compactness_of_minimizing_currents-a1.minimality_localizes-a1 (cmc_massOn_le_of_le_near_support), where the argument is applied to open sets G ⊆ O = U ∖ K; it uses only G ∩ K = ∅, so it is stated here for every such G. Write 𝒜_G := {ω ∈ 𝒟ⁿ(U) : tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x} (SimonGMT massAdmissibleOn U n G); this set depends only on U, n and G, not on the current.
+1. By definition, M_G(S) is the supremum in [0, ∞] of the set {max(S(ω), 0) : ω ∈ 𝒜_G}, and M_G(T) is the supremum of {max(T(ω), 0) : ω ∈ 𝒜_G}. Both suprema are taken over the same index set 𝒜_G, so it suffices to show S(ω) = T(ω) for every ω ∈ 𝒜_G.
+2. Let ω ∈ 𝒜_G. Then tsupport ω ⊆ G, and spt(S − T) ⊆ K by hypothesis. Since G ∩ K = ∅, tsupport ω ∩ spt(S − T) ⊆ G ∩ K = ∅.
+3. S − T ∈ 𝒟_n(U) is a current in U and ω ∈ 𝒟ⁿ(U) has tsupport disjoint from spt(S − T). By the sibling lemma vanish_off_support, applied to the current S − T and the form ω, (S − T)(ω) = 0. By the definition of the difference current, (S − T)(ω) = S(ω) − T(ω); hence S(ω) = T(ω).
+4. By steps 2–3, the functions ω ↦ max(S(ω), 0) and ω ↦ max(T(ω), 0) coincide on 𝒜_G. Therefore the two sets in step 1 are equal, and so are their suprema: M_G(S) = M_G(T). ∎
+
+## Key steps
+
+1. M_G(S) and M_G(T) are the suprema of max(S(ω), 0) and max(T(ω), 0) over the same admissible set 𝒜_G of test forms in 𝒟ⁿ(U) supported in G with |ω| ≤ 1.
+2. For ω ∈ 𝒜_G, tsupport ω ⊆ G misses K ⊇ spt(S − T), so vanish_off_support applied to S − T gives (S − T)(ω) = S(ω) − T(ω) = 0.
+3. The two functions agree on 𝒜_G, so their images and suprema agree: M_G(S) = M_G(T).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean (all identical; manifest project b4d606db, mathlib 25730c7c)`
+- `grep -rn 'GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|GeometricCurrentOn.VanishesOn' simongmt/Poincare/SimonGMT/Chapter06/*.lean; cat Chapter06/Mass.lean (massAdmissibleOn, GeometricCurrentOn.massOn); grep 'instance' Chapter06/*.lean (only a Zero instance, no Sub)`
+- `python3 scan of dag.json lean_statement for massOn with support/Disjoint, measure equality on open sets, R.measure finiteness; lean_name inventory (cmc_ prefix; cmc_ml_massOn_eq_of_disjoint_sub_support and cmc_ml_measure_eq_of_eq_on_open_subsets: no match); status/candidate_commit of dtc_vanish_off_support, rsd_imrep_compact_measure_ne_top, dor_imrep_massOn_eq_measure_and_support, dtc_massOn_eq_of_agreeOn`
+- `rg -n 'massOn_eq|measure_eq_of|ext_of_generate|isPiSystem_isOpen|VanishesOn|support ⊆' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no relevant match)`
+- `rg -n 'theorem ext_of_generate_finite|theorem isPiSystem_isOpen|theorem Monotone.measure_iUnion|theorem restrict_apply|lemma isFiniteMeasure_restrict|theorem withDensity_apply|measure_add_sdiff|theorem continuous_infEDist|theorem infEDist_zero_of_mem|theorem infEDist_pos_iff_notMem_closure|exists_inv_nat_lt' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'theorem ext_of_isOpen|restrict_eq_of_isOpen|ext_of_forall_isOpen|theorem ext_of_generateFrom_of_cover' local-references/123e8435b4a2469b/mathlib/Mathlib (only the general ext_of_generateFrom_of_cover)`
+- `rg -n 'massOn_eq|measure_eq_of_eq|ext_of_generate' lake-packages-25730c7c/simongmt/Poincare (only the unrelated Chapter08 Varifold.massOn_eq)`
+- `sed -n 1655,1760p, 1800,1930p and 6532,6572p runtime.py; grep -n 'def ensure' -A 35 store.py; grep -n 'def _accepted_checkpoint' -A 5 runtime.py`
+- `git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean (declaration layout: theorem Submission.X inside namespace GMT.Ch07)`
+- `lake env lean /tmp/mloc-split/Types.lean; lake env lean /tmp/mloc-split/Assembly.lean; lake env lean /tmp/mloc-split/Children.lean; lake env lean /tmp/mloc-split/Inst.lean; lake env lean /tmp/mloc-split/Final.lean (#print axioms)`
+- `independent reviewer: lake env lean /tmp/mloc-review/ReviewStatements.lean, ReviewInst.lean, ReviewAssembly.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+- `/tmp/mloc-split/Types.lean`
+- `/tmp/mloc-split/Assembly.lean`
+- `/tmp/mloc-split/Children.lean`
+- `/tmp/mloc-split/Inst.lean`
+- `/tmp/mloc-split/Final.lean`
+- `/tmp/mloc-split/proposal.json`
+- `/tmp/mloc-review/ReviewStatements.lean`
+- `/tmp/mloc-review/ReviewInst.lean`
+- `/tmp/mloc-review/ReviewAssembly.lean`
+
+The snapshot Contract.lean and Submission.lean are byte-identical to the workspace files (project b4d606db, mathlib 25730c7c). Neither the snapshot project nor SimonGMT has a lemma on mass equality away from spt(S − T), or on measures agreeing on Borel subsets of an open set given agreement on its open subsets (rg: no relevant match). The pinned Mathlib supplies only the general tools: ext_of_generate_finite, isPiSystem_isOpen, Monotone.measure_iUnion (valid for arbitrary sets), Measure.restrict_apply/restrict_apply', isFiniteMeasure_restrict, withDensity_apply, measure_add_sdiff, and Metric.infEDist with continuous_infEDist, infEDist_zero_of_mem and infEDist_pos_iff_notMem_closure. Mathlib's existing measure ext lemma is global, so the localized uniqueness lemma is a genuine new child. The DAG holds the accepted dtc_vanish_off_support (candidate 44ef61f7), whose frozen type is reused byte-for-byte; runtime.py maps an accepted name with identical type to the existing node and skips handoff installation for it. The two new names occur nowhere in dag.json. In this session all child types elaborate, S − T uses the contract instance GMT.Ch07.instSubGeometricCurrentOnEuclid, and Measure (Euclid P) is Borel. Both new children are proved in full, the measure child using only propext, Classical.choice and Quot.sound. The frozen parent type assembles from the children plus the frozen prerequisite cmc_massOn_eq_imRep_measure, and an independent reviewer confirmed all of this (ACCEPT).
