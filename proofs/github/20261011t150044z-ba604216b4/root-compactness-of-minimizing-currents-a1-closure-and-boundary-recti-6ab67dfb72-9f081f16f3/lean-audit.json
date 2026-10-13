@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52b7fe434ba0ae49af4ef67682e547e0d0a337b428dc950f0c85fea39ef4ca7d",
+  "git_delta": {
+    "base_commit": "9b8cf3241810bf48e77985485e36c1eaa1d64e22",
+    "candidate_commit": "c1eb36665e18f02172b74245b41ec5258ec12d3a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_dir_wedge_riesz_vector",
+    "diff_sha256": "ab8a26a6a5b3fede8fc212866959dae6fd115ea0e1dc0042e36986444661c822",
+    "source_sha256": "b6be17ec494b0bb6d1e2be5eba6a27188185c68a78833666668add680f5fcc35",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_dir_wedge_riesz_vector",
+      "statement": "∀ (P d : ℕ) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d), ∃ v : Euclid P, ∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
