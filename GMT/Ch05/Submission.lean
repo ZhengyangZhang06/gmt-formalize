@@ -458,6 +458,67 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Hilbert–Schmidt norm of the block operator `D = [[0, Hᵀ], [H, 0]]` on `ℝ^{n+ℓ}`:
+`|D|² = 2|H|²`.  Since `‖graphPoint x y‖² = ‖x‖² + ‖y‖²` and the standard basis vectors of
+`ℝ^{n+ℓ}` are `E_{castAdd i} = graphPoint eᵢ 0`, `E_{natAdd j} = graphPoint 0 f_j`
+(`Fin.addCases`; `castAdd ℓ i ≠ natAdd n j` by comparing values), split `hsNormSq D` over the
+`castAdd`/`natAdd` indices (`Fin.sum_univ_add`).  The column `D E_{castAdd i} = graphPoint 0 (H eᵢ)`
+contributes `‖H eᵢ‖²`; the column `D E_{natAdd j} = graphPoint (∑ᵢ (H eᵢ)_j eᵢ) 0` contributes
+`∑ᵢ (H eᵢ)_j²` (`EuclideanSpace.inner_single_right`).  Exchanging the finite sums
+(`Finset.sum_comm`) gives `hsNormSq H + hsNormSq H`. -/
+theorem allard52_gps_hsNormSq_swap : ∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn ℓ)
+    (D : Amb n ℓ →L[ℝ] Amb n ℓ), (∀ (x : Rn n) (y : Rn ℓ), D (graphPoint x y) =
+      graphPoint (∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y •
+        EuclideanSpace.single i 1) (H x)) → hsNormSq D = 2 * hsNormSq H := by
+  intro n ℓ H D hD
+  have hnorm : ∀ (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+    intro x y
+    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+      EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+    simp [graphPoint]
+  have hE₁ : ∀ i : Fin n, (EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) : Amb n ℓ) =
+      graphPoint (EuclideanSpace.single i 1) 0 := by
+    intro i
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j' => ?_) k
+    · simp [graphPoint, Pi.single_apply]
+    · have h : Fin.natAdd n j' ≠ Fin.castAdd ℓ i := by
+        rw [Ne, Fin.ext_iff, Fin.val_natAdd, Fin.val_castAdd]
+        have := i.isLt
+        omega
+      simp [graphPoint, h]
+  have hE₂ : ∀ j : Fin ℓ, (EuclideanSpace.single (Fin.natAdd n j) (1 : ℝ) : Amb n ℓ) =
+      graphPoint 0 (EuclideanSpace.single j 1) := by
+    intro j
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j' => ?_) k
+    · have h : Fin.castAdd ℓ i' ≠ Fin.natAdd n j := by
+        rw [Ne, Fin.ext_iff, Fin.val_natAdd, Fin.val_castAdd]
+        have := i'.isLt
+        omega
+      simp [graphPoint, h]
+    · simp [graphPoint, Pi.single_apply]
+  have hcol₁ : ∀ i : Fin n, ‖D (EuclideanSpace.single (Fin.castAdd ℓ i) 1)‖ ^ 2 =
+      ‖H (EuclideanSpace.single i 1)‖ ^ 2 := by
+    intro i
+    rw [hE₁, hD, hnorm]
+    simp
+  have hcol₂ : ∀ j : Fin ℓ, ‖D (EuclideanSpace.single (Fin.natAdd n j) 1)‖ ^ 2 =
+      ∑ i : Fin n, (H (EuclideanSpace.single i 1) j) ^ 2 := by
+    intro j
+    rw [hE₂, hD, hnorm, map_zero, norm_zero, EuclideanSpace.real_norm_sq_eq]
+    simp [EuclideanSpace.inner_single_right, Pi.single_apply]
+  unfold hsNormSq
+  rw [Fin.sum_univ_add]
+  simp_rw [hcol₁, hcol₂]
+  rw [Finset.sum_comm]
+  simp_rw [← EuclideanSpace.real_norm_sq_eq]
+  ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
