@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **An orthonormal basis of `ℝᴾ` adapted to a subspace `V`** (used to show that an `n`-vector
+annihilating every `w♭ ∧ α` with `w ⊥ V` only sees `β ∘ p_V`): each basis vector lies in `V` or in
+`Vᗮ`.  `V` and `Vᗮ` are orthogonal, and a vector orthogonal to `V + Vᗮ` lies in `Vᗮ ∩ Vᗮᗮ = 0`, so
+`ℝᴾ` is the internal orthogonal direct sum of `V` and `Vᗮ`.  Concatenating orthonormal bases of
+`V` and `Vᗮ` and re-indexing by `Fin P` (`finrank ℝ ℝᴾ = P`) gives the basis. -/
+theorem Submission.cbr_ci_cp_pr_adapted_orthonormalBasis : ∀ (P : ℕ) (V : Submodule ℝ (Euclid P)), ∃ e : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, e i ∈ V ∨ e i ∈ Vᗮ := by
+  intro P V
+  -- Step 1: `b ↦ cond b V Vᗮ` is an orthogonal family of subspaces
+  have hW' : OrthogonalFamily ℝ (fun b : Bool => ↥(cond b V Vᗮ))
+      fun b => (cond b V Vᗮ).subtypeₗᵢ :=
+    V.orthogonalFamily_self
+  -- Step 2: it is internal, since `(V ⊔ Vᗮ)ᗮ ≤ Vᗮ ⊓ Vᗮᗮ = ⊥`
+  have hW : DirectSum.IsInternal fun b : Bool => cond b V Vᗮ := by
+    rw [hW'.isInternal_iff, Submodule.eq_bot_iff]
+    intro x hx
+    have h1 : x ∈ Vᗮ :=
+      Submodule.orthogonal_le (le_iSup (fun b : Bool => cond b V Vᗮ) true) hx
+    have h2 : x ∈ Vᗮᗮ :=
+      Submodule.orthogonal_le (le_iSup (fun b : Bool => cond b V Vᗮ) false) hx
+    exact Submodule.disjoint_def.mp (Submodule.orthogonal_disjoint Vᗮ) x h1 h2
+  -- Step 3: the orthonormal basis subordinate to this decomposition, indexed by `Fin P`; its
+  -- `i`-th vector lies in the summand `cond b V Vᗮ` for some `b : Bool`
+  refine ⟨hW.subordinateOrthonormalBasis finrank_euclideanSpace_fin hW', fun i => ?_⟩
+  have hmem := hW.subordinateOrthonormalBasis_subordinate finrank_euclideanSpace_fin i hW'
+  revert hmem
+  generalize hW.subordinateOrthonormalBasisIndex finrank_euclideanSpace_fin i hW' = b
+  cases b
+  · intro hmem
+    exact Or.inr hmem
+  · intro hmem
+    exact Or.inl hmem
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
