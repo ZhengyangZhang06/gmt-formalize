@@ -359,6 +359,43 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, 2.8 and 2.12: a mass measure `μ` of `X ∈ 𝒟ₖ(ℝ^N)` vanishes off `spt X`, and
+`μ(ℝ^N) ≤ M(X)`, so `μ` is finite when `M(X) < ∞`. -/
+theorem Submission.dmr_massMeasure_support_finite :
+    ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k) (μ : Measure (Eucl N)),
+      IsMassMeasure X μ → μ X.supportᶜ = 0 ∧ (X.mass < ∞ → IsFiniteMeasure μ) := by
+  intro N k X μ hμ
+  constructor
+  · -- `(spt X)ᶜ = Z(X)` is a countable union (Lindelöf) of open `W ⊂⊂ ℝ^N` on which `X`
+    -- vanishes, and each such `W` has `μ W = M_W(X) = 0`.
+    obtain ⟨T, hTc, hTS, hTeq⟩ := TopologicalSpace.isOpen_sUnion_countable
+      {W : Set (Eucl N) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ univ ∧ X.VanishesOn W}
+      fun W hW => hW.1
+    have hZ : X.supportᶜ = ⋃₀ T := by
+      rw [hTeq, GeometricCurrentOn.support, ← compl_eq_univ_sdiff, compl_compl]
+      rfl
+    rw [hZ, measure_sUnion_null_iff hTc]
+    intro W hWT
+    obtain ⟨hWo, hWc, hWU, hWv⟩ := hTS hWT
+    rw [hμ.2 W ⟨hWo, hWc, hWU⟩]
+    refine nonpos_iff_eq_zero.1 (sSup_le ?_)
+    rintro r ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (X ω) ≤ 0
+    rw [hWv ω hω.1, ENNReal.ofReal_zero]
+  · -- `μ(B_n) = M_{B_n}(X) ≤ M(X)` for the balls `B_n ⊂⊂ ℝ^N`, and `B_n ↑ ℝ^N`.
+    intro hfin
+    have hball : ∀ n : ℕ, μ (ball (0 : Eucl N) n) ≤ X.mass := fun n => by
+      rw [hμ.2 _ ⟨isOpen_ball, (isCompact_closedBall _ _).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall, subset_univ _⟩]
+      exact X.massOn_mono (subset_univ _)
+    have hmono : Monotone fun n : ℕ => ball (0 : Eucl N) n :=
+      fun m n hmn => ball_subset_ball (Nat.cast_le.2 hmn)
+    have huniv : μ univ ≤ X.mass :=
+      calc μ univ = μ (⋃ n : ℕ, ball (0 : Eucl N) n) := by rw [iUnion_ball_nat]
+        _ = ⨆ n : ℕ, μ (ball (0 : Eucl N) n) := hmono.measure_iUnion
+        _ ≤ X.mass := iSup_le hball
+    exact ⟨huniv.trans_lt hfin⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
