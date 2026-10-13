@@ -549,6 +549,53 @@ theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid
     exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
       tendsto_one_div_add_atTop_nhds_zero_nat
 
+/-- **Functions agreeing on a measurable set have equal derivatives a.e. on it.**  Assume that
+density points see every direction (the statement of `Submission.dor_lmbsf_density_directions`).
+If `Z ⊆ ℝᵈ` is measurable and `v₁ = v₂` on `Z`, then `Dv₁(y) = Dv₂(y)` at `Lᵈ`-a.e. `y ∈ Z` where
+both are differentiable.  By the Besicovitch density theorem a.e. `y ∈ Z` is a density point of `Z`;
+there each unit vector `e` is a limit of `(yᵢ - y)/|yᵢ - y|` with `yᵢ ∈ Z ∖ {y}`, `yᵢ → y`, and the
+difference quotients of `v₁ - v₂` along `yᵢ` vanish, so `(Dv₁(y) - Dv₂(y)) e = 0`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn : (∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (v₁ v₂ : Euclid d → ℝ), MeasurableSet Z → EqOn v₁ v₂ Z → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → DifferentiableAt ℝ v₁ y → DifferentiableAt ℝ v₂ y → fderiv ℝ v₁ y = fderiv ℝ v₂ y := by
+  intro hDD d Z v₁ v₂ hZ hEq
+  -- a.e. point of `Z` is a Lebesgue density point of `Z`
+  have h := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (Euclid d)) Z
+  rw [ae_restrict_iff' hZ] at h
+  filter_upwards [h] with y hy hyZ h1 h2
+  have hden := hy hyZ
+  set L := fderiv ℝ v₁ y - fderiv ℝ v₂ y with hLdef
+  have hv : HasFDerivAt (fun x => v₁ x - v₂ x) L y := h1.hasFDerivAt.sub h2.hasFDerivAt
+  -- along `yᵢ ∈ Z` with `(yᵢ - y)/|yᵢ - y| → e` the difference quotients of `v₁ - v₂` are `0`
+  have hunit : ∀ e : Euclid d, ‖e‖ = 1 → L e = 0 := by
+    intro e he
+    obtain ⟨ys, hysZ, hys, hdir⟩ := hDD d Z y hden e he
+    have hd0 : Tendsto (fun i => ys i - y) atTop (𝓝 0) := by
+      simpa using hys.sub_const y
+    have hlim := (hv.hasFDerivWithinAt (s := univ)).lim (l := atTop)
+      (c := fun i => ‖ys i - y‖⁻¹) (d := fun i => ys i - y) hd0
+      (Eventually.of_forall fun _ => mem_univ _) hdir
+    have hzero : (fun i => ‖ys i - y‖⁻¹ • ((v₁ (y + (ys i - y)) - v₂ (y + (ys i - y))) -
+        (v₁ y - v₂ y))) = fun _ => (0 : ℝ) := by
+      funext i
+      have hi : y + (ys i - y) = ys i := by abel
+      rw [hi, hEq (hysZ i).1, hEq hyZ]
+      simp
+    rw [hzero] at hlim
+    exact tendsto_nhds_unique hlim tendsto_const_nhds
+  -- a linear map vanishing on unit vectors is `0`
+  have hL : L = 0 := by
+    ext e
+    by_cases he : e = 0
+    · simp [he]
+    · have hn : ‖e‖ ≠ 0 := norm_ne_zero_iff.2 he
+      have h1' : ‖‖e‖⁻¹ • e‖ = 1 := by
+        rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hn]
+      have := hunit _ h1'
+      rw [map_smul, smul_eq_mul, mul_eq_zero] at this
+      rcases this with h | h
+      · exact absurd (inv_eq_zero.1 h) hn
+      · simpa using h
+  exact sub_eq_zero.1 hL
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
