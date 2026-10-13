@@ -4022,6 +4022,34 @@ theorem Submission.dmr_weightedTangent_inter :
     ENNReal.mul_div_mul_left _ _ (ENNReal.ofReal_pos.mpr (by positivity)).ne'
       ENNReal.ofReal_ne_top, ENNReal.ofReal_inv_of_pos (by positivity), div_eq_mul_inv, mul_comm]
 
+/-- Restriction of a rectifiable triple to a Borel set (Simon Ch. 6, 2.9 for `τ(M, θ, ξ)` of
+3.1): `(M ∩ A, θ, ξ)` again satisfies the conditions of 3.1.  Every field passes to the subset
+`M ∩ A ⊆ M`, the a.e. ones through `Hⁿ⌞(M ∩ A) ≤ Hⁿ⌞M`.  For the orientation,
+`Submission.dmr_weightedTangent_inter` makes the weighted approximate tangent space
+`span τ` of `(M, θ)` one of `(M ∩ A, θ)` at `Hⁿ⌞(M ∩ A)`-a.e. `x`, with the same frame `τ`. -/
+theorem Submission.dmr_rectifiableTriple_inter :
+    ∀ (N k : ℕ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k)
+      (A : Set (Eucl N)), IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ → MeasurableSet A →
+      IsRectifiableTriple (univ : Set (Eucl N)) k (M ∩ A) θ ξ := by
+  intro N k M θ ξ A hT hA
+  have hle : (μHE[k] : Measure (Eucl N)).restrict (M ∩ A) ≤
+      (μHE[k] : Measure (Eucl N)).restrict M :=
+    Measure.restrict_mono inter_subset_left le_rfl
+  have htan := Submission.dmr_weightedTangent_inter N k M θ hT.nullMeasurableSet hT.pos
+    (fun K hK => hT.integrableOn K hK (subset_univ K)) A hA
+  refine
+    { subset := subset_univ _
+      nullMeasurableSet := hT.nullMeasurableSet.inter hA.nullMeasurableSet
+      countablyRectifiable := hT.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => hT.pos x hx.1
+      integrableOn := fun K hK hKU =>
+        (hT.integrableOn K hK hKU).mono_set (inter_subset_inter_left K inter_subset_left)
+      aestronglyMeasurable := hT.aestronglyMeasurable.mono_measure hle
+      orients := ?_ }
+  filter_upwards [ae_mono hle hT.orients, htan] with x hx hL
+  obtain ⟨τ, hτ, hM, hξ⟩ := hx
+  exact ⟨τ, hτ, hL _ hM, hξ⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
