@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.directional_form-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "A test m-form with coefficient norm ‖h‖|φ| whose exterior derivative evaluates to Dφ(h)",
+  "statement": "Let m ∈ ℕ, n := m + 1, φ : ℝ^n → ℝ a C^∞ function with compact support, and h ∈ ℝ^n. Then there is a test m-form ω ∈ D^m(ℝ^n) (TestFormOn univ m) with two properties. First, covectorEuclideanNorm(ω(x)) ≤ ‖h‖·|φ(x)| for every x. Second, for every x the exterior derivative dω (= exteriorDerivativeTestOn univ m ω) satisfies dω(x)(e_0, …, e_m) = Dφ(x)(h), where e_i = EuclideanSpace.single i 1 and Dφ(x) = fderiv ℝ φ x.",
+  "lean_statement": "∀ (m : ℕ) (φ : Eucl (m + 1) → ℝ) (h : Eucl (m + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → ∃ ω : TestFormOn (univ : Set (Eucl (m + 1))) m, (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl (m + 1)) m) x) ≤ ‖h‖ * |φ x|) ∧ ∀ x, ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) m ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1)) : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ φ x h",
+  "lean_name": "fiw_tb_te_directional_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-di-c48d2c2c91-a1"
+}
