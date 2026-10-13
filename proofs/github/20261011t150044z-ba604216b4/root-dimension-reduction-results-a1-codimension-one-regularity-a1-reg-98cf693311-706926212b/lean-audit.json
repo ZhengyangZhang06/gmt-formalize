@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7bd0fe8632cd977edb73ac0ceab0cd3e3f882999ac6a33d6211fb5a03097fc7b",
+  "git_delta": {
+    "base_commit": "2652f087676e07ed21f6009bde99bb805c96dc12",
+    "candidate_commit": "10cce2955441d1a8335957181369210b325b2a52",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_gc_unitOrientation_isometry",
+    "diff_sha256": "915a8c7528535aa053a5be71fa5d1509d1443321288ba4905e0a5c3a156b2a50",
+    "source_sha256": "e5308815b9fae8f01de0533feda6ab60c50d1643482271202aa9f0c7861b8649",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_gc_unitOrientation_isometry",
+      "statement": "∀ (P m : ℕ) (ξ : MultiVector P (m + 1)) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid P, Set.range ι = (Q : Set (Euclid P)) ∧ ∀ α : Covector (Euclid P) (m + 1), ξ α = α (fun i => ι (EuclideanSpace.single i 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
