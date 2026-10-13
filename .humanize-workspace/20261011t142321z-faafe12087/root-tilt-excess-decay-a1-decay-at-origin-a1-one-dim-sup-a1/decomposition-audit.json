@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "volume_preserving_funUnique|volume_preserving_toLp|setIntegral_preimage_emb|integral_Ioc_eq_integral_Ioo|setIntegral_mono_on_ae|setIntegral_mono_set",
+        "absolutelyContinuousOnInterval|integral_deriv_eq_sub|intervalIntegrable_deriv|ae_differentiableWithinAt_of_mem|theorem measurable_deriv|norm_deriv_le_of_lipschitzOn|integrableOn_of_bounded|volume_real_Ioo_of_le|norm_integral_le_integral_norm_uIoc",
+        "abbrev single|norm_single|dist_single|def proj|abbrev proj",
+        "tdo_ods_(ball_integral_eq_interval|hsNormSq_fderiv_single|norm_sub_le_integral_deriv|integral_le_sqrt|interval_sup_le)",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -o /tmp/ods-independent-audit-zad2mywn/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean",
+        "python3 /tmp/ods-independent-audit-zad2mywn/run_check.py Types.lean",
+        "python3 /tmp/ods-independent-audit-zad2mywn/run_check.py Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1/decomposition-v1.json",
+        "/tmp/ods-decomp/final/Full.lean",
+        "/tmp/ods-independent-audit-zad2mywn/Types.lean",
+        "/tmp/ods-independent-audit-zad2mywn/Full.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, matching contract definitions, and relevant Mathlib declarations. All five exact one-line propositions independently elaborate with frozen imports and no child declarations. Independently recompiled the supplied five proofs and exact selected-parent assembly, using the stated additional AbsolutelyContinuousFun import; all six axiom reports contain only propext, Classical.choice and Quot.sound. Euclidean norms, volume measures and coordinate constructions have the intended instances. All names are bare identifiers, mutually distinct and unreserved across the 388-node DAG; the name search found only this proposal. The split appropriately separates coordinate transfer, derivative identification and interval analysis. Dependencies are acyclic and correctly directed, and the supplied assembly proves precisely the selected frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including arbitrary radius and no integrability assumption. The volume-preserving measurable equivalence, unconditional set-integral transfer and exact ball preimage prove the claim, also for nonpositive radii."
+    },
+    {
+      "key": "hs_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unconditional identity matches its Lean type. The singleton Hilbert–Schmidt sum and chain rule handle differentiability; composition with the inverse coordinate projection proves nondifferentiability transfers, so both derivatives vanish in the remaining case."
+    },
+    {
+      "key": "ftc_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Bounded measurable derivatives supply integrability; Rademacher justifies the almost-everywhere scalar derivative comparison. Scalar absolute-continuity FTC, unordered interval estimates and null-endpoint removal complete the proof for either endpoint order. Empty and degenerate intervals cause no gap."
+    },
+    {
+      "key": "cauchy_schwarz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly assumes only square-integrability. The proof explicitly handles nonintegrable g using the undefined-integral convention. Otherwise every term in the variance expansion is integrable, and positivity of 2a yields the squared bound and required square-root inequality."
+    },
+    {
+      "key": "interval_sup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean estimate agree exactly. Continuity and bounded measurable derivatives justify the required integrability. The declared ftc_bound and cauchy_schwarz dependencies give averaging and both square-root terms with the correct constants. Together with ball_integral and hs_deriv, this establishes the selected parent without circularity."
+    }
+  ],
+  "required_changes": []
+}
