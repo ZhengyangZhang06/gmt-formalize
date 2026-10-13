@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.support_iff_weight_pos-a1",
+  "parent_id": "root.regular_set_dense-a1",
+  "depth": 2,
+  "title": "The support of an integer multiplicity current is the support of its weight measure",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T ∈ 𝒟_n(U), and let R = (M, θ, ξ) be an integer multiplicity representation of T in U with weight μ_T = R.measure = θH^n⌞M. Then for every x ∈ ℝ^P: x ∈ spt T if and only if x ∈ U and μ_T(B_r(x)) > 0 for every r > 0. Here spt T (T.support) is U minus the union of all open W with W̄ compact, W̄ ⊆ U, and T(ω) = 0 for every ω ∈ 𝒟^n(U) with spt ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ x : Euclid P, x ∈ T.support ↔ x ∈ U ∧ ∀ r : ℝ, 0 < r → 0 < R.measure (ball x r)",
+  "lean_name": "rsd_mem_support_iff_measure_ball_pos",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-support-iff-weight-pos-a1-a1"
+}
