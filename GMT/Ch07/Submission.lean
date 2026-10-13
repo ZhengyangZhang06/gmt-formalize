@@ -2170,6 +2170,143 @@ theorem Submission.imrep_carrier_sdiff_support_null : ∀ (P n : ℕ) (U : Set (
   obtain ⟨hWo, hWc, hWU, hTW⟩ := h𝒮W hW
   exact Submission.imrep_carrier_inter_null_of_vanishesOn P n U W T R hRT hWo hWc hWU hTW
 
+/-- **Simon Ch. 6, 3.1, 3.2(3) and 2.34** (chapter-06.txt lines 569–604 and 733–768; the
+constancy step of 7.3.2(1) and 7.3.3, chapter-07.txt lines 311–314 and 504–507): an integer
+multiplicity `S = τ(M, θ, ξ) ∈ 𝒟ₙ(V)` with `spt S ⊆ Q = span{τ₁, …, τₙ}` (`τ` orthonormal) is
+`g[[Q]]` for an integer density `g`, i.e. `S(ω) = ∫_{V∩Q} g ⟨ω, τ₁ ∧ ⋯ ∧ τₙ⟩ dHⁿ` and
+`M_W(S) = ∫_{W∩Q} |g| dHⁿ` for open `W ⊆ V`.  `Hⁿ(M ∖ Q) ≤ Hⁿ(M ∖ spt S) = 0`
+(`imrep_carrier_sdiff_support_null`), so `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` `Hⁿ`-a.e. on `M`
+(`idtp_pc_orient_ae_eq_or_neg`).  The sign is `ε = ⟨β₀, ξ⟩` for the covector
+`β₀(w) = det(⟨τᵢ, wⱼ⟩)`, which has `β₀(τ) = 1`, and `g = 1_M θ ε`.  Then `θ⟨ω, ξ⟩ = g ω(τ)` and
+`|g| = 1_M θ` `Hⁿ`-a.e., while `M_W(S) = μ_S(W) = ∫_{W∩M} θ dHⁿ` (`dimred_im_mass_measure`). -/
+theorem Submission.idtp_pc_signed_density : ∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P), IsOpen V → Orthonormal ℝ τ → IsIntegerMultiplicity S → S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → ∃ g : Euclid P → ℝ, AEStronglyMeasurable g (μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) ∧ (∀ᵐ x ∂(μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))), ∃ m : ℤ, g x = m) ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → ∫⁻ x in K ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] ≠ ∞) ∧ (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → S.massOn W = ∫⁻ x in W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] := by
+  intro P n V S τ hV hτ hS hspt
+  obtain ⟨R, hR⟩ := hS
+  set Q : Set (Euclid P) := (Submodule.span ℝ (Set.range τ) : Set (Euclid P))
+  have hQm : MeasurableSet Q := (Submodule.closed_of_finiteDimensional _).measurableSet
+  have hMm : MeasurableSet R.carrier := R.measurableSet_carrier
+  -- `Hⁿ(M ∖ Q) ≤ Hⁿ(M ∖ spt S) = 0`, as `spt S ⊆ Q`
+  have hnull : μHE[n] (R.carrier \ Q) = 0 :=
+    measure_mono_null (sdiff_subset_sdiff_right hspt)
+      (Submission.imrep_carrier_sdiff_support_null P n V S R hV hR)
+  -- `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` `Hⁿ`-a.e. on `M`
+  have hor := Submission.idtp_pc_orient_ae_eq_or_neg P n V R τ hτ hnull
+  -- the covector `β₀(w) = δ(Ls w₁, …, Ls wₙ) = det(⟨τᵢ, wⱼ⟩)`, `δ` the determinant of `ℝⁿ`,
+  -- `Ls w = (⟨τₖ, w⟩)ₖ`; `Ls τᵢ = eᵢ`, so `β₀(τ) = 1`
+  obtain ⟨β₀, hβ₀⟩ : ∃ β₀ : Covector (Euclid P) n, β₀ τ = 1 := by
+    classical
+    let b : Module.Basis (Fin n) ℝ (Euclid n) := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+    have hdet : ∀ c : Fin n → Euclid n, b.det c = (Matrix.of fun r l => c l r).det := by
+      intro c
+      rw [Module.Basis.det_apply]
+      congr 1
+    have hcont : Continuous (fun c : Fin n → Euclid n => b.det c) := by
+      simp only [hdet]
+      apply Continuous.matrix_det
+      refine continuous_matrix fun r l => ?_
+      exact (EuclideanSpace.proj r).continuous.comp (continuous_apply l)
+    let δ : Covector (Euclid n) n := { b.det with cont := hcont }
+    let Ls₀ : Euclid P →ₗ[ℝ] Euclid n :=
+      { toFun := fun y => (WithLp.equiv 2 (Fin n → ℝ)).symm (fun k => inner ℝ (τ k) y)
+        map_add' := fun y z => by ext k; simp [inner_add_right]
+        map_smul' := fun c y => by ext k; simp [inner_smul_right] }
+    let Ls : Euclid P →L[ℝ] Euclid n := LinearMap.toContinuousLinearMap Ls₀
+    have hLsτ : ∀ i, Ls (τ i) = b i := by
+      intro i
+      ext k
+      simp [Ls, Ls₀, b, orthonormal_iff_ite.mp hτ, eq_comm]
+    refine ⟨δ.compContinuousLinearMap Ls, ?_⟩
+    show δ (fun i => Ls (τ i)) = 1
+    simp only [hLsτ]
+    exact b.det_self
+  -- the sign `ε = ⟨β₀, ξ⟩` and the signed density `g = 1_M θ ε`
+  set ε : Euclid P → ℝ := fun x => R.orient x β₀
+  have hεm : AEStronglyMeasurable ε (μHE[n].restrict R.carrier) :=
+    (ContinuousLinearMap.apply ℝ ℝ β₀).continuous.comp_aestronglyMeasurable
+      R.aestronglyMeasurable_orient
+  set g : Euclid P → ℝ := R.carrier.indicator (fun x => (R.mult x : ℝ) * ε x)
+  -- `Hⁿ`-a.e. on `M`: `ε = ±1` and `ξ = ε τ₁ ∧ ⋯ ∧ τₙ`
+  have hgood : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      (ε x = 1 ∨ ε x = -1) ∧ ∀ α : Covector (Euclid P) n, R.orient x α = ε x * α τ := by
+    filter_upwards [hor] with x hx
+    rcases hx with h | h
+    · exact ⟨Or.inl (by simp [ε, h, hβ₀]), fun α => by simp [ε, h, hβ₀]⟩
+    · exact ⟨Or.inr (by simp [ε, h, hβ₀]), fun α => by simp [ε, h, hβ₀]⟩
+  have hgood' : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier →
+      ((ε x = 1 ∨ ε x = -1) ∧ ∀ α : Covector (Euclid P) n, R.orient x α = ε x * α τ) :=
+    (ae_restrict_iff' hMm).mp hgood
+  -- `g = ±θ ∈ ℤ` on `M` and `g = 0` off `M`, so `g ∈ ℤ` and `|g| = 1_M θ` `Hⁿ`-a.e.
+  have hgint : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∃ m : ℤ, g x = m := by
+    filter_upwards [hgood'] with x hx
+    by_cases hxM : x ∈ R.carrier
+    · rcases (hx hxM).1 with h1 | h1
+      · exact ⟨R.mult x, by simp [g, hxM, h1]⟩
+      · exact ⟨-(R.mult x : ℤ), by simp [g, hxM, h1]⟩
+    · exact ⟨0, by simp [g, hxM]⟩
+  have hgabs : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
+      ‖g x‖ₑ = R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) x := by
+    filter_upwards [hgood'] with x hx
+    by_cases hxM : x ∈ R.carrier
+    · rcases (hx hxM).1 with h1 | h1
+      · simp [g, hxM, h1]
+      · simp [g, hxM, h1]
+    · simp [g, hxM]
+  have hnullae : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ R.carrier \ Q :=
+    measure_eq_zero_iff_ae_notMem.mp hnull
+  refine ⟨g, ?_, ae_restrict_of_ae hgint, ?_, ?_, ?_⟩
+  · -- (i) `θε` is a.e.-strongly measurable on `M`, and `g` is its extension by `0`
+    have hθm : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) (μHE[n].restrict R.carrier) :=
+      ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp
+        R.measurable_mult).aestronglyMeasurable
+    have : AEStronglyMeasurable g (μHE[n] : Measure (Euclid P)) :=
+      (aestronglyMeasurable_indicator_iff hMm).mpr (hθm.mul hεm)
+    exact this.restrict
+  · -- (iii) `∫_{K∩Q} |g| ≤ ∫_K 1_M θ = ∫_{M∩K} θ < ∞`
+    intro K hK hKV
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKV) ?_
+    calc ∫⁻ x in K ∩ Q, ‖g x‖ₑ ∂μHE[n] ≤ ∫⁻ x in K, ‖g x‖ₑ ∂μHE[n] :=
+          lintegral_mono_set inter_subset_left
+      _ = ∫⁻ x in K, R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) x ∂μHE[n] :=
+          lintegral_congr_ae (ae_restrict_of_ae hgabs)
+      _ = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+          rw [lintegral_indicator hMm, Measure.restrict_restrict hMm]
+  · -- (iv) `1_M θ⟨ω, ξ⟩ = 1_{V∩Q} g ω(τ)` `Hⁿ`-a.e.: both vanish off `M`, and a.e. `x ∈ M`
+    -- lies in `V ∩ Q`
+    intro ω
+    rw [hR ω, IMRep.action, ← integral_indicator hMm,
+      ← integral_indicator (hV.measurableSet.inter hQm)]
+    refine integral_congr_ae ?_
+    filter_upwards [hgood', hnullae] with x hx hxn
+    by_cases hxM : x ∈ R.carrier
+    · have hxQ : x ∈ Q := by
+        by_contra h
+        exact hxn ⟨hxM, h⟩
+      have hxVQ : x ∈ V ∩ Q := ⟨R.carrier_subset hxM, hxQ⟩
+      rw [indicator_of_mem hxM, indicator_of_mem hxVQ, (hx hxM).2]
+      simp only [g, indicator_of_mem hxM]
+      ring
+    · by_cases hxVQ : x ∈ V ∩ Q
+      · rw [indicator_of_notMem hxM, indicator_of_mem hxVQ]
+        simp [g, hxM]
+      · rw [indicator_of_notMem hxM, indicator_of_notMem hxVQ]
+  · -- (v) `M_W(S) = μ_S(W) = ∫_{W∩M} θ = ∫_W |g| = ∫_{W∩Q} |g|`, as `g = 0` a.e. on `W ∖ Q`
+    intro W hW hWV
+    rw [(Submission.dimred_im_mass_measure P n V S R hV hR).1 W hW hWV, IMRep.measure,
+      withDensity_apply _ hW.measurableSet, Measure.restrict_restrict hW.measurableSet]
+    have hzero : ∫⁻ x in W \ Q, ‖g x‖ₑ ∂μHE[n] = 0 := by
+      have h0 : ∀ᵐ x ∂(μHE[n].restrict (W \ Q)), ‖g x‖ₑ = 0 := by
+        rw [ae_restrict_iff' (hW.measurableSet.diff hQm)]
+        filter_upwards [hnullae] with x hxn hxWQ
+        have hxM : x ∉ R.carrier := fun hxM => hxn ⟨hxM, hxWQ.2⟩
+        simp [g, hxM]
+      rw [lintegral_congr_ae h0, lintegral_zero]
+    calc ∫⁻ a in W ∩ R.carrier, (R.mult a : ℝ≥0∞) ∂μHE[n]
+        = ∫⁻ x in W, R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) x ∂μHE[n] := by
+          rw [lintegral_indicator hMm, Measure.restrict_restrict hMm, inter_comm]
+      _ = ∫⁻ x in W, ‖g x‖ₑ ∂μHE[n] := (lintegral_congr_ae (ae_restrict_of_ae hgabs)).symm
+      _ = ∫⁻ x in W ∩ Q, ‖g x‖ₑ ∂μHE[n] := by
+          rw [← lintegral_inter_add_sdiff (fun x => ‖g x‖ₑ) W hQm, hzero, add_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
