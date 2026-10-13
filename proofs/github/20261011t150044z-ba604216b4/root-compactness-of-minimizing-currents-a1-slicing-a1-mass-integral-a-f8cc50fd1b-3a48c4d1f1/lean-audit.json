@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "175d6063cceabeb6e6c095ca608063b88e40b49e0996187e07447d6abeb9458e",
+  "git_delta": {
+    "base_commit": "f272ad1ba991fa1ac92e20179995291e97235519",
+    "candidate_commit": "6efe397f182ee5f93e5be9c4b09eb298c3f56ad8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_smi_lintegral_ofReal_deriv_le",
+    "diff_sha256": "c329553f0c4248e24a562d63e0b7b632f6f4f7fe794edb68b69ec5eaf78c5ef1",
+    "source_sha256": "9906159f9387ef78e7d01c911ddb9486c7da1a6a17218795615e5896111e08d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_smi_lintegral_ofReal_deriv_le",
+      "statement": "∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
