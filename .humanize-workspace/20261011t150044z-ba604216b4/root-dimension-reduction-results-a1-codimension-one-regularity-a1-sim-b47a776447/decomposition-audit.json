@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsEmbeddedSubmanifold|def tangentSpace|def IsUnitOrientationOf|def IsOrientation|def regularSet|def HasMassDensity|unitBallVolume|MultiVector",
+        "theorem.*(inter_open|tangentSpace_inter|support_inter)|def IsEmbeddedSubmanifold",
+        "setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_zero_of_forall_eq_zero",
+        "codim1_dolr_(embedded_inter_open|rep_hasMassDensity|rep_support_inter)",
+        "git show 6da66b1edf6f809895011d303069229d599f99d6:GMT/Ch07/Submission.lean",
+        "git show e8842d90b78f15ebdbe728429ce98fccfaa6665c:GMT/Ch07/Submission.lean",
+        "git show 5fcaddaa05c1f91fbc4bc02e501a16a8818b9724:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dolr-independent-audit-n4lwn8g4/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dolr-independent-audit-n4lwn8g4/ChildrenAndParent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dolr-independent-audit-n4lwn8g4/Accepted_locally_closed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dolr-independent-audit-n4lwn8g4/Accepted_density_one.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dolr-independent-audit-n4lwn8g4/Accepted_mass_identity.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b47a776447/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b47a776447/decomposition-v1.json",
+        "/tmp/dolr-independent-audit-n4lwn8g4/Challenges.lean",
+        "/tmp/dolr-independent-audit-n4lwn8g4/ChildrenAndParent.lean",
+        "/tmp/dolr-independent-audit-n4lwn8g4/Accepted_locally_closed.lean",
+        "/tmp/dolr-independent-audit-n4lwn8g4/Accepted_density_one.lean",
+        "/tmp/dolr-independent-audit-n4lwn8g4/Accepted_mass_identity.lean"
+      ],
+      "conclusion": "The split is appropriate: three genuine new obligations and three valid accepted reuses establish the exact selected parent. Project, Mathlib and SimonGMT revisions match the pins; the frozen preamble is unchanged. Snapshot searches found the contract definitions but no matching open-piece/support theorem. All six types independently elaborate as propositions without child implementations. All names are bare identifiers; the three new names have no competing DAG owner or project declaration. Reused types match both DAG contracts and accepted source declarations exactly. Local and transitive dependency graphs are acyclic and do not return to the selected branch. Independently generated checks compile the supplied three new proofs and exact parent assembly successfully. Each reused candidate also compiles independently with only propext, Classical.choice and Quot.sound in its target's axiom closure; the unrelated frozen root placeholder is not used. The combined parent proof depends only on those standard axioms and the three independently verified reuses. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "open_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches every hypothesis and conclusion. Chart restriction preserves all chart clauses. The sine reparametrization preserves the derivative while keeping the witness curve inside O, proving tangent equality without an unstated r ≥ 1 or w ∈ N assumption. The supplied proof compiles without additional axioms."
+    },
+    {
+      "key": "rep_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract exactly matches the prose, including arbitrary k and m. Compact closed balls supply the finiteness required by mass_identity; density_one and multiplication by finite k.natAbs establish the required ENNReal limit, including k = 0. Every invoked dependency is declared and accepted."
+    },
+    {
+      "key": "rep_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, especially relative closedness and nonzero multiplicity, appear in the type. The proof establishes both support inclusions: vanishing neighborhoods exclude points off M, while positive submanifold density and the mass identity contradict vanishing near points of M. The argument is complete and non-circular."
+    },
+    {
+      "key": "locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration. Proper chart slices have compact continuous images, giving compact intersections with small closed balls. The identity M = O ∩ closure M then proves Borel measurability. The proof works for every stated r and d and has no undeclared dependency."
+    },
+    {
+      "key": "density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration. The two chart-image inclusions, bi-Lipschitz measure estimates and positive finite normalization yield the stated squeeze and limit, including n = 0. Its original dependencies are accepted, acyclic and present in the independently checked candidate."
+    },
+    {
+      "key": "mass_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration and includes all measurability, orientation, support and finiteness assumptions. Domination establishes integrability and the upper bound. Compact approximation and smooth unit approximation give the explicit lower-bound error tending to zero. The proof handles zero and negative multiplicities and uses verified accepted dependencies."
+    }
+  ],
+  "required_changes": []
+}
