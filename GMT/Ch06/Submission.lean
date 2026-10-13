@@ -359,6 +359,82 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Gram representative of a differential along a `C¹` chart (chart gradient for the tangential
+gradient in the slicing of Simon Ch. 6, §4): if `Φ : ℝⁿ → ℝ^P` is `C¹` and `A_w = DΦ(w)` is
+injective on an open `Ω`, then for any `h : ℝⁿ → ℝ` the field `γ(w) = A_w (A_w* A_w)⁻¹ a_w`, with
+`a_w` the Riesz vector of `Dh(w)`, extended by `0` off `Ω`, is Borel, lies in `range A_w` and
+satisfies `⟨γ(w), A_w u⟩ = Dh(w) u` on `Ω`. -/
+theorem Submission.slicing_im_tg_cg_gram_field :
+    ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (h : Eucl n → ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∀ w ∈ Ω, Function.Injective (fderiv ℝ Φ w)) → ∃ γ : Eucl n → Eucl P, Measurable γ ∧ ∀ w ∈ Ω, γ w ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u : Eucl n, inner ℝ (γ w) (fderiv ℝ Φ w u) = fderiv ℝ h w u := by
+  intro P n Φ Ω h hΩ hΦ hinj
+  classical
+  set A : Eucl n → (Eucl n →L[ℝ] Eucl P) := fderiv ℝ Φ with hA
+  have hAc : Continuous A := hΦ.continuous_fderiv one_ne_zero
+  -- The Gram operator `G w = A_w* A_w` depends continuously on `w`.
+  let G : Eucl n → (Eucl n →L[ℝ] Eucl n) := fun w => (ContinuousLinearMap.adjoint (A w)).comp (A w)
+  have hGc : Continuous G := by
+    have h1 : Continuous fun w => ContinuousLinearMap.adjoint (A w) :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Eucl n) (F := Eucl P)).continuous.comp hAc
+    exact h1.clm_comp hAc
+  -- On `Ω`, `⟨G w u, u⟩ = ‖A_w u‖²` makes `G w` injective, hence (finite dimension) a unit.
+  have hGunit : ∀ w ∈ Ω, IsUnit (G w) := by
+    intro w hw
+    rw [ContinuousLinearMap.isUnit_iff_bijective]
+    have hi : Function.Injective (G w) := by
+      rw [injective_iff_map_eq_zero]
+      intro u hu
+      have h1 : inner ℝ (G w u) u = ‖A w u‖ ^ 2 := by
+        simp only [G, ContinuousLinearMap.coe_comp, Function.comp_apply,
+          ContinuousLinearMap.adjoint_inner_left, real_inner_self_eq_norm_sq]
+      rw [hu, inner_zero_left] at h1
+      have h2 : A w u = 0 := by
+        have h3 : ‖A w u‖ ^ 2 = 0 := h1.symm
+        exact norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp h3)
+      exact (injective_iff_map_eq_zero _).mp (hinj w hw) u h2
+    refine ⟨hi, ?_⟩
+    exact (LinearMap.injective_iff_surjective
+      (f := ((G w : Eucl n →L[ℝ] Eucl n) : Eucl n →ₗ[ℝ] Eucl n))).mp hi
+  -- `B w = A_w (G w)⁻¹` is continuous on `Ω`, since `Ring.inverse` is continuous at units.
+  let B : Eucl n → (Eucl n →L[ℝ] Eucl P) := fun w => (A w).comp (Ring.inverse (G w))
+  have hBc : ContinuousOn B Ω := by
+    intro w hw
+    apply ContinuousAt.continuousWithinAt
+    have h1 : ContinuousAt (fun w => Ring.inverse (G w)) w := by
+      obtain ⟨U, hU⟩ := hGunit w hw
+      have h2 := NormedRing.inverse_continuousAt U
+      rw [hU] at h2
+      exact h2.comp hGc.continuousAt
+    exact hAc.continuousAt.clm_comp h1
+  -- The Riesz vector `a w` of `Dh(w)` is Borel in `w` (`measurable_fderiv`).
+  let a : Eucl n → Eucl n := fun w => (InnerProductSpace.toDual ℝ (Eucl n)).symm (fderiv ℝ h w)
+  have ham : Measurable a :=
+    (InnerProductSpace.toDual ℝ (Eucl n)).symm.continuous.measurable.comp (measurable_fderiv ℝ h)
+  -- `B` extended by `0` off the open set `Ω` is Borel, and `γ w = Bt w (a w)`.
+  let Bt : Eucl n → (Eucl n →L[ℝ] Eucl P) := Ω.piecewise B 0
+  have hBtm : Measurable Bt :=
+    ContinuousOn.measurable_piecewise hBc continuousOn_const hΩ.measurableSet
+  refine ⟨fun w => Bt w (a w), ?_, ?_⟩
+  · exact isBoundedBilinearMap_apply.continuous.measurable2 hBtm ham
+  · intro w hw
+    have hBt : Bt w = B w := Set.piecewise_eq_of_mem _ _ _ hw
+    simp only [hBt]
+    refine ⟨LinearMap.mem_range.mpr ⟨Ring.inverse (G w) (a w), rfl⟩, ?_⟩
+    intro u
+    -- `⟨A_w x, A_w u⟩ = ⟨G w x, u⟩` with `G w x = a w` for `x = (G w)⁻¹ a w`.
+    obtain ⟨U, hU⟩ := hGunit w hw
+    have hGR : G w (Ring.inverse (G w) (a w)) = a w := by
+      rw [← hU, Ring.inverse_unit]
+      show ((U : Eucl n →L[ℝ] Eucl n) * ((U⁻¹ : (Eucl n →L[ℝ] Eucl n)ˣ) : Eucl n →L[ℝ] Eucl n)) (a w)
+        = a w
+      rw [Units.mul_inv]
+      rfl
+    calc inner ℝ (B w (a w)) (A w u)
+        = inner ℝ ((ContinuousLinearMap.adjoint (A w)) (A w (Ring.inverse (G w) (a w)))) u := by
+          rw [ContinuousLinearMap.adjoint_inner_left]; rfl
+      _ = inner ℝ (G w (Ring.inverse (G w) (a w))) u := rfl
+      _ = inner ℝ (a w) u := by rw [hGR]
+      _ = fderiv ℝ h w u := InnerProductSpace.toDual_symm_apply
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
