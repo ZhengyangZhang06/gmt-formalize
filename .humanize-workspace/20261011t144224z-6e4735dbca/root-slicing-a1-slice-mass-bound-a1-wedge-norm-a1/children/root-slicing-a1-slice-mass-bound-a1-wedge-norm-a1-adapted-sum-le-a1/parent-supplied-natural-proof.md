@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1`
+- Child DAG node: `root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.adapted_sum_le-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Steps 6–7. Here ‖α‖ is replaced by an arbitrary constant c, and the adapted orthonormal basis by an arbitrary family u satisfying the value hypothesis; orthonormality is not used in this part.
+
+Notation. [P] := {0,…,P−1}. u = (u_0,…,u_{P−1}) is a family of vectors of ℝ^P, α : ℝ^P → ℝ is continuous linear, γ is an m-covector and c ∈ ℝ. Hypothesis (H): α(u_j) = c if j = 0 and α(u_j) = 0 if j ≠ 0. Put α∧γ := alternatizeUncurryFin(α.smulRight γ), an (m+1)-covector. For I : {0,…,m} → [P] put u_I := (u_{I(0)},…,u_{I(m)}) and I∘succ := (I(1),…,I(m)) : {0,…,m−1} → [P]. Claim: Σ_{I strictly increasing} ((α∧γ)(u_I))² ≤ c²·Σ_{J : {0,…,m−1}→[P] strictly increasing} γ(u_J)². In the statement each sum runs over all maps, with summand 0 for maps that are not strictly increasing.
+
+1. (Wedge formula.) By ContinuousAlternatingMap.alternatizeUncurryFin_apply and (α.smulRight γ)(x) = α(x)·γ (ContinuousLinearMap.smulRight_apply), for w = (w_0,…,w_m):
+ (α∧γ)(w) = Σ_{i=0}^{m} (−1)^i α(w_i)·γ(w_0,…,ŵ_i,…,w_m), where ŵ_i is omitted.
+
+2. (Values on strictly increasing tuples.) Let I be strictly increasing and w := u_I. For 1 ≤ i ≤ m, I(i) > I(0) ≥ 0, so I(i) ≠ 0 and α(u_{I(i)}) = 0 by (H); the i-th term vanishes. Removing the 0-th entry of u_I leaves u_{I∘succ}, so the i = 0 term is (−1)^0·α(u_{I(0)})·γ(u_{I∘succ}). By (H), α(u_{I(0)}) = c if I(0) = 0 and 0 otherwise. Hence
+ (α∧γ)(u_I) = c·γ(u_{I∘succ}) if I(0) = 0, and (α∧γ)(u_I) = 0 if I(0) ≠ 0.
+
+3. (The left side.) Let A := {I : {0,…,m} → [P] : I strictly increasing and I(0) = 0}. By step 2, the left side equals Σ_{I∈A} c²·γ(u_{I∘succ})².
+
+4. (Injection into increasing m-tuples.) For I ∈ A, I∘succ is strictly increasing, since it composes I with the strictly increasing map succ : j ↦ j+1. The map Φ : I ↦ I∘succ is injective on A. If I, I' ∈ A and I∘succ = I'∘succ, then I(0) = 0 = I'(0) and I(j+1) = I'(j+1) for all j < m, so I = I'.
+
+5. (Estimate.) Let B := {J : {0,…,m−1} → [P] : J strictly increasing}. By step 4, Σ_{I∈A} γ(u_{I∘succ})² = Σ_{J∈Φ(A)} γ(u_J)². This is ≤ Σ_{J∈B} γ(u_J)², because Φ(A) ⊆ B and every summand is ≥ 0. Multiply by c² ≥ 0 and use step 3: the left side is ≤ c²·Σ_{J∈B} γ(u_J)², which is the right side of the claim.
+
+6. (Degenerate cases.) If P = 0 there is no map {0,…,m} → [P], so the left side is 0, which is ≤ the nonnegative right side. If m+1 > P then A = ∅ and the left side is 0. The case m = 0 is included; then I∘succ is the empty map and γ is a 0-covector. ∎
+
+Formalization pointers:
+- Fin.sum_univ_succ isolates i = 0, and Fin.removeNth_zero gives removeNth 0 w = Fin.tail w.
+- Strict monotonicity gives (I 0 : ℕ) < (I i.succ : ℕ) via Fin.succ_pos.
+- Rewrite the left side as a sum over Finset.univ.filter (StrictMono I ∧ (I 0 : ℕ) = 0) using Finset.sum_filter.
+- Then use Finset.sum_image with the injectivity of I ↦ (fun j ↦ I j.succ) (proved with Fin.cases), Finset.sum_le_sum_of_subset_of_nonneg, and Fin.strictMono_succ.
+
+## Key steps
+
+1. (α∧γ)(w) = Σ_i (−1)^i α(w_i) γ(w with w_i removed), by alternatizeUncurryFin_apply and smulRight_apply.
+2. For strictly increasing I, every term with i ≥ 1 vanishes (I(i) ≠ 0), so (α∧γ)(u_I) = c·γ(u_{I∘succ}) if I(0) = 0, and 0 otherwise.
+3. The left side equals Σ_{I strictly increasing, I(0)=0} c²·γ(u_{I∘succ})².
+4. I ↦ I∘succ is injective on {I(0) = 0} and lands in the strictly increasing m-tuples; nonnegativity gives ≤ c²·Σ_{J strictly increasing} γ(u_J)².
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical); cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (identical)`
+- `snapshot project/lake-manifest.json revs vs git rev-parse HEAD of lake-packages-25730c7c/{simongmt,mathlib}: simongmt 2b3663083f3fe399b6296fb8eaee52169170e197, mathlib 25730c7c759d108ef87ab70af2342a196760f79d (match)`
+- `rg -n 'covectorEuclideanNorm' local-references/197bdd4b88278494/project (no match)`
+- `rg -n 'slicing_mb_wn_|sq_sum_eq_factorial_mul|sq_sum_onb_invariant|norm_sq_eq_onb_sum|adapted_onb|adapted_sum_le' local-references/197bdd4b88278494/project (no match)`
+- `grep -n 'covectorEuclideanNorm|abbrev Covector|def Covector|StrictMono' simongmt/Poincare/SimonGMT/Chapter06/*.lean; rg -n 'OrthonormalBasis' Poincare/SimonGMT/Chapter06 (no match); rg -n 'factorial|orderEmbOfFin|Tuple.sort|StrictMono I' Poincare/SimonGMT`
+- `grep -n 'theorem|lemma|def |abbrev ' simongmt Chapter06/{WedgeForms,FormSupNorm,FormsDuality,GeometricPointProduct}.lean`
+- `rg -n 'lemma OrthonormalBasis.norm_dual' Mathlib/Analysis/InnerProductSpace/Dual.lean; rg -n 'theorem Orthonormal.exists_orthonormalBasis_extension_of_card_eq' Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n 'theorem alternatizeUncurryFin_apply' Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean; rg -n 'theorem curryLeft_apply_apply' Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `rg -n 'theorem monotone_sort|theorem sort_eq_refl_iff_monotone|theorem comp_perm_comp_sort_eq_comp_sort' Mathlib/Data/Fin/Tuple/Sort.lean; rg -n 'theorem map_perm ' Mathlib/LinearAlgebra/Alternating/Basic.lean; rg -n 'theorem map_eq_zero_of_not_injective' Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n '^theorem toDual_symm_apply' Mathlib/Analysis/InnerProductSpace/Dual.lean; rg -n 'def apply \(m' Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `rg -ln 'factorial' Mathlib/LinearAlgebra/Alternating Mathlib/LinearAlgebra/ExteriorPower Mathlib/Analysis/Normed/Module/Alternating; module docstrings of Mathlib/LinearAlgebra/ExteriorPower/{BilinForm,Pairing,HodgeStar}.lean`
+- `python3 scan of dag.json (217 nodes, 217 distinct lean_names): five proposed names absent; statements mentioning covectorEuclideanNorm/Orthonormal/alternatizeUncurryFin/smulRight/StrictMono listed (no identical type)`
+- `contract_scope/child_modules in verifier/gmt-compare.py (replayed child scope: opens, namespace GMT.Ch06, noncomputable section/end)`
+- `lake env printenv LEAN_PATH; lean -o /tmp/wedge_split_trCfMb/out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean`
+- `lean /tmp/wedge_split_trCfMb/check/Stmts.lean (5 child types + parent elaborate, no errors)`
+- `lean /tmp/wedge_split_trCfMb/check/Instances.lean (pp.explicit: StrictMono decidability instance instDecidableStrictMonoOfForallForallForallLt, same as in covectorEuclideanNorm; #check of cited lemmas)`
+- `lean /tmp/wedge_split_trCfMb/check/Assembly.lean (#print axioms full_assembly: [propext, Classical.choice, Quot.sound]; ‖α‖ = ContinuousLinearMap.opNorm α by rfl)`
+- `lean /tmp/wedge_split_trCfMb/check/{ProveC1,ProveC2,ProveC4_ax,ProveC5_ax,EndToEnd}.lean (#print axioms of all five children and the parent: [propext, Classical.choice, Quot.sound])`
+- `grep -n -i 'orthonormal' book/chapter-06.txt; sed -n 85,110p book/chapter-06.txt (Simon 1.5–1.6)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/ExteriorPower/BilinForm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/ExteriorPower/HodgeStar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/wedge_split_trCfMb/check/Stmts.lean`
+- `/tmp/wedge_split_trCfMb/check/Instances.lean`
+- `/tmp/wedge_split_trCfMb/check/Assembly.lean`
+- `/tmp/wedge_split_trCfMb/check/ProveC1.lean`
+- `/tmp/wedge_split_trCfMb/check/ProveC2.lean`
+- `/tmp/wedge_split_trCfMb/check/ProveC4.lean`
+- `/tmp/wedge_split_trCfMb/check/ProveC5.lean`
+- `/tmp/wedge_split_trCfMb/check/EndToEnd.lean`
+
+Findings:
+- The pinned snapshot (project d8d46c95, Mathlib 25730c7c, SimonGMT 2b366308 per lake-manifest and package HEADs) contains the frozen Ch06 contract, byte-identical to the workspace Submission.
+- SimonGMT defines covectorEuclideanNorm as √(Σ_{I : Fin n → Fin P} if StrictMono I then α(basisFun ∘ I)² else 0) (Mass.lean:30), with Covector E n = E [⋀^Fin n]→L[ℝ] ℝ (Forms.lean:31).
+- SimonGMT has no orthonormal-basis invariance, counting identity or wedge-norm bound for this norm. Its only wedge estimate (norm_covectorWedge_le) is for the operator norm, and it contains no OrthonormalBasis usage in Chapter06.
+- Mathlib provides the needed tools: OrthonormalBasis.norm_dual (‖L‖² = Σ L(b_i)², the one-slot Parseval step), Orthonormal.exists_orthonormalBasis_extension_of_card_eq, InnerProductSpace.toDual_symm_apply, alternatizeUncurryFin_apply, curryLeft_apply_apply, ContinuousAlternatingMap.apply, map_eq_zero_of_not_injective, AlternatingMap.map_perm and the Tuple.sort API.
+- Mathlib's exterior-power bilinear forms act on ⋀[R]^n M, not on continuous alternating maps, and provide no coefficient-norm invariance. So all five children are new obligations.
+- In the replayed comparator child scope, all five child types and the parent type elaborate. The StrictMono decidability instance matches the one in covectorEuclideanNorm's definition.
+- The parent follows from the children with axioms [propext, Classical.choice, Quot.sound]. Scratch proofs of all five children compile with the same axioms.
+- No proposed name occurs in the snapshot project or among the 217 DAG nodes.
+- Simon 1.5–1.6 (local book) states that the covector inner product is induced from ℝ^P, which supports the basis independence in Step 3.

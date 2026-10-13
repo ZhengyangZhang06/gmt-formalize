@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.cutoff_current-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "If M(X) < ∞, then ω ↦ X(χω) is a current on ℝ^P",
+  "statement": "Let P, q ∈ ℕ and let U ⊆ ℝ^P be an arbitrary set. Let χ : ℝ^P → ℝ be C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ) with tsupport χ ⊆ U and |χ(x)| ≤ 1 for every x. Let X ∈ D_q(U) (GeometricCurrentOn U q) have finite mass, M(X) = X.mass = X.massOn U ≠ ∞. Then there is Y ∈ D_q(ℝ^P) (GeometricCurrentOn univ q: a linear functional on D^q(ℝ^P) that is sequentially continuous at 0 in the sense of TestFormOnConverges) such that Y(ω) = X(η) for all ω ∈ D^q(ℝ^P) and η ∈ D^q(U) with η(x) = χ(x)·ω(x) for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P q : ℕ) (U : Set (Eucl P)) (χ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → tsupport χ ⊆ U → (∀ x, |χ x| ≤ 1) → ∀ X : GeometricCurrentOn U q, X.mass ≠ ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) q, ∀ (ω : TestFormOn (univ : Set (Eucl P)) q) (η : TestFormOn U q), (∀ x, (η : DifferentialForm (Eucl P) q) x = χ x • (ω : DifferentialForm (Eucl P) q) x) → Y ω = X η",
+  "lean_name": "fiw_tb_ext_cutoff_current",
+  "depends_on": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.norm_smul-a1",
+    "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+    "root.flat_iff_weak-a1.im_series-a1.series_current-a1.converges_small-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.norm_smul-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1-a1",
+      "result_commit": "d771ac3ae563701d45563ad2e197624b3f42977f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.converges_small-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-converges-small-a1-a1",
+      "result_commit": "49ba437cb4c73c41041035a8f5eda19c11c4711b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-cutoff-current-a1-a1"
+}

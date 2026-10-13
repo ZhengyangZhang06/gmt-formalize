@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm|curryLeft|interiorProduct|interior product",
+        "interiorProduct|interior product|contraction|covectorEuclideanNorm",
+        "range_inj_of_wellFoundedLT|strictMono_of_injective|monotone_sort|def sort|map_eq_zero_of_not_injective|theorem map_perm|lemma map_perm",
+        "fiw_tb_ext_covectorNorm_smul",
+        "iwl_sp_covectorEuclideanNorm_pullback_le",
+        "iwl_sp_pn_sum_sq_tuples_eq_factorial_mul",
+        "dph_sh_ib_covectorEuclideanNorm_contract_le",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interior_bound_independent_audit_zbhxft47/ExactTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interior_bound_independent_audit_zbhxft47/ParentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interior_bound_independent_audit_zbhxft47/Contraction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interior_bound_independent_audit_zbhxft47/Reuse_norm_smul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interior_bound_independent_audit_zbhxft47/Reuse_pullback_norm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interior_bound_independent_audit_zbhxft47/Reuse_tuple_sum_factorial.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-715d48ac9c/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-715d48ac9c/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-norm-smul-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/isolated-comparator-result.json",
+        "/tmp/interior_bound_independent_audit_zbhxft47/ExactTypes.lean",
+        "/tmp/interior_bound_independent_audit_zbhxft47/ParentAssembly.lean",
+        "/tmp/interior_bound_independent_audit_zbhxft47/Contraction.lean",
+        "/tmp/interior_bound_independent_audit_zbhxft47/Reuse_norm_smul.lean",
+        "/tmp/interior_bound_independent_audit_zbhxft47/Reuse_pullback_norm.lean",
+        "/tmp/interior_bound_independent_audit_zbhxft47/Reuse_tuple_sum_factorial.lean"
+      ],
+      "conclusion": "The split appropriately isolates the contraction estimate needed by this exact selected parent. No matching coefficient-norm contraction bound was found in the snapshot project or searched alternating-map modules; norm_curryLeft concerns the operator norm. Definitions and relevant library files match the pinned build. All five frozen propositions independently elaborate. The three reused declarations have identical frozen types, passed comparators, compatible frozen contracts and package pins, and independently rechecked proofs using only propext, Classical.choice and Quot.sound. Lean also verifies the exact parent assembly from the proposed child types and the contraction bound from its sole declared prerequisite, with only those standard axioms. All names are bare identifiers; the new name is unreserved. The dependency graph, including existing reused dependencies, is acyclic. Scalar actions, Euclidean norms and curryLeft resolve to the intended structures; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and one-line type agree with the comparator-accepted declaration exactly. Pointwise scalar multiplication multiplies every squared coefficient by c²; factoring the finite sum and applying the square-root identities proves the claim for every real c. The proof is complete and non-circular, and the reuse is valid."
+    },
+    {
+      "key": "pullback_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all stated hypotheses and the coefficient-norm conclusion. The supplied proof establishes the tuple-counting identity, derives the single-slot estimate, iterates over all slots, cancels positive j!, and compares nonnegative squares. Zero degree and zero-dimensional spaces require no additional hypotheses. This is valid reuse of an identically typed, comparator-accepted declaration."
+    },
+    {
+      "key": "tuple_sum_factorial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Repeated indices contribute zero; permutation signs disappear after squaring; sorting and uniqueness of increasing enumerations give the required bijection and factorial multiplicity. The nonnegative defining sum justifies squaring the norm. The proof covers j = 0 and j > m without circularity, and the accepted declaration has the identical frozen type."
+    },
+    {
+      "key": "contraction_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes the full pointwise hypothesis defining δ and matches the prose exactly. Basis expansion, Cauchy–Schwarz, Fin.consEquiv, the declared tuple_sum_factorial prerequisite, positive-factorial cancellation and nonnegative square comparison prove the stated √(k+1) bound, including p = 0 and k = 0. The obligation is genuine, its name is unused, and its dependency is correctly directed. Constructing δ = γ.curryLeft w and combining this bound with homogeneity and pullback_norm proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

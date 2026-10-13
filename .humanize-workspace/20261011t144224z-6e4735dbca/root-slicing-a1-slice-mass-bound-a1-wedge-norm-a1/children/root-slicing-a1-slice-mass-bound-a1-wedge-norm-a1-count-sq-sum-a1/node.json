@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.count_sq_sum-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Counting identity: Σ_{all I} φ(u_I)² = k!·Σ_{I strictly increasing} φ(u_I)² (parent Step 1)",
+  "statement": "For all P, k ∈ ℕ, every family u = (u_0,…,u_{P−1}) of vectors of ℝ^P (u : Fin P → Eucl P, arbitrary, not necessarily orthonormal) and every k-covector φ on ℝ^P (φ : Covector (Eucl P) k, a continuous alternating k-linear map (ℝ^P)^k → ℝ): Σ_{I : {0,…,k−1} → [P]} φ(u_{I(0)},…,u_{I(k−1)})² = k!·Σ_{I strictly increasing} φ(u_{I(0)},…,u_{I(k−1)})². Here [P] = {0,…,P−1}. In Lean the right-hand sum runs over all I : Fin k → Fin P, with summand 0 when I is not strictly increasing.",
+  "lean_statement": "∀ (P k : ℕ) (u : Fin P → Eucl P) (φ : Covector (Eucl P) k), ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 = (k.factorial : ℝ) * ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0",
+  "lean_name": "slicing_mb_wn_sq_sum_eq_factorial_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-count-sq-sum-a1-a1"
+}
