@@ -448,6 +448,28 @@ theorem Submission.fiw_ims_sc_continuous_of_bound : ∀ (P n : ℕ) (U : Set (Eu
       rw [mul_div_assoc', div_lt_iff₀ hA1]
       nlinarith [abs_nonneg A]
 
+/-- **A bounded linear functional on `𝒟ⁿ(U)` is a current of mass at most `B`** (Simon Ch. 6,
+2.1 and 2.4; fact (F5/F6) for the Lipschitz push-forward).  If `T₀` is additive and homogeneous
+and `|T₀(ω)| ≤ B·C` whenever `|ω(y)| ≤ C` for all `y`, then `T₀` is a current `S`: its
+sequential continuity is `fiw_ims_sc_continuous_of_bound` with `A := B` on every compact
+`K ⊆ U`, and every mass-admissible `ω` (`|ω| ≤ 1`) has `S(ω) ≤ |T₀(ω)| ≤ B·1`, so the
+supremum `M(S)` is at most `B`. -/
+theorem Submission.dph_lpf_current_of_bounded_functional : ∀ (P n : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U n → ℝ) (B : ℝ), (∀ ω η : TestFormOn U n, T₀ (ω + η) = T₀ ω + T₀ η) → (∀ (c : ℝ) (ω : TestFormOn U n), T₀ (c • ω) = c * T₀ ω) → (∀ (ω : TestFormOn U n) (C : ℝ), (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) y) ≤ C) → |T₀ ω| ≤ B * C) → ∃ S : GeometricCurrentOn U n, (∀ ω, S ω = T₀ ω) ∧ S.mass ≤ ENNReal.ofReal B := by
+  intro P n U T₀ B hadd hsmul hbound
+  -- Additivity and homogeneity make `T₀` an `ℝ`-linear map on `𝒟ⁿ(U)`.
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := T₀
+      map_add' := hadd
+      map_smul' := fun c ω => by rw [RingHom.id_apply, smul_eq_mul]; exact hsmul c ω }
+  -- Continuity: on every compact `K ⊆ U` the bound holds with `A := B`.
+  refine ⟨⟨L, fun ωs hωs => Submission.fiw_ims_sc_continuous_of_bound P n U T₀
+    (fun _ _ _ => ⟨B, fun ω C _ _ hω => hbound ω C hω⟩) ωs hωs⟩, fun _ => rfl, ?_⟩
+  -- Mass: an admissible `ω` has `|ω| ≤ 1`, so `S(ω) ≤ |T₀(ω)| ≤ B · 1 = B`.
+  apply sSup_le
+  rintro _ ⟨ω, hω, rfl⟩
+  exact ENNReal.ofReal_le_ofReal
+    ((le_abs_self _).trans ((hbound ω 1 hω.2).trans_eq (mul_one B)))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
