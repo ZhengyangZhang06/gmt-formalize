@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.dir_deriv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "depth": 5,
+  "title": "Directional derivatives of C^2 global weak solutions of constant-coefficient systems are global weak solutions",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, and A a continuous bilinear form on L. Let V : R^n -> R^l be C^2 and assume that the integral over R^n of A[DV(x)][Dzeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l. Let v in R^n and d_vV(x) := DV(x)v. Then the integral over R^n of A[D(d_vV)(x)][Dzeta(x)] is 0 for every C^1 compactly supported zeta : R^n -> R^l.",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (v : Rn n), ContDiff ℝ 2 V → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ (fun y => fderiv ℝ V y v) x) (fderiv ℝ ζ x) = 0",
+  "lean_name": "dohr_eb_sch_liou_dir_deriv_solution",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.snd_deriv_symm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.snd_deriv_symm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-1d68d74191-a1"
+}
