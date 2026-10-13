@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Allard's Rectifiability Theorem 8.5.5 with Remark 5.6, and Corollary 8.5.7 (tangent cones are rectifiable cones)",
+  "statement": "If V has locally bounded first variation in open U ⊆ ℝ^N and Θ^n(μ_V,x) exists and is > 0 for μ_V-a.e. x, then V is rectifiable (IsRectifiable V: V = v(M,θ) for some M, θ) and V has a tangent plane with positive multiplicity in the sense of Def. 1.1 at μ_V-a.e. x. Moreover (Simon 5.7): let V have locally bounded first variation, x ∈ U, θ0 > 0, Θ^n(μ_V,x) = θ0, ρ^{1−n}‖δV‖(B_ρ(x)) → 0, and ρ^{-n}μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V,y) exists and ≥ 1)}) → 0 as ρ ↓ 0. Then every C ∈ VarTan(V,x) is rectifiable and η_{0,s#}C = C (rescaledMeasure C 0 s = C.measure) for all s > 0. (Exactly AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones.)",
+  "lean_statement": "AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones",
+  "lean_name": "allard_rectifiability_and_tangent_cones",
+  "depends_on": [
+    "root.first_variation-a1",
+    "root.monotonicity_density-a1",
+    "root.constancy-a1",
+    "root.varifold_tangents-a1",
+    "root.plane_disintegration-a1",
+    "root.first_rectifiability-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.monotonicity_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.constancy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.varifold_tangents-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.plane_disintegration-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-a1"
+}

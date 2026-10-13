@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|monotoneOn_of_deriv_nonneg|Antitone.deriv_nonpos|norm_integral_le_lintegral_norm|theorem lintegral_const_mul\\x27|theorem lintegral_indicator |theorem toReal_mono|theorem integral_map |integrableOn_of_bounded|IntegrableOn.integrable_of_forall_notMem_eq_zero",
+        "weightedCutoffMass|hasDerivAt_integral_radialCutoff|weightedRadialVectorField|scaledRadialCutoff",
+        "validate_lean_statement(st)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wrm-independent-audit-20261012/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-allard-lemma-a1-weighted-radial-monotonicity-a1/parent-child-handoff.json",
+        "/tmp/wrm-independent-audit-20261012/IndependentTypes.lean",
+        "/tmp/wrm-independent-audit-20261012/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "Pinned revisions and inspected snapshot/live sources agree. The cited analytic lemmas support the proofs, including the unconditional Bochner norm bound. The weighted-radial search returned no matches in the snapshot's project or Mathlib trees; those specialized modules are outside Submission's import closure. All three frozen types independently elaborate before child declarations. The supplied child proofs, exact comparator targets, and parent assembly using only its two frozen dependencies compile with axioms propext, Classical.choice and Quot.sound, without sorryAx. Names are bare and unreserved; dependencies are acyclic. Scalar actions and operator norms have the intended types; no Matrix/IsUnit construction occurs. The split appropriately isolates three analytic obligations and establishes the selected parent, including n = 0 and σ = ρ."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_mass_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type match all hypotheses. The proof constructs a positive radius neighborhood, proves cutoff and derivative vanishing outside the finite-measure compact ball, supplies compact domination and initial integrability, and computes the exact derivative before applying differentiation under the integral. Continuous h suffices; no unstated boundedness, measurability, or parent theorem is required."
+    },
+    {
+      "key": "first_variation_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit Div hypothesis matches the existing radial-field dependency after fixing N and n, and the parent discharges it without circularity. The proof establishes regularity, compact support, projection contraction, and integrability of every term. Its pointwise nonnegative remainder gives exactly nI − tJ + G ≤ δW(X), with the correct sign. Linearity and the weight pushforward justify the conclusion; locally bounded first variation is unnecessary here."
+    },
+    {
+      "key": "gradient_term_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including arbitrary h and the explicitly explained totalized Bochner integral. The support estimate gives pointwise domination by M(tA)t_P. The pinned lintegral lemmas need no additional measurability, and the unconditional Bochner norm bound covers non-integrable functions. The finite ENNReal upper bound justifies toReal monotonicity, and the final algebra yields exactly M A^(n+1) ε t^(n+1). No circular reliance or missing proof step remains."
+    }
+  ],
+  "required_changes": []
+}

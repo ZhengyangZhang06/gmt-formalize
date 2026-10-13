@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1.ball_mass_le_of_density-a1",
+  "parent_id": "root.integral_compactness-a1.variation_density_bound-a1",
+  "depth": 3,
+  "title": "A finite density gives μ(B_ρ(x)) ≤ ofReal(Cρ^n) for small ρ (step 4)",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N, let x ∈ ℝ^N, and let θ ∈ [0,∞] with θ ≠ ∞. Suppose HasDensity n μ x θ holds. That is, densityRatio n μ x ρ = μ(B_ρ(x)) / (ω_n·ofReal(ρ)^n) → θ in [0,∞] as ρ → 0 with ρ > 0. Here ω_n = unitBallVolume n is the volume of the open unit ball of ℝ^n, and B_ρ(x) = closedBall x ρ. Then there are C ∈ ℝ and r > 0 such that μ(B_ρ(x)) ≤ ENNReal.ofReal(C·ρ^n) for every ρ ∈ (0, r).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), HasDensity n μ x θ → θ ≠ ∞ → ∃ C r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r → μ (closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)",
+  "lean_name": "intcpt_vdb_ball_mass_le_of_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-variation-density-bound-a1-ball-mass-le-f8bbaa175f-a1"
+}

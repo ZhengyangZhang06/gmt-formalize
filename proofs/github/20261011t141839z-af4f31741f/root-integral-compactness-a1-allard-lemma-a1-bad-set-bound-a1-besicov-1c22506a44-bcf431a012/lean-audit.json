@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "96908efa612f212e2ac1fa6cd0110c137871b0653092325ae439a6ff87edcc8a",
+  "git_delta": {
+    "base_commit": "60df3fc2ed7abb8565de518f91175cd65b1a3ea9",
+    "candidate_commit": "00d7963dc1a33b948702815abc43a989321a9eed",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_bsb_besicovitch_cover",
+    "diff_sha256": "64a35babec86827f8db682c5508d059226e3d6e4841a665a0c6197c7da5df773",
+    "source_sha256": "66f114aab7bdf4aa08cb0098d1222fd09f2ec320e52111e51e625ab41ab46ec1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_bsb_besicovitch_cover",
+      "statement": "∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A O : Set (Euclidean N)) (R : ℝ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ ≤ R ∧ closedBall x σ ⊆ O ∧ μ (closedBall x σ) ≤ t * ν (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν O",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

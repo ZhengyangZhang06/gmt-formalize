@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec60495b8d78b046165524bcc4ba1781187ca859e3389cec97f7a577d64a091f",
+  "git_delta": {
+    "base_commit": "ad0b959554ea648f0f24bf0bde4f12b9a617c2a0",
+    "candidate_commit": "224cac46d81753fc113d2bd70a36c584628b60ba",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_scf_ratio_le",
+    "diff_sha256": "e5d7770165772d2ad304349fc4e6179a768eeacebd162940a4a1dd0a7c1adab6",
+    "source_sha256": "8b7014656efd85389ef77943744a536a1cb2bf1caa44de69e0d0e6bbad122a35",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_scf_ratio_le",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ ρ : ℝ, 0 < ρ → μ (closedBall 0 ρ) = a * unitBallVolume n * ENNReal.ofReal ρ ^ n) → ∀ (y : Euclidean N) (ρ : ℝ), 0 < ρ → densityRatio n μ y ρ ≤ a",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

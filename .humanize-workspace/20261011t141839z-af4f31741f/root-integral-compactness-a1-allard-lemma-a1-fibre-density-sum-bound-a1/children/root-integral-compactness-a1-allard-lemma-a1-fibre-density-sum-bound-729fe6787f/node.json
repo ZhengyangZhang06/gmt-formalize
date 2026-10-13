@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1.density_cylinder_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1",
+  "depth": 4,
+  "title": "Density bounded by a cylinder ratio (Simon Ch. 8, proof of Lemma 5.10, printed (6))",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N, P ∈ G(N,n), y ∈ ℝ^N, θ ∈ [0,∞], and ε, K ∈ ℝ with ε ≥ 0, e^ε ≤ 2 and K ≥ 0. Write p := p_P (= Grassmannian.project P), q(v) := v − p(v), U^t_r(y) := B_r(y) ∩ {z : |q(z − y)| < t} with B_r(y) the closed ball, and ω_n := unitBallVolume n. Assume (D) θ ≤ e^{εσ}·densityRatio n μ y σ (= e^{εσ}μ(B_σ(y))/(ω_nσ^n)) for every σ ∈ (0,1), and (C) μ(U^τ_σ(y))/σ^n ≤ μ(U^{2τ}_ρ(y))/ρ^n + Kερ/τ for all τ, σ, ρ with 0 < τ ≤ 1 and 0 < σ ≤ ρ < 1. Then for all τ ∈ (0,1/4] and σ ∈ (0,1): θ ≤ (e^ε·μ(U^{4τ}_σ(y))/σ^n + Kεσ/τ)/ω_n in [0,∞] (real coefficients enter via ofReal, and r^n means ofReal(r)^n).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (y : Euclidean N) (θ : ℝ≥0∞) (ε K : ℝ), 0 ≤ ε → Real.exp ε ≤ 2 → 0 ≤ K → (∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n μ y σ) → (∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ τ σ : ℝ, 0 < τ → τ ≤ 1 / 4 → 0 < σ → σ < 1 → θ ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) + ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n",
+  "lean_name": "intcpt_allard_fdsb_density_cylinder_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-729fe6787f-a1"
+}

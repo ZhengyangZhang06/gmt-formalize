@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f250463841121c987b275abd8c031534763de690f84d7646380626c5d5eaef7",
+  "git_delta": {
+    "base_commit": "a4c64435f912b2f7eaf0a927198b65da81fc5e90",
+    "candidate_commit": "eef4c8389281772a4b095a1d17f57dd8b3d43a58",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_ri_countablyRectifiable_similarity_preimage",
+    "diff_sha256": "0494896ae1372d2419911d3c074e4aa34d2a8f3dc534f261b6ad21c55e6c8c12",
+    "source_sha256": "e838f47e4d6b5e88474610ece1d248d85a1a8a92fcb47608c3156a82ffcd2053",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_ri_countablyRectifiable_similarity_preimage",
+      "statement": "∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (M : Set (Euclidean N)), 0 < t → Chapter03.CountablyRectifiable n M → Chapter03.CountablyRectifiable n ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

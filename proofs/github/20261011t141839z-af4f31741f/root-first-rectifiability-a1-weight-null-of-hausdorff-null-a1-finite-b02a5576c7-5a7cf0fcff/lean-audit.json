@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2b77538c45eec4626a10da463c096ffacc553c853cf0ae45fd5ba7676cda67df",
+  "git_delta": {
+    "base_commit": "c68183f0ee8e83c34916b95880abddcd3bf4d50a",
+    "candidate_commit": "4639a3515d00f28a2ecaa971a956e497eebe6269",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_ball_bound_of_finite_density",
+    "diff_sha256": "7b0ea3f515740c8031119ba6f2f8fe8c0a2fee7e2151ba53d6484c2ec2269627",
+    "source_sha256": "b0a9fc918bb3491c844d7c619e233fa880ef9fa762c3d9209ba25ef90734ae50",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_ball_bound_of_finite_density",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), θ ≠ ∞ → HasDensity n μ x θ → ∃ K j : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((j : ℝ) + 1) → μ (closedBall x ρ) ≤ (K : ℝ≥0∞) * ENNReal.ofReal ρ ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

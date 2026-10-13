@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.riesz_limit_measure-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Riesz representation of the vague limit functional (final step of Simon 4.16 via Theorem 4.12)",
+  "statement": "Let X be a locally compact Hausdorff space with its Borel σ-algebra and μ_j (j ∈ ℕ) measures on X such that for every compact K ⊆ X there is C_K < ∞ with μ_j(K) ≤ C_K for all sufficiently large j, and such that for every continuous compactly supported f : X → ℝ the real sequence (∫ f dμ_j)_j converges. Then there is a locally finite measure ν on X with ∫ f dμ_j → ∫ f dν for every continuous compactly supported f : X → ℝ.",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [MeasurableSpace X] [BorelSpace X] (μ : ℕ → Measure X), (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) → (∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 L)) → ∃ ν : Measure X, IsLocallyFiniteMeasure ν ∧ ∀ f : C_c(X, ℝ), Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 (∫ x, f x ∂ν))",
+  "lean_name": "radon_exists_measure_of_tendsto_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-radon-compactness-a1-riesz-limit-measure-a1-a1"
+}

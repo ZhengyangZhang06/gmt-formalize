@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.rescaled_integral-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Homothetic rescalings restricted to open sets preserve integrality",
+  "statement": "Let N, n ∈ ℕ, U, O ⊆ ℝ^N, V an n-varifold on U and W an n-varifold on O (so U and O are open), ξ ∈ ℝ^N and t > 0 with ξ + t·y ∈ U for every y ∈ O. If V is integral and W.measure = (rescaledMeasure V ξ t).restrict (O × G(N,n)), i.e. W = V_{ξ,t} ⌞ G_n(O), then W is integral.",
+  "lean_statement": "∀ (N n : ℕ) (U O : Set (Euclidean N)) (V : Varifold N n U) (W : Varifold N n O) (ξ : Euclidean N) (t : ℝ), 0 < t → (∀ y ∈ O, ξ + t • y ∈ U) → IsIntegral V → W.measure = (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n))) → IsIntegral W",
+  "lean_name": "intcpt_rescaled_restriction_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-rescaled-integral-a1-a1"
+}

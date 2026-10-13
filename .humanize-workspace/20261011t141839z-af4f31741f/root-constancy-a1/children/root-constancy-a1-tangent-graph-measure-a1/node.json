@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.tangent_graph_measure-a1",
+  "parent_id": "root.constancy-a1",
+  "depth": 2,
+  "title": "Constancy Theorem 8.4.1 in measure form (corrected): V is c·H^n⌞(M ∩ U) pushed onto the classical tangent graph",
+  "statement": "Let V be an n-varifold in the open set U ⊆ ℝ^N (Varifold N n U) that is stationary in U. Let M ⊆ ℝ^N be an n-dimensional C² submanifold in Simon's sense (IsSimonSubmanifold 2 M). Assume U ∩ spt μ_V ⊆ M, M ∩ U is preconnected, and M is nonempty. Then there are c ∈ [0,∞] with c ≠ ∞ and a Borel measurable map T : ℝ^N → G(N,n) such that V equals (c · H^n ⌞ (M ∩ U)) pushed forward under x ↦ (x, T(x)), as measures on ℝ^N × G(N,n) with H^n = μHE[n]. Moreover, if c ≠ 0, then for every x ∈ M ∩ U the plane of T(x) equals classicalTangentSpace M x, as subsets of ℝ^N.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)), V.Stationary → Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 M → U ∩ V.weight.support ⊆ M → IsPreconnected (M ∩ U) → M.Nonempty → ∃ (c : ℝ≥0∞) (T : Euclidean N → Grassmannian N n), c ≠ ∞ ∧ Measurable T ∧ V.measure = (c • (μHE[n] : Measure (Euclidean N)).restrict (M ∩ U)).map (fun x ↦ (x, T x)) ∧ (c ≠ 0 → ∀ x ∈ M ∩ U, ((T x).plane : Set (Euclidean N)) = classicalTangentSpace M x)",
+  "lean_name": "stationary_constancy_tangentGraph_measure",
+  "depends_on": [
+    "root.constancy-a1.classical_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.constancy-a1.classical_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-constancy-a1-tangent-graph-measure-a1-a1"
+}

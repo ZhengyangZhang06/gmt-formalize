@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "063b9cca85eebef16b9b90eb2432b5c1042df49b3662e2b16ea8aa5aa3755d66",
+  "git_delta": {
+    "base_commit": "343d3f6ee30b69edc5f9677504f431e2fff6484f",
+    "candidate_commit": "85df1e5ac2e7bed5ff6a486bcd2d685098df2bbb",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rh_mc_exists_c1_approx",
+    "diff_sha256": "077f4a8abd4b3ac0f1e9e3abb98fd1e666dfca19bb3d33df10530774d713dfe0",
+    "source_sha256": "a182c174d38df45fd088f314f2c3ade6d48688598bccad2ab5422e5fe4fb42c2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_mc_exists_c1_approx",
+      "statement": "∀ (N : ℕ) (g : Euclidean N → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclidean N)) (φ : ℕ → Euclidean N → ℝ), IsCompact K ∧ (∀ y ∉ K, g y = 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, ∀ y ∉ K, φ k y = 0) ∧ (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |φ k y - g y| ≤ ε)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

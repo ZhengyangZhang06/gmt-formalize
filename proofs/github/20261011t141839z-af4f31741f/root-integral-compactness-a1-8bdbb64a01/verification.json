@@ -1,0 +1,31 @@
+{
+  "node_id": "root.integral_compactness-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/339",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/5066",
+  "candidate_commit": "2cde3ae11f2d8f8bae1148af137e6d3ad6c3d891",
+  "integrated_commit": "",
+  "proof_base_commit": "c0da5d4e53f1a1e1c8f676ede5196978f7099231",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.first_variation-a1",
+    "root.monotonicity_density-a1",
+    "root.density_semicontinuity-a1",
+    "root.allard_tangent_cones-a1",
+    "root.first_rectifiability-a1",
+    "root.tangent_graph_cover-a1",
+    "root.compactness-a1",
+    "root.integral_compactness-a1.integral_density-a1",
+    "root.integral_compactness-a1.canonical_representation-a1",
+    "root.integral_compactness-a1.variation_density_bound-a1",
+    "root.integral_compactness-a1.rescaled_integral-a1",
+    "root.integral_compactness-a1.diagonal_blowup-a1",
+    "root.integral_compactness-a1.allard_lemma-a1",
+    "root.integral_compactness-a1.graph_fibre_bound-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1"
+  ]
+}

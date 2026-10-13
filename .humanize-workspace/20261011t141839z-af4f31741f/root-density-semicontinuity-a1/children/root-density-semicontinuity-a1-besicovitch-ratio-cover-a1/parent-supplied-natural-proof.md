@@ -1,0 +1,75 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_semicontinuity-a1`
+- Child DAG node: `root.density_semicontinuity-a1.besicovitch_ratio_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Besicovitch step (2) of the printed proof of 3.7 as written in the parent (“Let 𝔅 be the family of closed balls … by the Besicovitch Covering Lemma (Ch. 1 3.12) there are N countable subfamilies, each pairwise disjoint, whose union covers …; summing (2) over them …”). Here it is stated for general measures μ, ν, a general set A and a general ratio t. The parent applies it with μ = μ_{V_i}, ν = ‖δV_i‖, A = B_{i,j} ∖ B_i and t = j⁻¹.
+
+1. The constant. Euclidean N is a finite-dimensional real normed space, so it has the Besicovitch covering property (Mathlib's HasBesicovitchCovering instance for finite-dimensional normed spaces; Simon Ch. 1, 3.12). HasBesicovitchCovering.no_satelliteConfig gives C ∈ ℕ and τ > 1 such that there is no satellite configuration of C+1 balls with parameter τ. Fix this C; it depends only on N.
+
+2. The ball family. Let μ, ν, A, ρ₀, t satisfy the hypothesis. For every x ∈ A choose a radius σ(x) with 0 < σ(x) < ρ₀ and μ(B_{σ(x)}(x)) ≤ t·ν(B_{σ(x)}(x)), and write B_x := B_{σ(x)}(x) (closed ball). The centres x ∈ A and radii σ(x) ≤ ρ₀ form a Besicovitch ball package indexed by A; Mathlib's version only requires the radii to be bounded.
+
+3. Besicovitch covering. Apply Besicovitch.exist_disjoint_covering_families with τ, the emptiness of satellite configurations, and this package. It gives subsets s_1, …, s_C of A such that, for each k, the closed balls B_x (x ∈ s_k) are pairwise disjoint, and A ⊆ ⋃_k ⋃_{x∈s_k} B°_{σ(x)}(x) ⊆ ⋃_k ⋃_{x∈s_k} B_x.
+
+4. Countability. Each s_k is countable: the balls B_x (x ∈ s_k) are pairwise disjoint, each has nonempty interior (it contains the open ball B°_{σ(x)}(x) ∋ x, since σ(x) > 0), and ℝ^N is separable (Set.PairwiseDisjoint.countable_of_nonempty_interior).
+
+5. Location. For x ∈ A, B_x ⊆ B°_{ρ₀}(x) ⊆ thickening(ρ₀, A), since σ(x) < ρ₀ (closedBall_subset_ball, ball_subset_thickening).
+
+6. Summation. All steps are in [0,∞] and remain valid for t = ∞ and for null ν. μ(A) is the outer measure, so A need not be measurable.
+ μ(A) ≤ μ(⋃_k ⋃_{x∈s_k} B_x)  (monotonicity, step 3)
+ ≤ Σ_{k=1}^{C} μ(⋃_{x∈s_k} B_x)  (finite subadditivity)
+ ≤ Σ_k Σ_{x∈s_k} μ(B_x)  (countable subadditivity, step 4; measure_biUnion_le)
+ ≤ Σ_k Σ_{x∈s_k} t·ν(B_x)  (choice of σ(x))
+ = Σ_k t·ν(⋃_{x∈s_k} B_x)  (ENNReal.tsum_mul_left, and countable additivity of ν on the pairwise disjoint Borel sets B_x, measure_biUnion)
+ ≤ Σ_k t·ν(thickening(ρ₀, A))  (step 5)
+ = C·t·ν(thickening(ρ₀, A)).
+ The same chain applies if A = ∅ or C = 0; in the latter case step 3 forces A = ∅. ∎
+
+## Key steps
+
+1. C := the Besicovitch number of Euclidean N (no satellite configuration of C+1 balls); it is independent of μ, ν, A, ρ₀, t.
+2. Choose σ(x) ∈ (0, ρ₀) at each x ∈ A; Besicovitch.exist_disjoint_covering_families gives C pairwise disjoint subfamilies covering A.
+3. Each subfamily is countable (disjoint balls with nonempty interior in a separable space).
+4. μ(A) ≤ Σ_k Σ μ(B_x) ≤ Σ_k t Σ ν(B_x) = Σ_k t ν(⋃ B_x) ≤ C t ν(thickening(ρ₀, A)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `cat simongmt Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean; grep -n '^theorem\|^def' Chapter08/{Varifold,FirstVariationRiesz,BallVariationBound,StationaryMonotonicity,FirstVariationDensity,FirstVariationBounds}.lean`
+- `grep -rn -i 'portmanteau\|le_liminf\|limsup_le\|liminf_le' simongmt/Poincare --include=*.lean; grep -rln RadonConverges simongmt/Poincare`
+- `grep -n 'theorem exist_disjoint_covering_families' -A 12 and 'structure BallPackage' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -rn 'countable_of_nonempty_interior\|countable_of_isOpen' mathlib/Mathlib/Topology/`
+- `grep -n 'theorem exists_continuous_one_zero_of_isCompact\|theorem exists_compact_between' mathlib/Mathlib/Topology/UrysohnsLemma.lean mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `lake env lean Scratch/Api.lean Api2.lean Api3.lean (#check: HasBesicovitchCovering (Euclidean N), CompactSpace (Grassmannian N n), IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, IsOpen.exists_iUnion_isClosed, TopologicalSpace.isOpen_iUnion_countable, closure_thickening_subset_cthickening, ball_subset_thickening, cthickening_closure, ENNReal.liminf_add_of_right_tendsto_zero, Monotone.map_liminf_of_continuousAt, ofReal_integral_eq_lintegral_ofReal, Filter.limsup_comp, limsup_le_limsup_of_le, ENNReal.inv_mul_cancel_left, measure_biUnion_null_iff; ENNReal.liminf_const_mul and ENNReal.mul_liminf: unknown constants)`
+- `python3 -I gen.py: gmt-compare.contract_scope replay + lean_contract.validate_lean_statement on the 6 lean_statements; lake env lean Cmp/Challenge0..5.lean`
+- `lake env lean Scratch/Small.lean, Scratch/C2.lean, Scratch/C3.lean, Scratch/C5.lean, Scratch/C6.lean, Scratch/All.lean (exact frozen statements with complete proofs + parent assembly + #print axioms)`
+- `python3 dag.json lean_name collision check (15 nodes); grep -l -i portmanteau nodes/*/parent-supplied-natural-proof.md`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+
+Snapshot: project 63436ae6 + Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. SimonGMT Chapter08/VarifoldConvergence.lean already proves RadonConverges.firstVariation_tendsto, firstVariationNormOn_le_liminf, hasLocallyBoundedFirstVariation and firstVariationRieszMeasure_le_liminf. FirstVariationRiesz.lean:218 firstVariationRieszMeasure_eq_norm identifies variationMeasure with firstVariationNormOn on W ⊂⊂ U. Remark 3.8(1) (child variation_lsc) therefore needs no sibling. The VarifoldConvergence module states that it does not prove the lower-density part. SimonGMT has no portmanteau for varifold weights: the only *_le_liminf lemmas are for first variation, BV and currents (Chapter06/Mass.lean WeaklyConvergesOn.massOn_le_liminf), hence the child weight_portmanteau. Mathlib supplies the needed tools: Besicovitch covering families (Covering/Besicovitch.lean:455 exist_disjoint_covering_families, whose BallPackage needs only bounded radii; HasBesicovitchCovering is inferred for Euclidean N); countability of disjoint balls (Topology/Bases.lean:493); Urysohn (UrysohnsLemma.lean:404, LocallyCompact.lean:172); and the thickening and ℝ≥0∞ liminf lemmas. ENNReal.liminf_const_mul does not exist, so the proofs use Monotone.map_liminf_of_continuousAt. All 6 child lean_statements pass validate_lean_statement and elaborate in the replayed contract scope. In a scratch copy, complete proofs of all 6 exact statements compile with axioms propext, Classical.choice and Quot.sound only, and the parent assembly via Submission.monotonicity_and_density_theorems checks against DensitySemicontinuity. dag.json has no lean_name collisions.

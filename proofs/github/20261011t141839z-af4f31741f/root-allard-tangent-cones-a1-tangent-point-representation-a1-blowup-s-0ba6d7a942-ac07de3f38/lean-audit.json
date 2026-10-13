@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc87b0453dccdf381c44107d645e92a96d5e38d87ce5d682bdd87e8c4575a044",
+  "git_delta": {
+    "base_commit": "d347ebb51a9349d97abcd886cf3eb72865e79885",
+    "candidate_commit": "eb880df6af461cfd9ec67c393deb821ca044b6cd",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_tpr_blowup_setIntegral",
+    "diff_sha256": "4c7b03552dad7e55e0f4d9ee41a29737e7003d4685b9e45e094c2159f5c5132f",
+    "source_sha256": "801b5de46e45335a732d0172319ec6bea78edfb703716ef31c7b017728c25692",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_tpr_blowup_setIntegral",
+      "statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (φ : Euclidean N → ℝ) (x : Euclidean N) (r : ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, φ y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, φ (Chapter03.blowUpMap x r z) ∂μHE[n]",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

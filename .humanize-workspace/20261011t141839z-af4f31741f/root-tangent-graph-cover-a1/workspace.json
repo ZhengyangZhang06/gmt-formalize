@@ -1,0 +1,649 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T141839Z-af4f31741f",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch08/20261011t141839z-af4f31741f/dispatch/root-tangent-graph-cover-a1",
+  "source_commit": "63436ae63eb6a2fd7525bef73c73cf88e2cd7e93",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch08/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.tangent_graph_cover-a1.cone_linear_algebra-a1",
+      "key": "cone_linear_algebra",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-linear-algebra-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-linear-algebra-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.cone_linear_algebra-a1",
+        "subproblem": {
+          "key": "cone_linear_algebra",
+          "title": "Linear algebra of tilted cones: points violating the L-graph inequality over P lie, with a ball around them, in the cone around T^⊥",
+          "statement": "Let N, n ∈ ℕ, 0 < L ≤ 1 and P, T ∈ G(N,n), with p := Grassmannian.project P and p_T := Grassmannian.project T, such that ‖p_T u − p u‖ ≤ (L/4)‖u‖ for all u ∈ ℝ^N. If v, w ∈ ℝ^N satisfy L‖p v‖ < ‖v − p v‖ and ‖w − v‖ ≤ (L/8)‖v‖, then (L/16)‖w‖ ≤ ‖w − p_T w‖ and ‖w‖ ≤ 2‖v‖.",
+          "lean_statement": "∀ (N n : ℕ) (L : ℝ) (P T : Grassmannian N n) (v w : Euclidean N), 0 < L → L ≤ 1 → (∀ u : Euclidean N, ‖Grassmannian.project T u - Grassmannian.project P u‖ ≤ L / 4 * ‖u‖) → L * ‖Grassmannian.project P v‖ < ‖v - Grassmannian.project P v‖ → ‖w - v‖ ≤ L / 8 * ‖v‖ → L / 16 * ‖w‖ ≤ ‖w - Grassmannian.project T w‖ ∧ ‖w‖ ≤ 2 * ‖v‖",
+          "lean_name": "tgc_tilted_cone_inclusion",
+          "depends_on": [],
+          "natural_proof": "Source: step 3, (3.1) and (3.2), of the parent proof with c = L/4 and γ = L/8. The first conclusion is the inequality |q_T w| ≥ (c/4)|w| = (L/16)|w| established inside (3.2); by Pythagoras it says w ∈ K_α(T) = {|p_T w| ≤ α|w|} with α = (1 − L²/256)^{1/2}. Notation: for S ∈ G(N,n), p_S := Grassmannian.project S and q_S(u) := u − p_S u; p := p_P, q := q_P.\n\n0. Projection facts. For S ∈ G(N,n), p_S is linear, symmetric (Grassmannian.projectionLinearMap_isSymmetric: ⟨p_S a, b⟩ = ⟨a, p_S b⟩) and idempotent (Grassmannian.project_project). Hence for every u: ⟨p_S u, u − p_S u⟩ = ⟨p_S u, u⟩ − ⟨p_S u, p_S u⟩ = ⟨p_S u, u⟩ − ⟨u, p_S(p_S u)⟩ = ⟨p_S u, u⟩ − ⟨u, p_S u⟩ = 0, so Pythagoras (norm_add_sq_eq_norm_sq_add_norm_sq_real for p_S u + (u − p_S u) = u) gives ‖u‖² = ‖p_S u‖² + ‖q_S u‖². In particular ‖q_S u‖ ≤ ‖u‖. Also q_S is linear: q_S(a + b) = q_S a + q_S b. (These are proved inline; no extra named lemma is needed.)\n\n1. |q v| > (L/2)|v|. Put a := ‖q v‖ and b := ‖p v‖, so ‖v‖² = b² + a², and by hypothesis a > L b ≥ 0. Squaring nonnegative quantities, a² > L²b² = L²(‖v‖² − a²). Since L ≤ 1, L²a² ≤ a², hence L²‖v‖² = L²b² + L²a² < a² + a² = 2a². Then (2a)² = 4a² > 2L²‖v‖² ≥ (L‖v‖)², and as 2a ≥ 0 and L‖v‖ ≥ 0 we get 2a > L‖v‖, i.e. a > (L/2)‖v‖.\n\n2. |q_T v| > (L/4)|v|. q_T v − q v = p v − p_T v, so ‖q_T v − q v‖ = ‖p_T v − p v‖ ≤ (L/4)‖v‖ (tilt hypothesis with u = v). By the reverse triangle inequality (norm_sub_norm_le), ‖q_T v‖ ≥ ‖q v‖ − ‖q v − q_T v‖ > (L/2)‖v‖ − (L/4)‖v‖ = (L/4)‖v‖.\n\n3. ‖w‖ ≤ 2‖v‖. ‖w‖ ≤ ‖v‖ + ‖w − v‖ ≤ (1 + L/8)‖v‖ ≤ 2‖v‖, using L ≤ 1 and ‖v‖ ≥ 0. This is the second conclusion.\n\n4. (L/16)‖w‖ ≤ ‖q_T w‖. By linearity, q_T w = q_T v + q_T(w − v), and by step 0, ‖q_T(w − v)‖ ≤ ‖w − v‖ ≤ (L/8)‖v‖. Hence ‖q_T w‖ ≥ ‖q_T v‖ − ‖q_T(w − v)‖ > (L/4)‖v‖ − (L/8)‖v‖ = (L/8)‖v‖ ≥ (L/16)‖w‖, the last step by step 3 and L > 0. As q_T w = w − p_T w, this is the first conclusion. ∎",
+          "proof_key_steps": [
+            "Symmetric idempotent projections satisfy Pythagoras ‖u‖² = ‖p_S u‖² + ‖u − p_S u‖², so ‖u − p_S u‖ ≤ ‖u‖.",
+            "L‖p v‖ < ‖q v‖ and L ≤ 1 give ‖q v‖ > (L/2)‖v‖.",
+            "The tilt bound ‖p_T − p‖ ≤ L/4 gives ‖q_T v‖ > (L/4)‖v‖.",
+            "‖w‖ ≤ (1 + L/8)‖v‖ ≤ 2‖v‖.",
+            "‖q_T w‖ ≥ ‖q_T v‖ − ‖w − v‖ > (L/8)‖v‖ ≥ (L/16)‖w‖."
+          ]
+        },
+        "audit": {
+          "key": "cone_linear_algebra",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Symmetry and idempotence justify Pythagoras and contraction of the normal projection. The successive L/2, L/4, and L/8 estimates correctly yield both the L/16 cone inequality and the factor-2 norm bound. Every hypothesis and constant matches the frozen type, with no undeclared dependency."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.plane_ball_measure-a1",
+      "key": "plane_ball_measure",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-plane-ball-measure-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-plane-ball-measure-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.plane_ball_measure-a1",
+        "subproblem": {
+          "key": "plane_ball_measure",
+          "title": "H^n of a centred closed ball in an n-plane equals ω_n r^n",
+          "statement": "For N, n ∈ ℕ, T ∈ G(N,n) and r ≥ 0: μHE[n](T.plane ∩ closedBall 0 r) = unitBallVolume n · ofReal(r)^n, i.e. H^n(T ∩ B_r(0)) = ω_n r^n, where ω_n = unitBallVolume n is the Lebesgue measure of the open unit ball of ℝ^n = EuclideanSpace ℝ (Fin n).",
+          "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+          "lean_name": "tgc_plane_closedBall_hausdorff",
+          "depends_on": [],
+          "natural_proof": "Source: step (1.2) of the parent proof (normalisation), stated for every r ≥ 0. Notation: W := T.plane, a linear subspace of ℝ^N; ℝ^n := EuclideanSpace ℝ (Fin n); H := μHE[n] (on ℝ^N and on ℝ^n).\n\n1. finrank W = n (Grassmannian.finrank_plane). Hence W, with the inner product induced from ℝ^N, has an orthonormal basis b indexed by Fin n: take Mathlib's stdOrthonormalBasis ℝ W (indexed by Fin (finrank ℝ W)) and reindex it along finCongr (Grassmannian.finrank_plane T) : Fin (finrank ℝ W) ≃ Fin n.\n\n2. Let J : ℝ^n → ℝ^N be the composition of b.repr.symm : ℝ^n ≃ₗᵢ W with the inclusion W.subtypeₗᵢ : W →ₗᵢ ℝ^N. J is a linear isometry, in particular an isometry of metric spaces, and its range is W.\n\n3. J(closedBall(0, r)) = W ∩ closedBall(0, r). (⊆) For u ∈ ℝ^n with ‖u‖ ≤ r: J u ∈ W, and ‖J u‖ = ‖b.repr.symm u‖ = ‖u‖ ≤ r (the norm of an element of W is its norm in ℝ^N, Submodule.norm_coe; b.repr.symm preserves norms, LinearIsometryEquiv.norm_map). (⊇) For y ∈ W with ‖y‖ ≤ r put u := b.repr y; then ‖u‖ = ‖y‖ ≤ r and J u = y.\n\n4. By isometry invariance of the Euclidean Hausdorff measure (Isometry.euclideanHausdorffMeasure_image), H(J(closedBall(0, r))) = μHE[n](closedBall(0, r)) computed in ℝ^n, and on ℝ^n = EuclideanSpace ℝ (Fin n) we have μHE[n] = volume (EuclideanSpace.euclideanHausdorffMeasure_eq_volume).\n\n5. volume is an additive Haar measure on ℝ^n and finrank ℝ^n = n (finrank_euclideanSpace_fin), so for r ≥ 0, Measure.addHaar_closedBall gives volume(closedBall(0, r)) = ofReal(r^n) · volume(ball(0, 1)) = ofReal(r^n) · unitBallVolume n (definition of unitBallVolume). As r ≥ 0, ofReal(r^n) = ofReal(r)^n (ENNReal.ofReal_pow).\n\n6. Combining steps 3–5: H(W ∩ closedBall(0, r)) = ofReal(r)^n · unitBallVolume n = unitBallVolume n · ofReal(r)^n. ∎ (No case distinction is needed; e.g. for n = 0 this reads H^0({0}) = 1 = ω_0, and for r = 0, n ≥ 1 it gives H^n({0}) = 0.)\n\nFormalization note (checked in a scratch copy): b := (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane); J := T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry; then rw [← himg, J.isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr, finrank_euclideanSpace_fin, unitBallVolume, ENNReal.ofReal_pow hr, mul_comm].",
+          "proof_key_steps": [
+            "An orthonormal basis of T.plane indexed by Fin n (finrank_plane) gives a linear isometry J : ℝ^n → ℝ^N with range T.plane.",
+            "J(closedBall 0 r) = T.plane ∩ closedBall 0 r.",
+            "Isometry invariance of μHE[n] and μHE[n] = volume on EuclideanSpace ℝ (Fin n).",
+            "addHaar_closedBall: volume(closedBall 0 r) = ofReal(r^n)·volume(ball 0 1) = ω_n·ofReal(r)^n."
+          ]
+        },
+        "audit": {
+          "key": "plane_ball_measure",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The orthonormal-basis isometry identifies the plane ball exactly. Isometry invariance, normalized Hausdorff measure on Euclidean n-space, and the Haar closed-ball formula prove the frozen equality, including r = 0 and n = 0. No additional dimension hypothesis is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.weight_blowup-a1",
+      "key": "weight_blowup",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-weight-blowup-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-weight-blowup-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.weight_blowup-a1",
+        "subproblem": {
+          "key": "weight_blowup",
+          "title": "Weight blow-ups at a tangent point converge to θ·H^n on the tangent plane (Def. 8.1.1 tested with functions of position only)",
+          "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U (Varifold N n U), x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ with HasTangentPlane V x T θ (Simon Ch. 8, Def. 1.1). Then for every g ∈ C_c(ℝ^N, ℝ): t^{−n} ∫ g(t^{−1}(y − x)) dμ_V(y) → θ ∫_{T.plane} g dH^n as t ↓ 0 (t > 0), where μ_V = V.weight and H^n = μHE[n] on ℝ^N.",
+          "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ y, g (t⁻¹ • (y - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂(μHE[n] : Measure (Euclidean N))))",
+          "lean_name": "tgc_weight_blowup_tendsto",
+          "depends_on": [],
+          "natural_proof": "Source: step (1.1) of the parent proof (the cone/Lipschitz-graph argument of Simon's printed proof of Ch. 3, Thm 1.6 '⇐', run at varifold tangent points in the sense of Ch. 8, Def. 1.1), with every identification written out. Notation: μ := V.weight = V.measure.map Prod.fst; G := Grassmannian N n; H := μHE[n] on ℝ^N; W := (T.plane : Set ℝ^N); for t > 0, φ_t : ℝ^N × G → ℝ^N × G, φ_t(z) := (t^{−1}·(z.1 − x), z.2), so rescaledMeasure V x t = ofReal(t^{−1}^n) • V.measure.map φ_t (definition); ι : ℝ^N → ℝ^N × G, ι(y) := (y, T), so planeVarifoldMeasure T = (H.restrict W).map ι (definition).\n\n1. The lifted test function. Fix g ∈ C_c(ℝ^N, ℝ) and define f : ℝ^N × G → ℝ by f(y, S) := g(y). f = g ∘ Prod.fst is continuous. Let K := tsupport g ×ˢ univ. K is compact: tsupport g is compact because g has compact support, and G is a compact space (SimonGMT instance Grassmannian.instCompactSpace), so K = tsupport g × G is compact (IsCompact.prod with isCompact_univ). If z ∉ K then z.1 ∉ tsupport g, hence f(z) = g(z.1) = 0 (image_eq_zero_of_notMem_tsupport). By HasCompactSupport.intro, f has compact support, i.e. f ∈ C_c(ℝ^N × G, ℝ).\n\n2. Applying Def. 1.1. The third conjunct of HasTangentPlane V x T θ, applied to f, gives\n ∫ f d(rescaledMeasure V x t) → θ · ∫ f d(planeVarifoldMeasure T) as t → 0 in 𝓝[>] 0.\n\n3. The limit. ι is measurable (measurable_id.prodMk measurable_const) and f is continuous, hence a.e.-strongly measurable for every measure. By the change-of-variables formula for push-forward measures (integral_map),\n ∫ f d((H.restrict W).map ι) = ∫ f(ι(y)) d(H.restrict W)(y) = ∫ g(y) d(H.restrict W)(y) = ∫_{W} g dH.\n So the limit in step 2 is θ ∫_W g dH.\n\n4. The blow-up integrals for t > 0. Let t > 0. (a) integral_smul_measure: ∫ f d(c • ν) = c.toReal · ∫ f dν for c ∈ [0,∞]; here c = ofReal(t^{−1}^n) and c.toReal = t^{−1}^n because t^{−1}^n ≥ 0 (ENNReal.toReal_ofReal). (b) φ_t is continuous, hence measurable, so integral_map gives ∫ f d(V.measure.map φ_t) = ∫ f(φ_t z) dV.measure(z) = ∫ g(t^{−1}·(z.1 − x)) dV.measure(z). (c) Prod.fst is measurable and y ↦ g(t^{−1}·(y − x)) is continuous, so integral_map gives ∫ g(t^{−1}·(z.1 − x)) dV.measure(z) = ∫ g(t^{−1}·(y − x)) d(V.measure.map Prod.fst)(y) = ∫ g(t^{−1}·(y − x)) dμ(y). Hence for every t > 0:\n ∫ f d(rescaledMeasure V x t) = t^{−1}^n · ∫ g(t^{−1}·(y − x)) dμ(y).\n No integrability is needed: integral_map and integral_smul_measure are identities of Bochner integrals, valid whether or not the integrands are integrable.\n\n5. Conclusion. The functions t ↦ ∫ f d(rescaledMeasure V x t) and t ↦ t^{−1}^n ∫ g(t^{−1}(y − x)) dμ(y) agree on (0, ∞), and (0, ∞) ∈ 𝓝[>] 0 (self_mem_nhdsWithin). By Tendsto.congr', steps 2–4 give t^{−1}^n ∫ g(t^{−1}·(y − x)) dμ(y) → θ ∫_W g dH as t → 0 in 𝓝[>] 0, which is the claim. ∎\n\nFormalization note (checked in a scratch copy importing GMT.Ch08.Submission): build f as ⟨⟨fun z ↦ g z.1, g.continuous.comp continuous_fst⟩, HasCompactSupport.intro (g.hasCompactSupport.prod isCompact_univ) _⟩; rewrite with integral_map (f := fun z ↦ f z) using Continuous.aestronglyMeasurable of map_continuous f; then filter_upwards [self_mem_nhdsWithin], unfold rescaledMeasure, rw [integral_smul_measure, integral_map, ENNReal.toReal_ofReal], and finish with integral_map along measurable_fst.",
+          "proof_key_steps": [
+            "Lift g ∈ C_c(ℝ^N) to f(y,S) := g(y); f ∈ C_c(ℝ^N × G) because G is compact (f vanishes off tsupport g × G).",
+            "Apply the third conjunct of HasTangentPlane V x T θ to f.",
+            "Identify the limit: integral_map along y ↦ (y,T) turns θ∫ f dv(T) into θ∫_{T.plane} g dH^n.",
+            "For t > 0 identify the blow-up integral: integral_smul_measure (toReal(ofReal t^{−n}) = t^{−n}) and integral_map along φ_t and along Prod.fst give t^{−n}∫ g(t^{−1}(y − x)) dμ_V.",
+            "Transfer the limit with Tendsto.congr' on (0,∞) ∈ 𝓝[>] 0."
+          ]
+        },
+        "audit": {
+          "key": "weight_blowup",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean type agree. Compactness of the Grassmannian makes the lifted test function compactly supported; the pushforward and scalar-measure integral identities establish exactly the asserted limit. Their measurability requirements are supplied, and no integrability assumption or parent theorem is improperly invoked."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-weight-blowup-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-weight-blowup-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-weight-blowup-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.cone_decay-a1",
+      "key": "cone_decay",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-decay-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-decay-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.cone_decay-a1",
+        "subproblem": {
+          "key": "cone_decay",
+          "title": "Cone decay at a tangent point (n ≥ 1): the mass near x in a cone around T^⊥ is o(t^n)",
+          "statement": "Let N, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^N, V an n-varifold on U, x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ with HasTangentPlane V x T θ, and let β > 0; write p_T := Grassmannian.project T. Then for every ε ∈ (0,∞] there is δ > 0 such that for all t ∈ (0,δ): μ_V({y ∈ B_t(x) : β|y − x| ≤ |(y − x) − p_T(y − x)|}) ≤ ε t^n (B_t(x) = closedBall x t).",
+          "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), 0 < n → HasTangentPlane V x T θ → ∀ β : ℝ, 0 < β → ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), V.weight {y | y ∈ closedBall x t ∧ β * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n",
+          "lean_name": "tgc_tangent_cone_weight_decay",
+          "depends_on": [
+            "weight_blowup",
+            "plane_ball_measure"
+          ],
+          "natural_proof": "Source: step (1.4) of the parent proof (cone decay). The parent's cone K_α(T) = {v : |p_T v| ≤ α|v|}, α ∈ (0,1), equals {v : β|v| ≤ |v − p_T v|} with β = (1 − α²)^{1/2}, by Pythagoras |v|² = |p_T v|² + |v − p_T v|²; the argument below is that of (1.4), works for every β > 0 and does not need this identification. Uses the siblings weight_blowup (Submission.tgc_weight_blowup_tendsto) and plane_ball_measure (Submission.tgc_plane_closedBall_hausdorff). Notation: μ := V.weight; H := μHE[n] on ℝ^N; W := (T.plane : Set ℝ^N); ν := H.restrict W; p := Grassmannian.project T (linear, hence continuous since ℝ^N is finite-dimensional: LinearMap.continuous_of_finiteDimensional applied to projectionLinearMap); for t > 0, S_t := {y : y ∈ closedBall(x,t) ∧ β‖y − x‖ ≤ ‖(y − x) − p(y − x)‖} (the set in the statement).\n\n1. The case ε = ∞. For t > 0, ofReal(t)^n ≠ 0, so ∞ · ofReal(t)^n = ∞ and the bound is trivial on (0,∞) ∈ 𝓝[>] 0. Assume ε < ∞ and put e := ε.toReal > 0. HasTangentPlane gives x ∈ U and θ > 0.\n\n2. The set C. Let C := {w : ‖w‖ ≤ 1 ∧ β‖w‖ ≤ ‖w − p w‖}. C is closed (intersection of sets {f ≤ g} with f, g continuous: isClosed_le), C ⊆ closedBall(0,1), and 0 ∈ C (p 0 = 0). Scaling: if t > 0 and y ∈ S_t then w := t^{−1}·(y − x) ∈ C, because ‖w‖ = ‖y − x‖/t ≤ 1 and, by linearity of p, w − p w = t^{−1}·((y − x) − p(y − x)), so β‖w‖ = t^{−1}β‖y − x‖ ≤ t^{−1}‖(y − x) − p(y − x)‖ = ‖w − p w‖.\n\n3. C meets the plane in a null set. If w ∈ C ∩ W then p w = w (Grassmannian.projectionLinearMap_apply_of_mem: the projection fixes its range W), so β‖w‖ ≤ ‖w − p w‖ = 0 and ‖w‖ = 0 (β > 0). Thus C ∩ W ⊆ W ∩ closedBall(0,0), and plane_ball_measure with r = 0 gives H(W ∩ closedBall(0,0)) = ω_n · ofReal(0)^n = 0 because n ≥ 1. Hence ν(C) = H(C ∩ W) = 0 (Measure.restrict_apply, C closed hence measurable; measure_mono_null).\n\n4. Thickenings; choice of κ. For 0 ≤ r ≤ 1, cthickening r C ⊆ cthickening r (closedBall(0,1)) = closedBall(0, r + 1) ⊆ closedBall(0,2) (cthickening_subset_of_subset, cthickening_closedBall). By plane_ball_measure with r = 2, ν(closedBall(0,2)) = ω_n·ofReal(2)^n < ∞ (ω_n < ∞ by measure_ball_lt_top), so ν(cthickening 1 C) < ∞. Since C is closed, tendsto_measure_cthickening_of_isClosed gives ν(cthickening r C) → ν(C) = 0 as r → 0. Hence eventually in 𝓝 0, ν(cthickening r C) < ofReal(e/θ); taking δ from Metric.eventually_nhds_iff and κ := min(δ/2, 1), we get 0 < κ ≤ 1 and ν(cthickening κ C) < ofReal(e/θ); in particular ν(cthickening κ C) < ∞ and ν(cthickening κ C).toReal < e/θ.\n\n5. A cut-off. Define g(v) := max(0, 1 − infDist(v, C)/κ). g is continuous (continuous_infDist_pt), 0 ≤ g ≤ 1, and g = 1 on C (infDist_zero_of_mem). If v ∉ cthickening κ C then infDist(v, C) ≥ κ: otherwise, as C is nonempty (0 ∈ C), infDist_lt_iff gives w ∈ C with dist(v, w) < κ, and then v ∈ cthickening κ C (mem_cthickening_of_dist_le) — a contradiction; so 1 − infDist(v, C)/κ ≤ 0 and g(v) = 0. Hence g vanishes outside cthickening κ C ⊆ closedBall(0,2), a compact set, and g ∈ C_c(ℝ^N, ℝ).\n\n6. The limit is < e. 0 ≤ g ≤ 1_{cthickening κ C} pointwise, and this indicator is ν-integrable (the set is closed, ν of it is finite). By integral_mono_of_nonneg and integral_indicator_const, ∫_W g dH = ∫ g dν ≤ ν(cthickening κ C).toReal < e/θ, so ℓ := θ ∫_W g dH < θ · (e/θ) = e. By weight_blowup, F(t) := t^{−1}^n ∫ g(t^{−1}·(y − x)) dμ(y) → ℓ, so eventually in 𝓝[>] 0, F(t) < e.\n\n7. Finite mass near x. U is open (V.isOpen_domain) and x ∈ U, so there is R > 0 with ball(x,R) ⊆ U (Metric.isOpen_iff); closedBall(x,R/2) ⊆ ball(x,R) ⊆ U is compact, so μ(closedBall(x,R/2)) < ∞ (Varifold.weight_finite_on_compact). Eventually in 𝓝[>] 0 also t ≤ R/4 (Ioc_mem_nhdsGT).\n\n8. Fix t with 0 < t ≤ R/4 and F(t) < e (an 𝓝[>] 0-eventual set by steps 6–7), and put h_t(y) := g(t^{−1}·(y − x)).\n (a) h_t vanishes outside closedBall(x, R/2): if h_t(y) ≠ 0 then t^{−1}(y − x) ∈ cthickening κ C ⊆ closedBall(0,2), so ‖y − x‖ ≤ 2t ≤ R/2.\n (b) h_t is μ-integrable: it is continuous and bounded by 1 on closedBall(x,R/2), a set of finite μ-measure (Measure.integrableOn_of_bounded), and zero outside it (integrableOn_iff_integrable_of_support_subset).\n (c) 1_{S_t} ≤ ofReal ∘ h_t pointwise: for y ∈ S_t, t^{−1}(y − x) ∈ C by step 2, so h_t(y) = 1. S_t is closed (closedBall ∩ {continuous ≤ continuous}), hence measurable, so μ(S_t) = ∫⁻ 1_{S_t} dμ ≤ ∫⁻ ofReal(h_t) dμ = ofReal(∫ h_t dμ) (lintegral_indicator_one, lintegral_mono, ofReal_integral_eq_lintegral_ofReal using (b) and h_t ≥ 0).\n\n9. Conclusion. ofReal(t^{−1}^n) · μ(S_t) ≤ ofReal(t^{−1}^n) · ofReal(∫ h_t dμ) = ofReal(F(t)) ≤ ofReal(e) = ε (ENNReal.ofReal_mul, ENNReal.ofReal_le_ofReal, ENNReal.ofReal_toReal). Multiplying by ofReal(t)^n and using ofReal(t)^n · ofReal(t^{−1}^n) = 1 for t > 0: μ(S_t) = ofReal(t)^n · (ofReal(t^{−1}^n) · μ(S_t)) ≤ ofReal(t)^n · ε = ε · ofReal(t)^n. This holds on an 𝓝[>] 0-eventual set, which is the claim. ∎",
+          "proof_key_steps": [
+            "ε = ∞ is trivial; otherwise e := ε.toReal > 0.",
+            "C := {‖w‖ ≤ 1, β‖w‖ ≤ ‖w − p_T w‖} is closed, bounded, contains 0, and t^{−1}(S_t − x) ⊆ C.",
+            "C ∩ T.plane ⊆ {0}, which is H^n-null for n ≥ 1 (plane_ball_measure with r = 0).",
+            "ν := H^n⌞T.plane: ν(cthickening κ C) → ν(C) = 0 (tendsto_measure_cthickening_of_isClosed, finite via plane_ball_measure r = 2); pick κ ∈ (0,1] with θ ν(C_κ) < e.",
+            "Cut-off g = max(0, 1 − infDist(·,C)/κ) ∈ C_c, 1_C ≤ g ≤ 1_{C_κ}; by weight_blowup the blow-up integrals tend to θ∫ g dν < e.",
+            "For small t the rescaled cut-off is μ_V-integrable (support in a compact ball inside U) and μ_V(S_t) ≤ ∫ g((y − x)/t) dμ_V < e t^n."
+          ]
+        },
+        "audit": {
+          "key": "cone_decay",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "For every β > 0, the closed cone section meets the tangent plane only at its vertex, which is null because n > 0. Finite thickenings and the explicit cutoff yield the small limit. The proof establishes integrability inside a compact ball contained in U before comparing mass with the integral, and separately handles ε = ∞. Both declared dependencies suffice."
+        },
+        "resolved_dependencies": [
+          "root.tangent_graph_cover-a1.weight_blowup-a1",
+          "root.tangent_graph_cover-a1.plane_ball_measure-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-decay-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-decay-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-decay-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+      "key": "cone_graph_cover",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+        "subproblem": {
+          "key": "cone_graph_cover",
+          "title": "Abstract cone/density covering lemma: points with a lower mass bound and cone decay lie on countably many closed L-Lipschitz graphs over P",
+          "statement": "Let N, n ∈ ℕ, 0 < L ≤ 1, μ any measure on ℝ^N, P ∈ G(N,n) with p := Grassmannian.project P, and A ⊆ ℝ^N. Suppose every x ∈ A admits T ∈ G(N,n) with ‖p_T v − p v‖ ≤ (L/4)‖v‖ for all v (p_T := Grassmannian.project T) such that (i) there is c ∈ (0,∞] with c t^n ≤ μ(B_t(x)) for all sufficiently small t > 0, and (ii) for every ε ∈ (0,∞], μ({y ∈ B_t(x) : (L/16)|y − x| ≤ |(y − x) − p_T(y − x)|}) ≤ ε t^n for all sufficiently small t > 0. Then there are closed sets Γ_0, Γ_1, … ⊆ ℝ^N with ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for all y, z ∈ Γ_i (L-Lipschitz graphs over P) such that every x ∈ A lies in some Γ_i.",
+          "lean_statement": "∀ (N n : ℕ) (L : ℝ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (A : Set (Euclidean N)), 0 < L → L ≤ 1 → (∀ x ∈ A, ∃ T : Grassmannian N n, (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) ∧ (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ {y | y ∈ closedBall x t ∧ L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ A, ∃ i, x ∈ Γ i",
+          "lean_name": "tgc_cone_density_graph_cover",
+          "depends_on": [
+            "cone_linear_algebra"
+          ],
+          "natural_proof": "Source: steps 4–6 of the parent proof — uniform classes replacing Egoroff (printed (7)–(9)), the graph claim (printed (10)) and the closed graph pieces — for an abstract measure. The varifold enters the parent proof only through the lower mass bound (1.3) and the cone decay (1.4); here these are hypotheses (i) and (ii), and the parent's constant (2m)^{−1}ω_n is replaced by a_m := 1/m (ω_n is absorbed into c). Uses the sibling cone_linear_algebra (Submission.tgc_tilted_cone_inclusion). Notation: p := Grassmannian.project P, q(v) := v − p v; for T ∈ G(N,n), p_T := Grassmannian.project T; Tilt(T) :⟺ ∀ v, ‖p_T v − p v‖ ≤ (L/4)‖v‖; for x ∈ ℝ^N and t > 0, K(T,x,t) := {y : y ∈ closedBall(x,t) ∧ (L/16)‖y − x‖ ≤ ‖(y − x) − p_T(y − x)‖}; 'the graph inequality for (y,z)' means ‖q(y − z)‖ ≤ L‖p(y − z)‖. Only monotonicity of μ is used (no finiteness or measurability).\n\n1. Constants. γ := L/8 ∈ (0, 1/8]. For integers m ≥ 1: a_m := 1/m > 0 and ε_m := a_m (γ/2)^n / 2 > 0. For every s ≥ 0, ε_m (2s)^n = a_m (γ/2)^n 2^n s^n / 2 = a_m (γs)^n / 2.\n\n2. Uniform classes. For integers m, k ≥ 1 let E_{m,k} be the set of x ∈ ℝ^N for which there is T ∈ G(N,n) with Tilt(T) such that for every t ∈ (0, 1/k]:\n (i') ofReal(a_m t^n) ≤ μ(closedBall(x,t)), and (ii') μ(K(T,x,t)) ≤ ofReal(ε_m t^n).\n\n3. The classes cover A. Let x ∈ A and take T, c from the hypothesis. As c ≠ 0, ENNReal.exists_inv_nat_lt gives m ∈ ℕ with (m : [0,∞])^{−1} < c; necessarily m ≥ 1 (for m = 0 the left side is ∞), and ofReal(a_m) = m^{−1} < c. Apply (ii) with ε := ofReal(ε_m) > 0. Both (i) and this instance of (ii) hold eventually in 𝓝[>] 0, so by Metric.mem_nhdsWithin_iff there is δ > 0 such that for all t ∈ (0,δ): c · ofReal(t)^n ≤ μ(closedBall(x,t)) and μ(K(T,x,t)) ≤ ofReal(ε_m) · ofReal(t)^n. Choose an integer k ≥ 1 with 1/k < δ (exists_nat_gt applied to 1/δ). For t ∈ (0, 1/k] we have t < δ, so ofReal(a_m t^n) = ofReal(a_m) · ofReal(t)^n ≤ c · ofReal(t)^n ≤ μ(closedBall(x,t)) and μ(K(T,x,t)) ≤ ofReal(ε_m) · ofReal(t)^n = ofReal(ε_m t^n) (ENNReal.ofReal_mul, ENNReal.ofReal_pow, t ≥ 0). Hence x ∈ E_{m,k} with witness T.\n\n4. Graph property inside a class (printed (10)). CLAIM: if x, x' ∈ E_{m,k} and ‖x' − x‖ ≤ 1/(2k), then ‖q(x' − x)‖ ≤ L‖p(x' − x)‖. Suppose not, and put v := x' − x, so L‖p v‖ < ‖q v‖. Then v ≠ 0 (for v = 0 both sides vanish since p 0 = 0), so s := ‖v‖ satisfies 0 < s ≤ 1/(2k). Let T witness x ∈ E_{m,k}; at x' only (i') is used, so the witness for x' plays no role.\n (a) closedBall(x', γs) ⊆ K(T, x, 2s): for y with ‖y − x'‖ ≤ γs put w := y − x. Then w − v = y − x', so ‖w − v‖ ≤ (L/8)‖v‖, and cone_linear_algebra (applied to L, P, T, v, w with Tilt(T) and L‖p v‖ < ‖v − p v‖) gives (L/16)‖w‖ ≤ ‖w − p_T w‖ and ‖w‖ ≤ 2‖v‖ = 2s; that is, y ∈ closedBall(x, 2s) and y satisfies the cone inequality, so y ∈ K(T, x, 2s).\n (b) Since 0 < γs ≤ 2s ≤ 1/k (γ ≤ 1/8 < 2 and s ≤ 1/(2k)), (i') at x' with t = γs, monotonicity of μ with (a), and (ii') at x with t = 2s give\n  ofReal(a_m (γs)^n) ≤ μ(closedBall(x', γs)) ≤ μ(K(T, x, 2s)) ≤ ofReal(ε_m (2s)^n).\n (c) As ε_m (2s)^n ≥ 0, ENNReal.ofReal_le_ofReal_iff turns (b) into a_m (γs)^n ≤ ε_m (2s)^n = a_m (γs)^n / 2 (step 1), contradicting a_m (γs)^n > 0. This proves the claim.\n\n5. Closed pieces. Let (d_j)_{j∈ℕ} be a dense sequence in ℝ^N (ℝ^N is separable and nonempty: TopologicalSpace.denseSeq with denseRange_denseSeq). For m, k ≥ 1 and j ∈ ℕ put S_{m,k,j} := E_{m,k} ∩ closedBall(d_j, 1/(4k)) and Γ_{m,k,j} := closure(S_{m,k,j}).\n (a) Γ_{m,k,j} is closed (isClosed_closure).\n (b) Graph inequality on Γ_{m,k,j}: for y, z ∈ S_{m,k,j}, ‖y − z‖ ≤ ‖y − d_j‖ + ‖z − d_j‖ ≤ 1/(4k) + 1/(4k) = 1/(2k), so step 4 with x := z, x' := y gives ‖q(y − z)‖ ≤ L‖p(y − z)‖. The set F := {(y,z) ∈ ℝ^N × ℝ^N : ‖q(y − z)‖ ≤ L‖p(y − z)‖} is closed (isClosed_le of two continuous functions; p is continuous as a linear map on a finite-dimensional space), and S × S ⊆ F for S := S_{m,k,j}. Hence closure(S) × closure(S) = closure(S × S) ⊆ F (closure_prod_eq, closure_minimal): the graph inequality holds for all y, z ∈ Γ_{m,k,j}.\n (c) Covering: if x ∈ E_{m,k}, density gives j with dist(x, d_j) < 1/(4k) (DenseRange.exists_dist_lt), so x ∈ S_{m,k,j} ⊆ Γ_{m,k,j} (subset_closure).\n\n6. Enumeration. Let π : ℕ → ℕ × ℕ × ℕ, π(i) := (i.unpair.1, i.unpair.2.unpair.1, i.unpair.2.unpair.2); π(Nat.pair a (Nat.pair b c)) = (a, b, c) (Nat.unpair_pair), so π is surjective. Define Γ_i := Γ_{a+1, b+1, c} where π(i) = (a, b, c). Each Γ_i is closed and satisfies the graph inequality for all its pairs of points (step 5(a),(b)). If x ∈ A, step 3 gives m, k ≥ 1 with x ∈ E_{m,k}, step 5(c) gives j with x ∈ Γ_{m,k,j}, and i := Nat.pair (m − 1) (Nat.pair (k − 1) j) satisfies Γ_i = Γ_{m,k,j} ∋ x. This proves the statement. ∎ (Lean note: it is convenient to index the classes directly by m, k ∈ ℕ with a := 1/(m+1) and radii 1/(k+1); the argument is unchanged.)",
+          "proof_key_steps": [
+            "Constants γ = L/8, a_m = 1/m, ε_m = a_m(γ/2)^n/2, so that ε_m(2s)^n = a_m(γs)^n/2.",
+            "Uniform classes E_{m,k} (lower bound a_m t^n and cone bound ε_m t^n for all t ∈ (0,1/k]) cover A, using hypotheses (i), (ii) and 𝓝[>] 0.",
+            "Printed (10): if x, x' ∈ E_{m,k}, ‖x' − x‖ ≤ 1/(2k) and the graph inequality fails, cone_linear_algebra puts closedBall(x', γs) inside the cone region at x of radius 2s, so a_m(γs)^n ≤ a_m(γs)^n/2 — contradiction.",
+            "Closures of E_{m,k} ∩ closedBall(d_j, 1/(4k)), d_j dense, are closed L-graphs over P (closed condition) covering E_{m,k}.",
+            "Enumerate the triples (m,k,j) by Nat.unpair."
+          ]
+        },
+        "audit": {
+          "key": "cone_graph_cover",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The countable uniform classes cover every point of A, including when the initial lower-bound constant is infinite. The declared linear-algebra child gives the ball inclusion, and the chosen constants produce a strict positive-mass contradiction. Product closure preserves the graph inequality; dense localization and enumeration produce the required closed cover. No measurability of A, local finiteness of μ, or positive-dimensional hypothesis is silently required."
+        },
+        "resolved_dependencies": [
+          "root.tangent_graph_cover-a1.cone_linear_algebra-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.lower_mass_bound-a1",
+      "key": "lower_mass_bound",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-lower-mass-bound-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-lower-mass-bound-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.lower_mass_bound-a1",
+        "subproblem": {
+          "key": "lower_mass_bound",
+          "title": "Lower mass bound at a tangent point: liminf t^{−n} μ_V(B_t(x)) ≥ θ ω_n (eventual form)",
+          "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U, x ∈ ℝ^N, T ∈ G(N,n), θ ∈ ℝ with HasTangentPlane V x T θ. Then for every c ∈ [0,∞] with c < ofReal(θ) · ω_n (ω_n = unitBallVolume n) there is δ > 0 such that c · t^n ≤ μ_V(B_t(x)) for all t ∈ (0, δ); i.e. ∀ᶠ t in 𝓝[>] 0, c · ofReal(t)^n ≤ V.weight (closedBall x t).",
+          "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ c : ℝ≥0∞, c < ENNReal.ofReal θ * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ V.weight (closedBall x t)",
+          "lean_name": "tgc_tangent_weight_lower_bound",
+          "depends_on": [
+            "weight_blowup",
+            "plane_ball_measure"
+          ],
+          "natural_proof": "Source: step (1.3) of the parent proof, in 'eventually' form. Uses the sibling results weight_blowup (Submission.tgc_weight_blowup_tendsto) and plane_ball_measure (Submission.tgc_plane_closedBall_hausdorff). Notation: μ := V.weight; ω := unitBallVolume n; H := μHE[n] on ℝ^N; W := (T.plane : Set ℝ^N); ν := H.restrict W.\n\n1. Finiteness; real numbers. HasTangentPlane V x T θ gives θ > 0. ω = volume(ball(0,1)) in EuclideanSpace ℝ (Fin n) is finite (measure_ball_lt_top), so a := ofReal θ · ω < ∞, and c < a forces c < ∞. Put c_r := c.toReal and a_r := θ · ω.toReal = a.toReal (ENNReal.toReal_mul, ENNReal.toReal_ofReal). Since c, a < ∞ and c < a, c_r < a_r (ENNReal.toReal_lt_toReal).\n\n2. Choice of κ. The map κ ↦ a_r κ^n is continuous and equals a_r at κ = 1; hence it tends to a_r > c_r as κ → 1 from the left, so eventually in 𝓝[<] 1 we have c_r < a_r κ^n, and eventually κ ∈ (0,1) (Ioo_mem_nhdsLT). Choose κ with 0 < κ < 1 and c_r < a_r κ^n.\n\n3. A cut-off. Define g(v) := min(1, max(0, (1 − ‖v‖)/(1 − κ))) for v ∈ ℝ^N. g is continuous, 0 ≤ g ≤ 1; if ‖v‖ ≤ κ then (1 − ‖v‖)/(1 − κ) ≥ 1, so g(v) = 1; if ‖v‖ ≥ 1 then (1 − ‖v‖)/(1 − κ) ≤ 0, so g(v) = 0. Thus g vanishes outside the compact set closedBall(0,1) and g ∈ C_c(ℝ^N, ℝ) (HasCompactSupport.intro).\n\n4. Lower bound for the limit value. By plane_ball_measure with r = 1, ν(closedBall(0,1)) = H(W ∩ closedBall(0,1)) = ω < ∞ (Measure.restrict_apply and commutativity of ∩). As g is continuous, |g| ≤ 1 and g = 0 off closedBall(0,1), g is ν-integrable (Measure.integrableOn_of_bounded on closedBall(0,1), then integrableOn_iff_integrable_of_support_subset). Pointwise 1_{closedBall(0,κ)} ≤ g (g ≥ 0 everywhere, g = 1 on closedBall(0,κ)), and the indicator is ν-integrable because ν(closedBall(0,κ)) = ω · ofReal(κ)^n < ∞ (plane_ball_measure with r = κ ≥ 0). By monotonicity of the integral (integral_mono) and integral_indicator_const:\n ∫_W g dH = ∫ g dν ≥ ν(closedBall(0,κ)).toReal = (ω · ofReal(κ)^n).toReal = ω.toReal · κ^n.\n Multiplying by θ > 0: ℓ := θ ∫_W g dH ≥ a_r κ^n > c_r.\n\n5. Eventually large blow-up integrals. By weight_blowup applied to g, F(t) := t^{−1}^n ∫ g(t^{−1}·(y − x)) dμ(y) → ℓ as t → 0 in 𝓝[>] 0. As ℓ > c_r, eventually F(t) > c_r (Tendsto.eventually with eventually_gt_nhds); also eventually t > 0 (self_mem_nhdsWithin). Fix such a t; it remains to show c · ofReal(t)^n ≤ μ(closedBall(x,t)).\n\n6. Comparison with the ball mass. If μ(closedBall(x,t)) = ∞ there is nothing to prove. Otherwise put h_t(y) := g(t^{−1}·(y − x)). Then 0 ≤ h_t ≤ 1_{closedBall(x,t)}: if y ∉ closedBall(x,t) then ‖t^{−1}(y − x)‖ = ‖y − x‖/t > 1, so h_t(y) = 0; and h_t ≤ 1 everywhere. The indicator is μ-integrable since μ(closedBall(x,t)) < ∞, so by integral_mono_of_nonneg, ∫ h_t dμ ≤ ∫ 1_{closedBall(x,t)} dμ = μ(closedBall(x,t)).toReal. Hence c_r < F(t) ≤ t^{−1}^n · μ(closedBall(x,t)).toReal.\n\n7. Back to [0,∞]. Since c < ∞ and μ(closedBall(x,t)) < ∞: c = ofReal(c_r) and ofReal(t^{−1}^n · μ(closedBall(x,t)).toReal) = ofReal(t^{−1}^n) · μ(closedBall(x,t)) (ENNReal.ofReal_mul with t^{−1}^n ≥ 0, ENNReal.ofReal_toReal). As c_r ≥ 0, the strict real inequality of step 6 gives c < ofReal(t^{−1}^n) · μ(closedBall(x,t)) (ENNReal.ofReal_lt_ofReal_iff_of_nonneg). Multiplying by ofReal(t)^n and using ofReal(t)^n · ofReal(t^{−1}^n) = ofReal((t·t^{−1})^n) = 1 for t > 0:\n c · ofReal(t)^n ≤ ofReal(t^{−1}^n) · μ(closedBall(x,t)) · ofReal(t)^n = μ(closedBall(x,t)).\n This holds on an 𝓝[>] 0-eventual set of t, which is the claim. ∎",
+          "proof_key_steps": [
+            "θ > 0 and ω_n < ∞, so c < θω_n is finite; pick κ ∈ (0,1) with c < θ ω_n κ^n (continuity of κ ↦ κ^n at 1).",
+            "Cut-off g = min(1, max(0, (1 − ‖v‖)/(1 − κ))) ∈ C_c with 1_{B_κ(0)} ≤ g ≤ 1_{B_1(0)}.",
+            "θ∫_{T.plane} g dH^n ≥ θ H^n(T.plane ∩ B_κ(0)) = θ ω_n κ^n > c (plane_ball_measure).",
+            "weight_blowup: t^{−n}∫ g((y − x)/t) dμ_V → θ∫_{T.plane} g dH^n, hence eventually > c.",
+            "t^{−n}∫ g((y − x)/t) dμ_V ≤ t^{−n} μ_V(B_t(x)); multiply back by t^n in [0,∞]."
+          ]
+        },
+        "audit": {
+          "key": "lower_mass_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The cutoff argument uses precisely the declared weight_blowup and plane_ball_measure dependencies. It establishes the required strict limit comparison, handles infinite ball mass separately, and justifies the finite ENNReal-to-real conversions and positive-scale cancellation. The eventual conclusion matches the prose exactly."
+        },
+        "resolved_dependencies": [
+          "root.tangent_graph_cover-a1.weight_blowup-a1",
+          "root.tangent_graph_cover-a1.plane_ball_measure-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.dim_zero_countable-a1",
+      "key": "dim_zero_countable",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-dim-zero-countable-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-dim-zero-countable-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum project/GMT/Ch08/Contract.lean and workspace GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+              "rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n 'countable_meas_pos_of_disjoint_iUnion|countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top' mathlib/Mathlib",
+              "rg -n 'theorem tendsto_measure_cthickening' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "rg -n 'theorem cthickening_closedBall|theorem mem_cthickening_of_dist_le|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff' mathlib/Mathlib",
+              "rg -n 'theorem exists_dense_seq|def denseSeq|theorem denseRange_denseSeq' mathlib/Mathlib/Topology",
+              "rg -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib",
+              "grep -n 'structure Varifold|def weight|instSigmaFinite|finite_on_compact|def project|def plane|finrank_plane|instCompactSpace' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "rg -n 'theorem (norm_project|project_|inner_project)' simongmt Chapter08/*.lean; rg -n 'planeMeasure|locallyFinite_planeMeasure|unitBallVolume' simongmt",
+              "#check after import GMT.Ch08.Submission for 35 cited lemmas (Scratch/Avail.lean)",
+              "sed -n 100,280p book/sources/chapter-03-source.txt (printed proof of Ch. 3, Thm 1.6 ⇐)",
+              "python3 validate_lean_statement (verifier/lean_contract.py) on the 7 statements; dag.json lean_name collision check",
+              "lake env lean Scratch/Challenge_<key>.lean (7 files) and Scratch/Assembly.lean in a /tmp copy importing GMT.Ch08.Submission with the comparator's replayed scope",
+              "lake env lean Scratch/Full2.lean and Scratch/FullCheck.lean (proofs of all 7 children with exact frozen types and of the parent; #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Set/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and its Contract is byte-identical to the workspace Submission. Mathlib has no varifold theory, so no existing declaration matches any child. Mathlib does supply every tool the children use: Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Measure.addHaar_closedBall (EqHaar.lean:500), Measure.countable_meas_pos_of_disjoint_iUnion (SFinite.lean:305), tendsto_measure_cthickening_of_isClosed (BorelSpace/Metric.lean:143), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318), mem_cthickening_of_dist_le (Thickening.lean:201), denseSeq/denseRange_denseSeq (Topology/Bases.lean:373,378) and countable_iff_exists_subset_range (Data/Set/Countable.lean:119). The SimonGMT Varifold API is in the import closure of GMT.Ch08.Submission (Grassmannian.project/plane/finrank_plane/projectionLinearMap_isSymmetric/project_project/projectionLinearMap_apply_of_mem/instCompactSpace, Varifold.weight/weight_finite_on_compact/weight.instSigmaFinite). The SimonGMT lemmas norm_project_sq_add_norm_normalProject_sq (Chapter08/RadialFirstVariation.lean) and planeMeasure_unit_closedBall/locallyFinite_planeMeasure (Chapter04/TangentDensity.lean) are NOT in that closure (#check fails), so the child proofs derive Pythagoras and the plane-ball formula directly. All seven statements elaborate in the comparator scope and pass the validator. Scratch proofs of all seven with their exact frozen types, and of the parent from them, use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.dim_zero_countable-a1",
+        "subproblem": {
+          "key": "dim_zero_countable",
+          "title": "For n = 0 the tangent points of a varifold are atoms of μ_V, hence countable",
+          "statement": "Let N ∈ ℕ, U ⊆ ℝ^N and V a 0-varifold on U (Varifold N 0 U). Then the set {x ∈ ℝ^N : HasTangentPlane V x T θ for some T ∈ G(N,0) and θ ∈ ℝ} is countable.",
+          "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (V : Varifold N 0 U), {x : Euclidean N | ∃ (T : Grassmannian N 0) (θ : ℝ), HasTangentPlane V x T θ}.Countable",
+          "lean_name": "tgc_dim_zero_tangent_points_countable",
+          "depends_on": [
+            "lower_mass_bound"
+          ],
+          "natural_proof": "Source: step 2 of the parent proof (degenerate dimension n = 0): every tangent point is an atom of the σ-finite weight measure, and a σ-finite measure has at most countably many atoms. Uses the sibling lower_mass_bound (Submission.tgc_tangent_weight_lower_bound) with n = 0. Notation: μ := V.weight.\n\n1. Atoms are countable. μ is σ-finite (instance Varifold.weight.instSigmaFinite), hence s-finite. The singletons {y}, y ∈ ℝ^N, are measurable (measurableSet_singleton) and pairwise disjoint (Set.disjoint_singleton), so by Measure.countable_meas_pos_of_disjoint_iUnion the set A₀ := {y : 0 < μ({y})} is countable. It suffices to prove that every x in the set of the statement satisfies μ({x}) > 0: then that set is contained in A₀ and is countable (Set.Countable.mono).\n\n2. A positive lower bound near x. Let HasTangentPlane V x T θ. Then x ∈ U and θ > 0. ω_0 := unitBallVolume 0 = volume(ball(0,1)) in EuclideanSpace ℝ (Fin 0) is positive (Metric.measure_ball_pos: volume is an additive Haar measure, so it charges nonempty open sets). So a := ofReal θ · ω_0 > 0 (ENNReal.mul_pos), and there is c with 0 < c < a (exists_between in [0,∞]). By lower_mass_bound with n = 0: eventually as t → 0 in 𝓝[>] 0, c · ofReal(t)^0 ≤ μ(closedBall(x,t)); since ofReal(t)^0 = 1, this says c ≤ μ(closedBall(x,t)).\n\n3. Finite mass near x. U is open (V.isOpen_domain) and x ∈ U, so there is R > 0 with ball(x,R) ⊆ U (Metric.isOpen_iff). closedBall(x,R/2) ⊆ ball(x,R) is compact and contained in U, so μ(closedBall(x,R/2)) < ∞ (Varifold.weight_finite_on_compact).\n\n4. Continuity from above. Let s_j := closedBall(x, (R/2)/(j+1)) for j ∈ ℕ. The s_j are closed (so measurable), decreasing in j, μ(s_0) < ∞ by step 3, and ⋂_j s_j = {x} (x lies in every s_j; if y ≠ x choose j with (R/2)/(j+1) < dist(y,x), possible since (R/2)/(j+1) → 0). By tendsto_measure_iInter_atTop, μ(s_j) → μ(⋂_j s_j) = μ({x}). The radii (R/2)/(j+1) are positive and tend to 0 (tendsto_one_div_add_atTop_nhds_zero_nat), so they tend to 0 within (0,∞), i.e. in 𝓝[>] 0 (tendsto_nhdsWithin_iff); by step 2, c ≤ μ(s_j) for all sufficiently large j. Passing to the limit (ge_of_tendsto), c ≤ μ({x}), so μ({x}) ≥ c > 0.\n\n5. By steps 1 and 4 the set of tangent points is contained in the countable set A₀, hence is countable. ∎",
+          "proof_key_steps": [
+            "The atoms {y : 0 < μ_V{y}} of the σ-finite weight are countable (countable_meas_pos_of_disjoint_iUnion).",
+            "lower_mass_bound with n = 0 and 0 < c < θ ω_0 gives c ≤ μ_V(B_t(x)) for small t > 0.",
+            "x ∈ U gives finite mass of a small closed ball; continuity from above along B_{R/(2(j+1))}(x) ↓ {x} yields μ_V({x}) ≥ c > 0.",
+            "So every tangent point is an atom; the set of tangent points is countable."
+          ]
+        },
+        "audit": {
+          "key": "dim_zero_countable",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The n = 0 lower bound gives positive mass on sufficiently small balls. Local finiteness at the tangent point permits continuity from above to a positive singleton mass; sigma-finiteness then makes the set of such atoms countable. This proves exactly the stated set-countability obligation without using the covering theorem."
+        },
+        "resolved_dependencies": [
+          "root.tangent_graph_cover-a1.lower_mass_bound-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/task.md": "26a69821fcbb4c8156d8dbf819ba687b1796fca88b5c4969fc177e4e2d316f7f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/problem.md": "f3ff6fdb84533e44ef581c7db9fc65e6f4432d3e00703417ae6a5521b34622cf",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/problem.json": "ab856ea735af6858e6e745d0a7c2f7609ef9100e057929e5e454a9981df30814",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/reference-manifest.json": "b9f15a98b4902e870b1591aa2a8d0fbc8638813c80ba6751d53265f3313f8524",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/decomposition.json": "cce91b4299330ca0b2ec01cd8c7db2e9145a7af42c7a53c32e5d17527b71290a",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/decomposition-audit.json": "d34975fdda71b0720d38c76404bf4a4f8399abb711de86012ab6bbdcc39a2498",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/controller-contract.json": "d6d64638c7d2185f309c986882cec6bc2e74e968c0a584815c0cff93d386fef9",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-child-handoff.json": "8c9c2b811ec3f4fa7b5140550fe56e2abf05f3a4061cd15494cf36556f39211c",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-supplied-plan.md": "a1e47b3a18905954c6bae0cb8ea010324d6a020e2b71baf11a8993a5280a96af",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-supplied-natural-proof.md": "610ee0c5ca0aac84ebc2796ef34f2bca838f667bf41f77944ac0a1d5c25bcc8b",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-supplied-natural-proof.json": "b08bc8cf40eedb321e0dab7c65bac8d3a8f82a2258692f461b0429e9b81052f5",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-linear-algebra-a1/node.json": "7bd867f7d97bc2649869cce5285be50ab1fda75350f02c88ebeef4677a96b03d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-child-handoff.json": "d618685525f00e3fd2e62f80745e434e5472954d8cb3ac9f9b51a380319b5db3",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-supplied-plan.md": "687ea7c163c1c31b313cc04527a9a1c8f811cbe25467c2bbab220c3f82252227",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-supplied-natural-proof.md": "218da952a6ebb997651158b707e60ed6b5c600a8508b4ddb9cda68c6a26db2e6",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-plane-ball-measure-a1/parent-supplied-natural-proof.json": "64807f1e9aa7f2c4ffe42441d8c25332bd3a8f25533bad455be9bf5626a35405",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-plane-ball-measure-a1/node.json": "4a1746750f8bfa73880753b99c2e0581c74f357e0848b09c468a872abb3ef49c",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-weight-blowup-a1/parent-child-handoff.json": "0fc09b089d4b2ad5eaa73f790d42271682f644d458e4d78bae99a5fbc3228fe3",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-weight-blowup-a1/parent-supplied-plan.md": "6908b96a29a87bfd542103364472761a9a6c9023f87acb2e0cc28c5ee19c9d33",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-weight-blowup-a1/parent-supplied-natural-proof.md": "62df57c6b193ee78ef4ade2c152a555ecd3c06ddfaa2dcf3e4d9fee8e4d92738",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-weight-blowup-a1/parent-supplied-natural-proof.json": "280c4f5dcc63862b58935e54d6e9a859c4b4d035fc5b53200d7030ba5b9975b4",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-weight-blowup-a1/node.json": "d4f4c2ad68ababe852a81e4946f8b8541514015e8e05b67b4ed86e9b3f9ea480",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-decay-a1/parent-child-handoff.json": "50af631b31e1a48f8ee66d056123bfc9f5f0165f414474fc478b3a4a5f6f2d1e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-decay-a1/parent-supplied-plan.md": "4d5656b4bd577f954ccc8256f42f396c387c2e3ed1a57088050effa06ef3928d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-decay-a1/parent-supplied-natural-proof.md": "5cc28f5c1c2642e9e5309d7ac98842466ec5c8e3e69a34ee087790819ad47efc",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-decay-a1/parent-supplied-natural-proof.json": "141991b2d9384c90ec496362030b13cfee3cb48b9c7faedb695c77a56dd73220",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-decay-a1/node.json": "43a60dfed7afb9f813b2c95e5c023e76c773e7032153013e18411bcb5f195a05",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-child-handoff.json": "f3d077c2e9a99b0e7ab08513d69dcc5cc479e7a39bfc5d0056624233bd9e6f3d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-supplied-plan.md": "ab21376d2600b2662f09df4e9fcb9f9dfcb686abae95a6314651b85525beeb15",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-supplied-natural-proof.md": "dc9a2f1dc4f7c6df626b787451e7e1b48f123cf9fd57637a5015304d0f3f0fb6",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-supplied-natural-proof.json": "8ca71ae51bb78bab54002433f727367c6848abfe0e0e03905fb948cac2cb422f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1/node.json": "eb207fb0533ede662c3c2e32c905406efb505027b750884f1c107bb6dcfc1d9e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-child-handoff.json": "909fe8fbf46b24656778349fdaeb5c6055d5fa2c86e3c7058a8487be3945c762",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-supplied-plan.md": "02e5c73f4d21f135572b8516a961256e0bff6265df757057e48cefb564058c09",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-supplied-natural-proof.md": "d7824c0945c872b595a632ae0bcd2c0373e37a356bed1b5b7daf6705a706b6ad",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-lower-mass-bound-a1/parent-supplied-natural-proof.json": "b4620d2c11b3a8359ac5d399d407b9a48de8a0cbef79ada4970f0525a6c5fe7e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-lower-mass-bound-a1/node.json": "633875442d3d3e26b661d77d325090f11815e601d162197de02d9b2aa672eb1d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-child-handoff.json": "1ef05e0d65ba2515e60a8b9ff946a9cf9f43ac5e82ad0d1e069ea3c9483b484a",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-supplied-plan.md": "7355beae2fa771e7478a70379b0e1c18aac473c27d70cbe98cecec2bc46b2ecd",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-supplied-natural-proof.md": "81a5a730aae503d2075437f6839c963e9e1d08adc0686ae38baa8d36e5453faa",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-dim-zero-countable-a1/parent-supplied-natural-proof.json": "57605cdd5732e3a3b2769cc1412db1e5efff1130eecf05e4ba134f1faab54f07",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1/children/root-tangent-graph-cover-a1-dim-zero-countable-a1/node.json": "a704a3bd780dbb5812821829c14034cd4fb4379afc9db224d71632194523ada6"
+  }
+}

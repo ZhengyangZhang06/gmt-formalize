@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "def (MonotonicityFormula|variationMeasure|densityRatio|HasDensity|normalDefect|unitBallVolume)|namespace|^import|^open|monotonicity_formula_8_3_3",
+        "tendsto_nhdsWithin_Ioo_right|csSup_mem",
+        "varifold|monotonicity formula",
+        "mono833_",
+        "lean /tmp/mono833_independent_audit_20261012/FrozenTypes.lean",
+        "lean /tmp/mono833_independent_audit_20261012/Children.lean",
+        "lean /tmp/mono833_independent_audit_20261012/Assembly.lean",
+        "lean /tmp/mono833_independent_audit_20261012/ImportCompatibility.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-monotonicity-formula-a1/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/parent_verification.py",
+        "/tmp/mono833_independent_audit_20261012/FrozenTypes.lean",
+        "/tmp/mono833_independent_audit_20261012/Children.lean",
+        "/tmp/mono833_independent_audit_20261012/Assembly.lean",
+        "/tmp/mono833_independent_audit_20261012/ImportCompatibility.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen contract; the inspected Mathlib files also match the compiler library. No varifold or monotonicity-formula matches occurred in snapshot Mathlib; the radial ingredients are supplied by pinned SimonGMT. The split is appropriate: four genuine obligations support the supplied radial argument and establish exactly the selected MonotonicityFormula. The sole child dependency is radial_first_variation_bound depending on radial_layer_cake, so dependencies are correctly directed and acyclic. All names are fresh bare identifiers among 227 DAG nodes. All four frozen propositions elaborate before implementation and exactly match the supplied scratch declaration types. Independently replayed child proofs and parent assembly compile using only propext, Classical.choice and Quot.sound. Single-declaration leaf checks pass. Adding the radial import preserves the relevant frozen definitions by definitional equality. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_layer_cake",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and conclusion. The proof establishes nonnegativity and measurability, identifies each positive nonempty superlevel set as a closed ball of radius strictly between 0 and ρ₀, applies the ball bound, and integrates. The cited layer-cake theorem permits arbitrary measures; neither finiteness nor Λ ≥ 0 is missing. The proof is complete and non-circular."
+    },
+    {
+      "key": "radial_first_variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. The proof constructs the compactly supported C¹ test field inside U, establishes finite cutoff integrals, applies the independently available Riesz polar representation, and uses only its declared layer-cake prerequisite. Finiteness and Λ ≥ 0 justify conversion to real integrals and the final multiplication. No parent theorem or undeclared sibling is used."
+    },
+    {
+      "key": "integrating_factor_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated derivative assumptions and endpoint inequality. The supplied proof differentiates exp(Lt)f(t) − g(t), uses L ≥ 0, t ≥ a ≥ 0 and f′ + Lf ≥ 0 to obtain a nonnegative derivative, then applies the mean value theorem. Endpoint continuity and the case a = b are covered. No additional sign or regularity assumption is needed."
+    },
+    {
+      "key": "exp_weighted_density_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the prose, including unrestricted Λ and the right-neighborhood filter. The proof obtains the weighted limit as an infimum, bounds it by the finite midpoint value, and removes the exponential weight using ENNReal multiplication continuity with both side conditions justified. It proves all three conclusions without requiring measurability of P or relying on the parent."
+    }
+  ],
+  "required_changes": []
+}

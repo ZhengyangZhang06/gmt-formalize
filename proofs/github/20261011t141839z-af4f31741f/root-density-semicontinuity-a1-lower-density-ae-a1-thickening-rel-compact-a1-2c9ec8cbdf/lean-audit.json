@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee4f2dc192554a2e7b99b6c1520552a2a8ee5fe4b4a5363c3166cd489072ecf8",
+  "git_delta": {
+    "base_commit": "2c2e689e8131be1db0f9cb0d7dcf96b1298d5495",
+    "candidate_commit": "e5f3240dec26055aa0facf1d72f4002bc0c0b05f",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "exists_thickening_isRelCompactOpenIn",
+    "diff_sha256": "d5f05a2bc3f06646ba62696a567140d8cbaefe7baead699960b36fc2a24f2365",
+    "source_sha256": "80aefd582f5093c25f08ef46dac7fdd36c20c61a27b846ea356d916d6a689f98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_thickening_isRelCompactOpenIn",
+      "statement": "∀ (N : ℕ) (U W : Set (Euclidean N)), IsOpen U → IsRelCompactOpenIn W U → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ IsRelCompactOpenIn (thickening ρ₀ W) U",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

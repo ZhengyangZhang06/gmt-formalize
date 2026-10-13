@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "no_satelliteConfig|structure BallPackage|exist_disjoint_covering_families|instHasBesicovitchCovering",
+        "Monotone.measure_iUnion|eventually_lt_of_lt_liminf|countable_of_nonempty_interior|theorem ae_iff|theorem measure_biUnion |theorem measure_biUnion_le|measure_iUnion_fintype_le|tendsto_inv_nat_nhds_zero|protected theorem Tendsto.const_mul|protected theorem Tendsto.mul_const|theorem thickening_subset_of_subset|theorem ball_subset_thickening|def thickening|theorem inv_mul_cancel",
+        "git diff 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 b70dd9d5e02268a56fe635fac6f34398f3674925 -- GMT/Ch08/Submission.lean",
+        "intcpt_vdb_besicovitch_cover_estimate|intcpt_vdb_liminf_bound_ae_of_cover",
+        "abbrev Euclidean|def Euclidean",
+        "lake env lean /tmp/lrb-split-check/Split.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "GMT/Ch08/Contract.lean",
+        "GMT/Ch08/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-bound-ae-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-bound-ae-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1-besicovitch-ratio-cover-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa65/20261011T230757Z-ch08-root.density_semicontinuity-a1.besicovitch_ratio_cover-a1-l4rw5rkl/result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa65/20261011T230757Z-ch08-root.density_semicontinuity-a1.besicovitch_ratio_cover-a1-l4rw5rkl/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py",
+        "/tmp/lrb-split-check/Split.lean"
+      ],
+      "conclusion": "The pinned sources support every substantive proof step, including continuity from below for arbitrary sets and the stated ENNReal cancellation and continuity conditions. Euclidean denotes EuclideanSpace ℝ (Fin N), with the intended geometric and measure structures. Both statements pass lexical validation and are self-contained one-line propositions; their proof additions pass the single-theorem source-delta check. Neither bare name is reserved in the eight chapter DAGs or found in the 498 searched Git refs. Child A's frozen type is identical to the earlier accepted covering theorem; its retained comparator evidence confirms Lean and Nanoda acceptance with only propext, Quot.sound and Classical.choice permitted. The split appropriately separates the geometric estimate from the exceptional-set argument: A supplies exactly B's hypothesis H, and the supplied assembly proves the selected frozen parent type. Fresh compilation was not rerun because lake is unavailable in this environment."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "besicovitch_cover_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, with C depending only on N and no missing finiteness or measurability assumptions. The supplied proof establishes the Besicovitch families, their countability, containment in the thickening, and every summation inequality. ENNReal multiplication handles t = 0 or ∞, and empty sets and nonpositive radius bounds are covered. The proof is complete and independent of both the selected parent and the other child. Its fresh bare name is unreserved."
+    },
+    {
+      "key": "liminf_bound_ae_of_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes precisely H and the finite-supremum hypothesis appearing in the Lean type. The proof correctly derives the exceptional set, its inclusion in the increasing A_i, inverse cancellation for j + 1, the bounds obtained from H and thickening monotonicity, arbitrary-set continuity from below, and the zero limit using finite C and S. No measurability, local finiteness, or positive-r hypothesis is silently added. H is an explicit assumption, so the empty dependency list is correct and non-circular. Specializing child A supplies H and yields exactly the selected parent conclusion. Its fresh bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

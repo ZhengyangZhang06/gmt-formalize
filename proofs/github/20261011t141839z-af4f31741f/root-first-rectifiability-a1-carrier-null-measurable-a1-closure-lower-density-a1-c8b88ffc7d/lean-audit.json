@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5407372f757b51f169398bd791d27cdd24e542c7240861c9f592d25dcbf7f8e",
+  "git_delta": {
+    "base_commit": "6cd7485f01bdb2ffebc7ee7f7b64e03ecd8795ae",
+    "candidate_commit": "05f4ed7898af45c93f40d329258edfb63d733489",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_cnm_densityRatio_lower_closure",
+    "diff_sha256": "d55e6f14f0ee5203f727913ee7ea94053dc8604f326c61e4e5e91347f92053fb",
+    "source_sha256": "be071c3f1e414edf64376e85c252b8b9f6d52cfd955e020fd485764a09bf6173",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_cnm_densityRatio_lower_closure",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (E : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → c ≤ densityRatio n μ x ρ) → ∀ y ∈ closure E, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → c ≤ densityRatio n μ y ρ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

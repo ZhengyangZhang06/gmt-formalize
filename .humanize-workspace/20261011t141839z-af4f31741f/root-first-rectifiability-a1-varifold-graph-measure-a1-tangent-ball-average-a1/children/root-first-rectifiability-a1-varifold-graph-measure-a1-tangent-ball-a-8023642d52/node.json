@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.product_blowup-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1",
+  "depth": 4,
+  "title": "Def. 1.1 tested on product functions: t^{-n}∫ g(t⁻¹(y−x))β(S) dV → θ β(T) ∫_T g dH^n",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N (V : Varifold N n U), x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ, and suppose HasTangentPlane V x T θ (Simon Ch. 8, Def. 1.1: x ∈ U, θ > 0, and ∫ f dV_{x,t} → θ ∫ f dv(T) as t ↓ 0 for every f ∈ C_c(ℝ^N × G(N,n)), where V_{x,t} = rescaledMeasure V x t and v(T) = planeVarifoldMeasure T). Then for every g ∈ C_c(ℝ^N, ℝ) and every continuous β : G(N,n) → ℝ, t^{-n} ∫ g(t⁻¹(y − x)) β(S) dV(y,S) → θ · (β(T) · ∫_{T.plane} g dH^n) as t → 0⁺, where t^{-n} = (t⁻¹)^n, H^n = μHE[n], and all integrals are Bochner integrals (the first with respect to V.measure).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ (g : C_c(Euclidean N, ℝ)) (β : C(Grassmannian N n, ℝ)), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z.1 - x)) * β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (β T * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n])))",
+  "lean_name": "frt_vgm_tba_product_blowup_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-a-8023642d52-a1"
+}

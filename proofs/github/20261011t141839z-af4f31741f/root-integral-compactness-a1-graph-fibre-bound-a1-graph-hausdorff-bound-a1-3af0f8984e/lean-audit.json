@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9b8d8f2dacde39a44b627a222f745a1de5f9569984d65f190d4f0bde3d60c537",
+  "git_delta": {
+    "base_commit": "298a3bdf615e9c88303722a7a9245c68ad95b32e",
+    "candidate_commit": "947598d179d97d329bf27aae98ceb6ef92c4c4da",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_graph_hausdorff_le_projection",
+    "diff_sha256": "5ec37e3822996956a0b61619b37792de54b35e0e783b4d96b5914e066f6e3a8d",
+    "source_sha256": "9ce2c54ca1ad9b20a6ff4f2cb82250f075112607822aaa41db6ee07e75659e91",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_graph_hausdorff_le_projection",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (μHE[n] : Measure (Euclidean N)) A ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' A)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

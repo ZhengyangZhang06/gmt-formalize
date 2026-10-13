@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "^import|^open|^namespace|^section|^end|def Euclidean|def unitBallVolume|def densityRatio|def HasDensity",
+        "sed -n '50,115p' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n '428,565p' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "theorem div_lt_iff|theorem div_pos|theorem mul_div_cancel|theorem exists_nat_gt|theorem le_of_forall_pos_le_add",
+        "mem_nhdsGT_iff_exists_Ioo_subset|exists_nat_one_div_lt|theorem measure_ball_pos|theorem measure_ball_lt_top|theorem edist_le_ediam_of_mem|theorem measure_iUnion_le|theorem tsum_mul_left|theorem continuous_pow|theorem Tendsto.const_mul|theorem ge_of_tendsto",
+        "frt_measure_null_of_hausdorff_null_ball_bound|frt_ball_bound_of_finite_density",
+        "python3 /tmp/wnh_independent_audit_cedjavlk/check.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-null-of-hausdorff-null-a1/parent-child-handoff.json",
+        "/tmp/wnh_independent_audit_cedjavlk/FullReplay.lean",
+        "/tmp/wnh_independent_audit_cedjavlk/Assembly.lean",
+        "/tmp/wnh_independent_audit_cedjavlk/check.py"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions, byte-identical contract files, and compatibility of all 13 inspected Mathlib files with the compiler environment. The snapshot supplies the Hausdorff covering formula, nonzero normalization factor, volume bounds, and ENNReal limit/division facts used by the proofs. Neither proposed name is reserved in the 77-node DAG. Both exact one-line propositions pass validation and independently elaborate in comparator scope without either child being implemented. Fresh compiler replay of both complete proofs and the exact parent succeeds using only propext, Classical.choice and Quot.sound. A separate parent assembly parameterized solely by the two child contracts also compiles without sorry. The split is appropriate: two independent, acyclic obligations establish the selected parent through the stated countable decomposition."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "null_of_ball_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree on every hypothesis, including arbitrary A, finite nonnegative c, positive δ, and closed-ball bounds. The proof correctly removes Hausdorff normalization, bounds each covering-set intersection, handles zero diameter separately for n = 0 and n > 0, extracts arbitrarily cheap covers, and concludes by subadditivity and the c = 0 or ε/c argument. No measurability, regularity, or local-finiteness assumption on μ is hidden. The proof is complete and non-circular; the bare declaration name is available."
+    },
+    {
+      "key": "finite_density_ball_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the standalone Lean proposition. Positivity and finiteness of unitBallVolume hold for every n, including zero. The proof obtains an eventual bound from the finite density limit, chooses 1/(j+1) strictly inside its validity interval, chooses a natural K above m·ω, and clears the explicitly positive finite denominator. This proves the bound at every required radius, including the endpoint, without assuming μ is locally finite. The proof is complete, independent of the other child and parent conclusion, and uses an available bare declaration name."
+    }
+  ],
+  "required_changes": []
+}

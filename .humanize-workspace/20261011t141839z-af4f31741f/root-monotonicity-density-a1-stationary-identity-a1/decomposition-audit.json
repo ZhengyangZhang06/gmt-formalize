@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "^(import|namespace|open|end)|def (normalDefect|densityRatio|unitBallVolume|HasDensity|StationaryMonotonicityIdentity)",
+        "withDensity_apply|lintegral_mono_set|theorem lintegral_indicator|tendsto_measure_iUnion_atTop",
+        "sed -n '432,474p' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "normalDefect_annulus_tendsto_closedBall",
+        "annular_identity_limit_at_zero",
+        "python /tmp/stationary_decomposition_audit_yvf7i75l/check.py ChallengeTypes.lean",
+        "python /tmp/stationary_decomposition_audit_yvf7i75l/check.py LeafB.lean",
+        "python /tmp/stationary_decomposition_audit_yvf7i75l/check.py LeafC.lean",
+        "python /tmp/stationary_decomposition_audit_yvf7i75l/check.py ParentCandidate.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-stationary-identity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/runtime/flows/gmt-claude-ceab09671123/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-ceab09671123/_recursive_lean/parent_verification.py",
+        "/tmp/stationary_decomposition_audit_yvf7i75l/ChallengeTypes.lean",
+        "/tmp/stationary_decomposition_audit_yvf7i75l/LeafB.lean",
+        "/tmp/stationary_decomposition_audit_yvf7i75l/LeafC.lean",
+        "/tmp/stationary_decomposition_audit_yvf7i75l/ParentCandidate.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical contract, and exact parent digest. Neither proposed name is reserved in the DAG or another branch's proposal. Both frozen types elaborate independently before their declarations exist, pass the one-line validator, and match their candidate declarations exactly. Both leaf source deltas pass the gate. Fresh Lean checks of both leaves and the selected parent assembly succeed; their transitive axiom closures contain only propext, Classical.choice and Quot.sound. ENNReal order-topology, continuous-addition and right-filter NeBot instances were checked. The split is appropriate: two independent, genuine limit obligations support the retained annular computation. Localizing the pinned annular theorem to an intermediate radius and applying the children with the finite factor (unitBallVolume n)⁻¹ proves exactly StationaryMonotonicityIdentity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "centre_defect_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare name and independently elaborated one-line proposition match all prose quantifiers, including arbitrary real ρ. Every proof step is valid: the integrand vanishes at the centre; indicators justify removing it; annular defects are antitone; the reciprocal-radius annuli exhaust the punctured ball; continuity from below gives the sequence limit; and the supremum argument identifies the full right limit. The inspected withDensity_apply requires no integrand measurability. No stationarity, finiteness, positive outer radius, sibling result or parent theorem is assumed. The proof is complete and directly guides formalization."
+    },
+    {
+      "key": "density_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare name and exact one-line proposition match both hypotheses and the full conclusion. The proof correctly derives monotonicity, constructs the common infimum limit using ρ₀ > 0, combines limits through continuous ENNReal addition, and uses the eventual identity on (0,ρ] and uniqueness along the proper right-neighborhood filter. Infinite values cause no gap. This child is independent of the other child, so empty dependencies are correct and acyclic. The parent's supplied annular identity and scaled centre-defect limit discharge its premises and yield precisely the selected stationary identity."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.limit_ball_mass-a1",
+  "parent_id": "root.varifold_tangents-a1",
+  "depth": 2,
+  "title": "Mass of a varifold tangent on balls about 0: μ_C(B_ρ(0)) = θ0 ω_n ρ^n (corrected 5.2, step A3)",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, x ∈ ℝ^N, θ0 ∈ ℝ with Θ^n(μ_V, x) = θ0 (HasDensity n μ_V x (ofReal θ0)), and let C be an n-varifold on ℝ^N with IsVarifoldTangent V x C. Then μ_C(B_ρ(0)) = θ0·ω_n·ρ^n for every ρ > 0 (closed ball centred at 0; in ℝ≥0∞: ofReal θ0 * unitBallVolume n * ofReal ρ ^ n). This is Simon 5.2 with the printed centre x corrected to 0.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ) (C : Varifold N n (univ : Set (Euclidean N))), HasDensity n V.weight x (ENNReal.ofReal θ₀) → IsVarifoldTangent V x C → ∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n",
+  "lean_name": "varifold_tangents_limit_ball_mass",
+  "depends_on": [
+    "root.varifold_tangents-a1.rescaled_ball_mass-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.varifold_tangents-a1.rescaled_ball_mass-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-limit-ball-mass-a1-a1"
+}

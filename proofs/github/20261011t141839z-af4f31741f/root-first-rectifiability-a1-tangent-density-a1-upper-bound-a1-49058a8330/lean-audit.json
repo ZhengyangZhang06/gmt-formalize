@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68d577588964fd4877f8aeb1824be23950d0a5566477f3f066e5ab6817c2a93c",
+  "git_delta": {
+    "base_commit": "8c6206b34ff885bad20b01b0b66f6f21a725ed3d",
+    "candidate_commit": "94a8feb2121a06d8c798e4de3f1b2d3a334e4b01",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_td_ball_mass_upper_of_blowup",
+    "diff_sha256": "e0b062a0b29a678db5eb42db779ee83c37ccb3334170661a31ad66d15874bf88",
+    "source_sha256": "a54efe500c5bb37e1451abfc98b4ea4fd12563df4379b0351fd6dc02c2073a9e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_td_ball_mass_upper_of_blowup",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (T : Grassmannian N n) (θ r₀ : ℝ), 0 < θ → 0 < r₀ → μ (closedBall x r₀) ≠ ⊤ → (∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂μ) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]))) → ∀ c : ℝ≥0∞, ENNReal.ofReal θ * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

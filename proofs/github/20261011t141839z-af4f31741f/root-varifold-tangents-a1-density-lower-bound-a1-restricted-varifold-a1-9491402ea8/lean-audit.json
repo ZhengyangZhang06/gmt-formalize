@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ecb55c342f756d54935dc7f444ff4418a65072ddc52af8ea29094edea01cb973",
+  "git_delta": {
+    "base_commit": "a974ecefe43b5648166cbbd2d0e87c34d9c1cf65",
+    "candidate_commit": "9698262c000a55013578e3ed670970b7af68448e",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_dlb_exists_restricted_varifold",
+    "diff_sha256": "5ff949f69d8441fbb236dfbd7c2ce6c36e91da737585cf334d345fba68e0f528",
+    "source_sha256": "0611ceba969afccc59dbe6a143acba486ba4c8155e1899510d68a60db0152225",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_dlb_exists_restricted_varifold",
+      "statement": "∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μ : Measure (Euclidean N × Grassmannian N n)) (c : ℝ≥0∞), IsOpen Ω → c ≠ ∞ → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ Ω → μ (K ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞) → ∃ W : Varifold N n Ω, W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n)))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

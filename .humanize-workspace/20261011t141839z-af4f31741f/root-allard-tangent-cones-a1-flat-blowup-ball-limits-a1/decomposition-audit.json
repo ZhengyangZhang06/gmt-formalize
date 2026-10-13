@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "theorem addHaar_ball_of_pos|theorem addHaar_ball |theorem addHaar_closedBall ",
+        "^theorem (integral_smul_measure|integral_map) ",
+        "^theorem tendsto_integral_of_dominated_convergence ",
+        "lemma Measure.integrableOn_of_bounded|theorem IntegrableOn.integrable_of_forall_notMem_eq_zero",
+        "rescaledMeasure|planeVarifoldMeasure|unitBallVolume|finite_on_compact|isOpen_domain|weight_apply|finrank_plane|instCompactSpace",
+        "allard_tc_fbl_|allard_tc_flat_blowup_ball_limits|plane_ball",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fbl-decomp/FullCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fbl-independent-audit-5207elfw/IndependentTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1/decomposition-v1.json",
+        "/tmp/fbl-decomp/FullCheck.lean",
+        "/tmp/fbl-independent-audit-5207elfw/IndependentTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected flat-blowup ball-limit theorem. The pinned project/mathlib revisions and inspected library files match the compiler environment. The searched snapshot project contains no matching allard_tc_fbl_, allard_tc_flat_blowup_ball_limits, or plane_ball declaration. The cited measure-transfer, integration, compactness and dominated-convergence lemmas support the supplied proofs. All five child types and the selected parent type independently elaborate before child implementation with autoImplicit=false; relevant typeclass checks also pass. Recompilation of the supplied sorry-free proofs and all six exact-type comparator checks succeeds, with only propext, Classical.choice and Quot.sound as axioms. Dependencies are correctly directed and acyclic. All five names are bare identifiers, with no collisions in the current 92-node DAG or inspected other-branch proposals. No matrix-unit construction occurs. The nonnegative limit, eventual integrable constant shift, and β=1 specialization establish both exact parent conclusions. Public background consulted: the sequential cutoff/portmanteau argument in [Jerrard, Theorem 2](https://www.math.toronto.edu/rjerrard/1501/notes/week4.pdf); the supplied proof independently handles arbitrary filters."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches both ENNReal-valued ball identities and every hypothesis. The proof constructs the required isometry, transfers Hausdorff measure, and computes the volumes. Its separate n=0 argument correctly avoids a nontriviality assumption. It is complete and independent."
+    },
+    {
+      "key": "plane_cutoff_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches both k+1 cutoff limits. The declared plane_ball_measure dependency supplies finite dominating mass and equal open/closed unit-ball masses. Measurability, domination, pointwise limits, and evaluation of both limiting integrals are justified without circularity."
+    },
+    {
+      "key": "rescaled_sandwich",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes positive radius, closed-ball containment, and nonnegative continuous β exactly as required. The proof correctly establishes finite support mass, change of variables, integrability of all three comparison functions, and both inequalities. The pinned integral_map and integral_smul_measure lemmas support the stated identities without additional integrability hypotheses."
+    },
+    {
+      "key": "filter_squeeze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the family-indexed squeeze. The ε/2 proof chooses a common natural-number index and intersects the required eventual conditions. It works for every filter, including the bottom filter, and uses no unstated NeBot assumption."
+    },
+    {
+      "key": "nonneg_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves all parent hypotheses and precisely adds β≥0. The proof constructs valid compactly supported tests, evaluates their plane integrals, obtains eventual admissible radii, and applies exactly its three declared dependencies. It proves the stated limit for arbitrary real θ and arbitrary filters, without invoking itself or the parent."
+    }
+  ],
+  "required_changes": []
+}

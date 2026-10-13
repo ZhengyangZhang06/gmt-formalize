@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1.cylinder_grouping-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+  "depth": 4,
+  "title": "Grouping disjoint fibre cylinders into enlarged cylinders about cluster representatives (Simon 8.5.10, proof of (8), steps (b)–(d))",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N (Borel σ-algebra), P ∈ G(N,n), x ∈ ℝ^N, let s, Z ⊆ ℝ^N be finite sets and d, ρ, S, u ∈ ℝ. Write p := Grassmannian.project P and, for w ∈ ℝ^N and t, r ∈ ℝ, U^t_r(w) := closedBall w r ∩ {z : ‖(z − w) − p(z − w)‖ < t}. Assume: p(y) = x for every y ∈ s; Z ⊆ s; d > 0; d ≤ ‖y − y'‖ for all distinct y, y' ∈ s; ρ > 0; 0 ≤ S ≤ u·ρ; u ≤ 1; and every y ∈ s has some z ∈ Z with ‖y − z‖ ≤ S. Then, in [0,∞], Σ_{y∈s} μ(U^{d/2}_ρ(y))/ofReal(ρ)^n ≤ ofReal(1 + (2^n − 1)u)·Σ_{z∈Z} μ(U^{d/2+S}_{ρ+S}(z))/ofReal(ρ + S)^n.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s Z : Finset (Euclidean N)) (d ρ S u : ℝ), (∀ y ∈ s, Grassmannian.project P y = x) → Z ⊆ s → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → 0 < ρ → 0 ≤ S → S ≤ u * ρ → u ≤ 1 → (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) → ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) / ENNReal.ofReal ρ ^ n ≤ ENNReal.ofReal (1 + (2 ^ n - 1) * u) * ∑ y ∈ Z, μ (closedBall y (ρ + S) ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2 + S}) / ENNReal.ofReal (ρ + S) ^ n",
+  "lean_name": "intcpt_allard_ccb_cylinder_grouping",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a-7a04b0ef57-a1"
+}

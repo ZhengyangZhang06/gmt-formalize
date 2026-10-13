@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "994fb569f4ac232ce36691e01152eee63e28d2afc95e7621a1d103534c14ae67",
+  "git_delta": {
+    "base_commit": "6d95acfed062dda9ad45f0aca042f711afb3154d",
+    "candidate_commit": "dca2d2a0f9d864e47c5c32978091e15dd096d798",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_vdb_ball_mass_le_of_density",
+    "diff_sha256": "7fbf4cfc2b17e5cc66c08854724e258e2a23f6dd5f3390c81c73c093a92d7e31",
+    "source_sha256": "faf8e7a9a048fa39b464a753b7dc678890fa8730dc5d96a7a3397b13995f5ca4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_vdb_ball_mass_le_of_density",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), HasDensity n μ x θ → θ ≠ ∞ → ∃ C r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r → μ (closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

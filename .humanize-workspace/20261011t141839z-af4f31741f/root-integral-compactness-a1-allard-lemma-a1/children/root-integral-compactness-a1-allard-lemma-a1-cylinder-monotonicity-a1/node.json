@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Cylinder monotonicity at good points (Simon 8.5.10, printed (7))",
+  "statement": "For all N, n ∈ ℕ there is C ≥ 0 such that: let W be an n-varifold on U ⊆ ℝ^N with locally bounded first variation, P ∈ G(N,n), y ∈ ℝ^N with B°_1(y) ⊆ U, ε > 0, K ≥ 0, and assume for every r ∈ (0,1): (1r) ‖δW‖(B_r(y)) ≤ ε μ_W(B_r(y)); (2r) ∫_{B_r(y)×G(N,n)} t_P(S) dW(z,S) ≤ ε r^n (t_P(S) = operator norm of p_S − p_P); (3r) μ_W(B_r(y)) ≤ K r^n. Then for all 0 < τ ≤ 1 and 0 < σ ≤ ρ < 1, with U^τ_σ(y) := B_σ(y) ∩ {z : |(z − y) − p_P(z − y)| < τ}: μ_W(U^τ_σ(y))/σ^n ≤ μ_W(U^{2τ}_ρ(y))/ρ^n + C(1 + K)ερ/τ in [0,∞].",
+  "lean_statement": "∀ (N n : ℕ), ∃ C : ℝ, 0 ≤ C ∧ ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε K : ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 < ε → 0 ≤ K → (∀ r : ℝ, 0 < r → r < 1 → variationMeasure W (closedBall y r) ≤ ENNReal.ofReal ε * W.weight (closedBall y r)) → (∀ r : ℝ, 0 < r → r < 1 → (∫⁻ z in closedBall y r ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * r ^ n)) → (∀ r : ℝ, 0 < r → r < 1 → W.weight (closedBall y r) ≤ ENNReal.ofReal (K * r ^ n)) → ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → W.weight (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ W.weight (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (C * (1 + K) * ε * ρ / τ)",
+  "lean_name": "intcpt_allard_cylinder_monotonicity",
+  "depends_on": [
+    "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-monotonicity-a1-a1"
+}

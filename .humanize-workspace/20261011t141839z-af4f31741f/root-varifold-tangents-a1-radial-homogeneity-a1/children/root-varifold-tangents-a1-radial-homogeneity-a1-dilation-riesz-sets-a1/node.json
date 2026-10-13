@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_riesz_sets-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1",
+  "depth": 3,
+  "title": "Riesz uniqueness turns the C_c dilation law into μ(s·A) = sⁿ μ(A) for every set A",
+  "statement": "Let μ be a Borel measure on ℝ^N that is finite on compact sets, n ∈ ℕ and s > 0. Suppose that ∫ g(s⁻¹y) dμ(y) = s^n ∫ g dμ for every continuous function g : ℝ^N → ℝ with compact support. Then μ(s·A) = s^n μ(A) for every set A ⊆ ℝ^N (not necessarily measurable); in ℝ≥0∞: μ (s • A) = ENNReal.ofReal s ^ n * μ A.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ A : Set (Euclidean N), μ (s • A) = ENNReal.ofReal s ^ n * μ A",
+  "lean_name": "varifold_tangents_rh_measure_homogeneous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-dilation-riesz-sets-a1-a1"
+}

@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "MonotonicityFormula|StationaryMonotonicityIdentity|DensityExistsAE|normalDefect|variationMeasure",
+        "varifold",
+        "monotonicity formula",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/simongmt status --porcelain",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/mathlib status --porcelain",
+        "lean /tmp/audit_monotonicity_kn07ue__/src/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/tmp/audit_monotonicity_kn07ue__/src/Audit.lean",
+        "/tmp/audit_monotonicity_kn07ue__/Audit.log"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace Contract and Submission. Mathlib and SimonGMT match their pinned revisions, with clean worktrees. Snapshot Mathlib searches found no varifold or monotonicity-formula material; the cited SimonGMT sources supply the stated analytic ingredients. Independent Lean validation exited successfully: all three frozen propositions elaborate, proposed Submission names are absent, normalizations and centre conventions check, and the assembly proves exactly monotonicity_and_density_theorems : MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE. Checked reused lemmas and auxiliary proofs depend only on propext, Classical.choice and Quot.sound. DAG and other-branch decomposition checks found no name collisions. Splitting these three conjuncts is appropriate; density_exists_ae depends only on monotonicity_formula, with no cycle or reliance on the selected parent theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "monotonicity_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MonotonicityFormula is an existing, independently elaborating one-line Prop matching every prose hypothesis and conclusion. The fresh bare name is valid. The supplied proof establishes admissible cutoffs, the closed-superlevel layer-cake bound, the correctly signed integrating-factor comparison, dominated convergence and the finite density limit. Compact domination and normalization are justified, including n = 0. No circular or deferred proof obligation remains."
+    },
+    {
+      "key": "stationary_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "StationaryMonotonicityIdentity exactly matches the prose and requires no locally bounded first variation. The fresh bare name is valid. Localizing to an intermediate compact ball satisfies the reused annular theorem's hypotheses. The proof then establishes the density limit and passes through increasing annuli, correctly removing the centre because its integrand is zero. This proves the complete second conjunct independently."
+    },
+    {
+      "key": "density_exists_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DensityExistsAE exactly matches the measurable, finite-a.e. density conclusion; its fresh bare name is valid. The pinned ball-bound theorem needs only the stated first-variation hypothesis. Applying the declared monotonicity_formula dependency yields finite densities almost everywhere. Sigma-finiteness justifies Borel ball-mass measurability, and the measurable sequential liminf agrees with every existing density limit. The proof is complete and the dependency is correctly directed."
+    }
+  ],
+  "required_changes": []
+}

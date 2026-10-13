@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/5a882a57db723346/manifest.json (project 63436ae6, mathlib 25730c7c); lake-manifest + git rev-parse: .lake/packages/mathlib = 25730c7c, simongmt = 2b366308",
+        "sha256sum snapshot project/GMT/Ch08/Contract.lean vs workspace GMT/Ch08/Contract.lean and Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+        "rg -n 'def rescaledMeasure|def variationMeasure' project/GMT/Ch08/Contract.lean (lines 96, 63)",
+        "rg -n '^theorem integral_map\\b|^theorem integral_smul_measure\\b' mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean",
+        "rg -n 'closure_ball_subset_closedBall|ofReal_inv_of_pos|protected theorem mul_inv|inv_mul_lt_iff₀|toReal_ofReal|ofReal_mul|pow_ne_top|HasFDerivAt.comp|HasFDerivAt.const_smul|sub_const' over snapshot mathlib/Mathlib",
+        "rg -l firstVariation mathlib/Mathlib in snapshot (0 files: no varifold first variation in Mathlib); rg -l varifold_tangents_rdb_ over snapshot (0 files)",
+        "grep -n 'def tangentialDivergence|structure TestVectorField|def firstVariationNormOn|UnitSupportedIn|firstVariation_const_smul|continuous_tangentialDivergence|tangentialDivergence_zero|firstVariationRieszMeasure_eq_norm' over pinned SimonGMT Chapter08",
+        "grep -rn 'ofReal |V.firstVariation' and 'firstVariation_comp|blowUp.*firstVariation|rescale.*firstVariation' over SimonGMT (no existing variationMeasure-form bound or rescaling identity; only le_firstVariationNormOn, firstVariation_bound_of_unit_bound, VarifoldConvergence:86)",
+        "read SimonGMT FirstVariationBounds.lean, FirstVariationRiesz.lean:200-313, BallVariationBound.lean, TangentRescaling.lean (blowUpMeasure equals rescaledMeasure but is outside Submission's import closure)",
+        "python3 -I import verifier lean_contract.validate_lean_statement and gmt-compare.contract_scope/child_modules on both child statements (scope: open Set Filter MeasureTheory Metric; open scoped Topology ENNReal CompactlySupported Pointwise; namespace GMT.Ch08; open Poincare.SimonGMT; open Poincare.SimonGMT.Chapter08; section/end Definitions)",
+        "lake env lean /tmp/rdb-decomp/Final2.lean (children proved, parent frozen type from children, exact Submission.X replays, #print axioms) and /tmp/rdb-decomp/Stub2.lean (child proofs sorry'd, parent still compiles)",
+        "grep -rhoE '\"lean_name\": *\"[^\"]*\"' over run dir and grep for varifold_tangents_rdb_ over .humanize and cluster-state (no reservation)",
+        "grep book/sources/chapter-08-source.txt for 2.5 (p. 209) and 5.1-5.2 (p. 215)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-08-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-divergence-bound-a1/parent-child-handoff.json"
+      ],
+      "conclusion": "Snapshot = project 63436ae6 + Mathlib 25730c7c, matching the workspace .lake Mathlib; SimonGMT is pinned at 2b366308. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nMathlib (snapshot) supplies the change-of-variables tools for child A: integral_smul_measure (Bochner/Basic.lean:1052), integral_map (:1081), ENNReal.toReal_ofReal (ENNReal/Basic.lean:252), and the chain rule (HasFDerivAt.comp, FDeriv/Comp.lean:107; HasFDerivAt.const_smul, FDeriv/Add.lean:67). It supplies the parent's ENNReal and ball arithmetic: ENNReal.mul_inv (ENNReal/Inv.lean:245), ofReal_inv_of_pos (:945), ofReal_mul (ENNReal/Real.lean:297), pow_ne_top (ENNReal/Operations.lean:241), closure_ball_subset_closedBall (Pseudo/Lemmas.lean:73) and inv_mul_lt_iff₀ (GroupWithZero/Basic.lean:919). Mathlib has no varifold first variation (0 files match).\n\nPinned SimonGMT, all inside Submission's import closure, supplies child B's ingredients: firstVariationRieszMeasure_eq_norm (FirstVariationRiesz.lean:218), le_firstVariationNormOn, TestVectorField.scale and tsupport_scale_subset (FirstVariationBounds.lean), firstVariation_const_smul, firstVariation_zero and continuous_tangentialDivergence (Varifold.lean). SimonGMT has no lemma for the variationMeasure-form bound or for the rescaling identity. Its blowUpMeasure (TangentRescaling.lean) equals rescaledMeasure but is outside the import closure and has no first-variation identity. Hence both children are new, needed obligations.\n\nLean checks, in a scratch copy using the comparator's replayed scope:\n- Both child statements pass validate_lean_statement and the `exact Submission.X` replay, and are fully proved.\n- The parent's exact frozen type is proved from the two child statements alone.\n- Axioms are only propext, Classical.choice and Quot.sound.\n\nNo varifold_tangents_rdb_ name is reserved anywhere in the run, cluster-state or sources."
+    }
+  ],
+  "parent_id": "root.varifold_tangents-a1.rescaled_divergence_bound-a1",
+  "child_id": "root.varifold_tangents-a1.rescaled_divergence_bound-a1.first_variation_sup_bound-a1",
+  "subproblem": {
+    "key": "first_variation_sup_bound",
+    "title": "Simon 2.5 bound: |δV(Y)| ≤ sup|Y| · ‖δV‖(W) for test fields supported in W ⊂⊂ U",
+    "statement": "Let V be an n-varifold on the open set U ⊆ ℝ^N with locally bounded first variation, let W ⊆ ℝ^N be open with closure W compact and closure W ⊆ U, let K ∈ ℝ, and let Y : ℝ^N → ℝ^N be a C¹ vector field with tsupport Y ⊆ W and |Y(z)| ≤ K for all z. Then |δV(Y)| ≤ K·‖δV‖(W), where δV(Y) = V.firstVariation Y and ‖δV‖ = variationMeasure V; in ℝ≥0∞: ofReal|δV(Y)| ≤ ofReal K · variationMeasure V W.",
+    "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (W : Set (Euclidean N)) (Y : Euclidean N → Euclidean N) (K : ℝ), V.HasLocallyBoundedFirstVariation → IsOpen W → IsCompact (closure W) → closure W ⊆ U → ContDiff ℝ 1 Y → tsupport Y ⊆ W → (∀ z, ‖Y z‖ ≤ K) → ENNReal.ofReal |V.firstVariation Y| ≤ ENNReal.ofReal K * variationMeasure V W",
+    "lean_name": "varifold_tangents_rdb_firstVariation_le_variationMeasure",
+    "depends_on": [],
+    "natural_proof": "Source: steps 5–6 of the parent proof (Simon Ch. 8, 2.5, p. 209: ‖δV‖(W) = sup{|δV(X)| : X ∈ K(U;ℝ^N), |X| ≤ 1, spt X ⊆ W} for open W ⊂⊂ U, kernel-checked as SimonGMT Varifold.firstVariationRieszMeasure_eq_norm, FirstVariationRiesz.lean:218). Notation: δV(Y) := V.firstVariation Y; ‖δV‖ := variationMeasure V; hV : V.HasLocallyBoundedFirstVariation.\n1. (Y is a test field.) tsupport Y ⊆ W ⊆ closure W. Since tsupport Y is closed and contained in the compact set closure W, it is compact, i.e. HasCompactSupport Y (IsCompact.of_isClosed_subset). Also tsupport Y ⊆ closure W ⊆ U. Hence Y together with its C¹ property is an element Y' of Varifold.TestVectorField U.\n2. (‖δV‖(W) is the supremum of 2.5.) By the definition of variationMeasure and hV (dif_pos, equivalently dite_eq_left), variationMeasure V = V.firstVariationRieszMeasure hV. As W is open with closure W compact and contained in U, Varifold.firstVariationRieszMeasure_eq_norm gives V.firstVariationRieszMeasure hV W = V.firstVariationNormOn W. Hence variationMeasure V W = V.firstVariationNormOn W, and it suffices to prove ofReal|δV(Y)| ≤ ofReal K · V.firstVariationNormOn W.\n3. (K ≥ 0.) 0 ≤ ‖Y 0‖ ≤ K.\n4. (Case K = 0.) Then ‖Y z‖ ≤ 0, so Y z = 0 for every z, i.e. Y is the zero field, and Varifold.firstVariation_zero gives δV(Y) = 0. The left side is ofReal|0| = 0, which is ≤ the right side.\n5. (Case K > 0: normalization.) Let Ŷ := K⁻¹•Y, i.e. Ŷ = Y'.scale K⁻¹ ∈ TestVectorField U. Then tsupport Ŷ ⊆ tsupport Y ⊆ W (TestVectorField.tsupport_scale_subset) and ‖Ŷ z‖ = K⁻¹‖Y z‖ ≤ K⁻¹·K = 1 for every z. So Ŷ.UnitSupportedIn W. Since V.firstVariationNormOn W is by definition the supremum over all test fields X of (ofReal|δV(X)| if X.UnitSupportedIn W, else 0), Varifold.le_firstVariationNormOn gives ofReal|δV(Ŷ)| ≤ V.firstVariationNormOn W.\n6. (Linearity.) Y is C¹ with compact support, so Varifold.firstVariation_const_smul gives δV(K⁻¹•Y) = K⁻¹·δV(Y); as K⁻¹ > 0, |δV(Ŷ)| = K⁻¹·|δV(Y)|.\n7. (Conclusion.) |δV(Y)| = K·(K⁻¹·|δV(Y)|), so by ENNReal.ofReal_mul (K ≥ 0) ofReal|δV(Y)| = ofReal K · ofReal(K⁻¹·|δV(Y)|) = ofReal K · ofReal|δV(Ŷ)| ≤ ofReal K · V.firstVariationNormOn W = ofReal K · variationMeasure V W, by step 5, monotonicity of multiplication in ℝ≥0∞, and step 2. ∎",
+    "proof_key_steps": [
+      "tsupport Y ⊆ W ⊆ closure W (compact, ⊆ U), so Y is a TestVectorField U with compact support.",
+      "variationMeasure V W = firstVariationRieszMeasure hV W = firstVariationNormOn W (dif_pos and firstVariationRieszMeasure_eq_norm).",
+      "K ≥ 0; if K = 0 then Y = 0 and δV(Y) = 0.",
+      "If K > 0, Ŷ = K⁻¹Y is UnitSupportedIn W, so ofReal|δV(Ŷ)| ≤ firstVariationNormOn W (le_firstVariationNormOn).",
+      "δV(Ŷ) = K⁻¹δV(Y) (firstVariation_const_smul) and ofReal_mul give ofReal|δV(Y)| ≤ ofReal K · variationMeasure V W."
+    ]
+  },
+  "audit": {
+    "key": "first_variation_sup_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line proposition exactly matches the prose; openness of U is included in Varifold. Compact support follows from closed tsupport Y lying in compact closure W, so no hypothesis is missing. Local bounded first variation and the stated conditions on W justify the Riesz-norm identification. The proof derives K ≥ 0, handles K = 0, and for K > 0 correctly normalizes Y, applies the defining supremum bound, and restores the scale using homogeneity and ENNReal multiplication. It is complete, non-circular, and ready for formalization. The bare name is unreserved."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-divergence-bound-a1-first-variatio-6aa158296a/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-divergence-bound-a1-first-variatio-6aa158296a/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-divergence-bound-a1-first-variatio-6aa158296a/parent-supplied-natural-proof.json"
+}

@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "integral_withDensity_eq_integral_toReal_smul₀|setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|setIntegral_eq_integral_of_forall_compl_eq_zero|MeasurableEmbedding.integral_map|theorem integral_smul_measure",
+        "euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety",
+        "frt_wat_integral_eq_setIntegral_mul|frt_wat_setIntegral_blowUpMap_image",
+        "sed -n '324,368p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '188,213p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wat_independent_audit_kh1k3aje/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wat_independent_audit_kh1k3aje/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weighted-approx-tangent-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weighted-approx-tangent-a1/decomposition-v1.json",
+        "/tmp/wat_independent_audit_kh1k3aje/ChallengeTypes.lean",
+        "/tmp/wat_independent_audit_kh1k3aje/Children.lean",
+        "/tmp/wat_independent_audit_kh1k3aje/Assembly.lean",
+        "/tmp/wat_independent_audit_kh1k3aje/AxiomChecks.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and source compatibility. The density, support-localization, measurable-embedding and Hausdorff-scaling lemmas support the stated generality. Neither proposed name occurs in the searched snapshot project/GMT tree or is reserved in the 77-node DAG. Both standalone frozen types elaborate without their child declarations present. Both child proofs compile with only propext, Classical.choice and Quot.sound. The exact selected parent contract also compiles from these children with the recorded frt_weight_blowup_tendsto contract supplied explicitly as a hypothesis, using only those standard axioms. The split appropriately isolates two independent analytic obligations; compact localization, the sibling limit and weighted-tangent uniqueness complete the selected theorem. Dependency directions are correct and remain acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_integral_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose and all hypotheses. Each proof step is justified: Borel-set comparison identifies the restricted measure; support localizes the integral; integrability of θ supplies measurable finite density; null-measurability and positivity identify its real value almost everywhere; vanishing outside K permits the final support reduction. The cited identities genuinely allow arbitrary h, including non-integrable h. The proof is complete and non-circular. The bare name is unreserved, and the frozen type is independently usable."
+    },
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including arbitrary M and F and the hypothesis r > 0. The supplied inverse establishes a homeomorphism; Hausdorff scaling gives the pushforward factor r^n; measurable-embedding restriction and integral transport require no measurability of M or F; cancellation gives precisely r⁻¹ ^ n. All six steps are complete and non-circular. The bare name is unreserved, and the frozen type elaborates independently. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "required_changes": []
+}

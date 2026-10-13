@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1.small_open_superset-a1",
+  "parent_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1",
+  "depth": 3,
+  "title": "Small open neighbourhoods of null sets for a measure finite on compact subsets of U",
+  "statement": "Let N ∈ ℕ, μ a Borel measure on ℝ^N = Euclidean N, U ⊆ ℝ^N open with μ(K) < ∞ for every compact K ⊆ U, Z ⊆ U an arbitrary set with μ(Z) = 0, and ζ ∈ (0, ∞]. Then there is an open set O ⊆ ℝ^N with Z ⊆ O ⊆ U and μ(O) < ζ.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)) (ζ : ℝ≥0∞), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → 0 < ζ → ∃ O : Set (Euclidean N), IsOpen O ∧ Z ⊆ O ∧ O ⊆ U ∧ μ O < ζ",
+  "lean_name": "frt_hnw_exists_open_superset_measure_lt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-hausdorff-null-of-weight-null-a1-small-o-b3f69bfcb8-a1"
+}

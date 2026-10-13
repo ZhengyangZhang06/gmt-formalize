@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "308d09a5811810415c18aaf33cad7cb90dc1f96b20bca1b4a197b963430df763",
+  "git_delta": {
+    "base_commit": "edf6403e8f3705cbe1236f62087253a7ffede563",
+    "candidate_commit": "30f90c0831a05c24c64ce649914b8f14da3540b1",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_diag_blowup_variation_bound",
+    "diff_sha256": "ff06a544e972912c91b32ab02735e92de4f8d9f6b9d121ef9270b7c8e1002685",
+    "source_sha256": "073366b95e3846f026fd746c414960b9ac09acd46a37bf8bfdb5ce5d5cd8ea82",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_diag_blowup_variation_bound",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t R : ℝ), V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R → (∀ y ∈ ball (0 : Euclidean N) R, ξ + t • y ∈ U) → ∃ W : Varifold N n (ball (0 : Euclidean N) R), W.measure = (rescaledMeasure V ξ t).restrict (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧ W.HasLocallyBoundedFirstVariation ∧ variationMeasure W (ball (0 : Euclidean N) R) ≤ ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

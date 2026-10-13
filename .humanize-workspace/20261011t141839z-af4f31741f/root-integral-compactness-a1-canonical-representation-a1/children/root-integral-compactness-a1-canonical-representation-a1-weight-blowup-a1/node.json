@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.canonical_representation-a1.weight_blowup-a1",
+  "parent_id": "root.integral_compactness-a1.canonical_representation-a1",
+  "depth": 3,
+  "title": "Weight blow-up limit at a tangent point (Def. 8.1.1 tested with f(y,S) = g(y))",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U (Varifold N n U), x ∈ ℝ^N, T ∈ G(N,n) (Grassmannian N n) and θ ∈ ℝ with HasTangentPlane V x T θ. This is Simon Ch. 8, Def. 1.1: x ∈ U, θ > 0, and ∫ f dV_{x,t} → θ ∫ f dv(T) as t ↓ 0 for every f ∈ C_c(ℝ^N × G(N,n), ℝ), where V_{x,t} = rescaledMeasure V x t and v(T) = planeVarifoldMeasure T. Then for every g ∈ C_c(ℝ^N, ℝ), t^{-n} ∫ g(t^{-1}(z − x)) dμ_V(z) → θ ∫_{T.plane} g dH^n as t → 0 within (0, ∞). Here μ_V = V.weight, H^n = μHE[n] on ℝ^N, and all integrals are Bochner integrals.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]))",
+  "lean_name": "intcpt_canon_weight_blowup_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-canonical-representation-a1-weight-blowup-a1-a1"
+}

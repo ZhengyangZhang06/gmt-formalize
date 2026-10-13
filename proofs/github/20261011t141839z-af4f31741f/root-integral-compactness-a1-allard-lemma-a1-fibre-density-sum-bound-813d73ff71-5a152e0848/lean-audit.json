@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "62eaf3303933b53170beb35f58bcf56e93b757802c7204d85e2be75d82631eba",
+  "git_delta": {
+    "base_commit": "45c734c0cbde3f2f4b8e7caa77fb400acb1504d9",
+    "candidate_commit": "0c686aa9847f89543b983b5be3036a860c0889fb",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_fdsb_one_point_bound",
+    "diff_sha256": "5dcfe0c74b572749a7ba4c08fb665a55b601dda8ce5ffe6b9af2d0e66f67016c",
+    "source_sha256": "85a357388901937cb4c27c1bf757ce48347ada77c5cbd0ad1e105e6185243391",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_fdsb_one_point_bound",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x y : Euclidean N) (θ : ℝ≥0∞) (δ ε : ℝ), 0 < δ → δ ≤ 1 / 2 → 2 ^ (n + 2) * δ ≤ 1 → 0 < ε → ε ≤ δ ^ 4 → ‖y - x‖ < ε → (∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n μ y σ) → θ ≤ ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

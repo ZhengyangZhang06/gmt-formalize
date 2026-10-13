@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a1334af169ba9ac8c03ed8582a9b15036ab77e573491b04e6d10ce4854b58e50",
+  "git_delta": {
+    "base_commit": "0ff269013f95adbd8f3269ef7d9550059ef018bf",
+    "candidate_commit": "0c433f34dc5866d6d5ca82cab00ce6a219154cfd",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean",
+      "proofs/github/20261011t141839z-af4f31741f/root-final-proof.md"
+    ],
+    "diff_sha256": "b33e469f102422da5fbabfc29f28bfa71f334f6940fabad8bb36b415f930b9ea",
+    "source_sha256": "d8043fa0cc87843a5c8f8fc2282558b59698a3def3f83e6211ea400382e7d984",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch08.main_theorem",
+      "statement": "FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "6148e4e5363d6c386e48b3271f6ec4f1b62359c4"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.diagonal_blowup-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Diagonal integral blow-ups at a point of controlled first variation (step B4, printed (3)–(4))",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, and V_i (i ∈ ℕ), V n-varifolds on U (U open) such that V_i → V as Radon measures on G_n(U) (RadonConverges), every V_i is integral with locally bounded first variation, V has tangent plane P ∈ G(N,n) with multiplicity θ₀ at ξ (HasTangentPlane V ξ P θ₀; so ξ ∈ U, θ₀ > 0), and for some c ∈ ℝ, r > 0: liminf_i ‖δV_i‖(B_ρ(ξ)) ≤ cρ^n for every ρ ∈ (0,r). Then there are n-varifolds W_k (k ∈ ℕ) on the open ball B°_5(0), each integral with locally bounded first variation, such that ‖δW_k‖(B°_5(0)) → 0 and ∫ f dW_k → θ₀∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,n)) with tsupport f ⊆ B°_5(0) × G(N,n).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (ξ : Euclidean N) (P : Grassmannian N n) (θ₀ c r : ℝ), Varifold.RadonConverges Vi V → (∀ i, IsIntegral (Vi i)) → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → HasTangentPlane V ξ P θ₀ → 0 < r → (∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ variationMeasure (Vi i) (closedBall ξ ρ)) atTop ≤ ENNReal.ofReal (c * ρ ^ n)) → ∃ W : ℕ → Varifold N n (ball (0 : Euclidean N) 5), (∀ k, IsIntegral (W k)) ∧ (∀ k, (W k).HasLocallyBoundedFirstVariation) ∧ Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) ∧ ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))",
+  "lean_name": "intcpt_diagonal_integral_blowup",
+  "depends_on": [
+    "root.integral_compactness-a1.rescaled_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.rescaled_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-diagonal-blowup-a1-a1"
+}

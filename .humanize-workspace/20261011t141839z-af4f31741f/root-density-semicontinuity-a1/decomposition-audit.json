@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "cat .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "structure BallPackage|theorem exist_disjoint_covering_families|no_satelliteConfig|instance.*HasBesicovitchCovering|class HasBesicovitchCovering",
+        "exists_cthickening_subset_open|cthickening_closure|closure_thickening_subset_cthickening|liminf_add_of_right_tendsto_zero|map_liminf_of_continuousAt|theorem continuous_const_mul",
+        "portmanteau|weight.*le_liminf|limsup.*weight|ENNReal.liminf_const_mul|ENNReal.mul_liminf",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dsc-independent-audit/TypesAssemblyAxioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dsc-independent-audit/SuppliedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/tmp/dsc-a1-scratch/Scratch/All.lean",
+        "/tmp/dsc-independent-audit/TypesAssemblyAxioms.lean",
+        "/tmp/dsc-independent-audit/SuppliedProofs.lean"
+      ],
+      "conclusion": "Verified the frozen contract and pinned revisions; inspected Mathlib files match the snapshot. SimonGMT supplies the variation semicontinuity lemmas, but the Chapter08 search found no weight-portmanteau theorem. Independently checked all six natural proofs. All six exact types pass lexical validation and elaborate as propositions in the comparator's replayed scope without child implementations. Recompiled the supplied six proofs after removing the sibling placeholder; each uses only propext, Classical.choice and Quot.sound. A separately checked assembly proves DensitySemicontinuity from the child contracts and the declared predecessor's MonotonicityFormula and DensityExistsAE. The split is appropriate, dependencies are correctly directed and acyclic, and all six names are fresh bare identifiers. Relevant typeclass instances were checked; no problematic inline matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "variation_lsc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including the finite liminf hypothesis. Unfolding variationMeasure under local boundedness and applying the verified Riesz/norm identification and convergence lemmas proves both conclusions without circular reliance."
+    },
+    {
+      "key": "weight_portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lifted test functions have compact support because the Grassmannian is compact. Integrability, Urysohn approximation, compact exhaustion and finite-measure shrinking neighborhoods establish exactly the open-set liminf and compact-set limsup inequalities, without assuming global finiteness."
+    },
+    {
+      "key": "besicovitch_ratio_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned covering theorem requires bounded radii, so arbitrary A is permitted. Countability of the disjoint positive-radius balls and the stated measure inequalities prove the exact estimate for outer measure, including empty sets and extended-real t."
+    },
+    {
+      "key": "monotonicity_mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MonotonicityFormula is an explicit hypothesis. Density uniqueness along the nontrivial right-neighborhood filter identifies the limits; the positive finite normalization permits the stated ENNReal cancellation. This proves precisely the claimed mass bound."
+    },
+    {
+      "key": "limit_mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Shrinking radii give eventual ball inclusion, and q tending to infinity suffices for the subsequence limsup inequality. Compact-set portmanteau and continuity transfer the mass bound; division and the exponential limit prove lower density at least one. The proof supports arbitrary real Λ as stated."
+    },
+    {
+      "key": "lower_density_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four declared children supply exactly the required estimates. The proof correctly retains the liminf variation bound, handles arbitrary bad sets through outer measure, constructs the null exceptional sets and nearby good points, and exhausts U countably. It establishes the exact almost-everywhere lower-density conclusion; the parent separately obtains density existence from its declared predecessor."
+    }
+  ],
+  "required_changes": []
+}

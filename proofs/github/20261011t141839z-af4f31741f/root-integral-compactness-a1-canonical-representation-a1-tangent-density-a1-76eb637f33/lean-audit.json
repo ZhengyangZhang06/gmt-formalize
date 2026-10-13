@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b825b18683c569561cb5673a8e6de7b9ced8727d219a418a6cef827f2c0d08c9",
+  "git_delta": {
+    "base_commit": "64865027b6d646ee174fdc90066fb3b1cabb96e8",
+    "candidate_commit": "3940e9af89976f9e507fdb07e06e4e0742d9c8d6",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_canon_tangent_plane_hasDensity",
+    "diff_sha256": "88d26a812c31eabe1b5646a752d5699dddfcff7fc6eb6fc6a2c38c610a9e6298",
+    "source_sha256": "d315d9a61e0af3c559af1294e48b9e349bd3f233a97764fd6ba2d1d023c24102",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_canon_tangent_plane_hasDensity",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

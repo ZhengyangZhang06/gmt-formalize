@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "32fd449351807ddd74060bb35610d60c6f13662d2c09f2c1947d3f892fe93371",
+  "git_delta": {
+    "base_commit": "4a5669408ffa9deeddf73aab7f038c6dbddb7cb2",
+    "candidate_commit": "ae67142cf3675c1ff6c772ec2a8881ff1df8b4d5",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_tpd_hasDensity_of_ball_mass_bounds",
+    "diff_sha256": "3ed233b49e7f0d7a4e44eb22a4998bc3b4eba7adab98c25500ec6e7d6fa96206",
+    "source_sha256": "2962cea747674151f24deaf78e15333cd7866f215899f4b1ab1f869058b4755b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_tpd_hasDensity_of_ball_mass_bounds",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (a : ℝ≥0∞), (∀ c : ℝ≥0∞, c < a * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) → (∀ c : ℝ≥0∞, a * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n) → HasDensity n μ x a",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

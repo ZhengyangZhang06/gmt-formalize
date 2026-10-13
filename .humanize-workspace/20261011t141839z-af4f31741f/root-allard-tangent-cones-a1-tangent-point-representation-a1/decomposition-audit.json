@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "rg -n 'CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt.unique|def blowUpMap' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n 'integral_withDensity_eq_integral_toReal_smul₀|aemeasurable_iUnion_iff|MeasurableEmbedding.integral_map' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'allard_tc_tpr_' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json GMT .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT",
+        "sed -n '550,625p' ../../verifier/gmt-compare.py",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tpr-independent-audit-b3le30ai/Challenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tpr-independent-audit-b3le30ai/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-point-representation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-point-representation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/tpr-independent-audit-b3le30ai/Challenge.lean",
+        "/tmp/tpr-independent-audit-b3le30ai/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected tangent-point representation theorem. Snapshot revisions and inspected dependency sources agree. All six statements pass lexical validation and independently elaborate with autoImplicit false before child implementations. Each name is a bare identifier; searches and comparisons found no reservations in the current 93-node DAG or other proposed decompositions. All six supplied proofs were independently checked step by step and their exact-type Lean implementations recompiled successfully. The selected parent assembly also compiles with the authorized density sibling supplied explicitly as a hypothesis; no sorry or ancestor theorem is used. Axiom reports contain only propext, Classical.choice and Quot.sound. Declared child dependencies exactly match proof usage and are acyclic. Every child contributes to the selected conclusion. No differently typed declaration from another branch is reused, and no problematic inline matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rectifiable_sigma_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the absence of a measurability assumption on M. Compact Lipschitz images have finite normalized Hausdorff measure. Together with the null hull and its complement, they give the required countable finite-measure cover of the restricted measure."
+    },
+    {
+      "key": "hausdorff_null_of_weight_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite mass on compact sets supplies outer regularity. The proof explicitly handles dimension zero and both normalization identities. Applying density comparison inside arbitrarily small open supersets proves each positive-density level set Hausdorff-null, hence proves the exact conclusion without requiring Z or θ to be measurable."
+    },
+    {
+      "key": "weight_eq_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "S-finiteness justifies the measurable-hull intersection identity. The declared null-set child applies to M minus that hull. The subsequent restriction comparison is valid for arbitrary E and M because restrict_eq_self requires only containment. This proves the stated integral equality with no hidden measurability assumption."
+    },
+    {
+      "key": "integral_eq_weighted",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact exhaustion proves almost-everywhere measurability of θ. Equality on Borel sets identifies μ with the stated withDensity measure. The pinned Bochner identity applies to arbitrary g; null measurability of M and positivity of θ justify the final almost-everywhere rewrite."
+    },
+    {
+      "key": "blowup_set_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive r makes the blow-up map a homeomorphism. Translation invariance and Hausdorff scaling establish the restricted-measure identity on measurable test sets. MeasurableEmbedding.integral_map then proves the exact formula for arbitrary M and φ, including dimension zero."
+    },
+    {
+      "key": "weighted_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness of the Grassmannian validates the lifted test function. The two declared children identify the weighted blow-up integrals with the rescaled varifold integrals. Tangent-plane positivity supplies θ(x) ≠ 0 even without x ∈ M; approximate-tangent uniqueness and plane injectivity prove both directions. Reapplying this result to each tangent witness supplies the parent’s required set identity."
+    }
+  ],
+  "required_changes": []
+}

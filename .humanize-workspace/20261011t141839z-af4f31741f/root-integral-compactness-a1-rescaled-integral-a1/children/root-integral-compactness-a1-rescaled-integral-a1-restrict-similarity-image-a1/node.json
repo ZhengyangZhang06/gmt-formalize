@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.rescaled_integral-a1.restrict_similarity_image-a1",
+  "parent_id": "root.integral_compactness-a1.rescaled_integral-a1",
+  "depth": 3,
+  "title": "Restricted Hausdorff measure under the similarity y ↦ ξ + t·y",
+  "statement": "Let N, n ∈ ℕ, ξ ∈ ℝ^N, t > 0 and σ : ℝ^N → ℝ^N, σ(y) := ξ + t·y. Let H^n = μHE[n] be Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^N = Euclidean N. Then for every set A ⊆ ℝ^N, measurable or not, H^n⌞σ(A) = t^n·σ_#(H^n⌞A) as measures on ℝ^N. That is, (μHE[n]).restrict (σ '' A) = ENNReal.ofReal (t^n) • ((μHE[n]).restrict A).map σ.",
+  "lean_statement": "∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (A : Set (Euclidean N)), 0 < t → (μHE[n] : Measure (Euclidean N)).restrict ((fun y : Euclidean N ↦ ξ + t • y) '' A) = ENNReal.ofReal (t ^ n) • ((μHE[n] : Measure (Euclidean N)).restrict A).map (fun y : Euclidean N ↦ ξ + t • y)",
+  "lean_name": "intcpt_ri_restrict_similarity_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-rescaled-integral-a1-restrict-similarity-image-a1-a1"
+}

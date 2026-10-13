@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1.first_variation_lower_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1",
+  "depth": 4,
+  "title": "Weighted radial first-variation inequality at a fixed radius (corrected Simon 8.3.5; steps 1, 3, 4, 6)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, W an n-varifold on U and y ∈ ℝ^N. Let h : ℝ^N → ℝ be of class C¹ with h ≥ 0. Let φ : ℝ → ℝ be of class C¹ and non-increasing with φ(s) = 0 for every s ≥ A², where A > 0. Let t > 0 with B_{tA}(y) = closedBall y (tA) ⊆ U. Assume (Div): for every a : ℝ^N → ℝ, c, z ∈ ℝ^N and S ∈ G(N,n) with a differentiable at z, div_S(w ↦ a(w)(w − c))(z) = n·a(z) + Da(z)[p_S(z − c)]. Here div_S = Varifold.tangentialDivergence and p_S = Grassmannian.project S; (Div) is the statement of the parent's dependency radial_field_divergence for these N, n. Let X_t(z) := h(z)φ(|z − y|²/t²)(z − y), and define the Bochner integrals Ĩ(t) := ∫ φ(|z − y|²/t²)h(z) dμ_W(z), J(t) := ∫ φ'(|z − y|²/t²)·(−2|z − y|²/t³)·h(z) dμ_W(z) with φ' := deriv φ, and G(t) := ∫ φ(|z − y|²/t²)·Dh(z)[p_S(z − y)] dW(z,S). Here μ_W = W.weight and dW = W.measure. Then n·Ĩ(t) − t·J(t) + G(t) ≤ δW(X_t), where δW = W.firstVariation.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℝ → ℝ) (A t : ℝ), (∀ (a : Euclidean N → ℝ) (c z : Euclidean N) (S : Grassmannian N n), DifferentiableAt ℝ a z → Varifold.tangentialDivergence (fun w ↦ a w • (w - c)) z S = n * a z + fderiv ℝ a z (Grassmannian.project S (z - c))) → ContDiff ℝ 1 h → (∀ z, 0 ≤ h z) → ContDiff ℝ 1 φ → Antitone φ → 0 < A → (∀ s, A ^ 2 ≤ s → φ s = 0) → 0 < t → closedBall y (t * A) ⊆ U → (n : ℝ) * (∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) - t * (∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight) + (∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure) ≤ W.firstVariation (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))",
+  "lean_name": "intcpt_allard_wrm_first_variation_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-weighted-radial-monotoni-80029abc20-a1"
+}

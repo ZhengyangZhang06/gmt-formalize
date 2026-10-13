@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.dim_zero_countable-a1",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "depth": 2,
+  "title": "For n = 0 the tangent points of a varifold are atoms of μ_V, hence countable",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N and V a 0-varifold on U (Varifold N 0 U). Then the set {x ∈ ℝ^N : HasTangentPlane V x T θ for some T ∈ G(N,0) and θ ∈ ℝ} is countable.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (V : Varifold N 0 U), {x : Euclidean N | ∃ (T : Grassmannian N 0) (θ : ℝ), HasTangentPlane V x T θ}.Countable",
+  "lean_name": "tgc_dim_zero_tangent_points_countable",
+  "depends_on": [
+    "root.tangent_graph_cover-a1.lower_mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_graph_cover-a1.lower_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-dim-zero-countable-a1-a1"
+}

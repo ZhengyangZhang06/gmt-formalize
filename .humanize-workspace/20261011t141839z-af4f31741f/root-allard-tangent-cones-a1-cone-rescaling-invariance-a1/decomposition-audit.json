@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "euclideanHausdorffMeasure_smul₀|restrict_map|lintegral_map_equiv",
+        "preimage_smul₀|mem_inv_smul_set_iff₀",
+        "theorem exists_measurable_subset_ae_eq|theorem restrict_congr_set|theorem restrict_apply\\b|theorem restrict_eq_zero|lintegral_eq_zero_iff\\x27|setLIntegral_congr_fun_ae₀",
+        "rg -n --no-heading 'allard_tc_cri_' GMT .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "validate_lean_statement(c['lean_statement'])",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cri-independent-audit-4cj5067h/TypeOnly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cri-independent-audit-4cj5067h/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/GroupWithZero/Action/Pointwise/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-cone-rescaling-invariance-a1/decomposition-v1.json",
+        "/tmp/cri-decomp/All.lean",
+        "/tmp/cri-independent-audit-4cj5067h/TypeOnly.lean",
+        "/tmp/cri-independent-audit-4cj5067h/Audit.lean"
+      ],
+      "conclusion": "The split is appropriate: all four children discharge substantive steps of the selected parent proof. Pinned contract and dependency compatibility were checked. The library supports the claimed arbitrary-set restriction and arbitrary-integrand change-of-variables identities without sigma-finiteness. All four frozen types independently elaborate before their implementations, pass lexical validation, and match their prose hypotheses and conclusions. Independent Lean checks of the supplied proof realizations and exact-type comparison targets use only propext, Classical.choice and Quot.sound. The exact parent conclusion also checks using these children with the frozen tangent-plane sibling interface supplied explicitly as a hypothesis. Dependencies are acyclic and correctly directed; only rescaled_representation depends on hausdorff_dilation_lintegral. All names are bare identifiers, with no matches in existing DAG reservations or competing decomposition proposals. No child type refers to its implementation or contains a matrix-instance ambiguity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hausdorff_dilation_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the arbitrary-set, arbitrary-function statement. The supplied proof correctly derives pushforward scaling, inverts the positive scaling factor, commutes restriction with the measurable equivalence, and applies lintegral_map_equiv. No measurability or finiteness hypothesis is missing."
+    },
+    {
+      "key": "rescaled_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation hypothesis and measurable test-set restriction match the prose exactly. The proof establishes measurability of the rescaling map, applies the declared dilation-integral dependency, verifies the preimage identity, and cancels the scaling factors. It has no circular reliance."
+    },
+    {
+      "key": "carrier_dilation_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five hypotheses appear in the type and are used correctly. The measurable kernel and compact closed-ball exhaustion justify transferring measurable mu-null subsets to Hausdorff-null subsets. Homogeneity and inverse dilation then establish both exact null-set conclusions."
+    },
+    {
+      "key": "set_lintegral_congr_off_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly handles arbitrary integration sets: null differences give equal restricted measures, and a measurable kernel of G establishes integrand equality almost everywhere for that restriction. The final lintegral comparison requires neither measurable integrands nor sigma-finiteness."
+    }
+  ],
+  "required_changes": []
+}

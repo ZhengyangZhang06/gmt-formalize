@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1.weight_closed_ball_measurable-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.measurable_plane_selection-a1",
+  "depth": 4,
+  "title": "The closed-ball mass x ↦ μ(B_r(x)) of an s-finite measure on ℝ^N is Borel",
+  "statement": "Let N ∈ ℕ, let ℝ^N = EuclideanSpace ℝ (Fin N) carry its Borel σ-algebra, and let μ be an s-finite measure on ℝ^N. Then for every r ∈ ℝ the map ℝ^N → [0, ∞], x ↦ μ(B_r(x)), is Borel measurable, where B_r(x) = closedBall x r = {y : dist y x ≤ r} is the closed ball (empty when r < 0).",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)), SFinite μ → ∀ r : ℝ, Measurable (fun x : Euclidean N ↦ μ (closedBall x r))",
+  "lean_name": "frt_vgm_mps_weight_closedBall_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-measurable-pla-fed60c9267-a1"
+}

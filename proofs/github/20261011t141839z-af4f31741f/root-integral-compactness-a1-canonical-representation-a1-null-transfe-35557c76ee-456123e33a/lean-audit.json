@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7228c7071d65eec36b5477c20dfed30f536d9aa553d8d4db3d6e878c5f62fcfe",
+  "git_delta": {
+    "base_commit": "df1e1470bd9dbf21ba6fd77f8c4e10735d4c208b",
+    "candidate_commit": "5b7b0687425623170f5097d05713667d6158edd5",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_canon_nt_open_cover_finite_measure",
+    "diff_sha256": "dbd909e70dca186fe687e0ef1933bd9ee5e7ed85db06f5c449917b371e55ae47",
+    "source_sha256": "fa0456d95b3d4ba165b8ceafd8f39b9cf02095539dc10050710c1d58333f7acf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_canon_nt_open_cover_finite_measure",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (U : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∃ W : ℕ → Set (Euclidean N), (∀ i, IsOpen (W i) ∧ W i ⊆ U ∧ μ (W i) ≠ ∞) ∧ U ⊆ ⋃ i, W i",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

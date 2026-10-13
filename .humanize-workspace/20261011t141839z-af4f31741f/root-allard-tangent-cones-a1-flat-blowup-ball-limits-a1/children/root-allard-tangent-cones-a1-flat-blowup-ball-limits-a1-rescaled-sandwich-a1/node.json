@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.rescaled_sandwich-a1",
+  "parent_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "depth": 3,
+  "title": "Cut-off sandwich for the rescaled ball integral",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N (Varifold N n U), x ∈ ℝ^N, β : G(N,n) → ℝ continuous with β ≥ 0, k ∈ ℕ, and r > 0 with B_{2r}(x) ⊆ U (closed ball). Let φ_k⁺(y) = max(0, 1 − (k+1)·max(0, ‖y‖ − 1)) and φ_k⁻(y) = min(1, (k+1)·max(0, 1 − ‖y‖)), and let V_{x,r} = rescaledMeasure V x r. Then\n∫ φ_k⁻(y)β(S) dV_{x,r}(y,S) ≤ (∫_{B_r(x)×G(N,n)} β(S) dV(y,S)) / r^n ≤ ∫ φ_k⁺(y)β(S) dV_{x,r}(y,S).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (β : C(Grassmannian N n, ℝ)) (r : ℝ) (k : ℕ), 0 < r → closedBall x (2 * r) ⊆ U → (∀ S, 0 ≤ β S) → (∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2 ∂(rescaledMeasure V x r)) ≤ (∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / r ^ n ∧ (∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / r ^ n ≤ ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2 ∂(rescaledMeasure V x r)",
+  "lean_name": "allard_tc_fbl_rescaled_sandwich",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1-rescaled-sandwich-a1-a1"
+}

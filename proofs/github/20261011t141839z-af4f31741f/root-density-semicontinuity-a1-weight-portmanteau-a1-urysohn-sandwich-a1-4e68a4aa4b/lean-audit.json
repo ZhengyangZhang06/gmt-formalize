@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d012fffb089b0690403867be5a7127fa1ec65ff7a062342fc0d75535637c3a30",
+  "git_delta": {
+    "base_commit": "40bbec30ecede19c434acffd69a1d81de70808ff",
+    "candidate_commit": "4a8e59116e6d9c34d64d3b335024abc93c1c5053",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "exists_urysohn_integral_sandwich",
+    "diff_sha256": "83d21c5a69410cec26cde6e742a0b839de5c018c38d8f8ea84f68d4009308faa",
+    "source_sha256": "ff93591a9266d317cb319f65bab86f6b00b274230b35df0e91cea1269bde8827",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_urysohn_integral_sandwich",
+      "statement": "∀ (N : ℕ) (K O : Set (Euclidean N)), IsCompact K → IsOpen O → K ⊆ O → ∃ g : Euclidean N → ℝ, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ O ∧ ∀ ν : Measure (Euclidean N), (∀ L : Set (Euclidean N), IsCompact L → L ⊆ O → ν L ≠ ∞) → ν K ≤ ENNReal.ofReal (∫ x, g x ∂ν) ∧ ENNReal.ofReal (∫ x, g x ∂ν) ≤ ν O",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

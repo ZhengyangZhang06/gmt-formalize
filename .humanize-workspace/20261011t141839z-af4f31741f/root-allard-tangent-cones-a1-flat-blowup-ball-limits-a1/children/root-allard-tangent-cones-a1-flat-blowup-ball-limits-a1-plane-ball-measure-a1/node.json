@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_ball_measure-a1",
+  "parent_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of balls in an n-plane",
+  "statement": "Let N, n ∈ ℕ, T ∈ G(N,n) (Grassmannian N n) and r > 0. Let P = T.plane ⊆ ℝ^N, an n-dimensional linear subspace, and H^n = μHE[n] on ℝ^N = Euclidean N. Let B_r(0) = closedBall 0 r and B°_r(0) = ball 0 r. Let ω_n = unitBallVolume n, the Lebesgue measure of the open unit ball of ℝ^n = EuclideanSpace ℝ (Fin n). Then H^n(P ∩ B_r(0)) = ω_n·r^n and H^n(P ∩ B°_r(0)) = ω_n·r^n in [0,∞]. Precisely, both equal unitBallVolume n * ENNReal.ofReal r ^ n.",
+  "lean_statement": "∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+  "lean_name": "allard_tc_fbl_plane_ball_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1-plane-ball-measure-a1-a1"
+}

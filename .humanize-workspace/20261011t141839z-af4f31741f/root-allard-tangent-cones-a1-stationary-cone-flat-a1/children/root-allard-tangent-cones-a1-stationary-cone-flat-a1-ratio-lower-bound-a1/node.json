@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.ratio_lower_bound-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "At every support point the density ratios are at least the a.e. lower density bound",
+  "statement": "Let μ be a measure on ℝ^N, n ∈ ℕ and a ∈ [0,∞]. With R(y,ρ) := densityRatio n μ y ρ = μ(B_ρ(y))/(ω·ofReal(ρ)^n) (closed balls, ω = unitBallVolume n), suppose:\n(i) μ(B_ρ(y)) < ∞ for all y ∈ ℝ^N and ρ ∈ ℝ;\n(ii) for every y, ρ ↦ R(y,ρ) is non-decreasing on (0,∞);\n(iii) for μ-a.e. y there is θ ∈ [0,∞] with HasDensity n μ y θ (Θ^n(μ,y) exists and equals θ) and a ≤ θ.\nThen a ≤ R(y,ρ) for every y in the support spt μ and every ρ > 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ (y : Euclidean N) (ρ : ℝ), μ (closedBall y ρ) ≠ ∞) → (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ᵐ y ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ y θ ∧ a ≤ θ) → ∀ y ∈ μ.support, ∀ ρ : ℝ, 0 < ρ → a ≤ densityRatio n μ y ρ",
+  "lean_name": "allard_tc_scf_ratio_ge_on_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-ratio-lower-bound-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.variation_lsc-a1",
+  "parent_id": "root.density_semicontinuity-a1",
+  "depth": 2,
+  "title": "Remark 8.3.8(1): the Radon limit has locally bounded first variation and ‖δV‖(W) ≤ liminf ‖δV_i‖(W)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, and let V_i (i ∈ ℕ) and V be n-varifolds on U (Varifold N n U) with V_i → V as Radon measures on G_n(U) (Varifold.RadonConverges Vi V). Assume every V_i has locally bounded first variation and liminf_i ‖δV_i‖(W) < ∞ for every open W ⊂⊂ U (IsRelCompactOpenIn W U), where ‖δV_i‖ = variationMeasure (V_i). Then V has locally bounded first variation and ‖δV‖(W) ≤ liminf_i ‖δV_i‖(W) for every open W ⊂⊂ U.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) → V.HasLocallyBoundedFirstVariation ∧ ∀ W, IsRelCompactOpenIn W U → variationMeasure V W ≤ liminf (fun i ↦ variationMeasure (Vi i) W) atTop",
+  "lean_name": "variationMeasure_le_liminf_of_radonConverges",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-variation-lsc-a1-a1"
+}

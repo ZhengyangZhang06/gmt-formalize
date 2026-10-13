@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.canonical_representation-a1.tangent_density-a1",
+  "parent_id": "root.integral_compactness-a1.canonical_representation-a1",
+  "depth": 3,
+  "title": "A tangent plane of multiplicity θ at x forces Θ^n(μ_V, x) = θ",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U (Varifold N n U), x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ with HasTangentPlane V x T θ (Simon Ch. 8, Def. 1.1). Then the n-dimensional density of μ_V = V.weight at x exists and equals θ: densityRatio n μ_V x ρ = μ_V(B_ρ(x))/(ω_n ρ^n) → ofReal θ as ρ → 0 within (0, ∞), with B_ρ(x) the closed ball and ω_n = unitBallVolume n. That is, HasDensity n V.weight x (ENNReal.ofReal θ).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ)",
+  "lean_name": "intcpt_canon_tangent_plane_hasDensity",
+  "depends_on": [
+    "root.integral_compactness-a1.canonical_representation-a1.weight_blowup-a1",
+    "root.integral_compactness-a1.canonical_representation-a1.plane_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.canonical_representation-a1.weight_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.canonical_representation-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-canonical-representation-a1-tangent-density-a1-a1"
+}

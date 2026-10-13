@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_variation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "First variation of a general varifold: mass derivative (8.2.2–2.4) and representation (8.2.5–2.10)",
+  "statement": "For all N, n, open U ⊆ ℝ^N and n-varifolds V on U: (a) (Simon 8.2.2–8.2.4) if K ⊆ U is compact, φ : ℝ × ℝ^N → ℝ^N is C² on (−1,1) × U with φ(0,x) = x on U, each φ_t := φ(t,·) (|t| < 1) maps U injectively into U and equals the identity on U ∖ K, and X(x) is the t-derivative of φ(t,x) at t = 0 for x ∈ U, then t ↦ (V.pushforwardMeasure φ_t (K × G(N,n))).toReal = M(φ_{t#}V ⌞ Gₙ(K)) has derivative δV(X) = ∫ div_S X dV at t = 0; and div_S X(x) = Σ_i ⟨τ_i, DX(x)τ_i⟩ for every S ∈ G(N,n) and orthonormal basis τ of S. (b) (Simon 8.2.5–8.2.10) if V has locally bounded first variation, then variationMeasure V is the measure ‖δV‖ characterised by 2.5; for μ_V-a.e. x, variationDensity V x = D_{μ_V}‖δV‖(x) is finite and is the limit of ‖δV‖(B_ρ(x))/μ_V(B_ρ(x)) as ρ ↓ 0; μ_V(generalizedBoundary V) = 0; and there is a Borel ν : ℝ^N → ℝ^N with |ν| = 1 ‖δV‖-a.e. such that for every X ∈ K(U;ℝ^N): ⟨ν,X⟩ is ‖δV‖-integrable and δV(X) = −∫⟨ν,X⟩ d‖δV‖, ⟨H,X⟩ is μ_V-integrable and ⟨ν,X⟩ is σ-integrable, and δV(X) = −∫⟨H,X⟩ dμ_V − ∫⟨ν,X⟩ dσ, where H = generalizedMeanCurvature V ν and σ = generalizedBoundaryMeasure V. (Exactly FirstVariationIsMassDerivative ∧ FirstVariationRepresentation.)",
+  "lean_statement": "FirstVariationIsMassDerivative ∧ FirstVariationRepresentation",
+  "lean_name": "first_variation_theorems",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-variation-a1-a1"
+}

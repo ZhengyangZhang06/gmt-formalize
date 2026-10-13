@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1.uniform_limit_integral-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1.dilation_mollify_cc-a1",
+  "depth": 4,
+  "title": "Uniform convergence with a common compact support gives convergence of integrals against a measure finite on compacts",
+  "statement": "Let μ be a Borel measure on ℝ^N that is finite on compact sets, and let K ⊆ ℝ^N be compact. Let G and F_k (k ∈ ℕ) be μ-integrable functions ℝ^N → ℝ such that:\n- F_k(y) = G(y) for every k and every y ∉ K;\n- for every ε > 0 there is k₀ ∈ ℕ with |F_k(y) − G(y)| ≤ ε for all k ≥ k₀ and all y ∈ ℝ^N.\nThen ∫ F_k dμ → ∫ G dμ as k → ∞.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (K : Set (Euclidean N)) (F : ℕ → Euclidean N → ℝ) (G : Euclidean N → ℝ), IsFiniteMeasureOnCompacts μ → IsCompact K → (∀ k, Integrable (F k) μ) → Integrable G μ → (∀ k, ∀ y ∉ K, F k y = G y) → (∀ ε > 0, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ y, |F k y - G y| ≤ ε) → Tendsto (fun k => ∫ y, F k y ∂μ) atTop (𝓝 (∫ y, G y ∂μ))",
+  "lean_name": "varifold_tangents_rh_mc_tendsto_integral_of_uniform",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-dilation-mollify-cc-a-7a922443d4-a1"
+}

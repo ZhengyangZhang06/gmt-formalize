@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c785503b0bc1d64bb2a7fa20ee6a006886cd3ccf54beb83bbfae8bf0c929118",
+  "git_delta": {
+    "base_commit": "8b224de026e9b9886a28e4b941eb85ad1f1cddad",
+    "candidate_commit": "ccb55661dda4bc161a747eca77cc89405e95df10",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_fbl_nonneg_limit",
+    "diff_sha256": "5560fab3712e6998282cc599eb6bd28fc3a2804261c11e1b3d87f2cba7575c3e",
+    "source_sha256": "4284bd6aec660eb058548db780d2dc68d546f6e2a12e6cfebed7a174e63ae4f9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_fbl_nonneg_limit",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) {ι : Type} (l : Filter ι) (t : ι → ℝ), x ∈ U → Tendsto t l (𝓝[>] 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), Tendsto (fun i ↦ ∫ z, f z ∂(rescaledMeasure V x (t i))) l (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))) → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal * β T))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.stationary_identity-a1.centre_defect_limit-a1",
+  "parent_id": "root.monotonicity_density-a1.stationary_identity-a1",
+  "depth": 3,
+  "title": "The normal defect of the annuli B_ρ∖B_σ converges to that of B_ρ as σ ↓ 0",
+  "statement": "For all N, n ∈ ℕ, every U ⊆ ℝ^N, every n-varifold V on U (no further hypothesis), every x ∈ ℝ^N and every real ρ:\nnormalDefect V x (B_ρ(x) ∖ B_σ(x)) → normalDefect V x (B_ρ(x)) in [0,∞] as σ → 0 with σ > 0 (along the filter 𝓝[>] 0 on ℝ).\nHere:\n- B_s(x) = closedBall x s;\n- normalDefect V x A = ∫_{A×G(N,n)} ofReal(|(y − x) − p_S(y − x)|²/|y − x|^{n+2}) dV(y,S), i.e. the lintegral over A ×ˢ univ with respect to V.measure, where p_S = Grassmannian.project S;\n- the integrand is 0 at y = x, by Lean's convention a/0 = 0.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ : ℝ), Tendsto (fun σ : ℝ ↦ normalDefect V x (closedBall x ρ \\ closedBall x σ)) (𝓝[>] 0) (𝓝 (normalDefect V x (closedBall x ρ)))",
+  "lean_name": "normalDefect_annulus_tendsto_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-stationary-identity-a1-centre-defect-limit-a1-a1"
+}

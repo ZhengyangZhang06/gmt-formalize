@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.rescaled_mass_formula-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "Masses of the rescaled varifold measure on cylinders and closed balls",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N (V : Varifold N n U), x ∈ ℝ^N, t ∈ ℝ, and V_{x,t} := rescaledMeasure V x t = ofReal((t⁻¹)^n) • (φ_t)_# V.measure with φ_t(z,S) = (t⁻¹•(z − x), S). Then (i) for every Borel A ⊆ ℝ^N, V_{x,t}(A × G(N,n)) = ofReal((t⁻¹)^n)·μ_V({z : t⁻¹•(z − x) ∈ A}); and (ii) if t > 0, then for all y ∈ ℝ^N and ρ ∈ ℝ, V_{x,t}(B_ρ(y) × G(N,n)) = ofReal((t⁻¹)^n)·μ_V(B_{tρ}(x + t•y)), with closed balls.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t : ℝ), (∀ A : Set (Euclidean N), MeasurableSet A → rescaledMeasure V x t (A ×ˢ (univ : Set (Grassmannian N n))) = ENNReal.ofReal (t⁻¹ ^ n) * V.weight {z | t⁻¹ • (z - x) ∈ A}) ∧ (0 < t → ∀ (y : Euclidean N) (ρ : ℝ), rescaledMeasure V x t (closedBall y ρ ×ˢ (univ : Set (Grassmannian N n))) = ENNReal.ofReal (t⁻¹ ^ n) * V.weight (closedBall (x + t • y) (t * ρ)))",
+  "lean_name": "varifold_tangents_dlb_rescaledMeasure_prod_univ",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-rescaled-mass-formula-a1-a1"
+}

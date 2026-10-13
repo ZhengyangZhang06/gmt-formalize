@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1",
+  "depth": 3,
+  "title": "Euler's identity for a locally finite measure implies the dilation law ∫ g(s⁻¹y) dμ = sⁿ ∫ g dμ for C¹_c functions",
+  "statement": "Let μ be a Borel measure on ℝ^N that is finite on compact sets and let n ∈ ℕ. Suppose that ∫ (n·h(y) + Dh(y)(y)) dμ(y) = 0 for every C¹ function h : ℝ^N → ℝ with compact support (Dh = fderiv ℝ h). Then for every C¹ function g : ℝ^N → ℝ with compact support and every s > 0, ∫ g(s⁻¹y) dμ(y) = s^n ∫ g dμ.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂μ = 0) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ s : ℝ, 0 < s → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ",
+  "lean_name": "varifold_tangents_rh_scaling_of_euler_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-euler-dilation-c1-a1-a1"
+}

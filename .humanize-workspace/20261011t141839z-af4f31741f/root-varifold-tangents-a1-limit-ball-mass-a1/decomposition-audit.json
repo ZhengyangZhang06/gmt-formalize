@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "def VagueConverges|def IsVarifoldTangent|def HasDensity|def unitBallVolume|def rescaledMeasure",
+        "instCompactSpace|instSecondCountableTopology|MeasurableSpace|BorelSpace|structure Varifold|finite_on_compact|theorem weight_apply",
+        "theorem tendsto_measure_biInter_gt|theorem lintegral_indicator_one|theorem integrableOn_const|theorem ofReal_integral_eq_lintegral_ofReal|theorem continuous_const_mul|protected theorem intro",
+        "lemma le_of_tendsto_of_tendsto|theorem le_of_tendsto_of_tendsto",
+        "cylinder_cutoff|vague_cylinder_bounds|exists_urysohn_integral_sandwich",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lbm-decomp/FullReplay.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lbm-independent-audit/ContractsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-limit-ball-mass-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-limit-ball-mass-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-rescaled-ball-mass-a1/accepted-candidate.json",
+        "/tmp/lbm-decomp/FullReplay.lean",
+        "/tmp/lbm-independent-audit/ContractsAndAssembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical frozen/workspace contracts, and compatibility of the inspected Mathlib sources. The references supply compactness, integrability, integral comparison, preservation of inequalities under limits, and continuity from above. The targeted library search found no matching cylinder declarations. Both proposed names are bare identifiers, absent from current DAG reservations, and occur only in this proposal among decomposition files. The accepted rescaled-mass sibling has the identical frozen type and replayed proof. Both child types elaborate as Prop before either implementation exists; product Borel, compactness, Hausdorff, and proper-space instances also check. The full proof replay and a separate parameterized assembly check compile using only propext, Classical.choice, and Quot.sound. The split is appropriate and acyclic: the cutoff proves the vague bounds, which together with the accepted sibling and right-continuity prove precisely the selected closed-ball identity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cylinder_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including choosing F before every measure and requiring only a < b and finite outer-cylinder mass. Independently checked all eight proof steps: the explicit ramp has the claimed values for arbitrary real radii, compact product support gives C_c membership, and indicator domination establishes integrability before the Bochner-to-Lebesgue conversion. Both inequalities then follow by monotonicity. Negative radii and empty Grassmannians cause no gap. The proof is complete, non-circular, and ready for formalization; its full Lean replay passes."
+    },
+    {
+      "key": "vague_cylinder_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes every prose hypothesis and the exact two conclusions. Independently checked all seven proof steps: finite Lb gives eventual finite outer masses; the declared cutoff dependency supplies comparisons for both the sequence and limit measure; vague convergence and continuity of ofReal yield integral convergence; closed-order limits give both bounds. No unlisted finiteness or regularity assumption is used. The sole dependency on cylinder_cutoff is correctly directed and non-circular. Parameterized Lean checks establish this child from the cutoff contract and the exact selected parent from this child plus the accepted rescaling sibling."
+    }
+  ],
+  "required_changes": []
+}

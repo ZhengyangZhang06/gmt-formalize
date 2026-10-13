@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "IsRelCompactOpenIn|lower_density_ge_one_ae|exists_thickening_isRelCompactOpenIn|ae_of_forall_relCompactOpen_null_exceptional|measure_bad_interior_exceptional_eq_zero|exists_nearby_points_off_bad_sets",
+        "exists_cthickening_subset_open|IsCompact.cthickening|Monotone.measure_iUnion",
+        "liminf_const_mul_of_ne_top|liminf_add_of_right_tendsto_zero|tendsto_inv_nat_nhds_zero|theorem Monotone.measure_iUnion|theorem measure_biUnion_null_iff|theorem measure_le_inter_add_sdiff|theorem isOpen_iUnion_countable",
+        "theorem interior_maximal|theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem tendsto_iff_dist_tendsto_zero",
+        "structure Varifold|isOpen_domain|supported|theorem weight_apply",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lower-density-independent-audit-tqczf3ai/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lower-density-independent-audit-tqczf3ai/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1-lower-density-ae-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-density-semicontinuity-a1-lower-density-ae-a1/decomposition-v1.json",
+        "/tmp/lower-density-independent-audit-tqczf3ai/Children.lean",
+        "/tmp/lower-density-independent-audit-tqczf3ai/Assembly.lean",
+        "/tmp/lower-density-independent-audit-tqczf3ai/Challenge0.lean",
+        "/tmp/lower-density-independent-audit-tqczf3ai/Challenge1.lean",
+        "/tmp/lower-density-independent-audit-tqczf3ai/Challenge2.lean",
+        "/tmp/lower-density-independent-audit-tqczf3ai/Challenge3.lean"
+      ],
+      "conclusion": "Verified snapshot revisions and byte compatibility of the contract and consulted Mathlib files. The cited compactness, countable-cover, outer-measure, and ENNReal liminf lemmas support the supplied arguments. Searches found no existing declarations with the four proposed names. All names are bare, unreserved identifiers in the 161-node DAG; dependencies are acyclic. All four exact one-line propositions independently elaborate in comparator scope without child implementations. Recompiled isolated child proofs use only propext, Classical.choice, and Quot.sound. The parent assembly also compiles with only those axioms when the four exact frozen sibling contracts are explicit assumptions. Thus the split appropriately establishes the selected lower_density_ge_one_ae_of_radonConverges contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "thickening_rel_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include the same hypotheses and conclusion. Compact-open separation supplies a positive radius; closure containment and properness of Euclidean N establish compact closure inside U. The proof covers empty W and unrestricted U, is complete and non-circular, and supplies precisely the geometry needed in Step 1a."
+    },
+    {
+      "key": "relcompact_exhaustion_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the arbitrary-measure and arbitrary-property statement, including openness of U and μ(Uᶜ)=0. Relatively compact balls admit a countable subcover, and the failure set lies in the stated countable union of outer-null sets. No measurability of P or exceptional sets is assumed implicitly. This complete, independent proof supplies Step 2."
+    },
+    {
+      "key": "bad_interior_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and restricted intersections match exactly. The proof correctly establishes increasing tail interiors, eventual measure domination, removal of the vanishing error, and commutation of liminf with finite constant multiplication. Continuity from below and C·k⁻¹·L→0 prove the exact null-set conclusion. It handles C=0 and arbitrary bad sets, without strengthening finite liminf to a uniform bound or relying on the parent."
+    },
+    {
+      "key": "nearby_good_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose. Failure of tail-interior membership yields points in each open neighbourhood and indices q_i≥i. Choice, the positive radii 1/(i+1), and the squeeze argument establish both required convergences and every membership condition. The proof is complete and independent; its conclusions suffice for the parent's nearby-mass-bound sibling."
+    }
+  ],
+  "required_changes": []
+}

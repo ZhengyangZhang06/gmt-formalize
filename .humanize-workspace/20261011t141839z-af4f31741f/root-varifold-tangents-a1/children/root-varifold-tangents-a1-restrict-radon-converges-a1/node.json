@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.restrict_radon_converges-a1",
+  "parent_id": "root.varifold_tangents-a1",
+  "depth": 2,
+  "title": "Restricting a vaguely convergent sequence to an open set gives Radon convergence of varifolds on that set",
+  "statement": "Let Ω ⊆ ℝ^N, c ∈ [0,∞), and let μ_i (i ∈ ℕ), μ be Borel measures on ℝ^N × G(N,n) with μ_i → μ vaguely, i.e. ∫ f dμ_i → ∫ f dμ for every f ∈ C_c(ℝ^N × G(N,n)) (VagueConverges). Let W_i (i ∈ ℕ) and W be n-varifolds on Ω (Varifold N n Ω) whose measures are W_i.measure = c·(μ_i ⌞ (Ω × G)) and W.measure = c·(μ ⌞ (Ω × G)). Then W_i → W as Radon measures on G_n(Ω), i.e. Varifold.RadonConverges W_· W (convergence of ∫ f d(W_i)_dom for every f ∈ C_c(Ω × G)).",
+  "lean_statement": "∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N × Grassmannian N n)) (μ : Measure (Euclidean N × Grassmannian N n)) (Ws : ℕ → Varifold N n Ω) (W : Varifold N n Ω) (c : ℝ≥0∞), VagueConverges μs μ → c ≠ ∞ → (∀ i, (Ws i).measure = c • (μs i).restrict (Ω ×ˢ (univ : Set (Grassmannian N n)))) → W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → Varifold.RadonConverges Ws W",
+  "lean_name": "varifold_tangents_restricted_radon_converges",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-restrict-radon-converges-a1-a1"
+}

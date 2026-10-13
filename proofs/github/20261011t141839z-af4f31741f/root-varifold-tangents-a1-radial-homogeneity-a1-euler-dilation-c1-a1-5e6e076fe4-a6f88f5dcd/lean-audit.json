@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "69638b6799d6ca6126edff85878324ec8d7a5de899aaf32c4e96d044ae40d76c",
+  "git_delta": {
+    "base_commit": "2e9cbce84edbf1686bf88f5c304d59bf8b01654b",
+    "candidate_commit": "7b4bc68f74ab7ce28d5e8379c759358f8d497434",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rh_edc_euler_dilate",
+    "diff_sha256": "0eac97abc3f14fe1fb54a1f112bd791c4eb4619073589cf8cc418e3514c73e83",
+    "source_sha256": "c3abe06d33b17a1c719a4e4d9140632a5b3a4c12fb908eef05c250cb2044935c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_edc_euler_dilate",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂μ = 0) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ t : ℝ, 0 < t → (n : ℝ) * (∫ y, g (t⁻¹ • y) ∂μ) + ∫ y, fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) ∂μ = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

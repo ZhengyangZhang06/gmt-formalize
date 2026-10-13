@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1",
+  "parent_id": "root.varifold_tangents-a1",
+  "depth": 2,
+  "title": "A stationary varifold whose planes contain the position vector has n-homogeneous weight (corrected 5.3, step A5)",
+  "statement": "Let C be an n-varifold on ℝ^N (C : Varifold N n univ) which is stationary in ℝ^N and satisfies p_S(y) = y (i.e. y ∈ S) for C-a.e. (y,S), where p_S = Grassmannian.project S is the orthogonal projection onto S. Then μ_C(s·A) = s^n μ_C(A) for every s > 0 and every set A ⊆ ℝ^N (in ℝ≥0∞: C.weight (s • A) = ofReal s ^ n * C.weight A). This is the corrected form of Simon 5.3.",
+  "lean_statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A",
+  "lean_name": "varifold_tangents_radial_stationary_homogeneous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-a1"
+}

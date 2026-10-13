@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.density_pullback-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "Density lower bounds pull back from a scaled restriction to the original varifold",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N and W an n-varifold on Ω ⊆ ℝ^N (so Ω is open). Let c ∈ [0,∞] with c ≠ 0 and c ≠ ∞, and suppose W.measure = c • V.measure⌞(Ω × G(N,n)). Suppose also that for μ_W-a.e. y there is θ with HasDensity n μ_W y θ and 1 ≤ θ. Then for μ_V-a.e. y: if y ∈ Ω, there is θ with HasDensity n μ_V y θ and c⁻¹ ≤ θ.",
+  "lean_statement": "∀ (N n : ℕ) (U Ω : Set (Euclidean N)) (V : Varifold N n U) (W : Varifold N n Ω) (c : ℝ≥0∞), c ≠ 0 → c ≠ ∞ → W.measure = c • V.measure.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → (∀ᵐ y ∂W.weight, ∃ θ : ℝ≥0∞, HasDensity n W.weight y θ ∧ 1 ≤ θ) → ∀ᵐ y ∂V.weight, y ∈ Ω → ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ c⁻¹ ≤ θ",
+  "lean_name": "varifold_tangents_dlb_ae_hasDensity_of_restricted",
+  "depends_on": [
+    "root.varifold_tangents-a1.density_lower_bound-a1.density_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.density_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-density-pullback-a1-a1"
+}

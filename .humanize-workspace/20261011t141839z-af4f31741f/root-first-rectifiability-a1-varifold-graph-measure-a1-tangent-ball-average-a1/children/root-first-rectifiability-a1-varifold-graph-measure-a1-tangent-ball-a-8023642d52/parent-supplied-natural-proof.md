@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1`
+- Child DAG node: `root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.product_blowup-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 3–4 of the parent proof (the cut-off test functions and both sides of Def. 1.1). There the function χ_{a,b} is only used through its continuity and compact support, so the same argument is carried out for an arbitrary g ∈ C_c(ℝ^N, ℝ).
+
+Notation: G := Grassmannian N n; points of ℝ^N × G are z = (z.1, z.2).
+
+1. The test function. Let f(z) := g(z.1) β(z.2). f is continuous (g and β are continuous, and so are the projections). If z ∉ tsupport g × G, then z.1 ∉ tsupport g, so g(z.1) = 0 (image_eq_zero_of_notMem_tsupport) and f(z) = 0. tsupport g is compact because g has compact support, and G is compact (Grassmannian.instCompactSpace), so tsupport g × G is compact (IsCompact.prod). Hence f has compact support (HasCompactSupport.intro), and f is an element of C_c(ℝ^N × G, ℝ).
+
+2. Def. 1.1 applied to f. The third clause of HasTangentPlane V x T θ, applied to f, gives ∫ f d(rescaledMeasure V x t) → θ · ∫ f d(planeVarifoldMeasure T) as t → 0⁺ (along 𝓝[>] 0).
+
+3. The plane side. By definition planeVarifoldMeasure T = (μHE[n] ⌞ T.plane).map(y ↦ (y, T)). The map y ↦ (y, T) is continuous, hence measurable, and f is continuous, hence AE-strongly measurable, so by integral_map ∫ f d(planeVarifoldMeasure T) = ∫_{T.plane} f(y, T) dH^n(y) = ∫_{T.plane} g(y) β(T) dH^n(y). Pulling out the constant factor (integral_mul_const), this is (∫_{T.plane} g dH^n) · β(T) = β(T) · ∫_{T.plane} g dH^n. So the limit in 2 equals θ · (β(T) · ∫_{T.plane} g dH^n).
+
+4. The rescaled side. Fix t > 0. By definition rescaledMeasure V x t = ENNReal.ofReal(t⁻¹^n) • V.measure.map φ_t with φ_t(z) := (t⁻¹ • (z.1 − x), z.2); φ_t is continuous, hence measurable. By integral_smul_measure, ∫ f d(c • m) = c.toReal · ∫ f dm, and (ENNReal.ofReal(t⁻¹^n)).toReal = t⁻¹^n because t⁻¹^n ≥ 0 (ENNReal.toReal_ofReal). By integral_map (φ_t measurable, f AE-strongly measurable), ∫ f d(V.measure.map φ_t) = ∫ f(φ_t z) dV(z) = ∫ g(t⁻¹ • (z.1 − x)) β(z.2) dV(z). Hence, for every t > 0,
+ ∫ f d(rescaledMeasure V x t) = t⁻¹^n · ∫ g(t⁻¹ • (z.1 − x)) β(z.2) dV(z).
+No integrability hypothesis is needed: integral_smul_measure holds unconditionally and integral_map only needs the measurability just stated.
+
+5. Conclusion. The functions t ↦ ∫ f d(rescaledMeasure V x t) and t ↦ t⁻¹^n ∫ g(t⁻¹ • (z.1 − x)) β(z.2) dV(z) agree on (0, ∞), which belongs to 𝓝[>] 0 (self_mem_nhdsWithin). By Tendsto.congr' and steps 2–3, t⁻¹^n ∫ g(t⁻¹ • (z.1 − x)) β(z.2) dV(z) → θ · (β(T) · ∫_{T.plane} g dH^n) as t → 0⁺. ∎
+
+## Key steps
+
+1. f(y,S) := g(y)β(S) is continuous and vanishes off the compact set tsupport g × G(N,n), so f ∈ C_c(ℝ^N × G(N,n))
+2. HasTangentPlane applied to f: ∫ f dV_{x,t} → θ ∫ f dv(T) as t → 0⁺
+3. integral_map along y ↦ (y,T) and integral_mul_const: ∫ f dv(T) = β(T) ∫_{T.plane} g dH^n
+4. for t > 0, integral_smul_measure, ENNReal.toReal_ofReal and integral_map along φ_t: ∫ f dV_{x,t} = t⁻¹^n ∫ g(t⁻¹(y−x))β(S) dV
+5. the two expressions agree on (0,∞) ∈ 𝓝[>] 0, so Tendsto.congr' transfers the limit
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n 'def HasTangentPlane|def rescaledMeasure|def planeVarifoldMeasure|def unitBallVolume' project/GMT/Ch08/Contract.lean`
+- `cmp project/GMT/Ch08/Contract.lean project/GMT/Ch08/Submission.lean (identical)`
+- `rg -n 'theorem Isometry.euclideanHausdorffMeasure_image|theorem euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem addHaar_closedBall ' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `rg -n 'theorem integral_smul_measure|^theorem integral_map |theorem integral_mul_const |theorem integral_sub ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean`
+- `rg -n 'theorem integral_indicator |theorem setIntegral_const|theorem integral_indicator_one' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `rg -n 'integrableOn_of_bounded' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean; rg -n 'theorem IntegrableOn.integrable_of_forall_notMem_eq_zero|theorem integrableOn_const|theorem integrable_indicator_iff' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `rg -n '^theorem tendsto_order ' mathlib/Mathlib/Topology/Order/Basic.lean; rg -n 'theorem Filter.Tendsto.div ' mathlib/Mathlib/Topology/Algebra/GroupWithZero.lean; rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n 'theorem norm_coe_le_norm' mathlib/Mathlib/Topology/ContinuousMap/Compact.lean; rg -n 'theorem intro' mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `rg -n 'theorem measure_ball_pos|theorem measure_ball_lt_top' mathlib/Mathlib/MeasureTheory`
+- `grep -rn 'lemma mul_div_mul_left' mathlib/Mathlib/Algebra/GroupWithZero/`
+- `rg -n 'frt_vgm_tba|frt_td_plane' project/ (no match)`
+- `grep -n 'structure Varifold|isOpen_domain|finite_on_compact|theorem weight_apply|finrank_plane|instCompactSpace|abbrev Grassmannian' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `python3 -I scan of dag.json nodes with lean_name containing closedBall_hausdorff/plane_ball (ids, status, lean_statement); grep -c frt_vgm_tba in all 8 chapter dag.json files (0 each)`
+- `for r in $(git for-each-ref --format='%(refname)'); git grep -q frt_vgm_tba $r -- GMT (0 hits over 617 refs)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `python3 -I /tmp/tba_decomp3/scripts/scope.py and stmts3.py (gmt-compare.py contract_scope/child_modules mode='contract'; lean_contract.validate_lean_statement on all six types)`
+- `lake env lean /tmp/tba_decomp3/Full3.lean, Stub3.lean, Emu3.lean, Challenge_0..5.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/GroupWithZero.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/tmp/tba_decomp3/Full3.lean`
+- `/tmp/tba_decomp3/Stub3.lean`
+- `/tmp/tba_decomp3/Emu3.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is identical to Submission.lean. It defines HasTangentPlane (l.108), rescaledMeasure (l.96), planeVarifoldMeasure (l.102) and unitBallVolume (l.41) exactly as the children's prose describes them.
+
+Every library fact the children need exists in the pinned Mathlib/SimonGMT:
+- plane_ball: Isometry.euclideanHausdorffMeasure_image (Volume/Measure.lean:131), EuclideanSpace.euclideanHausdorffMeasure_eq_volume (:187), Measure.addHaar_closedBall (EqHaar.lean:500), finrank_euclideanSpace_fin (PiL2.lean:205), and SimonGMT Grassmannian.finrank_plane (Varifold.lean:126).
+- plane_cutoff_bounds and ball_cutoff_sandwich: Measure.integrableOn_of_bounded (IntegrableOn.lean:716), IntegrableOn.integrable_of_forall_notMem_eq_zero (:453), integrable_indicator_iff (:340), integrableOn_const (:119), integral_indicator and integral_indicator_one (Bochner/Set.lean:185/533), ContinuousMap.norm_coe_le_norm (ContinuousMap/Compact.lean:196), and Varifold.finite_on_compact (Varifold.lean:339).
+- product_blowup: integral_smul_measure and integral_map (Bochner/Basic.lean:1052/1081), integral_mul_const (:294), HasCompactSupport.intro (Topology/Algebra/Support.lean:232), and Grassmannian.instCompactSpace (Varifold.lean:271).
+- nonneg_ball_limit: tendsto_order (Topology/Order/Basic.lean:139) and Varifold.isOpen_domain (Varifold.lean:336).
+- Parent assembly: integral_sub (Bochner/Basic.lean:263), setIntegral_const (Bochner/Set.lean:524), Varifold.weight_apply (Varifold.lean:565), Filter.Tendsto.div (GroupWithZero.lean:189), mul_div_mul_left (GroupWithZero/Units/Basic.lean:460), measure_ball_pos (OpenPos.lean:212) and measure_ball_lt_top (Typeclasses/Finite.lean:373).
+
+Names: no frt_vgm_tba or frt_td_plane name occurs in the snapshot project. The plane-ball type is held by three DAG nodes under distinct names: frt_td_plane_closedBall_hausdorff (another parent; rejected for reuse by the controller), intcpt_canon_plane_closedBall_hausdorff and tgc_plane_closedBall_hausdorff. So the fresh, globally unique name frt_vgm_tba_plane_closedBall_hausdorff is used. No frt_vgm_tba_* name occurs in any chapter dag.json or on any local git ref, so the controller's _existing_lean_name_problem accepts all five.
+
+Lean checks: all five children and the parent's exact frozen type compile in Full3.lean with only propext, Classical.choice and Quot.sound. The parent compiles from the sorry'd children in Stub3.lean. The comparator challenge files built by the verifier's child_modules elaborate every type standalone, and validate_lean_statement accepts all six.

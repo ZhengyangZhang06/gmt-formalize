@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.lower_density_ae-a1.relcompact_exhaustion_ae-a1",
+  "parent_id": "root.density_semicontinuity-a1.lower_density_ae-a1",
+  "depth": 3,
+  "title": "Local to global almost everywhere: exhaustion of an open U by countably many balls W ⊂⊂ U",
+  "statement": "Let N ∈ ℕ, let U ⊆ ℝ^N = Euclidean N be open, let μ be a measure on ℝ^N with μ(ℝ^N ∖ U) = 0, and let P be a property of points of ℝ^N. Suppose that for every W ⊂⊂ U (IsRelCompactOpenIn W U) there is a set E ⊆ ℝ^N, not necessarily measurable, with μ(E) = 0 (outer measure) such that P(x) holds for every x ∈ W with x ∉ E. Then P(x) holds for μ-almost every x ∈ ℝ^N (∀ᵐ x ∂μ, P x).",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)) (P : Euclidean N → Prop), IsOpen U → μ Uᶜ = 0 → (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U → ∃ E : Set (Euclidean N), μ E = 0 ∧ ∀ x ∈ W, x ∉ E → P x) → ∀ᵐ x ∂μ, P x",
+  "lean_name": "ae_of_forall_relCompactOpen_null_exceptional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-lower-density-ae-a1-relcompact-exhaustion-ae-a1-a1"
+}

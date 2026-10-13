@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97017f2746fb242e3f930a226bc3bb42fa1326888d86b426df0c255a621871a1",
+  "git_delta": {
+    "base_commit": "54295e6c79ed665caddb17eb13d33a48b75e033b",
+    "candidate_commit": "94077eb6fde0c0117297e4e7b52a62c2e2e9d652",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "weight_closedBall_lower_bound_of_density_ge_one",
+    "diff_sha256": "8fd92d5befff62da646b9d96e6d00c0f504b0e9e919974123c476f47bd787ed9",
+    "source_sha256": "fa09dce85548ae4cf4b72b5e03dc0f0ac2ae1d89321950c9bdb93cc480daa257",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weight_closedBall_lower_bound_of_density_ge_one",
+      "statement": "MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ₀ Λ : ℝ) (θ : ℝ≥0∞), V.HasLocallyBoundedFirstVariation → 0 < ρ₀ → ball x ρ₀ ⊆ U → 0 ≤ Λ → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → variationMeasure V (closedBall x ρ) ≤ ENNReal.ofReal Λ * V.weight (closedBall x ρ)) → HasDensity n V.weight x θ → 1 ≤ θ → ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤ V.weight (closedBall x ρ)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1593d2052a2fe22861e9ceb27eaa7619de8bb465af4be46bee75f9843d62dd19",
+  "git_delta": {
+    "base_commit": "a35a3b9df726f9ceac9e376ea004e45fe7f4be2a",
+    "candidate_commit": "5c275791b69d411de9c8bd4619e0a1dc0d0a0b69",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_unit_disc_mass_eventually",
+    "diff_sha256": "8c9b3298a1b1074bff5f87a5cb7b5617fccebcc110282d7875912676e4909e93",
+    "source_sha256": "ed6c491817350d6684abd454644b89b0f6245d351c050650aebfdd8d70fb922a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_unit_disc_mass_eventually",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ η : ℝ, 0 < η → ∀ᶠ k in atTop, ∀ a ∈ (P.plane : Set (Euclidean N)), ‖a‖ ≤ 1 → (W k).weight (closedBall a 1) ≤ ENNReal.ofReal ((θ₀ + η) * (unitBallVolume n).toReal)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

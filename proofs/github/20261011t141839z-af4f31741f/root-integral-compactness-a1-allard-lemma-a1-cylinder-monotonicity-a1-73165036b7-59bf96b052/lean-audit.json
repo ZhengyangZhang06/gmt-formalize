@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "51054ec169f2a2c6dedac6c23c1bcddf7ac344e339138feb06fe73e3bcc1ff0c",
+  "git_delta": {
+    "base_commit": "c945379e02def02467361ecb59eb13f87bad2151",
+    "candidate_commit": "7bbdba787ff787e5656867339ae7ea837c3e6fa3",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_cm_cylinder_weight",
+    "diff_sha256": "ab10b1959b401c40c43ae674cdeb999ff2341c4527697259483b0588162009c2",
+    "source_sha256": "955e83519389ee8b726547c1c67a426ea1c96a203c0e4b252ebbb56f30851de3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_cm_cylinder_weight",
+      "statement": "∃ M₀ : ℝ, 0 ≤ M₀ ∧ ∀ (N n : ℕ) (P : Grassmannian N n) (y : Euclidean N) (τ : ℝ), 0 < τ → ∃ h : Euclidean N → ℝ, ContDiff ℝ 1 h ∧ (∀ z, 0 ≤ h z ∧ h z ≤ 1) ∧ (∀ z, ‖(z - y) - Grassmannian.project P (z - y)‖ < τ → h z = 1) ∧ (∀ z, 2 * τ ≤ ‖(z - y) - Grassmannian.project P (z - y)‖ → h z = 0) ∧ ∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M₀ / τ * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

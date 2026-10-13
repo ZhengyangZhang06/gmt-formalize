@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1",
+  "parent_id": "root.integral_compactness-a1",
+  "depth": 2,
+  "title": "Besicovitch bound liminf_i ν_i(B_ρ(x)) ≤ c(x)ρ^n almost everywhere (step B3, printed (1)–(2))",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N open, μ a Borel measure on ℝ^N with μ(ℝ^N ∖ U) = 0 and μ(K) < ∞ for every compact K ⊆ U, and ν_i (i ∈ ℕ) Borel measures on ℝ^N with sup_i ν_i(W) < ∞ for every open W ⊂⊂ U (IsRelCompactOpenIn W U). Suppose that for μ-a.e. x the density Θ^n(μ,x) exists and is finite. Then for μ-a.e. x there are c ∈ ℝ and r > 0 such that liminf_{i→∞} ν_i(B_ρ(x)) ≤ cρ^n (as ENNReal.ofReal(cρ^n)) for every ρ ∈ (0, r).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U → ⨆ i, ν i W ≠ ∞) → (∀ᵐ x ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ x θ ∧ θ ≠ ∞) → ∀ᵐ x ∂μ, ∃ c r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ ENNReal.ofReal (c * ρ ^ n)",
+  "lean_name": "intcpt_variation_liminf_density_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-variation-density-bound-a1-a1"
+}

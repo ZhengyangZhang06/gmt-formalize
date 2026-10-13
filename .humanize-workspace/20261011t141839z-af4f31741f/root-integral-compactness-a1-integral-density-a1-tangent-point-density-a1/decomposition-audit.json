@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def blowUpMap|def HasWeightedApproximateTangentSpaceAt|abbrev Euclidean ",
+        "euclideanHausdorffMeasure_smul₀",
+        "euclideanHausdorffMeasure_eq_volume",
+        "theorem _root_.MeasurableEmbedding.integral_map",
+        "aestronglyMeasurable_indicator_iff",
+        "le_div_iff_mul_le|div_le_of_le_mul|ofReal_lt_ofReal_iff|mul_lt_mul_left",
+        "intcpt_id_tpd_",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tpd3-decomp/Full.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tpd-independent-audit-3ix_uhxe/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-density-a1/decomposition-v2.json",
+        "/tmp/tpd3-decomp/Full.lean",
+        "/tmp/tpd-independent-audit-3ix_uhxe/Types.lean",
+        "/tmp/tpd-independent-audit-3ix_uhxe/Assembly.lean"
+      ],
+      "conclusion": "The pinned project and Mathlib revisions match the compiler context; the snapshot Contract and workspace Contract/Submission are byte-identical. The cited APIs support arbitrary-set change of variables, local cutoff measurability, plane-ball normalization including dimension zero, and ENNReal division. Independent elaboration confirms the intended measures, compactly supported functions and powers. All seven child types and the frozen parent type passed regenerated standalone comparator challenges; parent assembly also passed. The complete supplied Lean proofs recompiled successfully, with only propext, Classical.choice and Quot.sound. All names are distinct bare identifiers: no reservations were found in the DAG, other node directories, pinned libraries or 961 Git refs; node-directory matches were confined to this selected node's decomposition records. Splitting is appropriate: the seven substantive obligations follow the supplied proof, their actual dependencies match the acyclic declared graph, and their conclusions establish exactly the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_cov",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary M and F. The homeomorphism, Hausdorff scaling, measurable-embedding restriction identity and unconditional Bochner change of variables prove the formula without additional measurability assumptions or reliance on another DAG declaration."
+    },
+    {
+      "key": "plane_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact submodule contract is proved by isometric inclusion, Hausdorff measure equals volume, Haar ball scaling and a volume-preserving coordinate isometry. The argument covers both n = 0 and r = 0."
+    },
+    {
+      "key": "density_squeeze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The threshold hypotheses match the prose exactly. Positivity and finiteness of the normalizer justify division; intermediate thresholds and tendsto_order establish convergence, including a = 0 and a = ∞."
+    },
+    {
+      "key": "ball_sandwich",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both inequalities match. Indicator comparison bounds the finite lintegral J; local integrability supplies measurability through the ball indicator, and null-measurability supplies a.e. nonnegativity. The declared blowup_cov dependency then identifies ofReal(r^n I) with J."
+    },
+    {
+      "key": "plane_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit radial cutoff supplies every required pointwise property and compact support. Using only plane_ball, finite plane-ball measures yield integrable indicator bounds and both claimed integral inequalities."
+    },
+    {
+      "key": "ball_mass_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The strict threshold forces θ(x) > 0 and c < ∞, so omission of x ∈ M is justified. The κ choice, inner cutoff, tangent convergence and right sandwich inequality prove the exact eventual lower bound using precisely the declared dependencies."
+    },
+    {
+      "key": "ball_mass_upper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Membership x ∈ M correctly supplies θ(x) ≥ 0. The proof handles c = ∞ separately; otherwise the outer cutoff, tangent convergence and left sandwich inequality give the exact eventual upper bound, including zero weight and dimension zero."
+    }
+  ],
+  "required_changes": []
+}

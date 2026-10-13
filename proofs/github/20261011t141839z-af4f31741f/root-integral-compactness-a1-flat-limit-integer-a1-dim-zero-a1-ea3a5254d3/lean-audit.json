@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1465626b18543ee86f069586f1cc4ee73ea1e29a31836619a1b98fca8a7c8454",
+  "git_delta": {
+    "base_commit": "95a4411f79194013987cecb6ed873c6d364ce12f",
+    "candidate_commit": "655060246db7266aabb180432a6ccbb6d0e4bd02",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_dim_zero_integer",
+    "diff_sha256": "796add58e0080ecf1109ffa97ee4ecb7c40d163a0b0dc01bb4b15e7e9ed41b26",
+    "source_sha256": "32ab76b5abf402bd8af4a668d2c86089d1fbc8706beba65dcebd462d4b422953",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_dim_zero_integer",
+      "statement": "∀ (N : ℕ) (P : Grassmannian N 0) (θ₀ : ℝ) (W : ℕ → Varifold N 0 (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ f : C_c(Euclidean N × Grassmannian N 0, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N 0)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ m : ℕ, θ₀ = m",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

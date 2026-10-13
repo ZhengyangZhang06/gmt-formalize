@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.monotonicity_formula-a1",
+  "parent_id": "root.monotonicity_density-a1",
+  "depth": 2,
+  "title": "Monotonicity formula with ‖δV‖ ≤ Λ μ_V (Simon 8.3.3)",
+  "statement": "(Simon Ch. 8, 3.3; exactly the contract Prop MonotonicityFormula.) For all N, n ∈ ℕ, U ⊆ ℝ^N and every n-varifold V on U (SimonGMT Varifold N n U; U is open): let V have locally bounded first variation in U, let x ∈ ℝ^N and ρ0 > 0 with the open ball B°_{ρ0}(x) = ball x ρ0 ⊆ U, let Λ ≥ 0, and assume ‖δV‖(B_ρ(x)) ≤ ofReal(Λ)·μ_V(B_ρ(x)) for all 0 < ρ < ρ0, where B_ρ(x) = closedBall x ρ, μ_V = V.weight and ‖δV‖ = variationMeasure V. Then (i) ρ ↦ ofReal(e^{Λρ})·μ_V(B_ρ(x))/ofReal(ρ)^n is monotone non-decreasing on (0, ρ0) (values in [0,∞]); (ii) there is θ ∈ [0,∞] with θ ≠ ∞ and HasDensity n μ_V x θ, i.e. densityRatio n μ_V x ρ = μ_V(B_ρ(x))/(ω_n·ofReal(ρ)^n) → θ as ρ ↓ 0, where ω_n = unitBallVolume n; and (iii) for all 0 < σ ≤ ρ < ρ0: θ ≤ ofReal(e^{Λσ})·densityRatio n μ_V x σ and ofReal(e^{Λσ})·densityRatio n μ_V x σ + ω_n^{-1}·normalDefect V x (B_ρ(x) ∖ B_σ(x)) ≤ ofReal(e^{Λρ})·densityRatio n μ_V x ρ, where normalDefect V x A = ∫_{A×G(N,n)} ofReal(|(y − x) − p_S(y − x)|²/|y − x|^{n+2}) dV(y,S) (integrand 0 at y = x).",
+  "lean_statement": "MonotonicityFormula",
+  "lean_name": "monotonicity_formula_8_3_3",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-monotonicity-formula-a1-a1"
+}

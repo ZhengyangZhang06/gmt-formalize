@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a3237479f1c61beb1055ca429255e7864892e92abbcb2220b41ad34e13e40328",
+  "git_delta": {
+    "base_commit": "c447a6e83dd58eb7a909d8247a2ff856968346de",
+    "candidate_commit": "a424ee91200918b194e62c36b51e430c5e2ce555",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_plane_subset_hasDensity_one",
+    "diff_sha256": "c9ade71e415543cae8e9acc12a1ad854c246dbb41a8bd7fff77396aef4d994dd",
+    "source_sha256": "f67344dae518aeeac85b3f99250fd56aab5b3c2a62f8f07e7b3ddb844d423348",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_plane_subset_hasDensity_one",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (T : Set (Euclidean N)), T ⊆ (P.plane : Set (Euclidean N)) → ∃ Z : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) Z = 0 ∧ ∀ a ∈ T, a ∉ Z → HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict T) a 1",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

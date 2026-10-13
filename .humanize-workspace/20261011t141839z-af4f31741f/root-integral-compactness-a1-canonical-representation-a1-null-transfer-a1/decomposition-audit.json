@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "class WeaklyRegular|theorem _root_.Set.exists_isOpen_lt_of_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure",
+        "theorem isOpen_iUnion_countable",
+        "restrict_apply \\(|restrict_apply_univ|theorem restrict_apply_le|theorem exists_surjective_nat",
+        "theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity",
+        "def dimensionalDensityQuotient|def dimensionalUpperDensity",
+        "realUnitBallVolume_zero|simonHausdorffMeasureReal_toOuterMeasure|volume_euclidean_ball_eq|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure",
+        "check_source_delta|import|check_parent_git_delta",
+        "def child_modules|def contract_scope|def frozen_inputs|def validate_lean_statement|NodeChallenge",
+        "intcpt_canon_nt_"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/Countable/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-canonical-representation-a1-null-transfer-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-canonical-representation-a1-null-transfer-a1/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/parent_verification.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/nt-review-adv/out/Parent.out",
+        "/tmp/nt-review-adv/out/baseline_Dump.out",
+        "/tmp/nt-review-adv/out/importsOnly_Dump.out",
+        "/tmp/nt-review-adv/out/parent_Dump.out"
+      ],
+      "conclusion": "Pinned project, Mathlib and SimonGMT revisions match the workspace. The cited declarations support both proofs, including outer approximation of arbitrary sets and enumeration of an empty countable subcover. Both statements pass the lexical validator, and both supplied implementations pass the leaf insertion gate. Neither name is reserved by another DAG node or proposed decomposition; no identical frozen DAG child type was found. The split is appropriate: its children provide exactly the finite-mass cover and open approximation used by the selected parent, while the import-dependent normalization and density comparison remain in the parent. The supplied assembly establishes the exact frozen null-transfer statement, without ancestor assumptions. Both dependency lists are correctly empty. The three prerequisite modules are absent from the original import closure, and the inspected gates permit their addition by a non-leaf parent. A source scan of their 38 SimonGMT dependency modules found no axiom or proof-placeholder tokens outside comments and strings. Existing compilation artifacts report only propext, Classical.choice and Quot.sound and identical hashes for all 41 frozen declarations. Fresh Lean execution could not be performed because lake is unavailable in this environment."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "open_cover_finite_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every prose hypothesis and conclusion; ENNReal finiteness is correctly expressed by ≠ ∞. The proof constructs half-radius balls with compact closure inside U, obtains finite mass by monotonicity, selects a countable subcover, and enumerates Option T to handle even an empty index set. It proves every required property of W. The Euclidean metric and Borel instances are appropriate. The bare identifier is unused, the type is independently meaningful before implementation, and the proof invokes neither child nor parent theorem. This supplies the parent's localization step."
+    },
+    {
+      "key": "open_subset_measure_lt",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes openness, finite mass, A ⊆ W and μ A < ε, without imposing measurability on A. The proof makes μ.restrict W finite, obtains outer regularity from the Borel metric-space instance, and uses restriction domination on arbitrary sets. Outer approximation gives O'; intersecting with W preserves openness and containment, while measurability of O' justifies μ(O' ∩ W) = (μ.restrict W)(O'). Thus the strict bound follows for all allowed ε. The bare identifier is unused, the type is independently usable, and no dependency on the first child or selected parent is hidden."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d089f17f4ddcedda54ade4a86365eb6483230ce75ca38b2d45c9934347656403",
+  "git_delta": {
+    "base_commit": "c087a62e6161762034a1b0b4ce39476c3b2cf267",
+    "candidate_commit": "41e017ee87c48f5a0ebf492f467f79c5daa1a3e6",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_tangent_plane_density",
+    "diff_sha256": "13788bc30b2c8e3813286d50d967826d9dcc79d20ba7fb23701abeb418bdd534",
+    "source_sha256": "acc641b775aea94300dfff24acfd4e68e8be87df01cca4b73ed8d3a5231b060d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_tangent_plane_density",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.bad_set_bound-a1.marginal_measure-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.bad_set_bound-a1",
+  "depth": 4,
+  "title": "The functional A ↦ ∫_{A×G(N,n)} g dm is a Borel measure in A (Simon 8.5.10 proof, step 2: tilt term)",
+  "statement": "Let N, n ∈ ℕ, let m be a measure on ℝ^N × G(N,n) (G(N,n) = Grassmannian N n, product σ-algebra), and let g : ℝ^N × G(N,n) → [0,∞] be an arbitrary function. Then there is a measure τ on ℝ^N such that τ(A) = ∫⁻_{A × G(N,n)} g dm (lower Lebesgue integral over A ×ˢ univ) for every measurable A ⊆ ℝ^N.",
+  "lean_statement": "∀ (N n : ℕ) (m : Measure (Euclidean N × Grassmannian N n)) (g : Euclidean N × Grassmannian N n → ℝ≥0∞), ∃ τ : Measure (Euclidean N), ∀ A : Set (Euclidean N), MeasurableSet A → τ A = ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), g z ∂m",
+  "lean_name": "intcpt_allard_bsb_marginal_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-bad-set-bound-a1-margina-2792621399-a1"
+}

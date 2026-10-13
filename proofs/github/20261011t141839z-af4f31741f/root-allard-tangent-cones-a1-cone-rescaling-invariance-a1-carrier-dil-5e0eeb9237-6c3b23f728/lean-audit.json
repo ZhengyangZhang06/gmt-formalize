@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8287171bdc72ba40916fc43b9a3bbfb4f3b642bacc9a17c99553202dfb6417f1",
+  "git_delta": {
+    "base_commit": "886f6704dc1ec4b4ff080822d0376e2545faaa01",
+    "candidate_commit": "4c1aed2b5f50106466884495444f575c44d54238",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_cri_carrier_dilation_null",
+    "diff_sha256": "5f02f1210727f1f6eee568fe363c6554b841a2e932c253d5e6c72a34348bf2df",
+    "source_sha256": "f02efd97956c865b2b8160a576930038fc6bfd44bff5f3c02c44ba3c797204ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_cri_carrier_dilation_null",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Euclidean N))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N))) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → μ (s • A) = ENNReal.ofReal s ^ n * μ A) → ∀ s : ℝ, 0 < s → (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | w ∈ M ∧ s • w ∉ M} = 0 ∧ (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | s • w ∈ M ∧ w ∉ M} = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

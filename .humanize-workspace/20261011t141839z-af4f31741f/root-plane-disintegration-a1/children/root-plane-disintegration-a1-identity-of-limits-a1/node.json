@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.plane_disintegration-a1.identity_of_limits-a1",
+  "parent_id": "root.plane_disintegration-a1",
+  "depth": 2,
+  "title": "Lemma 8.1.3, second part: ∫_{Gₙ(A)} β dV = ∫_A ∫ β dη^(x) dμ_V(x)",
+  "statement": "Let V be an n-varifold on an open set U ⊆ ℝ^N with weight μ_V. Let η : ℝ^N → Measure(G(N,n)) be such that, for μ_V-a.e. x, η(x) is a probability measure and (∫_{B_ρ(x)×G} β(S) dV(y,S)) / μ_V(B_ρ(x)) → ∫ β dη(x) as ρ ↓ 0 for every continuous β : G(N,n) → ℝ (closed balls; Bochner integral divided by μ_V(B_ρ(x)).toReal). Then for every Borel A ⊆ ℝ^N and every continuous β ≥ 0 on G(N,n): ∫⁻_{A×G} ofReal(β(S)) dV(x,S) = ∫⁻_A (∫⁻ ofReal(β(S)) dη(x)(S)) dμ_V(x).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (η : Euclidean N → Measure (Grassmannian N n)), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) → ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight",
+  "lean_name": "plane_disint_identity_of_limits",
+  "depends_on": [
+    "root.plane_disintegration-a1.slice_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.plane_disintegration-a1.slice_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-plane-disintegration-a1-identity-of-limits-a1-a1"
+}

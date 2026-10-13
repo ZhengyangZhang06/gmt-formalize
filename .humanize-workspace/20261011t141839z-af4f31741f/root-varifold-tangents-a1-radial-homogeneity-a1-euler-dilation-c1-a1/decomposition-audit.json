@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|is_const_of_deriv_eq_zero|fderiv_of_notMem_tsupport|HasCompactSupport.fderiv|bounded_above_of_compact_support|integrable_of_hasCompactSupport|HasCompactSupport.comp_smul|Continuous.clm_apply",
+        "euler|dilat|hasDerivAt|homogen",
+        "def contract_scope|def validate_lean_statement|axiom|Submission",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/edc1-independent-audit/ContractsAndGlue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/edc1-independent-audit/Replay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/Pow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1-euler-dilation-c1-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1-euler-dilation-c1-a1/decomposition-v1.json",
+        "/tmp/edc1-decomp/Final.lean",
+        "/tmp/edc1-independent-audit/ContractsAndGlue.lean",
+        "/tmp/edc1-independent-audit/Replay.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and relevant analytic APIs; the project search found no reusable theorem for these obligations. All frozen types passed validation and independently elaborated as propositions with autoImplicit disabled before child implementations existed. Euclidean scalar actions, Borel and proper-space instances were checked. Replaying the supplied implementations and comparator-shaped targets succeeded with only propext, Classical.choice and Quot.sound. The names are bare identifiers and have no conflicts among 200 DAG nodes or 166 other decomposition files. The split is appropriate and acyclic: the two integral children give F′(t)=nF(t)/t, and the ODE child gives F(s)=s^n F(1). An independently written glue proof establishes the exact selected parent contract from just these three child propositions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "euler_ode_power",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose. The quotient rule applies because t^n is nonzero; the numerator cancellation correctly handles n=0 separately. Differentiability and zero derivative on the open preconnected positive half-line justify constancy, and evaluation at 1 proves the conclusion. The proof is complete, independent and non-circular."
+    },
+    {
+      "key": "euler_identity_dilates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the conclusion match the Lean type. Positive t makes dilation a linear homeomorphism, preserving C¹ regularity and compact support. The chain-rule identity is correct. Continuity and the derivative's vanishing outside tsupport g establish integrability of both summands before integral_add is used. Applying the assumed Euler identity then proves the exact conclusion without relying on another child or the parent theorem."
+    },
+    {
+      "key": "dilation_integral_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the total inverse convention. The pointwise derivative and its sign are correct. Compact support supplies R and a global derivative bound L; on (t/2,2t), the stated closed-ball indicator dominates the derivative uniformly and is integrable. Every measurability, integrability and neighbourhood hypothesis of the pinned dominated-differentiation theorem is supplied. Integral linearity gives exactly the stated derivative. The proof is complete and independent of the Euler identity and other children."
+    }
+  ],
+  "required_changes": []
+}

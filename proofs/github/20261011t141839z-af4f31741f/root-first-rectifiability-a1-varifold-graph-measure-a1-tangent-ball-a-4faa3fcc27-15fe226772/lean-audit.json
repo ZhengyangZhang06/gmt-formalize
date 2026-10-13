@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d450efacbd0aa3dd0aa0ed294be1afb929fab34012095a8bbe164f45a9cabb8",
+  "git_delta": {
+    "base_commit": "7c9038af1a6a644964594c955d80baaccc2df028",
+    "candidate_commit": "a053bc3ab3e2f7565820e58c05fb56afbe3b18cc",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_tba_nonneg_ball_limit",
+    "diff_sha256": "52320cefb3f4278b559e70c80d12df191cfc60dc6ab02fee6d2371a23ac791b8",
+    "source_sha256": "22a87f796fc8e62c7bf620594faff535eb49802d5820232d4fab1de4a046e348",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_tba_nonneg_ball_limit",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (unitBallVolume n).toReal * β T))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

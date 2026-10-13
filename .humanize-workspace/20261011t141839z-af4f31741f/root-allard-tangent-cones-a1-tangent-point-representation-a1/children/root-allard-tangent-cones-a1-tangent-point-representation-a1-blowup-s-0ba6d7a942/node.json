@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.blowup_set_integral-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "depth": 3,
+  "title": "Change of variables for H^n under the blow-up map η_{x,r}",
+  "statement": "Let N, n ∈ ℕ, H := μHE[n] on ℝ^N, M ⊆ ℝ^N any set, φ : ℝ^N → ℝ any function, x ∈ ℝ^N and r > 0. Let η_{x,r}(z) = r⁻¹(z − x) (Chapter03.blowUpMap x r). Then ∫_{η_{x,r}(M)} φ dH = r^{-n} ∫_M φ∘η_{x,r} dH (Bochner set integrals).",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (φ : Euclidean N → ℝ) (x : Euclidean N) (r : ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, φ y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, φ (Chapter03.blowUpMap x r z) ∂μHE[n]",
+  "lean_name": "allard_tc_tpr_blowup_setIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-blowup-s-0ba6d7a942-a1"
+}

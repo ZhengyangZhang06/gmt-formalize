@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.fibre_density_sum_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Density sum over a fibre with at most M good points (Simon 8.5.10, printed (6) and 5.11(∗))",
+  "statement": "Assume MonotonicityFormula. Let N, n ∈ ℕ, Λ ≥ 1 and M ∈ ℕ. There is δ' > 0 such that for δ ∈ (0,δ'], ε ∈ (0,δ⁴], every U ⊆ ℝ^N with B°_3(0) ⊆ U, every n-varifold W on U with locally bounded first variation and μ_W(B°_3(0)) ≤ Λ, P ∈ G(N,n), x ∈ ℝ^N, finite s ⊆ ℝ^N with #s ≤ M and Θ : ℝ^N → [0,∞]: if every y ∈ s satisfies p_P(y) = x, y ∈ B_2(0), (1) ‖δW‖(B_ρ(y)) ≤ εμ_W(B_ρ(y)) ∀ρ ∈ (0,1), (2) ∫_{B_ρ(y)×G} t_P dW ≤ ερ^n ∀ρ ∈ (0,1), |y − p_P(y)| < ε and HasDensity n μ_W y (Θ(y)), then Σ_{y∈s} Θ(y) ≤ (1 + δ)μ_W(B_1(x))/ω_n + δ in [0,∞] (ω_n = unitBallVolume n).",
+  "lean_statement": "MonotonicityFormula → ∀ (N n : ℕ) (Λ : ℝ), 1 ≤ Λ → ∀ M : ℕ, ∃ δ' : ℝ, 0 < δ' ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δ' → 0 < ε → ε ≤ δ ^ 4 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → ∀ (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞), s.card ≤ M → (∀ y ∈ s, Grassmannian.project P y = x ∧ y ∈ closedBall (0 : Euclidean N) 2 ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) ∧ ‖y - Grassmannian.project P y‖ < ε ∧ HasDensity n W.weight y (Θ y)) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ",
+  "lean_name": "intcpt_allard_fibre_density_sum_bound",
+  "depends_on": [
+    "root.integral_compactness-a1.allard_lemma-a1.good_point_monotonicity-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+    "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.good_point_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-fibre-density-sum-bound-a1-a1"
+}

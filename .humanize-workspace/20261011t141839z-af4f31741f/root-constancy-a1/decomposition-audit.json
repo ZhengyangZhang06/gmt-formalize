@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'classicalTangentSpace|ConstancyTheorem|^import|^open|^namespace' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "rg -l -i --no-ignore 'classical ?tangent|tangent.*curve' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Manifold",
+        "rg -n --no-ignore 'curve|velocit|parametrizedTangentSpace' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02 --glob '*.lean'",
+        "rg -n --no-ignore 'simon_chart_classicalTangentSpace_eq_range|stationary_constancy_tangentGraph_measure' GMT .lake/packages/simongmt/Poincare --glob '*.lean'",
+        "sed -n '1,260p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+        "sed -n '1,210p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyCorrected.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constancy-independent-audit-uqqwubdj/classical_tangent-challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constancy-independent-audit-uqqwubdj/tangent_graph_measure-challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constancy-independent-audit-uqqwubdj/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Manifold",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyCorrected.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-constancy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/tmp/constancy-independent-audit-uqqwubdj/classical_tangent-challenge.lean",
+        "/tmp/constancy-independent-audit-uqqwubdj/tangent_graph_measure-challenge.lean",
+        "/tmp/constancy-independent-audit-uqqwubdj/Assembly.lean"
+      ],
+      "conclusion": "Verified the frozen contract and compatible pinned revisions: project 63436ae6, Mathlib 25730c7c, SimonGMT 2b366308. No relevant curve-tangent characterization was found by the specified manifold search; SimonGMT's inspected tangent definition is the derivative range. ConstancyNormalCharts supplies the precise local defining-map lemma, ConstancyCorrected supplies corrected connected-carrier constancy, and AreaLiteral supplies the exact Hausdorff normalization. Both proposed types independently elaborate in comparator-generated challenge modules and pass the one-line validator. Recompiled the supplied complete child proofs and assembly: both children, ConstancyTheorem, and the three principal reused lemmas depend only on propext, Classical.choice, and Quot.sound. The split is appropriate; its sole internal dependency is tangent_graph_measure on classical_tangent. Both names are fresh bare identifiers with no active DAG reservation conflict. The assembly proves the selected parent, including empty-carrier and zero-multiplicity cases."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "classical_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every local-representation hypothesis and exactly matches the independently elaborated proposition. The bounded sine curve realizes every derivative-range vector while remaining in D. Conversely, relative properness and the inverse-function construction supply a defining map whose derivative kernel is the chart range; differentiating its locally vanishing composition with the witnessing curve proves the reverse inclusion. The supplied proof is complete, non-circular, and directly formalizable. The declaration name is a fresh bare identifier."
+    },
+    {
+      "key": "tangent_graph_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including M.Nonempty, finite ENNReal multiplicity, measurability, and the conditional pointwise tangent clause; openness of U is supplied by Varifold. The supplied formal route completely proves the statement using the inspected corrected constancy lemma, exact Hausdorff normalization, and classical_tangent. Nonemptiness supplies the fallback plane, and preconnectedness concerns M ∩ U exactly. The dependency is correctly directed and non-circular. Measure scaling, mapping, and range coercions elaborate as intended. The Borel-set assembly, including c = 0 and M = ∅, proves exactly ConstancyTheorem."
+    }
+  ],
+  "required_changes": []
+}

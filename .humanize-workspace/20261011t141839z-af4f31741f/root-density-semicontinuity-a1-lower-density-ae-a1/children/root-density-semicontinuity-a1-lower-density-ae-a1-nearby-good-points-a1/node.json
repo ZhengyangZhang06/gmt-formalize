@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.lower_density_ae-a1.nearby_good_points-a1",
+  "parent_id": "root.density_semicontinuity-a1.lower_density_ae-a1",
+  "depth": 3,
+  "title": "Printed (4), first half: points y_i → x and indices q_i → ∞ with y_i ∈ W ∖ Bad_{q_i}",
+  "statement": "Let N ∈ ℕ, let W ⊆ ℝ^N = Euclidean N be open, let Bad_ℓ ⊆ ℝ^N (ℓ ∈ ℕ) be arbitrary sets, and let x ∈ W satisfy x ∉ interior(⋂_{ℓ≥i} Bad_ℓ) for every i ∈ ℕ. Then there are q : ℕ → ℕ and y : ℕ → ℝ^N with q_i → ∞ and y_i → x as i → ∞, such that y_i ∈ W and y_i ∉ Bad_{q_i} for every i.",
+  "lean_statement": "∀ (N : ℕ) (W : Set (Euclidean N)) (Bad : ℕ → Set (Euclidean N)) (x : Euclidean N), IsOpen W → x ∈ W → (∀ i : ℕ, x ∉ interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ)) → ∃ (q : ℕ → ℕ) (y : ℕ → Euclidean N), Tendsto q atTop atTop ∧ Tendsto y atTop (𝓝 x) ∧ ∀ i, y i ∈ W ∧ y i ∉ Bad (q i)",
+  "lean_name": "exists_nearby_points_off_bad_sets",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-lower-density-ae-a1-nearby-good-points-a1-a1"
+}

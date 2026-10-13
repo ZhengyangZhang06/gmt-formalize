@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f2a5cfb4f005bf695c30c34a7c724f0cebd68d3096f5911e9173d31563b00068",
+  "git_delta": {
+    "base_commit": "0f5903f8cff8e52d5f25bfb439b9f74d813037f1",
+    "candidate_commit": "57bc904020874d7e60019abccb250ad71b0c641d",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_vdb_liminf_bound_ae_of_cover",
+    "diff_sha256": "8b60cc707c156fb42d5a1fc413ebcb673968b4151d58ca2051b96ac5dcebcbf5",
+    "source_sha256": "e510052b1db4bfe0695b5beeb161a5298e858888811d863228696ebfe250911e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_vdb_liminf_bound_ae_of_cover",
+      "statement": "∀ (N C : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (r : ℝ), (∀ (A : Set (Euclidean N)) (i : ℕ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < r ∧ μ (closedBall x σ) ≤ t * ν i (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν i (thickening r A)) → ⨆ i, ν i (thickening r W) ≠ ∞ → ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7505daa67d46dba87b66d630178bd3bba860b8f0e2df235d6eebfb1f891b101f",
+  "git_delta": {
+    "base_commit": "3cd7b644e78cf40c5ca1e41689e2dfa3fe57fd18",
+    "candidate_commit": "17d8646ef394be8f89ee143123883bf65e2bbf43",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_scf_constancy_plane",
+    "diff_sha256": "4bdf5f589e0fc3c04551ad5f0f98bff71e721f96c4e626b96cb68fb28790ec5a",
+    "source_sha256": "da23508c5114e7a89aa74ad0387003cd0c71343ad4fc64111121cf41aa1b280c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_scf_constancy_plane",
+      "statement": "ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (T : Grassmannian N n), C.Stationary → C.weight.support ⊆ (T.plane : Set (Euclidean N)) → ∃ θ : ℝ, 0 ≤ θ ∧ C.measure = ENNReal.ofReal θ • planeVarifoldMeasure T",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

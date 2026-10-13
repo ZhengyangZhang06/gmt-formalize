@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.tangent_density-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "Tangent points have density θ (Def. 1.1 ⇒ Θ^n(μ_V, x) = θ)",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, x ∈ ℝ^N, T ∈ G(N,n), θ ∈ ℝ with HasTangentPlane V x T θ. Then the n-dimensional density of μ_V at x exists and equals θ: μ_V(B_ρ(x))/(ω_n ρ^n) → θ as ρ ↓ 0, i.e. HasDensity n V.weight x (ENNReal.ofReal θ) (closed balls B_ρ(x), ω_n = unitBallVolume n).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ)",
+  "lean_name": "frt_tangent_plane_hasDensity",
+  "depends_on": [
+    "root.first_rectifiability-a1.weight_blowup-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.weight_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-tangent-density-a1-a1"
+}

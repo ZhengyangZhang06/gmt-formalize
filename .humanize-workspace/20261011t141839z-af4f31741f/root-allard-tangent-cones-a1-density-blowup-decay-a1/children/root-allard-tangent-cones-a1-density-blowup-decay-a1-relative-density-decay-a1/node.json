@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1.relative_density_decay-a1",
+  "parent_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+  "depth": 3,
+  "title": "Relative density zero at a point of finite density gives o(ρ^n) mass",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N, x ∈ ℝ^N, and θ ∈ [0,∞) with Θ^n(μ,x) = θ, i.e. μ(B_ρ(x))/(ω_n ρ^n) → θ as ρ ↓ 0 (HasDensity n μ x θ with θ ≠ ∞). Let A, E ⊆ ℝ^N be arbitrary sets such that μ(A ∩ B_ρ(x))/μ(B_ρ(x)) → 0 as ρ ↓ 0 and μ-a.e. point of E lies in A. Then μ(B_ρ(x) ∩ E)/ρ^n → 0 as ρ ↓ 0. Here B_ρ(x) is the closed ball, and all quotients are taken in [0,∞] with a/0 = ∞ for a ≠ 0 and 0/0 = 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞) (A E : Set (Euclidean N)), HasDensity n μ x θ → θ ≠ ∞ → Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → (∀ᵐ y ∂μ, y ∈ E → y ∈ A) → Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "allard_tc_dbd_relative_decay",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1-a1"
+}

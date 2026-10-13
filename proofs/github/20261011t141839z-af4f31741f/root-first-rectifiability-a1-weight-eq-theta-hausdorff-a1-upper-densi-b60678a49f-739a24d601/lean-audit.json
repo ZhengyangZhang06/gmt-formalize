@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4a55a1693cb78ec93128d98297346a8f33f186081604e2e6ff88e37a2142e3c2",
+  "git_delta": {
+    "base_commit": "bdec0da1f79e416d344ad10816544f4ff4d5af5c",
+    "candidate_commit": "6df89ae06153a0d31b354015b7ad67d9596afb64",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_weq_mul_hausdorff_le_of_upper_density",
+    "diff_sha256": "1466fc47b43a042ed1178a3799cd94b6d2157c22fd8e67a98c21a434b8ecf5b4",
+    "source_sha256": "3d37f7a601367d3f6090df0251de31f51a4d7666b89de34b696c7ccf0164907b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_weq_mul_hausdorff_le_of_upper_density",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (t : ℝ≥0∞), IsOpen W → A ⊆ W → (∀ x ∈ A, t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)) → t * μHE[n] A ≤ μ W",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

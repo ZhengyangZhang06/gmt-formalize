@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f58809de644a37753c437cead614fc7a4b458ae3cb8eaf718b4818b2cf8d61ac",
+  "git_delta": {
+    "base_commit": "a974ecefe43b5648166cbbd2d0e87c34d9c1cf65",
+    "candidate_commit": "d3544e1fe1779fa06a3ac532eb968976c0a9ac12",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_dlb_hasDensity_of_closedBall_scaling",
+    "diff_sha256": "b396e364605c1914f6ef698ec71fc8cb8c5d59fbafb983f0a40de045fdfb30d4",
+    "source_sha256": "93b9b9a1be0fa222200f93f207a62ce07eec2883da124d38ba5662b3e9366b24",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_dlb_hasDensity_of_closedBall_scaling",
+      "statement": "∀ (N n : ℕ) (μ ν : Measure (Euclidean N)) (y z : Euclidean N) (t δ : ℝ) (c θ : ℝ≥0∞), 0 < t → 0 < δ → c ≠ ∞ → (∀ ρ : ℝ, 0 < ρ → ρ < δ → ν (closedBall y ρ) = c * (ENNReal.ofReal (t⁻¹ ^ n) * μ (closedBall z (t * ρ)))) → HasDensity n μ z θ → HasDensity n ν y (c * θ)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

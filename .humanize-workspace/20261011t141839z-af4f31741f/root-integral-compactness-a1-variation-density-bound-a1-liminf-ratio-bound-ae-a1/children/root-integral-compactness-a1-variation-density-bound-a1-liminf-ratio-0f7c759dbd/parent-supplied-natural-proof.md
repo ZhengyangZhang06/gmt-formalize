@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1`
+- Child DAG node: `root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1.liminf_bound_ae_of_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3–6 of the parent proof, i.e. the remainder of the printed proof of estimate (1) of Simon 8.5.9, pp. 218–219. There the sets A_i = {x ∈ A : i_x ≤ i} increase to A and satisfy μ_V(A_i) ≤ c j⁻¹ ‖δV_ℓ‖(W) for ℓ ≥ i, hence μ_V(A_i) ≤ c j⁻¹ limsup_ℓ ‖δV_ℓ‖(W); so μ_V(A) ≤ c j⁻¹ for every j, and μ_V(A) = 0. The parent proof bounds instead by the larger, finite S = sup_ℓ ν_ℓ(thickening(r, W)). The Besicovitch estimate of parent step 2 enters only through hypothesis (H), together with monotonicity of the thickening in the set. The book's argument by contradiction is written directly as a proof that the exceptional set is μ-null.
+
+Notation: B_ρ(x) := closedBall x ρ and S := sup_i ν_i(thickening(r, W)), with S ≠ ∞ by hypothesis. All quantities lie in [0,∞]. For an arbitrary set E ⊆ ℝ^N, μ(E) is the outer measure; Mathlib measures are monotone on all sets.
+
+1. The exceptional set. Let P(x) be the statement "x ∈ W implies that there is c ∈ ℕ with liminf_i ν_i(B_ρ(x)) ≤ c·μ(B_ρ(x)) for every ρ with 0 < ρ < r". By definition (Mathlib ae_iff), "for μ-a.e. x, P(x)" means μ(E) = 0, where E := {x : not P(x)}. Since [0,∞] is linearly ordered, x ∈ E iff x ∈ W and for every c ∈ ℕ there is ρ with 0 < ρ < r and c·μ(B_ρ(x)) < liminf_i ν_i(B_ρ(x)). (If r ≤ 0 then E = ∅. The argument below covers this case too.)
+
+2. Fix j ∈ ℕ and put a := j + 1 ∈ [0,∞], so a ≠ 0 and a ≠ ∞. For i ∈ ℕ let A_i := {x ∈ W : there is ρ with 0 < ρ < r and a·μ(B_ρ(x)) < ν_k(B_ρ(x)) for every k ≥ i}.
+(a) The A_i increase. If i ≤ i′ then A_i ⊆ A_{i′}, because the same ρ works for every k ≥ i′ ≥ i.
+(b) E ⊆ ⋃_i A_i. Let x ∈ E. Step 1 with c = j + 1 gives ρ with 0 < ρ < r and ((j + 1 : ℕ) : [0,∞])·μ(B_ρ(x)) < liminf_k ν_k(B_ρ(x)); moreover ((j + 1 : ℕ) : [0,∞]) = j + 1 = a (Nat.cast_add_one). In the complete linear order [0,∞], a value strictly below the liminf of a sequence along atTop is eventually strictly below the sequence (Filter.eventually_lt_of_lt_liminf; its boundedness side condition holds automatically). By Filter.eventually_atTop there is i with a·μ(B_ρ(x)) < ν_k(B_ρ(x)) for all k ≥ i. Since x ∈ W, x ∈ A_i.
+(c) μ(A_i) ≤ C·a⁻¹·S for every i. Let x ∈ A_i, with ρ as in the definition of A_i. Taking k = i gives a·μ(B_ρ(x)) < ν_i(B_ρ(x)). Hence μ(B_ρ(x)) = a⁻¹·(a·μ(B_ρ(x))) ≤ a⁻¹·ν_i(B_ρ(x)). This uses a⁻¹·a = 1 (ENNReal.inv_mul_cancel, valid because a ≠ 0 and a ≠ ∞) and monotonicity of multiplication by a⁻¹. So every x ∈ A_i has σ := ρ with 0 < σ < r and μ(B_σ(x)) ≤ a⁻¹·ν_i(B_σ(x)). Hypothesis (H), applied with the set A_i, this i and t = a⁻¹, gives μ(A_i) ≤ C·a⁻¹·ν_i(thickening(r, A_i)). Since A_i ⊆ W, thickening(r, A_i) ⊆ thickening(r, W) (Metric.thickening_subset_of_subset; infEdist(y, ·) is antitone in the set). Hence ν_i(thickening(r, A_i)) ≤ ν_i(thickening(r, W)) ≤ sup_k ν_k(thickening(r, W)) = S (measure_mono, le_iSup). Multiplying by C·a⁻¹ gives μ(A_i) ≤ C·a⁻¹·S.
+
+3. Continuity from below. The measure of the union of an increasing sequence of arbitrary, not necessarily measurable, sets is the supremum of their measures (Mathlib Monotone.measure_iUnion). Using 2(b), 2(a) and 2(c), μ(E) ≤ μ(⋃_i A_i) = sup_i μ(A_i) ≤ C·(j + 1)⁻¹·S. This holds for every j ∈ ℕ.
+
+4. Limit. As j → ∞, (j + 1)⁻¹ → 0 in [0,∞]: compose ENNReal.tendsto_inv_nat_nhds_zero with j ↦ j + 1 (tendsto_add_atTop_nat 1) and use Nat.cast_add_one. Since C ≠ ∞ (ENNReal.natCast_ne_top), C·(j + 1)⁻¹ → C·0 = 0 (ENNReal.Tendsto.const_mul, whose side condition 0 ≠ 0 ∨ C ≠ ∞ holds by its right disjunct). Since S ≠ ∞, C·(j + 1)⁻¹·S → (C·0)·S = 0 (ENNReal.Tendsto.mul_const, whose side condition C·0 ≠ 0 ∨ S ≠ ∞ holds by its right disjunct). By step 3, μ(E) is a lower bound of every term of this sequence, which tends to 0. So μ(E) ≤ 0 (ge_of_tendsto'), i.e. μ(E) = 0.
+
+5. Conclusion. By step 1, μ(E) = 0 is exactly the claim: for μ-a.e. x, if x ∈ W then some c ∈ ℕ satisfies liminf_i ν_i(B_ρ(x)) ≤ c·μ(B_ρ(x)) for all ρ with 0 < ρ < r. ∎
+
+## Key steps
+
+1. By ae_iff the claim is μ(E) = 0 for E = {x ∈ W : ∀ c ∈ ℕ, ∃ ρ ∈ (0, r), c·μ(B_ρ(x)) < liminf_i ν_i(B_ρ(x))}.
+2. Fix a = j + 1. The sets A_i = {x ∈ W : ∃ ρ ∈ (0, r), ∀ k ≥ i, a·μ(B_ρ(x)) < ν_k(B_ρ(x))} increase, and E ⊆ ⋃_i A_i (Filter.eventually_lt_of_lt_liminf, Filter.eventually_atTop).
+3. Hypothesis (H) with t = a⁻¹, together with thickening(r, A_i) ⊆ thickening(r, W), gives μ(A_i) ≤ C·a⁻¹·S.
+4. Monotone.measure_iUnion (valid for arbitrary sets) gives μ(E) ≤ C·S/(j + 1) for every j.
+5. C·(j + 1)⁻¹·S → 0 because C, S < ∞, so ge_of_tendsto' gives μ(E) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (mode local-project; project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (both 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -n 'theorem _root_.Monotone.measure_iUnion|theorem eventually_lt_of_lt_liminf|theorem tendsto_inv_nat_nhds_zero|theorem thickening_subset_of_subset|theorem thickening_mono|theorem exist_disjoint_covering_families|theorem countable_of_nonempty_interior|theorem measure_iUnion_fintype_le|theorem measure_biUnion_le|theorem measure_biUnion ' <snapshot>/mathlib/Mathlib`
+- `sed -n 60,85p MeasureTheory/Measure/Continuity.lean; sed -n 600,615p Order/LiminfLimsup.lean; sed -n 88,100p Topology/MetricSpace/Thickening.lean; sed -n 440,475p MeasureTheory/Covering/Besicovitch.lean; sed -n 354,363p Topology/Instances/ENNReal/Lemmas.lean (all under <snapshot>/mathlib/Mathlib)`
+- `rg -n 'instance instHasBesicovitchCovering|no_satelliteConfig :' MeasureTheory/Covering/ (Besicovitch.lean:156 class field); grep -n HasBesicovitchCovering MeasureTheory/Covering/BesicovitchVectorSpace.lean (instance at line 499)`
+- `rg -n countable_of_nonempty_interior Topology/Bases.lean (line 493); rg -n 'theorem ball_subset_thickening' Topology/MetricSpace/Thickening.lean (line 153); rg -n 'protected theorem Tendsto.const_mul|protected theorem Tendsto.mul_const' Topology/Instances/ENNReal/Lemmas.lean (lines 354, 359); rg -n 'theorem ae_iff ' MeasureTheory/OuterMeasure/AE.lean (line 134)`
+- `grep -rn exists_besicovitchCovering_families --include=*.lean .lake/packages/simongmt/Poincare (Chapter01/Densities.lean:631)`
+- `git diff 63436ae b70dd9d5 -- GMT/Ch08/Submission.lean (accepted 45-line proof of Submission.besicovitch_ratio_cover_estimate); git log --oneline 63436ae..b70dd9d5 (54295e6 dispatch, b70dd9d proof)`
+- `python3 dag.json scans: records of the selected node, its parent, its siblings and root.density_semicontinuity-a1.besicovitch_ratio_cover-a1; lean_name collision scan for intcpt_vdb_besicovitch_cover_estimate and intcpt_vdb_liminf_bound_ae_of_cover over the dag.json of every chapter run ch01–ch08; cross-branch reuse scan (children whose parent field differs) over all chapters; identical-type check intcpt_canon_weight_blowup_tendsto vs frt_weight_blowup_tendsto`
+- `git grep -l 'intcpt_vdb_besicovitch_cover_estimate\|intcpt_vdb_liminf_bound_ae_of_cover' over all refs/heads and refs/remotes; grep -rl of the same names over the run directory (no match)`
+- `python3 -I: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') -> ['open Set Filter MeasureTheory Metric', 'open scoped Topology ENNReal CompactlySupported Pointwise', 'namespace GMT.Ch08', 'open Poincare.SimonGMT', 'open Poincare.SimonGMT.Chapter08', 'section Definitions', 'end Definitions']; verifier/lean_contract.py validate_lean_statement on both child statements (pass)`
+- `lake env lean /tmp/lrb-split-check/Split.lean, Challenge.lean, Solution.lean, Names.lean, Names2.lean (from the workspace root)`
+- `sed -n 680,760p book/chapter-08.txt (Simon 8.5.9, printed estimate (1) and its proof); grep -n -i 'errat|correction' book/sources/* (no match)`
+- `grep -n 'def check_source_delta|def _existing_lean_name_problem|def _overlay_accepted_children|test_cross_branch_accepted_same_type_is_reused' in /runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/{leaf_verification,runtime}.py and tests/test_worktrees.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-bound-ae-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/tests/test_worktrees.py`
+- `/tmp/lrb-split-check/Split.lean`
+- `/tmp/lrb-split-check/Challenge.lean`
+- `/tmp/lrb-split-check/Solution.lean`
+- `/tmp/lrb-split-check/Names.lean`
+
+The snapshot is project 63436ae6 plus Mathlib 25730c7c. The workspace Contract and Submission are byte-identical (sha256 2e5cd5b3…).
+
+Every Mathlib name cited in the two child proofs exists in the snapshot with the stated hypotheses: Besicovitch.instHasBesicovitchCovering, HasBesicovitchCovering.no_satelliteConfig, Besicovitch.exist_disjoint_covering_families (no nonemptiness needed), Set.PairwiseDisjoint.countable_of_nonempty_interior, Metric.ball_subset_thickening, Metric.thickening_subset_of_subset, measure_iUnion_fintype_le, measure_biUnion_le, measure_biUnion, ae_iff, Filter.eventually_lt_of_lt_liminf, Monotone.measure_iUnion (no measurability assumption), ENNReal.tendsto_inv_nat_nhds_zero, ENNReal.Tendsto.const_mul (side condition b ≠ 0 ∨ a ≠ ∞), ENNReal.Tendsto.mul_const (side condition a ≠ 0 ∨ b ≠ ∞) and ENNReal.inv_mul_cancel. A #check file confirms all of them.
+
+The accepted Submission.besicovitch_ratio_cover_estimate (commit b70dd9d5, another branch, not in this workspace) has exactly child A's type. Child A takes the fresh name intcpt_vdb_besicovitch_cover_estimate, following the parent handoff's note. The same pattern already occurs in this run: the accepted intcpt_canon_weight_blowup_tendsto has the same type as the accepted frt_weight_blowup_tendsto. SimonGMT's exists_besicovitchCovering_families (Chapter01/Densities.lean:631) is an alternative route to step 3 of child A.
+
+The leaf gate (check_source_delta) admits exactly one theorem per leaf, so the Besicovitch lemma cannot be a helper declaration of an atomic node.
+
+In the comparator's replayed contract scope, both child lean_statements elaborate and pass validate_lean_statement. Complete scratch proofs of both children, plus the selected frozen type assembled from them, compile using only propext, Classical.choice and Quot.sound. The names are unused in every chapter's dag.json, the run directory and all git refs. The printed proof of Simon 8.5.9 (1) matches the supplied steps, and book/sources records no Ch. 8 errata.

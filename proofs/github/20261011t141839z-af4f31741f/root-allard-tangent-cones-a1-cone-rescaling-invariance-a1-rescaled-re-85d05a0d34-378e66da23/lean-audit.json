@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "20c3e021a6b8ce45f3b5ebc4182f866e2263b53f11d9556750d2d4c0daf025ce",
+  "git_delta": {
+    "base_commit": "4aacdc62a2f82e9803846e836c81c9f8678b0b64",
+    "candidate_commit": "b62cfd99812bd2e68e42b8aae488a9dcc828200d",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_cri_rescaled_representation",
+    "diff_sha256": "2b07bbba97111da00589dcf8281862795c6703536fadd78014f330ca32a73c30",
+    "source_sha256": "5e0c7078ff067fc3fd139570c3a8b80a6e68943012157955215bbc2c235447ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_cri_rescaled_representation",
+      "statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (M : Set (Euclidean N)) (P : Euclidean N → Grassmannian N n → Prop) (g : Euclidean N → ℝ≥0∞), (∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n, P x T ∧ (x, T) ∈ A}, g x ∂(μHE[n] : Measure (Euclidean N))) → ∀ s : ℝ, 0 < s → ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → rescaledMeasure C 0 s A = ∫⁻ w in {w : Euclidean N | s • w ∈ M ∧ ∃ T : Grassmannian N n, P (s • w) T ∧ (w, T) ∈ A}, g (s • w) ∂(μHE[n] : Measure (Euclidean N))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

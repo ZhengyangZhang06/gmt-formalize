@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.radial_field_divergence-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1",
+  "depth": 3,
+  "title": "Tangential divergence of a radial-type field: div_S(a(·)(· − y)) = n·a + Da[p_S(z − y)]",
+  "statement": "Let N, n ∈ ℕ, a : ℝ^N → ℝ differentiable at z ∈ ℝ^N, y ∈ ℝ^N and S ∈ G(N,n). Then the tangential divergence (Varifold.tangentialDivergence, the trace of S.1 times the Jacobian matrix) of the field w ↦ a(w)(w − y) at z with respect to S equals n·a(z) + Da(z)[p_S(z − y)], where p_S = Grassmannian.project S.",
+  "lean_statement": "∀ (N n : ℕ) (a : Euclidean N → ℝ) (y z : Euclidean N) (S : Grassmannian N n), DifferentiableAt ℝ a z → Varifold.tangentialDivergence (fun w ↦ a w • (w - y)) z S = n * a z + fderiv ℝ a z (Grassmannian.project S (z - y))",
+  "lean_name": "intcpt_allard_radial_field_divergence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-radial-field-divergence-a1-a1"
+}

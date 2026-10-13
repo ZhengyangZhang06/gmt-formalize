@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "First Rectifiability Theorem 8.1.2",
+  "statement": "Let V be an n-varifold on open U ⊆ ℝ^N such that for μ_V-a.e. x there are T ∈ G(N,n) and θ with HasTangentPlane V x T θ (Def. 1.1: x ∈ U, θ > 0, V_{x,λ} → θ v(T) as λ ↓ 0 against C_c(ℝ^N × G)). Let M := {x ∈ spt μ_V : ∃ T θ', HasTangentPlane V x T θ'}. Then there is θ : ℝ^N → ℝ such that for every x ∈ M some T satisfies HasTangentPlane V x T (θ x), and IsVarifoldOf V M θ: M ⊆ U is H^n-null-measurable and countably n-rectifiable, θ > 0 on M, θ is H^n-integrable on M ∩ K for every compact K ⊆ U, and V(A) = ∫_{{x ∈ M : ∃ S, M has approximate tangent plane S at x w.r.t. θ (Ch. 3 1.7), (x,S) ∈ A}} θ dH^n for all Borel A. (Exactly FirstRectifiabilityTheorem.)",
+  "lean_statement": "FirstRectifiabilityTheorem",
+  "lean_name": "first_rectifiability_theorem",
+  "depends_on": [
+    "root.plane_disintegration-a1",
+    "root.tangent_graph_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.plane_disintegration-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-a1"
+}

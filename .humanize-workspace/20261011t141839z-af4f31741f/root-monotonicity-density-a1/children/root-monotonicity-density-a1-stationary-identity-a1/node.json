@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.stationary_identity-a1",
+  "parent_id": "root.monotonicity_density-a1",
+  "depth": 2,
+  "title": "Stationary monotonicity identity (Simon 8.3.4)",
+  "statement": "(Simon Ch. 8, 3.4; exactly the contract Prop StationaryMonotonicityIdentity.) For all N, n ∈ ℕ, U ⊆ ℝ^N, every n-varifold V on U (no first-variation hypothesis), x ∈ ℝ^N and ρ0 > 0 with ball x ρ0 ⊆ U: if V.firstVariation X = 0 for every test field X ∈ K(U;ℝ^N) (Varifold.TestVectorField U) with tsupport X ⊆ ball x ρ0, then there is θ ∈ [0,∞] with HasDensity n μ_V x θ such that θ + ω_n^{-1}·normalDefect V x (B_ρ(x)) = densityRatio n μ_V x ρ for every 0 < ρ < ρ0, where B_ρ(x) = closedBall x ρ, μ_V = V.weight, ω_n = unitBallVolume n, densityRatio n μ x ρ = μ(B_ρ(x))/(ω_n·ofReal(ρ)^n), and normalDefect V x A = ∫_{A×G(N,n)} ofReal(|(y − x) − p_S(y − x)|²/|y − x|^{n+2}) dV(y,S) (integrand 0 at y = x by Lean's 0/0 = 0).",
+  "lean_statement": "StationaryMonotonicityIdentity",
+  "lean_name": "stationary_monotonicity_identity_8_3_4",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-stationary-identity-a1-a1"
+}

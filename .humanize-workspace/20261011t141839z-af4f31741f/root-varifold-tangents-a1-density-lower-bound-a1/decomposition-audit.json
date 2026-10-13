@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "DensitySemicontinuity|IsVarifoldTangent|rescaledMeasure|unitBallVolume|HasDensity|densityRatio|variationMeasure|IsRelCompactOpenIn",
+        "rg -n 'varifold_tangents_dlb_|rescaledMeasure_prod_univ|hasDensity_of_closedBall_scaling' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project",
+        "theorem integral_smul_measure",
+        "theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "lemma absolutelyContinuous_smul",
+        "theorem measure_toMeasurable",
+        "protected theorem Tendsto.const_mul",
+        "theorem ae_restrict_iff'",
+        "support_tangentialDivergence_subset|structure TestVectorField|def firstVariationNormOn|def HasLocallyBoundedFirstVariation|def UnitSupportedIn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dlb-independent-audit-vo42ip3_/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-density-lower-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-density-lower-bound-a1/decomposition-v1.json",
+        "/tmp/dlb-decomp/VERIFIED_children_and_glue.lean",
+        "/tmp/dlb-independent-audit-vo42ip3_/Audit.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace contract; inspected Mathlib and SimonGMT sources match their pinned revisions. No proposed declaration was found in the snapshot project. The seven names are bare identifiers, with no collisions in the DAG or other branches' inspected declaration records. All seven exact propositions elaborate before their implementations and pass comparator-scope replay. Independent compilation verifies the supplied child proofs and assembly of the exact selected parent, treating its two frozen sibling contracts as explicit hypotheses; all checked proofs use only propext, Classical.choice and Quot.sound. The split appropriately separates reusable measure computations from localization and semicontinuity bookkeeping. Dependencies match proof usage, are acyclic, and establish this selected theorem. Scalar and measure constructions have the intended instances; no problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and exact Lean type agree. Positive-radius composition, finite constant multiplication and eventual ball-mass identities prove the density limit. ENNReal inversions have the required side conditions, including when θ is infinite or c is zero. No circular dependency."
+    },
+    {
+      "key": "rescaled_mass_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable pushforward calculation proves part (i) for every real t. For t > 0, the distance identity proves part (ii) for every real radius, including negative radii. All measurability requirements are supplied; the proof is independent."
+    },
+    {
+      "key": "restricted_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes exactly the required openness and finiteness hypotheses. The proof constructs every Varifold field: the restricted measure vanishes outside Ω, and restriction monotonicity plus finite c gives compact-cylinder finiteness. No additional regularity hypothesis is required."
+    },
+    {
+      "key": "first_variation_control",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof removes the restriction using vanishing tangential divergence outside the test-field support, then scales the integral and bounds the defining supremum. Finiteness gives LBFV, and the pinned Riesz-measure identity gives the stated variation bound. The cited integral identities require no omitted integrability assumption."
+    },
+    {
+      "key": "bad_set_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable hull correctly handles arbitrary E and O. Inclusion, restriction monotonicity and rescaled_mass_formula give the bound; positive finite t and R justify every cancellation. Arbitrary c, including infinity, is valid because only monotonicity is used. The declared dependency is exact."
+    },
+    {
+      "key": "restricted_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Membership in the open ball supplies δ = R − ‖y‖ > 0 without a separate R > 0 hypothesis. Small closed balls avoid the restriction boundary, and the two declared dependencies give precisely HasDensity n W.weight y (c * θ). The proof is complete and non-circular."
+    },
+    {
+      "key": "density_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weight identity and c ≠ 0 transfer the almost-everywhere assertion through the measurable restriction. Openness supplies local balls; c ≠ 0 and c ≠ infinity justify inversion. Applying density_scaling with t = 1 yields the density and lower bound c⁻¹ exactly, with no omitted measurability condition."
+    }
+  ],
+  "required_changes": []
+}

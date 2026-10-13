@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1.one_point_ball_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+  "depth": 4,
+  "title": "One-point bound from monotonicity: μ(B_σ(y))/σ^n ≤ (1 + 2^{n+2}δ²)μ(B_1(x)) (Simon 8.5.10, proof of (8), one point)",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N = Euclidean N (Borel σ-algebra), x, y ∈ ℝ^N and δ, ε, σ ∈ ℝ with 0 < δ ≤ 1/2, 0 < ε ≤ δ⁴, ‖y − x‖ < ε and 0 < σ ≤ δ². Write B_r(w) := closedBall w r. Assume (M_y): the map r ↦ ofReal(e^{εr})·μ(B_r(y))/ofReal(r)^n into [0,∞] is non-decreasing on the open interval (0,1). Then μ(B_σ(y))/ofReal(σ)^n ≤ ofReal(1 + 2^{n+2}δ²)·μ(B_1(x)) in [0,∞].",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x y : Euclidean N) (δ ε σ : ℝ), 0 < δ → δ ≤ 1 / 2 → 0 < ε → ε ≤ δ ^ 4 → ‖y - x‖ < ε → MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * μ (closedBall y r) / ENNReal.ofReal r ^ n) (Ioo 0 1) → 0 < σ → σ ≤ δ ^ 2 → μ (closedBall y σ) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1)",
+  "lean_name": "intcpt_allard_ccb_one_point_ball_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a-b3dd689a45-a1"
+}

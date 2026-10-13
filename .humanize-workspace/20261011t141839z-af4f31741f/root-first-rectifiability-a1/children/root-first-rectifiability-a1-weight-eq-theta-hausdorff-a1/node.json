@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "μ_V = θ H^n ⌞ M and local H^n-integrability of θ (Besicovitch differentiation and Radon–Nikodym)",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, μ := μ_V, M ⊆ U with μ(ℝ^N ∖ M) = 0, and θ : ℝ^N → ℝ with θ(x) > 0 and HasDensity n μ x (ENNReal.ofReal θ(x)) for every x ∈ M. Suppose that for every L ∈ (0,1], M is covered by a countable family of closed L-graphs over n-planes ((P, Γ) ∈ C_L, Γ closed, |q_P(y − z)| ≤ L|p_P(y − z)| on Γ). Then (a) θ is H^n-integrable on M ∩ K for every compact K ⊆ U, and (b) μ(B) = ∫_{B ∩ M} θ dH^n (as the lintegral of ENNReal.ofReal ∘ θ) for every μ-null-measurable B ⊆ ℝ^N.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), M ⊆ U → V.weight Mᶜ = 0 → (∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) → (∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ M ⊆ ⋃ c ∈ C, c.2) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μHE[n]) ∧ ∀ B : Set (Euclidean N), NullMeasurableSet B V.weight → V.weight B = ∫⁻ x in B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n]",
+  "lean_name": "frt_weight_eq_multiplicity_hausdorff",
+  "depends_on": [
+    "root.first_rectifiability-a1.density_one_flat_covers-a1",
+    "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1",
+    "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1",
+    "root.first_rectifiability-a1.carrier_null_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.carrier_null_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-a1"
+}

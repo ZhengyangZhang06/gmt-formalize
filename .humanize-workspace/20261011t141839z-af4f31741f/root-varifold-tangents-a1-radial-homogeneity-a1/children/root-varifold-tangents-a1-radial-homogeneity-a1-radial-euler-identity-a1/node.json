@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.radial_euler_identity-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1",
+  "depth": 3,
+  "title": "Stationarity tested on the radial field g(y)·y gives Euler's identity ∫(n·g + Dg(y)y) dμ_C = 0 (identity (H))",
+  "statement": "Let N, n ∈ ℕ and let C be an n-varifold on ℝ^N (C : Varifold N n univ) which is stationary in ℝ^N (C.firstVariation X = 0 for every C¹ compactly supported vector field X) and satisfies p_S(y) = y for C-a.e. (y,S), where p_S = Grassmannian.project S. Let μ_C = C.weight = π_#C. Then for every C¹ function g : ℝ^N → ℝ with compact support, ∫ (n·g(y) + Dg(y)(y)) dμ_C(y) = 0, where Dg(y) = fderiv ℝ g y.",
+  "lean_statement": "∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂C.weight = 0",
+  "lean_name": "varifold_tangents_rh_radial_euler_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-radial-euler-identity-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.lower_density_ae-a1.bad_interior_null-a1",
+  "parent_id": "root.density_semicontinuity-a1.lower_density_ae-a1",
+  "depth": 3,
+  "title": "Printed (3) and (5) of the proof of 3.7: the exceptional set ⋂_{k≥1} ⋃_i interior ⋂_{ℓ≥i} Bad_{ℓ,k} is μ-null",
+  "statement": "Let N ∈ ℕ, let μ and μ_q (q ∈ ℕ) be measures on ℝ^N = Euclidean N, let W ⊆ ℝ^N, let Bad_{q,k} ⊆ ℝ^N (q, k ∈ ℕ) be arbitrary sets with Bad_{q,k} ⊆ W, let C ∈ ℕ, and let a, b : ℕ → [0,∞]. Assume: (P1) μ(O) ≤ liminf_{q→∞} μ_q(O) for every open O ⊆ W; liminf_{q→∞} a_q < ∞; b_q → 0; and μ_q(Bad_{q,k}) ≤ C·k⁻¹·a_q + b_q in [0,∞] for all q ∈ ℕ and all k ≥ 1, where μ_q of an arbitrary set is its outer measure. Then μ(⋂_{k≥1} ⋃_{i∈ℕ} interior(⋂_{ℓ≥i} Bad_{ℓ,k})) = 0.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (Bad : ℕ → ℕ → Set (Euclidean N)) (C : ℕ) (a b : ℕ → ℝ≥0∞), (∀ O : Set (Euclidean N), IsOpen O → O ⊆ W → μ O ≤ liminf (fun q ↦ μs q O) atTop) → (∀ q k, Bad q k ⊆ W) → liminf a atTop ≠ ∞ → Tendsto b atTop (𝓝 0) → (∀ q k : ℕ, 1 ≤ k → μs q (Bad q k) ≤ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q + b q) → μ (⋂ k : ℕ, ⋂ (_ : 1 ≤ k), ⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) = 0",
+  "lean_name": "measure_bad_interior_exceptional_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-lower-density-ae-a1-bad-interior-null-a1-a1"
+}

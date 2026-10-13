@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "depth": 2,
+  "title": "Abstract cone/density covering lemma: points with a lower mass bound and cone decay lie on countably many closed L-Lipschitz graphs over P",
+  "statement": "Let N, n ∈ ℕ, 0 < L ≤ 1, μ any measure on ℝ^N, P ∈ G(N,n) with p := Grassmannian.project P, and A ⊆ ℝ^N. Suppose every x ∈ A admits T ∈ G(N,n) with ‖p_T v − p v‖ ≤ (L/4)‖v‖ for all v (p_T := Grassmannian.project T) such that (i) there is c ∈ (0,∞] with c t^n ≤ μ(B_t(x)) for all sufficiently small t > 0, and (ii) for every ε ∈ (0,∞], μ({y ∈ B_t(x) : (L/16)|y − x| ≤ |(y − x) − p_T(y − x)|}) ≤ ε t^n for all sufficiently small t > 0. Then there are closed sets Γ_0, Γ_1, … ⊆ ℝ^N with ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for all y, z ∈ Γ_i (L-Lipschitz graphs over P) such that every x ∈ A lies in some Γ_i.",
+  "lean_statement": "∀ (N n : ℕ) (L : ℝ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (A : Set (Euclidean N)), 0 < L → L ≤ 1 → (∀ x ∈ A, ∃ T : Grassmannian N n, (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) ∧ (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ {y | y ∈ closedBall x t ∧ L / 16 * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ A, ∃ i, x ∈ Γ i",
+  "lean_name": "tgc_cone_density_graph_cover",
+  "depends_on": [
+    "root.tangent_graph_cover-a1.cone_linear_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_graph_cover-a1.cone_linear_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1-a1"
+}

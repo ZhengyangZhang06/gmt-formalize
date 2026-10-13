@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c6050c8eb604d368751c6d9e887ddfd6898469df40de3f26bf75c39b148ddce",
+  "git_delta": {
+    "base_commit": "376ea19dd372524b54f346f0c4e2ab03e4ce829b",
+    "candidate_commit": "ef2ced1ce68cf05b44aabf1251508fb67f2c3cec",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_wrm_cutoff_mass_hasDerivAt",
+    "diff_sha256": "a90d39bc45ab3c508d48107c3712793fbcf0e9aa07ff19f70e3e71e1900010fe",
+    "source_sha256": "2a3b99bb617db3990cfdcb32c9c6b620958806ec4fc3333d3123ed005863c0af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_wrm_cutoff_mass_hasDerivAt",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℝ → ℝ) (A R t₀ : ℝ), Continuous h → ContDiff ℝ 1 φ → 0 < A → (∀ s, A ^ 2 ≤ s → φ s = 0) → μ (closedBall y R) ≠ ∞ → 0 < t₀ → t₀ * A < R → HasDerivAt (fun t : ℝ ↦ ∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) (∫ z, deriv φ (‖z - y‖ ^ 2 / t₀ ^ 2) * (-2 * ‖z - y‖ ^ 2 / t₀ ^ 3) * h z ∂μ) t₀",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

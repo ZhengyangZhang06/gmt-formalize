@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.piece_identity-a1",
+  "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+  "depth": 3,
+  "title": "μ⌞A = θ·H^n⌞A on a piece of finite H^n-measure (Besicovitch differentiation and Radon–Nikodym)",
+  "statement": "Let N, n ∈ ℕ, μ a Borel measure on ℝ^N, W ⊆ ℝ^N open with μ(W) < ∞, A ⊆ W with H^n(A) < ∞ and A H^n-null-measurable (H^n = μHE[n]), and θ : ℝ^N → ℝ. Assume: (i) for every x ∈ A, θ(x) > 0 and HasDensity n μ x (ofReal θ(x)), i.e. μ(B_r(x))/(ω_n r^n) → θ(x) as r ↓ 0; (ii) every Z ⊆ A with H^n(Z) = 0 has μ(Z) = 0; (iii) every Z ⊆ A with μ(Z) = 0 has H^n(Z) = 0; (iv) for (H^n⌞A)-a.e. x, HasDensity n (H^n⌞A) x 1. Then μ(B ∩ A) = ∫_{B ∩ A} θ dH^n (the lintegral of ofReal ∘ θ) for every Borel set B ⊆ ℝ^N.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsOpen W → μ W ≠ ∞ → A ⊆ W → μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → (∀ x ∈ A, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → (∀ Z ⊆ A, μHE[n] Z = 0 → μ Z = 0) → (∀ Z ⊆ A, μ Z = 0 → μHE[n] Z = 0) → (∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict A, HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict A) x 1) → ∀ B : Set (Euclidean N), MeasurableSet B → μ (B ∩ A) = ∫⁻ x in B ∩ A, ENNReal.ofReal (θ x) ∂μHE[n]",
+  "lean_name": "frt_weq_piece_restrict_eq_density",
+  "depends_on": [
+    "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.lebesgue_density_subset-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.lebesgue_density_subset-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1-a1"
+}

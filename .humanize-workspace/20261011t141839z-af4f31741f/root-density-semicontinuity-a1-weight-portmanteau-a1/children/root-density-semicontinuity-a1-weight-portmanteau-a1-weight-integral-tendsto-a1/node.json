@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.weight_portmanteau-a1.weight_integral_tendsto-a1",
+  "parent_id": "root.density_semicontinuity-a1.weight_portmanteau-a1",
+  "depth": 3,
+  "title": "Radon convergence of varifolds gives vague convergence of their weights on U",
+  "statement": "Let N, n ∈ ℕ and U ⊆ ℝ^N. Let V_i (i ∈ ℕ) and V be n-varifolds on U (Varifold N n U) with V_i → V as Radon measures on G_n(U) (Varifold.RadonConverges Vi V). Then for every continuous g : ℝ^N → ℝ with compact support and tsupport g ⊆ U, the Bochner integrals of g against the weights converge: ∫ g dμ_{V_i} → ∫ g dμ_V as i → ∞, where μ_X = X.weight.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(Vi i).weight) atTop (𝓝 (∫ x, g x ∂V.weight))",
+  "lean_name": "varifold_weight_integral_tendsto_of_radonConverges",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-weight-portmanteau-a1-weight-integral-tendsto-a1-a1"
+}

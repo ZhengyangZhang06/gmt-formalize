@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.classical_tangent-a1",
+  "parent_id": "root.constancy-a1",
+  "depth": 2,
+  "title": "Simon Ch. 2, 4.3: the classical (curve) tangent space at a C² Simon chart point equals the range of the chart derivative",
+  "statement": "Let N, n ∈ ℕ, M, W ⊆ ℝ^N, D ⊆ ℝ^n, and let φ : ℝ^n → ℝ^N be a C² local representation of M in Simon's sense (Ch. 2, 4.1; Chapter02.IsSimonLocalRepresentation 2 M D W φ). This means D and W are open, φ is C² on D and injective on D, φ(D) = W ∩ M, φ is relatively proper (K ⊆ W compact ⇒ D ∩ φ⁻¹(K) compact), and Dφ(u) is injective for every u ∈ D. Let a ∈ D. Then classicalTangentSpace M (φ(a)) equals the range of Dφ(a) = fderiv ℝ φ a. Here classicalTangentSpace M (φ(a)) is the set of velocities γ'(0) of maps γ : ℝ → ℝ^N that are C¹ on (−1,1), map (−1,1) into M, and satisfy γ(0) = φ(a).",
+  "lean_statement": "∀ (N n : ℕ) (M W : Set (Euclidean N)) (D : Set (Euclidean n)) (φ : Euclidean n → Euclidean N) (a : Euclidean n), Chapter02.IsSimonLocalRepresentation 2 M D W φ → a ∈ D → classicalTangentSpace M (φ a) = Set.range (fderiv ℝ φ a)",
+  "lean_name": "simon_chart_classicalTangentSpace_eq_range",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-constancy-a1-classical-tangent-a1-a1"
+}

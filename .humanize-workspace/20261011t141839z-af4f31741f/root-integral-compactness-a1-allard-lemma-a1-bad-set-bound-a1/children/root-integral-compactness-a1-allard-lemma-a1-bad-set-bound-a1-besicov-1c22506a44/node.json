@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.bad_set_bound-a1.besicovitch_cover-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.bad_set_bound-a1",
+  "depth": 4,
+  "title": "Besicovitch covering estimate for balls inside a fixed set (Simon 8.5.10, printed (4)–(5); Simon Ch. 1, 3.12)",
+  "statement": "For every N ∈ ℕ there is C ∈ ℕ (depending only on N) with the following property. Let μ, ν be measures on ℝ^N = Euclidean N (Borel σ-algebra), let A, O ⊆ ℝ^N be sets, R ∈ ℝ and t ∈ [0,∞]. Suppose every x ∈ A admits σ with 0 < σ ≤ R, B_σ(x) ⊆ O and μ(B_σ(x)) ≤ t·ν(B_σ(x)), where B_σ(x) = closedBall x σ. Then μ(A) ≤ C·t·ν(O). Here μ(A) and ν(O) are outer measures, so A and O need not be measurable.",
+  "lean_statement": "∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A O : Set (Euclidean N)) (R : ℝ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ ≤ R ∧ closedBall x σ ⊆ O ∧ μ (closedBall x σ) ≤ t * ν (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν O",
+  "lean_name": "intcpt_allard_bsb_besicovitch_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-bad-set-bound-a1-besicov-1c22506a44-a1"
+}

@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "DensityExistsAE|3\\.6|BallVariationBound",
+        "theorem measurable_measure_prodMk_left \\[",
+        "theorem Measurable.liminf\\b",
+        "theorem Filter.Tendsto.liminf_eq",
+        "protected theorem div_le_iff_le_mul|theorem ofReal_lt_ofReal_iff|div_le_iff_le_mul",
+        "symmetricDensity_spec",
+        "frt_weq_density_borel_representative",
+        "dea_ae_variationMeasure_ball_bound",
+        "git show 015a566dda072ed131ac107a823c055fb2c67c43:GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dea-independent-audit-oan9lv57/Probe.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/README.md",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-density-exists-ae-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-density-exists-ae-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/comparator-v1.log",
+        "/tmp/dea-independent-audit-oan9lv57/Probe.lean"
+      ],
+      "conclusion": "Confirmed pinned project 63436ae6, Mathlib 25730c7c, compatible SimonGMT 2b366308, and byte-identical frozen/live contracts. Prod.lean:97, Order.lean:1058, LiminfLimsup.lean:195 and Basic/ENNReal/Inv.lean:383 support the supplied arguments. The cited Data/ENNReal files are re-export shims. The ball-bound convenience theorem is absent from the frozen import closure, but FirstVariationRiesz.lean:254 supplies exactly the required finite ratio limit. Independently compiled both exact child types before their implementations, replayed both proofs, and checked their assembly with the inherited MonotonicityFormula hypothesis into exactly DensityExistsAE. All checked proofs use only propext, Classical.choice and Quot.sound. The split is appropriate and acyclic. The reused declaration has an identical accepted frozen type; the new name has no DAG reservation."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_borel_representative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly includes SFinite and agreement at every density point, including infinite limits. Each proof step is valid: closed incidence sets give measurable sections, s-finiteness gives measurable ball masses, constant division and sequential liminf preserve measurability, and positive reciprocal radii establish agreement. No circular reliance or further proof planning is needed. The bare name legally reuses comparator-accepted candidate 015a566 with the identical frozen type and no dependencies."
+    },
+    {
+      "key": "ae_ball_variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches every hypothesis and conclusion, including openness supplied by Varifold, positive R, nonnegative Λ and all radii 0 < r < R. The proof establishes a.e. membership in U, identifies variationMeasure under hV, and invokes the pinned localized differentiation theorem without needing global local finiteness at the boundary. Choosing Λ = D.toReal + 1 satisfies both ENNReal division side conditions, including zero or infinite denominators; shrinking R gives the required closed-ball containment. The bare name is unreserved and the empty dependency list is correct. This child and the representative, together with the inherited monotonicity dependency, establish the selected parent."
+    }
+  ],
+  "required_changes": []
+}

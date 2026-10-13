@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "303828a9cfa5c92904890dbfa83a829c1ebdb8f453037805a5d4cff955c4c248",
+  "git_delta": {
+    "base_commit": "003c0f2c76f8d748a936b7dad25e397343b3fcd6",
+    "candidate_commit": "5e8b42eeac5ef0ab1764b54c1534f588d18df212",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_lbm_exists_cylinder_cutoff",
+    "diff_sha256": "1603d9a04214173f54673069638ba32276483b4cb758a8c307476900addb5d69",
+    "source_sha256": "6deb47626a38e240caeae853ddd3d7e88e59daf2592ce0630bebc95edbe6ea1a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_lbm_exists_cylinder_cutoff",
+      "statement": "∀ (N n : ℕ) (a b : ℝ), a < b → ∃ F : C_c(Euclidean N × Grassmannian N n, ℝ), ∀ ν : Measure (Euclidean N × Grassmannian N n), ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → ν (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ ENNReal.ofReal (∫ z, F z ∂ν) ∧ ENNReal.ofReal (∫ z, F z ∂ν) ≤ ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

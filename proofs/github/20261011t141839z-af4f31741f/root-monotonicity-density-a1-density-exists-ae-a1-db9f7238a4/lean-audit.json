@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e0305ebadf10eb664df92ff0648868383f8e5842e170d82ec9d33f2b331fd222",
+  "git_delta": {
+    "base_commit": "93a204d8064d3e1c0434ae91f6151edefc777e8e",
+    "candidate_commit": "103e2378dace29847da531727edcc269ad646e86",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "e232e818b315939776cddb2f54320b44a834f72dafde634de4956892e4f91794",
+    "source_sha256": "0fa4fb58d16cf2f853677aaf312117be94c6d44efc3181c44f9b0e1cba473ab2",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.density_exists_ae_8_3_6",
+      "statement": "DensityExistsAE",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

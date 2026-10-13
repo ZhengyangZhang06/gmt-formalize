@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1.graph_piece_bounds-a1",
+  "parent_id": "root.first_rectifiability-a1.density_one_flat_covers-a1",
+  "depth": 3,
+  "title": "Two-sided density bounds for H^n⌞A at almost every point of a closed Lipschitz-graph piece",
+  "statement": "Let N, n ∈ ℕ. Let A ⊆ ℝ^N with H^n(A) < ∞ and A H^n-null-measurable, where H^n := μHE[n]. Let P ∈ G(N,n) with p := Grassmannian.project P, let L ≥ 0 and β := (1 + L²)^{1/2}, and let Γ ⊆ ℝ^N be closed with ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for all y, z ∈ Γ. Put λ := H^n⌞A. Then for (λ⌞Γ)-almost every x, (β^n)⁻¹ ≤ liminf_{r↓0} densityRatio n λ x r and limsup_{r↓0} densityRatio n λ x r ≤ β^n, where β^n is ENNReal.ofReal(β)^n.",
+  "lean_statement": "∀ (N n : ℕ) (A Γ : Set (Euclidean N)) (P : Grassmannian N n) (L : ℝ), μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → 0 ≤ L → IsClosed Γ → (∀ y ∈ Γ, ∀ z ∈ Γ, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∀ᵐ x ∂((μHE[n] : Measure (Euclidean N)).restrict A).restrict Γ, (ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n)⁻¹ ≤ liminf (densityRatio n ((μHE[n] : Measure (Euclidean N)).restrict A) x) (𝓝[>] 0) ∧ limsup (densityRatio n ((μHE[n] : Measure (Euclidean N)).restrict A) x) (𝓝[>] 0) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n",
+  "lean_name": "frt_graph_piece_density_bounds",
+  "depends_on": [
+    "root.first_rectifiability-a1.density_one_flat_covers-a1.plane_density-a1",
+    "root.first_rectifiability-a1.density_one_flat_covers-a1.graph_projection_compare-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1.plane_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.density_one_flat_covers-a1.graph_projection_compare-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-density-one-flat-covers-a1-graph-piece-bounds-a1-a1"
+}

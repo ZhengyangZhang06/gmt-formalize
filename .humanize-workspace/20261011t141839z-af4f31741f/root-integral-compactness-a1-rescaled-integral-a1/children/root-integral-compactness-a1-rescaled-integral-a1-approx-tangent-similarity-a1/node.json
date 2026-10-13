@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.rescaled_integral-a1.approx_tangent_similarity-a1",
+  "parent_id": "root.integral_compactness-a1.rescaled_integral-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent planes are invariant under the similarity y ↦ ξ + t·y",
+  "statement": "Let N, n ∈ ℕ, M ⊆ ℝ^N, θ : ℝ^N → ℝ, ξ, y ∈ ℝ^N, t > 0, P ≤ ℝ^N a linear subspace, and σ(w) := ξ + t·w. Then σ^{-1}(M) has weighted approximate tangent space P at y with respect to θ∘σ if and only if M has weighted approximate tangent space P at σ(y) = ξ + t·y with respect to θ (both in the sense of Chapter03.HasWeightedApproximateTangentSpaceAt n).",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (ξ y : Euclidean N) (t : ℝ) (P : Submodule ℝ (Euclidean N)), 0 < t → (Chapter03.HasWeightedApproximateTangentSpaceAt n ((fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M) (fun w : Euclidean N ↦ θ (ξ + t • w)) y P ↔ Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t • y) P)",
+  "lean_name": "intcpt_ri_weightedApproxTangent_similarity_iff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-rescaled-integral-a1-approx-tangent-similarity-a1-a1"
+}

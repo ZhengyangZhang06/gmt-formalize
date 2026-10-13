@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "sha256sum project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git rev-parse HEAD in .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197) and .lake/packages/mathlib (25730c7c)",
+        "sed -n 560,640p book/chapter-08.txt (printed proof of 5.5: display (2), (7), (8), Constancy 4.1)",
+        "grep -n '^theorem' Chapter08/TangentRadialRigidity.lean Chapter08/ConstancyTangentGraph.lean Chapter08/StationaryMonotonicity.lean",
+        "grep -rn 'def project|def plane|def normalProject|theorem continuous_normalProject|theorem eq_of_plane_eq|theorem normalProject_eq_sub|finrank_plane|instance.*CompactSpace' Poincare/SimonGMT",
+        "grep 'def IsSimonSubmanifold|def IsSimonLocalRepresentation|def IsProperOnInto' Chapter02/Submanifold.lean",
+        "grep 'structure Varifold|def weight|theorem weight_apply|weight_finite_on_compact|def Stationary|def StationaryOn|Stationary.stationaryOn|fst_mem_weight_support_of_mem_support|structure TestVectorField' Chapter08",
+        "grep 'mem_support_iff_forall|support_subset_of_isClosed|support_mem_ae' mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "grep 'theorem tendsto_measure_iInter_atTop' mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "grep 'theorem addHaar_closedBall|addHaar_unitClosedBall_eq_addHaar_unitBall|Nontrivial' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "grep 'theorem|notation' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (Isometry.euclideanHausdorffMeasure_image/_preimage, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)",
+        "grep 'theorem coe_norm|theorem norm_coe' mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean mathlib/Mathlib/Analysis/Normed/Group/Subgroup.lean",
+        "python3 dump of dag.json node ids, lean_names, statuses and statements; grep -c allard_tc_scf dag.json (0); grep -rl allard_tc_scf GMT and the run's nodes/*.json/*.md (none); git log --all -S allard_tc_scf (none)",
+        "contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') from verifier/gmt-compare.py and validate_lean_statement from verifier/lean_contract.py (all 8 child types and the parent pass)",
+        "lake env lean /tmp/scf-decomp-k7q2/lean/Types.lean (8 child types plus the parent in the replayed scope, autoImplicit false: only sorry warnings)",
+        "lake env lean /tmp/scf-decomp-k7q2/lean/Full.lean (sorry-free proofs of the 8 children and the parent assembly, comparator-form targets, #print axioms: propext, Classical.choice, Quot.sound)",
+        "lake env lean /tmp/scf-decomp-k7q2/lean/{NoExtraImports,Imp4,Imp7,ImpP}.lean (minimal extra imports per child and for the parent)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Subgroup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRadialRigidity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangentGraph.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancySupport.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/tmp/scf-decomp-k7q2/lean/Types.lean",
+        "/tmp/scf-decomp-k7q2/lean/Full.lean"
+      ],
+      "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission, and the pinned SimonGMT is 2b366308. Mathlib supplies the measure-theoretic tools the children cite: Measure.mem_support_iff_forall, Measure.support_subset_of_isClosed, tendsto_measure_iInter_atTop, Measure.addHaar_closedBall (no Nontrivial assumption, so n = 0 needs no special case), Isometry.euclideanHausdorffMeasure_preimage, EuclideanSpace.euclideanHausdorffMeasure_eq_volume and Submodule.norm_coe. SimonGMT supplies Grassmannian.continuous_project, normalProject_eq_sub, eq_of_plane_eq, finrank_plane, Varifold.weight_support_eq_fst_image_support, weight_finite_on_compact, weight_apply and IsSimonSubmanifold/IsSimonLocalRepresentation/IsProperOnInto, all with standard axioms. TangentRadialRigidity proves the zero-defect step only at centre 0 under a constant-ratio hypothesis, so a general-centre child (zero_defect_plane) is needed. No existing comparator-accepted declaration has the type of any proposed child. All 8 child types elaborate in the comparator scope and pass validate_lean_statement. Sorry-free proofs of all children and of the parent assembly compile. The only axioms are propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "child_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.monotonicity_identity-a1",
+  "subproblem": {
+    "key": "monotonicity_identity",
+    "title": "Monotonicity identity at every centre and every radius for a stationary varifold on ℝ^N",
+    "statement": "Assume StationaryMonotonicityIdentity (Simon 8.3.4). Let C be a stationary n-varifold on U = ℝ^N, with weight μ := μ_C. Then for every y ∈ ℝ^N:\n(a) there is θ ∈ [0,∞] such that Θ^n(μ, y) exists and equals θ (HasDensity n μ y θ), and θ + ω⁻¹·D_y(ρ) = R_μ(y,ρ) for every ρ > 0;\n(b) ρ ↦ R_μ(y,ρ) is non-decreasing on (0,∞).\nHere D_y(ρ) := normalDefect C y (B_ρ(y)) = ∫_{B_ρ(y) × G} ofReal(|(x−y) − p_S(x−y)|² / |x−y|^{n+2}) dC(x,S), R_μ(y,ρ) = μ(B_ρ(y)) / (ω·ofReal(ρ)^n), B_ρ(y) is the closed ball, and ω = unitBallVolume n.",
+    "lean_statement": "StationaryMonotonicityIdentity → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → ∀ y : Euclidean N, (∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ∀ ρ : ℝ, 0 < ρ → θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) = densityRatio n C.weight y ρ) ∧ MonotoneOn (densityRatio n C.weight y) (Ioi 0)",
+    "lean_name": "allard_tc_scf_monotonicity_identity",
+    "depends_on": [],
+    "natural_proof": "Source: step 1 of the parent proof (Simon 8.3.4 applied at every centre with U = ℝ^N). Notation: ω := unitBallVolume n = vol_n(B°_1(0)) (volume of the open unit ball of EuclideanSpace ℝ (Fin n)), as an element of [0,∞]; B_ρ(y) := closedBall y ρ; R_μ(y,ρ) := densityRatio n μ y ρ = μ(B_ρ(y)) / (ω · ofReal(ρ)^n); G := Grassmannian N n.\n1. Fix y ∈ ℝ^N and k ∈ ℕ, and put ρ₀ := k + 1 > 0. Apply StationaryMonotonicityIdentity with (N, n, U := univ, V := C, x := y, ρ₀). Its hypotheses hold:\n   - 0 < ρ₀;\n   - ball y ρ₀ ⊆ univ;\n   - for every X ∈ TestVectorField univ with tsupport X ⊆ ball y ρ₀, C.firstVariation X = 0, because C.Stationary says C.firstVariation X = 0 for every X ∈ TestVectorField univ.\n   It gives θ_k ∈ [0,∞] with HasDensity n μ y θ_k and θ_k + ω⁻¹·D_y(ρ) = R_μ(y,ρ) for 0 < ρ < k + 1.\n2. Limits are unique. HasDensity n μ y θ means R_μ(y,·) → θ along 𝓝[>] 0. This filter on ℝ is not trivial and [0,∞] is Hausdorff (tendsto_nhds_unique). So θ_k = θ_0 for every k. Put θ := θ_0; then HasDensity n μ y θ.\n3. Proof of (a). Let ρ > 0. Choose k ∈ ℕ with ρ < k (exists_nat_gt), so 0 < ρ < k + 1. Step 1 for this k, together with θ_k = θ, gives θ + ω⁻¹·D_y(ρ) = R_μ(y,ρ).\n4. Proof of (b). Let 0 < ρ ≤ ρ'. Then B_ρ(y) ⊆ B_ρ'(y), so B_ρ(y) × G ⊆ B_ρ'(y) × G. The integrand of normalDefect is a fixed nonnegative function, and a set lintegral is monotone in the set (lintegral_mono_set). Hence D_y(ρ) ≤ D_y(ρ'). Multiplying by ω⁻¹ and adding θ preserve ≤ in [0,∞]. So by (a), R_μ(y,ρ) = θ + ω⁻¹·D_y(ρ) ≤ θ + ω⁻¹·D_y(ρ') = R_μ(y,ρ'). ∎",
+    "proof_key_steps": [
+      "Apply StationaryMonotonicityIdentity at centre y with U = univ and ρ₀ = k+1; stationarity of C gives the local stationarity premise.",
+      "Densities along 𝓝[>]0 are unique, so the density θ does not depend on k.",
+      "Each ρ > 0 lies below some k+1, which gives the identity θ + ω⁻¹ D_y(ρ) = R(y,ρ) for every ρ > 0.",
+      "D_y(ρ) is monotone in ρ (set lintegral of a nonnegative integrand), so R(y,·) is non-decreasing on (0,∞)."
+    ]
+  },
+  "audit": {
+    "key": "monotonicity_identity",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and Lean type agree. Global stationarity supplies each local identity; uniqueness on the nontrivial right-neighborhood filter identifies the densities. Increasing integer radii cover every positive radius, and monotonicity of the defect integral proves the second conclusion without circular reliance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1-monotonicity-identity-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1-monotonicity-identity-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1-monotonicity-identity-a1/parent-supplied-natural-proof.json"
+}

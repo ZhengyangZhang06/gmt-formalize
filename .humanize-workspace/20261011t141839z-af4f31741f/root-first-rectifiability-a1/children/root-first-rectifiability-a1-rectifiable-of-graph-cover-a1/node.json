@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.rectifiable_of_graph_cover-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "Sets covered by countably many 1-graphs over n-planes are countably n-rectifiable",
+  "statement": "Let C ⊆ G(N,n) × 2^{ℝ^N} be countable such that for every c = (P, Γ) ∈ C, Γ is a 1-graph over P (|q_P(y − z)| ≤ |p_P(y − z)| for all y, z ∈ Γ, p_P = Grassmannian.project P, q_P = I − p_P), and let M ⊆ ⋃_{c ∈ C} c.2. Then M is countably n-rectifiable (Chapter03.CountablyRectifiable n M, Simon Ch. 3, 1.1).",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (C : Set (Grassmannian N n × Set (Euclidean N))), C.Countable → (∀ c ∈ C, ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ ‖Grassmannian.project c.1 (y - z)‖) → M ⊆ ⋃ c ∈ C, c.2 → Chapter03.CountablyRectifiable n M",
+  "lean_name": "frt_countablyRectifiable_of_graph_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-rectifiable-of-graph-cover-a1-a1"
+}

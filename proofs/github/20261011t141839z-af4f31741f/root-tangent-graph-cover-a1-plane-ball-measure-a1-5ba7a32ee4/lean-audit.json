@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4c0e68cf7568e88effe875cfffa2c86990f2ffefb25d532a337c838bfa66a773",
+  "git_delta": {
+    "base_commit": "28f83ecb0bd1f31a6b2353924393f514daf6e31f",
+    "candidate_commit": "45996d70dd49d0dd96ec72db02d05fc316898ba7",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_plane_closedBall_hausdorff",
+    "diff_sha256": "50bad28be372dc564b2412d086501c4fe02d902f8d3de49687f0a462c27ee3b2",
+    "source_sha256": "cc9dbd6e7314253e0d1b77d7ba8884cb6ed0e78e6686c0c9b360c36667071e80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_plane_closedBall_hausdorff",
+      "statement": "∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

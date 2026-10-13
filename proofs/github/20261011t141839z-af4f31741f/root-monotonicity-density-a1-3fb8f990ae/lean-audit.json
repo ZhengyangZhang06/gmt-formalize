@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8d775fbea05df90a12dcdf215a1d8abd7a8cc1ff3eef3859f68ce247ba2521b9",
+  "git_delta": {
+    "base_commit": "5b754b9654718a9cfd7b3df7f05a78af2827650e",
+    "candidate_commit": "d74280205bb9b43f33ab042219735908c2ce51dd",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "f3a92e9a82c1a618423925d340fd6145e209e713c7a3ca2bf2d5113f3951f91c",
+    "source_sha256": "58ec606abfe585d2e4de42476c6b5eae8b27af05b32d01d541c055b32949d081",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.monotonicity_and_density_theorems",
+      "statement": "MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
