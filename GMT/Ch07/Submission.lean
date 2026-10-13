@@ -451,6 +451,125 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Mass of a difference** (Simon (6.2.5), chapter-06.txt line 231; this subadditivity makes the
+flat distances `d_W` of 7.1 (lines 2018–2022) pseudometrics and is used in the proof of 7.2):
+`M_G(A − B) ≤ M_G(A) + M_G(B)` for every set `G`.  If `ω` is admissible for `M_G` then so is `−ω`
+(same support, same coefficient norm), and `(A − B)(ω) = A(ω) + B(−ω)`, so
+`ofReal ((A − B)(ω)) ≤ ofReal (A(ω)) + ofReal (B(−ω)) ≤ M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: it suffices to bound `ofReal ((A − B)(ω))` for each admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible: same support, same coefficient norm
+  have hneg : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
+  have hsplit : (A - B) ω = A ω + B (-ω) := by
+    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    change A ω - B ω = A ω + B (-ω)
+    rw [hB, sub_eq_add_neg]
+  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
+
+/-- **Close pairs** (Simon Ch. 6, 7.2, step 2 of the proof).  Assume differences of integer
+multiplicity currents in an open `U` are integer multiplicity.  If `Y − Q − S₁ = ∂R₁` and
+`Z − Q − S₂ = ∂R₂` in `U` with `R₁, S₁, R₂, S₂` integer multiplicity, then `R = R₁ − R₂` and
+`S = S₁ − S₂` are integer multiplicity, `Y − Z − S = ∂R` (the common `Q` cancels), and
+`M(R) + M(S) ≤ (M(R₁) + M(S₁)) + (M(R₂) + M(S₂))` by `M(A − B) ≤ M(A) + M(B)`. -/
+theorem Submission.cmc_fc_cs_close_of_common_center : (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (Y Z Q S₁ S₂ : GeometricCurrentOn U (m + 1)) (R₁ R₂ : GeometricCurrentOn U (m + 2)), IsOpen U → IsIntegerMultiplicity R₁ → IsIntegerMultiplicity S₁ → IsIntegerMultiplicity R₂ → IsIntegerMultiplicity S₂ → Y - Q - S₁ = R₁.boundary → Z - Q - S₂ = R₂.boundary → ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ Y - Z - S = R.boundary ∧ R.mass + S.mass ≤ (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass) := by
+  intro hIS P m U Y Z Q S₁ S₂ R₁ R₂ hU hR₁ hS₁ hR₂ hS₂ h₁ h₂
+  -- `R = R₁ − R₂` and `S = S₁ − S₂` are integer multiplicity by (IS)
+  refine ⟨R₁ - R₂, S₁ - S₂, hIS P (m + 2) U R₁ R₂ hU hR₁ hR₂, hIS P (m + 1) U S₁ S₂ hU hS₁ hS₂,
+    ?_, ?_⟩
+  · -- evaluate both hypotheses at `ω`, using `∂T(ω) = T(dω)`; the `Q(ω)` terms cancel
+    ext ω
+    have e₁ : Y ω - Q ω - S₁ ω = R₁ (exteriorDerivativeTestOn U (m + 1) ω) :=
+      congrArg (fun T : GeometricCurrentOn U (m + 1) => T ω) h₁
+    have e₂ : Z ω - Q ω - S₂ ω = R₂ (exteriorDerivativeTestOn U (m + 1) ω) :=
+      congrArg (fun T : GeometricCurrentOn U (m + 1) => T ω) h₂
+    change Y ω - Z ω - (S₁ ω - S₂ ω) =
+      R₁ (exteriorDerivativeTestOn U (m + 1) ω) - R₂ (exteriorDerivativeTestOn U (m + 1) ω)
+    linarith
+  · -- `M(R₁ − R₂) ≤ M(R₁) + M(R₂)` and `M(S₁ − S₂) ≤ M(S₁) + M(S₂)`, with `M = M_U`
+    calc (R₁ - R₂).mass + (S₁ - S₂).mass
+        ≤ (R₁.mass + R₂.mass) + (S₁.mass + S₂.mass) :=
+          add_le_add (Submission.cmc_fc_cs_massOn_sub_le P (m + 2) U U R₁ R₂)
+            (Submission.cmc_fc_cs_massOn_sub_le P (m + 1) U U S₁ S₂)
+      _ = (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass) := add_add_add_comm _ _ _ _
+/-- **Diagonal extraction** (Simon Ch. 6, proof of 7.2, chapter-06.txt lines 2101–2105:
+"apply (1) with `ε = 1, 1/2, 1/4` etc. to extract a subsequence `{T_{j_r}}` …
+`d(T_{j_{r+1}}, T_{j_r}) < 2^{-r}`", with `2^{-r}`-closeness replaced by an arbitrary relation
+`C r`).  If, for each `r`, every infinite `I ⊆ ℕ` contains an infinite `J ⊆ I` all of whose pairs
+are `C r`-related, then some strictly increasing `φ` has `C r (φ (r + 1)) (φ r)` for every `r`.
+Refining `I₀ = ℕ` gives nested infinite sets `I_{r+1} ⊆ I_r` with `I_{r+1}` pairwise
+`C r`-related; an increasing choice `φ(r) ∈ I_{r+1}` puts both `φ(r)` and `φ(r + 1)` in
+`I_{r+1}`. -/
+theorem Submission.cmc_fc_cs_diagonal_subseq : ∀ (C : ℕ → ℕ → ℕ → Prop), (∀ (r : ℕ) (I : Set ℕ), I.Infinite → ∃ J ⊆ I, J.Infinite ∧ ∀ j ∈ J, ∀ l ∈ J, C r j l) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, C r (φ (r + 1)) (φ r) := by
+  intro C hC
+  -- Step 1: refinements `F(r, I) ⊆ I`, infinite, with all pairs in relation `C r`
+  choose F hFsub hFinf hFC using hC
+  -- Step 2: nested infinite index sets `I₀ = ℕ`, `I_{r+1} = F(r, I_r)`
+  let I : ℕ → {s : Set ℕ // s.Infinite} := fun r =>
+    Nat.rec ⟨univ, infinite_univ⟩ (fun r s => ⟨F r s.1 s.2, hFinf r s.1 s.2⟩) r
+  have hsub : ∀ r, (I (r + 1)).1 ⊆ (I r).1 := fun r => hFsub r (I r).1 (I r).2
+  have hpair : ∀ r, ∀ j ∈ (I (r + 1)).1, ∀ l ∈ (I (r + 1)).1, C r j l :=
+    fun r => hFC r (I r).1 (I r).2
+  -- Step 3: `I_{r+1}` is unbounded: `g(r, a) ∈ I_{r+1}` and `a < g(r, a)`
+  choose g hgI hglt using fun r : ℕ => (I (r + 1)).2.exists_gt
+  -- Step 4: diagonal choice `φ(0) = g(0, 0)`, `φ(r + 1) = g(r + 1, φ(r)) ∈ I_{r+2}`
+  let φ : ℕ → ℕ := fun r => Nat.rec (g 0 0) (fun r a => g (r + 1) a) r
+  have hφI : ∀ r, φ r ∈ (I (r + 1)).1 := by
+    intro r
+    cases r with
+    | zero => exact hgI 0 0
+    | succ r => exact hgI (r + 1) (φ r)
+  have hφ : StrictMono φ := strictMono_nat_of_lt_succ fun r => hglt (r + 1) (φ r)
+  -- Step 5: `φ(r + 1) ∈ I_{r+2} ⊆ I_{r+1}` and `φ(r) ∈ I_{r+1} = F(r, I_r)`
+  exact ⟨φ, hφ, fun r => hpair r _ (hsub (r + 1) (hφI (r + 1))) _ (hφI r)⟩
+
+/-- **Cauchy subsequence** (Simon Ch. 6, proof of 7.2, chapter-06.txt lines 2101–2105: "apply (1)
+with `ε = 1, 1/2, 1/4` etc. to extract a subsequence `{T_{j_r}}` … `d(T_{j_{r+1}}, T_{j_r}) <
+2^{-r}`").  Assume differences of integer multiplicity currents in an open `U` are integer
+multiplicity, and that for every `η > 0` each `X_j` is within `η` of a member `Q` of one finite
+family `𝒬`: `X_j − Q − S = ∂R` with `R, S` integer multiplicity and `M(R) + M(S) ≤ η`.  Then a
+subsequence has consecutive terms `2^{-r}`-close.  For `η = 2^{-(r+1)}` and an infinite `I ⊆ ℕ`,
+one `q ∈ 𝒬` is the chosen member for infinitely many `j ∈ I` (pigeonhole); any two of these are
+`2 · 2^{-(r+1)} = 2^{-r}`-close by the common-center estimate, and the diagonal extraction
+finishes. -/
+theorem Submission.dimred_mbl_fc_cauchy_subseq : (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ η : ℝ≥0∞, 0 < η → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X j - Q - S = R.boundary ∧ R.mass + S.mass ≤ η) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X (φ (r + 1)) - X (φ r) - S = R.boundary ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+  intro hIS P m U X hU hX
+  -- Steps 4–5: diagonal extraction for the relation "`X_j`, `X_l` are `2^{-r}`-close"
+  refine Submission.cmc_fc_cs_diagonal_subseq (fun r j l =>
+    ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)),
+      IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X j - X l - S = R.boundary ∧
+        R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) ?_
+  intro r I hI
+  -- Step 3: the hypothesis with `η = 2^{-(r+1)}`; choose `Q_j ∈ 𝒬` and `R_j, S_j` for each `j`
+  obtain ⟨𝒬, h𝒬, hdec⟩ := hX ((2⁻¹ : ℝ≥0∞) ^ (r + 1))
+    (ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) _)
+  choose Q hQ R S hR hS hRS hmass using hdec
+  -- pigeonhole: `I` is covered by the finitely many fibers `{j ∈ I | Q_j = q}`, `q ∈ 𝒬`
+  obtain ⟨q, -, hq⟩ : ∃ q ∈ 𝒬, {j | j ∈ I ∧ Q j = q}.Infinite := by
+    by_contra! hfin
+    exact hI ((h𝒬.biUnion fun q hq => hfin q hq).subset fun j hj => mem_biUnion (hQ j) ⟨hj, rfl⟩)
+  refine ⟨{j | j ∈ I ∧ Q j = q}, fun j hj => hj.1, hq, ?_⟩
+  -- Step 2: two indices with the common center `q` are `2 · 2^{-(r+1)} = 2^{-r}`-close
+  rintro j ⟨-, hj⟩ l ⟨-, hl⟩
+  obtain ⟨R', S', hR', hS', hb, hm⟩ := Submission.cmc_fc_cs_close_of_common_center hIS P m U
+    (X j) (X l) q (S j) (S l) (R j) (R l) hU (hR j) (hS j) (hR l) (hS l) (hj ▸ hRS j)
+    (hl ▸ hRS l)
+  refine ⟨R', S', hR', hS', hb, hm.trans ?_⟩
+  calc (R j).mass + (S j).mass + ((R l).mass + (S l).mass)
+      ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) + (2⁻¹ : ℝ≥0∞) ^ (r + 1) := add_le_add (hmass j) (hmass l)
+    _ = (2⁻¹ : ℝ≥0∞) ^ r := by rw [pow_succ, ← mul_add, ENNReal.inv_two_add_inv_two, mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
