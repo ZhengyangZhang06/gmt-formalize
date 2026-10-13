@@ -732,6 +732,40 @@ theorem Submission.cbr_cc_current_algebra : (∀ (P n : ℕ) (U : Set (Euclid P)
         ENNReal.ofReal_sum_of_nonneg fun i _ => by positivity
     _ ≤ ∑ i ∈ F, ((m i).natAbs : ℝ≥0∞) * (S i).massOn W :=
         Finset.sum_le_sum fun i _ => hterm P n U (S i) (m i) W ω hω
+/-- **`H¹` on a line** (Simon Ch. 6, 2.2 and 2.4).  For a unit vector `τ`, `φ(u) = a + uτ` is an
+isometry `ℝ → ℝᴾ` (`|φ(u) − φ(v)| = |u − v| |τ|`), hence a closed and so measurable embedding, and
+`φ(A)` is Borel for Borel `A`.  On `ℝ`, `μHE[1]` is Lebesgue measure, and `μHE[1]` is preserved by
+isometries: `H¹(φ(A)) = H¹(A) = L¹(A)`, and `φ_#L¹ = H¹⌞range φ` gives `H¹⌞φ(A) = φ_#(L¹⌞A)`, so
+`∫_{φ(A)} h dH¹ = ∫_A h(a + uτ) du` for every `h` (change of variables along an embedding). -/
+theorem Submission.cbr_cc_seg_line_hausdorff : ∀ (P : ℕ) (a τ : Euclid P), ‖τ‖ = 1 → ∀ A : Set ℝ, MeasurableSet A → MeasurableSet ((fun u : ℝ => a + u • τ) '' A) ∧ μHE[1] ((fun u : ℝ => a + u • τ) '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in (fun u : ℝ => a + u • τ) '' A, h x ∂μHE[1] = ∫ u in A, h (a + u • τ) := by
+  intro P a τ hτ A hA
+  set φ : ℝ → Euclid P := fun u => a + u • τ with hφ
+  -- Step 1: `φ` is an isometry, `|φ(u) − φ(v)| = |(u − v)τ| = |u − v|`
+  have hiso : Isometry φ := by
+    refine Isometry.of_dist_eq fun u v => ?_
+    rw [hφ, dist_eq_norm, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hτ,
+      mul_one]
+  -- Step 2: hence a closed, so measurable, embedding, and `φ(A)` is Borel
+  have hemb : MeasurableEmbedding φ := hiso.isClosedEmbedding.measurableEmbedding
+  have hmeas : MeasurableSet (φ '' A) := hemb.measurableSet_image.mpr hA
+  -- Step 3: on `ℝ`, `μHE[1]` is Lebesgue measure
+  have hvol : (μHE[1] : Measure ℝ) = volume := by
+    simpa only [Module.finrank_self] using
+      InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := ℝ)
+  refine ⟨hmeas, ?_, fun h => ?_⟩
+  -- Step 4: isometry invariance, `H¹(φ(A)) = H¹(A) = L¹(A)`
+  · rw [hiso.euclideanHausdorffMeasure_image, hvol]
+  -- Step 5: `H¹⌞φ(A) = (H¹⌞range φ)⌞φ(A) = (φ_#H¹)⌞φ(A) = φ_#(H¹⌞A) = φ_#(L¹⌞A)`
+  · have hrestr : (μHE[1] : Measure (Euclid P)).restrict (φ '' A) = (volume.restrict A).map φ :=
+      calc (μHE[1] : Measure (Euclid P)).restrict (φ '' A)
+          = ((μHE[1] : Measure (Euclid P)).restrict (range φ)).restrict (φ '' A) := by
+            rw [Measure.restrict_restrict hmeas, inter_eq_left.mpr (image_subset_range φ A)]
+        _ = ((μHE[1] : Measure ℝ).map φ).restrict (φ '' A) := by
+            rw [hiso.map_euclideanHausdorffMeasure]
+        _ = (volume.restrict A).map φ := by
+            rw [hemb.restrict_map, hemb.injective.preimage_image, hvol]
+    -- Step 6: change of variables along the measurable embedding `φ`, for every `h`
+    rw [hrestr, hemb.integral_map]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
