@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52ac25716155fa344b19d86c3972d5756ac81a349892937e9ab65cea9e32962c",
+  "git_delta": {
+    "base_commit": "8b5b003bb67c85b178b48f6b116b2d0f0dee7d78",
+    "candidate_commit": "4a6e4e1e9d2ef845d8b3e8ffc4674d90a5e6069c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_af_chart_partition",
+    "diff_sha256": "3b32ac9e6d5a12ed450d9ed9edc8c51556536658a8105edc2360d95cccf72a1f",
+    "source_sha256": "00540627314e034d312694dda003176030007df6bc3e365b32d04cf53a8e7771",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_af_chart_partition",
+      "statement": "∀ (P m : ℕ) (M E : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → MeasurableSet E → E ⊆ M → ∃ (Es : ℕ → Set (Euclid P)) (Vs : ℕ → Set (Euclid m)) (Ws : ℕ → Set (Euclid P)) (ψs : ℕ → Euclid m → Euclid P), (∀ k, MeasurableSet (Es k)) ∧ Pairwise (fun i j => Disjoint (Es i) (Es j)) ∧ (⋃ k, Es k) = E ∧ ∀ k, IsOpen (Vs k) ∧ IsOpen (Ws k) ∧ ContDiffOn ℝ 1 (ψs k) (Vs k) ∧ InjOn (ψs k) (Vs k) ∧ ψs k '' Vs k = Ws k ∩ M ∧ (∀ K ⊆ Ws k, IsCompact K → IsCompact (Vs k ∩ ψs k ⁻¹' K)) ∧ (∀ z ∈ Vs k, Injective (fderiv ℝ (ψs k) z)) ∧ Es k ⊆ Ws k ∩ M",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
