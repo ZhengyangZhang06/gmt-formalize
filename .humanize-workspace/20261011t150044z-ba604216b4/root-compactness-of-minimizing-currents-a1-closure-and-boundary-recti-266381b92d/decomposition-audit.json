@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "cbr_ci_imc_|exists_plane_cutoff_quadratic_moment_eq|continuous_blowUp_image_setIntegral|aemeasurable_starProjection_of_aemeasurable_norm_sq|hasApproximateTangentSpaceAt_iff_of_null_sdiff|structure IMRep|def approxTangentPlane",
+        "HasApproximateTangentSpaceAt|blowUpMap|CountablyRectifiable.mono",
+        "Isometry.map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image",
+        "aemeasurable_of_tendsto_metrizable_ae\\x27|protected theorem Monotone.measurable|theorem _root_.AEMeasurable.aestronglyMeasurable ",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/imcrit-gen/FinalFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/imcrit-gen/HypAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/imcriterion-independent-audit-9lnfo09u/IndependentContracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-266381b92d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-266381b92d/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-b7386b9a1e/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-3808e84e38/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-tang-dd64318517/isolated-comparator-result.json",
+        "/tmp/imcrit-gen/FinalFull.lean",
+        "/tmp/imcrit-gen/HypAssembly.lean",
+        "/tmp/imcriterion-independent-audit-9lnfo09u/IndependentContracts.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected theorem. Snapshot contract and build inputs match the workspace; Mathlib is pinned at 25730c7c759d108ef87ab70af2342a196760f79d. No proposed declaration occurs in the pinned project. The DAG contains exactly the four claimed accepted reuses, with byte-identical frozen types and passing comparator receipts; both new names are unreserved. All six names are bare identifiers, and all six one-line propositions match their prose and elaborate independently with autoImplicit disabled. No self-dependent types, placeholders, aliases, or raw matrix-unit constructions occur. The dependency closure is acyclic and correctly directed. Independently recompiled the supplied proofs, checked the two new proofs using only their declared dependencies as hypotheses, and verified the exact parent follows from the two new child types and RECT. All compilations succeeded without warnings; reported axioms are only propext, Classical.choice and Quot.sound. The selected parent contract digest was independently recomputed and matches the required binding."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_quadratic_moment",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including choosing c before the ambient dimension. Compact support ensures integrability; reflections eliminate cross terms, coordinate swaps identify diagonal moments, and positivity follows at e₀/2. Isometric transport of normalized Hausdorff measure and the orthonormal projection expansion prove the exact formula. Reuse matches the accepted frozen type and is non-circular."
+    },
+    {
+      "key": "blowup_integral_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits nonmeasurable M. The push-forward identity is established on Borel test sets, so it remains valid for arbitrary restrictions. Local Hausdorff finiteness supplies an integrable compactly supported bound near each centre; dominated convergence proves continuity. No global finiteness or unstated measurability assumption is used. Accepted reuse has the identical type."
+    },
+    {
+      "key": "projection_field_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact arbitrary-measure contract follows from self-adjointness, idempotence and real polarization. Finitely many measurable coefficients reconstruct the projection through a continuous map into the operator-norm Borel space. The empty basis also handles P = 0. The proof is complete, non-circular, and matches the accepted reused type."
+    },
+    {
+      "key": "tangent_null_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both null-difference hypotheses are present and used. Nonzero blow-ups preserve null sets, giving equal restricted measures and therefore equal integrals without integrability assumptions. Equality for positive radii transfers the defining limits; the dimension clause is unchanged. This proves the equivalence for every x and Q, with no missing set-measurability hypothesis. Accepted reuse has the identical type."
+    },
+    {
+      "key": "tangent_field_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the locally finite, arbitrary-set contract. The n = 0 case gives an a.e. zero projection. For n > 0, the declared moment and continuity dependencies provide measurable approximants converging a.e. to c times each quadratic form; c > 0 permits division. The declared polarization dependency and finite-dimensional second countability give a.e. strong measurability. The supplied implementation independently compiles with precisely these dependency types as hypotheses."
+    },
+    {
+      "key": "im_assembly",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis needed for the IMRep construction appears in both prose and type. Removing the measurable hull of the null bad set yields a Borel carrier where natural floor equals the positive integer density. The integral bound supplies local multiplicity integrability, rectifiability passes to subsets, and the declared null-invariance dependency transfers tangent spaces. Equality of restricted measures proves the representation identity. The supplied implementation compiles using only that dependency; combined with tangent-field measurability and RECT, it establishes the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
