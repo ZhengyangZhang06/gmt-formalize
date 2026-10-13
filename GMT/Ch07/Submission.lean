@@ -498,6 +498,37 @@ theorem Submission.dor_lmb_ret_nc_local_inverse : ∀ (X Y : Type) [NormedAddCom
     have h₂ : ContDiffAt ℝ 1 (H : X → Y) (H.symm (H z)) := by
       rwa [H.left_inv hzS]
     exact (H.contDiffAt_symm (H.map_source hzS) h₁ h₂).contDiffWithinAt
+/-- **Normal coordinates, linear part** (parent proof, steps 1 and 5, with `L` in place of
+`Dψ(v₀)`).  For an injective linear `L : ℝ^d → ℝ^P`, the map `Λ(w, k) = L w + k` is a continuous
+linear isomorphism `ℝ^d × (range L)^⊥ ≅ ℝ^P`: it is injective, since `L w + k = 0` puts `k` in
+`range L ∩ (range L)^⊥ = 0` and then `w = 0`; both sides have dimension `P`; and a linear
+isomorphism between finite-dimensional spaces is continuous. -/
+theorem Submission.dor_lmb_ret_nc_linear_iso : ∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ Λ : (Euclid d × ↥(L.range)ᗮ) ≃L[ℝ] Euclid P, ∀ (w : Euclid d) (k : ↥(L.range)ᗮ), Λ (w, k) = L w + k := by
+  intro P d L hL
+  -- Step 1: `Λ₀ = L ∘ pr₁ + ι ∘ pr₂`, so `Λ₀ (w, k) = L w + k`
+  let Λ₀ : (Euclid d × ↥(L.range)ᗮ) →ₗ[ℝ] Euclid P :=
+    (L : Euclid d →ₗ[ℝ] Euclid P) ∘ₗ LinearMap.fst ℝ (Euclid d) ↥(L.range)ᗮ +
+      (L.range)ᗮ.subtype ∘ₗ LinearMap.snd ℝ (Euclid d) ↥(L.range)ᗮ
+  -- Step 2: `L w + k = 0` puts `k = L (-w)` in `range L ∩ (range L)^⊥ = 0`, then `w = 0`
+  have hinj : Injective Λ₀ := by
+    refine (injective_iff_map_eq_zero Λ₀).2 ?_
+    rintro ⟨w, k⟩ h
+    change L w + (k : Euclid P) = 0 at h
+    have hk : (k : Euclid P) ∈ L.range ⊓ (L.range)ᗮ :=
+      ⟨LinearMap.mem_range.2 ⟨-w, by simpa using neg_eq_of_add_eq_zero_right h⟩, k.2⟩
+    rw [Submodule.inf_orthogonal_eq_bot, Submodule.mem_bot] at hk
+    have hw : w = 0 := (injective_iff_map_eq_zero L).1 hL w (by simpa [hk] using h)
+    exact Prod.ext hw (Subtype.ext hk)
+  -- Step 3: `dim (ℝ^d × (range L)^⊥) = dim range L + dim (range L)^⊥ = P`
+  have hdim : Module.finrank ℝ (Euclid d × ↥(L.range)ᗮ) = Module.finrank ℝ (Euclid P) := by
+    rw [Module.finrank_prod,
+      ← LinearMap.finrank_range_of_inj (f := (L : Euclid d →ₗ[ℝ] Euclid P)) hL]
+    exact (L.range).finrank_add_finrank_orthogonal
+  -- Step 4: injective with equal finite dimensions, hence bijective
+  have hsurj : Surjective Λ₀ :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).1 hinj
+  -- Step 5: a linear equivalence in finite dimensions is continuous
+  exact ⟨(LinearEquiv.ofBijective Λ₀ ⟨hinj, hsurj⟩).toContinuousLinearEquiv, fun w k => rfl⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
