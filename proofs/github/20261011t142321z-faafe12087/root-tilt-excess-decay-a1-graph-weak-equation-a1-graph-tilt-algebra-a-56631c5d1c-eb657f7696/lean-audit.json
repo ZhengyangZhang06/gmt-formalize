@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e26bb2aa8898906b740190352adfebb2390caea2d24acd48573c593a4bfdb0d6",
+  "git_delta": {
+    "base_commit": "d21c88caf8ff1b2321521617d3f186d28db8137f",
+    "candidate_commit": "e57ebfe2b35733e48d0fe43da59d85710b114e64",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_gta_proj_inner_defect",
+    "diff_sha256": "f8d23ac62ee53efddbd6879aad3af62dc9f705f929710bcd99b65d543bbfb11c",
+    "source_sha256": "7e6ffad46b87d3b44e0a84fb1ae946e8a17db56f743202ec0920e4f0cc6340c6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_gta_proj_inner_defect",
+      "statement": "∀ (m : ℕ) (S T : Submodule ℝ (Rn m)) (u w : Rn m), u ∈ T → w ∈ T → |inner ℝ (S.starProjection u) (S.starProjection w) - inner ℝ u w| ≤ hsNormSq (S.starProjection - T.starProjection) * (‖u‖ * ‖w‖)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
