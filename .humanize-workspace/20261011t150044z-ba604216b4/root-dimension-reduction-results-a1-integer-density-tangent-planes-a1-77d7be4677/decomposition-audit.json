@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|exists_cthickening_subset_open|one_of_mem_closedBall",
+        "ae_eq_const_of_weak_coordinate_derivatives_zero|WeakDerivativesZero.ae_eq_const|sorry|axiom",
+        "exteriorDerivative_apply|def massOn|def support|def zeroRegion|HasApproximateTangentSpaceAt|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule",
+        "idtp_pc_|idtp_planar_cycle_eq_const_mul|dimred_im_mass_measure|imrep_carrier_sdiff_support_null|atsm_approxTangent_le_of_flat|dgcr_unitOrientation_eq_or_neg|dgcr_smooth_tests_to_C1_tests|dgcr_bwd_coordinate_covector",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-independent-audit-7zr5b5ch/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-decomp-k7q2/check/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-independent-audit-7zr5b5ch/Merged.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/pc-independent-audit-7zr5b5ch/Types.lean",
+        "/tmp/pc-decomp-k7q2/check/Children.lean",
+        "/tmp/pc-independent-audit-7zr5b5ch/Merged.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected planar constancy theorem. Project and dependency revisions match the pins; the snapshot contract matches the workspace contract and submission. All twelve frozen statements are standalone, one-line propositions and elaborate without implementing their children. All names are bare identifiers. The six reused names have accepted DAG entries with byte-identical types; the six new names have no collisions in the DAG or 4,654 other node artifacts. The declaration-name search found no matches in the frozen reference sources. Dependencies are correctly directed and acyclic, including the reused dependency closures. Each new script references exactly its declared sibling dependencies. No contract contains the prohibited matrix-unit construction. I independently reconstructed and compiled the accepted dependency code, six supplied new proofs, and exact selected parent proof, with explicit frozen-type checks. All twelve children, the selected parent, and the distributional constancy library theorem depend only on propext, Classical.choice and Quot.sound. The preserved ancestor main_theorem placeholder contributes no axiom to these proofs. The parent assembly establishes both the current identity and the mass identity with c.natAbs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_measure_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match. Orthonormality establishes the parametrization's isometry and range; Hausdorff invariance and Euclidean normalization give the exact measure identity, including n = 0."
+    },
+    {
+      "key": "plane_test_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are stated. The normal cutoff gives compact support inside V, and agreement near each parametrized point gives both the required values and directional derivatives by the chain rule."
+    },
+    {
+      "key": "approx_tangent_le_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has the identical frozen type. The separating bump has positive integral on Q, while flatness and the null exceptional set force its blow-up integrals to vanish. The proof correctly handles potentially nonmeasurable M and N without additional hypotheses."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has the identical frozen type. The orthogonal change of basis has determinant ±1, yielding a single sign valid for every covector. The argument also covers degree zero."
+    },
+    {
+      "key": "planar_orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The null-set hypothesis gives x ∈ Q almost everywhere on the carrier. The declared flat-tangent dependency applies there; equal dimensions identify the tangent plane with Q, and the orientation dependency gives exactly the stated disjunction."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has the identical frozen type. Coefficient-norm duality, smooth unit-field approximation and local regularity prove mass equality; the null-ball argument proves support equivalence, and measure uniqueness proves representation independence. All three conclusions are covered."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has the identical frozen type. Countable reduction to vanishing regions, scalar testing, positive multiplicity and a finite covector basis force the carrier measure of each such region to vanish. The proof is independent of planar constancy."
+    },
+    {
+      "key": "signed_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the measurable sign through a fixed normalized covector and extends θ times that sign by zero. It establishes all five conclusions, including local integrability and both integral identities, using precisely the declared dependencies."
+    },
+    {
+      "key": "coordinate_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has the identical frozen type. Contraction of the continuous determinant form gives the required covector; the permutation sign and repeated-vector cases yield exactly the stated values, including m = 0."
+    },
+    {
+      "key": "boundary_weak_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The degree hypothesis permits n = m + 1. Pulling back the declared coordinate covector makes the exterior-derivative sum equal Df(τ_j), with the two signs cancelling. Boundary vanishing then proves the exact integral identity; openness or integrability assumptions are not missing."
+    },
+    {
+      "key": "smooth_to_c1_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has the identical frozen type. Mollification preserves support in a fixed compact subset of D and approximates derivatives uniformly. Local integrability permits passage to the limit, and vanishing outside the support justifies the whole-space integral."
+    },
+    {
+      "key": "plane_constancy_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measure transfer, connected-domain argument, compact-set integrability and extended test identities prove all stated hypotheses for Euclidean constancy. Connectedness includes nonemptiness, providing positive volume to extract an integer constant. The final conditional transfer proves exactly clause (e), without assuming the child or parent theorem."
+    }
+  ],
+  "required_changes": []
+}

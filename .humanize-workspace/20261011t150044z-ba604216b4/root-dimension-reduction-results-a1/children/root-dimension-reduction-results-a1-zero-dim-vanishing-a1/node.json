@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Minimizing 0-currents supported in the constraint set vanish",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open, let A ⊆ ℝ^P be an arbitrary set and let T ∈ 𝒟_0(U) (GeometricCurrentOn U 0). If T is minimizing in A (IsMinimizingIn T A, Simon 7.1.1; in degree 0 the condition ∂S = ∂T is vacuous, SameBoundary = True) and spt T ⊆ A, then T = 0.",
+  "lean_statement": "∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → T = 0",
+  "lean_name": "dimred_zero_dim_minimizing_eq_zero",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-a1"
+}
