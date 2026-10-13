@@ -1989,6 +1989,41 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
 
+/-- **Simon 6.3.7** (the approximate tangent space of `φ(M)` at `φ(x)` is spanned by the images
+`Dφ(x)(τᵢ)`), for a bi-Lipschitz `C¹` map `φ` with injective derivative and `φ⁻¹(U) = U`: for
+`Hⁿ`-a.e. `x ∈ M`, `M` has the approximate tangent space `Q(x) = approxTangentPlane n M x` at `x`
+and `φ(M)` has the approximate tangent space `Dφ(x)(Q(x))` at `φ(x)`.  `M` is, up to an
+`Hⁿ`-null set, the union of bi-Lipschitz pieces `Fᵢ(Bᵢ)`; for a.e. `b ∈ Bᵢ`,
+`T_{Fᵢ(b)}M = range DFᵢ(b)` and `T_{φ(Fᵢ(b))}φ(M) = range D(φ ∘ Fᵢ)(b) = Dφ(Fᵢ(b))(range DFᵢ(b))`,
+and Lipschitz images of null parameter sets are `Hⁿ`-null. -/
+theorem Submission.dpf_approxTangent_bilipschitz_image_ae : ∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → ∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (approxTangentPlane n M x) ∧ HasApproximateTangentSpaceAt n (φ '' M) (φ x) (Submodule.map (fderiv ℝ φ x : Euclid P →ₗ[ℝ] Euclid P) (approxTangentPlane n M x)) := by
+  intro P n U M φ Λ hU hM hMU hrect hloc hφ hφinj hlip hanti hpre
+  -- Step 1: bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M` covering `M` up to an `Hⁿ`-null set
+  obtain ⟨F, B, m, hFlip, hBmeas, hmpos, hFlow, hFdiff, -, hFM, -, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  -- Step 3: `φ(M)` is Borel, contained in `U` and locally `Hⁿ`-finite in `U`
+  obtain ⟨hφMmeas, hφMU, hφMloc⟩ :=
+    Submission.dpf_itt_bilipschitz_image_locfin P n U M φ Λ Λ hM hMU hloc hlip hanti hpre
+  -- Step 6: it suffices to prove the conclusion at `Fᵢ(b)` for a.e. `b ∈ Bᵢ`
+  refine Submission.dpf_itt_ae_of_ae_pieces P n M F B _ hM hFlip hnull fun i => ?_
+  obtain ⟨L, hL⟩ := hFlip i
+  -- Step 4: `φ ∘ Fᵢ` is bi-Lipschitz on `Bᵢ`, with injective derivative of range
+  -- `Dφ(Fᵢ(b))(range DFᵢ(b))`
+  obtain ⟨hφFlip, ⟨m', hm'pos, hφFlow⟩, hφFdiff, hrange⟩ :=
+    Submission.dpf_itt_comp_bilipschitz_piece P n (F i) φ (B i) L Λ Λ (m i) hL (hmpos i)
+      (hFlow i) (hFdiff i) (hφ.differentiable one_ne_zero) hφinj hlip hanti
+  -- Step 2: `T_{Fᵢ(b)}M = range DFᵢ(b)` for a.e. `b ∈ Bᵢ`
+  have hM_ae := Submission.dpf_approxTangent_ae_bilipschitz_piece P n U M (F i) (B i) L (m i) hU
+    hM hMU hloc hL (hBmeas i) (hmpos i) (hFlow i) (hFdiff i) (hFM i)
+  -- Step 4: `T_{φ(Fᵢ(b))}φ(M) = range D(φ ∘ Fᵢ)(b)` for a.e. `b ∈ Bᵢ`
+  have hφM_ae := Submission.dpf_approxTangent_ae_bilipschitz_piece P n U (φ '' M) (φ ∘ F i)
+    (B i) (Λ * L) m' hU hφMmeas hφMU hφMloc hφFlip (hBmeas i) hm'pos hφFlow hφFdiff
+    (by rw [image_comp]; exact image_mono (hFM i))
+  -- Step 5: combine, using `Q(Fᵢ(b)) = range DFᵢ(b)` (uniqueness of approximate tangent planes)
+  filter_upwards [hM_ae, hφM_ae, ae_restrict_mem (hBmeas i)] with b hb hφb hbB
+  rw [Submission.dpf_itt_approxTangentPlane_eq P n M (F i b) _ hb, ← hrange b hbB]
+  exact ⟨hb, hφb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
