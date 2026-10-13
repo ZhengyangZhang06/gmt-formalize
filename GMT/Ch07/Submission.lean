@@ -985,6 +985,110 @@ theorem Submission.codim1_rdo_dg_bh_rescaled_volume_lower : ∀ (m : ℕ) (F : S
     field_simp
   rw [e1, e2, hscale, hscale, hfac]
   exact ⟨by gcongr, by gcongr⟩
+/-- **`L¹_loc` transfer** (the passage to the blow-up limit in Simon Ch. 3, 4.3 (7), and in the
+volume bounds fixing `λ = 0` after (9)): if `L^{m+1}((F_k Δ F₀) ∩ B_R(0)) → 0` for every `R`,
+then `∫_{F_k} f → ∫_{F₀} f` for continuous compactly supported `f`
+(`|∫_{F_k} f − ∫_{F₀} f| ≤ sup |f| · L^{m+1}((F_k Δ F₀) ∩ B_R(0))` once `spt f ⊆ B_R(0)`), and
+`L^{m+1}(F_k ∩ B_s(0))`, `L^{m+1}(B_s(0) \ F_k)` converge to the values for `F₀`, each differing
+from its limit by at most `L^{m+1}((F_k Δ F₀) ∩ B_s(0))`. -/
+theorem Submission.codim1_rdo_dg_bh_l1loc_transfer : ∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))) (F₀ : Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → MeasurableSet F₀ → (∀ R : ℝ, Tendsto (fun k => volume (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) R)) atTop (𝓝 0)) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z in Fs k, f z) atTop (𝓝 (∫ z in F₀, f z))) ∧ (∀ s : ℝ, Tendsto (fun k => volume (Fs k ∩ ball (0 : Euclid (m + 1)) s)) atTop (𝓝 (volume (F₀ ∩ ball (0 : Euclid (m + 1)) s)))) ∧ ∀ s : ℝ, Tendsto (fun k => volume (ball (0 : Euclid (m + 1)) s \ Fs k)) atTop (𝓝 (volume (ball (0 : Euclid (m + 1)) s \ F₀))) := by
+  intro m Fs F₀ hFs hF₀ hconv
+  -- `a k → b` in `[0, ∞]` once `b < ∞` and `a k ≤ b + e k`, `b ≤ a k + e k` with `e k → 0`
+  have key : ∀ (a : ℕ → ℝ≥0∞) (b : ℝ≥0∞) (e : ℕ → ℝ≥0∞), b ≠ ∞ → Tendsto e atTop (𝓝 0) →
+      (∀ k, a k ≤ b + e k) → (∀ k, b ≤ a k + e k) → Tendsto a atTop (𝓝 b) := by
+    intro a b e hb he h1 h2
+    rw [ENNReal.tendsto_nhds hb]
+    intro ε hε
+    filter_upwards [he.eventually (gt_mem_nhds hε)] with k hk
+    constructor
+    · rw [tsub_le_iff_right]
+      exact (h2 k).trans (by gcongr)
+    · exact (h1 k).trans (by gcongr)
+  refine ⟨?_, ?_, ?_⟩
+  · intro f hf hfc
+    obtain ⟨R, hR⟩ : ∃ R, tsupport f ⊆ ball (0 : Euclid (m + 1)) R :=
+      hfc.isCompact.isBounded.subset_ball 0
+    obtain ⟨M, hM⟩ : ∃ M, ∀ z, ‖f z‖ ≤ M := hf.bounded_above_of_compact_support hfc
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+    have hM' : ∀ z, |f z| ≤ M := fun z => by rw [← Real.norm_eq_abs]; exact hM z
+    have hfi : Integrable f := hf.integrable_of_hasCompactSupport hfc
+    set E : ℕ → Set (Euclid (m + 1)) := fun k => symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) R
+    have hEm : ∀ k, MeasurableSet (E k) := fun k =>
+      ((hFs k).symmDiff hF₀).inter measurableSet_ball
+    have hEfin : ∀ k, volume (E k) ≠ ∞ := fun k =>
+      ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono Set.inter_subset_right)
+    -- `|1_{F_k} f − 1_{F₀} f| ≤ M · 1_{E k}`, as `f = 0` off `B_R(0)`
+    have hbound : ∀ k, ‖(∫ z in Fs k, f z) - ∫ z in F₀, f z‖ ≤ M * (volume (E k)).toReal := by
+      intro k
+      rw [← integral_indicator (hFs k), ← integral_indicator hF₀,
+        ← integral_sub (hfi.indicator (hFs k)) (hfi.indicator hF₀)]
+      have hgi : Integrable ((E k).indicator (fun _ => M)) :=
+        (integrableOn_const (hEfin k)).integrable_indicator (hEm k)
+      calc ‖∫ z, ((Fs k).indicator f z - F₀.indicator f z)‖
+          ≤ ∫ z, (E k).indicator (fun _ => M) z := by
+            refine norm_integral_le_of_norm_le hgi (Eventually.of_forall fun z => ?_)
+            by_cases hz : z ∈ E k
+            · rw [Set.indicator_of_mem hz]
+              by_cases h1 : z ∈ Fs k <;> by_cases h2 : z ∈ F₀ <;>
+                simp [Set.indicator_of_mem, Set.indicator_of_notMem, h1, h2, hM0, hM' z]
+            · rw [Set.indicator_of_notMem hz, norm_le_zero_iff, sub_eq_zero]
+              by_cases hzR : z ∈ ball (0 : Euclid (m + 1)) R
+              · -- `z ∉ F_k Δ F₀`, so `z ∈ F_k ↔ z ∈ F₀`
+                have hzs : z ∉ symmDiff (Fs k) F₀ := fun h => hz ⟨h, hzR⟩
+                rw [Set.mem_symmDiff, not_or, not_and_not_right, not_and_not_right] at hzs
+                by_cases h1 : z ∈ Fs k
+                · rw [Set.indicator_of_mem h1, Set.indicator_of_mem (hzs.1 h1)]
+                · rw [Set.indicator_of_notMem h1,
+                    Set.indicator_of_notMem fun h2 => h1 (hzs.2 h2)]
+              · have hfz : f z = 0 := image_eq_zero_of_notMem_tsupport fun h => hzR (hR h)
+                rw [Set.indicator_apply_eq_zero.2 fun _ => hfz,
+                  Set.indicator_apply_eq_zero.2 fun _ => hfz]
+        _ = M * (volume (E k)).toReal := by
+            rw [integral_indicator_const _ (hEm k), smul_eq_mul, mul_comm, measureReal_def]
+    have hlim : Tendsto (fun k => M * (volume (E k)).toReal) atTop (𝓝 0) := by
+      simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp (hconv R)).const_mul M
+    rw [← tendsto_sub_nhds_zero_iff]
+    exact squeeze_zero_norm hbound hlim
+  · intro s
+    have hb : volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ≠ ∞ :=
+      ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono Set.inter_subset_right)
+    refine key _ _ _ hb (hconv s) (fun k => ?_) (fun k => ?_)
+    · calc volume (Fs k ∩ ball (0 : Euclid (m + 1)) s)
+          ≤ volume ((F₀ ∩ ball (0 : Euclid (m + 1)) s) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ F₀
+            · exact Or.inl ⟨h, hz.2⟩
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inl ⟨hz.1, h⟩), hz.2⟩
+        _ ≤ _ := measure_union_le _ _
+    · calc volume (F₀ ∩ ball (0 : Euclid (m + 1)) s)
+          ≤ volume ((Fs k ∩ ball (0 : Euclid (m + 1)) s) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ Fs k
+            · exact Or.inl ⟨h, hz.2⟩
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inr ⟨hz.1, h⟩), hz.2⟩
+        _ ≤ _ := measure_union_le _ _
+  · intro s
+    have hb : volume (ball (0 : Euclid (m + 1)) s \ F₀) ≠ ∞ :=
+      ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono Set.sdiff_subset)
+    refine key _ _ _ hb (hconv s) (fun k => ?_) (fun k => ?_)
+    · calc volume (ball (0 : Euclid (m + 1)) s \ Fs k)
+          ≤ volume ((ball (0 : Euclid (m + 1)) s \ F₀) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ F₀
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inr ⟨h, hz.2⟩), hz.1⟩
+            · exact Or.inl ⟨hz.1, h⟩
+        _ ≤ _ := measure_union_le _ _
+    · calc volume (ball (0 : Euclid (m + 1)) s \ F₀)
+          ≤ volume ((ball (0 : Euclid (m + 1)) s \ Fs k) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ Fs k
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inl ⟨h, hz.2⟩), hz.1⟩
+            · exact Or.inl ⟨hz.1, h⟩
+        _ ≤ _ := measure_union_le _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
