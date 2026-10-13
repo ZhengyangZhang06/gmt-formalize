@@ -359,6 +359,148 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- For a.e. `t`, the slice `M ∩ f⁻¹{t}` of an `Hᵐ⁺¹`-null-measurable `M` by a measurable `f`
+is `Hᵐ`-null-measurable, given that `Hᵐ⁺¹⌞M`-a.e. properties hold `Hᵐ⌞(M ∩ f⁻¹{t})`-a.e. for
+a.e. `t`.  With a Borel `B ⊆ M`, `B = M` `Hᵐ⁺¹`-a.e., the slice is the Borel set `B ∩ f⁻¹{t}`
+plus the part outside `B`, which is `Hᵐ`-null for a.e. `t`. -/
+theorem Submission.slicing_im_st_mf_slice_null_measurable :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (f : Eucl P → ℝ),
+      NullMeasurableSet M (μHE[m + 1] : Measure (Eucl P)) → Measurable f →
+      (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) →
+        ∀ᵐ t ∂(volume : Measure ℝ),
+          ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) →
+      ∀ᵐ t ∂(volume : Measure ℝ),
+        NullMeasurableSet (M ∩ f ⁻¹' {t}) (μHE[m] : Measure (Eucl P)) := by
+  intro P m M f hM hf hNT
+  -- A Borel kernel `B ⊆ M` with `B = M` `Hᵐ⁺¹`-a.e.; then `x ∈ B` for `Hᵐ⁺¹⌞M`-a.e. `x`.
+  obtain ⟨B, hBM, hB, hBM_ae⟩ := hM.exists_measurable_subset_ae_eq
+  have hmemB : ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), x ∈ B := by
+    rw [← Measure.restrict_congr_set hBM_ae]
+    exact ae_restrict_mem hB
+  filter_upwards [hNT (· ∈ B) hmemB] with t ht
+  -- The part of the slice outside `B` is `Hᵐ`-null.
+  have hnull : (μHE[m] : Measure (Eucl P)) ({x | x ∉ B} ∩ (M ∩ f ⁻¹' {t})) = 0 :=
+    nonpos_iff_eq_zero.1 ((Measure.le_restrict_apply _ _).trans_eq (ae_iff.1 ht))
+  -- `M ∩ f⁻¹{t} = (B ∩ f⁻¹{t}) ∪ ({x ∉ B} ∩ M ∩ f⁻¹{t})`: a Borel set plus a null set.
+  have hsplit : M ∩ f ⁻¹' {t} = B ∩ f ⁻¹' {t} ∪ {x | x ∉ B} ∩ (M ∩ f ⁻¹' {t}) := by
+    ext x
+    by_cases hx : x ∈ B
+    · simp [hx, hBM hx]
+    · simp [hx]
+  rw [hsplit]
+  exact (hB.inter (hf (measurableSet_singleton t))).nullMeasurableSet.union_null hnull
+/-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
+lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
+theorem Submission.cmb_exists_compactly_contained_exhaustion :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P),
+      (∀ i, CompactlyContainedOpen (W i) U) ∧
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i := by
+  intro P U hU
+  -- `d x = infEDist x Uᶜ` is continuous and positive exactly on `U`.
+  have hd : Continuous fun x : Eucl P => infEDist x Uᶜ := continuous_infEDist
+  have hpos : ∀ x ∈ U, 0 < infEDist x Uᶜ := fun x hx => by
+    rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq, notMem_compl_iff]
+    exact hx
+  refine ⟨fun i => {x | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}, fun i => ?_,
+    fun K hK hKU => ?_⟩
+  · -- `closure (W i) ⊆ closedBall 0 i ∩ {(i + 1)⁻¹ ≤ d}`, a compact subset of `U`.
+    have hcl : closure ({x : Eucl P | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}) ⊆
+        closedBall 0 i ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ} :=
+      closure_minimal (fun x hx => ⟨mem_closedBall_zero_iff.2 hx.1.le,
+        show ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ from hx.2.le⟩)
+        (isClosed_closedBall.inter (isClosed_le continuous_const hd))
+    refine ⟨(isOpen_lt continuous_norm continuous_const).inter (isOpen_lt continuous_const hd),
+      (isCompact_closedBall 0 _).of_isClosed_subset isClosed_closure (hcl.trans inter_subset_left),
+      fun x hx => ?_⟩
+    by_contra hxU
+    have h : ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ := (hcl hx).2
+    rw [infEDist_zero_of_mem hxU, nonpos_iff_eq_zero, ENNReal.inv_eq_zero] at h
+    exact ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩ h
+  · -- A compact `K ⊆ U` is bounded and `d` has a positive minimum on it.
+    rcases K.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨0, empty_subset _⟩
+    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.1 hK.isBounded
+    obtain ⟨i₁, hi₁⟩ := exists_nat_gt R
+    obtain ⟨x₀, hx₀K, hx₀⟩ := hK.exists_isMinOn hne hd.continuousOn
+    obtain ⟨i₂, hi₂⟩ := ENNReal.exists_inv_nat_lt (hpos x₀ (hKU hx₀K)).ne'
+    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
+    · show ‖x‖ < ((max i₁ i₂ : ℕ) : ℝ)
+      calc ‖x‖ ≤ R := hR x hx
+        _ < i₁ := hi₁
+        _ ≤ (max i₁ i₂ : ℕ) := Nat.cast_le.2 (le_max_left _ _)
+    · show (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ
+      calc (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (i₂ : ℝ≥0∞)⁻¹ :=
+            ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
+        _ < infEDist x₀ Uᶜ := hi₂
+        _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
+
+/-- For `L¹`-a.e. `t`, `θ` is `Hᵐ`-integrable on `M ∩ f⁻¹{t} ∩ K` for every compact `K ⊆ U`:
+co-area with `g = 1_{Kᵢ} |θ₀|` over a compact exhaustion `Kᵢ` of `U`, `θ₀` a Borel version of
+`θ` on `M`, transferred to the slices by the null-transfer hypothesis. -/
+theorem Submission.slicing_im_st_mf_slice_integrable :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (f : Eucl P → ℝ) (L : ℝ≥0)
+      (G : Eucl P → Eucl P), IsOpen U → M ⊆ U →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+        IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) →
+      (∀ x, ‖G x‖ ≤ L) →
+      (∀ g : Eucl P → ℝ≥0∞, Measurable g →
+        AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)))
+          (volume : Measure ℝ) ∧
+        ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) =
+          ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) →
+      (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) →
+        ∀ᵐ t ∂(volume : Measure ℝ),
+          ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) →
+      ∀ᵐ t ∂(volume : Measure ℝ), ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+        IntegrableOn θ (M ∩ f ⁻¹' {t} ∩ K) (μHE[m] : Measure (Eucl P)) := by
+  intro P m U M θ f L G hU hMU hθ hG hCA hNT
+  -- Compact Borel sets `closure (W i) ⊆ U`; every compact `C ⊆ U` lies in one of them.
+  obtain ⟨W, hW, hWK⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  have hKU : ∀ i, closure (W i) ⊆ U := fun i => (hW i).2.2
+  have hKm : ∀ i, MeasurableSet (closure (W i)) := fun _ => isClosed_closure.measurableSet
+  have hK : ∀ C : Set (Eucl P), IsCompact C → C ⊆ U → ∃ i, C ⊆ closure (W i) := fun C hC hCU =>
+    (hWK C hC hCU).imp fun _ h => h.trans subset_closure
+  -- `θ` is a.e. strongly measurable on `M = ⋃ i, M ∩ closure (W i)`; `θ₀` is a Borel version.
+  have hM : M = ⋃ i, M ∩ closure (W i) := by
+    refine (iUnion_subset fun _ => inter_subset_left).antisymm' fun x hx => ?_
+    obtain ⟨i, hi⟩ := hK {x} isCompact_singleton (singleton_subset_iff.2 (hMU hx))
+    exact mem_iUnion.2 ⟨i, hx, hi rfl⟩
+  have hθm : AEStronglyMeasurable θ ((μHE[m + 1] : Measure (Eucl P)).restrict M) := by
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    exact fun i => (hθ _ (hW i).2.1 (hKU i)).aestronglyMeasurable
+  obtain ⟨θ₀, hθ₀, hθθ₀⟩ := hθm
+  have hGL : ∀ x, ‖G x‖ₑ ≤ (L : ℝ≥0∞) := fun x =>
+    enorm_le_coe.2 (NNReal.coe_le_coe.1 (by simpa only [coe_nnnorm] using hG x))
+  -- Co-area with `g = 1_{closure (W i)} ‖θ₀‖ₑ`: `∫ J_i dt ≤ L ∫_{M ∩ closure (W i)} ‖θ‖ₑ < ∞`,
+  -- so the slice integral `J_i t` is finite for a.e. `t`, simultaneously for all `i`.
+  have hfin : ∀ᵐ t ∂(volume : Measure ℝ), ∀ i, ∫⁻ x in M ∩ f ⁻¹' {t},
+      (closure (W i)).indicator (fun y => ‖θ₀ y‖ₑ) x ∂(μHE[m] : Measure (Eucl P)) < ∞ := by
+    refine ae_all_iff.2 fun i => ?_
+    obtain ⟨hJm, hJ⟩ := hCA _ (hθ₀.measurable.enorm.indicator (hKm i))
+    refine ae_lt_top' hJm (ne_top_of_le_ne_top ?_ hJ.le)
+    refine ne_top_of_le_ne_top ?_ (lintegral_mono fun x => mul_le_mul_left (hGL x) _)
+    have h₁ : ∫⁻ x in M ∩ closure (W i), ‖θ x‖ₑ ∂(μHE[m + 1] : Measure (Eucl P)) =
+        ∫⁻ x in M ∩ closure (W i), ‖θ₀ x‖ₑ ∂(μHE[m + 1] : Measure (Eucl P)) :=
+      lintegral_congr_ae ((ae_restrict_of_ae_restrict_of_subset inter_subset_left hθθ₀).mono
+        fun x hx => congrArg (‖·‖ₑ) hx)
+    rw [lintegral_const_mul' _ _ ENNReal.coe_ne_top, lintegral_indicator (hKm i),
+      Measure.restrict_restrict (hKm i), inter_comm (closure (W i)), ← h₁]
+    exact ENNReal.mul_ne_top ENNReal.coe_ne_top (hθ _ (hW i).2.1 (hKU i)).2.ne
+  -- For such `t` (with `θ = θ₀` a.e. on the slice), `θ` is integrable on each
+  -- `M ∩ f⁻¹{t} ∩ closure (W i)`, hence on `M ∩ f⁻¹{t} ∩ K`.
+  filter_upwards [hNT (fun x => θ x = θ₀ x) hθθ₀, hfin] with t ht hti K hKc hKsub
+  obtain ⟨i, hi⟩ := hK K hKc hKsub
+  have hS : ∀ᵐ x ∂(μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t} ∩ closure (W i)),
+      θ x = θ₀ x := ae_restrict_of_ae_restrict_of_subset inter_subset_left ht
+  have h₂ : ∫⁻ x in M ∩ f ⁻¹' {t} ∩ closure (W i), ‖θ x‖ₑ ∂(μHE[m] : Measure (Eucl P)) =
+      ∫⁻ x in M ∩ f ⁻¹' {t}, (closure (W i)).indicator (fun y => ‖θ₀ y‖ₑ) x
+        ∂(μHE[m] : Measure (Eucl P)) := by
+    rw [lintegral_indicator (hKm i), Measure.restrict_restrict (hKm i),
+      inter_comm (closure (W i))]
+    exact lintegral_congr_ae (hS.mono fun x hx => congrArg (‖·‖ₑ) hx)
+  have hint : IntegrableOn θ (M ∩ f ⁻¹' {t} ∩ closure (W i)) (μHE[m] : Measure (Eucl P)) :=
+    ⟨hθ₀.aestronglyMeasurable.congr (hS.mono fun x hx => hx.symm), h₂.trans_lt (hti i)⟩
+  exact hint.mono_set (inter_subset_inter_right _ hi)
 /-- Null transfer to slices (Simon Ch. 6, §4; Step 1 of the slice triple): under the co-area
 identity for `(M, f, G)`, a property holding `H^{m+1}`-a.e. on `M` holds `H^m`-a.e. on
 `M ∩ f⁻¹{t}` for `L¹`-a.e. `t`.  Apply the co-area identity to the indicator of a measurable
@@ -391,6 +533,100 @@ theorem Submission.slicing_im_st_ae_transfer :
   filter_upwards [hint] with t ht
   rw [Pi.zero_apply, lintegral_indicator_one hZ] at ht
   exact ae_iff.2 (measure_mono_null (subset_toMeasurable _ _) ht)
+/-- `v ↦ ι(v)`, `ι(v) α = alternatizeUncurryFin ((innerSL ℝ v).smulRight α) = v♭ ∧ α`, is
+`(m + 1)`-Lipschitz from `ℝ^P` to `Λ^m →L Λ^{m+1}` with the operator norm. -/
+theorem Submission.slicing_im_st_mf_contraction_lipschitz :
+    ∀ (P m : ℕ), LipschitzWith ((m : ℝ≥0) + 1) (fun v : Eucl P =>
+      (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ v))) := by
+  intro P m
+  let ι : Eucl P → (Covector (Eucl P) m →L[ℝ] Covector (Eucl P) (m + 1)) := fun v =>
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+      (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ v))
+  -- Step 1: `ι(v) α = alternatizeUncurryFin ((innerSL ℝ v).smulRight α)` by definition.
+  have hform (v : Eucl P) (α : Covector (Eucl P) m) :
+      ι v α = ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ v).smulRight α) := rfl
+  -- Step 2: `ι(v) - ι(w) = ι(v - w)`, checked at every `α` and `σ = (σ₀, …, σₘ)`.
+  have hsub (v w : Eucl P) : ι v - ι w = ι (v - w) := by
+    ext α σ
+    simp only [_root_.sub_apply, ContinuousAlternatingMap.sub_apply, hform,
+      ContinuousAlternatingMap.alternatizeUncurryFin_apply, ContinuousLinearMap.smulRight_apply,
+      ContinuousAlternatingMap.smul_apply, innerSL_apply_apply, inner_sub_left, sub_smul,
+      smul_sub, Finset.sum_sub_distrib]
+  -- Step 3: `‖ι(u)‖ ≤ (m + 1) |u|`.
+  have hnorm (u : Eucl P) : ‖ι u‖ ≤ ((m : ℝ) + 1) * ‖u‖ := by
+    refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun α => ?_
+    rw [hform]
+    calc ‖ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ u).smulRight α)‖
+        ≤ ((m : ℝ) + 1) * ‖(innerSL ℝ u).smulRight α‖ :=
+          ContinuousAlternatingMap.norm_alternatizeUncurryFin_le _
+      _ = ((m : ℝ) + 1) * ‖u‖ * ‖α‖ := by
+          rw [ContinuousLinearMap.norm_smulRight_apply, innerSL_apply_norm, mul_assoc]
+  -- Step 4: `dist (ι v) (ι w) = ‖ι (v - w)‖ ≤ (m + 1) dist v w`.
+  change LipschitzWith ((m : ℝ≥0) + 1) ι
+  refine LipschitzWith.of_dist_le_mul fun v w => ?_
+  rw [dist_eq_norm, dist_eq_norm, hsub, NNReal.coe_add, NNReal.coe_natCast, NNReal.coe_one]
+  exact hnorm (v - w)
+
+/-- For `L¹`-a.e. `t`, the sliced orientation `x ↦ ξ(x) ∘ ι(|G x|⁻¹ G x)`, where
+`ι v = (v♭ ∧ ·) : Λᵐ → Λᵐ⁺¹`, is a.e. strongly measurable for `Hᵐ` on `M ∩ f⁻¹{t}`:
+it agrees there with `x ↦ ξ₀(x) ∘ ι(|G x|⁻¹ G x)` for a strongly measurable version `ξ₀` of `ξ`. -/
+theorem Submission.slicing_im_st_mf_slice_orientation_aesm :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ)
+      (G : Eucl P → Eucl P),
+      AEStronglyMeasurable ξ ((μHE[m + 1] : Measure (Eucl P)).restrict M) → Measurable G →
+      (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) →
+        ∀ᵐ t ∂(volume : Measure ℝ),
+          ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) →
+      ∀ᵐ t ∂(volume : Measure ℝ), AEStronglyMeasurable (fun x => (ξ x).comp
+        ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+          (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)
+            (innerSL ℝ (‖G x‖⁻¹ • G x)))))
+        ((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})) := by
+  intro P m M ξ f G hξ hG hNT
+  -- `x ↦ ι(|G x|⁻¹ G x)` is strongly measurable: `ι` is Lipschitz and `G` is measurable.
+  have hν : StronglyMeasurable fun x => ‖G x‖⁻¹ • G x :=
+    (hG.norm.inv.smul hG).stronglyMeasurable
+  have hιν := (Submission.slicing_im_st_mf_contraction_lipschitz P m).continuous
+    |>.comp_stronglyMeasurable hν
+  -- With `ξ₀` a strongly measurable version of `ξ`, `F x = ξ₀ x ∘ ι(|G x|⁻¹ G x)` is strongly
+  -- measurable, as operator composition is continuous.
+  have hF : StronglyMeasurable fun x => (hξ.mk ξ x).comp
+      ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)
+          (innerSL ℝ (‖G x‖⁻¹ • G x)))) :=
+    (continuous_fst.clm_comp continuous_snd).comp_stronglyMeasurable
+      (hξ.stronglyMeasurable_mk.prodMk hιν)
+  -- Null transfer of `ξ = ξ₀` to the slices; there `F` agrees a.e. with the sliced orientation.
+  filter_upwards [hNT (fun x => ξ x = hξ.mk ξ x) hξ.ae_eq_mk] with t ht
+  exact hF.aestronglyMeasurable.congr (ht.mono fun x hx => by simp only [hx])
+
+/-- Measure-theoretic fields of the slice triple (Simon Ch. 6, §4; Steps 2, 4, 5 and 6 of the
+slice triple): under the co-area identity for `(M, f, G)`, for `L¹`-a.e. `t` the set
+`M_t = {x ∈ M : f x = t, G x ≠ 0}` is `H^m`-null-measurable, `θ` is `H^m`-integrable on
+`M_t ∩ K` for every compact `K ⊆ U`, and `ξ_t = ξ ∘ ι(|G|⁻¹ G)` is `H^m⌞M_t`-a.e. strongly
+measurable.  The null transfer moves the fields of `(M, θ, ξ)` to the whole slice
+`M ∩ f⁻¹{t}`, and `M_t = (M ∩ f⁻¹{t}) ∩ G⁻¹{0}ᶜ` inherits them. -/
+theorem Submission.slicing_im_st_measure_fields : ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → Measurable f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) → ∀ᵐ t ∂(volume : Measure ℝ), NullMeasurableSet {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} (μHE[m] : Measure (Eucl P)) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ ({x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ∩ K) (μHE[m] : Measure (Eucl P))) ∧ AEStronglyMeasurable (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ((μHE[m] : Measure (Eucl P)).restrict {x | x ∈ M ∧ f x = t ∧ G x ≠ 0}) := by
+  intro P m U M θ ξ f L G hU hT hf hG hGL hcoarea
+  -- Null transfer: `H^{m+1}⌞M`-a.e. properties hold `H^m⌞(M ∩ f⁻¹{t})`-a.e. for a.e. `t`.
+  have hNT := Submission.slicing_im_st_ae_transfer P m M f G hcoarea
+  -- The three fields on the whole slice `M ∩ f⁻¹{t}`, each for a.e. `t`.
+  have hnull := Submission.slicing_im_st_mf_slice_null_measurable P m M f hT.nullMeasurableSet
+    hf hNT
+  have hint := Submission.slicing_im_st_mf_slice_integrable P m U M θ f L G hU hT.subset
+    hT.integrableOn hGL hcoarea hNT
+  have haesm := Submission.slicing_im_st_mf_slice_orientation_aesm P m M ξ f G
+    hT.aestronglyMeasurable hG hNT
+  filter_upwards [hnull, hint, haesm] with t hnull_t hint_t haesm_t
+  -- `M_t = (M ∩ f⁻¹{t}) ∩ G⁻¹{0}ᶜ`, a subset of the slice.
+  have hMt : {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} = M ∩ f ⁻¹' {t} ∩ G ⁻¹' {0}ᶜ :=
+    Set.ext fun _ => and_assoc.symm
+  have hsub : {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ⊆ M ∩ f ⁻¹' {t} := fun x hx => ⟨hx.1, hx.2.1⟩
+  refine ⟨?_, fun K hK hKU => (hint_t K hK hKU).mono_set (inter_subset_inter_left K hsub),
+    haesm_t.mono_set hsub⟩
+  rw [hMt]
+  exact hnull_t.inter (hG (measurableSet_singleton 0).compl).nullMeasurableSet
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
