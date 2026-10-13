@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0e184046fa3b4e4ff63be212154d44752dc71faeeb812d099d020c9e1e69ced4",
+  "git_delta": {
+    "base_commit": "9d1ff5d6efba63f79eec98f12bdda9be30e6dcdd",
+    "candidate_commit": "bc7325b5ff1741b71fb7edd55da29c936b7263b7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_ti_directional_annihilated",
+    "diff_sha256": "ab3e0eb00df02912f51f43c7383d35cce38264d4235c024dd46f77b8817fb7c1",
+    "source_sha256": "0199172756b392b889db7b8880127120da049e3fc0659539135f07688cecaef7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_ti_directional_annihilated",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), 0 < n → R.Represents S → BoundaryVanishes S → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β v) = 0) → ∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = fderiv ℝ (β : DifferentialForm (Euclid P) n) y v) → S γ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
