@@ -335,6 +335,103 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Flat flux identity** (the flat limit in the last step of Simon Ch. 3, proof of Thm. 4.3,
+`chapter-03.txt` lines 739–746: `μ_{ρ⁻¹E} → Hⁿ ⌞ {x^{n+1} = 0}`): for `|e| = 1`,
+`H = {y : ⟨y, e⟩ > 0}`, `P = (span{e})^⊥` and `φ ∈ C¹_c(ℝ^{n+1})`,
+`∫_H D_eφ dL^{n+1} = -∫_P φ dHⁿ`. Split `ℝ^{n+1} ≅ span{e} × P` measure-preservingly and apply
+Fubini; on each line `t ↦ te + p` (`p ∈ P`, so `⟨te + p, e⟩ = t`) the improper FTC gives
+`∫_0^∞ D_eφ(te + p) dt = -φ(p)`; finally `Hⁿ ⌞ P` is the volume of `P`, as `dim P = n`. -/
+theorem Submission.deGiorgiTM_halfSpace_integral_fderiv : ∀ (n : ℕ) (e : Rn (n + 1)) (φ : Rn (n + 1) → ℝ), ‖e‖ = 1 → ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ y in {y : Rn (n + 1) | 0 < inner ℝ y e}, fderiv ℝ φ y e = -∫ y in ((Submodule.span ℝ {e})ᗮ : Set (Rn (n + 1))), φ y ∂μHE[n] := by
+  intro n e φ he hφ hφc
+  set L : Submodule ℝ (Rn (n + 1)) := Submodule.span ℝ {e}
+  set H : Set (Rn (n + 1)) := {y | 0 < inner ℝ y e}
+  set ψ : Rn (n + 1) → ℝ := fun y ↦ fderiv ℝ φ y e
+  -- Step 1: `dim P = n`, `ψ = D_eφ` is continuous with compact support, and `H` is open.
+  have he0 : e ≠ 0 := by
+    rintro rfl
+    simp at he
+  have : Fact (finrank ℝ (Rn (n + 1)) = n + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hfinP : finrank ℝ Lᗮ = n := Submodule.finrank_orthogonal_span_singleton he0
+  have hψc : Continuous ψ := (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hψcs : HasCompactSupport ψ := hφc.fderiv_apply ℝ e
+  have hψi : Integrable ψ := hψc.integrable_of_hasCompactSupport hψcs
+  have hHm : MeasurableSet H :=
+    (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+  -- Step 2: the measure-preserving decomposition `Φ : ℝ^{n+1} ≃ L × P`, then Fubini.
+  let Φ := L.measurableEquivProd (0 : Rn (n + 1))
+  have hΦ : MeasurePreserving Φ volume volume := by
+    have := L.measurePreserving_measurableEquivProd (0 : Rn (n + 1))
+    rwa [InnerProductSpace.euclideanHausdorffMeasure_eq_volume] at this
+  have hΦs : MeasurePreserving Φ.symm volume volume := hΦ.symm Φ
+  have hΦapp : ∀ q : L × Lᗮ, Φ.symm q = (q.1 : Rn (n + 1)) + q.2 := by
+    intro q
+    simp [Φ]
+  let F : L × Lᗮ → ℝ := fun q ↦ H.indicator ψ (Φ.symm q)
+  have hFi : Integrable F (volume.prod volume) :=
+    (hΦs.integrable_comp_emb Φ.symm.measurableEmbedding).mpr (hψi.indicator hHm)
+  have h1 : ∫ y in H, ψ y = ∫ p : Lᗮ, ∫ l : L, F (l, p) := by
+    rw [← integral_indicator hHm, ← hΦs.integral_comp' (H.indicator ψ)]
+    exact integral_prod_symm F hFi
+  -- Steps 3–4: for `p ∈ P` the inner integral is `∫_0^∞ ψ(te + p) dt = -φ(p)`.
+  have h2 : ∀ p : Lᗮ, ∫ l : L, F (l, p) = -φ p := by
+    intro p
+    let T := LinearIsometryEquiv.toSpanUnitSingleton (𝕜 := ℝ) e he
+    have hT : MeasurePreserving T volume volume := T.measurePreserving
+    have hp : inner ℝ (p : Rn (n + 1)) e = 0 := by
+      have := p.2
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right] at this
+      rwa [real_inner_comm]
+    set c : ℝ → Rn (n + 1) := fun t ↦ t • e + p
+    have hcinner : ∀ t : ℝ, inner ℝ (c t) e = t := by
+      intro t
+      simp [c, inner_add_left, inner_smul_left, he, hp]
+    have hcpre : c ⁻¹' H = Ioi 0 := by
+      ext t
+      simp [H, hcinner]
+    have hciso : Isometry c := by
+      refine Isometry.of_dist_eq fun s t ↦ ?_
+      simp [c, dist_eq_norm, ← sub_smul, norm_smul, he]
+    have hcemb : Topology.IsClosedEmbedding c := hciso.isClosedEmbedding
+    have hcc : Continuous c := hciso.continuous
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun t ↦ φ (c t)) (ψ (c t)) t := by
+      intro t
+      have hc' : HasDerivAt c e t := by
+        simpa only [one_smul] using ((hasDerivAt_id' t).smul_const e).add_const (p : Rn (n + 1))
+      exact ((hφ.differentiable one_ne_zero) (c t)).hasFDerivAt.comp_hasDerivAt t hc'
+    have hfcs : HasCompactSupport (φ ∘ c) := hφc.comp_isClosedEmbedding hcemb
+    have hgcs : HasCompactSupport (ψ ∘ c) := hψcs.comp_isClosedEmbedding hcemb
+    have hgi : Integrable (ψ ∘ c) := (hψc.comp hcc).integrable_of_hasCompactSupport hgcs
+    have hlim : Tendsto (φ ∘ c) atTop (𝓝 0) :=
+      hfcs.is_zero_at_infty.mono_left atTop_le_cocompact
+    calc ∫ l : L, F (l, p) = ∫ t : ℝ, F (T t, p) :=
+          (hT.integral_comp T.toMeasurableEquiv.measurableEmbedding (fun l ↦ F (l, p))).symm
+      _ = ∫ t : ℝ, (Ioi (0 : ℝ)).indicator (ψ ∘ c) t := by
+          congr 1
+          ext t
+          rw [← hcpre, indicator_comp_right]
+          simp [F, hΦapp, T, c]
+      _ = ∫ t in Ioi (0 : ℝ), (ψ ∘ c) t := integral_indicator measurableSet_Ioi
+      _ = 0 - (φ ∘ c) 0 :=
+          integral_Ioi_of_hasDerivAt_of_tendsto (hφ.continuous.comp hcc).continuousWithinAt
+            (fun t _ ↦ hderiv t) hgi.integrableOn hlim
+      _ = -φ p := by simp [c]
+  -- Step 5: `Hⁿ ⌞ P` is the push-forward of the volume of `P`, since `dim P = n`.
+  have h3 : ∫ y in (Lᗮ : Set (Rn (n + 1))), φ y ∂μHE[n] = ∫ p : Lᗮ, φ p := by
+    have hmap := Isometry.map_euclideanHausdorffMeasure (d := n)
+      (isometry_subtype_coe (s := (Lᗮ : Set (Rn (n + 1)))))
+    rw [Subtype.range_coe] at hmap
+    have hPm : MeasurableSet (Lᗮ : Set (Rn (n + 1))) :=
+      Lᗮ.closed_of_finiteDimensional.measurableSet
+    have hvol : (μHE[finrank ℝ Lᗮ] : Measure Lᗮ) = volume :=
+      InnerProductSpace.euclideanHausdorffMeasure_eq_volume
+    rw [hfinP] at hvol
+    rw [← hmap, (MeasurableEmbedding.subtype_coe hPm).integral_map, hvol]
+    rfl
+  -- Step 6: combine Steps 2–5.
+  show ∫ y in H, ψ y = _
+  rw [h1, h3, ← integral_neg]
+  exact integral_congr_ae (Eventually.of_forall h2)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

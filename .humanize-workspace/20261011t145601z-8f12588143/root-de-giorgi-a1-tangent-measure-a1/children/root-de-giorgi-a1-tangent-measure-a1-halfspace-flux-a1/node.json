@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.halfspace_flux-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1",
+  "depth": 3,
+  "title": "Flat flux identity: ∫ of D_eφ over the half-space {⟨y,e⟩ > 0} equals −∫_{e^⊥} φ dHⁿ",
+  "statement": "Let n ∈ ℕ, N := n + 1, ℝ^N = EuclideanSpace ℝ (Fin N), e ∈ ℝ^N with |e| = 1, H := {y ∈ ℝ^N : ⟨y, e⟩ > 0}, P := (span{e})^⊥ and Hⁿ := μHE[n] (Mathlib's Euclidean Hausdorff measure on ℝ^N). Let φ : ℝ^N → ℝ be C¹ with compact support. Then ∫_H Dφ(y)e dL^N(y) = −∫_P φ dHⁿ. Here Dφ(y)e = fderiv ℝ φ y e, L^N = volume, and ∫_H, ∫_P are integrals against the restricted measures L^N⌞H and Hⁿ⌞P.",
+  "lean_statement": "∀ (n : ℕ) (e : Rn (n + 1)) (φ : Rn (n + 1) → ℝ), ‖e‖ = 1 → ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ y in {y : Rn (n + 1) | 0 < inner ℝ y e}, fderiv ℝ φ y e = -∫ y in ((Submodule.span ℝ {e})ᗮ : Set (Rn (n + 1))), φ y ∂μHE[n]",
+  "lean_name": "deGiorgiTM_halfSpace_integral_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-halfspace-flux-a1-a1"
+}
