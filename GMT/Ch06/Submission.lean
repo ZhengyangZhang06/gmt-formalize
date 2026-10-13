@@ -749,6 +749,106 @@ theorem Submission.slicing_im_si_left_lebesgue_point :
     Real.volume_Icc]
   rw [integral_smul_measure, integral_Icc_eq_integral_Ioo, show t - (t - ε) = ε by ring,
     ENNReal.toReal_inv, ENNReal.toReal_ofReal hε.le, smul_eq_mul]
+/-- Tangential gradient of the level cut-off `h_ε = ψ ∘ f`, `ψ(s) = max(0, min(1, (t - s)/ε))`:
+`h_ε` is Lipschitz and, wherever `G` is a tangential gradient of `f` vanishing on the level sets
+`{f = t - ε}` and `{f = t}`, `G_ε = 1_{t - ε < f < t} · (-ε⁻¹ G)` is a bounded Borel tangential
+gradient of `h_ε` (Simon Ch. 6, proof of 4.5(2)). -/
+theorem Submission.slicing_im_si_cutoff_tangential_gradient :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (Tan : Eucl P → Submodule ℝ (Eucl P) → Prop) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P) (t ε : ℝ), 0 < ε → LipschitzWith L f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂μ, ∀ Q : Submodule ℝ (Eucl P), Tan x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → (∀ᵐ x ∂μ, f x = t - ε → G x = 0) → (∀ᵐ x ∂μ, f x = t → G x = 0) → ∃ K : ℝ≥0, LipschitzWith K (fun x => max 0 (min 1 ((t - f x) / ε))) ∧ Measurable ((f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y)) ∧ (∀ x, ‖(f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x‖ ≤ K) ∧ ∀ᵐ x ∂μ, ∀ Q : Submodule ℝ (Eucl P), Tan x Q → (f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => max 0 (min 1 ((t - f (x + s • u)) / ε))) (inner ℝ ((f ⁻¹' Ioo (t - ε) t).indicator (fun y => (-ε⁻¹) • G y) x) u) 0 := by
+  intro P μ Tan f L G t ε hε hf hG hGL hTG h1 h2
+  set ψ : ℝ → ℝ := fun s => max 0 (min 1 ((t - s) / ε)) with hψdef
+  set Kψ : ℝ≥0 := ⟨ε⁻¹, inv_nonneg.2 hε.le⟩ with hKψ
+  -- `ψ` is `ε⁻¹`-Lipschitz: an affine map of slope `-ε⁻¹`, clamped to `[0, 1]`.
+  have hψL : LipschitzWith Kψ ψ := by
+    have hlin : LipschitzWith Kψ (fun s : ℝ => (t - s) / ε) := by
+      refine LipschitzWith.of_dist_le_mul fun a b => ?_
+      rw [Real.dist_eq, Real.dist_eq, show (t - a) / ε - (t - b) / ε = ε⁻¹ * (b - a) by ring,
+        abs_mul, abs_of_pos (inv_pos.2 hε), abs_sub_comm]
+      rfl
+    exact (hlin.const_min 1).const_max 0
+  have hfm : Measurable f := hf.continuous.measurable
+  set E : Set (Eucl P) := f ⁻¹' Ioo (t - ε) t with hEdef
+  have hE : MeasurableSet E := hfm measurableSet_Ioo
+  refine ⟨Kψ * L, hψL.comp hf, (hG.const_smul (-ε⁻¹)).indicator hE, fun x => ?_, ?_⟩
+  · -- `‖G_ε x‖ ≤ ε⁻¹ L`
+    by_cases hx : x ∈ E
+    · rw [indicator_of_mem hx, norm_smul, Real.norm_eq_abs, abs_neg, abs_of_pos (inv_pos.2 hε)]
+      simp only [hKψ]
+      exact mul_le_mul_of_nonneg_left (hGL x) (inv_nonneg.2 hε.le)
+    · rw [indicator_of_notMem hx, norm_zero]
+      exact NNReal.coe_nonneg _
+  · filter_upwards [hTG, h1, h2] with x hx hx1 hx2
+    intro Q hQ
+    obtain ⟨hGQ, hder⟩ := hx Q hQ
+    constructor
+    · by_cases hxE : x ∈ E
+      · rw [indicator_of_mem hxE]; exact Q.smul_mem _ hGQ
+      · rw [indicator_of_notMem hxE]; exact Q.zero_mem
+    intro u hu
+    have hd := hder u hu
+    have hc : ContinuousAt (fun s : ℝ => f (x + s • u)) 0 := hd.continuousAt
+    -- the cut-off composed with the line
+    change HasDerivAt (fun s => ψ (f (x + s • u))) _ 0
+    -- at points where `G x = 0` the Lipschitz bound gives derivative `0`
+    have edge : G x = 0 → HasDerivAt (fun s : ℝ => ψ (f (x + s • u))) 0 (0 : ℝ) := by
+      intro hG0
+      rw [hG0, inner_zero_left] at hd
+      rw [hasDerivAt_iff_isLittleO] at hd ⊢
+      simp only [sub_zero, smul_zero] at hd ⊢
+      refine Asymptotics.IsBigO.trans_isLittleO ?_ hd
+      refine Asymptotics.IsBigO.of_bound (Kψ : ℝ) (Eventually.of_forall fun s => ?_)
+      have := hψL.dist_le_mul (f (x + s • u)) (f (x + (0 : ℝ) • u))
+      simpa [Real.dist_eq, Real.norm_eq_abs] using this
+    -- case analysis on the position of `f x`
+    rcases lt_trichotomy (f x) (t - ε) with hlt | heq | hgt
+    · -- below the band: locally constant `1`
+      have hxE : x ∉ E := fun h => by simp [hEdef] at h; linarith [h.1]
+      rw [indicator_of_notMem hxE, inner_zero_left]
+      have hev : ∀ᶠ s in 𝓝 (0 : ℝ), f (x + s • u) < t - ε := by
+        have := hc.eventually_lt (continuousAt_const (y := t - ε)) (by simpa using hlt)
+        simpa using this
+      apply (hasDerivAt_const (0 : ℝ) (1 : ℝ)).congr_of_eventuallyEq
+      filter_upwards [hev] with s hs
+      have : 1 ≤ (t - f (x + s • u)) / ε := by rw [le_div_iff₀ hε]; linarith
+      simp only [hψdef, min_eq_left this, max_eq_right zero_le_one]
+    · -- lower edge: `G x = 0`
+      have hxE : x ∉ E := fun h => by simp [hEdef] at h; linarith [h.1]
+      rw [indicator_of_notMem hxE, inner_zero_left]
+      exact edge (hx1 heq)
+    · rcases lt_trichotomy (f x) t with hlt' | heq' | hgt'
+      · -- inside the band: affine with slope `-1/ε`
+        have hxE : x ∈ E := by simp [hEdef]; exact ⟨hgt, hlt'⟩
+        rw [indicator_of_mem hxE, real_inner_smul_left]
+        have hev1 : ∀ᶠ s in 𝓝 (0 : ℝ), t - ε < f (x + s • u) := by
+          have := (continuousAt_const (y := t - ε)).eventually_lt hc (by simpa using hgt)
+          simpa using this
+        have hev2 : ∀ᶠ s in 𝓝 (0 : ℝ), f (x + s • u) < t := by
+          have := hc.eventually_lt (continuousAt_const (y := t)) (by simpa using hlt')
+          simpa using this
+        have hlin : HasDerivAt (fun s : ℝ => (t - f (x + s • u)) / ε)
+            (-ε⁻¹ * inner ℝ (G x) u) 0 := by
+          have := (hd.const_sub t).div_const ε
+          convert this using 1
+          field_simp
+        apply hlin.congr_of_eventuallyEq
+        filter_upwards [hev1, hev2] with s hs1 hs2
+        have ha : (t - f (x + s • u)) / ε ≤ 1 := by rw [div_le_iff₀ hε]; linarith
+        have hb : 0 ≤ (t - f (x + s • u)) / ε := div_nonneg (by linarith) hε.le
+        simp only [hψdef, min_eq_right ha, max_eq_right hb]
+      · -- upper edge: `G x = 0`
+        have hxE : x ∉ E := fun h => by simp [hEdef] at h; linarith [h.2]
+        rw [indicator_of_notMem hxE, inner_zero_left]
+        exact edge (hx2 heq')
+      · -- above the band: locally constant `0`
+        have hxE : x ∉ E := fun h => by simp [hEdef] at h; linarith [h.2]
+        rw [indicator_of_notMem hxE, inner_zero_left]
+        have hev : ∀ᶠ s in 𝓝 (0 : ℝ), t < f (x + s • u) := by
+          have := (continuousAt_const (y := t)).eventually_lt hc (by simpa using hgt')
+          simpa using this
+        apply (hasDerivAt_const (0 : ℝ) (0 : ℝ)).congr_of_eventuallyEq
+        filter_upwards [hev] with s hs
+        have : (t - f (x + s • u)) / ε ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hε.le
+        simp only [hψdef, max_eq_left ((min_le_right _ _).trans this)]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
