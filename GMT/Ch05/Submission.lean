@@ -458,6 +458,34 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 7.1, second assertion (p. 127): if `H = h` `μ_V`-a.e. for some
+`h` continuous on `U`, then `H` is locally in `Lᵖ(μ_V)` in `U` for every `p > 0`.  On a compact
+`K ⊆ U`, `|h| ≤ A` and `μ_V(K) = ∫_{M ∩ K} θ dHⁿ < ∞`, so `∫_K |H|ᵖ dμ_V ≤ Aᵖ μ_V(K) < ∞`. -/
+theorem dohr_locally_lp_of_continuous : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H h : Amb n ℓ → Amb n ℓ), ContinuousOn h U → (∀ᵐ x ∂V.weight, H x = h x) → ∀ p : ℝ, 0 < p → V.LocallyLp H p := by
+  intro n ℓ U V H h hh hHh p hp K hK hKU
+  -- `|h| ≤ A` on the compact set `K ⊆ U`.
+  obtain ⟨A, hA⟩ := hK.exists_bound_of_continuousOn (hh.mono hKU)
+  -- `μ_V(K) = ∫_{M ∩ K} θ dHⁿ < ∞` since `θ` is `Hⁿ`-integrable on `M ∩ K`.
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  have hμK : V.weight K < ∞ := by
+    rw [RectifiableVarifold.weight, withDensity_apply _ hKm, Measure.restrict_restrict hKm,
+      Set.inter_comm]
+    exact (V.integrableOn_mult K hK hKU).setLIntegral_lt_top
+  calc ∫⁻ x in K, ‖H x‖ₑ ^ p ∂V.weight
+      = ∫⁻ x in K, ‖h x‖ₑ ^ p ∂V.weight :=
+        lintegral_congr_ae (by filter_upwards [ae_restrict_of_ae hHh] with x hx; rw [hx])
+    _ ≤ ∫⁻ _ in K, ENNReal.ofReal A ^ p ∂V.weight :=
+        setLIntegral_mono measurable_const fun x hx => by
+          gcongr
+          rw [← ofReal_norm]
+          exact ENNReal.ofReal_le_ofReal (hA x hx)
+    _ = ENNReal.ofReal A ^ p * V.weight K := setLIntegral_const _ _
+    _ < ∞ := ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg hp.le ENNReal.ofReal_ne_top) hμK
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
