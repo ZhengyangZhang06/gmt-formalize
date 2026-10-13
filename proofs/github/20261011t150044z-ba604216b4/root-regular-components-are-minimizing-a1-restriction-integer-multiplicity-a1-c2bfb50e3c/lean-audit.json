@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "40c88f48fca1237cb5b43fd493307f4d86fb37d44c1d761aede3da5a9ac4ff57",
+  "git_delta": {
+    "base_commit": "46c99146c65b99d0193fe6b83ef894ec3be20929",
+    "candidate_commit": "5117c19f8a8b25ba7329ddb031feb760f7c6e480",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7f3d81ed5c00e5b3d6b67ba9bad46353481ccd03ffd5d1cfe2f232808e9c2f93",
+    "source_sha256": "b770a28d75265bf6fe93b5789bca83dfa89d6277755d36f4012ecfbeb6693af7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_restriction_integer_multiplicity",
+      "statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T T₁ : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet A → μHE[n] (A \\ R.carrier) = 0 → (∀ ω : TestFormOn U n, T₁ ω = ∫ x in A, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → IsIntegerMultiplicity T₁ ∧ IsIntegerMultiplicity (T - T₁) ∧ (∀ W : Set (Euclid P), IsOpen W → T₁.massOn W + (T - T₁).massOn W = T.massOn W) ∧ ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → (T - T₁).massOn W ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
