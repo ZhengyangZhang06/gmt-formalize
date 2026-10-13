@@ -534,6 +534,136 @@ theorem gwe_wewe_lipschitz_fderiv_facts : ∀ (n ℓ : ℕ) (r : ℝ) (f : Rn n 
     rw [ContinuousLinearMap.comp_apply, ← sq_abs]
     have h := PiLp.norm_apply_le (fderiv ℝ f x (EuclideanSpace.single i 1)) j
     exact pow_le_pow_left₀ (abs_nonneg _) h 2
+/-- Simon 4.5 (15): the error made by dropping the weight `W` in the weak equation
+(steps 4-6 of `gwe_weighted_energy_weak_equation`). -/
+theorem gwe_wewe_weight_error_bound : ∀ (n ℓ : ℕ) (cJ σ κ M : ℝ) (f : Rn n → Rn ℓ) (W ζ : Rn n → ℝ) (j : Fin ℓ), 0 ≤ cJ → 0 < σ → 0 ≤ κ → κ ≤ 1 → LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → Measurable W → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ (1 ≤ W x ∧ W x ≤ (1 + κ) * (1 + cJ * hsNormSq (fderiv ℝ f x)))) → (∀ x, ‖gradient ζ x‖ ≤ M) → |(∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)) - ∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x| ≤ M * (volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0})).toReal + M * κ * (∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖) + 2 * cJ * M * ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x) := by
+  intro n ℓ cJ σ κ M f W ζ j hcJ hσ hκ0 hκ1 hf hW hH1 hζ
+  -- Sibling `lipschitz_fderiv_facts` with `r = σ / 2`.
+  obtain ⟨hDm, hGm, hD0, hbd, -⟩ := Submission.gwe_wewe_lipschitz_fderiv_facts n ℓ (σ / 2) f hf
+  -- `B₂ = ball 0 (σ/4) ⊆ B₁ = ball 0 (3σ/8) ⊆ ball 0 (σ/2)`.
+  have hB21 : ball (0 : Rn n) (σ / 4) ⊆ ball 0 (3 * σ / 8) := ball_subset_ball (by linarith)
+  have hB1h : ball (0 : Rn n) (3 * σ / 8) ⊆ ball 0 (σ / 2) := ball_subset_ball (by linarith)
+  have hB2fin : volume (ball (0 : Rn n) (σ / 4)) ≠ ∞ := measure_ball_lt_top.ne
+  have hM : 0 ≤ M := (norm_nonneg _).trans (hζ 0)
+  -- Measurability of `∇ζ = (toDual)⁻¹ ∘ Dζ` and of `u = ⟨∇f^j, ∇ζ⟩`.
+  have hζm : Measurable (gradient ζ) := by
+    unfold gradient
+    exact (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.measurable.comp
+      (measurable_fderiv ℝ ζ)
+  have hum : Measurable fun x => inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) :=
+    continuous_inner.measurable.comp ((hGm j).prodMk hζm)
+  -- `|u| ≤ M ‖∇f^j‖` (Cauchy–Schwarz).
+  have hu_le : ∀ x, |inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| ≤
+      M * ‖gradient (fun y => f y j) x‖ := fun x =>
+    (abs_real_inner_le_norm _ _).trans <| by
+      rw [mul_comm M]; exact mul_le_mul_of_nonneg_left (hζ x) (norm_nonneg _)
+  -- Integrability on `B₂` of `u`, `‖∇f^j‖`, `|Df|²` and `M 𝟙_N`, `N = B₁ ∩ {W = 0}`.
+  have hu_int : IntegrableOn (fun x => inner ℝ (gradient (fun y => f y j) x) (gradient ζ x))
+      (ball (0 : Rn n) (σ / 4)) := by
+    refine Measure.integrableOn_of_bounded (M := M) hB2fin hum.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
+    rw [Real.norm_eq_abs]
+    exact (hu_le x).trans (mul_le_of_le_one_right hM ((hbd x (hB1h (hB21 hx))).2 j))
+  have hG_int : IntegrableOn (fun x => ‖gradient (fun y => f y j) x‖)
+      (ball (0 : Rn n) (σ / 4)) := by
+    refine Measure.integrableOn_of_bounded (M := 1) hB2fin (hGm j).norm.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
+    rw [norm_norm]
+    exact (hbd x (hB1h (hB21 hx))).2 j
+  have hD_int : IntegrableOn (fun x => hsNormSq (fderiv ℝ f x)) (ball (0 : Rn n) (σ / 4)) := by
+    refine Measure.integrableOn_of_bounded (M := n) hB2fin hDm.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
+    rw [Real.norm_eq_abs, abs_of_nonneg (hD0 x)]
+    exact (hbd x (hB1h (hB21 hx))).1
+  have hN : MeasurableSet (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) :=
+    measurableSet_ball.inter (measurableSet_eq_fun hW measurable_const)
+  have hI_int : IntegrableOn ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator fun _ => M)
+      (ball (0 : Rn n) (σ / 4)) :=
+    (integrableOn_const hB2fin).indicator hN
+  have hIG_int : IntegrableOn (fun x => (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator
+      (fun _ => M) x + M * κ * ‖gradient (fun y => f y j) x‖) (ball (0 : Rn n) (σ / 4)) :=
+    hI_int.add (hG_int.const_mul (M * κ))
+  have hh_int : IntegrableOn (fun x => (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator
+      (fun _ => M) x + M * κ * ‖gradient (fun y => f y j) x‖ + 2 * cJ * M * hsNormSq (fderiv ℝ f x))
+      (ball (0 : Rn n) (σ / 4)) :=
+    hIG_int.add (hD_int.const_mul (2 * cJ * M))
+  -- Pointwise error: `|u - uW| ≤ M 𝟙_N + M κ ‖∇f^j‖ + 2 cJ M |Df|²` a.e. on `B₂`.
+  have hpt : ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (σ / 4))),
+      ‖inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) -
+          inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x‖ ≤
+        (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator (fun _ => M) x +
+          M * κ * ‖gradient (fun y => f y j) x‖ + 2 * cJ * M * hsNormSq (fderiv ℝ f x) := by
+    filter_upwards [ae_restrict_mem measurableSet_ball, ae_restrict_of_ae hH1] with x hx hHx
+    have hx1 : x ∈ ball (0 : Rn n) (3 * σ / 8) := hB21 hx
+    have hG1 : ‖gradient (fun y => f y j) x‖ ≤ 1 := (hbd x (hB1h hx1)).2 j
+    have hG0 : 0 ≤ ‖gradient (fun y => f y j) x‖ := norm_nonneg _
+    have hDx : 0 ≤ hsNormSq (fderiv ℝ f x) := hD0 x
+    have hux := hu_le x
+    have hκG : 0 ≤ M * κ * ‖gradient (fun y => f y j) x‖ := by positivity
+    have hcD : 0 ≤ 2 * cJ * M * hsNormSq (fderiv ℝ f x) := by positivity
+    rw [Real.norm_eq_abs]
+    rcases hHx hx1 with h0 | ⟨h1, h2⟩
+    · -- `W x = 0`: then `x ∈ N` and `|u - uW| = |u| ≤ M`.
+      rw [indicator_of_mem (show x ∈ ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0} from ⟨hx1, h0⟩),
+        h0, mul_zero, sub_zero]
+      have hMG : M * ‖gradient (fun y => f y j) x‖ ≤ M := mul_le_of_le_one_right hM hG1
+      linarith
+    · -- `1 ≤ W x ≤ (1 + κ)(1 + cJ |Df|²)`: then `x ∉ N` and `|u - uW| = |u| (W - 1)`.
+      rw [indicator_of_notMem (fun h : x ∈ ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0} => by
+        have h' : W x = 0 := h.2
+        linarith), zero_add]
+      have hw1 : 0 ≤ W x - 1 := by linarith
+      have hwκ : W x - 1 ≤ κ + 2 * cJ * hsNormSq (fderiv ℝ f x) := by
+        nlinarith [mul_le_mul_of_nonneg_right (show 1 + κ ≤ 2 by linarith) (mul_nonneg hcJ hDx)]
+      rw [show inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) -
+            inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x =
+          -(inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * (W x - 1)) by ring,
+        abs_neg, abs_mul, abs_of_nonneg hw1]
+      calc |inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| * (W x - 1)
+          ≤ M * ‖gradient (fun y => f y j) x‖ * (κ + 2 * cJ * hsNormSq (fderiv ℝ f x)) :=
+            mul_le_mul hux hwκ hw1 (mul_nonneg hM hG0)
+        _ = M * κ * ‖gradient (fun y => f y j) x‖ +
+              2 * cJ * M * hsNormSq (fderiv ℝ f x) * ‖gradient (fun y => f y j) x‖ := by ring
+        _ ≤ M * κ * ‖gradient (fun y => f y j) x‖ + 2 * cJ * M * hsNormSq (fderiv ℝ f x) := by
+            linarith [mul_le_of_le_one_right hcD hG1]
+  -- `uW = u - (u - uW)` is integrable on `B₂`.
+  have hdiff_int : IntegrableOn (fun x => inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) -
+      inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x) (ball (0 : Rn n) (σ / 4)) :=
+    Integrable.mono' hh_int (hum.sub (hum.mul hW)).aestronglyMeasurable hpt
+  have huW_int : IntegrableOn (fun x => inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x)
+      (ball (0 : Rn n) (σ / 4)) := by
+    refine (hu_int.sub hdiff_int).congr ?_
+    filter_upwards with x
+    simp
+  -- The indicator term: `∫_{B₂} M 𝟙_N = M Lⁿ(N ∩ B₂) ≤ M Lⁿ(N)`.
+  have hNfin : volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) ≠ ∞ :=
+    ((measure_mono inter_subset_left).trans_lt measure_ball_lt_top).ne
+  have hI : ∫ x in ball (0 : Rn n) (σ / 4),
+      (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator (fun _ => M) x ≤
+      M * (volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0})).toReal := by
+    rw [integral_indicator_const M hN, measureReal_restrict_apply hN, smul_eq_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_left (measureReal_mono inter_subset_left hNfin) hM
+  -- Integrate the pointwise error.
+  calc |(∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)) -
+        ∫ x in ball (0 : Rn n) (σ / 4),
+          inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x|
+      = ‖∫ x in ball (0 : Rn n) (σ / 4), (inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) -
+          inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x)‖ := by
+        rw [integral_sub hu_int huW_int, Real.norm_eq_abs]
+    _ ≤ ∫ x in ball (0 : Rn n) (σ / 4), ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator
+          (fun _ => M) x + M * κ * ‖gradient (fun y => f y j) x‖ +
+          2 * cJ * M * hsNormSq (fderiv ℝ f x)) :=
+        norm_integral_le_of_norm_le hh_int hpt
+    _ = (∫ x in ball (0 : Rn n) (σ / 4),
+          (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}).indicator (fun _ => M) x) +
+          M * κ * (∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖) +
+          2 * cJ * M * ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x) := by
+        rw [integral_add hIG_int (hD_int.const_mul (2 * cJ * M)),
+          integral_add hI_int (hG_int.const_mul (M * κ)), integral_const_mul, integral_const_mul]
+    _ ≤ M * (volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0})).toReal +
+          M * κ * (∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖) +
+          2 * cJ * M * ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x) := by
+        linarith
 
 end Submission
 
