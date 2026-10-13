@@ -2511,6 +2511,127 @@ theorem Submission.dorag_monotonicity_density : ∀ (n k : ℕ), 0 < n → ∀ (
         rw [hν (A m) (measurableSet_closedBall.diff measurableSet_closedBall)]
         exact hannulus _ (div_pos ht (by linarith)) (div_lt_self ht hm)
 
+/-- **Standing density bounds for the Allard graph construction** (Simon Ch. 5, 2.3–2.4,
+chapter-05.txt lines 266–288, with radii `4δρ` and `(1 − 4δ)ρ`).  Choose `δ₁ ≤ 1/8` and `C₁`
+with `K(δ) := e^δ(1 + δ)(1 − 4δ)^{−n} ≤ 1 + C₁δ ≤ 3/2` on `[0, δ₁]`, and `C₂ = max(1, C₁ωₙ)`.
+For `y ∈ B_{4δρ}(z)` and `0 < t ≤ (1 − 4δ)ρ`, monotonicity (Ch. 4, 4.7) and
+`μ(B_ρ(z)) ≤ (1 + δ)ωₙρⁿ` give `e^{κt}t^{−n}μ(B_t(y)) ≤ K(δ)ωₙ`, hence (a).  At `y ∈ spt μ` the
+density bound `∫_{B_t(y)} F_y dμ + ωₙ ≤ e^{κt}t^{−n}μ(B_t(y))` gives (b), as `e^{κt} ≤ 2`, and
+(c), after cancelling `ωₙ < ∞`.  The mass ratio stays `≤ 3/2 < 2` near every point of
+`B_{4δρ}(z)`, so `θ = 1` `μ`-a.e. there, which is (d). -/
+theorem Submission.dorag_standing_density_bounds : ∀ (n k : ℕ), 0 < n → ∃ δ₁ C₂ : ℝ, 0 < δ₁ ∧ δ₁ ≤ 1 / 8 ∧ 0 < C₂ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₁ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → (∀ y ∈ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → R.measure (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) ∧ (∀ y ∈ R.measure.support ∩ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ 2 * R.measure (closedBall y t)) ∧ (∀ y ∈ R.measure.support ∩ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → ∫⁻ x in closedBall y t, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure ≤ ENNReal.ofReal (C₂ * δ)) ∧ (∀ᵐ x ∂R.measure, x ∈ closedBall z (4 * δ * ρ) → R.mult x = 1) := by
+  intro n k hn
+  -- Step 0: `K(δ) ≤ 1 + C₁δ` on `[0, δ₁]`, `C₁δ₁ ≤ 1/2`, and `C₂ = max(1, C₁ωₙ)`
+  obtain ⟨δ₁, C₁, hδ₁, hδ₁8, hC₁, hC₁δ₁, hK⟩ := Submission.dorag_dbs_density_constants n
+  have hω_top : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top.ne
+  refine ⟨δ₁, max 1 (C₁ * (unitBallVolume n).toReal), hδ₁, hδ₁8,
+    lt_of_lt_of_le one_pos (le_max_left _ _), ?_⟩
+  intro δ hδ hδδ₁ U W R H κ ρ z hW hWU hρ hball hH hHκ hfv hz hmass hκρ
+  have hδ8 : δ ≤ 1 / 8 := hδδ₁.trans hδ₁8
+  have hκ : 0 ≤ κ := (norm_nonneg _).trans (hHκ 0)
+  -- monotonicity: `(M1)` without its tilt term, and the density bound `(D)`
+  obtain ⟨hmono, hD⟩ := Submission.dorag_monotonicity_density n k hn U W R H κ hW hWU hH hHκ hfv
+  have hmono' : ∀ (y : Euclid (n + k)) (s t : ℝ), 0 < s → s < t → closedBall y t ⊆ W →
+      ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * R.measure (closedBall y s) ≤
+        ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) :=
+    fun y s t hs hst hy => le_trans le_add_self (hmono y s t hs hst hy).1
+  -- Step 2: `e^{κt}t^{−n}μ(B_t(y)) ≤ K(δ)ωₙ` and `μ(B_t(y)) ≤ K(δ)ωₙtⁿ` with `K(δ) ≤ 3/2`
+  have hsharp := Submission.dorag_dbs_sharp_mass_ratio (n + k) n R.measure W κ δ ρ z hρ hδ.le
+    hδ8 hκ hκρ hball hmass hmono'
+  have hK1 : Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n ≤ 1 + C₁ * δ := hK δ hδ.le hδδ₁
+  have hCδ : C₁ * δ ≤ 1 / 2 := le_trans (mul_le_mul_of_nonneg_left hδδ₁ hC₁.le) hC₁δ₁
+  have hK32 : Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n ≤ 3 / 2 := by linarith
+  -- Step 1: `B_t(y) ⊆ B_ρ(z) ⊆ W` for `y ∈ B_{4δρ}(z)`, `t ≤ (1 − 4δ)ρ`
+  have hsub : ∀ y ∈ closedBall z (4 * δ * ρ), ∀ t : ℝ, t ≤ (1 - 4 * δ) * ρ →
+      closedBall y t ⊆ W := by
+    intro y hy t ht
+    refine Subset.trans ?_ hball
+    intro p hp
+    rw [mem_closedBall] at hp hy ⊢
+    calc dist p z ≤ dist p y + dist y z := dist_triangle p y z
+      _ ≤ (1 - 4 * δ) * ρ + 4 * δ * ρ := add_le_add (hp.trans ht) hy
+      _ = ρ := by ring
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- (a): `K(δ) ≤ 3/2 ≤ 2`
+    intro y hy t ht htle
+    calc R.measure (closedBall y t)
+        ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n *
+            ENNReal.ofReal (t ^ n) := (hsharp y hy t ht htle).2
+      _ ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n) := by
+        gcongr
+        calc ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n)
+            ≤ ENNReal.ofReal 2 := ENNReal.ofReal_le_ofReal (by linarith)
+          _ = 2 := by norm_num
+  · -- (b): `ωₙtⁿ ≤ e^{κt}μ(B_t(y))` by `(D)`, and `e^{κt} ≤ 2` as `κt ≤ δ ≤ 1/8`
+    rintro y ⟨hysupp, hy⟩ t ht htle
+    have hDy := hD y hysupp t ht (hsub y hy t htle)
+    have h1 : unitBallVolume n ≤
+        ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) :=
+      le_trans le_add_self hDy
+    have htn : 0 < t ^ n := pow_pos ht n
+    have h2 : unitBallVolume n * ENNReal.ofReal (t ^ n) ≤
+        ENNReal.ofReal (Real.exp (κ * t)) * R.measure (closedBall y t) := by
+      calc unitBallVolume n * ENNReal.ofReal (t ^ n)
+          ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) *
+              ENNReal.ofReal (t ^ n) := by gcongr
+        _ = ENNReal.ofReal (Real.exp (κ * t) / t ^ n * t ^ n) * R.measure (closedBall y t) := by
+          rw [ENNReal.ofReal_mul (div_nonneg (Real.exp_pos _).le htn.le)]; ring
+        _ = ENNReal.ofReal (Real.exp (κ * t)) * R.measure (closedBall y t) := by
+          rw [div_mul_cancel₀ _ htn.ne']
+    have hκt : κ * t ≤ 1 / 8 := by
+      have h1' : t ≤ ρ := htle.trans (by nlinarith)
+      have : κ * t ≤ κ * ρ := mul_le_mul_of_nonneg_left h1' hκ
+      linarith
+    have hexp : Real.exp (κ * t) ≤ 2 := by
+      have hlow := Real.add_one_le_exp (-(κ * t))
+      have hprod : Real.exp (κ * t) * Real.exp (-(κ * t)) = 1 := by
+        rw [← Real.exp_add]; simp
+      have hpos := Real.exp_pos (κ * t)
+      nlinarith
+    have h3 : ENNReal.ofReal (Real.exp (κ * t)) ≤ 2 := by
+      calc ENNReal.ofReal (Real.exp (κ * t)) ≤ ENNReal.ofReal 2 := ENNReal.ofReal_le_ofReal hexp
+        _ = 2 := by norm_num
+    calc unitBallVolume n * ENNReal.ofReal (t ^ n)
+        ≤ ENNReal.ofReal (Real.exp (κ * t)) * R.measure (closedBall y t) := h2
+      _ ≤ 2 * R.measure (closedBall y t) := by gcongr
+  · -- (c): `∫ F_y + ωₙ ≤ K(δ)ωₙ ≤ (1 + C₁δ)ωₙ`; cancel `ωₙ < ∞`
+    rintro y ⟨hysupp, hy⟩ t ht htle
+    have hDy := hD y hysupp t ht (hsub y hy t htle)
+    have hC₁δ0 : 0 ≤ C₁ * δ := mul_nonneg hC₁.le hδ.le
+    have h2 : (∫⁻ x in closedBall y t, ENNReal.ofReal (‖(x - y) -
+          (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2))
+          ∂R.measure) + unitBallVolume n ≤
+        ENNReal.ofReal (C₁ * δ) * unitBallVolume n + unitBallVolume n := by
+      calc _ ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) := hDy
+        _ ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n :=
+          (hsharp y hy t ht htle).1
+        _ ≤ ENNReal.ofReal (1 + C₁ * δ) * unitBallVolume n := by gcongr
+        _ = ENNReal.ofReal (C₁ * δ) * unitBallVolume n + unitBallVolume n := by
+          rw [ENNReal.ofReal_add (by norm_num) hC₁δ0, ENNReal.ofReal_one, add_mul, one_mul,
+            add_comm]
+    have h3 := ENNReal.le_of_add_le_add_right hω_top h2
+    calc _ ≤ ENNReal.ofReal (C₁ * δ) * unitBallVolume n := h3
+      _ = ENNReal.ofReal (C₁ * δ * (unitBallVolume n).toReal) := by
+        rw [ENNReal.ofReal_mul hC₁δ0, ENNReal.ofReal_toReal hω_top]
+      _ ≤ ENNReal.ofReal (max 1 (C₁ * (unitBallVolume n).toReal) * δ) := by
+        apply ENNReal.ofReal_le_ofReal
+        have := le_max_right 1 (C₁ * (unitBallVolume n).toReal)
+        nlinarith
+  · -- (d): on `B_{4δρ}(z)` the mass ratio is `≤ 3/2 < 2` for `0 < t ≤ (1 − 4δ)ρ`
+    have hSW : closedBall z (4 * δ * ρ) ⊆ W :=
+      (closedBall_subset_closedBall (by nlinarith)).trans hball
+    have ht' : 0 < (1 - 4 * δ) * ρ := mul_pos (by linarith) hρ
+    refine Submission.dorag_dbs_mult_eq_one_of_density_lt_two (n + k) n U W
+      (closedBall z (4 * δ * ρ)) R (3 / 2) hn hW hWU hSW (by norm_num) ?_
+    intro x hx
+    filter_upwards [Ioc_mem_nhdsGT ht'] with t ht
+    calc R.measure (closedBall x t)
+        ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n *
+            ENNReal.ofReal (t ^ n) := (hsharp x hx t ht.1 ht.2).2
+      _ ≤ ENNReal.ofReal (3 / 2) * unitBallVolume n * ENNReal.ofReal (t ^ n) := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
