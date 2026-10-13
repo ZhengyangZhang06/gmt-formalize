@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.graph_gram_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "depth": 5,
+  "title": "Gram identity for the linear graph map ι + ι'∘T (area Jacobian of a graph)",
+  "statement": "Let n, k ∈ ℕ, let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝᵏ, and let T : ℝⁿ → ℝᵏ be linear. Then (ι + ι'∘T)*∘(ι + ι'∘T) = id_{ℝⁿ} + T*∘T, where * is the adjoint (LinearMap.adjoint).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (T : Euclid n →ₗ[ℝ] Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LinearMap.adjoint (ι.toLinearMap + ι'.toLinearMap ∘ₗ T) ∘ₗ (ι.toLinearMap + ι'.toLinearMap ∘ₗ T) = LinearMap.id + LinearMap.adjoint T ∘ₗ T",
+  "lean_name": "doraggt_graph_map_gram_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-26a93dfd84-a1"
+}
