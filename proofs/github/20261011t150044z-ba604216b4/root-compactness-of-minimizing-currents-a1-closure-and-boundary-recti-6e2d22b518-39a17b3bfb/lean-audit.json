@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9eb07be0dd1ff6360bfd37199bfb035bdd40673e146778b58aaddb8005f5136b",
+  "git_delta": {
+    "base_commit": "63df94a400d8620dccd234cadfdb9694c394462c",
+    "candidate_commit": "6c348627d42cf4dbac1f8b9544b72ead224e62d7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cipi_imrep_weight_const_nat",
+    "diff_sha256": "cd25f8477a6e1a49c1390164d333829e8385f127e17e6ee7e26648c4936c4c02",
+    "source_sha256": "0c1a299afd7d3c75ed9b886a086c12e25642daffe73abad9ceaeff103fd249e1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cipi_imrep_weight_const_nat",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (R : IMRep U m) (S : Set (Euclid P)) (c : ℝ), 0 < c → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict S) K < ∞) → (∃ (x : Euclid P) (r : ℝ), 0 < ((μHE[m] : Measure (Euclid P)).restrict S) (ball x r)) → (∀ G : Set (Euclid P), IsOpen G → R.measure G = ENNReal.ofReal c * ((μHE[m] : Measure (Euclid P)).restrict S) G) → ∃ k : ℕ, c = k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
