@@ -1,0 +1,268 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.area_formula_prod-a1",
+      "key": "area_formula_prod",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 over dag.json nodes (lean_name/lean_statement/status): idtp_cse_fibre_area_identities and its siblings; idtp_carrier_area_formula (speculative-ready); accepted imrep_approxTangent_starProjection_aesm, dorag_aa_ae_finrank_approxTangentPlane, cbr_imRep_measure_basic, dpf_det_gram_stdOrthonormalBasis_eq, dpf_aestronglyMeasurable_gramJacobian; cousin idtp_cse_rc_angle_fderiv; statements containing 'finrank ℝ (approxTangentPlane', 'stdOrthonormalBasis', '!₂[' or ℝ × ℝ with fderiv",
+              "grep -c idtp_cse_fa_ dag.json (0); rg -l idtp_cse_fa_ nodes/ dag.json local-references/123e8435b4a2469b/project (no match); for f in .swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean: grep -l idtp_cse_fa_ (no match)",
+              "git show db9124843c:GMT/Ch07/Submission.lean | grep dorag_aa_ae_finrank_approxTangentPlane (accepted lemmas are delivered as `theorem Submission.X` in namespace GMT.Ch07)",
+              "grep -n 'HasApproximateTangentSpaceAt.finrank_eq|HasApproximateTangentSpaceAt.unique|def CountablyRectifiable|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "grep -rn '!₂\\[|volume_preserving_toLp|volume_preserving_ofLp|volume_preserving_finTwoArrow' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg 'setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable|restrict_withDensity|lintegral_withDensity_eq_lintegral_mul_non_measurable|apply_continuousLinearMap|ContinuousOn.isOpen_inter_preimage|contDiffAt_norm|hasStrictFDerivAt_norm_sq|HasFDerivAt.sqrt|HasFDerivAt.arctan|HasFDerivAt.prodMk|comp_fderiv|lintegral_comp_emb|aemeasurable_comp_iff|det_fin_two|det_reindex_self|sum_inner_mul_inner|sum_repr|starProjection_eq_self_iff|HasFDerivAt.div' .lake/packages/mathlib/Mathlib (same rev 25730c7c as the snapshot; no fderiv-form real quotient rule exists at this pin)",
+              "lake env lean /tmp/fa-decomp-7c1e/check/{Stmts,Parent,C1,C3,Deriv}.lean and /tmp/fa-decomp-7c1e/verify/C2.lean (+ #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/tmp/fa-decomp-7c1e/check/Stmts.lean",
+              "/tmp/fa-decomp-7c1e/check/Parent.lean",
+              "/tmp/fa-decomp-7c1e/check/C1.lean",
+              "/tmp/fa-decomp-7c1e/check/C3.lean",
+              "/tmp/fa-decomp-7c1e/check/Deriv.lean",
+              "/tmp/fa-decomp-7c1e/verify/C2.lean",
+              "/tmp/fa-decomp-7c1e/scripts/jac_check.py"
+            ],
+            "conclusion": "The pins match. The workspace Submission.lean (GMT.Ch07 namespace, frozen opens) is the compiler authority; mathlib is 25730c7c, equal to the snapshot's mathlib_commit, and SimonGMT is 2b36630.\n\nReusable results already in the DAG:\n- Accepted: dorag_aa_ae_finrank_approxTangentPlane (R.measure-a.e. finrank T_x = n), cbr_imRep_measure_basic (μHE⌞carrier ≪ R.measure) and imrep_approxTangent_starProjection_aesm. These replace the parent's direct use of the orients field and HasApproximateTangentSpaceAt.finrank_eq.\n- Pending: idtp_carrier_area_formula (speculative-ready), which child 3 uses.\n- Not reusable: dpf_det_gram_stdOrthonormalBasis_eq applies only to L : Euclid P →L Euclid P. No existing node gives the area formula into ℝ × ℝ or the polar-map Jacobian. The cousin idtp_cse_rc_angle_fderiv is still pending.\n\nAll Mathlib names cited in the child proofs exist at the pin. The proofs avoid the missing fderiv-form quotient rule by using the inverse and product rules.\n\nThe proposed idtp_cse_fa_* names are unreserved. All four types elaborate. The parent is kernel-checked from the three child types plus the accepted-lemma types, with standard axioms only. Children 1 and 2 are fully proved, and child 3 is proved relative to the carrier-area-formula type."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.area_formula_prod-a1",
+        "subproblem": {
+          "key": "area_formula_prod",
+          "title": "Carrier area formula for C¹ maps into ℝ × ℝ (transport through Euclid 2)",
+          "statement": "Let P ∈ ℕ, M, Z ⊆ ℝ^P, F : ℝ^P → ℝ × ℝ and h : ℝ^P → [0, ∞]. Assume M is Borel and countably 2-rectifiable, H²(M ∩ K) < ∞ for every compact K (H² := μHE[2]), Z is open, F is C¹ on Z, and h is a.e.-measurable for H²⌞M. For x ∈ ℝ^P let T_x := approxTangentPlane 2 M x, (u_i) := stdOrthonormalBasis ℝ T_x (indexed by Fin(dim T_x)), and J_F(x) := sqrt(det Γ(x)) with Γ(x)_ij := (DF(x)u_i)_1(DF(x)u_j)_1 + (DF(x)u_i)_2(DF(x)u_j)_2, DF(x) := fderiv ℝ F x. Then p ↦ Σ_{x ∈ M ∩ Z ∩ F⁻¹{p}} h(x) (tsum over the subtype) is a.e.-measurable for Lebesgue measure on ℝ × ℝ, and ∫_{ℝ×ℝ} Σ_{x ∈ M ∩ Z ∩ F⁻¹{p}} h(x) dp = ∫_{M ∩ Z} ofReal(J_F(x))·h(x) dH²(x) (lower Lebesgue integrals).",
+          "lean_statement": "∀ (P : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → ℝ × ℝ) (h : Euclid P → ℝ≥0∞), MeasurableSet M → CountablyRectifiable 2 M → (∀ K : Set (Euclid P), IsCompact K → μHE[2] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[2].restrict M) → AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) volume ∧ ∫⁻ p : ℝ × ℝ, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane 2 M x)) => (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).1 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).1 + (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).2 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).2))) * h x ∂μHE[2]",
+          "lean_name": "idtp_cse_fa_area_formula_prod",
+          "depends_on": [],
+          "natural_proof": "Source: parent step 1 (the coordinate map κ) and step 7 (transport of the carrier area formula). Notation: for x ∈ ℝ^P, T_x := approxTangentPlane 2 M x, (u_i) := stdOrthonormalBasis ℝ T_x indexed by Fin(dim T_x), J_F(x) := sqrt(det Γ_F(x)) with Γ_F(x)_ij := (DF(x)u_i)_1(DF(x)u_j)_1 + (DF(x)u_i)_2(DF(x)u_j)_2, where DF(x) := fderiv ℝ F x; volume on ℝ × ℝ is the product Lebesgue measure.\n1. (Coordinates.) Let κ : ℝ × ℝ → Euclid 2 be the continuous linear equivalence sending p to the Euclidean vector with coordinates (p.1, p.2), i.e. κ := (ContinuousLinearEquiv.finTwoArrow ℝ ℝ).symm followed by (EuclideanSpace.equiv (Fin 2) ℝ).symm; as a function κ = WithLp.toLp 2 ∘ MeasurableEquiv.finTwoArrow.symm. Since the inner product of Euclid 2 is the sum of the products of coordinates (`PiLp.inner_apply`, `Fin.sum_univ_two`), ⟨κ p, κ p'⟩ = p.1 p'.1 + p.2 p'.2 for all p, p' ∈ ℝ × ℝ.\n2. (κ preserves Lebesgue measure.) MeasurableEquiv.finTwoArrow : (Fin 2 → ℝ) → ℝ × ℝ is measure preserving for the volumes (`MeasureTheory.volume_preserving_finTwoArrow ℝ`), so its inverse is measure preserving (`MeasurePreserving.symm`), and WithLp.toLp 2 : (Fin 2 → ℝ) → Euclid 2 is measure preserving (`PiLp.volume_preserving_toLp`). The composition κ is therefore measure preserving from (ℝ × ℝ, volume) to (Euclid 2, volume) (`MeasurePreserving.comp`). Being a homeomorphism, κ is a measurable embedding (`Homeomorph.measurableEmbedding`).\n3. (The Euclid 2-valued map.) Put Φ := κ ∘ F : ℝ^P → Euclid 2. Since κ is a continuous linear map, Φ is C¹ on Z (`ContinuousLinearMap.contDiff.comp_contDiffOn`, i.e. κ.contDiff.comp_contDiffOn hF). For every x ∈ ℝ^P, fderiv ℝ Φ x = κ ∘L fderiv ℝ F x (`ContinuousLinearEquiv.comp_fderiv`; this holds at every point because κ is a continuous linear equivalence). Hence, by step 1, ⟨DΦ(x)v, DΦ(x)v'⟩ = (DF(x)v)_1(DF(x)v')_1 + (DF(x)v)_2(DF(x)v')_2 for all v, v', so for every x the Gram matrix ⟨DΦ(x)u_i, DΦ(x)u_j⟩ appearing in the carrier area formula equals Γ_F(x) entrywise and the two Jacobians coincide: J_Φ(x) = J_F(x).\n4. (Fibres.) For p ∈ ℝ × ℝ and x ∈ ℝ^P, Φ(x) = κ(p) iff F(x) = p, because κ is injective. Hence M ∩ Z ∩ Φ⁻¹{κ p} = M ∩ Z ∩ F⁻¹{p} as sets, and S_F(p) := Σ_{x ∈ M∩Z∩F⁻¹{p}} h(x) equals S_Φ(κ p), where S_Φ(y) := Σ_{x ∈ M∩Z∩Φ⁻¹{y}} h(x) (same index set and summands; rewrite the index set). Thus S_F = S_Φ ∘ κ.\n5. (Area formula on the carrier.) Apply `Submission.idtp_carrier_area_formula` with n := 2 (so 1 ≤ n), the given M and Z, F := Φ and the given h. Its hypotheses are exactly the assumptions (M Borel, countably 2-rectifiable, μHE[2](M ∩ K) < ∞ for compact K, Z open, h a.e.-measurable for μHE[2]⌞M) together with ContDiffOn ℝ 1 Φ Z from step 3. It yields: S_Φ is a.e.-measurable for volume on Euclid 2, and ∫ S_Φ d(volume) = ∫_{M∩Z} ofReal(sqrt(det ⟨DΦ(x)u_i, DΦ(x)u_j⟩))·h(x) dμHE[2](x).\n6. (Transport.) By steps 2 and 4, S_F = S_Φ ∘ κ is a.e.-measurable for volume on ℝ × ℝ (`MeasurePreserving.aemeasurable_comp_iff` applied with the measurable embedding κ: AEMeasurable (S_Φ ∘ κ) ↔ AEMeasurable S_Φ), which is the first conjunct. Moreover ∫ S_F d(volume) = ∫ S_Φ(κ p) dp = ∫ S_Φ d(volume) (`MeasurePreserving.lintegral_comp_emb`, valid for every [0,∞]-valued function since κ is a measurable embedding). By step 5 and the pointwise identity J_Φ = J_F of step 3 (apply `lintegral_congr`), this equals ∫_{M∩Z} ofReal(J_F(x))·h(x) dμHE[2](x), the second conjunct. ∎",
+          "proof_key_steps": [
+            "κ : ℝ×ℝ → Euclid 2, p ↦ (p.1, p.2), is a continuous linear equivalence with ⟨κp, κp'⟩ = p.1p'.1 + p.2p'.2, measure preserving (finTwoArrow.symm then toLp) and a measurable embedding.",
+            "Φ := κ ∘ F is C¹ on Z with fderiv Φ x = κ ∘L fderiv F x, so its Gram Jacobian equals the ℝ×ℝ Gram Jacobian of F at every x.",
+            "Fibres: M ∩ Z ∩ Φ⁻¹{κp} = M ∩ Z ∩ F⁻¹{p}, so the fibre sum of F is (fibre sum of Φ) ∘ κ.",
+            "Apply idtp_carrier_area_formula (n = 2) to Φ and transport a.e.-measurability and the lintegral along the measure-preserving embedding κ."
+          ]
+        },
+        "audit": {
+          "key": "area_formula_prod",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose includes every hypothesis of the exact Lean proposition. The coordinate equivalence preserves product Lebesgue measure; its derivative identity, fibre correspondence, and measurable-embedding transport establish both conclusions. The proof uses the exact existing carrier-area contract, explicitly declared upstream and still pending, with no circular dependency. It requires no further proof planning."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1",
+      "key": "polar_jacobian",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 over dag.json nodes (lean_name/lean_statement/status): idtp_cse_fibre_area_identities and its siblings; idtp_carrier_area_formula (speculative-ready); accepted imrep_approxTangent_starProjection_aesm, dorag_aa_ae_finrank_approxTangentPlane, cbr_imRep_measure_basic, dpf_det_gram_stdOrthonormalBasis_eq, dpf_aestronglyMeasurable_gramJacobian; cousin idtp_cse_rc_angle_fderiv; statements containing 'finrank ℝ (approxTangentPlane', 'stdOrthonormalBasis', '!₂[' or ℝ × ℝ with fderiv",
+              "grep -c idtp_cse_fa_ dag.json (0); rg -l idtp_cse_fa_ nodes/ dag.json local-references/123e8435b4a2469b/project (no match); for f in .swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean: grep -l idtp_cse_fa_ (no match)",
+              "git show db9124843c:GMT/Ch07/Submission.lean | grep dorag_aa_ae_finrank_approxTangentPlane (accepted lemmas are delivered as `theorem Submission.X` in namespace GMT.Ch07)",
+              "grep -n 'HasApproximateTangentSpaceAt.finrank_eq|HasApproximateTangentSpaceAt.unique|def CountablyRectifiable|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "grep -rn '!₂\\[|volume_preserving_toLp|volume_preserving_ofLp|volume_preserving_finTwoArrow' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg 'setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable|restrict_withDensity|lintegral_withDensity_eq_lintegral_mul_non_measurable|apply_continuousLinearMap|ContinuousOn.isOpen_inter_preimage|contDiffAt_norm|hasStrictFDerivAt_norm_sq|HasFDerivAt.sqrt|HasFDerivAt.arctan|HasFDerivAt.prodMk|comp_fderiv|lintegral_comp_emb|aemeasurable_comp_iff|det_fin_two|det_reindex_self|sum_inner_mul_inner|sum_repr|starProjection_eq_self_iff|HasFDerivAt.div' .lake/packages/mathlib/Mathlib (same rev 25730c7c as the snapshot; no fderiv-form real quotient rule exists at this pin)",
+              "lake env lean /tmp/fa-decomp-7c1e/check/{Stmts,Parent,C1,C3,Deriv}.lean and /tmp/fa-decomp-7c1e/verify/C2.lean (+ #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/tmp/fa-decomp-7c1e/check/Stmts.lean",
+              "/tmp/fa-decomp-7c1e/check/Parent.lean",
+              "/tmp/fa-decomp-7c1e/check/C1.lean",
+              "/tmp/fa-decomp-7c1e/check/C3.lean",
+              "/tmp/fa-decomp-7c1e/check/Deriv.lean",
+              "/tmp/fa-decomp-7c1e/verify/C2.lean",
+              "/tmp/fa-decomp-7c1e/scripts/jac_check.py"
+            ],
+            "conclusion": "The pins match. The workspace Submission.lean (GMT.Ch07 namespace, frozen opens) is the compiler authority; mathlib is 25730c7c, equal to the snapshot's mathlib_commit, and SimonGMT is 2b36630.\n\nReusable results already in the DAG:\n- Accepted: dorag_aa_ae_finrank_approxTangentPlane (R.measure-a.e. finrank T_x = n), cbr_imRep_measure_basic (μHE⌞carrier ≪ R.measure) and imrep_approxTangent_starProjection_aesm. These replace the parent's direct use of the orients field and HasApproximateTangentSpaceAt.finrank_eq.\n- Pending: idtp_carrier_area_formula (speculative-ready), which child 3 uses.\n- Not reusable: dpf_det_gram_stdOrthonormalBasis_eq applies only to L : Euclid P →L Euclid P. No existing node gives the area formula into ℝ × ℝ or the polar-map Jacobian. The cousin idtp_cse_rc_angle_fderiv is still pending.\n\nAll Mathlib names cited in the child proofs exist at the pin. The proofs avoid the missing fderiv-form quotient rule by using the inverse and product rules.\n\nThe proposed idtp_cse_fa_* names are unreserved. All four types elaborate. The parent is kernel-checked from the three child types plus the accepted-lemma types, with standard axioms only. Children 1 and 2 are fully proved, and child 3 is proved relative to the carrier-area-formula type."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1",
+        "subproblem": {
+          "key": "polar_jacobian",
+          "title": "Area-formula Jacobian of the polar map along a 2-plane containing the radial direction",
+          "statement": "Let P ∈ ℕ, Q and T linear subspaces of ℝ^P, and a, e, x ∈ ℝ^P with dim Q = 2, a, e ∈ Q, |a| = |e| = 1, ⟨a,e⟩ = 0, ⟨x,a⟩ > 0, dim T = 2 and p_T(x) = x (p_T := T.starProjection). Let F̃(y) := (|y|, arctan(⟨y,e⟩/⟨y,a⟩)) ∈ ℝ × ℝ, D := DF̃(x) (fderiv), (u_i)_{i < dim T} := stdOrthonormalBasis ℝ T, and Γ the dim T × dim T matrix Γ_ij := (Du_i)_1(Du_j)_1 + (Du_i)_2(Du_j)_2. Then sqrt(det Γ) = |p_T(⟨x,a⟩e − ⟨x,e⟩a)| / |Q.starProjection x|².",
+          "lean_statement": "∀ (P : ℕ) (Q T : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < inner ℝ x a → Module.finrank ℝ T = 2 → T.starProjection x = x → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).1 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).1 + (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).2 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).2)) = ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2",
+          "lean_name": "idtp_cse_fa_polar_gram_jacobian",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof, facts (F1)–(F3) and step 4 (Jacobian), made explicit in coordinates. Notation: α := ⟨x,a⟩ > 0, β := ⟨x,e⟩, A := αe − βa (this is Ax), ρ := α² + β², x̂ := x/|x|, g := A/ρ (this is ∇f(x)), F̃(y) := (|y|, arctan(⟨y,e⟩/⟨y,a⟩)), D := fderiv ℝ F̃ x, (u_k)_{k ∈ Fin(dim T)} := stdOrthonormalBasis ℝ T (vectors of T viewed in ℝ^P), Γ_kl := (Du_k)_1(Du_l)_1 + (Du_k)_2(Du_l)_2, p_T := T.starProjection, π := Q.starProjection. Goal: sqrt(det Γ) = |p_T A|/|πx|².\n1. (F1: πx = αa + βe and |πx|² = ρ > 0.) The family (a, e) is orthonormal (|a| = |e| = 1, ⟨a,e⟩ = 0), hence linearly independent, and span{a,e} ⊆ Q because a, e ∈ Q; since dim span{a,e} = 2 = dim Q, span{a,e} = Q (`Submodule.eq_of_le_of_finrank_eq`, `finrank_span_eq_card`). The vector w₀ := αa + βe lies in Q, and x − w₀ is orthogonal to every w = c₀a + c₁e ∈ Q: ⟨x − w₀, c₀a + c₁e⟩ = c₀(α − α) + c₁(β − β) = 0, using ⟨a,a⟩ = ⟨e,e⟩ = 1 and ⟨a,e⟩ = 0. Hence πx = w₀ (`Submodule.eq_starProjection_of_mem_of_inner_eq_zero`), and expanding ⟨w₀, w₀⟩ gives |πx|² = α² + β² = ρ. Since α > 0, ρ ≥ α² > 0.\n2. (F2: A ⊥ x.) ⟨A, x⟩ = α⟨e,x⟩ − β⟨a,x⟩ = αβ − βα = 0.\n3. (F3: the derivative of F̃ at x.) x ≠ 0 since ⟨x,a⟩ > 0 = ⟨0,a⟩. (a) The norm is differentiable at x with derivative v ↦ ⟨x,v⟩/|x|: |y| = sqrt(|y|²), the derivative of |y|² at x is v ↦ 2⟨x,v⟩ (`hasStrictFDerivAt_norm_sq`), and sqrt is differentiable at |x|² ≠ 0 with derivative 1/(2|x|) (`HasFDerivAt.sqrt`). (b) y ↦ ⟨y,e⟩ and y ↦ ⟨y,a⟩ are linear with derivatives v ↦ ⟨e,v⟩ and v ↦ ⟨a,v⟩ (`innerSL`, `real_inner_comm`). Since α ≠ 0, y ↦ ⟨y,a⟩⁻¹ has derivative v ↦ −⟨a,v⟩/α² (`hasFDerivAt_inv` composed with (b)), so by the product rule (`HasFDerivAt.mul`) q(y) := ⟨y,e⟩·⟨y,a⟩⁻¹ has derivative v ↦ ⟨e,v⟩/α − β⟨a,v⟩/α². (c) arctan has derivative 1/(1+t²) (`HasFDerivAt.arctan`), so y ↦ arctan(q(y)) has derivative v ↦ (1/(1 + β²/α²))·(⟨e,v⟩/α − β⟨a,v⟩/α²) = (α⟨e,v⟩ − β⟨a,v⟩)/(α² + β²) = ⟨A, v⟩/ρ. (d) The pair has the pair of derivatives (`HasFDerivAt.prodMk`); since y ↦ (|y|, arctan(⟨y,e⟩/⟨y,a⟩)) coincides with y ↦ (|y|, arctan(⟨y,e⟩·⟨y,a⟩⁻¹)) (t/s = t·s⁻¹; transfer with `HasFDerivAt.congr_of_eventuallyEq`), fderiv ℝ F̃ x equals this derivative (`HasFDerivAt.fderiv`). Hence for every v ∈ ℝ^P: (Dv)_1 = ⟨x,v⟩/|x| = ⟨x̂, v⟩ and (Dv)_2 = ⟨A, v⟩/ρ = ⟨g, v⟩ (the last identity is field arithmetic using α ≠ 0 and ρ ≠ 0).\n4. (The 2×2 Gram determinant.) For k ∈ Fin(dim T) put a_k := ⟨x̂, u_k⟩ = ⟨x,u_k⟩/|x| and c_k := ⟨g, u_k⟩ = ⟨A,u_k⟩/ρ. By step 3, Γ_kl = a_k a_l + c_k c_l. Since dim T = 2 the index type is Fin 2 (state the identity for an index type Fin n with n = 2 and substitute n = 2, or reindex along finCongr with `Matrix.det_reindex_self`), and expanding with `Matrix.det_fin_two`:\n   det Γ = (a_0² + c_0²)(a_1² + c_1²) − (a_0a_1 + c_0c_1)² = (a_0² + a_1²)(c_0² + c_1²) − (a_0c_0 + a_1c_1)² = (Σ_k a_k²)(Σ_k c_k²) − (Σ_k a_k c_k)²,\n   because both middle expressions expand to (a_0c_1 − a_1c_0)² (Lagrange's identity). (In the parent's language: Γ = LᵀL for the 2×2 matrix L with rows (a_k)_k and (c_k)_k, so det Γ = (det L)²; in the orthonormal basis (x̂, τ) of T, det L = ±⟨∇f(x), τ⟩ = ±⟨g, τ⟩.)\n5. (Parseval in T.) (u_k) is an orthonormal basis of T, so for y, z ∈ T: Σ_k ⟨y,u_k⟩² = |y|² and Σ_k ⟨y,u_k⟩⟨u_k,z⟩ = ⟨y,z⟩ (`OrthonormalBasis.sum_sq_inner_left`, `OrthonormalBasis.sum_inner_mul_inner`, applied in T to the elements x and p_T A of T). Moreover ⟨v, u_k⟩ = ⟨p_T v, u_k⟩ for every v ∈ ℝ^P, since v − p_T v ⊥ T ∋ u_k (`Submodule.starProjection_inner_eq_zero`). The hypothesis p_T x = x means x ∈ T (`Submodule.starProjection_eq_self_iff`). Therefore:\n   (i) Σ_k a_k² = |x|²/|x|² = 1;\n   (ii) Σ_k a_k c_k = (Σ_k ⟨x,u_k⟩⟨p_T A,u_k⟩)/(|x|ρ) = ⟨x, p_T A⟩/(|x|ρ) = ⟨p_T x, A⟩/(|x|ρ) = ⟨x, A⟩/(|x|ρ) = 0, using that p_T is self-adjoint (`Submodule.inner_starProjection_left_eq_right`) and step 2;\n   (iii) Σ_k c_k² = Σ_k ⟨p_T A, u_k⟩²/ρ² = |p_T A|²/ρ².\n6. (Conclusion.) By steps 4 and 5, det Γ = 1·|p_T A|²/ρ² − 0² = (|p_T A|/ρ)², so sqrt(det Γ) = |p_T A|/ρ (`Real.sqrt_sq`, as |p_T A|/ρ ≥ 0). By step 1, ρ = |πx|², so sqrt(det Γ) = |p_T(⟨x,a⟩e − ⟨x,e⟩a)|/|Q.starProjection x|², as claimed. ∎",
+          "proof_key_steps": [
+            "(a, e) is an orthonormal basis of Q, so πx = ⟨x,a⟩a + ⟨x,e⟩e, |πx|² = ρ := ⟨x,a⟩² + ⟨x,e⟩² > 0, and A := ⟨x,a⟩e − ⟨x,e⟩a ⊥ x.",
+            "For ⟨x,a⟩ > 0: fderiv F̃ x v = (⟨x,v⟩/|x|, ⟨A,v⟩/ρ) (norm via sqrt of norm², arctan ∘ (⟨y,e⟩·⟨y,a⟩⁻¹) via inverse, product and chain rules).",
+            "With a_k = ⟨x,u_k⟩/|x|, c_k = ⟨A,u_k⟩/ρ the Gram matrix is a_k a_l + c_k c_l and, as dim T = 2, det Γ = (Σa_k²)(Σc_k²) − (Σa_k c_k)² (det_fin_two, Lagrange).",
+            "Parseval in T with x ∈ T and ⟨v,u_k⟩ = ⟨p_T v,u_k⟩: Σa_k² = 1, Σa_k c_k = ⟨x,A⟩/(|x|ρ) = 0, Σc_k² = |p_T A|²/ρ².",
+            "Hence det Γ = (|p_T A|/ρ)² and sqrt(det Γ) = |p_T A|/|πx|²."
+          ]
+        },
+        "audit": {
+          "key": "polar_jacobian",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All geometric hypotheses match the exact Lean type. The proof correctly derives the projection and derivative formulas, expands the two-dimensional Gram determinant, and applies Parseval using radial tangency. Positivity justifies division and the final square root. Matrix.of supplies the intended matrix construction. The supplied proof is complete and independently kernel-checked."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.sector_open_smooth-a1",
+      "key": "sector_open_smooth",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 over dag.json nodes (lean_name/lean_statement/status): idtp_cse_fibre_area_identities and its siblings; idtp_carrier_area_formula (speculative-ready); accepted imrep_approxTangent_starProjection_aesm, dorag_aa_ae_finrank_approxTangentPlane, cbr_imRep_measure_basic, dpf_det_gram_stdOrthonormalBasis_eq, dpf_aestronglyMeasurable_gramJacobian; cousin idtp_cse_rc_angle_fderiv; statements containing 'finrank ℝ (approxTangentPlane', 'stdOrthonormalBasis', '!₂[' or ℝ × ℝ with fderiv",
+              "grep -c idtp_cse_fa_ dag.json (0); rg -l idtp_cse_fa_ nodes/ dag.json local-references/123e8435b4a2469b/project (no match); for f in .swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean: grep -l idtp_cse_fa_ (no match)",
+              "git show db9124843c:GMT/Ch07/Submission.lean | grep dorag_aa_ae_finrank_approxTangentPlane (accepted lemmas are delivered as `theorem Submission.X` in namespace GMT.Ch07)",
+              "grep -n 'HasApproximateTangentSpaceAt.finrank_eq|HasApproximateTangentSpaceAt.unique|def CountablyRectifiable|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "grep -rn '!₂\\[|volume_preserving_toLp|volume_preserving_ofLp|volume_preserving_finTwoArrow' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg 'setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable|restrict_withDensity|lintegral_withDensity_eq_lintegral_mul_non_measurable|apply_continuousLinearMap|ContinuousOn.isOpen_inter_preimage|contDiffAt_norm|hasStrictFDerivAt_norm_sq|HasFDerivAt.sqrt|HasFDerivAt.arctan|HasFDerivAt.prodMk|comp_fderiv|lintegral_comp_emb|aemeasurable_comp_iff|det_fin_two|det_reindex_self|sum_inner_mul_inner|sum_repr|starProjection_eq_self_iff|HasFDerivAt.div' .lake/packages/mathlib/Mathlib (same rev 25730c7c as the snapshot; no fderiv-form real quotient rule exists at this pin)",
+              "lake env lean /tmp/fa-decomp-7c1e/check/{Stmts,Parent,C1,C3,Deriv}.lean and /tmp/fa-decomp-7c1e/verify/C2.lean (+ #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v2.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/tmp/fa-decomp-7c1e/check/Stmts.lean",
+              "/tmp/fa-decomp-7c1e/check/Parent.lean",
+              "/tmp/fa-decomp-7c1e/check/C1.lean",
+              "/tmp/fa-decomp-7c1e/check/C3.lean",
+              "/tmp/fa-decomp-7c1e/check/Deriv.lean",
+              "/tmp/fa-decomp-7c1e/verify/C2.lean",
+              "/tmp/fa-decomp-7c1e/scripts/jac_check.py"
+            ],
+            "conclusion": "The pins match. The workspace Submission.lean (GMT.Ch07 namespace, frozen opens) is the compiler authority; mathlib is 25730c7c, equal to the snapshot's mathlib_commit, and SimonGMT is 2b36630.\n\nReusable results already in the DAG:\n- Accepted: dorag_aa_ae_finrank_approxTangentPlane (R.measure-a.e. finrank T_x = n), cbr_imRep_measure_basic (μHE⌞carrier ≪ R.measure) and imrep_approxTangent_starProjection_aesm. These replace the parent's direct use of the orients field and HasApproximateTangentSpaceAt.finrank_eq.\n- Pending: idtp_carrier_area_formula (speculative-ready), which child 3 uses.\n- Not reusable: dpf_det_gram_stdOrthonormalBasis_eq applies only to L : Euclid P →L Euclid P. No existing node gives the area formula into ℝ × ℝ or the polar-map Jacobian. The cousin idtp_cse_rc_angle_fderiv is still pending.\n\nAll Mathlib names cited in the child proofs exist at the pin. The proofs avoid the missing fderiv-form quotient rule by using the inverse and product rules.\n\nThe proposed idtp_cse_fa_* names are unreserved. All four types elaborate. The parent is kernel-checked from the three child types plus the accepted-lemma types, with standard axioms only. Children 1 and 2 are fully proved, and child 3 is proved relative to the carrier-area-formula type."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.sector_open_smooth-a1",
+        "subproblem": {
+          "key": "sector_open_smooth",
+          "title": "The sector box Z_s is open and the polar map (|x|, arctan(⟨x,e⟩/⟨x,a⟩)) is C¹ on the half-space ⟨x,a⟩ > 0",
+          "statement": "Let P ∈ ℕ, Q a linear subspace of ℝ^P with orthogonal projection π := Q.starProjection, a, e ∈ ℝ^P and s ∈ ℝ. Put f(x) := arctan(⟨x,e⟩/⟨x,a⟩) (real division, t/0 = 0), F̃(x) := (|x|, f(x)) ∈ ℝ × ℝ, Ω := {x : ⟨x,a⟩ > 0} and Z_s := {x : ⟨x,a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}. Then Z_s is open and F̃ is C¹ on Ω (ContDiffOn ℝ 1).",
+          "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ), IsOpen {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∧ ContDiffOn ℝ 1 (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) {x : Euclid P | 0 < inner ℝ x a}",
+          "lean_name": "idtp_cse_fa_sector_open_contDiffOn",
+          "depends_on": [],
+          "natural_proof": "Notation. ⟨·,·⟩ is the inner product of ℝ^P = Euclid P; π := Q.starProjection is the orthogonal projection onto Q, a continuous linear map (Q is finite-dimensional, hence closed). Ω := {x : 0 < ⟨x,a⟩}; q(x) := ⟨x,e⟩/⟨x,a⟩ (real division, t/0 = 0); f := arctan ∘ q; F̃ := (|·|, f) : ℝ^P → ℝ × ℝ; Z_s := {x : 0 < ⟨x,a⟩ ∧ ||x| − 1| < s ∧ |f(x)| < s ∧ |x − πx| < s|x|}. No hypothesis on Q, a, e, s is needed.\n1. (Ω is open.) Ω is the set where the continuous function x ↦ ⟨x,a⟩ is strictly greater than the constant 0, hence open (`isOpen_lt continuous_const (continuous_id.inner continuous_const)`).\n2. (Points of Ω.) Every x ∈ Ω satisfies ⟨x,a⟩ ≠ 0, and x ≠ 0 because ⟨0,a⟩ = 0.\n3. (f is C¹ on Ω.) Fix x ∈ Ω. The maps y ↦ ⟨y,e⟩ and y ↦ ⟨y,a⟩ are continuous linear, hence C^∞ (`ContDiff.inner ℝ contDiff_id contDiff_const`). Their quotient q is C^∞ at x because the denominator ⟨x,a⟩ is nonzero (step 2; `ContDiffAt.div`). Real.arctan is C^∞ on ℝ (`Real.contDiff_arctan`), so f = arctan ∘ q is C^∞, in particular C¹, at x, hence C¹ within Ω at x. Since x ∈ Ω was arbitrary, f is ContDiffOn ℝ 1 on Ω; in particular f is continuous on Ω.\n4. (F̃ is C¹ on Ω.) Fix x ∈ Ω. The norm of a real inner product space is C^∞ at every nonzero point (`contDiffAt_norm ℝ`), and x ≠ 0 by step 2, so |·| is C¹ at x and hence within Ω at x. Together with step 3, the pair F̃ = (|·|, f) is C¹ within Ω at x (`ContDiffWithinAt.prodMk`). Hence ContDiffOn ℝ 1 F̃ Ω, which is the second conjunct.\n5. (Z_s is open.) Let B := Ω ∩ {x : |f(x)| < s}. The function x ↦ |f(x)| is continuous on Ω (step 3), Ω is open (step 1) and (−∞, s) is open, so B = Ω ∩ (|f|)⁻¹((−∞, s)) is open (`ContinuousOn.isOpen_inter_preimage`). The sets A₁ := {x : ||x| − 1| < s} and A₃ := {x : |x − πx| < s|x|} are open, each being the set where one continuous function on ℝ^P is strictly smaller than another (`isOpen_lt`; |·| and π are continuous). Unfolding the definitions, x ∈ Z_s iff (0 < ⟨x,a⟩ and |f(x)| < s) and ||x| − 1| < s and |x − πx| < s|x|, i.e. Z_s = B ∩ A₁ ∩ A₃. A finite intersection of open sets is open, so Z_s is open (if s ≤ 0 it is empty, which is consistent). This is the first conjunct. ∎",
+          "proof_key_steps": [
+            "Ω = {⟨x,a⟩ > 0} is open and its points are nonzero with ⟨x,a⟩ ≠ 0.",
+            "arctan(⟨x,e⟩/⟨x,a⟩) is C¹ (hence continuous) on Ω: quotient of linear maps with nonvanishing denominator composed with the smooth arctan.",
+            "|·| is C^∞ away from 0, so F̃ = (|·|, f) is ContDiffOn ℝ 1 on Ω.",
+            "Z_s = (Ω ∩ |f|⁻¹(−∞,s)) ∩ {||x|−1| < s} ∩ {|x−πx| < s|x|} is a finite intersection of open sets (ContinuousOn.isOpen_inter_preimage, isOpen_lt)."
+          ]
+        },
+        "audit": {
+          "key": "sector_open_smooth",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean proposition agree, including arbitrary Q, a, e and s. The proof establishes nonvanishing denominators and x ≠ 0 on Ω before applying smoothness, then proves openness by intersecting the appropriate open sets. Both conclusions follow without additional hypotheses or circular dependencies."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/decomposition.json": "53bcd6c7f659cedce11afcb24d3b9d686bb425579bbc6fb32cba3d1c4f81325d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/decomposition-audit.json": "d8ed9bb104c09c9e0baa425fcaa919814ec82ec1fba48eaec7e313e524a81c03",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-child-handoff.json": "c5fcb9e9c129d032cbcfd4ca1002d29b1f7d23db4f7d78d017d810cf16891339",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-supplied-plan.md": "a57e1f7bdec174f79e6fdb4e696cd77df25f976c2c7b06b91b2abd489063b2bc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-supplied-natural-proof.md": "721d70ec64f0b56751bac6b4939bf9bf80cf376dd7871326b822633e5fa26526",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/parent-supplied-natural-proof.json": "2cc1248f9a174ac9d95fd3ae443763f4a41fdd87b72f9189d8103cc2e77e8a7c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c/node.json": "31aff5986e33e4e530784efe188c5b3b16b2bf2ed9cb6d264a7675909ae50fe3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-child-handoff.json": "08f5a0dc6d72693ae79839fd4f3be65477106cc3bf204d23e64eee002ccb86aa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-plan.md": "65431a05b64f4a00be8cb49d0d890d06826ae7a004deddcdb0cb5461a7be00ad",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-natural-proof.md": "c6a49e84c1a98009148e76f4c174fea9199b18c56fa101da41e2d2c3bd95440b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/parent-supplied-natural-proof.json": "b7fa30230488ab2e29edb3ee0816da0ba14cda2a9ff5299a4858c953a8a55d86",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b6873e076a/node.json": "6f8951d2e504045a4021bf994efdca0f33053baa141be23c9c47114d10c3d26a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-child-handoff.json": "994884e950eeb1d8f54fe9d3510899bfebae48fc5ab27ecd575e2267830522fc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-supplied-plan.md": "dd69e9a511cfd18edf63d3015bd4fbabdd08e8a0077bc92d199b3ee1e27f48a3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-supplied-natural-proof.md": "8c99e4544793babde6a9b1b4106dff94c2ceaaef6364c6cb4308f0e160f99edd",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/parent-supplied-natural-proof.json": "d6bea53a7dcc5a58bc6d7893876ae77ec35d2e472fd9bc22769f41b0f2a395b7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec/node.json": "3da5d44718b75da4e189814031b4a7bdc3e9f30e375582bdac58490f29db01b0"
+  }
+}

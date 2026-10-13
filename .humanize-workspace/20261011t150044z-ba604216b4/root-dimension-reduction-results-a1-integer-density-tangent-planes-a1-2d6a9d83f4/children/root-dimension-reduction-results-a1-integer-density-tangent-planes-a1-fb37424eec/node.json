@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.sector_open_smooth-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+  "depth": 5,
+  "title": "The sector box Z_s is open and the polar map (|x|, arctan(⟨x,e⟩/⟨x,a⟩)) is C¹ on the half-space ⟨x,a⟩ > 0",
+  "statement": "Let P ∈ ℕ, Q a linear subspace of ℝ^P with orthogonal projection π := Q.starProjection, a, e ∈ ℝ^P and s ∈ ℝ. Put f(x) := arctan(⟨x,e⟩/⟨x,a⟩) (real division, t/0 = 0), F̃(x) := (|x|, f(x)) ∈ ℝ × ℝ, Ω := {x : ⟨x,a⟩ > 0} and Z_s := {x : ⟨x,a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}. Then Z_s is open and F̃ is C¹ on Ω (ContDiffOn ℝ 1).",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ), IsOpen {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∧ ContDiffOn ℝ 1 (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) {x : Euclid P | 0 < inner ℝ x a}",
+  "lean_name": "idtp_cse_fa_sector_open_contDiffOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fb37424eec-a1"
+}
