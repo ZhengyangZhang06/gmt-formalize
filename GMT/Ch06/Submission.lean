@@ -2596,6 +2596,48 @@ theorem Submission.isoperimetric_coord_box_measure :
   have hiso : Isometry ι := by
     refine Isometry.of_dist_eq fun y y' => ?_
     rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    congr 1
+    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image α)) ?_,
+      Finset.sum_image (fun j _ j' _ h => α.injective h)]
+    · refine Finset.sum_congr rfl fun j _ => ?_
+      rw [hι_on, hι_on, dist_add_left]
+    · intro i _ hi
+      have hi' : i ∉ range α := by
+        rintro ⟨j, rfl⟩
+        exact hi (Finset.mem_image_of_mem α (Finset.mem_univ j))
+      rw [hι_off y i hi', hι_off y' i hi', dist_self]
+      ring
+  -- `ι` maps the cube `[a, b]ⁿ` onto the box, with preimage `y_j = x_{α j} - c_{α j}`.
+  have himage : ι '' {y : EuclideanSpace ℝ (Fin n) | ∀ j, a ≤ y j ∧ y j ≤ b} =
+      {x : Eucl N | ∀ i : Fin N, (i ∈ range α → c i + a ≤ x i ∧ x i ≤ c i + b) ∧
+        (i ∉ range α → x i = c i)} := by
+    ext x
+    constructor
+    · rintro ⟨y, hy, rfl⟩ i
+      refine ⟨?_, hι_off y i⟩
+      rintro ⟨j, rfl⟩
+      rw [hι_on]
+      exact ⟨by linarith [(hy j).1], by linarith [(hy j).2]⟩
+    · intro hx
+      refine ⟨WithLp.toLp 2 (fun j => x (α j) - c (α j)), fun j => ?_, ?_⟩
+      · have h := (hx (α j)).1 ⟨j, rfl⟩
+        constructor <;> dsimp only <;> linarith [h.1, h.2]
+      · ext i
+        by_cases hi : i ∈ range α
+        · obtain ⟨j, rfl⟩ := hi
+          rw [hι_on]
+          simp
+        · rw [hι_off _ i hi, (hx i).2 hi]
+  rw [← himage, hiso.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- The cube is the preimage of `Icc` under the volume-preserving `WithLp.ofLp`.
+  have hQ : {y : EuclideanSpace ℝ (Fin n) | ∀ j, a ≤ y j ∧ y j ≤ b} =
+      WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => a) (fun _ => b) := by
+    ext y
+    simp [Pi.le_def, forall_and]
+  rw [hQ, (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage
+    measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi, Finset.prod_const,
+    Finset.card_univ, Fintype.card_fin, ENNReal.ofReal_pow (sub_nonneg.2 hab)]
 /-- Mass estimate (Simon Ch. 6, 2.4–2.5): if `M(Z) < ∞` and `|η(x)| ≤ c` everywhere (Euclidean
 coefficient norm) with `c > 0`, then `|Z(η)| ≤ c · M(Z)`. -/
 theorem Submission.fiw_tb_te_abs_apply_le_mul_mass :
