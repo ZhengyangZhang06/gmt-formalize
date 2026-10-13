@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "caccioppoli|energy estimate|cutoff|cut-off",
+        "norm_smulRight_apply",
+        "contDiff_of_contDiffOn_union_of_isOpen",
+        "continuousOn_fderiv_of_isOpen",
+        "fderiv_of_notMem_tsupport",
+        "ofReal_integral_eq_lintegral_ofReal",
+        "lintegral_const_mul'",
+        "dohr_eb_sch_cacc_exists_cutoff",
+        "dohr_eb_sch_cacc_test_function",
+        "dohr_eb_sch_cacc_energy_estimate",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cacc-independent-audit-dwn_txz2/Audit.lean > /tmp/cacc-independent-audit-dwn_txz2/Audit.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-023445a3eb/parent-child-handoff.json",
+        "/tmp/cacc-independent-audit-dwn_txz2/Audit.lean",
+        "/tmp/cacc-independent-audit-dwn_txz2/Audit.log"
+      ],
+      "conclusion": "Confirmed the frozen handoff and pinned revisions: project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Twelve inspected Mathlib files match the compiled package sources. The keyword search across Analysis, MeasureTheory and the project found only the README's unrelated harmonic-comparison reference. The pinned smooth-transition, support, differentiation and integration lemmas support the supplied arguments. All three names are valid bare identifiers and absent from the 515-node DAG. In a fresh audit file, all frozen propositions elaborated before any child implementation; the verbatim supplied proofs, exact-type comparator wrappers, instance checks and parent assembly compiled successfully. Axiom checks reported only propext, Classical.choice and Quot.sound. The split is appropriate: cutoff and test_function are independent, and energy_estimate depends only on test_function. With C = (4 * Lam^2 / lam^2) * K^2, their conclusions establish the selected frozen parent, including an infinite right-hand integral."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including a dimension-independent K and topological support inside the open larger ball. The proof constructs the profile, bounds its derivative on a compact interval, establishes compact support inside radius 7ρ/4, and proves the global K/ρ derivative bound. It covers all natural dimensions, is non-circular, and supplies a complete formalization-ready argument."
+    },
+    {
+      "key": "test_function",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match exactly. Support inclusion and gluing over U and the complement of tsupport η establish global C1 regularity without assuming regularity of V elsewhere. The product rule proves the derivative formula on U; local vanishing proves it outside U. Independent instance checks confirm the stated smulRight rank-one map and scalar action. The proof is complete and has no child or parent dependency."
+    },
+    {
+      "key": "energy_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including arbitrary real Lam, nonnegative η and lower integrals. The declared test_function dependency supplies precisely the admissible test and derivative formula. Continuity and compact support establish integrability before absorption. Coercivity, the bilinear bound and the completed-square identity yield 4 Lam²/lam² without an unstated sign assumption on Lam. The passage to ENNReal is justified. No circular reliance or missing proof step remains."
+    }
+  ],
+  "required_changes": []
+}
