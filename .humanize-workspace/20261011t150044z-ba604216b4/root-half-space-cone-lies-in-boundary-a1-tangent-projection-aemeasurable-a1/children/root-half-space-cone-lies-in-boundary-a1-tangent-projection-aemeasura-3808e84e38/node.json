@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.projection_field_aemeasurable-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+  "depth": 3,
+  "title": "A field of orthogonal projections is a.e.-measurable when its quadratic forms are",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P and let K be a map from ℝ^P to linear subspaces of ℝ^P. Let p_x ∈ L(ℝ^P, ℝ^P) be the orthogonal projection onto K(x), i.e. (K x).starProjection. Suppose that for every u ∈ ℝ^P the real function x ↦ |p_x u|² is μ-a.e. measurable. Then x ↦ p_x is μ-a.e. measurable for the Borel σ-algebra of L(ℝ^P, ℝ^P) with the operator-norm topology.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (K : Euclid P → Submodule ℝ (Euclid P)), (∀ u : Euclid P, AEMeasurable (fun x => ‖(K x).starProjection u‖ ^ 2) μ) → AEMeasurable (fun x => (K x).starProjection) μ",
+  "lean_name": "aemeasurable_starProjection_of_aemeasurable_norm_sq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-3808e84e38-a1"
+}
