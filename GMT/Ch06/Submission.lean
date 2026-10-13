@@ -381,6 +381,25 @@ theorem Submission.deformation_ipl_mwc_mis_integral_fderiv_eq_zero :
     simp
   simp only [h1, h2, zero_mul, integral_zero, mul_one, integral_neg] at key
   linarith
+/-- **The determinant of a matrix of `C^m` functions is `C^m`.**  Let `M t s : ℝᵏ → ℝ`
+(`t, s : Fin n`) be `C^m` for some `m : WithTop ℕ∞` (finite, `∞` or `ω`).  Then
+`w ↦ det (M t s w)ₜₛ` is `C^m`.  By the Leibniz formula `det A = ∑_σ sign σ · ∏ᵢ A (σ i) i`, this
+function is a finite sum, over the permutations `σ` of `Fin n`, of constant multiples of finite
+products of entries (for `n = 0` it is the constant `1`). -/
+theorem Submission.deformation_ipl_mwc_mis_det_contDiff :
+    ∀ (k n : ℕ) (m : WithTop ℕ∞) (M : Fin n → Fin n → Eucl k → ℝ),
+      (∀ t s, ContDiff ℝ m (M t s)) →
+        ContDiff ℝ m (fun w => Matrix.det (Matrix.of fun t s : Fin n => M t s w)) := by
+  intro k n m M hM
+  -- Leibniz formula: `det (M t s w)ₜₛ = ∑_σ sign σ * ∏ᵢ M (σ i) i w`.
+  simp only [Matrix.det_apply', Matrix.of_apply]
+  -- Each summand is a constant times a finite product of `C^m` entries.
+  apply ContDiff.sum
+  intro σ _
+  apply contDiff_const.mul
+  apply contDiff_prod
+  intro i _
+  exact hM _ _
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
