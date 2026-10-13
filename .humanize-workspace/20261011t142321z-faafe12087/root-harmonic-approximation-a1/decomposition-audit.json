@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsW12WithGradient|def HarmonicApproximationLemma",
+        "rg -n -i 'rellich|kondrachov|weakly.?harmonic|poincar.{0,5} inequality|weyl.{0,10}lemma' mathlib/Mathlib project/GMT",
+        "exists_hasCompactSupport_eLpNorm_sub_le|instance SecondCountableTopology|theorem inner_def|def toDual|isSeqCompact_closedBall|theorem arzela_ascoli|theorem IsCompact.tendsto_subseq|theorem cauchy_complete_eLpNorm",
+        "def average|⨍.*restrict|average_eq|average.*def",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/harmonic-independent-audit-8c9aauj0/Check.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/harmonic-independent-audit-8c9aauj0/LibraryChecks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/SeparableMeasure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/WeakDual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/tmp/harmonic-independent-audit-8c9aauj0/Check.lean",
+        "/tmp/harmonic-independent-audit-8c9aauj0/LibraryChecks.lean"
+      ],
+      "conclusion": "The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Runtime contract/build files and inspected Mathlib files match the snapshot. Searches found no ready ball-specific Poincare, Rellich or Weyl theorem; the supporting convolution, compactness, Hilbert-space and distribution lemmas exist. Both independent Lean checks exited 0. All seven raw propositions elaborate without child implementations or proof holes; explicit-parentheses equality checks confirm the average and integral grouping. Checked declarations use only propext, Classical.choice and Quot.sound. L2 separability was verified with the elementary finite-exponent instance supplied explicitly. All proposed names are bare, distinct and unreserved across the 17 current DAG nodes and inspected other-branch proposals. Dependencies are acyclic and correctly directed. No matrix-unit construction occurs. The split is appropriate: its conclusions and the supplied mean-subtraction, limit-passage and constant-addition argument establish exactly HarmonicApproximationLemma."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type match. Zero extension gives the required L1/L2 functions; testing translated kernels correctly identifies the mollified gradient on the interior. Contraction and continuous compact-support density prove both L2 limits for the stated radii. The proof is complete and non-circular."
+    },
+    {
+      "key": "poincare_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The average, measure, hypotheses and energy bound match exactly. The segment argument and split Jacobian estimate give C = 2^{n+2}; interior approximation, Fatou, exhaustion and Cauchy–Schwarz justify passage to the stated mean-subtracted inequality. Only the declared smooth-approximation dependency is used."
+    },
+    {
+      "key": "boundary_layer_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly multiplies the sum of two lintegrals. The radial averaging calculation gives the claimed constant, including the trivial small-r case. Interior approximation is sufficient, and exhaustion uses the increasing sets B_s minus B_r, avoiding any unjustified monotonicity of the moving annuli. The declared dependency suffices."
+    },
+    {
+      "key": "translation_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The strict displacement hypothesis ensures 0 < r + norm(z) < 1. Segment integration, Cauchy–Schwarz and translation invariance give the exact constant. Approximation on that enlarged interior ball passes both sides to the limit; representative changes remain valid because translation preserves null sets."
+    },
+    {
+      "key": "rellich_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary real A through ofReal. Reduction to max(A,0), the mollification estimate, Arzela–Ascoli and the nested diagonal are valid. The two declared estimates make the selected sequence Cauchy on the whole ball, and L2 completeness supplies the required MemLp representative and lintegral convergence."
+    },
+    {
+      "key": "weak_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly includes n = 0 and convergence against every L2 test field. The dense-test diagonal, uniform Cauchy estimate and Riesz representation produce a limit of norm at most one. Passing between Lp classes and representatives proves exactly the stated integrals and energy bound without assuming the child or parent."
+    },
+    {
+      "key": "weyl_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All test-function hypotheses and all three conclusions match. The proof establishes distributional harmonicity, derives its radial mean-value identity by integration by parts, and justifies convolution interchange and differentiation limits. Compatibility and a countable null-set union validate the patched representative; the fundamental lemma proves gradient equality. No further proof-planning pass is needed. The localized mollification argument is corroborated by [Schmidt, PDE I, §2.5](https://wwwp2.math.uni-hamburg.de/en/forschung/bereiche/am/geom-part-differentialgleichungen/dokumente/pde.pdf#page=34)."
+    }
+  ],
+  "required_changes": []
+}

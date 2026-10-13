@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.translation_estimate-a1.ball_translate_lintegral-a1",
+  "parent_id": "root.harmonic_approximation-a1.translation_estimate-a1",
+  "depth": 3,
+  "title": "Translating a ball into a larger ball does not increase a lintegral",
+  "statement": "Let n be a natural number, F : R^n -> [0,infinity] an arbitrary function (no measurability assumed), r, s real numbers and w in R^n with r + |w| <= s. Then int^-_(B_r) F(x - w) dx <= int^-_(B_s) F(x) dx, where B_rho := ball(0,rho) is the open ball of EuclideanSpace R (Fin n) (empty if rho <= 0), dx is Lebesgue measure (volume) and int^- is Mathlib's lintegral.",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (r s : ℝ) (w : Rn n), r + ‖w‖ ≤ s → ∫⁻ x in ball (0 : Rn n) r, F (x - w) ≤ ∫⁻ x in ball (0 : Rn n) s, F x",
+  "lean_name": "lintegral_ball_comp_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-translation-estimate-a1-ball-translate-fb82697a57-a1"
+}
