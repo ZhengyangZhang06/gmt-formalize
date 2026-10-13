@@ -714,6 +714,228 @@ theorem allard52_campanato_from_tilt : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (
     by_cases hy : y ∈ closedBall ζ s
     · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy]
     · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
+/-- Lebesgue points of a bounded Borel operator field for the squared Hilbert–Schmidt
+oscillation (used in the proof of Simon Ch. 5, Theorem 5.2, p. 123; Lebesgue's differentiation
+theorem, Ch. 1, Theorem 3.23).  If `G : ℝⁿ → L(ℝᵐ, ℝᵏ)` is Borel with `‖G‖ ≤ B`, then for
+`Lⁿ`-a.e. `z`,
+`Lⁿ(B_t(z))⁻¹ ∫_{B_t(z)} |G(x) − G(z)|² dx → 0` as `t → 0⁺`.  Since `|A|² ≤ m ‖A‖²` and
+`‖G(x) − G(z)‖ ≤ 2B`, the integrand is at most `2mB ‖G(x) − G(z)‖`, whose ball averages tend
+to `0` at a.e. `z` by the differentiation theorem for the locally integrable `G` along the
+Vitali family of the doubling measure `Lⁿ`. -/
+theorem allard52_cae_hsNormSq_lebesgue_ae : ∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (B : ℝ), Measurable G → (∀ x, ‖G x‖ ≤ B) → ∀ᵐ z ∂(volume : Measure (Rn n)), Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) := by
+  intro n m k G B hG hB
+  -- A bounded Borel map into the finite-dimensional space `L(ℝᵐ, ℝᵏ)` is locally integrable.
+  have hloc : LocallyIntegrable G (volume : Measure (Rn n)) :=
+    locallyIntegrable_iff.2 fun K hK =>
+      Measure.integrableOn_of_bounded hK.measure_lt_top.ne hG.aestronglyMeasurable
+        (ae_of_all _ hB)
+  -- Pointwise comparison: `|G(x) − G(z)|² ≤ m ‖G(x) − G(z)‖² ≤ 2mB ‖G(x) − G(z)‖`.
+  have hpt : ∀ x z, ENNReal.ofReal (hsNormSq (G x - G z)) ≤
+      ENNReal.ofReal (2 * m * B) * ‖G x - G z‖ₑ := by
+    intro x z
+    have hT : ‖G x - G z‖ ≤ 2 * B := by
+      linarith [norm_sub_le (G x) (G z), hB x, hB z]
+    have hsum : hsNormSq (G x - G z) ≤ m * ‖G x - G z‖ ^ 2 := by
+      unfold hsNormSq
+      calc ∑ i : Fin m, ‖(G x - G z) (EuclideanSpace.single i 1)‖ ^ 2
+          ≤ ∑ _i : Fin m, ‖G x - G z‖ ^ 2 := by
+            gcongr with i
+            calc ‖(G x - G z) (EuclideanSpace.single i 1)‖
+                ≤ ‖G x - G z‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ := (G x - G z).le_opNorm _
+              _ = ‖G x - G z‖ := by simp
+        _ = m * ‖G x - G z‖ ^ 2 := by simp
+    rw [← ofReal_norm, ← ENNReal.ofReal_mul' (norm_nonneg (G x - G z))]
+    apply ENNReal.ofReal_le_ofReal
+    have hm : (0 : ℝ) ≤ m * ‖G x - G z‖ := mul_nonneg (Nat.cast_nonneg m) (norm_nonneg _)
+    nlinarith [mul_le_mul_of_nonneg_left hT hm]
+  -- Lebesgue differentiation along the closed balls `B_t(z)`, `t → 0⁺`.
+  filter_upwards [(IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure (Rn n)) 1).ae_tendsto_lintegral_enorm_sub_div hloc] with z hz
+  have hballs : Tendsto (fun t : ℝ => closedBall z t) (𝓝[>] 0)
+      ((IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure (Rn n)) 1).filterAt z) :=
+    IsUnifLocDoublingMeasure.tendsto_closedBall_filterAt (volume : Measure (Rn n))
+      (fun _ => z) id tendsto_id (by
+        filter_upwards [self_mem_nhdsWithin] with t ht
+        exact mem_closedBall_self (by simpa using (Set.mem_Ioi.1 ht).le))
+  have hlim := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal (2 * m * B)) (hz.comp hballs)
+    (Or.inr ENNReal.ofReal_ne_top)
+  rw [mul_zero] at hlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+    fun t => ?_
+  -- Average the pointwise comparison over `B_t(z)`.
+  calc (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))
+      ≤ (volume (closedBall z t))⁻¹ *
+          ∫⁻ x in closedBall z t, ENNReal.ofReal (2 * m * B) * ‖G x - G z‖ₑ := by
+        gcongr with x
+        exact hpt x z
+    _ = ENNReal.ofReal (2 * m * B) *
+          ((∫⁻ x in closedBall z t, ‖G x - G z‖ₑ) / volume (closedBall z t)) := by
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, ENNReal.div_eq_inv_mul, mul_left_comm]
+/-- At a quadratic Lebesgue point the Campanato centre is the value (Simon Ch. 5, proof of
+Theorem 5.2, p. 123: where `σ⁻ⁿ ∫_{B_σ(ξ)} |p_{T_x G(f)} − p_{S(ξ)}|² dHⁿ → 0`, `S(ξ)` is the
+approximate tangent space).  If `⨍_{B_t(z)} |G(x) − G(z)|² dx → 0` as `t ↓ 0` and
+`∫_{B_{s/2}(z)} |G(x) − T|² dx ≤ A sⁿ (s/R)^{2α}` for `0 < s ≤ s₀` (Hilbert–Schmidt norm), then
+`G(z) = T`: averaging `|G(z) − T|² ≤ 2|G(x) − T|² + 2|G(x) − G(z)|²` over `B_{s/2}(z)`, of volume
+`(s/2)ⁿ Lⁿ(B₁(0))`, gives
+`|G(z) − T|² ≤ 2^{n+1} A (s/R)^{2α} / Lⁿ(B₁(0)) + 2 ⨍_{B_{s/2}(z)} |G(x) − G(z)|² dx → 0`. -/
+theorem allard52_cae_center_eq_at_lebesgue_point : ∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (z : Rn n) (T : Rn m →L[ℝ] Rn k) (A R α s₀ : ℝ), 0 < R → 0 < α → 0 < s₀ → Measurable G → Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - T)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → G z = T := by
+  intro n m k G z T A R α s₀ _hR hα hs₀ hG hleb hcamp
+  -- Hilbert–Schmidt facts: `|S|² ≥ 0`, `|S − S'|² ≤ 2|S|² + 2|S'|²`, `|S|² = 0 ⇒ S = 0`.
+  have hs_nonneg : ∀ S : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq S := fun S =>
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hs_sub : ∀ S S' : Rn m →L[ℝ] Rn k,
+      hsNormSq (S - S') ≤ 2 * hsNormSq S + 2 * hsNormSq S' := by
+    intro S S'
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [sub_apply]
+    have h1 := norm_sub_le (S (EuclideanSpace.single i 1)) (S' (EuclideanSpace.single i 1))
+    have h2 := norm_nonneg (S (EuclideanSpace.single i 1) - S' (EuclideanSpace.single i 1))
+    nlinarith [sq_nonneg (‖S (EuclideanSpace.single i 1)‖ - ‖S' (EuclideanSpace.single i 1)‖)]
+  have hs_zero : ∀ S : Rn m →L[ℝ] Rn k, hsNormSq S = 0 → S = 0 := by
+    intro S hS
+    have hterm : ∀ i, S (EuclideanSpace.single i 1) = 0 := by
+      intro i
+      have := (Finset.sum_eq_zero_iff_of_nonneg
+        (fun i _ => sq_nonneg ‖S (EuclideanSpace.single i 1)‖)).1 hS i (Finset.mem_univ _)
+      simpa using this
+    ext1 w
+    rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr w]
+    simp [map_sum, map_smul, hterm]
+  -- Measurability of `x ↦ |G(x) − T|²`.
+  have hcont : Continuous fun S : Rn m →L[ℝ] Rn k => hsNormSq S := by
+    unfold hsNormSq
+    fun_prop
+  have hmeasT : Measurable fun x => ENNReal.ofReal (hsNormSq (G x - T)) :=
+    ENNReal.measurable_ofReal.comp
+      ((hcont.comp (continuous_id.sub continuous_const)).measurable.comp hG)
+  -- Ball volumes: `Lⁿ(B_t(z)) = tⁿ v` with `v = Lⁿ(B_1(0)) > 0`.
+  set v : ℝ≥0∞ := volume (closedBall (0 : Rn n) 1)
+  have hv0 : v ≠ 0 := (measure_closedBall_pos volume (0 : Rn n) one_pos).ne'
+  have hvol : ∀ t : ℝ, 0 ≤ t → volume (closedBall z t) = ENNReal.ofReal (t ^ n) * v := by
+    intro t ht
+    rw [Measure.addHaar_closedBall' volume z ht, finrank_euclideanSpace_fin]
+  -- Pointwise: `|G(z) − T|² ≤ 2|G(x) − T|² + 2|G(x) − G(z)|²`.
+  set h : ℝ := hsNormSq (G z - T)
+  have hpt : ∀ x, ENNReal.ofReal h ≤
+      2 * ENNReal.ofReal (hsNormSq (G x - T)) + 2 * ENNReal.ofReal (hsNormSq (G x - G z)) := by
+    intro x
+    have h1 : h ≤ 2 * hsNormSq (G x - T) + 2 * hsNormSq (G x - G z) := by
+      have := hs_sub (G x - T) (G x - G z)
+      rwa [sub_sub_sub_cancel_left] at this
+    calc ENNReal.ofReal h
+        ≤ ENNReal.ofReal (2 * hsNormSq (G x - T) + 2 * hsNormSq (G x - G z)) :=
+          ENNReal.ofReal_le_ofReal h1
+      _ = _ := by
+          rw [ENNReal.ofReal_add (mul_nonneg zero_le_two (hs_nonneg _))
+              (mul_nonneg zero_le_two (hs_nonneg _)),
+            ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+  -- For `0 < s ≤ s₀`: `ofReal h ≤ 2 ofReal(2ⁿ A (s/R)^{2α}) v⁻¹ + 2 a(s/2)`.
+  have hbound : ∀ s : ℝ, 0 < s → s ≤ s₀ → ENNReal.ofReal h ≤
+      2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ +
+        2 * ((volume (closedBall z (s / 2)))⁻¹ *
+          ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) := by
+    intro s hs hss
+    have ht : 0 < s / 2 := half_pos hs
+    set W : ℝ≥0∞ := volume (closedBall z (s / 2))
+    have hW0 : W ≠ 0 := (measure_closedBall_pos volume z ht).ne'
+    have hWtop : W ≠ ∞ := measure_closedBall_lt_top.ne
+    have hint : ENNReal.ofReal h * W ≤ 2 * ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) +
+        2 * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z)) := by
+      calc ENNReal.ofReal h * W = ∫⁻ _ in closedBall z (s / 2), ENNReal.ofReal h :=
+            (setLIntegral_const _ _).symm
+        _ ≤ ∫⁻ x in closedBall z (s / 2), (2 * ENNReal.ofReal (hsNormSq (G x - T)) +
+              2 * ENNReal.ofReal (hsNormSq (G x - G z))) := lintegral_mono hpt
+        _ = 2 * (∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - T))) +
+              2 * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z)) := by
+            rw [lintegral_add_left (hmeasT.const_mul 2), lintegral_const_mul 2 hmeasT,
+              lintegral_const_mul' 2 _ ENNReal.ofNat_ne_top]
+        _ ≤ _ := by
+            gcongr
+            exact hcamp s hs hss
+    -- `A sⁿ (s/R)^{2α} = (2ⁿ A (s/R)^{2α}) (s/2)ⁿ` and `W = ofReal((s/2)ⁿ) v`.
+    have hsplit : ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) =
+        ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * ENNReal.ofReal ((s / 2) ^ n) := by
+      rw [← ENNReal.ofReal_mul' (pow_nonneg ht.le n)]
+      congr 1
+      have : s ^ n = 2 ^ n * (s / 2) ^ n := by
+        rw [← mul_pow]
+        congr 1
+        ring
+      rw [this]
+      ring
+    have hq0 : ENNReal.ofReal ((s / 2) ^ n) ≠ 0 := by
+      rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+      exact pow_pos ht n
+    have hqtop : ENNReal.ofReal ((s / 2) ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
+    have hWeq : W = ENNReal.ofReal ((s / 2) ^ n) * v := hvol _ ht.le
+    have hfirst : ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) * W⁻¹ =
+        ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ := by
+      rw [hsplit, hWeq, ENNReal.mul_inv (Or.inl hq0) (Or.inl hqtop), mul_assoc,
+        ← mul_assoc (ENNReal.ofReal ((s / 2) ^ n)), ENNReal.mul_inv_cancel hq0 hqtop, one_mul]
+    calc ENNReal.ofReal h = ENNReal.ofReal h * W * W⁻¹ := by
+          rw [mul_assoc, ENNReal.mul_inv_cancel hW0 hWtop, mul_one]
+      _ ≤ (2 * ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) +
+            2 * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) * W⁻¹ := by
+          gcongr
+      _ = 2 * (ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α)) * W⁻¹) +
+            2 * (W⁻¹ * ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) := by
+          ring
+      _ = _ := by
+          rw [hfirst]
+          ring
+  -- The bound tends to `0` as `s → 0+`.
+  have hlim : Tendsto (fun s : ℝ => 2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ +
+      2 * ((volume (closedBall z (s / 2)))⁻¹ *
+        ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z)))) (𝓝[>] 0) (𝓝 0) := by
+    have hrpow : Tendsto (fun s : ℝ => (s / R) ^ (2 * α)) (𝓝 0) (𝓝 0) := by
+      have hc : ContinuousAt (fun s : ℝ => (s / R) ^ (2 * α)) 0 :=
+        (Real.continuousAt_rpow_const _ _ (Or.inr (by positivity))).comp
+          (continuous_id.div_const R).continuousAt
+      simpa [Real.zero_rpow (show 2 * α ≠ 0 by positivity)] using hc.tendsto
+    have hreal : Tendsto (fun s : ℝ => 2 ^ n * A * (s / R) ^ (2 * α)) (𝓝[>] 0) (𝓝 0) := by
+      have := (hrpow.const_mul (2 ^ n * A)).mono_left (nhdsWithin_le_nhds (s := Ioi 0))
+      simpa using this
+    have h1 : Tendsto (fun s : ℝ => 2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹)
+        (𝓝[>] 0) (𝓝 0) := by
+      have := ENNReal.Tendsto.mul_const
+        (ENNReal.Tendsto.const_mul (ENNReal.tendsto_ofReal hreal) (Or.inr ENNReal.ofNat_ne_top))
+        (Or.inr (ENNReal.inv_ne_top.2 hv0)) (b := v⁻¹) (a := 2 * ENNReal.ofReal 0)
+      simpa using this
+    have hhalf : Tendsto (fun s : ℝ => s / 2) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+      · have : Tendsto (fun s : ℝ => s / 2) (𝓝 0) (𝓝 (0 / 2)) := tendsto_id.div_const 2
+        rw [zero_div] at this
+        exact this.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with s hs
+        exact half_pos (Set.mem_Ioi.mp hs)
+    have h2 := ENNReal.Tendsto.const_mul (hleb.comp hhalf) (Or.inr ENNReal.ofNat_ne_top) (a := 2)
+    simpa using h1.add h2
+  -- Conclusion: `ofReal h ≤ 0`, so `h = 0` and `G z = T`.
+  have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal h ≤
+      2 * ENNReal.ofReal (2 ^ n * A * (s / R) ^ (2 * α)) * v⁻¹ +
+        2 * ((volume (closedBall z (s / 2)))⁻¹ *
+          ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - G z))) := by
+    filter_upwards [Ioc_mem_nhdsGT hs₀] with s hs
+    exact hbound s hs.1 hs.2
+  have hle : ENNReal.ofReal h ≤ 0 := ge_of_tendsto hlim hev
+  have hh0 : h = 0 :=
+    le_antisymm (ENNReal.ofReal_eq_zero.1 (nonpos_iff_eq_zero.1 hle)) (hs_nonneg _)
+  exact sub_eq_zero.1 (hs_zero _ hh0)
+/-- **Campanato centres agree with `G` almost everywhere** (Simon Ch. 5, proof of Theorem 5.2:
+identification of the centres by Lebesgue's differentiation theorem in the parameter domain `ℝⁿ`).
+Let `G, c : ℝⁿ → L(ℝᵐ, ℝᵏ)` with `G` Borel and `‖G‖ ≤ B`, and suppose that for every
+`z ∈ B_{R/4}(0)` and `s ∈ (0, R/4]`
+`∫_{B_{s/2}(z)} |G(x) − c(z)|² dx ≤ A sⁿ (s/R)^{2α}` (Hilbert–Schmidt norm, `R, α > 0`).
+Then `G(z) = c(z)` for `Lⁿ`-a.e. `z ∈ B̆_{R/4}(0)`.
+Off the null set of `allard52_cae_hsNormSq_lebesgue_ae`, every `z` is a quadratic Lebesgue point
+of `G`; for `z ∈ B̆_{R/4}(0) ⊆ B_{R/4}(0)` the Campanato bound at `z` is the hypothesis of
+`allard52_cae_center_eq_at_lebesgue_point` with `T = c(z)` and `s₀ = R/4`. -/
+theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z := by
+  intro n m k G c A R α B _hn hR hα hG hB hcamp
+  filter_upwards [Submission.allard52_cae_hsNormSq_lebesgue_ae n m k G B hG hB] with z hz hzR
+  exact Submission.allard52_cae_center_eq_at_lebesgue_point n m k G z (c z) A R α (R / 4) hR hα
+    (by positivity) hG hz (hcamp z (ball_subset_closedBall hzR))
 
 end Submission
 
