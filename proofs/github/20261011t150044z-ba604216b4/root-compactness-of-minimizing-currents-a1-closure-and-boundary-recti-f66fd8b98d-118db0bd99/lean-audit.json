@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5e1201023ea683e6eaf284d14e0f7adc56810e863bf5b7170e13d548e011c6a",
+  "git_delta": {
+    "base_commit": "a31cb4d444c7cab9083178bad69d61d148c08df1",
+    "candidate_commit": "03fd4f43e28894570ccfc6fbde9213ee2abdbdf4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_cone_testForm_coeff_lipschitz",
+    "diff_sha256": "3110df0262510e57d151be095df707495cf82d24f72d3b5dc81b8b9f377d2485",
+    "source_sha256": "0428b24db86280bb013cbcb666611f33be45f3ad2ae91b2bfc5529e1580e7e8c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_cone_testForm_coeff_lipschitz",
+      "statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k), ∃ c : ℝ, 0 ≤ c ∧ ∀ x y : Euclid P, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x - (ω : DifferentialForm (Euclid P) k) y) ≤ c * dist x y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
