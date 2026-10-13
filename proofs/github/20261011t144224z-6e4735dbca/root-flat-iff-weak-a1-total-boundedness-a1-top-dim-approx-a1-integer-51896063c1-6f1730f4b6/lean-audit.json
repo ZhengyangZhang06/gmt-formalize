@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3808b97de22e506cf39b692cd009a15f4ec5fd4c8a6dc1457500ae5619f949e0",
+  "git_delta": {
+    "base_commit": "ac93db3fe6aef91ce48c486165a1a08baa5399da",
+    "candidate_commit": "130b23e22587fad3be92a555e451794a17b4452b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_im_mean_deviation",
+    "diff_sha256": "c252a9eadc1bbe174f521b0cde408e182375e55f9b62d6b1a8bbcc103ef498fc",
+    "source_sha256": "f182cf65d2fe2530d0c1f28fa1731506e3cbade0c8c411951a433123402b91be",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_im_mean_deviation",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ → ∫⁻ x in F, ENNReal.ofReal |u x - a⁻¹ * ∫ y in F, u y ∂μ| ∂μ ≤ ENNReal.ofReal a⁻¹ * ∫⁻ x in F, ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
