@@ -359,6 +359,74 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Adapted frame of a nonzero functional (step 1 of the regular level-set charts used for slices
+of a rectifiable triple, Simon Ch. 6, 4.1–4.4): for `ℓ ≠ 0` on `ℝ^{m+1}` there are a
+norm-preserving `ι : ℝ^m → ℝ^{m+1}` onto `ker ℓ`, a vector `e ⟂ range ι` with `ℓ e = 1`, and `p`
+with `ι (p u) + ℓ u • e = u`.  Take `e = ‖a‖⁻² • a` for the Riesz vector `a` of `ℓ`, `ι` from an
+orthonormal basis of `ker ℓ` (dimension `m` by rank–nullity) and `p u = ι⁻¹ (u - ℓ u • e)`. -/
+theorem Submission.slicing_im_st_lsc_kernel_frame :
+    ∀ (m : ℕ) (ℓ : Eucl (m + 1) →L[ℝ] ℝ), ℓ ≠ 0 → ∃ (ι : Eucl m →L[ℝ] Eucl (m + 1)) (p : Eucl (m + 1) →L[ℝ] Eucl m) (e : Eucl (m + 1)), ℓ e = 1 ∧ (∀ v, ‖ι v‖ = ‖v‖) ∧ (∀ v, inner ℝ (ι v) e = 0) ∧ ∀ u, ι (p u) + ℓ u • e = u := by
+  intro m ℓ hℓ
+  -- Riesz vector `a` of `ℓ` (`ℓ u = ⟪a, u⟫`) and `e := ‖a‖⁻² • a`, so that `ℓ e = 1`.
+  set a : Eucl (m + 1) := (InnerProductSpace.toDual ℝ (Eucl (m + 1))).symm ℓ with ha
+  have hℓa : ∀ u, ℓ u = inner ℝ a u := fun u => by
+    rw [ha, InnerProductSpace.toDual_symm_apply]
+  have ha0 : a ≠ 0 := by
+    intro h0
+    apply hℓ
+    ext u
+    simp [hℓa, h0]
+  have hna : ‖a‖ ≠ 0 := norm_ne_zero_iff.2 ha0
+  set e : Eucl (m + 1) := (‖a‖ ^ 2)⁻¹ • a with he
+  have hℓe : ℓ e = 1 := by
+    rw [hℓa, he, inner_smul_right, real_inner_self_eq_norm_sq]
+    field_simp
+  -- `K := ker ℓ` has dimension `m`: `ℓ` maps onto `ℝ`, then rank–nullity.
+  set K : Submodule ℝ (Eucl (m + 1)) := LinearMap.ker ℓ.toLinearMap with hKdef
+  have htop : LinearMap.range ℓ.toLinearMap = ⊤ := by
+    obtain ⟨u, hu⟩ : ∃ u, ℓ u ≠ 0 := by
+      by_contra hcon
+      apply hℓ
+      ext u
+      by_contra hu
+      exact hcon ⟨u, by simpa using hu⟩
+    rw [eq_top_iff]
+    rintro y -
+    refine ⟨(y / ℓ u) • u, ?_⟩
+    simp [hu]
+  have hK : Module.finrank ℝ K = m := by
+    rw [hKdef]
+    have hrn := LinearMap.finrank_range_add_finrank_ker ℓ.toLinearMap
+    rw [htop, finrank_top, Module.finrank_self, finrank_euclideanSpace_fin] at hrn
+    omega
+  -- A linear isometry `J : ℝ^m ≃ K` from an orthonormal basis of `K` indexed by `Fin m`;
+  -- `ι := (K ↪ ℝ^{m+1}) ∘ J` and `p u := J⁻¹ (u - ℓ u • e)`.
+  let J : Eucl m ≃ₗᵢ[ℝ] K := ((stdOrthonormalBasis ℝ K).reindex (finCongr hK)).repr.symm
+  let ι : Eucl m →L[ℝ] Eucl (m + 1) :=
+    K.subtypeL.comp J.toContinuousLinearEquiv.toContinuousLinearMap
+  have hιK : ∀ v, ι v ∈ K := fun v => (J v).2
+  have hmemK : ∀ u, u - ℓ u • e ∈ K := by
+    intro u
+    simp [hKdef, LinearMap.mem_ker, hℓe]
+  let q : Eucl (m + 1) →L[ℝ] K :=
+    (ContinuousLinearMap.id ℝ (Eucl (m + 1)) - ℓ.smulRight e).codRestrict K (by
+      intro u
+      simpa using hmemK u)
+  let p : Eucl (m + 1) →L[ℝ] Eucl m :=
+    J.symm.toContinuousLinearEquiv.toContinuousLinearMap.comp q
+  refine ⟨ι, p, e, hℓe, ?_, ?_, ?_⟩
+  · intro v
+    show ‖((J v : K) : Eucl (m + 1))‖ = ‖v‖
+    rw [Submodule.norm_coe, LinearIsometryEquiv.norm_map]
+  · intro v
+    have h1 : ℓ (ι v) = 0 := hιK v
+    rw [hℓa] at h1
+    rw [he, inner_smul_right, real_inner_comm, h1, mul_zero]
+  · intro u
+    show ((J (J.symm (q u)) : K) : Eucl (m + 1)) + ℓ u • e = u
+    rw [LinearIsometryEquiv.apply_symm_apply]
+    simp [q]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
