@@ -359,6 +359,62 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Smooth `±1` separation of two disjoint compact sets `K₁, K₂ ⊆ ℝ^n`: a `C^∞` function
+`g : ℝ^n → ℝ` with compact support, `|g| ≤ 1`, `g = 1` on `K₁` and `g = -1` on `K₂`.
+`Disjoint.exists_thickenings` gives `δ > 0` with disjoint open thickenings `Vᵢ ⊇ Kᵢ`; the smooth
+Urysohn lemma `exists_contDiff_support_eq_eq_one_iff` gives `gᵢ : ℝ^n → [0, 1]` with
+`support gᵢ = Vᵢ` and `gᵢ = 1` on `Kᵢ`, compactly supported since `closure Vᵢ ⊆ cthickening δ Kᵢ`.
+At each point one of `g₁, g₂` vanishes, and `g = g₁ - g₂`. -/
+theorem Submission.fiw_tb_te_l1d_smooth_sign_sep : ∀ (n : ℕ) (K₁ K₂ : Set (Eucl n)), IsCompact K₁ → IsCompact K₂ → Disjoint K₁ K₂ → ∃ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g ∧ (∀ x, |g x| ≤ 1) ∧ (∀ x ∈ K₁, g x = 1) ∧ (∀ x ∈ K₂, g x = -1) := by
+  intro n K₁ K₂ hK₁ hK₂ hd
+  -- Steps 1–2: disjoint δ-thickenings `V₁ ⊇ K₁`, `V₂ ⊇ K₂`.
+  obtain ⟨δ, hδ, hdδ⟩ := hd.exists_thickenings hK₁ hK₂.isClosed
+  -- Step 3: smooth Urysohn functions `gᵢ : ℝ^n → [0, 1]`, `support gᵢ = Vᵢ`, `gᵢ = 1` on `Kᵢ`.
+  obtain ⟨g₁, hg₁, hr₁, hs₁, he₁⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K₁)) hK₁.isClosed (self_subset_thickening hδ K₁)
+  obtain ⟨g₂, hg₂, hr₂, hs₂, he₂⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K₂)) hK₂.isClosed (self_subset_thickening hδ K₂)
+  -- Step 4: `tsupport gᵢ = closure Vᵢ ⊆ cthickening δ Kᵢ`, which is compact.
+  have hc : ∀ (K : Set (Eucl n)) (f : Eucl n → ℝ), IsCompact K →
+      Function.support f = thickening δ K → HasCompactSupport f := by
+    intro K f hK hs
+    refine (hK.cthickening (r := δ)).of_isClosed_subset (isClosed_tsupport f) ?_
+    rw [tsupport, hs]
+    exact closure_thickening_subset_cthickening δ K
+  have h01₁ : ∀ x, 0 ≤ g₁ x ∧ g₁ x ≤ 1 := fun x => hr₁ (mem_range_self x)
+  have h01₂ : ∀ x, 0 ≤ g₂ x ∧ g₂ x ≤ 1 := fun x => hr₂ (mem_range_self x)
+  -- Step 5: at every point one of `g₁, g₂` vanishes, since `V₁ ∩ V₂ = ∅`.
+  have hdis : ∀ x, g₁ x = 0 ∨ g₂ x = 0 := by
+    intro x
+    by_contra h
+    rw [not_or] at h
+    have h1 : x ∈ Function.support g₁ := h.1
+    have h2 : x ∈ Function.support g₂ := h.2
+    rw [hs₁] at h1
+    rw [hs₂] at h2
+    exact Set.disjoint_left.mp hdδ h1 h2
+  -- Steps 6–8: `g = g₁ - g₂`.
+  refine ⟨g₁ - g₂, hg₁.sub hg₂, (hc K₁ g₁ hK₁ hs₁).sub (hc K₂ g₂ hK₂ hs₂), ?_, ?_, ?_⟩
+  · intro x
+    have a := h01₁ x
+    have b := h01₂ x
+    rw [Pi.sub_apply, abs_le]
+    rcases hdis x with h | h <;> constructor <;> linarith
+  · intro x hx
+    have h1 : g₁ x = 1 := (he₁ x).1 hx
+    have h2 : g₂ x = 0 := by
+      rcases hdis x with h | h
+      · rw [h1] at h; norm_num at h
+      · exact h
+    simp [h1, h2]
+  · intro x hx
+    have h2 : g₂ x = 1 := (he₂ x).1 hx
+    have h1 : g₁ x = 0 := by
+      rcases hdis x with h | h
+      · exact h
+      · rw [h2] at h; norm_num at h
+    simp [h1, h2]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
