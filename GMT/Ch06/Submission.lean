@@ -1194,6 +1194,119 @@ theorem Submission.ind_pi_good_slice_selection :
   exact ((hlim γ hγE (fun j => A (ψ j) γ) R (fun j => hA (ψ j) γ) hR).1 ω hω).comp
     hσ.tendsto_atTop
 
+/-- Simon Ch. 6, proof of 8.2, displays (8)–(9): localization of the cycles `Y_k ⇀ c [[Q]]`,
+`Q = span τ`, to the thin cylinder `W' = {‖p‖ < 1, d < 3/4} ⊂⊂ B₂(0)`.  The current
+`X = c [[Q]] ∈ 𝒟ₙ(B₂(0))` has the representation `(Hⁿ ⌞ Q, c τ₁ ∧ ⋯ ∧ τₙ)`, and
+`X_k = Y_k|_{B₂(0)}` are integer multiplicity cycles with `X_k ⇀ X`.  A good level
+`γ ∈ (1/4, 1/2)` of `d` gives restrictions `R_k = X_{κ(k)} ⌞ {d < γ}` with bounded
+`M_{W'}(R_k) + M_{W'}(∂R_k)` and `R_k → X ⌞ {d < γ} = X` on forms supported in `W'` (the
+measure of `X` lives on `Q ⊆ {d = 0}`).  Then `Z_k = R_k|_{W'}` are integer multiplicity,
+supported in `{d ≤ γ}`, and converge to `c [[Q]]` in `W'`. -/
+theorem Submission.ind_pi_localized_cycles :
+    SlicingTheorem → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R)) → ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (c : ℝ) (Y : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (p : Eucl P →L[ℝ] Eucl (m + 1)) (d : Eucl P → ℝ), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → (∀ k, IsIntegerMultiplicity (Y k)) → (∀ k, (Y k).boundary = 0) → (⨆ k, (Y k).massOn (ball (0 : Eucl P) 2)) < ∞ → (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ ball (0 : Eucl P) 2 → Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))) → ∃ (γ : ℝ) (Z : ℕ → GeometricCurrentOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1)), 0 ≤ γ ∧ γ < 3 / 4 ∧ (∀ k, IsIntegerMultiplicity (Z k)) ∧ (∀ k, (Z k).support ⊆ {y | d y ≤ γ}) ∧ (⨆ k, ((Z k).mass + (Z k).boundary.mass)) < ∞ ∧ ∀ ω : TestFormOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1), Tendsto (fun k => Z k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P)))) := by
+  intro hSlicing hRWL P m τ c Y p d hτ hp hd hYim hYb hYmass hYlim
+  -- Step 0: `d` is `1`-Lipschitz and vanishes on `Q`, `W' ⊂⊂ B = B₂(0)`, `Hⁿ ⌞ Q` is finite on
+  -- compact sets, and the finite-dimensional subspace `Q` is closed, hence measurable.
+  obtain ⟨hLip, -, -, -, -, hdQ, hW', -⟩ :=
+    Submission.ind_pi_frame_geometry P (m + 1) τ p d hτ hp hd
+  obtain ⟨-, hQfin⟩ := Submission.ind_pi_span_integral P (m + 1) τ hτ
+  set B : Set (Eucl P) := ball (0 : Eucl P) 2
+  set W' : Set (Eucl P) := {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4}
+  set Q : Set (Eucl P) := (Submodule.span ℝ (Set.range τ) : Set (Eucl P))
+  have hW'B : W' ⊆ B := subset_closure.trans hW'.2.2
+  have hQmeas : MeasurableSet Q := (Submodule.closed_of_finiteDimensional _).measurableSet
+  -- Step 1: `X = c [[Q]] ∈ 𝒟ₙ(B)` with representation `(Hⁿ ⌞ Q, c τ₁ ∧ ⋯ ∧ τₙ)`.
+  obtain ⟨X, hX⟩ := Submission.ind_pi_constant_vector_current P (m + 1) B
+    ((μHE[m + 1] : Measure (Eucl P)).restrict Q) (c • simpleNVector τ) hQfin
+  have hXω : ∀ ω : TestFormOn B (m + 1), X ω = c * ∫ z in Q,
+      (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P)) := by
+    intro ω
+    rw [(hX ω).2, ← integral_const_mul]
+    rfl
+  -- Step 2: restricting the domain does not increase `M_V` and commutes with `∂`.
+  have hmassRD : ∀ {k : ℕ} {U₁ U₂ : Set (Eucl P)} (T : GeometricCurrentOn U₂ k) (h : U₁ ⊆ U₂)
+      (V : Set (Eucl P)), (T.restrictDomain h).massOn V ≤ T.massOn V := by
+    intro k U₁ U₂ T h V
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    exact T.le_massOn (omega := testFormOnInclusion h k ω) hω
+  have hbdRD : ∀ {k : ℕ} {U₁ U₂ : Set (Eucl P)} (T : GeometricCurrentOn U₂ (k + 1))
+      (h : U₁ ⊆ U₂), (T.restrictDomain h).boundary = T.boundary.restrictDomain h :=
+    fun _ _ => GeometricCurrentOn.ext fun _ => rfl
+  -- Step 3: `X_k = Y_k|_B` are integer multiplicity cycles, `M_V(X_k) ≤ C₀ = sup_j M_B(Y_j)` for
+  -- `V ⊆ B`, and `X_k ⇀ X` in `B`.
+  set Xk : ℕ → GeometricCurrentOn B (m + 1) := fun k => (Y k).restrictDomain (subset_univ B)
+  have hXim : ∀ k, IsIntegerMultiplicity (Xk k) := fun k =>
+    Submission.br_restrictDomain_isIntegerMultiplicity P (m + 1) univ B (subset_univ B)
+      isOpen_ball (Y k) (hYim k)
+  have hXb : ∀ k, (Xk k).boundary = 0 := fun k => GeometricCurrentOn.ext fun ω => by
+    change (Y k).boundary (testFormOnInclusion (subset_univ B) m ω) = 0
+    rw [hYb k]
+    rfl
+  have hXmass : ∀ k (V : Set (Eucl P)), V ⊆ B → (Xk k).massOn V ≤ ⨆ j, (Y j).massOn B :=
+    fun k V hV => ((hmassRD (Y k) (subset_univ B) V).trans ((Y k).massOn_mono hV)).trans
+      (le_iSup (fun j => (Y j).massOn B) k)
+  have hXloc : ∀ k V, CompactlyContainedOpen V B → (Xk k).massOn V < ∞ :=
+    fun k V hV => (hXmass k V (subset_closure.trans hV.2.2)).trans_lt hYmass
+  have hXsup : (⨆ k, (Xk k).massOn W') < ∞ :=
+    (iSup_le fun k => hXmass k W' hW'B).trans_lt hYmass
+  have hXlim : WeaklyConvergesOn Xk X := fun ω => by
+    rw [hXω]
+    exact hYlim (testFormOnInclusion (subset_univ B) (m + 1) ω) ω.property.2
+  -- Step 4: a good level `γ ∈ (1/4, 1/2)` of `d`, restrictions `R_k = X_{κ(k)} ⌞ {d < γ}` with
+  -- `M_{W'}(R_k) ≤ M_{W'}(X_{κ(k)})`, `M_{W'}(∂R_k) ≤ G < ∞` and `R_k → X ⌞ {d < γ}` in `W'`.
+  obtain ⟨γ, κ, Rk, G, hγ, -, hG, hRres, hRmass, hRbd, hRlim⟩ :=
+    Submission.ind_pi_good_slice_selection hSlicing hRWL P m B W' Xk X d 1 (1 / 4) (1 / 2)
+      isOpen_ball hW' hLip (by norm_num) hXb hXloc hXsup hXlim
+  have hγ0 : 0 < γ := lt_trans (by norm_num) hγ.1
+  -- Step 5: `X ⌞ A_γ = X` for the open set `A_γ = {x ∈ B : d x < γ}`: the measure `Hⁿ ⌞ Q` of `X`
+  -- lives on `Q ⊆ {d = 0}`, and test forms in `B` vanish on `Q \ A_γ ⊆ Q \ B`.
+  have hA : IsOpen {x | x ∈ B ∧ d x < γ} := by
+    have h : IsOpen (B ∩ {x | d x < γ}) :=
+      isOpen_ball.inter (isOpen_lt hLip.continuous continuous_const)
+    exact h
+  have hXX : IsRestriction X {x | x ∈ B ∧ d x < γ} X := by
+    refine ⟨hA.measurableSet, _, _, hX, fun ω => ?_⟩
+    rw [(hX ω).2]
+    refine (setIntegral_eq_integral_of_ae_compl_eq_zero
+      (ae_restrict_of_forall_mem hQmeas fun x hxQ hxA => ?_)).symm
+    have hxB : x ∉ B := fun hxB => hxA ⟨hxB, by rw [hdQ x hxQ]; exact hγ0⟩
+    rw [image_eq_zero_of_notMem_tsupport fun h => hxB (ω.property.2 h)]
+    exact map_zero _
+  -- Step 6: the restrictions `R_k` of the integer multiplicity `X_{κ(k)}` to the open set `A_γ`
+  -- are integer multiplicity.
+  have hRim : ∀ k, IsIntegerMultiplicity (Rk k) := fun k =>
+    Submission.ind_pi_restriction_open_im P (m + 1) B {x | x ∈ B ∧ d x < γ} (Xk (κ k)) (Rk k)
+      isOpen_ball hA (hXim (κ k)) (hRres k)
+  -- Step 7: `Z_k = R_k|_{W'}`.
+  refine ⟨γ, fun k => (Rk k).restrictDomain hW'B, hγ0.le, hγ.2.trans (by norm_num),
+    fun k => Submission.br_restrictDomain_isIntegerMultiplicity P (m + 1) B W' hW'B hW'.1 (Rk k)
+      (hRim k), fun k => ?_, ?_, fun ω => ?_⟩
+  · -- `spt Z_k ⊆ {d ≤ γ}`: `R_k(ω) = ∫_{A_γ} ⟨ω, v⟩ dμ` vanishes if `spt ω ∩ {d ≤ γ} = ∅`.
+    refine Submission.fiw_tb_ext_support_subset P (m + 1) W' {y | d y ≤ γ} _ hW'.1
+      (isClosed_le hLip.continuous continuous_const) fun ω hω => ?_
+    obtain ⟨-, μ, v, -, hRv⟩ := hRres k
+    change Rk k (testFormOnInclusion hW'B (m + 1) ω) = 0
+    rw [hRv]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    have hxω : x ∉ tsupport (ω : DifferentialForm (Eucl P) (m + 1)) :=
+      fun h => Set.disjoint_left.mp hω h (le_of_lt hx.2)
+    rw [testFormOnInclusion_coe, image_eq_zero_of_notMem_tsupport hxω]
+    exact map_zero _
+  · -- `M(Z_k) ≤ M_{W'}(R_k) ≤ M_{W'}(X_{κ(k)}) ≤ C₀` and `M(∂Z_k) ≤ M_{W'}(∂R_k) ≤ G`.
+    have hbound : ∀ k, ((Rk k).restrictDomain hW'B).mass +
+        ((Rk k).restrictDomain hW'B).boundary.mass ≤ (⨆ j, (Y j).massOn B) + G := by
+      intro k
+      refine add_le_add ?_ ?_
+      · exact ((hmassRD (Rk k) hW'B W').trans (hRmass k)).trans (hXmass (κ k) W' hW'B)
+      · rw [hbdRD]
+        exact (hmassRD (Rk k).boundary hW'B W').trans (hRbd k)
+    exact (iSup_le hbound).trans_lt (ENNReal.add_lt_top.2 ⟨hYmass, hG⟩)
+  · -- `Z_k(ω) = R_k(ω) → X(ω) = c ∫_Q ⟨ω, τ₁ ∧ ⋯ ∧ τₙ⟩ dHⁿ`.
+    have h := hRlim X hXX (testFormOnInclusion hW'B (m + 1) ω) ω.property.2
+    rw [hXω] at h
+    exact h
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
