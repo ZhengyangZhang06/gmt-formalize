@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1.segment_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1",
+  "depth": 5,
+  "title": "C¹ segment estimate |v(x) − v(y)| ≤ ‖x − y‖ ∫₀¹ ‖Dv((1 − t)y + tx)‖ dt",
+  "statement": "Let n ∈ ℕ, ℝⁿ := Euclid n = EuclideanSpace ℝ (Fin n), v : ℝⁿ → ℝ of class C¹ (ContDiff ℝ 1 v), and x, y ∈ ℝⁿ. Then |v(x) − v(y)| ≤ ‖x − y‖ · ∫_0^1 ‖Dv((1 − t)y + tx)‖ dt, where Dv(z) = fderiv ℝ v z with the operator norm and the integral is the interval integral from 0 to 1.",
+  "lean_statement": "∀ (n : ℕ) (v : Euclid n → ℝ) (x y : Euclid n), ContDiff ℝ 1 v → |v x - v y| ≤ ‖x - y‖ * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v ((1 - t) • y + t • x)‖",
+  "lean_name": "cmcdt_cbm_sp_segment_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-b2a976d959-a1"
+}

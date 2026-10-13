@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1.cube_geometry-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1",
+  "depth": 5,
+  "title": "Geometry of the cube Q_δ: convex, measurable, diameter ≤ √n, volume ≤ 1",
+  "statement": "Let n ∈ ℕ, δ ≥ 0, and Q_δ := {z ∈ Euclid n : δ < z_i < 1 − δ for all i}. Then Q_δ is convex, Q_δ is measurable, ‖x − y‖ ≤ √n for all x, y ∈ Q_δ, and Lⁿ(Q_δ) ≤ 1 (Lebesgue measure volume, as an element of [0, ∞]).",
+  "lean_statement": "∀ (n : ℕ) (δ : ℝ), 0 ≤ δ → Convex ℝ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ∧ MeasurableSet {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ∧ (∀ x ∈ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}, ∀ y ∈ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖x - y‖ ≤ Real.sqrt n) ∧ volume {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ≤ 1",
+  "lean_name": "cmcdt_cbm_sp_cube_geometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-ff73506e85-a1"
+}
