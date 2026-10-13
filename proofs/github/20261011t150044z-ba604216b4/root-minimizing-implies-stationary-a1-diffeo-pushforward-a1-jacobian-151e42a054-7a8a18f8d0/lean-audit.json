@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d403609cb0e5c062d6415ad5ee1deab90d4492210323f910ebc657aa84d320e",
+  "git_delta": {
+    "base_commit": "164325eb5419cc1593fe336907322caaec9897fa",
+    "candidate_commit": "cd4a4a4c03df8c17a114b20e976afd1af6f1fbc7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_jm_aestronglyMeasurable_sqrt_det_compression",
+    "diff_sha256": "0c9f5cfb229332a7a750569bd34c4eabb90af97052ce80c77d996545fc501a84",
+    "source_sha256": "b4962f8e591f63c97d571f620fa632a5ce939c0806915499353f65c805c062b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_jm_aestronglyMeasurable_sqrt_det_compression",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (p L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable p μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt ((p x ∘L ((L x).adjoint ∘L L x) ∘L p x + (ContinuousLinearMap.id ℝ (Euclid P) - p x)).det)) μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
