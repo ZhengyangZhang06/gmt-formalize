@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "deformation_ipl_cc_|IsOpen.isSigmaCompact",
+        "measurable_fderiv|integral_iUnion_ae|hasSum_integral_iUnion_ae|integral_eq_lintegral_pos_part_sub_lintegral_neg_part|tendsto_tsum_of_dominated_convergence|eigenvalues_eq|det_eq_prod_eigenvalues",
+        "aestronglyMeasurable_iUnion_iff|aestronglyMeasurable_indicator_iff₀|comp_aestronglyMeasurable",
+        "prod_le_prod₀|continuous_compContinuousLinearMapCLM|opNorm_smul_le",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-convergence-audit-1paerh7s/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-convergence-audit-1paerh7s/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/Types.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/Assembly.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/gram_det_lower_bound.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/signed_change_of_variables.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/chart_orientation.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/chart_representation.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/integrand_bound.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/partition_tannery.lean",
+        "/tmp/chart-convergence-audit-1paerh7s/fderiv_lower_bound.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected chart-convergence theorem. Pinned revisions and frozen definitions match. All twelve propositions independently elaborate without child implementations. All names are bare identifiers; the six new names are unreserved, and the six reused contracts match their accepted checkpoints byte-for-byte. Candidate hashes, comparator receipts and permitted-axiom configurations were checked for reuse. The augmented dependency graph is acyclic. Every new supplied script, the reused derivative-estimate script, and the exact selected-parent assembly independently compile with only propext, Classical.choice and Quot.sound, taking precisely the required dependency types as hypotheses. The assembly uses the existing minor-continuity and measurability obligations without circularity. All inline Gram matrices use Matrix.of; no matrix-unit instance ambiguity occurs. The snapshot search found no deformation_ipl_cc_ declarations or IsOpen.isSigmaCompact."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "simple_nvector_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted contract reused. Alternating expansion proves change of frame; orthonormal calibration, dependence and Gram–Schmidt prove the Gram-norm identity, including degree zero."
+    },
+    {
+      "key": "weighted_tangent_on_c1_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the accepted type. Chart blow-ups, Lusin compact pieces and zero-density estimates establish the weighted tangent limit outside one null exceptional set. Positivity and local integrability are used correctly."
+    },
+    {
+      "key": "ae_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurable approximation and the accepted null-preimage result prove both parameter-set null-measurability and the restricted a.e. conclusion for arbitrary properties. No circular dependency."
+    },
+    {
+      "key": "chart_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes preimage null-measurability and composition measurability, then applies the accepted local area formula. Injectivity reduces the fibre sum to the required indicator, proving the exact contract."
+    },
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive-parameter slope argument uses openness and differentiability exactly as stated and works for arbitrary real c. The reused contract is identical; its supplied script independently compiles."
+    },
+    {
+      "key": "chart_image_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuous injectivity gives Borel measurability. Antilipschitz control confines each compact-target preimage to a compact ball; global C¹ regularity supplies the Lipschitz bound proving local Hausdorff finiteness."
+    },
+    {
+      "key": "gram_det_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram quadratic form equals the squared image norm. The spectral theorem gives eigenvalues at least c², and the determinant product yields the stated square-root bound, including k = 0. Independently compiled."
+    },
+    {
+      "key": "signed_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurable fderiv supplies a measurable nonnegative Jacobian without assuming C¹. Applying the declared area formula to positive, negative and absolute parts proves integrability and the signed equality. Independently compiled."
+    },
+    {
+      "key": "chart_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies transfer good points and identify tangent spaces using θ > 0. The continuous test covector gives a measurable sign, and the determinant calculation proves the orientation identity in every sign and degenerate case. Independently compiled."
+    },
+    {
+      "key": "chart_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "One weight is constructed before quantifying over f, A and α. The Jacobian lower bound proves its integrability; signed change of variables, orientation and the assumed derivative identity prove the exact representation. All dependencies are correctly directed; independently compiled."
+    },
+    {
+      "key": "integrand_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact exhaustion proves multiplicity measurability, continuous pairing proves integrand measurability, and tangent-frame bounds give the stated estimate. Arbitrary real Λ is valid: the product argument also handles the empty frame. Independently compiled."
+    },
+    {
+      "key": "partition_tannery",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Equality of restricted measures transfers integrability and domination to the union. Countable additivity gives summable bounds, and Tannery applies with the stated eventual quantifier. Neither measurability of S nor a separate positivity hypothesis is missing. Independently compiled."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.signed_change_of_variables-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "depth": 4,
+  "title": "Signed change of variables ∫_A h dH^k = ∫_{Ω∩Φ⁻¹(A)} h(Φ)·JΦ dL^k through an injective Lipschitz–antilipschitz chart (step 6b(β))",
+  "statement": "Let P, k ∈ ℕ, let Ω ⊆ ℝ^k be open, and let Φ : ℝ^k → ℝ^P be Lipschitz on Ω and c-antilipschitz on Ω for some c > 0 (c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω). Let A ⊆ Φ(Ω) be H^k-null-measurable (H^k = μHE[k] on ℝ^P), and let h : ℝ^P → ℝ be H^k-integrable on A. Put D := Ω ∩ Φ⁻¹(A) and JΦ(w) := √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩)_{i,j}, where DΦ(w) = fderiv ℝ Φ w and e_i = EuclideanSpace.single i 1. Then w ↦ h(Φ(w))·JΦ(w) is L^k-integrable on D (L^k = volume), and ∫_A h dH^k = ∫_D h(Φ(w))·JΦ(w) dL^k(w).",
+  "lean_statement": "∀ (P k : ℕ) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (A : Set (Eucl P)) (h : Eucl P → ℝ), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[k] : Measure (Eucl P)) → IntegrableOn h A (μHE[k] : Measure (Eucl P)) → IntegrableOn (fun w => h (Φ w) * Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl k)) ∧ ∫ x in A, h x ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω ∩ Φ ⁻¹' A, h (Φ w) * Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det ∂(volume : Measure (Eucl k))",
+  "lean_name": "deformation_ipl_cc_signed_change_of_variables",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708-a1",
+      "result_commit": "9fc44225b304fca8af9dead3256575ef03818d1e",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1-sign-b01f3ae29c-a1"
+}

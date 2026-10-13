@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.chart_orientation-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "depth": 4,
+  "title": "Measurable relative orientation on a C¹ antilipschitz chart: JΦ·ξ(Φ) = σ·simpleNVector(∂Φ) with σ = ±1 (step 6c)",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be open, and let (M, θ, ξ) satisfy IsRectifiableTriple U k M θ ξ (H^k = μHE[k] on ℝ^P). Let Φ : ℝ^k → ℝ^P be C¹ and c-antilipschitz on an open set Ω ⊆ ℝ^k for some c > 0. Write ∂_bΦ(w) := DΦ(w)e_b (DΦ(w) = fderiv ℝ Φ w, e_b = EuclideanSpace.single b 1), ∂Φ(w) := (∂_0Φ(w), …, ∂_{k−1}Φ(w)) and JΦ(w) := √det(⟨∂_aΦ(w), ∂_bΦ(w)⟩)_{a,b}. Then there is σ : ℝ^k → ℝ, a.e.-strongly measurable for L^k⌞(Ω ∩ Φ⁻¹(M)) (L^k = volume), such that for L^k-a.e. w ∈ Ω ∩ Φ⁻¹(M): σ(w) ∈ {1, −1} and JΦ(w)·ξ(Φ(w)) = σ(w)·simpleNVector(∂Φ(w)).",
+  "lean_statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)), IsOpen U → IsRectifiableTriple U k M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∃ σ : Eucl k → ℝ, AEStronglyMeasurable σ ((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)) ∧ ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' M)), (σ w = 1 ∨ σ w = -1) ∧ Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det • ξ (Φ w) = σ w • simpleNVector (fun b => fderiv ℝ Φ w (EuclideanSpace.single b 1))",
+  "lean_name": "deformation_ipl_cc_chart_orientation_sign",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-simple-nvector-algebra-a1-a1",
+      "result_commit": "d57bd3700c220d24cf66f12e852624be7dd975e4",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-a1",
+      "result_commit": "f9637977f9e75fb52f6164df51add52d8c76c0d8",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-ae-pullback-a1-a1",
+      "result_commit": "841085c6a9d76231a52113cfbad8e6e3261f0a6f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1-char-e8bb93b435-a1"
+}
