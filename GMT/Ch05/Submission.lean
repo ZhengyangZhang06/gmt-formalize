@@ -1033,6 +1033,41 @@ theorem dohr_eb_ehs_hessian_apply_contDiff : ∀ n ℓ : ℕ, ∀ Ψ : (Rn n →
   -- Step 4: the map is `Da_Q` followed by the continuous linear evaluation at `P`.
   rw [heq]
   exact hDaQ.clm_apply contDiff_const
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): pairing
+with a fixed vector `w` preserves the local class `C^{m,α}`.  If `g` is `C^m` on the open set `U` and
+`Dᵐg` is `α`-Hölder on every compact `K ⊆ U`, then so is `x ↦ ⟪g x, w⟫ = innerSL ℝ w ∘ g`: its
+`m`-th derivative on `U` is `innerSL ℝ w` composed with `Dᵐg` (`iteratedFDeriv_comp_left`), so a
+Hölder constant `C` of `Dᵐg` on `K` gives the constant `‖innerSL ℝ w‖ * C`. -/
+theorem dohr_eb_ehs_inner_right_holder : ∀ (n ℓ m : ℕ) (α : ℝ) (U : Set (Rn n)) (g : Rn n → Rn ℓ) (w : Rn ℓ), IsOpen U → IsLocallyHolderCkα m α g U → ContDiffOn ℝ m (fun x => inner ℝ (g x) w) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) x - iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro n ℓ m α U g w hU hg
+  -- Step 1: `x ↦ ⟪g x, w⟫` is `L ∘ g` for the continuous linear functional `L = ⟪w, ·⟫`.
+  set L : Rn ℓ →L[ℝ] ℝ := innerSL ℝ w with hL
+  have hfun : (fun z => inner ℝ (g z) w) = L ∘ g := by
+    funext z; simp [hL, real_inner_comm]
+  -- Step 2: on the open set `U`, `Dᵐ(L ∘ g) = L ∘ Dᵐg`.
+  have hiter : ∀ x ∈ U, iteratedFDeriv ℝ m (fun z => inner ℝ (g z) w) x
+      = L.compContinuousMultilinearMap (iteratedFDeriv ℝ m g x) := by
+    intro x hx
+    rw [hfun]
+    exact L.iteratedFDeriv_comp_left (hg.1.contDiffAt (hU.mem_nhds hx)) le_rfl
+  -- Step 3: `L ∘ g` is `C^m` on `U`.
+  refine ⟨?_, ?_⟩
+  · rw [hfun]; exact L.contDiff.comp_contDiffOn hg.1
+  -- Step 4: by linearity and `‖L ∘ N‖ ≤ ‖L‖ ‖N‖`, a Hölder constant `C` of `Dᵐg` on `K`
+  -- gives the Hölder constant `‖L‖ * C` of `Dᵐ(L ∘ g)`.
+  · intro K hK hKU
+    obtain ⟨C, hC⟩ := hg.2 K hK hKU
+    refine ⟨‖L‖ * C, fun x hx y hy => ?_⟩
+    rw [hiter x (hKU hx), hiter y (hKU hy)]
+    have hsub : L.compContinuousMultilinearMap (iteratedFDeriv ℝ m g x)
+        - L.compContinuousMultilinearMap (iteratedFDeriv ℝ m g y)
+        = L.compContinuousMultilinearMap (iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y) := by
+      ext v; simp
+    rw [hsub]
+    calc _ ≤ ‖L‖ * ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ :=
+          L.norm_compContinuousMultilinearMap_le _
+      _ ≤ ‖L‖ * (C * ‖x - y‖ ^ α) := mul_le_mul_of_nonneg_left (hC x hx y hy) (norm_nonneg _)
+      _ = ‖L‖ * C * ‖x - y‖ ^ α := by ring
 
 end Submission
 
