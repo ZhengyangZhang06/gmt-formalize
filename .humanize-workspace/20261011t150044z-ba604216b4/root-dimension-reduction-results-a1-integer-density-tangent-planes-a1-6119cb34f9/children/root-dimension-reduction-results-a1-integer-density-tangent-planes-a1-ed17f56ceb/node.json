@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1.density_on_carrier-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1",
+  "depth": 4,
+  "title": "The density of θH^n⌞M equals θ at H^n-almost every point of the carrier",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and R = (M, θ, ξ) ∈ IMRep U n (carrier M = R.carrier, multiplicity θ = R.mult : ℝ^P → ℕ). The properties of R used are: M is Borel (field measurableSet_carrier); θ is measurable (field measurable_mult) with θ ≥ 1 on M (field mult_pos); and for μHE[n]⌞M-a.e. x there is a subspace Q with HasApproximateTangentSpaceAt n M x Q (field orients). Suppose that μ_R := R.measure = θ·μHE[n]⌞M satisfies μ_R(K) < ∞ for every compact K ⊆ ℝ^P. Then for μHE[n]-almost every x ∈ ℝ^P with x ∈ M, μ_R(B_ρ(x))/(ω_nρ^n) → θ(x) in [0, ∞] as ρ ↓ 0. Here B_ρ(x) is the open ball, ω_n = unitBallVolume n, and ρ^n is entered via ENNReal.ofReal. (No restriction on n.)",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier → Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (R.mult x : ℝ≥0∞))",
+  "lean_name": "idtp_dema_density_on_carrier",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1.upper_density_zero-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1.upper_density_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1-a1",
+      "result_commit": "dbef2c15948a21d9574315bea458a9edb4f708e3",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412-a1",
+      "result_commit": "c3ca64f29e6259bb0947d084036f55b096f91e3f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ed17f56ceb-a1"
+}
