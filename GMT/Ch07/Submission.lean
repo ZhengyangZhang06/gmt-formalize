@@ -2615,6 +2615,47 @@ theorem Submission.dtc_mass_eq_measure : ∀ (P n : ℕ) (U W : Set (Euclid P)) 
       _ ≤ T.massOn W := iSup_le fun m => hcompact _
           ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
 
+/-- **Simon 7.2.4 (9)** (adding a cycle does not lower the mass of a minimizing current).  Let
+`S ∈ 𝒟ₙ(U)` be minimizing in `A`, `W ⊂⊂ U` open, and `X ∈ 𝒟ₙ(ℝᴾ)` integer multiplicity with
+`∂X = 0` and `spt X ⊆ K`, `K ⊆ A ∩ W` compact.  Then `M_W(S) ≤ M_W(Z)` for
+`Z = S − (0 − X|_U) = S + X|_U`, an admissible competitor: `Z` is integer multiplicity
+(`0 = X|_U − X|_U` and closure under differences), `∂Z = ∂S` since `X|_U(dω) = ∂X(ω) = 0`, and
+`Z − S = X|_U` vanishes on forms supported off `K ⊇ spt X`, so `spt(Z − S)` is a compact subset
+of `K ⊆ A ∩ W`. -/
+theorem Submission.dtc_bc_lc_rc_cycle_competitor : ∀ (P m : ℕ) (U A W K : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsMinimizingIn S A → IsOpen W → CompactlyContained W U → IsIntegerMultiplicity X → X.boundary = 0 → IsCompact K → X.support ⊆ K → K ⊆ A ∩ W → S.massOn W ≤ (S - (0 - X.restrictDomain (subset_univ U))).massOn W := by
+  intro P m U A W K S X hU hmin hW hWU hXim hXbd hK hXK hKAW
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) U
+  set XU := X.restrictDomain (subset_univ U)
+  -- `X|_U`, `0 = X|_U − X|_U` and `Z = S − (0 − X|_U)` are integer multiplicity
+  have hXUim : IsIntegerMultiplicity XU :=
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) univ U (subset_univ U) X hU hXim
+  have h0im : IsIntegerMultiplicity (0 : GeometricCurrentOn U (m + 1)) := by
+    have h0 : XU - XU = 0 := by
+      ext ω
+      exact sub_self (XU ω)
+    have h := hsub XU XU hU hXUim hXUim
+    rwa [h0] at h
+  have hZim : IsIntegerMultiplicity (S - (0 - XU)) := hsub S _ hU hmin.1 (hsub 0 XU hU h0im hXUim)
+  -- `∂Z = ∂S`, since `X|_U(dω) = X(d(ιω)) = ∂X(ιω) = 0`
+  have hbd : SameBoundary (S - (0 - XU)) S := by
+    show (S - (0 - XU)).boundary = S.boundary
+    ext ω
+    have hdX : XU (exteriorDerivativeTestOn U m ω) = 0 :=
+      congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) m =>
+        T (testFormOnInclusion (subset_univ U) m ω)) hXbd
+    show S (exteriorDerivativeTestOn U m ω) - (0 - XU (exteriorDerivativeTestOn U m ω)) =
+      S (exteriorDerivativeTestOn U m ω)
+    rw [hdX, sub_zero, sub_zero]
+  -- `Z − S = X|_U` vanishes on forms supported off `K ⊇ spt X`, so `spt (Z − S) ⊆ K`
+  have hKU : K ⊆ U := fun x hx => hWU.2 (subset_closure (hKAW hx).2)
+  have hspt := Submission.rsd_cmr_support_subset_of_vanish P (m + 1) U K (S - (0 - XU) - S) hU hK
+    hKU fun ω hω => by
+      have hX0 : XU ω = 0 := Submission.dtc_vanish_off_support P (m + 1) univ X
+        (testFormOnInclusion (subset_univ U) (m + 1) ω) (hω.mono_right hXK)
+      show S ω - (0 - XU ω) - S ω = 0
+      rw [hX0, sub_zero, sub_zero, sub_self]
+  exact hmin.2 W _ hW hWU hZim hbd hspt.2 (hspt.1.trans hKAW)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
