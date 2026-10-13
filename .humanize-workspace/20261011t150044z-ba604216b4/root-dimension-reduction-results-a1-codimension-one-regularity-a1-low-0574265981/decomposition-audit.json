@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "rg -n -i 'rellich|kondrachov|weyl.?s? lemma|weyl_lemma|poincare.?inequality|poincare_inequality' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n 'dorag_|codim1_ldr|HarmonicApproximationLemma|abbrev Euclid' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "rg -l '\"lean_name\": \"dorag_ha_(mean_value|interior_estimates|weyl_lemma|poincare_ball|rellich_ball|energy_lsc|approximation)\"' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition-v*.json'",
+        "iteratedFDeriv_two_apply|contDiff_convolution_left|hasFDerivAt_convolution_left|smoothTransition_pos",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/codex-ha-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/codex-ha-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-0574265981/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-0574265981/decomposition-v1.json",
+        "/tmp/codex-ha-independent-audit/Types.lean",
+        "/tmp/codex-ha-independent-audit/Types.log",
+        "/tmp/codex-ha-independent-audit/Assembly.lean",
+        "/tmp/codex-ha-independent-audit/Assembly.log",
+        "/tmp/codex-ha-independent-audit/reuse-evidence.json",
+        "/tmp/codex-ha-independent-audit/Checks.json"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest. The searches found no Rellich, Kondrachov, Weyl-lemma or Poincare-inequality match; Ch05 states harmonic approximation as a Prop, not an available proved theorem. The inspected calculus files support the cited differentiation, integration-by-parts and convolution steps. All seven proposed types independently elaborate as propositions without child implementations. Their Euclidean norms, derivatives and scalar integrals have the intended instances; no matrix-unit construction occurs. Every name is a bare identifier with exactly one accepted owner. Archived comparator challenge types, candidate sources, contracts, toolchains and package pins match; all seven passed kernel comparison permitting only propext, Quot.sound and Classical.choice. No conflicting reservation was found. Dependencies are correctly directed and acyclic. The split is appropriate: its analytic obligations support precisely the selected affine-approximation theorem. The conditional parent assembly compiles using only harmonic_approx and interior_estimates, plus standard axioms, with no ancestor or sorryAx dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mean_value",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree, including openness, C² regularity and closed-ball containment. The radial potential, dominated differentiation and cutoff integration by parts establish the kernel identity. Dominated convergence and measure-preserving reflection establish the ball identity. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "interior_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All regularity, energy and integrability hypotheses match the type. Third-derivative symmetry establishes harmonicity of directional derivatives. The declared mean_value dependency yields the value and gradient bounds; shifted-ball comparison gives the second-derivative bound, and Taylor integration gives the stated remainder with CH = 4n·2ⁿ·ω⁻¹/²."
+    },
+    {
+      "key": "weyl_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses distributional harmonicity and the smooth a.e. representative. Mollification is harmonic on the smaller balls by the supplied test-function argument. The declared radial mean-value result and Fubini identify mollifications locally; gluing gives smooth harmonic h, and Lebesgue differentiation proves h = W a.e. No circular regularity assumption is used."
+    },
+    {
+      "key": "poincare_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lipschitz hypothesis guarantees genuine integrability of every relevant integrand. Rademacher and Tonelli justify segment FTC for almost every pair. Cauchy–Schwarz and the two affine changes of variables give CP = 2^(n+2), with the exact mean and operator norm appearing in the Lean type. No child dependency is hidden."
+    },
+    {
+      "key": "rellich_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type correctly allow separate Lipschitz constants and infer M ≥ 0. The translation estimate and dilation-based boundary-layer estimate are valid. Arzela–Ascoli supplies finite interior nets; together the estimates give total boundedness in L². The displayed 5η/4 bound suffices by rescaling arbitrary η. Completeness yields the required strictly increasing subsequence and MemLp representative."
+    },
+    {
+      "key": "energy_lsc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every hypothesis used. Integration by parts eliminates the arbitrary constants through ∫divΦ = 0. L² convergence gives the duality bound without assuming integrability of the limiting gradient. Testing with χr∇h proves interior energy bounds, and monotone exhaustion establishes both global integrability and the bound E. The argument is non-circular."
+    },
+    {
+      "key": "harmonic_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized contradiction correctly uses its four declared dependencies: Poincare, Rellich, Weyl and energy_lsc. The constructed harmonic function satisfies every integrability clause. Scaling preserves the quantified test-function condition and gives the exact R₀ⁿ and R₀^(n+2) factors. Together with interior_estimates, a = h(0), b = Dh(0) and C = max(√2·CH, 2, 2ωCH²) prove all selected parent conclusions simultaneously for every allowed θ'. This follows the structure of [Simon, Chapter 5 §3](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "required_changes": []
+}
