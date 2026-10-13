@@ -878,6 +878,71 @@ theorem Submission.cbr_isoperimetric_filling : (∀ (P m : ℕ), ∃ c : NNReal,
   · refine ⟨R, hR, hRZ, hRm.trans (le_of_eq ?_), subset_union_right.trans hQR⟩
     rw [ENNReal.ofReal_mul hcρ, ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal, hZmz]
 
+/-- **Cone inequality for small cycles** (Simon Ch. 6, 2.27/2.30, as used in 8.2(4)–(6)).  Assume
+(VO) and let `c ≥ 0` be a Lipschitz constant of `ω` in the Euclidean coefficient norm.  If
+`∂X = 0`, `M(X) < ∞` and `spt X ⊆ B̄_ϱ(x₀)`, fix `ε > 0`, a bump `ζ` with `ζ = 1` on
+`B̄_{ϱ+ε/2}(x₀)` and `ζ = 0` off `B_{ϱ+ε}(x₀)`, `α := ω(x₀)` and `φ := ζ (ω - α)`.  Then
+`ω - φ = α` on `B_{ϱ+ε/2}(x₀) ⊇ spt X`, so `X(ω - φ) = 0` (a constant form is exact near `spt X`
+and `∂X = 0`), while `|φ(x)| = ζ(x) |ω(x) - ω(x₀)| ≤ c (ϱ + ε)`.  Hence
+`|X(ω)| = |X(φ)| ≤ c (ϱ + ε) M(X)`, and `ε ↓ 0` gives the claim. -/
+theorem Submission.cbrld_cycle_eval_le_radius_mul_mass : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (n + 1)), ∃ c : ℝ, 0 ≤ c ∧ ∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (x₀ : Euclid P) (ϱ : ℝ), 0 < ϱ → X.boundary = 0 → X.mass < ∞ → X.support ⊆ closedBall x₀ ϱ → |X ω| ≤ c * ϱ * X.mass.toReal := by
+  intro VO P n ω
+  -- the constant depends only on `ω`: a Lipschitz constant in the coefficient norm
+  obtain ⟨c, hc0, hc⟩ := Submission.cbrld_cone_testForm_coeff_lipschitz P (n + 1) univ ω
+  refine ⟨c, hc0, fun X x₀ ϱ hϱ hbd hM hspt => ?_⟩
+  have hsmul := (Submission.rsd_mw_tfa_norm_props P (n + 1)).2.1
+  let α : Covector (Euclid P) (n + 1) := (ω : DifferentialForm (Euclid P) (n + 1)) x₀
+  -- `|X(ω)| ≤ c (ϱ + ε) M(X)` for every `ε > 0`
+  have hbound : ∀ ε : ℝ, 0 < ε → |X ω| ≤ c * (ϱ + ε) * X.mass.toReal := by
+    intro ε hε
+    -- the cut-off: `ζ = 1` on `B̄_{ϱ+ε/2}(x₀)` and `ζ = 0` off `B_{ϱ+ε}(x₀)`
+    let ζ : ContDiffBump x₀ := ⟨ϱ + ε / 2, ϱ + ε, by linarith, by linarith⟩
+    -- the test form `φ = ζ (ω - α)`
+    let φ : TestFormOn (univ : Set (Euclid P)) (n + 1) :=
+      ⟨fun x => ζ x • ((ω : DifferentialForm (Euclid P) (n + 1)) x - α),
+        ⟨ζ.contDiff.smul (ContDiff.sub ω.property.1.1 contDiff_const),
+          ζ.hasCompactSupport.smul_right⟩, subset_univ _⟩
+    -- `ω - φ = α` on `B_{ϱ+ε/2}(x₀) ⊇ spt X`, so the cycle `X` kills `ω - φ`
+    have hconst : ∀ x ∈ ball x₀ (ϱ + ε / 2),
+        ((ω - φ : TestFormOn (univ : Set (Euclid P)) (n + 1)) :
+          DifferentialForm (Euclid P) (n + 1)) x = α := by
+      intro x hx
+      change (ω : DifferentialForm (Euclid P) (n + 1)) x -
+        ζ x • ((ω : DifferentialForm (Euclid P) (n + 1)) x - α) = α
+      rw [ζ.one_of_mem_closedBall (ball_subset_closedBall hx), one_smul, sub_sub_cancel]
+    have h0 : X (ω - φ) = 0 :=
+      Submission.cbrld_cone_cycle_eval_eq_zero_of_const_on_ball VO P n X x₀ (ϱ + ε / 2) α
+        (ω - φ) (by linarith) hbd (hspt.trans (closedBall_subset_ball (by linarith))) hconst
+    have hXφ : X ω = X φ := by
+      have h := map_sub X.toCurrent ω φ
+      change X (ω - φ) = X ω - X φ at h
+      linarith
+    -- `|φ(x)| = ζ(x) |ω(x) - ω(x₀)| ≤ c (ϱ + ε)`
+    have hφ : ∀ x, covectorEuclideanNorm ((φ : DifferentialForm (Euclid P) (n + 1)) x) ≤
+        c * (ϱ + ε) := by
+      intro x
+      change covectorEuclideanNorm (ζ x • ((ω : DifferentialForm (Euclid P) (n + 1)) x - α)) ≤
+        c * (ϱ + ε)
+      rw [hsmul, abs_of_nonneg (ζ.nonneg' x)]
+      by_cases hx : dist x x₀ < ϱ + ε
+      · calc ζ x * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (n + 1)) x - α)
+            ≤ 1 * (c * (ϱ + ε)) :=
+              mul_le_mul ζ.le_one ((hc x x₀).trans (mul_le_mul_of_nonneg_left hx.le hc0))
+                (covectorEuclideanNorm_nonneg _) zero_le_one
+          _ = c * (ϱ + ε) := one_mul _
+      · rw [ζ.zero_of_le_dist (not_lt.1 hx), zero_mul]
+        exact mul_nonneg hc0 (by linarith)
+    rw [hXφ]
+    exact Submission.cmr_abs_apply_le_massOn P (n + 1) univ univ X φ (c * (ϱ + ε)) hM.ne
+      (subset_univ _) hφ
+  -- let `ε ↓ 0`
+  have hlim : Tendsto (fun ε : ℝ => c * (ϱ + ε) * X.mass.toReal) (𝓝[>] 0)
+      (𝓝 (c * ϱ * X.mass.toReal)) := by
+    have h := (show Continuous fun ε : ℝ => c * (ϱ + ε) * X.mass.toReal by fun_prop).tendsto 0
+    rw [add_zero] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun ε hε => hbound ε hε)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
