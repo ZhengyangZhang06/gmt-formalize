@@ -8945,28 +8945,6 @@ theorem Submission.lpf_raf_chart_preimage_null : ∀ (P n : ℕ) (Φ : Eucl n �
   -- On `ℝⁿ`, `Hⁿ = Lⁿ`.
   rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
   exact measure_mono_null hsub himg
-  -- Unit norm: `ξ x = ±simpleNVector τ` with `τ` orthonormal for `Hⁿ`-a.e. `x ∈ M`, and
-  -- `‖simpleNVector τ‖ ^ 2 = det (⟪τᵢ, τⱼ⟫) = det 1 = 1`.
-  have hξ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1 := by
-    filter_upwards [hM.orients] with x hx
-    obtain ⟨τ, hτ, -, hξx⟩ := hx
-    have hgram : (Matrix.of fun i j => inner ℝ (τ i) (τ j)) = 1 := by
-      ext i j
-      simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
-    have hτ1 : ‖simpleNVector τ‖ = 1 := by
-      refine (pow_eq_one_iff_of_nonneg (ContinuousLinearMap.opNorm_nonneg _) two_ne_zero).mp ?_
-      rw [Submission.lpf_simple_nvector_algebra.1, hgram, Matrix.det_one]
-    rcases hξx with h | h
-    · rw [h, hτ1]
-    · rw [h, ContinuousLinearMap.opNorm_neg, hτ1]
-  -- It suffices that `Hⁿ(M ∩ W) = 0` for each open `W ⊂⊂ U` on which `T` vanishes; there `θ` is
-  -- integrable on `M ∩ W ⊆ M ∩ closure W`.
-  refine Submission.lpf_rsn_null_diff_support_of_local_null P n U T M _ hM.subset
-    fun W hW hWc hWU hTW => ?_
-  exact Submission.lpf_rsn_local_null P n U W T M θ ξ hW (subset_closure.trans hWU) hTW
-    hM.nullMeasurableSet hM.pos
-    ((hM.integrableOn _ hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure))
-    hM.aestronglyMeasurable hξ hT
 /-- Countable Lipschitz cover (Lindelöf): if `f` is locally Lipschitz on an arbitrary `U ⊆ ℝ^P`,
 then countably many open sets `O i` cover `U` and `f` is `K i`-Lipschitz on each `O i ∩ U`. -/
 theorem Submission.lpf_lli_countable_lipschitz_cover : ∀ (P Q : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → ∃ (O : ℕ → Set (Eucl P)) (K : ℕ → ℝ≥0), (∀ i, IsOpen (O i)) ∧ U ⊆ ⋃ i, O i ∧ ∀ i, LipschitzOnWith (K i) f (O i ∩ U) := by
