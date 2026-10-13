@@ -2840,4 +2840,167 @@ theorem dohr_tp_weighted_tangent_of_lebesgue_point : ∀ (n ℓ : ℕ) (M S : Se
 
 end Submission
 
+/-- Simon Ch. 5, proof of Theorem 7.1 (p. 128, system (2)), vertical first variation: if
+`Q(spt V - ξ)` is the graph of a `C¹` function `u` over `B̆_R(0)` and `μ_V = Hⁿ ⌞ spt V` on
+`B̆_s(ξ)`, then `u` weakly solves the Euler–Lagrange system of the area integrand
+`J(P) = √det(I + PᵀP)` with right-hand side `J(Du) ⟨(0, φ), F(x, u(x))⟩`, `F = Q ∘ h ∘ (ξ + Q⁻¹ ·)`,
+on a ball `B̆_r(0)`; moreover the rigidly moved data `O = Q(U - ξ)` and `F` stay open and
+locally `C^{q,α}`. -/
+theorem Submission.dohr_vertical_euler_lagrange : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H h : Amb n ℓ → Amb n ℓ) (q : ℕ) (α : ℝ), V.HasGeneralizedMeanCurvature H → IsLocallyHolderCkα q α h U → (∀ᵐ x ∂V.weight, H x = h x) → ∀ (ξ : Amb n ℓ) (s R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), 0 < s → s ≤ R → closedBall ξ s ⊆ U → ContDiffOn ℝ 1 u (ball 0 R) → u 0 = 0 → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → V.weight.restrict (ball ξ s) = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball ξ s) → IsOpen ((fun y => Q (y - ξ)) '' U) ∧ IsLocallyHolderCkα q α (fun z => Q (h (ξ + Q.symm z))) ((fun y => Q (y - ξ)) '' U) ∧ ∃ r > 0, r ≤ R ∧ (∀ x ∈ ball (0 : Rn n) r, graphPoint x (u x) ∈ (fun y => Q (y - ξ)) '' U) ∧ ∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∫ x in ball (0 : Rn n) r, fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in ball (0 : Rn n) r, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * inner ℝ (graphPoint 0 (φ x)) (Q (h (ξ + Q.symm (graphPoint x (u x))))) := by
+  intro n ℓ hn U hU V H h q α hH hh hHh ξ s R Q u hs hsR hball hu hu0 hgraph hmeas
+  -- Step 1: `O = Q(U - ξ)` is open and `F = Q ∘ h ∘ (ξ + Q⁻¹ ·)` is locally `C^{q,α}` on `O`.
+  obtain ⟨hO, hF⟩ := Submission.dohr_vel_holder_rigid_transport n ℓ U hU h q α ξ Q hh
+  refine ⟨hO, hF, ?_⟩
+  have hR : 0 < R := lt_of_lt_of_le hs hsR
+  have huR : ∀ x ∈ ball (0 : Rn n) R, DifferentiableAt ℝ u x := fun x hx =>
+    ((hu.differentiableOn one_ne_zero) x hx).differentiableAt (isOpen_ball.mem_nhds hx)
+  have hgp0 : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+  -- `pr` is the projection of `ℝ^{n+ℓ}` onto its first `n` coordinates: `pr (x, w) = x`.
+  let pr : Amb n ℓ → Rn n := fun z => WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp z (Fin.castAdd ℓ j))
+  have hprG : ∀ (x : Rn n) (w : Rn ℓ), pr (graphPoint x w) = x := by
+    intro x w
+    simp [pr, graphPoint]
+  -- Step 2: `G x = (x, u x)` is continuous at `0` with `G 0 = 0`; choose `r = min δ R` with
+  -- `|G x| < s` on `B̆_r(0)`.
+  have hGcont0 : ContinuousAt (fun z : Rn n => graphPoint z (u z)) 0 :=
+    (Submission.dohr_vel_graph_fderiv n ℓ u 0 (huR 0 (mem_ball_self hR))).1.continuousAt
+  obtain ⟨δ, hδ, hδG⟩ := Metric.continuousAt_iff.mp hGcont0 s hs
+  have hGs : ∀ x ∈ ball (0 : Rn n) (min δ R), ‖graphPoint x (u x)‖ < s := by
+    intro x hx
+    have hx' : dist x 0 < δ := lt_of_lt_of_le (mem_ball.mp hx) (min_le_left _ _)
+    have := hδG hx'
+    simpa [hu0, hgp0, dist_zero_right] using this
+  refine ⟨min δ R, lt_min hδ hR, min_le_right _ _, ?_, ?_⟩
+  · -- `G x = Q ((ξ + Q⁻¹ G x) - ξ)` with `ξ + Q⁻¹ G x ∈ B_s(ξ) ⊆ U`.
+    intro x hx
+    refine ⟨ξ + Q.symm (graphPoint x (u x)), ?_, ?_⟩
+    · apply hball
+      rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, LinearIsometryEquiv.norm_map]
+      exact (hGs x hx).le
+    · simp
+  · intro φ hφ1 hφc hφr
+    have hrR : min δ R ≤ R := min_le_right _ _
+    have hucont : ContinuousOn u (ball 0 (min δ R)) := hu.continuousOn.mono (ball_subset_ball hrR)
+    -- Step 4: the vertical test field `X = Q⁻¹ ψ (0, φ ∘ pr) ∘ Q(· - ξ)`, admissible in `U`.
+    obtain ⟨X, hX1, hXc, hXs, hXval, hXder⟩ :=
+      Submission.dohr_vel_vertical_test_field n ℓ ξ Q s (min δ R) u φ hs hucont hGs hφ1 hφc hφr
+    have hGMC := hH.2 X hX1 hXc (hXs.trans (ball_subset_closedBall.trans hball))
+    -- (iii), (Iso) and (Area): `μ_V`-integrals over `B̆_s(ξ)` become integrals over
+    -- `D_s = {x ∈ B̆_R(0) : |G x| < s}` with the area element `J(Du)`.
+    have hE := Submission.dohr_vel_graph_area_transport n ℓ U V ξ s R Q u hsR hu hgraph hmeas
+    -- Step 3: `μ_V`-a.e. on `B̆_s(ξ)` the tangent plane is `Q⁻¹` of the graph's tangent plane.
+    obtain ⟨-, hTP⟩ :=
+      Submission.dohr_graph_tangent_planes n ℓ hn U hU V ξ s R Q u hs hsR hball hu hgraph
+    have hDs_open : IsOpen {x : Rn n | x ∈ ball (0 : Rn n) R ∧ ‖graphPoint x (u x)‖ < s} := by
+      have hGc : ContinuousOn (fun z : Rn n => graphPoint z (u z)) (ball 0 R) := fun x hx =>
+        (Submission.dohr_vel_graph_fderiv n ℓ u x (huR x hx)).1.continuousAt.continuousWithinAt
+      have := hGc.isOpen_inter_preimage isOpen_ball (isOpen_ball : IsOpen (ball (0 : Amb n ℓ) s))
+      convert this using 1
+      ext x
+      simp
+    have hrDs : ball (0 : Rn n) (min δ R) ⊆
+        {x : Rn n | x ∈ ball (0 : Rn n) R ∧ ‖graphPoint x (u x)‖ < s} :=
+      fun x hx => ⟨ball_subset_ball hrR hx, hGs x hx⟩
+    have hφzero : ∀ x ∉ ball (0 : Rn n) (min δ R), φ x = 0 ∧ fderiv ℝ φ x = 0 := by
+      intro x hx
+      have hxs : x ∉ tsupport φ := fun h' => hx (hφr h')
+      refine ⟨image_eq_zero_of_notMem_tsupport hxs, ?_⟩
+      by_contra hne
+      exact hxs (support_fderiv_subset ℝ (Function.mem_support.mpr hne))
+    -- Step 6, left side: `div_M X` vanishes off `tsupport X ⊆ B̆_s(ξ)`.
+    have hL1 : ∫ y, V.divM X y ∂V.weight = ∫ y in ball ξ s, V.divM X y ∂V.weight := by
+      refine (setIntegral_eq_integral_of_forall_compl_eq_zero ?_).symm
+      intro y hy
+      have hyX : y ∉ tsupport X := fun h' => hy (hXs h')
+      have h0 : fderiv ℝ X y = 0 := by
+        by_contra hne
+        exact hyX (support_fderiv_subset ℝ (Function.mem_support.mpr hne))
+      simp [RectifiableVarifold.divM, h0]
+    have hSigmeas : MeasurableSet (V.support ∩ ball ξ s) :=
+      (hU.measurableSet.inter Measure.isClosed_support.measurableSet).inter measurableSet_ball
+    have hae_supp : ∀ᵐ y ∂(V.weight.restrict (ball ξ s)), y ∈ V.support ∩ ball ξ s := by
+      rw [hmeas]
+      exact ae_restrict_mem hSigmeas
+    -- `div_M X (y) = trace (DX(y) ∘ p_{P_y})` for `μ_V`-a.e. `y ∈ B̆_s(ξ)`, where
+    -- `P_y = Q⁻¹ (range DG(x))` and `x = pr (Q (y - ξ))` is the unique graph parameter of `y`.
+    have hL2 : ∫ y in ball ξ s, V.divM X y ∂V.weight =
+        ∫ y in ball ξ s, LinearMap.trace ℝ (Amb n ℓ) ((fderiv ℝ X y).toLinearMap ∘ₗ
+          (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range
+            (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) (pr (Q (y - ξ)))).toLinearMap)).starProjection.toLinearMap)
+          ∂V.weight := by
+      apply integral_congr_ae
+      filter_upwards [hae_supp, ae_restrict_of_ae hTP] with y hy hyTP
+      obtain ⟨hySig, hyb⟩ := hy
+      have hTy : Q (y - ξ) ∈ graphOver u (ball 0 R) ∩ ball 0 R := by
+        rw [← hgraph]
+        refine ⟨⟨y - ξ, ⟨y, hySig, rfl⟩, rfl⟩, ?_⟩
+        rw [mem_ball_zero_iff, LinearIsometryEquiv.norm_map, ← dist_eq_norm]
+        exact lt_of_lt_of_le (mem_ball.mp hyb) hsR
+      obtain ⟨⟨x, hxR, hxG⟩, -⟩ := hTy
+      have hprx : pr (Q (y - ξ)) = x := by
+        rw [← hxG]
+        exact hprG x (u x)
+      have hproj := hyTP hyb x hxR hxG.symm
+      show LinearMap.trace ℝ (Amb n ℓ) ((fderiv ℝ X y).toLinearMap ∘ₗ (V.tangentProj y).toLinearMap) = _
+      rw [hprx, hproj]
+    -- Step 5: `J(Du) · trace (DX ∘ p_{P_y}) = DJ(Du)[Dφ]` on `D_s` (Jacobi's formula).
+    have hL4 : ∀ x ∈ {x : Rn n | x ∈ ball (0 : Rn n) R ∧ ‖graphPoint x (u x)‖ < s},
+        Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+          inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ)))
+            (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) *
+          LinearMap.trace ℝ (Amb n ℓ) ((fderiv ℝ X (ξ + Q.symm (graphPoint x (u x)))).toLinearMap ∘ₗ
+            (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range
+              (fderiv ℝ (fun z : Rn n => graphPoint z (u z))
+                (pr (Q (ξ + Q.symm (graphPoint x (u x)) - ξ)))).toLinearMap)).starProjection.toLinearMap) =
+        fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+          Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
+            (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) := by
+      intro x hx
+      have hA := Submission.dohr_vel_graph_fderiv n ℓ u x (huR x hx.1)
+      have hTx : pr (Q (ξ + Q.symm (graphPoint x (u x)) - ξ)) = x := by
+        rw [add_sub_cancel_left, LinearIsometryEquiv.apply_symm_apply, hprG]
+      rw [hTx, Submission.dohr_vel_graph_projection_trace n ℓ (fderiv ℝ u x) (fderiv ℝ φ x)
+        (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x) Q
+        (fderiv ℝ X (ξ + Q.symm (graphPoint x (u x)))) hA.2 (hXder x),
+        (Submission.dohr_vel_area_integrand_fderiv n ℓ (fderiv ℝ u x)).2 (fderiv ℝ φ x)]
+    -- The integrand vanishes on `D_s \ B̆_r(0)`, where `Dφ = 0`.
+    have hLHS : ∫ y, V.divM X y ∂V.weight = ∫ x in ball (0 : Rn n) (min δ R),
+        fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+          Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
+            (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) := by
+      rw [hL1, hL2, hE, setIntegral_congr_fun hDs_open.measurableSet hL4]
+      refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hDs_open.measurableSet hrDs ?_
+      intro x hx
+      rw [(hφzero x hx.2).2, map_zero]
+    -- Step 7, right side: `H = h` `μ_V`-a.e., `⟨X, h⟩` vanishes off `B̆_s(ξ)`, and on the graph
+    -- `⟨X, h⟩ = ⟨Q⁻¹ (0, φ), h⟩ = ⟨(0, φ), Q h⟩`.
+    have hR1 : ∫ y, inner ℝ (X y) (H y) ∂V.weight = ∫ y, inner ℝ (X y) (h y) ∂V.weight :=
+      integral_congr_ae (hHh.mono fun y hy => by simp only [hy])
+    have hR2 : ∫ y, inner ℝ (X y) (h y) ∂V.weight =
+        ∫ y in ball ξ s, inner ℝ (X y) (h y) ∂V.weight := by
+      refine (setIntegral_eq_integral_of_forall_compl_eq_zero ?_).symm
+      intro y hy
+      have hyX : y ∉ tsupport X := fun h' => hy (hXs h')
+      rw [image_eq_zero_of_notMem_tsupport hyX, inner_zero_left]
+    have hR4 : ∀ x : Rn n,
+        inner ℝ (X (ξ + Q.symm (graphPoint x (u x)))) (h (ξ + Q.symm (graphPoint x (u x)))) =
+          inner ℝ (graphPoint 0 (φ x)) (Q (h (ξ + Q.symm (graphPoint x (u x))))) := by
+      intro x
+      rw [hXval x, LinearIsometryEquiv.inner_map_eq_flip, LinearIsometryEquiv.symm_symm]
+    have hRHS : ∫ y, inner ℝ (X y) (H y) ∂V.weight = ∫ x in ball (0 : Rn n) (min δ R),
+        Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+          inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ)))
+            (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) *
+          inner ℝ (graphPoint 0 (φ x)) (Q (h (ξ + Q.symm (graphPoint x (u x))))) := by
+      rw [hR1, hR2, hE]
+      simp_rw [hR4]
+      refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hDs_open.measurableSet hrDs ?_
+      intro x hx
+      rw [(hφzero x hx.2).1, hgp0, inner_zero_left, mul_zero]
+    -- Step 8: the first variation identity `∫ div_M X dμ_V = -∫ ⟨X, H⟩ dμ_V`.
+    rw [← hLHS, ← hRHS]
+    exact hGMC
+
 end GMT.Ch05
