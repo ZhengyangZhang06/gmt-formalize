@@ -2448,6 +2448,93 @@ theorem Submission.codim1_ovr_orientation_glue : ∀ (P m : ℕ) (C : GeometricC
     intro x hx
     have hxω : x ∉ tsupport (ω : DifferentialForm (Euclid P) m) := fun h => hx.2 ⟨hx.1, hω h⟩
     rw [image_eq_zero_of_notMem_tsupport hxω, map_zero]
+/-- **A dilation-invariant set that is locally `Hᵐ`-finite away from `0` has `Hᵐ`-finite
+intersection with every compact set** (`m ≥ 1`).  Here `0 ∉ M`, `M̄ ⊆ M ∪ {0}`, `tM ⊆ M` for
+`t > 0`, and each `y ∈ M` has an open `B ∋ y` with `Hᵐ(M ∩ B) < ∞`.  For compact `K ∌ 0`, `M ∩ K`
+is compact, hence covered by finitely many such `B`.  So the annulus `A = {R/2 ≤ |x| ≤ R}` has
+`Hᵐ(M ∩ A) < ∞`, and `M ∩ B̄_R(0) ⊆ ⋃ₖ 2⁻ᵏ(M ∩ A)` gives
+`Hᵐ(M ∩ B̄_R(0)) ≤ Σₖ 2⁻ᵏᵐ Hᵐ(M ∩ A) < ∞`; every compact set lies in some `B̄_R(0)`. -/
+theorem Submission.codim1_ovr_cone_locally_finite_measure : ∀ (P m : ℕ) (M : Set (Euclid P)), 1 ≤ m → (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ y ∈ M, ∃ B : Set (Euclid P), IsOpen B ∧ y ∈ B ∧ μHE[m] (M ∩ B) ≠ ∞) → ∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞ := by
+  intro P m M hm h0M hcl hcone hloc
+  choose! B hBo hyB hBfin using hloc
+  -- Step 1: compact sets avoiding the vertex.
+  have h6a : ∀ K : Set (Euclid P), IsCompact K → (0 : Euclid P) ∉ K → μHE[m] (M ∩ K) ≠ ∞ := by
+    intro K hK h0K
+    -- `M ∩ K` is closed: its closure lies in `(M ∪ {0}) ∩ K = M ∩ K`.
+    have hMKc : IsCompact (M ∩ K) := by
+      refine hK.of_isClosed_subset (isClosed_of_closure_subset fun x hx => ?_) inter_subset_right
+      have hx1 : x ∈ closure M := closure_mono inter_subset_left hx
+      have hx2 : x ∈ K := hK.isClosed.closure_subset (closure_mono inter_subset_right hx)
+      rcases hcl hx1 with h | h
+      · exact absurd (h ▸ hx2) h0K
+      · exact ⟨h, hx2⟩
+    obtain ⟨t, ht⟩ := hMKc.elim_finite_subcover (fun y : ↥(M ∩ K) => B y)
+      (fun y => hBo y y.2.1) (fun x hx => mem_iUnion.2 ⟨⟨x, hx⟩, hyB x hx.1⟩)
+    have hsub : M ∩ K ⊆ ⋃ y ∈ t, M ∩ B y := by
+      intro x hx
+      obtain ⟨y, hyt, hxy⟩ := mem_iUnion₂.1 (ht hx)
+      exact mem_iUnion₂.2 ⟨y, hyt, hx.1, hxy⟩
+    refine ne_top_of_le_ne_top ?_ ((measure_mono hsub).trans (measure_biUnion_finset_le t _))
+    exact ENNReal.sum_ne_top.2 fun y _ => hBfin y y.2.1
+  -- Step 2: closed balls about the vertex, by dyadic scaling of the annulus `A`.
+  have h6b : ∀ R : ℝ, 0 < R → μHE[m] (M ∩ closedBall 0 R) ≠ ∞ := by
+    intro R hR
+    set A : Set (Euclid P) := {x | R / 2 ≤ ‖x‖} ∩ closedBall 0 R with hAdef
+    have hA : IsCompact A :=
+      (isCompact_closedBall 0 R).of_isClosed_subset
+        ((isClosed_le continuous_const continuous_norm).inter isClosed_closedBall) inter_subset_right
+    have h0A : (0 : Euclid P) ∉ A := by
+      rintro ⟨h1, -⟩
+      simp only [mem_ofPred_eq, norm_zero] at h1
+      linarith
+    have ha := h6a A hA h0A
+    -- `x ∈ M`, `0 < ‖x‖ ≤ R`: with `2ᵏ ≤ R/‖x‖ < 2ᵏ⁺¹`, `2ᵏx ∈ M ∩ A` and `x = 2⁻ᵏ(2ᵏx)`.
+    have hcover : M ∩ closedBall 0 R ⊆ ⋃ k : ℕ, (fun x => ((2 : ℝ)⁻¹ ^ k) • x) '' (M ∩ A) := by
+      rintro x ⟨hxM, hxR⟩
+      have hx0 : x ≠ 0 := fun h => h0M (h ▸ hxM)
+      have hxpos : 0 < ‖x‖ := norm_pos_iff.2 hx0
+      have hxR' : ‖x‖ ≤ R := by simpa using hxR
+      obtain ⟨k, hk1, hk2⟩ := exists_nat_pow_near (x := R / ‖x‖) (y := (2 : ℝ))
+        (by rw [le_div_iff₀ hxpos, one_mul]; exact hxR') one_lt_two
+      refine mem_iUnion.2 ⟨k, ⟨(2 : ℝ) ^ k • x, ⟨hcone _ (by positivity) x hxM, ?_, ?_⟩, ?_⟩⟩
+      · show R / 2 ≤ ‖(2 : ℝ) ^ k • x‖
+        rw [norm_smul, Real.norm_eq_abs, abs_of_pos (by positivity)]
+        rw [div_lt_iff₀ hxpos, pow_succ] at hk2
+        nlinarith
+      · rw [mem_closedBall, dist_zero_right, norm_smul, Real.norm_eq_abs,
+          abs_of_pos (by positivity)]
+        rw [le_div_iff₀ hxpos] at hk1
+        exact hk1
+      · show (2 : ℝ)⁻¹ ^ k • (2 : ℝ) ^ k • x = x
+        rw [smul_smul, ← mul_pow, inv_mul_cancel₀ two_ne_zero, one_pow, one_smul]
+    -- Scaling law `Hᵐ(cE) = |c|ᵐ Hᵐ(E)` with `c = 2⁻ᵏ`.
+    have hnorm : ∀ k : ℕ, ((‖(2 : ℝ)⁻¹ ^ k‖₊ : NNReal) : ℝ≥0∞) = (2 : ℝ≥0∞)⁻¹ ^ k := by
+      intro k
+      rw [nnnorm_pow, nnnorm_inv, ENNReal.coe_pow, ENNReal.coe_inv (by simp)]
+      simp
+    have hscale : ∀ k : ℕ, μHE[m] ((fun x => ((2 : ℝ)⁻¹ ^ k) • x) '' (M ∩ A)) =
+        ((2 : ℝ≥0∞)⁻¹ ^ m) ^ k * μHE[m] (M ∩ A) := by
+      intro k
+      rw [Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ m (by positivity) (M ∩ A),
+        ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow, hnorm k]
+      congr 1
+      rw [← pow_mul, ← pow_mul, Nat.mul_comm]
+    have hr : (2 : ℝ≥0∞)⁻¹ ^ m < 1 := by
+      have h2 : (2 : ℝ≥0∞)⁻¹ < 1 := ENNReal.inv_lt_one.2 (by norm_num)
+      exact pow_lt_one₀ bot_le h2 (by omega)
+    -- Geometric series: `Σₖ (2⁻ᵐ)ᵏ Hᵐ(M ∩ A) = (1 - 2⁻ᵐ)⁻¹ Hᵐ(M ∩ A) < ∞`.
+    refine ne_top_of_le_ne_top ?_ ((measure_mono hcover).trans (measure_iUnion_le _))
+    simp_rw [hscale]
+    rw [ENNReal.tsum_mul_right, ENNReal.tsum_geometric]
+    refine ENNReal.mul_ne_top ?_ ha
+    exact ENNReal.inv_ne_top.2 (tsub_pos_of_lt hr).ne'
+  -- Step 3: a compact set lies in a closed ball `B̄_R(0)`, `R ≥ 1`.
+  intro K hK
+  obtain ⟨R₁, hR₁⟩ := hK.isBounded.subset_closedBall (0 : Euclid P)
+  have hKR : K ⊆ closedBall 0 (max R₁ 1) :=
+    hR₁.trans (closedBall_subset_closedBall (le_max_left _ _))
+  exact ne_top_of_le_ne_top (h6b _ (lt_of_lt_of_le one_pos (le_max_right _ _)))
+    (measure_mono (inter_subset_inter_right _ hKR))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
