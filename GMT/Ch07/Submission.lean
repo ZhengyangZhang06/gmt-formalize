@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Tangent identity** (step 6(c) of the C¹-retraction proof): if `proj` is differentiable at
+`x ∈ O`, `O` open, and fixes every point of `N ∩ O`, then `Dproj(x) v = v` for every
+`v ∈ T_xN`.  Write `v = γ'(0)` with `γ((−1, 1)) ⊆ N`, `γ(0) = x`; by continuity `γ` stays in `O`
+near `0`, so `proj ∘ γ = γ` near `0`.  The chain rule gives `(proj ∘ γ)'(0) = Dproj(x) v`, and
+uniqueness of derivatives gives `Dproj(x) v = γ'(0) = v`. -/
+theorem Submission.dor_lmb_ret_fderiv_tangent_eq : ∀ (P : ℕ) (N O : Set (Euclid P)) (proj : Euclid P → Euclid P) (x : Euclid P), IsOpen O → x ∈ O → DifferentiableAt ℝ proj x → (∀ z ∈ N ∩ O, proj z = z) → ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v := by
+  intro P N O proj x hO hxO hproj hfix v hv
+  obtain ⟨γ, -, hγN, hγ0, hγ⟩ := hv
+  -- `γ` is continuous at `0` and `γ 0 = x ∈ O`, so `γ s ∈ O` for `s` near `0`
+  have hγO : ∀ᶠ s in 𝓝 (0 : ℝ), γ s ∈ O :=
+    hγ.continuousAt (by rw [hγ0]; exact hO.mem_nhds hxO)
+  -- on `(−1, 1)` the curve lies in `N`, hence `proj ∘ γ = γ` near `0`
+  have heq : proj ∘ γ =ᶠ[𝓝 0] γ := by
+    filter_upwards [hγO, Ioo_mem_nhds neg_one_lt_zero zero_lt_one] with s hsO hsI
+    exact hfix (γ s) ⟨hγN hsI, hsO⟩
+  -- chain rule: `proj ∘ γ` has derivative `Dproj(x) v` at `0`
+  have hcomp : HasDerivAt (proj ∘ γ) (fderiv ℝ proj x v) 0 :=
+    hproj.hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ hγ0.symm
+  -- so does `γ`, and derivatives are unique
+  exact (hcomp.congr_of_eventuallyEq heq.symm).unique hγ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
