@@ -531,6 +531,53 @@ theorem Submission.codim1_rdo_dg_hr_translate_integral_eq : ∀ (n : ℕ) (F : S
   rw [hswap]
   linarith
 
+/-- **Tangential invariance** (step 2 of the half-space rigidity behind Simon Ch. 3, 4.3: "it
+follows that `F = ℝⁿ × H`").  If the Borel set `F ⊆ ℝⁿ` has `∫_F Dζ(z)(w) dz = 0` for every
+compactly supported `C¹` function `ζ`, then `z + w ∈ F ↔ z ∈ F` for a.e. `z`.  The translation
+identity with `t = 1` gives `∫_F ζ(z − w) dz = ∫_F ζ`, since every translate `ζ(· − s w)` is
+again admissible; substituting `z = y + w` turns this into `∫ ζ 1_F(· + w) = ∫ ζ 1_F`, and the
+fundamental lemma of the calculus of variations gives `1_F(· + w) = 1_F` a.e. -/
+theorem Submission.codim1_rdo_dg_hr_ae_translate_invariant : ∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, fderiv ℝ ζ z w = 0) → ∀ᵐ z ∂volume, (z + w ∈ F ↔ z ∈ F) := by
+  intro n F w hF hζ
+  -- `ζ(· − s w)` is again admissible, with derivative `Dζ(· − s w)`: the inner integrals vanish
+  have hinner : ∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∀ s : ℝ, ∫ z in F, fderiv ℝ ζ (z - s • w) w = 0 := by
+    intro ζ hζc hζs s
+    have h := hζ (fun y => ζ (y - s • w)) (hζc.comp (contDiff_id.sub contDiff_const))
+      (hζs.comp_homeomorph (Homeomorph.subRight (s • w)))
+    simpa only [fderiv_comp_sub] using h
+  -- the translation identity with `t = 1`
+  have htrans : ∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∫ z in F, ζ (z - w) = ∫ z in F, ζ z := by
+    intro ζ hζc hζs
+    have h := Submission.codim1_rdo_dg_hr_translate_integral_eq n F ζ w 1 hF hζc hζs
+    simpa only [one_smul, hinner ζ hζc hζs, intervalIntegral.integral_zero, sub_zero] using h
+  -- substituting `z = y + w`: `∫ ζ 1_F(· + w) = ∫ ζ 1_F`
+  have hG : MeasurableSet ((fun y => y + w) ⁻¹' F) := hF.preimage (measurable_add_const w)
+  have hint : ∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g →
+      ∫ y, g y • ((fun y => y + w) ⁻¹' F).indicator (fun _ => (1 : ℝ)) y
+        = ∫ y, g y • F.indicator (fun _ => (1 : ℝ)) y := by
+    intro g hgc hgs
+    have e1 : (fun y => g y • ((fun y => y + w) ⁻¹' F).indicator (fun _ => (1 : ℝ)) y)
+        = fun y => F.indicator (fun z => g (z - w)) (y + w) := by
+      funext y
+      by_cases hy : y + w ∈ F <;> simp [hy]
+    have e2 : (fun y => g y • F.indicator (fun _ => (1 : ℝ)) y) = F.indicator g := by
+      funext y
+      by_cases hy : y ∈ F <;> simp [hy]
+    rw [e1, e2, integral_add_right_eq_self (F.indicator fun z => g (z - w)) w,
+      integral_indicator hF, integral_indicator hF]
+    exact htrans g hgc hgs
+  -- the fundamental lemma: `1_F(· + w) = 1_F` a.e.
+  have hae : ∀ᵐ y ∂volume, ((fun y => y + w) ⁻¹' F).indicator (fun _ => (1 : ℝ)) y
+      = F.indicator (fun _ => (1 : ℝ)) y :=
+    ae_eq_of_integral_contDiff_smul_eq ((locallyIntegrable_const 1).indicator hG)
+      ((locallyIntegrable_const 1).indicator hF)
+      (fun g hgc hgs => hint g (hgc.of_le (by simp)) hgs)
+  -- equal indicators: `z + w ∈ F ↔ z ∈ F`
+  filter_upwards [hae] with z hz
+  by_cases h1 : z + w ∈ F <;> by_cases h2 : z ∈ F <;> simp_all
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
