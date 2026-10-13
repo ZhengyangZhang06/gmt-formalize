@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1",
+  "depth": 5,
+  "title": "At each of its points an embedded C¹ submanifold (cut by an open set) has its tangent space as approximate tangent space (Simon Ch. 3, 1.4 and proof of 1.6)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, let N ⊆ ℝ^P be an embedded m-dimensional C¹ submanifold (IsEmbeddedSubmanifold 1 m N), W ⊆ ℝ^P open, x ∈ N ∩ W, and Q a linear subspace of ℝ^P whose underlying set is the tangent space T_xN (contract tangentSpace N x). Then Q is the approximate tangent space of N ∩ W at x in the sense of Simon Ch. 3, 1.4 (HasApproximateTangentSpaceAt m (N ∩ W) x Q): dim Q = m, and for every continuous compactly supported f : ℝ^P → ℝ, ∫_{η_{x,r}(N ∩ W)} f dH^m → ∫_Q f dH^m as r ↓ 0, where η_{x,r}(y) = r^{-1}(y − x) and H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (N W : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOpen W → x ∈ N ∩ W → (Q : Set (Euclid P)) = tangentSpace N x → HasApproximateTangentSpaceAt m (N ∩ W) x Q",
+  "lean_name": "codim1_ac_submanifold_approxTangent",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78-a1"
+}

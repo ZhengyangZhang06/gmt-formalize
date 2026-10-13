@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1",
+  "depth": 5,
+  "title": "Area formula for an injective C¹ immersion of ℝ^P restricted to an embedded C¹ submanifold, and continuity of its tangential Jacobian (Simon Ch. 2, 4.11–4.13)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, let N ⊆ ℝ^P be an embedded m-dimensional C¹ submanifold, Q : ℝ^P → {linear subspaces of ℝ^P} with Q(x) = T_xN (as sets) for every x ∈ N, and Φ : ℝ^P → ℝ^P a C¹ injective map with DΦ(x) injective for every x. Let J(x) := (det(⟨DΦ(x)e_i(x), DΦ(x)e_j(x)⟩)_{i,j})^{1/2}, where e(x) = (e_i(x))_{i < dim Q(x)} is the standard orthonormal basis of Q(x) (stdOrthonormalBasis). Then J is continuous on N, and for every Borel set B ⊆ N and every function g : ℝ^P → [0, ∞], ∫_{Φ(B)} g dH^m = ∫_B J(x) g(Φ(x)) dH^m(x) (lower Lebesgue integrals, H^m = μHE[m]).",
+  "lean_statement": "∀ (P m : ℕ) (N : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → ContDiff ℝ 1 Φ → Injective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → ContinuousOn (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) N ∧ ∀ B : Set (Euclid P), B ⊆ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in Φ '' B, g y ∂μHE[m] = ∫⁻ x in B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (Φ x) ∂μHE[m]",
+  "lean_name": "codim1_ac_submanifold_area_formula",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-037da18399-a1"
+}
