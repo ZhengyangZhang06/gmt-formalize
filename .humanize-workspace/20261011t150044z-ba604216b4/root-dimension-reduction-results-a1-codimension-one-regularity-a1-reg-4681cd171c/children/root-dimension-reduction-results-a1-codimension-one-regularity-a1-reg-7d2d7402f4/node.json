@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.cone_exclusion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "Cone exclusion between nearby points with a common reference direction (Simon Ch. 3, 1.6 ⇐, (10))",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, μ a Borel measure on E, ν : E → E with |ν(y)| = 1 for all y, K ⊆ E, and δ, ε ∈ ℝ with ε ≥ 0 and (1 + 16^m)ε < 1. Put ω_m := unitBallVolume m and C(x) := {z : ¼|z − x| ≤ |⟨z − x, ν(x)⟩|}. Assume that for all x ∈ K and ρ ∈ (0, δ): (1 − ε)⁺ ω_m ρ^m ≤ μ(B̄_ρ(x)) and μ(C(x) ∩ B̄_ρ(x)) ≤ ε ω_m ρ^m (in [0, ∞]). Then for all x, x′ ∈ K and v ∈ E with |ν(x) − v| ≤ 1/16 and |x′ − x| < δ/2 we have |⟨x′ − x, v⟩| ≤ ½|x′ − x|.",
+  "lean_statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∀ x ∈ K, ∀ x' ∈ K, ∀ v : Euclid (m + 1), ‖ν x - v‖ ≤ 1 / 16 → ‖x' - x‖ < δ / 2 → |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2",
+  "lean_name": "codim1_rdo_dg_rc_cone_exclusion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-7d2d7402f4-a1"
+}
