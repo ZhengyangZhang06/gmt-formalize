@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.rescaled_volume-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "Scale invariance of the two-sided volume density bounds (Simon 3.4.3 (10)–(11))",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, F ⊆ E Borel, y ∈ E and c₂, ρ₂ ∈ ℝ such that L^{m+1}(F ∩ B_ρ(y)) ≥ c₂ρ^{m+1} and L^{m+1}(B_ρ(y) ∖ F) ≥ c₂ρ^{m+1} for every 0 < ρ < ρ₂ (left-hand sides compared with ENNReal.ofReal of the right-hand sides). Then for all s > 0 and r > 0 with rs < ρ₂: L^{m+1}(F_{y,r} ∩ B_s(0)) ≥ c₂s^{m+1} and L^{m+1}(B_s(0) ∖ F_{y,r}) ≥ c₂s^{m+1}, where F_{y,r} := {w : y + rw ∈ F}.",
+  "lean_statement": "∀ (m : ℕ) (F : Set (Euclid (m + 1))) (y : Euclid (m + 1)) (c₂ ρ₂ : ℝ), MeasurableSet F → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₂ → ENNReal.ofReal (c₂ * ρ ^ (m + 1)) ≤ volume (F ∩ ball y ρ) ∧ ENNReal.ofReal (c₂ * ρ ^ (m + 1)) ≤ volume (ball y ρ \\ F)) → ∀ s r : ℝ, 0 < s → 0 < r → r * s < ρ₂ → ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume ((fun w => y + r • w) ⁻¹' F ∩ ball (0 : Euclid (m + 1)) s) ∧ ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume (ball (0 : Euclid (m + 1)) s \\ (fun w => y + r • w) ⁻¹' F)",
+  "lean_name": "codim1_rdo_dg_bh_rescaled_volume_lower",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-f08bd35b68-a1"
+}

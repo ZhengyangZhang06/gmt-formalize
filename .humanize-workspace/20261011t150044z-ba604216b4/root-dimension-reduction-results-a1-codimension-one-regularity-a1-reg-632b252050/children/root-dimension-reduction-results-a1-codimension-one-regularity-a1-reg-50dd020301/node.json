@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.normal_defect-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "Normal concentration: the normal defect and tangential components are o(μ(B̄_ρ(y))) (Simon 3.4.3 (1)–(2))",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, μ a measure on E, ν : E → E Borel with |ν(z)| = 1 for every z, and y, v ∈ E with |v| = 1. Assume μ(B̄_{ρ₀}(y)) < ∞ for some ρ₀ > 0 and that the normal averages A(ρ) := μ(B̄_ρ(y))_ℝ^{-1} ∫_{B̄_ρ(y)} ν dμ converge to v as ρ ↓ 0 (μ(·)_ℝ = ENNReal.toReal, 0^{-1} = 0). Then for every δ > 0 there is ρ' > 0 such that for every ρ ∈ (0, ρ'): (i) ∫_{B̄_ρ(y)} (1 − ⟨ν(z), v⟩) dμ(z) ≤ δ·μ(B̄_ρ(y))_ℝ, and (ii) for every w ∈ E with ⟨w, v⟩ = 0, ∫_{B̄_ρ(y)} |⟨ν(z), w⟩| dμ(z) ≤ δ·|w|·μ(B̄_ρ(y))_ℝ.",
+  "lean_statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), Measurable ν → (∀ z, ‖ν z‖ = 1) → ‖v‖ = 1 → (∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞) → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ δ : ℝ, 0 < δ → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∫ z in closedBall y ρ, (1 - inner ℝ (ν z) v) ∂μ ≤ δ * (μ (closedBall y ρ)).toReal ∧ ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in closedBall y ρ, |inner ℝ (ν z) w| ∂μ ≤ δ * ‖w‖ * (μ (closedBall y ρ)).toReal",
+  "lean_name": "codim1_rdo_dg_bh_normal_defect_small",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-50dd020301-a1"
+}
