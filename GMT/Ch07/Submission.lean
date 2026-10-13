@@ -3837,6 +3837,125 @@ theorem Submission.codim1_rdo_dg_halfspace_rigidity : ∀ (m : ℕ) (F₀ : Set 
   filter_upwards [hinv, hmono] with z hzw hzwv hz
   simpa only [add_assoc, sub_add_cancel] using hzwv (hzw.2 hz)
 
+/-- **Blow-up of `F` at `y` is the half-space `{⟨w, v⟩ > 0}`** (Simon Ch. 3, proof of Theorem 4.3
+(De Giorgi), printed (7)–(11) and the paragraph "Now given any sequence `λ_k ↓ 0` …",
+chapter-03.txt lines 652–744; for the inward normal the limit is `{⟨w, v⟩ > 0}`, the OCR's
+inequality being reversed).  Given `r_k ↓ 0`, the rescaled sets `F_{y,r_k}` have locally bounded
+perimeter (`μ(B̄_ρ(y)) ≤ C₁ ρ^m`), so a subsequence converges in `L¹_loc` to some `F₀`; since the
+normal averages tend to `v`, `F₀` has vanishing tangential and nonpositive normal distributional
+derivative, hence is (a.e.) `∅`, `ℝ^{m+1}` or `{⟨w, v⟩ > c}`; the scale-invariant two-sided volume
+bounds force `c = 0`.  The limit being independent of the sequence, the whole family converges. -/
+theorem Submission.codim1_rdo_dg_blowup_halfspace : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → y ∈ D → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ R : ℝ, Tendsto (fun r : ℝ => volume (symmDiff ((fun w => y + r • w) ⁻¹' F) {w | 0 < inner ℝ w v} ∩ ball (0 : Euclid (m + 1)) R)) (𝓝[>] 0) (𝓝 0) := by
+  intro m D F μ ν y v hm hD hF hμD hμK hν hν1 hGG hy hv hA R
+  -- step 1: `μ(B̄_ρ(y)) ≤ C₁ ρ^m` for `ρ < ρ₁`, and `L(F ∩ B_ρ(y)), L(B_ρ(y) \ F) ≥ c₂ ρ^{m+1}`
+  -- for `ρ < ρ₂`
+  obtain ⟨ρ₁, C₁, hρ₁, hC₁, hball, -, hupper⟩ :=
+    Submission.codim1_rdo_dg_cutoff_estimates m D F μ ν y v hD hF hμD hμK hν hν1 hGG hy hv hA
+  obtain ⟨c₂, ρ₂, hc₂, hρ₂, hlower⟩ :=
+    Submission.codim1_rdo_dg_volume_density_lower m D F μ ν y v hm hD hF hμD hμK hν hν1 hGG hy
+      hv hA
+  -- `L((y + r ·)⁻¹ S) = r^{-(m+1)} L(S)` and `(y + r ·)⁻¹ B_{rs}(y) = B_s`
+  have hscale : ∀ r : ℝ, 0 < r → ∀ S : Set (Euclid (m + 1)),
+      volume ((fun w => y + r • w) ⁻¹' S) = ENNReal.ofReal ((r ^ (m + 1))⁻¹) * volume S := by
+    intro r hr S
+    have hcomp : (fun w : Euclid (m + 1) => y + r • w) ⁻¹' S =
+        (fun w => r • w) ⁻¹' ((fun u => y + u) ⁻¹' S) := rfl
+    rw [hcomp, Measure.addHaar_preimage_smul volume hr.ne', measure_preimage_add,
+      finrank_euclideanSpace_fin, abs_of_pos (inv_pos.mpr (pow_pos hr _))]
+  have hballpre : ∀ r : ℝ, 0 < r → ∀ s : ℝ,
+      (fun w => y + r • w) ⁻¹' ball y (r * s) = ball (0 : Euclid (m + 1)) s := by
+    intro r hr s
+    ext w
+    rw [mem_preimage, mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hr, mem_ball_zero_iff, mul_lt_mul_iff_of_pos_left hr]
+  -- step 6, scale invariance: `L(F_r ∩ B_s), L(B_s \ F_r) ≥ c₂ s^{m+1}` for `0 < r < ρ₂ / s`
+  have hdens : ∀ s : ℝ, 0 < s → ∀ r ∈ Ioo 0 (ρ₂ / s),
+      ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤
+          volume ((fun w => y + r • w) ⁻¹' F ∩ ball (0 : Euclid (m + 1)) s) ∧
+        ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤
+          volume (ball (0 : Euclid (m + 1)) s \ (fun w => y + r • w) ⁻¹' F) := by
+    intro s hs r hr
+    obtain ⟨h1, h2⟩ := hlower (r * s) (mul_pos hr.1 hs) ((lt_div_iff₀ hs).mp hr.2)
+    have hc : ENNReal.ofReal (c₂ * s ^ (m + 1)) =
+        ENNReal.ofReal ((r ^ (m + 1))⁻¹) * ENNReal.ofReal (c₂ * (r * s) ^ (m + 1)) := by
+      rw [← ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg hr.1.le _))]
+      congr 1
+      have hr' : r ^ (m + 1) ≠ 0 := pow_ne_zero _ hr.1.ne'
+      calc c₂ * s ^ (m + 1) = (r ^ (m + 1))⁻¹ * r ^ (m + 1) * (c₂ * s ^ (m + 1)) := by
+            rw [inv_mul_cancel₀ hr', one_mul]
+        _ = (r ^ (m + 1))⁻¹ * (c₂ * (r * s) ^ (m + 1)) := by ring
+    rw [← hballpre r hr.1 s, ← preimage_inter, ← preimage_sdiff, hscale r hr.1, hscale r hr.1, hc]
+    exact ⟨by gcongr, by gcongr⟩
+  -- step 7: it suffices that every sequence `r_k → 0⁺` has a subsequence along which the
+  -- quantity tends to `0`
+  refine tendsto_of_subseq_tendsto fun rs hrs => ?_
+  set Fs : ℕ → Set (Euclid (m + 1)) := fun k => (fun w => y + rs k • w) ⁻¹' F
+  have hFs : ∀ k, MeasurableSet (Fs k) := fun k =>
+    hF.preimage (continuous_const.add (continuous_const_smul (rs k))).measurable
+  -- step 4: perimeter bounds `C₁ R^m` on `B_R`, hence an `L¹_loc` limit `F₀` of a subsequence
+  have hBV : ∀ R' : ℝ, 0 < R' → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Euclid (m + 1) → Euclid (m + 1),
+      ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R' →
+      (∀ z, ‖g z‖ ≤ 1) → ∫ z in Fs k, LinearMap.trace ℝ (Euclid (m + 1))
+        (fderiv ℝ g z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C := by
+    intro R' hR'
+    refine ⟨C₁ * R' ^ m, ?_⟩
+    filter_upwards [hrs.eventually_mem (Ioo_mem_nhdsGT (div_pos hρ₁ hR'))]
+      with k hk g hg hgc hgs hg1
+    exact Submission.codim1_rdo_dg_bh_perimeter_bound m D F μ ν y ρ₁ C₁ hF hν hν1 hGG hρ₁ hC₁
+      hball hupper R' (rs k) hR' hk.1 ((lt_div_iff₀ hR').mp hk.2) g hg hgc hgs hg1
+  obtain ⟨ψ, F₀, hψ, hF₀, hconv⟩ := Submission.codim1_rdo_dg_bv_set_compactness m Fs hFs hBV
+  refine ⟨ψ, ?_⟩
+  have hrsψ : Tendsto (fun j => rs (ψ j)) atTop (𝓝[>] 0) := hrs.comp hψ.tendsto_atTop
+  obtain ⟨hint, hin, hout⟩ := Submission.codim1_rdo_dg_bh_l1loc_transfer m (fun j => Fs (ψ j))
+    F₀ (fun j => hFs (ψ j)) hF₀ hconv
+  -- step 5: `F₀` has vanishing tangential and nonpositive normal derivative
+  have htan : ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in F₀, fderiv ℝ ζ z w = 0 := by
+    intro ζ hζ hζc w hw
+    exact tendsto_nhds_unique
+      (hint (fun z => fderiv ℝ ζ z w)
+        ((hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const)
+        (HasCompactSupport.fderiv_apply (𝕜 := ℝ) hζc w))
+      ((Submission.codim1_rdo_dg_bh_tangential_vanish m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv hA
+        hρ₁ hC₁ hball hupper ζ hζ hζc w hw).comp hrsψ)
+  have hnor : ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      (∀ z, 0 ≤ ζ z) → ∫ z in F₀, fderiv ℝ ζ z v ≤ 0 := by
+    intro ζ hζ hζc hζ0
+    refine le_of_forall_pos_le_add fun δ hδ => ?_
+    rw [zero_add]
+    exact le_of_tendsto
+      (hint (fun z => fderiv ℝ ζ z v)
+        ((hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const)
+        (HasCompactSupport.fderiv_apply (𝕜 := ℝ) hζc v))
+      (hrsψ.eventually (Submission.codim1_rdo_dg_bh_normal_limsup m D F μ ν y v ρ₁ C₁ hF hν hν1
+        hGG hv hA hρ₁ hC₁ hball hupper ζ hζ hζc hζ0 δ hδ))
+  -- so `F₀` is a.e. `∅`, `ℝ^{m+1}` or `{⟨w, v⟩ > c}`
+  have htri := Submission.codim1_rdo_dg_halfspace_rigidity m F₀ v hv hF₀ htan hnor
+  -- step 6: the two-sided bounds pass to the limit, which forces `c = 0`
+  have hpos : ∀ s : ℝ, 0 < s → 0 < volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ∧
+      0 < volume (ball (0 : Euclid (m + 1)) s \ F₀) := by
+    intro s hs
+    have hcs : 0 < ENNReal.ofReal (c₂ * s ^ (m + 1)) := ENNReal.ofReal_pos.mpr (by positivity)
+    have hev : ∀ᶠ j in atTop, rs (ψ j) ∈ Ioo 0 (ρ₂ / s) :=
+      hrsψ.eventually_mem (Ioo_mem_nhdsGT (div_pos hρ₂ hs))
+    exact ⟨hcs.trans_le (ge_of_tendsto (hin s) (hev.mono fun j hj => (hdens s hs _ hj).1)),
+      hcs.trans_le (ge_of_tendsto (hout s) (hev.mono fun j hj => (hdens s hs _ hj).2))⟩
+  have hFH := Submission.codim1_rdo_dg_bh_offset_zero m F₀ v hv hpos htri
+  -- step 7: `L((F_{r_{ψ j}} Δ H) ∩ B_R) ≤ L((F_{r_{ψ j}} Δ F₀) ∩ B_R) + L(F₀ Δ H) → 0`
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hconv R)
+    (fun j => zero_le) (fun j => ?_)
+  calc volume (symmDiff (Fs (ψ j)) {w | 0 < inner ℝ w v} ∩ ball (0 : Euclid (m + 1)) R)
+      ≤ volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R ∪
+          symmDiff F₀ {w | 0 < inner ℝ w v}) := by
+        refine measure_mono fun x hx => ?_
+        rcases symmDiff_triangle _ F₀ _ hx.1 with h | h
+        · exact Or.inl ⟨h, hx.2⟩
+        · exact Or.inr h
+    _ ≤ volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R) +
+          volume (symmDiff F₀ {w | 0 < inner ℝ w v}) := measure_union_le _ _
+    _ = volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R) := by
+        rw [hFH, add_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
