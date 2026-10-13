@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "44971e93b861cd040f59f912c73cf75d7d0f81d14dd454957cfecabe8ad2738b",
+  "git_delta": {
+    "base_commit": "acbd42d7f1cdcefbdbf0dffe69931f132d65948b",
+    "candidate_commit": "6b000c36933a8a81221ba4327d703ad549d26fb0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_smooth_approx_compact_perturbation",
+    "diff_sha256": "d623b81dc2e6671a677ea52e85b4f5ec19f51892ff9ce4916990524565b0deba",
+    "source_sha256": "71447b6655f0bb82e8d3a971a8de8101da6b5f9b48fee7e3e744301c50b65b83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_smooth_approx_compact_perturbation",
+      "statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ (ψ : ℕ → Euclid P → Euclid P) (K' : Set (Euclid P)) (C : ℝ), IsCompact K' ∧ K' ⊆ U ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ψ k)) ∧ (∀ k x, x ∉ K' → ψ k x = x) ∧ (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) ∧ (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) ∧ ∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
