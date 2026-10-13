@@ -11732,4 +11732,270 @@ theorem lip_approx_graph_hole_measure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : �
 
 end Submission
 
+/-- **Simon Ch. 5, Lemma 2.6 (Lipschitz Approximation Lemma).**  Steps A1–A11 of the accepted
+decomposition.  If the tilt of `T₀ = q(ℝⁿ × {0})` on `B_{σ₀}(0)` exceeds `β²L²σ₀ⁿ`, then `f = 0`
+works (pinched density and `lip_approx_graph_measure`).  Otherwise the good set `G` is a graph over
+`T₀` with Lipschitz constant `2C₈βL` (`lip_approx_good_set_flat`, with the sibling
+`affine_approximation_lemma`); `f` is its bounded extension, and the two error terms are bounded by
+`lip_approx_good_set_complement` and `lip_approx_graph_hole_measure`. -/
+theorem Submission.lipschitz_approximation_lemma : LipschitzApproximationLemma := by
+  intro n ℓ hn p hp
+  obtain ⟨δP, hδP, -, hPD⟩ := Submission.lip_approx_pinched_density n ℓ hn p hp
+  obtain ⟨δ₇, C₇, hδ₇, hC₇, hGC⟩ := Submission.lip_approx_good_set_complement n ℓ hn p hp
+  obtain ⟨C₈, δ₈, hC₈, hδ₈, hGF⟩ :=
+    Submission.lip_approx_good_set_flat Submission.affine_approximation_lemma n ℓ hn p hp
+  obtain ⟨ε₁₀, δ₁₀, C₁₀, hε₁₀, hδ₁₀, hC₁₀, hGH⟩ :=
+    Submission.lip_approx_graph_hole_measure n ℓ hn p hp
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- A1: the choice of `β`
+  obtain ⟨β, hβ0, hβ4, hβD, hβC₈, hβc⟩ : ∃ β : ℝ, 0 < β ∧ β ≤ 1 / 4 ∧
+      β ≤ min (min δP δ₇) (min δ₈ δ₁₀) ∧ C₈ * β ≤ 1 / 32 ∧
+      2 * Real.sqrt ℓ * C₈ * β ≤ min 1 ε₁₀ := by
+    have hc : 0 ≤ 2 * Real.sqrt ℓ * C₈ := by positivity
+    have hm : 0 < min 1 ε₁₀ := lt_min one_pos hε₁₀
+    obtain ⟨β, hβ0, hβ1, hβ2, hβ3⟩ : ∃ β : ℝ, 0 < β ∧
+        β ≤ min (1 / 4) (min (min δP δ₇) (min δ₈ δ₁₀)) ∧ β ≤ 1 / (32 * C₈) ∧
+        β ≤ min 1 ε₁₀ / (2 * Real.sqrt ℓ * C₈ + 1) :=
+      ⟨min (min (1 / 4) (min (min δP δ₇) (min δ₈ δ₁₀)))
+          (min (1 / (32 * C₈)) (min 1 ε₁₀ / (2 * Real.sqrt ℓ * C₈ + 1))),
+        lt_min (lt_min (by norm_num) (lt_min (lt_min hδP hδ₇) (lt_min hδ₈ hδ₁₀)))
+          (lt_min (by positivity) (by positivity)),
+        min_le_left _ _, (min_le_right _ _).trans (min_le_left _ _),
+        (min_le_right _ _).trans (min_le_right _ _)⟩
+    refine ⟨β, hβ0, hβ1.trans (min_le_left _ _), hβ1.trans (min_le_right _ _), ?_, ?_⟩
+    · have h' := (le_div_iff₀ (by positivity)).1 hβ2
+      linarith
+    · have h' := (le_div_iff₀ (by positivity)).1 hβ3
+      linarith
+  refine ⟨β, max ((2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n) / β ^ 2)
+    ((1 + C₁₀) * (C₇ / β ^ 2) + C₁₀), hβ0, hβ4, ?_⟩
+  intro L K hL hL1 hK U hU V H δ ρ hδ hδβL hAll q hK'
+  have hρ : 0 < ρ := hAll.1
+  have hσ : 0 < δ * ρ := mul_pos hδ hρ
+  -- A2: `δ ≤ β` gives every smallness threshold
+  have hδβ : δ ≤ β := by
+    have h1 : β * L ≤ β := mul_le_of_le_one_right hβ0.le hL1
+    have h2 : (β * L) ^ (2 * n + 2) ≤ β * L :=
+      pow_le_of_le_one (by positivity) (h1.trans (by linarith)) (by omega)
+    linarith
+  have hδP' : δ ≤ δP := hδβ.trans (hβD.trans ((min_le_left _ _).trans (min_le_left _ _)))
+  have hδ₇' : δ ≤ δ₇ := hδβ.trans (hβD.trans ((min_le_left _ _).trans (min_le_right _ _)))
+  have hδ₈' : δ ≤ δ₈ := hδβ.trans (hβD.trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have hδ₁₀' : δ ≤ δ₁₀ := hδβ.trans (hβD.trans ((min_le_right _ _).trans (min_le_right _ _)))
+  have hδ1 : δ ≤ 1 := by linarith
+  set tilt : ℝ := ∫ x in closedBall 0 (δ * ρ),
+    hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight with htilt
+  have ht0 : 0 ≤ tilt := integral_nonneg fun x => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hu1 : 1 ≤ (L ^ 2)⁻¹ := (one_le_inv₀ (by positivity)).2 (pow_le_one₀ hL.le hL1)
+  by_cases hB : tilt ≤ β ^ 2 * L ^ 2 * (δ * ρ) ^ n
+  · -- Case B (A4–A11)
+    obtain ⟨hH, hFlat⟩ := hGF β L hβ0 hL hL1 U hU V H δ ρ hδ hδ₈' hδβL hAll q hB
+    obtain ⟨hsub, hnorm, hsurj, hproj⟩ := Submission.lip_approx_graph_coordinates n ℓ q
+    -- A5: coordinates `y = q (graphPoint (a y) (b y))`
+    have hsurj' : ∀ y : Amb n ℓ, ∃ (u : Rn n) (v : Rn ℓ), y = q (graphPoint u v) := by
+      intro y
+      obtain ⟨u, v, h⟩ := hsurj (q.symm y)
+      exact ⟨u, v, by rw [← h, LinearIsometryEquiv.apply_symm_apply]⟩
+    choose a b hab using hsurj'
+    have hgp0 : ∀ v : Rn ℓ, ‖graphPoint (0 : Rn n) v‖ = ‖v‖ := fun v =>
+      (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 (by simpa using hnorm 0 v)
+    have hQy : ∀ y, y - (rotatedPlane q).starProjection y = q (graphPoint 0 (b y)) := by
+      intro y
+      calc y - (rotatedPlane q).starProjection y
+          = q (graphPoint (a y) (b y)) -
+              (rotatedPlane q).starProjection (q (graphPoint (a y) (b y))) := by rw [← hab y]
+        _ = q (graphPoint (a y) (b y)) - q (graphPoint (a y) 0) := by rw [hproj]
+        _ = q (graphPoint (a y) (b y) - graphPoint (a y) 0) := (q.map_sub _ _).symm
+        _ = q (graphPoint 0 (b y)) := by rw [hsub, sub_self, sub_zero]
+    have hQdiff : ∀ y z, (y - z) - (rotatedPlane q).starProjection (y - z) =
+        q (graphPoint 0 (b y - b z)) := by
+      intro y z
+      rw [map_sub, sub_sub_sub_comm, hQy, hQy, ← q.map_sub, hsub, sub_self]
+    have hnormy : ∀ y, ‖y‖ ^ 2 = ‖a y‖ ^ 2 + ‖b y‖ ^ 2 := by
+      intro y
+      calc ‖y‖ ^ 2 = ‖q (graphPoint (a y) (b y))‖ ^ 2 := by rw [← hab y]
+        _ = ‖a y‖ ^ 2 + ‖b y‖ ^ 2 := by rw [q.norm_map, hnorm]
+    have hnormdiff : ∀ y z, ‖y - z‖ ^ 2 = ‖a y - a z‖ ^ 2 + ‖b y - b z‖ ^ 2 := by
+      intro y z
+      have hyz : y - z = q (graphPoint (a y - a z) (b y - b z)) := by
+        rw [← hsub, q.map_sub, ← hab y, ← hab z]
+      rw [hyz, q.norm_map, hnorm]
+    have hbdist : ∀ y, infDist y (rotatedPlane q : Set (Amb n ℓ)) = ‖b y‖ := by
+      intro y
+      rw [← (rotatedPlane q).dist_starProjection_eq_infDist y, dist_eq_norm, hQy y, q.norm_map,
+        hgp0]
+    -- the good set `G` of A4 and its part `Gb` in `B_{3σ₀/4}(0)`
+    set G : Set (Amb n ℓ) := {y | y ∈ V.support ∧ ∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 →
+      ∫ x in closedBall y (s / 2), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection)
+        ∂V.weight ≤ β ^ 2 * L ^ 2 * s ^ n}
+    set Gb : Set (Amb n ℓ) := G ∩ closedBall 0 (3 * (δ * ρ) / 4)
+    have hκ0 : 0 ≤ C₈ * β * L := by positivity
+    have hκ : C₈ * β * L ≤ 1 / 32 := by
+      have : C₈ * β * L ≤ C₈ * β := mul_le_of_le_one_right (by positivity) hL1
+      linarith
+    -- A6: `b` is a `2 C₈ β L`-Lipschitz function of `a` on `Gb`
+    have hLipG : ∀ y₁ ∈ Gb, ∀ y₂ ∈ Gb, ‖b y₁ - b y₂‖ ≤ 2 * (C₈ * β * L) * ‖a y₁ - a y₂‖ := by
+      rintro y₁ ⟨⟨hy₁s, hy₁g⟩, hy₁b⟩ y₂ ⟨⟨hy₂s, -⟩, hy₂b⟩
+      have h1 := hFlat y₁ ⟨hy₁s, hy₁b⟩ y₂ ⟨hy₂s, hy₂b⟩ hy₁g
+      rw [hQdiff, q.norm_map, hgp0] at h1
+      have hA := norm_nonneg (a y₂ - a y₁)
+      have hB' := norm_nonneg (b y₂ - b y₁)
+      have hX := norm_nonneg (y₂ - y₁)
+      have h2 : ‖y₂ - y₁‖ ≤ ‖a y₂ - a y₁‖ + ‖b y₂ - b y₁‖ := by
+        have h := hnormdiff y₂ y₁
+        exact (pow_le_pow_iff_left₀ hX (by positivity) two_ne_zero).1
+          (by rw [add_sq]; linarith [mul_nonneg hA hB'])
+      rw [norm_sub_rev (b y₁), norm_sub_rev (a y₁)]
+      linarith [mul_le_mul_of_nonneg_left h2 hκ0,
+        mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - 2 * (C₈ * β * L)) hB']
+    let g : Rn n → Rn ℓ := fun x => b (Classical.epsilon fun y => y ∈ Gb ∧ a y = x)
+    have hgval : ∀ y ∈ Gb, g (a y) = b y := by
+      intro y hy
+      obtain ⟨hy'G, hy'a⟩ : Classical.epsilon (fun y' => y' ∈ Gb ∧ a y' = a y) ∈ Gb ∧
+          a (Classical.epsilon fun y' => y' ∈ Gb ∧ a y' = a y) = a y :=
+        Classical.epsilon_spec (p := fun y' => y' ∈ Gb ∧ a y' = a y) ⟨y, hy, rfl⟩
+      have h' := hLipG _ hy'G y hy
+      rw [hy'a, sub_self, norm_zero, mul_zero] at h'
+      exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+    have hgLip : ∀ x ∈ a '' Gb, ∀ z ∈ a '' Gb,
+        ‖g x - g z‖ ≤ 2 * (C₈ * β * L) * ‖x - z‖ := by
+      rintro _ ⟨y₁, hy₁, rfl⟩ _ ⟨y₂, hy₂, rfl⟩
+      rw [hgval y₁ hy₁, hgval y₂ hy₂]
+      exact hLipG y₁ hy₁ y₂ hy₂
+    have hR₀ : 0 ≤ min (K * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ)) (C₈ * β * L * (δ * ρ)) :=
+      le_min (by positivity) (by positivity)
+    have hgbd : ∀ x ∈ a '' Gb,
+        ‖g x‖ ≤ min (K * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ)) (C₈ * β * L * (δ * ρ)) := by
+      rintro _ ⟨y, hy, rfl⟩
+      rw [hgval y hy, ← hbdist y]
+      have hy2 : y ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)) := by
+        refine ⟨hy.1.1, ?_⟩
+        have := hy.2
+        rw [mem_closedBall] at this ⊢
+        linarith
+      exact le_min (hK' y hy2) (hH y hy2)
+    -- A7: the extension `f`
+    obtain ⟨f, hfg, hfLip, hfbd⟩ := Submission.lip_approx_bounded_extension n ℓ (a '' Gb) g
+      (2 * (C₈ * β * L)) _ (by positivity) hR₀ hgLip hgbd
+    have hcL : 2 * Real.sqrt ℓ * C₈ * β * L ≤ min 1 ε₁₀ * L :=
+      mul_le_mul_of_nonneg_right hβc hL.le
+    have hcL1 : 2 * Real.sqrt ℓ * C₈ * β * L ≤ L :=
+      hcL.trans (mul_le_of_le_one_left hL.le (min_le_left _ _))
+    have hcLε : 2 * Real.sqrt ℓ * C₈ * β * L ≤ ε₁₀ :=
+      hcL.trans ((mul_le_of_le_one_right (le_min zero_le_one hε₁₀.le) hL1).trans
+        (min_le_right _ _))
+    have hfLip' : ∀ x z, ‖f x - f z‖ ≤ 2 * Real.sqrt ℓ * C₈ * β * L * ‖x - z‖ := by
+      intro x z
+      calc ‖f x - f z‖ ≤ Real.sqrt ℓ * (2 * (C₈ * β * L)) * ‖x - z‖ := hfLip x z
+        _ = 2 * Real.sqrt ℓ * C₈ * β * L * ‖x - z‖ := by ring
+    -- A8: `Gb` lies on the graph of `f`
+    have hfa : ∀ y ∈ Gb, f (a y) = b y := fun y hy => (hfg _ ⟨y, hy, rfl⟩).trans (hgval y hy)
+    have hGbF : ∀ y ∈ Gb, y = q (graphPoint (a y) (f (a y))) := by
+      intro y hy
+      rw [hfa y hy]
+      exact hab y
+    refine ⟨f, ?_, fun x _ => (hfbd x).trans (min_le_left _ _), ?_⟩
+    · refine LipschitzOnWith.of_dist_le' fun x _ z _ => ?_
+      rw [dist_eq_norm, dist_eq_norm]
+      calc ‖f x - f z‖ ≤ 2 * Real.sqrt ℓ * C₈ * β * L * ‖x - z‖ := hfLip' x z
+        _ ≤ L * ‖x - z‖ := mul_le_mul_of_nonneg_right hcL1 (norm_nonneg _)
+    · -- A9: the first error term
+      have hb0 : 0 < β ^ 2 * L ^ 2 := by positivity
+      have hC7 := hGC U hU V H δ ρ hδ hδ₇' hAll (rotatedPlane q) (β ^ 2 * L ^ 2) hb0
+      rw [← htilt] at hC7
+      have hT1 : V.weight (closedBall 0 (δ * ρ / 2) ∩
+          (V.support \ q '' graphOver f (closedBall 0 (δ * ρ / 2)))) ≤
+            V.weight (closedBall 0 (3 * (δ * ρ) / 4) \ G) := by
+        apply measure_mono
+        rintro y ⟨hyb, -, hyF⟩
+        have hyb' : y ∈ closedBall (0 : Amb n ℓ) (3 * (δ * ρ) / 4) := by
+          rw [mem_closedBall] at hyb ⊢
+          linarith
+        refine ⟨hyb', fun hyG => hyF ?_⟩
+        have hyGb : y ∈ Gb := ⟨hyG, hyb'⟩
+        refine ⟨graphPoint (a y) (f (a y)), ⟨a y, ?_, rfl⟩, (hGbF y hyGb).symm⟩
+        rw [mem_closedBall, dist_zero_right] at hyb ⊢
+        have h := hnormy y
+        have hay : ‖a y‖ ≤ ‖y‖ :=
+          (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+            (by linarith [sq_nonneg ‖b y‖])
+        linarith
+      -- A10: the second error term
+      have hfε : ∀ x z, ‖f x - f z‖ ≤ ε₁₀ * ‖x - z‖ := fun x z =>
+        (hfLip' x z).trans (mul_le_mul_of_nonneg_right hcLε (norm_nonneg _))
+      have hfsmall : ∀ x ∈ closedBall (0 : Rn n) (δ * ρ / 2), ‖f x‖ ≤ δ * ρ / 32 := by
+        intro x _
+        refine (hfbd x).trans ((min_le_right _ _).trans ?_)
+        have := mul_le_mul_of_nonneg_right hκ hσ.le
+        linarith
+      have hT2 := hGH U hU V H δ ρ hδ hδ₁₀' hAll q f hfε hfsmall
+      rw [← htilt] at hT2
+      have hT2' : V.weight (closedBall 0 (3 * (δ * ρ) / 4) \ q '' graphOver f univ) ≤
+          V.weight (closedBall 0 (3 * (δ * ρ) / 4) \ G) := by
+        apply measure_mono
+        rintro y ⟨hyb, hyF⟩
+        exact ⟨hyb, fun hyG => hyF ⟨graphPoint (a y) (f (a y)), ⟨a y, mem_univ _, rfl⟩,
+          (hGbF y ⟨hyG, hyb⟩).symm⟩⟩
+      -- A11
+      have hk : 0 ≤ C₇ / (β ^ 2 * L ^ 2) * tilt := mul_nonneg (by positivity) ht0
+      calc _ ≤ ENNReal.ofReal (C₇ / (β ^ 2 * L ^ 2) * tilt) + ENNReal.ofReal C₁₀ *
+              (ENNReal.ofReal (C₇ / (β ^ 2 * L ^ 2) * tilt) + ENNReal.ofReal tilt) :=
+            add_le_add (hT1.trans hC7)
+              (hT2.trans (mul_le_mul' le_rfl (add_le_add (hT2'.trans hC7) le_rfl)))
+        _ = ENNReal.ofReal (C₇ / (β ^ 2 * L ^ 2) * tilt +
+              C₁₀ * (C₇ / (β ^ 2 * L ^ 2) * tilt + tilt)) := by
+            rw [ENNReal.ofReal_add hk (mul_nonneg hC₁₀ (add_nonneg hk ht0)),
+              ENNReal.ofReal_mul hC₁₀, ENNReal.ofReal_add hk ht0]
+        _ ≤ _ := by
+            apply ENNReal.ofReal_le_ofReal
+            rw [div_mul_eq_div_div, div_eq_mul_inv (C₇ / β ^ 2)]
+            have hmax := le_max_right
+              ((2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n) / β ^ 2)
+              ((1 + C₁₀) * (C₇ / β ^ 2) + C₁₀)
+            linarith [mul_le_mul_of_nonneg_right hmax
+                (mul_nonneg (by positivity : (0 : ℝ) ≤ (L ^ 2)⁻¹) ht0),
+              mul_nonneg (mul_nonneg hC₁₀ ht0) (sub_nonneg.2 hu1)]
+  · -- Case A (A3): `f = 0`
+    replace hB := not_le.1 hB
+    refine ⟨fun _ => 0, LipschitzOnWith.of_dist_le' fun x _ z _ => ?_, fun x _ => ?_, ?_⟩
+    · rw [dist_self]
+      positivity
+    · rw [norm_zero]
+      positivity
+    · have hs0 : (0 : ℝ) < δ * ρ / 2 := by positivity
+      have hσρ : δ * ρ ≤ ρ := mul_le_of_le_one_left hρ.le hδ1
+      have h1 := (hPD U hU V H δ ρ hδ hδP' hAll 0 (by rw [norm_zero]; positivity) (δ * ρ / 2)
+        hs0 (by linarith)).1
+      have h2 := Submission.lip_approx_graph_measure n ℓ hn q (fun _ => (0 : Rn ℓ))
+        (fun x z => by simp) 0 (δ * ρ / 2) hs0.le
+      calc _ ≤ V.weight (closedBall 0 (δ * ρ / 2)) + (μHE[n] : Measure (Amb n ℓ))
+              (q '' graphOver (fun _ => (0 : Rn ℓ)) (closedBall 0 (δ * ρ / 2))) :=
+            add_le_add (measure_mono inter_subset_left)
+              (measure_mono (inter_subset_right.trans sdiff_subset))
+        _ ≤ ENNReal.ofReal (2 * unitBallVolume n * (δ * ρ / 2) ^ n) +
+            ENNReal.ofReal (2 ^ ((n : ℝ) / 2) * unitBallVolume n * (δ * ρ / 2) ^ n) :=
+            add_le_add h1 h2
+        _ = ENNReal.ofReal (2 * unitBallVolume n * (δ * ρ / 2) ^ n +
+            2 ^ ((n : ℝ) / 2) * unitBallVolume n * (δ * ρ / 2) ^ n) :=
+            (ENNReal.ofReal_add (by positivity) (by positivity)).symm
+        _ ≤ _ := by
+            apply ENNReal.ofReal_le_ofReal
+            have hσn : (δ * ρ / 2) ^ n ≤ (δ * ρ) ^ n := pow_le_pow_left₀ hs0.le (by linarith) n
+            have hA0 : 0 ≤ 2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n := by
+              positivity
+            calc 2 * unitBallVolume n * (δ * ρ / 2) ^ n +
+                  2 ^ ((n : ℝ) / 2) * unitBallVolume n * (δ * ρ / 2) ^ n
+                = (2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n) *
+                    (δ * ρ / 2) ^ n := by ring
+              _ ≤ (2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n) * (δ * ρ) ^ n :=
+                  mul_le_mul_of_nonneg_left hσn hA0
+              _ = (2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n) / β ^ 2 *
+                    (L ^ 2)⁻¹ * (β ^ 2 * L ^ 2 * (δ * ρ) ^ n) := by
+                  field_simp
+              _ ≤ (2 * unitBallVolume n + 2 ^ ((n : ℝ) / 2) * unitBallVolume n) / β ^ 2 *
+                    (L ^ 2)⁻¹ * tilt := mul_le_mul_of_nonneg_left hB.le (by positivity)
+              _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left _ _)
+                    (by positivity)) ht0
+
 end GMT.Ch05
