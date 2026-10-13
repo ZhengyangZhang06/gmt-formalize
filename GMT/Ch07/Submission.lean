@@ -754,6 +754,93 @@ theorem Submission.cbr_ci_imc_tangent_field_aestronglyMeasurable : ∀ (P n : �
     refine (h1.const_mul c⁻¹).congr (Eventually.of_forall fun x => ?_)
     simp only
     rw [← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul]
+/-- **Simon Ch. 6, 3.1** (integer multiplicity currents): if `Γ(ω) = ∫_M θ ⟨ω, ζ⟩ dHⁿ` with `M`
+Borel and countably `n`-rectifiable, `θ > 0` on `M`, `∫_M θ dHⁿ < ∞`, and `Hⁿ`-a.e. on `M` the
+density `θ` is an integer and `ζ` orients an approximate tangent space of `M`, then `Γ` is integer
+multiplicity.  The bad set is `Hⁿ`-null; removing a measurable null hull `N₀` of it leaves a Borel
+carrier `M'' = M \ N₀` on which everything holds pointwise, which has the approximate tangent
+spaces of `M` (Ch. 3, 1.4) and `Hⁿ⌞M'' = Hⁿ⌞M`; the multiplicity is `⌊θ⌋₊` on `M''`. -/
+theorem Submission.cbr_ci_imc_isIntegerMultiplicity_of_rectifiable : ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → CountablyRectifiable n M → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m) → IsIntegerMultiplicity Γ := by
+  intro P n Γ M θ ζ hM hrect hθ hζ hpos hint hrep hae
+  classical
+  set p : Euclid P → Prop := fun x => ∃ Q : Submodule ℝ (Euclid P),
+    HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m
+  -- the bad set `{x ∈ M | ¬ p x}` is `Hⁿ`-null, and so is its measurable hull `N₀`
+  have hbad : μHE[n] {x | x ∈ M ∧ ¬ p x} = 0 := by
+    rw [ae_restrict_iff' hM, ae_iff] at hae
+    simpa only [not_imp] using hae
+  set N₀ := toMeasurable (μHE[n]) {x | x ∈ M ∧ ¬ p x} with hN₀_def
+  have hN₀m : MeasurableSet N₀ := measurableSet_toMeasurable _ _
+  have hN₀ : μHE[n] N₀ = 0 := by rw [hN₀_def, measure_toMeasurable]; exact hbad
+  -- the carrier `M'' = M \ N₀` is Borel, `p` holds on all of it, and `M'' =ᵐ M`
+  set M'' := M \ N₀
+  have hM''m : MeasurableSet M'' := hM.diff hN₀m
+  have hM''sub : M'' ⊆ M := Set.sdiff_subset
+  have hgood : ∀ x ∈ M'', p x := by
+    intro x hx
+    by_contra h
+    exact hx.2 (subset_toMeasurable _ _ ⟨hx.1, h⟩)
+  have hdiff : μHE[n] (M \ M'') = 0 := by
+    refine measure_mono_null (fun x hx => ?_) hN₀
+    by_contra h
+    exact hx.2 ⟨hx.1, h⟩
+  have hdiff' : μHE[n] (M'' \ M) = 0 := by
+    rw [Set.sdiff_eq_empty.2 hM''sub, measure_empty]
+  -- the multiplicity `⌊θ⌋₊` on `M''`, which is `θ` there
+  let mult : Euclid P → ℕ := fun x => if x ∈ M'' then ⌊θ x⌋₊ else 0
+  have hmult_eq : ∀ x ∈ M'', (mult x : ℝ) = θ x := by
+    intro x hx
+    obtain ⟨Q, -, -, m, hm⟩ := hgood x hx
+    simp [mult, hx, hm]
+  have hmult_meas : Measurable mult :=
+    Measurable.ite hM''m (Nat.floor_mono.measurable.comp hθ) measurable_const
+  have hmult_pos : ∀ x ∈ M'', 0 < mult x := by
+    intro x hx
+    have h2 := hpos x (hM''sub hx)
+    rw [← hmult_eq x hx] at h2
+    exact_mod_cast h2
+  have hmult_int : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+      ∫⁻ x in M'' ∩ K, (mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+    intro K _ _
+    apply ne_of_lt
+    calc ∫⁻ x in M'' ∩ K, (mult x : ℝ≥0∞) ∂μHE[n]
+        ≤ ∫⁻ x in M'', (mult x : ℝ≥0∞) ∂μHE[n] := lintegral_mono_set inter_subset_left
+      _ = ∫⁻ x in M'', ENNReal.ofReal (θ x) ∂μHE[n] := by
+        apply setLIntegral_congr_fun hM''m
+        intro x hx
+        simp only
+        rw [← hmult_eq x hx, ENNReal.ofReal_natCast]
+      _ ≤ ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] := lintegral_mono_set hM''sub
+      _ < ∞ := hint
+  -- `M` and `M''` have the same approximate tangent spaces (Ch. 3, 1.4)
+  have horients : ∀ᵐ x ∂(μHE[n].restrict M''), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n M'' x Q ∧ IsUnitOrientationOf (ζ x) Q := by
+    rw [ae_restrict_iff' hM''m]
+    refine Eventually.of_forall fun x hx => ?_
+    obtain ⟨Q, hQ, hor, -⟩ := hgood x hx
+    exact ⟨Q, (Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff P n M M'' x Q
+      hdiff hdiff').1 hQ, hor⟩
+  let R : IMRep (univ : Set (Euclid P)) n :=
+    { carrier := M''
+      mult := mult
+      orient := ζ
+      measurableSet_carrier := hM''m
+      carrier_subset := subset_univ _
+      rectifiable := hrect.mono hM''sub
+      measurable_mult := hmult_meas
+      mult_pos := hmult_pos
+      locallyIntegrable_mult := hmult_int
+      aestronglyMeasurable_orient := hζ.aestronglyMeasurable
+      orients := horients }
+  -- `R` represents `Γ`: `Hⁿ⌞M = Hⁿ⌞M''` and `mult = θ` on `M''`
+  refine ⟨R, fun ω => ?_⟩
+  rw [hrep ω]
+  have hres : μHE[n].restrict M = μHE[n].restrict M'' :=
+    Measure.restrict_congr_set (ae_eq_set.2 ⟨hdiff, hdiff'⟩)
+  show _ = ∫ x in M'', (mult x : ℝ) * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]
+  rw [hres]
+  refine setIntegral_congr_fun hM''m (fun x hx => ?_)
+  simp only [hmult_eq x hx]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
