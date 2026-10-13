@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1",
+  "depth": 3,
+  "title": "C^1 approximation of Lipschitz functions (Simon Ch. 2, Theorem 1.5)",
+  "statement": "Let n be a natural number, f : R^n -> R Lipschitz (with constant K >= 0) and eps > 0. Then there is a C^1 function g : R^n -> R such that L^n({x : f(x) != g(x)} union {x : Df(x) != Dg(x)}) < eps, where L^n is Lebesgue measure (volume) on R^n = EuclideanSpace R (Fin n) and Df(x) = fderiv R f x (the zero map at points where f is not differentiable).",
+  "lean_statement": "∀ {n : ℕ} (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume ({x | f x ≠ g x} ∪ {x | fderiv ℝ f x ≠ fderiv ℝ g x}) < ENNReal.ofReal ε",
+  "lean_name": "tae_lipschitz_c1_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1-a1"
+}
