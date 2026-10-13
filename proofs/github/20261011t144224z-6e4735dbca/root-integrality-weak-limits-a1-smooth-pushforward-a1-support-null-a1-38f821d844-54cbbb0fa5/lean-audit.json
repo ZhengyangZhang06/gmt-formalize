@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dd45ebf31b10e5eef15d2885b8cade7a648fe23d023680026910231ce295691c",
+  "git_delta": {
+    "base_commit": "8ace89c19038f9f994fce7d9844b68d9135d7ad1",
+    "candidate_commit": "ef65e5d5597101fccdddd21c96644f55c90b2315",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_sn_local_null",
+    "diff_sha256": "1e511007d18b130c9676a714870213d1fb468abf6751aa8b80ed113370ea44dd",
+    "source_sha256": "fc0992c624b287d9bca9e95f0c618dc73c2d5a567447ae83a29b26c390ba3127",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_sn_local_null",
+      "statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
