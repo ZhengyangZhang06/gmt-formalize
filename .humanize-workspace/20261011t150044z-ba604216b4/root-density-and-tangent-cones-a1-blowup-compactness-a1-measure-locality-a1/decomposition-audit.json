@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '1,270p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n 'currentEval|IMRep.measure|locallyIntegrable_mult|IMRep.Represents|structure IMRep|dtc_mass_eq_measure|dtc_massOn_eq_of_agreeOn|rsd_imrep_compact_measure_ne_top|cmc_ml_measure_eq_of_eq_on_open_subsets' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n 'testFormOnSubmodule|abbrev TestFormOn|structure GeometricCurrentOn|testFormOnInclusion|restrictDomain' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "cat /tmp/mloc-check-1791874713/scripts/assembly.lean",
+        "python3 /tmp/measure-locality-independent-audit-y0jgue_x/verify_reuse.py",
+        "lake env lean /tmp/measure-locality-independent-audit-y0jgue_x/Types.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-measure-locality-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-measure-locality-a1/decomposition-review-retry.json",
+        "/tmp/measure-locality-independent-audit-y0jgue_x/verify_reuse.py",
+        "/tmp/measure-locality-independent-audit-y0jgue_x/reuse-evidence.json",
+        "/tmp/mloc-check-1791874713/scripts/assembly.lean",
+        "/tmp/mloc-check-1791874713/wt2/GMT/Ch07/Submission.lean",
+        "/tmp/mloc-check-1791874713/compile2.log"
+      ],
+      "conclusion": "The split is appropriate for the exact selected contract dtc_bc_measure_restrict_eq_of_eqOn. The frozen proof base lacks the cited mass–weight theorem, and the controller permits reuse through accepted children. All four bare names uniquely identify accepted declarations with byte-identical frozen types; their dependency closures are acyclic and avoid the selected node and its ancestors. The snapshot supplies the required definitions and measure lemmas but contains none of the four reused declarations. Each proposed type is a standalone one-line proposition using frozen/imported definitions, with no implementation-dependent alias or problematic inline matrix construction. The supplied assembly derives precisely the selected restriction equality. I independently matched candidate source hashes, comparator challenges, and retained kernel checks allowing only propext, Quot.sound and Classical.choice. Fresh Lean execution was unavailable because lake is absent from this shell; the verification script records the exact retained evidence inspected."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact reused type match. Cauchy–Binet establishes the coefficient-norm duality; local integrability justifies the evaluations; the upper bound, Lusin–Tietze extension, truncation, smoothing and cutoff give the compact lower bound with the stated error estimate. Compact exhaustion concludes equality, including infinite mass. The proof is complete and does not invoke the selected parent or its own conclusion."
+    },
+    {
+      "key": "mass_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both domain inclusions and exactly the stated supported-form agreement, without an unstated openness requirement. The proof transports admissible forms in both directions, preserves support and coefficient bounds, applies the agreement hypothesis, and equates the image sets defining the suprema. Applying it twice through T₂ restricted to W correctly handles the parent's different ambient domains."
+    },
+    {
+      "key": "compact_finiteness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and reused type agree. Compactness supplies measurability; withDensity_apply and restrict_restrict identify the weight with the integral controlled by locallyIntegrable_mult. Positive integer multiplicity gives θ ≥ 1 and hence finiteness of the unweighted measure. Both conjuncts are proved independently; the second supplies the parent's needed compact finiteness."
+    },
+    {
+      "key": "borel_uniqueness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated one-sided compact-finiteness assumption. The proof verifies the open exhaustion, compact closures inside O, monotonicity and coverage, including empty complement via infEDist. Agreement on open exhausting sets supplies finiteness for ν. Finite π-system uniqueness and continuity from below then prove equality on every Borel subset of O, yielding the parent's restriction equality."
+    }
+  ],
+  "required_changes": []
+}
