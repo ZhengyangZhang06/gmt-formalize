@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a789412feff5b84db30f344afd2b7a758ec102f0162d63530b0cbdeb23a7a5d7",
+  "git_delta": {
+    "base_commit": "292b4bfc7c4e3e8f1f7f42917b5673051fc20448",
+    "candidate_commit": "ba3fb9c48e5eacc3e654fbaf8ef096d93ba59aed",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_elc2_local_to_global_holder",
+    "diff_sha256": "00c7373fe9ad5f120df8ac13ca7de101c17bb3fac3e4707f6d6764c3990b8470",
+    "source_sha256": "a361a69f20fdf4a23bdbac24ccb4f88db577c11b61bd0af76d83857c3fd61314",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_elc2_local_to_global_holder",
+      "statement": "∀ (n ℓ : ℕ) (α : ℝ) (f : Rn n → Rn ℓ) (U : Set (Rn n)), 0 < α → IsOpen U → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ContDiffOn ℝ 1 f (ball x r) ∧ ∃ C : ℝ, ∀ y ∈ ball x r, ∀ z ∈ ball x r, ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ C * ‖y - z‖ ^ α) → IsLocallyHolderCkα 1 α f U",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
