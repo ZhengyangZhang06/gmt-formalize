@@ -451,6 +451,101 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Flatness of a submanifold at a chart point** (step 2 of the approximate-tangent-space
+argument; Simon Ch. 2, 4.1–4.3).  Let `ψ : V → W` be a 1:1 `C¹` map with `ψ(V) = W ∩ N`, proper
+into `W`, and `Dψ(v)` injective.  Then near `ψ(v)` every `z ∈ N` lies within `ε|z − ψ(v)|` of
+`ψ(v) + range Dψ(v)`.  Properness, continuity and injectivity of `ψ` force `z = ψ(β)` with `β`
+close to `v`; the first-order expansion at `v` and the coercivity `|h| ≤ K|Dψ(v)h|` then absorb
+the remainder. -/
+theorem Submission.atsm_chart_image_flat : ∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → Injective (fderiv ℝ ψ v) → v ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z (ψ v) < ρ → ∃ h : Euclid d, ‖z - ψ v - fderiv ℝ ψ v h‖ ≤ ε * ‖z - ψ v‖ := by
+  intro P d N W V ψ v hV hW hψ hinj himg hprop hLinj hv ε hε
+  set L := fderiv ℝ ψ v with hLdef
+  have hdiff : DifferentiableAt ℝ ψ v :=
+    (hψ.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)
+  have hL : HasFDerivAt ψ L v := hdiff.hasFDerivAt
+  have hcont : ContinuousOn ψ V := hψ.continuousOn
+  have hψvW : ψ v ∈ W := by
+    have : ψ v ∈ ψ '' V := mem_image_of_mem ψ hv
+    rw [himg] at this
+    exact this.1
+  -- coercivity of the injective derivative
+  obtain ⟨K, hKpos, hK⟩ := LinearMap.exists_antilipschitzWith (L : Euclid d →ₗ[ℝ] Euclid P)
+    (LinearMap.ker_eq_bot.mpr hLinj)
+  have hcoer : ∀ h : Euclid d, ‖h‖ ≤ K * ‖L h‖ := fun h =>
+    ContinuousLinearMap.bound_of_antilipschitz L hK h
+  have hK0 : (0 : ℝ) < K := by exact_mod_cast hKpos
+  set η : ℝ := min (1 / (2 * K)) (ε / (2 * K)) with hηdef
+  have hη : 0 < η := lt_min (by positivity) (by positivity)
+  have hηK : η * K ≤ 1 / 2 := by
+    calc η * K ≤ 1 / (2 * K) * K := by gcongr; exact min_le_left _ _
+      _ = 1 / 2 := by field_simp
+  have hηε : η * (2 * K) ≤ ε := by
+    calc η * (2 * K) ≤ ε / (2 * K) * (2 * K) := by gcongr; exact min_le_right _ _
+      _ = ε := by field_simp
+  -- first-order expansion
+  obtain ⟨σ, hσ, hσball⟩ := Metric.eventually_nhds_iff.1 (hL.isLittleO.bound hη)
+  -- a compact set away from v
+  obtain ⟨δ₁, hδ₁, hδ₁W⟩ := Metric.isOpen_iff.1 hW (ψ v) hψvW
+  set δ₀ : ℝ := δ₁ / 2 with hδ₀def
+  have hδ₀ : 0 < δ₀ := by positivity
+  have hcbW : closedBall (ψ v) δ₀ ⊆ W := (closedBall_subset_ball (by linarith)).trans hδ₁W
+  have hA : IsCompact (V ∩ ψ ⁻¹' closedBall (ψ v) δ₀) := hprop _ hcbW (isCompact_closedBall _ _)
+  set C := (V ∩ ψ ⁻¹' closedBall (ψ v) δ₀) \ ball v σ with hCdef
+  have hC : IsCompact C := hA.diff isOpen_ball
+  have hCV : C ⊆ V := fun β hβ => hβ.1.1
+  -- positive separation on C
+  obtain ⟨m, hm, hmC⟩ : ∃ m : ℝ, 0 < m ∧ ∀ β ∈ C, m ≤ ‖ψ β - ψ v‖ := by
+    rcases C.eq_empty_or_nonempty with hCe | hCne
+    · refine ⟨1, one_pos, fun β hβ => ?_⟩
+      rw [hCe] at hβ
+      exact hβ.elim
+    · have hfc : ContinuousOn (fun β => ‖ψ β - ψ v‖) C :=
+        ((hcont.mono hCV).sub continuousOn_const).norm
+      obtain ⟨β₀, hβ₀C, hβ₀min⟩ := hC.exists_isMinOn hCne hfc
+      refine ⟨‖ψ β₀ - ψ v‖, ?_, fun β hβ => (isMinOn_iff.mp hβ₀min) β hβ⟩
+      rcases (norm_nonneg (ψ β₀ - ψ v)).lt_or_eq with hlt | heq
+      · exact hlt
+      · exfalso
+        have h0 : ψ β₀ = ψ v := by
+          have h' := heq.symm
+          rwa [norm_eq_zero, sub_eq_zero] at h'
+        have hβv := hinj (hCV hβ₀C) hv h0
+        apply hβ₀C.2
+        rw [hβv]
+        exact mem_ball_self hσ
+  refine ⟨min δ₀ m, lt_min hδ₀ hm, ?_⟩
+  intro z hzN hzd
+  have hzcb : z ∈ closedBall (ψ v) δ₀ := mem_closedBall.2 (hzd.trans_le (min_le_left _ _)).le
+  have hzim : z ∈ ψ '' V := by
+    rw [himg]
+    exact ⟨hcbW hzcb, hzN⟩
+  obtain ⟨β, hβV, rfl⟩ := hzim
+  have hβA : β ∈ V ∩ ψ ⁻¹' closedBall (ψ v) δ₀ := ⟨hβV, hzcb⟩
+  have hβσ : dist β v < σ := by
+    by_contra hcon
+    have hβC : β ∈ C := ⟨hβA, fun hb => hcon (mem_ball.1 hb)⟩
+    have h1 := hmC β hβC
+    rw [← dist_eq_norm] at h1
+    have h2 : min δ₀ m ≤ dist (ψ β) (ψ v) := (min_le_right _ _).trans h1
+    linarith
+  refine ⟨β - v, ?_⟩
+  have hest : ‖ψ β - ψ v - L (β - v)‖ ≤ η * ‖β - v‖ := hσball hβσ
+  have hLh : ‖L (β - v)‖ ≤ ‖ψ β - ψ v‖ + η * ‖β - v‖ := by
+    calc ‖L (β - v)‖ = ‖(ψ β - ψ v) - (ψ β - ψ v - L (β - v))‖ := by congr 1; abel
+      _ ≤ ‖ψ β - ψ v‖ + ‖ψ β - ψ v - L (β - v)‖ := norm_sub_le _ _
+      _ ≤ ‖ψ β - ψ v‖ + η * ‖β - v‖ := by gcongr
+  have hh : ‖β - v‖ ≤ 2 * K * ‖ψ β - ψ v‖ := by
+    have h2 : ‖β - v‖ ≤ K * ‖ψ β - ψ v‖ + (η * K) * ‖β - v‖ := by
+      calc ‖β - v‖ ≤ K * ‖L (β - v)‖ := hcoer (β - v)
+        _ ≤ K * (‖ψ β - ψ v‖ + η * ‖β - v‖) := by gcongr
+        _ = K * ‖ψ β - ψ v‖ + (η * K) * ‖β - v‖ := by ring
+    have h3 : (η * K) * ‖β - v‖ ≤ 1 / 2 * ‖β - v‖ := by gcongr
+    linarith
+  calc ‖ψ β - ψ v - L (β - v)‖ ≤ η * ‖β - v‖ := hest
+    _ ≤ η * (2 * K * ‖ψ β - ψ v‖) := by gcongr
+    _ = (η * (2 * K)) * ‖ψ β - ψ v‖ := by ring
+    _ ≤ ε * ‖ψ β - ψ v‖ := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
