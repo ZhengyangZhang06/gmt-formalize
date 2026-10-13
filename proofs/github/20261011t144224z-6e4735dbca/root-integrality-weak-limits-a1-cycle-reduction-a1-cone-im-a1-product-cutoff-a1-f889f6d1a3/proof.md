@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.product_cutoff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 5 (A good η) of the parent proof, the claim that the scalar factor ϑ(y_0) ζ(π y) is C^∞ with tsupport inside Φ(tsupport ϑ × tsupport ζ), which is compact; filled in.
+
+Notation (used throughout): E := ℝ^P = Eucl P and E′ := ℝ^{P+1} = Eucl (P + 1), with the Euclidean norms; Φ(s, x) := (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)) ∈ E′ for s ∈ ℝ, x ∈ E, so Φ(s, x)_0 = s and Φ(s, x)_{j+1} = x_j (j ∈ Fin P); e_0 := EuclideanSpace.single 0 1 ∈ E′; ι(w) := Φ(0, w) for w ∈ E; π(y) := (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ E for y ∈ E′, so π(y)_j = y_{j+1}; y_0 := y 0 (= y.ofLp 0). D^k(E) := TestFormOn univ k (C^∞ k-forms with compact tsupport), D_k(E) := GeometricCurrentOn univ k; C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞), i.e. smooth of every finite order.
+
+1. (Smoothness.) y ↦ y_0 is a continuous linear functional (EuclideanSpace.proj 0), and π is a continuous linear map (π(y)_j = y_{j+1}; composite of the continuous linear equivalences EuclideanSpace.equiv with the continuous linear map Fin.tail). Both are C^∞, so y ↦ ϑ(y_0) and y ↦ ζ(π y) are C^∞ (ContDiff.comp), and so is their product χ (ContDiff.mul).
+2. (Norm splitting.) For y ∈ ℝ^{P+1}, EuclideanSpace.norm_eq and Fin.sum_univ_succ give ‖y‖² = Σ_{i : Fin (P+1)} y_i² = y_0² + Σ_{j : Fin P} y_{j+1}² = |y_0|² + ‖π(y)‖². Hence ‖y‖ ≤ |y_0| + ‖π(y)‖ (since √(a² + b²) ≤ a + b for a, b ≥ 0).
+3. (Compact support.) tsupport ϑ and tsupport ζ are compact, hence bounded: there are a, b ≥ 0 with |t| ≤ a for all t ∈ tsupport ϑ and ‖z‖ ≤ b for all z ∈ tsupport ζ. If χ(y) ≠ 0, then ϑ(y_0) ≠ 0 and ζ(π y) ≠ 0, so y_0 ∈ support ϑ ⊆ tsupport ϑ and π(y) ∈ tsupport ζ, whence |y_0| ≤ a, ‖π(y)‖ ≤ b and ‖y‖ ≤ a + b by step 2. Thus support χ ⊆ B̄_{a+b}(0); this ball is closed, so tsupport χ ⊆ B̄_{a+b}(0) (closure_minimal), and it is compact (ℝ^{P+1} is proper). Hence tsupport χ is compact, i.e. HasCompactSupport χ (IsCompact.of_isClosed_subset). ∎
+
+## Key steps
+
+1. y ↦ y_0 and π are continuous linear, so χ = (ϑ ∘ y_0) · (ζ ∘ π) is C^∞.
+2. ‖y‖² = y_0² + ‖π(y)‖², so ‖y‖ ≤ |y_0| + ‖π y‖.
+3. χ(y) ≠ 0 forces |y_0| ≤ a and ‖π y‖ ≤ b (bounds of the compact supports), so tsupport χ ⊆ B̄_{a+b}(0) is compact.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; sha256sum GMT/Ch06/Contract.lean`
+- `python3 -I: read nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md} and nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json (reused-child format)`
+- `python3 -I: dag.json status and frozen lean_statement of iwl_cr_cone_integer_multiplicity, iwl_cr_interval_product_im, iwl_cr_radial_operator, isoperimetric_apply_eq_zero_of_disjoint_support, iwl_sp_exists_compatible_testForm, slicing_mb_lb_smul_testForm, fiw_tb_ext_smul_testForm, iwl_sp_sn_signed_simpleNVector_bound_ne_zero, cmb_abs_apply_le_of_massOn_le`
+- `python3 -I: collision scan of dag.json and nodes/*/decomposition-v*.json for the 7 proposed lean_names and the prefix iwl_cr_ci_`
+- `grep -rn compContinuousLinearMap mathlib/Mathlib --include=*.lean | grep -i 'contDiff|hasStrictFDeriv|hasFDeriv|differentiable'`
+- `grep -rn 'def curryLeft|theorem curryLeft_apply|curryLeftLI|analyticOnNhd_compContinuousLinearMapCLM' mathlib/Mathlib/Analysis/Normed/Module/Alternating mathlib/Mathlib/Analysis/Analytic mathlib/Mathlib/LinearAlgebra/Alternating`
+- `grep -n 'theorem|lemma' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean; grep -rn 'contDiff_comp_iff|comp_contDiff_iff' mathlib/Mathlib`
+- `grep -rn 'theorem Integrable.mul_prod|integrable_prod_iff' mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `grep -n '^theorem|^def|^abbrev|^structure' simongmt Chapter06/{Forms,Currents,Mass,FormsDuality,CurrentLocalEquality,Product,AffineCurrentPushforward,ParametricCurrentContinuity,GeometricPointProduct,FixedSupportCurrentTopology}.lean`
+- `grep -rn 'ContDiff.*ullback|ullback.*isSmoothForm|integral_integral_swap' simongmt/Poincare/SimonGMT/Chapter06`
+- `python3 -I /tmp/ci_decomp/scripts/gen.py (verifier gmt-compare.py child_modules in contract scope + lean_contract.validate_lean_statement) -> /tmp/ci_decomp/gen2/*__NodeChallenge.lean`
+- `lake env lean on each of the 7 generated NodeChallenge files and on /tmp/ci_decomp/probe/AllChallenges.lean`
+- `lake env lean /tmp/ci_decomp/probe/Assembly2.lean (frozen parent type from sorry-stubbed children and dependencies, #print axioms)`
+- `lake env lean /tmp/ci_decomp/probe/Names.lean (#check of the cited Mathlib/SimonGMT declarations)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/ParametricCurrentContinuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ci_decomp/scripts/gen.py`
+- `/tmp/ci_decomp/probe/AllChallenges.lean`
+- `/tmp/ci_decomp/probe/Assembly2.lean`
+- `/tmp/ci_decomp/probe/Names.lean`
+
+Snapshot identity:
+- Project d8d46c95, Mathlib 25730c7c.
+- The snapshot's Ch06 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0ddd08be5db…).
+
+DAG findings:
+- isoperimetric_apply_eq_zero_of_disjoint_support is accepted with exactly the type reused here.
+- The frozen types of this node's dependencies iwl_cr_interval_product_im and iwl_cr_radial_operator were used verbatim in the assembly.
+- The compatible-form construction of another branch (iwl_sp_exists_compatible_testForm) is only rlcr-lean, so it is not reused.
+- No existing node supplies hyperplane slices, product-current support, the cone-map derivative or a Fubini exchange for τ(M,θ,ξ).
+- The prefix iwl_cr_ci_ is unused anywhere in dag.json or the decomposition files.
+
+Library findings:
+- No ContDiff lemma for compContinuousLinearMap in Mathlib; there are only HasFDerivAt/Differentiable versions in FDeriv/ContinuousAlternatingMap.lean.
+- Mathlib CPolynomial.lean:271 has ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM, which with AnalyticOnNhd.contDiff gives smoothness of the pull-back.
+- Alternating/Curry.lean has curryLeft, curryLeft_apply_apply and curryLeftLI.
+- MeasureTheory/Integral/Prod.lean has integral_integral_swap and Integrable.mul_prod. Integrable.prod_mul does not exist; this was corrected.
+- SimonGMT has only affine pull-back smoothness (affinePullbackForm_isSmoothForm) and pointSlice_isTestForm, which is the model for slice_forms. It has no nonlinear pull-back smoothness and no current/integral exchange; ParametricCurrentContinuity only proves continuity of parameter-slice values.
+
+Lean checks:
+- All 7 child statements elaborate in the comparator's exact challenge form.
+- The sorry-stubbed assembly proves the byte-identical frozen parent type with no errors.
+- Every other cited declaration name type-checks.

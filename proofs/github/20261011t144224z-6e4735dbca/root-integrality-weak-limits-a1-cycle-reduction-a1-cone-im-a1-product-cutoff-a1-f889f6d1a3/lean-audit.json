@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "34de3dcee27a313e6d1d2d1937ebd9a0e3b1a82ffae969854897ba985628019a",
+  "git_delta": {
+    "base_commit": "1ff167fcfa0feda654bd70f30fabb3a7f0e5c9f1",
+    "candidate_commit": "b4056df8fa7b27015f5f10b046ffe23d29a6f42d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_product_cutoff",
+    "diff_sha256": "c0530b920f8ae67c913e0f37bed0a9ae88ea66a9c573187504dd8e349ca2ea3c",
+    "source_sha256": "0213c2cef982777c39eb41b8bb6fb646d5f499a148398899815773336d219cca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_product_cutoff",
+      "statement": "∀ (P : ℕ) (ϑ : ℝ → ℝ) (ζ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ϑ → HasCompactSupport ϑ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : Eucl (P + 1) => ϑ (y 0) * ζ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ∧ HasCompactSupport (fun y : Eucl (P + 1) => ϑ (y 0) * ζ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
