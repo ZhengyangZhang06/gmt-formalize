@@ -680,6 +680,32 @@ theorem Submission.constancy_mdc_ae_const_of_weak_partials_vanish :
   filter_upwards [e1, e2] with k hk1 hk2
   exact hconst k x₁ x (by rw [mem_ball]; linarith) (by rw [mem_ball]; linarith)
 
+/-- Simon Ch. 6, 2.34, printed display (2) and the conclusion that `θ_ε` is constant on
+`B_ρ(x₀)`: a bounded measurable density `θ` of `f ↦ u(φ ∗ (1_B f))`, `B = B_ρ(x₀)`, is a.e. a
+constant `c` on `B`, so `u(φ ∗ (1_B f)) = c ∫_B f`.  `θ` is locally integrable (measurable and
+bounded), its weak coordinate derivatives vanish on `B`
+(`Submission.constancy_mdc_weak_partials_vanish`), hence `θ = c` a.e. on `B`
+(`Submission.constancy_mdc_ae_const_of_weak_partials_vanish`). -/
+theorem Submission.constancy_mollified_density_const : ∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ∀ j : Fin n, u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) = 0) → ∀ (x₀ : Eucl n) (ρ ε : ℝ), 0 < ρ → 0 < ε → closedBall x₀ (ρ + ε) ⊆ U → ∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ closedBall 0 ε → ∀ θ : Eucl n → ℝ, Measurable θ → (∃ M : ℝ, ∀ x, |θ x| ≤ M) → (∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = ∫ x in ball x₀ ρ, f x * θ x ∂volume) → ∃ c : ℝ, ∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = c * ∫ x in ball x₀ ρ, f x ∂volume := by
+  intro n U u hu x₀ ρ ε hρ _hε hU φ hφ hφc hφs θ hθm hθb h1
+  obtain ⟨M, hM⟩ := hθb
+  -- `θ` is measurable and bounded, hence integrable on every compact set.
+  have hθli : LocallyIntegrable θ volume :=
+    locallyIntegrable_iff.2 fun K hK =>
+      Measure.integrableOn_of_bounded (M := M) hK.measure_lt_top.ne hθm.aestronglyMeasurable
+        (Eventually.of_forall fun x => (Real.norm_eq_abs (θ x)).le.trans (hM x))
+  -- Printed display (2): the weak coordinate derivatives of `θ` vanish on `B_ρ(x₀)`.
+  have hw := Submission.constancy_mdc_weak_partials_vanish n U u hu x₀ ρ ε hU φ hφ hφc hφs θ h1
+  -- Hence `θ = c` a.e. on `B_ρ(x₀)`.
+  obtain ⟨c, hc⟩ :=
+    Submission.constancy_mdc_ae_const_of_weak_partials_vanish n θ hθli x₀ ρ hρ hw
+  -- `u(φ ∗ (1_B f)) = ∫_B f θ = ∫_B c f = c ∫_B f`.
+  refine ⟨c, fun f hf => ?_⟩
+  rw [h1 f hf, ← integral_const_mul]
+  refine integral_congr_ae ?_
+  filter_upwards [hc] with x hx
+  rw [hx, mul_comm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
