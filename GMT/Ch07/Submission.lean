@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Laplace expansion along the first column** (the coordinate form of Simon 6.2.34–2.35,
+indices from `0`): if `M` has column `0` equal to `p` and column `k + 1` equal to
+`e_{j.succAbove k}`, then `det M = (−1)ʲ pⱼ`.  The minor `N_j` (delete row `j`, column `0`) is
+the identity, `j.succAbove` being injective; for `i ≠ j` the minor `N_i` has a zero row, namely
+row `r₀` with `i.succAbove r₀ = j`, since `j ∉ range j.succAbove`. -/
+theorem Submission.codim1_lur_det_laplace_first_column : ∀ (n : ℕ) (p : Euclid (n + 1)) (j : Fin (n + 1)), Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) : Fin (n + 1) → Euclid (n + 1)) c r) = (-1 : ℝ) ^ (j : ℕ) * p j := by
+  intro n p j
+  set M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ := Matrix.of fun r c : Fin (n + 1) =>
+    (Fin.cons p (fun k : Fin n => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) :
+      Fin (n + 1) → Euclid (n + 1)) c r with hM
+  -- the entries: column `0` is `p`, column `k + 1` is `e_{j.succAbove k}`
+  have hM0 : ∀ r, M r 0 = p r := fun r => by simp [hM]
+  have hMs : ∀ r k, M r k.succ = if r = j.succAbove k then 1 else 0 := fun r k => by
+    simp [hM, PiLp.single_apply]
+  -- Laplace expansion along column `0`; only the term `i = j` survives
+  rw [Matrix.det_succ_column_zero, Finset.sum_eq_single j]
+  · -- the minor `N_j` is the identity, `j.succAbove` being injective
+    have hminor : M.submatrix j.succAbove Fin.succ = 1 := by
+      ext r k
+      simp [Matrix.one_apply, hMs]
+    rw [hminor, Matrix.det_one, mul_one, hM0]
+  · -- for `i ≠ j`, row `r₀` of the minor `N_i`, where `i.succAbove r₀ = j`, is zero
+    intro i _ hij
+    obtain ⟨r₀, hr₀⟩ := Fin.exists_succAbove_eq (Ne.symm hij)
+    rw [Matrix.det_eq_zero_of_row_eq_zero r₀ fun k => by simp [hMs, hr₀], mul_zero]
+  · intro h; exact absurd (Finset.mem_univ j) h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
