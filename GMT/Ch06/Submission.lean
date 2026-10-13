@@ -2256,6 +2256,70 @@ theorem Submission.deformation_ipl_cc_gram_det_lower_bound : ∀ (P k : ℕ) (T 
     _ = Real.sqrt ((c ^ 2) ^ k) := by ring_nf
     _ ≤ _ := Real.sqrt_le_sqrt hprod
 
+/-- Signed change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6; used for
+Ch. 6, 3.9): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω`, `A ⊆ Φ(Ω)` is
+`Hᵏ`-null-measurable and `h` is `Hᵏ`-integrable on `A`, then `h(Φ(w)) JΦ(w)` is `Lᵏ`-integrable
+on `D = Ω ∩ Φ⁻¹(A)` and `∫_A h dHᵏ = ∫_D h(Φ(w)) JΦ(w) dLᵏ(w)`.  This is the `[0, ∞]`-valued
+change of variables applied to the positive and negative parts of `h` and to `|h|`. -/
+theorem Submission.deformation_ipl_cc_signed_change_of_variables : ∀ (P k : ℕ) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (A : Set (Eucl P)) (h : Eucl P → ℝ), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[k] : Measure (Eucl P)) → IntegrableOn h A (μHE[k] : Measure (Eucl P)) → IntegrableOn (fun w => h (Φ w) * Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl k)) ∧ ∫ x in A, h x ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω ∩ Φ ⁻¹' A, h (Φ w) * Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det ∂(volume : Measure (Eucl k)) := by
+  intro P k Φ Ω A h hΩ hΦLip hΦanti hAΦ hAm hh
+  set J : Eucl k → ℝ := fun w => Real.sqrt (Matrix.of fun i j => inner ℝ
+    (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det
+  set D : Set (Eucl k) := Ω ∩ Φ ⁻¹' A
+  -- The Jacobian `J = JΦ` is nonnegative and Borel: `fderiv ℝ Φ` is Borel, and `J` is a
+  -- continuous function of its columns `DΦ(w) eᵢ`.
+  have hJ0 : ∀ w, 0 ≤ J w := fun w => Real.sqrt_nonneg _
+  have hJm : Measurable J := by
+    have hfd : Measurable (fderiv ℝ Φ) := measurable_fderiv ℝ Φ
+    have hcol : ∀ i : Fin k, Measurable (fun w => fderiv ℝ Φ w (EuclideanSpace.single i 1)) :=
+      fun i => (ContinuousLinearMap.apply ℝ (Eucl P)
+        (EuclideanSpace.single i 1)).continuous.measurable.comp hfd
+    have hmat : Measurable (fun w => (fun i j => inner ℝ
+        (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1)) :
+          Fin k → Fin k → ℝ)) := by
+      refine measurable_pi_iff.mpr fun i => measurable_pi_iff.mpr fun j => ?_
+      exact continuous_inner.measurable.comp ((hcol i).prodMk (hcol j))
+    have hdet : Continuous (fun f : Fin k → Fin k → ℝ => (Matrix.of f).det) :=
+      (show Continuous (fun f : Fin k → Fin k → ℝ => Matrix.of f) from continuous_id).matrix_det
+    exact Real.continuous_sqrt.measurable.comp (hdet.measurable.comp hmat)
+  -- The `[0, ∞]`-valued change of variables for `h⁺`, `h⁻` and `|h|`.
+  obtain ⟨-, hposm, hposeq⟩ := Submission.lpf_raf_chart_change_of_variables P k Φ Ω A
+    (fun x => ENNReal.ofReal (h x)) hΩ hΦLip hΦanti hAΦ hAm hh.aemeasurable.ennreal_ofReal
+  obtain ⟨-, hnegm, hnegeq⟩ := Submission.lpf_raf_chart_change_of_variables P k Φ Ω A
+    (fun x => ENNReal.ofReal (-h x)) hΩ hΦLip hΦanti hAΦ hAm hh.neg.aemeasurable.ennreal_ofReal
+  obtain ⟨-, -, habseq⟩ := Submission.lpf_raf_chart_change_of_variables P k Φ Ω A
+    (fun x => ‖h x‖ₑ) hΩ hΦLip hΦanti hAΦ hAm hh.aemeasurable.enorm
+  -- `h ∘ Φ = (h⁺ ∘ Φ) - (h⁻ ∘ Φ)` is a.e.-measurable on `D`.
+  have hhΦ : AEMeasurable (fun w => h (Φ w)) ((volume : Measure (Eucl k)).restrict D) := by
+    refine (hposm.ennreal_toReal.sub hnegm.ennreal_toReal).congr
+      (Filter.Eventually.of_forall fun w => ?_)
+    simp only [Pi.sub_apply]
+    rcases le_total 0 (h (Φ w)) with hw | hw
+    · rw [ENNReal.toReal_ofReal hw, ENNReal.ofReal_of_nonpos (by linarith), ENNReal.toReal_zero,
+        sub_zero]
+    · rw [ENNReal.ofReal_of_nonpos hw, ENNReal.toReal_ofReal (by linarith), ENNReal.toReal_zero]
+      ring
+  -- Integrability on `D`: `∫⁻_D ‖h(Φ(w)) J(w)‖ₑ dw = ∫⁻_A ‖h‖ₑ dHᵏ < ∞`.
+  have hFint : IntegrableOn (fun w => h (Φ w) * J w) D (volume : Measure (Eucl k)) := by
+    refine ⟨(hhΦ.mul hJm.aemeasurable).aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral]
+    have : ∫⁻ w in D, ‖h (Φ w) * J w‖ₑ = ∫⁻ x in A, ‖h x‖ₑ ∂(μHE[k] : Measure (Eucl P)) := by
+      rw [habseq]
+      refine lintegral_congr fun w => ?_
+      rw [enorm_mul, Real.enorm_eq_ofReal_abs (J w), abs_of_nonneg (hJ0 w)]
+    rw [this]
+    exact hh.2
+  refine ⟨hFint, ?_⟩
+  -- The signed identity: `∫ f = (∫⁻ f⁺) - (∫⁻ f⁻)` on both sides, and
+  -- `ofReal (±h(Φ(w))) * ofReal (J w) = ofReal (±h(Φ(w)) * J w)` as `J ≥ 0`.
+  rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hh,
+    integral_eq_lintegral_pos_part_sub_lintegral_neg_part hFint, hposeq, hnegeq]
+  congr 2
+  · refine lintegral_congr fun w => ?_
+    rw [← ENNReal.ofReal_mul' (hJ0 w)]
+  · refine lintegral_congr fun w => ?_
+    rw [← ENNReal.ofReal_mul' (hJ0 w), neg_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
