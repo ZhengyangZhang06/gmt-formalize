@@ -716,6 +716,185 @@ theorem Submission.dsmc_chart_tangentSpace_eq_range : ∀ (P r d : ℕ) (N : Set
         (himg.subset.trans inter_subset_right) v hv),
     hii, hiii⟩
 
+/-- **Graph over the tangent plane** (Simon Ch. 2, §4).  Let `N` be an embedded `C²`
+`d`-submanifold, `x ∈ N ∩ U` with `U` open, and `ι : ℝᵈ → ℝᴾ` a linear isometry onto `T_xN`.
+Then `B̄_{δ₁+δ₂}(x) ⊆ U` and over `B_{δ₁}(0)` the set `N` is the graph `v ↦ x + ιv + u(v)` of a
+`C²` map `u ⊥ ι(ℝᵈ)` with `u(0) = 0`, `Du(0) = 0`, `‖Du‖ ≤ 1` and `‖u‖ < δ₂/2`; a point
+`x + ιv + h ∈ N` with `|v| < δ₁`, `|h| < δ₂` and `h ⊥ ι(ℝᵈ)` has `h = u(v)`.
+For a chart `ψ` with `ψ(z₀) = x`, `Dψ(z₀)(ℝᵈ) = T_xN = ι(ℝᵈ)` and `ψ⁻¹` is continuous at `x`
+(`dsmc_chart_tangentSpace_eq_range`), so `φ = ι*(ψ − x)` has injective derivative `ι*Dψ(z₀)` at
+`z₀` and a `C²` local inverse `g : O → V₀` (`codim1_rdo_gc_local_inverse_c2`).  Put
+`u(v) = ψ(g(v)) − x − ιv`.  Then `ι*u = 0` on `O`, and `Du(0)` maps into `ι(ℝᵈ)` and is orthogonal
+to it, so `Du(0) = 0`.  Near `x`, `N` lies in `ψ(V₀)`, and `x + ιv + h = ψ(z)` gives `φ(z) = v`,
+so `z = g(v)` and `h = u(v)`. -/
+theorem Submission.codim1_rdo_gc_graph_over_tangent : ∀ (P d : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (ι : Euclid d →ₗᵢ[ℝ] Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → x ∈ N ∩ U → Set.range ι = tangentSpace N x → ∃ (u : Euclid d → Euclid P) (δ₁ δ₂ : ℝ), 0 < δ₁ ∧ 0 < δ₂ ∧ closedBall x (δ₁ + δ₂) ⊆ U ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ ContDiffOn ℝ 2 u (ball 0 δ₁) ∧ (∀ v ∈ ball (0 : Euclid d) δ₁, (∀ w : Euclid d, inner ℝ (ι w) (u v) = 0) ∧ ‖fderiv ℝ u v‖ ≤ 1 ∧ ‖u v‖ < δ₂ / 2 ∧ x + ι v + u v ∈ N) ∧ ∀ (v : Euclid d) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid d, inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v := by
+  intro P d U N x ι hU hN hx hι
+  -- a chart `ψ` with `ψ(z₀) = x`: `Dψ(z₀)(ℝᵈ) = T_xN = ι(ℝᵈ)` and `ψ⁻¹` is continuous at `x`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hψinj, hψimg, hprop, hDψ⟩ := hN x hx.1
+  obtain ⟨z₀, hz₀V, hψz₀⟩ : x ∈ ψ '' V := by rw [hψimg]; exact ⟨hxW, hx.1⟩
+  obtain ⟨htan, hinvc, -⟩ := Submission.dsmc_chart_tangentSpace_eq_range P 2 d N V W ψ
+    (by norm_num) hV hW hψ hψinj hψimg hprop hDψ z₀ hz₀V
+  rw [hψz₀] at htan hinvc
+  have hrangeψ : Set.range (fderiv ℝ ψ z₀) = Set.range ι := by rw [← htan, hι]
+  have hψ2 : ContDiffOn ℝ 2 ψ V := by exact_mod_cast hψ
+  -- the adjoint `ι*`: `⟨ιw, h⟩ = ⟨w, ι*h⟩`, `ι*ι = 1`, and `ι*h = 0` if `h ⊥ ι(ℝᵈ)`
+  set ιs : Euclid P →L[ℝ] Euclid d := ι.toContinuousLinearMap.adjoint with hιs
+  have hadj : ∀ w h, inner ℝ (ι w) h = inner ℝ w (ιs h) := fun w h => by
+    rw [hιs, ContinuousLinearMap.adjoint_inner_right]; rfl
+  have hιsι : ∀ w, ιs (ι w) = w := by
+    intro w
+    apply ext_inner_left ℝ
+    intro w'
+    rw [← hadj, LinearIsometry.inner_map_map]
+  have hιs0 : ∀ h, (∀ w, inner ℝ (ι w) h = 0) → ιs h = 0 := by
+    intro h hh
+    apply ext_inner_left ℝ
+    intro w
+    rw [← hadj, hh w, inner_zero_right]
+  -- `φ = ι*(ψ − x)` is `C²` on `V`, with injective derivative `ι*Dψ(z₀)` at `z₀`
+  have hψdiff : ∀ z ∈ V, HasFDerivAt ψ (fderiv ℝ ψ z) z := fun z hz =>
+    ((hψ2.contDiffAt (hV.mem_nhds hz)).differentiableAt (by norm_num)).hasFDerivAt
+  let φ : Euclid d → Euclid d := fun z => ιs (ψ z - x)
+  have hφ : ContDiffOn ℝ 2 φ V := ιs.contDiff.comp_contDiffOn (hψ2.sub contDiffOn_const)
+  have hφderiv : HasFDerivAt φ (ιs.comp (fderiv ℝ ψ z₀)) z₀ :=
+    ιs.hasFDerivAt.comp z₀ ((hψdiff z₀ hz₀V).sub_const x)
+  have hφinj : Injective (fderiv ℝ φ z₀) := by
+    rw [hφderiv.fderiv]
+    intro a₁ a₂ h
+    have h1 : ιs (fderiv ℝ ψ z₀ (a₁ - a₂)) = 0 := by
+      have h' : ιs (fderiv ℝ ψ z₀ a₁) = ιs (fderiv ℝ ψ z₀ a₂) := h
+      rw [map_sub, map_sub, h', sub_self]
+    obtain ⟨w, hw⟩ : fderiv ℝ ψ z₀ (a₁ - a₂) ∈ Set.range ι := hrangeψ ▸ ⟨a₁ - a₂, rfl⟩
+    rw [← hw, hιsι] at h1
+    have h2 : fderiv ℝ ψ z₀ (a₁ - a₂) = fderiv ℝ ψ z₀ 0 := by rw [← hw, h1, map_zero, map_zero]
+    exact sub_eq_zero.mp (hDψ z₀ hz₀V h2)
+  -- the `C²` local inverse `g : O → V₀` of `φ`; `φ(z₀) = 0`, so `0 ∈ O` and `g(0) = z₀`
+  obtain ⟨V₀, O, g, hV₀, hO, hz₀V₀, hV₀V, hg, hgmaps, hφg, hgφ⟩ :=
+    Submission.codim1_rdo_gc_local_inverse_c2 d φ V z₀ hV hz₀V hφ hφinj
+  have hφz₀ : φ z₀ = 0 := by simp [φ, hψz₀]
+  obtain ⟨h0O, hg0⟩ := hgφ z₀ hz₀V₀
+  rw [hφz₀] at h0O hg0
+  -- the graph map `u(v) = ψ(g(v)) − x − ιv`: on `O` it is `C²`, `ι*u = 0` and `x + ιv + u(v) ∈ N`
+  let u : Euclid d → Euclid P := fun v => ψ (g v) - x - ι v
+  have hGu : ∀ v, x + ι v + u v = ψ (g v) := fun v => by simp only [u]; abel
+  have hu0 : u 0 = 0 := by simp [u, hg0, hψz₀]
+  have hgV : MapsTo g O V := fun y hy => hV₀V (hgmaps hy)
+  have huC2 : ContDiffOn ℝ 2 u O :=
+    ((hψ2.comp hg hgV).sub contDiffOn_const).sub ι.toContinuousLinearMap.contDiff.contDiffOn
+  have hιsu : ∀ v ∈ O, ιs (u v) = 0 := by
+    intro v hv
+    have h1 : ιs (ψ (g v) - x) = v := hφg v hv
+    simp only [u, map_sub, hιsι]
+    rw [← map_sub, h1, sub_self]
+  have horthO : ∀ v ∈ O, ∀ w, inner ℝ (ι w) (u v) = 0 := by
+    intro v hv w
+    rw [hadj, hιsu v hv, inner_zero_right]
+  have hmemO : ∀ v ∈ O, x + ι v + u v ∈ N := fun v hv => by
+    rw [hGu]
+    have h1 : ψ (g v) ∈ ψ '' V := ⟨g v, hgV hv, rfl⟩
+    rw [hψimg] at h1
+    exact h1.2
+  have hudiff : ∀ v ∈ O, HasFDerivAt u (fderiv ℝ u v) v := fun v hv =>
+    ((huC2.contDiffAt (hO.mem_nhds hv)).differentiableAt (by norm_num)).hasFDerivAt
+  -- `Du(0) = 0`: every `Du(0)c` lies in `ι(ℝᵈ)` and is orthogonal to `ι(ℝᵈ)`
+  have hDu0 : fderiv ℝ u 0 = 0 := by
+    have hgdiff : HasFDerivAt g (fderiv ℝ g 0) 0 :=
+      ((hg.contDiffAt (hO.mem_nhds h0O)).differentiableAt (by norm_num)).hasFDerivAt
+    have hψg : HasFDerivAt (fun v => ψ (g v)) ((fderiv ℝ ψ z₀).comp (fderiv ℝ g 0)) 0 := by
+      have h' : HasFDerivAt ψ (fderiv ℝ ψ z₀) (g 0) := by rw [hg0]; exact hψdiff z₀ hz₀V
+      exact h'.comp 0 hgdiff
+    have huder : HasFDerivAt u ((fderiv ℝ ψ z₀).comp (fderiv ℝ g 0) - ι.toContinuousLinearMap) 0 :=
+      (hψg.sub_const x).sub ι.toContinuousLinearMap.hasFDerivAt
+    ext1 c
+    -- `⟨ιw, Du(0)c⟩ = 0`: differentiate `⟨ιw, u⟩ = 0` on the neighbourhood `O` of `0`
+    have horthD : ∀ w, inner ℝ (ι w) (fderiv ℝ u 0 c) = 0 := by
+      intro w
+      have hloc : (fun v' => inner ℝ (ι w) (u v')) =ᶠ[𝓝 0] fun _ => (0 : ℝ) :=
+        Filter.eventually_of_mem (hO.mem_nhds h0O) (fun v' hv' => horthO v' hv' w)
+      have hd : HasFDerivAt (fun v' => inner ℝ (ι w) (u v'))
+          ((innerSL ℝ (ι w)).comp (fderiv ℝ u 0)) 0 :=
+        (innerSL ℝ (ι w)).hasFDerivAt.comp 0 (hudiff 0 h0O)
+      have hd0 : HasFDerivAt (fun v' => inner ℝ (ι w) (u v')) (0 : Euclid d →L[ℝ] ℝ) 0 :=
+        (hasFDerivAt_const (0 : ℝ) 0).congr_of_eventuallyEq hloc
+      have h2 := congrArg (fun L => L c) (hd.unique hd0)
+      simpa using h2
+    -- `Du(0)c = Dψ(z₀)(Dg(0)c) − ιc = ι(w₁ − c)` with `Dψ(z₀)(Dg(0)c) = ιw₁`
+    obtain ⟨w₁, hw₁⟩ : fderiv ℝ ψ z₀ (fderiv ℝ g 0 c) ∈ Set.range ι :=
+      hrangeψ ▸ ⟨fderiv ℝ g 0 c, rfl⟩
+    have hDuc : fderiv ℝ u 0 c = ι (w₁ - c) := by
+      rw [huder.fderiv, map_sub]
+      simp [hw₁]
+    have h3 := horthD (w₁ - c)
+    rw [← hDuc, real_inner_self_eq_norm_sq] at h3
+    simpa using h3
+  -- `N ∩ B_s(x) ⊆ ψ(V₀)`, by continuity of `ψ⁻¹` at `x`; also `B_s(x) ⊆ W ∩ U`
+  obtain ⟨ε, hε, hballV₀⟩ := Metric.isOpen_iff.mp hV₀ z₀ hz₀V₀
+  obtain ⟨δC, hδC, hδCprop⟩ := hinvc ε hε
+  obtain ⟨ρW, hρW, hballW⟩ := Metric.isOpen_iff.mp hW x hxW
+  obtain ⟨ρU, hρU, hballU⟩ := Metric.isOpen_iff.mp hU x hx.2
+  set s := min (min ρW δC) ρU with hs
+  have hspos : 0 < s := lt_min (lt_min hρW hδC) hρU
+  have hNball : ∀ q ∈ N, dist q x < s → ∃ z ∈ V₀, ψ z = q := by
+    intro q hq hqx
+    have hqW : q ∈ W :=
+      hballW (lt_of_lt_of_le hqx (le_trans (min_le_left _ _) (min_le_left _ _)))
+    obtain ⟨z, hzV, rfl⟩ : q ∈ ψ '' V := by rw [hψimg]; exact ⟨hqW, hq⟩
+    have h1 := hδCprop z hzV (lt_of_lt_of_le hqx (le_trans (min_le_left _ _) (min_le_right _ _)))
+    exact ⟨z, hballV₀ h1, rfl⟩
+  -- `δ₂ = s/4`, and `δ₁ ≤ δ₂` so small that `B_{δ₁}(0) ⊆ O`, `‖u‖ < δ₂/2`, `‖Du‖ < 1` there
+  set r₁ := s / 4 with hr₁eq
+  have hr₁ : 0 < r₁ := by positivity
+  have hucont : ContinuousAt u 0 := huC2.continuousOn.continuousAt (hO.mem_nhds h0O)
+  have hDucont : ContinuousAt (fderiv ℝ u) 0 :=
+    (huC2.continuousOn_fderiv_of_isOpen hO (by norm_num)).continuousAt (hO.mem_nhds h0O)
+  obtain ⟨ρ₁, hρ₁, hρ₁prop⟩ := Metric.continuousAt_iff.mp hucont (r₁ / 2) (by positivity)
+  obtain ⟨ρ₂, hρ₂, hρ₂prop⟩ := Metric.continuousAt_iff.mp hDucont 1 one_pos
+  obtain ⟨ρ₃, hρ₃, hρ₃O⟩ := Metric.isOpen_iff.mp hO 0 h0O
+  set δ₁ := min (min (min ρ₁ ρ₂) ρ₃) r₁ with hδ₁eq
+  have hδ₁pos : 0 < δ₁ := lt_min (lt_min (lt_min hρ₁ hρ₂) hρ₃) hr₁
+  have hδ₁ρ₁ : δ₁ ≤ ρ₁ := le_trans (min_le_left _ _) (le_trans (min_le_left _ _) (min_le_left _ _))
+  have hδ₁ρ₂ : δ₁ ≤ ρ₂ := le_trans (min_le_left _ _) (le_trans (min_le_left _ _) (min_le_right _ _))
+  have hδ₁ρ₃ : δ₁ ≤ ρ₃ := le_trans (min_le_left _ _) (min_le_right _ _)
+  have hδ₁r₁ : δ₁ ≤ r₁ := min_le_right _ _
+  have hballO : ball (0 : Euclid d) δ₁ ⊆ O := (ball_subset_ball hδ₁ρ₃).trans hρ₃O
+  refine ⟨u, δ₁, r₁, hδ₁pos, hr₁, ?_, hu0, hDu0, huC2.mono hballO, ?_, ?_⟩
+  · -- `B̄_{δ₁+δ₂}(x) ⊆ B_s(x) ⊆ U`
+    intro q hq
+    apply hballU
+    rw [mem_closedBall] at hq
+    rw [mem_ball]
+    have : s ≤ ρU := min_le_right _ _
+    linarith
+  · intro v hv
+    have hvO := hballO hv
+    have hv0 : dist v 0 < δ₁ := hv
+    refine ⟨horthO v hvO, ?_, ?_, hmemO v hvO⟩
+    · have h1 := hρ₂prop (lt_of_lt_of_le hv0 hδ₁ρ₂)
+      rw [hDu0, dist_zero_right] at h1
+      exact h1.le
+    · have h1 := hρ₁prop (lt_of_lt_of_le hv0 hδ₁ρ₁)
+      rw [hu0, dist_zero_right] at h1
+      exact h1
+  · -- uniqueness: `q = x + ιv + h ∈ N ∩ B_s(x)` is `ψ(z)` with `z ∈ V₀` and `φ(z) = v`, so
+    -- `z = g(v)` and `x + ιv + u(v) = ψ(g(v)) = q`
+    intro v h hv hh horthh hq
+    have hvO : v ∈ O := hballO (by rw [mem_ball, dist_zero_right]; exact hv)
+    have hqx : dist (x + ι v + h) x < s := by
+      rw [dist_eq_norm, show x + ι v + h - x = ι v + h by abel]
+      calc ‖ι v + h‖ ≤ ‖ι v‖ + ‖h‖ := norm_add_le _ _
+        _ = ‖v‖ + ‖h‖ := by rw [LinearIsometry.norm_map]
+        _ < δ₁ + r₁ := add_lt_add hv hh
+        _ ≤ r₁ + r₁ := by linarith
+        _ < s := by rw [hr₁eq]; linarith
+    obtain ⟨z, hzV₀, hψz⟩ := hNball _ hq hqx
+    have hφz : φ z = v := by
+      show ιs (ψ z - x) = v
+      rw [hψz, show x + ι v + h - x = ι v + h by abel, map_add, hιsι, hιs0 h horthh, add_zero]
+    have hgz : g v = z := by rw [← hφz]; exact (hgφ z hzV₀).2
+    have h1 := hGu v
+    rw [hgz, hψz] at h1
+    exact (add_left_cancel h1).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
