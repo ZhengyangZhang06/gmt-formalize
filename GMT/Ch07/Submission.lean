@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Bochner form of the area formula** (Simon Ch. 3, 2.4–2.6, as used in the proof of 7.5.8).
+Let `B ⊆ ℝᵈ` be Borel, `G` continuous and injective on `B`, `J ≥ 0` Borel, and suppose
+`∫⁻_{G(B)} g dμ = ∫⁻_B J·(g ∘ G) dν` for every `g ≥ 0`.  Then `∫_{G(B)} f dμ = ∫_B J·(f ∘ G) dν`
+for every `f` (Bochner integrals, `0` when not integrable).  By Lusin–Souslin `G|_B` is a
+measurable embedding; testing with `g = 1_T` shows that `μ⌞G(B)` is the image under `G|_B` of
+`ν.withDensity J` pulled back to `B`, so `MeasurableEmbedding.integral_map` transports `f`, and
+the density is removed by `integral_withDensity_eq_integral_toReal_smul₀`. -/
+theorem Submission.codim1_lura_integral_image_of_lintegral : ∀ (d P : ℕ) (μ : Measure (Euclid P)) (ν : Measure (Euclid d)) (B : Set (Euclid d)) (G : Euclid d → Euclid P) (J : Euclid d → ℝ), MeasurableSet B → ContinuousOn G B → InjOn G B → Measurable J → (∀ v, 0 ≤ J v) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μ = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂ν) → ∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μ = ∫ v in B, J v * f (G v) ∂ν := by
+  intro d P μ ν B G J hB hGc hGi hJ hJ0 hg f
+  -- `G|_B : B → ℝᴾ` is a measurable embedding (Lusin–Souslin), `ρ = ofReal ∘ J` is finite
+  have he : MeasurableEmbedding (B.domRestrict G) := hGc.measurableEmbedding hB hGi
+  have hρ : Measurable fun v => ENNReal.ofReal (J v) := ENNReal.measurable_ofReal.comp hJ
+  have hρ_lt : ∀ v, ENNReal.ofReal (J v) < ∞ := fun _ => ENNReal.ofReal_lt_top
+  -- `∫⁻ g d((G|_B)₊ ι^*(ν.withDensity ρ)) = ∫⁻_B ρ (g ∘ G) dν` for every `g`
+  have hlin : ∀ g : Euclid P → ℝ≥0∞,
+      ∫⁻ w, g w ∂((Measure.comap Subtype.val (ν.withDensity fun v => ENNReal.ofReal (J v))).map
+        (B.domRestrict G)) = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂ν := by
+    intro g
+    rw [he.lintegral_map]
+    simp only [Set.domRestrict_apply]
+    rw [lintegral_subtype_comap hB (fun v => g (G v)), restrict_withDensity hB,
+      lintegral_withDensity_eq_lintegral_mul_non_measurable _ hρ (ae_of_all _ hρ_lt)]
+    rfl
+  -- testing with `g = 1_T`: this image measure is `μ⌞G(B)`
+  have hmap : (Measure.comap Subtype.val (ν.withDensity fun v => ENNReal.ofReal (J v))).map
+      (B.domRestrict G) = μ.restrict (G '' B) := by
+    ext T hT
+    rw [← lintegral_indicator_one hT, hlin, ← hg (T.indicator 1)]
+    exact lintegral_indicator_one hT
+  -- transport `f` along the two measurable embeddings, then remove the density (`J ≥ 0`)
+  rw [← hmap, he.integral_map]
+  simp only [Set.domRestrict_apply]
+  rw [integral_subtype_comap hB (fun v => f (G v)), restrict_withDensity hB,
+    integral_withDensity_eq_integral_toReal_smul₀ hρ.aemeasurable (ae_of_all _ hρ_lt)]
+  refine integral_congr_ae (ae_of_all _ fun v => ?_)
+  simp only [ENNReal.toReal_ofReal (hJ0 v), smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
