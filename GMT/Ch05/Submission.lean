@@ -714,6 +714,185 @@ theorem dohr_eb_lhr_dqub_wd_props : ∀ (n ℓ : ℕ) (α : ℝ) (U : Set (Rn n)
           mul_le_mul_of_nonneg_left ((norm_sub_le _ _).trans (add_le_add h1 h2))
             (inv_nonneg.2 (abs_nonneg d))
       _ = 2 * Hv * |d|⁻¹ * ‖x - y‖ ^ α := by ring
+/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): `d`-uniform Hölder bound for the
+forcing term of the difference-quotient system.**  Let `L = L(ℝⁿ, ℝ^ℓ)`, `U ⊇ B_{4R}(xb)` open,
+`‖e‖ ≤ 1`, let the coefficients `x ↦ a(x)[P][Q]` and `x ↦ Φ(x)[P]` be `C^{1,α}` in `U` and `v` be
+`C^{1,α}` in `U`.  For `0 < |d| < R` put
+`F_d(x, P) = d⁻¹ (Φ(x + d e)[P] − Φ(x)[P])
+  − d⁻¹ (a(x + d e)[Dv(x + d e)][P] − a(x)[Dv(x + d e)][P])`.
+Then `|F_d(x, P) − F_d(y, P)| ≤ M ‖x − y‖^α ‖P‖` on `B̆_{2R}(xb)` with `M` independent of `d`.
+Proof: `dohr_eb_lhr_dqub_form_coords` gives a spanning family `b` of `L` and a constant `C`
+bounding linear and bilinear forms by their values on `b`.  On `K₀ = B_{4R}(xb)`,
+`dohr_eb_lhr_dqub_fderiv_consts` gives a common bound `S'` and a common Hölder constant `H` for
+the derivatives of the scalar coefficients `a(·)[b_r][b_t]`, `Φ(·)[b_r]`, and `S_v`, `H_v` for
+`Dv`; put `M = C (H + H S_v + S' H_v)`.  The mean value inequality
+`dohr_eb_lhr_dqub_dq_mean_value` bounds the difference quotients of these coefficients by `S'`
+and their differences at `x, y` by `H ‖x − y‖^α`.  With
+`Q_x = Dv(x + d e)` and `Q_y = Dv(y + d e)`,
+`F_d(x, P) − F_d(y, P) = T(P) − β₁(Q_x, P) − β₂(Q_x − Q_y, P)` for the linear form `T` and the
+bilinear forms `β₁`, `β₂` built from these difference quotients, and the coordinate bounds give
+`|T(P)| + |β₁(Q_x, P)| + |β₂(Q_x − Q_y, P)| ≤ M ‖x − y‖^α ‖P‖`. -/
+theorem dohr_eb_lhr_dqub_forcing_holder : ∀ (n ℓ : ℕ) (α : ℝ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (xb e : Rn n) (R : ℝ), IsOpen U → 0 < R → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 (fun z => a z P Q) x - iteratedFDeriv ℝ 1 (fun z => a z P Q) y‖ ≤ C * ‖x - y‖ ^ α) → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 (fun z => Φ z P) x - iteratedFDeriv ℝ 1 (fun z => Φ z P) y‖ ≤ C * ‖x - y‖ ^ α) → IsLocallyHolderCkα 1 α v U → ∃ M : ℝ, ∀ d : ℝ, d ≠ 0 → |d| < R → ∀ x ∈ ball xb (2 * R), ∀ y ∈ ball xb (2 * R), ∀ P : Rn n →L[ℝ] Rn ℓ, |(d⁻¹ * (Φ (x + d • e) P - Φ x P) - d⁻¹ * (a (x + d • e) (fderiv ℝ v (x + d • e)) P - a x (fderiv ℝ v (x + d • e)) P)) - (d⁻¹ * (Φ (y + d • e) P - Φ y P) - d⁻¹ * (a (y + d • e) (fderiv ℝ v (y + d • e)) P - a y (fderiv ℝ v (y + d • e)) P))| ≤ M * ‖x - y‖ ^ α * ‖P‖ := by
+  intro n ℓ α U a Φ v xb e R hU hR hK0U he ha hΦ hv
+  -- Step 1: a spanning family `b` of `L` and the coordinate constant `C`.
+  obtain ⟨N, b, C, hC, hD1, hD2⟩ :=
+    Submission.dohr_eb_lhr_dqub_form_coords (Rn n →L[ℝ] Rn ℓ)
+  -- Step 2: derivative bounds and Hölder constants of the components on `K₀ = B_{4R}(xb)`.
+  have hK0c : IsCompact (closedBall xb (4 * R)) := isCompact_closedBall xb (4 * R)
+  have hAa : ∀ r t : Fin N, ∃ S H : ℝ, 0 ≤ S ∧ 0 ≤ H ∧
+      (∀ z ∈ closedBall xb (4 * R), ‖fderiv ℝ (fun z => a z (b r) (b t)) z‖ ≤ S) ∧
+      ∀ z ∈ closedBall xb (4 * R), ∀ w ∈ closedBall xb (4 * R),
+        ‖fderiv ℝ (fun z => a z (b r) (b t)) z - fderiv ℝ (fun z => a z (b r) (b t)) w‖ ≤
+          H * ‖z - w‖ ^ α := fun r t =>
+    Submission.dohr_eb_lhr_dqub_fderiv_consts (Rn n) ℝ α U _ (fun z => a z (b r) (b t)) hU hK0c
+      hK0U (ha (b r) (b t)).1 ((ha (b r) (b t)).2 _ hK0c hK0U)
+  have hAΦ : ∀ r : Fin N, ∃ S H : ℝ, 0 ≤ S ∧ 0 ≤ H ∧
+      (∀ z ∈ closedBall xb (4 * R), ‖fderiv ℝ (fun z => Φ z (b r)) z‖ ≤ S) ∧
+      ∀ z ∈ closedBall xb (4 * R), ∀ w ∈ closedBall xb (4 * R),
+        ‖fderiv ℝ (fun z => Φ z (b r)) z - fderiv ℝ (fun z => Φ z (b r)) w‖ ≤
+          H * ‖z - w‖ ^ α := fun r =>
+    Submission.dohr_eb_lhr_dqub_fderiv_consts (Rn n) ℝ α U _ (fun z => Φ z (b r)) hU hK0c
+      hK0U (hΦ (b r)).1 ((hΦ (b r)).2 _ hK0c hK0U)
+  obtain ⟨Sv, Hv, hSv0, hHv0, hSv, hHv⟩ :=
+    Submission.dohr_eb_lhr_dqub_fderiv_consts (Rn n) (Rn ℓ) α U _ v hU hK0c hK0U
+      (by simpa using hv.1) (hv.2 _ hK0c hK0U)
+  choose Sa Ha hSa0 hHa0 hSa hHa using hAa
+  choose SΦ HΦ hSΦ0 hHΦ0 hSΦ hHΦ using hAΦ
+  -- Step 3: uniform constants `S'`, `H` for all components; `M` is fixed before `d`.
+  set S' : ℝ := ∑ r, ∑ t, Sa r t + ∑ r, SΦ r
+  set H : ℝ := ∑ r, ∑ t, Ha r t + ∑ r, HΦ r
+  have hSa_sum0 : 0 ≤ ∑ r, ∑ t, Sa r t :=
+    Finset.sum_nonneg fun r _ => Finset.sum_nonneg fun t _ => hSa0 r t
+  have hHa_sum0 : 0 ≤ ∑ r, ∑ t, Ha r t :=
+    Finset.sum_nonneg fun r _ => Finset.sum_nonneg fun t _ => hHa0 r t
+  have hSΦ_sum0 : 0 ≤ ∑ r, SΦ r := Finset.sum_nonneg fun r _ => hSΦ0 r
+  have hHΦ_sum0 : 0 ≤ ∑ r, HΦ r := Finset.sum_nonneg fun r _ => hHΦ0 r
+  have hS'0 : 0 ≤ S' := add_nonneg hSa_sum0 hSΦ_sum0
+  have hH0 : 0 ≤ H := add_nonneg hHa_sum0 hHΦ_sum0
+  have hSa_le : ∀ r t, Sa r t ≤ S' := fun r t =>
+    le_trans (Finset.single_le_sum (fun t _ => hSa0 r t) (Finset.mem_univ t))
+      (le_trans (Finset.single_le_sum (f := fun r => ∑ t, Sa r t)
+        (fun r _ => Finset.sum_nonneg fun t _ => hSa0 r t) (Finset.mem_univ r))
+        (le_add_of_nonneg_right hSΦ_sum0))
+  have hHa_le : ∀ r t, Ha r t ≤ H := fun r t =>
+    le_trans (Finset.single_le_sum (fun t _ => hHa0 r t) (Finset.mem_univ t))
+      (le_trans (Finset.single_le_sum (f := fun r => ∑ t, Ha r t)
+        (fun r _ => Finset.sum_nonneg fun t _ => hHa0 r t) (Finset.mem_univ r))
+        (le_add_of_nonneg_right hHΦ_sum0))
+  have hSΦ_le : ∀ r, SΦ r ≤ S' := fun r =>
+    le_trans (Finset.single_le_sum (fun r _ => hSΦ0 r) (Finset.mem_univ r))
+      (le_add_of_nonneg_left hSa_sum0)
+  have hHΦ_le : ∀ r, HΦ r ≤ H := fun r =>
+    le_trans (Finset.single_le_sum (fun r _ => hHΦ0 r) (Finset.mem_univ r))
+      (le_add_of_nonneg_left hHa_sum0)
+  refine ⟨C * (H + H * Sv + S' * Hv), ?_⟩
+  intro d hd hdR x hx y hy P
+  -- Step 4: `x + d e, y + d e ∈ K₀`, and the bounds on `Q_x = Dv(x + d e)`, `Q_y = Dv(y + d e)`.
+  have hshift : ∀ z ∈ ball xb (2 * R), z + d • e ∈ closedBall xb (4 * R) := by
+    intro z hz
+    rw [mem_closedBall]
+    rw [mem_ball] at hz
+    have h1 : dist (z + d • e) xb ≤ dist z xb + ‖d • e‖ := by
+      rw [dist_eq_norm, dist_eq_norm]
+      calc ‖z + d • e - xb‖ = ‖(z - xb) + d • e‖ := by congr 1; abel
+        _ ≤ ‖z - xb‖ + ‖d • e‖ := norm_add_le _ _
+    have h2 : ‖d • e‖ ≤ R := by
+      rw [norm_smul, Real.norm_eq_abs]
+      calc |d| * ‖e‖ ≤ |d| * 1 := mul_le_mul_of_nonneg_left he (abs_nonneg d)
+        _ ≤ R := by linarith
+    linarith
+  have hxK := hshift x hx
+  have hyK := hshift y hy
+  set t : ℝ := ‖x - y‖ ^ α
+  have ht0 : 0 ≤ t := Real.rpow_nonneg (norm_nonneg _) α
+  set Qx := fderiv ℝ v (x + d • e)
+  set Qy := fderiv ℝ v (y + d • e)
+  have hQxb : ‖Qx‖ ≤ Sv := hSv _ hxK
+  have hQxy : ‖Qx - Qy‖ ≤ Hv * t := by
+    have := hHv _ hxK _ hyK
+    rwa [add_sub_add_right_eq_sub] at this
+  -- Step 5: the scalar difference quotients of the components, by the mean value inequality
+  -- `dohr_eb_lhr_dqub_dq_mean_value` with the common constants `S'` and `H`.
+  have hBa : ∀ r t', |d⁻¹ * (a (y + d • e) (b r) (b t') - a y (b r) (b t'))| ≤ S' ∧
+      |d⁻¹ * (a (x + d • e) (b r) (b t') - a x (b r) (b t')) -
+        d⁻¹ * (a (y + d • e) (b r) (b t') - a y (b r) (b t'))| ≤ H * t := by
+    intro r t'
+    have hB := Submission.dohr_eb_lhr_dqub_dq_mean_value (Rn n) ℝ α U
+      (fun z => a z (b r) (b t')) xb e R S' H d hU hK0U he
+      ((ha (b r) (b t')).1.differentiableOn one_ne_zero)
+      (fun z hz => (hSa r t' z hz).trans (hSa_le r t'))
+      (fun z hz w hw => (hHa r t' z hz w hw).trans
+        (mul_le_mul_of_nonneg_right (hHa_le r t') (Real.rpow_nonneg (norm_nonneg _) α)))
+      hd hdR
+    refine ⟨?_, ?_⟩
+    · simpa [smul_eq_mul, Real.norm_eq_abs] using (hB y hy y hy).1
+    · simpa [smul_eq_mul, Real.norm_eq_abs] using (hB x hx y hy).2
+  have hBΦ : ∀ r, |d⁻¹ * (Φ (x + d • e) (b r) - Φ x (b r)) -
+      d⁻¹ * (Φ (y + d • e) (b r) - Φ y (b r))| ≤ H * t := by
+    intro r
+    have hB := Submission.dohr_eb_lhr_dqub_dq_mean_value (Rn n) ℝ α U
+      (fun z => Φ z (b r)) xb e R S' H d hU hK0U he
+      ((hΦ (b r)).1.differentiableOn one_ne_zero)
+      (fun z hz => (hSΦ r z hz).trans (hSΦ_le r))
+      (fun z hz w hw => (hHΦ r z hz w hw).trans
+        (mul_le_mul_of_nonneg_right (hHΦ_le r) (Real.rpow_nonneg (norm_nonneg _) α)))
+      hd hdR
+    simpa [smul_eq_mul, Real.norm_eq_abs] using (hB x hx y hy).2
+  -- Step 6: the linear form `T` and the bilinear forms `β₁`, `β₂`.
+  let T : (Rn n →L[ℝ] Rn ℓ) → ℝ := fun P' =>
+    d⁻¹ * (Φ (x + d • e) P' - Φ x P') - d⁻¹ * (Φ (y + d • e) P' - Φ y P')
+  let β1 : (Rn n →L[ℝ] Rn ℓ) → (Rn n →L[ℝ] Rn ℓ) → ℝ := fun Q P' =>
+    d⁻¹ * (a (x + d • e) Q P' - a x Q P') - d⁻¹ * (a (y + d • e) Q P' - a y Q P')
+  let β2 : (Rn n →L[ℝ] Rn ℓ) → (Rn n →L[ℝ] Rn ℓ) → ℝ := fun Q P' =>
+    d⁻¹ * (a (y + d • e) Q P' - a y Q P')
+  have hTlin : IsLinearMap ℝ T := by
+    constructor
+    · intro P1 P2; simp only [T, map_add]; ring
+    · intro c P1; simp only [T, map_smul, smul_eq_mul]; ring
+  have hβ1l : ∀ P', IsLinearMap ℝ (fun Q => β1 Q P') := by
+    intro P'; constructor
+    · intro Q1 Q2; simp only [β1, map_add, add_apply]; ring
+    · intro c Q1; simp only [β1, map_smul, smul_apply, smul_eq_mul]; ring
+  have hβ1r : ∀ Q, IsLinearMap ℝ (β1 Q) := by
+    intro Q; constructor
+    · intro P1 P2; simp only [β1, map_add]; ring
+    · intro c P1; simp only [β1, map_smul, smul_eq_mul]; ring
+  have hβ2l : ∀ P', IsLinearMap ℝ (fun Q => β2 Q P') := by
+    intro P'; constructor
+    · intro Q1 Q2; simp only [β2, map_add, add_apply]; ring
+    · intro c Q1; simp only [β2, map_smul, smul_apply, smul_eq_mul]; ring
+  have hβ2r : ∀ Q, IsLinearMap ℝ (β2 Q) := by
+    intro Q; constructor
+    · intro P1 P2; simp only [β2, map_add]; ring
+    · intro c P1; simp only [β2, map_smul, smul_eq_mul]; ring
+  -- Step 7: coordinate bounds for `T(P)`, `β₁(Q_x, P)` and `β₂(Q_x − Q_y, P)`.
+  have hT : |T P| ≤ C * (H * t) * ‖P‖ :=
+    hD1 T (H * t) hTlin (mul_nonneg hH0 ht0) (fun r => hBΦ r) P
+  have hβ1 : |β1 Qx P| ≤ C * (H * t) * ‖Qx‖ * ‖P‖ :=
+    hD2 β1 (H * t) hβ1l hβ1r (mul_nonneg hH0 ht0) (fun r t' => (hBa r t').2) Qx P
+  have hβ2 : |β2 (Qx - Qy) P| ≤ C * S' * ‖Qx - Qy‖ * ‖P‖ :=
+    hD2 β2 S' hβ2l hβ2r hS'0 (fun r t' => (hBa r t').1) (Qx - Qy) P
+  -- Step 8: `F_d(x, P) − F_d(y, P) = T(P) − β₁(Q_x, P) − β₂(Q_x − Q_y, P)`.
+  have hid : (d⁻¹ * (Φ (x + d • e) P - Φ x P) - d⁻¹ * (a (x + d • e) Qx P - a x Qx P)) -
+      (d⁻¹ * (Φ (y + d • e) P - Φ y P) - d⁻¹ * (a (y + d • e) Qy P - a y Qy P)) =
+      T P - β1 Qx P - β2 (Qx - Qy) P := by
+    simp only [T, β1, β2, map_sub, sub_apply]; ring
+  -- Step 9: the triangle inequality.
+  rw [hid]
+  have hP0 : 0 ≤ ‖P‖ := norm_nonneg P
+  have hCH : 0 ≤ C * (H * t) := mul_nonneg hC (mul_nonneg hH0 ht0)
+  have hCS : 0 ≤ C * S' := mul_nonneg hC hS'0
+  have e1 : |β1 Qx P| ≤ C * (H * t) * Sv * ‖P‖ :=
+    hβ1.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hQxb hCH) hP0)
+  have e2 : |β2 (Qx - Qy) P| ≤ C * S' * (Hv * t) * ‖P‖ :=
+    hβ2.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hQxy hCS) hP0)
+  calc |T P - β1 Qx P - β2 (Qx - Qy) P|
+      ≤ |T P - β1 Qx P| + |β2 (Qx - Qy) P| := abs_sub _ _
+    _ ≤ |T P| + |β1 Qx P| + |β2 (Qx - Qy) P| := by
+        gcongr; exact abs_sub _ _
+    _ ≤ C * (H * t) * ‖P‖ + C * (H * t) * Sv * ‖P‖ + C * S' * (Hv * t) * ‖P‖ := by
+        gcongr
+    _ = C * (H + H * Sv + S' * Hv) * t * ‖P‖ := by ring
 
 end Submission
 
