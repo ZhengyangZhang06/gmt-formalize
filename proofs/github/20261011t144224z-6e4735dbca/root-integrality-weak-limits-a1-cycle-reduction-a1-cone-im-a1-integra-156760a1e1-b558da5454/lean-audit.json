@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "45c84f1d47a6eaac78cf8794870d68c002789d3bcd72d1e355b9ebdd826304e3",
+  "git_delta": {
+    "base_commit": "2499a200bce0b5d74d2ff4d9ec107424e16af52a",
+    "candidate_commit": "e3840f8472f6ac34769d822faa2adaedb624b331",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_ie_measure_inter_compact_lt_top",
+    "diff_sha256": "ee84dbac818bcd287dfb9039dd01c15fc1b5c167eead382f5e5a8683cf89b063",
+    "source_sha256": "24a413e97c8fe4fa7af15eb11ef308072966f1ffeb5c59f76e3c0227055b4611",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_ie_measure_inter_compact_lt_top",
+      "statement": "∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → IsCompact K → K ⊆ U → (μHE[n] : Measure (Eucl P)) (M ∩ K) < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
