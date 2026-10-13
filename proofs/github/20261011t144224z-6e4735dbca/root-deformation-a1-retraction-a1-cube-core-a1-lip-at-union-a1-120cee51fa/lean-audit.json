@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b456b3d48a9d46af002a8ebdd927c94f7b91259a28c2af685744a806f73ebf60",
+  "git_delta": {
+    "base_commit": "a80346bf1bbb538306180350fe64b97f3d19bb1d",
+    "candidate_commit": "9fe3ea843deedc7d449ed3c7d8225e8e5b7d21d9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dr_cc_lip_at_union",
+    "diff_sha256": "edcf343276cf2f3f739af9bf20cec07f8b13959c12efe752a14bf7fa5fc58971",
+    "source_sha256": "adfde3b4e461882d82f884ecaaab903371f090f3cd7851808f2ce576095ab5d3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dr_cc_lip_at_union",
+      "statement": "∀ (X Y : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] (ι : Type) [Finite ι] (G : ι → Set X) (B : Set X) (g : X → Y) (y : X) (K : ℝ), (∀ k, IsClosed (G k)) → B ⊆ ⋃ k, G k → (∀ k, y ∈ G k → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ G k ∩ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
