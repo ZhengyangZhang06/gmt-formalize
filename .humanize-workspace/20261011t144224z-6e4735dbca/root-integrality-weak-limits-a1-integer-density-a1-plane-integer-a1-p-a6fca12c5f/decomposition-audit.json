@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "iwl_sp_exists_compatible_testForm",
+        "ind_pi_pl_linear_pushforward_family",
+        "ind_pi_frame_geometry",
+        "ind_pi_span_integral",
+        "iwl_smooth_pushforward",
+        "exists_contDiff_support_eq_eq_one_iff|exists_contDiff_zero_iff_one_iff_of_isClosed",
+        "analyticOnNhd_compContinuousLinearMapCLM|theorem AnalyticOnNhd.contDiff|theorem ContDiff.fderiv_right|theorem ContDiff.clm_apply|theorem ContinuousLinearMap.fderiv|theorem ContinuousLinearMap.contDiff",
+        "exists_cthickening_subset_open|cthickening_subset_thickening.|closure_thickening_subset_cthickening|IsCompact.cthickening|self_subset_thickening|thickening_subset_cthickening|cthickening_empty",
+        "def support|def zeroRegion|isOpen_zeroRegion|def mass|massOn_mono|def WeaklyConvergesOn|def TestFormOn|abbrev TestFormOn|structure TestFormOn|def Covector|abbrev Covector|def DifferentialForm|abbrev DifferentialForm",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/projected-limit-audit-60c8ea1c/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-p-a6fca12c5f/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-p-a6fca12c5f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/9b2e48fec405a54e7669/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/tmp/pl-split-check-a6fc/Full.lean",
+        "/tmp/projected-limit-audit-60c8ea1c/Audit.lean"
+      ],
+      "conclusion": "Verified pinned revisions and compatibility with the compiler sources. Both child types independently elaborate before their implementations in the frozen contract scope. The cutoff declaration is accepted, has a byte-identical frozen type, and its source matches immutable commit fd5f1e29719e3bfa62df774678e3c6879599f8f9. No other DAG node or decomposition reserves the new family name. The augmented dependency graph is acyclic. Independently checked the supplied proofs and compiled both child proofs plus assembly of the exact selected parent, conditional on its existing frame_geometry and span_integral dependencies. All checked declarations use only propext, Classical.choice and Quot.sound. The split is appropriate: the children supply a common test form and uniform push-forward bounds, and the remaining span-integral calculation establishes precisely the selected weak-convergence conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compatible_testform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary V and A ⊆ U. The proof establishes compactness, the smooth cutoff, smoothness of the variable-derivative pullback, compact support, the support inclusion, and agreement on an open neighborhood of A; the empty-set case is valid. These steps prove every conclusion without circular reliance. The bare name legally reuses the accepted declaration with identical frozen type; its proof and axiom dependencies were independently checked."
+    },
+    {
+      "key": "linear_pushforward_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact one-line proposition, and SPF is the identical frozen antecedent. The proof correctly derives properness using support = U ∖ zeroRegion and compactness of p⁻¹(K) ∩ F inside U, applies SPF and choice, replaces fderiv p by p, and obtains both mass bounds using c = 1 and massOn_mono. No closedness of F or finite-mass assumption is silently required. The bare name is unreserved, and the child has no circular dependencies. Its conclusions provide the action identity and bounds needed by the selected parent."
+    }
+  ],
+  "required_changes": []
+}

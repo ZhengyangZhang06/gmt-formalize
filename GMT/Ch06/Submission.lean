@@ -435,6 +435,76 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     intro x hx
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+/-- Simon Ch. 6, proof of 8.2 (p. 179), `p_# S̃_j` and display (10): if `p` is linear with
+`‖p‖ ≤ 1` and proper on `F`, integer multiplicity `X_k ∈ 𝒟_{m+1}(U)` with `spt X_k ⊆ F` push
+forward (by the smooth push-forward, `f := p`) to integer multiplicity `S_k ∈ 𝒟_{m+1}(V)` with
+`S_k(ω) = X_k(p^#ω)`, `M_W(S_k) ≤ M(X_k)` and `M_W(∂S_k) ≤ M(∂X_k)`. -/
+theorem Submission.ind_pi_pl_linear_pushforward_family :
+    LipschitzPushforwardIntegerMultiplicity →
+    (LipschitzPushforwardIntegerMultiplicity →
+      ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V →
+      ∀ (X : GeometricCurrentOn U (k + 1)) (f : Eucl P → Eucl Q),
+        IsIntegerMultiplicity X → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → MapsTo f U V →
+        (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ X.support)) →
+        ∃ S : GeometricCurrentOn V (k + 1), IsIntegerMultiplicity S ∧
+          (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)),
+            (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+              (η : DifferentialForm (Eucl P) (k + 1)) x =
+                ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap
+                  (fderiv ℝ f x)) →
+            S ω = X η) ∧
+          (∀ (ω : TestFormOn V k) (η : TestFormOn U k),
+            (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+              (η : DifferentialForm (Eucl P) k) x =
+                ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap
+                  (fderiv ℝ f x)) →
+            S.boundary ω = X.boundary η) ∧
+          ∀ c : ℝ, 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q),
+            S.massOn W ≤ ENNReal.ofReal (c ^ (k + 1)) * X.massOn (f ⁻¹' W ∩ U) ∧
+            S.boundary.massOn W ≤ ENNReal.ofReal (c ^ k) * X.boundary.massOn (f ⁻¹' W ∩ U)) →
+    ∀ (P Q m : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (F : Set (Eucl P))
+      (p : Eucl P →L[ℝ] Eucl Q) (X : ℕ → GeometricCurrentOn U (m + 1)),
+      IsOpen U → IsOpen V → ‖p‖ ≤ 1 → MapsTo p U V →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (p ⁻¹' K ∩ F) ∧ p ⁻¹' K ∩ F ⊆ U) →
+      (∀ k, IsIntegerMultiplicity (X k)) → (∀ k, (X k).support ⊆ F) →
+      ∃ S : ℕ → GeometricCurrentOn V (m + 1), (∀ k, IsIntegerMultiplicity (S k)) ∧
+        (∀ (k : ℕ) (ω : TestFormOn V (m + 1)) (η : TestFormOn U (m + 1)),
+          (∃ N : Set (Eucl P), IsOpen N ∧ (X k).support ⊆ N ∧ ∀ x ∈ N,
+            (η : DifferentialForm (Eucl P) (m + 1)) x =
+              ((ω : DifferentialForm (Eucl Q) (m + 1)) (p x)).compContinuousLinearMap p) →
+          S k ω = X k η) ∧
+        ∀ (k : ℕ) (W : Set (Eucl Q)),
+          (S k).massOn W ≤ (X k).mass ∧ (S k).boundary.massOn W ≤ (X k).boundary.mass := by
+  intro hLPF hSPF P Q m U V F p X hU hV hp hpUV hprop hX hXF
+  -- 1. `p` is `C^∞` and `fderiv ℝ p x = p`, so `‖fderiv ℝ p x‖ ≤ 1`.
+  have hpd : ∀ x, fderiv ℝ p x = p := fun x => p.fderiv
+  have hps : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p := p.contDiff
+  -- 2. `p` is proper on `spt X_k`: `p⁻¹(K) ∩ spt X_k = (p⁻¹(K) ∩ F) \ zeroRegion X_k`.
+  have hpk : ∀ k, ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V →
+      IsCompact (p ⁻¹' K ∩ (X k).support) := by
+    intro k K hK hKV
+    obtain ⟨hKc, hKU⟩ := hprop K hK hKV
+    have heq : p ⁻¹' K ∩ (X k).support = (p ⁻¹' K ∩ F) \ (X k).zeroRegion := by
+      ext y
+      constructor
+      · rintro ⟨hy, hys⟩
+        exact ⟨⟨hy, hXF k hys⟩, hys.2⟩
+      · rintro ⟨hyF, hyZ⟩
+        exact ⟨hyF.1, hKU hyF, hyZ⟩
+    rw [heq]
+    exact hKc.diff (X k).isOpen_zeroRegion
+  -- 3. The smooth push-forward by `p` of each `X_k`; choose `S_k`.
+  choose S hSi hSa _ hSm using fun k => hSPF hLPF P Q m U V hU hV (X k) p (hX k) hps hpUV (hpk k)
+  refine ⟨S, hSi, ?_, ?_⟩
+  · -- 4. `S_k(ω) = X_k(η)` when `η = p^#ω` near `spt X_k`, as `fderiv ℝ p x = p`.
+    rintro k ω η ⟨N, hN, hXN, hη⟩
+    exact hSa k ω η ⟨N, hN, hXN, fun x hx => by rw [hpd x]; exact hη x hx⟩
+  · -- 5. The mass bounds at `c = 1`, then `M_{p⁻¹(W) ∩ U} ≤ M_U = M`.
+    intro k W
+    obtain ⟨hm, hbm⟩ := hSm k 1 zero_le_one (fun x => by rw [hpd x]; exact hp) W
+    simp only [one_pow, ENNReal.ofReal_one, one_mul] at hm hbm
+    exact ⟨hm.trans ((X k).massOn_mono inter_subset_right),
+      hbm.trans ((X k).boundary.massOn_mono inter_subset_right)⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
