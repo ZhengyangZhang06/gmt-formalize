@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'restrictDomain' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "restrictDomain|IsRectifiableTriple|IsIntegerMultiplicity|tauAction",
+        "massAdmissibleOn|def GeometricCurrentOn.mass|le_massOn|restrictDomain|testFormOnInclusion|CountablyRectifiable.mono|HasWeightedApproximateTangentSpaceAt|def blowUpMap",
+        "theorem setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "theorem restrict_restrict|theorem ae_restrict_mem₀|theorem ae_restrict_of_ae_restrict_of_subset|theorem restrict_mono",
+        "git show 03443db0c607754737d538401692c78a08383ee0:GMT/Ch06/Submission.lean | sed -n '368,540p'",
+        "git diff d8d46c9587747dee0751a1f780fcafdba16a3886 03443db0c607754737d538401692c78a08383ee0 -- GMT/Ch06/Contract.lean lakefile.toml lake-manifest.json lean-toolchain",
+        "rg -n --hidden --no-ignore -g 'decomposition-v*.json' '\"lean_name\": \"fiw_tb_ri_restrictDomain_mass_le\"' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes",
+        "#print axioms Submission.br_weightedTangent_congr",
+        "#print axioms Submission.br_restrictDomain_isIntegerMultiplicity",
+        "#print axioms Submission.fiw_tb_ri_restrictDomain_mass_le",
+        "#print axioms Submission.fiw_tb_restrictDomain_mass_im"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-restrict-im-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-restrict-im-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-restrict-domain-im-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-restrict-domain-im-a1/lean-audit-v1.json",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/store.py",
+        "/tmp/restrict-domain-independent-audit-fsr3wdd2/BaseMassProof.lean",
+        "/tmp/restrict-domain-independent-audit-fsr3wdd2/AcceptedAndAssembly.lean",
+        "/tmp/restrict-domain-independent-audit-fsr3wdd2/mass_le_NodeChallenge.lean",
+        "/tmp/restrict-domain-independent-audit-fsr3wdd2/restrict_domain_im_NodeChallenge.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned revisions and relevant definitions. The frozen project has no restrictDomain match; its pinned SimonGMT dependency supplies domain restriction, inclusion, mass and tangent-space APIs. The cited Mathlib integral lemmas require no missing integrability or carrier-measurability assumptions. Both child types independently elaborate in generated comparator challenges against the baseline without child implementations. The supplied mass proof, accepted integer-multiplicity proof and exact selected-parent assembly compile; their axioms are only propext, Classical.choice and Quot.sound. The split appropriately separates the selected conjunction and reuses an identical comparator-accepted contract. Both names are bare identifiers, no conflicting reservation exists, and the retained dependency graph is acyclic. No matrix-instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose; openness is legitimately unnecessary. Inclusion preserves the underlying form, support containment and coefficient-norm bound. Thus le_massOn bounds every admissible evaluation, and sSup_le proves the conclusion without relying on the parent. The supplied proof compiles independently. The bare name is unreserved, and no dependencies are needed."
+    },
+    {
+      "key": "restrict_domain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes all hypotheses and is byte-identical to the accepted frozen contract at 03443db0c607754737d538401692c78a08383ee0, so name reuse is valid. Independently checked every triple condition for M ∩ W, the small-scale blow-up equality and measurable-ball integral localization, transfer of the almost-everywhere orientation, and representation using vanishing outside W. These steps prove the exact child without circular reliance or deferred proof construction. Its retained tangent-locality dependency is accepted and has no path to the selected parent; no sibling dependency is missing."
+    }
+  ],
+  "required_changes": []
+}

@@ -833,6 +833,19 @@ theorem Submission.lpf_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl
     hM.nullMeasurableSet hM.pos
     ((hM.integrableOn _ hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure))
     hM.aestronglyMeasurable hξ hT
+/-- Simon Ch. 6, 2.4–2.5 and 2.16: restricting `Y ∈ 𝒟ₖ(U)` to a smaller domain `W ⊆ U` does
+not increase mass, `M(Y|_W) ≤ M(Y)`.  Every `ω` admissible for `M_W(Y|_W)`, regarded as the
+test form `ιω` on `U` with the same underlying form, is admissible for `M_U(Y)`, and
+`Y|_W(ω) = Y(ιω)`.  `W` need not be open. -/
+theorem Submission.fiw_tb_ri_restrictDomain_mass_le :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U) (Y : GeometricCurrentOn U k),
+      (Y.restrictDomain hWU).mass ≤ Y.mass := by
+  intro P k U W hWU Y
+  -- `(Y|_W).mass` is the supremum of `ofReal (Y|_W ω)` over `ω ∈ massAdmissibleOn W k W`.
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- `ιω` has the same underlying form as `ω`, so `tsupport ιω ⊆ W ⊆ U` and `|ιω(x)| ≤ 1`.
+  exact Y.le_massOn (omega := testFormOnInclusion hWU k ω) ⟨hω.1.trans hWU, hω.2⟩
 /-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), the locality step in the
 proof of Ch. 6, 6.3: the tangent spaces of `(M, θ)` at `x` only depend on `M ∩ V` up to
 `Hᵏ`-null sets and on `θ` up to `Hᵏ ⌞ (M ∩ V)`-null sets, `V ∋ x` open.  If `B_δ(x) ⊆ V` and
@@ -1237,6 +1250,54 @@ theorem Submission.fiw_tb_extend_to_univ : (∀ (P n : ℕ) (U : Set (Eucl P)), 
     exact Submission.fiw_tb_ext_isIntegerMultiplicity P (m + 1) U K hU hK hKU Y hYv hX
   · rw [← hbres] at hX
     exact Submission.fiw_tb_ext_isIntegerMultiplicity P m U K hU hK hKU Y.boundary hbYv hX
+/-- Simon Ch. 6, 2.16 and 3.1: the restriction `Y|_W ∈ 𝒟ₖ(W)` of an integer multiplicity
+`Y = τ(M, θ, ξ) ∈ 𝒟ₖ(U)` to an open `W ⊆ U` is the integer multiplicity current
+`τ(M ∩ W, θ, ξ)`. -/
+theorem Submission.br_restrictDomain_isIntegerMultiplicity :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W →
+      ∀ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y →
+        IsIntegerMultiplicity (Y.restrictDomain hWU) := by
+  rintro P k U W hWU hW Y ⟨M, θ, ξ, hM, hθ, hY⟩
+  have hMW : NullMeasurableSet (M ∩ W) (μHE[k] : Measure (Eucl P)) :=
+    hM.nullMeasurableSet.inter hW.measurableSet.nullMeasurableSet
+  refine ⟨M ∩ W, θ, ξ,
+    { subset := inter_subset_right
+      nullMeasurableSet := hMW
+      countablyRectifiable := hM.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => hM.pos x hx.1
+      integrableOn := fun K hK hKW =>
+        (hM.integrableOn K hK (hKW.trans hWU)).mono_set fun y hy => ⟨hy.1.1, hy.2⟩
+      aestronglyMeasurable := hM.aestronglyMeasurable.mono_set inter_subset_left
+      orients := ?_ }, fun x hx => hθ x hx.1, fun ω => ?_⟩
+  · -- `M` and `M ∩ W` agree in the open set `W`, so they have the same weighted approximate
+    -- tangent spaces at points of `W`.
+    have hnull : symmDiff M (M ∩ W) ∩ W = ∅ := by
+      ext y
+      simp only [mem_inter_iff, mem_symmDiff, mem_empty_iff_false, iff_false]
+      tauto
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left hM.orients,
+      ae_restrict_mem₀ hMW] with x hxM hx
+    obtain ⟨τ, hτ, hTx, hξ⟩ := hxM
+    exact ⟨τ, hτ, Submission.br_weightedTangent_congr P k M (M ∩ W) θ θ x W hW hx.2
+      (by rw [hnull, measure_empty]) (ae_of_all _ fun _ => rfl) rfl _ hTx, hξ⟩
+  · -- A test form on `W` vanishes off `W`, so the integrals over `M` and `M ∩ W` agree.
+    have h0 : ∀ x, x ∉ W → θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x) = 0 := fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport fun h => hx (ω.property.2 h), map_zero, mul_zero]
+    rw [GeometricCurrentOn.restrictDomain_apply, hY]
+    simp only [tauAction, testFormOnInclusion_coe]
+    rw [inter_comm M W, ← Measure.restrict_restrict hW.measurableSet,
+      setIntegral_eq_integral_of_forall_compl_eq_zero h0]
+
+/-- Simon Ch. 6, 2.4, 2.16 and 3.1: the restriction `Y|_W ∈ 𝒟ₖ(W)` of `Y ∈ 𝒟ₖ(U)` to an open
+`W ⊆ U` has `M_W(Y|_W) ≤ M_U(Y)`, since every admissible form for `M_W` is admissible for `M_U`,
+and it is integer multiplicity when `Y` is: `Y|_W = τ(M ∩ W, θ, ξ)` for `Y = τ(M, θ, ξ)`. -/
+theorem Submission.fiw_tb_restrictDomain_mass_im :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W →
+      ∀ Y : GeometricCurrentOn U k, (Y.restrictDomain hWU).mass ≤ Y.mass ∧
+        (IsIntegerMultiplicity Y → IsIntegerMultiplicity (Y.restrictDomain hWU)) := by
+  intro P k U W hWU hW Y
+  exact ⟨Submission.fiw_tb_ri_restrictDomain_mass_le P k U W hWU Y,
+    Submission.br_restrictDomain_isIntegerMultiplicity P k U W hWU hW Y⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
