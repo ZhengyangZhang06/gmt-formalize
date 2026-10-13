@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "tilt|cutoff|cut-off|hilbert.?schmidt|trace|dorag_th_",
+        "TiltExcessHeightEstimate|^theorem|^lemma|sorry",
+        "integral_withDensity_eq_integral_smul|ofReal_integral_eq_lintegral_ofReal|setLIntegral_eq_of_support_subset",
+        "norm_fderiv_le_of_lipschitz|fderiv_of_notMem_tsupport|HasCompactSupport.fderiv|norm_starProjection_apply_le|starProjection_apply_eq_zero_iff|sub_starProjection_mem_orthogonal|trace_eq_sum_inner|trace_smulRight",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "python3 /tmp/dorag-independent-audit-ckfbc30l/run_check.py Challenges.lean",
+        "python3 /tmp/dorag-independent-audit-ckfbc30l/run_check.py Children.lean",
+        "python3 /tmp/dorag-independent-audit-ckfbc30l/run_check.py Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b5982cc9c1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b5982cc9c1/decomposition-v1.json",
+        "/tmp/dorag-independent-audit-ckfbc30l/reservations.json",
+        "/tmp/dorag-independent-audit-ckfbc30l/Challenges.lean",
+        "/tmp/dorag-independent-audit-ckfbc30l/Children.lean",
+        "/tmp/dorag-independent-audit-ckfbc30l/Assembly.lean"
+      ],
+      "conclusion": "The frozen Ch07 contract matches the workspace byte-for-byte, and installed dependency revisions match the snapshot. No matching tilt helpers were found in snapshot Ch07; Ch05 contains a different contract behind an admitted main theorem. Independently compiled all five standalone proposition types, the supplied child proof appendices, exact-type checks, and the parent assembly with its dependencies as hypotheses. All five child declarations and the assembly depend only on propext, Classical.choice and Quot.sound. Every lean_name is a bare identifier; scans of 1,707 DAG nodes, 18,358 other node JSON files and 897 wiki files found no collisions. Projection expressions use bundled continuous linear maps and genuine linear-map composition; there is no matrix-instance ambiguity. The split is appropriate and acyclic: energy_inequality uses precisely projection_trace, hs_operator_bound and test_field_divergence. Together with radial_cutoff and the existing measurability sibling, it establishes the exact selected parent with C = 146. The sibling's frozen type matches and has no reverse dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all stated requirements. The profile construction, junction derivatives, constant neighborhood of the center, support closure and Lipschitz derivative bound prove every assertion, including P = 0. The supplied proof is complete and independent."
+    },
+    {
+      "key": "projection_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Symmetry and idempotence identify the squared Hilbert–Schmidt sum with trace((p_T−p_S)²); trace cyclicity and equal finranks give the stated factor 1/2. The proof does not assume the projections commute or invoke the parent."
+    },
+    {
+      "key": "hs_operator_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact squared inequality follows from standard-basis expansion, the triangle inequality and finite Cauchy–Schwarz. Nonnegativity justifies squaring, and the empty-basis case is included. No hypotheses or dependencies are missing."
+    },
+    {
+      "key": "test_field_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at x is sufficient for the stated product-rule computation. Composing the derivative with p_T and applying the rank-one trace identity yields exactly the frozen formula. No dimension equality or undeclared child result is used."
+    },
+    {
+      "key": "energy_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match, including both measurability assumptions and compact support inside W ⊆ U. The proof establishes finite support measure, integrability, the weighted first-variation identity and almost-everywhere tangent rank before using its three declared dependencies. Absolute values handle unrestricted ζ; Young absorption gives 16 and 4, and the nonnegative integrable functions justify conversion to lower integrals. No circular reliance or deferred proof construction remains."
+    }
+  ],
+  "required_changes": []
+}

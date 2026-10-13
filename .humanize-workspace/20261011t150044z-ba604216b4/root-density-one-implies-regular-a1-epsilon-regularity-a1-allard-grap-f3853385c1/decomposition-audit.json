@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem (cauchySeq_of_le_geometric|dist_le_of_le_geometric_of_tendsto)|norm_sq_eq_of_L2|dist_sq_eq_of_L2|instance completeSpace|theorem continuous_apply|isStarProjection_iff_eq_starProjection_range|isSelfAdjoint_iff_isSymmetric|trace_eq_sum_inner|theorem IsProj.trace|norm_starProjection_apply_le|inner_starProjection_left_eq_right|starProjection_eq_self_iff|starProjection_apply_mem",
+        "tendsto.*starProjection|starProjection.*tendsto|isClosed.*IsStarProjection|IsStarProjection.*isClosed|geometric.*sq|sq.*geometric",
+        "starProjection|dorag_ted_pl_geometric_limit|dorag_ted_pl_proj_limit_rank",
+        "lean Challenge.lean",
+        "lean -o SolA.olean SolA.lean",
+        "lean -o SolB.olean SolB.lean",
+        "lean -o Assembly.olean Assembly.lean",
+        "lean EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f3853385c1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f3853385c1/decomposition-v1.json",
+        "/tmp/planes-limit-independent-audit-aronseem/Challenge.lean",
+        "/tmp/planes-limit-independent-audit-aronseem/SolA.lean",
+        "/tmp/planes-limit-independent-audit-aronseem/SolB.lean",
+        "/tmp/planes-limit-independent-audit-aronseem/Assembly.lean",
+        "/tmp/planes-limit-independent-audit-aronseem/EndToEnd.lean"
+      ],
+      "conclusion": "The split is appropriate: geometric convergence and preservation of projection rank are independent obligations that together establish this selected parent. The handoff and DAG agree on its exact frozen type. The snapshot pins project b4d606d and Mathlib 25730c7c; inspected Mathlib files match the installed pinned sources. Searches found the required geometric, PiLp, projection and trace APIs, but no direct replacement for either child; the existing projection convergence results require monotonicity. Both exact child propositions elaborate independently of their implementations in the replayed comparator scope with autoImplicit disabled. Both supplied Lean proofs, an independently written assembly from the exact child types, and comparator-style checks compile with only propext, Classical.choice and Quot.sound. The assembly proves the exact selected parent, including subtraction orientation and constant 4. Projection existence, PiLp completeness and continuous-linear-map composition instances were checked. Scanning all eight local run DAGs and workspace Lean declarations found no name collision. The projection/trace characterization also agrees with equation (2) of [Lai–Lim–Ye, Simpler Grassmannian optimization](https://www.stat.uchicago.edu/~lekheng/work/simpler.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "geometric_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. Steps 1–3 correctly derive a ≥ 0, set h = √q ∈ [0, 1/2], and obtain the unsquared geometric bound. Steps 4–6 establish Cauchy convergence using completeness, pass the tail estimate to the limit, bound the positive denominator, and square to obtain exactly 4*a*q^j. This covers q = 0 and a = 0; the sequence supplies nonemptiness of X. The proof is complete, sufficiently detailed for formalization, and invokes neither child nor parent theorem. The empty dependency list is correct. dorag_ted_pl_geometric_limit is a valid unreserved bare identifier."
+    },
+    {
+      "key": "proj_limit_rank",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree exactly. Steps 1–3 reconstruct a continuous linear operator from the limiting columns and establish pointwise convergence. Step 4 correctly uses projection contraction to handle the varying input in the idempotence limit. Steps 5–6 pass symmetry to the limit and identify the operator as the orthogonal projection onto its range. Steps 7–9 justify trace equals rank, pass the finite trace sum to the limit, and use injectivity of the natural-number cast to recover rank n. Finite dimensionality supplies all required projection, completeness, finiteness and freeness instances, including P = 0. The proof is complete and non-circular; it assumes column convergence without depending on its sibling. dorag_ted_pl_proj_limit_rank is a valid unreserved bare identifier."
+    }
+  ],
+  "required_changes": []
+}

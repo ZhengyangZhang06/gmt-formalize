@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.lipschitz_ibp-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+  "depth": 6,
+  "title": "Integration by parts for a Lipschitz function against a C² test function on a ball (Step 0, first identity)",
+  "statement": "Let n ∈ ℕ and R ∈ ℝ, let u : ℝⁿ → ℝ (ℝⁿ = Euclid n) be Lipschitz with constant L, and let ζ : ℝⁿ → ℝ be of class C² with compact support and tsupport ζ ⊆ B_R := B̆_R(0). Then ∫_{B_R} Σ_{i<n} Du(y)e_i·Dζ(y)e_i dy = −∫_{B_R} u(y)·Σ_{i<n} D²ζ(y)(e_i, e_i) dy, where D = fderiv ℝ (so Du(y) = 0 wherever u is not differentiable), e_i = EuclideanSpace.single i 1, D²ζ(y)(a, b) = iteratedFDeriv ℝ 2 ζ y ![a, b], and integrals are Lebesgue integrals over the open ball.",
+  "lean_statement": "∀ (n : ℕ) (R : ℝ) (u ζ : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ y (EuclideanSpace.single i (1 : ℝ)) = -∫ y in ball (0 : Euclid n) R, u y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+  "lean_name": "dorag_haa_lipschitz_ibp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ed3a52633a-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1.curvature-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1",
+  "depth": 6,
+  "title": "Bound on the mean-curvature term of a radial cutoff",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P (Euclid P), y ∈ ℝ^P, H : ℝ^P → ℝ^P, φ : ℝ → ℝ and κ, A, τ ∈ ℝ, with τ > 0, φ(u) ≥ 0 for every u, φ(u) = 0 for every u ≥ A, |H(x)| ≤ κ for every x, and x ↦ φ(|x − y|/τ) μ-integrable. Then |∫ φ(|x − y|/τ)·⟨x − y, H(x)⟩ dμ(x)| ≤ A·κ·τ·∫ φ(|x − y|/τ) dμ(x) (Bochner integrals).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (H : Euclid P → Euclid P) (φ : ℝ → ℝ) (κ A τ : ℝ), 0 < τ → (∀ u, 0 ≤ φ u) → (∀ u, A ≤ u → φ u = 0) → (∀ x, ‖H x‖ ≤ κ) → Integrable (fun x => φ (‖x - y‖ / τ)) μ → |∫ x, φ (‖x - y‖ / τ) * inner ℝ (x - y) (H x) ∂μ| ≤ A * κ * τ * ∫ x, φ (‖x - y‖ / τ) ∂μ",
+  "lean_name": "doragm_sab_curvature_term_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-cfb20e63f1-a1"
+}
