@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def approxTangentPlane|def firstVariation|def measure|def IsUnitOrientationOf|abbrev MultiVector|abbrev Covector|^import|^open|^namespace|sorry|axiom",
+        "allard|tilt.?excess|harmonic.?approx|lipschitz.?approx",
+        "rellich|kondrachov|weyl.s lemma",
+        "dorag_|codim1_ldr_ag_",
+        "theorem ae_tendsto_average_norm_sub|theorem exists_disjoint_subfamily_covering_enlargement_closedBall|theorem ae_differentiableAt|theorem extend_real|theorem norm_fderiv_le_of_lipschitz|theorem measurable_fderiv",
+        "theorem simon_theorem_3_3|theorem simon_theorem_3_6|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|def weighted_area_formula_lipschitz_injOn|theorem weighted_area_formula_lipschitz_injOn|theorem injective_area_formula_lipschitz|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/ag-ldr-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/ag-ldr-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-dc03e60a0d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-dc03e60a0d/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/ag-ldr-independent-audit/Types.lean",
+        "/tmp/ag-ldr-independent-audit/Types.log",
+        "/tmp/ag-ldr-independent-audit/Assembly.lean",
+        "/tmp/ag-ldr-independent-audit/Assembly.log",
+        "/tmp/ag-ldr-independent-audit/ReuseChecks.json"
+      ],
+      "conclusion": "The split appropriately decomposes the selected codim1_ldr_allard_bounded_curvature_graph contract. Every child contributes directly or transitively, and dependencies are acyclic and correctly directed. Project, Mathlib and SimonGMT pins match. The snapshot contains no dorag_ or codim1_ldr_ag_ declarations; the Rellich/Kondrachov/Weyl search returned no matches. Chapter 5's analogous project theorem is sorry-backed, and SimonGMT explicitly leaves Allard regularity unformalized. All twelve exact types independently elaborate without child implementations. The supplied parent assembly was independently rerun successfully against five verbatim child hypotheses and the exact selected conclusion; its only axioms are propext, Classical.choice and Quot.sound. All names are bare identifiers. Nine reused declarations have identical frozen types and passing archived comparator/kernel checks; evidence is recorded in ReuseChecks.json. The three fresh names have no owners across the eight chapter DAGs. Inline constructions use the intended Euclidean, projection and linear-map instances; no matrix-unit ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Orientation determines the tangent plane almost everywhere; the compact-frame quotient constructs the required Borel projection map, and absolute continuity transfers measurability to R.measure. The n = 0 case is covered. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff identity, exponential inequalities and closed-ball limits prove both annular bounds. Approximate-tangent density and upper semicontinuity establish the support density lower bound, yielding D. Local finiteness, measurability and the zero-radius atom are justified. The type and accepted reuse match."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof combines concentration on the carrier, the sibling density bound, localized outer regularity and density comparison to prove precisely the asserted Hausdorff-null conclusion. Normalization changes do not affect nullity. Its dependency and identical-type reuse are valid."
+    },
+    {
+      "key": "graph_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rademacher, the weighted area formula and the blow-up limit identify graph tangents. Localized upper-density estimates transfer them to the carrier; injectivity handles the universal parameter quantifier. All hypotheses and exceptional sets match the exact type. Accepted reuse is valid."
+    },
+    {
+      "key": "tilt_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit cutoff, projection-trace identity and first-variation test yield the stated unnormalized inequality with C = 146. Integrability and conversion to lower integrals are justified, and n = 0 is handled. The prose, type and accepted declaration agree."
+    },
+    {
+      "key": "harmonic_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactness contradiction supplies harmonic approximation; scaling, mean-value estimates and Taylor expansion prove all three affine-output bounds with the required constant dependencies. This is a complete argument, consistent with [Simon, Chapter 5 §3](https://web.stanford.edu/class/math285/ts-gmt). The fresh name is unreserved."
+    },
+    {
+      "key": "density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chosen thresholds give the upper, lower and normal-part estimates throughout the stated enlarged range. Localized density comparison establishes the multiplicity lower density; integrality then forces multiplicity one. The four conclusions match the Lean conjunction and accepted frozen type."
+    },
+    {
+      "key": "affine_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Packing, the normal-part estimate and Chebyshev produce an actual tangent n-plane. The identity 1/2 − αn = α gives the height bound, and tilt_height gives the integral bound with the stated constants. All centers and radii satisfy the dependency hypotheses. Accepted reuse is valid."
+    },
+    {
+      "key": "lipschitz_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The good-set covering, two-case cone estimate, coordinate extension and missing-support estimate prove both 5A and 5B for the same graph. Constants, corrected radii and k = 0 are compatible. The prose includes all hypotheses, and the exact type matches the accepted declaration."
+    },
+    {
+      "key": "tilt_excess_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses the declared siblings to derive the weak equation, transfer it through the graph area formula, obtain affine approximation and control the new plane's excess. The zero-excess case and sequential threshold choices are covered. It proves the exact ENNReal contract without circularity; the fresh name is valid."
+    },
+    {
+      "key": "tilt_excess_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The density lower bound controls successive projection differences. Iteration gives a Cauchy sequence whose limit remains a rank-n orthogonal projection; interpolation gives every requested scale and the initial-plane bound. Finiteness justifies the ENNReal translation. Dependencies and the fresh name are valid."
+    },
+    {
+      "key": "graph_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly interprets the signed K bound through K⁺. Graph tangents and differentiation of the measure identify the limiting planes; the projection estimate at Lipschitz constant 1/4 yields Campanato control, and mollification proves C¹ regularity on the exact open ball. Accepted reuse has an identical type."
+    }
+  ],
+  "required_changes": []
+}
