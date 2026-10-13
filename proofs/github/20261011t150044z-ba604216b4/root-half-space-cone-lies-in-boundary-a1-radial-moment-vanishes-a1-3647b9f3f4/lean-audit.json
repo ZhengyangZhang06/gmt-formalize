@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ea6d4ec8431bd93af8b18069dd92f335da905d7e384b9119cc6ba9030eb2467",
+  "git_delta": {
+    "base_commit": "cd85cf76069b4253c566d71bc95ea30382f99c75",
+    "candidate_commit": "96dc55b0f001c21693db3be85dfef44bf762e7ba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "stationary_radial_imrep_weighted_moment_eq_zero",
+    "diff_sha256": "072b46d02e9ebcc280f6933a601a8decd53edf4f2f462d4b3220bec67a2a9562",
+    "source_sha256": "5f617e87922516b97365167bc2d328ffe4f80e744f26e13e46f7c31f33f5e218",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stationary_radial_imrep_weighted_moment_eq_zero",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → ∀ (e : Euclid P) (ρ : ℝ), ∫ x, max (ρ ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ e x ∂R.measure = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
