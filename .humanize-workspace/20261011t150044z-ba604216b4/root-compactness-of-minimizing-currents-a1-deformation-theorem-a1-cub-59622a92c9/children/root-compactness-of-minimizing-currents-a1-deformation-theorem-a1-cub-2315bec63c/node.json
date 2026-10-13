@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1.l1_limit-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1",
+  "depth": 5,
+  "title": "An affine bound in ∫|v_k| passes to the L¹ limit against a bounded multiplier",
+  "statement": "Let (α, μ) be a measure space (α : Type with a σ-algebra), S ⊆ α a measurable set, v_k : α → ℝ (k ∈ ℕ), w, h : α → ℝ, and A, B, M ∈ ℝ with B ≥ 0. Assume: every v_k and w are integrable on S; h is a.e.-strongly measurable for μ restricted to S; |h(x)| ≤ M for every x ∈ S; ∫_S |v_k − w| dμ → 0 as k → ∞; and |∫_S v_k h dμ| ≤ A + B ∫_S |v_k| dμ for every k. Then |∫_S w h dμ| ≤ A + B ∫_S |w| dμ.",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (S : Set α) (v : ℕ → α → ℝ) (w h : α → ℝ) (A B M : ℝ), MeasurableSet S → 0 ≤ B → (∀ k, IntegrableOn (v k) S μ) → IntegrableOn w S μ → AEStronglyMeasurable h (μ.restrict S) → (∀ x ∈ S, |h x| ≤ M) → Tendsto (fun k => ∫ x in S, |v k x - w x| ∂μ) atTop (𝓝 0) → (∀ k, |∫ x in S, v k x * h x ∂μ| ≤ A + B * ∫ x in S, |v k x| ∂μ) → |∫ x in S, w x * h x ∂μ| ≤ A + B * ∫ x in S, |w x| ∂μ",
+  "lean_name": "cmcdt_cbm_bvt_l1_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-2315bec63c-a1"
+}

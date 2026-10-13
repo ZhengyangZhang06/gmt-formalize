@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1.cube_cont_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1",
+  "depth": 5,
+  "title": "Continuous functions are bounded and integrable on the open unit cube",
+  "statement": "Let k ∈ ℕ, let Euclid k = EuclideanSpace ℝ (Fin k) carry Lebesgue measure (volume), and let Q₁ := {y : 0 < y_i < 1 for all i}. If f : Euclid k → ℝ is continuous, then (a) there is M ∈ ℝ with |f(y)| ≤ M for every y ∈ Q₁, and (b) f is integrable on Q₁.",
+  "lean_statement": "∀ (k : ℕ) (f : Euclid k → ℝ), Continuous f → (∃ M : ℝ, ∀ y ∈ {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ M) ∧ IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}",
+  "lean_name": "cmcdt_cbm_bvt_cube_cont_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-39ff7301b9-a1"
+}

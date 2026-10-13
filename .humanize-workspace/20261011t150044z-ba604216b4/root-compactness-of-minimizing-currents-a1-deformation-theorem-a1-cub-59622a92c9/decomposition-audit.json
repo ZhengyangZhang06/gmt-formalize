@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_cbm_bvt|cube_cont_bound|cube_exhaust|l1_limit",
+        "exists_bound_of_continuousOn",
+        "theorem ContDiff.continuous_fderiv\\b|def coeLM\\b|theorem LinearMap.continuous_of_finiteDimensional|def homeomorph|theorem continuous_apply|volume_preserving_ofLp",
+        "IsCountablyGenerated.*nhdsWithin|nhdsWithin.*IsCountablyGenerated|isCountablyGenerated_nhdsWithin",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bvtrace-decomp/final/Final.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bvtrace-independent-audit-vyc1klkp/Checked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-59622a92c9/parent-child-handoff.json",
+        "/tmp/bvtrace-decomp/final/Final.lean",
+        "/tmp/bvtrace-independent-audit-vyc1klkp/Checked.lean"
+      ],
+      "conclusion": "The split appropriately isolates three analytic steps of the selected trace estimate. The snapshot contract matches the workspace contract; the pinned Mathlib revision and inspected build sources agree. The name search returned no matches, and the DAG scan found no reserved-name collisions or reachable dependency cycles. All proposed names are bare identifiers. Each exact one-line child type independently elaborated as Prop before its implementation. All three child proofs compiled with only propext, Classical.choice and Quot.sound. A separate assembly, taking the exact frozen smooth_approx and smooth_trace contracts as explicit hypotheses, proved the exact selected parent type with the same standard axioms and no sorryAx. Thus sibling availability remains an existing dependency, not an assumed completed proof. The required volume and right-neighborhood filter instances also checked successfully."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_cont_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including k = 0. The supplied proof establishes compactness of the closed cube through PiLp.homeomorph, obtains boundedness and integrability there, and restricts both conclusions to the open cube. All hypotheses are present, and no parent or sibling result is used. This supplies the parent's divergence bound and approximation integrability."
+    },
+    {
+      "key": "l1_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose lists every hypothesis in the exact standalone Lean type. The proof establishes product integrability, bounds the integral difference by M ε_k, and uses B ≥ 0 to obtain the bound with error (B + M) ε_k. Passing to its limit proves the conclusion. No assumption M ≥ 0 is missing; the stated multiplier bound suffices. The argument is complete and non-circular."
+    },
+    {
+      "key": "cube_exhaust",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree. The proof establishes measurability, eventual cube inclusion, and eventual pointwise equality of indicators using finitely many coordinates, including the empty-coordinate case. Dominated convergence under volume restricted to Q₁ applies with integrable bound |f| and the verified countably generated filter. This proves the required exhaustion independently and supplies the parent's final limit passage."
+    }
+  ],
+  "required_changes": []
+}
