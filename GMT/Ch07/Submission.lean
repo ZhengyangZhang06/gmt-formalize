@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Slicing weakly convergent cycles at a good level (a step of White's projection argument that
+a limit of cycles has weight `≥ 1`, towards Simon 7.2.4).  Assume the slicing lemma `(SL)`, the
+convergence of slices `(T2)` and the majorant lemma `(MM)`.  Let `g` be `L`-Lipschitz, `G` open, `a < b`, `Γₖ ⇀ X` with
+`∂Γₖ = 0`, `Γₖ(ω) = ∫ ⟨ω, ξₖ⟩ dμₖ`, `X(ω) = ∫ ⟨ω, ξ_X⟩ dμ_X`, `limsupₖ μₖ(K) ≤ μ_c(K)` for compact
+`K`, `μ_c{g = s} = 0` for `s ∈ (a, b)` and `liminfₖ μₖ(G ∩ {a < g < b}) = 0`.  Then there are
+`t ∈ (a, b)` and a subsequence `φ` such that the slices `Zₖ = Γ_{φ(k)}⌞{g < t}` satisfy
+`M_G(∂Zₖ) < ∞`, `M_G(∂Zₖ) → 0` and `Zₖ(ω) → ∫_{g<t} ⟨ω, ξ_X⟩ dμ_X`. -/
+theorem Submission.cbr_ci_pw_good_level_slices : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P k : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P k) (μX μ : Measure (Euclid P)) (ξX : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (t : ℝ), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) k, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U k, Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ α : Covector (Euclid P) k, |ξX x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → μ {x | f x = t} = 0 → ∀ ω : TestFormOn U k, Tendsto (fun j => ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) atTop (𝓝 (∫ x in {x | f x < t}, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX))) → (∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P d : ℕ) (Γs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P (d + 1)) (μX μc : Measure (Euclid P)) (ξX : Euclid P → MultiVector P (d + 1)) (g : Euclid P → ℝ) (L : NNReal) (G : Set (Euclid P)) (a b : ℝ), LipschitzWith L g → IsOpen G → a < b → WeaklyConvergesOn Γs X → (∀ k, (Γs k).boundary = 0) → (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → μs k K < ∞) → (∀ k, AEStronglyMeasurable (ξs k) (μs k)) → (∀ k, ∀ᵐ x ∂(μs k), ∀ β : Covector (Euclid P) (d + 1), |ξs k x β| ≤ covectorEuclideanNorm β) → (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (d + 1)), Γs k ω = ∫ x, ξs k x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs k)) → (∀ K : Set (Euclid P), IsCompact K → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ β : Covector (Euclid P) (d + 1), |ξX x β| ≤ covectorEuclideanNorm β) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μX) → (∀ K : Set (Euclid P), IsCompact K → μc K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun k => μs k K) atTop ≤ μc K) → (∀ t ∈ Ioo a b, μc {x | g x = t} = 0) → (∀ k, μs k (G ∩ {x | a < g x ∧ g x < b}) < ∞) → liminf (fun k => μs k (G ∩ {x | a < g x ∧ g x < b})) atTop = 0 → ∃ t ∈ Ioo a b, ∃ (φ : ℕ → ℕ) (Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), StrictMono φ ∧ (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (d + 1)), Z k ω = ∫ x in {x | g x < t}, ξs (φ k) x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs (φ k))) ∧ (∀ k, (Z k).boundary.massOn G < ∞) ∧ Tendsto (fun k => (Z k).boundary.massOn G) atTop (𝓝 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Tendsto (fun k => Z k ω) atTop (𝓝 (∫ x in {x | g x < t}, ξX x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μX)) := by
+  intro SL T2 MM P d Γs X μs ξs μX μc ξX g L G a b hg hG hab hconv hbd hμs hξs hξsb hΓs hμX
+    hξX hξXb hX hμc hlimsup hlevel hfin hliminf
+  -- Slice every `Γₖ` by `g` with `(SL)`; `∂Γₖ = 0` is represented by the zero measure.
+  have hslice := fun k => SL P d univ (Γs k) (μs k) 0 (ξs k) (fun _ => 0) g L isOpen_univ
+    (fun K hK _ => hμs k K hK) (fun K _ _ => by simp) (hξs k) aestronglyMeasurable_const
+    (hξsb k) (by simp) (hΓs k) (fun η => by simp [hbd k]) hg
+  choose A B hA hB hAB hmass hint using hslice
+  -- The slices `Bₖ(s)` of `∂Γₖ = 0` vanish, so `∂Aₖ(s) - Bₖ(s) = ∂Aₖ(s)`.
+  have hsub : ∀ k s, (A k s).boundary - B k s = (A k s).boundary := by
+    intro k s
+    ext η
+    change (A k s).boundary η - B k s η = (A k s).boundary η
+    rw [hB k s η]
+    simp
+  -- `(MM)` gives a majorant with zero integral over `(a, b)`, hence a level `t ∈ (a, b)` with
+  -- `liminfₖ M_G(∂Aₖ(t)) = 0`.
+  obtain ⟨w, hwm, hwae, hwint⟩ := MM P μs g G a b L
+    (fun k s => ((A k s).boundary - B k s).massOn G) hg.continuous hfin
+    (fun k s _ => hmass k G s hG)
+  rw [hliminf, mul_zero, nonpos_iff_eq_zero, lintegral_eq_zero_iff hwm] at hwint
+  have hne : (volume : Measure ℝ) (Ioo a b) ≠ 0 := by
+    rw [Real.volume_Ioo, Ne, ENNReal.ofReal_eq_zero, not_le]
+    exact sub_pos.2 hab
+  obtain ⟨t, ht, hlt, hw0⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hne
+    ((ae_restrict_of_ae hwae).and hwint)
+  have h0 : liminf (fun k => ((A k t).boundary - B k t).massOn G) atTop ≤ 0 :=
+    (hlt ht).trans_eq hw0
+  -- A subsequence with `M_G(∂A_{φ(k)}(t)) < 1/k`.
+  have hfreq : ∀ m : ℕ, ∃ᶠ k in atTop, ((A k t).boundary - B k t).massOn G < (m : ℝ≥0∞)⁻¹ :=
+    fun m => frequently_lt_of_liminf_lt (by isBoundedDefault)
+      (h0.trans_lt (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top m)))
+  obtain ⟨φ, hφ, hφlt⟩ := extraction_forall_of_frequently hfreq
+  have hZ : ∀ k, (A (φ k) t).boundary.massOn G < (k : ℝ≥0∞)⁻¹ := fun k => by
+    simpa only [hsub] using hφlt k
+  refine ⟨t, ht, φ, fun k => A (φ k) t, hφ, fun k ω => hA (φ k) t ω,
+    fun k => (hZ k).trans_le le_top,
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
+      ENNReal.tendsto_inv_nat_nhds_zero (fun _ => zero_le) (fun k => (hZ k).le), fun ω => ?_⟩
+  -- `(T2)` along the subsequence: `Γ_{φ(k)} ⇀ X` and `limsupₖ μ_{φ(k)} ≤ limsupₖ μₖ ≤ μ_c`.
+  have hT2 := T2 P (d + 1) univ (fun k => Γs (φ k)) X (fun k => μs (φ k)) (fun k => ξs (φ k)) μX
+    μc ξX g t isOpen_univ hg.continuous (fun ω => (hconv ω).comp hφ.tendsto_atTop)
+    (fun j K hK _ => hμs (φ j) K hK) (fun j => hξs (φ j)) (fun j => hξsb (φ j))
+    (fun j ω => hΓs (φ j) ω) (fun K hK _ => hμX K hK) hξX hξXb hX (fun K hK _ => hμc K hK)
+    (fun K hK _ => (hφ.tendsto_atTop.limsup_comp_le_limsup (u := fun k => μs k K)).trans
+      (hlimsup K hK))
+    (hlevel t ht) ω
+  exact Tendsto.congr (fun k => (hA (φ k) t ω).symm) hT2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
