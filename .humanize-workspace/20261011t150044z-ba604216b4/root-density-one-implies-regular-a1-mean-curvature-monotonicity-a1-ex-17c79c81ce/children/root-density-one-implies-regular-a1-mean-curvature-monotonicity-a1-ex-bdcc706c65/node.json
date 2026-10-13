@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1.ode_monotonicity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+  "depth": 4,
+  "title": "Monotonicity of e^{κs}s^{−n}I(s) on (0, r] from the differential inequality nI − sI′ ≤ κsI",
+  "statement": "Let n ∈ ℕ, κ, r ∈ ℝ and I, I′ : ℝ → ℝ. Assume that I is continuous on (0, r], that I has derivative I′(s) at every s ∈ (0, r), and that n·I(s) − s·I′(s) ≤ κ·s·I(s) for every s ∈ (0, r). Then s ↦ e^{κs}·s^{−n}·I(s) (in Lean: fun s => Real.exp (κ * s) / s ^ n * I s) is nondecreasing on (0, r] (MonotoneOn on Ioc 0 r); i.e. e^{κσ}σ^{−n}I(σ) ≤ e^{κρ}ρ^{−n}I(ρ) whenever 0 < σ ≤ ρ ≤ r. No sign condition on κ or on I is assumed; for r ≤ 0 the statement is vacuous.",
+  "lean_statement": "∀ (n : ℕ) (κ r : ℝ) (I I' : ℝ → ℝ), ContinuousOn I (Ioc 0 r) → (∀ s ∈ Ioo 0 r, HasDerivAt I (I' s) s) → (∀ s ∈ Ioo 0 r, (n : ℝ) * I s - s * I' s ≤ κ * s * I s) → MonotoneOn (fun s => Real.exp (κ * s) / s ^ n * I s) (Ioc 0 r)",
+  "lean_name": "dsmc_em_exp_monotoneOn_of_deriv_ineq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-bdcc706c65-a1"
+}
