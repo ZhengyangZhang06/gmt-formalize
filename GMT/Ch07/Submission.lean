@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 6 of the oriented graph chart (zero-scale limit plane, Simon 7.5.8): the inverse function
+theorem with a `C¹` local inverse on an open target (as used in Simon Ch. 2, §4).  If `φ` is `C¹`
+on an open `V ∋ z₀` and `Dφ(z₀)` is injective, then `Dφ(z₀)` is invertible, so
+`V₁ = V ∩ {z : Dφ(z) invertible}` is an open neighbourhood of `z₀`.  The inverse function theorem
+restricted to `V₁` gives `φ : V₀ → O` bijective with inverse `χ`, and `χ` is `C¹` at every
+`a ∈ O` because `Dφ(χ(a))` is invertible. -/
+theorem Submission.codim1_zsl_gc_local_inverse : ∀ (d : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), IsOpen V → z₀ ∈ V → ContDiffOn ℝ 1 φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (χ : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ 1 χ O ∧ MapsTo χ O V₀ ∧ (∀ a ∈ O, φ (χ a) = a) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ χ (φ z) = z := by
+  intro d φ V z₀ hV hz₀ hφ hinj
+  -- `Dφ(z₀)` is invertible (injective endomorphism of a finite-dimensional space)
+  let L₀ : Euclid d ≃L[ℝ] Euclid d :=
+    (LinearEquiv.ofInjectiveEndo
+      ((fderiv ℝ φ z₀ : Euclid d →L[ℝ] Euclid d) : Euclid d →ₗ[ℝ] Euclid d)
+      hinj).toContinuousLinearEquiv
+  have hL₀ : (L₀ : Euclid d →L[ℝ] Euclid d) = fderiv ℝ φ z₀ := by
+    ext x; rfl
+  have hcd : ∀ z ∈ V, ContDiffAt ℝ 1 φ z := fun z hz => hφ.contDiffAt (hV.mem_nhds hz)
+  have hcont : ContinuousOn (fderiv ℝ φ) V := hφ.continuousOn_fderiv_of_isOpen hV le_rfl
+  -- the open set `V₁` where `Dφ` is invertible
+  let V₁ : Set (Euclid d) :=
+    V ∩ fderiv ℝ φ ⁻¹' range ((↑) : (Euclid d ≃L[ℝ] Euclid d) → Euclid d →L[ℝ] Euclid d)
+  have hV₁ : IsOpen V₁ := hcont.isOpen_inter_preimage hV ContinuousLinearEquiv.isOpen
+  have hz₀V₁ : z₀ ∈ V₁ := ⟨hz₀, L₀, hL₀⟩
+  have hstrict : HasStrictFDerivAt φ (L₀ : Euclid d →L[ℝ] Euclid d) z₀ := by
+    rw [hL₀]
+    exact (hcd z₀ hz₀).hasStrictFDerivAt one_ne_zero
+  -- the inverse function theorem, restricted to `V₁`
+  obtain ⟨e, he, hz₀e, hsrc⟩ : ∃ e : OpenPartialHomeomorph (Euclid d) (Euclid d),
+      ⇑e = φ ∧ z₀ ∈ e.source ∧ e.source ⊆ V₁ :=
+    ⟨(hstrict.toOpenPartialHomeomorph φ).restrOpen V₁ hV₁, rfl,
+      ⟨hstrict.mem_toOpenPartialHomeomorph_source, hz₀V₁⟩, inter_subset_right⟩
+  subst he
+  refine ⟨e.source, e.target, e.symm, e.open_source, e.open_target, hz₀e,
+    fun z hz => (hsrc hz).1, ?_, e.mapsTo_symm, fun a ha => e.right_inv ha,
+    fun z hz => ⟨e.map_source hz, e.left_inv hz⟩⟩
+  -- `χ = e.symm` is `C¹` at each `a ∈ O`, since `Dφ(χ(a))` is invertible
+  intro a ha
+  obtain ⟨hV', L, hL⟩ := hsrc (e.map_target ha)
+  have hd : HasFDerivAt e (L : Euclid d →L[ℝ] Euclid d) (e.symm a) := by
+    rw [hL]
+    exact ((hcd _ hV').differentiableAt one_ne_zero).hasFDerivAt
+  exact (e.contDiffAt_symm ha hd (hcd _ hV')).contDiffWithinAt
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
