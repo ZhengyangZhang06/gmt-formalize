@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.measure_subadditive-a1.open_to_borel-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.measure_subadditive-a1",
+  "depth": 5,
+  "title": "Comparison of measures from open subsets: if μ(ℝ^P ∖ U) = 0, ν is finite on compact subsets of the open set U, and μ(V) ≤ ν(V) for every open V ⊆ U, then μ ≤ ν",
+  "statement": "Let P ∈ ℕ and U ⊆ ℝ^P be open, and let μ, ν be measures on the Borel σ-algebra of ℝ^P (Mathlib Measure (Euclid P), evaluated on arbitrary subsets as outer measures). Assume (i) μ(ℝ^P ∖ U) = 0; (ii) ν(K) < ∞ for every compact K ⊆ U; (iii) μ(V) ≤ ν(V) for every open V ⊆ U. Then μ ≤ ν, i.e. μ(E) ≤ ν(E) for every E ⊆ ℝ^P (equivalently, for every Borel E). No finiteness of μ on compact sets and no local finiteness of ν near the boundary of U or outside U is assumed.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ V : Set (Euclid P), IsOpen V → V ⊆ U → μ V ≤ ν V) → μ ≤ ν",
+  "lean_name": "dtc_bc_lc_measure_le_of_le_on_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8bc85f342c-a1"
+}
