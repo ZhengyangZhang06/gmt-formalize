@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4cb5e0b0fa425666afb4393a7b4be0f578a0077e25287b440a3bc90d08b6ad0d",
+  "git_delta": {
+    "base_commit": "c41220806ce5c78b76f5f2547d6ed3bb7d972229",
+    "candidate_commit": "6b8166d06591013172415025360a39d91ce8b50d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lura_lintegral_image_eq_tsum_pieces",
+    "diff_sha256": "bac70e3ba3d6d15a84bd7856cf55270402c8d7681e3a7a0e5c3e0799fe9ea60c",
+    "source_sha256": "5b4096ee724a0034b1037b5b7545905c790ec768f4b086453af977d056f4536c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lura_lintegral_image_eq_tsum_pieces",
+      "statement": "∀ (m d P : ℕ) (M : Set (Euclid d)) (A : ℕ → Set (Euclid d)) (G : Euclid d → Euclid P), ContinuousOn G M → InjOn G M → (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[m] (G '' (M \\ ⋃ i, A i)) = 0 → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' M, g w ∂μHE[m] = ∑' i, ∫⁻ w in G '' A i, g w ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
