@@ -6,7 +6,6 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
-import Mathlib.Topology.ContinuousMap.SecondCountableSpace
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -466,6 +465,7 @@ theorem Submission.dor_lmbs_tfa_covector_finiteDimensional : ∀ (P n : ℕ), Fi
   refine FiniteDimensional.of_injective L fun α β h => ?_
   apply ContinuousAlternatingMap.toAlternatingMap_injective
   exact e.ext_alternating fun v _ => congrFun h v
+
 /-- Test forms supported in a fixed compact `K` have a countable subfamily `D` approximating every
 such `ω` together with `dω`, uniformly on `ℝᴾ`.  The covector spaces are finite-dimensional
 (`dor_lmbs_tfa_covector_finiteDimensional`), so `C(K, Λⁿ × Λⁿ⁺¹)` is second countable; pull back
@@ -482,8 +482,51 @@ theorem Submission.dor_lmbs_tfa_fixed_support_dense : ∀ (P n : ℕ) (U K : Set
   -- Step 2: `Λⁿ` and `Λⁿ⁺¹` are finite-dimensional, hence proper and second countable
   have := Submission.dor_lmbs_tfa_covector_finiteDimensional P n
   have := Submission.dor_lmbs_tfa_covector_finiteDimensional P (n + 1)
-  -- Step 3: `K` is compact, so `C(K, Λⁿ × Λⁿ⁺¹)` is second countable with the sup metric
+  have : ProperSpace (Covector (Euclid P) n) := FiniteDimensional.proper_real _
+  have : ProperSpace (Covector (Euclid P) (n + 1)) := FiniteDimensional.proper_real _
+  have : SecondCountableTopology (Covector (Euclid P) n) := secondCountable_of_proper
+  have : SecondCountableTopology (Covector (Euclid P) (n + 1)) := secondCountable_of_proper
+  -- Step 3: `K` is compact, so `C(K, Λⁿ × Λⁿ⁺¹)` carries the sup metric, and it is second
+  -- countable: up to `ε`, `f` is determined by a modulus `j` of uniform continuity at scale `ε / 4`
+  -- and by the indices, in a dense sequence `s`, of `ε / 4`-approximations of its values on a
+  -- finite `1 / (j + 1)`-net `t j` of `K`
   have : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  have : SecondCountableTopology C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)) := by
+    refine Metric.secondCountable_of_countable_discretization
+      (α := C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1))) fun ε hε => ?_
+    obtain ⟨s, hs⟩ := TopologicalSpace.exists_dense_seq
+      (Covector (Euclid P) n × Covector (Euclid P) (n + 1))
+    choose r hr using fun y : Covector (Euclid P) n × Covector (Euclid P) (n + 1) =>
+      hs.exists_dist_lt y (by positivity : (0 : ℝ) < ε / 4)
+    have hnet : ∀ j : ℕ, ∃ t : Finset K, ∀ x : K, ∃ p ∈ t, dist x p < 1 / ((j : ℝ) + 1) := by
+      intro j
+      obtain ⟨t, -, ht⟩ := (isCompact_univ : IsCompact (univ : Set K)).elim_nhds_subcover
+        (fun x => ball x (1 / ((j : ℝ) + 1))) fun x _ => ball_mem_nhds x (by positivity)
+      exact ⟨t, fun x => by simpa using ht (mem_univ x)⟩
+    choose t ht using hnet
+    have hmod : ∀ f : C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)), ∃ j : ℕ,
+        ∀ x y : K, dist x y < 1 / ((j : ℝ) + 1) → dist (f x) (f y) < ε / 4 := by
+      intro f
+      obtain ⟨δ, hδ, hfδ⟩ := Metric.uniformContinuous_iff.1
+        (CompactSpace.uniformContinuous_of_continuous f.continuous) (ε / 4) (by positivity)
+      obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+      exact ⟨j, fun x y hxy => hfδ (hxy.trans hj)⟩
+    choose J hJ using hmod
+    refine ⟨ℕ × List ℕ, inferInstance, fun f => (J f, (t (J f)).toList.map fun p => r (f p)),
+      fun f g hfg => (ContinuousMap.dist_le hε.le).2 fun x => ?_⟩
+    obtain ⟨hj, hl⟩ := Prod.mk.inj hfg
+    rw [← hj] at hl
+    -- `x` is `1 / (j + 1)`-close to a net point `p`, where `f p` and `g p` have a common index
+    obtain ⟨p, hp, hxp⟩ := ht (J f) x
+    have hrp : r (f p) = r (g p) := List.map_inj_left.1 hl p (Finset.mem_toList.2 hp)
+    have h₁ := hJ f x p hxp
+    have h₂ := hr (f p)
+    have h₃ := hr (g p)
+    have h₄ := hJ g x p (hj ▸ hxp)
+    rw [hrp] at h₂
+    rw [dist_comm] at h₃ h₄
+    linarith [dist_triangle4 (f x) (f p) (s (r (g p))) (g x),
+      dist_triangle (s (r (g p))) (g p) (g x)]
   -- Step 4: `Φ ω = (ω, dω)|_K`
   let Φ : TestFormOn U n → C(K, Covector (Euclid P) n × Covector (Euclid P) (n + 1)) := fun ω =>
     ⟨fun x => ((ω : DifferentialForm (Euclid P) n) x,
