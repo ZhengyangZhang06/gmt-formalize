@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmrc_|polar_pushforward|massOn_le_of_repr|measure_le_massOn_of_norming|measure_le_of_compactlyContained|testForm_restrict_cc|rsd_mw_exists_testForm_approx|cmr_vector_riesz_representation|cmr_testForm_extension_functional|cmr_covector_euclidean_equiv",
+        "abbrev TestFormOn|def TestFormOn|def IsTestForm|def covectorEuclideanNorm|def massOn|def massAdmissibleOn|theorem le_massOn",
+        "exists_hasCompactSupport_integral_sub_le|^variable|^section|^end",
+        "exists_contDiff_dist_le|^variable|^section|^end",
+        "continuous_clm_apply|isBoundedBilinearMap_apply|theorem Continuous.clm_comp|lemma Continuous.clm_comp",
+        "exists_inv_nat_lt|le_of_forall_pos_le_add|toReal_lt_of_lt_ofReal|ofReal_add_le",
+        "git show bc8485e31491a6762e3f3e385086f4a502e7e036:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rc-core-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rc-core-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rc-core-independent-audit/Constructions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-42d2392225/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-42d2392225/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa18/20261013T001051Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1-r4352in9/comparator.log",
+        "/tmp/rc-core-independent-audit/Types.lean",
+        "/tmp/rc-core-independent-audit/Assembly.lean",
+        "/tmp/rc-core-independent-audit/Constructions.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected representation theorem. The pinned contract matches the workspace source; package revisions match the recorded pins. Searches found none of the proposed declarations in the snapshot. DAG inspection found no reservation for the five new bare identifiers; the sole reused declaration is comparator-accepted with exactly the same frozen type. Its retained comparator export and kernel acceptance establish compatible reuse without additional proof axioms. Dependencies are correctly directed and acyclic. All six propositions independently elaborate without declaring their children. A fresh conditional assembly derives the exact selected parent type from the five new contracts and its three existing analytic prerequisites; its axioms are only propext, Classical.choice and Quot.sound. The integral APIs support the claimed arbitrary-integrand identity. The polar construction and continuous evaluation were independently checked, using c.toContinuousLinearMap when passing the equivalence to .comp. The supplied child proofs are complete mathematical arguments and require no new planning pass."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_l1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the prose and accepted declaration at bc8485e31491a6762e3f3e385086f4a502e7e036. Independently checked the coefficient seminorm estimate, compact-core exhaustion, continuous approximation, factor-two retraction, smooth rescaling, cutoff and final strict error bound. Finiteness, concentration on V and integrability supply the stated hypotheses throughout. The reproduced proof is non-circular; reuse resolves the noted import limitations."
+    },
+    {
+      "key": "testform_restrict_cc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all prose hypotheses. The support lies in U, so its preimage under the subtype embedding is compact even for arbitrary U. Continuity and f(0)=0 then give the required compactly supported continuous map. The supplied construction proves the exact conclusion without another child."
+    },
+    {
+      "key": "polar_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All nine conclusions and hypotheses match the elaborated proposition. Measurable normalization, zero extension, weighted push-forward, compact-set integrability, dual bounds and the operator-norm bound on β are justified. The weighted measure annihilates the zero-density obstruction to ξ(β)=1. Both integral transformations apply to arbitrary integrands with the stated measurable, finite density. The intended dual construction checks using c.toContinuousLinearMap; this is a routine projection in formalization."
+    },
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger conclusion for arbitrary W is valid and matches the prose. Each admissible evaluation is bounded by the integral of the indicator of its closed support, then by μ(W). The unconditional integral-norm inequality justifies omitting measurability assumptions on ξ. Taking the defining supremum proves the exact statement."
+    },
+    {
+      "key": "mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All eight hypotheses and support conditions match the proposition. Compact containment makes the restricted measure finite; the explicit operator-norm bound makes β integrable. The correctly declared approximation dependency supplies an admissible form. Continuous evaluation gives integrability, normalization bounds the nonnegative error, and the ε-limit yields μ(W') ≤ T.massOn W. No parent conclusion is assumed."
+    },
+    {
+      "key": "open_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose. The extended-distance exhaustion is open, increasing, compactly contained in W∩U and exhaustive, including empty and whole-space cases. Continuity from below and μ(Uᶜ)=0 prove the claimed bound without extra finiteness or regularity assumptions."
+    }
+  ],
+  "required_changes": []
+}

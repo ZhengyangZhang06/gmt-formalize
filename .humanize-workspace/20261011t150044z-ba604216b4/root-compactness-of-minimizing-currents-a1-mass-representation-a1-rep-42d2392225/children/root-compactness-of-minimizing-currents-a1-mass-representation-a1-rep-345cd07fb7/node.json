@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1.open_exhaustion-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1",
+  "depth": 4,
+  "title": "Exhaustion of W ∩ U by compactly contained open sets (parent step 12)",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P, let U, W ⊆ ℝ^P be open with μ(ℝ^P ∖ U) = 0, and let m ∈ [0, ∞]. Suppose μ(W') ≤ m for every open W' with W' ⊂⊂ U (CompactlyContained W' U: closure W' is compact and contained in U) and W' ⊆ W. Then μ(W) ≤ m.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (U W : Set (Euclid P)) (m : ℝ≥0∞), IsOpen U → IsOpen W → μ Uᶜ = 0 → (∀ W' : Set (Euclid P), IsOpen W' → CompactlyContained W' U → W' ⊆ W → μ W' ≤ m) → μ W ≤ m",
+  "lean_name": "cmrc_measure_le_of_compactlyContained",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-345cd07fb7-a1"
+}
