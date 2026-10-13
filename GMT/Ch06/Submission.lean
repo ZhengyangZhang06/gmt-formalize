@@ -2736,6 +2736,52 @@ theorem Submission.fiw_im_series : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U 
   refine ⟨S, hS, hSmass, M', θ', ξ', htri', hnat', fun ω => (hS ω).unique ?_⟩
   simpa only [hrep] using hsum' ω
 
+/-- Simon Ch. 6, Remark 3.2(1): if `T₁, T₂ ∈ 𝒟ₙ(U)` are integer multiplicity and `a, b ∈ ℤ`,
+then `S = a T₁ + b T₂` is integer multiplicity.  This is the finite case of
+`Submission.fiw_im_series`, for the family `(T₁, T₂, T₁, T₁, …)` with coefficients
+`(a, b, 0, 0, …)`; its mass hypothesis holds because integer multiplicity currents have
+`M_W < ∞` for `W ⊂⊂ U` (`Submission.fiw_im_mass_formula`). -/
+theorem Submission.fiw_im_lincomb :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ),
+      IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ →
+      (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S := by
+  intro P n U hU T₁ T₂ S a b h₁ h₂ hS
+  -- `X = τ(M, θ, ξ)` has `M_W(X) = ∫_{M ∩ W} θ dHⁿ ≤ ∫_{M ∩ closure W} θ dHⁿ < ∞` for `W ⊂⊂ U`.
+  have hfin : ∀ X : GeometricCurrentOn U n, IsIntegerMultiplicity X →
+      ∀ W, CompactlyContainedOpen W U → X.massOn W < ∞ := by
+    rintro X ⟨M, θ, ξ, hM, -, hX⟩ W ⟨hWo, hWc, hWU⟩
+    rw [Submission.fiw_im_mass_formula P n U hU X M θ ξ hM hX W hWo]
+    exact (lintegral_mono_set (inter_subset_inter_right M subset_closure)).trans_lt
+      (hM.integrableOn _ hWc hWU).setLIntegral_lt_top
+  -- The family `T r` (`T₂` if `r = 1`, else `T₁`) and coefficients `c r`, zero for `r ≥ 2`.
+  obtain ⟨T, hT0, hT1, hT⟩ : ∃ T : ℕ → GeometricCurrentOn U n,
+      T 0 = T₁ ∧ T 1 = T₂ ∧ ∀ r, IsIntegerMultiplicity (T r) :=
+    ⟨fun r => if r = 1 then T₂ else T₁, rfl, rfl, fun r => by
+      show IsIntegerMultiplicity (if r = 1 then T₂ else T₁)
+      split_ifs <;> assumption⟩
+  obtain ⟨c, hc0, hc1, hc⟩ : ∃ c : ℕ → ℤ,
+      c 0 = a ∧ c 1 = b ∧ ∀ r ∉ ({0, 1} : Finset ℕ), c r = 0 :=
+    ⟨fun r => if r = 0 then a else if r = 1 then b else 0, rfl, rfl, fun r hr => by
+      rw [Finset.mem_insert, Finset.mem_singleton, not_or] at hr
+      show (if r = 0 then a else if r = 1 then b else 0) = 0
+      rw [ite_eq_right hr.1, ite_eq_right hr.2]⟩
+  -- `∑' r, |c r| M_W(T r) = |a| M_W(T₁) + |b| M_W(T₂) < ∞`, so `fiw_im_series` applies.
+  obtain ⟨S', hS', -, hS'im⟩ := Submission.fiw_im_series P n U hU T c hT fun W hW => by
+    have h0 : ∀ r ∉ ({0, 1} : Finset ℕ), ((c r).natAbs : ℝ≥0∞) * (T r).massOn W = 0 :=
+      fun r hr => by rw [hc r hr, Int.natAbs_zero, Nat.cast_zero, zero_mul]
+    rw [tsum_eq_sum h0, Finset.sum_pair (zero_ne_one : (0 : ℕ) ≠ 1), hT0, hT1, hc0, hc1]
+    exact ENNReal.add_lt_top.2 ⟨ENNReal.mul_lt_top (ENNReal.natCast_lt_top _) (hfin T₁ h₁ W hW),
+      ENNReal.mul_lt_top (ENNReal.natCast_lt_top _) (hfin T₂ h₂ W hW)⟩
+  -- The series has finite support, so `S'(ω) = a T₁(ω) + b T₂(ω) = S(ω)` and `S' = S`.
+  have hS'S : S' = S := GeometricCurrentOn.ext fun ω => by
+    have h0 : ∀ r ∉ ({0, 1} : Finset ℕ), (c r : ℝ) * T r ω = 0 :=
+      fun r hr => by rw [hc r hr, Int.cast_zero, zero_mul]
+    have h : HasSum (fun r => (c r : ℝ) * T r ω) (∑ r ∈ ({0, 1} : Finset ℕ), (c r : ℝ) * T r ω) :=
+      hasSum_sum_of_ne_finset_zero h0
+    rw [Finset.sum_pair (zero_ne_one : (0 : ℕ) ≠ 1), hT0, hT1, hc0, hc1, ← hS ω] at h
+    exact (hS' ω).unique h
+  exact hS'S ▸ hS'im
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
