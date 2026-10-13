@@ -661,6 +661,84 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **A subspace of dimension at least `2` minus the origin is connected** (used in passing from
+`|A| ≡ 0` to a hyperplane in Simon, App. B, Theorem B.2).  The half-spaces
+`C_v = {x ∈ H : ⟨v, x⟩ > 0}` are convex subsets of `K = H ∖ {0}`.  Fix `x₀ ∈ K`; the dimension
+formula gives `w ∈ K` with `⟨x₀, w⟩ = 0`, and `T = C_{x₀} ∪ C_w ∪ C_{-x₀}` is preconnected because
+`x₀ + w ∈ C_{x₀} ∩ C_w` and `-x₀ + w ∈ C_w ∩ C_{-x₀}`.  Each `C_y`, `y ∈ K`, meets `T` (at `y` or
+at `x₀ + y`), so `T ∪ C_y ⊆ K` is a preconnected set containing `x₀` and `y`. -/
+theorem Submission.codim1_hcp_fcp_punctured_subspace_isConnected : ∀ (P : ℕ) (H : Submodule ℝ (Euclid P)), 2 ≤ Module.finrank ℝ H → IsConnected ((H : Set (Euclid P)) \ {0}) := by
+  intro P H hH
+  -- Step 1: the half-spaces `C_v = {x ∈ H : ⟨v, x⟩ > 0}` are convex, hence preconnected, and
+  -- lie in `K = H ∖ {0}`
+  set C : Euclid P → Set (Euclid P) := fun v => (H : Set (Euclid P)) ∩ {x | 0 < inner ℝ v x}
+  have hCpre : ∀ v, IsPreconnected (C v) := fun v =>
+    (H.convex.inter (convex_halfSpace_gt (innerₛₗ ℝ v).isLinear 0)).isPreconnected
+  have hCK : ∀ v, C v ⊆ (H : Set (Euclid P)) \ {0} := by
+    rintro v x ⟨hxH, hx : 0 < inner ℝ v x⟩
+    refine ⟨hxH, fun h0 => ?_⟩
+    rw [mem_singleton_iff.1 h0, inner_zero_right] at hx
+    exact lt_irrefl 0 hx
+  have hpos : ∀ y : Euclid P, y ≠ 0 → 0 < inner ℝ y y := fun y hy => real_inner_self_pos.2 hy
+  -- Step 2: `H ≠ {0}`, so there is `x₀ ∈ H` with `x₀ ≠ 0`
+  obtain ⟨x₀, hx₀H, hx₀⟩ := Submodule.exists_mem_ne_zero_of_ne_bot
+    (Submodule.one_le_finrank_iff.1 (by omega) : H ≠ ⊥)
+  -- Step 3: a nonzero `w ∈ H ∩ (span{x₀})ᗮ`, by the dimension formula
+  -- `dim (H ⊓ L) = dim H + dim L - dim (H ⊔ L) ≥ dim H - 1 ≥ 1`, `L = (span{x₀})ᗮ`
+  obtain ⟨w, ⟨hwH, hwL⟩, hw⟩ : ∃ w, w ∈ H ⊓ (ℝ ∙ x₀)ᗮ ∧ w ≠ 0 := by
+    refine Submodule.exists_mem_ne_zero_of_ne_bot (Submodule.one_le_finrank_iff.1 ?_)
+    have h1 := Submodule.finrank_sup_add_finrank_inf_eq H (ℝ ∙ x₀)ᗮ
+    have h2 := Submodule.finrank_add_finrank_orthogonal (ℝ ∙ x₀)
+    have h3 := Submodule.finrank_le (H ⊔ (ℝ ∙ x₀)ᗮ)
+    rw [finrank_span_singleton hx₀] at h2
+    omega
+  have hxw : inner ℝ x₀ w = 0 := Submodule.mem_orthogonal_singleton_iff_inner_right.1 hwL
+  have hwx : inner ℝ w x₀ = 0 := (real_inner_comm x₀ w).trans hxw
+  -- Step 4: `T = C_{x₀} ∪ C_w ∪ C_{-x₀}` is preconnected, as `x₀ + w ∈ C_{x₀} ∩ C_w` and
+  -- `-x₀ + w ∈ C_w ∩ C_{-x₀}`
+  have hT : IsPreconnected (C x₀ ∪ C w ∪ C (-x₀)) := by
+    refine ((hCpre x₀).union (x₀ + w) ?_ ?_ (hCpre w)).union (-x₀ + w) (Or.inr ?_) ?_
+      (hCpre (-x₀))
+    · refine ⟨H.add_mem hx₀H hwH, ?_⟩
+      show 0 < inner ℝ x₀ (x₀ + w)
+      rw [inner_add_right, hxw, add_zero]
+      exact hpos x₀ hx₀
+    · refine ⟨H.add_mem hx₀H hwH, ?_⟩
+      show 0 < inner ℝ w (x₀ + w)
+      rw [inner_add_right, hwx, zero_add]
+      exact hpos w hw
+    · refine ⟨H.add_mem (H.neg_mem hx₀H) hwH, ?_⟩
+      show 0 < inner ℝ w (-x₀ + w)
+      rw [inner_add_right, inner_neg_right, hwx, neg_zero, zero_add]
+      exact hpos w hw
+    · refine ⟨H.add_mem (H.neg_mem hx₀H) hwH, ?_⟩
+      show 0 < inner ℝ (-x₀) (-x₀ + w)
+      rw [inner_add_right, inner_neg_left, inner_neg_left, inner_neg_right, hxw, neg_zero,
+        add_zero, neg_neg]
+      exact hpos x₀ hx₀
+  -- Steps 5–7: `K` is nonempty, and every `y ∈ K` lies with `x₀` in a preconnected subset of `K`
+  refine ⟨⟨x₀, hx₀H, hx₀⟩, isPreconnected_of_forall x₀ fun y ⟨hyH, hy⟩ => ?_⟩
+  have hy0 : y ≠ 0 := hy
+  have hyy : y ∈ C y := ⟨hyH, hpos y hy0⟩
+  -- Step 5: `C_y` meets `T`, at `y` if `⟨x₀, y⟩ ≠ 0` and at `x₀ + y` if `⟨x₀, y⟩ = 0`
+  obtain ⟨z, hzT, hzy⟩ : ∃ z, z ∈ C x₀ ∪ C w ∪ C (-x₀) ∧ z ∈ C y := by
+    rcases lt_trichotomy 0 (inner ℝ x₀ y) with h | h | h
+    · exact ⟨y, Or.inl (Or.inl ⟨hyH, h⟩), hyy⟩
+    · refine ⟨x₀ + y, Or.inl (Or.inl ⟨H.add_mem hx₀H hyH, ?_⟩), H.add_mem hx₀H hyH, ?_⟩
+      · show 0 < inner ℝ x₀ (x₀ + y)
+        rw [inner_add_right, ← h, add_zero]
+        exact hpos x₀ hx₀
+      · show 0 < inner ℝ y (x₀ + y)
+        rw [inner_add_right, real_inner_comm x₀ y, ← h, zero_add]
+        exact hpos y hy0
+    · refine ⟨y, Or.inr ⟨hyH, ?_⟩, hyy⟩
+      show 0 < inner ℝ (-x₀) y
+      rw [inner_neg_left]
+      exact neg_pos.2 h
+  -- Step 6: `T ∪ C_y` is a preconnected subset of `K` containing `x₀` and `y`
+  refine ⟨C x₀ ∪ C w ∪ C (-x₀) ∪ C y, ?_, Or.inl (Or.inl (Or.inl ⟨hx₀H, hpos x₀ hx₀⟩)),
+    Or.inr hyy, hT.union z hzT hzy (hCpre y)⟩
+  exact union_subset (union_subset (union_subset (hCK x₀) (hCK w)) (hCK (-x₀))) (hCK y)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
