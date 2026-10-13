@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "daced1c18780d2c05f9aa20909cb0d6e5eedeb13a9c87313ff120a198b7d1984",
+  "git_delta": {
+    "base_commit": "1bd69a9160fd136ec1d593a2e84f56171602086c",
+    "candidate_commit": "491ca29dd186120d5ee02a8e0a9e82dcbcf9bd7a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_eil_limit",
+    "diff_sha256": "77769467f62a4e22a10aab7348db920e9c1b65a2dd7fc9cd5debaea3a64959c5",
+    "source_sha256": "08dd9c3674600615516c335218efd1a3625c8c2b36d7cd081488e951691cc380",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_eil_limit",
+      "statement": "∀ (P : ℕ) (d : ℝ) (S : ℝ → Set (Euclid P)) (ψ : ℕ → ℝ → ℝ≥0∞) (δ ε : ℕ → ℝ≥0∞) (B : ℝ≥0∞), (∀ k, Measurable (ψ k)) → Tendsto δ atTop (𝓝 0) → Tendsto ε atTop (𝓝 0) → (∀ k t, (⨅ (c : ℕ → Set (Euclid P)) (_ : S t ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ k), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ d) ≤ ψ k t) → (∀ k, ∫⁻ t, ψ k t ≤ B + ε k) → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μH[d] (S t) ≤ φ t) ∧ ∫⁻ t, φ t ≤ B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
