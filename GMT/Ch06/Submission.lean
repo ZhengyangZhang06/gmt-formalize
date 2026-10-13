@@ -526,6 +526,78 @@ theorem Submission.fiw_tb_te_directional_form :
     apply Finset.sum_congr rfl
     intro i _
     rw [map_smul, EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply, smul_eq_mul]
+/-- Weak translation estimate: if `|∫ u · Dφ(h)| ≤ B` for every `C^∞` compactly supported `φ`
+with `|φ| ≤ 1`, then `|∫ (u(· + h) − u) · g| ≤ B` for every such `g`.  For `φ_t = g(· − t h)`,
+`F(t) = ∫ u(y) g(y − t h) dy` has `F'(t) = −∫ u(y) Dφ_t(y)(h) dy`, so `|F'| ≤ B`, and
+`F(1) − F(0) = ∫ (u(x + h) − u(x)) g(x) dx` by translation invariance. -/
+theorem Submission.fiw_tb_te_translation_dual :
+    ∀ (n : ℕ) (u : Eucl n → ℝ) (h : Eucl n) (B : ℝ), Integrable u →
+      (∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ →
+        (∀ x, |φ x| ≤ 1) → |∫ x, u x * fderiv ℝ φ x h| ≤ B) →
+      ∀ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → HasCompactSupport g →
+        (∀ x, |g x| ≤ 1) → |∫ x, (u (x + h) - u x) * g x| ≤ B := by
+  intro n u h B hu hB g hg hgc hg1
+  have hn : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
+  -- `Dg` is continuous with compact support, hence bounded.
+  obtain ⟨K, hK⟩ := (hg.continuous_fderiv hn).bounded_above_of_compact_support (hgc.fderiv ℝ)
+  have hcont : ∀ t : ℝ, Continuous fun y : Eucl n => g (y - t • h) := fun t =>
+    hg.continuous.comp (continuous_id.sub continuous_const)
+  have hcont' : ∀ t : ℝ, Continuous fun y : Eucl n => fderiv ℝ g (y - t • h) (-h) := fun t =>
+    ((hg.continuous_fderiv hn).comp (continuous_id.sub continuous_const)).clm_apply
+      continuous_const
+  have hgle : ∀ t : ℝ, ∀ᵐ y ∂(volume : Measure (Eucl n)), ‖g (y - t • h)‖ ≤ 1 := fun t =>
+    ae_of_all _ fun y => by rw [Real.norm_eq_abs]; exact hg1 _
+  -- Differentiation under the integral sign, dominated by `‖u‖ K ‖h‖`:
+  -- `d/dt ∫ u(y) g(y - t h) dy = ∫ u(y) Dg(y - t h)(-h) dy`.
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => ∫ y, u y * g (y - s • h))
+      (∫ y, u y * fderiv ℝ g (y - t • h) (-h)) t := by
+    intro t
+    refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le (s := univ)
+      (F := fun s y => u y * g (y - s • h)) (F' := fun s y => u y * fderiv ℝ g (y - s • h) (-h))
+      (bound := fun y => ‖u y‖ * (K * ‖h‖)) Filter.univ_mem
+      (Filter.Eventually.of_forall fun s => hu.aestronglyMeasurable.mul
+        (hcont s).aestronglyMeasurable)
+      (hu.mul_bdd (hcont t).aestronglyMeasurable (hgle t))
+      (hu.aestronglyMeasurable.mul (hcont' t).aestronglyMeasurable)
+      (ae_of_all _ fun y s _ => ?_) (hu.norm.mul_const _) (ae_of_all _ fun y s _ => ?_)).2
+    · rw [norm_mul]
+      gcongr
+      calc ‖fderiv ℝ g (y - s • h) (-h)‖ ≤ K * ‖-h‖ :=
+            (fderiv ℝ g (y - s • h)).le_of_opNorm_le (hK _) (-h)
+        _ = K * ‖h‖ := by rw [norm_neg]
+    · have hline : HasDerivAt (fun s : ℝ => y - s • h) (-h) s := by
+        simpa using ((hasDerivAt_id s).smul_const h).const_sub y
+      exact ((hg.differentiable hn (y - s • h)).hasFDerivAt.comp_hasDerivAt s hline).const_mul (u y)
+  -- Each derivative is bounded by `B`: apply the hypothesis to `φ_t = g(· - t h)`.
+  have hbound : ∀ t : ℝ, ‖∫ y, u y * fderiv ℝ g (y - t • h) (-h)‖ ≤ B := by
+    intro t
+    have hφ := hB (fun y => g (y - t • h)) (hg.comp (contDiff_id.sub contDiff_const))
+      (hgc.comp_homeomorph (Homeomorph.subRight (t • h))) (fun y => hg1 _)
+    simp only [fderiv_comp_sub] at hφ
+    have heq : ∫ y, u y * fderiv ℝ g (y - t • h) (-h) = -∫ y, u y * fderiv ℝ g (y - t • h) h := by
+      rw [← integral_neg]
+      simp only [map_neg, mul_neg]
+    rw [heq, norm_neg, Real.norm_eq_abs]
+    exact hφ
+  -- Mean value inequality on `[0, 1]`.
+  have hmvt := norm_image_sub_le_of_norm_deriv_le_segment_01'
+    (f := fun s : ℝ => ∫ y, u y * g (y - s • h))
+    (fun t _ => (hderiv t).hasDerivWithinAt) (fun t _ => hbound t)
+  -- Identify the endpoints, using translation invariance of Lebesgue measure.
+  have h1 : ∫ y, u y * g (y - (1 : ℝ) • h) = ∫ x, u (x + h) * g x := by
+    rw [one_smul, ← integral_add_right_eq_self (μ := volume) (fun y => u y * g (y - h)) h]
+    simp only [add_sub_cancel_right]
+  have h0 : ∫ y, u y * g (y - (0 : ℝ) • h) = ∫ x, u x * g x := by
+    simp only [zero_smul, sub_zero]
+  have hint1 : Integrable fun x => u (x + h) * g x := by
+    simpa using (hu.comp_add_right h).mul_bdd (hcont 0).aestronglyMeasurable (hgle 0)
+  have hint0 : Integrable fun x => u x * g x := by
+    simpa using hu.mul_bdd (hcont 0).aestronglyMeasurable (hgle 0)
+  have hJ : ∫ x, (u (x + h) - u x) * g x = (∫ x, u (x + h) * g x) - ∫ x, u x * g x := by
+    rw [← integral_sub hint1 hint0]
+    simp only [sub_mul]
+  rw [hJ, ← h1, ← h0, ← Real.norm_eq_abs]
+  exact hmvt
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
