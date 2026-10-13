@@ -1481,6 +1481,79 @@ theorem Submission.dimred_cs_st_closedBall_measure_scaling : ∀ (P n : ℕ) (μ
     rw [Set.image_smul, smul_unitClosedBall_of_nonneg hρ.le]
   rw [htr ρ, htr 1, ← hsc, hhom ρ hρ _ measurableSet_closedBall]
 
+/-- **Simon, proof of 7.3.1 (chapter-07.txt lines 352–360), at a centre `z`.**  Let
+`R = (M, θ, ξ)` be an integer multiplicity triple in `ℝᴾ` with `V = v(M, θ)` stationary:
+`δV(X) = 0` for every `X ∈ C¹_c(ℝᴾ; ℝᴾ)`.  If `μ_V(B_ρ(z)) = ρⁿμ_V(B_1(z))` for every `ρ > 0`
+(closed balls, `μ_V = θHⁿ⌞M`), then `x − z ∈ TₓM`, i.e. `p_x(x − z) = x − z`, for `μ_V`-a.e. `x`.
+The ratio `ρ⁻ⁿμ_V(B_ρ(z)) = μ_V(B_1(z))` is constant and finite (`θ` is locally integrable), so
+the monotonicity identity 4.3.6 (`dtc_cone_monotonicity_identity`) gives
+`∫_{B_ρ(z) \ B_σ(z)} |(x − z) − p_x(x − z)|² / |x − z|ⁿ⁺² dμ_V = 0` for `0 < σ ≤ ρ`.  The
+integrand is `μ_V`-a.e.-measurable (`imrep_univ_tangent_starProjection_aemeasurable`), so it
+vanishes a.e. on each annulus, where `|x − z| > σ > 0`; the annuli
+`B_{k+1}(z) \ B_{1/(k+1)}(z)` exhaust `ℝᴾ \ {z}`, and `p_z(0) = 0`. -/
+theorem Submission.dimred_cs_st_tangent_sub_of_ball_ratio : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (z : Euclid P), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall z 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z := by
+  intro P n R z hstat hball
+  -- Step 1: `a := μ(B̄_1(z)) < ∞`
+  have ha : R.measure (closedBall z 1) ≠ ∞ := by
+    have h := R.locallyIntegrable_mult (closedBall z 1) (isCompact_closedBall z 1) (subset_univ _)
+    rwa [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+  -- Step 2: the normalized ratio is constantly `a`
+  have hratio : ∀ ρ : ℝ, 0 < ρ →
+      R.measure (closedBall z ρ) / ENNReal.ofReal (ρ ^ n) = R.measure (closedBall z 1) := by
+    intro ρ hρ
+    rw [hball ρ hρ, mul_comm, ENNReal.mul_div_cancel_right
+      (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne' ENNReal.ofReal_ne_top]
+  -- Step 3: measurability of the defect integrand
+  have hp : AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection (x - z))
+      R.measure :=
+    (continuous_fst.clm_apply continuous_snd).aemeasurable2
+      (Submission.imrep_univ_tangent_starProjection_aemeasurable P n R)
+      (aemeasurable_id.sub_const z)
+  have hf : AEMeasurable (fun x => ENNReal.ofReal
+      (‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 /
+        ‖x - z‖ ^ (n + 2))) R.measure :=
+    ENNReal.measurable_ofReal.comp_aemeasurable
+      ((((aemeasurable_id.sub_const z).sub hp).norm.pow_const 2).div
+        ((measurable_id.sub_const z).norm.pow_const (n + 2)).aemeasurable)
+  -- Step 4: the defect over each annulus vanishes
+  have hann : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ∀ᵐ x ∂R.measure,
+      x ∈ closedBall z ρ \ closedBall z σ →
+      (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z := by
+    intro σ ρ hσ hσρ
+    have h := Submission.dtc_cone_monotonicity_identity P n R hstat z σ ρ hσ hσρ
+    rw [hratio σ hσ, hratio ρ (hσ.trans_le hσρ)] at h
+    have hD := (lintegral_eq_zero_iff' (hf.mono_measure Measure.restrict_le_self)).1
+      ((ENNReal.add_right_inj ha).1 (h.trans (add_zero _).symm))
+    have hA : MeasurableSet (closedBall z ρ \ closedBall z σ) :=
+      measurableSet_closedBall.diff measurableSet_closedBall
+    filter_upwards [(ae_restrict_iff' hA).1 hD] with x hx hxA
+    have hxσ : σ < ‖x - z‖ := by
+      have h2 := hxA.2
+      rw [mem_closedBall, dist_eq_norm, not_le] at h2
+      exact h2
+    have h0 : ‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 /
+        ‖x - z‖ ^ (n + 2) ≤ 0 :=
+      ENNReal.ofReal_eq_zero.1 (hx hxA)
+    rw [div_le_iff₀ (pow_pos (hσ.trans hxσ) _), zero_mul] at h0
+    have hnorm := (pow_eq_zero_iff two_ne_zero).1 (le_antisymm h0 (sq_nonneg _))
+    exact (sub_eq_zero.1 (norm_eq_zero.1 hnorm)).symm
+  -- Step 5: the annuli `B̄_{k+1}(z) \ B̄_{1/(k+1)}(z)` exhaust `ℝᴾ \ {z}`
+  have hk1 : ∀ k : ℕ, (1 : ℝ) ≤ (k : ℝ) + 1 := fun k => le_add_of_nonneg_left k.cast_nonneg
+  have hall := ae_all_iff.2 fun k : ℕ => hann (1 / ((k : ℝ) + 1)) ((k : ℝ) + 1) (by positivity)
+    (((div_le_one (by positivity)).2 (hk1 k)).trans (hk1 k))
+  filter_upwards [hall] with x hx
+  rcases eq_or_ne x z with rfl | hxz
+  · simp
+  have hxpos : 0 < ‖x - z‖ := norm_pos_iff.2 (sub_ne_zero.2 hxz)
+  obtain ⟨k, hk⟩ := exists_nat_gt (max ‖x - z‖ ‖x - z‖⁻¹)
+  have hk0 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  refine hx k (Set.mem_sdiff_of_mem ?_ ?_)
+  · rw [mem_closedBall, dist_eq_norm]
+    linarith [le_max_left ‖x - z‖ ‖x - z‖⁻¹]
+  · rw [mem_closedBall, dist_eq_norm, not_le, one_div_lt hk0 hxpos, one_div]
+    linarith [le_max_right ‖x - z‖ ‖x - z‖⁻¹]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
