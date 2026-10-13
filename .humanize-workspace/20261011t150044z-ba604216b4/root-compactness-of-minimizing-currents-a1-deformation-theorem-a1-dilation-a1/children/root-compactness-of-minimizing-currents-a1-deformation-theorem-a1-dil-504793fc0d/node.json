@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.support-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1",
+  "depth": 4,
+  "title": "Supports scale under the dilation push-forward: spt Y = λ·spt X",
+  "statement": "Let P, k ∈ ℕ, λ > 0 and X, Y ∈ 𝒟_k(ℝ^P) (GeometricCurrentOn univ k). Assume Y(ω) = X(η) for all test forms ω, η ∈ TestFormOn univ k whose underlying forms satisfy η = δ_λ^#ω := affinePullbackForm (λ·id) 0 ω (this is δ_{λ#}X(ω) = X(δ_λ^#ω), i.e. Y = δ_{λ#}X is the push-forward of X under δ_λ(x) = λx). Then spt Y = {λx : x ∈ spt X}, i.e. Y.support = (fun x => λ • x) '' X.support. Here, following SimonGMT and Simon 6.2.11, spt T = univ \\ Z_T, where the zero region Z_T is the union of all open W with compact closure, closure W ⊆ univ, on which T vanishes (T(ω) = 0 for every ω ∈ TestFormOn univ k with tsupport ω ⊆ W).",
+  "lean_statement": "∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → Y.support = (fun x => lam • x) '' X.support",
+  "lean_name": "cmcdt_dil_support_eq",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.pullback_testform-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.pullback_testform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-dil-504793fc0d-a1"
+}
