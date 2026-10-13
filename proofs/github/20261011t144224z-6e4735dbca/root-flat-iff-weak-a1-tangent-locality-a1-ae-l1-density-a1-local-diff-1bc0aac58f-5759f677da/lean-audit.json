@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "38bfd9baaeabae65543e6529eeed5e1a7301c118599be77e082521208dbf7b5c",
+  "git_delta": {
+    "base_commit": "659272af1e56bf9878e668baa6e5233c4f17c2c4",
+    "candidate_commit": "fa6e66cc9288b68d94f683cce60fc221d845dc26",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_ald_ld_weighted_density_point",
+    "diff_sha256": "9a01159ac3fa959dab007e687ee83356eff9d2fa4a6900faffb68ae6671728e1",
+    "source_sha256": "a68636fe0b76ce1c441327863b1df9769d9e20fb8058a6c20b9ea533beb43ccf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_ald_ld_weighted_density_point",
+      "statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (M E : Set (Eucl P)) (θ : Eucl P → ℝ) (y : Eucl P) (r : ℝ), NullMeasurableSet M μ → NullMeasurableSet E μ → E ⊆ M → (∀ z ∈ M, 0 < θ z) → IntegrableOn θ (M ∩ closedBall y r) μ → ∀ᵐ x ∂(μ.restrict (E ∩ ball y r)), Tendsto (fun s : ℝ => (∫⁻ z in E ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ) / (∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ)) (𝓝[>] 0) (𝓝 1)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
