@@ -608,6 +608,132 @@ theorem Submission.codim1_rdo_c1a_egorov_isClosed : ∀ (n : ℕ) (C : Set (Eucl
     refine (htu j).mono fun x hx => ⟨⟨(hAA₀ (hQA hx)).1, ?_⟩, fun hxt => ?_⟩
     · exact ball_subset_ball (by linarith) (hR hx)
     · exact (hAA₀ (hQA hx)).2 (mem_iUnion.2 ⟨j, hxt⟩)
+/-- **Whitney's hypothesis 1.6(∗) on a large closed set** (Simon Ch. 2, proof of Theorem 1.5).
+Let `f : ℝⁿ → ℝ` be `L`-Lipschitz and differentiable at every point of the closed set `C`, with
+`Df` continuous on `C`.  The remainder quotient `R(x, y) = |f(y) − f(x) − Df(x)(y − x)| / |y − x|`
+is at most `2L`, and `η_k(x) = sup {R(x, y) : y ∈ C, 0 < |y − x| < 1/(k + 1)}` (`0` off `C`)
+tends to `0` on `C`.  Each `{η_k > t}`, `t ≥ 0`, is relatively open in `C`, so `η_k` is Borel,
+and Egorov's theorem in closed form gives a closed `A ⊆ C` with `Lⁿ(C \ A) < ε` such that
+`η_k → 0` uniformly on every compact `Q ⊆ A`.  Then `R(x, y) ≤ η_k(x) < ε'` for `x ∈ Q`,
+`y ∈ A`, `0 < |x − y| < 1/(k + 1)`. -/
+theorem Submission.codim1_rdo_c1a_whitney_remainder : ∀ (n : ℕ) (f : Euclid n → ℝ) (L : NNReal) (C : Set (Euclid n)), LipschitzWith L f → IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ContinuousOn (fderiv ℝ f) C → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Euclid n), A ⊆ C ∧ IsClosed A ∧ volume (C \ A) < ε ∧ ∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ ε' * ‖y - x‖ := by
+  intro n f L C hf hC hdiff hDf ε hε
+  classical
+  -- the remainder quotient `R(x, y)`, bounded by `2L` since `‖Df(x)‖ ≤ L`
+  let R : Euclid n → Euclid n → ℝ := fun x y => ‖f y - f x - fderiv ℝ f x (y - x)‖ / ‖y - x‖
+  have hR_le : ∀ x y, R x y ≤ 2 * L := by
+    intro x y
+    refine div_le_of_le_mul₀ (norm_nonneg _) (by positivity) ?_
+    calc ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ ‖f y - f x‖ + ‖fderiv ℝ f x (y - x)‖ :=
+          norm_sub_le _ _
+      _ ≤ L * ‖y - x‖ + L * ‖y - x‖ := by
+          refine add_le_add ?_ ?_
+          · rw [← dist_eq_norm, ← dist_eq_norm]
+            exact hf.dist_le_mul y x
+          · exact (ContinuousLinearMap.le_opNorm _ _).trans
+              (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hf) (norm_nonneg _))
+      _ = 2 * L * ‖y - x‖ := by ring
+  -- `η_k(x) = sup E_k(x)`, `E_k(x) = {R(x, y) : y ∈ C, 0 < |y − x| < 1/(k + 1)}`, on `C`
+  let E : ℕ → Euclid n → Set ℝ := fun k x =>
+    R x '' {y | y ∈ C ∧ 0 < dist y x ∧ dist y x < 1 / ((k : ℝ) + 1)}
+  let η : ℕ → Euclid n → ℝ := fun k x => if x ∈ C then sSup (E k x) else 0
+  have hη_nonneg : ∀ k x, 0 ≤ η k x := by
+    intro k x
+    by_cases hx : x ∈ C
+    · simp only [η, ite_eq_left hx]
+      exact Real.sSup_nonneg (by
+        rintro _ ⟨y, -, rfl⟩
+        exact div_nonneg (norm_nonneg _) (norm_nonneg _))
+    · simp only [η, ite_eq_right hx, le_refl]
+  have hR_le_η : ∀ (k : ℕ) x y, x ∈ C → y ∈ C → 0 < dist y x → dist y x < 1 / ((k : ℝ) + 1) →
+      R x y ≤ η k x := by
+    intro k x y hx hy h0 h1
+    simp only [η, ite_eq_left hx]
+    exact le_csSup ⟨2 * L, by rintro _ ⟨z, -, rfl⟩; exact hR_le x z⟩ ⟨y, ⟨hy, h0, h1⟩, rfl⟩
+  -- `η_k(x) → 0` for `x ∈ C`, by differentiability of `f` at `x`
+  have hη_tendsto : ∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 0) := by
+    intro x hx
+    rw [Metric.tendsto_atTop]
+    intro e he
+    obtain ⟨ρ, hρ, hρx⟩ :=
+      Metric.eventually_nhds_iff.mp ((hdiff x hx).hasFDerivAt.isLittleO.bound (half_pos he))
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hρ
+    refine ⟨N, fun k hk => ?_⟩
+    have hle : η k x ≤ e / 2 := by
+      simp only [η, ite_eq_left hx]
+      refine Real.sSup_le ?_ (half_pos he).le
+      rintro _ ⟨y, ⟨-, -, h1⟩, rfl⟩
+      exact div_le_of_le_mul₀ (norm_nonneg _) (half_pos he).le
+        (hρx (h1.trans_le ((Nat.one_div_le_one_div hk).trans hN.le)))
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (hη_nonneg k x)]
+    exact hle.trans_lt (half_lt_self he)
+  -- `{η_k > t}` is relatively open in the closed set `C` for `t ≥ 0`, so `η_k` is Borel
+  have hη_meas : ∀ k, Measurable (η k) := by
+    intro k
+    refine measurable_of_Ioi fun t => ?_
+    rcases lt_or_ge t 0 with ht | ht
+    · convert MeasurableSet.univ
+      exact eq_univ_of_forall fun x => ht.trans_le (hη_nonneg k x)
+    have hUC : η k ⁻¹' Ioi t ⊆ C := by
+      intro x hx
+      by_contra hxC
+      have hx' : t < η k x := hx
+      simp only [η, ite_eq_right hxC] at hx'
+      exact absurd hx' (not_lt.mpr ht)
+    have hnhds : ∀ x ∈ η k ⁻¹' Ioi t, η k ⁻¹' Ioi t ∪ Cᶜ ∈ 𝓝 x := by
+      intro x hx
+      have hxC := hUC hx
+      have hxt : t < sSup (E k x) := by
+        have hx' : t < η k x := hx
+        simpa only [η, ite_eq_left hxC] using hx'
+      have hne : (E k x).Nonempty := by
+        by_contra hemp
+        rw [not_nonempty_iff_eq_empty] at hemp
+        rw [hemp, Real.sSup_empty] at hxt
+        exact absurd hxt (not_lt.mpr ht)
+      obtain ⟨_, ⟨y, ⟨hy, h0, h1⟩, rfl⟩, hty⟩ := exists_lt_of_lt_csSup hne hxt
+      -- `z ↦ R(z, y)` is continuous within `C` at `x`, as `f` and `Df|_C` are continuous
+      have hsub : ContinuousWithinAt (fun z => y - z) C x :=
+        continuousWithinAt_const.sub continuousWithinAt_id
+      have hnum : ContinuousWithinAt (fun z => ‖f y - f z - fderiv ℝ f z (y - z)‖) C x :=
+        ((continuousWithinAt_const.sub hf.continuous.continuousWithinAt).sub
+          ((hDf x hxC).clm_apply hsub)).norm
+      have hRy : ContinuousWithinAt (fun z => R z y) C x :=
+        hnum.div hsub.norm (norm_sub_pos_iff.mpr (dist_pos.mp h0)).ne'
+      have hdist : Tendsto (fun z => dist y z) (𝓝 x) (𝓝 (dist y x)) :=
+        tendsto_const_nhds.dist tendsto_id
+      -- near `x`, every `z ∈ C` has `η_k(z) ≥ R(z, y) > t`
+      filter_upwards [eventually_nhdsWithin_iff.mp (Filter.Tendsto.eventually_const_lt hty hRy),
+        hdist.eventually_const_lt h0, hdist.eventually_lt_const h1] with z hz hz0 hz1
+      by_cases hzC : z ∈ C
+      · exact Or.inl ((hz hzC).trans_le (hR_le_η k z y hzC hy hz0 hz1))
+      · exact Or.inr hzC
+    have heq : η k ⁻¹' Ioi t = C ∩ interior (η k ⁻¹' Ioi t ∪ Cᶜ) := by
+      refine Subset.antisymm
+        (fun x hx => ⟨hUC hx, mem_interior_iff_mem_nhds.mpr (hnhds x hx)⟩) ?_
+      rintro x ⟨hxC, hxI⟩
+      rcases interior_subset hxI with hx | hx
+      · exact hx
+      · exact absurd hxC hx
+    rw [heq]
+    exact hC.measurableSet.inter isOpen_interior.measurableSet
+  -- Egorov on `C`: a closed `A ⊆ C`, `Lⁿ(C \ A) < ε`, with `η_k → 0` uniformly on compact `Q ⊆ A`
+  obtain ⟨A, hAC, hA, hCA, hunif⟩ := Submission.codim1_rdo_c1a_egorov_isClosed n C η
+    (fun _ => 0) hC.measurableSet hη_meas measurable_const hη_tendsto ε hε
+  refine ⟨A, hAC, hA, hCA, fun Q hQ hQA ε' hε' => ?_⟩
+  -- `η_k < ε'` on `Q` for some `k`; take `δ = 1/(k + 1)`
+  obtain ⟨k, hk⟩ := (Metric.tendstoUniformlyOn_iff.mp (hunif Q hQ hQA) ε' hε').exists
+  refine ⟨1 / ((k : ℝ) + 1), Nat.one_div_pos_of_nat, fun x hx y hy hxy => ?_⟩
+  rcases eq_or_ne y x with rfl | hyx
+  · simp
+  have h0 : 0 < dist y x := dist_pos.mpr hyx
+  have hηx : η k x < ε' := by
+    have hkx := hk x hx
+    rw [dist_comm, Real.dist_eq, sub_zero] at hkx
+    exact (le_abs_self _).trans_lt hkx
+  have hR : R x y ≤ ε' :=
+    (hR_le_η k x y (hAC (hQA hx)) (hAC hy) h0 (by rwa [dist_comm])).trans hηx.le
+  exact (div_le_iff₀ (norm_sub_pos_iff.mpr hyx)).mp hR
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
