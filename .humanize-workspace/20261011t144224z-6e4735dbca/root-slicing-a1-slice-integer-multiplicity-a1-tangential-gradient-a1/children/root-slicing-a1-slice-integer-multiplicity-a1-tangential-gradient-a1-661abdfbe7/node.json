@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_gradient-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1",
+  "depth": 4,
+  "title": "Borel tangential gradient of a Lipschitz function on one C¹ chart (Rademacher, Gram representation, Lipschitz bound)",
+  "statement": "Let P, n ∈ ℕ (ℝᵏ = EuclideanSpace ℝ (Fin k), Hⁿ = μHE[n] on ℝ^P), Ω ⊆ ℝⁿ open, and Φ : ℝⁿ → ℝ^P of class C¹ which is Lipschitz on Ω (with some constant K ≥ 0) and antilipschitz on Ω (there is c > 0 with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω). Let f : ℝ^P → ℝ be L-Lipschitz (L ∈ ℝ≥0). Then there is a Borel measurable g : ℝ^P → ℝ^P with |g(x)| ≤ L for every x ∈ ℝ^P such that for Hⁿ-a.e. y ∈ Φ(Ω) and every w ∈ Ω with Φ(w) = y, writing T_w := DΦ(w)(ℝⁿ) = LinearMap.range (fderiv ℝ Φ w): g(y) ∈ T_w, and for every v ∈ T_w the function s ↦ f(y + s v) is differentiable at s = 0 with derivative ⟨g(y), v⟩.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (f : Eucl P → ℝ) (L : ℝ≥0), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → LipschitzWith L f → ∃ g : Eucl P → Eucl P, Measurable g ∧ (∀ x, ‖g x‖ ≤ L) ∧ ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict (Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → g y ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ v ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => f (y + s • v)) (inner ℝ (g y) v) 0",
+  "lean_name": "slicing_im_tg_chart_gradient",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.line_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.line_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-661abdfbe7-a1"
+}
