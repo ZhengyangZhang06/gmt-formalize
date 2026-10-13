@@ -451,6 +451,110 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Polar coordinates `F(x) = (‖x‖, arctan(⟨x, e⟩/⟨x, u⟩))` on the half-space
+`H = {x | 0 < ⟨x, u⟩}`: both coordinates are `C¹` on `H`, since `0 ∉ H` and `⟨x, u⟩ ≠ 0` on `H`.
+At `p = r₀u` the norm `√(‖x‖²)` has derivative `⟨u, ·⟩`, and the product rule for
+`⟨x, e⟩ · ⟨x, u⟩⁻¹` with `⟨p, e⟩ = 0` and `arctan' 0 = 1` gives `⟨e, ·⟩/r₀`; the coordinate
+projections and uniqueness of the derivative identify `DF(p)`. -/
+theorem Submission.idtp_ccd_scsp_cc_polar_map : ∀ (P : ℕ) (u e : Euclid P) (r₀ : ℝ), ‖u‖ = 1 → inner ℝ u e = 0 → 0 < r₀ → ContDiffOn ℝ 1 (fun x : Euclid P => (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) {x : Euclid P | 0 < inner ℝ x u} ∧ ∀ h : Euclid P, fderiv ℝ (fun x : Euclid P => (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u) h = !₂[inner ℝ u h, inner ℝ e h / r₀] := by
+  intro P u e r₀ hu hue hr₀
+  -- `H = {0 < ⟨x, u⟩}` is open and does not contain `0`
+  have hHopen : IsOpen {x : Euclid P | 0 < inner ℝ x u} :=
+    isOpen_lt continuous_const (continuous_id.inner continuous_const)
+  have hc0 : ∀ x ∈ {x : Euclid P | 0 < inner ℝ x u},
+      ContDiffAt ℝ 1 (fun x : Euclid P => ‖x‖) x := by
+    intro x hx
+    refine contDiffAt_norm ℝ ?_
+    rintro rfl
+    simp only [mem_ofPred_eq, inner_zero_left, lt_self_iff_false] at hx
+  have hc1 : ∀ x ∈ {x : Euclid P | 0 < inner ℝ x u},
+      ContDiffAt ℝ 1 (fun x : Euclid P => Real.arctan (inner ℝ x e / inner ℝ x u)) x := by
+    intro x hx
+    have ha : ContDiff ℝ 1 (fun x : Euclid P => inner ℝ x e) := contDiff_id.inner ℝ contDiff_const
+    have hb : ContDiff ℝ 1 (fun x : Euclid P => inner ℝ x u) := contDiff_id.inner ℝ contDiff_const
+    exact Real.contDiff_arctan.contDiffAt.comp x (ha.contDiffAt.div hb.contDiffAt (ne_of_gt hx))
+  -- `F` is `C¹` on `H` coordinatewise
+  have hCD : ContDiffOn ℝ 1 (fun x : Euclid P =>
+      (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2))
+      {x : Euclid P | 0 < inner ℝ x u} := by
+    rw [contDiffOn_piLp]
+    intro i
+    fin_cases i
+    · simp only [Fin.zero_eta, Matrix.cons_val_zero]
+      exact fun x hx => (hc0 x hx).contDiffWithinAt
+    · simp only [Fin.mk_one, Matrix.cons_val_one, Matrix.cons_val_zero]
+      exact fun x hx => (hc1 x hx).contDiffWithinAt
+  refine ⟨hCD, fun h => ?_⟩
+  -- values at `p = r₀ • u`
+  have hpu : inner ℝ (r₀ • u) u = r₀ := by
+    rw [real_inner_smul_left, real_inner_self_eq_norm_sq, hu]; ring
+  have hpe : inner ℝ (r₀ • u) e = (0 : ℝ) := by
+    rw [real_inner_smul_left, hue, mul_zero]
+  have hpn : ‖r₀ • u‖ = r₀ := by
+    rw [norm_smul, hu, Real.norm_eq_abs, abs_of_pos hr₀, mul_one]
+  have hpH : r₀ • u ∈ {x : Euclid P | 0 < inner ℝ x u} := by
+    show 0 < inner ℝ (r₀ • u) u
+    rw [hpu]; exact hr₀
+  have hdiff : DifferentiableAt ℝ (fun x : Euclid P =>
+      (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u) :=
+    (hCD.contDiffAt (hHopen.mem_nhds hpH)).differentiableAt one_ne_zero
+  -- the norm `√(‖x‖²)` has derivative `⟨p, ·⟩ / ‖p‖ = ⟨u, ·⟩` at `p`
+  have hd0 : HasFDerivAt (fun x : Euclid P => ‖x‖) (innerSL ℝ u) (r₀ • u) := by
+    have h2 : HasFDerivAt (fun x : Euclid P => ‖x‖ ^ 2) (2 • innerSL ℝ (r₀ • u)) (r₀ • u) :=
+      (hasStrictFDerivAt_norm_sq (r₀ • u)).hasFDerivAt
+    have h3 := h2.sqrt (by rw [hpn]; positivity)
+    simp only [Real.sqrt_sq (norm_nonneg _)] at h3
+    convert h3 using 1
+    ext v
+    simp only [coe_innerSL_apply, hpn, one_div, mul_inv_rev, map_smul, smul_apply, smul_eq_mul,
+      nsmul_eq_mul, Nat.cast_ofNat]
+    field_simp
+  -- `⟨x, e⟩ · ⟨x, u⟩⁻¹` has derivative `⟨e, ·⟩ / r₀` at `p`, as `⟨p, e⟩ = 0`
+  have ha : HasFDerivAt (fun x : Euclid P => inner ℝ x e) (innerSL ℝ e) (r₀ • u) := by
+    convert (innerSL ℝ e).hasFDerivAt using 1
+    ext x; simp [real_inner_comm]
+  have hb : HasFDerivAt (fun x : Euclid P => inner ℝ x u) (innerSL ℝ u) (r₀ • u) := by
+    convert (innerSL ℝ u).hasFDerivAt using 1
+    ext x; simp [real_inner_comm]
+  have hbinv : HasFDerivAt (fun x : Euclid P => (inner ℝ x u)⁻¹)
+      ((-(r₀ ^ 2)⁻¹) • innerSL ℝ u) (r₀ • u) := by
+    have h1 := hasDerivAt_inv (show r₀ ≠ 0 from ne_of_gt hr₀)
+    rw [← hpu] at h1
+    have h2 := h1.comp_hasFDerivAt (r₀ • u) hb
+    rw [hpu] at h2
+    exact h2
+  have hq : HasFDerivAt (fun x : Euclid P => inner ℝ x e / inner ℝ x u)
+      (r₀⁻¹ • innerSL ℝ e) (r₀ • u) := by
+    have h1 := ha.fun_mul hbinv
+    simp only [hpe, hpu, zero_smul, zero_add] at h1
+    simpa only [div_eq_mul_inv] using h1
+  -- `arctan' 0 = 1`
+  have hd1 : HasFDerivAt (fun x : Euclid P => Real.arctan (inner ℝ x e / inner ℝ x u))
+      (r₀⁻¹ • innerSL ℝ e) (r₀ • u) := by
+    convert hq.arctan using 1
+    simp [hpe, hpu]
+  -- identify `fderiv` through the two coordinate projections
+  have hproj : ∀ i : Fin 2, HasFDerivAt (fun x : Euclid P =>
+      (EuclideanSpace.proj i : StrongDual ℝ (Euclid 2))
+        (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2))
+      ((EuclideanSpace.proj i : StrongDual ℝ (Euclid 2)).comp (fderiv ℝ (fun x : Euclid P =>
+        (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u))) (r₀ • u) :=
+    fun i => (EuclideanSpace.proj i : StrongDual ℝ (Euclid 2)).hasFDerivAt.comp (r₀ • u)
+      hdiff.hasFDerivAt
+  have e0 := (hproj 0).unique (by simpa only [Fin.isValue, PiLp.proj_apply,
+    Matrix.cons_val_zero] using hd0)
+  have e1 := (hproj 1).unique (by simpa only [Fin.isValue, PiLp.proj_apply,
+    Matrix.cons_val_one, Matrix.cons_val_fin_one] using hd1)
+  have v0 := congrArg (fun f => f h) e0
+  have v1 := congrArg (fun f => f h) e1
+  simp only [Fin.isValue, ContinuousLinearMap.comp_apply, PiLp.proj_apply, coe_innerSL_apply,
+    smul_apply, smul_eq_mul] at v0 v1
+  ext i
+  fin_cases i
+  · simpa [real_inner_comm] using v0
+  · simp only [Fin.mk_one, Matrix.cons_val_one, Matrix.cons_val_zero]
+    rw [v1, div_eq_inv_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
