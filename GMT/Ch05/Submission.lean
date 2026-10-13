@@ -963,6 +963,66 @@ theorem dohr_eb_sch_caccioppoli_const_coeff : ∀ (n ℓ : ℕ) (lam Lam : ℝ),
     _ = ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2 * K ^ 2 / ρ ^ 2) *
           ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), mul_div_assoc']
+/-- **Liouville theorem for constant-coefficient Legendre-elliptic systems** (Schauder estimate in
+the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion, p. 127).  Let `A` be a
+bilinear form on `L = L(ℝⁿ, ℝ^ℓ)` with `A[P][P] ≥ λ‖P‖²` and `|A[P][Q]| ≤ Λ‖P‖‖Q‖`, and let
+`W ∈ C¹(ℝⁿ; ℝ^ℓ)` with `‖DW(x) − DW(y)‖ ≤ K‖x − y‖^α` (`0 < α < 1`) solve `∫ A[DW][Dζ] = 0` for
+every `ζ ∈ C¹_c(ℝⁿ; ℝ^ℓ)`.  Then `DW` is constant.
+Proof: let `C ≥ 0` be the Caccioppoli constant for `(λ, Λ)` and `K₊ = max K 0`.  The smooth global
+solutions form a class `S` of `C¹` maps that is closed under directional derivatives and satisfies
+the Caccioppoli inequality at `0`.  For `ε > 0` the mollification `W_ε` lies in `S`, has Hölder
+constant `K₊` and satisfies `‖DW_ε − DW‖ ≤ K₊ ε^α`; the abstract Liouville theorem makes `DW_ε`
+constant, so `‖DW(x) − DW(y)‖ ≤ 2 K₊ ε^α`, which tends to `0` as `ε → 0⁺`. -/
+theorem dohr_eb_sch_liouville_const_coeff : ∀ (n ℓ : ℕ) (α lam Lam K : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (W : Rn n → Rn ℓ), 0 < α → α < 1 → 0 < lam → (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → ContDiff ℝ 1 W → (∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ W x) (fderiv ℝ ζ x) = 0) → ∀ x y : Rn n, fderiv ℝ W x = fderiv ℝ W y := by
+  intro n ℓ α lam Lam K A W hα hα1 hlam hcoer hbdd hW hhol hsol x y
+  -- Step 0: the Caccioppoli constant `C ≥ 0` for `(λ, Λ)`; `K₊ = max K 0` is a Hölder constant.
+  obtain ⟨C, hC0, hcacc⟩ := Submission.dohr_eb_sch_caccioppoli_const_coeff n ℓ lam Lam hlam
+  obtain ⟨Kp, hKp, hKKp⟩ : ∃ Kp : ℝ, 0 ≤ Kp ∧ K ≤ Kp := ⟨max K 0, le_max_right K 0, le_max_left K 0⟩
+  have hholp : ∀ x y : Rn n, ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ Kp * ‖x - y‖ ^ α := fun x y =>
+    (hhol x y).trans (mul_le_mul_of_nonneg_right hKKp (Real.rpow_nonneg (norm_nonneg _) α))
+  -- Step 1: the class `S` of smooth global solutions.
+  let S : Set (Rn n → Rn ℓ) := {V | ContDiff ℝ (⊤ : ℕ∞) V ∧
+    ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0}
+  -- (S1): smooth maps are `C¹`.
+  have hS1 : ∀ V ∈ S, ContDiff ℝ 1 V := fun V hV => contDiff_infty.1 hV.1 1
+  -- (S2): `x ↦ DV(x) v` is smooth, and a global solution by `dir_deriv_solution` (`V ∈ C²`).
+  have hS2 : ∀ V ∈ S, ∀ v : Rn n, (fun x => fderiv ℝ V x v) ∈ S := by
+    intro V hV v
+    refine ⟨?_, Submission.dohr_eb_sch_liou_dir_deriv_solution n ℓ A V v
+      (contDiff_infty.1 hV.1 2) hV.2⟩
+    exact (hV.1.fderiv_right (m := ((⊤ : ℕ∞) : WithTop ℕ∞)) (by simp)).clm_apply contDiff_const
+  -- (S3): the Caccioppoli inequality centred at `0`, tested with all of `C¹_c(B_{2ρ}(0))`.
+  have hS3 : ∀ V ∈ S, ∀ ρ : ℝ, 0 < ρ → ∀ c : Rn ℓ,
+      ∫⁻ x in ball (0 : Rn n) ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤
+        ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball (0 : Rn n) (2 * ρ), ‖V x - c‖ₑ ^ 2 :=
+    fun V hV ρ hρ c => hcacc A V 0 ρ c hcoer hbdd hρ (hS1 V hV).contDiffOn
+      fun ζ hζ hζc _ => hV.2 ζ hζ hζc
+  -- Steps 2–5: the mollification `W_ε ∈ S` has constant derivative, so
+  -- `‖DW(x) − DW(y)‖ ≤ ‖DW_ε(x) − DW(x)‖ + ‖DW_ε(y) − DW(y)‖ ≤ 2 K₊ ε^α`.
+  have hε : ∀ ε : ℝ, 0 < ε → ‖fderiv ℝ W x - fderiv ℝ W y‖ ≤ 2 * (Kp * ε ^ α) := by
+    intro ε hε
+    obtain ⟨V, hVsm, hVhol, hVW, hVsol⟩ :=
+      Submission.dohr_eb_sch_liou_mollify n ℓ α Kp ε A W hα hKp hε hW hholp hsol
+    have hconst := Submission.dohr_eb_sch_liou_abstract n ℓ α Kp C S V hα hα1 hKp hC0 hS1 hS2
+      hS3 ⟨hVsm, hVsol⟩ fun z => by simpa only [sub_zero] using hVhol z 0
+    have hxy : fderiv ℝ V x = fderiv ℝ V y := (hconst x).trans (hconst y).symm
+    calc ‖fderiv ℝ W x - fderiv ℝ W y‖ = dist (fderiv ℝ W x) (fderiv ℝ W y) :=
+          (dist_eq_norm _ _).symm
+      _ ≤ dist (fderiv ℝ W x) (fderiv ℝ V x) + dist (fderiv ℝ V x) (fderiv ℝ V y) +
+          dist (fderiv ℝ V y) (fderiv ℝ W y) := dist_triangle4 _ _ _ _
+      _ = ‖fderiv ℝ V x - fderiv ℝ W x‖ + ‖fderiv ℝ V y - fderiv ℝ W y‖ := by
+          rw [hxy, dist_self, add_zero, dist_comm (fderiv ℝ W x), dist_eq_norm, dist_eq_norm]
+      _ ≤ Kp * ε ^ α + Kp * ε ^ α := add_le_add (hVW x) (hVW y)
+      _ = 2 * (Kp * ε ^ α) := (two_mul _).symm
+  -- Step 6: let `ε → 0⁺`; `ε^α → 0^α = 0` as `α > 0`.
+  have hlim : Tendsto (fun ε : ℝ => 2 * (Kp * ε ^ α)) (𝓝[>] 0) (𝓝 0) := by
+    have h0 : Tendsto (fun ε : ℝ => ε ^ α) (𝓝 0) (𝓝 0) := by
+      simpa only [Real.zero_rpow hα.ne'] using
+        (Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto
+    simpa only [mul_zero] using ((h0.const_mul Kp).const_mul 2).mono_left nhdsWithin_le_nhds
+  exact sub_eq_zero.mp (norm_le_zero_iff.mp
+    (ge_of_tendsto hlim (eventually_nhdsWithin_of_forall hε)))
 
 end Submission
 
