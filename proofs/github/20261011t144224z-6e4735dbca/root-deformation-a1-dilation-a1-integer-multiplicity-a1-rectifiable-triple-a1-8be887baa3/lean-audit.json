@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c63a50de76bc45a9068139ad9e5f13deac248435e9d23a1bbd1cbe4f52f70a8",
+  "git_delta": {
+    "base_commit": "66a1fea1bbec6e034a512a72181fdd08dc0ee9fb",
+    "candidate_commit": "003dc0ac1d63c6f01e2444b2b07b5e7b9e83c92d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_im_rectifiableTriple",
+    "diff_sha256": "ca6ab82fd41467f4410f136982d3b6ade9e4f959d246ee554e1a668bb5f07fe5",
+    "source_sha256": "ff4ef0693a4287e90cb8cdbd3c30544584c20eeab3a48f49502956e6bc07edda",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_im_rectifiableTriple",
+      "statement": "∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) → MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) → IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ → IsRectifiableTriple (univ : Set (Eucl N)) k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y)) (fun y : Eucl N => ξ (ρ⁻¹ • y))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
