@@ -2490,6 +2490,85 @@ theorem Submission.dtc_mass_eq_measure : ∀ (P n : ℕ) (U W : Set (Euclid P)) 
       _ ≤ T.massOn W := iSup_le fun m => hcompact _
           ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
 
+/-- **Simon 2.1.9 and Remark 2.1.10** (Eilenberg's inequality, case `m = 1`): if `f` is
+`L`-Lipschitz on an arbitrary `A ⊆ ℝᴾ`, the upper integral of `t ↦ Hⁿ(A ∩ f⁻¹(t))` is at most
+`C L Hⁿ⁺¹(A)`, with `C` depending only on `n`; the upper integral is made explicit by a Borel
+majorant `φ`.
+
+Proof sketch:
+* `μHE[d] = c_d μH[d]` with `0 < c_d < ∞` independent of `P`; take `C = c_n / c_{n+1}`.
+* Extend `f` to an `L`-Lipschitz `g` on `ℝᴾ` (McShane); the fibres in `A` do not change.
+* If `L = 0`, `g` is constant `= g(0)`, so `φ = ∞ · 1_{g(0)}` works (`∫ φ = 0`).
+* If `L > 0` and `μH[n+1](A) = ∞`, the bound is `∞` and `φ ≡ ∞` works.
+* Otherwise `dtc_bc_lc_sl_eil_scale` at the scale and slack `δ_k = 2⁻ᵏ` gives Borel `ψ_k`
+  dominating the `δ_k`-contents of the fibres `A ∩ g⁻¹(t)`, with
+  `∫ ψ_k ≤ L μH[n+1](A) + L 2⁻ᵏ`.
+* `dtc_bc_lc_sl_eil_limit` (Fatou) gives a Borel `φ⁰ ≥ μH[n](A ∩ g⁻¹(t))` with
+  `∫ φ⁰ ≤ L μH[n+1](A)`; then `φ = c_n φ⁰`. -/
+theorem Submission.dtc_bc_lc_sl_eilenberg : ∀ n : ℕ, ∃ C : NNReal, ∀ (P : ℕ) (A : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μHE[n] (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * μHE[n + 1] A := by
+  -- the normalising constants `μHE[d] = c_d • μH[d]`, `c_d ≠ 0`, do not depend on `P`
+  obtain ⟨c, hc0, hc⟩ : ∃ c : ℕ → NNReal, (∀ d, c d ≠ 0) ∧
+      ∀ (P d : ℕ) (s : Set (Euclid P)), μHE[d] s = (c d : ℝ≥0∞) * μH[d] s :=
+    ⟨fun d => Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d],
+      Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero, fun P d s => by
+        rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+          smul_eq_mul]⟩
+  intro n
+  refine ⟨c n / c (n + 1), fun P A f L hf => ?_⟩
+  have hC : ((c n / c (n + 1) : NNReal) : ℝ≥0∞) * c (n + 1) = c n := by
+    rw [← ENNReal.coe_mul, div_mul_cancel₀ _ (hc0 (n + 1))]
+  -- McShane extension: `g` is `L`-Lipschitz on `ℝᴾ` and has the same fibres in `A`
+  obtain ⟨g, hg, hfg⟩ := hf.extend_real
+  have hfib : ∀ t, A ∩ f ⁻¹' {t} = A ∩ g ⁻¹' {t} := fun t => by
+    ext x
+    simp only [mem_inter_iff, mem_preimage, mem_singleton_iff]
+    exact ⟨fun h => ⟨h.1, (hfg h.1).symm.trans h.2⟩, fun h => ⟨h.1, (hfg h.1).trans h.2⟩⟩
+  -- `L = 0`: `g` is constant, so every fibre but one is empty
+  by_cases hL : L = 0
+  · subst hL
+    have hconst : ∀ x, g x = g 0 := fun x =>
+      dist_le_zero.1 ((hg.dist_le_mul x 0).trans (by simp))
+    refine ⟨({g 0} : Set ℝ).indicator fun _ => ∞,
+      measurable_const.indicator (measurableSet_singleton _), fun t => ?_, ?_⟩
+    · by_cases ht : t = g 0
+      · rw [ht, indicator_of_mem (mem_singleton _)]
+        exact le_top
+      · have hempty : A ∩ g ⁻¹' {t} = ∅ := by
+          ext x
+          simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, mem_empty_iff_false,
+            iff_false, not_and]
+          exact fun _ hx => ht (hx.symm.trans (hconst x))
+        rw [hfib, hempty, measure_empty]
+        exact zero_le
+    · rw [lintegral_indicator_const (measurableSet_singleton _), Real.volume_singleton, mul_zero]
+      exact zero_le
+  -- `L > 0` and `μH[n+1](A) = ∞`: the right-hand side is `∞`
+  by_cases hA : μH[((n + 1 : ℕ) : ℝ)] A = ∞
+  · refine ⟨fun _ => ∞, measurable_const, fun _ => le_top, le_of_le_of_eq le_top ?_⟩
+    rw [hc P (n + 1) A, hA, ENNReal.mul_top (ENNReal.coe_ne_zero.2 (hc0 (n + 1))),
+      ENNReal.mul_top (mul_ne_zero (ENNReal.coe_ne_zero.2 (div_ne_zero (hc0 n) (hc0 (n + 1))))
+        (ENNReal.coe_ne_zero.2 hL))]
+  -- main case: one scale `δ_k = 2⁻ᵏ` at a time, then the limit `k → ∞`
+  obtain ⟨δ, hδ0, hδ⟩ : ∃ δ : ℕ → ℝ≥0∞, (∀ k, 0 < δ k) ∧ Tendsto δ atTop (𝓝 0) :=
+    ⟨fun k => 2⁻¹ ^ k, ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top),
+      ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (ENNReal.inv_lt_one.2 ENNReal.one_lt_two)⟩
+  choose ψ hψm hψle hψint using fun k =>
+    Submission.dtc_bc_lc_sl_eil_scale P n A g L (δ k) (δ k) hg (hδ0 k) (hδ0 k) hA
+  obtain ⟨φ, hφm, hφle, hφint⟩ := Submission.dtc_bc_lc_sl_eil_limit P n
+    (fun t => A ∩ g ⁻¹' {t}) ψ δ (fun k => (L : ℝ≥0∞) * δ k)
+    ((L : ℝ≥0∞) * μH[((n + 1 : ℕ) : ℝ)] A) hψm hδ
+    (by simpa using ENNReal.Tendsto.const_mul (a := (L : ℝ≥0∞)) hδ (Or.inr ENNReal.coe_ne_top))
+    hψle (fun k => (hψint k).trans_eq (mul_add _ _ _))
+  refine ⟨fun t => (c n : ℝ≥0∞) * φ t, hφm.const_mul _, fun t => ?_, ?_⟩
+  · rw [hc, hfib]
+    exact mul_le_mul_right (hφle t) _
+  · rw [lintegral_const_mul _ hφm, hc P (n + 1) A]
+    calc (c n : ℝ≥0∞) * ∫⁻ t, φ t ≤ c n * (L * μH[((n + 1 : ℕ) : ℝ)] A) :=
+          mul_le_mul_right hφint _
+      _ = ((c n / c (n + 1) : NNReal) : ℝ≥0∞) * c (n + 1) * (L * μH[((n + 1 : ℕ) : ℝ)] A) := by
+          rw [hC]
+      _ = _ := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
