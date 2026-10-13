@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.radial_variation-a1.radial_field_c1-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.radial_variation-a1",
+  "depth": 6,
+  "title": "The radial test field φ(|x − y|/τ)(x − y) is C¹ with support in the closed ball of radius Aτ",
+  "statement": "Let P ∈ ℕ, y ∈ ℝ^P (Euclid P, Euclidean norm |·|), A, τ ∈ ℝ with τ > 0, and let φ : ℝ → ℝ be a C¹ function with φ(u) = 1 for every u ≤ 1 and φ(u) = 0 for every u ≥ A. Define X : ℝ^P → ℝ^P by X(x) := φ(|x − y|/τ)·(x − y). Then (i) X is C¹ on ℝ^P (ContDiff ℝ 1 X), (ii) X has compact support, and (iii) its topological support tsupport X = closure{x : X(x) ≠ 0} is contained in the closed ball B̄_{Aτ}(y) = {x : |x − y| ≤ Aτ}.",
+  "lean_statement": "∀ (P : ℕ) (y : Euclid P) (φ : ℝ → ℝ) (A τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → (∀ u, A ≤ u → φ u = 0) → 0 < τ → ContDiff ℝ 1 (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ∧ HasCompactSupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ∧ tsupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ⊆ closedBall y (A * τ)",
+  "lean_name": "doragm_rfv_radial_field_c1",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-fbac929f04-a1"
+}
