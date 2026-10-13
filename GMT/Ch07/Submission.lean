@@ -451,6 +451,119 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lebesgue's inequality for monotone functions** (Simon Ch. 6, remark before 4.10): if `F` is
+nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)` be the Stieltjes function of
+`F`, with measure `μ_G`; then `μ_G (a, b) = G(b⁻) − G(a) ≤ F(b) − F(a)`.  By Lebesgue's theorem
+(`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
+`(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
+theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
+  intro F a b hF
+  set G := hF.stieltjesFunction
+  -- `F(a) ≤ F(a⁺) = G(a)`, and `G(b⁻) ≤ F(b)` because `G(y) = F(y⁺) ≤ F(b)` for `y < b`
+  have hGa : F a ≤ G a := hF.le_rightLim le_rfl
+  have hGb : leftLim G b ≤ F b := by
+    refine le_of_tendsto (G.mono.tendsto_leftLim b) ?_
+    filter_upwards [self_mem_nhdsWithin] with y (hy : y < b)
+    exact hF.rightLim_le hy
+  calc ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t)
+      ≤ ∫⁻ t in Ioo a b, G.measure.rnDeriv volume t := by
+        -- a.e. `F′(t) = (dμ_G/dt)(t).toReal`
+        refine lintegral_mono_ae (ae_restrict_of_ae ?_)
+        filter_upwards [hF.ae_hasDerivAt] with t ht
+        rw [ht.deriv]
+        exact ENNReal.ofReal_toReal_le
+    _ ≤ volume.withDensity (G.measure.rnDeriv volume) (Ioo a b) := withDensity_apply_le _ _
+    _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
+    _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
+    _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
+
+/-- **Simon Ch. 6, remark before 4.10** (integrated lower left Dini derivative).  For monotone
+`F : ℝ → ℝ`, the lower integral over `(a, b)` of `D(t) = liminf_{h → 0+} (F(t) - F(t - h)) / h`
+is at most `F(b) - F(a)`.  `F` is differentiable a.e. (Lebesgue), and at a point of
+differentiability the left difference quotients tend to `F'(t)`, so `D = F'` a.e.  Changing the
+integrand on a null set needs no measurability of `D`, and `∫_(a,b) F' ≤ F(b) - F(a)` is
+`cmcs_smi_lintegral_ofReal_deriv_le`. -/
+theorem Submission.cmcs_smi_lintegral_left_dini_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) ≤ ENNReal.ofReal (F b - F a) := by
+  intro F a b hF
+  -- `D = ofReal ∘ deriv F` at every point of differentiability, hence a.e.
+  have hae : ∀ᵐ t, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) =
+      ENNReal.ofReal (deriv F t) := by
+    filter_upwards [hF.ae_differentiableAt] with t ht
+    -- `h ↦ -h` maps `𝓝[>] 0` into `𝓝[<] 0`, turning left slopes into the quotients above
+    have hneg : Tendsto (fun h : ℝ => -h) (𝓝[>] 0) (𝓝[<] 0) := by
+      simpa using tendsto_neg_nhdsGT (a := (0 : ℝ))
+    have hlim : Tendsto (fun h : ℝ => (F t - F (t - h)) / h) (𝓝[>] 0) (𝓝 (deriv F t)) := by
+      refine (ht.hasDerivAt.tendsto_slope_zero_left.comp hneg).congr fun h => ?_
+      simp only [Function.comp_apply, smul_eq_mul]
+      rw [← sub_eq_add_neg, inv_neg, div_eq_inv_mul]
+      ring
+    exact (ENNReal.tendsto_ofReal hlim).liminf_eq
+  calc ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0)
+      = ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) := lintegral_congr_ae (ae_restrict_of_ae hae)
+    _ ≤ ENNReal.ofReal (F b - F a) := Submission.cmcs_smi_lintegral_ofReal_deriv_le F a b hF
+
+/-- **Simon Ch. 6, the remark deriving 4.10 from 4.9, for a measure on `ℝ`.**  For any measure
+`ν` on `ℝ`, `∫⁻_{(a,b)} liminf_{h → 0+} h⁻¹ ν((t − h, t)) dt ≤ ν((a, b))` (Simon applies this to
+`ν((s, t)) = M_W(T ⌞ {s < f < t})`).  When `ν((a, b)) < ∞`, `F(s) = ν((a, min s b))` is finite
+and monotone, with `F a = 0` and `F b = ν((a, b))`.  For `0 < h < t − a`, additivity on
+`(a, t − h) ∪ (t − h, t) ⊆ (a, t)` gives `h⁻¹ ν((t − h, t)) ≤ (F t − F (t − h)) / h`, so the left
+density is at most the lower left Dini derivative of `F`, whose integral
+`cmcs_smi_lintegral_left_dini_le` bounds by `F b − F a`. -/
+theorem Submission.cmcs_smi_lintegral_left_density_le : ∀ (ν : Measure ℝ) (a b : ℝ), ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) ≤ ν (Ioo a b) := by
+  intro ν a b
+  by_cases hN : ν (Ioo a b) = ∞
+  · rw [hN]
+    exact le_top
+  -- the distribution function `F(s) = ν((a, min s b))` of `ν` on `(a, b)`
+  set F : ℝ → ℝ := fun s => (ν (Ioo a (min s b))).toReal with hFdef
+  have hfin : ∀ s, ν (Ioo a (min s b)) ≠ ∞ := fun s =>
+    ne_top_of_le_ne_top hN (measure_mono (Ioo_subset_Ioo_right (min_le_right s b)))
+  have hFmono : Monotone F := fun s s' hss' =>
+    ENNReal.toReal_mono (hfin s') (measure_mono (Ioo_subset_Ioo_right (min_le_min_right b hss')))
+  have hofF : ∀ s, ENNReal.ofReal (F s) = ν (Ioo a (min s b)) := fun s =>
+    ENNReal.ofReal_toReal (hfin s)
+  have hFa : F a = 0 := by
+    simp only [hFdef]
+    rw [Ioo_eq_empty (not_lt.2 (min_le_left a b)), measure_empty, ENNReal.toReal_zero]
+  have hFb : F b = (ν (Ioo a b)).toReal := by
+    simp only [hFdef, min_self]
+  -- the strip estimate: for `0 < h < t − a`, `h⁻¹ ν((t − h, t)) ≤ (F t − F (t − h)) / h`
+  have hstrip : ∀ t ∈ Ioo a b, ∀ h ∈ Ioo 0 (t - a),
+      ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t) ≤ ENNReal.ofReal ((F t - F (t - h)) / h) := by
+    intro t ht h hh
+    have hmt : min t b = t := min_eq_left ht.2.le
+    have hmth : min (t - h) b = t - h := min_eq_left (by linarith [hh.1, ht.2])
+    have hunion : ν (Ioo a (t - h)) + ν (Ioo (t - h) t) ≤ ν (Ioo a t) := by
+      rw [← measure_union _ measurableSet_Ioo]
+      · refine measure_mono (union_subset ?_ ?_)
+        · exact Ioo_subset_Ioo_right (by linarith [hh.1])
+        · exact Ioo_subset_Ioo_left (by linarith [hh.2])
+      · rw [Set.disjoint_left]
+        intro x hx1 hx2
+        linarith [hx1.2, hx2.1]
+    have hle : ν (Ioo (t - h) t) ≤ ENNReal.ofReal (F t - F (t - h)) := by
+      rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, hofF, hofF, hmt, hmth]
+      refine ENNReal.le_sub_of_add_le_left ?_ hunion
+      rw [← hmth]
+      exact hfin (t - h)
+    calc ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)
+        ≤ ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h)) := mul_le_mul_right hle _
+      _ = ENNReal.ofReal ((F t - F (t - h)) / h) := by
+        rw [← ENNReal.ofReal_mul (inv_nonneg.2 hh.1.le), div_eq_inv_mul]
+  -- `(0, t − a) ∈ 𝓝[>] 0`, so the strip estimate compares the two liminfs on `(a, b)`
+  have hpt : ∀ t ∈ Ioo a b,
+      liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) ≤
+        liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) := by
+    intro t ht
+    refine liminf_le_liminf ?_
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 ht.1)] with h hh
+    exact hstrip t ht h hh
+  calc ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0)
+      ≤ ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) :=
+        setLIntegral_mono' measurableSet_Ioo hpt
+    _ ≤ ENNReal.ofReal (F b - F a) := Submission.cmcs_smi_lintegral_left_dini_le F a b hFmono
+    _ = ν (Ioo a b) := by rw [hFb, hFa, sub_zero, ENNReal.ofReal_toReal hN]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
