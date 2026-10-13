@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsEmbeddedSubmanifold|InClassO|IsBoundaryOfRegion|BoundaryVanishes|namespace|^open|^import",
+        "theorem LinearMap.finrank_le_finrank_of_injective|theorem setIntegral_eq_zero_of_forall_eq_zero|theorem finrank_euclideanSpace_fin|closure_ball_subset_closedBall|theorem extDeriv_extDeriv|image_eq_zero_of_notMem_tsupport",
+        "regcomp_cop_dim_le_of_embedded",
+        "regcomp_cop_region_support_subset",
+        "regcomp_cop_region_boundary_vanishes",
+        "codim1_region_support_cycle",
+        "git diff eec32c409a10db4136a61af8a4fbd12a9e15e100 f555cc2f9d9bfed049983a7222a8ff812c453c17 -- GMT/Ch07/Submission.lean",
+        "git diff eec32c409a10db4136a61af8a4fbd12a9e15e100 8825e01799e286b822c297bae3fad2ffbd340e60 -- GMT/Ch07/Submission.lean",
+        "git diff eec32c409a10db4136a61af8a4fbd12a9e15e100 734d25194eafb6386fd1bc3b6d3c672452350c7b -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/rsc-independent-audit-q_kokr9w/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/rsc-independent-audit-q_kokr9w/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-bad9072576/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-bad9072576/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-c3fda798ab/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-8e907cf01e/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-eeb6d63d98/accepted-candidate.json",
+        "/tmp/rsc-independent-audit-q_kokr9w/TypesAndAssembly.lean",
+        "/tmp/rsc-independent-audit-q_kokr9w/Full.lean"
+      ],
+      "conclusion": "The split is appropriate and proves exactly codim1_region_support_cycle. Project, mathlib and SimonGMT revisions match the pins; snapshot Contract.lean and workspace Contract.lean/Submission.lean are byte-identical. Each proposed bare name has exactly one existing owner, comparator-accepted with the identical frozen type, and no conflicting active reservation. All three reused nodes have no children or dependencies, so the proposed edges are acyclic. Independent Lean checks elaborated every child proposition before its implementation and proved the exact parent type from the child types. Recompiling the accepted child proofs and parent assembly also succeeded. Every checked theorem depends only on propext, Classical.choice and Quot.sound, with no sorryAx or ancestor-theorem dependency. The assembly obtains the dimension bound from InClassO, combines support_subset_domain with the support child, and applies the cycle child. No matrix-unit or other problematic inline instance construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dim_le_of_embedded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all stated hypotheses. Nonemptiness supplies a chart point, the image equality supplies a point in its parameter domain, and the injective derivative yields the finrank inequality. This works for every stated P, d and r. The proof is complete and independent of the parent and other children; accepted reuse preserves the exact frozen type."
+    },
+    {
+      "key": "region_support_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including openness, relative closedness, E ⊆ N and the boundary representation. The proof correctly excludes closure N, constructs a half-radius ball with compact closure in U, and uses derivative support containment to make the integrand vanish on E. The cited set-integral lemma requires no measurability assumption on E. Membership in the zero region supplies the required contradiction without circularity."
+    },
+    {
+      "key": "region_boundary_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition permits arbitrary U and E, as stated. Exterior differentiation preserves the project's globally smooth test forms and their support containment without openness of U. The proof handles n = 0 explicitly; in successor degree it applies the hypothesis to dφ, uses d²φ = 0 and linearity, then current extensionality. Degrees and measure indices match, and no additional assumptions or circular dependencies are needed."
+    }
+  ],
+  "required_changes": []
+}
