@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d6e4ad7d8f05ada04c854ab32750cc43eef188287bda939f41075f24d178f9db",
+  "git_delta": {
+    "base_commit": "1f27676b37ea5f73f7900cb10448c757ab42f3ff",
+    "candidate_commit": "45a90f14d36dd4074bf1e1393c63ba909738c83f",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "d18fa3df86644dff1364a0b7c752431a86366232dbb2c99ec8f6fecd97991b43",
+    "source_sha256": "79161f770f3c686400a9cf5be342e7cd7aec74a59ac4513ea6b5f2c80d10b0a6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_cone_integer_multiplicity",
+      "statement": "∀ (P m : ℕ), (∀ (Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1)) (f : Eucl (P + 1) → Eucl P), IsIntegerMultiplicity Z → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ K : Set (Eucl P), IsCompact K → IsCompact (f ⁻¹' K ∩ Z.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), IsIntegerMultiplicity S ∧ ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)), (∃ N : Set (Eucl (P + 1)), IsOpen N ∧ Z.support ⊆ N ∧ ∀ y ∈ N, (η : DifferentialForm (Eucl (P + 1)) (m + 1)) y = ((ω : DifferentialForm (Eucl P) (m + 1)) (f y)).compContinuousLinearMap (fderiv ℝ f y)) → S ω = Z η) → ∀ (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → IsIntegerMultiplicity C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
