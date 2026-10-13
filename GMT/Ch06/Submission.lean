@@ -775,6 +775,23 @@ theorem Submission.deformation_dilation_lattice_chain :
   rw [hXY ω η hη, hX η, funext hη]
   exact tsum_congr fun F => by rw [hact F]
 
+/-- Dilation of currents (Simon Ch. 6, 2.23 and 2.24(1) for `η_ρ(x) = ρx`), the change of scale
+used to pass from 5.1 to 5.3.  For `ρ > 0` call `(X, Y)` a `ρ`-pair in degree `k` if
+`Y(ω) = X(η)` whenever `η(x) = ρᵏ ω(ρx)`, i.e. `η = η_ρ^# ω`.  Then: (1) `η_ρ^# ω` is a test form;
+(2) every `X ∈ 𝒟ₖ(ℝᴺ)` has a push-forward `Y = η_ρ# X`; (3) every `ρ`-pair has `M(Y) = ρᵏ M(X)`
+and `spt Y = ρ spt X`, `Y` is integer multiplicity if `X` is, and `Y = ∑ β_F [[ρF]]` if
+`X = ∑ β_F [[F]]`; (4) `∂` commutes with `η_ρ#`. -/
+theorem Submission.deformation_dilation : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, (∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∃ η : TestFormOn (univ : Set (Eucl N)) k, ∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Eucl N)) k, ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η)) ∧ (∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass ∧ Y.support = (fun x => ρ • x) '' X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) (k + 1), (∀ ω η : TestFormOn (univ : Set (Eucl N)) (k + 1), (∀ x, (η : DifferentialForm (Eucl N) (k + 1)) x = ρ ^ (k + 1) • (ω : DifferentialForm (Eucl N) (k + 1)) (ρ • x)) → Y ω = X η) → ∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y.boundary ω = X.boundary η := by
+  intro N ρ hρ k
+  -- (1), (2), (4): pull-back of test forms, push-forward of currents, commutation with `∂`.
+  obtain ⟨hpull, hpush, hbdry⟩ := Submission.deformation_dilation_calculus N ρ hρ k
+  -- (3): mass, support, integer multiplicity and lattice chains of an arbitrary `ρ`-pair.
+  exact ⟨hpull, hpush, fun X Y hXY =>
+    ⟨Submission.deformation_dilation_mass N ρ hρ k X Y hXY,
+      Submission.deformation_dilation_support N ρ hρ k X Y hXY,
+      Submission.deformation_dilation_integer_multiplicity N ρ hρ k X Y hXY,
+      Submission.deformation_dilation_lattice_chain N ρ hρ k X Y hXY⟩, hbdry⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
