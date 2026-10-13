@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "26a449187d9ccf9e7f2653e6206ec2ea01fd6385c7acbb10794063588c8a8527",
+  "git_delta": {
+    "base_commit": "a3bbb630c941ddddb755839454e9c9758e3c91ef",
+    "candidate_commit": "72c659e791aa4dfe012c17e62a667c35f37c9d7b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_vdl_annular_cutoff",
+    "diff_sha256": "b54559a3fbddebe0906f6ab4e3ec65ccf31d5a6817bd5fffe0796e16440a9f09",
+    "source_sha256": "e343afe903e95284435806c4508eb01efa6b3fd56cba537caa26eff4a78251a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_vdl_annular_cutoff",
+      "statement": "∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ C₀ / δ) ∧ ∀ z, z ∉ ball y (ρ + δ) \\ closedBall y ρ → fderiv ℝ ζ z = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
