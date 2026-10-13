@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lcmp_|dtc_massOn_eq_of_agreeOn|dtc_vanish_off_support|cmc_fc_eu|cutoff|massOn_le|restrictDomain",
+        "covectorEuclideanNorm|massAdmissibleOn|def GeometricCurrentOn.mass|theorem GeometricCurrentOn.le_massOn|zeroRegion|def GeometricCurrentOn.support|def GeometricCurrentOn.restrictDomain|theorem GeometricCurrentOn.restrictDomain_apply|testFormOnInclusion|tsupport_exteriorDerivative_subset|boundary_apply|def TestFormOn|structure GeometricCurrentOn",
+        "exists_cthickening_subset_open|closure_thickening_subset_cthickening|IsCompact.cthickening|theorem IsOpen.exists_contDiff_support_eq|exists_isSubordinate|tsupport_smul_subset_(left|right)|one_of_one_le|zero_of_nonpos",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show a3cc98d1f008606225ddd111bbd6688136867146:GMT/Ch07/Submission.lean",
+        "git show 0c79e2ab8192c141221cbe30fcd242e4becc6f00:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cutoff-independent-audit-p48cs1yh/Combined.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-extend-c6f2899005/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-extend-c6f2899005/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-mass-agree-a1/isolated-comparator-result.json",
+        "/tmp/cutoff-independent-audit-p48cs1yh/Combined.lean"
+      ],
+      "conclusion": "The pinned snapshot supplies the stated definitions and cutoff ingredients; the project search found no existing cutoff or mass-comparison helper. The frozen header and package revisions are compatible. Each proposed bare name has exactly one existing DAG match, comparator-accepted at the byte-identical type, with no child dependencies. All types are standalone one-line propositions and pass the statement validator. The handoff digest matches the requested binding. Fresh compilation of the extracted child proofs and an independently written assembly proves the exact selected parent; all four declarations depend only on propext, Classical.choice and Quot.sound. The split is appropriate and acyclic: vanishing passes from Y to its boundary through the support inclusion for exterior differentiation, localization bounds both masses by their masses on U, and agreement under restriction identifies these with the corresponding masses of X."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including arbitrary U. Steps 1–5 correctly cover the compact support by finitely many zero-region sets, construct a subordinate smooth partition, verify each product is a test form in U, and conclude by linearity. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "mass_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The proof handles C empty, explicitly constructs the smooth cutoff, proves coefficient-norm scaling, preserves admissibility, and uses vanishing on an open neighbourhood to obtain disjoint topological support before taking the supremum. Neither C ⊆ U nor V ⊆ U is needed: multiplication preserves the original form's support in U. No circular reliance or deferred proof construction occurs."
+    },
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose. Using W ⊆ V ⊆ U, the proof constructs both directions of the correspondence between admissible forms, preserves their underlying forms and norm bounds, applies the agreement hypothesis, and equates the supremum value sets. No openness or finite-mass hypothesis is missing, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
