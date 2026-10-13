@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11783f5270fba8338793a64c5b6eebd69f99b54163a52cefebd4cfed15713d07",
+  "git_delta": {
+    "base_commit": "74d24f66eb49d59fd5d8a7db5f9e1f22cdd75357",
+    "candidate_commit": "68abb974e251fa90e11f1987f73abe5f11647386",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_hr_ae_translate_invariant",
+    "diff_sha256": "c83e55e4fa51d7f144125e750632db7d3d685c99c1117cb5a10a613f684b0c00",
+    "source_sha256": "45341b451541bb297eeb7da12efc40af64d382bbccce13d84497552994f91221",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_hr_ae_translate_invariant",
+      "statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, fderiv ℝ ζ z w = 0) → ∀ᵐ z ∂volume, (z + w ∈ F ↔ z ∈ F)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
