@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b399ea44eb27b8a1da04ce9c4b4f37e7d9e85d340f7c98c813a55972203bef58",
+  "git_delta": {
+    "base_commit": "ffca5d00ec605970dbfb72ce7127840e2da1a56a",
+    "candidate_commit": "51d9121840c6f9d96de285ccfe2f42b785cfd049",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_iprod_current_of_bound",
+    "diff_sha256": "5d920e0d91a8a236492a717e69bd8c1c32a1105f20ced721c9fe82d34c94c7c9",
+    "source_sha256": "b72cfa62a078626fe5c9e1362c925e6c36e55105d552d8d3d0fc4cab15118f08",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_iprod_current_of_bound",
+      "statement": "∀ (P q : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U q →ₗ[ℝ] ℝ) (B : ℝ), 0 ≤ B → (∀ (ω : TestFormOn U q) (C : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) q) x) ≤ C) → |T₀ ω| ≤ B * C) → ∃ T : GeometricCurrentOn U q, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal B",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
