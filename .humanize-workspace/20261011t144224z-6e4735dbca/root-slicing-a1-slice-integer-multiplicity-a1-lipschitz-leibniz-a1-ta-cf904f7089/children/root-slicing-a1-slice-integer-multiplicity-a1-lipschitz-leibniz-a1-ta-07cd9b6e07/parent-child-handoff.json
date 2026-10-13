@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "read GMT/Ch06/Contract.lean (IsRectifiableTriple fields subset, nullMeasurableSet, countablyRectifiable, pos, integrableOn, orients) and verifier/gmt-compare.py contract_scope/child_modules (child challenge = import GMT.Ch06.Submission + replayed namespace GMT.Ch06 scope, solution = exact Submission.X)",
+        "python3 scan of dag.json (554 nodes; rechecked at 572 nodes before submission): status/candidate_commit/lean_statement of lpf_countably_rectifiable_c1_cover, lpf_weighted_tangent_on_c1_chart, lpf_raf_chart_change_of_variables, lpf_ccr_ae_pullback, lpf_tde_continuous_left_inverse, lpf_wtc_cat_fderiv_lower_bound (all accepted), lpf_chart_chain_rule, lpf_ccr_hasDerivAt_line_of_comp, lpf_tde_chart_directional_deriv, lpf_raf_chart_preimage_null, lpf_wtc_chart_image_measurable_locally_finite, lpf_wtc_cat_gram_jacobian_continuous (accepted, not needed), slicing_im_ll_gradient_weak_star (decomposing, parent-level dependency)",
+        "read the six reused nodes' parent-child-handoff.json (subproblem key/natural_proof/proof_key_steps) and compare title/statement/lean_statement with dag.json (byte-identical)",
+        "collision check: python3 over dag.json lean_name/lean_statement and rg 'slicing_im_ll_twl' in the snapshot and lake-packages-25730c7c/simongmt (no match)",
+        "git show d38f8d26:GMT/Ch06/Submission.lean (proof base = bare contract, no lpf declarations); git show <candidate>:GMT/Ch06/Submission.lean for the six reused candidates (declarations, imports); git merge-base --is-ancestor checks",
+        "union-merge simulation of the six reused candidate commits on d38f8d26 in a git clone --shared temp copy (git merge + git merge-file --union, as in the controller's _union_lean_conflicts)",
+        "grep snapshot Mathlib: LipschitzOnWith.ae_differentiableWithinAt_of_mem (Analysis/Calculus/Rademacher.lean), tendsto_tsum_of_dominated_convergence (Analysis/Normed/Group/Tannery.lean, not in import closure), hasSum_integral_iUnion, measurable_fderiv, integral_withDensity_eq_integral_smul, integrable_withDensity_iff_integrable_smul, withDensity_apply', Measure.map_apply_of_aemeasurable, integral_map, integrable_map_measure, MeasurableSet.image_of_continuousOn_injOn, disjointed/iUnion_disjointed/disjoint_disjointed, integrable_indicator_iff₀, ContinuousLinearMap.aestronglyMeasurable_comp₂, AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean, not imported; continuous_inner.comp_aestronglyMeasurable₂ used instead)",
+        "read SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt, HasWeightedApproximateTangentSpaceAt.unique)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/Stmts.lean (13 types: 5 new, 6 reused, gradient_weak_star, parent; no errors)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/AssemblyParent.lean (parent type from partition_tendsto, chart_representation, R1, R2, gradient_weak_star types; axioms propext, Classical.choice, Quot.sound)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/AssemblyT.lean, AssemblyCV.lean, AssemblyCF.lean, AssemblyDI.lean, AssemblyCR.lean (each new child from its declared dependencies' exact types; same axioms)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/Integrated.lean (union of the six reused candidates + five new children + parent, gradient_weak_star stubbed; EXIT 0; new children axioms propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-cf904f7089/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/twl_split/check/Stmts.lean",
+        "/tmp/twl_split/check/AssemblyParent.lean",
+        "/tmp/twl_split/check/AssemblyT.lean",
+        "/tmp/twl_split/check/AssemblyCV.lean",
+        "/tmp/twl_split/check/AssemblyCF.lean",
+        "/tmp/twl_split/check/AssemblyDI.lean",
+        "/tmp/twl_split/check/AssemblyCR.lean",
+        "/tmp/twl_split/check/Integrated.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract, so child types use only contract, SimonGMT and Mathlib names. All 13 relevant types elaborate in the exact comparator scope. The proof base d38f8d26 is the bare contract, so accepted lpf declarations can only be used as reused children. Six accepted declarations have exactly the types this proof needs: lpf_countably_rectifiable_c1_cover, lpf_weighted_tangent_on_c1_chart (both speculative when the handoff was written, accepted now), lpf_raf_chart_change_of_variables, lpf_ccr_ae_pullback, lpf_tde_continuous_left_inverse and lpf_wtc_cat_fderiv_lower_bound. They are reused byte-for-byte. No library has the Bochner chart area formula, the coefficient-field lift, the a.e. chart differential of a Lipschitz function with tangential gradient, or the partition/Tannery convergence lemma; these are the five new children. Mathlib supplies Rademacher on sets, countable additivity of the integral, withDensity/map integral transfer, measurable fderiv and Lusin–Souslin images. Tannery's file is outside the import closure, so its proof is inlined. Scratch Lean proves the parent type from the child types plus gradient_weak_star, and each new child from exactly its declared dependencies. A union-merge of the six reused candidates, together with all new children and the parent, compiles. Axioms are propext, Classical.choice, Quot.sound (sorryAx only from the gradient_weak_star stub). No new name occurs in the DAG, the snapshot or SimonGMT."
+    }
+  ],
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "child_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_has_fderiv_at-a1",
+  "subproblem": {
+    "key": "chart_has_fderiv_at",
+    "title": "Chain rule on a C¹ chart for a Lipschitz function with a tangential gradient: D(h∘Φ)(w) = ⟨G(Φ(w)), DΦ(w)·⟩ a.e.",
+    "statement": "Let P, n ∈ ℕ, Ω ⊆ ℝⁿ open, and Φ : ℝⁿ → ℝ^P of class C¹, Lipschitz on Ω and κ-antilipschitz on Ω for some κ > 0. Let A ⊆ ℝ^P be Hⁿ-null-measurable, h : ℝ^P → ℝ L-Lipschitz and G : ℝ^P → ℝ^P. Suppose that for Hⁿ-a.e. x ∈ A, every w ∈ Ω with Φ(w) = x and every u ∈ range DΦ(w), the function s ↦ h(x + su) has derivative ⟨G(x), u⟩ at s = 0. Then for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(A), h∘Φ is Fréchet differentiable at w with derivative s ↦ ⟨G(Φ(w)), DΦ(w)s⟩, i.e. the continuous linear map (innerSL ℝ (G(Φ(w)))) ∘ DΦ(w). Here Hⁿ = μHE[n] on ℝ^P, Lⁿ = volume on ℝⁿ and DΦ(w) = fderiv ℝ Φ w.",
+    "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (h : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → LipschitzWith L h → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), HasFDerivAt (h ∘ Φ) ((innerSL ℝ (G (Φ w))).comp (fderiv ℝ Φ w)) w",
+    "lean_name": "slicing_im_ll_twl_chart_hasFDerivAt",
+    "depends_on": [
+      "ae_pullback"
+    ],
+    "natural_proof": "Source: steps 7(c),(d) and 9(b) of the parent proof: Rademacher on the chart, the directional-derivative fact (Simon Ch. 2, 4.10), and uniqueness of derivatives. Notation: D := Ω ∩ Φ⁻¹(A), A_w := DΦ(w), and K is a Lipschitz constant of Φ on Ω.\n1. (Pulling back the hypothesis.) Let p(x) be the property: 'for every w ∈ Ω with Φ(w) = x and every u ∈ range A_w, s ↦ h(x + su) has derivative ⟨G(x), u⟩ at 0'. Apply the sibling ae_pullback (lpf_ccr_ae_pullback) with M := A. Its hypotheses hold: Ω is open, hence measurable; Φ is continuous (C¹), hence measurable; Φ is κ-antilipschitz on Ω; A is Hⁿ-null-measurable; and p holds Hⁿ-a.e. on A ∩ Φ(Ω) because it holds Hⁿ-a.e. on A ⊇ A ∩ Φ(Ω) (`ae_restrict_of_ae_restrict_of_subset`). The conclusion: D is Lⁿ-null-measurable, and p(Φ(w)) holds for Lⁿ-a.e. w ∈ D.\n2. (Rademacher.) h∘Φ is (L·K)-Lipschitz on Ω (`LipschitzWith.comp_lipschitzOnWith`). By Rademacher's theorem for maps Lipschitz on a set (Mathlib `LipschitzOnWith.ae_differentiableWithinAt_of_mem`), for Lⁿ-a.e. w ∈ ℝⁿ with w ∈ Ω, h∘Φ is differentiable within Ω at w. Since Ω is open (Ω ∈ 𝓝 w), h∘Φ is then differentiable at w (`DifferentiableWithinAt.differentiableAt`). Restricting to D ⊆ Ω (`ae_restrict_of_ae`): h∘Φ is differentiable at Lⁿ-a.e. w ∈ D.\n3. Fix w ∈ D at which steps 1 and 2 hold; Lⁿ-a.e. w ∈ D qualifies, using also `ae_restrict_mem₀` to get w ∈ D. Let B := D(h∘Φ)(w) and x := Φ(w). Fix s ∈ ℝⁿ, and put u := A_w s ∈ range A_w and φ₂(t) := h(x + t·u).\n(a) Applying p(x) to the point w itself, φ₂ has derivative ⟨G(x), A_w s⟩ at t = 0.\n(b) φ₂ also has derivative Bs at t = 0. The line t ↦ w + ts has derivative s. By the chain rule (`HasFDerivAt.comp_hasDerivAt`), φ₁(t) := (h∘Φ)(w + ts) has derivative Bs at 0, and t ↦ Φ(w + ts) has derivative A_w s at 0, i.e. Φ(w + ts) − Φ(w) − tA_w s = o(t). Since h is L-Lipschitz,\n|φ₂(t) − φ₁(t)| = |h(x + tA_w s) − h(Φ(w + ts))| ≤ L·|Φ(w + ts) − Φ(w) − tA_w s| = o(t).\nAs φ₂(0) = φ₁(0) = h(x),\nφ₂(t) − φ₂(0) − t·Bs = [φ₁(t) − φ₁(0) − t·Bs] + [φ₂(t) − φ₁(t)] = o(t).\nIn Lean: `hasDerivAt_iff_isLittleO`, then `IsBigO.of_bound` with constant L, `IsBigO.trans_isLittleO`, `IsLittleO.add` and `IsLittleO.congr_left`.\n(c) By uniqueness of derivatives (`HasDerivAt.unique`), Bs = ⟨G(x), A_w s⟩.\n4. Since s was arbitrary, B = (innerSL ℝ (G(x))) ∘ A_w as continuous linear maps, and h∘Φ has Fréchet derivative B at w (`DifferentiableAt.hasFDerivAt`). This holds for Lⁿ-a.e. w ∈ D. ∎",
+    "proof_key_steps": [
+      "ae_pullback moves the tangential-derivative hypothesis from Hⁿ-a.e. x ∈ A to Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(A).",
+      "Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem) for h∘Φ, which is Lipschitz on the open set Ω.",
+      "Directional derivative: t ↦ h(Φ(w) + t·DΦ(w)s) has derivative D(h∘Φ)(w)s, since it differs from (h∘Φ)(w + ts) by at most L·o(t).",
+      "Uniqueness of derivatives gives D(h∘Φ)(w)s = ⟨G(Φ(w)), DΦ(w)s⟩ for every s."
+    ]
+  },
+  "audit": {
+    "key": "chart_has_fderiv_at",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact HasFDerivAt conclusion follows from pulled-back directional hypotheses, Rademacher on the open chart domain, the explicit Lipschitz little-o comparison, and derivative uniqueness. The argument fixes one full-measure set before considering arbitrary directions, avoiding an uncountable exceptional-set gap."
+  },
+  "resolved_dependencies": [
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-07cd9b6e07/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-07cd9b6e07/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-07cd9b6e07/parent-supplied-natural-proof.json"
+}
