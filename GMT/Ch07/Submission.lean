@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Smooth cut-offs of a compact Lebesgue-null set** (steps 4 and 5(ii) of the parent proof).
+With `δₖ = 1/(k+1)`, take `aₖ` smooth with values in `[0, 1]`, support `thickening δₖ K`, and
+`aₖ = 1` exactly on `K` (`exists_contDiff_support_eq_eq_one_iff`).  Then `aₖ` vanishes off the
+compact `cthickening δₖ K`; a point `y ∉ K = ⋂_{δ>0} cthickening δ K` misses some
+`cthickening δ K`, so `aₖ(y) = 0` once `δₖ < δ`; and `0 ≤ ∫ aₖ ≤ λ(cthickening δₖ K) → λ(K) = 0`. -/
+theorem Submission.cmr_tdn_null_set_cutoffs : ∀ (n : ℕ) (K : Set (Euclid n)), IsCompact K → volume K = 0 → ∃ a : ℕ → Euclid n → ℝ, (∀ k, ContDiff ℝ (⊤ : ℕ∞) (a k)) ∧ (∀ k, HasCompactSupport (a k)) ∧ (∀ k y, 0 ≤ a k y) ∧ (∀ k y, a k y ≤ 1) ∧ (∀ k, ∀ y ∈ K, a k y = 1) ∧ (∀ y, y ∉ K → ∀ᶠ k in atTop, a k y = 0) ∧ Tendsto (fun k => ∫ y, a k y) atTop (𝓝 0) := by
+  intro n K hK hK0
+  -- `aₖ`: smooth, `[0, 1]`-valued, with support `thickening δₖ K` and `aₖ = 1` exactly on `K`
+  have hδ : ∀ k : ℕ, (0 : ℝ) < 1 / ((k : ℝ) + 1) := fun k => by positivity
+  have hex : ∀ k : ℕ, ∃ f : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) f ∧ range f ⊆ Icc 0 1 ∧
+      support f = thickening (1 / ((k : ℝ) + 1)) K ∧ ∀ x, x ∈ K ↔ f x = 1 := fun k =>
+    exists_contDiff_support_eq_eq_one_iff isOpen_thickening hK.isClosed
+      (self_subset_thickening (hδ k) K)
+  choose a ha_smooth ha_range ha_supp ha_one using hex
+  have hnonneg : ∀ k y, 0 ≤ a k y := fun k y => (ha_range k (mem_range_self y)).1
+  have hle : ∀ k y, a k y ≤ 1 := fun k y => (ha_range k (mem_range_self y)).2
+  -- `aₖ` vanishes off the compact `cthickening δₖ K`
+  have hzero : ∀ (k : ℕ) y, y ∉ cthickening (1 / ((k : ℝ) + 1)) K → a k y = 0 := by
+    intro k y hy
+    by_contra h
+    have hy' : y ∈ support (a k) := h
+    rw [ha_supp k] at hy'
+    exact hy (thickening_subset_cthickening _ _ hy')
+  refine ⟨a, ha_smooth, fun k => HasCompactSupport.intro hK.cthickening (hzero k), hnonneg, hle,
+    fun k y hy => (ha_one k y).1 hy, ?_, ?_⟩
+  · -- `y ∉ K = ⋂_{δ>0} cthickening δ K`, so `y ∉ cthickening δ K ⊇ cthickening δₖ K` for some
+    -- `δ > 0` and all `k` with `δₖ < δ`
+    intro y hy
+    rw [← hK.isClosed.closure_eq, closure_eq_iInter_cthickening] at hy
+    simp only [mem_iInter, not_forall] at hy
+    obtain ⟨δ, hδpos, hyδ⟩ := hy
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hδpos
+    filter_upwards [eventually_ge_atTop k₀] with k hk
+    refine hzero k y fun hmem => hyδ (cthickening_mono ?_ K hmem)
+    have hkk₀ : 1 / ((k : ℝ) + 1) ≤ 1 / ((k₀ : ℝ) + 1) :=
+      one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right hk 1)
+    linarith
+  · -- `0 ≤ ∫ aₖ ≤ λ(cthickening δₖ K)`, and `λ(cthickening δₖ K) → λ(K) = 0`
+    have hmeas : Tendsto (fun k : ℕ => (volume (cthickening (1 / ((k : ℝ) + 1)) K)).toReal)
+        atTop (𝓝 0) := by
+      have h := (tendsto_measure_cthickening_of_isCompact (μ := (volume : Measure (Euclid n)))
+        hK).comp tendsto_one_div_add_atTop_nhds_zero_nat
+      rw [hK0] at h
+      simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hmeas
+      (fun k => integral_nonneg (hnonneg k)) fun k => ?_
+    set C := cthickening (1 / ((k : ℝ) + 1)) K
+    have hCm : MeasurableSet C := isClosed_cthickening.measurableSet
+    have hint : Integrable (C.indicator fun _ => (1 : ℝ)) volume :=
+      (integrable_indicator_iff hCm).2 (integrableOn_const hK.cthickening.measure_lt_top.ne)
+    have hind : ∀ y, a k y ≤ C.indicator (fun _ => (1 : ℝ)) y := by
+      intro y
+      by_cases hy : y ∈ C
+      · rw [indicator_of_mem hy]
+        exact hle k y
+      · rw [indicator_of_notMem hy, hzero k y hy]
+    calc ∫ y, a k y ≤ ∫ y, C.indicator (fun _ => (1 : ℝ)) y :=
+          integral_mono_of_nonneg (Eventually.of_forall (hnonneg k)) hint
+            (Eventually.of_forall hind)
+      _ = (volume C).toReal := by
+          rw [integral_indicator_const _ hCm]
+          simp [measureReal_def]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
