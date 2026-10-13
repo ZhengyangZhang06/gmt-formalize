@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "90b3df35303da37beecba29acf67c4837965032e43c6b9e4edc33c63fc011751",
+  "git_delta": {
+    "base_commit": "0f6b306ddc7e5d9b4e707357a542b4c55efb672e",
+    "candidate_commit": "013681e40995ed13506dee23046e6ced0faf990a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_gc_local_inverse",
+    "diff_sha256": "bf79491056063ac945922d1ed3ef539499bdc8e0ff45d02f1cab8f20b64da353",
+    "source_sha256": "9b6c4ca0dac4c7da74e518b9ae58268a4a674eca3cbf2520cfaea24527e09ff3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_gc_local_inverse",
+      "statement": "∀ (d : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), IsOpen V → z₀ ∈ V → ContDiffOn ℝ 1 φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (χ : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ 1 χ O ∧ MapsTo χ O V₀ ∧ (∀ a ∈ O, φ (χ a) = a) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ χ (φ z) = z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
