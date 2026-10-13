@@ -945,6 +945,19 @@ theorem dohr_lmo_density_eq_mult_ae : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ))
   · -- (b): off `M` the density `1_M θ` vanishes.
     filter_upwards [hmain] with y hy hyM
     rwa [Set.indicator_of_notMem hyM] at hy
+/-- `μ_V`-null subsets of the carrier are `Hⁿ`-null: if `A ⊆ M` and `μ_V(A) = 0`, then
+`Hⁿ(A) = 0`.  `μ_V = Hⁿ ⌞ M` with density `θ`, so `μ_V(A) = 0` forces `θ = 0` `Hⁿ ⌞ M`-a.e. on `A`;
+as `θ > 0` on `M ⊇ A`, the set `A` itself is `Hⁿ ⌞ M`-null, hence `Hⁿ`-null. -/
+theorem dohr_lmo_hausdorff_null_of_weight_null : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (A : Set (Amb n ℓ)), A ⊆ V.carrier → V.weight A = 0 → (μHE[n] : Measure (Amb n ℓ)) A = 0 := by
+  intro n ℓ U V A hA hw
+  -- `μ_V(A) = 0` with the a.e.-measurable density `ofReal ∘ θ`: `{θ > 0} ∩ A` is `Hⁿ ⌞ M`-null.
+  have h0 : ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier)
+      ({x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ A) = 0 :=
+    (withDensity_apply_eq_zero' V.aemeasurable_mult.ennreal_ofReal).mp hw
+  -- `A` lies in this set and in `M`, since `A ⊆ M` and `θ > 0` on `M`.
+  have hsub : A ⊆ ({x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ A) ∩ V.carrier := fun x hx =>
+    ⟨⟨(ENNReal.ofReal_pos.mpr (V.mult_pos x (hA hx))).ne', hx⟩, hA hx⟩
+  exact measure_mono_null hsub (nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans h0.le))
 
 end Submission
 
