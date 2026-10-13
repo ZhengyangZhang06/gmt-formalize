@@ -630,6 +630,121 @@ theorem Submission.lpf_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl
     hM.nullMeasurableSet hM.pos
     ((hM.integrableOn _ hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure))
     hM.aestronglyMeasurable hξ hT
+/-- Countable Lipschitz cover (Lindelöf): if `f` is locally Lipschitz on an arbitrary `U ⊆ ℝ^P`,
+then countably many open sets `O i` cover `U` and `f` is `K i`-Lipschitz on each `O i ∩ U`. -/
+theorem Submission.lpf_lli_countable_lipschitz_cover : ∀ (P Q : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → ∃ (O : ℕ → Set (Eucl P)) (K : ℕ → ℝ≥0), (∀ i, IsOpen (O i)) ∧ U ⊆ ⋃ i, O i ∧ ∀ i, LipschitzOnWith (K i) f (O i ∩ U) := by
+  intro P Q U f hf
+  -- Step 1: each `x ∈ U` has an open `o x ∋ x` with `f` `k x`-Lipschitz on `o x ∩ U`.
+  have hloc : ∀ x ∈ U, ∃ (o : Set (Eucl P)) (k : ℝ≥0),
+      IsOpen o ∧ x ∈ o ∧ LipschitzOnWith k f (o ∩ U) := by
+    intro x hx
+    obtain ⟨k, t, ht, hft⟩ := hf hx
+    obtain ⟨o, ho, hxo, hot⟩ := mem_nhdsWithin.1 ht
+    exact ⟨o, k, ho, hxo, hft.mono hot⟩
+  choose! o k ho hxo hfo using hloc
+  -- Step 2: `ℝ^P` is hereditarily Lindelöf, so countably many `o x` (`x ∈ T ⊆ U`) cover `U`.
+  obtain ⟨T, hTc, hTU, hUT⟩ := (HereditarilyLindelofSpace.isLindelof U).elim_nhds_subcover o
+    fun x hx => (ho x hx).mem_nhds (hxo x hx)
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- Step 3: `T = ∅` forces `U = ∅`; take empty pieces.
+    refine ⟨fun _ => ∅, fun _ => 0, fun _ => isOpen_empty, fun x hx => ?_, fun _ => ?_⟩
+    · simpa using hUT hx
+    · simp
+  · -- Step 4: enumerate `T = range g` and take `O i = o (g i)`, `K i = k (g i)`.
+    obtain ⟨g, rfl⟩ := hTc.exists_eq_range hTne
+    refine ⟨fun i => o (g i), fun i => k (g i), fun i => ho _ (hTU _ (mem_range_self i)),
+      fun x hx => ?_, fun i => hfo _ (hTU _ (mem_range_self i))⟩
+    -- Step 5: the pieces cover `U`.
+    obtain ⟨y, ⟨i, rfl⟩, hxy⟩ := mem_iUnion₂.1 (hUT hx)
+    exact mem_iUnion.2 ⟨i, hxy⟩
+/-- Compact inner approximation: a `μ`-null-measurable `A ⊆ ℝ^P` with `μ ⌞ A` σ-finite is,
+up to a `μ`-null set, the union of countably many compact subsets of `A`. -/
+theorem Submission.lpf_lli_inner_compact_approx : ∀ (P : ℕ) (μ : Measure (Eucl P)) (A : Set (Eucl P)), NullMeasurableSet A μ → SigmaFinite (μ.restrict A) → ∃ C : ℕ → Set (Eucl P), (∀ k, IsCompact (C k)) ∧ (∀ k, C k ⊆ A) ∧ μ (A \ ⋃ k, C k) = 0 := by
+  intro P μ A hA hσ
+  -- Step 1: a Borel set `A' ⊆ A` with `μ (A \ A') = 0`.
+  obtain ⟨A', hA'A, hA'm, hA'ae⟩ := hA.exists_measurable_subset_ae_eq
+  have hAA' : μ (A \ A') = 0 := (ae_eq_set.1 hA'ae).2
+  -- Step 2: the Borel pieces `B m = A' ∩ S m`, `S = spanningSets (μ ⌞ A)`, have finite measure.
+  set S := spanningSets (μ.restrict A) with hS
+  set B : ℕ → Set (Eucl P) := fun m => A' ∩ S m
+  have hBA : ∀ m, B m ⊆ A := fun m => inter_subset_left.trans hA'A
+  have hBm : ∀ m, MeasurableSet (B m) := fun m => hA'm.inter (measurableSet_spanningSets _ m)
+  have hBfin : ∀ m, μ (B m) ≠ ∞ := by
+    intro m
+    have h : μ.restrict A (B m) = μ (B m) := by
+      rw [Measure.restrict_apply (hBm m), inter_eq_left.2 (hBA m)]
+    rw [← h]
+    exact ((measure_mono inter_subset_right).trans_lt (measure_spanningSets_lt_top _ m)).ne
+  -- Step 3: the finite measure `μ ⌞ B m` on `ℝ^P` is regular, so there are compact
+  -- `K m j ⊆ B m` with `μ (B m \ K m j) < (j + 1)⁻¹`.
+  have hK : ∀ m j : ℕ, ∃ K, K ⊆ B m ∧ IsCompact K ∧ μ (B m \ K) < ((j : ℝ≥0∞) + 1)⁻¹ := by
+    intro m j
+    have : IsFiniteMeasure (μ.restrict (B m)) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact (hBfin m).lt_top⟩
+    have : (μ.restrict (B m)).Regular :=
+      Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure _
+    obtain ⟨K, hKB, hKc, hKlt⟩ := (hBm m).exists_isCompact_sdiff_lt (μ := μ.restrict (B m))
+      (measure_ne_top _ _) (ε := ((j : ℝ≥0∞) + 1)⁻¹) (by simp)
+    refine ⟨K, hKB, hKc, ?_⟩
+    rwa [Measure.restrict_apply ((hBm m).diff hKc.measurableSet),
+      inter_eq_left.2 sdiff_subset] at hKlt
+  choose K hKB hKc hKlt using hK
+  -- Step 4: `μ (B m \ ⋃ j, K m j) < (j + 1)⁻¹` for every `j`, hence it vanishes.
+  have hnull : ∀ m, μ (B m \ ⋃ j, K m j) = 0 := by
+    intro m
+    by_contra h
+    obtain ⟨n, hn⟩ := ENNReal.exists_inv_nat_lt h
+    have h1 : μ (B m \ ⋃ j, K m j) < ((n : ℝ≥0∞) + 1)⁻¹ :=
+      (measure_mono (sdiff_subset_sdiff_right (subset_iUnion _ n))).trans_lt (hKlt m n)
+    have h2 : ((n : ℝ≥0∞) + 1)⁻¹ ≤ (n : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+    exact lt_irrefl _ ((h1.trans_le h2).trans hn)
+  -- Steps 5 and 6: re-index `K m j` along `Nat.unpair`; the rest of `A` lies in the null set
+  -- `(A \ A') ∪ ⋃ m, (B m \ ⋃ j, K m j)`.
+  refine ⟨fun k => K (Nat.unpair k).1 (Nat.unpair k).2, fun k => hKc _ _,
+    fun k => (hKB _ _).trans (hBA _), measure_mono_null ?_
+      (measure_union_null hAA' (measure_iUnion_null hnull))⟩
+  rintro x ⟨hxA, hxC⟩
+  by_cases hx : x ∈ A'
+  · have hxS : x ∈ ⋃ m, S m := by rw [hS, iUnion_spanningSets]; exact mem_univ x
+    obtain ⟨m, hm⟩ := mem_iUnion.1 hxS
+    refine Or.inr (mem_iUnion.2 ⟨m, ⟨hx, hm⟩, fun hxK => hxC ?_⟩)
+    obtain ⟨j, hj⟩ := mem_iUnion.1 hxK
+    exact mem_iUnion.2 ⟨Nat.pair m j, by simpa only [Nat.unpair_pair] using hj⟩
+  · exact Or.inl ⟨hxA, hx⟩
+
+/-- Locally Lipschitz images (step (P3) of Simon Ch. 6, Lemma 3.9; cf. Ch. 2, Theorem 1.8(i)).
+If `f` is locally Lipschitz on `U ⊆ ℝ^P`, then `f` maps `Hⁿ`-null subsets of `U` to `Hⁿ`-null
+sets, and `Hⁿ`-null-measurable `A ⊆ U` with `Hⁿ ⌞ A` σ-finite to `Hⁿ`-null-measurable sets. -/
+theorem Submission.lpf_locally_lipschitz_image : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → (∀ Z ⊆ U, (μHE[n] : Measure (Eucl P)) Z = 0 → (μHE[n] : Measure (Eucl Q)) (f '' Z) = 0) ∧ ∀ A ⊆ U, NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → SigmaFinite ((μHE[n] : Measure (Eucl P)).restrict A) → NullMeasurableSet (f '' A) (μHE[n] : Measure (Eucl Q)) := by
+  intro P Q n U f hf
+  -- Step 1: open sets `O i` covering `U`, with `f` `K i`-Lipschitz on `O i ∩ U`.
+  obtain ⟨O, K, -, hUO, hK⟩ := Submission.lpf_lli_countable_lipschitz_cover P Q U f hf
+  -- Step 2, part (i): `Hⁿ(f(Z ∩ O i)) ≤ (K i)ⁿ Hⁿ(Z ∩ O i) = 0` and `f(Z) ⊆ ⋃ i, f(Z ∩ O i)`.
+  have hnull : ∀ Z ⊆ U, (μHE[n] : Measure (Eucl P)) Z = 0 →
+      (μHE[n] : Measure (Eucl Q)) (f '' Z) = 0 := by
+    intro Z hZU hZ
+    have hcover : f '' Z ⊆ ⋃ i, f '' (Z ∩ O i) := by
+      rintro _ ⟨x, hxZ, rfl⟩
+      obtain ⟨i, hi⟩ := mem_iUnion.1 (hUO (hZU hxZ))
+      exact mem_iUnion.2 ⟨i, x, ⟨hxZ, hi⟩, rfl⟩
+    refine measure_mono_null hcover (measure_iUnion_null fun i => nonpos_iff_eq_zero.1 ?_)
+    calc (μHE[n] : Measure (Eucl Q)) (f '' (Z ∩ O i))
+        ≤ (K i : ℝ≥0∞) ^ n * (μHE[n] : Measure (Eucl P)) (Z ∩ O i) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            ((hK i).mono fun x hx => ⟨hx.2, hZU hx.1⟩)
+      _ = 0 := by rw [measure_mono_null inter_subset_left hZ, mul_zero]
+  refine ⟨hnull, fun A hAU hA hσ => ?_⟩
+  -- Step 3: compact `C k ⊆ A` with `Hⁿ(A \ ⋃ k, C k) = 0`.
+  obtain ⟨C, hCc, hCA, hAC⟩ := Submission.lpf_lli_inner_compact_approx P _ A hA hσ
+  -- Step 4: each `f(C k)` is compact (`f` is continuous on `U ⊇ C k`), hence Borel, and
+  -- `f(A \ ⋃ k, C k)` is `Hⁿ`-null by part (i).
+  have hB : MeasurableSet (⋃ k, f '' C k) := MeasurableSet.iUnion fun k =>
+    ((hCc k).image_of_continuousOn (hf.continuousOn.mono ((hCA k).trans hAU))).isClosed
+      |>.measurableSet
+  have hsplit : f '' A = (⋃ k, f '' C k) ∪ f '' (A \ ⋃ k, C k) := by
+    rw [← image_iUnion, ← image_union, union_sdiff_cancel (iUnion_subset hCA)]
+  rw [hsplit]
+  exact hB.nullMeasurableSet.union (.of_null (hnull _ (sdiff_subset.trans hAU) hAC))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
