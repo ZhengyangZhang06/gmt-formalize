@@ -451,6 +451,94 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Dominated convergence for pulled-back integrals** (Simon 6.2.23–6.2.24, the limit step in the
+push-forward by a `C¹` map).  Let `R = (M, θ, ξ)` be an integer multiplicity triple in `U`, `α` a
+continuous `n`-form with compact support in `U`, and `ψₖ` `C¹` maps equal to the identity off the
+compact `K' ⊆ U`, with `‖Dψₖ‖ ≤ C`, `ψₖ → φ` and `Dψₖ → Dφ` pointwise.  Then
+`∫_M θ ⟨α(ψₖ)∘Dψₖ, ξ⟩ dHⁿ → ∫_M θ ⟨α(φ)∘Dφ, ξ⟩ dHⁿ`: the integrands are dominated by
+`A Cⁿ θ 1_{spt α ∪ K'}` (`‖α‖ ≤ A`, `|ξ(γ)| ≤ ‖γ‖` a.e.), which is integrable since `θ` is locally
+`Hⁿ⌞M`-integrable in `U`. -/
+theorem Submission.dpf_pb_imrep_pullback_integral_tendsto : ∀ (P n : ℕ) (U K' : Set (Euclid P)) (R : IMRep U n) (α : DifferentialForm (Euclid P) n) (ψ : ℕ → Euclid P → Euclid P) (φ : Euclid P → Euclid P) (C : ℝ), IsCompact K' → K' ⊆ U → Continuous α → HasCompactSupport α → tsupport α ⊆ U → (∀ k, ContDiff ℝ 1 (ψ k)) → (∀ k x, x ∉ K' → ψ k x = x) → (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) → (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) → (∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x))) → Tendsto (fun k => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n])) := by
+  intro P n U K' R α ψ φ C hK' hK'U hα hαc hαU hψ hψid hψC hψφ hDψ
+  -- `C₀ = spt α ∪ K'` is compact, closed (hence measurable) and contained in `U`
+  have hC₀ : IsCompact (tsupport α ∪ K') := hαc.isCompact.union hK'
+  have hC₀m : MeasurableSet (tsupport α ∪ K') := hC₀.isClosed.measurableSet
+  -- `‖α‖ ≤ A` everywhere, so `0 ≤ A`
+  obtain ⟨A, hA⟩ := hα.bounded_above_of_compact_support hαc
+  have hA0 : 0 ≤ A := (norm_nonneg _).trans (hA 0)
+  -- `θ` is measurable
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  -- orientation bound: `|ξ(x)(γ)| = |γ(τ)| ≤ ‖γ‖ ∏ ‖τᵢ‖ = ‖γ‖` for `Hⁿ⌞M`-a.e. `x`
+  have hξ : ∀ᵐ x ∂μHE[n].restrict R.carrier, ∀ γ : Covector (Euclid P) n,
+      |R.orient x γ| ≤ ‖γ‖ := by
+    filter_upwards [R.orients] with x ⟨Q, _, τ, hτ, _, hor⟩ γ
+    have hγ : |γ τ| ≤ ‖γ‖ := by
+      have h := γ.le_opNorm τ
+      simp only [hτ.1, Finset.prod_const_one, mul_one] at h
+      rwa [Real.norm_eq_abs] at h
+    rcases hor with h | h
+    · rw [h γ]; exact hγ
+    · rw [h γ, abs_neg]; exact hγ
+  -- `x ↦ α(ψₖ(x))∘Dψₖ(x)` is continuous
+  have hβ : ∀ k, Continuous fun x =>
+      (α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x) := by
+    intro k
+    have h1 : Continuous fun x => (ContinuousAlternatingMap.compContinuousLinearMapCLM
+        (fderiv ℝ (ψ k) x) : Covector (Euclid P) n →L[ℝ] Covector (Euclid P) n) :=
+      ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp
+        ((hψ k).continuous_fderiv one_ne_zero)
+    exact h1.clm_apply (hα.comp (hψ k).continuous)
+  refine tendsto_integral_of_dominated_convergence
+    ((tsupport α ∪ K').indicator fun x => A * C ^ n * (R.mult x : ℝ)) ?_ ?_ ?_ ?_
+  · -- each integrand is a.e. strongly measurable
+    intro k
+    refine hθm.aestronglyMeasurable.mul ?_
+    have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+      isBoundedBilinearMap_apply.continuous
+    exact Continuous.comp_aestronglyMeasurable₂
+      (g := fun (L : MultiVector P n) (v : Covector (Euclid P) n) => L v) hev
+      R.aestronglyMeasurable_orient (hβ k).aestronglyMeasurable
+  · -- the bound `A Cⁿ θ 1_{C₀}` is integrable, as `θ` is integrable on `M ∩ C₀`
+    refine IntegrableOn.integrable_indicator ?_ hC₀m
+    refine Integrable.const_mul ?_ _
+    show Integrable _ ((μHE[n].restrict R.carrier).restrict (tsupport α ∪ K'))
+    rw [Measure.restrict_restrict hC₀m, inter_comm]
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    show ∫⁻ x in R.carrier ∩ (tsupport α ∪ K'), ‖(R.mult x : ℝ)‖ₑ ∂μHE[n] < ∞
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult _ hC₀ (union_subset hαU hK'U))
+  · -- domination `|hₖ| ≤ A Cⁿ θ 1_{C₀}` a.e.
+    intro k
+    filter_upwards [hξ] with x hx
+    by_cases hxC : x ∈ tsupport α ∪ K'
+    · rw [indicator_of_mem hxC]
+      have hβle : ‖(α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)‖ ≤ A * C ^ n := by
+        refine (ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _).trans ?_
+        rw [Fintype.card_fin]
+        exact mul_le_mul (hA _) (pow_le_pow_left₀ (norm_nonneg _) (hψC k x) n)
+          (pow_nonneg (norm_nonneg _) n) hA0
+      rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+      calc (R.mult x : ℝ) * |R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x))|
+          ≤ (R.mult x : ℝ) * (A * C ^ n) :=
+            mul_le_mul_of_nonneg_left ((hx _).trans hβle) (Nat.cast_nonneg _)
+        _ = A * C ^ n * (R.mult x : ℝ) := mul_comm _ _
+    · -- off `C₀`: `ψₖ(x) = x` and `α(x) = 0`, so the integrand vanishes
+      rw [indicator_of_notMem hxC]
+      have hxK : x ∉ K' := fun h => hxC (Or.inr h)
+      have hxα : x ∉ tsupport α := fun h => hxC (Or.inl h)
+      have h0 : (0 : Covector (Euclid P) n).compContinuousLinearMap (fderiv ℝ (ψ k) x) = 0 :=
+        map_zero (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ (ψ k) x))
+      rw [hψid k x hxK, image_eq_zero_of_notMem_tsupport hxα, h0, map_zero, mul_zero, norm_zero]
+  · -- pointwise convergence, by continuity of `α`, of `L ↦ (· ∘ L)` and of evaluation
+    refine Eventually.of_forall fun x => ?_
+    refine tendsto_const_nhds.mul (((R.orient x).continuous.tendsto _).comp ?_)
+    have h1 : Tendsto (fun k => (ContinuousAlternatingMap.compContinuousLinearMapCLM
+        (fderiv ℝ (ψ k) x) : Covector (Euclid P) n →L[ℝ] Covector (Euclid P) n)) atTop
+        (𝓝 (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ φ x))) :=
+      (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.tendsto _).comp (hDψ x)
+    have h2 : Tendsto (fun k => α (ψ k x)) atTop (𝓝 (α (φ x))) := (hα.tendsto _).comp (hψφ x)
+    exact (isBoundedBilinearMap_apply.continuous.tendsto _).comp (h1.prodMk_nhds h2)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
