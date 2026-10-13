@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "slicing_im_coarea|lpf_c1r|lpf_c1_approximation|Whitney|Lusin|Egoroff",
+        "theorem tendstoUniformlyOn_of_ae_tendsto|exists_isClosed_sdiff_lt|theorem LipschitzWith.ae_differentiableAt|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|theorem addHaar_sphere_of_ne_zero|theorem isClosed_iUnion|theorem norm_fderiv_le_of_lipschitz|theorem continuousOn_clm_apply|theorem contDiff_one_iff_fderiv|exists_disjoint_subfamily_covering_enlargement_ball",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-c1-approx-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-c1-approx-a1/decomposition-v1.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/c1-independent-audit-yrgaloz5/tests/FrozenTypes.lean",
+        "/tmp/c1-independent-audit-yrgaloz5/tests/Instances.lean",
+        "/tmp/c1-independent-audit-yrgaloz5/Conditional.log",
+        "/tmp/c1-independent-audit-yrgaloz5/RealTypes.log"
+      ],
+      "conclusion": "The snapshot fixes project d8d46c95 and Mathlib 25730c7c; installed dependencies match the pinned revisions. No proposed declaration exists in the snapshot project. Each name instead identifies exactly one comparator-accepted DAG declaration, with an identical frozen type and matching acceptance evidence. All five frozen propositions independently elaborate in the comparator scope without child implementations. The four accepted proofs and the selected parent assembly independently compile together; each depends only on propext, Classical.choice and Quot.sound. The conditional parent assembly uses exactly Lusin, uniform remainder and Whitney. Borel-space and canonical Lebesgue/Haar instances were checked; there are no matrix constructions. The split is appropriate: its dependency closure is acyclic, and Rademacher plus these children proves the exact selected contract, including ε = ∞. The supplied parent digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independent one-line proposition agree on all hypotheses and conclusions. The proof correctly reduces infinite ε, applies finite-measure scalar Lusin to the coordinates, controls the operator norm, and glues closed annular pieces using local finiteness. Null boundary spheres and the summable defect give the required strict bound; n = 0 is covered. No parent or self-reliance occurs. The bare name validly reuses the identical accepted contract at b7b6c027."
+    },
+    {
+      "key": "egoroff_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the one-line proposition, including every real radius R. Egoroff applies to each finite-measure Borel annulus with the stated measurability and convergence hypotheses. Closed inner approximations have a locally finite closed union and total defect at most ε/4 after reduction. Every bounded part meets finitely many pieces, giving uniform convergence; negative radii are harmless. This independent obligation supports uniform_remainder. The bare name reuses the identical accepted contract at 7919071b."
+    },
+    {
+      "key": "uniform_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line proposition agree. The supplied proof establishes bounded real remainder suprema, pointwise convergence from full differentiability, and Borel measurability; both proposed measurability arguments are valid. It applies egoroff_closed with all hypotheses satisfied, then uses compact boundedness to choose one positive radius and handles the diagonal separately. The sole dependency points correctly to egoroff_closed and creates no cycle. The bare name reuses the identical accepted contract at 38a84674, whose acceptance matches comparison-identity-v2."
+    },
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently usable one-line proposition match exactly. The proof supplies the Whitney construction rather than a future search plan: radius comparability, Vitali cover, bounded overlap, smooth weights, derivative bounds, nearest anchors, and the extension. The estimates proving differentiability and derivative continuity, including the 700ηM bound, are valid. Empty A and dimension zero are covered. No approximation theorem is assumed. The bare name reuses the identical accepted contract at 8b631fd6; its proof independently compiles with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}
