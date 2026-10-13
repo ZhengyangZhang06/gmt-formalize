@@ -740,6 +740,62 @@ theorem Submission.cmr_covector_euclidean_equiv : ∀ (P n : ℕ), ∃ (d : ℕ)
   refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
   rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
 
+/-- **Coordinate covectors `dx^I` exist and span** (Simon 6.1 (1.1)–(1.2); used for
+`ω = Σ_α ω_α dx^α`): (a) for every `I : Fin n → Fin P` some `n`-covector `θ` has
+`θ(v) = det (vⱼ(I k))_{k,j}`; (b) an `n`-vector `ζ` vanishing on these `θ` for every strictly
+increasing `I` vanishes.  Fix `θ_I` by (a).  Since `θ_I(e_J) = δ_{IJ}` for strictly increasing
+`I`, `J`, the remainder `α − Σ_I α(e_I) θ_I` of an `n`-covector `α` vanishes on every `e_J`.  So
+its coefficient norm `|·|_E` is `0`, and as `|·|_E` is the norm of a linear isomorphism onto `ℝᵈ`,
+`α = Σ_I α(e_I) θ_I`.  Hence `ζ α = Σ_I α(e_I) ζ θ_I = 0`. -/
+theorem Submission.dimred_mbl_fnd_coordinate_covectors_span : ∀ (P n : ℕ), (∀ I : Fin n → Fin P, ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) ∧ ∀ ζ : MultiVector P n, (∀ (I : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ζ θ = 0) → ζ = 0 := by
+  intro P n
+  -- Step 1 (part (a)): the determinant covector exists for every `I`
+  refine ⟨Submission.cmr_cc_det_covector_exists P n, fun ζ hζ => ?_⟩
+  classical
+  -- fix `θ I = dx^I` for every `I`
+  choose θ hθ using Submission.cmr_cc_det_covector_exists P n
+  set e := EuclideanSpace.basisFun (Fin P) ℝ with he
+  -- Step 2: `θ_I(e_J) = δ_{IJ}` for strictly increasing `I`, `J`
+  have hδ : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
+      θ I (fun j => e (J j)) = if I = J then 1 else 0 :=
+    fun I J hI hJ => Submission.cmr_cc_det_covector_basis_kronecker P n I J (θ I) hI hJ (hθ I)
+  -- Step 3: `α = Σ_I α(e_I) θ_I` over strictly increasing `I`
+  have hexp : ∀ α : Covector (Euclid P) n,
+      α = ∑ I : Fin n → Fin P, if StrictMono I then α (fun i => e (I i)) • θ I else 0 := by
+    intro α
+    set α' := α - ∑ I : Fin n → Fin P, if StrictMono I then α (fun i => e (I i)) • θ I else 0
+      with hα'
+    -- `α'(e_J) = α(e_J) − Σ_I α(e_I) δ_{IJ} = 0` for strictly increasing `J`
+    have hJ : ∀ J : Fin n → Fin P, StrictMono J → α' (fun j => e (J j)) = 0 := by
+      intro J hJ
+      rw [hα', ContinuousAlternatingMap.sub_apply, ContinuousAlternatingMap.sum_apply,
+        Finset.sum_eq_single J, ite_eq_left hJ, ContinuousAlternatingMap.smul_apply,
+        hδ J J hJ hJ, ite_eq_left rfl, smul_eq_mul, mul_one, sub_self]
+      · intro I _ hIJ
+        split_ifs with hI
+        · rw [ContinuousAlternatingMap.smul_apply, hδ I J hI hJ, ite_eq_right hIJ, smul_zero]
+        · rfl
+      · intro h
+        exact absurd (Finset.mem_univ J) h
+    -- every term of `|α'|_E` vanishes, so `|α'|_E = 0`
+    have hnorm : covectorEuclideanNorm α' = 0 := by
+      unfold covectorEuclideanNorm
+      rw [← he, Finset.sum_eq_zero fun I _ => ?_, Real.sqrt_zero]
+      split_ifs with hI
+      · rw [hJ I hI, sq, mul_zero]
+      · rfl
+    -- `|·|_E` is the norm of a linear isomorphism `c` onto `ℝᵈ`, so `c α' = 0` and `α' = 0`
+    obtain ⟨d, c, hc⟩ := Submission.cmr_covector_euclidean_equiv P n
+    have hc0 : c α' = 0 := norm_eq_zero.mp ((hc α').symm.trans hnorm)
+    exact sub_eq_zero.mp (c.map_eq_zero_iff.mp hc0)
+  -- Step 4 (part (b)): `ζ θ_I = 0` for strictly increasing `I`, so `ζ α = Σ_I α(e_I) ζ θ_I = 0`
+  refine ContinuousLinearMap.ext fun α => ?_
+  rw [zero_apply, hexp α, map_sum]
+  refine Finset.sum_eq_zero fun I _ => ?_
+  split_ifs with hI
+  · rw [map_smul, hζ I (θ I) hI (hθ I), smul_zero]
+  · exact map_zero ζ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
