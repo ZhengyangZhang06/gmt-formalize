@@ -1,0 +1,22 @@
+{
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3649",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "65a29dad072edd4aa7c3f236ad521b9f3fa990e9",
+  "integrated_commit": "",
+  "proof_base_commit": "b800f44295eeed854ec99525f83cc30db21299ed",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1",
+  "requires": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.slab_measure-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.slab_transfer-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.cylinder_null_measurable-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.cylinder_rectifiable-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.frame_orthonormal-a1"
+  ]
+}
