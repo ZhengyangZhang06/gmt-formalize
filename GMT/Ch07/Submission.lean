@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 2.5** (step 8(b) of the level cut in the proof of 7.2.4): if `Y = T − S` on
+the forms supported in `W`, then `M_W(Y) ≤ M_W(T) + M_W(S)`.  `M_W(Y)` is the supremum of `Y(ω)`
+over the forms `ω ∈ 𝒟ⁿ(U)` admissible for `M_W` (`spt ω ⊆ W`, `|ω| ≤ 1`).  For such `ω` the
+form `−ω` is admissible as well, since it has the same support and pointwise coefficient norm.
+As `Y(ω) = T(ω) − S(ω) = T(ω) + S(−ω)` and `ofReal` is subadditive, `Y(ω)` is bounded by
+`M_W(T) + M_W(S)`. -/
+theorem Submission.dor_lmb_glc_massOn_sub_le : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T S Y : GeometricCurrentOn U n), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Y ω = T ω - S ω) → Y.massOn W ≤ T.massOn W + S.massOn W := by
+  intro P n U W T S Y hY
+  -- Step 1: `M_W(Y)` is a supremum, so fix an admissible `ω`
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible (same support, same coefficient norm)
+  have hnω : -ω ∈ massAdmissibleOn U n W := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `Y(ω) = T(ω) − S(ω) = T(ω) + S(−ω)`, as `spt ω ⊆ W`
+  have hY' : Y ω = T ω + S (-ω) := by
+    rw [hY ω hω.1, map_neg S.toCurrent ω, sub_eq_add_neg]
+  -- Steps 4–5: subadditivity of `ofReal`, and each admissible value is bounded by the mass
+  calc ENNReal.ofReal (Y ω) = ENNReal.ofReal (T ω + S (-ω)) := by rw [hY']
+    _ ≤ ENNReal.ofReal (T ω) + ENNReal.ofReal (S (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ T.massOn W + S.massOn W := add_le_add (T.le_massOn hω) (S.le_massOn hnω)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
