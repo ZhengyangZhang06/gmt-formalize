@@ -601,6 +601,44 @@ theorem Submission.idtp_tdc_csfp_great_circle_local_plane : ∀ (P : ℕ) (S : S
   intro x hxQ hx
   exact hKA ⟨hxQ, mem_sphere_zero_iff_norm.2 hx⟩
 
+/-- Two seeded 2-planes of a closed, locally planar set are equal or meet only in `0` (proof of
+Simon 7.3.3(1), pp. 191–192: `spt S₀` lies in 2-planes `P₁, …, P_q` with `Pᵢ ∩ Pⱼ = {0}` for
+`i ≠ j`).  Here `S ⊆ ℝᴾ` is closed and locally a 2-plane near each `p ∈ S ∖ {0}`, and
+`S ∩ B_{δᵢ}(pᵢ) = Qᵢ ∩ B_{δᵢ}(pᵢ)` for 2-planes `Qᵢ` and unit vectors `pᵢ ∈ Qᵢ`.  If
+`Q₁ ⊓ Q₂ ≠ ⊥`, normalise a nonzero common vector to a unit vector `u ∈ Q₁ ∩ Q₂`.  Propagating
+local planarity along the great circles of `Q₁` and `Q₂` gives `S ∩ B_{εᵢ}(u) = Qᵢ ∩ B_{εᵢ}(u)`,
+so `Q₁` and `Q₂` agree on `B_t(u)`, `t = min(ε₁, ε₂)`, whence `Q₁ = Q₂`. -/
+theorem Submission.idtp_tdc_csfp_planes_eq_or_inf_bot : ∀ (P : ℕ) (S : Set (Euclid P)) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (p₁ p₂ : Euclid P) (δ₁ δ₂ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q₁ = 2 → Module.finrank ℝ Q₂ = 2 → p₁ ∈ Q₁ → ‖p₁‖ = 1 → 0 < δ₁ → S ∩ ball p₁ δ₁ = (Q₁ : Set (Euclid P)) ∩ ball p₁ δ₁ → p₂ ∈ Q₂ → ‖p₂‖ = 1 → 0 < δ₂ → S ∩ ball p₂ δ₂ = (Q₂ : Set (Euclid P)) ∩ ball p₂ δ₂ → Q₁ = Q₂ ∨ Q₁ ⊓ Q₂ = ⊥ := by
+  intro P S Q₁ Q₂ p₁ p₂ δ₁ δ₂ hS hloc hQ₁ hQ₂ hp₁ hp₁n hδ₁ hS₁ hp₂ hp₂n hδ₂ hS₂
+  -- if `Q₁ ⊓ Q₂ ≠ ⊥`, there is a nonzero `v ∈ Q₁ ∩ Q₂`
+  rcases eq_or_ne (Q₁ ⊓ Q₂) ⊥ with hbot | hbot
+  · exact Or.inr hbot
+  refine Or.inl ?_
+  obtain ⟨v, hv, hv0⟩ := (Submodule.ne_bot_iff _).1 hbot
+  obtain ⟨hv₁, hv₂⟩ := Submodule.mem_inf.1 hv
+  -- `u = |v|⁻¹ v` is a common unit vector
+  obtain ⟨u, hu₁, hu₂, hun⟩ : ∃ u : Euclid P, u ∈ Q₁ ∧ u ∈ Q₂ ∧ ‖u‖ = 1 :=
+    ⟨‖v‖⁻¹ • v, Q₁.smul_mem _ hv₁, Q₂.smul_mem _ hv₂, by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hv0)]⟩
+  -- along the great circles through `p₁` and `p₂`, `S` is locally `Q₁` and locally `Q₂` at `u`
+  obtain ⟨ε₁, hε₁, h₁⟩ := Submission.idtp_tdc_csfp_great_circle_local_plane P S Q₁ p₁ δ₁ hS hloc
+    hQ₁ hp₁ hp₁n hδ₁ hS₁ u hu₁ hun
+  obtain ⟨ε₂, hε₂, h₂⟩ := Submission.idtp_tdc_csfp_great_circle_local_plane P S Q₂ p₂ δ₂ hS hloc
+    hQ₂ hp₂ hp₂n hδ₂ hS₂ u hu₂ hun
+  -- so `Q₁ ∩ B_t(u) = S ∩ B_t(u) = Q₂ ∩ B_t(u)` for `t = min(ε₁, ε₂)`, and `Q₁ = Q₂`
+  obtain ⟨t, ht, ht₁, ht₂⟩ : ∃ t : ℝ, 0 < t ∧ t ≤ ε₁ ∧ t ≤ ε₂ :=
+    ⟨min ε₁ ε₂, lt_min hε₁ hε₂, min_le_left _ _, min_le_right _ _⟩
+  have hshrink : ∀ (A : Set (Euclid P)) (ε : ℝ), t ≤ ε → A ∩ ball u ε ∩ ball u t = A ∩ ball u t :=
+    fun A ε hε => by rw [inter_assoc, inter_eq_right.2 (ball_subset_ball hε)]
+  refine Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball P Q₁ Q₂ u t hu₁ ht ?_
+  calc (Q₁ : Set (Euclid P)) ∩ ball u t = (Q₁ : Set (Euclid P)) ∩ ball u ε₁ ∩ ball u t :=
+        (hshrink _ _ ht₁).symm
+    _ = S ∩ ball u ε₁ ∩ ball u t := by rw [h₁]
+    _ = S ∩ ball u t := hshrink _ _ ht₁
+    _ = S ∩ ball u ε₂ ∩ ball u t := (hshrink _ _ ht₂).symm
+    _ = (Q₂ : Set (Euclid P)) ∩ ball u ε₂ ∩ ball u t := by rw [h₂]
+    _ = (Q₂ : Set (Euclid P)) ∩ ball u t := hshrink _ _ ht₂
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
