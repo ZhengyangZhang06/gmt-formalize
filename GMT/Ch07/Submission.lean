@@ -522,7 +522,6 @@ theorem dorag_ha_rb_line_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal)
     exact (hFd b).tendsto_slope_zero_right.sub (hFd a).tendsto_slope_zero_right
   exact tendsto_nhds_unique hlim2 hlim1
 
-end Submission
 
 /-- **FTC along translates of a Lipschitz function, for a.e. base point.**  If `u : ℝⁿ → ℝ` is
 `L`-Lipschitz and `z ∈ ℝⁿ`, then `u(p + z) − u(p) = ∫₀¹ Du(p + τz)z dτ` for a.e. `p ∈ ℝⁿ`.  By
