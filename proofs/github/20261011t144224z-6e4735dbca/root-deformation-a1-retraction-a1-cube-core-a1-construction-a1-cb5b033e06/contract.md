@@ -1,0 +1,505 @@
+<!-- theorem-id: gmt-ch06/root.deformation-a1.retraction-a1.cube_core-a1.construction-a1 -->
+
+## Theorem `Submission.dr_cc_construction`
+
+Notation: m, ℓ ∈ ℕ, d := m + 1 + ℓ, indices i range over Fin d, ℝ^d = Eucl d with the Euclidean norm |·|, C := [0,1]^d (y ∈ C iff 0 ≤ y_i ≤ 1 for all i), a ∈ ℝ^d with 1/4 < a_i < 3/4 for all i, and La := {y ∈ ℝ^d : there is a set J of indices with |J| = m + 2 and integers k_i with y_i − a_i = k_i for all i ∈ J}. Assume ℓ ≥ 1. There is a map ψ₀ : ℝ^d → ℝ^d such that (α) for every x ∈ C ∖ La, ψ₀(x) ∈ C and there is a set I of exactly ℓ indices with ψ₀(x)_i ∈ {0,1} for all i ∈ I; (β) for all x, x′ ∈ C ∖ La with x′_i − x_i ∈ ℤ for all i, ψ₀(x′)_i − ψ₀(x)_i = x′_i − x_i for all i; (S1): for every x ∈ C ∖ La for which there is a set I of exactly ℓ indices with x_i ∈ {0,1} for all i ∈ I, ψ₀(x) = x; and (S2): for every set J of indices with |J| ≥ m + 2, every c ∈ ℝ^d with c_i = a_i for i ∈ J and c_i ∈ {0,1} for i ∉ J, every x ∈ C ∖ La with x_i = c_i for i ∉ J, every y ∈ C and s > 0 with y_i − c_i = s·(x_i − c_i) for all i, and such that y_i ∈ {0,1} for some i ∈ J: ψ₀(y) = ψ₀(x). (Informal remark, not part of the statement: in (S2), (J, c) is a face F of C of dimension |J| ≥ m + 2 with centre c = a_F, and y is the point where the ray from a_F through x leaves F, i.e. y = ψ_F(x), the radial retraction of F with origin a_F; so (S2) is the parent's ψ₀ = ψ₀ ∘ ψ_F on F ∖ La, and (S1) says ψ₀ fixes the points of C ∖ La lying on faces of dimension ≤ m + 1.)
+
+Node: `root.deformation-a1.retraction-a1.cube_core-a1.construction-a1`
+
+Root: https://github.com/ZhengyangZhang06/gmt-formalize/issues/6
+
+Parent: https://github.com/ZhengyangZhang06/gmt-formalize/issues/2515
+
+Prerequisites: https://github.com/ZhengyangZhang06/gmt-formalize/issues/3606
+
+Decomposition children: None
+
+## Lean problem
+
+Declaration: `Submission.dr_cc_construction`
+
+```lean
+∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ a : Eucl (m + 1 + ℓ), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∃ ψ₀ : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ), (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → (∀ i, 0 ≤ ψ₀ x i ∧ ψ₀ x i ≤ 1) ∧ ∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ψ₀ x i = 0 ∨ ψ₀ x i = 1) ∧ (∀ x x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La → (∀ i, ∃ k : ℤ, x' i - x i = k) → ∀ i, ψ₀ x' i - ψ₀ x i = x' i - x i) ∧ (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, x i = 0 ∨ x i = 1) → ψ₀ x = x) ∧ ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), m + 2 ≤ J.card → (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → (∃ i ∈ J, y i = 0 ∨ y i = 1) → ψ₀ y = ψ₀ x
+```
+
+### Frozen project context
+
+`GMT/Ch06/Contract.lean` at `d8d46c9587747dee0751a1f780fcafdba16a3886` supplies the original imports, definitions and root contract. Child hypotheses are stated above; prerequisite declarations are linked in their issues.
+
+```lean
+import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Topology.MetricSpace.Thickening
+import Mathlib.Topology.EMetricSpace.Lipschitz
+import Poincare.SimonGMT.Chapter01.Densities
+import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter06.Mass
+import Poincare.SimonGMT.Chapter06.FormsDuality
+import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
+
+Frozen contract.  Currents, boundary, mass and weak convergence are the clean SimonGMT
+objects (`Poincare.SimonGMT.Chapter06`):
+
+* `GeometricCurrentOn U n`: sequentially continuous linear functionals on `𝒟ⁿ(U)` (Simon 2.1);
+* `T.boundary` (2.3), `T.massOn W` (2.5, Euclidean coefficient norm of Remark 2.6),
+  `T.mass = T.massOn U` (2.4), `T.support` (2.11), `WeaklyConvergesOn` (2.13).
+
+Integer multiplicity currents `τ(M, θ, ξ)` (3.1), restriction `T ⌞ A` (2.9), slices (4.6),
+the Lipschitz push-forward (3.6), lattice polyhedral chains (§5) and the flat pseudometric
+`d_W` (7.1) are defined below from primitive data.  Hausdorff measure `Hⁿ` is Mathlib's
+normalized `μHE[n]` (equal to Lebesgue measure on `ℝⁿ`).
+
+**Degree convention.**  `GeometricCurrentOn.boundary` is defined on degree `m + 1`.  Whenever
+the book's statement involves `∂T` for an `n`-current with `n ≥ 1`, the Lean statement writes
+the book's `n` as `m + 1`.  The ambient space is `ℝ^P` (book: `ℝ^P` in §2, §8, `ℝ^{n+ℓ}`
+elsewhere); in §5–§6, where constants are `c(n, ℓ)`, the ambient space is `ℝ^{(m+1)+ℓ}`.
+-/
+
+open MeasureTheory Filter Set Metric
+open scoped ENNReal NNReal Topology
+
+namespace GMT.Ch06
+
+open Poincare.SimonGMT.Chapter06
+open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt)
+open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity)
+
+noncomputable section
+
+/-- Euclidean space `ℝ^P`. -/
+abbrev Eucl (P : ℕ) := EuclideanSpace ℝ (Fin P)
+
+variable {P : ℕ}
+
+/-! ## Basic notions -/
+
+/-- Simon's `W ⊂⊂ U` for open `W`: `W` is open and `closure W` is a compact subset of `U`. -/
+def CompactlyContainedOpen (W U : Set (Eucl P)) : Prop :=
+  IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U
+
+/-- Simon Ch. 6, 3.1 (p. 146) and 8.1 (p. 173): the conditions on the triple `(M, θ, ξ)`.
+
+* `M ⊆ U` is `Hⁿ`-measurable and countably `n`-rectifiable (Ch. 3, 1.1);
+* `θ` is positive on `M` and locally `Hⁿ`-integrable on `M` in `U`;
+* `ξ : M → Λₙ(ℝ^P)` is `Hⁿ`-measurable and for `Hⁿ`-a.e. `x ∈ M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for an
+  orthonormal basis `τ` of the approximate tangent space `TₓM` of `M` (w.r.t. `θ`, Ch. 3, 1.7).
+
+`n`-vectors are `NVector (ℝ^P) n` (the dual of `n`-covectors), so `⟨ω, ξ⟩ = ξ ω` and
+`τ₁ ∧ ⋯ ∧ τₙ = simpleNVector τ`.  The sign `±` (as printed in 8.1) is only needed for `n = 0`,
+where there is no frame to flip. -/
+structure IsRectifiableTriple (U : Set (Eucl P)) (n : ℕ) (M : Set (Eucl P))
+    (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) : Prop where
+  subset : M ⊆ U
+  nullMeasurableSet : NullMeasurableSet M (μHE[n] : Measure (Eucl P))
+  countablyRectifiable : CountablyRectifiable n M
+  pos : ∀ x ∈ M, 0 < θ x
+  integrableOn : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+    IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P))
+  aestronglyMeasurable : AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict M)
+  orients : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∃ τ : Fin n → Eucl P,
+    Orthonormal ℝ τ ∧
+    HasWeightedApproximateTangentSpaceAt n M θ x (Submodule.span ℝ (range τ)) ∧
+    (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ)
+
+/-- Simon Ch. 6, 3.1 (‡) (p. 146): `τ(M, θ, ξ)(ω) = ∫_M ⟨ω(x), ξ(x)⟩ θ(x) dHⁿ(x)`. -/
+def tauAction (n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+    (ω : DifferentialForm (Eucl P) n) : ℝ :=
+  ∫ x in M, θ x * ξ x (ω x) ∂(μHE[n] : Measure (Eucl P))
+
+/-- Simon Ch. 6, 8.1 (p. 173): `T` is *rectifiable*, `T = τ(M, θ, ξ)` with `θ` real-valued
+(positive, locally `Hⁿ`-integrable; footnote 4). -/
+def IsRectifiableCurrent {U : Set (Eucl P)} {n : ℕ} (T : GeometricCurrentOn U n) : Prop :=
+  ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+    IsRectifiableTriple U n M θ ξ ∧ ∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω
+
+/-- Simon Ch. 6, 3.1 (p. 146): `T ∈ 𝒟ₙ(U)` is an *integer multiplicity (rectifiable) current*:
+`T = τ(M, θ, ξ)` with `θ` positive integer-valued. -/
+def IsIntegerMultiplicity {U : Set (Eucl P)} {n : ℕ} (T : GeometricCurrentOn U n) : Prop :=
+  ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+    IsRectifiableTriple U n M θ ξ ∧ (∀ x ∈ M, ∃ k : ℕ, θ x = k) ∧
+    ∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω
+
+/-- Integral current (the hypothesis of Simon Ch. 6, 8.2, p. 176): `T` and `∂T` are both integer
+multiplicity (both then have locally finite mass). -/
+def IsIntegralCurrent {U : Set (Eucl P)} {m : ℕ} (T : GeometricCurrentOn U (m + 1)) : Prop :=
+  IsIntegerMultiplicity T ∧ IsIntegerMultiplicity T.boundary
+
+/-! ## Measure representation, restriction, slices -/
+
+/-- Simon Ch. 6, (2.7) (p. 136): `T(ω) = ∫ ⟨ω, v⟩ dμ`, with `⟨ω, v⟩` `μ`-integrable for every
+test form `ω` (testing with `φ dx^α`, `φ = 1` on a compact `K ⊆ U`, this is equivalent to `v`
+being locally `μ`-integrable on `U`).  No normalization of `v` is required: such `(μ, v)` exists
+iff `T` has locally finite mass (Riesz, Ch. 1, 4.14), and the vector measure `v μ` on `U` is
+then uniquely determined by `T`. -/
+def IsMeasureRepresentation {U : Set (Eucl P)} {n : ℕ} (T : GeometricCurrentOn U n)
+    (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n) : Prop :=
+  ∀ ω : TestFormOn U n, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) n) x)) μ ∧
+    T ω = ∫ x, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ
+
+/-- Simon Ch. 6, (2.9) (p. 136): `S = T ⌞ A` for a Borel set `A`, i.e.
+`S(ω) = ∫_A ⟨ω, T⃗⟩ dμ_T`.  Defined through any representation of `T` as in (2.7); the result
+does not depend on the representation (uniqueness of the vector measure `T⃗ μ_T`). -/
+def IsRestriction {U : Set (Eucl P)} {n : ℕ} (T : GeometricCurrentOn U n) (A : Set (Eucl P))
+    (S : GeometricCurrentOn U n) : Prop :=
+  MeasurableSet A ∧ ∃ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n),
+    IsMeasureRepresentation T μ v ∧
+    ∀ ω : TestFormOn U n, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ
+
+/-- Simon Ch. 6, (2.8) (p. 136): `μ` is the total variation (mass) measure `μ_T` of `T`:
+`μ_T(W) = M_W(T)` for every open `W ⊂⊂ U`, and `μ_T` lives on `U`. -/
+def IsMassMeasure {U : Set (Eucl P)} {n : ℕ} (T : GeometricCurrentOn U n)
+    (μ : Measure (Eucl P)) : Prop :=
+  μ Uᶜ = 0 ∧ ∀ W, CompactlyContainedOpen W U → μ W = T.massOn W
+
+/-- Simon Ch. 6, (4.6) (p. 157): the slice `⟨T, f, t₋⟩ = ∂(T ⌞ {f < t}) − (∂T) ⌞ {f < t}`
+(sets taken inside `U`), for `T` with `M_W(T) + M_W(∂T) < ∞`. -/
+def IsSlice {U : Set (Eucl P)} {m : ℕ} (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ)
+    (t : ℝ) (S : GeometricCurrentOn U m) : Prop :=
+  ∃ (A : GeometricCurrentOn U (m + 1)) (B : GeometricCurrentOn U m),
+    IsRestriction T {x | x ∈ U ∧ f x < t} A ∧
+    IsRestriction T.boundary {x | x ∈ U ∧ f x < t} B ∧
+    ∀ ω : TestFormOn U m, S ω = A.boundary ω - B ω
+
+/-! ## Lipschitz push-forward -/
+
+/-- Simon Ch. 6, (3.6) (p. 147) and Ch. 3, 2.1–2.2: `S = f_# T` for `T = τ(M, θ, ξ)` and `f`
+locally Lipschitz, `f_# T(ω) = ∫_M ⟨ω(f(x)), (d^M f_x)_# ξ(x)⟩ θ(x) dHⁿ(x)`.
+
+`L x` is any linear map agreeing with `d^M f_x` on `TₓM`; by Ch. 3, §2 (p. 76),
+`d^M f_x(τ) = (d/dt) f(x + tτ)|_{t=0}` for `τ ∈ TₓM`, `Hⁿ`-a.e. `x ∈ M`.  As `ξ(x) ∈ Λₙ(TₓM)`,
+the integrand only depends on `L x` restricted to `TₓM`, so `S` is uniquely determined. -/
+def IsLipschitzPushforward {Q n : ℕ} {U : Set (Eucl P)} {V : Set (Eucl Q)}
+    (T : GeometricCurrentOn U n) (f : Eucl P → Eucl Q) (S : GeometricCurrentOn V n) : Prop :=
+  ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+    (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)),
+    IsRectifiableTriple U n M θ ξ ∧ (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) ∧
+    (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P),
+      HasWeightedApproximateTangentSpaceAt n M θ x Tx →
+        ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) ∧
+    ∀ ω : TestFormOn V n, S ω =
+      ∫ x in M, θ x * nVectorPushforward n (L x) (ξ x)
+        ((ω : DifferentialForm (Eucl Q) n) (f x)) ∂(μHE[n] : Measure (Eucl P))
+
+/-! ## Lattice polyhedral chains (§5) -/
+
+/-- Index of an `n`-face of the cubical lattice in `ℝ^N` (Simon Ch. 6, §5, p. 159): a lattice
+point `z ∈ ℤ^N` and the increasing multi-index `α` of the `n` coordinate directions spanned. -/
+abbrev LatticeFaceIndex (n N : ℕ) := (Fin N → ℤ) × SimonMultiIndex n N
+
+/-- The closed face `ρ (z + F_α) ∈ 𝓛ₙ(ρ)`, `F_α = {x : xᵢ ∈ [0,1] (i ∈ α), xᵢ = 0 (i ∉ α)}`.
+Every closed `n`-face of the decomposition `⋃_z ρ(z + C)` arises from exactly one index. -/
+def latticeFace {n N : ℕ} (ρ : ℝ) (F : LatticeFaceIndex n N) : Set (Eucl N) :=
+  {x | ∀ i : Fin N,
+    (i ∈ range F.2 → ρ * (F.1 i : ℝ) ≤ x i ∧ x i ≤ ρ * ((F.1 i : ℝ) + 1)) ∧
+    (i ∉ range F.2 → x i = ρ * (F.1 i : ℝ))}
+
+/-- `[[F]](ω) = ∫_F ⟨ω, e_{α₁} ∧ ⋯ ∧ e_{αₙ}⟩ dHⁿ` (2.2), `F` oriented by its coordinate
+directions in increasing order. -/
+def latticeFaceAction {n N : ℕ} (ρ : ℝ) (F : LatticeFaceIndex n N)
+    (ω : DifferentialForm (Eucl N) n) : ℝ :=
+  ∫ x in latticeFace ρ F, ω x (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ))
+    ∂(μHE[n] : Measure (Eucl N))
+
+/-- `Pc = ∑_{F ∈ 𝓛ₙ(ρ)} β_F [[F]]` as a current in `U` (the sum is locally finite). -/
+def IsLatticeChain {n N : ℕ} {U : Set (Eucl N)} (ρ : ℝ) (β : LatticeFaceIndex n N → ℝ)
+    (Pc : GeometricCurrentOn U n) : Prop :=
+  ∀ ω : TestFormOn U n, Pc ω = ∑' F, β F * latticeFaceAction ρ F ω
+
+/-! ## Flat pseudometric (§7) -/
+
+/-- Simon Ch. 6, (7.1) (p. 170): `d_W(T₁, T₂) = inf {M_W(S) + M_W(R) : T₁ − T₂ = ∂R + S,
+R ∈ 𝒟ₙ₊₁(U), S ∈ 𝒟ₙ(U) integer multiplicity}`. -/
+def flatDistance {U : Set (Eucl P)} {n : ℕ} (W : Set (Eucl P))
+    (T₁ T₂ : GeometricCurrentOn U n) : ℝ≥0∞ :=
+  ⨅ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n)
+    (_ : IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+      ∀ ω : TestFormOn U n, T₁ ω - T₂ ω = R.boundary ω + S ω),
+    S.massOn W + R.massOn W
+
+/-! ## Headline results -/
+
+/-- **Simon Ch. 6, Lemma 2.15 (p. 137).**  If `T_q ∈ 𝒟ₙ(U)` and `sup_q M_W(T_q) < ∞` for each
+`W ⊂⊂ U`, there are a subsequence `T_{q'}` and `T ∈ 𝒟ₙ(U)` with `T_{q'} ⇀ T` and
+`∫ ⟨ω, T⃗_{q'}⟩ dμ_{T_{q'}} → ∫ ⟨ω, T⃗⟩ dμ_T` for every continuous compactly supported `n`-form
+`ω` on `U` (for all representations (2.7) of the `T_{q'}` and of `T`). -/
+def CompactnessUnderMassBounds : Prop :=
+  ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : ℕ → GeometricCurrentOn U n,
+    (∀ W, CompactlyContainedOpen W U → (⨆ q, (T q).massOn W) < ∞) →
+    ∃ (φ : ℕ → ℕ) (T₀ : GeometricCurrentOn U n), StrictMono φ ∧
+      WeaklyConvergesOn (fun q => T (φ q)) T₀ ∧
+      ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U →
+        ∀ (μ : ℕ → Measure (Eucl P)) (v : ℕ → Eucl P → NVector (Eucl P) n)
+          (μ₀ : Measure (Eucl P)) (v₀ : Eucl P → NVector (Eucl P) n),
+          (∀ q, IsMeasureRepresentation (T (φ q)) (μ q) (v q)) →
+          IsMeasureRepresentation T₀ μ₀ v₀ →
+          Tendsto (fun q => ∫ x, v q x (ω x) ∂(μ q)) atTop (𝓝 (∫ x, v₀ x (ω x) ∂μ₀))
+
+/-- **Simon Ch. 6, Theorem 2.34 (Constancy Theorem, p. 142).**  If `U ⊆ ℝⁿ` is open and
+connected, `T ∈ 𝒟ₙ(U)` and `∂T = 0`, then `T = c [[U]]` for a constant `c`, where
+`[[U]](ω) = ∫_U ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ`.  (Book `n = m + 1`.) -/
+def ConstancyTheorem : Prop :=
+  ∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → IsConnected U →
+    ∀ T : GeometricCurrentOn U (m + 1), T.boundary = 0 →
+      ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1),
+        T ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume
+
+/-- **Simon Ch. 6, Lemma 3.9 (p. 148).**  If `T ∈ 𝒟ₙ(U)` is integer multiplicity,
+`f : U → V` (`V ⊆ ℝ^Q` open) is locally Lipschitz and `f | spt T` is proper, then the
+push-forward `f_# T` of (3.6) exists in `𝒟ₙ(V)` and is integer multiplicity. -/
+def LipschitzPushforwardIntegerMultiplicity : Prop :=
+  ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V →
+    ∀ (T : GeometricCurrentOn U n) (f : Eucl P → Eucl Q),
+      IsIntegerMultiplicity T → LocallyLipschitzOn U f → MapsTo f U V →
+      (∀ K, IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ T.support)) →
+      ∃ S : GeometricCurrentOn V n, IsLipschitzPushforward T f S ∧ IsIntegerMultiplicity S
+
+/-- **Simon Ch. 6, Theorem 3.11 (Federer–Fleming Compactness Theorem, p. 149).**  If
+`T_j ∈ 𝒟ₙ(U)` are integer multiplicity and `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all
+`W ⊂⊂ U`, then some subsequence converges weakly in `U` to an integer multiplicity
+`T ∈ 𝒟ₙ(U)`.  (Book `n = m + 1`.) -/
+def FedererFlemingCompactness : Prop :=
+  ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : ℕ → GeometricCurrentOn U (m + 1),
+    (∀ j, IsIntegerMultiplicity (T j)) →
+    (∀ W, CompactlyContainedOpen W U → (⨆ j, ((T j).massOn W + (T j).boundary.massOn W)) < ∞) →
+    ∃ (φ : ℕ → ℕ) (T₀ : GeometricCurrentOn U (m + 1)), StrictMono φ ∧
+      IsIntegerMultiplicity T₀ ∧ WeaklyConvergesOn (fun j => T (φ j)) T₀
+
+/-- **Simon Ch. 6, §4 Slicing (4.4–4.10, pp. 153–158).**  Let `T ∈ 𝒟ₙ(U)` with
+`M_W(T) + M_W(∂T) < ∞` for all `W ⊂⊂ U`, and `f` Lipschitz on `U` (constant `L`).  Then the
+slices `⟨T, f, t⟩ = ∂(T ⌞ {f < t}) − (∂T) ⌞ {f < t}` (4.6) exist for every `t`, satisfy
+`spt ⟨T, f, t⟩ ⊆ spt T ∩ {f = t}` (4.8); if `T` is integer multiplicity they are integer
+multiplicity for `L¹`-a.e. `t` (4.4, 4.5(2)); and for every open `W ⊆ U`, every `L_W` with
+`|Df| ≤ L_W` a.e. on `W` (i.e. `L_W ≥ ess sup_W |Df|`) and `a < b` (4.10, upper integral):
+`∫*_a^b M_W(⟨T, f, t⟩) dt ≤ L_W · M_W(T ⌞ {a < f < b})`.
+The book prints `M(T ⌞ {a < f < b})` on the right of 4.10; its proof (4.9) gives the stronger
+`M_W`, stated here.  (Book `n = m + 1`.) -/
+def SlicingTheorem : Prop :=
+  ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1),
+    (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) →
+    ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+    ∃ S : ℝ → GeometricCurrentOn U m,
+      (∀ t, IsSlice T f t (S t)) ∧
+      (∀ t, (S t).support ⊆ T.support ∩ {x | f x = t}) ∧
+      (IsIntegerMultiplicity T → ∀ᵐ t ∂(volume : Measure ℝ), IsIntegerMultiplicity (S t)) ∧
+      ∀ W, IsOpen W → W ⊆ U →
+      ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ a b : ℝ, a < b →
+        ∀ R : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ a < f x ∧ f x < b} R →
+          ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ t ∈ Ioo a b, (S t).massOn W ≤ g t) ∧
+            ∫⁻ t in Ioo a b, g t ≤ (LW : ℝ≥0∞) * R.massOn W
+
+/-- **Simon Ch. 6, 5.3 (Deformation Theorem, scaled version, p. 160); `ρ = 1` is 5.1 (p. 159).**
+For `n, ℓ ≥ 1` there is `C = C(n, ℓ)` such that for every `T ∈ 𝒟ₙ(ℝ^{n+ℓ})` with
+`M(T) + M(∂T) < ∞` and every `ρ > 0`, `T − P = ∂R + S` where `P = ∑_{F ∈ 𝓛ₙ(ρ)} β_F [[F]]`,
+`M(P) ≤ C M(T)`, `M(∂P) ≤ C M(∂T)`, `M(R) ≤ C ρ M(T)`, `M(S) ≤ C ρ M(∂T)`,
+`spt P ∪ spt R ⊆ {dist(·, spt T) < 2√(n+ℓ) ρ}`, `spt ∂P ∪ spt S ⊆ {dist(·, spt ∂T) < 2√(n+ℓ) ρ}`;
+if `T` is integer multiplicity, `P, R` are integer multiplicity with `β_F ∈ ℤ`, and if moreover
+`∂T` is integer multiplicity then so is `S`.
+Errata: the book prints `n, k ∈ {1,2,…}` and `C(n, k)` for `n, ℓ`; `𝓛_j(ρ)` for `𝓛ₙ(ρ)`;
+"so is s" for "so is S".  (Book `n = m + 1`.) -/
+def DeformationTheorem : Prop :=
+  ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ C : ℝ≥0, ∀ (T : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)),
+    T.mass + T.boundary.mass < ∞ → ∀ ρ : ℝ, 0 < ρ →
+    ∃ (Pc : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1))
+      (β : LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℝ)
+      (R : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 2))
+      (S : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)),
+      IsLatticeChain ρ β Pc ∧
+      (∀ ω, T ω - Pc ω = R.boundary ω + S ω) ∧
+      Pc.mass ≤ C * T.mass ∧ Pc.boundary.mass ≤ C * T.boundary.mass ∧
+      R.mass ≤ C * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ C * ENNReal.ofReal ρ * T.boundary.mass ∧
+      Pc.support ∪ R.support ⊆
+        thickening (2 * Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ) * ρ) T.support ∧
+      Pc.boundary.support ∪ S.support ⊆
+        thickening (2 * Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ) * ρ) T.boundary.support ∧
+      (IsIntegerMultiplicity T →
+        (∀ F, ∃ k : ℤ, β F = k) ∧ IsIntegerMultiplicity Pc ∧ IsIntegerMultiplicity R) ∧
+      (IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → IsIntegerMultiplicity S)
+
+/-- **Simon Ch. 6, 6.1 (Isoperimetric Theorem, p. 168).**  For `n ≥ 2`, `ℓ ≥ 1` there is
+`c = c(n, ℓ)` such that every integer multiplicity `T ∈ 𝒟ₙ₋₁(ℝ^{n+ℓ})` with compact support and
+`∂T = 0` bounds an integer multiplicity `R ∈ 𝒟ₙ(ℝ^{n+ℓ})` with compact support and
+`M(R)^{(n−1)/n} ≤ c M(T)`.  (Book `n = m + 2`.) -/
+def IsoperimetricTheorem : Prop :=
+  ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ c : ℝ≥0, ∀ T : GeometricCurrentOn (univ : Set (Eucl (m + 2 + ℓ))) (m + 1),
+    IsIntegerMultiplicity T → IsCompact T.support → T.boundary = 0 →
+    ∃ R : GeometricCurrentOn (univ : Set (Eucl (m + 2 + ℓ))) (m + 2),
+      IsIntegerMultiplicity R ∧ IsCompact R.support ∧ R.boundary = T ∧
+      R.mass ^ (((m + 1 : ℕ) : ℝ) / ((m + 2 : ℕ) : ℝ)) ≤ c * T.mass
+
+/-- **Simon Ch. 6, 6.2 (Weak Polyhedral Approximation Theorem, p. 169).**  For integer
+multiplicity `T ∈ 𝒟ₙ(U)`, `U ⊆ ℝ^{n+ℓ}` open, with `M_W(T), M_W(∂T) < ∞` for all `W ⊂⊂ U`,
+there are `ρ_k ↓ 0` and `P_k = ∑_{F ∈ 𝓛ₙ(ρ_k)} β^{(k)}_F [[F]]` with `β^{(k)}_F ∈ ℤ` and
+`P_k ⇀ T` in `U`.  (Printed `F_n(ρ_k)`, `β_R^{(k)}` mean `𝓛ₙ(ρ_k)`, `β_F^{(k)}`.  Book `n = m + 1`.) -/
+def PolyhedralApproximation : Prop :=
+  ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ U : Set (Eucl (m + 1 + ℓ)), IsOpen U →
+    ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T →
+      (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) →
+      ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℤ)
+        (Pk : ℕ → GeometricCurrentOn U (m + 1)),
+        (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧
+        (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pk k)) ∧
+        WeaklyConvergesOn Pk T
+
+/-- **Simon Ch. 6, 6.3 (Boundary Rectifiability Theorem, p. 170).**  If `T ∈ 𝒟ₙ(U)` is integer
+multiplicity and `M_W(∂T) < ∞` for all `W ⊂⊂ U` (printed `M(∂T)`), then `∂T` is integer
+multiplicity.  (Book `n = m + 1`.) -/
+def BoundaryRectifiability : Prop :=
+  ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1),
+    IsIntegerMultiplicity T → (∀ W, CompactlyContainedOpen W U → T.boundary.massOn W < ∞) →
+    IsIntegerMultiplicity T.boundary
+
+/-- **Simon Ch. 6, Theorem 7.2 (p. 170).**  Let `T, T_j ∈ 𝒟ₙ(U)` be integer multiplicity with
+`sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all `W ⊂⊂ U`.  Then `T_j ⇀ T` iff `d_W(T_j, T) → 0`
+for every `W ⊂⊂ U`.  (Book `n = m + 1`.) -/
+def FlatConvergenceIffWeakConvergence : Prop :=
+  ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U →
+    ∀ (T : GeometricCurrentOn U (m + 1)) (Tj : ℕ → GeometricCurrentOn U (m + 1)),
+      IsIntegerMultiplicity T → (∀ j, IsIntegerMultiplicity (Tj j)) →
+      (∀ W, CompactlyContainedOpen W U →
+        (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) →
+      (WeaklyConvergesOn Tj T ↔
+        ∀ W, CompactlyContainedOpen W U →
+          Tendsto (fun j => flatDistance W (Tj j) T) atTop (𝓝 0))
+
+/-- **Simon Ch. 6, 8.1 (Rectifiability Theorem, p. 173).**  If `T ∈ 𝒟ₙ(U)` has
+`M_W(T) + M_W(∂T) < ∞` for all `W ⊂⊂ U` and the upper density `Θ*ⁿ(μ_T, x) > 0` for `μ_T`-a.e.
+`x ∈ U`, then `T = τ(M, θ, ξ)` is rectifiable (with real `θ`).  (Book `n = m + 1`.) -/
+def RectifiabilityTheorem : Prop :=
+  ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1),
+    (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) →
+    (∃ μ : Measure (Eucl P), IsMassMeasure T μ ∧
+      ∀ᵐ x ∂μ, 0 < dimensionalUpperDensity μ.toOuterMeasure ((m + 1 : ℕ) : ℝ) univ x) →
+    IsRectifiableCurrent T
+
+/-- **Simon Ch. 6, Theorem 8.2 (p. 176).**  If `T_j, ∂T_j` are integer multiplicity,
+`sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all `W ⊂⊂ U` and `T_j ⇀ T ∈ 𝒟ₙ(U)`, then `T` is integer
+multiplicity.  (Book `n = m + 1`.) -/
+def IntegralityOfWeakLimits : Prop :=
+  ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U →
+    ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)),
+      (∀ j, IsIntegralCurrent (Tj j)) →
+      (∀ W, CompactlyContainedOpen W U →
+        (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) →
+      WeaklyConvergesOn Tj T → IsIntegerMultiplicity T
+
+end
+
+theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
+
+end GMT.Ch06
+```
+
+## Natural-language proof
+
+Reviewed mathematical argument; formal verification state: `accepted`.
+
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.retraction-a1.cube_core-a1`
+- Child DAG node: `root.deformation-a1.retraction-a1.cube_core-a1.construction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 6, Lemma 5.4, printed proof p. 161 (with n := m + 1: the composite ψ₀ = ψ^{(n+1)}∘⋯∘ψ^{(n+ℓ)} of the radial retractions ψ_F and its translation property “ψ₀(z + x) = z + ψ₀(x)”), in the equivalent one-step form ψ₀ = R^ℓ of Step 3 of the parent proof, with the parent's (S1), (S2), Step 4 (α) and Step 5 (β). (S2) is stated with the exit point y of the ray from the face centre c = a_F through x; step 7 below shows that this y is R(x) = ψ_F(x) (or x itself if x ∈ ∂F).
+
+Notation: m, ℓ ∈ ℕ, d := m + 1 + ℓ, indices i range over Fin d, ℝ^d = Eucl d with the Euclidean norm |·|, C := [0,1]^d (y ∈ C iff 0 ≤ y_i ≤ 1 for all i), a ∈ ℝ^d with 1/4 < a_i < 3/4 for all i, and La := {y ∈ ℝ^d : there is a set J of indices with |J| = m + 2 and integers k_i with y_i − a_i = k_i for all i ∈ J}. For y ∈ ℝ^d let J(y) := {i : 0 < y_i < 1} (the carrier); |J(y)| ≤ d, and if y ∈ C and i ∉ J(y) then y_i ∈ {0,1}. Note a_i > 0 and 1 − a_i > 0. Call y active if y ∈ C, y ∉ La and |J(y)| ≥ m + 2.
+
+1. Definitions. For y with J(y) ≠ ∅ let T_i(y) := max{(y_i − a_i)/(1 − a_i), (a_i − y_i)/a_i} and N(y) := max_{i ∈ J(y)} T_i(y) (N(y) := 0 if J(y) = ∅; that value is never used). Thus T_i(y) ≤ N(y) for i ∈ J(y), and N(y) = T_{i₀}(y) for some i₀ ∈ J(y) when J(y) ≠ ∅. Define R : ℝ^d → ℝ^d by: if y is active, R(y)_i := a_i + (y_i − a_i)/N(y) for i ∈ J(y) and R(y)_i := y_i for i ∉ J(y); if y is not active, R(y) := y. (For active y, R(y) = ψ_{F(y)}(y), the radial retraction of the carrier face F(y) with origin its centre.) Put ψ₀ := R^ℓ, the ℓ-fold iterate of R.
+2. One step. Let y be active.
+ (a) N(y) > 0. Otherwise every i ∈ J(y) has (y_i − a_i)/(1 − a_i) ≤ 0 and (a_i − y_i)/a_i ≤ 0, i.e. y_i = a_i; choosing J′ ⊆ J(y) with |J′| = m + 2 gives y_i − a_i = 0 ∈ ℤ on J′, so y ∈ La, a contradiction.
+ (b) R(y) ∈ C. For i ∈ J(y): (y_i − a_i)/(1 − a_i) ≤ N(y) gives (y_i − a_i)/N(y) ≤ 1 − a_i, i.e. R(y)_i ≤ 1; and (a_i − y_i)/a_i ≤ N(y) gives (a_i − y_i)/N(y) ≤ a_i, i.e. R(y)_i ≥ 0. For i ∉ J(y): R(y)_i = y_i ∈ [0,1].
+ (c) Let i₀ ∈ J(y) with N(y) = T_{i₀}(y). If N(y) = (y_{i₀} − a_{i₀})/(1 − a_{i₀}), then (y_{i₀} − a_{i₀})/N(y) = 1 − a_{i₀} and R(y)_{i₀} = 1; otherwise N(y) = (a_{i₀} − y_{i₀})/a_{i₀}, so (y_{i₀} − a_{i₀})/N(y) = −a_{i₀} and R(y)_{i₀} = 0.
+ (d) J(R(y)) ⊆ J(y) ∖ {i₀}: R(y)_{i₀} ∈ {0,1}, and for i ∉ J(y), R(y)_i = y_i ∉ (0,1). Hence |J(R(y))| + 1 ≤ |J(y)|.
+ (e) R(y) ∉ La. Let c ∈ ℝ^d with c_i := a_i for i ∈ J(y) and c_i := y_i for i ∉ J(y). Then c_i ∈ {0,1} and y_i = c_i for i ∉ J(y), R(y) ∈ C by (b), and R(y)_i − c_i = N(y)^{-1}·(y_i − c_i) for every i (for i ∈ J(y) both sides equal (y_i − a_i)/N(y); for i ∉ J(y) both are 0). By the cone property, part (3) of sibling skeleton_facts (with J := J(y), x := y, the point R(y) in the role of y, and s := N(y)^{-1} > 0), R(y) ∈ La would imply y ∈ La, which is false.
+3. Iteration. Claim: for every k ∈ ℕ and every y ∈ C ∖ La, R^k(y) ∈ C ∖ La, and |J(R^k(y))| ≤ m + 1 or |J(R^k(y))| + k ≤ |J(y)|. Induction on k; k = 0 is clear. For the step let z := R^k(y) ∈ C ∖ La; note R^{k+1}(y) = R(z). If z is active, step 2 gives R(z) ∈ C ∖ La and |J(R(z))| + 1 ≤ |J(z)|; since |J(z)| ≥ m + 2, the induction hypothesis yields |J(z)| + k ≤ |J(y)|, so |J(R(z))| + (k + 1) ≤ |J(y)|. If z is not active then (as z ∈ C ∖ La) |J(z)| ≤ m + 1 and R(z) = z. Consequence: for y ∈ C ∖ La, taking k = ℓ and using |J(y)| ≤ d = m + 1 + ℓ, we get |J(ψ₀(y))| ≤ m + 1; so ψ₀(y) ∈ C ∖ La is not active and R(ψ₀(y)) = ψ₀(y).
+4. (α) (parent Step 4). Let x ∈ C ∖ La and y := ψ₀(x). By step 3, y ∈ C and |J(y)| ≤ m + 1, so the complement of J(y) has at least d − (m + 1) = ℓ elements; choose a subset I of it with |I| = ℓ. For i ∈ I, y_i ∈ [0,1] ∖ (0,1) = {0,1}.
+5. (β) (printed translation property; parent Step 5). Lemma: if y, y′ ∈ C ∖ La and y′_i − y_i ∈ ℤ for all i, then R(y′)_i − R(y)_i = y′_i − y_i for all i. Proof: if 0 < y_i < 1 or 0 < y′_i < 1, then the integer z_i := y′_i − y_i satisfies −1 < z_i < 1 (one of the two coordinates lies in (0,1) and the other in [0,1]), so z_i = 0 and y′_i = y_i. Hence J(y′) = J(y) =: J and y′_i = y_i for i ∈ J; consequently y is active iff y′ is. If neither is active, R(y′) − R(y) = y′ − y. If both are active, T_i(y′) = T_i(y) for i ∈ J, so N(y′) = N(y) (N(y′) = T_{i₁}(y′) = T_{i₁}(y) ≤ N(y) for a maximizing i₁ ∈ J, and symmetrically); then R(y′)_i = R(y)_i and y′_i − y_i = 0 for i ∈ J, while R(y′)_i − R(y)_i = y′_i − y_i for i ∉ J. Now let x, x′ ∈ C ∖ La with x′_i − x_i ∈ ℤ for all i. By induction on k, R^k(x′)_i − R^k(x)_i = x′_i − x_i for all i: k = 0 is trivial; for the step, R^k(x), R^k(x′) ∈ C ∖ La by step 3 and their difference is x′ − x ∈ ℤ^d by the induction hypothesis, so the Lemma applies. Taking k = ℓ gives (β).
+6. (S1). Let x ∈ C ∖ La and I a set of ℓ indices with x_i ∈ {0,1} for i ∈ I. Then J(x) is contained in the complement of I, so |J(x)| ≤ d − ℓ = m + 1, x is not active, R(x) = x, and ψ₀(x) = R^ℓ(x) = x.
+7. (S2). Let J, c, x, y, s be as in (S2). For i ∉ J, y_i − c_i = s·(x_i − c_i) = 0, so y_i = c_i.
+ Case A: 0 < x_i < 1 for every i ∈ J. Then J(x) = J (for i ∉ J, x_i = c_i ∈ {0,1}), so x is active (x ∈ C ∖ La and |J| ≥ m + 2). We show N(x) = 1/s. For i ∈ J we have c_i = a_i and y_i = a_i + s(x_i − a_i) ∈ [0,1], so s(x_i − a_i) ≤ 1 − a_i and s(a_i − x_i) ≤ a_i, i.e. (x_i − a_i)/(1 − a_i) ≤ 1/s and (a_i − x_i)/a_i ≤ 1/s; thus T_i(x) ≤ 1/s for all i ∈ J and N(x) ≤ 1/s. Let i₁ ∈ J with y_{i₁} ∈ {0,1}. If y_{i₁} = 1 then s(x_{i₁} − a_{i₁}) = 1 − a_{i₁}, so 1/s = (x_{i₁} − a_{i₁})/(1 − a_{i₁}) ≤ T_{i₁}(x) ≤ N(x); if y_{i₁} = 0 then s(a_{i₁} − x_{i₁}) = a_{i₁}, so 1/s = (a_{i₁} − x_{i₁})/a_{i₁} ≤ N(x). Hence N(x) = 1/s, and R(x)_i = a_i + s(x_i − a_i) = y_i for i ∈ J, R(x)_i = x_i = c_i = y_i for i ∉ J; that is, R(x) = y. Therefore ψ₀(y) = R^ℓ(R(x)) = R^{ℓ+1}(x) = R(R^ℓ(x)) = R^ℓ(x) = ψ₀(x), by the consequence in step 3.
+ Case B: some i₂ ∈ J has x_{i₂} ∉ (0,1); since x ∈ C, x_{i₂} ∈ {0,1}. First s ≤ 1: if x_{i₂} = 0 then y_{i₂} = a_{i₂} − s·a_{i₂} ≥ 0 forces s ≤ 1; if x_{i₂} = 1 then y_{i₂} = a_{i₂} + s(1 − a_{i₂}) ≤ 1 forces s ≤ 1. Next s ≥ 1: let i₁ ∈ J with y_{i₁} ∈ {0,1}; if y_{i₁} = 0 then s(a_{i₁} − x_{i₁}) = a_{i₁}, and s·x_{i₁} ≥ 0 gives s·a_{i₁} ≥ a_{i₁}, so s ≥ 1; if y_{i₁} = 1 then s(x_{i₁} − a_{i₁}) = 1 − a_{i₁}, and s·x_{i₁} ≤ s gives s(1 − a_{i₁}) ≥ 1 − a_{i₁}, so s ≥ 1. Hence s = 1, so y_i − c_i = x_i − c_i for all i, y = x, and ψ₀(y) = ψ₀(x).
+8. Steps 4–7 prove (α), (β), (S1) and (S2) for ψ₀ = R^ℓ. ∎
+
+Formalization notes (non-binding): obtain the carrier, gauge and R abstractly by existential `obtain`s with characterizing equations (e.g. `∃ Jx, ∀ y i, i ∈ Jx y ↔ (0 < y i ∧ y i < 1)` via `Finset.univ.filter`; N via `if h : (Jx y).Nonempty then (Jx y).sup' h … else 0`; R via `if (active) then WithLp.toLp 2 (fun i => …) else y`, under `classical`); use `Function.iterate_succ_apply'`, `Function.iterate_succ_apply`, `Function.iterate_fixed`, `Finset.card_univ_sdiff`, `Finset.exists_subset_card_eq`, `Finset.card_le_card`, `Finset.card_erase_of_mem`; state the iteration bound as a disjunction so that `omega` closes the arithmetic.
+
+## Key steps
+
+1. Define the carrier J(y), the gauge N(y) over J(y), the one-step carrier retraction R, and ψ₀ := R^ℓ.
+2. One step on active y: N(y) > 0, R(y) ∈ C, a coordinate of J(y) becomes 0 or 1, |J(R y)| < |J(y)|, and R(y) ∉ La by the cone property (sibling skeleton_facts).
+3. Iteration: after ℓ steps the carrier has ≤ m+1 elements, so R fixes ψ₀(y); this gives (α).
+4. (β): R commutes with integer translations inside C (same carrier, same gauge), then induct on the iterate.
+5. (S1): ℓ extreme coordinates ⇒ not active ⇒ fixed.
+6. (S2): if x ∈ relint F then N(x) = 1/s so y = R(x) and ψ₀(y) = R^{ℓ+1}(x) = ψ₀(x); if x ∈ ∂F then s = 1 and y = x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp workspace GMT/Ch06/Contract.lean = Submission.lean = snapshot project/GMT/Ch06/Contract.lean (identical)`
+- `python3 -I: handoff lean_statement == dag.json node root.deformation-a1.retraction-a1.cube_core-a1 lean_statement (True); verifier gmt-compare.py contract_scope replay = [open MeasureTheory Filter Set Metric, open scoped ENNReal NNReal Topology, namespace GMT.Ch06, open Poincare.SimonGMT.Chapter06, open …Chapter03 (…), open …Chapter01 (…), noncomputable section, end]`
+- `rg -n -i 'radial|retract|skeleton|gauge' project/GMT (only Ch04 normalRadialSq; no cubical/radial retraction, gauge or dual-skeleton lemma)`
+- `rg -l -i 'radialRetraction|cubeRetraction|dualSkeleton|lip_at|LipschitzAt' .lake/packages/simongmt/Poincare (no match); grep -rn dr_cc_ GMT .lake/packages/simongmt/Poincare (no match)`
+- `rg -n 'lemma isClosed_range_intCast' mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean (486, namespace Real)`
+- `rg -n 'notMem_iff_infDist_pos|theorem infDist_le_dist_of_mem|lemma le_infDist|theorem infDist_empty' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean (584, 500, 508, 476)`
+- `rg -n 'theorem dist_apply_le|theorem norm_apply_le|theorem sub_apply|theorem smul_apply|CoeFun' mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean (652, 713, 122, 126, 92); rg -n 'structure WithLp' mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean (49: toLp/ofLp)`
+- `rg -n 'theorem EuclideanSpace.dist_eq' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean (158)`
+- `rg -n 'theorem sup.._le_iff|theorem le_sup..|theorem exists_mem_eq_sup..' mathlib/Mathlib/Data/Finset/Lattice/Fold.lean (557, 563, 763); rg -n 'theorem abs_max_sub_max_le_max' mathlib/Mathlib/Algebra/Order/Group/MinMax.lean (83)`
+- `rg -n 'exists_subset_card_eq|card_insert_of_notMem|card_erase_of_mem|card_sdiff_of_subset' mathlib/Mathlib/Data/Finset/Card.lean (677, 103, 151, 597); rg -n card_univ_sdiff mathlib/Mathlib/Data/Fintype/Card.lean (130)`
+- `rg -n 'theorem Finite.exists_min' mathlib/Mathlib/Data/Fintype/Lattice.lean (56); rg -n 'theorem isOpen_iff' mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean (833); rg -n 'theorem isClosed_const|theorem isClosed_biInter|theorem Set.Finite.isClosed_biUnion' mathlib/Mathlib/Topology/Basic.lean (134, 162, 185)`
+- `rg -n 'theorem iterate_succ_apply|theorem iterate_fixed' mathlib/Mathlib/Logic/Function/Iterate.lean (65, 91, 174); rg -n 'theorem update_of_ne' mathlib/Mathlib/Logic/Function/Basic.lean (652); rg -n 'lemma le_induction' mathlib/Mathlib/Data/Nat/Init.lean (233); rg -n 'lemma le_div_iff₀|lemma div_le_div_iff₀' mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean (1128, 1423)`
+- `sed -n '1440,1690p' book/chapter-06.txt (printed Lemma 5.4 and proof, pp. 160–163: ψ_F, (1)–(8), translation property, claim (3))`
+- `python3 -I over dag.json (457 nodes): the seven dr_cc_* names vs all lean_name reservations (no collision); no reusable identical statement`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on the seven statements (all valid); lake env lean /tmp/cubecore-a1-scratch/stmts/NC_<key>.lean for each (exit 0, only the sorry warning)`
+- `lake env lean /tmp/cubecore-a1-scratch/AllProofs.lean (full proofs of the seven children and of Submission.deformation_retraction_cube_core from them; #print axioms = [propext, Classical.choice, Quot.sound] for all)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Finset/Lattice/Fold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Group/MinMax.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Finset/Card.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fintype/Card.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fintype/Lattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Logic/Function/Iterate.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Logic/Function/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Nat/Init.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1-cube-core-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/cubecore-a1-scratch/stmts/statements.json`
+- `/tmp/cubecore-a1-scratch/AllProofs.lean`
+
+Pinned revisions confirmed; the frozen Contract (= Submission) is byte-identical to the snapshot, and the selected frozen type equals the DAG entry. Neither the project nor SimonGMT has a cubical/radial retraction, a gauge, a dual-skeleton lemma, or a pointwise-Lipschitz calculus, so the children are built from pinned Mathlib primitives: Real.isClosed_range_intCast, Set.Finite.isClosed_biUnion and isClosed_biInter (closedness of La); IsClosed.notMem_iff_infDist_pos, Metric.le_infDist and Metric.infDist_le_dist_of_mem (distances); PiLp.dist_apply_le, PiLp.norm_apply_le, EuclideanSpace.dist_eq and WithLp.toLp/ofLp (coordinates); Finset.sup', le_sup', exists_mem_eq_sup', sup'_le and abs_max_sub_max_le_max (the gauge); Finset.exists_subset_card_eq, card_univ_sdiff, card_erase_of_mem and card_insert_of_notMem (counting); Function.iterate_succ_apply/iterate_succ_apply'/iterate_fixed (ψ₀ = R^ℓ); Finite.exists_min and Metric.isOpen_iff (union rule); Nat.le_induction (face-dimension induction). All seven child types validate and elaborate in the exact comparator challenge scope. All seven were fully proved in scratch, and the parent type was kernel-checked from construction + pointwise_lip, with axioms [propext, Classical.choice, Quot.sound]. No name collision exists, and no existing DAG node has a reusable identical statement.
+
+
+## Acceptance
+
+The exact contract must pass deterministic Git identity checks and the machine comparator, without a Lean agent review, changed assumptions or proof holes. Every node delivers an immutable accepted candidate after its original proof checks. Parents compose dependencies in isolated worktrees. Only the root integrates and validates the final target tree. Every child retains its issue and review PR.
+
+Solution PR: Pending
+
+After proof acceptance and exact solution PR publication, close this theorem issue. Issue closure does not assert Git merge or final root delivery.
+
+Child PRs remain review records; only confirmed root delivery closes those PRs without merging them.
+
+Proof status (`accepted` / `merged`) and GitHub PR state are separate.
