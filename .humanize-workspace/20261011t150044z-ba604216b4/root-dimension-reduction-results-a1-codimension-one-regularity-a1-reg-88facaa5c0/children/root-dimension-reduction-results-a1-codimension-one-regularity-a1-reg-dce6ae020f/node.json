@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.gauss_green_variation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1",
+  "depth": 6,
+  "title": "Variation bound for 1_F ζ from the Gauss–Green identity (parent step 1; Simon's |D(φ1_E)| ≤ φ|D1_E| + 1_E|Dφ|)",
+  "statement": "Let P ∈ N. Let D ⊆ R^P be open and F ⊆ R^P Borel. Let μ be a Borel measure on R^P with μ(R^P \\ D) = 0 and μ(K) < ∞ for every compact K ⊆ D. Let ν : R^P → R^P be Borel with |ν(z)| = 1 for all z. Assume the Gauss–Green identity (GG): ∫_F div φ dL^P = −∫⟨φ, ν⟩ dμ for every C¹ compactly supported φ : R^P → R^P with tsupport φ ⊆ D, where div φ = trace Dφ. Then for every C¹ compactly supported ζ : R^P → [0, ∞) with tsupport ζ ⊆ D, and every C¹ compactly supported g : R^P → R^P with |g(z)| ≤ 1 for all z: |∫ 1_F(z) ζ(z) div g(z) dL^P(z)| ≤ ∫ ζ dμ + ∫_F |Dζ| dL^P. Here |Dζ| is the operator norm.",
+  "lean_statement": "∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P), IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → ∀ g : Euclid P → Euclid P, ContDiff ℝ 1 g → HasCompactSupport g → (∀ z, ‖g z‖ ≤ 1) → |∫ z, F.indicator ζ z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ g z : Euclid P →ₗ[ℝ] Euclid P)| ≤ ∫ z, ζ z ∂μ + ∫ z in F, ‖fderiv ℝ ζ z‖",
+  "lean_name": "codim1_rdo_dg_sp_gauss_green_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dce6ae020f-a1"
+}

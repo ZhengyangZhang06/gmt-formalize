@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.l1loc_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "L¹_loc convergence of sets transfers integrals and local volumes",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, and let F_k ⊆ E (k ∈ ℕ) and F₀ ⊆ E be Borel sets with L^{m+1}((F_k Δ F₀) ∩ B_R(0)) → 0 as k → ∞ for every R ∈ ℝ. Then: (a) ∫_{F_k} f dL^{m+1} → ∫_{F₀} f dL^{m+1} for every continuous compactly supported f : E → ℝ; (b) L^{m+1}(F_k ∩ B_s(0)) → L^{m+1}(F₀ ∩ B_s(0)) for every s ∈ ℝ; (c) L^{m+1}(B_s(0) ∖ F_k) → L^{m+1}(B_s(0) ∖ F₀) for every s ∈ ℝ (convergence in [0, ∞]).",
+  "lean_statement": "∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))) (F₀ : Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → MeasurableSet F₀ → (∀ R : ℝ, Tendsto (fun k => volume (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) R)) atTop (𝓝 0)) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z in Fs k, f z) atTop (𝓝 (∫ z in F₀, f z))) ∧ (∀ s : ℝ, Tendsto (fun k => volume (Fs k ∩ ball (0 : Euclid (m + 1)) s)) atTop (𝓝 (volume (F₀ ∩ ball (0 : Euclid (m + 1)) s)))) ∧ ∀ s : ℝ, Tendsto (fun k => volume (ball (0 : Euclid (m + 1)) s \\ Fs k)) atTop (𝓝 (volume (ball (0 : Euclid (m + 1)) s \\ F₀)))",
+  "lean_name": "codim1_rdo_dg_bh_l1loc_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-cad2ba9711-a1"
+}

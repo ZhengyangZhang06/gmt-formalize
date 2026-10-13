@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.divergence_integral_zero-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "depth": 6,
+  "title": "The divergence of a compactly supported C¹ vector field integrates to zero",
+  "statement": "For every P ∈ ℕ and every C¹ map φ : ℝ^P → ℝ^P (ContDiff ℝ 1) with compact support, ∫_{ℝ^P} trace(Dφ(z)) dL^P(z) = 0. Here Dφ(z) = fderiv ℝ φ z, viewed as a linear map ℝ^P → ℝ^P, and L^P = volume.",
+  "lean_statement": "∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0",
+  "lean_name": "codim1_rdo_dg_vdl_integral_divergence_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c83d93d5a0-a1"
+}
