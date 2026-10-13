@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7781c0f608acc9e78e25a2324003d51e770b13278db06fa1f759e0e1ef0e8caf",
+  "git_delta": {
+    "base_commit": "b47f9c0f647b01892ff36475b7a9e597d3c8052c",
+    "candidate_commit": "8d9c9bbde6c9fe33c09d171ac67068dc83358b78",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_local_agreement",
+    "diff_sha256": "791edc5d2c23e8fa66d2ecdbeb0fc210d390fdb421f4a7681955de486ab2b04b",
+    "source_sha256": "04323f677e6ae391f5c1e18b9b735a5a20d7bc6fcdee2102abe06e5d81dde378",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_local_agreement",
+      "statement": "(∀ (P n : ℕ) (U₁ U₂ W : Set (Euclid P)) (T₁ : GeometricCurrentOn U₁ n) (T₂ : GeometricCurrentOn U₂ n) (R₁ : IMRep U₁ n) (R₂ : IMRep U₂ n), IsOpen U₁ → IsOpen U₂ → IsOpen W → W ⊆ U₁ → W ⊆ U₂ → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn W n, currentEval T₁ (ω : DifferentialForm (Euclid P) n) = currentEval T₂ (ω : DifferentialForm (Euclid P) n)) → R₁.measure.restrict W = R₂.measure.restrict W) → ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, ball (0 : Euclid P) R ⊆ Us j ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 R → currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1)) = C ω) ∧ ∀ β : TestFormOn (Us j) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (Ss j).boundary β = 0) → ConvergesWeakly Ss C ∧ MassMeasuresConverge Ss C ∧ C.boundary = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
