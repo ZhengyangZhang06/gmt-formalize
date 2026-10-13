@@ -2144,6 +2144,138 @@ theorem Submission.dtc_bc_measure_restrict_eq_of_eqOn : ∀ (P n : ℕ) (U₁ U�
   rw [Measure.restrict_apply hB, Measure.restrict_apply hB]
   exact Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P W R₁.measure R₂.measure hW hfin
     hopen (B ∩ W) (hB.inter hW.measurableSet) inter_subset_right
+/-- **Simon 7.2.4** (the "standard approximation argument" at the end of its proof, p. 187,
+lower half): if `μ(G) ≤ liminf_j μ_j(G)` for every bounded open `G`, then
+`∫ g dμ ≤ liminf_j ∫ g dμ_j` in `[0, ∞]` for every continuous `g ≥ 0` with compact support.
+By the layer cake formula both sides integrate `t ↦ ν{g > t}` over `t > 0`; for `t > 0` the set
+`{g > t}` is open and lies in the compact `tsupport g`, and Fatou's lemma finishes. -/
+theorem Submission.dtc_bc_rc_lintegral_le_liminf : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → ∫⁻ x, ENNReal.ofReal (g x) ∂μ ≤ liminf (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop := by
+  intro P μs μ hG g hg hgc hg0
+  -- step 1: `tsupport g` is compact, hence bounded
+  have hK : Bornology.IsBounded (tsupport g) := hgc.isCompact.isBounded
+  -- step 2: layer cake, `∫⁻ ofReal (g x) ∂ν = ∫⁻ t in Ioi 0, ν {x | t < g x}`
+  simp_rw [lintegral_eq_lintegral_meas_lt _ (ae_of_all _ hg0) hg.measurable.aemeasurable]
+  calc ∫⁻ t in Ioi 0, μ {x | t < g x}
+      ≤ ∫⁻ t in Ioi 0, liminf (fun j => μs j {x | t < g x}) atTop := by
+        -- steps 3 and 5: for `t > 0`, `{x | t < g x}` is open and contained in `tsupport g`
+        refine setLIntegral_mono' measurableSet_Ioi fun t ht =>
+          hG _ (isOpen_lt continuous_const hg) ?_
+        exact hK.subset fun x hx => subset_tsupport g (lt_trans ht hx).ne'
+    _ ≤ liminf (fun j => ∫⁻ t in Ioi 0, μs j {x | t < g x}) atTop :=
+        -- steps 4 and 6: `t ↦ μs j {x | t < g x}` is antitone, hence measurable; Fatou
+        lintegral_liminf_le fun j => Antitone.measurable fun s t hst =>
+          measure_mono fun x hx => lt_of_le_of_lt hst hx
+/-- **Simon 7.2.4** (proof, the "standard approximation argument", upper bound): if `μ` is finite
+on compact sets and `limsup_j μⱼ(K) ≤ μ(K)` for every compact `K`, then
+`limsup_j ∫ g dμⱼ ≤ ∫ g dμ` for every continuous compactly supported `g ≥ 0`.  By the layer cake
+formula `∫ g dν = ∫₀^∞ ν{g ≥ t} dt`; for `t > 0` the sets `{g ≥ t}` are compact subsets of
+`tsupport g`, so after an index shift the integrands are dominated by
+`(μ(tsupport g) + 1) · 1_{t ≤ M}` (`g ≤ M`), and the reverse Fatou lemma applies. -/
+theorem Submission.dtc_bc_rc_limsup_lintegral_le : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → limsup (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop ≤ ∫⁻ x, ENNReal.ofReal (g x) ∂μ := by
+  intro P μs μ hfin hlim g hg hgc hg0
+  -- `g ≤ M`
+  obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+  have hgM : ∀ x, g x ≤ M := fun x => (Real.le_norm_self (g x)).trans (hM x)
+  -- `μⱼ(tsupport g) < A := μ(tsupport g) + 1 < ∞` for `j ≥ j₁`
+  have hK₀ : IsCompact (tsupport g) := hgc.isCompact
+  have hAtop : μ (tsupport g) + 1 ≠ ∞ :=
+    ENNReal.add_ne_top.2 ⟨(hfin _ hK₀).ne, ENNReal.one_ne_top⟩
+  obtain ⟨j₁, hj₁⟩ := eventually_atTop.1 (eventually_lt_of_limsup_lt
+    ((hlim _ hK₀).trans_lt (ENNReal.lt_add_right (hfin _ hK₀).ne one_ne_zero)))
+  -- for `t > 0`, `{g ≥ t}` is a compact subset of `tsupport g`
+  have hsub : ∀ t : ℝ, 0 < t → {x | t ≤ g x} ⊆ tsupport g := fun t ht x hx =>
+    subset_tsupport g (ht.trans_le hx).ne'
+  have hcpt : ∀ t : ℝ, 0 < t → IsCompact {x | t ≤ g x} := fun t ht =>
+    hK₀.of_isClosed_subset (isClosed_le continuous_const hg) (hsub t ht)
+  -- layer cake: `∫ g dν = ∫₀^∞ ν{g ≥ t} dt`
+  have hlc : ∀ ν : Measure (Euclid P),
+      ∫⁻ x, ENNReal.ofReal (g x) ∂ν = ∫⁻ t in Ioi 0, ν {x | t ≤ g x} := fun ν =>
+    lintegral_eq_lintegral_meas_le ν (ae_of_all _ hg0) hg.measurable.aemeasurable
+  simp_rw [hlc]
+  rw [← limsup_nat_add _ j₁]
+  calc limsup (fun i => ∫⁻ t in Ioi 0, μs (i + j₁) {x | t ≤ g x}) atTop
+      ≤ ∫⁻ t in Ioi 0, limsup (fun i => μs (i + j₁) {x | t ≤ g x}) atTop := by
+        -- reverse Fatou, dominated by `A · 1_{(-∞, M]}`
+        refine limsup_lintegral_le (f := fun i t => μs (i + j₁) {x | t ≤ g x})
+          ((Iic M).indicator fun _ => μ (tsupport g) + 1) (fun i => ?_) (fun i => ?_) ?_
+        · exact Antitone.measurable fun s t hst => measure_mono fun x hx => hst.trans hx
+        · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+          by_cases htM : t ≤ M
+          · rw [indicator_of_mem (mem_Iic.2 htM)]
+            exact (measure_mono (hsub t ht)).trans (hj₁ _ (Nat.le_add_left _ _)).le
+          · have he : {x | t ≤ g x} = (∅ : Set (Euclid P)) :=
+              eq_empty_iff_forall_notMem.2 fun x hx => htM (le_trans hx (hgM x))
+            simp [he]
+        · rw [lintegral_indicator_const measurableSet_Iic, Measure.restrict_apply measurableSet_Iic,
+            Iic_inter_Ioi, Real.volume_Ioc]
+          exact ENNReal.mul_ne_top hAtop ENNReal.ofReal_ne_top
+    _ ≤ ∫⁻ t in Ioi 0, μ {x | t ≤ g x} := by
+        refine setLIntegral_mono' measurableSet_Ioi fun t ht => ?_
+        rw [limsup_nat_add (fun j => μs j {x | t ≤ g x}) j₁]
+        exact hlim _ (hcpt t ht)
+
+/-- **Radon convergence from the compact/open semicontinuity bounds** (the "standard approximation
+argument" ending Simon's proof of 7.2.4, p. 187).  Let `μ`, `μⱼ` be Borel measures on `ℝᴾ` with
+(a) `μ(K) < ∞` and (b) `limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)`
+for bounded open `G`.  Then `∫ f dμⱼ → ∫ f dμ` for continuous `f` with compact support.  For
+such `g ≥ 0`, `∫⁻ g dμⱼ → ∫⁻ g dμ < ∞` by the Fatou bound `dtc_bc_rc_lintegral_le_liminf` (from
+(c)) and the reverse Fatou bound `dtc_bc_rc_limsup_lintegral_le` (from (a), (b)), so the Bochner
+integrals `∫ g = (∫⁻ g).toReal` converge.  By (a), (b), `μⱼ(spt f) < ∞` for large `j`; then
+`f⁺ = max(f, 0)` and `f⁻ = max(−f, 0)` are `μⱼ`-integrable and `∫ f = ∫ f⁺ − ∫ f⁻`. -/
+theorem Submission.dtc_bc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P μs μ ha hb hc f hf hfc
+  -- `K₀ = spt f` is compact, and `μⱼ(K₀) < ∞` for `j ≥ j₁` by (a) and (b)
+  have hK₀ : IsCompact (tsupport f) := hfc.isCompact
+  obtain ⟨j₁, hj₁⟩ : ∃ j₁, ∀ j ≥ j₁, μs j (tsupport f) < ∞ :=
+    eventually_atTop.1 (eventually_lt_of_limsup_lt ((hb _ hK₀).trans_lt (ha _ hK₀)))
+  -- a continuous function vanishing off `K₀` is `ν`-integrable whenever `ν(K₀) < ∞`
+  have hint : ∀ ν : Measure (Euclid P), ν (tsupport f) < ∞ → ∀ g : Euclid P → ℝ,
+      Continuous g → support g ⊆ tsupport f → Integrable g ν := by
+    intro ν hν g hg hgs
+    have : IsFiniteMeasure (ν.restrict (tsupport f)) := isFiniteMeasure_restrict.2 hν.ne
+    exact (integrableOn_iff_integrable_of_support_subset hgs).1
+      (hg.integrable_of_hasCompactSupport (hfc.mono' hgs))
+  -- continuous `g ≥ 0` with compact support: `∫⁻ g dμⱼ → ∫⁻ g dμ < ∞`, then take `toReal`
+  have key : ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) →
+      Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ)) := by
+    intro g hg hgc hg0
+    have hT : Tendsto (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop
+        (𝓝 (∫⁻ x, ENNReal.ofReal (g x) ∂μ)) :=
+      tendsto_of_le_liminf_of_limsup_le
+        (Submission.dtc_bc_rc_lintegral_le_liminf P μs μ hc g hg hgc hg0)
+        (Submission.dtc_bc_rc_limsup_lintegral_le P μs μ ha hb g hg hgc hg0)
+    have hfin : ∫⁻ x, ENNReal.ofReal (g x) ∂μ ≠ ∞ := by
+      have : IsFiniteMeasureOnCompacts μ := ⟨ha⟩
+      exact (hg.integrable_of_hasCompactSupport hgc).lintegral_lt_top.ne
+    have hconv : ∀ ν : Measure (Euclid P),
+        ∫ x, g x ∂ν = (∫⁻ x, ENNReal.ofReal (g x) ∂ν).toReal := fun ν =>
+      integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hg0) hg.aestronglyMeasurable
+    rw [hconv μ]
+    exact ((ENNReal.tendsto_toReal hfin).comp hT).congr fun j => (hconv (μs j)).symm
+  -- `f = f⁺ − f⁻` with `f⁺ = max(f, 0)`, `f⁻ = max(−f, 0)` continuous, `≥ 0`, supported in `K₀`
+  have hcp : Continuous fun x => max (f x) 0 := hf.max continuous_const
+  have hcn : Continuous fun x => max (-f x) 0 := hf.neg.max continuous_const
+  have hsp : support (fun x => max (f x) 0) ⊆ support f := by
+    intro x hx
+    rw [mem_support] at hx ⊢
+    contrapose! hx
+    simp [hx]
+  have hsn : support (fun x => max (-f x) 0) ⊆ support f := by
+    intro x hx
+    rw [mem_support] at hx ⊢
+    contrapose! hx
+    simp [hx]
+  have hsplit : ∀ ν : Measure (Euclid P), ν (tsupport f) < ∞ →
+      ∫ x, f x ∂ν = ∫ x, max (f x) 0 ∂ν - ∫ x, max (-f x) 0 ∂ν := by
+    intro ν hν
+    rw [← integral_sub (hint ν hν _ hcp (hsp.trans (subset_tsupport f)))
+      (hint ν hν _ hcn (hsn.trans (subset_tsupport f)))]
+    simp only [max_zero_sub_max_neg_zero_eq_self]
+  rw [hsplit μ (ha _ hK₀)]
+  refine ((key _ hcp (hfc.mono hsp) fun x => le_max_right _ _).sub
+    (key _ hcn (hfc.mono hsn) fun x => le_max_right _ _)).congr' ?_
+  filter_upwards [eventually_ge_atTop j₁] with j hj
+  exact (hsplit (μs j) (hj₁ j hj)).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
