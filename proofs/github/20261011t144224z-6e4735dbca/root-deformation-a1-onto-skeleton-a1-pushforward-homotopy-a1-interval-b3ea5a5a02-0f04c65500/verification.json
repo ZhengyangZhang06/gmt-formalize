@@ -1,0 +1,17 @@
+{
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_slices-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5655",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e246cb9497182918e762dab2d23a48f8df8aeb72",
+  "integrated_commit": "",
+  "proof_base_commit": "de560c469d02806243edab2d35b9c4b91028dbc8",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1",
+  "requires": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1"
+  ]
+}
