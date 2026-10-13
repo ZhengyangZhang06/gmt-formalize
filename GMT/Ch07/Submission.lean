@@ -451,6 +451,101 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Dyadic series estimates** for the deformation theorem (Simon Ch. 6, proof of 5.1).  If
+`Λⱼ ≤ c₄ 2ʲ`, then: (1) for `p ≤ q`, `a₀ ≤ A` and `a_{j+1} ≤ C 2^{−(j+2)(q+1)} A`,
+`∑ⱼ (2Λⱼ)ᵖ aⱼ ≤ (2c₄)ᵖ (1 + C) A`; (2) for finite `K`, `A` and `zⱼ ≤ K 2^{−(j+2)(p+1)} A`,
+`(2Λⱼ)ᵖ zⱼ → 0`. -/
+theorem Submission.cmcsd_dyadic_series_bounds : ∀ (c₄ : NNReal) (Λ : ℕ → NNReal), (∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j) → (∀ (C : NNReal) (A : ℝ≥0∞) (p q : ℕ) (a : ℕ → ℝ≥0∞), p ≤ q → a 0 ≤ A → (∀ j, a (j + 1) ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (q + 1))) * A) → ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ p * a j ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * (1 + C) * A) ∧ (∀ (K A : ℝ≥0∞) (p : ℕ) (z : ℕ → ℝ≥0∞), K ≠ ∞ → A ≠ ∞ → (∀ j, z j ≤ K * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (p + 1))) * A) → Tendsto (fun j => (2 * (Λ j : ℝ≥0∞)) ^ p * z j) atTop (𝓝 0)) := by
+  intro c₄ Λ hΛ
+  -- `ofReal ((1/2)^e) = ι^e` with `ι = 2⁻¹`, and `2^m · ι^m = 1`
+  have hhalf : ∀ e : ℕ, ENNReal.ofReal ((1 / 2 : ℝ) ^ e) = (2⁻¹ : ℝ≥0∞) ^ e := by
+    intro e
+    rw [ENNReal.ofReal_pow (by norm_num : (0 : ℝ) ≤ 1 / 2), one_div,
+      ENNReal.ofReal_inv_of_pos (by norm_num : (0 : ℝ) < 2), ENNReal.ofReal_ofNat]
+  have hcancel : ∀ m : ℕ, (2 : ℝ≥0∞) ^ m * (2⁻¹ : ℝ≥0∞) ^ m = 1 := by
+    intro m
+    rw [← mul_pow, ENNReal.mul_inv_cancel two_ne_zero ENNReal.ofNat_ne_top, one_pow]
+  have hι1 : (2⁻¹ : ℝ≥0∞) ≤ 1 := ENNReal.one_half_lt_one.le
+  -- `2^m · ι^e ≤ ι^r` whenever `m + r ≤ e`
+  have hshift : ∀ m r e : ℕ, m + r ≤ e →
+      (2 : ℝ≥0∞) ^ m * (2⁻¹ : ℝ≥0∞) ^ e ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+    intro m r e hle
+    calc (2 : ℝ≥0∞) ^ m * (2⁻¹ : ℝ≥0∞) ^ e ≤ (2 : ℝ≥0∞) ^ m * (2⁻¹ : ℝ≥0∞) ^ (m + r) :=
+          mul_le_mul' le_rfl (pow_le_pow_right_of_le_one' hι1 hle)
+      _ = (2⁻¹ : ℝ≥0∞) ^ r := by rw [pow_add, ← mul_assoc, hcancel, one_mul]
+  -- Step 0: `(2Λ_j)^p ≤ (2c₄)^p · 2^{jp}`
+  have hw : ∀ p j : ℕ, (2 * (Λ j : ℝ≥0∞)) ^ p ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * 2 ^ (j * p) := by
+    intro p j
+    have h1 : Λ j ≤ c₄ * 2 ^ j := by exact_mod_cast hΛ j
+    have h2 : (Λ j : ℝ≥0∞) ≤ (c₄ : ℝ≥0∞) * 2 ^ j := by exact_mod_cast h1
+    calc (2 * (Λ j : ℝ≥0∞)) ^ p ≤ (2 * ((c₄ : ℝ≥0∞) * 2 ^ j)) ^ p := by gcongr
+      _ = (2 * (c₄ : ℝ≥0∞)) ^ p * 2 ^ (j * p) := by rw [← mul_assoc, mul_pow, ← pow_mul]
+  refine ⟨?_, ?_⟩
+  · intro C A p q a hpq ha0 ha
+    -- Step 1: the first term
+    have h0 : (2 * (Λ 0 : ℝ≥0∞)) ^ p * a 0 ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * A := by
+      calc (2 * (Λ 0 : ℝ≥0∞)) ^ p * a 0 ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * 2 ^ (0 * p) * A :=
+            mul_le_mul' (hw p 0) ha0
+        _ = (2 * (c₄ : ℝ≥0∞)) ^ p * A := by simp
+    -- Step 2: the later terms, `(2Λ_{j+1})^p a_{j+1} ≤ (2c₄)^p C A ι^{j+2}`
+    have hs : ∀ j, (2 * (Λ (j + 1) : ℝ≥0∞)) ^ p * a (j + 1) ≤
+        (2 * (c₄ : ℝ≥0∞)) ^ p * C * A * (2⁻¹ : ℝ≥0∞) ^ (j + 2) := by
+      intro j
+      have he : (j + 1) * p + (j + 2) ≤ (j + 2) * (q + 1) := by
+        nlinarith [Nat.mul_le_mul_left (j + 2) hpq]
+      calc (2 * (Λ (j + 1) : ℝ≥0∞)) ^ p * a (j + 1)
+          ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * 2 ^ ((j + 1) * p) *
+              (C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (q + 1))) * A) :=
+            mul_le_mul' (hw p (j + 1)) (ha j)
+        _ = (2 * (c₄ : ℝ≥0∞)) ^ p * C * A *
+              ((2 : ℝ≥0∞) ^ ((j + 1) * p) * (2⁻¹ : ℝ≥0∞) ^ ((j + 2) * (q + 1))) := by
+            rw [hhalf]; ring
+        _ ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * C * A * (2⁻¹ : ℝ≥0∞) ^ (j + 2) :=
+            mul_le_mul' le_rfl (hshift _ _ _ he)
+    -- Step 3: `Σ_j ι^{j+2} ≤ Σ_j ι^{j+1} = ι (1 - ι)⁻¹ = 1`, and summation
+    have hgeom : ∑' j : ℕ, (2⁻¹ : ℝ≥0∞) ^ (j + 2) ≤ 1 := by
+      calc ∑' j : ℕ, (2⁻¹ : ℝ≥0∞) ^ (j + 2) ≤ ∑' j : ℕ, (2⁻¹ : ℝ≥0∞) ^ (j + 1) :=
+            ENNReal.tsum_le_tsum fun j => pow_le_pow_right_of_le_one' hι1 (Nat.le_succ _)
+        _ = 1 := by
+            rw [ENNReal.tsum_geometric_add_one, ENNReal.one_sub_inv_two, inv_inv]
+            exact ENNReal.inv_mul_cancel two_ne_zero ENNReal.ofNat_ne_top
+    calc ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ p * a j
+        = (2 * (Λ 0 : ℝ≥0∞)) ^ p * a 0 + ∑' j, (2 * (Λ (j + 1) : ℝ≥0∞)) ^ p * a (j + 1) :=
+          tsum_eq_zero_add' ENNReal.summable
+      _ ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * A +
+            ∑' j : ℕ, (2 * (c₄ : ℝ≥0∞)) ^ p * C * A * (2⁻¹ : ℝ≥0∞) ^ (j + 2) :=
+          add_le_add h0 (ENNReal.tsum_le_tsum hs)
+      _ = (2 * (c₄ : ℝ≥0∞)) ^ p * A +
+            (2 * (c₄ : ℝ≥0∞)) ^ p * C * A * ∑' j : ℕ, (2⁻¹ : ℝ≥0∞) ^ (j + 2) := by
+          rw [ENNReal.tsum_mul_left]
+      _ ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * A + (2 * (c₄ : ℝ≥0∞)) ^ p * C * A * 1 := by gcongr
+      _ = (2 * (c₄ : ℝ≥0∞)) ^ p * (1 + C) * A := by ring
+  · intro K A p z hK hA hz
+    -- Step 4: `(2Λ_j)^p z_j ≤ κ ι^j` with `κ = (2c₄)^p K A < ∞`, and `κ ι^j → 0`
+    have hκ : (2 * (c₄ : ℝ≥0∞)) ^ p * K * A ≠ ∞ :=
+      ENNReal.mul_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top
+        (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top)) hK) hA
+    have hb : ∀ j, (2 * (Λ j : ℝ≥0∞)) ^ p * z j ≤
+        (2 * (c₄ : ℝ≥0∞)) ^ p * K * A * (2⁻¹ : ℝ≥0∞) ^ j := by
+      intro j
+      have he : j * p + j ≤ (j + 2) * (p + 1) := by nlinarith
+      calc (2 * (Λ j : ℝ≥0∞)) ^ p * z j
+          ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * 2 ^ (j * p) *
+              (K * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (p + 1))) * A) :=
+            mul_le_mul' (hw p j) (hz j)
+        _ = (2 * (c₄ : ℝ≥0∞)) ^ p * K * A *
+              ((2 : ℝ≥0∞) ^ (j * p) * (2⁻¹ : ℝ≥0∞) ^ ((j + 2) * (p + 1))) := by
+            rw [hhalf]; ring
+        _ ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * K * A * (2⁻¹ : ℝ≥0∞) ^ j :=
+            mul_le_mul' le_rfl (hshift _ _ _ he)
+    have hlim : Tendsto (fun j : ℕ => (2 * (c₄ : ℝ≥0∞)) ^ p * K * A * (2⁻¹ : ℝ≥0∞) ^ j)
+        atTop (𝓝 0) := by
+      have h := ENNReal.Tendsto.const_mul
+        (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one ENNReal.one_half_lt_one)
+        (Or.inr hκ)
+      rwa [mul_zero] at h
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le) hb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
