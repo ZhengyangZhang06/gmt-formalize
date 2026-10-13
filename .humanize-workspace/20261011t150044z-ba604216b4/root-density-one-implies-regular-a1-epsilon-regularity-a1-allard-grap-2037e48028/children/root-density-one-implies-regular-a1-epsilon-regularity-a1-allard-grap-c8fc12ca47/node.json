@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.split_integral_estimate-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+  "depth": 6,
+  "title": "Splitting estimate for set integrals",
+  "statement": "Let X be a type with a measurable space structure and a measure μ, A, B, F ⊆ X measurable sets with A ⊆ B, u, g, t : X → ℝ, G ≥ 0 and C ∈ [0, ∞]. Assume u is μ-integrable on B, ENNReal.ofReal|∫_B u dμ| ≤ C, |u(x)| ≤ G for μ-a.e. x ∈ B, u(x) = 0 for μ-a.e. x ∈ B with x ∉ A and x ∈ F, and |u(x) − g(x)| ≤ G·t(x) for μ-a.e. x ∈ A. Then ENNReal.ofReal|∫_A g dμ| ≤ ENNReal.ofReal(G)·(∫⁻_B ENNReal.ofReal(t) dμ + μ(B ∖ F)) + C, where ∫_B u and ∫_A g are Bochner integrals and ∫⁻ is the lower Lebesgue integral.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (A B F : Set X) (u g t : X → ℝ) (G : ℝ) (C : ℝ≥0∞), MeasurableSet A → MeasurableSet B → MeasurableSet F → A ⊆ B → 0 ≤ G → IntegrableOn u B μ → ENNReal.ofReal |∫ x in B, u x ∂μ| ≤ C → (∀ᵐ x ∂μ, x ∈ B → |u x| ≤ G) → (∀ᵐ x ∂μ, x ∈ B → x ∉ A → x ∈ F → u x = 0) → (∀ᵐ x ∂μ, x ∈ A → |u x - g x| ≤ G * t x) → ENNReal.ofReal |∫ x in A, g x ∂μ| ≤ ENNReal.ofReal G * (∫⁻ x in B, ENNReal.ofReal (t x) ∂μ + μ (B \\ F)) + C",
+  "lean_name": "dorag_tes_gv_split_integral_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c8fc12ca47-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.vertical_variation_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+  "depth": 6,
+  "title": "First-variation bound for vertical cutoff fields (Simon (6), (11))",
+  "statement": "Let n ≥ 1 and m ∈ ℕ, U, W ⊆ ℝᵐ with W ⊆ U, R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n) with μ := R.measure, κ ∈ ℝ and H : ℝᵐ → ℝᵐ with |H(x)| ≤ κ for all x, such that R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X : ℝᵐ → ℝᵐ with tsupport X ⊆ W; assume x ↦ p_x is μ-a.e. strongly measurable, where p_x is the orthogonal projection onto approxTangentPlane n M x. Let r > 0 and ξ ∈ ℝᵐ with B_r(ξ) ⊆ W (closed ball), P : ℝᵐ → ℝⁿ continuous linear with |Py| ≤ |y| for all y, and assume |x − ξ|² ≤ |P(x − ξ)|² + r²/16 for every x ∈ spt μ ∩ B_r(ξ). Let ζ : ℝⁿ → ℝ be C¹ with compact support and tsupport ζ ⊆ B̆ⁿ_{r/2}(0), G ∈ ℝ with ‖Dζ(v)‖ ≤ G for all v, and e ∈ ℝᵐ with |e| ≤ 1. Put u(x) := Dζ(P(x − ξ))(P(p_x e)). Then u is μ-integrable on B_r(ξ), and ENNReal.ofReal|∫_{B_r(ξ)} u dμ| ≤ ENNReal.ofReal(G)·(ENNReal.ofReal(κr/2)·μ(B_r(ξ))).",
+  "lean_statement": "∀ (n m : ℕ), 0 < n → ∀ (U W : Set (Euclid m)) (R : IMRep U n) (H : Euclid m → Euclid m) (κ : ℝ) (ξ : Euclid m) (r : ℝ) (P : Euclid m →L[ℝ] Euclid n) (ζ : Euclid n → ℝ) (G : ℝ) (e : Euclid m), W ⊆ U → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid m → Euclid m, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → 0 < r → closedBall ξ r ⊆ W → (∀ y, ‖P y‖ ≤ ‖y‖) → (∀ x ∈ R.measure.support ∩ closedBall ξ r, ‖x - ξ‖ ^ 2 ≤ ‖P (x - ξ)‖ ^ 2 + r ^ 2 / 16) → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) (r / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → ‖e‖ ≤ 1 → IntegrableOn (fun x => fderiv ℝ ζ (P (x - ξ)) (P ((approxTangentPlane n R.carrier x).starProjection e))) (closedBall ξ r) R.measure ∧ ENNReal.ofReal |∫ x in closedBall ξ r, fderiv ℝ ζ (P (x - ξ)) (P ((approxTangentPlane n R.carrier x).starProjection e)) ∂R.measure| ≤ ENNReal.ofReal G * (ENNReal.ofReal (κ * r / 2) * R.measure (closedBall ξ r))",
+  "lean_name": "dorag_tes_gv_vertical_variation_bound",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.vertical_field_variation-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.cutoff_extension-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.vertical_field_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1.cutoff_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-596c901abb-a1"
+}
