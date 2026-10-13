@@ -458,6 +458,62 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127):
+admissibility of the difference-quotient test maps `φ_h(x) = h⁻¹ (ζ(x) − ζ(x − h e))`.  For
+`ζ ∈ C¹_c` with `tsupport ζ ⊆ U` (`U` open), compactness gives `δ > 0` with
+`K' = cthickening δ (tsupport ζ) ⊆ U`; for `|h| < δ / (‖e‖ + 1)` we have `‖h e‖ < δ`, so
+`support φ_h ⊆ K'` and `φ_h` is `C¹`, compactly supported with `tsupport φ_h ⊆ K' ⊆ U`.  The chain
+rule for the translation and linearity give `Dφ_h(y) = h⁻¹ (Dζ(y) − Dζ(y − h e))`. -/
+theorem dohr_eb_ehs_del_test_admissible : ∀ n ℓ : ℕ, ∀ (ζ : Rn n → Rn ℓ) (U : Set (Rn n)) (e : Rn n), IsOpen U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∀ᶠ h in 𝓝[≠] (0 : ℝ), ContDiff ℝ 1 (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ∧ HasCompactSupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ∧ tsupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆ U ∧ ∀ y, fderiv ℝ (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) y = h⁻¹ • (fderiv ℝ ζ y - fderiv ℝ ζ (y - h • e)) := by
+  intro n ℓ ζ U e hU hζ hζc hζU
+  -- Step 1 (margin): `K' = cthickening δ (tsupport ζ) ⊆ U`; restrict to `|h| < δ / (‖e‖ + 1)`.
+  obtain ⟨δ, hδ, hδU⟩ := hζc.isCompact.exists_cthickening_subset_open hU hζU
+  have he1 : 0 < ‖e‖ + 1 := by positivity
+  have hpos : 0 < δ / (‖e‖ + 1) := div_pos hδ he1
+  have hev : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < δ / (‖e‖ + 1) := by
+    apply nhdsWithin_le_nhds
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hpos] with h hh
+    simpa [Real.dist_eq] using hh
+  filter_upwards [hev] with h hh
+  have hdiff : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  have hhe : ‖h • e‖ < δ := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |h| * ‖e‖ ≤ |h| * (‖e‖ + 1) := by gcongr; linarith
+      _ < δ / (‖e‖ + 1) * (‖e‖ + 1) := by gcongr
+      _ = δ := div_mul_cancel₀ _ he1.ne'
+  -- Step 2 (support): if `φ_h(x) ≠ 0` then `x ∈ tsupport ζ` or `x − h e ∈ tsupport ζ`, so `x ∈ K'`.
+  have hsupp : Function.support (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆
+      cthickening δ (tsupport ζ) := by
+    intro x hx
+    by_contra hxK
+    apply hx
+    have h1 : ζ x = 0 := by
+      by_contra h1
+      exact hxK (self_subset_cthickening _ (subset_tsupport _ h1))
+    have h2 : ζ (x - h • e) = 0 := by
+      by_contra h2
+      apply hxK
+      apply mem_cthickening_of_dist_le x (x - h • e) δ (tsupport ζ) (subset_tsupport _ h2)
+      rw [dist_eq_norm, sub_sub_cancel]
+      exact hhe.le
+    simp [h1, h2]
+  have htsupp : tsupport (fun x => h⁻¹ • (ζ x - ζ (x - h • e))) ⊆ cthickening δ (tsupport ζ) :=
+    closure_minimal hsupp isClosed_cthickening
+  refine ⟨?_, ?_, htsupp.trans hδU, ?_⟩
+  -- Step 3 (`C¹`): `ζ` composed with the translation, a difference and a constant multiple.
+  · exact (hζ.sub (hζ.comp (contDiff_id.sub contDiff_const))).const_smul h⁻¹
+  -- Step 4 (compact support): `tsupport φ_h` is closed inside the compact set `K'`.
+  · exact IsCompact.of_isClosed_subset hζc.isCompact.cthickening (isClosed_tsupport _) htsupp
+  -- Step 5 (derivative): chain rule for the translation (`hasFDerivAt_comp_sub`) and linearity.
+  · intro y
+    have hd1 : HasFDerivAt (fun x => ζ (x - h • e)) (fderiv ℝ ζ (y - h • e)) y :=
+      (hasFDerivAt_comp_sub (h • e)).mpr (hdiff (y - h • e)).hasFDerivAt
+    exact ((((hdiff y).hasFDerivAt).sub hd1).const_smul h⁻¹).fderiv
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
