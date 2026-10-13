@@ -454,4 +454,50 @@ end
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+namespace Submission
+
+/-- The orthogonal cylinder `{z + ιv + ι'w : |v| < s, |w| < h}` is open: with `A = ι*` and
+`B = ι'*`, it equals `{x : |A(x − z)| < s} ∩ {x : |B(x − z)| < h}`. -/
+theorem dgid_orthogonal_cylinder_isOpen : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (z : Euclid (n + k)) (s h : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (n + k), ∃ v : Euclid n, ∃ w : Euclid k, x = ι v + ι' w) → IsOpen {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} := by
+  intro n k ι ι' z s h horth hdec
+  set A := ι.toContinuousLinearMap.adjoint with hAdef
+  set B := ι'.toContinuousLinearMap.adjoint with hBdef
+  -- `A (ιv + ι'w) = v` and `B (ιv + ι'w) = w`, tested against every vector.
+  have hA : ∀ v w, A (ι v + ι' w) = v := by
+    intro v w
+    apply ext_inner_right ℝ
+    intro v'
+    rw [hAdef, ContinuousLinearMap.adjoint_inner_left, inner_add_left,
+      LinearIsometry.coe_toContinuousLinearMap, LinearIsometry.inner_map_map,
+      real_inner_comm (ι v') (ι' w), horth v' w, add_zero]
+  have hB : ∀ v w, B (ι v + ι' w) = w := by
+    intro v w
+    apply ext_inner_right ℝ
+    intro w'
+    rw [hBdef, ContinuousLinearMap.adjoint_inner_left, inner_add_left,
+      LinearIsometry.coe_toContinuousLinearMap, LinearIsometry.inner_map_map, horth v w', zero_add]
+  have hset : {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} =
+      {x | ‖A (x - z)‖ < s} ∩ {x | ‖B (x - z)‖ < h} := by
+    ext x
+    constructor
+    · rintro ⟨v, hv, w, hw, rfl⟩
+      have e : z + ι v + ι' w - z = ι v + ι' w := by abel
+      refine ⟨?_, ?_⟩
+      · show ‖A (z + ι v + ι' w - z)‖ < s
+        rw [e, hA]; exact mem_ball_zero_iff.mp hv
+      · show ‖B (z + ι v + ι' w - z)‖ < h
+        rw [e, hB]; exact mem_ball_zero_iff.mp hw
+    · rintro ⟨hx1, hx2⟩
+      obtain ⟨v, w, hvw⟩ := hdec (x - z)
+      have hx1' : ‖A (x - z)‖ < s := hx1
+      have hx2' : ‖B (x - z)‖ < h := hx2
+      rw [hvw, hA] at hx1'
+      rw [hvw, hB] at hx2'
+      refine ⟨v, mem_ball_zero_iff.mpr hx1', w, mem_ball_zero_iff.mpr hx2', ?_⟩
+      rw [add_assoc, ← hvw]; abel
+  rw [hset]
+  exact (isOpen_lt (by fun_prop) continuous_const).inter (isOpen_lt (by fun_prop) continuous_const)
+
+end Submission
+
 end GMT.Ch07
