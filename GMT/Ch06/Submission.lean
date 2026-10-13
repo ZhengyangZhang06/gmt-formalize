@@ -734,34 +734,6 @@ theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
     rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr htpos.le), le_inv_mul_iff₀ htpos]
     linarith [h1]
   exact ge_of_tendsto hnorm hev
-/-- Countable Lipschitz cover (Lindelöf): if `f` is locally Lipschitz on an arbitrary `U ⊆ ℝ^P`,
-then countably many open sets `O i` cover `U` and `f` is `K i`-Lipschitz on each `O i ∩ U`. -/
-theorem Submission.lpf_lli_countable_lipschitz_cover : ∀ (P Q : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → ∃ (O : ℕ → Set (Eucl P)) (K : ℕ → ℝ≥0), (∀ i, IsOpen (O i)) ∧ U ⊆ ⋃ i, O i ∧ ∀ i, LipschitzOnWith (K i) f (O i ∩ U) := by
-  intro P Q U f hf
-  -- Step 1: each `x ∈ U` has an open `o x ∋ x` with `f` `k x`-Lipschitz on `o x ∩ U`.
-  have hloc : ∀ x ∈ U, ∃ (o : Set (Eucl P)) (k : ℝ≥0),
-      IsOpen o ∧ x ∈ o ∧ LipschitzOnWith k f (o ∩ U) := by
-    intro x hx
-    obtain ⟨k, t, ht, hft⟩ := hf hx
-    obtain ⟨o, ho, hxo, hot⟩ := mem_nhdsWithin.1 ht
-    exact ⟨o, k, ho, hxo, hft.mono hot⟩
-  choose! o k ho hxo hfo using hloc
-  -- Step 2: `ℝ^P` is hereditarily Lindelöf, so countably many `o x` (`x ∈ T ⊆ U`) cover `U`.
-  obtain ⟨T, hTc, hTU, hUT⟩ := (HereditarilyLindelofSpace.isLindelof U).elim_nhds_subcover o
-    fun x hx => (ho x hx).mem_nhds (hxo x hx)
-  rcases T.eq_empty_or_nonempty with rfl | hTne
-  · -- Step 3: `T = ∅` forces `U = ∅`; take empty pieces.
-    refine ⟨fun _ => ∅, fun _ => 0, fun _ => isOpen_empty, fun x hx => ?_, fun _ => ?_⟩
-    · simpa using hUT hx
-    · simp
-  · -- Step 4: enumerate `T = range g` and take `O i = o (g i)`, `K i = k (g i)`.
-    obtain ⟨g, rfl⟩ := hTc.exists_eq_range hTne
-    refine ⟨fun i => o (g i), fun i => k (g i), fun i => ho _ (hTU _ (mem_range_self i)),
-      fun x hx => ?_, fun i => hfo _ (hTU _ (mem_range_self i))⟩
-    -- Step 5: the pieces cover `U`.
-    obtain ⟨y, ⟨i, rfl⟩, hxy⟩ := mem_iUnion₂.1 (hUT hx)
-    exact mem_iUnion.2 ⟨i, hxy⟩
-
 /-- Disjoint Lipschitz pieces: if `u` is locally Lipschitz on an open `Ω ⊆ ℝⁿ` and `D ⊆ Ω` is
 `Lⁿ`-null-measurable, then `D` is covered by pairwise disjoint null-measurable `B m ⊆ D ∩ V m`,
 where the `V m ⊆ Ω` are open and `u` is `K m`-Lipschitz on `V m`. -/
@@ -2265,72 +2237,6 @@ theorem Submission.lpf_weighted_tangent_on_c1_chart :
     ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
       hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
     ((hθC k).continuousWithinAt hyk) (hy₃ (hMV hyMN.1) fun h => h.2 hyk)
-/-- Antilipschitz charts pull back `Hⁿ`-null sets to `Lⁿ`-null sets (Simon Ch. 3, proof of 2.6;
-used for Ch. 6, 3.9): if `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` on `Ω` with `c > 0`, then `Φ` has a
-`c⁻¹`-Lipschitz inverse `Ψ` on `Φ(Ω)` with `Ω ∩ Φ⁻¹(Z) ⊆ Ψ(Φ(Ω) ∩ Z)`, so `Hⁿ(Z) = 0` gives
-`Lⁿ(Ω ∩ Φ⁻¹(Z)) = Hⁿ(Ω ∩ Φ⁻¹(Z)) = 0`. -/
-theorem Submission.lpf_raf_chart_preimage_null : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (c : ℝ), 0 < c → (∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ Z : Set (Eucl P), (μHE[n] : Measure (Eucl P)) Z = 0 → (volume : Measure (Eucl n)) (Ω ∩ Φ ⁻¹' Z) = 0 := by
-  intro P n Φ Ω c hc hΦ Z hZ
-  -- `Φ` is injective on `Ω`, so `Ψ := invFunOn Φ Ω` is a left inverse of `Φ` on `Ω`.
-  have hinj : InjOn Φ Ω := by
-    intro w hw w' hw' h
-    have h1 := hΦ w hw w' hw'
-    rw [h, sub_self, norm_zero] at h1
-    have h2 : ‖w - w'‖ ≤ 0 := by
-      by_contra h3
-      exact absurd h1 (not_le.mpr (mul_pos hc (lt_of_not_ge h3)))
-    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
-  set Ψ := Function.invFunOn Φ Ω
-  have hleft : LeftInvOn Ψ Φ Ω := hinj.leftInvOn_invFunOn
-  -- `Ψ` is `c⁻¹`-Lipschitz on `Φ '' Ω`.
-  have hlip : LipschitzOnWith (Real.toNNReal c⁻¹) Ψ (Φ '' Ω) := by
-    refine LipschitzOnWith.of_dist_le_mul ?_
-    rintro _ ⟨w, hw, rfl⟩ _ ⟨w', hw', rfl⟩
-    rw [hleft hw, hleft hw', dist_eq_norm, dist_eq_norm,
-      Real.coe_toNNReal _ (inv_nonneg.mpr hc.le), inv_mul_eq_div, le_div_iff₀ hc, mul_comm]
-    exact hΦ w hw w' hw'
-  -- `Ω ∩ Φ⁻¹(Z) ⊆ Ψ(Φ(Ω) ∩ Z)`, and the latter is `Hⁿ`-null by the Lipschitz image bound.
-  have hsub : Ω ∩ Φ ⁻¹' Z ⊆ Ψ '' (Φ '' Ω ∩ Z) := by
-    rintro w ⟨hw, hwZ⟩
-    exact ⟨Φ w, ⟨⟨w, hw, rfl⟩, hwZ⟩, hleft hw⟩
-  have himg : (μHE[n] : Measure (Eucl n)) (Ψ '' (Φ '' Ω ∩ Z)) = 0 := by
-    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
-      (A := Φ '' Ω ∩ Z) n (hlip.mono fun _ hy => hy.1)
-    have h2 : (μHE[n] : Measure (Eucl P)) (Φ '' Ω ∩ Z) = 0 :=
-      measure_mono_null (fun _ hy => hy.2) hZ
-    rw [h2, mul_zero] at h1
-    exact nonpos_iff_eq_zero.mp h1
-  -- On `ℝⁿ`, `Hⁿ = Lⁿ`.
-  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-  exact measure_mono_null hsub himg
-
-/-- `Hⁿ`-a.e. properties pull back along antilipschitz charts (used for Simon Ch. 6, 3.9): if
-`M` is `Hⁿ`-null-measurable, `Ω` and `Φ` are measurable and `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` on `Ω`
-with `c > 0`, then `Ω ∩ Φ⁻¹(M)` is `Lⁿ`-null-measurable, and a property holding `Hⁿ`-a.e. on
-`M ∩ Φ(Ω)` holds at `Φ w` for `Lⁿ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`. -/
-theorem Submission.lpf_ccr_ae_pullback : ∀ (P n : ℕ) (M : Set (Eucl P)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (p : Eucl P → Prop), MeasurableSet Ω → Measurable Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ Φ '' Ω)), p x) → NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) ∧ ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), p (Φ w) := by
-  intro P n M Φ Ω p hΩ hΦ ⟨c, hc, hanti⟩ hM hp
-  -- `Hⁿ`-null sets of `ℝ^P` pull back to `Lⁿ`-null sets of parameters in `Ω`.
-  have hnull := Submission.lpf_raf_chart_preimage_null P n Φ Ω c hc hanti
-  -- With `B ⊆ M` measurable and `Hⁿ(M \ B) = 0`, `Ω ∩ Φ⁻¹(M)` is measurable ∪ `Lⁿ`-null.
-  obtain ⟨B, hBM, hB, hBae⟩ := hM.exists_measurable_subset_ae_eq
-  have hS : Ω ∩ Φ ⁻¹' M = (Ω ∩ Φ ⁻¹' B) ∪ (Ω ∩ Φ ⁻¹' (M \ B)) := by
-    ext w
-    by_cases hw : Φ w ∈ B
-    · simp [hw, hBM hw]
-    · simp [hw]
-  have hSm : NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) := by
-    rw [hS]
-    exact (hΩ.inter (hΦ hB)).nullMeasurableSet.union_null (hnull _ (ae_eq_set.mp hBae).2)
-  refine ⟨hSm, (ae_restrict_iff'₀ hSm).mpr ?_⟩
-  -- The exceptional set `{¬p} ∩ (M ∩ Φ(Ω))` is `Hⁿ`-null, so its pullback is `Lⁿ`-null.
-  have hZ : (μHE[n] : Measure (Eucl P)) ({x | ¬p x} ∩ (M ∩ Φ '' Ω)) = 0 :=
-    nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans_eq (ae_iff.mp hp))
-  rw [ae_iff]
-  refine measure_mono_null (fun w hw => ?_) (hnull _ hZ)
-  have hw' : ¬(w ∈ Ω ∩ Φ ⁻¹' M → p (Φ w)) := hw
-  obtain ⟨⟨hwΩ, hwM⟩, hwp⟩ := not_imp.mp hw'
-  exact ⟨hwΩ, hwp, hwM, mem_image_of_mem Φ hwΩ⟩
 /-- Change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6 with a weight;
 used for Ch. 6, 3.9): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω` and
 `A ⊆ Φ(Ω)` is `Hⁿ`-null-measurable, then `D = Ω ∩ Φ⁻¹(A)` is `Lⁿ`-null-measurable, `g ∘ Φ` is
