@@ -1,0 +1,145 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 5–7 of the parent's supplied proof, i.e. the passage from Allard's graph conclusion to y ∈ reg T behind the book's 'Hence by Allard's Theorem 5.2 of Ch. 5 we have y ∈ reg T' in 7.4.3 (chapter-07.txt lines 624–631), together with the Constancy Theorem of Simon Ch. 6, 2.34 (chapter-06.txt lines 571–600), the area formula of Ch. 2, 3.2–3.5, the Upper Density Theorem of Ch. 1, 3.6 and Remark 3.7(2), and Ch. 3, 1.4–1.5 (approximate tangent planes). The parent's step 6 projects T⌞C to the base disc by Pr_# and applies 2.34 there; here the same argument is carried out directly on the integral representation of T (the projection Pr below plays the role of Pr_#, and the area formula replaces the push-forward formula 2.24(2)), because C¹ push-forward of currents is not in the library (only GeometricCurrentOn.affinePushforward). Notation: Hⁿ := μHE[n] (it equals Lebesgue measure on ℝⁿ and on n-planes); M := R.carrier, θ := R.mult (a positive integer on M), ξ := R.orient, μ := R.measure = θHⁿ⌞M; open balls are written B̆, closed balls B; D := B̆ⁿ_s(0) ⊆ ℝⁿ; e₁, …, eₙ is the standard basis of ℝⁿ; Φ(v) := z + ιv + ι'u(v); C := {z + ιv + ι'w : |v| < s, |w| < h}.
+
+1. Orthogonal coordinates. Since ι, ι' are linear isometries with ⟨ιv, ι'w⟩ = 0, the ranges L := ι(ℝⁿ) and L' := ι'(ℝ^k) are orthogonal subspaces of dimensions n and k, so ℝ^{n+k} = L ⊕ L'. Let ι*, ι'* be the adjoints: ι*ι = id, ι'*ι' = id, ι*ι' = 0, ι'*ι = 0 and ιι* + ι'ι'* = id. Put Pr(x) := ι*(x − z) ∈ ℝⁿ and Q(x) := ι'*(x − z) ∈ ℝ^k. These maps are affine, smooth and 1-Lipschitz, x = z + ιPr(x) + ι'Q(x) and |x − z|² = |Pr x|² + |Q x|². Hence C = {x : |Pr x| < s, |Q x| < h} is open. Φ is C¹ on D, Pr∘Φ = id and Q∘Φ = u; so Φ is injective and |Φ(v) − Φ(v')| ≥ |v − v'|. Put Σ := Φ(D).
+
+2. Position of Σ. For v ∈ D, Φ(v) ∈ Φ(D) = spt μ ∩ C ⊆ C, so |u(v)| = |Q Φ(v)| < h. Thus Σ = spt μ ∩ C ⊆ C, Σ is relatively closed in C (spt μ is closed), and z = Φ(0) ∈ Σ because u(0) = 0.
+
+3. Derivative and Jacobian. For v ∈ D, DΦ(v) = ι + ι'∘Du(v), so ι*∘DΦ(v) = id_{ℝⁿ}; DΦ(v) is injective with n-dimensional range L_v := DΦ(v)(ℝⁿ). By orthogonality DΦ(v)*DΦ(v) = I + Du(v)*Du(v), so JΦ(v) := (det DΦ(v)*DΦ(v))^{1/2} ≥ 1, and JΦ is continuous on D.
+
+4. A smaller piece. Let s' := s/2, D' := B̆ⁿ_{s'}(0), Σ' := Φ(D'), C' := {x : |Pr x| < s', |Q x| < h} (open, Σ' ⊆ C' ⊆ C), and r'' := min{s', h}/2 > 0. The closed ball Bⁿ_{s'}(0) is a compact subset of D and Du is continuous on D, so Λ := max over Bⁿ_{s'}(0) of ‖Du‖ is finite and Φ is (1 + Λ)-Lipschitz on the convex set Bⁿ_{s'}(0). If |x − z| < r'' then |Pr x|, |Q x| ≤ |x − z| < r'', so B̆_{r''}(z) ⊆ C' ⊆ C ⊆ U.
+
+5. Σ' is an embedded C¹ n-dimensional submanifold (IsEmbeddedSubmanifold 1 n Σ'). For every y ∈ Σ' use the chart V := D', W := C', ψ := Φ: V and W are open; y ∈ W; Φ is C¹ on D' and injective; Φ(D') = Σ' = C' ∩ Σ' because Σ' ⊆ C'; fderiv Φ(v) = DΦ(v) is injective for v ∈ D' (step 3). Properness: let K ⊆ C' be compact. If |v| = s' then |Pr Φ(v)| = s', so Φ(v) ∉ C' ⊇ K. Hence D' ∩ Φ⁻¹(K) = Bⁿ_{s'}(0) ∩ Φ⁻¹(K), a closed subset (Φ is continuous on Bⁿ_{s'}(0) ⊆ D) of a compact set, hence compact.
+
+6. Tangent spaces. Let y = Φ(v₀) ∈ Σ' with v₀ ∈ D'. Then tangentSpace Σ' y = L_{v₀}. (⊆) Let γ : ℝ → ℝ^{n+k} be C¹ on (−1, 1) with γ((−1,1)) ⊆ Σ', γ(0) = y and derivative w at 0. Since Φ(Pr x) = x for x ∈ Σ', γ(t) = Φ(Pr γ(t)) for |t| < 1; Pr∘γ takes values in D', is differentiable at 0 with derivative ι*w, and Φ is differentiable at v₀ = Pr γ(0). By the chain rule w = DΦ(v₀)(ι*w) ∈ L_{v₀}. (⊇) Given a ∈ ℝⁿ choose c > 0 with c|a| < s' − |v₀| and put γ(t) := Φ(v₀ + c·tanh(t/c)·a). Then v₀ + c tanh(t/c) a ∈ D' for all t, γ is C¹ on (−1, 1), γ((−1,1)) ⊆ Σ', γ(0) = y and γ'(0) = DΦ(v₀)a. Hence tangentSpace Σ' y is the n-dimensional subspace L_{v₀}.
+
+7. Orientation. For v ∈ D let τ(v) = (τ₁(v), …, τₙ(v)) be the Gram–Schmidt orthonormalisation of (DΦ(v)e₁, …, DΦ(v)eₙ). It is an orthonormal basis of L_v and depends continuously on v (Gram–Schmidt is given by continuous formulas on linearly independent families, and v ↦ DΦ(v) is continuous on D). Define ξ_Σ : ℝ^{n+k} → MultiVector by ξ_Σ(x)(α) := α(τ(Pr x)) for x ∈ Σ and ξ_Σ(x) := 0 for x ∉ Σ.
+ (a) For y ∈ Σ', IsUnitOrientationOf (ξ_Σ y) L_{Pr y} holds, witnessed by τ(Pr y) with the + sign.
+ (b) ξ_Σ is continuous on Σ, hence on Σ': x ↦ τ(Pr x) is continuous on Σ, and τ ↦ (α ↦ α(τ)) is continuous from (ℝ^{n+k})ⁿ into the dual of the covector space, since by multilinearity |α(τ) − α(τ')| ≤ ‖α‖ Σᵢ (∏_{j<i}|τ'_j|)|τᵢ − τ'ᵢ|(∏_{j>i}|τ_j|).
+ With step 6 this gives IsOrientation n Σ' ξ_Σ.
+ (c) Key identity: for v ∈ D and every n-covector α, α(DΦ(v)e₁, …, DΦ(v)eₙ) = JΦ(v)·ξ_Σ(Φ(v))(α). Indeed Gram–Schmidt gives DΦ(v)e_j = Σ_{i≤j} A_{ij} τᵢ(v) with A upper triangular and A_{jj} > 0, so α(DΦ(v)e₁, …, DΦ(v)eₙ) = det(A)·α(τ(v)) because α is multilinear and alternating; and DΦ(v)*DΦ(v) = AᵀA because τ(v) is orthonormal, so det A = JΦ(v).
+
+8. Area formula and finiteness. For every t < s, Φ restricted to Bⁿ_t(0) is injective and Lipschitz with Jacobian JΦ, so (Simon Ch. 2, 3.2 and 3.5; library Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn, applied to a Lipschitz extension of Φ restricted to Bⁿ_t(0), and monotone convergence as t ↑ s): for every Borel A ⊆ D and Borel g ≥ 0, ∫_{Φ(A)} g dHⁿ = ∫_A g(Φ(v)) JΦ(v) dv, and likewise for g integrable over Φ(A). Consequences: (a) Hⁿ(Φ(A)) ≥ Lⁿ(A), so preimages under Φ of Hⁿ-null subsets of Σ are Lⁿ-null; (b) Hⁿ(Σ') ≤ (1 + Λ)ⁿ ω_n s'ⁿ < ∞ (LipschitzOnWith.hausdorffMeasure_image_le); (c) for compact K ⊆ C, K ∩ Σ = K ∩ spt μ is compact, so Pr(K ∩ Σ) is a compact subset of D, contained in some Bⁿ_t(0) with t < s, and Hⁿ(K ∩ Σ) < ∞.
+
+9. μ is carried by Σ inside C. As ℝ^{n+k} is second countable, μ(ℝ^{n+k} ∖ spt μ) = 0 (MeasureTheory.Measure.measure_compl_support). Since spt μ ∩ C = Σ, μ(C ∖ Σ) = 0, and since θ ≥ 1 on M, Hⁿ((M ∩ C) ∖ Σ) = 0.
+
+10. Approximate tangent planes of M on Σ. Claim: for Hⁿ-a.e. x ∈ M ∩ C we have x ∈ Σ, and every subspace Q₀ with HasApproximateTangentSpaceAt n M x Q₀ equals L_{Pr x}.
+ (a) Σ has approximate tangent plane L_{v₀} at every y = Φ(v₀) ∈ Σ. Let f ∈ C_c(ℝ^{n+k}) with spt f ⊆ B_R(0). For small λ > 0 (λR < s − |v₀| and B_{λR}(y) ⊆ C), the points x ∈ Σ with |x − y| ≤ λR are of the form Φ(v) with |v − v₀| ≤ λR, because |Φ(v) − Φ(v₀)| ≥ |v − v₀|. By the scaling Hⁿ(λ·A) = λⁿHⁿ(A) and the area formula,
+ ∫_{η_{y,λ}(Σ)} f dHⁿ = λ^{−n} ∫_Σ f((x − y)/λ) dHⁿ(x) = ∫_{|w| ≤ R} f((Φ(v₀ + λw) − Φ(v₀))/λ) JΦ(v₀ + λw) dw.
+ The integrand is bounded by sup|f| · max over Bⁿ_{λR}(v₀) of JΦ, and converges for every w to f(DΦ(v₀)w) JΦ(v₀), since Φ is differentiable at v₀ and f, JΦ are continuous. By dominated convergence the limit is ∫_{ℝⁿ} f(DΦ(v₀)w) JΦ(v₀) dw = ∫_{L_{v₀}} f dHⁿ (area formula for the injective linear map DΦ(v₀), whose Jacobian is JΦ(v₀)). As dim L_{v₀} = n, HasApproximateTangentSpaceAt n Σ y L_{v₀}.
+ (b) A := Σ ∖ M is Borel with Hⁿ(A ∩ K) < ∞ for every compact K ⊆ C (step 8(c)). By the Upper Density Theorem (Simon Ch. 1, 3.6 with Remark 3.7(2), applied to Hⁿ⌞A in the open set C; library simon_theorem_3_6 and simon_remark_3_7_of_openSigmaFinite), the upper n-density of Hⁿ⌞A vanishes at Hⁿ-a.e. x ∈ C ∖ A, in particular at Hⁿ-a.e. x ∈ M ∩ Σ.
+ (c) Let x ∈ M ∩ Σ be such a point and let f, R be as in (a). For small λ with B_{λR}(x) ⊆ C,
+ |∫_{η_{x,λ}(M)} f dHⁿ − ∫_{η_{x,λ}(Σ)} f dHⁿ| ≤ sup|f| · λ^{−n} (Hⁿ((M ∖ Σ) ∩ B_{λR}(x)) + Hⁿ(A ∩ B_{λR}(x))) = sup|f| · λ^{−n} Hⁿ(A ∩ B_{λR}(x)) → 0,
+ using Hⁿ((M ∖ Σ) ∩ C) = 0 (step 9). So M has approximate tangent plane L_{Pr x} at x, and by uniqueness of approximate tangent planes (Simon Ch. 3, 1.5(1); HasApproximateTangentSpaceAt.unique), Q₀ = L_{Pr x}. Together with step 9 this proves the claim.
+
+11. The orientation of R on Σ. By the IMRep field orients and step 10, for Hⁿ-a.e. x ∈ M ∩ C: x ∈ Σ and ξ(x)(α) = ±α(τ') for some orthonormal basis τ' of L_{Pr x}. Two orthonormal bases of the same n-dimensional space differ by an orthogonal matrix O, and α(τ') = det(O)·α(τ(Pr x)) with det O = ±1. Hence ξ(x) = ε(x)·ξ_Σ(x) with ε(x) ∈ {1, −1}. Let β(x) be the n-covector β(x)(w₁, …, wₙ) := det(⟨τᵢ(Pr x), w_j⟩)_{i,j}; it depends continuously on x ∈ Σ and β(x)(τ(Pr x)) = 1, so ε(x) = ξ(x)(β(x)). Define g : Σ → ℝ by g(x) := θ(x)·ξ(x)(β(x)) for x ∈ M ∩ Σ and g(x) := 0 for x ∈ Σ ∖ M. Then g is Hⁿ⌞Σ-measurable (ξ is a.e. strongly measurable, θ and β are measurable), |g| ≤ θ·1_M, g is integer-valued Hⁿ-a.e. on Σ, and θ(x)ξ(x) = g(x)ξ_Σ(x) for Hⁿ-a.e. x ∈ M ∩ C.
+
+12. Representation of T on C. Put G := g∘Φ on D.
+ (a) G ∈ L¹_loc(D): for compact K' ⊆ D, Φ(K') is a compact subset of C ⊆ U, and ∫_{K'} |G| dv ≤ ∫_{K'} |G| JΦ dv = ∫_{Φ(K')} |g| dHⁿ ≤ ∫_{M ∩ Φ(K')} θ dHⁿ < ∞ (IMRep.locallyIntegrable_mult).
+ (b) G is Lⁿ-a.e. integer-valued on D (steps 11 and 8(a)).
+ (c) For every ω ∈ TestFormOn U n with tsupport ω ⊆ C:
+ T(ω) = ∫_M θ ξ(ω) dHⁿ = ∫_{M ∩ C} θ ξ(ω) dHⁿ = ∫_Σ g ξ_Σ(ω) dHⁿ = ∫_D G(v) ω(Φ(v))(DΦ(v)e₁, …, DΦ(v)eₙ) dv.
+ The first equality is R.Represents T; the second holds because ω = 0 off C; the third follows from steps 9 and 11 and g = 0 on Σ ∖ M; the fourth is the area formula (step 8) combined with the identity of step 7(c). All integrals converge: spt ω ∩ Σ is compact with finite Hⁿ-measure (step 8(c)), ω and ξ_Σ are bounded, and |g| ≤ θ·1_M is integrable on compact subsets of U.
+
+13. ∂T = 0 gives zero weak derivatives of G. Write n = m + 1. Fix j ∈ {1, …, n} and a ∈ C_c^∞(D). The compact set u(spt a) lies in B̆^k_h(0) (step 2), so choose 0 < h₁ < h₂ < h with u(spt a) ⊆ B^k_{h₁}(0), and η ∈ C_c^∞(B̆^k_h(0)) with η ≡ 1 on B^k_{h₂}(0). Let ψ be the (n−1)-form on ℝⁿ given by ψ := (−1)^{j−1} a dv¹ ∧ ⋯ ∧ dv^{j−1} ∧ dv^{j+1} ∧ ⋯ ∧ dvⁿ (for n = 1, ψ := a); then dψ = (∂_j a) dv¹ ∧ ⋯ ∧ dvⁿ, i.e. dψ(v)(e₁, …, eₙ) = ∂_j a(v). (With the library's normalisation of the exterior derivative this identity may carry a nonzero constant factor depending only on n and j; such a factor does not affect the conclusion ∫_D G ∂_j a dv = 0 below.) Define the (n−1)-form φ on ℝ^{n+k} by φ(x)(w₁, …, w_{n−1}) := η(Q x)·ψ(Pr x)(ι*w₁, …, ι*w_{n−1}), i.e. φ = (η∘Q)·Pr^#ψ with Pr^# the affine pull-back (library affinePullbackForm). Then φ is smooth with tsupport φ ⊆ z + ι(spt a) + ι'(spt η), a compact subset of C ⊆ U; so φ ∈ TestFormOn U m, and BoundaryVanishes T (T.boundary = 0) gives T(dφ) = 0.
+ For v ∈ D: (i) if v ∉ spt a, the open set {x : Pr x ∉ spt a} contains Φ(v) and φ ≡ 0 on it, so dφ(Φ(v)) = 0 = ∂_j a(v); (ii) if v ∈ spt a, then |Q x| < h₂ on a neighbourhood of Φ(v) (as Q Φ(v) = u(v) ∈ B^k_{h₁}(0)), where φ = Pr^#ψ; exterior differentiation commutes with affine pull-back (Simon 6.1.14; library exteriorDerivative_affinePullbackForm), so dφ(Φ(v)) = (Pr^# dψ)(Φ(v)) and, using ι*∘DΦ(v) = id,
+ dφ(Φ(v))(DΦ(v)e₁, …, DΦ(v)eₙ) = dψ(v)(ι*DΦ(v)e₁, …, ι*DΦ(v)eₙ) = dψ(v)(e₁, …, eₙ) = ∂_j a(v).
+ Applying step 12(c) to ω := dφ (tsupport dφ ⊆ tsupport φ ⊆ C) gives
+ 0 = T(dφ) = ∫_D G(v) ∂_j a(v) dv for every a ∈ C_c^∞(D) and every j = 1, …, n.
+
+14. Constancy. G ∈ L¹_loc(D), D is a connected open subset of ℝⁿ, and ∫_D G ∂_j a dv = 0 for all a ∈ C_c^∞(D) and all j. Hence there is c ∈ ℝ with G = c Lⁿ-a.e. on D. This is the argument of Simon Ch. 6, 2.34: the mollifications G_t := G ∗ ϱ_t are smooth on {v ∈ D : dist(v, ∂D) > t} with ∂_j G_t = 0 there (take a := ϱ_t(v − ·)), so G_t is constant on that ball, and G_t → G in L¹_loc(D). In the library: extend the identity to C¹ compactly supported a by mollifying a (∂_j(a ∗ ϱ_t) = (∂_j a) ∗ ϱ_t → ∂_j a uniformly, with supports in a fixed compact subset of D, while G is integrable there), then apply Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero. Since G is Lⁿ-a.e. integer-valued (step 12(b)) and Lⁿ(D) > 0, c ∈ ℤ.
+
+15. T = c[[Σ]] in C. For ω ∈ TestFormOn U n with tsupport ω ⊆ C, steps 12(c), 14, 7(c) and 8 give
+ T(ω) = c ∫_D ω(Φ(v))(DΦ(v)e₁, …, DΦ(v)eₙ) dv = c ∫_Σ ξ_Σ(x)(ω(x)) dHⁿ(x).
+
+16. c ≠ 0. Choose r > 0 with the closed ball B_r(z) ⊆ C (C is open and z ∈ C). If c = 0, step 15 gives T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ B̆_r(z). The open set B̆_r(z) has compact closure B_r(z) ⊆ U, so it belongs to the family defining the zero region of T (GeometricCurrentOn.zeroRegion), hence z ∉ T.support — contradicting the hypothesis z ∈ T.support. So c ∈ ℤ ∖ {0}.
+
+17. Conclusion z ∈ regularSet T. Take ρ := r'' (step 4), m := c, the manifold Σ' and the orientation ξ_Σ. Then: z ∈ T.support (hypothesis); r'' > 0 and ball z r'' ⊆ U (step 4); m ≠ 0 (step 16); z = Φ(0) ∈ Σ'; IsEmbeddedSubmanifold 1 n Σ' (step 5); IsOrientation n Σ' ξ_Σ (steps 6 and 7); for compact K ⊆ ball z r'', μHE[n](Σ' ∩ K) ≤ Hⁿ(Σ') < ∞ (step 8(b)); and for every ω ∈ TestFormOn U n with tsupport ω ⊆ ball z r'' (⊆ C' ⊆ C), step 15 gives T(ω) = c ∫_Σ ξ_Σ(x)(ω(x)) dHⁿ(x) = c ∫_{Σ'} ξ_Σ(x)(ω(x)) dHⁿ(x), because every x = Φ(v) ∈ Σ ∖ Σ' has |x − z| ≥ |Pr x| = |v| ≥ s' > r'', so ω(x) = 0. These are exactly the defining conditions of z ∈ regularSet T.
+
+## Key steps
+
+1. Orthogonal coordinates Pr = ι*(· − z), Q = ι'*(· − z): C is open and Σ := Φ(B_s(0)) = spt μ ∩ C is an injective C¹ graph through z.
+2. Σ' := Φ(B_{s/2}(0)) is an embedded C¹ n-submanifold with tangentSpace = DΦ(ℝⁿ), Gram–Schmidt orientation ξ_Σ (continuous) and finite Hⁿ-measure; α(DΦe₁,…,DΦeₙ) = JΦ·ξ_Σ(α).
+3. μ(C ∖ Σ) = 0; by the area formula and the upper density theorem the approximate tangent plane of M equals T_xΣ a.e. on M ∩ C, so θξ = gξ_Σ with g integer-valued.
+4. Representation T(ω) = ∫_D G(v) ω(Φ(v))(DΦ(v)e₁,…,DΦ(v)eₙ) dv on C with G = g∘Φ ∈ L¹_loc(D).
+5. Testing ∂T = 0 with φ = (η∘Q)·Pr^#ψ gives ∫_D G ∂_j a = 0 for all a ∈ C_c^∞(D); distributional constancy (Simon 6.2.34) gives G ≡ c ∈ ℤ a.e.
+6. T = c[[Σ]] on C, c ≠ 0 because z ∈ spt T; restricting to Σ' and the ball B_{r''}(z) gives z ∈ regularSet T.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `grep -n '^(theorem|lemma|def|structure)' simongmt Chapter06/{Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward,Forms}.lean Chapter03/Rectifiable.lean Chapter05/Basic.lean`
+- `grep -n '^(theorem|def)' simongmt Chapter08/{DistributionalConstancy,ConstancyTangentGraph,ConstancyCorrected,ConstancyProjection}.lean`
+- `grep -n '^theorem' simongmt Chapter02/{AreaFormula,AreaLipschitz,Area}.lean Chapter04/{MeanCurvature,LpMeanCurvature,MultiplicityBridge}.lean Chapter01/{DensityComparison,Densities,HausdorffDensityBounds}.lean`
+- `grep measure_compl_support / mem_support_iff in mathlib MeasureTheory/Measure/Support.lean; exists_disjoint_subfamily_covering_enlargement_closedBall in MeasureTheory/Covering/Vitali.lean; LipschitzWith.ae_differentiableAt in Analysis/Calculus/Rademacher.lean; LipschitzOnWith.extend_real in Topology/MetricSpace/Lipschitz.lean; hausdorffMeasure_image_le in MeasureTheory/Measure/Hausdorff.lean; ae_tendsto_average_norm_sub in MeasureTheory/Covering/Differentiation.lean`
+- `grep -rl 'dor_allard_bounded_curvature_graph|dor_graph_supported_cycle_regular' dag.json GMT simongmt (no match); lean_name listing of dag.json and of every nodes/*/decomposition-v*.json`
+- `python3 lean_contract.validate_lean_statement on both strings; gmt-compare.child_modules (contract mode) then lean NodeA.lean NodeB.lean`
+- `lean -o build/DorerContract.olean DorerContract.lean (byte copy of Contract.lean); lean AssemblyExact.lean (#print axioms dorer_assembly_exact)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/simon-gmt.pdf`
+- `/tmp/ch07-dorer-decomp/NodeA.lean`
+- `/tmp/ch07-dorer-decomp/NodeB.lean`
+- `/tmp/ch07-dorer-decomp/AssemblyExact.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean.
+Reusable facts found:
+- Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero and WeakDerivativesZero.ae_eq_const give distributional constancy on a connected open set (child B, step 14).
+- Chapter02.weighted_area_formula_lipschitz_injOn and injective_area_formula_lipschitz give the injective Lipschitz area formula (both children).
+- Chapter03.HasApproximateTangentSpaceAt (unweighted blow-up definition) and HasApproximateTangentSpaceAt.unique.
+- Chapter01.simon_theorem_3_3 and simon_theorem_3_6 / simon_remark_3_7_*: comparison and upper density theorems.
+- Chapter04.HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn: bounded-H monotonicity for the library RectifiableVarifold.
+- Chapter06.affinePullbackForm and exteriorDerivative_affinePullbackForm (child B, step 13), GeometricCurrentOn.zeroRegion and support.
+- Mathlib: Measure.measure_compl_support, Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall, LipschitzWith.ae_differentiableAt, LipschitzOnWith.extend_real, LipschitzOnWith.hausdorffMeasure_image_le, ae_tendsto_average_norm_sub.
+Not available, hence the split:
+- Allard regularity: Chapter05/Basic.lean defines only the vocabulary and states that Lipschitz approximation, excess decay and Allard are not formalized.
+- The current Constancy Theorem and C¹ push-forward of currents: only the proper affine push-forward exists.
+Lean checks:
+- Both child strings pass validate_lean_statement and elaborate in comparator-generated contract-scope modules.
+- The conditional assembly of the exact parent type from the exact C1, C3 and child types uses only propext, Classical.choice and Quot.sound.
+- No name collisions.

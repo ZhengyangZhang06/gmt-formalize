@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.glue-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 6,
+  "title": "Patching a consistent family of local smooth harmonic functions into a smooth harmonic function on the ball",
+  "statement": "Let n ∈ ℕ, R > 0, ℝⁿ = Euclid n, e_i = EuclideanSpace.single i 1, and let F : ℝ → ℝⁿ → ℝ, (ε, x) ↦ F ε x. Assume:\n(i) for every ε with 0 < ε < R and every m ∈ ℕ, F ε is C^m on B̆_{R−ε}(0);\n(ii) for every ε with 0 < ε < R and every y ∈ B̆_{R−ε}(0), Σ_i iteratedFDeriv ℝ 2 (F ε) y ![e_i, e_i] = 0;\n(iii) F ε x = F δ x whenever ε > 0, δ > 0 and |x| + ε + δ < R.\nThen there is h : ℝⁿ → ℝ such that:\n- h is C^m on B̆_R(0) for every m ∈ ℕ;\n- Σ_i iteratedFDeriv ℝ 2 h y ![e_i, e_i] = 0 for every y ∈ B̆_R(0);\n- for every x ∈ B̆_R(0), F ε x = h(x) for all sufficiently small ε > 0 (∀ᶠ ε in 𝓝[>] 0).",
+  "lean_statement": "∀ (n : ℕ) (R : ℝ) (F : ℝ → Euclid n → ℝ), 0 < R → (∀ ε : ℝ, 0 < ε → ε < R → ∀ m : ℕ, ContDiffOn ℝ m (F ε) (ball (0 : Euclid n) (R - ε))) → (∀ ε : ℝ, 0 < ε → ε < R → ∀ y ∈ ball (0 : Euclid n) (R - ε), ∑ i : Fin n, iteratedFDeriv ℝ 2 (F ε) y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ (ε δ : ℝ) (x : Euclid n), 0 < ε → 0 < δ → ‖x‖ + ε + δ < R → F ε x = F δ x) → ∃ h : Euclid n → ℝ, (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R)) ∧ (∀ y ∈ ball (0 : Euclid n) R, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) ∧ ∀ x ∈ ball (0 : Euclid n) R, ∀ᶠ ε in 𝓝[>] (0 : ℝ), F ε x = h x",
+  "lean_name": "dorag_ha_weyl_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6ac0f7aaa6-a1"
+}

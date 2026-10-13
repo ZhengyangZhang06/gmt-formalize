@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.planes_limit-a1.geometric_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.planes_limit-a1",
+  "depth": 6,
+  "title": "Limit and squared tail bound for a geometrically Cauchy sequence with ratio q ≤ 1/4",
+  "statement": "Let X be a complete metric space (a type X with MetricSpace X and CompleteSpace X), let (v_j)_{j∈ℕ} be a sequence in X, and let a, q ∈ ℝ with 0 ≤ q ≤ 1/4 such that dist(v_j, v_{j+1})² ≤ a·q^j for every j ∈ ℕ. Then there is w ∈ X such that v_j → w as j → ∞ and dist(v_j, w)² ≤ 4·a·q^j for every j ∈ ℕ.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [CompleteSpace X] (v : ℕ → X) (a q : ℝ), 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, dist (v j) (v (j + 1)) ^ 2 ≤ a * q ^ j) → ∃ w : X, Tendsto v atTop (𝓝 w) ∧ ∀ j : ℕ, dist (v j) w ^ 2 ≤ 4 * a * q ^ j",
+  "lean_name": "dorag_ted_pl_geometric_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-a3d099e8e3-a1"
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "C¹ regularity of a graph carrying decaying tilt-excess (proof of Simon 5.5.2)",
+  "statement": "Let n ≥ 1, k ≥ 0, U ⊆ ℝ^{n+k} any set, R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n; ξ_R = R.orient is its orientation, and ξ below denotes a point) with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]), W ⊆ U open, κ ∈ ℝ, H : ℝ^{n+k} → ℝ^{n+k} μ-a.e. strongly measurable with |H(x)| ≤ κ for all x, such that R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X : ℝ^{n+k} → ℝ^{n+k} with tsupport X ⊆ W. Let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ ¼|v − w| for all v, w and f(0) = 0, z ∈ ℝ^{n+k}, a > 0, s₀ > 0 and K ∈ ℝ (K may be negative; K⁺ := max{K, 0}), such that B_a(z) ⊆ W, spt μ ∩ B_a(z) = F ∩ B_a(z) with F := {z + ιv + ι'f(v) : v ∈ ℝⁿ}, and for every ξ ∈ spt μ ∩ B_a(z) there is an n-dimensional subspace S with ∫_{B_s(ξ)} |p_x − p_S|² dμ ≤ K⁺s^{n+1} = max{K, 0}·s^{n+1} for all s ∈ (0, s₀]. This bound is exactly the Lean bound ENNReal.ofReal (K * s ^ (n + 1)): for s > 0, ENNReal.ofReal(K s^{n+1}) = max{K s^{n+1}, 0} = max{K, 0}·s^{n+1}, so for K < 0 the hypothesis says that these integrals vanish, exactly as for K = 0 (the bound is not the possibly negative real number K s^{n+1}). Then f is C¹ on the open ball B̆_{a/2}(0) ⊆ ℝⁿ (ContDiffOn ℝ 1 f (ball 0 (a/2))). Here p_x is the orthogonal projection onto approxTangentPlane n M x, p_x^⊥ := I − p_x, p_S the orthogonal projection onto a subspace S, |A|² := Σ_i |Ae_i|² the Hilbert–Schmidt norm (the Lean sum over EuclideanSpace.single i 1), B_t(y) the closed ball, and integrals of nonnegative functions are lower Lebesgue integrals in [0, ∞] (Lean ∫⁻ of ENNReal.ofReal).",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (z : Euclid (n + k)) (a s₀ K : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ 1 / 4 * ‖v - w‖) → f 0 = 0 → 0 < a → 0 < s₀ → closedBall z a ⊆ W → R.measure.support ∩ closedBall z a = range (fun v => z + ι v + ι' (f v)) ∩ closedBall z a → (∀ ξ ∈ R.measure.support ∩ closedBall z a, ∃ S : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ S = n ∧ ∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall ξ s, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (K * s ^ (n + 1))) → ContDiffOn ℝ 1 f (ball (0 : Euclid n) (a / 2))",
+  "lean_name": "dorag_graph_c1_of_tilt_decay",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178-a1"
+}

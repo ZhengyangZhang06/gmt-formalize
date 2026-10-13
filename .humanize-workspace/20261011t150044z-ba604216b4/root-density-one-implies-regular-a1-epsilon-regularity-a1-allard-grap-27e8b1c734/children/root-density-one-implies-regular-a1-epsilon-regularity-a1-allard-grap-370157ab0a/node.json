@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.gram_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1",
+  "depth": 6,
+  "title": "Gram identity (ι + ι'∘B)*(ι + ι'∘B) = id + B*B",
+  "statement": "Let n, k ∈ ℕ and let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝᵏ. Let B : ℝⁿ → ℝᵏ be a continuous linear map, and put L := ι + ι'∘B : ℝⁿ → ℝ^{n+k} (Lean: ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L B). Then L*∘L = id_{ℝⁿ} + B*∘B, where * is the Hilbert-space adjoint (ContinuousLinearMap.adjoint), ∘ is composition of continuous linear maps, and ℝᵖ = Euclid p.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (B : Euclid n →L[ℝ] Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L B).adjoint ∘L (ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L B) = ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B",
+  "lean_name": "dorag_tes_ga_graph_linear_gram_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-370157ab0a-a1"
+}

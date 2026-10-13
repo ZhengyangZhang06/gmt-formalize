@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dorag_dbs_|dorag_standing_density_bounds|^structure IMRep|^def IMRep.measure|^def unitBallVolume",
+        "theorem ae_tendsto_measure_inter_div",
+        "def HasApproximateTangentSpaceAt|regular_euclideanHausdorffMeasure_restrict_submodule|def blowUpMap",
+        "euclideanHausdorffMeasure_homothety_image|theorem Isometry.euclideanHausdorffMeasure_image|theorem Isometry.map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "instance.*HasBesicovitchCovering|theorem addHaar_closedBall_eq_addHaar_ball|theorem one_add_mul_le_pow|theorem add_one_le_exp",
+        "rg -n 'dorag_dbs_|dorag_standing_density_bounds' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "rg -n 'dorag_dbs_' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/*/.humanize/github-theorem-prover/runs/*/dag.json",
+        "python3 /tmp/density-bounds-independent-review-eclp7a4d/check.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-498c875e36/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-498c875e36/decomposition-v1.json",
+        "/tmp/density-bounds-independent-review-eclp7a4d/Assembly.lean",
+        "/tmp/density-bounds-independent-review-eclp7a4d/Assembly.log",
+        "/tmp/density-bounds-independent-review-eclp7a4d/results.json"
+      ],
+      "conclusion": "Verified the pinned project and package revisions and compatibility of the inspected sources. The required definitions, Hausdorff scaling and volume lemmas, and finite-dimensional Besicovitch instance support the proofs. No proposed declaration exists in the snapshot, and none of the six names is reserved in the eight workspace DAGs. Every name is a bare identifier. All six one-line types independently elaborate in comparator contract scope without child implementations. Independently recompiling the supplied proofs gives only propext, Classical.choice and Quot.sound for every child. The supplied assembly proves the exact frozen dorag_standing_density_bounds type, assuming only its existing frozen monotonicity dependency in addition to standard axioms. The six-way split is appropriate: its acyclic obligations establish all four selected conclusions. Typeclass-sensitive constructions were checked; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "constants",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including n = 0 and δ = 0. The explicit constants satisfy every bound; the exponential, Bernoulli and product estimates are complete and non-circular. The supplied proof independently compiles."
+    },
+    {
+      "key": "sharp_ratio",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both ENNReal conclusions match. Ball containment, the endpoint t = t′, normalization and positive-factor cancellation are justified. Monotonicity is an explicit hypothesis, with no hidden parent dependency. The supplied proof independently compiles."
+    },
+    {
+      "key": "tangent_lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated lower-density result for arbitrary M. The proof establishes plane-ball normalization, cutoff convergence and scaling, and explicitly handles infinite measure and c ≤ 0 without adding measurability or local-finiteness assumptions. The supplied proof independently compiles."
+    },
+    {
+      "key": "localized_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly requires finiteness only on compact subsets of W. The countable cover, finite restricted measures, transfer of almost-everywhere convergence, and zero-denominator case prove the exact eventual inequality. The required Besicovitch instance is available; the supplied proof independently compiles."
+    },
+    {
+      "key": "lower_density_mult",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the IMRep hypotheses and matches the restricted-measure quantifiers. Local finiteness follows from positive multiplicity and local integrability; countably many level sets and the two declared dependencies yield the claimed lower bound. The choice c ≤ ma² and weighted-measure comparison are justified. The supplied proof independently compiles."
+    },
+    {
+      "key": "mult_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the statement, including arbitrary S and possibly negative c₀. Absolute continuity transfers the declared lower-density result; integer multiplicity and cancellation of a positive finite ball-volume factor give the contradiction. No parent conclusion is assumed. The supplied proof independently compiles."
+    }
+  ],
+  "required_changes": []
+}

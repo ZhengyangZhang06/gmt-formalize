@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.planes_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1",
+  "depth": 5,
+  "title": "Limit plane of a geometrically Hilbert–Schmidt-Cauchy sequence of n-planes (Simon 5.5.2 proof, (4)–(5))",
+  "statement": "Let P, n ∈ ℕ and E := ℝ^P (EuclideanSpace ℝ (Fin P)) with standard basis e_i := EuclideanSpace.single i 1 (i < P). For a subspace V ⊆ E let p_V := V.starProjection be the orthogonal projection onto V (a continuous linear map E → E), and for continuous linear maps A, B : E → E put d(A, B) := Σ_{i<P} ‖A e_i − B e_i‖² (the squared Hilbert–Schmidt distance). Let (S_j)_{j∈ℕ} be subspaces of E with dim S_j = n (Module.finrank ℝ S_j = n) for every j, and let a, q ∈ ℝ with 0 ≤ q ≤ 1/4 such that d(p_{S_{j+1}}, p_{S_j}) ≤ a·q^j for every j ∈ ℕ. Then there is a subspace S' ⊆ E with dim S' = n (Module.finrank ℝ S' = n) and d(p_{S'}, p_{S_j}) ≤ 4·a·q^j for every j ∈ ℕ.",
+  "lean_statement": "∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (a q : ℝ), (∀ j, Module.finrank ℝ (S j) = n) → 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, ∑ i : Fin P, ‖(S (j + 1)).starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ a * q ^ j) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ j : ℕ, ∑ i : Fin P, ‖S'.starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * a * q ^ j",
+  "lean_name": "dorag_ted_planes_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f3853385c1-a1"
+}

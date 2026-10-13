@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "approxTangentPlane|tangentialDivergence|firstVariation|IsStationaryAlong|sorry|axiom",
+        "def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|not.*formal|Allard|ae_eq_const_of_weak_coordinate_derivatives_zero|weak_coordinate_derivatives_zero",
+        "weighted_area_formula_lipschitz_injOn|injective_area_formula_lipschitz|sorry|axiom",
+        "measure_compl_support|ae_tendsto_average_norm_sub",
+        "rg -n 'dor_allard_bounded_curvature_graph|dor_graph_supported_cycle_regular' GMT .lake/packages/simongmt/Poincare/SimonGMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "validate_lean_statement on both proposed types; inspected all nodes/*/decomposition-v*.json for name reservations",
+        "lean /tmp/ch07-dorer-decomp/NodeA.lean",
+        "lean /tmp/ch07-dorer-decomp/NodeB.lean",
+        "lean /tmp/ch07-dorer-decomp/AssemblyExact.lean",
+        "lean /tmp/ch07-epsilon-independent-audit/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1/decomposition-v1.json",
+        "/tmp/ch07-dorer-decomp/NodeA.lean",
+        "/tmp/ch07-dorer-decomp/NodeB.lean",
+        "/tmp/ch07-dorer-decomp/AssemblyExact.lean",
+        "/tmp/ch07-epsilon-independent-audit/LibraryAxioms.lean"
+      ],
+      "conclusion": "Verified project b4d606d, mathlib 25730c7c and simongmt 2b366308, including compatibility of inspected sources with compiler sources. Found applicable area, density, tangent uniqueness, support and distributional constancy lemmas. Allard is explicitly unformalized; the Chapter 5 contract contains a sorry-backed headline theorem and cannot supply an accepted proof. No competing reservations of either proposed name were found. Both exact one-line types independently elaborate in comparator challenge modules; their sorry warnings belong only to challenge stubs. The conditional assembly contains the exact frozen parent, C1, C3 and child types and checks using only propext, Classical.choice and Quot.sound. The inspected reusable lemmas have the same permitted axiom dependencies. The two-part split is appropriate, dependencies are acyclic, and the supplied radius reduction and cylinder construction establish this selected parent. Public cross-check: [Simon, Chapters 5 and 6](https://web.stanford.edu/class/math285/ts-gmt.pdf), Theorems 5.2 and 2.34."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "allard_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including uniform constants, local first variation, global curvature bound, closed-ball mass hypothesis and open-ball graph conclusion. The supplied proof derives monotonicity, density bounds, affine and Lipschitz approximation, harmonic approximation, excess decay and C¹ regularity without assuming Allard or parent regularity. The corrected radii and smallness choices support the stated conclusion. Its empty dependency list is justified by the independent monotonicity derivation. The bare name is unreserved, and the type elaborates without the child declaration or any problematic inline instance construction."
+    },
+    {
+      "key": "graph_cycle_regular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact Lean proposition. The proof supplies the contract's embedded manifold, continuous orientation and finite local measure; identifies approximate tangent planes; derives an integer-valued density through the area formula; and uses boundary tests and distributional constancy to obtain a constant integer coefficient. Support membership excludes coefficient zero. Restriction to the smaller graph gives every regularSet witness. This is a complete non-circular argument independent of the other child. The bare name is unreserved, and its frozen type independently elaborates."
+    }
+  ],
+  "required_changes": []
+}

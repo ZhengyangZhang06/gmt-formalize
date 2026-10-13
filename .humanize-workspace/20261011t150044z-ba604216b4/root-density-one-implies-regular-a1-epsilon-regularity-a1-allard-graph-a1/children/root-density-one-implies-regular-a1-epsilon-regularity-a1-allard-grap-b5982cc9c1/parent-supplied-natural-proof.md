@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Sibling map (dependency key — frozen Lean declaration — labels used below): tangent_projection_measurable — Submission.dorag_approxTangent_starProjection_aesm (x ↦ p_x is AE-strongly measurable for μ = R.measure).
+Source: parent proof Part 3.1 (Simon Ch. 5, Lemma 2.1 and its proof, with |H| ≤ κ). Conventions: E := ℝ^{n+k}; B_t(x) closed ball; M := R.carrier, μ := R.measure; p_x := projection onto T_xM := approxTangentPlane n M x; for a submodule S, p_S := S.starProjection and q := I − p_S, so |q(v)| = dist(v, S) = ‖v − p_S v‖. For linear A, |A|² := Σ_i |Ae_i|² (Hilbert–Schmidt; the Lean sum) and ‖A‖ ≤ |A| is the operator norm. We prove the statement with C := 146 (for all n, k). If n = 0, every approximate tangent plane has finrank 0, so approxTangentPlane 0 M x = ⊥ for every x, and finrank S = 0 forces S = ⊥; hence the left side is ∫⁻ ofReal(0) = 0 and the statement holds trivially. (The argument below also works verbatim for n = 0.)
+Preliminaries. (P1) κ ≥ 0. (P2) μ(B_r(ξ)) < ∞ since B_r(ξ) ⊆ W ⊆ U is compact (IMRep.locallyIntegrable_mult). (P3) For μ-a.e. x, T_xM is an n-dimensional subspace (IMRep.orients, definition of approxTangentPlane and uniqueness), so trace p_x = n; x ↦ p_x is μ-measurable (sibling tangent_projection_measurable). (P4) For C¹ compactly supported X with tsupport X ⊆ W, div_M X(x) = trace(p_x∘DX(x)) is bounded, measurable and supported in a compact subset of W, so R.firstVariation X = ∫div_M X dμ and (MC) gives ∫div_M X dμ = −∫⟨X, H⟩dμ.
+
+1. Cut-off. Let χ₀(u) := 1 − 3u² + 2u³ on [0, 1]; then χ₀(0) = 1, χ₀(1) = 0, χ₀'(0) = χ₀'(1) = 0, 0 ≤ χ₀ ≤ 1 and |χ₀'| ≤ 3/2. Define χ(σ) := 1 for σ ≤ 1/2, χ(σ) := χ₀(2σ − 1) for 1/2 ≤ σ ≤ 1, χ(σ) := 0 for σ ≥ 1; χ ∈ C¹(ℝ), 0 ≤ χ ≤ 1, |χ'| ≤ 3. Put ζ(x) := χ(|x − ξ|/r). Then ζ is C¹ (it is ≡ 1 near ξ), 0 ≤ ζ ≤ 1, ζ ≡ 1 on B_{r/2}(ξ), ζ = 0 outside B̆_r(ξ), tsupport ζ ⊆ B_r(ξ), and |∇ζ| ≤ 3/r.
+2. Test field. X(x) := ζ(x)² q(x − ξ) is C¹ with compact support, tsupport X ⊆ B_r(ξ) ⊆ W. For every x, DX(x)h = ζ(x)² q h + 2ζ(x)⟨∇ζ(x), h⟩ q(x − ξ), so at μ-a.e. x (P3), div_M X(x) = trace(p_x DX(x)) = ζ² trace(p_x q) + 2ζ⟨p_x q(x − ξ), ∇ζ⟩.
+3. Algebra. trace(p_x q) = trace(p_x) − trace(p_x p_S) = n − trace(p_x p_S) = ½|p_x − p_S|², because |p_x − p_S|² = trace((p_x − p_S)²) = trace p_x + trace p_S − 2 trace(p_x p_S) = 2n − 2 trace(p_x p_S) (p_x, p_S symmetric idempotents of rank n; finrank S = n). Also p_x q(x − ξ) = (p_x − p_S) q(x − ξ) since p_S q = 0, so |⟨p_x q(x − ξ), ∇ζ⟩| ≤ |∇ζ| ‖p_x − p_S‖ |q(x − ξ)| ≤ |∇ζ| |p_x − p_S| |q(x − ξ)|.
+4. First variation. By (P4) and 2–3, ½∫ζ²|p_x − p_S|²dμ = −∫2ζ⟨p_x q(x − ξ), ∇ζ⟩dμ − ∫ζ²⟨q(x − ξ), H⟩dμ. Using 2ab ≤ ¼a² + 4b² with a = ζ|p_x − p_S|, b = |∇ζ||q(x − ξ)|, and |H| ≤ κ: ½∫ζ²|p_x − p_S|² ≤ ¼∫ζ²|p_x − p_S|² + 4∫|∇ζ|²|q(x − ξ)|² + ∫ζ²|q(x − ξ)|κ dμ. All integrals are finite: the integrands are bounded (|p_x − p_S|² ≤ 2|p_x|² + 2|p_S|² = 4n μ-a.e.) and vanish outside B_r(ξ), which has finite measure (P2). Hence ¼∫ζ²|p_x − p_S|² ≤ 4∫|∇ζ|²|q(x − ξ)|² + ∫ζ²|q(x − ξ)|κ.
+5. Estimate. Since |∇ζ| ≤ 3/r, ζ ≤ 1, everything vanishes outside B_r(ξ), and |q(x − ξ)|κ ≤ ½r^{−2}|q(x − ξ)|² + ½r²κ²: ¼∫ζ²|p_x − p_S|² ≤ (36 + ½)r^{−2}∫_{B_r(ξ)}|q(x − ξ)|²dμ + ½κ²r²μ(B_r(ξ)). As ζ ≡ 1 on B_{r/2}(ξ): ∫_{B_{r/2}(ξ)}|p_x − p_S|²dμ ≤ 146 r^{−2}∫_{B_r(ξ)}|q(x − ξ)|²dμ + 2κ²r²μ(B_r(ξ)) ≤ 146(r^{−2}∫_{B_r(ξ)} dist(x − ξ, S)²dμ + κ²r²μ(B_r(ξ))).
+6. Lean form. With |p_x − p_S|² = Σ_i ‖p_x e_i − p_S e_i‖² and dist(x − ξ, S)² = ‖(x − ξ) − p_S(x − ξ)‖², 5 is the asserted inequality ∫⁻_{B_{r/2}(ξ)} ofReal(|p_x − p_S|²)dμ ≤ ofReal(C)·(ofReal(1/r²)∫⁻_{B_r(ξ)} ofReal(‖(x − ξ) − p_S(x − ξ)‖²)dμ + ofReal(κ²r²)μ(B_r(ξ))) with C = 146 (all terms finite; for the lower Lebesgue integrals use that the integrands are μ-measurable by (P3)). ∎
+
+## Key steps
+
+1. Choose a C¹ cut-off ζ with ζ ≡ 1 on B_{r/2}(ξ), support in B_r(ξ), and |∇ζ| ≤ 3/r.
+2. Test with X = ζ²p_S^⊥(x − ξ): div_M X = ζ²trace(p_xp_S^⊥) + 2ζ⟨p_xp_S^⊥(x − ξ), ∇ζ⟩.
+3. Use trace(p_xp_S^⊥) = ½|p_x − p_S|² and p_xp_S^⊥ = (p_x − p_S)p_S^⊥.
+4. Apply the first variation identity, absorb the ¼-term by Young's inequality, and use |H| ≤ κ to conclude with C = 146.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)`
+- `rg -n -i 'allard|tilt.?excess|harmonic.?approx|lipschitz.?approx' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `rg -n 'sorry' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean; rg -n '^theorem|^lemma' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean`
+- `rg -l -i "rellich|kondrachov|weyl's lemma|weakly harmonic" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory  (no match, exit 1)`
+- `rg -n 'theorem ae_differentiableAt|theorem norm_fderiv_le_of_lipschitz' Analysis/Calculus/Rademacher.lean Analysis/Calculus/FDeriv/Basic.lean; grep -n ae_differentiableAt Analysis/Calculus/Rademacher.lean  (in the snapshot Mathlib)`
+- `rg -n 'theorem exists_disjoint_subfamily_covering_enlargement_closedBall' MeasureTheory/Covering/Vitali.lean; rg -n 'theorem ae_tendsto_average_norm_sub' MeasureTheory/Covering/Differentiation.lean; rg -n 'theorem measurable_fderiv' Analysis/Calculus/FDeriv/Measurable.lean  (in the snapshot Mathlib)`
+- `sed -n 10,30p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean (simongmt rev 2b3663083f3fe399b6296fb8eaee52169170e197 from the snapshot's lake-manifest.json)`
+- `python3: lean_name collision scan of the 12 dorag_* names over dag.json (200 nodes), nodes/*/*.json and other workspaces' dag.json; exact-statement comparison against .humanize/math-wiki/*.md (43 pages)`
+- `python3 -I lean_contract.validate_lean_statement on all 12 lean_statements; lean (lean-4.35.0-rc3, LEAN_PATH of the built workspace) on 13 comparator-format modules Challenge_<key>.lean`
+- `lean Check.lean (#check of the Mathlib API used by the assembly); lean Assembly.lean with #print axioms GMT.Ch07.AllardAsmV3.assembly`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/math-wiki`
+- `/tmp/allard-v3-work/v3/Challenge_PARENT.lean`
+- `/tmp/allard-v3-work/asm3/Assembly.lean`
+- `/tmp/allard-v3-work/asm3/Assembly.log`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace contract and to GMT/Ch07/Submission.lean, which is the compiler context of every child type.
+
+Nothing in the snapshot proves Allard regularity or any child:
+- The only Allard-related declarations are in GMT/Ch05/Submission.lean: Prop definitions (TiltExcessHeightEstimate, AffineApproximationLemma, LipschitzApproximationLemma, HarmonicApproximationLemma, TiltExcessDecayTheorem, AllardRegularityTheorem, …) for a different varifold type. They are used only in main_theorem := by sorry (line 461), so nothing is proved there.
+- SimonGMT Chapter05/Basic.lean says compactness, Lipschitz approximation, excess decay and Allard regularity are not formalized.
+- The Rellich/Kondrachov/Weyl/weakly-harmonic search found no match in the snapshot's Mathlib Analysis and MeasureTheory.
+The split into 12 children therefore stands, and no identical comparator-approved declaration exists to reuse.
+
+The Mathlib tools the children cite exist at the pinned revision:
+- LipschitzWith.ae_differentiableAt (Rademacher.lean:385);
+- norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947);
+- measurable_fderiv (FDeriv/Measurable.lean:378);
+- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (Vitali.lean:158);
+- VitaliFamily.ae_tendsto_average_norm_sub (Differentiation.lean:837).
+
+Lean checks:
+- All 12 child types and the frozen parent type elaborate in comparator scope; the only diagnostic is the expected sorry warning.
+- The assembly proves the exact parent type from the five top-level child types, with axioms propext, Classical.choice and Quot.sound only.
+- No dorag_* name collides with any DAG reservation.
