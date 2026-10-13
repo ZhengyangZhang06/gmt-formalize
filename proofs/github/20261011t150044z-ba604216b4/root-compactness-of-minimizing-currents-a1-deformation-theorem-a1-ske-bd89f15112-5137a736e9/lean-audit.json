@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5f69ea4da47bc457f9e485e4a3cd6d4d70e0f3b1cc74bd5cee29cb786d883987",
+  "git_delta": {
+    "base_commit": "28a0ebaa707a1aa930f79a9b9d3557e33feb88f5",
+    "candidate_commit": "27a23ba42a89518da7049a112b11de8671f10ed5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsd_massOn_le_measure_inter",
+    "diff_sha256": "c93340dfb5b5e4af7d9b341aa779b7d7a85f11559f7ab8d49a70eb6a3a581e3a",
+    "source_sha256": "7c3d490726e58f6eeca8bda194f9bd8882bb61928db3fb5bc5b2b668e7f06691",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsd_massOn_le_measure_inter",
+      "statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P d) (E V : Set (Euclid P)), (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U d, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → X.massOn V ≤ μ (E ∩ V)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

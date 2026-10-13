@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon (6.2.5)** for a current given by integration against a multivector field of norm at
+most one: if `X(ω) = ∫_E ⟨ω(x), ξ(x)⟩ dμ(x)` for every `ω ∈ 𝒟^d(U)` and
+`|⟨α, ξ(x)⟩| ≤ |α|` for `μ`-a.e. `x`, then `M_V(X) ≤ μ(E ∩ V)` for every set `V` (the estimates
+`M(W_j) ≤ μ_T(E_j)`, `M(D_j) ≤ μ_∂(E_j)` of the deformation step).  For `ω` admissible for
+`M_V(X)`, `|⟨ω(x), ξ(x)⟩|` is at most `1` on `spt ω ⊆ V` and vanishes off `spt ω`, so
+`X(ω) ≤ ∫_E |⟨ω, ξ⟩| dμ ≤ μ(spt ω ∩ E) ≤ μ(E ∩ V)`. -/
+theorem Submission.cmcsd_massOn_le_measure_inter : ∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P d) (E V : Set (Euclid P)), (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U d, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → X.massOn V ≤ μ (E ∩ V) := by
+  intro P d U X μ ξ E V hξ hX
+  -- Step 1: it suffices to bound `ofReal (X ω)` for each admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  have hS : MeasurableSet (tsupport (ω : DifferentialForm (Euclid P) d)) :=
+    (isClosed_tsupport _).measurableSet
+  -- Step 2: `|⟨ω(x), ξ(x)⟩| ≤ 1` on `spt ω` and `= 0` off `spt ω`, for `μ`-a.e. `x`
+  have hpt : ∀ᵐ x ∂μ.restrict E, ‖ξ x ((ω : DifferentialForm (Euclid P) d) x)‖ₑ ≤
+      (tsupport (ω : DifferentialForm (Euclid P) d)).indicator 1 x := by
+    refine ae_restrict_of_ae (hξ.mono fun x hx => ?_)
+    by_cases hx' : x ∈ tsupport (ω : DifferentialForm (Euclid P) d)
+    · rw [indicator_of_mem hx', Pi.one_apply, Real.enorm_eq_ofReal_abs]
+      exact ENNReal.ofReal_le_one.2 ((hx _).trans (hω.2 x))
+    · rw [image_eq_zero_of_notMem_tsupport hx', map_zero, enorm_zero]
+      exact zero_le
+  -- Step 3: `ofReal X(ω) ≤ ‖∫_E ⟨ω, ξ⟩ dμ‖ₑ ≤ ∫⁻_E ‖⟨ω, ξ⟩‖ₑ dμ ≤ μ(spt ω ∩ E) ≤ μ(E ∩ V)`
+  calc ENNReal.ofReal (X ω)
+      = ENNReal.ofReal (∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) := by
+        rw [hX]
+    _ ≤ ‖∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x in E, ‖ξ x ((ω : DifferentialForm (Euclid P) d) x)‖ₑ ∂μ :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x in E, (tsupport (ω : DifferentialForm (Euclid P) d)).indicator 1 x ∂μ :=
+        lintegral_mono_ae hpt
+    _ = μ (tsupport (ω : DifferentialForm (Euclid P) d) ∩ E) := by
+        rw [lintegral_indicator_one hS, Measure.restrict_apply hS]
+    _ ≤ μ (E ∩ V) := measure_mono fun x hx => ⟨hx.2, hω.1 hx.1⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
