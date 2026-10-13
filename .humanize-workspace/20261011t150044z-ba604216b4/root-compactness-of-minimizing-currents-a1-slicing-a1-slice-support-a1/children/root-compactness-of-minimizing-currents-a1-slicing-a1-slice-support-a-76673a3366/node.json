@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.level_split-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+  "depth": 4,
+  "title": "Level-set splitting of a test form whose support misses {f = t}",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let f : ℝ^P → ℝ be continuous, let t ∈ ℝ, and let η ∈ 𝒟^n(U) (a C^∞ n-form on ℝ^P with compact support whose topological support lies in U) be such that tsupport η is disjoint from {x : f(x) = t}. Then there are η₁, η₂ ∈ 𝒟^n(U) with η = η₁ + η₂, tsupport η₁ ⊆ {x : f(x) < t} and tsupport η₂ ⊆ {x : t < f(x)}.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (f : Euclid P → ℝ) (t : ℝ) (η : TestFormOn U n), Continuous f → Disjoint (tsupport (η : DifferentialForm (Euclid P) n)) {x | f x = t} → ∃ η₁ η₂ : TestFormOn U n, η = η₁ + η₂ ∧ tsupport (η₁ : DifferentialForm (Euclid P) n) ⊆ {x | f x < t} ∧ tsupport (η₂ : DifferentialForm (Euclid P) n) ⊆ {x | t < f x}",
+  "lean_name": "cmcs_ss_testForm_level_split",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366-a1"
+}
