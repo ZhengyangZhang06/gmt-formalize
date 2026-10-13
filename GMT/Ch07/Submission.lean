@@ -451,6 +451,332 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- If `F` has derivative `L` at `b` and `f` is continuous with compact support, then
+`∫_{B̄_R(0)} |f(r⁻¹(F(b + rc) − F(b))) − f(Lc)| dc → 0` as `r ↓ 0` (the error term `T₃` in the
+limit of rescaled integrals over the image of a `C¹` piece; cf. the tangent-plane limit in Simon
+Ch. 3, proof of 1.6 "⇒").  With `V = |B̄_R(0)|` and `S = |R| + 1`, take `η` from the uniform
+continuity of `f` for `ε / (V + 1)`, then `δ₀` with `‖F(b + k) − F(b) − Lk‖ ≤ (η / 2S)‖k‖` for
+`‖k‖ < δ₀`; for `0 < r < δ₀ / S` the integrand is `≤ ε / (V + 1)` on the ball. -/
+theorem Submission.pit_ril_diffQuot_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (b : Euclid n) (f : Euclid P → ℝ) (R : ℝ), HasFDerivAt F L b → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
+  intro P n F L b f R hF hfc hfs
+  -- `D = B̄_R(0)` has finite measure `V`, and `‖c‖ < S = |R| + 1` on `D`
+  have hDfin : (volume : Measure (Euclid n)) (closedBall 0 R) < ∞ := measure_closedBall_lt_top
+  set V : ℝ := (volume : Measure (Euclid n)).real (closedBall 0 R)
+  have hV : 0 ≤ V := measureReal_nonneg
+  set S : ℝ := |R| + 1
+  have hS : 0 < S := by positivity
+  have hcS : ∀ c ∈ closedBall (0 : Euclid n) R, ‖c‖ < S := fun c hc =>
+    ((mem_closedBall_zero_iff.1 hc).trans (le_abs_self R)).trans_lt (lt_add_one _)
+  -- uniform continuity of `f` and the little-o form of `HasFDerivAt`
+  have huc := Metric.uniformContinuous_iff.1 (hfs.uniformContinuous_of_continuous hfc)
+  have hlo := hasFDerivAt_iff_isLittleO_nhds_zero.1 hF
+  rw [Metric.tendsto_nhdsWithin_nhds]
+  intro ε hε
+  have hV1 : 0 < V + 1 := by linarith
+  set ε₁ : ℝ := ε / (V + 1) with hε₁_def
+  have hε₁ : 0 < ε₁ := div_pos hε hV1
+  obtain ⟨η, hη, hηf⟩ := huc ε₁ hε₁
+  set θ : ℝ := η / (2 * S) with hθ_def
+  have hθ : 0 < θ := div_pos hη (by linarith)
+  obtain ⟨δ₀, hδ₀, hδ₀F⟩ := Metric.eventually_nhds_iff.1 (hlo.bound hθ)
+  refine ⟨δ₀ / S, div_pos hδ₀ hS, fun r hr hrδ => ?_⟩
+  rw [mem_Ioi] at hr
+  rw [Real.dist_eq, sub_zero, abs_of_pos hr] at hrδ
+  have hrS : r * S < δ₀ := (lt_div_iff₀ hS).1 hrδ
+  -- pointwise bound on the integrand
+  have hpt : ∀ c ∈ closedBall (0 : Euclid n) R,
+      ‖‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖‖ ≤ ε₁ := by
+    intro c hc
+    have hc' := hcS c hc
+    have hnorm : ‖r • c‖ = r * ‖c‖ := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr]
+    have hrc : dist (r • c) 0 < δ₀ := by
+      rw [dist_zero_right, hnorm]
+      calc r * ‖c‖ ≤ r * S := mul_le_mul_of_nonneg_left hc'.le hr.le
+        _ < δ₀ := hrS
+    have hbound := hδ₀F hrc
+    have heq : r⁻¹ • (F (b + r • c) - F b) - L c
+        = r⁻¹ • (F (b + r • c) - F b - L (r • c)) := by
+      rw [map_smul, smul_sub _ (F (b + r • c) - F b), inv_smul_smul₀ hr.ne']
+    have hclose : dist (r⁻¹ • (F (b + r • c) - F b)) (L c) < η := by
+      rw [dist_eq_norm, heq, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr]
+      calc r⁻¹ * ‖F (b + r • c) - F b - L (r • c)‖
+          ≤ r⁻¹ * (θ * ‖r • c‖) := mul_le_mul_of_nonneg_left hbound (inv_nonneg.2 hr.le)
+        _ = θ * ‖c‖ := by rw [hnorm]; field_simp
+        _ ≤ θ * S := mul_le_mul_of_nonneg_left hc'.le hθ.le
+        _ = η / 2 := by rw [hθ_def]; field_simp
+        _ < η := half_lt_self hη
+    have := hηf hclose
+    rw [Real.dist_eq] at this
+    rw [norm_norm, Real.norm_eq_abs]
+    exact this.le
+  -- integral bound
+  have hint := norm_setIntegral_le_of_norm_le_const hDfin hpt
+  rw [dist_zero_right]
+  calc ‖∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖‖
+      ≤ ε₁ * V := hint
+    _ < ε := by
+      rw [hε₁_def, div_mul_eq_mul_div, div_lt_iff₀ hV1]
+      nlinarith
+/-- At a point `b` of Lebesgue density one of the Borel set `B` (`λ(B ∩ B̄_ρ(b))/λ(B̄_ρ(b)) → 1`
+as `ρ ↓ 0`, the quotient taken in `[0, ∞]`), the averages `⨍_{B̄_s(b)} 1_{ℝⁿ∖B} dλ` tend to `0`
+as `s ↓ 0`.  For `s > 0`, `0 < λ(B̄_s(b)) < ∞` and, by additivity, the average equals
+`1 − (λ(B ∩ B̄_s(b))/λ(B̄_s(b))).toReal`; `toReal` is continuous at `1`. -/
+theorem Submission.pit_ril_compl_average_tendsto : ∀ (n : ℕ) (B : Set (Euclid n)) (b : Euclid n), MeasurableSet B → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, Bᶜ.indicator (fun _ => (1 : ℝ)) a ∂volume) (𝓝[>] 0) (𝓝 0) := by
+  intro n B b hB hlim
+  -- `q(ρ).toReal → 1` (`toReal` is continuous at `1 ≠ ∞`), so `1 - q(ρ).toReal → 0`
+  have h1 : Tendsto (fun ρ : ℝ =>
+      1 - (volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)).toReal) (𝓝[>] 0) (𝓝 0) := by
+    have h := (tendsto_const_nhds : Tendsto (fun _ : ℝ => (1 : ℝ)) (𝓝[>] 0) (𝓝 1)).sub
+      ((ENNReal.tendsto_toReal ENNReal.one_ne_top).comp hlim)
+    rwa [ENNReal.toReal_one, sub_self] at h
+  refine h1.congr' ?_
+  -- for `s > 0`, `0 < λ(C_s) < ∞` and the average equals `1 - q(s).toReal`
+  filter_upwards [self_mem_nhdsWithin] with s (hs : 0 < s)
+  have hfin : volume (closedBall b s) ≠ ∞ := measure_closedBall_lt_top.ne
+  have hC : volume.real (closedBall b s) ≠ 0 :=
+    (ENNReal.toReal_pos (measure_closedBall_pos volume b hs).ne' hfin).ne'
+  -- `λ_ℝ(C_s ∩ B) + λ_ℝ(C_s \ B) = λ_ℝ(C_s)`
+  have hsplit := measureReal_inter_add_sdiff (μ := volume) (s := closedBall b s) hB hfin
+  rw [setAverage_eq, setIntegral_indicator hB.compl, setIntegral_const, smul_eq_mul, smul_eq_mul,
+    mul_one, ENNReal.toReal_div, ← measureReal_def, ← measureReal_def, inter_comm B,
+    ← Set.sdiff_eq, ← hsplit]
+  rw [← hsplit] at hC
+  field_simp
+  ring
+/-- Localised three-term estimate for the rescaled area integrals (one fixed `r > 0`).  With
+`Φ_r(c) = r⁻¹(F(b + rc) − F(b))` and `D = B̄_{R/m}(0)`, the integrands
+`X(c) = 1_B(b + rc) J(b + rc) f(Φ_r(c))` and `Y(c) = J(b) f(Lc)` vanish off `D` (by the lower
+bounds for `F` on `B` and for `L`, as `f = 0` off the open `R`-ball), and pointwise
+`|X − Y| ≤ KM·1_{Bᶜ}(b + rc) + M|J(b + rc) − J(b)| + J(b)|f(Φ_r(c)) − f(Lc)|`, by cases on
+`b + rc ∈ B`; all are bounded Borel functions, so integrate over `D`. -/
+theorem Submission.pit_ril_three_term_bound : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ) (R M r : ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → (∀ c, m * ‖c‖ ≤ ‖L c‖) → Continuous f → (∀ w, R ≤ ‖w‖ → f w = 0) → (∀ w, ‖f w‖ ≤ M) → 0 < r → ‖(∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) - J b * (∫ c, f (L c) ∂volume)‖ ≤ K * M * (∫ c in closedBall (0 : Euclid n) (R / m), Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) ∂volume) + M * (∫ c in closedBall (0 : Euclid n) (R / m), ‖J (b + r • c) - J b‖ ∂volume) + J b * (∫ c in closedBall (0 : Euclid n) (R / m), ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) := by
+  intro P n F L B J K m b f R M r hF hB hJ hJK hm hFB hL hf hfR hfM hr
+  -- constants: `0 ≤ M`, `0 ≤ J b ≤ K`, `0 ≤ K`, and `λ(D) < ∞` for `D = B̄_{R/m}(0)`
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hfM 0)
+  have hJb0 : 0 ≤ J b := (hJK b).1
+  have hJbK : J b ≤ K := (hJK b).2
+  have hK0 : 0 ≤ K := hJb0.trans hJbK
+  have hDfin : volume (closedBall (0 : Euclid n) (R / m)) ≠ ∞ := measure_closedBall_lt_top.ne
+  -- measurability of the integrands
+  have hshift : Continuous fun c : Euclid n => b + r • c :=
+    continuous_const.add (continuous_id.const_smul r)
+  have hΦ : Continuous fun c : Euclid n => f (r⁻¹ • (F (b + r • c) - F b)) :=
+    hf.comp (((hF.comp hshift).sub continuous_const).const_smul r⁻¹)
+  have hfL : Continuous fun c : Euclid n => f (L c) := hf.comp L.continuous
+  have hIJ : Measurable fun c : Euclid n => B.indicator J (b + r • c) :=
+    (hJ.indicator hB).comp hshift.measurable
+  have hg₁ : Measurable fun c : Euclid n => Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) :=
+    (measurable_const.indicator hB.compl).comp hshift.measurable
+  have hg₂ : Measurable fun c : Euclid n => ‖J (b + r • c) - J b‖ :=
+    ((hJ.comp hshift.measurable).sub measurable_const).norm
+  have hg₃ : Continuous fun c : Euclid n => ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ :=
+    (hΦ.sub hfL).norm
+  -- bounded measurable functions are integrable on `D`
+  have hIJb : ∀ c : Euclid n, ‖B.indicator J (b + r • c)‖ ≤ K := by
+    intro c
+    by_cases h : b + r • c ∈ B
+    · rw [Set.indicator_of_mem h, Real.norm_of_nonneg (hJK _).1]
+      exact (hJK _).2
+    · rw [Set.indicator_of_notMem h, norm_zero]
+      exact hK0
+  have hXint : IntegrableOn
+      (fun c : Euclid n => B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)))
+      (closedBall (0 : Euclid n) (R / m)) volume := by
+    refine Measure.integrableOn_of_bounded (M := K * M) hDfin
+      (hIJ.mul hΦ.measurable).aestronglyMeasurable (Eventually.of_forall fun c => ?_)
+    rw [norm_mul]
+    exact mul_le_mul (hIJb c) (hfM _) (norm_nonneg _) hK0
+  have hYint : IntegrableOn (fun c : Euclid n => J b * f (L c))
+      (closedBall (0 : Euclid n) (R / m)) volume := by
+    refine Measure.integrableOn_of_bounded (M := K * M) hDfin
+      (measurable_const.mul hfL.measurable).aestronglyMeasurable (Eventually.of_forall fun c => ?_)
+    rw [norm_mul, Real.norm_of_nonneg hJb0]
+    exact mul_le_mul hJbK (hfM _) (norm_nonneg _) hK0
+  have hg₁int : IntegrableOn (fun c : Euclid n => Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c))
+      (closedBall (0 : Euclid n) (R / m)) volume := by
+    refine Measure.integrableOn_of_bounded (M := 1) hDfin hg₁.aestronglyMeasurable
+      (Eventually.of_forall fun c => ?_)
+    by_cases h : b + r • c ∈ Bᶜ
+    · rw [Set.indicator_of_mem h, norm_one]
+    · rw [Set.indicator_of_notMem h, norm_zero]
+      exact zero_le_one
+  have hg₂int : IntegrableOn (fun c : Euclid n => ‖J (b + r • c) - J b‖)
+      (closedBall (0 : Euclid n) (R / m)) volume := by
+    refine Measure.integrableOn_of_bounded (M := K) hDfin hg₂.aestronglyMeasurable
+      (Eventually.of_forall fun c => ?_)
+    rw [norm_norm, Real.norm_eq_abs, abs_sub_le_iff]
+    constructor <;> linarith [hJK (b + r • c), hJK b]
+  have hg₃int : IntegrableOn
+      (fun c : Euclid n => ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖)
+      (closedBall (0 : Euclid n) (R / m)) volume := by
+    refine Measure.integrableOn_of_bounded (M := M + M) hDfin hg₃.aestronglyMeasurable
+      (Eventually.of_forall fun c => ?_)
+    rw [norm_norm]
+    exact (norm_sub_le _ _).trans (add_le_add (hfM _) (hfM _))
+  -- localisation: both integrands vanish off `D`
+  have hloc : ∀ c : Euclid n, c ∉ closedBall (0 : Euclid n) (R / m) → R < m * ‖c‖ := by
+    intro c hc
+    rw [mem_closedBall, dist_zero_right, not_le, div_lt_iff₀ hm] at hc
+    rwa [mul_comm] at hc
+  have hXloc : ∀ c : Euclid n, c ∉ closedBall (0 : Euclid n) (R / m) →
+      B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) = 0 := by
+    intro c hc
+    by_cases h : b + r • c ∈ B
+    · have h1 := hFB _ h
+      rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr.le] at h1
+      have h2 : R ≤ ‖r⁻¹ • (F (b + r • c) - F b)‖ := by
+        rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le)]
+        calc R ≤ m * ‖c‖ := (hloc c hc).le
+          _ = r⁻¹ * (m * (r * ‖c‖)) := by rw [mul_left_comm m r, inv_mul_cancel_left₀ hr.ne']
+          _ ≤ r⁻¹ * ‖F (b + r • c) - F b‖ := mul_le_mul_of_nonneg_left h1 (inv_nonneg.2 hr.le)
+      rw [hfR _ h2, mul_zero]
+    · rw [Set.indicator_of_notMem h, zero_mul]
+  have hYloc : ∀ c : Euclid n, c ∉ closedBall (0 : Euclid n) (R / m) → J b * f (L c) = 0 := by
+    intro c hc
+    rw [hfR _ ((hloc c hc).le.trans (hL c)), mul_zero]
+  -- pointwise three-term estimate, by cases on `b + r • c ∈ B`
+  have hpt : ∀ c : Euclid n,
+      ‖B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) - J b * f (L c)‖ ≤
+        K * M * Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) + M * ‖J (b + r • c) - J b‖ +
+          J b * ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ := by
+    intro c
+    have hu := hfM (r⁻¹ • (F (b + r • c) - F b))
+    have hv := hfM (L c)
+    have hA : 0 ≤ M * ‖J (b + r • c) - J b‖ := mul_nonneg hM0 (norm_nonneg _)
+    have hB' : 0 ≤ J b * ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ :=
+      mul_nonneg hJb0 (norm_nonneg _)
+    by_cases h : b + r • c ∈ B
+    · rw [Set.indicator_of_mem h, Set.indicator_of_notMem (Set.notMem_compl_iff.2 h), mul_zero,
+        zero_add]
+      have hJu := mul_le_mul_of_nonneg_left hu (norm_nonneg (J (b + r • c) - J b))
+      calc ‖J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) - J b * f (L c)‖
+          = ‖(J (b + r • c) - J b) * f (r⁻¹ • (F (b + r • c) - F b)) +
+              J b * (f (r⁻¹ • (F (b + r • c) - F b)) - f (L c))‖ := by
+            congr 1
+            ring
+        _ ≤ ‖(J (b + r • c) - J b) * f (r⁻¹ • (F (b + r • c) - F b))‖ +
+              ‖J b * (f (r⁻¹ • (F (b + r • c) - F b)) - f (L c))‖ := norm_add_le _ _
+        _ = ‖J (b + r • c) - J b‖ * ‖f (r⁻¹ • (F (b + r • c) - F b))‖ +
+              J b * ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ := by
+            rw [norm_mul, norm_mul, Real.norm_of_nonneg hJb0]
+        _ ≤ M * ‖J (b + r • c) - J b‖ + J b * ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ := by
+            linarith [mul_comm M ‖J (b + r • c) - J b‖]
+    · rw [Set.indicator_of_notMem h, Set.indicator_of_mem (Set.mem_compl h), zero_mul, zero_sub,
+        norm_neg, norm_mul, Real.norm_of_nonneg hJb0, mul_one]
+      have hJv : J b * ‖f (L c)‖ ≤ K * M := mul_le_mul hJbK hv (norm_nonneg _) hK0
+      linarith
+  -- integrate the pointwise estimate over `D`
+  have h1 : (∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) =
+      ∫ c in closedBall (0 : Euclid n) (R / m),
+        B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume :=
+    (setIntegral_eq_integral_of_forall_compl_eq_zero hXloc).symm
+  have h2 : J b * (∫ c, f (L c) ∂volume) =
+      ∫ c in closedBall (0 : Euclid n) (R / m), J b * f (L c) ∂volume := by
+    rw [← integral_const_mul]
+    exact (setIntegral_eq_integral_of_forall_compl_eq_zero hYloc).symm
+  have hG₁₂ : IntegrableOn (fun c : Euclid n => K * M * Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) +
+      M * ‖J (b + r • c) - J b‖) (closedBall (0 : Euclid n) (R / m)) volume :=
+    (hg₁int.const_mul _).add (hg₂int.const_mul _)
+  have hG : IntegrableOn (fun c : Euclid n => K * M * Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) +
+      M * ‖J (b + r • c) - J b‖ + J b * ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖)
+      (closedBall (0 : Euclid n) (R / m)) volume :=
+    hG₁₂.add (hg₃int.const_mul _)
+  rw [h1, h2, ← integral_sub hXint hYint]
+  refine (norm_integral_le_of_norm_le hG (Eventually.of_forall hpt)).trans_eq ?_
+  rw [integral_add hG₁₂ (hg₃int.const_mul _), integral_add (hg₁int.const_mul _) (hg₂int.const_mul _),
+    integral_const_mul, integral_const_mul, integral_const_mul]
+/-- **Rescaled integrals at a point of vanishing ball averages**: for `R > 0`, if
+`⨍_{B̄_s(b)} h → 0` as `s → 0⁺`, then `∫_{B̄_R(0)} h(b + rc) dc → 0` as `r → 0⁺`.
+For `r > 0`, dilation by `r` and translation by `b` give
+`∫_{B̄_R(0)} h(b + rc) dc = r⁻ⁿ ∫_{B̄_{rR}(b)} h = ω Rⁿ ⨍_{B̄_{rR}(b)} h`, `ω = λ(B̄₁(0))`. -/
+theorem Submission.pit_integral_closedBall_rescale_tendsto : ∀ (n : ℕ) (h : Euclid n → ℝ) (b : Euclid n) (R : ℝ), 0 < R → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, h a ∂volume) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, h (b + r • c) ∂volume) (𝓝[>] 0) (𝓝 0) := by
+  intro n h b R hR hlim
+  -- `ω = λ(B̄₁(0)) ∈ (0, ∞)` and `λ(B̄_s(z)) = sⁿ ω` for `s ≥ 0`
+  set ω : ℝ := volume.real (closedBall (0 : Euclid n) 1) with hω_def
+  have hω : 0 < ω := by
+    rw [hω_def, measureReal_def]
+    exact ENNReal.toReal_pos (measure_closedBall_pos volume 0 one_pos).ne'
+      measure_closedBall_lt_top.ne
+  have hvol : ∀ (z : Euclid n) {s : ℝ}, 0 ≤ s → volume.real (closedBall z s) = s ^ n * ω := by
+    intro z s hs
+    rw [Measure.addHaar_real_closedBall' volume z hs, finrank_euclideanSpace_fin]
+  -- for `r > 0`: `∫_{B̄_R(0)} h(b + rc) dc = Rⁿ ω ⨍_{B̄_{rR}(b)} h`
+  have key : ∀ r : ℝ, 0 < r → ∫ c in closedBall (0 : Euclid n) R, h (b + r • c) ∂volume =
+      R ^ n * ω * ⨍ a in closedBall b (r * R), h a ∂volume := by
+    intro r hr
+    set H : Euclid n → ℝ := (closedBall b (r * R)).indicator h with hH
+    have hmem : ∀ c : Euclid n, b + r • c ∈ closedBall b (r * R) ↔ c ∈ closedBall (0 : Euclid n) R := by
+      intro c
+      rw [mem_closedBall, mem_closedBall, dist_self_add_left, dist_zero_right, norm_smul,
+        Real.norm_eq_abs, abs_of_pos hr, mul_le_mul_iff_of_pos_left hr]
+    -- `1_{B̄_R(0)}(c) h(b + rc) = H(b + rc)`
+    have h1 : ∫ c in closedBall (0 : Euclid n) R, h (b + r • c) ∂volume =
+        ∫ c, H (b + r • c) ∂volume := by
+      rw [← integral_indicator measurableSet_closedBall]
+      congr 1
+      ext c
+      by_cases hc : c ∈ closedBall (0 : Euclid n) R
+      · rw [indicator_of_mem hc, hH, indicator_of_mem ((hmem c).2 hc)]
+      · rw [indicator_of_notMem hc, hH, indicator_of_notMem (mt (hmem c).1 hc)]
+    -- dilation by `r` and translation by `b`
+    have h2 : ∫ c, H (b + r • c) ∂volume = (r ^ n)⁻¹ * ∫ a in closedBall b (r * R), h a ∂volume := by
+      rw [Measure.integral_comp_smul volume (fun x => H (b + x)) r, integral_add_left_eq_self H b,
+        hH, integral_indicator measurableSet_closedBall, finrank_euclideanSpace_fin, smul_eq_mul,
+        abs_of_pos (inv_pos.2 (pow_pos hr n))]
+    have h3 : ⨍ a in closedBall b (r * R), h a ∂volume =
+        ((r * R) ^ n * ω)⁻¹ * ∫ a in closedBall b (r * R), h a ∂volume := by
+      rw [setAverage_eq, hvol b (mul_pos hr hR).le, smul_eq_mul]
+    rw [h1, h2, h3, mul_pow]
+    field_simp
+  -- `r ↦ rR` maps `𝓝[>] 0` into `𝓝[>] 0`
+  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨?_, ?_⟩
+    · have hc : Tendsto (fun r : ℝ => r * R) (𝓝 0) (𝓝 (0 * R)) :=
+        (continuous_id.mul continuous_const).tendsto 0
+      rw [zero_mul] at hc
+      exact hc.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hR
+  have hlim' := (hlim.comp hmap).const_mul (R ^ n * ω)
+  rw [mul_zero] at hlim'
+  refine hlim'.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact (key r hr).symm
+
+/-- **Rescaled integrals at a density point of `B` and a Lebesgue point of `J`**: let
+`m|a − b| ≤ |F(a) − F(b)|` on `B`, `m|c| ≤ |Lc|` for `L = DF(b)`, `0 ≤ J ≤ K`, let `B` have
+density `1` at `b` and `⨍_{B̄_ρ(b)} |J − J(b)| → 0`.  Then for `f ∈ C_c(ℝᴾ)`,
+`∫ 1_B(b + rc) J(b + rc) f(r⁻¹(F(b + rc) − F(b))) dc → J(b) ∫ f(Lc) dc` as `r → 0⁺`.
+With `f = 0` off `B_R(0)` and `|f| ≤ M`, the error is at most `K M T₁ + M T₂ + J(b) T₃`, where
+`T₁, T₂, T₃` integrate `1_{Bᶜ}(b + rc)`, `|J(b + rc) − J(b)|` and
+`|f(r⁻¹(F(b + rc) − F(b))) − f(Lc)|` over `B̄_{R/m}(0)`; each tends to `0`. -/
+theorem Submission.pit_rescaled_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → (∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖) → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) (𝓝[>] 0) (𝓝 (J b * ∫ c, f (fderiv ℝ F b c) ∂volume)) := by
+  intro P n F B J K m b f hF hB hJ hJK hm hFB hdiff hL hdens hLeb hf hfc
+  -- `f = 0` off `B_R(0)` and `|f| ≤ M`; the integrals live on `B̄_{R/m}(0)`
+  obtain ⟨R, hR, hRf⟩ := hfc.exists_pos_le_norm
+  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfc
+  have hRm : 0 < R / m := div_pos hR hm
+  -- `T₁ → 0`: `B` has density `1` at `b`
+  have hT₁ := Submission.pit_integral_closedBall_rescale_tendsto n
+    (Bᶜ.indicator fun _ => (1 : ℝ)) b (R / m) hRm
+    (Submission.pit_ril_compl_average_tendsto n B b hB hdens)
+  -- `T₂ → 0`: `b` is a Lebesgue point of `J`
+  have hT₂ := Submission.pit_integral_closedBall_rescale_tendsto n (fun a => ‖J a - J b‖) b
+    (R / m) hRm hLeb
+  -- `T₃ → 0`: `r⁻¹(F(b + rc) − F(b)) → Lc` uniformly on `B̄_{R/m}(0)`
+  have hT₃ := Submission.pit_ril_diffQuot_integral_tendsto P n F (fderiv ℝ F b) b f (R / m)
+    hdiff.hasFDerivAt hf hfc
+  have hlim := ((hT₁.const_mul (K * M)).add (hT₂.const_mul M)).add (hT₃.const_mul (J b))
+  simp only [mul_zero, add_zero] at hlim
+  -- squeeze `|I(r) − J(b) ∫ f(Lc) dc| ≤ K M T₁(r) + M T₂(r) + J(b) T₃(r)` for `r > 0`
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun r => norm_nonneg _) ?_ hlim
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact Submission.pit_ril_three_term_bound P n F (fderiv ℝ F b) B J K m b f R M r hF hB hJ hJK
+    hm hFB hL hf hRf hM hr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
