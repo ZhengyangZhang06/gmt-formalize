@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5e16fc63483bf1ff2848755fed5a431211d83974f3029054316b1461098f4826",
+  "git_delta": {
+    "base_commit": "53ca5870465d924687a9d95304245172ce9280ca",
+    "candidate_commit": "684d9f3b1ea8410dfef74854b43540be7ca2140b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbs_tfa_fixed_support_dense",
+    "diff_sha256": "f50fccaa7883500d6512134af6cc3c3163a53aeaafc3125163cc363c21e6bfc2",
+    "source_sha256": "a396e7859c1d6aaafac8db7eaf6e9ea42a4624dba297149fc2023382204e3afc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbs_tfa_fixed_support_dense",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)), IsCompact K → ∃ D : Set (TestFormOn U n), D.Countable ∧ (∀ η ∈ D, tsupport (η : DifferentialForm (Euclid P) n) ⊆ K) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → ∀ ε : ℝ, 0 < ε → ∃ η ∈ D, (∀ x, dist ((ω : DifferentialForm (Euclid P) n) x) ((η : DifferentialForm (Euclid P) n) x) < ε) ∧ ∀ x, dist (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) (exteriorDerivative (η : DifferentialForm (Euclid P) n) x) < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
