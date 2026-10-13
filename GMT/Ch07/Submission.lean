@@ -565,6 +565,32 @@ theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
     simp [NNReal.smul_def]
 
+/-- **The blow-up of a represented current on the form `ω = g β`** (push-forward 6.2.23,
+chapter-06.txt lines 403–413; `T = τ(M, θ, ξ)`, 6.3.1 (‡), chapter-06.txt lines 733–748; the
+blow-ups `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 325–337).  Let `R` represent
+`C ∈ 𝒟ₙ(ℝᴾ)`, `μ = R.measure`, `ξ = R.orient`, `t > 0`, and `ω ∈ 𝒟ⁿ(ℝᴾ)` with `ω(x) = g(x) β`.
+`η = η_{a,t}` is onto, so `ω` is a test form on the domain `η(ℝᴾ)` of `η_{a,t#}C`, and
+`η_{a,t#}C(ω) = t⁻ⁿ C(ω ∘ η) = t⁻ⁿ ∫ ⟨g(η(y)) β, ξ(y)⟩ dμ = t⁻ⁿ ∫ g(η(y)) ⟨β, ξ(y)⟩ dμ`. -/
+theorem Submission.idtp_cse_bml_td_blowUp_smul_form_eval : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (a : Euclid P) (t : ℝ) (ht : 0 < t) (g : Euclid P → ℝ) (β : Covector (Euclid P) n) (ω : TestFormOn (univ : Set (Euclid P)) n), R.Represents C → (∀ x, (ω : DifferentialForm (Euclid P) n) x = g x • β) → currentEval (blowUp C a t ht.ne') (ω : DifferentialForm (Euclid P) n) = t⁻¹ ^ n * ∫ y, g (dilation a t y) * R.orient y β ∂R.measure := by
+  intro P n C R a t ht g β ω hRC hω
+  -- Step 1: `η = η_{a,t}` is onto (`η(a + tz) = z`), so `ω` is a test form on `η(ℝᴾ)` and
+  -- `currentEval` takes its positive branch.
+  have hsurj : dilation a t '' (univ : Set (Euclid P)) = univ :=
+    eq_univ_of_forall fun z => ⟨a + t • z, mem_univ _, by
+      simp [dilation, dilationCLM, smul_add, smul_smul, ht.ne']⟩
+  have hmem : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation a t '' univ :=
+    ⟨ω.2.1, by rw [hsurj]; exact subset_univ _⟩
+  rw [currentEval, dite_eq_left hmem]
+  -- Step 2: `ω' = ω ∘ η ∈ 𝒟ⁿ(ℝᴾ)` and `η_{a,t#}C(ω) = t⁻ⁿ C(ω')`; `C(ω') = ∫ ⟨ω', ξ⟩ dμ`.
+  obtain ⟨ω', hω'⟩ := (Submission.dtc_blowUp_testForm_corr P n univ a t ht).1 ⟨ω, hmem⟩
+  rw [(Submission.dtc_blowUp_testForm_corr P n univ a t ht).2.2 C ⟨ω, hmem⟩ ω' hω', hRC ω',
+    (Submission.cbr_imRep_measure_basic P n univ R).2.2.2.2.2.2]
+  -- Step 3: `⟨ω'(y), ξ(y)⟩ = ⟨g(η(y)) β, ξ(y)⟩ = g(η(y)) ⟨β, ξ(y)⟩` pointwise, by linearity.
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+  simp only [hω', hω, map_smul, smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
