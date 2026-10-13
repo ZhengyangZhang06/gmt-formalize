@@ -464,6 +464,36 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+/-! ### Build-resource setting
+
+This file contains the whole accepted dependency closure of the chapter's proofs (about 11,000
+lines). The command-line frontend keeps every command's info trees in memory until the end of the
+file (they only feed the `.ilean` cross-reference data), which exceeds the verifier's memory
+budget. The file-local elaborator below elaborates each declaration with Lean's builtin
+`elabDeclaration` (synchronously, so that proof bodies are elaborated inside it) and then discards
+the info trees recorded for it (the same file-local `command_elab` mechanism as Mathlib's
+`suppress_compilation`). Statements, proofs and kernel checking are unaffected; the two linters
+that read tactic info trees are switched off, since they would misreport every tactic of a
+declaration whose info trees were dropped. -/
+
+set_option Elab.async false
+set_option linter.unusedTactic false
+set_option linter.unreachableTactic false
+
+namespace Submission
+
+open Lean Elab Command in
+/-- Elaborate a declaration with the builtin elaborator, then drop the info trees it recorded. -/
+def elabDeclarationDroppingInfoTrees : CommandElab := fun stx => do
+  let saved ← getInfoState
+  elabDeclaration stx
+  modifyInfoState fun _ => saved
+
+end Submission
+
+attribute [local command_elab Lean.Parser.Command.declaration]
+  Submission.elabDeclarationDroppingInfoTrees
+
 namespace Submission
 
 /-- **Simon Ch. 3, Remark 1.8(1), first assertion** (Lusin exhaustion of a rectifiable varifold):
