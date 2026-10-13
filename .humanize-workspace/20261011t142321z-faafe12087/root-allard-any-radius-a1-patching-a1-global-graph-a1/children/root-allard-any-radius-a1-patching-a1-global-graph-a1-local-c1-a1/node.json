@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.global_graph-a1.local_c1-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1.global_graph-a1",
+  "depth": 4,
+  "title": "C^1 regularity and an operator-norm derivative bound are local properties",
+  "statement": "Let m and k be natural numbers, R^m := Rn m and R^k := Rn k. Write B°_r(x) for the open ball, fderiv for the Fréchet derivative, and |·| on derivatives for the operator norm. Let u : R^m → R^k, let Ω ⊆ R^m be open, and let L be a real number. Assume that every x0 ∈ Ω has some ε > 0 and some f : R^m → R^k such that:\n(a) f is C^1 on B°_ε(x0) (ContDiffOn ℝ 1);\n(b) |fderiv f x0| ≤ L;\n(c) u(w) = f(w) for every w ∈ B°_ε(x0) ∩ Ω.\nThen u is C^1 on Ω (ContDiffOn ℝ 1 u Ω), and |fderiv u x| ≤ L for every x ∈ Ω.",
+  "lean_statement": "∀ {m k : ℕ} (u : Rn m → Rn k) (Ω : Set (Rn m)) (L : ℝ), IsOpen Ω → (∀ x₀ ∈ Ω, ∃ (ε : ℝ) (f : Rn m → Rn k), 0 < ε ∧ ContDiffOn ℝ 1 f (ball x₀ ε) ∧ ‖fderiv ℝ f x₀‖ ≤ L ∧ ∀ w ∈ ball x₀ ε ∩ Ω, u w = f w) → ContDiffOn ℝ 1 u Ω ∧ ∀ x ∈ Ω, ‖fderiv ℝ u x‖ ≤ L",
+  "lean_name": "arp_contDiffOn_of_local_C1_reps",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-global-graph-a1-local-c1-a1-a1"
+}

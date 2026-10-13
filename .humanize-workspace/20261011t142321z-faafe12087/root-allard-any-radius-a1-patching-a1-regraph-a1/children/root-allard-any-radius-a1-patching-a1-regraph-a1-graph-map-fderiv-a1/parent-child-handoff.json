@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json; cmp <snapshot>/project/{GMT/Ch05/Contract.lean,GMT/Ch05/Submission.lean,lakefile.toml,lean-toolchain,lake-manifest.json} against the workspace copies",
+        "rg -n 'theorem surjOn_closedBall_of_nonlinearRightInverse|theorem of_local_left_inverse|theorem inverse_continuousAt|theorem contDiffAt_succ_iff_hasFDerivAt|theorem contDiffAt_zero|continuousOn_fderiv_of_isOpen|theorem contDiffAt_symm|def toOpenPartialHomeomorph|def ofInjectiveEndo|theorem contDiffOn_succ_iff_fderiv_of_isOpen|theorem norm_image_sub_le_of_norm_fderivWithin_le|structure NonlinearRightInverse' <snapshot>/mathlib/Mathlib",
+        "rg -n 'contDiffAt_symm|of_local_left_inverse|norm_fderiv_le_of_lipschitz' <snapshot>/mathlib/Mathlib",
+        "rg -n 'ring_inverse_equiv|theorem inverse_equiv|def unitsEquiv|def toUnit|theorem inverse_unit|theorem contDiffOn_zero|abbrev EuclideanSpace.finAddEquivProd|theorem append_left|theorem append_right' <snapshot>/mathlib/Mathlib",
+        "sed -n 360,400p PiL2.lean; sed -n 30,60p Normed/Operator/Banach.lean; sed -n 130,175p InverseFunctionTheorem/ApproximatesLinearOn.lean; sed -n 155,200p FDeriv/OfCompLeft.lean; sed -n 1,90p ContinuousLinearMap/Invertible.lean",
+        "python3 -I scans of dag.json (lean_names, duplicates, statuses, statements mentioning fderiv/ContDiffOn/ApproximatesLinearOn/inverse) and of nodes/*/*.json for arp_rgr_ball_right_inverse, arp_rgr_right_inverse_contDiffOn, arp_rgr_graph_map_fderiv",
+        "git for-each-ref (563 refs) | xargs git grep -l -E 'arp_rgr_|rgr_ball_right_inverse|right_inverse_contDiffOn|graph_map_fderiv' -- '*.lean'; grep -rn the same names over GMT/ and <snapshot>/project",
+        "grep -n 'depends_on|proof_base_commit|Do not add helper declarations' /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py and prompts.py",
+        "lake build GMT.Ch05.Submission in scratch /tmp/regraph-split-Bu1nSC/proj (.lake/packages -> lake-packages-25730c7c)",
+        "lake env lean Checks/Avail.lean (#check of all cited lemmas)",
+        "lake env lean Checks/{Stmts,Skel,SkelAx,ChildA,ChildB,ChildC,Combined}.lean",
+        "python3 -I scripts/gen_challenges.py (verifier lean_contract.validate_lean_statement and gmt-compare.child_modules in contract mode); lake env lean Checks/Challenge_{ball_right_inverse,inverse_c1,graph_map_fderiv,parent}.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Invertible.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/decomposition-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/prompts.py",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Avail.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Stmts.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Skel.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/SkelAx.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/ChildA.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/ChildB.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/ChildC.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Combined.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Challenge_ball_right_inverse.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Challenge_inverse_c1.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Challenge_graph_map_fderiv.lean",
+        "/tmp/regraph-split-Bu1nSC/proj/Checks/Challenge_parent.lean",
+        "/tmp/regraph-split-Bu1nSC/scripts/gen_challenges.py",
+        "/tmp/regraph-split-Bu1nSC/draft/subproblems.json"
+      ],
+      "conclusion": "Snapshot and target\n- The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.\n- Contract.lean, Submission.lean and the Lake inputs are byte-identical to the workspace copies.\n\nLibrary: every lemma the children cite is in the snapshot and in scope after `import GMT.Ch05.Submission`.\n- ApproximatesLinearOn.surjOn_closedBall_of_nonlinearRightInverse (ApproximatesLinearOn.lean:143), with ContinuousLinearMap.NonlinearRightInverse (Normed/Operator/Banach.lean:37)\n- LinearEquiv.ofInjectiveEndo (FiniteDimensional/Basic.lean:412) and LinearMap.injective_iff_surjective\n- HasFDerivAt.of_local_left_inverse (FDeriv/OfCompLeft.lean:165)\n- NormedRing.inverse_continuousAt (Normed/Ring/Units.lean:183)\n- ContinuousLinearEquiv.toUnit (Topology/Algebra/Module/Equiv/Basic.lean:610)\n- Ring.inverse_unit (GroupWithZero/Units/Basic.lean:89)\n- In ContDiff/Defs.lean: ContDiffOn.continuousOn_fderiv_of_isOpen (:916), contDiffOn_succ_iff_fderiv_of_isOpen (:891), contDiffOn_zero (:618), contDiffAt_succ_iff_hasFDerivAt (:1018), contDiffAt_zero (:1129)\n- EuclideanSpace.finAddEquivProd (PiL2.lean:378)\n- Fin.append_left and Fin.append_right (Data/Fin/Tuple/Basic.lean:312 and :323)\n- Alternatives also in scope: OpenPartialHomeomorph.contDiffAt_symm (ContDiff/Operations.lean:881) and ApproximatesLinearOn.toOpenPartialHomeomorph.\n- ContractingWith is not in scope, as the parent proof's Lean remark says.\n\nWorkflow constraints (flow runtime)\n- A leaf child adds only its single theorem, with no helper declarations.\n- A child's proof base overlays only its accepted depends_on siblings, so the children are self-contained and do not cite arp_rotatedPlane_graphPoint_coords.\n\nNames and reuse\n- arp_rgr_ball_right_inverse, arp_rgr_right_inverse_contDiffOn and arp_rgr_graph_map_fderiv occur in none of the DAG's 359 nodes (no duplicate names) and in no node file.\n- They are also absent from GMT/, from the snapshot project, and from every .lean file on 563 git refs. Nothing is reused.\n\nLean checks\n- All three child types and the parent type pass validate_lean_statement. They elaborate in the comparator's generated child scope (open MeasureTheory Metric Set Filter Topology; open scoped ENNReal NNReal; namespace GMT.Ch05; open RectifiableVarifold), with only the expected sorry warning.\n- Instances are as intended: ‖fderiv ℝ X w‖ is ContinuousLinearMap.hasOpNorm, ‖h‖ is the PiLp 2 norm, and ContDiffOn ℝ 1 uses (1 : WithTop ℕ∞). No Matrix or IsUnit construction occurs.\n- The exact parent type compiles from stubs of the three children plus the sibling. #print axioms lists exactly those four besides propext, Classical.choice and Quot.sound.\n- All three children have complete scratch proofs that use only the standard axioms.\n\nNo network sources were needed; the mathematics is the parent-supplied proof."
+    }
+  ],
+  "parent_id": "root.allard_any_radius-a1.patching-a1.regraph-a1",
+  "child_id": "root.allard_any_radius-a1.patching-a1.regraph-a1.graph_map_fderiv-a1",
+  "subproblem": {
+    "key": "graph_map_fderiv",
+    "title": "The graph map x -> y + q(graphPoint x (v x)) is C^1 with derivative h -> q(graphPoint h (Dv(x) h))",
+    "statement": "Let n, l be natural numbers, q a linear isometric equivalence of R^{n+l}, v : R^n -> R^l, y in R^{n+l} and U an open subset of R^n. If v is C^1 on U, then Psi(x) := y + q(graphPoint x (v x)) is C^1 on U, and for every x in U and h in R^n, fderiv Psi x h = q(graphPoint h (fderiv v x h)).",
+    "lean_statement": "∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 v U → ContDiffOn ℝ 1 (fun x => y + q (graphPoint x (v x))) U ∧ ∀ x ∈ U, ∀ h : Rn n, fderiv ℝ (fun x => y + q (graphPoint x (v x))) x h = q (graphPoint h (fderiv ℝ v x h))",
+    "lean_name": "arp_rgr_graph_map_fderiv",
+    "depends_on": [],
+    "natural_proof": "Notation: E := EuclideanSpace.finAddEquivProd : R^{n+l} -> R^n x R^l, Mathlib's canonical continuous linear equivalence (Mathlib/Analysis/InnerProductSpace/PiL2.lean:378) sending z to the pair (first n coordinates of z, last l coordinates of z), i.e. (E z).1 i = z(Fin.castAdd l i) and (E z).2 j = z(Fin.natAdd n j). Let Psi(x) := y + q(graphPoint x (v x)). Hypotheses: q is a linear isometric equivalence of R^{n+l}, U is open and v is C^1 on U.\nProvenance: this is the chain-rule computation in step 8 of the parent regraph proof, together with its coordinate identity (i), which is proved here in step 1 because the parent's sibling lemma is not available to this node; nothing from the parent is assumed.\n1. graphPoint a b = E^{-1}(a, b) for all a in R^n and b in R^l. By definition graphPoint a b is the vector of R^{n+l} with coordinates Fin.append a b; its Fin.castAdd l i-th coordinate is a i and its Fin.natAdd n j-th coordinate is b j (Fin.append_left, Fin.append_right). Hence E(graphPoint a b) = (a, b) componentwise, and applying E^{-1} proves the claim. [Lean: apply E.injective; rw [ContinuousLinearEquiv.apply_symm_apply]; ext i <;> simp [graphPoint].]\n2. Put L := q o E^{-1}, a continuous linear map R^n x R^l -> R^{n+l} (q is a linear isometry, hence continuous linear, and E^{-1} is continuous linear). By step 1, L(a, b) = q(graphPoint a b) for all a, b; hence Psi(x) = y + L(x, v x) for every x in R^n.\n3. Psi is C^1 on U. The map x -> (x, v x) is C^1 on U because both components are: the identity is C^infinity and v is C^1 on U (ContDiffOn.prodMk). Composing with the continuous linear map L, which is C^infinity (ContinuousLinearMap.contDiff.comp_contDiffOn), and adding the constant y (contDiffOn_const.add) preserves C^1 on U. By step 2 the resulting map is Psi.\n4. The derivative. Fix x in U. Since U is open and v is C^1 on U with 1 != 0, v is differentiable at x, i.e. v has derivative Dv := fderiv v x at x. Hence x' -> (x', v x') has derivative h -> (h, Dv h) at x (HasFDerivAt.prodMk of hasFDerivAt_id and the derivative of v). A continuous linear map is its own derivative, so by the chain rule x' -> L(x', v x') has derivative h -> L(h, Dv h) at x, and adding the constant y does not change the derivative (HasFDerivAt.const_add). Therefore fderiv Psi x is the map h -> L(h, Dv h), and by step 2, fderiv Psi x h = q(graphPoint h (fderiv v x h)) for every h in R^n.",
+    "proof_key_steps": [
+      "graphPoint a b = E^{-1}(a, b) for E = EuclideanSpace.finAddEquivProd, checked coordinatewise via Fin.append",
+      "Psi(x) = y + L(x, v x) with L := q o E^{-1} continuous linear",
+      "C^1 on U: compose the C^1 map x -> (x, v x) with L and add the constant y",
+      "Chain rule at x in U: Psi has derivative h -> L(h, Dv(x) h) = q(graphPoint h (fderiv v x h))"
+    ]
+  },
+  "audit": {
+    "key": "graph_map_fderiv",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line proposition exactly matches the prose and includes all hypotheses. The proof independently establishes the graphPoint coordinate identity from Fin.append, so the empty dependency list is correct. It uses finAddEquivProd only as a continuous linear equivalence, then obtains C¹ regularity by composition and the exact derivative formula by the product and chain rules. Openness supplies ordinary differentiability at each specified point. No parent or unavailable sibling theorem is used."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1-graph-map-fderiv-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1-graph-map-fderiv-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-regraph-a1-graph-map-fderiv-a1/parent-supplied-natural-proof.json"
+}

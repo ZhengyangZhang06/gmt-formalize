@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.rotated_coords-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1",
+  "depth": 3,
+  "title": "Orthonormal coordinates adapted to the rotated plane q0(R^n x {0})",
+  "statement": "For all natural numbers n, l:\n(i) graphPoint a b = E^{-1}(a, b) for all a in R^n and b in R^l. Here E = EuclideanSpace.finAddEquivProd : R^{n+l} -> R^n x R^l is Mathlib's canonical continuous linear splitting into the first n and the last l coordinates.\n(ii) |graphPoint a b|^2 = |a|^2 + |b|^2.\n(iii) For every linear isometry q0 of R^{n+l} and all a, b, the distance infDist from q0(graphPoint a b) to the n-plane rotatedPlane q0 = q0(R^n x {0}) equals |b|.",
+  "lean_statement": "∀ (n ℓ : ℕ), (∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (a, b)) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ ∀ (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ), infDist (q₀ (graphPoint a b)) (rotatedPlane q₀ : Set (Amb n ℓ)) = ‖b‖",
+  "lean_name": "arp_rotatedPlane_graphPoint_coords",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-rotated-coords-a1-a1"
+}

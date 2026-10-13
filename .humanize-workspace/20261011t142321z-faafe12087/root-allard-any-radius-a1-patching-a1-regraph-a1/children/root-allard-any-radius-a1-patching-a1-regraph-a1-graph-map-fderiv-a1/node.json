@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.regraph-a1.graph_map_fderiv-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1.regraph-a1",
+  "depth": 4,
+  "title": "The graph map x -> y + q(graphPoint x (v x)) is C^1 with derivative h -> q(graphPoint h (Dv(x) h))",
+  "statement": "Let n, l be natural numbers, q a linear isometric equivalence of R^{n+l}, v : R^n -> R^l, y in R^{n+l} and U an open subset of R^n. If v is C^1 on U, then Psi(x) := y + q(graphPoint x (v x)) is C^1 on U, and for every x in U and h in R^n, fderiv Psi x h = q(graphPoint h (fderiv v x h)).",
+  "lean_statement": "∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 v U → ContDiffOn ℝ 1 (fun x => y + q (graphPoint x (v x))) U ∧ ∀ x ∈ U, ∀ h : Rn n, fderiv ℝ (fun x => y + q (graphPoint x (v x))) x h = q (graphPoint h (fderiv ℝ v x h))",
+  "lean_name": "arp_rgr_graph_map_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-regraph-a1-graph-map-fderiv-a1-a1"
+}
