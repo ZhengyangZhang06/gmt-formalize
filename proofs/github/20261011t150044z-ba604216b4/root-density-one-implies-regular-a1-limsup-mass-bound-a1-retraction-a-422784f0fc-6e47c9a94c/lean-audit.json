@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "83a5bfd1db15dda6425cd4b6df414a25a2f8d1e2ef23d2404c88853d8bb514f3",
+  "git_delta": {
+    "base_commit": "a59808a784efc602484977049b93727d558ebec7",
+    "candidate_commit": "1e7fbdd076e699bcecd7c005caa842713e109b1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_normal_space_transfer",
+    "diff_sha256": "d5437a21f139d9878851d8de3a47704c9d79ad5730152356ececa614471c9434",
+    "source_sha256": "35eeaaa4c9791246d331093ea3ef76c03db64232755f41c08bd3b76ae7ce56d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_normal_space_transfer",
+      "statement": "∀ (P : ℕ) (T T' : Submodule ℝ (Euclid P)), Module.finrank ℝ T = Module.finrank ℝ T' → ‖T'.starProjection - T.starProjection‖ ≤ 1 / 2 → ∀ n ∈ T'ᗮ, ∃ e ∈ Tᗮ, e - T'.starProjection e = n ∧ ‖e‖ ≤ 2 * ‖n‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
