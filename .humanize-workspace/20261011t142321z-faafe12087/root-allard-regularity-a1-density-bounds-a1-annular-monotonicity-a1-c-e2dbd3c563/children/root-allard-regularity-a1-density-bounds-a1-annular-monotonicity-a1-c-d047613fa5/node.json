@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_limit-a1.radial_tendsto-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_limit-a1",
+  "depth": 5,
+  "title": "Dominated convergence for radial cutoff integrals at a fixed radius",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l), f : R^(n+l) -> R, y in R^(n+l), phi_k : R -> R and eps_k in R (k in N), and R, t real numbers with 0 < t < R. Assume: f is mu-integrable on the closed ball B_R(y); every phi_k is continuous; 0 <= phi_k(u) <= 1 for all k and u; phi_k(u) = 1 whenever u <= 1; phi_k(u) = 0 whenever u >= 1 + eps_k; and eps_k -> 0. Then, as k -> infinity, integral phi_k(|x - y|/t) f(x) dmu(x), taken over the whole space, tends to the integral of f over the closed ball B_t(y) with respect to mu.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ) (R t : ℝ), 0 < t → t < R → IntegrableOn f (closedBall y R) μ → (∀ k, Continuous (φ k)) → (∀ k u, 0 ≤ φ k u ∧ φ k u ≤ 1) → (∀ k u, u ≤ 1 → φ k u = 1) → (∀ k u, 1 + ε k ≤ u → φ k u = 0) → Tendsto ε atTop (𝓝 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall y t, f x ∂μ))",
+  "lean_name": "allard52_amcl_radial_cutoff_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-d047613fa5-a1"
+}
