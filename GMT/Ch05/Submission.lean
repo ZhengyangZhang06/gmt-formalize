@@ -3391,6 +3391,176 @@ theorem dohr_eb_difference_quotient_limit : ∀ (n ℓ : ℕ) (α : ℝ) (f : Rn
       exact hhol d hd.1 hd.2 x hx y hy)
     (fun K hK hKB => Submission.dohr_eb_dql_diffQuot_tendstoUniformlyOn n ℓ f _ K e hB'open hf
       hK (hKB.trans hBB'))
+/-- Currying step of the proof that `f` is `C^{m+1,α}` iff `Df` is `C^{m,α}` (elliptic bootstrap
+for Simon 7.1): on an open `U`, `f` is `C^{m+1}` with `D^{m+1}f` locally `α`-Hölder iff `f` is `C¹`,
+`Df` is `C^m` and `D^m(Df)` is locally `α`-Hölder, with the same constants.  Indeed
+`D^{m+1}f(x) = Φ (D^m(Df)(x))` for the currying linear isometry `Φ`, and `C^{m+1}` on an open set
+means differentiable with `C^m` derivative. -/
+theorem dohr_eb_hsif_succ_iff_curry : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) := by
+  intro n E _ _ m α f U hU
+  -- Steps 1–2: `D^{m+1}f(x) = Φ (D^m(Df)(x))` with `Φ` a linear isometry, so the two Hölder
+  -- differences have equal norms at every pair of points.
+  have hnorm : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ =
+        ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ := by
+    intro x y
+    rw [iteratedFDeriv_succ_eq_comp_right, iteratedFDeriv_succ_eq_comp_right]
+    simp only [Function.comp_apply]
+    rw [← LinearIsometryEquiv.map_sub, LinearIsometryEquiv.norm_map]
+  -- Step 3: hence the Hölder clauses coincide, with the same constant on each compact `K`.
+  have hhol : (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔
+      (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤
+        C * ‖x - y‖ ^ α) := by
+    simp only [hnorm]
+  -- Step 4: on the open set `U`, `f` is `C^{m+1}` iff it is differentiable with `C^m` derivative
+  -- (the analyticity clause is vacuous since `m` is finite).
+  have hsucc := contDiffOn_succ_iff_fderiv_of_isOpen (𝕜 := ℝ) (f := f) (n := (m : WithTop ℕ∞)) hU
+  -- Steps 5–6: the regularity parts agree.
+  have hreg : ContDiffOn ℝ (m + 1 : ℕ) f U ↔
+      ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U := by
+    push_cast
+    refine ⟨fun h => ⟨h.of_le le_add_self, (hsucc.1 h).2.2⟩, fun h => ?_⟩
+    exact hsucc.2 ⟨h.1.differentiableOn one_ne_zero, by simp, h.2⟩
+  -- Step 7: combine.
+  rw [hreg, hhol, and_assoc]
+
+/-- Columns of an operator-valued map (step 1 of the proof that `f` is `C^{m+1,α}` iff `Df` is
+`C^{m,α}`, in the elliptic bootstrap for Simon 7.1): `g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on a set `U` iff
+every column `g_k = g(·) e_k` is.  Indeed `g_k = ev_k ∘ g` for the evaluation `ev_k T = T e_k`, and
+conversely `g = ∑_k ι_k ∘ g_k` for the continuous linear reconstruction `ι_k w = (h ↦ h_k • w)`. -/
+theorem dohr_eb_hsif_contDiffOn_clm_iff_columns : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), ContDiffOn ℝ m g U ↔ ∀ k : Fin n, ContDiffOn ℝ m (fun x => g x (EuclideanSpace.single k (1 : ℝ))) U := by
+  intro n E _ _ m g U
+  -- Step 1: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` are continuous linear.
+  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
+    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
+  -- Step 2: the reconstruction `g = ∑ k, ι k ∘ g_k`, from `h = ∑ k, h_k • e_k`.
+  have hrec : g = fun x => ∑ k, ι k (g x (EuclideanSpace.single k (1 : ℝ))) := by
+    funext x
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  refine ⟨fun hg k => ?_, fun hk => ?_⟩
+  -- Step 3: each column `g_k = ev_k ∘ g` is `C^m` on `U`.
+  · exact hg.clm_apply contDiffOn_const
+  -- Step 4: `g = ∑ k, ι k ∘ g_k` is a finite sum of `C^m` maps on `U`.
+  · rw [hrec]
+    exact ContDiffOn.sum fun k _ => (ι k).contDiff.comp_contDiffOn (hk k)
+
+/-- Columns of an operator-valued map (step 3, "Components", of the proof that `f` is
+`C^{m+1,α}` iff `Df` is `C^{m,α}`, in the elliptic bootstrap for Simon 7.1): if
+`g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on the open set `U` and `g_k = g(·) e_k`, then on `U` the differences
+of `D^m g_k` are bounded by those of `D^m g`, and those of `D^m g` by the sum over `k` of those of
+`D^m g_k`.  Indeed `D^m g_k = ev_k ∘ D^m g` and `D^m g = ∑_k ι_k ∘ D^m g_k`, where the evaluation
+`ev_k T = T e_k` and the reconstruction `ι_k w = (h ↦ h_k • w)` have norm at most one. -/
+theorem dohr_eb_hsif_iteratedFDeriv_column_bounds : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ m g U → ∀ x ∈ U, ∀ y ∈ U, (∀ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖) ∧ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ ∑ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ := by
+  intro n E _ _ m g U hU hg x hx y hy
+  -- Step 1: the evaluation maps `ev k : T ↦ T e_k` have norm at most one.
+  let ev : Fin n → (Rn n →L[ℝ] E) →L[ℝ] E := fun k =>
+    ContinuousLinearMap.apply ℝ E (EuclideanSpace.single k (1 : ℝ))
+  have hev : ∀ k, ‖ev k‖ ≤ 1 := fun k =>
+    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun T => by
+      simpa [ev] using T.le_opNorm (EuclideanSpace.single k (1 : ℝ))
+  -- Step 2: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` have norm at most one.
+  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
+    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
+  have hι : ∀ k, ‖ι k‖ ≤ 1 := fun k =>
+    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun w => by
+      have hproj : ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n))‖ ≤ 1 :=
+        ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun h => by
+          simpa using PiLp.norm_apply_le h k
+      show ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n)).smulRight w‖ ≤ 1 * ‖w‖
+      rw [ContinuousLinearMap.norm_smulRight_apply]
+      exact mul_le_mul_of_nonneg_right hproj (norm_nonneg w)
+  -- Step 3: `L ∘ A - L ∘ B = L ∘ (A - B)` and `‖L ∘ A‖ ≤ ‖A‖` when `‖L‖ ≤ 1`.
+  have hcomp : ∀ {F G : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G]
+      [NormedSpace ℝ G] (L : F →L[ℝ] G), ‖L‖ ≤ 1 →
+      ∀ A B : ContinuousMultilinearMap ℝ (fun _ : Fin m => Rn n) F,
+        ‖L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B‖ ≤ ‖A - B‖ := by
+    intro F G _ _ _ _ L hL A B
+    have : L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B =
+        L.compContinuousMultilinearMap (A - B) := by
+      ext v
+      simp
+    rw [this]
+    exact (L.norm_compContinuousMultilinearMap_le _).trans
+      (mul_le_of_le_one_left (norm_nonneg _) hL)
+  -- Step 4: `g` and its columns are `C^m` at every point of the open set `U`.
+  have hgat : ∀ z ∈ U, ContDiffAt ℝ m g z := fun z hz => hg.contDiffAt (hU.mem_nhds hz)
+  have hcolat : ∀ k, ∀ z ∈ U,
+      ContDiffAt ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z := fun k z hz =>
+    (hgat z hz).continuousLinearMap_comp (ev k)
+  -- Step 5: the column formula `D^m g_k(z) = ev k ∘ D^m g(z)`.
+  have hcol : ∀ k, ∀ z ∈ U,
+      iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z =
+        (ev k).compContinuousMultilinearMap (iteratedFDeriv ℝ m g z) := fun k z hz =>
+    (ev k).iteratedFDeriv_comp_left (hgat z hz) le_rfl
+  -- Step 7: the reconstruction `g = ∑ k, ι k ∘ g_k`.
+  have hrec : g = fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ))) := by
+    funext z
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  -- Step 8: the sum formula `D^m g(z) = ∑ k, ι k ∘ D^m g_k(z)`.
+  have hsum : ∀ z ∈ U, iteratedFDeriv ℝ m g z = ∑ k, (ι k).compContinuousMultilinearMap
+      (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) := by
+    intro z hz
+    calc iteratedFDeriv ℝ m g z
+        = iteratedFDeriv ℝ m (fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
+          congrArg (iteratedFDeriv ℝ m · z) hrec
+      _ = ∑ k, iteratedFDeriv ℝ m (fun z => ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
+          iteratedFDeriv_fun_sum_apply fun k _ => (hcolat k z hz).continuousLinearMap_comp (ι k)
+      _ = ∑ k, (ι k).compContinuousMultilinearMap
+            (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) :=
+          Finset.sum_congr rfl fun k _ => (ι k).iteratedFDeriv_comp_left (hcolat k z hz) le_rfl
+  refine ⟨fun k => ?_, ?_⟩
+  -- Step 6: bound (i).
+  · rw [hcol k x hx, hcol k y hy]
+    exact hcomp (ev k) (hev k) _ _
+  -- Step 9: bound (ii).
+  · rw [hsum x hx, hsum y hy, ← Finset.sum_sub_distrib]
+    exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => hcomp (ι k) (hι k) _ _)
+
+/-- **`C^{m+1,α}_loc` through first derivatives**: `u ∈ C^{m+1,α}_loc` iff `Du ∈ C^{m,α}_loc` iff
+every `D_k u ∈ C^{m,α}_loc`, the bookkeeping of the Schauder bootstrap in the proof of Simon Ch. 5,
+Theorem 7.1 (p. 128).  For `f : ℝⁿ → E` and open `U ⊆ ℝⁿ`, write
+(A) `f` is `C^{m+1}` on `U` and `D^{m+1}f` is `α`-Hölder on each compact `K ⊆ U`;
+(B) `f` is `C¹` on `U`, `Df` is `C^m` on `U` and `D^m(Df)` is `α`-Hölder on each compact `K ⊆ U`;
+(C) `f` is `C¹` on `U` and every partial derivative `D_k f = Df(·) e_k` is `C^m` on `U` with
+`D^m(D_k f)` `α`-Hölder on each compact `K ⊆ U`.
+Then `(A ↔ B) ∧ (A ↔ C)`. -/
+theorem dohr_eb_holder_succ_iff_fderiv : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → (((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) ∧ ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ∀ k : Fin n, ContDiffOn ℝ m (fun x => fderiv ℝ f x (EuclideanSpace.single k (1 : ℝ))) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ C * ‖x - y‖ ^ α))) := by
+  intro n E _ _ m α f U hU
+  -- Steps 1–2, (A ↔ B): `D^{m+1}f = Ψ ∘ D^m(Df)` for a linear isometry `Ψ`, and on the open set
+  -- `U`, `f ∈ C^{m+1}` iff `f ∈ C¹` and `Df ∈ C^m`.
+  have hAB := Submission.dohr_eb_hsif_succ_iff_curry n E m α f U hU
+  refine ⟨hAB, hAB.trans (and_congr_right fun _ => ?_)⟩
+  -- Steps 3–4, (B ↔ C) once `f ∈ C¹(U)`: `Df ∈ C^m(U)` iff every column `D_k f ∈ C^m(U)`; on `U`,
+  -- `‖Δ D^m(D_k f)‖ ≤ ‖Δ D^m(Df)‖ ≤ Σ_k ‖Δ D^m(D_k f)‖` (`Δ h = h(x) - h(y)`) transfers the Hölder
+  -- constants: `C` for each `D_k f`, and `Σ_k C_k` for `Df`.
+  have hcols := Submission.dohr_eb_hsif_contDiffOn_clm_iff_columns n E m (fderiv ℝ f) U
+  have hbds := Submission.dohr_eb_hsif_iteratedFDeriv_column_bounds n E m (fderiv ℝ f) U hU
+  constructor
+  · rintro ⟨hm, hH⟩ k
+    refine ⟨hcols.1 hm k, fun K hK hKU => ?_⟩
+    obtain ⟨C, hC⟩ := hH K hK hKU
+    exact ⟨C, fun x hx y hy => ((hbds hm x (hKU hx) y (hKU hy)).1 k).trans (hC x hx y hy)⟩
+  · intro hk
+    have hm : ContDiffOn ℝ m (fderiv ℝ f) U := hcols.2 fun k => (hk k).1
+    refine ⟨hm, fun K hK hKU => ?_⟩
+    choose C hC using fun k => (hk k).2 K hK hKU
+    refine ⟨∑ k, C k, fun x hx y hy => ?_⟩
+    calc _ ≤ ∑ k : Fin n,
+          ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x -
+            iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ :=
+          (hbds hm x (hKU hx) y (hKU hy)).2
+      _ ≤ ∑ k : Fin n, C k * ‖x - y‖ ^ α := Finset.sum_le_sum fun k _ => hC k x hx y hy
+      _ = (∑ k : Fin n, C k) * ‖x - y‖ ^ α := (Finset.sum_mul _ _ _).symm
 
 end Submission
 
