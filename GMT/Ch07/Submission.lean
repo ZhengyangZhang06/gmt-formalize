@@ -1395,6 +1395,32 @@ theorem Submission.codim1_rdo_dg_bvc_limit_of_fast_cauchy : ∀ (n : ℕ) (Gs : 
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
     (Eventually.of_forall fun _ => zero_le) (eventually_atTop.2 ⟨N, hbound⟩)
 
+/-- **Compactness for sets of locally bounded perimeter** (Simon Ch. 2, 2.6, chapter-02.txt
+lines 598–626, for `u_k = 1_{F_k}` on `U = ℝ^{m+1}`; the precompactness that the book cites from
+[GT01, Theorem 7.22] is proved by mollification and Arzelà–Ascoli).  If for every `R > 0` there is
+`C_R` with `∫_{F_k} div g ≤ C_R` for all large `k` and every `C¹` field `g` with `|g| ≤ 1` and
+compact support in `B_R(0)`, then a subsequence `F_{ψ j}` converges locally in measure to a Borel
+set `F₀`.  The indicators `1_{F_k}` are totally bounded in `L¹(B_R)` for every `R`; so every
+infinite index set contains an infinite one whose members are pairwise `2^{-r}`-close on
+`B_{r+1}`; the diagonal subsequence is `2^{-r}`-fast Cauchy on `B_{r+1}`, hence converges. -/
+theorem Submission.codim1_rdo_dg_bv_set_compactness : ∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ z in Fs k, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∃ (ψ : ℕ → ℕ) (F₀ : Set (Euclid (m + 1))), StrictMono ψ ∧ MeasurableSet F₀ ∧ ∀ R : ℝ, Tendsto (fun j => volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R)) atTop (𝓝 0) := by
+  intro m Fs hmeas hdiv
+  -- Steps 1–3: for every `R, θ > 0`, finitely many `F_i` are `θ`-close in measure on `B_R` to
+  -- every `F_k` (mollification estimate and finite sup-norm nets of the mollified indicators)
+  have hTB := Submission.codim1_rdo_dg_bvc_indicator_totally_bounded m Fs hmeas hdiv
+  -- Step 4: every infinite `I ⊆ ℕ` contains an infinite `J` whose members are pairwise
+  -- `2^{-r}`-close on `B_{r+1}`
+  have hJ := Submission.codim1_rdo_dg_bvc_infinite_close_subset (m + 1) Fs hTB
+  -- Step 4: diagonal extraction of a strictly increasing `ψ` with `F_{ψ(r+1)}` and `F_{ψ r}`
+  -- `2^{-r}`-close on `B_{r+1}`
+  obtain ⟨ψ, hψ, hclose⟩ := Submission.cmc_fc_cs_diagonal_subseq
+    (fun r j l => volume (symmDiff (Fs j) (Fs l) ∩ ball (0 : Euclid (m + 1)) ((r : ℝ) + 1)) ≤
+      (2⁻¹ : ℝ≥0∞) ^ r) hJ
+  -- Step 5: the fast Cauchy subsequence converges locally in measure to a Borel `F₀`
+  obtain ⟨F₀, hF₀, hconv⟩ := Submission.codim1_rdo_dg_bvc_limit_of_fast_cauchy (m + 1)
+    (fun j => Fs (ψ j)) (fun j => hmeas (ψ j)) hclose
+  exact ⟨ψ, F₀, hψ, hF₀, hconv⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
