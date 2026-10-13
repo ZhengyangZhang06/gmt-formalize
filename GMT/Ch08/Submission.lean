@@ -17318,4 +17318,72 @@ theorem Submission.compactness_theorem : CompactnessTheorem := by
       (hVdens.mono fun _ ⟨θ, hθ, hθ1⟩ ↦ ⟨θ, hθ, zero_lt_one.trans_le hθ1⟩)).1
   exact ⟨φ, hφ, V, hRC, hrect, hVbv, hVdens, hVvar⟩
 
+/-- **Simon Ch. 8, 5.9 (Allard's Integral Compactness Theorem)** (child `integral_compactness` of
+`main_theorem`): integral varifolds have `Θ^n ≥ 1` almost everywhere, so 5.8 applies with null
+exceptional sets and gives the convergent subsequence.  Every subsequential limit `V` is integral:
+by 3.7, 5.5 and 1.2, `V = v(M, θ)` with a tangent plane of multiplicity `θ(ξ)` at each `ξ ∈ M`, and
+at `μ_V`-a.e. `ξ ∈ M` the diagonal blow-ups of the `V_i` at `ξ` are integral with vanishing first
+variation and converge to `θ(ξ) v(T_ξ)`, which forces `θ(ξ) ∈ ℕ` (5.10, 5.11). -/
+theorem Submission.integral_compactness_theorem : IntegralCompactnessTheorem := by
+  intro N n U Vj hVj hVjδ hbound
+  -- The set where `Θ^n(μ_{V_j}, ·) ≥ 1` fails is `μ_{V_j}`-null.
+  have hnull : ∀ j, (Vj j).weight
+      {x | ¬ ∃ θ : ℝ≥0∞, HasDensity n (Vj j).weight x θ ∧ 1 ≤ θ} = 0 := fun j ↦ ae_iff.1 <| by
+    filter_upwards [Submission.intcpt_integral_density_integer N n U (Vj j) (hVj j)]
+      with x ⟨k, hk, hx⟩
+    exact ⟨k, hx, by exact_mod_cast hk⟩
+  have hδle : ∀ W j, variationMeasure (Vj j) W ≤
+      ⨆ j, ((Vj j).weight W + variationMeasure (Vj j) W) := fun W j ↦
+    le_add_self.trans (le_iSup (fun j ↦ (Vj j).weight W + variationMeasure (Vj j) W) j)
+  -- Every subsequential limit is integral.
+  have hlim : ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
+      Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V := by
+    intro φ V _ hV
+    obtain ⟨hVδ, -, hV1⟩ := Submission.density_semicontinuity_theorem N n U (fun i ↦ Vj (φ i)) V
+      (fun i ↦ {x | ¬ ∃ θ : ℝ≥0∞, HasDensity n (Vj (φ i)).weight x θ ∧ 1 ≤ θ}) hV
+      (fun i ↦ hVjδ (φ i))
+      (fun W hW ↦ ne_top_of_le_ne_top (hbound W hW)
+        (liminf_le_of_frequently_le' (Frequently.of_forall fun i ↦ hδle W (φ i))))
+      (fun i y hy ↦ not_not.1 hy.2)
+      (fun W _ ↦ tendsto_const_nhds.congr fun i ↦
+        (measure_mono_null inter_subset_left (hnull (φ i))).symm)
+    -- `V = v(M, θ)` with a tangent plane at every point of `M`; `μ_V`-null subsets of `M` are
+    -- `H^n`-null.
+    obtain ⟨θ, hVM, hM, hMnull⟩ := Submission.intcpt_canonical_tangent_representation
+      Submission.allard_rectifiability_and_tangent_cones.1 Submission.first_rectifiability_theorem
+      N n U V hVδ (hV1.mono fun x ⟨t, ht, h1t⟩ ↦ ⟨t, ht, zero_lt_one.trans_le h1t⟩)
+    -- `liminf_i ‖δV_i‖(B_ρ(ξ)) ≤ c(ξ) ρ^n` for small `ρ`, at `μ_V`-a.e. `ξ`.
+    obtain ⟨Θ, -, hΘ⟩ := Submission.monotonicity_and_density_theorems.2.2 N n U V hVδ
+    have hc := Submission.intcpt_variation_liminf_density_bound N n U V.weight
+      (fun i ↦ variationMeasure (Vj (φ i))) V.isOpen_domain
+      ((V.weight_apply V.isOpen_domain.isClosed_compl.measurableSet).trans V.supported)
+      V.weight_finite_on_compact
+      (fun W hW ↦ ne_top_of_le_ne_top (hbound W hW) (iSup_le fun i ↦ hδle W (φ i)))
+      (hΘ.mono fun x hx ↦ ⟨Θ x, hx.2, hx.1⟩)
+    -- At such `ξ ∈ M` the blow-ups force `θ(ξ) ∈ ℕ`.
+    have hθ : ∀ᵐ ξ ∂V.weight, ξ ∈ {x | x ∈ V.weight.support ∧
+        ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} → ∃ m : ℕ, θ ξ = m := by
+      filter_upwards [hc] with ξ ⟨c, r, hr, hcr⟩ hξ
+      obtain ⟨P, hP⟩ := (hM ξ hξ).1
+      obtain ⟨W, hW, hWδ, hWδ0, hWP⟩ := Submission.intcpt_diagonal_integral_blowup N n U
+        (fun i ↦ Vj (φ i)) V ξ P (θ ξ) c r hV (fun i ↦ hVj (φ i)) (fun i ↦ hVjδ (φ i)) hP hr hcr
+      exact Submission.intcpt_flat_limit_integer_multiplicity
+        Submission.allard_rectifiability_and_tangent_cones.1 Submission.first_rectifiability_theorem
+        Submission.monotonicity_and_density_theorems.1
+        Submission.tangent_points_lipschitz_graph_cover N n P (θ ξ) W hP.2.1 hW hWδ hWδ0 hWP
+    -- `{θ ∉ ℕ} ∩ M` is `μ_V`-null, hence `H^n`-null.
+    refine ⟨_, θ, hVM, ae_iff.2 ?_⟩
+    rw [Measure.restrict_apply₀' hVM.2.1]
+    refine hMnull _ inter_subset_right (measure_mono_null ?_ (ae_iff.1 hθ))
+    exact fun x hx h ↦ hx.1 (h hx.2)
+  -- Existence: 5.8 with the null exceptional sets above.
+  refine ⟨?_, hlim⟩
+  obtain ⟨φ, hφ, V, hV, -, hVδ, -, hVlim⟩ := Submission.compactness_theorem N n U Vj
+    (fun j ↦ {x | ¬ ∃ θ : ℝ≥0∞, HasDensity n (Vj j).weight x θ ∧ 1 ≤ θ})
+    (fun j ↦ by obtain ⟨M, θ, h, -⟩ := hVj j; exact ⟨M, θ, h⟩) hVjδ hbound
+    (fun j x hx ↦ not_not.1 hx.2)
+    (fun W _ ↦ tendsto_const_nhds.congr fun j ↦
+      (measure_mono_null inter_subset_left (hnull j)).symm)
+  exact ⟨φ, hφ, V, hV, hlim φ V hφ hV, hVδ, hVlim⟩
+
 end GMT.Ch08
