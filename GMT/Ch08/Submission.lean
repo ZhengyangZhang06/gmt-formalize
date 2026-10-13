@@ -650,6 +650,122 @@ theorem Submission.intcpt_fli_unit_disc_mass_eventually :
     mem_iUnion₂.1 (hcover ⟨ha, by rwa [mem_closedBall, dist_zero_right]⟩)
   rw [mem_ball] at hadist
   exact (measure_mono (closedBall_subset_closedBall' (by linarith))).trans (hk al hal).le
+/-- Tilt cutoffs are test functions (the cutoff `χ(z) t_P(S)` of the flat-limit step of Simon
+Ch. 8, 5.9): for `P ∈ G(N,n)` and continuous compactly supported `χ` on `ℝ^N`, the function
+`(z,S) ↦ χ(z) ‖p_S - p_P‖` lies in `C_c(ℝ^N × G(N,n))` and has support in `spt χ × G(N,n)`. -/
+theorem Submission.intcpt_fli_tilt_cutoff_cc :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (χ : Euclidean N → ℝ), Continuous χ → HasCompactSupport χ → ∃ f : C_c(Euclidean N × Grassmannian N n, ℝ), (∀ (z : Euclidean N) (S : Grassmannian N n), f (z, S) = χ z * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖) ∧ tsupport f ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
+  intro N n P χ hχ hχcs
+  -- Step 1: `Φ = toContinuousLinearMap ∘ (toMatrix b b)⁻¹` is linear on the finite-dimensional
+  -- matrix space, hence continuous.
+  let b := (EuclideanSpace.basisFun (Fin N) ℝ).toBasis
+  let Φ : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
+    (LinearMap.toContinuousLinearMap :
+      (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap ∘ₗ
+      (LinearMap.toMatrix b b).symm.toLinearMap
+  have hΦ : Continuous Φ := Φ.continuous_of_finiteDimensional
+  -- Step 2: `p_S = (toMatrix b b)⁻¹ S`, so by linearity
+  -- `toContinuousLinearMap (p_S - p_P) = Φ (S - P)`.
+  have heq : ∀ S : Grassmannian N n, LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P) = Φ (S.1 - P.1) := by
+    intro S
+    have h : (LinearMap.toMatrix b b).symm (S.1 - P.1) =
+        Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P := by
+      rw [map_sub]
+      rfl
+    rw [← h]
+    rfl
+  -- Step 3: `t_P(S) = ‖Φ (S - P)‖` is continuous in `S`.
+  have ht : Continuous fun S : Grassmannian N n ↦ ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ := by
+    simp only [heq]
+    exact (hΦ.comp (continuous_subtype_val.sub continuous_const)).norm
+  -- Step 4: `F(z,S) = χ(z) t_P(S)` is continuous.
+  let F : Euclidean N × Grassmannian N n → ℝ := fun z ↦ χ z.1 * ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+  have hF : Continuous F := (hχ.comp continuous_fst).mul (ht.comp continuous_snd)
+  -- Step 5: `support F ⊆ support χ × G ⊆ tsupport χ × G`, which is closed.
+  have hFsupp : tsupport F ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
+    refine closure_minimal (fun z hz ↦ ⟨subset_tsupport χ fun h ↦ hz ?_, mem_univ _⟩)
+      ((isClosed_tsupport χ).prod isClosed_univ)
+    simp only [F, h, zero_mul]
+  -- Step 6: `tsupport χ × G` is compact (`G` is compact), so `F ∈ C_c(ℝ^N × G)`.
+  have hFcs : HasCompactSupport F :=
+    (hχcs.prod isCompact_univ).of_isClosed_subset (isClosed_tsupport F) hFsupp
+  exact ⟨⟨⟨F, hF⟩, hFcs⟩, fun z S ↦ rfl, hFsupp⟩
+
+/-- **The tilt excess of a sequence converging to a plane tends to zero** (step 4(iii) of the
+proof that a flat limit of integral varifolds has integer multiplicity, used for Simon Ch. 8, 5.9).
+If `∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c` with `tsupport f ⊆ B°_5(0) × G(N,n)`, then
+`∫_{B°_3(0) × G(N,n)} ‖p_S - p_P‖ dW_k(z,S) < η` for all large `k`: test the convergence with
+`f(z,S) = χ(z) ‖p_S - p_P‖`, where the cutoff `χ` is `1` on `B_3(0)` and `0` off `B°_4(0)`;
+its `v(P)`-integral vanishes because `‖p_P - p_P‖ = 0`. -/
+theorem Submission.intcpt_fli_tilt_excess_eventually :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ η : ℝ, 0 < η → ∀ᶠ k in atTop, (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂(W k).measure) < ENNReal.ofReal η := by
+  intro N n P θ₀ W hconv η hη
+  -- Step 1: the cutoff `χ(z) = max(0, min(1, 4 - |z|))` is continuous and nonnegative, `χ = 1` on
+  -- `B_3(0)` and `χ = 0` off `B°_4(0)`; so `tsupport χ ⊆ B_4(0)` and `χ` has compact support.
+  set χ : Euclidean N → ℝ := fun z ↦ max 0 (min 1 (4 - ‖z‖))
+  have hχ_cont : Continuous χ :=
+    continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))
+  have hχ_nonneg : ∀ z, 0 ≤ χ z := fun z ↦ le_max_left _ _
+  have hχ_one : ∀ z, ‖z‖ ≤ 3 → χ z = 1 := by
+    intro z hz
+    show max 0 (min 1 (4 - ‖z‖)) = 1
+    rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+  have hχ_supp : tsupport χ ⊆ closedBall (0 : Euclidean N) 4 := by
+    refine closure_minimal (fun z hz ↦ ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_zero_right]
+    by_contra h
+    exact hz (max_eq_left ((min_le_right _ _).trans (by linarith [not_le.1 h])))
+  have hχ_cs : HasCompactSupport χ :=
+    (isCompact_closedBall (0 : Euclidean N) 4).of_isClosed_subset (isClosed_tsupport χ) hχ_supp
+  -- Step 2: `tilt_cutoff` gives `f ∈ C_c` with `f(z,S) = χ(z) t_P(S)` and
+  -- `tsupport f ⊆ tsupport χ × G ⊆ B_4(0) × G ⊆ B°_5(0) × G`.
+  obtain ⟨f, hf, hf_supp⟩ := Submission.intcpt_fli_tilt_cutoff_cc N n P χ hχ_cont hχ_cs
+  have hf_supp4 : tsupport f ⊆ closedBall (0 : Euclidean N) 4 ×ˢ (univ : Set (Grassmannian N n)) :=
+    hf_supp.trans (prod_mono hχ_supp subset_rfl)
+  have hf_supp5 : tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) :=
+    hf_supp4.trans (prod_mono (closedBall_subset_ball (by norm_num)) subset_rfl)
+  -- Step 3: along `y ↦ (y,P)`, `∫ f dv(P) = ∫_P χ(y) t_P(P) dH^n = 0` as `t_P(P) = ‖0‖ = 0`; so by
+  -- (H), `ofReal(∫ f dW_k) → ofReal 0 = 0`, and `ofReal(∫ f dW_k) < ofReal η` for all large `k`.
+  have hplane : ∫ z, f z ∂(planeVarifoldMeasure P) = 0 := by
+    rw [planeVarifoldMeasure, integral_map measurable_prodMk_right.aemeasurable
+      (map_continuous f).aestronglyMeasurable]
+    simp [hf]
+  have hlim : Tendsto (fun k ↦ ENNReal.ofReal (∫ z, f z ∂(W k).measure)) atTop (𝓝 0) := by
+    have := ENNReal.tendsto_ofReal (hconv f hf_supp5)
+    rwa [hplane, mul_zero, ENNReal.ofReal_zero] at this
+  filter_upwards [hlim.eventually_lt_const (ENNReal.ofReal_pos.2 hη)] with k hk
+  refine lt_of_le_of_lt ?_ hk
+  -- Step 4: `f ≥ 0` is bounded and vanishes off `B_4(0) × G`, which has finite `W_k`-measure as
+  -- `B_4(0)` is a compact subset of `B°_5(0)`; so `f` is `W_k`-integrable and
+  -- `ofReal(∫ f dW_k) = ∫⁻ ofReal(f) dW_k`.
+  have hf_nonneg : ∀ z, 0 ≤ f z := fun ⟨z, S⟩ ↦ by
+    rw [hf]
+    exact mul_nonneg (hχ_nonneg z) (norm_nonneg _)
+  obtain ⟨C, hC⟩ := (map_continuous f).norm.bddAbove_range_of_hasCompactSupport
+    f.hasCompactSupport.norm
+  have hf_int : Integrable f (W k).measure := by
+    refine (integrableOn_iff_integrable_of_support_subset
+      ((subset_tsupport f).trans hf_supp4)).1 ?_
+    exact Measure.integrableOn_of_bounded (M := C)
+      ((W k).finite_on_compact _ (isCompact_closedBall 0 4) (closedBall_subset_ball (by norm_num)))
+      (map_continuous f).aestronglyMeasurable (ae_of_all _ fun z ↦ hC ⟨z, rfl⟩)
+  rw [ofReal_integral_eq_lintegral_ofReal hf_int (ae_of_all _ hf_nonneg)]
+  -- Step 5: `χ = 1` on `B°_3(0)`, so `ofReal(t_P(S)) = ofReal(f(z,S))` on `B°_3(0) × G`, and the
+  -- tilt excess is `∫⁻_{B°_3(0) × G} ofReal(f) dW_k ≤ ∫⁻ ofReal(f) dW_k`.
+  calc ∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)),
+        ENNReal.ofReal ‖LinearMap.toContinuousLinearMap
+          (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+          ∂(W k).measure
+      = ∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)),
+          ENNReal.ofReal (f z) ∂(W k).measure := by
+        refine setLIntegral_congr_fun (measurableSet_ball.prod MeasurableSet.univ) ?_
+        rintro ⟨z, S⟩ ⟨hz, -⟩
+        dsimp only
+        rw [hf, hχ_one z (mem_ball_zero_iff.1 hz).le, one_mul]
+    _ ≤ ∫⁻ z, ENNReal.ofReal (f z) ∂(W k).measure := setLIntegral_le_lintegral _ _
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
