@@ -359,6 +359,31 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Cut-off pull-backs of smooth forms are test forms (step 5 of the proof of Simon Ch. 6, 8.2):
+for smooth `f : ℝ^P → ℝ^Q`, a smooth form `ω` and a smooth compactly supported `χ`,
+`η(y) = χ(y) ω(f(y)) ∘ Df(y)` is smooth (the pull-back `B ↦ (α ↦ α ∘ B)` is analytic) and has
+compact support. -/
+theorem Submission.iwl_cr_ci_cutoff_pullback_testForm :
+    ∀ (P Q k : ℕ) (f : Eucl P → Eucl Q) (χ : Eucl P → ℝ) (ω : DifferentialForm (Eucl Q) k),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ →
+      HasCompactSupport χ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω →
+      ∃ η : TestFormOn (univ : Set (Eucl P)) k, ∀ y, (η : DifferentialForm (Eucl P) k) y =
+        χ y • (ω (f y)).compContinuousLinearMap (fderiv ℝ f y) := by
+  intro P Q k f χ ω hf hχ hχc hω
+  -- `y ↦ Df(y)` is smooth.
+  have hDf : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right le_rfl
+  -- The pull-back operator `B ↦ (α ↦ α ∘ B)` is analytic, hence smooth.
+  have hpull : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (ContinuousAlternatingMap.compContinuousLinearMapCLM :
+        (Eucl P →L[ℝ] Eucl Q) → Covector (Eucl Q) k →L[ℝ] Covector (Eucl P) k) :=
+    (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff
+  -- So `p(y) = ω(f(y)) ∘ Df(y)` is smooth, and `η = χ • p` is smooth with compact support.
+  have hp : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (fun y => (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)) :=
+    (hpull.comp hDf).clm_apply (hω.comp hf)
+  exact ⟨⟨fun y => χ y • (ω (f y)).compContinuousLinearMap (fderiv ℝ f y),
+    ⟨hχ.smul hp, hχc.smul_right⟩, subset_univ _⟩, fun y => rfl⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
