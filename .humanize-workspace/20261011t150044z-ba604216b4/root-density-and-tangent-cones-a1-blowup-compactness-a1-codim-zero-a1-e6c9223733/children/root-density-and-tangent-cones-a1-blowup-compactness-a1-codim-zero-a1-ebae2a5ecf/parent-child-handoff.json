@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/{Contract,Submission}.lean against workspace GMT/Ch07/{Contract,Submission}.lean (identical); grep scope commands (open/namespace/noncomputable section/end) of Contract.lean",
+        "python3 -I over dag.json: this node's record (depth 4, status decomposing, children []); siblings under codim_zero-a1; regex scans of lean_statements for basisFun, IsUnitOrientationOf, Orthonormal, finrank, '∃ ε : Covector', 'R.orient y α = σ y', 'R.action ω = ∫ y'; statements of dgcr_unitOrientation_eq_or_neg, rsdic_unitOrientation_eq_or_eq_neg, fvmb_imrep_ae_unitOrientation_approxTangentPlane, dorag_aa_ae_finrank_approxTangentPlane, dgoj_exists_det_covector",
+        "rg -n 'euclideanHausdorffMeasure_eq_volume|theorem eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|theorem eq_top_of_finrank_eq|theorem det_self|theorem det_apply' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n 'continuous_of_finiteDimensional|def mkContinuous|toContinuousAlternatingMap|structure ContinuousAlternatingMap' in snapshot Mathlib Topology/Algebra/Module and Analysis/Normed/Module/{Alternating,Multilinear}",
+        "grep -n HasApproximateTangentSpaceAt simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; sed simongmt Chapter06/Forms.lean and Currents.lean (Covector, DifferentialForm, TestFormOn, GeometricCurrentOn)",
+        "rg -l 'dtc_bc_cz_top_density_' GMT, simongmt/Poincare, snapshot project, dag.json (exit 1, no match); rg -o in nodes/ (only the implementation-note mentions dtc_bc_cz_top_density_ and _aux)",
+        "python3 -I /tmp/td-split-7f3a/scripts/gen.py: verifier gmt-compare.py child_modules (contract mode) + lean_contract.validate_lean_statement on the 3 child types and the parent type",
+        "lake env lean /tmp/td-split-7f3a/check/{Probe,Stmts,C1,C2,C3,Full,Names2}.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-e6c9223733/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/td-split-7f3a/check/Full.lean",
+        "/tmp/td-split-7f3a/check/Stmts.lean",
+        "/tmp/td-split-7f3a/gen/Challenge_det_covector.lean",
+        "/tmp/td-split-7f3a/gen/Challenge_orient_sign.lean",
+        "/tmp/td-split-7f3a/gen/Challenge_of_sign.lean",
+        "/tmp/td-split-7f3a/gen/Challenge_parent.lean"
+      ],
+      "conclusion": "Pin: the snapshot contract and submission are byte-identical to the workspace files; the workspace HEAD is b4d606d and the tree is clean.\n\nLibrary support at the pin, all checked by #check in comparator scope:\n- Module.Basis.det_self, det_apply, toMatrix_apply and coord_apply; AlternatingMap.eq_smul_basis_det.\n- OrthonormalBasis.mk, coe_mk, coe_toBasis and det_to_matrix_orthonormalBasis_real; LinearMap.continuous_of_finiteDimensional; Continuous.matrix_det.\n- SimonGMT HasApproximateTangentSpaceAt.finrank_eq; Submodule.eq_top_of_finrank_eq; finrank_euclideanSpace.\n- AEStronglyMeasurable.mk, stronglyMeasurable_mk and ae_eq_mk; ContinuousLinearMap.apply.\n- EuclideanSpace.euclideanHausdorffMeasure_eq_volume (in the frozen import closure, since μHE is defined in the same file); locallyIntegrableOn_iff; lintegral_indicator; Measure.restrict_restrict; integral_congr_ae; setIntegral_eq_integral_of_forall_compl_eq_zero, which needs no integrability.\n\nMathlib has no finite-dimensional continuity lemma for multilinear maps. ε is therefore built as { D with cont } from continuity via det_apply.\n\nLean evidence:\n- All three child types and the parent type validate and elaborate in the exact generated challenge files.\n- Full.lean proves all three children and the parent from them; every target depends only on propext, Classical.choice and Quot.sound.\n\nReuse and names:\n- No byte-identical accepted reuse exists; dgoj_exists_det_covector is weaker.\n- No dtc_bc_cz_top_density_ names exist anywhere."
+    }
+  ],
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+  "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.orient_sign-a1",
+  "subproblem": {
+    "key": "orient_sign",
+    "title": "Top-dimensional orientations are ±e₁∧⋯∧eₙ almost everywhere, with a measurable sign",
+    "statement": "Let n ∈ ℕ, let V ⊆ ℝⁿ = Euclid n be an arbitrary set (no openness is needed), and let R : IMRep V n be an integer multiplicity triple (M, θ, ξ) with M = R.carrier and ξ = R.orient : ℝⁿ → MultiVector n n. Let Hⁿ = μHE[n] and e = ⇑(EuclideanSpace.basisFun (Fin n) ℝ). Then there is a measurable σ : ℝⁿ → ℝ such that, for Hⁿ⌞M-almost every y, two things hold: σ(y) = 1 or σ(y) = −1, and ξ(y)(α) = σ(y)·α(e) for every n-covector α ∈ Covector (Euclid n) n.",
+    "lean_statement": "∀ (n : ℕ) (V : Set (Euclid n)) (R : IMRep V n), ∃ σ : Euclid n → ℝ, Measurable σ ∧ ∀ᵐ y ∂(μHE[n].restrict R.carrier), (σ y = 1 ∨ σ y = -1) ∧ ∀ α : Covector (Euclid n) n, R.orient y α = σ y * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+    "lean_name": "dtc_bc_cz_top_density_orient_sign",
+    "depends_on": [
+      "det_covector"
+    ],
+    "natural_proof": "Source: steps 3–4 of the parent proof of dtc_bc_cz_top_density, with all details filled in; the measurable modification σ̃ of step 4 is produced here. Uses the sibling det_covector (Submission.dtc_bc_cz_top_density_det_covector).\nNotation. ℝⁿ := Euclid n, Hⁿ := μHE[n], e := ⇑(EuclideanSpace.basisFun (Fin n) ℝ). For R : IMRep V n write M := R.carrier and ξ := R.orient : ℝⁿ → MultiVector n n, where MultiVector n n = (Covector (Euclid n) n →L[ℝ] ℝ). The IMRep fields used are:\n   - aestronglyMeasurable_orient: ξ is AEStronglyMeasurable for Hⁿ⌞M;\n   - orients: for Hⁿ⌞M-a.e. y there is a subspace Q of ℝⁿ with HasApproximateTangentSpaceAt n M y Q and IsUnitOrientationOf (ξ y) Q.\nNo property of V and no positivity of n is used.\n1. By det_covector at n, fix ε ∈ Covector (Euclid n) n with:\n   (i) ε(e) = 1;\n   (ii) α(v) = ε(v)·α(e) for every n-covector α and every v : Fin n → ℝⁿ;\n   (iii) ε(τ) = 1 ∨ ε(τ) = −1 for every orthonormal τ : Fin n → ℝⁿ with span(range τ) = ⊤.\n2. Measurable sign. Define σ₀(y) := ξ(y)(ε).\n   - σ₀ is the composition of ξ with the continuous linear map \"evaluation at ε\", ContinuousLinearMap.apply ℝ ℝ ε : MultiVector n n →L[ℝ] ℝ. So σ₀ is AEStronglyMeasurable for Hⁿ⌞M (Continuous.comp_aestronglyMeasurable with aestronglyMeasurable_orient).\n   - Let σ := AEStronglyMeasurable.mk σ₀. Then σ is strongly measurable (AEStronglyMeasurable.stronglyMeasurable_mk), hence measurable (StronglyMeasurable.measurable).\n   - Moreover σ₀ = σ Hⁿ⌞M-a.e. (AEStronglyMeasurable.ae_eq_mk).\n3. It remains to prove that for Hⁿ⌞M-a.e. y, σ(y) ∈ {1, −1} and ξ(y)(α) = σ(y)·α(e) for every n-covector α. The intersection of two Hⁿ⌞M-conull sets is conull, so it suffices to prove this at every y where the orients property holds and σ₀(y) = σ(y). Fix such a y.\n4. The tangent space is all of ℝⁿ. Choose Q with HasApproximateTangentSpaceAt n M y Q and IsUnitOrientationOf (ξ y) Q. By HasApproximateTangentSpaceAt.finrank_eq, finrank Q = n. Also finrank ℝⁿ = card (Fin n) = n (finrank_euclideanSpace, Fintype.card_fin). Hence Q = ⊤ (Submodule.eq_top_of_finrank_eq).\n5. By IsUnitOrientationOf (ξ y) Q, choose τ : Fin n → ℝⁿ orthonormal with span(range τ) = Q = ⊤ such that either\n   (a) ξ(y)(α) = α(τ) for all n-covectors α, or\n   (b) ξ(y)(α) = −α(τ) for all α.\nBy (iii), ε(τ) = 1 ∨ ε(τ) = −1. By (ii), α(τ) = ε(τ)·α(e) for every α.\n6. In case (a) put s := ε(τ); in case (b) put s := −ε(τ). In both cases s = 1 ∨ s = −1 by step 5, and ξ(y)(α) = s·α(e) for every α:\n   - in case (a), ξ(y)(α) = α(τ) = ε(τ)·α(e);\n   - in case (b), ξ(y)(α) = −α(τ) = −ε(τ)·α(e).\n7. Take α = ε in step 6 and use (i): σ₀(y) = ξ(y)(ε) = s·ε(e) = s. Hence σ(y) = σ₀(y) = s, so σ(y) = 1 ∨ σ(y) = −1, and ξ(y)(α) = s·α(e) = σ(y)·α(e) for every α. As y was an arbitrary point of an Hⁿ⌞M-conull set, σ is measurable and has the required a.e. properties. ∎\nImplementation note (not part of the proof): name every auxiliary Lean declaration introduced for this child with the prefix dtc_bc_cz_top_density_orient_sign_ (for example dtc_bc_cz_top_density_orient_sign_aux). The candidates of sibling children are merged into one Submission.lean, and only byte-identical duplicate declarations are dropped during that merge.",
+    "proof_key_steps": [
+      "Fix ε from det_covector: ε(e) = 1, α(v) = ε(v)α(e), and ε = ±1 on orthonormal spanning frames.",
+      "σ₀ := ξ(·)(ε) is AEStronglyMeasurable because evaluation at ε is continuous linear. Let σ := AEStronglyMeasurable.mk σ₀; it is measurable and σ = σ₀ Hⁿ⌞M-a.e.",
+      "At a.e. y, orients gives Q with an approximate tangent space and a unit orientation. finrank Q = n forces Q = ⊤.",
+      "τ is orthonormal, spans ⊤, and ξ(y) = ±(α ↦ α(τ)). Since α(τ) = ε(τ)α(e) and ε(τ) = ±1, ξ(y)(α) = s·α(e) with s = ±1.",
+      "s = s·ε(e) = ξ(y)(ε) = σ₀(y) = σ(y), so σ(y) = ±1 and ξ(y)(α) = σ(y)α(e) a.e."
+    ]
+  },
+  "audit": {
+    "key": "orient_sign",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type exactly states global measurability and a single conull set on which both conclusions hold for every covector. The proof correctly uses det_covector, identifies the tangent subspace with top by finrank, and transfers continuous evaluation to its measurable modification. Intersecting the two conull sets suffices; no uncountable intersection or undeclared dependency is hidden."
+  },
+  "resolved_dependencies": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.det_covector-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-ebae2a5ecf/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-ebae2a5ecf/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-ebae2a5ecf/parent-supplied-natural-proof.json"
+}

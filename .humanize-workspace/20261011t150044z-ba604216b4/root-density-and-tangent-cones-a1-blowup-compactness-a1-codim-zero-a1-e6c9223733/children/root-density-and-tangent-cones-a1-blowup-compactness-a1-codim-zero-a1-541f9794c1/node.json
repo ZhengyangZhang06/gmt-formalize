@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.of_sign-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+  "depth": 5,
+  "title": "An IM representation in ℝⁿ oriented by σ·(e₁∧⋯∧eₙ) acts by an integer L¹_loc density",
+  "statement": "Let n ∈ ℕ, let V ⊆ ℝⁿ = Euclid n be open, and let R : IMRep V n with M = R.carrier, θ = R.mult and ξ = R.orient. Let Hⁿ = μHE[n] and e = ⇑(EuclideanSpace.basisFun (Fin n) ℝ). Let σ : ℝⁿ → ℝ be measurable such that, for Hⁿ⌞M-a.e. y, σ(y) ∈ {1, −1} and ξ(y)(α) = σ(y)·α(e) for every n-covector α. Then there is g : ℝⁿ → ℤ with two properties. First, y ↦ (g(y) : ℝ) is locally Lebesgue-integrable on V (LocallyIntegrableOn … V volume). Second, R.action ω = ∫_{ℝⁿ} g(y)·ω(y)(e) dLⁿ(y) for every n-form ω : DifferentialForm (Euclid n) n, not necessarily smooth or compactly supported. Here R.action ω = ∫_M θ(y)·ξ(y)(ω(y)) dHⁿ(y).",
+  "lean_statement": "∀ (n : ℕ) (V : Set (Euclid n)) (R : IMRep V n) (σ : Euclid n → ℝ), IsOpen V → Measurable σ → (∀ᵐ y ∂(μHE[n].restrict R.carrier), (σ y = 1 ∨ σ y = -1) ∧ ∀ α : Covector (Euclid n) n, R.orient y α = σ y * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → ∃ g : Euclid n → ℤ, LocallyIntegrableOn (fun y => (g y : ℝ)) V volume ∧ ∀ ω : DifferentialForm (Euclid n) n, R.action ω = ∫ y, (g y : ℝ) * ω y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+  "lean_name": "dtc_bc_cz_top_density_of_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-541f9794c1-a1"
+}

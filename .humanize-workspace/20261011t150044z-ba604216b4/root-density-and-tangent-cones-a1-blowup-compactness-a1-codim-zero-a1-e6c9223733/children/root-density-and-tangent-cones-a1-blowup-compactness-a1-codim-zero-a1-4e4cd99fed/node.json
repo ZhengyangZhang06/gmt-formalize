@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.det_covector-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+  "depth": 5,
+  "title": "The determinant n-covector of ℝⁿ: every n-covector is α(e)·ε, and ε = ±1 on orthonormal bases",
+  "statement": "Let n ∈ ℕ, ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n), and let e = (e₁, …, eₙ) = ⇑(EuclideanSpace.basisFun (Fin n) ℝ) be the standard orthonormal basis. There is an n-covector ε ∈ Covector (Euclid n) n (a continuous alternating n-linear form on ℝⁿ) with three properties. (i) ε(e) = 1. (ii) α(v) = ε(v)·α(e) for every n-covector α and every v : Fin n → ℝⁿ. (iii) ε(τ) = 1 or ε(τ) = −1 for every orthonormal family τ : Fin n → ℝⁿ whose span is ℝⁿ.",
+  "lean_statement": "∀ n : ℕ, ∃ ε : Covector (Euclid n) n, ε ⇑(EuclideanSpace.basisFun (Fin n) ℝ) = 1 ∧ (∀ (α : Covector (Euclid n) n) (v : Fin n → Euclid n), α v = ε v * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) ∧ ∀ τ : Fin n → Euclid n, Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = ⊤ → ε τ = 1 ∨ ε τ = -1",
+  "lean_name": "dtc_bc_cz_top_density_det_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-4e4cd99fed-a1"
+}
