@@ -582,6 +582,44 @@ theorem Submission.dgc_periodic_maximal :
   simp_rw [ENNReal.ofReal_mul hβ.le, ENNReal.tsum_mul_left] at h1
   rw [one_div, ENNReal.ofReal_inv_of_pos hβ, ENNReal.le_inv_iff_mul_le, mul_comm]
   exact h1
+/-- Fubini bound for the cylinder over a set of centres (corrected (5) in the proof of Simon
+Ch. 6, 5.1): for `J ⊆ ι` and any `B ⊆ ℝ^J`,
+`L^ι({a ∈ [0,1]^ι : (a_i)_{i ∈ J} ∈ B}) ≤ L^J(B)`.  The set lies in the preimage of
+`B × [0,1]^{ι∖J}` under the measure-preserving equivalence `ℝ^ι ≃ ℝ^J × ℝ^{ι∖J}`, and the
+product measure of a rectangle of arbitrary sets is the product of the measures. -/
+theorem Submission.dgc_cylinder_volume :
+    ∀ (ι : Type) [Fintype ι] (J : Finset ι) (B : Set (EuclideanSpace ℝ J)),
+      volume {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧
+        WithLp.toLp 2 (fun i : J => a i) ∈ B} ≤ volume B := by
+  intro ι _ J B
+  classical
+  -- `e : E_ι → ℝ^J × ℝ^{ι∖J}` (coordinates, then restriction to `J` and to `ι∖J`) is a
+  -- measure-preserving measurable equivalence.  (`convert` identifies the two `Fintype ↥J`
+  -- instances underlying the product measures.)
+  let e := (MeasurableEquiv.toLp 2 (ι → ℝ)).symm.trans
+    (MeasurableEquiv.piEquivPiSubtypeProd (fun _ : ι => ℝ) (· ∈ J))
+  have he : MeasurePreserving e := by
+    convert (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp ι).trans
+      (volume_preserving_piEquivPiSubtypeProd (fun _ : ι => ℝ) (· ∈ J))
+  -- The set lies in `e⁻¹(B' × C)`, `B'` the coordinate copy of `B` and `C = [0,1]^{ι∖J}`.
+  let B' : Set (J → ℝ) := MeasurableEquiv.toLp 2 (J → ℝ) ⁻¹' B
+  let C : Set ({i // i ∉ J} → ℝ) := univ.pi fun _ => Icc 0 1
+  have hsub : {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧
+      WithLp.toLp 2 (fun i : J => a i) ∈ B} ⊆ e ⁻¹' (B' ×ˢ C) :=
+    fun a ha => ⟨ha.2, fun i _ => ha.1 i⟩
+  -- The two factors: `L^J(B') = L^J(B)` and `L^{ι∖J}(C) = ∏ L¹([0,1]) = 1`.
+  have hB' : volume B' = volume B :=
+    (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp J).symm.measure_preimage_equiv B
+  have hC : volume C = 1 := by
+    simp only [C, volume_pi_pi, Real.volume_Icc, sub_zero, ENNReal.ofReal_one,
+      Finset.prod_const_one]
+  -- Monotonicity and the rectangle formula for product measures.
+  calc volume {a : EuclideanSpace ℝ ι | (∀ i, 0 ≤ a i ∧ a i ≤ 1) ∧
+        WithLp.toLp 2 (fun i : J => a i) ∈ B}
+      ≤ volume (e ⁻¹' (B' ×ˢ C)) := measure_mono hsub
+    _ = volume B' * volume C := by
+      rw [he.measure_preimage_equiv, Measure.volume_eq_prod, Measure.prod_prod]
+    _ = volume B := by rw [hB', hC, mul_one]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
