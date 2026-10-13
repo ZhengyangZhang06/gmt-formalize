@@ -451,6 +451,204 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.3.1, Ch. 3 Remark 1.5(1)**: for `Hⁿ`-a.e. `x ∈ M`, the orientation `ξ(x)` of an
+integer multiplicity triple `(M, θ, ξ)` orients the chosen approximate tangent plane `TₓM`.
+`R.orients` gives, a.e. on `M`, an approximate tangent plane `Q` at `x` oriented by `ξ(x)`; the
+chosen witness `approxTangentPlane n M x` is then `Q`, approximate tangent planes being unique. -/
+theorem Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), IsUnitOrientationOf (R.orient x) (approxTangentPlane n R.carrier x) := by
+  intro P n U R
+  filter_upwards [R.orients] with x hx
+  obtain ⟨Q, hQ, hξ⟩ := hx
+  -- the chosen witness of `∃ Q', HasApproximateTangentSpaceAt n M x Q'` is `Q`
+  have h : ∃ Q', HasApproximateTangentSpaceAt n R.carrier x Q' := ⟨Q, hQ⟩
+  have hT : approxTangentPlane n R.carrier x = Q := by
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec.unique hQ
+  rw [hT]
+  exact hξ
+/-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
+If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
+theorem Submission.unit_orientation_norm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
+  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
+  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
+  have hbound : ‖α τ‖ ≤ ‖α‖ := by
+    simpa [hτ.1] using α.le_opNorm τ
+  rcases hξ with h | h
+  · rw [h, one_mul]
+    exact hbound
+  · rw [h, norm_neg, one_mul]
+    exact hbound
+/-- The vector representing `β ↦ ζ(β ∧ α)` (steps 4(a), 4(b) of the parent proof; Simon Ch. 6,
+proof of Lemma 4.5(2), display (3)).  Write `β ∧ α` for `alternatizeUncurryFin (β.smulRight α)`,
+`eₗ` for the standard basis of `ℝᴾ` and `V = Σₗ ζ(⟨eₗ, ·⟩ ∧ α) eₗ`.  Then `ζ(β ∧ α) = β(V)` for
+every `1`-covector `β`, as `β ↦ ζ(β ∧ α)` is linear and `β = Σₗ β(eₗ) ⟨eₗ, ·⟩`.  If `ζ` orients
+`Q` and `v ∈ Qᗮ`, then `(⟨v, ·⟩ ∧ α)(τ) = Σᵢ (-1)ⁱ ⟨v, τᵢ⟩ α(…) = 0` for the basis `τ` of `Q`, so
+`⟨v, V⟩ = ζ(⟨v, ·⟩ ∧ α) = 0` and `V ∈ Qᗮᗮ = Q`. -/
+theorem Submission.dor_lmbsf_ll_wedge_representing_vector : ∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (α : Covector (Euclid P) n), (∀ β : Euclid P →L[ℝ] ℝ, ζ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ l : Fin P, ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight α)) • EuclideanSpace.single l (1 : ℝ))) ∧ ∀ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ζ Q → (∑ l : Fin P, ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight α)) • EuclideanSpace.single l (1 : ℝ)) ∈ Q := by
+  intro P n ζ α
+  -- `Φ(β) = ζ(β ∧ α)` is linear in `β`
+  let Φ : (Euclid P →L[ℝ] ℝ) → ℝ := fun β =>
+    ζ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α))
+  have hΦadd : ∀ β₁ β₂ : Euclid P →L[ℝ] ℝ, Φ (β₁ + β₂) = Φ β₁ + Φ β₂ := by
+    intro β₁ β₂
+    have : (β₁ + β₂).smulRight α = β₁.smulRight α + β₂.smulRight α := by
+      ext v; simp [add_smul]
+    simp only [Φ, this, ContinuousAlternatingMap.alternatizeUncurryFin_add, map_add]
+  have hΦsmul : ∀ (c : ℝ) (β : Euclid P →L[ℝ] ℝ), Φ (c • β) = c • Φ β := by
+    intro c β
+    have : (c • β).smulRight α = c • β.smulRight α := by
+      ext v; simp [mul_smul]
+    simp only [Φ, this, ContinuousAlternatingMap.alternatizeUncurryFin_smul, map_smul]
+  let Φl : (Euclid P →L[ℝ] ℝ) →ₗ[ℝ] ℝ :=
+    { toFun := Φ, map_add' := hΦadd, map_smul' := hΦsmul }
+  -- `β = Σₗ β(eₗ) ⟨eₗ, ·⟩`
+  have hβexp : ∀ β : Euclid P →L[ℝ] ℝ, β = ∑ l : Fin P,
+      β (EuclideanSpace.single l (1 : ℝ)) • innerSL ℝ (EuclideanSpace.single l (1 : ℝ)) := by
+    intro β
+    ext v
+    have hv : v = ∑ l : Fin P, v l • EuclideanSpace.single l (1 : ℝ) := by
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr v]
+      simp
+    simp only [FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+      Pi.smul_apply, innerSL_apply_apply, EuclideanSpace.inner_single_left, map_one, one_mul,
+      smul_eq_mul]
+    conv_lhs => rw [hv]
+    simp [map_sum, map_smul, mul_comm]
+  -- `ζ(β ∧ α) = Σₗ β(eₗ) ζ(⟨eₗ, ·⟩ ∧ α) = β(V)`
+  have hid : ∀ β : Euclid P →L[ℝ] ℝ, Φ β = β (∑ l : Fin P,
+      Φ (innerSL ℝ (EuclideanSpace.single l (1 : ℝ))) • EuclideanSpace.single l (1 : ℝ)) := by
+    intro β
+    have h1 : Φ β = Φl β := rfl
+    rw [h1, hβexp β, map_sum]
+    simp only [map_sum, map_smul, smul_eq_mul]
+    apply Finset.sum_congr rfl
+    intro l _
+    simp only [Φl, LinearMap.coe_mk, AddHom.coe_mk]
+    have := hβexp β
+    rw [← this]
+    ring
+  refine ⟨hid, ?_⟩
+  intro Q hQ
+  obtain ⟨τ, -, hspan, hsign⟩ := hQ
+  -- `ζ(⟨v, ·⟩ ∧ α) = ±(⟨v, ·⟩ ∧ α)(τ) = 0` for `v ∈ Qᗮ`, as every `τᵢ ∈ Q`
+  have hzero : ∀ v ∈ Qᗮ, Φ (innerSL ℝ v) = 0 := by
+    intro v hv
+    have hτQ : ∀ i, τ i ∈ Q := fun i => hspan ▸ Submodule.subset_span (Set.mem_range_self i)
+    have hval :
+        ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ v).smulRight α) τ = 0 := by
+      rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+      apply Finset.sum_eq_zero
+      intro i _
+      simp [Submodule.inner_left_of_mem_orthogonal (hτQ i) hv]
+    rcases hsign with h | h
+    · simp only [Φ, h, hval]
+    · simp only [Φ, h, hval, neg_zero]
+  -- `⟨u, V⟩ = ζ(⟨u, ·⟩ ∧ α) = 0` for `u ∈ Qᗮ`, so `V ∈ Qᗮᗮ = Q`
+  rw [← Submodule.orthogonal_orthogonal Q, Submodule.mem_orthogonal]
+  intro u hu
+  have := hid (innerSL ℝ u)
+  rw [hzero u hu, innerSL_apply_apply] at this
+  exact this.symm
+
+/-- **A bounded Borel tangent field representing `β ↦ ⟨β ∧ ω, ξ⟩`** (Simon Ch. 6, proof of
+Lemma 4.5(2), display (3)).  Let `R = (M, θ, ξ)` be an integer multiplicity `(n+1)`-triple and `ω`
+a continuous `n`-form with `‖ω‖ ≤ B`.  Let `ξ₀` be a strongly measurable version of `ξ`, replaced
+by `0` where its norm exceeds `1`.  Then `W = Σₗ ξ₀(eₗ♭ ∧ ω) eₗ` is Borel, vanishes where `ω` does
+and is bounded by `P (n+1) B`.  For `H^{n+1}`-a.e. `x ∈ M`, `ξ(x)` orients `TₓM`, so `‖ξ(x)‖ ≤ 1`
+and `ξ₀(x) = ξ(x)`; there `W(x)` is the representing vector of `β ↦ ⟨β ∧ ω(x), ξ(x)⟩`, which
+lies in `TₓM`. -/
+theorem Submission.dor_lmbsf_ll_tangent_wedge_field : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U (n + 1)) (ω : DifferentialForm (Euclid P) n) (B : ℝ), Continuous ω → (∀ x, ‖ω x‖ ≤ B) → ∃ (W : Euclid P → Euclid P) (c' : ℝ), Measurable W ∧ (∀ x, ω x = 0 → W x = 0) ∧ (∀ x, ‖W x‖ ≤ c') ∧ ∀ᵐ x ∂(μHE[n + 1].restrict R.carrier), W x ∈ approxTangentPlane (n + 1) R.carrier x ∧ ∀ β : Euclid P →L[ℝ] ℝ, R.orient x (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight (ω x))) = β (W x) := by
+  intro P n U R ω B hω hB
+  classical
+  -- a strongly measurable version `ξ₁` of `ξ`, and its truncation `ξ₀` to the closed unit ball
+  have hξm := R.aestronglyMeasurable_orient
+  set ξ₁ : Euclid P → MultiVector P (n + 1) := hξm.mk R.orient with hξ₁_def
+  have hξ₁ : StronglyMeasurable ξ₁ := hξm.stronglyMeasurable_mk
+  have hξ₁ae : R.orient =ᵐ[μHE[n + 1].restrict R.carrier] ξ₁ := hξm.ae_eq_mk
+  set S : Set (Euclid P) := {x | ‖ξ₁ x‖ ≤ 1} with hS_def
+  have hS : MeasurableSet S :=
+    measurableSet_le (hξ₁.norm (β := MultiVector P (n + 1))).measurable measurable_const
+  set ξ₀ : Euclid P → MultiVector P (n + 1) := S.piecewise ξ₁ 0 with hξ₀_def
+  have hξ₀ : StronglyMeasurable ξ₀ := hξ₁.piecewise hS stronglyMeasurable_const
+  have hξ₀norm : ∀ x, ‖ξ₀ x‖ ≤ 1 := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [hξ₀_def, Set.piecewise_eq_of_mem _ _ _ hx]; exact hx
+    · rw [hξ₀_def, Set.piecewise_eq_of_notMem _ _ _ hx, Pi.zero_apply]
+      exact (norm_zero (E := MultiVector P (n + 1))).le.trans zero_le_one
+  -- the coefficient forms `Aₗ = eₗ♭ ∧ ω` are continuous
+  set e : Fin P → Euclid P := fun l => EuclideanSpace.single l (1 : ℝ) with he_def
+  set A : Fin P → Euclid P → Covector (Euclid P) (n + 1) := fun l x =>
+    ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (e l)).smulRight (ω x)) with hA_def
+  have hA : ∀ l, Continuous (A l) := by
+    intro l
+    have h1 : Continuous (fun x => (innerSL ℝ (e l)).smulRight (ω x)) :=
+      (isBoundedBilinearMap_smulRight (𝕜 := ℝ) (E := Euclid P)).continuous.comp
+        (continuous_const.prodMk hω)
+    have h2 := (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ (n := n)).continuous.comp h1
+    simpa [Function.comp_def, ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply] using h2
+  -- the coefficients `ξ₀(Aₗ)` are strongly measurable
+  have hcoef : ∀ l, StronglyMeasurable (fun x => ξ₀ x (A l x)) := by
+    intro l
+    have h2 : StronglyMeasurable (A l) := (hA l).stronglyMeasurable
+    exact (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) (n + 1)) (F := ℝ)).continuous.comp_stronglyMeasurable
+      (hξ₀.prodMk h2)
+  set W : Euclid P → Euclid P := fun x => ∑ l : Fin P, ξ₀ x (A l x) • e l with hW_def
+  -- `‖Aₗ‖ ≤ (n+1) ‖eₗ♭‖ ‖ω‖ ≤ (n+1) B`
+  have hAnorm : ∀ l x, ‖A l x‖ ≤ (n + 1) * B := by
+    intro l x
+    have h1 := ContinuousAlternatingMap.norm_alternatizeUncurryFin_le ((innerSL ℝ (e l)).smulRight (ω x))
+    have h2 : ‖(innerSL ℝ (e l)).smulRight (ω x)‖ = ‖innerSL ℝ (e l)‖ * ‖ω x‖ :=
+      ContinuousLinearMap.norm_smulRight_apply _ _
+    have h3 : ‖innerSL ℝ (e l)‖ = 1 := by
+      rw [innerSL_apply_norm]; simp [e]
+    calc ‖A l x‖ ≤ (n + 1) * ‖(innerSL ℝ (e l)).smulRight (ω x)‖ := h1
+      _ = (n + 1) * ‖ω x‖ := by rw [h2, h3, one_mul]
+      _ ≤ (n + 1) * B := by gcongr; exact hB x
+  refine ⟨W, (P : ℝ) * ((n + 1) * B), ?_, ?_, ?_, ?_⟩
+  · exact Finset.measurable_sum _ (fun l _ => (hcoef l).measurable.smul_const (e l))
+  · intro x hx
+    have hA0 : ∀ l, A l x = 0 := by
+      intro l
+      have h0 : (innerSL ℝ (e l)).smulRight (0 : Covector (Euclid P) n) = 0 := by ext; simp
+      ext v
+      simp only [hA_def, hx, h0, ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+      simp
+    simp only [hW_def, hA0, map_zero, zero_smul, Finset.sum_const_zero]
+  · intro x
+    calc ‖W x‖ ≤ ∑ l : Fin P, ‖ξ₀ x (A l x) • e l‖ := norm_sum_le _ _
+      _ ≤ ∑ l : Fin P, (n + 1) * B := by
+          apply Finset.sum_le_sum
+          intro l _
+          rw [norm_smul]
+          have he1 : ‖e l‖ = 1 := by simp [e]
+          rw [he1, mul_one]
+          calc ‖ξ₀ x (A l x)‖ ≤ ‖ξ₀ x‖ * ‖A l x‖ := (ξ₀ x).le_opNorm _
+            _ ≤ 1 * ((n + 1) * B) := by
+                gcongr
+                · exact hξ₀norm x
+                · exact hAnorm l x
+            _ = (n + 1) * B := one_mul _
+      _ = (P : ℝ) * ((n + 1) * B) := by simp
+  -- a.e. on `M`: `ξ` orients `TₓM`, so `‖ξ‖ ≤ 1` and `ξ₀ = ξ₁ = ξ`; then `W` is the representing
+  -- vector of `β ↦ ξ(β ∧ ω)`
+  · filter_upwards [hξ₁ae, Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane P (n + 1) U R] with x hx1 hx2
+    have hnorm : ‖R.orient x‖ ≤ 1 := Submission.unit_orientation_norm_le_one P (n + 1) _ _ hx2
+    have hxS : x ∈ S := by
+      show ‖ξ₁ x‖ ≤ 1
+      rw [← hx1]; exact hnorm
+    have hξ₀x : ξ₀ x = R.orient x := by
+      rw [hξ₀_def, Set.piecewise_eq_of_mem _ _ _ hxS, hx1]
+    obtain ⟨hidt, hmem⟩ := Submission.dor_lmbsf_ll_wedge_representing_vector P n (R.orient x) (ω x)
+    have hWx : W x = ∑ l : Fin P, R.orient x (ContinuousAlternatingMap.alternatizeUncurryFin
+        ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight (ω x))) • EuclideanSpace.single l (1 : ℝ) := by
+      simp only [hW_def, hA_def, he_def, hξ₀x]
+    refine ⟨?_, ?_⟩
+    · rw [hWx]; exact hmem _ hx2
+    · intro β; rw [hWx]; exact hidt β
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

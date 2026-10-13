@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ad7ccd949efec4e4f501be80a0878a4aafde956e270f3cd32fe94b93a836bae4",
+  "git_delta": {
+    "base_commit": "01216a22f62883f6f1ec3aa8e9c55a4f5eab57aa",
+    "candidate_commit": "11f9d7866050d55ba02dbe3b2fbbb7be2e099bcb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_ll_tangent_wedge_field",
+    "diff_sha256": "1cd7c6551926cb888d5e3a41d917e5c297c9fc88131cdf19e5c7cb9993a47821",
+    "source_sha256": "b16b654600a2b6a4f40df99838f96595f0beadaf6fcf24362741c9c32cb65d0e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_ll_tangent_wedge_field",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U (n + 1)) (ω : DifferentialForm (Euclid P) n) (B : ℝ), Continuous ω → (∀ x, ‖ω x‖ ≤ B) → ∃ (W : Euclid P → Euclid P) (c' : ℝ), Measurable W ∧ (∀ x, ω x = 0 → W x = 0) ∧ (∀ x, ‖W x‖ ≤ c') ∧ ∀ᵐ x ∂(μHE[n + 1].restrict R.carrier), W x ∈ approxTangentPlane (n + 1) R.carrier x ∧ ∀ β : Euclid P →L[ℝ] ℝ, R.orient x (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight (ω x))) = β (W x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
