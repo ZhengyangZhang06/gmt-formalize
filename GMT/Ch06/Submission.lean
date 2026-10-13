@@ -2729,6 +2729,33 @@ theorem Submission.rectifiability_mass_measure_representation : ∀ (P k : ℕ) 
       refine ⟨by rw [hfun]; exact hint, ?_⟩
       rw [hfun, ← heq, hLHω ω]
 
+/-- **Simon Ch. 6, Lemma 2.36 with Remarks 2.37(1)–(2) (pp. 144–145).**  Let `T ∈ 𝒟ₙ(U)`,
+`n = m + 1`, satisfy `M_W(T) + M_W(∂T) < ∞` for every `W ⊂⊂ U`, let `μ = μ_T` be its mass
+measure and `Q` a linear isometry of `ℝ^P`.  If `E` is Borel and `Lⁿ(p_α(Q(E))) = 0` for every
+`α ∈ I(n, P)`, then `μ(E) = 0`.  (2.37(2) prints `Lⁿ(Q(E)) = 0`; the projections `p_α ∘ Q` are
+meant.)  With `T(ω) = ∫ ⟨ω, ξ⟩ dμ` and `|ξ| = 1` `μ`-a.e. (2.7–2.8), printed (1)–(4) give
+`μ(W) = M_W(T) ≤ C μ(W ∖ K)` for every compact `K ⊆ E` and open `W ⊂⊂ U`; letting `W ↓ K` gives
+`μ(K) = 0`, and inner regularity (Ch. 1, 1.15) extends this to `E`. -/
+theorem Submission.rectifiability_projection_null : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → ∀ (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (E : Set (Eucl P)), MeasurableSet E → (∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' E) = 0) → μ E = 0 := by
+  intro P m U hU T hmass μ hμ Q E hE hproj
+  -- Step 1: `M_W(T) ≤ M_W(T) + M_W(∂T) < ∞`, so 2.7–2.8 give `ξ` with `T(ω) = ∫ ⟨ω, ξ⟩ dμ` and
+  -- `|ξ| = 1` `μ`-a.e.
+  have hT : ∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ := fun W hW =>
+    (ENNReal.add_lt_top.1 (hmass W hW)).1
+  obtain ⟨ξ, -, hξ, hrep⟩ :=
+    (Submission.rectifiability_mass_measure_representation P (m + 1) U hU T hT).2 μ hμ
+  -- Step 2: `μ(W) = M_W(T) < ∞` for every open `W ⊂⊂ U`.
+  have hfin : ∀ W, CompactlyContainedOpen W U → μ W < ∞ := fun W hW =>
+    (hμ.2 W hW).trans_lt (hT W hW)
+  -- Step 3 (inner regularity): it suffices that every compact `K ⊆ E` with `K ⊆ U` is `μ`-null.
+  refine Submission.rpn_null_of_compact_null P U E μ hU hμ.1 hfin hE fun K hK hKE hKU => ?_
+  -- Step 4: `p_α(Q(K)) ⊆ p_α(Q(E))` is `Lⁿ`-null for every `α`, so printed (1)–(3) give
+  -- `μ(W) = M_W(T) ≤ C μ(W ∖ K)` (printed (4)), and shrinking `W ↓ K` gives `μ(K) = 0`.
+  obtain ⟨C, hC⟩ := Submission.rpn_massOn_le_mul_measure_diff P m U T hmass μ ξ hrep hξ Q K hK
+    fun α => measure_mono_null (image_mono hKE) (hproj α)
+  exact Submission.rpn_compact_null_of_le_mul_diff P U K μ C hU hK hKU hfin fun W hW =>
+    (hμ.2 W hW).trans_le (hC W hW)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
