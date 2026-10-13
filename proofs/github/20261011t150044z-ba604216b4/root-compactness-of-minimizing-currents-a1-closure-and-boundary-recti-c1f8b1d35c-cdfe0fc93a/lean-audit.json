@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f5a89bc6f20241b49ee0f40086b6df625ee074c2e8f6a78818a939a4b2bfc62",
+  "git_delta": {
+    "base_commit": "8d74805987c8b1caf90a1b3101cf68eeea1218f3",
+    "candidate_commit": "eb28b36e636d94abbb167ef31f664191853ae1ee",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_smm_monotone_majorant",
+    "diff_sha256": "ed7d65362191b4e9429fe79bd99066290adf1c8c6a9d4b016ef754db14a877b6",
+    "source_sha256": "8f8a62d4f161e37e861d9ea8136e41a349a19ad38a007804c41c433c538b5547",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_smm_monotone_majorant",
+      "statement": "∀ (F : ℕ → ℝ → ℝ) (Z : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (L : NNReal), (∀ j, Monotone (F j)) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F j t - F j (t - h))) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => ENNReal.ofReal (F j b - F j a)) atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
