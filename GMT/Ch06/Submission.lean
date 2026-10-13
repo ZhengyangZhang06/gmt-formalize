@@ -359,6 +359,27 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Smooth cutoff: for a compact `K` inside an open `U ⊆ ℝ^P` there is a `C^∞` function
+`0 ≤ χ ≤ 1` with compact support in `U` that equals `1` on an open neighbourhood `N` of `K`. -/
+theorem Submission.fiw_tb_ext_cutoff :
+    ∀ (P : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U →
+      ∃ (χ : Eucl P → ℝ) (N : Set (Eucl P)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ ∧
+        (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ HasCompactSupport χ ∧ tsupport χ ⊆ U ∧ IsOpen N ∧ K ⊆ N ∧
+        ∀ x ∈ N, χ x = 1 := by
+  intro P U K hU hK hKU
+  -- Compact `L₁, L` with `K ⊆ interior L₁ ⊆ L₁ ⊆ interior L ⊆ L ⊆ U`.
+  obtain ⟨L, hL, hKL, hLU⟩ := exists_compact_between hK hU hKU
+  obtain ⟨L₁, hL₁, hKL₁, hL₁L⟩ := exists_compact_between hK isOpen_interior hKL
+  -- Smooth Urysohn: `f` is `C^∞`, `0 ≤ f ≤ 1`, `support f = interior L`, `f = 1` exactly on `L₁`.
+  obtain ⟨f, hf, hfr, hfs, hf1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞)) isOpen_interior hL₁.isClosed hL₁L
+  -- `L` is closed, so `tsupport f = closure (interior L) ⊆ L`; hence it is compact and `⊆ U`.
+  have htsupp : tsupport f ⊆ L :=
+    closure_minimal (hfs.symm ▸ interior_subset) hL.isClosed
+  refine ⟨f, interior L₁, hf, fun x => hfr (mem_range_self x), ?_, htsupp.trans hLU,
+    isOpen_interior, hKL₁, fun x hx => (hf1 x).mp (interior_subset hx)⟩
+  exact hL.of_isClosed_subset (isClosed_tsupport _) htsupp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
