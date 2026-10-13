@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^(def|structure|theorem|abbrev|namespace)|IsUnit|Matrix' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "sed -n '45,180p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n 'def massOn|def covectorEuclideanNorm|theorem massOn_le_liminf|def zeroRegion|def support|boundary_affinePushforward' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "rg -n 'dimred_' GMT .lake/packages/simongmt/Poincare --glob '*.lean'",
+        "rg -n 'dimred_' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/*/gmt-ch07/GMT --glob '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/dimred-independent-audit-s7xwpqdu/src /tmp/dimred-independent-audit-s7xwpqdu/src/CheckTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/dimred-independent-audit-s7xwpqdu/src /tmp/dimred-independent-audit-s7xwpqdu/src/CheckLibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+        "/tmp/dimred-independent-audit-s7xwpqdu/src/CheckTypes.lean",
+        "/tmp/dimred-independent-audit-s7xwpqdu/src/CheckLibraryAxioms.lean",
+        "/tmp/dimred-independent-audit-s7xwpqdu/types.log",
+        "/tmp/dimred-independent-audit-s7xwpqdu/axioms.log"
+      ],
+      "conclusion": "The split is appropriate for the selected dimension_reduction_results conjunction: the three headline children assemble its exact type, and the nine auxiliary children support their proofs. The handoff matches the selected contract. Project b4d606d, mathlib 25730c7c and SimonGMT 2b36630 match the pinned references; inspected SimonGMT sources match their pinned revision. All twelve one-line propositions independently elaborate using the frozen definitions, with main_theorem and all proposed child declarations absent from the scratch environment. Conditional assembly and the six checked library lemmas use only propext, Classical.choice and Quot.sound. Mathlib confirms μHE[n] = c_n • μH[n] with finite positive c_n, validating the corrected inverse normalization. Child dependencies and inherited sibling dependencies are acyclic and correctly directed. No proposed name collides with the DAG, other branch proposals, or searched Lean files; all names are bare identifiers suitable for Submission.X. No matrix-unit inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for arbitrary open U and any representing IMRep. Pointwise duality, Radon approximation, the support argument and measure uniqueness establish all three conclusions without circularity."
+    },
+    {
+      "key": "zero_dim_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice. Counting measure gives an isolated weighted point; deleting it produces an admissible competitor because SameBoundary is vacuous in degree zero. The mass comparison proves vanishing."
+    },
+    {
+      "key": "monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The radial first-variation calculation establishes both monotonicity claims, density existence, upper semicontinuity and the support lower bound. Nonpositive R in the Lean type causes only an empty interval, so it agrees with the prose."
+    },
+    {
+      "key": "regular_point_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly requires neither global integer multiplicity nor minimality. Local closedness, the independently proved local mass identity and C¹ graph density yield the stated constant positive integer density, including degree zero."
+    },
+    {
+      "key": "moving_blowups",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies exhausting domains, uniform local mass bounds, compactness, admissible projected competitors and measure convergence. Representation independence gives the exact universally quantified MassMeasuresConverge conclusion."
+    },
+    {
+      "key": "one_dim_cones",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Polar homogeneity and the density lower bound give finitely many rays. Constancy and the explicit segment competitors force antipodal pairing and hence a multiplicity line. Zero-current and zero-ambient-dimension cases are covered."
+    },
+    {
+      "key": "cone_splitting",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density invariance yields measure invariance, tangency and current invariance. Slicing constructs the factor; product competitors and the separate projection argument establish its ambient minimality. Support and density identities match the frozen type."
+    },
+    {
+      "key": "density_gap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contradiction argument verifies compactness and density-one regularity hypotheses, then contradicts integer densities at regular points. It proves the exact weaker conclusion θ ≤ 1 and handles j > P separately."
+    },
+    {
+      "key": "threshold_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The corrected normalization and countable-test diagonal argument justify the function family and its tangent closure. Every Appendix A hypothesis is checked; H1 and H2 exclude the requisite alternatives and yield all three stated conclusions."
+    },
+    {
+      "key": "integer_density_tangent_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both exceptional-set estimates, the corrected intersection of flatness sets, tangent-plane existence and E ⊆ F, including low-dimensional cases. The cited cone classification is corroborated by [Chang, Appendix A, pp. 761–762](https://www.math.stonybrook.edu/~bishop/classes/math638.F20/Chang_Reg_Min_2_currents.pdf)."
+    },
+    {
+      "key": "singular_set_density_below_two",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uniform density bounds pass to every admissible zero-scale limit. The gap and regularity arguments identify the local singular set with a density threshold, and both threshold_reduction hypotheses are discharged. Degree-zero and negative-exponent cases are covered."
+    },
+    {
+      "key": "codimension_one_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies support, cycle and multiplicity-one reductions; treats offset-plane limits with perimeter bounds before BV compactness; and verifies the gap constants and Simons B.2 hypotheses. Threshold reduction gives precisely the three dimensional cases, including finiteness on compact subsets of U."
+    }
+  ],
+  "required_changes": []
+}
