@@ -451,6 +451,86 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 4.3 (8)–(9)** (translation identity): for a Borel set `F ⊆ ℝⁿ`,
+`ζ ∈ C¹_c(ℝⁿ)`, `w ∈ ℝⁿ` and `t ∈ ℝ`,
+`∫_F ζ(z − t w) dz = ∫_F ζ(z) dz − ∫₀ᵗ ∫_F Dζ(z − s w)(w) dz ds` (oriented `∫₀ᵗ`).  Integrate
+the fundamental theorem of calculus for `s ↦ ζ(z − s w)` over `z ∈ F` and swap the integrals
+(Fubini); `Dζ(z − s w)(w)` is bounded and, for `s` between `0` and `t`, vanishes for `z` off the
+compact set `tsupport ζ + [0, t] w`. -/
+theorem Submission.codim1_rdo_dg_hr_translate_integral_eq : ∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (ζ : EuclideanSpace ℝ (Fin n) → ℝ) (w : EuclideanSpace ℝ (Fin n)) (t : ℝ), MeasurableSet F → ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, ζ (z - t • w) = (∫ z in F, ζ z) - ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w := by
+  intro n F ζ w t hF hζ hcs
+  -- `Dζ` is continuous and bounded by `M`
+  have hDc : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  obtain ⟨M, hM⟩ := hDc.bounded_above_of_compact_support (hcs.fderiv ℝ)
+  -- `G (s, z) = Dζ (z - s • w) w` is continuous
+  have hGc : Continuous (uncurry fun (s : ℝ) (z : EuclideanSpace ℝ (Fin n)) =>
+      fderiv ℝ ζ (z - s • w) w) :=
+    (hDc.comp (continuous_snd.sub (continuous_fst.smul continuous_const))).clm_apply
+      continuous_const
+  -- for `s ∈ uIcc 0 t`, `Dζ (z - s • w) = 0` off the compact `K' = tsupport ζ + uIcc 0 t • w`
+  obtain ⟨K', hK', hvan⟩ : ∃ K' : Set (EuclideanSpace ℝ (Fin n)), IsCompact K' ∧
+      ∀ s ∈ uIcc (0 : ℝ) t, ∀ z ∉ K', fderiv ℝ ζ (z - s • w) = 0 := by
+    refine ⟨(fun p : EuclideanSpace ℝ (Fin n) × ℝ => p.1 + p.2 • w) '' (tsupport ζ ×ˢ uIcc 0 t),
+      (hcs.isCompact.prod isCompact_uIcc).image
+        (continuous_fst.add (continuous_snd.smul continuous_const)), fun s hs z hz => ?_⟩
+    by_contra h
+    exact hz ⟨(z - s • w, s), ⟨support_fderiv_subset ℝ h, hs⟩, sub_add_cancel z (s • w)⟩
+  -- FTC along `s ↦ ζ (z - s • w)`, whose derivative is `-G (s, z)`
+  have hFTC : ∀ z, ζ (z - t • w) - ζ z = -∫ s in (0 : ℝ)..t, fderiv ℝ ζ (z - s • w) w := by
+    intro z
+    have hderiv : ∀ s ∈ uIcc (0 : ℝ) t,
+        HasDerivAt (fun s => ζ (z - s • w)) (-fderiv ℝ ζ (z - s • w) w) s := by
+      intro s _
+      have h1 : HasDerivAt (fun s : ℝ => z - s • w) (-w) s := by
+        simpa using ((hasDerivAt_id s).smul_const w).const_sub z
+      have h2 := ((hζ.differentiable one_ne_zero) (z - s • w)).hasFDerivAt.comp_hasDerivAt s h1
+      rw [map_neg] at h2
+      exact h2
+    have hint : IntervalIntegrable (fun s => -fderiv ℝ ζ (z - s • w) w) volume 0 t :=
+      ((hDc.comp (continuous_const.sub (continuous_id.smul continuous_const))).clm_apply
+        continuous_const).neg.intervalIntegrable _ _
+    rw [← intervalIntegral.integral_neg,
+      intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+    simp
+  -- `G` is integrable for `(volume|uIoc 0 t) ⊗ (volume|F)`: a.e. `|G (s, z)| ≤ M ‖w‖ 1_{K'}(z)`
+  have hint : Integrable (uncurry fun (s : ℝ) (z : EuclideanSpace ℝ (Fin n)) =>
+      fderiv ℝ ζ (z - s • w) w) ((volume.restrict (uIoc 0 t)).prod (volume.restrict F)) := by
+    have hbound : Integrable (fun p : ℝ × EuclideanSpace ℝ (Fin n) =>
+        (1 : ℝ) * K'.indicator (fun _ => M * ‖w‖) p.2)
+        ((volume.restrict (uIoc 0 t)).prod (volume.restrict F)) :=
+      Integrable.mul_prod (f := fun _ : ℝ => (1 : ℝ)) (g := K'.indicator fun _ => M * ‖w‖)
+        (integrableOn_const (s := uIoc 0 t) measure_Ioc_lt_top.ne enorm_ne_top).integrable
+        ((integrable_indicator_iff hK'.measurableSet).2
+          (integrableOn_const hK'.measure_lt_top.ne enorm_ne_top))
+    have hfst : ∀ᵐ p ∂((volume.restrict (uIoc (0 : ℝ) t)).prod (volume.restrict F)),
+        p.1 ∈ uIoc (0 : ℝ) t :=
+      Measure.quasiMeasurePreserving_fst.ae (ae_restrict_mem measurableSet_uIoc)
+    refine hbound.mono' hGc.aestronglyMeasurable ?_
+    filter_upwards [hfst] with ⟨s, z⟩ hs
+    simp only [uncurry_apply_pair, one_mul]
+    by_cases hz : z ∈ K'
+    · rw [indicator_of_mem hz]
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hM _) (norm_nonneg _))
+    · rw [indicator_of_notMem hz, hvan s (uIoc_subset_uIcc hs) z hz]
+      simp
+  -- `ζ (· - t • w)` and `ζ` are continuous with compact support, hence integrable
+  have hi2 : Integrable ζ := hζ.continuous.integrable_of_hasCompactSupport hcs
+  have hi1 : Integrable (fun z => ζ (z - t • w)) :=
+    (hζ.continuous.comp (continuous_id.sub continuous_const)).integrable_of_hasCompactSupport
+      (hcs.comp_homeomorph (Homeomorph.subRight (t • w)))
+  -- integrate the FTC identity over `F` and swap the order of integration
+  have hswap : ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w =
+      ∫ z in F, ∫ s in (0 : ℝ)..t, fderiv ℝ ζ (z - s • w) w :=
+    intervalIntegral_integral_swap hint
+  have hsplit : ∫ z in F, (ζ (z - t • w) - ζ z) =
+      -∫ z in F, ∫ s in (0 : ℝ)..t, fderiv ℝ ζ (z - s • w) w := by
+    rw [← integral_neg]
+    exact integral_congr_ae (ae_of_all _ hFTC)
+  rw [integral_sub hi1.integrableOn hi2.integrableOn] at hsplit
+  rw [hswap]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

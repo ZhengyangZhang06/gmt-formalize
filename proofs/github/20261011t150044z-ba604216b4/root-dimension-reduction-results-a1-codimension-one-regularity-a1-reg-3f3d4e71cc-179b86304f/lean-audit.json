@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "247641ff731ff6d1f583fef13dd8d9d743441ddf170da9a4370c03ea0f9e6e05",
+  "git_delta": {
+    "base_commit": "00d4f38969361736a347d68d5b3d634a2dece30e",
+    "candidate_commit": "536a1b1808b6bfcf19c95dc323e5b3e75ea44af9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_hr_translate_integral_eq",
+    "diff_sha256": "305cc12e4c09214daeb461078122026a3ea1d4beeb00371106c83d8160b78b90",
+    "source_sha256": "246655b6e80d79da8b2e12fd074eb50a76eaa4f226805f68e61b45872d308b14",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_hr_translate_integral_eq",
+      "statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (ζ : EuclideanSpace ℝ (Fin n) → ℝ) (w : EuclideanSpace ℝ (Fin n)) (t : ℝ), MeasurableSet F → ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, ζ (z - t • w) = (∫ z in F, ζ z) - ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
