@@ -402,6 +402,27 @@ theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl 
   rcases hw with rfl | rfl
   · exact h1
   · simpa [abs_neg] using h1
+/-- **An `n`-vector commutes with the interval integral of a continuous covector family.**  If
+`f : ℝ → Λᵐ(ℝ^P)` is continuous and `c(v) = ∫_a^b f(s)(v) ds` for every `v`, then
+`∫_a^b w(f(s)) ds = w(c)` for every `w ∈ Λₘ(ℝ^P)`: evaluation at `v` is a continuous linear
+functional, so `(∫_a^b f)(v) = ∫_a^b f(s)(v) ds = c(v)` and `∫_a^b f = c`; then `w` commutes with
+the integral (`ContinuousLinearMap.intervalIntegral_comp_comm`). -/
+theorem Submission.iwl_cr_ci_ie_nvector_intervalIntegral : ∀ (P m : ℕ) (a b : ℝ) (f : ℝ → Covector (Eucl P) m) (c : Covector (Eucl P) m) (w : NVector (Eucl P) m), Continuous f → (∀ v : Fin m → Eucl P, c v = ∫ s in a..b, f s v) → ∫ s in a..b, w (f s) = w c := by
+  intro P m a b f c w hf hc
+  have hfi : IntervalIntegrable f volume a b := hf.intervalIntegrable a b
+  -- `∫_a^b f = c`: both agree at every `v`, via the evaluation functional `α ↦ α v`.
+  have hI : (∫ s in a..b, f s) = c := by
+    ext v
+    rw [hc v]
+    let L : Covector (Eucl P) m →L[ℝ] ℝ :=
+      (ContinuousMultilinearMap.apply ℝ (fun _ : Fin m => Eucl P) ℝ v).comp
+        (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ)
+    have hL : ∀ α : Covector (Eucl P) m, L α = α v := fun α => rfl
+    have h := L.intervalIntegral_comp_comm hfi
+    simp only [hL] at h
+    exact h.symm
+  -- `w` commutes with the integral.
+  rw [w.intervalIntegral_comp_comm hfi, hI]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
