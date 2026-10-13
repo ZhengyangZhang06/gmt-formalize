@@ -451,6 +451,102 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, proof of 1.6 "⇐", claim (10)** (cone exclusion), in codimension one: let
+`μ(B̄_ρ(y)) ≥ (1 − ε) ωₘ ρᵐ` and `μ(C(y) ∩ B̄_ρ(y)) ≤ ε ωₘ ρᵐ` for `y ∈ K`, `0 < ρ < δ`, where
+`C(y) = {z : |z − y| ≤ 4 |⟨z − y, ν(y)⟩|}`, and let `(1 + 16ᵐ) ε < 1`.  Then
+`|⟨x' − x, v⟩| ≤ |x' − x| / 2` for `x, x' ∈ K` with `|x' − x| < δ / 2` and `|ν(x) − v| ≤ 1/16`.
+Otherwise `B̄_{ρ/8}(x') ⊆ C(x) ∩ B̄_{2ρ}(x)` for `ρ = |x' − x|`, and the two bounds give
+`(1 − ε) ωₘ (ρ/8)ᵐ ≤ ε ωₘ (2ρ)ᵐ`, i.e. `1 − ε ≤ 16ᵐ ε`. -/
+theorem Submission.codim1_rdo_dg_rc_cone_exclusion : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∀ x ∈ K, ∀ x' ∈ K, ∀ v : Euclid (m + 1), ‖ν x - v‖ ≤ 1 / 16 → ‖x' - x‖ < δ / 2 → |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2 := by
+  intro m μ ν K δ ε hν1 hε0 hε1 hlow hup x hx x' hx' v hv hxx'
+  by_contra hcon
+  push Not at hcon
+  set w := x' - x with hw
+  set ρ := ‖w‖ with hρ
+  have hρ0 : 0 < ρ := by
+    rcases (norm_nonneg w).lt_or_eq with h | h
+    · exact h
+    · exfalso
+      have hw0 : w = 0 := norm_eq_zero.1 h.symm
+      rw [hw0] at hcon
+      simp at hcon
+      linarith [h, hρ]
+  have hδ : 0 < δ := by linarith
+  -- `|⟨w, ν x⟩| > 7ρ/16`, since `|⟨w, v⟩| > ρ/2` and `|ν x - v| ≤ 1/16`
+  have h2 : 7 * ρ / 16 < |inner ℝ w (ν x)| := by
+    have e1 : |inner ℝ w (v - ν x)| ≤ ρ * ‖ν x - v‖ := by
+      calc |inner ℝ w (v - ν x)| ≤ ‖w‖ * ‖v - ν x‖ := abs_real_inner_le_norm _ _
+        _ = ρ * ‖ν x - v‖ := by rw [norm_sub_rev v (ν x)]
+    have e2 : inner ℝ w v = inner ℝ w (ν x) + inner ℝ w (v - ν x) := by
+      rw [inner_sub_right]; ring
+    have e3 : |inner ℝ w v| ≤ |inner ℝ w (ν x)| + |inner ℝ w (v - ν x)| := by
+      rw [e2]; exact abs_add_le _ _
+    have e4 : ρ * ‖ν x - v‖ ≤ ρ * (1 / 16) := mul_le_mul_of_nonneg_left hv hρ0.le
+    linarith
+  -- `B̄_{ρ/8}(x') ⊆ C(x) ∩ B̄_{2ρ}(x)`: on the small ball `|z - x| ≤ 9ρ/8` and
+  -- `|⟨z - x, ν x⟩| > 7ρ/16 - ρ/8 = 5ρ/16`
+  have hsub : closedBall x' (ρ / 8) ⊆
+      {z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x (2 * ρ) := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm] at hz
+    have hzx : z - x = w + (z - x') := by rw [hw]; abel
+    have hnorm : ‖z - x‖ ≤ 9 * ρ / 8 := by
+      calc ‖z - x‖ = ‖w + (z - x')‖ := by rw [hzx]
+        _ ≤ ‖w‖ + ‖z - x'‖ := norm_add_le _ _
+        _ ≤ ρ + ρ / 8 := by linarith
+        _ = 9 * ρ / 8 := by ring
+    have hin : |inner ℝ (z - x') (ν x)| ≤ ρ / 8 := by
+      calc |inner ℝ (z - x') (ν x)| ≤ ‖z - x'‖ * ‖ν x‖ := abs_real_inner_le_norm _ _
+        _ = ‖z - x'‖ := by rw [hν1 x, mul_one]
+        _ ≤ ρ / 8 := hz
+    have hinner : inner ℝ (z - x) (ν x) = inner ℝ w (ν x) + inner ℝ (z - x') (ν x) := by
+      rw [hzx, inner_add_left]
+    have hbig : 5 * ρ / 16 < |inner ℝ (z - x) (ν x)| := by
+      rw [hinner]
+      have h' : |inner ℝ w (ν x)| ≤
+          |inner ℝ w (ν x) + inner ℝ (z - x') (ν x)| + |inner ℝ (z - x') (ν x)| := by
+        have := abs_sub (inner ℝ w (ν x) + inner ℝ (z - x') (ν x)) (inner ℝ (z - x') (ν x))
+        simpa using this
+      linarith
+    refine ⟨?_, ?_⟩
+    · show (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|
+      linarith
+    · rw [mem_closedBall, dist_eq_norm]; linarith
+  -- `(1 - ε) ωₘ (ρ/8)ᵐ ≤ μ(B̄_{ρ/8}(x')) ≤ μ(C(x) ∩ B̄_{2ρ}(x)) ≤ ε ωₘ (2ρ)ᵐ`
+  have hlow' := hlow x' hx' (ρ / 8) (by positivity) (by linarith)
+  have hup' := hup x hx (2 * ρ) (by positivity) (by linarith)
+  have hchain : ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal ((ρ / 8) ^ m) ≤
+      ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal ((2 * ρ) ^ m) :=
+    hlow'.trans ((measure_mono hsub).trans hup')
+  -- cancelling `ωₘ (ρ/8)ᵐ ∈ (0, ∞)` gives `1 - ε ≤ 16ᵐ ε`, contradicting `(1 + 16ᵐ) ε < 1`
+  have hω0 : unitBallVolume m ≠ 0 := by
+    unfold unitBallVolume; exact (measure_ball_pos _ _ one_pos).ne'
+  have hωt : unitBallVolume m ≠ ∞ := by
+    unfold unitBallVolume; exact measure_ball_lt_top.ne
+  set a := (unitBallVolume m).toReal with ha_def
+  have ha : 0 < a := ENNReal.toReal_pos hω0 hωt
+  have hωeq : unitBallVolume m = ENNReal.ofReal a := (ENNReal.ofReal_toReal hωt).symm
+  have h1ε : 0 ≤ 1 - ε := by
+    have : 0 ≤ (16 : ℝ) ^ m * ε := by positivity
+    nlinarith
+  have hL : ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal ((ρ / 8) ^ m) =
+      ENNReal.ofReal ((1 - ε) * a * (ρ / 8) ^ m) := by
+    rw [hωeq, ← ENNReal.ofReal_mul h1ε, ← ENNReal.ofReal_mul (by positivity)]
+  have hR : ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal ((2 * ρ) ^ m) =
+      ENNReal.ofReal (ε * a * (2 * ρ) ^ m) := by
+    rw [hωeq, ← ENNReal.ofReal_mul hε0, ← ENNReal.ofReal_mul (by positivity)]
+  rw [hL, hR, ENNReal.ofReal_le_ofReal_iff (by positivity)] at hchain
+  have hpow : (2 * ρ) ^ m = 16 ^ m * (ρ / 8) ^ m := by
+    rw [← mul_pow]; congr 1; ring
+  rw [hpow] at hchain
+  have hpos : 0 < a * (ρ / 8) ^ m := by positivity
+  have h16 : (1 - ε) * (a * (ρ / 8) ^ m) ≤ (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by
+    calc (1 - ε) * (a * (ρ / 8) ^ m) = (1 - ε) * a * (ρ / 8) ^ m := by ring
+      _ ≤ ε * a * (16 ^ m * (ρ / 8) ^ m) := hchain
+      _ = (ε * 16 ^ m) * (a * (ρ / 8) ^ m) := by ring
+  have h17 : 1 - ε ≤ ε * 16 ^ m := le_of_mul_le_mul_right h16 hpos
+  nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
