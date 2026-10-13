@@ -679,6 +679,61 @@ theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
     linarith [h1]
   exact ge_of_tendsto hnorm hev
 
+/-- Tangent range of a level-set chart (step 7 of the level-set charts for the slicing theorem,
+Simon Ch. 6, §4): if `ψ` is differentiable at `v` and `c`-antilipschitz (`c > 0`) on an open
+`V ∋ v`, and `h ∘ ψ` is constant on `V` with `Dh(ψ v) ≠ 0`, then
+`range D(Φ ∘ ψ)(v) = DΦ(ψ v)(ker Dh(ψ v))`.  By the derivative lower bound `Dψ(v)` is injective,
+by the chain rule its range lies in `ker Dh(ψ v)`, and both subspaces have dimension `m`. -/
+theorem Submission.slicing_im_st_lsc_tangent_range :
+    ∀ (P m : ℕ) (ψ : Eucl m → Eucl (m + 1)) (Φ : Eucl (m + 1) → Eucl P) (h : Eucl (m + 1) → ℝ) (V : Set (Eucl m)) (c : ℝ) (v : Eucl m), IsOpen V → v ∈ V → 0 < c → DifferentiableAt ℝ ψ v → DifferentiableAt ℝ Φ (ψ v) → DifferentiableAt ℝ h (ψ v) → fderiv ℝ h (ψ v) ≠ 0 → (∀ v' ∈ V, ∀ v'' ∈ V, c * ‖v' - v''‖ ≤ ‖ψ v' - ψ v''‖) → (∀ v' ∈ V, h (ψ v') = h (ψ v)) → LinearMap.range (fderiv ℝ (Φ ∘ ψ) v).toLinearMap = Submodule.map (fderiv ℝ Φ (ψ v)).toLinearMap (LinearMap.ker (fderiv ℝ h (ψ v)).toLinearMap) := by
+  intro P m ψ Φ h V c v hV hv hc hψd hΦd hhd hdh hanti hconst
+  -- `c ‖u‖ ≤ ‖Dψ(v) u‖` with `c > 0`, so `Dψ(v)` is injective.
+  have hlow := Submission.lpf_wtc_cat_fderiv_lower_bound (m + 1) m ψ V c v hV hv hψd hanti
+  have hinj : Function.Injective (fderiv ℝ ψ v) := by
+    intro a b hab
+    have h1 := hlow (a - b)
+    rw [map_sub, hab, sub_self, norm_zero] at h1
+    have h2 : ‖a - b‖ ≤ 0 := by nlinarith [norm_nonneg (a - b)]
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h2)
+  -- `h ∘ ψ` is constant near `v`, so `Dh(ψ v) ∘ Dψ(v) = D(h ∘ ψ)(v) = 0`.
+  have hev : (h ∘ ψ) =ᶠ[𝓝 v] fun _ => h (ψ v) := by
+    filter_upwards [hV.mem_nhds hv] with v' hv' using hconst v' hv'
+  have hzero : fderiv ℝ (h ∘ ψ) v = 0 := by
+    rw [hev.fderiv_eq]
+    exact fderiv_const_apply _
+  have hcomp : fderiv ℝ (h ∘ ψ) v = (fderiv ℝ h (ψ v)).comp (fderiv ℝ ψ v) :=
+    fderiv_comp v hhd hψd
+  have hle : LinearMap.range (fderiv ℝ ψ v).toLinearMap ≤
+      LinearMap.ker (fderiv ℝ h (ψ v)).toLinearMap := by
+    rintro _ ⟨u, rfl⟩
+    have h3 := congrArg (fun L : Eucl m →L[ℝ] ℝ => L u) (hcomp.symm.trans hzero)
+    simpa using h3
+  -- Both subspaces have dimension `m`: `Dψ(v)` is injective, and `Dh(ψ v) ≠ 0` maps onto `ℝ`.
+  have hrange : Module.finrank ℝ (LinearMap.range (fderiv ℝ ψ v).toLinearMap) = m := by
+    rw [LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+  have htop : LinearMap.range (fderiv ℝ h (ψ v)).toLinearMap = ⊤ := by
+    obtain ⟨u, hu⟩ : ∃ u, fderiv ℝ h (ψ v) u ≠ 0 := by
+      by_contra hcon
+      apply hdh
+      ext u
+      by_contra hu
+      exact hcon ⟨u, by simpa using hu⟩
+    rw [eq_top_iff]
+    rintro y -
+    refine ⟨(y / fderiv ℝ h (ψ v) u) • u, ?_⟩
+    simp [hu]
+  have hker : Module.finrank ℝ (LinearMap.ker (fderiv ℝ h (ψ v)).toLinearMap) = m := by
+    have hrn := LinearMap.finrank_range_add_finrank_ker (fderiv ℝ h (ψ v)).toLinearMap
+    rw [htop, finrank_top, Module.finrank_self, finrank_euclideanSpace_fin] at hrn
+    omega
+  have heq : LinearMap.range (fderiv ℝ ψ v).toLinearMap =
+      LinearMap.ker (fderiv ℝ h (ψ v)).toLinearMap :=
+    Submodule.eq_of_le_of_finrank_eq hle (hrange.trans hker.symm)
+  -- Chain rule: `range D(Φ ∘ ψ)(v) = DΦ(ψ v)(range Dψ(v))`.
+  rw [fderiv_comp v hΦd hψd]
+  show LinearMap.range ((fderiv ℝ Φ (ψ v)).toLinearMap.comp (fderiv ℝ ψ v).toLinearMap) = _
+  rw [LinearMap.range_comp, heq]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
