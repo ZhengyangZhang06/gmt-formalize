@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.3, proof of (1), display (2)** (via the monotonicity of Ch. 4, 4.7): if
+`Θⁿ(μ_T, y) = θ < θ₁`, then `e^{Λρ}ρ⁻ⁿ M_{B_ρ(y)}(T) < ωₙθ₁` for all small `ρ > 0`.
+For `ρ > 0` the quantity equals `e^{Λρ}ωₙ · (ωₙρⁿ)⁻¹ M_{B_ρ(y)}(T)`, which tends to `ωₙθ` because
+`e^{Λρ} → 1`; and `ωₙθ < ωₙθ₁` because `0 < ωₙ < ∞`. -/
+theorem Submission.idod_monotone_quantity_eventually_lt : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P) (Λ θ θ₁ : ℝ), HasMassDensity T y θ → θ < θ₁ → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ) < unitBallVolume n * ENNReal.ofReal θ₁ := by
+  intro P n U T y Λ θ θ₁ hθ hθθ₁
+  -- `0 < ωₙ < ∞`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := volume) (x := (0 : Euclid n)) (r := 1)).ne
+  -- `e^{Λρ} ωₙ → ωₙ` as `ρ ↓ 0`
+  have hexp : Tendsto (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ)) * unitBallVolume n)
+      (𝓝[>] 0) (𝓝 (unitBallVolume n)) := by
+    have h : Tendsto (fun ρ : ℝ => Real.exp (Λ * ρ)) (𝓝[>] 0) (𝓝 1) :=
+      ((by fun_prop : Continuous fun ρ : ℝ => Real.exp (Λ * ρ)).tendsto' 0 1
+        (by simp)).mono_left nhdsWithin_le_nhds
+    have h' := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h) (Or.inr hωtop)
+    rwa [ENNReal.ofReal_one, one_mul] at h'
+  -- the quantity tends to `ωₙθ`, and `ωₙθ < ωₙθ₁`
+  have hlim := ENNReal.Tendsto.mul hexp (Or.inl hω0) hθ.2 (Or.inr hωtop)
+  have hlt : unitBallVolume n * ENNReal.ofReal θ < unitBallVolume n * ENNReal.ofReal θ₁ :=
+    ENNReal.mul_lt_mul_right hω0 hωtop
+      ((ENNReal.ofReal_lt_ofReal_iff (hθ.1.trans_lt hθθ₁)).2 hθθ₁)
+  filter_upwards [hlim.eventually (gt_mem_nhds hlt), self_mem_nhdsWithin] with ρ hρ (hρ0 : 0 < ρ)
+  -- for `ρ > 0`: `e^{Λρ}ρ⁻ⁿ M_{B_ρ(y)}(T) = e^{Λρ}ωₙ · (ωₙρⁿ)⁻¹ M_{B_ρ(y)}(T)`
+  convert hρ using 1
+  rw [ENNReal.ofReal_div_of_pos (pow_pos hρ0 n), div_eq_mul_inv, div_eq_mul_inv,
+    ENNReal.mul_inv (Or.inl hω0) (Or.inl hωtop)]
+  calc _ = ENNReal.ofReal (Real.exp (Λ * ρ)) * (ENNReal.ofReal (ρ ^ n))⁻¹ *
+        T.massOn (ball y ρ) * (unitBallVolume n * (unitBallVolume n)⁻¹) := by
+          rw [ENNReal.mul_inv_cancel hω0 hωtop, mul_one]
+    _ = _ := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

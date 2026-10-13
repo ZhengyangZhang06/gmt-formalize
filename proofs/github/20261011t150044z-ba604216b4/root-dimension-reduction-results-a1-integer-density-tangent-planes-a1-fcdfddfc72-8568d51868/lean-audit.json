@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "35d1b7e67bb4e64be137eedabb80c2210b045329daec2c88bded34b3a66626af",
+  "git_delta": {
+    "base_commit": "1ff5f2321a47d73f804ed25e71cd54a2e0b13c20",
+    "candidate_commit": "03ca59f9c83f74cc54e586b62a2f680fc6e23f17",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idod_monotone_quantity_eventually_lt",
+    "diff_sha256": "ec1f9e41b938603155452dbd57fd999a59b12f640fab350907dbe4d63db851d9",
+    "source_sha256": "5f31b78b93d51d7e4b2c3faeee110cb797d666b10572d5721e9b994a47f67ca0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idod_monotone_quantity_eventually_lt",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P) (Λ θ θ₁ : ℝ), HasMassDensity T y θ → θ < θ₁ → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ) < unitBallVolume n * ENNReal.ofReal θ₁",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
