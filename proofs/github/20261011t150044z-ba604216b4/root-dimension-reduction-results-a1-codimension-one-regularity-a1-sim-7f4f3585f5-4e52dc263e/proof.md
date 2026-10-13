@@ -1,0 +1,193 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.partition_glue-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 7 of the supplied parent proof (parent B3c), stated in the general form "local agreement on an open cover implies agreement". The partition-of-unity argument is that of Simon Ch. 6, 2.11, as in the accepted Submission.dtc_vanish_off_support.
+Departure, stated explicitly. The parent's case split moves to the caller: points of spt C ∖ {0} use the local representation, and points off spt C use vanish_off_support. Here every point of O is assumed to have a neighbourhood with the local identity. In the parent, a point off spt C has the neighbourhood ℝ^P ∖ spt C, on which both sides vanish.
+Notation: H^m := μHE[m], ⟨α, η⟩ := η(α), and |α| := covectorEuclideanNorm α.
+
+1. (Finite cover.) K := tsupport ω is compact, as ω is a test form, and K ⊆ O. For each x ∈ K choose an open B_x ∋ x as in the hypothesis. Finitely many B_{x_1}, …, B_{x_N} cover K.
+2. (Partition of unity.) Take a smooth partition of unity on ℝ^P on the closed set K, subordinate to this cover (Mathlib SmoothPartitionOfUnity.exists_isSubordinate with model ℝ^P). It gives smooth ψ_1, …, ψ_N : ℝ^P → ℝ with tsupport ψ_j ⊆ B_{x_j} and Σ_j ψ_j = 1 on K.
+3. (The pieces.) For each j put ω_j := ψ_jω.
+ - ω_j is smooth, and tsupport ω_j ⊆ tsupport ψ_j ∩ tsupport ω ⊆ B_{x_j} ∩ K.
+ - So tsupport ω_j is compact (a closed subset of K), and ω_j ∈ 𝒟^m(ℝ^P).
+ - The hypothesis for B_{x_j} gives C(ω_j) = ∫_M ⟨ψ_jω, ξ⟩ dH^m.
+4. (Splitting ω.) ω = Σ_j ω_j pointwise. On K, Σ_j ψ_j(x)ω(x) = ω(x). Off K, ω(x) = 0 and every term vanishes. By linearity of C, C(ω) = Σ_j C(ω_j).
+5. (Integrability.) Each F_j(x) := ⟨ψ_j(x)ω(x), ξ(x)⟩ is integrable on M.
+ - F_j is continuous on the Borel set M, hence a.e. strongly measurable for H^m⌞M. Here ξ is continuous on M, ψ_jω is continuous, and evaluation is continuous.
+ - x ↦ |ψ_j(x)ω(x)| is continuous with compact support, so it is bounded by some S_j. Here |·| = covectorEuclideanNorm is continuous: it is the square root of a finite sum of squares of the continuous evaluations α ↦ α(e_{I(0)}, …, e_{I(m−1)}), and it vanishes at 0.
+ - For x ∈ M ∩ K, |F_j(x)| ≤ |ψ_j(x)ω(x)| ≤ S_j, by the hypothesis |⟨α, ξ(x)⟩| ≤ |α|. For x ∈ M ∖ K, ω(x) = 0, so F_j(x) = 0.
+ - S_j·1_K is integrable for H^m⌞M, because H^m(M ∩ K) < ∞.
+6. (Summation.) C(ω) = Σ_j ∫_M F_j dH^m = ∫_M Σ_j F_j dH^m = ∫_M ⟨Σ_j ψ_jω, ξ⟩ dH^m = ∫_M ⟨ω, ξ⟩ dH^m. This uses linearity of the integral for integrable functions, linearity of each ξ(x), and step 4. ∎
+
+Lean reference proof (verified). The declaration below was compiled with Lean v4.35.0-rc3 and Mathlib 25730c7c, after `import GMT.Ch07.Submission`, in namespace GMT.Ch07 with the contract `open`s. It was compiled twice: in a standalone file, and spliced into a copy of GMT/Ch07/Submission.lean just before main_theorem. Each listed dependency was present under its exact frozen type, as an axiom standing in for the accepted or sibling declaration. `#print axioms` reports propext, Classical.choice and Quot.sound, plus exactly the declarations listed in depends_on (for reused children: their Submission names). It follows the numbered proof above.
+
+```lean
+theorem Submission.codim1_ovr_partition_glue_rep : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M O : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), IsOpen O → MeasurableSet M → ContinuousOn ξ M → (∀ x ∈ M, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ x ∈ O, ∃ B : Set (Euclid P), IsOpen B ∧ x ∈ B ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ B → C ω = ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) m) z) ∂μHE[m]) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → C ω = ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) m) z) ∂μHE[m] := by
+  intro P m C M O ξ hO hMm hξc hξb hfin hloc ω hωO
+  classical
+  set ω₀ : DifferentialForm (Euclid P) m := (ω : DifferentialForm (Euclid P) m) with hω₀
+  set K := tsupport ω₀ with hKdef
+  have hKc : IsCompact K := ω.property.1.2
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω₀ := ω.property.1.1
+  -- the Euclidean covector norm is continuous
+  have hnc : Continuous fun α : Covector (Euclid P) m => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))).continuous).pow 2
+    · exact continuous_const
+  -- step 1: finite subcover of K = spt ω by the local sets B_x
+  choose! B hBo hxB hBrep using hloc
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun x : K => B x) (fun x => hBo x (hωO x.2))
+    (fun x hx => mem_iUnion.2 ⟨⟨x, hx⟩, hxB x (hωO hx)⟩)
+  let Wt : t → Set (Euclid P) := fun i => B ((i : K) : Euclid P)
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.1 (ht hx)
+    exact mem_iUnion.2 ⟨⟨y, hy⟩, hxy⟩
+  -- step 2: smooth partition of unity on K subordinate to the cover
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => hBo _ (hωO (i : K).2)) hKt
+  have hψs : ∀ i, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ i) :=
+    fun i => contMDiff_iff_contDiff.mp (ψ i).contMDiff
+  have hmem : ∀ i, (fun x => ψ i x • ω₀ x) ∈ TestFormOn (univ : Set (Euclid P)) m ∧
+      tsupport (fun x => ψ i x • ω₀ x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • ω₀ x) ⊆ K := tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, subset_univ _⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (hψs i).smul hωs
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn (univ : Set (Euclid P)) m := fun i => ⟨_, (hmem i).1⟩
+  have hpt : ∀ x, ω₀ x = ∑ i, ψ i x • ω₀ x := by
+    intro x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : ω₀ x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    exact hpt x
+  -- step 3: each piece is represented, and the pieces are integrable on M
+  have hpiece : ∀ i, C (ωi i) = ∫ z in M, ξ z (ψ i z • ω₀ z) ∂μHE[m] :=
+    fun i => hBrep _ (hωO (i : K).2) (ωi i) (hmem i).2
+  have hint : ∀ i, IntegrableOn (fun z => ξ z (ψ i z • ω₀ z)) M μHE[m] := by
+    intro i
+    have hcont : Continuous fun x => ψ i x • ω₀ x := (hψs i).continuous.smul hωs.continuous
+    obtain ⟨S, hS⟩ := (hnc.comp hcont).bounded_above_of_compact_support
+      (((hmem i).1.1.2).comp_left (covectorEuclideanNorm_zero P m))
+    refine Integrable.mono' (g := K.indicator fun _ => S) ?_ ?_ ?_
+    · refine IntegrableOn.integrable_indicator ?_ hKc.isClosed.measurableSet
+      show IntegrableOn (fun _ => S) K (μHE[m].restrict M)
+      refine integrableOn_const ?_
+      rw [Measure.restrict_apply hKc.isClosed.measurableSet, inter_comm]
+      exact hfin _ hKc
+    · exact (hξc.clm_apply hcont.continuousOn).aestronglyMeasurable hMm
+    · refine (ae_restrict_iff' hMm).2 (Eventually.of_forall fun z hz => ?_)
+      by_cases hzK : z ∈ K
+      · rw [indicator_of_mem hzK, Real.norm_eq_abs]
+        refine (hξb z hz _).trans ?_
+        have := hS z
+        rw [Function.comp_apply, Real.norm_eq_abs] at this
+        exact (le_abs_self _).trans this
+      · rw [indicator_of_notMem hzK, image_eq_zero_of_notMem_tsupport hzK, smul_zero, map_zero,
+          norm_zero]
+  -- step 4: sum the pieces
+  calc C ω = ∑ i, C (ωi i) := by
+        rw [hsum]; exact map_sum (C.toCurrent : TestFormOn (univ : Set (Euclid P)) m →ₗ[ℝ] ℝ) _ _
+    _ = ∑ i, ∫ z in M, ξ z (ψ i z • ω₀ z) ∂μHE[m] := Finset.sum_congr rfl fun i _ => hpiece i
+    _ = ∫ z in M, ∑ i, ξ z (ψ i z • ω₀ z) ∂μHE[m] :=
+        (integral_finsetSum _ fun i _ => hint i).symm
+    _ = ∫ z in M, ξ z (ω₀ z) ∂μHE[m] := by
+        congr 1; funext z
+        rw [← map_sum, ← hpt z]
+```
+
+## Key steps
+
+1. Cover the compact support of ω by finitely many neighbourhoods on which the local identity holds.
+2. A smooth partition of unity on tsupport ω splits ω into test forms supported in these neighbourhoods.
+3. Each piece satisfies the identity. The integrands are continuous on M and bounded by S_j·1_{tsupport ω}, hence integrable; summing gives the identity for ω.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `cat GMT/Ch07/Contract.lean (IMRep, IsIntegerMultiplicity, IsConeCurrent, blowUp, dilation, IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, regularSet, HasMassDensity)`
+- `grep -n 'VanishesOn|def zeroRegion|def support|isOpen_zeroRegion|structure GeometricCurrentOn|abbrev TestFormOn|IsTestForm|IsSmoothForm|covectorEuclideanNorm|testFormEuclideanSupNorm' simongmt/Poincare/SimonGMT/Chapter06/{CurrentLocalEquality,Currents,Forms,Mass,FormSupNorm}.lean`
+- `rg -n 'euclideanHausdorffMeasure_smul₀|nullSingletonClass_hausdorff|exists_isSubordinate|one_of_mem_closedBall|support_eq|tsupport_eq|tendsto_integral_of_dominated_convergence|setIntegral_ge_of_const_le_real|setIntegral_mono_set|IntegrableOn.of_bound|ENNReal.tsum_geometric|exists_nat_pow_near|Tendsto.bddAbove_range|ContinuousAlternatingMap.apply' <snapshot>/mathlib/Mathlib`
+- `rg -c 'codim1_ovr_' <snapshot> (no match); grep each of the 7 new lean_names in dag.json (no match); git grep -l 'codim1_ovr_' over all 1662 distinct ref objects (no match)`
+- `python3 over dag.json: accepted nodes whose lean_statement mentions IsEmbeddedSubmanifold, tangentSpace or IsOrientation; nodes with IsConeCurrent and support; IMRep/IsIntegerMultiplicity with Tendsto; status, frozen type, candidate commit and parent handoff of the 5 reused names; children of simons_regular_cone-a1`
+- `git show <commit> -- GMT/Ch07/Submission.lean for 44ef61f79e21 (dtc_vanish_off_support: smooth partition of unity), 52115c22ec2d (cone_current_apply_dilation_pullback), d626082a69a0 (chart_tangentSpace_eq_range_fderiv), a5ceace526bc (dpf_pb_imrep_pullback_integral_tendsto: IMRep dominated convergence)`
+- `runtime.py (_decompose, _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff) and speculation.py contract (a parent's prerequisites are its children plus its depends_on)`
+- `lean -DautoImplicit=false /tmp/ovr-split-check/{Types,Assembly,SkelC3,C1C2,C4,C5,C6,C7,Full,SubmissionCopy}.lean with LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b7ab3fcecc/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-27e5a07a68/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/speculation.py`
+- `/tmp/ovr-split-check/Full.lean`
+- `/tmp/ovr-split-check/SubmissionCopy.lean`
+
+Pins match. The manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+Library.
+- SimonGMT Chapter06 supplies GeometricCurrentOn, TestFormOn, VanishesOn, the open zeroRegion, support = U ∖ zeroRegion, and covectorEuclideanNorm.
+- SimonGMT has no continuity or homogeneity lemma for covectorEuclideanNorm, and no local-to-global gluing lemma for currents. The children prove these inline.
+- The snapshot Mathlib has every library lemma the children use:
+  - Measure.euclideanHausdorffMeasure_smul₀ (Geometry/Euclidean/Volume/Measure.lean:152);
+  - nullSingletonClass_hausdorff (MeasureTheory/Measure/Hausdorff.lean:615);
+  - SmoothPartitionOfUnity.exists_isSubordinate (Geometry/Manifold/PartitionOfUnity.lean:555);
+  - ContDiffBump.one_of_mem_closedBall, support_eq and tsupport_eq (Analysis/Calculus/BumpFunction/Basic.lean:137–157);
+  - tendsto_integral_of_dominated_convergence (MeasureTheory/Integral/DominatedConvergence.lean:57);
+  - setIntegral_mono_set and setIntegral_ge_of_const_le_real (MeasureTheory/Integral/Bochner/Set.lean:737, 798);
+  - IntegrableOn.of_bound (MeasureTheory/Integral/IntegrableOn.lean:174);
+  - ENNReal.tsum_geometric (Analysis/SpecificLimits/Basic.lean:402);
+  - exists_nat_pow_near (Algebra/Order/Archimedean/Basic.lean:195).
+DAG.
+- Five accepted declarations are reused with byte-identical frozen types: cone_current_apply_dilation_pullback (52115c22ec2d), chart_tangentSpace_eq_range_fderiv (d626082a69a0), dor_ims_unitOrientation_dual (9c8432cb0101), rsdic_unitOrientation_eq_or_eq_neg (fe95347baaed) and dimred_rpd_submanifold_density_one (e8842d90b78f).
+- Unaccepted nodes owned by other parents cannot be shared: idtp_tpf_cone_support_smul and idtp_ccd_cone_support_smul (decomposing) have the content of cone_support_smul. So that child gets the fresh name codim1_ovr_cone_support_smul.
+- The 7 new codim1_ovr_ names are free in dag.json, the snapshot, SimonGMT and all git refs.
+- This node's own prerequisites stay available to its glue (speculation.contract = children + depends_on): codim1_density_one_regular_local_rep, dtc_vanish_off_support and dor_ims_unitOrientation_dual.
+Lean.
+- Types.lean elaborates all 12 child types.
+- Assembly.lean proves the selected frozen type from the frozen child types and this node's prerequisites, all given as axioms.
+- Each new child has a complete Lean proof that uses exactly its listed dependencies. These proofs are attached to the child proofs.
+- Full.lean, and SubmissionCopy.lean (the same block spliced into a copy of Submission.lean before main_theorem), compile without errors.
+- #print axioms of the selected theorem lists propext, Classical.choice and Quot.sound, plus the 7 frozen prerequisites: the 5 reused declarations, codim1_density_one_regular_local_rep and dtc_vanish_off_support.
