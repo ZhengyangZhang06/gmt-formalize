@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1535c7f774dd0ed70dfe738017c06667f2b22dee3d5d7d997cabfb27df294bfd",
+  "git_delta": {
+    "base_commit": "f1fc23add061634b5d44716dd5b51910cd4ff42a",
+    "candidate_commit": "e90d4d35bddf434d6a23e99a1f6f00188e9c3f51",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1a_egorov_isClosed",
+    "diff_sha256": "a0136c3210fe62c404a5a441c18c88a74584cef1852bc4db5f6566b26edc1142",
+    "source_sha256": "0e4b652db1164ca87e9918b27971197020150bd60945bb5893afeb03977549a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1a_egorov_isClosed",
+      "statement": "∀ (n : ℕ) (C : Set (Euclid n)) (η : ℕ → Euclid n → ℝ) (g : Euclid n → ℝ), MeasurableSet C → (∀ k, Measurable (η k)) → Measurable g → (∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Euclid n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < ε ∧ ∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → TendstoUniformlyOn η g atTop Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
