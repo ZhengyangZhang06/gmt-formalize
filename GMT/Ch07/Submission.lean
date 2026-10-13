@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Real-integral form of a lower-integral Gagliardo–Nirenberg–Sobolev inequality** (Simon
+Ch. 3, proof of Theorem 4.3 (De Giorgi), Sobolev step, chapter-03.txt lines 689–712; the bound
+`(H)` below has the shape of Mathlib's `lintegral_pow_le_pow_lintegral_fderiv`).  If every `C¹`
+compactly supported `w : ℝᴾ → ℝ` satisfies `∫⁻ ‖w‖ₑ^p ≤ C (∫⁻ ‖Dw‖ₑ)^p`, then with
+`c = C^{1/p} + 1 > 0` every such `w` satisfies `(∫ |w|^p)^{1/p} ≤ c ∫ |Dw|`: `Dw` is continuous
+with compact support, so `∫⁻ ‖Dw‖ₑ < ∞`; both Bochner integrals are the `toReal` of the lower
+integrals, `(H)` passes to `toReal`, and `t ↦ t^{1/p}` is monotone on `[0, ∞)`. -/
+theorem Submission.codim1_rdo_dg_sp_gns_real_of_lintegral : ∀ (P : ℕ) (p : ℝ) (C : NNReal), 0 < p → (∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → ∫⁻ x, ‖w x‖ₑ ^ p ≤ (C : ℝ≥0∞) * (∫⁻ x, ‖fderiv ℝ w x‖ₑ) ^ p) → ∃ c : ℝ, 0 < c ∧ ∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → (∫ z, |w z| ^ p) ^ p⁻¹ ≤ c * ∫ z, ‖fderiv ℝ w z‖ := by
+  intro P p C hp hH
+  -- Step 1: `c = C^{1/p} + 1 > 0`
+  refine ⟨(C : ℝ) ^ p⁻¹ + 1, by positivity, ?_⟩
+  intro w hw hcs
+  -- Step 2: `Dw` is continuous with compact support, so `∫⁻ ‖Dw‖ₑ < ∞` and
+  -- `∫ |Dw| = (∫⁻ ‖Dw‖ₑ).toReal`
+  have hDcont : Continuous (fderiv ℝ w) := hw.continuous_fderiv one_ne_zero
+  have hDint : Integrable (fderiv ℝ w) := hDcont.integrable_of_hasCompactSupport (hcs.fderiv ℝ)
+  have hAfin : (∫⁻ x, ‖fderiv ℝ w x‖ₑ) ≠ ∞ := hDint.hasFiniteIntegral.ne
+  have hA : ∫ z, ‖fderiv ℝ w z‖ = (∫⁻ x, ‖fderiv ℝ w x‖ₑ).toReal :=
+    integral_norm_eq_lintegral_enorm hDcont.aestronglyMeasurable
+  -- Step 3: `|w|^p` is continuous and nonnegative, and `ofReal (|w x|^p) = ‖w x‖ₑ^p`, so
+  -- `∫ |w|^p = (∫⁻ ‖w‖ₑ^p).toReal`
+  have hF : ∫ z, |w z| ^ p = (∫⁻ x, ‖w x‖ₑ ^ p).toReal := by
+    rw [integral_eq_lintegral_of_nonneg_ae
+      (Eventually.of_forall fun z => Real.rpow_nonneg (abs_nonneg (w z)) p)
+      ((hw.continuous.abs.rpow_const fun _ => Or.inr hp.le).aestronglyMeasurable)]
+    congr 1
+    refine lintegral_congr fun x => ?_
+    rw [Real.enorm_eq_ofReal_abs, ENNReal.ofReal_rpow_of_nonneg (abs_nonneg _) hp.le]
+  -- Step 4: take `toReal` in `(H)`, whose right side `C · (∫⁻ ‖Dw‖ₑ)^p` is finite
+  have h4 : ∫ z, |w z| ^ p ≤ (C : ℝ) * (∫ z, ‖fderiv ℝ w z‖) ^ p := by
+    have h := ENNReal.toReal_mono
+      (ENNReal.mul_ne_top ENNReal.coe_ne_top (ENNReal.rpow_ne_top_of_nonneg hp.le hAfin))
+      (hH w hw hcs)
+    rwa [ENNReal.toReal_mul, ← ENNReal.toReal_rpow, ENNReal.coe_toReal, ← hF, ← hA] at h
+  -- Step 5: take the `1/p` power: `(C I^p)^{1/p} = C^{1/p} I ≤ c I`
+  have hI : 0 ≤ ∫ z, ‖fderiv ℝ w z‖ := integral_nonneg fun z => norm_nonneg _
+  have hL : 0 ≤ ∫ z, |w z| ^ p := integral_nonneg fun z => Real.rpow_nonneg (abs_nonneg (w z)) p
+  calc (∫ z, |w z| ^ p) ^ p⁻¹ ≤ ((C : ℝ) * (∫ z, ‖fderiv ℝ w z‖) ^ p) ^ p⁻¹ :=
+        Real.rpow_le_rpow hL h4 (inv_nonneg.2 hp.le)
+    _ = (C : ℝ) ^ p⁻¹ * ∫ z, ‖fderiv ℝ w z‖ := by
+        rw [Real.mul_rpow C.coe_nonneg (Real.rpow_nonneg hI p), Real.rpow_rpow_inv hI hp.ne']
+    _ ≤ ((C : ℝ) ^ p⁻¹ + 1) * ∫ z, ‖fderiv ℝ w z‖ :=
+        mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) hI
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
