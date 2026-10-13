@@ -453,6 +453,30 @@ theorem Submission.rpn_moc_abs_covector_apply_le :
     (Submission.cmb_rb_abs_euclideanCovectorCoordinate_le P n φ β) (abs_nonneg _)).trans_eq
     (mul_comm _ _)
 
+/-- Pairing bound for a unit `n`-vector on `ℝ^P`: if `∑_β w(dx^β)² = 1`, then
+`|w(θ)| ≤ ∑_β |θ(e_{β(0)}, …, e_{β(n-1)})|`. -/
+theorem Submission.rpn_moc_abs_nvector_apply_le :
+    ∀ (P n : ℕ) (w : NVector (Eucl P) n) (θ : Covector (Eucl P) n),
+      ∑ β : SimonMultiIndex n P, (euclideanNVectorCoordinate w β) ^ 2 = 1 →
+      |w θ| ≤ ∑ β : SimonMultiIndex n P, |euclideanCovectorCoordinate θ β| := by
+  intro P n w θ hw
+  -- Each coordinate `w(dx^β)` is one nonnegative summand of `∑_γ w(dx^γ)² = 1`.
+  have hcoord : ∀ β : SimonMultiIndex n P, |euclideanNVectorCoordinate w β| ≤ 1 := by
+    intro β
+    rw [← sq_le_one_iff_abs_le_one, ← hw]
+    exact Finset.single_le_sum (f := fun γ => euclideanNVectorCoordinate w γ ^ 2)
+      (fun γ _ => sq_nonneg _) (Finset.mem_univ β)
+  -- Expand `θ = ∑_β θ(e_β) dx^β` and apply the linear map `w`.
+  have hexp : w θ = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate θ β * euclideanNVectorCoordinate w β := by
+    conv_lhs => rw [Submission.cmb_covector_eq_sum_coord_smul_wedge P n θ]
+    simp only [map_sum, map_smul, smul_eq_mul, euclideanNVectorCoordinate]
+  -- Triangle inequality, then `|θ(e_β)| |w(dx^β)| ≤ |θ(e_β)|`.
+  rw [hexp]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun β _ => ?_)
+  rw [abs_mul]
+  exact mul_le_of_le_one_right (abs_nonneg _) (hcoord β)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
