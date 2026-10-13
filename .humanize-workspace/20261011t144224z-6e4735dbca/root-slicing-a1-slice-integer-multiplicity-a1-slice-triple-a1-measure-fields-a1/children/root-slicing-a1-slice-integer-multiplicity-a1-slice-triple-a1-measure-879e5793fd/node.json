@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1.slice_null_measurable-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1",
+  "depth": 5,
+  "title": "For L¹-a.e. t the slice M ∩ f⁻¹{t} is H^m-null-measurable",
+  "statement": "Let P, m ∈ ℕ, let M ⊆ ℝ^P be H^{m+1}-null-measurable and let f : ℝ^P → ℝ be Borel measurable. Write Hᵏ := μHE[k] (Euclidean Hausdorff measure on ℝ^P) and L¹ for Lebesgue measure on ℝ. Assume the null-transfer property for (M, f): for every predicate p on ℝ^P that holds for H^{m+1}-a.e. x ∈ M (∀ᵐ x ∂(H^{m+1} restricted to M), p x), for L¹-a.e. t ∈ ℝ the predicate p holds for H^m-a.e. x ∈ M ∩ f⁻¹{t} (∀ᵐ x ∂(H^m restricted to M ∩ f⁻¹{t}), p x). Then for L¹-a.e. t ∈ ℝ the set M ∩ f⁻¹{t} is H^m-null-measurable.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Eucl P)) (f : Eucl P → ℝ), NullMeasurableSet M (μHE[m + 1] : Measure (Eucl P)) → Measurable f → (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) → ∀ᵐ t ∂(volume : Measure ℝ), NullMeasurableSet (M ∩ f ⁻¹' {t}) (μHE[m] : Measure (Eucl P))",
+  "lean_name": "slicing_im_st_mf_slice_null_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-measure-879e5793fd-a1"
+}

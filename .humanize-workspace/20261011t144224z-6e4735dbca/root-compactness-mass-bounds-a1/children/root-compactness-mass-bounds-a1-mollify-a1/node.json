@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.mollify-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Uniform approximation of continuous compactly supported forms by test forms",
+  "statement": "Let P, n ∈ ℕ and let U, V ⊆ ℝ^P with V open and V ⊆ U. Let ω : ℝ^P → Covector (Eucl P) n be continuous with compact support and tsupport ω ⊆ V, and let ε > 0. Then there is η ∈ TestFormOn U n with tsupport η ⊆ V and |ω(x) − η(x)| ≤ ε for every x ∈ ℝ^P (|·| = covectorEuclideanNorm).",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) n), IsOpen V → V ⊆ U → Continuous ω → HasCompactSupport ω → tsupport ω ⊆ V → ∀ ε : ℝ, 0 < ε → ∃ η : TestFormOn U n, tsupport (η : DifferentialForm (Eucl P) n) ⊆ V ∧ ∀ x, covectorEuclideanNorm (ω x - (η : DifferentialForm (Eucl P) n) x) ≤ ε",
+  "lean_name": "cmb_exists_testForm_uniform_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mollify-a1-a1"
+}
