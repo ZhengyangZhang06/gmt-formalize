@@ -471,6 +471,29 @@ theorem Submission.dpfir_ii_map_restrict_image_le_smul : ∀ (P n : ℕ) (φ ψ 
     Measure.restrict_apply hA, smul_eq_mul]
   exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
     hφ.lipschitzOnWith
+/-- Lipschitz images of countably `n`-rectifiable sets are countably `n`-rectifiable (used in
+Simon Ch. 6, 3.6–3.7; Ch. 3, Definition 1.1).  If `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)` with `Hⁿ(M₀) = 0` and each
+`Fⱼ` Lipschitz, then `φ(M) ⊆ φ(M₀) ∪ ⋃ⱼ (φ ∘ Fⱼ)(ℝⁿ)`, where `Hⁿ(φ(M₀)) ≤ Λⁿ Hⁿ(M₀) = 0`
+(Simon Ch. 2, Theorem 1.8(i)) and `φ ∘ Fⱼ` is `Λ Kⱼ`-Lipschitz. -/
+theorem Submission.dpfir_ii_countablyRectifiable_image_of_lipschitz : ∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith Λ φ → CountablyRectifiable n M → CountablyRectifiable n (φ '' M) := by
+  intro P n M φ Λ hφ hM
+  -- `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)` with `Hⁿ(M₀) = 0` and each `Fⱼ` Lipschitz
+  obtain ⟨M₀, hM₀, F, hF, hMsub⟩ := hM
+  refine ⟨φ '' M₀, ?_, fun j => φ ∘ F j, fun j => ?_, ?_⟩
+  · -- `Hⁿ(φ(M₀)) ≤ Λⁿ Hⁿ(M₀) = 0`
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hφ.lipschitzOnWith (s := M₀))
+    rw [hM₀, mul_zero] at h
+    exact nonpos_iff_eq_zero.1 h
+  · -- `φ ∘ Fⱼ` is `Λ Kⱼ`-Lipschitz
+    obtain ⟨K, hK⟩ := hF j
+    exact ⟨Λ * K, hφ.comp hK⟩
+  · -- `φ(M) ⊆ φ(M₀) ∪ ⋃ⱼ (φ ∘ Fⱼ)(ℝⁿ)`
+    rintro _ ⟨x, hx, rfl⟩
+    rcases hMsub hx with hx₀ | hxF
+    · exact Or.inl (mem_image_of_mem φ hx₀)
+    · obtain ⟨j, v, rfl⟩ := mem_iUnion.1 hxF
+      exact Or.inr (mem_iUnion.2 ⟨j, v, rfl⟩)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
