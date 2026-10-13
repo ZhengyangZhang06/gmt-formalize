@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.cone_support_smul-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "depth": 4,
+  "title": "The support of an integer multiplicity cone is invariant under positive dilations",
+  "statement": "For all P, n ∈ ℕ and every C ∈ 𝒟_n(ℝ^P) that is integer multiplicity (IsIntegerMultiplicity C) and a cone (IsConeCurrent C, η_{0,λ#}C = C for λ > 0): for every t > 0 and every x ∈ spt C, t·x ∈ spt C.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity C → IsConeCurrent C → ∀ t : ℝ, 0 < t → ∀ x ∈ C.support, t • x ∈ C.support",
+  "lean_name": "idtp_ccd_cone_support_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da460264ee-a1"
+}

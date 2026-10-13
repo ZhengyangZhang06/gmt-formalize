@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_point_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 6 (first paragraph and 6(a)). Conventions: H^n := μHE[n], ω_n := unitBallVolume n, B_r(x) := ball x r; spt T = U ∖ zeroRegion T, where zeroRegion T is the union of the open W with closure W compact and contained in U on which T vanishes (T(ω) = 0 whenever tsupport ω ⊆ W), SimonGMT Chapter06/CurrentLocalEquality.lean (Simon 6.2.11).
+1. (Unpacking.) By the definition of regularSet: y ∈ spt T, and there are ρ₀ > 0 with B_{ρ₀}(y) ⊆ U, m ∈ ℤ ∖ {0}, a set M ∋ y with IsEmbeddedSubmanifold 1 n M, ξ with IsOrientation n M ξ, H^n(M ∩ K) < ∞ for every compact K ⊆ B_{ρ₀}(y), and T(ω) = m·∫_M ξ(x)(ω(x)) dH^n(x) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ B_{ρ₀}(y).
+2. (Chart; local compactness.) Let (V₀, W₀, ψ) be a chart of M at y as in IsEmbeddedSubmanifold: V₀ ⊆ ℝⁿ and W₀ ∋ y open, ψ C¹ on V₀ and injective on V₀, ψ(V₀) = W₀ ∩ M, and V₀ ∩ ψ⁻¹(K) compact for every compact K ⊆ W₀. Claim: M ∩ K is compact for every compact K ⊆ W₀. Indeed M ∩ K = ψ(V₀ ∩ ψ⁻¹(K)) (a point of M ∩ K lies in W₀ ∩ M = ψ(V₀); the other inclusion is clear), and ψ is continuous on V₀ ⊇ V₀ ∩ ψ⁻¹(K), so M ∩ K is a continuous image of a compact set. Also M is a Borel set: by Lindelöf countably many chart sets W_i cover M, and each M ∩ W_i = ψ_i(V_i) is a continuous image of the σ-compact open set V_i, so M is σ-compact.
+3. (Radius.) Choose ρ with 0 < ρ ≤ ρ₀ and B_ρ(y) ⊆ W₀. Then B_ρ(y) ⊆ B_{ρ₀}(y) ⊆ U, y ∈ M, M is an embedded C¹ n-submanifold, and H^n(M ∩ K) < ∞ for every compact K ⊆ B_ρ(y) ⊆ B_{ρ₀}(y). It remains to prove spt T ∩ B_ρ(y) = M ∩ B_ρ(y).
+4. (spt T ∩ B_ρ(y) ⊆ M.) Let x ∈ B_ρ(y) ∖ M. Choose ε > 0 with closedBall(x, ε) ⊆ B_ρ(y) ⊆ W₀. By step 2, M ∩ closedBall(x, ε) is compact, hence closed, and it does not contain x; so there is ε' ∈ (0, ε] with B_{ε'}(x) ∩ M = ∅. Let W := B_{ε'/2}(x): W is open, closure W ⊆ closedBall(x, ε'/2) is compact and contained in U, and T vanishes on W: if ω ∈ 𝒟ⁿ(U) and tsupport ω ⊆ W ⊆ B_{ρ₀}(y), then ω(z) = 0 for every z ∈ M (as z ∉ W), so T(ω) = m·∫_M ξ(z)(0) dH^n(z) = 0. Hence x ∈ W ⊆ zeroRegion T, i.e. x ∉ spt T.
+5. (M ∩ B_ρ(y) ⊆ spt T.) Let x ∈ M ∩ B_ρ(y); then x ∈ U. Suppose x ∈ zeroRegion T, i.e. x ∈ W for some open W (closure W compact, ⊆ U) on which T vanishes.
+(a) By IsOrientation, ξ(x) is a unit orientation of a subspace, so the accepted lemma `Submission.imsupp_unit_orientation_ne_zero_norm_le_one` gives ξ(x) ≠ 0, and also ‖ξ(z)‖ ≤ 1 for every z ∈ M. Choose a covector α₀ with ξ(x)(α₀) ≠ 0 and put α := ξ(x)(α₀)⁻¹·α₀, so ξ(x)(α) = 1.
+(b) z ↦ ξ(z)(α) is continuous on M (ξ is continuous on M, and evaluation at α is continuous), so there is ε₁ > 0 with ξ(z)(α) > 1/2 for every z ∈ M ∩ B_{ε₁}(x).
+(c) Choose ε with 0 < ε ≤ ε₁ and B_ε(x) ⊆ W ∩ B_ρ(y).
+(d) Let g be the smooth bump centred at x with inner radius ε/4 and outer radius ε/2 (Mathlib ContDiffBump): g is smooth, 0 ≤ g ≤ 1, g = 1 on closedBall(x, ε/4) and tsupport g = closedBall(x, ε/2). Put ω(z) := g(z)·α. Then ω is smooth with compact support and tsupport ω ⊆ closedBall(x, ε/2) ⊆ B_ε(x) ⊆ W ∩ B_ρ(y) ⊆ U, so ω ∈ 𝒟ⁿ(U), and T(ω) = 0 because T vanishes on W.
+(e) On the other hand tsupport ω ⊆ B_{ρ₀}(y), so T(ω) = m·∫_M h dH^n with h(z) := ξ(z)(g(z)·α) = g(z)·ξ(z)(α). Let K := closedBall(x, ε/2), compact and contained in B_ρ(y) ⊆ W₀; M ∩ K is compact (step 2) and H^n(M ∩ K) < ∞ (step 3). h = 0 on M ∖ K; on M ∩ K ⊆ M ∩ B_{ε₁}(x) we have h ≥ 0, and h ≥ 1/2 on M ∩ closedBall(x, ε/4) (where g = 1); |h| ≤ ‖α‖ on M (since 0 ≤ g ≤ 1 and ‖ξ(z)‖ ≤ 1); and h is continuous on the compact set M ∩ K. Hence h is integrable on M ∩ K and, M being Borel (step 2), ∫_M h dH^n = ∫_{M∩K} h dH^n ≥ ∫_{M ∩ B_{ε/4}(x)} h dH^n ≥ (1/2)·H^n(M ∩ B_{ε/4}(x)).
+(f) H^n(M ∩ B_{ε/4}(x)) > 0: by the accepted lemma `Submission.dimred_rpd_submanifold_density_one` (M embedded C¹ n-submanifold, x ∈ M), H^n(M ∩ B_s(x))/(ω_n sⁿ) → 1 as s ↓ 0, so H^n(M ∩ B_s(x)) > 0 for some s ∈ (0, ε/4), and H^n(M ∩ B_{ε/4}(x)) ≥ H^n(M ∩ B_s(x)).
+(g) Therefore T(ω) = m·∫_M h dH^n ≠ 0 because m ≠ 0, contradicting (d). So x ∉ zeroRegion T, and x ∈ U ∖ zeroRegion T = spt T. ∎
+
+## Key steps
+
+1. Unpack y ∈ reg T: T = m[[M]] (m ≠ 0) for forms supported in B_{ρ₀}(y), with M an oriented embedded C¹ n-submanifold of locally finite H^n measure.
+2. Using a chart (V₀, W₀, ψ) at y, M ∩ K = ψ(V₀ ∩ ψ⁻¹K) is compact for compact K ⊆ W₀; choose ρ ≤ ρ₀ with B_ρ(y) ⊆ W₀.
+3. Points of B_ρ(y) ∖ M have a ball missing M on which T vanishes, so they are not in spt T.
+4. At x ∈ M ∩ B_ρ(y), the form g·α (bump g, ξ(x)(α) = 1) has T(gα) = m∫_M gξ(α) dH^n > 0 by continuity of ξ and positive H^n measure of M near x (submanifold density one), so x ∈ spt T.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `python3 -I scans of dag.json (lean_name, lean_statement, status): lemmas mentioning regularSet; IsConeCurrent together with support; IsStationaryAlong or firstVariation together with IsMinimizingIn; HasApproximateTangentSpaceAt together with IsEmbeddedSubmanifold or ContDiff; names matching support_null|density_zero|vanish|null_off; restrictDomain together with boundary; subspace ball measure; statuses of the 29 cited lemma names`
+- `grep -n 'def restrictDomain|def VanishesOn|def zeroRegion|def support|def IsTestForm|def testFormOnSubmodule|def GeometricCurrentOn.boundary|def WeaklyConvergesOn|abbrev Covector' simongmt Chapter06/{CurrentLocalEquality,Currents,Forms}.lean`
+- `grep -n 'def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique|def CountablyRectifiable' simongmt Chapter03/Rectifiable.lean`
+- `grep -n 'theorem integral_area_formula_of_injective_derivative|def areaJacobianAt|areaJacobianAt_eq_sqrt_det_gram|theorem ae_eq_const_of_weak_coordinate_derivatives_zero' simongmt Chapter02/{WeightedArea,Area,AreaParametrization}.lean Chapter08/DistributionalConstancy.lean`
+- `grep -rn 'euclideanHausdorffMeasure' mathlib Geometry/Euclidean/Volume/Measure.lean (zero_or_top, eq_volume, Isometry.euclideanHausdorffMeasure_image); grep -n 'addHaar_ball_of_pos|addHaar_ball ' mathlib MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `grep -c idtp_ccd dag.json; grep -rl idtp_ccd run nodes/*.json|*.md and .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no match); grep -n 'Whi82' book/chapter-07.txt, book/simon-gmt.txt; sed -n 490,515p book/chapter-07.txt`
+- `lake env lean /tmp/ccdp_check/Children.lean (7 child types elaborate); lake env lean /tmp/ccdp_check/Assembly.lean (#print axioms assembly_check: propext, Classical.choice, Quot.sound); lake env lean /tmp/ccdp_check/FromJson.lean (frozen child types as Submission.* stubs plus accepted-lemma stubs prove the parent type, exit 0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3597486845/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3597486845/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3597486845/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/ccdp_check/Children.lean`
+- `/tmp/ccdp_check/Assembly.lean`
+- `/tmp/ccdp_check/FromJson.lean`
+
+Pins match the manifest. The snapshot project commit equals workspace HEAD, b4d606d. Mathlib is 25730c7c and SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Accepted DAG lemmas used by the children, all with status `accepted`: rsd_constant_multiplicity_reduction, rsd_ae_hasMassDensity_mult, rsd_mem_support_iff_measure_ball_pos, rsd_massOn_eq_measure, rsd_cmr_support_eq_inter, imrep_carrier_sdiff_support_null, regcomp_atl_local_density_zero, approxTangent_le_submanifold_tangentSpace, dtc_approxTangent_of_null_diff, chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, dimred_rpd_submanifold_density_one, imsupp_unit_orientation_ne_zero_norm_le_one, cone_current_imrep_measure_smul_image, dtc_restrictDomain_isIntegerMultiplicity, dtc_massOn_eq_of_agreeOn, dimred_cs_mi_hasMassDensity_unique, dimred_regular_point_density.
+
+Non-accepted results used, all ancestor or parent prerequisites as in the supplied proof:
+- density_one_implies_regular (speculative-ready)
+- minimizing_implies_stationary (speculative-ready)
+- idtp_planar_cycle_eq_const_mul (planar_constancy, this node's prerequisite)
+
+No accepted lemma already states any child. In particular:
+- No accepted lemma states cone-support dilation invariance or the regular-point support identity.
+- No accepted lemma gives existence of approximate tangent planes for C¹ submanifolds. This is why sheet_first_variation uses the density argument plus approxTangent_le_submanifold_tangentSpace.
+- The decomposing node codim1_density_one_regular_local_rep covers only density 1 and is not accepted.
+
+SimonGMT supplies the area formula integral_area_formula_of_injective_derivative (areaJacobianAt = normDet; areaJacobianAt_eq_sqrt_det_gram is in AreaParametrization.lean) and ae_eq_const_of_weak_coordinate_derivatives_zero, which takes C¹ test functions. These modules are outside the base import closure, so only proofs, never the frozen statements, use them; other worktrees already add these imports. The SimonGMT definitions of support, zeroRegion and test forms (ContDiff ∞ with compact support) match the arguments in the proofs.
+
+Mathlib supplies euclideanHausdorffMeasure_zero_or_top, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image and addHaar_ball_of_pos.
+
+The proposed names idtp_ccd_* are unreserved: there is no match in dag.json, the run nodes, or any worktree Submission.
+
+Lean check: all 7 child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07. The hypothesis-only assembly proves the frozen parent type with axioms propext, Classical.choice and Quot.sound.

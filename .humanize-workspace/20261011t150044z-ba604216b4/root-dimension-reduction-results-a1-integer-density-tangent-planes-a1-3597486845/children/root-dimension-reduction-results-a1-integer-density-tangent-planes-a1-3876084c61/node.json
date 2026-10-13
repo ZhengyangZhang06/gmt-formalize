@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "depth": 4,
+  "title": "A stationary C¹ surface that is radially invariant near p ≠ 0 coincides with a plane through p near p",
+  "statement": "For every P ∈ ℕ, every M ⊆ ℝ^P that is an embedded C¹ 2-dimensional submanifold (IsEmbeddedSubmanifold 1 2 M), every p ∈ M with p ≠ 0 and every ρ > 0 such that (i) t·x ∈ M whenever x ∈ M ∩ B_ρ(p), t > 0 and t·x ∈ B_ρ(p), and (ii) M is stationary in B_ρ(p): ∫_{M ∩ B_ρ(p)} tr(P_x ∘ DX(x)) dH²(x) = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support and tsupport X ⊆ B_ρ(p), where P_x is the orthogonal projection onto span(tangentSpace M x) and H² := μHE[2]: there are δ > 0 and a 2-dimensional linear subspace Q of ℝ^P with p ∈ Q and M ∩ B_δ(p) = Q ∩ B_δ(p).",
+  "lean_statement": "∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → p ∈ M → p ≠ 0 → 0 < ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball p ρ → ∫ x in M ∩ ball p ρ, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[2] = 0) → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ p ∈ Q ∧ M ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ",
+  "lean_name": "idtp_ccd_stationary_cone_sheet_planar",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3876084c61-a1"
+}
