@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1.plane_ball_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+  "depth": 6,
+  "title": "Hausdorff measure of an open ball in an m-dimensional linear subspace (parent Step 1)",
+  "statement": "Let N, m ∈ ℕ and let Q ⊆ ℝ^N = Euclid N be a linear subspace with dim Q = m (Module.finrank ℝ Q = m). Let H^m := μHE[m] be Mathlib's Euclidean-normalized m-dimensional Hausdorff measure on ℝ^N (Euclidean metric), and let ω_m := unitBallVolume m = volume (ball (0 : Euclid m) 1), the Lebesgue measure of the open unit ball of ℝ^m. Then for every real s > 0, H^m(Q ∩ B_s(0)) = ω_m · s^m, as an equality in [0, ∞] with s^m entered as ENNReal.ofReal (s ^ m).",
+  "lean_statement": "∀ (N m : ℕ) (Q : Submodule ℝ (Euclid N)), Module.finrank ℝ Q = m → ∀ s : ℝ, 0 < s → μHE[m] ((Q : Set (Euclid N)) ∩ ball 0 s) = unitBallVolume m * ENNReal.ofReal (s ^ m)",
+  "lean_name": "codim1_rdo_dg_ftd_plane_ball_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a92e89eaac-a1"
+}

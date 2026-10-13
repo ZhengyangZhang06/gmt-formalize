@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n --no-ignore 'def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|theorem GeometricCurrentOn.le_massOn|def IsUnitOrientationOf|def MultiVector|def Covector|def TestFormOn|def IsTestForm' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        "rg -n -i 'theorem.*lusin|lusin.*continu' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "theorem enorm_integral_le_lintegral_enorm|theorem integral_withDensity_eq_integral_toReal_smul|theorem lintegral_indicator|theorem restrict_restrict|theorem exists_measurable_superset_of_null|theorem withDensity_apply|theorem withDensity_absolutelyContinuous|instance.*InnerRegular",
+        "rg -n --glob '*.lean' 'codim1_oriented_rep_massOn_le_lintegral|codim1_oriented_rep_lintegral_le_massOn' GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project ../../lake-packages-25730c7c/simongmt/Poincare",
+        "git show 57cebee2fbae5e013e3b0e4191cd38bc03b89473:GMT/Ch07/Submission.lean",
+        "lean -DautoImplicit=false /tmp/oriented-mass-independent-audit-63g_n26_/Types.lean",
+        "lean -DautoImplicit=false /tmp/oriented-mass-independent-audit-63g_n26_/FullCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-ori-0059e6635e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-ori-0059e6635e/decomposition-v1.json",
+        "/tmp/oriented-mass-independent-audit-63g_n26_/Types.lean",
+        "/tmp/oriented-mass-independent-audit-63g_n26_/FullCheck.lean",
+        "/tmp/oriented-mass-independent-audit-63g_n26_/FullCheck.log"
+      ],
+      "conclusion": "Verified the project, Mathlib and SimonGMT pins and matching contract hashes. The library supports the unconditional integral bound, restriction identity for arbitrary M', density conversion and finite-measure compact regularity. The Lusin search found no continuity theorem. All five exact types independently elaborate without child implementations. The three reused declarations have identical frozen types and passed comparator records; their proof bodies match the accepted candidates. Both new names are unreserved, and the dependency closure is acyclic. Recompilation with actual reused proofs, both new proofs and the exact selected parent assembly succeeded; all six declarations use only propext, Classical.choice and Quot.sound. The split is appropriate: the two mass inequalities establish precisely the selected theorem by antisymmetry. All names are bare identifiers, and no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Coordinate expansion, the inline squared-minors identity and Cauchy–Schwarz establish the bound; the finite evaluation sum defines a continuous linear L and proves both remaining conclusions. The zero-degree and overdimension cases are covered. Reuse has the identical comparator-accepted type and introduces no circular dependency."
+    },
+    {
+      "key": "lusin_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Removing a measurable null superset preserves the original field on A₀. Restriction to A₀ supplies the required finite inner-regular measure without assuming global finiteness. The compact intersections have the stated geometric-series defect, and the basis-preimage argument proves continuity. The proof is complete and the accepted frozen type is unchanged."
+    },
+    {
+      "key": "smooth_unit_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly records smoothness, compact support inside V, the global coefficient-norm bound and approximation on K. Tietze extension, radial normalization, the compactly supported cutoff and normalized mollification establish these conclusions. Uniform continuity controls the approximation error, and the empty-set case is handled. The proof is non-circular and reuse preserves the accepted type."
+    },
+    {
+      "key": "oriented_mass_upper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weaker hypotheses are sound and explicitly reflected in both prose and type. Orientation duality bounds the integrand by the weighted indicator of W. The unconditional Bochner-integral inequality covers nonintegrable functions, so no measurability hypothesis is missing. Measurability of W suffices for both restriction identities, even for arbitrary M'. Taking the supremum proves the exact conclusion using only the declared dependency."
+    },
+    {
+      "key": "oriented_mass_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary M' and finiteness only on W. Absolute continuity transfers measurability and null-set bounds; Lusin and smooth approximation apply with every prerequisite established. Domination proves integrability, and the finite-density formula identifies the current evaluation. With m = I.toReal and δ = η/(m+1), the three error terms give T(ω) > r. Taking all nonnegative r < I proves the lower bound, including I = 0. Together with the upper child this yields the exact selected parent; dependencies are correctly directed and non-circular."
+    }
+  ],
+  "required_changes": []
+}

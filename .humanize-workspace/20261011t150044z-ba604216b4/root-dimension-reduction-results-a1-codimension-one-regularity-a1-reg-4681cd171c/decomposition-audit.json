@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "codim1_rdo_dg_rc_|rectifiable_of_flat_tangent|flat_tangent_density_cone",
+        "^theorem measurable_measure_prodMk_left |^theorem LipschitzOnWith.extend_real|^theorem _root_.MeasurableSet.exists_isCompact_sdiff_lt|^instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace|^def OrthonormalBasis.fromOrthogonalSpanSingleton|^theorem isOpen_biUnion_countable|^theorem tendsto_measure_iInter_atTop",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/rc-independent-audit-99_ll3jk/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/rc-independent-audit-99_ll3jk/Proofs.lean",
+        "sed -n '145,270p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4681cd171c/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4681cd171c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/rc-independent-audit-99_ll3jk/Types.lean",
+        "/tmp/rc-independent-audit-99_ll3jk/Proofs.lean"
+      ],
+      "conclusion": "The seven-way split is appropriate for this selected theorem. Snapshot revisions match the compiler environment; frozen and workspace contract files are byte-identical. The inspected libraries supply the required section measurability, compact inner regularity, Lipschitz extension, orthogonal coordinates, finite covers and rectifiability closure lemmas. No proposed declaration name was found in the searched libraries or the 974-node DAG; all names are distinct bare identifiers, and no existing DAG declaration is reused. Dependencies are acyclic and match the supplied proofs' actual sibling references. All seven exact one-line propositions independently elaborate before their implementations exist. All seven supplied Lean proofs independently compile with only propext, Classical.choice and Quot.sound. The supplied assembly also compiles against the selected frozen conclusion when the exact declared flat_tangent_density dependency is supplied as an explicit hypothesis; this verifies assembly without claiming to prove that external dependency. Euclidean, measure and ENNReal instances are appropriate; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_cone_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including s-finiteness and unrestricted real α,q. Both product sets are measurable, and the s-finite section-measure theorem proves the two conclusions without circularity."
+    },
+    {
+      "key": "uniform_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The increasing Borel good sets cover almost everywhere. Finite-measure continuity and compact inner regularity give the required measure loss; monotonicity and continuity extend rational-radius bounds to real radii. The proof handles ε ≥ 1 and η = ∞ and uses exactly its declared dependency."
+    },
+    {
+      "key": "cone_exclusion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The small-ball inclusion and measure comparison give 1 − ε ≤ 16^m ε, contradicting the stated threshold. Cancellation uses positive finite factors. No unit-length assumption on v or additional finiteness assumption on μ is needed; all hypotheses match the Lean type."
+    },
+    {
+      "key": "lipschitz_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two-point estimate defines a well-defined Lipschitz height function. Its extension gives a closed coincidence set containing S, covered by a Lipschitz parametrization from Euclid m. The proof requires neither measurability of S nor m ≥ 1."
+    },
+    {
+      "key": "compact_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite covers of the unit sphere and K produce pieces satisfying cone_exclusion. The declared graph lemma covers each piece, and their finite union is closed, countably rectifiable and contains K. No missing measurability hypothesis or circular dependency occurs."
+    },
+    {
+      "key": "halving_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact-closure finiteness makes μ restricted to U finite. Small-ball equality transfers both almost-everywhere limits. The two declared dependencies yield a cover with the required half-measure estimate; μ(U)=0 is handled separately."
+    },
+    {
+      "key": "halving_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Successive residual open sets retain compact closure inside D, allowing repeated application of the stated halving hypothesis. Finite initial mass gives geometric decay. Countable gluing yields a Borel rectifiable carrier, with μ(Dᶜ)=0 supplying the global conclusion. This is a genuine conditional reduction, not circular reliance on the parent."
+    }
+  ],
+  "required_changes": []
+}

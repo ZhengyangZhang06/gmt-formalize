@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1.fderiv_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+  "depth": 6,
+  "title": "Derivative lower bound from a lower Lipschitz bound at a point (step 1)",
+  "statement": "Let P, n ∈ ℕ, g : ℝ^n → ℝ^P, U ⊆ ℝ^n an open set, a ∈ U and m ∈ ℝ. Suppose g is differentiable at a and m|x − a| ≤ |g(x) − g(a)| for every x ∈ U. Then m|v| ≤ |Dg(a)v| for every v ∈ ℝ^n, where Dg(a) = fderiv ℝ g a.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (U : Set (Euclid n)) (a : Euclid n) (m : ℝ), IsOpen U → a ∈ U → DifferentiableAt ℝ g a → (∀ x ∈ U, m * ‖x - a‖ ≤ ‖g x - g a‖) → ∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g a v‖",
+  "lean_name": "codim1_rdo_c1pt_fderiv_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e9bb54472d-a1"
+}

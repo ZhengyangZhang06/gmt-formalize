@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f491ca27bdbaa4b580ee06aa079ab9564398c3c2541c9b7fc6d1c47c3f637601",
+  "git_delta": {
+    "base_commit": "5c568c78b5acdbfdc6017ecf0ac7170df6e31a27",
+    "candidate_commit": "3632b244600d917333b1ceef4709c265614d91ef",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_measure_eq_hausdorff",
+    "diff_sha256": "dc3576fd82b3b6f80e43ae6e71505b0583591a5636641ded27466cd93e60938b",
+    "source_sha256": "1df00d5ccdb7433ec9a0bb258721af467026a032389d37519d377d302dd0986f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_measure_eq_hausdorff",
+      "statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → (∀ S : Set (Euclid (m + 1)), MeasurableSet S → CountablyRectifiable m S → μHE[m] S ≠ ∞ → ∀ᵐ w ∂(μHE[m].restrict S), Tendsto (fun t : ℝ => μHE[m] (S ∩ ball w t) / (unitBallVolume m * ENNReal.ofReal (t ^ m))) (𝓝[>] 0) (𝓝 1)) → ∃ B : Set (Euclid (m + 1)), MeasurableSet B ∧ B ⊆ D ∧ CountablyRectifiable m B ∧ μ = μHE[m].restrict B ∧ ∀ᵐ y ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B y (Submodule.span ℝ {ν y})ᗮ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
