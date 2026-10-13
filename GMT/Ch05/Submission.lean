@@ -458,6 +458,69 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Segment-averaged forcing (Simon Ch. 5, §7, Step 4 and (H4) of the `C^{2,α}` bootstrap): with
+`G(x) = ∫₀¹ g(x + (t d) e) dt`, `Φ(x) := ⟨G(x), · e⟩` is a continuous linear form on
+`L(ℝⁿ, ℝ^ℓ)`, and if every segment `x + [0, d] e`, `x ∈ S`, lies in a set `K` on which `g` is
+`α`-Hölder with constant `H`, then `|Φ(x)[P] − Φ(y)[P]| ≤ H ‖e‖ ‖x − y‖^α ‖P‖` on `S`. -/
+theorem dohr_eb_elc2_averaged_forcing : ∀ (n ℓ : ℕ) (α H d : ℝ) (g : Rn n → Rn ℓ) (S K : Set (Rn n)) (e : Rn n), 0 < α → (∀ x ∈ S, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ K) → (∀ x ∈ K, ∀ y ∈ K, ‖g x - g y‖ ≤ H * ‖x - y‖ ^ α) → ∃ Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P : Rn n →L[ℝ] Rn ℓ), Φ x P = inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (P e)) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ H * ‖e‖ * ‖x - y‖ ^ α * ‖P‖ := by
+  intro n ℓ α H d g S K e hα hseg hH
+  -- `G(x) = ∫₀¹ g(x + (t d) e) dt` and `Φ(x) = ⟨G(x), ·⟩ ∘ (P ↦ P e)`.
+  set G : Rn n → Rn ℓ := fun x => ∫ t in (0 : ℝ)..1, g (x + (t * d) • e) with hG
+  refine ⟨fun x => (innerSL ℝ (G x)).comp (ContinuousLinearMap.apply ℝ (Rn ℓ) e), ?_, ?_⟩
+  · intro x P
+    simp [G, innerSL_apply_apply]
+  · -- `g` is continuous on `K`: `‖g q − g p‖ ≤ max H 0 ‖q − p‖^α → 0` as `q → p`, since `α > 0`.
+    have hgc : ContinuousOn g K := by
+      intro p hp
+      rw [Metric.continuousWithinAt_iff]
+      intro η hη
+      have hcont : Tendsto (fun r : ℝ => max H 0 * r ^ α) (𝓝[≥] 0) (𝓝 (max H 0 * 0 ^ α)) := by
+        apply Tendsto.const_mul
+        exact ((Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto).mono_left
+          nhdsWithin_le_nhds
+      rw [Real.zero_rpow hα.ne', mul_zero] at hcont
+      obtain ⟨δ, hδ, hδη⟩ := (Metric.tendsto_nhdsWithin_nhds.mp hcont) η hη
+      refine ⟨δ, hδ, fun q hq hqp => ?_⟩
+      rw [dist_eq_norm] at hqp ⊢
+      have h2 : max H 0 * ‖q - p‖ ^ α < η := by
+        have := hδη (x := ‖q - p‖) (by simp)
+          (by simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using hqp)
+        rw [Real.dist_eq, sub_zero] at this
+        exact lt_of_le_of_lt (le_abs_self _) this
+      calc ‖g q - g p‖ ≤ H * ‖q - p‖ ^ α := hH q hq p hp
+        _ ≤ max H 0 * ‖q - p‖ ^ α := by gcongr; exact le_max_left _ _
+        _ < η := h2
+    -- For `x ∈ S`, `t ↦ g(x + (t d) e)` is continuous on `[0, 1]`, hence interval integrable.
+    have hint : ∀ x ∈ S, IntervalIntegrable (fun t : ℝ => g (x + (t * d) • e)) volume 0 1 := by
+      intro x hx
+      apply ContinuousOn.intervalIntegrable
+      rw [uIcc_of_le zero_le_one]
+      exact hgc.comp (by fun_prop) (fun t ht => hseg x hx t ht)
+    intro x hx y hy P
+    -- `‖G x − G y‖ ≤ H ‖x − y‖^α`: the integrand difference is bounded pointwise on `(0, 1]`.
+    have hGd : ‖G x - G y‖ ≤ H * ‖x - y‖ ^ α := by
+      simp only [G]
+      rw [← intervalIntegral.integral_sub (hint x hx) (hint y hy)]
+      have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+        (C := H * ‖x - y‖ ^ α) (f := fun t => g (x + (t * d) • e) - g (y + (t * d) • e)) (by
+          intro t ht
+          rw [uIoc_of_le zero_le_one] at ht
+          have h := hH _ (hseg x hx t ⟨ht.1.le, ht.2⟩) _ (hseg y hy t ⟨ht.1.le, ht.2⟩)
+          simpa using h)
+      simpa using this
+    -- Cauchy–Schwarz and `‖P e‖ ≤ ‖P‖ ‖e‖`.
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
+      innerSL_apply_apply]
+    rw [← inner_sub_left]
+    calc |inner ℝ (G x - G y) (P e)| ≤ ‖G x - G y‖ * ‖P e‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖G x - G y‖ * (‖P‖ * ‖e‖) := by gcongr; exact P.le_opNorm e
+      _ ≤ (H * ‖x - y‖ ^ α) * (‖P‖ * ‖e‖) := by gcongr
+      _ = H * ‖e‖ * ‖x - y‖ ^ α * ‖P‖ := by ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
