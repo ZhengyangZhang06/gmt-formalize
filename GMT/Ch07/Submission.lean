@@ -661,6 +661,34 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **`C¹` cut-off of a chart**: if `ψ` is `C¹` on an open `V ⊆ ℝᵐ` and `v₀ ∈ V`, then `ψ`
+agrees on some ball `B_ρ(v₀) ⊆ V` with a map `g` that is `C¹` on all of `ℝᵐ`.  Take
+`B_ε(v₀) ⊆ V`, a smooth bump `φ` with `φ = 1` on `B̄_{ε/4}(v₀)` and `φ = 0` off `B_{ε/2}(v₀)`,
+`g = φ ψ` and `ρ = ε/4`.  At points of `B_ε(v₀) ⊆ V`, `g` is a product of `C¹` maps; at points
+with `|v − v₀| ≥ ε`, `g` vanishes on the neighbourhood `{w : |w − v₀| > ε/2}`. -/
+theorem Submission.codim1_ac_sat_c1_local_extension : ∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → ∃ (g : Euclid m → Euclid P) (ρ : ℝ), 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ ContDiff ℝ 1 g ∧ EqOn g ψ (ball v₀ ρ) := by
+  intro P m V ψ v₀ hV hψ hv₀
+  -- Step 1: `B_ε(v₀) ⊆ V`
+  obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.mp hV v₀ hv₀
+  -- Step 2: a smooth bump `φ` with `φ = 1` on `B̄_{ε/4}(v₀)` and `φ = 0` off `B_{ε/2}(v₀)`
+  let φ : ContDiffBump v₀ := ⟨ε / 4, ε / 2, by positivity, by linarith⟩
+  -- Step 3: `g = φ ψ` and `ρ = ε / 4`, so `B_ρ(v₀) ⊆ B_ε(v₀) ⊆ V`
+  refine ⟨fun v => φ v • ψ v, ε / 4, by positivity,
+    (ball_subset_ball (by linarith)).trans hεV, ?_, fun v hv => ?_⟩
+  · -- Step 5: `g` is `C¹` at every point `v`
+    refine contDiff_iff_contDiffAt.mpr fun v => ?_
+    by_cases hv : dist v v₀ < ε
+    · -- (a) `v ∈ B_ε(v₀) ⊆ V`: `φ` and `ψ` are `C¹` at `v`
+      exact (φ.contDiffAt (n := 1)).smul (hψ.contDiffAt (hV.mem_nhds (hεV (mem_ball.mpr hv))))
+    · -- (b) `|v − v₀| ≥ ε`: `g = 0` on the neighbourhood `{w : |w − v₀| > ε/2}` of `v`
+      have hO : ∀ᶠ w in 𝓝 v, ε / 2 < dist w v₀ :=
+        continuousAt_const.eventually_lt (continuous_id.dist continuous_const).continuousAt
+          (by linarith [not_lt.mp hv])
+      refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+      filter_upwards [hO] with w hw
+      rw [φ.zero_of_le_dist hw.le, zero_smul]
+  · -- Step 4: `φ = 1` on `B̄_{ε/4}(v₀)`, so `g = ψ` on `B_ρ(v₀)`
+    simp only [φ.one_of_mem_closedBall (ball_subset_closedBall hv), one_smul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
