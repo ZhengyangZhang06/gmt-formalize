@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.variation_density_bound-a1.liminf_ratio_bound_ae-a1",
+  "parent_id": "root.integral_compactness-a1.variation_density_bound-a1",
+  "depth": 3,
+  "title": "Besicovitch a.e. bound liminf_i ν_i(B_ρ(x)) ≤ c·μ(B_ρ(x)) for ρ < r on a set whose r-thickening has bounded ν_i-mass (step 2, printed (1))",
+  "statement": "Let N ∈ ℕ, let μ and ν_i (i ∈ ℕ) be measures on ℝ^N = Euclidean N, let W ⊆ ℝ^N be an arbitrary set and r ∈ ℝ. Suppose S := sup_i ν_i(thickening(r, W)) < ∞, where thickening(r, W) = {y : infEdist(y, W) < ofReal(r)} (Metric.thickening; it is empty when r ≤ 0). Then for μ-almost every x (the set of exceptions has outer μ-measure 0) the following holds: if x ∈ W, there is c ∈ ℕ with liminf_{i→∞} ν_i(B_ρ(x)) ≤ c·μ(B_ρ(x)) in [0,∞] for every ρ ∈ (0, r). Here B_ρ(x) = closedBall x ρ.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (r : ℝ), ⨆ i, ν i (thickening r W) ≠ ∞ → ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ)",
+  "lean_name": "intcpt_vdb_liminf_ratio_bound_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-variation-density-bound-a1-liminf-ratio-bound-ae-a1-a1"
+}

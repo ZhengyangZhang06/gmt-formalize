@@ -1816,6 +1816,249 @@ theorem Submission.intcpt_canonical_tangent_representation :
     V.weight_finite_on_compact (hZM.trans hθM.1) hZ fun x hx ↦ ?_
   rw [Filter.Tendsto.limsup_eq (hden x (hZM hx))]
   exact ENNReal.ofReal_pos.2 (hθM.2.2.2.1 x (hZM hx))
+/-- **Simon Ch. 8, 5.9, proof of estimate (1), Besicovitch step, p. 219** (child
+`besicovitch_cover_estimate` of `liminf_ratio_bound_ae`): if every `x ∈ A` is the centre of a closed
+ball `B_σ(x)`, `0 < σ < ρ₀`, with `μ(B_σ(x)) ≤ t ν(B_σ(x))`, then `μ(A) ≤ C t ν({dist(·, A) < ρ₀})`,
+where `C` is the Besicovitch number of `ℝ^N` (Ch. 1, 3.12).  The covering lemma splits a subfamily
+of these balls covering `A` into `C` disjoint, hence countable, subfamilies; sum the ratio bound
+over each. -/
+theorem Submission.intcpt_vdb_besicovitch_cover_estimate :
+    ∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A : Set (Euclidean N)) (ρ₀ : ℝ)
+      (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧
+        μ (closedBall x σ) ≤ t * ν (closedBall x σ)) →
+      μ A ≤ (C : ℝ≥0∞) * t * ν (thickening ρ₀ A) := by
+  intro N
+  -- `C` admits no satellite configuration of `C + 1` balls in `ℝ^N`.
+  obtain ⟨C, τ, hτ, hC⟩ := HasBesicovitchCovering.no_satelliteConfig (α := Euclidean N)
+  refine ⟨C, fun μ ν A ρ₀ t h ↦ ?_⟩
+  choose σ hσ0 hσρ hσ using h
+  obtain ⟨s, hdisj, hcov⟩ := Besicovitch.exist_disjoint_covering_families hτ hC
+    { c := ((↑) : A → Euclidean N), r := fun x ↦ σ x x.2, rpos := fun x ↦ hσ0 x x.2,
+      r_bound := ρ₀, r_le := fun x ↦ (hσρ x x.2).le }
+  set B : A → Set (Euclidean N) := fun x ↦ closedBall (x : Euclidean N) (σ x x.2)
+  have hdisj' : ∀ i, (s i).PairwiseDisjoint B := hdisj
+  have hcov' : A ⊆ ⋃ i, ⋃ x ∈ s i, B x := fun y hy ↦ by
+    have hy' := hcov ⟨⟨y, hy⟩, rfl⟩
+    simp only [mem_iUnion] at hy' ⊢
+    obtain ⟨i, x, hx, hyx⟩ := hy'
+    exact ⟨i, x, hx, ball_subset_closedBall hyx⟩
+  -- Each disjoint subfamily is countable: its balls have nonempty interior.
+  have hcount : ∀ i, (s i).Countable := fun i ↦
+    (hdisj' i).countable_of_nonempty_interior fun x _ ↦
+      ⟨x, ball_subset_interior_closedBall (mem_ball_self (hσ0 x x.2))⟩
+  have hsub : ∀ x : A, B x ⊆ thickening ρ₀ A := fun x ↦
+    (closedBall_subset_ball (hσρ x x.2)).trans (ball_subset_thickening x.2 ρ₀)
+  calc μ A ≤ μ (⋃ i, ⋃ x ∈ s i, B x) := measure_mono hcov'
+    _ ≤ ∑ i, μ (⋃ x ∈ s i, B x) := measure_iUnion_fintype_le μ _
+    _ ≤ ∑ i, ∑' x : s i, μ (B x) :=
+        Finset.sum_le_sum fun i _ ↦ measure_biUnion_le μ (hcount i) B
+    _ ≤ ∑ i, ∑' x : s i, t * ν (B x) :=
+        Finset.sum_le_sum fun i _ ↦ ENNReal.tsum_le_tsum fun x ↦ hσ _ x.1.2
+    _ = ∑ i, t * ν (⋃ x ∈ s i, B x) := by
+        refine Finset.sum_congr rfl fun i _ ↦ ?_
+        rw [ENNReal.tsum_mul_left,
+          measure_biUnion (hcount i) (hdisj' i) fun x _ ↦ measurableSet_closedBall]
+    _ ≤ ∑ _i : Fin C, t * ν (thickening ρ₀ A) :=
+        Finset.sum_le_sum fun i _ ↦
+          mul_le_mul_right (measure_mono (iUnion₂_subset fun x _ ↦ hsub x)) t
+    _ = (C : ℝ≥0∞) * t * ν (thickening ρ₀ A) := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_assoc]
+/-- **Simon Ch. 8, proof of 5.9, estimate (1)** (child `liminf_bound_ae_of_cover` of
+`liminf_ratio_bound_ae`): suppose `μ(A) ≤ C t ν_i({dist(·, A) < r})` whenever every `x ∈ A` is the
+centre of a closed ball `B_σ(x)`, `0 < σ < r`, with `μ(B_σ(x)) ≤ t ν_i(B_σ(x))` (the Besicovitch
+estimate), and `S = sup_i ν_i({dist(·, W) < r}) < ∞`.  Then for `μ`-a.e. `x ∈ W` there is `c` with
+`liminf_i ν_i(B_ρ(x)) ≤ c μ(B_ρ(x))` for all `0 < ρ < r`.  For each `j`, the exceptional set lies
+in the increasing union of the sets `A_i` of points with one radius `ρ` such that
+`(j + 1) μ(B_ρ(x)) < ν_k(B_ρ(x))` for all `k ≥ i`; each `A_i` has measure at most
+`C S / (j + 1)`, hence so does the exceptional set, which is therefore `μ`-null. -/
+theorem Submission.intcpt_vdb_liminf_bound_ae_of_cover :
+    ∀ (N C : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N))
+      (W : Set (Euclidean N)) (r : ℝ),
+      (∀ (A : Set (Euclidean N)) (i : ℕ) (t : ℝ≥0∞),
+        (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < r ∧ μ (closedBall x σ) ≤ t * ν i (closedBall x σ)) →
+        μ A ≤ (C : ℝ≥0∞) * t * ν i (thickening r A)) →
+      ⨆ i, ν i (thickening r W) ≠ ∞ →
+      ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r →
+        liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) := by
+  intro N C μ ν W r hH hS
+  rw [ae_iff]
+  set E := {x | ¬(x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r →
+    liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ))}
+  set S := ⨆ i, ν i (thickening r W)
+  have key : ∀ j : ℕ, μ E ≤ (C : ℝ≥0∞) * ((j : ℝ≥0∞) + 1)⁻¹ * S := by
+    intro j
+    have ha0 : (j : ℝ≥0∞) + 1 ≠ 0 := by simp
+    have hatop : (j : ℝ≥0∞) + 1 ≠ ∞ := by simp
+    set a : ℝ≥0∞ := (j : ℝ≥0∞) + 1
+    -- `E` lies in the increasing union of the sets `A i` of points `x ∈ W` having a radius
+    -- `ρ ∈ (0, r)` with `a μ(B_ρ(x)) < ν_k(B_ρ(x))` for every `k ≥ i`.
+    set A : ℕ → Set (Euclidean N) := fun i ↦ {x | x ∈ W ∧ ∃ ρ : ℝ, 0 < ρ ∧ ρ < r ∧
+      ∀ k, i ≤ k → a * μ (closedBall x ρ) < ν k (closedBall x ρ)}
+    have hA : Monotone A := fun i i' hi x ⟨hxW, ρ, hρ, hρr, hk⟩ ↦
+      ⟨hxW, ρ, hρ, hρr, fun k hk' ↦ hk k (hi.trans hk')⟩
+    have hEA : E ⊆ ⋃ i, A i := by
+      intro x hx
+      simp only [E, mem_ofPred_eq, not_imp, not_exists, not_forall, not_le] at hx
+      obtain ⟨ρ, hρ, hρr, hlt⟩ := hx.2 (j + 1)
+      rw [Nat.cast_add_one] at hlt
+      obtain ⟨i, hi⟩ := eventually_atTop.1 (eventually_lt_of_lt_liminf hlt)
+      exact mem_iUnion.2 ⟨i, hx.1, ρ, hρ, hρr, hi⟩
+    -- On `A i` the ball ratios are at most `a⁻¹`, so the covering estimate `hH` applies.
+    have hAS : ∀ i, μ (A i) ≤ (C : ℝ≥0∞) * a⁻¹ * S := by
+      intro i
+      have hcov : ∀ x ∈ A i, ∃ σ : ℝ, 0 < σ ∧ σ < r ∧
+          μ (closedBall x σ) ≤ a⁻¹ * ν i (closedBall x σ) := by
+        rintro x ⟨-, ρ, hρ, hρr, hk⟩
+        refine ⟨ρ, hρ, hρr, ?_⟩
+        calc μ (closedBall x ρ) = a⁻¹ * (a * μ (closedBall x ρ)) :=
+              (ENNReal.inv_mul_cancel_left ha0 hatop).symm
+          _ ≤ a⁻¹ * ν i (closedBall x ρ) := by
+              gcongr
+              exact (hk i le_rfl).le
+      refine (hH _ i _ hcov).trans ?_
+      gcongr
+      exact (measure_mono (thickening_subset_of_subset r fun x hx ↦ hx.1)).trans
+        (le_iSup (fun k ↦ ν k (thickening r W)) i)
+    calc μ E ≤ μ (⋃ i, A i) := measure_mono hEA
+      _ = ⨆ i, μ (A i) := hA.measure_iUnion
+      _ ≤ (C : ℝ≥0∞) * a⁻¹ * S := iSup_le hAS
+  -- `C (j + 1)⁻¹ S → 0` as `j → ∞`, because `C` and `S` are finite.
+  have hlim : Tendsto (fun j : ℕ ↦ (C : ℝ≥0∞) * ((j : ℝ≥0∞) + 1)⁻¹ * S) atTop (𝓝 0) := by
+    have h := ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)
+    simp only [Function.comp_def, Nat.cast_add_one] at h
+    have h' := ENNReal.Tendsto.mul_const
+      (ENNReal.Tendsto.const_mul h (Or.inr (ENNReal.natCast_ne_top C))) (Or.inr hS)
+    rwa [mul_zero, zero_mul] at h'
+  exact nonpos_iff_eq_zero.1 (ge_of_tendsto' hlim key)
+
+/-- **Simon Ch. 8, proof of 5.9, printed estimate (1)** (child `liminf_ratio_bound_ae` of
+`variation_density_bound`): if `sup_i ν_i(thickening(r, W)) < ∞`, then for `μ`-a.e. `x ∈ W` some
+`c ∈ ℕ` satisfies `liminf_i ν_i(B_ρ(x)) ≤ c μ(B_ρ(x))` for every `ρ ∈ (0, r)`.  The Besicovitch
+covering estimate (Ch. 1, 3.12), with its constant `C = C(N)` and `ρ₀ = r`, is exactly the covering
+hypothesis of the a.e. argument for each `ν_i`. -/
+theorem Submission.intcpt_vdb_liminf_ratio_bound_ae :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N))
+      (r : ℝ), ⨆ i, ν i (thickening r W) ≠ ∞ → ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ →
+        ρ < r → liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) := by
+  intro N μ ν W r hS
+  -- Steps 1–2: the Besicovitch number `C` of `ℝ^N` and the covering estimate it gives.
+  obtain ⟨C, hC⟩ := Submission.intcpt_vdb_besicovitch_cover_estimate N
+  -- Steps 3–6: applied to `ν i` with `ρ₀ = r`, it makes the exceptional set `μ`-null.
+  exact Submission.intcpt_vdb_liminf_bound_ae_of_cover N C μ ν W r
+    (fun A i t h ↦ hC μ (ν i) A r t h) hS
+/-- **Simon Ch. 8, proof of 5.9, printed (1)–(2), localisation and exhaustion** (child
+`open_thickening_exhaustion` of `variation_density_bound`): an open `U ⊆ ℝ^N` is covered by
+countably many sets `W_p` whose `r_p`-thickenings (`r_p > 0`) are relatively compact open subsets of
+`U`.  Take `W = B°_s(x)` and `r = s` with `B°_{3s}(x) ⊆ U`: `thickening s (B°_s(x)) ⊆ B°_{2s}(x)`
+has compact closure inside `B_{2s}(x) ⊆ U`, and countably many such balls cover `U` (Lindelöf). -/
+theorem Submission.intcpt_vdb_open_thickening_exhaustion :
+    ∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ (W : ℕ → Set (Euclidean N)) (r : ℕ → ℝ),
+      (∀ p, 0 < r p) ∧ (∀ p, IsRelCompactOpenIn (thickening (r p) (W p)) U) ∧ U ⊆ ⋃ p, W p := by
+  intro N U hU
+  -- For `x ∈ U` choose `s x > 0` with `B°_{3 s x}(x) ⊆ U`.
+  have hrad : ∀ x ∈ U, ∃ s : ℝ, 0 < s ∧ ball x (3 * s) ⊆ U := fun x hx ↦ by
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hx
+    exact ⟨ε / 3, by positivity, by rwa [mul_div_cancel₀ ε three_ne_zero]⟩
+  choose! s hs0 hsU using hrad
+  -- `thickening (s x) (B°_{s x}(x)) ⊆ B°_{2 s x}(x)` has closure in `B_{2 s x}(x) ⊆ B°_{3 s x}(x)`.
+  have hrel : ∀ x ∈ U, IsRelCompactOpenIn (thickening (s x) (ball x (s x))) U := fun x hx ↦ by
+    have hsub : closure (thickening (s x) (ball x (s x))) ⊆ closedBall x (2 * s x) := by
+      refine (closure_mono ?_).trans closure_ball_subset_closedBall
+      simpa only [two_mul] using Metric.thickening_ball x (s x) (s x)
+    refine ⟨isOpen_thickening, (isCompact_closedBall x _).of_isClosed_subset isClosed_closure hsub,
+      hsub.trans ((closedBall_subset_ball ?_).trans (hsU x hx))⟩
+    linarith [hs0 x hx]
+  -- Lindelöf: countably many of the balls `B°_{s x}(x)`, `x ∈ U`, cover `U`.
+  obtain ⟨T, hTU, hTc, hT⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable U (fun x ↦ ball x (s x)) fun _ _ ↦ isOpen_ball
+  have hcov : U ⊆ ⋃ x ∈ T, ball x (s x) := by
+    rw [hT]
+    exact fun x hx ↦ mem_biUnion hx (mem_ball_self (hs0 x hx))
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- `U = ∅`: take `W p = ∅` and `r p = 1`.
+    rw [biUnion_empty] at hcov
+    refine ⟨fun _ ↦ ∅, fun _ ↦ 1, fun _ ↦ one_pos, fun _ ↦ ?_, hcov.trans (empty_subset _)⟩
+    rw [thickening_empty]
+    refine ⟨isOpen_empty, ?_, ?_⟩ <;> rw [closure_empty]
+    exacts [isCompact_empty, empty_subset U]
+  · -- `T = range f`: take `W p = B°_{s (f p)}(f p)` and `r p = s (f p)`.
+    obtain ⟨f, rfl⟩ := hTc.exists_eq_range hTne
+    rw [biUnion_range] at hcov
+    exact ⟨fun p ↦ ball (f p) (s (f p)), fun p ↦ s (f p), fun p ↦ hs0 _ (hTU ⟨p, rfl⟩),
+      fun p ↦ hrel _ (hTU ⟨p, rfl⟩), hcov⟩
+/-- **Simon Ch. 8, proof of 5.9, passage from (1) to (2)** (child `ball_mass_le_of_density` of
+`variation_density_bound`): a finite density `Θ^n(μ, x) = θ < ∞` gives `μ(B_ρ(x)) ≤ C ρ^n`, with
+`C = (θ + 1) ω_n`, for all small `ρ > 0`.  The ratio `μ(B_ρ(x)) / (ω_n ρ^n)` is eventually
+`< θ + 1`, and `0 < ω_n ρ^n < ∞` clears the denominator. -/
+theorem Submission.intcpt_vdb_ball_mass_le_of_density :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), HasDensity n μ x θ →
+      θ ≠ ∞ → ∃ C r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r →
+        μ (closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n) := by
+  intro N n μ x θ hθ hθ_top
+  -- The density ratio is eventually `< θ + 1`, so it is `< θ + 1` on some interval `(0, r)`.
+  have hlim : Tendsto (densityRatio n μ x) (𝓝[>] 0) (𝓝 θ) := hθ
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), densityRatio n μ x ρ < θ + 1 :=
+    hlim.eventually (Iio_mem_nhds (ENNReal.lt_add_right hθ_top one_ne_zero))
+  obtain ⟨r, hr, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 hev
+  -- `ω_n` is the Haar volume of the nonempty open bounded unit ball, so `0 < ω_n < ∞`.
+  have hω₀ : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin n))) 0 one_pos).ne'
+  have hω_top : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := (volume : Measure (EuclideanSpace ℝ (Fin n)))) (x := 0)
+      (r := 1)).ne
+  refine ⟨(θ.toReal + 1) * (unitBallVolume n).toReal, r, hr, fun ρ hρ hρr ↦ ?_⟩
+  have hρ' : densityRatio n μ x ρ < θ + 1 := hsub ⟨hρ, hρr⟩
+  have hD₀ : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω₀ (pow_ne_zero n (ENNReal.ofReal_pos.2 hρ).ne')
+  have hD_top : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hω_top (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  calc μ (closedBall x ρ) ≤ (θ + 1) * (unitBallVolume n * ENNReal.ofReal ρ ^ n) :=
+        (ENNReal.div_le_iff hD₀ hD_top).1 hρ'.le
+    _ = ENNReal.ofReal ((θ.toReal + 1) * (unitBallVolume n).toReal * ρ ^ n) := by
+        rw [ENNReal.ofReal_mul (mul_nonneg (add_nonneg ENNReal.toReal_nonneg zero_le_one)
+            ENNReal.toReal_nonneg),
+          ENNReal.ofReal_mul (add_nonneg ENNReal.toReal_nonneg zero_le_one),
+          ENNReal.ofReal_add ENNReal.toReal_nonneg zero_le_one, ENNReal.ofReal_toReal hθ_top,
+          ENNReal.ofReal_one, ENNReal.ofReal_toReal hω_top, ENNReal.ofReal_pow hρ.le, mul_assoc]
+
+/-- **Simon Ch. 8, proof of 5.9, printed estimates (1)–(2)** (child `variation_density_bound` of
+`integral_compactness`): if `μ(ℝ^N ∖ U) = 0`, `sup_i ν_i(W) < ∞` for every open `W ⊂⊂ U` and
+`Θ^n(μ, x)` exists and is finite for `μ`-a.e. `x`, then for `μ`-a.e. `x` there are `c` and `r > 0`
+with `liminf_i ν_i(B_ρ(x)) ≤ c ρ^n` for `0 < ρ < r`.  Cover `U` by countably many `W_p` whose
+`r_p`-thickenings are `⊂⊂ U` (child `open_thickening_exhaustion`).  At `μ`-a.e. `x ∈ W_p`,
+Besicovitch gives `liminf_i ν_i(B_ρ(x)) ≤ c μ(B_ρ(x))` for `ρ < r_p` (child
+`liminf_ratio_bound_ae`), and the finite density gives `μ(B_ρ(x)) ≤ C ρ^n` for small `ρ` (child
+`ball_mass_le_of_density`). -/
+theorem Submission.intcpt_variation_liminf_density_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N))
+      (ν : ℕ → Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 →
+      (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) →
+      (∀ W : Set (Euclidean N), IsRelCompactOpenIn W U → ⨆ i, ν i W ≠ ∞) →
+      (∀ᵐ x ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ x θ ∧ θ ≠ ∞) →
+      ∀ᵐ x ∂μ, ∃ c r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r →
+        liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ ENNReal.ofReal (c * ρ ^ n) := by
+  intro N n U μ ν hU hUc _ hν hdens
+  obtain ⟨W, r, hr, hWU, hUW⟩ := Submission.intcpt_vdb_open_thickening_exhaustion N U hU
+  -- Each `thickening (r p) (W p)` is `⊂⊂ U`, so its `ν_i`-masses are bounded and the
+  -- Besicovitch bound holds at `μ`-a.e. point of `W p`; countably many `p` keep it a.e.
+  have hratio : ∀ᵐ x ∂μ, ∀ p, x ∈ W p → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r p →
+      liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) :=
+    ae_all_iff.2 fun p ↦
+      Submission.intcpt_vdb_liminf_ratio_bound_ae N μ ν (W p) (r p) (hν _ (hWU p))
+  have hmemU : ∀ᵐ x ∂μ, x ∈ U := mem_ae_iff.2 hUc
+  filter_upwards [hratio, hmemU, hdens] with x hx hxU hxθ
+  obtain ⟨p, hxp⟩ := mem_iUnion.1 (hUW hxU)
+  obtain ⟨c, hc⟩ := hx p hxp
+  obtain ⟨θ, hθ, hθtop⟩ := hxθ
+  obtain ⟨C, r', hr', hC⟩ := Submission.intcpt_vdb_ball_mass_le_of_density N n μ x θ hθ hθtop
+  refine ⟨c * C, min (r p) r', lt_min (hr p) hr', fun ρ hρ hρr ↦ ?_⟩
+  calc liminf (fun i ↦ ν i (closedBall x ρ)) atTop
+      ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) := hc ρ hρ (hρr.trans_le (min_le_left _ _))
+    _ ≤ (c : ℝ≥0∞) * ENNReal.ofReal (C * ρ ^ n) := by
+        gcongr
+        exact hC ρ hρ (hρr.trans_le (min_le_right _ _))
+    _ = ENNReal.ofReal (c * C * ρ ^ n) := by
+        rw [mul_assoc, ENNReal.ofReal_mul (Nat.cast_nonneg c), ENNReal.ofReal_natCast]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
