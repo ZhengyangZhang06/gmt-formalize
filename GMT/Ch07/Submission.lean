@@ -451,6 +451,22 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Continuous functions are integrable on open boxes** (fact (F3) in the proof of the smooth
+trace estimate on a cube, cf. Simon 2.8–2.9).  The open box `{z : a < z_j < b ∀ j}` lies in the
+image under `toLp 2` of the closed order interval `Icc (fun _ => a) (fun _ => b)` of
+`Fin n → ℝ`, which is compact, and a continuous function is integrable on a compact set
+(`ContinuousOn.integrableOn_compact`). -/
+theorem Submission.cmcdt_cbm_st_box_integrableOn : ∀ (n : ℕ) (h : Euclid n → ℝ) (a b : ℝ), Continuous h → IntegrableOn h {z : Euclid n | ∀ j, a < z j ∧ z j < b} := by
+  intro n h a b hh
+  -- the open box lies in the closed box `K = toLp '' Icc (fun _ => a) (fun _ => b)`
+  have hsub : {z : Euclid n | ∀ j, a < z j ∧ z j < b} ⊆
+      (WithLp.toLp 2) '' (Set.Icc (fun _ => a) (fun _ => b) : Set (Fin n → ℝ)) :=
+    fun z hz => ⟨z.ofLp, ⟨fun j => (hz j).1.le, fun j => (hz j).2.le⟩, rfl⟩
+  -- `K` is compact: a closed order interval of `Fin n → ℝ` under the continuous map `toLp 2`
+  have hKc : IsCompact ((WithLp.toLp 2) '' (Set.Icc (fun _ => a) (fun _ => b) : Set (Fin n → ℝ))) :=
+    isCompact_Icc.image (PiLp.continuous_toLp 2 _)
+  exact (hh.continuousOn.integrableOn_compact hKc).mono_set hsub
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
