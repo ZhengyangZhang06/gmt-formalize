@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Orthogonal projection onto a 2-plane in an orthonormal frame.**  If `Q ⊆ ℝᴾ` has dimension
+`2` and `a, e ∈ Q` are orthonormal, then `π_Q x = ⟨x, a⟩a + ⟨x, e⟩e` for every `x`.  The family
+`(a, e)` is orthonormal, hence linearly independent, so `span {a, e} ≤ Q` has dimension `2` and
+equals `Q`.  The candidate `y = ⟨x, a⟩a + ⟨x, e⟩e` lies in `Q`, and `⟨x − y, a⟩ = ⟨x − y, e⟩ = 0`,
+so `x − y` is orthogonal to every `w = c₀a + c₁e ∈ Q`; the orthogonal projection is the unique
+point of `Q` with this property. -/
+theorem Submission.idtp_cse_etp_loc_frame_projection : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ x : Euclid P, Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+  intro P Q a e hQ ha he hna hne hae x
+  have hea : inner ℝ e a = 0 := by rw [real_inner_comm]; exact hae
+  have haa : inner ℝ a a = 1 := by rw [real_inner_self_eq_norm_sq, hna]; norm_num
+  have hee : inner ℝ e e = 1 := by rw [real_inner_self_eq_norm_sq, hne]; norm_num
+  -- Step 1: `![a, e]` is orthonormal, hence linearly independent
+  have hon : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hna, hne, hae, hea]
+  -- Step 2: `span {a, e} ≤ Q` and both have dimension `2`, so `span {a, e} = Q`
+  have hle : Submodule.span ℝ (range ![a, e]) ≤ Q := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    fin_cases i
+    · exact ha
+    · exact he
+  have hspan : Submodule.span ℝ (range ![a, e]) = Q :=
+    Submodule.eq_of_le_of_finrank_eq hle
+      (by rw [finrank_span_eq_card hon.linearIndependent, hQ]; simp)
+  -- Step 5: `π_Q x` is the unique point `y ∈ Q` with `⟨x − y, w⟩ = 0` for all `w ∈ Q`
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+  -- Step 3: the candidate `y = ⟨x, a⟩a + ⟨x, e⟩e` lies in `Q`
+  · exact Q.add_mem (Q.smul_mem _ ha) (Q.smul_mem _ he)
+  -- Step 4: `w = c₀a + c₁e` and `⟨x − y, w⟩ = c₀⟨x − y, a⟩ + c₁⟨x − y, e⟩ = 0`
+  · intro w hw
+    rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+    obtain ⟨c, rfl⟩ := hw
+    simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, inner_add_right,
+      real_inner_smul_right, inner_sub_left, inner_add_left, real_inner_smul_left, haa, hee, hae,
+      hea]
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
