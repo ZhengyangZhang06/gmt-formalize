@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "013a7c19bf0481ca90422fa047e5df27905ea7150c4f3040e4d32422fb6ebba3",
+  "git_delta": {
+    "base_commit": "3500adbe6285fc32fe8e4e088351aa3fac3e35a4",
+    "candidate_commit": "f7dbd7a666a79ad32bece1bb139195bc32f67318",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_lpfex_bounded_compatible_form",
+    "diff_sha256": "7c9a49d277f8a705c14aa6f761aca5e645923608da4325de3c1ca337f962c2c3",
+    "source_sha256": "bf2f7c6c454639f77264c0dc735f8989b3dc70d6f9ace9e12fce6648f35513e0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_lpfex_bounded_compatible_form",
+      "statement": "∀ (m m' k : ℕ) (f : Eucl m → Eucl m') (A O : Set (Eucl m)) (Λ : ℝ≥0), IsOpen O → A ⊆ O → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ x ∈ O, ‖fderiv ℝ f x‖ ≤ Λ) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (f ⁻¹' K ∩ A)) → ∀ ω : TestFormOn (univ : Set (Eucl m')) k, ∃ η : TestFormOn (univ : Set (Eucl m)) k, (∃ N : Set (Eucl m), IsOpen N ∧ A ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧ ∀ C : ℝ, (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl m') k) y) ≤ C) → ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl m) k) x) ≤ (Λ : ℝ) ^ k * C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
