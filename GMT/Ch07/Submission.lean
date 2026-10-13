@@ -1369,6 +1369,19 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- Mass agrees away from `spt (S − T)`.  If `spt (S − T) ⊆ K` and `G ∩ K = ∅`, then
+`M_G(S) = M_G(T)`.  Both masses are suprema over the same admissible forms `ω ∈ 𝒟ⁿ(U)` with
+`spt ω ⊆ G` and `|ω| ≤ 1`; for each of them `spt ω` misses `spt (S − T) ⊆ K`, so
+`S(ω) − T(ω) = (S − T)(ω) = 0` by Simon 6.2.11. -/
+theorem Submission.cmc_ml_massOn_eq_of_disjoint_sub_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K G : Set (Euclid P)), (S - T).support ⊆ K → Disjoint G K → S.massOn G = T.massOn G := by
+  intro P n U S T K G hK hGK
+  -- `M_G(S)` and `M_G(T)` are suprema over the same admissible set
+  refine congrArg sSup (Set.image_congr fun ω hω => ?_)
+  -- `spt ω ⊆ G` misses `spt (S − T) ⊆ K`, so `S(ω) − T(ω) = (S − T)(ω) = 0`
+  have h0 : S ω - T ω = 0 :=
+    Submission.dtc_vanish_off_support P n U (S - T) ω (Disjoint.mono hω.1 hK hGK)
+  exact congrArg ENNReal.ofReal (sub_eq_zero.mp h0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
