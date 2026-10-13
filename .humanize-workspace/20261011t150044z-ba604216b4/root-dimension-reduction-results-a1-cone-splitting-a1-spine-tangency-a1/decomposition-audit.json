@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD",
+        "def approxTangentPlane|structure HasApproximateTangentSpaceAt|def HasApproximateTangentSpaceAt|def measure|structure IMRep|def firstVariation|locallyIntegrable_mult|theorem.*satisfiesStationaryMonotonicity|theorem smul_unitClosedBall_of_nonneg|theorem lintegral_eq_zero_iff.|theorem starProjection_eq_self_iff|theorem ae_all_iff|def finBasis",
+        "dimred_cs_st_closedBall_measure_scaling|dimred_cs_st_tangent_sub_of_ball_ratio",
+        "span_eq|image_smul",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_eq_volume",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-spine-audit-690ko_gf/AuditFull.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-monotonicity-identity-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/gmt-spine-audit-690ko_gf/AuditFull.lean",
+        "/tmp/gmt-spine-audit-690ko_gf/Challenge_tangent_projection_measurable.lean",
+        "/tmp/gmt-spine-audit-690ko_gf/Challenge_monotonicity_identity.lean",
+        "/tmp/gmt-spine-audit-690ko_gf/Challenge_ball_scaling.lean",
+        "/tmp/gmt-spine-audit-690ko_gf/Challenge_centre_tangency.lean"
+      ],
+      "conclusion": "The revisions match the pinned snapshot, and its contract is byte-identical to the workspace contract. The referenced measure, projection, and scaling facts have the required meanings. Both reused declarations have passing comparator receipts and identical frozen types; neither depends on the selected parent. The new names have no competing DAG, project, or snapshot reservation. All four names are bare identifiers, and all four one-line propositions independently elaborate in comparator scope without child implementations. No problematic inline matrix-unit construction occurs. Independently assembling the supplied new proofs, accepted candidate code, and supplied parent assembly compiles successfully; all four children and the exact selected parent depend only on propext, Classical.choice, and Quot.sound. The split is appropriate: its dependencies are acyclic and correctly directed, and tangency at zero and a finite basis of L establishes the selected simultaneous conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the exact all-P,n IMRep proposition, and reuse at 74a7d911 has an identical frozen type. The proof handles n=0, derives local finiteness from positive multiplicity, obtains measurable projection norms through continuous blow-up integrals and their a.e. limits, then uses polarization and finite-dimensional reconstruction. It is complete and non-circular."
+    },
+    {
+      "key": "monotonicity_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on stationarity, arbitrary centre, closed-ball annulus, radii, and ENNReal identity. Reuse at 4d61ba7a preserves the identical type and its existing upstream measurability prerequisite. The proof justifies integrability, radial differentiation, the correctly directed squeeze, dominated convergence, and conversion to lower integrals. It also covers n=0 and equal radii without circular reliance."
+    },
+    {
+      "key": "ball_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match the Lean proposition. Translation by -z gives equality with balls centred at zero; positive dilation identifies the scaled unit ball; translation at radius one yields the stated normalization at z. No finiteness assumption or invalid ENNReal cancellation is needed. The supplied implementation compiles, and the new bare name is unreserved."
+    },
+    {
+      "key": "centre_tangency",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from the declared prerequisites. The proof establishes finite unit-ball mass before cancellation, verifies defect measurability before using the zero-lintegral criterion, and uses positive annular denominators to obtain tangency. Countable annular exhaustion covers x≠z, while linearity handles x=z. The supplied implementation compiles; the new name is unreserved, and the result combines with ball_scaling to prove the selected parent."
+    }
+  ],
+  "required_changes": []
+}
