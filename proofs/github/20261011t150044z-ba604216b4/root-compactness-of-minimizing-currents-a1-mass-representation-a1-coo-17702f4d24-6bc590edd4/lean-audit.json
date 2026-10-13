@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f88b47d63e3cdfe58675f6e45a4234808840dc4f3a49476ad000b51b6838d81c",
+  "git_delta": {
+    "base_commit": "1a1d19aaf9475f54b4ee992b917ef07ecf63f11c",
+    "candidate_commit": "6ee4b8992ea7487903d7a4dcc28d5355d5c982f2",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "fdfb20252c885957648cecb801ffd068076249eef25fb395cb696889e767325d",
+    "source_sha256": "759d5909ef5245d95ee0f30925fa7cc88af7635277b350bf4793e2dcebb32e2a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_coordinate_covectors_span",
+      "statement": "∀ (P n : ℕ), (∀ I : Fin n → Fin P, ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) ∧ ∀ ζ : MultiVector P n, (∀ (I : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ζ θ = 0) → ζ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
