@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Infinite pairwise close subsets** (the pigeonhole step behind "every sequence in a totally
+bounded subset has a Cauchy subsequence" in the BV compactness theorem, Simon Ch. 2, 2.6, applied
+to the indicators `1_{F_k}` in `L¹(B_R)`).  Suppose that for all `R, θ > 0` there is a finite set
+`S` such that every `F_k` has some `i ∈ S` with `L((F_k Δ F_i) ∩ B_R) < θ`.  Then every infinite
+`I ⊆ ℕ` contains an infinite `J ⊆ I` with `L((F_j Δ F_l) ∩ B_{r+1}) ≤ 2^{-r}` for all `j, l ∈ J`.
+Take `R = r + 1`, `θ = 2^{-(r+1)}` and a centre map `c : ℕ → S`; then some fibre
+`J = I ∩ c⁻¹{s}` is infinite, and `F_j Δ F_l ⊆ (F_j Δ F_s) ∪ (F_l Δ F_s)` gives
+`2^{-(r+1)} + 2^{-(r+1)} = 2^{-r}`. -/
+theorem Submission.codim1_rdo_dg_bvc_infinite_close_subset : ∀ (n : ℕ) (Fs : ℕ → Set (Euclid n)), (∀ R : ℝ, 0 < R → ∀ θ : ℝ, 0 < θ → ∃ S : Finset ℕ, ∀ k, ∃ i ∈ S, volume (symmDiff (Fs k) (Fs i) ∩ ball (0 : Euclid n) R) < ENNReal.ofReal θ) → ∀ (r : ℕ) (I : Set ℕ), I.Infinite → ∃ J ⊆ I, J.Infinite ∧ ∀ j ∈ J, ∀ l ∈ J, volume (symmDiff (Fs j) (Fs l) ∩ ball (0 : Euclid n) ((r : ℝ) + 1)) ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+  intro n Fs hTB r I hI
+  -- Step 1: radius `r + 1` and accuracy `2^{-(r+1)}` give `S` and a centre map `c : ℕ → S`
+  obtain ⟨S, hS⟩ := hTB ((r : ℝ) + 1) (by positivity) ((1 / 2 : ℝ) ^ (r + 1)) (by positivity)
+  choose c hcS hc using hS
+  have hθ : ENNReal.ofReal ((1 / 2 : ℝ) ^ (r + 1)) = (2⁻¹ : ℝ≥0∞) ^ (r + 1) := by
+    rw [ENNReal.ofReal_pow (by norm_num), one_div, ENNReal.ofReal_inv_of_pos (by norm_num),
+      ENNReal.ofReal_ofNat]
+  -- Step 2: `I ⊆ ⋃_{s ∈ S} (I ∩ c⁻¹{s})`, so some fibre `I ∩ c⁻¹{s}` is infinite
+  obtain ⟨s, -, hJ⟩ : ∃ s ∈ S, (I ∩ c ⁻¹' {s}).Infinite := by
+    by_contra! h
+    exact hI ((S.finite_toSet.biUnion fun s hs => h s hs).subset
+      fun k hk => mem_biUnion (hcS k) ⟨hk, rfl⟩)
+  refine ⟨I ∩ c ⁻¹' {s}, inter_subset_left, hJ, fun j hj l hl => ?_⟩
+  -- Step 3: `F_j Δ F_l ⊆ (F_j Δ F_s) ∪ (F_l Δ F_s)`, monotonicity and subadditivity
+  set B := ball (0 : Euclid n) ((r : ℝ) + 1)
+  have hjs : volume (symmDiff (Fs j) (Fs s) ∩ B) ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) := by
+    rw [← hθ, ← (hj.2 : c j = s)]
+    exact (hc j).le
+  have hls : volume (symmDiff (Fs l) (Fs s) ∩ B) ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) := by
+    rw [← hθ, ← (hl.2 : c l = s)]
+    exact (hc l).le
+  have htri : symmDiff (Fs j) (Fs l) ∩ B ⊆
+      (symmDiff (Fs j) (Fs s) ∩ B) ∪ (symmDiff (Fs l) (Fs s) ∩ B) := by
+    rintro x ⟨hx, hxB⟩
+    rcases symmDiff_triangle (Fs j) (Fs s) (Fs l) hx with h | h
+    · exact Or.inl ⟨h, hxB⟩
+    · exact Or.inr ⟨by rwa [symmDiff_comm] at h, hxB⟩
+  calc volume (symmDiff (Fs j) (Fs l) ∩ B)
+      ≤ volume (symmDiff (Fs j) (Fs s) ∩ B) + volume (symmDiff (Fs l) (Fs s) ∩ B) :=
+        (measure_mono htri).trans (measure_union_le _ _)
+    _ ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) + (2⁻¹ : ℝ≥0∞) ^ (r + 1) := add_le_add hjs hls
+    _ = (2⁻¹ : ℝ≥0∞) ^ r := by rw [pow_succ, ← div_eq_mul_inv, ENNReal.add_halves]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
