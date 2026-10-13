@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dmcbrld_|cbrld_|dor_lmb_glc_good_radius|cmcs_smi_lintegral_ofReal_deriv_le",
+        "intervalIntegrable_deriv|intervalIntegral_deriv_mem_uIcc|ofReal_integral_eq_lintegral_ofReal|theorem measurable_deriv|ae_hasDerivAt|ae_differentiableAt|theorem deriv_nonneg|countable_meas_pos_of_disjoint_iUnion|meas_ge_le_lintegral_div|tendsto_slope_zero_left",
+        "git diff cbce4763f17082f947c2646bc235268cc4f8d1fc^ cbce4763f17082f947c2646bc235268cc4f8d1fc -- GMT/Ch07/Submission.lean",
+        "git diff 6efe397f182ee5f93e5be9c4b09eb298c3f56ad8^ 6efe397f182ee5f93e5be9c4b09eb298c3f56ad8 -- GMT/Ch07/Submission.lean",
+        "git diff 17add307cf7302df0052def4a2a7b5f45c0704e2^ 17add307cf7302df0052def4a2a7b5f45c0704e2 -- GMT/Ch07/Submission.lean",
+        "git diff 8d881dabd 215074ec7 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbrld_radius_independent_audit_8rryvps7/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbrld_radius_independent_audit_8rryvps7/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-63e06ca29e/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-63e06ca29e/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1-c2deed446a/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a-f8cc50fd1b/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c79dbf19c5/accepted-candidate.json",
+        "/tmp/dmcbrld_radius_independent_audit_8rryvps7/Types.lean",
+        "/tmp/dmcbrld_radius_independent_audit_8rryvps7/Assembly.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest; inspected sources match the snapshot. The snapshot search found none of the proposed DAG declaration names. Each child instead has exactly one comparator-accepted DAG owner, with an identical frozen type and verified retained artifacts. All names are bare identifiers. Independently generated checks successfully elaborate all frozen propositions before introducing child implementations, including checks that omitted measures mean Lebesgue volume. Reconstructed accepted child proofs and the assembly for dmcbrld_exists_good_slice_radius compile in the exact frozen Contract context; all four declarations use only propext, Classical.choice and Quot.sound. The three independent children have no outgoing proof dependencies, so reuse is acyclic. Their conclusions establish this selected parent through the supplied assembly, making the split appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary real endpoints, a.e. measurability, and possibly infinite I. The proof correctly restricts μ to the finite closed ball, removes countably many charged spheres, handles I = 0 and I = ∞ separately, and applies Markov cancellation only for positive finite I. The covering contradiction is complete and requires no measurability assumption on p. Applied as specified, it supplies the selected parent's null sphere, avoidance and derivative bound. Identical-type accepted reuse is valid; the proof is independent of the parent and siblings."
+    },
+    {
+      "key": "lebesgue_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition includes every hypothesis and correctly allows all a and b. The supplied proof handles the empty interval, establishes derivative nonnegativity and integrability, converts the lower integral to the interval integral, and applies the pinned monotone-derivative bound with its hypotheses satisfied. These are independent library results, so the argument is non-circular and complete. The historical extra-import instruction does not obstruct this reuse: the identical-type accepted declaration compiles under the frozen imports using its retained Stieltjes proof. Its application to G supplies the parent's required integral estimate."
+    },
+    {
+      "key": "annulus_liminf",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line proposition agree exactly. Finiteness at ρ implies finiteness of every backward ball for h > 0; no unmentioned positivity of ρ or sphere-nullness is needed. The negative-increment derivative limit, continuous ENNReal.ofReal conversion, finite measure subtraction and eventual annulus comparison establish the stated liminf inequality on the nontrivial right-neighborhood filter. Identical-type accepted reuse is valid and non-circular. Together with the parent's differentiation of F = G^n, this proves the exact final bound, including n = 1 and zero ball mass."
+    }
+  ],
+  "required_changes": []
+}
