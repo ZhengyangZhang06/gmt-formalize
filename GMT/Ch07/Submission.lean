@@ -747,7 +747,7 @@ theorem Submission.idtp_caf_paf_carrier_side : ∀ (P n : ℕ) (g : Euclid n →
         (Metric.measure_closedBall_pos volume z εpos).ne'
     obtain ⟨ρ, ρpos, hρ⟩ :
         ∃ ρ > 0, ball x ρ ∩ s ⊆ {y | ‖f y - f x - (f' x) (y - x)‖ ≤ ε * ‖y - x‖} :=
-      mem_nhdsWithin_iff.1 ((hf' x xs).isLittleO.def εpos)
+      mem_nhdsWithin_iff.1 ((hf' x xs).isLittleO.bound εpos)
     have B₂ : ∀ᶠ r in 𝓝[>] (0 : ℝ), {x} + r • closedBall z ε ⊆ ball x ρ := by
       apply nhdsWithin_le_nhds
       exact eventually_singleton_add_smul_subset isBounded_closedBall (ball_mem_nhds x ρpos)
