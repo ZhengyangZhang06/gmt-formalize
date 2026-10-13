@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68d6b88adf6d36f80aba60026bfcc17ac8c35ad09cef7eeca29bdc5e8021af32",
+  "git_delta": {
+    "base_commit": "021779ae0fc6d5885c3f318293c954da037248bc",
+    "candidate_commit": "5aa5f19ff46a815b947e735a5066f3111320b642",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpfir_ii_map_restrict_image_le_smul",
+    "diff_sha256": "7971a8bd22721920be6dbc724a420e2003587a85e956ce24d757cfbd211e0e0d",
+    "source_sha256": "f598497294300a09787f9320b04f7d50c32f4cbbfd1e0b32d20ff1cbab92a4b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpfir_ii_map_restrict_image_le_smul",
+      "statement": "∀ (P n : ℕ) (φ ψ : Euclid P → Euclid P) (Λ : NNReal) (S : Set (Euclid P)), LipschitzWith Λ φ → Measurable ψ → LeftInverse ψ φ → (μHE[n].restrict (φ '' S)).map ψ ≤ ((Λ : ℝ≥0∞) ^ n) • μHE[n].restrict S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
