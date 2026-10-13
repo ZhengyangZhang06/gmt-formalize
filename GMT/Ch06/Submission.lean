@@ -359,6 +359,35 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+theorem Submission.ind_pi_ss_cycle_slice_boundary : ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (t : ℝ) (S : GeometricCurrentOn U m), IsOpen U → T.boundary = 0 → IsSlice T f t S → ∃ A : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ f x < t} A ∧ A.boundary = S := by
+  intro P m U T f t S hU hT hSl
+  -- Unfold `IsSlice` (4.6): `S = ∂A − B` with `A = T ⌞ Aₜ`, `B = (∂T) ⌞ Aₜ`, where
+  -- `Aₜ = {x ∈ U : f x < t}` and `B ω = ∫_{Aₜ} ⟨ω, v⟩ dμ` for a representation `(μ, v)` of `∂T`.
+  obtain ⟨A, B, hA, ⟨hmeas, μ, v, hrep, hB⟩, hS⟩ := hSl
+  -- `B = 0`, i.e. uniqueness of restrictions for the zero current `∂T`: testing `∂T = 0` with
+  -- `g ω` (`g ∈ C_c^∞(U)`) shows that `⟨ω, v⟩` integrates to zero against every such `g`, so it
+  -- vanishes `μ`-a.e. on `U ⊇ Aₜ`.
+  have hB0 : ∀ ω : TestFormOn U m, B ω = 0 := by
+    intro ω
+    have hae : ∀ᵐ x ∂μ, x ∈ U → v x ((ω : DifferentialForm (Eucl P) m) x) = 0 := by
+      refine hU.ae_eq_zero_of_integral_contDiff_smul_eq_zero
+        ((hrep ω).1.locallyIntegrable.locallyIntegrableOn U) (fun g hg hgc hgU => ?_)
+      let gω : TestFormOn U m := ⟨fun x => g x • (ω : DifferentialForm (Eucl P) m) x,
+        ⟨hg.smul ω.property.1.1, hgc.smul_right⟩,
+        (tsupport_smul_subset_left _ _).trans hgU⟩
+      calc ∫ x, g x • v x ((ω : DifferentialForm (Eucl P) m) x) ∂μ
+          = ∫ x, v x ((gω : DifferentialForm (Eucl P) m) x) ∂μ := by
+            congr 1
+            funext x
+            exact (map_smul (v x) (g x) _).symm
+        _ = T.boundary gω := ((hrep gω).2).symm
+        _ = 0 := by rw [hT, GeometricCurrentOn.zero_apply]
+    rw [hB ω]
+    exact integral_eq_zero_of_ae
+      ((ae_restrict_iff' hmeas).2 (hae.mono fun x hx hxA => hx hxA.1))
+  -- Hence `S = ∂A − 0 = ∂A`, with `A` the restriction of `T` to `Aₜ`.
+  refine ⟨A, hA, GeometricCurrentOn.ext fun ω => ?_⟩
+  rw [hS ω, hB0 ω, sub_zero]
 /-- Simon Ch. 6, (2.8)–(2.9): for `W ⊂⊂ U` and `S = X ⌞ A`, `M_W(S) ≤ M_W(X)`.  For an
 admissible `ω`, `S(ω) = ∫_A ⟨ω, v⟩ dμ`.  By regularity of the finite measure `|⟨ω, v⟩| μ` there
 are a closed `F ⊆ A` and an open `G ⊇ A` with `∫_{G \ F} |⟨ω, v⟩| dμ < ε`; a smooth
@@ -492,6 +521,71 @@ theorem Submission.ind_pi_ss_cycle_slice_boundary : ∀ (P m : ℕ) (U : Set (Eu
   -- Hence `S = ∂A − 0 = ∂A`, with `A` the restriction of `T` to `Aₜ`.
   refine ⟨A, hA, GeometricCurrentOn.ext fun ω => ?_⟩
   rw [hS ω, hB0 ω, sub_zero]
+
+/-- **Slices of a cycle (Simon Ch. 6, 4.5(1)–(2), 4.6, 4.10).**  For `X ∈ 𝒟_{m+1}(U)` with
+`∂X = 0` and locally finite mass, `d` `L`-Lipschitz and `a < b`, there are restrictions
+`A_t = X ⌞ {d < t}` and a measurable `g` with `M_W(∂A_t) ≤ g(t)` on `(a, b)` and
+`∫⁻_{(a,b)} g ≤ L · M_W(X)`.  As `M_V(∂X) = M_V(0) = 0`, `SlicingTheorem` gives slices
+`S_t = ⟨X, d, t⟩`, and `∂A_t = S_t` by `ind_pi_ss_cycle_slice_boundary`.  The band
+`{a < d < b} = {|d - (a + b)/2| < (b - a)/2}` is a sublevel set of an `L`-Lipschitz function, so
+the same lemma gives the restriction `R = X ⌞ {a < d < b}` used by the mass clause of 4.10
+(`‖Dd‖ ≤ L`); finally `M_W(R) ≤ M_W(X)` by `ind_pi_ss_restriction_massOn_le`. -/
+theorem Submission.ind_pi_ss_cycle_slice_family : SlicingTheorem → ∀ (P m : ℕ) (U W : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ), IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b → X.boundary = 0 → (∀ V, CompactlyContainedOpen V U → X.massOn V < ∞) → ∃ (A : ℝ → GeometricCurrentOn U (m + 1)) (g : ℝ → ℝ≥0∞), Measurable g ∧ (∀ t, IsRestriction X {x | x ∈ U ∧ d x < t} (A t)) ∧ (∀ t ∈ Ioo a b, (A t).boundary.massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * X.massOn W := by
+  intro hST P m U W X d L a b hU hW hd hab hX0 hXfin
+  -- Step 1: `M_V(∂X) = M_V(0) = 0`, so `X` satisfies the hypotheses of `SlicingTheorem`.
+  have hfin : ∀ V, CompactlyContainedOpen V U →
+      X.massOn V < ∞ ∧ X.boundary.massOn V < ∞ := by
+    intro V hV
+    have h0 : (0 : GeometricCurrentOn U m).massOn V = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, -, rfl⟩
+      simp
+    rw [hX0, h0]
+    exact ⟨hXfin V hV, ENNReal.zero_lt_top⟩
+  -- Step 2: the slices `S_t = ⟨X, d, t⟩` and the mass clause of 4.10 for `d`.
+  obtain ⟨S, hS, -, -, hSmass⟩ := hST P m U hU X hfin d L hd.lipschitzOnWith
+  -- Step 3: `A_t = X ⌞ {d < t}` with `∂A_t = S_t`.
+  choose A hAres hAbd using fun t =>
+    Submission.ind_pi_ss_cycle_slice_boundary P m U X d t (S t) hU hX0 (hS t)
+  -- Step 4: `R = X ⌞ {a < d < b}`, as the band is the sublevel set `{|d - c| < r}` of the
+  -- `L`-Lipschitz function `|d - c|`, `c = (a + b)/2`, `r = (b - a)/2`.
+  have hc : LipschitzWith L fun x => |d x - (a + b) / 2| := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    calc dist |d x - (a + b) / 2| |d y - (a + b) / 2|
+        = |(|d x - (a + b) / 2| - |d y - (a + b) / 2|)| := Real.dist_eq _ _
+      _ ≤ |(d x - (a + b) / 2) - (d y - (a + b) / 2)| := abs_abs_sub_abs_le_abs_sub _ _
+      _ = dist (d x) (d y) := by rw [sub_sub_sub_cancel_right, Real.dist_eq]
+      _ ≤ L * dist x y := hd.dist_le_mul x y
+  obtain ⟨S', hS', -⟩ := hST P m U hU X hfin (fun x => |d x - (a + b) / 2|) L hc.lipschitzOnWith
+  obtain ⟨R, hR, -⟩ := Submission.ind_pi_ss_cycle_slice_boundary P m U X
+    (fun x => |d x - (a + b) / 2|) ((b - a) / 2) (S' ((b - a) / 2)) hU hX0 (hS' _)
+  have hRband : IsRestriction X {x | x ∈ U ∧ a < d x ∧ d x < b} R := by
+    have hband : {x | x ∈ U ∧ a < d x ∧ d x < b} =
+        {x | x ∈ U ∧ |d x - (a + b) / 2| < (b - a) / 2} := by
+      ext x
+      simp only [mem_ofPred_eq, abs_sub_lt_iff]
+      constructor
+      · rintro ⟨hx, h₁, h₂⟩
+        exact ⟨hx, by linarith, by linarith⟩
+      · rintro ⟨hx, h₁, h₂⟩
+        exact ⟨hx, by linarith, by linarith⟩
+    rw [hband]
+    exact hR
+  -- Step 5: the mass clause of 4.10 on `W`, with `‖Dd‖ ≤ L` everywhere.
+  have hDd : ∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ d x‖₊ ≤ L :=
+    ae_of_all _ fun x _ => by
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact norm_fderiv_le_of_lipschitz ℝ hd
+  obtain ⟨g, hg, hgS, hgint⟩ :=
+    hSmass W hW.1 (subset_closure.trans hW.2.2) L hDd a b hab R hRband
+  -- Step 6: `M_W(∂A_t) = M_W(S_t) ≤ g(t)` and `∫⁻ g ≤ L · M_W(R) ≤ L · M_W(X)`.
+  refine ⟨A, g, hg, hAres, fun t ht => ?_, ?_⟩
+  · rw [hAbd t]
+    exact hgS t ht
+  · calc ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * R.massOn W := hgint
+      _ ≤ (L : ℝ≥0∞) * X.massOn W := by
+        gcongr
+        exact Submission.ind_pi_ss_restriction_massOn_le P (m + 1) U W _ X R hU hW hRband
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
