@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Splitting estimate for set integrals (the splitting of `B_r(ξ)` into the graph part and its
+complement in the graph first-variation estimate, for abstract integrands).  If `g` is integrable
+on `A`, then `∫_A g = ∫_B u − ∫_{B∖A} u − ∫_A (u − g)`; the first term is bounded by `C`, the
+second by `G μ(B ∖ F)` (as `|u| ≤ G` on `B` and `u = 0` on `(B ∖ A) ∩ F`), and the third by
+`G ∫_B t` (as `|u − g| ≤ G t` on `A ⊆ B`).  Otherwise `∫_A g = 0`. -/
+theorem Submission.dorag_tes_gv_split_integral_estimate : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (A B F : Set X) (u g t : X → ℝ) (G : ℝ) (C : ℝ≥0∞), MeasurableSet A → MeasurableSet B → MeasurableSet F → A ⊆ B → 0 ≤ G → IntegrableOn u B μ → ENNReal.ofReal |∫ x in B, u x ∂μ| ≤ C → (∀ᵐ x ∂μ, x ∈ B → |u x| ≤ G) → (∀ᵐ x ∂μ, x ∈ B → x ∉ A → x ∈ F → u x = 0) → (∀ᵐ x ∂μ, x ∈ A → |u x - g x| ≤ G * t x) → ENNReal.ofReal |∫ x in A, g x ∂μ| ≤ ENNReal.ofReal G * (∫⁻ x in B, ENNReal.ofReal (t x) ∂μ + μ (B \ F)) + C := by
+  intro X _ μ A B F u g t G C hA hB hF hAB hG hu hC hbd hzero hdiff
+  -- if `g` is not integrable on `A`, the left side is `ofReal |0| = 0`
+  by_cases hg : IntegrableOn g A μ
+  swap
+  · rw [integral_undef hg]
+    simp
+  -- `∫_A g = ∫_B u − ∫_{B∖A} u − ∫_A (u − g)`
+  have huA : IntegrableOn u A μ := hu.mono_set hAB
+  have hgA : ∫ x in A, g x ∂μ =
+      ∫ x in B, u x ∂μ - ∫ x in B \ A, u x ∂μ - ∫ x in A, (u x - g x) ∂μ := by
+    rw [integral_sub huA hg, ← integral_inter_add_sdiff hA hu, inter_eq_right.mpr hAB]
+    ring
+  -- off `A`: `‖u‖ₑ ≤ ofReal G · 1_{X∖F}` a.e. on `B ∖ A`
+  have hoff : ENNReal.ofReal |∫ x in B \ A, u x ∂μ| ≤ ENNReal.ofReal G * μ (B \ F) := by
+    calc ENNReal.ofReal |∫ x in B \ A, u x ∂μ| = ‖∫ x in B \ A, u x ∂μ‖ₑ :=
+          (Real.enorm_eq_ofReal_abs _).symm
+      _ ≤ ∫⁻ x in B \ A, ‖u x‖ₑ ∂μ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x in B \ A, Fᶜ.indicator (fun _ => ENNReal.ofReal G) x ∂μ := by
+          refine lintegral_mono_ae ?_
+          rw [ae_restrict_iff' (hB.diff hA)]
+          filter_upwards [hbd, hzero] with x hxbd hxzero hx
+          by_cases hxF : x ∈ F
+          · simp [hxzero hx.1 hx.2 hxF]
+          · rw [indicator_of_mem (mem_compl hxF), Real.enorm_eq_ofReal_abs]
+            exact ENNReal.ofReal_le_ofReal (hxbd hx.1)
+      _ = ENNReal.ofReal G * μ (Fᶜ ∩ (B \ A)) := by
+          rw [lintegral_indicator_const hF.compl, Measure.restrict_apply hF.compl]
+      _ ≤ ENNReal.ofReal G * μ (B \ F) := by
+          gcongr
+          exact fun x hx => ⟨hx.2.1, hx.1⟩
+  -- on `A`: `‖u − g‖ₑ ≤ ofReal G · ofReal t` a.e. on `A`, and `A ⊆ B`
+  have hon : ENNReal.ofReal |∫ x in A, (u x - g x) ∂μ| ≤
+      ENNReal.ofReal G * ∫⁻ x in B, ENNReal.ofReal (t x) ∂μ := by
+    calc ENNReal.ofReal |∫ x in A, (u x - g x) ∂μ| = ‖∫ x in A, (u x - g x) ∂μ‖ₑ :=
+          (Real.enorm_eq_ofReal_abs _).symm
+      _ ≤ ∫⁻ x in A, ‖u x - g x‖ₑ ∂μ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x in A, ENNReal.ofReal G * ENNReal.ofReal (t x) ∂μ := by
+          refine lintegral_mono_ae ?_
+          rw [ae_restrict_iff' hA]
+          filter_upwards [hdiff] with x hx hxA
+          rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_mul hG]
+          exact ENNReal.ofReal_le_ofReal (hx hxA)
+      _ = ENNReal.ofReal G * ∫⁻ x in A, ENNReal.ofReal (t x) ∂μ :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal G * ∫⁻ x in B, ENNReal.ofReal (t x) ∂μ := by
+          gcongr
+  -- triangle inequality and subadditivity of `ofReal`, then the three bounds
+  calc ENNReal.ofReal |∫ x in A, g x ∂μ|
+      ≤ ENNReal.ofReal (|∫ x in B, u x ∂μ| + |∫ x in B \ A, u x ∂μ| +
+          |∫ x in A, (u x - g x) ∂μ|) := by
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [hgA]
+        refine (abs_sub _ _).trans ?_
+        gcongr
+        exact abs_sub _ _
+    _ ≤ ENNReal.ofReal |∫ x in B, u x ∂μ| + ENNReal.ofReal |∫ x in B \ A, u x ∂μ| +
+          ENNReal.ofReal |∫ x in A, (u x - g x) ∂μ| := by
+        refine ENNReal.ofReal_add_le.trans ?_
+        gcongr
+        exact ENNReal.ofReal_add_le
+    _ ≤ C + ENNReal.ofReal G * μ (B \ F) +
+          ENNReal.ofReal G * ∫⁻ x in B, ENNReal.ofReal (t x) ∂μ := by
+        gcongr
+    _ = ENNReal.ofReal G * (∫⁻ x in B, ENNReal.ofReal (t x) ∂μ + μ (B \ F)) + C := by
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

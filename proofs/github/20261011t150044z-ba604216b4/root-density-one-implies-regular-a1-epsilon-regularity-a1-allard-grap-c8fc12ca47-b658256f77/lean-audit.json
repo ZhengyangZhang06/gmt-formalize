@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e77c52a30b9a282c2f2f23fd70ed74925e3a81da835d7beec7f141eacf6bec2e",
+  "git_delta": {
+    "base_commit": "3af8bcbd61d5c83f427f8086a37f24c564b8c1df",
+    "candidate_commit": "bc3aeb4718de8ea914a56d8d982e6a5c8ed0f99e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gv_split_integral_estimate",
+    "diff_sha256": "f98d245f2f682382d75095153877559da66bbe1b06941e57731dde720079427d",
+    "source_sha256": "bf3b107c3c340c11103ccd0d3c2c31f9e720a75e1753cb6b0db925cc686b2e4b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gv_split_integral_estimate",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (A B F : Set X) (u g t : X → ℝ) (G : ℝ) (C : ℝ≥0∞), MeasurableSet A → MeasurableSet B → MeasurableSet F → A ⊆ B → 0 ≤ G → IntegrableOn u B μ → ENNReal.ofReal |∫ x in B, u x ∂μ| ≤ C → (∀ᵐ x ∂μ, x ∈ B → |u x| ≤ G) → (∀ᵐ x ∂μ, x ∈ B → x ∉ A → x ∈ F → u x = 0) → (∀ᵐ x ∂μ, x ∈ A → |u x - g x| ≤ G * t x) → ENNReal.ofReal |∫ x in A, g x ∂μ| ≤ ENNReal.ofReal G * (∫⁻ x in B, ENNReal.ofReal (t x) ∂μ + μ (B \\ F)) + C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
