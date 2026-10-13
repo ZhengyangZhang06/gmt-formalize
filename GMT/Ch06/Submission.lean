@@ -13300,6 +13300,20 @@ theorem Submission.slicing_integer_multiplicity_ae : ∀ (P m : ℕ) (U : Set (E
   refine ⟨_, θ, _, ht, fun x hx => hθ x hx.1, fun ω => ?_⟩
   rw [hSR, hR]
 
+/-- **Simon Ch. 6, §4 Slicing (4.4–4.10, pp. 153–158).**  Choose for every level `t` a slice
+`S t = ∂(T ⌞ {f < t}) − (∂T) ⌞ {f < t}` (4.6).  Every slice satisfies the support bound 4.8;
+for integer multiplicity `T`, off one `L¹`-null set of levels every slice is integer
+multiplicity (4.4, 4.5(2)); and any family of slices obeys the mass bound 4.9–4.10. -/
+theorem Submission.slicing_theorem : SlicingTheorem := by
+  intro P m U hU T hT f L hf
+  -- 4.6: a slice at every level.
+  choose S hS using Submission.slicing_exists P m U hU T hT f L hf
+  refine ⟨S, hS, fun t => Submission.slicing_support_subset P m U hU T f L hf t (S t) (hS t),
+    fun hIM => ?_, Submission.slicing_mass_bound P m U hU T hT f L hf S hS⟩
+  -- 4.5(2): the exceptional null set of levels does not depend on the chosen slices.
+  filter_upwards [Submission.slicing_integer_multiplicity_ae P m U hU T hT f L hf hIM] with t ht
+  exact ht (S t) (hS t)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
