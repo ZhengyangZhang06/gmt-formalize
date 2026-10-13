@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "75c9f49105d05596c11f9c3b8e43a83eb02ecb636b6cfe43dc296e522ac3899f",
+  "git_delta": {
+    "base_commit": "4293de2837cfb3b081667968d25db4660bc84976",
+    "candidate_commit": "3ccf445b8c933aab2b2825eb4ba4b45f5dbdef9a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_tma_normal_halfspace",
+    "diff_sha256": "ef1ab36c329484298c6f21cc2c26fdb714542a5d2a57f860e6a0d724bfb1effe",
+    "source_sha256": "413cbdf967b3f4b3a6c98092673d652086a1b3adabd22fdf1b8ccb947d435e3b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_tma_normal_halfspace",
+      "statement": "∀ (m : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1)) (v : Euclid (m + 1)) (h : Euclid (m + 1) → ℝ), ‖v‖ = 1 → (∀ x, inner ℝ (ι x) v = 0) → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v}, fderiv ℝ h w v = -∫ x, h (ι x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
