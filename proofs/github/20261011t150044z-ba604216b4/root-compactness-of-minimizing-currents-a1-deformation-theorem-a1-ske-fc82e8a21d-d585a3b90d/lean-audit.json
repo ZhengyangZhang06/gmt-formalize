@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a047f12d5f4cd119a0360c15082a880610246af6600c9624250c275d313af7d5",
+  "git_delta": {
+    "base_commit": "28a0ebaa707a1aa930f79a9b9d3557e33feb88f5",
+    "candidate_commit": "52ff6182fa1f89ef888e2fceeb5405eca51b1f0a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsd_support_calculus",
+    "diff_sha256": "9834a77416ebaa8a93020c7e7fc485a98946d20083f377a7b931fb1bc26bd33f",
+    "source_sha256": "f254b2f80fea62e4ba48befedf11105194a8358d9f0aa927bcf8f39055e66f39",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsd_support_calculus",
+      "statement": "∀ (P n : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → X ω = 0) → X.support ⊆ E) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed X.support) ∧ (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) n, (A - B).support ⊆ A.support ∪ B.support) ∧ (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).support = ∅ ∧ (∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1), A.boundary.support ⊆ A.support)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
