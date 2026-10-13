@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.im_extend-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "Lemma B: if Z on ℝ^P vanishes off a compact K ⊆ U and Z|_U is integer multiplicity, then so is Z",
+  "statement": "Let P, q ∈ ℕ, U ⊆ ℝ^P open, K ⊆ U compact, and Z ∈ D_q(ℝ^P) (GeometricCurrentOn univ q) with Z(ω) = 0 for every ω ∈ D^q(ℝ^P) whose tsupport is disjoint from K. Suppose Z|_U := Z.restrictDomain (subset_univ U) is an integer multiplicity current in U. That is, Z|_U = τ(M, θ, ξ) on D^q(U) for a rectifiable triple with IsRectifiableTriple U q M θ ξ and θ(x) ∈ ℕ for x ∈ M. Then Z is an integer multiplicity current in ℝ^P (IsIntegerMultiplicity Z, with a triple relative to univ).",
+  "lean_statement": "∀ (P q : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ Z : GeometricCurrentOn (univ : Set (Eucl P)) q, (∀ ω : TestFormOn (univ : Set (Eucl P)) q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → IsIntegerMultiplicity (Z.restrictDomain (subset_univ U)) → IsIntegerMultiplicity Z",
+  "lean_name": "fiw_tb_ext_isIntegerMultiplicity",
+  "depends_on": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.cutoff-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.eq_near-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.support_subset-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+    "root.boundary_rectifiability-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.eq_near-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.support_subset-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-a1",
+      "result_commit": "b0d12af0ae3de012b5efa6fa488511b9ff716893",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.tangent_locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-tangent-locality-a1-a1",
+      "result_commit": "def607d836e2e6071aa1efb85ad37d0ca1d1ac19",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-im-extend-a1-a1"
+}
