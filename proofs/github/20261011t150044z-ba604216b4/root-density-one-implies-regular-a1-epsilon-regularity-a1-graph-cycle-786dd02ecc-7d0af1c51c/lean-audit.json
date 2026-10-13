@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d20632e3f4053e0b8fba97c0b98fa4ac3aa93ed00f145591b1a9faa512e84335",
+  "git_delta": {
+    "base_commit": "bbbc2909788d317f80b9178b92e5e54e0a9559cf",
+    "candidate_commit": "376e5f482d73f6f48d00a4945533b15f784859d5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_stc_exists_normalized_mollifier",
+    "diff_sha256": "3b2360c83fd4b3bcee38378c28ebc095470dc28f1fa38e663b7820ebfcd4f790",
+    "source_sha256": "bc7e502cabfae8804e355e1f42102bb6c21e253a88e5291b156e37dba7b2615c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_stc_exists_normalized_mollifier",
+      "statement": "∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
