@@ -519,6 +519,24 @@ theorem Submission.regcomp_cop_region_boundary_vanishes : ∀ (P n : ℕ) (U E :
       exteriorDerivative_sq φ.property.1.1
     simp only [hdd, Pi.zero_apply, map_zero, integral_zero]
 
+/-- **Simon 7.5.1** (`T = ∂[[E]]` in `U`, `N ∈ 𝒪`, `E ⊆ N ∩ U`; Ch. 6, 2.3 and 2.11; Ch. 2, §4).
+If `U` is open, `N ∈ 𝒪` is oriented by `ξN`, `E ⊆ N ∩ U` and `T(ω) = ∫_E ⟨dω, ξN⟩ dH^{n+1}` for
+`ω ∈ 𝒟ⁿ(U)`, then `n + 1 ≤ P`, `spt T ⊆ U ∩ N` and `∂T = 0` in `U`.  A chart of `N` at a point
+of `N ∩ U ≠ ∅` has injective derivative `ℝ^{n+1} → ℝᴾ`, so `n + 1 ≤ P`; `spt T ⊆ U` by
+definition and `spt T ⊆ N` because `(N̄ \ N) ∩ U = ∅` and `E ⊆ N`; and
+`∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξN⟩ dH^{n+1} = 0`.  Minimality of `T` is not needed. -/
+theorem Submission.codim1_region_support_cycle : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → InClassO n U N ξN → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → n + 1 ≤ P ∧ T.support ⊆ U ∩ N ∧ BoundaryVanishes T := by
+  intro P n U N E ξN T hU hO hE hT
+  obtain ⟨hN, -, hNU, hne⟩ := hO
+  refine ⟨?_, fun x hx => ⟨T.support_subset_domain hx, ?_⟩, ?_⟩
+  · -- `n + 1 ≤ P`: `N` is a nonempty embedded `(n + 1)`-dimensional submanifold of `ℝᴾ`
+    exact Submission.regcomp_cop_dim_le_of_embedded P (n + 1) 2 N hN (hne.mono inter_subset_left)
+  · -- `spt T ⊆ N`, since `(N̄ \ N) ∩ U = ∅` and `E ⊆ N`
+    exact Submission.regcomp_cop_region_support_subset P n U N E ξN T hU hNU
+      (hE.trans inter_subset_left) hT hx
+  · -- `∂T = 0`: `∂T(φ) = T(dφ) = ∫_E ⟨d(dφ), ξN⟩ dH^{n+1} = 0`
+    exact Submission.regcomp_cop_region_boundary_vanishes P n U E ξN T hT
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
