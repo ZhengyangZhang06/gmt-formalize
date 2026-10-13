@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -482,6 +483,67 @@ theorem Submission.codim1_rdo_c1cov_local_lower_lipschitz : ∀ (P n : ℕ) (G :
   have h3 : ‖fderiv ℝ G x (a - b)‖ ≤ ‖G a - G b‖ + ‖G a - G b - fderiv ℝ G x (a - b)‖ := by
     simpa using norm_sub_le (G a - G b) (G a - G b - fderiv ℝ G x (a - b))
   linarith
+/-- **Simon Ch. 3, Lemma 1.2, "only if" part, final paragraph** (chapter-03.txt lines 61–65),
+for one `C¹` map `G : ℝⁿ → ℝᴾ`: up to an `Hⁿ`-null set, `G(ℝⁿ)` is covered by the images
+`G(B_{r_k}(c_k))` of countably many open balls (empty when `r_k ≤ 0`) carrying lower Lipschitz
+bounds `m_k|a − b| ≤ |G a − G b|`, `m_k > 0`.
+The critical image `G({x : DG(x) not injective})` is `Hⁿ`-null by the area formula
+(`area_image_criticalSet_eq_zero`).  For a dense sequence `e` and `(q, p) = Nat.unpair k`, the
+candidate ball `B_{1/(p+1)}(e_q)` is kept, with a witness `m_k`, when it carries a lower Lipschitz
+bound, and replaced by `B_0 = ∅` otherwise.  At a regular point `x`,
+`codim1_rdo_c1cov_local_lower_lipschitz` gives a bound on some `B_δ(x)`; a candidate ball with
+`2/(p+1) < δ` and `|x − e_q| < 1/(p+1)` contains `x`, lies in `B_δ(x)` and is kept. -/
+theorem Submission.codim1_rdo_c1cov_regular_ball_cover : ∀ (P n : ℕ) (G : Euclid n → Euclid P), ContDiff ℝ 1 G → ∃ (c : ℕ → Euclid n) (r m : ℕ → ℝ), (∀ k, 0 < m k) ∧ (∀ k, ∀ a ∈ ball (c k) (r k), ∀ b ∈ ball (c k) (r k), m k * ‖a - b‖ ≤ ‖G a - G b‖) ∧ μHE[n] (range G \ ⋃ k, G '' ball (c k) (r k)) = 0 := by
+  classical
+  intro P n G hG
+  -- the critical image `G({x : DG(x) not injective})` is `Hⁿ`-null (area formula)
+  have hfin : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
+  have hcrit := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero G
+  rw [hfin] at hcrit
+  -- candidate balls `B_{1/(p+1)}(e_q)`, `(q, p) = Nat.unpair k`, for a dense sequence `e`
+  obtain ⟨e, he⟩ := TopologicalSpace.exists_dense_seq (Euclid n)
+  let ctr : ℕ → Euclid n := fun k => e (Nat.unpair k).1
+  let rad : ℕ → ℝ := fun k => 1 / ((Nat.unpair k).2 + 1 : ℝ)
+  -- a candidate ball is good if `G` has a lower Lipschitz bound on it
+  let good : ℕ → Prop := fun k => ∃ μ : ℝ, 0 < μ ∧
+    ∀ a ∈ ball (ctr k) (rad k), ∀ b ∈ ball (ctr k) (rad k), μ * ‖a - b‖ ≤ ‖G a - G b‖
+  refine ⟨ctr, fun k => if good k then rad k else 0,
+    fun k => if h : good k then Exists.choose h else 1, fun k => ?_, fun k => ?_, ?_⟩
+  · -- `m_k > 0`
+    show 0 < if h : good k then Exists.choose h else 1
+    split_ifs with h
+    exacts [(Exists.choose_spec h).1, one_pos]
+  · -- (i): the witness on a good ball; otherwise `B_0(c_k) = ∅`
+    intro a ha b hb
+    dsimp only at ha hb ⊢
+    by_cases h : good k
+    · rw [ite_eq_left h] at ha hb
+      rw [dite_eq_left h]
+      exact (Exists.choose_spec h).2 a ha b hb
+    · rw [ite_eq_right h, ball_zero] at ha
+      exact absurd ha (notMem_empty a)
+  · -- (ii): each regular point lies in a good ball, so the remainder is in the critical image
+    refine measure_mono_null ?_ hcrit
+    rintro y ⟨⟨x, rfl⟩, hy⟩
+    refine ⟨x, ⟨hG.differentiable one_ne_zero x, fun hinj => hy ?_⟩, rfl⟩
+    obtain ⟨δ, μ, hδ, hμ, hlip⟩ :=
+      Submission.codim1_rdo_c1cov_local_lower_lipschitz P n G x hG hinj
+    obtain ⟨p, hp⟩ := exists_nat_one_div_lt (half_pos hδ)
+    obtain ⟨q, hq⟩ := he.exists_dist_lt x (Nat.one_div_pos_of_nat : (0 : ℝ) < 1 / ((p : ℝ) + 1))
+    have hk : Nat.unpair (Nat.pair q p) = (q, p) := Nat.unpair_pair q p
+    -- `B_{1/(p+1)}(e_q) ⊆ B_δ(x)`, so this candidate ball is good
+    have hsub : ball (ctr (Nat.pair q p)) (rad (Nat.pair q p)) ⊆ ball x δ := by
+      intro a ha
+      simp only [ctr, rad, hk, mem_ball] at ha ⊢
+      calc dist a x ≤ dist a (e q) + dist (e q) x := dist_triangle _ _ _
+        _ < 1 / ((p : ℝ) + 1) + 1 / ((p : ℝ) + 1) := add_lt_add ha (by rwa [dist_comm])
+        _ < δ := by linarith
+    have hgood : good (Nat.pair q p) :=
+      ⟨μ, hμ, fun a ha b hb => hlip a (hsub ha) b (hsub hb)⟩
+    refine mem_iUnion.2 ⟨Nat.pair q p, x, ?_, rfl⟩
+    show x ∈ ball (ctr (Nat.pair q p)) (if good (Nat.pair q p) then rad (Nat.pair q p) else 0)
+    rw [ite_eq_left hgood]
+    simpa only [ctr, rad, hk, mem_ball] using hq
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
