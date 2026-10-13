@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "Area formula for a C¹ antilipschitz chart against continuous compactly supported functions",
+  "statement": "Let Φ : ℝⁿ → ℝ^Q be C¹, Ω ⊆ ℝⁿ open, and c > 0 with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω. For v ∈ ℝⁿ put JΦ(v) := √det(⟨DΦ(v)e_i, DΦ(v)e_j⟩)_{i,j<n}, where e_i = EuclideanSpace.single i 1 is the standard basis of ℝⁿ. Then for every continuous compactly supported h : ℝ^Q → ℝ, ∫_{Φ(Ω)} h dHⁿ = ∫_Ω JΦ(v) h(Φ(v)) dLⁿ(v) (Hⁿ = μHE[n] on ℝ^Q, Lⁿ = volume on ℝⁿ; Bochner set integrals).",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ h : Eucl Q → ℝ, Continuous h → HasCompactSupport h → ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) = ∫ v in Ω, Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det * h (Φ v)",
+  "lean_name": "lpf_wtc_chart_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8d37e9b354-a1"
+}
