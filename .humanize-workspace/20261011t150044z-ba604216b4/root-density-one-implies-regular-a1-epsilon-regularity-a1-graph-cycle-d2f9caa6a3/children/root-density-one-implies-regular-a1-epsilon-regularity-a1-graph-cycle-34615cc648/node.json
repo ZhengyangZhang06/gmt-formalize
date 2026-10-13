@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.mollify_deriv_approx-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+  "depth": 5,
+  "title": "Mollification approximates a C¹_c function in directional-derivative sup norm with support control",
+  "statement": "Let n ∈ ℕ, φ : ℝⁿ → ℝ of class C¹ with compact support, δ > 0, v ∈ ℝⁿ and ε > 0. Then there is ψ : ℝⁿ → ℝ of class C^∞ (ContDiff ℝ (⊤ : ℕ∞)) with compact support such that tsupport ψ ⊆ cthickening δ (tsupport φ) (the closed δ-neighbourhood of the topological support of φ) and |Dψ(x)v − Dφ(x)v| ≤ ε for every x ∈ ℝⁿ (Df(x)v = fderiv ℝ f x v).",
+  "lean_statement": "∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ 1 φ → HasCompactSupport φ → ∀ (δ : ℝ), 0 < δ → ∀ (v : Euclid n) (ε : ℝ), 0 < ε → ∃ ψ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ cthickening δ (tsupport φ) ∧ ∀ x, |fderiv ℝ ψ x v - fderiv ℝ φ x v| ≤ ε",
+  "lean_name": "dgcr_stc_mollify_C1_fderiv_approx",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648-a1"
+}
