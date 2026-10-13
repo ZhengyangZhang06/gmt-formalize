@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d98879b1101e564ab25a6951e3c726b566df8a74d261f61e8bfd362f1b6d6bd",
+  "git_delta": {
+    "base_commit": "3292fbc51588141fb3967c1fc315663a65c2363f",
+    "candidate_commit": "965a5969af34a1eed70e251ebbdc1444947aebeb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_pc_smooth_grad_bound",
+    "diff_sha256": "462571c27b8040d2f806e95a6e709c581e712ee8371f986b108fa5c7e9464218",
+    "source_sha256": "1a0fae9e4ea2e918a1e5f64f36e39430079aacd51ba54c9e6f60b0fd342c3844",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_pc_smooth_grad_bound",
+      "statement": "∀ (m : ℕ) (g : Euclid m → ℝ) (r c : ℝ), ContDiff ℝ (⊤ : ℕ∞) g → (∀ ψ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid m) r → (∀ v, ‖ψ v‖ ≤ 1) → ∫ v, g v * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap ≤ c) → ∫⁻ v in ball (0 : Euclid m) r, ‖fderiv ℝ g v‖ₑ ≤ ENNReal.ofReal c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
