@@ -1,0 +1,127 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'dph_lpf_|LipPF' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib -g '*.lean'",
+        "extDeriv_pullback|EventuallyEq.extDeriv_eq",
+        "IsCompact.cthickening|mem_cthickening_of_dist_le|self_subset_thickening|exists_cthickening_subset_open",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "python3 /tmp/lpf_independent_audit/check_contracts.py",
+        "python3 /tmp/lpf_independent_audit/run_lean_check.py Types",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lpf_independent_audit/Assembly.lean",
+        "#print axioms Submission.iwl_sp_exists_compatible_testForm",
+        "#print axioms Submission.iwl_cr_support_lemmas",
+        "#print axioms Submission.fiw_ims_sc_continuous_of_bound",
+        "#print axioms Submission.cmb_abs_apply_le_of_massOn_le",
+        "#print axioms Submission.iwl_sp_covectorEuclideanNorm_pullback_le"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-30886ea76d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-30886ea76d/decomposition-v1.json",
+        "/tmp/lpf_independent_audit/check_contracts.py",
+        "/tmp/lpf_independent_audit/contracts_result.json",
+        "/tmp/lpf_independent_audit/Types.lean",
+        "/tmp/lpf_independent_audit/Types.result.json",
+        "/tmp/lpf_independent_audit/Assembly.lean",
+        "/tmp/lpf_independent_audit/Reuse_compatible_form.lean",
+        "/tmp/lpf_independent_audit/Reuse_support_lemmas.lean",
+        "/tmp/lpf_independent_audit/Reuse_continuity_criterion.lean",
+        "/tmp/lpf_independent_audit/Reuse_mass_bound.lean",
+        "/tmp/lpf_independent_audit/Reuse_pullback_norm.lean",
+        "/tmp/lpf_independent_audit/reuse_and_assembly_results.json"
+      ],
+      "conclusion": "The split is appropriate for the selected dph_lipschitz_pushforward contract. All twelve one-line propositions elaborate using the frozen imports and definitions without child implementations. Lean verified the exact parent assembly from the children and its declared upstream dependencies. All seven new names are unreserved bare identifiers; the five reused types are byte-identical to accepted DAG contracts, and their recompiled proofs use only propext, Classical.choice and Quot.sound. Both dependency graphs are acyclic. The pinned sources support the current, mass, support, cutoff and exterior-derivative arguments. The dph_lpf_|LipPF search returned no matches. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "proper_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match both clauses. Closedness and compact containment prove the first; the convex-combination estimate and continuous cylinder parametrization prove the second. Neither continuity of G nor an additional sign hypothesis on d is needed."
+    },
+    {
+      "key": "reference_sequence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit SA hypothesis matches the frozen upstream type. Restricting uniform convergence to F_{r/2}, identifying its limit there, and applying proper_transfer to eventual unit-distance bounds prove every RS conclusion."
+    },
+    {
+      "key": "compatible_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse, independently type- and axiom-checked. The compact preimage, smooth cutoff and open neighborhood construction establish compatibility and both support restrictions without requiring A closed or V open."
+    },
+    {
+      "key": "support_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three clauses match their prose. Support preservation under exterior differentiation proves the boundary clause; the small-ball vanishing arguments prove the weak-limit and linear-combination clauses. The reused vanishing prerequisite is accepted and correctly instantiated."
+    },
+    {
+      "key": "comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit Prod and SH assumptions are correctly directed upstream inputs. The proof treats zero and successor degrees, specializes HEq correctly, supplies properness and compatible forms, and obtains a nonnegative constant independent of epsilon. Its final epsilon argument proves precisely the stated convergence."
+    },
+    {
+      "key": "continuity_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse with permitted axioms. The accepted converges_small prerequisite supplies the common compact support and uniform coefficient bounds. Choosing epsilon/(|A|+1) proves continuity for arbitrary L and arbitrary-sign A under exactly the displayed assumptions."
+    },
+    {
+      "key": "current_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the linear map and required sequential-continuity field, then bounds the defining mass supremum using C=1. It proves the exact contract for arbitrary U and B; no separate nonnegativity assumption is missing."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse with permitted axioms. The proof derives C≥0, checks admissibility of both signed rescalings for c>C, correctly converts the ENNReal bound using B≥0, and passes to c decreasing to C."
+    },
+    {
+      "key": "pullback_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse with permitted axioms. The tuple-counting identity, one-slot estimate and multilinear induction establish the coefficient-norm inequality, including degree zero and degrees exceeding either ambient dimension."
+    },
+    {
+      "key": "existence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "RS and CL are explicit hypotheses, and the conclusion is exactly Part (I). The supplied proof establishes cutoff bounds, Cauchy convergence along arbitrary index maps tending to infinity, limiting linearity, current continuity, mass, characterization, uniqueness and support without circular reliance."
+    },
+    {
+      "key": "boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conclusion is exactly Part (II). The proof verifies normality of ∂X using the HEq condition and boundary_boundary, applies Part (I), and identifies its result with ∂S through compatible exterior derivatives and unique limits. This establishes the full boundary LipPF quantification."
+    },
+    {
+      "key": "linearity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conclusion is exactly Part (III). The support lemma places all three supports in one closed union; RS and compatible_form provide a common approximation and test-form sequence. Passing the three LipPF limits through the given linear identity requires no unstated mass assumption."
+    }
+  ],
+  "required_changes": []
+}
