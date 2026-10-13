@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem (lintegral_iUnion|lintegral_tsum|setLIntegral_eq_of_support_subset|integral_iUnion|hasSum_integral_iUnion|tendsto_tsum_of_dominated_convergence|ae_restrict_iUnion_iff)|ennreal_tsum|theorem MeasurableSet.image_of_continuousOn_injOn",
+        "def approxTangentPlane|def HasApproximateTangentSpaceAt|def CountablyRectifiable|theorem HasApproximateTangentSpaceAt.unique|theorem countablyRectifiable_iUnion|sorry|axiom",
+        "dor_lmbsf_tg_(coarea_gluing|tangent_gluing|weak_limit_gluing)",
+        "git log --all --format=%h -S dor_lmbsf_tg_ -- GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tg-independent-audit-cd55iv9j/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tg-independent-audit-cd55iv9j/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-c1d8721df1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-c1d8721df1/decomposition-v1.json",
+        "/tmp/tg-independent-audit-cd55iv9j/Types.lean",
+        "/tmp/tg-independent-audit-cd55iv9j/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "The pinned sources support the cited measure-theoretic steps; inspected mathlib files match the compiler package, and the snapshot Contract matches the workspace Contract and Submission. All three frozen one-line propositions independently elaborate in comparator scope without their implementations. Independently checked exact child proofs and the assembly of dor_lmbsf_tangential_gradient from its four frozen sibling contracts compile with only propext, Classical.choice and Quot.sound. All names are bare and unreserved; searches found no collision outside this proposal's artifacts or in git history. The selected dependency closure is acyclic. The split is appropriate: its independent obligations establish G3, G4b and G5, while the inherited siblings and remaining parent steps establish the other conclusions. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coarea_gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including arbitrary φ. The proof establishes the exact disjoint measurable slice decomposition, sums the lower integrals, proves a.e.-measurability, and uses the support condition to identify the right-hand side. The library lemmas require no additional measurability of φ. This independently supplies G3 without circular reliance."
+    },
+    {
+      "key": "tangent_gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All TL, Borel, containment and local-finiteness hypotheses match. TL is applied in the correct direction on each piece and evaluated at Q(x); no measurability of Q is needed. Countable a.e. gluing and restriction to B complete the exact conclusion. The parent's compact-piece argument supplies the premises needed for G4b."
+    },
+    {
+      "key": "weak_limit_gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. Null modifications preserve the restricted measures; domination establishes integrability; disjoint Bochner integration supplies both series and a summable bound. The norm bound implies D ≥ 0 almost everywhere, so no positivity hypothesis is missing. Tannery gives the claimed limit, and the parent's compact mass estimates justify its G5 instantiation. The supplied proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

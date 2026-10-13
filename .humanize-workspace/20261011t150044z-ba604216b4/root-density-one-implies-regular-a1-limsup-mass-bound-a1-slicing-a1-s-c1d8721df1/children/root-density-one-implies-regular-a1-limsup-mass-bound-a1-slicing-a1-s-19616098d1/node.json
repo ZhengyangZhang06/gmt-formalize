@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1.coarea_gluing-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1",
+  "depth": 6,
+  "title": "Countable gluing of the co-area identity over disjoint Borel pieces (parent Steps 3–4; Simon Ch. 3, 2.8–2.9 summed over the decomposition of Remark 1.3)",
+  "statement": "Let P ∈ ℕ, let μ and ν be measures on ℝ^P, let M ⊆ ℝ^P be Borel, and let S_j ⊆ M (j ∈ ℕ) be pairwise disjoint Borel sets. Let g : ℝ^P → ℝ^P be Borel with g(x) = 0 whenever x ∉ ⋃_j S_j. Let f : ℝ^P → ℝ be Borel and φ : ℝ^P → [0, ∞] arbitrary. For A ⊆ ℝ^P and t ∈ ℝ put A_t := A ∩ {x : g(x) ≠ 0} ∩ f⁻¹(t). Assume that for every j:\n- the function t ↦ ∫_{(S_j)_t} φ dν is a.e.-measurable for Lebesgue measure on ℝ, and\n- ∫_ℝ ∫_{(S_j)_t} φ dν dt = ∫_{S_j} |g| φ dμ.\nThen t ↦ ∫_{M_t} φ dν is a.e.-measurable and ∫_ℝ ∫_{M_t} φ dν dt = ∫_M |g| φ dμ. All integrals are lower Lebesgue integrals in [0, ∞], and |g(x)| = ‖g x‖ₑ.",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (M : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (g : Euclid P → Euclid P) (f : Euclid P → ℝ) (φ : Euclid P → ℝ≥0∞), MeasurableSet M → (∀ j, MeasurableSet (S j)) → Pairwise (fun i j => Disjoint (S i) (S j)) → (∀ j, S j ⊆ M) → Measurable g → (∀ x, (∀ j, x ∉ S j) → g x = 0) → Measurable f → (∀ j, AEMeasurable (fun t => ∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) ∧ ∫⁻ t, (∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) = ∫⁻ x in S j, ‖g x‖ₑ * φ x ∂μ) → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) ∧ ∫⁻ t, (∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) = ∫⁻ x in M, ‖g x‖ₑ * φ x ∂μ",
+  "lean_name": "dor_lmbsf_tg_coarea_gluing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-19616098d1-a1"
+}

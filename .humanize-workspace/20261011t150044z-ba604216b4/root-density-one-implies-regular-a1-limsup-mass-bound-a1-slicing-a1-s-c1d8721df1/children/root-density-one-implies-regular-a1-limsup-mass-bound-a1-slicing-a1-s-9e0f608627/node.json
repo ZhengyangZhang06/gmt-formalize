@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1.tangent_gluing-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1",
+  "depth": 6,
+  "title": "Approximate tangent spaces glue over a countable Borel cover of a locally Hⁿ-finite set, given tangent locality (TL) (parent Step 6; Simon Ch. 3, Remark 1.5(2))",
+  "statement": "Assume (TL): for all P, n ∈ ℕ, every open U ⊆ ℝ^P and all Borel sets A ⊆ B ⊆ U with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]), the following holds for Hⁿ-a.e. x ∈ A and every linear subspace Q of ℝ^P: B has approximate tangent space Q at x iff A does (HasApproximateTangentSpaceAt, Simon Ch. 3, 1.4).\nLet P, n ∈ ℕ, U ⊆ ℝ^P open, and B ⊆ U Borel with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U. Let S_j (j ∈ ℕ) be Borel sets with S_j ⊆ B for every j and B ⊆ ⋃_j S_j. Let Q assign to each x ∈ ℝ^P a linear subspace Q(x) of ℝ^P. Suppose that for every j, for Hⁿ-a.e. x ∈ S_j, S_j has approximate tangent space Q(x) at x. Then for Hⁿ-a.e. x ∈ B, B has approximate tangent space Q(x) at x.",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U B : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), IsOpen U → MeasurableSet B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → (∀ j, MeasurableSet (S j)) → (∀ j, S j ⊆ B) → B ⊆ ⋃ j, S j → (∀ j, ∀ᵐ x ∂(μHE[n].restrict (S j)), HasApproximateTangentSpaceAt n (S j) x (Q x)) → ∀ᵐ x ∂(μHE[n].restrict B), HasApproximateTangentSpaceAt n B x (Q x)",
+  "lean_name": "dor_lmbsf_tg_tangent_gluing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-9e0f608627-a1"
+}
