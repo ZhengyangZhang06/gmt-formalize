@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ae53b45cfef9998a4ed481c5e7e96bfb90e7b633df49ba80fd633813862552af",
+  "git_delta": {
+    "base_commit": "7da8f43d5b6888af31e81437b66b97ad28bee27a",
+    "candidate_commit": "f55cfacdb67db89b8e7743294cbf4fbb6ee08c26",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_pfr_setIntegral_image_transfer",
+    "diff_sha256": "717c61d743fdb229e2f4be3227a688bccfc04c725b248072e9e18502857e0898",
+    "source_sha256": "54852798e73beec4922b13a0bdbdd7473a788d3cec4c0d3c19ea0559ebceb039",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_pfr_setIntegral_image_transfer",
+      "statement": "∀ (m d P : ℕ) (B B' : Set (Euclid d)) (G : Euclid d → Euclid P) (J h : Euclid d → ℝ) (g : Euclid P → ℝ), MeasurableSet B → MeasurableSet B' → B' ⊆ B → ContinuousOn G B → InjOn G B → (∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μHE[m] = ∫ v in B, J v * f (G v) ∂μHE[m]) → (∀ᵐ v ∂(μHE[m].restrict B), h v = B'.indicator (fun y => J y * g (G y)) v) → ∫ v in B, h v ∂μHE[m] = ∫ w in G '' B', g w ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
