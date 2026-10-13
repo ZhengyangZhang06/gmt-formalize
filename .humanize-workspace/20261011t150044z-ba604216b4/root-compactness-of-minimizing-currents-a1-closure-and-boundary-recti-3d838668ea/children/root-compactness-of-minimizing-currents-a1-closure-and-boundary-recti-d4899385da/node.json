@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.mass_sub-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "depth": 5,
+  "title": "Subadditivity of local mass for a difference of currents",
+  "statement": "For all P, n ∈ ℕ, all sets U, W ⊆ ℝ^P and all currents S, T ∈ 𝒟_n(U) (GeometricCurrentOn U n): M_W(S − T) ≤ M_W(S) + M_W(T) in [0, ∞]. Here S − T is the difference current of the frozen contract, and M_W(R) = sup{ENNReal.ofReal(R(ω)) : ω ∈ 𝒟^n(U), tsupport ω ⊆ W, |ω(x)| ≤ 1 for all x} (GeometricCurrentOn.massOn with massAdmissibleOn U n W), where |·| is the Euclidean coefficient norm covectorEuclideanNorm.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (S T : GeometricCurrentOn U n), (S - T).massOn W ≤ S.massOn W + T.massOn W",
+  "lean_name": "cbrld_ns_massOn_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d4899385da-a1"
+}
