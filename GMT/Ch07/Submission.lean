@@ -451,6 +451,242 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 4.3 (8)–(9)** (translation identity): for a Borel set `F ⊆ ℝⁿ`,
+`ζ ∈ C¹_c(ℝⁿ)`, `w ∈ ℝⁿ` and `t ∈ ℝ`,
+`∫_F ζ(z − t w) dz = ∫_F ζ(z) dz − ∫₀ᵗ ∫_F Dζ(z − s w)(w) dz ds` (oriented `∫₀ᵗ`).  Integrate
+the fundamental theorem of calculus for `s ↦ ζ(z − s w)` over `z ∈ F` and swap the integrals
+(Fubini); `Dζ(z − s w)(w)` is bounded and, for `s` between `0` and `t`, vanishes for `z` off the
+compact set `tsupport ζ + [0, t] w`. -/
+theorem Submission.codim1_rdo_dg_hr_translate_integral_eq : ∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (ζ : EuclideanSpace ℝ (Fin n) → ℝ) (w : EuclideanSpace ℝ (Fin n)) (t : ℝ), MeasurableSet F → ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, ζ (z - t • w) = (∫ z in F, ζ z) - ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w := by
+  intro n F ζ w t hF hζ hcs
+  -- `Dζ` is continuous and bounded by `M`
+  have hDc : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  obtain ⟨M, hM⟩ := hDc.bounded_above_of_compact_support (hcs.fderiv ℝ)
+  -- `G (s, z) = Dζ (z - s • w) w` is continuous
+  have hGc : Continuous (uncurry fun (s : ℝ) (z : EuclideanSpace ℝ (Fin n)) =>
+      fderiv ℝ ζ (z - s • w) w) :=
+    (hDc.comp (continuous_snd.sub (continuous_fst.smul continuous_const))).clm_apply
+      continuous_const
+  -- for `s ∈ uIcc 0 t`, `Dζ (z - s • w) = 0` off the compact `K' = tsupport ζ + uIcc 0 t • w`
+  obtain ⟨K', hK', hvan⟩ : ∃ K' : Set (EuclideanSpace ℝ (Fin n)), IsCompact K' ∧
+      ∀ s ∈ uIcc (0 : ℝ) t, ∀ z ∉ K', fderiv ℝ ζ (z - s • w) = 0 := by
+    refine ⟨(fun p : EuclideanSpace ℝ (Fin n) × ℝ => p.1 + p.2 • w) '' (tsupport ζ ×ˢ uIcc 0 t),
+      (hcs.isCompact.prod isCompact_uIcc).image
+        (continuous_fst.add (continuous_snd.smul continuous_const)), fun s hs z hz => ?_⟩
+    by_contra h
+    exact hz ⟨(z - s • w, s), ⟨support_fderiv_subset ℝ h, hs⟩, sub_add_cancel z (s • w)⟩
+  -- FTC along `s ↦ ζ (z - s • w)`, whose derivative is `-G (s, z)`
+  have hFTC : ∀ z, ζ (z - t • w) - ζ z = -∫ s in (0 : ℝ)..t, fderiv ℝ ζ (z - s • w) w := by
+    intro z
+    have hderiv : ∀ s ∈ uIcc (0 : ℝ) t,
+        HasDerivAt (fun s => ζ (z - s • w)) (-fderiv ℝ ζ (z - s • w) w) s := by
+      intro s _
+      have h1 : HasDerivAt (fun s : ℝ => z - s • w) (-w) s := by
+        simpa using ((hasDerivAt_id s).smul_const w).const_sub z
+      have h2 := ((hζ.differentiable one_ne_zero) (z - s • w)).hasFDerivAt.comp_hasDerivAt s h1
+      rw [map_neg] at h2
+      exact h2
+    have hint : IntervalIntegrable (fun s => -fderiv ℝ ζ (z - s • w) w) volume 0 t :=
+      ((hDc.comp (continuous_const.sub (continuous_id.smul continuous_const))).clm_apply
+        continuous_const).neg.intervalIntegrable _ _
+    rw [← intervalIntegral.integral_neg,
+      intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+    simp
+  -- `G` is integrable for `(volume|uIoc 0 t) ⊗ (volume|F)`: a.e. `|G (s, z)| ≤ M ‖w‖ 1_{K'}(z)`
+  have hint : Integrable (uncurry fun (s : ℝ) (z : EuclideanSpace ℝ (Fin n)) =>
+      fderiv ℝ ζ (z - s • w) w) ((volume.restrict (uIoc 0 t)).prod (volume.restrict F)) := by
+    have hbound : Integrable (fun p : ℝ × EuclideanSpace ℝ (Fin n) =>
+        (1 : ℝ) * K'.indicator (fun _ => M * ‖w‖) p.2)
+        ((volume.restrict (uIoc 0 t)).prod (volume.restrict F)) :=
+      Integrable.mul_prod (f := fun _ : ℝ => (1 : ℝ)) (g := K'.indicator fun _ => M * ‖w‖)
+        (integrableOn_const (s := uIoc 0 t) measure_Ioc_lt_top.ne enorm_ne_top).integrable
+        ((integrable_indicator_iff hK'.measurableSet).2
+          (integrableOn_const hK'.measure_lt_top.ne enorm_ne_top))
+    have hfst : ∀ᵐ p ∂((volume.restrict (uIoc (0 : ℝ) t)).prod (volume.restrict F)),
+        p.1 ∈ uIoc (0 : ℝ) t :=
+      Measure.quasiMeasurePreserving_fst.ae (ae_restrict_mem measurableSet_uIoc)
+    refine hbound.mono' hGc.aestronglyMeasurable ?_
+    filter_upwards [hfst] with ⟨s, z⟩ hs
+    simp only [uncurry_apply_pair, one_mul]
+    by_cases hz : z ∈ K'
+    · rw [indicator_of_mem hz]
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hM _) (norm_nonneg _))
+    · rw [indicator_of_notMem hz, hvan s (uIoc_subset_uIcc hs) z hz]
+      simp
+  -- `ζ (· - t • w)` and `ζ` are continuous with compact support, hence integrable
+  have hi2 : Integrable ζ := hζ.continuous.integrable_of_hasCompactSupport hcs
+  have hi1 : Integrable (fun z => ζ (z - t • w)) :=
+    (hζ.continuous.comp (continuous_id.sub continuous_const)).integrable_of_hasCompactSupport
+      (hcs.comp_homeomorph (Homeomorph.subRight (t • w)))
+  -- integrate the FTC identity over `F` and swap the order of integration
+  have hswap : ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w =
+      ∫ z in F, ∫ s in (0 : ℝ)..t, fderiv ℝ ζ (z - s • w) w :=
+    intervalIntegral_integral_swap hint
+  have hsplit : ∫ z in F, (ζ (z - t • w) - ζ z) =
+      -∫ z in F, ∫ s in (0 : ℝ)..t, fderiv ℝ ζ (z - s • w) w := by
+    rw [← integral_neg]
+    exact integral_congr_ae (ae_of_all _ hFTC)
+  rw [integral_sub hi1.integrableOn hi2.integrableOn] at hsplit
+  rw [hswap]
+  linarith
+/-- **Sign version of the fundamental lemma**: if `f` is locally integrable on `ℝⁿ` and
+`∫ g f ≥ 0` for every nonnegative `C¹` function `g` with compact support, then `f ≥ 0` a.e.
+For compact `K`, smooth Urysohn functions `gⱼ` (`0 ≤ gⱼ ≤ 1`, `gⱼ = 1` on `K`,
+`support gⱼ = K_{uⱼ}`, `uⱼ ↓ 0`) are admissible tests with `gⱼ → 1_K` pointwise and
+`|gⱼ f| ≤ 1_{K¹}|f|`, so dominated convergence gives `∫_K f ≥ 0`.  If `{f < 0}` had positive
+measure, inner regularity would give a compact `K ⊆ {f < 0}` of positive measure, on which
+`∫_K f < 0`. -/
+theorem Submission.codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg : ∀ (n : ℕ) (f : EuclideanSpace ℝ (Fin n) → ℝ), LocallyIntegrable f volume → (∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * f x) → ∀ᵐ x ∂volume, 0 ≤ f x := by
+  intro n f hf htest
+  -- Steps 1–3: `0 ≤ ∫_K f` for every compact `K`
+  have hcpt : ∀ K : Set (EuclideanSpace ℝ (Fin n)), IsCompact K → 0 ≤ ∫ x in K, f x := by
+    intro K hK
+    have hK1 : IsCompact (cthickening 1 K) := hK.cthickening
+    -- radii `u j ∈ (0, 1)` with `u j → 0`
+    obtain ⟨u, -, u_pos, u_lim⟩ : ∃ u : ℕ → ℝ, StrictAnti u ∧ (∀ j, u j ∈ Ioo 0 1) ∧
+        Tendsto u atTop (𝓝 0) := exists_seq_strictAnti_tendsto' zero_lt_one
+    have vK : ∀ j, thickening (u j) K ⊆ cthickening 1 K :=
+      fun j => thickening_subset_cthickening_of_le (u_pos j).2.le K
+    -- smooth Urysohn functions `g j` with `support (g j) = K_{u j}` and `g j = 1` on `K`
+    have : ∀ j, ∃ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g ∧ range g ⊆ Icc 0 1 ∧
+        support g = thickening (u j) K ∧ ∀ x ∈ K, g x = 1 := by
+      intro j
+      obtain ⟨g, hg, hgr, hgs, hg1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+        isOpen_thickening hK.isClosed (self_subset_thickening (u_pos j).1 K)
+      exact ⟨g, hg, hgr, hgs, fun x hx => (hg1 x).1 hx⟩
+    choose g g_diff g_range g_supp hg1 using this
+    have hnn : ∀ j, 0 ≤ ∫ x, g j x * f x := by
+      intro j
+      refine htest _ (g_diff j) ?_ (fun x => (g_range j (mem_range_self x)).1)
+      apply HasCompactSupport.of_support_subset_isCompact hK1
+      rw [g_supp]
+      exact vK j
+    -- dominated convergence: `∫ g j * f → ∫_K f`
+    have L : Tendsto (fun j => ∫ x, g j x * f x) atTop (𝓝 (∫ x in K, f x)) := by
+      rw [← integral_indicator hK.measurableSet]
+      let bound : EuclideanSpace ℝ (Fin n) → ℝ := (cthickening 1 K).indicator fun x => ‖f x‖
+      have A : ∀ j, AEStronglyMeasurable (fun x => g j x * f x) volume :=
+        fun j => (g_diff j).continuous.aestronglyMeasurable.mul hf.aestronglyMeasurable
+      have B : Integrable bound volume := by
+        rw [integrable_indicator_iff hK1.measurableSet]
+        exact (hf.integrableOn_isCompact hK1).norm
+      have C : ∀ j, ∀ᵐ x ∂volume, ‖g j x * f x‖ ≤ bound x := by
+        intro j
+        filter_upwards with x
+        rw [norm_mul]
+        refine le_indicator_apply (fun _ => ?_) (fun hxK => ?_)
+        · have h01 := g_range j (mem_range_self (f := g j) x)
+          have : ‖g j x‖ ≤ 1 := by
+            rw [Real.norm_of_nonneg h01.1]
+            exact h01.2
+          exact mul_le_of_le_one_left (norm_nonneg _) this
+        · have : g j x = 0 := by
+            rw [← notMem_support, g_supp]
+            contrapose hxK
+            exact vK j hxK
+          simp [this]
+      have D : ∀ᵐ x ∂volume, Tendsto (fun j => g j x * f x) atTop (𝓝 (K.indicator f x)) := by
+        filter_upwards with x
+        by_cases hxK : x ∈ K
+        · have : ∀ j, g j x = 1 := fun j => hg1 j x hxK
+          simp [this, indicator_of_mem hxK f]
+        · simp_rw [indicator_of_notMem hxK f]
+          apply tendsto_const_nhds.congr'
+          suffices H : ∀ᶠ j in atTop, g j x = 0 by
+            filter_upwards [H] with j hj using by simp [hj]
+          obtain ⟨ε, εpos, hε⟩ : ∃ ε, 0 < ε ∧ x ∉ thickening ε K := by
+            rw [← hK.isClosed.closure_eq, closure_eq_iInter_thickening K] at hxK
+            simpa using hxK
+          filter_upwards [(tendsto_order.1 u_lim).2 _ εpos] with j hj
+          rw [← notMem_support, g_supp]
+          contrapose hε
+          exact thickening_mono hj.le K hε
+      exact tendsto_integral_of_dominated_convergence bound A B C D
+    exact ge_of_tendsto' L hnn
+  -- Steps 4–6: `{f < 0}` is null; take a measurable `T ⊆ {f < 0}` with `T =ᵐ {f < 0}`
+  rw [ae_iff]
+  simp only [not_le]
+  by_contra hS
+  obtain ⟨T, hTS, hTm, hTeq⟩ := (nullMeasurableSet_lt hf.aestronglyMeasurable.aemeasurable
+    aemeasurable_const : NullMeasurableSet {x | f x < 0} volume).exists_measurable_subset_ae_eq
+  have hTpos : 0 < volume T := by
+    rw [measure_congr hTeq]
+    exact pos_iff_ne_zero.2 hS
+  -- inner regularity: a compact `K ⊆ T` of positive measure
+  obtain ⟨K, hKT, hKc, hKpos⟩ := hTm.exists_lt_isCompact hTpos
+  -- `∫_K f < 0` since `f < 0` on `K`
+  have hneg : 0 < ∫ x in K, -f x := by
+    have hfK : IntegrableOn f K volume := hf.integrableOn_isCompact hKc
+    rw [setIntegral_pos_iff_support_of_nonneg_ae (f := fun x => -f x) _ hfK.neg]
+    · have : support (fun x => -f x) ∩ K = K := by
+        refine inter_eq_right.2 fun x hx => ?_
+        have : f x < 0 := hTS (hKT hx)
+        rw [mem_support]
+        linarith
+      rwa [this]
+    · exact ae_restrict_of_forall_mem hKc.measurableSet fun x hx => by
+        have : f x < 0 := hTS (hKT hx)
+        simp only [Pi.zero_apply]
+        linarith
+  rw [integral_neg] at hneg
+  linarith [hcpt K hKc]
+
+/-- Normal monotonicity (Simon Ch. 3, 4.3: "`H` is non-decreasing"): if `∫_F Dζ(z)(v) dz ≤ 0`
+for every nonnegative `ζ ∈ C¹_c(ℝⁿ)`, then for `t ≥ 0` and a.e. `z`, `z ∈ F` implies
+`z + t v ∈ F`.  The hypothesis for the translates `ζ(· − s v)` gives
+`g(s) = ∫_F Dζ(z − s v)(v) dz ≤ 0`, so the translation identity
+`codim1_rdo_dg_hr_translate_integral_eq` yields `∫_F ζ ≤ ∫_F ζ(· − t v)`.  Substituting
+`z = y + t v`, `f = 1_F(· + t v) − 1_F` has `∫ ζ f ≥ 0` for all such `ζ`, so `f ≥ 0` a.e. by
+`codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg`; and `z ∈ F`, `z + t v ∉ F` would give `f(z) = −1`. -/
+theorem Submission.codim1_rdo_dg_hr_ae_translate_monotone : ∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∫ z in F, fderiv ℝ ζ z v ≤ 0) → ∀ t : ℝ, 0 ≤ t → ∀ᵐ z ∂volume, z ∈ F → z + t • v ∈ F := by
+  intro n F v hF hdiv t ht
+  classical
+  -- Steps 1–2: for every admissible `ζ`, `∫_F ζ ≤ ∫_F ζ(· − t v)`
+  have hmono : ∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      (∀ z, 0 ≤ ζ z) → ∫ z in F, ζ z ≤ ∫ z in F, ζ (z - t • v) := by
+    intro ζ hζ hζc hζ0
+    -- `g(s) = ∫_F Dζ(z − s v)(v) dz ≤ 0`: the hypothesis for the translate `ζ(· − s v)`
+    have hg : ∀ s : ℝ, ∫ z in F, fderiv ℝ ζ (z - s • v) v ≤ 0 := fun s => by
+      simpa only [fderiv_comp_sub] using hdiv (fun y => ζ (y - s • v))
+        (hζ.comp (contDiff_id.sub contDiff_const))
+        (hζc.comp_homeomorph (Homeomorph.subRight (s • v))) fun z => hζ0 _
+    have hint : 0 ≤ ∫ s in (0 : ℝ)..t, -∫ z in F, fderiv ℝ ζ (z - s • v) v :=
+      intervalIntegral.integral_nonneg_of_forall ht fun s => neg_nonneg.2 (hg s)
+    rw [intervalIntegral.integral_neg] at hint
+    rw [Submission.codim1_rdo_dg_hr_translate_integral_eq n F ζ v t hF hζ hζc]
+    linarith
+  -- Step 3: with `u = 1_F`, `f = u(· + t v) − u` has `∫ g f ≥ 0` for every admissible `g`
+  set u : EuclideanSpace ℝ (Fin n) → ℝ := F.indicator fun _ => 1
+  have hFt : MeasurableSet ((· + t • v) ⁻¹' F) := hF.preimage (measurable_add_const _)
+  have htest : ∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g →
+      (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * (u (x + t • v) - u x) := by
+    intro g hg hgc hg0
+    have hgi : Integrable g := hg.continuous.integrable_of_hasCompactSupport hgc
+    -- `∫_F g(z − t v) dz = ∫ 1_F(y + t v) g(y) dy` by translation invariance
+    have e1 : ∫ z in F, g (z - t • v) = ∫ y, ((· + t • v) ⁻¹' F).indicator g y := by
+      rw [← integral_indicator hF, ← integral_add_right_eq_self _ (t • v)]
+      congr 1; ext y; simp [indicator_apply]
+    have e2 : ∫ z in F, g z = ∫ y, F.indicator g y := (integral_indicator hF).symm
+    have e3 : (fun x => g x * (u (x + t • v) - u x)) =
+        fun x => ((· + t • v) ⁻¹' F).indicator g x - F.indicator g x := by
+      ext x; simp [u, indicator_apply, mul_sub]
+    have := hmono g hg hgc hg0
+    rw [e3, integral_sub (hgi.indicator hFt) (hgi.indicator hF)]
+    linarith
+  -- `f` is bounded and Borel, hence locally integrable
+  have hli : LocallyIntegrable (fun x => u (x + t • v) - u x) volume := by
+    have hu' : (fun x => u (x + t • v)) = ((· + t • v) ⁻¹' F).indicator fun _ => 1 := by
+      ext x; simp [u, indicator_apply]
+    refine LocallyIntegrable.sub ?_ ?_
+    · rw [hu']; exact (locallyIntegrable_const 1).indicator hFt
+    · exact (locallyIntegrable_const 1).indicator hF
+  -- Steps 4–5: `f ≥ 0` a.e., while `z ∈ F`, `z + t v ∉ F` would give `f(z) = −1`
+  filter_upwards [Submission.codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg n _ hli htest]
+    with z hz hzF
+  by_contra hzt
+  norm_num [u, hzF, hzt] at hz
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
