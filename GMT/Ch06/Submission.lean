@@ -1603,6 +1603,321 @@ theorem Submission.slicing_mb_pointwise : ∀ (P m : ℕ) (U : Set (Eucl P)), Is
           hT₂ f L hf W hW hWU LW hLW ω hωW hω1 (χ h) t h ((1 + ε) / h) (hχs h hh)
           (fun s => hχabs h s hh) (hχd h hh) (hχd0 h hh)).trans ?_
         gcongr
+/-- The distribution function `G(r) = ν((a,b) ∩ (-∞, r])` of a measure `ν` on `ℝ` with
+`ν((a,b)) < ∞` is nondecreasing and right-continuous. -/
+theorem Submission.slicing_mb_dm_distribution_mono_rightcont :
+    ∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ →
+      Monotone (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) ∧
+      ∀ s : ℝ, ContinuousWithinAt (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) (Ici s) s := by
+  intro ν a b hab
+  -- Each `A_r = (a,b) ∩ (-∞, r]` lies in `(a,b)`, so `ν(A_r) < ∞`.
+  have hfin : ∀ r : ℝ, ν (Ioo a b ∩ Iic r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top hab (measure_mono inter_subset_left)
+  -- `r ↦ A_r` is monotone, hence so is `G`.
+  have hsub : ∀ r r' : ℝ, r ≤ r' → Ioo a b ∩ Iic r ⊆ Ioo a b ∩ Iic r' := fun r r' h =>
+    inter_subset_inter_right _ (Iic_subset_Iic.2 h)
+  refine ⟨fun r r' h => ENNReal.toReal_mono (hfin r') (measure_mono (hsub r r' h)), fun s => ?_⟩
+  -- Continuity within `[s, ∞)` is continuity within `(s, ∞)`.
+  rw [← continuousWithinAt_Ioi_iff_Ici]
+  -- `⋂_{r > s} A_r = A_s`.
+  have hinter : (⋂ r > s, Ioo a b ∩ Iic r) = Ioo a b ∩ Iic s := by
+    ext x
+    simp only [mem_iInter, mem_inter_iff, mem_Iic]
+    constructor
+    · intro h
+      exact ⟨(h (s + 1) (by linarith)).1, le_of_forall_gt_imp_ge_of_dense fun r hr => (h r hr).2⟩
+    · intro h r hr
+      exact ⟨h.1, h.2.trans hr.le⟩
+  -- Continuity of `ν` from above along `r ↓ s`, using `ν(A_{s+1}) < ∞`.
+  have hlim : Tendsto (fun r => ν (Ioo a b ∩ Iic r)) (𝓝[>] s) (𝓝 (ν (Ioo a b ∩ Iic s))) := by
+    rw [← hinter]
+    exact tendsto_measure_biInter_gt (s := fun r => Ioo a b ∩ Iic r)
+      (fun r _ => (measurableSet_Ioo.inter measurableSet_Iic).nullMeasurableSet)
+      (fun i j _ hij => hsub i j hij) ⟨s + 1, by linarith, hfin (s + 1)⟩
+  -- `toReal` is continuous at the finite value `ν(A_s)`.
+  exact (ENNReal.tendsto_toReal (hfin s)).comp hlim
+/-- The lower left Dini derivative `D(t) = liminf_{k → 0+} ofReal ((G t - G (t - k)) / k)` of a
+nondecreasing right-continuous `G : ℝ → ℝ` is Borel measurable. -/
+theorem Submission.slicing_mb_dm_lowerLeftDini_measurable :
+    ∀ G : ℝ → ℝ, Monotone G → (∀ s : ℝ, ContinuousWithinAt G (Ici s) s) →
+      Measurable (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k))
+        (𝓝[>] 0)) := by
+  intro G hG hG_cont
+  -- The intervals `(0, 1/(j+1))`, `j ∈ ℕ`, form a basis of `𝓝[>] 0`.
+  have hbasis : (𝓝[>] (0 : ℝ)).HasBasis (fun _ : ℕ => True)
+      (fun j => Ioo 0 (1 / ((j : ℝ) + 1))) := by
+    refine (nhdsGT_basis (0 : ℝ)).to_hasBasis (fun δ hδ => ?_) (fun j _ => ?_)
+    · obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+      exact ⟨j, trivial, Ioo_subset_Ioo_right hj.le⟩
+    · exact ⟨1 / ((j : ℝ) + 1), Nat.one_div_pos_of_nat, subset_rfl⟩
+  -- Right-continuity of `G` makes `k ↦ F_t(k)` left-continuous at each `k > 0`.
+  have hleft : ∀ t k : ℝ, 0 < k → ContinuousWithinAt
+      (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (Iio k) k := by
+    intro t k hk
+    have hGk : ContinuousWithinAt (fun x : ℝ => G (t - x)) (Iio k) k := by
+      have h1 : ContinuousWithinAt G (Ioi (t - k)) (t - k) :=
+        continuousWithinAt_Ioi_iff_Ici.2 (hG_cont (t - k))
+      refine h1.comp (continuous_const.sub continuous_id).continuousWithinAt ?_
+      intro x hx
+      simp only [mem_Ioi, mem_Iio] at hx ⊢
+      linarith
+    exact ENNReal.continuous_ofReal.continuousAt.comp_continuousWithinAt
+      ((continuousWithinAt_const.sub hGk).div continuousWithinAt_id hk.ne')
+  -- The infimum over real `k ∈ (0, δ)` equals the infimum over rational `q ∈ (0, δ)`.
+  have hrat : ∀ t δ : ℝ, (⨅ k ∈ Ioo 0 δ, ENNReal.ofReal ((G t - G (t - k)) / k)) =
+      ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), ENNReal.ofReal ((G t - G (t - q)) / q) := by
+    intro t δ
+    refine le_antisymm (le_iInf₂ fun q hq => iInf₂_le (q : ℝ) hq) (le_iInf₂ fun k hk => ?_)
+    -- Approximate `k` from the left by rationals `q n ∈ (max 0 (k - 1/(n+1)), k)`.
+    have hex : ∀ n : ℕ, ∃ q : ℚ, max 0 (k - 1 / ((n : ℝ) + 1)) < q ∧ (q : ℝ) < k := fun n =>
+      exists_rat_btwn (max_lt hk.1 (sub_lt_self k Nat.one_div_pos_of_nat))
+    choose q hq_lo hq_hi using hex
+    have hq_tendsto : Tendsto (fun n => (q n : ℝ)) atTop (𝓝[<] k) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_
+        (Eventually.of_forall hq_hi)
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le (g := fun n : ℕ => k - 1 / ((n : ℝ) + 1))
+        (h := fun _ => k) ?_ tendsto_const_nhds
+        (fun n => (le_max_right _ _).trans (hq_lo n).le) (fun n => (hq_hi n).le)
+      simpa using (tendsto_const_nhds (f := (atTop : Filter ℕ)) (x := k)).sub
+        tendsto_one_div_add_atTop_nhds_zero_nat
+    refine ge_of_tendsto' ((hleft t k hk.1).tendsto.comp hq_tendsto) fun n => ?_
+    exact iInf₂_le (q n) ⟨(le_max_left _ _).trans_lt (hq_lo n), (hq_hi n).trans hk.2⟩
+  -- Hence `D(t) = ⨆ j, ⨅ q ∈ ℚ ∩ (0, 1/(j+1)), F_t(q)`, a countable formula.
+  have hformula : (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k))
+      (𝓝[>] 0)) = fun t => ⨆ j : ℕ, ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 (1 / ((j : ℝ) + 1))),
+        ENNReal.ofReal ((G t - G (t - q)) / q) := by
+    funext t
+    rw [hbasis.liminf_eq_iSup_iInf]
+    simp only [iSup_true]
+    exact iSup_congr fun j => hrat t _
+  -- `G` is monotone, hence measurable, so each `t ↦ F_t(q)` is measurable.
+  rw [hformula]
+  have hGm : Measurable G := hG.measurable
+  refine Measurable.iSup fun j => Measurable.iInf fun q => Measurable.iInf_Prop _ ?_
+  exact ENNReal.measurable_ofReal.comp
+    ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)
+/-- For nondecreasing `G : ℝ → ℝ` and `a ≤ b`, the lower integral over `(a, b)` of the lower left
+Dini derivative `D(t) = liminf_{k → 0+} ofReal ((G t - G (t - k)) / k)` is at most `G b - G a`. -/
+theorem Submission.slicing_mb_dm_lintegral_lowerLeftDini_le :
+    ∀ G : ℝ → ℝ, Monotone G → ∀ a b : ℝ, a ≤ b →
+      ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤
+        ENNReal.ofReal (G b - G a) := by
+  intro G hG a b hab
+  -- Step sizes `δ n = 1/(n+1) → 0+`.
+  set δ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1)
+  have hδ_pos : ∀ n, 0 < δ n := fun n => Nat.one_div_pos_of_nat
+  have hδ_lim : Tendsto δ atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  have hδ_tendsto : Tendsto δ atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hδ_lim
+      (Eventually.of_forall hδ_pos)
+  -- Truncated left difference quotients `F n t = 1_{t > a + δ n} ofReal (G t - G (t - δ n)) / δ n`.
+  set F : ℕ → ℝ → ℝ≥0∞ := fun n => (Ioi (a + δ n)).indicator
+    (fun t => ENNReal.ofReal ((G t - G (t - δ n)) / δ n)) with hF_def
+  have hGm : Measurable G := hG.measurable
+  have hF_meas : ∀ n, Measurable (F n) := fun n =>
+    (ENNReal.measurable_ofReal.comp
+      ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)).indicator measurableSet_Ioi
+  -- For `t ∈ (a, b)`: `δ n → 0+`, and `t > a + δ n` eventually, so `D(t) ≤ liminf_n F n t`.
+  have hpt : ∀ t ∈ Ioo a b,
+      liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤
+        liminf (fun n => F n t) atTop := by
+    intro t ht
+    refine hδ_tendsto.liminf_le_liminf_comp.trans_eq (liminf_congr ?_)
+    filter_upwards [(tendsto_order.1 hδ_lim).2 _ (sub_pos.2 ht.1)] with n hn
+    have hmem : t ∈ Ioi (a + δ n) := by
+      simp only [mem_Ioi]
+      linarith
+    simp only [hF_def, Function.comp_apply, indicator_of_mem hmem]
+  -- Each `F n` integrates over `(a, b)` to at most `G b - G a`.
+  have hbound : ∀ n, ∫⁻ t in Ioo a b, F n t ≤ ENNReal.ofReal (G b - G a) := by
+    intro n
+    have hc : 0 < δ n := hδ_pos n
+    simp only [hF_def]
+    rw [setLIntegral_indicator measurableSet_Ioi, inter_comm, Ioo_inter_Ioi,
+      max_eq_right (by linarith : a ≤ a + δ n)]
+    rcases le_or_gt b (a + δ n) with hb | hb
+    · rw [Ioo_eq_empty (not_lt.2 hb), setLIntegral_empty]
+      exact zero_le
+    -- On `(a + δ n, b)` the quotient is nonnegative and integrable, and
+    -- `∫_{a+δ}^b (G t - G (t - δ)) dt = ∫_{b-δ}^b G - ∫_a^{a+δ} G ≤ δ (G b - G a)`.
+    have hGc : Monotone (fun t => G (t - δ n)) := fun x y hxy => hG (by linarith)
+    have hint : IntervalIntegrable (fun t => (G t - G (t - δ n)) / δ n) volume (a + δ n) b :=
+      (hG.intervalIntegrable.sub hGc.intervalIntegrable).div_const _
+    have hintOn : IntegrableOn (fun t => (G t - G (t - δ n)) / δ n) (Ioo (a + δ n) b) :=
+      ((intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le).1 hint).mono_set Ioo_subset_Ioc_self
+    have hnonneg : 0 ≤ᵐ[volume.restrict (Ioo (a + δ n) b)]
+        (fun t => (G t - G (t - δ n)) / δ n) :=
+      Eventually.of_forall fun t => div_nonneg (sub_nonneg.2 (hG (by linarith))) hc.le
+    have hreal : ∫ t in Ioo (a + δ n) b, (G t - G (t - δ n)) / δ n ≤ G b - G a := by
+      rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hb.le,
+        intervalIntegral.integral_div,
+        intervalIntegral.integral_sub hG.intervalIntegrable hGc.intervalIntegrable,
+        intervalIntegral.integral_comp_sub_right G (δ n), add_sub_cancel_right, div_le_iff₀ hc]
+      have h1 := intervalIntegral.integral_add_adjacent_intervals
+        (hG.intervalIntegrable (μ := volume) (a := a + δ n) (b := b - δ n))
+        (hG.intervalIntegrable (μ := volume) (a := b - δ n) (b := b))
+      have h2 := intervalIntegral.integral_add_adjacent_intervals
+        (hG.intervalIntegrable (μ := volume) (a := a) (b := a + δ n))
+        (hG.intervalIntegrable (μ := volume) (a := a + δ n) (b := b - δ n))
+      have h3 : ∫ x in (b - δ n)..b, G x ≤ δ n * G b := by
+        have := intervalIntegral.integral_mono_on (μ := volume) (by linarith : b - δ n ≤ b)
+          hG.intervalIntegrable intervalIntegrable_const (fun x hx => hG hx.2)
+        simpa [intervalIntegral.integral_const] using this
+      have h4 : δ n * G a ≤ ∫ x in a..(a + δ n), G x := by
+        have := intervalIntegral.integral_mono_on (μ := volume) (by linarith : a ≤ a + δ n)
+          intervalIntegrable_const hG.intervalIntegrable (fun x hx => hG hx.1)
+        simpa [intervalIntegral.integral_const] using this
+      linarith
+    calc ∫⁻ t in Ioo (a + δ n) b, ENNReal.ofReal ((G t - G (t - δ n)) / δ n)
+        = ENNReal.ofReal (∫ t in Ioo (a + δ n) b, (G t - G (t - δ n)) / δ n) :=
+          (ofReal_integral_eq_lintegral_ofReal hintOn hnonneg).symm
+      _ ≤ ENNReal.ofReal (G b - G a) := ENNReal.ofReal_le_ofReal hreal
+  -- Fatou's lemma.
+  calc ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0)
+      ≤ ∫⁻ t in Ioo a b, liminf (fun n => F n t) atTop := setLIntegral_mono' measurableSet_Ioo hpt
+    _ ≤ liminf (fun n => ∫⁻ t in Ioo a b, F n t) atTop := lintegral_liminf_le hF_meas
+    _ ≤ ENNReal.ofReal (G b - G a) := liminf_le_of_frequently_le' (Frequently.of_forall hbound)
+/-- **Lower left density versus the lower left Dini derivative** (Simon Ch. 6, p. 158, the step
+"4.9 gives 4.10").  Let `ν((a, b)) < ∞`, `G r = ν((a, b) ∩ (-∞, r])` (as a real number) and
+`t ∈ (a, b)`.  Then `liminf_{h → 0+} ν([t - h, t]) / h ≤ liminf_{k → 0+} (G t - G (t - k)) / k`.
+For `c > 1` and `0 < k < t - a`, `[t - k / c, t] ⊆ (a, b) ∩ (t - k, t]`, a band of mass
+`G t - G (t - k)`, so the density at `h = k / c` is at most `c · (G t - G (t - k)) / k`.
+Reparametrizing `h = k / c` gives `liminf ≤ c · liminf`, and `c ↓ 1` finishes. -/
+theorem Submission.slicing_mb_dm_density_le_lowerLeftDini : ∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ → ∀ t ∈ Ioo a b, liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ liminf (fun k : ℝ => ENNReal.ofReal (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) := by
+  intro ν a b hν t ht
+  obtain ⟨hat, htb⟩ := ht
+  -- Step 1: `A_r = (a, b) ∩ (-∞, r]` has finite measure, so `G r = ν(A_r).toReal` is monotone.
+  have hfin : ∀ r : ℝ, ν (Ioo a b ∩ Iic r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top hν (measure_mono inter_subset_left)
+  have hmono : ∀ r r' : ℝ, r ≤ r' →
+      (ν (Ioo a b ∩ Iic r)).toReal ≤ (ν (Ioo a b ∩ Iic r')).toReal := fun r r' hr =>
+    ENNReal.toReal_mono (hfin r') (measure_mono (inter_subset_inter_right _ (Iic_subset_Iic.2 hr)))
+  -- Step 2: for `s' ≤ s`, `A_s = A_{s'} ⊔ ((a, b) ∩ (s', s])`, so
+  -- `ν((a, b) ∩ (s', s]) = G s - G s'`.
+  have hincr : ∀ s' s : ℝ, s' ≤ s → ν (Ioo a b ∩ Ioc s' s) =
+      ENNReal.ofReal ((ν (Ioo a b ∩ Iic s)).toReal - (ν (Ioo a b ∩ Iic s')).toReal) := by
+    intro s' s hs
+    have hunion : Ioo a b ∩ Iic s = (Ioo a b ∩ Iic s') ∪ (Ioo a b ∩ Ioc s' s) := by
+      ext x
+      simp only [mem_inter_iff, mem_union, mem_Iic, mem_Ioc]
+      constructor
+      · rintro ⟨hx, hxs⟩
+        by_cases hxs' : x ≤ s'
+        · exact Or.inl ⟨hx, hxs'⟩
+        · exact Or.inr ⟨hx, lt_of_not_ge hxs', hxs⟩
+      · rintro (⟨hx, hxs'⟩ | ⟨hx, -, hxs⟩)
+        · exact ⟨hx, hxs'.trans hs⟩
+        · exact ⟨hx, hxs⟩
+    have hdisj : Disjoint (Ioo a b ∩ Iic s') (Ioo a b ∩ Ioc s' s) := by
+      rw [Set.disjoint_left]
+      rintro x ⟨-, hx₁⟩ ⟨-, hx₂, -⟩
+      exact absurd hx₁ (not_le.2 hx₂)
+    have hB : ν (Ioo a b ∩ Ioc s' s) ≠ ∞ :=
+      ne_top_of_le_ne_top hν (measure_mono inter_subset_left)
+    have hadd : (ν (Ioo a b ∩ Iic s)).toReal =
+        (ν (Ioo a b ∩ Iic s')).toReal + (ν (Ioo a b ∩ Ioc s' s)).toReal := by
+      rw [hunion, measure_union hdisj (measurableSet_Ioo.inter measurableSet_Ioc),
+        ENNReal.toReal_add (hfin s') hB]
+    rw [← ENNReal.ofReal_toReal hB, hadd, add_sub_cancel_left]
+  -- Step 3: for `c > 1` and `0 < k < t - a`, `h = k / c` gives `[t - h, t] ⊆ (a, b) ∩ (t - k, t]`,
+  -- hence `ν([t - h, t]) / h ≤ c · (G t - G (t - k)) / k`.
+  have hband : ∀ c : ℝ, 1 < c → ∀ᶠ k in 𝓝[>] (0 : ℝ),
+      ν (Icc (t - k / c) t) / ENNReal.ofReal (k / c) ≤ ENNReal.ofReal c * ENNReal.ofReal
+        (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k) := by
+    intro c hc
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hat)] with k hk
+    obtain ⟨hk0, hkt⟩ := hk
+    have hc0 : 0 < c := zero_lt_one.trans hc
+    have hhk : k / c < k := div_lt_self hk0 hc
+    have hsub : Icc (t - k / c) t ⊆ Ioo a b ∩ Ioc (t - k) t := by
+      rintro x ⟨hx₁, hx₂⟩
+      exact ⟨⟨by linarith, by linarith⟩, by linarith, hx₂⟩
+    have hΔ0 : 0 ≤ ((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k :=
+      div_nonneg (sub_nonneg.2 (hmono _ _ (by linarith))) hk0.le
+    apply ENNReal.div_le_of_le_mul
+    calc ν (Icc (t - k / c) t) ≤ ν (Ioo a b ∩ Ioc (t - k) t) := measure_mono hsub
+      _ = ENNReal.ofReal (c * (((ν (Ioo a b ∩ Iic t)).toReal -
+            (ν (Ioo a b ∩ Iic (t - k))).toReal) / k) * (k / c)) := by
+        rw [hincr _ _ (by linarith)]
+        congr 1
+        field_simp
+      _ = _ := by
+        rw [ENNReal.ofReal_mul (mul_nonneg hc0.le hΔ0), ENNReal.ofReal_mul hc0.le]
+  -- Steps 4–5: reparametrize `h = k / c` and factor out the constant `ofReal c`.
+  have hc_bound : ∀ c : ℝ, 1 < c →
+      liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤
+        ENNReal.ofReal c * liminf (fun k : ℝ => ENNReal.ofReal
+          (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) := by
+    intro c hc
+    have hc0 : 0 < c := zero_lt_one.trans hc
+    have htend : Tendsto (fun k : ℝ => k / c) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have h0 : Tendsto (fun k : ℝ => k / c) (𝓝 0) (𝓝 (0 / c)) := tendsto_id.div_const c
+        rw [zero_div] at h0
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with k hk
+        exact div_pos hk hc0
+    calc liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0)
+        ≤ liminf (fun k : ℝ => ν (Icc (t - k / c) t) / ENNReal.ofReal (k / c)) (𝓝[>] 0) :=
+          htend.liminf_le_liminf_comp
+      _ ≤ liminf (fun k : ℝ => ENNReal.ofReal c * ENNReal.ofReal
+            (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) :=
+          liminf_le_liminf (hband c hc)
+      _ = _ := ENNReal.liminf_const_mul_of_ne_top ENNReal.ofReal_ne_top
+  -- Step 6: let `c_n = 1 + 1 / (n + 1) ↓ 1`.
+  set D := liminf (fun k : ℝ => ENNReal.ofReal
+    (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0)
+  rcases eq_or_ne D ∞ with hD | hD
+  · rw [hD]
+    exact le_top
+  · have h1 : Tendsto (fun n : ℕ => 1 + 1 / ((n : ℝ) + 1)) atTop (𝓝 1) := by
+      simpa using tendsto_one_div_add_atTop_nhds_zero_nat.const_add (1 : ℝ)
+    have h2 : Tendsto (fun n : ℕ => ENNReal.ofReal (1 + 1 / ((n : ℝ) + 1)) * D) atTop (𝓝 D) := by
+      simpa using ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hD)
+    refine ge_of_tendsto h2 (Eventually.of_forall fun n => hc_bound _ ?_)
+    have : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+    linarith
+
+/-- The measurable majorant in Simon Ch. 6, 4.10 (`M_W(T ⌞ {f < t})` is increasing in `t`, so
+it is differentiable a.e. and its derivative integrates to at most `M_W(T ⌞ {a < f < b})`), for
+a Borel measure `ν` on `ℝ`: the lower left density `liminf_{h → 0+} ν([t - h, t]) / h` has a
+Borel majorant on `(a, b)` whose integral over `(a, b)` is at most `ν((a, b))`.
+If `ν((a, b)) = ∞` the constant `∞` works.  Otherwise the distribution function
+`G(r) = ν((a, b) ∩ (-∞, r])` is nondecreasing and right-continuous, and the majorant is `D` on
+`(a, b)` and `0` elsewhere, where `D(t) = liminf_{k → 0+} (G(t) - G(t - k)) / k` is the lower
+left Dini derivative of `G`: `D` is Borel, it dominates the closed-band density, and by
+Lebesgue's theorem for monotone functions `∫_{(a,b)} D ≤ G(b) - G(a) = ν((a, b))`. -/
+theorem Submission.slicing_mb_density_majorant :
+    ∀ (ν : Measure ℝ) (a b : ℝ), a < b → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧
+      (∀ t ∈ Ioo a b,
+        liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ g t) ∧
+      ∫⁻ t in Ioo a b, g t ≤ ν (Ioo a b) := by
+  intro ν a b hab
+  -- If `ν((a, b)) = ∞`, take `g ≡ ∞`.
+  by_cases hQ : ν (Ioo a b) = ∞
+  · exact ⟨fun _ => ∞, measurable_const, fun _ _ => le_top, by rw [hQ]; exact le_top⟩
+  obtain ⟨hG_mono, hG_right⟩ := Submission.slicing_mb_dm_distribution_mono_rightcont ν a b hQ
+  set G : ℝ → ℝ := fun r => (ν (Ioo a b ∩ Iic r)).toReal
+  set D : ℝ → ℝ≥0∞ := fun t =>
+    liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0)
+  refine ⟨(Ioo a b).indicator D,
+    (Submission.slicing_mb_dm_lowerLeftDini_measurable G hG_mono hG_right).indicator
+      measurableSet_Ioo, fun t ht => ?_, ?_⟩
+  · -- On `(a, b)` the closed-band density is at most `D = g`.
+    rw [Set.indicator_of_mem ht]
+    exact Submission.slicing_mb_dm_density_le_lowerLeftDini ν a b hQ t ht
+  · -- `∫⁻_{(a,b)} g = ∫⁻_{(a,b)} D ≤ G(b) - G(a)`, with `G(a) = 0` and `G(b) = ν((a, b))`.
+    have hGa : G a = 0 := by
+      have h : Ioo a b ∩ Iic a = ∅ :=
+        eq_empty_of_forall_notMem fun x (hx : x ∈ Ioo a b ∩ Iic a) => not_le.2 hx.1.1 hx.2
+      simp only [G, h, measure_empty, ENNReal.toReal_zero]
+    have hGb : G b = (ν (Ioo a b)).toReal := by
+      have h : Ioo a b ∩ Iic b = Ioo a b := inter_eq_left.2 fun x (hx : x ∈ Ioo a b) => hx.2.le
+      simp only [G, h]
+    rw [setLIntegral_congr_fun measurableSet_Ioo fun t ht => Set.indicator_of_mem ht D]
+    calc ∫⁻ t in Ioo a b, D t ≤ ENNReal.ofReal (G b - G a) :=
+          Submission.slicing_mb_dm_lintegral_lowerLeftDini_le G hG_mono a b hab.le
+      _ = ν (Ioo a b) := by rw [hGa, hGb, sub_zero, ENNReal.ofReal_toReal hQ]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
