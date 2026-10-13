@@ -501,6 +501,22 @@ theorem Submission.dpf_itt_bilipschitz_image_locfin : ∀ (P n : ℕ) (U M : Set
     rw [← image_inter_preimage]
     exact ne_top_of_le_ne_top
       (ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg hn ENNReal.coe_ne_top) hMK) (hle _)
+/-- Composing a bi-Lipschitz immersed piece `F` with a bi-Lipschitz immersion `φ` of `ℝᴾ`:
+`φ ∘ F` is `ΛL`-Lipschitz, bounded below on `B` by `m' = m / (Λ' + 1)`, differentiable on `B` with
+injective derivative `D(φ ∘ F)(a) = Dφ(F a) ∘ DF(a)` (chain rule), and so
+`range D(φ ∘ F)(a) = Dφ(F a)(range DF(a))`. -/
+theorem Submission.dpf_itt_comp_bilipschitz_piece : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (φ : Euclid P → Euclid P) (B : Set (Euclid n)) (L Λ Λ' : NNReal) (m : ℝ), LipschitzWith L F → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → Differentiable ℝ φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → LipschitzWith (Λ * L) (φ ∘ F) ∧ (∃ m' : ℝ, 0 < m' ∧ ∀ a ∈ B, ∀ a' ∈ B, m' * ‖a - a'‖ ≤ ‖(φ ∘ F) a - (φ ∘ F) a'‖) ∧ (∀ a ∈ B, DifferentiableAt ℝ (φ ∘ F) a ∧ Injective (fderiv ℝ (φ ∘ F) a)) ∧ ∀ a ∈ B, LinearMap.range (fderiv ℝ (φ ∘ F) a : Euclid n →ₗ[ℝ] Euclid P) = Submodule.map (fderiv ℝ φ (F a) : Euclid P →ₗ[ℝ] Euclid P) (LinearMap.range (fderiv ℝ F a : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F φ B L Λ Λ' m hF hm hlow hdiff hφ hφinj hφL hφA
+  refine ⟨hφL.comp hF, ⟨m / ((Λ' : ℝ) + 1), div_pos hm (by positivity), fun a ha a' ha' => ?_⟩,
+    fun a ha => ⟨(hφ (F a)).comp a (hdiff a ha).1, ?_⟩, fun a ha => ?_⟩
+  · have h1 : ‖F a - F a'‖ ≤ (Λ' : ℝ) * ‖φ (F a) - φ (F a')‖ := by
+      simpa only [dist_eq_norm] using hφA.le_mul_dist (F a) (F a')
+    rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity), comp_apply, comp_apply]
+    nlinarith [hlow a ha a' ha', norm_nonneg (φ (F a) - φ (F a'))]
+  · rw [fderiv_comp a (hφ (F a)) (hdiff a ha).1, ContinuousLinearMap.coe_comp]
+    exact (hφinj (F a)).comp (hdiff a ha).2
+  · rw [fderiv_comp a (hφ (F a)) (hdiff a ha).1, ContinuousLinearMap.toLinearMap_comp]
+    exact LinearMap.range_comp _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
