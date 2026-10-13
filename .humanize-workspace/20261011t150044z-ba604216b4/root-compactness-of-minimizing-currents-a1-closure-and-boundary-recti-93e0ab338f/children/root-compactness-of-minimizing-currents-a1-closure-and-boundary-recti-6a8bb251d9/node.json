@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1",
+  "depth": 5,
+  "title": "Hausdorff measure of an affine plane spanned by an orthonormal frame is the image of Lebesgue measure",
+  "statement": "Let P, m ∈ ℕ, let w = (w_0, …, w_{m−1}) be an orthonormal family in ℝ^P (= Euclid P), a ∈ ℝ^P, and S := {y ∈ ℝ^P : y − a ∈ span(w_0, …, w_{m−1})}, the affine m-plane through a spanned by w. Let ℝ^m := Fin m → ℝ carry the product Lebesgue measure Lᵐ (volume) and j : ℝ^m → ℝ^P, j(z) := a + Σ_i z_i w_i. Then (i) the image measure j_*(Lᵐ) equals Hᵐ⌞S, where Hᵐ = μHE[m]; (ii) S is closed; (iii) (Hᵐ⌞S)(K) < ∞ for every compact K ⊆ ℝ^P; (iv) (Hᵐ⌞S)(B_r(a)) > 0 for every r > 0.",
+  "lean_statement": "∀ (P m : ℕ) (w : Fin m → Euclid P) (a : Euclid P), Orthonormal ℝ w → Measure.map (fun z : Fin m → ℝ => a + ∑ i, z i • w i) volume = (μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ IsClosed {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) K < ∞) ∧ ∀ r : ℝ, 0 < r → 0 < ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) (ball a r)",
+  "lean_name": "cbr_cipi_affine_plane_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9-a1"
+}
