@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d9dece11d3384905e2801fe35f3c56c01fea2f3906a1c7fa153c80f9f40c44a3",
+  "git_delta": {
+    "base_commit": "2408ff2335cf5b7fcae586bcea182d8e961174a6",
+    "candidate_commit": "86ff2230d2143d172c9e76d158db982169281ebe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_rc_cone_exclusion",
+    "diff_sha256": "ccd34698b5f5079e3362fd44f3a898af3364a9680475605920304e37f5cc5760",
+    "source_sha256": "5c05567f7cf3664e9965bcd505831a47ccfda152786c3210027e5b6eec47093d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_rc_cone_exclusion",
+      "statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∀ x ∈ K, ∀ x' ∈ K, ∀ v : Euclid (m + 1), ‖ν x - v‖ ≤ 1 / 16 → ‖x' - x‖ < δ / 2 → |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
