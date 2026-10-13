@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "87eb5818771603cf73fa9a51e63985ef19c918517b77930e2b8cd0b58b28ce44",
+  "git_delta": {
+    "base_commit": "d887b6d8f7af3c989d123c78c3ffff58f78dbb41",
+    "candidate_commit": "ccbcf082665ae9d11738d2fb63f6752ff1c8daab",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_pc_plane_test_extension",
+    "diff_sha256": "38ab1fa3f50dd377179b862371a7922361fbf88c0ce86545f1eb93813e1363cb",
+    "source_sha256": "e890253ec7448895cf3f309e332d2512a081b94a696ae2c2cc2fa2f10886939f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_pc_plane_test_extension",
+      "statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (τ : Fin n → Euclid P) (ψ : Euclid n → ℝ), IsOpen V → Orthonormal ℝ τ → ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ {s : Euclid n | ∑ i, s i • τ i ∈ V} → ∃ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f ∧ HasCompactSupport f ∧ tsupport f ⊆ V ∧ ∀ s : Euclid n, f (∑ i, s i • τ i) = ψ s ∧ ∀ j : Fin n, fderiv ℝ f (∑ i, s i • τ i) (τ j) = fderiv ℝ ψ s (EuclideanSpace.single j (1 : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
