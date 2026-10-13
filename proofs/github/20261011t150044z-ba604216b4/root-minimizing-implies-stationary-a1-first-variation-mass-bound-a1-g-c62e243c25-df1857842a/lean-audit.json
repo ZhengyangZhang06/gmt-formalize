@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2e98b10c46d8acc1bda1538846cfceb0bd361b9257a23fb921f7a11c0a555cfb",
+  "git_delta": {
+    "base_commit": "5809272ba2935f36d462fc0da25e7b2b173efb4b",
+    "candidate_commit": "09451bfac0d1f16e843ff33d6eebd8a6c546d07e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "fvmb_perturbed_frame_sum_norm_sq_sub_le",
+    "diff_sha256": "b7e7187cac244d246ebfae5dc47dd675b2763da607754f9ed168b1b6e414602d",
+    "source_sha256": "8e8e23f07013da17dfe15a94427f054827849918dbcb216841db949316e8d05e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fvmb_perturbed_frame_sum_norm_sq_sub_le",
+      "statement": "∀ (P n : ℕ) (A η t : ℝ) (B L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), η ≤ 1 → ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → Orthonormal ℝ τ → |∑ a, inner ℝ (τ a) (B (τ a))| ≤ (n : ℝ) * A ∧ ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ) ≤ 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
