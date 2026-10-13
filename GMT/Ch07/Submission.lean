@@ -1665,6 +1665,67 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Minimizing `0`-currents do not meet the constraint set** (the case `n = 0` of Simon 7.4.3,
+which the book leaves implicit since Ch. 6 §3 takes `n ≥ 1`; here for an arbitrary `A`).  If
+`T ∈ 𝒟₀(U)` is minimizing in `A`, then `spt T ∩ A = ∅`.  Let
+`T = τ(M, θ, ξ)` and suppose `x ∈ spt T ∩ A`.  Since `spt T = U ∩ spt μ_T` and, in degree `0`,
+`U ∩ spt μ_T = M`, `x ∈ M`.  Deleting `x` gives `R' = (M \ {x}, θ, ξ)`, which represents
+`S = T − D` with `D(ω) = θ(x)ξ(x)(ω(x))`, and `spt(S − T) = spt(−D) = {x} ⊆ A ∩ W` for a ball
+`W ⊂⊂ U` about `x`.  As `μ_T(W) = μ_{R'}(W) + θ(x)` with `μ_T(W) < ∞` and `θ(x) ≥ 1`,
+`M_W(S) = μ_{R'}(W) < M_W(T)`, contradicting minimality. -/
+theorem Submission.dor_zero_dim_minimizing_support_disjoint : ∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ∩ A = ∅ := by
+  intro P U A T hU hmin
+  obtain ⟨⟨R, hR⟩, hminT⟩ := hmin
+  refine eq_empty_iff_forall_notMem.mpr fun x hx => ?_
+  obtain ⟨hxT, hxA⟩ := hx
+  obtain ⟨-, hMfin, hMorient, hMspt⟩ := Submission.dor_zdm_imrep_zero_structure P U R
+  obtain ⟨hmassT, hsptT⟩ := Submission.dor_imrep_massOn_eq_measure_and_support P 0 U T R hU hR
+  -- `x` is a carrier point: `spt T = U ∩ spt μ_R = M`
+  have hxM : x ∈ R.carrier := by
+    rw [← hMspt hU, ← hsptT]
+    exact hxT
+  have hxU : x ∈ U := R.carrier_subset hxM
+  -- delete `x`: `R' = (M \ {x}, θ, ξ)`, `μ_R = μ_{R'} + θ(x) δ_x`
+  obtain ⟨R', -, hmeas, hact⟩ := Submission.dor_zdm_imrep_zero_erase_point P U R x hxM
+  -- the point current `D(ω) = θ(x) ξ(x)(ω(x))`; the competitor `S = T − D` is represented by `R'`
+  obtain ⟨⟨D, hD⟩, -⟩ :=
+    Submission.dor_zdm_point_current P 0 U x ((R.mult x : ℝ) • R.orient x) hU hxU
+  have hS : R'.Represents (T - D) := by
+    intro ω
+    change T ω - D ω = _
+    rw [hR ω, hD ω, hact ω, smul_apply, smul_eq_mul]
+  -- `spt(S − T) = {x}`: `(S − T)(ω) = −θ(x) ξ(x)(ω(x))` and `θ(x) ξ(x) ≠ 0`
+  have hξ : (R.mult x : ℝ) • R.orient x ≠ 0 :=
+    smul_ne_zero (by exact_mod_cast (R.mult_pos x hxM).ne') (hMorient x hxM).2
+  have hspt : (T - D - T).support = {x} := by
+    refine (Submission.dor_zdm_point_current P 0 U x (-((R.mult x : ℝ) • R.orient x)) hU
+      hxU).2 (T - D - T) (fun ω => ?_) ((neg_ne_zero (α := MultiVector P 0)).mpr hξ)
+    change T ω - D ω - T ω = _
+    rw [hD ω, neg_apply, sub_sub_cancel_left]
+  -- minimality on `W = B_{r/2}(x)`, `W ⊂⊂ U`
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU x hxU
+  have hr2 : 0 < r / 2 := half_pos hr
+  have hcl : closure (ball x (r / 2)) = closedBall x (r / 2) := closure_ball x hr2.ne'
+  have hKU : closedBall x (r / 2) ⊆ U := (closedBall_subset_ball (half_lt_self hr)).trans hrU
+  have hxW : x ∈ ball x (r / 2) := mem_ball_self hr2
+  have hle := hminT (ball x (r / 2)) (T - D) isOpen_ball
+    ⟨by rw [hcl]; exact isCompact_closedBall x (r / 2), by rw [hcl]; exact hKU⟩ ⟨R', hS⟩
+    trivial (by rw [hspt]; exact isCompact_singleton)
+    (by rw [hspt]; exact singleton_subset_iff.mpr ⟨hxA, hxW⟩)
+  -- `M_W(T) = μ_R(W)`, `M_W(S) = μ_{R'}(W)` and `μ_R(W) = μ_{R'}(W) + θ(x) < ∞`
+  rw [hmassT _ isOpen_ball,
+    (Submission.dor_imrep_massOn_eq_measure_and_support P 0 U (T - D) R' hU hS).1 _
+      isOpen_ball] at hle
+  have hRW : R.measure (ball x (r / 2)) = R'.measure (ball x (r / 2)) + (R.mult x : ℝ≥0∞) := by
+    rw [hmeas, Measure.add_apply, Measure.smul_apply, Measure.dirac_apply_of_mem hxW,
+      smul_eq_mul, mul_one]
+  have hfin : R.measure (ball x (r / 2)) ≠ ∞ :=
+    ne_top_of_le_ne_top (hMfin _ (isCompact_closedBall x (r / 2)) hKU).2
+      (measure_mono ball_subset_closedBall)
+  rw [hRW] at hfin hle
+  have hθ : (R.mult x : ℝ≥0∞) ≠ 0 := by exact_mod_cast (R.mult_pos x hxM).ne'
+  exact absurd hle (not_le.mpr (ENNReal.lt_add_right (ENNReal.add_ne_top.mp hfin).1 hθ))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
