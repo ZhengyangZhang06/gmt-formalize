@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d61477a51d5415132795b619593cb8b19791097b99f5be944b874f99f1b41609",
+  "git_delta": {
+    "base_commit": "37c18a54ad2af4f4a97d7aea208d9d9291f4574d",
+    "candidate_commit": "92ece7614561ddf1ebc0a1d52f69da6358d57e60",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_smm_strip_distribution_function",
+    "diff_sha256": "ae8050c8aec50e726b7d19d78afcfe94b69320af3c58677ed58bc009174262ce",
+    "source_sha256": "a59abb36095b9dcec5d9695cfa2080e5e32bc11cbfeb0d1ba7614a2263907b63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_smm_strip_distribution_function",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ), Continuous f → μ (G ∩ {x | a < f x ∧ f x < b}) < ∞ → ∃ F : ℝ → ℝ, Monotone F ∧ ENNReal.ofReal (F b - F a) = μ (G ∩ {x | a < f x ∧ f x < b}) ∧ ∀ t ∈ Ioo a b, ∀ h ∈ Ioo 0 (t - a), μ (G ∩ {x | t - h < f x ∧ f x < t}) ≤ ENNReal.ofReal (F t - F (t - h))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
