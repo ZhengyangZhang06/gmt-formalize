@@ -1,0 +1,105 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.boundary_rectifiability-a1`
+- Child DAG node: `root.boundary_rectifiability-a1.local_to_global_im-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the patching lemma (P5) of the parent proof, written out in full: Lindelöf; (i) comparison of the representations on overlaps; (ii) the disjointification D_i; (iii) the partition-of-unity representation; (iv) the triple conditions with the tangent transfer (sibling tangent_locality). In (i) the parent's “taking total variations” is carried out pointwise by evaluating on dual covectors, which needs no Cauchy–Binet identity.
+
+Notation. H := Hᵏ = `μHE[k]`; ⟨α, w⟩ := w(α) for a k-covector α and a k-vector w (`NVector`). For a k-covector α, ‖α‖_op is its operator norm as a continuous multilinear map. `IsIntegerMultiplicity Y` means Y = τ(N, ϑ, ζ), i.e. Y(ω) = ∫_N ϑ⟨ω,ζ⟩dH for all ω ∈ Dᵏ(U), with `IsRectifiableTriple U k N ϑ ζ` and ϑ(x) ∈ ℕ on N.
+
+Facts used.
+(F0) |α(v₁,…,v_k)| ≤ ‖α‖_op|v₁|⋯|v_k|. Hence if τ is orthonormal and w = ±simpleNVector τ then |⟨α,w⟩| = |α(τ₁,…,τ_k)| ≤ ‖α‖_op.
+(F1) Dual covectors. For an orthonormal k-tuple τ in ℝ^P let α_τ(v₁,…,v_k) := det(⟨τ_a, v_b⟩)_{a,b=1}^k; this is a continuous alternating k-linear map (e.g. SimonGMT `wedgeCovectors k (fun a => ⟪τ a, ·⟫)` with `wedgeCovectors_apply_det`). Then simpleNVector(τ)(α_τ) = det(⟨τ_a,τ_b⟩) = det(Id) = 1, and for another orthonormal k-tuple τ′, with B_{ab} := ⟨τ_a, τ′_b⟩: simpleNVector(τ′)(α_τ) = det B and simpleNVector(τ)(α_{τ′}) = det Bᵀ = det B. (For k = 0 all these determinants equal 1.)
+(F2) Local finiteness. If (N, ϑ, ζ) is an integer multiplicity triple on U then ϑ ≥ 1 on N (a positive natural number), so H(N ∩ K) ≤ ∫_{N∩K}ϑ dH < ∞ for compact K ⊆ U.
+(F3) Fundamental lemma (Mathlib `IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`): if O ⊆ ℝ^P is open, ν is a measure on ℝ^P, g is locally ν-integrable on O and ∫φg dν = 0 for every smooth compactly supported φ with tsupport φ ⊆ O, then g = 0 ν-a.e. on O.
+(F4) The space of k-covectors on ℝ^P is finite dimensional; fix a basis b₁,…,b_L. A k-vector w is determined by the numbers w(b_l) (linearity).
+
+Proof.
+1. (Empty domain.) If U = ∅, every ω ∈ Dᵏ(U) has tsupport ω ⊆ ∅, so ω = 0 and X(ω) = 0 = τ(∅,0,0)(ω); the empty triple satisfies all conditions (∅ is null and countably k-rectifiable; all other conditions are vacuous), so X is integer multiplicity. Assume U ≠ ∅.
+2. (Countable subcover.) ℝ^P is second countable, so the open cover {V_x : x ∈ U} of U has a countable subcover; enumerate it (repeating members if it is finite) as V_i := V_{x_i}, i ∈ ℕ, so U = ⋃_i V_i, and let Y_i := Y_{x_i} = τ(M_i, θ_i, ξ_i) with integer multiplicity triples on U. Thus X(ω) = Y_i(ω) whenever tsupport ω ⊆ V_i.
+3. (Comparison on overlaps.) Claim: for all i, i′ ∈ ℕ and O := V_i ∩ V_{i′}: (a) H((M_i Δ M_{i′}) ∩ O) = 0; (b) θ_i = θ_{i′} and ξ_i = ξ_{i′} H-a.e. on M_i ∩ M_{i′} ∩ O.
+ Proof. O is open. Let ν := H⌞(M_i ∪ M_{i′}). For each basis covector b_l put g₁ := 1_{M_i}θ_i⟨b_l,ξ_i⟩ and g₂ := 1_{M_{i′}}θ_{i′}⟨b_l,ξ_{i′}⟩. They are locally ν-integrable on O: if K ⊆ O is compact, g₁ is a.e. strongly measurable for ν⌞K (M_i is null-measurable, θ_i is a.e. measurable on M_i ∩ K because it is integrable there, and x ↦ ⟨b_l, ξ_i(x)⟩ is a.e. strongly measurable for H⌞M_i because ξ_i is and evaluation at b_l is continuous linear), |g₁| ≤ ‖b_l‖_op θ_i 1_{M_i} ν-a.e. (F0 and the orientation property of Y_i, valid H-a.e. on M_i), and θ_i ∈ L¹(H⌞(M_i ∩ K)); likewise for g₂. If φ is smooth with compact support and tsupport φ ⊆ O, then ω := φ·b_l (the form x ↦ φ(x)b_l) is in Dᵏ(U) with tsupport ω ⊆ O ⊆ V_i ∩ V_{i′}, hence Y_i(ω) = X(ω) = Y_{i′}(ω), which reads (M_i, M_{i′} are null-measurable) ∫φ g₁ dν = ∫_{M_i}θ_iφ⟨b_l,ξ_i⟩dH = ∫_{M_{i′}}θ_{i′}φ⟨b_l,ξ_{i′}⟩dH = ∫φ g₂ dν. By F3, g₁ = g₂ ν-a.e. on O. Doing this for l = 1,…,L and using F4, the k-vector valued functions G₁ := 1_{M_i}θ_iξ_i and G₂ := 1_{M_{i′}}θ_{i′}ξ_{i′} agree ν-a.e. on O. Let E be the ν-null set where this fails, together with the H-null sets where the orientation property of Y_i fails on M_i or that of Y_{i′} fails on M_{i′}.
+ (a) Let x ∈ (M_i ∖ M_{i′}) ∩ O ∖ E. Then ξ_i(x) = ±simpleNVector τ with τ orthonormal, so by F1 G₁(x)(α_τ) = ±θ_i(x) ≠ 0, while G₂(x) = 0, contradicting G₁(x) = G₂(x). Hence (M_i ∖ M_{i′}) ∩ O ⊆ E is ν-null, and therefore H-null (ν and H agree on subsets of M_i ∪ M_{i′}). Symmetrically for (M_{i′} ∖ M_i) ∩ O.
+ (b) Let x ∈ M_i ∩ M_{i′} ∩ O ∖ E: ξ_i(x) = s·simpleNVector τ, ξ_{i′}(x) = s′·simpleNVector τ′ with s, s′ ∈ {±1}, τ, τ′ orthonormal, and θ_i(x) s simpleNVector τ = θ_{i′}(x) s′ simpleNVector τ′. Evaluating at α_τ and at α_{τ′} (F1): θ_i(x)s = θ_{i′}(x)s′ det B and θ_i(x)s det B = θ_{i′}(x)s′. Taking absolute values, θ_i(x) = θ_{i′}(x)|det B| and θ_{i′}(x) = θ_i(x)|det B|, so θ_i(x) = θ_i(x)|det B|²; as θ_i(x) > 0, |det B| = 1 and θ_i(x) = θ_{i′}(x). Dividing the vector identity θ_iξ_i = θ_{i′}ξ_{i′} by θ_i(x) = θ_{i′}(x) > 0 gives ξ_i(x) = ξ_{i′}(x).
+4. (Construction.) Let D_i := V_i ∖ ⋃_{j<i}V_j. These are Borel, pairwise disjoint, D_i ⊆ V_i, and ⋃_i D_i = U (each x ∈ U lies in D_i for the least i with x ∈ V_i). Define M := ⋃_i (M_i ∩ D_i); for x ∈ D_i put θ(x) := θ_i(x) and ξ(x) := ξ_i(x); for x ∉ U put θ(x) := 0, ξ(x) := 0. Then M ∩ D_i = M_i ∩ D_i.
+5. (Agreement on each V_i.) For each i: (a) H((M_i Δ M) ∩ V_i) = 0; (b) θ = θ_i and ξ = ξ_i H⌞(M_i ∩ V_i)-a.e. Proof: V_i is the disjoint union of the sets V_i ∩ D_j (j ∈ ℕ), and on V_i ∩ D_j we have M = M_j, θ = θ_j, ξ = ξ_j. Since V_i ∩ D_j ⊆ V_i ∩ V_j, step 3 (with i′ = j) gives H((M_i Δ M_j) ∩ V_i ∩ D_j) = 0 and θ_j = θ_i, ξ_j = ξ_i H-a.e. on M_i ∩ M_j ∩ V_i ∩ D_j, while (M_i ∖ M_j) ∩ V_i ∩ D_j is H-null. A countable union of null sets is null.
+6. (Triple conditions on U.) (a) M ⊆ ⋃_i D_i = U. (b) M is a countable union of the null-measurable sets M_i ∩ D_i, hence null-measurable. (c) M ⊆ ⋃_i M_i, a countable union of countably k-rectifiable sets, so M is countably k-rectifiable (SimonGMT `countablyRectifiable_iUnion`, `CountablyRectifiable.mono`). (d) On M ∩ D_i = M_i ∩ D_i, θ = θ_i > 0 and θ ∈ ℕ. (e) If K ⊆ U is compact then K ⊆ V₁ ∪ ⋯ ∪ V_N for some N, so K ∩ D_j = ∅ for j > N (D_j is disjoint from V₁,…,V_{j−1}); hence M ∩ K = ⋃_{j≤N}(M_j ∩ D_j ∩ K) and ∫_{M∩K}θ dH ≤ Σ_{j≤N}∫_{M_j∩K}θ_j dH < ∞, so θ is integrable on M ∩ K. (f) On each of the countably many null-measurable pieces M_i ∩ D_i of M, ξ = ξ_i, which is a.e. strongly measurable for H⌞M_i, hence for H⌞(M_i ∩ D_i); therefore ξ is a.e. strongly measurable for H⌞M. (g) Orientation. Fix i. For H-a.e. x ∈ M ∩ D_i = M_i ∩ D_i the orientation property of Y_i gives an orthonormal τ with `HasWeightedApproximateTangentSpaceAt k M_i θ_i x (span τ)` and ξ_i(x) = ±simpleNVector τ; also ξ(x) = ξ_i(x) and θ(x) = θ_i(x) because x ∈ D_i. Apply tangent_locality to (M_i, θ_i), (M, θ), V := V_i (open, x ∈ V_i): H(symmDiff M_i M ∩ V_i) = 0 and θ_i = θ H⌞(M_i ∩ V_i)-a.e. by step 5, and θ_i(x) = θ(x). Hence `HasWeightedApproximateTangentSpaceAt k M θ x (span τ)`, and ξ(x) = ±simpleNVector τ. As M is the countable union of the pieces M ∩ D_i, the orientation property holds H⌞M-a.e.
+7. (Representation.) Let ω ∈ Dᵏ(U) and K := tsupport ω, a compact subset of U. Choose N with K ⊆ V₁ ∪ ⋯ ∪ V_N (K compact, the V_i open and covering U) and smooth functions χ₁,…,χ_N ≥ 0 with tsupport χ_i ⊆ V_i and Σ_iχ_i = 1 on K (a smooth partition of unity on the closed set K subordinate to the open cover V₁,…,V_N; Mathlib `SmoothPartitionOfUnity.exists_isSubordinate`). Then ω = Σ_iχ_iω, and χ_iω is smooth with tsupport χ_iω ⊆ K ∩ tsupport χ_i, a compact subset of V_i ⊆ U, so χ_iω ∈ Dᵏ(U) and X(ω) = Σ_i X(χ_iω) = Σ_i Y_i(χ_iω) = Σ_i ∫_{M_i}θ_iχ_i⟨ω,ξ_i⟩dH. The i-th integrand vanishes outside V_i, and on V_i the triples (M_i,θ_i,ξ_i) and (M,θ,ξ) agree up to H-null sets (step 5), so ∫_{M_i}θ_iχ_i⟨ω,ξ_i⟩dH = ∫_{M∩V_i}θχ_i⟨ω,ξ⟩dH = ∫_M θχ_i⟨ω,ξ⟩dH. All integrands are integrable: they vanish off K and are bounded by (sup_K‖ω‖_op)·θ on M ∩ K (F0, step 6(e)) resp. on M_i ∩ K. Summing, X(ω) = ∫_M θ(Σ_iχ_i)⟨ω,ξ⟩dH = ∫_M θ⟨ω,ξ⟩dH, because Σ_iχ_i = 1 on K and ⟨ω(x),ξ(x)⟩ = 0 for x ∉ K.
+8. (Conclusion.) By steps 6 and 7, X = τ(M,θ,ξ) with `IsRectifiableTriple U k M θ ξ` and θ ∈ ℕ on M; X is integer multiplicity.
+
+## Key steps
+
+1. Lindelöf: countably many neighbourhoods V_i cover U, with integer multiplicity Y_i = τ(M_i,θ_i,ξ_i) agreeing with X on forms supported in V_i.
+2. On V_i ∩ V_{i′}, testing with φ·b_l and the fundamental lemma shows θ_i1_{M_i}ξ_i = θ_{i′}1_{M_{i′}}ξ_{i′} a.e.; evaluating on dual covectors α_τ gives M_i = M_{i′}, θ_i = θ_{i′}, ξ_i = ξ_{i′} up to null sets.
+3. Glue along the disjoint Borel sets D_i = V_i ∖ ⋃_{j<i}V_j: M = ⋃(M_i ∩ D_i), θ = θ_i, ξ = ξ_i on D_i.
+4. The glued triple satisfies all IsRectifiableTriple conditions; orientation transfers by tangent_locality.
+5. A smooth partition of unity subordinate to finitely many V_i shows X = τ(M,θ,ξ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n '^def |^structure |^abbrev ' project/GMT/Ch06/Contract.lean`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (byte-identical)`
+- `python3 gmt-compare.py contract_scope / child_modules replay (open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)`
+- `rg -n 'theorem extDeriv_apply' mathlib/Mathlib`
+- `rg -n 'theorem Isometry.map_euclideanHausdorffMeasure|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero' mathlib/Mathlib`
+- `rg -n 'theorem hausdorffMeasure_image_le' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'def succAboveOrderEmb' mathlib/Mathlib/Order/Fin/Basic.lean`
+- `rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `rg -n 'theorem exists_isSubordinate' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `rg -n 'structure ContDiffBump' mathlib/Mathlib`
+- `rg -n 'theorem norm_fderiv_le_of_lipschitz' mathlib/Mathlib`
+- `rg -n 'eq_smul_basis_det' mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `rg -n 'theorem le_restrict_apply|theorem restrict_congr_set|theorem restrict_restrict' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `rg -il 'cauchy.?binet|CauchyBinet' mathlib/Mathlib (no match)`
+- `rg -il 'poincare inequality|Poincaré inequality' mathlib/Mathlib (no match)`
+- `grep -n 'theorem|def' simongmt Chapter02/BV.lean (IsLocallyBV and lower semicontinuity only; no BV Poincaré or trace inequality)`
+- `inspect simongmt Chapter06/{Currents,Mass,CurrentLocalEquality,FormsDuality,Forms,AffineCurrentPushforward}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, boundary, massOn, covectorEuclideanNorm, restrictDomain, testFormOnInclusion, simpleNVector, wedgeCovectors_apply_det, exteriorDerivative_apply, blowUpMap, HasWeightedApproximateTangentSpaceAt, CountablyRectifiable)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/br_decomp at frozen commit d8d46c9, pinned shared packages)`
+- `lake env lean Scratch/FinalCheck.lean (10 frozen child statements, parent assembly, finite_mass_boundary_im from its dependencies; #print axioms)`
+- `lake env lean Scratch/ComparatorChallenges.lean (NodeChallenge modules generated by gmt-compare.py child_modules for all 10 statements; 0 errors)`
+- `lake build Scratch.AProof (Scratch/TLProof.lean, Scratch/AProof.lean: tangent_locality and restrict_domain_im fully proved; #print axioms)`
+- `python3 scan of dag.json lean_name values (no collision with br_* names)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Fin/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/br_decomp/Scratch/FinalCheck.lean`
+- `/tmp/br_decomp/Scratch/ComparatorChallenges.lean`
+- `/tmp/br_decomp/Scratch/TLProof.lean`
+- `/tmp/br_decomp/Scratch/AProof.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract; Submission.lean is byte-identical to it. Mathlib provides extDeriv_apply (sign (−1)^i with removeNth), isometry invariance of μHE and its identification with Lebesgue measure, Lipschitz image bounds for Hausdorff measure, Fin.succAboveOrderEmb, the open-set fundamental lemma IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (any measure, local integrability only), smooth partitions of unity, ContDiffBump cut-offs, norm_fderiv_le_of_lipschitz and AlternatingMap.eq_smul_basis_det. There is no Cauchy–Binet and no BV Poincaré inequality in Mathlib (no match), and SimonGMT's BV.lean has no Poincaré or trace inequality; hence the children avoid Cauchy–Binet (dual-covector evaluation, operator-norm bounds) and prove the needed BV estimates on boxes directly. SimonGMT supplies restrictDomain, testFormOnInclusion, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, boundary_boundary, WeaklyConvergesOn.boundary, massOn_mono, wedgeCovectors_apply_det and countablyRectifiable_iUnion. In a scratch build of the frozen commit, all ten child statements elaborate in the comparator's exact child scope (modules generated by gmt-compare.py); the parent BoundaryRectifiability typechecks from restrict_domain_im, local_to_global_im, finite_mass_boundary_im, localization and the three sibling theorems; finite_mass_boundary_im typechecks from zero_dim_weak_limit, lattice_boundary_im and lattice_approximation; tangent_locality and restrict_domain_im are fully proved with axioms [propext, Classical.choice, Quot.sound]. No br_* name is reserved in the DAG. These checks do not certify the remaining analytic children.
