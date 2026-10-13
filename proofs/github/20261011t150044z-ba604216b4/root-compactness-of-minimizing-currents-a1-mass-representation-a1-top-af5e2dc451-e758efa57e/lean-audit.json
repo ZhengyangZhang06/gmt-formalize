@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0ba682378ca513b29a7de912d9697268f4357e3b22ae9145224932419b2c5258",
+  "git_delta": {
+    "base_commit": "54709047846d42fdd0cf05ef3c75009640fc8294",
+    "candidate_commit": "6625935760aa852ce62f825f5464380aa5d94c9f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_tdn_ball_average_bound",
+    "diff_sha256": "0b4a612877de907da486edf716b3dd8a641d5d13d9cad765aba994152b49ddc3",
+    "source_sha256": "f8d12fc2385d6aded5f80ae8313aaea1809cd9f09d10c818d5e2c93be006a498",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_tdn_ball_average_bound",
+      "statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ) (a : Euclid n → ℝ) (r : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → 0 ≤ Λ → Continuous a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → (∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖) → 0 < r → |∫ x, h x * a (q x) ∂ν| ≤ r * Λ + (volume (ball (0 : Euclid n) r)).toReal⁻¹ * (∫ x, |h x| ∂ν) * ∫ y, a y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
