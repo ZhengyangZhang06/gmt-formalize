@@ -574,6 +574,9 @@ theorem Submission.any_radius_gr_ht_pointwise_height : ∀ (n ℓ : ℕ) (q : Am
     _ ≤ 2 ^ (n + 4) * ‖Y - P Y‖ ^ 2 / ‖Y‖ ^ (n + 2) :=
         div_le_div_of_nonneg_left (by positivity) hYk hpow
     _ = 2 ^ (n + 4) * (‖Y - P Y‖ ^ 2 / ‖Y‖ ^ (n + 2)) := mul_div_assoc _ _ _
+
+namespace Submission
+
 /-- Hilbert–Schmidt facts for maps between Euclidean spaces (`|A|² = hsNormSq A`):
 (H1) if `Y` is an adjoint of `X` (`⟨X u, v⟩ = ⟨u, Y v⟩`), then `|Y| = |X|`;
 (H2) `|Y X| ≤ ‖Y‖ |X|`; (H3) `|X W| ≤ ‖W‖ |X|` (`‖·‖` the operator norm).
