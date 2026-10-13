@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.extend_by_zero-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "depth": 3,
+  "title": "Extension by zero of an integer multiplicity current essentially carried by a compact set",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, V ⊆ U open, and K ⊆ ℝ^P compact with K ⊆ V. Let X ∈ 𝒟_n(V), and let R = (M, θ, ξ) be an IMRep of V representing X (X = τ(M, θ, ξ)) with Hⁿ(M ∖ K) = 0. Then there is Y ∈ 𝒟_n(U) such that: (i) Y restricted to V equals X (Y.restrictDomain = X); (ii) spt Y ⊆ K; (iii) spt Y is compact; (iv) if ∂X = 0 in V (BoundaryVanishes X), then ∂Y = 0 in U; (v) Y is integer multiplicity.",
+  "lean_statement": "∀ (P n : ℕ) (U V K : Set (Euclid P)) (hVU : V ⊆ U) (X : GeometricCurrentOn V n) (R : IMRep V n), IsOpen U → IsOpen V → IsCompact K → K ⊆ V → R.Represents X → μHE[n] (R.carrier \\ K) = 0 → ∃ Y : GeometricCurrentOn U n, Y.restrictDomain hVU = X ∧ Y.support ⊆ K ∧ IsCompact Y.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ IsIntegerMultiplicity Y",
+  "lean_name": "dtc_extend_by_zero",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_transfer-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-extend-by-zero-a1-a1"
+}
