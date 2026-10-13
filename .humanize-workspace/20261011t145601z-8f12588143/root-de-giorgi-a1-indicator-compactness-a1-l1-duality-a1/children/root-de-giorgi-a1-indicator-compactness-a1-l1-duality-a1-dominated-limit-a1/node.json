@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.dominated_limit-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+  "depth": 4,
+  "title": "Dominated convergence for pairings with a function integrable on a ball",
+  "statement": "Let N ∈ ℕ, R ∈ ℝ, w, s : ℝ^N → ℝ, and ψ_j : ℝ^N → ℝ for j ∈ ℕ. Assume that:\n- w is integrable with respect to Lebesgue measure L^N on the open ball B := B_R(0);\n- every ψ_j is L^N-a.e.-strongly measurable;\n- |ψ_j(y)| ≤ 1 for all j and all y;\n- ψ_j(y) = 0 for all j and all y ∉ B;\n- ψ_j(y) → s(y) as j → ∞ for L^N-almost every y.\nThen ∫_{ℝ^N} w ψ_j dL^N → ∫_{ℝ^N} w s dL^N as j → ∞.",
+  "lean_statement": "∀ (N : ℕ) (w s : Rn N → ℝ) (R : ℝ) (ψ : ℕ → Rn N → ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume → (∀ j, AEStronglyMeasurable (ψ j) volume) → (∀ j y, |ψ j y| ≤ 1) → (∀ j y, y ∉ Metric.ball (0 : Rn N) R → ψ j y = 0) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))) → Tendsto (fun j ↦ ∫ y, w y * ψ j y) atTop (𝓝 (∫ y, w y * s y))",
+  "lean_name": "indCompact_l1Dual_tendsto_integral_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-dominated-limit-a1-a1"
+}
