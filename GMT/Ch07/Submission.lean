@@ -451,6 +451,84 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Difference quotients `r⁻¹(f(v + rw) − f(v))` of a map differentiable at `v` converge to
+`Df(v)w` uniformly on every closed ball `B̄_R(0)` as `r ↓ 0` (the `o(|h|)` estimate in the
+weighted blow-up limit of the Allard graph step).  With `R' = max R 1`, pick `ρ > 0` such that
+`|f(v + h) − f(v) − Df(v)h| ≤ ε|h|/(2R')` for `|h| < ρ`.  For `0 < r < ρ/R'` and `|w| ≤ R`,
+`|rw| < ρ`, and linearity of `Df(v)` gives `|Df(v)w − r⁻¹(f(v + rw) − f(v))| ≤ ε|w|/(2R') < ε`. -/
+theorem Submission.dorwbl_diff_quotient_tendstoUniformlyOn : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), DifferentiableAt ℝ f v → ∀ R : ℝ, TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => r⁻¹ • (f (v + r • w) - f v)) (fun w => fderiv ℝ f v w) (𝓝[>] 0) (closedBall (0 : Euclid n) R) := by
+  intro n k f v hf R
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hR : 0 < max R 1 := lt_of_lt_of_le one_pos (le_max_right R 1)
+  have hc : 0 < ε / (2 * max R 1) := by positivity
+  obtain ⟨ρ, hρ, hsmall⟩ := Metric.eventually_nhds_iff.1
+    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).bound hc)
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < ρ / max R 1 by positivity)] with r hr w hw
+  obtain ⟨hr0, hrρ⟩ := hr
+  have hw' : ‖w‖ ≤ max R 1 := (mem_closedBall_zero_iff.1 hw).trans (le_max_left R 1)
+  have hrw : ‖r • w‖ = r * ‖w‖ := by rw [norm_smul, Real.norm_of_nonneg hr0.le]
+  -- `|rw| ≤ rR' < ρ`, so the little-o bound applies to `h = rw`
+  have hbound := hsmall (show dist (r • w) 0 < ρ by
+    rw [dist_zero_right, hrw]
+    calc r * ‖w‖ ≤ r * max R 1 := mul_le_mul_of_nonneg_left hw' hr0.le
+      _ < ρ / max R 1 * max R 1 := mul_lt_mul_of_pos_right hrρ hR
+      _ = ρ := div_mul_cancel₀ ρ hR.ne')
+  -- `Df(v)w − r⁻¹(f(v + rw) − f(v)) = −r⁻¹(f(v + rw) − f(v) − Df(v)(rw))`
+  have hid : fderiv ℝ f v w - r⁻¹ • (f (v + r • w) - f v) =
+      -(r⁻¹ • (f (v + r • w) - f v - fderiv ℝ f v (r • w))) := by
+    simp only [map_smul, smul_sub, smul_smul, inv_mul_cancel₀ hr0.ne', one_smul]
+    abel
+  rw [dist_eq_norm, hid, norm_neg, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le]
+  calc r⁻¹ * ‖f (v + r • w) - f v - fderiv ℝ f v (r • w)‖
+      ≤ r⁻¹ * (ε / (2 * max R 1) * ‖r • w‖) :=
+        mul_le_mul_of_nonneg_left hbound (inv_nonneg.2 hr0.le)
+    _ = ε / (2 * max R 1) * ‖w‖ := by
+        rw [hrw]
+        field_simp
+    _ ≤ ε / (2 * max R 1) * max R 1 := mul_le_mul_of_nonneg_left hw' hc.le
+    _ = ε / 2 := by field_simp
+    _ < ε := half_lt_self hε
+
+/-- Test-function step (Step 8) of the weighted graph blow-up limit used for the tangent planes of
+Lipschitz graphs (cf. Simon Ch. 3, proof of 1.6 "⇒", where `∫_{η_{x,λ}(N)} f dHⁿ → ∫_{T_x N} f dHⁿ`).
+If `f : ℝⁿ → ℝᵏ` is differentiable at `v` and `ψ ∈ C_c(ℝ^{n+k})`, then
+`U(r) = ∫_{B̄_R(0)} |ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v)))) − ψ(ιw + ι'(Df(v)w))| dw → 0` as `r ↓ 0`.
+The difference quotients tend to `Df(v)` uniformly on `B̄_R(0)`; the isometry `ι'` carries this to
+the graph maps, and `ψ` is uniformly continuous, so eventually the integrand is at most
+`ε / (Lⁿ(B̄_R(0)) + 1)` on the ball, which has finite measure.  Continuity of `f` is not used. -/
+theorem Submission.dorwbl_test_fn_diff_quotient_integral_tendsto_zero : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (ψ : Euclid (n + k) → ℝ), Continuous f → DifferentiableAt ℝ f v → Continuous ψ → HasCompactSupport ψ → ∀ R : ℝ, Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|) (𝓝[>] 0) (𝓝 0) := by
+  intro n k ι ι' f v ψ _hf hfv hψ hψc R
+  -- the graph maps `Φ_r w = ι w + ι' (f_{v,r} w)` tend to `Φ w = ι w + ι' (Df(v) w)` uniformly on
+  -- `B̄_R(0)`: `dist (Φ w) (Φ_r w) = dist (Df(v) w) (f_{v,r} w)` since `ι'` is an isometry
+  have hΦ : TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => ι w + ι' (r⁻¹ • (f (v + r • w) - f v)))
+      (fun w => ι w + ι' (fderiv ℝ f v w)) (𝓝[>] 0) (closedBall (0 : Euclid n) R) := by
+    have h := Submission.dorwbl_diff_quotient_tendstoUniformlyOn n k f v hfv R
+    rw [Metric.tendstoUniformlyOn_iff] at h ⊢
+    intro ε hε
+    filter_upwards [h ε hε] with r hr w hw
+    simp only [dist_add_left, LinearIsometry.dist_map]
+    exact hr w hw
+  -- `ψ` is uniformly continuous (continuous with compact support), so `ψ ∘ Φ_r → ψ ∘ Φ` uniformly
+  have hψΦ := (hψc.uniformContinuous_of_continuous hψ).comp_tendstoUniformlyOn hΦ
+  rw [Metric.tendstoUniformlyOn_iff] at hψΦ
+  have hB : volume (closedBall (0 : Euclid n) R) < ∞ := measure_closedBall_lt_top
+  have hV : 0 ≤ volume.real (closedBall (0 : Euclid n) R) := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- with `η = ε / (Lⁿ(B̄_R(0)) + 1)`, eventually `|U(r)| ≤ η Lⁿ(B̄_R(0)) < ε`
+  have hη : 0 < ε / (volume.real (closedBall (0 : Euclid n) R) + 1) := div_pos hε (by linarith)
+  filter_upwards [hψΦ _ hη] with r hr
+  rw [dist_zero_right]
+  refine (norm_setIntegral_le_of_norm_le_const
+    (C := ε / (volume.real (closedBall (0 : Euclid n) R) + 1)) hB fun w hw => ?_).trans_lt ?_
+  · have h1 := hr w hw
+    simp only [Function.comp_apply, Real.dist_eq] at h1
+    rw [Real.norm_eq_abs, abs_abs, abs_sub_comm]
+    exact h1.le
+  · rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
