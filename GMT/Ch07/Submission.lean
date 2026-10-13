@@ -610,6 +610,54 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
 
+/-- **Simon Ch. 3, Lemma 1.2 ("if" part)**: an embedded `C¹` `m`-submanifold `N ⊆ ℝᴾ` is Borel
+and countably `m`-rectifiable.  By Lindelöf countably many charts `ψⱼ(Vⱼ) = Wⱼ ∩ N` cover `N`.
+Each open `Vⱼ ⊆ ℝᵐ` is σ-compact, so `ψⱼ(Vⱼ)` is σ-compact, hence Borel; and `ψⱼ` is Lipschitz
+on each compact piece of `Vⱼ`, so extends to a Lipschitz map `ℝᵐ → ℝᴾ` (Ch. 2, 1.2).  This is
+the argument of SimonGMT's `measurableSet_of_isSimonSubmanifold` and
+`countablyRectifiable_of_isSimonSubmanifold`. -/
+theorem Submission.codim1_ac_pp_embedded_measurable_rectifiable : ∀ (P m : ℕ) (N : Set (Euclid P)), IsEmbeddedSubmanifold 1 m N → MeasurableSet N ∧ CountablyRectifiable m N := by
+  intro P m N hN
+  rcases N.eq_empty_or_nonempty with rfl | hne
+  · exact ⟨MeasurableSet.empty,
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty⟩
+  have : Nonempty N := hne.to_subtype
+  -- a chart `ψ_y : V_y → W_y` with `ψ_y(V_y) = W_y ∩ N` at each `y ∈ N`
+  choose V W ψ hV hW hyW hψ _ himg _ _ using fun y : N => hN y y.2
+  -- Lindelöf: countably many `W_{c j}` cover `N`, so `N = ⋃ⱼ ψ_{c j}(V_{c j})`
+  obtain ⟨c, hc⟩ := (HereditarilyLindelofSpace.isLindelof N).indexed_countable_subcover W hW
+    fun y hy => mem_iUnion_of_mem ⟨y, hy⟩ (hyW ⟨y, hy⟩)
+  have hNeq : N = ⋃ j, ψ (c j) '' V (c j) := by
+    refine Subset.antisymm (fun y hy => ?_)
+      (iUnion_subset fun j => (himg (c j)).trans_subset inter_subset_right)
+    obtain ⟨j, hyj⟩ := mem_iUnion.mp (hc hy)
+    exact mem_iUnion_of_mem j ((himg (c j)).symm ▸ ⟨hyj, hy⟩)
+  -- each chart domain is σ-compact (open in `ℝᵐ`): `V = ⋃ₖ Kₖ` with `Kₖ` compact
+  have hσ : ∀ y : N, IsSigmaCompact (V y) := fun y => by
+    have : LocallyCompactSpace (V y) := (hV y).locallyCompactSpace
+    exact isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  rw [hNeq]
+  refine ⟨MeasurableSet.iUnion fun j => ?_,
+    Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun j => ?_⟩
+  · -- Borel: `ψ(V)` is σ-compact, a countable union of compact sets
+    obtain ⟨K, hK, hKeq⟩ := (hσ (c j)).image_of_continuousOn (hψ (c j)).continuousOn
+    rw [← hKeq]
+    exact MeasurableSet.iUnion fun k => (hK k).measurableSet
+  · -- rectifiable: the `C¹` map `ψ` is Lipschitz on each compact `Kₖ ⊆ V`; extend it to `ℝᵐ`
+    obtain ⟨K, hK, hKeq⟩ := hσ (c j)
+    have hLip : ∀ k, ∃ L, LipschitzOnWith L (ψ (c j)) (K k) := fun k =>
+      LocallyLipschitzOn.exists_lipschitzOnWith_of_compact (hK k) fun x hx => by
+        obtain ⟨L, t, ht, hLt⟩ := ((hψ (c j)).contDiffAt
+          ((hV (c j)).mem_nhds (hKeq ▸ mem_iUnion_of_mem k hx))).exists_lipschitzOnWith
+        exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hLt⟩
+    choose L hL using hLip
+    choose g hg hgeq using fun k => (hL k).extend_finite_dimension
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun k =>
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hg k)).mono ?_
+    rintro _ ⟨x, hx, rfl⟩
+    obtain ⟨k, hxk⟩ := mem_iUnion.mp (hKeq.symm ▸ hx)
+    exact mem_iUnion_of_mem k ⟨x, (hgeq k hxk).symm⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
