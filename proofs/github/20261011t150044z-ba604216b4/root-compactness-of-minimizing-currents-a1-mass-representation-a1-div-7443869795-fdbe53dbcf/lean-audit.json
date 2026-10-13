@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "63229132bb3deb03feaabeb9f15a468ef6141e5d80d2c6b73bf5d16c463d4252",
+  "git_delta": {
+    "base_commit": "14a832357b1d794c0a99285dbf615ea9fee69793",
+    "candidate_commit": "e4813e59c4ae404f91b1cdbd9115e600cabec4c7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_df_det_update_sum_trace",
+    "diff_sha256": "434ce34e8bbc5c85eb8959e93f7208c9bea9d2d4f287d18935ff8506b170914c",
+    "source_sha256": "e76aa0aad90592b06f7d0c3ab59c8598cb9e5aef36237fcbc19975990d8acbcd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_df_det_update_sum_trace",
+      "statement": "∀ (n : ℕ) (A : Euclid n →ₗ[ℝ] Euclid n) (u : Fin n → Euclid n), ∑ i : Fin n, Matrix.det (Matrix.of fun k j => Function.update u i (A (u i)) j k) = LinearMap.trace ℝ (Euclid n) A * Matrix.det (Matrix.of fun k j => u j k)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
