@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f88d4c8f94afec7327d8d51ff00b10dee2e990b7975b81499fa328c8d5d3ecb9",
+  "git_delta": {
+    "base_commit": "52fbfb9f3c0a3740524be3f4a63f5e021504cdf0",
+    "candidate_commit": "79f163716b0d501f823efd26f1dc76106068743a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_good_set_flat",
+    "diff_sha256": "473a266aa2662f0cc36451d78f81456261fc4b976050a4a2ddedbbf37ba62435",
+    "source_sha256": "903b4f403fa9f4cf4cac35a258c98467396aef01e8610e68738bf5ddd630a5d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_good_set_flat",
+      "statement": "AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C₀ δ₀ : ℝ, 0 < C₀ ∧ 0 < δ₀ ∧ ∀ β L : ℝ, 0 < β → 0 < L → L ≤ 1 → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → δ ≤ (β * L) ^ (2 * n + 2) → V.AllardHypotheses H p δ ρ → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, ∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ β ^ 2 * L ^ 2 * (δ * ρ) ^ n → (∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ C₀ * β * L * (δ * ρ)) ∧ ∀ y₁ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4), ∀ y₂ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4), (∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 → ∫ x in closedBall y₁ (s / 2), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ β ^ 2 * L ^ 2 * s ^ n) → ‖(y₂ - y₁) - (rotatedPlane q).starProjection (y₂ - y₁)‖ ≤ C₀ * β * L * ‖y₂ - y₁‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
