@@ -5640,6 +5640,42 @@ theorem Submission.lpf_rectifiable_area_formula :
     (μHE[n] : Measure (Eucl Q)) f h (fun x => h x * ‖nVectorPushforward n (L x) (ξ x)‖ₑ) A Z B
     hBA hBdisj hBmeas hAcover hZ0 hfZ0 hpiece
 
+/-- **Simon Ch. 6, Lemma 3.9 (p. 148), integrality of the push-forward.**  If `T = τ(M, θ, ξ)` is
+integer multiplicity, `f` is locally Lipschitz on `U` with `f(U) ⊆ V` and `f | spt T` proper, `L`
+is the a.e. tangential differential of `f` on `M`, and `S(ω) = ∫_M θ ⟨ω ∘ f, L_#ξ⟩ dHⁿ`, then `S`
+is integer multiplicity (printed 3.4–3.9).
+
+* Source side (`Submission.lpf_pi_source_charts`; Steps 1, 3, 6): for `Hⁿ`-a.e. `x ∈ M` with
+  `L_#ξ(x) ≠ 0`, `L_#ξ(x) = ±‖L_#ξ(x)‖ σ₁ ∧ ⋯ ∧ σₙ` for an orthonormal frame `σ` of the tangent
+  plane `DG_k(w)(ℝⁿ)` of a `C¹` antilipschitz chart `G_k` with `G_k(w) = f(x)`.
+* Image density (`Submission.lpf_pi_image_density`; Steps 4, 5, 8, 9): by the area formula
+  `Submission.lpf_rectifiable_area_formula`, `S(ω) = ∫_Y ⟨ω, Ψ⟩ dHⁿ` with `Ψ(y)` the fibre sum
+  `∑_{f(x) = y} θ(x) L_#ξ(x)`, an integer combination of unit simple `n`-vectors on chart planes.
+* Target side (`Submission.lpf_pi_im_of_chart_density`; Steps 7, 8, 10, 11): such a
+  representation is `τ(M', θ', ξ')` with `θ'` positive integer-valued. -/
+theorem Submission.lpf_pushforward_integrality : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (S : GeometricCurrentOn V n), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → LocallyLipschitzOn U f → MapsTo f U V → (∀ K, IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ T.support)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ ω : TestFormOn V n, S ω = ∫ x in M, θ x * nVectorPushforward n (L x) (ξ x) ((ω : DifferentialForm (Eucl Q) n) (f x)) ∂(μHE[n] : Measure (Eucl P))) → IsIntegerMultiplicity S := by
+  intro P Q n U V hU hV T M θ ξ f L S htri hθ hT hf hfUV hprop hderiv hL hS
+  have hsna := Submission.lpf_simple_nvector_algebra
+  -- Source charts: `L_#ξ = ±‖L_#ξ‖ σ₁ ∧ ⋯ ∧ σₙ` on chart tangent planes through `f x`, a.e. on `M`.
+  obtain ⟨G, O, hO, hG, hanti, hchart⟩ := Submission.lpf_pi_source_charts hsna
+    Submission.lpf_countably_rectifiable_c1_cover Submission.lpf_chart_chain_rule
+    Submission.lpf_lipschitz_c1_immersion_pieces P Q n U M θ ξ f L hU htri hf hderiv
+  -- `∫_{M ∩ f⁻¹(K)} θ ‖L_#ξ‖ dHⁿ < ∞` for compact `K ⊆ V`, and measurability of `θ` and `L_#ξ`.
+  have hloc := Submission.lpf_pi_local_finite_weight Submission.lpf_rectifiable_support_null
+    P Q n U V T M θ ξ f L hU htri hT hf hprop hderiv
+  obtain ⟨hθm, hΞm⟩ := Submission.lpf_pi_measurability P Q n U M θ ξ L hU htri hL
+  -- The image density `Ψ` on `Y ⊆ V` representing `S`.
+  obtain ⟨Y, Ψ, hYV, hY, hYfin, hΨm, hΨint, hfam, hSY⟩ := Submission.lpf_pi_image_density
+    P Q n V M θ (fun x => nVectorPushforward n (L x) (ξ x)) f G O S hV htri.nullMeasurableSet
+    htri.pos hθ hθm hΞm (hf.continuousOn.mono htri.subset) (hfUV.mono_left htri.subset)
+    (fun Z hZ hZ0 => (Submission.lpf_locally_lipschitz_image P Q n U f hf).1 Z
+      (hZ.trans htri.subset) hZ0)
+    (fun A h hAM hA hh => Submission.lpf_rectifiable_area_formula P Q n U M θ ξ f L hU htri hf
+      hderiv hL A h hAM hA hh)
+    hloc hchart hS
+  exact Submission.lpf_pi_im_of_chart_density Submission.lpf_weighted_tangent_on_c1_chart hsna
+    Q n V Y Ψ G O S hV hO hG hanti hYV hY hYfin hΨm hΨint hfam hSY
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
