@@ -451,6 +451,166 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, Remark 2.6(a)–(b)** for the Euclidean coefficient norm: a unit orientation
+`ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal) has `|ξ(α)| ≤ |α|`, and the single continuous linear map
+`J(w) = Σ_I w(e^I) e^I` (`I` strictly increasing) has `|J(ξ)| = 1` and `ξ(J(ξ)) = 1`.  Here
+`e^I(v) = det(⟨e_{I(k)}, vⱼ⟩)`, every covector expands as `α = Σ_I α(e_I) e^I`, and
+`e^I(e_K) = δ_IK`.  Expanding `γ(v) = det(⟨τₖ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet identity
+`Σ_I e^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
+theorem Submission.rsd_mw_unit_orientation_dual : ∀ (P n : ℕ), ∃ J : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (J ξ) = 1 ∧ ξ (J ξ) = 1 := by
+  intro P n
+  -- `D u v = Σ_σ sgn σ ∏ₖ ⟨uₖ, v_{σ k}⟩ = det(⟨uₖ, vⱼ⟩)`, a continuous alternating map as an
+  -- alternatization; `e^I = D (e ∘ I)` and `γ = D τ`
+  let D : (Fin n → Euclid P) → Covector (Euclid P) n := fun u =>
+    ContinuousMultilinearMap.alternatization
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
+        fun k => innerSL ℝ (u k))
+  have hD : ∀ u v, D u v =
+      ∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ k, inner ℝ (u k) (v (σ k)) := by
+    intro u v
+    simp only [D, ContinuousMultilinearMap.alternatization_apply_apply,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      ContinuousMultilinearMap.mkPiAlgebra_apply, innerSL_apply_apply, Function.comp_apply]
+  -- `D u v = D v u` (determinant of the transpose): substitute `σ ↦ σ⁻¹` and `k ↦ σ k`
+  have hDsymm : ∀ u v, D u v = D v u := by
+    intro u v
+    rw [hD, hD]
+    refine Fintype.sum_equiv (Equiv.inv (Equiv.Perm (Fin n))) _ _ fun σ => ?_
+    rw [Equiv.inv_apply, Equiv.Perm.sign_inv,
+      ← Equiv.prod_comp σ (fun k => inner ℝ (v k) (u (σ⁻¹ k)))]
+    simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply, real_inner_comm]
+  -- `D u u = 1` for orthonormal `u`: only `σ = 1` contributes
+  have hD1 : ∀ u, Orthonormal ℝ u → D u u = 1 := by
+    intro u hu
+    rw [hD, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
+    · rw [Equiv.Perm.sign_one, one_smul]
+      refine Finset.prod_eq_one fun k _ => ?_
+      rw [Equiv.Perm.coe_one, id, real_inner_self_eq_norm_sq, hu.norm_eq_one, one_pow]
+    · intro σ _ hσ
+      obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
+        by_contra! h
+        exact hσ (Equiv.ext h)
+      rw [Finset.prod_eq_zero (Finset.mem_univ k) (hu.inner_eq_zero hk.symm), smul_zero]
+    · exact fun h => absurd (Finset.mem_univ _) h
+  -- step 2: `e^I(e_K) = δ_IK` for strictly increasing `I`, `K`; a nonzero term forces
+  -- `K ∘ σ = I`, so `range I = range K` and `I = K`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  have he : ∀ i j, inner ℝ (e i) (e j) = if i = j then (1 : ℝ) else 0 :=
+    orthonormal_iff_ite.mp e.orthonormal
+  have hK : ∀ I K : Fin n → Fin P, StrictMono I → StrictMono K →
+      D (fun k => e (I k)) (fun k => e (K k)) = if I = K then 1 else 0 := by
+    intro I K hI hK
+    split_ifs with hIK
+    · subst hIK
+      exact hD1 _ (e.orthonormal.comp I hI.injective)
+    · rw [hD]
+      refine Finset.sum_eq_zero fun σ _ => ?_
+      rw [Finset.prod_eq_zero_iff.mpr, smul_zero]
+      by_contra! h
+      apply hIK
+      have hKσ : K ∘ σ = I := funext fun k => by
+        have := h k (Finset.mem_univ k)
+        rw [he] at this
+        split_ifs at this with hk
+        · exact hk.symm
+        · exact absurd rfl this
+      rw [← StrictMono.range_inj_of_wellFoundedLT hI hK, ← hKσ, EquivLike.range_comp]
+  -- step 1: `α = Σ_{I ∈ S} α(e_I) e^I`; both sides are alternating, so compare them on `e ∘ f`
+  -- for injective `f`, and write `f = (f ∘ σ) ∘ σ⁻¹` with `f ∘ σ` strictly increasing
+  let S : Finset (Fin n → Fin P) := Finset.univ.filter StrictMono
+  have hE : ∀ α : Covector (Euclid P) n,
+      α = ∑ I ∈ S, α (fun k => e (I k)) • D (fun k => e (I k)) := by
+    intro α
+    apply ContinuousAlternatingMap.toAlternatingMap_injective
+    refine e.toBasis.ext_alternating fun f hf => ?_
+    simp only [OrthonormalBasis.coe_toBasis, ContinuousAlternatingMap.coe_toAlternatingMap]
+    set σ := Tuple.sort f
+    have hfσ : StrictMono (f ∘ σ) :=
+      (Tuple.monotone_sort f).strictMono_of_injective (hf.comp σ.injective)
+    have hperm : ∀ β : Covector (Euclid P) n,
+        β (fun k => e (f k)) = Equiv.Perm.sign σ⁻¹ • β (fun k => e ((f ∘ σ) k)) := by
+      intro β
+      have : (fun k => e (f k)) = (fun k => e ((f ∘ σ) k)) ∘ ⇑(σ⁻¹) := by
+        funext k
+        simp
+      rw [this]
+      exact β.toAlternatingMap.map_perm _ _
+    rw [hperm α, hperm, ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single (f ∘ σ)]
+    · rw [ContinuousAlternatingMap.smul_apply, hK _ _ hfσ hfσ, ite_eq_left rfl, smul_eq_mul,
+        mul_one]
+    · intro I hI hIf
+      rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2 hfσ,
+        ite_eq_right hIf, smul_zero]
+    · exact fun h => absurd (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hfσ⟩) h
+  -- `|β| = (Σ_{I ∈ S} β(e_I)²)^{1/2}`
+  have hnorm : ∀ β : Covector (Euclid P) n,
+      covectorEuclideanNorm β = Real.sqrt (∑ I ∈ S, β (fun k => e (I k)) ^ 2) := by
+    intro β
+    rw [covectorEuclideanNorm, Finset.sum_filter]
+  -- step 3 (Cauchy–Binet): `Σ_{I ∈ S} e^I(τ)² = 1` for orthonormal `τ`; evaluate the expansion
+  -- of `γ = D τ` at `τ`, using `γ(τ) = 1` and `γ(e_I) = e^I(τ)`
+  have hCB : ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ →
+      ∑ I ∈ S, D (fun k => e (I k)) τ ^ 2 = 1 := by
+    intro τ hτ
+    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE (D τ))
+    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul, hD1 τ hτ] at h
+    rw [h]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    rw [hDsymm τ, sq]
+  -- step 4: `J w = Σ_{I ∈ S} w(e^I) e^I`
+  refine ⟨∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ (D fun k => e (I k))).smulRight
+    (D fun k => e (I k)), ?_⟩
+  have hJ : ∀ w : MultiVector P n, (∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ
+      (D fun k => e (I k))).smulRight (D fun k => e (I k))) w =
+      ∑ I ∈ S, w (D fun k => e (I k)) • D fun k => e (I k) := by
+    intro w
+    simp only [sum_apply, ContinuousLinearMap.smulRight_apply,
+      ContinuousLinearMap.apply_apply]
+  -- step 5: `ξ(α) = s α(τ)` with `s = ±1`
+  rintro ξ Q ⟨τ, hτ, -, hξ⟩
+  have hξ2 : ∀ α β : Covector (Euclid P) n, ξ α * ξ β = α τ * β τ := by
+    intro α β
+    rcases hξ with h | h
+    · rw [h, h]
+    · rw [h, h, neg_mul_neg]
+  have hξabs : ∀ α : Covector (Euclid P) n, |ξ α| = |α τ| := by
+    intro α
+    rcases hξ with h | h
+    · rw [h]
+    · rw [h, abs_neg]
+  have hCBτ := hCB τ hτ
+  refine ⟨fun α => ?_, ?_, ?_⟩
+  · -- (i) `|ξ(α)| = |Σ_I α(e_I) e^I(τ)| ≤ |α| (Σ_I e^I(τ)²)^{1/2} = |α|`
+    rw [hξabs, hnorm]
+    apply Real.abs_le_sqrt
+    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE α)
+    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul] at h
+    rw [h]
+    calc (∑ I ∈ S, α (fun k => e (I k)) * D (fun k => e (I k)) τ) ^ 2
+        ≤ (∑ I ∈ S, α (fun k => e (I k)) ^ 2) * ∑ I ∈ S, D (fun k => e (I k)) τ ^ 2 :=
+          Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+      _ = ∑ I ∈ S, α (fun k => e (I k)) ^ 2 := by rw [hCBτ, mul_one]
+  · -- (ii) `J(ξ)(e_K) = ξ(e^K)`, so `|J(ξ)|² = Σ_K ξ(e^K)² = Σ_K e^K(τ)² = 1`
+    rw [hnorm, hJ]
+    have : ∑ K ∈ S, (∑ I ∈ S, ξ (D fun k => e (I k)) • D fun k => e (I k))
+        (fun k => e (K k)) ^ 2 = 1 := by
+      rw [← hCBτ]
+      refine Finset.sum_congr rfl fun K hK' => ?_
+      rw [ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single K]
+      · rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hK').2
+          (Finset.mem_filter.mp hK').2, ite_eq_left rfl, smul_eq_mul, mul_one, sq, sq, hξ2]
+      · intro I hI hIK
+        rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2
+          (Finset.mem_filter.mp hK').2, ite_eq_right hIK, smul_zero]
+      · exact fun h => absurd hK' h
+    rw [this, Real.sqrt_one]
+  · -- (iii) `ξ(J(ξ)) = Σ_I ξ(e^I)² = Σ_I e^I(τ)² = 1`
+    rw [hJ, map_sum, ← hCBτ]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    rw [map_smul, smul_eq_mul, hξ2, sq]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
