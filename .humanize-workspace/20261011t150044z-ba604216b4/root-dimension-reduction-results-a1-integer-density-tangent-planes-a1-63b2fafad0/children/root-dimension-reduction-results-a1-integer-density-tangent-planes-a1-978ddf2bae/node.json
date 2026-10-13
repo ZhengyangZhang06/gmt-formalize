@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.countable_separating_tests-a1.plateau_weak_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.countable_separating_tests-a1",
+  "depth": 6,
+  "title": "Smooth plateau functions converge weakly to the indicator of an interval",
+  "statement": "For all real numbers p, q there is a sequence (χ_k)_{k∈ℕ} of C¹ functions ℝ → ℝ with tsupport χ_k ⊆ [p, q] for every k, such that for every Lebesgue-integrable function g : ℝ → ℝ, ∫_ℝ χ_k(α)·g(α) dα → ∫_{(p,q)} g(α) dα as k → ∞.",
+  "lean_statement": "∀ p q : ℝ, ∃ χ : ℕ → ℝ → ℝ, (∀ k, ContDiff ℝ 1 (χ k)) ∧ (∀ k, tsupport (χ k) ⊆ Icc p q) ∧ ∀ g : ℝ → ℝ, Integrable g → Tendsto (fun k => ∫ α, χ k α * g α) atTop (𝓝 (∫ α in Ioo p q, g α))",
+  "lean_name": "idtp_cse_ah_cst_plateau_weak_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-978ddf2bae-a1"
+}
