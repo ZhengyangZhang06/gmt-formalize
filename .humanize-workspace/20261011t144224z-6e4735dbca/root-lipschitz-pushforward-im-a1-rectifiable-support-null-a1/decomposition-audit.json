@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "variable|theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|IsLocallyFiniteMeasure|LocallyIntegrableOn",
+        "theorem isOpen_sUnion_countable",
+        "theorem .*ext_multilinear|theorem of_injective|theorem Integrable.mul_bdd|theorem ae_restrict_mem₀|theorem restrict_restrict |theorem measure_biUnion_null_iff",
+        "def GeometricCurrentOn\\.(VanishesOn|zeroRegion|support)|theorem.*support|theorem.*zeroRegion",
+        "lpf_rsn_null_diff_support_of_local_null|lpf_rsn_covector_separating_family|lpf_rsn_weighted_fundamental_lemma|lpf_rsn_local_null",
+        "python3 run_lean.py Audit/NodeChallengeAll.lean",
+        "python3 run_lean.py Audit/Sufficiency.lean",
+        "python3 run_lean.py Audit/ProofsAndSolutions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/parent-child-handoff.json",
+        "/tmp/rsn_independent_audit_jhaer7se/run_lean.py",
+        "/tmp/rsn_independent_audit_jhaer7se/Audit/NodeChallengeAll.lean",
+        "/tmp/rsn_independent_audit_jhaer7se/Audit/Sufficiency.lean",
+        "/tmp/rsn_independent_audit_jhaer7se/Audit/ProofsAndSolutions.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected support-null theorem. Frozen definitions and inspected library sources match the pinned snapshot. All four one-line propositions independently elaborate before child implementations exist. The unchanged supplied proofs and comparator solution checks compile with only propext, Classical.choice and Quot.sound. The exact parent implication also compiles from the child types and the existing simple_nvector_algebra dependency, without sorryAx. Dependencies are acyclic and correctly directed. All four names are bare identifiers; the DAG search found no reservations. The operator-norm instance was independently checked. The weighted fundamental lemma requires local integrability, not local finiteness of the measure."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match exactly. M ⊆ U gives the zero-region inclusion; a countable open subcover, nullity of each intersection and measure monotonicity prove the conclusion. No measurability assumption or circular dependency is hidden."
+    },
+    {
+      "key": "covector_separating_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact finite-separation statement follows from the injective evaluation map on basis tuples, finite-dimensionality and basis extensionality. The supplied proof covers degenerate dimensions and requires neither the parent nor another child."
+    },
+    {
+      "key": "weighted_fundamental_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the C∞ order match. Boundedness and measurability of g make θg integrable on W for μ.restrict M. The pinned fundamental lemma applies; null-measurability supplies almost-everywhere membership in M, where positivity permits removing θ. No additional measure-finiteness assumption is needed."
+    },
+    {
+      "key": "local_null_on_vanishing_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scalar-times-covector test forms satisfy every support and smoothness condition. Vanishing and representation supply precisely the weighted test identities. The two declared dependencies give ξ = 0 almost everywhere on W, contradicting unit norm and yielding the exact measure-zero conclusion. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
