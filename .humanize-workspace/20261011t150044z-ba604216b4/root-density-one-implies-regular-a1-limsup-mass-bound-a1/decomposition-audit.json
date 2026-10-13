@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|def blowUpMap|def CountablyRectifiable|theorem.*unique",
+        "slicing|flat metric|flat norm|deformation theorem|nearest.point|tubular",
+        "ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite|simon_theorem_3_6",
+        "compContinuousLinearMap|measure_compl_support|hausdorffMeasure_smul₀",
+        "contract_scope|def validate_lean_statement",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env sh -c 'LEAN_PATH=\"/tmp/lmb-independent-audit-yhy01mrl:$LEAN_PATH\" lean --root=/tmp/lmb-independent-audit-yhy01mrl /tmp/lmb-independent-audit-yhy01mrl/Types.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean --root=/tmp/lmb-independent-audit-yhy01mrl /tmp/lmb-independent-audit-yhy01mrl/Facts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/parent-child-handoff.json",
+        "/tmp/lmb-independent-audit-yhy01mrl/AuditContract.lean",
+        "/tmp/lmb-independent-audit-yhy01mrl/Types.lean",
+        "/tmp/lmb-independent-audit-yhy01mrl/Facts.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical workspace contract. All eight statements pass lexical validation and elaborate independently as Prop in the comparator scope, using contract definitions without the root theorem or proposed child declarations. Explicit checks confirm Lebesgue measure for the implicit real integrals and a.e. quantifiers, ENNReal scalar multiplication of measures, and setwise measure order. Checked foundational declarations have only propext, Classical.choice and Quot.sound as axioms. The searched library supplies tangent uniqueness, density comparison, disjointification and Euclidean-domain area formulas; it does not supply the required general current slicing, flat convergence or nonlinear current push-forward. Chapter 6's headline specification is sorry-backed and was not reused as proof. The current 571-node DAG reserves none of the eight bare names. Child dependencies are acyclic; C1 premises exactly match the accepted sibling contract, and neither parent dependency leads back to the selected node. Splitting is appropriate: the supplied assembly establishes this selected limsup bound, with vanishing error M(S_j)+(2/ε)M(R_j), rather than another DAG target."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including Borel measurability and local finiteness. Exhaustion and the upper-density theorem give a null exceptional set independent of the test function and plane; the blow-up integral estimate proves both implications, including n=0."
+    },
+    {
+      "key": "int_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable sign construction handles overlap and cancellation. Tangent locality establishes orientation on the resulting carrier; the action identity and pointwise multiplicity bound prove the exact representation and measure inequality."
+    },
+    {
+      "key": "borel_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every exported field equality is justified. Tangent locality preserves orientation, local integrability establishes sequential continuity of the constructed current, and restriction commutes with the multiplicity density."
+    },
+    {
+      "key": "slicing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cited rectifiable slicing and coarea results provide the slice carriers and mass estimate. The supplied orientation construction, mollified cutoff argument, and countable dense family establish the identity outside one null set independent of the test form. The proof establishes the exact conditional contract without assuming this child or the parent."
+    },
+    {
+      "key": "retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normal coordinates, compact localization and differentiated normality establish the C¹ retraction and derivative bound. Differentiation along curves matches the frozen tangentSpace definition. The exported statement correctly omits nearestness. The regularity and derivative formula also agree with [Leobacher–Steinicke, Theorem C](https://arxiv.org/html/1811.10578v4)."
+    },
+    {
+      "key": "flat_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The localization argument preserves weak convergence at the chosen Helly-continuity level. The independently cited deformation and mass-completeness results apply to the localized currents; telescoping and restoration outside W give the required global identity with vanishing local mass. The cases n>P, n=P and empty W are covered."
+    },
+    {
+      "key": "level_cut",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The slice and Markov estimates select a level satisfying all required properties simultaneously. The construction proves integrality, boundary vanishing and support vanishing for X. Separate estimates on the open ball and sphere yield exactly the stated closed-ball bound."
+    },
+    {
+      "key": "projected_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies tangent inclusion, compact projected support, integrality and boundary vanishing of the competitor. Steps c1–c9 handle cancellation, Borel representatives and orientation on the positive-multiplicity carrier. Vector-measure equality justifies the pulled-back mass estimate; finite subtraction on G minus F gives the exact ENNReal inequality."
+    }
+  ],
+  "required_changes": []
+}

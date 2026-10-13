@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "depth": 3,
+  "title": "Weak convergence of integer multiplicity cycles with local mass bounds implies flat convergence (Simon Ch. 6, 7.2)",
+  "statement": "Assume (C1), the frozen statement of the sibling-of-parent node dor_imrep_massOn_eq_measure_and_support: for all P, n ∈ ℕ, open U ⊆ ℝ^P, T ∈ 𝒟_n(U) and every integer multiplicity triple R in U representing T, M_W(T) = μ_R(W) for every open W ⊆ ℝ^P, and spt T = U ∩ spt μ_R. Let P, n ∈ ℕ with n ≥ 1, and U ⊆ ℝ^P open. Let T_j (j ∈ ℕ) and T in 𝒟_n(U) be integer multiplicity currents with ∂T_j = 0 and ∂T = 0 in U and T_j ⇀ T in U. Assume sup_j M_W(T_j) < ∞ for every open W whose closure is a compact subset of U. Then for every open W with W̄ a compact subset of U there are integer multiplicity R_j ∈ 𝒟_{n+1}(U) and S_j ∈ 𝒟_n(U) with T − T_j = ∂R_j + S_j in U for all j, and M_W(R_j) + M_W(S_j) → 0. This is the 'only if' part of Simon Ch. 6, Theorem 7.2 for cycles; the conclusion is equivalent to d_W(T_j, T) → 0.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n), IsOpen U → 0 < n → (∀ j, IsIntegerMultiplicity (Ts j)) → IsIntegerMultiplicity T → (∀ j, BoundaryVanishes (Ts j)) → BoundaryVanishes T → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, (Ts j).massOn W < ∞) → WeaklyConvergesOn Ts T → ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ∃ (Rs : ℕ → GeometricCurrentOn U (n + 1)) (Ss : ℕ → GeometricCurrentOn U n), (∀ j, IsIntegerMultiplicity (Rs j)) ∧ (∀ j, IsIntegerMultiplicity (Ss j)) ∧ (∀ j (ω : TestFormOn U n), T ω - Ts j ω = (Rs j).boundary ω + Ss j ω) ∧ Tendsto (fun j => (Rs j).massOn W + (Ss j).massOn W) atTop (𝓝 0)",
+  "lean_name": "dor_lmb_flat_convergence_cycles",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1-a1"
+}

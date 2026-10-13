@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "depth": 3,
+  "title": "Slicing of integer multiplicity currents by a Lipschitz function (Simon Ch. 6, 4.1–4.5)",
+  "statement": "Assume (C1), the frozen statement of the sibling-of-parent node dor_imrep_massOn_eq_measure_and_support: for all P, n ∈ ℕ, open U ⊆ ℝ^P, T ∈ 𝒟_n(U) and every integer multiplicity triple R in U representing T, M_W(T) = μ_R(W) for every open W ⊆ ℝ^P, and spt T = U ∩ spt μ_R. Let P, n ∈ ℕ, U ⊆ ℝ^P open, T ∈ 𝒟_{n+1}(U) represented by an integer multiplicity triple RT = (M, θ, ξ), and ∂T ∈ 𝒟_n(U) represented by an integer multiplicity triple RB = (M', θ', ξ'). Let f : ℝ^P → ℝ be L-Lipschitz. Then there are currents P_t ∈ 𝒟_n(U), t ∈ ℝ, such that:\n(1) for every open W ⊆ ℝ^P, t ↦ M_W(P_t) is a.e.-measurable and ∫_ℝ M_W(P_t) dt ≤ L·M_W(T);\n(2) for L¹-a.e. t: P_t is integer multiplicity; P_t(ω) = 0 for every ω ∈ 𝒟ⁿ(U) whose support is disjoint from f⁻¹(t); and P_t(ω) = ∫_{M∩{f<t}} θ⟨dω, ξ⟩ dH^{n+1} − ∫_{M'∩{f<t}} θ'⟨ω, ξ'⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U).\nRemark (no additional claim): the identity in (2) says P_t = ∂(T⌞{f<t}) − (∂T)⌞{f<t} on 𝒟ⁿ(U), which is Simon's formula 4.5(2) for the slice ⟨T, f, t⟩ (Ch. 6, 4.4–4.5).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]",
+  "lean_name": "dor_lmb_slicing_lipschitz",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.tangent_locality-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-a1"
+}

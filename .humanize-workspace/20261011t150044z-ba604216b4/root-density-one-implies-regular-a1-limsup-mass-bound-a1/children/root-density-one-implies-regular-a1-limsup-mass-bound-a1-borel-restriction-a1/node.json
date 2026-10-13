@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "depth": 3,
+  "title": "Restriction of an integer multiplicity current to a Borel set",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple (IMRep) in U, and A ⊆ ℝ^P a Borel set. Then (M ∩ A, θ, ξ) is an integer multiplicity triple R' in U, and there is S ∈ 𝒟_n(U) represented by R'. That is, S(ω) = ∫_{M∩A} θ⟨ω, ξ⟩ dHⁿ, the restriction τ(M, θ, ξ)⌞A. Moreover μ_{R'} = μ_R⌞A.",
+  "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (R : IMRep U n), IsOpen U → MeasurableSet A → ∃ (S : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents S ∧ R'.carrier = R.carrier ∩ A ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R'.measure = R.measure.restrict A",
+  "lean_name": "dor_lmb_imrep_restrict_current",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1-a1"
+}
