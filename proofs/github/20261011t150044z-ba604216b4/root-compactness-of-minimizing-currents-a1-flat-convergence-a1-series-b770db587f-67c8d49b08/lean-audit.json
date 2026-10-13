@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7b04ef23d0b0ec579549b51ed1642798cd964e41cf720bfbc2f5f7fda029de96",
+  "git_delta": {
+    "base_commit": "4639f296112d7ed8404d0b458a36ec8372363cde",
+    "candidate_commit": "a6a740d8eb1b7ef650cab5e74e9c6170654b404a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_sl_im_partial_sum",
+    "diff_sha256": "6e0f185323936d3458b0d6cb0d514f3bbf848c47e6617a42d280cce6d5fbff6f",
+    "source_sha256": "5901aff23849ce9116dd05a0b726c5d4302db8a134b38ab4391cb7650957d4df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_sl_im_partial_sum",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (Y : ℕ → GeometricCurrentOn U n), (∀ A B : GeometricCurrentOn U n, IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ i, IsIntegerMultiplicity (Y i)) → ∀ N : ℕ, ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ (∀ ω : TestFormOn U n, Z ω = ∑ i ∈ Finset.range (N + 1), Y i ω) ∧ ∀ G : Set (Euclid P), Z.massOn G ≤ ∑ i ∈ Finset.range (N + 1), (Y i).massOn G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
