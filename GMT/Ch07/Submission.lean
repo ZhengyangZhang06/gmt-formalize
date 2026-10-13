@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter01.CompactMetrizableCompactness
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Simon 1.4.16, one compact piece** (the Alaoglu step of the proof, corrected to a genuine
+subsequence).  If `K ⊆ ℝᴾ` is compact and `supⱼ μⱼ(K) < ∞`, there is a strictly increasing `θ`
+such that `∫ f dμ_{θ(j)}` converges for every continuous `f` with `tsupport f ⊆ K`.  View `K` as a
+compact metrizable Borel space, pull the `μⱼ` back along the inclusion `ι : K → ℝᴾ`, apply the
+corrected Simon 4.16 (`simon_theorem_4_16_compact_metrizable`) there, and transfer the integrals
+of `f` and `f ∘ ι` (`f` vanishes off `K`). -/
+theorem Submission.cbr_ct_vs_compact_piece_subseq : ∀ (P : ℕ) (K : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsCompact K → ⨆ j, μs j K < ∞ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ f : Euclid P → ℝ, Continuous f → tsupport f ⊆ K → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(μs (θ j))) atTop (𝓝 c) := by
+  intro P K μs hK hM
+  -- Step 1: `X = K` is a compact metrizable Borel space
+  have : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  -- Step 2: the inclusion `ι : K → ℝᴾ` is a measurable embedding
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  have hι : MeasurableEmbedding (Subtype.val : K → Euclid P) := MeasurableEmbedding.subtype_coe hKm
+  -- Step 3: `λⱼ = ι^* μⱼ` satisfies `λⱼ(A) = μⱼ(ι(A)) ≤ μⱼ(K)`
+  have hbound : ∀ A : Set K, IsCompact A →
+      (⨆ j, Measure.comap (Subtype.val : K → Euclid P) (μs j) A) < ∞ := by
+    intro A _
+    refine lt_of_le_of_lt (iSup_mono fun j => ?_) hM
+    rw [hι.comap_apply]
+    exact measure_mono (Subtype.coe_image_subset K A)
+  -- Step 4: the corrected Simon 4.16 on `X`
+  obtain ⟨θ, hθ, ν, -, hν⟩ :=
+    Poincare.SimonGMT.Chapter01.simon_theorem_4_16_compact_metrizable
+      (fun j => Measure.comap (Subtype.val : K → Euclid P) (μs j)) hbound
+  refine ⟨θ, hθ, fun f hf hfK => ?_⟩
+  -- Step 5: `g = f ∘ ι ∈ C_c(X, ℝ)`
+  let g : CompactlySupportedContinuousMap K ℝ :=
+    ⟨⟨fun x => f x, hf.comp continuous_subtype_val⟩, HasCompactSupport.of_compactSpace _⟩
+  refine ⟨∫ x, g x ∂ν, (hν g).congr fun j => ?_⟩
+  -- Steps 6–7: `∫ f dμ = ∫_K f dμ = ∫ g d(ι^* μ)`
+  show ∫ x, f (x : Euclid P) ∂(Measure.comap (Subtype.val : K → Euclid P) (μs (θ j))) =
+    ∫ x, f x ∂(μs (θ j))
+  rw [integral_subtype_comap hKm f]
+  exact setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (hfK h)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
