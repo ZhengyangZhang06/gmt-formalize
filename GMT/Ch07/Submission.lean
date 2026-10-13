@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A `0`-dimensional integer multiplicity carrier is finite on compact `K ⊆ U` (Simon 6.3.1,
+`n = 0`): `H⁰ = μHE[0]` gives every point mass `1` and `θ ≥ 1` on `M`, so
+`H⁰(M ∩ K) ≤ ∫_{M ∩ K} θ dH⁰ < ∞`, while an infinite `M ∩ K` has `N`-point subsets of
+`H⁰`-measure `N` for every `N`. -/
+theorem Submission.dtc_dim_zero_carrier_finite : ∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite := by
+  intro P U K R hK hKU
+  -- `H⁰(M ∩ K) ≤ ∫_{M ∩ K} θ dH⁰ < ∞`, as `θ ≥ 1` on `M`
+  have hfin : μHE[0] (R.carrier ∩ K) ≠ ∞ := by
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
+    rw [← setLIntegral_one]
+    exact setLIntegral_mono' (R.measurableSet_carrier.inter hK.isClosed.measurableSet)
+      fun x hx => by exact_mod_cast R.mult_pos x hx.1
+  -- an infinite `M ∩ K` contains `N` points, of `H⁰`-measure `N > H⁰(M ∩ K)`
+  by_contra hinf
+  obtain ⟨N, hN⟩ := ENNReal.exists_nat_gt hfin
+  obtain ⟨F, hF, hcard⟩ := Set.Infinite.exists_subset_card_eq hinf N
+  refine hN.not_ge ?_
+  calc (N : ℝ≥0∞) = ∑ x ∈ F, μHE[0] ({x} : Set (Euclid P)) := by
+        simp [Measure.euclideanHausdorffMeasure_zero, hcard]
+    _ = μHE[0] (F : Set (Euclid P)) := sum_measure_singleton
+    _ ≤ μHE[0] (R.carrier ∩ K) := measure_mono hF
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

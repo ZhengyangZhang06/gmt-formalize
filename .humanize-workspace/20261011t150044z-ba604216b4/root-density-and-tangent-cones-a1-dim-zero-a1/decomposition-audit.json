@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'structure GeometricCurrentOn|def TestFormOnConverges|abbrev TestFormOn|theorem GeometricCurrentOn.ext|GeometricCurrentOn.zero_apply|Zero \\(GeometricCurrentOn' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "rg -n 'def CountablyRectifiable|CountablyRectifiable.mono|def blowUpMap|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n -A 20 'def GeometricCurrentOn.VanishesOn|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "rg -n -A 18 'def massAdmissibleOn|def GeometricCurrentOn.massOn' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "rg -n 'pointCurrent|Dirac' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|IntegrableOn.of_forall_sdiff_eq_zero|integrableOn_singleton|integrableOn_finite_biUnion",
+        "theorem withDensity_add_measure|theorem dirac_withDensity",
+        "theorem iteratedFDeriv_zero_eq_comp|lemma iteratedFDeriv_zero_eq_comp",
+        "rg -l --hidden -g '*.json' -g '*.md' -g '*.lean' 'dtc_dim_zero_carrier_finite|dtc_approxTangent_sdiff_singleton|dtc_dim_zero_erase_point|dtc_point_current' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT",
+        "git log --all --format='%h %s' -G 'dtc_dim_zero_carrier_finite|dtc_approxTangent_sdiff_singleton|dtc_dim_zero_erase_point|dtc_point_current' -- '*.lean'",
+        "m.validate_lean_statement(c['lean_statement'])",
+        "m.contract_scope(c,'GMT.Ch07.main_theorem')",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Ch07/Submission.lean -o /tmp/dim-zero-independent-audit-8tyfqdp_/.lake/build/lib/lean/GMT/Ch07/Submission.olean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Product.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/parent-child-handoff.json",
+        "/tmp/dz-decomp-7f3a/proj/Check/All.lean",
+        "/tmp/dim-zero-independent-audit-8tyfqdp_/Audit.lean"
+      ],
+      "conclusion": "The four-way split is appropriate for the selected zero-dimensional theorem. The pinned definitions and supporting measure-theory lemmas validate the supplied arguments; the existing algebraic pointCurrent does not supply the proposed domain-current contract. Snapshot/workspace sources and package revisions were checked for compatibility. Name searches found only this proposal's records, with no reservation by another DAG branch or matching declaration in Git history. All names are bare identifiers. Dependencies are acyclic and correctly directed: erase_point requires carrier_finite and tangent_delete_point. Each exact frozen type independently elaborated as Prop before any child implementation, then passed an exact comparator-style wrapper. Direct pinned-Lean compilation of all four supplied implementations and the exact parent assembly succeeded; every axiom report contained only propext, Classical.choice and Quot.sound. The assembly takes the existing mass_eq_measure contract as an explicit hypothesis, since that sibling remains under development. It establishes all three selected parent conclusions, including zero mass for arbitrary W. No circular, implementation-dependent or matrix-instance-sensitive contract was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "carrier_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U and compact K ⊆ U. Singleton mass one and positive integer multiplicity bound H⁰(M ∩ K) by the finite local multiplicity integral. An infinite intersection would contain finite subsets with arbitrarily large measure, giving the stated contradiction. The proof is complete and independent of minimality or the parent."
+    },
+    {
+      "key": "tangent_delete_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the exact predicate. The positive cutoff places the deleted point outside each test function's support after blow-up. For positive radii, the larger image is Borel, and the cited set-integral lemma justifies equality without an unstated integrability assumption. Eventual equality transfers the limit, while the dimension clause is unchanged. Generalization to arbitrary n is justified."
+    },
+    {
+      "key": "erase_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every IMRep field, including restricted a.e. measurability and orientation via tangent_delete_point. Restriction and density identities give the asserted equality of measures. carrier_finite supplies integrability on the test form's compact support; vanishing elsewhere then justifies splitting the Bochner integral. This proves every existential conjunct and the exact action identity using only the two declared child dependencies."
+    },
+    {
+      "key": "point_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated MultiVector is a continuous linear functional, so evaluation defines the required linear map. The zeroth-derivative convergence argument, including the case outside the common compact support, proves precisely the current's continuity field. Small relatively compact balls avoiding p establish the support inclusion. Arbitrary p is valid; no missing assumption p ∈ U is needed. The prose and one-line proposition match."
+    }
+  ],
+  "required_changes": []
+}
