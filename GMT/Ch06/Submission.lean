@@ -840,6 +840,206 @@ theorem Submission.deformation_ipl_mwc_minor_ibp_smooth :
         refine Finset.sum_congr rfl fun q _ => integral_congr_ae (ae_of_all _ fun w => ?_)
         simp only [hC q w]
         ring
+/-- `C_c^∞` fields are dense in `L¹(Ω)`: for `Ω ⊆ ℝⁿ` open, `c : ℝⁿ → ℝⁿ` integrable on `Ω` and
+`δ > 0` there is a smooth `b` with compact support, `spt b ⊆ Ω` and `∫_Ω |c − b| < δ`.  The
+exhaustion `K_j = F_j ∩ B̄(0, j)` of `Ω` gives a compact `K ⊆ Ω` with `∫_{Ω∖K} |c| < δ/2`;
+`1_K c` is within `δ/2` in `L¹(ℝⁿ)` of a smooth compactly supported `b₀` (approximate simple
+functions, using the regularity of `Lⁿ` and the smooth Urysohn lemma); and `b = χ b₀` for a
+smooth cutoff `0 ≤ χ ≤ 1` with `χ = 1` on `K` and `spt χ ⊆ Ω`. -/
+theorem Submission.slicing_im_ll_gws_smooth_dense :
+    ∀ (n : ℕ) (Ω : Set (Eucl n)) (c : Eucl n → Eucl n), IsOpen Ω → IntegrableOn c Ω (volume : Measure (Eucl n)) → ∀ δ : ℝ, 0 < δ → ∃ b : Eucl n → Eucl n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧ HasCompactSupport b ∧ tsupport b ⊆ Ω ∧ ∫ w in Ω, ‖c w - b w‖ < δ := by
+  intro n Ω c hΩ hc δ hδ
+  -- Step 1: the compact exhaustion `K j = F j ∩ B̄(0, j)` of `Ω`.
+  obtain ⟨F, hFc, hFΩ, hFU, hFm⟩ := hΩ.exists_iUnion_isClosed
+  have hKc : ∀ j : ℕ, IsCompact (F j ∩ closedBall 0 j) := fun j =>
+    (isCompact_closedBall 0 j).inter_left (hFc j)
+  have hKΩ : ∀ j : ℕ, F j ∩ closedBall 0 j ⊆ Ω := fun j => inter_subset_left.trans (hFΩ j)
+  have hKm : Monotone fun j : ℕ => F j ∩ closedBall (0 : Eucl n) j := fun i j hij =>
+    inter_subset_inter (hFm hij) (closedBall_subset_closedBall (Nat.cast_le.2 hij))
+  have hKU : ⋃ j : ℕ, F j ∩ closedBall (0 : Eucl n) j = Ω := by
+    refine Subset.antisymm (iUnion_subset hKΩ) fun w hw => ?_
+    rw [← hFU] at hw
+    obtain ⟨i, hi⟩ := mem_iUnion.1 hw
+    refine mem_iUnion.2 ⟨max i ⌈‖w‖⌉₊, hFm (le_max_left _ _) hi, ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact (Nat.le_ceil _).trans (Nat.cast_le.2 (le_max_right _ _))
+  -- Step 2: a compact `K = K j ⊆ Ω` with `∫_{Ω \ K} |c| < δ / 2`.
+  have hcn : IntegrableOn (fun w => ‖c w‖) Ω := hc.norm
+  obtain ⟨K, hK, hKΩ', htail⟩ : ∃ K : Set (Eucl n), IsCompact K ∧ K ⊆ Ω ∧
+      ∫ w in Ω \ K, ‖c w‖ < δ / 2 := by
+    have hlim := tendsto_setIntegral_of_monotone (fun j => (hKc j).measurableSet) hKm
+      (by rw [hKU]; exact hcn)
+    rw [hKU] at hlim
+    obtain ⟨j, hj⟩ := ((tendsto_order.1 hlim).1 _ (sub_lt_self _ (half_pos hδ))).exists
+    refine ⟨_, hKc j, hKΩ j, ?_⟩
+    rw [setIntegral_sdiff (hKc j).measurableSet hcn (hKΩ j)]
+    linarith
+  -- Step 3: `C_c^∞` is dense in `L¹(ℝⁿ)` (simple functions, regularity and smooth Urysohn).
+  have hdense : ∀ f : Eucl n → Eucl n, Integrable f → ∀ ε : ℝ, 0 < ε →
+      ∃ g : Eucl n → Eucl n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g ∧
+        ∫ w, ‖f w - g w‖ ≤ ε := by
+    intro f hf ε hε
+    have hind : ∀ (v : Eucl n) ⦃s : Set (Eucl n)⦄, MeasurableSet s → volume s < ∞ →
+        ∀ {η : ℝ≥0∞}, η ≠ 0 → ∃ g : Eucl n → Eucl n,
+          eLpNorm (g - s.indicator fun _ => v) 1 volume ≤ η ∧
+            (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g) := by
+      intro v s hs hμs η hη
+      obtain ⟨θ, hθ0, hθ⟩ := ENNReal.exists_nnreal_pos_mul_lt
+        (ENNReal.mul_ne_top ENNReal.ofNat_ne_top enorm_ne_top : 2 * ‖v‖ₑ ≠ ∞) hη
+      have hθ0' : (θ : ℝ≥0∞) ≠ 0 := ENNReal.coe_ne_zero.2 hθ0.ne'
+      obtain ⟨A, hAs, hA, hsA⟩ := hs.exists_isCompact_sdiff_lt hμs.ne hθ0'
+      obtain ⟨U, hsU, hU, -, hUs⟩ := hs.exists_isOpen_sdiff_lt hμs.ne hθ0'
+      obtain ⟨L, hL, hAL, hLU⟩ := exists_compact_between hA hU (hAs.trans hsU)
+      obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff
+        (n := (⊤ : ℕ∞)) isOpen_interior hA.isClosed hAL
+      have hχ0 : ∀ x, x ∉ interior L → χ x = 0 := fun x hx =>
+        Function.notMem_support.1 (by rw [hχs]; exact hx)
+      refine ⟨fun x => χ x • v, ?_, hχ.smul contDiff_const, ?_⟩
+      · calc eLpNorm ((fun x => χ x • v) - s.indicator fun _ => v) 1 volume
+            ≤ eLpNorm ((U \ A).indicator fun _ => v) 1 volume := by
+              refine eLpNorm_mono ((hχ.continuous.smul continuous_const).aestronglyMeasurable.sub
+                (aestronglyMeasurable_const.indicator hs)) fun x => ?_
+              rw [Pi.sub_apply]
+              by_cases hxA : x ∈ A
+              · simp [(hχ1 x).1 hxA, indicator_of_mem (hAs hxA)]
+              by_cases hxU : x ∈ U
+              · rw [indicator_of_mem (mem_sdiff_of_mem hxU hxA)]
+                obtain ⟨h0, h1⟩ := hχr (mem_range_self x)
+                by_cases hxs : x ∈ s
+                · rw [indicator_of_mem hxs,
+                    show χ x • v - v = (χ x - 1) • v by rw [sub_smul, one_smul], norm_smul,
+                    Real.norm_eq_abs]
+                  calc |χ x - 1| * ‖v‖ ≤ 1 * ‖v‖ := by
+                        gcongr; rw [abs_le]; constructor <;> linarith
+                    _ = ‖v‖ := one_mul _
+                · rw [indicator_of_notMem hxs, sub_zero, norm_smul, Real.norm_eq_abs]
+                  calc |χ x| * ‖v‖ ≤ 1 * ‖v‖ := by
+                        gcongr; rw [abs_le]; constructor <;> linarith
+                    _ = ‖v‖ := one_mul _
+              · have hxs : x ∉ s := fun h => hxU (hsU h)
+                have hxL : x ∉ interior L := fun h => hxU (hLU (interior_subset h))
+                simp [hχ0 x hxL, hxs]
+          _ = ‖v‖ₑ * volume (U \ A) := by
+              rw [eLpNorm_indicator_const (hU.measurableSet.diff hA.measurableSet).nullMeasurableSet
+                one_ne_zero ENNReal.one_ne_top]
+              simp
+          _ ≤ ‖v‖ₑ * (θ + θ) := by
+              gcongr
+              calc volume (U \ A) ≤ volume ((U \ s) ∪ (s \ A)) := measure_mono fun x hx => by
+                    by_cases hxs : x ∈ s
+                    · exact Or.inr ⟨hxs, hx.2⟩
+                    · exact Or.inl ⟨hx.1, hxs⟩
+                _ ≤ volume (U \ s) + volume (s \ A) := measure_union_le _ _
+                _ ≤ θ + θ := add_le_add hUs.le hsA.le
+          _ = θ * (2 * ‖v‖ₑ) := by ring
+          _ ≤ η := hθ.le
+      · exact HasCompactSupport.intro hL fun x hx => by
+          simp [hχ0 x fun h => hx (interior_subset h)]
+    obtain ⟨g, hfg, hg, hgc⟩ := (memLp_one_iff_integrable.2 hf).induction_dense
+      ENNReal.one_ne_top
+      (fun g : Eucl n → Eucl n => ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g)
+      hind (fun f g hf hg => ⟨hf.1.add hg.1, hf.2.add hg.2⟩) (ENNReal.ofReal_pos.2 hε).ne'
+    refine ⟨g, hg, hgc, ?_⟩
+    have hm : AEStronglyMeasurable (f - g) volume :=
+      (hf.sub (hg.continuous.integrable_of_hasCompactSupport hgc)).aestronglyMeasurable
+    rw [eLpNorm_one_eq_lintegral_enorm hm] at hfg
+    change ∫ w, ‖(f - g) w‖ ≤ ε
+    rw [integral_norm_eq_lintegral_enorm hm]
+    exact ENNReal.toReal_le_of_le_ofReal hε.le hfg
+  -- Step 3 applied to `1_K c`.
+  have hKi : Integrable (K.indicator c) :=
+    (integrable_indicator_iff hK.measurableSet).2 (hc.mono_set hKΩ')
+  obtain ⟨b₀, hb₀, hb₀c, hb₀K⟩ := hdense _ hKi (δ / 2) (half_pos hδ)
+  have hb₀i : Integrable b₀ := hb₀.continuous.integrable_of_hasCompactSupport hb₀c
+  -- Step 4: a smooth cutoff `χ`, `χ = 1` exactly on `K`, `0 ≤ χ ≤ 1`, `tsupport χ ⊆ L ⊆ Ω`.
+  obtain ⟨L, hL, hKL, hLΩ⟩ := exists_compact_between hK hΩ hKΩ'
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff
+    (n := (⊤ : ℕ∞)) isOpen_interior hK.isClosed hKL
+  have hχL : tsupport χ ⊆ L := by
+    rw [tsupport, hχs]
+    exact closure_minimal interior_subset hL.isClosed
+  have hχc : HasCompactSupport χ := hL.of_isClosed_subset (isClosed_tsupport _) hχL
+  -- Step 5: `b = χ b₀`.
+  have hbc : HasCompactSupport fun w => χ w • b₀ w := hχc.smul_right
+  have hbi : Integrable fun w => χ w • b₀ w :=
+    (hχ.continuous.smul hb₀.continuous).integrable_of_hasCompactSupport hbc
+  refine ⟨fun w => χ w • b₀ w, hχ.smul hb₀, hbc,
+    (tsupport_smul_subset_left _ _).trans (hχL.trans hLΩ), ?_⟩
+  -- Step 6: `|c - b| ≤ |1_{Kᶜ} c| + |1_K c - b₀|` pointwise.
+  have hptw : ∀ w, ‖c w - χ w • b₀ w‖ ≤ ‖Kᶜ.indicator c w‖ + ‖K.indicator c w - b₀ w‖ := by
+    intro w
+    by_cases hw : w ∈ K
+    · simp [(hχ1 w).1 hw, hw]
+    · rw [indicator_of_mem (mem_compl hw), indicator_of_notMem hw, zero_sub, norm_neg]
+      obtain ⟨h0, h1⟩ := hχr (mem_range_self w)
+      calc ‖c w - χ w • b₀ w‖ ≤ ‖c w‖ + ‖χ w • b₀ w‖ := norm_sub_le _ _
+        _ ≤ ‖c w‖ + ‖b₀ w‖ := by
+          gcongr
+          rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg h0]
+          exact mul_le_of_le_one_left (norm_nonneg _) h1
+  -- Step 7: integrate over `Ω`.
+  have h1 : ∫ w in Ω, ‖Kᶜ.indicator c w‖ < δ / 2 := by
+    simp_rw [norm_indicator_eq_indicator_norm]
+    rw [setIntegral_indicator hK.measurableSet.compl, ← sdiff_eq]
+    exact htail
+  have h2 : ∫ w in Ω, ‖K.indicator c w - b₀ w‖ ≤ δ / 2 :=
+    (setIntegral_le_integral (hKi.sub hb₀i).norm
+      (Eventually.of_forall fun _ => norm_nonneg _)).trans hb₀K
+  calc ∫ w in Ω, ‖c w - χ w • b₀ w‖
+      ≤ ∫ w in Ω, (‖Kᶜ.indicator c w‖ + ‖K.indicator c w - b₀ w‖) :=
+        setIntegral_mono (hc.sub hbi.integrableOn).norm
+          ((hc.indicator hK.measurableSet.compl).norm.add (hKi.sub hb₀i).norm.integrableOn) hptw
+    _ = (∫ w in Ω, ‖Kᶜ.indicator c w‖) + ∫ w in Ω, ‖K.indicator c w - b₀ w‖ :=
+        integral_add (hc.indicator hK.measurableSet.compl).norm (hKi.sub hb₀i).norm.integrableOn
+    _ < δ / 2 + δ / 2 := add_lt_add_of_lt_of_le h1 h2
+    _ = δ := add_halves δ
+
+/-- `C_c^∞(Ω)` is dense in `L¹(Ω)` for real functions: for `Ω ⊆ ℝᵏ` open, `η` integrable on `Ω`
+and `ε > 0` there is a smooth `φ` with compact support, `spt φ ⊆ Ω` and `∫_Ω |η − φ| < ε`.  For
+`k = 0` the space is a point, so `Ω = ∅` (take `φ = 0`) or `Ω = ℝ⁰` (take `φ = η`, a constant).
+For `k ≥ 1` the field `c = η e₀` is approximated by `b` (`slicing_im_ll_gws_smooth_dense`) and
+`φ = b₀` is its first coordinate, so `|η − φ| = |(c − b)₀| ≤ |c − b|`. -/
+theorem Submission.deformation_ipl_mwc_td_scalar_smooth_dense :
+    ∀ (k : ℕ) (Ω : Set (Eucl k)) (η : Eucl k → ℝ), IsOpen Ω → IntegrableOn η Ω (volume : Measure (Eucl k)) → ∀ ε : ℝ, 0 < ε → ∃ φ : Eucl k → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω ∧ ∫ w in Ω, |η w - φ w| ∂(volume : Measure (Eucl k)) < ε := by
+  intro k Ω η hΩ hη ε hε
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · -- `k = 0`: `Eucl 0` is a single point, so `Ω = ∅` or `Ω = univ`.
+    by_cases hΩe : Ω = ∅
+    · subst hΩe
+      exact ⟨0, contDiff_const, HasCompactSupport.zero, by simp, by simpa using hε⟩
+    · have hΩu : Ω = univ := by
+        obtain ⟨x, hx⟩ := nonempty_iff_ne_empty.2 hΩe
+        exact eq_univ_of_forall fun y => Subsingleton.elim x y ▸ hx
+      have hconst : η = fun _ => η 0 := funext fun x => congrArg η (Subsingleton.elim x 0)
+      refine ⟨η, ?_, ?_, by simp [hΩu], by simpa using hε⟩
+      · rw [hconst]
+        exact contDiff_const
+      · exact subsingleton_of_subsingleton.isCompact.of_isClosed_subset (isClosed_tsupport _)
+          (subset_univ _)
+  · -- `k ≥ 1`: carry `η` as the first coordinate of a vector field and project back.
+    let i₀ : Fin k := ⟨0, hk⟩
+    let e : Eucl k := EuclideanSpace.single i₀ (1 : ℝ)
+    have he : e i₀ = 1 := by simp [e]
+    have hc : IntegrableOn (fun w => η w • e) Ω := hη.smul_const e
+    obtain ⟨b, hb, hbc, hbΩ, hbε⟩ :=
+      Submission.slicing_im_ll_gws_smooth_dense k Ω (fun w => η w • e) hΩ hc ε hε
+    let p : Eucl k →L[ℝ] ℝ := EuclideanSpace.proj i₀
+    have hp : ∀ v : Eucl k, p v = v i₀ := fun v => rfl
+    have hp0 : p 0 = 0 := map_zero p
+    have hφ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (p ∘ b) := p.contDiff.comp hb
+    have hφc : HasCompactSupport (p ∘ b) := hbc.comp_left hp0
+    refine ⟨p ∘ b, hφ, hφc, (tsupport_comp_subset hp0 b).trans hbΩ, ?_⟩
+    have hbi : Integrable b := hb.continuous.integrable_of_hasCompactSupport hbc
+    have hφi : Integrable (p ∘ b) := hφ.continuous.integrable_of_hasCompactSupport hφc
+    -- `|η − φ| = |(c − b)₀| ≤ ‖c − b‖` pointwise, and both sides are integrable on `Ω`.
+    have hptw : ∀ w, |η w - (p ∘ b) w| ≤ ‖η w • e - b w‖ := fun w => by
+      have h1 : (η w • e - b w) i₀ = η w - (p ∘ b) w := by
+        simp [Function.comp, hp, he]
+      rw [← h1, ← Real.norm_eq_abs]
+      exact PiLp.norm_apply_le _ _
+    calc ∫ w in Ω, |η w - (p ∘ b) w| ≤ ∫ w in Ω, ‖η w • e - b w‖ :=
+          setIntegral_mono (hη.sub hφi.integrableOn).abs (hc.sub hbi.integrableOn).norm hptw
+      _ < ε := hbε
 /-- A smooth approximate identity on `ℝⁿ` (Simon Ch. 6, proof of 2.34, p. 143; Ch. 2, §2):
 `ψ_k(y) = (k+1)ⁿ I⁻¹ h((k+1) y)` for a smooth bump `0 ≤ h ≤ 1` with `h(0) = 1`,
 `spt h ⊆ B_1(0)` and `I = ∫ h > 0`.  Each `ψ_k` is `C^∞`, nonnegative, of integral `1` and
@@ -1340,6 +1540,60 @@ theorem Submission.deformation_ipl_mwc_minor_ibp_lipschitz : ∀ (k Q r : ℕ) (
     · filter_upwards [hae] with w hw hwΩ
       have h0 : vt (a 0) w = EuclideanSpace.proj (a 0) (v w) := (hvteq (a 0) hwΩ).symm
       simp only [hw hwΩ, h0]
+
+/-- Smooth test functions suffice (step (3.0) of the proof of `minor_weak_continuity`): if
+`Ω ⊆ ℝᵏ` is open, `|f_j|, |f₀| ≤ B` on `Ω` and `∫_Ω φ f_j → ∫_Ω φ f₀` for every `φ ∈ C¹_c(Ω)`, then
+`∫_Ω η f_j → ∫_Ω η f₀` for every `η ∈ L¹(Ω)`.  Given `δ > 0`, choose `ε > 0` with
+`2 |B| ε ≤ δ / 2` and, by `scalar_smooth_dense`, `φ ∈ C_c^∞(Ω)` with `∫_Ω |η − φ| < ε`.  Then
+`|∫_Ω η g − ∫_Ω φ g| ≤ |B| ∫_Ω |η − φ| ≤ |B| ε` for `g = f_j, f₀`, so for large `j`
+`|∫_Ω η f_j − ∫_Ω η f₀| ≤ |B| ε + |∫_Ω φ f_j − ∫_Ω φ f₀| + |B| ε < δ`. -/
+theorem Submission.deformation_ipl_mwc_test_density : ∀ (k : ℕ) (Ω : Set (Eucl k)) (B : ℝ) (f : ℕ → Eucl k → ℝ) (f₀ : Eucl k → ℝ), IsOpen Ω → (∀ j, AEStronglyMeasurable (f j) ((volume : Measure (Eucl k)).restrict Ω)) → AEStronglyMeasurable f₀ ((volume : Measure (Eucl k)).restrict Ω) → (∀ j, ∀ w ∈ Ω, |f j w| ≤ B) → (∀ w ∈ Ω, |f₀ w| ≤ B) → (∀ φ : Eucl k → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ω → Tendsto (fun j => ∫ w in Ω, φ w * f j w ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, φ w * f₀ w ∂(volume : Measure (Eucl k))))) → ∀ η : Eucl k → ℝ, IntegrableOn η Ω (volume : Measure (Eucl k)) → Tendsto (fun j => ∫ w in Ω, η w * f j w ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, η w * f₀ w ∂(volume : Measure (Eucl k)))) := by
+  intro k Ω B f f₀ hΩ hfm hf₀m hfB hf₀B hφ η hη
+  -- Step 2: `ζ g ∈ L¹(Ω)` for `ζ ∈ L¹(Ω)` and `g` bounded by `B` (hence by `|B|`) on `Ω`.
+  have hint : ∀ ζ g : Eucl k → ℝ, IntegrableOn ζ Ω (volume : Measure (Eucl k)) →
+      AEStronglyMeasurable g ((volume : Measure (Eucl k)).restrict Ω) → (∀ w ∈ Ω, |g w| ≤ B) →
+      IntegrableOn (fun w => ζ w * g w) Ω (volume : Measure (Eucl k)) := fun ζ g hζ hg hgB =>
+    Integrable.mul_bdd hζ hg (ae_restrict_of_forall_mem hΩ.measurableSet fun w hw =>
+      (hgB w hw).trans (le_abs_self B))
+  rw [Metric.tendsto_atTop]
+  intro δ hδ
+  -- Step 3: `ε > 0` with `2 |B| ε ≤ δ / 2` (`|B|` avoids the case split `Ω = ∅`).
+  obtain ⟨ε, hε0, hBε⟩ : ∃ ε : ℝ, 0 < ε ∧ |B| * ε ≤ δ / 4 := by
+    refine ⟨δ / (4 * (|B| + 1)), by positivity, ?_⟩
+    rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [abs_nonneg B]
+  -- Step 1 (the sibling `scalar_smooth_dense`): `φ ∈ C_c^∞(Ω)` with `∫_Ω |η − φ| < ε`.
+  obtain ⟨φ, hφs, hφc, hφΩ, hηφ⟩ :=
+    Submission.deformation_ipl_mwc_td_scalar_smooth_dense k Ω η hΩ hη ε hε0
+  have hφi : IntegrableOn φ Ω (volume : Measure (Eucl k)) :=
+    (hφs.continuous.integrable_of_hasCompactSupport hφc).integrableOn
+  -- `|∫_Ω η g − ∫_Ω φ g| ≤ |B| ∫_Ω |η − φ| ≤ |B| ε` for `g` bounded by `B` on `Ω`.
+  have happrox : ∀ g : Eucl k → ℝ,
+      AEStronglyMeasurable g ((volume : Measure (Eucl k)).restrict Ω) → (∀ w ∈ Ω, |g w| ≤ B) →
+      dist (∫ w in Ω, η w * g w ∂(volume : Measure (Eucl k)))
+        (∫ w in Ω, φ w * g w ∂(volume : Measure (Eucl k))) ≤ |B| * ε := by
+    intro g hg hgB
+    rw [dist_eq_norm, ← integral_sub (hint η g hη hg hgB) (hint φ g hφi hg hgB)]
+    calc ‖∫ w in Ω, η w * g w - φ w * g w ∂(volume : Measure (Eucl k))‖
+        ≤ ∫ w in Ω, |B| * |η w - φ w| ∂(volume : Measure (Eucl k)) := by
+          refine norm_integral_le_of_norm_le ((hη.sub hφi).abs.const_mul |B|)
+            (ae_restrict_of_forall_mem hΩ.measurableSet fun w hw => ?_)
+          rw [← sub_mul, Real.norm_eq_abs, abs_mul, mul_comm]
+          exact mul_le_mul_of_nonneg_right ((hgB w hw).trans (le_abs_self B)) (abs_nonneg _)
+      _ = |B| * ∫ w in Ω, |η w - φ w| ∂(volume : Measure (Eucl k)) := integral_const_mul _ _
+      _ ≤ |B| * ε := mul_le_mul_of_nonneg_left hηφ.le (abs_nonneg B)
+  -- The hypothesis for `φ ∈ C¹_c(Ω)`, then the `ε/3` estimate.
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1
+    (hφ φ (hφs.of_le (WithTop.coe_le_coe.2 le_top)) hφc hφΩ) (δ / 2) (half_pos hδ)
+  refine ⟨N, fun j hj => ?_⟩
+  have h₁ := happrox (f j) (hfm j) (hfB j)
+  have h₂ := hN j hj
+  have h₃ := happrox f₀ hf₀m hf₀B
+  rw [dist_comm] at h₃
+  linarith [dist_triangle4 (∫ w in Ω, η w * f j w ∂(volume : Measure (Eucl k)))
+    (∫ w in Ω, φ w * f j w ∂(volume : Measure (Eucl k)))
+    (∫ w in Ω, φ w * f₀ w ∂(volume : Measure (Eucl k)))
+    (∫ w in Ω, η w * f₀ w ∂(volume : Measure (Eucl k)))]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
