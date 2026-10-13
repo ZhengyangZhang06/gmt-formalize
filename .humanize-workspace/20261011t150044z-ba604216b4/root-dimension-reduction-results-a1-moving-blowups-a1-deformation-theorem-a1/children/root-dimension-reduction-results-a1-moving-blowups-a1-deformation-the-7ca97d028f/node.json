@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.dilation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1",
+  "depth": 4,
+  "title": "Push-forward by dilations x ↦ λx (scaling of currents, step E0)",
+  "statement": "For every P ∈ ℕ there is an operation dil assigning to every degree k ∈ ℕ, real λ and current X ∈ 𝒟_k(ℝ^P) (domain univ) a current dil_k(λ, X) ∈ 𝒟_k(ℝ^P) such that for every k and every λ > 0: (1) dil_k(λ, X − Y) = dil_k(λ, X) − dil_k(λ, Y) for all X, Y; (2) dil_k(λ⁻¹, dil_k(λ, X)) = X; (3) M(dil_k(λ, X)) = λ^k M(X) (in [0, ∞], factor ENNReal.ofReal (λ^k)); (4) spt dil_k(λ, X) = {λx : x ∈ spt X}; (5) dil_k(λ, X) is integer multiplicity whenever X is (every degree k, including 0); (6) ∂dil_{k+1}(λ, X) = dil_k(λ, ∂X) for X ∈ 𝒟_{k+1}(ℝ^P).",
+  "lean_statement": "∀ P : ℕ, ∃ dil : ∀ k : ℕ, ℝ → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k, ∀ (k : ℕ) (lam : ℝ), 0 < lam → (∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, dil k lam (X - Y) = dil k lam X - dil k lam Y) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, dil k lam⁻¹ (dil k lam X) = X) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, (dil k lam X).mass = ENNReal.ofReal (lam ^ k) * X.mass) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, (dil k lam X).support = (fun x => lam • x) '' X.support) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, IsIntegerMultiplicity X → IsIntegerMultiplicity (dil k lam X)) ∧ ∀ X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (dil (k + 1) lam X).boundary = dil k lam X.boundary",
+  "lean_name": "dimred_mbl_dt_dilation_pushforward",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-7ca97d028f-a1"
+}

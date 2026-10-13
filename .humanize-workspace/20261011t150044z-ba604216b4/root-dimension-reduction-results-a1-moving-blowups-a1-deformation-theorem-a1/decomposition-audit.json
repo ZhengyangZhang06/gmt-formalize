@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "deformation theorem|federer|polyhedral|cubical|skeleton|lipschitz.*push|homotopy",
+        "federer.?fleming|deformation theorem|polyhedral chain|flat norm",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_eq_volume|map_euclideanHausdorffMeasure",
+        "python3 /tmp/deformation-audit-l5u17v1n/audit_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/deformation-audit-l5u17v1n/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/deformation-audit-l5u17v1n/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/deformation-audit-l5u17v1n/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/deformation-audit-l5u17v1n/ReferenceAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-v2.json",
+        "/tmp/deformation-audit-l5u17v1n/audit_contracts.py",
+        "/tmp/deformation-audit-l5u17v1n/Types.lean",
+        "/tmp/deformation-audit-l5u17v1n/Instances.lean",
+        "/tmp/deformation-audit-l5u17v1n/Assembly.lean",
+        "/tmp/deformation-audit-l5u17v1n/ReferenceAxioms.lean"
+      ],
+      "conclusion": "Verified project, Mathlib and SimonGMT revisions against the pins. The project deformation specification is unproved; the Mathlib search found no deformation theorem. The eight-way split appropriately separates genuine obligations needed by this selected parent. All eight frozen propositions elaborate independently, pass the comparator's validator, match their prose hypotheses and conclusions, and contain no implementation-dependent references. Names are bare identifiers with no DAG collisions; sibling dependencies and the existing prerequisite closure are acyclic. Inline checks confirm C-infinity regularity, derivative trace, Euclidean coordinates and current operations; no matrix-unit construction occurs. The conditional assembly was independently recompiled with the exact frozen prerequisite and child types and proves the selected parent, including finite-family quantifier order and P=0. Its axioms, and those of the checked area, tangent, affine and scaling results, are only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "skeleton_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the coordinate-strip hypothesis and requested displacement/Lipschitz conclusions. The facewise radial construction, compatibility on intersections, corrected 1/4 separation estimate and induction establish the pointwise bound; the near/far comparison gives c/r. The dimensional hypothesis ensures the dual skeleton is nonempty. No circular theorem use occurs."
+    },
+    {
+      "key": "good_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof applies to the two arbitrary finite measures quantified in the type. The tube identity, disjoint periodic cylinders, 5r estimate and Fubini argument produce one centre valid at every required radius. Zero measures and zero-dimensional complementary fibres are handled, and the constant depends only on P and m."
+    },
+    {
+      "key": "cube_bv_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives V≥0 and the two-sided test bound, proves the mollified gradient and Poincaré estimates, constructs an integer median, and obtains the trace estimate for every smooth bounded G. Such G need not have compact support because its derivative is bounded on the closed cube. The regularity and divergence expressions elaborate as intended."
+    },
+    {
+      "key": "dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proper affine push-forward supplies the operation without extra compactness or normality assumptions. Pullback identities prove subtraction, inverse and boundary laws; admissible-form scaling proves exact mass scaling, including infinite mass. Zero-region transport proves support equality, and Hausdorff scaling plus tangent transport proves integer multiplicity in every degree, including zero."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute evaluation summability constructs a sequentially continuous current with the stated mass and support bounds. Under the explicit MR and IMC antecedents, finite total multiplicity, tangent locality and uniqueness permit the measurable sign combination and resulting IMRep. This proves integer multiplicity directly, without invoking compactness, the parent, or the child itself."
+    },
+    {
+      "key": "lipschitz_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The smooth calculus, mollification estimates and cutoff homotopy establish all operator laws under precisely the stated normality hypotheses. Bi-Lipschitz parametrizations, the area formula, weak continuity of Jacobians and im_series establish integrality. Locality and degree-zero cases are supplied. References to skeleton_deformation explain downstream use and do not create a reverse dependency."
+    },
+    {
+      "key": "skeleton_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof correctly applies its four sibling prerequisites and explicit foundational antecedents. Good radii make the shell and slice currents normal; locality cancels adjacent slice terms, whose residual masses vanish. Summability gives integer-multiplicity Q₀ and R₁, the correct homotopy signs, boundary mass control and closed support bounds. No integer-multiplicity assumption on ∂T is introduced."
+    },
+    {
+      "key": "face_replacement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Disjoint face neighbourhoods control the sum of local variations, and cube_bv_median supplies the integer coefficients and both error bounds. The bounded integer coefficient family is finite and chosen before Q₀. Explicit face and boundary representations prove integrality and the mass dichotomy, including the vertex case; the support argument proves both required inclusions."
+    }
+  ],
+  "required_changes": []
+}

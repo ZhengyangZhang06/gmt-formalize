@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.dilation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step E0 of the parent proof (the rescaling of Simon Ch. 6, 5.3 from 5.1): δ_{ρ#} (SimonGMT affinePushforward) preserves integer multiplicity (carrier δ_ρ(M), same multiplicity and orientation transported; approximate tangent spaces commute with dilations), scales masses of k-currents by the k-th power of the factor and supports by the factor, and commutes with ∂. Here the factor is called λ and the map is x ↦ λx.
+
+Notation. For λ ≠ 0, δ_λ(x) := λx. For a k-form ω on ℝ^P, (δ_λ^#ω)(x) := ω(λx) ∘ (λ·id), i.e. (δ_λ^#ω)(x)(v_1,…,v_k) = λ^kω(λx)(v_1,…,v_k). |·| is the Euclidean coefficient norm and ‖ω‖ := sup_x|ω(x)|.
+
+1. Definition. For λ ≠ 0 the affine map x ↦ 0 + (λ·id)x is a homeomorphism, hence proper. SimonGMT's GeometricCurrentOn.affinePushforward (λ·id) 0 (Simon 6.2.23) therefore defines, for X ∈ 𝒟_k(ℝ^P) (domain univ, whose preimage is univ), a current dil_k(λ, X) := δ_{λ#}X with δ_{λ#}X(ω) = X(δ_λ^#ω). For λ = 0 put dil_k(0, X) := X (never used; formally dil is defined by a dependent if on λ ≠ 0, since the properness proof uses λ ≠ 0). Below λ > 0.
+
+2. Linearity: dil(λ, X − Y)(ω) = (X − Y)(δ_λ^#ω) = X(δ_λ^#ω) − Y(δ_λ^#ω), so dil(λ, X − Y) = dil(λ, X) − dil(λ, Y) by GeometricCurrentOn.ext (the contract's subtraction is pointwise).
+
+3. Inverse: δ_λ^#(δ_{λ⁻¹}^#ω)(x) = (δ_{λ⁻¹}^#ω)(λx) ∘ (λ·id) = ω(x) ∘ (λ⁻¹·id) ∘ (λ·id) = ω(x), so dil(λ⁻¹, dil(λ, X))(ω) = X(δ_λ^#δ_{λ⁻¹}^#ω) = X(ω).
+
+4. Boundary: SimonGMT GeometricCurrentOn.boundary_affinePushforward (d commutes with affine pull-back, SimonGMT exteriorDerivative_affinePullbackForm) gives ∂dil(λ, X) = dil(λ, ∂X) for X of degree k + 1.
+
+5. Mass. For a k-covector α, (α ∘ (λ·id))(e_{i_1},…,e_{i_k}) = λ^kα(e_{i_1},…,e_{i_k}), hence |α ∘ (λ·id)| = λ^k|α| and |δ_λ^#ω(x)| = λ^k|ω(λx)|. If ω is admissible for M(dil(λ, X)) (test form, |ω| ≤ 1 everywhere), then η := δ_λ^#ω is a test form (tsupport η = λ^{−1}tsupport ω) with |η| ≤ λ^k, so dil(λ, X)(ω) = X(η) ≤ λ^kM(X) (apply the definition of mass to the admissible form λ^{−k}η; if M(X) = ∞ there is nothing to prove). Conversely, for η admissible for M(X), ω := λ^kδ_{λ⁻¹}^#η is admissible (|ω(y)| = λ^kλ^{−k}|η(y/λ)| ≤ 1) and δ_λ^#ω = λ^kη, so λ^kX(η) = dil(λ, X)(ω) ≤ M(dil(λ, X)). Taking suprema in [0, ∞] (with ENNReal.ofReal) gives M(dil(λ, X)) = λ^kM(X), also when M(X) = ∞; for k = 0, λ^0 = 1.
+
+6. Support. tsupport(δ_λ^#ω) = λ^{−1}tsupport ω. If W is open with compact closure, so is λW. X vanishes on all test forms supported in W iff dil(λ, X) vanishes on all test forms supported in λW, because ω ↦ δ_λ^#ω is a bijection between test forms supported in λW and test forms supported in W, with inverse ω ↦ δ_{λ⁻¹}^#ω (3). Hence the zero region of dil(λ, X) is λ·(zero region of X), and spt dil(λ, X) = ℝ^P ∖ λZ_X = λ(ℝ^P ∖ Z_X) = (x ↦ λx)(spt X).
+
+7. Integer multiplicity. Let R = (M, θ, ξ) be an IMRep (domain univ, degree k) of X. Define M' := λM, θ'(y) := θ(y/λ), ξ'(y) := ξ(y/λ). Then:
+ - M' is Borel (image of a Borel set under a homeomorphism) and countably k-rectifiable (compose the Lipschitz parametrizations of M with δ_λ, and use that δ_λ maps Hᵏ-null sets to Hᵏ-null sets by the scaling below);
+ - θ' is Borel, ℕ-valued and positive on M';
+ - ξ' is a.e. strongly measurable for Hᵏ⌞M' (composition with the homeomorphism δ_{λ⁻¹}, under which Hᵏ⌞M' and Hᵏ⌞M correspond up to the factor λ^k).
+ Hausdorff scaling: Hᵏ(λA) = λ^kHᵏ(A) for all A (Mathlib MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀). So Hᵏ⌞(λM) = λ^k·(δ_λ)_*(Hᵏ⌞M) as measures (δ_λ is a measurable equivalence), and by the change of variables for Bochner integrals under a measurable equivalence (Mathlib integral_map_equiv, integral_smul_measure), ∫_{λM}f dHᵏ = λ^k∫_M f(λx) dHᵏ(x) for every f (both sides are 0 if one is not integrable, since integrability is transported as well).
+ Local integrability: for compact K, ∫_{M'∩K}θ' dHᵏ = λ^k∫_{M∩λ^{−1}K}θ dHᵏ < ∞.
+ Approximate tangent spaces: with SimonGMT's blowUpMap x r (y) = r^{−1}(y − x), blowUpMap (λx) r '' (λM) = blowUpMap x (r/λ) '' M, and r ↦ r/λ maps the filter 𝓝[>] 0 onto itself; therefore HasApproximateTangentSpaceAt k (λM) (λx) Q ⟺ HasApproximateTangentSpaceAt k M x Q. Consequently, for Hᵏ-a.e. y ∈ M' (y = λx with x outside the exceptional null set of R, which δ_λ maps to a null set), ξ'(y) = ξ(x) is a unit orientation of an approximate tangent space of M' at y. So R' := (M', θ', ξ') is an IMRep.
+ It represents dil(λ, X): for every ω, ⟨(δ_λ^#ω)(x), ξ(x)⟩ = λ^k⟨ω(λx), ξ(x)⟩ (ξ(x) is a continuous linear functional on k-covectors and δ_λ^#ω(x) = λ^kω(λx) as k-covectors), so
+ dil(λ, X)(ω) = X(δ_λ^#ω) = ∫_M θ(x)λ^k⟨ω(λx), ξ(x)⟩ dHᵏ(x) = ∫_{M'}θ'(y)⟨ω(y), ξ'(y)⟩ dHᵏ(y) = R'.action ω.
+ This holds in every degree k, including k = 0 (H⁰ is counting measure and λ^0 = 1).
+
+8. The function dil : ∀ k, ℝ → 𝒟_k(ℝ^P) → 𝒟_k(ℝ^P) of 1 satisfies, for every k and λ > 0, the six properties of the statement by 2, 3, 5, 6, 7 and 4. ∎
+
+## Key steps
+
+1. dil_k(λ, X) := SimonGMT affine push-forward along x ↦ λx (proper for λ ≠ 0), X(δ_λ^#ω).
+2. Linearity, inverse (δ_λ^#δ_{λ⁻¹}^# = id) and boundary commutation (boundary_affinePushforward).
+3. Coefficient norms scale by λ^k under δ_λ^#, giving M(dil(λ, X)) = λ^k M(X).
+4. Zero regions scale by λ, giving spt dil(λ, X) = λ spt X.
+5. The IMRep (λM, θ(·/λ), ξ(·/λ)) represents dil(λ, X): Hᵏ scales by λ^k and approximate tangent spaces are dilation invariant.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c); git rev-parse HEAD (b4d606db); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n -i 'deformation theorem|federer|polyhedral|cubical|skeleton|lipschitz.*push|homotopy' SNAPSHOT/project/GMT -g '*.lean' (only the unproved Ch06 specifications DeformationTheorem and LipschitzPushforwardIntegerMultiplicity with main_theorem := by sorry; Ch07 does not import Ch06)`
+- `rg -n -i -l 'federer.?fleming|deformation theorem|polyhedral chain|flat norm' SNAPSHOT/mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'dimred_mbl_dt' SNAPSHOT/project SNAPSHOT/mathlib GMT lake-packages-25730c7c/simongmt (no match); python3 scan of RUN/dag.json lean_names (1048 nodes) for the eight proposed names (none)`
+- `rg -n 'theorem infEDist_smul₀' SNAPSHOT/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean; rg -n "theorem cthickening_subset_thickening'|theorem cthickening_cthickening_subset|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff|protected theorem _root_.IsCompact.cthickening" SNAPSHOT/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean; rg -n 'theorem map_coord_zero' SNAPSHOT/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean (all found)`
+- `rg over lake-packages-25730c7c/mathlib/Mathlib and lake-packages-25730c7c/simongmt/Poincare for every Mathlib/SimonGMT name cited in the eight child proofs (all present, e.g. MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀ at Geometry/Euclidean/Volume/Measure.lean:152, LipschitzOnWith.hausdorffMeasure_image_le at MeasureTheory/Measure/Hausdorff.lean:733, LipschitzWith.ae_differentiableAt at Analysis/Calculus/Rademacher.lean:385, area_image_criticalSet_eq_zero at SimonGMT Chapter02/AreaCritical.lean:185)`
+- `grep/sed of SimonGMT Chapter06 Currents.lean, Mass.lean, CurrentLocalEquality.lean, Forms.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, ext, zero_apply, boundary, massAdmissibleOn, massOn, mass, le_massOn, covectorEuclideanNorm_neg, WeaklyConvergesOn.boundary, WeaklyConvergesOn.massOn_le_liminf, zeroRegion, support, isOpen_zeroRegion, Covector, DifferentialForm, CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique)`
+- `python3 scans of RUN/dag.json: selected node (decomposing, attempt 2, children []); frozen types of the four resolved dependencies (dtc_vanish_off_support and dor_imrep_massOn_eq_measure_and_support accepted; dimred_mbl_current_foundations and dimred_mbl_slice_mass_bounds decomposing); foundations == (cmc_exists_massRepresentation) ∧ (cmc_imRep_locality_restrict_sub), SL == cmc_slice_mass_bounds, MR == accepted cmc_massOn_eq_imRep_measure (all true); twin cmc_deformation_theorem has the same type and its eight children have these eight types (all decomposing)`
+- `python3/cat of this node's decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json and decomposition-scope-v1.json (digest 1445be18…, same as this session), and of the twin's decomposition-v2.json, decomposition-review-receipt-v1/v2.json and its children's decomposition-audit-v1.json`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose, _existing_lean_name_problem, _overlay_accepted_children), decomposition_scope.py, lean_contract.py and verifier/gmt-compare.py (child_modules, contract_scope); both validate_lean_statement implementations on all eight types`
+- `lake env lean /tmp/dmdt2/lean/Types.lean and /tmp/dmdt2/chal/Challenge_<key>.lean for all eight keys (only sorry warnings); lake env lean /tmp/dmdt2/lean/InstCheck.lean (clean); lake env lean /tmp/dmdt2/lean/AssemblyAx.lean (#print axioms dmdt_assembly_check: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-review-receipt-v2.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dmdt2/lean/Types.lean`
+- `/tmp/dmdt2/lean/InstCheck.lean`
+- `/tmp/dmdt2/lean/Assembly.lean`
+- `/tmp/dmdt2/lean/AssemblyAx.lean`
+- `/tmp/dmdt2/chal/Challenge_skeleton_retraction.lean`
+- `/tmp/dmdt2/chal/Challenge_skeleton_deformation.lean`
+- `/tmp/dmdt2/chal/Challenge_face_replacement.lean`
+
+Pins match (project b4d606db, Mathlib 25730c7c, SimonGMT 2b366308), and Submission.lean is byte-identical to the frozen contract. Neither the snapshot project nor Mathlib contains a deformation theorem, Lipschitz push-forward of currents, polyhedral chains or flat norms; the snapshot's Ch06 DeformationTheorem is an unproved specification that Ch07 does not import. All eight obligations are therefore new, and every cited Mathlib/SimonGMT name exists. The parent's resolved dependencies enter as exact antecedents. The eight child types are identical to this node's audited but never-activated v1 and to the twin's twice-audited split. They elaborate in the comparator's challenge form, pass both validators and collide with no DAG name. The Lean assembly proves the exact parent type from the four dependency types and the dilation, skeleton_deformation and face_replacement types, using only propext, Classical.choice and Quot.sound.
