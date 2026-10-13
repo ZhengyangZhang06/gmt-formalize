@@ -402,6 +402,47 @@ theorem Submission.lpf_wtc_blowup_setIntegral_image :
     rw [hc, one_mul]
   rw [hmp.setIntegral_image_emb hemb g S, Measure.restrict_smul, integral_smul_measure,
     ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+/-- The image `Φ(Ω)` of an open `Ω ⊆ ℝⁿ` under a `C¹` map `Φ : ℝⁿ → ℝ^Q` with
+`c |w - w'| ≤ |Φ w - Φ w'|` on `Ω` is Borel, and `Hⁿ(Φ(Ω) ∩ K) < ∞` for every compact `K`. -/
+theorem Submission.lpf_wtc_chart_image_measurable_locally_finite :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ →
+      (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      MeasurableSet (Φ '' Ω) ∧ ∀ K : Set (Eucl Q), IsCompact K →
+        (μHE[n] : Measure (Eucl Q)) (Φ '' Ω ∩ K) < ∞ := by
+  intro Q n Φ Ω hΩ hΦ ⟨c, hc, hcΦ⟩
+  refine ⟨?_, fun K hK => ?_⟩
+  · -- `Φ` is injective on `Ω`, so `Φ '' Ω` is Borel by Lusin–Souslin.
+    refine hΩ.measurableSet.image_of_continuousOn_injOn hΦ.continuous.continuousOn
+      fun w hw w' hw' h => ?_
+    have h0 := hcΦ w hw w' hw'
+    rw [h, sub_self, norm_zero] at h0
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right h0 hc))
+  · rcases (Φ '' Ω ∩ K).eq_empty_or_nonempty with h | ⟨_, ⟨w₀, hw₀, rfl⟩, hw₀K⟩
+    · rw [h, measure_empty]
+      exact ENNReal.zero_lt_top
+    -- `Ω ∩ Φ⁻¹(K)` lies in the closed ball `B` of radius `D / c` about `w₀`, `D ≥ diam K`.
+    obtain ⟨D, hD⟩ := Metric.isBounded_iff.1 hK.isBounded
+    have hsub : Φ '' Ω ∩ K ⊆ Φ '' closedBall w₀ (D / c) := by
+      rintro _ ⟨⟨v, hv, rfl⟩, hvK⟩
+      refine ⟨v, ?_, rfl⟩
+      rw [mem_closedBall, dist_eq_norm, le_div_iff₀ hc, mul_comm]
+      exact (hcΦ v hv w₀ hw₀).trans ((dist_eq_norm (Φ v) (Φ w₀)).symm.trans_le (hD hvK hw₀K))
+    -- `DΦ` is bounded on the compact convex ball `B`, so `Φ` is Lipschitz on `B`.
+    obtain ⟨C, hC⟩ := (isCompact_closedBall w₀ (D / c)).exists_bound_of_continuousOn
+      (hΦ.continuous_fderiv one_ne_zero).continuousOn
+    have hLip : LipschitzOnWith (Real.toNNReal C) Φ (closedBall w₀ (D / c)) :=
+      (convex_closedBall w₀ (D / c)).lipschitzOnWith_of_nnnorm_fderiv_le
+        (fun x _ => hΦ.differentiable one_ne_zero x)
+        (fun x hx => by
+          rw [← NNReal.coe_le_coe, coe_nnnorm]
+          exact (hC x hx).trans (Real.le_coe_toNNReal C))
+    -- `μHE[n] = κₙ • μH[n]` and `μH[n](Φ(B)) ≤ Λⁿ μH[n](B) < ∞` (`μH[n]` is Haar on `ℝⁿ`).
+    refine (measure_mono hsub).trans_lt ?_
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+    refine ENNReal.mul_lt_top ENNReal.coe_lt_top
+      ((hLip.hausdorffMeasure_image_le n.cast_nonneg).trans_lt ?_)
+    exact ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg n.cast_nonneg ENNReal.coe_ne_top)
+      (isCompact_closedBall w₀ (D / c)).measure_lt_top
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
