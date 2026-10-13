@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c0d35f3f04c774d7d37ab5fdfeced5c25f15a30a7721ab1ec02d5387bb477d6",
+  "git_delta": {
+    "base_commit": "63429748156372e70e2a5accbece921bf9f4c3e9",
+    "candidate_commit": "67ffac86a718e582dd3bf691e41e2c26cb1b8b5b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_lipschitzPushforward_apply_eq",
+    "diff_sha256": "bca4a251244a37511cccb858597a7f5a5fb345ff49e8fce1dca5a1e6043097b6",
+    "source_sha256": "37debfe9c03d810963cda9a19df28c6f7b5df427c196d9af15625a0192f45b8e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_lipschitzPushforward_apply_eq",
+      "statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (X : GeometricCurrentOn U n) (S : GeometricCurrentOn V n) (f : Eucl P → Eucl Q), Differentiable ℝ f → IsLipschitzPushforward X f S → ∀ (ω : TestFormOn V n) (η : TestFormOn U n), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) n) x = ((ω : DifferentialForm (Eucl Q) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
