@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "TestFormOn|TestFormOnConverges|GeometricCurrentOn|CompactlyContainedOpen|def Covector|abbrev Covector",
+        "instSecondCountableTopology|IsSeparable.of_separableSpace|exists_countable_dense_subset|mem_closure_iff_seq_limit|pseudoMetrizableSpace_pi",
+        "countable|separable|SecondCountable|dense",
+        "slicing_im_td_countable_seq_dense|slicing_im_td_current_tendsto|cmb_exists_compactly_contained_exhaustion",
+        "git diff 9f6ec514b377527799a1eaedae78f43210587b00 cb89cc7f436bbfa9b474f73003fa9aa79ebad102 -- GMT/Ch06/Submission.lean",
+        "python3 /tmp/tdet-independent-audit-cr9twvae/run_lean.py Types.lean",
+        "python3 /tmp/tdet-independent-audit-cr9twvae/run_lean.py Assembly.lean",
+        "python3 /tmp/tdet-independent-audit-cr9twvae/run_lean.py Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/CompactConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-exhaustion-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-testform-determining-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-testform-determining-a1/decomposition-v1.json",
+        "/tmp/tdet-independent-audit-cr9twvae/Types.lean",
+        "/tmp/tdet-independent-audit-cr9twvae/Assembly.lean",
+        "/tmp/tdet-independent-audit-cr9twvae/Proofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected compiler sources with the snapshot. The searched Chapter06 sources yielded no existing countable sequential-density or determining-family lemma; the accepted sup-norm-density theorem is insufficient. All child types and the selected parent type pass lexical validation and elaborate using Contract alone, without child implementations. Independently compiled the supplied child proof implementations and a separate parent assembly from the exact child contracts; all report only propext, Classical.choice and Quot.sound. The split is appropriate: compact exhaustion, countable approximation on each compact support, and sequential continuity yield a countable determining family by uniqueness of limits and current extensionality. All names are bare identifiers, both new names are unreserved, and exhaustion is valid identical-type reuse of an accepted leaf. The empty sibling dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose hypotheses and conclusions. The infEDist construction proves openness, compact closure contained in U, and absorption of every compact subset, including empty-set and U = univ cases. The proof is complete and non-circular. The comparator-accepted declaration at root.compactness_mass_bounds-a1.exhaustion-a1 has the identical frozen type; its proof also recompiles with only permitted axioms."
+    },
+    {
+      "key": "seq_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree for arbitrary U and compact K ⊆ U. The finite-dimensional injections and intended topology instances check. A countable dense subset of the jet image, chosen preimages, and first countability produce a sequence supported in K whose every derivative converges uniformly there. Thus K itself witnesses the exact TestFormOnConverges conclusion. No openness assumption, injectivity argument, circular reliance, or future proof-construction step is missing."
+    },
+    {
+      "key": "current_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line proposition match, including arbitrary U. Support subtraction and iteratedFDeriv_sub show that e_l − ω converges to zero on the same compact K. The current's continuity-at-zero field then applies, and linearity plus addition of the constant S(ω) gives the asserted limit. This complete proof uses neither another child nor the parent theorem."
+    }
+  ],
+  "required_changes": []
+}

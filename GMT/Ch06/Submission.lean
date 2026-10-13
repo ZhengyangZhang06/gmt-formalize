@@ -9326,6 +9326,162 @@ theorem Submission.slicing_im_slice_identity : ∀ (P m : ℕ) (U M : Set (Eucl 
     linarith
   rw [hSAB ω, hφt, ht]
   rfl
+/-- **Countable sequential density of test forms supported in a compact `K ⊆ U`** (the
+"countable dense set of `ω ∈ 𝒟ⁿ(U)`" of Simon Ch. 6, proof of 4.5, p. 157).  The value spaces
+`ℝ^P [×i]→L[ℝ] Λᵏ` of `D^i ω` are second countable (by currying).  For each order `m` and scale
+`1/(j+1)`, the forms whose jets `(D^i ω)_{i ≤ m}` oscillate on `K` by less than `1/(m+1)` at
+scale `1/(j+1)` are approximated within `3/(m+1)` on `K` through their jets on a finite
+`1/(j+1)`-net of `K`.  A choice over the orders `m` gives a sequence whose derivatives of every
+order converge uniformly on `K`. -/
+theorem Submission.slicing_im_td_countable_seq_dense : ∀ (P k : ℕ) (U K : Set (Eucl P)), IsCompact K → K ⊆ U → ∃ E : Set (TestFormOn U k), E.Countable ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ K → ∃ e : ℕ → TestFormOn U k, (∀ l, e l ∈ E) ∧ TestFormOnConverges e ω := by
+  intro P k U K hK hKU
+  -- The value spaces of the iterated derivatives are second countable.
+  have hgen : ∀ (G : Type) [NormedAddCommGroup G] [NormedSpace ℝ G] [SecondCountableTopology G]
+      (i : ℕ), SecondCountableTopology (ContinuousMultilinearMap ℝ (fun _ : Fin i => Eucl P) G) := by
+    intro G _ _ _ i
+    induction i with
+    | zero =>
+      exact (continuousMultilinearCurryFin0 ℝ (Eucl P) G).toHomeomorph.secondCountableTopology
+    | succ n ih =>
+      exact (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => Eucl P)
+        G).toHomeomorph.secondCountableTopology
+  have hCov : SecondCountableTopology (Covector (Eucl P) k) := by
+    have := hgen ℝ k
+    exact ContinuousAlternatingMap.isEmbedding_toContinuousMultilinearMap.isInducing.secondCountableTopology
+  have hSC : ∀ i : ℕ, SecondCountableTopology
+      (ContinuousMultilinearMap ℝ (fun _ : Fin i => Eucl P) (Covector (Eucl P) k)) :=
+    fun i => hgen _ i
+  -- The jet of order `m`: `J m ω x = (D^i ω x)_{i ≤ m}`.
+  let J : (m : ℕ) → TestFormOn U k → Eucl P → ((i : Fin (m + 1)) →
+      ContinuousMultilinearMap ℝ (fun _ : Fin i => Eucl P) (Covector (Eucl P) k)) :=
+    fun m ω x i => iteratedFDeriv ℝ i (ω : DifferentialForm (Eucl P) k) x
+  have hJcont : ∀ m (ω : TestFormOn U k), Continuous (J m ω) := fun m ω =>
+    continuous_pi fun i => ω.2.1.1.continuous_iteratedFDeriv (by exact_mod_cast le_top)
+  let D : Set (TestFormOn U k) := {ω | tsupport (ω : DifferentialForm (Eucl P) k) ⊆ K}
+  -- Finite `1/(j+1)`-nets of `K` inside `K`.
+  have hnet : ∀ j : ℕ, ∃ t : Finset (Eucl P), (↑t : Set (Eucl P)) ⊆ K ∧
+      K ⊆ ⋃ y ∈ t, Metric.ball y (1 / ((j : ℝ) + 1)) := by
+    intro j
+    obtain ⟨t, htK, ht, hcov⟩ := hK.finite_cover_balls (e := 1 / ((j : ℝ) + 1)) (by positivity)
+    exact ⟨ht.toFinset, by simpa using htK, by simpa using hcov⟩
+  choose net hnetK hnet using hnet
+  -- Order `m`, accuracy `1/(m+1)`, scale `1/(j+1)`: take a countable dense subset of the jets on
+  -- the net and choose preimages.
+  have key : ∀ m j : ℕ, ∃ E' : Set (TestFormOn U k), E'.Countable ∧ E' ⊆ D ∧
+      ∀ ω ∈ D, (∀ x ∈ K, ∀ y ∈ K, dist x y < 1 / ((j : ℝ) + 1) →
+          dist (J m ω x) (J m ω y) < 1 / ((m : ℝ) + 1)) →
+        ∃ η ∈ E', ∀ x ∈ K, dist (J m ω x) (J m η x) < 3 / ((m : ℝ) + 1) := by
+    intro m j
+    set r : ℝ := 1 / ((m : ℝ) + 1) with hr_def
+    have hr : 0 < r := by positivity
+    let Dj : Set (TestFormOn U k) := {ω | ω ∈ D ∧ ∀ x ∈ K, ∀ y ∈ K,
+      dist x y < 1 / ((j : ℝ) + 1) → dist (J m ω x) (J m ω y) < r}
+    let g : TestFormOn U k → (net j → ((i : Fin (m + 1)) →
+        ContinuousMultilinearMap ℝ (fun _ : Fin i => Eucl P) (Covector (Eucl P) k))) :=
+      fun ω y => J m ω y
+    obtain ⟨S, hSA, hSc, hAS⟩ :=
+      (TopologicalSpace.IsSeparable.of_separableSpace (g '' Dj)).exists_countable_dense_subset
+    have hpre : ∀ s : S, ∃ ω ∈ Dj, g ω = s := fun s => hSA s.2
+    choose pick hpickD hpickg using hpre
+    have : Countable S := hSc.to_subtype
+    refine ⟨Set.range pick, Set.countable_range pick, ?_, ?_⟩
+    · rintro _ ⟨s, rfl⟩
+      exact (hpickD s).1
+    · intro ω hωD hωmod
+      obtain ⟨s, hsS, hdist⟩ := (Metric.mem_closure_iff (α := net j → (i : Fin (m + 1)) →
+          ContinuousMultilinearMap ℝ (fun _ : Fin i => Eucl P) (Covector (Eucl P) k))).mp
+        (hAS ⟨ω, ⟨hωD, hωmod⟩, rfl⟩) r hr
+      have hηD : pick ⟨s, hsS⟩ ∈ Dj := hpickD ⟨s, hsS⟩
+      have hgη : g (pick ⟨s, hsS⟩) = s := hpickg ⟨s, hsS⟩
+      refine ⟨pick ⟨s, hsS⟩, ⟨⟨s, hsS⟩, rfl⟩, fun x hx => ?_⟩
+      obtain ⟨y, hy, hxy⟩ := Set.mem_iUnion₂.mp (hnet j hx)
+      have hyK : y ∈ K := hnetK j hy
+      have hxy' : dist x y < 1 / ((j : ℝ) + 1) := Metric.mem_ball.mp hxy
+      rw [← hgη] at hdist
+      have h1 : dist (J m ω x) (J m ω y) < r := hωmod x hx y hyK hxy'
+      have h2 : dist (J m ω y) (J m (pick ⟨s, hsS⟩) y) < r :=
+        (dist_le_pi_dist (g ω) (g (pick ⟨s, hsS⟩)) ⟨y, hy⟩).trans_lt hdist
+      have h3 : dist (J m (pick ⟨s, hsS⟩) y) (J m (pick ⟨s, hsS⟩) x) < r :=
+        hηD.2 y hyK x hx (by rwa [dist_comm])
+      have h4 := dist_triangle4 (J m ω x) (J m ω y) (J m (pick ⟨s, hsS⟩) y)
+        (J m (pick ⟨s, hsS⟩) x)
+      rw [show 3 / ((m : ℝ) + 1) = r + r + r by rw [hr_def]; ring]
+      linarith
+  choose E' hE'c hE'D hE' using key
+  refine ⟨⋃ m, ⋃ j, E' m j,
+    Set.countable_iUnion fun m => Set.countable_iUnion fun j => hE'c m j, ?_⟩
+  intro ω hω
+  -- At order `m`, `J m ω` is uniformly continuous on `K`; choose a scale and an approximant.
+  have hlevel : ∀ m : ℕ, ∃ η ∈ ⋃ m', ⋃ j, E' m' j, η ∈ D ∧
+      ∀ x ∈ K, dist (J m ω x) (J m η x) < 3 / ((m : ℝ) + 1) := by
+    intro m
+    have huc : UniformContinuousOn (J m ω) K :=
+      hK.uniformContinuousOn_of_continuous (hJcont m ω).continuousOn
+    obtain ⟨δ, hδ, hδ'⟩ := (Metric.uniformContinuousOn_iff (α := Eucl P) (β := (i : Fin (m + 1)) →
+        ContinuousMultilinearMap ℝ (fun _ : Fin i => Eucl P) (Covector (Eucl P) k))).mp huc
+      (1 / ((m : ℝ) + 1)) (by positivity)
+    obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨η, hηE, hη⟩ := hE' m j ω hω fun x hx y hy hxy => hδ' x hx y hy (hxy.trans hj)
+    exact ⟨η, Set.mem_iUnion.2 ⟨m, Set.mem_iUnion.2 ⟨j, hηE⟩⟩, hE'D m j hηE, hη⟩
+  choose e heE heD he using hlevel
+  -- `K' := K`; for `m ≥ i` the `i`-th derivatives of `e m` are within `3/(m+1)` of those of `ω`.
+  refine ⟨e, heE, K, hK, hKU, heD, hω, fun i => Metric.tendstoUniformlyOn_iff.2 fun ε hε => ?_⟩
+  obtain ⟨m₀, hm₀⟩ := exists_nat_gt (3 / ε)
+  filter_upwards [eventually_ge_atTop (max i m₀)] with m hm x hx
+  have him : i < m + 1 := Nat.lt_succ_of_le ((le_max_left i m₀).trans hm)
+  have h3 : 3 / ((m : ℝ) + 1) < ε := by
+    have hm' : (m₀ : ℝ) ≤ m := by exact_mod_cast (le_max_right i m₀).trans hm
+    rw [div_lt_iff₀ (by positivity)]
+    rw [div_lt_iff₀ hε] at hm₀
+    nlinarith
+  exact (dist_le_pi_dist (J m ω x) (J m (e m) x) ⟨i, him⟩).trans_lt ((he m x hx).trans h3)
+/-- Simon's currents are sequentially continuous at every test form: if `e l → ω` in `𝒟ᵏ(U)`,
+then `S (e l) → S ω`.  The differences `e l - ω` converge to `0` on the same compact set, so
+continuity of `S` at `0` (`GeometricCurrentOn.continuous'`) and linearity give the limit. -/
+theorem Submission.slicing_im_td_current_tendsto :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (S : GeometricCurrentOn U k) (e : ℕ → TestFormOn U k)
+      (ω : TestFormOn U k), TestFormOnConverges e ω →
+        Tendsto (fun l => S (e l)) atTop (𝓝 (S ω)) := by
+  intro P k U S e ω ⟨K, hK, hKU, he, hω, hd⟩
+  -- `e l - ω → 0` on the same compact `K ⊆ U`.
+  have hconv : TestFormOnConverges (fun l => e l - ω) 0 := by
+    refine ⟨K, hK, hKU, fun l => (tsupport_sub _ _).trans (union_subset (he l) hω), by simp,
+      fun i => Metric.tendstoUniformlyOn_iff.2 fun ε hε => ?_⟩
+    -- The `i`-th derivatives of the smooth forms `e l` and `ω` subtract.
+    have hsub : ∀ l x, iteratedFDeriv ℝ i
+        ((e l : DifferentialForm (Eucl P) k) - (ω : DifferentialForm (Eucl P) k)) x =
+          iteratedFDeriv ℝ i (e l : DifferentialForm (Eucl P) k) x -
+            iteratedFDeriv ℝ i (ω : DifferentialForm (Eucl P) k) x := fun l x =>
+      iteratedFDeriv_sub_apply ((e l).property.1.1.of_le (by exact_mod_cast le_top)).contDiffAt
+        (ω.property.1.1.of_le (by exact_mod_cast le_top)).contDiffAt
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hd i) ε hε] with l hl x hx
+    simpa [hsub, dist_eq_norm, norm_sub_rev] using hl x hx
+  -- Continuity of `S` at `0`, then linearity: `S (e l) = S (e l - ω) + S ω`.
+  have hlim := (S.continuous' _ hconv).add_const (S ω)
+  rw [zero_add] at hlim
+  refine hlim.congr fun l => ?_
+  rw [S.toCurrent.map_sub (e l) ω, sub_add_cancel]
+
+/-- A countable family of test forms determines currents (the "countable dense set of
+`ω ∈ 𝒟ⁿ(U)`" in the proof of Simon Ch. 6, 4.5(2)): for open `U ⊆ ℝ^P` there is a countable
+`E ⊆ 𝒟ᵏ(U)` such that two currents in `𝒟ₖ(U)` agreeing on `E` are equal. -/
+theorem Submission.slicing_im_testform_determining :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ E : Set (TestFormOn U k), E.Countable ∧
+      ∀ S R : GeometricCurrentOn U k, (∀ e ∈ E, S e = R e) → S = R := by
+  intro P k U hU
+  -- Exhaust `U` by the compact sets `closure (W i) ⊆ U` and take, for each `i`, a countable
+  -- family `E i` approximating every form supported in `closure (W i)`.
+  obtain ⟨W, hW, hWK⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  choose E hE hEω using fun i => Submission.slicing_im_td_countable_seq_dense P k U
+    (closure (W i)) (hW i).2.1 (hW i).2.2
+  refine ⟨⋃ i, E i, countable_iUnion hE, fun S R hSR => GeometricCurrentOn.ext fun ω => ?_⟩
+  -- `tsupport ω` is a compact subset of `U`, hence lies in some `W i`.
+  obtain ⟨i, hi⟩ := hWK _ ω.2.1.2 ω.2.2
+  obtain ⟨e, heE, he⟩ := hEω i ω (hi.trans subset_closure)
+  -- `S (e l) = R (e l)` for every `l`, while `S (e l) → S ω` and `R (e l) → R ω`.
+  refine tendsto_nhds_unique (Submission.slicing_im_td_current_tendsto P k U S e ω he) ?_
+  exact (Submission.slicing_im_td_current_tendsto P k U R e ω he).congr fun l =>
+    (hSR (e l) (mem_iUnion.2 ⟨i, heE l⟩)).symm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
