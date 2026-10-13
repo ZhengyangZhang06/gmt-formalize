@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.abs_le_mass-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1",
+  "depth": 4,
+  "title": "Evaluation of a finite-mass current is bounded by mass times the coefficient sup norm (Simon 6.2.4; supplied proof step 3)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, X ∈ 𝒟_n(U) with M(X) ≠ ∞, ω ∈ 𝒟ⁿ(U), and c ∈ ℝ with c > 0 and |ω(x)| ≤ c for every x ∈ ℝ^P. Then |X(ω)| ≤ c·M(X)^ℝ, where M(X)^ℝ := M(X).toReal. Conventions: 𝒟ⁿ(U) = TestFormOn U n is the real submodule of smooth (ContDiff ℝ ∞) n-forms on ℝ^P with compact support and tsupport ⊆ U, and ω(x) denotes (ω : DifferentialForm (Euclid P) n) x; |α| = covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} is the Euclidean coefficient norm of an n-covector α (e the standard orthonormal basis of ℝ^P) and ‖α‖ its operator norm as a continuous alternating map; 𝒟_n(U) = GeometricCurrentOn U n is the space of n-currents in U (an ℝ-linear map toCurrent : 𝒟ⁿ(U) → ℝ, applied as X(ω), together with sequential continuity: X(ω_j) → 0 whenever TestFormOnConverges ω_j 0); M(X) = X.mass = X.massOn U ∈ [0, ∞] is the supremum of ENNReal.ofReal X(ω) over ω ∈ massAdmissibleOn U n U, i.e. over ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ U and |ω(x)| ≤ 1 for all x.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (ω : TestFormOn U n) (c : ℝ), 0 < c → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |X ω| ≤ c * X.mass.toReal",
+  "lean_name": "cmc_fc_sc_abs_le_mul_mass",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1",
+      "result_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-99cd9ba1b0-a1"
+}
