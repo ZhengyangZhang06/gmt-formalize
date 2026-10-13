@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "200768176998cf98285187016aca0a451f341efc5edb8de4b22c452192e2f27e",
+  "git_delta": {
+    "base_commit": "f85c931737747312e34496c958e3d23f8dea4786",
+    "candidate_commit": "ed6259bb8432086b1512a02dd83bc416443b3b9c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "pit_setIntegral_range_linear",
+    "diff_sha256": "854f5801ffb2752c1cfaaaf03c2fcda63dffb9bedd1343096773970cd158ef69",
+    "source_sha256": "4f555e5dfb8466c410dc97c2af952d753454a7ee94a47b4c05609de3415a2d21",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pit_setIntegral_range_linear",
+      "statement": "∀ (P n : ℕ) (T : Euclid n →L[ℝ] Euclid P) (j : ℝ) (f : Euclid P → ℝ), 0 ≤ j → (∀ S : Set (Euclid n), μHE[n] (T '' S) = ENNReal.ofReal j * volume S) → Continuous f → ∫ y in (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = j * ∫ c, f (T c) ∂volume",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
