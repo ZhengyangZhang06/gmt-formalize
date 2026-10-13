@@ -6047,6 +6047,90 @@ theorem Submission.rectifiability_structure_projection : ∀ (P m : ℕ) (A : Se
   rw [hnull, mul_zero] at hle
   exact le_antisymm hle zero_le
 
+/-- Simon Ch. 6, proof of 8.1, (1)–(8) (pp. 173–174): if `Θ*ⁿ(μ, x) > 0` for `μ`-a.e. `x`, the
+mass measure `μ` of `T` is `θ Hⁿ ⌞ M` for a Borel, countably `n`-rectifiable `M ⊆ U` and a Borel
+`θ`, positive on `M` and locally `Hⁿ`-integrable in `U`.  A Borel carrier
+`B₀ ⊆ U ∩ {Θ*ⁿ(μ, ·) > 0}` of `μ` is `Hⁿ`-σ-finite; in its decomposition `B₀ = R ∪ P'`
+(Ch. 3, Lemma 3.2) the purely unrectifiable part `P'` is `μ`-null by the structure theorem and
+Remark 2.37(2), hence `Hⁿ`-null; Radon–Nikodym for `μ ≪ Hⁿ ⌞ B₀` then gives `M` and `θ`. -/
+theorem Submission.rectifiability_mass_measure_rectifiable : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → (∀ᵐ x ∂μ, 0 < dimensionalUpperDensity μ.toOuterMeasure ((m + 1 : ℕ) : ℝ) univ x) → ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ), M ⊆ U ∧ MeasurableSet M ∧ CountablyRectifiable (m + 1) M ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) ∧ μ = ((μHE[m + 1] : Measure (Eucl P)).restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) := by
+  intro P m U hU T hmass μ hμ hdens
+  -- Step 1: an exhaustion `W i ⊂⊂ U` with `μ(W i) = M_{W i}(T) < ∞` and `U ⊆ ⋃ i, W i`, so `μ`
+  -- is σ-finite; and `μ ≪ Hⁿ` (Remark 2.37(1)).
+  obtain ⟨W, hWU, hWK⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  have hWo : ∀ i, IsOpen (W i) := fun i => (hWU i).1
+  have hWfin : ∀ i, μ (W i) < ∞ := fun i => by
+    rw [hμ.2 _ (hWU i)]
+    exact le_self_add.trans_lt (hmass _ (hWU i))
+  have hUW : U ⊆ ⋃ i, W i := fun x hx => by
+    obtain ⟨i, hi⟩ := hWK {x} isCompact_singleton (singleton_subset_iff.2 hx)
+    exact mem_iUnion.2 ⟨i, hi (mem_singleton x)⟩
+  have hμσ : SigmaFinite μ := by
+    refine ⟨⟨⟨fun i => W i ∪ Uᶜ, fun _ => trivial, fun i => ?_, ?_⟩⟩⟩
+    · exact (measure_union_le _ _).trans_lt (by rw [hμ.1, add_zero]; exact hWfin i)
+    · refine eq_univ_of_forall fun x => ?_
+      by_cases hx : x ∈ U
+      · obtain ⟨i, hi⟩ := mem_iUnion.1 (hUW hx)
+        exact mem_iUnion.2 ⟨i, Or.inl hi⟩
+      · exact mem_iUnion.2 ⟨0, Or.inr hx⟩
+  have hac := Submission.rectifiability_mass_measure_abs_continuous P m U hU T hmass μ hμ
+  -- Step 2: a Borel carrier `B₀ = U ∖ Z` of `μ`, `Z` a Borel `μ`-null hull of
+  -- `{x : ¬ Θ*ⁿ(μ, x) > 0}`.
+  obtain ⟨B₀, hB₀m, hB₀U, hB₀D, hμB₀⟩ : ∃ B₀ : Set (Eucl P), MeasurableSet B₀ ∧ B₀ ⊆ U ∧
+      (∀ x ∈ B₀, 0 < dimensionalUpperDensity μ.toOuterMeasure ((m + 1 : ℕ) : ℝ) univ x) ∧
+      μ B₀ᶜ = 0 := by
+    set Z := toMeasurable μ {x | ¬ 0 < dimensionalUpperDensity μ.toOuterMeasure
+      ((m + 1 : ℕ) : ℝ) univ x} with hZ
+    have hZ0 : μ Z = 0 := by
+      rw [hZ, measure_toMeasurable]
+      exact ae_iff.1 hdens
+    refine ⟨U \ Z, hU.measurableSet.diff (measurableSet_toMeasurable _ _), sdiff_subset,
+      fun x hx => ?_, measure_mono_null (fun x hx => ?_) (measure_union_null hμ.1 hZ0)⟩
+    · by_contra h
+      exact hx.2 (subset_toMeasurable _ _ h)
+    · by_cases hxU : x ∈ U
+      · exact Or.inr (by_contra fun hxZ => hx ⟨hxU, hxZ⟩)
+      · exact Or.inl hxU
+  -- Step 3 (printed (1)): `B₀` is covered by countably many sets of finite `Hⁿ`-measure.
+  obtain ⟨C, hB₀C, hCfin⟩ := (Submission.rectifiability_positive_density_cover_null P (m + 1) μ W
+    B₀ hWo hWfin (hB₀U.trans hUW) hB₀D).1
+  -- Step 4: Lemma 3.2 of Ch. 3 gives `B₀ = R ∪ P'` with `R` Borel and countably rectifiable and
+  -- `P'` purely unrectifiable.
+  obtain ⟨R, P', hRP, -, -, hP'm, hRrect, hP'pure⟩ :=
+    Poincare.SimonGMT.Chapter03.measurable_rectifiable_purelyUnrectifiable_decomposition
+      hB₀m.nullMeasurableSet C hB₀C hCfin
+  have hP'B₀ : P' ⊆ B₀ := subset_union_right.trans hRP.symm.subset
+  -- `μ(P') = 0`: the structure theorem gives `Q` with `Lⁿ(p_α(Q P')) = 0` for all `α`; Remark
+  -- 2.37(2) gives `μ(Bk) = 0` for a Borel kernel `Bk ⊆ P'`, and `μ ≪ Hⁿ` handles `P' ∖ Bk`.
+  obtain ⟨Q, hQ⟩ := Submission.rectifiability_structure_projection P m P' hP'pure
+    ⟨C, hP'B₀.trans hB₀C, hCfin⟩
+  obtain ⟨Bk, hBkP', hBkm, hBkae⟩ := hP'm.exists_measurable_subset_ae_eq
+  have hμBk : μ Bk = 0 := Submission.rectifiability_projection_null P m U hU T hmass μ hμ Q Bk
+    hBkm fun α => measure_mono_null (image_mono hBkP') (hQ α)
+  have hμP' : μ P' = 0 :=
+    measure_mono_null (union_sdiff_cancel hBkP').symm.subset
+      (measure_union_null hμBk (hac (ae_le_set.1 hBkae.symm.le)))
+  -- `Hⁿ(P') = 0` (printed (6)), so `B₀ = R ∪ P'` is countably rectifiable (printed (7)).
+  have hP'0 : (μHE[m + 1] : Measure (Eucl P)) P' = 0 :=
+    (Submission.rectifiability_positive_density_cover_null P (m + 1) μ W P' hWo hWfin
+      (hP'B₀.trans (hB₀U.trans hUW)) fun x hx => hB₀D x (hP'B₀ hx)).2 hμP'
+  have hB₀rect : CountablyRectifiable (m + 1) B₀ := by
+    have h := Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (n := m + 1) (D := {R, P'})
+      ((countable_singleton P').insert R) (by
+        rintro S (rfl | rfl)
+        exacts [hRrect, Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero hP'0])
+    rwa [sUnion_pair, ← hRP] at h
+  -- Steps 5–6 (printed (8)): Radon–Nikodym for `μ ≪ Hⁿ ⌞ B₀`, with `Hⁿ ⌞ B₀` σ-finite by step 3,
+  -- gives `M ⊆ B₀` and `θ > 0` on `M` with `μ = θ Hⁿ ⌞ M`.
+  obtain ⟨M, θ, hMB₀, hMm, hθm, hθpos, hθint, hrep⟩ :=
+    Submission.rectifiability_rn_positive_real_density (Eucl P) (μHE[m + 1] : Measure (Eucl P)) μ
+      B₀ hB₀m (Poincare.SimonGMT.Chapter03.sigmaFinite_restrict_of_hausdorff_finite_cover C hB₀C
+        hCfin) hμσ hμB₀ hac
+  -- Step 7: a compact `K ⊆ U` lies in some `W i`, so `μ(K) < ∞` and `θ` is integrable on `M ∩ K`.
+  refine ⟨M, θ, hMB₀.trans hB₀U, hMm, hB₀rect.mono hMB₀, hθm, hθpos, fun K hK hKU => ?_, hrep⟩
+  obtain ⟨i, hi⟩ := hWK K hK hKU
+  exact hθint K hK.measurableSet ((measure_mono hi).trans_lt (hWfin i))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
