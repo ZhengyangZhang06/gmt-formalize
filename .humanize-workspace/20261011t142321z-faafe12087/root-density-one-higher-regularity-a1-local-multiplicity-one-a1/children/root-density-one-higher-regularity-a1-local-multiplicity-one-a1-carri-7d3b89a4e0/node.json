@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.carrier_graph_symmdiff-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1",
+  "depth": 3,
+  "title": "Transport of a null carrier-support symmetric difference into graph coordinates",
+  "statement": "Let n, l be natural numbers, M and S subsets of R^(n+l), xi in R^(n+l), R and s reals with s <= R, Q a linear isometry equivalence of R^(n+l), u : R^n -> R^l any function, G(x) := graphPoint x (u x), Gamma := graphOver u (Bo^n_R(0)) (H^n := muHE[n]). Assume Q((S - xi)) cap Bo_R(0) = Gamma cap Bo_R(0) and H^n((M cap Bo_s(xi)) symmetric-difference (S cap Bo_s(xi))) = 0. Then for every rho with 0 < rho <= s, H^n((Q((M - xi)) cap Bo_rho(0)) symmetric-difference graphOver u W_rho) = 0, where W_rho := {x in Bo^n_rho(0) : ||graphPoint x (u x)|| < rho}.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (M S : Set (Amb n ℓ)) (ξ : Amb n ℓ) (R s : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), s ≤ R → Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (M ∩ ball ξ s) (S ∩ ball ξ s)) = 0 → ∀ ρ : ℝ, 0 < ρ → ρ ≤ s → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (Q '' ((fun x => x - ξ) '' M) ∩ ball 0 ρ) (graphOver u {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ})) = 0",
+  "lean_name": "dohr_lmo_carrier_graph_symmDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-carri-7d3b89a4e0-a1"
+}

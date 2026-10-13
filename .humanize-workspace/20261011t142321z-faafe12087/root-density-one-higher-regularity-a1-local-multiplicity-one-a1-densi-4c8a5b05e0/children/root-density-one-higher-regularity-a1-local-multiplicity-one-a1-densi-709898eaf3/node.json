@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.density_eq_mult_ae-a1.weight_restrict_withdensity-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.density_eq_mult_ae-a1",
+  "depth": 4,
+  "title": "The weight restricted to O is H^n on spt V cap O with density ofReal(1_M theta)",
+  "statement": "Let n, l be natural numbers and U a subset of R^(n+l). Let V = v(M, theta) be a rectifiable n-varifold in U, with M := V.carrier, theta := V.mult, mu := V.weight = (H^n restricted to M).withDensity (ofReal o theta), Sigma := V.support = U cap spt mu and H^n := muHE[n]. Let O be a measurable set with O contained in U. Then mu restricted to O equals (H^n restricted to (Sigma cap O)).withDensity f, where f(x) := ofReal(M.indicator theta x), i.e. f = 1_M * ofReal(theta).",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → O ⊆ U → V.weight.restrict O = ((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)).withDensity (fun x => ENNReal.ofReal (V.carrier.indicator V.mult x))",
+  "lean_name": "dohr_lmo_dema_weight_restrict_withDensity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-densi-709898eaf3-a1"
+}
