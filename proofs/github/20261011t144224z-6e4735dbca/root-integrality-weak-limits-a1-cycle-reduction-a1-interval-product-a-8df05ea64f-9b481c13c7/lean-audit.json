@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fce9e378b0a7a6d4c63bb4e7052158ddacb1b81917ab31d7794c0031bc26603a",
+  "git_delta": {
+    "base_commit": "138d01ccb96c036d96422445a576be827eb71bd4",
+    "candidate_commit": "32d81ccbe658f69eb93dff07d123f5e301f8af33",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ip_pt_frame_orthonormal",
+    "diff_sha256": "276120eaa9aee416bc2c74eb012ed407ed75bf445fffe256a406529acb3701bf",
+    "source_sha256": "a77abbeaa1f6fa780e8cc97dac4fd20f860f2b6eb871c1c882735dea6eabc12c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ip_pt_frame_orthonormal",
+      "statement": "∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
