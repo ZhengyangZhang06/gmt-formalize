@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dadc51ee57ac1f981062263c7dd84f733a58fe0bab28edfc5faaf1031362bcc2",
+  "git_delta": {
+    "base_commit": "4eda269fbcfe2e5c6ae1cb377b564da2bd97d9e3",
+    "candidate_commit": "97c95f28428c9c1b525bf2772752d9c072253aa9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmrc_testForm_restrict_cc",
+    "diff_sha256": "9bdf39b31830b5cd0d022c37fb2803f0e57000f990375859aa1b4fbd5f69fe58",
+    "source_sha256": "5eadf46e5e962096d74b3398750779367b898280b534fe4939913a3f31b96497",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmrc_testForm_restrict_cc",
+      "statement": "∀ (P n d : ℕ) (U : Set (Euclid P)) (f : Covector (Euclid P) n → EuclideanSpace ℝ (Fin d)), Continuous f → f 0 = 0 → ∀ ω : TestFormOn U n, ∃ g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)), ∀ x : U, g x = f ((ω : DifferentialForm (Euclid P) n) x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
