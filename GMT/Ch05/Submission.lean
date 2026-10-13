@@ -522,6 +522,144 @@ theorem dohr_eb_lhr_cover_holder_one : ∀ (n : ℕ) (E : Type) [NormedAddCommGr
   refine ⟨max Cs (2 * S * (δ ^ α)⁻¹), fun x hx y hy => ?_⟩
   rw [hiso x, hiso y, ← map_sub, LinearIsometryEquiv.norm_map]
   exact hD x hx y hy
+/-- **Uniform bounds for a `C¹` scalar function on a compact convex set** (the scalar step of the
+coefficient bounds in the linear higher-regularity part of Simon 7.1).  Let `0 < α ≤ 1`, `U ⊆ ℝⁿ`
+open, `K ⊆ U` compact and convex, and `f` be `C¹` on `U`.  Then some `S ≥ 0` has `|f(x)| ≤ S` and
+`|f(x) − f(y)| ≤ S |x − y|^α` for all `x, y ∈ K`.
+Proof: `f` and `Df` are continuous, hence bounded, on the compact `K`; the mean value inequality
+on the convex `K` gives `|f(x) − f(y)| ≤ S₁ |x − y|`; and with `D = diam K`,
+`t = t^α t^{1−α} ≤ D^{1−α} t^α` for `0 ≤ t ≤ D`. -/
+theorem dohr_eb_lhr_cub_scalar_c1_bounds : ∀ (n : ℕ) (α : ℝ) (U K : Set (Rn n)) (f : Rn n → ℝ), 0 < α → α ≤ 1 → IsOpen U → IsCompact K → Convex ℝ K → K ⊆ U → ContDiffOn ℝ 1 f U → ∃ S : ℝ, 0 ≤ S ∧ ∀ x ∈ K, ∀ y ∈ K, |f x| ≤ S ∧ |f x - f y| ≤ S * ‖x - y‖ ^ α := by
+  intro n α U K f hα0 hα1 hU hK hKc hKU hf
+  -- Step 1: `f` and `Df` are continuous on `K`, and `f` is differentiable at every point of `K`.
+  have hfc : ContinuousOn f K := hf.continuousOn.mono hKU
+  have hdfc : ContinuousOn (fderiv ℝ f) K := (hf.continuousOn_fderiv_of_isOpen hU le_rfl).mono hKU
+  have hfd : ∀ x ∈ K, DifferentiableAt ℝ f x := fun x hx =>
+    (hf.differentiableOn one_ne_zero x (hKU hx)).differentiableAt (hU.mem_nhds (hKU hx))
+  -- Step 2: `|f| ≤ S0` and `‖Df‖ ≤ S1` on the compact set `K`.
+  obtain ⟨S0, hS0⟩ := hK.exists_bound_of_continuousOn hfc
+  obtain ⟨S1, hS1⟩ := hK.exists_bound_of_continuousOn hdfc
+  -- Step 3: mean value inequality on the convex set `K`.
+  have hlip : ∀ x ∈ K, ∀ y ∈ K, |f x - f y| ≤ max S1 0 * ‖x - y‖ := by
+    intro x hx y hy
+    have h := hKc.norm_image_sub_le_of_norm_fderiv_le (C := max S1 0) hfd
+      (fun z hz => (hS1 z hz).trans (le_max_left _ _)) hy hx
+    rwa [Real.norm_eq_abs] at h
+  -- Step 4: `‖x - y‖ ≤ D := diam K` on `K`.
+  have hdist : ∀ x ∈ K, ∀ y ∈ K, ‖x - y‖ ≤ Metric.diam K := fun x hx y hy => by
+    rw [← dist_eq_norm]
+    exact Metric.dist_le_diam_of_mem hK.isBounded hx hy
+  -- Step 5: `t ≤ D^(1-α) t^α` for `0 ≤ t ≤ D`.
+  have helem : ∀ t : ℝ, 0 ≤ t → t ≤ Metric.diam K →
+      t ≤ Metric.diam K ^ (1 - α) * t ^ α := by
+    intro t ht0 htD
+    rcases ht0.eq_or_lt with rfl | htpos
+    · rw [Real.zero_rpow hα0.ne', mul_zero]
+    · have h1 : t ^ α * t ^ (1 - α) = t := by
+        rw [← Real.rpow_add htpos, show α + (1 - α) = 1 by ring, Real.rpow_one]
+      have h2 : t ^ (1 - α) ≤ Metric.diam K ^ (1 - α) :=
+        Real.rpow_le_rpow ht0 htD (by linarith)
+      calc t = t ^ α * t ^ (1 - α) := h1.symm
+        _ ≤ t ^ α * Metric.diam K ^ (1 - α) :=
+          mul_le_mul_of_nonneg_left h2 (Real.rpow_nonneg ht0 _)
+        _ = Metric.diam K ^ (1 - α) * t ^ α := mul_comm _ _
+  -- Steps 6-7: `S := max (max S0 0) (max S1 0 * D^(1-α))`.
+  refine ⟨max (max S0 0) (max S1 0 * Metric.diam K ^ (1 - α)),
+    (le_max_right _ _).trans (le_max_left _ _), ?_⟩
+  intro x hx y hy
+  constructor
+  · calc |f x| = ‖f x‖ := (Real.norm_eq_abs _).symm
+      _ ≤ S0 := hS0 x hx
+      _ ≤ max S0 0 := le_max_left _ _
+      _ ≤ _ := le_max_left _ _
+  · calc |f x - f y| ≤ max S1 0 * ‖x - y‖ := hlip x hx y hy
+      _ ≤ max S1 0 * (Metric.diam K ^ (1 - α) * ‖x - y‖ ^ α) :=
+        mul_le_mul_of_nonneg_left (helem _ (norm_nonneg _) (hdist x hx y hy)) (le_max_right _ _)
+      _ = (max S1 0 * Metric.diam K ^ (1 - α)) * ‖x - y‖ ^ α := (mul_assoc _ _ _).symm
+      _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.rpow_nonneg (norm_nonneg _) _)
+/-- Coefficient bounds for the linear system in the proof of Simon Ch. 5, Theorem 7.1 (second
+assertion, p. 127), steps 1, 2 and 6: on a finite-dimensional real normed space `L` with basis
+`E₀, …, E_{N-1}`, every continuous bilinear form satisfies
+`|B(P)(Q)| ≤ c (∑_{r,t} |B(E_r)(E_t)|) ‖P‖ ‖Q‖`, and likewise for the difference `B − B'` of two
+forms, with `c = c₀²`, `c₀ = ∑_r ‖π_r‖` the sum of the norms of the coordinate functionals. -/
+theorem dohr_eb_lhr_cub_bilinear_basis_bound : ∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (E : Fin N → L) (c : ℝ), 0 ≤ c ∧ (∀ (B : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t)|) * ‖P‖ * ‖Q‖) ∧ ∀ (B B' : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L), |B P Q - B' P Q| ≤ c * (∑ r, ∑ t, |B (E r) (E t) - B' (E r) (E t)|) * ‖P‖ * ‖Q‖ := by
+  intro L _ _ _
+  -- Step 1: a basis `b` of `L` and its continuous coordinate functionals `π r`.
+  let b := Module.finBasis ℝ L
+  let π : Fin (Module.finrank ℝ L) → L →L[ℝ] ℝ := fun r =>
+    LinearMap.toContinuousLinearMap (b.coord r)
+  have hπ : ∀ r P, π r P = b.repr P r := fun r P => by simp [π]
+  -- Step 2: `|P_r| ≤ c₀ ‖P‖` with `c₀ = ∑ r, ‖π r‖`.
+  let c₀ : ℝ := ∑ r, ‖π r‖
+  have hc₀ : 0 ≤ c₀ := Finset.sum_nonneg fun r _ => norm_nonneg (π r)
+  have hcoord : ∀ r P, |b.repr P r| ≤ c₀ * ‖P‖ := by
+    intro r P
+    rw [← hπ, ← Real.norm_eq_abs]
+    calc ‖π r P‖ ≤ ‖π r‖ * ‖P‖ := (π r).le_opNorm P
+      _ ≤ c₀ * ‖P‖ := mul_le_mul_of_nonneg_right
+          (Finset.single_le_sum (fun s _ => norm_nonneg (π s)) (Finset.mem_univ r)) (norm_nonneg P)
+  -- Step 3: `B P Q = ∑ r, ∑ t, P_r Q_t B (b r) (b t)`.
+  have hexp : ∀ (B : L →L[ℝ] L →L[ℝ] ℝ) (P Q : L),
+      B P Q = ∑ r, ∑ t, b.repr P r * b.repr Q t * B (b r) (b t) := by
+    intro B P Q
+    conv_lhs => rw [← b.sum_repr P, ← b.sum_repr Q]
+    simp only [map_sum, map_smul, sum_apply, smul_apply, smul_eq_mul, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun t _ => by ring
+  -- Step 4: `|∑ r, ∑ t, P_r Q_t β r t| ≤ c₀² (∑ r, ∑ t, |β r t|) ‖P‖ ‖Q‖` for any array `β`.
+  have harr : ∀ (β : Fin (Module.finrank ℝ L) → Fin (Module.finrank ℝ L) → ℝ) (P Q : L),
+      |∑ r, ∑ t, b.repr P r * b.repr Q t * β r t| ≤
+        c₀ ^ 2 * (∑ r, ∑ t, |β r t|) * ‖P‖ * ‖Q‖ := by
+    intro β P Q
+    calc |∑ r, ∑ t, b.repr P r * b.repr Q t * β r t|
+        ≤ ∑ r, |∑ t, b.repr P r * b.repr Q t * β r t| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ r, ∑ t, |b.repr P r * b.repr Q t * β r t| :=
+          Finset.sum_le_sum fun r _ => Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ r, ∑ t, c₀ * ‖P‖ * (c₀ * ‖Q‖) * |β r t| := by
+          refine Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun t _ => ?_
+          rw [abs_mul, abs_mul]
+          exact mul_le_mul_of_nonneg_right
+            (mul_le_mul (hcoord r P) (hcoord t Q) (abs_nonneg _) (by positivity)) (abs_nonneg _)
+      _ = c₀ ^ 2 * (∑ r, ∑ t, |β r t|) * ‖P‖ * ‖Q‖ := by
+          simp only [← Finset.mul_sum]
+          ring
+  -- Step 5: take `E = b` and `c = c₀²`; for `B − B'` subtract the two expansions termwise.
+  refine ⟨Module.finrank ℝ L, b, c₀ ^ 2, by positivity, fun B P Q => ?_, fun B B' P Q => ?_⟩
+  · rw [hexp B P Q]
+    exact harr _ P Q
+  · rw [hexp B P Q, hexp B' P Q]
+    simp only [← Finset.sum_sub_distrib, ← mul_sub]
+    exact harr _ P Q
+/-- Coefficient bounds in the elliptic bootstrap of Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): if every component `x ↦ a(x)[P][Q]` of a field `a` of continuous bilinear forms on
+`L = L(ℝⁿ, ℝ^ℓ)` is `C¹` on the open set `U`, then on each compact convex `K ⊆ U` the forms `a(x)`
+are uniformly bounded and uniformly `α`-Hölder in `x`.  A basis `E_r` of `L` controls every
+bilinear form through its values `B(E_r, E_t)`, and each `C¹` component `a_rt(x) = a(x)[E_r][E_t]`
+is bounded by `S_rt` and `α`-Hölder with constant `S_rt` on `K`; take `M := c Σ_{r,t} S_rt`. -/
+theorem dohr_eb_lhr_coeff_uniform_bounds : ∀ (n ℓ : ℕ) (α : ℝ) (U K : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ), 0 < α → α ≤ 1 → IsOpen U → IsCompact K → Convex ℝ K → K ⊆ U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → ∃ M : ℝ, ∀ x ∈ K, ∀ y ∈ K, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖ ∧ |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
+  intro n ℓ α U K a hα hα1 hU hK hKc hKU ha
+  -- Steps 1–2: expansion of bilinear forms on a basis `E` of `L`.
+  obtain ⟨N, E, c, hc, hB, hBB'⟩ :=
+    Submission.dohr_eb_lhr_cub_bilinear_basis_bound (Rn n →L[ℝ] Rn ℓ)
+  -- Steps 3–5: each component `a_rt` is bounded and `α`-Hölder on `K`, with constant `S r t`.
+  choose S hS0 hS using fun r t : Fin N =>
+    Submission.dohr_eb_lhr_cub_scalar_c1_bounds n α U K (fun x => a x (E r) (E t)) hα hα1 hU hK
+      hKc hKU (ha (E r) (E t))
+  -- Steps 6–7: sum the component bounds over the basis.
+  refine ⟨c * ∑ r, ∑ t, S r t, fun x hx y hy P Q => ⟨?_, ?_⟩⟩
+  · calc |a x P Q| ≤ c * (∑ r, ∑ t, |a x (E r) (E t)|) * ‖P‖ * ‖Q‖ := hB (a x) P Q
+      _ ≤ c * (∑ r, ∑ t, S r t) * ‖P‖ * ‖Q‖ := by
+        gcongr with r _ t _
+        exact (hS r t x hx y hy).1
+  · calc |a x P Q - a y P Q|
+        ≤ c * (∑ r, ∑ t, |a x (E r) (E t) - a y (E r) (E t)|) * ‖P‖ * ‖Q‖ :=
+          hBB' (a x) (a y) P Q
+      _ ≤ c * (∑ r, ∑ t, S r t * ‖x - y‖ ^ α) * ‖P‖ * ‖Q‖ := by
+        gcongr with r _ t _
+        exact (hS r t x hx y hy).2
+      _ = c * (∑ r, ∑ t, S r t) * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
+        simp only [← Finset.sum_mul]
+        ring
 
 end Submission
 
