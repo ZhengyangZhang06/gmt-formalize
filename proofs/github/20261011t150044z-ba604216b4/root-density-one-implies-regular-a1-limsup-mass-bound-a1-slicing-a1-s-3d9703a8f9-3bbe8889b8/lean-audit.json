@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "82d75d1906cbb8be456e6f7fc91abaf66f884b5c376cccc7a75edf62bb0853a4",
+  "git_delta": {
+    "base_commit": "58ab3bbd2e5e16973f9a5b57f6ec77d7e8959946",
+    "candidate_commit": "d9e14074f2295f8ba0ef53785e14be70a6ba7493",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_density_directions",
+    "diff_sha256": "4444d5c26034f7a8d8475358793238f914afeb392cc531b98ff95f3406bd0bd9",
+    "source_sha256": "652e850f1f7e57d0ce9053137c90dc7221512cb5d734910076e660a72276940d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_density_directions",
+      "statement": "∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
