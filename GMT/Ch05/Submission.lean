@@ -484,6 +484,31 @@ theorem dohr_eb_lhr_dqwe_linear_family_continuousAt : ∀ (n ℓ : ℕ) (U : Set
   -- Step 5: a finite sum of products of functions continuous at `x₀` is continuous at `x₀`.
   rw [hexp]
   exact tendsto_finsetSum _ fun r _ => (hc r).mul (hΦr r)
+/-- **Continuity of a bilinear-form family evaluated along continuous data.**  Let
+`L = L(ℝⁿ, ℝ^ℓ)`, let `U ⊆ ℝⁿ` be open and let `a : ℝⁿ → L(L, L(L, ℝ))` be such that
+`x ↦ a(x)[P][Q]` is continuous on `U` for all `P, Q ∈ L`.  If `s(x₀) ∈ U` and `s`, `A`, `B` are
+continuous at `x₀`, then `x ↦ a(s(x))[A(x)][B(x)]` is continuous at `x₀`.
+In a basis `(E_r)` of `L` with (continuous) coordinate functionals `c_r`,
+`a(s(x))[A(x)][B(x)] = Σ_r c_r(A(x)) · a(s(x))[E_r][B(x)]`, and each `x ↦ a(s(x))[E_r][B(x)]` is
+continuous at `x₀` by `dohr_eb_lhr_dqwe_linear_family_continuousAt` applied to `y ↦ a(y)[E_r]`. -/
+theorem dohr_eb_lhr_dqwe_bilinear_family_continuousAt : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (A B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => a x P Q) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt A x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => a (s x) (A x) (B x)) x₀ := by
+  intro n ℓ U a s A B x₀ hU ha hsU hs hA hB
+  -- Step 1: a basis `E_r = b r` of the finite-dimensional space `L`; its coordinate functionals
+  -- `c_r = b.coord r` are continuous.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  have hc : ∀ r, Continuous fun P : Rn n →L[ℝ] Rn ℓ => b.repr P r := fun r =>
+    (b.coord r).continuous_of_finiteDimensional
+  -- Step 2: expanding the first slot, `a(s x)[A x][B x] = Σ_r c_r(A x) · a(s x)[E_r][B x]`.
+  have hexp : ∀ x, a (s x) (A x) (B x) = ∑ r, b.repr (A x) r * a (s x) (b r) (B x) := by
+    intro x
+    conv_lhs => rw [← b.sum_repr (A x)]
+    simp only [map_sum, map_smul, _root_.sum_apply, _root_.smul_apply, smul_eq_mul]
+  simp only [hexp]
+  -- Steps 3–5: each summand is `c_r ∘ A` times `x ↦ a(s x)[E_r][B x]`, both continuous at `x₀`
+  -- (the latter by the linear-family lemma for `y ↦ a(y)[E_r]`), and finite sums preserve this.
+  refine tendsto_finsetSum _ fun r _ => ((hc r).continuousAt.comp hA).mul ?_
+  exact Submission.dohr_eb_lhr_dqwe_linear_family_continuousAt n ℓ U (fun y => a y (b r)) s B x₀
+    hU (fun P => ha (b r) P) hsU hs hB
 
 end Submission
 
