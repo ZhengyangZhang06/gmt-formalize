@@ -458,6 +458,43 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Integrability of a continuous radial profile vanishing beyond `T` (the integrability parts (a)
+and (b) of `ted_lpm_fcm_cutoff_mass_hasDerivAt`): if `μ(B_S(y)) < ∞`, `g` is continuous with
+`g = 0` on `(T, ∞)`, `t > 0` and `T t < S`, then `x ↦ g(‖x − y‖/t)` is `μ`-integrable.
+It is bounded by `K = max(max_{[0,T]} |g|, 0)`, hence integrable on `B_S(y)`, and it vanishes off
+`B_S(y)`, where `‖x − y‖/t > S/t > T`. -/
+theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ := by
+  intro n ℓ μ y g S T t hμ hg hg0 ht htS
+  -- Step 1: `|g u| ≤ K` for `u ≥ 0`.
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ K := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hg.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hg0 u h, abs_zero]
+      exact le_max_right _ _
+  -- Step 2: `x ↦ g(‖x − y‖/t)` is continuous, hence a.e.-strongly measurable.
+  have hmeas : AEStronglyMeasurable (fun x => g (‖x - y‖ / t)) (μ.restrict (closedBall y S)) :=
+    (hg.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable
+  -- Steps 3–4: it is bounded by `K`, hence integrable on `B_S(y)`, which has finite measure.
+  have hon : IntegrableOn (fun x => g (‖x - y‖ / t)) (closedBall y S) μ := by
+    refine IntegrableOn.of_bound hμ hmeas K (Eventually.of_forall fun x => ?_)
+    rw [Real.norm_eq_abs]
+    exact hK _ (div_nonneg (norm_nonneg _) ht.le)
+  -- Steps 5–6: off `B_S(y)` we have `‖x − y‖/t > T`, so the integrand vanishes there.
+  refine hon.integrable_of_forall_notMem_eq_zero fun x hx => hg0 _ ?_
+  have hxS : S < ‖x - y‖ := by
+    simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+  rw [lt_div_iff₀ ht]
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
