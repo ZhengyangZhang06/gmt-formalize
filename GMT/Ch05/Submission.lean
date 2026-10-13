@@ -655,12 +655,14 @@ theorem dohr_eb_ehs_del_lhs_tendsto : ∀ n ℓ : ℕ, ∀ (F : Rn n → ((Rn n 
     apply tendsto_integral_filter_of_dominated_convergence (fun _ => (CD + 1) * Cτ)
     · filter_upwards [hev] with h hh
       apply ContinuousOn.aestronglyMeasurable _ hK.measurableSet
-      apply ContinuousOn.clm_apply _ hτ.continuousOn
-      -- `ContinuousSub L*` is only found with a larger pending-instance depth.
-      set_option maxSynthPendingDepth 3 in
-      exact ContinuousOn.smul (f := fun _ => (h⁻¹ : ℝ)) continuousOn_const
-        ((hFc.comp (continuousOn_id.add continuousOn_const)
-          (fun y hy => hδU (hshift h hh y hy))).sub (hFc.mono hτU))
+      -- The integrand is the real-valued `h⁻¹ (F(y + h e)[τ(y)] − F(y)[τ(y)])`, continuous on `K`.
+      have hc : ContinuousOn (fun y => h⁻¹ * (F (y + h • e) (τ y) - F y (τ y))) (tsupport τ) :=
+        continuousOn_const.mul
+          (((hFc.comp (continuousOn_id.add continuousOn_const)
+            (fun y hy => hδU (hshift h hh y hy))).clm_apply hτ.continuousOn).sub
+            ((hFc.mono hτU).clm_apply hτ.continuousOn))
+      refine hc.congr (fun y _ => ?_)
+      simp only [_root_.smul_apply, _root_.sub_apply, smul_eq_mul]
     · filter_upwards [hev1] with h hh
       apply ae_restrict_of_forall_mem hK.measurableSet
       intro y hy
