@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1e8f43b57285f32f39a988bb63f3261962d12d89541781759f627b7c0870132e",
+  "git_delta": {
+    "base_commit": "48cd6dccc9eb653f3ef0e37dfbe3b5c93efacb96",
+    "candidate_commit": "a4988d1a63a263fd0f985dcbcce864d72843d831",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "b590f1be9f19c026b7f93ea5bf81357e78a0f339666e6362e0a7c3aaf950f35e",
+    "source_sha256": "3f2ced40243577556be0dd3dc82e9c4da48619742d04364bbacb185c0b21a73f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_piola_identity",
+      "statement": "∀ (k r : ℕ) (W : Fin r → Eucl k → ℝ) (b : Fin (r + 1) → Fin k), (∀ t, ContDiff ℝ 2 (W t)) → ∀ w : Eucl k, ∑ q : Fin (r + 1), fderiv ℝ (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) w (EuclideanSpace.single (b q) 1) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
