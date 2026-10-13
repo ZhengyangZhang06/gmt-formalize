@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c6773594436246def086dfbe9470214e073a5206663f4484b53933d9c958f02",
+  "git_delta": {
+    "base_commit": "d60dda766bb949332641738e103d6935ebe4fef3",
+    "candidate_commit": "07759cf2463daf515e42a750eb37248aee6a9937",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_approxTangent_iff_of_subset",
+    "diff_sha256": "849c3acfec456852ed15c907b09481d0206c265542e0c86b8a4d3d38a7162f61",
+    "source_sha256": "0f5d594001e47d82ac3c2ff534e3e1c13424129bc91f329d97f486da96970e4a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_approxTangent_iff_of_subset",
+      "statement": "∀ (N k : ℕ) (E E' : Set (Eucl N)), E ⊆ E' → NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → NullMeasurableSet E' (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E' ∩ K) < ∞) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E x Q ↔ Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E' x Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
