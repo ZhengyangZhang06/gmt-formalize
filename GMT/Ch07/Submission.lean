@@ -703,6 +703,105 @@ theorem Submission.codim1_rdo_dg_tma_normal_halfspace : ∀ (m : ℕ) (ι : Eucl
   · rw [hderiv]
   · rfl
 
+/-- **Gauss–Green for a half-space** (used in the proof of Simon Ch. 3, Theorem 4.3).  For
+`|v| = 1` and `g ∈ C¹_c(ℝ^{m+1}; ℝ^{m+1})`,
+`∫_{⟨w, v⟩ > 0} div g dL^{m+1} = −∫_{v^⊥} ⟨g, v⟩ dHᵐ`.  With `ι : ℝᵐ → v^⊥` from
+`codim1_rdo_dg_tma_hyperplane_param`, `(ι e₀, …, ι e_{m−1}, v)` is an orthonormal basis `b`, so
+`div g = Σⱼ D⟨bⱼ, g⟩(bⱼ)`.  The `m` tangential terms integrate to `0` over the half-space
+(`codim1_rdo_dg_tma_tangential_halfspace`), the normal term is `−∫ ⟨v, g(ι x)⟩ dx`
+(`codim1_rdo_dg_tma_normal_halfspace`), and `Hᵐ⌞v^⊥ = ι_# Lᵐ` turns it into the boundary
+integral. -/
+theorem Submission.codim1_rdo_dg_tma_halfspace_gauss_green : ∀ (m : ℕ) (v : Euclid (m + 1)) (g : Euclid (m + 1) → Euclid (m + 1)), ‖v‖ = 1 → ContDiff ℝ 1 g → HasCompactSupport g → ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), inner ℝ (g z) v ∂μHE[m] := by
+  intro m v g hv hg hgc
+  have hv0 : v ≠ 0 := by
+    rintro rfl
+    simp at hv
+  obtain ⟨ι, hιv, hmap⟩ := Submission.codim1_rdo_dg_tma_hyperplane_param m v hv0
+  -- the adapted orthonormal basis `(ι e₀, …, ι e_{m-1}, v)`
+  let b : Fin (m + 1) → Euclid (m + 1) :=
+    Fin.lastCases v (fun i => ι (EuclideanSpace.single i (1 : ℝ)))
+  have hb_last : b (Fin.last m) = v := by simp [b]
+  have hb_cs : ∀ i : Fin m, b (Fin.castSucc i) = ι (EuclideanSpace.single i (1 : ℝ)) := by
+    intro i
+    simp [b]
+  have hb : Orthonormal ℝ b := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    induction i using Fin.lastCases with
+    | last =>
+      induction j using Fin.lastCases with
+      | last => simp [hb_last, hv]
+      | cast j =>
+        rw [hb_last, hb_cs, real_inner_comm, hιv, ite_eq_right (Fin.castSucc_lt_last j).ne']
+    | cast i =>
+      induction j using Fin.lastCases with
+      | last => rw [hb_last, hb_cs, hιv, ite_eq_right (Fin.castSucc_lt_last i).ne]
+      | cast j =>
+        rw [hb_cs, hb_cs, LinearIsometry.inner_map_map, EuclideanSpace.inner_single_left]
+        by_cases hij : i = j
+        · subst hij
+          simp
+        · simp [hij, Fin.castSucc_inj]
+  have hcard : Fintype.card (Fin (m + 1)) = Module.finrank ℝ (Euclid (m + 1)) := by simp
+  have hsp : ⊤ ≤ Submodule.span ℝ (Set.range b) := by
+    rw [← coe_basisOfOrthonormalOfCardEqFinrank hb hcard,
+      (basisOfOrthonormalOfCardEqFinrank hb hcard).span_eq]
+  let B : OrthonormalBasis (Fin (m + 1)) ℝ (Euclid (m + 1)) := OrthonormalBasis.mk hb hsp
+  have hB : ∀ i, B i = b i := by
+    intro i
+    simp [B]
+  -- scalar components
+  set h : Fin (m + 1) → Euclid (m + 1) → ℝ := fun i w => inner ℝ (b i) (g w) with hhdef
+  have hh_cd : ∀ i, ContDiff ℝ 1 (h i) := fun i => contDiff_const.inner ℝ hg
+  have hh_cs : ∀ i, HasCompactSupport (h i) := by
+    intro i
+    exact hgc.mono' (fun w hw => by
+      by_contra hgw
+      exact hw (by simp [hhdef, image_eq_zero_of_notMem_tsupport hgw]))
+  have hfd : ∀ i w, fderiv ℝ (h i) w (b i) =
+      inner ℝ (b i) ((fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) (b i)) := by
+    intro i w
+    have hgd : DifferentiableAt ℝ g w := (hg.differentiable one_ne_zero) w
+    rw [hhdef]
+    simp only
+    rw [fderiv_inner_apply ℝ (differentiableAt_const (b i)) hgd]
+    simp
+  have htr : ∀ w, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = ∑ i, fderiv ℝ (h i) w (b i) := by
+    intro w
+    rw [LinearMap.trace_eq_sum_inner _ B]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hfd, hB]
+  have hint : ∀ i, Integrable (fun w => fderiv ℝ (h i) w (b i))
+      (volume.restrict {w : Euclid (m + 1) | 0 < inner ℝ w v}) := by
+    intro i
+    have hc : Continuous (fun w => fderiv ℝ (h i) w (b i)) :=
+      ((hh_cd i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+    have hcs : HasCompactSupport (fun w => fderiv ℝ (h i) w (b i)) :=
+      ((hh_cs i).fderiv ℝ).mono' (fun w hw => by
+        by_contra hne
+        exact hw (by simp [image_eq_zero_of_notMem_tsupport hne]))
+    exact (hc.integrable_of_hasCompactSupport hcs).integrableOn
+  simp_rw [htr]
+  rw [integral_finsetSum _ (fun i _ => hint i), Fin.sum_univ_castSucc]
+  -- the `m` tangential terms vanish
+  have htan : ∀ i : Fin m, ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v},
+      fderiv ℝ (h (Fin.castSucc i)) w (b (Fin.castSucc i)) = 0 := by
+    intro i
+    exact Submission.codim1_rdo_dg_tma_tangential_halfspace (m + 1) v (b (Fin.castSucc i))
+      (h (Fin.castSucc i)) (by rw [hb_cs]; exact hιv _) (hh_cd _) (hh_cs _)
+  simp_rw [htan, Finset.sum_const_zero, zero_add]
+  -- the normal term, and `Hᵐ⌞v^⊥ = ι_# Lᵐ`
+  rw [hb_last]
+  have hnorm := Submission.codim1_rdo_dg_tma_normal_halfspace m ι v (h (Fin.last m)) hv hιv
+    (hh_cd _) (hh_cs _)
+  rw [hnorm, hmap]
+  congr 1
+  have hcont : Continuous (fun z => inner ℝ (g z) v) := hg.continuous.inner continuous_const
+  rw [integral_map ι.continuous.aemeasurable hcont.aestronglyMeasurable]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp [hhdef, hb_last, real_inner_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
