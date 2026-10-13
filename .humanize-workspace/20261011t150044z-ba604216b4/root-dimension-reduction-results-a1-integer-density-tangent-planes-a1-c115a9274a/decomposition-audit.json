@@ -1,0 +1,109 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "DensityAndTangentCones|MinimizingImpliesStationary|def HasMassDensity|def IsEmbeddedSubmanifold|def MassMeasuresConverge|def IsConeCurrent|HasLocallyBoundedMeanCurvature",
+        "federer|fleming|compactness|monotonicity|constancy|slicing|tangent cone|blowUp|blow-up",
+        "covectorEuclideanNorm|def.*massOn|def.*support|def.*zeroRegion|restrictDomain|massOn_le_liminf",
+        "theorem upperSemicontinuousOn_const|theorem fderiv_id |theorem Ioo_mem_nhdsGT|theorem notMem_empty",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_tc_independent_audit_9cczbzkt/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_tc_independent_audit_9cczbzkt/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c115a9274a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c115a9274a/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-density-usc-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/gmt_tc_independent_audit_9cczbzkt/Types.lean",
+        "/tmp/gmt_tc_independent_audit_9cczbzkt/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected DensityAndTangentCones contract. Project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308 match the pinned context; the snapshot and workspace Ch07 contracts are byte-identical. The nine reused names have byte-identical accepted DAG and handoff types. Their comparator evidence, including underlying cached results and configurations, records kernel acceptance with only propext, Quot.sound and Classical.choice permitted. The fresh name idtp_fons_blowUp_compactness has no DAG owner. All names are bare identifiers, and all ten types independently elaborate as one-line propositions without child implementations; none contains a matrix-unit construction. The combined dependency graph is acyclic across 70 reachable nodes. An implication theorem taking the children and the registered MinimizingImpliesStationary dependency as hypotheses compiles to the exact selected parent type, with only standard axioms. The snapshot's Ch04/Ch06 headline results are unproved specifications, not reusable proofs of compactness; the supplied compactness proof instead explicitly invokes the mathematical source theorems and supplies the projection comparison. The source structure was checked against local Simon Chapters 6–7 and the public [Simon text](https://web.stanford.edu/class/math285/ts-gmt.pdf), especially 7.2.4, Remark 7.2.5(2), and 7.3.1."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, including arbitrary degrees and extended-real mass. Cauchy–Binet establishes the required coefficient-norm duality; the Lusin–Tietze–mollification construction proves the compact-set lower bound, and exhaustion handles infinite mass. The argument is complete and non-circular."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No openness assumption on U is silently required. Compactness gives a finite cover by open zero regions, and the subordinate smooth partition splits the form into valid test forms annihilated by S. This proves the exact support contract."
+    },
+    {
+      "key": "im_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The density-zero and tangent-transfer arguments justify common tangent planes on overlaps. Signed cancellation produces positive integer multiplicities on the remaining carrier; all representation fields and the subtraction identity are verified. The type includes the stated openness and positive-degree hypotheses."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all three conjuncts: admissible-form correspondence gives mass scaling for every W, the explicit transported representation gives the Borel measure identity, and inverse push-forward preserves competitor boundaries and supports. Positive dilation and the conditional integer-multiplicity assumptions are used correctly."
+    },
+    {
+      "key": "dim_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Counting measure gives locally finite carrier points. The mass identity puts each carrier point in the constrained support; deleting one yields an admissible competitor with strictly smaller local mass. The proof then establishes all three conclusions, including zero mass on arbitrary sets."
+    },
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes openness, vanishing boundary, support inclusion and mass equality on every subset of the restricted domain. The cutoff extension preserves the competitor's integer multiplicity, compact support and zero boundary, so minimality transfers in exactly the stated constraint set."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurability and integrability of the first variation are justified before radial testing. The differential inequality yields finite density limits, the open/closed-ball comparison gives HasMassDensity, and estimates uniform in nearby centres prove upper semicontinuity. No parent density theorem is invoked."
+    },
+    {
+      "key": "blowup_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fixed-centre contract contains all needed geometric and density hypotheses. The proof handles k = 0 separately, constructs truncations with uniform local mass and boundary bounds, and obtains an integer-multiplicity boundaryless weak limit. Retractions with Lipschitz constants tending to one transport arbitrary ambient cycle competitors and yield ambient minimality. Compact limsup/open liminf bounds and the every-subsequence argument establish mass convergence for all representations along the selected subsequence. It does not assume either this child or the unaccepted identically typed declaration."
+    },
+    {
+      "key": "blowup_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Transported representations make the universal mass-convergence hypothesis applicable. Scaling identifies limiting ball masses at continuity radii, and continuity from below extends the identity to every positive radius. Positivity and finiteness of the denominator then prove the exact HasMassDensity conclusion."
+    },
+    {
+      "key": "cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly interprets ofReal θ through max(θ,0), so it does not assume an unstated sign condition. Stationary monotonicity forces radial tangency; the explicit Cartan/homotopy calculation uses zero boundary to prove dilation invariance. Surjectivity of dilation then gives precisely IsConeCurrent."
+    }
+  ],
+  "required_changes": []
+}
