@@ -2248,6 +2248,146 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **Extending an off-vertex representation across the vertex** (vertex negligibility and
+passage to all test forms).  Let `C ∈ 𝒟ₘ(ℝᴾ)` be integer multiplicity, `m ≥ 1`, and `M` a Borel set
+with `0 ∉ M` and `Hᵐ(M ∩ K) < ∞` for compact `K`, carrying `ξ` continuous on `M` with
+`|⟨α, ξ⟩| ≤ |α|`.  If `C(ω) = ∫_M ⟨ω, ξ⟩ dHᵐ` whenever `0 ∉ spt ω`, then this holds for every
+`ω ∈ 𝒟ᵐ(ℝᴾ)`.  Split `ω = χₖω + (1 − χₖ)ω` with smooth bumps `χₖ = 1` on `B̄_{εₖ}(0)`,
+supported in `B_{2εₖ}(0)`, `εₖ = 1/(k+1)`: `C(χₖω) → 0` by
+`codim1_ovr_imrep_vanish_at_vertex`, while `C((1 − χₖ)ω) = ∫_M (1 − χₖ)⟨ω, ξ⟩ dHᵐ` tends to
+`∫_M ⟨ω, ξ⟩ dHᵐ` by dominated convergence, with bound `sup |ω| · 1_{spt ω}`. -/
+theorem Submission.codim1_ovr_extend_rep_across_vertex : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 1 ≤ m → IsIntegerMultiplicity C → MeasurableSet M → (0 : Euclid P) ∉ M → ContinuousOn ξ M → (∀ x ∈ M, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (0 : Euclid P) ∉ tsupport (ω : DifferentialForm (Euclid P) m) → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+  intro P m C M ξ hm hIM hMm h0M hξc hξb hfin hoff ω
+  set ω₀ : DifferentialForm (Euclid P) m := (ω : DifferentialForm (Euclid P) m) with hω₀
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω₀ := ω.property.1.1
+  have hωc : HasCompactSupport ω₀ := ω.property.1.2
+  -- Step 1: the Euclidean covector norm is continuous and absolutely homogeneous, and
+  -- `|ω(x)| ≤ S` for all `x`.
+  have hnc : Continuous fun α : Covector (Euclid P) m => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))).continuous).pow 2
+    · exact continuous_const
+  have hsmul : ∀ (a : ℝ) (α : Covector (Euclid P) m),
+      covectorEuclideanNorm (a • α) = |a| * covectorEuclideanNorm α := by
+    intro a α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg a), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul]; ring
+    · simp
+  obtain ⟨S, hS⟩ : ∃ S, ∀ x, covectorEuclideanNorm (ω₀ x) ≤ S := by
+    obtain ⟨S, hS⟩ := (hnc.comp hωs.continuous).bounded_above_of_compact_support
+      (hωc.comp_left (covectorEuclideanNorm_zero P m))
+    exact ⟨S, fun x => (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hS x)⟩
+  -- Step 2: cut-offs `χₖ = 1` on `closedBall 0 εₖ`, supported in `ball 0 (2εₖ)`, and the split
+  -- `ω = χₖω + (1 − χₖ)ω` into test forms.
+  let ε : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
+  have hε : ∀ k, 0 < ε k := fun k => by positivity
+  have hε0 : Tendsto (fun k => 2 * ε k) atTop (𝓝 0) := by
+    have : Tendsto ε atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+    simpa using this.const_mul 2
+  let χ : ℕ → ContDiffBump (0 : Euclid P) := fun k => ⟨ε k, 2 * ε k, hε k, by linarith [hε k]⟩
+  have hχ0 : ∀ k (x : Euclid P), 2 * ε k ≤ ‖x‖ → χ k x = 0 := by
+    intro k x hx
+    have hxs : x ∉ support (χ k) := by
+      rw [(χ k).support_eq, mem_ball, dist_zero_right, not_lt]; exact hx
+    exact notMem_support.1 hxs
+  have hin : ∀ k, (fun x => χ k x • ω₀ x) ∈ TestFormOn (univ : Set (Euclid P)) m := by
+    intro k
+    have h1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => χ k x • ω₀ x) :=
+      ((χ k).contDiff (n := ⊤)).smul hωs
+    have h2 : HasCompactSupport (fun x => χ k x • ω₀ x) :=
+      hωc.mono (support_smul_subset_right (fun x => χ k x) ω₀)
+    exact ⟨⟨h1, h2⟩, subset_univ _⟩
+  have hout : ∀ k, (fun x => (1 - χ k x) • ω₀ x) ∈ TestFormOn (univ : Set (Euclid P)) m := by
+    intro k
+    have h1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => (1 - χ k x) • ω₀ x) :=
+      (contDiff_const.sub ((χ k).contDiff (n := ⊤))).smul hωs
+    have h2 : HasCompactSupport (fun x => (1 - χ k x) • ω₀ x) :=
+      hωc.mono (support_smul_subset_right (fun x => 1 - χ k x) ω₀)
+    exact ⟨⟨h1, h2⟩, subset_univ _⟩
+  let ωin : ℕ → TestFormOn (univ : Set (Euclid P)) m := fun k => ⟨_, hin k⟩
+  let ωout : ℕ → TestFormOn (univ : Set (Euclid P)) m := fun k => ⟨_, hout k⟩
+  have hsplit : ∀ k, C ω = C (ωin k) + C (ωout k) := by
+    intro k
+    have hsum : ω = ωin k + ωout k := by
+      apply Subtype.ext; funext x
+      show ω₀ x = χ k x • ω₀ x + (1 - χ k x) • ω₀ x
+      rw [← add_smul]; simp
+    rw [hsum]; exact map_add (C.toCurrent : TestFormOn (univ : Set (Euclid P)) m →ₗ[ℝ] ℝ) _ _
+  -- Step 3 (vertex negligibility): `C(χₖω) → 0`.
+  have h1 : Tendsto (fun k => C (ωin k)) atTop (𝓝 0) := by
+    refine Submission.codim1_ovr_imrep_vanish_at_vertex P m C ωin (fun k => 2 * ε k) S hm hIM
+      hε0 ?_ ?_
+    · intro k x hx
+      show χ k x • ω₀ x = 0
+      rw [hχ0 k x hx, zero_smul]
+    · intro k x
+      show covectorEuclideanNorm (χ k x • ω₀ x) ≤ S
+      rw [hsmul, abs_of_nonneg (χ k).nonneg]
+      calc χ k x * covectorEuclideanNorm (ω₀ x) ≤ 1 * covectorEuclideanNorm (ω₀ x) :=
+            mul_le_mul_of_nonneg_right (χ k).le_one (covectorEuclideanNorm_nonneg _)
+        _ ≤ S := by rw [one_mul]; exact hS x
+  -- Step 4: `0 ∉ spt((1 − χₖ)ω)`, so `C((1 − χₖ)ω) = ∫_M (1 − χₖ)⟨ω, ξ⟩ dHᵐ`.
+  have h2 : ∀ k, C (ωout k) = ∫ x in M, (1 - χ k x) * ξ x (ω₀ x) ∂μHE[m] := by
+    intro k
+    rw [hoff (ωout k) ?_]
+    · refine setIntegral_congr_fun hMm fun x _ => ?_
+      show ξ x ((1 - χ k x) • ω₀ x) = _
+      rw [map_smul, smul_eq_mul]
+    · intro h0
+      have hnhds : ball (0 : Euclid P) (ε k) ∈ 𝓝 (0 : Euclid P) := ball_mem_nhds 0 (hε k)
+      have hzero : ∀ x ∈ ball (0 : Euclid P) (ε k), (1 - χ k x) • ω₀ x = 0 := by
+        intro x hx
+        rw [(χ k).one_of_mem_closedBall (ball_subset_closedBall hx), sub_self, zero_smul]
+      exact (notMem_tsupport_iff_eventuallyEq.2
+        (Filter.eventually_of_mem hnhds hzero)) h0
+  -- Step 5: dominated convergence on `M`, with bound `S · 1_{spt ω}`.
+  have hK : IsCompact (tsupport ω₀) := hωc
+  have h3 : Tendsto (fun k => ∫ x in M, (1 - χ k x) * ξ x (ω₀ x) ∂μHE[m]) atTop
+      (𝓝 (∫ x in M, ξ x (ω₀ x) ∂μHE[m])) := by
+    refine tendsto_integral_of_dominated_convergence
+      ((tsupport ω₀).indicator fun _ => S) ?_ ?_ ?_ ?_
+    · intro k
+      exact (((continuousOn_const (c := (1 : ℝ))).sub (χ k).continuous.continuousOn).mul
+        (hξc.clm_apply hωs.continuous.continuousOn)).aestronglyMeasurable hMm
+    · refine IntegrableOn.integrable_indicator ?_ hK.isClosed.measurableSet
+      show IntegrableOn (fun _ => S) (tsupport ω₀) (μHE[m].restrict M)
+      refine integrableOn_const ?_
+      rw [Measure.restrict_apply hK.isClosed.measurableSet, inter_comm]
+      exact hfin _ hK
+    · intro k
+      refine (ae_restrict_iff' hMm).2 (Eventually.of_forall fun x hx => ?_)
+      by_cases hxK : x ∈ tsupport ω₀
+      · rw [indicator_of_mem hxK, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+        have h01 : |1 - χ k x| ≤ 1 := by
+          rw [abs_le]; constructor <;> linarith [(χ k).nonneg (x := x), (χ k).le_one (x := x)]
+        calc |1 - χ k x| * |ξ x (ω₀ x)| ≤ 1 * covectorEuclideanNorm (ω₀ x) :=
+              mul_le_mul h01 (hξb x hx _) (abs_nonneg _) zero_le_one
+          _ ≤ S := by rw [one_mul]; exact hS x
+      · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero, mul_zero,
+          norm_zero]
+    · refine (ae_restrict_iff' hMm).2 (Eventually.of_forall fun x hx => ?_)
+      have hx0 : x ≠ 0 := fun h => h0M (h ▸ hx)
+      have hev : ∀ᶠ k in atTop, 2 * ε k < ‖x‖ := hε0.eventually (gt_mem_nhds (norm_pos_iff.2 hx0))
+      apply tendsto_const_nhds.congr'
+      filter_upwards [hev] with k hk
+      rw [hχ0 k x hk.le, sub_zero, one_mul]
+  -- Step 6: `C(ω) = C(χₖω) + C((1 − χₖ)ω) → 0 + ∫_M ⟨ω, ξ⟩ dHᵐ`; the left side is constant.
+  have h4 : Tendsto (fun k => C (ωin k) + C (ωout k)) atTop
+      (𝓝 (0 + ∫ x in M, ξ x (ω₀ x) ∂μHE[m])) := by
+    refine h1.add ?_
+    simp_rw [h2]; exact h3
+  rw [zero_add] at h4
+  have h5 : (fun k => C (ωin k) + C (ωout k)) = fun _ => C ω := funext fun k => (hsplit k).symm
+  rw [h5] at h4
+  exact tendsto_nhds_unique tendsto_const_nhds h4
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
