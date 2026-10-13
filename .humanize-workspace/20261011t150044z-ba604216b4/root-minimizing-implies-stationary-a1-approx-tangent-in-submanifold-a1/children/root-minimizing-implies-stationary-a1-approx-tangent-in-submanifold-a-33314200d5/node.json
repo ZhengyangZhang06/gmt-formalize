@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+  "depth": 3,
+  "title": "An approximate tangent plane of M lies in every subspace along which a set carrying H^n-almost all of M is flat",
+  "statement": "Let P, n ∈ ℕ and M, N ⊆ ℝ^P with H^n(M ∖ N) = 0, where H^n = μHE[n] is the normalized n-dimensional Euclidean Hausdorff measure. No measurability of M or N is assumed. Let x ∈ ℝ^P, and let Q, T be linear subspaces of ℝ^P. Suppose N is flat at x along T: for every real ε > 0 there is a real ρ > 0 such that every z ∈ N with |z − x| < ρ admits some t ∈ T with |z − x − t| ≤ ε|z − x|. Suppose Q is an approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n M x Q). That is, finrank Q = n, and for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,r}(M)} f dH^n → ∫_Q f dH^n as r ↓ 0 (along 𝓝[>] 0), where η_{x,r}(y) = r⁻¹(y − x). Then Q ⊆ T, i.e. Q ≤ T as submodules. Norms and distances are Euclidean.",
+  "lean_statement": "∀ (P n : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q T : Submodule ℝ (Euclid P)), μHE[n] (M \\ N) = 0 → (∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z x < ρ → ∃ t ∈ T, ‖z - x - t‖ ≤ ε * ‖z - x‖) → HasApproximateTangentSpaceAt n M x Q → Q ≤ T",
+  "lean_name": "atsm_approxTangent_le_of_flat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a-33314200d5-a1"
+}
