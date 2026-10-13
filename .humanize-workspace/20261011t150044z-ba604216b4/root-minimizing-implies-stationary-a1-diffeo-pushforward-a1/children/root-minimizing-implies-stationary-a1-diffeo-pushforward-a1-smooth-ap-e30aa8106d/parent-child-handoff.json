@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/{parent-child-handoff.json,decomposition-scope-v1.json,decomposition-scope-v2.json,decomposition-v2.json,decomposition-audit-v1.json,decomposition-audit-v2.json,decomposition-review-receipt-v1.json,decomposition-review-receipt-v2.json}; sha256(handoff natural_proof) = edb40234e38681383059766fc8fce5de4e38aeb8b70b1da74d3e2f3509f688a2",
+        "python3 -I: dag.json scan of all 451 nodes for the 11 dpf_ lean_names (no hits) and for approxTangent/pushforward/area_formula/bilipschitz lean_names",
+        "grep -l '\"<each dpf_ name>\"' nodes/*/decomposition-v*.json (hits only in this node's own v1/v2)",
+        "grep -n diffeo-pushforward issue-workers.json; git branch -a | grep diffeo; git grep -n 'dpf_\\|imrep_c1_diffeo' <node proof branch> -- GMT (no matches)",
+        "rg -n 'pushforward|Pushforward' project/GMT --glob '*.lean'",
+        "rg -n 'dpf_|imrep_c1_diffeo|approxTangent.*map|area_formula' project/GMT --glob '*.lean' (no match)",
+        "grep -rn in mathlib/Mathlib: exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, ae_tendsto_measure_inter_div, ae_tendsto_average_norm_sub, image_of_continuousOn_injOn, hausdorffMeasure_image_le, contDiff_symm, extDerivWithin_pullback, det_isEmpty, theorem lintegral_iUnion, normDet_comp, normDet_sq_eq_det_gram, euclideanHausdorffMeasure_image, normDet_of_subsingleton, euclideanHausdorffMeasure_zero, hausdorffMeasure_zero_singleton, exists_antilipschitzWith, analyticOnNhd_compContinuousLinearMapCLM, continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, convolution_tendsto_right_of_continuous, hasFDerivAt_convolution_right, contDiff_convolution_left, lipschitzWith_of_nnnorm_fderiv_le, toHomeomorphOfContinuousClosed, ofInjectiveEndo, eq_smul_basis_det, comp_quasiMeasurePreserving, integral_eq_lintegral_pos_part_sub_lintegral_neg_part, euclideanHausdorffMeasure_homothety_image, euclideanHausdorffMeasure_eq_volume, lintegral_withDensity_eq_lintegral_mul_non_measurable, norm_fderiv_le_of_lipschitz, addHaar_closedBall_eq_addHaar_ball, exists_cthickening_subset_open, continuous_det, det_fromBlocks_zero₂₁, gramSchmidtOrthonormalBasis",
+        "grep -n -A12 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' Mathlib/MeasureTheory/Function/Jacobian.lean; grep -A6 'Homeomorph.contDiff_symm' Mathlib/Analysis/Calculus/ContDiff/Operations.lean; grep -A8 euclideanHausdorffMeasure_homothety_image Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -A5 'normDet_comp\\|normDet_sq_eq_det_gram\\|euclideanHausdorffMeasure_image' Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "grep -rn in simongmt/Poincare/SimonGMT: def areaRegularSet, measurableSet_areaRegularSet, area_image_compl_regularSet_eq_zero, weighted_area_formula_lipschitz_injOn, measurable_areaJacobianAt, def HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique, def blowUpMap, exteriorDerivativeOn_pullbackFormWithin, def pullbackFormWithin, exteriorDerivativeTestOn, boundary_apply, def TestFormOnConverges, def IsTestForm, def IsSmoothForm, exteriorDerivative_isTestForm, tsupport_exteriorDerivative_subset, def CountablyRectifiable, def areaJacobianAt, structure GeometricCurrentOn",
+        "grep -n '^theorem\\|^lemma' simongmt/Poincare/SimonGMT/Chapter03/*.lean",
+        "lake env lean /tmp/dpf-a3-review/Types.lean",
+        "lake env lean /tmp/dpf-a3-review/Assembly.lean (#print axioms assembly_conditional)",
+        "lake env lean /tmp/dpf-a3-review/Wiring.lean",
+        "lake env lean /tmp/dpf-a3-review/Instances.lean (#print axioms gram_eq_normDet_check)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-audit-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-review-receipt-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/tmp/dpf-a3-review/Types.lean",
+        "/tmp/dpf-a3-review/Assembly.lean",
+        "/tmp/dpf-a3-review/Wiring.lean",
+        "/tmp/dpf-a3-review/Instances.lean"
+      ],
+      "conclusion": "No declaration in the local snapshot proves this push-forward statement or any of the 11 children, so the children are new. The only related project item is the Ch06 contract's LipschitzPushforwardIntegerMultiplicity, a different Prop about IsLipschitzPushforward that is still unproved (its main_theorem is sorry). SimonGMT Chapter03 asserts no theorem that rectifiable sets have approximate tangent planes almost everywhere. Every library fact the child proofs rely on exists in the pinned Mathlib (25730c7c) and SimonGMT (2b36630) with compatible hypotheses:\n- the partition theorem, with rpos : ∀ A, r A ≠ 0;\n- Homeomorph.contDiff_symm and the homothety scaling of μHE;\n- Besicovitch density and Lebesgue differentiation;\n- normDet_comp, normDet_sq_eq_det_gram and euclideanHausdorffMeasure_image;\n- SimonGMT's weighted injective Lipschitz area formula, which takes an arbitrary weight and has no rank hypothesis;\n- HasApproximateTangentSpaceAt (finrank plus C_c blow-up convergence) and its uniqueness.\nAll 11 frozen child types and the parent type elaborate in the comparator's replayed contract scope. The parent assembly compiles, and its conditional form uses only propext, Classical.choice and Quot.sound. Sibling wiring and the inferred instances were confirmed in Lean: the Matrix.of Gram expression equals normDet of the restricted map, ‖L‖ is the operator norm, and HasOrthogonalProjection is found. No name collides with the 451 DAG nodes or with other nodes' stored proposals."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.smooth_approximation-a1",
+  "subproblem": {
+    "key": "smooth_approximation",
+    "title": "Smooth approximation of a compactly supported C¹ perturbation of the identity",
+    "statement": "Let U ⊆ ℝ^P be open, K ⊆ U compact and φ : ℝ^P → ℝ^P a C¹ map with φ(x) = x for x ∉ K. Then there are C^∞ maps ψ_k : ℝ^P → ℝ^P (k ∈ ℕ), a compact K' ⊆ U and a constant C such that ψ_k(x) = x for x ∉ K' and all k, ‖Dψ_k(x)‖ ≤ C for all k and x, and ψ_k(x) → φ(x), Dψ_k(x) → Dφ(x) as k → ∞ for every x.",
+    "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ (ψ : ℕ → Euclid P → Euclid P) (K' : Set (Euclid P)) (C : ℝ), IsCompact K' ∧ K' ⊆ U ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ψ k)) ∧ (∀ k x, x ∉ K' → ψ k x = x) ∧ (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) ∧ (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) ∧ ∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x))",
+    "lean_name": "dpf_smooth_approx_compact_perturbation",
+    "depends_on": [],
+    "natural_proof": "Source: the mollification φ_k := id + ρ_k ∗ (φ − id) in step 3 of the parent proof (used to reduce Simon 6.2.24(1), chapter-06.txt line 414, ∂f_#T = f_#∂T, from C¹ maps to smooth maps), with the details filled in. Notation: E := ℝ^P, I := identity, λ := Lebesgue measure (volume) on E, ∗ convolution with respect to λ; in Lean ContDiff ℝ (⊤ : ℕ∞) is the C^∞ condition (the coercion of ⊤ : ℕ∞ to WithTop ℕ∞, not the analytic order).\n1. Margin. Since K is compact, U open and K ⊆ U, there is δ > 0 with K' := cthickening δ K = {x : infEdist(x, K) ≤ δ} ⊆ U (Mathlib IsCompact.exists_cthickening_subset_open; if K = ∅ then K' = ∅). K' is compact (IsCompact.cthickening, E proper).\n2. The perturbation. g := φ − id : E → E is C¹, and g(x) = 0 for x ∉ K; so g and Dg = Dφ − I (Dg = 0 on the open set E ∖ K by Filter.EventuallyEq.fderiv_eq) are continuous with support in the compact set K. Hence g has compact support, and A := sup_x ‖Dg(x)‖ < ∞.\n3. Mollifiers. For k ∈ ℕ let β_k : ContDiffBump (0 : E) have 0 < rIn < rOut = δ/(k+2), and ρ_k := β_k.normed λ: ρ_k is C^∞, ρ_k ≥ 0 (ContDiffBump.nonneg_normed), ∫ ρ_k dλ = 1 (ContDiffBump.integral_normed) and ρ_k(y) = 0 for |y| ≥ δ/(k+2) (its support is the open ball of radius rOut). Define ψ_k := id + ρ_k ∗ g, i.e. ψ_k(x) = x + ∫ ρ_k(t) g(x − t) dt (the convolution ρ_k ⋆[lsmul ℝ ℝ, λ] g).\n4. Smoothness. ρ_k is C^∞ with compact support and g is continuous, hence locally integrable, so ρ_k ∗ g is C^∞ (Mathlib HasCompactSupport.contDiff_convolution_left with n = ⊤ : ℕ∞; λ is invariant under translations and negation). Hence ψ_k is C^∞.\n5. Support. Let x ∉ K'. For every t with ρ_k(t) ≠ 0 we have |t| < δ/(k+2) < δ, and x − t ∉ K (otherwise infEdist(x, K) ≤ |t| < δ, i.e. x ∈ K'). So g(x − t) = 0 whenever ρ_k(t) ≠ 0, (ρ_k ∗ g)(x) = 0 and ψ_k(x) = x, for every k.\n6. Derivative bound. g is C¹ with compact support and ρ_k is locally integrable, so ρ_k ∗ g is differentiable with D(ρ_k ∗ g)(x) = (ρ_k ⋆[(lsmul ℝ ℝ).precompR E, λ] Dg)(x) = ∫ ρ_k(t) Dg(x − t) dt (Mathlib HasCompactSupport.hasFDerivAt_convolution_right, the derivative falling on the compactly supported C¹ factor g). Therefore Dψ_k(x) = I + ∫ ρ_k(t) Dg(x − t) dt and ‖Dψ_k(x)‖ ≤ ‖I‖ + ∫ ρ_k(t) ‖Dg(x − t)‖ dt ≤ 1 + A =: C (ρ_k ≥ 0, ∫ρ_k = 1).\n7. Pointwise convergence. Fix x. Since rOut(β_k) = δ/(k+2) → 0 and g, Dg are continuous, (ρ_k ∗ g)(x) → g(x) and ∫ ρ_k(t) Dg(x − t) dt → Dg(x) (Mathlib ContDiffBump.convolution_tendsto_right_of_continuous; the derivative of step 6 is pointwise the same integral ∫ ρ_k(t) • Dg(x − t) dt as the scalar convolution ρ_k ⋆[lsmul ℝ ℝ, λ] Dg used by that lemma, by unfolding convolution_def; directly: |(ρ_k ∗ h)(x) − h(x)| ≤ sup_{|t| ≤ δ/(k+2)} |h(x − t) − h(x)| → 0 for h ∈ {g, Dg}). Hence ψ_k(x) = x + (ρ_k ∗ g)(x) → x + g(x) = φ(x) and Dψ_k(x) → I + Dg(x) = Dφ(x).\n8. Conclusion: ψ_k, K' and C satisfy all requirements: K' compact ⊆ U (step 1), each ψ_k C^∞ (step 4), ψ_k = id off K' (step 5), ‖Dψ_k‖ ≤ C (step 6), and the two pointwise limits (step 7). (For P = 0 all statements are trivial: E is a point, g = 0 and ψ_k = id = φ. The Lean proof needs Mathlib.Analysis.Calculus.BumpFunction.Normed and Mathlib.Analysis.Calculus.BumpFunction.Convolution for ContDiffBump.normed and ContDiffBump.convolution_tendsto_right_of_continuous, which the submission may import although the frozen statement does not use them; the convolution derivative and smoothness lemmas are already in scope.)",
+    "proof_key_steps": [
+      "Choose δ > 0 with K' := cthickening δ K ⊆ U; K' is compact.",
+      "g := φ − id is C¹ with compact support in K, and A := sup‖Dg‖ < ∞.",
+      "ψ_k := id + ρ_k ∗ g with normalized smooth bumps ρ_k of radius δ/(k+2) is C^∞.",
+      "ρ_k ∗ g vanishes off K', so ψ_k = id off K'.",
+      "Dψ_k = I + ρ_k ∗ Dg gives ‖Dψ_k‖ ≤ 1 + A.",
+      "Mollification converges at continuity points: ψ_k → φ and Dψ_k → Dφ pointwise."
+    ]
+  },
+  "audit": {
+    "key": "smooth_approximation",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The mollifier construction supplies a common compact support inside U, smooth approximants, a uniform derivative bound and both pointwise limits. The convolution lemmas have the required hypotheses. The explicitly typed smoothness order and the zero-dimensional case are correct."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-smooth-ap-e30aa8106d/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-smooth-ap-e30aa8106d/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-smooth-ap-e30aa8106d/parent-supplied-natural-proof.json"
+}

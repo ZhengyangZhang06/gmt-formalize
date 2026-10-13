@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Simon 6.2.24(1): the push-forward formula current is a cycle when T is",
+  "statement": "Let U ⊆ ℝ^P be open, R = (M, θ, ξ) an integer multiplicity triple representing T ∈ 𝒟_n(U), K ⊆ U compact, φ : ℝ^P → ℝ^P C¹ with φ(x) = x for x ∉ K, and S ∈ 𝒟_n(U) a current with S(ω) = ∫_M θ(x) ξ(x)(ω(φ(x))∘Dφ(x)) dH^n(x) for every ω ∈ 𝒟^n(U). If ∂T = 0 (BoundaryVanishes T; vacuous for n = 0) then ∂S = 0 (BoundaryVanishes S).",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (T S : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]) → BoundaryVanishes T → BoundaryVanishes S",
+  "lean_name": "dpf_pushforward_formula_boundaryVanishes",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.smooth_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.smooth_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026-a1"
+}
