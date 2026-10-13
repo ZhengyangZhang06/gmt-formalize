@@ -1,0 +1,24 @@
+{
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4732",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "719de746fc675ae67f3e3f82a506d023f582af62",
+  "integrated_commit": "",
+  "proof_base_commit": "427b834398295a3a0353f77bc5aaae94bbffe095",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "requires": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.chart_localization-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.tangent_projection-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_space_transfer-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.nearest_point-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.tangent_identity-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.derivative_estimate-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.uniform_injectivity-a1"
+  ]
+}
