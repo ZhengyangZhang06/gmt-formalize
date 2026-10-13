@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_boundary-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_boundary-a1.c1_perturbation-a1",
+      "key": "c1_perturbation",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/children/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md,parent-supplied-natural-proof.json}",
+              "python3 scans of RUN/dag.json for nodes whose lean_statement/title mention compContinuousLinearMap, BoundaryVanishes, exteriorDerivative/extDeriv, mollif, pullback, convolution, push (found accepted dpf_pushforward_formula_boundaryVanishes, dpf_smooth_approx_compact_perturbation, dpf_pb_smooth_pullback_isTestForm, dpf_pb_imrep_pullback_integral_tendsto; twin dor_lmb_pc_pushforward_boundaryVanishes decomposing; dtc_bc_lc_pf_c1_compact_perturbation rlcr-lean without K' ⊆ O)",
+              "python3: read RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json (how accepted cross-branch declarations were reused)",
+              "grep -n '_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children|reuse' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "python3: accepted-candidate.json, isolated-comparator-result.json, lean-audit-v1.json and parent-supplied-natural-proof.md of node root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026; parent-child-handoff.json of node ...-smooth-ap-e30aa8106d",
+              "git show 74a1c6be70198afecab9b07ad3b6e49b79222a80:GMT/Ch07/Submission.lean | grep -n 'theorem '; diff of its first 452 lines with GMT/Ch07/Submission.lean (identical)",
+              "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents.lean,Forms.lean} (GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn, BoundaryVanishes data, exteriorDerivativeOn_pullbackFormWithin, pullbackFormWithin)",
+              "rg -n 'exists_contDiff_support_eq_eq_one_iff|exists_contDiff_tsupport_subset|exists_cthickening_subset_open|IsCompact.cthickening|closure_thickening_subset_cthickening|cthickening_subset_thickening|self_subset_thickening|Filter.EventuallyEq.fderiv_eq|ContDiffAt.congr_of_eventuallyEq|contDiff_iff_contDiffAt|ContDiffOn.contDiffAt' RUN/local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "python3 -I: gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem) to build the comparator scope prefix",
+              "lake env lean /tmp/pfbdecomp/T0.lean (#check of the cited Mathlib lemmas after import GMT.Ch07.Submission)",
+              "lake env lean /tmp/pfbdecomp/T1.lean (conditional assembly: both child types as sorry, exact frozen parent type; #print axioms)",
+              "lake env lean /tmp/pfbdecomp/TA.lean (full Lean proof of child dimred_mbl_pfb_c1_compact_perturbation; #print axioms)",
+              "lake env lean /tmp/pfbdecomp/T3.lean (accepted declarations of candidate 74a1c6be + child A proof + assembly, zero sorry; #print axioms; exact-checks of parent and reused frozen types)",
+              "python3 -I: verifier lean_contract.validate_lean_statement on both child types; byte-identity of the reused type with dag.json; collision scan for dimred_mbl_pfb_ in dag.json and nodes/*/decomposition-v*.json; git log --all --oneline -S'dimred_mbl_pfb_'; rg -l dimred_mbl_pfb_ RUN/local-references/123e8435b4a2469b/project (no match)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/parent-supplied-natural-proof.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/accepted-candidate.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/isolated-comparator-result.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/lean-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-smooth-ap-e30aa8106d/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/pfbdecomp/cand_submission.lean",
+              "/tmp/pfbdecomp/T1.lean",
+              "/tmp/pfbdecomp/TA.lean",
+              "/tmp/pfbdecomp/T3.lean"
+            ],
+            "conclusion": "Pins match the manifest: project b4d606d, Mathlib 25730c7c, SimonGMT 2b366308. Neither the frozen contract nor SimonGMT has a boundary theorem for push-forward by non-affine maps. SimonGMT does supply GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn and exteriorDerivativeOn_pullbackFormWithin (Simon 6.1.14), which the reused child's proof uses.\nThe DAG has the comparator-accepted dpf_pushforward_formula_boundaryVanishes (candidate 74a1c6be, isolated comparator passed, machine-nonleaf audit). It covers this node's steps 0 and 3–6 for C¹ maps equal to the identity off a compact subset of U. It is reused with a byte-identical frozen type. Its accepted dependencies, dpf_smooth_approx_compact_perturbation, dpf_pb_smooth_pullback_isTestForm and dpf_pb_imrep_pullback_integral_tendsto, are in that candidate's history. Neither the twin node dor_lmb_pc_pushforward_boundaryVanishes nor dtc_bc_lc_pf_c1_compact_perturbation is accepted (and the latter lacks K' ⊆ O), so neither is shared. The new name dimred_mbl_pfb_c1_compact_perturbation collides with nothing.\nEvery Mathlib lemma cited for the new child exists at the pinned revision and is in scope after import GMT.Ch07.Submission.\nLean checks: the new child is fully proved, and the end-to-end assembly with the real accepted proof proves the exact frozen parent type with zero sorry. Both use only the axioms propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_boundary-a1",
+        "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_boundary-a1.c1_perturbation-a1",
+        "subproblem": {
+          "key": "c1_perturbation",
+          "title": "C¹ cut-off of f near K to a compact perturbation of the identity supported in O",
+          "statement": "Let P ∈ ℕ, O ⊆ ℝ^P open, K ⊆ O compact, and f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O; f is arbitrary off O). Then there exist a map φ : ℝ^P → ℝ^P of class C¹ on all of ℝ^P (ContDiff ℝ 1 φ), an open set V ⊆ ℝ^P with K ⊆ V, and a compact set K' with K' ⊆ O, such that φ(x) = f(x) and Dφ(x) = Df(x) for every x ∈ V (Df(x) := fderiv ℝ f x), and φ(x) = x for every x ∉ K'.",
+          "lean_statement": "∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (V K' : Set (Euclid P)), IsOpen V ∧ K ⊆ V ∧ IsCompact K' ∧ K' ⊆ O ∧ ContDiff ℝ 1 φ ∧ (∀ x ∈ V, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x) ∧ ∀ x, x ∉ K' → φ x = x",
+          "lean_name": "dimred_mbl_pfb_c1_compact_perturbation",
+          "depends_on": [],
+          "natural_proof": "Source: step 2 (Cutoffs) of the parent proof, specialized. The parent cuts f off to g = χ₁·f with g = f near K. Here the cut-off is taken relative to the identity, φ = χ·f + (1 − χ)·id, so that in addition φ = id off a compact subset of O. The parent's conclusion \"g(x) = f(x) and Dg(x) = Df(x) on a neighbourhood of K\" is kept.\nNotation: E := ℝ^P (Euclid P, a finite-dimensional and hence proper real normed space); thickening r K := {z : infEdist(z, K) < r}; cthickening r K := {z : infEdist(z, K) ≤ r}; Df(x) := fderiv ℝ f x.\n1. Margin. K is compact, O is open and K ⊆ O, so there is δ > 0 with cthickening δ K ⊆ O (Mathlib IsCompact.exists_cthickening_subset_open). Put s := thickening δ K (open, isOpen_thickening), t := cthickening (δ/2) K (closed, isClosed_cthickening) and V := thickening (δ/2) K (open, isOpen_thickening). Then K ⊆ V (self_subset_thickening, since δ/2 > 0), V ⊆ t (thickening_subset_cthickening), and t ⊆ s (cthickening_subset_thickening', since 0 < δ and δ/2 < δ). If K = ∅, all these sets are empty and the steps below go through unchanged.\n2. Smooth cutoff. Apply the smooth Urysohn lemma in the finite-dimensional real space E (Mathlib exists_contDiff_support_eq_eq_one_iff, with smoothness order ⊤ : ℕ∞) to the open set s and the closed set t ⊆ s. It gives χ : E → ℝ, C^∞, with values in [0, 1], support χ = s, and χ(x) = 1 ⟺ x ∈ t. In particular χ is C¹ (ContDiff.of_le), and χ = 1 on V ⊆ t.\n3. The compact set K'. Let K' := tsupport χ = closure (support χ) = closure s. Then K' ⊆ cthickening δ K (closure_thickening_subset_cthickening) ⊆ O by step 1. K' is closed (isClosed_tsupport) and lies in the compact set cthickening δ K (IsCompact.cthickening, E proper), so K' is compact (IsCompact.of_isClosed_subset).\n4. Definition. For x ∈ E put φ(x) := χ(x)·f(x) + (1 − χ(x))·x. No regularity of f off O is used.\n5. φ = id off K'. If x ∉ K' = tsupport χ, then χ(x) = 0 (image_eq_zero_of_notMem_tsupport), so φ(x) = 0·f(x) + 1·x = x.\n6. φ = f near K. Let x ∈ V. Since V is open, it is a neighbourhood of x. Every y ∈ V lies in t, so χ(y) = 1 and φ(y) = 1·f(y) + 0·y = f(y). Thus φ and f agree on a neighbourhood of x (φ =ᶠ[𝓝 x] f). This gives φ(x) = f(x) (Filter.EventuallyEq.eq_of_nhds) and Dφ(x) = Df(x) (Filter.EventuallyEq.fderiv_eq: the Fréchet derivative at x depends only on the germ at x).\n7. φ is C¹ on E. By contDiff_iff_contDiffAt it suffices to show ContDiffAt ℝ 1 φ x for every x ∈ E.\n (a) x ∈ O. O is open, so O ∈ 𝓝 x and f is C¹ at x (ContDiffOn.contDiffAt). χ is C¹ at x by step 2, and the constant 1 and the identity are C¹. The product of a real C¹ function with a vector-valued C¹ map is C¹ at x, and so are sums and differences of C¹ maps (ContDiffAt.smul, ContDiffAt.add, ContDiffAt.sub). Hence φ = χ·f + (1 − χ)·id is C¹ at x.\n (b) x ∉ O. Then x ∉ K', because K' ⊆ O (step 3). The complement of the closed set K' is an open neighbourhood of x on which φ = id (step 5). So φ =ᶠ[𝓝 x] id, and φ is C¹ at x (ContDiffAt.congr_of_eventuallyEq with contDiffAt_id).\n8. Conclusion. The triple (φ, V, K') has all required properties:\n - V is open and K ⊆ V (step 1);\n - K' is compact and K' ⊆ O (step 3);\n - φ is C¹ on E (step 7);\n - φ(x) = f(x) and Dφ(x) = Df(x) for every x ∈ V (step 6);\n - φ(x) = x for every x ∉ K' (step 5). ∎",
+          "proof_key_steps": [
+            "Choose δ > 0 with cthickening δ K ⊆ O; V := thickening (δ/2) K is an open neighbourhood of K, contained in t := cthickening (δ/2) K ⊆ s := thickening δ K.",
+            "Smooth Urysohn (exists_contDiff_support_eq_eq_one_iff): χ ∈ C^∞(E, [0,1]) with support χ = s and χ = 1 exactly on t; K' := tsupport χ ⊆ cthickening δ K ⊆ O is compact.",
+            "φ := χ·f + (1 − χ)·id equals id off K' and equals f on the open set V, hence φ = f and Dφ = Df on V (EventuallyEq.fderiv_eq).",
+            "φ is C¹ at points of O (C¹ combination of χ, f, id) and at points off O (φ = id near them, as K' ⊆ O), hence ContDiff ℝ 1 φ."
+          ]
+        },
+        "audit": {
+          "key": "c1_perturbation",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The standalone one-line type matches every hypothesis and conclusion in the prose. The proof supplies the compact margin, smooth cutoff, compact support containment, identity outside that support, and global C¹ regularity even though f is arbitrary outside O. Equality on the open neighbourhood V gives equality of Fréchet derivatives by locality. Empty K and dimension zero cause no gap. The proof is complete and non-circular, and the bare declaration name is unreserved. Applying it on O ∩ U supplies precisely the compact perturbation required by perturbed_boundary."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/decomposition.json": "a6a0848c91b382298e86855988916c1412a97da5447d089ff2232f5836c259c1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/decomposition-audit.json": "6fb615f8677d163955feb7191c8610240ada6c42fab208177db1a090bb3df433",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/children/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-child-handoff.json": "6c8ebb05ea49937ee5f3fc2903e4132c3122431aa1668410f44bcbcaf4ab7614",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/children/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-supplied-plan.md": "404080deb2a9ffb9e1567c7cc8eb5a17b02f8ef8798e2bc58f5af21b0792a696",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/children/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-supplied-natural-proof.md": "b2cf1e15c1505ca0ecce8e21d698e6326b499a8d5c2b0cb6870923461ad11b9d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/children/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/parent-supplied-natural-proof.json": "888a2a5176e4431579771c5a743e99494d96d292d0141e957834625294336206",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/children/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/node.json": "6cb7404849ff77adc615a6d05f98a22946b949f7aacf9c165f903aa4b9eb0cc3"
+  }
+}
