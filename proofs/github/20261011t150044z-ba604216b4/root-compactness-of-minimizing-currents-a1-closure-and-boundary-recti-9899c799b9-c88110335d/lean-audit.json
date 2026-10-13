@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e17d4a04a85e00ab96beda4fd318c77c84b2ae6e0b8a5d54cd05731d4ba32ed2",
+  "git_delta": {
+    "base_commit": "06bc2fbaa77a692bab0341289dca8d4a3145ef3c",
+    "candidate_commit": "2a45ecf209be6af4b268ee58190794c9983c69ee",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_ud_uniformize_eventually",
+    "diff_sha256": "a1a5a6b103ebfb49d09f77aacf86db9586fc5f2c41debdeeea590694a4536daa",
+    "source_sha256": "293d41cdbf144b52f2af908b152da9ae10f2f94d681af2a5ddc82cc3451af179",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_ud_uniformize_eventually",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F : Set (Euclid P)) (T : ℝ → Set (Euclid P)), MeasurableSet F → μ F ≠ ∞ → (∀ ρ : ℝ, 0 < ρ → IsClosed (T ρ)) → (∀ x ∈ F, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), x ∈ T ρ) → ∀ η : ℝ≥0∞, η ≠ 0 → ∃ (E : Set (Euclid P)) (δ : ℝ), E ⊆ F ∧ 0 < δ ∧ μ (F \\ E) < η ∧ ∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → x ∈ T ρ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

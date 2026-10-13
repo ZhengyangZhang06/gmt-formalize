@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.plane_net-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "Finite ε-net of n-planes in projection operator norm (Simon Ch. 3, proof of 1.6, choice of π₁,…,π_N)",
+  "statement": "For all P, n ∈ ℕ and ε > 0 there are N ∈ ℕ and n-dimensional linear subspaces T₁,…,T_N of ℝ^P such that every n-dimensional linear subspace Q of ℝ^P satisfies ‖p_Q − p_{T_j}‖ < ε for some j, where p_V is the orthogonal projection onto V and ‖·‖ the operator norm.",
+  "lean_statement": "∀ (P n : ℕ) (ε : ℝ), 0 < ε → ∃ (N : ℕ) (T : Fin N → Submodule ℝ (Euclid P)), (∀ j, Module.finrank ℝ (T j) = n) ∧ ∀ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n → ∃ j, ‖Q.starProjection - (T j).starProjection‖ < ε",
+  "lean_name": "cbrr_projection_net",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4f51ecf64a-a1"
+}
