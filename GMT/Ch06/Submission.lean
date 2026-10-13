@@ -442,6 +442,102 @@ theorem Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support :
   change T.toCurrent ψ = T.toCurrent φ
   rw [← sub_eq_zero, ← hsub]
   exact hzero
+/-- Cut-off of a null sequence: if every derivative of `ψ_l` tends to `0` uniformly on
+`K = tsupport ζ`, then the test forms `φ_l = ζ ψ_l` tend to `0` in `𝒟ᵏ(U)`.  By the Leibniz rule,
+`D^j φ_l` is controlled on `K` by the bounded derivatives of `ζ` and the derivatives of `ψ_l` of
+order `≤ j`. -/
+theorem Submission.iwl_cr_ce_cutoff_converges_zero :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (ζ : Eucl P → ℝ) (ψs : ℕ → DifferentialForm (Eucl P) k)
+      (φs : ℕ → TestFormOn U k), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ U → (∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψs l)) →
+      (∀ l x, (φs l : DifferentialForm (Eucl P) k) x = ζ x • ψs l x) →
+      (∀ (j : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ,
+        ‖iteratedFDeriv ℝ j (ψs l) x‖ ≤ ε) →
+      TestFormOnConverges φs 0 := by
+  intro P k U ζ ψs φs hζ hζc hζU hψ hφ hsmall
+  -- Leibniz estimate, by induction on the order `j`, for a continuous bilinear `B`: if every
+  -- derivative of `f` is bounded on `K = tsupport ζ` and every derivative of `g l` tends to `0`
+  -- uniformly on `K`, then `D^j (B (f ·) (g l ·))` tends to `0` uniformly on `K`.
+  have key : ∀ (j : ℕ) (F₁ F₂ G : Type) [NormedAddCommGroup F₁] [NormedSpace ℝ F₁]
+      [NormedAddCommGroup F₂] [NormedSpace ℝ F₂] [NormedAddCommGroup G] [NormedSpace ℝ G]
+      (B : F₁ →L[ℝ] F₂ →L[ℝ] G) (f : Eucl P → F₁) (g : ℕ → Eucl P → F₂),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (g l)) →
+      (∀ i, ∃ C, ∀ x ∈ tsupport ζ, ‖iteratedFDeriv ℝ i f x‖ ≤ C) →
+      (∀ (i : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ,
+        ‖iteratedFDeriv ℝ i (g l) x‖ ≤ ε) →
+      ∀ ε : ℝ, 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ,
+        ‖iteratedFDeriv ℝ j (fun y => B (f y) (g l y)) x‖ ≤ ε := by
+    intro j
+    induction j with
+    | zero =>
+      intro F₁ F₂ G _ _ _ _ _ _ B f g _ _ hfb hgs ε hε
+      obtain ⟨C, hC⟩ := hfb 0
+      have hA : 0 < ‖B‖ * |C| + 1 := by positivity
+      filter_upwards [hgs 0 (ε / (‖B‖ * |C| + 1)) (div_pos hε hA)] with l hl x hx
+      have h1 := hC x hx
+      have h2 := hl x hx
+      rw [norm_iteratedFDeriv_zero] at h1 h2 ⊢
+      calc ‖B (f x) (g l x)‖ ≤ ‖B‖ * ‖f x‖ * ‖g l x‖ := B.le_opNorm₂ _ _
+        _ ≤ (‖B‖ * |C| + 1) * (ε / (‖B‖ * |C| + 1)) := by
+          apply mul_le_mul _ h2 (norm_nonneg _) hA.le
+          nlinarith [norm_nonneg B, h1.trans (le_abs_self C), norm_nonneg (f x)]
+        _ = ε := by field_simp
+    | succ j ih =>
+      intro F₁ F₂ G _ _ _ _ _ _ B f g hf hg hfb hgs ε hε
+      have hf' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right le_rfl
+      have hg' : ∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ (g l)) :=
+        fun l => (hg l).fderiv_right le_rfl
+      -- `D (B (f ·) (g l ·)) = B (f ·) (D (g l) ·) + B (D f ·) (g l ·)`, with the bilinear maps
+      -- `precompR` and `precompL` built from `B`.
+      have hD : ∀ l, fderiv ℝ (fun y => B (f y) (g l y)) =
+          fun y => B.precompR (Eucl P) (f y) (fderiv ℝ (g l) y) +
+            B.precompL (Eucl P) (fderiv ℝ f y) (g l y) := fun l => funext fun y =>
+        B.fderiv_of_bilinear (hf.differentiable (by simp)).differentiableAt
+          ((hg l).differentiable (by simp)).differentiableAt
+      have h1 := ih F₁ (Eucl P →L[ℝ] F₂) (Eucl P →L[ℝ] G) (B.precompR (Eucl P)) f
+        (fun l => fderiv ℝ (g l)) hf hg' hfb
+        (fun i ε hε => by
+          filter_upwards [hgs (i + 1) ε hε] with l hl x hx
+          rw [norm_iteratedFDeriv_fderiv]
+          exact hl x hx) (ε / 2) (half_pos hε)
+      have h2 := ih (Eucl P →L[ℝ] F₁) F₂ (Eucl P →L[ℝ] G) (B.precompL (Eucl P)) (fderiv ℝ f) g
+        hf' hg (fun i => by
+          obtain ⟨C, hC⟩ := hfb (i + 1)
+          exact ⟨C, fun x hx => by rw [norm_iteratedFDeriv_fderiv]; exact hC x hx⟩)
+        hgs (ε / 2) (half_pos hε)
+      filter_upwards [h1, h2] with l hl1 hl2 x hx
+      have hc1 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+          (fun y => B.precompR (Eucl P) (f y) (fderiv ℝ (g l) y)) :=
+        (B.precompR (Eucl P)).isBoundedBilinearMap.contDiff.comp (hf.prodMk (hg' l))
+      have hc2 : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+          (fun y => B.precompL (Eucl P) (fderiv ℝ f y) (g l y)) :=
+        (B.precompL (Eucl P)).isBoundedBilinearMap.contDiff.comp (hf'.prodMk (hg l))
+      rw [← norm_iteratedFDeriv_fderiv, hD l,
+        fun_iteratedFDeriv_add_apply (hc1.contDiffAt.of_le (mod_cast le_top))
+          (hc2.contDiffAt.of_le (mod_cast le_top))]
+      calc _ ≤ _ := norm_add_le _ _
+        _ ≤ ε / 2 + ε / 2 := add_le_add (hl1 x hx) (hl2 x hx)
+        _ = ε := add_halves ε
+  -- Every derivative of the cut-off is bounded.
+  have hζb : ∀ i, ∃ C, ∀ x ∈ tsupport ζ, ‖iteratedFDeriv ℝ i ζ x‖ ≤ C := fun i => by
+    obtain ⟨C, hC⟩ :=
+      (hζ.continuous_iteratedFDeriv (mod_cast le_top)).bounded_above_of_compact_support
+        (hζc.iteratedFDeriv i)
+    exact ⟨C, fun x _ => hC x⟩
+  have hfun : ∀ l, (φs l : DifferentialForm (Eucl P) k) =
+      fun y => ContinuousLinearMap.lsmul ℝ ℝ (ζ y) (ψs l y) := fun l => funext fun y => by
+    simp only [hφ l y, ContinuousLinearMap.lsmul_apply]
+  refine ⟨tsupport ζ, hζc.isCompact, hζU, fun l => ?_, ?_, fun j => ?_⟩
+  · rw [funext (hφ l)]
+    exact tsupport_smul_subset_left _ _
+  · simp
+  · rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    filter_upwards [key j ℝ (Covector (Eucl P) k) (Covector (Eucl P) k)
+      (ContinuousLinearMap.lsmul ℝ ℝ) ζ ψs hζ hψ hζb hsmall (ε / 2) (half_pos hε)] with l hl x hx
+    rw [hfun l]
+    simp only [Submodule.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left]
+    exact (hl x hx).trans_lt (half_lt_self hε)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
