@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f31d39f841f7a940f3c8a814b57a7821c5b4dbd801e45773aeaa73b79f02a494",
+  "git_delta": {
+    "base_commit": "a0cbb004aa77d989e268c52c1ac74415d2527a6f",
+    "candidate_commit": "2a94c61b52e7439887ee602a72438411c1bfc984",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_cover_holder_one",
+    "diff_sha256": "eddbd392beff414461e1ff26681dc6bd1c55d9e0f3eba271d8c878063f6f0a72",
+    "source_sha256": "72b01f64b26475a7a78aaa4fc482622be336e0d954cf0f43aa26976d360352b2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_cover_holder_one",
+      "statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (α : ℝ) (U : Set (Rn n)) (F : Rn n → E), 0 < α → IsOpen U → (∀ x ∈ U, ∃ R : ℝ, 0 < R ∧ ball x R ⊆ U ∧ ContDiffOn ℝ 1 F (ball x R) ∧ ∃ C : ℝ, ∀ y ∈ ball x R, ∀ z ∈ ball x R, ‖fderiv ℝ F y - fderiv ℝ F z‖ ≤ C * ‖y - z‖ ^ α) → ContDiffOn ℝ 1 F U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 F x - iteratedFDeriv ℝ 1 F y‖ ≤ C * ‖x - y‖ ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
