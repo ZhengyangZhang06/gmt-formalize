@@ -1532,6 +1532,33 @@ theorem Submission.cmc_massOn_le_of_le_near_support : ∀ (P n : ℕ) (U : Set (
   rw [hμT W' hW', hμS W' hW', hsplit RT.measure, hsplit RS.measure, ← hdiff]
   exact add_le_add hle le_rfl
 
+/-- **Simon 7.2.4, proof, (8)–(12) and the lower semicontinuity step after (12)** (p. 186):
+the weak limit `C` of currents `Sⱼ` with the local comparison property is minimizing in `ℝᴾ`.
+Let `W ⊂⊂ ℝᴾ` be open and `S` an integer multiplicity competitor with `∂S = ∂C` and
+`K = spt(S − C)` a compact subset of `W`; choose `ε > 0` with `K_ε ⊆ W`.  The comparison
+hypothesis with `ψ = id` gives an open `W'` with `K ⊆ W' ⊆ K_ε` and `φ'` with
+`lim sup_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`, so lower semicontinuity of mass gives
+`M_{W'}(C) ≤ lim inf_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`, and minimality localizes from `W'` to
+`W ⊇ W'`. -/
+theorem Submission.dimred_mbl_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ := by
+  intro P n Us Ss C hUs hC hconv hloc
+  refine ⟨hC, fun W S hW hWU hS hSC hKc hKW => ?_⟩
+  -- `K = spt(S − C)` is a compact subset of the open set `W`, so `K_ε ⊆ W` for some `ε > 0`
+  have hKW' : (S - C).support ⊆ W := fun x hx => (hKW hx).2
+  obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW'
+  -- the comparison hypothesis with `ψ = id`, for the admissible competitor `S`
+  obtain ⟨W', hW', hKW'', hW'ε, φ', hφ', hcomp⟩ :=
+    hloc (S - C).support ε hKc hε id strictMono_id
+  -- `M_{W'}(C) ≤ lim inf_i M_{W'}(S_{φ'(i)}) ≤ lim sup_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`
+  have hle : C.massOn W' ≤ S.massOn W' :=
+    calc C.massOn W' ≤ liminf (fun i => (Ss (φ' i)).massOn W') atTop :=
+          Submission.dimred_mbl_mm_massOn_le_liminf P n Us Ss C hUs hconv φ' hφ' W'
+      _ ≤ limsup (fun i => (Ss (φ' i)).massOn W') atTop := liminf_le_limsup
+      _ ≤ S.massOn W' := hcomp S hS hSC subset_rfl
+  -- minimality localizes from `W'` to `W ⊇ W'`, as `K ⊆ W'` and `W ⊂⊂ ℝᴾ`
+  exact Submission.cmc_massOn_le_of_le_near_support P n univ S C (S - C).support W' W
+    isOpen_univ hS hC hKc subset_rfl hW' hW hKW'' (hW'ε.trans hεW) hWU hle
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
