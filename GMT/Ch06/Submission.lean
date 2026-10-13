@@ -694,6 +694,38 @@ theorem Submission.slicing_im_creg_box_bulk : ∀ (P n : ℕ) (Φ : Eucl n → E
     have hm : Measurable (B.piecewise χ (fun _ => (0 : Eucl n))) :=
       hχ.continuousOn.measurable_piecewise continuousOn_const hB.measurableSet
     have heq : B ∩ χ ⁻¹' S = B ∩ (B.piecewise χ (fun _ => (0 : Eucl n))) ⁻¹' S := by
+      ext y
+      simp only [mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hy, hyS⟩
+        exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy]⟩
+      · rintro ⟨hy, hyS⟩
+        exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy] at hyS⟩
+    rw [heq]
+    exact hB.measurableSet.inter (hm hS)
+  -- Step 5: `χ(S') = S`.
+  have himg : χ '' (B ∩ χ ⁻¹' S) = S := by
+    ext w
+    constructor
+    · rintro ⟨y, ⟨-, hy⟩, rfl⟩
+      exact hy
+    · intro hw
+      obtain ⟨y, hyB, rfl⟩ := hSχ hw
+      exact ⟨y, ⟨hyB, hw⟩, rfl⟩
+  -- Step 6: `χ` has derivative `Dχ(y)` at every `y ∈ S' ⊆ B` (`B` is open).
+  have hder : ∀ y ∈ B ∩ χ ⁻¹' S, HasFDerivWithinAt χ (fderiv ℝ χ y) (B ∩ χ ⁻¹' S) y := by
+    intro y hy
+    have hd : DifferentiableAt ℝ χ y :=
+      (hχ.differentiableOn one_ne_zero y hy.1).differentiableAt (hB.mem_nhds hy.1)
+    exact hd.hasFDerivAt.hasFDerivWithinAt
+  -- Step 7: change of variables along `χ` on `S'`.
+  have hcov := lintegral_image_eq_lintegral_abs_det_fderiv_mul (volume : Measure (Eucl n)) hS'
+    hder (hχinj.mono inter_subset_left) (fun w => ψ (Φ w) * ENNReal.ofReal (Real.sqrt
+      (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1))
+        (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det))
+  rw [himg] at hcov
+  -- Step 8: combine and write the set integral over `S'` as an indicator integral.
+  rw [harea, hcov, lintegral_indicator hS']
 /-- Area formula on the slices `{y₀ = t}` of a straightened chart `(B, χ)` (Simon Ch. 3, 2.6 on
 each slice; used for the co-area formula of Ch. 6, 4.1): with `[t, v] = (t, v₀, …, v_{m-1})`, the
 slice map `σ_t(v) = Φ(χ[t, v])` is Lipschitz and `c`-antilipschitz on the open slice
@@ -755,29 +787,6 @@ theorem Submission.slicing_im_creg_box_slice_area : ∀ (P m : ℕ) (Φ : Eucl (
         exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy] at hyS⟩
     rw [heq]
     exact hB.measurableSet.inter (hm hS)
-  -- Step 5: `χ(S') = S`.
-  have himg : χ '' (B ∩ χ ⁻¹' S) = S := by
-    ext w
-    constructor
-    · rintro ⟨y, ⟨-, hy⟩, rfl⟩
-      exact hy
-    · intro hw
-      obtain ⟨y, hyB, rfl⟩ := hSχ hw
-      exact ⟨y, ⟨hyB, hw⟩, rfl⟩
-  -- Step 6: `χ` has derivative `Dχ(y)` at every `y ∈ S' ⊆ B` (`B` is open).
-  have hder : ∀ y ∈ B ∩ χ ⁻¹' S, HasFDerivWithinAt χ (fderiv ℝ χ y) (B ∩ χ ⁻¹' S) y := by
-    intro y hy
-    have hd : DifferentiableAt ℝ χ y :=
-      (hχ.differentiableOn one_ne_zero y hy.1).differentiableAt (hB.mem_nhds hy.1)
-    exact hd.hasFDerivAt.hasFDerivWithinAt
-  -- Step 7: change of variables along `χ` on `S'`.
-  have hcov := lintegral_image_eq_lintegral_abs_det_fderiv_mul (volume : Measure (Eucl n)) hS'
-    hder (hχinj.mono inter_subset_left) (fun w => ψ (Φ w) * ENNReal.ofReal (Real.sqrt
-      (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1))
-        (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det))
-  rw [himg] at hcov
-  -- Step 8: combine and write the set integral over `S'` as an indicator integral.
-  rw [harea, hcov, lintegral_indicator hS']
   have hSt : MeasurableSet St := he_cont.measurable hS'
   -- `σ = Φ ∘ χ ∘ e` is `K Λ`-Lipschitz on `B_t`, and `c`-antilipschitz there by the slice
   -- hypothesis and the antilipschitz bound of `Φ` on `χ(B) ⊆ Ω`; hence injective on `B_t`.
