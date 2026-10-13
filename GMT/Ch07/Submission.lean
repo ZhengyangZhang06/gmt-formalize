@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,49 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Simon Ch. 3, proof of Lemma 1.2 ("only if"), last paragraph**, for one `C¹` map
+`G : ℝᵐ → ℝᴾ`: `G(ℝᵐ) ⊆ N₀ ∪ ⋃ₗ Nₗ` with `Hᵐ(N₀) = 0` and each `Nₗ` an embedded `C¹`
+`m`-submanifold.  `N₀ = G({x : DG(x) not injective})` is `Hᵐ`-null by the area formula (Ch. 2 §3,
+SimonGMT `area_image_criticalSet_eq_zero`).  At a regular point `x`, `G` is injective with injective
+derivative on some `B̄_{r_x}(x)`, so `G(B_{r_x}(x))` is a submanifold; countably many of these balls
+cover the regular set (Lindelöf, left implicit by Simon), and no ball is needed if it is empty. -/
+theorem Submission.dor_lmbsf_c1c_c1_range_cover : ∀ (P m : ℕ) (G : Euclid m → Euclid P), ContDiff ℝ 1 G → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ Set.range G ⊆ N₀ ∪ ⋃ l, N l := by
+  intro P m G hG
+  -- Step 2: the critical image is `Hᵐ`-null; `G` is differentiable everywhere (step 1), so every
+  -- `x` with `DG(x)` not injective is critical.
+  have hN₀ := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero (E := Euclid m)
+    (F := Euclid P) G
+  rw [finrank_euclideanSpace_fin] at hN₀
+  have hcrit : ∀ x, ¬ Injective (fderiv ℝ G x) →
+      G x ∈ G '' {x | DifferentiableAt ℝ G x ∧ ¬ Injective (fderiv ℝ G x)} :=
+    fun x hx => mem_image_of_mem G ⟨hG.differentiable one_ne_zero x, hx⟩
+  -- Step 3: at a regular point `x`, `G(B_{r_x}(x))` is an embedded `C¹` `m`-submanifold.
+  have hchart : ∀ x : {x : Euclid m // Injective (fderiv ℝ G x)}, ∃ r : ℝ, 0 < r ∧
+      IsEmbeddedSubmanifold 1 m (G '' ball (x : Euclid m) r) := by
+    rintro ⟨x, hx⟩
+    obtain ⟨r, hr, hinj, hder⟩ := Submission.dor_lmbsf_c1c_immersion_local_injOn P m G x hG hx
+    exact ⟨r, hr, Submission.dor_lmbsf_c1c_injOn_closedBall_chart P m G x r hG hinj
+      fun z hz => hder z (ball_subset_closedBall hz)⟩
+  choose r hr hN using hchart
+  -- Step 4: with no regular point, `Nₗ = ∅` (vacuously a submanifold) and `G(ℝᵐ) ⊆ N₀`.
+  rcases isEmpty_or_nonempty {x : Euclid m // Injective (fderiv ℝ G x)} with hR | hR
+  · refine ⟨_, fun _ => ∅, hN₀, fun _ y hy => absurd hy (notMem_empty y), ?_⟩
+    rintro _ ⟨x, rfl⟩
+    exact Or.inl (hcrit x fun hx => hR.false ⟨x, hx⟩)
+  -- Otherwise countably many balls `B_{r_{xₗ}}(xₗ)` cover the regular set (Lindelöf).
+  obtain ⟨f, hf⟩ := (HereditarilyLindelofSpace.isLindelof
+    {x : Euclid m | Injective (fderiv ℝ G x)}).indexed_countable_subcover
+    (fun x : {x : Euclid m // Injective (fderiv ℝ G x)} => ball (x : Euclid m) (r x))
+    (fun _ => isOpen_ball) fun x hx => mem_iUnion.mpr ⟨⟨x, hx⟩, mem_ball_self (hr _)⟩
+  refine ⟨_, fun l => G '' ball (f l : Euclid m) (r (f l)), hN₀, fun l => hN (f l), ?_⟩
+  -- Step 5: `G(x) ∈ N₀` if `x` is critical, and `G(x) ∈ Nₗ` if `x ∈ B_{r_{xₗ}}(xₗ)`.
+  rintro _ ⟨x, rfl⟩
+  by_cases hx : Injective (fderiv ℝ G x)
+  · obtain ⟨l, hl⟩ := mem_iUnion.mp
+      (hf (show x ∈ {x : Euclid m | Injective (fderiv ℝ G x)} from hx))
+    exact Or.inr (mem_iUnion.mpr ⟨l, mem_image_of_mem G hl⟩)
+  · exact Or.inl (hcrit x hx)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
