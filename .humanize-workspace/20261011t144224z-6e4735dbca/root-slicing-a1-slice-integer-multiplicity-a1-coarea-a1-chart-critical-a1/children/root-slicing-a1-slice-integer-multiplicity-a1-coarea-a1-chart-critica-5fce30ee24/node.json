@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_critical-a1.small_lip_partition-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_critical-a1",
+  "depth": 5,
+  "title": "Countable Borel partition of a critical set into pieces on which a C¹ function is ε-Lipschitz",
+  "statement": "Let n ∈ ℕ, ℝⁿ := Eucl n with the Euclidean norm, h : ℝⁿ → ℝ of class C¹, E ⊆ ℝⁿ a Borel (measurable) set such that Dh(w) = fderiv ℝ h w = 0 for every w ∈ E, and ε ∈ ℝ≥0 with ε > 0. Then there exist sets D_k ⊆ ℝⁿ (k ∈ ℕ) which are Borel and pairwise disjoint, satisfy ⋃_k D_k = E, and on each of which h is ε-Lipschitz, i.e. |h(z) − h(z′)| ≤ ε|z − z′| for all z, z′ ∈ D_k (LipschitzOnWith ε h (D k)).",
+  "lean_statement": "∀ (n : ℕ) (h : Eucl n → ℝ) (E : Set (Eucl n)) (ε : ℝ≥0), ContDiff ℝ 1 h → MeasurableSet E → (∀ w ∈ E, fderiv ℝ h w = 0) → 0 < ε → ∃ D : ℕ → Set (Eucl n), (∀ k, MeasurableSet (D k)) ∧ Pairwise (Function.onFun Disjoint D) ∧ (⋃ k, D k) = E ∧ ∀ k, LipschitzOnWith ε h (D k)",
+  "lean_name": "slicing_im_coarea_cc_small_lip_partition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critica-5fce30ee24-a1"
+}

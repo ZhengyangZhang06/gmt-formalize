@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.straighten-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1",
+  "depth": 5,
+  "title": "Inverse-function straightening of a C¹ function with nonzero differential (slice chart with h∘χ = first coordinate)",
+  "statement": "Let m ∈ ℕ, n := m+1, h : ℝⁿ → ℝ of class C¹, Ω ⊆ ℝⁿ open and w₀ ∈ Ω with Dh(w₀) ≠ 0. Then there are an open set B ⊆ ℝⁿ and a map χ : ℝⁿ → ℝⁿ such that χ is C¹ on B, χ(B) is open, w₀ ∈ χ(B) ⊆ Ω, χ is Lipschitz on B, h(χ(y)) = y_0 for every y ∈ B, and |v − v′| ≤ |χ([t,v]) − χ([t,v′])| for all t ∈ ℝ and v, v′ ∈ ℝ^m with [t,v], [t,v′] ∈ B, where [t,v] := (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) = (t, v_0, …, v_{m−1}).",
+  "lean_statement": "∀ (m : ℕ) (h : Eucl (m + 1) → ℝ) (Ω : Set (Eucl (m + 1))) (w₀ : Eucl (m + 1)), IsOpen Ω → w₀ ∈ Ω → ContDiff ℝ 1 h → fderiv ℝ h w₀ ≠ 0 → ∃ (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)), IsOpen B ∧ ContDiffOn ℝ 1 χ B ∧ IsOpen (χ '' B) ∧ w₀ ∈ χ '' B ∧ χ '' B ⊆ Ω ∧ (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) ∧ (∀ y ∈ B, h (χ y) = y 0) ∧ ∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖",
+  "lean_name": "slicing_im_creg_straightening",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-3781bc1432-a1"
+}

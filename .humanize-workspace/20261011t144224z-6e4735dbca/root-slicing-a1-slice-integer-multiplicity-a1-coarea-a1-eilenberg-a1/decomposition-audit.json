@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "hausdorffMeasure_apply|hausdorffMeasure_le_liminf_tsum|mkMetric_le_liminf_tsum|mkMetric_apply|def hausdorffMeasure|variable",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|def euclideanHausdorffMeasure|μHE",
+        "volume_closedEBall|lintegral_tsum|lintegral_liminf_le|lintegral_indicator_const|theorem Measurable.liminf|theorem Measurable.ennreal_tsum|theorem Measurable.tsum",
+        "rpow_le_rpow|rpow_natCast",
+        "eilenberg|near_optimal_cover|liminf_cover_bound|cover_majorant|slicing_im_coarea_eil_",
+        "slicing_im_coarea_eil_near_optimal_cover",
+        "slicing_im_coarea_eil_liminf_cover_bound",
+        "slicing_im_coarea_eil_cover_majorant",
+        "slicing_im_coarea_eil_unnormalized",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/eilenberg-decomp-scratch/FullCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/eilenberg-scope-audit-ywppm287/Checks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1/decomposition-v1.json",
+        "/tmp/eilenberg-decomp-scratch/FullCheck.lean",
+        "/tmp/eilenberg-scope-audit-ywppm287/Checks.lean"
+      ],
+      "conclusion": "Verified the frozen handoff and pinned revisions; inspected build sources match the snapshot. The split appropriately separates three independent covering obligations, their unnormalized assembly, and parent normalization. All four names are bare identifiers and unreserved among 508 DAG nodes. Chapter 2 contains a differently normalized Eilenberg proposition, but only as an unproved contract, not reusable evidence. Independently written checks confirm that every literal child type elaborates without its implementation and equals its explicitly parenthesized interpretation, including ENNReal powers and Lebesgue integration. Rerunning the supplied complete Lean proofs succeeds for all four exact child types and the exact selected parent, with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "near_optimal_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches every stated hypothesis and conclusion. The covering formula, strict room from finite measure and positive ε, and successive infimum elimination supply the cover. Intersecting with A preserves coverage and decreases weights using d ≥ 0. Empty pieces, d = 0, and infinite permitted r or ε are handled correctly. No circular dependency."
+    },
+    {
+      "key": "liminf_cover_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the arbitrary-real-exponent statement. Reindexing by nonempty pieces preserves countability, diameter bounds and coverage, including empty index types. The pinned Hausdorff liminf lemma applies without a sign hypothesis on d; subtype summation and liminf monotonicity finish the proof. The empty-piece correction is valid at d = 0 and for negative d."
+    },
+    {
+      "key": "cover_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose and requires neither coverage of A nor measurability on X. The chosen closed extended balls contain each image by the Lipschitz hypothesis. Their indicators give the pointwise covering bound and a Borel sum. The integral calculation uses the verified extended-ball volume formula and natural-power identity, remaining valid for m = 0, L = 0, empty pieces and infinite diameters. The proof is complete and independent of other children."
+    },
+    {
+      "key": "unnormalized",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-extended-metric-space statement. Both degenerate cases have explicit valid measurable majorants. In the finite-measure case, the three declared dependencies supply shrinking covers, measurable majorants and the pointwise liminf bound; Fatou and multiplication by finite 2L give the integral estimate. Dependencies are correctly directed and acyclic. Instantiating X = Eucl P and scaling by κ_m with C = 2κ_m/κ_{m+1} proves exactly the selected frozen parent."
+    }
+  ],
+  "required_changes": []
+}
