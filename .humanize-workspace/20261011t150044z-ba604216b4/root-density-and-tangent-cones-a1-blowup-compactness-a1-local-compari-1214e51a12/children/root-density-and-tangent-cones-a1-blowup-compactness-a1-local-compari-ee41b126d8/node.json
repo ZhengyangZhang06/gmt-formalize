@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.unit_orient-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1",
+  "depth": 6,
+  "title": "Unit orientations: operator-norm bound and the interior product ξ⌞ν orienting Q ∩ ν^⊥ (Simon Ch. 6, 4.3)",
+  "statement": "Let P, n ∈ ℕ. Write Λ^k := Covector (Euclid P) k for the continuous alternating k-forms on ℝ^P with the operator norm ‖·‖, and MultiVector P k := (Λ^k →L[ℝ] ℝ). Call ξ ∈ MultiVector P k a unit orientation of a linear subspace Q ⊆ ℝ^P (contract IsUnitOrientationOf ξ Q) if there is an orthonormal family τ = (τ_1, …, τ_k) in ℝ^P with span τ = Q such that ξ(α) = α(τ) for every α ∈ Λ^k, or ξ(α) = −α(τ) for every α ∈ Λ^k. (a) If ξ ∈ MultiVector P n is a unit orientation of Q, then |ξ(α)| ≤ ‖α‖ for every α ∈ Λ^n. (b) Let ξ ∈ MultiVector P (n+1) be a unit orientation of Q, let v ∈ Q with v ≠ 0, put ν := |v|⁻¹v, and let ζ ∈ MultiVector P n satisfy ζ(α) = ξ(ν♭ ∧ α) for every α ∈ Λ^n, where ν♭ := ⟨ν, ·⟩ (innerSL ℝ ν) and ν♭ ∧ α := alternatizeUncurryFin(ν♭.smulRight α), i.e. (ν♭ ∧ α)(w_0, …, w_n) = Σ_{i=0}^{n} (−1)^i ⟨ν, w_i⟩ α(w_0, …, ŵ_i, …, w_n). Then ζ is a unit orientation of Q ⊓ (span{v})^⊥ = Q ∩ v^⊥. This is Simon's claim in 4.3 that ξ⌞ν, defined by ⟨ξ⌞ν, α⟩ = ⟨ξ, ν ∧ α⟩, is a unit simple n-vector orienting T_xM ∩ ν^⊥ when ξ orients T_xM and ν ∈ T_xM is a unit vector.",
+  "lean_statement": "(∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∀ α : Covector (Euclid P) n, |ξ α| ≤ ‖α‖) ∧ ∀ (P n : ℕ) (ξ : MultiVector P (n + 1)) (Q : Submodule ℝ (Euclid P)) (v : Euclid P) (ζ : MultiVector P n), IsUnitOrientationOf ξ Q → v ∈ Q → v ≠ 0 → (∀ α : Covector (Euclid P) n, ζ α = ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (‖v‖⁻¹ • v)).smulRight α))) → IsUnitOrientationOf ζ (Q ⊓ (ℝ ∙ v)ᗮ)",
+  "lean_name": "dtc_bc_lc_sl_sf_unit_orient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ee41b126d8-a1"
+}
