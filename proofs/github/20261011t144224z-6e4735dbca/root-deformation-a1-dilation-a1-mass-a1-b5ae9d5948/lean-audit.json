@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cd78b5ea9dee24db63ee38681d6d3b5edffb9cca5a3a4ec87497c5028320c36a",
+  "git_delta": {
+    "base_commit": "4c14ea7f7495fcf6c8a3728c965665dad6480b05",
+    "candidate_commit": "92a17179417332257b6cc039e8c4c27b41e2e9a5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_mass",
+    "diff_sha256": "1239581bb5c5b92d3985691f816aab0e75ffd44ddf53d9c6460b71b1a300a303",
+    "source_sha256": "da145fa6c96d1d931fd7b2edd175132e4ab65f8fa3b7e7c07e581a59b94a2da7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_mass",
+      "statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
