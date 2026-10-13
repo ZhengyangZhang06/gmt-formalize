@@ -359,6 +359,80 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- An integer median of an integer-valued function on a set of positive finite measure (Simon
+Ch. 6, proof of 5.1, (31): the choice of `β_F`).  With `A k = F ∩ {u ≤ k}`, `μ (A k)` increases
+to `μ F = a` as `k → ∞` and decreases to `0` as `k → -∞` (continuity of `μ` from below and from
+above), so there is a least integer `β` with `μ (A β) ≥ a/2`.  Then `μ (A (β - 1)) < a/2`, and since
+`u` is integer-valued, `F ⊆ A (β - 1) ∪ (F ∩ {β ≤ u})`, which forces `μ (F ∩ {β ≤ u}) ≥ a/2`. -/
+theorem Submission.fiw_tb_tda_im_median_exists :
+    ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ),
+      MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u →
+      (∀ x, ∃ k : ℤ, u x = k) →
+      ∃ β : ℤ, ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ β}) ∧
+        ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | (β : ℝ) ≤ u x}) := by
+  intro α _ μ F a u hF ha hμF hu hint
+  -- Step 1: `A k = F ∩ {u ≤ k}` is measurable and monotone in `k`.
+  set A : ℤ → Set α := fun k => F ∩ {x | u x ≤ k}
+  have hAmeas : ∀ k, MeasurableSet (A k) := fun k => hF.inter (measurableSet_le hu measurable_const)
+  have hAmono : Monotone A := fun k l hkl x hx =>
+    ⟨hx.1, show u x ≤ (l : ℝ) from (hx.2 : u x ≤ k).trans (Int.cast_le.mpr hkl)⟩
+  have hhalf_pos : 0 < ENNReal.ofReal (a / 2) := ENNReal.ofReal_pos.mpr (by linarith)
+  have hhalf_lt : ENNReal.ofReal (a / 2) < ENNReal.ofReal a :=
+    (ENNReal.ofReal_lt_ofReal_iff ha).mpr (by linarith)
+  have hsum : ENNReal.ofReal (a / 2) + ENNReal.ofReal (a / 2) = ENNReal.ofReal a := by
+    rw [← ENNReal.ofReal_add (by linarith) (by linarith), add_halves]
+  -- Step 2: `⋃ k, A k = F`, so `μ (A k) → μ F = ofReal a` and some `μ (A k₁) > ofReal (a / 2)`.
+  have hUnion : (⋃ k, A k) = F := by
+    refine Subset.antisymm (iUnion_subset fun k => inter_subset_left) fun x hx => ?_
+    exact mem_iUnion.mpr ⟨⌈u x⌉, hx, show u x ≤ (⌈u x⌉ : ℝ) from Int.le_ceil _⟩
+  have hlim_top : Tendsto (μ ∘ A) atTop (𝓝 (ENNReal.ofReal a)) := by
+    have := tendsto_measure_iUnion_atTop (μ := μ) hAmono
+    rwa [hUnion, hμF] at this
+  obtain ⟨k₁, hk₁⟩ := (hlim_top.eventually (lt_mem_nhds hhalf_lt)).exists
+  -- Step 3: `⋂ j, A (-j) = ∅`, so `μ (A (-j)) → 0` and some `μ (A (-j₀)) < ofReal (a / 2)`.
+  have hBanti : Antitone fun j : ℕ => A (-(j : ℤ)) :=
+    fun j j' hjj' => hAmono (neg_le_neg (Int.ofNat_le.mpr hjj'))
+  have hInter : (⋂ j : ℕ, A (-(j : ℤ))) = ∅ := by
+    refine eq_empty_of_forall_notMem fun x hx => ?_
+    have hx' : u x ≤ ((-((1 - ⌊u x⌋).toNat : ℤ) : ℤ) : ℝ) :=
+      (mem_iInter.mp hx (1 - ⌊u x⌋).toNat).2
+    have hj : -((1 - ⌊u x⌋).toNat : ℤ) < ⌊u x⌋ := by
+      have := Int.self_le_toNat (1 - ⌊u x⌋)
+      omega
+    exact absurd hx' (not_le.mpr ((Int.cast_lt.mpr hj).trans_le (Int.floor_le _)))
+  have hlim_bot : Tendsto (μ ∘ fun j : ℕ => A (-(j : ℤ))) atTop (𝓝 0) := by
+    have := tendsto_measure_iInter_atTop (μ := μ) (fun j => (hAmeas _).nullMeasurableSet) hBanti
+      ⟨0, ne_top_of_le_ne_top (hμF ▸ ENNReal.ofReal_ne_top) (measure_mono inter_subset_left)⟩
+    rwa [hInter, measure_empty] at this
+  obtain ⟨j₀, hj₀⟩ := (hlim_bot.eventually (gt_mem_nhds hhalf_pos)).exists
+  -- Step 4: `β` is the least integer with `ofReal (a / 2) ≤ μ (A β)`; the set of such integers
+  -- contains `k₁` and is bounded below by `-j₀`.
+  obtain ⟨β, hβK, hβmin⟩ := Int.exists_least_of_bdd
+    (P := fun k => ENNReal.ofReal (a / 2) ≤ μ (A k))
+    ⟨-(j₀ : ℤ), fun k hk => not_lt.mp fun hlt =>
+      lt_irrefl _ ((hk.trans (measure_mono (hAmono hlt.le))).trans_lt hj₀)⟩
+    ⟨k₁, hk₁.le⟩
+  -- Step 5: the first inequality is `β ∈ K`.
+  refine ⟨β, hβK, ?_⟩
+  -- Step 6: `μ (A (β - 1)) < ofReal (a / 2)` by minimality, and `F ⊆ A (β - 1) ∪ (F ∩ {β ≤ u})`
+  -- as `u` is integer-valued; subadditivity and `a / 2 + a / 2 = a` give the second inequality.
+  have hβ1 : μ (A (β - 1)) < ENNReal.ofReal (a / 2) := by
+    by_contra h
+    have := hβmin _ (not_lt.mp h)
+    omega
+  have hcover : F ⊆ A (β - 1) ∪ (F ∩ {x | (β : ℝ) ≤ u x}) := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hint x
+    rcases le_or_gt k (β - 1) with hkb | hkb
+    · exact Or.inl ⟨hx, show u x ≤ ((β - 1 : ℤ) : ℝ) by rw [hk]; exact_mod_cast hkb⟩
+    · exact Or.inr ⟨hx, show (β : ℝ) ≤ u x by rw [hk]; exact_mod_cast (show β ≤ k by omega)⟩
+  by_contra hlt
+  have h1 : μ F ≤ μ (A (β - 1)) + μ (F ∩ {x | (β : ℝ) ≤ u x}) :=
+    (measure_mono hcover).trans (measure_union_le _ _)
+  have h2 := ENNReal.add_lt_add hβ1 (not_le.mp hlt)
+  rw [hsum, ← hμF] at h2
+  exact lt_irrefl _ (h1.trans_lt h2)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
