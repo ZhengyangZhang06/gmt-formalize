@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1.exp_ratio-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 8–9 of the parent proof (Simon Ch. 4, 3.16: multiply by the integrating factor and integrate over [σ, ρ], here done by comparing derivatives). Text: book/chapter-04.txt lines 382–416.
+Setting (hypotheses of the Lean statement, in order): n ∈ ℕ; c, K, s, t ∈ ℝ; I, I', G, G', J, h : ℝ → ℝ; c ≥ 0; 0 < s; s < t; and for every τ ∈ [s, t] (Icc s t): (D1) HasDerivAt I (I' τ) τ; (D2) HasDerivAt G (G' τ) τ; (E) n·I(τ) − τ·I'(τ) + τ·J(τ) = −h(τ); (H) |h(τ)| ≤ c·τ·I(τ); (J) 0 ≤ J(τ); (C1) G'(τ) ≤ J(τ)/τⁿ; (C2) J(τ)/τⁿ ≤ K·G'(τ). Goal: (a) G(t) − G(s) ≤ Φ_c(t) − Φ_c(s) and (b) Φ_{−c}(t) − Φ_{−c}(s) ≤ K·(G(t) − G(s)), with Φ_b as in the notation below (in the Lean goal, Φ_{−c}(σ) is written Real.exp (-(c * σ)) / σ ^ n * I σ).
+Notation: for b ∈ ℝ, Φ_b(σ) := e^{bσ}/σⁿ · I(σ) (Lean: Real.exp (b * σ) / σ ^ n * I σ). The hypotheses are used only at points τ ∈ [s, t].
+1. (Positivity.) Every τ ∈ [s, t] has τ ≥ s > 0, so τ ≠ 0 and τⁿ > 0.
+2. (Derivative of Φ_b.) Fix b ∈ ℝ and τ ∈ [s, t].
+   - σ ↦ e^{bσ} has derivative e^{bτ}·b at τ (HasDerivAt.exp applied to (hasDerivAt_id τ).const_mul b).
+   - σ ↦ σⁿ has derivative n·τ^{n−1} (hasDerivAt_pow), and τⁿ ≠ 0.
+   - The quotient rule (HasDerivAt.div) and the product rule with (D1) show that Φ_b has derivative
+     ((e^{bτ}b·τⁿ − e^{bτ}·nτ^{n−1})/(τⁿ)²)·I(τ) + (e^{bτ}/τⁿ)·I'(τ)
+     at τ (after Pi.div_apply, the value of the quotient at τ is e^{bτ}/τⁿ).
+   - By (E), τ·I'(τ) = n·I(τ) + τ·J(τ) + h(τ), i.e. I'(τ) = (n·I(τ) + τ·J(τ) + h(τ))/τ.
+   Substituting, the derivative equals
+     Φ_b'(τ) := (e^{bτ}/τⁿ)·(J(τ) + b·I(τ) + h(τ)/τ).
+   Check:
+   - If n = 0, the n-terms vanish and τ⁰ = 1, so both expressions equal e^{bτ}(b·I + J + h/τ).
+   - If n ≥ 1, write τⁿ = τ^{n−1}·τ. Then (e^{bτ}·nτ^{n−1}/τ^{2n})·I = (e^{bτ}/τⁿ)·(n·I/τ), which cancels the term (e^{bτ}/τⁿ)·(n·I/τ) coming from I'(τ). The remaining terms are (e^{bτ}/τⁿ)(b·I + J + h/τ).
+   In Lean: rewrite I'(τ), split on n, then field_simp and ring.
+3. (Integration lemma.) Let f, f' : ℝ → ℝ. Suppose f has derivative f'(τ) at every τ ∈ [s, t] and f'(τ) ≥ 0 for every τ ∈ [s, t]. Then f(s) ≤ f(t).
+   Proof: f is continuous at each point of [s, t], so ContinuousOn f [s, t]. The interior of [s, t] is (s, t) (interior_Icc), and at each point there f has derivative f' within (s, t), which is ≥ 0. By monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc s t), f is monotone on [s, t]. Apply this to s ≤ t.
+4. (Sign facts.) For τ ∈ [s, t]:
+   - J(τ)/τⁿ ≥ 0, by (J) and τⁿ > 0.
+   - By (H) and abs_le, −c·τ·I(τ) ≤ h(τ) ≤ c·τ·I(τ). Dividing by τ > 0 (le_div_iff₀, div_le_iff₀) gives c·I(τ) + h(τ)/τ ≥ 0 and −c·I(τ) + h(τ)/τ ≤ 0.
+5. (Part (a).) Let f := Φ_c − G and f'(τ) := Φ_c'(τ) − G'(τ). By step 2 (b = c) and (D2), f has derivative f'(τ) at every τ ∈ [s, t]. For such τ:
+   - Φ_c'(τ) = e^{cτ}·(J(τ)/τⁿ) + (e^{cτ}/τⁿ)·(c·I(τ) + h(τ)/τ).
+   - The second summand is ≥ 0 by step 4, since e^{cτ}/τⁿ > 0.
+   - Since c ≥ 0 and τ > 0, e^{cτ} ≥ 1 (Real.one_le_exp), so e^{cτ}·(J/τⁿ) ≥ J/τⁿ because J/τⁿ ≥ 0.
+   - By (C1), J(τ)/τⁿ ≥ G'(τ).
+   So f'(τ) ≥ 0. Step 3 gives Φ_c(s) − G(s) ≤ Φ_c(t) − G(t), which rearranges to G(t) − G(s) ≤ Φ_c(t) − Φ_c(s). This is (a).
+6. (Part (b).) Let f := K·G − Φ_{−c} and f'(τ) := K·G'(τ) − Φ_{−c}'(τ). By (D2) (HasDerivAt.const_mul) and step 2 (b = −c), f has derivative f'(τ) at every τ ∈ [s, t]. For such τ:
+   - Φ_{−c}'(τ) = e^{−cτ}·(J(τ)/τⁿ) + (e^{−cτ}/τⁿ)·(−c·I(τ) + h(τ)/τ).
+   - The second summand is ≤ 0 by step 4.
+   - Since −c·τ ≤ 0, e^{−cτ} ≤ 1 (Real.exp_le_one_iff), so e^{−cτ}·(J/τⁿ) ≤ J/τⁿ because J/τⁿ ≥ 0.
+   - By (C2), J(τ)/τⁿ ≤ K·G'(τ).
+   So Φ_{−c}'(τ) ≤ K·G'(τ) and f'(τ) ≥ 0. Step 3 gives K·G(s) − Φ_{−c}(s) ≤ K·G(t) − Φ_{−c}(t), i.e. Φ_{−c}(t) − Φ_{−c}(s) ≤ K·(G(t) − G(s)).
+   Since e^{(−c)σ} = Real.exp (−(c·σ)) (neg_mul), this is exactly (b). ∎
+
+## Key steps
+
+1. Φ_b(σ) = e^{bσ}σ^{−n}I(σ) has derivative (e^{bτ}/τⁿ)(J + bI + h/τ) on [s, t], by the quotient and product rules and the identity (E).
+2. A function with a nonnegative derivative at every point of [s, t] satisfies f(s) ≤ f(t) (monotoneOn_of_hasDerivWithinAt_nonneg).
+3. |h| ≤ cτI gives cI + h/τ ≥ 0 and −cI + h/τ ≤ 0; J/τⁿ ≥ 0, e^{cτ} ≥ 1 and e^{−cτ} ≤ 1.
+4. (a): Φ_c' ≥ J/τⁿ ≥ G', so Φ_c − G is nondecreasing.
+5. (b): Φ_{−c}' ≤ J/τⁿ ≤ K G', so K G − Φ_{−c} is nondecreasing; rewrite −c·σ as −(c·σ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project; project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean workspace GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scan of dag.json: frozen lean_statement of this node and of uncles monotonicity-a1.cutoff_deriv-a1 / radial_variation-a1; non-sibling dependency pattern; accepted lean_statements matching closedBall|smoothTransition|HasDerivAt|Real.exp|withDensity|lintegral (no reusable accepted match)`
+- `git show 5b94acf2:GMT/Ch07/Submission.lean (accepted declarations are `theorem Submission.X` inside namespace GMT.Ch07; IMRep.measure finiteness via withDensity_apply / Measure.restrict_restrict / locallyIntegrable_mult)`
+- `grep -n in snapshot mathlib: ContinuousLinearMap.aestronglyMeasurable_comp₂, Antitone.deriv_nonpos, monotoneOn_of_hasDerivWithinAt_nonneg, lintegral_indicator_one, lintegral_indicator, setLIntegral_congr_fun, setLIntegral_le_lintegral, integral_div, ofReal_integral_eq_lintegral_ofReal, norm_integral_le_of_norm_le, withDensity_apply, IsCompact.exists_cthickening_subset_open, cthickening_closedBall, starProjection_orthogonal_val, norm_starProjection_apply_le, Real.smoothTransition.{one_of_one_le,zero_of_nonpos,monotone}`
+- `lean #check in contract scope: MeasureTheory.AEStronglyMeasurable.clm_apply (unknown constant), monotoneOn_of_deriv_nonneg, Real.smoothTransition.contDiff/nonneg/le_one, IsLocalMax.deriv_eq_zero, ENNReal.ofReal_add / ofReal_mul / ofReal_add_le`
+- `sed -n 215,420p book/chapter-04.txt (Simon Ch. 4, 3.1–3.5 and 3.14–3.17)`
+- `lake env lean /tmp/sab-decomp/{Probe,Stmts,Children,Assembly,E2E}.lean with #print axioms; independent reviewer re-run of /tmp/sab-review/E2E.lean`
+- `grep -l doragm_sab_ over workspaces/*/.humanize/github-theorem-prover/runs/*/dag.json (8 chapters), ch07 run nodes/, workspaces/*/GMT and lake-packages-25730c7c/simongmt *.lean; git log --all -S doragm_sab_ (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f3c1d2f867/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/sab-decomp/E2E.lean`
+- `/tmp/sab-review/E2E.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace Submission.lean, the compiler context of every child type.
+
+Nothing in the snapshot or the DAG already proves any proposed child:
+- No doragm_sab_* declaration exists.
+- The closest nodes, dsmc_em_exp_monotoneOn_of_deriv_ineq and dsmc_em_cutoff_integral_hasDerivAt, are not accepted and have different types.
+- The uncles cutoff_deriv and radial_variation are still decomposing, so children cannot use them; the parent keeps them.
+
+Every Mathlib lemma cited in the child proofs exists at the pinned revision and is in contract scope. Locations:
+- aestronglyMeasurable_comp₂: Lemmas.lean:79
+- Antitone.deriv_nonpos: Slope.lean:214
+- monotoneOn_of_hasDerivWithinAt_nonneg: MeanValue.lean:428
+- lintegral_indicator_one: Lebesgue/Basic.lean:572
+- lintegral_indicator: Lebesgue/Basic.lean:510
+- setLIntegral_congr_fun: Lebesgue/Basic.lean:298
+- setLIntegral_le_lintegral: Lebesgue/Basic.lean:258
+- integral_div: Bochner/Basic.lean:297
+- ofReal_integral_eq_lintegral_ofReal: Bochner/Basic.lean:739
+- norm_integral_le_of_norm_le: Bochner/Basic.lean:985
+- withDensity_apply: WithDensity.lean:44
+- IsCompact.exists_cthickening_subset_open: Thickening.lean:426
+- cthickening_closedBall: Pointwise.lean:318
+- starProjection_orthogonal_val: Projection/Basic.lean:203
+- norm_starProjection_apply_le: Projection/Basic.lean:411
+- smoothTransition lemmas: SmoothTransition.lean:161, 168, 222
+
+AEStronglyMeasurable.clm_apply does not exist, so the parent proves measurability of p_x(x − y) with aestronglyMeasurable_comp₂.
+
+Simon's chapter-04.txt 3.3–3.5 and 3.16–3.17 fix each child's route.
+
+Lean checks:
+- All six child types elaborate and are fully proved.
+- The exact frozen parent type follows from the six children plus the two exact uncle types.
+- Axioms are only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced these results.
