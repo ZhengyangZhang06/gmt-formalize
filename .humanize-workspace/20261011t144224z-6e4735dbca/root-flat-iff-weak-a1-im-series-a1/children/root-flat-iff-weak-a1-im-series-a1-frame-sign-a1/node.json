@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.frame_sign-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1",
+  "depth": 3,
+  "title": "Orthonormal frames of the same subspace have the same simple n-vector up to sign",
+  "statement": "Let P, n ∈ ℕ and τ, τ' : Fin n → ℝ^P be orthonormal families with span(range τ) = span(range τ'). Then simpleNVector τ' = simpleNVector τ or simpleNVector τ' = −simpleNVector τ.",
+  "lean_statement": "∀ (P n : ℕ) (τ τ' : Fin n → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ τ' → Submodule.span ℝ (range τ) = Submodule.span ℝ (range τ') → simpleNVector τ' = simpleNVector τ ∨ simpleNVector τ' = -simpleNVector τ",
+  "lean_name": "fiw_ims_frame_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-frame-sign-a1-a1"
+}
