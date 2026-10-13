@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.det_covector-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "A continuous determinant n-covector on ℝⁿ normalized on the standard basis",
+  "statement": "For every n ∈ ℕ there is an n-covector δ of ℝⁿ (δ ∈ Covector (Euclid n) n, a continuous alternating n-linear form on ℝⁿ) with δ(e₁, …, eₙ) = 1, where eᵢ = EuclideanSpace.single i 1 is the standard basis of ℝⁿ.",
+  "lean_statement": "∀ n : ℕ, ∃ δ : Covector (Euclid n) n, δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1",
+  "lean_name": "dgoj_exists_det_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-ee844cd15b-a1"
+}
