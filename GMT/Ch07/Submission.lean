@@ -534,6 +534,44 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
     constructor <;> linarith
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
+/-- **Integrability and zeroth-order bound of the pairing `∫_E ⟨ω, ξ⟩ dμ`** (Simon 6.2.4–6.2.5,
+`μ⌞E ∧ ξ` as a current; used for restrictions of currents in the slicing argument of 7.2.4).
+If `|⟨α, ξ(x)⟩| ≤ |α|` for every `n`-covector `α` and `μ`-a.e. `x`, and the continuous form
+`ω` vanishes off a measurable `K` with `μ(K) < ∞` and `|ω| ≤ ε`, then `|ξ(ω)| ≤ ε 1_K`
+`μ`-a.e., so `ξ(ω)` is `μ⌞E`-integrable and `|∫_E ξ(ω) dμ| ≤ ε μ(K ∩ E) ≤ ε μ(K)`. -/
+theorem Submission.cmcs_rc_pairing_integrable_abs_le : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E K : Set (Euclid P)) (ω : DifferentialForm (Euclid P) n) (ε : ℝ), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Continuous ω → MeasurableSet K → μ K < ∞ → (∀ x, x ∉ K → ω x = 0) → (∀ x, covectorEuclideanNorm (ω x) ≤ ε) → Integrable (fun x => ξ x (ω x)) (μ.restrict E) ∧ |∫ x in E, ξ x (ω x) ∂μ| ≤ ε * (μ K).toReal := by
+  intro P n μ ξ E K ω ε hξm hξb hω hK hμK hzero hε
+  -- Step 1: `ε ≥ 0`
+  have hε0 : 0 ≤ ε := (covectorEuclideanNorm_nonneg _).trans (hε 0)
+  -- Step 2: `F x = ξ x (ω x)` is a.e. strongly measurable
+  have hmeas : AEStronglyMeasurable (fun x => ξ x (ω x)) μ :=
+    (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n)
+      (F := ℝ)).continuous.comp_aestronglyMeasurable₂ (g := fun Λ α => Λ α) hξm
+      hω.aestronglyMeasurable
+  -- Step 3: `‖F x‖ ≤ K.indicator ε x` a.e.
+  have hbd : ∀ᵐ x ∂μ, ‖ξ x (ω x)‖ ≤ K.indicator (fun _ => ε) x := by
+    filter_upwards [hξb] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, Real.norm_eq_abs]
+      exact (hx (ω x)).trans (hε x)
+    · rw [indicator_of_notMem hxK, hzero x hxK, map_zero, norm_zero]
+  -- Step 4: the dominating function is integrable
+  have hg : Integrable (K.indicator (fun _ => ε)) μ :=
+    (integrableOn_const hμK.ne).integrable_indicator hK
+  -- Step 5: integrability of `F`, then on `μ.restrict E`
+  have hint : Integrable (fun x => ξ x (ω x)) μ := hg.mono' hmeas hbd
+  refine ⟨hint.restrict, ?_⟩
+  -- Step 6: `‖∫_E F‖ ≤ ∫_E g = ν.real K * ε`
+  have h1 : ‖∫ x in E, ξ x (ω x) ∂μ‖ ≤ ∫ x in E, K.indicator (fun _ => ε) x ∂μ :=
+    norm_integral_le_of_norm_le hg.restrict (ae_restrict_of_ae hbd)
+  rw [integral_indicator_const ε hK, smul_eq_mul] at h1
+  -- Step 7: `ν K = μ (K ∩ E) ≤ μ K`, multiply by `ε ≥ 0`
+  rw [← Real.norm_eq_abs]
+  refine h1.trans ?_
+  rw [mul_comm]
+  refine mul_le_mul_of_nonneg_left ?_ hε0
+  rw [measureReal_def, Measure.restrict_apply hK]
+  exact ENNReal.toReal_mono hμK.ne (measure_mono inter_subset_left)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
