@@ -516,6 +516,7 @@ theorem dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n �
         _ ≤ c * (ρ ^ α * ‖z - z'‖ ^ α) := h1
         _ = ρ ^ α * (c * ‖z - z'‖ ^ α) := by ring
     exact le_of_mul_le_mul_left h2 hρα
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
 (p. 127): if `ρ > 0` and `|y₀| + ρ ≤ 1`, the rescaled data `a(y₀ + ρ z)`, `ρ Φ(y₀ + ρ z)` and
 `w(y₀ + ρ z)` on `B̆₁(0)` satisfy the structure conditions of `a`, `Φ`, `w` with the same
 constants.  The map `z ↦ y₀ + ρ z` sends `B̆₁(0)` into itself and multiplies distances by
