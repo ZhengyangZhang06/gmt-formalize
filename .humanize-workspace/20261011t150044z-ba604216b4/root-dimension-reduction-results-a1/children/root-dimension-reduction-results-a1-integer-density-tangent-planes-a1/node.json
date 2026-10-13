@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Simon 7.3.3: integer densities off an H^{n−3+α}-null set and tangent planes off an H^{n−2+α}-null set",
+  "statement": "IntegerDensityAndTangentPlanes of the frozen contract (Simon 7.3.3, with README erratum 4: E ⊆ F). For all n, k, ℓ ∈ ℕ with ℓ ≤ k, all sets U, N ⊆ ℝ^{n+k} and every T ∈ 𝒟_n(U): if U is open, N is an embedded C² (n+ℓ)-dimensional submanifold (IsEmbeddedSubmanifold 2 (n + ℓ) N), (closure N ∖ N) ∩ U = ∅, T is minimizing in U ∩ N, spt T ⊆ U ∩ N and ∂T = 0 in U (BoundaryVanishes T), then there exist sets E ⊆ F ⊆ ℝ^{n+k} such that μH[n − 3 + α](E) = 0 for every real α > 0; for every x ∈ U ∖ E there is an integer m with HasMassDensity T x m; μH[n − 2 + α](F) = 0 for every real α > 0; and HasTangentPlaneAt T x for every x ∈ spt T ∖ F.",
+  "lean_statement": "IntegerDensityAndTangentPlanes",
+  "lean_name": "dimred_integer_density_and_tangent_planes",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1",
+    "root.dimension_reduction_results-a1.one_dim_cones-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.one_dim_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a1"
+}
