@@ -451,7 +451,131 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The translate `Q − a = {y | y + a ∈ Q}` of `Q = span τ`, `τ : Fin d → ℝᴾ` orthonormal, is a
+`d`-dimensional embedded `Cʳ` submanifold (Simon Ch. 2, §4, (4.1)), with the single chart
+`ψ(v) = ι(v) − a` on `V = ℝᵈ`, `W = ℝᴾ`: `ι(v) = ∑ⱼ vⱼ τⱼ` is a linear isometry of `ℝᵈ` onto `Q`,
+so `ψ` is smooth, injective and proper, and `Dψ ≡ ι` is injective. -/
+theorem Submission.codim1_zsl_op_translate_isEmbeddedSubmanifold : ∀ (P d r : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin d → Euclid P) (a : Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → IsEmbeddedSubmanifold r d {y | y + a ∈ Q} := by
+  intro P d r Q τ a hτ hQ
+  -- Step 1: the continuous linear map `ι v = ∑ⱼ vⱼ τⱼ`
+  set ι : Euclid d →L[ℝ] Euclid P := ∑ j, (EuclideanSpace.proj j).smulRight (τ j) with hι_def
+  have hι : ∀ v, ι v = ∑ j, v j • τ j := by
+    intro v
+    simp [hι_def]
+  -- Step 2: `ι` is an isometry, by orthonormality of `τ`
+  have hnorm : ∀ v, ‖ι v‖ = ‖v‖ := by
+    intro v
+    have h2 : ‖ι v‖ ^ 2 = ‖v‖ ^ 2 := by
+      rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, hι, hτ.inner_sum,
+        EuclideanSpace.inner_eq_star_dotProduct]
+      simp [dotProduct]
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h2
+  -- Step 3: `ι` is injective
+  have hinj : Injective ι := by
+    intro v w hvw
+    have h0 : ‖v - w‖ = 0 := by rw [← hnorm, map_sub, hvw, sub_self, norm_zero]
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+  -- Step 4: the range of `ι` is `Q`
+  have hrange : ∀ z, z ∈ Q ↔ ∃ v, ι v = z := by
+    intro z
+    constructor
+    · intro hz
+      rw [← hQ] at hz
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hz
+      exact ⟨WithLp.toLp 2 c, by rw [hι]; simpa using hc⟩
+    · rintro ⟨v, rfl⟩
+      rw [hι, ← hQ]
+      exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+  -- Steps 5–7: the global chart `ψ v = ι v − a` with `V = ℝᵈ`, `W = ℝᴾ`
+  intro y _
+  refine ⟨univ, univ, fun v => ι v - a, isOpen_univ, isOpen_univ, mem_univ y,
+    (ι.contDiff.sub contDiff_const).contDiffOn, ?_, ?_, ?_, ?_⟩
+  -- `ψ` is injective on `V`
+  · intro v _ w _ hvw
+    exact hinj (sub_left_injective hvw)
+  -- `ψ(V) = W ∩ A`, by Step 4
+  · ext z
+    rw [image_univ, univ_inter, mem_range]
+    change (∃ v, ι v - a = z) ↔ z + a ∈ Q
+    rw [hrange]
+    constructor
+    · rintro ⟨v, rfl⟩
+      exact ⟨v, (sub_add_cancel _ _).symm⟩
+    · rintro ⟨v, hv⟩
+      exact ⟨v, by rw [hv, add_sub_cancel_right]⟩
+  -- `ψ` is proper: `ψ⁻¹(K)` is closed and bounded by `R + ‖a‖` (Heine–Borel)
+  · intro K _ hK
+    rw [univ_inter]
+    refine Metric.isCompact_of_isClosed_isBounded
+      (hK.isClosed.preimage (ι.continuous.sub continuous_const)) ?_
+    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.mp hK.isBounded
+    refine isBounded_iff_forall_norm_le.mpr ⟨R + ‖a‖, fun v hv => ?_⟩
+    calc ‖v‖ = ‖(ι v - a) + a‖ := by rw [sub_add_cancel, hnorm]
+      _ ≤ ‖ι v - a‖ + ‖a‖ := norm_add_le _ _
+      _ ≤ R + ‖a‖ := by gcongr; exact hR _ hv
+  -- `Dψ(z) = ι` is injective
+  · intro z _
+    rw [(ι.hasFDerivAt.sub_const a).fderiv]
+    exact hinj
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+
+namespace Submission
+
+/-- The tangent space of the translate `{z | z + a ∈ Q} = Q − a` at any of its points `y` is `Q`:
+slopes `t⁻¹(γ t − γ 0)` of a curve in the translate lie in the closed subspace `Q` and tend to
+`γ'(0)`, and the line `t ↦ y + t • v` realizes each `v ∈ Q` as a velocity. -/
+theorem codim1_zsl_op_translate_tangentSpace_eq : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a y : Euclid P), y + a ∈ Q → tangentSpace {z | z + a ∈ Q} y = (Q : Set (Euclid P)) := by
+  intro P Q a y hy
+  -- Step 1: `Q` is finite-dimensional, hence closed.
+  have hQ : IsClosed (Q : Set (Euclid P)) := Q.closed_of_finiteDimensional
+  ext v
+  constructor
+  · -- Step 2: the slopes `t⁻¹(γ t − γ 0)` lie in `Q` for `t ∈ (−1, 1)` and tend to `v`.
+    rintro ⟨γ, -, hγA, hγ0, hγv⟩
+    have hIoo : Ioo (-1 : ℝ) 1 ∈ 𝓝[≠] (0 : ℝ) :=
+      nhdsWithin_le_nhds (Ioo_mem_nhds (by norm_num) (by norm_num))
+    refine hQ.mem_of_tendsto (hasDerivAt_iff_tendsto_slope.mp hγv) ?_
+    filter_upwards [hIoo] with t ht
+    have h1 : γ t + a ∈ Q := hγA ht
+    have h2 : γ 0 + a ∈ Q := hγ0 ▸ hy
+    rw [slope_def_module]
+    exact Q.smul_mem _ (by simpa using Q.sub_mem h1 h2)
+  · -- Step 3: the line `t ↦ y + t • v` witnesses `v ∈ tangentSpace {z | z + a ∈ Q} y`.
+    intro hv
+    refine ⟨fun t => y + t • v, ?_, ?_, by simp, ?_⟩
+    · exact (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn
+    · intro t _
+      show y + t • v + a ∈ Q
+      rw [add_right_comm]
+      exact Q.add_mem hy (Q.smul_mem t hv)
+    · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const v).const_add y
+
+end Submission
+
+/-- **Lemma A-plane** (Simon 7.5, class `𝒪`, p. 197; used for the zero-scale limits of
+7.5.3–7.5.5).  If `ξ` is a unit orientation of the subspace `Q ⊆ ℝᴾ`, then `dim Q = n + 1` and the
+offset plane `A = Q − a = {y : y + a ∈ Q}`, oriented by the constant `ξ`, is in class `𝒪` of `ℝᴾ`.
+The orthonormal `τ` of `ξ` is linearly independent and spans `Q`, so `dim Q = n + 1`; `A` is an
+embedded `C²` `(n + 1)`-submanifold, and `T_yA = Q` for `y ∈ A`, so the constant `ξ` orients `A`;
+`A` is closed (the preimage of the finite-dimensional, hence closed, `Q`) and contains `−a`. -/
+theorem Submission.codim1_zsl_offset_plane_inClassO : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P (n + 1)) (a : Euclid P), IsUnitOrientationOf ξ Q → Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξ) := by
+  intro P n Q ξ a hξ
+  obtain ⟨τ, hτ, hspan, -⟩ := id hξ
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  -- `dim Q = n + 1`: `τ` is a basis of `Q`
+  · rw [← hspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- `A` is an embedded `C²` `(n + 1)`-submanifold
+  · exact Submission.codim1_zsl_op_translate_isEmbeddedSubmanifold P (n + 1) 2 Q τ a hτ hspan
+  -- the constant `ξ` orients `A`, as `T_yA = Q` for every `y ∈ A`
+  · exact ⟨continuousOn_const, fun y hy =>
+      ⟨Q, (Submission.codim1_zsl_op_translate_tangentSpace_eq P Q a y hy).symm, hξ⟩⟩
+  -- `A` is closed, so `closure A \ A = ∅`
+  · have hA : IsClosed {y : Euclid P | y + a ∈ Q} :=
+      Q.closed_of_finiteDimensional.preimage (continuous_add_const a)
+    rw [hA.closure_eq, Set.sdiff_self, empty_inter]
+  -- `−a ∈ A`
+  · exact ⟨-a, show -a + a ∈ Q by rw [neg_add_cancel]; exact Q.zero_mem, mem_univ _⟩
 
 end GMT.Ch07

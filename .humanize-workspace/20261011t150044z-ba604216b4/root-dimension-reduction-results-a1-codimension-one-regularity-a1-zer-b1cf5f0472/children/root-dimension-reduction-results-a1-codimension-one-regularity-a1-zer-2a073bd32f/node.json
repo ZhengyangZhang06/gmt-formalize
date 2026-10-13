@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1.translate_embedded-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1",
+  "depth": 5,
+  "title": "Translates of an orthonormally spanned subspace are embedded C^r submanifolds",
+  "statement": "Let P, d, r ∈ ℕ. Let Q ⊆ ℝ^P (= Euclid P) be a linear subspace, let τ = (τ_0, …, τ_{d−1}) : Fin d → ℝ^P be an orthonormal family with span{τ_0, …, τ_{d−1}} = Q, and let a ∈ ℝ^P. Then the translate A := {y ∈ ℝ^P : y + a ∈ Q} = Q − a is a d-dimensional embedded C^r submanifold in the sense of IsEmbeddedSubmanifold r d A. That is, for every y ∈ A there exist an open V ⊆ ℝ^d, an open W ⊆ ℝ^P with y ∈ W, and a map ψ : ℝ^d → ℝ^P such that: ψ is C^r on V; ψ is injective on V; ψ(V) = W ∩ A; V ∩ ψ^{−1}(K) is compact for every compact K ⊆ W; and the derivative fderiv ℝ ψ z is injective for every z ∈ V.",
+  "lean_statement": "∀ (P d r : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin d → Euclid P) (a : Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → IsEmbeddedSubmanifold r d {y | y + a ∈ Q}",
+  "lean_name": "codim1_zsl_op_translate_isEmbeddedSubmanifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2a073bd32f-a1"
+}

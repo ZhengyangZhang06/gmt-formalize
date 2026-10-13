@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|abbrev Euclid|def Euclid)|def (IsEmbeddedSubmanifold|tangentSpace|IsUnitOrientationOf|IsOrientation|InClassO)|abbrev MultiVector|def MultiVector|axiom|sorry",
+        "theorem Orthonormal.inner_sum|theorem hasDerivAt_iff_tendsto_slope|theorem slope_def_module|theorem finrank_span_eq_card|theorem mem_span_range_iff_exists_fun|theorem isCompact_of_isClosed_isBounded|theorem isBounded_iff_forall_norm_le|theorem closed_of_finiteDimensional|theorem inner_eq_star_dotProduct|theorem real_inner_self_eq_norm_sq|def proj|theorem mem_of_tendsto",
+        "codim1_zsl_op_translate_isEmbeddedSubmanifold|codim1_zsl_op_translate_tangentSpace_eq",
+        "git log --all --oneline -G 'codim1_zsl_op_translate_isEmbeddedSubmanifold|codim1_zsl_op_translate_tangentSpace_eq' -- 'GMT/*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j1 -DautoImplicit=false /tmp/offset-plane-independent-audit-y6455fx3/Complete.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/AffineSpace/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Neighborhoods.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b1cf5f0472/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b1cf5f0472/decomposition-v1.json",
+        "/tmp/offset-plane-decomp/gen/FinalProofs.lean",
+        "/tmp/offset-plane-independent-audit-y6455fx3/Complete.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match the snapshot pins; the frozen Contract and workspace Submission are byte-identical. The definitions and cited library lemmas support both supplied proofs. Neither proposed name is reserved in the DAG; searches found no existing declaration or identical frozen child type. Both names are bare identifiers, and both empty dependency lists are correct and acyclic. The split separates two substantive independent arguments. Their conclusions, together with frame dimension, closedness and the point −a, prove the exact selected parent contract. Independent Lean verification using the frozen definitions succeeded: both child propositions elaborate before either declaration, the supplied proof implementations and parent assembly compile, and all three theorems depend only on propext, Classical.choice and Quot.sound. Required Euclidean, finite-dimensional, proper-space and punctured-filter instances also check."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translate_embedded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches all prose hypotheses and the conclusion. Independently checked steps establish the continuous linear isometry, its range Q, and every chart clause: smoothness, injectivity, image equality, compact preimages and injective derivative. The boundedness argument covers empty compact sets; d = 0 and r = 0 cause no gap. The proof is complete, uses no child or parent theorem, and directly supplies the parent's submanifold conjunct."
+    },
+    {
+      "key": "translate_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including y + a ∈ Q and equality as sets. Finite-dimensional closedness, eventual slope membership and convergence along the nontrivial punctured real filter prove the forward inclusion. The affine line satisfies every curve-witness clause for the reverse inclusion. The proof is complete and independent of the other child and parent theorem; its equality supplies the parent's constant-orientation argument."
+    }
+  ],
+  "required_changes": []
+}
