@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.cusp-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1",
+  "depth": 5,
+  "title": "Cusp lemma: if every blow-up of μ at a is (vaguely) a multiple of H²⌞Q, support points near a satisfy |x − πx| ≤ ε|x − a|",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P with μ(K) < ∞ for every compact K, Z ⊆ ℝ^P, Q a linear subspace of ℝ^P, a ∈ Q, m ∈ ℝ, and π := Q.starProjection (orthogonal projection onto Q). Assume (i) ω_2ρ² ≤ μ(B_ρ(y)) (unitBallVolume 2 * ENNReal.ofReal (ρ^2) ≤ μ (ball y ρ)) for every y ∈ Z and every ρ > 0; and (ii) for every sequence λ_j > 0 with λ_j → 0 there is a strictly increasing φ : ℕ → ℕ such that λ_{φ(j)}^{−2}·∫ g(dilation a λ_{φ(j)} x) dμ(x) → m·∫_Q g dH² (H² := μHE[2]) for every continuous compactly supported g : ℝ^P → ℝ. Then for every ε > 0 there is s > 0 such that |x − πx| ≤ ε·|x − a| for every x ∈ Z with |x − a| < s.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (Z : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)) (a : Euclid P) (m : ℝ), a ∈ Q → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ y ∈ Z, ∀ ρ : ℝ, 0 < ρ → unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤ μ (ball y ρ)) → (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂μ) atTop (𝓝 (m * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ ∀ x ∈ Z, dist x a < s → ‖x - Q.starProjection x‖ ≤ ε * dist x a",
+  "lean_name": "idtp_cse_etp_cusp",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.rescaled_limit_mem-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.rescaled_limit_mem-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cda04c6cd0-a1"
+}

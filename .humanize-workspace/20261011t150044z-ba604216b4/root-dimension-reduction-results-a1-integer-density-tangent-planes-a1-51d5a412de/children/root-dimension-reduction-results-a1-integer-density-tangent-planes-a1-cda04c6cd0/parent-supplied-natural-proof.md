@@ -1,0 +1,62 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.cusp-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 (the cusp) of the parent proof, with the blow-up input (V) and the lower bound abstracted into hypotheses (ii) and (i). Notation: π := Q.starProjection, q(x) := x − πx, |x − a| = dist x a.
+1. (q.) q = id − π is a continuous linear map ℝ^P → ℝ^P. Since a ∈ Q, πa = a (Submodule.starProjection_eq_self_iff), so q(a) = 0 and q(x − a) = q(x) for every x. Q is finite-dimensional, hence closed (Submodule.closed_of_finiteDimensional).
+2. (Assume the contrary.) Suppose there is ε > 0 for which no s > 0 works. Then for every j ∈ ℕ (using s := 1/(j + 1)) there is x_j ∈ Z with s_j := |x_j − a| < 1/(j + 1) and |q(x_j)| > ε·s_j; choose such x_j for every j. If s_j = 0 then x_j = a and |q(x_j)| = |q(a)| = 0 = ε·s_j, which is impossible; so s_j > 0. As 0 < s_j < 1/(j + 1), s_j → 0.
+3. (Blow-up subsequence.) Apply (ii) to λ_j := s_j (positive, → 0): there is φ strictly increasing such that for every continuous compactly supported g, (V_φ): s_{φ(j)}^{−2}∫ g(dilation a s_{φ(j)} x) dμ(x) → m∫_Q g dH².
+4. (Compactness of directions.) Put w_j := s_{φ(j)}^{−1}(x_{φ(j)} − a). Then |w_j| = s_{φ(j)}^{−1}|x_{φ(j)} − a| = 1, so every w_j lies in the unit sphere of ℝ^P, which is compact (isCompact_sphere; ℝ^P is proper). By sequential compactness (IsCompact.tendsto_subseq) there are ψ : ℕ → ℕ strictly increasing and w with |w| = 1 such that w_{ψ(j)} → w.
+5. (Hypotheses of the sibling lemma.) Put λ'_j := s_{φ(ψ(j))} > 0 and w'_j := w_{ψ(j)}, so w'_j → w. Since ψ is strictly increasing, ψ(j) → ∞ (StrictMono.tendsto_atTop), and composing the convergence (V_φ) with ψ gives, for every continuous compactly supported g: λ'_j^{−2}∫ g(dilation a λ'_j x) dμ(x) → m∫_Q g dH². Moreover, a + λ'_j w'_j = a + s·s^{−1}(x − a) = x with s := s_{φ(ψ(j))} > 0, x := x_{φ(ψ(j))} ∈ Z, so by (i) with ρ := λ'_j r > 0: ω_2·ofReal((λ'_j r)²) ≤ μ(B_{λ'_j r}(a + λ'_j w'_j)) for every r > 0 and every j (in particular for all sufficiently large j).
+6. (w ∈ Q.) By the sibling `Submission.idtp_cse_etp_rescaled_limit_mem` applied to μ (finite on compacts), S := Q (closed), a, w, m, (λ'_j), (w'_j) and the hypotheses of step 5: w ∈ Q, hence q(w) = 0.
+7. (Contradiction.) For each j, with s := s_{φ(ψ(j))} and x := x_{φ(ψ(j))}: |q(w'_j)| = s^{−1}|q(x − a)| = s^{−1}|q(x)| > s^{−1}·ε s = ε (steps 1, 2). Since q and |·| are continuous and w'_j → w, |q(w'_j)| → |q(w)|, so |q(w)| ≥ ε > 0 (ge_of_tendsto), contradicting q(w) = 0. Hence for every ε > 0 a suitable s > 0 exists. ∎
+
+## Key steps
+
+1. q = id − π is continuous linear with q(a) = 0 (a ∈ Q).
+2. If the claim fails for ε, pick x_j ∈ Z with 0 < s_j = |x_j − a| < 1/(j+1) and |q(x_j)| > εs_j.
+3. Use (ii) on λ_j = s_j and compactness of the unit sphere to get a subsequence with w_j = (x_j − a)/s_j → w, |q(w_j)| > ε.
+4. a + s_j w_j = x_j ∈ Z gives the lower bound (i) at radius s_j r; rescaled_limit_mem yields w ∈ Q, so q(w) = 0, contradicting |q(w)| ≥ ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 scan of dag.json: lean_statement/status of idtp_cone_tangent_cone_planar, dimred_im_mass_measure, dtc_blowUp_imrep, dimred_cs_mi_hasMassDensity_unique, rsd_imrep_compact_measure_ne_top, idtp_cse_massOn_ball_lower_bound, and of the cone_sector_endpoint_density and cone_tangent_cone_planar subtrees`
+- `python3 scan of dag.json lean_statements for existing plane-IMRep / dilation-integral / local-finiteness / density-uniqueness lemmas (patterns '∃ R … IMRep … span|Submodule', 'Orthonormal … IMRep', 'dilation … R.measure … Tendsto', 'R.measure K ≠ ∞', 'HasMassDensity … θ = θ'')`
+- `grep -lE 'idtp_cse_etp_' dag.json nodes/ GMT/ local-references/123e8435b4a2469b/project; ls ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean | xargs -P 16 grep -l idtp_cse_etp_ (no match anywhere)`
+- `grep SimonGMT: def CountablyRectifiable, countablyRectifiable_range, def HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule, GeometricCurrentOn.support / zeroRegion / VanishesOn, GeometricCurrentOn.massOn / massAdmissibleOn, Covector / DifferentialForm / TestFormOn / GeometricCurrentOn`
+- `grep Mathlib (workspace and snapshot): Isometry.euclideanHausdorffMeasure_preimage, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, withDensity_const, integral_smul_measure, integral_map, integral_const_mul, Real.arctan_lt_self, Real.arctan_pos, Real.cos_arctan, Real.sin_arctan, Real.one_sub_sq_div_two_le_cos, IsCompact.tendsto_subseq, isCompact_sphere, ContinuousAlternatingMap.apply, Submodule.starProjection_eq_self_iff, Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.starProjection_inner_eq_zero, norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero, Submodule.eq_of_le_of_finrank_eq, finrank_span_eq_card, Continuous.integrable_of_hasCompactSupport, tendsto_one_div_add_atTop_nhds_zero_nat`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical); lake-manifest.json mathlib rev vs manifest.json mathlib_commit (equal)`
+- `lake env lean /tmp/etp_check/Stmts.lean; lake env lean /tmp/etp_check/Parent.lean; lake env lean /tmp/etp_review/All.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-51d5a412de/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/tmp/etp_check/Stmts.lean`
+- `/tmp/etp_check/Parent.lean`
+- `/tmp/etp_review/All.lean`
+
+Pins match: project b4d606db, mathlib 25730c7c and SimonGMT 2b36630. The snapshot Submission.lean is byte-identical to the workspace contract, which is the compiler authority. No existing DAG or library declaration provides any of the seven children: the flat-current IMRep, the blow-up push-forward vague limit, the frame sign, rescaled-limit membership, the cusp or the localization. All seven are therefore new, with unreserved idtp_cse_etp_* names (no occurrence in the DAG, node records, GMT/, the snapshot or any worktree). Reused accepted lemmas are dtc_blowUp_imrep, dimred_im_mass_measure, dimred_cs_mi_hasMassDensity_unique and rsd_imrep_compact_measure_ne_top; their DAG types match their uses. Every cited Mathlib/SimonGMT name exists at the pins. All 7 child types elaborate, and the parent's frozen type is kernel-checked from them with stubs. An independent reviewer fully formalized all 7 children using only standard axioms plus the accepted dtc_blowUp_imrep and dimred_im_mass_measure; I re-ran that file and it compiles.
