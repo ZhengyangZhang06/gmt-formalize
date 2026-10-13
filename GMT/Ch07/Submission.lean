@@ -451,6 +451,88 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Co-area consequences for special integrands** (Simon Ch. 6, Lemma 4.1, last part, and
+Remark 4.2 with `g` an indicator; parent `slice_family`, steps 2(a), 2(b) and 4).  Write
+`Sₜ = M ∩ f⁻¹(t)` and assume the co-area identity (CF) for every Borel `g ≥ 0`.
+* (a) Enclose the `H^{n+1}`-null set `{x ∈ M : ¬p x}` in a Borel null set `Z`.  (CF) with
+  `g = 1_Z` has right side `0`, so `Hⁿ(Z ∩ Sₜ) = 0` for a.e. `t`, and `p` holds `Hⁿ`-a.e. on `Sₜ`.
+* (b) (CF) with `g = 1_{f⁻¹(c)}`: the slice integral vanishes for `t ≠ c`, hence for a.e. `t`.
+  Hence `∫_M |G| 1_{f⁻¹(c)} dH^{n+1} = 0`, and `G = 0` a.e. on `M ∩ f⁻¹(c)`.
+* (c) (CF) with `g·1_{B̄ₖ}`, `B̄ₖ = B̄(0, k)`, makes `∫_{Sₜ ∩ B̄ₖ} g dHⁿ` finite for a.e. `t`.
+  Intersect over `k ∈ ℕ` and cover each compact `K` by some `B̄ₖ`. -/
+theorem Submission.dtc_bc_lc_sl_sf_coarea_ae : ∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), MeasurableSet M → Measurable f → Measurable G → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → (∀ p : Euclid P → Prop, (∀ᵐ x ∂(μHE[n + 1].restrict M), p x) → ∀ᵐ t, ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), p x) ∧ (∀ c : ℝ, ∀ᵐ x ∂(μHE[n + 1].restrict M), f x = c → G x = 0) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → (∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in M ∩ K, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in M ∩ f ⁻¹' {t} ∩ K, g x ∂μHE[n] ≠ ∞ := by
+  intro P n M f G hM hf hG hCF
+  have hS : ∀ t : ℝ, MeasurableSet (M ∩ f ⁻¹' {t}) := fun t =>
+    hM.inter (hf (measurableSet_singleton t))
+  refine ⟨?_, ?_, ?_⟩
+  -- (a) null sets
+  · intro p hp
+    -- a Borel `H^{n+1}`-null set `Z ⊇ {x ∈ M : ¬p x}`
+    obtain ⟨Z, hYZ, hZm, hZ0⟩ :=
+      exists_measurable_superset_of_null (ae_iff.1 ((ae_restrict_iff' hM).1 hp))
+    have h1 := hCF (Z.indicator 1) (measurable_one.indicator hZm)
+    -- the right side of (CF) with `g = 1_Z` vanishes
+    have hrhs : ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * Z.indicator 1 x ∂μHE[n + 1] = 0 := by
+      have hzero : (fun x => ENNReal.ofReal ‖G x‖ * Z.indicator 1 x) =ᵐ[μHE[n + 1].restrict M]
+          0 := by
+        filter_upwards [ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 hZ0)] with x hx
+        simp [hx]
+      exact (lintegral_congr_ae hzero).trans lintegral_zero
+    -- so `Hⁿ(Z ∩ Sₜ) = 0` for a.e. `t`
+    filter_upwards [(lintegral_eq_zero_iff' h1.1).1 (h1.2.trans hrhs)] with t ht
+    have hZt : (μHE[n].restrict (M ∩ f ⁻¹' {t})) Z = 0 := by
+      rw [← lintegral_indicator_one hZm]
+      exact ht
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZt, ae_restrict_mem (hS t)] with x hxZ hxS
+    by_contra hpx
+    exact hxZ (hYZ fun h => hpx (h hxS.1))
+  -- (b) level sets
+  · intro c
+    have hfc : MeasurableSet (f ⁻¹' {c}) := hf (measurableSet_singleton c)
+    have h2 := hCF ((f ⁻¹' {c}).indicator 1) (measurable_one.indicator hfc)
+    -- the slice integral vanishes for `t ≠ c`, i.e. for a.e. `t`
+    have hzero : (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, (f ⁻¹' {c}).indicator 1 x ∂μHE[n]) =ᵐ[volume]
+        0 := by
+      filter_upwards [compl_mem_ae_iff.2 (measure_singleton c)] with t ht
+      rw [lintegral_indicator_one hfc, Measure.restrict_apply hfc]
+      exact measure_mono_null
+        (fun x hx => ht ((show f x = t from hx.2.2).symm.trans (show f x = c from hx.1)))
+        measure_empty
+    have hrhs : ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * (f ⁻¹' {c}).indicator 1 x ∂μHE[n + 1] = 0 :=
+      h2.2.symm.trans ((lintegral_eq_zero_iff' h2.1).2 hzero)
+    have hmeas : Measurable fun x =>
+        ENNReal.ofReal ‖G x‖ * (f ⁻¹' {c}).indicator (1 : Euclid P → ℝ≥0∞) x :=
+      hG.norm.ennreal_ofReal.mul (measurable_one.indicator hfc)
+    filter_upwards [(lintegral_eq_zero_iff hmeas).1 hrhs] with x hx hfx
+    rw [Pi.zero_apply, indicator_of_mem (show x ∈ f ⁻¹' {c} from hfx), Pi.one_apply, mul_one,
+      ENNReal.ofReal_eq_zero] at hx
+    exact norm_le_zero_iff.1 hx
+  -- (c) local finiteness
+  · intro g hg hfin
+    have hk : ∀ k : ℕ, ∀ᵐ t : ℝ,
+        ∫⁻ x in M ∩ f ⁻¹' {t} ∩ closedBall (0 : Euclid P) k, g x ∂μHE[n] ≠ ∞ := by
+      intro k
+      have hB : MeasurableSet (closedBall (0 : Euclid P) k) := measurableSet_closedBall
+      have h3 := hCF ((closedBall (0 : Euclid P) k).indicator g) (hg.indicator hB)
+      have hfun : (fun x => ENNReal.ofReal ‖G x‖ * (closedBall (0 : Euclid P) k).indicator g x) =
+          (closedBall (0 : Euclid P) k).indicator fun x => ENNReal.ofReal ‖G x‖ * g x := by
+        funext x
+        exact (indicator_mul_right _ (fun x => ENNReal.ofReal ‖G x‖) g).symm
+      have hfinite :
+          ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, (closedBall (0 : Euclid P) k).indicator g x ∂μHE[n] ≠ ∞ := by
+        rw [h3.2, hfun, lintegral_indicator hB, Measure.restrict_restrict hB,
+          inter_comm (closedBall (0 : Euclid P) k)]
+        exact hfin _ (isCompact_closedBall _ _)
+      filter_upwards [ae_lt_top' h3.1 hfinite] with t ht
+      rw [lintegral_indicator hB, Measure.restrict_restrict hB,
+        inter_comm (closedBall (0 : Euclid P) k)] at ht
+      exact ht.ne
+    filter_upwards [ae_all_iff.2 hk] with t ht K hK
+    obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall (0 : Euclid P)
+    obtain ⟨k, hkR⟩ := exists_nat_ge R
+    exact ne_top_of_le_ne_top (ht k) (lintegral_mono_set (inter_subset_inter_right _
+      (hR.trans (closedBall_subset_closedBall hkR))))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
