@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
+Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
+of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
+theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞ := by
+  intro P n U R K hK hKU
+  have hint := R.locallyIntegrable_mult K hK hKU
+  -- `μ_R(K) = ∫_K θ d(Hⁿ⌞M) = ∫_{M ∩ K} θ dHⁿ`, `K` being closed, hence Borel
+  have hmeas : R.measure K = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+  refine ⟨?_, by rw [hmeas]; exact hint⟩
+  refine ne_top_of_le_ne_top hint ?_
+  -- `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ`, as `1 ≤ θ` on `M`
+  calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, (1 : ℝ≥0∞) ∂μHE[n] := by
+        rw [setLIntegral_one]
+    _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+        refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
+        intro x hx
+        exact_mod_cast R.mult_pos x hx.1
+/-- **Simon Ch. 6, 3.1–3.2** (the weight `θHᵏ⌞M`): for an integer multiplicity triple
+`R = (M, θ, ξ)` in `W`, `R.measure = (Hᵏ⌞M).withDensity θ` has the same null sets as `Hᵏ⌞M`
+(`θ` is measurable and `θ ≥ 1` on `M`).  For Borel `A`, `R.measure(A) = ∫_{M ∩ A} θ dHᵏ`; hence
+`R.measure(ℝᴾ \ M) = 0`, and `R.measure(K) < ∞` for compact `K ⊆ W` by local integrability of
+`θ`.  Absolute continuity makes `ξ` a.e. strongly measurable for `R.measure`, and
+`R.action ω = ∫_M θ⟨ω, ξ⟩ dHᵏ = ∫ ⟨ω, ξ⟩ dR.measure` for every form `ω`. -/
+theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure := by
+  intro P k W R
+  -- the density `θ`, as an `ℝ≥0`-valued measurable function
+  have hθ : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+  -- (a) a measure with density is absolutely continuous w.r.t. its base measure
+  have hac : R.measure ≪ μHE[k].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- (c) `μ(A) = ∫_A θ d(Hᵏ⌞M) = ∫_{M ∩ A} θ dHᵏ` for Borel `A`
+  have happly : ∀ A : Set (Euclid P), MeasurableSet A →
+      R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k] := fun A hA => by
+    rw [IMRep.measure, withDensity_apply _ hA, Measure.restrict_restrict hA, inter_comm A]
+  refine ⟨hac, ?_, happly, ?_, fun K hK hKW => ?_, R.aestronglyMeasurable_orient.mono_ac hac,
+    fun ω => ?_⟩
+  -- (b) `θ ≠ 0` on `M`, hence `Hᵏ⌞M`-a.e.
+  · refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'
+  -- (d) `M ∩ Mᶜ = ∅`
+  · rw [happly _ R.measurableSet_carrier.compl, inter_compl_self, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- (e) local integrability of `θ`
+  · rw [happly K hK.measurableSet]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKW)
+  -- (g) `∫ ⟨ω, ξ⟩ d(θ Hᵏ⌞M) = ∫_M θ ⟨ω, ξ⟩ dHᵏ`
+  · have h := integral_withDensity_eq_integral_smul (μ := μHE[k].restrict R.carrier) hθ
+      fun x => R.orient x (ω x)
+    simp only [ENNReal.coe_natCast] at h
+    rw [IMRep.measure, h, IMRep.action]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp [NNReal.smul_def]
+
+/-- **Orientation is local** (Simon Ch. 6, 3.1; Ch. 3, 1.4).  Assume (IMC)(a): for Borel
+`M ⊆ M' ⊆ U`, `U` open, with `Hⁿ(M' ∩ K) < ∞` for compact `K ⊆ U`, the approximate tangent
+spaces of `M` and `M'` agree `Hⁿ`-a.e. on `M`.  Let `Nᵢ ⊆ Mᵢ` (`i` in a countable type) be Borel
+pieces of the carriers of integer multiplicity triples `Rᵢ = (Mᵢ, θᵢ, ξᵢ)` in open `Wᵢ`, with
+`M = ⋃ᵢ Nᵢ ⊆ U`, `Hᵏ(M ∩ K) < ∞` for compact `K ⊆ U`, and `ξ = ξᵢ` `Hᵏ`-a.e. on `Nᵢ`.  Then `ξ`
+orients an approximate tangent space of `M` `Hᵏ`-a.e. on `M`: `Hᵏ`-a.e. on `Nᵢ`, `ξ = ξᵢ` orients
+`TₓMᵢ = TₓNᵢ = TₓM`, by (IMC)(a) in `Wᵢ` (`Hᵏ⌞Mᵢ` is locally finite in `Wᵢ`) and in `U`. -/
+theorem Submission.cbrg_ae_orient_iUnion : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (ι : Type) [Countable ι] (P k : ℕ) (U : Set (Euclid P)) (W N : ι → Set (Euclid P)) (R : (i : ι) → IMRep (W i) k) (ξ : Euclid P → MultiVector P k), IsOpen U → (∀ i, IsOpen (W i)) → (∀ i, MeasurableSet (N i)) → (∀ i, N i ⊆ (R i).carrier) → (⋃ i, N i) ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[k] ((⋃ i, N i) ∩ K) ≠ ∞) → (∀ i, ∀ᵐ y ∂(μHE[k].restrict (N i)), ξ y = (R i).orient y) → ∀ᵐ x ∂(μHE[k].restrict (⋃ i, N i)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt k (⋃ i, N i) x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+  intro hIMC ι _ P k U W N R ξ hU hWo hNm hNR hNU hfinN hξ
+  -- `M = ⋃ᵢ Nᵢ` is a countable union: it suffices to work `Hᵏ`-a.e. on each piece `Nᵢ`
+  rw [ae_restrict_iUnion_iff]
+  intro i
+  have hMm : MeasurableSet (⋃ j, N j) := MeasurableSet.iUnion hNm
+  -- (α) `ξᵢ` orients an approximate tangent space of `Mᵢ`, a.e. on `Nᵢ ⊆ Mᵢ`
+  have hα : ∀ᵐ x ∂(μHE[k].restrict (N i)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt k (R i).carrier x Q ∧ IsUnitOrientationOf ((R i).orient x) Q :=
+    ae_restrict_of_ae_restrict_of_subset (hNR i) (R i).orients
+  -- (γ) (IMC)(a) in `Wᵢ` for `Nᵢ ⊆ Mᵢ ⊆ Wᵢ`, `Hᵏ⌞Mᵢ` being locally finite in `Wᵢ`
+  have hγ := hIMC P k (W i) (N i) (R i).carrier (hWo i) (hNm i) (R i).measurableSet_carrier
+    (hNR i) (R i).carrier_subset
+    (fun K hK hKW => (Submission.rsd_imrep_compact_measure_ne_top P k (W i) (R i) K hK hKW).1)
+  -- (δ) (IMC)(a) in `U` for `Nᵢ ⊆ M ⊆ U`
+  have hδ := hIMC P k U (N i) (⋃ j, N j) hU (hNm i) hMm (subset_iUnion N i) hNU hfinN
+  -- (β) `ξ = ξᵢ` a.e. on `Nᵢ`; then `TₓMᵢ = TₓNᵢ = TₓM` is oriented by `ξ(x) = ξᵢ(x)`
+  filter_upwards [hα, hγ, hδ, hξ i] with x hxα hxγ hxδ hxξ
+  obtain ⟨Q, hQ, hQo⟩ := hxα
+  refine ⟨Q, (hxδ Q).1 ((hxγ Q).2 hQ), ?_⟩
+  rw [hxξ]
+  exact hQo
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
