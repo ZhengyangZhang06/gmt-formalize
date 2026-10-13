@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b44ae8a78d8fc0af8795bf169998b8c13c902f9452c82d58035ef6060c4216d2",
+  "git_delta": {
+    "base_commit": "9c989bc00caa96e00bc54d043fd3bbf5eae406ae",
+    "candidate_commit": "6bffed6a5c5bf1ff86417d0d37e13a47dbe4c783",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_pi_ss_restriction_massOn_le",
+    "diff_sha256": "87e58a9a7e738dbfff073ac46c4da5c11116e08b01910746729e079bc4a46adb",
+    "source_sha256": "6a97c100faac0596db4fb6ab5aa4b6d78c97c3d7599002ad6ced5e30ca5ac0db",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_ss_restriction_massOn_le",
+      "statement": "∀ (P k : ℕ) (U W A : Set (Eucl P)) (X S : GeometricCurrentOn U k), IsOpen U → CompactlyContainedOpen W U → IsRestriction X A S → S.massOn W ≤ X.massOn W",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
