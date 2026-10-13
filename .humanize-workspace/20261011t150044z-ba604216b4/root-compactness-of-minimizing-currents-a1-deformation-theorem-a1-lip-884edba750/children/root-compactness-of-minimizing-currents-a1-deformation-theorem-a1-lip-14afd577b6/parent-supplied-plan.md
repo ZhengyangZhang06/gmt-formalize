@@ -1,0 +1,24 @@
+# Parent-supplied child implementation contract
+
+This scaffold was created deterministically by the controller. DAG child
+`root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1` must not run plan generation or natural-language proof generation.
+Use the independently reviewed proof at `.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-14afd577b6/parent-supplied-natural-proof.md` directly.
+
+## Frozen theorem
+
+- Parent node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1`
+- Child key: `curry_le`
+- Declaration: `Submission.cmcdt_lp_covector_curryLeft_norm_le`
+- Exact Lean type: `∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β`
+
+## Sibling prerequisites
+
+- `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1`
+
+## Implementation steps
+
+1. Read the complete parent-supplied natural-language proof.
+2. Formalize exactly the frozen theorem without weakening or replacing it.
+3. Use only the listed accepted sibling prerequisites and ordinary frozen proof-base helpers.
+4. Run the configured author-side child comparator and return a committed candidate. The outer
+   controller, not this nested implementation loop, owns the independent reviewer comparator.

@@ -1,0 +1,79 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6 of the selected parent proof. That step rotates v to a basis vector f_{i₀}. It compares the Hilbert–Schmidt sums of ι_{f_{i₀}}β and β by the position at which the index i₀ occurs. The parent keeps only the tuples in which i₀ occurs exactly once. Here that count is written with the position sums R_p below. Uses the sibling sq_sum (regcomp_covector_sq_sum_orthonormalBasis).
+
+Notation. ℝ^N = Euclid N with standard basis e. |α| := covectorEuclideanNorm α = (Σ_{J strictly increasing} α(e∘J)²)^{1/2}. For an orthonormal basis f of ℝ^N indexed by Fin N and J : Fin m → Fin N, write f∘J := (f_{J(0)}, …, f_{J(m−1)}). For x ∈ ℝ^N, ι_xβ := β.curryLeft x is the k-covector w ↦ β(x, w_0, …, w_{k−1}) (ContinuousAlternatingMap.curryLeft_apply_apply: β.curryLeft x w = β (Matrix.vecCons x w), and Matrix.vecCons x w = Fin.cons x w). β.curryLeft is a continuous linear map in x, so ι_{cx}β = c·ι_xβ and ι_0β = 0.
+
+1. (Homogeneity of the coefficient norm.) For c ∈ ℝ and a k-covector γ: |c·γ| = |c|·|γ|. Each coefficient satisfies (c·γ)(e∘J) = c·γ(e∘J), so the radicand of |c·γ| is c² times the radicand X ≥ 0 of |γ|. Then √(c²·X) = √(c²)·√X = |c|·√X (Real.sqrt_mul, Real.sqrt_sq_eq_abs).
+
+2. (Case v = 0.) Then ι_vβ = 0, so |ι_vβ| = 0 (covectorEuclideanNorm_zero), and the right side ‖0‖·|β| = 0. Assume from now on v ≠ 0. Then N ≥ 1, since ℝ^0 = {0}. Put i₀ := 0 ∈ Fin N.
+
+3. (Rotating v to a basis vector.) Put u := ‖v‖⁻¹·v. Then ‖u‖ = 1 and v = ‖v‖·u. The one-member family (u) indexed by the set {i₀} is orthonormal (a single unit vector), and finrank ℝ^N = N = card (Fin N). So Orthonormal.exists_orthonormalBasis_extension_of_card_eq gives an orthonormal basis f of ℝ^N indexed by Fin N with f_{i₀} = u. By linearity, ι_vβ = ‖v‖·ι_uβ. By step 1 and ‖v‖ ≥ 0, |ι_vβ| = ‖v‖·|ι_uβ|. It therefore suffices to show |ι_uβ| ≤ |β|.
+
+4. (Position sums.) For J : Fin (k+1) → Fin N put g(J) := β(f∘J)² ≥ 0. For each position p ∈ Fin (k+1) put R_p := Σ_{J : Fin (k+1) → Fin N} [J(p) = i₀]·g(J), where [·] is 1 if the condition holds and 0 otherwise.
+
+5. (R_0 = k!·|ι_uβ|².) (a, j) ↦ Fin.cons a j is a bijection Fin N × (Fin k → Fin N) → (Fin (k+1) → Fin N) (Fin.consEquiv). Under it the condition J(0) = i₀ becomes a = i₀, so R_0 = Σ_{j : Fin k → Fin N} β(f∘Fin.cons i₀ j)². Since f∘Fin.cons i₀ j = Fin.cons f_{i₀} (f∘j) = Fin.cons u (f∘j) (Fin.comp_cons), each term equals (ι_uβ)(f∘j)². Hence R_0 = Σ_{j : Fin k → Fin N} (ι_uβ)(f∘j)² = k!·|ι_uβ|², by sq_sum applied to the k-covector ι_uβ and the orthonormal basis f.
+
+6. (R_p = R_0 for every p.) Let σ := Equiv.swap 0 p, the transposition of 0 and p in Fin (k+1) (σ is the identity if p = 0). Then σ⁻¹ = σ and σ⁻¹(0) = p. The map J ↦ J∘σ⁻¹ is a bijection of Fin (k+1) → Fin N (Equiv.arrowCongr σ (Equiv.refl _)). We have (J∘σ⁻¹)(0) = J(p). Also β(f∘J∘σ⁻¹) = sign(σ⁻¹)·β(f∘J) (AlternatingMap.map_perm applied to β.toAlternatingMap), and sign(σ⁻¹) = ±1, so g(J∘σ⁻¹) = g(J). Substituting J ↦ J∘σ⁻¹ in R_0 gives R_0 = Σ_J [(J∘σ⁻¹)(0) = i₀]·g(J∘σ⁻¹) = Σ_J [J(p) = i₀]·g(J) = R_p. (This is the parent's remark that moving f_{i₀} to the front only permutes the arguments, so β(f_{I'}) = ±β(f_{i₀}, f_I).)
+
+7. (Σ_p R_p ≤ Σ_J g(J).) Exchanging the finite sums gives Σ_{p ∈ Fin (k+1)} R_p = Σ_J c(J)·g(J), where c(J) := #{p ∈ Fin (k+1) : J(p) = i₀}. If c(J) ≤ 1, then c(J)·g(J) ≤ g(J) because g(J) ≥ 0. If c(J) ≥ 2, there are positions p ≠ q with J(p) = J(q) = i₀. Then the argument tuple f∘J has equal entries in the distinct slots p and q, so β(f∘J) = 0 because β is alternating (ContinuousAlternatingMap.map_eq_zero_of_eq). Hence c(J)·g(J) = 0 = g(J). Summing over J proves the claim. (This is the parent's restriction to tuples in which i₀ occurs exactly once. Tuples containing i₀ twice contribute 0, and the dropped terms are ≥ 0.)
+
+8. (Total sum.) Σ_{J : Fin (k+1) → Fin N} g(J) = (k+1)!·|β|², by sq_sum applied to the (k+1)-covector β and the orthonormal basis f.
+
+9. (Conclusion.) By steps 5–8, (k+1)·k!·|ι_uβ|² = Σ_{p ∈ Fin (k+1)} R_p ≤ (k+1)!·|β|² = (k+1)·k!·|β|². Divide by (k+1)·k! > 0 to get |ι_uβ|² ≤ |β|². Both norms are ≥ 0 (covectorEuclideanNorm_nonneg), so |ι_uβ| ≤ |β|. With step 3, |ι_vβ| = ‖v‖·|ι_uβ| ≤ ‖v‖·|β|, that is, covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β. ∎
+
+## Key steps
+
+1. Homogeneity |c·γ| = |c|·|γ| and the case v = 0; otherwise reduce to u = v/‖v‖ = f_{i₀} for an orthonormal basis f (Orthonormal.exists_orthonormalBasis_extension_of_card_eq).
+2. Position sums R_p := Σ_{J(p) = i₀} β(f∘J)²: R_0 = k!·|ι_uβ|² by Fin.cons reindexing and sq_sum.
+3. R_p = R_0 by the transposition 0 ↔ p (sign² = 1).
+4. Σ_p R_p ≤ Σ_J β(f∘J)² = (k+1)!·|β|², because tuples with i₀ in two slots vanish; cancel (k+1)·k! and take square roots.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `grep -rn 'covectorEuclideanNorm|abbrev Covector' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06 (Mass.lean:30 definition, Forms.lean:31 Covector := E [⋀^Fin n]→L[ℝ] ℝ)`
+- `python3 -I scans of dag.json: lean_name regex covector|curry|orthonormal|pullback|cmcdt_lp; exact lean_statement equality against the four child types; status/candidate_commit of regcomp_covector_sq_sum_orthonormalBasis, regcomp_covector_eval_orthonormal_le, cmcs_wn_adapted_orthonormalBasis; freshness of cmcdt_lp_covector_pullback_norm_le and cmcdt_lp_covector_curryLeft_norm_le (no match among 1650 nodes)`
+- `git show b7846b639953f647296619e6e73dec8a8a22ba73:GMT/Ch07/Submission.lean (accepted Lean proofs of regcomp_covector_sq_sum_basis_invariant/basisFun/orthonormalBasis and regcomp_covector_eval_orthonormal_le); git merge-base --is-ancestor 16144a475b272196ba8b2bd15f104028282dbcfc b7846b639953f647296619e6e73dec8a8a22ba73 (true)`
+- `rg -n in <snapshot>/mathlib/Mathlib: 'noncomputable def curryLeft|curryLeft_apply_apply|curryLeft_compContinuousLinearMap' (Analysis/Normed/Module/Alternating/Curry.lean), 'def consEquiv' (Data/Fin/Tuple/Basic.lean:184), 'theorem comp_cons' (Data/Fin/Tuple/Basic.lean:260), 'def apply' (Topology/Algebra/Module/Alternating/Topology.lean:294), 'theorem toDual_symm_apply' (Analysis/InnerProductSpace/Dual.lean:178), 'sum_inner_mul_inner' (Analysis/InnerProductSpace/PiL2.lean:506), 'theorem opNorm_comp_le' (Analysis/Normed/Operator/Basic.lean:408), 'Orthonormal.exists_orthonormalBasis_extension_of_card_eq' (PiL2.lean:1044), 'map_eq_zero_of_eq|compContinuousLinearMap_apply' (Topology/Algebra/Module/Alternating/Basic.lean:134,319), 'theorem map_perm' (LinearAlgebra/Alternating/Basic.lean:672), 'pow_le_pow_iff_left₀' (Algebra/Order/GroupWithZero/Basic.lean:681)`
+- `sed of /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py (_existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint, _overlay_accepted_children) and store.py ensure: an accepted node with identical frozen type is reused unchanged and overlaid into dependants`
+- `python3 -I read of nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1/decomposition-v1.json (precedent reuse of the same two accepted theorems) and of the parent-child-handoff.json of the accepted nodes -c35871b74d (sq_sum) and -930e70c904 (eval_le)`
+- `lake env lean /tmp/cmcdt-lp-cb-decomp/lean/Types.lean, L1.lean, L2.lean, Final.lean (all compile; Final.lean sorry-free, axioms propext, Classical.choice, Quot.sound)`
+- `python3 -I /tmp/cmcdt-lp-cb-decomp/scripts/check_types.py (validate_lean_statement from verifier/lean_contract.py on all four child types; reused types byte-identical to dag.json; new names fresh)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-884edba750/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/store.py`
+- `/tmp/cmcdt-lp-cb-decomp/lean/Final.lean`
+- `/tmp/cmcdt-lp-cb-decomp/lean/L1.lean`
+- `/tmp/cmcdt-lp-cb-decomp/lean/L2.lean`
+
+The snapshot contract (project b4d606db, Mathlib 25730c7c) is the workspace Submission.lean. covectorEuclideanNorm (SimonGMT Chapter06/Mass.lean) and Covector (Chapter06/Forms.lean) are exactly the objects in the selected type. Identity (L0) and conjunct (L3) are already comparator-accepted DAG theorems: regcomp_covector_sq_sum_orthonormalBasis (candidate 16144a475b) and regcomp_covector_eval_orthonormal_le (candidate b7846b6399, which contains the former in its history). Their frozen types are byte-identical to the child types used here, and the runtime reuses accepted nodes whose frozen type is identical. No accepted DAG node, snapshot file, Mathlib or SimonGMT declaration gives (L1) or (L2), and both new names are fresh. The pinned Mathlib supplies every tool the new proofs cite: ContinuousAlternatingMap.curryLeft (a continuous linear map) with curryLeft_apply_apply and curryLeft_compContinuousLinearMap, Fin.consEquiv, Fin.comp_cons, ContinuousAlternatingMap.apply, InnerProductSpace.toDual_symm_apply, OrthonormalBasis.sum_inner_mul_inner, ContinuousLinearMap.opNorm_comp_le, Orthonormal.exists_orthonormalBasis_extension_of_card_eq, map_eq_zero_of_eq, AlternatingMap.map_perm and pow_le_pow_iff_left₀. A sorry-free Lean file compiles after import GMT.Ch07.Submission with axioms propext, Classical.choice and Quot.sound. It contains the accepted lemma code, complete proofs of both new children and the parent assembly against the exact frozen type.

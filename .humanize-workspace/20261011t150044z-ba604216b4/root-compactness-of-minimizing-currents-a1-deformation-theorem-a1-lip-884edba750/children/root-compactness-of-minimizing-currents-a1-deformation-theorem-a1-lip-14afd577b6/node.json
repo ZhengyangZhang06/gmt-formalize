@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1",
+  "depth": 5,
+  "title": "Interior-product bound for the coefficient norm: |ι_vβ| ≤ |v|·|β| (parent (L2))",
+  "statement": "Let N, k ∈ ℕ, let v ∈ ℝ^N = Euclid N and let β be a (k+1)-covector on ℝ^N (Covector (Euclid N) (k+1)). Let ι_vβ := β.curryLeft v be the interior product, the k-covector ι_vβ(w_1, …, w_k) = β(v, w_1, …, w_k). Then |ι_vβ| ≤ ‖v‖·|β|, where ‖v‖ is the Euclidean norm of v and |α| = covectorEuclideanNorm α is the Euclidean norm of the values of α on the strictly increasing tuples of standard basis vectors.",
+  "lean_statement": "∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β",
+  "lean_name": "cmcdt_lp_covector_curryLeft_norm_le",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1",
+      "result_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-14afd577b6-a1"
+}
