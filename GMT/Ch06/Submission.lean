@@ -719,6 +719,50 @@ theorem Submission.iwl_cr_ci_cone_map :
     rw [key, ContinuousAlternatingMap.map_smul_univ, Fin.prod_univ_succ, smul_eq_mul]
     simp only [Fin.cons_zero, Fin.cons_succ, one_mul, Finset.prod_const, Finset.card_univ,
       Fintype.card_fin]
+/-- The product `χ(y) = ϑ(y₀) ζ(π y)` of cut-offs on `ℝ` and `ℝ^P`, `π y = (y₁, …, y_P)`, is a
+cut-off on `ℝ^{P+1}`: `y ↦ y₀` and `π` are linear, so `χ` is smooth, and `‖y‖ ≤ |y₀| + ‖π y‖`
+puts `support χ` inside the compact ball `B̄_{a+b}(0)`, where `tsupport ϑ ⊆ B̄_a(0)` and
+`tsupport ζ ⊆ B̄_b(0)`. -/
+theorem Submission.iwl_cr_ci_product_cutoff :
+    ∀ (P : ℕ) (ϑ : ℝ → ℝ) (ζ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ϑ →
+      HasCompactSupport ϑ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ →
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : Eucl (P + 1) => ϑ (y 0) *
+        ζ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ∧
+      HasCompactSupport (fun y : Eucl (P + 1) => ϑ (y 0) *
+        ζ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) := by
+  intro P ϑ ζ hϑ hϑc hζ hζc
+  -- `π y = (y₁, …, y_P)`: the equivalences `EuclideanSpace.equiv` around `Fin.tail`.
+  let π : Eucl (P + 1) → Eucl P := fun y =>
+    (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))
+  have hπ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) π :=
+    (EuclideanSpace.equiv (Fin P) ℝ).symm.contDiff.comp
+      ((contDiff_pi.2 fun j : Fin P => contDiff_apply ℝ ℝ j.succ).comp
+        (EuclideanSpace.equiv (Fin (P + 1)) ℝ).contDiff)
+  refine ⟨(hϑ.comp (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin (P + 1))).contDiff).mul
+    (hζ.comp hπ), ?_⟩
+  -- `‖y‖² = y₀² + ‖π y‖²`, hence `‖y‖ ≤ |y₀| + ‖π y‖`.
+  have hnorm : ∀ y : Eucl (P + 1), ‖y‖ ≤ |y 0| + ‖π y‖ := by
+    intro y
+    have h1 : ‖y‖ ^ 2 = y 0 ^ 2 + ‖π y‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_succ]
+      rfl
+    have h2 : ‖y‖ ^ 2 ≤ (|y 0| + ‖π y‖) ^ 2 := by
+      rw [h1, add_sq, sq_abs]
+      nlinarith [abs_nonneg (y 0), norm_nonneg (π y)]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 h2
+  -- `χ y ≠ 0` forces `|y₀| ≤ a` and `‖π y‖ ≤ b`, so `support χ ⊆ B̄_{a+b}(0)`.
+  obtain ⟨a, ha⟩ := hϑc.isCompact.isBounded.subset_closedBall 0
+  obtain ⟨b, hb⟩ := hζc.isCompact.isBounded.subset_closedBall 0
+  refine HasCompactSupport.intro (isCompact_closedBall (0 : Eucl (P + 1)) (a + b)) ?_
+  intro y hy
+  by_contra hne
+  have h0 : y 0 ∈ closedBall (0 : ℝ) a := ha (subset_tsupport _ (left_ne_zero_of_mul hne))
+  have hπy : π y ∈ closedBall (0 : Eucl P) b := hb (subset_tsupport _ (right_ne_zero_of_mul hne))
+  rw [mem_closedBall_zero_iff, Real.norm_eq_abs] at h0
+  rw [mem_closedBall_zero_iff] at hπy
+  exact hy (mem_closedBall_zero_iff.2 ((hnorm y).trans (add_le_add h0 hπy)))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
