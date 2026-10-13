@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def (dilation|dilationCLM|blowUp|HasMassDensity|ConvergesWeakly|currentEval|unitBallVolume)|dtc_blowUp_massOn_image|idtp_convergesWeakly_massOn_le|idod_blowUp_limit_mass_density_le",
+        "theorem (div_le_of_le_mul|ofReal_le_ofReal_iff|ofReal_mul|mul_sSup|le_of_tendsto|tendsto_ofReal)|def (IsTestForm|TestFormOn)|def GeometricCurrentOn.restrictDomain",
+        "mul_sSup|tsupport_comp_subset_preimage|comp_homeomorph",
+        "git show 17c63f22cc8bff3693345ac9074b98fadbf16246:GMT/Ch07/Submission.lean",
+        "git show fb9bfaa2bb3b6a2fb2c8d2c902f098a63fc92f2d:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idod-independent-audit-1401bsa5/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e69bcca705/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c658ab2df9/accepted-candidate.json",
+        "/tmp/idod-independent-audit-1401bsa5/Audit.lean"
+      ],
+      "conclusion": "Verified the project and Mathlib pins and byte-identical frozen contract files. The snapshot supplies the stated definitions and ENNReal/order lemmas; the child declarations themselves have no match in the pinned project or Mathlib. Both accepted-candidate receipts record comparator success, match the proposed types byte-for-byte, and have matching candidate-source hashes. Each bare name occurs at exactly one accepted DAG node. Their dependency closures are acyclic and contain neither the selected parent nor a dependency on each other; mass scaling retains its accepted test-form prerequisite. The split is appropriate: it makes available the two external results consumed by the supplied parent proof. Independently checked ball rescaling, eventual domain containment, scaling cancellation, and the density-limit argument. A fresh Lean run elaborated both literal child propositions before their implementations and verified the conditional assembly and composed exact parent. All checked proofs use only propext, Classical.choice, and Quot.sound. Real, scalar, and ENNReal operations have the intended instances; no matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_mass_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every parameter and hypothesis and matches the independently elaborated one-line proposition. Reuse of dtc_blowUp_massOn_image is valid at its identical accepted type. The proof explicitly constructs inverse affine homeomorphisms, preserves smoothness and compact support, derives the λ⁻ⁿ evaluation factor by multilinearity, transfers admissibility in both directions, and proves both supremum inequalities using the correctly justified nonnegative factor. It covers arbitrary U and W and n = 0 without additional assumptions or circular reliance. Its conclusion supplies exactly parent step 2(d)."
+    },
+    {
+      "key": "weak_limit_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line proposition agree, including varying domains, arbitrary W, ENNReal B, and eventual containment together with the mass bound. Reuse of idtp_convergesWeakly_massOn_le has an identical accepted type and no conflicting reservation. The proof correctly regards each admissible limit test form as a test form on every sufficiently large source domain, unfolds currentEval, bounds its evaluation by mass, passes through continuous ofReal and the closed order bound on nontrivial atTop, then takes the supremum. This is complete and non-circular, including B = ∞, and supplies exactly parent step 3."
+    }
+  ],
+  "required_changes": []
+}
