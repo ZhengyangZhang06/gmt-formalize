@@ -494,6 +494,317 @@ theorem Submission.slicing_mb_cutoff : ∀ (t h ε : ℝ), 0 < h → 0 < ε → 
         filter_upwards [Ioi_mem_nhds (show t - r < s by linarith)] with u hu
         exact hχ_zero u hu
       rw [hev.deriv_eq, deriv_const]
+/-- Simon Ch. 6, proof of 4.8–4.9 (p. 158): the integral bounding the right side of 4.11, for a
+differentiable approximation `g` of `f` (Simon's `f^{(σ)}`):
+`∫ |D(χ ∘ g)| |ω| dμ ≤ c L_W μ(spt ω ∩ {t − h − δ < f < t + δ})` when `|ω| ≤ 1`,
+`|g − f| ≤ δ` and `‖Dg‖ ≤ L_W` on `spt ω`, `|χ'| ≤ c` and `χ' = 0` off `(t − h, t)`.
+Off `spt ω` the integrand vanishes.  On `spt ω` the chain rule gives
+`‖D(χ ∘ g)(x)‖ ≤ |χ'(g x)| ‖Dg(x)‖`; this is `0` unless `t − h < g x < t`, and then
+`t − h − δ < f x < t + δ` and the bound is `c L_W`.  Integrate the indicator bound. -/
+theorem Submission.slicing_mb_cdb_grad_lintegral_le :
+    ∀ (P m : ℕ) (μ : Measure (Eucl P)) (ω : DifferentialForm (Eucl P) m) (f g : Eucl P → ℝ) (LW : ℝ≥0) (χ : ℝ → ℝ) (t h c δ : ℝ), (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → Differentiable ℝ g → Differentiable ℝ χ → (∀ x ∈ tsupport ω, |g x - f x| ≤ δ) → (∀ x ∈ tsupport ω, ‖fderiv ℝ g x‖₊ ≤ LW) → (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) → ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) * ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ ≤ ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ)) := by
+  intro P m μ ω f g LW χ t h c δ hω hg hχ hgf hDg hc hband
+  set E := tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ)
+  set a : ℝ≥0∞ := ENNReal.ofReal c * (LW : ℝ≥0∞)
+  -- `c ≥ |χ'(0)| ≥ 0`.
+  have hc0 : 0 ≤ c := (abs_nonneg _).trans (hc 0)
+  -- Pointwise bound of the integrand by `1_E · a`.
+  have hpt : ∀ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+      ENNReal.ofReal (covectorEuclideanNorm (ω x)) ≤ E.indicator (fun _ => a) x := by
+    intro x
+    by_cases hxK : x ∈ tsupport ω
+    · -- Chain rule: `D(χ ∘ g)(x) = Dχ(g x) ∘ Dg(x)`.
+      have hchain : fderiv ℝ (fun y => χ (g y)) x = (fderiv ℝ χ (g x)).comp (fderiv ℝ g x) :=
+        fderiv_fun_comp x (hχ (g x)) (hg x)
+      by_cases hgx : g x ∈ Ioo (t - h) t
+      · -- `t − h < g x < t` and `|g x − f x| ≤ δ` put `x` in `E`.
+        have hxE : x ∈ E := by
+          refine ⟨hxK, ?_⟩
+          have hab := abs_le.mp (hgf x hxK)
+          rw [mem_Ioo] at hgx
+          rw [mem_preimage, mem_Ioo]
+          constructor <;> linarith [hgx.1, hgx.2, hab.1, hab.2]
+        rw [indicator_of_mem hxE]
+        have hnorm : ‖fderiv ℝ (fun y => χ (g y)) x‖ ≤ c * LW := by
+          rw [hchain]
+          calc ‖(fderiv ℝ χ (g x)).comp (fderiv ℝ g x)‖
+              ≤ ‖fderiv ℝ χ (g x)‖ * ‖fderiv ℝ g x‖ := ContinuousLinearMap.opNorm_comp_le _ _
+            _ ≤ c * LW := by
+              apply mul_le_mul _ _ (norm_nonneg _) hc0
+              · rw [← norm_deriv_eq_norm_fderiv, Real.norm_eq_abs]
+                exact hc _
+              · exact_mod_cast hDg x hxK
+        have h1 : (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) ≤ a := by
+          calc (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞)
+              = ENNReal.ofReal ‖fderiv ℝ (fun y => χ (g y)) x‖ := (ofReal_norm _).symm
+            _ ≤ ENNReal.ofReal (c * LW) := ENNReal.ofReal_le_ofReal hnorm
+            _ = a := by rw [ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal]
+        have h2 : ENNReal.ofReal (covectorEuclideanNorm (ω x)) ≤ 1 :=
+          ENNReal.ofReal_le_one.mpr (hω x)
+        calc (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+              ENNReal.ofReal (covectorEuclideanNorm (ω x))
+            ≤ a * 1 := mul_le_mul' h1 h2
+          _ = a := mul_one _
+      · -- `χ'(g x) = 0`, so `Dχ(g x) = 0` and `D(χ ∘ g)(x) = 0`.
+        have hfd : fderiv ℝ χ (g x) = 0 := by
+          rw [← norm_eq_zero, ← norm_deriv_eq_norm_fderiv, hband _ hgx, norm_zero]
+        rw [hchain, hfd]
+        simp
+    · -- Off `spt ω`, `ω x = 0`.
+      have h0 : ω x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp [h0]
+  calc ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) *
+        ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ
+      ≤ ∫⁻ x, E.indicator (fun _ => a) x ∂μ := lintegral_mono hpt
+    _ ≤ a * μ E := lintegral_indicator_const_le _ _
+/-- Continuity from above for the shrinking level bands (parent proof, Step 6).  With
+`δ_j = 1/(j+1)`, the sets `E_j = K ∩ f⁻¹((a − δ_j, b + δ_j))` are Borel (`K` is closed and
+`f` is continuous on `K`), decrease in `j`, have intersection `K ∩ f⁻¹([a, b])`, and
+`μ(E_0) ≤ μ(K) < ∞`; so `μ(E_j) → μ(K ∩ f⁻¹([a, b]))`. -/
+theorem Submission.slicing_mb_cdb_band_measure_tendsto :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (K : Set (Eucl P)) (f : Eucl P → ℝ) (a b : ℝ),
+      IsClosed K → ContinuousOn f K → μ K < ∞ →
+        Tendsto
+          (fun j : ℕ => μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))))
+          atTop (𝓝 (μ (K ∩ f ⁻¹' Icc a b))) := by
+  intro P μ K f a b hK hf hμK
+  -- `E_j = K \ (K ∩ f⁻¹((a − δ_j, b + δ_j)ᶜ))` is Borel.
+  have hmeas : ∀ j : ℕ,
+      MeasurableSet (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))) := by
+    intro j
+    have hcl :
+        IsClosed (K ∩ f ⁻¹' (Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))ᶜ) :=
+      hf.preimage_isClosed_of_isClosed hK isOpen_Ioo.isClosed_compl
+    have heq : K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) =
+        K \ (K ∩ f ⁻¹' (Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))ᶜ) := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage, Set.mem_sdiff, mem_compl_iff]
+      tauto
+    rw [heq]
+    exact hK.measurableSet.diff hcl.measurableSet
+  -- `δ_j` decreases, so the bands decrease.
+  have hanti : Antitone fun j : ℕ =>
+      K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) := by
+    intro i j hij x hx
+    have hle : 1 / ((j : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := Nat.one_div_le_one_div hij
+    simp only [mem_inter_iff, mem_preimage, mem_Ioo] at hx ⊢
+    exact ⟨hx.1, by linarith [hx.2.1], by linarith [hx.2.2]⟩
+  -- `⋂_j E_j = K ∩ f⁻¹([a, b])`.
+  have hinter :
+      ⋂ j : ℕ, K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)) =
+        K ∩ f ⁻¹' Icc a b := by
+    ext x
+    simp only [mem_iInter, mem_inter_iff, mem_preimage, mem_Ioo, mem_Icc]
+    constructor
+    · intro h
+      refine ⟨(h 0).1, ?_, ?_⟩
+      · by_contra! hlt
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (sub_pos.mpr hlt)
+        linarith [(h j).2.1]
+      · by_contra! hlt
+        obtain ⟨j, hj⟩ := exists_nat_one_div_lt (sub_pos.mpr hlt)
+        linarith [(h j).2.2]
+    · rintro ⟨hxK, hax, hxb⟩ j
+      have hδ : 0 < 1 / ((j : ℝ) + 1) := Nat.one_div_pos_of_nat
+      exact ⟨hxK, by linarith, by linarith⟩
+  -- `μ(E_0) ≤ μ(K) < ∞`; continuity from above.
+  have hfin : ∃ j : ℕ,
+      μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1))) ≠ ∞ :=
+    ⟨0, ((measure_mono inter_subset_left).trans_lt hμK).ne⟩
+  have h := tendsto_measure_iInter_atTop (fun j => (hmeas j).nullMeasurableSet) hanti hfin
+  rw [hinter] at h
+  exact h
+/-- Dominated convergence for the bounded continuous multipliers `χ(g_j)` against an integrable
+density `F` (the limit `σ ↓ 0` in the cutoff defect bound of the slice mass estimate, Simon Ch. 6,
+4.9–4.10): if `F` vanishes off `K` and `g_j → f` on `K`, then `∫ χ(g_j) F dν → ∫ χ(f) F dν`.
+The integrands are dominated by `|F|` since `|χ| ≤ 1`, and converge everywhere: on `K` by
+continuity of `χ`, off `K` because `F = 0`. -/
+theorem Submission.slicing_mb_cdb_multiplier_integral_tendsto :
+    ∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ)
+      (g : ℕ → Eucl P → ℝ) (χ : ℝ → ℝ), Integrable F ν → (∀ x, x ∉ K → F x = 0) →
+      (∀ j, Measurable (g j)) → (∀ x ∈ K, Tendsto (fun j => g j x) atTop (𝓝 (f x))) →
+      Continuous χ → (∀ s, |χ s| ≤ 1) →
+      Tendsto (fun j => ∫ x, χ (g j x) * F x ∂ν) atTop (𝓝 (∫ x, χ (f x) * F x ∂ν)) := by
+  intro P ν F K f g χ hF hFK hg hgf hχ hχ1
+  refine tendsto_integral_of_dominated_convergence (fun x => ‖F x‖) (fun j => ?_) hF.norm
+    (fun j => Eventually.of_forall fun x => ?_) (Eventually.of_forall fun x => ?_)
+  · -- `χ ∘ g j` is measurable and `F` is integrable.
+    exact (hχ.measurable.comp (hg j)).aestronglyMeasurable.mul hF.aestronglyMeasurable
+  · -- `|χ| ≤ 1`.
+    rw [norm_mul, Real.norm_eq_abs (χ (g j x))]
+    exact mul_le_of_le_one_left (norm_nonneg _) (hχ1 _)
+  · -- On `K` by continuity of `χ`; off `K` both sides vanish.
+    by_cases hx : x ∈ K
+    · exact ((hχ.tendsto (f x)).comp (hgf x hx)).mul_const (F x)
+    · simp only [hFK x hx, mul_zero]
+      exact tendsto_const_nhds
+/-- The mollifier behind Simon's `f^{(σ)}` (Ch. 6, §4, p. 158; parent Step 4): a smooth,
+nonnegative, compactly supported `ρ` vanishing off `B(0, σ)` with `∫ ρ = 1`.  Take the bump `φ`
+centred at `0` with radii `σ/2 < σ`; then `support φ = B(0, σ)`, so `c = ∫ φ > 0` and
+`ρ = c⁻¹ φ` works. -/
+theorem Submission.slicing_mb_sa_mollifier_exists :
+    ∀ (P : ℕ) (σ : ℝ), 0 < σ → ∃ ρ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ρ ∧
+      HasCompactSupport ρ ∧ (∀ y, 0 ≤ ρ y) ∧ (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) ∧
+      ∫ y, ρ y = 1 := by
+  intro P σ hσ
+  -- The smooth bump `φ` centred at `0` with `support φ = B(0, σ)`.
+  let φ : ContDiffBump (0 : Eucl P) := ⟨σ / 2, σ, half_pos hσ, half_lt_self hσ⟩
+  have hφi : Integrable φ := φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+  -- Its mass `c = ∫ φ` is positive since `B(0, σ)` has positive Lebesgue measure.
+  have hc : 0 < ∫ y, φ y := by
+    rw [integral_pos_iff_support_of_nonneg (fun y => φ.nonneg) hφi, φ.support_eq]
+    exact measure_ball_pos _ _ hσ
+  refine ⟨fun y => (∫ y, φ y)⁻¹ * φ y, contDiff_const.mul φ.contDiff,
+    φ.hasCompactSupport.mul_left, fun y => mul_nonneg (inv_nonneg.2 hc.le) φ.nonneg,
+    fun y hy => mul_eq_zero_of_right _ (φ.zero_of_le_dist (by rwa [dist_zero_right])), ?_⟩
+  rw [integral_const_mul, inv_mul_cancel₀ hc.ne']
+/-- **Uniform error of a mollified Lipschitz function** (Simon Ch. 6, 4.11, p. 158: "use
+`f^{(σ)}` in place of `f`").  If `F` is `L`-Lipschitz and `ρ ≥ 0` is continuous with compact
+support, `ρ(y) = 0` for `|y| ≥ σ` and `∫ ρ = 1`, then `|∫ ρ(y) F(x − y) dy − F(x)| ≤ L σ`.
+As `∫ ρ = 1`, the error is `∫ ρ(y) (F(x − y) − F(x)) dy`, and pointwise
+`|ρ(y) (F(x − y) − F(x))| ≤ ρ(y) L |y| ≤ ρ(y) L σ`, since `ρ(y) ≠ 0` forces `|y| < σ`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_close : ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ (ρ : Eucl P → ℝ) (σ : ℝ), Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) → ∫ y, ρ y = 1 → ∀ x : Eucl P, |(∫ y, ρ y * F (x - y)) - F x| ≤ (L : ℝ) * σ := by
+  intro P F L hF ρ σ hρc hρs hρ0 hρσ hρ1 x
+  -- `ρ` and `y ↦ ρ(y) F(x − y)` are continuous with compact support, hence integrable.
+  have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρs
+  have hgi : Integrable fun y => ρ y * F (x - y) :=
+    (hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hρs.mul_right
+  -- Since `∫ ρ = 1`, the error is `∫ ρ(y) (F(x − y) − F(x)) dy`.
+  have herr : (∫ y, ρ y * F (x - y)) - F x = ∫ y, ρ y * (F (x - y) - F x) := by
+    simp_rw [mul_sub]
+    rw [integral_sub hgi (hρi.mul_const (F x)), integral_mul_const, hρ1, one_mul]
+  -- Pointwise `|ρ(y) (F(x − y) − F(x))| ≤ ρ(y) L σ`.
+  have hpt : ∀ y, ‖ρ y * (F (x - y) - F x)‖ ≤ ρ y * ((L : ℝ) * σ) := by
+    intro y
+    by_cases hy : ρ y = 0
+    · simp [hy]
+    -- `ρ(y) ≠ 0` forces `|y| < σ`.
+    have hyσ : ‖y‖ ≤ σ := (not_le.mp fun h => hy (hρσ y h)).le
+    have hlip : |F (x - y) - F x| ≤ (L : ℝ) * σ := by
+      rw [← Real.dist_eq]
+      calc dist (F (x - y)) (F x) ≤ (L : ℝ) * dist (x - y) x := hF.dist_le_mul _ _
+        _ = (L : ℝ) * ‖y‖ := by rw [dist_self_sub_left]
+        _ ≤ (L : ℝ) * σ := mul_le_mul_of_nonneg_left hyσ L.coe_nonneg
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 y)]
+    exact mul_le_mul_of_nonneg_left hlip (hρ0 y)
+  -- Integrate the pointwise bound, using `∫ ρ = 1` once more.
+  rw [herr, ← Real.norm_eq_abs]
+  calc ‖∫ y, ρ y * (F (x - y) - F x)‖ ≤ ∫ y, ρ y * ((L : ℝ) * σ) :=
+        norm_integral_le_of_norm_le (hρi.mul_const _) (Eventually.of_forall hpt)
+    _ = (L : ℝ) * σ := by rw [integral_mul_const, hρ1, one_mul]
+/-- Differentiation under the integral sign for the mollification of a globally Lipschitz `F`
+by a continuous compactly supported `ρ`: `D(∫ ρ(y) F(· - y) dy)(x) = ∫ ρ(y) DF(x - y) dy`.
+By Rademacher's theorem and the invariance of Lebesgue measure under `y ↦ x - y`, `F` is
+differentiable at `x - y` for a.e. `y`; `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz on `ℝ^P`
+with integrable majorant `L |ρ|`, so `hasFDerivAt_integral_of_dominated_loc_of_lip` applies
+with `s = ℝ^P`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt :
+    ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ ρ : Eucl P → ℝ, Continuous ρ →
+      HasCompactSupport ρ → ∀ x : Eucl P,
+        HasFDerivAt (fun x' : Eucl P => ∫ y, ρ y * F (x' - y))
+          (∫ y, ρ y • fderiv ℝ F (x - y)) x := by
+  intro P F L hF ρ hρc hρs x
+  -- Rademacher, pulled back along the measure-preserving map `y ↦ x - y`.
+  have hae : ∀ᵐ y : Eucl P, DifferentiableAt ℝ F (x - y) :=
+    (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving.ae
+      hF.ae_differentiableAt
+  -- `y ↦ ρ(y) F(x' - y)` is continuous for every `x'`.
+  have hcont : ∀ x' : Eucl P, Continuous fun y : Eucl P => ρ y * F (x' - y) := fun x' =>
+    hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))
+  -- `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz for every `y`.
+  have hlip : ∀ y : Eucl P,
+      LipschitzOnWith (Real.nnabs (L * |ρ y|)) (fun x' : Eucl P => ρ y * F (x' - y)) univ := by
+    refine fun y => (LipschitzWith.of_dist_le_mul fun a b => ?_).lipschitzOnWith
+    calc dist (ρ y * F (a - y)) (ρ y * F (b - y)) = |ρ y| * dist (F (a - y)) (F (b - y)) := by
+          rw [Real.dist_eq, Real.dist_eq, ← mul_sub, abs_mul]
+      _ ≤ |ρ y| * (L * dist (a - y) (b - y)) := by gcongr; exact hF.dist_le_mul _ _
+      _ = Real.nnabs (L * |ρ y|) * dist a b := by
+          rw [dist_sub_right, Real.coe_nnabs, abs_mul, abs_abs, NNReal.abs_eq]; ring
+  -- For a.e. `y`, the chain rule gives the derivative `ρ(y) DF(x - y)` at `x`.
+  have hderiv : ∀ᵐ y : Eucl P,
+      HasFDerivAt (fun x' : Eucl P => ρ y * F (x' - y)) (ρ y • fderiv ℝ F (x - y)) x := by
+    filter_upwards [hae] with y hy
+    have h := hy.hasFDerivAt.comp x (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y)
+    rw [ContinuousLinearMap.comp_id] at h
+    exact h.const_mul (ρ y)
+  exact (hasFDerivAt_integral_of_dominated_loc_of_lip univ_mem
+    (Eventually.of_forall fun x' => (hcont x').aestronglyMeasurable)
+    ((hcont x).integrable_of_hasCompactSupport hρs.mul_right)
+    (hρc.measurable.smul ((measurable_fderiv ℝ F).comp
+      (measurable_const.sub measurable_id))).aestronglyMeasurable
+    (Eventually.of_forall hlip)
+    ((hρc.abs.integrable_of_hasCompactSupport hρs.abs).const_mul _) hderiv).2
+
+/-- Simon Ch. 6, 4.11 ("use `f^{(σ)}` in place of `f`") on a compact `K ⊆ W`: if `f` is
+`L`-Lipschitz on the open set `W` and `‖Df‖ ≤ LW` a.e. on `W`, then some `C^∞` function `g` is
+`δ`-close to `f` on `K` with `‖Dg‖ ≤ LW` on `K`.  Here `g = ρ ⋆ F` mollifies a McShane extension
+`F` of `f|W` with a kernel supported in a ball small enough that `x - y ∈ W` whenever `x ∈ K` and
+`ρ(y) ≠ 0`. -/
+theorem Submission.slicing_mb_smooth_approx :
+    ∀ (P : ℕ) (W : Set (Eucl P)), IsOpen W → ∀ (f : Eucl P → ℝ) (L : ℝ≥0),
+      LipschitzOnWith L f W → ∀ LW : ℝ≥0,
+      (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ δ : ℝ, 0 < δ →
+      ∃ g : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ (∀ x ∈ K, |g x - f x| ≤ δ) ∧
+        (∀ x ∈ K, ‖fderiv ℝ g x‖₊ ≤ LW) := by
+  intro P W hW f L hf LW hLW K hK hKW δ hδ
+  -- The closed `r`-neighbourhood of `K` lies in `W`.
+  obtain ⟨r, hr, hrW⟩ := hK.exists_cthickening_subset_open hW hKW
+  -- McShane extension: `F` is `L`-Lipschitz on `ℝ^P` and `F = f` on `W`.
+  obtain ⟨F, hFL, hfF⟩ := hf.extend_real
+  -- The mollification radius: `σ ≤ r` keeps `x - y` in `W`, and `L σ ≤ δ`.
+  obtain ⟨σ, hσ, hσr, hσδ⟩ : ∃ σ : ℝ, 0 < σ ∧ σ ≤ r ∧ (L : ℝ) * σ ≤ δ := by
+    refine ⟨min r (δ / ((L : ℝ) + 1)), lt_min hr (div_pos hδ (by positivity)), min_le_left _ _, ?_⟩
+    calc (L : ℝ) * min r (δ / ((L : ℝ) + 1)) ≤ (L : ℝ) * (δ / ((L : ℝ) + 1)) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) L.coe_nonneg
+      _ ≤ δ := by
+          rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+          nlinarith [L.coe_nonneg]
+  obtain ⟨ρ, hρ, hρc, hρ0, hρσ, hρ1⟩ := Submission.slicing_mb_sa_mollifier_exists P σ hσ
+  have hρi : Integrable ρ (volume : Measure (Eucl P)) :=
+    hρ.continuous.integrable_of_hasCompactSupport hρc
+  refine ⟨fun x => ∫ y, ρ y * F (x - y), ?_, fun x hx => ?_, fun x hx => ?_⟩
+  · -- `g = ρ ⋆ F` is `C^∞`: `ρ` is `C^∞` with compact support and `F` is continuous.
+    have hconv : (fun x => ∫ y, ρ y * F (x - y)) =
+        convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure (Eucl P)) := by
+      funext x
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+    rw [hconv]
+    exact hρc.contDiff_convolution_left _ hρ hFL.continuous.locallyIntegrable
+  · -- `|g - F| ≤ L σ ≤ δ` everywhere, and `F = f` on `K ⊆ W`.
+    rw [hfF (hKW hx)]
+    exact (Submission.slicing_mb_sa_mollify_lipschitz_close P F L hFL ρ σ hρ.continuous hρc hρ0
+      hρσ hρ1 x).trans hσδ
+  · -- `Dg(x) = ∫ ρ(y) DF(x - y) dy`; for a.e. `y` with `ρ(y) ≠ 0`, `x - y ∈ W` and
+    -- `‖DF(x - y)‖ = ‖Df(x - y)‖ ≤ LW` (`y ↦ x - y` preserves Lebesgue measure).
+    have hDg : fderiv ℝ (fun x => ∫ y, ρ y * F (x - y)) x = ∫ y, ρ y • fderiv ℝ F (x - y) :=
+      (Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt P F L hFL ρ hρ.continuous hρc
+        x).fderiv
+    rw [hDg, ← NNReal.coe_le_coe, coe_nnnorm]
+    have hae : ∀ᵐ y ∂(volume : Measure (Eucl P)),
+        x - y ∈ W → ‖fderiv ℝ f (x - y)‖₊ ≤ LW :=
+      ((volume : Measure (Eucl P)).measurePreserving_sub_left x).quasiMeasurePreserving.ae hLW
+    have hbd : ∀ᵐ y ∂(volume : Measure (Eucl P)),
+        ‖ρ y • fderiv ℝ F (x - y)‖ ≤ ρ y * LW := by
+      filter_upwards [hae] with y hy
+      rw [norm_smul, Real.norm_of_nonneg (hρ0 y)]
+      rcases eq_or_ne (ρ y) 0 with h0 | h0
+      · simp [h0]
+      have hyσ : ‖y‖ < σ := not_le.mp fun h => h0 (hρσ y h)
+      have hxy : x - y ∈ W := hrW (mem_cthickening_of_dist_le _ x r K hx (by
+        rw [dist_eq_norm, sub_sub_cancel_left, norm_neg]
+        exact hyσ.le.trans hσr))
+      have hD : fderiv ℝ F (x - y) = fderiv ℝ f (x - y) :=
+        (hfF.symm.eventuallyEq_of_mem (hW.mem_nhds hxy)).fderiv_eq
+      rw [hD]
+      exact mul_le_mul_of_nonneg_left (by exact_mod_cast hy hxy) (hρ0 y)
+    calc ‖∫ y, ρ y • fderiv ℝ F (x - y)‖ ≤ ∫ y, ‖ρ y • fderiv ℝ F (x - y)‖ :=
+          norm_integral_le_integral_norm _
+      _ ≤ ∫ y, ρ y * (LW : ℝ) :=
+          integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
+            (hρi.mul_const _) hbd
+      _ = LW := by rw [integral_mul_const, hρ1, one_mul]
 /-- Simon Ch. 6, 4.11 (Leibniz rule, pointwise): `d(ψω)(x) = ψ(x) dω(x) + Dψ(x) ∧ ω(x)`, the
 wedge `Dψ(x) ∧ ω(x)` being the alternatization of `h ↦ Dψ(x)(h) ω(x)`.  As `d = Alt ∘ D`
 (Mathlib's `extDeriv`), this is the product rule `D(ψω)(x) = ψ(x) Dω(x) + Dψ(x) ⊗ ω(x)`
@@ -1020,6 +1331,100 @@ theorem Submission.slicing_mb_leibniz_bound :
     (lintegral_mono fun x => ?_)
   rw [hη₃, ← enorm_eq_nnnorm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
   exact ENNReal.ofReal_le_ofReal (Submission.slicing_mb_wedge_norm_le P m _ _)
+
+/-- The cut-off defect bound in the proof of Simon Ch. 6, 4.9 for Lipschitz `f` (4.11 and the
+bound of its right side, p. 158, with `f^{(σ)}` in place of `f`, then `σ ↓ 0`).  Let
+`K = spt ω ⊆ W`, `|ω| ≤ 1`, `|v| ≤ 1` on covectors, `|Df| ≤ L_W` a.e. on the open `W ⊆ U`, and
+`|χ| ≤ 1`, `|χ'| ≤ c`, `χ' = 0` off `(t - h, t)`.  Then
+`|∫ χ(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ(f) ⟨dω, v₁⟩ dμ₁| ≤ c L_W μ(K ∩ {t - h ≤ f ≤ t})`, i.e.
+`∂T(χ(f) ω) - T(χ(f) dω)` computed through the representations of `∂T` and `T`.  For smooth
+`g_j` with `|g_j - f| ≤ 1/(j+1)` and `|Dg_j| ≤ L_W` on `K`, 4.11 for `ψ_j = χ ∘ g_j` gives the
+bound with the band `K ∩ {t - h - 1/(j+1) < f < t + 1/(j+1)}`; let `j → ∞` by dominated
+convergence on the left and continuity from above on the right. -/
+theorem Submission.slicing_mb_cutoff_defect_bound :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) →
+      (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+      ∀ (μ₁ : Measure (Eucl P)) (v₁ : Eucl P → NVector (Eucl P) (m + 1)),
+      IsMeasureRepresentation T μ₁ v₁ →
+      ∀ (μ₂ : Measure (Eucl P)) (v₂ : Eucl P → NVector (Eucl P) m),
+      IsMeasureRepresentation T.boundary μ₂ v₂ →
+      ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+      ∀ W : Set (Eucl P), IsOpen W → W ⊆ U →
+      ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Eucl P) m) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x) ≤ 1) →
+      ∀ (χ : ℝ → ℝ) (t h c : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → (∀ s, |χ s| ≤ 1) →
+      (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) →
+      ENNReal.ofReal |∫ x, χ (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ -
+        ∫ x, χ (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤
+      ENNReal.ofReal c * (LW : ℝ≥0∞) *
+        μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩ f ⁻¹' Icc (t - h) t) := by
+  intro P m U T μ v hμv hμK hv μ₁ v₁ hμ₁ μ₂ v₂ hμ₂ f L hf W hW hWU LW hLW ω hωW hω1 χ t h c hχ
+    hχ1 hχc hχ0
+  -- `K = spt ω` is compact and `K ⊆ W ⊆ U`.
+  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) m)) := ω.property.1.2
+  have hKU : tsupport (ω : DifferentialForm (Eucl P) m) ⊆ U := hωW.trans hWU
+  -- Smooth `g_j` with `|g_j - f| ≤ 1/(j+1)` and `‖Dg_j‖ ≤ L_W` on `K`.
+  choose g hg hgf hgD using fun j : ℕ =>
+    Submission.slicing_mb_smooth_approx P W hW f L (hf.mono hWU) LW hLW _ hKc hωW
+      (1 / ((j : ℝ) + 1)) (by positivity)
+  -- 4.11 for `ψ_j = χ ∘ g_j`, evaluated through the representations of `∂T` and `T`; its right
+  -- side is at most `c L_W μ(K ∩ {t - h - 1/(j+1) < f < t + 1/(j+1)})`.
+  have key : ∀ j : ℕ,
+      ENNReal.ofReal |∫ x, χ (g j x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ -
+        ∫ x, χ (g j x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤
+      ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩
+        f ⁻¹' Ioo (t - h - 1 / ((j : ℝ) + 1)) (t + 1 / ((j : ℝ) + 1))) := by
+    intro j
+    obtain ⟨η₁, η₂, hη₁, hη₂, hle⟩ := Submission.slicing_mb_leibniz_bound P m U T μ v hμv hv ω
+      (fun y => χ (g j y)) (hχ.comp (hg j))
+    have e₁ : T.boundary η₁ =
+        ∫ x, χ (g j x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ := by
+      rw [(hμ₂ η₁).2]
+      congr 1
+      funext x
+      rw [hη₁ x, map_smul, smul_eq_mul]
+    have e₂ : T η₂ =
+        ∫ x, χ (g j x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁ := by
+      rw [(hμ₁ η₂).2]
+      congr 1
+      funext x
+      rw [hη₂ x, map_smul, smul_eq_mul]
+    rw [← e₁, ← e₂]
+    exact hle.trans (Submission.slicing_mb_cdb_grad_lintegral_le P m μ _ f (g j) LW χ t h c
+      (1 / ((j : ℝ) + 1)) hω1 ((hg j).differentiable (by simp)) (hχ.differentiable (by simp))
+      (hgf j) (hgD j) hχc hχ0)
+  -- `g_j → f` pointwise on `K`.
+  have hconv : ∀ x ∈ tsupport (ω : DifferentialForm (Eucl P) m),
+      Tendsto (fun j => g j x) atTop (𝓝 (f x)) := by
+    intro x hx
+    rw [tendsto_iff_dist_tendsto_zero]
+    refine squeeze_zero (fun j => dist_nonneg) (fun j => ?_)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    rw [Real.dist_eq]
+    exact hgf j x hx
+  -- Left side: dominated convergence in both integrals, whose densities vanish off `K`.
+  have hL₂ := Submission.slicing_mb_cdb_multiplier_integral_tendsto P μ₂
+    (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) _ f g χ (hμ₂ ω).1
+    (fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx])
+    (fun j => (hg j).continuous.measurable) hconv hχ.continuous hχ1
+  have hL₁ := Submission.slicing_mb_cdb_multiplier_integral_tendsto P μ₁
+    (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x)) _ f g χ
+    (hμ₁ (exteriorDerivativeTestOn U m ω)).1
+    (fun x hx => by
+      have hx' : x ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m)) :=
+        fun h' => hx (tsupport_exteriorDerivative_subset _ h')
+      simp [image_eq_zero_of_notMem_tsupport hx'])
+    (fun j => (hg j).continuous.measurable) hconv hχ.continuous hχ1
+  -- Right side: continuity from above for the bands, as `μ(K) < ∞`.
+  have hR := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal c * (LW : ℝ≥0∞))
+    (Submission.slicing_mb_cdb_band_measure_tendsto P μ _ f (t - h) t (isClosed_tsupport _)
+      (hf.continuousOn.mono hKU) (hμK _ hKc hKU))
+    (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.coe_ne_top))
+  exact le_of_tendsto_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp (hL₂.sub hL₁).abs)
+    hR key
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

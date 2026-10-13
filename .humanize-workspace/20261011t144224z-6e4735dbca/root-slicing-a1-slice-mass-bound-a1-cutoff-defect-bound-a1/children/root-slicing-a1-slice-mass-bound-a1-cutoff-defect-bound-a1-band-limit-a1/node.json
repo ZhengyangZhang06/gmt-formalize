@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1.band_limit-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1",
+  "depth": 4,
+  "title": "Continuity from above for the shrinking level bands K ∩ f⁻¹((a − 1/(j+1), b + 1/(j+1)))",
+  "statement": "For every P ∈ ℕ, every measure μ on ℝ^P, every closed set K ⊆ ℝ^P with μ(K) < ∞, every function f : ℝ^P → ℝ that is continuous on K, and all reals a, b: as j → ∞ through ℕ, μ(K ∩ f⁻¹((a − 1/(j+1), b + 1/(j+1)))) → μ(K ∩ f⁻¹([a, b])) in [0, ∞] (open intervals (·,·) = Ioo, closed interval [a, b] = Icc, 1/(j+1) computed in ℝ).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (K : Set (Eucl P)) (f : Eucl P → ℝ) (a b : ℝ), IsClosed K → ContinuousOn f K → μ K < ∞ → Tendsto (fun j : ℕ => μ (K ∩ f ⁻¹' Ioo (a - 1 / ((j : ℝ) + 1)) (b + 1 / ((j : ℝ) + 1)))) atTop (𝓝 (μ (K ∩ f ⁻¹' Icc a b)))",
+  "lean_name": "slicing_mb_cdb_band_measure_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1-band-limit-a1-a1"
+}
