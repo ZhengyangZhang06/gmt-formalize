@@ -359,6 +359,105 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Compression estimate behind the critical-set step of the area formula (Simon Ch. 2, 3.2–3.4,
+pp. 53–54, via the approximation argument of [Har79], [Fed69]).  If `f` is `t²`-close on `S` to a
+non-injective linear map `A` (`0 < t ≤ 1`), then `Hⁿ(f(S)) ≤ (‖A‖ + t)ⁿ · t Lⁿ(S)`: for a unit
+vector `e ∈ ker A`, the compression `T x = x + (t - 1)⟨e, x⟩ e` has `det T = t`, and `f ∘ T⁻¹` is
+`(‖A‖ + t)`-Lipschitz on `T(S)`. -/
+theorem Submission.slicing_im_st_cd_c1c_singular_compression :
+    ∀ (n P : ℕ) (f : Eucl n → Eucl P) (A : Eucl n →L[ℝ] Eucl P) (S : Set (Eucl n)) (t : ℝ≥0),
+      0 < t → t ≤ 1 → ¬ Function.Injective A → ApproximatesLinearOn f A S (t ^ 2) →
+        (μHE[n] : Measure (Eucl P)) (f '' S) ≤
+          ((‖A‖₊ + t : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * (volume : Measure (Eucl n)) S) := by
+  intro n P f A S t ht0 ht1 hA hf
+  -- A unit vector `e` with `A e = 0`.
+  obtain ⟨e, he1, hAe⟩ : ∃ e : Eucl n, ‖e‖ = 1 ∧ A e = 0 := by
+    simp only [Function.Injective, not_forall] at hA
+    obtain ⟨x, y, hxy, hne⟩ := hA
+    have hv : x - y ≠ 0 := sub_ne_zero.2 hne
+    refine ⟨(‖x - y‖⁻¹ : ℝ) • (x - y), norm_smul_inv_norm hv, ?_⟩
+    rw [map_smul, map_sub, hxy, sub_self, smul_zero]
+  have hee : inner ℝ e e = 1 := by rw [real_inner_self_eq_norm_sq, he1, one_pow]
+  have ht0' : (0 : ℝ) < t := ht0
+  have ht1' : (t : ℝ) ≤ 1 := ht1
+  -- The compression `T x = x + (t - 1)⟨e, x⟩ e` and its inverse `T' x = x + (t⁻¹ - 1)⟨e, x⟩ e`.
+  let T : Eucl n →ₗ[ℝ] Eucl n := LinearMap.id + ((t : ℝ) - 1) • (innerₛₗ ℝ e).smulRight e
+  let T' : Eucl n →ₗ[ℝ] Eucl n := LinearMap.id + ((t : ℝ)⁻¹ - 1) • (innerₛₗ ℝ e).smulRight e
+  have hT : ∀ x, T x = x + (((t : ℝ) - 1) * inner ℝ e x) • e := fun x => by
+    simp [T, mul_smul]
+  have hT' : ∀ x, T' x = x + (((t : ℝ)⁻¹ - 1) * inner ℝ e x) • e := fun x => by
+    simp [T', mul_smul]
+  have hT'T : ∀ x, T' (T x) = x := fun x => by
+    rw [hT', hT, inner_add_right, inner_smul_right, hee, add_assoc, ← add_smul]
+    convert add_zero x
+    convert zero_smul ℝ e
+    field_simp
+    ring
+  -- `det T = t`: in the standard basis, `T` has matrix `1 + u wᵀ` with `u = (t - 1) e`, `w = e`.
+  have hdet : LinearMap.det T = t := by
+    classical
+    let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+    rw [← LinearMap.det_toMatrix b]
+    have hM : LinearMap.toMatrix b b T = 1 + Matrix.replicateCol Unit
+        (fun i => ((t : ℝ) - 1) * e.ofLp i) * Matrix.replicateRow Unit (fun j => e.ofLp j) := by
+      ext i j
+      rw [LinearMap.toMatrix_apply]
+      simp [b, T, Matrix.one_apply, Matrix.mul_apply, EuclideanSpace.inner_single_right]
+      ring
+    have h2 : ∑ i, e.ofLp i ^ 2 = 1 := by rw [← EuclideanSpace.real_norm_sq_eq, he1, one_pow]
+    rw [hM, Matrix.det_one_add_replicateCol_mul_replicateRow]
+    simp only [dotProduct]
+    calc 1 + ∑ i, e.ofLp i * (((t : ℝ) - 1) * e.ofLp i)
+        = 1 + ((t : ℝ) - 1) * ∑ i, e.ofLp i ^ 2 := by
+          rw [Finset.mul_sum]
+          exact congrArg _ (Finset.sum_congr rfl fun i _ => by ring)
+      _ = t := by rw [h2]; ring
+  -- `Lⁿ(T(S)) = t Lⁿ(S)`.
+  have hvol : (volume : Measure (Eucl n)) (T '' S) = (t : ℝ≥0∞) * volume S := by
+    rw [MeasureTheory.Measure.addHaar_image_linearMap, hdet, abs_of_pos ht0',
+      ENNReal.ofReal_coe_nnreal]
+  -- `f ∘ T'` is `(‖A‖ + t)`-Lipschitz on `T(S)`: for `x, y ∈ S`, `A (x - y) = A (T x - T y)` and
+  -- `‖x - y‖ ≤ t⁻¹ ‖T x - T y‖`.
+  have hlip : LipschitzOnWith (‖A‖₊ + t) (f ∘ T') (T '' S) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+    simp only [Function.comp_apply, hT'T, dist_eq_norm]
+    have hw : x - y = T' (T x - T y) := by rw [← map_sub, hT'T]
+    have hAw : A (x - y) = A (T x - T y) := by
+      rw [hw, hT', map_add, map_smul, hAe, smul_zero, add_zero]
+    have hxy : ‖x - y‖ ≤ (t : ℝ)⁻¹ * ‖T x - T y‖ := by
+      have hc : 0 ≤ (t : ℝ)⁻¹ - 1 := sub_nonneg.2 (one_le_inv_iff₀.2 ⟨ht0', ht1'⟩)
+      have hi : |inner ℝ e (T x - T y)| ≤ ‖T x - T y‖ := by
+        simpa [he1] using abs_real_inner_le_norm e (T x - T y)
+      rw [hw, hT']
+      calc ‖(T x - T y) + (((t : ℝ)⁻¹ - 1) * inner ℝ e (T x - T y)) • e‖
+          ≤ ‖T x - T y‖ + ‖(((t : ℝ)⁻¹ - 1) * inner ℝ e (T x - T y)) • e‖ := norm_add_le _ _
+        _ = ‖T x - T y‖ + ((t : ℝ)⁻¹ - 1) * |inner ℝ e (T x - T y)| := by
+          rw [norm_smul, he1, mul_one, Real.norm_eq_abs, abs_mul, abs_of_nonneg hc]
+        _ ≤ ‖T x - T y‖ + ((t : ℝ)⁻¹ - 1) * ‖T x - T y‖ := by gcongr
+        _ = (t : ℝ)⁻¹ * ‖T x - T y‖ := by ring
+    have happrox : ‖f x - f y - A (x - y)‖ ≤ (t : ℝ) ^ 2 * ‖x - y‖ := by
+      simpa using hf x hx y hy
+    calc ‖f x - f y‖ = ‖A (x - y) + (f x - f y - A (x - y))‖ := by
+          rw [add_sub_cancel]
+      _ ≤ ‖A (x - y)‖ + ‖f x - f y - A (x - y)‖ := norm_add_le _ _
+      _ ≤ ‖A‖ * ‖T x - T y‖ + (t : ℝ) ^ 2 * ((t : ℝ)⁻¹ * ‖T x - T y‖) := by
+          gcongr
+          · rw [hAw]
+            exact A.le_opNorm _
+          · exact happrox.trans (by gcongr)
+      _ = ((‖A‖₊ + t : ℝ≥0) : ℝ) * ‖T x - T y‖ := by
+          rw [sq, mul_assoc, mul_inv_cancel_left₀ ht0'.ne', NNReal.coe_add, coe_nnnorm, add_mul]
+  -- `f(S) = (f ∘ T')(T(S))`; the Lipschitz image bound and `Hⁿ = Lⁿ` on `ℝⁿ` conclude.
+  have himage : f '' S = (f ∘ T') '' (T '' S) := by
+    rw [Set.image_image]
+    exact (Set.image_congr fun x _ => by simp only [Function.comp_apply, hT'T]).symm
+  calc (μHE[n] : Measure (Eucl P)) (f '' S) = μHE[n] ((f ∘ T') '' (T '' S)) := by rw [himage]
+    _ ≤ ((‖A‖₊ + t : ℝ≥0) : ℝ≥0∞) ^ n * μHE[n] (T '' S) :=
+      Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hlip
+    _ = ((‖A‖₊ + t : ℝ≥0) : ℝ≥0∞) ^ n * ((t : ℝ≥0∞) * (volume : Measure (Eucl n)) S) := by
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hvol]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
