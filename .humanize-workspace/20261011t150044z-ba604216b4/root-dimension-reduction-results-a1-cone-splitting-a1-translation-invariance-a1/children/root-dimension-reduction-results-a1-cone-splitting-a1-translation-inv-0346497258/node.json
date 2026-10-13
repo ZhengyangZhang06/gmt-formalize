@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.const_contraction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "depth": 4,
+  "title": "Contraction with a constant vector preserves test forms",
+  "statement": "Let P, m ∈ ℕ, let β be an (m+1)-form on ℝ^P which is a test form (IsTestForm β: C^∞ with compact support), and let v ∈ ℝ^P. Then the m-form ι_vβ : z ↦ β(z).curryLeft v is a test form.",
+  "lean_statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (v : Euclid P), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) v)",
+  "lean_name": "dimred_cs_ti_const_contraction_isTestForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-0346497258-a1"
+}

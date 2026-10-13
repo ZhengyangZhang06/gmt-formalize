@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.tangent_wedge_vanishes-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "depth": 4,
+  "title": "v ∧ ξ = 0 almost everywhere when the fixed vector v is tangent almost everywhere",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) ∈ IMRep(U, n) (M = R.carrier, θ = R.mult, ξ = R.orient), μ := R.measure = θ·Hⁿ⌞M, and v ∈ ℝ^P. Suppose that for μ-a.e. x the orthogonal projection of v onto approxTangentPlane n M x (the approximate tangent plane T_xM, defined as ⊥ when none exists) equals v. Then for μ-a.e. x and every (n+1)-covector β on ℝ^P, ξ(x)(β.curryLeft v) = 0, where (β.curryLeft v)(w_1, …, w_n) = β(v, w_1, …, w_n).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (v : Euclid P), (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection v = v) → ∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β v) = 0",
+  "lean_name": "dimred_cs_ti_wedge_vanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-6cd841efb8-a1"
+}

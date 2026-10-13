@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "Cartan|interiorProduct|lieDerivForm",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|ae_withDensity_iff|theorem fderiv_comp_add_left|lemma fderiv_comp_add_left|theorem is_const_of_deriv_eq_zero|theorem starProjection_eq_self_iff",
+        "tsupport_fderiv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_homeomorph",
+        "dimred_cs_ti_",
+        "unit_orientation_norm_le_one",
+        "git show 0325970d8b47298803106a41abbcdb3c8c9ac103:GMT/Ch07/Submission.lean",
+        "validate_lean_statement",
+        "contract_scope",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ti-independent-audit/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-translation-invariance-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-translation-invariance-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/ti-independent-audit/Full.lean",
+        "/tmp/ti-independent-audit/Isolate_blowup_translate_eval.log",
+        "/tmp/ti-independent-audit/Isolate_tangent_wedge_vanishes.log",
+        "/tmp/ti-independent-audit/Isolate_const_cartan.log",
+        "/tmp/ti-independent-audit/Isolate_const_contraction.log",
+        "/tmp/ti-independent-audit/Isolate_directional_annihilation.log",
+        "/tmp/ti-independent-audit/Isolate_orientation_norm.log",
+        "/tmp/ti-independent-audit/Isolate_translate_derivative.log",
+        "/tmp/ti-independent-audit/Isolate_action_translation_invariance.log"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match the pins. No Cartan/interior-product helper matched in the searched DifferentialForm and Chapter06 directories. The split appropriately separates the supplied proof into genuine obligations with correctly directed, acyclic dependencies. All eight one-line propositions match their prose and elaborate before implementation in the comparator scope. Names are bare identifiers; the seven new names remain unreserved, and orientation_norm has an identical comparator-accepted type. Every supplied proof passed independent Lean checking, including isolation with only declared dependency stubs. With actual proofs substituted, the supplied assembly proves exactly the selected frozen parent using only propext, Classical.choice and Quot.sound, without sorryAx. The contraction constructions have the intended continuous-alternating-map types; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_translate_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes translation preserves test forms, checks the currentEval domain condition, and unfolds the affine pullback. The sign η_{−v,1}(y)=v+y and the existential witness exactly match the contract."
+    },
+    {
+      "key": "tangent_wedge_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute continuity transfers orientation data to R.measure. Tangent-plane uniqueness and the projection hypothesis put v in the orientation span; alternating evaluation then vanishes for every covector on a common full-measure set."
+    },
+    {
+      "key": "const_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at y suffices for the continuous-linear contraction chain rule. The exterior-derivative sums have the correct degrees and signs and cancel to give exactly fderiv ℝ β y v."
+    },
+    {
+      "key": "const_contraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies both parts of IsTestForm: smoothness under constant continuous-linear contraction and compact support from support inclusion. No additional hypothesis is needed."
+    },
+    {
+      "key": "directional_annihilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive degree justifies the boundary argument. The declared Cartan and contraction dependencies give γ=dψ+χ; the boundary term vanishes, and representation plus positive multiplicity converts the wedge hypothesis into a zero Hausdorff-measure integrand."
+    },
+    {
+      "key": "orientation_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration at 0325970d8b47298803106a41abbcdb3c8c9ac103. The independently checked operator-norm proof is complete, including degree zero."
+    },
+    {
+      "key": "translate_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies measurability, pointwise differentiation, a common compact support bound, integrability at t, and uniform integrable derivative domination. Thus differentiation under the integral proves the exact HasDerivAt statement; orientation_norm is its only child dependency."
+    },
+    {
+      "key": "action_translation_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translated forms and their directional derivatives are explicitly proved to be test forms. The hypothesis and translate_derivative give G′=0 everywhere, so constancy yields G(1)=G(0). There is no circular reliance on the parent."
+    }
+  ],
+  "required_changes": []
+}

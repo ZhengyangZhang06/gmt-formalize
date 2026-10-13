@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.blowup_translate_eval-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "depth": 4,
+  "title": "A unit-scale blow-up η_{−v,1#} is the translation by v",
+  "statement": "Let P, n ∈ ℕ, S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), v ∈ ℝ^P and ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n). Then there is a test form ω' ∈ 𝒟ⁿ(ℝ^P) with ω'(y) = ω(v + y) for every y ∈ ℝ^P such that currentEval(blowUp S (−v) 1, ω) = S(ω'). Here blowUp S (−v) 1 = η_{−v,1#}S ∈ 𝒟_n(η_{−v,1}(ℝ^P)) is the push-forward of S by the dilation η_{−v,1}(y) = −(1⁻¹·(−v)) + 1⁻¹·y = v + y (contract blowUp: restrictDomain followed by affinePushforward with linear part dilationCLM P 1 and translation −(1⁻¹•(−v))), and currentEval T φ is T(φ) when φ is a test form with tsupport φ inside the domain of T, and 0 otherwise.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (v : Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (v + y)) ∧ currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω'",
+  "lean_name": "dimred_cs_ti_blowUp_translate_eval",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-c792dab29d-a1"
+}
