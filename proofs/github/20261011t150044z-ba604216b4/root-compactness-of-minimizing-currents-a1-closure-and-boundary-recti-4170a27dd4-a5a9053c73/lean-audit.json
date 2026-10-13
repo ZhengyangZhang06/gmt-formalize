@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d99350ef0c4824b2cc87514462346193a3d1abb290d44b9d2d12e27062c49f1e",
+  "git_delta": {
+    "base_commit": "db2537a73d2be96c0b5d8711e257cf22755cb792",
+    "candidate_commit": "2531fcb92cdc05428995550a18a6f515798ab239",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_l1_boundary_variation_bound",
+    "diff_sha256": "1553d8eb4a11bb60ac53a34d37d4a48d03d113a0fad874cfe9d6e20344ed1fe1",
+    "source_sha256": "0bc75bfc4822b92a84089a7abffa3bb1e05afdae7f2af177dd36de9bc910dab4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_l1_boundary_variation_bound",
+      "statement": "∀ (d : ℕ) (U : Set (Euclid (d + 1))) (Y : GeometricCurrentOn U (d + 1)) (u : Euclid (d + 1) → ℝ) (ε : Covector (Euclid (d + 1)) d) (f : Euclid (d + 1) → ℝ) (z : Euclid (d + 1)) (M : ℝ), (∀ ω : TestFormOn U (d + 1), Y ω = ∫ y in U, u y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))) → Y.boundary.massOn U ≠ ∞ → covectorEuclideanNorm ε ≤ ‖z‖ → (∀ y, exteriorDerivative (fun x => f x • ε) y (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ f y z) → ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ U → (∀ y, |f y| ≤ M) → |∫ y in U, u y * fderiv ℝ f y z| ≤ (Y.boundary.massOn U).toReal * ‖z‖ * M",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
