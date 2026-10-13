@@ -1332,6 +1332,46 @@ theorem Submission.codim1_rdo_c1a_whitney_extension : ∀ (n : ℕ) (A : Set (Eu
     · exact hgcont x hx
     · exact (hgc x hx).continuousAt_fderiv one_ne_zero
 
+/-- **`C¹` approximation of Lipschitz functions** (Simon Ch. 2, Theorem 1.5, the part about
+values).  If `u : ℝᵐ → ℝ` is `K`-Lipschitz and `ε > 0`, some `G ∈ C¹(ℝᵐ)` agrees with `u` off a
+set of measure `< ε`.  By Rademacher's theorem, the Borel set `B` of points where `u` is
+differentiable has null complement, and `Du` is Borel.  Lusin's theorem gives a closed `C ⊆ B`,
+`Lᵐ(B \ C) < ε / 2`, on which `Du` is continuous.  Egorov's theorem applied to the Whitney
+remainders gives a closed `A ⊆ C`, `Lᵐ(C \ A) < ε / 2`, on which `(u, Du)` satisfies Whitney's
+condition 1.6(∗).  Whitney's extension theorem gives `G ∈ C¹` with `G = u` on `A`, and
+`{u ≠ G} ⊆ Bᶜ ∪ (B \ C) ∪ (C \ A)`. -/
+theorem Submission.dor_lmbsf_lipschitz_c1_approx : ∀ (m : ℕ) (u : Euclid m → ℝ) (K : NNReal), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧ volume {y | u y ≠ G y} < ε := by
+  intro m u K hu ε hε
+  -- Rademacher: the Borel set `B` of differentiability points of `u` has null complement
+  set B : Set (Euclid m) := {x | DifferentiableAt ℝ u x}
+  have hB : MeasurableSet B := measurableSet_of_differentiableAt ℝ u
+  have hBc : volume Bᶜ = 0 := ae_iff.mp hu.ae_differentiableAt
+  -- Lusin: a closed `C ⊆ B`, `Lᵐ(B \ C) < ε / 2`, on which `Du` is continuous
+  obtain ⟨C, hCB, hC, hDC, hBC⟩ := Submission.codim1_rdo_c1a_lusin_isClosed m (fderiv ℝ u) B
+    (measurable_fderiv ℝ u) hB (ε / 2) (ENNReal.half_pos hε.ne')
+  -- Egorov on the Whitney remainders: a closed `A ⊆ C`, `Lᵐ(C \ A) < ε / 2`, satisfying 1.6(∗)
+  obtain ⟨A, hAC, hA, hCA, hrem⟩ := Submission.codim1_rdo_c1a_whitney_remainder m u K C hu hC
+    (fun x hx => hCB hx) hDC (ε / 2) (ENNReal.half_pos hε.ne')
+  -- Whitney's extension theorem: `G ∈ C¹` with `G = u` on `A`
+  obtain ⟨G, hG, hGA, -⟩ := Submission.codim1_rdo_c1a_whitney_extension m A u (fderiv ℝ u) hA
+    hu.continuous.continuousOn (hDC.mono hAC) hrem
+  refine ⟨G, hG, ?_⟩
+  -- `{u ≠ G} ⊆ Aᶜ ⊆ Bᶜ ∪ (B \ C) ∪ (C \ A)`
+  calc volume {y | u y ≠ G y} ≤ volume (Bᶜ ∪ ((B \ C) ∪ (C \ A))) := by
+        refine measure_mono fun y hy => ?_
+        have hyA : y ∉ A := fun hyA => hy (hGA hyA).symm
+        by_cases hyB : y ∈ B
+        · by_cases hyC : y ∈ C
+          · exact Or.inr (Or.inr ⟨hyC, hyA⟩)
+          · exact Or.inr (Or.inl ⟨hyB, hyC⟩)
+        · exact Or.inl hyB
+    _ ≤ volume Bᶜ + (volume (B \ C) + volume (C \ A)) :=
+        (measure_union_le _ _).trans (add_le_add le_rfl (measure_union_le _ _))
+    _ < ε / 2 + ε / 2 := by
+        rw [hBc, zero_add]
+        exact ENNReal.add_lt_add hBC hCA
+    _ = ε := ENNReal.add_halves ε
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
