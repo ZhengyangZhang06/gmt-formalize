@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "16e9de9dee8bfeda6f5891cfe9c13183e88a3e6d47cd645fe4cfbb1a5bfe72fc",
+  "git_delta": {
+    "base_commit": "1d91497901e9a040bb92dab7cea2968379e0e3a2",
+    "candidate_commit": "fb9bfaa2bb3b6a2fb2c8d2c902f098a63fc92f2d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_convergesWeakly_massOn_le",
+    "diff_sha256": "503fd5cabaa8353f2ef3444cff64dbab534ec5355195cb3baeecc230a48b75fc",
+    "source_sha256": "293d1b99e244dbf1a429bf2c554ab53a688506743acae940683f1b2f3b665069",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_convergesWeakly_massOn_le",
+      "statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (V : Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn V n) (W : Set (Euclid P)) (B : ℝ≥0∞), ConvergesWeakly Ts S → (∀ᶠ j in atTop, W ⊆ Us j ∧ (Ts j).massOn W ≤ B) → S.massOn W ≤ B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
