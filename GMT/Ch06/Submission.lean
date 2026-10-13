@@ -359,6 +359,98 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Dilation calculus on `ℝ^N` for `η_ρ(x) = ρ x`, `ρ > 0` (Simon Ch. 6, 2.23, 2.24(1) and
+§1, 1.14): `η_ρ^# ω = ρ^k ω(ρ ·)` is a test form; every current `X` has the push-forward
+`Y = X ∘ η_ρ^#`, i.e. `Y(ω) = X(η_ρ^# ω)`; and push-forward commutes with `∂`, because
+`d(η_ρ^# ω) = η_ρ^#(dω)`. -/
+theorem Submission.deformation_dilation_calculus :
+    ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, (∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∃ η : TestFormOn (univ : Set (Eucl N)) k, ∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Eucl N)) k, ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η)) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) (k + 1), (∀ ω η : TestFormOn (univ : Set (Eucl N)) (k + 1), (∀ x, (η : DifferentialForm (Eucl N) (k + 1)) x = ρ ^ (k + 1) • (ω : DifferentialForm (Eucl N) (k + 1)) (ρ • x)) → Y ω = X η) → ∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y.boundary ω = X.boundary η := by
+  intro N ρ hρ k
+  -- Step 2: `x ↦ ρ • x` is a homeomorphism, so preimages of compact sets are compact.
+  have hcpt : ∀ K : Set (Eucl N), IsCompact K → IsCompact ((fun x : Eucl N => ρ • x) ⁻¹' K) :=
+    fun K hK => (Homeomorph.smulOfNeZero ρ hρ.ne').isCompact_preimage.2 hK
+  -- Step 3(b): `tsupport (ρ ^ k • ω(ρ ·)) ⊆ (ρ ·)⁻¹ (tsupport ω)`.
+  have hsupp : ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      tsupport (fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ⊆
+        (fun x : Eucl N => ρ • x) ⁻¹' tsupport (ω : DifferentialForm (Eucl N) k) := fun ω =>
+    (tsupport_smul_subset_right (fun _ => ρ ^ k) _).trans
+      (tsupport_comp_subset_preimage _ (continuous_const_smul ρ))
+  -- Step 3: `ρ ^ k • ω(ρ ·)` is again a test form.
+  have hmem : ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      (fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∈
+        testFormOnSubmodule (univ : Set (Eucl N)) k := fun ω =>
+    ⟨⟨(ω.property.1.1.comp (contDiff_const_smul ρ)).const_smul (ρ ^ k),
+      (hcpt _ ω.property.1.2).of_isClosed_subset (isClosed_tsupport _) (hsupp ω)⟩, subset_univ _⟩
+  -- Step 4: the pull-back operator `P ω = ρ ^ k • ω(ρ ·)`.
+  let P : TestFormOn (univ : Set (Eucl N)) k →ₗ[ℝ] TestFormOn (univ : Set (Eucl N)) k :=
+    { toFun := fun ω => ⟨fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x), hmem ω⟩
+      map_add' := fun ω η => by
+        apply Subtype.ext
+        funext x
+        simp [smul_add]
+      map_smul' := fun c ω => by
+        apply Subtype.ext
+        funext x
+        simp [smul_comm c] }
+  -- Iterated derivatives: `D^i (P ω) x = (ρ ^ k * ρ ^ i) • D^i ω (ρ • x)`.
+  have hD : ∀ (ω : TestFormOn (univ : Set (Eucl N)) k) (i : ℕ) (x : Eucl N),
+      iteratedFDeriv ℝ i (P ω : DifferentialForm (Eucl N) k) x =
+        (ρ ^ k * ρ ^ i) • iteratedFDeriv ℝ i (ω : DifferentialForm (Eucl N) k) (ρ • x) := by
+    intro ω i x
+    have hωi : ContDiff ℝ i (ω : DifferentialForm (Eucl N) k) := ω.property.1.1.of_le (by simp)
+    have hc : ContDiff ℝ i (fun y => (ω : DifferentialForm (Eucl N) k) (ρ • y)) :=
+      hωi.comp (contDiff_const_smul ρ)
+    show iteratedFDeriv ℝ i (fun y => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • y)) x = _
+    rw [iteratedFDeriv_const_smul_apply' hc.contDiffAt, iteratedFDeriv_comp_const_smul ρ hωi,
+      mul_smul]
+  -- Step 4(b): `P` is sequentially continuous at `0` for Simon's test-form topology.
+  have hconv : ∀ ωseq : ℕ → TestFormOn (univ : Set (Eucl N)) k,
+      TestFormOnConverges ωseq 0 → TestFormOnConverges (fun j => P (ωseq j)) 0 := by
+    rintro ωseq ⟨K, hK, -, hseq, -, hderiv⟩
+    refine ⟨(fun x : Eucl N => ρ • x) ⁻¹' K, hcpt K hK, subset_univ _,
+      fun j => (hsupp (ωseq j)).trans (preimage_mono (hseq j)), by simp, fun i => ?_⟩
+    have hcomp := (uniformContinuous_const_smul (ρ ^ k * ρ ^ i)).comp_tendstoUniformlyOn
+      ((hderiv i).comp (fun x : Eucl N => ρ • x))
+    refine (hcomp.congr (Eventually.of_forall fun j x _ => (hD (ωseq j) i x).symm)).congr_right
+      fun x _ => ?_
+    simp
+  -- Step 1: scaling identity `α (ρ v₁, …, ρ v_j) = ρ ^ j α (v₁, …, v_j)`.
+  have hscale : ∀ (j : ℕ) (α : Covector (Eucl N) j),
+      α.compContinuousLinearMap (ρ • ContinuousLinearMap.id ℝ (Eucl N)) = ρ ^ j • α := by
+    intro j α
+    ext v
+    have h := α.map_smul_univ (fun _ => ρ) v
+    rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin] at h
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.smul_apply, ← h]
+    rfl
+  refine ⟨fun ω => ⟨P ω, fun x => rfl⟩,
+    fun X => ⟨⟨X.toCurrent.comp P, fun ωseq h => X.continuous' _ (hconv ωseq h)⟩,
+      fun ω η hη => ?_⟩, ?_⟩
+  · -- Step 5: `Y ω = X (P ω) = X η`.
+    show X.toCurrent (P ω) = X.toCurrent η
+    congr 1
+    exact Subtype.ext (funext fun x => (hη x).symm)
+  · -- Step 7: apply the degree `k + 1` pair property to `(dω, dη)`.
+    intro X Y hXY ω η hη
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+    apply hXY
+    intro x
+    show extDeriv (η : DifferentialForm (Eucl N) k) x =
+      ρ ^ (k + 1) • extDeriv (ω : DifferentialForm (Eucl N) k) (ρ • x)
+    -- Step 6: `d` commutes with the pull-back by `L = ρ • id`.
+    set L : Eucl N →L[ℝ] Eucl N := ρ • ContinuousLinearMap.id ℝ (Eucl N)
+    have hη' : (η : DifferentialForm (Eucl N) k) =
+        fun y => ((ω : DifferentialForm (Eucl N) k) (L y)).compContinuousLinearMap
+          (fderiv ℝ L y) := by
+      funext y
+      rw [hη y, L.fderiv, hscale]
+      rfl
+    rw [hη', extDeriv_pullback (r := ((⊤ : ℕ∞) : WithTop ℕ∞))
+      ((ω.property.1.1.differentiable (by simp)).differentiableAt)
+      L.contDiff.contDiffAt (by simp), L.fderiv, hscale]
+    rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
