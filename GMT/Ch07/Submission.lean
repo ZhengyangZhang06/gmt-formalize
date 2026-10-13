@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.2.4, (12)–(13)** (upper bound on compact sets): let `μ` be finite on compact
+subsets of `ℝᴾ`, and suppose that for every compact `K`, `ε > 0` and subsequence `ψ` there are
+`K ⊆ W ⊆ thickening ε K` and a further subsequence `φ'` with `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)`.
+Then `limsup_j μ_j(K) ≤ μ(K)` for every compact `K`.  If `μ(thickening ε K) < b < limsup_j μ_j(K)`,
+then `μ_{ψ(i)}(K) > b` along a subsequence `ψ`, and
+`b ≤ limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W) ≤ μ(thickening ε K) < b`.  Hence
+`limsup_j μ_j(K) ≤ μ(thickening ε K)` for every `ε > 0`, and `μ(thickening ε K) → μ(K)` as
+`ε ↓ 0` by continuity from above (`K` is closed and `μ(thickening 1 K) ≤ μ(cthickening 1 K) < ∞`).
+-/
+theorem Submission.dtc_bc_mm_limsup_le_of_subseq : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ limsup (fun i => μs (ψ (φ' i)) W) atTop ≤ μ W) → ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K := by
+  intro P μs μ hfin hsub K hK
+  -- `limsup_j μ_j(K) ≤ μ(thickening ε K)` for every `ε > 0`.
+  have hthick : ∀ ε : ℝ, 0 < ε → limsup (fun j => μs j K) atTop ≤ μ (thickening ε K) := by
+    intro ε hε
+    by_contra hlt
+    obtain ⟨b, hab, hbL⟩ := exists_between (not_le.mp hlt)
+    obtain ⟨ψ, hψ, hψb⟩ := extraction_of_frequently_atTop (frequently_lt_of_lt_limsup (h := hbL))
+    obtain ⟨W, hKW, hWε, φ', -, hW⟩ := hsub K ε hK hε ψ hψ
+    have hb : b ≤ limsup (fun i => μs (ψ (φ' i)) W) atTop :=
+      le_limsup_of_frequently_le (Frequently.of_forall fun i =>
+        (hψb (φ' i)).le.trans (measure_mono hKW))
+    exact (hb.trans (hW.trans (measure_mono hWε))).not_gt hab
+  -- Continuity from above: `μ(thickening r K) → μ(K)` as `r ↓ 0`.
+  have hT : Tendsto (fun r => μ (thickening r K)) (𝓝[>] 0) (𝓝 (μ K)) :=
+    tendsto_measure_thickening_of_isClosed ⟨1, one_pos, ((measure_mono
+      (thickening_subset_cthickening 1 K)).trans_lt (hfin _ hK.cthickening)).ne⟩ hK.isClosed
+  exact ge_of_tendsto hT (eventually_nhdsWithin_of_forall hthick)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
