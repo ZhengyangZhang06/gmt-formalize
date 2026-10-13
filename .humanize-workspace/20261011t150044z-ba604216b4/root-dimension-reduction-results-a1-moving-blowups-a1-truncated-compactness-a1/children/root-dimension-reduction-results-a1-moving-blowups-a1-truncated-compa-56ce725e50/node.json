@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1.weak_compactness-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1",
+  "depth": 4,
+  "title": "Sequential weak compactness of currents in ℝ^P with locally bounded mass",
+  "statement": "Let P, n ∈ ℕ and let T_j ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), j ∈ ℕ, satisfy sup_j M_{ball(0,R)}(T_j) < ∞ in [0, ∞] for every R ∈ ℝ (SimonGMT massOn, Euclidean coefficient norm). Then there are a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^P) such that T_{φ(i)} ⇀ C, i.e. T_{φ(i)}(ω) → C(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) (WeaklyConvergesOn).",
+  "lean_statement": "∀ (P n : ℕ) (T : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ⨆ j, (T j).massOn (ball (0 : Euclid P) R) < ∞) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), StrictMono φ ∧ WeaklyConvergesOn (fun i => T (φ i)) C",
+  "lean_name": "dimred_mbl_tc_weak_compactness",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91-a1",
+      "result_commit": "7a706164baaf42fc7f55751247396a8836928310",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60-a1",
+      "result_commit": "b7f4cfc754eab8dd4e248fef575abd1043b7ac4c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compa-56ce725e50-a1"
+}
