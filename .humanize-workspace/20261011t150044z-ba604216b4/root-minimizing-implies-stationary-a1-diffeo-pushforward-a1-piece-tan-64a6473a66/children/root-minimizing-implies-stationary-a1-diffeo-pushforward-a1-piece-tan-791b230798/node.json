@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.blowup_scaling-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "depth": 5,
+  "title": "Change of variables for Hausdorff integrals under a blow-up map",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P an arbitrary set, x ∈ ℝ^P and r > 0, and let η_{x,r}(y) := r^{-1}(y − x) (SimonGMT blowUpMap x r). Then for every function f : ℝ^P → ℝ, ∫_{η_{x,r}(M)} f dH^n = r^{-n} ∫_M f(η_{x,r}(y)) dH^n(y). Here H^n = μHE[n], the integrals are Bochner integrals, and no measurability or integrability of M or f is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (r : ℝ), 0 < r → ∀ f : Euclid P → ℝ, ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = r⁻¹ ^ n * ∫ y in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μHE[n]",
+  "lean_name": "pit_setIntegral_blowUpMap_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-791b230798-a1"
+}

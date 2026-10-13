@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "A Borel countably n-rectifiable set is, up to a null set, a disjoint union of bi-Lipschitz Borel pieces",
+  "statement": "Let M ⊆ ℝ^P be Borel and countably n-rectifiable. Then there are Lipschitz maps F_i : ℝ^n → ℝ^P, Borel sets B_i ⊆ ℝ^n and constants m_i > 0 (i ∈ ℕ) such that m_i|a − a'| ≤ |F_i(a) − F_i(a')| for a, a' ∈ B_i, F_i is differentiable with injective derivative at every point of B_i, each F_i(B_i) is a Borel subset of M, the sets F_i(B_i) are pairwise disjoint, and H^n(M ∖ ⋃_i F_i(B_i)) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)), MeasurableSet M → CountablyRectifiable n M → ∃ (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (m : ℕ → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, 0 < m i) ∧ (∀ i, ∀ a ∈ B i, ∀ a' ∈ B i, m i * ‖a - a'‖ ≤ ‖F i a - F i a'‖) ∧ (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (F i) a ∧ Injective (fderiv ℝ (F i) a)) ∧ (∀ i, MeasurableSet (F i '' B i)) ∧ (∀ i, F i '' B i ⊆ M) ∧ Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) ∧ μHE[n] (M \\ ⋃ i, F i '' B i) = 0",
+  "lean_name": "dpf_rectifiable_bilipschitz_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8-a1"
+}
