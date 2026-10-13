@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_constancy-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Lemma B (step 2) of the parent proof of dtc_bc_codim_zero, i.e. Simon's proof of the Constancy Theorem (Ch. 6, 2.34, chapter-06.txt lines 571–600: the forms ω_j = (−1)^{j−1} a dx¹∧…∧dx^{j−1}∧dx^{j+1}∧…∧dxⁿ with dω_j = D_j a dx¹∧…∧dxⁿ, and (2) ∫ D_j a·θ dLⁿ = T(dω_j) = ∂T(ω_j) = 0), with Simon's Riesz-representation step replaced by the integer density of sibling top_density, and the parent's mollification step supplied by sibling smooth_to_c1_tests. Siblings used: top_density (A) and smooth_to_c1_tests (S2C = the accepted declaration dgcr_smooth_tests_to_C1_tests). Cited library theorem (pinned SimonGMT, Chapter08/DistributionalConstancy.lean, standard axioms only; add `import Poincare.SimonGMT.Chapter08.DistributionalConstancy`, as accepted candidates in this run already do): Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero — if f : Euclidean n → ℝ (Euclidean n = EuclideanSpace ℝ (Fin n) = Euclid n) is LocallyIntegrableOn U volume, U is open and preconnected, and ∫ f(x)·fderiv ℝ φ x ((EuclideanSpace.basisFun (Fin n) ℝ) i) dx = 0 for every φ with ContDiff ℝ 1 φ, HasCompactSupport φ, tsupport φ ⊆ U and every i : Fin n, then ∃ c, ∀ᵐ x ∂volume.restrict U, f x = c.
+Notation: e := ⇑(EuclideanSpace.basisFun (Fin n) ℝ); e* is the n-covector v ↦ D(v), D := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.det (continuous because D(v) is the determinant of the coordinate matrix of v: Module.Basis.det_apply, Continuous.matrix_det; e*(e) = 1 by Module.Basis.det_self); for k : Fin n, Fin.removeNth k e : Fin m → ℝⁿ is e with its k-th entry removed.
+1. By A (n = m + 1 > 0, V open, X integer multiplicity) there is g : ℝⁿ → ℤ, with y ↦ (g(y) : ℝ) locally integrable on V, such that X(ω) = ∫ g(y)·ω(y)(e) dy for every ω ∈ TestFormOn V n.
+2. Coordinate m-covectors. For i : Fin n let γ_i := (−1)^i·(e*.curryLeft e_i) ∈ Covector (Euclid n) m, where e*.curryLeft e_i is the contraction w ↦ e*(Matrix.vecCons e_i w) = e*(e_i, w₁, …, w_m) (Mathlib ContinuousAlternatingMap.curryLeft, curryLeft_apply_apply). By Mathlib ContinuousAlternatingMap.map_insertNth (the continuous version of AlternatingMap.map_insertNth), e*(Fin.insertNth i e_i w) = (−1)^i·e*(Matrix.vecCons e_i w); since (−1)^i·(−1)^i = 1, γ_i(w) = e*(Fin.insertNth i e_i w) for all w : Fin m → ℝⁿ. Key identity: γ_i(Fin.removeNth k e) = δ_{ik} for all k : Fin n. For k = i: Fin.insertNth i e_i (Fin.removeNth i e) = e (Fin.insertNth_self_removeNth), so the value is e*(e) = 1. For k ≠ i: there is z : Fin m with k.succAbove z = i (Fin.exists_succAbove_eq), so (Fin.removeNth k e)(z) = e(k.succAbove z) = e_i (Fin.removeNth_apply); the tuple Fin.insertNth i e_i (Fin.removeNth k e) therefore has the entry e_i at position i (Fin.insertNth_apply_same) and at position i.succAbove z (Fin.insertNth_apply_succAbove), and i.succAbove z ≠ i (Fin.succAbove_ne); so e* vanishes on it (ContinuousAlternatingMap.map_eq_zero_of_eq).
+3. Let a : ℝⁿ → ℝ be C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a, which is SimonGMT's smoothness exponent ∞) with compact support and tsupport a ⊆ B, and let i : Fin n. Put β_i(y) := a(y)·γ_i (a form of degree m). Then β_i is C^∞ (a smooth scalar function times a constant covector), tsupport β_i ⊆ tsupport a (tsupport_smul_subset_left), which is compact and contained in B ⊆ V; so β_i ∈ TestFormOn V m with tsupport β_i ⊆ B.
+4. Exterior derivative. By SimonGMT exteriorDerivative_apply (Mathlib extDeriv_apply), for every y: dβ_i(y)(e) = Σ_{k : Fin n} (−1)^k·D[z ↦ β_i(z)(Fin.removeNth k e)](y)(e_k). Since β_i(z)(Fin.removeNth k e) = a(z)·γ_i(Fin.removeNth k e) = δ_{ik}·a(z) by step 2, the k-th term is (−1)^k·δ_{ik}·Da(y)(e_k); hence dβ_i(y)(e) = (−1)^i·∂_i a(y), where ∂_i a(y) := fderiv ℝ a y (e_i).
+5. As tsupport β_i ⊆ B, the hypothesis gives 0 = X.boundary β_i = X(dβ_i) (GeometricCurrentOn.boundary_apply: the test form exteriorDerivativeTestOn V m β_i has underlying form dβ_i). By steps 1 and 4, X(dβ_i) = ∫ g(y)·dβ_i(y)(e) dy = (−1)^i·∫ g(y)·∂_i a(y) dy (MeasureTheory.integral_const_mul). Hence ∫ g·∂_i a = 0 for every such a and every i.
+6. Constancy. Put G(y) := (g(y) : ℝ); G is LocallyIntegrableOn B (LocallyIntegrableOn.mono_set, B ⊆ V). Apply S2C with D := B (open) and G. Its hypothesis asks, for every a with ContDiff ℝ (⊤ : ℕ∞) a, compact support and tsupport a ⊆ B, and every j : Fin n, that ∫_B G·fderiv ℝ a v (EuclideanSpace.single j 1) dv = 0. Here EuclideanSpace.single j 1 = e_j (EuclideanSpace.basisFun_apply), and the integrand vanishes outside tsupport a ⊆ B (fderiv_of_notMem_tsupport), so the integral over B equals the integral over ℝⁿ (setIntegral_eq_integral_of_forall_compl_eq_zero), which is 0 by step 5. Hence S2C gives ∫ G(x)·fderiv ℝ φ x (e_i) dx = 0 for every C¹ function φ with compact support and tsupport φ ⊆ B and every i. The library theorem (f := G, U := B, open and preconnected) yields c₀ ∈ ℝ with G = c₀ Lⁿ-a.e. on B.
+7. Integrality. If B = ∅ put c := 0. Otherwise B is a nonempty open set, so volume B > 0 (IsOpen.measure_pos), and Measure.exists_mem_of_measure_ne_zero_of_ae (with μ := volume, s := B, applied to the statement ∀ᵐ y ∂(volume.restrict B), G y = c₀) gives y₀ ∈ B with g(y₀) = c₀; put c := g(y₀) ∈ ℤ, so (c : ℝ) = c₀. In both cases G(y) = c for Lⁿ-a.e. y ∈ B (vacuously if B = ∅, as volume.restrict ∅ = 0).
+8. Formula. Let ω ∈ TestFormOn V n with tsupport ω ⊆ B. For a.e. y: if y ∈ B then g(y) = c (ae_restrict_iff' with B measurable); if y ∉ B then y ∉ tsupport ω, so ω(y) = 0 (image_eq_zero_of_notMem_tsupport). Hence g(y)·ω(y)(e) = c·ω(y)(e) for a.e. y, and step 1 gives X(ω) = ∫ g·ω(e) = ∫ c·ω(e) = c·∫ ω(y)(e) dy (integral_congr_ae, MeasureTheory.integral_const_mul). ∎
+Implementation note (not part of the proof): name every auxiliary Lean declaration introduced for this child with the prefix dtc_bc_cz_top_constancy_ (for example dtc_bc_cz_top_constancy_aux), because the candidates of sibling children are merged into one Submission.lean and only byte-identical duplicate declarations are dropped during that merge. The continuous-alternating-map API of step 2 (ContinuousAlternatingMap.curryLeft, ContinuousAlternatingMap.curryLeft_apply_apply, ContinuousAlternatingMap.map_insertNth) is already available after `import GMT.Ch07.Submission`; only the library constancy theorem needs the extra `import Poincare.SimonGMT.Chapter08.DistributionalConstancy`.
+
+## Key steps
+
+1. Write X(ω) = ∫ g ω(e) with the integer L¹_loc density g of top_density.
+2. For a ∈ C_c^∞(B) and the coordinate m-covectors γ_i = (−1)^i e*.curryLeft e_i (γ_i(removeNth k e) = δ_ik), β_i = aγ_i ∈ 𝒟^m(V) has dβ_i(e) = (−1)^i ∂_i a, so 0 = ∂X(β_i) = (−1)^i ∫ g ∂_i a.
+3. smooth_to_c1_tests extends the weak equations to C¹ tests, and the pinned library theorem ae_eq_const_of_weak_coordinate_derivatives_zero gives g = c₀ a.e. on B.
+4. A point of the positive-measure open set B shows c₀ = g(y₀) ∈ ℤ; then X(ω) = c∫ω(e) for ω supported in B.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (identical)`
+- `python3 -I over dag.json: this node's record (status decomposing, attempts 3, children [], depends_on measure_locality-a1); lean_name inventory (902 nodes); reuse candidates dtc_vanish_off_support, dtc_isIntegerMultiplicity_sub, dgcr_smooth_tests_to_C1_tests (status accepted, byte-identical lean_statement, candidate commits); MEAS dtc_bc_measure_restrict_eq_of_eqOn (status comparing); keyword scan of accepted nodes (onstancy, blowUp, currentEval, basisFun, IMRep univ) for further reuse`
+- `Read this node's decomposition-v1.json, decomposition-review-receipt-v1/v2.json, decomposition-audit-v1.json, decomposition-scope-v1.json, parent-child-handoff.json, and the accepted handoffs of vanish_off_support-a1, im_sub-a1 and graph-cycle-d2f9caa6a3 (dgcr)`
+- `grep -n '_overlay_accepted_children|_existing_lean_name_problem|_install_parent_supplied_child_handoff|_solve_children|max_nodes|def _solve' /runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/runtime.py; store.py ensure; swarm-project.json (max_depth 6, max_children 12, max_nodes 1000)`
+- `git merge-base --is-ancestor {44ef61f,77fcc7d,c1d6084} e34a71c (all fail); git show <accepted candidate>:GMT/Ch07/Submission.lean import tally over 570 accepted nodes`
+- `sed/grep simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,CurrentLocalEquality}.lean (IsTestForm, TestFormOn, GeometricCurrentOn, boundary_apply, exteriorDerivative_apply, zeroRegion, support) and Chapter08/DistributionalConstancy.lean (ae_eq_const_of_weak_coordinate_derivatives_zero)`
+- `rg -n 'theorem map_insertNth|theorem curryLeft_apply_apply|theorem integral_comp_inv_smul_of_nonneg|theorem exists_mem_of_measure_ne_zero_of_ae|theorem integral_pos' local-references/123e8435b4a2469b/mathlib/Mathlib; rg 'continuous_of_finiteDimensional' (linear version only)`
+- `rg -c 'dtc_bc_cz_' snapshot project, workspace GMT, simongmt/Poincare, dag.json (no match, exit 1); rg -l in nodes/ (only this node's v1 artifacts)`
+- `python3 -I /tmp/cz0-v2/scripts/gen_challenges.py (verifier gmt-compare.py child_modules contract mode + lean_contract.validate_lean_statement) on the 9 child types, the parent type and the MEAS type`
+- `lake env lean /tmp/cz0-v2/check/{Challenge_*.lean (11 files), Assembly.lean, IfaceDgcr.lean, Names.lean, Closure.lean, Closure2.lean} with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/tmp/cz0-v2/check/Assembly.lean`
+- `/tmp/cz0-v2/check/IfaceDgcr.lean`
+- `/tmp/cz0-v2/check/Names.lean`
+- `/tmp/cz0-v2/check/Closure2.lean`
+- `/tmp/cz0-v2/check/Challenge_parent.lean`
+
+Snapshot pin and contract: the snapshot (project b4d606d, Mathlib 25730c7c) contract is byte-identical to the workspace Contract.lean and Submission.lean used for compilation.
+
+Library support:
+- The pinned SimonGMT library supplies the APIs the children use: currents, boundary, support/zeroRegion, affine push-forward/pullback, rectifiability and approximate tangent spaces.
+- It also supplies Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero (standard axioms). Its hypothesis is verbatim the conclusion of the accepted dgcr_smooth_tests_to_C1_tests.
+- Every cited Mathlib/SimonGMT lemma exists at the pin. Only ContDiffBump.integral_pos and the Chapter08 theorem need imports beyond the frozen closure.
+
+Lean checks:
+- All 11 types elaborate in comparator scope.
+- A conditional Lean assembly derives the exact selected type from six child types plus MEAS, using only propext, Classical.choice and Quot.sound.
+
+Reuse and dependencies:
+- V, G and dgcr are accepted with byte-identical types and are absent from this node's dispatch base, so they are reused as children.
+- MEAS is not accepted, so it enters local_agreement as a hypothesis.
+
+Names: no dtc_bc_cz_ name occurs in the DAG, the snapshot or the library.

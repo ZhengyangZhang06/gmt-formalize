@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_constancy-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1",
+  "depth": 4,
+  "title": "Constancy Theorem for top-dimensional integer multiplicity currents (Lemma B)",
+  "statement": "Let m ∈ ℕ and n := m + 1. Let V ⊆ ℝⁿ be open, X ∈ 𝒟_n(V) integer multiplicity, and B ⊆ V open and preconnected, and suppose ∂X = 0 in B: X.boundary β (= X(dβ)) = 0 for every β ∈ 𝒟^m(V) (TestFormOn V m) with tsupport β ⊆ B. Then there is c ∈ ℤ such that X(ω) = c·∫_{ℝⁿ} ω(y)(e) dLⁿ(y) for every ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ B, where e = (e₁, …, eₙ) is the standard basis (EuclideanSpace.basisFun) — i.e. X = c[[B]] in B with the standard orientation.",
+  "lean_statement": "∀ (m : ℕ) (V B : Set (Euclid (m + 1))) (X : GeometricCurrentOn V (m + 1)), IsOpen V → IsIntegerMultiplicity X → IsOpen B → IsPreconnected B → B ⊆ V → (∀ β : TestFormOn V m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ B → X.boundary β = 0) → ∃ c : ℤ, ∀ ω : TestFormOn V (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ B → X ω = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)",
+  "lean_name": "dtc_bc_cz_top_constancy",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3-a1",
+      "result_commit": "c1d608481329bbb6de1c0f4e4052367b8d92d742",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-ef3f91c228-a1"
+}

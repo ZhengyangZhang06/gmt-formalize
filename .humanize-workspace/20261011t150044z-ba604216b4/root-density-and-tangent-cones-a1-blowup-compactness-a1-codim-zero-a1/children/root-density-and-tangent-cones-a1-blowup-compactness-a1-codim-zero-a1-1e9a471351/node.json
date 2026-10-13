@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.unit_current-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1",
+  "depth": 4,
+  "title": "The integer multiplicity current c[[ℝⁿ]]",
+  "statement": "Let n ≥ 1 and c ∈ ℤ. Then there is C ∈ 𝒟_n(ℝⁿ) (GeometricCurrentOn univ n) which is integer multiplicity and satisfies C(ω) = c·∫_{ℝⁿ} ω(y)(e) dLⁿ(y) for every ω ∈ 𝒟ⁿ(ℝⁿ), where e = (e₁, …, eₙ) is the standard basis of ℝⁿ (EuclideanSpace.basisFun) — i.e. C = c[[ℝⁿ]] with the standard orientation e₁∧…∧eₙ.",
+  "lean_statement": "∀ (n : ℕ) (c : ℤ), 0 < n → ∃ C : GeometricCurrentOn (univ : Set (Euclid n)) n, IsIntegerMultiplicity C ∧ ∀ ω : TestFormOn (univ : Set (Euclid n)) n, C ω = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+  "lean_name": "dtc_bc_cz_unit_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-1e9a471351-a1"
+}

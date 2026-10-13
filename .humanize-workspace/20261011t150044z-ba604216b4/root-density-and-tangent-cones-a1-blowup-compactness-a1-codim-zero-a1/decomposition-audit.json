@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '1,223p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "ae_eq_const_of_weak_coordinate_derivatives_zero|sorry|axiom",
+        "dtc_bc_cz_|dtc_bc_codim_zero|dgcr_smooth_tests_to_C1_tests",
+        "theorem (eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|map_insertNth|curryLeft_apply_apply)|theorem (locallyIntegrableOn_iff|integral_comp_inv_smul_of_nonneg|euclideanHausdorffMeasure_eq_volume)|def AEStronglyMeasurable.mk|theorem exists_mem_of_measure_ne_zero_of_ae",
+        "det_to_matrix_orthonormalBasis_real|integral_pos_iff_support_of_nonneg|theorem dist_convolution_le|theorem HasCompactSupport.hasFDerivAt_convolution_right|theorem hasFDerivAt_convolution_right|theorem HasCompactSupport.contDiff_convolution_left|exists_isSubordinate",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cz0-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cz0-independent-audit/IfaceDgcr.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cz0-independent-audit/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1/decomposition-v2.json",
+        "/tmp/cz0-independent-audit/Assembly.lean",
+        "/tmp/cz0-independent-audit/IfaceDgcr.lean",
+        "/tmp/cz0-independent-audit/LibraryAxioms.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace byte-for-byte; package revisions match the pins. All nine child types, the selected parent type, and MEAS independently elaborate in comparator scope. The exact conditional parent assembly, smooth-to-C¹ interface, and checked library results use only propext, Classical.choice and Quot.sound. The six new names are unreserved; the three reused declarations have identical frozen types and successful comparator receipts restricted to permitted axioms. Dependencies, including reused nodes and MEAS, are acyclic and correctly directed. The split appropriately separates six substantive obligations and three accepted reuses, and establishes the selected full-sequence convergence theorem. All names are bare identifiers; no child type requires its implementation or contains a matrix-unit instance ambiguity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "top_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose. Full-dimensional tangents and orthonormal determinants give the orientation sign; measurable replacement and the multiplicity bound establish the integer-valued locally integrable density and exact action formula."
+    },
+    {
+      "key": "top_constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate-form construction and exterior-derivative signs are correct. The declared dependencies supply the density and C¹ weak equations required by pinned distributional constancy. Empty B and integrality of the constant are explicitly handled."
+    },
+    {
+      "key": "unit_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integral functional satisfies the frozen sequential-continuity definition. The empty representation for c = 0 and the constant multiplicity/orientation representation otherwise verify all IMRep fields and the stated action."
+    },
+    {
+      "key": "blowup_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conditional conclusions follow from affine pullback, support transport, positive-dilation Jacobian cancellation, and commutation with exterior differentiation. The proof works for arbitrary U and real ρ, exactly as quantified."
+    },
+    {
+      "key": "minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies make S − C an integer multiplicity cycle and then a constant current. A positive-integral bump outside its compact support forces that constant to vanish, proving competitor equality and minimality for every A."
+    },
+    {
+      "key": "local_agreement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The MEAS premise exactly matches the parent's existing dependency. Eventual agreement on balls proves full-sequence weak convergence, convergence for every supplied representation, and boundary vanishing. No additional integer-multiplicity existence assumption is needed."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type. Independently, the compact support lies in the zero region; a finite subordinate smooth partition decomposes the form into annihilated pieces. Openness of U is unnecessary."
+    },
+    {
+      "key": "im_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type. The supplied density-zero transfer and common-tangent arguments justify the measurable signed cancellation construction, its orientation and integrability fields, and the subtraction action identity."
+    },
+    {
+      "key": "smooth_to_c1_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type. Normalized mollifiers preserve support in a fixed compact subset of D and approximate derivatives uniformly; local integrability controls the pairing error. Localization then gives the exact whole-space conclusion."
+    }
+  ],
+  "required_changes": []
+}
