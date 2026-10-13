@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slicing_im_creg|chart_change_of_variables|lintegral_image_eq_lintegral_abs_det_fderiv_mul",
+        "theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul",
+        "image_of_continuousOn_injOn|measurable_piecewise",
+        "measurable_fderiv_apply_const|theorem ContDiff.continuous_fderiv_apply|theorem ContDiffOn.differentiableOn|theorem ContDiff.differentiable",
+        "^(theorem|lemma).*measurable_piecewise|^theorem.*continuous_fderiv_apply|^theorem measurable_fderiv_apply_const|^theorem.*matrix_det",
+        "git show 9fc44225b304fca8af9dead3256575ef03818d1e:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/box-independent-audit-hz7j2ylg/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/box-independent-audit-hz7j2ylg/Integrated.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-a1-box-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-a1-box-a1/decomposition-v1.json",
+        "/tmp/box-independent-audit-hz7j2ylg/AcceptedSubmission.lean",
+        "/tmp/box-independent-audit-hz7j2ylg/Challenges.lean",
+        "/tmp/box-independent-audit-hz7j2ylg/Integrated.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility with the current compiler inputs. The project snapshot contains no matching slicing/chart-change declarations; the inspected Mathlib APIs support the supplied arguments. All four exact propositions independently elaborate before child implementations exist. Rebuilt proofs and exact-type checks compile: every child uses only propext, Classical.choice and Quot.sound. The exact selected parent follows using additionally only its inherited Jacobian and Tonelli contracts. The split appropriately isolates three substantive proof blocks and reuses the accepted area formula. DAG dependencies are acyclic and correctly directed; all names are bare identifiers, the three new names are unreserved among 619 nodes, and the reused declaration has an identical frozen type. Gram matrices use Matrix.of; no problematic matrix IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree. Reuse matches the accepted declaration at commit 9fc44225b304fca8af9dead3256575ef03818d1e byte-for-byte. Independently checked all seven proof steps: null-preimage control establishes both measurability conclusions, and the accepted local area formula reduces to the claimed integral through singleton/empty fibres. Its prerequisites are accepted and non-circular; the rebuilt proof has only standard axioms."
+    },
+    {
+      "key": "bulk",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, measures, determinant factors and indicator support match the exact Lean type. The proof establishes the Borel images/preimages and their identities, applies area_formula, and then verifies injectivity and within-set derivatives for change of variables along χ. The pinned change-of-variables theorem requires no measurability assumption on its integrand. All eight steps are complete, and the sole child dependency is correctly directed to area_formula."
+    },
+    {
+      "key": "slice_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose for every t. The nine-step proof constructs the affine isometric slice embedding, proves the slice sets measurable and the slice map Lipschitz and antilipschitz, applies area_formula, and identifies its Jacobian by the chain rule. Indicator congruence gives precisely the stated integral. Empty slices and m = 0 are covered uniformly. No global injectivity of χ or additional condition on Ω or S is silently assumed."
+    },
+    {
+      "key": "integrand_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree. The proof correctly extends χ measurably, replaces only its outer occurrences on the indicator support, and retains Dχ. Derivative evaluation measurability, C¹ joint derivative continuity, continuous inner products and the determinant on the finite entry-function space establish the remaining factors. All eight steps prove global Borel measurability without assuming χ measurable outside B or using another child."
+    }
+  ],
+  "required_changes": []
+}

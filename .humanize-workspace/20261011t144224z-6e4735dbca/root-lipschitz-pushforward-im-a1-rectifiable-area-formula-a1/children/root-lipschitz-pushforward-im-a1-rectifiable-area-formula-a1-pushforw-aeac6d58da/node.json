@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.pushforward_enorm_aemeasurable-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "A.e.-measurability of x ↦ ‖L(x)_#ξ(x)‖ₑ",
+  "statement": "For all P, Q, n ∈ ℕ, every measure μ on ℝ^P, and all L : ℝ^P → L(ℝ^P, ℝ^Q) and ξ : ℝ^P → NVector(ℝ^P, n) that are μ-a.e. strongly measurable, the function x ↦ ‖nVectorPushforward n (L x) (ξ x)‖ₑ is μ-a.e. measurable.",
+  "lean_statement": "∀ (P Q n : ℕ) (μ : Measure (Eucl P)) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (ξ : Eucl P → NVector (Eucl P) n), AEStronglyMeasurable L μ → AEStronglyMeasurable ξ μ → AEMeasurable (fun x => ‖nVectorPushforward n (L x) (ξ x)‖ₑ) μ",
+  "lean_name": "lpf_raf_pushforward_enorm_aemeasurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-pushforw-aeac6d58da-a1"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.box-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1",
+  "depth": 5,
+  "title": "C¹ co-area identity on one straightened chart (B, χ) (area formula, change of variables, Jacobian identity, Tonelli)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, Ω ⊆ ℝⁿ open, Φ : ℝⁿ → ℝ^P of class C¹, K-Lipschitz on Ω and c-antilipschitz on Ω (c > 0), h : ℝⁿ → ℝ of class C¹, f : ℝ^P → ℝ arbitrary, G : ℝ^P → ℝ^P Borel, B ⊆ ℝⁿ open and χ : ℝⁿ → ℝⁿ of class C¹ on B with χ(B) ⊆ Ω, χ Lipschitz on B, h(χ(y)) = y_0 for y ∈ B, and |v − v′| ≤ |χ([t,v]) − χ([t,v′])| whenever [t,v], [t,v′] ∈ B ([t,v] = (t, v_0, …, v_{m−1})). Let S ⊆ χ(B) be Borel with f(Φ(w)) = h(w), G(Φ(w)) ∈ range DΦ(w) and ⟨G(Φ(w)), DΦ(w)u⟩ = Dh(w)u (all u) for every w ∈ S. Then for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{Φ(S) ∩ f⁻¹{t}} g dH^m is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{Φ(S) ∩ f⁻¹{t}} g dH^m dt = ∫_{Φ(S)} |G| g dH^{m+1} (Hᵏ := μHE[k]).",
+  "lean_statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (f : Eucl P → ℝ) (G : Eucl P → Eucl P) (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)) (S : Set (Eucl (m + 1))), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → Measurable G → IsOpen B → ContDiffOn ℝ 1 χ B → χ '' B ⊆ Ω → (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) → (∀ y ∈ B, h (χ y) = y 0) → (∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖) → MeasurableSet S → S ⊆ χ '' B → (∀ w ∈ S, f (Φ w) = h w ∧ G (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u, inner ℝ (G (Φ w)) (fderiv ℝ Φ w u) = fderiv ℝ h w u) → ∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in Φ '' S, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))",
+  "lean_name": "slicing_im_creg_box_coarea",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.jacobian-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.tonelli-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708-a1",
+      "result_commit": "9fc44225b304fca8af9dead3256575ef03818d1e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.jacobian-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.tonelli-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-a1-box-a1-a1"
+}

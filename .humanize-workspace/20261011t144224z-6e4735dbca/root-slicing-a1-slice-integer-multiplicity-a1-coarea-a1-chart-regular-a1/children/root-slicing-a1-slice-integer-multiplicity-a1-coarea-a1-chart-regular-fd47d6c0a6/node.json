@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.jacobian-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1",
+  "depth": 5,
+  "title": "Jacobian identity for the slice map: J_m(A∘D∘ι) = |γ|·J_n(A)·|det D| in Gram-determinant form",
+  "statement": "Let P, m ∈ ℕ, n := m+1, A : ℝⁿ → ℝ^P and D : ℝⁿ → ℝⁿ continuous linear maps, and γ ∈ ℝ^P with γ ∈ range A and ⟨γ, A(D y)⟩ = y_0 for every y ∈ ℝⁿ. With e_i := EuclideanSpace.single i 1, √det(⟨A D e_{i+1}, A D e_{j+1}⟩)_{i,j<m} = |γ| · √det(⟨A e_i, A e_j⟩)_{i,j<n} · |det D|. No injectivity of A or invertibility of D is assumed; for m = 0 the left side is √(det of the empty matrix) = 1.",
+  "lean_statement": "∀ (P m : ℕ) (A : Eucl (m + 1) →L[ℝ] Eucl P) (D : Eucl (m + 1) →L[ℝ] Eucl (m + 1)) (γ : Eucl P), γ ∈ LinearMap.range A.toLinearMap → (∀ y : Eucl (m + 1), inner ℝ γ (A (D y)) = y 0) → Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (A (D (EuclideanSpace.single i.succ 1))) (A (D (EuclideanSpace.single j.succ 1)))).det = ‖γ‖ * Real.sqrt (Matrix.of fun i j : Fin (m + 1) => inner ℝ (A (EuclideanSpace.single i 1)) (A (EuclideanSpace.single j 1))).det * |D.det|",
+  "lean_name": "slicing_im_creg_jacobian_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-fd47d6c0a6-a1"
+}
