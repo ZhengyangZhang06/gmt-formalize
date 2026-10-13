@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_smm_|dmcbr_slice_mass_majorant|cbr_slice_mass_majorant",
+        "theorem measure_Ioo|Monotone.stieltjesFunction|stieltjesFunction_eq|Monotone.ae_hasDerivAt|Monotone.ae_differentiableAt|withDensity_rnDeriv_le|theorem withDensity_apply_le|le_rightLim|rightLim_le|tendsto_leftLim",
+        "theorem measure_inter_add_sdiff|theorem HasDerivAt.tendsto_slope_zero_left|theorem measurable_deriv|theorem liminf_const_mul_of_ne_top|theorem lintegral_liminf_le|theorem lintegral_const_mul|theorem ofReal_mul|theorem toReal_mono|theorem ofReal_sub|theorem le_sub_of_add_le_right|theorem Measurable.liminf|theorem ae_all_iff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_independent_audit_20261013/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_smm_split/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_smm_split/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightLim.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-11eb725a64/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-11eb725a64/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-73490b9586/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-248525c992/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c1f8b1d35c/accepted-candidate.json",
+        "/tmp/dmcbr_independent_audit_20261013/FrozenTypes.lean",
+        "/tmp/dmcbr_smm_split/Full.lean",
+        "/tmp/dmcbr_smm_split/Assembly.lean"
+      ],
+      "conclusion": "Verified project pin b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d. No proposed-name matches occur in the searched snapshot project/GMT root. Each bare child name instead uniquely identifies a comparator-accepted DAG declaration with a byte-identical frozen type; accepted source hashes and unchanged imports were checked. All four propositions elaborate independently before child implementations exist. The accepted child proofs and exact selected-parent assembly independently compile under the frozen imports, using only propext, Classical.choice and Quot.sound. Borel-space and filter instances also check. The split is appropriate: four genuine analytic obligations establish this selected theorem, with only monotone_majorant depending on lintegral_deriv and left_slope. The dependency graph is acyclic, and the selected contract digest recomputes exactly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "strip_distribution",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including arbitrary G, finite strip mass and unrestricted endpoints. Finiteness justifies toReal and subtraction; splitting along the measurable open strip requires no measurability of G. The endpoint identity explicitly handles b ≤ a. The complete construction is non-circular. Name reuse is valid at accepted commit 92ece761 with identical type."
+    },
+    {
+      "key": "lintegral_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose for every a and b. Monotone differentiation identifies the derivative with the Stieltjes Radon–Nikodym density a.e.; the integral comparison and both endpoint inequalities have the stated direction. measure_Ioo requires no endpoint ordering. The proof is complete and independent of the parent. Name reuse is valid at accepted commit b8056c46 with identical type."
+    },
+    {
+      "key": "left_slope",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability alone suffices, exactly as stated in prose and Lean. Substitution h ↦ −h gives the required quotient limit; eventual positivity justifies ofReal_mul even for negative increments. Continuity of ofReal and the nontrivial right-neighborhood filter give equality of the liminf with the asserted bound. No monotonicity or circular premise is used. Name reuse is valid at accepted commit 9e4623f7 with identical type."
+    },
+    {
+      "key": "monotone_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, without measurability assumptions on Z or an endpoint-order assumption. The supplied proof explicitly constructs measurable g, obtains simultaneous a.e. differentiability by countability, and applies the two declared siblings with their exact hypotheses. Finite-L liminf multiplication covers L = 0, and Fatou gives the required bound. These dependencies are correctly directed and non-circular; combining this conclusion with strip_distribution proves the exact selected parent. Name reuse is valid at accepted commit eb28b36e with identical type."
+    }
+  ],
+  "required_changes": []
+}
