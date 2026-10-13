@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ted_lpm_|ted_lp_monotonicity|aal_radial_first_variation_identity",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|continuousAt_of_dominated|integral_hasDerivAt_right|intervalIntegrable_rpow\\x27|monotoneOn_of_deriv_nonneg|lintegral_mul_le_Lp_mul_Lq|tendsto_integral_filter_of_dominated_convergence|norm_integral_le_lintegral_norm|abs_exp_sub_one_le",
+        "axiom|sorryAx|propext|Classical.choice|Quot.sound|untrusted|Your solution is okay",
+        "git show 98ff8ad3107f7a51f470ffbc3f8c9bf681f15676:GMT/Ch05/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/ted-lpm-independent-audit-p5pv8pxe /tmp/ted-lpm-independent-audit-p5pv8pxe/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/ted-lpm-independent-audit-p5pv8pxe /tmp/ted-lpm-independent-audit-p5pv8pxe/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/ted-lpm-independent-audit-p5pv8pxe /tmp/ted-lpm-independent-audit-p5pv8pxe/FullWithReusedRadial.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-radial-first-variation-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-radial-first-variation-a1/isolated-comparator-result.json",
+        "/tmp/ted-lpm-independent-audit-p5pv8pxe/AuditBase.lean",
+        "/tmp/ted-lpm-independent-audit-p5pv8pxe/Types.lean",
+        "/tmp/ted-lpm-independent-audit-p5pv8pxe/AssemblyAx.lean",
+        "/tmp/ted-lpm-independent-audit-p5pv8pxe/FullWithReusedRadial.lean",
+        "/tmp/ted-lpm-independent-audit-p5pv8pxe/FullWithReusedRadial.lean.log"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; workspace definitions and package revisions are compatible. The snapshot project has no matching ted_lpm_*, ted_lp_monotonicity, or aal_radial_first_variation_identity declaration. DAG inspection confirms the three new names are unreserved and the reused radial identity is comparator-accepted with an identical frozen type. The pinned Mathlib provides the stated Hölder, differentiation, dominated-convergence, FTC, power-integrability, and exponential estimates. Independent compilation succeeded for all four standalone challenge types, the parent assembly, and the supplied complete proofs with the actual accepted radial proof substituted. All four child proofs have only propext, Classical.choice, and Quot.sound as axioms. The compiled parent additionally assumes only the already accepted ted_tangent_plane_facts. Its type is exactly the selected handoff type. All names are bare identifiers; no child type references its implementation or contains a Matrix/IsUnit construction. The split is appropriate and its dependencies are acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including the a.e. rank-n projection hypothesis and support condition. The proof establishes C¹ regularity near the center and away from it, compact support, admissibility, the derivative and trace formulas, and the center case before using a.e. equality of integrals. It requires neither the parent theorem nor another child. Reuse is valid: the frozen type matches the accepted candidate and handoff exactly, and the accepted proof independently compiles with only standard axioms."
+    },
+    {
+      "key": "curvature_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and power conventions match. Finite ball measure and the cutoff bounds establish integrability of ψ; integrability of H supplies the measurability required by Hölder. The conjugate-exponent estimate, ψ^q ≤ ψ, finiteness of the lower-integral bound, and passage through toReal justify the exact conclusion, including t = 0. The proof is complete and independent of the parent and siblings. Its bare name is unreserved."
+    },
+    {
+      "key": "fixed_cutoff_monotone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the quantified defining equations and interval conclusion exactly. Antitonicity and eventual vanishing imply φ ≥ 0, ensuring the denominator is at least one at positive radii. The compact derivative bound justifies differentiation under the integral; the stated domination proves continuity of L. The radial inequality has the correct sign. β < 1 supplies integrability at zero, and FTC gives the claimed nonnegative derivative of Ψ. The argument also covers n = 0 and an empty interval when S ≤ 0. No additional dependency or hypothesis is needed; the bare name is unreserved."
+    },
+    {
+      "key": "abstract_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches every hypothesis and both conclusions. The proof checks both sibling applications, constructs cutoffs with T_k R < S, and obtains closed-ball indicators pointwise, including boundary points. Its uniform integrable bound justifies the cutoff and interval-integral limits. The scaled hypothesis yields N_R R^α ≤ κΛ, and κ/α = 1/4 gives all stated exponential and decay bounds. Passing to the limit proves monotonicity through r = R. Dependencies are exactly curvature_holder and fixed_cutoff_monotone, without circular reliance. The parent's supplied assembly derives the radial inequality from the reused identity and accepted tangent-plane facts, then unfolds scaledLpNorm to obtain the selected frozen theorem verbatim. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

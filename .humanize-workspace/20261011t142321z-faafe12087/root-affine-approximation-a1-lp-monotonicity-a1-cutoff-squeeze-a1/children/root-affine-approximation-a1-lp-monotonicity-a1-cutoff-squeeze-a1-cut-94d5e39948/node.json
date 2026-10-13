@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1.cutoff_derivative-a1",
+  "parent_id": "root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1",
+  "depth": 4,
+  "title": "Differentiation of a scaled radial cutoff integral with a bounded weight (Simon Ch. 4, 3.4)",
+  "statement": "Let n, l >= 0, mu a measure on R^(n+l), q : R^(n+l) -> R, y in R^(n+l), phi : R -> R, and reals S, epsilon, B, t with epsilon > 0. Write r = r(x) = |x - y| and phi' = deriv phi. Assume:\n- mu(B_S(y)) < infinity, where B_S(y) is the closed ball;\n- q is mu-a.e. strongly measurable and |q(x)| <= B for mu-a.e. x;\n- phi is C^1 and nonincreasing, with phi(s) = 1 for s <= 1 and phi(s) = 0 for s >= 1 + epsilon;\n- 0 < t and (1 + epsilon) t < S.\nThen x -> phi(r/t) q(x) and x -> (r/t) phi'(r/t) q(x) are mu-integrable. Moreover the function s -> integral phi(r/s) q dmu (a Bochner integral, defined for every real s) is differentiable at s = t with derivative -(1/t) integral (r/t) phi'(r/t) q dmu.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (q : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε B t : ℝ), 0 < ε → μ (closedBall y S) < ⊤ → AEStronglyMeasurable q μ → (∀ᵐ x ∂μ, |q x| ≤ B) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → Integrable (fun x => φ (‖x - y‖ / t) * q x) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * q x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t) t",
+  "lean_name": "aal_cfs_hasDerivAt_cutoff_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-lp-monotonicity-a1-cutoff-squeeze-a1-cut-94d5e39948-a1"
+}

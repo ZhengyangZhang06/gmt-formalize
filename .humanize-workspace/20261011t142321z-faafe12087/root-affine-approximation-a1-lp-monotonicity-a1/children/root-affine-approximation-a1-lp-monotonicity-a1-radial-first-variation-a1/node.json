@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.lp_monotonicity-a1.radial_first_variation-a1",
+  "parent_id": "root.affine_approximation-a1.lp_monotonicity-a1",
+  "depth": 3,
+  "title": "Radial first-variation identity for the cutoff fields phi(|x-y|/rho)(x-y) (Simon Ch. 4, 3.2-3.3 and 4.1)",
+  "statement": "Let n, l >= 0 be integers, U a subset of R^(n+l), and V a RectifiableVarifold n l U with generalized mean curvature H in U (V.HasGeneralizedMeanCurvature H). Let mu := V.weight and p_x := V.tangentProj x, and assume that for mu-a.e. x there is an n-dimensional subspace P of R^(n+l) such that p_x is the orthogonal projection onto P. Let y in R^(n+l), let phi : R -> R be C^1 with phi(t) = 1 for all t <= 1 and phi(t) = 0 for all t >= T, and let rho > 0 with the closed ball B_{T rho}(y) contained in U. Then, writing r = |x - y| and using the convention a/0 = 0, integral [n phi(r/rho) + (r/rho) phi'(r/rho) (1 - |x - y - p_x(x - y)|^2 / |x - y|^2)] dmu(x) = - integral phi(r/rho) (x - y).H(x) dmu(x), both sides being Bochner integrals over R^(n+l).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (y : Amb n ℓ) (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → closedBall y (T * ρ) ⊆ U → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) ∂V.weight = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂V.weight",
+  "lean_name": "aal_radial_first_variation_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-lp-monotonicity-a1-radial-first-variation-a1-a1"
+}
