@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'skeleton|retraction|orderStatistic|order statistic|kth largest|k-th largest' project -g '*.lean'",
+        "rg -n -i 'order statistic|orderStatistic|kthLargest|k-th largest' mathlib/Mathlib",
+        "rg -n 'abbrev Euclid|EuclideanSpace.dist_eq|theorem dist_eq |def EuclideanSpace|exists_subset_card_eq' project/GMT/Ch07/Contract.lean mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean mathlib/Mathlib/Data/Finset/Card.lean",
+        "rg -n 'theorem infDist_le_dist_of_mem|theorem infDist_le_infDist_add_dist|theorem lipschitz_infDist_pt|theorem segment_eq_image.|theorem dist_apply_le|theorem exists_mem_eq_sup.|theorem exists_mem_eq_inf.' mathlib/Mathlib",
+        "rg --no-ignore -l 'dor_lmb_fcdr_' GMT -g '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fcdr-independent-audit-2s3b6t32/AllChallengeTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Segment.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Lattice/Fold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-94b1aae78b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/Instances.lean",
+        "/tmp/fcdr-independent-audit-2s3b6t32/AllChallengeTypes.lean"
+      ],
+      "conclusion": "Verified the pinned revisions b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and 25730c7c759d108ef87ab70af2342a196760f79d. Snapshot-relative searches found no matching project retraction or Mathlib order-statistic declaration. Inspected library declarations support the finite extrema, cardinality, Euclidean norm, infDist and segment arguments. The workspace contract and submission match the frozen contract; inspected metric/module instances are the intended L2 instances. All six types pass the statement validator, match regenerated comparator challenges, and elaborate independently without child implementations. All names are bare identifiers and unreserved in the DAG; no accepted declaration is reused. Empty sibling dependency lists are accurate and acyclic. The split is appropriate: its six obligations establish the selected parent through the supplied construction and near/far estimates. Independently recompiled Assembly.lean, which proves the exact frozen parent using precisely the six child axioms and standard axioms. EndToEnd.lean also recompiles; every child and the parent use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "order_stat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. The nonempty finite max-min construction proves both cardinality properties, including ties. The two directed inequalities prove the absolute-value bound for every real t satisfying the premise. This is a complete, independent construction."
+    },
+    {
+      "key": "dual_dist",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including unrestricted x and y. The cardinality hypothesis supplies a nonempty set J of exactly m+2 indices and establishes κ(r(y)) ≥ 0. The explicitly constructed shifted point belongs to L*(a), and its Euclidean distance gives the stated bound without assuming y lies in a cube."
+    },
+    {
+      "key": "cube_skeleton",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Positive κ makes every relevant denominator positive. Both sign cases establish the coordinate bounds for arbitrary y; the supplied index set then gives precisely the required number of endpoint coordinates. No unstated cube or dimension hypothesis is used."
+    },
+    {
+      "key": "cube_periodic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Integer differences inside [0,1] give equal coordinates or exchanged endpoints, preserving the entire ratio vector. The dimension hypothesis ensures a nonempty witnessing set and hence κ ≤ 1. The coordinate calculation proves compatibility, including cases with zero denominators elsewhere."
+    },
+    {
+      "key": "cube_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, requiring positive κ only at the first point. The proof establishes the ratio and denominator variation bounds and explicitly handles a zero denominator at the second point by proving its numerator vanishes. Summing the squared coordinate bounds yields exactly the stated 4√P/κ coefficient."
+    },
+    {
+      "key": "grid_segment",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Excluding constant coordinates makes the breakpoint set finite. The midpoint-floor construction places each closed piece in one cube, and the cube estimates telescope to the conclusion. The proof covers constant segments and requires no unstated continuity of f or regularity of S."
+    }
+  ],
+  "required_changes": []
+}

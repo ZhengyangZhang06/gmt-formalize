@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c)",
+        "cmp project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (identical)",
+        "rg -n -i \"skeleton|retraction|orderStatistic|order statistic|kth largest|k-th largest\" project -g \"*.lean\" (no match)",
+        "rg -n \"latticeFace|IsLatticeChain|DeformationTheorem\" project -g \"*.lean\" (only GMT/Ch06/Submission.lean, not imported by GMT.Ch07.Submission)",
+        "rg -n -i \"order statistic|orderStatistic|kthLargest|k-th largest\" mathlib/Mathlib (no match: no Lipschitz order-statistic lemma)",
+        "rg -n \"theorem infDist_le_dist_of_mem|theorem infDist_le_infDist_add_dist|theorem segment_eq_image'|theorem dist_apply_le|theorem exists_mem_eq_sup'\" mathlib/Mathlib",
+        "rg -n \"exists_subset_card_eq|Icc_subset_of_forall_mem_nhdsWithin|abs_projIcc_sub_projIcc|sum_le_card_nsmul|EuclideanSpace.dist_eq|dist_le_range_sum_dist\" in the snapshot Mathlib files listed",
+        "python3 -I scans of dag.json: twin types (cmcdt_skeleton_retraction speculative-ready, dimred_mbl_dt_skeleton_retraction decomposing, children unaccepted) and name freshness of prefix dor_lmb_fcdr_",
+        "sed -n 1488,1500p book/chapter-06.txt (Simon Lemma 5.4)",
+        "lake env lean on chal/Challenge_*.lean, Instances.lean, Assembly.lean, Child_*.lean, EndToEnd.lean with #print axioms; verifier lean_contract.validate_lean_statement and gmt-compare.child_modules regeneration"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Segment.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Lattice/Fold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UnitInterval.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-94b1aae78b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtsr_skeleton_retraction_decomposition/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsr_skeleton_retraction_decomposition/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dor_lmb_fcdr_retraction_decomposition/EndToEnd.lean"
+      ],
+      "conclusion": "Snapshot: project b4d606db, mathlib 25730c7c. The snapshot Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The snapshot project has no skeleton retraction, Lemma 5.4 or order-statistic declaration, and Mathlib has no Lipschitz order-statistic lemma (no match), so all six children are new obligations. Ch06's latticeFace/DeformationTheorem are frozen definitions only and are not imported by GMT.Ch07.Submission. Every Mathlib lemma the child proofs and the assembly rely on exists in the pinned snapshot: Metric.infDist_le_dist_of_mem, Metric.infDist_le_infDist_add_dist, segment_eq_image', EuclideanSpace.dist_eq, PiLp.dist_apply_le, Finset.exists_subset_card_eq, Finset.exists_mem_eq_sup'/inf', Finset.sum_le_card_nsmul, dist_le_range_sum_dist, IsClosed.Icc_subset_of_forall_mem_nhdsWithin and Set.abs_projIcc_sub_projIcc. Twin nodes cmcdt_skeleton_retraction and dimred_mbl_dt_skeleton_retraction carry this byte-identical frozen type, but their children (cmcdtsr_*, dimred_mbl_dtsr_*) follow the face-induction proof and none is accepted, so nothing is reused. The new prefix dor_lmb_fcdr_ is unused in the DAG and in GMT/. Lean checks: all six child types elaborate as exact comparator challenges, and Assembly.lean proves the frozen parent type from the six child axioms. EndToEnd.lean proves all six children and the parent with axioms [propext, Classical.choice, Quot.sound] only."
+    }
+  ],
+  "proof": "Source: step 4(i) of the parent proof (Φ(x)_i lies between a_i and the end of [0, 1] on the side of x_i, and equals that end for the at least ℓ = P − m − 1 indices with r_i(x) ≥ κ(x)).\n1. From |a_i − 1/2| < 1/4 we get 1/4 < a_i < 3/4, so a_i > 0 and 1 − a_i > 0. Put k₀ := κ(r(y)) > 0 and μ_i := max(r_i(y), k₀); then μ_i ≥ k₀ > 0 and μ_i ≥ r_i(y).\n2. Bounds. Fix i. If y_i ≥ a_i: (y_i − a_i)/μ_i ≥ 0, and μ_i ≥ r_i(y) ≥ (y_i − a_i)/(1 − a_i) gives (1 − a_i)μ_i ≥ y_i − a_i, i.e. (y_i − a_i)/μ_i ≤ 1 − a_i; hence a_i ≤ Φ(y)_i ≤ 1. If y_i < a_i: (y_i − a_i)/μ_i < 0, and μ_i ≥ r_i(y) ≥ (a_i − y_i)/a_i gives a_i μ_i ≥ a_i − y_i, i.e. (y_i − a_i)/μ_i ≥ −a_i; hence 0 ≤ Φ(y)_i < a_i. In both cases 0 ≤ Φ(y)_i ≤ 1.\n3. Skeleton. Apply the hypothesis on κ to u := r(y): there is s with P ≤ m + 1 + |s| and k₀ ≤ r_i(y) for all i ∈ s. Fix i ∈ s. Then r_i(y) ≥ k₀ > 0, so μ_i = r_i(y).\n   (a) If y_i ≥ a_i, then (a_i − y_i)/a_i ≤ 0 ≤ (y_i − a_i)/(1 − a_i), so r_i(y) = (y_i − a_i)/(1 − a_i); since r_i(y) > 0, y_i − a_i > 0, and Φ(y)_i = a_i + (y_i − a_i)(1 − a_i)/(y_i − a_i) = a_i + (1 − a_i) = 1.\n   (b) If y_i < a_i, then (y_i − a_i)/(1 − a_i) < 0 < (a_i − y_i)/a_i, so r_i(y) = (a_i − y_i)/a_i and Φ(y)_i = a_i + (y_i − a_i)·a_i/(a_i − y_i) = a_i − a_i = 0.\n   Hence Φ(y)_i ∈ {0, 1} for every i ∈ s, and P ≤ m + 1 + |s|. ∎",
+  "key_steps": [
+    "μ_i := max(r_i(y), κ(r(y))) satisfies μ_i ≥ κ(r(y)) > 0 and μ_i ≥ r_i(y).",
+    "Since r_i(y) ≥ (y_i − a_i)/(1 − a_i) and r_i(y) ≥ (a_i − y_i)/a_i, Φ(y)_i lies in [a_i, 1] if y_i ≥ a_i and in [0, a_i) if y_i < a_i.",
+    "The hypothesis gives s with P ≤ m + 1 + |s| and r_i(y) ≥ κ(r(y)) on s; there μ_i = r_i(y) and Φ(y)_i is exactly 1 or 0."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

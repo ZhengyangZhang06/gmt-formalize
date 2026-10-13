@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1.order_stat-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1",
+  "depth": 6,
+  "title": "Lipschitz order statistic κ (the (m+2)-th smallest = (P−m−1)-th largest entry)",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P. There is a function κ from functions u : Fin P → ℝ to ℝ such that (1) for every u there is a finset s of indices with P ≤ m + 1 + |s| and κ(u) ≤ u_i for all i ∈ s; (2) for every u there is a finset s of indices with m + 2 ≤ |s| and u_i ≤ κ(u) for all i ∈ s; and (3) for all u, v and every real t, if |u_i − v_i| ≤ t for every index i, then |κ(u) − κ(v)| ≤ t. (Remark, not an extra requirement: (1) and (2) force κ(u) to be the ℓ-th largest entry of u, ℓ = P − m − 1, i.e. the order statistic r_(ℓ) of step 2 of the parent proof.)",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∃ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, κ u ≤ u i) ∧ (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, u i ≤ κ u) ∧ ∀ u v : Fin P → ℝ, ∀ t : ℝ, (∀ i, |u i - v i| ≤ t) → |κ u - κ v| ≤ t",
+  "lean_name": "dor_lmb_fcdr_order_stat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-d8af4b6b18-a1"
+}
