@@ -458,6 +458,34 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The weight `μ_V = Hⁿ ⌞ θ` of a rectifiable `n`-varifold `V = v(M, θ)` in `U` (steps 2(i), 2(ii)
+and 8 of the proof of Simon Ch. 5, Theorem 4.5, pp. 118–119): `μ_V(K) < ∞` for compact `K ⊆ U`,
+`μ_V` vanishes off `spt V`, and `μ_V ≪ Hⁿ` (every `Hⁿ`-null set, measurable or not, is
+`μ_V`-null). -/
+theorem gte_weight_null_finite : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ U → V.weight K < ⊤) ∧ V.weight (V.support)ᶜ = 0 ∧ ∀ Z : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) Z = 0 → V.weight Z = 0 := by
+  intro n ℓ U V
+  -- `μ_V = (Hⁿ ⌞ M).withDensity (ofReal ∘ θ) ≪ Hⁿ ⌞ M ≪ Hⁿ`
+  have hM : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier :=
+    withDensity_absolutelyContinuous _ _
+  have hH : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)) :=
+    hM.trans (Measure.absolutelyContinuous_of_le Measure.restrict_le_self)
+  refine ⟨fun K hK hKU => ?_, ?_, fun Z hZ => hH hZ⟩
+  -- (i): `μ_V(K) = ∫⁻_{M ∩ K} ofReal θ dHⁿ ≤ ∫⁻_{M ∩ K} ‖θ‖ₑ dHⁿ < ∞`, `θ` integrable on `M ∩ K`
+  · rw [RectifiableVarifold.weight, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (lintegral_mono fun x => Real.ofReal_le_enorm (V.mult x)).trans_lt
+      (V.integrableOn_mult K hK hKU).hasFiniteIntegral
+  -- (ii): `(spt V)ᶜ = Uᶜ ∪ (spt μ_V)ᶜ`; `μ_V` is conull on its support, and `Hⁿ ⌞ M` vanishes
+  -- on `Uᶜ` because `M ⊆ U`
+  · rw [RectifiableVarifold.support, compl_inter]
+    refine measure_union_null (hM ?_) Measure.measure_compl_support
+    rw [Measure.restrict_apply₀' V.nullMeasurableSet_carrier]
+    exact measure_mono_null (fun x hx => hx.1 (V.carrier_subset hx.2)) measure_empty
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
