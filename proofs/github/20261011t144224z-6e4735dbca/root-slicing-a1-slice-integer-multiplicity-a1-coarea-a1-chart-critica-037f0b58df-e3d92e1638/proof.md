@@ -1,0 +1,87 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_critical-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_critical-a1.null_of_small_majorants-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. L¹ = volume on ℝ, and ∫ denotes the lower Lebesgue integral ∫⁻ with respect to L¹ of [0, ∞]-valued functions. ε ∈ ℝ≥0 is viewed in [0, ∞] through the coercion. Put F(t) := ν(S ∩ f⁻¹{t}) ∈ [0, ∞]; no measurability of F (or of f, S, A_k) is assumed or used. The proof extracts Step 5 (first bullet) and Step 6 of the parent proof of chart_critical.
+
+1. (Choices.) For j ∈ ℕ let ε_j := (j+1)⁻¹ ∈ ℝ≥0, so ε_j > 0. Apply the hypothesis with ε := ε_j. This gives sets A_{j,k} ⊆ X and measurable φ_{j,k} : ℝ → [0, ∞] (k ∈ ℕ) with S ⊆ ⋃_k A_{j,k}, ν(A_{j,k} ∩ f⁻¹{t}) ≤ φ_{j,k}(t) for all k and t, and Σ_k ∫φ_{j,k} ≤ ε_j·M (countable choice over j).
+
+2. (Summed majorants.) For j ∈ ℕ define ψ_j(t) := Σ_k φ_{j,k}(t) ∈ [0, ∞]. As a countable sum of measurable [0, ∞]-valued functions, ψ_j is measurable (`Measurable.tsum`, formerly `Measurable.ennreal_tsum`).
+
+3. (ψ_j majorizes F.) Fix j and t. If x ∈ S ∩ f⁻¹{t}, then x ∈ A_{j,k} for some k (because S ⊆ ⋃_k A_{j,k}), so x ∈ A_{j,k} ∩ f⁻¹{t}. Thus S ∩ f⁻¹{t} ⊆ ⋃_k (A_{j,k} ∩ f⁻¹{t}). Monotonicity and countable subadditivity of ν hold for arbitrary subsets (`measure_mono`, `measure_iUnion_le`). Together with termwise comparison of [0, ∞]-series (`ENNReal.tsum_le_tsum`) they give F(t) ≤ ν(⋃_k (A_{j,k} ∩ f⁻¹{t})) ≤ Σ_k ν(A_{j,k} ∩ f⁻¹{t}) ≤ Σ_k φ_{j,k}(t) = ψ_j(t).
+
+4. (Integral of ψ_j.) By the monotone convergence theorem for series of measurable [0, ∞]-valued functions (`lintegral_tsum`, each φ_{j,k} measurable), ∫ψ_j = Σ_k ∫φ_{j,k} ≤ ε_j·M.
+
+5. (Infimum.) Let g(t) := inf_{j∈ℕ} ψ_j(t). Then:
+ - g is measurable (`Measurable.iInf`, using Step 2);
+ - F(t) ≤ ψ_j(t) for every j by Step 3, so F(t) ≤ g(t) for every t (`le_iInf`);
+ - g ≤ ψ_j pointwise (`iInf_le`), so ∫g ≤ ∫ψ_j ≤ ε_j·M for every j (`lintegral_mono` and Step 4).
+
+6. (∫g = 0.) In ℝ, 1/(j+1) → 0 as j → ∞ (`tendsto_one_div_add_atTop_nhds_zero_nat`). Hence ε_j → 0 in ℝ≥0 (`NNReal.tendsto_coe`) and in [0, ∞] (`ENNReal.tendsto_coe`). Since M ≠ ∞, ε_j·M → 0·M = 0 (`ENNReal.Tendsto.mul_const`, side condition M ≠ ⊤). As ∫g ≤ ε_j·M for every j, passing to the limit gives ∫g ≤ 0 (`ge_of_tendsto'`), hence ∫g = 0.
+
+7. (Conclusion.) g is measurable with ∫g = 0, so g = 0 L¹-a.e. (`lintegral_eq_zero_iff`). For every t with g(t) = 0, Step 5 gives 0 ≤ F(t) ≤ g(t) = 0, i.e. ν(S ∩ f⁻¹{t}) = 0. Therefore ν(S ∩ f⁻¹{t}) = 0 for L¹-a.e. t ∈ ℝ. ∎
+
+## Key steps
+
+1. For ε_j = 1/(j+1), choose covers A_{j,k} of S and measurable majorants φ_{j,k} with Σ_k ∫φ_{j,k} ≤ ε_j·M; put ψ_j := Σ_k φ_{j,k}, which is measurable.
+2. Countable subadditivity of ν on S ∩ f⁻¹{t} ⊆ ⋃_k (A_{j,k} ∩ f⁻¹{t}) gives ν(S ∩ f⁻¹{t}) ≤ ψ_j(t) for every t; monotone convergence (lintegral_tsum) gives ∫ψ_j ≤ ε_j·M.
+3. g := inf_j ψ_j is a measurable majorant with ∫g ≤ ε_j·M → 0 because M ≠ ∞, so ∫g = 0.
+4. lintegral_eq_zero_iff gives g = 0 a.e., hence ν(S ∩ f⁻¹{t}) = 0 for a.e. t.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean GMT/Ch06/Submission.lean (both identical)`
+- `rg -n "μHE" mathlib/Mathlib; rg -n "theorem euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib -A6`
+- `rg -n "euclideanHausdorffMeasure_eq_volume|hausdorffMeasure_image_le|lipschitzOnWith_of_nnnorm_fderiv_le|theorem isOpen_iUnion_countable|theorem lintegral_tsum|theorem lintegral_eq_zero_iff" mathlib/Mathlib`
+- `rg -n "theorem iUnion_disjointed|theorem disjoint_disjointed|theorem MeasurableSet.disjointed|theorem disjointed_subset" mathlib/Mathlib; rg -n "theorem lipschitzOnWith_empty" mathlib/Mathlib`
+- `rg -n "euclideanHausdorffMeasure_image_le_of_lipschitzOn" -A8 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare`
+- `python3 scan of dag.json (502 nodes): status and lean_statement of the coarea-a1 subtree (eilenberg type read verbatim); pattern scan for 'fderiv ℝ h w = 0', 'Pairwise (Function.onFun Disjoint', "∑'", 'Measurable φ', 'majorant', 'small'; lean_name collision check for slicing_im_coarea_cc_small_lip_partition and slicing_im_coarea_cc_null_of_small_majorants (none)`
+- `rg -l "slicing_im_coarea_cc_|small_lip_partition|null_of_small_majorants" nodes/ (no match); rg -n "slicing_im_coarea_cc" local-references/197bdd4b88278494/project GMT (no match)`
+- `python3: verifier/gmt-compare.py contract_scope(GMT/Ch06/Contract.lean, 'GMT.Ch06.main_theorem') -> namespace GMT.Ch06, replayed open/open scoped/noncomputable section/end commands`
+- `sed -n 1420,1520p book/chapter-02.txt (Simon Ch. 2 §6: 6.3, its consequence for C = {Jf = 0}, 6.4)`
+- `lake env lean /tmp/cc-decomp-scratch/T0.lean (#check of the cited Mathlib/SimonGMT lemma names)`
+- `lake env lean /tmp/cc-decomp-scratch/Assembly.lean; lake env lean /tmp/cc-decomp-scratch/Children.lean; lake env lean /tmp/cc-decomp-scratch/StmtA.lean; lake env lean /tmp/cc-decomp-scratch/final/Final.lean (exact child strings proved in comparator form; frozen parent type from frozen eilenberg type + children; #print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critical-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critical-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critical-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/cc-decomp-scratch/T0.lean`
+- `/tmp/cc-decomp-scratch/Assembly.lean`
+- `/tmp/cc-decomp-scratch/Children.lean`
+- `/tmp/cc-decomp-scratch/StmtA.lean`
+- `/tmp/cc-decomp-scratch/final/Final.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract, and Submission is byte-identical to it. It contains every library fact the split needs.
+
+Mathlib: ContDiff.continuous_fderiv and ContDiff.differentiable, Convex.lipschitzOnWith_of_nnnorm_fderiv_le, TopologicalSpace.isOpen_iUnion_countable, disjointed with iUnion_disjointed, disjoint_disjointed, disjointed_subset and MeasurableSet.disjointed, lipschitzOnWith_empty, Measurable.tsum, Measurable.iInf, lintegral_tsum, lintegral_eq_zero_iff, and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (μHE[d] = volume on Eucl d).
+
+SimonGMT: Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+
+No existing declaration or DAG node states either child. The accepted lpf_raf_lla_disjoint_lipschitz_pieces gives disjoint Lipschitz pieces only with uncontrolled constants, so it cannot give the ε-small partition. Both new lean_names are unused among the 502 DAG nodes and in the project.
+
+Lean checks in the exact comparator scope: both child types elaborate and are proved in scratch. The frozen parent type follows from the frozen slicing_im_coarea_eilenberg type together with the two child types. All of these depend only on propext, Classical.choice and Quot.sound.
