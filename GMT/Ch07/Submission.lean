@@ -522,6 +522,32 @@ theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s
   rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
   exact hpos.ne' hkey.symm
 
+/-- **Tangential divergence of the rotation field** (steps 4–5 of the parent proof).  With the
+skew map `A y = ⟨y, u⟩ e − ⟨y, e⟩ u`, the field is `X = g • A`, so the product rule gives
+`DX(x) h = g(x) A h + (Dg(x) h) A x` at `x = t v`.  The frame formula in the orthonormal frame
+`(v, w)` of `Q` gives `tr(p_Q ∘ DX(x)) = ⟨v, DX(x) v⟩ + ⟨w, DX(x) w⟩`; skewness `⟨z, A z⟩ = 0`
+and `A x = t A v` leave only `(Dg(x) w) t ⟨w, A v⟩`. -/
+theorem Submission.idtp_ccd_scsp_tf_rotation_trace : ∀ (P : ℕ) (u e v w : Euclid P) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (t : ℝ), Orthonormal ℝ ![v, w] → Submodule.span ℝ (Set.range ![v, w]) = Q → DifferentiableAt ℝ g (t • v) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) (t • v)).toLinearMap) = fderiv ℝ g (t • v) w * (t * (inner ℝ v u * inner ℝ w e - inner ℝ v e * inner ℝ w u)) := by
+  intro P u e v w Q g t hτ hQ hg
+  -- the skew continuous linear map `A y = ⟪y, u⟫ e - ⟪y, e⟫ u`, so that `X = g • A`
+  obtain ⟨A, hA⟩ : ∃ A : Euclid P →L[ℝ] Euclid P,
+      ∀ y, A y = inner ℝ y u • e - inner ℝ y e • u :=
+    ⟨(innerSL ℝ u).smulRight e - (innerSL ℝ e).smulRight u, fun y => by simp [real_inner_comm]⟩
+  have hX : (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) =
+      fun y => g y • A y := by
+    funext y
+    rw [hA]
+  -- product rule: `DX(x) = g(x) A + Dg(x) ⊗ A x`
+  have hD : HasFDerivAt (fun y : Euclid P => g y • A y)
+      (g (t • v) • A + (fderiv ℝ g (t • v)).smulRight (A (t • v))) (t • v) :=
+    hg.hasFDerivAt.smul A.hasFDerivAt
+  -- frame formula in the orthonormal frame `(v, w)` of `Q`, then expand the two diagonal entries
+  rw [Submission.fvmb_trace_starProjection_comp_eq_sum_inner P 2 Q ![v, w] _ hτ hQ, hX, hD.fderiv]
+  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, add_apply, smul_apply,
+    ContinuousLinearMap.smulRight_apply, hA, inner_add_right, inner_sub_right, inner_smul_right,
+    real_inner_smul_left]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
