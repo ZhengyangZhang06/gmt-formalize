@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "55da3092529acebcd5d01aa34caeaf956ef957ae288beff9d1c3809f1b1db093",
+  "git_delta": {
+    "base_commit": "c0e7a8e201a78361dae52512b9ab186aff1901cd",
+    "candidate_commit": "77269f38dfbf52a77be48c7b7ab5f75abfb02d53",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_ps_translation_ball",
+    "diff_sha256": "bf06eed27ca139b18e2fd8745f18c8ade7755203e5858aac2db9409fbe952b2a",
+    "source_sha256": "a50b32e989008f7db8d7e4d70ee28b8d9a37faf5c7790ef743c52775e9ba01a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_ps_translation_ball",
+      "statement": "∀ (n : ℕ) (u : Eucl n → ℝ) (Λ : ℝ≥0∞) (r : ℝ), Measurable u → (∀ h : Eucl n, ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) → ∫⁻ x, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y| ≤ ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
