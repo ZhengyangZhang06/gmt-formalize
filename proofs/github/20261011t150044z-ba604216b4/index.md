@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/4782 | this PR | root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_measure_map-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_test_extension-a1, root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.planar_orientation_sign-a1, root.dimension_reduction_results-a1.im_mass_measure-a1, root.minimizing_implies_stationary-a1.support_null-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.signed_density-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.coordinate_covector-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.boundary_weak_derivative-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_constancy_reduction-a1 |
