@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2fb658df3b9d38fe7d27ec94c373dc5de7aacb290ffc3bc3bf7504715b12870a",
+  "git_delta": {
+    "base_commit": "701fd6d6c99fa65494dc7fe530580e553c64c952",
+    "candidate_commit": "807d10da8466864e6485b298dd0f677fd8e11c09",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_caf_paf_fiberSum_ae_congr",
+    "diff_sha256": "a451c9f7c39e43a197740695b7618588d5afe244bb5de827ff0d4bf64137398c",
+    "source_sha256": "b02b385c27f948e573be31f98689f448701f8227e8b02deec97820dd46cbd9dd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_caf_paf_fiberSum_ae_congr",
+      "statement": "∀ (P n : ℕ) (S V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (h h' : Euclid P → ℝ≥0∞), S ⊆ V → LipschitzWith LG G → EqOn F G V → h =ᵐ[μHE[n].restrict S] h' → (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) =ᵐ[volume] (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h' x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

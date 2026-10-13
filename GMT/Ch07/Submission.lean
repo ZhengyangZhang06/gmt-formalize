@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Fibre sums of `Hⁿ`-a.e. equal weights agree `Lⁿ`-a.e.** (Simon Ch. 2, 1.8(i): Lipschitz
+images of `Hⁿ`-null sets are `Hⁿ`-null).  Let `S ⊆ V`, `F = G` on `V` with `G` Lipschitz, and
+`h = h'` `Hⁿ⌞S`-a.e.  Enlarge `{h ≠ h'}` to a Borel `Hⁿ⌞S`-null set `N`; then `Hⁿ(N ∩ S) = 0`, so
+`F(N ∩ S) = G(N ∩ S)` is `Hⁿ = Lⁿ`-null.  For `y ∉ F(N ∩ S)` every `x ∈ S` with `F(x) = y` lies
+outside `N`, so `h(x) = h'(x)` and the fibre sums `Σ_{x ∈ S, F(x) = y}` of `h` and `h'` agree. -/
+theorem Submission.idtp_caf_paf_fiberSum_ae_congr : ∀ (P n : ℕ) (S V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (h h' : Euclid P → ℝ≥0∞), S ⊆ V → LipschitzWith LG G → EqOn F G V → h =ᵐ[μHE[n].restrict S] h' → (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) =ᵐ[volume] (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h' x) := by
+  intro P n S V F G LG h h' hSV hG hFG hh
+  -- a Borel `Hⁿ⌞S`-null set `N ⊇ {h ≠ h'}`; then `Hⁿ(N ∩ S) = 0`
+  obtain ⟨N, hNsub, hNmeas, hN0⟩ := exists_measurable_superset_of_null (ae_iff.1 hh)
+  rw [Measure.restrict_apply hNmeas] at hN0
+  -- `F(N ∩ S) = G(N ∩ S)` is `Hⁿ`-null (Lipschitz image), i.e. `Lⁿ`-null
+  have hFG' : F '' (N ∩ S) = G '' (N ∩ S) := image_congr fun x hx => hFG (hSV hx.2)
+  have hM : volume (F '' (N ∩ S)) = 0 := by
+    rw [hFG', ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    refine le_antisymm ?_ zero_le
+    calc μHE[n] (G '' (N ∩ S)) ≤ (LG : ℝ≥0∞) ^ n * μHE[n] (N ∩ S) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            hG.lipschitzOnWith
+      _ = 0 := by rw [hN0, mul_zero]
+  -- off `F(N ∩ S)` every fibre point lies outside `N`, where `h = h'`
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hM] with y hy
+  refine tsum_congr fun x => ?_
+  by_contra hne
+  exact hy ⟨x, ⟨hNsub hne, x.2.1⟩, x.2.2⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
