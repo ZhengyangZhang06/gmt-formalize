@@ -620,6 +620,197 @@ theorem Submission.dohr_eb_elc2_averaged_hessian : ∀ (n ℓ : ℕ) (Ψ : (Rn n
           _ ≤ LB * (H * ‖x - y‖ ^ α) * ‖P‖ * ‖Q‖ := by gcongr
           _ = LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by ring)
     simpa using this
+/-- Shifted integration by parts (difference-quotient step of the `C^{1,α} ⇒ C^{2,α}` regularity for
+Euler–Lagrange systems in the elliptic bootstrap of Simon Ch. 5, Theorem 7.1): if `g` is continuous on
+the open set `U`, `ζ ∈ C¹_c(ℝⁿ; ℝ^ℓ)` and `x + t d e ∈ U` for `x ∈ spt ζ`, `t ∈ [0, 1]`, then
+`∫ ⟨ζ(x) − ζ(x − de), g(x)⟩ dx = d ∫ ⟨∫₀¹ g(x + tde) dt, Dζ(x) e⟩ dx`.  Write
+`ζ(x) − ζ(x − de) = d ∫₀¹ Dζ(x − sde) e ds`, exchange the integrals (Fubini), translate
+`x = y + sde` for each `s`, and exchange back; `s` is clamped to `[0, 1]` so that both integrands are
+continuous on `ℝ × ℝⁿ` and vanish off a compact set. -/
+theorem dohr_eb_elc2_shift_ibp : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (g ζ : Rn n → Rn ℓ) (e : Rn n) (d : ℝ), IsOpen U → ContinuousOn g U → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ x ∈ tsupport ζ, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U) → ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = d * ∫ x, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
+  intro n ℓ U g ζ e d hU hg hζ hζc hseg
+  set K := tsupport ζ with hK_def
+  have hKc : IsCompact K := hζc
+  have hKcl : IsClosed K := isClosed_tsupport ζ
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζ0 : ∀ y ∉ K, fderiv ℝ ζ y = 0 := fun y hy => fderiv_of_notMem_tsupport ℝ hy
+  have hζdiff : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  -- clamp
+  set c : ℝ → ℝ := fun s => max 0 (min s 1) with hc_def
+  have hc_cont : Continuous c := by simp only [hc_def]; fun_prop
+  have hc_mem : ∀ s, c s ∈ Icc (0:ℝ) 1 := fun s =>
+    ⟨le_max_left _ _, max_le zero_le_one (min_le_right _ _)⟩
+  have hc_eq : ∀ s ∈ Icc (0:ℝ) 1, c s = s := fun s hs => by
+    simp only [hc_def, min_eq_left hs.2, max_eq_right hs.1]
+  have hc_eq' : ∀ s ∈ uIcc (0:ℝ) 1, c s = s := fun s hs => hc_eq s (by rwa [uIcc_of_le zero_le_one] at hs)
+  -- the compact set K'
+  set K' : Set (Rn n) := (fun p : ℝ × Rn n => p.2 + (p.1 * d) • e) '' (Icc (0:ℝ) 1 ×ˢ K) with hK'_def
+  have hK'c : IsCompact K' := (isCompact_Icc.prod hKc).image (by fun_prop)
+  have hK'U : K' ⊆ U := by
+    rintro _ ⟨⟨t, y⟩, ⟨ht, hy⟩, rfl⟩
+    exact hseg y hy t ht
+  -- F and Ft
+  set F : ℝ → Rn n → ℝ := fun s x => inner ℝ (fderiv ℝ ζ (x - (c s * d) • e) e) (g x) with hF_def
+  set Ft : ℝ → Rn n → ℝ := fun s y => inner ℝ (fderiv ℝ ζ y e) (g (y + (c s * d) • e)) with hFt_def
+  have hFcont : Continuous (Function.uncurry F) := by
+    rw [continuous_iff_continuousAt]
+    rintro ⟨s, x⟩
+    by_cases hx : x - (c s * d) • e ∈ K
+    · have hxU : x ∈ U := by
+        have := hseg _ hx (c s) (hc_mem s)
+        simpa using this
+      have hgx : ContinuousAt g x := hg.continuousAt (hU.mem_nhds hxU)
+      have h1 : Continuous (fun p : ℝ × Rn n => fderiv ℝ ζ (p.2 - (c p.1 * d) • e) e) := by
+        have hm : Continuous (fun p : ℝ × Rn n => p.2 - (c p.1 * d) • e) := by fun_prop
+        exact (hDζ.comp hm).clm_apply continuous_const
+      have h2 : ContinuousAt (fun p : ℝ × Rn n => g p.2) (s, x) := hgx.comp continuousAt_snd
+      exact h1.continuousAt.inner h2
+    · have hopen : IsOpen {p : ℝ × Rn n | p.2 - (c p.1 * d) • e ∉ K} :=
+        hKcl.isOpen_compl.preimage (by fun_prop)
+      have hev : Function.uncurry F =ᶠ[𝓝 (s, x)] fun _ => (0:ℝ) := by
+        filter_upwards [hopen.mem_nhds hx] with p hp
+        simp [hF_def, Function.uncurry, hDζ0 _ hp]
+      exact continuousAt_const.congr hev.symm
+  have hFtcont : Continuous (Function.uncurry Ft) := by
+    rw [continuous_iff_continuousAt]
+    rintro ⟨s, y⟩
+    by_cases hy : y ∈ K
+    · have hyU : y + (c s * d) • e ∈ U := hseg y hy (c s) (hc_mem s)
+      have hgy : ContinuousAt g (y + (c s * d) • e) := hg.continuousAt (hU.mem_nhds hyU)
+      have h1 : Continuous (fun p : ℝ × Rn n => fderiv ℝ ζ p.2 e) :=
+        (hDζ.comp continuous_snd).clm_apply continuous_const
+      have hm : Continuous (fun p : ℝ × Rn n => p.2 + (c p.1 * d) • e) := by fun_prop
+      have h2 : ContinuousAt (fun p : ℝ × Rn n => g (p.2 + (c p.1 * d) • e)) (s, y) :=
+        hgy.comp_of_eq hm.continuousAt rfl
+      exact h1.continuousAt.inner h2
+    · have hopen : IsOpen {p : ℝ × Rn n | p.2 ∉ K} := hKcl.isOpen_compl.preimage continuous_snd
+      have hev : Function.uncurry Ft =ᶠ[𝓝 (s, y)] fun _ => (0:ℝ) := by
+        filter_upwards [hopen.mem_nhds hy] with p hp
+        simp [hFt_def, Function.uncurry, hDζ0 _ hp]
+      exact continuousAt_const.congr hev.symm
+  -- integrability on the product
+  have hprod : (volume.restrict (uIoc (0:ℝ) 1)).prod (volume : Measure (Rn n)) =
+      ((volume : Measure ℝ).prod (volume : Measure (Rn n))).restrict (uIoc (0:ℝ) 1 ×ˢ univ) := by
+    rw [← Measure.prod_restrict, Measure.restrict_univ]
+  have hsub : uIoc (0:ℝ) 1 ×ˢ (univ : Set (Rn n)) ⊆ Icc (0:ℝ) 1 ×ˢ univ := by
+    rw [uIoc_of_le zero_le_one]
+    exact prod_mono Ioc_subset_Icc_self le_rfl
+  have hFint : Integrable (Function.uncurry F)
+      ((volume.restrict (uIoc (0:ℝ) 1)).prod (volume : Measure (Rn n))) := by
+    rw [hprod]
+    have h1 : IntegrableOn (Function.uncurry F) (Icc (0:ℝ) 1 ×ˢ K')
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) :=
+      hFcont.continuousOn.integrableOn_compact (isCompact_Icc.prod hK'c)
+    have h2 : IntegrableOn (Function.uncurry F) (Icc (0:ℝ) 1 ×ˢ univ)
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) := by
+      refine h1.of_forall_sdiff_eq_zero (measurableSet_Icc.prod MeasurableSet.univ) ?_
+      rintro ⟨s, x⟩ ⟨⟨hs, -⟩, hnot⟩
+      have hx : x ∉ K' := fun hx => hnot ⟨hs, hx⟩
+      have hnk : x - (c s * d) • e ∉ K := by
+        intro hk
+        apply hx
+        refine ⟨(c s, x - (c s * d) • e), ⟨hc_mem s, hk⟩, ?_⟩
+        simp
+      simp [hF_def, Function.uncurry, hDζ0 _ hnk]
+    exact h2.mono_set hsub
+  have hFtint : Integrable (Function.uncurry Ft)
+      ((volume.restrict (uIoc (0:ℝ) 1)).prod (volume : Measure (Rn n))) := by
+    rw [hprod]
+    have h1 : IntegrableOn (Function.uncurry Ft) (Icc (0:ℝ) 1 ×ˢ K)
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) :=
+      hFtcont.continuousOn.integrableOn_compact (isCompact_Icc.prod hKc)
+    have h2 : IntegrableOn (Function.uncurry Ft) (Icc (0:ℝ) 1 ×ˢ univ)
+        ((volume : Measure ℝ).prod (volume : Measure (Rn n))) := by
+      refine h1.of_forall_sdiff_eq_zero (measurableSet_Icc.prod MeasurableSet.univ) ?_
+      rintro ⟨s, y⟩ ⟨⟨hs, -⟩, hnot⟩
+      have hy : y ∉ K := fun hy => hnot ⟨hs, hy⟩
+      simp [hFt_def, Function.uncurry, hDζ0 _ hy]
+    exact h2.mono_set hsub
+  -- pointwise identity (i)
+  have hI : ∀ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = d * ∫ s in (0:ℝ)..1, F s x := by
+    intro x
+    have hderiv : ∀ s ∈ uIcc (0:ℝ) 1, HasDerivAt (fun s : ℝ => ζ (x - (s * d) • e))
+        (fderiv ℝ ζ (x - (s * d) • e) (-(d • e))) s := by
+      intro s _
+      have hl : HasDerivAt (fun s : ℝ => x - (s * d) • e) (-(d • e)) s := by
+        have := (((hasDerivAt_id s).mul_const d).smul_const e).const_sub x
+        simpa using this
+      exact (hζdiff _).hasFDerivAt.comp_hasDerivAt s hl
+    have hcontd : Continuous (fun s : ℝ => fderiv ℝ ζ (x - (s * d) • e) e) := by
+      have hm : Continuous (fun s : ℝ => x - (s * d) • e) := by fun_prop
+      exact (hDζ.comp hm).clm_apply continuous_const
+    have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (by
+      have hm : Continuous (fun s : ℝ => x - (s * d) • e) := by fun_prop
+      exact ((hDζ.comp hm).clm_apply continuous_const).intervalIntegrable 0 1)
+    have hrw : (fun s : ℝ => fderiv ℝ ζ (x - (s * d) • e) (-(d • e))) =
+        fun s => -(d • fderiv ℝ ζ (x - (s * d) • e) e) := by
+      funext s; rw [map_neg, map_smul]
+    rw [hrw, intervalIntegral.integral_neg, intervalIntegral.integral_smul] at hftc
+    simp only [one_mul, zero_mul, zero_smul, sub_zero] at hftc
+    have hdiff : ζ x - ζ (x - d • e) = d • ∫ s in (0:ℝ)..1, fderiv ℝ ζ (x - (s * d) • e) e := by
+      rw [← neg_neg (d • ∫ s in (0:ℝ)..1, fderiv ℝ ζ (x - (s * d) • e) e), hftc]; abel
+    rw [hdiff, real_inner_smul_left]
+    congr 1
+    have hcongr : ∫ s in (0:ℝ)..1, F s x =
+        ∫ s in (0:ℝ)..1, inner ℝ (fderiv ℝ ζ (x - (s * d) • e) e) (g x) := by
+      apply intervalIntegral.integral_congr
+      intro s hs
+      simp only [hF_def, hc_eq' s hs]
+    rw [hcongr, real_inner_comm]
+    have := ContinuousLinearMap.intervalIntegral_comp_comm (innerSL ℝ (g x))
+      (hcontd.intervalIntegrable (μ := volume) 0 1)
+    simp only [innerSL_apply_apply] at this
+    rw [← this]
+    apply intervalIntegral.integral_congr
+    intro s _
+    simp only [real_inner_comm]
+  -- pointwise identity (ii)
+  have hII : ∀ y, ∫ s in (0:ℝ)..1, Ft s y =
+      inner ℝ (∫ t in (0 : ℝ)..1, g (y + (t * d) • e)) (fderiv ℝ ζ y e) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have hgc : ContinuousOn (fun t : ℝ => g (y + (t * d) • e)) (uIcc 0 1) := by
+        rw [uIcc_of_le zero_le_one]
+        exact hg.comp (by fun_prop) (fun t ht => hseg y hy t ht)
+      have hcongr : ∫ s in (0:ℝ)..1, Ft s y =
+          ∫ s in (0:ℝ)..1, inner ℝ (fderiv ℝ ζ y e) (g (y + (s * d) • e)) := by
+        apply intervalIntegral.integral_congr
+        intro s hs
+        simp only [hFt_def, hc_eq' s hs]
+      rw [hcongr, real_inner_comm]
+      have := ContinuousLinearMap.intervalIntegral_comp_comm (innerSL ℝ (fderiv ℝ ζ y e))
+        (hgc.intervalIntegrable (μ := volume))
+      simp only [innerSL_apply_apply] at this
+      exact this
+    · simp [hFt_def, hDζ0 _ hy]
+  -- translation
+  have hT : ∀ s, ∫ x, F s x = ∫ y, Ft s y := by
+    intro s
+    rw [← integral_add_right_eq_self (fun x => F s x) ((c s * d) • e)]
+    congr 1
+    funext y
+    simp [hF_def, hFt_def]
+  -- main chain
+  calc ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x)
+      = ∫ x, d * ∫ s in (0:ℝ)..1, F s x := by
+        congr 1; funext x; exact hI x
+    _ = d * ∫ x, ∫ s in (0:ℝ)..1, F s x := integral_const_mul d _
+    _ = d * ∫ s in (0:ℝ)..1, ∫ x, F s x := by
+        rw [intervalIntegral_integral_swap hFint]
+    _ = d * ∫ s in (0:ℝ)..1, ∫ y, Ft s y := by
+        congr 1
+        apply intervalIntegral.integral_congr
+        intro s _
+        exact hT s
+    _ = d * ∫ y, ∫ s in (0:ℝ)..1, Ft s y := by
+        rw [intervalIntegral_integral_swap hFtint]
+    _ = d * ∫ x, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
+        congr 1
+        congr 1
+        funext y
+        exact hII y
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
