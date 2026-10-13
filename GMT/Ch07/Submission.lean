@@ -451,6 +451,252 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Test forms and the blow-up under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`** (Simon
+Ch. 3, 1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt lines 403–413; used for
+`η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337).  `η = η_{x,λ}` is an affine
+homeomorphism of `ℝᴾ` with inverse `ι(z) = x + λz`, and `η⁻¹(η(U)) = U`.  (a) `ω ↦ ω ∘ η` maps
+`𝒟ⁿ(η(U))` to `𝒟ⁿ(U)`; (b) `ω' ↦ ω' ∘ ι` maps `𝒟ⁿ(U)` to `𝒟ⁿ(η(U))`, and `(ω' ∘ ι) ∘ η = ω'`;
+(c) if `ω' = ω ∘ η` then `η_{x,λ#}T(ω) = T(η^#ω) = λ⁻ⁿ T(ω')`, since by multilinearity
+`(η^#ω)(y) = ω(η(y)) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(η(y))`. -/
+theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω' := by
+  intro P n U x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  -- Step 1: `η = η_{x,λ}` (`y ↦ −λ⁻¹x + λ⁻¹y`) and `ι(z) = x + λz` are mutually inverse affine
+  -- homeomorphisms, both `C^∞`.  (`∞` is `ℝ≥0∞`'s top under `open scoped ENNReal`.)
+  let η : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hne)).trans
+    (Homeomorph.addLeft (-(lam⁻¹ • x)))
+  have hη : ⇑η = dilation x lam := by
+    funext y
+    simp [η, dilation, dilationCLM]
+  let ι : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam hne).trans (Homeomorph.addLeft x)
+  have hι : ⇑ι = fun z => x + lam • z := by
+    funext z
+    simp [ι]
+  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hιη : ∀ y, x + lam • dilation x lam y = y := by
+    intro y
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hηsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (dilation x lam) :=
+    contDiff_const.add (dilationCLM P lam).contDiff
+  have hιsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Euclid P => x + lam • z) :=
+    contDiff_const.add (contDiff_id.const_smul lam)
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a) `ω' := ω ∘ η`: smooth, compactly supported (`η` a homeomorphism), and
+    -- `tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(U)) = U`.
+    intro ω
+    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω.property
+    refine ⟨⟨fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y), ?_⟩, fun y => rfl⟩
+    change IsTestForm (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧
+      tsupport (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ⊆ U
+    refine ⟨⟨hsmooth.comp hηsmooth, ?_⟩, ?_⟩
+    · have h := hcompact.comp_homeomorph η
+      rwa [hη] at h
+    · refine (tsupport_comp_subset_preimage (ω : DifferentialForm (Euclid P) n)
+        (hη ▸ η.continuous)).trans ((preimage_mono hsupp).trans ?_)
+      rw [preimage_image_eq U (hη ▸ η.injective)]
+  · -- (b) `ω := ω' ∘ ι`: a test form with `tsupport ω ⊆ ι⁻¹(U) ⊆ η(U)`, and `ω ∘ η = ω'`.
+    intro ω'
+    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω'.property
+    refine ⟨⟨fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z), ?_⟩, fun y => ?_⟩
+    · change IsTestForm (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ∧
+        tsupport (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ⊆ dilation x lam '' U
+      refine ⟨⟨hsmooth.comp hιsmooth, ?_⟩, ?_⟩
+      · have h := hcompact.comp_homeomorph ι
+        rwa [hι] at h
+      · refine (tsupport_comp_subset_preimage (ω' : DifferentialForm (Euclid P) n)
+          (hι ▸ ι.continuous)).trans fun z hz => ?_
+        exact ⟨x + lam • z, hsupp hz, hηι z⟩
+    · change (ω' : DifferentialForm (Euclid P) n) y =
+        (ω' : DifferentialForm (Euclid P) n) (x + lam • dilation x lam y)
+      rw [hιη]
+  · -- (c) `η_{x,λ#}T(ω) = T(η^#ω)`, and `η^#ω = λ⁻ⁿ ω'` by multilinearity; `T` is linear.
+    intro T ω ω' hω
+    unfold blowUp
+    rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
+      show lam⁻¹ ^ n * T ω' = T (lam⁻¹ ^ n • ω') by rw [map_smul, smul_eq_mul]]
+    congr 1
+    apply Subtype.ext
+    funext y
+    ext v
+    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    have hv : ⇑(dilationCLM P lam) ∘ v = fun i => lam⁻¹ • v i := by
+      funext i
+      simp [dilationCLM]
+    rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
+    simp
+
+/-- **Mass scaling of blow-ups: `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)`** for `λ > 0` and every
+`W ⊆ ℝᴾ` (scaling identity (1) in the proof of Simon 7.3.1, chapter-07.txt lines 329–331; mass
+`M_W` of 6.2.5 with the Euclidean coefficient norm).  By `Submission.dtc_blowUp_testForm_corr`,
+`ω ↦ ω ∘ η` and `ω' ↦ ω' ∘ ι` (`ι(z) = x + λz`) exchange the admissible forms for
+`M_{η(W)}(η_{x,λ#}T)` and `M_W(T)`, preserving the coefficient norm pointwise, and
+`η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`; multiplication by `λ⁻ⁿ ≥ 0` commutes with the suprema. -/
+theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (W : Set (Euclid P)), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W := by
+  intro P n U T x lam hlam W
+  obtain ⟨hA, hB, hC⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  have hc : 0 ≤ lam⁻¹ ^ n := pow_nonneg (inv_nonneg.mpr hlam.le) n
+  -- `η = η_{x,λ}` and `ι(z) = x + λz` are continuous and mutually inverse; so `η` is injective.
+  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hιη : ∀ y, x + lam • dilation x lam y = y := by
+    intro y
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hηinj : Injective (dilation x lam) := fun y y' h => by
+    rw [← hιη y, ← hιη y', h]
+  have hηcont : Continuous (dilation x lam) :=
+    continuous_const.add (dilationCLM P lam).continuous
+  have hιcont : Continuous (fun z : Euclid P => x + lam • z) :=
+    continuous_const.add (continuous_const_smul lam)
+  unfold GeometricCurrentOn.massOn
+  apply le_antisymm
+  · -- Upper bound: an admissible `ω` for `η_{x,λ#}T` on `η(W)` gives the admissible
+    -- `ω' = ω ∘ η` for `T` on `W` (`tsupport ω' ⊆ η⁻¹(η(W)) = W`), and
+    -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω')`.
+    refine sSup_le ?_
+    rintro _ ⟨ω, ⟨hωs, hωn⟩, rfl⟩
+    obtain ⟨ω', hω'⟩ := hA ω
+    dsimp only
+    rw [hC T ω ω' hω', ENNReal.ofReal_mul hc]
+    gcongr
+    refine le_sSup ⟨ω', ⟨?_, fun y => ?_⟩, rfl⟩
+    · have hcomp : (ω' : DifferentialForm (Euclid P) n) =
+          (ω : DifferentialForm (Euclid P) n) ∘ dilation x lam := funext hω'
+      rw [hcomp]
+      refine (tsupport_comp_subset_preimage _ hηcont).trans ((preimage_mono hωs).trans ?_)
+      rw [preimage_image_eq W hηinj]
+    · rw [hω' y]
+      exact hωn _
+  · -- Lower bound: an admissible `ω'` for `T` on `W` gives the admissible `ω = ω' ∘ ι` for
+    -- `η_{x,λ#}T` on `η(W)` (`tsupport ω ⊆ ι⁻¹(W) ⊆ η(W)`), and `λ⁻ⁿ T(ω') = η_{x,λ#}T(ω)`.
+    rw [ENNReal.mul_sSup]
+    refine iSup₂_le ?_
+    rintro _ ⟨ω', ⟨hωs, hωn⟩, rfl⟩
+    obtain ⟨ω, hω⟩ := hB ω'
+    dsimp only
+    rw [← ENNReal.ofReal_mul hc, ← hC T ω ω' hω]
+    refine le_sSup ⟨ω, ⟨?_, fun z => ?_⟩, rfl⟩
+    · have hcomp : (ω : DifferentialForm (Euclid P) n) =
+          (ω' : DifferentialForm (Euclid P) n) ∘ fun z => x + lam • z := by
+        funext z
+        rw [Function.comp_apply, hω, hηι]
+      rw [hcomp]
+      refine (tsupport_comp_subset_preimage _ hιcont).trans fun z hz => ?_
+      exact ⟨x + lam • z, hωs hz, hηι z⟩
+    · have h := hωn (x + lam • z)
+      rwa [hω, hηι] at h
+/-- **Simon 6.2.14 on varying domains**: mass bounds pass to `ConvergesWeakly`-limits.  If
+`Tⱼ ⇀ S` and, for all large `j`, `W ⊆ Uⱼ` and `M_W(Tⱼ) ≤ B`, then `M_W(S) ≤ B`.  An admissible
+`ω` for `M_W(S)` has `spt ω ⊆ W ⊆ Uⱼ`, so `currentEval Tⱼ ω = Tⱼ(ω)` with `ω` admissible for
+`M_W(Tⱼ)`; hence eventually `ofReal (currentEval Tⱼ ω) ≤ B`, and the limit `ofReal (S(ω))` lies
+in the closed set `{t ≤ B}`. -/
+theorem Submission.idtp_convergesWeakly_massOn_le : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (V : Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn V n) (W : Set (Euclid P)) (B : ℝ≥0∞), ConvergesWeakly Ts S → (∀ᶠ j in atTop, W ⊆ Us j ∧ (Ts j).massOn W ≤ B) → S.massOn W ≤ B := by
+  intro P n Us V Ts S W B hconv hev
+  -- `M_W(S)` is the supremum of `ofReal (S(ω))` over admissible `ω`
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- `ofReal (currentEval Tⱼ ω) → ofReal (S(ω))`, and `{t ≤ B}` is closed
+  refine le_of_tendsto (ENNReal.tendsto_ofReal (hconv ω)) ?_
+  -- for large `j`, `spt ω ⊆ W ⊆ Uⱼ`: `ω` is a test form of `Uⱼ`, admissible for `M_W(Tⱼ)`
+  filter_upwards [hev] with j hj
+  obtain ⟨hWU, hB⟩ := hj
+  have h : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us j :=
+    ⟨ω.2.1, hω.1.trans hWU⟩
+  have heval : currentEval (Ts j) (ω : DifferentialForm (Euclid P) n) = Ts j ⟨_, h⟩ :=
+    dite_eq_left h
+  rw [heval]
+  exact ((Ts j).le_massOn (W := W) (omega := ⟨_, h⟩) hω).trans hB
+
+/-- **Small-ball mass bounds pass to weak limits of blow-ups at moving centres** (Simon 7.3.3,
+proof of (1), displays (6) and (11), chapter-07.txt lines 444–476).  If
+`M_{B_ρ(y)}(T) ≤ θ₂ ωₙ ρⁿ` for `y ∈ B_{3r/2}(z)` and `0 < ρ < ρ₀`, `xᵢ ∈ B_r(z)`, `λᵢ → 0` and
+`η_{xᵢ,λᵢ#}T ⇀ S`, then `M_{B_ρ(w)}(S) ≤ θ₂ ωₙ ρⁿ` for all `w` and `ρ > 0`, so `Θⁿ(μ_S, w) ≤ θ₂`.
+For large `i`, `yᵢ = xᵢ + λᵢw ∈ B_{3r/2}(z)`, `B_{λᵢρ}(yᵢ) ⊆ B_{2r}(z) ⊆ U` and
+`η_{xᵢ,λᵢ}(B_{λᵢρ}(yᵢ)) = B_ρ(w)`; by `Submission.dtc_blowUp_massOn_image`,
+`M_{B_ρ(w)}(η_{xᵢ,λᵢ#}T) = λᵢ⁻ⁿ M_{B_{λᵢρ}(yᵢ)}(T) ≤ θ₂ ωₙ ρⁿ`, and
+`Submission.idtp_convergesWeakly_massOn_le` passes this bound to `S`. -/
+theorem Submission.idod_blowUp_limit_mass_density_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (z : Euclid P) (r θ₂ ρ₀ : ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), 0 < r → 0 ≤ θ₂ → 0 < ρ₀ → ball z (2 * r) ⊆ U → (∀ y ∈ ball z (3 * r / 2), ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) → (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ (w : Euclid P) (ρ : ℝ), 0 < ρ → S.massOn (ball w ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ∧ ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → θ ≤ θ₂ := by
+  intro P n U T S z r θ₂ ρ₀ xs lams hlams hr hθ₂ hρ₀ hU hT hxs hlim hconv
+  -- Step 1: `η_{x,λ}(B_{λρ}(x + λw)) = B_ρ(w)` for `λ > 0`, since `η_{x,λ}(x + λu) = u`,
+  -- `x + λ η_{x,λ}(v) = v` and `|(x + λu) − (x + λw)| = λ|u − w|`.
+  have hball : ∀ (x w : Euclid P) (lam ρ : ℝ), 0 < lam →
+      dilation x lam '' ball (x + lam • w) (lam * ρ) = ball w ρ := by
+    intro x w lam ρ hlam
+    have hne : lam ≠ 0 := hlam.ne'
+    have hηι : ∀ u, dilation x lam (x + lam • u) = u := by
+      intro u
+      simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+    have hιη : ∀ v, x + lam • dilation x lam v = v := by
+      intro v
+      simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+    have hdist : ∀ u, dist (x + lam • u) (x + lam • w) = lam * dist u w := by
+      intro u
+      rw [dist_add_left, dist_smul₀, Real.norm_of_nonneg hlam.le]
+    ext u
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      rw [mem_ball, ← hιη v, hdist] at hv
+      exact mem_ball.mpr (lt_of_mul_lt_mul_left hv hlam.le)
+    · intro hu
+      refine ⟨x + lam • u, ?_, hηι u⟩
+      rw [mem_ball, hdist]
+      exact mul_lt_mul_of_pos_left (mem_ball.mp hu) hlam
+  -- Steps 2–3: the bound for the blow-ups at large `i`, passed to the weak limit `S`.
+  have h1 : ∀ (w : Euclid P) (ρ : ℝ), 0 < ρ →
+      S.massOn (ball w ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+    intro w ρ hρ
+    refine Submission.idtp_convergesWeakly_massOn_le P n (fun i => dilation (xs i) (lams i) '' U)
+      univ (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S (ball w ρ) _ hconv ?_
+    -- for large `i`: `λᵢ(|w| + ρ) < r/2` and `λᵢρ < ρ₀`
+    have hwρ : 0 < ‖w‖ + ρ := by positivity
+    filter_upwards [hlim.eventually (gt_mem_nhds (div_pos (half_pos hr) hwρ)),
+      hlim.eventually (gt_mem_nhds (div_pos hρ₀ hρ))] with i hi1 hi2
+    have hlam : 0 < lams i := hlams i
+    rw [lt_div_iff₀ hwρ] at hi1
+    rw [lt_div_iff₀ hρ] at hi2
+    -- `yᵢ = xᵢ + λᵢw ∈ B_{3r/2}(z)` and `B_{λᵢρ}(yᵢ) ⊆ B_{2r}(z) ⊆ U`
+    have hxz : dist (xs i) z < r := mem_ball.mp (hxs i)
+    have hyx : dist (xs i + lams i • w) (xs i) = lams i * ‖w‖ := by
+      rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    have hyz : dist (xs i + lams i • w) z < lams i * ‖w‖ + r :=
+      (dist_triangle _ (xs i) z).trans_lt (by rw [hyx]; linarith)
+    have hlw : 0 ≤ lams i * ‖w‖ := mul_nonneg hlam.le (norm_nonneg w)
+    have hlρ : 0 < lams i * ρ := mul_pos hlam hρ
+    have hy : xs i + lams i • w ∈ ball z (3 * r / 2) := by
+      rw [mem_ball]
+      nlinarith
+    have hsub : ball (xs i + lams i • w) (lams i * ρ) ⊆ U :=
+      (ball_subset_ball' (by nlinarith)).trans hU
+    rw [← hball (xs i) w (lams i) ρ hlam]
+    refine ⟨image_mono hsub, ?_⟩
+    -- mass scaling `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)` and the hypothesis at `yᵢ`, radius `λᵢρ`
+    rw [Submission.dtc_blowUp_massOn_image P n U T (xs i) (lams i) hlam]
+    calc ENNReal.ofReal ((lams i)⁻¹ ^ n) * T.massOn (ball (xs i + lams i • w) (lams i * ρ))
+        ≤ ENNReal.ofReal ((lams i)⁻¹ ^ n) *
+            (ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal ((lams i * ρ) ^ n)) := by
+          gcongr
+          exact hT _ hy _ hlρ hi2
+      _ = ENNReal.ofReal θ₂ * unitBallVolume n *
+            ENNReal.ofReal ((lams i)⁻¹ ^ n * (lams i * ρ) ^ n) := by
+          rw [ENNReal.ofReal_mul (by positivity)]
+          ring
+      _ = ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+          rw [← mul_pow, inv_mul_cancel_left₀ hlam.ne']
+  refine ⟨h1, ?_⟩
+  -- Step 4: the density ratio of `S` at `w` is `≤ θ₂` for every `ρ > 0`, hence so is its limit.
+  rintro w θ ⟨-, hθ⟩
+  refine (ENNReal.ofReal_le_ofReal_iff hθ₂).mp (le_of_tendsto hθ ?_)
+  filter_upwards [self_mem_nhdsWithin] with ρ hρ
+  refine ENNReal.div_le_of_le_mul ?_
+  rw [← mul_assoc]
+  exact h1 w ρ hρ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
