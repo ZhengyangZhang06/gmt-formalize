@@ -436,6 +436,88 @@ theorem Submission.ind_rs_weightedTangent_dilation :
   refine ((hQ.2 f).comp hlim).congr fun s => ?_
   simp only [Function.comp_apply, hset, hweight]
 
+/-- Rectifiable triples are invariant under the dilations `η(y) = r⁻¹(y − x)`, `r > 0`:
+`(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` is again a rectifiable triple, where `η⁻¹(z) = x + r z`.
+`η` is a measurable embedding pushing `c Hⁿ`, `c = (rⁿ)⁻¹`, forward to `Hⁿ`, so
+`Hⁿ(η(S)) = c Hⁿ(S)` for every `S` and `Hⁿ ⌞ η(M) = η_#(c Hⁿ ⌞ M)`; the weighted approximate
+tangent spaces of `(η(M), θ ∘ η⁻¹)` at `η(y)` are those of `(M, θ)` at `y`. -/
+theorem Submission.ind_rs_rectifiableTriple_dilation :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (x : Eucl P) (r : ℝ), 0 < r → IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ →
+      IsRectifiableTriple (univ : Set (Eucl P)) n ((fun y => r⁻¹ • (y - x)) '' M)
+        (fun z => θ (x + r • z)) (fun z => ξ (x + r • z)) := by
+  intro P n M θ ξ x r hr hT
+  obtain ⟨hemb, hmp⟩ := Submission.ind_rs_dilation_measurePreserving P n x r hr
+  set η : Eucl P → Eucl P := fun y => r⁻¹ • (y - x)
+  set c : ℝ≥0∞ := ENNReal.ofReal ((r ^ n)⁻¹)
+  -- `x + r • η(y) = y`, so `θ(x + r • ·) ∘ η = θ` and `ξ(x + r • ·) ∘ η = ξ`.
+  have hinv : ∀ y, x + r • η y = y := fun y => by
+    show x + r • r⁻¹ • (y - x) = y
+    rw [smul_inv_smul₀ hr.ne', add_sub_cancel]
+  -- `Hⁿ(η(S)) = c Hⁿ(S)` for every `S`; in particular `η` maps `Hⁿ`-null sets to null sets.
+  have hnull : ∀ S : Set (Eucl P), (μHE[n] : Measure (Eucl P)) S = 0 →
+      (μHE[n] : Measure (Eucl P)) (η '' S) = 0 := by
+    intro S hS
+    rw [← hmp.map_eq, hemb.map_apply, preimage_image_eq _ hemb.injective, Measure.smul_apply, hS,
+      smul_zero]
+  -- `Hⁿ ⌞ η(M) = η_#(c Hⁿ ⌞ M)`.
+  have hres : MeasurePreserving η (c • (μHE[n] : Measure (Eucl P)).restrict M)
+      ((μHE[n] : Measure (Eucl P)).restrict (η '' M)) := by
+    rw [← Measure.restrict_smul]
+    exact hmp.restrict_image_emb hemb M
+  refine ⟨subset_univ _, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `η(M) =ᵐ η(B)` for the measurable hull `B` of `M`.
+    have hB := hT.nullMeasurableSet.toMeasurable_ae_eq
+    rw [ae_eq_set] at hB
+    refine (hemb.measurableSet_image.2
+      (measurableSet_toMeasurable (μHE[n] : Measure (Eucl P)) M)).nullMeasurableSet.congr ?_
+    rw [ae_eq_set, ← image_sdiff hemb.injective, ← image_sdiff hemb.injective]
+    exact ⟨hnull _ hB.1, hnull _ hB.2⟩
+  · -- `η(M) ⊆ η(M₀) ∪ ⋃ⱼ range (η ∘ Fⱼ)` with `η` Lipschitz.
+    obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hT.countablyRectifiable
+    have hηL : LipschitzWith ‖r⁻¹‖₊ η := LipschitzWith.of_dist_le_mul fun a b => by
+      show dist (r⁻¹ • (a - x)) (r⁻¹ • (b - x)) ≤ ‖r⁻¹‖₊ * dist a b
+      rw [dist_smul₀, dist_sub_right, coe_nnnorm]
+    refine ⟨η '' M₀, hnull M₀ hM₀, fun j => η ∘ F j, fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖r⁻¹‖₊ * K, hηL.comp hK⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      rcases hMF hy with hy₀ | hy₁
+      · exact Or.inl (mem_image_of_mem η hy₀)
+      · obtain ⟨j, w, rfl⟩ := mem_iUnion.1 hy₁
+        exact Or.inr (mem_iUnion.2 ⟨j, w, rfl⟩)
+  · rintro _ ⟨y, hy, rfl⟩
+    show 0 < θ (x + r • η y)
+    rw [hinv]
+    exact hT.pos y hy
+  · -- `η(M) ∩ K = η(M ∩ η⁻¹(K))` with `η⁻¹(K)` compact, and `η_#(c Hⁿ) = Hⁿ`.
+    intro K hK _
+    let e : Eucl P ≃ₜ Eucl P :=
+      (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+    have he : (e : Eucl P → Eucl P) = η := by
+      funext y
+      simp [e, η, sub_eq_add_neg]
+    have hK' : IsCompact (η ⁻¹' K) := by
+      rw [← he]
+      exact e.isCompact_preimage.2 hK
+    have hθ : (fun z => θ (x + r • z)) ∘ η = θ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← image_inter_preimage, hmp.integrableOn_image hemb, hθ, IntegrableOn,
+      Measure.restrict_smul]
+    exact Integrable.smul_measure (hT.integrableOn _ hK' (subset_univ _)) ENNReal.ofReal_ne_top
+  · have hξ : (fun z => ξ (x + r • z)) ∘ η = ξ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← hres.map_eq, hemb.aestronglyMeasurable_map_iff, hξ]
+    exact hT.aestronglyMeasurable.smul_measure c
+  · -- At `η(y)` the frame `τ` of `(M, θ, ξ)` at `y` still orients `(η(M), θ', ξ')`.
+    rw [← hres.map_eq, hemb.ae_map_iff]
+    filter_upwards [Measure.ae_smul_measure hT.orients c] with y hy
+    obtain ⟨τ, hτ, htan, hξy⟩ := hy
+    refine ⟨τ, hτ, Submission.ind_rs_weightedTangent_dilation P n M θ x y r _ hr htan, ?_⟩
+    show ξ (x + r • η y) = _ ∨ ξ (x + r • η y) = _
+    rw [hinv]
+    exact hξy
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
