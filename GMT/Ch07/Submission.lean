@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Mathlib.Analysis.Normed.Lp.SmoothApprox
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -548,6 +549,72 @@ theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid
   · rw [tendsto_iff_norm_sub_tendsto_zero]
     exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
       tendsto_one_div_add_atTop_nhds_zero_nat
+
+/-- **Derivatives of uniformly Lipschitz, uniformly convergent functions converge weakly against
+`L¹` fields.**  If `uₖ : ℝᵈ → ℝ` are `K`-Lipschitz and `uₖ → u` uniformly, then
+`∫ Duₖ[Φ] → ∫ Du[Φ]` for every integrable `Φ : ℝᵈ → ℝᵈ`.  The limit `u` is `K`-Lipschitz, so for
+`v = uₖ, u` and integrable `Θ` the field `Dv[Θ]` is integrable with `|∫ Dv[Θ]| ≤ K ∫ |Θ|`.  Given
+`ε > 0`, take a smooth compactly supported `Ψ` with `∫ |Φ - Ψ| ≤ ε/(4K + 1)` (density in `L¹`);
+then `|∫ Dv[Φ] - ∫ Dv[Ψ]| ≤ ε/4`, and `∫ Duₖ[Ψ] → ∫ Du[Ψ]` by
+`dor_lmbsf_pwl_fderiv_weak_smooth`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_weak_integrable : ∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Φ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → Integrable Φ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Φ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Φ y))) := by
+  intro d K us u Φ hus hU hΦ
+  -- the uniform limit `u` is `K`-Lipschitz
+  have hu : LipschitzWith K u := LipschitzWith.of_dist_le_mul fun x z =>
+    le_of_tendsto ((hU.tendsto_at x).dist (hU.tendsto_at z))
+      (Eventually.of_forall fun k => (hus k).dist_le_mul x z)
+  -- `‖Dv‖ ≤ K` for `K`-Lipschitz `v`, so `Dv[Θ]` is integrable and `|∫ Dv[Θ]| ≤ K ∫ |Θ|`
+  have hbound : ∀ v : Euclid d → ℝ, LipschitzWith K v → ∀ Θ : Euclid d → Euclid d,
+      Integrable Θ → Integrable (fun y => fderiv ℝ v y (Θ y)) ∧
+        ‖∫ y, fderiv ℝ v y (Θ y)‖ ≤ K * ∫ y, ‖Θ y‖ := by
+    intro v hv Θ hΘ
+    have hmeas : AEStronglyMeasurable (fun y => fderiv ℝ v y (Θ y)) volume :=
+      Continuous.comp_aestronglyMeasurable
+        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Euclid d) (F := ℝ)).continuous
+        ((measurable_fderiv ℝ v).aestronglyMeasurable.prodMk hΘ.aestronglyMeasurable)
+    have hle : ∀ y, ‖fderiv ℝ v y (Θ y)‖ ≤ K * ‖Θ y‖ := fun y =>
+      (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hv) (norm_nonneg _))
+    refine ⟨(hΘ.norm.const_mul K).mono' hmeas (Eventually.of_forall hle), ?_⟩
+    calc ‖∫ y, fderiv ℝ v y (Θ y)‖ ≤ ∫ y, (K : ℝ) * ‖Θ y‖ :=
+          norm_integral_le_of_norm_le (hΘ.norm.const_mul K) (Eventually.of_forall hle)
+      _ = K * ∫ y, ‖Θ y‖ := integral_const_mul _ _
+  refine Metric.tendsto_atTop.2 fun ε hε => ?_
+  -- a smooth compactly supported `Ψ` with `∫ |Φ - Ψ| ≤ η`, where `Kη ≤ ε/4`
+  set η : ℝ := ε / (4 * K + 1) with hη
+  have hηpos : 0 < η := div_pos hε (by positivity)
+  have hKη : (K : ℝ) * η ≤ ε / 4 := by
+    rw [hη, mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [K.2]
+  obtain ⟨Ψ, hΨc, hΨs, hΨε⟩ :=
+    (memLp_one_iff_integrable.2 hΦ).exist_eLpNorm_sub_le (p := 1) (by simp) le_rfl hηpos
+  have hΨi : Integrable Ψ := hΨs.continuous.integrable_of_hasCompactSupport hΨc
+  have hdiff : ∫ y, ‖(Φ - Ψ) y‖ ≤ η := by
+    rw [integral_norm_eq_lintegral_enorm (hΦ.sub hΨi).aestronglyMeasurable,
+      ← eLpNorm_one_eq_lintegral_enorm (hΦ.sub hΨi).aestronglyMeasurable]
+    exact ENNReal.toReal_le_of_le_ofReal hηpos.le hΨε
+  -- replacing `Φ` by `Ψ` moves `∫ Dv[Φ]` by at most `Kη ≤ ε/4`
+  have hclose : ∀ v : Euclid d → ℝ, LipschitzWith K v →
+      dist (∫ y, fderiv ℝ v y (Φ y)) (∫ y, fderiv ℝ v y (Ψ y)) ≤ ε / 4 := by
+    intro v hv
+    rw [dist_eq_norm, ← integral_sub (hbound v hv Φ hΦ).1 (hbound v hv Ψ hΨi).1]
+    calc ‖∫ y, (fderiv ℝ v y (Φ y) - fderiv ℝ v y (Ψ y))‖
+        = ‖∫ y, fderiv ℝ v y ((Φ - Ψ) y)‖ := by simp only [Pi.sub_apply, map_sub]
+      _ ≤ K * ∫ y, ‖(Φ - Ψ) y‖ := (hbound v hv (Φ - Ψ) (hΦ.sub hΨi)).2
+      _ ≤ K * η := mul_le_mul_of_nonneg_left hdiff K.2
+      _ ≤ ε / 4 := hKη
+  -- `∫ Duₖ[Ψ] → ∫ Du[Ψ]` for the `C¹` compactly supported field `Ψ`
+  have hconv := Submission.dor_lmbsf_pwl_fderiv_weak_smooth d K us u Ψ hus hU
+    (hΨs.of_le (by exact_mod_cast le_top)) hΨc
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1 hconv (ε / 2) (half_pos hε)
+  refine ⟨N, fun k hk => ?_⟩
+  have h1 := hclose (us k) (hus k)
+  have h2 : dist (∫ y, fderiv ℝ (us k) y (Ψ y)) (∫ y, fderiv ℝ u y (Ψ y)) < ε / 2 := hN k hk
+  have h3 := hclose u hu
+  rw [dist_comm] at h3
+  show dist (∫ y, fderiv ℝ (us k) y (Φ y)) (∫ y, fderiv ℝ u y (Φ y)) < ε
+  linarith [dist_triangle4 (∫ y, fderiv ℝ (us k) y (Φ y)) (∫ y, fderiv ℝ (us k) y (Ψ y))
+    (∫ y, fderiv ℝ u y (Ψ y)) (∫ y, fderiv ℝ u y (Φ y))]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
