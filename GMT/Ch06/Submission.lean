@@ -4650,6 +4650,85 @@ theorem Submission.slicing_im_coarea_chart_regular : ∀ (P m : ℕ) (Φ : Eucl 
   obtain ⟨hfw, -, hGw, hinw⟩ := hpt w (hSsub hw).2.1 (hSsub hw).2.2
   exact ⟨hfw, hGw, hinw⟩
 
+/-- Simon Ch. 3, (2.8)–(2.9) for a real-valued Lipschitz `f` on the carrier `M` of a rectifiable
+triple (`n = m + 1`): if `G` is a Borel tangential gradient of `f` on `M`, then for every Borel
+`g ≥ 0` the function `t ↦ ∫_{M ∩ f⁻¹{t}} g dH^m` is a.e.-measurable and
+`∫_ℝ ∫_{M ∩ f⁻¹{t}} g dH^m dt = ∫_M |G| g dHⁿ`.
+
+`M` is cut into disjoint Borel chart pieces `W i` (`slicing_im_coarea_pieces`) covering `M` up to
+an `Hⁿ`-null set `Z`. The co-area formula holds on the regular parts `W i ∩ {G ≠ 0}`
+(`slicing_im_coarea_chart_regular`). The slices of the critical parts `W i ∩ {G = 0}`
+(`slicing_im_coarea_chart_critical`) and of `Z` (`slicing_im_coarea_eilenberg`) are `H^m`-null
+for a.e. `t`, and `|G| g = 0` on the critical parts, so the regular parts glue to the
+statement on `M` (`slicing_im_coarea_glue`). -/
+theorem Submission.slicing_im_coarea :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1))
+      (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U →
+      IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → Measurable G →
+      (∀ x, ‖G x‖ ≤ L) →
+      (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q →
+          G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) →
+      ∀ g : Eucl P → ℝ≥0∞, Measurable g →
+        AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)))
+            (volume : Measure ℝ) ∧
+          ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)))
+              ∂(volume : Measure ℝ) =
+            ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P)) := by
+  intro P m U M θ ξ f L G hU hT hf hG _hGL hTG g hg
+  have hfm : Measurable f := hf.continuous.measurable
+  have hG0 : MeasurableSet {x : Eucl P | G x = 0} := hG (measurableSet_singleton 0)
+  -- Steps 1–4: disjoint Borel chart pieces `W i ⊆ M` with `Hⁿ(M \ ⋃ i, W i) = 0`, on which
+  -- `f ∘ Φ i = h i` and `G` represents `D(h i)` through `DΦ i`.
+  obtain ⟨Φ, Ω, h, W, hΩ, hΦ, hΦL, hΦc, hh, hWm, hWM, hWΦ, hWd, hZ, hW⟩ :=
+    Submission.slicing_im_coarea_pieces P m U M θ ξ f L G hU hT hf hTG
+  -- Steps 5–7: glue the regular parts `W i ∩ {G ≠ 0}`; the rest of `M` is `Z ∪ ⋃ i, W i ∩ {G = 0}`.
+  refine Submission.slicing_im_coarea_glue (Eucl P) (μHE[m + 1] : Measure (Eucl P))
+    (μHE[m] : Measure (Eucl P)) f (fun x => ‖G x‖ₑ) g M (fun i => W i ∩ {x | G x ≠ 0}) hfm
+    (fun i => (hWm i).inter hG0.compl) (fun i => inter_subset_left.trans (hWM i))
+    (fun i j hij => Disjoint.mono inter_subset_left inter_subset_left (hWd hij)) ?_ ?_ ?_
+  · -- `|G| g` vanishes off `Z` on the remainder, since there `G = 0`.
+    have hmeas : MeasurableSet {x : Eucl P | ¬ (‖G x‖ₑ * g x = 0)} :=
+      ((hG.enorm.mul hg) (measurableSet_singleton 0)).compl
+    rw [ae_iff, Measure.restrict_apply hmeas]
+    refine measure_mono_null ?_ hZ
+    rintro x ⟨hx0, hxM, hxW'⟩
+    refine ⟨hxM, fun hxW => ?_⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.mp hxW
+    exact hxW' (mem_iUnion.mpr ⟨i, hi, fun hGx => hx0 (by rw [hGx, enorm_zero, zero_mul])⟩)
+  · -- Eilenberg's inequality on the `Hⁿ`-null set `Z = M \ ⋃ i, W i`.
+    obtain ⟨C, hC⟩ := Submission.slicing_im_coarea_eilenberg m
+    obtain ⟨φ, hφm, hφ, hφi⟩ := hC P f L (M \ ⋃ i, W i) hf.lipschitzOnWith
+    have hφ0 : φ =ᵐ[volume] 0 := by
+      rw [← lintegral_eq_zero_iff hφm]
+      exact nonpos_iff_eq_zero.mp (hφi.trans_eq (by rw [hZ, mul_zero]))
+    -- On the critical parts `D(h i) = 0`, because `⟪0, DΦ i w u⟫ = D(h i) w u`.
+    have hcrit : ∀ᵐ t ∂(volume : Measure ℝ), ∀ i,
+        (μHE[m] : Measure (Eucl P)) ((W i ∩ {x | G x = 0}) ∩ f ⁻¹' {t}) = 0 :=
+      ae_all_iff.mpr fun i =>
+        Submission.slicing_im_coarea_chart_critical P m (Φ i) (Ω i) (h i) f
+          (W i ∩ {x | G x = 0}) (hΩ i) (hΦ i) (hΦL i) (hΦc i) (hh i) ((hWm i).inter hG0)
+          (inter_subset_left.trans (hWΦ i)) fun w hw hwW =>
+            ⟨(hW i w hw hwW.1).1, ContinuousLinearMap.ext fun u => by
+              rw [zero_apply, ← (hW i w hw hwW.1).2.2 u,
+                show G (Φ i w) = 0 from hwW.2, inner_zero_left]⟩
+    filter_upwards [hφ0, hcrit] with t ht hct
+    have hZt : (μHE[m] : Measure (Eucl P)) ((M \ ⋃ i, W i) ∩ f ⁻¹' {t}) = 0 :=
+      nonpos_iff_eq_zero.mp ((hφ t).trans_eq ht)
+    refine measure_mono_null ?_ (measure_union_null hZt (measure_iUnion_null hct))
+    rintro x ⟨⟨hxM, hxW⟩, hxt⟩
+    by_cases hx : x ∈ ⋃ i, W i
+    · obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+      refine Or.inr (mem_iUnion.mpr ⟨i, ⟨hi, ?_⟩, hxt⟩)
+      by_contra hGx
+      exact hxW (mem_iUnion.mpr ⟨i, hi, hGx⟩)
+    · exact Or.inl ⟨⟨hxM, hx⟩, hxt⟩
+  · -- Step 6: the co-area formula on every regular part.
+    exact fun i => Submission.slicing_im_coarea_chart_regular P m (Φ i) (Ω i) (h i) f G
+      (W i ∩ {x | G x ≠ 0}) (hΩ i) (hΦ i) (hΦL i) (hΦc i) (hh i) hfm hG
+      ((hWm i).inter hG0.compl) (inter_subset_left.trans (hWΦ i))
+      (fun w hw hwW => ⟨(hW i w hw hwW.1).1, hwW.2, (hW i w hw hwW.1).2⟩) g hg
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
