@@ -2628,6 +2628,79 @@ theorem Submission.codim1_ovr_cone_locally_finite_measure : ∀ (P m : ℕ) (M :
   exact ne_top_of_le_ne_top (h6b _ (lt_of_lt_of_le one_pos (le_max_right _ _)))
     (measure_mono (inter_subset_inter_right _ hKR))
 
+/-- **Simon Ch. 6, 3.1**: an integer multiplicity `m`-current, `m ≥ 1`, does not charge the
+origin.  If `ωₖ(x) = 0` for `|x| ≥ rₖ`, `rₖ → 0`, and `|ωₖ| ≤ c`, then `C(ωₖ) → 0`.  Writing
+`C(ωₖ) = ∫_M θ ⟨ωₖ, ξ⟩ dHᵐ`, the integrands are bounded by `c θ 1_{B(0, R₀)}` (`|ξ(α)| ≤ |α|`)
+and vanish eventually off `0`, and `Hᵐ({0}) = 0`; dominated convergence applies. -/
+theorem Submission.codim1_ovr_imrep_vanish_at_vertex : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) m) (r : ℕ → ℝ) (c : ℝ), 1 ≤ m → IsIntegerMultiplicity C → Tendsto r atTop (𝓝 0) → (∀ (k : ℕ) (x : Euclid P), r k ≤ ‖x‖ → (ωs k : DifferentialForm (Euclid P) m) x = 0) → (∀ (k : ℕ) (x : Euclid P), covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) m) x) ≤ c) → Tendsto (fun k => C (ωs k)) atTop (𝓝 0) := by
+  intro P m C ωs r c hm hIM hr hsupp hbd
+  obtain ⟨R, hR⟩ := hIM
+  obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P m
+  -- `rₖ ≤ R₀` for all `k`, so every `ωₖ` vanishes off `closedBall 0 R₀`
+  obtain ⟨R₀, hR₀⟩ : ∃ R₀ : ℝ, ∀ k, r k ≤ R₀ := by
+    obtain ⟨b, hb⟩ := hr.bddAbove_range
+    exact ⟨b, fun k => hb ⟨k, rfl⟩⟩
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have hK : IsCompact (closedBall (0 : Euclid P) R₀) := isCompact_closedBall 0 R₀
+  have hKm : MeasurableSet (closedBall (0 : Euclid P) R₀) := measurableSet_closedBall
+  -- `|ξ(x)(γ)| ≤ |γ|` for `Hᵐ`-a.e. `x ∈ M`
+  have hξ : ∀ᵐ x ∂μHE[m].restrict R.carrier, ∀ γ : Covector (Euclid P) m,
+      |R.orient x γ| ≤ covectorEuclideanNorm γ := by
+    filter_upwards [R.orients] with x ⟨Q, _, hQ⟩ γ
+    exact (hL (R.orient x) Q hQ).1 γ
+  -- `Hᵐ({0}) = 0` as `m ≥ 1`
+  have h0null : μHE[m] ({0} : Set (Euclid P)) = 0 := by
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply]
+    have := Measure.nullSingletonClass_hausdorff (Euclid P) (d := (m : ℝ))
+      (by exact_mod_cast hm)
+    simp
+  have hrep : ∀ k, C (ωs k) = ∫ x in R.carrier, (R.mult x : ℝ) *
+      R.orient x ((ωs k : DifferentialForm (Euclid P) m) x) ∂μHE[m] := fun k => hR (ωs k)
+  simp_rw [hrep]
+  have hlim0 : (∫ x in R.carrier, (0 : ℝ) ∂μHE[m]) = 0 := integral_zero _ _
+  rw [← hlim0]
+  refine tendsto_integral_of_dominated_convergence
+    ((closedBall (0 : Euclid P) R₀).indicator fun x => c * (R.mult x : ℝ)) ?_ ?_ ?_ ?_
+  · -- measurability: `θ`, `ξ` and `ωₖ` are, and `(η, α) ↦ η(α)` is continuous
+    intro k
+    refine hθm.aestronglyMeasurable.mul ?_
+    have hev : Continuous fun p : MultiVector P m × Covector (Euclid P) m => p.1 p.2 :=
+      isBoundedBilinearMap_apply.continuous
+    exact Continuous.comp_aestronglyMeasurable₂
+      (g := fun (L : MultiVector P m) (v : Covector (Euclid P) m) => L v) hev
+      R.aestronglyMeasurable_orient (ContDiff.continuous (ωs k).property.1.1).aestronglyMeasurable
+  · -- `c θ 1_{B(0, R₀)}` is integrable on `M` since `θ` is locally integrable
+    refine IntegrableOn.integrable_indicator ?_ hKm
+    refine Integrable.const_mul ?_ _
+    show Integrable _ ((μHE[m].restrict R.carrier).restrict (closedBall (0 : Euclid P) R₀))
+    rw [Measure.restrict_restrict hKm, inter_comm]
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    show ∫⁻ x in R.carrier ∩ closedBall (0 : Euclid P) R₀, ‖(R.mult x : ℝ)‖ₑ ∂μHE[m] < ∞
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult _ hK (subset_univ _))
+  · -- domination `|θ ξ(ωₖ)| ≤ c θ 1_{B(0, R₀)}`
+    intro k
+    filter_upwards [hξ] with x hx
+    by_cases hxK : x ∈ closedBall (0 : Euclid P) R₀
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs, mul_comm c]
+      exact mul_le_mul_of_nonneg_left ((hx _).trans (hbd k x)) (Nat.cast_nonneg _)
+    · rw [indicator_of_notMem hxK]
+      have hxr : r k ≤ ‖x‖ := by
+        rw [mem_closedBall, dist_zero_right, not_le] at hxK
+        exact (hR₀ k).trans hxK.le
+      rw [hsupp k x hxr, map_zero, mul_zero, norm_zero]
+  · -- at `x ≠ 0`, `rₖ < |x|` eventually, so the integrand is eventually `0`
+    have hae : ∀ᵐ x ∂μHE[m].restrict R.carrier, x ≠ 0 := by
+      apply ae_restrict_of_ae
+      rw [ae_iff]
+      simpa using h0null
+    filter_upwards [hae] with x hx
+    have hxpos : 0 < ‖x‖ := norm_pos_iff.2 hx
+    have hev : ∀ᶠ k in atTop, r k < ‖x‖ := hr.eventually (gt_mem_nhds hxpos)
+    apply tendsto_const_nhds.congr'
+    filter_upwards [hev] with k hk
+    rw [hsupp k x hk.le, map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
