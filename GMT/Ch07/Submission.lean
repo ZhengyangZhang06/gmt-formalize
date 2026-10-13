@@ -451,6 +451,17 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The chosen approximate tangent plane** (Simon Ch. 3, Remark 1.5(1), used for 7.1.2).  If `Q`
+is an approximate tangent space of `M` at `x` (Ch. 3, 1.4), then `approxTangentPlane n M x = Q`:
+`Q` witnesses the existential in its definition, so it returns the chosen plane, which is an
+approximate tangent space of `M` at `x` and hence equals `Q` by uniqueness. -/
+theorem Submission.dpf_itt_approxTangentPlane_eq : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n M x Q → approxTangentPlane n M x = Q := by
+  intro P n M x Q hQ
+  have h : ∃ Q', HasApproximateTangentSpaceAt n M x Q' := ⟨Q, hQ⟩
+  unfold approxTangentPlane
+  rw [dite_eq_left h]
+  exact h.choose_spec.unique hQ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
