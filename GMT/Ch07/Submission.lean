@@ -658,6 +658,7 @@ theorem Submission.codim1_rdo_dg_bvc_l1_le_of_tests : ∀ (n : ℕ) (f : Euclid 
         field_simp
   -- Step 7: `∫_{B_R} |f| = ∫ f g ≤ ∫ f φ + M S < A + η`; `η > 0` is arbitrary
   rw [hrepr]
+  linarith
 /-- **Translation against a `C¹` test function** (step 1 of the BV compactness argument, for a
 single translation vector `w`): if `∫_F div g ≤ C` for every `C¹` field `g` with `|g| ≤ 1` and
 compact support in `B_{R+|w|}(0)`, then `∫_F (φ(z) − φ(z + w)) dz ≤ |w| C` for every `C¹` test
