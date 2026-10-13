@@ -1,0 +1,28 @@
+{
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1111",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "64c17f9e467c16ab7aa9a5c79a9a60fc772b4832",
+  "integrated_commit": "",
+  "proof_base_commit": "1938ad3eb6c8452d5f94e253177767af4224ff8a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+    "root.compactness_mass_bounds-a1.covector_expansion-a1",
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+    "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1",
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_unique_on_open-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+    "root.boundary_rectifiability-a1.tangent_locality-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.pushforward_measurable-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1"
+  ]
+}
