@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Approximate tangent planes of `M` on a chart piece** (Simon Ch. 3, Remark 1.5(2) and the
+proof of Theorem 1.6 "⇒"; Step 7 of `dor_lmbsf_lipschitz_chart_pieces`).  Assume the locality
+principle (TL): for Borel `A ⊆ B ⊆ U` with `Hⁿ(B ∩ K) < ∞` for compact `K ⊆ U`, at `Hⁿ`-a.e.
+`x ∈ A` the sets `B` and `A` have the same approximate tangent spaces.  Let `ψ` be `C¹` on the
+convex compact `C'` with `ψ(C') ⊆ U`, let `C ⊆ int C'` be compact, and let `ψ(C')` have
+approximate tangent space `Dψ(y)(ℝᵐ)` at `ψ(y)` for `y ∈ int C'`.  Then at `Hᵐ`-a.e.
+`x ∈ M ∩ ψ(C)`, `M` has approximate tangent space `Dψ(y)(ℝᵐ)` for every `y ∈ C` with `ψ(y) = x`.
+`S = ψ(C')` is compact, and `Hᵐ(S) ≤ Λᵐ Lᵐ(C') < ∞` since `ψ` is Lipschitz on `C'`; apply (TL)
+to `M ∩ ψ(C) ⊆ S` and to `M ∩ ψ(C) ⊆ M`. -/
+theorem Submission.dor_lmbsf_cp_chart_tangent_ae : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P m : ℕ) (U M : Set (Euclid P)) (C C' : Set (Euclid m)) (ψ : Euclid m → Euclid P), IsOpen U → MeasurableSet M → M ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → ContDiffOn ℝ 1 ψ C' → ψ '' C' ⊆ U → IsCompact C → IsCompact C' → Convex ℝ C' → C ⊆ interior C' → (∀ y ∈ interior C', HasApproximateTangentSpaceAt m (ψ '' C') (ψ y) (LinearMap.range (fderiv ℝ ψ y : Euclid m →ₗ[ℝ] Euclid P))) → ∀ᵐ x ∂(μHE[m].restrict (M ∩ ψ '' C)), ∀ y ∈ C, ψ y = x → HasApproximateTangentSpaceAt m M x (LinearMap.range (fderiv ℝ ψ y : Euclid m →ₗ[ℝ] Euclid P)) := by
+  intro TL P m U M C C' ψ hU hM hMU hfin hψ hψU hC hC' hconv hCC' hIT
+  have hψC' : ContinuousOn ψ C' := hψ.continuousOn
+  have hCsub : C ⊆ C' := hCC'.trans interior_subset
+  -- `S = ψ(C')` and `ψ(C)` are compact
+  have hS : IsCompact (ψ '' C') := hC'.image_of_continuousOn hψC'
+  have hSC : IsCompact (ψ '' C) := hC.image_of_continuousOn (hψC'.mono hCsub)
+  -- `Hᵐ(S) ≤ Λᵐ Hᵐ(C') = Λᵐ Lᵐ(C') < ∞`, `ψ` being `Λ`-Lipschitz on the convex compact `C'`
+  obtain ⟨Λ, hΛ⟩ := hψ.exists_lipschitzOnWith one_ne_zero hconv hC'
+  have hSfin : μHE[m] (ψ '' C') ≠ ∞ := by
+    refine ne_of_lt (lt_of_le_of_lt
+      (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m hΛ) ?_)
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hC'.measure_lt_top
+  -- (TL) for `A = M ∩ ψ(C) ⊆ S` and for `A ⊆ M`
+  have hA : MeasurableSet (M ∩ ψ '' C) := hM.inter hSC.isClosed.measurableSet
+  have h1 := TL P m U (M ∩ ψ '' C) (ψ '' C') hU hA hS.isClosed.measurableSet
+    (fun x hx => image_mono hCsub hx.2) hψU
+    (fun K _ _ => ne_top_of_le_ne_top hSfin (measure_mono inter_subset_left))
+  have h2 := TL P m U (M ∩ ψ '' C) M hU hA hM inter_subset_left hMU hfin
+  -- at `x = ψ y`, transfer the tangent plane of `S` to `A`, then to `M`
+  filter_upwards [h1, h2] with x hx1 hx2 y hy hyx
+  have hS' := hIT y (hCC' hy)
+  rw [hyx] at hS'
+  exact (hx2 _).2 ((hx1 _).1 hS')
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
