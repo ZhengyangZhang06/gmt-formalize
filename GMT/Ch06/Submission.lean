@@ -686,11 +686,11 @@ theorem Submission.iwl_cr_hp_piece_product :
       intro x hx
       obtain ⟨n, hn⟩ := (Metric.denseRange_iff.mp hD) (fderiv ℝ f x) (ρ0 / 2) (by positivity)
       exact mem_iUnion.mpr ⟨n, hx, by rw [mem_preimage, mem_ball]; exact hn⟩
-    set P' : ℕ → Set (Eucl k) := disjointed P with hP'def
+    set P' : ℕ → Set (Eucl k) := disjointed P with hP'eq
     have hP'm : ∀ n, MeasurableSet (P' n) := MeasurableSet.disjointed hPm
     have hP'P : ∀ n, P' n ⊆ P n := disjointed_subset P
     have hP'S : ∀ n, P' n ⊆ S := fun n => (hP'P n).trans inter_subset_left
-    have hP'cov : S ⊆ ⋃ n, P' n := by rw [hP'def, iUnion_disjointed]; exact hPcov
+    have hP'cov : S ⊆ ⋃ n, P' n := by rw [hP'eq, iUnion_disjointed]; exact hPcov
     have hP'disj : Pairwise (Function.onFun Disjoint P') := disjoint_disjointed P
     -- the scale `ρ A` attached to each linear map
     have hρex : ∀ A : Eucl k →L[ℝ] Eucl Q, ∃ ρ : ℝ, 0 < ρ ∧
