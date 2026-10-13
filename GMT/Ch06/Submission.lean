@@ -419,6 +419,30 @@ theorem Submission.isoperimetric_apply_eq_zero_of_disjoint_support :
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => hη i
 
+/-- Locality of currents: test forms that agree on an open neighbourhood `N` of `spt T` have the
+same value, since `ψ - φ` vanishes on `N`, so its support lies in the closed set `Nᶜ`, which misses
+`spt T`. -/
+theorem Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ψ φ : TestFormOn U n)
+      (N : Set (Eucl P)), IsOpen N → T.support ⊆ N →
+      (∀ x ∈ N, (ψ : DifferentialForm (Eucl P) n) x = (φ : DifferentialForm (Eucl P) n) x) →
+      T ψ = T φ := by
+  intro P n U T ψ φ N hN hTN hψφ
+  -- `ψ - φ` vanishes on the open set `N`, so `tsupport (ψ - φ) ⊆ Nᶜ`.
+  have hsupp : tsupport ((ψ - φ : TestFormOn U n) : DifferentialForm (Eucl P) n) ⊆ Nᶜ := by
+    refine closure_minimal ?_ hN.isClosed_compl
+    intro x hx hxN
+    apply hx
+    rw [Submodule.coe_sub, Pi.sub_apply, hψφ x hxN, sub_self]
+  -- `Nᶜ` misses `spt T ⊆ N`, so `T (ψ - φ) = 0`.
+  have hzero : T (ψ - φ) = 0 :=
+    Submission.isoperimetric_apply_eq_zero_of_disjoint_support P n U T (ψ - φ)
+      (Set.disjoint_of_subset_left hsupp (Set.disjoint_compl_left_iff_subset.2 hTN))
+  have hsub : T.toCurrent (ψ - φ) = T.toCurrent ψ - T.toCurrent φ := map_sub T.toCurrent ψ φ
+  change T.toCurrent ψ = T.toCurrent φ
+  rw [← sub_eq_zero, ← hsub]
+  exact hzero
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
