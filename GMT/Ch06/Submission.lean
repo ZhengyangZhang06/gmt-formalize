@@ -1785,6 +1785,133 @@ theorem Submission.deformation_ipl_mwc_minor_weak_star :
     rw [hlim]
     exact (h1.add (hih.const_mul _)).congr fun j => (hsplit j).symm
 
+/-- Weak continuity of the Jacobian minors `M_{a,b}(u) = det (⟨e_{a t}, Du (e_{b s})⟩)_{t,s}`
+against a coefficient `ψ (g ∘ u)`, `ψ ∈ L¹(Ω)`, `g ∈ C_c(ℝ^Q)` (step 2 of the proof of
+`minor_weak_continuity`).  With `η = ψ (g ∘ u₀) ∈ L¹(Ω)`,
+`∫_Ω ψ (g ∘ u_j) M_{a,b}(u_j) = ∫_Ω ψ (g ∘ u_j - g ∘ u₀) M_{a,b}(u_j) + ∫_Ω η M_{a,b}(u_j)`; the
+first term tends to `0` because `|M_{a,b}(u_j)| ≤ r! C^r` on `Ω` and `g ∘ u_j → g ∘ u₀`
+uniformly on `Ω`, the second tends to `∫_Ω η M_{a,b}(u₀)` by `minor_weak_star`. -/
+theorem Submission.deformation_ipl_mwc_coeff_minor_continuity :
+    ∀ (k Q : ℕ) (Ω : Set (Eucl k)) (ψ : Eucl k → ℝ) (g : Eucl Q → ℝ) (C : ℝ≥0)
+      (u : ℕ → Eucl k → Eucl Q) (u₀ : Eucl k → Eucl Q) (r : ℕ) (a : Fin r → Fin Q)
+      (b : Fin r → Fin k), IsOpen Ω → IntegrableOn ψ Ω (volume : Measure (Eucl k)) →
+      Continuous g → HasCompactSupport g → (∀ j, LipschitzOnWith C (u j) Ω) →
+      LipschitzOnWith C u₀ Ω → TendstoUniformlyOn u u₀ atTop Ω →
+      Tendsto (fun j => ∫ w in Ω, ψ w * g (u j w) * Matrix.det (Matrix.of fun t s : Fin r =>
+          EuclideanSpace.proj (a t) (fderiv ℝ (u j) w (EuclideanSpace.single (b s) 1)))
+            ∂(volume : Measure (Eucl k))) atTop
+        (𝓝 (∫ w in Ω, ψ w * g (u₀ w) * Matrix.det (Matrix.of fun t s : Fin r =>
+          EuclideanSpace.proj (a t) (fderiv ℝ u₀ w (EuclideanSpace.single (b s) 1)))
+            ∂(volume : Measure (Eucl k)))) := by
+  intro k Q Ω ψ g C u u₀ r a b hΩ hψ hg hgc hu hu₀ hconv
+  -- `M v w = M_{a,b}(v)(w)`, the `(a, b)` minor of `Dv(w)`.
+  let M : (Eucl k → Eucl Q) → Eucl k → ℝ := fun v w => Matrix.det (Matrix.of fun t s : Fin r =>
+    EuclideanSpace.proj (a t) (fderiv ℝ v w (EuclideanSpace.single (b s) 1)))
+  /- Step 1: bounds and measurability.  Leibniz formula: `|det A| ≤ r! c^r` if all
+  `|A t s| ≤ c` (`Matrix.det_le` is not imported). -/
+  have abs_det_le : ∀ (A : Matrix (Fin r) (Fin r) ℝ) (c : ℝ), (∀ t s, |A t s| ≤ c) →
+      |A.det| ≤ (Nat.factorial r : ℝ) * c ^ r := by
+    intro A c hA
+    rw [Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin r), Equiv.Perm.sign σ • ∏ i, A (σ i) i|
+        ≤ ∑ σ : Equiv.Perm (Fin r), |Equiv.Perm.sign σ • ∏ i, A (σ i) i| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin r), c ^ r := by
+          gcongr with σ
+          have hσ : |Equiv.Perm.sign σ • ∏ i, A (σ i) i| = |∏ i, A (σ i) i| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+          rw [hσ, Finset.abs_prod]
+          calc ∏ i, |A (σ i) i| ≤ ∏ _i : Fin r, c := by
+                gcongr with i
+                exact hA _ _
+            _ = c ^ r := by simp
+      _ = (Nat.factorial r : ℝ) * c ^ r := by simp [Fintype.card_perm]
+  -- On `Ω`, `‖Dv‖ ≤ C` for `v` `C`-Lipschitz on `Ω`, so every entry of the minor is `≤ C`.
+  obtain ⟨B, hB0, hMb⟩ : ∃ B : ℝ, 0 ≤ B ∧
+      ∀ v, LipschitzOnWith C v Ω → ∀ w ∈ Ω, |M v w| ≤ B := by
+    refine ⟨(Nat.factorial r : ℝ) * (C : ℝ) ^ r, by positivity, fun v hv w hw => ?_⟩
+    refine abs_det_le _ C fun t s => ?_
+    have hD : ‖fderiv ℝ v w‖ ≤ C := norm_fderiv_le_of_lipschitzOn ℝ (hΩ.mem_nhds hw) hv
+    calc |EuclideanSpace.proj (a t) (fderiv ℝ v w (EuclideanSpace.single (b s) 1))|
+        = ‖fderiv ℝ v w (EuclideanSpace.single (b s) 1) (a t)‖ := by simp [Real.norm_eq_abs]
+      _ ≤ ‖fderiv ℝ v w (EuclideanSpace.single (b s) 1)‖ := PiLp.norm_apply_le _ _
+      _ ≤ ‖fderiv ℝ v w‖ * ‖EuclideanSpace.single (b s) (1 : ℝ)‖ := (fderiv ℝ v w).le_opNorm _
+      _ ≤ C := by simpa using hD
+  have hMm : ∀ v, Measurable (M v) := by
+    intro v
+    have hdet : Continuous fun A : Fin r → Fin r → ℝ => (Matrix.of A).det :=
+      Continuous.matrix_det continuous_id
+    have hent : ∀ t s : Fin r, Measurable fun w =>
+        EuclideanSpace.proj (a t) (fderiv ℝ v w (EuclideanSpace.single (b s) 1)) := fun t s =>
+      (EuclideanSpace.proj (a t)).continuous.measurable.comp (measurable_fderiv_apply_const ℝ v _)
+    exact hdet.measurable.comp (measurable_pi_iff.2 fun t => measurable_pi_iff.2 fun s => hent t s)
+  have hMbd : ∀ j, ∀ᵐ w ∂(volume : Measure (Eucl k)).restrict Ω, ‖M (u j) w‖ ≤ B := fun j =>
+    (ae_restrict_iff' hΩ.measurableSet).2 (ae_of_all _ fun w hw => by
+      simpa [Real.norm_eq_abs] using hMb _ (hu j) w hw)
+  obtain ⟨G, hG⟩ := hg.bounded_above_of_compact_support hgc
+  have hgm : ∀ v, LipschitzOnWith C v Ω →
+      AEStronglyMeasurable (fun w => g (v w)) ((volume : Measure (Eucl k)).restrict Ω) :=
+    fun v hv => (hg.comp_continuousOn hv.continuousOn).aestronglyMeasurable hΩ.measurableSet
+  -- Step 2: integrability.
+  let η : Eucl k → ℝ := fun w => ψ w * g (u₀ w)
+  have hη : IntegrableOn η Ω (volume : Measure (Eucl k)) :=
+    Integrable.mul_bdd hψ (hgm u₀ hu₀) (ae_of_all _ fun w => hG _)
+  have hint₁ : ∀ j, IntegrableOn (fun w => ψ w * (g (u j w) - g (u₀ w)) * M (u j) w) Ω
+      (volume : Measure (Eucl k)) := fun j =>
+    Integrable.mul_bdd (Integrable.mul_bdd (c := G + G) hψ ((hgm _ (hu j)).sub (hgm _ hu₀))
+      (ae_of_all _ fun w => (norm_sub_le _ _).trans (add_le_add (hG _) (hG _))))
+      (hMm _).aestronglyMeasurable (hMbd j)
+  have hint₂ : ∀ j, IntegrableOn (fun w => η w * M (u j) w) Ω (volume : Measure (Eucl k)) :=
+    fun j => Integrable.mul_bdd hη (hMm _).aestronglyMeasurable (hMbd j)
+  -- Step 3: `∫_Ω ψ (g ∘ u_j) M_j = D₁(j) + ∫_Ω η M_j`.
+  have hsplit : ∀ j, ∫ w in Ω, ψ w * g (u j w) * M (u j) w ∂(volume : Measure (Eucl k)) =
+      (∫ w in Ω, ψ w * (g (u j w) - g (u₀ w)) * M (u j) w ∂(volume : Measure (Eucl k))) +
+        ∫ w in Ω, η w * M (u j) w ∂(volume : Measure (Eucl k)) := by
+    intro j
+    rw [← integral_add (hint₁ j) (hint₂ j)]
+    congr 1
+    funext w
+    simp only [η]
+    ring
+  -- Step 4: `D₁(j) → 0`, as `g ∘ u_j → g ∘ u₀` uniformly on `Ω` and `|M_j| ≤ B` there.
+  have hunif : TendstoUniformlyOn (fun j w => g (u j w)) (fun w => g (u₀ w)) atTop Ω :=
+    (hgc.uniformContinuous_of_continuous hg).comp_tendstoUniformlyOn hconv
+  obtain ⟨I, hI0, hI⟩ : ∃ I : ℝ, 0 ≤ I ∧ ∫ w in Ω, |ψ w| ∂(volume : Measure (Eucl k)) = I :=
+    ⟨_, integral_nonneg fun w => abs_nonneg _, rfl⟩
+  have hD₁ : Tendsto (fun j => ∫ w in Ω, ψ w * (g (u j w) - g (u₀ w)) * M (u j) w
+      ∂(volume : Measure (Eucl k))) atTop (𝓝 0) := by
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    have hBI : 0 < B * I + 1 := by positivity
+    obtain ⟨δ, hδ0, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧ δ * (B * I + 1) = ε :=
+      ⟨ε / (B * I + 1), div_pos hε hBI, div_mul_cancel₀ ε hBI.ne'⟩
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (Metric.tendstoUniformlyOn_iff.1 hunif δ hδ0)
+    refine ⟨N, fun j hj => ?_⟩
+    have hbound : ∀ᵐ w ∂(volume : Measure (Eucl k)).restrict Ω,
+        ‖ψ w * (g (u j w) - g (u₀ w)) * M (u j) w‖ ≤ δ * B * |ψ w| := by
+      refine (ae_restrict_iff' hΩ.measurableSet).2 (ae_of_all _ fun w hw => ?_)
+      have e₁ : |g (u j w) - g (u₀ w)| ≤ δ := by
+        rw [← Real.dist_eq, dist_comm]
+        exact (hN j hj w hw).le
+      have e₂ := hMb _ (hu j) w hw
+      rw [Real.norm_eq_abs, abs_mul, abs_mul]
+      calc |ψ w| * |g (u j w) - g (u₀ w)| * |M (u j) w| ≤ |ψ w| * δ * B := by gcongr
+        _ = δ * B * |ψ w| := by ring
+    rw [dist_zero_right]
+    calc ‖∫ w in Ω, ψ w * (g (u j w) - g (u₀ w)) * M (u j) w ∂(volume : Measure (Eucl k))‖
+        ≤ ∫ w in Ω, δ * B * |ψ w| ∂(volume : Measure (Eucl k)) :=
+          norm_integral_le_of_norm_le (hψ.abs.const_mul _) hbound
+      _ = δ * (B * I) := by rw [integral_const_mul, hI]; ring
+      _ < δ * (B * I + 1) := mul_lt_mul_of_pos_left (lt_add_one _) hδ0
+      _ = ε := hδε
+  -- Step 5: the sibling `minor_weak_star` tested against `η ∈ L¹(Ω)`.
+  have hη₂ :=
+    Submission.deformation_ipl_mwc_minor_weak_star k Q Ω C u u₀ hΩ hu hu₀ hconv r a b η hη
+  -- Step 6: conclusion.
+  have hlim := hD₁.add hη₂
+  rw [zero_add] at hlim
+  exact hlim.congr fun j => (hsplit j).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
