@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "628d2684680d6726449e47e476c986d78ef78a76455e91cef4839ecaee5294bd",
+  "git_delta": {
+    "base_commit": "dd25541de271cfdc4595e994cae7753e92841c6f",
+    "candidate_commit": "8cbba3e92c374fb4773517c8a983f11834ea4f45",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lr_left_inverse_projection",
+    "diff_sha256": "ef00bc2b9b2540456afb858f5073a3ee94a538d467fec3ad8049d22a3000eafe",
+    "source_sha256": "ca13a123e09d830a16ea0f7bb314b604d230b000d819465d7ba6ffb934d4a961",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lr_left_inverse_projection",
+      "statement": "∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ A : Euclid P →L[ℝ] Euclid d, A.comp L = ContinuousLinearMap.id ℝ (Euclid d) ∧ ‖L.comp A‖ ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
