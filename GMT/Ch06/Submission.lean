@@ -704,20 +704,6 @@ theorem Submission.iwl_cr_ce_cutoff_radial_operator : ∀ (P m : ℕ) (r : ℝ),
     ext v
     rw [Pi.add_apply, ContinuousAlternatingMap.add_apply, hψformula, hψformula, hψformula,
       ← intervalIntegral.integral_add (hint ω x _) (hint ω' x _)]
-/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
-(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
-theorem Submission.cmb_abs_apply_le_of_massOn_le :
-    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
-      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
-      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
-      |T ω| ≤ B * C := by
-  intro P n U W T ω B C hB hM hW hC
-  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
-  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
-      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
-    intro t α
-    unfold covectorEuclideanNorm
-    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
     congr 1
     funext t
     simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add]
@@ -800,19 +786,6 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
       linarith
     change (ζ x • ψ ω x) v = _
     rw [ζ.one_of_mem_closedBall hx', one_smul, hψformula]
-  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  have hB1 : 0 < B + 1 := by linarith
-  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
-  have hBδ : B * (ε / (B + 1)) ≤ ε := by
-    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
-          mul_le_mul_of_nonneg_right (by linarith) hδ.le
-      _ = ε := by field_simp
-  have := key (C + ε / (B + 1)) (by linarith)
-  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
-    _ = B * C + B * (ε / (B + 1)) := by ring
-    _ ≤ B * C + ε := by linarith
-
 /-- **Radial coefficient bound** (for the cone mass estimate, Simon Ch. 6, 2.27 and 2.30,
 pp. 140–141, in the proof of 8.2, p. 177).  If `|ω(y)| ≤ 1` for all `y` and
 `β(v) = ∫₀¹ tᵐ ω(tx)(x, v) dt` for all `v`, then `|β| ≤ P^{2m+1} |x|`, `|·|` the Euclidean
