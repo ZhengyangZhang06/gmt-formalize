@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1.field_regularity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1",
+  "depth": 6,
+  "title": "The zero extension of the vector field of a pulled-back n-form is C¹ with compact support in D",
+  "statement": "Let P, n ∈ ℕ, let D ⊆ ℝ^{n+1} be open, let G : ℝ^{n+1} → ℝ^P be C² on D, and let ω : ℝ^P → Λ^n(ℝ^P) be a C^∞ differential n-form (values: continuous alternating n-linear forms on ℝ^P). Assume C := D ∩ G^{-1}(tsupport ω) is compact.\n\nLet e_0, …, e_n be the standard basis of ℝ^{n+1}, DG(v) the derivative of G at v, and j.succAbove the increasing enumeration of {0, …, n} ∖ {j}. Define Φ : ℝ^{n+1} → ℝ^{n+1} by Φ(v) := Σ_{j=0}^{n} (−1)^j ω(G(v))(DG(v)e_{j.succAbove 0}, …, DG(v)e_{j.succAbove(n−1)})·e_j for v ∈ D, and Φ(v) := 0 for v ∉ D.\n\nThen Φ is C¹ on ℝ^{n+1}, Φ has compact support, and tsupport Φ ⊆ D.",
+  "lean_statement": "∀ (P n : ℕ) (D : Set (Euclid (n + 1))) (G : Euclid (n + 1) → Euclid P) (ω : DifferentialForm (Euclid P) n) (Φ : Euclid (n + 1) → Euclid (n + 1)), IsOpen D → ContDiffOn ℝ 2 G D → ContDiff ℝ (⊤ : ℕ∞) ω → IsCompact (D ∩ G ⁻¹' tsupport ω) → Φ = D.indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (G v) (fun k => fderiv ℝ G v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) → ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ D",
+  "lean_name": "codim1_lur_cd_pullback_field_regularity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f1e3302e5-a1"
+}
