@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial mollifier** (step 0 of the Weyl lemma used in Simon Ch. 5, proof of Lemma 3.1; cf. the
+standard mollifier of Evans, *PDE*, App. C.5).  With `θ = Real.smoothTransition`,
+`k(y) = θ(1 − ‖y‖²)` is continuous, nonnegative, vanishes off `B̄₁(0)` and has `k(0) = 1`, so
+`c = ∫ k > 0`.  Then `C = c⁻¹` and `g ε t = θ(1 − t/ε²)/(c εⁿ)` work: `g ε` is continuous, vanishes
+for `t ≥ ε²`, satisfies `0 ≤ g ε t ≤ C/εⁿ`, `y ↦ g ε (‖y‖²)` is `C^∞`, and the substitution
+`y = εu` gives `∫ θ(1 − ‖y‖²/ε²) dy = εⁿ c`, so `∫ g ε (‖y‖²) dy = 1`. -/
+theorem Submission.dorag_ha_weyl_radial_mollifier : ∀ n : ℕ, 0 < n → ∃ C : ℝ, ∃ g : ℝ → ℝ → ℝ, ∀ ε : ℝ, 0 < ε → Continuous (g ε) ∧ (∀ t : ℝ, ε ^ 2 ≤ t → g ε t = 0) ∧ (∀ t : ℝ, |g ε t| ≤ C / ε ^ n) ∧ (∀ m : ℕ, ContDiff ℝ m (fun y : Euclid n => g ε (‖y‖ ^ 2))) ∧ ∫ y : Euclid n, g ε (‖y‖ ^ 2) = 1 := by
+  intro n _hn
+  -- the unscaled bump `k y = θ (1 - ‖y‖²)`, `θ = Real.smoothTransition`
+  obtain ⟨k, hk⟩ : ∃ k : Euclid n → ℝ, ∀ y, k y = Real.smoothTransition (1 - ‖y‖ ^ 2) :=
+    ⟨_, fun _ => rfl⟩
+  have hk_cont : Continuous k := by
+    rw [show k = fun y => Real.smoothTransition (1 - ‖y‖ ^ 2) from funext hk]
+    exact Real.smoothTransition.continuous.comp (continuous_const.sub (continuous_norm.pow 2))
+  have hk_supp : HasCompactSupport k := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) 1) fun y hy => ?_
+    have h1 : 1 < ‖y‖ := by simpa using hy
+    rw [hk]
+    exact Real.smoothTransition.zero_of_nonpos (by nlinarith)
+  have hk_nonneg : 0 ≤ k := fun y => by rw [hk]; exact Real.smoothTransition.nonneg _
+  have hk0 : k 0 ≠ 0 := by rw [hk]; simp
+  have hcpos : 0 < ∫ y, k y :=
+    hk_cont.integral_pos_of_hasCompactSupport_nonneg_nonzero hk_supp hk_nonneg hk0
+  -- change of variables `y = ε u`
+  have hscale : ∀ ε : ℝ, 0 < ε →
+      ∫ y : Euclid n, Real.smoothTransition (1 - ‖y‖ ^ 2 / ε ^ 2) = ε ^ n * ∫ y, k y := by
+    intro ε hε
+    have h := Measure.integral_comp_inv_smul_of_nonneg volume k hε.le
+    rw [finrank_euclideanSpace_fin, smul_eq_mul] at h
+    rw [← h]
+    congr 1
+    ext y
+    rw [hk, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hε, mul_pow, inv_pow, inv_mul_eq_div]
+  generalize ∫ y, k y = c at hcpos hscale
+  refine ⟨c⁻¹, fun ε t => Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n), fun ε hε => ?_⟩
+  have hεn : 0 < ε ^ n := pow_pos hε n
+  have hden : 0 < c * ε ^ n := mul_pos hcpos hεn
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · -- (a) continuity
+    exact (Real.smoothTransition.continuous.comp
+      (continuous_const.sub (continuous_id.div_const _))).div_const _
+  · -- (b) vanishing for `t ≥ ε²`
+    intro t ht
+    have h1 : 1 ≤ t / ε ^ 2 := (one_le_div (pow_pos hε 2)).mpr ht
+    show Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n) = 0
+    rw [Real.smoothTransition.zero_of_nonpos (by linarith), zero_div]
+  · -- (c) sup bound
+    intro t
+    show |Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n)| ≤ c⁻¹ / ε ^ n
+    rw [abs_of_nonneg (div_nonneg (Real.smoothTransition.nonneg _) hden.le)]
+    calc Real.smoothTransition (1 - t / ε ^ 2) / (c * ε ^ n) ≤ 1 / (c * ε ^ n) :=
+          div_le_div_of_nonneg_right (Real.smoothTransition.le_one _) hden.le
+      _ = c⁻¹ / ε ^ n := by rw [one_div, mul_inv, div_eq_mul_inv]
+  · -- (d) smoothness
+    intro m
+    have h : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun y : Euclid n =>
+        Real.smoothTransition (1 - ‖y‖ ^ 2 / ε ^ 2) / (c * ε ^ n) :=
+      (Real.smoothTransition.contDiff.comp
+        (contDiff_const.sub ((contDiff_norm_sq ℝ).div_const _))).div_const _
+    exact contDiff_infty.mp h m
+  · -- (e) normalization
+    show ∫ y : Euclid n, Real.smoothTransition (1 - ‖y‖ ^ 2 / ε ^ 2) / (c * ε ^ n) = 1
+    rw [integral_div, hscale ε hε, mul_comm]
+    exact div_self hden.ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
