@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "whitney|lusin|c1_approx|egorov|dor_lmbsf",
+        "tendstoUniformlyOn_of_ae_tendsto|exists_isCompact_sdiff_lt|exists_isClosed_sdiff_lt|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|continuousOn_iUnion|isClosed_iUnion|exists_disjoint_subfamily_covering_enlargement_ball",
+        "git show b4f065d2:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1-independent-audit/ReuseAndParent.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-36cc9a67df/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-36cc9a67df/decomposition-v1.json",
+        "/tmp/c1-independent-audit/Types.lean",
+        "/tmp/c1-independent-audit/ReuseAndParent.lean"
+      ],
+      "conclusion": "Confirmed project b4d606db and mathlib 25730c7c. The pinned regularity, Egorov, locally finite pasting, Vitali and Whitney declarations support the supplied arguments; the Contract search found no matching approximation helpers. Each proposed name has exactly one DAG owner, with comparator acceptance and a byte-identical frozen type. All names are valid bare identifiers. Independent Lean checks passed for the five challenge types, required derivative-space instances, reuse compatibility, and the exact selected parent assembled from the children. All five reused declarations and the assembled parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: its obligations follow the selected analytic proof, its dependency edges are correctly directed and acyclic, and its conclusions establish the selected parent, including zero dimension and infinite tolerance."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the hypotheses and compact-set conclusion. Restricting μ to A legitimately supplies finite-measure regularity without assuming μ itself locally finite. The countable-basis construction, summable error bounds, compact intersection and relative-open preimage argument prove the statement for the stated general target. No circular reliance occurs."
+    },
+    {
+      "key": "lusin_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including possibly infinite measure and tolerance. Finite-measure Lusin applies to each measurable bounded shell. Local finiteness gives both closedness and continuous pasting; the summable defects give the required strict bound. The dependency on lusin_finite is necessary and correctly directed."
+    },
+    {
+      "key": "egorov_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely states uniform convergence on every compact subset of the resulting closed set. Egorov on increasing balls yields uniform convergence on bounded subsets after removing a summably small union. Closed inner approximation on locally finite shells preserves that convergence and leaves total defect at most δ/2 < ε. All measurability and finiteness hypotheses are supplied."
+    },
+    {
+      "key": "whitney_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact compact-uniform remainder condition matches the prose. The Lipschitz bound controls the suprema, differentiability proves pointwise convergence, and the fixed-witness continuity argument correctly proves Borel measurability, including empty suprema and negative thresholds. egorov_closed then supplies A; δ = 1/(k+1) gives the estimate for every allowed y, with y = x handled separately."
+    },
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes all continuity, closedness and compatibility hypotheses and exactly the claimed value and derivative conclusions. The supplied construction proves the theorem independently: Vitali coverage, radius comparability, bounded overlap, locally finite normalized bumps and anchor estimates justify the extension. The 5η remainder bound proves differentiability on A, and the η(1+700M) bound proves derivative continuity there. The empty-set case is covered; neither the child nor the parent theorem is assumed."
+    }
+  ],
+  "required_changes": []
+}
