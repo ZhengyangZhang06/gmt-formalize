@@ -1123,6 +1123,24 @@ theorem Submission.codim1_hcp_fv_trace_comp_abs_le : ∀ (P : ℕ) (K : Submodul
   have hon : Orthonormal ℝ (fun i => ((e i : K) : Euclid P)) :=
     e.orthonormal.comp_linearIsometry K.subtypeₗᵢ
   -- step 2: it spans `K`, the image of `span (range e) = ⊤` under the inclusion
+  have hspan : Submodule.span ℝ (Set.range (fun i => ((e i : K) : Euclid P))) = K := by
+    have h : Set.range (fun i => ((e i : K) : Euclid P)) = K.subtype '' Set.range e := by
+      rw [← Set.range_comp]; rfl
+    have htop : Submodule.span ℝ (Set.range e) = ⊤ := by
+      simpa using e.toBasis.span_eq
+    rw [h, Submodule.span_image, htop, Submodule.map_top, Submodule.range_subtype]
+  -- step 3: `trace(p_K ∘ L) = Σₐ ⟪τₐ, Lτₐ⟫`
+  rw [Submission.fvmb_trace_starProjection_comp_eq_sum_inner P (Module.finrank ℝ K) K _ L hon hspan]
+  -- steps 4-5: triangle inequality, then `|⟪τₐ, Lτₐ⟫| ≤ ‖τₐ‖ ‖L‖ ‖τₐ‖ = ‖L‖` termwise
+  calc |∑ a, inner ℝ ((e a : K) : Euclid P) (L ((e a : K) : Euclid P))|
+      ≤ ∑ a, |inner ℝ ((e a : K) : Euclid P) (L ((e a : K) : Euclid P))| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _a : Fin (Module.finrank ℝ K), ‖L‖ := by
+        refine Finset.sum_le_sum fun a _ => ?_
+        refine (abs_real_inner_le_norm _ _).trans ?_
+        rw [hon.1 a, one_mul]
+        exact (L.le_opNorm _).trans (by rw [hon.1 a, mul_one])
+    _ = (Module.finrank ℝ K : ℝ) * ‖L‖ := by simp
 
 /-- **Simon Ch. 2, §5** (the expansion `J_t = 1 + t div_M X + O(t²)` behind the first variation
 formula 5.3, for the linear map `I + tB` on an `n`-plane): given `P`, `n`, `A ≥ 0` and `ε > 0`
@@ -1148,18 +1166,6 @@ theorem Submission.codim1_hcp_fv_subspace_jacobian_first_order : ∀ (P n : ℕ)
     have htop : Submodule.span ℝ (Set.range e) = ⊤ := by
       simpa using e.toBasis.span_eq
     rw [h, Submodule.span_image, htop, Submodule.map_top, Submodule.range_subtype]
-  -- step 3: `trace(p_K ∘ L) = Σₐ ⟪τₐ, Lτₐ⟫`
-  rw [Submission.fvmb_trace_starProjection_comp_eq_sum_inner P (Module.finrank ℝ K) K _ L hon hspan]
-  -- steps 4-5: triangle inequality, then `|⟪τₐ, Lτₐ⟫| ≤ ‖τₐ‖ ‖L‖ ‖τₐ‖ = ‖L‖` termwise
-  calc |∑ a, inner ℝ ((e a : K) : Euclid P) (L ((e a : K) : Euclid P))|
-      ≤ ∑ a, |inner ℝ ((e a : K) : Euclid P) (L ((e a : K) : Euclid P))| :=
-        Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _a : Fin (Module.finrank ℝ K), ‖L‖ := by
-        refine Finset.sum_le_sum fun a _ => ?_
-        refine (abs_real_inner_le_norm _ _).trans ?_
-        rw [hon.1 a, one_mul]
-        exact (L.le_opNorm _).trans (by rw [hon.1 a, mul_one])
-    _ = (Module.finrank ℝ K : ℝ) * ‖L‖ := by simp
   -- step 4: the determinant on `K` is the Gram determinant of the frame `(L eᵢ)`
   have hgramdet : ∀ L : Euclid P →L[ℝ] Euclid P,
       ((L.comp K.subtypeL).adjoint ∘L (L.comp K.subtypeL)).det =
