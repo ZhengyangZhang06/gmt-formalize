@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.translated_varifold-a1.support_eq-a1",
+  "parent_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "depth": 3,
+  "title": "Support of a translated varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be arbitrary, let V be a rectifiable n-varifold in U, let x₀ ∈ ℝ^{n+ℓ}, and let W be a rectifiable n-varifold in {y : y + x₀ ∈ U} whose weight μ_W is the pushforward of μ_V under y ↦ y − x₀. Then spt W := {y : y + x₀ ∈ U} ∩ spt μ_W equals {y : y + x₀ ∈ spt V}, where spt V := U ∩ spt μ_V.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → W.support = (fun y => y + x₀) ⁻¹' V.support",
+  "lean_name": "rsod_tv_support_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-translated-varifold-a1-support-eq-a1-a1"
+}

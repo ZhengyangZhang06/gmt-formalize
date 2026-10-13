@@ -625,6 +625,513 @@ theorem rsod_exists_localized_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
     exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (lt_of_le_of_lt
       (lintegral_mono' (Measure.restrict_mono subset_rfl Measure.restrict_le_self) le_rfl)
       (hL K hK (hKB.trans hBU)))
+/-- Pythagorean identity for graph points: `|(x, y)|² = |x|² + |y|²` for the point
+`(x, y) ∈ ℝⁿ × ℝ^ℓ = ℝ^{n+ℓ}`.  Expand the three squared Euclidean norms as sums of squared
+coordinates (`EuclideanSpace.real_norm_sq_eq`), split the sum over `Fin (n + ℓ)` into the indices
+`Fin.castAdd ℓ j` and `Fin.natAdd n k` (`Fin.sum_univ_add`), and read off the coordinates `x j`,
+resp. `y k`, of `graphPoint x y` there (`Fin.append_left`/`Fin.append_right`). -/
+theorem rsod_norm_graphPoint_sq : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+  intro n ℓ x y
+  rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+    EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+  simp [graphPoint]
+/-- The graph point `(x, y) ∈ ℝ^{n+ℓ}` is the inverse image of `(x, y)` under Mathlib's canonical
+equivalence `EuclideanSpace.finAddEquivProd : ℝ^{n+ℓ} ≃L[ℝ] ℝⁿ × ℝ^ℓ` (reindexing by
+`finSumFinEquiv.symm`, then splitting into the `Sum.inl`/`Sum.inr` parts).  Compare coordinates:
+every index of `Fin (n + ℓ)` is `Fin.castAdd ℓ j` or `Fin.natAdd n k` (`Fin.addCases`); there both
+sides equal `x j`, resp. `y k` (`Fin.append_left`/`Fin.append_right` on the left,
+`finSumFinEquiv_symm_apply_castAdd`/`finSumFinEquiv_symm_apply_natAdd` on the right). -/
+theorem rsod_graphPoint_eq_finAddEquivProd_symm : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    graphPoint x y = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y) := by
+  intro n ℓ x y
+  ext i
+  refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+  · simp [graphPoint]
+  · simp [graphPoint]
+
+/-- The rotated, translated graph chart `φ x = q (graphPoint x (u x)) + x₀` of a map `u` that is
+`C¹` on an open set `Ω ⊆ ℝⁿ` is injective on all of `ℝⁿ`, `C¹` on `Ω`, and has injective
+derivative at every point of `Ω`.  By `rsod_graphPoint_eq_finAddEquivProd_symm`,
+`φ x = A (x, u x) + x₀` for the injective continuous linear map `A = q ∘ E.symm`,
+`E = EuclideanSpace.finAddEquivProd`.  Hence `φ x = φ x'` forces `(x, u x) = (x', u x')`; `φ` is
+`C¹` on `Ω` as `A` after the `C¹` map `x ↦ (x, u x)`, plus a constant; and at `x ∈ Ω` (a
+neighbourhood of `x`, so `u` is differentiable there) the chain rule gives
+`Dφ(x) v = A (v, Du(x) v)`, which determines `v` since `A` is injective. -/
+theorem rsod_graphChart_injective_contDiffOn_fderiv_injective : ∀ {n ℓ : ℕ}
+    (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (Ω : Set (Rn n)), IsOpen Ω →
+    ContDiffOn ℝ 1 u Ω → Function.Injective (fun x => q (graphPoint x (u x)) + x₀) ∧
+      ContDiffOn ℝ 1 (fun x => q (graphPoint x (u x)) + x₀) Ω ∧
+      ∀ x ∈ Ω, Function.Injective (fderiv ℝ (fun x => q (graphPoint x (u x)) + x₀) x) := by
+  intro n ℓ q u x₀ Ω hΩ hu
+  let E : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
+  let A : Rn n × Rn ℓ →L[ℝ] Amb n ℓ := (q : Amb n ℓ →L[ℝ] Amb n ℓ).comp (E.symm : _ →L[ℝ] _)
+  have hA : Function.Injective A := q.injective.comp E.symm.injective
+  have hφ : (fun x => q (graphPoint x (u x)) + x₀) = fun x => A (x, u x) + x₀ := by
+    funext x
+    simp [A, E, rsod_graphPoint_eq_finAddEquivProd_symm]
+  rw [hφ]
+  refine ⟨fun x x' h => (Prod.ext_iff.mp (hA (add_right_cancel h))).1,
+    (A.contDiff.comp_contDiffOn (contDiffOn_id.prodMk hu)).add contDiffOn_const, fun x hx => ?_⟩
+  have hux : HasFDerivAt u (fderiv ℝ u x) x :=
+    ((hu.contDiffAt (hΩ.mem_nhds hx)).differentiableAt one_ne_zero).hasFDerivAt
+  have hφx : HasFDerivAt (fun x => A (x, u x) + x₀)
+      (A.comp ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ u x))) x :=
+    (A.hasFDerivAt.comp x ((hasFDerivAt_id x).prodMk hux)).add_const x₀
+  rw [hφx.fderiv]
+  exact fun v w h => (Prod.ext_iff.mp (hA h)).1
+/-- Fact (Gr) in the proof of Simon Ch. 5, Corollary 7.3, for the Ch. 2 §4 notion of a `C¹`
+submanifold: if `u` is `C¹` on the closed ball `Bⁿ_s(0)` and `{y : y + x₀ ∈ S}` agrees with
+`q(graph u)` in `B_s(0)`, then `B̆_s(x₀) ∩ S` is an `n`-dimensional `C¹` submanifold.  A single
+chart `φ(x) = q(x, u(x)) + x₀` on `Ω = B̆ⁿ_s(0) ∩ φ⁻¹(B̆_s(x₀))` serves every point, because
+`|x| ≤ |(x, u(x))| = |φ(x) - x₀|`; for compact `K ⊆ B̆_s(x₀)`, `Ω ∩ φ⁻¹(K) = Bⁿ_s(0) ∩ φ⁻¹(K)` is a
+closed subset of the compact ball. -/
+theorem rsod_isC1Submanifold_ball_inter_graph : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ)
+    (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (s : ℝ) (S : Set (Amb n ℓ)), 0 < s →
+    ContDiffOn ℝ 1 u (closedBall 0 s) →
+    (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s →
+    IsC1Submanifold n (ball x₀ s ∩ S) := by
+  intro n ℓ q u x₀ s S _hs hu hS
+  set φ : Rn n → Amb n ℓ := fun x => q (graphPoint x (u x)) + x₀
+  -- Step 1: `|x| ≤ |(x, u(x))| = |φ(x) - x₀|`, so `φ(x) ∈ B̆_s(x₀)` forces `x ∈ B̆ⁿ_s(0)`.
+  have hnorm : ∀ x : Rn n, ‖x‖ ≤ ‖graphPoint x (u x)‖ := fun x => by
+    nlinarith [Submission.rsod_norm_graphPoint_sq x (u x), norm_nonneg x,
+      norm_nonneg (graphPoint x (u x)), sq_nonneg ‖u x‖]
+  have hdist : ∀ x : Rn n, dist (φ x) x₀ = ‖graphPoint x (u x)‖ := fun x => by
+    rw [dist_eq_norm]
+    show ‖q (graphPoint x (u x)) + x₀ - x₀‖ = _
+    rw [add_sub_cancel_right, q.norm_map]
+  have hball : ∀ x : Rn n, φ x ∈ ball x₀ s → x ∈ ball (0 : Rn n) s := fun x hx =>
+    mem_ball_zero_iff.2 ((hnorm x).trans_lt ((hdist x).symm.trans_lt (mem_ball.1 hx)))
+  -- Step 2: for `|z| ≤ s`, `z + x₀ ∈ S` iff `z = q(x, u(x))` for some `x ∈ Bⁿ_s(0)`.
+  have hH : ∀ z : Amb n ℓ, ‖z‖ ≤ s →
+      (z + x₀ ∈ S ↔ ∃ x ∈ closedBall (0 : Rn n) s, q (graphPoint x (u x)) = z) := by
+    intro z hz
+    have hz' : z ∈ closedBall (0 : Amb n ℓ) s := mem_closedBall_zero_iff.2 hz
+    constructor
+    · intro hzS
+      have hzq : z ∈ q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s := by
+        rw [← hS]
+        exact ⟨hzS, hz'⟩
+      obtain ⟨⟨w, ⟨x, hx, rfl⟩, rfl⟩, -⟩ := hzq
+      exact ⟨x, hx, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      have hzS : q (graphPoint x (u x)) ∈ (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s := by
+        rw [hS]
+        exact ⟨⟨graphPoint x (u x), ⟨x, hx, rfl⟩, rfl⟩, hz'⟩
+      exact hzS.1
+  -- Steps 3–6: `φ` is injective, and `C¹` with injective derivative on `B̆ⁿ_s(0)`; it is
+  -- continuous on `Bⁿ_s(0)` because `(x, y) ↦ graphPoint x y` is a continuous linear map.
+  obtain ⟨hinj, hC1, hder⟩ := Submission.rsod_graphChart_injective_contDiffOn_fderiv_injective
+    q u x₀ (ball 0 s) isOpen_ball (hu.mono ball_subset_closedBall)
+  have hcont : ContinuousOn φ (closedBall 0 s) := by
+    have hG : ContinuousOn (fun x : Rn n => graphPoint x (u x)) (closedBall 0 s) := by
+      simp_rw [Submission.rsod_graphPoint_eq_finAddEquivProd_symm]
+      exact (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm.continuous
+        |>.comp_continuousOn (continuousOn_id.prodMk hu.continuousOn)
+    exact (q.continuous.comp_continuousOn hG).add continuousOn_const
+  intro y hy
+  refine ⟨ball 0 s ∩ φ ⁻¹' ball x₀ s, ball x₀ s, φ,
+    (hcont.mono ball_subset_closedBall).isOpen_inter_preimage isOpen_ball isOpen_ball,
+    isOpen_ball, hy.1, hC1.mono inter_subset_left, hinj.injOn, ?_, ?_,
+    fun x hx => hder x hx.1⟩
+  · -- Step 7: `φ(Ω) = B̆_s(x₀) ∩ S`.
+    ext y'
+    constructor
+    · rintro ⟨x, ⟨hx, hφx⟩, rfl⟩
+      refine ⟨hφx, hφx, (hH (q (graphPoint x (u x))) ?_).2 ⟨x, ball_subset_closedBall hx, rfl⟩⟩
+      rw [q.norm_map, ← hdist]
+      exact (mem_ball.1 hφx).le
+    · rintro ⟨-, hy', hy'S⟩
+      obtain ⟨x, -, hx⟩ := (hH (y' - x₀) (mem_ball_iff_norm.1 hy').le).1
+        (by rwa [sub_add_cancel])
+      have hφx : φ x = y' := by
+        show q (graphPoint x (u x)) + x₀ = y'
+        rw [hx, sub_add_cancel]
+      have hφx' : φ x ∈ ball x₀ s := by
+        rw [hφx]
+        exact hy'
+      exact ⟨x, ⟨hball x hφx', hφx'⟩, hφx⟩
+  · -- Step 8: for compact `K ⊆ B̆_s(x₀)`, `Ω ∩ φ⁻¹(K) = Bⁿ_s(0) ∩ φ⁻¹(K)` is compact.
+    intro K hK hKW
+    have hset : ball 0 s ∩ φ ⁻¹' ball x₀ s ∩ φ ⁻¹' K = closedBall 0 s ∩ φ ⁻¹' K := by
+      ext x
+      exact ⟨fun hx => ⟨ball_subset_closedBall hx.1.1, hx.2⟩,
+        fun hx => ⟨⟨hball x (hKW hx.2), hKW hx.2⟩, hx.2⟩⟩
+    rw [hset]
+    exact (isCompact_closedBall 0 s).of_isClosed_subset
+      (hcont.preimage_isClosed_of_isClosed isClosed_closedBall hK.isClosed) inter_subset_left
+/-- Translating a rectifiable varifold (used for the translation `τ(x) = x − ξ` in Simon Ch. 5,
+7.1–7.3): for `τ(y) = y + x₀`, `v(τ⁻¹M, θ ∘ τ)` is a rectifiable `n`-varifold in `τ⁻¹U`.  `τ` is an
+isometry, so it preserves `Hⁿ`; null-measurability, countable rectifiability (via `τ⁻¹M₀` and the
+Lipschitz maps `F_j − x₀`), a.e.-measurability of `θ ∘ τ` on `τ⁻¹M` and its integrability on
+`τ⁻¹M ∩ K` (through the compact set `τ(K) ⊆ U`) all transfer. -/
+theorem rsod_tv_exists_structure : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ), ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ ∀ y, W.mult y = V.mult (y + x₀) := by
+  intro n ℓ U V x₀
+  -- `τ(y) = y + x₀` is an isometric equivalence, hence `Hⁿ`-measure preserving, and a
+  -- measurable embedding.
+  have hτ : MeasurePreserving (fun y : Amb n ℓ => y + x₀) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight x₀).measurePreserving_euclideanHausdorffMeasure n
+  have hτe : MeasurableEmbedding (fun y : Amb n ℓ => y + x₀) := measurableEmbedding_addRight x₀
+  refine ⟨{
+    carrier := (fun y => y + x₀) ⁻¹' V.carrier
+    mult := fun y => V.mult (y + x₀)
+    carrier_subset := preimage_mono V.carrier_subset
+    nullMeasurableSet_carrier := V.nullMeasurableSet_carrier.preimage hτ.quasiMeasurePreserving
+    countablyRectifiable := ?_
+    mult_pos := fun y hy => V.mult_pos (y + x₀) hy
+    aemeasurable_mult := ?_
+    integrableOn_mult := ?_ }, rfl, fun y => rfl⟩
+  · -- Translate the null set `M₀` and the Lipschitz pieces `F j` by `-x₀`.
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := V.countablyRectifiable
+    refine ⟨(fun y => y + x₀) ⁻¹' M₀, by rw [hτ.measure_preimage_emb hτe]; exact hM₀,
+      fun j z => F j z - x₀, fun j => ?_, fun y hy => ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨K + 0, hK.sub (LipschitzWith.const x₀)⟩
+    · rcases hcover hy with h | h
+      · exact Or.inl h
+      · obtain ⟨j, z, hz⟩ := mem_iUnion.1 h
+        exact Or.inr (mem_iUnion.2 ⟨j, z, by simp [hz]⟩)
+  · -- `τ` maps `Hⁿ⌞τ⁻¹M` to `Hⁿ⌞M`.
+    exact ((hτ.restrict_preimage_emb hτe V.carrier).aemeasurable_comp_iff hτe).2
+      V.aemeasurable_mult
+  · -- `τ(K)` is a compact subset of `U`, and `τ⁻¹(M ∩ τ(K)) = τ⁻¹M ∩ K`.
+    intro K hK hKU
+    have h := (hτ.integrableOn_comp_preimage hτe).2 (V.integrableOn_mult
+      ((fun y => y + x₀) '' K) (hK.image (continuous_add_const x₀))
+      (by rintro _ ⟨k, hk, rfl⟩; exact hKU hk))
+    rwa [preimage_inter, hτe.injective.preimage_image] at h
+/-- **Weight of a translated varifold** (Simon Ch. 4, 1.1; Ch. 5, proof of Theorem 7.1, p. 127:
+"after applying the appropriate translation"; used for Corollary 7.3).  Let `τ(y) = y + x₀` and
+`σ(y) = y - x₀`.  If `W = v(τ⁻¹ M, θ ∘ τ)`, then `μ_W = σ_# μ_V`: `τ` preserves `Hⁿ` and is a
+measurable embedding, and `τ⁻¹(σ⁻¹A ∩ M) = A ∩ τ⁻¹M`, so for measurable `A`
+`μ_W(A) = ∫_{τ⁻¹(σ⁻¹A ∩ M)} θ ∘ τ dHⁿ = ∫_{σ⁻¹A ∩ M} θ dHⁿ = μ_V(σ⁻¹A)`. -/
+theorem rsod_tv_weight_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ),
+    W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) →
+    W.weight = V.weight.map (fun y => y - x₀) := by
+  intro n ℓ U U' V W x₀ hc hm
+  -- `τ` is an `Hⁿ`-preserving measurable embedding (an isometry) and `σ` is measurable.
+  have hτ : MeasurePreserving (fun y : Amb n ℓ => y + x₀) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight x₀).measurePreserving_euclideanHausdorffMeasure n
+  have hτe : MeasurableEmbedding (fun y : Amb n ℓ => y + x₀) := measurableEmbedding_addRight x₀
+  have hσ : Measurable (fun y : Amb n ℓ => y - x₀) := measurable_sub_const x₀
+  -- It suffices to compare `μ_W(A)` and `(σ_# μ_V)(A) = μ_V(σ⁻¹A)` on measurable sets `A`.
+  ext A hA
+  -- `τ⁻¹(σ⁻¹A ∩ M) = A ∩ τ⁻¹M = A ∩ W.carrier`.
+  have hset : (fun y => y + x₀) ⁻¹' ((fun y => y - x₀) ⁻¹' A ∩ V.carrier) = A ∩ W.carrier := by
+    ext y
+    simp [hc]
+  -- Change of variables along `τ`: `∫_{A ∩ τ⁻¹M} θ ∘ τ dHⁿ = ∫_{σ⁻¹A ∩ M} θ dHⁿ`.
+  have key := hτ.setLIntegral_comp_preimage_emb hτe (fun x => ENNReal.ofReal (V.mult x))
+    ((fun y => y - x₀) ⁻¹' A ∩ V.carrier)
+  rw [hset] at key
+  -- Unfold both weights into set integrals; then `W.mult = θ ∘ τ` closes the goal.
+  rw [Measure.map_apply hσ hA]
+  simp only [RectifiableVarifold.weight]
+  rw [withDensity_apply _ hA, withDensity_apply _ (hσ hA), Measure.restrict_restrict hA,
+    Measure.restrict_restrict (hσ hA), ← key]
+  simp only [hm]
+/-- **Support of a translated varifold** (Simon Ch. 5, proof of Theorem 7.1, p. 127: "after
+applying the appropriate translation"; used for Corollary 7.3).  Let `τ(y) = y + x₀`.  If `W` is a
+rectifiable varifold in `τ⁻¹U` whose weight is the push-forward `μ_W = (· - x₀)_# μ_V`, then
+`spt W = τ⁻¹(spt V)`: the translations are continuous and mutually inverse, so the neighbourhoods of
+`y` are exactly the `τ`-preimages of the neighbourhoods of `y + x₀`. -/
+theorem rsod_tv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U)
+    (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)),
+    W.weight = V.weight.map (fun y => y - x₀) → W.support = (fun y => y + x₀) ⁻¹' V.support := by
+  intro n ℓ U V x₀ W hw
+  -- `σ = MeasurableEquiv.subRight x₀` is definitionally `y ↦ y - x₀`, so `(σ_# μ)(G) = μ(σ⁻¹G)`
+  -- for every set `G`, measurable or not.
+  have hσ : (fun y : Amb n ℓ => y - x₀) = ⇑(MeasurableEquiv.subRight x₀) := rfl
+  have hσa : ∀ z : Amb n ℓ, MeasurableEquiv.subRight x₀ z = z - x₀ := fun _ => rfl
+  -- `spt (σ_# μ_V) = τ⁻¹(spt μ_V)`, using `y ∈ spt μ ↔ ∀ G ∈ 𝓝 y, 0 < μ G`.
+  have hsupp : (V.weight.map (fun y => y - x₀)).support =
+      (fun y => y + x₀) ⁻¹' V.weight.support := by
+    ext y
+    rw [hσ, Set.mem_preimage, Measure.mem_support_iff_forall, Measure.mem_support_iff_forall]
+    constructor
+    · -- For `G ∈ 𝓝 (y + x₀)`: `τ⁻¹G ∈ 𝓝 y` and `σ⁻¹(τ⁻¹G) = G`.
+      intro h G hG
+      have hτG := h _ ((continuous_add_const x₀).continuousAt.preimage_mem_nhds hG)
+      have hG' : MeasurableEquiv.subRight x₀ ⁻¹' ((fun z : Amb n ℓ => z + x₀) ⁻¹' G) = G := by
+        ext z
+        simp only [Set.mem_preimage, hσa, sub_add_cancel]
+      rwa [MeasurableEquiv.map_apply, hG'] at hτG
+    · -- For `G ∈ 𝓝 y`: `σ⁻¹G ∈ 𝓝 (y + x₀)` since `σ (y + x₀) = y`.
+      intro h G hG
+      rw [MeasurableEquiv.map_apply]
+      refine h _ ((continuous_sub_right x₀).continuousAt.preimage_mem_nhds ?_)
+      rwa [add_sub_cancel_right]
+  -- `spt W = τ⁻¹U ∩ spt μ_W = τ⁻¹U ∩ τ⁻¹(spt μ_V) = τ⁻¹(U ∩ spt μ_V) = τ⁻¹(spt V)`.
+  simp only [RectifiableVarifold.support, hw, hsupp, Set.preimage_inter]
+/-- Translation invariance of tangent planes (Simon Ch. 3, 1.7; Ch. 4, 1.3): if
+`W = v(τ⁻¹ M, θ ∘ τ)` with `τ(y) = y + x₀`, then `η_{y,r}(τ⁻¹ M) = η_{y + x₀,r}(M)` and the
+blown-up multiplicities agree, so the weighted approximate tangent planes of `W` at `y` are those
+of `V` at `y + x₀`, and `W`, `V` choose the same tangent projection there. -/
+theorem rsod_tv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ),
+    W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) →
+    ∀ y, W.tangentProj y = V.tangentProj (y + x₀) := by
+  intro n ℓ U U' V W x₀ hc hm y
+  -- `η_{y,r}(τ⁻¹ M) = η_{y + x₀,r}(M)`, since `z - y = (z + x₀) - (y + x₀)`.
+  have himg : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap y r '' W.carrier =
+      Poincare.SimonGMT.Chapter03.blowUpMap (y + x₀) r '' V.carrier := by
+    intro r
+    rw [hc]
+    ext w
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨z + x₀, hz, ?_⟩
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+      congr 1
+      abel
+    · rintro ⟨m, hm', rfl⟩
+      refine ⟨m - x₀, by simpa using hm', ?_⟩
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+      congr 1
+      abel
+  -- `θ_W(y + r w) = θ((y + x₀) + r w)` and `θ_W(y) = θ(y + x₀)`, so the predicates agree.
+  have hadd : ∀ (r : ℝ) (w : Amb n ℓ), y + r • w + x₀ = y + x₀ + r • w := fun r w =>
+    add_right_comm y (r • w) x₀
+  have key : ∀ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult y P ↔
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult
+        (y + x₀) P := by
+    intro P
+    simp only [Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt, himg, hm, hadd]
+  -- Hence `W` at `y` and `V` at `y + x₀` choose the same tangent plane.
+  have hchoose : ∀ (p q : Submodule ℝ (Amb n ℓ) → Prop) (h₁ : ∃ P, p P) (h₂ : ∃ P, q P),
+      p = q → Classical.choose h₁ = Classical.choose h₂ := by
+    rintro p q h₁ h₂ rfl
+    rfl
+  unfold RectifiableVarifold.tangentProj
+  by_cases h₁ : ∃ P,
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult y P
+  · have h₂ := (exists_congr key).1 h₁
+    rw [dite_eq_left h₁, dite_eq_left h₂]
+    congr 1
+    exact hchoose _ _ h₁ h₂ (funext fun P => propext (key P))
+  · have h₂ : ¬∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
+        V.mult (y + x₀) P := fun h => h₁ ((exists_congr key).2 h)
+    rw [dite_eq_right h₁, dite_eq_right h₂]
+/-- **Generalized mean curvature of a translated varifold** (Simon Ch. 4, Definition 3.14; Ch. 5,
+proof of Theorem 7.1, p. 127: "after applying the appropriate translation"; used for
+Corollary 7.3).  Let `τ(y) = y + x₀` and `σ(y) = y - x₀`.  If `μ_W = σ_# μ_V` and
+`p_{T_y W} = p_{T_{y + x₀} V}`, then `W` has generalized mean curvature `H ∘ τ` in `τ⁻¹ U`:
+neighbourhoods `G ∈ 𝓝[U] (y + x₀)` pull back to `τ⁻¹ G ∈ 𝓝[τ⁻¹ U] y`, and for
+`X ∈ C¹_c(τ⁻¹ U)` the field `X̃ = X ∘ σ ∈ C¹_c(U)` has `div_W X ∘ σ = div_V X̃`, so changing
+variables along `σ` turns the first variation of `W` at `X` into that of `V` at `X̃`. -/
+theorem rsod_tv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U)
+    (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)),
+    W.weight = V.weight.map (fun y => y - x₀) → (∀ y, W.tangentProj y = V.tangentProj (y + x₀)) →
+    ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H →
+    W.HasGeneralizedMeanCurvature (fun y => H (y + x₀)) := by
+  intro n ℓ U V x₀ W hw hT H hH
+  obtain ⟨hHloc, hHfv⟩ := hH
+  -- `σ(y) = y - x₀` as a measurable equivalence, so `μ_W = σ_# μ_V`.
+  have hw' : W.weight = V.weight.map (MeasurableEquiv.subRight x₀) := hw
+  refine ⟨?_, ?_⟩
+  · -- Local integrability: transport `G ∈ 𝓝[U] (y + x₀)` to `τ⁻¹ G ∈ 𝓝[τ⁻¹ U] y`.
+    intro y hy
+    obtain ⟨G, hG, hGi⟩ := hHloc (y + x₀) hy
+    refine ⟨(fun z => z + x₀) ⁻¹' G, ?_, ?_⟩
+    · exact ((continuous_add_const x₀).continuousWithinAt.tendsto_nhdsWithin
+        (mapsTo_preimage _ _)) hG
+    · -- `IntegrableOn (H ∘ τ) (τ⁻¹ G) (σ_# μ_V) ↔ IntegrableOn (H ∘ τ ∘ σ) (σ⁻¹ τ⁻¹ G) μ_V`.
+      rw [hw', integrableOn_map_equiv]
+      have h1 : (fun z => H (z + x₀)) ∘ (MeasurableEquiv.subRight x₀) = H := by
+        funext z
+        show H (z - x₀ + x₀) = H z
+        rw [sub_add_cancel]
+      have h2 : (MeasurableEquiv.subRight x₀) ⁻¹' ((fun z => z + x₀) ⁻¹' G) = G := by
+        ext z
+        show z - x₀ + x₀ ∈ G ↔ z ∈ G
+        rw [sub_add_cancel]
+      rw [h1, h2]
+      exact hGi
+  · -- First variation: test `V` with the translated field `X̃(x) = X(x - x₀)`.
+    intro X hX hXc hXs
+    have hX'c : ContDiff ℝ 1 (fun x => X (x - x₀)) := hX.comp (contDiff_id.sub contDiff_const)
+    have hX'cs : HasCompactSupport (fun x => X (x - x₀)) :=
+      hXc.comp_homeomorph (IsometryEquiv.subRight x₀).toHomeomorph
+    have hX's : tsupport (fun x => X (x - x₀)) ⊆ U := by
+      intro x hx
+      have h := hXs (tsupport_comp_subset_preimage X (continuous_sub_right x₀) hx)
+      simpa using h
+    have key := hHfv _ hX'c hX'cs hX's
+    -- `div_W X (x - x₀) = div_V X̃ (x)`.
+    have hdiv : ∀ x, W.divM X (x - x₀) = V.divM (fun x => X (x - x₀)) x := by
+      intro x
+      simp only [RectifiableVarifold.divM, hT, sub_add_cancel]
+      rw [fderiv_comp_sub]
+    -- Change variables along `σ` on both sides and apply the first variation of `V` at `X̃`.
+    rw [hw', integral_map_equiv, integral_map_equiv]
+    show ∫ x, W.divM X (x - x₀) ∂V.weight = -∫ x, inner ℝ (X (x - x₀)) (H (x - x₀ + x₀)) ∂V.weight
+    simp only [hdiv, sub_add_cancel]
+    exact key
+/-- Translation of local `Lᵖ` bounds (translation step in the proof of Simon Ch. 5, Corollary 7.3,
+p. 128).  If `μ_W = σ_# μ_V` for `σ(y) = y − x₀` and `∫_K |H|ᵖ dμ_V < ∞` for every compact
+`K ⊆ U`, then `∫_K |H(y + x₀)|ᵖ dμ_W(y) < ∞` for every compact `K ⊆ U − x₀`: restriction and
+`lintegral` commute with the push-forward by the measurable equivalence `σ`, so the integral equals
+`∫_{σ⁻¹(K)} |H|ᵖ dμ_V`, and `σ⁻¹(K) = K + x₀` is a compact subset of `U`. -/
+theorem rsod_tv_locallyLp : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → ∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp (fun y => H (y + x₀)) p := by
+  intro n ℓ U V x₀ W hw H p hV K hK hKU
+  have hσ : (fun y : Amb n ℓ => y - x₀) = ⇑(MeasurableEquiv.subRight x₀) := rfl
+  have hpre : ⇑(MeasurableEquiv.subRight x₀) ⁻¹' K = (fun y => y + x₀) '' K := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨x - x₀, hx, sub_add_cancel x x₀⟩
+    · rintro ⟨k, hk, rfl⟩
+      show k + x₀ - x₀ ∈ K
+      rwa [add_sub_cancel_right]
+  have hsub : (fun y => y + x₀) '' K ⊆ U := by
+    rintro _ ⟨k, hk, rfl⟩
+    exact hKU hk
+  -- `∫⁻_K f d(σ_# μ_V) = ∫⁻_{σ⁻¹(K)} f ∘ σ dμ_V`, and `f (σ x) = |H(x − x₀ + x₀)|ᵖ = |H x|ᵖ`.
+  rw [hw, hσ, MeasurableEquiv.restrict_map, lintegral_map_equiv, hpre]
+  refine lt_of_eq_of_lt (lintegral_congr fun x => ?_)
+    (hV _ (hK.image (continuous_add_const x₀)) hsub)
+  show ‖H (x - x₀ + x₀)‖ₑ ^ p = ‖H x‖ₑ ^ p
+  rw [sub_add_cancel]
+/-- **Translation of a rectifiable varifold** (Simon Ch. 5, proof of Theorem 7.1, p. 127: "after
+applying the appropriate translation"; used for Corollary 7.3).  For `τ(y) = y + x₀`, the varifold
+`W = v(τ⁻¹M, θ ∘ τ)` in `τ⁻¹U` has weight `μ_W = (· - x₀)_# μ_V`, support `spt W = τ⁻¹(spt V)`,
+generalized mean curvature `H ∘ τ` whenever `V` has generalized mean curvature `H`, and `H ∘ τ`
+is locally in `Lᵖ(μ_W)` whenever `H` is locally in `Lᵖ(μ_V)`. -/
+theorem rsod_exists_translated_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ),
+    ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U),
+      W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ (∀ y, W.mult y = V.mult (y + x₀)) ∧
+      W.weight = V.weight.map (fun y => y - x₀) ∧
+      W.support = (fun y => y + x₀) ⁻¹' V.support ∧
+      (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H →
+        W.HasGeneralizedMeanCurvature (fun y => H (y + x₀))) ∧
+      (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p →
+        W.LocallyLp (fun y => H (y + x₀)) p) := by
+  intro n ℓ U V x₀
+  -- Step 1: `W = v(τ⁻¹M, θ ∘ τ)` is a rectifiable varifold in `τ⁻¹U`.
+  obtain ⟨W, hc, hm⟩ := Submission.rsod_tv_exists_structure n ℓ U V x₀
+  -- Step 2: `μ_W = (· - x₀)_# μ_V` by change of variables along `τ`.
+  have hw : W.weight = V.weight.map (fun y => y - x₀) :=
+    Submission.rsod_tv_weight_eq n ℓ U _ V W x₀ hc hm
+  -- Step 4: blow-ups of `τ⁻¹M` at `y` are those of `M` at `y + x₀`, so tangent planes translate.
+  have hT : ∀ y, W.tangentProj y = V.tangentProj (y + x₀) :=
+    Submission.rsod_tv_tangentProj_eq n ℓ U _ V W x₀ hc hm
+  -- Steps 3, 5, 6: the support, the first variation and the local `Lᵖ` bounds transfer along `τ`.
+  exact ⟨W, hc, hm, hw, Submission.rsod_tv_support_eq n ℓ U V x₀ W hw,
+    Submission.rsod_tv_meanCurvature n ℓ U V x₀ W hw hT,
+    Submission.rsod_tv_locallyLp n ℓ U V x₀ W hw⟩
+/-- **Allard hypotheses at small scales** (Simon Ch. 5, proof of Theorem 7.1 and Corollary 7.3):
+at a point `0 ∈ U` with `Θⁿ(μ_V, 0) = 1`, the hypotheses 5.1 hold for every `δ > 0` at all small
+radii `ρ`.  Density one forces `0 ∈ spt μ_V` and `ω_n⁻¹ ρ⁻ⁿ μ_V(B_ρ(0)) < 1 + δ` for small `ρ`,
+while `(ρ^{p−n} ∫_{B_ρ(0)} |H|ᵖ dμ_V)^{1/p} ≤ (ρ^{p−n} ∫_{B_{ρ₁}(0)} |H|ᵖ dμ_V)^{1/p} → 0`
+since `p > n` and `H ∈ Lᵖ_loc`. -/
+theorem rsod_allardHypotheses_small_scale : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U →
+    ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p →
+    V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) →
+    (0 : Amb n ℓ) ∈ U → V.HasDensity 0 1 → ∀ δ : ℝ, 0 < δ →
+    ∃ ρ : ℝ, V.AllardHypotheses H p δ ρ := by
+  intro n ℓ hn U hU V H p hp hH hLp hmult h0U hdens δ hδ
+  -- `ω_n > 0`, so `ω_n rⁿ > 0` for `r > 0`.
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  have hpos : ∀ r : ℝ, 0 < r → ENNReal.ofReal (unitBallVolume n * r ^ n) ≠ 0 := fun r hr =>
+    (ENNReal.ofReal_pos.2 (mul_pos hω (pow_pos hr n))).ne'
+  unfold RectifiableVarifold.HasDensity at hdens
+  rw [ENNReal.ofReal_one] at hdens
+  -- `0 ∈ spt μ_V`: otherwise `μ_V(B_r(0)) = 0` for small `r`, and the density would be `0`.
+  have hsupp : (0 : Amb n ℓ) ∈ V.weight.support := by
+    by_contra h
+    obtain ⟨G, hG, hG0⟩ := Measure.notMem_support_iff_exists.1 h
+    obtain ⟨ε, hε, hεG⟩ := nhds_basis_closedBall.mem_iff.1 hG
+    have h0 : Tendsto (fun r : ℝ => V.weight (closedBall 0 r) /
+        ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 0) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Ioc_mem_nhdsGT hε] with r hr
+      rw [measure_mono_null ((closedBall_subset_closedBall hr.2).trans hεG) hG0, ENNReal.zero_div]
+    exact zero_ne_one (tendsto_nhds_unique h0 hdens)
+  -- A closed ball `B_{ρ₁}(0) ⊆ U`; it is compact, so `∫_{B_{ρ₁}(0)} |H|ᵖ dμ_V < ∞`.
+  obtain ⟨ρ₁, hρ₁, hρ₁U⟩ := nhds_basis_closedBall.mem_iff.1 (hU.mem_nhds h0U)
+  have hA := hLp _ (isCompact_closedBall 0 ρ₁) hρ₁U
+  -- The mass ratio is eventually `< 1 + δ`.
+  have hmass : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      V.weight (closedBall 0 r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) := by
+    have h1 : (1 : ℝ≥0∞) < ENNReal.ofReal (1 + δ) := by
+      rw [← ENNReal.ofReal_one, ENNReal.ofReal_lt_ofReal_iff (by linarith)]
+      linarith
+    filter_upwards [hdens.eventually_lt_const h1, self_mem_nhdsWithin] with r hr hr0
+    rw [ENNReal.ofReal_mul (by linarith)]
+    exact (ENNReal.div_le_iff (hpos r hr0) ENNReal.ofReal_ne_top).1 hr.le
+  -- The scaled `Lᵖ` norm is eventually `≤ δ`, since `(r^{p−n} A)^{1/p} → 0` for `p > n`.
+  have hlp : ∀ᶠ r in 𝓝[>] (0 : ℝ), V.scaledLpNorm H p 0 r ≤ ENNReal.ofReal δ := by
+    have hpn : 0 < p - n := sub_pos.2 hp
+    have hp0 : 0 < 1 / p := one_div_pos.2 ((Nat.cast_nonneg n).trans_lt hp)
+    have h1 : Tendsto (fun r : ℝ => r ^ (p - n)) (𝓝[>] 0) (𝓝 0) := by
+      have := (Real.continuousAt_rpow_const 0 (p - n) (Or.inr hpn.le)).tendsto
+      rw [Real.zero_rpow hpn.ne'] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    have h2 := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hA.ne)
+    rw [ENNReal.ofReal_zero, zero_mul] at h2
+    have h3 : Tendsto (fun r : ℝ => (ENNReal.ofReal (r ^ (p - n)) *
+        ∫⁻ x in closedBall 0 ρ₁, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)) (𝓝[>] 0) (𝓝 0) := by
+      have := ((ENNReal.continuous_rpow_const (y := 1 / p)).tendsto 0).comp h2
+      rwa [ENNReal.zero_rpow_of_pos hp0] at this
+    filter_upwards [h3.eventually_lt_const (ENNReal.ofReal_pos.2 hδ), Ioc_mem_nhdsGT hρ₁]
+      with r hr hrρ
+    refine le_trans ?_ hr.le
+    unfold RectifiableVarifold.scaledLpNorm
+    gcongr
+    exact hrρ.2
+  -- Any radius in all three eventual sets works.
+  obtain ⟨ρ, ⟨hρmass, hρlp⟩, hρ0, hρρ₁⟩ := ((hmass.and hlp).and (Ioc_mem_nhdsGT hρ₁)).exists
+  exact ⟨ρ, hρ0, hH, hmult, ⟨h0U, hsupp⟩, (closedBall_subset_closedBall hρρ₁).trans hρ₁U,
+    hρmass, hρlp⟩
+/-- **Simon Ch. 5, Theorem 7.1, support form** (first paragraph of the printed proof, p. 127):
+given Theorem 5.2, a point `x₀ ∈ U` with `Θⁿ(μ_V, x₀) = 1` is a regular point of `V`
+(Definition 7.2).  The translate `W` of `V` by `-x₀` has density `1` at `0`, so 5.1 holds for `W`
+with `δ = δ₀` at a small scale `ρ`; Theorem 5.2 makes `spt W ∩ B_{γρ}(0)` a rotated `C¹` graph
+over `Bⁿ_{γρ}(0)`, hence `B̆_{γρ}(x₀) ∩ spt V` is an `n`-dimensional `C¹` submanifold. -/
+theorem rsod_mem_regularSet_of_density_one : AllardRegularityTheorem → ∀ (n ℓ : ℕ), 1 ≤ n →
+    ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U)
+    (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H →
+    V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ x₀ ∈ U, V.HasDensity x₀ 1 →
+    x₀ ∈ V.regularSet := by
+  intro hAllard n ℓ hn U hU V H p hp hH hLp hθ x₀ hx₀ hdens
+  -- Step 1: the constants `δ₀, γ` of Theorem 5.2 for `n, ℓ, p`.
+  obtain ⟨δ₀, γ, C, hδ₀, -, hγ, -, hallard⟩ := hAllard n ℓ hn p hp
+  -- Steps 2–3: the translate `W` of `V` by `-x₀`, living in the open set `U - x₀ ∋ 0`.
+  obtain ⟨W, -, hWmult, hWweight, hWspt, hWH, hWLp⟩ :=
+    Submission.rsod_exists_translated_varifold n ℓ U V x₀
+  have hU' : IsOpen ((fun y => y + x₀) ⁻¹' U) := hU.preimage (continuous_id.add_const x₀)
+  have h0U' : (0 : Amb n ℓ) ∈ (fun y => y + x₀) ⁻¹' U := by simpa using hx₀
+  -- Step 4: `μ_W(B_r(0)) = μ_V(B_r(x₀))`, so `Θⁿ(μ_W, 0) = Θⁿ(μ_V, x₀) = 1`.
+  have hball (r : ℝ) : W.weight (closedBall 0 r) = V.weight (closedBall x₀ r) := by
+    rw [hWweight, (measurableEmbedding_subRight x₀).map_apply]
+    congr 1
+    ext y
+    simp [dist_eq_norm]
+  have hWdens : W.HasDensity 0 1 := by
+    unfold RectifiableVarifold.HasDensity at hdens ⊢
+    simpa only [hball] using hdens
+  -- Step 5: `θ_W ≥ 1` `μ_W`-a.e., since `θ_W(x - x₀) = θ_V(x)`.
+  have hWθ : ∀ᵐ y ∂W.weight, 1 ≤ W.mult y := by
+    rw [hWweight, (measurableEmbedding_subRight x₀).ae_map_iff]
+    filter_upwards [hθ] with x hx
+    rwa [hWmult, sub_add_cancel]
+  -- Step 6: the hypotheses 5.1 for `W` with `δ = δ₀` at some scale `ρ`.
+  obtain ⟨ρ, hρ⟩ := Submission.rsod_allardHypotheses_small_scale n ℓ hn _ hU' W
+    (fun y => H (y + x₀)) p hp (hWH H hH) (hWLp H p hLp) hWθ h0U' hWdens δ₀ hδ₀
+  -- Step 7: Theorem 5.2 for `W`: `spt W ∩ B_{γρ}(0) = q(graph u) ∩ B_{γρ}(0)`, `u ∈ C¹`.
+  obtain ⟨q, u, hu, -, -, hgraph, -⟩ := hallard _ hU' W _ δ₀ ρ hδ₀ le_rfl hρ
+  obtain ⟨hρ, -, -, h0W, -⟩ := hρ
+  rw [hWspt] at hgraph h0W
+  -- Steps 8–9: `x₀ = 0 + x₀ ∈ spt V`, and `B̆_{γρ}(x₀) ∩ spt V` is an `n`-dimensional `C¹`
+  -- submanifold by the graph lemma.
+  refine ⟨by simpa using h0W, γ * ρ, mul_pos hγ hρ, ?_⟩
+  exact Submission.rsod_isC1Submanifold_ball_inter_graph n ℓ q u x₀ (γ * ρ) V.support
+    (mul_pos hγ hρ) hu hgraph
 
 end Submission
 
