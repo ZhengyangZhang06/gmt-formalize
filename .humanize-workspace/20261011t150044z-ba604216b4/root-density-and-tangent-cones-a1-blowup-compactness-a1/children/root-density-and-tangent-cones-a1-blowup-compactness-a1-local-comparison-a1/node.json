@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "depth": 3,
+  "title": "Local comparison inequality for minimizing currents with nearly isometric retractions (Simon 7.2.4 (1)–(11), Remark 7.2.5(2))",
+  "statement": "Let P, m ∈ ℕ with n := m + 1 < P. For j ∈ ℕ let U_j ⊆ ℝ^P be open, A_j ⊆ ℝ^P, S_j ∈ 𝒟_n(U_j) and Ŝ_j ∈ 𝒟_n(ℝ^P); let C ∈ 𝒟_n(ℝ^P) and ρ_j ∈ ℝ. Assume: (1) every S_j is minimizing in A_j (IsMinimizingIn S_j A_j) and spt S_j ⊆ A_j; (2) for every R ∈ ℝ there is c ∈ [0, ∞) with M_{B_R(0)}(S_j) ≤ c for all large j; (3) for every G > 0 there are maps π_j : ℝ^P → ℝ^P such that, for all large j, π_j is C¹ on B_G(0), maps B_G(0) into A_j, is the identity on A_j ∩ B_G(0) and satisfies |π_j(y)| ≤ 2|y| on B_G(0), and such that for every η > 0, for all large j, |π_j(y) − π_j(z)| ≤ (1 + η)|y − z| for y, z ∈ B_G(0); (4) C and every Ŝ_j are integer multiplicity, sup_j (M_W(Ŝ_j) + M_W(∂Ŝ_j)) < ∞ for every bounded open W ⊆ ℝ^P, and Ŝ_j ⇀ C in ℝ^P (WeaklyConvergesOn); (5) ρ_j → ∞, closedBall(0, ρ_j) ⊆ U_j, and Ŝ_j(ω) = currentEval(S_j, ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ B_{ρ_j}(0). Then for every compact K ⊆ ℝ^P, every ε > 0 and every strictly increasing ψ : ℕ → ℕ there are an open W ⊆ ℝ^P with K ⊆ W ⊆ {y : dist(y, K) < ε} (thickening ε K) and a strictly increasing φ' : ℕ → ℕ such that limsup_i M_W(S_{ψ(φ'(i))}) ≤ M_W(S) for every integer multiplicity S ∈ 𝒟_n(ℝ^P) with ∂S = ∂C (SameBoundary S C) and spt(S − C) ⊆ K.",
+  "lean_statement": "∀ (P m : ℕ) (Us As : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), m + 1 < P → (∀ j, IsOpen (Us j)) → (∀ j, IsMinimizingIn (Ss j) (As j)) → (∀ j, (Ss j).support ⊆ As j) → (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (Ss j).massOn (ball 0 R) ≤ c) → (∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid P → Euclid P, (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (As j) ∧ (∀ y ∈ As j ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖) → IsIntegerMultiplicity C → (∀ j, IsIntegerMultiplicity (Ŝ j)) → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ŝ j).massOn W + (Ŝ j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ŝ C → Tendsto ρ atTop atTop → (∀ j, closedBall (0 : Euclid P) (ρ j) ⊆ Us j) → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → ∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W",
+  "lean_name": "dtc_bc_local_comparison",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.measure_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.measure_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1-a1"
+}

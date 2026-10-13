@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.measure_locality-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "depth": 3,
+  "title": "Locality and uniqueness of the weight measure of integer multiplicity currents (Simon 6.3.2(3), 6.2.16)",
+  "statement": "Let P, n ∈ ℕ, let U₁, U₂, W ⊆ ℝ^P be open with W ⊆ U₁ and W ⊆ U₂, let T₁ ∈ 𝒟_n(U₁) and T₂ ∈ 𝒟_n(U₂) (GeometricCurrentOn) and let R₁ = (M₁, θ₁, ξ₁) ∈ IMRep U₁ n and R₂ = (M₂, θ₂, ξ₂) ∈ IMRep U₂ n be integer multiplicity representations with R₁.Represents T₁ and R₂.Represents T₂. Suppose that T₁ and T₂ agree on W, i.e. currentEval T₁ ω = currentEval T₂ ω for every ω ∈ 𝒟ⁿ(W) (TestFormOn W n: a smooth compactly supported n-form on ℝ^P with tsupport ω ⊆ W). Then the weight measures μ_i := R_i.measure = θ_i·Hⁿ⌞M_i (Hⁿ = μHE[n]) agree on W: μ₁.restrict W = μ₂.restrict W, i.e. μ₁(B ∩ W) = μ₂(B ∩ W) for every Borel set B ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U₁ U₂ W : Set (Euclid P)) (T₁ : GeometricCurrentOn U₁ n) (T₂ : GeometricCurrentOn U₂ n) (R₁ : IMRep U₁ n) (R₂ : IMRep U₂ n), IsOpen U₁ → IsOpen U₂ → IsOpen W → W ⊆ U₁ → W ⊆ U₂ → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn W n, currentEval T₁ (ω : DifferentialForm (Euclid P) n) = currentEval T₂ (ω : DifferentialForm (Euclid P) n)) → R₁.measure.restrict W = R₂.measure.restrict W",
+  "lean_name": "dtc_bc_measure_restrict_eq_of_eqOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-measure-locality-a1-a1"
+}

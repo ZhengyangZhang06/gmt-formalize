@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "depth": 3,
+  "title": "Codimension zero: blow-ups of an integer multiplicity n-current in ℝⁿ converge to c[[ℝⁿ]] (Constancy Theorem)",
+  "statement": "Let n ≥ 1, U ⊆ ℝⁿ open, T ∈ 𝒟_n(U) integer multiplicity (IsIntegerMultiplicity T), x ∈ U with x ∉ spt ∂T (x ∉ boundarySupport T), and λ_j > 0 (j ∈ ℕ) with λ_j → 0. Then there is C ∈ 𝒟_n(ℝⁿ) such that the blow-ups S_j := η_{x,λ_j#}T (blowUp T x λ_j) satisfy S_j ⇀ C in ℝⁿ (ConvergesWeakly), μ_{S_j} → μ_C for all integer multiplicity representations (MassMeasuresConverge), C is minimizing in ℝⁿ (IsMinimizingIn C univ; in particular C is integer multiplicity) and ∂C = 0 (BoundaryVanishes C). (In fact C = c[[ℝⁿ]] for some c ∈ ℤ.)",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (T : GeometricCurrentOn U n) (x : Euclid n), 0 < n → IsOpen U → IsIntegerMultiplicity T → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ C : GeometricCurrentOn (univ : Set (Euclid n)) n, ConvergesWeakly (fun j => blowUp T x (lams j) (hlams j).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams j) (hlams j).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C",
+  "lean_name": "dtc_bc_codim_zero",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.measure_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.measure_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-a1"
+}

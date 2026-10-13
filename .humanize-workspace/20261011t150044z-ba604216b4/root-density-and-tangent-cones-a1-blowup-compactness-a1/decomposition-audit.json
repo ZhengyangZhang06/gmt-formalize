@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "def HasApproximateTangentSpaceAt|def CountablyRectifiable|hasApproximateTangentSpaceAt_submodule|ae_eq_const_of_weak_coordinate_derivatives_zero|structure WeakDerivativesZero|def WeakDerivativesZero",
+        "lintegral_eq_lintegral_meas_(lt|le)|limsup_lintegral_le|lintegral_liminf_le|ext_of_generate_finite",
+        "rg -n 'compactness|Federer|slicing|flat metric|push.forward' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06 --glob '*.lean'",
+        "rg -n 'dtc_bc_' GMT .lake/packages/simongmt/Poincare --glob '*.lean'",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "GMT/Ch07/Submission.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/bc-independent-audit/Check.lean",
+        "/tmp/bc-independent-audit/Instances.lean",
+        "/tmp/bc-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "The frozen contract matches the workspace sources, and the Mathlib and SimonGMT revisions match their pins. All eight exact propositions independently elaborate in the comparator scope without child implementations. The uniform-mass supremum parses correctly; no Matrix/IsUnit construction occurs. Names are bare, distinct and unreserved, and dependencies are acyclic. Inherited declarations have matching accepted contracts and kernel-verification records. Checked library results use only standard axioms. The snapshot lacks the required general compactness, slicing, flat-convergence and non-affine push-forward theorems; their mathematical uses were checked against [Simon, Chapter 6](https://web.stanford.edu/class/math285/ts-gmt). The eight-way split is appropriate. An independently compiled conditional assembly proves the exact selected parent type from the proposed contracts, using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "measure_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including all domain and representation hypotheses. Equality of admissible evaluations gives equality on open subsets; compact exhaustion and finite-measure uniqueness establish the exact restriction equality. No circular dependence."
+    },
+    {
+      "key": "radon_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact limsup bound supplies eventual finiteness on the test function's support. Layer cake, Fatou and dominated reverse Fatou then prove convergence, including conversion to Bochner integrals. No unstated global finiteness assumption is needed."
+    },
+    {
+      "key": "local_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness makes the restricted chart image relatively open. The inverse-function construction yields a retraction whose derivative at x is orthogonal projection; derivative continuity and the mean-value inequality prove the stated Lipschitz estimates. The zero-dimensional case is covered."
+    },
+    {
+      "key": "blowup_hypotheses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all seven clauses using affine pullback, the inherited scaling and support results, finite density, and local_retraction. The rescaled retractions land in U ∩ N as required. Omitting the parent's dimension inequality and closure hypothesis is justified."
+    },
+    {
+      "key": "codim_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integer-valued top-dimensional density and mollification argument meet the pinned distributional-constancy theorem's hypotheses. Agreement on expanding balls proves both convergence conclusions and vanishing boundary. Constancy of compactly supported cycle differences proves minimality."
+    },
+    {
+      "key": "truncated_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The good-radius construction, slicing estimate and cutoff argument give global truncations with finite boundary mass and uniform local bounds, including exceptional initial indices. The cited compactness theorem applies. Expanding agreement regions establish every remaining output, including the zero boundary."
+    },
+    {
+      "key": "local_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normality hypotheses for flat convergence and slicing are checked. The retracted cycle is admissible, the secant argument establishes fixation of carrier tangent planes, and the finite outside-W contribution can be canceled. W and the extracted subsequence are chosen independently of the competitor, matching the conclusion's quantifier order."
+    },
+    {
+      "key": "minimizing_and_measures",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lower semicontinuity is justified on the exhausting domains. Measure locality extends the comparison inequality to each minimizing test region. The bad-subsequence argument establishes compact-set limsup bounds, and radon_criterion yields convergence for every representation. The proof does not assume unstated integer multiplicity of the sequence."
+    }
+  ],
+  "required_changes": []
+}
