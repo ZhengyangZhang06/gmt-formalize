@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cfe0967777f725ade0827d6e7ea8e1c43797203a681079fd29defcfc8d4df21c",
+  "git_delta": {
+    "base_commit": "eb98c8be4da42c6330d7e3171e6a48d4137b0785",
+    "candidate_commit": "9ada70060f45ccb3dc0915b981e72495b2a35c8e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_itt_bilipschitz_image_locfin",
+    "diff_sha256": "e4f1e0f7e88eb9c97ea9340cf7af2ea5cf8fb0d0e30db484c955653a0000e764",
+    "source_sha256": "80810be367f7b470e60a6aa038d4dcf0d939d63840a0cbf9bf23161b5717c138",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_itt_bilipschitz_image_locfin",
+      "statement": "∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ Λ' : NNReal), MeasurableSet M → M ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → φ ⁻¹' U = U → MeasurableSet (φ '' M) ∧ φ '' M ⊆ U ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (φ '' M ∩ C) ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
