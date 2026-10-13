@@ -591,6 +591,131 @@ theorem Submission.dorag_tes_gt_graph_measure_exceptional_set : ∀ (n k : ℕ) 
         _ = μHE[n].restrict (Φ '' (D \ Z)) := Measure.restrict_congr_set hae
     intro h _
     rw [hmeas]
+/-- Bounded transfer from a two-sided lower-integral comparison: let `Z` be measurable with
+`m(Z) ≤ a`, `m(D), ν(S) < ∞`, `c ≥ 0` and `s ≥ 0` integrable on `D`, and suppose that
+`∫⁻_{D∖Z} h dm ≤ ∫⁻_S h∘φ dν ≤ ∫⁻_{D∖Z} (1 + c s) h dm` for every measurable `h ≥ 0`.  Then
+(a) `∫⁻_D g dm ≤ ∫⁻_S g∘φ dν + G a` for measurable `0 ≤ g ≤ G`, and
+(b) `|∫_D g dm - ∫_S g∘φ dν| ≤ G (a + c ∫_D s dm)` for measurable `|g| ≤ G`.
+For (a), the part of `∫⁻_D g` over `D ∩ Z` is at most `G m(Z) ≤ G a`, and the part over `D ∖ Z`
+is at most `∫⁻_S g∘φ`.  For (b), bounded measurable functions are integrable on `D` and `S`, so
+for measurable `0 ≤ h ≤ G` the comparison passes to Bochner integrals and gives
+`-G a ≤ ∫_S h∘φ - ∫_D h ≤ G c ∫_D s`; this is applied to `g⁺` and `g⁻`, and `g = g⁺ - g⁻`. -/
+theorem Submission.dorag_tes_gt_bounded_transfer_of_lintegral_bounds : ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Nonempty X] (m : Measure X) (ν : Measure Y) (D Z : Set X) (S : Set Y) (φ : Y → X) (s : X → ℝ) (a c : ℝ), MeasurableSet D → MeasurableSet Z → Measurable φ → m D ≠ ∞ → ν S ≠ ∞ → m Z ≤ ENNReal.ofReal a → 0 ≤ a → 0 ≤ c → (∀ v, 0 ≤ s v) → IntegrableOn s D m → (∀ h : X → ℝ≥0∞, Measurable h → (∫⁻ v in D \ Z, h v ∂m) ≤ (∫⁻ y in S, h (φ y) ∂ν) ∧ (∫⁻ y in S, h (φ y) ∂ν) ≤ ∫⁻ v in D \ Z, ENNReal.ofReal (1 + c * s v) * h v ∂m) → (∀ (g : X → ℝ) (G : ℝ), Measurable g → (∀ v, 0 ≤ g v) → (∀ v, g v ≤ G) → (∫⁻ v in D, ENNReal.ofReal (g v) ∂m) ≤ (∫⁻ y in S, ENNReal.ofReal (g (φ y)) ∂ν) + ENNReal.ofReal (G * a)) ∧ ∀ (g : X → ℝ) (G : ℝ), Measurable g → (∀ v, |g v| ≤ G) → |(∫ v in D, g v ∂m) - (∫ y in S, g (φ y) ∂ν)| ≤ G * (a + c * (∫ v in D, s v ∂m)) := by
+  intro X Y _ _ _ m ν D Z S φ s a c hD hZ hφ hmD hνS hmZ ha hc hs hsD hcmp
+  obtain ⟨x₀⟩ := ‹Nonempty X›
+  have hmDZ : m (D ∩ Z) ≤ ENNReal.ofReal a := (measure_mono inter_subset_right).trans hmZ
+  refine ⟨fun g G hg hg0 hgG => ?_, fun g G hg hgG => ?_⟩
+  · have hG0 : 0 ≤ G := (hg0 x₀).trans (hgG x₀)
+    have h1 : ∫⁻ v in D ∩ Z, ENNReal.ofReal (g v) ∂m ≤ ENNReal.ofReal (G * a) :=
+      calc ∫⁻ v in D ∩ Z, ENNReal.ofReal (g v) ∂m ≤ ∫⁻ v in D ∩ Z, ENNReal.ofReal G ∂m :=
+            lintegral_mono fun v => ENNReal.ofReal_le_ofReal (hgG v)
+        _ = ENNReal.ofReal G * m (D ∩ Z) := setLIntegral_const _ _
+        _ ≤ ENNReal.ofReal G * ENNReal.ofReal a := by gcongr
+        _ = ENNReal.ofReal (G * a) := (ENNReal.ofReal_mul hG0).symm
+    have h2 := (hcmp (fun v => ENNReal.ofReal (g v)) (ENNReal.measurable_ofReal.comp hg)).1
+    calc ∫⁻ v in D, ENNReal.ofReal (g v) ∂m
+        = ∫⁻ v in D ∩ Z, ENNReal.ofReal (g v) ∂m + ∫⁻ v in D \ Z, ENNReal.ofReal (g v) ∂m :=
+          (lintegral_inter_add_sdiff _ D hZ).symm
+      _ ≤ ENNReal.ofReal (G * a) + ∫⁻ y in S, ENNReal.ofReal (g (φ y)) ∂ν := add_le_add h1 h2
+      _ = _ := add_comm _ _
+  · have hDZ : m.real (D ∩ Z) ≤ a := ENNReal.toReal_le_of_le_ofReal ha hmDZ
+    have hsDZ : IntegrableOn s (D \ Z) m := hsD.mono_set Set.sdiff_subset
+    have hint : ∀ (u : X → ℝ) (G : ℝ), Measurable u → (∀ v, ‖u v‖ ≤ G) →
+        IntegrableOn u D m ∧ IntegrableOn (fun y => u (φ y)) S ν := fun u G hu huG =>
+      ⟨Measure.integrableOn_of_bounded hmD hu.aestronglyMeasurable (ae_of_all _ huG),
+        Measure.integrableOn_of_bounded hνS (hu.comp hφ).aestronglyMeasurable
+          (ae_of_all _ fun y => huG (φ y))⟩
+    -- the key estimate `-G a ≤ ∫_S h∘φ - ∫_D h ≤ G c ∫_D s` for measurable `0 ≤ h ≤ G`
+    have key : ∀ (h : X → ℝ) (G : ℝ), Measurable h → (∀ v, 0 ≤ h v) → (∀ v, h v ≤ G) →
+        -(G * a) ≤ (∫ y in S, h (φ y) ∂ν) - ∫ v in D, h v ∂m ∧
+          (∫ y in S, h (φ y) ∂ν) - ∫ v in D, h v ∂m ≤ G * (c * ∫ v in D, s v ∂m) := by
+      intro h G hh hh0 hhG
+      have hG0 : 0 ≤ G := (hh0 x₀).trans (hhG x₀)
+      have hnorm : ∀ v, ‖h v‖ ≤ G := fun v => (Real.norm_of_nonneg (hh0 v)).trans_le (hhG v)
+      obtain ⟨hhD, hhS⟩ := hint h G hh hnorm
+      have hhDZ : IntegrableOn h (D \ Z) m := hhD.mono_set Set.sdiff_subset
+      have hshDZ : IntegrableOn (fun v => s v * h v) (D \ Z) m := by
+        refine Integrable.mono' (hsDZ.const_mul G)
+          (hsDZ.aestronglyMeasurable.mul hh.aestronglyMeasurable) (ae_of_all _ fun v => ?_)
+        rw [Real.norm_of_nonneg (mul_nonneg (hs v) (hh0 v)), mul_comm G]
+        exact mul_le_mul_of_nonneg_left (hhG v) (hs v)
+      have hwDZ : IntegrableOn (fun v => (1 + c * s v) * h v) (D \ Z) m := by
+        have e : (fun v => (1 + c * s v) * h v) = fun v => h v + c * (s v * h v) := by
+          funext v; ring
+        rw [e]
+        exact hhDZ.add (hshDZ.const_mul c)
+      obtain ⟨L1, L2⟩ := hcmp (fun v => ENNReal.ofReal (h v)) (ENNReal.measurable_ofReal.comp hh)
+      have L2' : ∫⁻ y in S, ENNReal.ofReal (h (φ y)) ∂ν ≤
+          ∫⁻ v in D \ Z, ENNReal.ofReal ((1 + c * s v) * h v) ∂m := by
+        refine L2.trans (le_of_eq (lintegral_congr fun v => ?_))
+        exact (ENNReal.ofReal_mul (add_nonneg zero_le_one (mul_nonneg hc (hs v)))).symm
+      have eDZ : ∫ v in D \ Z, h v ∂m = (∫⁻ v in D \ Z, ENNReal.ofReal (h v) ∂m).toReal :=
+        integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hh0) hhDZ.aestronglyMeasurable
+      have eS : ∫ y in S, h (φ y) ∂ν = (∫⁻ y in S, ENNReal.ofReal (h (φ y)) ∂ν).toReal :=
+        integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun y => hh0 (φ y))
+          hhS.aestronglyMeasurable
+      have eW : ∫ v in D \ Z, (1 + c * s v) * h v ∂m =
+          (∫⁻ v in D \ Z, ENNReal.ofReal ((1 + c * s v) * h v) ∂m).toReal :=
+        integral_eq_lintegral_of_nonneg_ae
+          (ae_of_all _ fun v => mul_nonneg (add_nonneg zero_le_one (mul_nonneg hc (hs v))) (hh0 v))
+          hwDZ.aestronglyMeasurable
+      have B1 : ∫ v in D \ Z, h v ∂m ≤ ∫ y in S, h (φ y) ∂ν := by
+        rw [eDZ, eS]
+        exact ENNReal.toReal_mono hhS.lintegral_lt_top.ne L1
+      have B2 : ∫ y in S, h (φ y) ∂ν ≤ ∫ v in D \ Z, (1 + c * s v) * h v ∂m := by
+        rw [eS, eW]
+        exact ENNReal.toReal_mono hwDZ.lintegral_lt_top.ne L2'
+      have eD : ∫ v in D, h v ∂m = (∫ v in D ∩ Z, h v ∂m) + ∫ v in D \ Z, h v ∂m :=
+        (integral_inter_add_sdiff hZ hhD).symm
+      have I0 : 0 ≤ ∫ v in D ∩ Z, h v ∂m := integral_nonneg hh0
+      have I1 : ∫ v in D ∩ Z, h v ∂m ≤ G * a := by
+        have hn : ‖∫ v in D ∩ Z, h v ∂m‖ ≤ G * m.real (D ∩ Z) :=
+          norm_setIntegral_le_of_norm_le_const
+            ((measure_mono inter_subset_left).trans_lt hmD.lt_top) fun v _ => hnorm v
+        exact (le_abs_self _).trans ((Real.norm_eq_abs _ ▸ hn).trans
+          (mul_le_mul_of_nonneg_left hDZ hG0))
+      have eW' : ∫ v in D \ Z, (1 + c * s v) * h v ∂m =
+          (∫ v in D \ Z, h v ∂m) + c * ∫ v in D \ Z, s v * h v ∂m := by
+        have e : ∀ v, (1 + c * s v) * h v = h v + c * (s v * h v) := fun v => by ring
+        simp_rw [e]
+        rw [integral_add hhDZ (hshDZ.const_mul c), integral_const_mul]
+      have I2 : ∫ v in D \ Z, s v * h v ∂m ≤ G * ∫ v in D, s v ∂m :=
+        calc ∫ v in D \ Z, s v * h v ∂m ≤ ∫ v in D \ Z, G * s v ∂m :=
+              setIntegral_mono hshDZ (hsDZ.const_mul G) fun v => by
+                rw [mul_comm G]
+                exact mul_le_mul_of_nonneg_left (hhG v) (hs v)
+          _ = G * ∫ v in D \ Z, s v ∂m := integral_const_mul G _
+          _ ≤ G * ∫ v in D, s v ∂m :=
+              mul_le_mul_of_nonneg_left (setIntegral_mono_set hsD (ae_of_all _ hs)
+                (LE.le.eventuallySubset Set.sdiff_subset)) hG0
+      have I3 : c * ∫ v in D \ Z, s v * h v ∂m ≤ c * (G * ∫ v in D, s v ∂m) :=
+        mul_le_mul_of_nonneg_left I2 hc
+      constructor
+      · linarith
+      · linarith
+    have hG0 : 0 ≤ G := (abs_nonneg _).trans (hgG x₀)
+    have hp : ∀ v, max (g v) 0 ≤ G := fun v => max_le ((le_abs_self _).trans (hgG v)) hG0
+    have hn : ∀ v, max (-g v) 0 ≤ G := fun v => max_le ((neg_le_abs _).trans (hgG v)) hG0
+    have hpm : Measurable fun v => max (g v) 0 := hg.max measurable_const
+    have hnm : Measurable fun v => max (-g v) 0 := hg.neg.max measurable_const
+    obtain ⟨hpD, hpS⟩ := hint _ G hpm fun v =>
+      (Real.norm_of_nonneg (le_max_right _ _)).trans_le (hp v)
+    obtain ⟨hnD, hnS⟩ := hint _ G hnm fun v =>
+      (Real.norm_of_nonneg (le_max_right _ _)).trans_le (hn v)
+    obtain ⟨k1, k2⟩ := key _ G hpm (fun v => le_max_right _ _) hp
+    obtain ⟨k3, k4⟩ := key _ G hnm (fun v => le_max_right _ _) hn
+    have eD : ∫ v in D, g v ∂m = (∫ v in D, max (g v) 0 ∂m) - ∫ v in D, max (-g v) 0 ∂m := by
+      rw [← integral_sub hpD hnD]
+      exact integral_congr_ae (ae_of_all _ fun v => (max_zero_sub_max_neg_zero_eq_self (g v)).symm)
+    have eS : ∫ y in S, g (φ y) ∂ν =
+        (∫ y in S, max (g (φ y)) 0 ∂ν) - ∫ y in S, max (-g (φ y)) 0 ∂ν := by
+      rw [← integral_sub hpS hnS]
+      exact integral_congr_ae
+        (ae_of_all _ fun y => (max_zero_sub_max_neg_zero_eq_self (g (φ y))).symm)
+    rw [eD, eS, abs_le]
+    constructor
+    · linarith
+    · linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
