@@ -5199,17 +5199,6 @@ theorem Submission.frt_td_plane_closedBall_hausdorff :
   -- Steps 6–7: Haar scaling `vol (B_r(0)) = r^n vol (B°_1(0))` (`r ≥ 0`; no `0 < n` needed).
   rw [Measure.addHaar_closedBall _ _ hr, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr,
     unitBallVolume, mul_comm]
-  · rintro ⟨hx, S, hS, hxS⟩
-    rw [Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx] at hS
-    -- A point of `G(N,n)` is determined by its plane: `S = ofSubmodule S.plane = T`.
-    have hST : S = T := by
-      rw [← S.ofSubmodule_plane, ← T.ofSubmodule_plane]
-      congr 1
-      exact SetLike.coe_injective hS
-    rw [hST] at hxS
-    exact ⟨hxS, hx⟩
-  · rintro ⟨hxT, hx⟩
-    exact ⟨hx, T, (Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx).symm, hxT⟩
 /-- The plane varifold `v(T)` of an `n`-plane `T ∈ G(N,n)` has mass `ω_n r^n` over the cylinder
 `B_r(0) × G(N,n)` (step 8 of the proof that a stationary cone with density `≥ θ₀` a.e. is `θ₀ v(T)`,
 used for Simon Ch. 8, 5.5): `v(T)(B_r(0) × G(N,n)) = H^n(B_r(0) ∩ T)`, and `H^n` is transported to
