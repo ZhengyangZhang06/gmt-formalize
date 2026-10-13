@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "62ba2fbafb0e552f2979c3bb34ae0c988a0c03fe7bf57fe90f6cfeae079f6371",
+  "git_delta": {
+    "base_commit": "b019ebe6e80f9cf1d700f2d4116dabe44b07f025",
+    "candidate_commit": "cde7c8bf38263bde33596ae28aa1c7a6944b5d53",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_vl_integrable_of_tsupport_subset",
+    "diff_sha256": "06b587d17775741997c4d18b581cbee9c90fcab3fd712afd8584742f20fb360b",
+    "source_sha256": "dbd61387626c3dcfe67bcdeeed0f89c374f55fece6e516c9afef6000dc2cad7d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_vl_integrable_of_tsupport_subset",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable f ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
