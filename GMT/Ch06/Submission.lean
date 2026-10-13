@@ -807,6 +807,76 @@ theorem Submission.iwl_cr_support_lemmas :
       rw [hZ ω, e1, e2]
       ring
 
+/-- **Mass limits of currents with summable increments** (Simon Ch. 6, proof of 5.1, I.5,
+printed (19)).  If `A_{ν+1} = A_ν + B_ν` and `∑_ν M(B_ν) < ∞`, then `A_ν ⇀ A' = A_0 + ∑_μ B_μ`,
+`M(A') ≤ M(A_0) + ∑_ν M(B_ν)`, `M(A' - A_ν) ≤ ∑_μ M(B_{μ+ν})`, and `spt A' ⊆ F` for every closed
+`F` containing all `spt A_ν`.  Each tail `∑_μ B_{μ+ν}` is a current of mass at most
+`∑_μ M(B_{μ+ν})` (`fiw_ims_series_current`); telescoping gives
+`A_ν(ω) = A_0(ω) + ∑_{μ<ν} B_μ(ω)`, so `A' - A_ν` is the `ν`-th tail; supports pass to weak
+limits (`iwl_cr_support_lemmas`). -/
+theorem Submission.deformation_telescope_limit : ∀ (N k : ℕ) (A B : ℕ → GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ ν ω, A (ν + 1) ω = A ν ω + B ν ω) → (∑' ν, (B ν).mass) < ∞ → ∃ A' : GeometricCurrentOn (univ : Set (Eucl N)) k, WeaklyConvergesOn A A' ∧ A'.mass ≤ (A 0).mass + ∑' ν, (B ν).mass ∧ (∀ (ν : ℕ) (Dν : GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ ω, Dν ω = A' ω - A ν ω) → Dν.mass ≤ ∑' μ, (B (μ + ν)).mass) ∧ ∀ F : Set (Eucl N), IsClosed F → (∀ ν, (A ν).support ⊆ F) → A'.support ⊆ F := by
+  intro N k A B hAB hB
+  -- For every shift `ν`, the tail series `∑_μ B_{μ+ν}` is a current `S ν` with
+  -- `M(S ν) ≤ ∑' μ, M(B_{μ+ν})` (`fiw_ims_series_current` with all coefficients `1`).
+  have hS : ∀ ν : ℕ, ∃ S : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω, HasSum (fun μ => B (μ + ν) ω) (S ω)) ∧ S.mass ≤ ∑' μ, (B (μ + ν)).mass := by
+    intro ν
+    -- `M_W(B_{μ+ν}) ≤ M(B_{μ+ν})`, and the shifted sum is at most the full sum `< ∞`.
+    have hfin : ∀ W, CompactlyContainedOpen W (univ : Set (Eucl N)) →
+        (∑' μ, (((fun _ : ℕ => (1 : ℤ)) μ).natAbs : ℝ≥0∞) * (B (μ + ν)).massOn W) < ∞ := by
+      intro W _
+      simp only [Int.natAbs_one, Nat.cast_one, one_mul]
+      calc ∑' μ, (B (μ + ν)).massOn W ≤ ∑' μ, (B (μ + ν)).mass :=
+            ENNReal.tsum_le_tsum fun μ => (B (μ + ν)).massOn_mono (subset_univ W)
+        _ ≤ ∑' μ, (B μ).mass :=
+            ENNReal.tsum_comp_le_tsum_of_injective (add_left_injective ν) fun μ => (B μ).mass
+        _ < ∞ := hB
+    obtain ⟨S, hsum, hmass⟩ := Submission.fiw_ims_series_current N k univ isOpen_univ
+      (fun μ => B (μ + ν)) (fun _ => 1) hfin
+    refine ⟨S, fun ω => ?_, ?_⟩
+    · simpa only [Int.cast_one, one_mul] using hsum ω
+    · simpa only [GeometricCurrentOn.mass, Int.natAbs_one, Nat.cast_one, one_mul] using hmass univ
+  choose S hSsum hSmass using hS
+  have hS0 : ∀ ω, HasSum (fun μ => B μ ω) (S 0 ω) := fun ω => by
+    simpa only [add_zero] using hSsum 0 ω
+  -- The limit `A' = A_0 + S 0`, i.e. `A'(ω) = A_0(ω) + ∑_μ B_μ(ω)`.
+  obtain ⟨A', hA'⟩ : ∃ A' : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      ∀ ω, A' ω = A 0 ω + S 0 ω :=
+    ⟨⟨(A 0).toCurrent + (S 0).toCurrent, fun ωs h => by
+      simpa only [LinearMap.add_apply, add_zero] using
+        ((A 0).continuous' ωs h).add ((S 0).continuous' ωs h)⟩, fun ω => rfl⟩
+  -- Telescoping: `A_ν(ω) = A_0(ω) + ∑_{μ<ν} B_μ(ω)`.
+  have htel : ∀ ν ω, A ν ω = A 0 ω + ∑ μ ∈ Finset.range ν, B μ ω := by
+    intro ν ω
+    induction ν with
+    | zero => simp
+    | succ ν ih => rw [hAB, ih, Finset.sum_range_succ, add_assoc]
+  -- `A_ν(ω)` are the partial sums of a convergent series with sum `A'(ω)`.
+  have hconv : WeaklyConvergesOn A A' := by
+    intro ω
+    rw [hA']
+    exact ((hS0 ω).tendsto_sum_nat.const_add (A 0 ω)).congr fun ν => (htel ν ω).symm
+  refine ⟨A', hconv, ?_, fun ν Dν hD => ?_, fun F hF hAF =>
+    Submission.iwl_cr_support_lemmas.2.1 N k univ isOpen_univ F A A' hF hAF hconv⟩
+  · -- `A'(ω) ≤ M(A_0) + M(S 0)` for every admissible `ω`, and `M(S 0) ≤ ∑' ν, M(B_ν)`.
+    have hS0mass : (S 0).mass ≤ ∑' ν, (B ν).mass := by
+      simpa only [add_zero] using hSmass 0
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    calc ENNReal.ofReal (A' ω) = ENNReal.ofReal (A 0 ω + S 0 ω) := by rw [hA']
+      _ ≤ ENNReal.ofReal (A 0 ω) + ENNReal.ofReal (S 0 ω) := ENNReal.ofReal_add_le
+      _ ≤ (A 0).mass + (S 0).mass := add_le_add ((A 0).le_massOn hω) ((S 0).le_massOn hω)
+      _ ≤ (A 0).mass + ∑' ν, (B ν).mass := add_le_add le_rfl hS0mass
+  · -- `Dν = S ν`: `A'(ω) - A_ν(ω) = ∑_{μ ≥ ν} B_μ(ω) = ∑_μ B_{μ+ν}(ω)`.
+    have hDS : Dν = S ν := by
+      ext ω
+      have h := (hS0 ω).summable.sum_add_tsum_nat_add ν
+      rw [(hSsum ν ω).tsum_eq, (hS0 ω).tsum_eq] at h
+      rw [hD, hA', htel ν ω, ← h]
+      ring
+    rw [hDS]
+    exact hSmass ν
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
