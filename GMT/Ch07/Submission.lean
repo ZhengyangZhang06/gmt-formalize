@@ -451,6 +451,74 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Points of `spt T` carry mass** (Simon 6.2.5, 6.2.11; cf. 6.2.12): if `x ∈ spt T` and
+`W ∋ x` is open, then `M_W(T) > 0`.  Otherwise `T` vanishes on `W`, so a small ball about `x`
+with compact closure in `U ∩ W` lies in the zero region of `T`, contradicting `x ∈ spt T`.  Hence
+`T(ω) ≠ 0` for some `ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ W`, and `sgn(T(ω)) C⁻¹ ω`, `C ≥ sup |ω|`, is
+admissible for `M_W(T)` with positive value. -/
+theorem Submission.codim1_rdo_massOn_pos_of_mem_support : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P), IsOpen U → IsOpen W → x ∈ W → x ∈ T.support → 0 < T.massOn W := by
+  intro P n U W T x hU hW hxW hxT
+  obtain ⟨hxU, hxZ⟩ := hxT
+  -- `T` does not vanish on `W`: otherwise `B_r(x)`, with `B̄_r(x) ⊆ U ∩ W` compact, would lie in
+  -- the zero region of `T`
+  have hnv : ¬ T.VanishesOn W := by
+    intro hvan
+    apply hxZ
+    obtain ⟨r, hr, hrUW⟩ :=
+      nhds_basis_closedBall.mem_iff.1 ((hU.inter hW).mem_nhds ⟨hxU, hxW⟩)
+    refine mem_sUnion.2 ⟨ball x r, ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self hr⟩
+    · rw [closure_ball x hr.ne']
+      exact isCompact_closedBall x r
+    · rw [closure_ball x hr.ne']
+      exact hrUW.trans inter_subset_left
+    · intro ω hω
+      exact hvan ω (hω.trans (ball_subset_closedBall.trans (hrUW.trans inter_subset_right)))
+  obtain ⟨ω, hωW, hω0⟩ : ∃ ω : TestFormOn U n,
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W ∧ T ω ≠ 0 := by
+    by_contra h
+    exact hnv fun ω hω => Classical.byContradiction fun h' => h ⟨ω, hω, h'⟩
+  -- `z ↦ |ω(z)|` is continuous with compact support, hence bounded by some `C > 0`
+  have hcont : Continuous fun α : Covector (Euclid P) n => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact (continuous_eval_const _).pow 2
+    · exact continuous_const
+  obtain ⟨C, hC⟩ := (hcont.comp (ContDiff.continuous ω.2.1.1)).bounded_above_of_compact_support
+    (ω.2.1.2.comp_left (covectorEuclideanNorm_zero P n))
+  have hC1 : 0 < max C 1 := lt_of_lt_of_le one_pos (le_max_right C 1)
+  have hωC : ∀ z, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) z) ≤ max C 1 :=
+    fun z => (le_abs_self _).trans ((hC z).trans (le_max_left C 1))
+  -- `|cα| = |c| |α|`
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  -- `c ω` with `|c| = C⁻¹` is admissible for `M_W(T)`; it has positive value if `c T(ω) > 0`
+  have key : ∀ c : ℝ, |c| = (max C 1)⁻¹ → 0 < c * T ω → 0 < T.massOn W := by
+    intro c hc hcω
+    have hmem : c • ω ∈ massAdmissibleOn U n W := by
+      refine ⟨?_, fun z => ?_⟩
+      · rw [Submodule.coe_smul]
+        exact (tsupport_smul_subset_right (fun _ => c) _).trans hωW
+      · rw [Submodule.coe_smul, Pi.smul_apply, hsmul, hc]
+        calc (max C 1)⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) z)
+            ≤ (max C 1)⁻¹ * max C 1 := mul_le_mul_of_nonneg_left (hωC z) (inv_nonneg.2 hC1.le)
+          _ = 1 := inv_mul_cancel₀ hC1.ne'
+    refine lt_of_lt_of_le ?_ (T.le_massOn hmem)
+    rw [ENNReal.ofReal_pos, map_smul, smul_eq_mul]
+    exact hcω
+  rcases hω0.lt_or_gt with h | h
+  · refine key (-(max C 1)⁻¹) ?_ (mul_pos_of_neg_of_neg (neg_lt_zero.2 (inv_pos.2 hC1)) h)
+    rw [abs_neg, abs_of_pos (inv_pos.2 hC1)]
+  · exact key (max C 1)⁻¹ (abs_of_pos (inv_pos.2 hC1)) (mul_pos (inv_pos.2 hC1) h)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
