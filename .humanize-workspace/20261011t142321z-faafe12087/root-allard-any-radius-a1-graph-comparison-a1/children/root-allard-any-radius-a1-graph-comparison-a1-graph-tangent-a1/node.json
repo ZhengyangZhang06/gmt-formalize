@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_comparison-a1.graph_tangent-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_comparison-a1",
+  "depth": 3,
+  "title": "Tangent planes along a C^1 graph piece, given the transfer of weight-null sets to parameters",
+  "statement": "Let n >= 1, l >= 0, U open in R^(n+l), V a contract rectifiable n-varifold in U with weight mu = V.weight, q a linear isometry of R^(n+l), Omega open in R^n, u : R^n -> R^l of class C^1 on Omega, and F(x) := q(graphPoint(x, u(x))). Assume that for every property P which holds mu-a.e., P(F(x)) holds for L^n-a.e. x in Omega. Then for L^n-a.e. x in Omega, V.tangentProj(F(x)) is the orthogonal projection onto the image under q of span{graphPoint(v, Du(x) v) : v in R^n} (Du(x) = fderiv u x).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → (∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂V.weight, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))) → ∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection",
+  "lean_name": "anyrad_gc_graph_tangentProj_ae",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.tangent_plane_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-tangent-plane-facts-a1-a1",
+      "result_commit": "a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-comparison-a1-graph-tangent-a1-a1"
+}
