@@ -451,6 +451,46 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `Hⁿ` on an affine `n`-plane is carried to Lebesgue measure by orthonormal coordinates: if `v` is
+orthonormal and `pL x = (⟨v₁, x⟩, …, ⟨vₙ, x⟩)`, then `pL_#(Hⁿ⌞(w + span v)) = Lⁿ` on `ℝⁿ`.  The
+plane is the range of the isometry `ι z = w + Σᵢ (zᵢ − ⟨vᵢ, w⟩) vᵢ`, and `pL ∘ ι = id`, so
+`pL_#(Hⁿ⌞(w + span v)) = pL_# ι_# Hⁿ = Hⁿ = Lⁿ` (`Isometry.map_euclideanHausdorffMeasure`,
+`EuclideanSpace.euclideanHausdorffMeasure_eq_volume`). -/
+theorem Submission.cbr_ci_pw_plane_map_volume : ∀ (P n : ℕ) (v : Fin n → Euclid P) (w : Euclid P) (pL : Euclid P →L[ℝ] Euclid n), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → Measure.map pL ((μHE[n]).restrict {y : Euclid P | y - w ∈ Submodule.span ℝ (Set.range v)}) = (volume : Measure (Euclid n)) := by
+  intro P n v w pL hv hpL
+  obtain ⟨ι, hι⟩ : ∃ ι : Euclid n → Euclid P,
+      ∀ z, ι z = w + ∑ i, (z i - inner ℝ (v i) w) • v i := ⟨_, fun _ => rfl⟩
+  have hiso : Isometry ι := by
+    refine Isometry.of_dist_eq fun z z' => ?_
+    have hsub : ι z - ι z' = ∑ i, (z i - z' i) • v i := by
+      simp only [hι, add_sub_add_left_eq_sub, ← Finset.sum_sub_distrib, ← sub_smul,
+        sub_sub_sub_cancel_right]
+    rw [dist_eq_norm, dist_eq_norm, hsub]
+    refine (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).1 ?_
+    rw [← real_inner_self_eq_norm_sq, hv.inner_sum, EuclideanSpace.real_norm_sq_eq]
+    simp [sq]
+  have hcomp : ⇑pL ∘ ι = id := by
+    funext z
+    refine PiLp.ext fun k => ?_
+    rw [comp_apply, hpL, hι, inner_add_right, hv.inner_right_fintype, id]
+    ring
+  have hrange : range ι = {y : Euclid P | y - w ∈ Submodule.span ℝ (Set.range v)} := by
+    ext y
+    constructor
+    · rintro ⟨z, rfl⟩
+      rw [mem_ofPred_eq, hι, add_sub_cancel_left]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · intro hy
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hy
+      have hcoef : ∀ i, pL y i - inner ℝ (v i) w = c i := by
+        intro i
+        rw [hpL, ← inner_sub_right, ← hc, hv.inner_right_fintype]
+      refine ⟨pL y, ?_⟩
+      simp only [hι, hcoef, hc, add_sub_cancel]
+  rw [← hrange, ← hiso.map_euclideanHausdorffMeasure,
+    Measure.map_map pL.measurable hiso.continuous.measurable, hcomp, Measure.map_id,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
