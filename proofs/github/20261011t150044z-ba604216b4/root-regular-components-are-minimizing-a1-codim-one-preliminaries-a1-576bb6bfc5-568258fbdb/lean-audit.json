@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "51c9f429ea5b9fced351e300e0b23c6a5e64ac8747668a8273048f35f51ac088",
+  "git_delta": {
+    "base_commit": "3ede8ff30be387ca4873eab2b5f69e6d4e3bf94e",
+    "candidate_commit": "f8e098abf98a86666926e4d1fa7c22b6a566a69a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_zdr_isolated_carrier_point",
+    "diff_sha256": "48538b7958c6798f7faa6f28f2d092798b66340edd0fa4e96b67e3e990d24925",
+    "source_sha256": "f6396c4f1cc9150f585f6073549d86f03a3c4684ae273ffea64f476bbd826c42",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_zdr_isolated_carrier_point",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0) (R : IMRep U 0) (y : Euclid P) (r c : ℝ), R.Represents T → 0 < r → ball y r ⊆ U → c ≠ 0 → (∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r → T ω = c * (ω : DifferentialForm (Euclid P) 0) y (fun i => i.elim0)) → y ∈ R.carrier ∧ R.carrier ∩ ball y r ⊆ {y}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
