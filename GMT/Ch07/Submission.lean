@@ -451,6 +451,20 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Simon Ch. 2, §4 (graph charts): for linear isometries `ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}`
+with `⟨ιv, ι'w⟩ = 0` and `u` of class `C¹` on `D = B_s(0)`, the graph map
+`Φ(v) = z + ιv + ι'u(v)` is `C¹` on `D`, and the adjoint `ι*` satisfies `ι*(Φ(v) − z) = v` for
+every `v`: `⟨ι*(ιv + ι'u(v)), e⟩ = ⟨ιv, ιe⟩ + ⟨ι'u(v), ιe⟩ = ⟨v, e⟩ + 0`. -/
+theorem Submission.dgce_graph_contDiffOn_left_inverse : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → ContDiffOn ℝ 1 (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) ∧ ∃ L : Euclid (n + k) →L[ℝ] Euclid n, ∀ v, L (z + ι v + ι' (u v) - z) = v := by
+  intro n k ι ι' u z s horth hu
+  -- `Φ = (z + ι·) + ι' ∘ u`: constants and linear isometries are smooth, `ι' ∘ u` is `C¹` on `D`
+  refine ⟨(contDiffOn_const.add ι.contDiff.contDiffOn).add (ι'.contDiff.comp_contDiffOn hu),
+    ContinuousLinearMap.adjoint ι.toContinuousLinearMap, fun v => ext_inner_right ℝ fun e => ?_⟩
+  -- `⟨ι*(Φ(v) − z), e⟩ = ⟨ιv + ι'u(v), ιe⟩ = ⟨v, e⟩ + ⟨ιe, ι'u(v)⟩ = ⟨v, e⟩`
+  rw [ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap, add_assoc,
+    add_sub_cancel_left, inner_add_left, LinearIsometry.inner_map_map,
+    real_inner_comm (ι e) (ι' (u v)), horth, add_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
