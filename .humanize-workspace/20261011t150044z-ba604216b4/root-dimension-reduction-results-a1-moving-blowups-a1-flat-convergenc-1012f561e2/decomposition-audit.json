@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmc_fcl|dimred_mbl_fc|rsd_cmr_support_subset_of_vanish' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "structure IMRep|def (measure|Represents|IsIntegerMultiplicity|WeaklyConvergesOn)|MultiVector|instance.*Sub|covectorEuclideanNorm",
+        "integral_withDensity_eq_integral_smul",
+        "withDensity_absolutelyContinuous",
+        "restrict_withDensity",
+        "enorm_integral_le_lintegral_enorm",
+        "tendsto_measure_iInter_atTop",
+        "exists_contMDiffMap_one_nhds_of_subset_interior",
+        "python3 -I /tmp/gmt_localize_independent_audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_localize_independent_audit/Types.lean > /tmp/gmt_localize_independent_audit/types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_localize_independent_audit/Verified.lean > /tmp/gmt_localize_independent_audit/verified.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-1012f561e2/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-1012f561e2/decomposition-v2.json",
+        "/tmp/gmt_localize_independent_audit.py",
+        "/tmp/gmt_localize_independent_audit/Types.lean",
+        "/tmp/gmt_localize_independent_audit/Verified.lean",
+        "/tmp/gmt_localize_independent_audit/verified.log"
+      ],
+      "conclusion": "The split is appropriate for the selected localization theorem. Project and library revisions match the pins. The snapshot contains no matching child declarations; reuse was independently checked against all seven comparator-passed checkpoints and their candidate sources. Each name is a bare identifier, has exactly one accepted owner, and retains its byte-identical frozen type. All seven types elaborate independently as propositions before child implementation. Their proofs compile with only propext, Classical.choice and Quot.sound. The dependency graph is acyclic, with imrep_restrict depending on imrep_data. The verbatim parent-supplied assembly compiles at the exact selected type, including the empty-W case; its only additional axiom is the explicitly recorded good_slice prerequisite. This conditional check does not certify that pending prerequisite. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dist_sublevel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including nonempty C and every real r ≤ δ₀. The proof places each closed sublevel inside a compact thickening contained in U, correctly covering negative r. It supplies the parent’s compact neighborhoods."
+    },
+    {
+      "key": "imrep_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conclusions follow from the stated IMRep fields, absolute continuity and the measurable NNReal density identity. The orientation bound remains conditional exactly as specified. No unstated openness, integrability or finiteness hypothesis is needed."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel restriction commutes with withDensity, and the carrier, multiplicity and orientation equalities give both claimed formulas. The sole dependency, imrep_data, supplies the action identity and is correctly directed and non-circular."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closed-support indicator argument proves the exact bound for arbitrary E and V. Its Bochner-integral norm inequality requires no omitted integrability assumption, and restriction is evaluated on the measurable test-form support. Taking the admissible supremum completes the proof."
+    },
+    {
+      "key": "mass_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The common admissible set, ENNReal.ofReal_add_le and the supremum definition prove the stated inequality, including infinite masses. This directly supplies the parent’s boundary-mass estimate."
+    },
+    {
+      "key": "support_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Relatively compact balls inside U ∖ K exclude every exterior point from the support. The identity support = K ∖ zeroRegion then establishes compactness. The proof matches the pinned support definition and also handles K = ∅."
+    },
+    {
+      "key": "weak_conv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The detailed cutoff estimate establishes measurability and integrability before subtracting integrals. Continuity from above controls the limit’s strict inner layers, while the stated concentration hypothesis controls the sequence. The cutoff product inherits compact support from the test form, so no openness of U, compactness of G or zero mass on the limiting level is silently assumed. The final epsilon estimate proves the exact weak-convergence conclusion."
+    }
+  ],
+  "required_changes": []
+}
