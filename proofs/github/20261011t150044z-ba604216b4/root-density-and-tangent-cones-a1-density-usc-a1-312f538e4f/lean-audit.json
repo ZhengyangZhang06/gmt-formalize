@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dc1ed2e729498ba736f419ccfff3c309719971bba02cb42641ed04cfdfb544cc",
+  "git_delta": {
+    "base_commit": "359aaecbe51024bf4220aca2f0d038882465aead",
+    "candidate_commit": "4cc9fd949b25364fc1c892f90a4aae30524f72bb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_density_usc",
+    "diff_sha256": "cb57218734977b33b429dc84800129ca038d1c2694c31abe844b54b0604653a2",
+    "source_sha256": "f6ee6a10f9dcc17f99fd930c4be7f03360ccc2bbc9fcea47d52331ff421cf099",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_density_usc",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → 0 < n → R.Represents T → R.HasLocallyBoundedMeanCurvature → ∃ Θ : Euclid P → ℝ, (∀ x ∈ U, HasMassDensity T x (Θ x)) ∧ UpperSemicontinuousOn Θ U",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
