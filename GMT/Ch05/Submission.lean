@@ -486,6 +486,57 @@ theorem allard52_gfz_graphPoint_inner : ∀ (n ℓ : ℕ) (x x' : Rn n) (y y' : 
     inner ℝ (graphPoint x y) (graphPoint x' y') = inner ℝ x x' + inner ℝ y y' := by
   intro n ℓ x x' y y'
   simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right]
+/-- Derivative at `0` of the Gram-formula projection `F(A) = J_A (τ(J_A) J_A)⁻¹ τ(J_A)`, where
+`J_A = ι + κ ∘ A`, `τ` is an abstract transpose (`⟪τ L w, v⟫ = ⟪w, L v⟫`), `ι` is isometric and
+`κ` has range orthogonal to that of `ι`.  Testing against every `u` (`ext_inner_right`) gives, for
+`π = τ ι`: `π ∘ ι = 1`, `π ∘ κ = 0` and `τ(κ ∘ H') ∘ ι = 0`.  As `A ↦ J_A` has derivative
+`compL κ`, the product rule (`HasFDerivAt.clm_comp`) shows that the Gram map `G_A = τ(J_A) ∘ J_A`
+has derivative `H' ↦ π ∘ κ ∘ H' + τ(κ ∘ H') ∘ ι = 0` at `0`, and `G_0 = 1`.  `Ring.inverse` is
+differentiable at the unit `1` (`differentiableAt_inverse`), so `A ↦ G_A⁻¹` has derivative `0`
+and value `1` at `0`; the product rule twice gives `ι ∘ τ(κ ∘ H) + κ ∘ H ∘ π`. -/
+theorem allard52_gfz_gram_fderiv_zero : ∀ (n ℓ : ℕ) (ι : Rn n →L[ℝ] Amb n ℓ)
+    (κ : Rn ℓ →L[ℝ] Amb n ℓ) (τ : (Rn n →L[ℝ] Amb n ℓ) →L[ℝ] (Amb n ℓ →L[ℝ] Rn n)),
+    (∀ (L : Rn n →L[ℝ] Amb n ℓ) (w : Amb n ℓ) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v)) →
+    (∀ v u : Rn n, inner ℝ (ι v) (ι u) = inner ℝ v u) →
+    (∀ (v : Rn n) (z : Rn ℓ), inner ℝ (ι v) (κ z) = 0) → ∀ H : Rn n →L[ℝ] Rn ℓ,
+    fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ =>
+      (ι + κ ∘L A) ∘L Ring.inverse (τ (ι + κ ∘L A) ∘L (ι + κ ∘L A)) ∘L τ (ι + κ ∘L A)) 0 H =
+      ι ∘L τ (κ ∘L H) + κ ∘L H ∘L τ ι := by
+  intro n ℓ ι κ τ hT hI hO H
+  have hπι : τ ι ∘L ι = 1 := by
+    ext1 v
+    refine ext_inner_right ℝ fun u => ?_
+    rw [ContinuousLinearMap.comp_apply, hT, hI, ContinuousLinearMap.one_def,
+      ContinuousLinearMap.id_apply]
+  have hπκ : ∀ z : Rn ℓ, τ ι (κ z) = 0 := fun z =>
+    ext_inner_right ℝ fun u => by rw [hT, real_inner_comm, hO, inner_zero_left]
+  have hτκι : ∀ (H' : Rn n →L[ℝ] Rn ℓ) (v : Rn n), τ (κ ∘L H') (ι v) = 0 := fun H' v =>
+    ext_inner_right ℝ fun u => by rw [hT, ContinuousLinearMap.comp_apply, hO, inner_zero_left]
+  set K := ContinuousLinearMap.compL ℝ (Rn n) (Rn ℓ) (Amb n ℓ) κ with hK
+  have hJ : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ => ι + κ ∘L A) K 0 :=
+    K.hasFDerivAt.const_add ι
+  have hτJ : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ => τ (ι + κ ∘L A)) (τ ∘L K) 0 :=
+    τ.hasFDerivAt.comp (0 : Rn n →L[ℝ] Rn ℓ) hJ
+  have hG : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ => τ (ι + κ ∘L A) ∘L (ι + κ ∘L A))
+      (0 : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] Rn n →L[ℝ] Rn n) 0 := by
+    convert hτJ.clm_comp hJ using 1
+    ext H' v
+    simp [hK, hπκ, hτκι]
+  have hG0 : τ (ι + κ ∘L (0 : Rn n →L[ℝ] Rn ℓ)) ∘L (ι + κ ∘L 0) = 1 := by
+    rw [ContinuousLinearMap.comp_zero, add_zero, hπι]
+  have hR : HasFDerivAt (fun A : Rn n →L[ℝ] Rn ℓ =>
+      Ring.inverse (τ (ι + κ ∘L A) ∘L (ι + κ ∘L A)))
+      (0 : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] Rn n →L[ℝ] Rn n) 0 := by
+    have hinv : DifferentiableAt ℝ (Ring.inverse : (Rn n →L[ℝ] Rn n) → (Rn n →L[ℝ] Rn n))
+        (τ (ι + κ ∘L (0 : Rn n →L[ℝ] Rn ℓ)) ∘L (ι + κ ∘L 0)) := by
+      rw [hG0]
+      exact differentiableAt_inverse isUnit_one
+    have := hinv.hasFDerivAt.comp (0 : Rn n →L[ℝ] Rn ℓ) hG
+    rwa [ContinuousLinearMap.comp_zero] at this
+  have hF := hJ.clm_comp (hR.clm_comp hτJ)
+  rw [hF.fderiv]
+  ext v
+  simp [hK, hπι]
 
 end Submission
 
