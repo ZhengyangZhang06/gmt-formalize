@@ -4327,6 +4327,80 @@ theorem Submission.slicing_im_ll_gradient_weak_star :
   rw [abs_sub_comm (∫ w in Ω, fderiv ℝ u w (b w))] at h₅
   linarith
 
+/-- Simon Ch. 6, proof of Lemma 4.5(2), (1): if the differentiable `L`-Lipschitz `g_k` converge
+uniformly to `h`, whose tangential gradient on `(M, θ)` is `G`, then `∫_M Dg_k(Y) dHⁿ` tends to
+`∫_M ⟨G, Y⟩ dHⁿ` for every integrable tangent field `Y`.  `M` is cut into pieces on disjoint
+`C¹` chart images, where `range DΦ` is the weighted tangent plane; on each piece both integrals
+are parameter integrals against one integrable field, which converge by the weak-* convergence
+of the chart gradients, and dominated convergence sums the pieces. -/
+theorem Submission.slicing_im_ll_tangential_weak_limit : ∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen U → IsRectifiableTriple U n M θ ξ → ∀ (h : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), LipschitzWith L h → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∀ Y : Eucl P → Eucl P, Integrable Y ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q → Y x ∈ Q) → ∀ g : ℕ → Eucl P → ℝ, (∀ k, Differentiable ℝ (g k)) → (∀ k, LipschitzWith L (g k)) → TendstoUniformly g h atTop → Tendsto (fun k => ∫ x in M, fderiv ℝ (g k) x (Y x) ∂(μHE[n] : Measure (Eucl P))) atTop (𝓝 (∫ x in M, inner ℝ (G x) (Y x) ∂(μHE[n] : Measure (Eucl P)))) := by
+  intro P n U M θ ξ hU hT h L G hh hG hGL hTG Y hY hYtan g hgd hgL hgu
+  -- `C¹` charts `Φ j`, Lipschitz and antilipschitz on open `Ω j`, cover `M` up to an
+  -- `Hⁿ`-null set (Simon Ch. 3, 1.2).
+  obtain ⟨Φ, Ω, hΩ, hΦ, hLip, hanti, hcover⟩ :=
+    Submission.lpf_countably_rectifiable_c1_cover P n M hT.countablyRectifiable
+  -- Each chart image is Borel: `Φ j` is continuous and injective on the open set `Ω j`.
+  have himg : ∀ j, MeasurableSet (Φ j '' Ω j) := by
+    intro j
+    obtain ⟨κ, hκ, hκΦ⟩ := hanti j
+    refine (hΩ j).measurableSet.image_of_continuousOn_injOn (hΦ j).continuous.continuousOn
+      fun w hw w' hw' hww' => ?_
+    have h₁ := hκΦ w hw w' hw'
+    rw [hww', sub_self, norm_zero] at h₁
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right h₁ hκ))
+  -- Disjoint Borel pieces `V j ⊆ Φ j '' Ω j`; they cover `M` up to an `Hⁿ`-null set.
+  set V : ℕ → Set (Eucl P) := disjointed fun j => Φ j '' Ω j with hV
+  have hVm : ∀ j, MeasurableSet (V j) := MeasurableSet.disjointed himg
+  have hnull : ((μHE[n] : Measure (Eucl P)).restrict M) (⋃ j, V j)ᶜ = 0 := by
+    rw [Measure.restrict_apply (MeasurableSet.iUnion hVm).compl, hV, iUnion_disjointed,
+      inter_comm, ← sdiff_eq]
+    exact hcover
+  -- The integrands and their integrable majorant `L |Y|` (`|Dg_k| ≤ L`, `|G| ≤ L`).
+  have hb : Integrable (fun x => (L : ℝ) * ‖Y x‖) ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    hY.norm.const_mul _
+  have hFb : ∀ k x, ‖fderiv ℝ (g k) x (Y x)‖ ≤ (L : ℝ) * ‖Y x‖ := fun k x =>
+    ((fderiv ℝ (g k) x).le_opNorm (Y x)).trans
+      (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ (hgL k)) (norm_nonneg _))
+  have hF : ∀ k, Integrable (fun x => fderiv ℝ (g k) x (Y x))
+      ((μHE[n] : Measure (Eucl P)).restrict M) := fun k =>
+    hb.mono' ((ContinuousLinearMap.id ℝ (Eucl P →L[ℝ] ℝ)).aestronglyMeasurable_comp₂
+      (measurable_fderiv ℝ (g k)).aestronglyMeasurable hY.aestronglyMeasurable)
+      (ae_of_all _ (hFb k))
+  have hFlim : Integrable (fun x => inner ℝ (G x) (Y x))
+      ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    hb.mono' (continuous_inner.comp_aestronglyMeasurable₂ (g := fun a b => inner ℝ a b)
+      hG.aestronglyMeasurable hY.aestronglyMeasurable) (ae_of_all _ fun x =>
+      (norm_inner_le_norm _ _).trans (mul_le_mul_of_nonneg_right (hGL x) (norm_nonneg _)))
+  -- Reduce to the convergence on each piece (dominated convergence for the series).
+  refine Submission.slicing_im_ll_twl_partition_tendsto (Eucl P)
+    ((μHE[n] : Measure (Eucl P)).restrict M) V (fun x => (L : ℝ) * ‖Y x‖)
+    (fun k x => fderiv ℝ (g k) x (Y x)) (fun x => inner ℝ (G x) (Y x)) hVm
+    (disjoint_disjointed _) hnull hb hF (fun k => ae_of_all _ (hFb k)) hFlim fun j => ?_
+  -- The piece `A := V j ∩ M ⊆ Φ j '' Ω j`.
+  rw [Measure.restrict_restrict (hVm j)]
+  have hAΦ : V j ∩ M ⊆ Φ j '' Ω j := inter_subset_left.trans (disjointed_subset _ j)
+  -- For `Hⁿ`-a.e. `x = Φ j w ∈ A`, `range DΦ j (w)` is the weighted tangent plane of `(M, θ)`,
+  -- so it contains `Y x` and `h` has the derivative `⟨G x, u⟩` along each of its vectors `u`.
+  have hwtA := ae_restrict_of_ae_restrict_of_subset (subset_inter inter_subset_right hAΦ)
+    (Submission.lpf_weighted_tangent_on_c1_chart P n U M θ (Φ j) (Ω j) hU hT.subset
+      hT.nullMeasurableSet hT.pos hT.integrableOn (hΩ j) (hΦ j) (hanti j))
+  -- Both integrals over `A` as parameter integrals against one integrable field `c`.
+  obtain ⟨c, hc, hcf, hch⟩ := Submission.slicing_im_ll_twl_chart_representation P n (Φ j) (Ω j)
+    (V j ∩ M) h L G Y (hΩ j) (hΦ j) (hLip j) (hanti j) hAΦ
+    ((hVm j).nullMeasurableSet.inter hT.nullMeasurableSet) hh hG hGL
+    ((show IntegrableOn Y M (μHE[n] : Measure (Eucl P)) from hY).mono_set inter_subset_right) (by
+      filter_upwards [hwtA, ae_restrict_of_ae_restrict_of_subset inter_subset_right hTG,
+        ae_restrict_of_ae_restrict_of_subset inter_subset_right hYtan] with x h₁ h₂ h₃ w hw hwx
+      exact ⟨h₃ _ (h₁ w hw hwx), (h₂ _ (h₁ w hw hwx)).2⟩)
+  -- Weak-* convergence of the chart gradients `D(g_k ∘ Φ j) → D(h ∘ Φ j)` against `c`:
+  -- `g_k ∘ Φ j → h ∘ Φ j` uniformly on `Ω j`, all `L K`-Lipschitz there.
+  obtain ⟨K, hK⟩ := hLip j
+  rw [hch]
+  exact (Submission.slicing_im_ll_gradient_weak_star n (Ω j) (L * K) (h ∘ Φ j)
+    (fun k => g k ∘ Φ j) (hΩ j) (hh.comp_lipschitzOnWith hK)
+    (fun k => (hgL k).comp_lipschitzOnWith hK) (hgu.comp (Φ j)).tendstoUniformlyOn c hc).congr
+    fun k => (hcf (g k) L (hgd k) (hgL k)).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
