@@ -428,6 +428,49 @@ theorem Submission.dgc_pm_lattice_tubes_disjoint :
         _ = 1 := by norm_num
     linarith
 
+/-- Vitali volume bound (Simon Ch. 6, §5, proof of 5.1, printed (4), pp. 163–164): if
+`0 < r(b) ≤ R` on `S ⊆ ℝᵏ` and every `u ⊆ S` with pairwise disjoint closed balls
+`B̄_{r(b)}(b)` is countable with `∑_{b ∈ u} r(b)ᵏ ≤ M`, then `Lᵏ(S) ≤ 10ᵏ M`.
+The 5-times covering lemma (closed balls, `τ = 5`) gives such a `u` with
+`S ⊆ ⋃_{b ∈ u} B̄_{5r(b)}(b)`, and `Lᵏ(B̄_{5r(b)}(b)) ≤ (10 r(b))ᵏ`.  Only monotonicity and
+countable subadditivity of the outer measure are used, so `S` need not be measurable. -/
+theorem Submission.dgc_pm_vitali_volume_bound :
+    ∀ (ι : Type) [Fintype ι] (S : Set (EuclideanSpace ℝ ι)) (r : EuclideanSpace ℝ ι → ℝ)
+      (R M : ℝ), (∀ b ∈ S, 0 < r b ∧ r b ≤ R) →
+      (∀ u ⊆ S, u.PairwiseDisjoint (fun b => closedBall b (r b)) →
+        u.Countable ∧ ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) ≤ ENNReal.ofReal M) →
+      volume S ≤ ENNReal.ofReal (10 ^ Fintype.card ι * M) := by
+  intro ι _ S r R M hr hpack
+  -- 5-times covering: a disjoint subfamily `u ⊆ S` whose enlargements `B̄_{5r(b)}(b)` cover `S`.
+  obtain ⟨u, huS, hdisj, hcov⟩ :=
+    Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall S (fun b => b) r R
+      (fun a ha => (hr a ha).2) 5 (by norm_num)
+  obtain ⟨hcount, hsum⟩ := hpack u huS hdisj
+  have hSsub : S ⊆ ⋃ b ∈ u, closedBall b (5 * r b) := by
+    intro a ha
+    obtain ⟨b, hb, hsub⟩ := hcov a ha
+    exact mem_biUnion hb (hsub (mem_closedBall_self (hr a ha).1.le))
+  -- `Lᵏ(B̄_{5r(b)}(b)) ≤ (2 · 5r(b))ᵏ = 10ᵏ r(b)ᵏ`.
+  have hball : ∀ b ∈ u, volume (closedBall b (5 * r b)) ≤
+      ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal (r b ^ Fintype.card ι) := by
+    intro b hb
+    have hrb := (hr b (huS hb)).1
+    calc volume (closedBall b (5 * r b))
+        ≤ ENNReal.ofReal ((2 * (5 * r b)) ^ Fintype.card ι) :=
+          Submission.dgc_pm_ball_volume_le ι b _ (by positivity)
+      _ = ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal (r b ^ Fintype.card ι) := by
+        rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow]
+        ring_nf
+  calc volume S ≤ volume (⋃ b ∈ u, closedBall b (5 * r b)) := measure_mono hSsub
+    _ ≤ ∑' b : u, volume (closedBall (b : EuclideanSpace ℝ ι) (5 * r b)) :=
+        measure_biUnion_le _ hcount _
+    _ ≤ ∑' b : u, ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal (r b ^ Fintype.card ι) :=
+        ENNReal.tsum_le_tsum fun b => hball b b.2
+    _ = ENNReal.ofReal (10 ^ Fintype.card ι) * ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) :=
+        ENNReal.tsum_mul_left
+    _ ≤ ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal M := by gcongr
+    _ = ENNReal.ofReal (10 ^ Fintype.card ι * M) := (ENNReal.ofReal_mul (by positivity)).symm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
