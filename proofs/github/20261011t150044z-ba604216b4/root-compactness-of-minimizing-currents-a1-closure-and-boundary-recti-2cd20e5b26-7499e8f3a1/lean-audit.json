@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c814bee75a316de618cf8c79b160a711a618798c9bc00923b9f00ef07d8c86d1",
+  "git_delta": {
+    "base_commit": "0916a631e191569320da0bbfa4b2d1b4183f18b9",
+    "candidate_commit": "4f44b9339ae6e2328f5cae8263924f08a432cfba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_mu_uniform_of_equilipschitz",
+    "diff_sha256": "c10134cd8e1f59b671d2c7735b076a43a8690823c4798a58f081a593e0b6798b",
+    "source_sha256": "f11906d69d574f17bec1668c9640f52750ee7f355c2145a3eea356379a725af3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_mu_uniform_of_equilipschitz",
+      "statement": "∀ (n : ℕ) (K : Set (Euclid n)) (F : ℕ → Euclid n → ℝ) (a L : ℝ), IsCompact K → (∀ x ∈ K, Tendsto (fun k => F k x) atTop (𝓝 a)) → (∀ᶠ k in atTop, ∀ x ∈ K, ∀ x' ∈ K, |F k x - F k x'| ≤ L * dist x x') → TendstoUniformlyOn F (fun _ => a) atTop K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
