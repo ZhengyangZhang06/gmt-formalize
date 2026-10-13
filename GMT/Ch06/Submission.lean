@@ -436,6 +436,73 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
 
+/-- Horizontal slices of a compatible form: for `j_s(x) = (s, x)`, the slice `θ_s = j_s^# θ` is a
+test form on `ℝ^m` with `θ_s(x)(v) = θ(s, x)((0, v₁), …, (0, v_q))`, and `θ_s = (G ∘ j_s)^# ω`
+at every `x` with `(s, x) ∈ N` whenever `θ = G^# ω` on `N` (chain rule). -/
+theorem Submission.dph_sh_slice_compatible_testForm :
+    ∀ (m m' q : ℕ) (G : Eucl (m + 1) → Eucl m') (ω : DifferentialForm (Eucl m') q)
+      (θ : TestFormOn (univ : Set (Eucl (m + 1))) q) (N : Set (Eucl (m + 1))) (s : ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G →
+      (∀ y ∈ N, (θ : DifferentialForm (Eucl (m + 1)) q) y =
+        (ω (G y)).compContinuousLinearMap (fderiv ℝ G y)) →
+      ∃ θs : TestFormOn (univ : Set (Eucl m)) q,
+        (∀ (x : Eucl m) (v : Fin q → Eucl m), (θs : DifferentialForm (Eucl m) q) x v =
+          (θ : DifferentialForm (Eucl (m + 1)) q)
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+            (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧
+        ∀ x : Eucl m, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ N →
+          (θs : DifferentialForm (Eucl m) q) x =
+            (ω ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap
+              (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x) := by
+  intro m m' q G ω θ N s hG hθN
+  -- 1. `j_s x = (s, x)` has derivative `L v = (0, v)` everywhere, so it is `C^∞`.
+  let L : Eucl m →L[ℝ] Eucl (m + 1) :=
+    ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm : (Fin (m + 1) → ℝ) →L[ℝ] Eucl (m + 1)).comp
+      ((0 : Eucl m →L[ℝ] ℝ).finCons
+        (EuclideanSpace.equiv (Fin m) ℝ : Eucl m →L[ℝ] (Fin m → ℝ)))
+  let j : Eucl m → Eucl (m + 1) := fun x =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))
+  have hjd : ∀ x, HasFDerivAt j L x := fun x =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.hasFDerivAt.comp x
+      ((hasFDerivAt_const s x).finCons (EuclideanSpace.equiv (Fin m) ℝ).hasFDerivAt)
+  have hjs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) j := by
+    refine contDiff_infty_iff_fderiv.2 ⟨fun x => (hjd x).differentiableAt, ?_⟩
+    rw [show fderiv ℝ j = fun _ => L from funext fun x => (hjd x).fderiv]
+    exact contDiff_const
+  -- 2. `j_s` is proper: the continuous map `tl (y₀, y') = y'` is a left inverse.
+  let tl : Eucl (m + 1) → Eucl m := fun y =>
+    (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))
+  have htl : Continuous tl :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.continuous.comp <| continuous_pi fun i : Fin m =>
+      (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (m + 1)) ℝ).continuous
+  have htlj : ∀ x, tl (j x) = x := fun x => by
+    simp only [tl, j, ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  have hprop : ∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ univ →
+      IsCompact (j ⁻¹' K ∩ univ) := fun K hK _ => by
+    rw [inter_univ]
+    exact (hK.image htl).of_isClosed_subset (hK.isClosed.preimage hjs.continuous)
+      fun x hx => ⟨j x, hx, htlj x⟩
+  -- 3. The slice `θ_s = j_s^# θ ∈ 𝒟^q(ℝ^m)`; it equals `θ(j_s x) ∘ L` everywhere.
+  obtain ⟨θs, -, N₀, -, hN₀, -, -, hθsN, -⟩ :=
+    Submission.iwl_sp_exists_compatible_testForm m (m + 1) q univ univ univ j isOpen_univ
+      subset_rfl hjs hprop θ
+  have hθs : ∀ x, (θs : DifferentialForm (Eucl m) q) x =
+      ((θ : DifferentialForm (Eucl (m + 1)) q) (j x)).compContinuousLinearMap L := fun x => by
+    rw [hθsN x (hN₀ (mem_univ x)), (hjd x).fderiv]
+  refine ⟨θs, fun x v => by rw [hθs x]; rfl, fun x hx => ?_⟩
+  -- 4. Chain rule `D(G ∘ j_s)(x) = DG(j_s x) ∘ L`, and `θ = G^# ω` at `j_s x ∈ N`.
+  have hGj : HasFDerivAt (fun x : Eucl m => G (j x)) ((fderiv ℝ G (j x)).comp L) x :=
+    ((hG.differentiable (by simp)) (j x)).hasFDerivAt.comp x (hjd x)
+  rw [hθs x, hGj.fderiv, hθN (j x) hx]
+  ext v
+  rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
