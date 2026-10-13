@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.product_exists-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1",
+  "depth": 5,
+  "title": "Existence, uniqueness, mass bound and support of the product [[0,1]]×X of a finite-mass current (supplied steps 5–6)",
+  "statement": "For all m, k ∈ ℕ and every X ∈ D_k(ℝ^m) with M(X) < ∞ there is Z ∈ D_{k+1}(ℝ^{m+1}) such that: (a) ProdChar(X, Z), i.e. Z(η) = ∫_0^1 X(φ(s)) ds for every η ∈ D^{k+1}(ℝ^{m+1}) and every φ : ℝ → D^k(ℝ^m) with φ(s)(x)(v) = η(cons(s,x))(Fin.cons e₀ (fun i => ι(v i))) for all s ∈ [0,1], x ∈ ℝ^m, v : Fin k → ℝ^m; (b) every Z′ ∈ D_{k+1}(ℝ^{m+1}) with ProdChar(X, Z′) equals Z; (c) M(Z) ≤ M(X); (d) spt Z ⊆ {y ∈ ℝ^{m+1} : t(y) ∈ [0,1], tl(y) ∈ spt X}, where t(y) := EuclideanSpace.equiv (Fin (m+1)) ℝ y 0 and tl(y) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ y)). Here D^q = TestFormOn univ q, D_q = GeometricCurrentOn univ q, M = mass, spt = support, cons, ι, e₀ as above.",
+  "lean_statement": "∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k), X.mass < ∞ → ∃ Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1), (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) ∧ (∀ Z' : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1), (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z' η = ∫ s in (0 : ℝ)..1, X (φ s)) → Z' = Z) ∧ Z.mass ≤ X.mass ∧ Z.support ⊆ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support}",
+  "lean_name": "dph_iprod_exists",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+    "root.isoperimetric-a1.vanish_off_support-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.current_criterion-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1-a1",
+      "result_commit": "143edefdefb78884021e674a1258fa4be2c3d315",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.current_criterion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-f62a462e6c-a1"
+}
