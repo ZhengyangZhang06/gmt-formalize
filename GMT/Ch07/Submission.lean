@@ -451,6 +451,86 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
+`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
+`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
+the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
+theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
+  intro P n τ b hτ hb α
+  set L := Submodule.span ℝ (Set.range τ)
+  -- `τ` is a basis `e` of `L`
+  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
+  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
+    rw [Module.Basis.span_apply hτ.linearIndependent i]
+  -- the restriction `α_L` of `α` to `L`
+  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
+  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
+  have h1 : α b = αL b' := rfl
+  have h2 : α τ = αL e := by
+    show α τ = α (fun i => (e i : Euclid P))
+    congr 1
+    funext i
+    exact (he i).symm
+  -- coordinates of `b'` in `e` are the inner products with `τ`
+  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
+    intro i j
+    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
+      have := congrArg (Subtype.val) (e.sum_repr (b' j))
+      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
+      exact this.symm
+    rw [hs, hτ.inner_right_fintype]
+  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
+    ext i j
+    rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
+  -- `α_L = α_L(e) • det_e`
+  have h3 : αL b' = αL e * e.det b' := by
+    conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
+    rfl
+  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+
+/-- Sign lemma for unit orientations (Simon 6.1.1; used for the slice orientation
+`ξ ⌞ ∇^M f/|∇^M f|` of 6.4.3 in the slicing step of the proof of 7.4.3): if
+`ζ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `ρ` is an orthonormal `m`-frame in `Q`, then
+`ζ = ρ₁ ∧ ⋯ ∧ ρₘ` or `ζ = -ρ₁ ∧ ⋯ ∧ ρₘ`.  The change of frame `M = (⟨τᵢ, ρⱼ⟩)` satisfies
+`Mᵀ M = I`, so `det M = ±1`, and `β(ρ) = det M · β(τ)` for every `m`-covector `β`. -/
+theorem Submission.dor_lmbsf_io_orientation_frame_sign : ∀ (P m : ℕ) (ζ : MultiVector P m) (Q : Submodule ℝ (Euclid P)) (ρ : Fin m → Euclid P), IsUnitOrientationOf ζ Q → Orthonormal ℝ ρ → (∀ j, ρ j ∈ Q) → (∀ β : Covector (Euclid P) m, ζ β = β ρ) ∨ ∀ β : Covector (Euclid P) m, ζ β = -β ρ := by
+  intro P m ζ Q ρ hζ hρ hρQ
+  obtain ⟨τ, hτ, hspan, hsign⟩ := hζ
+  set M : Matrix (Fin m) (Fin m) ℝ := Matrix.of fun i j => inner ℝ (τ i) (ρ j) with hM
+  have hρspan : ∀ j, ρ j ∈ Submodule.span ℝ (Set.range τ) := fun j => hspan ▸ hρQ j
+  -- `β(ρ) = det M · β(τ)`
+  have hdet : ∀ β : Covector (Euclid P) m, β ρ = M.det * β τ :=
+    Submission.dgoj_covector_eq_det_mul_of_mem_span P m τ ρ hτ hρspan
+  -- Parseval in `span τ`: `⟨x, y⟩ = ∑ᵢ ⟨τᵢ, x⟩ ⟨τᵢ, y⟩`
+  have hparseval : ∀ x y : Euclid P, y ∈ Submodule.span ℝ (Set.range τ) →
+      inner ℝ x y = ∑ i, inner ℝ (τ i) x * inner ℝ (τ i) y := by
+    intro x y hy
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hy
+    simp only [hτ.inner_right_fintype, inner_sum, inner_smul_right]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [real_inner_comm, mul_comm]
+  -- `M` is orthogonal, so `det M = ±1`
+  have hMM : M.transpose * M = 1 := by
+    ext j k
+    rw [Matrix.mul_apply, Matrix.one_apply]
+    simp only [Matrix.transpose_apply, hM, Matrix.of_apply]
+    rw [← hparseval (ρ j) (ρ k) (hρspan k)]
+    exact orthonormal_iff_ite.1 hρ j k
+  have hdet2 : M.det * M.det = 1 := by
+    have := congrArg Matrix.det hMM
+    rwa [Matrix.det_mul, Matrix.det_transpose, Matrix.det_one] at this
+  have hpm : M.det = 1 ∨ M.det = -1 := by
+    have h0 : (M.det - 1) * (M.det + 1) = 0 := by linear_combination hdet2
+    rcases mul_eq_zero.1 h0 with h | h
+    · left; linarith
+    · right; linarith
+  rcases hsign with h | h <;> rcases hpm with hd | hd
+  · left; intro β; rw [h, hdet, hd, one_mul]
+  · right; intro β; rw [h, hdet, hd]; ring
+  · right; intro β; rw [h, hdet, hd, one_mul]
+  · left; intro β; rw [h, hdet, hd]; ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
