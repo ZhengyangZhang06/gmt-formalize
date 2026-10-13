@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|open|namespace|end)|abbrev (Rn|Amb)|def (graphPoint|graphOver)|axiom|sorry",
+        "LipschitzOnWith.norm_div_le",
+        "theorem coe_sqrt",
+        "theorem EuclideanSpace.norm_sq_eq",
+        "theorem ContinuousOn.aemeasurable",
+        "theorem map_apply_of_aemeasurable",
+        "theorem restrict_apply'",
+        "theorem lintegral_map'",
+        "theorem lintegral_smul_measure",
+        "theorem lintegral_mono'",
+        "theorem le_iff ",
+        "tdo_gl_graph_map_lipschitzOn|tdo_gl_lintegral_image_le",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-lintegral-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-lintegral-a1/decomposition-v1.json",
+        "/tmp/tdo-gl-independent-audit-a4236ja4/ChallengeTypes.lean",
+        "/tmp/tdo-gl-independent-audit-a4236ja4/Split.lean"
+      ],
+      "conclusion": "The split is appropriate: the independent coordinate estimate and image-integral inequality cover the selected proof, with acyclic empty child dependency lists. The handoff and DAG agree with the selected frozen parent. Snapshot revisions match the installed Mathlib and pinned SimonGMT package; inspected source files match their pinned versions. The normalization, arbitrary-set Hausdorff image bound, restricted measurability, measure comparison, and integral identities have precisely the required hypotheses. Neither proposed name is reserved in the DAG; snapshot project/Mathlib searches found no occurrence. Both bare names and one-line propositions pass validation. Fresh Lean checks confirm that the types elaborate before either child is declared, and that the supplied proofs and comparator-style exact checks succeed for both children and the unchanged parent. All three proofs use only propext, Classical.choice, and Quot.sound. Euclidean norms, volume, scalar powers, and square-root coercions match the prose. The classical image estimate is also corroborated by [Falconer, Chapter 2, equation (2.9)](https://www.ma.imperial.ac.uk/~jswlamb/M345PA46/F03%20chap%202.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_map_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact Lean proposition. Coordinate subtraction and the Euclidean sum-of-squares identity, followed by the Lipschitz estimate and justified square-root operations, prove the stated constant. No measurability or positive-dimension assumption is needed. The proof is complete, independently formalizable, and uses no child or ancestor theorem."
+    },
+    {
+      "key": "lipschitz_image_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including both measures and all measurability hypotheses. Every proof step is justified: the image bound applies to arbitrary subsets of D; measurable D gives restricted AEMeasurability; comparison on measurable test sets requires no measurability of F(D); integral monotonicity, scaling, and push-forward substitution finish the exact claim. Zero constants, zero dimensions, and infinite integrals are covered. No circular reliance occurs. Specializing to the first child's graph map and converting the constant proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

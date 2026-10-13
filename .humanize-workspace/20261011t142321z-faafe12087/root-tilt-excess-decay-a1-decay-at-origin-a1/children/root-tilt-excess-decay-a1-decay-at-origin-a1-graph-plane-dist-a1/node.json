@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Dimension and distance estimates for a rotated linear graph plane",
+  "statement": "Let n, l be natural numbers, q a linear isometry equivalence of R^{n+l}, A : R^n -> R^l a continuous linear map with Hilbert-Schmidt norm |A| := hsNorm A, and S := span{q(graphPoint(v, A v)) : v in R^n}. Then (i) dim S = n; (ii) dist(x, S) <= dist(x, rotatedPlane q) + |A| ||x|| for every x in R^{n+l}; (iii) dist(q(graphPoint(x', y)) - q(graphPoint(0, c)), S) <= ||y - (c + A x')|| for all x' in R^n and y, c in R^l; (iv) ||x'|| <= ||q(graphPoint(x', y)) - q(graphPoint(0, c))|| for the same x', y, c; (v) ||q(graphPoint(0, c))|| = ||c|| for every c in R^l. Here dist(z, P) = infDist z P.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ), Module.finrank ℝ (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))) = n ∧ (∀ x : Amb n ℓ, infDist x (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ infDist x (rotatedPlane q : Set (Amb n ℓ)) + hsNorm A * ‖x‖) ∧ (∀ (x' : Rn n) (y c : Rn ℓ), infDist (q (graphPoint x' y) - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ ‖y - (c + A x')‖) ∧ (∀ (x' : Rn n) (y c : Rn ℓ), ‖x'‖ ≤ ‖q (graphPoint x' y) - q (graphPoint (0 : Rn n) c)‖) ∧ ∀ c : Rn ℓ, ‖q (graphPoint (0 : Rn n) c)‖ = ‖c‖",
+  "lean_name": "tdo_graph_plane_dist",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1-a1"
+}
