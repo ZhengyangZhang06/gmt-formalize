@@ -1023,6 +1023,53 @@ theorem Submission.dor_lmbsf_pc_slice_area_tonelli : ∀ (P n : ℕ) (Φ : Eucli
     rw [← he.lintegral_comp hHm]
     exact (lintegral_prod _ hHe.aemeasurable).symm
 
+/-- **Co-area formula for a patch parametrized over the slices `{w(0) = t}`** (Simon Ch. 2, §6).
+Let `S ⊆ ℝⁿ⁺¹` be Borel, `Φ : ℝⁿ⁺¹ → ℝᴾ` differentiable with injective `DΦ(w)` at every `w ∈ S`
+and injective on `S`, and let `G(Φ(w)) ∈ DΦ(w)(ℝⁿ⁺¹)` with `⟨G(Φ(w)), DΦ(w)e⟩ = e(0)` for
+`w ∈ S`.  Then for Borel `φ ≥ 0`, `t ↦ ∫_{Φ(S ∩ {w(0) = t})} φ dHⁿ` is a.e.-measurable and
+`∫_ℝ ∫_{Φ(S ∩ {w(0) = t})} φ dHⁿ dt = ∫_{Φ(S)} |G| φ dHⁿ⁺¹`.
+Let `J(w)`, `J'(w)` be the Gram-determinant Jacobians of `DΦ(w)` on `e₀, …, eₙ` and on
+`e₁, …, eₙ`.  Slicing gives `∫_ℝ ∫_{Φ(S ∩ {w(0) = t})} φ dHⁿ dt = ∫_S J'(w) φ(Φ(w)) dw`, the area
+formula gives `∫_{Φ(S)} |G| φ dHⁿ⁺¹ = ∫_S J(w) |G(Φ(w))| φ(Φ(w)) dw`, and at `w ∈ S` the vector
+`u = G(Φ(w))` lies in the span of the `aₗ = DΦ(w)eₗ` with `⟨u, aₗ⟩ = δₗ₀`, so the Gram cofactor
+identity `det(⟨aᵢ₊₁, aⱼ₊₁⟩) = |u|² det(⟨aᵢ, aⱼ⟩)` gives `J'(w) = |u| J(w)`. -/
+theorem Submission.dor_lmbsf_pc_param_coarea : ∀ (P n : ℕ) (Φ : Euclid (n + 1) → Euclid P) (S : Set (Euclid (n + 1))) (G : Euclid P → Euclid P), MeasurableSet S → (∀ w ∈ S, DifferentiableAt ℝ Φ w) → (∀ w ∈ S, Injective (fderiv ℝ Φ w)) → InjOn Φ S → (∀ w ∈ S, G (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (Φ w)) (fderiv ℝ Φ w e) = e 0) → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) = ∫⁻ x in Φ '' S, ‖G x‖ₑ * φ x ∂μHE[n + 1] := by
+  intro P n Φ S G hS hd hinj hInj hG φ hφ
+  -- slicing: the slice integral is a.e.-measurable in `t` and integrates to `∫_S J' · φ ∘ Φ`
+  obtain ⟨hmeas, heq⟩ :=
+    Submission.dor_lmbsf_pc_slice_area_tonelli P n Φ S hS hd hinj hInj φ hφ
+  refine ⟨hmeas, ?_⟩
+  -- area formula with weight `|G| φ`: `∫_{Φ(S)} |G| φ dHⁿ⁺¹ = ∫_S J · (|G| φ) ∘ Φ`
+  rw [heq, (Submission.codim1_lura_gram_area_formula (n + 1) P Φ).2 S hS hd hinj hInj
+    (fun x => ‖G x‖ₑ * φ x)]
+  -- the integrands agree on `S`: `J'(w) = |G(Φ(w))| J(w)`
+  refine setLIntegral_congr_fun hS fun w hw => ?_
+  obtain ⟨⟨v, hv⟩, hinner⟩ := hG w hw
+  set a : Fin (n + 1) → Euclid P := fun i => fderiv ℝ Φ w (EuclideanSpace.single i 1)
+  -- `u = G(Φ(w)) = DΦ(w)v = Σₗ vₗ aₗ` lies in the span of the `aₗ`
+  have hspan : G (Φ w) ∈ Submodule.span ℝ (Set.range a) := by
+    rw [Submodule.mem_span_range_iff_exists_fun]
+    refine ⟨fun i => v i, ?_⟩
+    have hv' : fderiv ℝ Φ w v = G (Φ w) := hv
+    rw [← hv']
+    have hvsum : v = ∑ i, v i • EuclideanSpace.single i (1 : ℝ) := by
+      ext j
+      simp [Finset.sum_apply, Pi.single_apply, Finset.sum_ite_eq]
+    conv_rhs => rw [hvsum]
+    simp [a, map_sum, map_smul]
+  -- `⟨u, aₗ⟩ = eₗ(0) = δₗ₀`
+  have ha0 : inner ℝ (G (Φ w)) (a 0) = 1 := by
+    simp [a, hinner]
+  have hak : ∀ k : Fin n, inner ℝ (G (Φ w)) (a k.succ) = 0 := by
+    intro k
+    simp [a, hinner, Fin.succ_ne_zero]
+  -- Gram cofactor identity, then square roots
+  have hgram := Submission.dor_lmbsf_pc_gram_det_succ_eq P n a (G (Φ w)) hspan ha0 hak
+  simp only [a] at hgram
+  rw [hgram, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _),
+    ENNReal.ofReal_mul (norm_nonneg _), ofReal_norm]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
