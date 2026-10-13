@@ -444,6 +444,200 @@ theorem Submission.slicing_im_coarea_cc_null_of_small_majorants :
   -- Hence `g = 0` a.e., and `ν (S ∩ f ⁻¹' {t}) ≤ g t` gives the claim.
   filter_upwards [(lintegral_eq_zero_iff hg).1 hg0] with t ht
   exact le_antisymm ((le_iInf fun j => hFψ j t).trans_eq ht) bot_le
+/-- Near-optimal covers for `μH[d]` (`d ≥ 0`, `μH[d] A < ∞`): for `r, ε > 0`, `A` is covered by
+sets `S i ⊆ A` of diameter `≤ r` with `∑ᵢ (diam S i)^d ≤ μH[d] A + ε`, empty pieces counting `0`.
+By `hausdorffMeasure_apply` the `r`-content of `A` is `≤ μH[d] A < μH[d] A + ε`, so some cover
+`t` beats `μH[d] A + ε`; its traces `t i ∩ A` keep the cover and only shrink diameters. -/
+theorem Submission.slicing_im_coarea_eil_near_optimal_cover :
+    ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (A : Set X) (r ε : ℝ≥0∞), 0 ≤ d → 0 < r → 0 < ε → (μH[d] : Measure X) A ≠ ∞ → ∃ S : ℕ → Set X, (∀ i, S i ⊆ A) ∧ A ⊆ ⋃ i, S i ∧ (∀ i, ediam (S i) ≤ r) ∧ ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ d ≤ (μH[d] : Measure X) A + ε := by
+  intro X _ _ _ d A r ε hd hr hε hA
+  -- The `r`-content of `A` is at most `μH[d] A`, hence strictly below `μH[d] A + ε`.
+  have hlt : (⨅ (t : ℕ → Set X) (_ : A ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r),
+      ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ d) < (μH[d] : Measure X) A + ε := by
+    refine lt_of_le_of_lt ?_ (ENNReal.lt_add_right hA hε.ne')
+    rw [Measure.hausdorffMeasure_apply]
+    exact le_iSup₂ (f := fun ρ (_ : 0 < ρ) => ⨅ (t : ℕ → Set X) (_ : A ⊆ ⋃ n, t n)
+      (_ : ∀ n, ediam (t n) ≤ ρ), ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ d) r hr
+  -- So some cover `t` of `A` by sets of diameter `≤ r` has sum below `μH[d] A + ε`.
+  simp only [iInf_lt_iff] at hlt
+  obtain ⟨t, hAt, htr, hsum⟩ := hlt
+  -- Its traces `t i ∩ A` on `A` still cover `A`, have diameter `≤ r` and smaller terms
+  -- (`x ↦ x ^ d` is monotone as `d ≥ 0`; an empty trace contributes `0`).
+  refine ⟨fun i => t i ∩ A, fun i => inter_subset_right, fun x hx => ?_, fun i => ?_, ?_⟩
+  · obtain ⟨i, hi⟩ := mem_iUnion.1 (hAt hx)
+    exact mem_iUnion.2 ⟨i, hi, hx⟩
+  · exact (ediam_mono inter_subset_left).trans (htr i)
+  · refine le_trans (ENNReal.tsum_le_tsum fun i => iSup_le fun hne => ?_) hsum.le
+    exact le_iSup_of_le (hne.mono inter_subset_left)
+      (ENNReal.rpow_le_rpow (ediam_mono inter_subset_left) hd)
+/-- Simon Ch. 6, §4 (Eilenberg's inequality in the coarea step): if for every `k` the sets
+`T k i` (`i ∈ ℕ`) cover `s` and have diameter `≤ r k`, where `r k → 0`, then
+`μH[d](s) ≤ liminf_k ∑ᵢ (ediam T k i)^d`, empty pieces contributing `0`.  Reindexing the `k`-th
+cover by its nonempty pieces `{i // (T k i).Nonempty}` (a countable type) keeps a cover of `s`
+with the same diameter bound, so Mathlib's `hausdorffMeasure_le_liminf_tsum` bounds `μH[d](s)` by
+the liminf of the reindexed sums; each reindexed sum is at most the sum over all `i`. -/
+theorem Submission.slicing_im_coarea_eil_liminf_cover_bound :
+    ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r : ℕ → ℝ≥0∞) (T : ℕ → ℕ → Set X), Tendsto r atTop (𝓝 0) → (∀ k i, ediam (T k i) ≤ r k) → (∀ k, s ⊆ ⋃ i, T k i) → (μH[d] : Measure X) s ≤ liminf (fun k => ∑' i, ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d) atTop := by
+  intro X _ _ _ d s r T hr hT hs
+  calc (μH[d] : Measure X) s
+      ≤ liminf (fun k => ∑' j : {i // (T k i).Nonempty}, ediam (T k j) ^ d) atTop :=
+        Measure.hausdorffMeasure_le_liminf_tsum (ι := fun k => {i // (T k i).Nonempty}) d s r hr
+          (fun k j => T k j) (.of_forall fun k j => hT k j) (.of_forall fun k x hx => by
+            -- a piece containing `x` is nonempty
+            obtain ⟨i, hi⟩ := mem_iUnion.1 (hs k hx)
+            exact mem_iUnion.2 ⟨⟨i, x, hi⟩, hi⟩)
+    _ ≤ liminf (fun k => ∑' i, ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d) atTop :=
+        liminf_le_liminf (.of_forall fun k =>
+          (ENNReal.tsum_le_tsum fun j => le_iSup_of_le j.2 le_rfl).trans
+            (ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective
+              fun i => ⨆ (_ : (T k i).Nonempty), ediam (T k i) ^ d))
+/-- If `f` is `L`-Lipschitz on `A` and `S i ⊆ A`, a Borel `ψ : ℝ → [0, ∞]` majorizes the slice
+sums `∑ᵢ (ediam (S i ∩ A ∩ f⁻¹{t}))^m` over nonempty pieces, with
+`∫ ψ ≤ 2 L ∑ᵢ (ediam (S i))^(m+1)` (empty `S i` omitted).  Pick `a i = f xᵢ` with `xᵢ ∈ S i`
+(any `a i` if `S i = ∅`), so `f (S i) ⊆ Iᵢ := closedEBall (a i) (L · ediam (S i))`, and take
+`ψ = ∑ᵢ cᵢ 1_{Iᵢ}`, `cᵢ = (ediam (S i))^m` (`0` if `S i = ∅`): a nonempty piece
+`S i ∩ (A ∩ f⁻¹{t}) ∋ y` forces `t = f y ∈ Iᵢ`, and `λ¹(Iᵢ) = 2 L ediam (S i)`
+(`Real.volume_closedEBall`). -/
+theorem Submission.slicing_im_coarea_eil_cover_majorant :
+    ∀ (X : Type) [EMetricSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X) (S : ℕ → Set X),
+      LipschitzOnWith L f A → (∀ i, S i ⊆ A) →
+      ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧
+        (∀ t : ℝ, ∑' i, ⨆ (_ : (S i ∩ (A ∩ f ⁻¹' {t})).Nonempty),
+          ediam (S i ∩ (A ∩ f ⁻¹' {t})) ^ (m : ℝ) ≤ ψ t) ∧
+        ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) *
+          ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ ((m + 1 : ℕ) : ℝ) := by
+  intro X _ m f L A S hf hSA
+  -- Centres: `edist (f y) (a i) ≤ L · ediam (S i)` for `y ∈ S i` (`a i = f xᵢ` with `xᵢ ∈ S i`).
+  have hcen : ∀ i, ∃ a : ℝ, ∀ y ∈ S i, edist (f y) a ≤ L * ediam (S i) := by
+    intro i
+    rcases (S i).eq_empty_or_nonempty with h | ⟨x, hx⟩
+    · exact ⟨0, by simp [h]⟩
+    · exact ⟨f x, fun y hy => (hf (hSA i hy) (hSA i hx)).trans
+        (mul_le_mul_right (edist_le_ediam_of_mem hy hx) _)⟩
+  choose a ha using hcen
+  have hI : ∀ i, MeasurableSet (closedEBall (a i) (L * ediam (S i))) :=
+    fun i => isClosed_closedEBall.measurableSet
+  refine ⟨fun t => ∑' i, (closedEBall (a i) (L * ediam (S i))).indicator
+      (fun _ => ⨆ (_ : (S i).Nonempty), ediam (S i) ^ (m : ℝ)) t,
+    Measurable.tsum fun i => measurable_const.indicator (hI i), fun t => ?_, ?_⟩
+  · -- A nonempty slice piece `S i ∩ (A ∩ f⁻¹{t}) ∋ y` gives `t = f y ∈ Iᵢ`.
+    refine ENNReal.tsum_le_tsum fun i => iSup_le fun ⟨y, hyS, _, hyt⟩ => ?_
+    have htI : t ∈ closedEBall (a i) (L * ediam (S i)) := by
+      rw [mem_closedEBall, ← show f y = t from hyt]
+      exact ha i y hyS
+    rw [indicator_of_mem htI]
+    exact le_iSup_of_le ⟨y, hyS⟩
+      (ENNReal.rpow_le_rpow (ediam_mono inter_subset_left) (Nat.cast_nonneg m))
+  · -- `∫ ψ = ∑ᵢ cᵢ λ¹(Iᵢ)` and `cᵢ λ¹(Iᵢ) = 2 L (ediam (S i))^(m+1)` for `S i ≠ ∅`.
+    rw [lintegral_tsum fun i => (measurable_const.indicator (hI i)).aemeasurable,
+      ← ENNReal.tsum_mul_left]
+    refine ENNReal.tsum_le_tsum fun i => ?_
+    rw [lintegral_indicator_const (hI i), Real.volume_closedEBall]
+    rcases (S i).eq_empty_or_nonempty with h | h
+    · simp [h]
+    · simp only [iSup_pos h, ENNReal.rpow_natCast]
+      exact le_of_eq (by ring)
+
+/-- Eilenberg's inequality for the unnormalized Hausdorff measures on an extended metric space:
+if `f : X → ℝ` is `L`-Lipschitz on `A`, some Borel `ψ` majorizes `t ↦ μH[m](A ∩ f⁻¹{t})` with
+`∫ ψ ≤ 2 L μH[m+1](A)`.  For `L = 0` take `∞ · 1_{f(A)}` (`f(A)` has at most one point), and for
+`μH[m+1](A) = ∞` the constant `∞`.  Otherwise `ψ = liminf_k ψ_k`, where `ψ_k` is the majorant
+(`slicing_im_coarea_eil_cover_majorant`) of a near-optimal cover of `A` at scale `(k + 1)⁻¹`
+(`slicing_im_coarea_eil_near_optimal_cover`): the pointwise bound is
+`slicing_im_coarea_eil_liminf_cover_bound` and the integral bound is Fatou's lemma. -/
+theorem Submission.slicing_im_coarea_eil_unnormalized : ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X), LipschitzOnWith L f A → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, (μH[(m : ℝ)] : Measure X) (A ∩ f ⁻¹' {t}) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A := by
+  intro X _ _ _ m f L A hf
+  -- `L = 0`: `f` is constant on `A`, so `∞ · 1_{f(A)}` works (`f(A)` is countable, hence null).
+  rcases eq_or_ne L 0 with rfl | hL
+  · have hc : (f '' A).Countable := Set.Subsingleton.countable <| by
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+      simpa using hf hx hy
+    refine ⟨(f '' A).indicator fun _ => ∞, measurable_const.indicator hc.measurableSet,
+      fun t => ?_, ?_⟩
+    · by_cases ht : t ∈ f '' A
+      · simp [indicator_of_mem ht]
+      · have h : A ∩ f ⁻¹' {t} = ∅ :=
+          eq_empty_of_forall_notMem fun x hx => ht ⟨x, hx.1, hx.2⟩
+        simp [h]
+    · rw [lintegral_indicator_const hc.measurableSet, hc.measure_zero, mul_zero]
+      exact zero_le
+  have h2L : 2 * (L : ℝ≥0∞) ≠ 0 := mul_ne_zero two_ne_zero (ENNReal.coe_ne_zero.2 hL)
+  -- `μH[m+1](A) = ∞`: the constant `∞` works.
+  by_cases hA : (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A = ∞
+  · refine ⟨fun _ => ∞, measurable_const, fun _ => le_top, ?_⟩
+    rw [hA, ENNReal.mul_top h2L]
+    exact le_top
+  -- Scales `ρ_k = (k + 1)⁻¹ → 0`.
+  obtain ⟨ρ, hρpos, hρlim⟩ : ∃ ρ : ℕ → ℝ≥0∞, (∀ k, 0 < ρ k) ∧ Tendsto ρ atTop (𝓝 0) :=
+    ⟨fun k => ((k + 1 : ℕ) : ℝ≥0∞)⁻¹, fun k => ENNReal.inv_pos.2 (ENNReal.natCast_ne_top _),
+      ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)⟩
+  -- Near-optimal covers `S k` of `A` at scale `ρ k` and their majorants `φ k`.
+  choose S hSA hAS hSd hSsum using fun k =>
+    Submission.slicing_im_coarea_eil_near_optimal_cover X ((m + 1 : ℕ) : ℝ) A (ρ k) (ρ k)
+      (Nat.cast_nonneg _) (hρpos k) (hρpos k) hA
+  choose φ hφm hφt hφi using fun k =>
+    Submission.slicing_im_coarea_eil_cover_majorant X m f L A (S k) hf (hSA k)
+  refine ⟨fun t => liminf (fun k => φ k t) atTop, Measurable.liminf hφm, fun t => ?_, ?_⟩
+  · -- The pieces `S k i ∩ (A ∩ f⁻¹{t})` cover the level set at scale `ρ k`.
+    calc (μH[(m : ℝ)] : Measure X) (A ∩ f ⁻¹' {t})
+        ≤ liminf (fun k => ∑' i, ⨆ (_ : (S k i ∩ (A ∩ f ⁻¹' {t})).Nonempty),
+            ediam (S k i ∩ (A ∩ f ⁻¹' {t})) ^ (m : ℝ)) atTop :=
+          Submission.slicing_im_coarea_eil_liminf_cover_bound X (m : ℝ) (A ∩ f ⁻¹' {t}) ρ
+            (fun k i => S k i ∩ (A ∩ f ⁻¹' {t})) hρlim
+            (fun k i => (ediam_mono inter_subset_left).trans (hSd k i))
+            (fun k x hx => by
+              obtain ⟨i, hi⟩ := mem_iUnion.1 (hAS k hx.1)
+              exact mem_iUnion.2 ⟨i, hi, hx⟩)
+      _ ≤ liminf (fun k => φ k t) atTop := liminf_le_liminf (.of_forall fun k => hφt k t)
+  · -- Fatou, then `2L (μH[m+1](A) + ρ k) → 2L μH[m+1](A)`.
+    have hlim : Tendsto (fun k => 2 * (L : ℝ≥0∞) *
+        ((μH[((m + 1 : ℕ) : ℝ)] : Measure X) A + ρ k)) atTop
+        (𝓝 (2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A)) := by
+      have h := ENNReal.Tendsto.const_mul (a := 2 * (L : ℝ≥0∞))
+        (hρlim.const_add ((μH[((m + 1 : ℕ) : ℝ)] : Measure X) A))
+        (Or.inr (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top))
+      rwa [add_zero] at h
+    calc ∫⁻ t, liminf (fun k => φ k t) atTop
+        ≤ liminf (fun k => ∫⁻ t, φ k t) atTop := lintegral_liminf_le hφm
+      _ ≤ liminf (fun k => 2 * (L : ℝ≥0∞) *
+            ((μH[((m + 1 : ℕ) : ℝ)] : Measure X) A + ρ k)) atTop :=
+          liminf_le_liminf (.of_forall fun k => (hφi k).trans (by gcongr; exact hSsum k))
+      _ = 2 * (L : ℝ≥0∞) * (μH[((m + 1 : ℕ) : ℝ)] : Measure X) A := hlim.liminf_eq
+
+/-- Eilenberg's inequality for a real-valued Lipschitz function (Federer 2.10.25 with target `ℝ`),
+for the normalized `Hᵏ = μHE[k]`: if `f` is `L`-Lipschitz on `A ⊆ ℝ^P`, some Borel `φ` majorizes
+`t ↦ Hᵐ(A ∩ f⁻¹{t})` with `∫ φ ≤ C(m) L Hᵐ⁺¹(A)`.  With `κ_d` the scalar of
+`μHE[d] = κ_d • μH[d]` (`euclideanHausdorffMeasure_def`; it does not depend on the space and
+`κ_{m+1} ≠ 0`), take `C = 2 κ_m / κ_{m+1}` and `φ = κ_m ψ`, where `ψ` is the majorant for the
+unnormalized `μH` with constant `2` (`slicing_im_coarea_eil_unnormalized`). -/
+theorem Submission.slicing_im_coarea_eilenberg : ∀ m : ℕ, ∃ C : ℝ≥0, ∀ (P : ℕ) (f : Eucl P → ℝ) (L : ℝ≥0) (A : Set (Eucl P)), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t : ℝ, (μHE[m] : Measure (Eucl P)) (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * (μHE[m + 1] : Measure (Eucl P)) A := by
+  intro m
+  -- `μHE[d] = κ_d • μH[d]` on every space, with `κ_d ∈ ℝ≥0` independent of the space.
+  obtain ⟨κ₀, hκ₀⟩ : ∃ κ₀ : ℝ≥0, ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X],
+      (μHE[m] : Measure X) = κ₀ • μH[(m : ℝ)] :=
+    ⟨_, fun X _ _ _ => Measure.euclideanHausdorffMeasure_def m⟩
+  obtain ⟨κ₁, hκ₁0, hκ₁⟩ : ∃ κ₁ : ℝ≥0, κ₁ ≠ 0 ∧
+      ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X],
+        (μHE[m + 1] : Measure X) = κ₁ • μH[((m + 1 : ℕ) : ℝ)] :=
+    ⟨_, Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (m + 1),
+      fun X _ _ _ => Measure.euclideanHausdorffMeasure_def (m + 1)⟩
+  refine ⟨2 * κ₀ / κ₁, fun P f L A hf => ?_⟩
+  -- The unnormalized inequality on `ℝ^P`, rescaled by `κ_m`.
+  obtain ⟨ψ, hψm, hψt, hψi⟩ := Submission.slicing_im_coarea_eil_unnormalized (Eucl P) m f L A hf
+  refine ⟨fun t => (κ₀ : ℝ≥0∞) * ψ t, hψm.const_mul _, fun t => ?_, ?_⟩
+  · rw [hκ₀, Measure.smul_apply, Measure.nnreal_smul_coe_apply]
+    dsimp only
+    gcongr
+    exact hψt t
+  · rw [lintegral_const_mul _ hψm, hκ₁, Measure.smul_apply, Measure.nnreal_smul_coe_apply]
+    have hC : ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * κ₁ = 2 * κ₀ := by
+      rw [← ENNReal.coe_mul, div_mul_cancel₀ _ hκ₁0, ENNReal.coe_mul, ENNReal.coe_ofNat]
+    calc (κ₀ : ℝ≥0∞) * ∫⁻ t, ψ t
+        ≤ κ₀ * (2 * L * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A) := by gcongr
+      _ = ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * κ₁ * L * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A := by
+        rw [hC]; ring
+      _ = ((2 * κ₀ / κ₁ : ℝ≥0) : ℝ≥0∞) * L * (κ₁ * (μH[((m + 1 : ℕ) : ℝ)] : Measure (Eucl P)) A) := by
+        ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

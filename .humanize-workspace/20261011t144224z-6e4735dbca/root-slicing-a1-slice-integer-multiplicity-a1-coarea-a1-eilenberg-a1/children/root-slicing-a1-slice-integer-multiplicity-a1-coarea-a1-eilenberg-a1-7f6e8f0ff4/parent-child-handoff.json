@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp project/GMT/Ch06/Contract.lean project/GMT/Ch06/Submission.lean (identical); cmp snapshot Submission.lean with workspace GMT/Ch06/Submission.lean (identical)",
+        "grep -rn 'slicing_im_coarea_eil\\|near_optimal_cover\\|liminf_cover_bound\\|cover_majorant' local-references/197bdd4b88278494/project (no match)",
+        "python3 scan of dag.json: lean_name containing eil/near_optimal/liminf/majorant/unnormalized (only slicing_im_coarea_eilenberg, slicing_mb_density_majorant, slicing_mb_pointwise_liminf_bound, the last two unrelated); lean_statement containing μH/μHE with ∑/diam/liminf (no reusable cover or liminf lemma); collision check of the four proposed names against all 507 lean_name values (none)",
+        "grep -n 'hausdorffMeasure_apply\\|hausdorffMeasure_le_liminf_tsum\\|mkMetric_le_liminf_tsum\\|mkMetric_apply' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "grep -rn 'addHaarScalarFactor_volume_hausdorffMeasure_ne_zero\\|euclideanHausdorffMeasure_def\\|μHE\\[' mathlib/Mathlib (Geometry/Euclidean/Volume/Measure.lean; the def lemma is rfl)",
+        "grep 'def ediam\\|ediam_mono\\|edist_le_ediam_of_mem\\|ediam_le' mathlib/Mathlib/Topology/EMetricSpace/Diam.lean (namespace Metric)",
+        "grep 'volume_closedEBall\\|volume_closedBall\\|volume_eball' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "grep -rn 'theorem lintegral_liminf_le\\|theorem lintegral_tsum\\|theorem Measurable.liminf\\|theorem Measurable.ennreal_tsum\\|theorem lintegral_indicator_const' mathlib/Mathlib",
+        "grep -rn 'def closedEBall\\|mem_closedEBall\\|isClosed_closedEBall\\|tendsto_inv_nat_nhds_zero' mathlib/Mathlib/Topology",
+        "grep \"theorem mul_le_mul_left\\b\\|mul_le_mul_left'\\|theorem mul_le_mul_right\" mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean (no mul_le_mul_left'; mul_le_mul_right (bc : b ≤ c) (a) : a * b ≤ a * c)",
+        "grep -rn 'theorem rpow_natCast\\|theorem rpow_le_rpow' mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean; grep 'Subsingleton.countable\\|Set.Countable.measure_zero' mathlib/Mathlib",
+        "grep -rn 'hausdorffMeasure_apply\\|hausdorffMeasure_le_liminf\\|mkMetric_le_liminf\\|Eilenberg\\|eilenberg\\|coarea_inequality' lake-packages-25730c7c/simongmt (no match); grep -n '^theorem\\|^def' SimonGMT Chapter02/UpperIntegral.lean Chapter02/AreaNormalization.lean Chapter01/Hausdorff.lean",
+        "sed verifier/gmt-compare.py contract_scope/child_modules (child scope: Contract opens, namespace GMT.Ch06, noncomputable section/end; target proved by exact Submission.<lean_name>)",
+        "lake env lean /tmp/eilenberg-decomp-scratch/Stmts.lean (four child types elaborate in the comparator scope)",
+        "lake env lean /tmp/eilenberg-decomp-scratch/{Parent,Dproof,Leaves,FullCheck}.lean (parent from unnormalized; unnormalized from the three leaves; leaves proved outright; comparator-style exact Submission.X checks; #print axioms: propext, Classical.choice, Quot.sound)",
+        "independent reviewer: lake env lean /tmp/eil-review-k7q2x9/{Indep,Syn,Parens,Consts}.lean (independent derivation, instance constants, syntactic μH match after euclideanHausdorffMeasure_def)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/UpperIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1/decomposition-scope-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/eilenberg-decomp-scratch/Stmts.lean",
+        "/tmp/eilenberg-decomp-scratch/Parent.lean",
+        "/tmp/eilenberg-decomp-scratch/Dproof.lean",
+        "/tmp/eilenberg-decomp-scratch/Leaves.lean",
+        "/tmp/eilenberg-decomp-scratch/FullCheck.lean",
+        "/tmp/eilenberg-decomp-scratch/draft_subproblems.json",
+        "/tmp/eil-review-k7q2x9/Indep.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract; Submission is byte-identical to it.\n\nNo existing lemma to reuse:\n- The snapshot has no Eilenberg inequality and no near-optimal-cover or empty-piece-free liminf lemma for Mathlib's μH.\n- SimonGMT has none either; its content API concerns its own simonHausdorff measures.\n- No accepted DAG node provides any of these.\n- The four proposed names collide with nothing in the project or among the 507 DAG names.\n\nPinned Mathlib supplies:\n- hausdorffMeasure_apply.\n- hausdorffMeasure_le_liminf_tsum. It sums ediam^d without the nonemptiness supremum, which is why the reindexing child exists.\n- euclideanHausdorffMeasure_def (rfl) and addHaarScalarFactor_volume_hausdorffMeasure_ne_zero.\n- Metric.ediam, and Metric.closedEBall with Real.volume_closedEBall (= 2r for every r ∈ [0, ∞]).\n- lintegral_tsum, lintegral_indicator_const, lintegral_liminf_le, Measurable.liminf, and the deprecated Measurable.ennreal_tsum.\n- ENNReal.rpow_natCast and ENNReal.rpow_le_rpow.\n- No mul_le_mul_left'; mul_le_mul_right replaces it.\n\nLean checks in the exact comparator scope:\n- The four child types elaborate.\n- The parent's frozen type follows from unnormalized.\n- unnormalized follows from the three leaves.\n- The three leaves are proved outright.\n- All five pass comparator-style `exact Submission.X` checks, using only propext, Classical.choice and Quot.sound.\n\nThese scratch proofs certify the statements, not the downstream child workers."
+    }
+  ],
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1",
+  "child_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1.near_optimal_cover-a1",
+  "subproblem": {
+    "key": "near_optimal_cover",
+    "title": "Near-optimal small-diameter covers by subsets for a set of finite Hausdorff measure",
+    "statement": "Let X be an extended metric space whose measurable structure is its Borel σ-algebra, let d ∈ ℝ with d ≥ 0, let A ⊆ X be an arbitrary set with μH[d](A) < ∞ (Mathlib's unnormalized d-dimensional Hausdorff measure, evaluated as an outer measure), and let r, ε ∈ [0, ∞] with r > 0 and ε > 0. Then there are sets S_i ⊆ A (i ∈ ℕ) with A ⊆ ⋃_i S_i, ediam S_i ≤ r for every i, and Σ_i ⨆_{S_i ≠ ∅} (ediam S_i)^d ≤ μH[d](A) + ε, where ediam is the extended diameter and the supremum over the proposition S_i ≠ ∅ equals (ediam S_i)^d if S_i ≠ ∅ and 0 if S_i = ∅.",
+    "lean_statement": "∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (A : Set X) (r ε : ℝ≥0∞), 0 ≤ d → 0 < r → 0 < ε → (μH[d] : Measure X) A ≠ ∞ → ∃ S : ℕ → Set X, (∀ i, S i ⊆ A) ∧ A ⊆ ⋃ i, S i ∧ (∀ i, ediam (S i) ≤ r) ∧ ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ d ≤ (μH[d] : Measure X) A + ε",
+    "lean_name": "slicing_im_coarea_eil_near_optimal_cover",
+    "depends_on": [],
+    "natural_proof": "Conventions. X is an extended metric space whose measurable structure is its Borel σ-algebra. ediam S ∈ [0, ∞] is the extended diameter `Metric.ediam S` (written `ediam` under `open Metric`); ediam ∅ = 0. μH[d] is Mathlib's unnormalized d-dimensional Hausdorff measure `MeasureTheory.Measure.hausdorffMeasure d`, evaluated as an outer measure on arbitrary (possibly non-measurable) sets. Arithmetic is in [0, ∞] with 0·∞ = 0; x^a for x ∈ [0, ∞] and real a is `ENNReal.rpow`. For S ⊆ X and a real exponent a put w_a(S) := ⨆_{S ≠ ∅} (ediam S)^a, the supremum over the proposition S ≠ ∅, so w_a(S) = (ediam S)^a if S ≠ ∅ and w_a(∅) = 0 (in particular w_0(∅) = 0 although (ediam ∅)^0 = 1).\n\n1. (Formula for μH.) By `MeasureTheory.Measure.hausdorffMeasure_apply`, μH[d](A) = ⨆_{ρ ∈ (0, ∞]} H_ρ(A), where H_ρ(A) := ⨅ over sequences t : ℕ → Set X with A ⊆ ⋃_n t_n and ediam t_n ≤ ρ for all n of the sum Σ_n w_d(t_n). (The infimum is over t and the two side conditions, i.e. three nested infima.) Since r > 0, taking ρ = r in the supremum gives H_r(A) ≤ μH[d](A) (`le_iSup₂`).\n\n2. (Strict room.) Because μH[d](A) ≠ ∞ and ε > 0, μH[d](A) < μH[d](A) + ε (`ENNReal.lt_add_right`). With step 1, H_r(A) < μH[d](A) + ε.\n\n3. (A good cover.) An infimum that is strictly below a value is attained below that value by some element (`iInf_lt_iff`, applied successively to the three nested infima). Hence there is t : ℕ → Set X with A ⊆ ⋃_n t_n, ediam t_n ≤ r for every n, and Σ_n w_d(t_n) < μH[d](A) + ε.\n\n4. (Intersect with A.) Put S_i := t_i ∩ A for i ∈ ℕ. Then S_i ⊆ A. If x ∈ A, then x ∈ t_i for some i by step 3, so x ∈ t_i ∩ A = S_i; hence A ⊆ ⋃_i S_i.\n\n5. (Diameters.) Since S_i ⊆ t_i, ediam S_i ≤ ediam t_i ≤ r (`Metric.ediam_mono`).\n\n6. (Termwise comparison.) For each i, w_d(S_i) ≤ w_d(t_i). Indeed, if S_i = ∅ then w_d(S_i) = 0. Otherwise t_i ⊇ S_i is nonempty, so w_d(t_i) = (ediam t_i)^d, while w_d(S_i) = (ediam S_i)^d ≤ (ediam t_i)^d because ediam S_i ≤ ediam t_i and x ↦ x^d is monotone on [0, ∞] for d ≥ 0 (`ENNReal.rpow_le_rpow`). This is the only place where d ≥ 0 is used.\n\n7. (Sum.) Summing step 6 over i (`ENNReal.tsum_le_tsum`) and using step 3: Σ_i w_d(S_i) ≤ Σ_i w_d(t_i) < μH[d](A) + ε. Together with steps 4 and 5 this proves the statement. ∎",
+    "proof_key_steps": [
+      "μH[d](A) is the supremum over ρ > 0 of the ρ-content H_ρ(A) (hausdorffMeasure_apply), so H_r(A) ≤ μH[d](A) < μH[d](A) + ε.",
+      "iInf_lt_iff gives a countable cover (t_n) of A with ediam t_n ≤ r and Σ w_d(t_n) < μH[d](A) + ε.",
+      "S_i := t_i ∩ A still covers A, has ediam ≤ r, and w_d(S_i) ≤ w_d(t_i) because d ≥ 0 (rpow monotone); sum termwise."
+    ]
+  },
+  "audit": {
+    "key": "near_optimal_cover",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line type matches every stated hypothesis and conclusion. The covering formula, strict room from finite measure and positive ε, and successive infimum elimination supply the cover. Intersecting with A preserves coverage and decreases weights using d ≥ 0. Empty pieces, d = 0, and infinite permitted r or ε are handled correctly. No circular dependency."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1-7f6e8f0ff4/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1-7f6e8f0ff4/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1-7f6e8f0ff4/parent-supplied-natural-proof.json"
+}
