@@ -683,6 +683,74 @@ theorem Submission.rpn_pe_kernel_representation : ∀ (m : ℕ) (a : Eucl (m + 1
     Measure.toSphere_real_apply_univ, finrank_euclideanSpace_fin, measureReal_def, ← hω,
     show ((m + 1 : ℕ) : ℝ) * ω = c by rw [hc]; push_cast; ring, mul_div_cancel₀ _ hc_pos.ne']
 
+/-- Sup bound for the kernel potentials (Step 5 of the potential estimate).  With
+`ω = Lⁿ(B₁(0))`, `c = (m + 1) ω` and `K_j(t) = t_j / (c |t|^{m+1})`, every compactly supported
+`a` with `|a| ≤ M` satisfies `|∫ K_j(t) a(y - t) dt| ≤ C M Lⁿ(spt a)^{1/(m+1)}` with
+`C = (m + 2) ω^{m/(m+1)} / c`.  Proof: `|K_j(t) a(y - t)| ≤ (M / c) 1_{S_y}(t) |t|^{-m}` on
+`S_y = {t : y - t ∈ spt a}`, a translate of `spt a`; integrate and apply
+`rpn_pe_inv_norm_pow_set_bound` to `S_y`.  No measurability of `a` is needed. -/
+theorem Submission.rpn_pe_kernel_sup_bound : ∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ (j : Fin (m + 1)) (y : Eucl (m + 1)), |∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * a (y - t)| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  intro m
+  set ω : ℝ := (volume (ball (0 : Eucl (m + 1)) 1)).toReal
+  set c : ℝ := ((m : ℝ) + 1) * ω
+  have hω_pos : 0 < ω :=
+    ENNReal.toReal_pos (measure_ball_pos volume (0 : Eucl (m + 1)) one_pos).ne'
+      measure_ball_lt_top.ne
+  have hc_pos : 0 < c := mul_pos (by positivity) hω_pos
+  refine ⟨((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) / c, ?_⟩
+  intro a ha M hM j y
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- The translated support `S_y = {t : y - t ∈ spt a}` has the measure of `spt a`.
+  set S : Set (Eucl (m + 1)) := tsupport a
+  set Sy : Set (Eucl (m + 1)) := (fun t => y - t) ⁻¹' S
+  have hSy_meas : MeasurableSet Sy :=
+    ((isClosed_tsupport a).preimage (continuous_const.sub continuous_id)).measurableSet
+  have hvol : volume Sy = volume S :=
+    (Measure.measurePreserving_sub_left volume y).measure_preimage
+      (isClosed_tsupport a).measurableSet.nullMeasurableSet
+  have hSy_fin : volume Sy ≠ ⊤ := by
+    rw [hvol]
+    exact (IsCompact.measure_lt_top ha).ne
+  obtain ⟨hint, hbound⟩ := Submission.rpn_pe_inv_norm_pow_set_bound m Sy hSy_meas hSy_fin
+  rw [hvol] at hbound
+  -- Pointwise domination by `(M / c) 1_{S_y}(t) |t|^{-m}`.
+  have hg_int : Integrable (fun t => M / c * Sy.indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) t) :=
+    ((integrable_indicator_iff hSy_meas).2 hint).const_mul (M / c)
+  have hdom : ∀ t : Eucl (m + 1), ‖t j / (c * ‖t‖ ^ (m + 1)) * a (y - t)‖ ≤
+      M / c * Sy.indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) t := by
+    intro t
+    by_cases ht : t ∈ Sy
+    · rw [indicator_of_mem ht, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      have hK : |t j / (c * ‖t‖ ^ (m + 1))| ≤ (‖t‖ ^ m)⁻¹ / c := by
+        rw [abs_div, abs_of_nonneg (by positivity : (0 : ℝ) ≤ c * ‖t‖ ^ (m + 1))]
+        rcases (norm_nonneg t).eq_or_lt with h0 | hpos
+        · rw [← h0, zero_pow (Nat.succ_ne_zero m), mul_zero, div_zero]
+          positivity
+        · rw [div_le_iff₀ (by positivity)]
+          calc |t j| = ‖t j‖ := (Real.norm_eq_abs _).symm
+            _ ≤ ‖t‖ := PiLp.norm_apply_le t j
+            _ = (‖t‖ ^ m)⁻¹ / c * (c * ‖t‖ ^ (m + 1)) := by
+              field_simp
+              ring
+      calc |t j / (c * ‖t‖ ^ (m + 1))| * |a (y - t)| ≤ (‖t‖ ^ m)⁻¹ / c * M :=
+            mul_le_mul hK (hM _) (abs_nonneg _) (by positivity)
+        _ = M / c * (‖t‖ ^ m)⁻¹ := by ring
+    · have hyt : y - t ∉ tsupport a := ht
+      rw [indicator_of_notMem ht, image_eq_zero_of_notMem_tsupport hyt]
+      simp
+  calc |∫ t, t j / (c * ‖t‖ ^ (m + 1)) * a (y - t)|
+      = ‖∫ t, t j / (c * ‖t‖ ^ (m + 1)) * a (y - t)‖ := (Real.norm_eq_abs _).symm
+    _ ≤ ∫ t, M / c * Sy.indicator (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) t :=
+        norm_integral_le_of_norm_le hg_int (Eventually.of_forall hdom)
+    _ = M / c * ∫ t in Sy, (‖t‖ ^ m)⁻¹ := by
+        rw [integral_const_mul, integral_indicator hSy_meas]
+    _ ≤ M / c * (((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) *
+          (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1))) :=
+        mul_le_mul_of_nonneg_left hbound (div_nonneg hM0 hc_pos.le)
+    _ = ((m : ℝ) + 2) * ω ^ ((m : ℝ) / ((m : ℝ) + 1)) / c * M *
+          (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+        ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
