@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.minimality_localizes-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "The minimality inequality propagates from a neighbourhood of spt(S − T) to larger open sets",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, S, T ∈ 𝒟_n(U) integer multiplicity, K ⊆ ℝ^P compact with spt(S − T) ⊆ K, and W, W' ⊆ ℝ^P open with K ⊆ W ⊆ W' and closure(W') compact and contained in U. If M_W(T) ≤ M_W(S), then M_{W'}(T) ≤ M_{W'}(S).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K W W' : Set (Euclid P)), IsOpen U → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsCompact K → (S - T).support ⊆ K → IsOpen W → IsOpen W' → K ⊆ W → W ⊆ W' → CompactlyContained W' U → T.massOn W ≤ S.massOn W → T.massOn W' ≤ S.massOn W'",
+  "lean_name": "cmc_massOn_le_of_le_near_support",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1-a1"
+}

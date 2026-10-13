@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "71645d247595cce7a5ee9e84795fe02a370091498a723ae63bbf40bb8bc1c1de",
+  "git_delta": {
+    "base_commit": "58f5ca99d1ab62b5b695a5d1b9c20bcae6ac5339",
+    "candidate_commit": "bd1b211071e8763cfd4dc7db773c7633a658fc6a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_cauchy_subseq",
+    "diff_sha256": "4d8e83b7748639eb341b08101a93a86b1a6c4880d33ecc3b7e09fc29f972266a",
+    "source_sha256": "ec7f37cfd1092e8d017c57c6665d43d2c86adf18e845b64915d3ae1261152f27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_cauchy_subseq",
+      "statement": "∀ (P m : ℕ) (L : Set (Euclid P)) (X : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact L → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X j - Q - S = R.boundary ∧ R.mass + S.mass ≤ ε) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X (φ (r + 1)) - X (φ r) - S = R.boundary ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
