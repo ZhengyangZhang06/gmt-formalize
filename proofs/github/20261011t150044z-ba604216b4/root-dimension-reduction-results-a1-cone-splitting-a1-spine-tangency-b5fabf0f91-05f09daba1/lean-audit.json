@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e304dea230d90ce8625836ae9efdbf6ae42a8f61c530372b6502e61b787872bc",
+  "git_delta": {
+    "base_commit": "f06d837b49329d7fedb8679cdda1f62d04f4cdcc",
+    "candidate_commit": "48fa6bad41e0499824aaa40318767127358a4152",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_st_tangent_sub_of_ball_ratio",
+    "diff_sha256": "6f96553ff379af1e400b6df9ba2ad67be99e0874a75691dbe1047598ecc2663d",
+    "source_sha256": "b401b4b68d44e40e447918f41c377ae97d3feff49bd62a52f75ccce4ca6ce000",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_st_tangent_sub_of_ball_ratio",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (z : Euclid P), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall z 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
