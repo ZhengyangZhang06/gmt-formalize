@@ -795,6 +795,17 @@ theorem allard52_gps_hsNormSq_swap : ∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn �
   rw [Finset.sum_comm]
   simp_rw [← EuclideanSpace.real_norm_sq_eq]
   ring
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 123): the orthogonal projection `Π(A) = p_{Γ_A}` onto the
+graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is a `C²` function of `A ∈ L(ℝⁿ, ℝ^ℓ)`, and
+`|DΠ(0)[H]|² = 2|H|²` (Hilbert–Schmidt norms).  Smoothness is `allard52_gps_contDiff`
+(`Π(A) = J_A (J_Aᵀ J_A)⁻¹ J_Aᵀ` with `J_A v = (v, A v)`, and inversion is smooth at units).
+By `allard52_gps_fderiv_zero_apply`, `DΠ(0)[H] (x, y) = (Hᵀ y, H x)`, i.e. `DΠ(0)[H]` is the block
+operator `[[0, Hᵀ], [H, 0]]`, whose squared Hilbert–Schmidt norm is `|Hᵀ|² + |H|² = 2|H|²` by
+`allard52_gps_hsNormSq_swap`. -/
+theorem allard52_gpa_graphProj_smooth : ∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) ∧ ∀ H : Rn n →L[ℝ] Rn ℓ, hsNormSq (fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H) = 2 * hsNormSq H := by
+  intro n ℓ
+  exact ⟨Submission.allard52_gps_contDiff n ℓ, fun H =>
+    Submission.allard52_gps_hsNormSq_swap n ℓ H _ (Submission.allard52_gps_fderiv_zero_apply n ℓ H)⟩
 
 end Submission
 
