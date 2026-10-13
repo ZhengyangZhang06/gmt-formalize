@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.WeightedArea
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Injective area formula with the Gram-determinant Jacobian** (Simon Ch. 2, (3.3) and (3.5)).
+For `f : ℝᵐ → ℝᴾ` let `Jf(x) = √det(⟨Df(x)eₖ, Df(x)eₗ⟩)`, `eₖ` the standard basis of `ℝᵐ`.  Then
+(i) `Jf` is Borel; (ii) if `s` is Borel, `f` is differentiable with injective `Df(x)` at every
+`x ∈ s` and `f` is injective on `s`, every `g ≥ 0` has `∫_{f(s)} g dHᵐ = ∫_s Jf(x) g(f(x)) dx`.
+By `normDet_sq_eq_det_gram` for the orthonormal basis `(eₖ)`, `Jf(x) = normDet Df(x)` is the
+SimonGMT metric Jacobian `areaJacobianAt f x`; apply its measurability and its weighted injective
+area formula, with `dim ℝᵐ = m`. -/
+theorem Submission.codim1_lura_gram_area_formula : ∀ (m P : ℕ) (f : Euclid m → Euclid P), Measurable (fun x => Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ f x (EuclideanSpace.single k 1)) (fderiv ℝ f x (EuclideanSpace.single l 1))))) ∧ ∀ s : Set (Euclid m), MeasurableSet s → (∀ x ∈ s, DifferentiableAt ℝ f x) → (∀ x ∈ s, Injective (fderiv ℝ f x)) → InjOn f s → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in f '' s, g y ∂μHE[m] = ∫⁻ x in s, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ f x (EuclideanSpace.single k 1)) (fderiv ℝ f x (EuclideanSpace.single l 1))))) * g (f x) ∂volume := by
+  intro m P f
+  -- Gram identity: `√det(⟨Df(x)eₖ, Df(x)eₗ⟩) = normDet Df(x) = areaJacobianAt f x`, all `x`
+  have hJ : ∀ x, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m =>
+      inner ℝ (fderiv ℝ f x (EuclideanSpace.single k 1)) (fderiv ℝ f x (EuclideanSpace.single l 1)))) =
+        Poincare.SimonGMT.Chapter02.areaJacobianAt f x := by
+    intro x
+    have h := (fderiv ℝ f x : Euclid m →ₗ[ℝ] Euclid P).normDet_sq_eq_det_gram
+      (EuclideanSpace.basisFun (Fin m) ℝ)
+    rw [RCLike.ofReal_real_eq_id, id] at h
+    rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+      ← Real.sqrt_sq (LinearMap.normDet_nonneg _), h]
+    simp [Matrix.gram, EuclideanSpace.basisFun_apply]
+  refine ⟨?_, ?_⟩
+  -- (i) measurability of the metric Jacobian
+  · simp_rw [hJ]
+    exact Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt f
+  -- (ii) the weighted injective area formula with Lebesgue measure on `ℝᵐ`, `finrank ℝᵐ = m`
+  · intro s hs hf hreg hinj g
+    have h := Poincare.SimonGMT.Chapter02.weighted_area_formula_volume_of_injective_derivative
+      hs hf hreg hinj g
+    rw [finrank_euclideanSpace_fin] at h
+    simp_rw [hJ]
+    exact h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
