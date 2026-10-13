@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.integral_current-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "depth": 6,
+  "title": "The pulled-back integral Y(ω) = ∫_F ξ(x)(ω(pL x)∘pL) dμ defines a current in 𝒟_l(U)",
+  "statement": "Let P, m, l ∈ ℕ, pL : ℝ^P → ℝ^m continuous linear, U ⊆ ℝ^m, S, F ⊆ ℝ^P, μ a measure on ℝ^P and ξ : ℝ^P → Λ_l(ℝ^P) (MultiVector P l). Write |α| := covectorEuclideanNorm α and γ∘pL := γ.compContinuousLinearMap pL. Assume: F is measurable; F ⊆ S; S ∩ pL⁻¹(K) is compact for every compact K ⊆ U; μ(K) < ∞ for every compact K ⊆ ℝ^P; ξ is μ-a.e. strongly measurable; for μ-a.e. x, |ξ(x)(β)| ≤ |β| for every l-covector β on ℝ^P; and |γ∘pL| ≤ |γ| for every l-covector γ on ℝ^m. Then there is a current Y ∈ 𝒟_l(U) (GeometricCurrentOn U l: a linear functional on the test forms 𝒟^l(U) = TestFormOn U l such that Y(ω_j) → 0 whenever TestFormOnConverges ω_j 0) such that Y(ω) = ∫_F ξ(x)(ω(pL x)∘pL) dμ(x) for every ω ∈ 𝒟^l(U).",
+  "lean_statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (S F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l), MeasurableSet F → F ⊆ S → (∀ K : Set (Euclid m), IsCompact K → K ⊆ U → IsCompact (S ∩ pL ⁻¹' K)) → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → ∃ Y : GeometricCurrentOn U l, ∀ ω : TestFormOn U l, Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ",
+  "lean_name": "cbr_ci_pw_proj_integral_current",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.integral_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.integral_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d5d7f6d4a0-a1"
+}

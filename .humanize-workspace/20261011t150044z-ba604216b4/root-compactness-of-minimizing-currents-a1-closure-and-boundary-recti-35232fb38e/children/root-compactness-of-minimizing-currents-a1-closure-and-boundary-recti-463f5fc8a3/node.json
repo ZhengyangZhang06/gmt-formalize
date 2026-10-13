@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.integral_estimate-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "depth": 6,
+  "title": "Integrability and a uniform sup-norm estimate for the pulled-back integrand ξ(x)(ω(pL x)∘pL) on F",
+  "statement": "Let P, m, l ∈ ℕ, pL : ℝ^P → ℝ^m continuous linear, S, F ⊆ ℝ^P, K ⊆ ℝ^m, μ a measure on ℝ^P and ξ : ℝ^P → Λ_l(ℝ^P) (MultiVector P l, the continuous linear functionals on l-covectors of ℝ^P). Write |α| := covectorEuclideanNorm α and ‖α‖ for the operator norm of a continuous alternating map. Assume: F is measurable; F ⊆ S; S ∩ pL⁻¹(K) is compact; μ(K') < ∞ for every compact K' ⊆ ℝ^P; ξ is μ-a.e. strongly measurable; for μ-a.e. x, |ξ(x)(β)| ≤ |β| for every l-covector β on ℝ^P; and |γ∘pL| ≤ |γ| for every l-covector γ on ℝ^m, where γ∘pL = γ.compContinuousLinearMap pL. Then there is a real c ≥ 0 such that for every continuous l-form ω : ℝ^m → Λ^l(ℝ^m) with ω(y) = 0 for all y ∉ K, and every M ∈ ℝ with ‖ω(y)‖ ≤ M for all y, the function Φ_ω(x) := ξ(x)(ω(pL x)∘pL) is integrable with respect to μ⌞F = μ.restrict F and |∫_F Φ_ω dμ| ≤ c·M.",
+  "lean_statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (S F : Set (Euclid P)) (K : Set (Euclid m)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l), MeasurableSet F → F ⊆ S → IsCompact (S ∩ pL ⁻¹' K) → (∀ K' : Set (Euclid P), IsCompact K' → μ K' < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → ∃ c : ℝ, 0 ≤ c ∧ ∀ (ω : DifferentialForm (Euclid m) l) (M : ℝ), Continuous ω → (∀ y, y ∉ K → ω y = 0) → (∀ y, ‖ω y‖ ≤ M) → Integrable (fun x => ξ x ((ω (pL x)).compContinuousLinearMap pL)) (μ.restrict F) ∧ |∫ x in F, ξ x ((ω (pL x)).compContinuousLinearMap pL) ∂μ| ≤ c * M",
+  "lean_name": "cbr_ci_pw_proj_integral_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-463f5fc8a3-a1"
+}
