@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.1** (proof of (2), local retraction onto `N`, chart step): if `W` is open, `ψ` is
+continuous and injective on `V`, `ψ(V) = W ∩ N` and `ψ` is proper over `W` (`V ∩ ψ⁻¹(K)` is
+compact for compact `K ⊆ W`), then `N ∩ B_ρ(ψ(v₀)) ⊆ ψ(V₀)` for some `ρ > 0`, whenever `V₀ ⊆ V`
+is open and `v₀ ∈ V₀`.  Otherwise there are `yᵢ = ψ(fᵢ) ∈ N` with `fᵢ ∈ V \ V₀` and
+`yᵢ → ψ(v₀)`; the `fᵢ` lie in the compact set `V ∩ ψ⁻¹({ψ(v₀)} ∪ {yᵢ})`, so a subsequence
+converges to some `a ∈ V \ V₀` with `ψ(a) = ψ(v₀)`, contradicting injectivity. -/
+theorem Submission.dtc_bc_lr_chart_image_nhds : ∀ (P d : ℕ) (N W : Set (Euclid P)) (V V₀ : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → IsOpen V₀ → V₀ ⊆ V → v₀ ∈ V₀ → ∃ ρ : ℝ, 0 < ρ ∧ N ∩ ball (ψ v₀) ρ ⊆ ψ '' V₀ := by
+  intro P d N W V V₀ ψ v₀ hW hψc hψi hψV hprop hV₀ hV₀V hv₀
+  -- Step 1: `x := ψ v₀ ∈ W` and `B_{r_W}(x) ⊆ W`
+  have hv₀V : v₀ ∈ V := hV₀V hv₀
+  have hxW : ψ v₀ ∈ W := (hψV ▸ mem_image_of_mem ψ hv₀V : ψ v₀ ∈ W ∩ N).1
+  obtain ⟨rW, hrW, hballW⟩ := Metric.isOpen_iff.1 hW _ hxW
+  -- Step 2: otherwise pick `yᵢ ∈ N ∩ B_{min(r_W, 1/(i+1))}(x) \ ψ(V₀)`, so `yᵢ ∈ W` and `yᵢ → x`
+  by_contra hcon
+  have hseq : ∀ i : ℕ, ∃ y, y ∈ N ∧ dist y (ψ v₀) < min rW (1 / ((i : ℝ) + 1)) ∧ y ∉ ψ '' V₀ := by
+    intro i
+    obtain ⟨y, ⟨hyN, hyb⟩, hy⟩ := not_subset.1 fun h =>
+      hcon ⟨min rW (1 / ((i : ℝ) + 1)), lt_min hrW (by positivity), h⟩
+    exact ⟨y, hyN, hyb, hy⟩
+  choose y hyN hyd hyV₀ using hseq
+  have hyW : ∀ i, y i ∈ W := fun i => hballW ((hyd i).trans_le (min_le_left _ _))
+  have hylim : Tendsto y atTop (𝓝 (ψ v₀)) :=
+    tendsto_iff_dist_tendsto_zero.2 (squeeze_zero (fun i => dist_nonneg)
+      (fun i => ((hyd i).trans_le (min_le_right _ _)).le) tendsto_one_div_add_atTop_nhds_zero_nat)
+  -- Step 3: `yᵢ = ψ(fᵢ)` with `fᵢ ∈ V \ V₀`
+  have hf : ∀ i, ∃ f, f ∈ V ∧ ψ f = y i := fun i => (hψV.symm ▸ ⟨hyW i, hyN i⟩ : y i ∈ ψ '' V)
+  choose f hfV hfy using hf
+  have hfV₀ : ∀ i, f i ∉ V₀ := fun i hi => hyV₀ i ⟨f i, hi, hfy i⟩
+  -- Step 4: `K := {x} ∪ {yᵢ}` is a compact subset of `W`, so `V ∩ ψ⁻¹(K) ∋ fᵢ` is compact
+  have hKW : insert (ψ v₀) (range y) ⊆ W := by
+    rintro z (rfl | ⟨i, rfl⟩)
+    exacts [hxW, hyW i]
+  have hfK : ∀ i, f i ∈ V ∩ ψ ⁻¹' insert (ψ v₀) (range y) := fun i =>
+    ⟨hfV i, Or.inr ⟨i, (hfy i).symm⟩⟩
+  -- Step 5: a subsequence `f_{φ(i)} → a ∈ V`
+  obtain ⟨a, ⟨haV, -⟩, φ, hφ, hfa⟩ :=
+    (hprop _ hKW hylim.isCompact_insert_range).tendsto_subseq hfK
+  -- Step 6: `a ∉ V₀`, as `V₀ᶜ` is closed
+  have haV₀ : a ∉ V₀ :=
+    hV₀.isClosed_compl.mem_of_tendsto hfa (Eventually.of_forall fun i => hfV₀ (φ i))
+  -- Step 7: `ψ(a) = x` by continuity of `ψ` on `V` and uniqueness of limits
+  have h₁ : Tendsto (ψ ∘ (f ∘ φ)) atTop (𝓝 (ψ a)) :=
+    (hψc a haV).tendsto.comp
+      (tendsto_nhdsWithin_iff.2 ⟨hfa, Eventually.of_forall fun i => hfV (φ i)⟩)
+  have h₂ : Tendsto (ψ ∘ (f ∘ φ)) atTop (𝓝 (ψ v₀)) := by
+    have hcomp : ψ ∘ (f ∘ φ) = y ∘ φ := funext fun i => hfy (φ i)
+    rw [hcomp]
+    exact hylim.comp hφ.tendsto_atTop
+  -- Step 8: injectivity gives `a = v₀ ∈ V₀`, a contradiction
+  exact haV₀ (hψi haV hv₀V (tendsto_nhds_unique h₁ h₂) ▸ hv₀)
 /-- **Simon Ch. 2, §4, (4.3)**: if `ψ` is `Cʳ` (`r ≥ 1`) on an open `V ⊆ ℝᵈ` and `ψ(V) ⊆ N`,
 then every `Dψ(v) a`, `v ∈ V`, is the velocity at `0` of a `C¹` curve in `N` through `ψ(v)`, i.e.
 `Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N`.  For `a = 0` take the constant curve.  Otherwise, with
@@ -661,6 +711,59 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **`Cʳ` inverse function theorem with a `Cʳ` inverse on a neighbourhood** (Simon Ch. 2, 4.4;
+smooth charts of the hypercone plane: `φ` maps an open `V₀ ∋ z₀` `Cʳ`-diffeomorphically onto an
+open `O`).  If `φ : ℝᵈ → ℝᵈ` is `Cʳ` (`r ≥ 1`) on an open `V ∋ z₀` and `Dφ(z₀)` is injective,
+there are open sets `V₀`, `O` with `z₀ ∈ V₀ ⊆ V` such that `φ : V₀ → O` is a bijection whose
+inverse `χ` is `Cʳ` on `O`.  `Dφ` is continuous on `V`, so `V' = {z ∈ V : Dφ(z) injective}` is
+open; the strict-derivative inverse function theorem gives an open partial homeomorphism `Φ = φ`
+with `z₀ ∈ Φ.source`; take `V₀ = Φ.source ∩ V'`, `O = Φ.target ∩ Φ.symm ⁻¹' V₀` and
+`χ = Φ.symm`, which is `Cʳ` at every `a ∈ O` because `Dφ(χ a)` is invertible. -/
+theorem Submission.codim1_hcp_sc_local_inverse_cr : ∀ (d r : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), 1 ≤ r → IsOpen V → z₀ ∈ V → ContDiffOn ℝ r φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (χ : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ r χ O ∧ MapsTo χ O V₀ ∧ (∀ a ∈ O, φ (χ a) = a) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ χ (φ z) = z := by
+  intro d r φ V z₀ hr hV hz₀ hφ hinj
+  -- `r ≥ 1` as an exponent in `WithTop ℕ∞`: `1 ≤ r` and `r ≠ 0`
+  have hr1 : (1 : WithTop ℕ∞) ≤ r := by exact_mod_cast hr
+  have hr0 : (r : WithTop ℕ∞) ≠ 0 := by exact_mod_cast Nat.one_le_iff_ne_zero.mp hr
+  -- step 1: `φ` is `Cʳ` and differentiable at every point of `V`, and `Dφ` is continuous on `V`
+  have hcont : ContinuousOn (fderiv ℝ φ) V := hφ.continuousOn_fderiv_of_isOpen hV hr1
+  have hdiff : ∀ z ∈ V, HasFDerivAt φ (fderiv ℝ φ z) z := fun z hz =>
+    ((hφ.contDiffAt (hV.mem_nhds hz)).differentiableAt hr0).hasFDerivAt
+  -- step 2: an injective endomorphism of `ℝᵈ` is a continuous linear equivalence
+  have equivOf : ∀ L : Euclid d →L[ℝ] Euclid d, Injective L →
+      ∃ E : Euclid d ≃L[ℝ] Euclid d, (E : Euclid d →L[ℝ] Euclid d) = L := by
+    intro L hL
+    have hsurj : Surjective L := LinearMap.injective_iff_surjective.mp hL
+    exact ⟨(LinearEquiv.ofBijective (L : Euclid d →ₗ[ℝ] Euclid d)
+      ⟨hL, hsurj⟩).toContinuousLinearEquiv, by ext; rfl⟩
+  -- step 3: `V' = {z ∈ V : Dφ(z) injective}` is open and contains `z₀`
+  set V' := V ∩ (fderiv ℝ φ) ⁻¹' {L | Injective L}
+  have hV' : IsOpen V' := hcont.isOpen_inter_preimage hV ContinuousLinearMap.isOpen_injective
+  have hz₀' : z₀ ∈ V' := ⟨hz₀, hinj⟩
+  -- step 4: the inverse function theorem at `z₀` gives `Φ = φ` with `z₀ ∈ Φ.source`
+  obtain ⟨E₀, hE₀⟩ := equivOf _ hinj
+  have hstrict : HasStrictFDerivAt φ (E₀ : Euclid d →L[ℝ] Euclid d) z₀ := by
+    rw [hE₀]; exact (hφ.contDiffAt (hV.mem_nhds hz₀)).hasStrictFDerivAt hr0
+  set Φ := hstrict.toOpenPartialHomeomorph φ
+  have hΦcoe : ∀ z, Φ z = φ z := fun z => rfl
+  -- step 5: `V₀ = Φ.source ∩ V'`, `O = Φ.target ∩ Φ.symm ⁻¹' V₀`, `χ = Φ.symm`; for `a ∈ O`,
+  -- `χ a ∈ V₀` and `φ (χ a) = a`
+  have hV₀ : IsOpen (Φ.source ∩ V') := Φ.open_source.inter hV'
+  refine ⟨Φ.source ∩ V', Φ.target ∩ Φ.symm ⁻¹' (Φ.source ∩ V'), Φ.symm, hV₀,
+    Φ.continuousOn_symm.isOpen_inter_preimage Φ.open_target hV₀,
+    ⟨hstrict.mem_toOpenPartialHomeomorph_source, hz₀'⟩, fun z hz => hz.2.1, ?_,
+    fun a ha => ha.2, fun a ha => by rw [← hΦcoe]; exact Φ.right_inv ha.1, fun z hz => ?_⟩
+  -- step 7: `χ` is `Cʳ` at every `a ∈ O`, since `Dφ(χ a)` is invertible and `φ` is `Cʳ` at `χ a`
+  · intro a ha
+    have hz : Φ.symm a ∈ V' := ha.2.2
+    obtain ⟨E, hE⟩ := equivOf _ hz.2
+    apply ContDiffAt.contDiffWithinAt
+    apply Φ.contDiffAt_symm ha.1
+    · rw [hE]; exact hdiff _ hz.1
+    · exact hφ.contDiffAt (hV.mem_nhds hz.1)
+  -- step 6: for `z ∈ V₀`, `φ z ∈ O` and `χ (φ z) = z`
+  · have h1 : Φ.symm (Φ z) = z := Φ.left_inv hz.1
+    rw [← hΦcoe]
+    exact ⟨⟨Φ.map_source hz.1, by rw [Set.mem_preimage, h1]; exact hz⟩, h1⟩
 /-- **A linear left inverse makes a map an injective immersion** (Simon Ch. 2, §4, (4.4), where
 the graph map `G(x) = (x, u(x))` has the linear left inverse `(x, y) ↦ x`; step 4 of the `C^∞`
 chart construction for the hypercone plane).  Let `D ⊆ ℝᵈ` be open, `g` differentiable on `D`,
@@ -687,6 +790,82 @@ theorem Submission.codim1_hcp_sc_left_inverse_immersion : ∀ (P d : ℕ) (D : S
     rw [← hπ a ha, hab, hπ b hb]
   · -- Step 4: `π(Dg(a) u) = u`, so `π` is a left inverse of `Dg(a)`
     exact LeftInverse.injective fun u => DFunLike.congr_fun (hid a ha) u
+
+/-- **Simon Ch. 2, §4, Remark 4.4** (local graphical representation, using (4.2)): let `ψ` be
+`Cʳ` (`r ≥ 1`), 1:1 and proper on the open set `V` with `ψ(V) = W ∩ N`, and let `π` be
+continuous linear with `π ∘ Dψ(v₀)` injective.  Then `φ = π(ψ − c)` has `Dφ(v₀) = π ∘ Dψ(v₀)`,
+so the inverse function theorem gives a `Cʳ` inverse `χ : D → S` of `φ` with `v₀ ∈ S ⊆ V`, and
+`g = ψ ∘ χ` is `Cʳ` on `D` with `π(g(a) − c) = a` and `g(D) = ψ(S)`.  As `ψ` is open onto its
+image (4.2), `ψ(S) = O ∩ N` for the open set `O = W ∩ ⋃_{v ∈ S} B_{ρ_v}(ψ(v))`.  The left
+inverse `π(· − c)` makes `g` and every `Dg(a)` injective, and for compact `K ⊆ O`,
+`D ∩ g⁻¹(K) = π((N ∩ K) − c)`, where `N ∩ K = ψ(V ∩ ψ⁻¹(K))` is compact. -/
+theorem Submission.codim1_hcp_sc_graph_reparam : ∀ (P d r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P) (v₀ : Euclid d), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → Injective (π ∘L fderiv ℝ ψ v₀) → ∃ (D : Set (Euclid d)) (O : Set (Euclid P)) (g : Euclid d → Euclid P), IsOpen D ∧ IsOpen O ∧ ψ v₀ ∈ O ∧ O ⊆ W ∧ ContDiffOn ℝ r g D ∧ InjOn g D ∧ g '' D = O ∩ N ∧ (∀ K ⊆ O, IsCompact K → IsCompact (D ∩ g ⁻¹' K)) ∧ (∀ a ∈ D, Injective (fderiv ℝ g a)) ∧ ∀ a ∈ D, π (g a - c) = a := by
+  intro P d r N W V ψ π c v₀ hr hV hW hψ hinj hψV hprop hv₀ hπψ
+  have hψc : ContinuousOn ψ V := hψ.continuousOn
+  have hψVWN : ∀ v ∈ V, ψ v ∈ W ∩ N := fun v hv => hψV ▸ mem_image_of_mem ψ hv
+  -- Step 1: `φ = π(ψ − c)` is `Cʳ` on `V`, and `Dφ(v₀) = π ∘ Dψ(v₀)` is injective
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv₀ : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv₀)).hasFDerivAt
+  have hφ : ContDiffOn ℝ r (fun v => π (ψ v - c)) V :=
+    π.contDiff.comp_contDiffOn (hψ.sub contDiffOn_const)
+  have hDφ : fderiv ℝ (fun v => π (ψ v - c)) v₀ = π ∘L fderiv ℝ ψ v₀ :=
+    (π.hasFDerivAt.comp v₀ (hψv₀.sub_const c)).fderiv
+  -- Step 2: a `Cʳ` local inverse `χ : D → S` of `φ` with `v₀ ∈ S ⊆ V`; then `χ(D) = S`
+  obtain ⟨S, D, χ, hS, hD, hv₀S, hSV, hχ, hχD, hφχ, hχφ⟩ :=
+    Submission.codim1_hcp_sc_local_inverse_cr d r (fun v => π (ψ v - c)) V v₀ hr hV hv₀ hφ
+      (hDφ ▸ hπψ)
+  have hχS : χ '' D = S :=
+    Subset.antisymm hχD.image_subset fun z hz => ⟨_, (hχφ z hz).1, (hχφ z hz).2⟩
+  -- Step 3: `g = ψ ∘ χ` is `Cʳ` on `D`, `π(g(a) − c) = a` on `D`, and `g(D) = ψ(S)`
+  have hg : ContDiffOn ℝ r (ψ ∘ χ) D := hψ.comp hχ (hχD.mono_right hSV)
+  have hgπ : ∀ a ∈ D, π ((ψ ∘ χ) a - c) = a := hφχ
+  have hgD : (ψ ∘ χ) '' D = ψ '' S := by rw [image_comp, hχS]
+  -- Step 4: `ψ(S) = O ∩ N` for the open set `O = W ∩ ⋃_{v ∈ S} B(ψ(v), ρ_v)` (Simon 4.2)
+  choose ρ hρ hρS using fun v (hv : v ∈ S) =>
+    Submission.dtc_bc_lr_chart_image_nhds P d N W V S ψ v hW hψc hinj hψV hprop hS hSV hv
+  set O : Set (Euclid P) := W ∩ ⋃ (v) (hv : v ∈ S), ball (ψ v) (ρ v hv)
+  have hO : IsOpen O := hW.inter (isOpen_iUnion fun v => isOpen_iUnion fun hv => isOpen_ball)
+  have hψO : ∀ v (hv : v ∈ S), ψ v ∈ O := fun v hv =>
+    ⟨(hψVWN v (hSV hv)).1, mem_iUnion₂.2 ⟨v, hv, mem_ball_self (hρ v hv)⟩⟩
+  have hSO : ψ '' S = O ∩ N := by
+    refine Subset.antisymm ?_ ?_
+    · rintro _ ⟨v, hv, rfl⟩
+      exact ⟨hψO v hv, (hψVWN v (hSV hv)).2⟩
+    · rintro x ⟨⟨-, hx⟩, hxN⟩
+      obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.1 hx
+      exact hρS v hv ⟨hxN, hxv⟩
+  -- Step 5: `g` and every `Dg(a)` are injective, as `π(· − c)` is a left inverse of `g`
+  have hg1 : ContDiffOn ℝ 1 (ψ ∘ χ) D := hg.of_le (by exact_mod_cast hr)
+  obtain ⟨hginj, hDg⟩ := Submission.codim1_hcp_sc_left_inverse_immersion P d D (ψ ∘ χ) π c hD
+    (hg1.differentiableOn one_ne_zero) hgπ
+  refine ⟨D, O, ψ ∘ χ, hD, hO, hψO v₀ hv₀S, inter_subset_left, hg, hginj, hgD.trans hSO,
+    fun K hKO hK => ?_, fun a ha => (hDg a ha).2, hgπ⟩
+  -- Step 6: `N ∩ K = ψ(V ∩ ψ⁻¹(K))` is compact
+  have hKW : K ⊆ W := hKO.trans inter_subset_left
+  have hNK : N ∩ K = ψ '' (V ∩ ψ ⁻¹' K) := by
+    refine Subset.antisymm ?_ ?_
+    · rintro x ⟨hxN, hxK⟩
+      obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := hψV ▸ ⟨hKW hxK, hxN⟩
+      exact ⟨v, ⟨hv, hxK⟩, rfl⟩
+    · rintro _ ⟨v, ⟨hv, hvK⟩, rfl⟩
+      exact ⟨(hψVWN v hv).2, hvK⟩
+  have hNKc : IsCompact (N ∩ K) := by
+    rw [hNK]
+    exact (hprop K hKW hK).image_of_continuousOn (hψc.mono inter_subset_left)
+  -- Step 7: `D ∩ g⁻¹(K) = p(N ∩ K)` with `p(x) = π(x − c)` continuous, so it is compact
+  have hDK : D ∩ (ψ ∘ χ) ⁻¹' K = (fun x => π (x - c)) '' (N ∩ K) := by
+    refine Subset.antisymm ?_ ?_
+    · rintro a ⟨ha, haK⟩
+      have haN : (ψ ∘ χ) a ∈ O ∩ N := hgD.trans hSO ▸ mem_image_of_mem (ψ ∘ χ) ha
+      exact ⟨(ψ ∘ χ) a, ⟨haN.2, haK⟩, hgπ a ha⟩
+    · rintro _ ⟨x, ⟨hxN, hxK⟩, rfl⟩
+      obtain ⟨b, hb, rfl⟩ : x ∈ (ψ ∘ χ) '' D := hgD.trans hSO ▸ ⟨hKO hxK, hxN⟩
+      show π ((ψ ∘ χ) b - c) ∈ D ∩ (ψ ∘ χ) ⁻¹' K
+      rw [hgπ b hb]
+      exact ⟨hb, hxK⟩
+  rw [hDK]
+  exact hNKc.image (π.continuous.comp (continuous_sub_right c))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
