@@ -1970,6 +1970,117 @@ theorem Submission.deformation_ipl_mwc_coeff_minor_continuity :
   rw [zero_add] at hlim
   exact hlim.congr fun j => (hsplit j).symm
 
+/-- **Weak continuity of `ψ · α(u)(∂₀u, …, ∂_{k−1}u)`** (weak continuity of Jacobian minors;
+used for Lipschitz push-forwards as limits of C¹ push-forwards in the proof of Simon Ch. 6, 5.1,
+remark after (21)).  By the covector expansion and `wedgeCovectors_apply_det`,
+`α(y)(∂₀u, …, ∂_{k−1}u) = ∑_γ α_γ(y) M_γ(Du)` with `α_γ = euclideanCovectorCoordinate (α ·) γ`
+and `M_γ(Du) = det(∂_s u^{γ t})`.  Each summand `ψ (α_γ ∘ u) M_γ(Du)` is integrable on `Ω`:
+`α_γ` is continuous with compact support, and `‖Du‖ ≤ C` on the open set `Ω` gives
+`|M_γ(Du)| = |dy^γ(Du e₀, …, Du e_{k−1})| ≤ ‖dy^γ‖ Cᵏ` there.  Each summand converges by
+`deformation_ipl_mwc_coeff_minor_continuity` with `g = α_γ`, `r = k`, `a = γ`, `b = id`. -/
+theorem Submission.deformation_ipl_minor_weak_continuity : ∀ (k Q : ℕ) (Ω : Set (Eucl k)) (ψ : Eucl k → ℝ) (α : Eucl Q → Covector (Eucl Q) k) (C : ℝ≥0) (u : ℕ → Eucl k → Eucl Q) (u₀ : Eucl k → Eucl Q), IsOpen Ω → IntegrableOn ψ Ω (volume : Measure (Eucl k)) → Continuous α → HasCompactSupport α → (∀ j, LipschitzOnWith C (u j) Ω) → LipschitzOnWith C u₀ Ω → TendstoUniformlyOn u u₀ atTop Ω → Tendsto (fun j => ∫ w in Ω, ψ w * α (u j w) (fun b => fderiv ℝ (u j) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, ψ w * α (u₀ w) (fun b => fderiv ℝ u₀ w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k)))) := by
+  intro k Q Ω ψ α C u u₀ hΩ hψ hαc hαs hu hu₀ hlim
+  -- Coordinate expansion: `α(y)(x) = ∑_γ α_γ(y) det(x_s^{γ t})`.
+  have hexp : ∀ (y : Eucl Q) (x : Fin k → Eucl Q), α y x = ∑ γ : SimonMultiIndex k Q,
+      euclideanCovectorCoordinate (α y) γ *
+        Matrix.det (Matrix.of fun t s : Fin k => EuclideanSpace.proj (γ t) (x s)) := by
+    intro y x
+    conv_lhs => rw [Submission.cmb_covector_eq_sum_coord_smul_wedge Q k (α y)]
+    rw [ContinuousAlternatingMap.sum_apply]
+    refine Finset.sum_congr rfl fun γ _ => ?_
+    rw [ContinuousAlternatingMap.smul_apply, wedgeCovectors_apply_det, smul_eq_mul]
+  -- The coefficients `α_γ` are continuous with compact support.
+  have hgc : ∀ γ : SimonMultiIndex k Q, Continuous fun y => euclideanCovectorCoordinate (α y) γ :=
+    fun γ => hαc.eval_const _
+  have hgs : ∀ γ : SimonMultiIndex k Q,
+      HasCompactSupport fun y => euclideanCovectorCoordinate (α y) γ := by
+    intro γ
+    refine hαs.mono fun y hy => ?_
+    rw [Function.mem_support] at hy ⊢
+    intro h0
+    apply hy
+    simp [euclideanCovectorCoordinate, h0]
+  -- The minors of a map `C`-Lipschitz on `Ω` are measurable, and bounded on `Ω` by
+  -- `‖dy^γ‖ Cᵏ` since `‖Dv‖ ≤ C` on the open set `Ω`.
+  have hminor : ∀ v : Eucl k → Eucl Q, LipschitzOnWith C v Ω → ∀ γ : SimonMultiIndex k Q,
+      AEStronglyMeasurable (fun w => Matrix.det (Matrix.of fun t s : Fin k =>
+          EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1))))
+          ((volume : Measure (Eucl k)).restrict Ω) ∧
+        ∀ w ∈ Ω, ‖Matrix.det (Matrix.of fun t s : Fin k =>
+            EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1)))‖ ≤
+          ‖wedgeCovectors k (fun t => EuclideanSpace.proj (γ t))‖ * (C : ℝ) ^ k := by
+    intro v hv γ
+    set ω : Covector (Eucl Q) k := wedgeCovectors k (fun t => EuclideanSpace.proj (γ t)) with hω
+    -- `M_γ(v)(w) = dy^γ(Dv(w) e₀, …, Dv(w) e_{k−1})`.
+    have hM : ∀ w, Matrix.det (Matrix.of fun t s : Fin k =>
+        EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1))) =
+          ω (fun s => fderiv ℝ v w (EuclideanSpace.single s 1)) := by
+      intro w
+      rw [hω, wedgeCovectors_apply_det]
+    simp only [hM]
+    refine ⟨?_, fun w hw => ?_⟩
+    · have hcont : Continuous fun L : Eucl k →L[ℝ] Eucl Q =>
+          ω (fun s => L (EuclideanSpace.single s 1)) :=
+        ω.coe_continuous.comp (continuous_pi fun s => continuous_id.clm_apply continuous_const)
+      exact (hcont.measurable.comp (measurable_fderiv ℝ v)).aestronglyMeasurable
+    · have hD : ‖fderiv ℝ v w‖ ≤ C := norm_fderiv_le_of_lipschitzOn ℝ (hΩ.mem_nhds hw) hv
+      calc ‖ω (fun s => fderiv ℝ v w (EuclideanSpace.single s 1))‖
+          ≤ ‖ω‖ * ∏ s, ‖fderiv ℝ v w (EuclideanSpace.single s 1)‖ := ω.le_opNorm _
+        _ ≤ ‖ω‖ * ∏ _s : Fin k, (C : ℝ) := by
+            gcongr with s
+            calc ‖fderiv ℝ v w (EuclideanSpace.single s 1)‖
+                ≤ ‖fderiv ℝ v w‖ * ‖(EuclideanSpace.single s (1 : ℝ) : Eucl k)‖ :=
+                  (fderiv ℝ v w).le_opNorm _
+              _ = ‖fderiv ℝ v w‖ := by simp
+              _ ≤ C := hD
+        _ = ‖ω‖ * (C : ℝ) ^ k := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  -- Each summand `ψ (α_γ ∘ v) M_γ(v)` is integrable on `Ω`.
+  have hint : ∀ v : Eucl k → Eucl Q, LipschitzOnWith C v Ω → ∀ γ : SimonMultiIndex k Q,
+      IntegrableOn (fun w => ψ w * euclideanCovectorCoordinate (α (v w)) γ *
+        Matrix.det (Matrix.of fun t s : Fin k =>
+          EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1))))
+        Ω (volume : Measure (Eucl k)) := by
+    intro v hv γ
+    obtain ⟨B, hB⟩ := (hgc γ).bounded_above_of_compact_support (hgs γ)
+    obtain ⟨hmeas, hbd⟩ := hminor v hv γ
+    have hgm : AEStronglyMeasurable (fun w => euclideanCovectorCoordinate (α (v w)) γ)
+        ((volume : Measure (Eucl k)).restrict Ω) :=
+      ((hgc γ).comp_continuousOn hv.continuousOn).aestronglyMeasurable hΩ.measurableSet
+    have hm : AEStronglyMeasurable (fun w => euclideanCovectorCoordinate (α (v w)) γ *
+        Matrix.det (Matrix.of fun t s : Fin k =>
+          EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1))))
+        ((volume : Measure (Eucl k)).restrict Ω) := hgm.mul hmeas
+    have hb : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict Ω),
+        ‖euclideanCovectorCoordinate (α (v w)) γ * Matrix.det (Matrix.of fun t s : Fin k =>
+          EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1)))‖ ≤
+          B * (‖wedgeCovectors k (fun t => EuclideanSpace.proj (γ t))‖ * (C : ℝ) ^ k) := by
+      filter_upwards [ae_restrict_mem hΩ.measurableSet] with w hw
+      rw [norm_mul]
+      exact mul_le_mul (hB _) (hbd w hw) (norm_nonneg _) ((norm_nonneg _).trans (hB (v w)))
+    exact (Integrable.mul_bdd hψ hm hb).congr
+      (Eventually.of_forall fun w => (mul_assoc _ _ _).symm)
+  -- Both integrals are finite sums over `γ` of such summands.
+  have hrw : ∀ v : Eucl k → Eucl Q, LipschitzOnWith C v Ω →
+      ∫ w in Ω, ψ w * α (v w) (fun b => fderiv ℝ v w (EuclideanSpace.single b 1))
+          ∂(volume : Measure (Eucl k)) =
+        ∑ γ : SimonMultiIndex k Q, ∫ w in Ω, ψ w * euclideanCovectorCoordinate (α (v w)) γ *
+          Matrix.det (Matrix.of fun t s : Fin k =>
+            EuclideanSpace.proj (γ t) (fderiv ℝ v w (EuclideanSpace.single s 1)))
+          ∂(volume : Measure (Eucl k)) := by
+    intro v hv
+    rw [← integral_finsetSum _ fun γ _ => hint v hv γ]
+    congr 1
+    funext w
+    rw [hexp (v w), Finset.mul_sum]
+    exact Finset.sum_congr rfl fun γ _ => (mul_assoc _ _ _).symm
+  rw [hrw u₀ hu₀]
+  refine Tendsto.congr (fun j => (hrw (u j) (hu j)).symm) ?_
+  -- Each summand converges: coefficient–minor continuity with `r = k`, `a = γ`, `b = id`.
+  exact tendsto_finsetSum _ fun γ _ =>
+    Submission.deformation_ipl_mwc_coeff_minor_continuity k Q Ω ψ
+      (fun y => euclideanCovectorCoordinate (α y) γ) C u u₀ k γ (fun s => s)
+      hΩ hψ (hgc γ) (hgs γ) hu hu₀ hlim
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
