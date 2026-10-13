@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.good_set_complement-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Measure of the complement of the good set (Simon 5.2.6, estimate (6))",
+  "statement": "For n >= 1, l, p > n there are delta_0 > 0 and C_0 >= 0 such that: if 0 < delta <= delta_0, 2.3 holds, sigma_0 = delta rho, T is any linear subspace and b > 0, then mu(B_(3 sigma_0/4)(0) minus G') <= (C_0/b) integral_(B_(sigma_0)(0)) hsNormSq(p_x - p_T) dmu, where G' is the set of y in spt V with integral_(B_(s/2)(y)) hsNormSq(p_x - p_T) dmu <= b s^n for all s in (0, sigma_0/2].",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₀ C₀ : ℝ, 0 < δ₀ ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → ∀ (T : Submodule ℝ (Amb n ℓ)) (b : ℝ), 0 < b → V.weight (closedBall 0 (3 * (δ * ρ) / 4) \\ {y | y ∈ V.support ∧ ∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 → ∫ x in closedBall y (s / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ b * s ^ n}) ≤ ENNReal.ofReal (C₀ / b * ∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight)",
+  "lean_name": "lip_approx_good_set_complement",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.tangent_structure-a1",
+    "root.lipschitz_approximation-a1.pinched_density-a1",
+    "root.lipschitz_approximation-a1.vitali_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.pinched_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.vitali_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-good-set-complement-a1-a1"
+}
