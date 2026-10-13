@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b7f6a4bfae7a699be6009a42f7beb94be2907a11b8531c7d1b0e86d7f6868630",
+  "git_delta": {
+    "base_commit": "e22f59a2fb0cf4b5ceb50d1de21b6fe56df03122",
+    "candidate_commit": "bc8fc26f62f5d496916393bc98a959eea4b05adb",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c3a2f23658b1f48f4a88a62bff4d23d37704f4ff5b8083ac39cbf50cad85141d",
+    "source_sha256": "e2424953213237ce71a490adc92634d47f1b55383dbbf9cb07401041f4122c65",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_extend_to_univ",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity X → X.support ⊆ K → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.restrictDomain (subset_univ U) = X ∧ Y.support ⊆ K ∧ Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
