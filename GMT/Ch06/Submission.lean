@@ -1342,6 +1342,54 @@ theorem Submission.slicing_im_coarea_glue :
     lintegral_iUnion hW hdisj]
   exact tsum_congr fun i => (hpieces i).2
 
+/-- Co-area formula on a regular injective `C¹` chart (Simon Ch. 3, 2.9 for real-valued `f` on
+`M = Φ(Ω)`; the last part of Ch. 6, Lemma 4.1): let `Φ` be `C¹`, Lipschitz and antilipschitz on
+the open `Ω ⊆ ℝⁿ`, `W ⊆ Φ(Ω)` Borel, and on `Ω ∩ Φ⁻¹(W)` let `G ≠ 0` be the tangential gradient
+of `f` along `Φ`: `f ∘ Φ = h`, `G(Φw) ∈ range DΦ(w)` and `⟨G(Φw), DΦ(w)u⟩ = Dh(w)u`.  Then
+`t ↦ ∫_{W ∩ f⁻¹{t}} g dH^m` is a.e.-measurable and `∫ ∫_{W ∩ f⁻¹{t}} g dH^m dt = ∫_W |G| g dHⁿ`.
+Every `w₀ ∈ Ω ∩ Φ⁻¹(W)` is a regular point of `h`, so `h` is straightened by a chart `χ` with
+`w₀ ∈ χ(B)`; on Borel subsets of `χ(B)` the identity holds by the box co-area lemma, and the
+local-to-global lemma glues these pieces. -/
+theorem Submission.slicing_im_coarea_chart_regular : ∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (f : Eucl P → ℝ) (G : Eucl P → Eucl P) (W : Set (Eucl P)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → Measurable f → Measurable G → MeasurableSet W → W ⊆ Φ '' Ω → (∀ w ∈ Ω, Φ w ∈ W → f (Φ w) = h w ∧ G (Φ w) ≠ 0 ∧ G (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u, inner ℝ (G (Φ w)) (fderiv ℝ Φ w u) = fderiv ℝ h w u) → ∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in W, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P)) := by
+  intro P m Φ Ω h f G W hΩ hΦ hK hc hh hf hG hW hWΩ hpt g hg
+  -- Step 1: `Φ` is continuous and, being antilipschitz, injective on `Ω`.
+  have hinj : InjOn Φ Ω := by
+    obtain ⟨c, hc0, hcΦ⟩ := hc
+    intro w hw w' hw' heq
+    have h1 := hcΦ w hw w' hw'
+    rw [heq, sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hc0 (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  -- Step 6: by the local-to-global lemma (Lindelöf cover and gluing), it suffices to give every
+  -- `w₀ ∈ Ω ∩ Φ⁻¹(W)` an open neighbourhood `O` such that the co-area identity holds for `Φ(S)`,
+  -- for every Borel `S ⊆ O ∩ Ω ∩ Φ⁻¹(W)`.
+  refine Submission.slicing_im_creg_local_to_global P (m + 1) Φ Ω W f (fun x => ‖G x‖ₑ) g
+    (μHE[m + 1] : Measure (Eucl P)) (μHE[m] : Measure (Eucl P)) hΩ hΦ.continuous hinj hf hW hWΩ
+    fun w₀ hw₀ hw₀W => ?_
+  -- Step 1: `w₀` is a regular point of `h`: writing `G(Φw₀) = DΦ(w₀)u₀`,
+  -- `Dh(w₀)u₀ = ⟨G(Φw₀), DΦ(w₀)u₀⟩ = |G(Φw₀)|² ≠ 0`.
+  obtain ⟨-, hG0, hrange, hinner⟩ := hpt w₀ hw₀ hw₀W
+  obtain ⟨u₀, hu₀⟩ := LinearMap.mem_range.mp hrange
+  rw [ContinuousLinearMap.coe_coe] at hu₀
+  have hDh : fderiv ℝ h w₀ ≠ 0 := by
+    intro h0
+    have h1 := hinner u₀
+    rw [hu₀, h0] at h1
+    exact hG0 (inner_self_eq_zero.mp h1)
+  -- Step 2: straighten `h` near `w₀`: a `C¹` chart `χ` on the open `B` with `h (χ y) = y 0`
+  -- and `w₀ ∈ χ(B) ⊆ Ω`, `χ(B)` open.
+  obtain ⟨B, χ, hB, hχ, hχB, hw₀B, hχΩ, hΛ, hhχ, hslice⟩ :=
+    Submission.slicing_im_creg_straightening m h Ω w₀ hΩ hw₀ hh hDh
+  -- Steps 3–5: on Borel `S ⊆ χ(B) ∩ Ω ∩ Φ⁻¹(W)` the box co-area identity applies; its pointwise
+  -- hypotheses are those of the theorem without `G ≠ 0`.
+  refine ⟨χ '' B, hχB, hw₀B, fun S hS hSsub => ?_⟩
+  refine Submission.slicing_im_creg_box_coarea P m Φ Ω h f G B χ S hΩ hΦ hK hc hh hG hB hχ hχΩ
+    hΛ hhχ hslice hS (fun w hw => (hSsub hw).1) (fun w hw => ?_) g hg
+  obtain ⟨hfw, -, hGw, hinw⟩ := hpt w (hSsub hw).2.1 (hSsub hw).2.2
+  exact ⟨hfw, hGw, hinw⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
