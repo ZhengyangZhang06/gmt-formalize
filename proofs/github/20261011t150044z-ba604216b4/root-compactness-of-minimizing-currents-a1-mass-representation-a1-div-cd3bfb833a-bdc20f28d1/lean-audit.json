@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c51372671a1ba11daa0a9a896e78e8a576af9516fb8dc77b5d329f29a1cc87d",
+  "git_delta": {
+    "base_commit": "14a832357b1d794c0a99285dbf615ea9fee69793",
+    "candidate_commit": "c9a1cfd30640941f68b757f3bd34daa8dc7846bb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_df_extDeriv_smul_curryLeft",
+    "diff_sha256": "07fa13c2efc1611cd1df0bd919d4b44fd7f89bdbe6df1dcc9fb9b7aa01f555e7",
+    "source_sha256": "223e17164c030becc2c6c74a6bb36b8f6d42185fabbe9a3e59e4953ae2b92e86",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_df_extDeriv_smul_curryLeft",
+      "statement": "∀ (P m : ℕ) (θ : Covector (Euclid P) (m + 1)) (b : Euclid P → ℝ) (G : Euclid P → Euclid P) (x : Euclid P), DifferentiableAt ℝ b x → DifferentiableAt ℝ G x → ∀ w : Fin (m + 1) → Euclid P, exteriorDerivative (fun y => b y • ContinuousAlternatingMap.curryLeft θ (G y)) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w)) + b x * θ (Fin.cons (fderiv ℝ G x (w i)) (i.removeNth w)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
