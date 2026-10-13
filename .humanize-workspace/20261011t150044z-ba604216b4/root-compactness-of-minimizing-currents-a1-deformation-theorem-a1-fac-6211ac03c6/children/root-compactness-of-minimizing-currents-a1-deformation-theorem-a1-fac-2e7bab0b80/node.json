@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.mass_disjoint_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1",
+  "depth": 5,
+  "title": "Local mass is superadditive over finitely many pairwise disjoint regions",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and S an n-current in U (GeometricCurrentOn U n). Let ι be a type, s a finite subset of ι, and N : ι → Set(ℝ^P) with N_i ∩ N_j = ∅ for all distinct i, j ∈ s. Then Σ_{i∈s} M_{N_i}(S) ≤ M_{⋃_{i∈s} N_i}(S) in [0, ∞]. Here M_W(S) = S.massOn W is the supremum of ofReal(S ω) over test n-forms ω in U with tsupport ω ⊆ W and covectorEuclideanNorm(ω(x)) ≤ 1 for all x.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ι : Type) (s : Finset ι) (N : ι → Set (Euclid P)), (↑s : Set ι).PairwiseDisjoint N → ∑ i ∈ s, S.massOn (N i) ≤ S.massOn (⋃ i ∈ s, N i)",
+  "lean_name": "cmcdtfrbv_massOn_disjoint_sum_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-2e7bab0b80-a1"
+}

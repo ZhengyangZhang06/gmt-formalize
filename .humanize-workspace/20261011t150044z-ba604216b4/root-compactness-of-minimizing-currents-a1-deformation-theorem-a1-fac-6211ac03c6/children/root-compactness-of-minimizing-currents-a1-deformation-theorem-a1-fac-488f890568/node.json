@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.face_covectors-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1",
+  "depth": 5,
+  "title": "Coordinate m-covectors dual to the codimension-one faces of a coordinate (m+1)-plane",
+  "statement": "Let P, m ∈ ℕ, let ι : Fin (m+1) → Fin P be strictly increasing, and write e_l := EuclideanSpace.single l 1 ∈ ℝ^P. There are m-covectors ε_0, …, ε_m on ℝ^P (ε : Fin (m+1) → Covector (Euclid P) m) with the following two properties for every c : Fin (m+1) → ℝ. (a) covectorEuclideanNorm(Σ_j c_j ε_j) = √(Σ_j c_j²), using the Euclidean coefficient norm of Simon 6.1.15. (b) For every j ∈ Fin (m+1), (Σ_{j'} c_{j'} ε_{j'})(fun k => e_{ι(j.succAbove k)}) = (−1)^j c_j. In words: evaluated on the tuple (e_{ι(0)}, …, e_{ι(m)}) with its j-th vector removed, the form gives (−1)^j c_j.",
+  "lean_statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P), StrictMono ι → ∃ ε : Fin (m + 1) → Covector (Euclid P) m, (∀ c : Fin (m + 1) → ℝ, covectorEuclideanNorm (∑ j, c j • ε j) = Real.sqrt (∑ j, c j ^ 2)) ∧ ∀ (c : Fin (m + 1) → ℝ) (j : Fin (m + 1)), (∑ j', c j' • ε j') (fun k => EuclideanSpace.single (ι (j.succAbove k)) (1 : ℝ)) = (-1) ^ (j : ℕ) * c j",
+  "lean_name": "cmcdtfrbv_face_covectors",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_exists-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_kronecker-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_exists-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d-a1",
+      "result_commit": "fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_kronecker-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-40c536ad5f-a1",
+      "result_commit": "00788882fbd65dbb75a03979d0bd554cf094da31",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-488f890568-a1"
+}
