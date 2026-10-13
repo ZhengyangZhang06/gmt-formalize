@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "depth": 4,
+  "title": "A C¹ graph over a ball is an injectively parametrized embedded C¹ submanifold with tangent spaces range DΦ",
+  "statement": "Let n, k ∈ ℕ, let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let s > 0, z ∈ ℝ^{n+k}, and let u : ℝⁿ → ℝ^k be of class C¹ on the open ball D = B_s(0). Put Φ(v) := z + ιv + ι'u(v) and Σ := Φ(D). Then (i) Φ is injective on D; (ii) for every v ∈ D, Φ is differentiable at v and fderiv ℝ Φ v is injective; (iii) Σ is an embedded n-dimensional C¹ submanifold in the sense of the contract (IsEmbeddedSubmanifold 1 n Σ); (iv) for every v ∈ D, the contract's tangent space tangentSpace Σ (Φ(v)) equals the range of fderiv ℝ Φ v (as a set).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → ContDiffOn ℝ 1 u (ball 0 s) → InjOn (fun v => z + ι v + ι' (u v)) (ball (0 : Euclid n) s) ∧ (∀ v ∈ ball (0 : Euclid n) s, DifferentiableAt ℝ (fun v => z + ι v + ι' (u v)) v ∧ Injective (fderiv ℝ (fun v => z + ι v + ι' (u v)) v)) ∧ IsEmbeddedSubmanifold 1 n ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∧ ∀ v ∈ ball (0 : Euclid n) s, tangentSpace ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) (z + ι v + ι' (u v)) = (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v : Euclid n →ₗ[ℝ] Euclid (n + k)) : Set (Euclid (n + k)))",
+  "lean_name": "dgcr_graph_chart_embedded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-df090c7f1c-a1"
+}

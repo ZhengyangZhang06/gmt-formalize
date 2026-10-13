@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "depth": 4,
+  "title": "On a C¹-graph cylinder an integer multiplicity current has an integer-valued density on the graph",
+  "statement": "Let n ≥ 1, k ≥ 0, U ⊆ ℝ^{n+k}, T ∈ 𝒟ₙ(U) and R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep) with R.Represents T. Let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0, s, h > 0, z ∈ ℝ^{n+k}, u : ℝⁿ → ℝ^k of class C¹ on D = B_s(0), Φ(v) := z + ιv + ι'u(v), Σ := Φ(D), C := {z + ιv + ι'w : ‖v‖ < s, ‖w‖ < h}. Assume C ⊆ U and spt μ_R ∩ C = Σ, where μ_R = R.measure = θHⁿ⌞M. Let ξ : ℝ^{n+k} → Λₙ(ℝ^{n+k}) and β : ℝ^{n+k} → Λⁿ(ℝ^{n+k}) be such that β is continuous on Σ, ξ(x)(β(x)) = 1 for every x ∈ Σ, and ξ(Φ(v)) is a unit orientation of range DΦ(v) for every v ∈ D. Then there is g : ℝ^{n+k} → ℝ such that G := g∘Φ is locally integrable on D, G(v) ∈ ℤ for Lⁿ-a.e. v ∈ D, and T(ω) = ∫_Σ g(x)·ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) with spt ω ⊆ C.",
+  "lean_statement": "∀ (n k : ℕ) (U : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s h : ℝ) (ξ : Euclid (n + k) → MultiVector (n + k) n) (β : Euclid (n + k) → Covector (Euclid (n + k)) n), 0 < n → R.Represents T → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → 0 < h → ContDiffOn ℝ 1 u (ball 0 s) → {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → R.measure.support ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} = (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s → ContinuousOn β ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) → (∀ x ∈ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ x (β x) = 1) → (∀ v ∈ ball (0 : Euclid n) s, IsUnitOrientationOf (ξ (z + ι v + ι' (u v))) (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v : Euclid n →ₗ[ℝ] Euclid (n + k)))) → ∃ g : Euclid (n + k) → ℝ, LocallyIntegrableOn (fun v => g (z + ι v + ι' (u v))) (ball (0 : Euclid n) s) volume ∧ (∀ᵐ v ∂(volume.restrict (ball (0 : Euclid n) s)), ∃ m : ℤ, g (z + ι v + ι' (u v)) = m) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid (n + k)) n) ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} → T ω = ∫ x in (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, g x * ξ x ((ω : DifferentialForm (Euclid (n + k)) n) x) ∂μHE[n]",
+  "lean_name": "dgcr_graph_integer_density_on_graph",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orthogonal_coordinates-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_measure_bounds-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orthogonal_coordinates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_measure_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-83ad345463-a1"
+}
