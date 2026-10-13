@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1.a_bound-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1",
+  "depth": 5,
+  "title": "Hoelder absorption: |E/t^(n+1)/(1 + I/t^n)| <= 2 kappa Lambda R^(-1) (t/R)^(-n/p)",
+  "statement": "Let n >= 1 be a natural number and p, R, Lambda, eps, t, I, E, N real numbers. Assume n < p, R > 0, Lambda > 0, 0 < eps <= 1, t > 0, I >= 0 and N >= 0. Write kappa := (p - n)/(4p). Assume N <= kappa Lambda R^(n/p - 1) and |E| <= (1 + eps) t N I^(1 - 1/p), with real powers. Then |E / t^(n+1) / (1 + I/t^n)| <= 2 kappa Lambda R^(-1) (t/R)^(-n/p). Here t^(n+1) and t^n are natural-number powers and (t/R)^(-n/p) is a real power.",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∀ (p R Λ ε t I E N : ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < ε → ε ≤ 1 → 0 < t → 0 ≤ I → 0 ≤ N → N ≤ (p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1) → |E| ≤ (1 + ε) * t * N * I ^ (1 - 1 / p) → |E / t ^ (n + 1) / (1 + I / t ^ n)| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p))",
+  "lean_name": "allard52_am_fc_a_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-a7bbf25b2b-a1"
+}

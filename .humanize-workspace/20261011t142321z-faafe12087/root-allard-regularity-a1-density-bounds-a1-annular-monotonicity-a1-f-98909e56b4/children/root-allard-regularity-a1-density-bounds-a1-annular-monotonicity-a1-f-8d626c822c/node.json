@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1.primitive-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1",
+  "depth": 5,
+  "title": "Continuity and size of the primitive G(t) = integral_0^t a",
+  "statement": "Let n be a natural number, let p, R, Lambda, eps be real numbers with n < p, R > 0, Lambda > 0 and eps > 0, and let a : R -> R. Write kappa := (p - n)/(4p) and b(t) := 2 kappa Lambda R^(-1) (t/R)^(-n/p), a real power. Assume that for every real t with t > 0 and (1 + eps) t < R, a is continuous at t and |a(t)| <= b(t). Then for every real t with t > 0 and (1 + eps) t < R: the function G(u) := integral_0^u a(tau) dtau (interval integral) is continuous at t, and |G(t)| <= Lambda/2.",
+  "lean_statement": "∀ (n : ℕ) (p R Λ ε : ℝ) (a : ℝ → ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < ε → (∀ t : ℝ, 0 < t → (1 + ε) * t < R → ContinuousAt a t ∧ |a t| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p))) → ∀ t : ℝ, 0 < t → (1 + ε) * t < R → ContinuousAt (fun u => ∫ τ in (0)..u, a τ) t ∧ |∫ τ in (0)..t, a τ| ≤ Λ / 2",
+  "lean_name": "allard52_am_fc_primitive",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-8d626c822c-a1"
+}
