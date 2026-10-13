@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Orthonormal frame of `Q` adapted to a unit vector `ν ∈ Q` (Simon Ch. 6, 4.3, used for the
+orientation of the slices in 7.4): if `dim Q = n + 1`, then `Q' = Q ∩ ν^⊥` has an orthonormal
+basis `σ = (σ₁, …, σₙ)`, so that `(ν, σ₁, …, σₙ)` is an orthonormal basis of `Q`.  The dimension
+count is `dim (ℝν) + dim (ν^⊥ ∩ Q) = dim Q`. -/
+theorem Submission.dor_lmbsf_io_adapted_frame : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), Module.finrank ℝ Q = n + 1 → ν ∈ Q → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Q ⊓ (ℝ ∙ ν)ᗮ ∧ Orthonormal ℝ (Fin.cons ν σ : Fin (n + 1) → Euclid P) ∧ (∀ i, σ i ∈ Q) ∧ ∀ i, inner ℝ ν (σ i) = 0 := by
+  intro P n Q ν hQ hνQ hν
+  set Q' : Submodule ℝ (Euclid P) := Q ⊓ (ℝ ∙ ν)ᗮ with hQ'def
+  have hν0 : ν ≠ 0 := by
+    intro h; rw [h, norm_zero] at hν; exact zero_ne_one hν
+  have hle : (ℝ ∙ ν) ≤ Q := (Submodule.span_singleton_le_iff_mem ν Q).2 hνQ
+  -- `dim Q' = n`
+  have hdim : Module.finrank ℝ Q' = n := by
+    have h1 := Submodule.finrank_add_inf_finrank_orthogonal hle
+    rw [finrank_span_singleton hν0, hQ] at h1
+    have : Q' = (ℝ ∙ ν)ᗮ ⊓ Q := inf_comm _ _
+    rw [this]; omega
+  -- `σ` is an orthonormal basis `b` of `Q'`, viewed in `ℝᴾ`
+  let b : OrthonormalBasis (Fin n) ℝ Q' := (stdOrthonormalBasis ℝ Q').reindex (finCongr hdim)
+  let σ : Fin n → Euclid P := fun i => (b i : Euclid P)
+  have hσ : Orthonormal ℝ σ := b.orthonormal.comp_linearIsometry Q'.subtypeₗᵢ
+  have hσmem : ∀ i, σ i ∈ Q' := fun i => (b i).2
+  have hσspan : Submodule.span ℝ (Set.range σ) = Q' := by
+    have hrange : Set.range σ = Q'.subtype '' Set.range b := by
+      ext x; simp [σ]
+    have htop : Submodule.span ℝ (Set.range b) = ⊤ := by simpa using b.toBasis.span_eq
+    rw [hrange, Submodule.span_image, htop, Submodule.map_top, Submodule.range_subtype]
+  have hσQ : ∀ i, σ i ∈ Q := fun i => (hσmem i).1
+  have hνσ : ∀ i, inner ℝ ν (σ i) = 0 := fun i =>
+    (Submodule.mem_orthogonal_singleton_iff_inner_right).1 (hσmem i).2
+  refine ⟨σ, hσ, hσspan, ?_, hσQ, hνσ⟩
+  -- `Fin.cons ν σ` is orthonormal: split both indices into `0` and successors
+  rw [orthonormal_iff_ite] at hσ ⊢
+  intro i j
+  refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+  · simp [hν]
+  · simp [hνσ j', (Fin.succ_ne_zero j').symm]
+  · simp [real_inner_comm, hνσ i', Fin.succ_ne_zero i']
+  · simp [hσ i' j']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
