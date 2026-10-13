@@ -1559,6 +1559,102 @@ theorem Submission.rpn_null_compact_cutoff : ∀ (N : ℕ) (F : Set (Eucl N)), I
     hVc.of_isClosed_subset (isClosed_tsupport _) hsupp, fun y => hb01 y, fun y hy => hb1 hy, ?_⟩
   exact ENNReal.toReal_le_of_le_ofReal hδ.le ((measure_mono (hsupp.trans hVG)).trans hGδ.le)
 
+/-- **Mass off a compact set with null projections (Simon Ch. 6, proof of Lemma 2.36, displays
+(1)–(3), run for `Q_#T` as in Remark 2.37(2)).**  Let `T ∈ 𝒟ₙ(U)` (`n = m + 1`) have
+`M_W(T) + M_W(∂T) < ∞` for all `W ⊂⊂ U` and be represented by `(μ, ξ)` with
+`Σ_β ξ(x)(dx^β)² = 1` for `μ`-a.e. `x`.  If `K` is compact and `Lⁿ(π_α(K)) = 0` for every
+`α ∈ I(n, P)`, where `π_α(x) = ((Qx)_{α(0)}, …, (Qx)_{α(m)})`, then `M_W(T) ≤ C μ(W∖K)` for every
+open `W ⊂⊂ U`.  Each admissible `ω` expands as `Σ_α ω_α θ_α` with `ω_α = ω(Q⁻¹e_α)` and
+`θ_α = Q^*dx^α` (the top form of `π_α`).  For each `α` the cut-off estimate gives
+`|T(ω_α θ_α)| ≤ c_α c'_α μ(W∖K)`, with `c_α = Σ_β |dx^β(Q⁻¹e_α)|` and `c'_α = Σ_β |θ_α(e_β)|`. -/
+theorem Submission.rpn_massOn_le_mul_measure_diff : ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ (μ : Measure (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ ξ → (∀ᵐ x ∂μ, ∑ β : SimonMultiIndex (m + 1) P, (euclideanNVectorCoordinate (ξ x) β) ^ 2 = 1) → ∀ (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (K : Set (Eucl P)), IsCompact K → (∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' K) = 0) → ∃ C : ℝ≥0, ∀ W, CompactlyContainedOpen W U → T.massOn W ≤ (C : ℝ≥0∞) * μ (W \ K) := by
+  intro P m U T hmass μ ξ hrep hξ Q K hK hnull
+  classical
+  -- Step 1: `π_α x = ((Qx)_{α(0)}, …, (Qx)_{α(m)})` is linear and `y^i ∘ π_α = x^{α(i)} ∘ Q`, so
+  -- the top form of `π_α` is `θ_α = Q^*dx^α`; `π_α(K)` is the null set of the hypothesis.
+  let π : SimonMultiIndex (m + 1) P → Eucl P →L[ℝ] Eucl (m + 1) := fun α =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.pi fun i =>
+        (EuclideanSpace.proj (α i) : Eucl P →L[ℝ] ℝ).comp (Q : Eucl P →L[ℝ] Eucl P))
+  let θ : SimonMultiIndex (m + 1) P → Covector (Eucl P) (m + 1) := fun α =>
+    wedgeCovectors (m + 1)
+      (fun i => (EuclideanSpace.proj (α i) : Eucl P →L[ℝ] ℝ).comp (Q : Eucl P →L[ℝ] Eucl P))
+  have hθπ : ∀ α, wedgeCovectors (m + 1)
+      (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp (π α)) = θ α := fun α =>
+    congrArg (wedgeCovectors (m + 1)) (funext fun i => ContinuousLinearMap.ext fun x => rfl)
+  have hπK : ∀ α, (volume : Measure (Eucl (m + 1))) (π α '' K) = 0 := hnull
+  -- Step 4: the constants `c_α = Σ_β |dx^β(e^Q_α)|` and `c'_α = Σ_β |θ_α(e_β)|`.
+  let e : SimonMultiIndex (m + 1) P → Fin (m + 1) → Eucl P := fun α i =>
+    Q.symm (EuclideanSpace.single (α i) (1 : ℝ))
+  let c : SimonMultiIndex (m + 1) P → ℝ := fun α => ∑ β : SimonMultiIndex (m + 1) P,
+    |wedgeCovectors (m + 1) (fun j => (EuclideanSpace.proj (β j) : Eucl P →L[ℝ] ℝ)) (e α)|
+  let c' : SimonMultiIndex (m + 1) P → ℝ := fun α => ∑ β : SimonMultiIndex (m + 1) P,
+    |euclideanCovectorCoordinate (θ α) β|
+  have hc : ∀ α, 0 ≤ c α := fun α => Finset.sum_nonneg fun β _ => abs_nonneg _
+  have hc' : ∀ α, 0 ≤ c' α := fun α => Finset.sum_nonneg fun β _ => abs_nonneg _
+  set S : ℝ := ∑ α : SimonMultiIndex (m + 1) P, c α * c' α
+  have hS0 : 0 ≤ S := Finset.sum_nonneg fun α _ => mul_nonneg (hc α) (hc' α)
+  -- Step 4(b): `|ξ(x)(θ_α)| ≤ c'_α` for `μ`-a.e. `x`.
+  have hξθ : ∀ α, ∀ᵐ x ∂μ, |ξ x (θ α)| ≤ c' α := fun α =>
+    hξ.mono fun x hx => Submission.rpn_moc_abs_nvector_apply_le P (m + 1) (ξ x) (θ α) hx
+  refine ⟨Real.toNNReal (1 + S), fun W hW => ?_⟩
+  -- Step 5: `W ⊆ U` with finite masses; the case `μ(W∖K) = ∞` is trivial.
+  have hW' : IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U := hW
+  have hWU : W ⊆ U := subset_closure.trans hW'.2.2
+  have hfin := ENNReal.add_lt_top.mp (hmass W hW)
+  have hC0 : ((Real.toNNReal (1 + S) : ℝ≥0) : ℝ≥0∞) ≠ 0 := by
+    rw [ne_eq, ENNReal.coe_eq_zero, Real.toNNReal_eq_zero, not_le]
+    linarith
+  by_cases hD : μ (W \ K) = ∞
+  · rw [hD, ENNReal.mul_top hC0]
+    exact le_top
+  apply sSup_le
+  rintro _ ⟨ω, hω, rfl⟩
+  -- Step 6: `ω_α(x) = ω(x)(e^Q_α)` is smooth, supported in `W` and bounded by `c_α`.
+  let f : SimonMultiIndex (m + 1) P → Eucl P → ℝ := fun α x =>
+    (ω : DifferentialForm (Eucl P) (m + 1)) x (e α)
+  have hf_smooth : ∀ α, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f α) := fun α =>
+    (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (e α)).contDiff.comp ω.property.1.1
+  have hf_cs : ∀ α, HasCompactSupport (f α) := fun α =>
+    ω.property.1.2.comp_left (g := fun φ : Covector (Eucl P) (m + 1) => φ (e α)) rfl
+  have hf_supp : ∀ α, tsupport (f α) ⊆ W := fun α =>
+    (tsupport_comp_subset (g := fun φ : Covector (Eucl P) (m + 1) => φ (e α)) rfl _).trans hω.1
+  have hf_bound : ∀ α x, |f α x| ≤ c α := fun α x =>
+    (Submission.rpn_moc_abs_covector_apply_le P (m + 1) _ (e α)).trans
+      (mul_le_of_le_one_right (hc α) (hω.2 x))
+  -- The test forms `ζ_α = ω_α θ_α`; by the rotated expansion `ω = Σ_α ζ_α`.
+  choose ζ hζ using fun α => Submission.rpn_moc_exists_testForm_smul P (m + 1) U (f α) (θ α)
+    (hf_smooth α) (hf_cs α) ((hf_supp α).trans hWU)
+  have hωζ : ω = ∑ α, ζ α := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    simp only [hζ]
+    exact Submission.rpn_covector_rotated_expansion P (m + 1) Q _
+  -- Step 7: `|T(ζ_α)| ≤ c_α c'_α μ(W∖K)`, cutting off near `π_α(K)` (printed display (2)).
+  have hTζ : ∀ α, |T (ζ α)| ≤ c α * c' α * (μ (W \ K)).toReal := fun α =>
+    Submission.rpn_moc_abs_apply_top_form_le P m U W K T μ ξ hrep hW'.1 hWU hK hD (π α) (f α)
+      (c α) (c' α) (hf_smooth α) (hf_cs α) (hf_supp α) (hf_bound α)
+      (by rw [hθπ α]; exact hξθ α)
+      (Submission.rpn_pullback_top_form_bound P m U W T hWU hfin.1 hfin.2 (f α) (hf_smooth α)
+        (hf_cs α) (hf_supp α) (π α))
+      (fun δ hδ => Submission.rpn_null_compact_cutoff (m + 1) (π α '' K)
+        (hK.image (π α).continuous) (hπK α) δ hδ)
+      (ζ α) (fun x => by rw [hθπ α]; exact hζ α x)
+  -- Step 8: sum over `α` (printed display (3)).
+  have hTω : T ω ≤ (1 + S) * (μ (W \ K)).toReal := by
+    calc T ω = ∑ α, T (ζ α) := by rw [hωζ]; exact map_sum T.toCurrent ζ Finset.univ
+      _ ≤ ∑ α, |T (ζ α)| := Finset.sum_le_sum fun α _ => le_abs_self _
+      _ ≤ ∑ α, c α * c' α * (μ (W \ K)).toReal := Finset.sum_le_sum fun α _ => hTζ α
+      _ = S * (μ (W \ K)).toReal := (Finset.sum_mul _ _ _).symm
+      _ ≤ (1 + S) * (μ (W \ K)).toReal :=
+        mul_le_mul_of_nonneg_right (by linarith) ENNReal.toReal_nonneg
+  calc ENNReal.ofReal (T ω) ≤ ENNReal.ofReal ((1 + S) * (μ (W \ K)).toReal) :=
+        ENNReal.ofReal_le_ofReal hTω
+    _ = ((Real.toNNReal (1 + S) : ℝ≥0) : ℝ≥0∞) * μ (W \ K) := by
+      rw [ENNReal.ofReal_mul (by linarith), ENNReal.ofReal_toReal hD]
+      rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
