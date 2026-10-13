@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65490cc80dbe4119a22e2ff298bad8103ed8990e9d3cbab8fe0303cd61d36ff8",
+  "git_delta": {
+    "base_commit": "70ea3e0da35992280a413d39bf1aad6a02290c27",
+    "candidate_commit": "cbce4763f17082f947c2646bc235268cc4f8d1fc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_glc_good_radius",
+    "diff_sha256": "4b939c749358a6f576067d23cd8cca6ee44d849f074c167b29c7b05c8c7d500f",
+    "source_sha256": "a3f2d201e6fbd29dd1625f9375662d4d59020e7886bc09e8ca6003d5e00db583",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_glc_good_radius",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (ρ ρ' : ℝ) (g : ℝ → ℝ≥0∞) (I : ℝ≥0∞) (p : ℝ → Prop), ρ < ρ' → μ (closedBall y ρ') ≠ ∞ → AEMeasurable g → ∫⁻ t, g t ≤ I → (∀ᵐ t, p t) → ∃ t : ℝ, ρ < t ∧ t < ρ' ∧ p t ∧ μ (sphere y t) = 0 ∧ g t ≤ ENNReal.ofReal (2 / (ρ' - ρ)) * I",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
