@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9e8ec9a219e20a36c181a458c256ad5e312c193127d8b98f479b3f6ce09100f8",
+  "git_delta": {
+    "base_commit": "009c02ed3cbd659d1d11f2a60ccfba4441530fcd",
+    "candidate_commit": "a74b428bb36948640a1ac200ad64946c36a93da3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmr_tdn_null_of_average_bound",
+    "diff_sha256": "3f971dda41c0b1695eb305a8d52ef5565cb0a6c6fc12b278d6edacfbcb80d444",
+    "source_sha256": "ebcf8634a5bf202c5fd79cafd0d6adb49dc85784128d7dff9bd218fa4bae31dd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmr_tdn_null_of_average_bound",
+      "statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ), Measurable q → Integrable h ν → (∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → |∫ x, h x * a (q x) ∂ν| ≤ ε + C * ∫ y, a y) → ∀ K : Set (Euclid n), IsCompact K → volume K = 0 → ∫ x in q ⁻¹' K, h x ∂ν = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
