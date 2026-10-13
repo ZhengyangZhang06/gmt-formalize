@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2963d3e93e4664d7ba5dca4428822ed5419aef60d4981efe144276474087fd46",
+  "git_delta": {
+    "base_commit": "138d01ccb96c036d96422445a576be827eb71bd4",
+    "candidate_commit": "ecdea5cf8fdc5e38293b28f27a9f2e479e9fbd47",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ip_pt_cylinder_nullMeasurableSet",
+    "diff_sha256": "61f00cdfd1adc9e253d61b99c73873f4d14c5f9a66a34140d022eadf97c94fc1",
+    "source_sha256": "1a2a6e6a8dcdf49447e7a6e4db7c1a62615b93e7a9f07c5aba4a1ee659454156",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ip_pt_cylinder_nullMeasurableSet",
+      "statement": "∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) → ∀ M : Set (Eucl P), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → NullMeasurableSet {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} (μHE[m + 1] : Measure (Eucl (P + 1)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
