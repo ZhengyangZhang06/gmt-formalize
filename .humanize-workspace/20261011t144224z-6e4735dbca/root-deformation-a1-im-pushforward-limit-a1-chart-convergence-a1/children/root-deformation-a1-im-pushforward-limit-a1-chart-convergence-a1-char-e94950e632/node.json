@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.chart_representation-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "depth": 4,
+  "title": "Chart representation of push-forward integrals by one L¹ weight ψ: ∫_G θ(A_#ξ)(α∘f) dH^k = ∫_Ω ψ·α(f∘Φ)(∂(f∘Φ)) (steps 6a–6d)",
+  "statement": "Let P, Q, k ∈ ℕ, let U ⊆ ℝ^P be open, and let (M, θ, ξ) satisfy IsRectifiableTriple U k M θ ξ (H^k = μHE[k] on ℝ^P). Let Φ : ℝ^k → ℝ^P be C¹, let Ω ⊆ ℝ^k be open, and let Φ be Lipschitz on Ω and c-antilipschitz on Ω for some c > 0. Let G ⊆ ℝ^P be H^k-null-measurable with G ⊆ M and G ⊆ Φ(Ω), and with θ H^k-integrable on G. Then there is ψ : ℝ^k → ℝ, Lebesgue integrable on Ω, with the following property. Let f : ℝ^P → ℝ^Q, A : ℝ^P → L(ℝ^P, ℝ^Q) and α : ℝ^Q → Covector(ℝ^Q, k) be such that (i) f∘Φ has Fréchet derivative A(Φ(w))∘DΦ(w) at L^k-a.e. w ∈ Ω ∩ Φ⁻¹(G), and (ii) x ↦ θ(x)·(A(x)_#ξ(x))(α(f(x))) is H^k-integrable on G. Then ∫_G θ(x)·(A(x)_#ξ(x))(α(f(x))) dH^k(x) = ∫_Ω ψ(w)·α(f(Φ(w)))(∂_0(f∘Φ)(w), …, ∂_{k−1}(f∘Φ)(w)) dw. Here A_# = nVectorPushforward k A, DΦ(w) = fderiv ℝ Φ w and ∂_b(f∘Φ)(w) = fderiv ℝ (f∘Φ) w e_b with e_b = EuclideanSpace.single b 1.",
+  "lean_statement": "∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (G : Set (Eucl P)), IsOpen U → IsRectifiableTriple U k M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → G ⊆ M → G ⊆ Φ '' Ω → NullMeasurableSet G (μHE[k] : Measure (Eucl P)) → IntegrableOn θ G (μHE[k] : Measure (Eucl P)) → ∃ ψ : Eucl k → ℝ, IntegrableOn ψ Ω (volume : Measure (Eucl k)) ∧ ∀ (f : Eucl P → Eucl Q) (A : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (α : Eucl Q → Covector (Eucl Q) k), (∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' G)), HasFDerivAt (f ∘ Φ) ((A (Φ w)).comp (fderiv ℝ Φ w)) w) → IntegrableOn (fun x => θ x * nVectorPushforward k (A x) (ξ x) (α (f x))) G (μHE[k] : Measure (Eucl P)) → ∫ x in G, θ x * nVectorPushforward k (A x) (ξ x) (α (f x)) ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω, ψ w * α (f (Φ w)) (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))",
+  "lean_name": "deformation_ipl_cc_chart_integral_representation",
+  "depends_on": [
+    "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.gram_det_lower_bound-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.signed_change_of_variables-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.chart_orientation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.gram_det_lower_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9-a1",
+      "result_commit": "8cfbc487a3d10545b0ea005ad58122242bbcc072",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708-a1",
+      "result_commit": "9fc44225b304fca8af9dead3256575ef03818d1e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.signed_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.chart_orientation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1-char-e94950e632-a1"
+}

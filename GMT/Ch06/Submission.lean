@@ -2199,6 +2199,62 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   refine ⟨hD, hgae, ?_⟩
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
+/-- Gram-determinant lower bound (the Jacobian bound of step 6a): if `0 ≤ c` and `c‖s‖ ≤ ‖T s‖`
+for all `s ∈ ℝᵏ`, then `cᵏ ≤ √det (⟪T eᵢ, T eⱼ⟫)ᵢⱼ`.  The Gram matrix is the matrix of the
+symmetric operator `S = T† T` in the standard basis; on an orthonormal eigenbasis `uᵢ` of `S` the
+eigenvalues are `⟪S uᵢ, uᵢ⟫ = ‖T uᵢ‖² ≥ c²`, and `det S` is their product. -/
+theorem Submission.deformation_ipl_cc_gram_det_lower_bound : ∀ (P k : ℕ) (T : Eucl k →L[ℝ] Eucl P) (c : ℝ), 0 ≤ c → (∀ s : Eucl k, c * ‖s‖ ≤ ‖T s‖) → c ^ k ≤ Real.sqrt (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1)) (T (EuclideanSpace.single j 1))).det := by
+  intro P k T c hc hT
+  -- `S = T† T` on `ℝᵏ`, with `⟪S x, y⟫ = ⟪T x, T y⟫`
+  set S : Eucl k →ₗ[ℝ] Eucl k :=
+    ((ContinuousLinearMap.adjoint T).comp T : Eucl k →L[ℝ] Eucl k).toLinearMap with hS
+  have hSin : ∀ x y : Eucl k, inner ℝ (S x) y = inner ℝ (T x) (T y) := by
+    intro x y
+    simp only [hS, ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply]
+    exact ContinuousLinearMap.adjoint_inner_left T y (T x)
+  -- Step 1: `S` is symmetric
+  have hsymm : S.IsSymmetric := by
+    intro x y
+    rw [hSin, real_inner_comm (S y) x, hSin, real_inner_comm]
+  have hn : Module.finrank ℝ (Eucl k) = k := finrank_euclideanSpace_fin
+  -- Step 2: the Gram matrix is the matrix of `S` in the standard basis, so `det G = det S`
+  have hmat : LinearMap.toMatrix (EuclideanSpace.basisFun (Fin k) ℝ).toBasis
+      (EuclideanSpace.basisFun (Fin k) ℝ).toBasis S = Matrix.of fun i j =>
+        inner ℝ (T (EuclideanSpace.single i 1)) (T (EuclideanSpace.single j 1)) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+      OrthonormalBasis.coe_toBasis_repr_apply, EuclideanSpace.basisFun_apply,
+      EuclideanSpace.basisFun_repr, Matrix.of_apply, ← hSin,
+      hsymm (EuclideanSpace.single i 1) (EuclideanSpace.single j 1),
+      EuclideanSpace.inner_single_left]
+    simp
+  have hdet : (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1))
+      (T (EuclideanSpace.single j 1))).det = LinearMap.det S := by
+    rw [← hmat, LinearMap.det_toMatrix]
+  -- Step 3: every eigenvalue `λᵢ = ⟪S uᵢ, uᵢ⟫ = ‖T uᵢ‖²` is at least `c²`
+  have heig : ∀ i, c ^ 2 ≤ hsymm.eigenvalues hn i := by
+    intro i
+    have hun : ‖hsymm.eigenvectorBasis hn i‖ = 1 := (hsymm.eigenvectorBasis hn).orthonormal.1 i
+    have h1 := hSin (hsymm.eigenvectorBasis hn i) (hsymm.eigenvectorBasis hn i)
+    rw [hsymm.apply_eigenvectorBasis hn i, real_inner_smul_left, real_inner_self_eq_norm_sq,
+      real_inner_self_eq_norm_sq, hun] at h1
+    have h2 := hT (hsymm.eigenvectorBasis hn i)
+    rw [hun, mul_one] at h2
+    have h3 : hsymm.eigenvalues hn i = ‖T (hsymm.eigenvectorBasis hn i)‖ ^ 2 := by
+      simpa using h1
+    rw [h3]
+    nlinarith [norm_nonneg (T (hsymm.eigenvectorBasis hn i))]
+  -- Step 4: `det G = ∏ λᵢ ≥ (c²)ᵏ`
+  have hprod : (c ^ 2) ^ k ≤ (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1))
+      (T (EuclideanSpace.single j 1))).det := by
+    rw [hdet, hsymm.det_eq_prod_eigenvalues hn]
+    calc (c ^ 2) ^ k = ∏ _i : Fin k, c ^ 2 := by simp
+      _ ≤ ∏ i, hsymm.eigenvalues hn i :=
+          Finset.prod_le_prod₀ (fun _ _ => sq_nonneg c) (fun i _ => heig i)
+  -- Step 5: `cᵏ = √((c²)ᵏ) ≤ √det G`
+  calc c ^ k = Real.sqrt ((c ^ k) ^ 2) := (Real.sqrt_sq (pow_nonneg hc k)).symm
+    _ = Real.sqrt ((c ^ 2) ^ k) := by ring_nf
+    _ ≤ _ := Real.sqrt_le_sqrt hprod
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
