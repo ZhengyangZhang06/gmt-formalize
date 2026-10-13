@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c8bfdb784285932ab483011b65fdba34458e9b5b10e2e5086b8b45a8bfa26147",
+  "git_delta": {
+    "base_commit": "6ffc84ce6826873826cade35ce49fb54f44ea1bc",
+    "candidate_commit": "b9f5a84a73ae75646ac9cb929a7fdafed4e2eabb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_smp_strip_lintegral_le",
+    "diff_sha256": "77d89b2198d77f82182806ad4e837f03aab3d5fc8c0ac144db010194829430eb",
+    "source_sha256": "70145c8e03039f9ccf16ec01735bddbca41b13cd1cf9dc7f08c08cc817dece5f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_smp_strip_lintegral_le",
+      "statement": "∀ (P k : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (η : DifferentialForm (Euclid P) k) (W S : Set (Euclid P)) (c : ℝ), (∀ x, ‖fderiv ℝ g x‖ ≤ c) → (∀ x, fderiv ℝ g x ≠ 0 → x ∈ S) → tsupport η ⊆ W → (∀ x, covectorEuclideanNorm (η x) ≤ 1) → ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm (η x)) ∂μ ≤ ENNReal.ofReal c * μ (W ∩ S)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
