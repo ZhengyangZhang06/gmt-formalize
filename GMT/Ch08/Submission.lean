@@ -410,6 +410,38 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Weight form of flat convergence (Simon Ch. 8, proof of 5.9, pp. 218–219): if
+`∫ f dW_k → θ₀ ∫ f dv(P)` for every `f ∈ C_c(ℝ^N × G(N,n))` with `spt f ⊆ B°_5(0) × G(N,n)`, then
+`∫ g dμ_{W_k} → θ₀ ∫_P g dH^n` for every `g ∈ C_c(ℝ^N)` with `spt g ⊆ B°_5(0)`. -/
+theorem Submission.intcpt_fli_weight_integral_tendsto :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclidean N) 5 → Tendsto (fun k ↦ ∫ x, g x ∂(W k).weight) atTop (𝓝 (θ₀ * ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N)))) := by
+  intro N n P θ₀ W hconv g hg hgc hg5
+  -- Steps 1–3: the lift `F (z, S) = g z` has `tsupport F ⊆ spt g × G(N,n)`, a compact set as
+  -- `G(N,n)` is compact, so `F ∈ C_c(ℝ^N × G(N,n))`.
+  have hFsupp : tsupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) ⊆
+      tsupport g ×ˢ (univ : Set (Grassmannian N n)) :=
+    closure_minimal (fun z hz ↦ ⟨subset_tsupport g hz, mem_univ _⟩)
+      ((isClosed_tsupport g).prod isClosed_univ)
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    { toFun := fun z ↦ g z.1
+      continuous_toFun := hg.comp continuous_fst
+      hasCompactSupport' :=
+        (hgc.isCompact.prod isCompact_univ).of_isClosed_subset (isClosed_tsupport _) hFsupp }
+  -- Step 4: `tsupport f ⊆ B°_5(0) × G(N,n)`, so the hypothesis applies to `f`.
+  have hlim := hconv f (hFsupp.trans (Set.prod_mono hg5 subset_rfl))
+  -- Step 5: `∫ f dW_k = ∫ g dμ_{W_k}`, by `integral_map` along `Prod.fst`.
+  have hleft : ∀ k, ∫ z, f z ∂(W k).measure = ∫ x, g x ∂(W k).weight := fun k ↦ by
+    rw [Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+    rfl
+  -- Step 6: `∫ f dv(P) = ∫_P g dH^n`, by `integral_map` along `y ↦ (y, P)`.
+  have hright : ∫ z, f z ∂(planeVarifoldMeasure P) =
+      ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N)) := by
+    rw [planeVarifoldMeasure, integral_map measurable_prodMk_right.aemeasurable
+      (map_continuous f).aestronglyMeasurable]
+    rfl
+  -- Step 7: substitute steps 5 and 6 into step 4.
+  simpa only [hleft, hright] using hlim
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
