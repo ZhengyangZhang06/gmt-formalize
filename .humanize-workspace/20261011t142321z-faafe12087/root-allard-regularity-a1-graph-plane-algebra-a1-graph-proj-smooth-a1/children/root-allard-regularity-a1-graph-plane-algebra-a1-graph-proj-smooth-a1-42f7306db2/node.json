@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.hs_block_swap-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+  "depth": 4,
+  "title": "Hilbert-Schmidt norm of the block operator [[0, H^T],[H, 0]]",
+  "statement": "For natural numbers n, l, a continuous linear H : R^n -> R^l and a continuous linear D : R^(n+l) -> R^(n+l) such that D(graphPoint x y) = graphPoint (sum_{i<n} <H e_i, y> e_i) (H x) for all x in R^n, y in R^l (e_i = EuclideanSpace.single i 1 in R^n): hsNormSq D = 2 hsNormSq H, where hsNormSq B = sum_k ||B E_k||^2 over the standard basis.",
+  "lean_statement": "∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn ℓ) (D : Amb n ℓ →L[ℝ] Amb n ℓ), (∀ (x : Rn n) (y : Rn ℓ), D (graphPoint x y) = graphPoint (∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y • EuclideanSpace.single i 1) (H x)) → hsNormSq D = 2 * hsNormSq H",
+  "lean_name": "allard52_gps_hsNormSq_swap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-42f7306db2-a1"
+}

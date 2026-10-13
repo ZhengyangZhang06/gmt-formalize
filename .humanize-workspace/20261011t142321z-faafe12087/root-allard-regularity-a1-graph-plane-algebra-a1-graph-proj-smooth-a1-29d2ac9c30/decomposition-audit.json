@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_gfz|graphPoint_split|gram_fderiv_zero|transpose_eq_sum",
+        "theorem ext_inner_right|theorem inner_apply|theorem inner_single_left|def finAddEquivProd|theorem sum_repr|def basisFun|theorem basisFun_apply|theorem basisFun_repr",
+        "theorem one_def|theorem mul_def|instance monoidWithZero|def compL|theorem prod_univ_add|theorem inverse_one|HasFDerivAt.const_add|hasFDerivAt_const_add_iff",
+        "sed -n '600,678p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "sed -n '20,85p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "allard52_gfz",
+        "python3 /tmp/gfz-audit-ako9_khj/run_checks.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-29d2ac9c30/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-29d2ac9c30/decomposition-v1.json",
+        "/tmp/gfz-audit-ako9_khj/EndToEnd.lean",
+        "/tmp/gfz-audit-ako9_khj/Implication.lean",
+        "/tmp/gfz-audit-ako9_khj/Instances.lean",
+        "/tmp/gfz-audit-ako9_khj/run_checks.py"
+      ],
+      "conclusion": "The split appropriately separates four genuine obligations establishing the exact frozen allard52_gps_fderiv_zero_apply contract. Snapshot definitions and relevant Mathlib sources match the compiler sources. All four statements are standalone one-line propositions; independently generated comparator challenge modules compile against a freshly compiled frozen base without child implementations. The complete proofs, accepted prerequisites, and exact parent assembly compile with only propext, Classical.choice and Quot.sound. A separate implication theorem verifies sufficiency of precisely the four child contracts and two declared prerequisite contracts. Ring.inverse selects ContinuousLinearMap.monoidWithZero; multiplication is composition and one is identity. All proposed names are bare identifiers, with no matches in the searched snapshot trees, 486 DAG names, or 2553 local Git refs. Accepted prerequisite types match exactly. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_point_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including all dimensions and quantifiers. The proof explicitly constructs continuous linear witnesses, verifies their coordinates using Fin.addCases, and obtains the required splitting by additivity. It is complete and independent of other children."
+    },
+    {
+      "key": "graph_point_inner",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unconditional inner-product identity exactly matches its Lean proposition. Expanding PiLp inner products and splitting the finite coordinate sum proves it directly, including zero-dimensional cases, without circular dependencies."
+    },
+    {
+      "key": "gram_fderiv_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three hypotheses and continuous linear map types match the prose. The proof correctly derives the identity and orthogonality relations, DG(0)=0 and G(0)=1, applies inversion differentiation with available completeness instances, and uses the product rule twice to obtain exactly the stated derivative. Composition order and the Ring.inverse instance were independently checked. No missing invertibility hypothesis or circular reliance remains."
+    },
+    {
+      "key": "transpose_eq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The transpose hypothesis and coordinate formula match exactly. The supplied basis expansion, linearity calculations, real-inner-product symmetry, and nondegeneracy prove the conclusion for every dimension. The proof assumes only the stated transpose identity and does not depend on constructing a transpose elsewhere."
+    }
+  ],
+  "required_changes": []
+}
