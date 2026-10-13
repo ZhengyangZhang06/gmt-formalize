@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.diagonal_subseq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1",
+  "depth": 4,
+  "title": "Diagonal extraction from nested infinite cliques",
+  "statement": "Let C : ℕ → ℕ → ℕ → Prop be any family of binary relations C r on ℕ. Suppose that for every r ∈ ℕ and every infinite set I ⊆ ℕ there is an infinite set J ⊆ I such that C r j l holds for all j, l ∈ J. Then there is a strictly increasing φ : ℕ → ℕ such that C r (φ(r + 1)) (φ(r)) holds for every r ∈ ℕ.",
+  "lean_statement": "∀ (C : ℕ → ℕ → ℕ → Prop), (∀ (r : ℕ) (I : Set ℕ), I.Infinite → ∃ J ⊆ I, J.Infinite ∧ ∀ j ∈ J, ∀ l ∈ J, C r j l) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, C r (φ (r + 1)) (φ r)",
+  "lean_name": "cmc_fc_cs_diagonal_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-81bbc80940-a1"
+}
