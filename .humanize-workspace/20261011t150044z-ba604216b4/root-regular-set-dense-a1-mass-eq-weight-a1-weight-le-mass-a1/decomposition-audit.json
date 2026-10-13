@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "measure_le_massOn|massOn_le_measure|orient_opNorm|opNorm_le_one|unit_orientation_norm",
+        "rsd_mw_wlm_",
+        "instance.*[Nn]orm|def opNorm|theorem le_opNorm|norm_def|toContinuousMultilinearMap",
+        "theorem lintegral_mono_ae|theorem le_of_forall_lt|theorem ofReal_lt_ofReal_iff",
+        "abbrev Covector|def Covector|def DifferentialForm|abbrev DifferentialForm|def IsTestForm|def TestFormOn|abbrev TestFormOn|def massAdmissibleOn|def massOn|theorem le_massOn|def covectorEuclideanNorm",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsd-wlm-independent-8ix_ptfy/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-v2.json",
+        "/tmp/rsd-wlm-independent-8ix_ptfy/results.json",
+        "/tmp/rsd-wlm-independent-8ix_ptfy/Instances.lean",
+        "/tmp/rsd-wlm-independent-8ix_ptfy/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility with the loaded sources. The project search found no matching existing helper declarations. All five names are bare identifiers and unreserved in the current DAG; the differently named orientation theorem is not reused. Dependencies are correctly directed and acyclic. Independently generated comparator challenges elaborate without child implementations. Each supplied Lean proof compiles separately, and its exact comparator solution uses only propext, Classical.choice and Quot.sound. Norm/topology probes confirm the intended instances. The parent assembly proves exactly rsd_mw_measure_le_massOn using the five children and only the two declared sibling contracts. The split is appropriate and preserves the selected contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orient_opnorm_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose. Orthonormality, the multilinear operator-norm inequality and the two sign cases establish the functional bound, including n = 0. The proof is independent of the other branch's declaration."
+    },
+    {
+      "key": "open_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Inner approximation supplies a compact core; an open neighborhood with compact closure inside W then has finite weight by R.locallyIntegrable_mult. No global finiteness or openness of U is assumed."
+    },
+    {
+      "key": "integrable_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated finite-measure integrability claim. Continuity and scaling give a uniform bound on J applied to the unit ball; continuous composition supplies measurability, and domination proves integrability. The instance-sensitive steps independently compile."
+    },
+    {
+      "key": "eval_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from representation, vanishing outside V and conversion through the measurable NNReal-valued density. The cited localization and density identities require neither measurability of V nor an additional integrability hypothesis."
+    },
+    {
+      "key": "integral_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and strict conclusion match exactly. The proof establishes integrability of h = ξ(ω), then compares the nonnegative integrable function 1 − h with N(ω − β) through lower integrals. This validly avoids any measurability assumption on β and yields the claimed strict bound."
+    }
+  ],
+  "required_changes": []
+}
