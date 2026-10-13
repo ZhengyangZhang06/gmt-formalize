@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30b990011894953032a5e186d1b5bd20f17377a401e7e8ded9381d0bd83a2a80",
+  "git_delta": {
+    "base_commit": "9c989bc00caa96e00bc54d043fd3bbf5eae406ae",
+    "candidate_commit": "014fdc802b43b7b1804291d945881bfa91c93f35",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_pi_ss_cycle_slice_boundary",
+    "diff_sha256": "94d8535af473ab2c1ed74d7ecb4a4c2afa12a0e203e7866523126b2db8355ada",
+    "source_sha256": "71d97336d7a7813955e5f5c4a7df55e9303fe8718b23fd49fb3292f2edf51c93",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_ss_cycle_slice_boundary",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (t : ℝ) (S : GeometricCurrentOn U m), IsOpen U → T.boundary = 0 → IsSlice T f t S → ∃ A : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ f x < t} A ∧ A.boundary = S",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
