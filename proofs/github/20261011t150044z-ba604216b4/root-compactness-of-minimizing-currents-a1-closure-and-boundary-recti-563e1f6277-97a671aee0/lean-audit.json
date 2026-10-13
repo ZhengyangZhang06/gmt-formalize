@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "169c08275053b0163374814749d1ce27ca3f885c42d277471502d90323432a21",
+  "git_delta": {
+    "base_commit": "227ea556ac74e924c3ef031cf6ac5062ac844350",
+    "candidate_commit": "0bc462947c52de7a9c37ba81f905adbee7d845bc",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7d670d805a28885a4e146ee6ec34f30b37b4def41913aa3ecaf79047cb6697bf",
+    "source_sha256": "1ca6985a87c98dfeae6d7dd72f5c306ac9a57b953a9cb9e7386cb76658f586d4",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_uniform_density_on_large_set",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), 0 < n → MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → ∀ (a b ε : ℝ), ENNReal.ofReal a < unitBallVolume n → 0 < b → 0 < ε → ∃ (E : Set (Euclid P)) (δ : ℝ), E ⊆ M ∧ 0 < δ ∧ μHE[n] (M \\ E) < ENNReal.ofReal ε ∧ (∀ x ∈ E, Module.finrank ℝ (Q x) = n) ∧ (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ (μHE[n].restrict M) (closedBall y ρ)) ∧ ∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → (μHE[n].restrict M) ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

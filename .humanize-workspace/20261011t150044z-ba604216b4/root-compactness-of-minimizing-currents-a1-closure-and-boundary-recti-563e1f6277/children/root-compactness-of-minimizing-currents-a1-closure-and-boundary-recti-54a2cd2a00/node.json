@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1.ae_lusin-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1",
+  "depth": 5,
+  "title": "Lusin's theorem for an a.e. strongly measurable map, keeping an a.e. property (parent steps 1–2; the closed set F of Simon Ch. 3, proof of 1.6, (4))",
+  "statement": "Let P ∈ ℕ and let Y be a pseudo-metrizable, second-countable topological space. Let μ be a measure on ℝ^P (Borel σ-algebra), A ⊆ ℝ^P a Borel set with μ(A) < ∞, f : ℝ^P → Y a map that is almost everywhere strongly measurable with respect to μ⌞A, and p a property of points of ℝ^P that holds μ⌞A-almost everywhere. Then for every η ∈ (0, ∞] (η ≠ 0) there is a compact set K ⊆ A with μ(A ∖ K) < η such that p(x) holds for every x ∈ K and f is continuous on K.",
+  "lean_statement": "∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [TopologicalSpace.PseudoMetrizableSpace Y] [SecondCountableTopology Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (f : Euclid P → Y) (p : Euclid P → Prop), MeasurableSet A → μ A ≠ ∞ → AEStronglyMeasurable f (μ.restrict A) → (∀ᵐ x ∂(μ.restrict A), p x) → ∀ η : ℝ≥0∞, η ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \\ K) < η ∧ (∀ x ∈ K, p x) ∧ ContinuousOn f K",
+  "lean_name": "cbrr_ud_lusin_of_aestronglyMeasurable",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9-a1",
+      "result_commit": "e4172a7b3e6ff6905ecff6f6d729752746d19ff0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-54a2cd2a00-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1.uniformize-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1",
+  "depth": 5,
+  "title": "Egoroff-type uniformization of eventually-true closed conditions on a set of finite measure (parent steps 4(iii)–5)",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P (Borel σ-algebra), F ⊆ ℝ^P a Borel set with μ(F) < ∞, and (T_ρ)_{ρ∈ℝ} a family of subsets of ℝ^P. Suppose T_ρ is closed for every ρ > 0, and every x ∈ F lies in T_ρ for all sufficiently small ρ > 0, i.e. there is r > 0 with x ∈ T_ρ for all ρ ∈ (0, r) (Lean: ∀ᶠ ρ in 𝓝[>] 0, x ∈ T ρ). Then for every η ∈ (0, ∞] (η ≠ 0) there are E ⊆ F and δ > 0 such that μ(F ∖ E) < η and x ∈ T_ρ for all x ∈ E and all ρ ∈ (0, δ).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F : Set (Euclid P)) (T : ℝ → Set (Euclid P)), MeasurableSet F → μ F ≠ ∞ → (∀ ρ : ℝ, 0 < ρ → IsClosed (T ρ)) → (∀ x ∈ F, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), x ∈ T ρ) → ∀ η : ℝ≥0∞, η ≠ 0 → ∃ (E : Set (Euclid P)) (δ : ℝ), E ⊆ F ∧ 0 < δ ∧ μ (F \\ E) < η ∧ ∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → x ∈ T ρ",
+  "lean_name": "cbrr_ud_uniformize_eventually",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9899c799b9-a1"
+}
