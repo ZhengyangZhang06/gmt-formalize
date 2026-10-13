@@ -2371,7 +2371,326 @@ theorem Submission.monotonicity_and_density_theorems :
     MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE :=
   ⟨Submission.monotonicity_formula_8_3_3, Submission.stationary_monotonicity_identity_8_3_4,
     Submission.density_exists_ae_8_3_6⟩
+/-- Test functions for the sequential form of the Alaoglu step in Simon Ch. 1, 4.16 (erratum: the
+Alaoglu theorem only yields a subnet).  If `X` is locally compact, Hausdorff and second countable,
+there is a sequence `g` in `C_c(X, ℝ)` such that every `f ∈ C_c(X, ℝ)` has a compact
+`K ⊇ tsupport f` and, for each `η > 0`, some `g k` with `tsupport (g k) ⊆ K` and `|f - g k| ≤ η`
+everywhere. -/
+theorem Submission.radon_compactlySupported_countable_approx :
+    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
+      [SecondCountableTopology X], ∃ g : ℕ → C_c(X, ℝ), ∀ f : C_c(X, ℝ), ∃ K : Set X,
+        IsCompact K ∧ tsupport f ⊆ K ∧ ∀ η : ℝ, 0 < η → ∃ k : ℕ, tsupport (g k) ⊆ K ∧
+          ∀ x : X, |f x - g k x| ≤ η := by
+  intro X _ _ _ _
+  -- Step 1: `C(X, ℝ)` with the compact-open topology is second countable.  This inlines Mathlib's
+  -- `ContinuousMap.compactOpen_eq_generateFrom` and `ContinuousMap.instSecondCountableTopology`
+  -- (`Mathlib.Topology.ContinuousMap.SecondCountableSpace`, outside this file's imports), with
+  -- the closures of the relatively compact basic open sets of `X` as the compact sets.
+  set S : Set (Set X) :=
+    closure '' {B | B ∈ TopologicalSpace.countableBasis X ∧ IsCompact (closure B)}
+  set T : Set (Set ℝ) := TopologicalSpace.countableBasis ℝ
+  have hT : TopologicalSpace.IsTopologicalBasis T := TopologicalSpace.isBasis_countableBasis ℝ
+  have hS₁ : ∀ K ∈ S, IsCompact K := by
+    rintro _ ⟨B, hB, rfl⟩
+    exact hB.2
+  have hS₂ : ∀ f : C(X, ℝ), ∀ x, ∀ V ∈ T, f x ∈ V → ∃ K ∈ S, K ∈ 𝓝 x ∧ MapsTo f K V := by
+    intro f x V hV hxV
+    have hpre : f ⁻¹' V ∈ 𝓝 x := ((hT.isOpen hV).preimage f.continuous).mem_nhds hxV
+    obtain ⟨C, hCx, hCV, hC⟩ := local_compact_nhds hpre
+    obtain ⟨B, hB, hxB, hBC⟩ := (TopologicalSpace.isBasis_countableBasis X).mem_nhds_iff.1 hCx
+    have hBC' : closure B ⊆ C := closure_minimal hBC hC.isClosed
+    refine ⟨closure B, ⟨B, ⟨hB, hC.of_isClosed_subset isClosed_closure hBC'⟩, rfl⟩, ?_, ?_⟩
+    · exact mem_of_superset
+        ((TopologicalSpace.isOpen_of_mem_countableBasis hB).mem_nhds hxB) subset_closure
+    · exact fun y hy => hCV (hBC' hy)
+  have hkey : (ContinuousMap.compactOpen : TopologicalSpace C(X, ℝ)) =
+      TopologicalSpace.generateFrom (Set.image2 (fun K t ↦
+        {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}) := by
+    apply le_antisymm
+    · apply_rules [TopologicalSpace.generateFrom_anti, image2_subset_iff.mpr]
+      intro K hK t ht
+      exact mem_image2_of_mem (hS₁ K hK) (isOpen_sUnion fun _ h ↦ hT.isOpen <| ht.2 h)
+    · refine le_of_nhds_le_nhds fun f ↦ ?_
+      simp only [ContinuousMap.nhds_compactOpen, le_iInf_iff, le_principal_iff]
+      intro K (hK : IsCompact K) U (hU : IsOpen U) hfKU
+      simp only [TopologicalSpace.nhds_generateFrom]
+      obtain ⟨t, htT, htf, hTU, hKT⟩ :
+          ∃ t ⊆ T, t.Finite ∧ (∀ V ∈ t, V ⊆ U) ∧ f '' K ⊆ ⋃₀ t := by
+        rw [hT.open_eq_sUnion' hU, mapsTo_iff_image_subset, sUnion_eq_biUnion] at hfKU
+        obtain ⟨t, ht, hfin, htK⟩ :=
+          (hK.image (map_continuous f)).elim_finite_subcover_image (fun V hV ↦ hT.isOpen hV.1)
+            hfKU
+        refine ⟨t, fun _ h ↦ (ht h).1, hfin, fun _ h ↦ (ht h).2, ?_⟩
+        rwa [sUnion_eq_biUnion]
+      rw [image_subset_iff] at hKT
+      obtain ⟨s, hsS, hsf, hKs, hst⟩ :
+          ∃ s ⊆ S, s.Finite ∧ K ⊆ ⋃₀ s ∧ MapsTo f (⋃₀ s) (⋃₀ t) := by
+        have : ∀ x ∈ K, ∃ L ∈ S, L ∈ 𝓝 x ∧ MapsTo f L (⋃₀ t) := by
+          intro x hx
+          rcases hKT hx with ⟨V, hVt, hxV⟩
+          rcases hS₂ f x V (htT hVt) hxV with ⟨L, hLS, hLx, hLV⟩
+          exact ⟨L, hLS, hLx, hLV.mono_right <| subset_sUnion_of_mem hVt⟩
+        choose! L hLS hLmem hLt using this
+        rcases hK.elim_nhds_subcover L hLmem with ⟨s, hsK, hs⟩
+        refine ⟨L '' s, image_subset_iff.2 fun x hx ↦ hLS x <| hsK x hx, s.finite_toSet.image _,
+          by rwa [sUnion_image], ?_⟩
+        rw [mapsTo_sUnion, forall_mem_image]
+        exact fun x hx ↦ hLt x <| hsK x hx
+      have hsub : (⋂ L ∈ s, {g : C(X, ℝ) | MapsTo g L (⋃₀ t)}) ⊆ {g | MapsTo g K U} := by
+        simp only [← ofPred_forall, ← mapsTo_iUnion, ← sUnion_eq_biUnion]
+        exact fun g hg ↦ hg.mono hKs (sUnion_subset hTU)
+      refine mem_of_superset ((biInter_mem hsf).2 fun L hL ↦ ?_) hsub
+      refine mem_iInf_of_mem _ <| mem_iInf_of_mem ?_ <| mem_principal_self _
+      exact ⟨hst.mono_left (subset_sUnion_of_mem hL), mem_image2_of_mem (hsS hL) ⟨htf, htT⟩⟩
+  have hcount : (Set.image2 (fun K t ↦ {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S
+      {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}).Countable :=
+    (((TopologicalSpace.countable_countableBasis X).mono fun _ hB => hB.1).image _).image2
+      (countable_ofPred_finite_subset (TopologicalSpace.countable_countableBasis ℝ)) _
+  have : SecondCountableTopology C(X, ℝ) := ⟨⟨_, hcount, hkey⟩⟩
+  -- Step 2: a dense sequence `d` in `C(X, ℝ)` approximates every `h` uniformly on compact sets,
+  -- since the compact-open topology is that of the compact-convergence uniformity.
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → C(X, ℝ), DenseRange d :=
+    ⟨TopologicalSpace.denseSeq C(X, ℝ), TopologicalSpace.denseRange_denseSeq C(X, ℝ)⟩
+  have happrox : ∀ (h : C(X, ℝ)) (L : Set X), IsCompact L → ∀ η : ℝ, 0 < η →
+      ∃ i, ∀ x ∈ L, |h x - d i x| < η := by
+    intro h L hL η hη
+    have hW : {p : C(X, ℝ) × C(X, ℝ) | ∀ x ∈ L,
+        (p.1 x, p.2 x) ∈ {q : ℝ × ℝ | dist q.1 q.2 < η}} ∈ uniformity C(X, ℝ) :=
+      ContinuousMap.hasBasis_compactConvergenceUniformity.mem_of_mem
+        (i := (L, {q : ℝ × ℝ | dist q.1 q.2 < η})) ⟨hL, Metric.dist_mem_uniformity hη⟩
+    obtain ⟨_, ⟨i, rfl⟩, hi⟩ := hd.inter_nhds_nonempty (UniformSpace.ball_mem_nhds h hW)
+    exact ⟨i, fun x hx => by simpa [Real.dist_eq] using hi x hx⟩
+  -- Step 3: a compact exhaustion `E` of `X` and Urysohn cutoffs `χ m` with values in `[0, 1]`,
+  -- equal to `1` on `E m` and vanishing off `interior (E (m + 1))`.
+  set E := CompactExhaustion.choice X
+  choose χ hχ1 hχ0 hχc hχI using fun m => exists_continuous_one_zero_of_isCompact
+    (E.isCompact m) isOpen_interior.isClosed_compl
+    (disjoint_compl_right_iff_subset.2 (E.subset_interior_succ m))
+  have hχsupp : ∀ m, tsupport (χ m) ⊆ E (m + 1) := by
+    intro m
+    refine closure_minimal ?_ (E.isCompact (m + 1)).isClosed
+    intro x hx
+    by_contra hxE
+    exact hx (hχ0 m (fun hxi => hxE (interior_subset hxi)))
+  -- Step 4: the family `g (Nat.pair m i) = χ m * d i`, supported in `E (m + 1)`.
+  let g : ℕ → C_c(X, ℝ) := fun k =>
+    ⟨χ (Nat.unpair k).1 * d (Nat.unpair k).2, (hχc (Nat.unpair k).1).mul_right⟩
+  have hgx : ∀ k x, g k x = χ (Nat.unpair k).1 x * d (Nat.unpair k).2 x := fun _ _ => rfl
+  have hgsupp : ∀ k, tsupport (g k) ⊆ E ((Nat.unpair k).1 + 1) := fun k =>
+    (tsupport_mul_subset_left (f := χ (Nat.unpair k).1) (g := d (Nat.unpair k).2)).trans
+      (hχsupp _)
+  clear_value g
+  -- Step 5: if `tsupport f ⊆ E m`, take `K = E (m + 1)`.  As `f = χ m * f`, we get
+  -- `|f - χ m * d i| = χ m * |f - d i| ≤ η` once `|f - d i| < η` on `E (m + 1)`.
+  refine ⟨g, fun f => ?_⟩
+  obtain ⟨m, hm⟩ := E.exists_superset_of_isCompact f.hasCompactSupport.isCompact
+  refine ⟨E (m + 1), E.isCompact _, hm.trans (E.subset_succ m), fun η hη => ?_⟩
+  obtain ⟨i, hi⟩ := happrox f (E (m + 1)) (E.isCompact _) η hη
+  refine ⟨Nat.pair m i, ?_, fun x => ?_⟩
+  · simpa [Nat.unpair_pair] using hgsupp (Nat.pair m i)
+  · have hfx : f x = χ m x * f x := by
+      by_cases hx : x ∈ E m
+      · rw [hχ1 m hx, Pi.one_apply, one_mul]
+      · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hm h)), mul_zero]
+    rw [hgx, Nat.unpair_pair, hfx, ← mul_sub, abs_mul, abs_of_nonneg (hχI m x).1]
+    by_cases hx : x ∈ E (m + 1)
+    · calc χ m x * |f x - d i x| ≤ 1 * η :=
+            mul_le_mul (hχI m x).2 (hi x hx).le (abs_nonneg _) zero_le_one
+        _ = η := one_mul η
+    · rw [hχ0 m (fun h => hx (interior_subset h)), Pi.zero_apply, zero_mul]
+      exact hη.le
+/-- Final step of Simon Ch. 1, 4.16 (Riesz representation, Theorem 4.12): if the masses `μ_j(K)` of
+each compact `K` are eventually bounded and `∫ f dμ_j` converges for every `f ∈ C_c(X, ℝ)`, then
+the limits are the integrals `∫ f dν` against a single locally finite measure `ν` on `X`. -/
+theorem Submission.radon_exists_measure_of_tendsto_integral :
+    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [MeasurableSpace X]
+      [BorelSpace X] (μ : ℕ → Measure X),
+      (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) →
+      (∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 L)) →
+      ∃ ν : Measure X, IsLocallyFiniteMeasure ν ∧
+        ∀ f : C_c(X, ℝ), Tendsto (fun j ↦ ∫ x, f x ∂(μ j)) atTop (𝓝 (∫ x, f x ∂ν)) := by
+  intro X _ _ _ _ _ μ hμ hconv
+  -- Step 1: each `f ∈ C_c(X, ℝ)` is `μ j`-integrable for all large `j`, since `f` is continuous,
+  -- vanishes off the compact set `tsupport f`, and `μ j (tsupport f) < ∞` for large `j`.
+  have hint : ∀ f : C_c(X, ℝ), ∀ᶠ j in atTop, Integrable f (μ j) := by
+    intro f
+    obtain ⟨C, hC, hev⟩ := hμ (tsupport f) f.hasCompactSupport.isCompact
+    filter_upwards [hev] with j hj
+    have : IsFiniteMeasure ((μ j).restrict (tsupport f)) :=
+      isFiniteMeasure_restrict.2 (ne_top_of_le_ne_top hC hj)
+    exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).1
+      (f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport)
+  -- Step 2: the limit functional `F f = lim_j ∫ f dμ_j` is additive, homogeneous and positive.
+  choose F hF using hconv
+  have hadd : ∀ f g : C_c(X, ℝ), F (f + g) = F f + F g := by
+    intro f g
+    refine tendsto_nhds_unique (hF (f + g)) (((hF f).add (hF g)).congr' ?_)
+    filter_upwards [hint f, hint g] with j hf hg
+    rw [CompactlySupportedContinuousMap.coe_add]
+    exact (integral_add hf hg).symm
+  have hsmul : ∀ (c : ℝ) (f : C_c(X, ℝ)), F (c • f) = c • F f := by
+    intro c f
+    refine tendsto_nhds_unique (hF (c • f)) (((hF f).const_smul c).congr fun j ↦ ?_)
+    rw [CompactlySupportedContinuousMap.coe_smul]
+    exact (integral_smul c _).symm
+  have hpos : ∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ F f := fun f hf ↦
+    ge_of_tendsto' (hF f) fun j ↦ integral_nonneg (CompactlySupportedContinuousMap.le_def.1 hf)
+  -- Step 3: by the Riesz–Markov–Kakutani theorem, `F f = ∫ f dν` for the Riesz measure `ν` of `F`,
+  -- which is regular, hence finite on compact sets, hence locally finite.
+  refine ⟨RealRMK.rieszMeasure (PositiveLinearMap.mk₀ ⟨⟨F, hadd⟩, hsmul⟩ hpos), inferInstance,
+    fun f ↦ ?_⟩
+  rw [RealRMK.integral_rieszMeasure]
+  exact hF f
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
+
+/-- Subsequence extraction in Simon Ch. 1, 4.16 (erratum: the Alaoglu theorem only yields a
+subnet, so `X` is taken second countable).  If `X` is locally compact, Hausdorff and second
+countable and the masses `μ j K` of each compact `K` are eventually bounded, then for one strictly
+increasing `φ` every `∫ f dμ (φ j)` with `f ∈ C_c(X, ℝ)` converges.  A Tychonoff (diagonal)
+extraction in `ℕ → ℝ` makes `∫ g k dμ (φ j)` converge for the countable family `g` of
+`radon_compactlySupported_countable_approx`; uniform approximation of `f` by `g k` supported in a
+fixed compact `K ⊇ tsupport f` and the mass bound on `K` then make `∫ f dμ (φ j)` Cauchy. -/
+theorem Submission.radon_exists_subseq_tendsto_integral :
+    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
+      [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ : ℕ → Measure X),
+      (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) →
+      ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ L : ℝ,
+        Tendsto (fun j ↦ ∫ x, f x ∂(μ (φ j))) atTop (𝓝 L) := by
+  intro X _ _ _ _ _ _ μ hμ
+  -- Step 0(a): `h ∈ C_c(X, ℝ)` is `ν`-integrable if `ν K < ∞` for some `K ⊇ tsupport h`.
+  have hint : ∀ (ν : Measure X) (h : C_c(X, ℝ)) (K : Set X), tsupport h ⊆ K → ν K ≠ ∞ →
+      Integrable (fun x ↦ h x) ν := by
+    intro ν h K hK hν
+    obtain ⟨M, hM⟩ := (map_continuous h).bounded_above_of_compact_support h.hasCompactSupport
+    exact (integrableOn_iff_integrable_of_support_subset ((subset_tsupport _).trans hK)).1
+      (Measure.integrableOn_of_bounded hν (map_continuous h).aestronglyMeasurable
+        (Eventually.of_forall hM))
+  -- Step 0(b): `|∫ h dν| ≤ η ν(K)` if `h = 0` off `K`, `|h| ≤ η` and `ν K < ∞`.
+  have hest : ∀ (ν : Measure X) (h : X → ℝ) (K : Set X) (η : ℝ), ν K ≠ ∞ →
+      (∀ x, x ∉ K → h x = 0) → (∀ x, |h x| ≤ η) → |∫ x, h x ∂ν| ≤ η * ν.real K := by
+    intro ν h K η hν hK hη
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hK, ← Real.norm_eq_abs]
+    exact norm_setIntegral_le_of_norm_le_const hν.lt_top fun x _ ↦
+      (Real.norm_eq_abs _).le.trans (hη x)
+  -- Step 1: the countable approximating family `g`.
+  obtain ⟨g, hg⟩ := Submission.radon_compactlySupported_countable_approx X
+  -- Step 2: each sequence `j ↦ ∫ g k dμ j` is bounded, by `|M| C` for `j ≥ J` and by the
+  -- finitely many earlier terms otherwise.
+  have hbdd : ∀ k, ∃ B : ℝ, ∀ j, |∫ x, g k x ∂(μ j)| ≤ B := by
+    intro k
+    obtain ⟨C, hC, hev⟩ := hμ _ (g k).hasCompactSupport.isCompact
+    obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+    obtain ⟨M, hM⟩ :=
+      (map_continuous (g k)).bounded_above_of_compact_support (g k).hasCompactSupport
+    refine ⟨|M| * C.toReal + ∑ i ∈ Finset.range J, |∫ x, g k x ∂(μ i)|, fun j ↦ ?_⟩
+    have hsum : 0 ≤ ∑ i ∈ Finset.range J, |∫ x, g k x ∂(μ i)| :=
+      Finset.sum_nonneg fun _ _ ↦ abs_nonneg _
+    have hMC : 0 ≤ |M| * C.toReal := mul_nonneg (abs_nonneg _) ENNReal.toReal_nonneg
+    rcases lt_or_ge j J with hj | hj
+    · have h1 : |∫ x, g k x ∂(μ j)| ≤ ∑ i ∈ Finset.range J, |∫ x, g k x ∂(μ i)| :=
+        Finset.single_le_sum (f := fun i ↦ |∫ x, g k x ∂(μ i)|) (fun _ _ ↦ abs_nonneg _)
+          (Finset.mem_range.2 hj)
+      linarith
+    · have hjC : μ j (tsupport (g k)) ≤ C := hJ j hj
+      have h1 : |∫ x, g k x ∂(μ j)| ≤ |M| * (μ j).real (tsupport (g k)) :=
+        hest (μ j) (g k) _ |M| (hjC.trans_lt hC.lt_top).ne
+          (fun x hx ↦ image_eq_zero_of_notMem_tsupport hx)
+          (fun x ↦ (Real.norm_eq_abs _).ge.trans ((hM x).trans (le_abs_self M)))
+      have h2 : |M| * (μ j).real (tsupport (g k)) ≤ |M| * C.toReal :=
+        mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hC hjC) (abs_nonneg M)
+      linarith
+  choose B hB using hbdd
+  -- Step 3: the points `(∫ g k dμ j)_k` lie in the compact set `∏_k [-B k, B k]` of the first
+  -- countable space `ℕ → ℝ`, so a subsequence converges, i.e. converges in every coordinate `k`.
+  obtain ⟨l, -, φ, hφ, hlim⟩ :=
+    (isCompact_univ_pi fun k ↦ isCompact_Icc (a := -B k) (b := B k)).tendsto_subseq
+      (x := fun j k ↦ ∫ x, g k x ∂(μ j)) fun j ↦ mem_univ_pi.2 fun k ↦ abs_le.1 (hB k j)
+  have hconv : ∀ k, Tendsto (fun j ↦ ∫ x, g k x ∂(μ (φ j))) atTop (𝓝 (l k)) :=
+    fun k ↦ tendsto_pi_nhds.1 hlim k
+  refine ⟨φ, hφ, fun f ↦ ?_⟩
+  -- Step 4: `∫ f dμ (φ j)` is Cauchy, hence convergent.
+  obtain ⟨K, hK, hfK, happrox⟩ := hg f
+  obtain ⟨C, hC, hev⟩ := hμ K hK
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+  have hc : 0 ≤ C.toReal := ENNReal.toReal_nonneg
+  refine cauchySeq_tendsto_of_complete (Metric.cauchySeq_iff.2 fun ε hε ↦ ?_)
+  obtain ⟨η, hη, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η * (2 * C.toReal + 2) = ε :=
+    ⟨ε / (2 * C.toReal + 2), div_pos hε (by linarith), div_mul_cancel₀ ε (by linarith)⟩
+  obtain ⟨k, hgK, hfg⟩ := happrox η hη
+  obtain ⟨N₁, hN₁⟩ := Metric.cauchySeq_iff.1 (hconv k).cauchySeq η hη
+  -- (i): for `p ≥ J`, `φ p ≥ p ≥ J`, so `μ (φ p) K ≤ C` and `|∫ f - ∫ g k| ≤ η C`.
+  have hclose : ∀ p, J ≤ p →
+      |∫ x, f x ∂(μ (φ p)) - ∫ x, g k x ∂(μ (φ p))| ≤ η * C.toReal := by
+    intro p hp
+    have hpC : μ (φ p) K ≤ C := hJ _ (hp.trans (hφ.id_le p))
+    have hfin : μ (φ p) K ≠ ∞ := (hpC.trans_lt hC.lt_top).ne
+    rw [← integral_sub (hint _ f K hfK hfin) (hint _ (g k) K hgK hfin)]
+    refine (hest _ (fun x ↦ f x - g k x) K η hfin (fun x hx ↦ ?_) hfg).trans
+      (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hC hpC) hη.le)
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hx (hfK h)),
+      image_eq_zero_of_notMem_tsupport (fun h ↦ hx (hgK h)), sub_zero]
+  -- (ii): the triangle inequality, with `η C + η + η C < η (2 C + 2) = ε`.
+  refine ⟨max N₁ J, fun p hp q hq ↦ ?_⟩
+  have h1 := abs_le.1 (hclose p (le_of_max_le_right hp))
+  have h2 := abs_le.1 (hclose q (le_of_max_le_right hq))
+  have h3 := abs_lt.1 (show |∫ x, g k x ∂(μ (φ p)) - ∫ x, g k x ∂(μ (φ q))| < η from
+    Real.dist_eq _ _ ▸ hN₁ p (le_of_max_le_left hp) q (le_of_max_le_left hq))
+  rw [Real.dist_eq, abs_lt]
+  constructor <;> linarith
+
+/-- **Simon Ch. 1, 4.16 (Compactness Theorem for Radon measures), corrected**, on `Gₙ(U)`; used in
+Ch. 8, 5.1 and 5.8.  If `μ_j(K × G(N,n))` is eventually bounded for each compact `K ⊆ U`, then a
+subsequence `μ_{φ(j)}` converges to an `n`-varifold `V` on `U` against every test function supported
+in `U × G(N,n)`.  The printed proof extracts with Alaoglu, which only yields a subnet; on the second
+countable space `Gₙ(U)` the extraction is sequential, and the limit functional is represented by
+the Riesz theorem (Ch. 1, 4.12). -/
+theorem Submission.varifold_radon_compactness :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : ℕ → Measure (Euclidean N × Grassmannian N n)),
+      IsOpen U →
+      (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧
+        ∀ᶠ j in atTop, μ j (K ×ˢ (univ : Set (Grassmannian N n))) ≤ C) →
+      ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ V : Varifold N n U,
+        ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+          tsupport f ⊆ U ×ˢ (univ : Set (Grassmannian N n)) →
+          Tendsto (fun j ↦ ∫ z, f z ∂(μ (φ j))) atTop (𝓝 (∫ z, f z ∂V.measure)) := by
+  intro N n U μ hU hμ
+  -- Simon's `Gₙ(U)`: the open subset `U × G(N,n)`, as a subtype.
+  set S : Set (Euclidean N × Grassmannian N n) := U ×ˢ (univ : Set (Grassmannian N n))
+  have hSo : IsOpen S := hU.prod isOpen_univ
+  have hS : MeasurableSet S := hSo.measurableSet
+  have : LocallyCompactSpace S := hSo.locallyCompactSpace
+  -- The `μ_j` restricted to `Gₙ(U)`; a compact subset of `Gₙ(U)` lies over a compact `K ⊆ U`.
+  have hμS : ∀ K : Set S, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧
+      ∀ᶠ j in atTop, (μ j).comap Subtype.val K ≤ C := by
+    intro K hK
+    obtain ⟨C, hC, hev⟩ := hμ ((fun z : S ↦ z.1.1) '' K)
+      (hK.image (continuous_fst.comp continuous_subtype_val)) (by rintro _ ⟨z, _, rfl⟩; exact z.2.1)
+    refine ⟨C, hC, hev.mono fun j hj ↦ ?_⟩
+    rw [comap_subtype_coe_apply hS]
+    refine (measure_mono ?_).trans hj
+    rintro _ ⟨z, hz, rfl⟩
+    exact ⟨⟨z, hz, rfl⟩, mem_univ _⟩
+  -- Sequential extraction, then Riesz representation of the limit functional on `C_c(Gₙ(U))`.
+  obtain ⟨φ, hφ, hlim⟩ :=
+    Submission.radon_exists_subseq_tendsto_integral S (fun j ↦ (μ j).comap Subtype.val) hμS
+  obtain ⟨ν, hν, hconv⟩ :=
+    Submission.radon_exists_measure_of_tendsto_integral S (fun j ↦ (μ (φ j)).comap Subtype.val)
+      (fun K hK ↦ (hμS K hK).imp fun _ h ↦ ⟨h.1, hφ.tendsto_atTop.eventually h.2⟩) hlim
+  refine ⟨φ, hφ, Varifold.ofDomainMeasure hU ν, fun f hf ↦ ?_⟩
+  -- `f` vanishes off `Gₙ(U)` and restricts to a compactly supported function on it.
+  have hf0 : ∀ z, z ∉ S → f z = 0 := fun z hz ↦ image_eq_zero_of_notMem_tsupport fun h ↦ hz (hf h)
+  let f' : C_c(S, ℝ) :=
+    ⟨⟨fun z ↦ f z, f.continuous.comp continuous_subtype_val⟩,
+      IsCompact.of_isClosed_subset (Topology.IsInducing.subtypeVal.isCompact_preimage'
+          f.hasCompactSupport (by rwa [Subtype.range_coe])) (isClosed_tsupport _)
+        (closure_minimal (fun z hz ↦ subset_tsupport f hz)
+          ((isClosed_tsupport f).preimage continuous_subtype_val))⟩
+  have hμf : ∀ j, ∫ z, f' z ∂((μ (φ j)).comap Subtype.val) = ∫ z, f z ∂(μ (φ j)) := fun j ↦
+    (integral_subtype_comap hS _).trans (setIntegral_eq_integral_of_forall_compl_eq_zero hf0)
+  have hVf : ∫ z, f z ∂(Varifold.ofDomainMeasure hU ν).measure = ∫ z, f' z ∂ν :=
+    (MeasurableEmbedding.subtype_coe hS).integral_map _
+  rw [hVf]
+  exact (hconv f').congr hμf
 
 end GMT.Ch08

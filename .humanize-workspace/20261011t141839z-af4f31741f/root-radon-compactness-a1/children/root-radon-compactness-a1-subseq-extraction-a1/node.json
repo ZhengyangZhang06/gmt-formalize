@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.subseq_extraction-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Diagonal subsequence along which ∫ f dμ_j converges for every f ∈ C_c(X) (sequential, erratum-corrected Alaoglu step of Simon 4.16)",
+  "statement": "Let X be a locally compact Hausdorff second-countable space with its Borel σ-algebra and μ_j (j ∈ ℕ) measures on X such that for every compact K ⊆ X there is C_K < ∞ with μ_j(K) ≤ C_K for all sufficiently large j. Then there is a strictly increasing φ : ℕ → ℕ such that for every continuous compactly supported f : X → ℝ the real sequence (∫ f dμ_{φ(j)})_{j∈ℕ} converges.",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ : ℕ → Measure X), (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ L : ℝ, Tendsto (fun j ↦ ∫ x, f x ∂(μ (φ j))) atTop (𝓝 L)",
+  "lean_name": "radon_exists_subseq_tendsto_integral",
+  "depends_on": [
+    "root.radon_compactness-a1.cc_countable_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radon_compactness-a1.cc_countable_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-radon-compactness-a1-subseq-extraction-a1-a1"
+}
