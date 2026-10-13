@@ -451,6 +451,150 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial retraction onto the closed unit ball is nonexpansive towards the ball** (step 0(d)
+of `regcomp_exists_smooth_unit_form_approx`).  If `‖y‖ ≤ 1`, then
+`‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖`: for `‖x‖ ≤ 1` the retraction fixes `x`; for `s = ‖x‖ > 1`,
+`‖x - y‖² - ‖s⁻¹ • x - y‖² = s² - 1 - 2(1 - s⁻¹)⟨x, y⟩ ≥ (s - 1)²` by Cauchy–Schwarz. -/
+theorem Submission.regcomp_norm_radial_retraction_sub_le : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (x y : E), ‖y‖ ≤ 1 → ‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖ := by
+  intro E _ _ x y hy
+  rcases le_or_gt ‖x‖ 1 with hx | hx
+  · -- Step 1: if `‖x‖ ≤ 1`, the retraction fixes `x`.
+    rw [max_eq_left hx, inv_one, one_smul]
+  · -- Steps 2–5: `s = ‖x‖ > 1`; compare the squared distances.
+    rw [max_eq_right hx.le]
+    have hs : 0 < ‖x‖ := one_pos.trans hx
+    -- Cauchy–Schwarz with `‖y‖ ≤ 1`: `⟨x, y⟩ ≤ s`; and `s⁻¹ < 1`, `s⁻¹ s = 1`.
+    have hxy : inner ℝ x y ≤ ‖x‖ :=
+      (real_inner_le_norm x y).trans (mul_le_of_le_one_right hs.le hy)
+    have hinv : ‖x‖⁻¹ < 1 := inv_lt_one_of_one_lt₀ hx
+    have hcancel : ‖x‖⁻¹ * ‖x‖ = 1 := inv_mul_cancel₀ hs.ne'
+    -- `‖s⁻¹ • x - y‖² = 1 - 2s⁻¹⟨x, y⟩ + ‖y‖²`.
+    have h2 : ‖‖x‖⁻¹ • x - y‖ ^ 2 = 1 - 2 * (‖x‖⁻¹ * inner ℝ x y) + ‖y‖ ^ 2 := by
+      rw [norm_sub_sq_real, norm_smul, real_inner_smul_left, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 hs), hcancel, one_pow]
+    -- The difference of the squares is at least `(s - 1)² ≥ 0`.
+    have key : ‖‖x‖⁻¹ • x - y‖ ^ 2 ≤ ‖x - y‖ ^ 2 := by
+      rw [h2, norm_sub_sq_real]
+      nlinarith [mul_nonneg (sub_nonneg.2 hinv.le) (sub_nonneg.2 hxy), sq_nonneg (‖x‖ - 1)]
+    exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 key
+
+/-- **The Euclidean coefficient norm** `|α|_E = covectorEuclideanNorm α` on `Λⁿ(ℝᴾ)` (Simon
+6.1.15) is a continuous seminorm dominated by the operator norm, and the radial retraction
+`v ↦ (max 1 |v|_E)⁻¹ v` onto its unit ball does not increase the distance to points of that ball.
+
+The coefficient map `Φ α = (ev_j α)_j ∈ ℓ²(Fin n → Fin P)`, with
+`ev_j α = α(e_{j 0}, …, e_{j (n-1)})` for increasing `j` and `0` otherwise, is continuous linear
+with `‖Φ α‖ = |α|_E` (`EuclideanSpace.norm_eq`).  So (i)–(iii) are those of `‖·‖ ∘ Φ`, (iv) holds
+with `c = 1 + ‖Φ‖`, and (v) is `regcomp_norm_radial_retraction_sub_le` for `x = Φ v`, `y = Φ b`. -/
+theorem Submission.regcomp_covectorEuclideanNorm_seminorm_retract : ∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) ∧ (∀ α β : Covector (Euclid P) n, covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β) ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ c * ‖α‖) ∧ ∀ v b : Covector (Euclid P) n, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v - b) ≤ covectorEuclideanNorm (v - b) := by
+  intro P n
+  classical
+  -- `ev j α = α(e_{j 0}, …, e_{j (n-1)})` for increasing `j`, and `0` otherwise
+  let ev : (Fin n → Fin P) → Covector (Euclid P) n →L[ℝ] ℝ := fun j =>
+    if StrictMono j then
+      ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+        (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (j i))
+    else 0
+  -- the coefficient map `Φ : Λⁿ → ℓ²(Fin n → Fin P)`
+  let Φ : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P) :=
+    (EuclideanSpace.equiv (Fin n → Fin P) ℝ).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.pi ev)
+  have hΦ : ∀ α, ‖Φ α‖ = covectorEuclideanNorm α := by
+    intro α
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    by_cases hj : StrictMono j <;> simp [Φ, ev, hj]
+  refine ⟨1 + ‖Φ‖, by positivity, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (continuous_norm.comp Φ.continuous).congr hΦ
+  · intro α β
+    simpa only [← hΦ, map_add] using norm_add_le (Φ α) (Φ β)
+  · intro t α
+    simp only [← hΦ, map_smul, norm_smul, Real.norm_eq_abs]
+  · intro α
+    rw [← hΦ]
+    exact (Φ.le_opNorm α).trans
+      (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left zero_le_one) (norm_nonneg α))
+  · intro v b hb
+    rw [← hΦ] at hb
+    simp only [← hΦ, map_sub, map_smul]
+    exact Submission.regcomp_norm_radial_retraction_sub_le (EuclideanSpace ℝ (Fin n → Fin P))
+      (Φ v) (Φ b) hb
+
+/-- **Smooth unit approximation inside the support.**  Let `f : ℝᴾ → Λⁿ(ℝᴾ)` be continuous with
+compact support and `|f|_E ≤ 1`, where `|·|_E = covectorEuclideanNorm` (Simon 6.1.15).  For every
+`κ > 0` there is a test form `h` with `support h ⊆ support f`, `|h|_E ≤ 1` and `|h - f|_E ≤ κ`.
+
+Take `c` with `|α|_E ≤ c ‖α‖` from `regcomp_covectorEuclideanNorm_seminorm_retract` and
+`δ = min (1/2) (κ/2)`.  Smooth partitions of unity give a `C^∞` map `h` with
+`‖h - (1 - δ) • f‖ < δ / c` that vanishes wherever `f` does.  This is the argument of Mathlib's
+`Continuous.exists_contDiff_approx`, run in place because `Mathlib.Geometry.Manifold.SmoothApprox`
+is outside the contract imports.  So `tsupport h ⊆ tsupport f` is compact,
+`|h|_E < δ + (1 - δ) = 1` and `|h - f|_E < δ + δ ≤ κ`. -/
+theorem Submission.regcomp_exists_smooth_unit_form_support_approx : ∀ (P n : ℕ) (f : Euclid P → Covector (Euclid P) n), Continuous f → HasCompactSupport f → (∀ z, covectorEuclideanNorm (f z) ≤ 1) → ∀ κ : ℝ, 0 < κ → ∃ h : DifferentialForm (Euclid P) n, IsTestForm h ∧ support h ⊆ support f ∧ (∀ z, covectorEuclideanNorm (h z) ≤ 1) ∧ ∀ z, covectorEuclideanNorm (h z - f z) ≤ κ := by
+  intro P n f hf hfc hf1 κ hκ
+  -- (0) `|·|_E` is a seminorm with `|α|_E ≤ c ‖α‖`
+  obtain ⟨c, hc, -, hadd, hsmul, hle, -⟩ :=
+    Submission.regcomp_covectorEuclideanNorm_seminorm_retract P n
+  -- (1) `δ = min (1/2) (κ/2)`
+  obtain ⟨δ, hδ0, hδ1, hδκ⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 2 ∧ 2 * δ ≤ κ :=
+    ⟨min (1 / 2) (κ / 2), lt_min (by norm_num) (half_pos hκ), min_le_left _ _, by
+      linarith [min_le_right (1 / 2 : ℝ) (κ / 2)]⟩
+  -- (2) a `C^∞` `g` with `dist (g x) ((1 - δ) • f x) < δ / c`, and `g x = 0` where `f x = 0`
+  have hr : 0 < δ / c := div_pos hδ0 hc
+  have hFc : Continuous fun x => (1 - δ) • f x := hf.const_smul (1 - δ)
+  obtain ⟨g, hg⟩ := exists_contMDiffMap_forall_mem_convex_of_local (n := ⊤)
+    (modelWithCornersSelf ℝ (Euclid P))
+    (t := fun x => {y | dist y ((1 - δ) • f x) < δ / c ∧ (f x = 0 → y = 0)})
+    (fun x => (convex_ball ((1 - δ) • f x) (δ / c)).inter
+      (convex_singleton (0 : Covector (Euclid P) n)).setOfPred_const_imp)
+    (fun x => by
+      have h1 : ∀ᶠ y in 𝓝 x, dist ((1 - δ) • f x) ((1 - δ) • f y) < δ / c :=
+        (hFc.continuousAt.eventually_mem (ball_mem_nhds _ hr)).mono fun y hy => mem_ball'.1 hy
+      have h2 : ∀ᶠ y in 𝓝 x,
+          dist ((1 - δ) • f x) ((1 - δ) • f y) < δ / c ∧ (f y = 0 → (1 - δ) • f x = 0) := by
+        by_cases hx : f x = 0
+        · exact h1.mono fun y hy => ⟨hy, fun _ => by rw [hx, smul_zero]⟩
+        · exact (h1.and (hf.continuousAt.eventually_ne hx)).mono fun y hy =>
+            ⟨hy.1, fun h => absurd h hy.2⟩
+      exact ⟨_, h2, fun _ => (1 - δ) • f x, contMDiffOn_const, fun y hy => hy⟩)
+  -- (3) `support g ⊆ support f`
+  have hsupp : support g ⊆ support f := fun x hx hfx => hx ((hg x).2 hfx)
+  -- (5) `|g x - (1 - δ) • f x|_E < δ`
+  have hgF : ∀ x, covectorEuclideanNorm (g x - (1 - δ) • f x) < δ := by
+    intro x
+    calc covectorEuclideanNorm (g x - (1 - δ) • f x) ≤ c * ‖g x - (1 - δ) • f x‖ := hle _
+      _ = c * dist (g x) ((1 - δ) • f x) := by rw [dist_eq_norm]
+      _ < c * (δ / c) := mul_lt_mul_of_pos_left (hg x).1 hc
+      _ = δ := by field_simp
+  -- (6) `|g z|_E ≤ δ + (1 - δ) = 1`
+  have hunit : ∀ z, covectorEuclideanNorm (g z) ≤ 1 := by
+    intro z
+    calc covectorEuclideanNorm (g z)
+        = covectorEuclideanNorm ((g z - (1 - δ) • f z) + (1 - δ) • f z) := by rw [sub_add_cancel]
+      _ ≤ covectorEuclideanNorm (g z - (1 - δ) • f z) + covectorEuclideanNorm ((1 - δ) • f z) :=
+          hadd _ _
+      _ = covectorEuclideanNorm (g z - (1 - δ) • f z) + (1 - δ) * covectorEuclideanNorm (f z) := by
+          rw [hsmul, abs_of_nonneg (by linarith)]
+      _ ≤ δ + (1 - δ) * 1 :=
+          add_le_add (hgF z).le (mul_le_mul_of_nonneg_left (hf1 z) (by linarith))
+      _ = 1 := by ring
+  -- (7) `|g z - f z|_E ≤ δ + δ ≤ κ`
+  have happrox : ∀ z, covectorEuclideanNorm (g z - f z) ≤ κ := by
+    intro z
+    have hsplit : g z - f z = (g z - (1 - δ) • f z) + (-δ) • f z := by
+      module
+    calc covectorEuclideanNorm (g z - f z)
+        = covectorEuclideanNorm ((g z - (1 - δ) • f z) + (-δ) • f z) := by rw [hsplit]
+      _ ≤ covectorEuclideanNorm (g z - (1 - δ) • f z) + covectorEuclideanNorm ((-δ) • f z) :=
+          hadd _ _
+      _ = covectorEuclideanNorm (g z - (1 - δ) • f z) + δ * covectorEuclideanNorm (f z) := by
+          rw [hsmul, abs_neg, abs_of_pos hδ0]
+      _ ≤ δ + δ * 1 := add_le_add (hgF z).le (mul_le_mul_of_nonneg_left (hf1 z) hδ0.le)
+      _ ≤ κ := by linarith
+  -- (4), (8) `tsupport g ⊆ tsupport f` is compact, so `g` is a test form
+  exact ⟨g, ⟨g.contMDiff.contDiff, hfc.mono hsupp⟩, hsupp, hunit, happrox⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
