@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep.action|abbrev MultiVector|def IsUnitOrientationOf|abbrev TestFormOn|def TestFormOn",
+        "dpfir_|codim1_ldr_dpf|dpf_imrep_bilipschitz_image_rep",
+        "comp_quasiMeasurePreserving|absolutelyContinuous_of_le_smul|theorem ae |lintegral_map |integrable_toReal_of_lintegral_ne_top|integral_eq_lintegral_pos_part_sub_lintegral_neg_part|Integrable.mono\\x27|bounded_above_of_compact_support|integrable_indicator_iff|le_opNorm|continuous_compContinuousLinearMapCLM|hausdorffMeasure_image_le|to_rightInverse|isBounded_preimage",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show 371040c271e4e83cbb78f30032b14ee36933a7d4:GMT/Ch07/Submission.lean",
+        "git show df4d2f905b5c222cc16b76ff5ad81cc644b85d53:GMT/Ch07/Submission.lean",
+        "git show 070868a6452cb93f9382d51ead2db3827590d575:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/codim1-imrep-independent-audit-118dw4vu/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/codim1-imrep-independent-audit-118dw4vu/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/codim1-imrep-independent-audit-118dw4vu/Reuse_image_imrep.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/codim1-imrep-independent-audit-118dw4vu/Reuse_pairing_integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/codim1-imrep-independent-audit-118dw4vu/Reuse_area_integral_transfer.lean",
+        "sed -n '426,440p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "sed -n '815,862p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-c5ed1bf966/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-c5ed1bf966/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/codim1-imrep-independent-audit-118dw4vu/Types.lean",
+        "/tmp/codim1-imrep-independent-audit-118dw4vu/Assembly.lean",
+        "/tmp/codim1-imrep-independent-audit-118dw4vu/Reuse_image_imrep.lean",
+        "/tmp/codim1-imrep-independent-audit-118dw4vu/Reuse_pairing_integrable.lean",
+        "/tmp/codim1-imrep-independent-audit-118dw4vu/Reuse_area_integral_transfer.lean"
+      ],
+      "conclusion": "The three-part split is appropriate for this selected image-representation theorem. Project, Mathlib and SimonGMT revisions match their pins; the frozen contract matches the workspace. The snapshot search found no declarations matching dpfir_, codim1_ldr_dpf or dpf_imrep_bilipschitz_image_rep. Inspected definitions and library lemmas support the supplied proofs. All three proposed names are bare identifiers, each uniquely owned by an accepted DAG node with a byte-identical frozen type. Candidate headers match the frozen definitions. All three types elaborate independently in the comparator scope. The reused declarations and a conditional assembly of the exact selected parent from its four inherited contracts and three proposed children compile with only propext, Classical.choice and Quot.sound. The 16-node dependency closure is acyclic and contains neither the selected parent nor an ancestor. No problematic inline matrix-unit construction occurs; Gram matrices use Matrix.of. The binding digest independently recomputes to the requested value."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every hypothesis and conclusion in the prose, including the equalities for all ambient x. The proof constructs the inverse, proves image-measure domination, and verifies every IMRep field. Finite Lipschitz distortion supplies local multiplicity integrability; quasi-measure-preservation transfers both a.e. strong measurability and orientation. Rectifiability and the pointwise identities are explicitly established. No parent or child theorem is assumed. Reuse of the identical accepted declaration at 371040c2 is valid and independently axiom-checked."
+    },
+    {
+      "key": "pairing_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree; openness of U is unnecessary. The orthonormal-frame estimate bounds unit-orientation evaluation, including degree zero. Compact support and local multiplicity integrability give an integrable dominating function, while continuity of evaluation supplies a.e. strong measurability. These prove precisely the stated integrability without circular reliance or missing hypotheses. Reuse of the identical accepted declaration at df4d2f90 is valid and independently axiom-checked."
+    },
+    {
+      "key": "area_integral_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose. Nonnegativity of J gives the required absolute-value, positive-part and negative-part identities a.e. The assumed area identity first establishes integrability of h, then equality of the signed integrals. No measurability of J or φ is silently required because the area identity quantifies over every ENNReal-valued g. The proof is complete and independent of the parent. Reuse of the identical accepted declaration at 070868a6 is valid and independently axiom-checked."
+    }
+  ],
+  "required_changes": []
+}
