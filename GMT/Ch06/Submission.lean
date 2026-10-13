@@ -389,6 +389,33 @@ theorem Submission.dr_cc_lip_at_comp : ∀ (X Y Z : Type) [PseudoMetricSpace X] 
     _ ≤ (K₂ + η) * ((K₁ + η) * dist x' x) := mul_le_mul_of_nonneg_left hfx (by linarith)
     _ = (K₁ * K₂ + η * (K₁ + K₂ + η)) * dist x' x := by ring
     _ ≤ (K₁ * K₂ + ε) * dist x' x := mul_le_mul_of_nonneg_right (by linarith) dist_nonneg
+/-- Union rule for pointwise upper Lipschitz bounds (used for Simon Ch. 6, Lemma 5.4, p. 162,
+where `y` may lie on several closed faces): if `g` is `K`-Lipschitz at `y` within `G k ∩ B` for
+every closed piece `G k ∋ y`, and `B ⊆ ⋃ k, G k` with finitely many pieces, then `g` is
+`K`-Lipschitz at `y` within `B`.  Pieces missing `y` stay a positive distance away from `y`, and
+the minimum of finitely many radii is a common radius. -/
+theorem Submission.dr_cc_lip_at_union : ∀ (X Y : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] (ι : Type) [Finite ι] (G : ι → Set X) (B : Set X) (g : X → Y) (y : X) (K : ℝ), (∀ k, IsClosed (G k)) → B ⊆ ⋃ k, G k → (∀ k, y ∈ G k → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ G k ∩ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y := by
+  intro X Y _ _ ι _ G B g y K hG hB hloc ε hε
+  -- A radius `r k > 0` for each piece: from the hypothesis if `y ∈ G k`, and otherwise a ball
+  -- around `y` missing the closed set `G k` (the bound then holds vacuously).
+  have hr : ∀ k, ∃ r : ℝ, 0 < r ∧
+      ∀ y' ∈ G k ∩ B, dist y' y < r → dist (g y') (g y) ≤ (K + ε) * dist y' y := by
+    intro k
+    by_cases hyk : y ∈ G k
+    · exact hloc k hyk ε hε
+    · obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 (hG k).isOpen_compl y hyk
+      exact ⟨r, hr, fun y' hy' hdist => absurd hy'.1 (hball (Metric.mem_ball.2 hdist))⟩
+  choose r hr0 hrb using hr
+  -- A common radius `δ ≤ r k`: the minimum over the finite index type (`1` if `ι` is empty).
+  obtain ⟨δ, hδ, hδr⟩ : ∃ δ : ℝ, 0 < δ ∧ ∀ k, δ ≤ r k := by
+    rcases isEmpty_or_nonempty ι with hι | hι
+    · exact ⟨1, one_pos, fun k => isEmptyElim k⟩
+    · obtain ⟨k₀, hk₀⟩ := Finite.exists_min r
+      exact ⟨r k₀, hr0 k₀, hk₀⟩
+  -- A point `y' ∈ B` lies in some piece `G k`, and `dist y' y < δ ≤ r k`.
+  refine ⟨δ, hδ, fun y' hy' hdist => ?_⟩
+  obtain ⟨k, hk⟩ := Set.mem_iUnion.1 (hB hy')
+  exact hrb k y' ⟨hk, hy'⟩ (hdist.trans_le (hδr k))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
