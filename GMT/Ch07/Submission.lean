@@ -1247,6 +1247,56 @@ theorem Submission.cbr_cipi_halfspace_partial_integral : ∀ (d : ℕ) (g : (Fin
     funext s
     simp [Set.indicator, Fin.insertNth_zero']
 
+/-- **Exterior derivative of a test form along an orthonormally parametrised plane, in
+coordinates** (Simon 6.1.11; used for the boundary of a half-plane current in the
+integer-multiplicity criterion for plane cycles).  Let `v = (v₀, …, v_d)` be orthonormal in `ℝᴾ`,
+`ω = φ` a test `d`-form, `ι(x) = Σⱼ xⱼ vⱼ`, `Gᵢ(y) = ω(y)(v₀, …, v̂ᵢ, …, v_d)` and `gᵢ = Gᵢ ∘ ι`.
+`ι` is linear and injective (`v` is linearly independent) with finite-dimensional domain, hence
+a continuous closed embedding.  `Gᵢ` is evaluation at a fixed tuple composed with `ω`, so it is
+`C^∞` with compact support; hence `gᵢ` is `C¹` with compact support.  The chain rule gives
+`Dgᵢ(z)(eᵢ) = DGᵢ(ι z)(ι eᵢ) = DGᵢ(ι z)(vᵢ)`, and the coordinate formula
+`dω(y)(v) = Σᵢ (−1)ⁱ DGᵢ(y)(vᵢ)` at `y = ι z` gives (ii). -/
+theorem Submission.cbr_cipi_plane_extDeriv_coords : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ i : Fin (d + 1), ContDiff ℝ 1 (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) ∧ HasCompactSupport (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v))) ∧ ∀ z : Fin (d + 1) → ℝ, exteriorDerivative (φ : DifferentialForm (Euclid P) d) (∑ j, z j • v j) v = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) z (Pi.single i 1) := by
+  intro P d v hv φ
+  set ω : DifferentialForm (Euclid P) d := (φ : DifferentialForm (Euclid P) d)
+  -- Step 1: `ω` is `C^∞` with compact support
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) ω := φ.property.1.1
+  have hωc : HasCompactSupport ω := φ.property.1.2
+  -- Step 2: `ι(x) = Σⱼ xⱼ vⱼ` is a continuous linear closed embedding
+  let ι : (Fin (d + 1) → ℝ) →L[ℝ] Euclid P :=
+    LinearMap.toContinuousLinearMap (Fintype.linearCombination ℝ v)
+  have hι : ∀ x : Fin (d + 1) → ℝ, ι x = ∑ j, x j • v j := fun x =>
+    Fintype.linearCombination_apply ℝ v x
+  have hιemb : Topology.IsClosedEmbedding ι := LinearMap.isClosedEmbedding_of_injective
+    (LinearMap.ker_eq_bot.mpr hv.linearIndependent.fintypeLinearCombination_injective)
+  -- Step 3: `Gᵢ(y) = ω(y)(removeNth i v)` is `C^∞` with compact support, and `gᵢ = Gᵢ ∘ ι`
+  have hG : ∀ i : Fin (d + 1), ContDiff ℝ (⊤ : ℕ∞) (fun y => ω y (i.removeNth v)) ∧
+      HasCompactSupport (fun y => ω y (i.removeNth v)) := fun i =>
+    ⟨(ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (i.removeNth v)).contDiff.comp hωs,
+      hωc.comp_left (g := fun α : Covector (Euclid P) d => α (i.removeNth v)) rfl⟩
+  have hg : ∀ i : Fin (d + 1), (fun x : Fin (d + 1) → ℝ => ω (∑ j, x j • v j) (i.removeNth v)) =
+      (fun y => ω y (i.removeNth v)) ∘ ι := fun i =>
+    funext fun x => by simp only [Function.comp_apply, hι]
+  refine ⟨fun i => ?_, fun z => ?_⟩
+  -- Step 4: (i), as `Gᵢ` is `C^∞` with compact support and `ι` is a closed embedding
+  · rw [hg i]
+    exact ⟨((hG i).1.comp ι.contDiff).of_le (by simp), (hG i).2.comp_isClosedEmbedding hιemb⟩
+  -- Step 5: the chain rule, `Dgᵢ(z)(eᵢ) = DGᵢ(ι z)(ι eᵢ) = DGᵢ(ι z)(vᵢ)`
+  · have hderiv : ∀ i : Fin (d + 1),
+        fderiv ℝ (fun x : Fin (d + 1) → ℝ => ω (∑ j, x j • v j) (i.removeNth v)) z
+          (Pi.single i 1) = fderiv ℝ (fun y => ω y (i.removeNth v)) (ι z) (v i) := by
+      intro i
+      rw [hg i, fderiv_comp z ((hG i).1.differentiable (by simp) _) ι.differentiableAt, ι.fderiv,
+        ContinuousLinearMap.comp_apply]
+      congr 1
+      simp [ι]
+    -- Step 6: (ii), from `dω(ι z)(v) = Σᵢ (−1)ⁱ DGᵢ(ι z)(vᵢ)`
+    rw [← hι z, exteriorDerivative_apply (hωs.differentiable (by simp) _)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hderiv i, zsmul_eq_mul]
+    push_cast
+    rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
