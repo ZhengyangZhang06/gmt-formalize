@@ -7548,4 +7548,129 @@ theorem Submission.iwl_top_dim_integrality : ∀ (m : ℕ) (U : Set (Eucl (m + 1
           image_eq_zero_of_notMem_tsupport (fun h => hxU (ω.property.2 h))
         simp [h0]
 
+/-- **Rectifiable weak limits of integer multiplicity cycles are integer multiplicity** (Simon
+Ch. 6, proof of Theorem 8.2, printed (7)–(10), pp. 178–179, with the documented corrections).
+Write `T = τ(M, θ, ξ)`; it suffices that `θ(x) ∈ ℕ` for `Hⁿ`-a.e. `x ∈ M`.  After passing to a
+subsequence, at a.e. `x` we have `M_{B_r(x)}(T_j) ≤ C rⁿ` for small `r` and large `j`, the
+blow-ups `(η_{x,λ})_# T` converge to `θ(x) ∫_{TₓM} ⟨·, ξ(x)⟩ dHⁿ` as `λ ↓ 0`, and
+`ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `TₓM = span τ`.  For `λ_k ↓ 0` the rescalings
+`Y_{k,j} = (η_{x,λ_k})_# T_j` are integer multiplicity cycles with
+`M_{B_2(0)}(Y_{k,j}) ≤ λ_k⁻ⁿ M_{B_{2λ_k}(x)}(T_j) ≤ 2ⁿ C` for large `j`, and
+`Y_{k,j} → (η_{x,λ_k})_# T` as `j → ∞`.  A diagonal sequence `Y_{k,φ'(k)}` converges in `B_2(0)`
+to `c [[span τ]]` with `c = ±θ(x)`, so the planar integrality theorem gives `c ∈ ℤ`, hence
+`θ(x) = |c| ∈ ℕ` as `θ(x) > 0`.  The hypothesis `m + 2 ≤ P` is not needed. -/
+theorem Submission.iwl_integer_density : ∀ (P m : ℕ), m + 2 ≤ P → SlicingTheorem → LipschitzPushforwardIntegerMultiplicity → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → IsRectifiableCurrent T → IsIntegerMultiplicity T := by
+  intro P m _hP hSlice hLip Tj T hTj hbdy hmass hconv hrect
+  obtain ⟨M, θ, ξ, hMθξ, hT⟩ := hrect
+  -- Step 1: a subsequence `T_{φ(j)}` with `M_{B_r(x)}(T_{φ(j)}) ≤ C rⁿ` for small `r`, large `j`,
+  -- at `Hⁿ`-a.e. `x`.
+  obtain ⟨φ, hφ, hdens⟩ := Submission.ind_mass_density_bound P (m + 1) Tj hmass
+  -- It suffices to show `θ(x) ∈ ℕ` for `Hⁿ`-a.e. `x ∈ M`.
+  refine Submission.ind_ae_integer_multiplicity P (m + 1) univ T M θ ξ hMθξ hT ?_
+  filter_upwards [ae_restrict_of_ae hdens, Submission.ind_ae_blowup_limit P (m + 1) M θ ξ hMθξ,
+    hMθξ.orients, ae_restrict_mem₀ hMθξ.nullMeasurableSet] with x hxdens hxblow hxor hxM
+  obtain ⟨C, r₀, hr₀, hC⟩ := hxdens
+  obtain ⟨τ, hτ, hQ, hξx⟩ := hxor
+  -- Radii `λ_k = r₀/(4(k+1)) ↓ 0`, with `2λ_k < r₀`.
+  obtain ⟨lam, hlam_pos, hlam_lt, hlam_tendsto⟩ : ∃ lam : ℕ → ℝ, (∀ k, 0 < lam k) ∧
+      (∀ k, 2 * lam k < r₀) ∧ Tendsto lam atTop (𝓝[>] 0) := by
+    refine ⟨fun k => r₀ / 4 * (1 / ((k : ℝ) + 1)), fun k => by positivity, fun k => ?_, ?_⟩
+    · have h1 : 1 / ((k : ℝ) + 1) ≤ 1 := by
+        rw [div_le_one (by positivity)]
+        linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+      have h2 : 0 < 1 / ((k : ℝ) + 1) := by positivity
+      nlinarith
+    · refine tendsto_nhdsWithin_iff.2 ⟨?_, Eventually.of_forall fun k =>
+        mem_Ioi.2 (by positivity : (0 : ℝ) < r₀ / 4 * (1 / ((k : ℝ) + 1)))⟩
+      simpa only [mul_zero] using
+        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul (r₀ / 4)
+  -- Step 2: the rescalings `Y_{k,j} = (η_{x,λ_k})_# T_{φ(j)}`.
+  choose Y hYη hYeq hYim hYbdy hYmass using fun k j =>
+    Submission.ind_rescaled_current P m (Tj (φ j)) x (lam k) (hlam_pos k)
+  -- `Z_k = (η_{x,λ_k})_# T` and the blow-up limit `L = θ(x) ∫_{TₓM} ⟨·, ξ(x)⟩ dHⁿ`.
+  set Z : ℕ → TestFormOn (univ : Set (Eucl P)) (m + 1) → ℝ := fun k ω =>
+    tauAction (m + 1) M θ ξ (fun y => (lam k ^ (m + 1))⁻¹ •
+      (ω : DifferentialForm (Eucl P) (m + 1)) ((lam k)⁻¹ • (y - x)))
+  set L : TestFormOn (univ : Set (Eucl P)) (m + 1) → ℝ := fun ω =>
+    θ x * ∫ z in (Submodule.span ℝ (range τ) : Set (Eucl P)),
+      ξ x ((ω : DifferentialForm (Eucl P) (m + 1)) z) ∂(μHE[m + 1] : Measure (Eucl P))
+    with hL_def
+  -- `Y_{k,j}(ω) = T_{φ(j)}(η) → T(η) = Z_k(ω)` as `j → ∞`.
+  have hYZ : ∀ (k : ℕ) (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)),
+      tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ ball (0 : Eucl P) 2 →
+      Tendsto (fun j => Y k j ω) atTop (𝓝 (Z k ω)) := by
+    intro k ω _
+    obtain ⟨η, hη⟩ := hYη k 0 ω
+    have hTη : T η = Z k ω := by
+      rw [hT η]
+      exact congrArg (tauAction (m + 1) M θ ξ) (funext hη)
+    rw [← hTη]
+    exact ((hconv η).comp hφ.tendsto_atTop).congr fun j => (hYeq k j ω η hη).symm
+  -- `Z_k(ω) → L(ω)` as `k → ∞` (blow-up of `T` at `x`).
+  have hZL : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ ball (0 : Eucl P) 2 →
+      Tendsto (fun k => Z k ω) atTop (𝓝 (L ω)) := by
+    intro ω _
+    exact (hxblow _ hQ ω ω.property.1.1.continuous ω.property.1.2).comp hlam_tendsto
+  -- `M_{B_2(0)}(Y_{k,j}) ≤ λ_k⁻ⁿ M_{B_{2λ_k}(x)}(T_{φ(j)}) ≤ 2ⁿ C` for large `j`.
+  have hmassY : ∀ k, ∀ᶠ j in atTop,
+      (Y k j).massOn (ball (0 : Eucl P) 2) ≤ ENNReal.ofReal (C * 2 ^ (m + 1)) := by
+    intro k
+    filter_upwards [hC (2 * lam k) ⟨by linarith [hlam_pos k], hlam_lt k⟩] with j hj
+    have hsub : {y : Eucl P | (lam k)⁻¹ • (y - x) ∈ ball (0 : Eucl P) 2} ⊆
+        ball x (2 * lam k) := by
+      intro y hy
+      have hy' : (lam k)⁻¹ • (y - x) ∈ ball (0 : Eucl P) 2 := hy
+      rw [mem_ball, dist_zero_right, norm_smul, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 (hlam_pos k)), inv_mul_lt_iff₀ (hlam_pos k)] at hy'
+      rw [mem_ball, dist_eq_norm]
+      linarith
+    calc (Y k j).massOn (ball (0 : Eucl P) 2)
+        ≤ ENNReal.ofReal ((lam k ^ (m + 1))⁻¹) *
+            (Tj (φ j)).massOn {y | (lam k)⁻¹ • (y - x) ∈ ball (0 : Eucl P) 2} :=
+          hYmass k j _
+      _ ≤ ENNReal.ofReal ((lam k ^ (m + 1))⁻¹) *
+            ENNReal.ofReal (C * (2 * lam k) ^ (m + 1)) := by
+          gcongr
+          exact ((Tj (φ j)).massOn_mono hsub).trans hj
+      _ = ENNReal.ofReal (C * 2 ^ (m + 1)) := by
+          rw [← ENNReal.ofReal_mul (inv_pos.2 (pow_pos (hlam_pos k) (m + 1))).le]
+          congr 1
+          have hne := (pow_pos (hlam_pos k) (m + 1)).ne'
+          rw [mul_pow]
+          field_simp
+  -- Step 3: diagonal selection `Y_k := Y_{k,φ'(k)}`, still converging to `L` in `B_2(0)`.
+  obtain ⟨φ', -, hbdφ', hlimφ'⟩ := Submission.ind_diagonal_weak_limit P (m + 1) univ
+    (ball (0 : Eucl P) 2) Y Z L (C * 2 ^ (m + 1)) isBounded_ball.isCompact_closure hYZ hZL
+    hmassY
+  -- Step 4: a planar weak limit `c [[span τ]]` of integer multiplicity cycles has `c ∈ ℤ`.
+  have hplane : ∀ c : ℝ, (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), L ω = c *
+      ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)),
+        (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))) →
+      ∃ k : ℤ, c = k := by
+    intro c hc
+    refine Submission.ind_plane_multiplicity_integer hSlice hLip
+      Submission.iwl_restriction_weak_limit Submission.iwl_smooth_pushforward
+      Submission.iwl_top_dim_integrality P m τ c (fun k => Y k (φ' k)) hτ
+      (fun k => hYim k (φ' k) (hTj (φ (φ' k)))) (fun k => hYbdy k (φ' k) (hbdy (φ (φ' k))))
+      (lt_of_le_of_lt (iSup_le hbdφ') ENNReal.ofReal_lt_top) fun ω hω => ?_
+    rw [← hc ω]
+    exact hlimφ' ω hω
+  -- Step 5: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ`, so `c = ±θ(x) ∈ ℤ` and `θ(x) > 0` gives `θ(x) ∈ ℕ`.
+  have hθx : 0 < θ x := hMθξ.pos x hxM
+  have hnat : ∀ k : ℤ, θ x = k → ∃ n : ℕ, θ x = n := by
+    intro k hk
+    have hk0 : 0 ≤ k := by
+      have : (0 : ℝ) ≤ k := hk ▸ hθx.le
+      exact_mod_cast this
+    exact ⟨k.toNat, by rw [hk]; exact_mod_cast (Int.toNat_of_nonneg hk0).symm⟩
+  rcases hξx with hξx | hξx
+  · obtain ⟨k, hk⟩ := hplane (θ x) fun ω => by
+      simp only [hL_def, hξx, simpleNVector_apply]
+    exact hnat k hk
+  · obtain ⟨k, hk⟩ := hplane (-θ x) fun ω => by
+      simp only [hL_def, hξx, neg_apply, simpleNVector_apply, integral_neg]
+      ring
+    exact hnat (-k) (by push_cast; linarith)
+
 end GMT.Ch06
