@@ -673,6 +673,86 @@ theorem Submission.regcomp_ims_difference_data : ∀ (P n : ℕ) (U : Set (Eucli
           rcases (hC x).mp h with ⟨h, -⟩ | ⟨-, h⟩ | ⟨h, -, -⟩
           exacts [hx1 h, hx2 h, hx1 h])]
       ext α; simp
+/-- Gluing two integer multiplicity triples `R₁ = (C₁, θ₁, ξ₁)` and `R₂ = (C₂, θ₂, ξ₂)` in `U`
+along a Borel carrier `C ⊆ C₁ ∪ C₂`, with multiplicity `0 < θ ≤ 1_{C₁} θ₁ + 1_{C₂} θ₂` on `C` and
+orientation `ξ = ±ξ₁` `Hⁿ`-a.e. on `C ∩ C₁`, `ξ = ±ξ₂` `Hⁿ`-a.e. on `C \ C₁`, gives a triple
+`(C, θ, ξ)` in `U`, provided `Hⁿ`-a.e. point of `C ∩ C₁`, resp. `C \ C₁`, inherits the approximate
+tangent spaces of `C₁`, resp. `C₂` (Simon Ch. 6, 3.1).
+
+`C ⊆ C₁ ∪ C₂ ⊆ U` is countably rectifiable, `∫_{C ∩ K} θ dHⁿ ≤ ∫_{C₁ ∩ K} θ₁ dHⁿ +
+∫_{C₂ ∩ K} θ₂ dHⁿ < ∞`, and on each of the pieces `C ∩ C₁` and `C \ C₁ ⊆ C₂`, which cover `C`,
+the orientation condition of `R₁`, resp. `R₂`, passes to `(C, ξ)`: `T_x Cᵢ = Q` is transferred to
+`T_x C = Q`, and `±` a unit orientation of `Q` is again one. -/
+theorem Submission.regcomp_ims_imrep_of_signed_pieces : ∀ (P n : ℕ) (U C : Set (Euclid P)) (R₁ R₂ : IMRep U n) (θ : Euclid P → ℕ) (ξ : Euclid P → MultiVector P n), MeasurableSet C → C ⊆ R₁.carrier ∪ R₂.carrier → Measurable θ → (∀ x ∈ C, 0 < θ x) → (∀ x ∈ C, θ x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → AEStronglyMeasurable ξ (μHE[n].restrict C) → (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ξ x = R₁.orient x ∨ ξ x = -R₁.orient x) → (∀ᵐ x ∂(μHE[n].restrict (C \ R₁.carrier)), ξ x = R₂.orient x ∨ ξ x = -R₂.orient x) → (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₁.carrier x Q → HasApproximateTangentSpaceAt n C x Q) → (∀ᵐ x ∂(μHE[n].restrict (C \ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₂.carrier x Q → HasApproximateTangentSpaceAt n C x Q) → ∃ R : IMRep U n, R.carrier = C ∧ R.mult = θ ∧ R.orient = ξ := by
+  intro P n U C R₁ R₂ θ ξ hC hCsub hθ hpos hle hξ hsgn₁ hsgn₂ htan₁ htan₂
+  have hC₁ := R₁.measurableSet_carrier
+  have hC₂ := R₂.measurableSet_carrier
+  -- Step 3: `C ⊆ C₁ ∪ C₂` is countably rectifiable
+  have hrect : CountablyRectifiable n C := by
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
+      (fun i : ℕ => if i = 0 then R₁.carrier else R₂.carrier) fun i => ?_).mono ?_
+    · split_ifs
+      exacts [R₁.rectifiable, R₂.rectifiable]
+    · intro x hx
+      rcases hCsub hx with h | h
+      · exact mem_iUnion.2 ⟨0, by simpa using h⟩
+      · exact mem_iUnion.2 ⟨1, by simpa using h⟩
+  -- Step 5: `∫_{C ∩ K} θ ≤ ∫_K (1_{C₁} θ₁ + 1_{C₂} θ₂) = ∫_{C₁ ∩ K} θ₁ + ∫_{C₂ ∩ K} θ₂ < ∞`
+  have hint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      ∫⁻ x in C ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+    intro K hK hKU
+    have hθ₁ : Measurable fun x => (R₁.mult x : ℝ≥0∞) :=
+      (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R₁.measurable_mult
+    refine ne_top_of_le_ne_top (ENNReal.add_ne_top.2
+      ⟨R₁.locallyIntegrable_mult K hK hKU, R₂.locallyIntegrable_mult K hK hKU⟩) ?_
+    calc ∫⁻ x in C ∩ K, (θ x : ℝ≥0∞) ∂μHE[n]
+        ≤ ∫⁻ x in C ∩ K, (R₁.carrier.indicator (fun y => (R₁.mult y : ℝ≥0∞)) x
+            + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ≥0∞)) x) ∂μHE[n] := by
+          refine setLIntegral_mono' (hC.inter hK.measurableSet) fun x hx => ?_
+          have h := hle x hx.1
+          simp only [Set.indicator] at h ⊢
+          split_ifs at h ⊢ <;> exact_mod_cast h
+      _ ≤ ∫⁻ x in K, (R₁.carrier.indicator (fun y => (R₁.mult y : ℝ≥0∞)) x
+            + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ≥0∞)) x) ∂μHE[n] :=
+          lintegral_mono_set inter_subset_right
+      _ = ∫⁻ x in R₁.carrier ∩ K, (R₁.mult x : ℝ≥0∞) ∂μHE[n]
+            + ∫⁻ x in R₂.carrier ∩ K, (R₂.mult x : ℝ≥0∞) ∂μHE[n] := by
+          rw [lintegral_add_left (hθ₁.indicator hC₁), lintegral_indicator hC₁,
+            lintegral_indicator hC₂, Measure.restrict_restrict hC₁, Measure.restrict_restrict hC₂]
+  -- Step 7(a): `w = ±v` is a unit orientation of `Q` whenever `v` is
+  have hsign : ∀ (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf v Q → (w = v ∨ w = -v) → IsUnitOrientationOf w Q := by
+    rintro v w Q ⟨τ, hτ, hspan, hv⟩ hw
+    refine ⟨τ, hτ, hspan, ?_⟩
+    rcases hw with rfl | rfl
+    · exact hv
+    · rcases hv with hv | hv
+      · exact Or.inr fun α => by simp [hv α]
+      · exact Or.inl fun α => by simp [hv α]
+  -- Step 7(b): on `C ∩ C₁`, from `R₁.orients`
+  have hor₁ : ∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n C x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset
+      (inter_subset_right : C ∩ R₁.carrier ⊆ R₁.carrier) R₁.orients, hsgn₁, htan₁]
+      with x hx hxs hxt
+    obtain ⟨Q, hQ, hξQ⟩ := hx
+    exact ⟨Q, hxt Q hQ, hsign _ _ Q hξQ hxs⟩
+  -- Step 7(c): on `C \ C₁ ⊆ C₂`, from `R₂.orients`
+  have hsub₂ : C \ R₁.carrier ⊆ R₂.carrier := fun x hx => (hCsub hx.1).resolve_left hx.2
+  have hor₂ : ∀ᵐ x ∂(μHE[n].restrict (C \ R₁.carrier)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n C x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset hsub₂ R₂.orients, hsgn₂, htan₂]
+      with x hx hxs hxt
+    obtain ⟨Q, hQ, hξQ⟩ := hx
+    exact ⟨Q, hxt Q hQ, hsign _ _ Q hξQ hxs⟩
+  -- Step 7(d): the pieces cover `C`; rewrite only the measure, since `C` also occurs in `T_x C`
+  have hor : ∀ᵐ x ∂(μHE[n].restrict C), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n C x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+    have h := (ae_restrict_union_iff (C ∩ R₁.carrier) (C \ R₁.carrier) _).2 ⟨hor₁, hor₂⟩
+    rwa [Set.inter_union_sdiff] at h
+  -- Step 8: assemble `R = (C, θ, ξ)`
+  exact ⟨IMRep.mk C θ ξ hC (hCsub.trans (union_subset R₁.carrier_subset R₂.carrier_subset))
+    hrect hθ hpos hint hξ hor, rfl, rfl, rfl⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
