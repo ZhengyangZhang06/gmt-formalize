@@ -1084,6 +1084,71 @@ theorem Submission.cbr_ci_const_vector_massOn : ∀ (P m : ℕ) (ν : Measure (E
     (fun _ => s⁻¹ • ζ₀) (fun _ => β) hμK aestronglyMeasurable_const hξ hrep
     aestronglyMeasurable_const ⟨‖β‖, fun _ => le_rfl⟩ (fun _ => hβ1) hξβ W W' hW' hW'U hW'W
 
+/-- **A constant multiple of `Hᵐ⌞S` that is the weight of an integer multiplicity triple has an
+integer constant** (Simon 6.3.1; steps 5 and 6 of the integer-multiplicity criterion for plane
+currents).  Let `R = (M, θ, ξ)`, with weight `μ_R = θ Hᵐ⌞M`.  Let `S` be Borel with `Hᵐ⌞S` finite
+on compact sets and `Hᵐ⌞S(B_r(x)) > 0`, and let `c > 0` with `μ_R(G) = c Hᵐ⌞S(G)` for every open
+`G`.  The open sets form a π-system generating the Borel sets, and both measures are finite on
+the balls `B_{j+1}(0)` covering `ℝᴾ`, so `μ_R = c Hᵐ⌞S`.  The set `D = B_r(x) ∩ S` has
+`0 < Hᵐ(D) < ∞`.  Restricting to `D` gives `μ_R⌞D = (1_M θ) Hᵐ⌞D` and `(c Hᵐ⌞S)⌞D = c Hᵐ⌞D`.
+The two densities agree `Hᵐ⌞D`-a.e., because `Hᵐ⌞D` is finite.  As `Hᵐ⌞D ≠ 0`, some `y` has
+`1_M θ(y) = c > 0`; then `y ∈ M` and `c = θ(y) ∈ ℕ`. -/
+theorem Submission.cbr_cipi_imrep_weight_const_nat : ∀ (P m : ℕ) (U : Set (Euclid P)) (R : IMRep U m) (S : Set (Euclid P)) (c : ℝ), 0 < c → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict S) K < ∞) → (∃ (x : Euclid P) (r : ℝ), 0 < ((μHE[m] : Measure (Euclid P)).restrict S) (ball x r)) → (∀ G : Set (Euclid P), IsOpen G → R.measure G = ENNReal.ofReal c * ((μHE[m] : Measure (Euclid P)).restrict S) G) → ∃ k : ℕ, c = k := by
+  rintro P m U R S c hc hS hK ⟨x, r, hpos⟩ hG
+  -- `Hᵐ = μHE[m]`, `ν = Hᵐ⌞S`, `M = R.carrier`, `θ = R.mult`, `D = B_r(x) ∩ S`
+  -- Step 1: `ν(B_ρ(z)) ≤ ν(B̄_ρ(z)) < ∞`, closed balls being compact
+  have hball : ∀ (z : Euclid P) (ρ : ℝ),
+      (μHE[m] : Measure (Euclid P)).restrict S (ball z ρ) ≠ ∞ := fun z ρ =>
+    ((measure_mono ball_subset_closedBall).trans_lt (hK _ (isCompact_closedBall z ρ))).ne
+  -- Step 2: `μ_R = c ν`; they agree on the π-system of open sets, which generates the Borel
+  -- sets, and are finite on the balls `B_{j+1}(0)` covering `ℝᴾ`
+  have hR : R.measure = ENNReal.ofReal c • (μHE[m] : Measure (Euclid P)).restrict S := by
+    refine Measure.ext_of_generateFrom_of_iUnion {s | IsOpen s}
+      (fun j : ℕ => ball (0 : Euclid P) (j + 1)) BorelSpace.measurable_eq isPiSystem_isOpen
+      (iUnion_ball_nat_succ 0) (fun _ => isOpen_ball (x := (0 : Euclid P))) (fun j => ?_)
+      (fun s hs => ?_)
+    · rw [hG _ isOpen_ball]
+      exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hball _ _)
+    · rw [hG s hs, Measure.smul_apply, smul_eq_mul]
+  -- Step 3: `0 < Hᵐ(D) = ν(B_r(x)) < ∞`, so `Hᵐ⌞D` is a nonzero finite measure
+  have hD : MeasurableSet (ball x r ∩ S) := measurableSet_ball.inter hS
+  have hHD : (μHE[m] : Measure (Euclid P)) (ball x r ∩ S) =
+      (μHE[m] : Measure (Euclid P)).restrict S (ball x r) :=
+    (Measure.restrict_apply measurableSet_ball).symm
+  have : IsFiniteMeasure ((μHE[m] : Measure (Euclid P)).restrict (ball x r ∩ S)) := by
+    rw [isFiniteMeasure_restrict, hHD]
+    exact hball x r
+  have : (ae ((μHE[m] : Measure (Euclid P)).restrict (ball x r ∩ S))).NeBot := by
+    rw [ae_neBot, Ne, Measure.restrict_eq_zero, hHD]
+    exact hpos.ne'
+  -- Step 4: `μ_R⌞D = (1_M θ) Hᵐ⌞D`, as `μ_R = θ Hᵐ⌞M`
+  have h1 : R.measure.restrict (ball x r ∩ S) =
+      ((μHE[m] : Measure (Euclid P)).restrict (ball x r ∩ S)).withDensity
+        (R.carrier.indicator fun y => (R.mult y : ℝ≥0∞)) := by
+    rw [withDensity_indicator R.measurableSet_carrier,
+      Measure.restrict_restrict R.measurableSet_carrier, IMRep.measure,
+      restrict_withDensity hD, Measure.restrict_restrict hD, inter_comm]
+  -- Step 5: `(c ν)⌞D = c Hᵐ⌞D`, as `D ⊆ S`
+  have h2 : (ENNReal.ofReal c • (μHE[m] : Measure (Euclid P)).restrict S).restrict
+      (ball x r ∩ S) = ((μHE[m] : Measure (Euclid P)).restrict (ball x r ∩ S)).withDensity
+        fun _ => ENNReal.ofReal c := by
+    rw [withDensity_const, Measure.restrict_smul, Measure.restrict_restrict hD,
+      inter_eq_left.2 inter_subset_right]
+  -- Step 6: by Steps 2, 4 and 5 the densities `1_M θ` and `c` give the same measure with
+  -- respect to the finite measure `Hᵐ⌞D`, so they agree `Hᵐ⌞D`-a.e.
+  have hθ : Measurable fun y => (R.mult y : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hae : (R.carrier.indicator fun y => (R.mult y : ℝ≥0∞))
+      =ᵐ[(μHE[m] : Measure (Euclid P)).restrict (ball x r ∩ S)] fun _ => ENNReal.ofReal c :=
+    (withDensity_eq_iff_of_sigmaFinite (hθ.indicator R.measurableSet_carrier).aemeasurable
+      aemeasurable_const).1 (by rw [← h1, ← h2, hR])
+  -- Step 7: as `Hᵐ⌞D ≠ 0`, some `y` has `1_M θ(y) = c > 0`; then `y ∈ M` and `c = θ(y) ∈ ℕ`
+  obtain ⟨y, hy⟩ := Eventually.exists hae
+  by_cases hyM : y ∈ R.carrier
+  · simp only [indicator_of_mem hyM] at hy
+    exact ⟨R.mult y, by rw [← ENNReal.toReal_ofReal hc.le, ← hy, ENNReal.toReal_natCast]⟩
+  · simp only [indicator_of_notMem hyM] at hy
+    exact absurd hy.symm (ENNReal.ofReal_pos.2 hc).ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
