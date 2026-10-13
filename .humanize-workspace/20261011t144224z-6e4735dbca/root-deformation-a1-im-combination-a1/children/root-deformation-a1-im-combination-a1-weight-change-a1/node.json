@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_combination-a1.weight_change-a1",
+  "parent_id": "root.deformation-a1.im_combination-a1",
+  "depth": 3,
+  "title": "Changing the multiplicity on a set of locally finite measure preserves weighted approximate tangent spaces almost everywhere",
+  "statement": "Let N, k ∈ ℕ and H := μHE[k] on ℝ^N = Eucl N. Let E ⊆ ℝ^N be H-null-measurable with H(E ∩ K) < ∞ for every compact K ⊆ ℝ^N, and let θ, θ′ : ℝ^N → ℝ both be H-integrable on E ∩ K for every compact K ⊆ ℝ^N, with θ > 0 on E (no sign condition on θ′). Then for H-a.e. x ∈ E (H⌞E-almost every x) and every linear subspace Q ⊆ ℝ^N: if Q is a weighted approximate tangent space of (E, θ) at x (HasWeightedApproximateTangentSpaceAt k E θ x Q, Simon Ch. 3, 1.7), then Q is a weighted approximate tangent space of (E, θ′) at x.",
+  "lean_statement": "∀ (N k : ℕ) (E : Set (Eucl N)) (θ θ' : Eucl N → ℝ), NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E ∩ K) < ∞) → (∀ x ∈ E, 0 < θ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (E ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ' (E ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k E θ x Q → HasWeightedApproximateTangentSpaceAt k E θ' x Q",
+  "lean_name": "deformation_imcomb_weight_change",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.integrality_weak_limits-a1.im_closure-a1.lebesgue_points-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-tangent-locality-a1-a1",
+      "result_commit": "96e830881dafe74af53547d1e5de4de197719c25",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.im_closure-a1.lebesgue_points-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-lebesgue-points-a1-a1",
+      "result_commit": "3047dcd2a39a402d0c218985fe97b92bf589038f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-combination-a1-weight-change-a1-a1"
+}
