@@ -1958,6 +1958,90 @@ theorem Submission.codim1_dolr_rep_support_inter : ∀ (P m : ℕ) (U : Set (Euc
     rw [hmass] at hzero
     exact mul_ne_zero hk' hpos hzero
 
+/-- **Multiplicity one near a regular point of density one** (Simon 7.4.1; Ch. 3, 1.8(2);
+Ch. 6, 2.5 and 2.11).  Let `y ∈ reg T`, so `T = k[[M]]` in `B_{ρ_y}(y)` with `k ≠ 0` and
+`y ∈ M`, and let `Θᵐ(μ_T, y) = 1`.  The density of `k[[M]]` at `y` is `|k|`, so `k = ±1` by
+uniqueness of limits.  Take `ρ₀ = min(ε, ρ_y/2)`, where `M ∩ closedBall(y, ε)` is compact; then
+`M` is relatively closed in `B_ρ(y)` for `ρ ≤ ρ₀`, so `spt T ∩ B_ρ(y) = M ∩ B_ρ(y)`.  This open
+piece of `M` is an embedded `C¹` submanifold with the tangent spaces of `M`, it is oriented by
+`ξ = kξ_y = ±ξ_y`, its `Hᵐ`-measure is at most `Hᵐ(M ∩ closedBall(y, ρ)) < ∞`, and
+`T(ω) = ∫_M ⟨ω, ξ⟩ dHᵐ = ∫_{M ∩ B_ρ(y)} ⟨ω, ξ⟩ dHᵐ` when `spt ω ⊆ B_ρ(y)`. -/
+theorem Submission.codim1_density_one_regular_local_rep : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (y : Euclid P), 1 ≤ m → IsOpen U → y ∈ regularSet T → HasMassDensity T y 1 → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ball y ρ₀ ⊆ U ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₀ → ∃ ξ : Euclid P → MultiVector P m, IsEmbeddedSubmanifold 1 m (T.support ∩ ball y ρ) ∧ IsOrientation m (T.support ∩ ball y ρ) ξ ∧ μHE[m] (T.support ∩ ball y ρ) ≠ ∞ ∧ ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ → T ω = ∫ x in T.support ∩ ball y ρ, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+  intro P m U T y _h1m _hU hy hd
+  -- Step 1: `y ∈ reg T` gives `T = k[[M]]` in `B_{ρ_y}(y)` with `k ≠ 0` and `y ∈ M`
+  obtain ⟨_hyS, ρy, hρy, hballU, k, M, ξy, hk, hyM, hMemb, hξ, hfin, hrep⟩ := hy
+  -- Step 2: `Θᵐ(μ_T, y) = |k|` and `Θᵐ(μ_T, y) = 1`, so `k = ±1`
+  have hdk := Submission.codim1_dolr_rep_hasMassDensity P m U T y ρy k M ξy hρy hballU hyM
+    hMemb hξ hfin hrep
+  have hk1 : k.natAbs = 1 := by
+    have h := tendsto_nhds_unique hd.2 hdk.2
+    rw [ENNReal.ofReal_one, ENNReal.ofReal_natCast] at h
+    exact_mod_cast h.symm
+  have hkpm : k = 1 ∨ k = -1 := by
+    rcases Int.natAbs_eq_iff.mp hk1 with h | h
+    · left; simpa using h
+    · right; simpa using h
+  -- Step 3: `ρ₀ = min(ε, ρ_y/2)`, with `M` Borel and `M ∩ closedBall(y, ε)` compact
+  obtain ⟨hMmeas, hloc⟩ := Submission.dimred_rpd_embedded_locally_closed P 1 m M hMemb
+  obtain ⟨ε, hε, hcpt⟩ := hloc y hyM
+  refine ⟨min ε (ρy / 2), lt_min hε (half_pos hρy), ?_, ?_⟩
+  · exact (ball_subset_ball ((min_le_right _ _).trans (half_le_self hρy.le))).trans hballU
+  intro ρ hρ hρle
+  have hρε : ρ ≤ ε := hρle.trans (min_le_left _ _)
+  have hρρy : ρ < ρy := lt_of_le_of_lt (hρle.trans (min_le_right _ _)) (half_lt_self hρy)
+  have hballsub : ball y ρ ⊆ ball y ρy := ball_subset_ball hρρy.le
+  -- Step 4: `M` is relatively closed in `B_ρ(y)`, and `T = k[[M]]` in `B_ρ(y)`
+  have hcl : closure M ∩ ball y ρ ⊆ M := by
+    intro x hx
+    have h1 : x ∈ closure (M ∩ ball y ρ) := isOpen_ball.closure_inter hx
+    have h2 : closure (M ∩ ball y ρ) ⊆ M ∩ closedBall y ε := by
+      rw [← hcpt.isClosed.closure_eq]
+      exact closure_mono (inter_subset_inter_right _
+        (ball_subset_closedBall.trans (closedBall_subset_closedBall hρε)))
+    exact (h2 h1).1
+  have hfinW : ∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[m] (M ∩ K) ≠ ∞ :=
+    fun K hK hKs => hfin K hK (hKs.trans hballsub)
+  have hrepW : ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ →
+      T ω = k * ∫ x in M, ξy x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] :=
+    fun ω hω => hrep ω (hω.trans hballsub)
+  -- Step 5: `spt T ∩ B_ρ(y) = M ∩ B_ρ(y)`
+  have hsupp := Submission.codim1_dolr_rep_support_inter P m U T (ball y ρ) M k ξy isOpen_ball
+    (hballsub.trans hballU) hk hMemb hξ hcl hfinW hrepW
+  -- Step 6: the open piece `M ∩ B_ρ(y)` is an embedded `C¹` submanifold with the tangent
+  -- spaces of `M`
+  obtain ⟨hemb, htan⟩ := Submission.codim1_dolr_embedded_inter_open P 1 m M (ball y ρ) hMemb
+    isOpen_ball
+  -- Step 7: `ξ = kξ_y = ±ξ_y` on `spt T ∩ B_ρ(y) = M ∩ B_ρ(y)`
+  refine ⟨fun x => (k : ℝ) • ξy x, ?_, ?_, ?_, ?_⟩
+  · -- (i) an embedded `C¹` `m`-submanifold
+    rw [hsupp]
+    exact hemb
+  · -- (ii) `±ξ_y` is continuous and orients the (unchanged) tangent spaces
+    rw [hsupp]
+    refine ⟨(hξ.1.mono inter_subset_left).const_smul (k : ℝ), fun w hw => ?_⟩
+    obtain ⟨Q, hQ, τ, horth, hspan, hsign⟩ := hξ.2 w hw.1
+    refine ⟨Q, by rw [htan w hw.2]; exact hQ, τ, horth, hspan, ?_⟩
+    rcases hkpm with rfl | rfl
+    · simpa using hsign
+    · rcases hsign with h | h
+      · right; intro α; simp [h α]
+      · left; intro α; simp [h α]
+  · -- (iii) `Hᵐ(M ∩ B_ρ(y)) ≤ Hᵐ(M ∩ closedBall(y, ρ)) < ∞`
+    rw [hsupp]
+    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y ρ) (closedBall_subset_ball hρρy))
+      (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
+  · -- (iv) `T(ω) = ∫_M ⟨ω, kξ_y⟩ dHᵐ`, and `ω = 0` on `M \ B_ρ(y)`
+    intro ω hω
+    rw [hsupp, hrepW ω hω, ← integral_const_mul,
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMmeas
+        (inter_subset_left : M ∩ ball y ρ ⊆ M)]
+    · refine setIntegral_congr_fun (hMmeas.inter isOpen_ball.measurableSet) fun x _ => ?_
+      simp
+    · intro x hx
+      have hx' : x ∉ tsupport (ω : DifferentialForm (Euclid P) m) := fun h => hx.2 ⟨hx.1, hω h⟩
+      rw [image_eq_zero_of_notMem_tsupport hx']
+      simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
