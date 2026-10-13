@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5cb74507731cd3aa9163893290d338d54b7a0085fd70c3036ca8c60604adc7ca",
+  "git_delta": {
+    "base_commit": "16129004c9e0a72cc0f39d75954190f7f95b4cad",
+    "candidate_commit": "bceb72ce671d90f2cd795ecd0e1c200e92f09800",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fderiv_apply_eq_of_approxTangent",
+    "diff_sha256": "559ffb6d408c3e02437351aa8058ac817b4786dddb69854f91a3f692e7112038",
+    "source_sha256": "821323d410986aefc96bc2d10a3f4e80bcd9526abb0fd7ffd25f45c87cff1229",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fderiv_apply_eq_of_approxTangent",
+      "statement": "∀ (P n : ℕ) (A : Set (Euclid P)) (f : Euclid P → Euclid P) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n A x Q → DifferentiableAt ℝ f x → f x = x → (∀ y ∈ A, f y = y) → ∀ v ∈ Q, fderiv ℝ f x v = v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,162 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`∫_Q g dHⁿ > 0` for a nonnegative `C_c` function `g` with `g(w) > 0` at a point `w` of an
+`n`-plane `Q`** (step 4 of the proof that approximate tangent planes of a submanifold lie in its
+tangent spaces; Simon Ch. 3, 1.4).  `Hⁿ⌞Q` is regular with support `Q` (SimonGMT Ch. 3), so `g` is
+`Hⁿ⌞Q`-integrable and the open set `{g ≠ 0} ∋ w` has positive `Hⁿ⌞Q`-measure. -/
+theorem Submission.dsmc_att_setIntegral_submodule_pos : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (w : Euclid P), Module.finrank ℝ Q = n → Continuous g → HasCompactSupport g → (∀ y, 0 ≤ g y) → w ∈ Q → 0 < g w → 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
+  intro P n Q g w hQ hg hgc hg0 hw hgw
+  -- `Hⁿ⌞Q` is regular, hence finite on compact sets, so the `C_c` function `g` is integrable.
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ
+  rw [integral_pos_iff_support_of_nonneg hg0 (hg.integrable_of_hasCompactSupport hgc)]
+  -- `w ∈ Q = spt(Hⁿ⌞Q)` and `{g ≠ 0}` is an open neighbourhood of `w`.
+  have hwμ : w ∈ ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).support := by
+    rwa [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ]
+  exact (Measure.mem_support_iff_forall _).1 hwμ _ (hg.isOpen_support.mem_nhds hgw.ne')
+/-- Blow-up maps preserve `Hⁿ`-null sets: if `λ ≠ 0` and `Hⁿ(E) = 0`, then `Hⁿ(η_{x,λ}(E)) = 0`.
+Since `η_{x,λ}(E) = λ⁻¹ · (E − x)`, the translation `y ↦ y − x` is an isometry (so
+`Hⁿ(E − x) = Hⁿ(E) = 0`) and the dilation by `λ⁻¹ ≠ 0` multiplies `Hⁿ` by `|λ⁻¹|ⁿ`. -/
+theorem Submission.dsmc_att_blowUpMap_image_null : ∀ (P n : ℕ) (E : Set (Euclid P)) (x : Euclid P) (lam : ℝ), lam ≠ 0 → μHE[n] E = 0 → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' E) = 0 := by
+  intro P n E x lam hlam hE
+  -- Step 1: `η_{x,λ}(E) = λ⁻¹ · τ(E)`, where `τ y = y − x`
+  have himage : Poincare.SimonGMT.Chapter03.blowUpMap x lam '' E =
+      (fun z : Euclid P => lam⁻¹ • z) '' ((fun y : Euclid P => y - x) '' E) := by
+    rw [Set.image_image]
+    rfl
+  -- Step 2: `τ` is an isometry, so `Hⁿ(τ(E)) = Hⁿ(E) = 0`
+  have hτ : Isometry (fun y : Euclid P => y - x) := (IsometryEquiv.subRight x).isometry
+  have htrans : μHE[n] ((fun y : Euclid P => y - x) '' E) = 0 := by
+    rw [hτ.euclideanHausdorffMeasure_image, hE]
+  -- Steps 3–4: `Hⁿ(λ⁻¹ · τ(E)) = ‖λ⁻¹‖₊ⁿ • Hⁿ(τ(E)) = 0`
+  rw [himage, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam), htrans,
+    smul_zero]
+
+/-- **Blow-ups of `M ∩ N` approach every vector of an approximate tangent space** (Simon Ch. 3,
+Definition 1.4, chapter-03.txt lines 77–83, tested as in Remark 1.5(3), lines 90–92).  If
+`Hⁿ(M \ N) = 0`, `Q` is an approximate tangent space of `M` at `x`, `w ∈ Q` and `s > 0`, then for
+all small `λ > 0` some `y ∈ M ∩ N` has `|λ⁻¹(y − x) − w| < s`.  The tent `f = max(0, s − |· − w|)`
+lies in `C_c`, vanishes off `B_s(w)` and has `∫_Q f dHⁿ > 0`, so `∫_{η_{x,λ}(M)} f dHⁿ > 0` for
+small `λ`; hence `Hⁿ(η_{x,λ}(M) ∩ B_s(w)) ≠ 0`, and since `η_{x,λ}(M \ N)` is `Hⁿ`-null,
+`η_{x,λ}(M ∩ N)` meets `B_s(w)`. -/
+theorem Submission.dsmc_att_blowUp_points_of_approxTangent : ∀ (P n : ℕ) (M N : Set (Euclid P)) (x w : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (M \ N) = 0 → HasApproximateTangentSpaceAt n M x Q → w ∈ Q → ∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ M ∩ N, ‖lam⁻¹ • (y - x) - w‖ < s := by
+  intro P n M N x w Q hMN hQ hw s hs
+  -- the tent `g = max(0, s − |· − w|)`: continuous, `g ≥ 0`, `g(w) = s` and `{g ≠ 0} ⊆ B_s(w)`
+  set g : Euclid P → ℝ := fun y => max 0 (s - ‖y - w‖)
+  have hg_cont : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).norm)
+  have hg_nonneg : ∀ y, 0 ≤ g y := fun y => le_max_left _ _
+  have hg_ball : ∀ y, g y ≠ 0 → y ∈ ball w s := by
+    intro y hy
+    rw [mem_ball, dist_eq_norm]
+    by_contra h
+    exact hy (max_eq_left (by linarith [not_lt.mp h]))
+  have hg_supp : HasCompactSupport g :=
+    HasCompactSupport.intro (isCompact_closedBall w s) fun y hy =>
+      not_not.mp fun h => hy (ball_subset_closedBall (hg_ball y h))
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hg_cont⟩, hg_supp⟩
+  -- `∫_Q f dHⁿ > 0`, hence `∫_{η_{x,λ}(M)} f dHⁿ > 0` for every `λ ∈ (0, λ₀)`
+  have hI : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] :=
+    Submission.dsmc_att_setIntegral_submodule_pos P n Q g w hQ.1 hg_cont hg_supp hg_nonneg hw
+      (by simp [g, hs])
+  obtain ⟨lam₀, hlam₀, hpos⟩ :=
+    mem_nhdsGT_iff_exists_Ioo_subset.mp ((hQ.2 f).eventually (lt_mem_nhds hI))
+  refine ⟨lam₀, hlam₀, fun lam hlam hlam₀' => ?_⟩
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x lam with hη
+  -- a positive integral of `f` over `η(M)` forces `Hⁿ(η(M) ∩ B_s(w)) ≠ 0`
+  have hball : μHE[n] (η '' M ∩ ball w s) ≠ 0 := by
+    intro h0
+    have hF : 0 < ∫ y in η '' M, f y ∂μHE[n] := hpos ⟨hlam, hlam₀'⟩
+    have hF0 : ∫ y in η '' M, f y ∂μHE[n] = 0 := by
+      apply integral_eq_zero_of_ae
+      rw [EventuallyEq, ae_iff]
+      refine measure_mono_null (fun y hy => hg_ball y hy) ?_
+      rw [Measure.restrict_apply measurableSet_ball, inter_comm]
+      exact h0
+    exact hF.ne' hF0
+  -- `η(M \ N)` is `Hⁿ`-null and `η(M) ∩ B_s(w) ⊆ (η(M ∩ N) ∩ B_s(w)) ∪ η(M \ N)`
+  have hnull : μHE[n] (η '' (M \ N)) = 0 :=
+    Submission.dsmc_att_blowUpMap_image_null P n (M \ N) x lam hlam.ne' hMN
+  have hcov : η '' M ∩ ball w s ⊆ (η '' (M ∩ N) ∩ ball w s) ∪ η '' (M \ N) := by
+    rintro z ⟨⟨y, hyM, rfl⟩, hz⟩
+    by_cases hyN : y ∈ N
+    · exact Or.inl ⟨⟨y, ⟨hyM, hyN⟩, rfl⟩, hz⟩
+    · exact Or.inr ⟨y, ⟨hyM, hyN⟩, rfl⟩
+  have hne : μHE[n] (η '' (M ∩ N) ∩ ball w s) ≠ 0 := fun h0 =>
+    hball (measure_mono_null hcov (measure_union_null h0 hnull))
+  -- so `η(M ∩ N)` meets `B_s(w)`
+  obtain ⟨z, ⟨y, hy, rfl⟩, hz⟩ := nonempty_of_measure_ne_zero hne
+  refine ⟨y, hy, ?_⟩
+  rw [mem_ball, dist_eq_norm] at hz
+  simpa [hη, Poincare.SimonGMT.Chapter03.blowUpMap] using hz
+
+/-- **`Df(x)` fixes the approximate tangent space of a pointwise fixed set** (steps 5–6 of the proof
+that a map fixing `spt T` preserves the orientation of `T`; approximate tangent spaces as in Simon
+Ch. 3, Definition 1.4).  If `f` is differentiable at `x`, `f(x) = x`, `f` fixes every point of `A`
+and `Q` is an approximate tangent space of `A` at `x`, then `Df(x)v = v` for every `v ∈ Q`.  The
+blow-up points `u = λ⁻¹(y − x)`, `y ∈ A`, approach `v` as `λ ↓ 0`; since `f(y) − f(x) = y − x`,
+differentiability gives `|u − Df(x)u| ≤ η|u|`, so `|Df(x)v − v| ≤ ε` for every `ε > 0`. -/
+theorem Submission.dtc_bc_lc_fderiv_apply_eq_of_approxTangent : ∀ (P n : ℕ) (A : Set (Euclid P)) (f : Euclid P → Euclid P) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n A x Q → DifferentiableAt ℝ f x → f x = x → (∀ y ∈ A, f y = y) → ∀ v ∈ Q, fderiv ℝ f x v = v := by
+  intro P n A f x Q hQ hf hfx hA v hv
+  set L := fderiv ℝ f x
+  have hfL : HasFDerivAt f L x := hf.hasFDerivAt
+  -- Step 1: it suffices to show `|Lv − v| ≤ ε` for every `ε > 0`; fix the constants
+  refine eq_of_forall_dist_le fun ε hε => ?_
+  rw [dist_eq_norm]
+  set C : ℝ := ‖v‖ + 1 with hC
+  set K : ℝ := ‖L‖ + 1 with hK
+  have hCpos : 0 < C := by rw [hC]; positivity
+  have hKpos : 0 < K := by rw [hK]; positivity
+  set η : ℝ := ε / (2 * C) with hη
+  set s : ℝ := min 1 (ε / (2 * K))
+  have hηpos : 0 < η := div_pos hε (mul_pos two_pos hCpos)
+  have hspos : 0 < s := lt_min one_pos (div_pos hε (mul_pos two_pos hKpos))
+  have hKs : K * s ≤ ε / 2 := by
+    calc K * s ≤ K * (ε / (2 * K)) := mul_le_mul_of_nonneg_left (min_le_right _ _) hKpos.le
+      _ = ε / 2 := by field_simp
+  have hηC : η * C = ε / 2 := by rw [hη]; field_simp
+  -- Step 2: differentiability gives `δ > 0` with `|f(y) − f(x) − L(y − x)| ≤ η|y − x|` near `x`
+  obtain ⟨δ, hδ, hδf⟩ := Metric.eventually_nhds_iff.mp (hfL.isLittleO.bound hηpos)
+  -- Step 3: blow-up points of `A ∩ A = A` approach `v`
+  obtain ⟨lam₀, hlam₀, hpts⟩ :=
+    Submission.dsmc_att_blowUp_points_of_approxTangent P n A A x v Q (by simp) hQ hv s hspos
+  -- Step 4: the scale `λ = min(λ₀/2, δ/(2C))` and the point `u = λ⁻¹(y − x)`
+  set lam : ℝ := min (lam₀ / 2) (δ / (2 * C))
+  have hlampos : 0 < lam := lt_min (half_pos hlam₀) (div_pos hδ (mul_pos two_pos hCpos))
+  obtain ⟨y, ⟨hyA, -⟩, hy⟩ := hpts lam hlampos ((min_le_left _ _).trans_lt (half_lt_self hlam₀))
+  set u : Euclid P := lam⁻¹ • (y - x) with hu
+  have hyx : y - x = lam • u := by rw [hu, smul_inv_smul₀ hlampos.ne']
+  have huv : ‖u - v‖ < s := hy
+  have huC : ‖u‖ ≤ C := by
+    have h1 := norm_le_norm_sub_add u v
+    have h2 := huv.trans_le (min_le_left _ _)
+    rw [hC]; linarith
+  have hyδ : dist y x < δ := by
+    rw [dist_eq_norm, hyx, norm_smul, Real.norm_of_nonneg hlampos.le]
+    calc lam * ‖u‖ ≤ δ / (2 * C) * C :=
+          mul_le_mul (min_le_right _ _) huC (norm_nonneg _) (div_pos hδ (mul_pos two_pos hCpos)).le
+      _ = δ / 2 := by field_simp
+      _ < δ := half_lt_self hδ
+  -- Step 5: `f(y) = y` and `f(x) = x` turn the estimate into `|u − Lu| ≤ η|u| ≤ ε/2`
+  have hkey : ‖u - L u‖ ≤ ε / 2 := by
+    have h := hδf hyδ
+    rw [hA y hyA, hfx, hyx, map_smul, ← smul_sub, norm_smul, norm_smul,
+      Real.norm_of_nonneg hlampos.le, mul_left_comm] at h
+    calc ‖u - L u‖ ≤ η * ‖u‖ := le_of_mul_le_mul_left h hlampos
+      _ ≤ η * C := mul_le_mul_of_nonneg_left huC hηpos.le
+      _ = ε / 2 := hηC
+  -- Step 6: `|Lv − v| ≤ |L(v − u)| + |Lu − u| + |u − v| ≤ Ks + ε/2 ≤ ε`
+  have hLvu : ‖L v - L u‖ ≤ ‖L‖ * ‖u - v‖ := by
+    calc ‖L v - L u‖ = ‖L (v - u)‖ := by rw [map_sub]
+      _ ≤ ‖L‖ * ‖v - u‖ := L.le_opNorm _
+      _ = ‖L‖ * ‖u - v‖ := by rw [norm_sub_rev]
+  calc ‖L v - v‖ = ‖(L v - L u) + (L u - u) + (u - v)‖ := by congr 1; abel
+    _ ≤ ‖L v - L u‖ + ‖L u - u‖ + ‖u - v‖ := norm_add₃_le
+    _ ≤ ‖L‖ * ‖u - v‖ + ε / 2 + ‖u - v‖ := by rw [norm_sub_rev (L u) u]; linarith
+    _ = K * ‖u - v‖ + ε / 2 := by rw [hK]; ring
+    _ ≤ K * s + ε / 2 := by linarith [mul_le_mul_of_nonneg_left huv.le hKpos.le]
+    _ ≤ ε := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
