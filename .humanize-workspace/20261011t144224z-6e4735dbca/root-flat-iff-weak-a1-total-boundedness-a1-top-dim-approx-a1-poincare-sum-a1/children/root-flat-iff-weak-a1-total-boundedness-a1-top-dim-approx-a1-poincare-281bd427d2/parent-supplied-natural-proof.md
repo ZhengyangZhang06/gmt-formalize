@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1`
+- Child DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1.translation_ball-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3–4 of the parent proof of fiw_tb_tda_poincare_sum (the substitution y = x + h, Tonelli's theorem and the translation estimate), stated for an arbitrary dimension n and radius r. No sign condition on r is used. If r < 0, every closed ball is empty and the argument goes through unchanged.
+
+Notation.
+- E := Eucl n and L := volume on E. L is an additive Haar measure on the finite-dimensional real inner product space E. So it is invariant under every translation h ↦ a + h (IsAddLeftInvariant) and σ-finite, hence s-finite.
+- B := closedBall(0, r) ⊆ E and 1_B := B.indicator 1 : E → [0, ∞].
+- For x ∈ E, H(x) := ∫⁻_{y ∈ closedBall(x, r)} ofReal|u(x) − u(y)| dL(y). The left side of the claim is ∫⁻ H dL.
+- k(x, h) := 1_B(h) · ofReal|u(x + h) − u(x)| for x, h ∈ E.
+- All integrals are lower Lebesgue integrals of [0, ∞]-valued functions. So no integrability assumption is needed, and Λ = ∞ is allowed.
+
+1. (Ball membership.) For all x, h ∈ E: x + h ∈ closedBall(x, r) ⟺ h ∈ B. Indeed dist(x + h, x) = ‖(x + h) − x‖ = ‖h‖ = dist(h, 0) (dist_eq_norm, add_sub_cancel_left, sub_zero). So both conditions say ‖h‖ ≤ r.
+
+2. (Substitution y = x + h.) Fix x ∈ E.
+   - closedBall(x, r) is measurable, so lintegral_indicator gives H(x) = ∫⁻ (closedBall(x, r)).indicator(y ↦ ofReal|u(x) − u(y)|)(y) dL(y).
+   - By translation invariance of L (lintegral_add_left_eq_self, with the translation h ↦ x + h), this equals ∫⁻ (closedBall(x, r)).indicator(y ↦ ofReal|u(x) − u(y)|)(x + h) dL(h).
+   - Compare the integrands pointwise in h (lintegral_congr). If h ∈ B, then x + h ∈ closedBall(x, r) by step 1. The integrand is then ofReal|u(x) − u(x + h)| = ofReal|u(x + h) − u(x)| (abs_sub_comm) = 1_B(h) · ofReal|u(x + h) − u(x)|.
+   - If h ∉ B, then x + h ∉ closedBall(x, r) by step 1, so the integrand is 0 = 1_B(h) · ofReal|u(x + h) − u(x)|.
+   Hence H(x) = ∫⁻ k(x, h) dL(h) for every x.
+
+3. (Joint measurability.) k is measurable on E × E:
+   - (x, h) ↦ 1_B(h) is the measurable function 1_B (B is closed, hence measurable) composed with the measurable projection (x, h) ↦ h.
+   - (x, h) ↦ u(x + h) − u(x) is measurable, because u is measurable and (x, h) ↦ x + h and (x, h) ↦ x are measurable.
+   - Composing with the continuous function |·| and with the measurable map ENNReal.ofReal keeps measurability.
+   - A product of two measurable [0, ∞]-valued functions is measurable.
+   In particular, uncurry k is a.e.-measurable for L ⊗ L.
+
+4. (Tonelli.) By step 2, then lintegral_lintegral_swap (L is s-finite; measurability from step 3):
+   ∫⁻ H dL = ∫⁻_x ∫⁻_h k(x, h) dL(h) dL(x) = ∫⁻_h ∫⁻_x k(x, h) dL(x) dL(h).
+   For fixed h, x ↦ ofReal|u(x + h) − u(x)| is measurable (u is measurable and x ↦ x + h is measurable). So lintegral_const_mul gives ∫⁻_x k(x, h) dL(x) = 1_B(h) · ∫⁻_x ofReal|u(x + h) − u(x)| dL(x).
+
+5. (Translation estimate on B.) For every h ∈ E:
+   1_B(h) · ∫⁻_x ofReal|u(x + h) − u(x)| dL(x) ≤ B.indicator(fun _ ↦ ofReal(r) · Λ)(h).
+   - If h ∈ B, the left side is ∫⁻_x ofReal|u(x + h) − u(x)| dL(x), which is ≤ ofReal‖h‖ · Λ by the hypothesis. Since ‖h‖ = dist(h, 0) ≤ r, we have ofReal‖h‖ ≤ ofReal(r) (ENNReal.ofReal_le_ofReal). Multiplication by Λ is monotone in [0, ∞], so ofReal‖h‖ · Λ ≤ ofReal(r) · Λ, which is the right side.
+   - If h ∉ B, both sides are 0.
+   Hence, by step 4 and lintegral_mono, ∫⁻ H dL ≤ ∫⁻ B.indicator(fun _ ↦ ofReal(r) · Λ) dL.
+
+6. (Integral of a constant on B.) B is measurable, so lintegral_indicator_const gives ∫⁻ B.indicator(fun _ ↦ ofReal(r) · Λ) dL = ofReal(r) · Λ · L(B).
+
+7. (Conclusion.) Steps 2, 4, 5 and 6 give
+   ∫⁻_x ∫⁻_{y ∈ closedBall(x, r)} ofReal|u(x) − u(y)| dL(y) dL(x) = ∫⁻ H dL ≤ ofReal(r) · Λ · L(closedBall(0, r)). ∎
+
+## Key steps
+
+1. x + h ∈ closedBall(x, r) ⟺ h ∈ B := closedBall(0, r), since dist(x + h, x) = ‖h‖ = dist(h, 0).
+2. lintegral_indicator plus translation invariance (lintegral_add_left_eq_self) rewrite the inner ball integral H(x) as ∫⁻ 1_B(h)·ofReal|u(x + h) − u(x)| dL(h).
+3. The integrand (x, h) ↦ 1_B(h)·ofReal|u(x + h) − u(x)| is measurable on E × E, since u is measurable, addition is measurable and B is closed.
+4. Tonelli (lintegral_lintegral_swap) and lintegral_const_mul give ∫⁻ H = ∫⁻_h 1_B(h)·∫⁻_x ofReal|u(x + h) − u(x)|.
+5. The hypothesis and ‖h‖ ≤ r on B bound each inner integral by ofReal(r)·Λ, pointwise against B.indicator(const ofReal(r)·Λ).
+6. lintegral_indicator_const gives the final value ofReal(r)·Λ·L(closedBall(0, r)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical)`
+- `rg -n "theorem lintegral_add_left_eq_self|lintegral_mul_left_eq_self|theorem lintegral_lintegral_swap|theorem volume_preserving_ofLp|theorem volume_Icc_pi\b|theorem lintegral_indicator_const\b|theorem norm_eq \(|theorem setLIntegral_mono'|theorem tsum_mul_left|theorem lintegral_mono_set\b" mathlib/Mathlib`
+- `rg -n "volume_preserving_ofLp|theorem volume_closedBall|norm_apply_le|norm_eq" Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean Mathlib/Analysis/InnerProductSpace/PiL2.lean Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `rg -n "theorem mul_le_mul_left'|theorem ofReal_coe_nnreal|theorem coe_nnreal_eq" mathlib/Mathlib (mul_le_mul_left' absent at this revision; ENNReal.ofReal_coe_nnreal present)`
+- `rg -n "lintegral_add_left_eq_self|lintegral_lintegral_swap|volume_closedBall|volume \(closedBall" lake-packages-25730c7c/simongmt (SimonGMT)`
+- `rg -n "closedBall|lintegral_add_left|Poincar" local-references/.../project/GMT`
+- `python3 scan of dag.json (458 nodes): statuses, lean_name collisions, statements mentioning volume (closedBall / x + h, and the frozen sibling fiw_tb_tda_lattice_cubes type`
+- `git log --all --oneline -S fiw_tb_tda_ps_ (no match)`
+- `grep runtime.py: _overlay_accepted_children, _existing_lean_name_problem, _solve_children, child.proof_base_commit = dispatch commit`
+- `verifier/gmt-compare.py contract_scope/child_modules used to generate NodeChallenge/NodeSolution for both children; validate_lean_statement from runtime and verifier lean_contract.py (both pass)`
+- `lean (LEAN_PATH from lake env) on /tmp/psum-decomp-17747/{Assembly,ProtoA,ProtoB,Full,Chal_*,Sol_*}.lean: 0 errors`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-poincare-sum-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/psum-decomp-17747/Assembly.lean`
+- `/tmp/psum-decomp-17747/ProtoA.lean`
+- `/tmp/psum-decomp-17747/ProtoB.lean`
+- `/tmp/psum-decomp-17747/Full.lean`
+
+Snapshot: project d8d46c95 with Mathlib 25730c7c. Contract.lean is identical to the workspace's Contract.lean and Submission.lean.
+
+Neither the project nor SimonGMT has the translation-to-ball double-integral estimate or the box bound for ball volume. SimonGMT has only Tonelli uses (Chapter04) and the exact Gamma-function ball volume (Chapter01). No DAG node has either obligation, so they become the two children: fiw_tb_tda_ps_translation_ball and fiw_tb_tda_ps_ball_volume_le. Both names are unused.
+
+Mathlib API found at the pinned revision: lintegral_add_left_eq_self (to_additive of lintegral_mul_left_eq_self), lintegral_lintegral_swap, lintegral_indicator_const, setLIntegral_mono', lintegral_mono_set, ENNReal.tsum_mul_left, PiLp.volume_preserving_ofLp, Real.volume_Icc_pi, PiLp.norm_apply_le, EuclideanSpace.norm_eq and ENNReal.ofReal_coe_nnreal. Exact ball-volume formulas exist (EuclideanSpace.volume_closedBall) but involve Gamma, so the box bound is simpler. mul_le_mul_left' is absent at this revision; use mul_le_mul' or gcongr.
+
+Children of this node cannot use the sibling lattice_cubes, because their proof base is this node's dispatch commit. So steps 1–2, which use it, stay in the parent.
+
+Scratch Lean checks:
+- The frozen parent type compiles from stubs of the frozen lattice_cubes type and both child types (5,648 heartbeats; sorryAx only from the lattice_cubes stub).
+- Scratch proofs of both children compile, and the comparator-style NodeSolution targets close by `exact Submission.X` with only propext, Classical.choice and Quot.sound.
+- Both types pass validate_lean_statement.
