@@ -6654,6 +6654,26 @@ theorem Submission.lpf_pushforward_integrality : ∀ (P Q n : ℕ) (U : Set (Euc
   exact Submission.lpf_pi_im_of_chart_density Submission.lpf_weighted_tangent_on_c1_chart hsna
     Q n V Y Ψ G O S hV hO hG hanti hYV hY hYfin hΨm hΨint hfam hSY
 
+/-- **Simon Ch. 6, Lemma 3.9 (p. 148).**  Write `T = τ(M, θ, ξ)` with `θ` integer valued.  The
+tangential differential `d^M f` (Ch. 3, §2) supplies the linear maps `L x`; with them (3.6)
+defines a current `S = f_# T` in `V`, and the area formula with 3.7–3.8 gives
+`S = τ(f(M), N, ζ)` with `N` integer valued, so `S` is integer multiplicity. -/
+theorem Submission.lipschitz_pushforward_integer_multiplicity :
+    LipschitzPushforwardIntegerMultiplicity := by
+  intro P Q n U V hU hV T f hT hf hfUV hproper
+  obtain ⟨M, θ, ξ, hMθξ, hθ, hTrep⟩ := hT
+  -- Ch. 3, §2: `L x` agrees with `d^M f_x` on the weighted tangent spaces of `(M, θ)`, and is
+  -- measurable and locally bounded on `M`.
+  obtain ⟨L, hLderiv, hLmeas, hLbdd⟩ :=
+    Submission.lpf_tangential_differential_exists P Q n U M θ ξ f hU hMθξ hf
+  -- (3.6) defines a current in `V`, since `f | spt T` is proper.
+  obtain ⟨S, hS⟩ := Submission.lpf_pushforward_is_current P Q n U V hU hV T M θ ξ f L hMθξ hTrep
+    hf.continuousOn hproper hLmeas hLbdd
+  -- 3.6–3.8: by the area formula, `S = τ(f(M), N, ζ)` with `N` integer valued.
+  exact ⟨S, ⟨M, θ, ξ, L, hMθξ, hTrep, hLderiv, hS⟩,
+    Submission.lpf_pushforward_integrality P Q n U V hU hV T M θ ξ f L S hMθξ hθ hTrep hf hfUV
+      hproper hLderiv hLmeas hS⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
