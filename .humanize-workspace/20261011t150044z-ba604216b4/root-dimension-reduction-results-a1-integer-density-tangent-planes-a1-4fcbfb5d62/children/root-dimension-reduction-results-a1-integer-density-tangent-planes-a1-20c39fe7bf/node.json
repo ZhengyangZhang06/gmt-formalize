@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.stationarity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1",
+  "depth": 4,
+  "title": "Simon 7.1.2: minimizing currents in a C² submanifold are stationary in it, with locally bounded generalized mean curvature (registered obligation)",
+  "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅, and T ∈ 𝒟_n(U) with spt T ⊆ N, T minimizing in N ∩ U (Simon 7.1.1, integer multiplicity competitors) and ∂T = 0 in U (vacuous for n = 0). Then for every integer multiplicity representation R = (M, θ, ξ) of T, the varifold v(M, θ) is stationary in N ∩ U (∫_M θ div_M X dH^n = 0 for all X ∈ C¹_c(U; ℝ^{n+k}) with X(x) ∈ T_xN for x ∈ N ∩ U) and has a generalized mean curvature H in U that is μ_V-essentially bounded on every compact subset of U.",
+  "lean_statement": "MinimizingImpliesStationary",
+  "lean_name": "idtp_fons_minimizing_stationary",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-20c39fe7bf-a1"
+}

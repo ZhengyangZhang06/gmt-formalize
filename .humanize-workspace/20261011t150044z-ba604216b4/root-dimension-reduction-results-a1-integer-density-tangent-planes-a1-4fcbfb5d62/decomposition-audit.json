@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^(import|open|namespace)|def (MinimizingImpliesStationary|DensityAndTangentCones|HasMassDensity|IsMinimizingIn|IsEmbeddedSubmanifold|BoundaryVanishes|IsConeCurrent|IMRep)|structure IMRep|def IMRep\\.(measure|HasLocallyBoundedMeanCurvature|IsStationaryAlong)|abbrev Euclid' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_def|HasOrthogonalProjection|starProjection_apply_mem",
+        "euclideanHausdorffMeasure_smul₀|lintegral_withDensity_eq_lintegral_mul_non_measurable|withDensity_congr_ae|withDensity_indicator",
+        "idtp_fons_cone_closed_class|idtp_fons_flat_class_reduction|idtp_fons_invariant_planar_support|idtp_fons_minimizing_stationary|idtp_fons_minimizing_monotonicity|idtp_fons_density_tangent_cones|idtp_fons_invariant_cone_splitting|idtp_fons_one_dim_minimizing_cone",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fons_v2/check/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fons_v2/check/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fons_scope_audit_uh1dq6sf/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/fons_v2/check/Types.lean",
+        "/tmp/fons_v2/check/AssemblyAx.lean",
+        "/tmp/fons_scope_audit_uh1dq6sf/Instances.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected flatness theorem. Snapshot and workspace pins agree; the frozen contract is unchanged. All twelve one-line propositions elaborate and match their prose. The two named proposition definitions already exist in the frozen contract. All names are bare identifiers; searches found no competing reservation for the eight fresh names. The four reused types are byte-identical to accepted declarations, whose comparator evidence permits only propext, Classical.choice and Quot.sound. Dependency traversal found no cycle, including through reused declarations and inherited dependencies. The assembly independently compiled at the exact parent type using seven proposed children and the registered density dependency; its axioms are explicitly conditional obligations, not evidence that those obligations are implemented. The instance probe confirms ordinary measure scalar multiplication and orthogonal projection onto complete Euclidean subspaces; no matrix-unit construction occurs. Mathematical cross-check: [Simon, Chapter 7 §§2–3 and Appendix A](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_class",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit DEM/MON/DTC/PS assumptions match the type. Finite positive mass and barycenter recover positive-scale parameters; global minimizing cycles have total mass zero or infinity. The proof verifies rescaling and tangent closure, passage of zero boundary to limits, domain convergence, and all M1–M9 without relying on the parent or moving-centre compactness."
+    },
+    {
+      "key": "class_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurable canonical densities, the correct Hausdorff normalization, H0, and all Appendix A hypotheses. Domain convergence and the lower mass bound justify support semicontinuity. M8–M9 exclude d + 1 = n, yielding the stated null set and its emptiness when n = 1."
+    },
+    {
+      "key": "planar_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "CS and ODC are explicit hypotheses, subsequently discharged by the parent. Degree transport gives a one-dimensional factor; orthogonal decomposition places the support in L ⊔ span{e}. The stated n ≤ P hypothesis justifies extension to an n-plane."
+    },
+    {
+      "key": "abstract_dimension_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is valid. The supplied proof covers weak-limit uniqueness using H0, moving-dilation control, preservation of positive Hausdorff measure under tangent selection, the invariance induction, the extremal subspace, and finiteness when d = 0."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is valid. Pointwise duality gives the upper mass bound; Lusin approximation, bounded extension, mollification and inner regularity give the reverse inequality. The support equivalence and representation independence then follow with the required open-domain hypotheses."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is valid. The proof supplies the test-form correspondence for arbitrary W, transports every IMRep field, and pulls competitors back with their boundaries and compact supports. These establish all three conclusions with the correct scaling factor."
+    },
+    {
+      "key": "cone_measure_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is valid, including its existing dependency closure. The rescaled triple represents the same cone; representation uniqueness and Hausdorff change of variables give the claimed Borel-set identity in every degree."
+    },
+    {
+      "key": "stationarity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MinimizingImpliesStationary is an independently usable frozen definition matching the prose. The proof handles n = 0, constructs admissible tangent-flow competitors, obtains stationarity by first variation, and derives locally bounded mean curvature. Support containment and relative closedness of N are used correctly."
+    },
+    {
+      "key": "monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The registered stationarity and mass-measure prerequisites support the radial first-variation computation. The proof correctly passes from closed to open balls, constructs finite nonnegative density limits, proves upper semicontinuity, and extends the almost-everywhere integer lower bound to every support point."
+    },
+    {
+      "key": "tangent_cones",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DensityAndTangentCones is a pre-existing frozen proposition matching the prose, including degree zero. Localization and the supplied compactness argument provide weak convergence, integer multiplicity, zero boundary, ambient minimality and mass convergence. Constant limiting density ratios and the homotopy argument establish the cone property and matching density."
+    },
+    {
+      "key": "cone_splitting",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives measure invariance and tangent-plane containment before invoking homotopy and slicing. It constructs the transverse factor, proves minimality using capped product competitors and orthogonal projection, and obtains the exact support and density equivalences. The cases d = 0 and n > P are covered."
+    },
+    {
+      "key": "one_dim_cones",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles zero current and zero ambient dimension. Homogeneous mass and the density lower bound give finitely many rays; constancy and zero boundary yield balanced integer coefficients. Minimality for every pairing forces a single antipodal pair, proving planar support and the stated integer density."
+    }
+  ],
+  "required_changes": []
+}
