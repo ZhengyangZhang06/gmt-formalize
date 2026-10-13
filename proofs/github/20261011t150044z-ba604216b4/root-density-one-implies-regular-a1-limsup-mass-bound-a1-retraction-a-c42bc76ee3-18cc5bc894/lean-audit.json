@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f879832b923f28b782621f7b45506dd052dc7197005fc98164c741c005ac5487",
+  "git_delta": {
+    "base_commit": "e08c3f414c615a93db14e7343c291c3539867419",
+    "candidate_commit": "478698302416306f13c977a1488e401bee692e67",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_nc_linear_iso",
+    "diff_sha256": "d9997f2cea9bd0c33b5ea16b489bd8265b783b52632e4565799cfe3af535f061",
+    "source_sha256": "8d789c439015ec12aba0b1d24134a72000798765398948b505429a5fec15da1d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_nc_linear_iso",
+      "statement": "∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ Λ : (Euclid d × ↥(L.range)ᗮ) ≃L[ℝ] Euclid P, ∀ (w : Euclid d) (k : ↥(L.range)ᗮ), Λ (w, k) = L w + k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
