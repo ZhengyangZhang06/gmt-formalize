@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fa1435780c9c5f6adf449ca11841a02c90afbea6d8aa97d5f1b0a631dd0c78d9",
+  "git_delta": {
+    "base_commit": "cab2de2f2c1d30cfe1d85b862f31d1aeaf37887b",
+    "candidate_commit": "9d4e3de4d78b2e318f4dd5fc98d5f8de8981b6e2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_det_covector_norm_le",
+    "diff_sha256": "e290c0cea9e8bd447cc5b21dde3e4b54dafcbb7ddc2bbf71b4d815deb2226733",
+    "source_sha256": "56a817048564d7ac5c8571275a43194a63467e3db917d0664d8dc585c37ea280",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_det_covector_norm_le",
+      "statement": "∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)) (p : Euclid (n + 1)) (α : Covector (Euclid P) n), ‖A‖ ≤ 1 → ‖p‖ ≤ 1 → (∀ a : Fin n → Euclid P, α a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r)) → covectorEuclideanNorm α ≤ ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
