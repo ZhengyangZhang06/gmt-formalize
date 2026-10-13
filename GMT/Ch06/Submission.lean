@@ -5415,6 +5415,539 @@ theorem Submission.rectifiability_bf_projection_null_ae : ∀ (N m : ℕ) (E : S
     · exact h3'
   exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨l, a, hl, rfl⟩)))
 
+/-- **Simon Ch. 3, Structure Theorem 3.6, as used in Ch. 6, 8.1 (p. 174).**  If `A ⊆ ℝ^P` is
+purely `n`-unrectifiable and `Hⁿ`-σ-finite (`n = m + 1`), then some rotation `Q` makes every
+coordinate projection `p_α(Q(A))`, `α ∈ I(n, P)`, Lebesgue-null.  Up to an `Hⁿ`-null set, `A`
+is a countable union of compact purely unrectifiable pieces of finite measure, and their images
+under `x ↦ (⟪vᵢ, x⟫)ᵢ` are null for almost every frame `v`
+(`rectifiability_bf_projection_null_ae`).  Gram–Schmidt applied to a random frame, together with
+Tonelli's theorem, gives an orthonormal frame all of whose coordinate subframes avoid the null
+set of bad frames. -/
+theorem Submission.rectifiability_structure_projection : ∀ (P m : ℕ) (A : Set (Eucl P)), Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) A → (∃ S : ℕ → Set (Eucl P), A ⊆ ⋃ j, S j ∧ ∀ j, (μHE[m + 1] : Measure (Eucl P)) (S j) < ∞) → ∃ Q : Eucl P ≃ₗᵢ[ℝ] Eucl P, ∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' A) = 0 := by
+  have bf := Submission.rectifiability_bf_projection_null_ae
+  classical
+  intro P m A hA hS
+  -- Step 1: if `P < m + 1` there is no strictly increasing `α`.
+  by_cases hnP : m + 1 ≤ P
+  swap
+  · refine ⟨LinearIsometryEquiv.refl ℝ _, fun α => absurd ?_ hnP⟩
+    simpa using Fintype.card_le_of_injective α α.injective
+  -- Steps 4-6 (frame avoidance): for every null Borel set `Z` of `(m + 1)`-frames whose complement
+  -- is stable under row recombination, some orthonormal basis has all coordinate subframes outside `Z`.
+  have hFA : ∀ Z : Set (Fin (m + 1) → Eucl P), MeasurableSet Z →
+      (volume : Measure (Fin (m + 1) → Eucl P)) Z = 0 →
+      (∀ (G : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) (w : Fin (m + 1) → Eucl P),
+        (fun i => ∑ l, G i l • w l) ∈ Z → w ∈ Z) →
+      ∃ Q : Eucl P ≃ₗᵢ[ℝ] Eucl P, ∀ α : SimonMultiIndex (m + 1) P,
+        (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) ∉ Z := by
+    intro Z hZm hZ0 hZpre
+    -- an orthonormal frame `c` gives the isometry `x ↦ ∑ xₖ cₖ`
+    have hUc : ∀ c : Fin P → Eucl P, Orthonormal ℝ c →
+        ∃ U : Eucl P ≃ₗᵢ[ℝ] Eucl P, ∀ x : Eucl P, U x = ∑ k, x k • c k := by
+      intro c hc
+      have hsp : ⊤ ≤ Submodule.span ℝ (Set.range c) :=
+        (hc.linearIndependent.span_eq_top_of_card_eq_finrank' (by simp)).ge
+      refine ⟨(OrthonormalBasis.mk hc hsp).repr.symm, fun x => ?_⟩
+      rw [← (OrthonormalBasis.mk hc hsp).sum_repr_symm]
+      simp
+    -- the transpose of an orthonormal frame is orthonormal
+    have hTON : ∀ b : Fin P → Eucl P, Orthonormal ℝ b →
+        Orthonormal ℝ (fun k : Fin P => (WithLp.toLp 2 (fun i : Fin P => b i k) : Eucl P)) := by
+      intro b hb
+      have hsp : ⊤ ≤ Submodule.span ℝ (Set.range b) :=
+        (hb.linearIndependent.span_eq_top_of_card_eq_finrank' (by simp)).ge
+      rw [orthonormal_iff_ite]
+      intro k l
+      have h := (OrthonormalBasis.mk hb hsp).sum_inner_mul_inner
+        (EuclideanSpace.single k (1 : ℝ)) (EuclideanSpace.single l (1 : ℝ))
+      simp only [OrthonormalBasis.coe_mk, EuclideanSpace.inner_single_left,
+        EuclideanSpace.inner_single_right, PiLp.single_apply] at h
+      rw [PiLp.inner_apply]
+      simp only [RCLike.inner_apply, conj_trivial] at h ⊢
+      convert h using 1
+      · refine Finset.sum_congr rfl fun i _ => ?_
+        simp [mul_comm]
+      · by_cases hkl : k = l <;> simp [hkl, eq_comm]
+    -- Tonelli: for an isometry-invariant finite measure on independent frames and an equivariant
+    -- orthonormalization, the orthonormalized frame and its transpose have the same law
+    have hTonGen : ∀ (μ : Measure (Fin P → Eucl P)), IsFiniteMeasure μ → μ univ ≠ 0 →
+        (∀ (O : Eucl P ≃ₗᵢ[ℝ] Eucl P) (S' : Set (Fin P → Eucl P)), MeasurableSet S' →
+          μ ((fun a i => O (a i)) ⁻¹' S') = μ S') →
+        (∀ᵐ a ∂μ, LinearIndependent ℝ a) →
+        ∀ (GS : (Fin P → Eucl P) → (Fin P → Eucl P)), Measurable GS →
+        (∀ (O : Eucl P ≃ₗᵢ[ℝ] Eucl P) a, GS (fun i => O (a i)) = fun i => O (GS a i)) →
+        (∀ a, LinearIndependent ℝ a → Orthonormal ℝ (GS a)) →
+        ∀ (S' : Set (Fin P → Eucl P)), MeasurableSet S' →
+        μ (GS ⁻¹' S') =
+          μ ((fun a k => (WithLp.toLp 2 (fun i : Fin P => GS a i k) : Eucl P)) ⁻¹' S') := by
+      intro μ hfin hμ0 hμinv hμind GS hGSm hGSeq hGSon S' hS'
+      set T : (Fin P → Eucl P) → (Fin P → Eucl P) :=
+        fun b k => (WithLp.toLp 2 (fun i : Fin P => b i k) : Eucl P) with hT
+      set st : (Fin P → Eucl P) → (Fin P → Eucl P) → (Fin P → Eucl P) :=
+        fun c b i => ∑ k, b i k • c k with hst
+      have hco : ∀ k : Fin P, Continuous fun x : Eucl P => x k := fun k =>
+        (EuclideanSpace.proj (𝕜 := ℝ) k).continuous
+      have hTc : Continuous T := by
+        refine continuous_pi fun k => (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+        exact (hco k).comp (continuous_apply i)
+      have hstc : Continuous (fun p : (Fin P → Eucl P) × (Fin P → Eucl P) => st p.1 p.2) := by
+        refine continuous_pi fun i => continuous_finsetSum _ fun k _ => ?_
+        exact ((hco k).comp ((continuous_apply i).comp continuous_snd)).smul
+          ((continuous_apply k).comp continuous_fst)
+      have hTT : ∀ b, T (T b) = b := by
+        intro b; funext k; ext i; simp [hT]
+      have hstT : ∀ b c, st c b = T (st (T b) (T c)) := by
+        intro b c; funext i; ext j; simp [hT, hst, mul_comm]
+      have hUst : ∀ c, Orthonormal ℝ c →
+          ∃ U : Eucl P ≃ₗᵢ[ℝ] Eucl P, ∀ b, st c b = fun i => U (b i) := by
+        intro c hc
+        obtain ⟨U, hU⟩ := hUc c hc
+        exact ⟨U, fun b => by funext i; simp [hst, hU]⟩
+      have hTm : Measurable T := hTc.measurable
+      set M : Set ((Fin P → Eucl P) × (Fin P → Eucl P)) :=
+        {p | st (T (GS p.2)) (GS p.1) ∈ S'} with hM
+      have hMm : MeasurableSet M :=
+        hS'.preimage (hstc.measurable.comp ((hTm.comp (hGSm.comp measurable_snd)).prodMk
+          (hGSm.comp measurable_fst)))
+      have h1 : (μ.prod μ) M = μ ((fun a => T (GS a)) ⁻¹' S') * μ univ := by
+        rw [Measure.prod_apply hMm]
+        have hae : ∀ᵐ x ∂μ, μ (Prod.mk x ⁻¹' M) = μ ((fun a => T (GS a)) ⁻¹' S') := by
+          filter_upwards [hμind] with x hx
+          obtain ⟨U, hU⟩ := hUst (T (GS x)) (hTON _ (hGSon x hx))
+          have hset : Prod.mk x ⁻¹' M =
+              (fun a i => U (a i)) ⁻¹' ((fun a => T (GS a)) ⁻¹' S') := by
+            ext y
+            simp only [hM, mem_preimage, mem_ofPred_eq]
+            rw [hstT, hTT, hU, ← hGSeq]
+          rw [hset, hμinv U ((fun a => T (GS a)) ⁻¹' S') ((hTm.comp hGSm) hS')]
+        rw [lintegral_congr_ae hae, lintegral_const, mul_comm]
+      have h2 : (μ.prod μ) M = μ (GS ⁻¹' S') * μ univ := by
+        rw [Measure.prod_apply_symm hMm]
+        have hae : ∀ᵐ y ∂μ, μ ((fun x => (x, y)) ⁻¹' M) = μ (GS ⁻¹' S') := by
+          filter_upwards [hμind] with y hy
+          obtain ⟨U, hU⟩ := hUst (T (GS y)) (hTON _ (hGSon y hy))
+          have hset : (fun x => (x, y)) ⁻¹' M = (fun a i => U (a i)) ⁻¹' (GS ⁻¹' S') := by
+            ext x
+            simp only [hM, mem_preimage, mem_ofPred_eq]
+            rw [hU, ← hGSeq]
+          rw [hset, hμinv U (GS ⁻¹' S') (hGSm hS')]
+        rw [lintegral_congr_ae hae, lintegral_const, mul_comm]
+      exact (ENNReal.mul_left_inj hμ0 (measure_ne_top μ univ)).mp (h2.symm.trans h1)
+    -- Gram-Schmidt is equivariant under linear isometries
+    have hGSeq : ∀ (O : Eucl P ≃ₗᵢ[ℝ] Eucl P) (a : Fin P → Eucl P),
+        InnerProductSpace.gramSchmidtNormed ℝ (fun i => O (a i)) =
+          fun i => O (InnerProductSpace.gramSchmidtNormed ℝ a i) := by
+      intro O a
+      have key : ∀ k, InnerProductSpace.gramSchmidt ℝ (fun i => O (a i)) k =
+          O (InnerProductSpace.gramSchmidt ℝ a k) := by
+        intro k
+        induction k using WellFoundedLT.induction with
+        | _ k ih =>
+          rw [InnerProductSpace.gramSchmidt_def ℝ (fun i => O (a i)) k,
+            InnerProductSpace.gramSchmidt_def ℝ a k]
+          simp only [Submodule.starProjection_singleton]
+          rw [map_sub, map_sum]
+          congr 1
+          refine Finset.sum_congr rfl fun i hi => ?_
+          rw [ih i (Finset.mem_Iio.mp hi)]
+          simp [LinearIsometryEquiv.inner_map_map, map_smul]
+      funext k
+      simp only [InnerProductSpace.gramSchmidtNormed, key, LinearIsometryEquiv.norm_map, map_smul]
+    -- Gram-Schmidt is measurable
+    have hGSm : Measurable (fun a : Fin P → Eucl P => InnerProductSpace.gramSchmidtNormed ℝ a) := by
+      have key : ∀ k, Measurable (fun a : Fin P → Eucl P =>
+          InnerProductSpace.gramSchmidt ℝ a k) := by
+        intro k
+        induction k using WellFoundedLT.induction with
+        | _ k ih =>
+          have h : (fun a : Fin P → Eucl P => InnerProductSpace.gramSchmidt ℝ a k) = fun a =>
+              a k - ∑ i ∈ Finset.Iio k, (inner ℝ (InnerProductSpace.gramSchmidt ℝ a i) (a k) /
+                ‖InnerProductSpace.gramSchmidt ℝ a i‖ ^ 2) • InnerProductSpace.gramSchmidt ℝ a i := by
+            funext a
+            have := InnerProductSpace.gramSchmidt_def'' ℝ a k
+            simp only [RCLike.ofReal_real_eq_id, id] at this
+            exact eq_sub_of_add_eq this.symm
+          rw [h]
+          refine (measurable_pi_apply k).sub (Finset.measurable_sum _ fun i hi => ?_)
+          have hi' := ih i (Finset.mem_Iio.mp hi)
+          have hin : Measurable fun a : Fin P → Eucl P =>
+              inner ℝ (InnerProductSpace.gramSchmidt ℝ a i) (a k) :=
+            continuous_inner.measurable.comp (hi'.prodMk (measurable_pi_apply k))
+          exact (hin.div (hi'.norm.pow_const 2)).smul hi'
+      refine measurable_pi_iff.mpr fun k => ?_
+      simp only [InnerProductSpace.gramSchmidtNormed, RCLike.ofReal_real_eq_id, id]
+      exact ((key k).norm.inv).smul (key k)
+    -- the first `m + 1` Gram-Schmidt vectors recombine the first `m + 1` input vectors
+    have hGSspan : ∀ a : Fin P → Eucl P, ∃ G : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ,
+        ∀ i : Fin (m + 1), InnerProductSpace.gramSchmidtNormed ℝ a (Fin.castLE hnP i) =
+          ∑ l, G i l • a (Fin.castLE hnP l) := by
+      intro a
+      have h : ∀ i : Fin (m + 1), ∃ c : Fin (m + 1) → ℝ, ∑ l, c l • a (Fin.castLE hnP l) =
+          InnerProductSpace.gramSchmidtNormed ℝ a (Fin.castLE hnP i) := by
+        intro i
+        rw [← Submodule.mem_span_range_iff_exists_fun]
+        have hmem := InnerProductSpace.gramSchmidt_mem_span ℝ a (le_refl (Fin.castLE hnP i))
+        have hsub : a '' Set.Iic (Fin.castLE hnP i) ⊆
+            Set.range (fun l : Fin (m + 1) => a (Fin.castLE hnP l)) := by
+          rintro _ ⟨k, hk, rfl⟩
+          have hk' : (k : ℕ) < m + 1 := lt_of_le_of_lt (by simpa [Fin.le_def] using hk) i.isLt
+          exact ⟨⟨k, hk'⟩, by simp⟩
+        unfold InnerProductSpace.gramSchmidtNormed
+        exact Submodule.smul_mem _ _ (Submodule.span_mono hsub hmem)
+      choose G hG using h
+      exact ⟨G, fun i => (hG i).symm⟩
+    -- a coordinate permutation moving the initial segment onto `α`
+    have hperm : ∀ α : SimonMultiIndex (m + 1) P, ∃ O : Eucl P ≃ₗᵢ[ℝ] Eucl P,
+        ∀ (x : Eucl P) (i : Fin (m + 1)), O x (α i) = x (Fin.castLE hnP i) := by
+      intro α
+      let e₀ : {x // x ∈ Set.range (Fin.castLE hnP)} ≃ {y // y ∈ Set.range α} :=
+        (Equiv.ofInjective _ (Fin.castLE_injective hnP)).symm.trans
+          (Equiv.ofInjective α α.injective)
+      let σ : Equiv.Perm (Fin P) := e₀.extendSubtype
+      have hσ : ∀ i, σ (Fin.castLE hnP i) = α i := by
+        intro i
+        simp only [σ]
+        rw [Equiv.extendSubtype_apply_of_mem e₀ _ ⟨i, rfl⟩]
+        simp [e₀]
+      refine ⟨LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℝ σ, fun x i => ?_⟩
+      rw [← hσ i]
+      simp [LinearIsometryEquiv.piLpCongrLeft_apply]
+    -- the random frame: Lebesgue measure restricted to the independent frames in a ball
+    set B : Set (Fin P → Eucl P) := ball 0 2 ∩ {a | LinearIndependent ℝ a} with hB
+    set μ : Measure (Fin P → Eucl P) := (volume : Measure (Fin P → Eucl P)).restrict B with hμ
+    have hBopen : IsOpen B := isOpen_ball.inter (isOpen_setOfPred_linearIndependent (𝕜 := ℝ))
+    have hBm : MeasurableSet B := hBopen.measurableSet
+    have hfin : IsFiniteMeasure μ :=
+      isFiniteMeasure_restrict.mpr ((measure_mono inter_subset_left).trans_lt measure_ball_lt_top).ne
+    have hμ0 : μ univ ≠ 0 := by
+      rw [Measure.restrict_apply_univ]
+      refine (hBopen.measure_pos _ ⟨fun i => EuclideanSpace.single i 1, ?_, ?_⟩).ne'
+      · rw [mem_ball_zero_iff, pi_norm_lt_iff (by norm_num)]
+        intro i
+        simp
+      · exact (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin P)).linearIndependent
+    have hμinv : ∀ (O : Eucl P ≃ₗᵢ[ℝ] Eucl P) (S' : Set (Fin P → Eucl P)), MeasurableSet S' →
+        μ ((fun a i => O (a i)) ⁻¹' S') = μ S' := by
+      intro O S' hS'
+      have hΨ : MeasurePreserving (fun (a : Fin P → Eucl P) i => O (a i)) volume volume :=
+        measurePreserving_pi (fun _ => volume) (fun _ => volume) (fun _ => O.measurePreserving)
+      have hBpre : (fun (a : Fin P → Eucl P) i => O (a i)) ⁻¹' B = B := by
+        ext a
+        simp only [hB, mem_preimage, mem_inter_iff, mem_ball_zero_iff, mem_ofPred_eq,
+          pi_norm_lt_iff (show (0 : ℝ) < 2 by norm_num), LinearIsometryEquiv.norm_map]
+        have : LinearIndependent ℝ (fun i => O (a i)) ↔ LinearIndependent ℝ a :=
+          LinearMap.linearIndependent_iff (v := a) O.toLinearEquiv.toLinearMap
+            (LinearEquiv.ker O.toLinearEquiv)
+        rw [this]
+      have hpre : (fun (a : Fin P → Eucl P) i => O (a i)) ⁻¹' S' ∩ B =
+          (fun (a : Fin P → Eucl P) i => O (a i)) ⁻¹' (S' ∩ B) := by
+        rw [preimage_inter, hBpre]
+      rw [Measure.restrict_apply (hΨ.measurable hS'), Measure.restrict_apply hS', hpre,
+        hΨ.measure_preimage (hS'.inter hBm).nullMeasurableSet]
+    have hμind : ∀ᵐ a ∂μ, LinearIndependent ℝ a := by
+      rw [ae_restrict_iff' hBm]
+      exact Filter.Eventually.of_forall fun a ha => ha.2
+    -- projections of null sets of `(m + 1)`-frames are null
+    have hproj : (volume : Measure (Fin P → Eucl P))
+        {a | (fun i : Fin (m + 1) => a (Fin.castLE hnP i)) ∈ Z} = 0 := by
+      let p : Fin P → Prop := fun k => (k : ℕ) < m + 1
+      have hmp := measurePreserving_piEquivPiSubtypeProd
+        (fun _ : Fin P => (volume : Measure (Eucl P))) p
+      let f : Fin (m + 1) ≃ {k : Fin P // p k} :=
+        { toFun := fun i => ⟨Fin.castLE hnP i, i.isLt⟩
+          invFun := fun k => ⟨k.1, k.2⟩
+          left_inv := fun i => by simp
+          right_inv := fun k => by ext; simp }
+      have hf := measurePreserving_piCongrLeft
+        (fun _ : {k : Fin P // p k} => (volume : Measure (Eucl P))) f
+      set Z' : Set ({k : Fin P // p k} → Eucl P) := {w | (fun i : Fin (m + 1) => w (f i)) ∈ Z}
+        with hZ'
+      have hZ'0 : Measure.pi (fun _ : {k : Fin P // p k} => (volume : Measure (Eucl P))) Z' = 0 := by
+        rw [← hf.measure_preimage_equiv Z']
+        have hpre : (MeasurableEquiv.piCongrLeft (fun _ => Eucl P) f) ⁻¹' Z' = Z := by
+          ext v
+          simp only [hZ', mem_preimage, mem_ofPred_eq]
+          congr! 1
+        rw [hpre]
+        exact hZ0
+      have hset : {a : Fin P → Eucl P | (fun i : Fin (m + 1) => a (Fin.castLE hnP i)) ∈ Z} =
+          (MeasurableEquiv.piEquivPiSubtypeProd (fun _ : Fin P => Eucl P) p) ⁻¹' (Z' ×ˢ univ) := by
+        ext a
+        simp [hZ', f, MeasurableEquiv.piEquivPiSubtypeProd, Equiv.piEquivPiSubtypeProd]
+      rw [hset, volume_pi, hmp.measure_preimage_equiv, Measure.prod_prod, hZ'0, zero_mul]
+    set GS : (Fin P → Eucl P) → (Fin P → Eucl P) :=
+      fun a => InnerProductSpace.gramSchmidtNormed ℝ a with hGS
+    have hGSon : ∀ a, LinearIndependent ℝ a → Orthonormal ℝ (GS a) :=
+      fun a ha => InnerProductSpace.gramSchmidtNormed_orthonormal ha
+    have hGSeq' : ∀ (O : Eucl P ≃ₗᵢ[ℝ] Eucl P) a, GS (fun i => O (a i)) = fun i => O (GS a i) :=
+      hGSeq
+    have hGSm' : Measurable GS := hGSm
+    set T : (Fin P → Eucl P) → (Fin P → Eucl P) :=
+      fun b k => (WithLp.toLp 2 (fun i : Fin P => b i k) : Eucl P) with hT
+    have hco : ∀ k : Fin P, Continuous fun x : Eucl P => x k := fun k =>
+      (EuclideanSpace.proj (𝕜 := ℝ) k).continuous
+    have hTc : Continuous T := by
+      refine continuous_pi fun k => (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+      exact (hco k).comp (continuous_apply i)
+    have hTm : Measurable T := hTc.measurable
+    -- the law of the Gram-Schmidt frame equals the law of its transpose (Tonelli)
+    have hTon := hTonGen μ hfin hμ0 hμinv hμind GS hGSm' hGSeq' hGSon
+    -- every coordinate subframe of the Gram-Schmidt frame avoids `Z` almost surely
+    have hS : ∀ β : Fin (m + 1) → Fin P,
+        MeasurableSet {b : Fin P → Eucl P | (fun i => b (β i)) ∈ Z} :=
+      fun β => hZm.preimage (measurable_pi_iff.mpr fun i => measurable_pi_apply (β i))
+    have hbad : ∀ α : SimonMultiIndex (m + 1) P, μ {a | (fun i => GS a (α i)) ∈ Z} = 0 := by
+      intro α
+      obtain ⟨O, hO⟩ := hperm α
+      have e1 : μ {a | (fun i => GS a (α i)) ∈ Z} = μ {a | (fun i => T (GS a) (α i)) ∈ Z} :=
+        hTon _ (hS α)
+      have hX : MeasurableSet {a | (fun i => T (GS a) (α i)) ∈ Z} := (hTm.comp hGSm') (hS α)
+      have e2 : μ {a | (fun i => T (GS a) (α i)) ∈ Z} =
+          μ {a | (fun i => T (GS a) (Fin.castLE hnP i)) ∈ Z} := by
+        rw [← hμinv O _ hX]
+        congr 1
+        ext a
+        simp only [mem_preimage, mem_ofPred_eq]
+        rw [hGSeq']
+        have : (fun i => T (fun j => O (GS a j)) (α i)) =
+            (fun i => T (GS a) (Fin.castLE hnP i)) := by
+          funext i; ext j; simp [hT, hO]
+        rw [this]
+      have e3 : μ {a | (fun i => T (GS a) (Fin.castLE hnP i)) ∈ Z} =
+          μ {a | (fun i => GS a (Fin.castLE hnP i)) ∈ Z} :=
+        (hTon _ (hS (Fin.castLE hnP))).symm
+      have e4 : μ {a | (fun i => GS a (Fin.castLE hnP i)) ∈ Z} ≤
+          μ {a | (fun i => a (Fin.castLE hnP i)) ∈ Z} := by
+        refine measure_mono fun a ha => ?_
+        obtain ⟨G, hG⟩ := hGSspan a
+        have h' : (fun i => GS a (Fin.castLE hnP i)) =
+            fun i => ∑ l, G i l • a (Fin.castLE hnP l) := funext hG
+        exact hZpre G _ (h' ▸ ha)
+      have e5 : μ {a | (fun i => a (Fin.castLE hnP i)) ∈ Z} = 0 :=
+        le_antisymm ((Measure.restrict_le_self _).trans_eq hproj) zero_le
+      rw [e1, e2, e3]
+      exact le_antisymm (e4.trans e5.le) zero_le
+    have hfinite : Finite (SimonMultiIndex (m + 1) P) :=
+      Finite.of_injective (fun f : Fin (m + 1) ↪o Fin P => (f : Fin (m + 1) → Fin P))
+        (fun f g h => RelEmbedding.ext (congrFun h))
+    have hN : μ ({a | LinearIndependent ℝ a}ᶜ ∪
+        ⋃ α : SimonMultiIndex (m + 1) P, {a | (fun i => GS a (α i)) ∈ Z}) = 0 := by
+      refine measure_union_null ?_ (measure_iUnion_null hbad)
+      rw [Measure.restrict_apply' hBm]
+      refine measure_mono_null (fun a ha => ?_) measure_empty
+      exact ha.1 ha.2.2
+    obtain ⟨a, ha⟩ : ({a | LinearIndependent ℝ a}ᶜ ∪
+        ⋃ α : SimonMultiIndex (m + 1) P, {a | (fun i => GS a (α i)) ∈ Z})ᶜ.Nonempty := by
+      by_contra h
+      rw [Set.not_nonempty_iff_eq_empty, compl_empty_iff] at h
+      rw [h] at hN
+      exact hμ0 hN
+    simp only [mem_compl_iff, mem_union, not_or, mem_iUnion, not_exists, mem_ofPred_eq,
+      not_not] at ha
+    obtain ⟨hind, hgood⟩ := ha
+    obtain ⟨U, hU⟩ := hUc (GS a) (hGSon a hind)
+    refine ⟨U.symm, fun α => ?_⟩
+    simp only [LinearIsometryEquiv.symm_symm, hU]
+    have hsum : (fun i => ∑ k, (EuclideanSpace.single (α i) (1 : ℝ)) k • GS a k) =
+        fun i => GS a (α i) := by
+      funext i
+      simp [PiLp.single_apply]
+    rw [hsum]
+    exact hgood α
+  -- Step 2: compact, purely unrectifiable pieces of finite measure covering `A` up to a null set.
+  obtain ⟨K, hKc, hKfin, hKpu, hnull⟩ : ∃ K : ℕ → Set (Eucl P), (∀ j, IsCompact (K j)) ∧
+      (∀ j, (μHE[m + 1] : Measure (Eucl P)) (K j) < ∞) ∧
+      (∀ j, Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) (K j)) ∧
+      (μHE[m + 1] : Measure (Eucl P)) (A \ ⋃ j, K j) = 0 := by
+    obtain ⟨S, hAS, hSfin⟩ := hS
+    set μ : Measure (Eucl P) := μHE[m + 1] with hμ
+    let A' : ℕ → Set (Eucl P) := fun j => A ∩ S j
+    have hA'fin : ∀ j, μ (A' j) ≠ ∞ := fun j =>
+      ((measure_mono inter_subset_right).trans_lt (hSfin j)).ne
+    let B : ℕ → Set (Eucl P) := fun j => toMeasurable μ (A' j)
+    have hBmeas : ∀ j, MeasurableSet (B j) := fun j => measurableSet_toMeasurable _ _
+    have hAB : ∀ j, A' j ⊆ B j := fun j => subset_toMeasurable _ _
+    have hBfin : ∀ j, μ (B j) < ∞ := fun j => by
+      simp only [B, measure_toMeasurable]; exact (hA'fin j).lt_top
+    have hBinter : ∀ j F, MeasurableSet F → μ (toMeasurable μ (A' j) ∩ F) = μ (A' j ∩ F) :=
+      fun j F hF => Measure.measure_toMeasurable_inter hF (hA'fin j)
+    have hBpu : ∀ j, Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) (B j) := by
+      intro j
+      obtain ⟨R, Pp, hRP, -, hRmeas, -, hRrect, hPpu⟩ :=
+        Poincare.SimonGMT.Chapter03.measurable_rectifiable_purelyUnrectifiable_decomposition
+          (n := m + 1) (hBmeas j).nullMeasurableSet (fun _ => B j)
+          (subset_iUnion_of_subset 0 subset_rfl) (fun _ => hBfin j)
+      have hRsub : R ⊆ B j := by rw [hRP]; exact subset_union_left
+      have hR0 : μ R = 0 := by
+        have h1 := hBinter j R hRmeas
+        rw [inter_eq_right.mpr hRsub] at h1
+        rw [h1]
+        exact hA _ (inter_subset_left.trans inter_subset_left) (hRrect.mono inter_subset_right)
+      intro T hT hTrect
+      have hcov : T ⊆ (T ∩ R) ∪ (T ∩ Pp) := by
+        intro x hx
+        have hxB := hT hx
+        rw [hRP] at hxB
+        rcases hxB with h | h
+        · exact Or.inl ⟨hx, h⟩
+        · exact Or.inr ⟨hx, h⟩
+      refine measure_mono_null hcov (measure_union_null (measure_mono_null inter_subset_right hR0) ?_)
+      exact hPpu _ inter_subset_right (hTrect.mono inter_subset_left)
+    have hcomp : ∀ j, ∃ C : ℕ → Set (Eucl P), (∀ i, IsCompact (C i)) ∧ (∀ i, C i ⊆ B j) ∧
+        μ (B j \ ⋃ i, C i) = 0 := by
+      intro j
+      have : IsFiniteMeasure (μ.restrict (B j)) := isFiniteMeasure_restrict.mpr (hBfin j).ne
+      have happrox : ∀ i : ℕ, ∃ C ⊆ B j, IsCompact C ∧
+          μ.restrict (B j) (B j \ C) < ((i : ℝ≥0∞) + 1)⁻¹ := fun i =>
+        (hBmeas j).exists_isCompact_sdiff_lt (measure_ne_top _ _) (by simp)
+      choose C hCsub hCc hCsmall using happrox
+      refine ⟨C, hCc, hCsub, ?_⟩
+      have hle : ∀ i : ℕ, μ.restrict (B j) (B j \ ⋃ k, C k) ≤ ((i : ℝ≥0∞) + 1)⁻¹ := fun i =>
+        ((measure_mono (sdiff_subset_sdiff_right (subset_iUnion C i))).trans (hCsmall i).le)
+      have h0 : μ.restrict (B j) (B j \ ⋃ k, C k) = 0 := by
+        refine le_antisymm (ENNReal.le_of_forall_pos_le_add ?_) zero_le
+        intro ε hε _
+        obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt (a := (ε : ℝ≥0∞)) (by simpa using hε.ne')
+        calc μ.restrict (B j) (B j \ ⋃ k, C k) ≤ ((i : ℝ≥0∞) + 1)⁻¹ := hle i
+          _ ≤ (i : ℝ≥0∞)⁻¹ := by gcongr; exact le_self_add
+          _ ≤ ε := hi.le
+          _ ≤ 0 + ε := by simp
+      rwa [Measure.restrict_apply' (hBmeas j), inter_eq_left.mpr sdiff_subset] at h0
+    choose C hCc hCsub hCnull using hcomp
+    refine ⟨fun k => C (Nat.unpair k).1 (Nat.unpair k).2, fun k => hCc _ _, fun k => ?_,
+      fun k => ?_, ?_⟩
+    · exact (measure_mono (hCsub _ _)).trans_lt (hBfin _)
+    · exact (hBpu _).mono (hCsub _ _)
+    · have hsub : A \ ⋃ k, C (Nat.unpair k).1 (Nat.unpair k).2 ⊆ ⋃ j, (B j \ ⋃ i, C j i) := by
+        intro x hx
+        obtain ⟨j, hj⟩ := mem_iUnion.mp (hAS hx.1)
+        refine mem_iUnion.mpr ⟨j, hAB j ⟨hx.1, hj⟩, ?_⟩
+        intro hxC
+        obtain ⟨i, hi⟩ := mem_iUnion.mp hxC
+        exact hx.2 (mem_iUnion.mpr ⟨Nat.pair j i, by simpa [Nat.unpair_pair] using hi⟩)
+      exact measure_mono_null hsub (measure_iUnion_null hCnull)
+  -- the row maps `L v x = (⟪v i, x⟫)ᵢ`
+  let L : (Fin (m + 1) → Eucl P) → Eucl P → Eucl (m + 1) :=
+    fun v x => (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1))
+  -- Step 3(b): `v ↦ Lⁿ(L v '' K)` is measurable for compact `K` (closed graph and Tonelli).
+  have hLmeas : ∀ K' : Set (Eucl P), IsCompact K' →
+      Measurable (fun v => (volume : Measure (Eucl (m + 1))) (L v '' K')) := by
+    intro K' hK'
+    let Λ : (Fin (m + 1) → Eucl P) × Eucl P → Eucl (m + 1) := fun p => L p.1 p.2
+    have hΛ : Continuous Λ := by
+      apply (PiLp.continuous_toLp 2 _).comp
+      apply continuous_pi
+      intro i
+      exact ((continuous_apply i).comp continuous_fst).inner continuous_snd
+    let Γ : Set ((Fin (m + 1) → Eucl P) × Eucl (m + 1)) := {q | ∃ x ∈ K', Λ (q.1, x) = q.2}
+    have hΓ : IsClosed Γ := by
+      have : CompactSpace K' := isCompact_iff_compactSpace.mp hK'
+      let C' : Set (((Fin (m + 1) → Eucl P) × Eucl (m + 1)) × K') :=
+        {r | Λ (r.1.1, (r.2 : Eucl P)) = r.1.2}
+      have hC' : IsClosed C' := isClosed_eq
+        (hΛ.comp ((continuous_fst.comp continuous_fst).prodMk
+          (continuous_subtype_val.comp continuous_snd)))
+        (continuous_snd.comp continuous_fst)
+      have himg : Prod.fst '' C' = Γ := by
+        ext q
+        constructor
+        · rintro ⟨r, hr, rfl⟩
+          exact ⟨r.2, r.2.2, hr⟩
+        · rintro ⟨x, hx, hq⟩
+          exact ⟨(q, ⟨x, hx⟩), hq, rfl⟩
+      rw [← himg]
+      exact isClosedMap_fst_of_compactSpace C' hC'
+    have hmeas := measurable_measure_prodMk_left (ν := (volume : Measure (Eucl (m + 1))))
+      hΓ.measurableSet
+    have hsec : ∀ v : Fin (m + 1) → Eucl P, Prod.mk v ⁻¹' Γ = L v '' K' := by
+      intro v
+      ext y
+      simp only [mem_image, mem_preimage, mem_ofPred_eq, Γ, Λ]
+    simp_rw [← hsec]
+    exact hmeas
+  -- Step 3(c): recombining the rows by a matrix `G` scales `Lⁿ(L v '' S)` by `|det G|`.
+  have hLrec : ∀ (G : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) (v : Fin (m + 1) → Eucl P)
+      (S' : Set (Eucl P)), (volume : Measure (Eucl (m + 1))) (L (fun i => ∑ l, G i l • v l) '' S') =
+        ENNReal.ofReal |G.det| * (volume : Measure (Eucl (m + 1))) (L v '' S') := by
+    intro G v S'
+    let g : Eucl (m + 1) →ₗ[ℝ] Eucl (m + 1) := Matrix.toEuclideanLin G
+    have hcomp : L (fun i => ∑ l, G i l • v l) = g ∘ L v := by
+      funext x
+      ext i
+      simp [L, g, Matrix.toEuclideanLin, Matrix.mulVec, dotProduct, sum_inner, inner_smul_left]
+    have hdet : LinearMap.det g = G.det := by
+      simp only [g, Matrix.toEuclideanLin]
+      simp
+    rw [hcomp, Set.image_comp, Measure.addHaar_image_linearMap, hdet]
+  -- the bad set `Z`
+  let Z : Set (Fin (m + 1) → Eucl P) :=
+    ⋃ j, {v | 0 < (volume : Measure (Eucl (m + 1))) (L v '' K j)}
+  have hZm : MeasurableSet Z :=
+    MeasurableSet.iUnion fun j => measurableSet_lt measurable_const (hLmeas (K j) (hKc j))
+  -- Step 3(a): `Z` is Lebesgue-null.
+  have hZ0 : (volume : Measure (Fin (m + 1) → Eucl P)) Z = 0 := by
+    refine measure_iUnion_null fun j => ?_
+    have h := bf P m (K j) (hKc j).isClosed.measurableSet (hKfin j) (hKpu j)
+    rw [ae_iff] at h
+    refine measure_mono_null (fun v hv => ?_) h
+    simp only [mem_ofPred_eq] at hv ⊢
+    exact hv.ne'
+  have hZpre : ∀ (G : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ) (w : Fin (m + 1) → Eucl P),
+      (fun i => ∑ l, G i l • w l) ∈ Z → w ∈ Z := by
+    intro G w hw
+    simp only [Z, mem_iUnion, mem_ofPred_eq] at hw ⊢
+    obtain ⟨j, hj⟩ := hw
+    refine ⟨j, pos_iff_ne_zero.mpr fun h0 => ?_⟩
+    rw [hLrec G w (K j), h0, mul_zero] at hj
+    exact lt_irrefl _ hj
+  obtain ⟨Q, hQ⟩ := hFA Z hZm hZ0 hZpre
+  -- Steps 4 and 3(d): conclusion
+  refine ⟨Q, fun α => ?_⟩
+  set v : Fin (m + 1) → Eucl P := fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ)) with hvdef
+  have hv : ∀ j, (volume : Measure (Eucl (m + 1))) (L v '' K j) = 0 := by
+    intro j
+    by_contra hne
+    exact hQ α (mem_iUnion.mpr ⟨j, pos_iff_ne_zero.mpr hne⟩)
+  have hrows : (fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1)))
+      = L v := by
+    funext x
+    simp only [L, v]
+    congr 1
+    funext i
+    rw [← LinearIsometryEquiv.inner_map_map Q, LinearIsometryEquiv.apply_symm_apply,
+      EuclideanSpace.inner_single_left]
+    simp
+  rw [hrows]
+  have hsub : L v '' A ⊆ (⋃ j, L v '' K j) ∪ L v '' (A \ ⋃ j, K j) := by
+    rintro y ⟨x, hxA, rfl⟩
+    by_cases hx : x ∈ ⋃ j, K j
+    · obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+      exact Or.inl (mem_iUnion.mpr ⟨j, mem_image_of_mem _ hj⟩)
+    · exact Or.inr (mem_image_of_mem _ ⟨hxA, hx⟩)
+  refine measure_mono_null hsub (measure_union_null (measure_iUnion_null hv) ?_)
+  let ℓ : Eucl P →ₗ[ℝ] Eucl (m + 1) :=
+    { toFun := L v
+      map_add' := by
+        intro x y
+        simp only [L]
+        ext i
+        simp [inner_add_right]
+      map_smul' := by
+        intro c x
+        simp only [L]
+        ext i
+        simp [inner_smul_right] }
+  let f : Eucl P →L[ℝ] Eucl (m + 1) := LinearMap.toContinuousLinearMap ℓ
+  have hf : (f : Eucl P → Eucl (m + 1)) = L v := rfl
+  have hvol : (volume : Measure (Eucl (m + 1))) = (μHE[m + 1] : Measure (Eucl (m + 1))) := by
+    have h := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := Eucl (m + 1))
+    simpa [finrank_euclideanSpace] using h.symm
+  rw [hvol, ← hf]
+  have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+    (A := A \ ⋃ j, K j) (m + 1) (f.lipschitzWith.lipschitzOnWith)
+  rw [hnull, mul_zero] at hle
+  exact le_antisymm hle zero_le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
