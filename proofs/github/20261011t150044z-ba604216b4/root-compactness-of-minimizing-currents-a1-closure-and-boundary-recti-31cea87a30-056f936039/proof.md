@@ -1,0 +1,79 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.open_segment_tangent-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 5; Simon Ch. 3, 1.4 (chapter-03.txt lines 77–85). That definition says the n-dimensional subspace P is the approximate tangent space of M at x if ∫_{η_{x,λ}(M)} f dHⁿ → ∫_P f dHⁿ as λ ↓ 0 for every f ∈ C⁰_c, where η_{x,λ}(y) = λ⁻¹(y − x); in Lean this map is blowUpMap x λ.
+Notation: φ(u) := a + uτ, I := φ((0, ℓ)), Q := span{τ}, η_r := blowUpMap x r, H¹ := μHE[1].
+1. Let x ∈ I and write x = φ(s₀) with 0 < s₀ < ℓ. Since |τ| = 1, τ ≠ 0, so finrank Q = 1 (finrank_span_singleton). This is the dimension condition.
+2. Fix f ∈ C_c(ℝ^P, ℝ). Its topological support is compact (f.hasCompactSupport), hence bounded, so tsupport f ⊆ B̄_{R₀}(0) for some R₀. Put ρ := max(R₀, 1) > 0. If f(y) ≠ 0 then y ∈ tsupport f (subset_tsupport), so |y| ≤ R₀ ≤ ρ.
+3. Put δ := min(s₀, ℓ − s₀). Then δ > 0, δ ≤ s₀ and δ ≤ ℓ − s₀. Fix r with 0 < r < δ/ρ; then rρ < δ.
+4. η_r(I) ⊆ Q. For u ∈ (0, ℓ), η_r(φ(u)) = r⁻¹((a + uτ) − (a + s₀τ)) = (r⁻¹(u − s₀))τ. This is a scalar multiple of τ, hence lies in Q (Submodule.mem_span_singleton).
+5. f vanishes on Q ∖ η_r(I). Let y ∈ Q with f(y) ≠ 0. By Submodule.mem_span_singleton, y = cτ for some c ∈ ℝ, and |c| = |cτ| = |y| ≤ ρ by step 2. Put u := s₀ + rc. Then |rc| = r|c| ≤ rρ < δ, so u ≥ s₀ − |rc| > s₀ − δ ≥ 0 and u ≤ s₀ + |rc| < s₀ + δ ≤ ℓ. Hence u ∈ (0, ℓ), and by step 4, η_r(φ(u)) = (r⁻¹(rc))τ = cτ = y, so y ∈ η_r(I). Contrapositively, f(y) = 0 for every y ∈ Q ∖ η_r(I).
+6. Q is a finite-dimensional subspace, hence closed (Submodule.closed_of_finiteDimensional), hence Borel and in particular null-measurable. Apply setIntegral_eq_of_subset_of_ae_sdiff_eq_zero with t := Q and s := η_r(I): s ⊆ t by step 4, and f = 0 everywhere (so a.e.) on t ∖ s by step 5. The lemma does not need s to be measurable. It gives ∫_Q f dH¹ = ∫_{η_r(I)} f dH¹ for every r ∈ (0, δ/ρ).
+7. Since δ/ρ > 0, the interval (0, δ/ρ) belongs to 𝓝[>] 0 (Ioo_mem_nhdsGT). By step 6, r ↦ ∫_{η_r(I)} f dH¹ is eventually equal along 𝓝[>] 0 to the constant ∫_Q f dH¹, so it tends to ∫_Q f dH¹ (tendsto_const_nhds.congr'). As f ∈ C_c(ℝ^P, ℝ) was arbitrary, this together with step 1 is HasApproximateTangentSpaceAt 1 I x Q. ∎
+
+## Key steps
+
+1. Write x = a + s₀τ with 0 < s₀ < ℓ; finrank span{τ} = 1 because τ ≠ 0.
+2. For f ∈ C_c, f(y) ≠ 0 implies |y| ≤ ρ for some ρ > 0; put δ := min(s₀, ℓ − s₀) > 0.
+3. For 0 < r < δ/ρ: blowUpMap x r '' I ⊆ span{τ}, and every y = cτ with f(y) ≠ 0 equals blowUpMap x r (a + (s₀ + rc)τ) with s₀ + rc ∈ (0, ℓ).
+4. So for all small r the integral over the blow-up equals the integral over the closed line span{τ} (setIntegral_eq_of_subset_of_ae_sdiff_eq_zero).
+5. Eventually constant in 𝓝[>] 0, hence convergent: HasApproximateTangentSpaceAt 1 I x span{τ}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical) and Submission.lean (identical copy); rg -n 'segment|elim0' project/GMT/Ch07/Contract.lean (no match)`
+- `python3 -I scans of dag.json: frozen lean_statement/status of the selected node, its parent cbr_closure_compact_support and its dependencies dtc_imrep_current (accepted), rsd_cmr_support_subset_of_vanish (accepted), cbr_cc_current_algebra (decomposing); pattern scan over all 1305 nodes for 'segment', 'elim0', 'HasApproximateTangentSpaceAt', 'μHE\[1\]', 'IsUnitOrientationOf', 'ContinuousAlternatingMap.apply', 'Measure.map', 'Ioo 0', 'exteriorDerivative', 'blowUpMap' and inspection of hasApproximateTangentSpaceAt_iff_of_null_sdiff, regcomp_approx_tangent_locality, dtc_approxTangent_dilation, dtc_hausdorff_dilation, dpfir_bilipschitz_image_imrep_exists, codim1_rdo_c1_piece_approxTangent, regcomp_cop_zdr_unitOrientation_zero; collision check of cbr_cc_seg_line_hausdorff, cbr_cc_seg_open_segment_tangent, cbr_cc_seg_zero_form_ftc, cbr_cc_seg_segment_imrep (none present)`
+- `grep/rg in snapshot mathlib/Mathlib: notation μHE, Isometry.euclideanHausdorffMeasure_image, Isometry.map_euclideanHausdorffMeasure, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, extDeriv_apply, extDeriv_constOfIsEmpty, ContinuousAlternatingMap.apply/apply_apply, segment_same, segment_eq_image, segment_eq_image', isCompact_segment (no match: use segment_eq_image + isCompact_Icc.image), setIntegral_eq_of_subset_of_ae_sdiff_eq_zero, ContDiff.differentiable, ContDiff.continuous_fderiv, integral_eq_sub_of_hasDerivAt, integral_Ioc_eq_integral_Ioo, integral_of_le, PiLp.norm_apply_le, finrank_span_singleton, Submodule.closed_of_finiteDimensional, MeasurableEmbedding.restrict_map, MeasurableEmbedding.integral_map, ae_restrict_of_forall_mem, orthonormal_iff_ite`
+- `grep -n in lake-packages-25730c7c/simongmt/Poincare/SimonGMT: Chapter03/Rectifiable.lean (CountablyRectifiable, countablyRectifiable_range, CountablyRectifiable.mono, blowUpMap, HasApproximateTangentSpaceAt), Chapter06/Forms.lean (DifferentialForm, IsSmoothForm, IsTestForm, exteriorDerivative, exteriorDerivative_apply), Chapter06/Currents.lean (TestFormOn, GeometricCurrentOn, boundary_apply, zero_apply), Chapter06/Mass.lean (massOn, mass := massOn U), CurrentLocalEquality.lean (support)`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on the 4 child statements (all OK); python3 -I gmt-compare.py contract_scope replay (open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end)`
+- `lake env lean /tmp/seg-decomp-q9/{Types,Replay,ChildA,ChildB,ChildC,ChildD,Assembly,All}.lean with #print axioms (all: propext, Classical.choice, Quot.sound)`
+- `sed -n on book/chapter-06.txt 190,232p (6.2.1–2.5) and 728,760p (6.3.1); book/chapter-03.txt 60,106p (3.1.4 approximate tangent space)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9cb35f6b9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9cb35f6b9/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b218e818f5/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Segment.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/seg-decomp-q9/Types.lean`
+- `/tmp/seg-decomp-q9/Replay.lean`
+- `/tmp/seg-decomp-q9/ChildA.lean`
+- `/tmp/seg-decomp-q9/ChildB.lean`
+- `/tmp/seg-decomp-q9/ChildC.lean`
+- `/tmp/seg-decomp-q9/ChildD.lean`
+- `/tmp/seg-decomp-q9/Assembly.lean`
+- `/tmp/seg-decomp-q9/All.lean`
+
+The pinned snapshot (project b4d606d, mathlib 25730c7c) has the frozen contract byte-identical to the workspace and supplies every lemma cited in the child proofs. The snapshot has no isCompact_segment; compactness of the segment comes from segment_eq_image and isCompact_Icc.image. SimonGMT supplies CountablyRectifiable, countablyRectifiable_range and its .mono, blowUpMap, HasApproximateTangentSpaceAt and exteriorDerivative_apply. No accepted DAG declaration matches any of the four new obligations, so new names with prefix cbr_cc_seg_ are used; none collides with an existing DAG name. All four statements pass the verifier's lexical check and elaborate in the replayed comparator scope. In /tmp/seg-decomp-q9/All.lean, children A, B and C are proved outright and D from A and B. The frozen selected type is proved from the four children plus the frozen types of dtc_imrep_current, rsd_cmr_support_subset_of_vanish and cbr_cc_current_algebra. Every check reports only the axioms propext, Classical.choice and Quot.sound.
