@@ -660,6 +660,243 @@ theorem dohr_eb_lhr_coeff_uniform_bounds : ∀ (n ℓ : ℕ) (α : ℝ) (U K : S
       _ = c * (∑ r, ∑ t, S r t) * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
         simp only [← Finset.sum_mul]
         ring
+/-- Continuity of a linear-form family evaluated along continuous data (in the difference-quotient
+weak equation of the linear higher-regularity step of the elliptic bootstrap for Simon 7.1): if
+`x ↦ Φ(x)[P]` is continuous on the open set `U` for every `P ∈ L = L(ℝⁿ, ℝ^ℓ)`, `s(x₀) ∈ U` and `s`,
+`B` are continuous at `x₀`, then `x ↦ Φ(s(x))[B(x)]` is continuous at `x₀`.  Expanding `B(x)` in a
+basis `(E_r)` of the finite-dimensional space `L` writes `Φ(s(x))[B(x)]` as the finite sum
+`Σ_r c_r(B(x)) Φ(s(x))[E_r]` of products of functions continuous at `x₀`. -/
+theorem dohr_eb_lhr_dqwe_linear_family_continuousAt : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => Φ x P) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => Φ (s x) (B x)) x₀ := by
+  intro n ℓ U Φ s B x₀ hU hΦ hs₀ hs hB
+  -- Step 1: a basis `E_r = b r` of `L`; its coordinates `c_r = b.coord r` are continuous on `L`.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  -- Step 2: `Φ(s x)[B x] = Σ_r c_r(B x) Φ(s x)[E_r]`, by linearity of `Φ(s x)`.
+  have hexp : (fun x => Φ (s x) (B x)) = fun x => ∑ r, b.repr (B x) r * Φ (s x) (b r) := by
+    funext x
+    conv_lhs => rw [← b.sum_repr (B x)]
+    simp only [map_sum, map_smul, smul_eq_mul]
+  -- Step 3: `x ↦ c_r(B x)` is continuous at `x₀`.
+  have hc : ∀ r, ContinuousAt (fun x => b.repr (B x) r) x₀ := fun r =>
+    (b.coord r).continuous_of_finiteDimensional.continuousAt.comp hB
+  -- Step 4: `x ↦ Φ(s x)[E_r]` is continuous at `x₀`, since `U` is a neighbourhood of `s x₀`.
+  have hΦr : ∀ r, ContinuousAt (fun x => Φ (s x) (b r)) x₀ := fun r =>
+    ((hΦ (b r)).continuousAt (hU.mem_nhds hs₀)).comp hs
+  -- Step 5: a finite sum of products of functions continuous at `x₀` is continuous at `x₀`.
+  rw [hexp]
+  exact tendsto_finsetSum _ fun r _ => (hc r).mul (hΦr r)
+/-- **Continuity of a bilinear-form family evaluated along continuous data.**  Let
+`L = L(ℝⁿ, ℝ^ℓ)`, let `U ⊆ ℝⁿ` be open and let `a : ℝⁿ → L(L, L(L, ℝ))` be such that
+`x ↦ a(x)[P][Q]` is continuous on `U` for all `P, Q ∈ L`.  If `s(x₀) ∈ U` and `s`, `A`, `B` are
+continuous at `x₀`, then `x ↦ a(s(x))[A(x)][B(x)]` is continuous at `x₀`.
+In a basis `(E_r)` of `L` with (continuous) coordinate functionals `c_r`,
+`a(s(x))[A(x)][B(x)] = Σ_r c_r(A(x)) · a(s(x))[E_r][B(x)]`, and each `x ↦ a(s(x))[E_r][B(x)]` is
+continuous at `x₀` by `dohr_eb_lhr_dqwe_linear_family_continuousAt` applied to `y ↦ a(y)[E_r]`. -/
+theorem dohr_eb_lhr_dqwe_bilinear_family_continuousAt : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (A B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => a x P Q) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt A x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => a (s x) (A x) (B x)) x₀ := by
+  intro n ℓ U a s A B x₀ hU ha hsU hs hA hB
+  -- Step 1: a basis `E_r = b r` of the finite-dimensional space `L`; its coordinate functionals
+  -- `c_r = b.coord r` are continuous.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  have hc : ∀ r, Continuous fun P : Rn n →L[ℝ] Rn ℓ => b.repr P r := fun r =>
+    (b.coord r).continuous_of_finiteDimensional
+  -- Step 2: expanding the first slot, `a(s x)[A x][B x] = Σ_r c_r(A x) · a(s x)[E_r][B x]`.
+  have hexp : ∀ x, a (s x) (A x) (B x) = ∑ r, b.repr (A x) r * a (s x) (b r) (B x) := by
+    intro x
+    conv_lhs => rw [← b.sum_repr (A x)]
+    simp only [map_sum, map_smul, _root_.sum_apply, _root_.smul_apply, smul_eq_mul]
+  simp only [hexp]
+  -- Steps 3–5: each summand is `c_r ∘ A` times `x ↦ a(s x)[E_r][B x]`, both continuous at `x₀`
+  -- (the latter by the linear-family lemma for `y ↦ a(y)[E_r]`), and finite sums preserve this.
+  refine tendsto_finsetSum _ fun r _ => ((hc r).continuousAt.comp hA).mul ?_
+  exact Submission.dohr_eb_lhr_dqwe_linear_family_continuousAt n ℓ U (fun y => a y (b r)) s B x₀
+    hU (fun P => ha (b r) P) hsU hs hB
+/-- Translated weak identity (difference-quotient step of the linear higher-regularity argument in
+the elliptic bootstrap of Simon Ch. 5, Theorem 7.1).  Suppose
+`∫_U a(x)[Dv(x)][Dζ(x)] dx = ∫_U Φ(x)[Dζ(x)] dx` for every `C¹` map `ζ : ℝⁿ → ℝ^ℓ` with compact
+support in `U`, and let `η` be `C¹` with compact support and `x + h ∈ U` for `x ∈ spt η`.  Then
+`∫ a(x + h)[Dv(x + h)][Dη(x)] dx = ∫ Φ(x + h)[Dη(x)] dx` over all of `ℝⁿ`.  Proof: test with
+`ζ = η(· − h)`, which is `C¹` with compact support in `U` and `Dζ = Dη(· − h)`; both integrands
+vanish off `U`, so the integrals over `U` are integrals over `ℝⁿ`; finally substitute `y = x + h`
+(translation invariance of Lebesgue measure). -/
+theorem dohr_eb_lhr_dqwe_shifted_weak_identity : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (h : Rn n) (η : Rn n → Rn ℓ), (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → ContDiff ℝ 1 η → HasCompactSupport η → (∀ x ∈ tsupport η, x + h ∈ U) → ∫ x, a (x + h) (fderiv ℝ v (x + h)) (fderiv ℝ η x) = ∫ x, Φ (x + h) (fderiv ℝ η x) := by
+  intro n ℓ U a Φ v h η hweak hη hηc hηU
+  -- Step 1: the translated test function `ζ = η(· − h)` is `C¹` with compact support.
+  have hζC : ContDiff ℝ 1 (fun y => η (y - h)) := hη.comp (contDiff_id.sub contDiff_const)
+  have hζc : HasCompactSupport (fun y => η (y - h)) := hηc.comp_homeomorph (Homeomorph.subRight h)
+  -- Step 2: `y ∈ spt ζ ⇒ y − h ∈ spt η ⇒ y = (y − h) + h ∈ U`.
+  have hζU : tsupport (fun y => η (y - h)) ⊆ U := fun y hy => by
+    simpa only [sub_add_cancel] using
+      hηU (y - h) (tsupport_comp_subset_preimage η (continuous_id.sub continuous_const) hy)
+  -- Step 3: the weak identity for `ζ`, with `Dζ(y) = Dη(y − h)`.
+  have h3 := hweak (fun y => η (y - h)) hζC hζc hζU
+  simp only [fderiv_comp_sub] at h3
+  -- Step 4: off `U`, `y − h ∉ spt η ⊇ spt Dη`, so `Dη(y − h) = 0` and both integrands vanish.
+  have hvan : ∀ y, y ∉ U → fderiv ℝ η (y - h) = 0 := fun y hy =>
+    image_eq_zero_of_notMem_tsupport fun hmem => hy (by
+      simpa only [sub_add_cancel] using hηU (y - h) (tsupport_fderiv_subset ℝ hmem))
+  have hL : ∫ y in U, a y (fderiv ℝ v y) (fderiv ℝ η (y - h)) =
+      ∫ y, a y (fderiv ℝ v y) (fderiv ℝ η (y - h)) :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by rw [hvan y hy, map_zero]
+  have hR : ∫ y in U, Φ y (fderiv ℝ η (y - h)) = ∫ y, Φ y (fderiv ℝ η (y - h)) :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by rw [hvan y hy, map_zero]
+  -- Step 5: substitute `y = x + h` (Lebesgue measure is translation invariant), `x + h − h = x`.
+  have e1 := integral_add_right_eq_self (μ := volume)
+    (fun y => a y (fderiv ℝ v y) (fderiv ℝ η (y - h))) h
+  have e2 := integral_add_right_eq_self (μ := volume) (fun y => Φ y (fderiv ℝ η (y - h))) h
+  simp only [add_sub_cancel_right] at e1 e2
+  rw [e1, e2, ← hL, ← hR]
+  exact h3
+/-- A function `F : ℝⁿ → ℝ` continuous at every point of a compact set `K` and vanishing off `K` is
+Lebesgue integrable.  `K` is closed, so each `x ∉ K` has the open neighbourhood `ℝⁿ \ K` on which
+`F = 0`, and `F` is continuous at `x`; at the points of `K` it is continuous by hypothesis.  Thus `F`
+is continuous, and it has compact support since it vanishes off the compact set `K`, so it is
+integrable for `volume`, which is finite on compact sets. -/
+theorem dohr_eb_lhr_dqwe_integrable_of_continuousAt : ∀ (n : ℕ) (F : Rn n → ℝ) (K : Set (Rn n)), IsCompact K → (∀ x ∈ K, ContinuousAt F x) → (∀ x, x ∉ K → F x = 0) → Integrable F := by
+  intro n F K hK hcont hzero
+  -- Steps 1–3: `F` is continuous at every point; off `K` it agrees with `0` on the open
+  -- neighbourhood `Kᶜ` of the point.
+  have hF : Continuous F := by
+    refine continuous_iff_continuousAt.2 fun x => ?_
+    by_cases hx : x ∈ K
+    · exact hcont x hx
+    · have hev : (fun _ => (0 : ℝ)) =ᶠ[𝓝 x] F := by
+        filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hx] with y hy
+        exact (hzero y hy).symm
+      exact continuousAt_const.congr hev
+  -- Steps 4–5: `F` vanishes off the compact set `K`, so it has compact support and is integrable.
+  exact hF.integrable_of_hasCompactSupport (HasCompactSupport.intro hK hzero)
+/-- Derivative of a difference quotient (difference-quotient step of the linear higher-regularity
+argument in the elliptic bootstrap of Simon Ch. 5, Theorem 7.1): if `v : ℝⁿ → ℝ^ℓ` is
+differentiable at `x` and at `x + d e`, then the derivative at `x` of
+`z ↦ d⁻¹ (v(z + d e) − v(z))` is `d⁻¹ (Dv(x + d e) − Dv(x))`.  For `d = 0` both sides vanish,
+as `0⁻¹ = 0`.  By the chain rule `g(z) = v(z + d e)` is differentiable at `x` with
+`Dg(x) = Dv(x + d e)`; the derivative of `d⁻¹ (g − v)` is then `d⁻¹ (Dg(x) − Dv(x))`. -/
+theorem dohr_eb_lhr_dqwe_fderiv_diff_quot : ∀ (n ℓ : ℕ) (v : Rn n → Rn ℓ) (e x : Rn n) (d : ℝ), DifferentiableAt ℝ v x → DifferentiableAt ℝ v (x + d • e) → fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x = d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x) := by
+  intro n ℓ v e x d hx hxd
+  have hg : DifferentiableAt ℝ (fun z => v (z + d • e)) x :=
+    hxd.comp x (differentiableAt_id.add_const (d • e))
+  rw [fderiv_fun_const_smul (hg.fun_sub hx) d⁻¹, fderiv_fun_sub hg hx,
+    fderiv_comp_add_right (d • e)]
+/-- Difference quotients of a weak solution (step 3 of the linear higher-regularity argument behind
+**Simon Ch. 5, Theorem 7.1(ii)**).  If `v ∈ C¹(U)` satisfies `∫_U a(x)[Dv][Dζ] = ∫_U Φ(x)[Dζ]` for
+all `ζ ∈ C¹_c(U; ℝ^ℓ)`, then `w = d⁻¹ (v(· + de) − v)` satisfies `∫_B a(x)[Dw][Dζ] = ∫_B Ψ(x)[Dζ]`
+on `B = B̆_{2R}(xb)` for all `ζ ∈ C¹_c(B; ℝ^ℓ)`, where
+`Ψ(x) = d⁻¹ (Φ(x + de) − Φ(x)) − d⁻¹ (a(x + de) − a(x))[Dv(x + de)]`: test the equation with `ζ`
+and with `ζ(· − de)`, subtract, and divide by `d`. -/
+theorem dohr_eb_lhr_dq_weak_equation : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (xb e : Rn n) (R d : ℝ), IsOpen U → 0 < R → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → d ≠ 0 → |d| < R → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => a x P Q) U) → (∀ P : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => Φ x P) U) → ContDiffOn ℝ 1 v U → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → ∃ Ψ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P : Rn n →L[ℝ] Rn ℓ), Ψ x P = d⁻¹ * (Φ (x + d • e) P - Φ x P) - d⁻¹ * (a (x + d • e) (fderiv ℝ v (x + d • e)) P - a x (fderiv ℝ v (x + d • e)) P)) ∧ ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball xb (2 * R) → ∫ x in ball xb (2 * R), a x (fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x) (fderiv ℝ ζ x) = ∫ x in ball xb (2 * R), Ψ x (fderiv ℝ ζ x) := by
+  intro n ℓ U a Φ v xb e R d hU hR hball he hd hdR ha hΦ hv hweak
+  -- Step 1: `Ψ(x) := d⁻¹ (Φ(x + de) − Φ(x)) − d⁻¹ (a(x + de)[Q_x] − a(x)[Q_x])`,
+  -- `Q_x := Dv(x + de)`.
+  obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ∀ (x : Rn n) (P : Rn n →L[ℝ] Rn ℓ),
+      Ψ x P = d⁻¹ * (Φ (x + d • e) P - Φ x P) -
+        d⁻¹ * (a (x + d • e) (fderiv ℝ v (x + d • e)) P - a x (fderiv ℝ v (x + d • e)) P) :=
+    ⟨fun x => d⁻¹ • (Φ (x + d • e) - Φ x) -
+        d⁻¹ • (a (x + d • e) (fderiv ℝ v (x + d • e)) - a x (fderiv ℝ v (x + d • e))),
+      fun x P => by simp only [sub_apply, smul_apply, smul_eq_mul]⟩
+  refine ⟨Ψ, hΨ, fun ζ hζ hζc hζB => ?_⟩
+  -- Step 2: for `x ∈ B := B̆_{2R}(xb)`, both `x` and `x + de` lie in `B_{4R}(xb) ⊆ U`.
+  have hde : ‖d • e‖ < R := by
+    rw [norm_smul, Real.norm_eq_abs]
+    calc |d| * ‖e‖ ≤ |d| * 1 := mul_le_mul_of_nonneg_left he (abs_nonneg d)
+      _ < R := by rwa [mul_one]
+  have hBU : ∀ x ∈ ball xb (2 * R), x ∈ U := fun x hx =>
+    hball (mem_closedBall.2 (by linarith [mem_ball.1 hx]))
+  have hBU' : ∀ x ∈ ball xb (2 * R), x + d • e ∈ U := by
+    intro x hx
+    refine hball (mem_closedBall.2 ?_)
+    have h1 : dist (x + d • e) x = ‖d • e‖ := by rw [dist_eq_norm, add_sub_cancel_left]
+    linarith [dist_triangle (x + d • e) x xb, mem_ball.1 hx]
+  -- Step 3: `v` is differentiable and `Dv` is continuous at every point of the open set `U`.
+  have hvd : ∀ y ∈ U, DifferentiableAt ℝ v y := fun y hy =>
+    (hv.differentiableOn one_ne_zero y hy).differentiableAt (hU.mem_nhds hy)
+  have hDv : ∀ y ∈ U, ContinuousAt (fderiv ℝ v) y := fun y hy =>
+    (hv.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt (hU.mem_nhds hy)
+  have hsh : ∀ x : Rn n, ContinuousAt (fun y : Rn n => y + d • e) x := fun x =>
+    (continuous_id.add continuous_const).continuousAt
+  -- Step 5: `K := tsupport ζ ⊆ B` is compact; `Dζ` is continuous and vanishes off `K`.
+  have hK : IsCompact (tsupport ζ) := hζc
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hDζ0 : ∀ x, x ∉ tsupport ζ → fderiv ℝ ζ x = 0 := fun x hx =>
+    fderiv_of_notMem_tsupport ℝ hx
+  have hKU : ∀ x ∈ tsupport ζ, x ∈ U := fun x hx => hBU x (hζB hx)
+  have hKU' : ∀ x ∈ tsupport ζ, x + d • e ∈ U := fun x hx => hBU' x (hζB hx)
+  -- Step 6: the integrands `f₁, g₁, f₂, f₃, g₃` are continuous at the points of `K` and vanish
+  -- off `K`, hence integrable.
+  have hf1 : Integrable (fun x => a x (fderiv ℝ v x) (fderiv ℝ ζ x)) :=
+    Submission.dohr_eb_lhr_dqwe_integrable_of_continuousAt n _ _ hK
+      (fun x hx => Submission.dohr_eb_lhr_dqwe_bilinear_family_continuousAt n ℓ U a (fun y => y)
+        (fderiv ℝ v) (fderiv ℝ ζ) x hU ha (hKU x hx) (continuousAt_id' x) (hDv x (hKU x hx))
+        hDζ.continuousAt)
+      (fun x hx => by rw [hDζ0 x hx, map_zero])
+  have hg1 : Integrable (fun x => Φ x (fderiv ℝ ζ x)) :=
+    Submission.dohr_eb_lhr_dqwe_integrable_of_continuousAt n _ _ hK
+      (fun x hx => Submission.dohr_eb_lhr_dqwe_linear_family_continuousAt n ℓ U Φ (fun y => y)
+        (fderiv ℝ ζ) x hU hΦ (hKU x hx) (continuousAt_id' x) hDζ.continuousAt)
+      (fun x hx => by rw [hDζ0 x hx, map_zero])
+  have hf2 : Integrable (fun x => a x (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x)) :=
+    Submission.dohr_eb_lhr_dqwe_integrable_of_continuousAt n _ _ hK
+      (fun x hx => Submission.dohr_eb_lhr_dqwe_bilinear_family_continuousAt n ℓ U a (fun y => y)
+        (fun y => fderiv ℝ v (y + d • e)) (fderiv ℝ ζ) x hU ha (hKU x hx) (continuousAt_id' x)
+        ((hDv _ (hKU' x hx)).comp_of_eq (hsh x) rfl) hDζ.continuousAt)
+      (fun x hx => by rw [hDζ0 x hx, map_zero])
+  have hf3 : Integrable (fun x => a (x + d • e) (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x)) :=
+    Submission.dohr_eb_lhr_dqwe_integrable_of_continuousAt n _ _ hK
+      (fun x hx => Submission.dohr_eb_lhr_dqwe_bilinear_family_continuousAt n ℓ U a
+        (fun y => y + d • e) (fun y => fderiv ℝ v (y + d • e)) (fderiv ℝ ζ) x hU ha (hKU' x hx)
+        (hsh x) ((hDv _ (hKU' x hx)).comp_of_eq (hsh x) rfl) hDζ.continuousAt)
+      (fun x hx => by rw [hDζ0 x hx, map_zero])
+  have hg3 : Integrable (fun x => Φ (x + d • e) (fderiv ℝ ζ x)) :=
+    Submission.dohr_eb_lhr_dqwe_integrable_of_continuousAt n _ _ hK
+      (fun x hx => Submission.dohr_eb_lhr_dqwe_linear_family_continuousAt n ℓ U Φ
+        (fun y => y + d • e) (fderiv ℝ ζ) x hU hΦ (hKU' x hx) (hsh x) hDζ.continuousAt)
+      (fun x hx => by rw [hDζ0 x hx, map_zero])
+  -- Steps 7–8: testing with `ζ` and with `ζ(· − de)` gives `∫ f₁ = ∫ g₁` and `∫ f₃ = ∫ g₃`.
+  have h7 : ∫ x, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x, Φ x (fderiv ℝ ζ x) := by
+    have h := Submission.dohr_eb_lhr_dqwe_shifted_weak_identity n ℓ U a Φ v 0 ζ hweak hζ hζc
+      (fun x hx => by rw [add_zero]; exact hKU x hx)
+    simpa only [add_zero] using h
+  have h8 : ∫ x, a (x + d • e) (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x) =
+      ∫ x, Φ (x + d • e) (fderiv ℝ ζ x) :=
+    Submission.dohr_eb_lhr_dqwe_shifted_weak_identity n ℓ U a Φ v (d • e) ζ hweak hζ hζc hKU'
+  -- Step 9: on `B`, `Dw = d⁻¹ (Dv(· + de) − Dv)` (step 4), so
+  -- `a(x)[Dw(x)][Dζ(x)] = d⁻¹ (f₂ − f₁)(x)`; both sides become integrals over `ℝⁿ` of integrands
+  -- vanishing off `K ⊆ B`.
+  have hlhs : ∫ x in ball xb (2 * R), a x (fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x)
+      (fderiv ℝ ζ x) = d⁻¹ * ((∫ x, a x (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x)) -
+        ∫ x, a x (fderiv ℝ v x) (fderiv ℝ ζ x)) := by
+    have hEq : EqOn
+        (fun x => a x (fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x) (fderiv ℝ ζ x))
+        (fun x => d⁻¹ * (a x (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x) -
+          a x (fderiv ℝ v x) (fderiv ℝ ζ x))) (ball xb (2 * R)) := by
+      intro x hx
+      simp only
+      rw [Submission.dohr_eb_lhr_dqwe_fderiv_diff_quot n ℓ v e x d (hvd x (hBU x hx))
+        (hvd _ (hBU' x hx)), map_smul, map_sub, smul_apply, sub_apply, smul_eq_mul]
+    have hzero : ∀ x, x ∉ ball xb (2 * R) → d⁻¹ * (a x (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x) -
+        a x (fderiv ℝ v x) (fderiv ℝ ζ x)) = 0 := by
+      intro x hx
+      rw [hDζ0 x fun h => hx (hζB h), map_zero, map_zero, sub_zero, mul_zero]
+    rw [setIntegral_congr_fun measurableSet_ball hEq,
+      setIntegral_eq_integral_of_forall_compl_eq_zero hzero, integral_const_mul,
+      integral_sub hf2 hf1]
+  have hrhs : ∫ x in ball xb (2 * R), Ψ x (fderiv ℝ ζ x) =
+      d⁻¹ * ((∫ x, Φ (x + d • e) (fderiv ℝ ζ x)) - ∫ x, Φ x (fderiv ℝ ζ x)) -
+        d⁻¹ * ((∫ x, a (x + d • e) (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x)) -
+          ∫ x, a x (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x)) := by
+    have hzero : ∀ x, x ∉ ball xb (2 * R) → Ψ x (fderiv ℝ ζ x) = 0 := by
+      intro x hx
+      rw [hDζ0 x fun h => hx (hζB h), map_zero]
+    have hI1 : Integrable fun x => d⁻¹ * (Φ (x + d • e) (fderiv ℝ ζ x) - Φ x (fderiv ℝ ζ x)) :=
+      (hg3.sub hg1).const_mul _
+    have hI2 : Integrable fun x => d⁻¹ * (a (x + d • e) (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x) -
+        a x (fderiv ℝ v (x + d • e)) (fderiv ℝ ζ x)) :=
+      (hf3.sub hf2).const_mul _
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+    simp only [hΨ]
+    rw [integral_sub hI1 hI2, integral_const_mul, integral_const_mul, integral_sub hg3 hg1,
+      integral_sub hf3 hf2]
+  -- `LHS − RHS = d⁻¹ [(∫ f₃ − ∫ g₃) − (∫ f₁ − ∫ g₁)] = 0`.
+  rw [hlhs, hrhs, h7, ← h8]
+  ring
 
 end Submission
 

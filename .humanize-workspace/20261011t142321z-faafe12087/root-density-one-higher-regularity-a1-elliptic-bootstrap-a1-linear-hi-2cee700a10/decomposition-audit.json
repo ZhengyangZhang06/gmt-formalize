@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dqwe|difference quotient|linear_family_continuity|bilinear_family_continuity",
+        "sum_repr|coord_apply|def finBasis|continuous_of_finiteDimensional|tendsto_finsetProd",
+        "fderiv_fun_const_smul|fderiv_fun_sub|fderiv_comp_add_right|fderiv_comp_sub|tsupport_fderiv_subset|continuousOn_fderiv_of_isOpen",
+        "mulTSupport_comp_subset_preimage|image_eq_one_of_notMem_mulTSupport|HasCompactMulSupport.intro|HasCompactMulSupport.comp_homeomorph|divRight|ContinuousAt.congr|integrable_of_hasCompactSupport",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|integral_mul_right_eq_self|integral_add_right_eq_self",
+        "integral_const_mul|theorem integral_sub|setIntegral_congr_fun|isMulRightInvariant",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dqwe-independent-audit-k1njt0wd/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dqwe-independent-audit-k1njt0wd/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dqwe-independent-audit-k1njt0wd/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dqwe-independent-audit-k1njt0wd/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-2cee700a10/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-2cee700a10/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Monoid.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Group/ContinuousDiv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Continuous.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/tmp/dqwe-independent-audit-k1njt0wd/Challenge.lean",
+        "/tmp/dqwe-independent-audit-k1njt0wd/Instances.lean",
+        "/tmp/dqwe-independent-audit-k1njt0wd/Assembly.out",
+        "/tmp/dqwe-independent-audit-k1njt0wd/EndToEnd.lean",
+        "/tmp/dqwe-independent-audit-k1njt0wd/EndToEnd.out"
+      ],
+      "conclusion": "Verified project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The compilation contract and all fifteen inspected Mathlib sources match the snapshot byte-for-byte. The project search found no matching difference-quotient helpers. All five names are bare identifiers, with no reservations in the DAG or collisions across 553 other decomposition files. Every frozen one-line proposition elaborates without child implementations. Independent compilation confirms the intended continuous-linear-map scalar operations and Lebesgue-measure instances. The parent assembly uses exactly the five child assumptions; substituting their proofs proves the exact frozen parent using only propext, Classical.choice and Quot.sound. The split is appropriate: the children establish coefficient continuity, translated testing, integrability and derivative calculus, while the parent supplies Ψ, geometry and integral algebra. The sole dependency, bilinear_family_continuity depending on linear_family_continuity, is correctly directed and acyclic. No ancestor theorem or unproved external branch is used."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "linear_family_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree on every hypothesis. Continuous finite-dimensional coordinates give the stated basis expansion; openness upgrades coefficient continuity to ambient continuity at s(x₀). Composition, multiplication and finite summation prove the exact conclusion. The proof is complete and non-circular."
+    },
+    {
+      "key": "bilinear_family_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The first-slot expansion is valid in the continuous dual. For each basis vector, the declared linear-family dependency applies with precisely the supplied coefficient and continuity hypotheses. Finite summation concludes the stated result. Prose and type match, and no undeclared dependency is needed."
+    },
+    {
+      "key": "shifted_weak_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The translated test is C¹, compactly supported and admissible in U. Derivative support containment makes both integrands vanish outside U. The pinned restriction-removal and translation lemmas require neither measurability of U nor integrability. Mathlib's total fderiv permits arbitrary v. All steps prove the exact stated identity without circularity."
+    },
+    {
+      "key": "compact_support_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypothesis gives ambient continuity at every point of K, including its boundary. Compactness makes the complement open, where vanishing gives continuity. Thus F is continuous with compact support and is Lebesgue integrable. The proof includes all necessary hypotheses and matches the exact Lean proposition."
+    },
+    {
+      "key": "fderiv_difference_quotient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two differentiability hypotheses justify translated composition and subtraction; constant scalar multiplication gives the displayed bundled derivative identity. The argument remains valid for d = 0. Prose and standalone Lean type match, and the proof uses neither the parent nor another child."
+    }
+  ],
+  "required_changes": []
+}

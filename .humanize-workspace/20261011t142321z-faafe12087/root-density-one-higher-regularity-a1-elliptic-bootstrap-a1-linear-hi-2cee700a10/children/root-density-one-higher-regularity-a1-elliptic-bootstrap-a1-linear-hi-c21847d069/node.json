@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.compact_support_integrable-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1",
+  "depth": 5,
+  "title": "A function continuous at every point of a compact set and vanishing off it is integrable",
+  "statement": "Let n be a natural number, F : R^n → R and K ⊆ R^n compact. Assume F is continuous at every point of K and F(x) = 0 for every x ∉ K. Then F is Lebesgue integrable on R^n.",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ) (K : Set (Rn n)), IsCompact K → (∀ x ∈ K, ContinuousAt F x) → (∀ x, x ∉ K → F x = 0) → Integrable F",
+  "lean_name": "dohr_eb_lhr_dqwe_integrable_of_continuousAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-c21847d069-a1"
+}
