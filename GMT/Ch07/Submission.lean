@@ -1136,6 +1136,116 @@ theorem Submission.cbr_cipi_affine_plane_measure : ∀ (P m : ℕ) (w : Fin m �
   · intro r hr
     rw [← hmapJ, Measure.map_apply hJm measurableSet_ball]
     exact (isOpen_ball.preimage hJ.continuous).measure_pos _ ⟨0, by simp [J, hr]⟩
+/-- **Integrals of partial derivatives of a compactly supported `C¹` function over a coordinate
+half-space** (the divergence theorem on a half-space by Fubini and the fundamental theorem of
+calculus; used for the boundary of a half-plane current in the integer-multiplicity criterion for
+cycles).  Let `g : ℝ^{d+1} → ℝ` be `C¹` with compact support, `H = {z | z₀ < t}` and
+`∂ᵢg(z) = Dg(z)(eᵢ)`.  Since `tsupport g ⊆ B̄_R(0)`, on each coordinate line
+`ℓ(s) = insertNth i s y = ℓ(0) + s eᵢ` the function `h = g ∘ ℓ` is `C¹` with compact support and
+`h′(s) = ∂ᵢg(ℓ(s))`.  Fubini through the measure-preserving `z ↦ (zᵢ, removeNth i z)` gives
+`∫_H ∂ᵢg = ∫_y ∫_s 1_H(ℓ(s)) h′(s) ds dy`.  For `i ≠ 0`, `ℓ(s)₀ = y₀` does not depend on `s`, so
+each inner integral is `0` or `∫_ℝ h′ = 0`.  For `i = 0`, `ℓ(s) = (s, y)` and the inner integral
+is `∫_{(−∞,t)} h′ = h(t) = g(t, y)`. -/
+theorem Submission.cbr_cipi_halfspace_partial_integral : ∀ (d : ℕ) (g : (Fin (d + 1) → ℝ) → ℝ) (t : ℝ), ContDiff ℝ 1 g → HasCompactSupport g → (∀ i : Fin (d + 1), i ≠ 0 → ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single i 1) = 0) ∧ ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single 0 1) = ∫ z' : Fin d → ℝ, g (Fin.cons t z') := by
+  intro d g t hg hcs
+  -- Step 1: `tsupport g ⊆ B̄_R(0)` (sup norm)
+  obtain ⟨R, hR⟩ := hcs.isCompact.isBounded.subset_closedBall 0
+  -- Steps 2–3: on the coordinate line `ℓ(s) = insertNth i s y = ℓ(0) + s eᵢ`, `h = g ∘ ℓ` is `C¹`
+  -- with compact support and `h′(s) = ∂ᵢg(ℓ(s))`; the fundamental theorem of calculus gives
+  -- `∫_ℝ h′ = 0` and `∫_{(−∞,t)} h′ = h(t)`
+  have hline : ∀ (i : Fin (d + 1)) (y : Fin d → ℝ),
+      (∫ s : ℝ, fderiv ℝ g (Fin.insertNth i s y) (Pi.single i 1) = 0) ∧
+      ∫ s in Iio t, fderiv ℝ g (Fin.insertNth i s y) (Pi.single i 1) = g (Fin.insertNth i t y) := by
+    intro i y
+    have hℓ : ∀ s : ℝ, (Fin.insertNth i s y : Fin (d + 1) → ℝ) =
+        Fin.insertNth i 0 y + s • Pi.single i 1 := by
+      intro s
+      funext j
+      rcases eq_or_ne j i with rfl | hj
+      · simp
+      · obtain ⟨k, rfl⟩ := Fin.exists_succAbove_eq hj
+        simp [hj]
+    set h : ℝ → ℝ := fun s => g (Fin.insertNth i s y) with hh
+    have hcomp : h = g ∘ fun s : ℝ =>
+        (Fin.insertNth i 0 y : Fin (d + 1) → ℝ) + s • Pi.single i 1 := by
+      funext s
+      simp only [hh, Function.comp_apply, ← hℓ s]
+    have hderiv : ∀ s, HasDerivAt h (fderiv ℝ g (Fin.insertNth i s y) (Pi.single i 1)) s := by
+      intro s
+      have h1 : HasDerivAt
+          (fun s : ℝ => (Fin.insertNth i 0 y : Fin (d + 1) → ℝ) + s • Pi.single i 1)
+          (Pi.single i 1) s := by
+        simpa using ((hasDerivAt_id s).smul_const (Pi.single i (1 : ℝ) : Fin (d + 1) → ℝ)).const_add
+          (Fin.insertNth i 0 y : Fin (d + 1) → ℝ)
+      have h2 := (hg.differentiable one_ne_zero (Fin.insertNth i s y)).hasFDerivAt
+      rw [hℓ s] at h2
+      rw [hcomp, hℓ s]
+      exact h2.comp_hasDerivAt s h1
+    have hcont : ContDiff ℝ 1 h := by
+      rw [hcomp]
+      exact hg.comp (contDiff_const.add (contDiff_id.smul contDiff_const))
+    -- `|s| = |ℓ(s)ᵢ| ≤ ‖ℓ(s)‖`, so `h(s) = 0` for `|s| > R`
+    have hsupp : HasCompactSupport h := by
+      refine HasCompactSupport.intro (isCompact_closedBall (0 : ℝ) R) fun s hs => ?_
+      show g (Fin.insertNth i s y) = 0
+      refine image_eq_zero_of_notMem_tsupport fun hmem => hs ?_
+      have h3 := hR hmem
+      simp only [mem_closedBall, dist_zero_right] at h3 ⊢
+      calc ‖s‖ = ‖(Fin.insertNth i s y : Fin (d + 1) → ℝ) i‖ := by simp
+        _ ≤ ‖(Fin.insertNth i s y : Fin (d + 1) → ℝ)‖ := norm_le_pi_norm _ i
+        _ ≤ R := h3
+    have hderiv_eq : deriv h = fun s => fderiv ℝ g (Fin.insertNth i s y) (Pi.single i 1) := by
+      funext s
+      exact (hderiv s).deriv
+    refine ⟨integral_eq_zero_of_hasDerivAt_of_integrable hderiv ?_ ?_, ?_⟩
+    · exact hderiv_eq ▸ (hcont.continuous_deriv le_rfl).integrable_of_hasCompactSupport hsupp.deriv
+    · exact hcont.continuous.integrable_of_hasCompactSupport hsupp
+    · rw [← integral_Iic_eq_integral_Iio, ← hderiv_eq]
+      exact HasCompactSupport.integral_Iic_deriv_eq hcont hsupp t
+  -- Step 4: Fubini through the measure-preserving `z ↦ (zᵢ, removeNth i z)`, whose inverse is
+  -- `(s, y) ↦ insertNth i s y`
+  have hfub : ∀ (i : Fin (d + 1)) (F : (Fin (d + 1) → ℝ) → ℝ), Integrable F →
+      ∫ z, F z = ∫ y : Fin d → ℝ, ∫ s : ℝ, F (Fin.insertNth i s y) := by
+    intro i F hF
+    have hmp := (volume_preserving_piFinSuccAbove (fun _ : Fin (d + 1) => ℝ) i).symm
+    rw [← hmp.integral_comp' F,
+      show (volume : Measure (ℝ × (Fin d → ℝ))) = volume.prod volume from rfl, integral_prod_symm]
+    · simp only [MeasurableEquiv.piFinSuccAbove_symm_apply]
+      rfl
+    · exact (hmp.integrable_comp_emb (MeasurableEquiv.measurableEmbedding _)).2 hF
+  -- `1_H ∂ᵢg` is integrable: `∂ᵢg` is continuous with compact support and `H` is Borel
+  have hH : MeasurableSet {z : Fin (d + 1) → ℝ | z 0 < t} :=
+    measurableSet_lt (measurable_pi_apply 0) measurable_const
+  have hint : ∀ i : Fin (d + 1), Integrable ({z : Fin (d + 1) → ℝ | z 0 < t}.indicator
+      fun z => fderiv ℝ g z (Pi.single i 1)) := fun i =>
+    (((hg.continuous_fderiv one_ne_zero).clm_apply continuous_const).integrable_of_hasCompactSupport
+      (hcs.fderiv_apply (𝕜 := ℝ) _)).indicator hH
+  constructor
+  -- Step 5: for `i ≠ 0`, `(insertNth i s y)₀ = y₀` does not depend on `s`, so each inner integral
+  -- is `0` or `∫_ℝ h′ = 0`
+  · intro i hi
+    rw [← integral_indicator hH, hfub i _ (hint i)]
+    refine integral_eq_zero_of_ae (Eventually.of_forall fun y => ?_)
+    have hconst : ∀ s : ℝ, (Fin.insertNth i s y : Fin (d + 1) → ℝ) 0 =
+        (Fin.insertNth i 0 y : Fin (d + 1) → ℝ) 0 := by
+      intro s
+      obtain ⟨k, hk⟩ := Fin.exists_succAbove_eq (x := (0 : Fin (d + 1))) (y := i) (Ne.symm hi)
+      rw [← hk, Fin.insertNth_apply_succAbove, Fin.insertNth_apply_succAbove]
+    by_cases hy : (Fin.insertNth i 0 y : Fin (d + 1) → ℝ) 0 < t
+    · simp only [Set.indicator, Set.mem_ofPred_eq, hconst, hy, ite_true]
+      exact (hline i y).1
+    · simp [Set.indicator, hconst, hy]
+  -- Step 6: for `i = 0`, `insertNth 0 s y = Fin.cons s y`, so the inner integral is
+  -- `∫_{(−∞,t)} h′ = h(t) = g(Fin.cons t y)`
+  · rw [← integral_indicator hH, hfub 0 _ (hint 0)]
+    congr 1
+    funext y
+    have h0 := (hline 0 y).2
+    simp only [Fin.insertNth_zero'] at h0
+    rw [← h0, ← integral_indicator measurableSet_Iio]
+    congr 1
+    funext s
+    simp [Set.indicator, Fin.insertNth_zero']
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
