@@ -516,6 +516,193 @@ theorem Submission.isoperimetric_apply_eq_zero_of_disjoint_support :
   change T.toCurrent ω = 0
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => hη i
+/-- Euclidean coefficient norms `|γ| = covectorEuclideanNorm γ` of slices of covectors, with
+`ι(v) = (0, v) ∈ ℝ^{m+1}` and `e₀ = EuclideanSpace.single 0 1`: (C1) if `γ'(v) = γ(e₀, ι ∘ v)`
+then `|γ'| ≤ |γ|`; (C2) if `γ'(v) = γ(ι ∘ v)` then `|γ'| ≤ |γ|`; (C3) `|α| ≤ √(P^n) · ‖α‖`.
+For (C1) and (C2), `e₀ = b_0` and `ι(b_j) = b_{j+1}` for the standard bases `b`, so the
+coefficients of `γ'` are coefficients of `γ` on distinct strictly increasing multi-indices; for
+(C3), each of the `P^n` coefficients `α(b_{I(0)}, …, b_{I(n-1)})` is at most
+`‖α‖ · ∏ ‖b_{I(i)}‖ = ‖α‖`. -/
+theorem Submission.dph_iprod_slice_covector_norm_le :
+    (∀ (m k : ℕ) (γ : Covector (Eucl (m + 1)) (k + 1)) (γ' : Covector (Eucl m) k),
+      (∀ v : Fin k → Eucl m, γ' v = γ (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧
+    (∀ (m q : ℕ) (γ : Covector (Eucl (m + 1)) q) (γ' : Covector (Eucl m) q),
+      (∀ v : Fin q → Eucl m, γ' v = γ (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧
+    (∀ (P n : ℕ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖) := by
+  -- `e₀` is the first standard basis vector of `ℝ^{m+1}`.
+  have hb0 : ∀ m : ℕ, (EuclideanSpace.single 0 1 : Eucl (m + 1)) =
+      EuclideanSpace.basisFun (Fin (m + 1)) ℝ 0 := by
+    intro m; simp [EuclideanSpace.basisFun_apply]
+  -- `ι` maps the `j`-th standard basis vector of `ℝ^m` to the `(j+1)`-st one of `ℝ^{m+1}`.
+  have hbι : ∀ (m : ℕ) (j : Fin m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (EuclideanSpace.basisFun (Fin m) ℝ j))) =
+      EuclideanSpace.basisFun (Fin (m + 1)) ℝ j.succ := by
+    intro m j
+    apply (EuclideanSpace.equiv (Fin (m + 1)) ℝ).injective
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
+    funext i
+    refine Fin.cases ?_ (fun i => ?_) i <;> simp [EuclideanSpace.basisFun_apply]
+  -- A sum dominated termwise, along an injection, by nonnegative terms is at most the full sum.
+  have key : ∀ {A B : Type} [Fintype A] [Fintype B] [DecidableEq B] (g : A → B),
+      Function.Injective g → ∀ (F : B → ℝ) (G : A → ℝ), (∀ b, 0 ≤ F b) →
+      (∀ a, G a ≤ F (g a)) → ∑ a, G a ≤ ∑ b, F b := by
+    intro A B _ _ _ g hg F G hF hG
+    calc ∑ a, G a ≤ ∑ a, F (g a) := Finset.sum_le_sum (fun a _ => hG a)
+      _ = ∑ b ∈ Finset.univ.image g, F b := (Finset.sum_image (fun a _ b _ h => hg h)).symm
+      _ ≤ ∑ b, F b :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) (fun b _ _ => hF b)
+  refine ⟨?_, ?_, ?_⟩
+  · -- (C1): compare along `I ↦ (0, I + 1)`.
+    intro m k γ γ' hγ'
+    unfold covectorEuclideanNorm
+    apply Real.sqrt_le_sqrt
+    apply key (fun I : Fin k → Fin m =>
+      (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)))
+    · intro I I' h
+      funext i
+      have := congrFun h i.succ
+      simpa using this
+    · intro J; split_ifs <;> positivity
+    · intro I
+      by_cases h1 : StrictMono I
+      · have h2 : StrictMono (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)) := by
+          intro a b hab
+          induction a using Fin.cases with
+          | zero =>
+            induction b using Fin.cases with
+            | zero => exact absurd hab (lt_irrefl _)
+            | succ j => simp [Fin.succ_pos]
+          | succ i =>
+            induction b using Fin.cases with
+            | zero => exact absurd hab (Fin.not_lt_zero _)
+            | succ j =>
+              simp only [Fin.cons_succ, Fin.succ_lt_succ_iff] at hab ⊢
+              exact h1 hab
+        rw [ite_eq_left h1, ite_eq_left h2, hγ']
+        apply le_of_eq
+        congr 2
+        funext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp only [Fin.cons_zero]
+          exact hb0 m
+        · simp only [Fin.cons_succ]
+          exact hbι m (I i)
+      · rw [ite_eq_right h1]
+        split_ifs <;> positivity
+  · -- (C2): compare along `I ↦ I + 1`.
+    intro m q γ γ' hγ'
+    unfold covectorEuclideanNorm
+    apply Real.sqrt_le_sqrt
+    apply key (fun I : Fin q → Fin m => (fun i => (I i).succ : Fin q → Fin (m + 1)))
+    · intro I I' h
+      funext i
+      have := congrFun h i
+      simpa using this
+    · intro J; split_ifs <;> positivity
+    · intro I
+      by_cases h1 : StrictMono I
+      · have h2 : StrictMono (fun i => (I i).succ : Fin q → Fin (m + 1)) :=
+          fun a b hab => Fin.succ_lt_succ_iff.mpr (h1 hab)
+        rw [ite_eq_left h1, ite_eq_left h2, hγ']
+        apply le_of_eq
+        congr 2
+        funext i
+        exact hbι m (I i)
+      · rw [ite_eq_right h1]
+        split_ifs <;> positivity
+  · -- (C3): every coefficient is at most `‖α‖`, and there are `P ^ n` of them.
+    intro P n α
+    have hcoef : ∀ I : Fin n → Fin P,
+        |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
+      intro I
+      have h := ContinuousAlternatingMap.le_opNorm α
+        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+      simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+        Real.norm_eq_abs] at h
+      exact h
+    rw [covectorEuclideanNorm]
+    calc Real.sqrt _ ≤ Real.sqrt ((P : ℝ) ^ n * ‖α‖ ^ 2) := by
+          apply Real.sqrt_le_sqrt
+          calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+                apply Finset.sum_le_sum
+                intro I _
+                split_ifs
+                · rw [← sq_abs]
+                  exact pow_le_pow_left₀ (abs_nonneg _) (hcoef I) 2
+                · positivity
+            _ = (P : ℝ) ^ n * ‖α‖ ^ 2 := by simp [Finset.card_univ]
+      _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+
+/-- A linear functional `T₀` on `𝒟^q(U)` with `|T₀(ω)| ≤ B · sup_x |ω(x)|` (Euclidean coefficient
+norm) is a current of mass at most `B`: test-form convergence makes `sup_x |ω_j(x)| → 0`, since
+`|α| ≤ √(P^q) ‖α‖` (conjunct (C3) of `Submission.dph_iprod_slice_covector_norm_le`), and every
+mass-admissible `ω` has `T(ω) ≤ |T₀(ω)| ≤ B`. -/
+theorem Submission.dph_iprod_current_of_bound :
+    ∀ (P q : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U q →ₗ[ℝ] ℝ) (B : ℝ), 0 ≤ B →
+      (∀ (ω : TestFormOn U q) (C : ℝ),
+        (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) q) x) ≤ C) →
+          |T₀ ω| ≤ B * C) →
+      ∃ T : GeometricCurrentOn U q, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal B := by
+  have hSN := Submission.dph_iprod_slice_covector_norm_le
+  intro P q U T₀ B hB hbd
+  -- (C3): the coefficient norm is at most `c = √(P^q)` times the operator norm.
+  have hC3 : ∀ α : Covector (Eucl P) q,
+      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ q) * ‖α‖ :=
+    fun α => hSN.2.2 P q α
+  set c := Real.sqrt ((P : ℝ) ^ q)
+  have hc0 : 0 ≤ c := Real.sqrt_nonneg _
+  refine ⟨⟨T₀, ?_⟩, fun ω => rfl, ?_⟩
+  · -- Sequential continuity at `0`: the order-`0` uniform convergence on the common compact
+    -- support `K` gives `|ω_j(x)| ≤ c δ` for all `x` and large `j`, so `|T₀(ω_j)| ≤ B c δ < ε`.
+    intro ωs hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    have h0 := hunif 0
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨δ, hδ, hδε⟩ : ∃ δ > 0, B * c * δ < ε := by
+      refine ⟨ε / (B * c + 1), by positivity, ?_⟩
+      have hpos : 0 < B * c + 1 := by positivity
+      rw [← mul_div_assoc, div_lt_iff₀ hpos]
+      nlinarith [mul_nonneg hB hc0]
+    rw [Metric.tendstoUniformlyOn_iff] at h0
+    filter_upwards [h0 δ hδ] with n hn
+    have hpt : ∀ x, covectorEuclideanNorm ((ωs n : DifferentialForm (Eucl P) q) x) ≤ c * δ := by
+      intro x
+      by_cases hx : x ∈ K
+      · have h1 := hn x hx
+        rw [dist_comm, dist_eq_norm] at h1
+        have h2 : iteratedFDeriv ℝ 0
+            (((0 : TestFormOn U q) : DifferentialForm (Eucl P) q)) x = 0 := by
+          simp
+        rw [h2, sub_zero, norm_iteratedFDeriv_zero] at h1
+        calc covectorEuclideanNorm ((ωs n : DifferentialForm (Eucl P) q) x)
+            ≤ c * ‖(ωs n : DifferentialForm (Eucl P) q) x‖ := hC3 _
+          _ ≤ c * δ := mul_le_mul_of_nonneg_left h1.le hc0
+      · -- Off `K`, `ω_j` vanishes.
+        have h3 : (ωs n : DifferentialForm (Eucl P) q) x = 0 :=
+          image_eq_zero_of_notMem_tsupport (fun h => hx (hsupp n h))
+        rw [h3, covectorEuclideanNorm_zero]
+        positivity
+    have h4 := hbd (ωs n) (c * δ) hpt
+    rw [Real.dist_eq, sub_zero]
+    calc |T₀ (ωs n)| ≤ B * (c * δ) := h4
+      _ = B * c * δ := by ring
+      _ < ε := hδε
+  · -- Mass: a mass-admissible `ω` has `|ω(x)| ≤ 1` everywhere, so `T(ω) ≤ |T₀(ω)| ≤ B`.
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    apply ENNReal.ofReal_le_ofReal
+    have h5 := hbd ω 1 hω.2
+    have h6 : T₀ ω ≤ |T₀ ω| := le_abs_self _
+    show T₀ ω ≤ B
+    linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
