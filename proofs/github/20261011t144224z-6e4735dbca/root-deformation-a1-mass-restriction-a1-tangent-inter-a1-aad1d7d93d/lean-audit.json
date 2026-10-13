@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6aeba61b0d77f6eca7b27b560e1252aad798919aebf81e630a3de8799772ca78",
+  "git_delta": {
+    "base_commit": "96c0441eeaf14f09568ddf6fcd65cef8dc580bad",
+    "candidate_commit": "092432628141e9fbc9fd497443b307d833a89784",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dmr_weightedTangent_inter",
+    "diff_sha256": "f45cdc05e984e569d88e72e1bef2d025d905422c184dbe12d7158b3032c4a499",
+    "source_sha256": "5498065ef3a6376ed52fa9e3650c067dd2e8f9fd0246765468dafa44282e0c42",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmr_weightedTangent_inter",
+      "statement": "∀ (N k : ℕ) (M : Set (Eucl N)) (θ : Eucl N → ℝ), NullMeasurableSet M (μHE[k] : Measure (Eucl N)) → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ A : Set (Eucl N), MeasurableSet A → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict (M ∩ A)), ∀ L : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k M θ x L → HasWeightedApproximateTangentSpaceAt k (M ∩ A) θ x L",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
