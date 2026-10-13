@@ -359,6 +359,24 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Product rule for a weighted sum of finite products: if every `g i t` is differentiable at
+`w`, the derivative of `x ↦ ∑ i, a i * ∏ t, g i t x` at `w` in direction `v` is
+`∑ i, a i * ∑ u, fderiv ℝ (g i u) w v * ∏ t ≠ u, g i t w`. -/
+theorem Submission.deformation_ipl_mwc_pi_fderiv_sum_prod : ∀ (k r : ℕ) (ι : Type) [Fintype ι] (a : ι → ℝ) (g : ι → Fin r → Eucl k → ℝ) (w v : Eucl k), (∀ i t, DifferentiableAt ℝ (g i t) w) → fderiv ℝ (fun x : Eucl k => ∑ i, a i * ∏ t, g i t x) w v = ∑ i, a i * ∑ u, fderiv ℝ (g i u) w v * ∏ t ∈ Finset.univ.erase u, g i t w := by
+  intro k r ι _ a g w v hg
+  -- Product rule for each `∏ t, g i t`, then the constant factor `a i` and the sum over `ι`.
+  have hs : HasFDerivAt (fun x => ∑ i, a i * ∏ t, g i t x)
+      (∑ i, a i • ∑ u, (∏ t ∈ Finset.univ.erase u, g i t w) • fderiv ℝ (g i u) w) w :=
+    HasFDerivAt.fun_sum fun i _ =>
+      (HasFDerivAt.finsetProd fun t _ => (hg i t).hasFDerivAt).const_mul (a i)
+  -- Evaluate the derivative at `v` termwise and commute the real factors.
+  rw [hs.fderiv]
+  simp only [sum_apply, smul_apply, smul_eq_mul]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  congr 1
+  refine Finset.sum_congr rfl fun u _ => ?_
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
