@@ -1274,6 +1274,64 @@ theorem dohr_eb_sch_integral_clm_fderiv_eq_zero : ∀ (n ℓ : ℕ) (c : (Rn n �
   simpa using hderiv.unique hzero
 
 end Submission
+/-- **Interpolation bound for `Dw`** (step (1b) of the Schauder estimate in the elliptic bootstrap
+for Simon 7.1).  If `w` is `C¹` on `B̆_ρ(x)` with `|w| ≤ S` there and
+`‖Dw(y) − Dw(z)‖ ≤ K |y − z|^α` for `y, z ∈ B̆_ρ(x)`, then `‖Dw(x)‖ ≤ 2S/t + t^α K` for every
+`t ∈ (0, ρ)` (operator norm). -/
+theorem Submission.dohr_eb_sch_fderiv_norm_interpolation : ∀ (n ℓ : ℕ) (w : Rn n → Rn ℓ) (x : Rn n) (ρ t α S K : ℝ), 0 ≤ α → 0 ≤ K → 0 < t → t < ρ → ContDiffOn ℝ 1 w (ball x ρ) → (∀ y ∈ ball x ρ, ‖w y‖ ≤ S) → (∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖fderiv ℝ w y - fderiv ℝ w z‖ ≤ K * ‖y - z‖ ^ α) → ‖fderiv ℝ w x‖ ≤ 2 * S / t + t ^ α * K := by
+  intro n ℓ w x ρ t α S K hα hK ht htρ hw hS hH
+  -- Step 1: `S ≥ |w(x)| ≥ 0`, so `B = 2S/t + t^α K ≥ 0`.
+  have hxB : x ∈ ball x ρ := mem_ball_self (ht.trans htρ)
+  have hS0 : 0 ≤ S := (norm_nonneg _).trans (hS x hxB)
+  have hB : 0 ≤ 2 * S / t + t ^ α * K :=
+    add_nonneg (div_nonneg (mul_nonneg zero_le_two hS0) ht.le)
+      (mul_nonneg (Real.rpow_nonneg ht.le α) hK)
+  -- Step 2: `B_t(x) ⊆ B̆_ρ(x)`, and `w` has derivative `Dw(y)` at every `y ∈ B_t(x)`.
+  have hsub : closedBall x t ⊆ ball x ρ := closedBall_subset_ball htρ
+  have hdiff : ∀ y ∈ closedBall x t, HasFDerivWithinAt w (fderiv ℝ w y) (closedBall x t) y :=
+    fun y hy => (((hw.differentiableOn one_ne_zero) y (hsub hy)).differentiableAt
+      (isOpen_ball.mem_nhds (hsub hy))).hasFDerivAt.hasFDerivWithinAt
+  -- Step 3: `‖Dw(y) − Dw(x)‖ ≤ K t^α` on `B_t(x)`.
+  have hbound : ∀ y ∈ closedBall x t, ‖fderiv ℝ w y - fderiv ℝ w x‖ ≤ K * t ^ α := by
+    intro y hy
+    calc ‖fderiv ℝ w y - fderiv ℝ w x‖ ≤ K * ‖y - x‖ ^ α := hH y (hsub hy) x hxB
+      _ ≤ K * t ^ α := by
+        gcongr
+        exact mem_closedBall_iff_norm.mp hy
+  -- Steps 4–5: `|Dw(x) e| ≤ B` for every unit vector `e`.
+  have hunit : ∀ e : Rn n, ‖e‖ = 1 → ‖fderiv ℝ w x e‖ ≤ 2 * S / t + t ^ α * K := by
+    intro e he
+    have hte : ‖t • e‖ = t := by rw [norm_smul, he, Real.norm_of_nonneg ht.le, mul_one]
+    have hxe : x + t • e ∈ closedBall x t := by
+      rw [mem_closedBall_iff_norm, add_sub_cancel_left, hte]
+    -- Step 4: the mean value inequality for `h(y) = w(y) − Dw(x)(y − x)` on `B_t(x)` gives
+    -- `|w(x + te) − w(x) − t Dw(x)e| ≤ K t^α · t`.
+    have hmv := (convex_closedBall x t).norm_image_sub_le_of_norm_hasFDerivWithin_le' hdiff
+      hbound (mem_closedBall_self ht.le) hxe
+    rw [add_sub_cancel_left, hte, map_smul] at hmv
+    -- Step 5: `t |Dw(x)e| ≤ |w(x + te) − w(x)| + |w(x + te) − w(x) − t Dw(x)e| ≤ 2S + K t^α t`.
+    have h1 : ‖w (x + t • e)‖ ≤ S := hS _ (hsub hxe)
+    have h2 : ‖w x‖ ≤ S := hS x hxB
+    have key : t * ‖fderiv ℝ w x e‖ ≤ 2 * S + K * t ^ α * t :=
+      calc t * ‖fderiv ℝ w x e‖ = ‖t • fderiv ℝ w x e‖ := by
+            rw [norm_smul, Real.norm_of_nonneg ht.le]
+        _ = ‖(w (x + t • e) - w x) - (w (x + t • e) - w x - t • fderiv ℝ w x e)‖ := by
+            congr 1; abel
+        _ ≤ ‖w (x + t • e) - w x‖ + ‖w (x + t • e) - w x - t • fderiv ℝ w x e‖ :=
+            norm_sub_le _ _
+        _ ≤ (‖w (x + t • e)‖ + ‖w x‖) + K * t ^ α * t := add_le_add (norm_sub_le _ _) hmv
+        _ ≤ 2 * S + K * t ^ α * t := by linarith
+    rw [div_add' _ _ _ ht.ne', le_div_iff₀ ht]
+    linarith
+  -- Step 6: `|Dw(x) v| = |v| |Dw(x)(v/|v|)| ≤ B |v|`, so `‖Dw(x)‖ ≤ B`.
+  refine ContinuousLinearMap.opNorm_le_bound _ hB fun v => ?_
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  have hv' : fderiv ℝ w x v = ‖v‖ • fderiv ℝ w x (‖v‖⁻¹ • v) := by
+    rw [map_smul, smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.mpr hv), one_smul]
+  rw [hv', norm_smul, Real.norm_of_nonneg (norm_nonneg v)]
+  exact (mul_le_mul_of_nonneg_left (hunit _ (norm_smul_inv_norm hv)) (norm_nonneg v)).trans_eq
+    (mul_comm _ _)
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
