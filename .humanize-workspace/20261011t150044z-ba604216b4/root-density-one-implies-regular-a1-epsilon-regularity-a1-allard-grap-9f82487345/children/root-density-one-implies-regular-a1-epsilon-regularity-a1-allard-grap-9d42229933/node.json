@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.deriv_under_integral-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "depth": 6,
+  "title": "Differentiation under the integral sign for M(σ) = ∫ h(x − σy) g(|y|²) dy",
+  "statement": "Let n ∈ ℕ, let U ⊆ ℝⁿ (= Euclid n) be open, and let h : ℝⁿ → ℝ be C¹ on U. Let x ∈ ℝⁿ, r > 0 and R ∈ ℝ with closedBall(x, R) ⊆ U, and let g : ℝ → ℝ be continuous with g(t) = 0 for all t ≥ r². For σ ∈ ℝ let M(σ) := ∫_{ℝⁿ} h(x − σy)·g(|y|²) dy. Then for every s ∈ ℝ with |s|·r < R, M is differentiable at s with M'(s) = −∫_{ℝⁿ} Dh(x − s y)(y)·g(|y|²) dy, where Dh(z) = fderiv ℝ h z.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (x : Euclid n) (r R : ℝ) (g : ℝ → ℝ), IsOpen U → ContDiffOn ℝ 1 h U → closedBall x R ⊆ U → 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, |s| * r < R → HasDerivAt (fun σ : ℝ => ∫ y : Euclid n, h (x - σ • y) * g (‖y‖ ^ 2)) (-∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2)) s",
+  "lean_name": "dorag_ha_mv_deriv_under_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9d42229933-a1"
+}
