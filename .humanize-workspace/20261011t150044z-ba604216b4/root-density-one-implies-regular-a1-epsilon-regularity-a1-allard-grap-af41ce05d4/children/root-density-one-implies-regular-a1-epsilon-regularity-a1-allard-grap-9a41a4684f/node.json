@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.l2_subseq-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "Extraction of an L²-convergent subsequence from finite L²-nets",
+  "statement": "Let (α, μ) be a measure space (α : Type with a measurable space structure, μ any measure on it) and let f_j : α → ℝ (j ∈ ℕ) be in L²(μ) (MemLp (f j) 2 μ). Suppose that for every η > 0 there is a finite S ⊆ ℕ such that every j has some k ∈ S with ∫ (f_j − f_k)² dμ ≤ η. Then there are a strictly increasing φ : ℕ → ℕ and W : α → ℝ with W ∈ L²(μ) and ∫ (f_{φ(j)} − W)² dμ → 0 as j → ∞.",
+  "lean_statement": "∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : ℕ → α → ℝ), (∀ j, MemLp (f j) 2 μ) → (∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x, (f j x - f k x) ^ 2 ∂μ ≤ η) → ∃ (φ : ℕ → ℕ) (W : α → ℝ), StrictMono φ ∧ MemLp W 2 μ ∧ Tendsto (fun j => ∫ x, (f (φ j) x - W x) ^ 2 ∂μ) atTop (𝓝 0)",
+  "lean_name": "dorag_ha_rb_l2_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9a41a4684f-a1"
+}
