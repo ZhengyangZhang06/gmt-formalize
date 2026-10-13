@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.mass_agree-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "depth": 3,
+  "title": "Mass on W is determined by the action on forms supported in W, across a change of domain",
+  "statement": "Let P, n ∈ ℕ, U, V, W ⊆ ℝ^P with V ⊆ U and W ⊆ V, S ∈ 𝒟_n(U) and S' ∈ 𝒟_n(V) (GeometricCurrentOn). Suppose S(ιω) = S'(ω) for every ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ W. Here ι = testFormOnInclusion (V ⊆ U) regards a test form supported in V as a test form supported in U. Then M_W(S) = M_W(S'). M_W = massOn is Simon's mass 6.2.5 with the Euclidean coefficient norm: the supremum in [0, ∞] of ofReal(T(ω)) over test forms ω in the domain with tsupport ω ⊆ W and |ω(y)| ≤ 1 for all y.",
+  "lean_statement": "∀ (P n : ℕ) (U V W : Set (Euclid P)) (hVU : V ⊆ U) (S : GeometricCurrentOn U n) (S' : GeometricCurrentOn V n), W ⊆ V → (∀ ω : TestFormOn V n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → S (testFormOnInclusion hVU n ω) = S' ω) → S.massOn W = S'.massOn W",
+  "lean_name": "dtc_massOn_eq_of_agreeOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-mass-agree-a1-a1"
+}

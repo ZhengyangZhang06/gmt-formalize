@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "depth": 3,
+  "title": "An integer multiplicity triple defines a current",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, and R = (M, θ, ξ) an IMRep of U (Simon 6.3.1 data). Then there is T ∈ 𝒟_n(U) such that T(ω) = R.action ω = ∫_M θ(x)⟨ω(x), ξ(x)⟩ dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (R.Represents T). Here T ∈ 𝒟_n(U) means a GeometricCurrentOn U n: a linear functional on 𝒟ⁿ(U) with T(ω_j) → 0 whenever ω_j → 0 in Simon's test-form topology (TestFormOnConverges).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T",
+  "lean_name": "dtc_imrep_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1"
+}
