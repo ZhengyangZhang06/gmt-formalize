@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "66e98f4b8da3cc24e27a91795e3c9ea6f058a34ca13843fb19a74c4bfc6d3a41",
+  "git_delta": {
+    "base_commit": "bb71f122ec2f0c7a2ca45006568f31a7d38c342e",
+    "candidate_commit": "7d520b6dd7f84a594befb9db6ddd496af74d4372",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_tcd_blowUp_preimage_le_of_testFunction",
+    "diff_sha256": "d4e0ae41057925164c0edf35a545002f82b51ce012b5bb5b9920c1b9b0f1d88f",
+    "source_sha256": "888b4974a9141699de5d39990e9d53eccdc54e7d495e788e060742cc1ff316a4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_tcd_blowUp_preimage_le_of_testFunction",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (U : Set (Euclid P)) (f : CompactlySupportedContinuousMap (Euclid P) ℝ), μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → MeasurableSet U → (∀ y, 0 ≤ f y) → (∀ y ∈ U, 1 ≤ f y) → ∀ t : ℝ≥0∞, ENNReal.ofReal (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]) < t → ∀ᶠ r in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' U) ≤ t * ENNReal.ofReal (r ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
