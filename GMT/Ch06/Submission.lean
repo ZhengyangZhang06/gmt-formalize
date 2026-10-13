@@ -2374,6 +2374,30 @@ theorem Submission.ind_ab_rescaled_tangent_limit :
         (fun z => x + z) '' ((fun z => r • z) '' B) := by
       ext y
       simp only [mem_preimage, mem_image, Poincare.SimonGMT.Chapter03.blowUpMap]
+      constructor
+      · intro hy
+        exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
+          rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+      · rintro ⟨z, ⟨b, hb, rfl⟩, rfl⟩
+        rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+    rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+      smul_eq_mul, ← mul_assoc]
+    have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+      rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+        coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+        ENNReal.ofReal_one]
+    rw [hc, one_mul]
+  -- Change of variables: `∫_{η(M)} g dHⁿ = (rⁿ)⁻¹ ∫_M g ∘ η dHⁿ`.
+  rw [hmp.setIntegral_image_emb hemb _ M, Measure.restrict_smul, integral_smul_measure,
+    ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+  -- `x + r • η y = y`.
+  have hy : x + r • Poincare.SimonGMT.Chapter03.blowUpMap x r y = y := by
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_inv_smul₀ hr.ne', add_sub_cancel]
+  simp only [hy]
+  exact mul_comm _ _
 /-- `Hⁿ` scaling law for the dilation `η(y) = r⁻¹(y − x)`, `r > 0`: `η` is a measurable
 embedding and pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, i.e. `Hⁿ(η⁻¹(B)) = rⁿ Hⁿ(B)`. -/
 theorem Submission.ind_rs_dilation_measurePreserving :
@@ -2456,16 +2480,15 @@ theorem Submission.ind_rs_tauAction_dilation :
         coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
         ENNReal.ofReal_one]
     rw [hc, one_mul]
-  -- Change of variables: `∫_{η(M)} g dHⁿ = (rⁿ)⁻¹ ∫_M g ∘ η dHⁿ`.
-  rw [hmp.setIntegral_image_emb hemb _ M, Measure.restrict_smul, integral_smul_measure,
-    ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+  -- Change variables on the right; on the left, pull `(rⁿ)⁻¹` out of the linear `ξ(y)`.
+  simp only [tauAction]
+  rw [hmp.setIntegral_image_emb hemb (fun z => θ (x + r • z) * ξ (x + r • z) (ω z)) M,
+    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+    smul_eq_mul, ← integral_const_mul]
   congr 1
-  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
-  -- `x + r • η y = y`.
-  have hy : x + r • Poincare.SimonGMT.Chapter03.blowUpMap x r y = y := by
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_inv_smul₀ hr.ne', add_sub_cancel]
-  simp only [hy]
-  exact mul_comm _ _
+  funext y
+  simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, map_smul, smul_eq_mul]
+  ring
 
 /-- Weighted ball growth at a point with a weighted approximate tangent space `Q`:
 `∫_{M ∩ B̄_s(x)} θ dHⁿ ≤ C sⁿ` for all small `s > 0`.  Test the rescaled tangent limit
@@ -2890,15 +2913,6 @@ theorem Submission.ind_ae_blowup_limit :
   congr 1
   refine integral_congr_ae (Eventually.of_forall fun y => ?_)
   simp only [map_smul, smul_eq_mul]
-  ring
-  -- Change variables on the right; on the left, pull `(rⁿ)⁻¹` out of the linear `ξ(y)`.
-  simp only [tauAction]
-  rw [hmp.setIntegral_image_emb hemb (fun z => θ (x + r • z) * ξ (x + r • z) (ω z)) M,
-    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
-    smul_eq_mul, ← integral_const_mul]
-  congr 1
-  funext y
-  simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, map_smul, smul_eq_mul]
   ring
 
 /-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
