@@ -451,6 +451,128 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Unit orientations** (Simon Ch. 6, 4.3, p. 155).
+(a) If `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` orients `Q` (`τ` orthonormal), then `|⟨α, ξ⟩| ≤ ‖α‖` for every
+`n`-covector `α`: `|α(τ)| ≤ ‖α‖ ∏ᵢ |τᵢ| = ‖α‖`.
+(b) If `ξ` orients `Q`, `0 ≠ v ∈ Q` and `ν = |v|⁻¹v`, then `ζ` with `⟨α, ζ⟩ = ⟨ν♭ ∧ α, ξ⟩`
+orients `Q ∩ v^⊥`.  Take an orthonormal basis `τ'` of `Q ∩ v^⊥` (of dimension `n`); then
+`σ = (ν, τ'₁, …, τ'ₙ)` is an orthonormal basis of `Q`, so `β(τ) = det_σ(τ) β(σ)` with
+`det_σ(τ) = ±1` for every `(n+1)`-covector `β`, and `(ν♭ ∧ α)(σ) = ⟪ν, ν⟫ α(τ') = α(τ')`.
+Hence `ζ(α) = ±α(τ')`, with one sign for all `α`. -/
+theorem Submission.dtc_bc_lc_sl_sf_unit_orient : (∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∀ α : Covector (Euclid P) n, |ξ α| ≤ ‖α‖) ∧ ∀ (P n : ℕ) (ξ : MultiVector P (n + 1)) (Q : Submodule ℝ (Euclid P)) (v : Euclid P) (ζ : MultiVector P n), IsUnitOrientationOf ξ Q → v ∈ Q → v ≠ 0 → (∀ α : Covector (Euclid P) n, ζ α = ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (‖v‖⁻¹ • v)).smulRight α))) → IsUnitOrientationOf ζ (Q ⊓ (ℝ ∙ v)ᗮ) := by
+  refine ⟨?_, ?_⟩
+  · -- (a) `ξ(α) = ±α(τ)` and `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+    intro P n ξ Q hξ α
+    obtain ⟨τ, hτ, -, hs⟩ := hξ
+    have h1 : |α τ| ≤ ‖α‖ := by
+      have h := α.le_opNorm τ
+      simpa [hτ.1, Real.norm_eq_abs] using h
+    rcases hs with hs | hs
+    · rw [hs]; exact h1
+    · rw [hs, abs_neg]; exact h1
+  · intro P n ξ Q v ζ hξ hv hv0 hζ
+    obtain ⟨τ, hτ, hτspan, hs⟩ := hξ
+    -- Step 1: the unit vector `ν = ‖v‖⁻¹ v ∈ Q`
+    set ν : Euclid P := ‖v‖⁻¹ • v with hν_def
+    have hνnorm : ‖ν‖ = 1 := by
+      rw [hν_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.mpr hv0)]
+    have hνQ : ν ∈ Q := Q.smul_mem _ hv
+    -- Step 2: `dim Q = n + 1` and `dim (Q ⊓ (ℝ ∙ v)ᗮ) = n`
+    have hQdim : Module.finrank ℝ Q = n + 1 := by
+      rw [← hτspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+    have hQ'dim : Module.finrank ℝ (Q ⊓ (ℝ ∙ v)ᗮ : Submodule ℝ (Euclid P)) = n := by
+      have h := Submodule.finrank_add_inf_finrank_orthogonal (K₁ := ℝ ∙ v) (K₂ := Q)
+        ((Submodule.span_singleton_le_iff_mem v Q).mpr hv)
+      rw [finrank_span_singleton hv0, hQdim, inf_comm] at h
+      omega
+    -- Step 3: an orthonormal basis `τ'` of `Q ⊓ (ℝ ∙ v)ᗮ`, indexed by `Fin n`
+    let b : OrthonormalBasis (Fin n) ℝ (Q ⊓ (ℝ ∙ v)ᗮ : Submodule ℝ (Euclid P)) :=
+      (stdOrthonormalBasis ℝ _).reindex (finCongr hQ'dim)
+    let τ' : Fin n → Euclid P := fun i => (b i : Euclid P)
+    have hτ'on : Orthonormal ℝ τ' :=
+      b.orthonormal.comp_linearIsometry (Q ⊓ (ℝ ∙ v)ᗮ : Submodule ℝ (Euclid P)).subtypeₗᵢ
+    have hτ'span : Submodule.span ℝ (Set.range τ') = Q ⊓ (ℝ ∙ v)ᗮ := by
+      have hr : Set.range τ' = (Q ⊓ (ℝ ∙ v)ᗮ : Submodule ℝ (Euclid P)).subtype '' Set.range b := by
+        rw [← Set.range_comp]; rfl
+      rw [hr, Submodule.span_image, ← b.coe_toBasis, b.toBasis.span_eq, Submodule.map_subtype_top]
+    have hτ'Q : ∀ i, τ' i ∈ Q := fun i => (b i).2.1
+    have hτ'perp : ∀ i, inner ℝ ν (τ' i) = 0 := by
+      intro i
+      have h : τ' i ∈ (ℝ ∙ v)ᗮ := (Submodule.mem_inf.mp (b i).2).2
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right] at h
+      rw [hν_def, real_inner_smul_left, h, mul_zero]
+    -- Step 4: `σ = (ν, τ'₁, …, τ'ₙ)` is orthonormal and lies in `Q`
+    let σ : Fin (n + 1) → Euclid P := Fin.cons ν τ'
+    have hσon : Orthonormal ℝ σ := by
+      rw [orthonormal_iff_ite]
+      intro i j
+      refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+      · simp [σ, hνnorm]
+      · simp [σ, hτ'perp, (Fin.succ_ne_zero j).symm]
+      · simp [σ, real_inner_comm, hτ'perp, Fin.succ_ne_zero i]
+      · simp [σ, Fin.succ_inj, orthonormal_iff_ite.mp hτ'on]
+    have hσQ : ∀ i, σ i ∈ Q := by
+      intro i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simpa [σ] using hνQ
+      · simpa [σ] using hτ'Q j
+    have hτQ : ∀ i, τ i ∈ Q := fun i => hτspan ▸ Submodule.subset_span (Set.mem_range_self i)
+    -- Step 5: `σ` and `τ` are orthonormal bases of `Q`
+    let σQ : Fin (n + 1) → Q := fun i => ⟨σ i, hσQ i⟩
+    let τQ : Fin (n + 1) → Q := fun i => ⟨τ i, hτQ i⟩
+    have hσQon : Orthonormal ℝ σQ := (Q.subtypeₗᵢ.orthonormal_comp_iff).mp hσon
+    have hτQon : Orthonormal ℝ τQ := (Q.subtypeₗᵢ.orthonormal_comp_iff).mp hτ
+    have hcard : Fintype.card (Fin (n + 1)) = Module.finrank ℝ Q := by simp [hQdim]
+    have hσsp : ⊤ ≤ Submodule.span ℝ (Set.range σQ) := by
+      have h := (basisOfOrthonormalOfCardEqFinrank hσQon hcard).span_eq
+      rw [coe_basisOfOrthonormalOfCardEqFinrank] at h
+      exact h.ge
+    have hτsp : ⊤ ≤ Submodule.span ℝ (Set.range τQ) := by
+      have h := (basisOfOrthonormalOfCardEqFinrank hτQon hcard).span_eq
+      rw [coe_basisOfOrthonormalOfCardEqFinrank] at h
+      exact h.ge
+    let bσ : OrthonormalBasis (Fin (n + 1)) ℝ Q := OrthonormalBasis.mk hσQon hσsp
+    let bτ : OrthonormalBasis (Fin (n + 1)) ℝ Q := OrthonormalBasis.mk hτQon hτsp
+    -- Step 6: uniform sign, `β(τ) = d β(σ)` with `d = det_σ τ = ±1`
+    set d : ℝ := bσ.toBasis.det bτ with hd_def
+    have hd : d = 1 ∨ d = -1 := bσ.det_to_matrix_orthonormalBasis_real bτ
+    have hβ : ∀ β : Covector (Euclid P) (n + 1), β τ = d * β σ := by
+      intro β
+      let f : Q [⋀^Fin (n + 1)]→ₗ[ℝ] ℝ := β.toAlternatingMap.compLinearMap Q.subtype
+      have hf := congrArg (fun g : Q [⋀^Fin (n + 1)]→ₗ[ℝ] ℝ => g bτ)
+        (AlternatingMap.eq_smul_basis_det bσ.toBasis f)
+      have h1 : f bτ = β τ := by
+        simp only [f, bτ, OrthonormalBasis.coe_mk, AlternatingMap.compLinearMap_apply,
+          ContinuousAlternatingMap.coe_toAlternatingMap]
+        rfl
+      have h2 : f bσ.toBasis = β σ := by
+        simp only [f, bσ, OrthonormalBasis.coe_toBasis, OrthonormalBasis.coe_mk,
+          AlternatingMap.compLinearMap_apply, ContinuousAlternatingMap.coe_toAlternatingMap]
+        rfl
+      simp only [AlternatingMap.smul_apply, smul_eq_mul] at hf
+      rw [h1, h2] at hf
+      rw [hf, hd_def, mul_comm]
+    -- Step 7: `(ν♭ ∧ α)(σ) = ⟪ν, ν⟫ α(τ') = α(τ')`
+    have hwedge : ∀ α : Covector (Euclid P) n,
+        ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α) σ = α τ' := by
+      intro α
+      rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ]
+      simp [σ, hτ'perp, hνnorm, Fin.removeNth_zero, Fin.tail_cons]
+    -- Step 8: `ζ(α) = ε α(τ')` with `ε = ±1`
+    obtain ⟨s, hs1, hs⟩ : ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ β, ξ β = s * β τ := by
+      rcases hs with hs | hs
+      · exact ⟨1, Or.inl rfl, fun β => by rw [hs β, one_mul]⟩
+      · exact ⟨-1, Or.inr rfl, fun β => by rw [hs β, neg_one_mul]⟩
+    have hζ' : ∀ α, ζ α = (s * d) * α τ' := by
+      intro α
+      rw [hζ α, hs, hβ, hwedge, mul_assoc]
+    refine ⟨τ', hτ'on, hτ'span, ?_⟩
+    rcases hs1 with rfl | rfl <;> rcases hd with hd | hd
+    · left; intro α; rw [hζ' α, hd]; ring
+    · right; intro α; rw [hζ' α, hd]; ring
+    · right; intro α; rw [hζ' α, hd]; ring
+    · left; intro α; rw [hζ' α, hd]; ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
