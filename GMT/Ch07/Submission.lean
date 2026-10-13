@@ -537,6 +537,40 @@ theorem Submission.codim1_rdo_dg_bh_rescaled_gauss_green : ∀ (m : ℕ) (D F : 
       = (r ^ m)⁻¹ * (r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w) := by field_simp
     _ = -(r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by rw [hGGφ]; ring
 
+/-- **Directional rescaled Gauss–Green identity** (Simon Ch. 3, 4.3, (8), for an arbitrary
+direction `w` in place of `eᵢ`).  Let `(μ, ν)` satisfy the Gauss–Green identity
+`∫_F div φ dL^{m+1} = −∫ ⟨φ, ν⟩ dμ` for `φ ∈ C¹_c` with `spt φ ⊆ D`, and let `r > 0`,
+`B̄_{rR}(y) ⊆ D`.  For `ζ ∈ C¹_c` with `spt ζ ⊆ B_R(0)` and `w ∈ ℝ^{m+1}`, the field `g = ζ w` is
+`C¹` with `spt g ⊆ spt ζ ⊆ B_R(0)`, `div g = Dζ(·)(w)` (the trace of the rank-one map
+`h ↦ Dζ(h) w` is `Dζ(w)`) and `⟨g, ν⟩ = ζ ⟨w, ν⟩`.  The rescaled Gauss–Green identity for `g`
+thus reads `∫_{F_{y,r}} Dζ(w) dL^{m+1} = −r⁻ᵐ ∫ ζ(r⁻¹(z − y)) ⟨w, ν(z)⟩ dμ(z)`, where
+`F_{y,r} = {x : y + r x ∈ F}`. -/
+theorem Submission.codim1_rdo_dg_bh_directional_gauss_green : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r R : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → closedBall y (r * R) ⊆ D → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R → ∀ w : Euclid (m + 1), ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z w = -(r ^ m)⁻¹ * ∫ z, ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ := by
+  intro m D F μ ν y r R hF hGG hr hball ζ hζ hζc hζs w
+  -- Step 1: `g = ζ w` is `C¹` with compact support and `spt g ⊆ spt ζ ⊆ B_R(0)`
+  have hg : ContDiff ℝ 1 (fun z => ζ z • w) := hζ.smul contDiff_const
+  have hgc : HasCompactSupport (fun z => ζ z • w) := hζc.smul_right (f' := fun _ => w)
+  have hgs : tsupport (fun z => ζ z • w) ⊆ ball (0 : Euclid (m + 1)) R :=
+    (tsupport_smul_subset_left ζ (fun _ => w)).trans hζs
+  -- Step 2: `div g = Dζ(·)(w)`, the trace of the rank-one map `h ↦ Dζ(h) w`
+  have h1 : ∀ z, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ (fun z => ζ z • w) z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = fderiv ℝ ζ z w := by
+    intro z
+    rw [fderiv_smul_const ((hζ.differentiable one_ne_zero) z) w]
+    have : ((fderiv ℝ ζ z).smulRight w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) =
+        (fderiv ℝ ζ z : Euclid (m + 1) →ₗ[ℝ] ℝ).smulRight w := by
+      ext x; simp
+    rw [this, LinearMap.trace_smulRight]
+    rfl
+  -- Step 3: `⟨g(r⁻¹(z − y)), ν(z)⟩ = ζ(r⁻¹(z − y)) ⟨w, ν(z)⟩`
+  have h2 : ∀ z, inner ℝ (ζ (r⁻¹ • (z - y)) • w) (ν z) = ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) :=
+    fun z => real_inner_smul_left _ _ _
+  -- Step 4: the rescaled Gauss–Green identity for `g`, with both integrands rewritten
+  have key := Submission.codim1_rdo_dg_bh_rescaled_gauss_green m D F μ ν y r R hF hGG hr hball
+    (fun z => ζ z • w) hg hgc hgs
+  simp_rw [h1, h2] at key
+  exact key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
