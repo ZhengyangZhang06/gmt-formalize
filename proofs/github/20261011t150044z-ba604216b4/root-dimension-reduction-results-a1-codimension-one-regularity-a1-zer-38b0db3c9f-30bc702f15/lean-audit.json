@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d09eb2e33c5c236a7a5c9a9351c29822bc8d0b5831abc58d0253e0eb14b8fdec",
+  "git_delta": {
+    "base_commit": "20d3b0404875b9c99f49adc798e73e70908b64e0",
+    "candidate_commit": "e7782e6781e360978e940ca5bd92d55b431163b5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_pc_smooth_translate_l1",
+    "diff_sha256": "6601afa354dfe911e8118f18dc1182e1d8057f2c32ebeee7947ca1e07af269ac",
+    "source_sha256": "fd8ea94a5aac275f6bf9cac8e4015ef1c7959a7671288267dea34c128a795e83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_pc_smooth_translate_l1",
+      "statement": "∀ (m : ℕ) (f : Euclid m → ℝ) (h : Euclid m) (R : ℝ), ContDiff ℝ 1 f → ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ ≤ ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
