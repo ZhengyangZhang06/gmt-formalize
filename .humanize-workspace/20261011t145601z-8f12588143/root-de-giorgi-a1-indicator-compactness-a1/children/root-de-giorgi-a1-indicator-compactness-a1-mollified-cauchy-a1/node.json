@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.mollified_cauchy-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "depth": 3,
+  "title": "Translation estimates plus uniformly Cauchy mollifications imply local Cauchy in measure",
+  "statement": "Let N ∈ ℕ and let (F_k)_{k∈ℕ} be L^N-null-measurable subsets of ℝ^N. Let (ρ_m)_{m∈ℕ} be continuous, compactly supported functions ℝ^N → ℝ with ρ_m ≥ 0, ∫ρ_m dL^N = 1 and support ρ_m ⊆ B̄_{1/(m+1)}(0). Write v_{m,k}(y) := ∫_{F_k} ρ_m(y − z) dz and S_h := {y : y + h ∈ S}. Assume:\n(i) for every R ∈ ℕ there are C ∈ ℝ and k₀ ∈ ℕ such that L^N(B_R(0) ∩ ((F_k)_h Δ F_k)) ≤ ofReal(C|h|) for all k ≥ k₀ and all h ∈ ℝ^N with |h| ≤ 1;\n(ii) for every m ∈ ℕ and ε > 0 there is k₀ such that |v_{m,k}(y) − v_{m,l}(y)| ≤ ε for all k, l ≥ k₀ and all y ∈ B̄_m(0).\nThen for every R ∈ ℕ and every ε ∈ (0, ∞] there is k₀ such that L^N(B_R(0) ∩ (F_k Δ F_l)) ≤ ε for all k, l ≥ k₀.",
+  "lean_statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)) (ρ : ℕ → Rn N → ℝ), (∀ k, NullMeasurableSet (F k) volume) → (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) → (∀ m y, 0 ≤ ρ m y) → (∀ m, ∫ y, ρ m y = 1) → (∀ m, Function.support (ρ m) ⊆ Metric.closedBall (0 : Rn N) (1 / ((m : ℝ) + 1))) → (∀ R : ℕ, ∃ C : ℝ, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F k) (F k)) ≤ ENNReal.ofReal (C * ‖h‖)) → (∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, ∀ y ∈ Metric.closedBall (0 : Rn N) m, |(∫ z in F k, ρ m (y - z)) - ∫ z in F l, ρ m (y - z)| ≤ ε) → ∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε",
+  "lean_name": "indCompact_local_cauchy_of_mollified_cauchy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-mollified-cauchy-a1-a1"
+}

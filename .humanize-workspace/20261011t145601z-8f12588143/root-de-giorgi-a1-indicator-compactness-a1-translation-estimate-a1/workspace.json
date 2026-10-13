@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T145601Z-8f12588143",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch03/20261011t145601z-8f12588143/dispatch/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1",
+  "source_commit": "d09bc8a18ce60face651f042976e8465f21f0f68",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch03/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.ftc_fubini_identity-a1",
+      "key": "ftc_fubini_identity",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; cmp GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean; git rev-parse HEAD; lake-manifest.json revs of mathlib and simongmt",
+              "python3 -I lean_name collision check against dag.json (200 nodes) for indCompact_transEst_volume_symmDiff_eq_integral, indCompact_transEst_integral_indicator_shift_mul, indCompact_transEst_setIntegral_shift_sub_ftc, indCompact_transEst_abs_setIntegral_fderiv_le and any 'transEst' name; DAG metadata of translation_estimate-a1 and l1_duality-a1",
+              "git log --all --oneline -S'indCompact_transEst_'; grep -rn 'indCompact_transEst_' GMT .lake/packages/simongmt/Poincare",
+              "python3 -I /tmp/transest-v2/scripts/gen.py (importlib of verifier/gmt-compare.py layout/child_modules/contract_scope and verifier/lean_contract.py validate_lean_statement) on the 4 child types; lake env lean on each generated NodeChallenge.lean",
+              "lake env lean /tmp/transest-v2/lean/FullCheckV1Copy.lean (attempt-1 scratch proofs; #print axioms)",
+              "lake env lean /tmp/transest-v2/lean/AssemblyCheck.lean (4 child proofs, `exact Submission.X` comparator targets, parentFromChildren with the frozen l1_duality type as hypothesis, instance sanity examples, #print axioms)",
+              "rg -n 'indicator_symmDiff|mulIndicator_symmDiff|integral_mul_right_eq_self|integrableOn_of_bounded|comp_homeomorph|tsupport_comp_eq_preimage|norm_integral_le_of_norm_le_const|trace_smulRight|fderiv_smul_const|fderiv_of_notMem_tsupport|prod_restrict|integral_integral_swap|fderiv_comp_sub|fderiv_const_mul|tsupport_smul_subset_left|tsupport_mul_subset_right|integrable_indicator_iff₀|integral_indicator₀|of_forall_sdiff_eq_zero' <snapshot>/mathlib/Mathlib",
+              "rg -n 'euclideanDivergence' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean; rg -n -i 'translation|symmDiff|indicator' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "grep -n -i 'compactness' book/chapter-03.txt; sed -n 590,630p book/chapter-02.txt; sed -n 640,665p book/chapter-03.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/lake-manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-review-receipt-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Algebra/Order/Group/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionFullCheck.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionV2AssemblyCheck.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_volume_symmDiff_eq_integral/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_integral_indicator_shift_mul/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_setIntegral_shift_sub_ftc/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_abs_setIntegral_fderiv_le/NodeChallenge.lean",
+              "/tmp/transest-v2/lean/AssemblyCheck.lean"
+            ],
+            "conclusion": "Snapshot consistency: the snapshot contract is byte-identical to the workspace Contract.lean, and Submission.lean is still a byte copy. HEAD is d09bc8a and the pins are Mathlib 25730c7c and simongmt 2b366308.\n\nLibrary coverage. None of the four child statements exists in Mathlib or SimonGMT:\n- SimonGMT Chapter02/BV.lean only defines euclideanDivergence g x := trace(fderiv g x) and proves coordinate, measurability and Lipschitz-bound lemmas.\n- Neither library has a BV translation estimate.\n\nEvery ingredient the child proofs cite is present in the pinned snapshot:\n- abs_indicator_symmDiff (via to_additive of mabs_mulIndicator_symmDiff); integral_add_right_eq_self (via integral_mul_right_eq_self).\n- Measure.integrableOn_of_bounded and IntegrableOn.of_forall_sdiff_eq_zero.\n- HasCompactSupport.comp_homeomorph and tsupport_comp_eq_preimage.\n- intervalIntegral.norm_integral_le_of_norm_le_const.\n- LinearMap.trace_smulRight, fderiv_smul_const, fderiv_of_notMem_tsupport, fderiv_comp_sub and fderiv_const_mul.\n- Measure.prod_restrict (arbitrary sets) and integral_integral_swap.\n- tsupport_smul_subset_left and tsupport_mul_subset_right.\n- integrable_indicator_iff₀ and integral_indicator₀.\n\nLean results:\n- All four child types validate and elaborate in the generated comparator scope.\n- Complete child proofs compile with only propext, Classical.choice and Quot.sound.\n- The exact frozen parent type compiles from them plus the frozen l1_duality type passed as a hypothesis, again with only those axioms.\n\nNames: the four lean_names are unreserved in the 200-node DAG, in git history and in the GMT/SimonGMT sources."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+        "child_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.ftc_fubini_identity-a1",
+        "subproblem": {
+          "key": "ftc_fubini_identity",
+          "title": "Translation difference of a C¹_c function as a parametric integral of directional derivatives",
+          "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be an arbitrary set, let ψ : ℝ^N → ℝ be C¹ with compact support, and let h ∈ ℝ^N. Then ∫_F (ψ(z − h) − ψ(z)) dz = −∫_0^1 (∫_F Dψ(z − th)[h] dz) dt. Here ∫_F is integration with respect to the restricted measure L^N⌞F, which is defined for every set F. Dψ(x)[v] is the Fréchet derivative of ψ at x applied to v, and ∫_0^1 is the interval integral.",
+          "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ z in F, (ψ (z - h) - ψ z) = -∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h",
+          "lean_name": "indCompact_transEst_setIntegral_shift_sub_ftc",
+          "depends_on": [],
+          "natural_proof": "Source. Steps 5(b) and 5(d) of the parent proof: the fundamental theorem of calculus along t ↦ ψ(z − th), and Fubini for (z, t) ↦ 1_F(z)·Dψ(z − th)[h]. Here F is an arbitrary set. Let μ := L^N⌞F (so μ ≤ L^N, and μ is s-finite) and ν := L^1⌞(0,1].\n\n1. (Continuity.) Since ψ is C¹, it is differentiable everywhere and x ↦ Dψ(x) is continuous (ContDiff.differentiable, ContDiff.continuous_fderiv). Hence f(z, t) := Dψ(z − th)[h] is continuous on ℝ^N × ℝ: it is the continuous map (z,t) ↦ z − th, followed by Dψ, evaluated at the fixed vector h.\n\n2. (FTC for fixed z.) Fix z and let g(t) := ψ(z − th). The map t ↦ z − th has derivative −h, so by the chain rule g'(t) = Dψ(z − th)[−h] = −f(z, t). Since g' is continuous, it is interval-integrable on [0,1]. The fundamental theorem of calculus (intervalIntegral.integral_eq_sub_of_hasDerivAt) gives g(1) − g(0) = ∫_0^1 g'(t) dt, i.e. ψ(z − h) − ψ(z) = −∫_0^1 f(z, t) dt.\n\n3. (Reduction to Fubini.) Integrating the identity of step 2 over F:\n∫_F (ψ(z − h) − ψ(z)) dz = ∫_F (−∫_0^1 f(z,t) dt) dz = −∫_F ∫_0^1 f(z,t) dt dz.\nSince 0 ≤ 1, ∫_0^1 φ(t) dt = ∫ φ dν for every φ (intervalIntegral.integral_of_le). It therefore suffices to prove\n∫ (∫ f(z,t) dν(t)) dμ(z) = ∫ (∫ f(z,t) dμ(z)) dν(t).\nThis is Fubini's theorem for s-finite measures (integral_integral_swap), once f is μ ⊗ ν-integrable.\n\n4. (Integrability.) By Measure.prod_restrict, μ ⊗ ν = (L^N ⊗ L^1)⌞(F × (0,1]). Let K := {x + s h : x ∈ tsupport ψ, s ∈ [0,1]}. It is the image of the compact set tsupport ψ × [0,1] under the continuous map (x, s) ↦ x + s h, so K is compact.\n (a) f is continuous, K × [0,1] is compact, and L^N ⊗ L^1 is finite on compact sets. Hence f is integrable on K × [0,1] (ContinuousOn.integrableOn_compact).\n (b) f vanishes on (ℝ^N × [0,1]) \\ (K × [0,1]). Indeed, let t ∈ [0,1] with f(z,t) ≠ 0. Then Dψ(z − th) ≠ 0. Since ψ ≡ 0 on the open set ℝ^N \\ tsupport ψ, its derivative vanishes there (fderiv_of_notMem_tsupport). So z − th ∈ tsupport ψ, and z = (z − th) + t h ∈ K.\n (c) ℝ^N × [0,1] is measurable, so (a) and (b) show that f is integrable on ℝ^N × [0,1] (IntegrableOn.of_forall_sdiff_eq_zero). Hence f is integrable on the subset F × (0,1] (IntegrableOn.mono_set), i.e. f is μ ⊗ ν-integrable.\n\n5. (Conclusion.) By Fubini, ∫_F ∫_0^1 f(z,t) dt dz = ∫_0^1 ∫_F f(z,t) dz dt. Together with step 3, ∫_F (ψ(z − h) − ψ(z)) dz = −∫_0^1 (∫_F Dψ(z − th)[h] dz) dt. ∎",
+          "proof_key_steps": [
+            "f(z,t) := Dψ(z − th)[h] is continuous on ℝ^N × ℝ because ψ is C¹.",
+            "FTC along t ↦ ψ(z − th) gives ψ(z − h) − ψ(z) = −∫_0^1 f(z,t) dt for every z.",
+            "Integrate over F, write ∫_0^1 as the integral over (0,1], and reduce to Fubini for L^N⌞F ⊗ L^1⌞(0,1] (integral_integral_swap).",
+            "Integrability: f is continuous on the compact set K × [0,1], where K = tsupport ψ + [0,1]h, and vanishes on (ℝ^N × [0,1]) \\ (K × [0,1]). Since F × (0,1] ⊆ ℝ^N × [0,1], f is integrable for the product measure.",
+            "Swap the integrals to obtain −∫_0^1 ∫_F Dψ(z − th)[h] dz dt."
+          ]
+        },
+        "audit": {
+          "key": "ftc_fubini_identity",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type faithfully includes arbitrary F, C¹ regularity and compact support. The chain rule and FTC produce the correct minus sign. The swept compact set controls the directional derivative throughout the parameter interval, giving product integrability and justified Fubini. Restriction to arbitrary F is valid: the restricted measure is σ-finite, and the pinned prod_restrict theorem requires no measurability of F. No missing hypothesis or circular step remains."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.shift_change_of_variables-a1",
+      "key": "shift_change_of_variables",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; cmp GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean; git rev-parse HEAD; lake-manifest.json revs of mathlib and simongmt",
+              "python3 -I lean_name collision check against dag.json (200 nodes) for indCompact_transEst_volume_symmDiff_eq_integral, indCompact_transEst_integral_indicator_shift_mul, indCompact_transEst_setIntegral_shift_sub_ftc, indCompact_transEst_abs_setIntegral_fderiv_le and any 'transEst' name; DAG metadata of translation_estimate-a1 and l1_duality-a1",
+              "git log --all --oneline -S'indCompact_transEst_'; grep -rn 'indCompact_transEst_' GMT .lake/packages/simongmt/Poincare",
+              "python3 -I /tmp/transest-v2/scripts/gen.py (importlib of verifier/gmt-compare.py layout/child_modules/contract_scope and verifier/lean_contract.py validate_lean_statement) on the 4 child types; lake env lean on each generated NodeChallenge.lean",
+              "lake env lean /tmp/transest-v2/lean/FullCheckV1Copy.lean (attempt-1 scratch proofs; #print axioms)",
+              "lake env lean /tmp/transest-v2/lean/AssemblyCheck.lean (4 child proofs, `exact Submission.X` comparator targets, parentFromChildren with the frozen l1_duality type as hypothesis, instance sanity examples, #print axioms)",
+              "rg -n 'indicator_symmDiff|mulIndicator_symmDiff|integral_mul_right_eq_self|integrableOn_of_bounded|comp_homeomorph|tsupport_comp_eq_preimage|norm_integral_le_of_norm_le_const|trace_smulRight|fderiv_smul_const|fderiv_of_notMem_tsupport|prod_restrict|integral_integral_swap|fderiv_comp_sub|fderiv_const_mul|tsupport_smul_subset_left|tsupport_mul_subset_right|integrable_indicator_iff₀|integral_indicator₀|of_forall_sdiff_eq_zero' <snapshot>/mathlib/Mathlib",
+              "rg -n 'euclideanDivergence' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean; rg -n -i 'translation|symmDiff|indicator' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "grep -n -i 'compactness' book/chapter-03.txt; sed -n 590,630p book/chapter-02.txt; sed -n 640,665p book/chapter-03.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/lake-manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-review-receipt-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Algebra/Order/Group/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionFullCheck.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionV2AssemblyCheck.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_volume_symmDiff_eq_integral/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_integral_indicator_shift_mul/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_setIntegral_shift_sub_ftc/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_abs_setIntegral_fderiv_le/NodeChallenge.lean",
+              "/tmp/transest-v2/lean/AssemblyCheck.lean"
+            ],
+            "conclusion": "Snapshot consistency: the snapshot contract is byte-identical to the workspace Contract.lean, and Submission.lean is still a byte copy. HEAD is d09bc8a and the pins are Mathlib 25730c7c and simongmt 2b366308.\n\nLibrary coverage. None of the four child statements exists in Mathlib or SimonGMT:\n- SimonGMT Chapter02/BV.lean only defines euclideanDivergence g x := trace(fderiv g x) and proves coordinate, measurability and Lipschitz-bound lemmas.\n- Neither library has a BV translation estimate.\n\nEvery ingredient the child proofs cite is present in the pinned snapshot:\n- abs_indicator_symmDiff (via to_additive of mabs_mulIndicator_symmDiff); integral_add_right_eq_self (via integral_mul_right_eq_self).\n- Measure.integrableOn_of_bounded and IntegrableOn.of_forall_sdiff_eq_zero.\n- HasCompactSupport.comp_homeomorph and tsupport_comp_eq_preimage.\n- intervalIntegral.norm_integral_le_of_norm_le_const.\n- LinearMap.trace_smulRight, fderiv_smul_const, fderiv_of_notMem_tsupport, fderiv_comp_sub and fderiv_const_mul.\n- Measure.prod_restrict (arbitrary sets) and integral_integral_swap.\n- tsupport_smul_subset_left and tsupport_mul_subset_right.\n- integrable_indicator_iff₀ and integral_indicator₀.\n\nLean results:\n- All four child types validate and elaborate in the generated comparator scope.\n- Complete child proofs compile with only propext, Classical.choice and Quot.sound.\n- The exact frozen parent type compiles from them plus the frozen l1_duality type passed as a hypothesis, again with only those axioms.\n\nNames: the four lean_names are unreserved in the 200-node DAG, in git history and in the GMT/SimonGMT sources."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+        "child_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.shift_change_of_variables-a1",
+        "subproblem": {
+          "key": "shift_change_of_variables",
+          "title": "Translation change of variables for indicator differences tested against an integrable function",
+          "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be L^N-null-measurable with real indicator 1_F, let ψ : ℝ^N → ℝ be Lebesgue integrable, and let h ∈ ℝ^N. Then ∫_{ℝ^N} (1_F(y + h) − 1_F(y))·ψ(y) dy = ∫_F (ψ(z − h) − ψ(z)) dz.",
+          "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), NullMeasurableSet F volume → Integrable ψ volume → ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y = ∫ z in F, (ψ (z - h) - ψ z)",
+          "lean_name": "indCompact_transEst_integral_indicator_shift_mul",
+          "depends_on": [],
+          "natural_proof": "Source. Step 5(a) of the parent proof. Substituting z = y + h and using translation invariance of Lebesgue measure gives ∫ χ(y+h)ψ(y) dy = ∫ χ(z)ψ(z−h) dz, hence ∫ wψ = ∫_F (ψ(z − h) − ψ(z)) dz. Here ψ is only assumed integrable.\n\nNotation.\n- 1_F is the real indicator of F.\n- ψ_h(z) := ψ(z − h).\n- G := 1_F·ψ_h (= F.indicator ψ_h) and H := 1_F·ψ (= F.indicator ψ).\n- ∫_F f := ∫ f d(L^N⌞F).\n\n1. (The translate is integrable.) L^N is invariant under translations, so ψ_h is integrable (Integrable.comp_sub_right).\n\n2. (Integrability of the pieces.) F is null-measurable, and ψ_h and ψ are integrable, in particular on F. So G and H are integrable (integrable_indicator_iff₀). By translation invariance again, y ↦ G(y + h) is integrable (Integrable.comp_add_right).\n\n3. (Pointwise rewriting.) For every y, (1_F(y + h) − 1_F(y))·ψ(y) = G(y + h) − H(y). Indeed:\n- G(y + h) = 1_F(y + h)·ψ((y + h) − h) = 1_F(y + h)·ψ(y);\n- H(y) = 1_F(y)·ψ(y).\nChecking the four cases (y + h ∈ F or not, y ∈ F or not) confirms the identity.\n\n4. (Linearity.) By step 2, ∫ (G(y + h) − H(y)) dy = ∫ G(y + h) dy − ∫ H(y) dy.\n\n5. (Translation invariance.) The map y ↦ y + h preserves L^N, so ∫ G(y + h) dy = ∫ G(z) dz (integral_add_right_eq_self).\n\n6. (Indicator integrals.) Since F is null-measurable, ∫ G = ∫_F ψ_h and ∫ H = ∫_F ψ (integral_indicator₀).\n\n7. (Linearity on F.) ψ_h and ψ are integrable on F, so ∫_F ψ_h − ∫_F ψ = ∫_F (ψ_h − ψ) = ∫_F (ψ(z − h) − ψ(z)) dz.\n\n8. (Conclusion.) Chaining steps 3–7 gives ∫ (1_F(y + h) − 1_F(y))·ψ(y) dy = ∫_F (ψ(z − h) − ψ(z)) dz. ∎",
+          "proof_key_steps": [
+            "ψ(· − h) is integrable. So are F.indicator ψ(· − h), F.indicator ψ, and y ↦ F.indicator ψ(· − h) evaluated at y + h.",
+            "Pointwise, (1_F(y+h) − 1_F(y))ψ(y) = [1_F ψ(· − h)](y + h) − [1_F ψ](y).",
+            "Translation invariance: ∫ [1_F ψ(· − h)](y + h) dy = ∫ 1_F ψ(· − h) (integral_add_right_eq_self).",
+            "integral_indicator₀ for the null-measurable F, plus linearity, gives ∫_F (ψ(z − h) − ψ(z)) dz."
+          ]
+        },
+        "audit": {
+          "key": "shift_change_of_variables",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type exactly states the claimed identity for null-measurable F, integrable ψ and arbitrary h. The proof establishes integrability of every term before subtraction, performs the translation with the correct sign, and converts indicator integrals to restricted integrals. It is complete and independent of the parent and other children."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.slice_divergence_bound-a1",
+      "key": "slice_divergence_bound",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; cmp GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean; git rev-parse HEAD; lake-manifest.json revs of mathlib and simongmt",
+              "python3 -I lean_name collision check against dag.json (200 nodes) for indCompact_transEst_volume_symmDiff_eq_integral, indCompact_transEst_integral_indicator_shift_mul, indCompact_transEst_setIntegral_shift_sub_ftc, indCompact_transEst_abs_setIntegral_fderiv_le and any 'transEst' name; DAG metadata of translation_estimate-a1 and l1_duality-a1",
+              "git log --all --oneline -S'indCompact_transEst_'; grep -rn 'indCompact_transEst_' GMT .lake/packages/simongmt/Poincare",
+              "python3 -I /tmp/transest-v2/scripts/gen.py (importlib of verifier/gmt-compare.py layout/child_modules/contract_scope and verifier/lean_contract.py validate_lean_statement) on the 4 child types; lake env lean on each generated NodeChallenge.lean",
+              "lake env lean /tmp/transest-v2/lean/FullCheckV1Copy.lean (attempt-1 scratch proofs; #print axioms)",
+              "lake env lean /tmp/transest-v2/lean/AssemblyCheck.lean (4 child proofs, `exact Submission.X` comparator targets, parentFromChildren with the frozen l1_duality type as hypothesis, instance sanity examples, #print axioms)",
+              "rg -n 'indicator_symmDiff|mulIndicator_symmDiff|integral_mul_right_eq_self|integrableOn_of_bounded|comp_homeomorph|tsupport_comp_eq_preimage|norm_integral_le_of_norm_le_const|trace_smulRight|fderiv_smul_const|fderiv_of_notMem_tsupport|prod_restrict|integral_integral_swap|fderiv_comp_sub|fderiv_const_mul|tsupport_smul_subset_left|tsupport_mul_subset_right|integrable_indicator_iff₀|integral_indicator₀|of_forall_sdiff_eq_zero' <snapshot>/mathlib/Mathlib",
+              "rg -n 'euclideanDivergence' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean; rg -n -i 'translation|symmDiff|indicator' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "grep -n -i 'compactness' book/chapter-03.txt; sed -n 590,630p book/chapter-02.txt; sed -n 640,665p book/chapter-03.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/lake-manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-review-receipt-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Algebra/Order/Group/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionFullCheck.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionV2AssemblyCheck.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_volume_symmDiff_eq_integral/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_integral_indicator_shift_mul/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_setIntegral_shift_sub_ftc/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_abs_setIntegral_fderiv_le/NodeChallenge.lean",
+              "/tmp/transest-v2/lean/AssemblyCheck.lean"
+            ],
+            "conclusion": "Snapshot consistency: the snapshot contract is byte-identical to the workspace Contract.lean, and Submission.lean is still a byte copy. HEAD is d09bc8a and the pins are Mathlib 25730c7c and simongmt 2b366308.\n\nLibrary coverage. None of the four child statements exists in Mathlib or SimonGMT:\n- SimonGMT Chapter02/BV.lean only defines euclideanDivergence g x := trace(fderiv g x) and proves coordinate, measurability and Lipschitz-bound lemmas.\n- Neither library has a BV translation estimate.\n\nEvery ingredient the child proofs cite is present in the pinned snapshot:\n- abs_indicator_symmDiff (via to_additive of mabs_mulIndicator_symmDiff); integral_add_right_eq_self (via integral_mul_right_eq_self).\n- Measure.integrableOn_of_bounded and IntegrableOn.of_forall_sdiff_eq_zero.\n- HasCompactSupport.comp_homeomorph and tsupport_comp_eq_preimage.\n- intervalIntegral.norm_integral_le_of_norm_le_const.\n- LinearMap.trace_smulRight, fderiv_smul_const, fderiv_of_notMem_tsupport, fderiv_comp_sub and fderiv_const_mul.\n- Measure.prod_restrict (arbitrary sets) and integral_integral_swap.\n- tsupport_smul_subset_left and tsupport_mul_subset_right.\n- integrable_indicator_iff₀ and integral_indicator₀.\n\nLean results:\n- All four child types validate and elaborate in the generated comparator scope.\n- Complete child proofs compile with only propext, Classical.choice and Quot.sound.\n- The exact frozen parent type compiles from them plus the frozen l1_duality type passed as a hypothesis, again with only those axioms.\n\nNames: the four lean_names are unreserved in the 200-node DAG, in git history and in the GMT/SimonGMT sources."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+        "child_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.slice_divergence_bound-a1",
+        "subproblem": {
+          "key": "slice_divergence_bound",
+          "title": "Divergence-test bound for translated directional derivatives",
+          "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be an arbitrary set, and let R, C ∈ ℝ. Assume ∫_F div g dL^N ≤ C for every C¹ vector field g : ℝ^N → ℝ^N that has compact support, satisfies tsupport g ⊆ B_{R+1}(0), and has |g(y)| ≤ 1 for all y. Here div g = trace Dg (euclideanDivergence) and ∫_F is integration against L^N⌞F. Let ψ : ℝ^N → ℝ be C¹ with compact support, tsupport ψ ⊆ B_R(0), and |ψ(y)| ≤ 1 for all y. Then |∫_F Dψ(z − a)[h] dz| ≤ C|h| for all a, h ∈ ℝ^N with |a| ≤ 1.",
+          "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (R C : ℝ), (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ → tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∀ a h : Rn N, ‖a‖ ≤ 1 → |∫ z in F, fderiv ℝ ψ (z - a) h| ≤ C * ‖h‖",
+          "lean_name": "indCompact_transEst_abs_setIntegral_fderiv_le",
+          "depends_on": [],
+          "natural_proof": "Source. Steps 2 and 5(c) of the parent proof.\n- Step 2 tests the hypothesis with ±G/λ.\n- Step 5(c) uses the field Ψ_t(z) = ψ(z − th)h. It is C¹, has compact support in B_{R+1}(0) and |Ψ_t| ≤ |h|, and div Ψ_t(z) = Dψ(z − th)[h] by the trace of a rank-one map.\nHere the shift is an arbitrary a with |a| ≤ 1 (the parent uses a = th), and F is an arbitrary set. Integrals over F are taken with respect to L^N⌞F, and constant factors can be pulled out of them (integral_const_mul). Recall div g(x) = trace(Dg(x)) (SimonGMT euclideanDivergence g x = LinearMap.trace (fderiv g x)).\n\n1. (Case h = 0.) Then Dψ(z − a)[0] = 0 for all z, so the integral is 0 = C·|0|, and the claim holds. From now on h ≠ 0, so |h| > 0. Put I := ∫_F Dψ(z − a)[h] dz.\n\n2. (Translated profile.) Let τ(y) := y − a, a homeomorphism of ℝ^N, and ψ_a(y) := ψ(y − a) = ψ(τ(y)).\n- ψ_a has compact support (HasCompactSupport.comp_homeomorph).\n- tsupport ψ_a = τ⁻¹(tsupport ψ) = {y : y − a ∈ tsupport ψ} (tsupport_comp_eq_preimage).\n- If y ∈ tsupport ψ_a, then y − a ∈ tsupport ψ ⊆ B_R(0), so |y| ≤ |y − a| + |a| < R + 1.\nHence tsupport ψ_a ⊆ B_{R+1}(0). (The parent proof reaches the same inclusion through R' := max over tsupport ψ of |·| < R; the direct pointwise estimate suffices.)\n\n3. (Claim: if c ∈ ℝ and |c| = |h|⁻¹, then cI ≤ C.) Fix such c and let G(y) := (c·ψ(y − a))·h.\n (a) G is C¹. The map y ↦ c·ψ(y − a) is C¹ (ψ composed with an affine map, times a constant), and multiplying it by the fixed vector h preserves C¹.\n (b) support G ⊆ support ψ_a, hence tsupport G ⊆ tsupport ψ_a (tsupport_smul_subset_left, tsupport_mul_subset_right). So G has compact support, being a closed subset of the compact set tsupport ψ_a, and tsupport G ⊆ B_{R+1}(0) by step 2.\n (c) For every y, |G(y)| = |c|·|ψ(y − a)|·|h| = |h|⁻¹·|ψ(y − a)|·|h| = |ψ(y − a)| ≤ 1.\n (d) (Divergence.) Put φ(y) := c·ψ(y − a). Then φ is differentiable everywhere and G(y) = φ(y)·h.\n - DG(z) = Dφ(z).smulRight h, i.e. DG(z)[v] = Dφ(z)[v]·h (fderiv_smul_const).\n - The trace of the rank-one linear map v ↦ ℓ(v)·h is ℓ(h) (LinearMap.trace_smulRight). So div G(z) = trace DG(z) = Dφ(z)[h].\n - By the constant-multiple and translation rules (fderiv_const_mul, fderiv_comp_sub), Dφ(z) = c·Dψ(z − a).\n Therefore div G(z) = c·Dψ(z − a)[h] for every z.\n (e) By (a)–(c), G satisfies the hypotheses of the assumption, so ∫_F div G ≤ C. By (d), ∫_F div G = ∫_F c·Dψ(z − a)[h] dz = c·I. Hence cI ≤ C.\n\n4. (Two-sided bound.)\n- With c = |h|⁻¹, step 3 gives |h|⁻¹·I ≤ C. Multiplying by |h| > 0 yields I ≤ C|h|.\n- With c = −|h|⁻¹, it gives −|h|⁻¹·I ≤ C, hence −I ≤ C|h|.\nTherefore |∫_F Dψ(z − a)[h] dz| = |I| ≤ C|h|. ∎",
+          "proof_key_steps": [
+            "The case h = 0 is trivial; otherwise |h| > 0.",
+            "tsupport ψ(· − a) = a + tsupport ψ is compact and lies in B_{R+1}(0), since |y| ≤ |y − a| + |a| < R + 1.",
+            "For |c| = |h|⁻¹, the field G = cψ(· − a)h is C¹, compactly supported in B_{R+1}(0), and satisfies |G| ≤ 1.",
+            "div G(z) = c·Dψ(z − a)[h], by fderiv_smul_const, LinearMap.trace_smulRight and the chain rule for the translation.",
+            "The hypothesis gives c·I ≤ C. Taking c = ±|h|⁻¹ yields |I| ≤ C|h|."
+          ]
+        },
+        "audit": {
+          "key": "slice_divergence_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type matches every hypothesis, including arbitrary F and h and only the bound ‖a‖ ≤ 1. The proof handles h = 0, establishes compact support inside the strict enlarged ball, normalizes the test field, and computes its divergence using the rank-one trace identity. Testing both signs yields the exact absolute-value bound. Restricted integration and constant extraction need no additional measurability assumption on F."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.symmdiff_l1_identity-a1",
+      "key": "symmdiff_l1_identity",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; cmp GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean; git rev-parse HEAD; lake-manifest.json revs of mathlib and simongmt",
+              "python3 -I lean_name collision check against dag.json (200 nodes) for indCompact_transEst_volume_symmDiff_eq_integral, indCompact_transEst_integral_indicator_shift_mul, indCompact_transEst_setIntegral_shift_sub_ftc, indCompact_transEst_abs_setIntegral_fderiv_le and any 'transEst' name; DAG metadata of translation_estimate-a1 and l1_duality-a1",
+              "git log --all --oneline -S'indCompact_transEst_'; grep -rn 'indCompact_transEst_' GMT .lake/packages/simongmt/Poincare",
+              "python3 -I /tmp/transest-v2/scripts/gen.py (importlib of verifier/gmt-compare.py layout/child_modules/contract_scope and verifier/lean_contract.py validate_lean_statement) on the 4 child types; lake env lean on each generated NodeChallenge.lean",
+              "lake env lean /tmp/transest-v2/lean/FullCheckV1Copy.lean (attempt-1 scratch proofs; #print axioms)",
+              "lake env lean /tmp/transest-v2/lean/AssemblyCheck.lean (4 child proofs, `exact Submission.X` comparator targets, parentFromChildren with the frozen l1_duality type as hypothesis, instance sanity examples, #print axioms)",
+              "rg -n 'indicator_symmDiff|mulIndicator_symmDiff|integral_mul_right_eq_self|integrableOn_of_bounded|comp_homeomorph|tsupport_comp_eq_preimage|norm_integral_le_of_norm_le_const|trace_smulRight|fderiv_smul_const|fderiv_of_notMem_tsupport|prod_restrict|integral_integral_swap|fderiv_comp_sub|fderiv_const_mul|tsupport_smul_subset_left|tsupport_mul_subset_right|integrable_indicator_iff₀|integral_indicator₀|of_forall_sdiff_eq_zero' <snapshot>/mathlib/Mathlib",
+              "rg -n 'euclideanDivergence' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean; rg -n -i 'translation|symmDiff|indicator' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "grep -n -i 'compactness' book/chapter-03.txt; sed -n 590,630p book/chapter-02.txt; sed -n 640,665p book/chapter-03.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/lake-manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-review-receipt-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Algebra/Order/Group/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionFullCheck.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionV2AssemblyCheck.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_volume_symmDiff_eq_integral/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_integral_indicator_shift_mul/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_setIntegral_shift_sub_ftc/NodeChallenge.lean",
+              "/tmp/transest-v2/challenges/indCompact_transEst_abs_setIntegral_fderiv_le/NodeChallenge.lean",
+              "/tmp/transest-v2/lean/AssemblyCheck.lean"
+            ],
+            "conclusion": "Snapshot consistency: the snapshot contract is byte-identical to the workspace Contract.lean, and Submission.lean is still a byte copy. HEAD is d09bc8a and the pins are Mathlib 25730c7c and simongmt 2b366308.\n\nLibrary coverage. None of the four child statements exists in Mathlib or SimonGMT:\n- SimonGMT Chapter02/BV.lean only defines euclideanDivergence g x := trace(fderiv g x) and proves coordinate, measurability and Lipschitz-bound lemmas.\n- Neither library has a BV translation estimate.\n\nEvery ingredient the child proofs cite is present in the pinned snapshot:\n- abs_indicator_symmDiff (via to_additive of mabs_mulIndicator_symmDiff); integral_add_right_eq_self (via integral_mul_right_eq_self).\n- Measure.integrableOn_of_bounded and IntegrableOn.of_forall_sdiff_eq_zero.\n- HasCompactSupport.comp_homeomorph and tsupport_comp_eq_preimage.\n- intervalIntegral.norm_integral_le_of_norm_le_const.\n- LinearMap.trace_smulRight, fderiv_smul_const, fderiv_of_notMem_tsupport, fderiv_comp_sub and fderiv_const_mul.\n- Measure.prod_restrict (arbitrary sets) and integral_integral_swap.\n- tsupport_smul_subset_left and tsupport_mul_subset_right.\n- integrable_indicator_iff₀ and integral_indicator₀.\n\nLean results:\n- All four child types validate and elaborate in the generated comparator scope.\n- Complete child proofs compile with only propext, Classical.choice and Quot.sound.\n- The exact frozen parent type compiles from them plus the frozen l1_duality type passed as a hypothesis, again with only those axioms.\n\nNames: the four lean_names are unreserved in the 200-node DAG, in git history and in the GMT/SimonGMT sources."
+          }
+        ],
+        "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+        "child_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.symmdiff_l1_identity-a1",
+        "subproblem": {
+          "key": "symmdiff_l1_identity",
+          "title": "Measure of a symmetric difference in a ball equals the L¹ distance of the indicators",
+          "statement": "Let N ∈ ℕ and R ∈ ℝ, and let A, F ⊆ ℝ^N be L^N-null-measurable sets with real-valued indicator functions 1_A and 1_F. Let B_R(0) be the open ball (empty if R ≤ 0) and A Δ F the symmetric difference. Then, in [0, ∞], L^N(B_R(0) ∩ (A Δ F)) = ofReal(∫_{B_R(0)} |1_A(y) − 1_F(y)| dL^N(y)).",
+          "lean_statement": "∀ (N : ℕ) (A F : Set (Rn N)) (R : ℝ), NullMeasurableSet A volume → NullMeasurableSet F volume → volume (Metric.ball (0 : Rn N) R ∩ symmDiff A F) = ENNReal.ofReal (∫ y in Metric.ball (0 : Rn N) R, |A.indicator (1 : Rn N → ℝ) y - F.indicator (1 : Rn N → ℝ) y|)",
+          "lean_name": "indCompact_transEst_volume_symmDiff_eq_integral",
+          "depends_on": [],
+          "natural_proof": "Source. Step 4 of the parent proof: |w| = 1_{F_h Δ F}, so ∫_{B_R(0)} |w| = L^N(B_R(0) ∩ (F_h Δ F)) < ∞. Here it is stated for two arbitrary L^N-null-measurable sets A and F; the parent applies it with A = F_h = (· + h)⁻¹F.\n\nNotation.\n- B := B_R(0), the open ball (B = ∅ if R ≤ 0).\n- 1_S is the real indicator of a set S (S.indicator 1).\n- S := A Δ F = (A \\ F) ∪ (F \\ A).\n- L^N⌞B is the restriction of L^N to B, and ∫_B f := ∫ f d(L^N⌞B).\n\n1. (Pointwise identity.) For every y ∈ ℝ^N, |1_A(y) − 1_F(y)| = 1_S(y).\n- If y lies in exactly one of A and F, then y ∈ S and both sides equal 1.\n- If y lies in both or in neither, then y ∉ S and both sides equal 0.\n(Mathlib: abs_indicator_symmDiff, the additive form of mabs_mulIndicator_symmDiff.) Hence ∫_B |1_A − 1_F| = ∫_B 1_S.\n\n2. (Null-measurability.) Null-measurable sets form a σ-algebra, so S is L^N-null-measurable (NullMeasurableSet.symmDiff). Since L^N⌞B ≤ L^N, the measure L^N⌞B is absolutely continuous with respect to L^N. Hence S is also (L^N⌞B)-null-measurable (NullMeasurableSet.mono_ac with Measure.absolutelyContinuous_of_le Measure.restrict_le_self).\n\n3. (Integral of an indicator.) For any measure μ and any μ-null-measurable set S, ∫ 1_S dμ = ∫_S 1 dμ = μ(S).toReal (integral_indicator₀ and setIntegral_const). With μ = L^N⌞B this gives ∫_B 1_S = (L^N⌞B)(S).toReal.\n\n4. (Restriction to the ball.) B is open, hence measurable, so (L^N⌞B)(S) = L^N(S ∩ B) for every set S (Measure.restrict_apply').\n\n5. (Finiteness.) L^N(S ∩ B) ≤ L^N(B) < ∞, because balls have finite Lebesgue measure (measure_ball_lt_top). Hence ofReal(L^N(S ∩ B).toReal) = L^N(S ∩ B) (ENNReal.ofReal_toReal).\n\n6. (Conclusion.) By steps 1, 3, 4 and 5:\nofReal(∫_B |1_A − 1_F|) = ofReal((L^N⌞B)(S).toReal) = ofReal(L^N(S ∩ B).toReal) = L^N(S ∩ B) = L^N(B ∩ (A Δ F)).\nIf R ≤ 0, then B = ∅ and both sides are 0, so no case split is needed. ∎",
+          "proof_key_steps": [
+            "|1_A − 1_F| = 1_{A Δ F} pointwise (abs_indicator_symmDiff).",
+            "A Δ F is null-measurable for L^N, hence also for L^N⌞B_R(0) ≤ L^N.",
+            "∫_{B_R(0)} 1_{AΔF} = (L^N⌞B_R(0))(AΔF).toReal = L^N(AΔF ∩ B_R(0)).toReal, by integral_indicator₀, setIntegral_const and restrict_apply' (the ball is measurable).",
+            "L^N(AΔF ∩ B_R(0)) ≤ L^N(B_R(0)) < ∞, so ofReal of its toReal is itself; this gives L^N(B_R(0) ∩ (A Δ F))."
+          ]
+        },
+        "audit": {
+          "key": "symmdiff_l1_identity",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition matches the prose and includes both null-measurability hypotheses. The proof establishes the pointwise indicator identity, transfers null-measurability to the restricted measure, evaluates the indicator integral, and uses finite ball measure to justify ofReal/toReal conversion. It covers arbitrary R and N without hidden positivity assumptions or circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/task.md": "e75273998f7c4f95ebf065f0fad2d086525ca06c562b9d468f9786e0824e1b5d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/problem.md": "d450b947d5616531ac8cc4a99158db188c875f9e857bfcaf8b809a207631a989",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/problem.json": "8a4e29f58fc3cd9ec56e6ed45bec4c9008d5eb705e95bd016943fc957faf50db",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/reference-manifest.json": "b6a97248df40c5dc702e39c00119a850911686a21d507e00b0849f87a8d3d512",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition.json": "d492b58b6de5d324bc9a32b619be2be3c171ffb1acb0a919e4c722b5264c06df",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-audit.json": "f716cc7e9cf6c27e04af7c7ddd4fa95b18bfb77c1631ce75141d2c881cac2c8e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/controller-contract.json": "31d3ac7a976c9c9beab4104bf5eed7a165f1f72155288ca9c3600d33f425a627",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-child-handoff.json": "59454c39928b2475cb2e232f4ad15526c48c2b738de380e637436fdea80e56b6",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-supplied-plan.md": "d2ba5f446ae79f32a0305e90170b51cd3cf25b70a3cec8baf1e42667defb6210",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-supplied-natural-proof.md": "759d050163cf3d96568136725629a301c99a90b153a48bf7edea8b90ac0583c0",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/parent-supplied-natural-proof.json": "547221492a2a31fedd6c7e8b6a7e686b925264edd694a81137f04f8469d26fd1",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867/node.json": "baea8c28e123dda019c47fc704bc0161f2a9415b8a9fcac9c4e49accaffe2319",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-child-handoff.json": "687a9cd2fcacdc0479427261c90549917eff118fc69913f37410a00eadbf78dd",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-supplied-plan.md": "e5b6682c72e65ed712155e86f12239d1c61ad1edb9b122a3498c81e4bec74421",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-supplied-natural-proof.md": "f9ee76a3c0687104899fe38b1d4b0d758e660884a3b67854327931e2d6bcaf85",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/parent-supplied-natural-proof.json": "cb11f8bc8ffea3af7eba478fe7a9ad68b8d3b323b90def4ece1523073447ef44",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760/node.json": "db0ffc1f53189aee36f4586c17e071e53dcdd7fb97975f87d4cd34290d6bda1b",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-child-handoff.json": "facf44f4785d9c83e2a50b0aa3a7bbba700ba545ef2375012591ffb2b43f3b52",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-supplied-plan.md": "ea1fc34bc680c56b20a5d2a9caa76362f4b2bf15ecbb04d16b922b363c0280cb",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-supplied-natural-proof.md": "1cd3f28106f7889daa3e149af12d1702705551a02119490ea5cbc08d1bc6a06d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/parent-supplied-natural-proof.json": "e85b28df42bcbcd27e6fa32d500db22918b06b75f08852ac929a90ed34072d5f",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sl-504ec668ba/node.json": "093a865e6fc861c8bdf07573d22946104bbbd0085b6fc2c8a3d50cfa28fb4506",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-child-handoff.json": "ee949023869eb1ca46bb3921f5c6c408062d25ee4fd253b0f6437a184138b529",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-supplied-plan.md": "505f70f83939f87b6ccda05eb8ae422cd9e47a7d9239b38c18f582a21ff5c7dc",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-supplied-natural-proof.md": "12c988f4abd2ae2e764bb1549c4015337afff0fb5f517131a389e2fd85aabc69",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/parent-supplied-natural-proof.json": "cfafd617ed31967c6d7d219b8d6a8752b3d5e9de20acc34ba83db55aaf634a32",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/children/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sy-097b589f33/node.json": "fadb78ea20d5bd3472cc7fcece6f31aabe8600bb7df929ed2b809ef04038b8d9"
+  }
+}

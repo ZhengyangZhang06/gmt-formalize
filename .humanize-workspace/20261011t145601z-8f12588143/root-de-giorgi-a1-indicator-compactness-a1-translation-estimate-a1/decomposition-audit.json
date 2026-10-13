@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "prod_restrict|integral_integral_swap|of_forall_sdiff_eq_zero|norm_integral_le_of_norm_le_const|trace_smulRight|fderiv_of_notMem_tsupport",
+        "mabs_mulIndicator_symmDiff|integrable_indicator_iff₀|integral_indicator₀|setIntegral_const|comp_sub_right|integral_mul_right_eq_self|comp_homeomorph|tsupport_comp_eq_preimage|fderiv_smul_const|fderiv_const_mul|fderiv_comp_sub",
+        "indCompact_transEst_|indCompact_translation_estimate",
+        "git log --all --oneline -S'indCompact_transEst_' -- GMT/Ch03",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/TransEstSplitDecisionV2AssemblyCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/transest-independent-audit-uyxnd10y/symmdiff_l1_identity/NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/transest-independent-audit-uyxnd10y/shift_change_of_variables/NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/transest-independent-audit-uyxnd10y/ftc_fubini_identity/NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/transest-independent-audit-uyxnd10y/slice_divergence_bound/NodeChallenge.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/TransEstSplitDecisionV2AssemblyCheck.lean"
+      ],
+      "conclusion": "The split is appropriate: four independent analytic obligations cover the selected translation estimate and combine with its existing l1_duality dependency to prove exactly the frozen parent contract. Dependency traversal is acyclic. All four names are bare identifiers and unreserved in the current 204-node DAG; no previously accepted declaration is reused. The prior proposal has identical names and types. Snapshot revisions and inspected library files match the installed pins. No matching proposed declarations were found in the searched snapshot sources or Chapter 3 git history. All four types pass lexical validation and independently elaborate in freshly generated comparator challenges without child implementations. Recompiling the supplied complete proofs and exact parent assembly succeeds, with only propext, Classical.choice and Quot.sound; the assembly assumes precisely the recorded l1_duality type. Indicator, scalar-action, Euclidean-norm and volume instance checks also pass. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "symmdiff_l1_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the prose and includes both null-measurability hypotheses. The proof establishes the pointwise indicator identity, transfers null-measurability to the restricted measure, evaluates the indicator integral, and uses finite ball measure to justify ofReal/toReal conversion. It covers arbitrary R and N without hidden positivity assumptions or circular reliance."
+    },
+    {
+      "key": "shift_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the claimed identity for null-measurable F, integrable ψ and arbitrary h. The proof establishes integrability of every term before subtraction, performs the translation with the correct sign, and converts indicator integrals to restricted integrals. It is complete and independent of the parent and other children."
+    },
+    {
+      "key": "ftc_fubini_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully includes arbitrary F, C¹ regularity and compact support. The chain rule and FTC produce the correct minus sign. The swept compact set controls the directional derivative throughout the parameter interval, giving product integrability and justified Fubini. Restriction to arbitrary F is valid: the restricted measure is σ-finite, and the pinned prod_restrict theorem requires no measurability of F. No missing hypothesis or circular step remains."
+    },
+    {
+      "key": "slice_divergence_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches every hypothesis, including arbitrary F and h and only the bound ‖a‖ ≤ 1. The proof handles h = 0, establishes compact support inside the strict enlarged ball, normalizes the test field, and computes its divergence using the rank-one trace identity. Testing both signs yields the exact absolute-value bound. Restricted integration and constant extraction need no additional measurability assumption on F."
+    }
+  ],
+  "required_changes": []
+}
