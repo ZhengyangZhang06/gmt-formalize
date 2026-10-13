@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1.mass_bound-a1",
+      "key": "mass_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical)",
+              "rg -c -g '*.lean' 'rsdic_|regcomp_|dor_lmb_' local-references/123e8435b4a2469b/project (no match, exit 1: accepted DAG declarations live on branches, not in the frozen snapshot)",
+              "rg -n 'structure IMRep|def IMRep.measure|def IMRep.action|def IsUnitOrientationOf' local-references/123e8435b4a2469b/project",
+              "rg -n 'theorem le_iff\\b|theorem withDensity_apply\\b|theorem lintegral_indicator\\b|theorem lintegral_mono_ae\\b|theorem lintegral_const_mul\\b|theorem lintegral_add_left\\b|theorem restrict_restrict\\b|theorem smul_apply\\b' local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+              "rg -n 'det_to_matrix_orthonormalBasis|eq_smul_basis_det|euclideanHausdorffMeasure_smul₀|hausdorffMeasure_smul₀|exists_orthonormalBasis_extension|theorem le_opNorm|theorem ae_restrict_iff|theorem ae_eq_mk' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "grep -n 'def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|theorem CountablyRectifiable.mono|theorem countablyRectifiable_iUnion|def blowUpMap' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "grep -n 'theorem simon_theorem_3_6|theorem simon_remark_3_7_hausdorff' simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean; rg 'simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure' simongmt (Chapter02/AreaLiteral.lean)",
+              "grep -n 'def covectorEuclideanNorm|abbrev Covector' simongmt/Poincare/SimonGMT/Chapter06/{Mass,Forms}.lean",
+              "dag.json scan: lean_name/lean_statement/status of rsdic_ae_tangent_iff_of_subset, rsdic_unitOrientation_eq_or_eq_neg, rsdic_exists_imrep_int_combination, rsdic_imrep_action_int_combination, regcomp_unit_orientation_pairing (all accepted, identical); dor_lmb_ic_measure_le_of_weighted_orient_eq unreserved; duplicate-lean_name scan and cross-branch reuse precedent (im_calculus decomposition-v1)",
+              "git show {a157a5f,fe95347,0af9ed5,faacb9c,2a16c5a}:GMT/Ch07/Submission.lean; git merge-base --is-ancestor checks",
+              "python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope/child_modules on all six lean_statements",
+              "lake env lean /tmp/ic-decomp/Types.lean, /tmp/ic-decomp/Assembly.lean, /tmp/ic-decomp/cmp/*_NodeChallenge.lean, /tmp/ic-decomp/ChildCand.lean, /tmp/ic-decomp/ParentMerged.lean, ParentMerged6.lean, ParentMergedAlt.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-tangent-locality-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/decomposition-v6.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/decomposition-v1.json",
+              "/tmp/ic-decomp/Types.lean",
+              "/tmp/ic-decomp/Assembly.lean",
+              "/tmp/ic-decomp/ChildCand.lean",
+              "/tmp/ic-decomp/ParentMerged6.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace contract, which defines IMRep, IsUnitOrientationOf, IMRep.action, IMRep.Represents and IMRep.measure.\n\nThe snapshot contains no rsdic_/regcomp_/dor_lmb_ declarations. The accepted ones are on DAG branches; their candidate commits a157a5f, fe95347, 0af9ed5, faacb9c and 2a16c5a were inspected with git show.\n\nLibrary facts used in the child proofs:\n- Mathlib Measure.le_iff, withDensity_apply, lintegral_indicator, Measure.restrict_restrict, lintegral_const_mul, lintegral_add_left, lintegral_mono_ae, Measure.smul_apply.\n- Mathlib ContinuousAlternatingMap.le_opNorm, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, AlternatingMap.eq_smul_basis_det, Orthonormal.exists_orthonormalBasis_extension, Measure.euclideanHausdorffMeasure_smul₀.\n- SimonGMT HasApproximateTangentSpaceAt (and .unique), CountablyRectifiable.mono, countablyRectifiable_iUnion, blowUpMap, covectorEuclideanNorm.\n- The Upper Density Theorem (Simon Ch. 1, 3.6), formalized as simon_theorem_3_6.\n\nNo library lemma gives the mass bound for an integer combination; it is the one new child.\n\nLean checks:\n- All six types elaborate in the exact comparator scope and pass validate_lean_statement.\n- The new child and the parent assembly have complete proofs using only standard axioms.\n- The simulated overlay merge compiles."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1",
+        "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1.mass_bound-a1",
+        "subproblem": {
+          "key": "mass_bound",
+          "title": "Mass bound for an integer combination: (†) a.e. implies μ_R ≤ |p₁|μ_{R₁} + |p₂|μ_{R₂}",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, let R₁ = (M₁, θ₁, ξ₁), R₂ = (M₂, θ₂, ξ₂), R = (M, θ, ξ) be integer multiplicity triples (IMRep) in U and p₁, p₂ ∈ ℤ. Suppose that for Hⁿ-a.e. x ∈ ℝ^P (Hⁿ = μHE[n]) the n-vectors satisfy 1_M(x)θ(x)ξ(x) = p₁1_{M₁}(x)θ₁(x)ξ₁(x) + p₂1_{M₂}(x)θ₂(x)ξ₂(x). Then μ_R ≤ |p₁|μ_{R₁} + |p₂|μ_{R₂} as measures on ℝ^P, where μ_{R′} = θ′Hⁿ⌞M′ (IMRep.measure) and |pᵢ| = pᵢ.natAbs acts as a scalar in [0, ∞].",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure",
+          "lean_name": "dor_lmb_ic_measure_le_of_weighted_orient_eq",
+          "depends_on": [
+            "orientation_pairing"
+          ],
+          "natural_proof": "Source: the final sentence of step 5 (0 ≤ θ ≤ |p₁|θ₁1_{M₁} + |p₂|θ₂1_{M₂}) and step 8 of the supplied proof of the selected theorem. Step 8 is reproduced in step 5 below.\nDeparture: the supplied proof reads the multiplicity bound off its explicit formula θ = |m|, by the triangle inequality. Here R is an arbitrary IMRep satisfying the identity (†). This is what the reused construction (sibling combination_construction) exports: (†), not its formula. So the same bound is recovered Hⁿ-a.e. from (†), using the normalisation of step 1(a) in the Euclidean coefficient norm (sibling orientation_pairing). Step 8 only integrates the bound, so an a.e. bound suffices.\nNotation:\n - μ := μHE[n]; for c ∈ ℤ, |c| = c.natAbs.\n - For an IMRep R' = (M', θ', ξ') in U put g_{R'} := 1_{M'}θ' : ℝ^P → ℕ and F_{R'} := 1_{M'}θ'ξ' : ℝ^P → Λₙ(ℝ^P).\n - The hypothesis reads F_R = p₁F_{R₁} + p₂F_{R₂} μ-a.e.; μ_{R'} := R'.measure = (μ⌞M').withDensity θ'.\n - |β| := covectorEuclideanNorm β.\n1. Good points. M, M₁, M₂ are Borel, so the field orients of each of R, R₁, R₂ gives: for μ-a.e. x, if x ∈ M' then ξ'(x) is a unit orientation of some subspace Q (IsUnitOrientationOf (ξ' x) Q). Let G be the set of x at which these three implications and the hypothesis identity all hold. Then μ(ℝ^P ∖ G) = 0.\n2. One term. Let R' be an IMRep and x a point such that x ∈ M' implies that ξ'(x) is a unit orientation of some Q. Let β be an n-covector with |β| ≤ 1. Then |F_{R'}(x)(β)| ≤ g_{R'}(x):\n - if x ∉ M', both sides are 0;\n - if x ∈ M', then F_{R'}(x)(β) = θ'(x)·ξ'(x)(β), and orientation_pairing (i) gives |ξ'(x)(β)| ≤ |β| ≤ 1, so |F_{R'}(x)(β)| ≤ θ'(x) = g_{R'}(x).\n3. Pointwise multiplicity bound. Claim: for x ∈ G, g_R(x) ≤ |p₁|g_{R₁}(x) + |p₂|g_{R₂}(x) in ℕ.\n - If x ∉ M, then g_R(x) = 0.\n - If x ∈ M, then ξ(x) is a unit orientation of some Q, since x ∈ G. orientation_pairing (ii) gives an n-covector β with |β| ≤ 1 and ξ(x)(β) = 1. Evaluating the identity at β and using step 2 for R₁ and R₂ (x ∈ G):\n  θ(x) = θ(x)·ξ(x)(β) = F_R(x)(β) = p₁F_{R₁}(x)(β) + p₂F_{R₂}(x)(β) ≤ |p₁|·|F_{R₁}(x)(β)| + |p₂|·|F_{R₂}(x)(β)| ≤ |p₁|g_{R₁}(x) + |p₂|g_{R₂}(x).\n This is a real inequality between natural numbers, so it holds in ℕ. Hence\n (‡) g_R ≤ |p₁|g_{R₁} + |p₂|g_{R₂} μ-a.e.\n4. Measures as integrals. For an IMRep R' and a Borel set s: μ_{R'}(s) = ∫⁻_s θ' d(μ⌞M') = ∫⁻_{s∩M'} θ' dμ = ∫⁻_s g_{R'} dμ (Mathlib withDensity_apply, Measure.restrict_restrict, lintegral_indicator). Also g_{R'} is Borel, since θ' is measurable and M' is Borel.\n5. Comparison (step 8). Let s be Borel. By (‡), which holds μ⌞s-a.e. since μ⌞s ≪ μ, monotonicity of the lower integral gives the first inequality below. Additivity for measurable integrands and constants pulled out of ∫⁻ give the next equality, and step 4 the last:\n μ_R(s) = ∫⁻_s g_R dμ ≤ ∫⁻_s (|p₁|g_{R₁} + |p₂|g_{R₂}) dμ = |p₁|∫⁻_s g_{R₁} dμ + |p₂|∫⁻_s g_{R₂} dμ = |p₁|μ_{R₁}(s) + |p₂|μ_{R₂}(s).\n The right-hand side is (|p₁|•μ_{R₁} + |p₂|•μ_{R₂})(s), where the scalars |pᵢ| ∈ [0, ∞) act on measures. Two measures that compare on all Borel sets compare as measures (Mathlib Measure.le_iff). Hence R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure. ∎",
+          "proof_key_steps": [
+            "A.e. on ℝ^P the hypothesis identity holds and the orientations of R, R₁, R₂ are unit orientations on their carriers.",
+            "For |β| ≤ 1 and a.e. x, |(1_{M'}θ'ξ')(x)(β)| ≤ 1_{M'}θ'(x), by orientation_pairing (i).",
+            "At a.e. x ∈ M pick β with |β| ≤ 1 and ξ(x)(β) = 1 (orientation_pairing (ii)); evaluating (†) at β gives θ(x) ≤ |p₁|1_{M₁}θ₁(x) + |p₂|1_{M₂}θ₂(x).",
+            "μ_{R'}(s) = ∫⁻_s 1_{M'}θ' dHⁿ for Borel s; integrate the a.e. bound to get μ_R(s) ≤ |p₁|μ_{R₁}(s) + |p₂|μ_{R₂}(s), hence μ_R ≤ |p₁|μ_{R₁} + |p₂|μ_{R₂}."
+          ]
+        },
+        "audit": {
+          "key": "mass_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The norming covector is chosen pointwise, so no measurable-selection assumption is needed. Evaluating the a.e. identity yields the natural-valued indicator multiplicity bound for arbitrary R. The withDensity and restricted-integral identities then give comparison on every Borel set and hence the exact measure inequality. The orientation_pairing dependency and ENNReal scalar action are correct; the new name is unreserved."
+        },
+        "resolved_dependencies": [
+          "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/decomposition.json": "a893b9d7614e6f1853f82fb5fa85994a07c7776eec93e654d6029eea71500ffe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/decomposition-audit.json": "28a30d4e1dc8f31105d0b2d003e393bb368d21de587e705c82c3f2696bb129a1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-child-handoff.json": "716b36ba6cdadc8e6e9b0521c4b0c0c9580acb9414c8201b1b419f7288634701",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-supplied-plan.md": "88a2a3402b99d2b3ceb18a6e7da0255c42eca2770b089476afebaddc33280e6b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-supplied-natural-proof.md": "7cc084318ad57387c288e3230213426f319bc17e93317d9b8a077ac5a29988f3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/parent-supplied-natural-proof.json": "aa0b1294211eb7339974bb76deaa4ed1d810e85682374e962d342a75911355c3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/node.json": "166f131986002ceb8b50a57cfc9be60663ce23bb68ffef4aa365f7ee7cddbfa9"
+  }
+}
