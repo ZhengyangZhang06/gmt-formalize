@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "depth": 3,
+  "title": "Borel measurable chartwise tangential differential L(x) = D(f∘Φ_j)(Ψ_j x)∘DΦ_j(Ψ_j x)⁺",
+  "statement": "Let Ω_j ⊆ ℝⁿ (j ∈ ℕ) be open, Φ_j : ℝⁿ → ℝ^P C¹ maps, each c_j-antilipschitz on Ω_j for some c_j > 0, and f : ℝ^P → ℝ^Q any map. Then there is a strongly (Borel) measurable L : ℝ^P → L(ℝ^P, ℝ^Q) with L(x) = 0 for x ∉ ⋃_j Φ_j(Ω_j), such that every x ∈ ⋃_j Φ_j(Ω_j) admits j and w ∈ Ω_j with Φ_j(w) = x, L(x)(DΦ_j(w)s) = D(f∘Φ_j)(w)s for all s ∈ ℝⁿ, and for every v ∈ ℝ^P some s ∈ ℝⁿ with |DΦ_j(w)s| ≤ |v| and L(x)v = D(f∘Φ_j)(w)s (D(f∘Φ_j)(w) = Mathlib fderiv, which is 0 where f∘Φ_j is not differentiable).",
+  "lean_statement": "∀ (P Q n : ℕ) (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)) (f : Eucl P → Eucl Q), (∀ j, IsOpen (Ω j)) → (∀ j, ContDiff ℝ 1 (Φ j)) → (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), StronglyMeasurable L ∧ (∀ x, x ∉ (⋃ j, Φ j '' Ω j) → L x = 0) ∧ ∀ x ∈ (⋃ j, Φ j '' Ω j), ∃ j, ∃ w ∈ Ω j, Φ j w = x ∧ (∀ s : Eucl n, L x (fderiv ℝ (Φ j) w s) = fderiv ℝ (f ∘ Φ j) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ (Φ j) w s‖ ≤ ‖v‖ ∧ L x v = fderiv ℝ (f ∘ Φ j) w s",
+  "lean_name": "lpf_tde_measurable_chart_differential",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.continuous_left_inverse-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.continuous_left_inverse-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-me-70f87b0655-a1"
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.coefficient_field-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "depth": 5,
+  "title": "An integrable tangent field on a chart piece lifts to an integrable coefficient field c with DΦ·c = JΦ·(Y∘Φ)",
+  "statement": "Let P, n ∈ ℕ, Ω ⊆ ℝⁿ open, and Φ : ℝⁿ → ℝ^P of class C¹, Lipschitz on Ω and κ-antilipschitz on Ω for some κ > 0. Let A ⊆ Φ(Ω) be Hⁿ-null-measurable and Y : ℝ^P → ℝ^P Hⁿ⌞A-integrable, such that for Hⁿ-a.e. x ∈ A and every w ∈ Ω with Φ(w) = x, Y(x) ∈ range DΦ(w). Put D := Ω ∩ Φ⁻¹(A) and JΦ(w) := √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩)_{i,j<n}. Then there is c : ℝⁿ → ℝⁿ, Lⁿ-integrable on Ω, with c(w) = 0 for every w ∉ D and DΦ(w)c(w) = JΦ(w)·Y(Φ(w)) for Lⁿ-a.e. w ∈ D. Here Hⁿ = μHE[n] on ℝ^P, Lⁿ = volume on ℝⁿ, DΦ(w) = fderiv ℝ Φ w and e_i = EuclideanSpace.single i 1.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (Y : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → IntegrableOn Y A (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → Y x ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap) → ∃ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) ∧ (∀ w, w ∉ Ω ∩ Φ ⁻¹' A → c w = 0) ∧ ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), fderiv ℝ Φ w (c w) = Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det • Y (Φ w)",
+  "lean_name": "slicing_im_ll_twl_coefficient_field",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1",
+    "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.continuous_left_inverse-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-ae-pullback-a1-a1",
+      "result_commit": "841085c6a9d76231a52113cfbad8e6e3261f0a6f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.continuous_left_inverse-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-co-7afa0393aa-a1",
+      "result_commit": "d9f5b44bfc7833808051c4a02273d2978a8d8bb6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9-a1",
+      "result_commit": "8cfbc487a3d10545b0ea005ad58122242bbcc072",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-c96b654981-a1"
+}
