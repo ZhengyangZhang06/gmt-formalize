@@ -1135,40 +1135,342 @@ theorem Submission.rectifiability_mass_measure_representation : ∀ (P k : ℕ) 
       rw [sdiff_eq_empty.2 hAB, measure_empty]
     have hν₀null : NullMeasurable ν₀ μU := by
       intro s hs
-      have hadm : s • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
-        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
-        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
-        exact (hC x).trans hc.le
-      have hle := (T.le_massOn hadm).trans hM
-      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
-      have hlin : T (s • ω) = s * T ω := by
-        rw [map_smul, smul_eq_mul]
-      rwa [hlin] at hle
-    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
-    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
-    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
-    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
-    rw [abs_le]
-    constructor
-    · have := mul_le_mul_of_nonneg_left h2 hc0.le
-      rw [e2] at this
-      linarith
-    · have := mul_le_mul_of_nonneg_left h1 hc0.le
-      rw [e1] at this
-      linarith
-  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  have hB1 : 0 < B + 1 := by linarith
-  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
-  have hBδ : B * (ε / (B + 1)) ≤ ε := by
-    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
-          mul_le_mul_of_nonneg_right (by linarith) hδ.le
-      _ = ε := by field_simp
-  have := key (C + ε / (B + 1)) (by linarith)
-  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
-    _ = B * C + B * (ε / (B + 1)) := by ring
-    _ ≤ B * C + ε := by linarith
+      exact hcarath_null _ (hν₀.measurable hs)
+    have hν₀ae : AEMeasurable ν₀ μU := hν₀null.aemeasurable
+    have hν₀1' : ∀ᵐ y ∂μU, ‖ν₀ y‖ = 1 :=
+      (Poincare.SimonGMT.Chapter01.ae_radonCaratheodoryMeasure_iff μU).1 hν₀1
+    obtain ⟨ν₂, hν₂m, hν₂le, hν₀₂⟩ : ∃ ν₂ : U → EuclideanSpace ℝ ι, Measurable ν₂ ∧
+        (∀ y, ‖ν₂ y‖ ≤ 1) ∧ ν₀ =ᵐ[μU] ν₂ := by
+      obtain ⟨ν₁, hν₁m, hν₀₁⟩ : ∃ ν₁ : U → EuclideanSpace ℝ ι, Measurable ν₁ ∧ ν₀ =ᵐ[μU] ν₁ :=
+        ⟨hν₀ae.mk ν₀, hν₀ae.measurable_mk, hν₀ae.ae_eq_mk⟩
+      refine ⟨fun y => if ‖ν₁ y‖ ≤ 1 then ν₁ y else 0,
+        Measurable.ite (measurableSet_le hν₁m.norm measurable_const) hν₁m measurable_const,
+        fun y => ?_, ?_⟩
+      · show ‖(if ‖ν₁ y‖ ≤ 1 then ν₁ y else 0)‖ ≤ 1
+        split_ifs with h
+        · exact h
+        · simp
+      · filter_upwards [hν₀₁, hν₀1'] with y h1 h2
+        simp only [← h1, h2, le_refl, ite_true]
+    have hν₂1 : ∀ᵐ y ∂μU, ‖ν₂ y‖ = 1 := by
+      filter_upwards [hν₀₂, hν₀1'] with y h1 h2
+      rw [← h1, h2]
+    have hrepU : ∀ f : C_c(U, EuclideanSpace ℝ ι), Λ f = ∫ y, inner ℝ (f y) (ν₂ y) ∂μU := by
+      intro f
+      rw [hrep f]
+      have hae : (fun y => inner ℝ (f y) (ν₀ y)) =ᵐ[Poincare.SimonGMT.Chapter01.radonCaratheodoryMeasure μU]
+          (fun y => inner ℝ (f y) (ν₂ y)) := by
+        refine (Poincare.SimonGMT.Chapter01.ae_radonCaratheodoryMeasure_iff μU).2 ?_
+        filter_upwards [hν₀₂] with y hy
+        rw [hy]
+      rw [integral_congr_ae hae]
+      apply Poincare.SimonGMT.Chapter01.integral_radonCaratheodoryMeasure
+      have : Measurable fun y => inner ℝ (f y) (ν₂ y) :=
+        (continuous_fst.inner continuous_snd).measurable.comp (f.continuous.measurable.prodMk hν₂m)
+      exact this.stronglyMeasurable
+    have hintU : ∀ f : C_c(U, EuclideanSpace ℝ ι), Integrable (fun y => inner ℝ (f y) (ν₂ y)) μU := by
+      intro f
+      have hf : Integrable (fun y => f y) μU := f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport
+      refine hf.norm.mono' ?_ (Eventually.of_forall fun y => ?_)
+      · exact ((continuous_fst.inner continuous_snd).measurable.comp
+          (f.continuous.measurable.prodMk hν₂m)).aestronglyMeasurable
+      · calc ‖inner ℝ (f y) (ν₂ y)‖ ≤ ‖f y‖ * ‖ν₂ y‖ := norm_inner_le_norm _ _
+          _ ≤ ‖f y‖ * 1 := mul_le_mul_of_nonneg_left (hν₂le y) (norm_nonneg _)
+          _ = ‖f y‖ := mul_one _
+    -- Step 8: push forward to `ℝ^P`.
+    have hemb : MeasurableEmbedding (Subtype.val : U → Eucl P) :=
+      MeasurableEmbedding.subtype_coe hU.measurableSet
+    obtain ⟨μ, hμdef⟩ : ∃ μ : Measure (Eucl P), μ = Measure.map Subtype.val μU := ⟨_, rfl⟩
+    obtain ⟨ν, hνval, hνout, hνm⟩ : ∃ ν : Eucl P → EuclideanSpace ℝ ι, (∀ y : U, ν y = ν₂ y) ∧
+        (∀ x, x ∉ U → ν x = 0) ∧ Measurable ν := by
+      refine ⟨fun x => if hx : x ∈ U then ν₂ ⟨x, hx⟩ else 0, fun y => by simp,
+        fun x hx => by simp [hx], ?_⟩
+      exact Measurable.dite (f := ν₂) (g := fun _ => (0 : EuclideanSpace ℝ ι)) hν₂m
+        measurable_const hU.measurableSet
+    have hνle : ∀ x, ‖ν x‖ ≤ 1 := by
+      intro x; by_cases hx : x ∈ U
+      · rw [show ν x = ν₂ ⟨x, hx⟩ from hνval ⟨x, hx⟩]; exact hν₂le _
+      · rw [hνout x hx, norm_zero]; exact zero_le_one
+    -- Restriction of a compactly supported map on `ℝ^P` to `U`.
+    have hrestr : ∀ g : Eucl P → EuclideanSpace ℝ ι, Continuous g → HasCompactSupport g →
+        tsupport g ⊆ U → ∃ f : C_c(U, EuclideanSpace ℝ ι), (∀ y : U, f y = g y) ∧ ext f = g := by
+      intro g hg hgc hgU
+      have hcomp : IsCompact (Subtype.val ⁻¹' tsupport g : Set U) := by
+        rw [Subtype.isCompact_iff]
+        have : Subtype.val '' (Subtype.val ⁻¹' tsupport g : Set U) = tsupport g := by
+          rw [image_preimage_eq_inter_range, Subtype.range_coe]; exact inter_eq_left.2 hgU
+        rw [this]; exact hgc.isCompact
+      let f : C_c(U, EuclideanSpace ℝ ι) :=
+        { toFun := fun y => g y
+          continuous_toFun := hg.comp continuous_subtype_val
+          hasCompactSupport' := hcomp.of_isClosed_subset (isClosed_tsupport _)
+            (tsupport_comp_subset_preimage g continuous_subtype_val) }
+      refine ⟨f, fun y => rfl, ?_⟩
+      funext x
+      by_cases hx : x ∈ U
+      · rw [show ext f x = f ⟨x, hx⟩ from hext_val f ⟨x, hx⟩]; rfl
+      · rw [hext_out f x hx]
+        exact (image_eq_zero_of_notMem_tsupport fun h => hx (hgU h)).symm
+    refine ⟨μ, ν, ?_, hνm.stronglyMeasurable, ?_, ?_, ?_⟩
+    · -- `μ(ℝ^P ∖ U) = 0`
+      rw [hμdef, hemb.map_apply]
+      have : (Subtype.val ⁻¹' Uᶜ : Set U) = ∅ := by
+        ext y; simp
+      rw [this, measure_empty]
+    · -- `‖ν‖ = 1` `μ`-a.e.
+      rw [hμdef, hemb.ae_map_iff]
+      filter_upwards [hν₂1] with y hy
+      rw [hνval]; exact hy
+    · -- integrability and the representation (Step 11 in coordinates)
+      intro g hg hgc hgU
+      obtain ⟨f, hf, hfg⟩ := hrestr g hg hgc hgU
+      have hcomp : (fun y : U => inner ℝ (g y) (ν y)) = fun y => inner ℝ (f y) (ν₂ y) := by
+        funext y; rw [hf, hνval]
+      constructor
+      · rw [hμdef, hemb.integrable_map_iff]
+        change Integrable (fun y : U => inner ℝ (g y) (ν y)) μU
+        rw [hcomp]; exact hintU f
+      · rw [hμdef, hemb.integral_map, hcomp, ← hrepU f]
+        show L g = L (ext f)
+        rw [hfg]
+    · -- the envelope formula for `μ(W)`
+      intro W hWo hWU
+      set S : ℝ≥0∞ := ⨆ (g : Eucl P → EuclideanSpace ℝ ι) (_ : Continuous g ∧ HasCompactSupport g ∧
+        tsupport g ⊆ W ∧ ∀ x, ‖g x‖ ≤ 1), ENNReal.ofReal (L g) with hS
+      have hμW : μ W = μU (Subtype.val ⁻¹' W) := by rw [hμdef]; exact hemb.map_apply μU W
+      apply le_antisymm
+      · -- `μ(W) ≤ S`: inner regularity, Urysohn and the envelope identity
+        rw [hμW]
+        have hW'o : IsOpen (Subtype.val ⁻¹' W : Set U) := hWo.preimage continuous_subtype_val
+        rw [hW'o.measure_eq_iSup_isCompact μU]
+        refine iSup_le fun K => iSup_le fun hKW => iSup_le fun hK => ?_
+        obtain ⟨φ, hφ1, hφc, hφW, hφr⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen hK hW'o hKW
+        obtain ⟨u, hu⟩ : ∃ u : C_c(U, ℝ≥0), ∀ y, (u y : ℝ) = φ y := by
+          refine ⟨⟨⟨fun y => ⟨φ y, (Set.mem_Icc.1 (hφr y)).1⟩, φ.continuous.subtype_mk _⟩, ?_⟩,
+            fun y => rfl⟩
+          refine hφc.of_isClosed_subset (isClosed_tsupport _) (closure_mono ?_)
+          intro y hy h0
+          exact hy (Subtype.ext h0)
+        have hu_int : Integrable (fun y => (u y : ℝ)) μU :=
+          (NNReal.continuous_coe.comp u.continuous).integrable_of_hasCompactSupport
+            (u.hasCompactSupport.comp_left (by simp))
+        have hKu : μU K ≤ ENNReal.ofReal (∫ y, (u y : ℝ) ∂μU) := by
+          rw [ofReal_integral_eq_lintegral_ofReal hu_int (Eventually.of_forall fun y => (u y).2),
+            ← lintegral_indicator_one hK.isClosed.measurableSet]
+          apply lintegral_mono
+          intro y
+          by_cases hy : y ∈ K
+          · simp [indicator_of_mem hy, hu, hφ1 hy]
+          · simp [indicator_of_notMem hy]
+        have henv := Poincare.SimonGMT.Chapter01.simon_theorem_4_14_positive_envelope Λ hΛ u
+        rw [← henv] at hKu
+        refine hKu.trans ?_
+        by_cases hStop : S = ∞
+        · rw [hStop]; exact le_top
+        · have hbd : ∀ b ∈ Λ '' {ω : C_c(U, EuclideanSpace ℝ ι) | ∀ x, ‖ω x‖ ≤ (u x : ℝ)},
+              b ≤ S.toReal := by
+            rintro _ ⟨ω, hω, rfl⟩
+            have hωsupp : tsupport ω ⊆ tsupport φ := by
+              apply closure_mono
+              intro y hy
+              rw [Function.mem_support] at hy ⊢
+              intro h0
+              apply hy
+              have := hω y
+              rw [hu, h0] at this
+              exact norm_le_zero_iff.1 this
+            have hadm : Continuous (ext ω) ∧ HasCompactSupport (ext ω) ∧ tsupport (ext ω) ⊆ W ∧
+                ∀ x, ‖ext ω x‖ ≤ 1 := by
+              refine ⟨hext_cont ω, hext_cs ω, ?_, hext_norm ω 1 zero_le_one fun y => ?_⟩
+              · refine (hext_tsupp ω).trans ?_
+                rintro _ ⟨y, hy, rfl⟩
+                exact hφW (hωsupp hy)
+              · exact (hω y).trans (by rw [hu]; exact (Set.mem_Icc.1 (hφr y)).2)
+            have hle : ENNReal.ofReal (L (ext ω)) ≤ S :=
+              le_iSup₂_of_le (f := fun (g : Eucl P → EuclideanSpace ℝ ι)
+                (_ : Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ W ∧ ∀ x, ‖g x‖ ≤ 1) =>
+                  ENNReal.ofReal (L g)) (ext ω) hadm le_rfl
+            exact (ENNReal.ofReal_le_iff_le_toReal hStop).1 hle
+          have hne : (Λ '' {ω : C_c(U, EuclideanSpace ℝ ι) | ∀ x, ‖ω x‖ ≤ (u x : ℝ)}).Nonempty :=
+            ⟨Λ 0, 0, fun x => by simp, rfl⟩
+          calc ENNReal.ofReal (sSup (Λ '' {ω : C_c(U, EuclideanSpace ℝ ι) | ∀ x, ‖ω x‖ ≤ (u x : ℝ)}))
+              ≤ ENNReal.ofReal S.toReal := ENNReal.ofReal_le_ofReal (csSup_le hne hbd)
+            _ = S := ENNReal.ofReal_toReal hStop
+      · -- `S ≤ μ(W)`: the representation and `‖ν‖ ≤ 1`
+        refine iSup₂_le fun g hg => ?_
+        obtain ⟨hgc, hgcs, hgW, hg1⟩ := hg
+        have hgU : tsupport g ⊆ U := hgW.trans hWU
+        obtain ⟨f, hf, hfg⟩ := hrestr g hgc hgcs hgU
+        have hLg : L g = ∫ y, inner ℝ (f y) (ν₂ y) ∂μU := by
+          rw [← hrepU f]; show L g = L (ext f); rw [hfg]
+        rw [hLg, hμW]
+        set A : Set U := Subtype.val ⁻¹' tsupport g
+        have hA : MeasurableSet A := (isClosed_tsupport g).measurableSet.preimage measurable_subtype_coe
+        have hAW : A ⊆ Subtype.val ⁻¹' W := preimage_mono hgW
+        have hAfin : μU A < ∞ := by
+          have : IsCompact A := by
+            rw [Subtype.isCompact_iff]
+            have : Subtype.val '' A = tsupport g := by
+              rw [image_preimage_eq_inter_range, Subtype.range_coe]; exact inter_eq_left.2 hgU
+            rw [this]; exact hgcs.isCompact
+          exact this.measure_lt_top
+        have hle : ∫ y, inner ℝ (f y) (ν₂ y) ∂μU ≤ ∫ y, A.indicator 1 y ∂μU := by
+          apply integral_mono (hintU f)
+          · exact (integrable_indicator_iff hA).2 (integrableOn_const hAfin.ne)
+          · intro y
+            by_cases hy : y ∈ A
+            · rw [indicator_of_mem hy]
+              calc inner ℝ (f y) (ν₂ y) ≤ ‖f y‖ * ‖ν₂ y‖ := real_inner_le_norm _ _
+                _ ≤ 1 * 1 := by
+                  apply mul_le_mul _ (hν₂le y) (norm_nonneg _) zero_le_one
+                  rw [hf]; exact hg1 _
+                _ = 1 := one_mul 1
+            · rw [indicator_of_notMem hy]
+              have : f y = 0 := by rw [hf]; exact image_eq_zero_of_notMem_tsupport hy
+              simp [this]
+        rw [integral_indicator_one hA] at hle
+        calc ENNReal.ofReal (∫ y, inner ℝ (f y) (ν₂ y) ∂μU) ≤ ENNReal.ofReal (μU.real A) :=
+              ENNReal.ofReal_le_ofReal hle
+          _ = μU A := by rw [measureReal_def, ENNReal.ofReal_toReal hAfin.ne]
+          _ ≤ μU (Subtype.val ⁻¹' W) := measure_mono hAW
+  -- Assembly (Steps 2, 7, 8, 9, 10, 11).
+  intro P k U hU T hT
+  by_cases hkP : P < k
+  · -- Step 2 (degenerate case `k > P`): `T = 0`, every mass measure is `0`, and `ξ := 0`.
+    have hT0 : ∀ ω : TestFormOn U k, T ω = 0 :=
+      Submission.br_la_apply_eq_zero_of_lt_degree P k U T hkP
+    have hmass0 : ∀ W, T.massOn W = 0 := by
+      intro W
+      refine le_antisymm (sSup_le ?_) bot_le
+      rintro _ ⟨ω, -, rfl⟩
+      simp [hT0 ω]
+    have hMM0 : IsMassMeasure T (0 : Measure (Eucl P)) :=
+      ⟨by simp, fun W _ => by simp [hmass0 W]⟩
+    refine ⟨⟨0, hMM0⟩, fun μ hμ => ?_⟩
+    have hμ0 : μ = 0 := h_measure_uniqueness P U hU μ 0 hμ.1 (by simp)
+      (fun W hW => by rw [hμ.2 W hW, hmass0 W]; simp)
+      (fun W hW => by rw [hμ.2 W hW, hmass0 W]; exact ENNReal.zero_lt_top)
+    subst hμ0
+    exact ⟨fun _ => 0, stronglyMeasurable_const, by simp, fun ω => ⟨by simp, by simp [hT0 ω]⟩⟩
+  · -- Main case.
+    obtain ⟨e, he_coord, he_norm, he_diag, he_off⟩ := h_coordinates P k
+    obtain ⟨L, hLT, hLadd, hLsmul, hLmass⟩ := h_extension P k U hU T hT
+    -- the functional in coordinates: L_H g := L (e.symm ∘ g)
+    let LH : (Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P)) → ℝ :=
+      fun g => L (fun x => e.symm (g x))
+    have hcont : ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), Continuous g →
+        Continuous (fun x => e.symm (g x)) := fun g hg => e.symm.continuous.comp hg
+    have htsupp : ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P),
+        tsupport (fun x => e.symm (g x)) ⊆ tsupport g := fun g =>
+      tsupport_comp_subset (g := fun v => e.symm v) (map_zero e.symm) g
+    have hcs : ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), HasCompactSupport g →
+        HasCompactSupport (fun x => e.symm (g x)) := fun g hg =>
+      hg.comp_left (g := fun v => e.symm v) (map_zero e.symm)
+    have hnorm_symm : ∀ v : EuclideanSpace ℝ (SimonMultiIndex k P),
+        covectorEuclideanNorm (e.symm v) = ‖v‖ := fun v => by
+      rw [← he_norm, e.apply_symm_apply]
+    have hLHadd : ∀ g₁ g₂ : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), Continuous g₁ →
+        HasCompactSupport g₁ → tsupport g₁ ⊆ U → Continuous g₂ → HasCompactSupport g₂ →
+        tsupport g₂ ⊆ U → LH (g₁ + g₂) = LH g₁ + LH g₂ := by
+      intro g₁ g₂ h1 h1c h1U h2 h2c h2U
+      have := hLadd _ _ (hcont g₁ h1) (hcs g₁ h1c) ((htsupp g₁).trans h1U)
+        (hcont g₂ h2) (hcs g₂ h2c) ((htsupp g₂).trans h2U)
+      have hf : (fun x => e.symm ((g₁ + g₂) x)) =
+          (fun x => e.symm (g₁ x)) + (fun x => e.symm (g₂ x)) := by
+        funext x; simp
+      simp only [LH, hf]
+      exact this
+    have hLHsmul : ∀ (c : ℝ) (g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P)), Continuous g →
+        HasCompactSupport g → tsupport g ⊆ U → LH (c • g) = c * LH g := by
+      intro c g hg hgc hgU
+      have := hLsmul c _ (hcont g hg) (hcs g hgc) ((htsupp g).trans hgU)
+      have hf : (fun x => e.symm ((c • g) x)) = c • (fun x => e.symm (g x)) := by
+        funext x; simp
+      simp only [LH, hf]
+      exact this
+    have hLHbdd : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ,
+        ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), Continuous g → tsupport g ⊆ K →
+          (∀ x, ‖g x‖ ≤ 1) → LH g ≤ C := by
+      intro K hK hKU
+      obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+      have hW : CompactlyContainedOpen W U := ⟨hWo, hWc, hWU⟩
+      refine ⟨(T.massOn W).toReal, fun g hg hgK hg1 => ?_⟩
+      have h := hLmass W _ hW (hcont g hg) ((htsupp g).trans (hgK.trans hKW))
+        (fun x => by rw [hnorm_symm]; exact hg1 x)
+      exact (ENNReal.ofReal_le_iff_le_toReal (hT W hW).ne).1 h
+    obtain ⟨μ₀, ν, hμ₀U, hνmeas, hνunit, hrep, hμ₀W⟩ :=
+      h_riesz_open P (SimonMultiIndex k P) U hU LH hLHadd hLHsmul hLHbdd
+    have hLHω : ∀ ω : TestFormOn U k,
+        LH (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) = T ω := by
+      intro ω
+      have : (fun x => e.symm (e ((ω : DifferentialForm (Eucl P) k) x))) =
+          (ω : DifferentialForm (Eucl P) k) := by
+        funext x; simp
+      simp only [LH, this, hLT]
+    have hωcont : ∀ ω : TestFormOn U k, Continuous (ω : DifferentialForm (Eucl P) k) :=
+      fun ω => ω.property.1.1.continuous
+    have hωcs : ∀ ω : TestFormOn U k,
+        HasCompactSupport (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) := fun ω =>
+      ω.property.1.2.comp_left (g := fun v => e v) (map_zero e)
+    have hωts : ∀ ω : TestFormOn U k,
+        tsupport (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) ⊆
+          tsupport (ω : DifferentialForm (Eucl P) k) := fun ω =>
+      tsupport_comp_subset (g := fun v => e v) (map_zero e) _
+    -- (2.8): μ₀(W) = M_W(T) for W ⊂⊂ U
+    have hmass : ∀ W, CompactlyContainedOpen W U → μ₀ W = T.massOn W := by
+      intro W hW
+      rw [hμ₀W W hW.1 (subset_closure.trans hW.2.2)]
+      apply le_antisymm
+      · refine iSup₂_le fun g hg => ?_
+        exact hLmass W _ hW (hcont g hg.1) ((htsupp g).trans hg.2.2.1)
+          (fun x => by rw [hnorm_symm]; exact hg.2.2.2 x)
+      · refine sSup_le ?_
+        rintro _ ⟨ω, hω, rfl⟩
+        show ENNReal.ofReal (T ω) ≤ _
+        rw [← hLHω ω]
+        refine le_iSup₂_of_le (f := fun (g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P))
+          (_ : Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ W ∧ ∀ x, ‖g x‖ ≤ 1) =>
+            ENNReal.ofReal (LH g))
+          (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) ⟨e.continuous.comp (hωcont ω),
+            hωcs ω, (hωts ω).trans hω.1, fun x => by rw [he_norm]; exact hω.2 x⟩ le_rfl
+    have hMM : IsMassMeasure T μ₀ := ⟨hμ₀U, hmass⟩
+    refine ⟨⟨μ₀, hMM⟩, fun μ hμ => ?_⟩
+    -- uniqueness: every mass measure equals μ₀
+    have hμeq : μ = μ₀ := h_measure_uniqueness P U hU μ μ₀ hμ.1 hμ₀U
+      (fun W hW => by rw [hμ.2 W hW, hmass W hW]) (fun W hW => by rw [hμ.2 W hW]; exact hT W hW)
+    subst hμeq
+    -- ξ(x) := ⟨ν(x), e(·)⟩
+    let eL : Covector (Eucl P) k →L[ℝ] EuclideanSpace ℝ (SimonMultiIndex k P) := e
+    let Φ : EuclideanSpace ℝ (SimonMultiIndex k P) → NVector (Eucl P) k :=
+      fun v => (innerSL ℝ v).comp eL
+    have hΦc : Continuous Φ := (innerSL ℝ).continuous.clm_comp_const eL
+    have hΦ : ∀ v φ, Φ v φ = inner ℝ v (e φ) := fun v φ => rfl
+    refine ⟨fun x => Φ (ν x), hΦc.comp_stronglyMeasurable hνmeas, ?_, ?_⟩
+    · filter_upwards [hνunit] with x hx
+      have hcoord : ∀ α, euclideanNVectorCoordinate (Φ (ν x)) α = ν x α := by
+        intro α
+        rw [euclideanNVectorCoordinate, hΦ, PiLp.inner_apply]
+        rw [Finset.sum_eq_single α]
+        · rw [he_coord, he_diag]; simp
+        · intro β _ hβ
+          rw [he_coord, he_off α β (Ne.symm hβ)]; simp
+        · simp
+      simp only [hcoord]
+      have h2 := EuclideanSpace.norm_eq (ν x)
+      rw [hx] at h2
+      have h3 : (∑ i, ‖(ν x) i‖ ^ 2) = 1 := by
+        have h4 := congrArg (· ^ 2) h2
+        simp only [one_pow] at h4
+        rw [h4, Real.sq_sqrt (Finset.sum_nonneg fun i _ => by positivity)]
+      simpa [Real.norm_eq_abs, sq_abs] using h3
+    · intro ω
+      have hfun : (fun x => Φ (ν x) ((ω : DifferentialForm (Eucl P) k) x)) =
+          (fun x => inner ℝ (e ((ω : DifferentialForm (Eucl P) k) x)) (ν x)) := by
+        funext x; rw [hΦ, real_inner_comm]
+      obtain ⟨hint, heq⟩ := hrep (fun x => e ((ω : DifferentialForm (Eucl P) k) x))
+        (e.continuous.comp (hωcont ω)) (hωcs ω) ((hωts ω).trans ω.property.2)
+      refine ⟨by rw [hfun]; exact hint, ?_⟩
+      rw [hfun, ← heq, hLHω ω]
 /-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
 `α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
 theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
@@ -2578,342 +2880,6 @@ theorem Submission.iwl_restriction_theory : (∀ (P k : ℕ) (U : Set (Eucl P)),
         S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ :=
       fun ω => (hS ω).trans (setInt hU hrep' hrep hA ω)
     exact massEq hU hmass hrep hfin hv hA S hS2 hW hWU
-      exact hcarath_null _ (hν₀.measurable hs)
-    have hν₀ae : AEMeasurable ν₀ μU := hν₀null.aemeasurable
-    have hν₀1' : ∀ᵐ y ∂μU, ‖ν₀ y‖ = 1 :=
-      (Poincare.SimonGMT.Chapter01.ae_radonCaratheodoryMeasure_iff μU).1 hν₀1
-    obtain ⟨ν₂, hν₂m, hν₂le, hν₀₂⟩ : ∃ ν₂ : U → EuclideanSpace ℝ ι, Measurable ν₂ ∧
-        (∀ y, ‖ν₂ y‖ ≤ 1) ∧ ν₀ =ᵐ[μU] ν₂ := by
-      obtain ⟨ν₁, hν₁m, hν₀₁⟩ : ∃ ν₁ : U → EuclideanSpace ℝ ι, Measurable ν₁ ∧ ν₀ =ᵐ[μU] ν₁ :=
-        ⟨hν₀ae.mk ν₀, hν₀ae.measurable_mk, hν₀ae.ae_eq_mk⟩
-      refine ⟨fun y => if ‖ν₁ y‖ ≤ 1 then ν₁ y else 0,
-        Measurable.ite (measurableSet_le hν₁m.norm measurable_const) hν₁m measurable_const,
-        fun y => ?_, ?_⟩
-      · show ‖(if ‖ν₁ y‖ ≤ 1 then ν₁ y else 0)‖ ≤ 1
-        split_ifs with h
-        · exact h
-        · simp
-      · filter_upwards [hν₀₁, hν₀1'] with y h1 h2
-        simp only [← h1, h2, le_refl, ite_true]
-    have hν₂1 : ∀ᵐ y ∂μU, ‖ν₂ y‖ = 1 := by
-      filter_upwards [hν₀₂, hν₀1'] with y h1 h2
-      rw [← h1, h2]
-    have hrepU : ∀ f : C_c(U, EuclideanSpace ℝ ι), Λ f = ∫ y, inner ℝ (f y) (ν₂ y) ∂μU := by
-      intro f
-      rw [hrep f]
-      have hae : (fun y => inner ℝ (f y) (ν₀ y)) =ᵐ[Poincare.SimonGMT.Chapter01.radonCaratheodoryMeasure μU]
-          (fun y => inner ℝ (f y) (ν₂ y)) := by
-        refine (Poincare.SimonGMT.Chapter01.ae_radonCaratheodoryMeasure_iff μU).2 ?_
-        filter_upwards [hν₀₂] with y hy
-        rw [hy]
-      rw [integral_congr_ae hae]
-      apply Poincare.SimonGMT.Chapter01.integral_radonCaratheodoryMeasure
-      have : Measurable fun y => inner ℝ (f y) (ν₂ y) :=
-        (continuous_fst.inner continuous_snd).measurable.comp (f.continuous.measurable.prodMk hν₂m)
-      exact this.stronglyMeasurable
-    have hintU : ∀ f : C_c(U, EuclideanSpace ℝ ι), Integrable (fun y => inner ℝ (f y) (ν₂ y)) μU := by
-      intro f
-      have hf : Integrable (fun y => f y) μU := f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport
-      refine hf.norm.mono' ?_ (Eventually.of_forall fun y => ?_)
-      · exact ((continuous_fst.inner continuous_snd).measurable.comp
-          (f.continuous.measurable.prodMk hν₂m)).aestronglyMeasurable
-      · calc ‖inner ℝ (f y) (ν₂ y)‖ ≤ ‖f y‖ * ‖ν₂ y‖ := norm_inner_le_norm _ _
-          _ ≤ ‖f y‖ * 1 := mul_le_mul_of_nonneg_left (hν₂le y) (norm_nonneg _)
-          _ = ‖f y‖ := mul_one _
-    -- Step 8: push forward to `ℝ^P`.
-    have hemb : MeasurableEmbedding (Subtype.val : U → Eucl P) :=
-      MeasurableEmbedding.subtype_coe hU.measurableSet
-    obtain ⟨μ, hμdef⟩ : ∃ μ : Measure (Eucl P), μ = Measure.map Subtype.val μU := ⟨_, rfl⟩
-    obtain ⟨ν, hνval, hνout, hνm⟩ : ∃ ν : Eucl P → EuclideanSpace ℝ ι, (∀ y : U, ν y = ν₂ y) ∧
-        (∀ x, x ∉ U → ν x = 0) ∧ Measurable ν := by
-      refine ⟨fun x => if hx : x ∈ U then ν₂ ⟨x, hx⟩ else 0, fun y => by simp,
-        fun x hx => by simp [hx], ?_⟩
-      exact Measurable.dite (f := ν₂) (g := fun _ => (0 : EuclideanSpace ℝ ι)) hν₂m
-        measurable_const hU.measurableSet
-    have hνle : ∀ x, ‖ν x‖ ≤ 1 := by
-      intro x; by_cases hx : x ∈ U
-      · rw [show ν x = ν₂ ⟨x, hx⟩ from hνval ⟨x, hx⟩]; exact hν₂le _
-      · rw [hνout x hx, norm_zero]; exact zero_le_one
-    -- Restriction of a compactly supported map on `ℝ^P` to `U`.
-    have hrestr : ∀ g : Eucl P → EuclideanSpace ℝ ι, Continuous g → HasCompactSupport g →
-        tsupport g ⊆ U → ∃ f : C_c(U, EuclideanSpace ℝ ι), (∀ y : U, f y = g y) ∧ ext f = g := by
-      intro g hg hgc hgU
-      have hcomp : IsCompact (Subtype.val ⁻¹' tsupport g : Set U) := by
-        rw [Subtype.isCompact_iff]
-        have : Subtype.val '' (Subtype.val ⁻¹' tsupport g : Set U) = tsupport g := by
-          rw [image_preimage_eq_inter_range, Subtype.range_coe]; exact inter_eq_left.2 hgU
-        rw [this]; exact hgc.isCompact
-      let f : C_c(U, EuclideanSpace ℝ ι) :=
-        { toFun := fun y => g y
-          continuous_toFun := hg.comp continuous_subtype_val
-          hasCompactSupport' := hcomp.of_isClosed_subset (isClosed_tsupport _)
-            (tsupport_comp_subset_preimage g continuous_subtype_val) }
-      refine ⟨f, fun y => rfl, ?_⟩
-      funext x
-      by_cases hx : x ∈ U
-      · rw [show ext f x = f ⟨x, hx⟩ from hext_val f ⟨x, hx⟩]; rfl
-      · rw [hext_out f x hx]
-        exact (image_eq_zero_of_notMem_tsupport fun h => hx (hgU h)).symm
-    refine ⟨μ, ν, ?_, hνm.stronglyMeasurable, ?_, ?_, ?_⟩
-    · -- `μ(ℝ^P ∖ U) = 0`
-      rw [hμdef, hemb.map_apply]
-      have : (Subtype.val ⁻¹' Uᶜ : Set U) = ∅ := by
-        ext y; simp
-      rw [this, measure_empty]
-    · -- `‖ν‖ = 1` `μ`-a.e.
-      rw [hμdef, hemb.ae_map_iff]
-      filter_upwards [hν₂1] with y hy
-      rw [hνval]; exact hy
-    · -- integrability and the representation (Step 11 in coordinates)
-      intro g hg hgc hgU
-      obtain ⟨f, hf, hfg⟩ := hrestr g hg hgc hgU
-      have hcomp : (fun y : U => inner ℝ (g y) (ν y)) = fun y => inner ℝ (f y) (ν₂ y) := by
-        funext y; rw [hf, hνval]
-      constructor
-      · rw [hμdef, hemb.integrable_map_iff]
-        change Integrable (fun y : U => inner ℝ (g y) (ν y)) μU
-        rw [hcomp]; exact hintU f
-      · rw [hμdef, hemb.integral_map, hcomp, ← hrepU f]
-        show L g = L (ext f)
-        rw [hfg]
-    · -- the envelope formula for `μ(W)`
-      intro W hWo hWU
-      set S : ℝ≥0∞ := ⨆ (g : Eucl P → EuclideanSpace ℝ ι) (_ : Continuous g ∧ HasCompactSupport g ∧
-        tsupport g ⊆ W ∧ ∀ x, ‖g x‖ ≤ 1), ENNReal.ofReal (L g) with hS
-      have hμW : μ W = μU (Subtype.val ⁻¹' W) := by rw [hμdef]; exact hemb.map_apply μU W
-      apply le_antisymm
-      · -- `μ(W) ≤ S`: inner regularity, Urysohn and the envelope identity
-        rw [hμW]
-        have hW'o : IsOpen (Subtype.val ⁻¹' W : Set U) := hWo.preimage continuous_subtype_val
-        rw [hW'o.measure_eq_iSup_isCompact μU]
-        refine iSup_le fun K => iSup_le fun hKW => iSup_le fun hK => ?_
-        obtain ⟨φ, hφ1, hφc, hφW, hφr⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen hK hW'o hKW
-        obtain ⟨u, hu⟩ : ∃ u : C_c(U, ℝ≥0), ∀ y, (u y : ℝ) = φ y := by
-          refine ⟨⟨⟨fun y => ⟨φ y, (Set.mem_Icc.1 (hφr y)).1⟩, φ.continuous.subtype_mk _⟩, ?_⟩,
-            fun y => rfl⟩
-          refine hφc.of_isClosed_subset (isClosed_tsupport _) (closure_mono ?_)
-          intro y hy h0
-          exact hy (Subtype.ext h0)
-        have hu_int : Integrable (fun y => (u y : ℝ)) μU :=
-          (NNReal.continuous_coe.comp u.continuous).integrable_of_hasCompactSupport
-            (u.hasCompactSupport.comp_left (by simp))
-        have hKu : μU K ≤ ENNReal.ofReal (∫ y, (u y : ℝ) ∂μU) := by
-          rw [ofReal_integral_eq_lintegral_ofReal hu_int (Eventually.of_forall fun y => (u y).2),
-            ← lintegral_indicator_one hK.isClosed.measurableSet]
-          apply lintegral_mono
-          intro y
-          by_cases hy : y ∈ K
-          · simp [indicator_of_mem hy, hu, hφ1 hy]
-          · simp [indicator_of_notMem hy]
-        have henv := Poincare.SimonGMT.Chapter01.simon_theorem_4_14_positive_envelope Λ hΛ u
-        rw [← henv] at hKu
-        refine hKu.trans ?_
-        by_cases hStop : S = ∞
-        · rw [hStop]; exact le_top
-        · have hbd : ∀ b ∈ Λ '' {ω : C_c(U, EuclideanSpace ℝ ι) | ∀ x, ‖ω x‖ ≤ (u x : ℝ)},
-              b ≤ S.toReal := by
-            rintro _ ⟨ω, hω, rfl⟩
-            have hωsupp : tsupport ω ⊆ tsupport φ := by
-              apply closure_mono
-              intro y hy
-              rw [Function.mem_support] at hy ⊢
-              intro h0
-              apply hy
-              have := hω y
-              rw [hu, h0] at this
-              exact norm_le_zero_iff.1 this
-            have hadm : Continuous (ext ω) ∧ HasCompactSupport (ext ω) ∧ tsupport (ext ω) ⊆ W ∧
-                ∀ x, ‖ext ω x‖ ≤ 1 := by
-              refine ⟨hext_cont ω, hext_cs ω, ?_, hext_norm ω 1 zero_le_one fun y => ?_⟩
-              · refine (hext_tsupp ω).trans ?_
-                rintro _ ⟨y, hy, rfl⟩
-                exact hφW (hωsupp hy)
-              · exact (hω y).trans (by rw [hu]; exact (Set.mem_Icc.1 (hφr y)).2)
-            have hle : ENNReal.ofReal (L (ext ω)) ≤ S :=
-              le_iSup₂_of_le (f := fun (g : Eucl P → EuclideanSpace ℝ ι)
-                (_ : Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ W ∧ ∀ x, ‖g x‖ ≤ 1) =>
-                  ENNReal.ofReal (L g)) (ext ω) hadm le_rfl
-            exact (ENNReal.ofReal_le_iff_le_toReal hStop).1 hle
-          have hne : (Λ '' {ω : C_c(U, EuclideanSpace ℝ ι) | ∀ x, ‖ω x‖ ≤ (u x : ℝ)}).Nonempty :=
-            ⟨Λ 0, 0, fun x => by simp, rfl⟩
-          calc ENNReal.ofReal (sSup (Λ '' {ω : C_c(U, EuclideanSpace ℝ ι) | ∀ x, ‖ω x‖ ≤ (u x : ℝ)}))
-              ≤ ENNReal.ofReal S.toReal := ENNReal.ofReal_le_ofReal (csSup_le hne hbd)
-            _ = S := ENNReal.ofReal_toReal hStop
-      · -- `S ≤ μ(W)`: the representation and `‖ν‖ ≤ 1`
-        refine iSup₂_le fun g hg => ?_
-        obtain ⟨hgc, hgcs, hgW, hg1⟩ := hg
-        have hgU : tsupport g ⊆ U := hgW.trans hWU
-        obtain ⟨f, hf, hfg⟩ := hrestr g hgc hgcs hgU
-        have hLg : L g = ∫ y, inner ℝ (f y) (ν₂ y) ∂μU := by
-          rw [← hrepU f]; show L g = L (ext f); rw [hfg]
-        rw [hLg, hμW]
-        set A : Set U := Subtype.val ⁻¹' tsupport g
-        have hA : MeasurableSet A := (isClosed_tsupport g).measurableSet.preimage measurable_subtype_coe
-        have hAW : A ⊆ Subtype.val ⁻¹' W := preimage_mono hgW
-        have hAfin : μU A < ∞ := by
-          have : IsCompact A := by
-            rw [Subtype.isCompact_iff]
-            have : Subtype.val '' A = tsupport g := by
-              rw [image_preimage_eq_inter_range, Subtype.range_coe]; exact inter_eq_left.2 hgU
-            rw [this]; exact hgcs.isCompact
-          exact this.measure_lt_top
-        have hle : ∫ y, inner ℝ (f y) (ν₂ y) ∂μU ≤ ∫ y, A.indicator 1 y ∂μU := by
-          apply integral_mono (hintU f)
-          · exact (integrable_indicator_iff hA).2 (integrableOn_const hAfin.ne)
-          · intro y
-            by_cases hy : y ∈ A
-            · rw [indicator_of_mem hy]
-              calc inner ℝ (f y) (ν₂ y) ≤ ‖f y‖ * ‖ν₂ y‖ := real_inner_le_norm _ _
-                _ ≤ 1 * 1 := by
-                  apply mul_le_mul _ (hν₂le y) (norm_nonneg _) zero_le_one
-                  rw [hf]; exact hg1 _
-                _ = 1 := one_mul 1
-            · rw [indicator_of_notMem hy]
-              have : f y = 0 := by rw [hf]; exact image_eq_zero_of_notMem_tsupport hy
-              simp [this]
-        rw [integral_indicator_one hA] at hle
-        calc ENNReal.ofReal (∫ y, inner ℝ (f y) (ν₂ y) ∂μU) ≤ ENNReal.ofReal (μU.real A) :=
-              ENNReal.ofReal_le_ofReal hle
-          _ = μU A := by rw [measureReal_def, ENNReal.ofReal_toReal hAfin.ne]
-          _ ≤ μU (Subtype.val ⁻¹' W) := measure_mono hAW
-  -- Assembly (Steps 2, 7, 8, 9, 10, 11).
-  intro P k U hU T hT
-  by_cases hkP : P < k
-  · -- Step 2 (degenerate case `k > P`): `T = 0`, every mass measure is `0`, and `ξ := 0`.
-    have hT0 : ∀ ω : TestFormOn U k, T ω = 0 :=
-      Submission.br_la_apply_eq_zero_of_lt_degree P k U T hkP
-    have hmass0 : ∀ W, T.massOn W = 0 := by
-      intro W
-      refine le_antisymm (sSup_le ?_) bot_le
-      rintro _ ⟨ω, -, rfl⟩
-      simp [hT0 ω]
-    have hMM0 : IsMassMeasure T (0 : Measure (Eucl P)) :=
-      ⟨by simp, fun W _ => by simp [hmass0 W]⟩
-    refine ⟨⟨0, hMM0⟩, fun μ hμ => ?_⟩
-    have hμ0 : μ = 0 := h_measure_uniqueness P U hU μ 0 hμ.1 (by simp)
-      (fun W hW => by rw [hμ.2 W hW, hmass0 W]; simp)
-      (fun W hW => by rw [hμ.2 W hW, hmass0 W]; exact ENNReal.zero_lt_top)
-    subst hμ0
-    exact ⟨fun _ => 0, stronglyMeasurable_const, by simp, fun ω => ⟨by simp, by simp [hT0 ω]⟩⟩
-  · -- Main case.
-    obtain ⟨e, he_coord, he_norm, he_diag, he_off⟩ := h_coordinates P k
-    obtain ⟨L, hLT, hLadd, hLsmul, hLmass⟩ := h_extension P k U hU T hT
-    -- the functional in coordinates: L_H g := L (e.symm ∘ g)
-    let LH : (Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P)) → ℝ :=
-      fun g => L (fun x => e.symm (g x))
-    have hcont : ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), Continuous g →
-        Continuous (fun x => e.symm (g x)) := fun g hg => e.symm.continuous.comp hg
-    have htsupp : ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P),
-        tsupport (fun x => e.symm (g x)) ⊆ tsupport g := fun g =>
-      tsupport_comp_subset (g := fun v => e.symm v) (map_zero e.symm) g
-    have hcs : ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), HasCompactSupport g →
-        HasCompactSupport (fun x => e.symm (g x)) := fun g hg =>
-      hg.comp_left (g := fun v => e.symm v) (map_zero e.symm)
-    have hnorm_symm : ∀ v : EuclideanSpace ℝ (SimonMultiIndex k P),
-        covectorEuclideanNorm (e.symm v) = ‖v‖ := fun v => by
-      rw [← he_norm, e.apply_symm_apply]
-    have hLHadd : ∀ g₁ g₂ : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), Continuous g₁ →
-        HasCompactSupport g₁ → tsupport g₁ ⊆ U → Continuous g₂ → HasCompactSupport g₂ →
-        tsupport g₂ ⊆ U → LH (g₁ + g₂) = LH g₁ + LH g₂ := by
-      intro g₁ g₂ h1 h1c h1U h2 h2c h2U
-      have := hLadd _ _ (hcont g₁ h1) (hcs g₁ h1c) ((htsupp g₁).trans h1U)
-        (hcont g₂ h2) (hcs g₂ h2c) ((htsupp g₂).trans h2U)
-      have hf : (fun x => e.symm ((g₁ + g₂) x)) =
-          (fun x => e.symm (g₁ x)) + (fun x => e.symm (g₂ x)) := by
-        funext x; simp
-      simp only [LH, hf]
-      exact this
-    have hLHsmul : ∀ (c : ℝ) (g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P)), Continuous g →
-        HasCompactSupport g → tsupport g ⊆ U → LH (c • g) = c * LH g := by
-      intro c g hg hgc hgU
-      have := hLsmul c _ (hcont g hg) (hcs g hgc) ((htsupp g).trans hgU)
-      have hf : (fun x => e.symm ((c • g) x)) = c • (fun x => e.symm (g x)) := by
-        funext x; simp
-      simp only [LH, hf]
-      exact this
-    have hLHbdd : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ,
-        ∀ g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P), Continuous g → tsupport g ⊆ K →
-          (∀ x, ‖g x‖ ≤ 1) → LH g ≤ C := by
-      intro K hK hKU
-      obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
-      have hW : CompactlyContainedOpen W U := ⟨hWo, hWc, hWU⟩
-      refine ⟨(T.massOn W).toReal, fun g hg hgK hg1 => ?_⟩
-      have h := hLmass W _ hW (hcont g hg) ((htsupp g).trans (hgK.trans hKW))
-        (fun x => by rw [hnorm_symm]; exact hg1 x)
-      exact (ENNReal.ofReal_le_iff_le_toReal (hT W hW).ne).1 h
-    obtain ⟨μ₀, ν, hμ₀U, hνmeas, hνunit, hrep, hμ₀W⟩ :=
-      h_riesz_open P (SimonMultiIndex k P) U hU LH hLHadd hLHsmul hLHbdd
-    have hLHω : ∀ ω : TestFormOn U k,
-        LH (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) = T ω := by
-      intro ω
-      have : (fun x => e.symm (e ((ω : DifferentialForm (Eucl P) k) x))) =
-          (ω : DifferentialForm (Eucl P) k) := by
-        funext x; simp
-      simp only [LH, this, hLT]
-    have hωcont : ∀ ω : TestFormOn U k, Continuous (ω : DifferentialForm (Eucl P) k) :=
-      fun ω => ω.property.1.1.continuous
-    have hωcs : ∀ ω : TestFormOn U k,
-        HasCompactSupport (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) := fun ω =>
-      ω.property.1.2.comp_left (g := fun v => e v) (map_zero e)
-    have hωts : ∀ ω : TestFormOn U k,
-        tsupport (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) ⊆
-          tsupport (ω : DifferentialForm (Eucl P) k) := fun ω =>
-      tsupport_comp_subset (g := fun v => e v) (map_zero e) _
-    -- (2.8): μ₀(W) = M_W(T) for W ⊂⊂ U
-    have hmass : ∀ W, CompactlyContainedOpen W U → μ₀ W = T.massOn W := by
-      intro W hW
-      rw [hμ₀W W hW.1 (subset_closure.trans hW.2.2)]
-      apply le_antisymm
-      · refine iSup₂_le fun g hg => ?_
-        exact hLmass W _ hW (hcont g hg.1) ((htsupp g).trans hg.2.2.1)
-          (fun x => by rw [hnorm_symm]; exact hg.2.2.2 x)
-      · refine sSup_le ?_
-        rintro _ ⟨ω, hω, rfl⟩
-        show ENNReal.ofReal (T ω) ≤ _
-        rw [← hLHω ω]
-        refine le_iSup₂_of_le (f := fun (g : Eucl P → EuclideanSpace ℝ (SimonMultiIndex k P))
-          (_ : Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ W ∧ ∀ x, ‖g x‖ ≤ 1) =>
-            ENNReal.ofReal (LH g))
-          (fun x => e ((ω : DifferentialForm (Eucl P) k) x)) ⟨e.continuous.comp (hωcont ω),
-            hωcs ω, (hωts ω).trans hω.1, fun x => by rw [he_norm]; exact hω.2 x⟩ le_rfl
-    have hMM : IsMassMeasure T μ₀ := ⟨hμ₀U, hmass⟩
-    refine ⟨⟨μ₀, hMM⟩, fun μ hμ => ?_⟩
-    -- uniqueness: every mass measure equals μ₀
-    have hμeq : μ = μ₀ := h_measure_uniqueness P U hU μ μ₀ hμ.1 hμ₀U
-      (fun W hW => by rw [hμ.2 W hW, hmass W hW]) (fun W hW => by rw [hμ.2 W hW]; exact hT W hW)
-    subst hμeq
-    -- ξ(x) := ⟨ν(x), e(·)⟩
-    let eL : Covector (Eucl P) k →L[ℝ] EuclideanSpace ℝ (SimonMultiIndex k P) := e
-    let Φ : EuclideanSpace ℝ (SimonMultiIndex k P) → NVector (Eucl P) k :=
-      fun v => (innerSL ℝ v).comp eL
-    have hΦc : Continuous Φ := (innerSL ℝ).continuous.clm_comp_const eL
-    have hΦ : ∀ v φ, Φ v φ = inner ℝ v (e φ) := fun v φ => rfl
-    refine ⟨fun x => Φ (ν x), hΦc.comp_stronglyMeasurable hνmeas, ?_, ?_⟩
-    · filter_upwards [hνunit] with x hx
-      have hcoord : ∀ α, euclideanNVectorCoordinate (Φ (ν x)) α = ν x α := by
-        intro α
-        rw [euclideanNVectorCoordinate, hΦ, PiLp.inner_apply]
-        rw [Finset.sum_eq_single α]
-        · rw [he_coord, he_diag]; simp
-        · intro β _ hβ
-          rw [he_coord, he_off α β (Ne.symm hβ)]; simp
-        · simp
-      simp only [hcoord]
-      have h2 := EuclideanSpace.norm_eq (ν x)
-      rw [hx] at h2
-      have h3 : (∑ i, ‖(ν x) i‖ ^ 2) = 1 := by
-        have h4 := congrArg (· ^ 2) h2
-        simp only [one_pow] at h4
-        rw [h4, Real.sq_sqrt (Finset.sum_nonneg fun i _ => by positivity)]
-      simpa [Real.norm_eq_abs, sq_abs] using h3
-    · intro ω
-      have hfun : (fun x => Φ (ν x) ((ω : DifferentialForm (Eucl P) k) x)) =
-          (fun x => inner ℝ (e ((ω : DifferentialForm (Eucl P) k) x)) (ν x)) := by
-        funext x; rw [hΦ, real_inner_comm]
-      obtain ⟨hint, heq⟩ := hrep (fun x => e ((ω : DifferentialForm (Eucl P) k) x))
-        (e.continuous.comp (hωcont ω)) (hωcs ω) ((hωts ω).trans ω.property.2)
-      refine ⟨by rw [hfun]; exact hint, ?_⟩
-      rw [hfun, ← heq, hLHω ω]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
