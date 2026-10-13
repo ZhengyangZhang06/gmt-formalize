@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Compactness of `n`-planes** (Simon, proof of 7.3.3(2), convergence of the planes).  Every
+sequence of `n`-dimensional subspaces `Q_j ⊆ ℝᴾ` has a subsequence `Q_{j_i}` converging to the span
+`Q` of an orthonormal `n`-frame `τ`, in the sense `|p_{Q_{j_i}}(u) − p_Q(u)| ≤ κ_i |u|`, `κ_i → 0`:
+orthonormal frames `v_j` of the `Q_j` lie in the compact unit ball of `(ℝᴾ)ⁿ`, so a subsequence
+converges to some `τ`, which is again orthonormal; then `p_{Q_j}(u) = Σ_l ⟨v_{j,l}, u⟩ v_{j,l}`,
+`p_Q(u) = Σ_l ⟨τ_l, u⟩ τ_l`, and each term differs by at most `2 |v_{j_i,l} − τ_l| |u|`. -/
+theorem Submission.idtp_tpf_plane_subseq_limit : ∀ (P n : ℕ) (Qs : ℕ → Submodule ℝ (Euclid P)), (∀ j, Module.finrank ℝ (Qs j) = n) → ∃ (js : ℕ → ℕ) (τ : Fin n → Euclid P) (κ : ℕ → ℝ), StrictMono js ∧ Orthonormal ℝ τ ∧ Tendsto κ atTop (𝓝 0) ∧ ∀ (i : ℕ) (u : Euclid P), ‖(Qs (js i)).starProjection u - (Submodule.span ℝ (Set.range τ)).starProjection u‖ ≤ κ i * ‖u‖ := by
+  intro P n Qs hQs
+  -- orthonormal frames `v j` of the `Q_j`, indexed by `Fin n`
+  let b : ∀ j, OrthonormalBasis (Fin n) ℝ (Qs j) := fun j =>
+    (stdOrthonormalBasis ℝ (Qs j)).reindex (finCongr (hQs j))
+  let v : ℕ → Fin n → Euclid P := fun j l => (b j l : Euclid P)
+  have hv : ∀ j, Orthonormal ℝ (v j) := fun j =>
+    (b j).orthonormal.comp_linearIsometry (Qs j).subtypeₗᵢ
+  have hproj : ∀ j u, (Qs j).starProjection u = ∑ l, inner ℝ (v j l) u • v j l := by
+    intro j u
+    rw [(b j).starProjection_eq_sum_rankOne]
+    simp [v]
+  -- the frames lie in the compact closed unit ball of `(ℝᴾ)ⁿ`
+  have hball : ∀ j, v j ∈ closedBall (0 : Fin n → Euclid P) 1 := fun j =>
+    mem_closedBall_zero_iff.2 <| (pi_norm_le_iff_of_nonneg zero_le_one).2 fun l =>
+      ((hv j).1 l).le
+  obtain ⟨τ, -, js, hjs, hlim⟩ :=
+    (isCompact_closedBall (0 : Fin n → Euclid P) 1).tendsto_subseq hball
+  have hlim' : ∀ l, Tendsto (fun i => v (js i) l) atTop (𝓝 (τ l)) := tendsto_pi_nhds.1 hlim
+  -- orthonormality passes to the limit
+  have hτ : Orthonormal ℝ τ := by
+    classical
+    rw [orthonormal_iff_ite]
+    intro l l'
+    have h := (hlim' l).inner (𝕜 := ℝ) (hlim' l')
+    simp only [orthonormal_iff_ite.1 (hv _) l l'] at h
+    exact tendsto_nhds_unique h tendsto_const_nhds
+  -- `p_Q(u) = Σ_l ⟨τ_l, u⟩ τ_l` for `Q = span τ`
+  have hprojτ : ∀ u, (Submodule.span ℝ (Set.range τ)).starProjection u =
+      ∑ l, inner ℝ (τ l) u • τ l := by
+    intro u
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      (Submodule.sum_mem _ fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩))
+      fun z hz => ?_
+    induction hz using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨m, rfl⟩ := hx
+      rw [inner_sub_left, hτ.inner_left_fintype, conj_trivial, real_inner_comm, sub_self]
+    | zero => exact inner_zero_right _
+    | add x y _ _ hx hy => rw [inner_add_right, hx, hy, add_zero]
+    | smul a x _ hx => rw [real_inner_smul_right, hx, mul_zero]
+  refine ⟨js, τ, fun i => 2 * ∑ l, ‖v (js i) l - τ l‖, hjs, hτ, ?_, fun i u => ?_⟩
+  · have h : Tendsto (fun i => ∑ l, ‖v (js i) l - τ l‖) atTop (𝓝 (∑ _l : Fin n, (0 : ℝ))) :=
+      tendsto_finsetSum _ fun l _ => tendsto_iff_norm_sub_tendsto_zero.1 (hlim' l)
+    simpa using h.const_mul 2
+  · show _ ≤ (2 * ∑ l, ‖v (js i) l - τ l‖) * ‖u‖
+    rw [hproj, hprojτ, ← Finset.sum_sub_distrib, Finset.mul_sum, Finset.sum_mul]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun l _ => ?_)
+    -- `⟨a, u⟩ a − ⟨t, u⟩ t = ⟨a − t, u⟩ a + ⟨t, u⟩ (a − t)` with `|a| = |t| = 1`
+    have ha : ‖v (js i) l‖ = 1 := (hv (js i)).1 l
+    have ht : ‖τ l‖ = 1 := hτ.1 l
+    generalize v (js i) l = a at ha ⊢
+    generalize τ l = t at ht ⊢
+    calc ‖inner ℝ a u • a - inner ℝ t u • t‖
+        = ‖inner ℝ (a - t) u • a + inner ℝ t u • (a - t)‖ := by
+          rw [inner_sub_left, sub_smul, smul_sub, sub_add_sub_cancel]
+      _ ≤ |inner ℝ (a - t) u| * ‖a‖ + |inner ℝ t u| * ‖a - t‖ := by
+          refine (norm_add_le _ _).trans_eq ?_
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs]
+      _ ≤ ‖a - t‖ * ‖u‖ * 1 + ‖t‖ * ‖u‖ * ‖a - t‖ := by
+          rw [ha]
+          gcongr <;> exact abs_real_inner_le_norm _ _
+      _ = 2 * ‖a - t‖ * ‖u‖ := by
+          rw [ht]
+          ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
