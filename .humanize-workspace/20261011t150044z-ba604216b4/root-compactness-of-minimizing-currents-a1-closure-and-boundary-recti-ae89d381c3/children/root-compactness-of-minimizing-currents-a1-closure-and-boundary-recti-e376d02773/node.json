@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.l1_constant-a1.l1_squeeze-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.l1_constant-a1",
+  "depth": 6,
+  "title": "L¹ convergence to a constant from uniformly convergent mollifications and an L¹ mollification error bound",
+  "statement": "Let n ∈ ℕ, R > 0, c ∈ ℝ, φ : ℝⁿ → ℝ (ℝⁿ = Euclid n) continuous with compact support, u_k : ℝⁿ → ℝ (k ∈ ℕ) Lebesgue integrable on B_{2R}(0), and a_k ∈ ℝ with a_k → 0. Put w_k(x) := ∫_{B_{2R}(0)} u_k(y)·φ(x − y) dy. Assume w_k → c uniformly on closedBall(0, R) and ∫_{B_R(0)} |u_k(x) − w_k(x)| dx ≤ a_k for all sufficiently large k. Then ∫_{B_R(0)} |u_k(x) − c| dx → 0.",
+  "lean_statement": "∀ (n : ℕ) (R c : ℝ) (φ : Euclid n → ℝ) (u : ℕ → Euclid n → ℝ) (a : ℕ → ℝ), 0 < R → Continuous φ → HasCompactSupport φ → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → TendstoUniformlyOn (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (fun _ => c) atTop (closedBall 0 R) → Tendsto a atTop (𝓝 0) → (∀ᶠ k in atTop, ∫ x in ball 0 R, |u k x - ∫ y in ball 0 (2 * R), u k y * φ (x - y)| ≤ a k) → Tendsto (fun k => ∫ x in ball 0 R, |u k x - c|) atTop (𝓝 0)",
+  "lean_name": "cbr_ci_pw_l1_squeeze_of_mollified",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e376d02773-a1"
+}
