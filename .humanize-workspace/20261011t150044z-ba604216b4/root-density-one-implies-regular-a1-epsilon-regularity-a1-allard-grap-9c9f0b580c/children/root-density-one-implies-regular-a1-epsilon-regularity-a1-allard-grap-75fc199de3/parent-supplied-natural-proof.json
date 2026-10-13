@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+        "grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|ae_lineDeriv_sum_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "grep -rn 'setIntegral_comp_smul_of_pos|integrable_comp_smul_iff|map_addHaar_smul|smul_unitBall_of_pos|smul_ball' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'comp_right_fderiv|iteratedFDeriv_comp_right|iteratedFDeriv_comp_left|fderiv_comp_smul|fderiv_const_smul_field|fderiv_add_const|fderiv_sub_const|iteratedFDeriv_two_apply|iteratedFDeriv_add_const' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'integral_mul_le_Lp_mul_Lq_of_nonneg|MemLp.integrable_sq|MemLp.integrable_mul|MemLp.of_bound|Integrable.bdd_mul' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "grep -rn 'support_fderiv_subset|support_iteratedFDeriv_subset|HasCompactSupport.fderiv|HasCompactSupport.comp_smul|tsupport_comp_eq_preimage|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|DifferentiableAt.lineDeriv_eq_fderiv' <snapshot>/mathlib/Mathlib",
+        "grep -rn -E 'integral_lineDeriv_mul_eq|setIntegral_comp_smul|integral_mul_le_Lp_mul_Lq|lipschitz_ibp|weakly_harmonic|rescale' <snapshot>/project/GMT; grep -rln (same terms, plus fderiv_comp_smul, IntegrationByParts) .lake/packages/simongmt/Poincare",
+        "grep -n 'Lemma 3.1|Rellich|Poincar' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt; sed -n 585,660p chapter-05.txt",
+        "python3 -I scan of lean_name fields in dag.json and nodes/*/*.json plus grep -rl for the six proposed dorag_haa_* names (0 hits)",
+        "lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds): /tmp/dorag-ha-approx-split/Types.lean, Names.lean (#check of cited lemmas; MemLp.integrable_sq unknown), Assembly.lean, Checks.lean, Checks2.lean, Checks3.lean, Checks4.lean, Checks5.lean, Full.lean (#print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/dorag-ha-approx-split/Types.lean",
+        "/tmp/dorag-ha-approx-split/Names.lean",
+        "/tmp/dorag-ha-approx-split/Assembly.lean",
+        "/tmp/dorag-ha-approx-split/Checks.lean",
+        "/tmp/dorag-ha-approx-split/Checks2.lean",
+        "/tmp/dorag-ha-approx-split/Checks3.lean",
+        "/tmp/dorag-ha-approx-split/Checks4.lean",
+        "/tmp/dorag-ha-approx-split/Checks5.lean",
+        "/tmp/dorag-ha-approx-split/Full.lean"
+      ],
+      "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nThe pinned Mathlib, within the contract's import closure, supplies everything the children cite:\n- LipschitzWith.integral_lineDeriv_mul_eq (Rademacher.lean:169) and LipschitzWith.ae_differentiableAt (:385);\n- Measure.setIntegral_comp_smul_of_pos and integrable_comp_smul_iff (Haar/NormedSpace.lean:148, :175), and smul_unitBall_of_pos (Ball/Pointwise.lean:139);\n- fderiv_comp_smul (FDeriv/Equiv.lean:503) and fderiv_const_smul_field (FDeriv/Add.lean:175), both unconditional, and iteratedFDeriv_two_apply (FTaylorSeries.lean:948);\n- integral_mul_le_Lp_mul_Lq_of_nonneg (Bochner/Basic.lean:1230), MemLp.integrable_mul, Integrable.bdd_mul and MemLp.of_bound;\n- support_fderiv_subset, support_iteratedFDeriv_subset, HasCompactSupport.comp_smul, tsupport_comp_eq_preimage, ContDiff.lipschitzWith_of_hasCompactSupport and norm_fderiv_le_of_lipschitz.\nThe one exception is MemLp.integrable_sq (L2Space.lean:42), which is outside the import closure; the child proofs say so and use MemLp.integrable_mul instead.\n\nNothing is reusable from the project or SimonGMT. The project GMT tree matches only unrelated rescaledMeasure varifold definitions in Ch08. SimonGMT's only hit is a Hölder call inside Chapter04/LpMeanCurvature.lean. No declaration in either provides the six child statements, so no comparator-approved declaration can be reused.\n\nLean checks in comparator scope:\n- all six child types elaborate;\n- full Lean proofs of all six children use only propext, Classical.choice and Quot.sound;\n- the exact frozen type of dorag_ha_approximation compiles from the six children plus unproved stubs of dorag_ha_poincare_ball, dorag_ha_rellich_ball, dorag_ha_weyl_lemma and dorag_ha_energy_lsc, with sorryAx coming only from those stubs.\n\nThe six dorag_haa_* names have no collisions in dag.json or nodes/*/*.json."
+    }
+  ],
+  "proof": "Source: the Cauchy–Schwarz bullet of step A3 of the parent proof, stated for a general L² test function. Notation: μ := volume.restrict (ball (0 : Euclid n) R); all integrals are with respect to μ, i.e. over B_R (no sign condition on R is needed). Put a_j := ∫ (f_j − W)² and b := ∫ g².\n1. (Integrability and linearity.) For each j, f_j − W ∈ L²(μ) (MemLp.sub). The product of two L²(μ) functions is μ-integrable (Hölder with exponents 2, 2, 1: MemLp.integrable_mul; note that MemLp.integrable_sq lives in Mathlib.MeasureTheory.Function.L2Space, which the frozen contract does not import). Hence f_j·g and W·g are integrable and, by linearity of the integral (integral_sub), ∫ f_j g − ∫ W g = ∫ (f_j − W)·g.\n2. (Cauchy–Schwarz.) The functions |f_j − W| and |g| are nonnegative and lie in L²(μ) (MemLp.abs). Hölder's inequality for nonnegative functions with p = q = 2 (integral_mul_le_Lp_mul_Lq_of_nonneg with Real.HolderConjugate.two_two; note ENNReal.ofReal 2 = 2) gives, together with |∫φ| ≤ ∫|φ| and |xy| = |x||y|,\n   |∫ (f_j − W)·g| ≤ ∫ |f_j − W|·|g| ≤ (∫ |f_j − W|²)^{1/2}·(∫ |g|²)^{1/2} = √(a_j)·√b,\n   where |x|² = x² and x^{1/2} = √x (Real.sqrt_eq_rpow) were used.\n3. (Limit of the bound.) a_j → 0 by hypothesis, and √ is continuous with √0 = 0, so √(a_j) → 0 and √(a_j)·√b → 0.\n4. (Conclusion.) By steps 1–2, 0 ≤ |∫ f_j g − ∫ W g| ≤ √(a_j)·√b for every j, so by step 3 and the squeeze theorem ∫ f_j g − ∫ W g → 0, i.e. ∫_{B_R} f_j·g → ∫_{B_R} W·g. ∎",
+  "key_steps": [
+    "f_j − W ∈ L²; products of L² functions are integrable (MemLp.integrable_mul), so ∫f_jg − ∫Wg = ∫(f_j − W)g.",
+    "Hölder/Cauchy–Schwarz with p = q = 2: |∫(f_j − W)g| ≤ (∫(f_j − W)²)^{1/2}(∫g²)^{1/2}.",
+    "The bound tends to 0 because ∫(f_j − W)² → 0 and √ is continuous at 0; squeeze."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

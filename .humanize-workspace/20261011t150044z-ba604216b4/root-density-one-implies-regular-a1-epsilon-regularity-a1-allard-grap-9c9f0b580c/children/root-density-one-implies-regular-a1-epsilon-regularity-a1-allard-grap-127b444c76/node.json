@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1.ball_rescale-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.harmonic_approx-a1",
+  "depth": 6,
+  "title": "Change of variables between the unit ball and the ball of radius r",
+  "statement": "Let n ∈ ℕ, F : ℝⁿ → ℝ (ℝⁿ = Euclid n) arbitrary, and r > 0. Then y ↦ F(r·y) is integrable on B̆_1(0) if and only if F is integrable on B̆_r(0), and ∫_{B̆_1(0)} F(r·y) dy = r^{−n}·∫_{B̆_r(0)} F(x) dx (Lebesgue/Bochner integrals, with the convention that the integral of a non-integrable function is 0).",
+  "lean_statement": "∀ (n : ℕ) (F : Euclid n → ℝ) (r : ℝ), 0 < r → (IntegrableOn (fun y => F (r • y)) (ball (0 : Euclid n) 1) ↔ IntegrableOn F (ball (0 : Euclid n) r)) ∧ ∫ y in ball (0 : Euclid n) 1, F (r • y) = (r ^ n)⁻¹ * ∫ x in ball (0 : Euclid n) r, F x",
+  "lean_name": "dorag_haa_ball_rescale_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-127b444c76-a1"
+}
