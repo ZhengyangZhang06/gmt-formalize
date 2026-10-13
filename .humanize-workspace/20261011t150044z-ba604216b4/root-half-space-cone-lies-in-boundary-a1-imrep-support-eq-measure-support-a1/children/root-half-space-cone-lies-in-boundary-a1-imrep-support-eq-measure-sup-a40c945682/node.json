@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.weight_null_where_current_vanishes-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+  "depth": 3,
+  "title": "Where a represented current vanishes on an open set, its weight θH^n⌞M vanishes (fundamental lemma)",
+  "statement": "Let P, n ∈ ℕ, let U, W ⊆ ℝ^P, let T ∈ GeometricCurrentOn U n, and let R = (M, θ, ξ) ∈ IMRep U n with R.Represents T, i.e. T(ω) = R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Suppose W is open, W ⊆ U, and T vanishes on W (T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ W). Then R.measure(W) = 0, where R.measure = (H^n⌞M).withDensity θ.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → R.measure W = 0",
+  "lean_name": "imsupp_measure_eq_zero_of_vanishesOn",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-a40c945682-a1"
+}
