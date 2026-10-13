@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1ade1b0dee0019d60c4d8d435b82f011f169812302dae9454a207785c35def02",
+  "git_delta": {
+    "base_commit": "8246c69fe97426d3ea50f2e5a7d6b89195501013",
+    "candidate_commit": "17add307cf7302df0052def4a2a7b5f45c0704e2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_radius_liminf_annulus_le_of_hasDerivAt",
+    "diff_sha256": "0102adb169341335d07a14c3950dba077e0ecfe17e6359dd5bf555600453d33e",
+    "source_sha256": "6a4f95ce5f9423461578954505e042b1eec0017889a29448279567dec17b0dc8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_radius_liminf_annulus_le_of_hasDerivAt",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (ρ d : ℝ), μ (ball x₁ ρ) ≠ ∞ → HasDerivAt (fun r : ℝ => (μ (ball x₁ r)).toReal) d ρ → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) ≤ ENNReal.ofReal d",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
