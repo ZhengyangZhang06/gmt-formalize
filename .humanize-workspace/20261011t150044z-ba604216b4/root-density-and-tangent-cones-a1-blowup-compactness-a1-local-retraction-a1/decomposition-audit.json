@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Euclid|def Euclid|def IsEmbeddedSubmanifold|^import|^namespace|^open |^noncomputable",
+        "theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem norm_image_sub_le_of_norm_fderiv_le",
+        "def orthogonalProjectionOnto|def starProjection|theorem starProjection_norm_le|theorem orthogonalProjectionOnto_mem_subspace_eq_self",
+        "def toOpenPartialHomeomorph|theorem to_localInverse|def localInverse|theorem localInverse_def|mem_toOpenPartialHomeomorph_source",
+        "contDiffAt_symm|hasStrictFDerivAt'|subset_compl_ball|def unitsEquiv",
+        "isCompact_insert_range|theorem IsCompact.tendsto_subseq|def ofInjective|theorem isOpen_inter_preimage_symm",
+        "local_retraction|left_inverse_projection|lipschitz_near_point|chart_image_nhds|dtc_bc_lr_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lrdecomp/check/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lr-independent-audit-53zofju5/IndependentContracts.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/decomposition-v1.json",
+        "/tmp/lrdecomp/check/EndToEnd.lean",
+        "/tmp/lr-independent-audit-53zofju5/IndependentContracts.lean"
+      ],
+      "conclusion": "The four-way split appropriately isolates independent calculus, linear-algebra, inverse-function and compactness obligations. Their empty dependency lists are correct and acyclic. All names are bare identifiers and have no collisions in the 684-node DAG; the project-source search also found no matching declarations. The snapshot contract matches workspace Contract.lean and Submission.lean, and all 12 inspected Mathlib files match the compiler package at revision 25730c7c. All frozen types pass validation and independently elaborate as propositions before any child implementation. Bundled endomorphism multiplication was independently checked to be composition. The inspected complete child proofs and assembly of the exact selected parent type compile successfully, with only propext, Classical.choice and Quot.sound. The assembly obtains a retraction with derivative norm at most one and then the required shrinking-ball Lipschitz estimates."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_near_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean type match exactly. Openness converts C¹ regularity into differentiability and continuity of fderiv at x. Taking s = min(s₁, δ), bounding the derivative by c + η, and applying the convex mean-value inequality proves every quantified conclusion. No additional sign hypothesis on c is needed: the assumed norm bound implies c ≥ 0. The proof is complete and non-circular."
+    },
+    {
+      "key": "left_inverse_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match exactly. Finite dimensionality supplies a continuous inverse onto the range and an orthogonal projection. The explicit construction A = e⁻¹ ∘ p proves A.comp L = id and identifies L.comp A with the ambient orthogonal projection, giving the required norm bound. The argument includes zero-dimensional spaces and uses no child or parent conclusion."
+    },
+    {
+      "key": "local_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and exactly matches the Lean type. The proof constructs the partial homeomorphism, restricts to the open region where the derivative is invertible, verifies both mapping properties and inverse identities, and proves C¹ regularity at every target point. The inverse-function theorem supplies the derivative identity at h(v₀). Invertibility is correctly interpreted in the composition algebra of continuous linear endomorphisms. No hidden dependency or missing construction remains."
+    },
+    {
+      "key": "chart_image_nhds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, without an unstated openness assumption on V or global continuity assumption on ψ. The contradiction sequence gives a compact K contained in W; properness yields a subsequential limit inside V. Closedness of the complement of V₀ excludes that limit from V₀, while continuity within V and injectivity identify it with v₀. This proves the exact neighbourhood inclusion without circularity."
+    }
+  ],
+  "required_changes": []
+}
