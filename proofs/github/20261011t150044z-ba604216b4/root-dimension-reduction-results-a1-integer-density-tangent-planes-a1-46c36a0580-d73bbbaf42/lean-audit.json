@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "00c7c1e19b2efc3aca4c39e32c4e8ae767d3994b99dd6d1c028f5cda8e592a35",
+  "git_delta": {
+    "base_commit": "9b62b3e97f1ec8bc6844f68dfdb6564b754d2a51",
+    "candidate_commit": "defe9cdcedaea34329ffe73fe1c51933a850da58",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_sfv_span_tangentSpace_finrank",
+    "diff_sha256": "536563191f2acf92722418702800ff388c897a2c4443da7c1cbd27002e881021",
+    "source_sha256": "546757d2b662b6741c10da3fa9d746e0cf38b23dd32f3c9350eeafcd52f3b8ab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_sfv_span_tangentSpace_finrank",
+      "statement": "∀ (P d : ℕ) (M : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 1 d M → x ∈ M → (Submodule.span ℝ (tangentSpace M x) : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = d",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
