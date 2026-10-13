@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e20a1297f2d1932881e3f66f8395608603c3811218fbbd59707f9002e62fbe7a",
+  "git_delta": {
+    "base_commit": "c358999b6dd6fe136a2b27a87752ae2293007df3",
+    "candidate_commit": "6858d6830f1a61b9fb96db5a56a41e9e196988c5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorwbl_diff_quotient_tendstoUniformlyOn",
+    "diff_sha256": "179ee20a50a61618e8f5f3c615a90d49777a7b809daa0a9c14b58315eea50c0e",
+    "source_sha256": "622b53578653e4d65e9feff6fe33153973f1cd5dab39ee2a78809f2283172ac8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorwbl_diff_quotient_tendstoUniformlyOn",
+      "statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), DifferentiableAt ℝ f v → ∀ R : ℝ, TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => r⁻¹ • (f (v + r • w) - f v)) (fun w => fderiv ℝ f v w) (𝓝[>] 0) (closedBall (0 : Euclid n) R)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Difference quotients `r⁻¹(f(v + rw) − f(v))` of a map differentiable at `v` converge to
+`Df(v)w` uniformly on every closed ball `B̄_R(0)` as `r ↓ 0` (the `o(|h|)` estimate in the
+weighted blow-up limit of the Allard graph step).  With `R' = max R 1`, pick `ρ > 0` such that
+`|f(v + h) − f(v) − Df(v)h| ≤ ε|h|/(2R')` for `|h| < ρ`.  For `0 < r < ρ/R'` and `|w| ≤ R`,
+`|rw| < ρ`, and linearity of `Df(v)` gives `|Df(v)w − r⁻¹(f(v + rw) − f(v))| ≤ ε|w|/(2R') < ε`. -/
+theorem Submission.dorwbl_diff_quotient_tendstoUniformlyOn : ∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), DifferentiableAt ℝ f v → ∀ R : ℝ, TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => r⁻¹ • (f (v + r • w) - f v)) (fun w => fderiv ℝ f v w) (𝓝[>] 0) (closedBall (0 : Euclid n) R) := by
+  intro n k f v hf R
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hR : 0 < max R 1 := lt_of_lt_of_le one_pos (le_max_right R 1)
+  have hc : 0 < ε / (2 * max R 1) := by positivity
+  obtain ⟨ρ, hρ, hsmall⟩ := Metric.eventually_nhds_iff.1
+    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).bound hc)
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < ρ / max R 1 by positivity)] with r hr w hw
+  obtain ⟨hr0, hrρ⟩ := hr
+  have hw' : ‖w‖ ≤ max R 1 := (mem_closedBall_zero_iff.1 hw).trans (le_max_left R 1)
+  have hrw : ‖r • w‖ = r * ‖w‖ := by rw [norm_smul, Real.norm_of_nonneg hr0.le]
+  -- `|rw| ≤ rR' < ρ`, so the little-o bound applies to `h = rw`
+  have hbound := hsmall (show dist (r • w) 0 < ρ by
+    rw [dist_zero_right, hrw]
+    calc r * ‖w‖ ≤ r * max R 1 := mul_le_mul_of_nonneg_left hw' hr0.le
+      _ < ρ / max R 1 * max R 1 := mul_lt_mul_of_pos_right hrρ hR
+      _ = ρ := div_mul_cancel₀ ρ hR.ne')
+  -- `Df(v)w − r⁻¹(f(v + rw) − f(v)) = −r⁻¹(f(v + rw) − f(v) − Df(v)(rw))`
+  have hid : fderiv ℝ f v w - r⁻¹ • (f (v + r • w) - f v) =
+      -(r⁻¹ • (f (v + r • w) - f v - fderiv ℝ f v (r • w))) := by
+    simp only [map_smul, smul_sub, smul_smul, inv_mul_cancel₀ hr0.ne', one_smul]
+    abel
+  rw [dist_eq_norm, hid, norm_neg, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le]
+  calc r⁻¹ * ‖f (v + r • w) - f v - fderiv ℝ f v (r • w)‖
+      ≤ r⁻¹ * (ε / (2 * max R 1) * ‖r • w‖) :=
+        mul_le_mul_of_nonneg_left hbound (inv_nonneg.2 hr0.le)
+    _ = ε / (2 * max R 1) * ‖w‖ := by
+        rw [hrw]
+        field_simp
+    _ ≤ ε / (2 * max R 1) * max R 1 := mul_le_mul_of_nonneg_left hw' hc.le
+    _ = ε / 2 := by field_simp
+    _ < ε := half_lt_self hε
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
