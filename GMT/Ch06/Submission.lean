@@ -788,6 +788,48 @@ theorem Submission.slicing_representation_unique :
   obtain ⟨C, hC⟩ := hab β
   exact ⟨C, fun x => (Real.norm_eq_abs (a β x)).symm.le.trans (hC x)⟩
 
+/-- **Uniqueness of the vector measure `v μ` of a representation (2.7), Simon Ch. 6, 2.7–2.9
+(p. 136).**  Two representations `(μ₁, v₁)`, `(μ₂, v₂)` of `X ∈ 𝒟ₖ(ℝ^N)` have (a) the same set
+integrals `∫_A ⟨ω, vᵢ⟩ dμᵢ` over every Borel `A`, for every test form `ω`
+(`slicing_representation_unique` with `U = W = ℝ^N`), and (b) the same `∫_A ⟨α, vᵢ⟩ dμᵢ` over
+every bounded Borel `A`, for every constant covector `α`: if `A ⊆ closedBall 0 R`, a smooth
+cutoff `φ` with `support φ = ball 0 (R + 1)` and `φ = 1` on `closedBall 0 R` makes `φ α` a test
+form equal to `α` on `A`, and (a) applies to it. -/
+theorem Submission.dmr_measureRepresentation_unique : ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k) (μ₁ μ₂ : Measure (Eucl N)) (v₁ v₂ : Eucl N → NVector (Eucl N) k), IsMeasureRepresentation X μ₁ v₁ → IsMeasureRepresentation X μ₂ v₂ → (∀ A : Set (Eucl N), MeasurableSet A → ∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∫ x in A, v₁ x ((ω : DifferentialForm (Eucl N) k) x) ∂μ₁ = ∫ x in A, v₂ x ((ω : DifferentialForm (Eucl N) k) x) ∂μ₂) ∧ (∀ A : Set (Eucl N), MeasurableSet A → Bornology.IsBounded A → ∀ α : Covector (Eucl N) k, ∫ x in A, v₁ x α ∂μ₁ = ∫ x in A, v₂ x α ∂μ₂) := by
+  intro N k X μ₁ μ₂ v₁ v₂ h₁ h₂
+  -- Step 1 (part (a)): `slicing_representation_unique` with `U = W = ℝ^N`; both representations
+  -- give `∫ ⟨ω, v₁⟩ dμ₁ = X ω = ∫ ⟨ω, v₂⟩ dμ₂`.
+  have ha : ∀ A : Set (Eucl N), MeasurableSet A → ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      ∫ x in A, v₁ x ((ω : DifferentialForm (Eucl N) k) x) ∂μ₁ =
+        ∫ x in A, v₂ x ((ω : DifferentialForm (Eucl N) k) x) ∂μ₂ := fun A hA ω =>
+    Submission.slicing_representation_unique N k univ isOpen_univ μ₁ μ₂ v₁ v₂
+      (fun ω => (h₁ ω).1) (fun ω => (h₂ ω).1) univ isOpen_univ
+      (fun ω _ => (h₁ ω).2.symm.trans (h₂ ω).2) A hA ω (subset_univ _)
+  refine ⟨ha, fun A hA hAb α => ?_⟩
+  -- Step 2: `A ⊆ closedBall 0 R`.
+  obtain ⟨R, hR⟩ := hAb.subset_closedBall (0 : Eucl N)
+  -- Step 3: a smooth cutoff `φ` with `support φ = ball 0 (R + 1)` and `φ = 1` on
+  -- `closedBall 0 R`; it has compact support.
+  obtain ⟨φ, hφ, -, hφs, hφ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞))
+    (isOpen_ball (x := (0 : Eucl N)) (ε := R + 1)) isClosed_closedBall
+    (closedBall_subset_ball (lt_add_one R))
+  have hφc : HasCompactSupport φ := by
+    refine (isCompact_closedBall (0 : Eucl N) (R + 1)).of_isClosed_subset (isClosed_tsupport φ) ?_
+    rw [tsupport, hφs]
+    exact closure_ball_subset_closedBall
+  -- Step 4: `ω = φ α` is a test form on `ℝ^N`.
+  let ω : TestFormOn (univ : Set (Eucl N)) k :=
+    ⟨fun x => φ x • α, ⟨⟨hφ.smul contDiff_const, hφc.smul_right⟩, subset_univ _⟩⟩
+  -- Step 5: `ω = α` on `A`, so the set integrals over `A` agree.
+  have hω : ∀ v : Eucl N → NVector (Eucl N) k,
+      EqOn (fun x => v x ((ω : DifferentialForm (Eucl N) k) x)) (fun x => v x α) A := by
+    intro v x hx
+    change v x (φ x • α) = v x α
+    rw [(hφ1 x).1 (hR hx), one_smul]
+  -- Step 6: conclude with part (a) for `A` and `ω`.
+  rw [← setIntegral_congr_fun hA (hω v₁), ← setIntegral_congr_fun hA (hω v₂)]
+  exact ha A hA ω
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
