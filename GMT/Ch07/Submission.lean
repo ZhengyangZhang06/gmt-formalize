@@ -2025,4 +2025,131 @@ theorem Submission.dgcr_smooth_tests_to_C1_tests : ∀ (n : ℕ) (D : Set (Eucli
     ← setIntegral_eq_integral_of_forall_compl_eq_zero hvanD]
   exact htest ψ hψ hψc (hψK.trans hKD) i
 
+/-- **Reduction of the constancy of an integer density on a plane to `ℝⁿ`** (steps 3 and 6–8 of
+the planar constancy step in the integer density of tangent planes, Simon 7.3).  Let
+`ι(s) = ∑ᵢ sᵢτᵢ` for an orthonormal family `τ`, `Q = span τ`, `Ω = ι⁻¹(V)` and `h = g ∘ ι`.
+Since `Hⁿ⌞Q = ι_#Lⁿ` and the isometry `ι` is a measurable embedding, restricted measures,
+integrals, a.e. statements and a.e.-measurability transfer between `V ∩ Q` and `Ω`.  So `Ω` is open,
+`Ω = ι*(V ∩ Q)` is connected (`ι*(y) = (⟨τₖ, y⟩)ₖ` is a left inverse of `ι`, and `ι ∘ ι* = id` on
+`Q`), and `h` is locally integrable on `Ω`.  A smooth test `ψ` in `Ω` extends to a smooth test `f`
+in `V` with `D_{τⱼ}f ∘ ι = ∂ⱼψ`, so `∫_Ω h ∂ⱼψ = ∫_{V∩Q} g D_{τⱼ}f dHⁿ = 0`, and `C¹` tests follow.
+Finally, if `h = c₀` a.e. on `Ω`, then `c₀ ∈ ℤ` (`h` is integer valued a.e. and `Lⁿ(Ω) > 0`), and
+`g = c₀` `Hⁿ`-a.e. on `V ∩ Q`. -/
+theorem Submission.idtp_pc_constancy_reduction : ∀ (P n : ℕ) (V : Set (Euclid P)) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), IsOpen V → Orthonormal ℝ τ → IsConnected (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → AEStronglyMeasurable g (μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → (∀ᵐ x ∂(μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))), ∃ m : ℤ, g x = m) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → ∫⁻ x in K ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] ≠ ∞) → (∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0) → IsOpen {s : Euclid n | ∑ i, s i • τ i ∈ V} ∧ IsPreconnected {s : Euclid n | ∑ i, s i • τ i ∈ V} ∧ LocallyIntegrableOn (fun s : Euclid n => g (∑ i, s i • τ i)) {s : Euclid n | ∑ i, s i • τ i ∈ V} volume ∧ (∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ {s : Euclid n | ∑ i, s i • τ i ∈ V} → ∀ i : Fin n, ∫ s, g (∑ k, s k • τ k) * fderiv ℝ φ s ((EuclideanSpace.basisFun (Fin n) ℝ) i) = 0) ∧ ∀ c₀ : ℝ, (∀ᵐ s ∂(volume.restrict {s : Euclid n | ∑ i, s i • τ i ∈ V}), g (∑ i, s i • τ i) = c₀) → ∃ c : ℤ, ∀ᵐ x ∂(μHE[n].restrict (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)))), g x = c := by
+  intro P n V τ g hV hτ hconn hgm hgint hgloc hweak
+  -- the parametrization `ι = L`: a linear isometry, hence a measurable embedding
+  let L : Euclid n →ₗ[ℝ] Euclid P :=
+    { toFun := fun s => ∑ i, s i • τ i
+      map_add' := fun s t => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
+  have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
+  have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
+    intro s
+    have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
+      rw [hLapp, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.norm_eq,
+        Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
+  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
+  have hcont : Continuous L := hiso.continuous
+  have hemb : MeasurableEmbedding L := hiso.isClosedEmbedding.measurableEmbedding
+  have hinj : Injective L := hiso.injective
+  set Q : Set (Euclid P) := (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) with hQ
+  -- step 1: `Hⁿ⌞Q = ι_#Lⁿ`, so `Hⁿ⌞(A ∩ Q) = ι_#(Lⁿ⌞ι⁻¹(A))` for measurable `A`
+  have hmap : (μHE[n] : Measure (Euclid P)).restrict Q = Measure.map L volume :=
+    Submission.idtp_pc_plane_hausdorff_eq_map P n τ hτ
+  have htr : ∀ A : Set (Euclid P), MeasurableSet A →
+      (μHE[n] : Measure (Euclid P)).restrict (A ∩ Q) =
+        Measure.map L (volume.restrict (L ⁻¹' A)) := by
+    intro A hA
+    rw [← Measure.restrict_restrict hA, hmap, hemb.restrict_map]
+  -- step 2: `Ω = ι⁻¹(V)` is open
+  set Ω : Set (Euclid n) := {s : Euclid n | ∑ i, s i • τ i ∈ V} with hΩ
+  have hΩo : IsOpen Ω := hV.preimage hcont
+  -- step 3: the left inverse `ι*(y) = (⟨τₖ, y⟩)ₖ` maps `V ∩ Q` onto `Ω`, so `Ω` is connected
+  let Ls : Euclid P → Euclid n :=
+    fun y => (WithLp.equiv 2 (Fin n → ℝ)).symm (fun k => inner ℝ (τ k) y)
+  have hLscont : Continuous Ls := by
+    refine (PiLp.continuous_toLp 2 _).comp ?_
+    exact continuous_pi fun k => continuous_const.inner continuous_id
+  have hLsL : ∀ s, Ls (L s) = s := by
+    intro s
+    ext k
+    simp [Ls, hLapp, hτ.inner_right_fintype]
+  have hrangeL : ∀ y ∈ Q, L (Ls y) = y := by
+    intro y hy
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hy
+    have : Ls (∑ i, c i • τ i) = (WithLp.equiv 2 (Fin n → ℝ)).symm c := by
+      ext k
+      simp [Ls, hτ.inner_right_fintype]
+    rw [this]
+    simp [hLapp]
+  have hLmemQ : ∀ s, L s ∈ Q := by
+    intro s
+    rw [hLapp]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  have himage : Ls '' (V ∩ Q) = Ω := by
+    ext s
+    constructor
+    · rintro ⟨y, ⟨hyV, hyQ⟩, rfl⟩
+      show L (Ls y) ∈ V
+      rw [hrangeL y hyQ]; exact hyV
+    · intro hs
+      exact ⟨L s, ⟨hs, hLmemQ s⟩, hLsL s⟩
+  have hΩc : IsPreconnected Ω := by
+    rw [← himage]
+    exact hconn.isPreconnected.image Ls hLscont.continuousOn
+  -- step 4: `h = g ∘ ι` is a.e.-strongly measurable, and `∫_{K'} |h| = ∫_{ι(K') ∩ Q} |g| dHⁿ < ∞`
+  -- for compact `K' ⊆ Ω`
+  have hgm' : AEStronglyMeasurable (fun s => g (L s)) volume := by
+    have : AEStronglyMeasurable g (Measure.map L volume) := hmap ▸ hgm
+    exact (hemb.aestronglyMeasurable_map_iff).mp this
+  have hloc : LocallyIntegrableOn (fun s : Euclid n => g (∑ i, s i • τ i)) Ω volume := by
+    refine (locallyIntegrableOn_iff hΩo.isLocallyClosed).mpr fun k hkΩ hk => ?_
+    refine ⟨hgm'.restrict, ?_⟩
+    have hKc : IsCompact (L '' k) := hk.image hcont
+    have hKV : L '' k ⊆ V := by
+      rintro _ ⟨s, hs, rfl⟩; exact hkΩ hs
+    have hfin := hgloc (L '' k) hKc hKV
+    have h1 : ∫⁻ x in L '' k ∩ Q, ‖g x‖ₑ ∂μHE[n] = ∫⁻ s in k, ‖g (L s)‖ₑ := by
+      rw [htr _ hKc.isClosed.measurableSet, hemb.lintegral_map, hinj.preimage_image]
+    show ∫⁻ s in k, ‖g (L s)‖ₑ < ∞
+    rw [← h1]
+    exact lt_top_iff_ne_top.mpr hfin
+  -- step 5: for a smooth test `ψ` in `Ω`, `∫_Ω h ∂ⱼψ = ∫_{V∩Q} g D_{τⱼ}f dHⁿ = 0`, where `f` is
+  -- the extension of `ψ` to a smooth test in `V`
+  have hsmooth : ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a →
+      tsupport a ⊆ Ω → ∀ j : Fin n,
+        ∫ v in Ω, g (∑ i, v i • τ i) * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0 := by
+    intro a ha hac has j
+    obtain ⟨f, hf, hfc, hfV, hfa⟩ :=
+      Submission.idtp_pc_plane_test_extension P n V τ a hV hτ ha hac has
+    have h0 := hweak f hf hfc hfV j
+    have h2 : ∫ x in V ∩ Q, g x * fderiv ℝ f x (τ j) ∂μHE[n] =
+        ∫ s in Ω, g (L s) * fderiv ℝ f (L s) (τ j) := by
+      rw [htr V hV.measurableSet, hemb.integral_map]
+      rfl
+    rw [h2] at h0
+    rw [← h0]
+    refine setIntegral_congr_fun hΩo.measurableSet fun s _ => ?_
+    simp only [hLapp] at *
+    rw [(hfa s).2 j]
+  -- step 6: `C¹` tests, by mollification
+  refine ⟨hΩo, hΩc, hloc, Submission.dgcr_smooth_tests_to_C1_tests n Ω _ hΩo hloc hsmooth, ?_⟩
+  -- step 7: `h = c₀` a.e. on `Ω` forces `c₀ ∈ ℤ`; transfer `g = c₀` back to `V ∩ Q`
+  intro c₀ hc₀
+  have hne : Ω.Nonempty := by
+    rw [← himage]; exact hconn.nonempty.image Ls
+  have hint' : ∀ᵐ s ∂(volume : Measure (Euclid n)), ∃ m : ℤ, g (L s) = m := by
+    have : ∀ᵐ x ∂(Measure.map L (volume : Measure (Euclid n))), ∃ m : ℤ, g x = m := hmap ▸ hgint
+    exact (hemb.ae_map_iff).mp this
+  have hpos : (volume : Measure (Euclid n)) Ω ≠ 0 := (hΩo.measure_pos volume hne).ne'
+  obtain ⟨s, -, hs1, m, hm⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hpos
+    (hc₀.and (ae_restrict_of_ae hint'))
+  have hc : c₀ = m := hs1.symm.trans hm
+  refine ⟨m, ?_⟩
+  rw [htr V hV.measurableSet, hemb.ae_map_iff]
+  filter_upwards [hc₀] with s hs
+  rw [← hc]; exact hs
+
 end GMT.Ch07
