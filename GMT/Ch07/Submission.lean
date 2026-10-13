@@ -1829,6 +1829,69 @@ theorem Submission.dtc_blowUp_scaling : ∀ (P n : ℕ) (U A : Set (Euclid P)) (
     Submission.dtc_blowUp_imrep P n U T x lam hlam,
     Submission.dtc_blowUp_isMinimizingIn P n U A T x lam hlam⟩
 
+/-- **Simon 7.3.1** (proof, display (1), display (4) and "for each `ρ > 0`"): let `T`, `C` be
+integer multiplicity, `Θⁿ(μ_T, x) = θ`, `λⱼ > 0`, `λⱼ → 0` and `μ_{η_{x,λⱼ#}T} → μ_C`.  Then
+`M_{B_ρ(0)}(C) = ωₙρⁿθ` for every `ρ > 0`, hence `Θⁿ(μ_C, 0) = θ`.  Representations `Rⱼ` of the
+blow-ups (`dtc_blowUp_scaling`) have `μ_{Rⱼ}(B_ρ(0)) → ωₙρⁿθ` (`μ_T = μ_R` on small balls by
+`dtc_mass_eq_measure`) and, when `μ_C(∂B_ρ(0)) = 0`, `μ_{Rⱼ}(B_ρ(0)) → μ_C(B_ρ(0))`; the identity
+at these radii extends to every `ρ > 0`. -/
+theorem Submission.dtc_blowUp_density : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (x : Euclid P) (θ : ℝ) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), IsOpen U → 0 < n → x ∈ U → IsIntegerMultiplicity T → IsIntegerMultiplicity C → Tendsto lams atTop (𝓝 0) → HasMassDensity T x θ → MassMeasuresConverge (fun j => blowUp T x (lams j) (hlams j).ne') C → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ) ∧ HasMassDensity C 0 θ := by
+  intro P n U T C x θ lams hlams hU hn hxU hT hC hlim hdens hconv
+  obtain ⟨R, hR⟩ := hT
+  obtain ⟨RC, hRC⟩ := hC
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : Euclid n) zero_lt_one).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 1: representations `Rⱼ` of `η_{x,λⱼ#}T` with `μ_{Rⱼ}(s) = λⱼ⁻ⁿ μ_R(η_{x,λⱼ}⁻¹(s))`
+  choose Rs hRs hRsm using fun j =>
+    (Submission.dtc_blowUp_scaling P n U U T x (lams j) (hlams j) hU hn).2.1 R hR
+  -- Step 2 (book (1)): `μ_T = μ_R` on the balls `B_r(x) ⊆ U`, so `μ_{Rⱼ}(B_ρ(0)) → ωₙρⁿθ`
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 hU x hxU
+  have hdensR : Tendsto (fun r : ℝ => R.measure (ball x r) /
+      (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) := by
+    refine hdens.2.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hδ] with r hr
+    rw [Submission.dtc_mass_eq_measure P n U (ball x r) T R hU isOpen_ball
+      ((ball_subset_ball hr.2.le).trans hδU) hR]
+  have hlimRs : ∀ ρ : ℝ, 0 < ρ → Tendsto (fun j => (Rs j).measure (ball 0 ρ)) atTop
+      (𝓝 (unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ)) :=
+    Submission.dtc_rescaled_ball_measure_tendsto P n R.measure (fun j => (Rs j).measure) x θ lams
+      hlams hlim hdensR hRsm
+  -- Step 3: `μ_C` is finite on balls (`θ_C` is locally integrable), and so is `μ_{Rⱼ}` for large
+  -- `j`, its limit being finite
+  have hfinC : ∀ r : ℝ, 0 < r → RC.measure (ball 0 r) ≠ ∞ := by
+    intro r _
+    refine ne_top_of_le_ne_top ?_ (measure_mono ball_subset_closedBall)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact RC.locallyIntegrable_mult _ (isCompact_closedBall 0 r) (subset_univ _)
+  have hfinRs : ∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, (Rs j).measure (ball 0 r) ≠ ∞ := fun r hr =>
+    (hlimRs r hr).eventually (eventually_ne_nhds (ENNReal.mul_ne_top
+      (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top) ENNReal.ofReal_ne_top))
+  -- Step 4 (book (4)): if `μ_C(∂B_ρ(0)) = 0` then `μ_{Rⱼ}(B_ρ(0)) → μ_C(B_ρ(0))`, so
+  -- `μ_C(B_ρ(0)) = ωₙρⁿθ`; this extends to every `ρ > 0`
+  have hgood : ∀ ρ : ℝ, 0 < ρ → RC.measure (sphere 0 ρ) = 0 →
+      RC.measure (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal θ * ENNReal.ofReal (ρ ^ n) := by
+    intro ρ hρ hsph
+    rw [mul_right_comm]
+    exact tendsto_nhds_unique (Submission.dtc_tendsto_measure_ball_of_vague P
+      (fun j => (Rs j).measure) RC.measure ρ hρ hfinC hfinRs
+      (fun f hf hfc => hconv Rs hRs RC hRC f hf hfc (subset_univ _)) hsph) (hlimRs ρ hρ)
+  have hball := Submission.dtc_measure_ball_eq_of_null_sphere P n RC.measure
+    (unitBallVolume n * ENNReal.ofReal θ) (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top) hfinC
+    hgood
+  -- Step 5: `M_{B_ρ(0)}(C) = μ_C(B_ρ(0)) = ωₙρⁿθ`
+  have hmass : ∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) =
+      unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ := fun ρ hρ => by
+    rw [Submission.dtc_mass_eq_measure P n univ (ball 0 ρ) C RC isOpen_univ isOpen_ball
+      (subset_univ _) hRC, hball ρ hρ, mul_right_comm]
+  -- Step 6: the density quotient of `C` at `0` is `θ` on all of `(0, ∞)`
+  refine ⟨hmass, hdens.1, tendsto_const_nhds.congr' ?_⟩
+  filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+  rw [hmass ρ hρ, mul_comm (unitBallVolume n * ENNReal.ofReal (ρ ^ n)),
+    ENNReal.mul_div_cancel_right (mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne')
+      (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
