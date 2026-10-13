@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cfcabff9ea28fa03333af9a94ffcc79954a9739fdc7c6628b2ef96229527c320",
+  "git_delta": {
+    "base_commit": "00d4f38969361736a347d68d5b3d634a2dece30e",
+    "candidate_commit": "cd1e327316aee105f8cd66d7f11c4da2c9819e7a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_hr_monotone_set_trichotomy",
+    "diff_sha256": "5044f4f28170fba20de47c97adad58de2606f424aff1fe08922ecccacbff5b4c",
+    "source_sha256": "418c77dcac95d09d321d0b8bf0851c8fcfd9646e855a6fb1da6ab88201829f5e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_hr_monotone_set_trichotomy",
+      "statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ a : EuclideanSpace ℝ (Fin n), 0 ≤ inner ℝ a v → ∀ᵐ z ∂volume, z ∈ F → z + a ∈ F) → volume F = 0 ∨ volume Fᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F {z | c < inner ℝ z v}) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
