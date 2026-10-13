@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8654ecb9460cc95a0d2288e34ba234d52fe0115159ecd60c23d95512a2e5398c",
+  "git_delta": {
+    "base_commit": "20d3b0404875b9c99f49adc798e73e70908b64e0",
+    "candidate_commit": "061206d561d4d19f395d81bf69e9301075028687",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_pc_cauchy_limit_set",
+    "diff_sha256": "d010d328ca98c95c2eb91c785421b619c36025421463d34381a588ac9f4ab631",
+    "source_sha256": "fe55b1aa42aaf9f10487a7cd221042568868d9b22103ff5ed7d7220c6fb4d20d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_pc_cauchy_limit_set",
+      "statement": "∀ (m : ℕ) (F : ℕ → Set (Euclid m)), (∀ i, MeasurableSet (F i)) → (∀ R : ℝ, 0 < R → ∀ η : ℝ, 0 < η → ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j → volume (symmDiff (F i) (F j) ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal η) → ∃ (σ : ℕ → ℕ) (F' : Set (Euclid m)), StrictMono σ ∧ MeasurableSet F' ∧ ∀ R : ℝ, Tendsto (fun i => volume (symmDiff (F (σ i)) F' ∩ ball (0 : Euclid m) R)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
