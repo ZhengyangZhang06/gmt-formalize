@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1.column_iterated_bounds-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+  "depth": 4,
+  "title": "Iterated-derivative differences of an operator-valued map versus its columns",
+  "statement": "Let n, m be natural numbers, E a real normed space, R^n = EuclideanSpace R (Fin n), U an open subset of R^n, and g : R^n -> L(R^n, E) a map that is C^m on U. Let e_k = EuclideanSpace.single k 1 and g_k(z) := g(z) e_k for k in Fin n, and let D^m = iteratedFDeriv R m be the global iterated derivative. Then for all x, y in U: (i) for every k in Fin n, ||D^m g_k(x) - D^m g_k(y)|| <= ||D^m g(x) - D^m g(y)||; and (ii) ||D^m g(x) - D^m g(y)|| <= sum over k in Fin n of ||D^m g_k(x) - D^m g_k(y)||.",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ m g U → ∀ x ∈ U, ∀ y ∈ U, (∀ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖) ∧ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ ∑ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖",
+  "lean_name": "dohr_eb_hsif_iteratedFDeriv_column_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-0b85993074-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.form_coords-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1",
+  "depth": 5,
+  "title": "Linear and bilinear forms on a finite-dimensional space are bounded by their basis values",
+  "statement": "Let L be a finite-dimensional real normed space. Then there are N ∈ ℕ, vectors b_0, …, b_{N−1} ∈ L and a real C ≥ 0 with two properties. (1) For every ℝ-linear map f : L → ℝ and every m ≥ 0 with |f(b_r)| ≤ m for all r, |f(P)| ≤ C m ‖P‖ for all P ∈ L. (2) For every map β : L → L → ℝ that is ℝ-linear in each argument and every m ≥ 0 with |β(b_r, b_t)| ≤ m for all r, t, |β(Q, P)| ≤ C m ‖Q‖ ‖P‖ for all Q, P ∈ L.",
+  "lean_statement": "∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (b : Fin N → L) (C : ℝ), 0 ≤ C ∧ (∀ (f : L → ℝ) (m : ℝ), IsLinearMap ℝ f → 0 ≤ m → (∀ r, |f (b r)| ≤ m) → ∀ P, |f P| ≤ C * m * ‖P‖) ∧ ∀ (β : L → L → ℝ) (m : ℝ), (∀ P, IsLinearMap ℝ (fun Q => β Q P)) → (∀ Q, IsLinearMap ℝ (β Q)) → 0 ≤ m → (∀ r t, |β (b r) (b t)| ≤ m) → ∀ Q P, |β Q P| ≤ C * m * ‖Q‖ * ‖P‖",
+  "lean_name": "dohr_eb_lhr_dqub_form_coords",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-07d2a44481-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.weak_eq_deriv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1",
+  "depth": 5,
+  "title": "Differentiating a weak identity in a direction e",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l), U an open subset of R^n, ω₁, ω₂ : R^n -> L* = L(L, R) both C^1 on U (as maps into the normed space L*), and e ∈ R^n. Assume ∫_U ω₁(x)[Dφ(x)] dx = ∫_U ω₂(x)[Dφ(x)] dx for every C^1 compactly supported φ : R^n -> R^l with tsupport φ ⊆ U. Then for every C^1 compactly supported ζ : R^n -> R^l with tsupport ζ ⊆ U, the functions F_i(x) := (Dω_i(x) e)[Dζ(x)] (i = 1, 2) are integrable on U and ∫_U F_1 dx = ∫_U F_2 dx.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 ω₁ U → ContDiffOn ℝ 1 ω₂ U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → IntegrableOn (fun x => fderiv ℝ ω₁ x e (fderiv ℝ ζ x)) U ∧ IntegrableOn (fun x => fderiv ℝ ω₂ x e (fderiv ℝ ζ x)) U ∧ ∫ x in U, fderiv ℝ ω₁ x e (fderiv ℝ ζ x) = ∫ x in U, fderiv ℝ ω₂ x e (fderiv ℝ ζ x)",
+  "lean_name": "dohr_eb_lhr_ds_weak_eq_fderiv",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.translate_weak-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.translate_weak-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-5d6eabe960-a1"
+}

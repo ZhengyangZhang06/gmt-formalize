@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.fderiv_difference_quotient-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1",
+  "depth": 5,
+  "title": "Derivative of a difference quotient",
+  "statement": "Let n, ℓ be natural numbers, v : R^n → R^ℓ, e, x ∈ R^n and d ∈ R (with the convention 0⁻¹ = 0, so for d = 0 both sides are 0), and assume v is differentiable at x and at x + d e. Then the derivative at x of z ↦ d⁻¹(v(z + d e) − v(z)) equals d⁻¹(Dv(x + d e) − Dv(x)).",
+  "lean_statement": "∀ (n ℓ : ℕ) (v : Rn n → Rn ℓ) (e x : Rn n) (d : ℝ), DifferentiableAt ℝ v x → DifferentiableAt ℝ v (x + d • e) → fderiv ℝ (fun z => d⁻¹ • (v (z + d • e) - v z)) x = d⁻¹ • (fderiv ℝ v (x + d • e) - fderiv ℝ v x)",
+  "lean_name": "dohr_eb_lhr_dqwe_fderiv_diff_quot",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-b1f2e65fd6-a1"
+}

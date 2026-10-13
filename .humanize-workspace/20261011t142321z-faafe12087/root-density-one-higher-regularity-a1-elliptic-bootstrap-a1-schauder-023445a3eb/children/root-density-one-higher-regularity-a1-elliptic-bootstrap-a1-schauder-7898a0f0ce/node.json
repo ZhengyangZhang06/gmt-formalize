@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1.test_function-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1",
+  "depth": 5,
+  "title": "The Caccioppoli test function eta^2 (V - c) is an admissible C^1 test function, with its derivative",
+  "statement": "Let n, l be natural numbers, U an open subset of R^n, V : R^n -> R^l a map that is C^1 on U, eta : R^n -> R a C^1 function on R^n with compact support and tsupport(eta) contained in U, and c in R^l. Let zeta(x) := eta(x)^2 (V(x) - c). Then zeta is C^1 on R^n, zeta has compact support, tsupport(zeta) is contained in U, and for every x in R^n, D zeta(x) = eta(x)^2 DV(x) + 2 eta(x) (V(x) - c) (x) D eta(x). Here DV(x) = fderiv R V x, D eta(x) = fderiv R eta x, and (V(x) - c) (x) D eta(x) is the linear map h -> (D eta(x) h)(V(x) - c), i.e. ContinuousLinearMap.smulRight (fderiv R eta x) (V x - c).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (V : Rn n → Rn ℓ) (η : Rn n → ℝ) (c : Rn ℓ), IsOpen U → ContDiffOn ℝ 1 V U → ContDiff ℝ 1 η → HasCompactSupport η → tsupport η ⊆ U → ContDiff ℝ 1 (fun x => η x ^ 2 • (V x - c)) ∧ HasCompactSupport (fun x => η x ^ 2 • (V x - c)) ∧ tsupport (fun x => η x ^ 2 • (V x - c)) ⊆ U ∧ ∀ x, fderiv ℝ (fun x => η x ^ 2 • (V x - c)) x = η x ^ 2 • fderiv ℝ V x + (2 * η x) • (fderiv ℝ η x).smulRight (V x - c)",
+  "lean_name": "dohr_eb_sch_cacc_test_function",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-7898a0f0ce-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1.diffquot_uniform-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1",
+  "depth": 4,
+  "title": "Difference quotients of a C^1 map converge to the directional derivative uniformly on compact sets",
+  "statement": "Let n, l be natural numbers, f : R^n -> R^l, U ⊆ R^n open, K ⊆ R^n compact with K ⊆ U, and e ∈ R^n, and assume f is C^1 on U. Then the difference quotients g_d(x) := d^{-1}(f(x + d e) - f(x)) converge to the directional derivative Df(x)e uniformly for x ∈ K as d -> 0 with d ≠ 0, i.e. along the punctured neighbourhood filter 𝓝[≠] 0 of 0 in R.",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 f U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (d : ℝ) (x : Rn n) => d⁻¹ • (f (x + d • e) - f x)) (fun x => fderiv ℝ f x e) (𝓝[≠] 0) K",
+  "lean_name": "dohr_eb_dql_diffQuot_tendstoUniformlyOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-differenc-01f01400e6-a1"
+}

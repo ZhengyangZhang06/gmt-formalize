@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1.holder_rescale-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.unit_ball_estimate-a1",
+  "depth": 5,
+  "title": "Scaling identity for scale-weighted Hoelder quotients under x = y + rho z",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, g : R^n -> L, y in R^n, and real numbers rho, r, alpha, c with rho > 0 (s^alpha denotes the real power of s >= 0; balls are open). Then the following are equivalent: (a) ||rho g(y + rho z) - rho g(y + rho z')|| <= c |z - z'|^alpha for all z, z' in B_r(0); (b) rho^{1+alpha} ||g(x) - g(x')|| <= c |x - x'|^alpha for all x, x' in B_{rho r}(y).",
+  "lean_statement": "∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α)",
+  "lean_name": "dohr_eb_sch_ube_holder_rescale",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-5b41592233-a1"
+}
