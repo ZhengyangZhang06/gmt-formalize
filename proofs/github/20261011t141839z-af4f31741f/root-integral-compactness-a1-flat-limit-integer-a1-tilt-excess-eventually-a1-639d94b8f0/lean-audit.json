@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "da2dfb41871e357c295de343b4eeafb9eac6547254783f3dbdbe84375007dddc",
+  "git_delta": {
+    "base_commit": "c5da29274f0c5312bf0f5816ce5dbe617eaa6d47",
+    "candidate_commit": "ce0f9af0546d39d6555f6ed0621cda0d93adb96c",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_tilt_excess_eventually",
+    "diff_sha256": "9f668ac19cc8fea3b2c3187f626cfc506c8434c5cf0152bbf8a3cfbdcbbac852",
+    "source_sha256": "fba21979e9bad20c2645adafada5bfa6efbf4b103ef96f316c06e1e5656dd594",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_tilt_excess_eventually",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ η : ℝ, 0 < η → ∀ᶠ k in atTop, (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂(W k).measure) < ENNReal.ofReal η",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
