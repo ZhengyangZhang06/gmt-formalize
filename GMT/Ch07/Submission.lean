@@ -451,6 +451,82 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Signed layer cake** (Simon Ch. 3, 4.3 (4)–(5), the limit procedure of the De Giorgi cut-off
+estimates): let `0 ≤ ζ ≤ 1` vanish off `S`, `μ(S) < ∞`, `ζ = 1` on `B`, `|g| ≤ 1` and `c ≥ 0`.  If
+`c μ({ζ ≥ t}) ≤ ∫_{ζ ≥ t} g dμ` for every `t ∈ (0, 1]`, then `c μ(B) ≤ ∫ ζ g dμ`.
+
+Proof sketch:
+* `ζ(x) g(x) = ∫_{(0,1]} H(x, t) dt` with `H(x, t) = 1{t ≤ ζ(x)} g(x)`; `H` is bounded and
+  measurable on the finite product `μ⌞S ⊗ λ⌞(0, 1]`, so Fubini swaps the two integrals.
+* For `t ∈ (0, 1]`, `B ⊆ {ζ ≥ t} ⊆ S`, so `∫ H(·, t) dμ⌞S = ∫_{ζ ≥ t} g dμ ≥ c μ({ζ ≥ t}) ≥ c μ(B)`;
+  integrating over `(0, 1]` concludes. -/
+theorem Submission.codim1_rdo_dg_ce_signed_layer_cake : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (ζ g : X → ℝ) (S B : Set X) (c : ℝ), Measurable ζ → Measurable g → (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) → (∀ x, |g x| ≤ 1) → MeasurableSet S → μ S ≠ ∞ → (∀ x, x ∉ S → ζ x = 0) → (∀ x ∈ B, ζ x = 1) → 0 ≤ c → (∀ t : ℝ, 0 < t → t ≤ 1 → c * (μ {x | t ≤ ζ x}).toReal ≤ ∫ x in {x | t ≤ ζ x}, g x ∂μ) → c * (μ B).toReal ≤ ∫ x, ζ x * g x ∂μ := by
+  intro X _ μ ζ g S B c hζ hg hζ01 hg1 hS hSfin hζS hζB hc hlev
+  -- the finite measures `μ⌞S` and `λ⌞(0, 1]`
+  have : IsFiniteMeasure (μ.restrict S) := isFiniteMeasure_restrict.2 hSfin
+  set ν : Measure ℝ := volume.restrict (Ioc (0 : ℝ) 1) with hν
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 (by simp)
+  -- for `t ∈ (0, 1]`, `B ⊆ {ζ ≥ t} ⊆ S`
+  have hLS : ∀ t : ℝ, 0 < t → {x | t ≤ ζ x} ⊆ S := fun t ht x hx => by
+    by_contra hxS
+    have hx' : t ≤ ζ x := hx
+    rw [hζS x hxS] at hx'
+    linarith
+  have hBL : ∀ t : ℝ, t ≤ 1 → B ⊆ {x | t ≤ ζ x} := fun t ht x hx => by
+    show t ≤ ζ x
+    rw [hζB x hx]
+    exact ht
+  -- the layer-cake integrand `H(x, t) = 1{t ≤ ζ(x)} g(x)` is integrable on `μ⌞S ⊗ λ⌞(0, 1]`
+  set H : X → ℝ → ℝ := fun x t => if t ≤ ζ x then g x else 0 with hH
+  have hHmeas : Measurable (uncurry H) :=
+    Measurable.ite (measurableSet_le measurable_snd (hζ.comp measurable_fst))
+      (hg.comp measurable_fst) measurable_const
+  have hHint : Integrable (uncurry H) ((μ.restrict S).prod ν) := by
+    refine Integrable.of_bound hHmeas.aestronglyMeasurable 1 (Eventually.of_forall fun p => ?_)
+    simp only [uncurry, hH]
+    split_ifs
+    · simpa [Real.norm_eq_abs] using hg1 p.1
+    · simp
+  -- inner integral in `t`: `∫_{(0,1]} H(x, t) dt = λ((0, ζ(x)]) g(x) = ζ(x) g(x)`
+  have hinner : ∀ x, ∫ t, H x t ∂ν = ζ x * g x := by
+    intro x
+    have : (fun t => H x t) = (Iic (ζ x)).indicator (fun _ => g x) := by
+      funext t; simp [hH, indicator_apply, mem_Iic]
+    rw [this, integral_indicator_const _ measurableSet_Iic, smul_eq_mul, hν, Measure.real,
+      Measure.restrict_apply measurableSet_Iic]
+    have hset : Iic (ζ x) ∩ Ioc (0 : ℝ) 1 = Ioc 0 (ζ x) := by
+      ext t; simp only [mem_inter_iff, mem_Iic, mem_Ioc]
+      constructor
+      · rintro ⟨h1, h2, _⟩; exact ⟨h2, h1⟩
+      · rintro ⟨h2, h1⟩; exact ⟨h1, h2, h1.trans (hζ01 x).2⟩
+    rw [hset, Real.volume_Ioc, sub_zero, ENNReal.toReal_ofReal (hζ01 x).1]
+  -- `ζ g` vanishes off `S`, so `∫ ζ g dμ = ∫∫ H dt dμ⌞S`
+  have hleft : ∫ x, ζ x * g x ∂μ = ∫ x, ∫ t, H x t ∂ν ∂(μ.restrict S) := by
+    simp_rw [hinner]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    simp [hζS x hx]
+  -- for `t ∈ (0, 1]`: `∫ H(·, t) dμ⌞S = ∫_{ζ ≥ t} g dμ ≥ c μ({ζ ≥ t}) ≥ c μ(B)`
+  have hlow : ∀ t ∈ Ioc (0 : ℝ) 1, c * (μ B).toReal ≤ ∫ x, H x t ∂(μ.restrict S) := by
+    intro t ht
+    have hLmeas : MeasurableSet {x | t ≤ ζ x} := measurableSet_le measurable_const hζ
+    have : (fun x => H x t) = {x | t ≤ ζ x}.indicator g := by
+      funext x; simp [hH, indicator_apply]
+    rw [this, integral_indicator hLmeas, Measure.restrict_restrict hLmeas,
+      inter_eq_left.2 (hLS t ht.1)]
+    refine le_trans ?_ (hlev t ht.1 ht.2)
+    have hLfin : μ {x | t ≤ ζ x} ≠ ∞ := ne_top_of_le_ne_top hSfin (measure_mono (hLS t ht.1))
+    exact mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hLfin (measure_mono (hBL t ht.2))) hc
+  have hint_t : Integrable (fun t => ∫ x, H x t ∂(μ.restrict S)) ν := hHint.integral_prod_right
+  calc c * (μ B).toReal = ∫ t, c * (μ B).toReal ∂ν := by
+        simp [hν, Measure.real]
+    _ ≤ ∫ t, ∫ x, H x t ∂(μ.restrict S) ∂ν := by
+        refine integral_mono_ae (integrable_const _) hint_t ?_
+        rw [hν, EventuallyLE, ae_restrict_iff' measurableSet_Ioc]
+        exact Eventually.of_forall hlow
+    _ = ∫ x, ∫ t, H x t ∂ν ∂(μ.restrict S) := (integral_integral_swap hHint).symm
+    _ = ∫ x, ζ x * g x ∂μ := hleft.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
