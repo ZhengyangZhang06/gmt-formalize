@@ -744,7 +744,6 @@ theorem dorag_ha_rb_dilation_average : ∀ (n : ℕ) (F : Euclid n → ℝ) (s :
         congr 1
         ring
 
-end Submission
 
 /-- Step 3 (boundary layer) of the Rellich compactness argument on the unit ball, used for the
 harmonic approximation in Allard's theorem (Simon 7.4.3): for `L`-Lipschitz `u : ℝⁿ → ℝ` and
