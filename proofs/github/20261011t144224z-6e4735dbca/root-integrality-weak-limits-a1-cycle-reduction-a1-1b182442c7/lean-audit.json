@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "45b0e106f2a3a1db653f61ea2d76cc6e991ca2b5e2bdf809896ddd0a0fa8b560",
+  "git_delta": {
+    "base_commit": "1e53bc9357a8581a0d186d48c9d1b17347b1d89d",
+    "candidate_commit": "9801717d461a51c7d9715458465590fe595277dc",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "37c435bba10f88ea2904c5cc8abaa94cdf593ef980def9be0bf43430bac027cf",
+    "source_sha256": "19f80968bed8d36ad59730e68bd2f72569f4c016b40261c90653ae65b0a7290a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cycle_reduction",
+      "statement": "∀ (P m : ℕ), LipschitzPushforwardIntegerMultiplicity → (∀ (Yj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Yj j).boundary) → (⨆ j, (Yj j).boundary.mass) < ∞ → WeaklyConvergesOn (fun j => (Yj j).boundary) Y.boundary → IsIntegerMultiplicity Y.boundary) → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T) → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegralCurrent (Tj j)) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, ((Tj j).mass + (Tj j).boundary.mass)) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
