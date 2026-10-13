@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.plane_ball_measure-a1",
+  "parent_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+  "depth": 3,
+  "title": "n-dimensional Hausdorff measure of balls in an n-plane",
+  "statement": "Let n ≥ 1 and ℓ ∈ ℕ. Let P be a linear subspace of ℝ^{n+ℓ} with dim P = n, and let s ≥ 0. Then the n-dimensional Euclidean Hausdorff measure restricted to P gives the closed ball B_s(0) measure ω_n sⁿ, where ω_n = π^{n/2}/Γ(n/2+1) = unitBallVolume n. In Lean form: ((μHE[n]).restrict P)(closedBall 0 s) = ENNReal.ofReal(unitBallVolume n · sⁿ).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n → ∀ s : ℝ, 0 ≤ s → ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) = ENNReal.ofReal (unitBallVolume n * s ^ n)",
+  "lean_name": "rsod_planeMeasure_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e-a1"
+}
