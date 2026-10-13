@@ -2040,6 +2040,24 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **Compactness for sets of locally bounded perimeter** (Simon Ch. 2, 2.6, for the indicators
+`uᵢ = 1_{Fᵢ}`).  If for each `R > 0` the perimeters of the `Fᵢ` in `B_R(0)` are eventually at most
+`c(R)` (`∫_{Fᵢ} div φ ≤ c(R)` for smooth `φ` with `spt φ ⊆ B_R(0)` and `|φ| ≤ 1`), then a
+subsequence converges in `L¹_loc`: `L^m((F_{σ i} Δ F') ∩ B_R(0)) → 0` for every `R`.
+For `R > 0` and `i ≥ i_{R+2}`, `codim1_zsl_pc_translation_estimate` (steps 1–4: mollify, integrate
+by parts, use the fundamental theorem of calculus, let `ε → 0`) turns the bound `c(R + 2)` into
+`L^m(((Fᵢ − h) Δ Fᵢ) ∩ B_R(0)) ≤ c(R + 2)|h|` for `|h| ≤ 1`.  From this uniform local translation
+estimate, `codim1_zsl_pc_compact_of_translation` (steps 5–8: cube averages, a diagonal
+subsequence, a fast Cauchy subsequence and its `liminf` set) gives `σ` and `F'`. -/
+theorem Submission.codim1_zsl_perimeter_compactness : ∀ (m : ℕ) (F : ℕ → Set (Euclid m)), (∀ i, MeasurableSet (F i)) → (∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ φ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 R → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in F i, LinearMap.trace ℝ (Euclid m) (fderiv ℝ φ v).toLinearMap ≤ c) → ∃ (σ : ℕ → ℕ) (F' : Set (Euclid m)), StrictMono σ ∧ MeasurableSet F' ∧ ∀ R : ℝ, Tendsto (fun i => volume (symmDiff (F (σ i)) F' ∩ ball 0 R)) atTop (𝓝 0) := by
+  intro m F hF hP
+  -- Steps 5–8: a uniform local translation estimate gives `σ` and `F'`.
+  refine Submission.codim1_zsl_pc_compact_of_translation m F hF fun R hR => ?_
+  -- Steps 1–4: for `i ≥ i_{R+2}`, the perimeter bound `c(R + 2)` gives the estimate with `C = c`.
+  obtain ⟨c, hc⟩ := hP (R + 2) (by linarith)
+  exact ⟨c, hc.mono fun i hi =>
+    Submission.codim1_zsl_pc_translation_estimate m (F i) R c (hF i) hi⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
