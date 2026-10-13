@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Rn|^import|^open |^namespace|^end |theorem main_theorem",
+        "hasFDerivAt_of_tendstoUniformlyOnFilter|hasFDerivAt_of_tendstoUniformlyOn |difference_quotients_converge_uniformly",
+        "interpolation inequalit|Landau.Kolmogorov|difference quotient",
+        "dohr_eb_dql_diffQuot_tendstoUniformlyOn|dohr_eb_dql_interpolation_fderiv_bound|dohr_eb_dql_c1Holder_of_tendstoUniformlyOn",
+        "python3 run_lean.py GMT/Ch05/Submission.lean -o .lake/build/lib/lean/GMT/Ch05/Submission.olean",
+        "python3 run_lean.py Comprehensive.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-differenc-488312ef14/parent-child-handoff.json",
+        "/tmp/dql-independent-audit-wktoml38/Comprehensive.lean",
+        "/tmp/dql-independent-audit-wktoml38/Comprehensive.log"
+      ],
+      "conclusion": "Independently verified project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected library files match the snapshot. The searches found no interpolation-inequality match and found difference-quotient references only in UniformLimitsDeriv.lean. All three names are bare, unreserved identifiers. Every frozen child type elaborated before any child implementation, and comparator-style exact-type checks passed. Independently replayed the supplied proofs and unchanged parent assembly with Lean 4.35.0-rc3: all completed proofs use only propext, Classical.choice and Quot.sound. Isolation checks confirm that c1holder_limit requires only interpolation, while the parent requires diffquot_uniform and c1holder_limit. Derivative norms are the intended continuous-linear-map operator norms. The split is appropriate, acyclic, and establishes precisely the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "diffquot_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches all prose hypotheses and the punctured-filter conclusion. Compact thickening, uniform continuity of Df, the mean-value remainder estimate, and division by nonzero d establish the exact uniform convergence. Empty K and e = 0 cause no gap. The supplied proof is complete and independent of sibling and parent theorems."
+    },
+    {
+      "key": "interpolation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches the prose. Positivity of t and t ≤ r imply r > 0 and S ≥ 0. The segment geometry, Hölder remainder estimate, and normalization of nonzero vectors yield exactly 2S/t + L t^α. The operator-norm argument also handles zero-dimensional domains. No unstated C¹ assumption or circular dependency is used."
+    },
+    {
+      "key": "c1holder_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type includes the non-bottom filter, all three eventual hypotheses, and compact-uniform convergence. The proof correctly derives local nonnegativity of M, uses interpolation to obtain uniformly Cauchy derivatives, constructs their limit by completeness, passes both bounds to that limit, and identifies a continuous derivative using the uniform-limit theorem. Empty balls are covered. Its sole sibling dependency is interpolation; applying this result with diffquot_uniform and the supplied chain-rule assembly proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
