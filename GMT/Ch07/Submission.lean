@@ -520,6 +520,56 @@ theorem Submission.codim1_rdo_gc_unitOrientation_isometry : ∀ (P m : ℕ) (ξ 
     have : (EuclideanSpace.single i 1 : Euclid (m + 1)) = B i := by simp [B]
     rw [this]
     exact (hfB i).symm
+/-- **`C²` inverse function theorem with a `C²` inverse on a neighbourhood** (graph chart of
+`N ∈ 𝒪` over its tangent plane, step 4: `φ : V₀ → O` is bijective with `C²` inverse).  If
+`φ : ℝᵈ → ℝᵈ` is `C²` on an open `V ∋ z₀` and `Dφ(z₀)` is injective, there are open sets `V₀`, `O`
+with `z₀ ∈ V₀ ⊆ V` such that `φ : V₀ → O` is a bijection whose inverse `g` is `C²` on `O`.
+`Dφ` is continuous on `V`, so `V' = {z ∈ V : Dφ(z) injective}` is open; the strict-derivative
+inverse function theorem gives an open partial homeomorphism `Φ = φ` with `z₀ ∈ Φ.source`; take
+`V₀ = Φ.source ∩ V'`, `O = Φ.target ∩ Φ.symm ⁻¹' V₀` and `g = Φ.symm`, which is `C²` at every
+`y ∈ O` because `Dφ(g y)` is invertible. -/
+theorem Submission.codim1_rdo_gc_local_inverse_c2 : ∀ (d : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), IsOpen V → z₀ ∈ V → ContDiffOn ℝ 2 φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (g : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ 2 g O ∧ MapsTo g O V₀ ∧ (∀ y ∈ O, φ (g y) = y) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ g (φ z) = z := by
+  intro d φ V z₀ hV hz₀ hφ hinj
+  -- step 1: `φ` is `C²` and differentiable at every point of `V`, and `Dφ` is continuous on `V`
+  have hcont : ContinuousOn (fderiv ℝ φ) V := hφ.continuousOn_fderiv_of_isOpen hV (by norm_num)
+  have hdiff : ∀ z ∈ V, HasFDerivAt φ (fderiv ℝ φ z) z := fun z hz =>
+    ((hφ.contDiffAt (hV.mem_nhds hz)).differentiableAt (by norm_num)).hasFDerivAt
+  -- step 2: an injective endomorphism of `ℝᵈ` is a continuous linear equivalence
+  have equivOf : ∀ L : Euclid d →L[ℝ] Euclid d, Injective L →
+      ∃ E : Euclid d ≃L[ℝ] Euclid d, (E : Euclid d →L[ℝ] Euclid d) = L := by
+    intro L hL
+    have hsurj : Surjective L := LinearMap.injective_iff_surjective.mp hL
+    exact ⟨(LinearEquiv.ofBijective (L : Euclid d →ₗ[ℝ] Euclid d)
+      ⟨hL, hsurj⟩).toContinuousLinearEquiv, by ext; rfl⟩
+  -- step 3: `V' = {z ∈ V : Dφ(z) injective}` is open and contains `z₀`
+  set V' := V ∩ (fderiv ℝ φ) ⁻¹' {L | Injective L} with hV'eq
+  have hV' : IsOpen V' := hcont.isOpen_inter_preimage hV ContinuousLinearMap.isOpen_injective
+  have hz₀' : z₀ ∈ V' := ⟨hz₀, hinj⟩
+  -- step 4: the inverse function theorem at `z₀` gives `Φ = φ` with `z₀ ∈ Φ.source`
+  obtain ⟨E₀, hE₀⟩ := equivOf _ hinj
+  have hstrict : HasStrictFDerivAt φ (E₀ : Euclid d →L[ℝ] Euclid d) z₀ := by
+    rw [hE₀]; exact (hφ.contDiffAt (hV.mem_nhds hz₀)).hasStrictFDerivAt (by norm_num)
+  set Φ := hstrict.toOpenPartialHomeomorph φ with hΦeq
+  have hΦcoe : ∀ z, Φ z = φ z := fun z => rfl
+  -- steps 5–6: `V₀ = Φ.source ∩ V'`, `O = Φ.target ∩ Φ.symm ⁻¹' V₀`, `g = Φ.symm`; for `y ∈ O`,
+  -- `g y ∈ V₀` and `φ (g y) = y`
+  have hV₀ : IsOpen (Φ.source ∩ V') := Φ.open_source.inter hV'
+  refine ⟨Φ.source ∩ V', Φ.target ∩ Φ.symm ⁻¹' (Φ.source ∩ V'), Φ.symm, hV₀,
+    Φ.continuousOn_symm.isOpen_inter_preimage Φ.open_target hV₀,
+    ⟨hstrict.mem_toOpenPartialHomeomorph_source, hz₀'⟩, fun z hz => hz.2.1, ?_,
+    fun y hy => hy.2, fun y hy => by rw [← hΦcoe]; exact Φ.right_inv hy.1, fun z hz => ?_⟩
+  -- step 7: `g` is `C²` at every `y ∈ O`, since `Dφ(g y)` is invertible
+  · intro y hy
+    have hz : Φ.symm y ∈ V' := hy.2.2
+    obtain ⟨E, hE⟩ := equivOf _ hz.2
+    apply ContDiffAt.contDiffWithinAt
+    apply Φ.contDiffAt_symm hy.1
+    · rw [hE]; exact hdiff _ hz.1
+    · exact hφ.contDiffAt (hV.mem_nhds hz.1)
+  -- step 6(b): for `z ∈ V₀`, `φ z ∈ O` and `g (φ z) = z`
+  · have h1 : Φ.symm (Φ z) = z := Φ.left_inv hz.1
+    rw [← hΦcoe]
+    exact ⟨⟨Φ.map_source hz.1, by rw [Set.mem_preimage, h1]; exact hz⟩, h1⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
