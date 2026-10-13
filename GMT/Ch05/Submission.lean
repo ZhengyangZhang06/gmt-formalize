@@ -778,6 +778,53 @@ theorem Submission.tdo_ods_interval_sup_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ
   -- Step 7: combine.
   exact hmean.trans (add_le_add hW_cs hD_cs)
 
+namespace Submission
+
+/-- **One-dimensional sup bound** (used for `n = 1 < p < 2` in the proof of the Tilt-excess Decay
+Theorem, Simon Ch. 5, 4.5).  If `w : ℝ¹ → ℝ^ℓ` is `K`-Lipschitz on the closed ball `B̄_a(0)` with
+`a > 0`, then for every `x ∈ B̄_a(0)`
+`|w(x)| ≤ ((2a)⁻¹ ∫_{B_a(0)} |w|²)^{1/2} + (2a ∫_{B_a(0)} |Dw|²)^{1/2}`.
+
+Proof: `ι(t) = t e₁` maps `[-a, a]` isometrically into `B̄_a(0)`, so `W = w ∘ ι` is `K`-Lipschitz on
+`[-a, a]`, and `x = ι(x₁)` with `x₁ ∈ [-a, a]`.  The interval bound `tdo_ods_interval_sup_le` at
+`t = x₁` is the claim once both ball integrals are written as integrals over `(-a, a)`
+(`tdo_ods_ball_integral_eq_interval`) and `|Dw(ι t)|² = |W'(t)|²`
+(`tdo_ods_hsNormSq_fderiv_single`). -/
+theorem tdo_one_dim_sup_le : ∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K w (closedBall 0 a) → ∀ x ∈ closedBall (0 : Rn 1) a, ‖w x‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ y in ball (0 : Rn 1) a, ‖w y‖ ^ 2) + Real.sqrt (2 * a * ∫ y in ball (0 : Rn 1) a, hsNormSq (fderiv ℝ w y)) := by
+  intro ℓ w a K ha hw x hx
+  -- Step 2: the curve `W(t) = w(t e₁)` is `K`-Lipschitz on `[-a, a]`.
+  set W : ℝ → Rn ℓ := fun s => w (EuclideanSpace.single (0 : Fin 1) s)
+  have hmaps : ∀ s ∈ Icc (-a) a,
+      EuclideanSpace.single (0 : Fin 1) s ∈ closedBall (0 : Rn 1) a := by
+    intro s hs
+    rw [mem_closedBall_zero_iff, PiLp.norm_single, Real.norm_eq_abs]
+    exact abs_le.mpr hs
+  have hWlip : LipschitzOnWith K W (Icc (-a) a) := by
+    intro s hs t ht
+    simpa only [W, PiLp.edist_single_same] using hw (hmaps s hs) (hmaps t ht)
+  -- `x = x₁ e₁` with `x₁ ∈ [-a, a]`.
+  have hx_eq : EuclideanSpace.single (0 : Fin 1) (x 0) = x := by
+    ext i
+    rw [Subsingleton.elim i 0, PiLp.single_eq_same]
+  have hx0 : x 0 ∈ Icc (-a) a := by
+    have h := mem_closedBall_zero_iff.mp hx
+    rw [← hx_eq, PiLp.norm_single, Real.norm_eq_abs] at h
+    exact abs_le.mp h
+  -- Step 8: both ball integrals are integrals over `(-a, a)` along `W`.
+  have h1 : (∫ y in ball (0 : Rn 1) a, ‖w y‖ ^ 2) = ∫ s in Ioo (-a) a, ‖W s‖ ^ 2 :=
+    Submission.tdo_ods_ball_integral_eq_interval (fun y => ‖w y‖ ^ 2) a
+  have h2 : (∫ y in ball (0 : Rn 1) a, hsNormSq (fderiv ℝ w y)) =
+      ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2 := by
+    rw [Submission.tdo_ods_ball_integral_eq_interval (fun y => hsNormSq (fderiv ℝ w y)) a]
+    exact integral_congr_ae (ae_of_all _ fun s =>
+      Submission.tdo_ods_hsNormSq_fderiv_single ℓ w s)
+  -- Steps 2–7: the interval bound for `W` at `t = x₁`.
+  have hWx : W (x 0) = w x := congrArg w hx_eq
+  rw [h1, h2, ← hWx]
+  exact Submission.tdo_ods_interval_sup_le ℓ W a K ha hWlip (x 0) hx0
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
