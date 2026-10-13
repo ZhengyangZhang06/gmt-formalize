@@ -451,6 +451,246 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Helly selection with no concentration on left intervals (the compactness ingredient of the
+choice of the slicing level in the proof of Simon 6.7.2, "an argument as in 6.7(2) of Ch. 2"): if
+`μⱼ([a, b]) ≤ Λ < ∞`, then along a subsequence `φ` and off a countable set `N`, every
+`s ∈ (a, b) \ N` and `ε > 0` admit `δ > 0` with `μ_{φ j}([s - δ, s]) ≤ ε` for all large `j`.
+By Tychonoff, `μ_{φ j}([a, d]) → G(d)` for every rational `d ∈ (a, b)`; `N` is the discontinuity
+set of the nondecreasing `G̃(t) = sup ({0} ∪ {G(d) : d < t})`, and `[s - δ, s] ⊆ [a, d₂] \ [a, d₁]`
+for rationals `d₁ < s - δ`, `s < d₂` with `G(d₂) - G(d₁) < ε`. -/
+theorem Submission.cmc_fc_gs_helly_no_concentration : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (φ : ℕ → ℕ) (N : Set ℝ), StrictMono φ ∧ N.Countable ∧ ∀ s ∈ Ioo a b, s ∉ N → ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε := by
+  intro μ a b Λ hΛ hμ
+  -- `μⱼ([a, x]) ≤ μⱼ([a, b]) ≤ Λ < ∞` for `x ≤ b`
+  have hle : ∀ j x, x ≤ b → μ j (Icc a x) ≤ Λ := fun j x hx =>
+    (measure_mono (Icc_subset_Icc_right hx)).trans (hμ j)
+  have hfin : ∀ j x, x ≤ b → μ j (Icc a x) ≠ ∞ := fun j x hx =>
+    ((hle j x hx).trans_lt hΛ.lt_top).ne
+  -- Helly selection: `d ↦ μⱼ([a, d])` lies in the compact box `∏_{d ∈ ℚ ∩ (a, b)} [0, Λ]` of
+  -- the first countable space `ℝ^(ℚ ∩ (a, b))`
+  have hK : IsCompact (univ.pi fun _ : {q : ℚ // (q : ℝ) ∈ Ioo a b} => Icc (0 : ℝ) Λ.toReal) :=
+    isCompact_univ_pi fun _ => isCompact_Icc
+  obtain ⟨G, hGK, φ, hφ, hlim⟩ := hK.tendsto_subseq
+    (x := fun j d => (μ j (Icc a (d.1 : ℝ))).toReal)
+    fun j d _ => ⟨ENNReal.toReal_nonneg, ENNReal.toReal_mono hΛ (hle j _ d.2.2.le)⟩
+  have hGd : ∀ d : {q : ℚ // (q : ℝ) ∈ Ioo a b},
+      Tendsto (fun j => (μ (φ j) (Icc a (d.1 : ℝ))).toReal) atTop (𝓝 (G d)) :=
+    tendsto_pi_nhds.1 hlim
+  -- `G` is nondecreasing
+  have hGmono : ∀ d d' : {q : ℚ // (q : ℝ) ∈ Ioo a b}, (d.1 : ℝ) ≤ d'.1 → G d ≤ G d' :=
+    fun d d' h => le_of_tendsto_of_tendsto' (hGd d) (hGd d') fun j =>
+      ENNReal.toReal_mono (hfin _ _ d'.2.2.le) (measure_mono (Icc_subset_Icc_right h))
+  -- `G̃(t) = sup ({0} ∪ {G(d) : d < t})`
+  obtain ⟨Gt, hGt⟩ : ∃ Gt : ℝ → ℝ, ∀ t, Gt t = sSup (insert 0 (G '' {d | (d.1 : ℝ) < t})) :=
+    ⟨_, fun _ => rfl⟩
+  have hbdd : ∀ t, BddAbove (insert 0 (G '' {d | (d.1 : ℝ) < t})) := fun t =>
+    ⟨Λ.toReal, by
+      rintro x (rfl | ⟨d, -, rfl⟩)
+      exacts [ENNReal.toReal_nonneg, (hGK d (mem_univ d)).2]⟩
+  -- (α) `G(d) ≤ G̃(t)` if `d < t`; (β) `G̃(t) ≤ G(d)` if `t < d`
+  have hα : ∀ d t, (d.1 : ℝ) < t → G d ≤ Gt t := fun d t h => by
+    rw [hGt]
+    exact le_csSup (hbdd t) (mem_insert_of_mem _ ⟨d, h, rfl⟩)
+  have hβ : ∀ d t, t < (d.1 : ℝ) → Gt t ≤ G d := fun d t h => by
+    rw [hGt]
+    refine csSup_le (insert_nonempty _ _) ?_
+    rintro x (rfl | ⟨d', hd', rfl⟩)
+    exacts [(hGK d (mem_univ d)).1, hGmono d' d (lt_trans hd' h).le]
+  have hmono : Monotone Gt := fun t t' h => by
+    rw [hGt, hGt]
+    exact csSup_le_csSup (hbdd t') (insert_nonempty _ _)
+      (insert_subset_insert (image_mono fun d hd => lt_of_lt_of_le hd h))
+  -- `N` is the countable set of discontinuities of the monotone `G̃`
+  refine ⟨φ, {t | ¬ContinuousAt Gt t}, hφ, hmono.countable_not_continuousAt, ?_⟩
+  intro s hs hsN ε hε
+  have hcont : ContinuousAt Gt s := by
+    by_contra h
+    exact hsN h
+  rcases eq_or_ne ε ∞ with rfl | hε'
+  · exact ⟨1, one_pos, Eventually.of_forall fun _ => le_top⟩
+  have he : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hε'
+  obtain ⟨η₀, hη₀, hcη⟩ := Metric.continuousAt_iff.1 hcont (ε.toReal / 2) (half_pos he)
+  -- `δ = η = min (η₀ / 3, (s - a) / 3, (b - s) / 2)`
+  obtain ⟨hsa, hsb⟩ := hs
+  set η := min (η₀ / 3) (min ((s - a) / 3) ((b - s) / 2))
+  have h1 : η ≤ η₀ / 3 := min_le_left _ _
+  have h2 : η ≤ (s - a) / 3 := (min_le_right _ _).trans (min_le_left _ _)
+  have h3 : η ≤ (b - s) / 2 := (min_le_right _ _).trans (min_le_right _ _)
+  have hη : 0 < η := lt_min (by linarith) (lt_min (by linarith) (by linarith))
+  -- rationals `d₁ ∈ (s - 2η, s - η)` and `d₂ ∈ (s, s + η)`, both in `(a, b)`
+  obtain ⟨q₁, hq₁, hq₁'⟩ := exists_rat_btwn (show s - 2 * η < s - η by linarith)
+  obtain ⟨q₂, hq₂, hq₂'⟩ := exists_rat_btwn (show s < s + η by linarith)
+  have hd₁ : (q₁ : ℝ) ∈ Ioo a b := ⟨by linarith, by linarith⟩
+  have hd₂ : (q₂ : ℝ) ∈ Ioo a b := ⟨by linarith, by linarith⟩
+  -- `G(d₂) - G(d₁) ≤ G̃(s + η) - G̃(s - 2η) < ε`
+  have hup := @hcη (s + η) (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith)
+  have hdown := @hcη (s - 2 * η) (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith)
+  rw [Real.dist_eq, abs_lt] at hup hdown
+  have hlt : G ⟨q₂, hd₂⟩ - G ⟨q₁, hd₁⟩ < ε.toReal := by
+    have := hα ⟨q₂, hd₂⟩ (s + η) hq₂'
+    have := hβ ⟨q₁, hd₁⟩ (s - 2 * η) hq₁
+    linarith [hup.2, hdown.1]
+  -- `μ_{φ j}([s - η, s]) ≤ μ_{φ j}([a, d₂] \ [a, d₁])`, which tends to `G(d₂) - G(d₁) < ε`
+  refine ⟨η, hη, (((hGd ⟨q₂, hd₂⟩).sub (hGd ⟨q₁, hd₁⟩)).eventually_lt_const hlt).mono
+    fun j hj => ?_⟩
+  have hsub : Icc (s - η) s ⊆ Icc a (q₂ : ℝ) \ Icc a (q₁ : ℝ) := by
+    rintro x ⟨hx1, hx2⟩
+    exact ⟨⟨by linarith, by linarith⟩, fun hx => by linarith [hx.2]⟩
+  calc μ (φ j) (Icc (s - η) s) ≤ μ (φ j) (Icc a (q₂ : ℝ) \ Icc a (q₁ : ℝ)) := measure_mono hsub
+    _ = μ (φ j) (Icc a (q₂ : ℝ)) - μ (φ j) (Icc a (q₁ : ℝ)) :=
+      measure_sdiff (Icc_subset_Icc_right (by linarith)) measurableSet_Icc.nullMeasurableSet
+        (hfin _ _ hd₁.2.le)
+    _ = ENNReal.ofReal ((μ (φ j) (Icc a (q₂ : ℝ))).toReal - (μ (φ j) (Icc a (q₁ : ℝ))).toReal) := by
+      rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ENNReal.ofReal_toReal (hfin _ _ hd₂.2.le),
+        ENNReal.ofReal_toReal (hfin _ _ hd₁.2.le)]
+    _ ≤ ENNReal.ofReal ε.toReal := ENNReal.ofReal_le_ofReal hj.le
+    _ = ε := ENNReal.ofReal_toReal hε'
+/-- **Simon 7.2.4, proof** (choice of a good slice; Tonelli for the sliding window): for an
+s-finite measure `ν` on `ℝ` and `h ∈ ℝ`, `t ↦ ν((t − h, t))` is measurable and
+`∫ ν((t − h, t)) dt = h₊ · ν(ℝ)`, where `h₊ = max h 0`.  The set
+`E = {(t, x) : t − h < x < t}` is measurable, its `t`-sections are `(t − h, t)` and its
+`x`-sections are `(x, x + h)`; computing `(L¹ ⊗ ν)(E)` in both orders gives the identity. -/
+theorem Submission.cmc_fc_gs_aqf_window_lintegral : ∀ (ν : Measure ℝ) [SFinite ν] (h : ℝ), Measurable (fun t : ℝ => ν (Ioo (t - h) t)) ∧ ∫⁻ t, ν (Ioo (t - h) t) ∂volume = ENNReal.ofReal h * ν univ := by
+  intro ν _ h
+  -- the window set `E = {(t, x) : t - h < x < t}` and its two families of sections
+  set E : Set (ℝ × ℝ) := {p | p.1 - h < p.2} ∩ {p | p.2 < p.1} with hE
+  have hEm : MeasurableSet E :=
+    (measurableSet_lt (measurable_fst.sub_const h) measurable_snd).inter
+      (measurableSet_lt measurable_snd measurable_fst)
+  have hsec : ∀ t : ℝ, Prod.mk t ⁻¹' E = Ioo (t - h) t := fun t => rfl
+  have hsec' : ∀ x : ℝ, (fun t => (t, x)) ⁻¹' E = Ioo x (x + h) := by
+    intro x
+    ext t
+    simp only [hE, mem_preimage, mem_inter_iff, mem_ofPred_eq, mem_Ioo]
+    constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+  refine ⟨?_, ?_⟩
+  · simpa only [hsec] using measurable_measure_prodMk_left (ν := ν) hEm
+  · -- Tonelli in both orders for `L¹ ⊗ ν` on `E`, then `L¹((x, x + h)) = h₊`
+    calc ∫⁻ t, ν (Ioo (t - h) t) ∂volume = (volume.prod ν) E := by
+          rw [Measure.prod_apply hEm]
+          simp only [hsec]
+      _ = ∫⁻ x, volume (Ioo x (x + h)) ∂ν := by
+          rw [Measure.prod_apply_symm hEm]
+          simp only [hsec']
+      _ = ENNReal.ofReal h * ν univ := by
+          simp only [Real.volume_Ioo, add_sub_cancel_left, lintegral_const]
+
+/-- **Double Fatou for left window quotients.**  If `ν_j(ℝ) ≤ Λ < ∞` for all `j`, then for
+a.e. `t`, `liminf_j liminf_n Q_{j,n}(t) < ∞`, where `Q_{j,n}(t) = (n + 1) ν_j((t - 1/(n+1), t))`.
+By the window lemma `∫⁻ Q_{j,n} = (n + 1) · (1/(n+1)) · ν_j(ℝ) = ν_j(ℝ) ≤ Λ`; Fatou's lemma in
+`n` and then in `j` bounds the integral of the iterated `liminf` by `Λ`, and a measurable
+`[0, ∞]`-valued function with finite integral is finite a.e. -/
+theorem Submission.cmc_fc_gs_aqf_ae_seq_liminf_finite : ∀ (ν : ℕ → Measure ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, ν j univ ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), liminf (fun j => liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * ν j (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop) atTop ≠ ∞ := by
+  intro ν Λ hΛ hν
+  -- each `ν j` has total mass at most `Λ < ∞`, so it is finite (hence s-finite)
+  have hfin : ∀ j, IsFiniteMeasure (ν j) := fun j => ⟨(hν j).trans_lt hΛ.lt_top⟩
+  -- the window quotients `Q j n t = (n + 1) ν_j((t - 1/(n+1), t))` are measurable
+  set Q : ℕ → ℕ → ℝ → ℝ≥0∞ := fun j n t =>
+    ((n : ℝ≥0∞) + 1) * ν j (Ioo (t - 1 / ((n : ℝ) + 1)) t)
+  have hQm : ∀ j n, Measurable (Q j n) := fun j n =>
+    (Submission.cmc_fc_gs_aqf_window_lintegral (ν j) (1 / ((n : ℝ) + 1))).1.const_mul _
+  -- `(n + 1) · ofReal (1/(n+1)) = 1`
+  have hnorm : ∀ n : ℕ, ((n : ℝ≥0∞) + 1) * ENNReal.ofReal (1 / ((n : ℝ) + 1)) = 1 := by
+    intro n
+    have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    rw [one_div, ENNReal.ofReal_inv_of_pos hpos, ENNReal.ofReal_add n.cast_nonneg zero_le_one,
+      ENNReal.ofReal_natCast, ENNReal.ofReal_one]
+    exact ENNReal.mul_inv_cancel (by simp) (by simp)
+  -- `∫⁻ Q j n = ν_j(ℝ)` by the window lemma
+  have hQint : ∀ j n, ∫⁻ t, Q j n t = ν j univ := by
+    intro j n
+    obtain ⟨hm, hint⟩ := Submission.cmc_fc_gs_aqf_window_lintegral (ν j) (1 / ((n : ℝ) + 1))
+    show ∫⁻ t, ((n : ℝ≥0∞) + 1) * ν j (Ioo (t - 1 / ((n : ℝ) + 1)) t) = ν j univ
+    rw [lintegral_const_mul _ hm, hint, ← mul_assoc, hnorm, one_mul]
+  -- first Fatou: `∫⁻ liminf_n Q j n ≤ liminf_n ν_j(ℝ) = ν_j(ℝ) ≤ Λ`
+  have hqm : ∀ j, Measurable fun t => liminf (fun n => Q j n t) atTop :=
+    fun j => Measurable.liminf (hQm j)
+  have hqint : ∀ j, ∫⁻ t, liminf (fun n => Q j n t) atTop ≤ Λ := by
+    intro j
+    calc ∫⁻ t, liminf (fun n => Q j n t) atTop
+        ≤ liminf (fun n => ∫⁻ t, Q j n t) atTop := lintegral_liminf_le (hQm j)
+      _ = ν j univ := by simp_rw [hQint j]; exact liminf_const _
+      _ ≤ Λ := hν j
+  -- second Fatou: `∫⁻ liminf_j liminf_n Q j n ≤ liminf_j Λ = Λ`
+  have hFm : Measurable fun t => liminf (fun j => liminf (fun n => Q j n t) atTop) atTop :=
+    Measurable.liminf hqm
+  have hFint : ∫⁻ t, liminf (fun j => liminf (fun n => Q j n t) atTop) atTop ≤ Λ :=
+    calc ∫⁻ t, liminf (fun j => liminf (fun n => Q j n t) atTop) atTop
+        ≤ liminf (fun j => ∫⁻ t, liminf (fun n => Q j n t) atTop) atTop := lintegral_liminf_le hqm
+      _ ≤ liminf (fun _ : ℕ => Λ) atTop := liminf_le_liminf (Eventually.of_forall hqint)
+      _ = Λ := liminf_const Λ
+  -- a measurable function with finite integral is finite a.e.
+  filter_upwards [ae_lt_top hFm (ne_top_of_le_ne_top hΛ hFint)] with t ht
+  exact ht.ne
+/-- **Simon 7.2.4, good slices** (comparison of difference quotients): for `a < t < b`,
+`liminf_{h ↓ 0} h⁻¹ μ((t − h, t)) ≤ liminf_n (n + 1) (μ⌞[a, b])((t − 1/(n + 1), t))`.  Along
+`hₙ = 1/(n + 1) → 0⁺` the liminf can only grow; once `hₙ < t − a` the window `(t − hₙ, t)` lies in
+`[a, b]`, where `μ⌞[a, b]` agrees with `μ`, and `ofReal hₙ⁻¹ = n + 1`. -/
+theorem Submission.cmc_fc_gs_aqf_liminf_le_seq : ∀ (μ : Measure ℝ) (a b t : ℝ), t ∈ Ioo a b → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (Ioo (t - h) t)) (𝓝[>] 0) ≤ liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * (μ.restrict (Icc a b)) (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop := by
+  intro μ a b t ht
+  -- `hₙ = 1/(n + 1) → 0` through positive values
+  have hv : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+      Eventually.of_forall fun n => Set.mem_Ioi.2 (by positivity)⟩
+  refine (hv.liminf_le_liminf_comp
+    (u := fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (Ioo (t - h) t))).trans_eq (liminf_congr ?_)
+  -- eventually `hₙ < t − a`, so the window lies in `[a, b]`
+  filter_upwards [(tendsto_order.1 (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))).2 _
+    (sub_pos.2 ht.1)] with n hn
+  have hsub : Ioo (t - 1 / ((n : ℝ) + 1)) t ⊆ Icc a b := fun x hx =>
+    ⟨by linarith [hx.1], by linarith [hx.2, ht.2]⟩
+  simp only [Function.comp_apply]
+  rw [Measure.restrict_apply measurableSet_Ioo, Set.inter_eq_left.2 hsub, one_div, inv_inv,
+    ENNReal.ofReal_add (Nat.cast_nonneg n) zero_le_one, ENNReal.ofReal_natCast, ENNReal.ofReal_one]
+
+/-- Lower left difference quotients have a.e. finite `liminf` over `j` (the Fatou/Tonelli
+ingredient of the choice of the slicing level in the proof of Simon 6.7.2, "an argument as in
+6.7(2) of Ch. 2"): if `μⱼ([a, b]) ≤ Λ < ∞`, then for a.e. `t ∈ (a, b)`,
+`liminf_j liminf_{h ↓ 0} h⁻¹ μⱼ((t - h, t)) < ∞`.  For `νⱼ = μⱼ⌞[a, b]`, so `νⱼ(ℝ) ≤ Λ`, Tonelli
+and Fatou (twice) make the iterated `liminf` of `(n + 1) νⱼ((t - 1/(n + 1), t))` finite off a null
+set, and for `t ∈ (a, b)` it bounds the `liminf` along `h ↓ 0` for every `j`. -/
+theorem Submission.cmc_fc_gs_ae_quotient_finite : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ j (Ioo (t - h) t)) (𝓝[>] 0)) atTop ≠ ∞ := by
+  intro μ a b Λ hΛ hμ
+  -- `νⱼ = μⱼ⌞[a, b]` has `νⱼ(ℝ) = μⱼ([a, b]) ≤ Λ`, so off a null set the iterated `liminf` of its
+  -- sequential quotients is finite
+  filter_upwards [Submission.cmc_fc_gs_aqf_ae_seq_liminf_finite (fun j => (μ j).restrict (Icc a b))
+    Λ hΛ fun j => (Measure.restrict_apply_univ _).trans_le (hμ j)] with t ht hat
+  -- for `t ∈ (a, b)` and every `j`, the `liminf` along `h ↓ 0` is at most that of `νⱼ`
+  exact ne_top_of_le_ne_top ht <| liminf_le_liminf <| Eventually.of_forall fun j =>
+    Submission.cmc_fc_gs_aqf_liminf_le_seq (μ j) a b t hat
+
+/-- **Choice of a good slicing level** (Simon Ch. 6, proof of Theorem 7.2, chapter-06.txt
+line 2090: "by 4.5(1),(2) and an argument as in 6.7(2) of Ch. 2").  If `μⱼ([a, b]) ≤ Λ < ∞`,
+there are `s ∈ (a, b)`, a subsequence `φ` and `C < ∞` such that every lower left difference
+quotient `liminf_{h↓0} h⁻¹ μ_{φ(j)}((s − h, s))` is `≤ C` and, for every `ε > 0`, eventually
+`μ_{φ(j)}([s − δ, s]) ≤ ε` for some `δ > 0`.  Helly selection gives `φ₁` and a countable set `N`
+off which no mass concentrates from the left along `φ₁`; Tonelli and Fatou, applied to
+`μ ∘ φ₁`, give `L(t) := liminf_j liminf_{h↓0} h⁻¹ μ_{φ₁(j)}((t − h, t)) < ∞` for a.e.
+`t ∈ (a, b)`.  As `(a, b)` has positive Lebesgue measure and `N` is null, some `s ∈ (a, b) ∖ N`
+has `L(s) < ∞`; the quotients at `s` are `< L(s) + 1 =: C` for infinitely many `j`, which gives
+a second extraction `φ₂`, and `φ := φ₁ ∘ φ₂`. -/
+theorem Submission.cmc_fc_good_slice : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (s : ℝ) (φ : ℕ → ℕ) (C : ℝ≥0∞), a < s ∧ s < b ∧ StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (φ j) (Ioo (s - h) s)) (𝓝[>] 0) ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε := by
+  intro μ a b Λ hab hΛ hμ
+  -- Steps 1–3: Helly selection; off the countable set `N` no mass concentrates along `φ₁`
+  obtain ⟨φ₁, N, hφ₁, hN, hconc⟩ := Submission.cmc_fc_gs_helly_no_concentration μ a b Λ hΛ hμ
+  -- Step 4: Tonelli and Fatou for the subsequence `μ ∘ φ₁`, which is still bounded by `Λ`
+  have hfin := Submission.cmc_fc_gs_ae_quotient_finite (fun j => μ (φ₁ j)) a b Λ hΛ
+    fun j => hμ (φ₁ j)
+  -- Step 5: `(a, b)` is not Lebesgue-null and `N` is, so a good level `s ∈ (a, b) ∖ N` exists
+  have hab' : volume (Ioo a b) ≠ 0 := by
+    rw [Real.volume_Ioo]
+    exact (ENNReal.ofReal_pos.2 (sub_pos.2 hab)).ne'
+  have := ae_restrict_neBot.2 hab'
+  obtain ⟨s, hs, hsN, hL⟩ := ((ae_restrict_mem (s := Ioo a b) measurableSet_Ioo).and
+    (ae_restrict_of_ae ((hN.ae_notMem volume).and hfin))).exists
+  -- Step 6: the quotients at `s` are `< L + 1` infinitely often; extract `φ₂` along them
+  obtain ⟨φ₂, hφ₂, hlt⟩ := extraction_of_frequently_atTop
+    (frequently_lt_of_liminf_lt (by isBoundedDefault) (ENNReal.lt_add_right (hL hs) one_ne_zero))
+  refine ⟨s, φ₁ ∘ φ₂, _, hs.1, hs.2, hφ₁.comp hφ₂,
+    ENNReal.add_ne_top.2 ⟨hL hs, ENNReal.one_ne_top⟩, fun k => (hlt k).le, fun ε hε => ?_⟩
+  -- Steps 7–8: the `δ` of Helly selection works along `φ₁ ∘ φ₂`, since `φ₂ → ∞`
+  obtain ⟨δ, hδ, hev⟩ := hconc s hs hsN ε hε
+  exact ⟨δ, hδ, hφ₂.tendsto_atTop.eventually hev⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
