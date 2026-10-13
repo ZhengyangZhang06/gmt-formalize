@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.lipschitz_c1_pieces-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "A Lipschitz map ℝ^m → ℝ^P agrees with countably many C¹ maps off a set with H^m-null image (given scalar C¹ approximation)",
+  "statement": "Let P, m ∈ ℕ, K ≥ 0, and let F : ℝ^m → ℝ^P be K-Lipschitz (ℝ^k = Euclid k). Assume:\n(H) for every Lipschitz u : ℝ^m → ℝ (with any constant L ≥ 0) and every ε ∈ (0, ∞] there is g : ℝ^m → ℝ of class C¹ with L^m({y : u(y) ≠ g(y)}) < ε, where L^m = volume on ℝ^m.\n(H) is verbatim the frozen type of the C¹-approximation node c1_approx (Lean dor_lmbsf_lipschitz_c1_approx; Simon Ch. 2, Theorem 1.5, value part) at dimension m.\nThen there are E ⊆ ℝ^P with H^m(E) = 0 (H^m = μHE[m]) and C¹ maps G_i : ℝ^m → ℝ^P (i ∈ ℕ) such that F(ℝ^m) ⊆ E ∪ ⋃_i G_i(ℝ^m).",
+  "lean_statement": "∀ (P m : ℕ) (F : Euclid m → Euclid P) (K : NNReal), LipschitzWith K F → (∀ (u : Euclid m → ℝ) (L : NNReal), LipschitzWith L u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid m → ℝ, ContDiff ℝ 1 g ∧ volume {y | u y ≠ g y} < ε) → ∃ (E : Set (Euclid P)) (G : ℕ → Euclid m → Euclid P), μHE[m] E = 0 ∧ (∀ i, ContDiff ℝ 1 (G i)) ∧ Set.range F ⊆ E ∪ ⋃ i, Set.range (G i)",
+  "lean_name": "dor_lmbsf_c1c_lipschitz_range_c1_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947-a1"
+}
