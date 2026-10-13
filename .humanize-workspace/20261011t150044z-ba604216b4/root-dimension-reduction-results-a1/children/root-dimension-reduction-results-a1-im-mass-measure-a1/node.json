@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Mass of an integer multiplicity current equals its representing measure, and its support is the support of that measure",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P (= Euclid P) be open, let T ∈ 𝒟_n(U) (GeometricCurrentOn U n) and let R = (M, θ, ξ) be an integer multiplicity representation of T in U (an IMRep U n with R.Represents T, i.e. T(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ 𝒟^n(U), where H^n = μHE[n]). Write μ_R := R.measure = θ·H^n⌞M. Then: (a) M_W(T) = μ_R(W) for every open W ⊆ U, where M_W(T) = T.massOn W is the supremum (in [0, ∞]) of ofReal T(ω) over ω ∈ 𝒟^n(U) with tsupport ω ⊆ W and Euclidean coefficient norm |ω(x)| ≤ 1 for all x; (b) for every x ∈ U: x ∈ spt T if and only if μ_R(B_ε(x)) ≠ 0 for every ε > 0; (c) every other representation R' of T has the same measure: R'.measure = R.measure.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure",
+  "lean_name": "dimred_im_mass_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1"
+}
