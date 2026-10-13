@@ -578,6 +578,87 @@ theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b 
     rfl
   rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
 
+/-- Orientation of the push-forward by an injective linear map (Simon Ch. 6, 3.4–3.5 and 3.7:
+`L_#ξ = J η`): if `ξ` is a unit orientation of `Q`, `ζ(β) = ξ(β ∘ L)` and
+`J = (det(Leₐ · Le_b))^{1/2}` for the orthonormal basis `e` of `Q`, then `0 < J ≤ ‖L‖ⁿ` and `J⁻¹ζ`
+is a unit orientation of `L(Q)`.  With `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` and `σ` an orthonormal frame of
+`span (Lτ) = L(Q)`, `β(Lτ) = det A · β(σ)` for `A = (⟨σᵢ, Lτⱼ⟩)`, and `J = |det A|`. -/
+theorem Submission.dpf_unitOrientation_map_gramNormalized : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n) (L : Euclid P →L[ℝ] Euclid P) (J : ℝ), IsUnitOrientationOf ξ Q → Injective L → J = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j)))) → 0 < J ∧ J ≤ ‖L‖ ^ n ∧ IsUnitOrientationOf (J⁻¹ • ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid P) Q) := by
+  intro P n Q ξ L J hξ hL hJ
+  -- `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `Q`
+  obtain ⟨τ, hτ, hτQ, hξτ⟩ := hξ
+  -- `Lτ` is linearly independent; let `σ` be an orthonormal frame of `span (Lτ)` (Gram–Schmidt)
+  have hv : LinearIndependent ℝ fun i => L (τ i) :=
+    hτ.linearIndependent.map' (L : Euclid P →ₗ[ℝ] Euclid P) (LinearMap.ker_eq_bot.mpr hL)
+  obtain ⟨σ, hσ, hσv, hdet, hA0, hAle⟩ :=
+    Submission.dpf_exists_orthonormal_frame_det_gram P n (fun i => L (τ i)) hv
+  -- `α(Lτ) = det A · α(σ)` for every `n`-covector `α`, where `A = (⟨σᵢ, Lτⱼ⟩)`: the restriction
+  -- of `α` to `span σ` is `α(σ) det_σ`, and the coordinates of `Lτⱼ` in the basis `σ` are `Aᵢⱼ`
+  have hcov : ∀ α : Covector (Euclid P) n, α (fun j => L (τ j)) =
+      (Matrix.of fun i j => inner ℝ (σ i) (L (τ j))).det * α σ := by
+    intro α
+    set S := Submodule.span ℝ (Set.range σ)
+    have hvS : ∀ j, L (τ j) ∈ S := fun j => by
+      rw [hσv]
+      exact Submodule.subset_span (Set.mem_range_self j)
+    let e : Module.Basis (Fin n) ℝ S := Module.Basis.span hσ.linearIndependent
+    have he : ∀ i, (e i : Euclid P) = σ i := fun i => by
+      rw [Module.Basis.span_apply hσ.linearIndependent i]
+    let αS : S [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap S.subtype
+    let w : Fin n → S := fun j => ⟨L (τ j), hvS j⟩
+    have h1 : α (fun j => L (τ j)) = αS w := rfl
+    have h2 : α σ = αS e := by
+      show α σ = α (fun i => (e i : Euclid P))
+      congr 1
+      funext i
+      exact (he i).symm
+    have hrepr : ∀ i j, e.repr (w j) i = inner ℝ (σ i) (L (τ j)) := by
+      intro i j
+      have hs : L (τ j) = ∑ l, e.repr (w j) l • σ l := by
+        have := congrArg Subtype.val (e.sum_repr (w j))
+        simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
+        exact this.symm
+      rw [hs, hσ.inner_right_fintype]
+    have hmat : e.toMatrix w = Matrix.of fun i j => inner ℝ (σ i) (L (τ j)) := by
+      ext i j
+      rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
+    have h3 : αS w = αS e * e.det w := by
+      conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αS]
+      rfl
+    rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+  generalize (Matrix.of fun i j => inner ℝ (σ i) (L (τ j))).det = d at hdet hA0 hAle hcov
+  -- `J = √(det G(Le)) = √(det G(Lτ)) = √((det A)²) = |det A|`
+  have hJd : J = |d| := by
+    rw [hJ, Submission.dpf_det_gram_stdOrthonormalBasis_eq P n Q L τ hτ hτQ, hdet,
+      Real.sqrt_sq_eq_abs]
+  refine ⟨by rw [hJd]; exact abs_pos.mpr hA0, ?_, σ, hσ, ?_, ?_⟩
+  · -- `J = |det A| ≤ ∏ᵢ ‖Lτᵢ‖ ≤ ‖L‖ⁿ`
+    rw [hJd]
+    refine hAle.trans ?_
+    calc ∏ i, ‖L (τ i)‖ ≤ ∏ _i : Fin n, ‖L‖ :=
+          Finset.prod_le_prod₀ (fun i _ => norm_nonneg _) fun i _ => by
+            simpa [hτ.1 i] using L.le_opNorm (τ i)
+      _ = ‖L‖ ^ n := by simp
+  · -- `span σ = span (Lτ) = L(span τ) = L(Q)`
+    rw [hσv, ← hτQ, Submodule.map_span, ← Set.range_comp]
+    rfl
+  · -- `(J⁻¹ζ)(α) = J⁻¹ ξ(α ∘ L) = ±J⁻¹ α(Lτ) = ±(J⁻¹ det A) α(σ)` with `J⁻¹ det A = ±1`
+    have hζ : ∀ α : Covector (Euclid P) n,
+        (J⁻¹ • ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) α =
+          J⁻¹ * ξ (α.compContinuousLinearMap L) := fun α => rfl
+    have hατ : ∀ α : Covector (Euclid P) n, α.compContinuousLinearMap L τ = d * α σ :=
+      fun α => hcov α
+    have hsign : J⁻¹ * d = 1 ∨ J⁻¹ * d = -1 := by
+      rw [hJd]
+      rcases hA0.lt_or_gt with h | h
+      · exact Or.inr (by rw [abs_of_neg h, inv_neg, neg_mul, inv_mul_cancel₀ hA0])
+      · exact Or.inl (by rw [abs_of_pos h, inv_mul_cancel₀ hA0])
+    rcases hξτ with hξτ | hξτ <;> rcases hsign with hs | hs
+    · exact Or.inl fun α => by rw [hζ, hξτ, hατ]; linear_combination α σ * hs
+    · exact Or.inr fun α => by rw [hζ, hξτ, hατ]; linear_combination α σ * hs
+    · exact Or.inr fun α => by rw [hζ, hξτ, hατ]; linear_combination -α σ * hs
+    · exact Or.inl fun α => by rw [hζ, hξτ, hατ]; linear_combination -α σ * hs
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
