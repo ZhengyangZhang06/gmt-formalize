@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+  "depth": 5,
+  "title": "Normalized smooth mollifier on ℝⁿ with support in a given ball",
+  "statement": "For every n ∈ ℕ and every r > 0 there is ρ : ℝⁿ → ℝ (ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n) with Lebesgue measure) such that ρ is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), ρ has compact support, ρ(x) ≥ 0 for all x, ∫_{ℝⁿ} ρ = 1, and support ρ ⊆ B_r(0) (the open ball of radius r about 0).",
+  "lean_statement": "∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r",
+  "lean_name": "dgcr_stc_exists_normalized_mollifier",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc-a1"
+}
