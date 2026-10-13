@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d8c04333f80ef38c4d410e25e9de067f07858667579fe0310f7c5fdec072b337",
+  "git_delta": {
+    "base_commit": "310886e8e3a6461dd76b32755e62c3d310540748",
+    "candidate_commit": "5570cd6a944d5398d2397269bcfb325122399ba6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_ps_slice_integral_eq_zero",
+    "diff_sha256": "1ec11b8e06537f7277d8c3ab539eb6a031180445f20265e11097bb6c6c5ce4a9",
+    "source_sha256": "e481470f1c4759df980b08c82b0ffad0a877536ef72d23e59dcd2d31a67577b9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_ps_slice_integral_eq_zero",
+      "statement": "∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m), X.support ⊆ closedBall 0 R → Disjoint (tsupport (η : DifferentialForm (Eucl (P + 1)) (m + 1))) ((fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) '' (Icc (0 : ℝ) 1 ×ˢ closedBall (0 : Eucl P) R)) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P), (φ s : DifferentialForm (Eucl P) m) x v = (η : DifferentialForm (Eucl (P + 1)) (m + 1)) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → ∫ s in (0 : ℝ)..1, X (φ s) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
