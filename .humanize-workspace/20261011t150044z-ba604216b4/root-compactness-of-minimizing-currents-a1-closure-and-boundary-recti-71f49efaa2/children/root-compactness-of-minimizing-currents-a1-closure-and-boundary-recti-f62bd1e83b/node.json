@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.smooth_ae_approx-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "depth": 6,
+  "title": "Smooth, uniformly bounded, a.e.-convergent approximation of a bounded measurable function supported in a ball",
+  "statement": "Let n ∈ ℕ and R, δ ∈ ℝ with δ > 0 (ℝⁿ = Euclid n with Lebesgue measure), and let g₀ : ℝⁿ → ℝ be measurable with |g₀(x)| ≤ 1 for all x and g₀(x) = 0 whenever ‖x‖ ≥ R. Then there is a sequence (G_j)_{j∈ℕ} of functions ℝⁿ → ℝ such that every G_j is smooth (C^∞) with compact support, tsupport G_j ⊆ B_{R+δ}(0), |G_j(x)| ≤ 1 for all j and x, and G_j(x) → g₀(x) as j → ∞ for Lebesgue-almost every x ∈ ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (R δ : ℝ) (g₀ : Euclid n → ℝ), 0 < δ → Measurable g₀ → (∀ x, |g₀ x| ≤ 1) → (∀ x, R ≤ ‖x‖ → g₀ x = 0) → ∃ G : ℕ → Euclid n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (G j)) ∧ (∀ j, HasCompactSupport (G j)) ∧ (∀ j, tsupport (G j) ⊆ ball 0 (R + δ)) ∧ (∀ j x, |G j x| ≤ 1) ∧ ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun j => G j x) atTop (𝓝 (g₀ x))",
+  "lean_name": "cbr_ci_pw_bv_smooth_ae_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f62bd1e83b-a1"
+}
