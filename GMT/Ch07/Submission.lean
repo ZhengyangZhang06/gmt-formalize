@@ -5290,6 +5290,151 @@ theorem Submission.pushforward_action_massOn_le_first_variation : ∀ (P n : ℕ
     _ = m + t * R.firstVariation X + m * ε' * |t| := by ring
     _ ≤ m + t * R.firstVariation X + ε * |t| := by linarith
 
+/-- **Simon 7.1.2, first claim (pp. 181–182).**  If `T ∈ 𝒟ₙ(U)` is minimizing in `N ∩ U`
+(`N` an embedded `C²` submanifold, `(N̄ \ N) ∩ U = ∅`), `∂T = 0` in `U`, and `T = τ(M, θ, ξ)` with
+`Hⁿ(M \ N) = 0`, then `V = v(M, θ)` is stationary in `N ∩ U`.  Fix `X` tangent to `N` and an
+open `W ⊂⊂ U` containing `spt X`.  If `μ_V(W) = 0`, then `div_M X = 0` `μ_V`-a.e.  Otherwise the
+deformations `φ_t` push `T` forward to competitors with `spt(φ_{t#}T − T) ⊆ spt X ∩ N`, so
+`μ_V(W) ≤ M_W(φ_{t#}T) ≤ μ_V(W) + t δV(X) + ε|t|` for all small `t` of both signs, which forces
+`δV(X) = 0`.  No separate case `n = 0` is needed, since `∂S = ∂T` is vacuous there. -/
+theorem Submission.stationaryAlong_of_minimizing_in_submanifold :
+    ∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n),
+      IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ →
+      IsMinimizingIn T (N ∩ U) → BoundaryVanishes T → R.Represents T →
+      μHE[n] (R.carrier \ N) = 0 → R.IsStationaryAlong N := by
+  intro P n d U N T R hU hN hNU hmin hT hR hMN X hX hXc hXU hXN
+  -- `∂S₁ = 0 = ∂S₂` gives `∂S₁ = ∂S₂` (vacuous in degree `0`).
+  have hsame : ∀ {m : ℕ} (S₁ S₂ : GeometricCurrentOn U m), BoundaryVanishes S₁ →
+      BoundaryVanishes S₂ → SameBoundary S₁ S₂ := by
+    intro m S₁ S₂ h₁ h₂
+    cases m with
+    | zero => trivial
+    | succ m => exact (show S₁.boundary = 0 from h₁).trans (show S₂.boundary = 0 from h₂).symm
+  -- An open `W ⊂⊂ U` containing `K = spt X`, with `μ_V(W) < ∞` and `M_W(T) = μ_V(W)`.
+  obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hXc hU hXU
+  have hWm : MeasurableSet W := hWo.measurableSet
+  have hRW : R.measure W = ∫⁻ x in W, (R.mult x : ℝ≥0∞) ∂(μHE[n].restrict R.carrier) := by
+    rw [IMRep.measure, withDensity_apply _ hWm]
+  have hRWfin : R.measure W ≠ ∞ := by
+    rw [hRW, Measure.restrict_restrict hWm]
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult _ hWc hWU) (lintegral_mono_set ?_)
+    exact fun x hx => ⟨hx.2, subset_closure hx.1⟩
+  have hTW : T.massOn W = R.measure W :=
+    Submission.imrep_represents_massOn_eq_measure P n U W T R hU hR hWo
+      (subset_closure.trans hWU)
+  -- If `μ_V(W) = 0`, then `Hⁿ(M ∩ W) = 0` and `DX = 0` off `W`, so `div_M X = 0` a.e. on `M`.
+  by_cases hW0 : R.measure W = 0
+  · have hMW : μHE[n].restrict R.carrier W = 0 := by
+      refine le_antisymm ?_ bot_le
+      calc μHE[n].restrict R.carrier W
+          = ∫⁻ _ in W, 1 ∂(μHE[n].restrict R.carrier) := (setLIntegral_one W).symm
+        _ ≤ ∫⁻ x in W, (R.mult x : ℝ≥0∞) ∂(μHE[n].restrict R.carrier) := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_of_ae (ae_restrict_mem R.measurableSet_carrier)] with x hx
+          exact Nat.one_le_cast.2 (R.mult_pos x hx)
+        _ = 0 := by rw [← hRW, hW0]
+    rw [IMRep.firstVariation]
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hMW] with x hx
+    have hDX : fderiv ℝ X x = 0 := fderiv_of_notMem_tsupport ℝ fun h => hx (hKW h)
+    simp [tangentialDivergence, hDX]
+  have hm : 0 < (R.measure W).toReal := ENNReal.toReal_pos hW0 hRWfin
+  -- The deformations `φ_t` along `N`, fixing `ℝᴾ \ K` pointwise.
+  obtain ⟨φ, hφ, hφD⟩ :=
+    Submission.tangential_c1_deformation_exists P d U N X hU hN hNU hX hXc hXU hXN
+  -- `K ∩ N = K ∩ N̄` is compact, since `(N̄ \ N) ∩ U = ∅` and `K ⊆ U`.
+  have hKNc : IsCompact (tsupport X ∩ N) := by
+    have h : tsupport X ∩ N = tsupport X ∩ closure N := by
+      refine Subset.antisymm (inter_subset_inter_right _ subset_closure) ?_
+      rintro x ⟨hxK, hxN⟩
+      refine ⟨hxK, ?_⟩
+      by_contra h
+      exact hNU.subset ⟨⟨hxN, h⟩, hXU hxK⟩
+    rw [h]
+    exact hXc.inter_right isClosed_closure
+  -- Every push-forward `φ_{t#}T` is an admissible competitor in 7.1.1, so `μ_V(W) ≤ M_W(φ_{t#}T)`.
+  have hcomp : ∀ (t : ℝ) (S : GeometricCurrentOn U n), IsIntegerMultiplicity S →
+      BoundaryVanishes S →
+      (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) *
+        R.orient x (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+          (fderiv ℝ (φ t) x)) ∂μHE[n]) →
+      R.measure W ≤ S.massOn W := by
+    intro t S hSi hSb hSω
+    -- `φ_t` is injective and fixes `ℝᴾ \ K` pointwise, so it maps `K` into `K`.
+    have hφK : ∀ x ∈ tsupport X, φ t x ∈ tsupport X := by
+      intro x hx
+      by_contra h
+      have hfix : φ t x = x := (hφ t).2.1.1 ((hφ t).2.2.2.1 _ h)
+      exact h (by rwa [hfix])
+    -- `spt(φ_{t#}T − T) ⊆ K ∩ N`: near `y ∉ K ∩ N` the integrands agree `Hⁿ`-a.e. on `M`.
+    have hsub : (S - T).support ⊆ tsupport X ∩ N := by
+      intro y hy
+      by_contra hyKN
+      obtain ⟨ε, hε, hεU⟩ :=
+        Metric.isOpen_iff.1 (hU.inter hKNc.isClosed.isOpen_compl) y ⟨hy.1, hyKN⟩
+      have hcl : closure (ball y (ε / 2)) ⊆ ball y ε :=
+        closure_ball_subset_closedBall.trans (closedBall_subset_ball (half_lt_self hε))
+      have hball : ball y (ε / 2) ∈ {V : Set (Euclid P) | IsOpen V ∧ IsCompact (closure V) ∧
+          closure V ⊆ U ∧ (S - T).VanishesOn V} := by
+        refine ⟨isOpen_ball,
+          (isCompact_closedBall y (ε / 2)).closure_of_subset ball_subset_closedBall,
+          fun z hz => (hεU (hcl hz)).1, ?_⟩
+        intro ω hω
+        have hω0 : ∀ z ∈ tsupport X ∩ N, (ω : DifferentialForm (Euclid P) n) z = 0 :=
+          fun z hz => image_eq_zero_of_notMem_tsupport fun hzω =>
+            (hεU (ball_subset_ball (half_le_self hε.le) (hω hzω))).2 hz
+        change S ω - T ω = 0
+        rw [hSω ω, hR ω, IMRep.action, sub_eq_zero]
+        refine setIntegral_congr_ae R.measurableSet_carrier ?_
+        filter_upwards [measure_eq_zero_iff_ae_notMem.1 hMN] with x hxMN hxM
+        have hxN : x ∈ N := by
+          by_contra h
+          exact hxMN ⟨hxM, h⟩
+        have harg : ((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+            (fderiv ℝ (φ t) x) = (ω : DifferentialForm (Euclid P) n) x := by
+          by_cases hxK : x ∈ tsupport X
+          · rw [hω0 x ⟨hxK, hxN⟩, hω0 (φ t x) ⟨hφK x hxK, ((hφ t).2.2.2.2 ⟨hxN, hXU hxK⟩).1⟩]
+            ext v
+            simp
+          · have hφx : φ t =ᶠ[𝓝 x] id := by
+              filter_upwards [(isClosed_tsupport X).isOpen_compl.mem_nhds hxK] with z hz
+              exact (hφ t).2.2.2.1 z hz
+            rw [hφx.fderiv_eq, fderiv_id, (hφ t).2.2.2.1 x hxK]
+            ext v
+            simp
+        rw [harg]
+      exact hy.2 (mem_sUnion_of_mem (mem_ball_self (half_pos hε)) hball)
+    have hSTc : IsCompact (S - T).support := by
+      have h : (S - T).support = (tsupport X ∩ N) ∩ ((S - T).zeroRegion)ᶜ :=
+        Subset.antisymm (fun y hy => ⟨hsub hy, hy.2⟩) fun y hy => ⟨hXU hy.1.1, hy.2⟩
+      rw [h]
+      exact hKNc.inter_right (S - T).isOpen_zeroRegion.isClosed_compl
+    rw [← hTW]
+    exact hmin.2 W S hWo ⟨hWc, hWU⟩ hSi (hsame S T hSb hT) hSTc fun y hy =>
+      ⟨⟨(hsub hy).2, hXU (hsub hy).1⟩, hKW (hsub hy).1⟩
+  -- The expansion `M_W(φ_{t#}T) ≤ μ_V(W) + t δV(X) + ε|t|` for `|t| < δ` gives `|δV(X)| ≤ ε`.
+  have hbound : ∀ ε : ℝ, 0 < ε → |R.firstVariation X| ≤ ε := by
+    intro ε hε
+    obtain ⟨δ, hδ, hδS⟩ := Submission.pushforward_action_massOn_le_first_variation P n U W R X
+      φ hWo hRWfin hX hXc hKW (fun t => (hφ t).1) (fun t => (hφ t).2.2.2.1) hφD ε hε
+    have key : ∀ t : ℝ, |t| < δ → 0 ≤ t * R.firstVariation X + ε * |t| := by
+      intro t ht
+      obtain ⟨S, hSi, hSb, hSω⟩ := Submission.imrep_c1_diffeo_pushforward_im P n U
+        (tsupport X) T R (φ t) hU hR hXc hXU (hφ t).1 (hφ t).2.1 (hφ t).2.2.1 (hφ t).2.2.2.1
+      have h := (ENNReal.ofReal_toReal hRWfin).le.trans
+        ((hcomp t S hSi (hSb hT) hSω).trans (hδS t ht S hSω))
+      by_contra hneg
+      exact not_lt.2 h ((ENNReal.ofReal_lt_ofReal_iff hm).2 (by linarith [not_le.1 hneg]))
+    have h₁ := key (δ / 2) (by rw [abs_of_pos (half_pos hδ)]; exact half_lt_self hδ)
+    have h₂ := key (-(δ / 2)) (by rw [abs_neg, abs_of_pos (half_pos hδ)]; exact half_lt_self hδ)
+    rw [abs_of_pos (half_pos hδ)] at h₁
+    rw [abs_neg, abs_of_pos (half_pos hδ)] at h₂
+    rw [abs_le]
+    constructor <;> nlinarith
+  by_contra ha
+  have h := hbound (|R.firstVariation X| / 2) (half_pos (abs_pos.2 ha))
+  linarith [abs_pos.2 ha]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
