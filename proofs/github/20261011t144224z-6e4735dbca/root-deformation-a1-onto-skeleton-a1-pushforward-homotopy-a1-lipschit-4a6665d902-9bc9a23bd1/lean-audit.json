@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "544ddd7ae8874dd450d604de9ddd87724e46e1a83957ee46388aabcad5839039",
+  "git_delta": {
+    "base_commit": "f9e79e964428c3e564880f232ef341239300f9ef",
+    "candidate_commit": "f5a2520e7214dba13ea094aea8bfe41ce2520115",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_lpf_current_of_bounded_functional",
+    "diff_sha256": "f7855d0bc26aff42f1be842aa03aff47c4f4ff4de88e82cc5488d73481d66191",
+    "source_sha256": "5e98477185f5746a8c0078fdebc06e3610c92fa30a488d54a32ae6c08726a321",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_lpf_current_of_bounded_functional",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U n → ℝ) (B : ℝ), (∀ ω η : TestFormOn U n, T₀ (ω + η) = T₀ ω + T₀ η) → (∀ (c : ℝ) (ω : TestFormOn U n), T₀ (c • ω) = c * T₀ ω) → (∀ (ω : TestFormOn U n) (C : ℝ), (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) y) ≤ C) → |T₀ ω| ≤ B * C) → ∃ S : GeometricCurrentOn U n, (∀ ω, S ω = T₀ ω) ∧ S.mass ≤ ENNReal.ofReal B",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
