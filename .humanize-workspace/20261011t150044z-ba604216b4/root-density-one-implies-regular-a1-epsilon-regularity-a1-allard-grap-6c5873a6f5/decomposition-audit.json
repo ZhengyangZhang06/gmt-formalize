@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "integral_lineDeriv_mul_eq|ae_differentiableAt",
+        "toDual_symm_apply|real_norm_sq_eq|inner_single_left",
+        "exists_pos_lt_subset_ball|exists_lt_subset_ball",
+        "lipschitzWith_of_hasCompactSupport",
+        "one_of_mem_closedBall|tsupport_eq|hasCompactSupport|nonneg.|le_one",
+        "fderiv_of_isOpen|continuousOn_fderiv_of_isOpen",
+        "integral_mul_le_Lp_mul_Lq_of_nonneg",
+        "setLIntegral_iUnion_of_directed",
+        "rg -n 'integral_lineDeriv_mul_eq|dorag_ha_lsc_|dorag_ha_energy_lsc' project/GMT",
+        "lean_name",
+        "lean_statement",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/energy-lsc-independent-audit-y2jxd3r5/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/energy-lsc-independent-audit-y2jxd3r5/ProofAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6c5873a6f5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6c5873a6f5/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/energy-lsc-independent-audit-y2jxd3r5/ChallengeTypes.lean",
+        "/tmp/energy-lsc-independent-audit-y2jxd3r5/ProofAudit.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and source compatibility. The snapshot supplies the cited analytic and linear-algebra lemmas; the project search found no matches for the queried IBP or energy declaration names. Euclid uses the intended Euclidean norm. All six statements are standalone one-line propositions, pass the statement validator, and elaborate in replayed comparator scope before any child declaration. Independently compiled all unchanged supplied proof appendices and a fresh assembly of the exact frozen parent; every axiom report contains only propext, Classical.choice, and Quot.sound. Scanning 3271 JSON files found the six bare names only in this proposal and its review wrapper, with no competing reservation or identical existing DAG type. The split is appropriate: dependencies are acyclic and match actual sibling uses, and the children establish both conclusions of the selected energy theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "grad_norm_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match both conclusions for every n, including zero. The Riesz representative gives the exact operator-norm identity; Cauchy–Schwarz applied to a and −a gives the absolute-value bound. The proof is complete and independent."
+    },
+    {
+      "key": "ibp_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All Lipschitz, smoothness, compact-support and support-containment hypotheses match. Rademacher justifies replacing line derivatives almost everywhere; integrability permits finite summation, and both integrands vanish outside the ball. The proof covers arbitrary n and R without additional assumptions."
+    },
+    {
+      "key": "ibp_c1_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C¹-on-ball contract matches the prose. The proof handles R ≤ 0, constructs a cutoff equal to one near all test supports, and proves global C¹ regularity without assumptions on h outside the ball. Its sole sibling dependency, ibp_lipschitz, is correctly directed."
+    },
+    {
+      "key": "duality_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All convergence, energy, regularity and almost-everywhere hypotheses match. The proof establishes the required L² and integrability facts, cancels constants using zero integrated divergence, proves convergence of the pairings, and passes their uniform bound to the limit. Exactly the three declared siblings are used."
+    },
+    {
+      "key": "interior_energy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positivity, C² and universal duality hypotheses match exactly. The cutoff gradient is an admissible C¹ compactly supported field; its integrable energy satisfies X ≤ √E√X, yielding X ≤ E and the interior bound. Depending only on grad_norm_sq is correct because duality is an explicit hypothesis."
+    },
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. Continuity first establishes integrability on interior balls, avoiding any reliance on default values of nonintegrable Bochner integrals. Positive exhausting radii, monotone convergence, measurability and E ≥ 0 then prove both global integrability and the exact bound. No sibling or parent reliance occurs."
+    }
+  ],
+  "required_changes": []
+}
