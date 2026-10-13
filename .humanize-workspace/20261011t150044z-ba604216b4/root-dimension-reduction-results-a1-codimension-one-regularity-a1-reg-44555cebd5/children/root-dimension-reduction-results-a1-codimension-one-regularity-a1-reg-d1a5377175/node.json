@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1.det_normal_decomp-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1",
+  "depth": 6,
+  "title": "det[w, σ] = ⟨w, ν⟩·det[ν, σ] when span σ = (span{ν})^⊥",
+  "statement": "Let n ≥ 0, let ν, w ∈ ℝ^{n+1} with |ν| = 1, and let σ = (σ_0, …, σ_{n−1}) be a family in ℝ^{n+1} with span{σ_0, …, σ_{n−1}} = (span{ν})^⊥. For x ∈ ℝ^{n+1} let [x, σ] be the (n+1)×(n+1) real matrix whose column 0 is x and whose column l+1 is σ_l (its entry in row r, column c is the r-th coordinate of the c-th column vector). Then det[w, σ] = ⟨w, ν⟩·det[ν, σ].",
+  "lean_statement": "∀ (n : ℕ) (ν w : Euclid (n + 1)) (σ : Fin n → Euclid (n + 1)), ‖ν‖ = 1 → Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ → Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons w σ : Fin (n + 1) → Euclid (n + 1)) c r) = inner ℝ w ν * Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r)",
+  "lean_name": "codim1_lur_no_det_cons_normal_decomp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-d1a5377175-a1"
+}

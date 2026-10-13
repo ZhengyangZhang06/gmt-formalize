@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1.covector_det_rep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1",
+  "depth": 6,
+  "title": "Every n-covector on ℝ^{n+1} is the determinant with first column φ_β",
+  "statement": "Let n ≥ 0 and let β be an n-covector on ℝ^{n+1} (a continuous alternating n-linear form). Let e_0, …, e_n be the standard basis of ℝ^{n+1}, j.succAbove the increasing enumeration of {0, …, n} ∖ {j}, b_j := β(e_{j.succAbove 0}, …, e_{j.succAbove(n−1)}) for j ∈ {0, …, n}, and φ_β := Σ_{j=0}^{n} (−1)^j b_j e_j. For x ∈ ℝ^{n+1} and a = (a_0, …, a_{n−1}) in ℝ^{n+1}, let [x, a] be the (n+1)×(n+1) real matrix whose column 0 is x and whose column l+1 is a_l (its entry in row r, column c is the r-th coordinate of the c-th column vector). Then β(a_0, …, a_{n−1}) = det[φ_β, a] for every a = (a_0, …, a_{n−1}) ∈ (ℝ^{n+1})^n.",
+  "lean_statement": "∀ (n : ℕ) (β : Covector (Euclid (n + 1)) n) (a : Fin n → Euclid (n + 1)), β a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons (∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • EuclideanSpace.single j (1 : ℝ)) a : Fin (n + 1) → Euclid (n + 1)) c r)",
+  "lean_name": "codim1_lur_no_covector_eq_det_cons",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-61178587b2-a1"
+}
