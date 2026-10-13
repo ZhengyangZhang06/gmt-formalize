@@ -546,7 +546,6 @@ theorem Submission.tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ �
   rw [norm_norm]
   exact norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW
 
-namespace Submission
 
 /-- A.e. derivative comparison for the one-dimensional sup bound in the tilt-excess decay
 (Simon Ch. 5, Theorem 4.5): if `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]` and `‖u‖ ≤ 1`, then
