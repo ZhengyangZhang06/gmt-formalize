@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'ted_lpm_fcm_|aal_cfs_integrating_factor_deriv' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem continuousAt_of_dominated|theorem IntegrableOn.integrable_of_forall_notMem_eq_zero|lemma IntegrableOn.of_bound|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem ContDiff.continuous_deriv|theorem monotoneOn_of_deriv_nonneg|theorem integral_hasDerivAt_right|theorem intervalIntegrable_rpow",
+        "theorem HasDerivAt.congr_of_eventuallyEq|theorem Filter.EventuallyEq.deriv_eq|theorem ContDiff.continuous_deriv",
+        "git show 99d4f685ff569eb9d68fc1e0d28ba77e7a3f22c4:GMT/Ch05/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fcm-independent-audit-sfvjldhc/Integrated.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Continuous.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-cutoff-squeeze-a1-int-85dadbafe4/accepted-candidate.json",
+        "/tmp/fcm-decomp-1791832966/proj/Check/Full.lean",
+        "/tmp/fcm-independent-audit-sfvjldhc/Integrated.lean"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace contract files match the snapshot. The project snapshot contains none of the proposed names. Current DAG inspection confirms both new names are unreserved. The reused declaration is comparator-accepted, has exactly the proposed frozen type, and has no children or dependencies. Its inspected proof matches the accepted commit verbatim. All three types are bare, one-line propositions that elaborate independently before their implementations in the frozen contract scope. Euclidean inner products, natural powers, real powers, and interval integrals have the intended interpretations. Independent recompilation of the supplied proofs and exact parent assembly succeeded; all four audited declarations use only propext, Classical.choice, and Quot.sound. The sole sorry warning belongs to the frozen root main_theorem and is absent from their dependencies. The split is appropriate and acyclic: the two analytic children provide I's derivative and L's continuity; the radial inequality makes Q=(tP−nI−L)/t nonnegative; the integrating-factor child then supplies the nonnegative derivative needed for the selected parent's monotonicity conclusion. Continuity of a follows from the same children and the positive denominator."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integrating_factor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including both conclusions. The proof establishes denominator positivity, local continuity of a, integrability near zero using β<1, and the FTC hypotheses. Its quotient calculation correctly handles n=0, and cancellation yields the exact derivative. Absolute-integral bounds prove the second conclusion. No positivity assumption on M or continuity at zero is missing. The argument is complete and non-circular. The bare name is valid reuse of the identical comparator-accepted frozen type."
+    },
+    {
+      "key": "cutoff_mass_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and all three conclusions match exactly. Compact bounds for φ and uφ′ extend to nonnegative arguments using cutoff vanishing. Localization and finite ball measure establish both integrability conclusions. The bound 2C/t on s>t/2 verifies differentiation under the restricted-measure integral; neighborhood equality transfers the derivative to μ with the stated sign and denominator. Antitonicity is unnecessary. The proof is complete, independent of the parent and siblings, and the bare name is unreserved."
+    },
+    {
+      "key": "cutoff_pairing_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition have identical hypotheses and conclusion. Compactness bounds φ, localization identifies the integrals near t, and KS‖H‖ is an integrable dominating function. The proof explicitly supplies restricted-measure measurability and pointwise continuity, then transfers continuity back to μ. No finite-measure assumption is needed because H supplies the integrable bound. This is a complete non-circular obligation with no sibling dependency, and its bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

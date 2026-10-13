@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.curvature_holder-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+  "depth": 3,
+  "title": "Hoelder bound for the radial curvature pairing with a cutoff weight (Simon Ch. 4, 4.2-4.3)",
+  "statement": "Let n, l be natural numbers and E := R^{n+l} (EuclideanSpace R (Fin (n+l))). Let p > 1 be real, mu a measure on E, H : E -> E, psi : E -> R, y in E and t >= 0 real; B_t(y) denotes the closed ball. Assume (1) mu(B_t(y)) < infinity; (2) H is mu-integrable on B_t(y); (3) J := integral^-_{B_t(y)} |H|^p dmu < infinity, the lower (lintegral) integral of the extended function |H|^p; (4) psi is mu-a.e. strongly measurable; (5) 0 <= psi(x) <= 1 for every x in E; (6) psi(x) = 0 for every x with |x - y| > t. Then |integral_E psi(x) ((x - y).H(x)) dmu(x)| <= t * (J.toReal)^(1/p) * (integral_E psi dmu)^(1 - 1/p), where the integrals over E are Bochner integrals and the powers are real powers.",
+  "lean_statement": "∀ (n ℓ : ℕ) (p : ℝ), 1 < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (ψ : Amb n ℓ → ℝ) (y : Amb n ℓ) (t : ℝ), 0 ≤ t → μ (closedBall y t) < ⊤ → IntegrableOn H (closedBall y t) μ → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ → AEStronglyMeasurable ψ μ → (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) → (∀ x, t < ‖x - y‖ → ψ x = 0) → |∫ x, ψ x * inner ℝ (x - y) (H x) ∂μ| ≤ t * (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) * (∫ x, ψ x ∂μ) ^ (1 - 1 / p)",
+  "lean_name": "ted_lpm_curvature_holder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-curvature-holder-a1-a1"
+}
