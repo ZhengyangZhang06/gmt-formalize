@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def covectorEuclideanNorm|def massAdmissibleOn|noncomputable def.*massOn|def GeometricCurrentOn|le_massOn|VanishesOn|zeroRegion|def.*support",
+        "lusin|innerRegular|exists_restrict_eq|instTietzeExtensionTVS",
+        "support_convolution_subset|contDiff_convolution_left",
+        "dor_ims_(unitOrientation_dual|action_eq_integral|massOn_le_measure|lusin_continuousOn|smooth_unit_approx|measure_le_massOn|support_of_massOn_eq)",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "python3 /tmp/imrep-ms-independent-audit/run_lean.py /tmp/imrep-ms-independent-audit/TypesAndAssembly.lean",
+        "python3 /tmp/imrep-ms-independent-audit/run_lean.py /tmp/imrep-ms-decomp/C2Check.lean",
+        "python3 /tmp/imrep-ms-independent-audit/run_lean.py /tmp/imrep-ms-decomp/Sanity.lean",
+        "python3 /tmp/imrep-ms-independent-audit/run_lean.py /tmp/imrep-ms-independent-audit/ConditionalUpperBound.lean",
+        "python3 /tmp/imrep-ms-independent-audit/run_lean.py /tmp/imrep-ms-independent-audit/ConditionalLowerBound.lean",
+        "python3 /tmp/imrep-ms-independent-audit/run_lean.py /tmp/imrep-ms-independent-audit/InlineChecksFinal.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/tmp/imrep-ms-independent-audit/TypesAndAssembly.lean",
+        "/tmp/imrep-ms-independent-audit/ConditionalUpperBound.lean",
+        "/tmp/imrep-ms-independent-audit/ConditionalLowerBound.lean",
+        "/tmp/imrep-ms-independent-audit/InlineChecksFinal.lean",
+        "/tmp/imrep-ms-decomp/C2Check.lean",
+        "/tmp/imrep-ms-decomp/Sanity.lean"
+      ],
+      "conclusion": "The seven-child split appropriately establishes the selected contract dor_imrep_massOn_eq_measure_and_support. Dependencies are acyclic and correctly directed; every child contributes. All seven frozen strings independently elaborate as propositions before any child declaration exists. Their names are bare identifiers, with no reservations or declaration matches in the searched DAG, project, SimonGMT, or pinned Mathlib. Snapshot definitions and inspected build sources agree; package revisions match the pins. The parent assembly, both mass bounds conditional on their declared siblings, and the complete integral-formula and support proofs compile using only propext, Classical.choice, and Quot.sound. Covector finite-dimensionality requires a routine local instance; its injective-map construction and the resulting topology/Tietze instances were independently checked. Reused determinant, regularity, convolution, and density-integral lemmas passed axiom checks. No problematic matrix-unit construction occurs. Lusin searches found separation/Souslin results, not the required continuity theorem; the supplied child proves it directly. Supplementary mathematical reference: [Simon, Chapter 1, Theorem 1.17](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_duality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Coordinate expansion proves the squared-minor identity; Cauchy–Schwarz and the explicitly constructed continuous linear map establish all three conclusions. The zero-degree and excessive-degree cases are covered without circularity."
+    },
+    {
+      "key": "action_integral_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact-support domination in the operator norm proves integrability, and the measurable finite density gives the stated integral identity. Neither openness nor the duality sibling is needed. The supplied complete Lean proof independently recompiles with only standard axioms."
+    },
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger conclusion for arbitrary W is justified by comparison with the measurable compact support, followed by measure monotonicity. Integrability and ENNReal conversion are handled correctly. Only the two declared siblings are used; their conditional assembly compiles without sorry."
+    },
+    {
+      "key": "lusin_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly removes a measurable null set, restricts to a finite Borel measure, and constructs paired compact approximations for a countable target basis. Summable measure losses and relatively open basis preimages give exactly the claimed compact set and continuity, without additional measure hypotheses."
+    },
+    {
+      "key": "smooth_unit_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Tietze extension, radial retraction, the compactly supported cutoff, and normalized convolution establish every stated conclusion. The coefficient-map estimates correctly connect the Euclidean coefficient norm to the operator norm; compact kernel support justifies the integral estimates. The argument is independent of the duality sibling."
+    },
+    {
+      "key": "mass_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Null-set removal supplies pointwise good values on K'; compact exhaustion and shrinking neighborhoods justify both measure approximations. The declared siblings produce an admissible form, and the explicit error budget proves the lower bound, including infinite mass. The conditional proof independently compiles with only standard axioms."
+    },
+    {
+      "key": "support_from_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rescaling by both signs correctly turns zero mass into vanishing on all supported test forms. Small relatively compact balls and the pinned support definitions establish both inclusions. The mass identity is an explicit hypothesis supplied independently by the other children, so there is no circularity. The complete proof recompiles with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}
