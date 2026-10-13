@@ -458,6 +458,50 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The weak Euler–Lagrange equation `∫_U DΨ(Du)[Dφ] = -∫_U ⟨φ, g⟩` (all `φ ∈ C¹_c(U; ℝ^ℓ)`),
+differentiated in the direction `e`: `∫_U D²Ψ(Du)[Dv_e][Dζ] = ∫_U ⟨g, Dζ e⟩` with `v_e = Du(·) e`.
+Test the equation with the difference quotients `φ_h = h⁻¹ (ζ − ζ(· − h e))`, which are admissible
+for small `h ≠ 0`.  With `F = DΨ ∘ Du` (`C¹` on `U`) and `τ = Dζ`, the left side tends to
+`−∫_U DF(x) e [Dζ(x)]` and the right side to `−∫_U ⟨Dζ(x) e, g(x)⟩` as `h → 0`; the limits agree, and
+`DF(x) e = D²Ψ(Du(x))[Dv_e(x)]` on `U` by the chain rule and the symmetry of `D²u`. -/
+theorem dohr_eb_ehs_differentiated_el : ∀ n ℓ : ℕ, ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), IsOpen U → ContDiff ℝ 2 Ψ → ContDiffOn ℝ 2 u U → ContinuousOn g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → ∀ (e : Rn n) (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x) (fderiv ℝ (fun z => fderiv ℝ u z e) x) (fderiv ℝ ζ x) = ∫ x in U, inner ℝ (g x) (fderiv ℝ ζ x e) := by
+  intro n ℓ Ψ U u g hU hΨ hu hg hEL e ζ hζ hζc hζU
+  -- `F = DΨ ∘ Du` is `C¹` on `U`; `τ = Dζ` is continuous with compact support inside `U`.
+  have hF : ContDiffOn ℝ 1 (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) U :=
+    (hΨ.fderiv_right (m := 1) (by norm_num)).comp_contDiffOn
+      (hu.fderiv_of_isOpen hU (m := 1) (by norm_num))
+  have hτ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv (by norm_num)
+  have hτc : HasCompactSupport (fderiv ℝ ζ) := hζc.fderiv ℝ
+  have hτU : tsupport (fderiv ℝ ζ) ⊆ U := (tsupport_fderiv_subset ℝ).trans hζU
+  -- The two sides of the equation tested with `φ_h` and their limits as `h → 0`.
+  have hL := Submission.dohr_eb_ehs_del_lhs_tendsto n ℓ (fun z => fderiv ℝ Ψ (fderiv ℝ u z))
+    (fderiv ℝ ζ) U e hU hF hτ hτc hτU
+  have hR := (Submission.dohr_eb_ehs_del_rhs_tendsto n ℓ ζ g U e hU hζ hζc hζU hg).neg
+  -- For small `h ≠ 0`, `φ_h` is admissible and `Dφ_h = h⁻¹ (Dζ − Dζ(· − h e))`.
+  have hLR : (fun h : ℝ => ∫ x in U,
+        fderiv ℝ Ψ (fderiv ℝ u x) (h⁻¹ • (fderiv ℝ ζ x - fderiv ℝ ζ (x - h • e)))) =ᶠ[𝓝[≠] 0]
+      fun h : ℝ => -∫ x in U, inner ℝ (h⁻¹ • (ζ x - ζ (x - h • e))) (g x) := by
+    filter_upwards [Submission.dohr_eb_ehs_del_test_admissible n ℓ ζ U e hU hζ hζc hζU]
+      with h ⟨h1, h2, h3, h4⟩
+    have hEL_h := hEL _ h1 h2 h3
+    simp only [h4] at hEL_h
+    exact hEL_h
+  -- Uniqueness of limits along `𝓝[≠] 0`.
+  have key := neg_inj.mp (tendsto_nhds_unique_of_eventuallyEq hL hR hLR)
+  calc ∫ x in U, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x) (fderiv ℝ (fun z => fderiv ℝ u z e) x)
+        (fderiv ℝ ζ x)
+      = ∫ x in U, fderiv ℝ (fun z => fderiv ℝ Ψ (fderiv ℝ u z)) x e (fderiv ℝ ζ x) :=
+        setIntegral_congr_fun hU.measurableSet fun x hx =>
+          (DFunLike.congr_fun
+            (Submission.dohr_eb_ehs_del_chain_symm n ℓ Ψ U u hU hΨ hu e x hx) _).symm
+    _ = ∫ x in U, inner ℝ (fderiv ℝ ζ x e) (g x) := key
+    _ = ∫ x in U, inner ℝ (g x) (fderiv ℝ ζ x e) :=
+        integral_congr_ae (Eventually.of_forall fun x => real_inner_comm _ _)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
