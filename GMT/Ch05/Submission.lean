@@ -458,6 +458,63 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Caccioppoli inequality for constant-coefficient Legendre systems: if `V` is `C¹` on
+`B̆_{2ρ}(y)` and `∫ A[DV][Dζ] = 0` for every `ζ ∈ C¹_c(B̆_{2ρ}(y); ℝ^ℓ)`, then
+`∫_{B̆_ρ(y)} |DV|² ≤ C ρ⁻² ∫_{B̆_{2ρ}(y)} |V − c|²` in `[0, ∞]`, with `C = C(λ, Λ)`.
+Take the cutoff `η` of `dohr_eb_sch_cacc_exists_cutoff` (`‖Dη‖ ≤ K/ρ`), apply
+`dohr_eb_sch_cacc_energy_estimate` with `U = B̆_{2ρ}(y)`, and put `C = (4Λ²/λ²) K²`. -/
+theorem dohr_eb_sch_caccioppoli_const_coeff : ∀ (n ℓ : ℕ) (lam Lam : ℝ), 0 < lam → ∃ C : ℝ, 0 ≤ C ∧ ∀ (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (y : Rn n) (ρ : ℝ) (c : Rn ℓ), (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → 0 < ρ → ContDiffOn ℝ 1 V (ball y (2 * ρ)) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball y (2 * ρ) → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤ ENNReal.ofReal (C / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
+  intro n ℓ lam Lam hlam
+  obtain ⟨K, hK0, hcut⟩ := Submission.dohr_eb_sch_cacc_exists_cutoff
+  refine ⟨4 * Lam ^ 2 / lam ^ 2 * K ^ 2, by positivity, ?_⟩
+  intro A V y ρ c hleg hbd hρ hV hweak
+  obtain ⟨η, hη, hη01, hη1, hηc, hηU, hDη⟩ := hcut n y ρ hρ
+  have hen := Submission.dohr_eb_sch_cacc_energy_estimate n ℓ lam Lam A (ball y (2 * ρ)) V η c
+    hlam hleg hbd isOpen_ball hV hη hηc hηU (fun x => (hη01 x).1) hweak
+  -- `η = 1` on `B̆_ρ(y)`
+  have hL : ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2 ≤
+      ∫⁻ x, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) := by
+    calc ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2
+        = ∫⁻ x in ball y ρ, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) := by
+          refine setLIntegral_congr_fun measurableSet_ball fun x hx => ?_
+          rw [hη1 x hx, one_pow, one_mul, ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]
+      _ ≤ ∫⁻ x, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) := setLIntegral_le_lintegral _ _
+  -- `‖Dη‖ ≤ K/ρ`, and `Dη = 0` off `tsupport η ⊆ B̆_{2ρ}(y)`
+  have hR : ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2) ≤
+      ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
+    calc ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2)
+        ≤ ∫⁻ x, (ball y (2 * ρ)).indicator
+            (fun x => ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ‖V x - c‖ₑ ^ 2) x := by
+          refine lintegral_mono fun x => ?_
+          by_cases hx : x ∈ ball y (2 * ρ)
+          · rw [indicator_of_mem hx, ← ofReal_norm, ← ENNReal.ofReal_pow (norm_nonneg _),
+              ← ENNReal.ofReal_mul (by positivity)]
+            refine ENNReal.ofReal_le_ofReal ?_
+            calc ‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2 ≤ ‖V x - c‖ ^ 2 * (K / ρ) ^ 2 := by
+                  gcongr
+                  exact hDη x
+              _ = K ^ 2 / ρ ^ 2 * ‖V x - c‖ ^ 2 := by ring
+          · have hx' : x ∉ tsupport η := fun h => hx (hηU h)
+            rw [fderiv_of_notMem_tsupport ℝ hx', norm_zero]
+            simp
+      _ = ∫⁻ x in ball y (2 * ρ), ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ‖V x - c‖ₑ ^ 2 :=
+          lintegral_indicator measurableSet_ball _
+      _ = ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  calc ∫⁻ x in ball y ρ, ‖fderiv ℝ V x‖ₑ ^ 2
+      ≤ ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2) *
+          ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2) := hL.trans hen
+    _ ≤ ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2) *
+          (ENNReal.ofReal (K ^ 2 / ρ ^ 2) * ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2) := by
+        gcongr
+    _ = ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2 * K ^ 2 / ρ ^ 2) *
+          ∫⁻ x in ball y (2 * ρ), ‖V x - c‖ₑ ^ 2 := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), mul_div_assoc']
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
