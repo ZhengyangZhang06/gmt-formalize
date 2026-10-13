@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "tangentSpace|approxTangentPlane|IsEmbeddedSubmanifold|firstVariation|IsStationaryAlong|locallyIntegrable_mult|orients|tangentialDivergence",
+        "measurable_fderiv|integral_eq_lintegral_of_nonneg_ae|integral_withDensity_eq_integral_smul|ae_withDensity_iff|lintegral_prod_right|aemeasurable_of_tendsto_metrizable_ae",
+        "toOpenPartialHomeomorph|contDiffAt_symm|contDiffAt_ringInverse|fderiv_of_isOpen|continuousOn_fderiv_of_isOpen",
+        "euclideanHausdorffMeasure_smul₀|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "measure_compl_support|mem_support_iff_forall",
+        "dsmc_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dsmc-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dsmc-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dsmc-independent-audit/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/tmp/dsmc-independent-audit/Types.lean",
+        "/tmp/dsmc-independent-audit/Assembly.lean",
+        "/tmp/dsmc-independent-audit/Instances.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected mean-curvature/monotonicity theorem. All seven obligations are substantive, non-circular, and connected to its proof; declared dependencies are acyclic and correctly directed. The inherited mass/support dependency matches the handoff. No proposed name is reserved in the current DAG, and all names are bare identifiers. All seven exact one-line propositions independently elaborate without child implementations. The conditional assembly, with child contracts and the inherited sibling supplied as explicit hypotheses, proves the exact frozen parent type and depends only on propext, Classical.choice, and Quot.sound. This checks assembly, not completed child formalizations. Snapshot and workspace contracts are byte-identical; inspected active library sources match the pinned references. Checked reusable lemmas have only those standard axioms. Instance checks confirm Euclidean inner products, Borel operator spaces, and operator multiplication by composition; there is no Matrix/function-multiplication ambiguity. The chart construction legitimately leaves the parent's closure hypothesis unused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Properness and injectivity establish inverse continuity; the derivative lower bound yields the secant estimate. Curve derivatives give one tangent-space inclusion, and the explicitly bounded reparametrized curves give the reverse inclusion. The zero-dimensional case is covered."
+    },
+    {
+      "key": "tangent_projection_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the stated properties. The inverse-function construction correctly restricts the source to S ∩ O₀, ensuring a C¹ inverse throughout the required target. The Gram-operator formula gives self-adjointness and the required range/fixed-vector identities; compactness supplies the uniform derivative bound. Only the declared chart dependency is used."
+    },
+    {
+      "key": "approx_tangent_in_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Positive compactly supported plane tests force nearby blow-up points; similarity invariance preserves the null exceptional set. The chart secant estimate then forces every vector of Q into the closed classical tangent space. Neither measurability of M nor local finiteness of its measure is silently assumed."
+    },
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact AEMeasurable conclusion. Open-set exhaustion and positive locally integrable multiplicity give σ-finiteness. Nonnegative blow-up integrals are measurable through lintegrals and toReal, including nonintegrable cases. Plane moments, almost-everywhere limits, polarization, and finite operator expansion recover the projection field. The n = 0 case and absolute-continuity transfer are handled."
+    },
+    {
+      "key": "first_variation_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The trace expression is measurable under the explicit projection hypothesis. Its compact-support derivative bound and finite weighted mass establish integrability. The withDensity identity then gives precisely IMRep.firstVariation. No openness of U or boundedness of the multiplicity is incorrectly required."
+    },
+    {
+      "key": "mean_curvature_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated hypotheses match the Lean type. The basis-independent contraction defines measurable H with the global nβ bound. The field Pt·X is globally C¹ and admissible for stationarity. Differentiated self-adjointness and the tangent fixed-vector property give the correct negative first-variation identity; the declared integral lemma justifies additivity. Nonpositive radii are covered."
+    },
+    {
+      "key": "exp_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact open-ball ENNReal inequality. Radial differentiation has the correct sign and yields nI − sI′ ≤ κsI. Compact-ball finiteness justifies all integrals and limit operations. Continuity extends cutoff monotonicity to ρ = r, and dominated convergence removes the cutoff before the valid ENNReal conversion. Nonpositive radii are vacuous, and κ ≥ 0 follows from the global bound."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes of a set carried by a C¹ submanifold lie in its tangent spaces",
+  "statement": "Let P, n, r, d ∈ ℕ with r ≥ 1, and let N be an embedded C^r d-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold r d N). Let M ⊆ ℝ^P with Hⁿ(M ∖ N) = 0, where Hⁿ = μHE[n], and let x ∈ N. Let Q be an approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n M x Q): finrank Q = n, and ∫_{η_{x,λ}(M)} f dHⁿ → ∫_Q f dHⁿ as λ ↓ 0 for every f ∈ C_c(ℝ^P), where η_{x,λ}(y) = λ⁻¹(y − x). Then Q ⊆ T_xN = tangentSpace N x.",
+  "lean_statement": "∀ (P n r d : ℕ) (M N : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ r → IsEmbeddedSubmanifold r d N → x ∈ N → μHE[n] (M \\ N) = 0 → HasApproximateTangentSpaceAt n M x Q → (Q : Set (Euclid P)) ⊆ tangentSpace N x",
+  "lean_name": "dsmc_approxTangentPlane_subset_tangentSpace",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738-a1"
+}
