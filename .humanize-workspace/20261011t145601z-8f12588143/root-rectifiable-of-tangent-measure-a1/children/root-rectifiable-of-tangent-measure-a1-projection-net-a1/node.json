@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1.projection_net-a1",
+  "parent_id": "root.rectifiable_of_tangent_measure-a1",
+  "depth": 2,
+  "title": "A countable ε-net of n-planes for the orthogonal-projection norm",
+  "statement": "Let N, n ∈ ℕ with n ≤ N and let ε > 0. Then there is a sequence Q_0, Q_1, Q_2, … of linear subspaces of ℝ^N = EuclideanSpace ℝ (Fin N), each of dimension n, such that every n-dimensional linear subspace P of ℝ^N satisfies ‖q_P − q_{Q_j}‖ < ε for some j ∈ ℕ, where q_V = V.starProjection : ℝ^N →L[ℝ] ℝ^N is the orthogonal projection onto V and ‖·‖ is the operator norm.",
+  "lean_statement": "∀ (N n : ℕ) (ε : ℝ), n ≤ N → 0 < ε → ∃ Q : ℕ → Submodule ℝ (Rn N), (∀ j, finrank ℝ (Q j) = n) ∧ ∀ P : Submodule ℝ (Rn N), finrank ℝ P = n → ∃ j, ‖P.starProjection - (Q j).starProjection‖ < ε",
+  "lean_name": "tangentMeasure_countable_projection_net",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-projection-net-a1-a1"
+}

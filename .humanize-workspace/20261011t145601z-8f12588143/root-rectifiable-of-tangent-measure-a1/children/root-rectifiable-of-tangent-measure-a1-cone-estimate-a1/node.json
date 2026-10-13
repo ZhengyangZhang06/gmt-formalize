@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1.cone_estimate-a1",
+  "parent_id": "root.rectifiable_of_tangent_measure-a1",
+  "depth": 2,
+  "title": "Key cone estimate: uniform density and cone bounds force a projection lower bound (Simon (9)–(10), corrected constant)",
+  "statement": "Let N, n ∈ ℕ, let μ be a measure on the Borel sets of ℝ^N = EuclideanSpace ℝ (Fin N), let Q be a linear subspace of ℝ^N with orthogonal projection q = Q.starProjection, let E ⊆ ℝ^N, and let a, b, δ ∈ ℝ with a > 0 and 32ⁿ b < a. Assume that for every x ∈ E and every ρ ∈ (0, δ): (9a) μ(B_ρ(x)) ≥ a ρⁿ, and (9b) μ({z : |q(z − x)| ≤ |z − x|/3} ∩ B_ρ(x)) ≤ b ρⁿ (both read in [0, ∞] as ENNReal.ofReal(aρⁿ) ≤ μ(…) and μ(…) ≤ ENNReal.ofReal(bρⁿ)). Then |y − x| ≤ 4 |q(y − x)| for all x, y ∈ E with |y − x| < δ/2.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (a b δ : ℝ), 0 < a → 32 ^ n * b < a → (∀ x ∈ E, ∀ ρ ∈ Set.Ioo 0 δ, ENNReal.ofReal (a * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧ μ ({z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖Q.starProjection (y - x)‖",
+  "lean_name": "tangentMeasure_projection_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-cone-estimate-a1-a1"
+}

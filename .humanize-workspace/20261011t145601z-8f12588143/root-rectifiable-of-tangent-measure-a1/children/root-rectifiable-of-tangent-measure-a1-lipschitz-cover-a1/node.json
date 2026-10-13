@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1.lipschitz_cover-a1",
+  "parent_id": "root.rectifiable_of_tangent_measure-a1",
+  "depth": 2,
+  "title": "A set on which the projection to an n-plane is locally co-Lipschitz lies in countably many Lipschitz images of ℝⁿ",
+  "statement": "Let N, n ∈ ℕ, let Q be a linear subspace of ℝ^N = EuclideanSpace ℝ (Fin N) with finrank Q = n and orthogonal projection q = Q.starProjection, let E ⊆ ℝ^N, C ∈ ℝ and δ > 0, and assume |y − x| ≤ C |q(y − x)| for all x, y ∈ E with |y − x| < δ. Then there are maps F_0, F_1, F_2, … : ℝⁿ → ℝ^N (ℝⁿ = EuclideanSpace ℝ (Fin n)), each Lipschitz (with some constant K_i ≥ 0), such that E ⊆ ⋃_i F_i(ℝⁿ).",
+  "lean_statement": "∀ (N n : ℕ) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (C δ : ℝ), finrank ℝ Q = n → 0 < δ → (∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ → ‖y - x‖ ≤ C * ‖Q.starProjection (y - x)‖) → ∃ F : ℕ → Rn n → Rn N, (∀ i, ∃ K : ℝ≥0, LipschitzWith K (F i)) ∧ E ⊆ ⋃ i, Set.range (F i)",
+  "lean_name": "tangentMeasure_lipschitz_cover_of_projection_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-lipschitz-cover-a1-a1"
+}
