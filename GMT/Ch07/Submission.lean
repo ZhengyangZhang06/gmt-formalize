@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -482,6 +483,47 @@ theorem Submission.dpf_raf_lintegral_image_eq_tsum_pieces : ∀ (P n : ℕ) (M :
   have hae : φ '' M =ᵐ[μHE[n]] ⋃ i, φ '' A i :=
     ae_eq_set.mpr ⟨hnull', by rw [sdiff_eq_empty.mpr hsub, measure_empty]⟩
   rw [setLIntegral_congr hae, lintegral_iUnion hmeas hdisj' g]
+/-- **Area formula on one injective Lipschitz piece** (Simon Ch. 3, 2.3–2.6, used for the
+diffeomorphism push-forward in 7.1.2).  Let `F : ℝⁿ → ℝᴾ` be Lipschitz and injective on the Borel
+set `B`, let `φ : ℝᴾ → ℝᴾ` be differentiable, Lipschitz and injective on `F(B)`, and let
+`Q(F(b)) = range DF(b)` for a.e. `b ∈ B`.  With `e` the standard orthonormal basis of `Q(x)` and
+`J(x) = √det(Dφ(x)eₐ · Dφ(x)e_b)`, every `g ≥ 0` has
+`∫_{φ(F(B))} g dHⁿ = ∫_{F(B)} J(x) g(φ(x)) dHⁿ(x)`.  Apply the Lipschitz area formula to `φ ∘ F`
+and to `F`; a.e. on `B` the chain rule and `normDet (S ∘ T) = normDet (S|_{range T}) · normDet T`
+give `J_{φ∘F}(b) = J(F(b)) J_F(b)`, and `normDet (S|_V)² = det(S eₐ · S e_b)` (Gram). -/
+theorem Submission.dpf_raf_piece_area_formula_gram : ∀ (P n : ℕ) (Q : Euclid P → Submodule ℝ (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal) (F : Euclid n → Euclid P) (L : NNReal) (B : Set (Euclid n)), Differentiable ℝ φ → LipschitzWith Λ φ → LipschitzWith L F → MeasurableSet B → InjOn F B → InjOn φ (F '' B) → (∀ᵐ b ∂(volume.restrict B), Q (F b) = LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' (F '' B), g y ∂μHE[n] = ∫⁻ x in F '' B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (φ x) ∂μHE[n] := by
+  intro P n Q φ Λ F L B hφd hφ hF hB hFi hφi hQ g
+  -- Gram identity: `normDet (T|_W) = √det(⟨T eₐ, T e_b⟩)`, `e = stdOrthonormalBasis ℝ V`, `V = W`
+  have hgram : ∀ (T : Euclid P →L[ℝ] Euclid P) (V W : Submodule ℝ (Euclid P)), V = W →
+      Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ V) =>
+        inner ℝ (T (stdOrthonormalBasis ℝ V i)) (T (stdOrthonormalBasis ℝ V j)))) =
+        ((T : Euclid P →ₗ[ℝ] Euclid P).domRestrict W).normDet := by
+    rintro T V W rfl
+    have h := ((T : Euclid P →ₗ[ℝ] Euclid P).domRestrict V).normDet_sq_eq_det_gram
+      (stdOrthonormalBasis ℝ V)
+    rw [RCLike.ofReal_real_eq_id, id] at h
+    rw [← Real.sqrt_sq (LinearMap.normDet_nonneg _), h]
+    rfl
+  -- area formula for `φ ∘ F` (injective on `B`, `φ(F(B)) = (φ ∘ F)(B)`) and for `F`
+  have hn : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
+  have hleft := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn (hφ.comp hF) hB
+    (hφi.comp hFi (mapsTo_image F B)) g
+  have hright := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hF hB hFi
+    (fun x => ENNReal.ofReal (Real.sqrt (Matrix.det
+      (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) =>
+        inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) i))
+          (fderiv ℝ φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (φ x))
+  rw [hn] at hleft hright
+  rw [← image_comp, hleft, hright]
+  -- the integrands agree `λ⌞B`-a.e. (Rademacher and the hypothesis on `Q`)
+  refine lintegral_congr_ae ?_
+  filter_upwards [ae_restrict_of_ae hF.ae_differentiableAt, hQ] with b hb hQb
+  rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+    Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet, fderiv_comp b (hφd (F b)) hb,
+    ContinuousLinearMap.toLinearMap_comp, LinearMap.normDet_comp,
+    ← hgram (fderiv ℝ φ (F b)) (Q (F b)) _ hQb,
+    ENNReal.ofReal_mul (Real.sqrt_nonneg _), comp_apply]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
