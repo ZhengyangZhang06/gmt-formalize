@@ -518,30 +518,6 @@ theorem Submission.codim1_zsl_op_translate_isEmbeddedSubmanifold : ∀ (P d r : 
     rw [(ι.hasFDerivAt.sub_const a).fderiv]
     exact hinj
 
-/-- **Lemma A-plane** (Simon 7.5, class `𝒪`, p. 197; used for the zero-scale limits of
-7.5.3–7.5.5).  If `ξ` is a unit orientation of the subspace `Q ⊆ ℝᴾ`, then `dim Q = n + 1` and the
-offset plane `A = Q − a = {y : y + a ∈ Q}`, oriented by the constant `ξ`, is in class `𝒪` of `ℝᴾ`.
-The orthonormal `τ` of `ξ` is linearly independent and spans `Q`, so `dim Q = n + 1`; `A` is an
-embedded `C²` `(n + 1)`-submanifold, and `T_yA = Q` for `y ∈ A`, so the constant `ξ` orients `A`;
-`A` is closed (the preimage of the finite-dimensional, hence closed, `Q`) and contains `−a`. -/
-theorem Submission.codim1_zsl_offset_plane_inClassO : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P (n + 1)) (a : Euclid P), IsUnitOrientationOf ξ Q → Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξ) := by
-  intro P n Q ξ a hξ
-  obtain ⟨τ, hτ, hspan, -⟩ := id hξ
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
-  -- `dim Q = n + 1`: `τ` is a basis of `Q`
-  · rw [← hspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
-  -- `A` is an embedded `C²` `(n + 1)`-submanifold
-  · exact Submission.codim1_zsl_op_translate_isEmbeddedSubmanifold P (n + 1) 2 Q τ a hτ hspan
-  -- the constant `ξ` orients `A`, as `T_yA = Q` for every `y ∈ A`
-  · exact ⟨continuousOn_const, fun y hy =>
-      ⟨Q, (Submission.codim1_zsl_op_translate_tangentSpace_eq P Q a y hy).symm, hξ⟩⟩
-  -- `A` is closed, so `closure A \ A = ∅`
-  · have hA : IsClosed {y : Euclid P | y + a ∈ Q} :=
-      Q.closed_of_finiteDimensional.preimage (continuous_add_const a)
-    rw [hA.closure_eq, Set.sdiff_self, empty_inter]
-  -- `−a ∈ A`
-  · exact ⟨-a, show -a + a ∈ Q by rw [neg_add_cancel]; exact Q.zero_mem, mem_univ _⟩
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -577,5 +553,29 @@ theorem codim1_zsl_op_translate_tangentSpace_eq : ∀ (P : ℕ) (Q : Submodule �
     · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const v).const_add y
 
 end Submission
+
+/-- **Lemma A-plane** (Simon 7.5, class `𝒪`, p. 197; used for the zero-scale limits of
+7.5.3–7.5.5).  If `ξ` is a unit orientation of the subspace `Q ⊆ ℝᴾ`, then `dim Q = n + 1` and the
+offset plane `A = Q − a = {y : y + a ∈ Q}`, oriented by the constant `ξ`, is in class `𝒪` of `ℝᴾ`.
+The orthonormal `τ` of `ξ` is linearly independent and spans `Q`, so `dim Q = n + 1`; `A` is an
+embedded `C²` `(n + 1)`-submanifold, and `T_yA = Q` for `y ∈ A`, so the constant `ξ` orients `A`;
+`A` is closed (the preimage of the finite-dimensional, hence closed, `Q`) and contains `−a`. -/
+theorem Submission.codim1_zsl_offset_plane_inClassO : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P (n + 1)) (a : Euclid P), IsUnitOrientationOf ξ Q → Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξ) := by
+  intro P n Q ξ a hξ
+  obtain ⟨τ, hτ, hspan, -⟩ := id hξ
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  -- `dim Q = n + 1`: `τ` is a basis of `Q`
+  · rw [← hspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- `A` is an embedded `C²` `(n + 1)`-submanifold
+  · exact Submission.codim1_zsl_op_translate_isEmbeddedSubmanifold P (n + 1) 2 Q τ a hτ hspan
+  -- the constant `ξ` orients `A`, as `T_yA = Q` for every `y ∈ A`
+  · exact ⟨continuousOn_const, fun y hy =>
+      ⟨Q, (Submission.codim1_zsl_op_translate_tangentSpace_eq P Q a y hy).symm, hξ⟩⟩
+  -- `A` is closed, so `closure A \ A = ∅`
+  · have hA : IsClosed {y : Euclid P | y + a ∈ Q} :=
+      Q.closed_of_finiteDimensional.preimage (continuous_add_const a)
+    rw [hA.closure_eq, Set.sdiff_self, empty_inter]
+  -- `−a ∈ A`
+  · exact ⟨-a, show -a + a ∈ Q by rw [neg_add_cancel]; exact Q.zero_mem, mem_univ _⟩
 
 end GMT.Ch07
