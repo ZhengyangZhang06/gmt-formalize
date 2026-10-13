@@ -528,6 +528,86 @@ theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P
     rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
       Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
     simp
+/-- **Simon Ch. 3, 1.4** (change of variables under the blow-up `η_{x,r}`): for `r > 0`, every
+set `M` and every `f`, `∫_{η_{x,r}(M)} f dHⁿ = r⁻ⁿ ∫_M f(η_{x,r}(y)) dHⁿ(y)`.
+`η_{x,r} = (r⁻¹ • ·) ∘ (· − x)` is a homeomorphism with `Hⁿ(η_{x,r}(S)) = r⁻ⁿ Hⁿ(S)` for every
+`S` (translation is an isometry), so `Hⁿ⌞η_{x,r}(M) = r⁻ⁿ η_{x,r#}(Hⁿ⌞M)`. -/
+theorem Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (r : ℝ), 0 < r → ∀ f : Euclid P → ℝ, ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = r⁻¹ ^ n * ∫ y in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μHE[n] := by
+  intro P n M x r hr f
+  -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` is a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P,
+      ⇑e = Poincare.SimonGMT.Chapter03.blowUpMap x r :=
+    ⟨(Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne')), rfl⟩
+  -- `Hⁿ(η_{x,r}(S)) = ‖r⁻¹‖₊ⁿ Hⁿ(S)` for every set `S`
+  have hscale : ∀ S : Set (Euclid P), μHE[n] (e '' S) = ‖r⁻¹‖₊ ^ n • μHE[n] S := by
+    intro S
+    have hS : e '' S = (fun y => r⁻¹ • y) '' ((IsometryEquiv.subRight x) '' S) := by
+      rw [image_image, he]
+      rfl
+    rw [hS, image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image]
+  -- `Hⁿ⌞η_{x,r}(M) = ‖r⁻¹‖₊ⁿ η_{x,r#}(Hⁿ⌞M)`, checked on Borel sets
+  have hmeas : μHE[n].restrict (e '' M) = (‖r⁻¹‖₊ ^ n) • (μHE[n].restrict M).map e := by
+    ext A hA
+    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply e.measurable hA,
+      Measure.restrict_apply (hA.preimage e.measurable), ← hscale, image_inter e.injective,
+      e.image_preimage]
+  -- change of variables, with `‖r⁻¹‖₊ⁿ = r⁻¹ ^ n`
+  rw [← he, hmeas, integral_smul_nnreal_measure, e.measurableEmbedding.integral_map,
+    NNReal.smul_def, smul_eq_mul, NNReal.coe_pow, coe_nnnorm, Real.norm_eq_abs,
+    abs_of_pos (inv_pos.2 hr)]
+
+/-- **Blow-ups of a region boundary** (Simon 7.5.1, `T = ∂[[E]]`; 6.2.23, `η_#T(ω) = T(η^#ω)`):
+if `T = ∂[[E]]` in `U` with orientation `ξN`, then for `λ > 0` the blow-up `η_{y,λ#}T` is
+`∂[[η_{y,λ}(E)]]` in `η_{y,λ}(U)` with orientation `w ↦ ξN(y + λw)`.  For `ω ∈ 𝒟ⁿ(η(U))` and
+`ω' = ω ∘ η ∈ 𝒟ⁿ(U)`, `η_#T(ω) = λ⁻ⁿ T(ω')`; `ω' = λⁿ η^#ω` and `d` commutes with the affine
+pull-back, so `dω'(z) = λ⁻¹ dω(η(z))`; the change of variables
+`∫_{η(E)} g dH^{n+1} = λ^{-(n+1)} ∫_E g ∘ η dH^{n+1}` cancels the powers of `λ`. -/
+theorem Submission.codim1_zsl_blowUp_isBoundaryOfRegion : ∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (y : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsBoundaryOfRegion T E ξN → IsBoundaryOfRegion (blowUp T y lam hlam.ne') (dilation y lam '' E) (fun w => ξN (y + lam • w)) := by
+  intro P n U E ξN T y lam hlam hT ω
+  have hne : lam ≠ 0 := hlam.ne'
+  -- Steps 1–2: `ω' := ω ∘ η ∈ 𝒟ⁿ(U)`, `η_#T(ω) = λ⁻ⁿ T(ω')`, and `T(ω') = ∫_E ξN (dω')`.
+  obtain ⟨ω', hω'⟩ := (Submission.dtc_blowUp_testForm_corr P n U y lam hlam).1 ω
+  rw [(Submission.dtc_blowUp_testForm_corr P n U y lam hlam).2.2 T ω ω' hω', hT ω']
+  -- Step 3: the affine pull-back `η^#α` of a `k`-form is `λ⁻ᵏ α ∘ η` (multilinearity), so
+  -- `ω' = λⁿ η^#ω` and `dω' = λⁿ η^#(dω) = λ⁻¹ (dω) ∘ η`.
+  have hpull : ∀ {k : ℕ} (α : DifferentialForm (Euclid P) k) (z : Euclid P),
+      affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • y)) α z =
+        lam⁻¹ ^ k • α (dilation y lam z) := by
+    intro k α z
+    ext v
+    have hv : ⇑(dilationCLM P lam) ∘ v = fun i => lam⁻¹ • v i := by
+      funext i
+      simp [dilationCLM]
+    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin]
+    rfl
+  have hω'eq : (ω' : DifferentialForm (Euclid P) n) =
+      lam ^ n • affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • y))
+        (ω : DifferentialForm (Euclid P) n) := by
+    funext z
+    rw [Pi.smul_apply, hpull, smul_smul, ← mul_pow, mul_inv_cancel₀ hne, one_pow, one_smul, hω' z]
+  have hdω' : ∀ z, exteriorDerivative (ω' : DifferentialForm (Euclid P) n) z =
+      lam⁻¹ • exteriorDerivative (ω : DifferentialForm (Euclid P) n) (dilation y lam z) := by
+    intro z
+    rw [hω'eq, exteriorDerivative_smul, exteriorDerivative_affinePullbackForm _ _ ω.property.1.1,
+      Pi.smul_apply, hpull, smul_smul, pow_succ, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ hne,
+      one_pow, one_mul]
+  -- Steps 5–6: `y + λ η(z) = z`, `blowUpMap y λ = η`, and the change of variables.
+  have hηinv : ∀ z, y + lam • dilation y lam z = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hbl : Poincare.SimonGMT.Chapter03.blowUpMap y lam = dilation y lam := by
+    funext z
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_sub, sub_eq_neg_add]
+    simp [dilation, dilationCLM]
+  have hcov := Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul P (n + 1) E y lam hlam
+    (fun w => ξN (y + lam • w) (exteriorDerivative (ω : DifferentialForm (Euclid P) n) w))
+  simp only [hbl, hηinv] at hcov
+  -- Steps 4 and 7: pull `λ⁻¹` out of the integral; `λ⁻ⁿ · λ⁻¹ = λ^{-(n+1)}`.
+  simp only [hcov, hdω', map_smul, smul_eq_mul, integral_const_mul]
+  ring
 
 /-- **Uniform local mass bound for blow-ups with converging centres** (Simon 7.5.3 and 7.5.5,
 chapter-07.txt lines 790–901).  If `xᵢ → x`, `λᵢ → 0` (`λᵢ > 0`) and `M_{B_ρ(y)}(T) ≤ Cρⁿ` for
