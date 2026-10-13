@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_le_liminf_tsum|def hausdorffMeasure|exists_disjoint_subfamily_covering_enlargement|euclideanHausdorffMeasure_def|def euclideanHausdorffMeasure|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|exists_isClosed_sdiff_lt|exists_isClosed_diff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure",
+        "countable_of_nonempty_interior|isOpen_biUnion_countable",
+        "setIntegral_union|norm_setIntegral_le_of_norm_le_const|setIntegral_eq_of_subset_of_forall_diff_eq_zero",
+        "tendsto_nhds_zero|continuousAt_toReal|theorem Tendsto.const_mul",
+        "rg -n -g '*.lean' 'simon_theorem_3_6|ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "git show 048ff2b9:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-locality-independent-audit-xwzlzc6n/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-locality-independent-audit-xwzlzc6n/Access.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-locality-independent-audit-xwzlzc6n/Accepted.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-tangent-locality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-tangent-locality-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/tangent-locality-independent-audit-xwzlzc6n/Types.lean",
+        "/tmp/tangent-locality-independent-audit-xwzlzc6n/Access.lean",
+        "/tmp/tangent-locality-independent-audit-xwzlzc6n/Accepted.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes the selected tangent-locality contract. Snapshot revisions and frozen definitions match the proof environment. No Lean matches for the cited SimonGMT density theorems occur in the snapshot project/mathlib; independent compiler checks confirm they are unavailable through the frozen imports. The replacement covering proof uses available lemmas. All four child types independently elaborate as propositions in comparator scope, including the intended ENNReal and Borel instances. Each bare lean_name uniquely matches an accepted DAG node with a byte-identical frozen type. The transitive prerequisite graph is acyclic and cannot reach the selected parent. Accepted declaration bodies match their candidate commits. Independent replay of all four proofs and the supplied assembly of the exact selected parent succeeds with only propext, Classical.choice and Quot.sound; the unrelated root placeholder contributes no axiom."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match all hypotheses and the ENNReal limit. Threshold reduction, countable disjoint-ball selection, the 6ⁿ Hausdorff covering estimate, and closed approximation under the finite restricted measure prove the required null exceptional set. The argument covers n=0, needs no measurability of threshold sets, and contains no circular reliance. Reuse has an identical accepted type."
+    },
+    {
+      "key": "local_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly requires local finiteness only on compact subsets of U, without assuming S⊆U. The countable ball cover gives finite-measure pieces; upper_density_zero applies simultaneously outside one null set. Eventual equality inside sufficiently small closed balls proves the exact limit. The dependency is correctly directed and the accepted frozen type is identical."
+    },
+    {
+      "key": "blowup_measure_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches arbitrary S and arbitrary real R with only r>0. The set identity and translation/scaling formulas establish the stated ENNReal equality without measurability assumptions, including R<0 and n=0. All scalar and measure instances are correct. The proof is independent and reuse preserves the accepted type."
+    },
+    {
+      "key": "pointwise_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The proof establishes Borel blow-up images, eventual integrability from local finiteness, disjoint integral additivity, and the scaled density bound. Positive finite scaling factors and continuity of ENNReal.toReal at zero justify the limit. Subtraction/addition transfers convergence in both directions for every test function and Q. Applying local_density_zero to B∖A and restricting to A supplies these hypotheses almost everywhere, proving the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
