@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.blowup_two_point-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1",
+  "depth": 4,
+  "title": "Two-point blow-up estimate for a C¹ map at an interior point",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝⁿ (Rn n = EuclideanSpace ℝ (Fin n)) be open, let G : ℝⁿ → ℝ^{n+ℓ} (Amb n ℓ) be C¹ on U (ContDiffOn ℝ 1 G U), let x ∈ U, ρ ∈ ℝ and ε > 0, and put L := fderiv ℝ G x. Then for all sufficiently small t > 0, i.e. eventually along 𝓝[>] 0: (a) x + t•v ∈ U for every v in the closed ball closedBall(0, ρ) of ℝⁿ; and (b) ‖t⁻¹•(G(x + t•v) − G(x + t•v')) − L(v − v')‖ ≤ ε‖v − v'‖ for all v, v' ∈ closedBall(0, ρ).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (G : Rn n → Amb n ℓ) (x : Rn n) (ρ ε : ℝ), IsOpen U → ContDiffOn ℝ 1 G U → x ∈ U → 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), (∀ v ∈ closedBall (0 : Rn n) ρ, x + t • v ∈ U) ∧ ∀ v ∈ closedBall (0 : Rn n) ρ, ∀ v' ∈ closedBall (0 : Rn n) ρ, ‖t⁻¹ • (G (x + t • v) - G (x + t • v')) - fderiv ℝ G x (v - v')‖ ≤ ε * ‖v - v'‖",
+  "lean_name": "dohr_tp_gat_blowup_two_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-5e3ec97c0a-a1"
+}

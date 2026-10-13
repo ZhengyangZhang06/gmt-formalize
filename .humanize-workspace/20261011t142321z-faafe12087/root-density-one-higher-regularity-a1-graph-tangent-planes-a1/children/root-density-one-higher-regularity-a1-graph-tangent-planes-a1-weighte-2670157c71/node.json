@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_ae-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "Almost every point of the carrier inherits the approximate tangent planes of a containing set with n-dimensional growth",
+  "statement": "Let n, l be natural numbers, M, S, O subsets of R^(n+l) with O open, theta : R^(n+l) -> R and C real. Assume M is H^n-null-measurable, theta is a.e.-measurable for H^n restricted to M, theta is H^n-integrable on M cap O, H^n((M cap O) minus S) = 0, and H^n(S cap O cap B_r(z)) <= C r^n for every z and every r > 0 (B_r closed balls). Then for H^n-a.e. y in M (i.e. a.e. for H^n restricted to M): if y is in O, then every linear subspace P which is the approximate tangent space of S at y (Chapter03.HasApproximateTangentSpaceAt n S y P) is the approximate tangent space of M with respect to theta at y (Chapter03.HasWeightedApproximateTangentSpaceAt n M theta y P). Here H^n = muHE[n].",
+  "lean_statement": "∀ (n ℓ : ℕ) (M S O : Set (Amb n ℓ)) (θ : Amb n ℓ → ℝ) (C : ℝ), IsOpen O → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → IntegrableOn θ (M ∩ O) (μHE[n] : Measure (Amb n ℓ)) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ O) \\ S) = 0 → (∀ (z : Amb n ℓ) (r : ℝ), 0 < r → (μHE[n] : Measure (Amb n ℓ)) (S ∩ O ∩ closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)) → ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict M), y ∈ O → ∀ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P",
+  "lean_name": "dohr_tp_ae_weighted_tangent_of_growth",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.lebesgue_point_growth-a1",
+    "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.lebesgue_point_growth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-weighte-2670157c71-a1"
+}
