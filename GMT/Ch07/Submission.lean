@@ -819,6 +819,84 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     rw [hL, map_sum, ← hCBτ]
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
+/-- **Simon Ch. 2, §4, (4.1)–(4.3)**: if `N` is an embedded `d`-dimensional `C¹` submanifold and
+`Φ : ℝᴾ → ℝᴾ` is an anti-Lipschitz `C¹` bijection with `DΦ(x)` injective, then `Φ(N)` is an
+embedded `d`-dimensional `C¹` submanifold and `T_{Φ(x)}Φ(N) = DΦ(x)(TₓN)` for `x ∈ N`.  `Φ⁻¹` is
+Lipschitz, so `Φ` is a homeomorphism, and a chart `(V, W, ψ)` of `N` gives the chart
+`(V, Φ(W), Φ ∘ ψ)` of `Φ(N)`: `Φ(W)` is open, `Φ(ψ(V)) = Φ(W) ∩ Φ(N)`, `V ∩ (Φ ∘ ψ)⁻¹(K)` is
+compact because `Φ⁻¹(K) ⊆ W` is, and `D(Φ ∘ ψ) = DΦ ∘ Dψ` is injective.  The tangent spaces then
+follow from `chart_tangentSpace_eq_range_fderiv` for both charts. -/
+theorem Submission.codim1_ac_diffeo_image_submanifold : ∀ (P d : ℕ) (N : Set (Euclid P)) (Φ : Euclid P → Euclid P) (Λ : NNReal), IsEmbeddedSubmanifold 1 d N → ContDiff ℝ 1 Φ → Bijective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → AntilipschitzWith Λ Φ → IsEmbeddedSubmanifold 1 d (Φ '' N) ∧ ∀ x ∈ N, tangentSpace (Φ '' N) (Φ x) = (fderiv ℝ Φ x) '' tangentSpace N x := by
+  intro P d N Φ Λ hN hΦ hbij hDΦ hanti
+  -- Step 1: `Φ` is a homeomorphism, its inverse being `Λ`-Lipschitz
+  obtain ⟨H, hH⟩ : ∃ H : Euclid P ≃ₜ Euclid P, ⇑H = Φ :=
+    ⟨{ toEquiv := Equiv.ofBijective Φ hbij
+       continuous_toFun := hΦ.continuous
+       continuous_invFun :=
+        (hanti.to_rightInverse (Equiv.ofBijective Φ hbij).rightInverse_symm).continuous }, rfl⟩
+  have hopen : ∀ O : Set (Euclid P), IsOpen O → IsOpen (Φ '' O) := by
+    intro O hO
+    rw [← hH]
+    exact H.isOpenMap O hO
+  have hcpt : ∀ K : Set (Euclid P), IsCompact K → IsCompact (Φ ⁻¹' K) := by
+    intro K hK
+    rw [← hH]
+    exact H.isCompact_preimage.2 hK
+  have hΦ1 : ContDiff ℝ (1 : ℕ) Φ := by exact_mod_cast hΦ
+  -- Step 2: a chart `(V, W, ψ)` of `N` gives the chart `(V, Φ(W), Φ ∘ ψ)` of `Φ(N)`
+  have hchart : ∀ (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P),
+      IsOpen V → IsOpen W → ContDiffOn ℝ (1 : ℕ) ψ V → InjOn ψ V → ψ '' V = W ∩ N →
+      (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) →
+      IsOpen (Φ '' W) ∧ ContDiffOn ℝ (1 : ℕ) (Φ ∘ ψ) V ∧ InjOn (Φ ∘ ψ) V ∧
+        (Φ ∘ ψ) '' V = Φ '' W ∩ Φ '' N ∧
+        (∀ K ⊆ Φ '' W, IsCompact K → IsCompact (V ∩ (Φ ∘ ψ) ⁻¹' K)) ∧
+        ∀ z ∈ V, Injective (fderiv ℝ (Φ ∘ ψ) z) := by
+    intro V W ψ hV hW hψ hinj hψV hproper hDψ
+    refine ⟨hopen W hW, hΦ1.comp_contDiffOn hψ, hbij.injective.comp_injOn hinj, ?_, ?_, ?_⟩
+    · -- `Φ(ψ(V)) = Φ(W ∩ N) = Φ(W) ∩ Φ(N)`, `Φ` being injective
+      rw [image_comp, hψV, image_inter hbij.injective]
+    · -- `Φ⁻¹(K)` is a compact subset of `W`
+      intro K hKW hK
+      have hK' : Φ ⁻¹' K ⊆ W := by
+        intro z hz
+        obtain ⟨w, hw, hwz⟩ := hKW hz
+        rwa [← hbij.injective hwz]
+      exact hproper _ hK' (hcpt K hK)
+    · -- chain rule: `D(Φ ∘ ψ)(z) = DΦ(ψ(z)) ∘ Dψ(z)`, a composition of injective maps
+      intro z hz
+      have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+      have hψz : HasFDerivAt ψ (fderiv ℝ ψ z) z :=
+        ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hz)).hasFDerivAt
+      have hΦz : HasFDerivAt Φ (fderiv ℝ Φ (ψ z)) (ψ z) :=
+        (hΦ.differentiable one_ne_zero (ψ z)).hasFDerivAt
+      rw [(hΦz.comp z hψz).fderiv, ContinuousLinearMap.coe_comp]
+      exact (hDΦ (ψ z)).comp (hDψ z hz)
+  refine ⟨?_, ?_⟩
+  · -- `Φ(N)` is an embedded `d`-dimensional `C¹` submanifold
+    rintro _ ⟨y, hy, rfl⟩
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, hψV, hproper, hDψ⟩ := hN y hy
+    obtain ⟨hW', hψ', hinj', hψV', hproper', hDψ'⟩ :=
+      hchart V W ψ hV hW hψ hinj hψV hproper hDψ
+    exact ⟨V, Φ '' W, Φ ∘ ψ, hV, hW', mem_image_of_mem Φ hyW, hψ', hinj', hψV', hproper', hDψ'⟩
+  · -- Step 3: the tangent spaces, by `chart_tangentSpace_eq_range_fderiv` for both charts
+    intro x hx
+    obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, hψV, hproper, hDψ⟩ := hN x hx
+    obtain ⟨hW', hψ', hinj', hψV', hproper', hDψ'⟩ :=
+      hchart V W ψ hV hW hψ hinj hψV hproper hDψ
+    obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW, hx⟩
+    have hTN := Submission.chart_tangentSpace_eq_range_fderiv P d 1 N W V ψ v le_rfl hV hW hψ
+      hinj hψV hproper hDψ hv
+    have hTΦN := Submission.chart_tangentSpace_eq_range_fderiv P d 1 (Φ '' N) (Φ '' W) V
+      (Φ ∘ ψ) v le_rfl hV hW' hψ' hinj' hψV' hproper' hDψ' hv
+    have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+    have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+      ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+    have hΦv : HasFDerivAt Φ (fderiv ℝ Φ (ψ v)) (ψ v) :=
+      (hΦ.differentiable one_ne_zero (ψ v)).hasFDerivAt
+    calc tangentSpace (Φ '' N) (Φ (ψ v)) = range (fderiv ℝ (Φ ∘ ψ) v) := hTΦN
+      _ = range (fderiv ℝ Φ (ψ v) ∘ fderiv ℝ ψ v) := by
+        rw [(hΦv.comp v hψv).fderiv, ContinuousLinearMap.coe_comp]
+      _ = fderiv ℝ Φ (ψ v) '' tangentSpace N (ψ v) := by rw [range_comp, hTN]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
