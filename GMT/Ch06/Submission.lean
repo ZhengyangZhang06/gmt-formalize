@@ -1785,6 +1785,19 @@ theorem Submission.iwl_imc_tau_measure_representation : ∀ (P k : ℕ) (U M : S
     rw [hfun]
     exact hX ω
 
+/-- Upper density theorem at every scale `Rr` (Simon Ch. 1, 3.6 with Remark 3.7(2)): if
+`∫⁻_{S ∩ K} g dHᵏ < ∞` for every compact `K ⊆ U`, then for `Hᵏ`-a.e. `x ∈ U \ S` and every
+`R > 0`, `r⁻ᵏ ∫⁻_{S ∩ B̄_{Rr}(x)} g dHᵏ → 0` as `r → 0+`.  The unit-scale case
+`ρ⁻ᵏ ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ → 0` is `lpf_wtc_ae_zero_density_off_set`; the change of scale
+`ρ = Rr` is `iwl_imc_quotient_rescale_tendsto_zero`. -/
+theorem Submission.iwl_imc_density_zero_off_set : ∀ (P k : ℕ) (U S : Set (Eucl P)) (g : Eucl P → ℝ≥0∞), IsOpen U → NullMeasurableSet S (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∫⁻ y in S ∩ K, g y ∂(μHE[k] : Measure (Eucl P)) < ∞) → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ U → x ∉ S → ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in S ∩ closedBall x (R * r), g y ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0) := by
+  intro P k U S g hU hS hg
+  -- Unit scale: for `Hᵏ`-a.e. `x ∈ U \ S`, `F_x(ρ) / ρᵏ → 0`, `F_x(ρ) = ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ`.
+  filter_upwards [Submission.lpf_wtc_ae_zero_density_off_set P k U S g hU hS hg]
+    with x hx hxU hxS R hR
+  -- Change of scale `ρ = Rr`: `r⁻ᵏ F_x(Rr) → 0`.
+  exact Submission.iwl_imc_quotient_rescale_tendsto_zero k
+    (fun ρ => ∫⁻ y in S ∩ closedBall x ρ, g y ∂(μHE[k] : Measure (Eucl P))) (hx hxU hxS) R hR
 /-- Normalized Lebesgue points (Simon Ch. 1, 3.23 with Theorem 3.3): for `Hᵏ⌞M`-a.e. `x` and
 every `R > 0`, `r⁻ᵏ ∫_{M ∩ B̄_{Rr}(x)} |f - f(x)| dHᵏ → 0` as `r ↓ 0`.  On a ball `W` with
 `K = B̄ ⊆ U`, Lebesgue–Besicovitch differentiation for the finite measure `λ = Hᵏ⌞(M ∩ K)` makes
@@ -1909,6 +1922,177 @@ theorem Submission.iwl_imc_normalized_lebesgue_points : ∀ (P k : ℕ) (U M : S
     ⟨(x, ε / 2), (closedBall_subset_ball (half_lt_self hε)).trans hεU, mem_ball_self (half_pos hε)⟩
   obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.1 hxT
   exact hx p hp hxp
+
+/-- Tangent planes agree on the overlap (for Simon Ch. 6, 3.2 (1); Ch. 3, 1.7): given the tangent
+locality (TL), for `Hᵏ⌞(M₁ ∩ M₂)`-a.e. `x` every weighted approximate tangent plane of `(M₁, θ₁)`
+at `x` is one of `(M₂, θ₂)`.  At normalized Lebesgue points of `θ₁, θ₂` on `M₁ ∩ M₂` where
+`M₁ Δ M₂` has density zero, (TL) compares each `(M_l, θ_l)` with the constant weight `θ_l(x)` on
+`M₁ ∩ M₂`, and a nonzero constant factor does not change the tangent condition. -/
+theorem Submission.iwl_imc_tangent_overlap : ∀ (P k : ℕ), (∀ (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P), NullMeasurableSet M (μHE[k] : Measure (Eucl P)) → NullMeasurableSet M' (μHE[k] : Measure (Eucl P)) → θ x = θ' x → (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[k] : Measure (Eucl P)) ∧ IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[k] : Measure (Eucl P))) → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k M' θ' x Q) → ∀ U : Set (Eucl P), IsOpen U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ), M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[k] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[k] : Measure (Eucl P)) → (∀ x ∈ M₁, 1 ≤ θ₁ x) → (∀ x ∈ M₂, 1 ≤ θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₁ (M₁ ∩ K) (μHE[k] : Measure (Eucl P))) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₂ (M₂ ∩ K) (μHE[k] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q := by
+  intro P k hTL U hU M₁ M₂ θ₁ θ₂ hM₁U hM₂U hM₁ hM₂ hθ₁ hθ₂ hint₁ hint₂
+  set H : Measure (Eucl P) := (μHE[k] : Measure (Eucl P)) with hH
+  have hNm : NullMeasurableSet (M₁ ∩ M₂) H := hM₁.inter hM₂
+  -- Step 1: `Hᵏ(M₁ ∩ M₂ ∩ K) ≤ Hᵏ(M₁ ∩ K) ≤ ∫_{M₁ ∩ K} |θ₁| dHᵏ < ∞`, since `θ₁ ≥ 1` on `M₁`.
+  have hfin : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → H (M₁ ∩ M₂ ∩ K) < ∞ := by
+    intro K hK hKU
+    have hMK : NullMeasurableSet (M₁ ∩ K) H :=
+      hM₁.inter hK.isClosed.measurableSet.nullMeasurableSet
+    calc H (M₁ ∩ M₂ ∩ K) ≤ H (M₁ ∩ K) :=
+          measure_mono (show M₁ ∩ M₂ ∩ K ⊆ M₁ ∩ K from fun y hy => ⟨hy.1.1, hy.2⟩)
+      _ = ∫⁻ _ in M₁ ∩ K, 1 ∂H := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ y in M₁ ∩ K, ‖θ₁ y‖ₑ ∂H := by
+        refine lintegral_mono_ae ?_
+        filter_upwards [ae_restrict_mem₀ hMK] with y hy
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.one_le_ofReal.2 ((hθ₁ y hy.1).trans (le_abs_self _))
+      _ < ∞ := (hint₁ K hK hKU).hasFiniteIntegral
+  -- Step 2: normalized Lebesgue points of `θ₁` and `θ₂` on `M₁ ∩ M₂`.
+  have hL₁ := Submission.iwl_imc_normalized_lebesgue_points P k U (M₁ ∩ M₂) θ₁ hU
+    (inter_subset_left.trans hM₁U) hNm hfin fun K hK hKU => (hint₁ K hK hKU).mono_set
+      (show M₁ ∩ M₂ ∩ K ⊆ M₁ ∩ K from fun y hy => ⟨hy.1.1, hy.2⟩)
+  have hL₂ := Submission.iwl_imc_normalized_lebesgue_points P k U (M₁ ∩ M₂) θ₂ hU
+    (inter_subset_left.trans hM₁U) hNm hfin fun K hK hKU => (hint₂ K hK hKU).mono_set
+      (show M₁ ∩ M₂ ∩ K ⊆ M₂ ∩ K from fun y hy => ⟨hy.1.2, hy.2⟩)
+  -- Step 3: `S = M₁ Δ M₂` has density zero off `S` for `g = 1_{M₁}|θ₁| + 1_{M₂}|θ₂|`.
+  set S : Set (Eucl P) := symmDiff M₁ M₂
+  have hSm : NullMeasurableSet S H := hM₁.symmDiff hM₂
+  set g : Eucl P → ℝ≥0∞ := fun y =>
+    M₁.indicator (fun z => ‖θ₁ z‖ₑ) y + M₂.indicator (fun z => ‖θ₂ z‖ₑ) y
+  have hgK : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∫⁻ y in S ∩ K, g y ∂H < ∞ := by
+    intro K hK hKU
+    have hKm : MeasurableSet K := hK.isClosed.measurableSet
+    -- `∫_K 1_M |θ| dHᵏ = ∫_{M ∩ K} |θ| dHᵏ`, and `1_M |θ|` is a.e.-measurable on `K`.
+    have piece : ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ), NullMeasurableSet M H →
+        IntegrableOn θ (M ∩ K) H → AEMeasurable (M.indicator fun z => ‖θ z‖ₑ) (H.restrict K) ∧
+          ∫⁻ y in K, M.indicator (fun z => ‖θ z‖ₑ) y ∂H < ∞ := by
+      intro M θ hM hθ
+      have hM' : NullMeasurableSet M (H.restrict K) := hM.mono Measure.restrict_le_self
+      have hres : (H.restrict K).restrict M = H.restrict (M ∩ K) := Measure.restrict_restrict' hKm
+      refine ⟨(aemeasurable_indicator_iff₀ hM').2 ?_, ?_⟩
+      · rw [hres]
+        exact hθ.aestronglyMeasurable.enorm
+      · rw [lintegral_indicator₀ hM', hres]
+        exact hθ.hasFiniteIntegral
+    obtain ⟨h₁m, h₁⟩ := piece M₁ θ₁ hM₁ (hint₁ K hK hKU)
+    obtain ⟨-, h₂⟩ := piece M₂ θ₂ hM₂ (hint₂ K hK hKU)
+    calc ∫⁻ y in S ∩ K, g y ∂H ≤ ∫⁻ y in K, g y ∂H := lintegral_mono_set inter_subset_right
+      _ = ∫⁻ y in K, M₁.indicator (fun z => ‖θ₁ z‖ₑ) y ∂H +
+          ∫⁻ y in K, M₂.indicator (fun z => ‖θ₂ z‖ₑ) y ∂H := lintegral_add_left' h₁m _
+      _ < ∞ := ENNReal.add_lt_top.2 ⟨h₁, h₂⟩
+  have hD := Submission.iwl_imc_density_zero_off_set P k U S g hU hSm hgK
+  -- Step 4: a nonzero constant factor in the weight does not change the tangent condition.
+  have scale : ∀ (N : Set (Eucl P)) (φ ψ : Eucl P → ℝ) (c : ℝ) (x : Eucl P)
+      (Q : Submodule ℝ (Eucl P)), c ≠ 0 → (∀ y, ψ y = c * φ y) →
+      (HasWeightedApproximateTangentSpaceAt k N ψ x Q ↔
+        HasWeightedApproximateTangentSpaceAt k N φ x Q) := by
+    intro N φ ψ c x Q hc hψ
+    unfold HasWeightedApproximateTangentSpaceAt
+    refine and_congr_right fun _ => forall_congr' fun f => ?_
+    have key : ∀ (s : Set (Eucl P)) (r : ℝ), ∫ y in s, f y * ψ (x + r • y) ∂μHE[k] =
+        c * ∫ y in s, f y * φ (x + r • y) ∂μHE[k] := by
+      intro s r
+      rw [← integral_const_mul]
+      congr 1
+      funext y
+      rw [hψ]
+      ring
+    simp only [key, hψ x, mul_assoc]
+    constructor
+    · intro h
+      have h' := h.const_mul c⁻¹
+      simp only [← mul_assoc, inv_mul_cancel₀ hc, one_mul] at h'
+      exact h'
+    · intro h
+      exact h.const_mul c
+  -- Step 5: by (TL), `(M, θ)` has the same tangent planes at `x` as `(M₁ ∩ M₂, θ(x))`.
+  have compare : ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ), NullMeasurableSet M H → M₁ ∩ M₂ ⊆ M →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) H) →
+      (∀ z ∈ M, z ∉ M₁ ∩ M₂ → z ∈ S) → (∀ z ∈ M, ‖θ z‖ₑ ≤ g z) → ∀ x ∈ U,
+      (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) *
+        ∫⁻ y in M₁ ∩ M₂ ∩ closedBall x (R * r), ‖θ y - θ x‖ₑ ∂H) (𝓝[>] 0) (𝓝 0)) →
+      (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) *
+        ∫⁻ y in S ∩ closedBall x (R * r), g y ∂H) (𝓝[>] 0) (𝓝 0)) →
+      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Q ↔
+        HasWeightedApproximateTangentSpaceAt k (M₁ ∩ M₂) (fun _ => θ x) x Q := by
+    intro M θ hMm hNM hint hMS hθg x hxU hL hDx Q
+    have hsmall : ∀ᶠ ρ in 𝓝 (0 : ℝ), closedBall x ρ ⊆ U :=
+      eventually_closedBall_subset (hU.mem_nhds hxU)
+    obtain ⟨ρ, hρU, hρ⟩ := ((hsmall.filter_mono nhdsWithin_le_nhds).and
+      (self_mem_nhdsWithin : Ioi (0 : ℝ) ∈ 𝓝[>] 0)).exists
+    refine hTL M (M₁ ∩ M₂) θ (fun _ => θ x) x hMm hNm rfl
+      ⟨ρ, hρ, hint _ (isCompact_closedBall x ρ) hρU,
+        integrableOn_const (hfin _ (isCompact_closedBall x ρ) hρU).ne⟩ ?_ Q
+    intro R hR
+    have hscale : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝 0) :=
+      ((continuous_const.mul continuous_id).tendsto' 0 0 (mul_zero R)).mono_left
+        nhdsWithin_le_nhds
+    have hlim := (hL R hR).add (hDx R hR)
+    rw [add_zero] at hlim
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+      (Eventually.of_forall fun r => zero_le) ?_
+    filter_upwards [hscale.eventually hsmall] with r hrU
+    have hBm : MeasurableSet (closedBall x (R * r)) := measurableSet_closedBall
+    -- `|1_M θ - 1_{M₁ ∩ M₂} θ(x)| ≤ 1_{M₁ ∩ M₂} |θ - θ(x)| + 1_S g` pointwise.
+    have hpt : ∀ z, ‖M.indicator θ z - (M₁ ∩ M₂).indicator (fun _ => θ x) z‖ₑ ≤
+        (M₁ ∩ M₂).indicator (fun y => ‖θ y - θ x‖ₑ) z + S.indicator g z := by
+      intro z
+      by_cases hzN : z ∈ M₁ ∩ M₂
+      · rw [indicator_of_mem (hNM hzN), indicator_of_mem hzN, indicator_of_mem hzN]
+        exact le_self_add
+      · rw [indicator_of_notMem hzN, indicator_of_notMem hzN, sub_zero, zero_add]
+        by_cases hzM : z ∈ M
+        · rw [indicator_of_mem hzM, indicator_of_mem (hMS z hzM hzN)]
+          exact hθg z hzM
+        · rw [indicator_of_notMem hzM, enorm_zero]
+          exact zero_le
+    have hNB : NullMeasurableSet (M₁ ∩ M₂) (H.restrict (closedBall x (R * r))) :=
+      hNm.mono Measure.restrict_le_self
+    have hSB : NullMeasurableSet S (H.restrict (closedBall x (R * r))) :=
+      hSm.mono Measure.restrict_le_self
+    have hmeas : AEMeasurable ((M₁ ∩ M₂).indicator fun y => ‖θ y - θ x‖ₑ)
+        (H.restrict (closedBall x (R * r))) := by
+      refine (aemeasurable_indicator_iff₀ hNB).2 ?_
+      rw [Measure.restrict_restrict' hBm]
+      exact (((hint _ (isCompact_closedBall x (R * r)) hrU).aestronglyMeasurable.sub
+        aestronglyMeasurable_const).enorm).mono_measure (Measure.restrict_mono
+          (show M₁ ∩ M₂ ∩ closedBall x (R * r) ⊆ M ∩ closedBall x (R * r) from
+            fun y hy => ⟨hNM hy.1, hy.2⟩) le_rfl)
+    rw [← mul_add]
+    gcongr
+    calc ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - (M₁ ∩ M₂).indicator (fun _ => θ x) z‖ₑ ∂H
+        ≤ ∫⁻ z in closedBall x (R * r),
+            ((M₁ ∩ M₂).indicator (fun y => ‖θ y - θ x‖ₑ) z + S.indicator g z) ∂H :=
+          lintegral_mono hpt
+      _ = ∫⁻ z in closedBall x (R * r), (M₁ ∩ M₂).indicator (fun y => ‖θ y - θ x‖ₑ) z ∂H +
+            ∫⁻ z in closedBall x (R * r), S.indicator g z ∂H := lintegral_add_left' hmeas _
+      _ = ∫⁻ y in M₁ ∩ M₂ ∩ closedBall x (R * r), ‖θ y - θ x‖ₑ ∂H +
+            ∫⁻ y in S ∩ closedBall x (R * r), g y ∂H := by
+          rw [lintegral_indicator₀ hNB, lintegral_indicator₀ hSB, Measure.restrict_restrict' hBm,
+            Measure.restrict_restrict' hBm]
+  -- Step 6: chain the two comparisons through the constant weights `θ₁(x)` and `θ₂(x)`.
+  filter_upwards [hL₁, hL₂, ae_restrict_of_ae (s := M₁ ∩ M₂) hD, ae_restrict_mem₀ hNm]
+    with x hx₁ hx₂ hxD hxN Q hQ
+  have hxU : x ∈ U := hM₁U hxN.1
+  have hxS : x ∉ S := fun h => by
+    rcases mem_symmDiff.1 h with ⟨-, h'⟩ | ⟨-, h'⟩
+    exacts [h' hxN.2, h' hxN.1]
+  have hDx := hxD hxU hxS
+  have c₁ := compare M₁ θ₁ hM₁ inter_subset_left hint₁
+    (fun z hz hzN => mem_symmDiff.2 (Or.inl ⟨hz, fun h => hzN ⟨hz, h⟩⟩))
+    (fun z hz => by
+      show ‖θ₁ z‖ₑ ≤ M₁.indicator (fun z => ‖θ₁ z‖ₑ) z + M₂.indicator (fun z => ‖θ₂ z‖ₑ) z
+      rw [indicator_of_mem hz]
+      exact le_self_add) x hxU hx₁ hDx Q
+  have c₂ := compare M₂ θ₂ hM₂ inter_subset_right hint₂
+    (fun z hz hzN => mem_symmDiff.2 (Or.inr ⟨hz, fun h => hzN ⟨h, hz⟩⟩))
+    (fun z hz => by
+      show ‖θ₂ z‖ₑ ≤ M₁.indicator (fun z => ‖θ₁ z‖ₑ) z + M₂.indicator (fun z => ‖θ₂ z‖ₑ) z
+      rw [indicator_of_mem hz]
+      exact le_add_self) x hxU hx₂ hDx Q
+  have hθ₁x : θ₁ x ≠ 0 := (zero_lt_one.trans_le (hθ₁ x hxN.1)).ne'
+  have hθ₂x : θ₂ x ≠ 0 := (zero_lt_one.trans_le (hθ₂ x hxN.2)).ne'
+  exact c₂.2 ((scale (M₁ ∩ M₂) (fun _ => θ₁ x) (fun _ => θ₂ x) (θ₂ x / θ₁ x) x Q
+    (div_ne_zero hθ₂x hθ₁x) fun _ => (div_mul_cancel₀ _ hθ₁x).symm).2 (c₁.1 hQ))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
