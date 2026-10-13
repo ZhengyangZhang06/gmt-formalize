@@ -847,6 +847,87 @@ theorem Submission.codim1_rdo_dg_bvc_translation_l1_le : ∀ (n : ℕ) (F : Set 
   exact key.trans_le
     (Submission.codim1_rdo_dg_bvc_translate_test_le n F R C w φ hF hdiv hφ hφc hφs hφb)
 
+/-- **Mollification estimate for a set of bounded perimeter** (Simon 2.6, chapter-02.txt
+lines 598–626, the precompactness step delegated to [GT01, Theorem 7.22]: with `u = 1_F`,
+`‖u − ρ * u‖_{L¹(B_R)} ≤ ε C` when `ρ ≥ 0`, `∫ ρ = 1`, `support ρ ⊆ B_ε(0)`, `ε ≤ 1` and
+`∫_F div g ≤ C` for the fields `g` of the class in `B_{R+1}(0)`).  As `∫ ρ = 1`,
+`|u(z) − ∫ ρ(y) u(z − y) dy| ≤ ∫ ρ(y) |u(z) − u(z − y)| dy`; the integrand is at most `ρ(y)`,
+so Fubini on `B_R(0) × ℝⁿ` turns the integral over `B_R(0)` into `∫ ρ(y) I(y) dy` with
+`I(y) = ∫_{B_R(0)} |u(z) − u(z − y)| dz`.  For `ρ(y) ≠ 0`, `|y| < ε ≤ 1`, so the translation
+estimate `Submission.codim1_rdo_dg_bvc_translation_l1_le` applies at radius
+`R + |y| ≤ R + 1` and gives `I(y) ≤ |y| C ≤ ε C`. -/
+theorem Submission.codim1_rdo_dg_bvc_mollify_l1_le : ∀ (n : ℕ) (F : Set (Euclid n)) (R C ε : ℝ) (ρ : Euclid n → ℝ), MeasurableSet F → ε ≤ 1 → Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → support ρ ⊆ ball (0 : Euclid n) ε → (∀ g : Euclid n → Euclid n, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid n) (R + 1) → (∀ z, ‖g z‖ ≤ 1) → ∫ z in F, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid n) ≤ C) → ∫ z in ball (0 : Euclid n) R, |F.indicator (fun _ => (1 : ℝ)) z - ∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (z - y)| ≤ ε * C := by
+  intro n F R C ε ρ hF hε1 hρc hρcs hρ0 hρ1 hρs hdiv
+  set u : Euclid n → ℝ := F.indicator (fun _ => (1 : ℝ)) with hu
+  have hu_meas : Measurable u := measurable_const.indicator hF
+  have hu01 : ∀ z, 0 ≤ u z ∧ u z ≤ 1 := fun z => by
+    simp only [hu, Set.indicator]; split_ifs <;> norm_num
+  have hbd : ∀ z y, |u z - u (z - y)| ≤ 1 := fun z y => by
+    have h1 := hu01 z
+    have h2 := hu01 (z - y)
+    rw [abs_le]; constructor <;> linarith
+  -- Step 1: `C ≥ 0` (the field `g = 0`) and `ρ` is integrable
+  have hC : 0 ≤ C := by
+    simpa using hdiv (fun _ => 0) contDiff_const HasCompactSupport.zero (by simp) (by simp)
+  have hρint : Integrable ρ := hρc.integrable_of_hasCompactSupport hρcs
+  -- Step 2: pointwise, `|u z − ∫ ρ(y) u(z − y)| ≤ ∫ ρ(y) |u z − u(z − y)|`, since `∫ ρ = 1`
+  have hpt : ∀ z, |u z - ∫ y, ρ y * u (z - y)| ≤ ∫ y, ρ y * |u z - u (z - y)| := by
+    intro z
+    have hint1 : Integrable (fun y => ρ y * u z) := hρint.mul_const _
+    have hint2 : Integrable (fun y => ρ y * u (z - y)) :=
+      hρint.mul_bdd (c := 1) (hu_meas.comp (measurable_const.sub measurable_id)).aestronglyMeasurable
+        (Eventually.of_forall fun y => by
+          rw [Real.norm_eq_abs, abs_of_nonneg (hu01 (z - y)).1]
+          exact (hu01 (z - y)).2)
+    have e : ∫ y, ρ y * (u z - u (z - y)) = u z - ∫ y, ρ y * u (z - y) := by
+      simp_rw [mul_sub]
+      rw [integral_sub hint1 hint2, integral_mul_const, hρ1, one_mul]
+    rw [← e]
+    refine abs_integral_le_integral_abs.trans_eq ?_
+    congr 1
+    funext y
+    rw [abs_mul, abs_of_nonneg (hρ0 y)]
+  -- Step 3: Fubini for `H(z, y) = ρ(y) |u z − u(z − y)| ≤ ρ(y)` on `B_R(0) × ℝⁿ`
+  set H : Euclid n → Euclid n → ℝ := fun z y => ρ y * |u z - u (z - y)| with hH
+  have hHmeas : Measurable (Function.uncurry H) :=
+    (hρc.measurable.comp measurable_snd).mul (continuous_abs.measurable.comp
+      ((hu_meas.comp measurable_fst).sub (hu_meas.comp (measurable_fst.sub measurable_snd))))
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) R)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hHint :
+      Integrable (Function.uncurry H) ((volume.restrict (ball (0 : Euclid n) R)).prod volume) := by
+    have hdom : Integrable (fun p : Euclid n × Euclid n => ρ p.2)
+        ((volume.restrict (ball (0 : Euclid n) R)).prod volume) := by
+      simpa using
+        (integrable_const (1 : ℝ) (μ := volume.restrict (ball (0 : Euclid n) R))).mul_prod hρint
+    refine hdom.mono' hHmeas.aestronglyMeasurable (Eventually.of_forall fun p => ?_)
+    simp only [Function.uncurry, hH, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 p.2), abs_abs]
+    exact mul_le_of_le_one_right (hρ0 p.2) (hbd _ _)
+  -- Step 4: each translation; for `ρ(y) ≠ 0`, `translation_l1` with `w = y` at radius `R + |y|`
+  have hinner : ∀ y, ∫ z in ball (0 : Euclid n) R, H z y ≤ ρ y * (ε * C) := by
+    intro y
+    simp only [hH]
+    rw [integral_const_mul]
+    by_cases hy : ρ y = 0
+    · simp [hy]
+    have hyε : ‖y‖ < ε := mem_ball_zero_iff.1 (hρs hy)
+    have hdiv' : ∀ g : Euclid n → Euclid n, ContDiff ℝ 1 g → HasCompactSupport g →
+        tsupport g ⊆ ball (0 : Euclid n) (R + ‖y‖) → (∀ z, ‖g z‖ ≤ 1) →
+        ∫ z in F, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid n) ≤ C :=
+      fun g hg hgc hgs hgb => hdiv g hg hgc (hgs.trans (ball_subset_ball (by linarith))) hgb
+    have hI : ∫ z in ball (0 : Euclid n) R, |u z - u (z - y)| ≤ ε * C :=
+      (Submission.codim1_rdo_dg_bvc_translation_l1_le n F R C y hF hdiv').trans
+        (mul_le_mul_of_nonneg_right hyε.le hC)
+    exact mul_le_mul_of_nonneg_left hI (hρ0 y)
+  -- Step 5: combine the three estimates
+  calc ∫ z in ball (0 : Euclid n) R, |u z - ∫ y, ρ y * u (z - y)|
+      ≤ ∫ z in ball (0 : Euclid n) R, ∫ y, H z y :=
+        integral_mono_of_nonneg (Eventually.of_forall fun z => abs_nonneg _)
+          hHint.integral_prod_left (Eventually.of_forall hpt)
+    _ = ∫ y, ∫ z in ball (0 : Euclid n) R, H z y := integral_integral_swap hHint
+    _ ≤ ∫ y, ρ y * (ε * C) := integral_mono hHint.integral_prod_right (hρint.mul_const _) hinner
+    _ = ε * C := by rw [integral_mul_const, hρ1, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
