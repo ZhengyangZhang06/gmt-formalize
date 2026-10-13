@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f0181bdd7cf91a764812f66cbd664b18cfde83c7ef7a19568463ed2b05a85769",
+  "git_delta": {
+    "base_commit": "f16c6c1ff7f50783dc482d1d7ddfa61548861ad6",
+    "candidate_commit": "b5e3987455b9b42fe5868f3abde44be21a293e2f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_ret_nearest_point",
+    "diff_sha256": "25fe67fd929386ae0b3e850be25746115e1f7a0c719ad1742ba38f80f79b79f9",
+    "source_sha256": "16b5bb10edfcaf97ec7fbb87bb04cce989cc0d552fd00961744b787724c3156a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_ret_nearest_point",
+      "statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ 2 ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (r δ : ℝ) (g : Euclid P → Euclid d), 0 < r ∧ 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ ContDiffOn ℝ 1 g (ball (ψ v₀) r) ∧ MapsTo g (ball (ψ v₀) r) (ball v₀ δ) ∧ (∀ x ∈ ball (ψ v₀) r, ∀ z ∈ N, ‖x - ψ (g x)‖ ≤ ‖x - z‖) ∧ (∀ x ∈ ball (ψ v₀) r, (fderiv ℝ ψ (g x)).range.starProjection (x - ψ (g x)) = 0) ∧ ∀ x ∈ N ∩ ball (ψ v₀) r, ψ (g x) = x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
