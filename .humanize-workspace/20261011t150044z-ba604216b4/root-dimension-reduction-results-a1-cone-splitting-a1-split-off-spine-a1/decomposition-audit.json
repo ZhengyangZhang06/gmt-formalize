@@ -1,0 +1,129 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "^(import|open|namespace|def|structure|abbrev)|IsMinimizingIn|SameBoundary|BoundaryVanishes|IsConeCurrent|IsUnitOrientationOf",
+        "HasApproximateTangentSpaceAt|CountablyRectifiable|weighted_area_formula_lipschitz_injOn|area_image_compl_regularSet_eq_zero|exteriorDerivative_apply|^axiom|sorry",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|def alternatization|theorem ae_tendsto_rnDeriv",
+        "\\b(sorry|axiom|admit)\\b",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "git show 2d0f5bbe8de725944c1d9c73d65c6163f6d67b07:GMT/Ch07/Submission.lean",
+        "git show 6907c2cb07a30284981f3f56aad0d3daf62d6314:GMT/Ch07/Submission.lean",
+        "git show c004e5e3f4166664a2267650ee8f8eaf8eb4f33f:GMT/Ch07/Submission.lean",
+        "git show d15b5cf486116871dce9295932632b12f0af96e0:GMT/Ch07/Submission.lean",
+        "git show 568bfe5f73347cadf50a6748d118063fc5ea5bd2:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/sos-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/sos-independent-audit/AssemblyHyp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/sos-independent-audit/AreaAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Product.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/CoareaProjection.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa42/20261012T151228Z-ch07-root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1-efqngzll/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa48/20261012T154314Z-ch07-root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_-5z0gs0sj/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa6/20261012T163722Z-ch07-root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1-4stm2spq/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa48/20261013T001447Z-ch07-root.minimizing_implies_stationary-a1.mass_equals_measure-a1-9nnx_qvg/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa62/20261012T210510Z-ch07-root.minimizing_implies_stationary-a1.support_null-a1-9xzk1a16/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa48/20261013T014037Z-ch07-root.regular_set_dense-a1.integer_combination-a1-coq0hv7w/comparator.log",
+        "/tmp/sos-independent-audit/AuditBase.lean",
+        "/tmp/sos-independent-audit/Types.lean",
+        "/tmp/sos-independent-audit/AssemblyHyp.lean",
+        "/tmp/sos-independent-audit/AreaAxioms.lean",
+        "/tmp/sos-independent-audit/env.json"
+      ],
+      "conclusion": "The split appropriately establishes the selected dimred_cs_split_off_spine contract. Project, mathlib and SimonGMT pins match. All twelve frozen types independently elaborate against a freshly compiled copy of the frozen definitions, before any child implementation. They are single-line propositions with matching prose and bare names; no problematic matrix-unit construction occurs. The six new names are unreserved. The six reuses have identical accepted types and matching candidate-source hashes; their kernel records permit only propext, Classical.choice and Quot.sound. Proposed dependencies and all reused dependency closures are acyclic and do not depend on the selected parent. Conditional Lean assembly proves the exact parent, including d=0, using only the three principal child contracts and standard axioms, without sorryAx. This checks assembly, not implementations of the new children. The supplied analytic proofs fill the missing general-product and rectifiable-coarea machinery. The documented AreaLipschitz import supplies axiom-clean area theorems. Public mathematical cross-check: Simon Ch. 3 §2.8–2.10, Ch. 6 §2.30–2.31 and Ch. 7 Lemma 3.5 in [Introduction to Geometric Measure Theory](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match. Bi-Lipschitz pieces, pullback of null sets, Besicovitch differentiation and the area-formula blow-up prove the stated a.e. tangent conclusion for arbitrary locally finite Borel Y. The proof supplies the required analytic steps without circular reliance."
+    },
+    {
+      "key": "spine_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches, including d=0. Adapted parametrizations establish JH=J_bH; Tonelli and the null-remainder estimate prove the integral identity and measurability. The declared lipschitz_tangent dependency establishes the slice tangent conclusion."
+    },
+    {
+      "key": "product_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The measurable slice construction and two-sided translation identities justify selecting one common base slice. Its translated representation gives support, concentration, the measure identity and the action formula. Required dependencies are correctly directed."
+    },
+    {
+      "key": "boundary_cone_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact two implications are proved. The proof constructs the contraction, derives tangent containment from concentration, verifies the boundary sign (-1)^d, and checks dilation scaling. No product-decomposition theorem or parent conclusion is assumed beyond the explicit action identity."
+    },
+    {
+      "key": "cone_filling_subspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The m>0 contract matches the proof. The cutoff homotopy gives boundary X and compact support inside V. The detailed Lipschitz parametrization and signed multiplicity construction establish integer multiplicity using the declared dependencies."
+    },
+    {
+      "key": "minimality_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the exact competitor conditions. Product construction and cone filling produce the compact integer-multiplicity cycle (-1)^d∂([[Q_r]]×Y₀). The order-r^d mass saving dominates the order-r^(d−1) face cost. Boundary signs, concentration and measure comparison are justified, with all required dependencies supplied."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted declaration. Integrability and linearity follow from compact-support domination; the same bound proves the required sequential continuity for arbitrary U and degree, including zero."
+    },
+    {
+      "key": "orient_data_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse with an accepted dependency closure. Local integrability and the vector-valued fundamental lemma on open U prove precisely the stated equality of indicator-weighted orientations."
+    },
+    {
+      "key": "measure_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Equality of vector densities forces null carrier differences; tangent uniqueness and determinant-covector evaluation then establish equality of positive multiplicities and representation measures."
+    },
+    {
+      "key": "mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The accepted Gram bounds apply to the contract's Euclidean coefficient norm. Domination proves the upper bound; measurable dual selection, smooth approximation and exhaustion prove the lower bound."
+    },
+    {
+      "key": "carrier_sdiff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Countable reduction of the zero region and testing with scalar bumps times constant covectors force orientations to vanish wherever the carrier lies off the support, contradicting their a.e. nonvanishing."
+    },
+    {
+      "key": "int_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The supplied tangent-locality argument aligns orientations on overlaps; the absolute signed multiplicity and adjusted orientation form the required representation. Zero-degree and above-ambient-degree cases are covered."
+    }
+  ],
+  "required_changes": []
+}

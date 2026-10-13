@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1",
+  "depth": 4,
+  "title": "Minimality passes from S = [[L]] × S₀ to the factor: S₀ is minimizing in L^⊥ (large-cube competitors)",
+  "statement": "Data:\n- P, n ∈ ℕ; L ⊆ ℝ^P a linear subspace with 1 ≤ d := dim L < n; m := n − d ≥ 1.\n- f = (f_1, …, f_d) an orthonormal family in L.\n- S ∈ 𝒟_n(ℝ^P), minimizing in ℝ^P (IsMinimizingIn S univ), with an integer multiplicity representation R (μ := R.measure).\n- S₀ ∈ 𝒟_m(ℝ^P) with an integer multiplicity representation R₀ (μ₀ := R₀.measure).\nHypotheses:\n- ∂S₀ = 0 (BoundaryVanishes S₀) and μ₀(ℝ^P ∖ L^⊥) = 0;\n- measure identity: μ(A) = ∫_L μ₀(A − t) dH^d(t) for every Borel A;\n- product formula: S(ω) = ∫_L currentEval S₀ (y ↦ ♭(ω(t + y))) dH^d(t) for every test n-form ω and every map ♭ : Λ^n → Λ^m with (♭α)(v) = α(f_1, …, f_d, v_1, …, v_m) (Lean: α (Fin.append f v ∘ Fin.cast _)).\nConclusion: S₀ is minimizing in L^⊥ (IsMinimizingIn S₀ L^⊥). That is, S₀ is integer multiplicity, and M_W(S₀) ≤ M_W(S₀') whenever:\n- W ⊆ ℝ^P is open with compact closure;\n- S₀' is integer multiplicity with ∂S₀' = ∂S₀;\n- spt(S₀' − S₀) is a compact subset of L^⊥ ∩ W.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (f : Fin (Module.finrank ℝ L) → Euclid P) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (hd : Module.finrank ℝ L < n), 0 < Module.finrank ℝ L → Orthonormal ℝ f → (∀ i, f i ∈ L) → IsMinimizingIn S univ → R.Represents S → R₀.Represents S₀ → BoundaryVanishes S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) (n - Module.finrank ℝ L), (∀ (α : Covector (Euclid P) n) (v : Fin (n - Module.finrank ℝ L) → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast (Nat.add_sub_of_le hd.le).symm)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (L : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[Module.finrank ℝ L]) → IsMinimizingIn S₀ (Lᗮ : Set (Euclid P))",
+  "lean_name": "dimred_cs_sos_minimality_transfer",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+    "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+    "root.minimizing_implies_stationary-a1.support_null-a1",
+    "root.regular_set_dense-a1.integer_combination-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1",
+      "result_commit": "642d7450f79f28435ddba02f9c815e2208bcee00",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-a1",
+      "result_commit": "6907c2cb07a30284981f3f56aad0d3daf62d6314",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mass-equals-measure-a1-a1",
+      "result_commit": "c004e5e3f4166664a2267650ee8f8eaf8eb4f33f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-a1",
+      "result_commit": "d15b5cf486116871dce9295932632b12f0af96e0",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-a1",
+      "result_commit": "568bfe5f73347cadf50a6748d118063fc5ea5bd2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb-a1"
+}

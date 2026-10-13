@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1",
+  "depth": 4,
+  "title": "Approximate tangent planes along Lipschitz maps: Y has approximate tangent space DF(u)(ℝ^k) at F(u) for a.e. regular u ∈ F⁻¹(Y)",
+  "statement": "Let P, k ∈ ℕ with k ≥ 1, let F : ℝ^k → ℝ^P be Lipschitz (LipschitzWith K F), and let Y ⊆ ℝ^P be Borel with H^k(Y ∩ C) < ∞ for every compact C, where H^k = μHE[k].\nThen for Lebesgue-a.e. u ∈ ℝ^k the following holds: if F(u) ∈ Y, F is differentiable at u and DF(u) is injective, then Y has approximate tangent space DF(u)(ℝ^k) at F(u). That is, HasApproximateTangentSpaceAt k Y (F u) (LinearMap.range (fderiv ℝ F u)) in the sense of SimonGMT (Simon Ch. 3, 1.4).",
+  "lean_statement": "∀ (P k : ℕ) (F : Euclid k → Euclid P) (Y : Set (Euclid P)) (K : NNReal), 0 < k → LipschitzWith K F → MeasurableSet Y → (∀ C : Set (Euclid P), IsCompact C → μHE[k] (Y ∩ C) ≠ ∞) → ∀ᵐ u ∂(volume : Measure (Euclid k)), F u ∈ Y → DifferentiableAt ℝ F u → Function.Injective (fderiv ℝ F u) → HasApproximateTangentSpaceAt k Y (F u) (LinearMap.range (fderiv ℝ F u : Euclid k →ₗ[ℝ] Euclid P))",
+  "lean_name": "dimred_cs_sos_lipschitz_approx_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8c1b7724be-a1"
+}

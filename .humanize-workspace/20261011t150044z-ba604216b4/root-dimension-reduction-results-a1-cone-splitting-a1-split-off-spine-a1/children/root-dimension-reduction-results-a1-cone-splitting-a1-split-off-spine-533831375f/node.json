@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.product_decomposition-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1",
+  "depth": 4,
+  "title": "A translation-invariant integer multiplicity current whose tangent planes contain L is a product: S = [[L]] × S₀ with S₀ supported in L^⊥",
+  "statement": "Data:\n- P, n ∈ ℕ; L ⊆ ℝ^P a linear subspace with 1 ≤ d := dim L < n; m := n − d.\n- f = (f_1, …, f_d) an orthonormal family in L (hence an orthonormal basis of L).\n- S ∈ 𝒟_n(ℝ^P) and an integer multiplicity representation R = (M, θ, ξ) of S (IMRep univ n, R.Represents S); μ := R.measure.\nHypotheses:\n- S is invariant under translations by L: currentEval (blowUp S (−v) 1) ω = S ω, i.e. S(ω(v + ·)) = S(ω), for v ∈ L and ω ∈ 𝒟^n(ℝ^P).\n- For μ-a.e. x, the projection p_x onto approxTangentPlane n M x fixes every v ∈ L.\nConclusion: there are S₀ ∈ 𝒟_m(ℝ^P) and an integer multiplicity representation R₀ of S₀ (IMRep univ m) such that:\n- spt S₀ ⊆ L^⊥;\n- μ₀ := R₀.measure satisfies μ₀(ℝ^P ∖ L^⊥) = 0;\n- μ(A) = ∫_L μ₀(A − t) dH^d(t) for every Borel A, written ∫⁻ t in L, μ₀((fun y => t + y)⁻¹' A) ∂μHE[d];\n- product formula: let ♭ : Λ^n → Λ^m be any map with (♭α)(v) = α(f_1, …, f_d, v_1, …, v_m) (Lean: α (Fin.append f v ∘ Fin.cast _)). Then for every test n-form ω,\n S(ω) = ∫_L currentEval S₀ (y ↦ ♭(ω(t + y))) dH^d(t).",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (f : Fin (Module.finrank ℝ L) → Euclid P) (hd : Module.finrank ℝ L < n), 0 < Module.finrank ℝ L → Orthonormal ℝ f → (∀ i, f i ∈ L) → (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) → R.Represents S → (∀ᵐ x ∂R.measure, ∀ v ∈ L, (approxTangentPlane n R.carrier x).starProjection v = v) → ∃ (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)), R₀.Represents S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) ∧ ∀ flat : Covector (Euclid P) n → Covector (Euclid P) (n - Module.finrank ℝ L), (∀ (α : Covector (Euclid P) n) (v : Fin (n - Module.finrank ℝ L) → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast (Nat.add_sub_of_le hd.le).symm)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (L : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[Module.finrank ℝ L]",
+  "lean_name": "dimred_cs_sos_product_decomposition",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.spine_coarea-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.spine_coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1",
+      "result_commit": "642d7450f79f28435ddba02f9c815e2208bcee00",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-vect-8c0391929c-a1",
+      "result_commit": "2d0f5bbe8de725944c1d9c73d65c6163f6d67b07",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-a1",
+      "result_commit": "6907c2cb07a30284981f3f56aad0d3daf62d6314",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-533831375f-a1"
+}
