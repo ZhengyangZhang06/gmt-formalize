@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1.rotated_plane_dist-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1",
+  "depth": 4,
+  "title": "Distance from a graph point to the rotated coordinate plane",
+  "statement": "For all natural numbers n, l, every linear isometry equivalence q of R^(n+l), every a in R^n and every b in R^l, the distance from q(graphPoint a b) to the rotated plane rotatedPlane q = q(horizontalPlane n l), regarded as a set, equals ||b||: infDist (q(graphPoint a b)) (rotatedPlane q) = ||b||.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖",
+  "lean_name": "tdo_gpd_infDist_rotatedPlane_graphPoint",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.graph_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1",
+      "result_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1-rota-341ecee7fe-a1"
+}
