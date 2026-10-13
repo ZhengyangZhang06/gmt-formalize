@@ -503,6 +503,49 @@ theorem Submission.slicing_im_ll_gws_lipschitz_ibp :
         refine integral_congr_ae (Eventually.of_forall fun w => ?_)
         simp [g, Finset.mul_sum, mul_comm]
 
+/-- Convergence of the gradient pairings against a `C¹` test field: if `u_k → u` uniformly on
+the open set `Ω`, all `C`-Lipschitz on `Ω`, and `b` is `C¹` with compact support in `Ω`, then
+`∫_Ω Du_k(b) → ∫_Ω Du(b)`.  With the weak divergence `g ∈ L¹` of `b` given by
+`slicing_im_ll_gws_lipschitz_ibp`, `∫_Ω Du_k(b) - ∫_Ω Du(b) = ∫_Ω (u - u_k) g`, which is at most
+`sup_Ω |u - u_k| · ∫_Ω |g|`. -/
+theorem Submission.slicing_im_ll_gws_smooth_tendsto : ∀ (n : ℕ) (Ω : Set (Eucl n)) (C : ℝ≥0) (u : Eucl n → ℝ) (ug : ℕ → Eucl n → ℝ), IsOpen Ω → LipschitzOnWith C u Ω → (∀ k, LipschitzOnWith C (ug k) Ω) → TendstoUniformlyOn ug u atTop Ω → ∀ b : Eucl n → Eucl n, ContDiff ℝ 1 b → HasCompactSupport b → tsupport b ⊆ Ω → Tendsto (fun k => ∫ w in Ω, fderiv ℝ (ug k) w (b w)) atTop (𝓝 (∫ w in Ω, fderiv ℝ u w (b w))) := by
+  intro n Ω C u ug hΩ hu hug hconv b hb hbc hbΩ
+  -- Step 1: the weak divergence `g` of `b`, applied to `u` and to every `u_k` (all
+  -- `C`-Lipschitz on `Ω`).
+  obtain ⟨g, hg, hgf⟩ := Submission.slicing_im_ll_gws_lipschitz_ibp n Ω b hΩ hb hbc hbΩ
+  obtain ⟨hu_int, hu_eq⟩ := hgf C u hu
+  -- Step 2: `∫_Ω Du_k(b) - ∫_Ω Du(b) = -∫_Ω u_k g + ∫_Ω u g = ∫_Ω (u - u_k) g`.
+  have hdiff : ∀ k, (∫ w in Ω, fderiv ℝ (ug k) w (b w)) - ∫ w in Ω, fderiv ℝ u w (b w) =
+      ∫ w in Ω, (u w - ug k w) * g w := fun k => by
+    obtain ⟨hk_int, hk_eq⟩ := hgf C (ug k) (hug k)
+    simp only [sub_mul]
+    rw [hk_eq, hu_eq, integral_sub hu_int hk_int]
+    ring
+  -- Step 3: `A = ∫_Ω |g| ≥ 0`, `η = ε / (2 (A + 1))`, and `N` with `|u - u_k| < η` on `Ω` for
+  -- all `k ≥ N` (uniform convergence).
+  obtain ⟨A, hA⟩ : ∃ A, ∫ w in Ω, |g w| = A := ⟨_, rfl⟩
+  have hA0 : 0 ≤ A := by
+    rw [← hA]
+    exact integral_nonneg fun w => abs_nonneg (g w)
+  refine Metric.tendsto_atTop.2 fun ε hε => ?_
+  have hA1 : 0 < 2 * (A + 1) := by linarith
+  have hη : 0 < ε / (2 * (A + 1)) := div_pos hε hA1
+  obtain ⟨N, hN⟩ := eventually_atTop.1 (Metric.tendstoUniformlyOn_iff.1 hconv _ hη)
+  refine ⟨N, fun k hk => ?_⟩
+  -- Step 4: `|∫_Ω (u - u_k) g| ≤ ∫_Ω η |g| = η A`.
+  have hbound : ∀ w ∈ Ω, ‖(u w - ug k w) * g w‖ ≤ ε / (2 * (A + 1)) * |g w| := fun w hw => by
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, ← Real.dist_eq]
+    exact mul_le_mul_of_nonneg_right (hN k hk w hw).le (abs_nonneg (g w))
+  have hest : ‖∫ w in Ω, (u w - ug k w) * g w‖ ≤ ∫ w in Ω, ε / (2 * (A + 1)) * |g w| :=
+    norm_integral_le_of_norm_le (hg.integrableOn.abs.const_mul _)
+      (ae_restrict_of_forall_mem hΩ.measurableSet hbound)
+  rw [integral_const_mul, hA] at hest
+  -- Step 5: `η A < η · 2 (A + 1) = ε`.
+  rw [Real.dist_eq, hdiff k, ← Real.norm_eq_abs]
+  calc ‖∫ w in Ω, (u w - ug k w) * g w‖ ≤ ε / (2 * (A + 1)) * A := hest
+    _ < ε / (2 * (A + 1)) * (2 * (A + 1)) := mul_lt_mul_of_pos_left (by linarith) hη
+    _ = ε := div_mul_cancel₀ ε hA1.ne'
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
