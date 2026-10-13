@@ -640,6 +640,32 @@ theorem dohr_eb_ail_hessian_zero : ∀ n ℓ : ℕ, ∀ Q : Rn n →L[ℝ] Rn �
   -- Steps 4–5: the one-variable second derivative is `trace G(Q) = Σ_a ‖Q e_a‖²`.
   rw [hfun, Submission.dohr_eb_ail_sqrt_det_second_deriv]
   simp [Matrix.trace]
+/-- The operator norm is at most the Hilbert–Schmidt norm: `‖Q‖² ≤ Σₐ ‖Q eₐ‖²` for every linear
+`Q : ℝᵐ → ℝᵏ`.  Expanding `h = Σₐ hₐ eₐ` gives `‖Q h‖ ≤ Σₐ |hₐ| ‖Q eₐ‖ ≤ ‖h‖ (Σₐ ‖Q eₐ‖²)^{1/2}`
+(triangle inequality, then Cauchy–Schwarz), so `‖Q‖ ≤ (Σₐ ‖Q eₐ‖²)^{1/2}` by
+`ContinuousLinearMap.opNorm_le_bound`; square both sides. -/
+theorem dohr_eb_ail_opNorm_sq_le : ∀ m k : ℕ, ∀ Q : Rn m →L[ℝ] Rn k, ‖Q‖ ^ 2 ≤ ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 := by
+  intro m k Q
+  have hQ : ‖Q‖ ≤ Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2) := by
+    refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) (fun h => ?_)
+    have hexp : h = ∑ a : Fin m, h a • EuclideanSpace.single a (1 : ℝ) := by
+      ext i
+      simp [Finset.sum_apply, Pi.single_apply]
+    have hQh : Q h = ∑ a : Fin m, h a • Q (EuclideanSpace.single a (1 : ℝ)) := by
+      conv_lhs => rw [hexp]
+      simp [map_sum, map_smul]
+    calc ‖Q h‖ = ‖∑ a : Fin m, h a • Q (EuclideanSpace.single a (1 : ℝ))‖ := by rw [hQh]
+      _ ≤ ∑ a : Fin m, ‖h a • Q (EuclideanSpace.single a (1 : ℝ))‖ := norm_sum_le _ _
+      _ = ∑ a : Fin m, ‖h a‖ * ‖Q (EuclideanSpace.single a (1 : ℝ))‖ := by simp_rw [norm_smul]
+      _ ≤ Real.sqrt (∑ a : Fin m, ‖h a‖ ^ 2) *
+            Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2) * ‖h‖ := by
+          rw [EuclideanSpace.norm_eq h, mul_comm]
+  calc ‖Q‖ ^ 2 ≤ (Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2)) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) hQ 2
+    _ = ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 :=
+        Real.sq_sqrt (Finset.sum_nonneg (fun a _ => sq_nonneg _))
 
 end Submission
 
