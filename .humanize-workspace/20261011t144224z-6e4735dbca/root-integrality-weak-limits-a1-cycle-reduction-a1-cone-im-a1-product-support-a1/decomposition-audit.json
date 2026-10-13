@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'theorem Continuous.finCons|abbrev EuclideanSpace.equiv|theorem integral_congr |theorem closure_minimal|theorem exists_isSubordinate' mathlib/Mathlib/Topology/Constructions.lean mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean mathlib/Mathlib/Topology/Closure.lean mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "sed -n '1,165p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "sed -n '95,190p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "sed -n '15,65p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "git show 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/product_support_independent_audit_20261013/ReusedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/product_support_independent_audit_20261013/IndependentProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Closure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-product-support-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-product-support-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-support-subset-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json",
+        "/tmp/product_support_independent_audit_20261013/ReusedProofs.lean",
+        "/tmp/product_support_independent_audit_20261013/IndependentProofs.lean",
+        "/tmp/product_support_independent_audit_20261013/support_criterion__NodeChallenge.lean",
+        "/tmp/product_support_independent_audit_20261013/vanish_off_support__NodeChallenge.lean",
+        "/tmp/product_support_independent_audit_20261013/slice_integral_vanish__NodeChallenge.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical snapshot/workspace contracts. The sources confirm the support definition, test-form hypotheses, subordinate smooth partitions, continuity of the Euclidean coordinate construction, and integral congruence without integrability assumptions. Both reused declarations have comparator_passed=true and identical frozen types; their retained source hashes match. No other DAG node or decomposition reserves the new name, and the proposed dependency closure is acyclic. All three exact propositions elaborate independently in comparator challenge scope. Both reused proofs, an independent implementation of the supplied slice proof, and assembly of the exact selected parent from frozen child types and its declared slice_forms prerequisite compile with only propext, Classical.choice and Quot.sound. The split is appropriate: compactness is elementary parent glue, and the children establish precisely the required support inclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and is identical to the comparator-accepted declaration. The proof correctly uses openness of V and closedness of K to construct a relatively compact ball in V ∖ K, proves vanishing there, and contradicts membership in support. It is complete and non-circular; the retained proof recompiles."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted type legitimately allows arbitrary U. Compact tsupport contained in U yields a finite cover by zero-region sets. The pinned partition-of-unity theorem supplies the stated tsupport inclusions; the resulting smooth compactly supported pieces are valid test forms, and linearity proves vanishing. The proof covers empty support, requires no omitted openness assumption, and recompiles without nonstandard axioms."
+    },
+    {
+      "key": "slice_integral_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes all three hypotheses and the exact Φ, e₀ and ι constructions. The proof establishes closedness of C_s, containment of slice tsupport in C_s, disjointness from X.support, and pointwise vanishing via its sole declared dependency. Integral congruence then proves the conclusion without additional regularity assumptions. It handles R < 0 and zero dimensions, uses no parent theorem, and independently compiles. Together with support_criterion and the existing slice_forms prerequisite, it establishes the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

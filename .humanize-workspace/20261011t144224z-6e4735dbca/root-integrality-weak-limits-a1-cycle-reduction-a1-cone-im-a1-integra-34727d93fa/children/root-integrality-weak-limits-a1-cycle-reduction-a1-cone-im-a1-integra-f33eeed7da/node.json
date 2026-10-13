@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1.param_fubini-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1",
+  "depth": 5,
+  "title": "Parametric Fubini for the τ-integrand: ∫_0^1 ∫ θ ξ(Φ(s)) dμ ds = ∫ θ ξ(Ψ) dμ",
+  "statement": "Let P, m ∈ ℕ, B ∈ ℝ and let μ be an s-finite measure on ℝ^P. Let θ : ℝ^P → ℝ be μ-integrable. Let ξ : ℝ^P → Λ_m(ℝ^P) (NVector (Eucl P) m) be μ-AEStronglyMeasurable, with |ξ(x)(α)| ≤ ‖α‖ for every m-covector α, for μ-a.e. x. Let Φ : ℝ → ℝ^P → Λ^m(ℝ^P) (Covector (Eucl P) m) be such that (s, x) ↦ Φ(s)(x) is continuous on ℝ × ℝ^P and ‖Φ(s)(x)‖ ≤ B for all s ∈ [0, 1] and x ∈ ℝ^P. Let Ψ : ℝ^P → Λ^m(ℝ^P) satisfy Ψ(x)(v) = ∫_0^1 Φ(s)(x)(v) ds for all x ∈ ℝ^P and v : Fin m → ℝ^P. Then ∫_0^1 (∫ θ(x) ξ(x)(Φ(s)(x)) dμ(x)) ds = ∫ θ(x) ξ(x)(Ψ(x)) dμ(x).",
+  "lean_statement": "∀ (P m : ℕ) (μ : Measure (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m) (Φ : ℝ → Eucl P → Covector (Eucl P) m) (Ψ : Eucl P → Covector (Eucl P) m) (B : ℝ), SFinite μ → Integrable θ μ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖) → Continuous (fun p : ℝ × Eucl P => Φ p.1 p.2) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ x, ‖Φ s x‖ ≤ B) → (∀ (x : Eucl P) (v : Fin m → Eucl P), Ψ x v = ∫ s in (0 : ℝ)..1, Φ s x v) → ∫ s in (0 : ℝ)..1, ∫ x, θ x * ξ x (Φ s x) ∂μ = ∫ x, θ x * ξ x (Ψ x) ∂μ",
+  "lean_name": "iwl_cr_ci_ie_param_fubini",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1.nvector_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1.nvector_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-integra-f33eeed7da-a1"
+}

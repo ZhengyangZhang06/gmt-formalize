@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "depth": 4,
+  "title": "An integer multiplicity current commutes with ∫_0^1 ds on a continuous, uniformly supported family of test forms",
+  "statement": "Let P, m ∈ ℕ, X ∈ D_m(ℝ^P) integer multiplicity, K ⊆ ℝ^P compact, φ : ℝ → D^m(ℝ^P) such that (s, x) ↦ φ(s)(x) is continuous on ℝ × ℝ^P and tsupport φ(s) ⊆ K for every s ∈ [0, 1], and ψ ∈ D^m(ℝ^P) with ψ(x)(v) = ∫_0^1 φ(s)(x)(v) ds for all x ∈ ℝ^P and v ∈ (ℝ^P)^m. Then ∫_0^1 X(φ(s)) ds = X(ψ).",
+  "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (K : Set (Eucl P)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m) (ψ : TestFormOn (univ : Set (Eucl P)) m), IsIntegerMultiplicity X → IsCompact K → Continuous (fun p : ℝ × Eucl P => (φ p.1 : DifferentialForm (Eucl P) m) p.2) → (∀ s ∈ Icc (0 : ℝ) 1, tsupport (φ s : DifferentialForm (Eucl P) m) ⊆ K) → (∀ (x : Eucl P) (v : Fin m → Eucl P), (ψ : DifferentialForm (Eucl P) m) x v = ∫ s in (0 : ℝ)..1, (φ s : DifferentialForm (Eucl P) m) x v) → ∫ s in (0 : ℝ)..1, X (φ s) = X ψ",
+  "lean_name": "iwl_cr_ci_integral_exchange",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-integra-34727d93fa-a1"
+}

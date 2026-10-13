@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1.nvector_integral-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1",
+  "depth": 5,
+  "title": "An n-vector commutes with the pointwise interval integral of a continuous covector family",
+  "statement": "Let P, m ∈ ℕ and a, b ∈ ℝ. Let f : ℝ → Λ^m(ℝ^P) be continuous, where Λ^m(ℝ^P) = Covector (Eucl P) m is the space of continuous alternating m-linear maps (ℝ^P)^m → ℝ with the operator norm. Let c ∈ Λ^m(ℝ^P) satisfy c(v) = ∫_a^b f(s)(v) ds for every v : Fin m → ℝ^P, and let w ∈ Λ_m(ℝ^P) = NVector (Eucl P) m be a continuous linear functional on m-covectors. Then ∫_a^b w(f(s)) ds = w(c). Integrals are interval integrals for Lebesgue measure.",
+  "lean_statement": "∀ (P m : ℕ) (a b : ℝ) (f : ℝ → Covector (Eucl P) m) (c : Covector (Eucl P) m) (w : NVector (Eucl P) m), Continuous f → (∀ v : Fin m → Eucl P, c v = ∫ s in a..b, f s v) → ∫ s in a..b, w (f s) = w c",
+  "lean_name": "iwl_cr_ci_ie_nvector_intervalIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-integra-5b296a6678-a1"
+}

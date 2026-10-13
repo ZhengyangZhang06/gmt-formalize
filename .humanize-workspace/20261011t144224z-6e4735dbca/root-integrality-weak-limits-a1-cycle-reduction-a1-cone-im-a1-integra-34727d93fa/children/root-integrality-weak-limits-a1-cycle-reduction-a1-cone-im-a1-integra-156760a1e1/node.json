@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1.finite_measure-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1",
+  "depth": 5,
+  "title": "Integer multiplicity triples have locally finite Hⁿ-measure: Hⁿ(M ∩ K) < ∞ for compact K ⊆ U",
+  "statement": "Let P, n ∈ ℕ, U, M, K ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λ_n(ℝ^P) (NVector (Eucl P) n). Assume IsRectifiableTriple U n M θ ξ (frozen contract): M is Hⁿ-null-measurable, θ > 0 on M, θ is Hⁿ-integrable on M ∩ K' for every compact K' ⊆ U, plus the measurability and orientation fields. Assume also that θ is integer-valued on M (for every x ∈ M there is k ∈ ℕ with θ(x) = k), that K is compact and that K ⊆ U. Then Hⁿ(M ∩ K) < ∞, where Hⁿ = μHE[n] is the Hausdorff measure on ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → IsCompact K → K ⊆ U → (μHE[n] : Measure (Eucl P)) (M ∩ K) < ∞",
+  "lean_name": "iwl_cr_ci_ie_measure_inter_compact_lt_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-integra-156760a1e1-a1"
+}
