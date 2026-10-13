@@ -470,6 +470,50 @@ theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ
     fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
   · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
   · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+/-- **An `L¹` pairing that vanishes on uniform approximants vanishes in the limit** (step 5 of the
+extension from smooth to `C¹` tests in the graph-cycle regularity step of Simon 7.4.3).  Let
+`K ⊆ ℝⁿ` be measurable, `G` integrable on `K` and `f` AE-strongly measurable with `|f| ≤ C` on `K`.
+If for every `ε > 0` some AE-strongly measurable `g` with `|f − g| ≤ ε` on `K` has `∫_K G g = 0`,
+then `∫_K G f = 0`: `|g| ≤ C + ε` on `K`, so both products are integrable on `K`, and
+`|∫_K G f| = |∫_K G (f − g)| ≤ ε ∫_K |G|` for every `ε > 0`. -/
+theorem Submission.dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx : ∀ (n : ℕ) (K : Set (Euclid n)) (G f : Euclid n → ℝ) (C : ℝ), MeasurableSet K → IntegrableOn G K volume → AEStronglyMeasurable f (volume.restrict K) → (∀ x ∈ K, |f x| ≤ C) → (∀ ε : ℝ, 0 < ε → ∃ g : Euclid n → ℝ, AEStronglyMeasurable g (volume.restrict K) ∧ (∀ x ∈ K, |f x - g x| ≤ ε) ∧ ∫ x in K, G x * g x = 0) → ∫ x in K, G x * f x = 0 := by
+  intro n K G f C hK hG hf hfC happrox
+  -- `M = ∫_K |G| ≥ 0`, and `G f` is integrable on `K` since `|f| ≤ C` on `K`.
+  have hM : 0 ≤ ∫ x in K, |G x| := integral_nonneg fun x => abs_nonneg (G x)
+  have hGf : Integrable (fun x => G x * f x) (volume.restrict K) :=
+    Integrable.mul_bdd hG hf (ae_restrict_of_forall_mem hK fun x hx => hfC x hx)
+  -- `|∫_K G f| ≤ ε M` for every `ε > 0`.
+  have hbound : ∀ ε : ℝ, 0 < ε → |∫ x in K, G x * f x| ≤ ε * ∫ x in K, |G x| := by
+    intro ε hε
+    obtain ⟨g, hg, hfg, hGg⟩ := happrox ε hε
+    -- `|g| ≤ |f| + |f − g| ≤ C + ε` on `K`, so `G g` is integrable on `K`.
+    have hGg_int : Integrable (fun x => G x * g x) (volume.restrict K) :=
+      Integrable.mul_bdd (c := C + ε) hG hg (ae_restrict_of_forall_mem hK fun x hx => by
+        have h1 := abs_le.mp (hfC x hx)
+        have h2 := abs_le.mp (hfg x hx)
+        rw [Real.norm_eq_abs]
+        exact abs_le.mpr ⟨by linarith [h1.1, h2.2], by linarith [h1.2, h2.1]⟩)
+    -- `∫_K G f = ∫_K G f − ∫_K G g = ∫_K G (f − g)`.
+    have heq : ∫ x in K, G x * f x = ∫ x in K, G x * (f x - g x) := by
+      simp_rw [mul_sub]
+      rw [integral_sub hGf hGg_int, hGg, sub_zero]
+    -- `|G (f − g)| ≤ |G| ε` on `K`.
+    rw [heq]
+    calc |∫ x in K, G x * (f x - g x)| ≤ ∫ x in K, |G x| * ε :=
+          norm_integral_le_of_norm_le ((Integrable.abs hG).mul_const ε)
+            (ae_restrict_of_forall_mem hK fun x hx => by
+              rw [Real.norm_eq_abs, abs_mul]
+              exact mul_le_mul_of_nonneg_left (hfg x hx) (abs_nonneg _))
+      _ = ε * ∫ x in K, |G x| := by rw [integral_mul_const, mul_comm]
+  -- If `a = |∫_K G f| > 0`, then `ε = a / (2(M + 1))` gives `a ≤ a M / (2(M + 1)) < a`.
+  by_contra hne
+  set M := ∫ x in K, |G x|
+  set a := |∫ x in K, G x * f x|
+  have ha : 0 < a := abs_pos.mpr hne
+  have hpos : 0 < 2 * (M + 1) := by linarith
+  have h := hbound (a / (2 * (M + 1))) (div_pos ha hpos)
+  rw [div_mul_eq_mul_div, le_div_iff₀ hpos] at h
+  nlinarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
