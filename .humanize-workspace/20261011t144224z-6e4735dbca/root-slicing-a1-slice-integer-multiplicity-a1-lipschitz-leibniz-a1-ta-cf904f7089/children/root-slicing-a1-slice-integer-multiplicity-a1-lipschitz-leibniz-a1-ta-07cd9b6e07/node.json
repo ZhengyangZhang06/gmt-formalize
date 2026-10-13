@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_has_fderiv_at-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "depth": 5,
+  "title": "Chain rule on a C¹ chart for a Lipschitz function with a tangential gradient: D(h∘Φ)(w) = ⟨G(Φ(w)), DΦ(w)·⟩ a.e.",
+  "statement": "Let P, n ∈ ℕ, Ω ⊆ ℝⁿ open, and Φ : ℝⁿ → ℝ^P of class C¹, Lipschitz on Ω and κ-antilipschitz on Ω for some κ > 0. Let A ⊆ ℝ^P be Hⁿ-null-measurable, h : ℝ^P → ℝ L-Lipschitz and G : ℝ^P → ℝ^P. Suppose that for Hⁿ-a.e. x ∈ A, every w ∈ Ω with Φ(w) = x and every u ∈ range DΦ(w), the function s ↦ h(x + su) has derivative ⟨G(x), u⟩ at s = 0. Then for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(A), h∘Φ is Fréchet differentiable at w with derivative s ↦ ⟨G(Φ(w)), DΦ(w)s⟩, i.e. the continuous linear map (innerSL ℝ (G(Φ(w)))) ∘ DΦ(w). Here Hⁿ = μHE[n] on ℝ^P, Lⁿ = volume on ℝⁿ and DΦ(w) = fderiv ℝ Φ w.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (h : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → LipschitzWith L h → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)), HasFDerivAt (h ∘ Φ) ((innerSL ℝ (G (Φ w))).comp (fderiv ℝ Φ w)) w",
+  "lean_name": "slicing_im_ll_twl_chart_hasFDerivAt",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.ae_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-ae-pullback-a1-a1",
+      "result_commit": "841085c6a9d76231a52113cfbad8e6e3261f0a6f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-07cd9b6e07-a1"
+}

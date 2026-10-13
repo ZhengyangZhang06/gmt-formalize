@@ -1,0 +1,71 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.coefficient_field-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 8 of the parent proof, the coefficient field c = 1_{E'}·JΦ·a with a = (AᵀA)⁻¹Aᵀ(Y∘Φ). Here the explicit left inverse (AᵀA)⁻¹Aᵀ is replaced by the continuous left inverse Λ of the sibling continuous_left_inverse, which has exactly the properties used there. Notation as in the statement; A_w := DΦ(w).
+1. (Left inverse.) The sibling continuous_left_inverse (lpf_tde_continuous_left_inverse) gives Λ : L(ℝⁿ, ℝ^P) → L(ℝ^P, ℝⁿ), continuous on the set of injective linear maps, such that every injective B satisfies Λ(B)∘B = id and |B(Λ(B)v)| ≤ |v| for all v ∈ ℝ^P.
+2. (Chart derivative bounds.) Φ is C¹, so it is differentiable everywhere and w ↦ A_w is continuous (`ContDiff.continuous_fderiv`). For w ∈ Ω, the sibling fderiv_lower_bound (lpf_wtc_cat_fderiv_lower_bound) gives κ|s| ≤ |A_w s| for all s ∈ ℝⁿ. Consequences: A_w is injective for w ∈ Ω, since A_w s = A_w s' gives κ|s − s'| ≤ 0, so s = s'. And for v ∈ ℝ^P, κ|Λ(A_w)v| ≤ |A_w Λ(A_w)v| ≤ |v|, i.e. |Λ(A_w)v| ≤ κ⁻¹|v|.
+3. (Integrability of Z.) Apply the sibling chart_integral_eq with E := ℝ^P and F := Y (Y is Hⁿ⌞A-integrable). It gives: D is Lⁿ-null-measurable, and Z(w) := JΦ(w)·Y(Φ(w)) is Lⁿ-integrable on D.
+4. (Definition.) Put f(w) := Λ(A_w)(Z(w)) and c := 1_D·f, so c = f on D and c = 0 off D. In particular c(w) = 0 for every w ∉ D.
+5. (c is integrable on Ω.) Measurability: w ↦ Λ(A_w) is continuous on Ω. It is the composition of the continuous map w ↦ A_w, which sends Ω into the injective maps by step 2, with Λ, which is continuous there. So it is Lⁿ⌞Ω-a.e. strongly measurable (Ω is open; `ContinuousOn.aestronglyMeasurable`), hence Lⁿ⌞D-a.e. strongly measurable. Z is Lⁿ⌞D-a.e. strongly measurable by step 3, and evaluation (B, v) ↦ Bv is continuous bilinear, so f is Lⁿ⌞D-a.e. strongly measurable (`ContinuousLinearMap.aestronglyMeasurable_comp₂` with the identity of L(ℝ^P, ℝⁿ)).
+Integrability: for every w ∈ D ⊆ Ω, |f(w)| ≤ κ⁻¹|Z(w)| by step 2, and κ⁻¹|Z| is integrable on D, so f is integrable on D (`Integrable.mono'`). D is null-measurable, so the extension by zero c = 1_D·f is Lⁿ-integrable on ℝⁿ (`IntegrableOn.integrable_indicator₀`), in particular on Ω.
+6. (Pulling back the tangency.) Apply the sibling ae_pullback (lpf_ccr_ae_pullback) with M := A and p(x) := 'for every w ∈ Ω with Φ(w) = x, Y(x) ∈ range A_w'. Its hypotheses hold: Ω is open, hence measurable; Φ is continuous, hence measurable; Φ is κ-antilipschitz on Ω; A is Hⁿ-null-measurable; and p holds Hⁿ-a.e. on A ∩ Φ(Ω) because it holds Hⁿ-a.e. on A ⊇ A ∩ Φ(Ω) (`ae_restrict_of_ae_restrict_of_subset`). Hence p(Φ(w)) holds for Lⁿ-a.e. w ∈ D.
+7. (The identity.) Let w ∈ D satisfy p(Φ(w)); by step 6 and `ae_restrict_mem₀`, Lⁿ-a.e. w ∈ D does. Apply p(Φ(w)) to the point w itself (w ∈ Ω, Φ(w) = Φ(w)): there is s ∈ ℝⁿ with A_w s = Y(Φ(w)). Then Z(w) = JΦ(w)·A_w s = A_w(JΦ(w)s). By step 1 (A_w is injective), c(w) = f(w) = Λ(A_w)A_w(JΦ(w)s) = JΦ(w)s. Therefore A_w c(w) = JΦ(w)·A_w s = JΦ(w)·Y(Φ(w)). ∎
+
+## Key steps
+
+1. Λ from continuous_left_inverse plays the role of (AᵀA)⁻¹Aᵀ; with fderiv_lower_bound, DΦ(w) is injective and |Λ(DΦ(w))v| ≤ κ⁻¹|v| on Ω.
+2. chart_integral_eq with F = Y: D is null-measurable and Z = JΦ·(Y∘Φ) is integrable on D.
+3. c := 1_D·Λ(DΦ)(Z) is a.e. strongly measurable (Λ∘DΦ is continuous on Ω) and |c| ≤ κ⁻¹|Z|, so c is integrable on Ω and vanishes off D.
+4. ae_pullback moves the tangency Y∘Φ ∈ range DΦ to a.e. w ∈ D, where Λ(DΦ)∘DΦ = id gives DΦ(w)c(w) = JΦ(w)Y(Φ(w)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `read GMT/Ch06/Contract.lean (IsRectifiableTriple fields subset, nullMeasurableSet, countablyRectifiable, pos, integrableOn, orients) and verifier/gmt-compare.py contract_scope/child_modules (child challenge = import GMT.Ch06.Submission + replayed namespace GMT.Ch06 scope, solution = exact Submission.X)`
+- `python3 scan of dag.json (554 nodes; rechecked at 572 nodes before submission): status/candidate_commit/lean_statement of lpf_countably_rectifiable_c1_cover, lpf_weighted_tangent_on_c1_chart, lpf_raf_chart_change_of_variables, lpf_ccr_ae_pullback, lpf_tde_continuous_left_inverse, lpf_wtc_cat_fderiv_lower_bound (all accepted), lpf_chart_chain_rule, lpf_ccr_hasDerivAt_line_of_comp, lpf_tde_chart_directional_deriv, lpf_raf_chart_preimage_null, lpf_wtc_chart_image_measurable_locally_finite, lpf_wtc_cat_gram_jacobian_continuous (accepted, not needed), slicing_im_ll_gradient_weak_star (decomposing, parent-level dependency)`
+- `read the six reused nodes' parent-child-handoff.json (subproblem key/natural_proof/proof_key_steps) and compare title/statement/lean_statement with dag.json (byte-identical)`
+- `collision check: python3 over dag.json lean_name/lean_statement and rg 'slicing_im_ll_twl' in the snapshot and lake-packages-25730c7c/simongmt (no match)`
+- `git show d38f8d26:GMT/Ch06/Submission.lean (proof base = bare contract, no lpf declarations); git show <candidate>:GMT/Ch06/Submission.lean for the six reused candidates (declarations, imports); git merge-base --is-ancestor checks`
+- `union-merge simulation of the six reused candidate commits on d38f8d26 in a git clone --shared temp copy (git merge + git merge-file --union, as in the controller's _union_lean_conflicts)`
+- `grep snapshot Mathlib: LipschitzOnWith.ae_differentiableWithinAt_of_mem (Analysis/Calculus/Rademacher.lean), tendsto_tsum_of_dominated_convergence (Analysis/Normed/Group/Tannery.lean, not in import closure), hasSum_integral_iUnion, measurable_fderiv, integral_withDensity_eq_integral_smul, integrable_withDensity_iff_integrable_smul, withDensity_apply', Measure.map_apply_of_aemeasurable, integral_map, integrable_map_measure, MeasurableSet.image_of_continuousOn_injOn, disjointed/iUnion_disjointed/disjoint_disjointed, integrable_indicator_iff₀, ContinuousLinearMap.aestronglyMeasurable_comp₂, AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean, not imported; continuous_inner.comp_aestronglyMeasurable₂ used instead)`
+- `read SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt, HasWeightedApproximateTangentSpaceAt.unique)`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/Stmts.lean (13 types: 5 new, 6 reused, gradient_weak_star, parent; no errors)`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/AssemblyParent.lean (parent type from partition_tendsto, chart_representation, R1, R2, gradient_weak_star types; axioms propext, Classical.choice, Quot.sound)`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/AssemblyT.lean, AssemblyCV.lean, AssemblyCF.lean, AssemblyDI.lean, AssemblyCR.lean (each new child from its declared dependencies' exact types; same axioms)`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/Integrated.lean (union of the six reused candidates + five new children + parent, gradient_weak_star stubbed; EXIT 0; new children axioms propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-cf904f7089/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/twl_split/check/Stmts.lean`
+- `/tmp/twl_split/check/AssemblyParent.lean`
+- `/tmp/twl_split/check/AssemblyT.lean`
+- `/tmp/twl_split/check/AssemblyCV.lean`
+- `/tmp/twl_split/check/AssemblyCF.lean`
+- `/tmp/twl_split/check/AssemblyDI.lean`
+- `/tmp/twl_split/check/AssemblyCR.lean`
+- `/tmp/twl_split/check/Integrated.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract, so child types use only contract, SimonGMT and Mathlib names. All 13 relevant types elaborate in the exact comparator scope. The proof base d38f8d26 is the bare contract, so accepted lpf declarations can only be used as reused children. Six accepted declarations have exactly the types this proof needs: lpf_countably_rectifiable_c1_cover, lpf_weighted_tangent_on_c1_chart (both speculative when the handoff was written, accepted now), lpf_raf_chart_change_of_variables, lpf_ccr_ae_pullback, lpf_tde_continuous_left_inverse and lpf_wtc_cat_fderiv_lower_bound. They are reused byte-for-byte. No library has the Bochner chart area formula, the coefficient-field lift, the a.e. chart differential of a Lipschitz function with tangential gradient, or the partition/Tannery convergence lemma; these are the five new children. Mathlib supplies Rademacher on sets, countable additivity of the integral, withDensity/map integral transfer, measurable fderiv and Lusin–Souslin images. Tannery's file is outside the import closure, so its proof is inlined. Scratch Lean proves the parent type from the child types plus gradient_weak_star, and each new child from exactly its declared dependencies. A union-merge of the six reused candidates, together with all new children and the parent, compiles. Axioms are propext, Classical.choice, Quot.sound (sorryAx only from the gradient_weak_star stub). No new name occurs in the DAG, the snapshot or SimonGMT.

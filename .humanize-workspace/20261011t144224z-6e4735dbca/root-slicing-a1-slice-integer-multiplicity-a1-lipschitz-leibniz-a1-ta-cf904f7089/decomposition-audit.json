@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CountablyRectifiable|HasWeightedApproximateTangentSpaceAt",
+        "slicing_im_ll_twl|lpf_countably_rectifiable_c1_cover|lpf_weighted_tangent_on_c1_chart",
+        "ae_differentiableWithinAt_of_mem|measurable_fderiv|hasSum_integral_iUnion|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|integrable_withDensity_iff_integrable_smul|integral_withDensity_eq_integral_smul",
+        "area_image_compl_regularSet_eq_zero|weighted_area_formula_lipschitz_injOn|regularSet",
+        "isUnit_iff_bijective|theorem mul_def|def mul|inverse_continuousAt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_independent_audit/ConditionalChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_independent_audit/Integrated.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-cf904f7089/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-cf904f7089/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/twl_independent_audit/Types.lean",
+        "/tmp/twl_independent_audit/ConditionalChecks.lean",
+        "/tmp/twl_independent_audit/Integrated.lean"
+      ],
+      "conclusion": "The split is appropriate: five new analytic obligations and six accepted declarations reused with byte-identical frozen types. All names are bare identifiers; the five new names are unreserved and have no matches in the searched snapshot or SimonGMT. The augmented dependency graph is acyclic. All propositions elaborate independently in the comparator scope, and explicit instance checks confirm ordinary matrix multiplication and continuous-linear-map composition. Independent compilation verified each supplied new-child assembly from exactly its declared dependencies and the exact selected parent type from the proposed children plus its existing gradient_weak_star dependency. The integrated check passed; all eleven child declarations use only propext, Classical.choice and Quot.sound. The integrated parent's sorryAx comes from the deliberately stubbed, still-pending gradient_weak_star; the separate conditional parent assembly has no sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "countably_rectifiable_c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted frozen type is identical and matches the prose. The proof uses the accepted immersion-pieces dependency, removes null exceptional and critical images, and shrinks to countably many relatively compact balls to obtain both chart bounds and the required cover. No circular reliance occurs."
+    },
+    {
+      "key": "weighted_tangent_on_c1_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type is identical and includes every local integrability, positivity and chart hypothesis used. Chart blow-up, compact Lusin pieces, zero-density estimates and the weighted error decomposition establish precisely the quantified a.e. conclusion. These classical inputs agree with [Simon, Chapters 1 and 3](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    },
+    {
+      "key": "chart_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type, with the correct Matrix.of Gram determinant. Null-set pullback establishes both measurability conclusions; the accepted local area formula and singleton-fibre calculation give exactly the asserted nonnegative integral equality."
+    },
+    {
+      "key": "ae_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type and matching prose. The proof first establishes null-measurability of the parameter set, then pulls back the exceptional null set. Measure.le_restrict_apply avoids an unjustified measurability assumption on the chart image."
+    },
+    {
+      "key": "continuous_left_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Invertibility of A* A, continuity of inversion at units, and the orthogonal-projection estimate establish all conclusions, including degenerate dimensions. The inverse is taken in the continuous-linear-map composition ring, with no pointwise-multiplication ambiguity."
+    },
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type and complete proof. Openness permits the line perturbation; division by positive t and convergence of the derivative slopes yield the bound. No sign assumption on c is needed."
+    },
+    {
+      "key": "partition_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone proposition matches all prose hypotheses. Countable integral additivity produces the summable majorant, and the supplied finite-tail argument proves convergence of the sums. No sigma-finiteness or unstated domination of Flim is required."
+    },
+    {
+      "key": "chart_integral_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Banach-valued proposition matches the prose. The proof constructs the Jacobian-weighted parameter measure, proves its pushforward identity on Borel sets, and transfers integrability and integrals through map and withDensity. Its sole declared dependency suffices."
+    },
+    {
+      "key": "coefficient_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly constructs c by extension by zero. The derivative lower bound and projection estimate control its norm; the Bochner chart formula supplies integrability, and ae_pullback supplies the tangent-range identity. All four dependencies are correctly directed and sufficient."
+    },
+    {
+      "key": "chart_has_fderiv_at",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact HasFDerivAt conclusion follows from pulled-back directional hypotheses, Rademacher on the open chart domain, the explicit Lipschitz little-o comparison, and derivative uniqueness. The argument fixes one full-measure set before considering arbitrary directions, avoiding an uncountable exceptional-set gap."
+    },
+    {
+      "key": "chart_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs one coefficient field valid for every differentiable Lipschitz f. Integrability bounds, chain-rule identities, the a.e. derivative of h composed with the chart, and extension by zero prove both integral identities. Together with partition_tendsto, the reused geometric inputs and the existing gradient_weak_star dependency, these conclusions establish the exact selected parent statement."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.partition_tendsto-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "depth": 5,
+  "title": "Integrals converge if they converge on every piece of a countable measurable partition, under integrable domination (Tannery)",
+  "statement": "Let X be a measurable space, ν a measure on X, V_j ⊆ X (j ∈ ℕ) measurable and pairwise disjoint with ν(X ∖ ⋃_j V_j) = 0, b : X → ℝ ν-integrable, F_k : X → ℝ (k ∈ ℕ) ν-integrable with |F_k(x)| ≤ b(x) for ν-a.e. x (for every k), and F_∞ : X → ℝ ν-integrable. If ∫_{V_j} F_k dν → ∫_{V_j} F_∞ dν as k → ∞ for every j, then ∫_X F_k dν → ∫_X F_∞ dν as k → ∞.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (V : ℕ → Set X) (b : X → ℝ) (F : ℕ → X → ℝ) (Flim : X → ℝ), (∀ j, MeasurableSet (V j)) → Pairwise (Function.onFun Disjoint V) → ν (⋃ j, V j)ᶜ = 0 → Integrable b ν → (∀ k, Integrable (F k) ν) → (∀ k, ∀ᵐ x ∂ν, ‖F k x‖ ≤ b x) → Integrable Flim ν → (∀ j, Tendsto (fun k => ∫ x in V j, F k x ∂ν) atTop (𝓝 (∫ x in V j, Flim x ∂ν))) → Tendsto (fun k => ∫ x, F k x ∂ν) atTop (𝓝 (∫ x, Flim x ∂ν))",
+  "lean_name": "slicing_im_ll_twl_partition_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-2aebefd87c-a1"
+}
