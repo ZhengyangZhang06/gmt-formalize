@@ -754,6 +754,82 @@ theorem Submission.fiw_tb_tda_integer_median : ∀ {α : Type} [MeasurableSpace 
   exact (Submission.fiw_tb_tda_im_median_minimizes μ F a β u hF ha hμF hu hui hle hge
     (a⁻¹ * ∫ y in F, u y ∂μ)).trans
     (Submission.fiw_tb_tda_im_mean_deviation μ F a u hF ha hμF hu hui)
+/-- A translation estimate `∫ |u(x + h) − u(x)| dx ≤ ‖h‖ Λ` bounds the double integral over
+`r`-balls: `∫_x ∫_{closedBall(x, r)} |u(x) − u(y)| dy dx ≤ r Λ |closedBall(0, r)|`.
+Substituting `y = x + h` turns the inner integral into `∫ 1_B(h) |u(x + h) − u(x)| dh` with
+`B = closedBall(0, r)`; Tonelli swaps the integrals, and on `B` the hypothesis and `‖h‖ ≤ r`
+bound the inner `x`-integral by `r Λ`. -/
+theorem Submission.fiw_tb_tda_ps_translation_ball :
+    ∀ (n : ℕ) (u : Eucl n → ℝ) (Λ : ℝ≥0∞) (r : ℝ), Measurable u →
+      (∀ h : Eucl n, ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) →
+      ∫⁻ x, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y| ≤
+        ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r) := by
+  intro n u Λ r hu hΛ
+  set B : Set (Eucl n) := closedBall 0 r
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  -- `x + h ∈ closedBall x r ↔ h ∈ closedBall 0 r`.
+  have hmem : ∀ x h : Eucl n, x + h ∈ closedBall x r ↔ h ∈ B := by
+    intro x h
+    simp [B, mem_closedBall, dist_eq_norm]
+  -- Substituting `y = x + h` in the inner integral.
+  have hsub : ∀ x : Eucl n, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y| =
+      ∫⁻ h, B.indicator 1 h * ENNReal.ofReal |u (x + h) - u x| := by
+    intro x
+    rw [← lintegral_indicator measurableSet_closedBall, ← lintegral_add_left_eq_self
+      ((closedBall x r).indicator fun y => ENNReal.ofReal |u x - u y|) x]
+    refine lintegral_congr fun h => ?_
+    by_cases hh : h ∈ B
+    · rw [indicator_of_mem ((hmem x h).2 hh), indicator_of_mem hh, Pi.one_apply, one_mul,
+        abs_sub_comm]
+    · rw [indicator_of_notMem (fun h' => hh ((hmem x h).1 h')), indicator_of_notMem hh, zero_mul]
+  -- The integrand is jointly measurable.
+  have hk : Measurable fun p : Eucl n × Eucl n =>
+      B.indicator 1 p.2 * ENNReal.ofReal |u (p.1 + p.2) - u p.1| :=
+    ((measurable_one.indicator hBm).comp measurable_snd).mul
+      (ENNReal.measurable_ofReal.comp
+        (continuous_abs.measurable.comp ((hu.comp measurable_add).sub (hu.comp measurable_fst))))
+  calc ∫⁻ x, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y|
+      = ∫⁻ x, ∫⁻ h, B.indicator 1 h * ENNReal.ofReal |u (x + h) - u x| :=
+        lintegral_congr fun x => hsub x
+    _ = ∫⁻ h, ∫⁻ x, B.indicator 1 h * ENNReal.ofReal |u (x + h) - u x| :=
+        lintegral_lintegral_swap hk.aemeasurable
+    _ = ∫⁻ h, B.indicator 1 h * ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| :=
+        lintegral_congr fun h => lintegral_const_mul _
+          (ENNReal.measurable_ofReal.comp
+            (continuous_abs.measurable.comp ((hu.comp (measurable_add_const h)).sub hu)))
+    _ ≤ ∫⁻ h, B.indicator (fun _ => ENNReal.ofReal r * Λ) h := by
+        refine lintegral_mono fun h => ?_
+        by_cases hh : h ∈ B
+        · rw [indicator_of_mem hh, indicator_of_mem hh, Pi.one_apply, one_mul]
+          refine (hΛ h).trans ?_
+          gcongr
+          exact mem_closedBall_zero_iff.1 hh
+        · rw [indicator_of_notMem hh, indicator_of_notMem hh, zero_mul]
+    _ = ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r) :=
+        lintegral_indicator_const hBm _
+/-- Box bound for the volume of a Euclidean ball, used in `fiw_tb_tda_poincare_sum`:
+`closedBall(0, r) ⊆ [-r, r]ⁿ`, hence `Lⁿ(closedBall(0, r)) ≤ (2r)ⁿ`. -/
+theorem Submission.fiw_tb_tda_ps_ball_volume_le : ∀ (n : ℕ) (r : ℝ), 0 ≤ r → volume (closedBall (0 : Eucl n) r) ≤ ENNReal.ofReal ((2 * r) ^ n) := by
+  intro n r hr
+  -- Steps 1–2: `|xᵢ| ≤ ‖x‖ ≤ r`, so `closedBall(0, r) ⊆ ofLp⁻¹(Icc(-r, r))`.
+  have hsub : closedBall (0 : Eucl n) r ⊆
+      WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => -r) (fun _ : Fin n => r) := by
+    intro x hx
+    rw [mem_closedBall, dist_zero_right] at hx
+    have hcoord : ∀ i, |x i| ≤ r := fun i => by
+      have h := PiLp.norm_apply_le x i
+      rw [Real.norm_eq_abs] at h
+      exact h.trans hx
+    exact ⟨fun i => (abs_le.mp (hcoord i)).1, fun i => (abs_le.mp (hcoord i)).2⟩
+  -- Steps 3–4: `ofLp` preserves volume, and the box has volume `ofReal (2r) ^ n = ofReal ((2r)ⁿ)`.
+  calc volume (closedBall (0 : Eucl n) r)
+      ≤ volume (WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => -r) (fun _ : Fin n => r)) :=
+        measure_mono hsub
+    _ = volume (Icc (fun _ : Fin n => -r) (fun _ : Fin n => r)) :=
+        (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage measurableSet_Icc.nullMeasurableSet
+    _ = ENNReal.ofReal ((2 * r) ^ n) := by
+        rw [Real.volume_Icc_pi, ENNReal.ofReal_pow (by linarith)]
+        simp only [sub_neg_eq_add, Finset.prod_const, Finset.card_univ, Fintype.card_fin, two_mul]
 /-- Top-dimensional lattice cubes in `ℝⁿ`, `n = m + 1`, `ρ > 0`.  The only order embedding
 `Fin n ↪o Fin n` is the identity, so `latticeFace ρ F` is the closed cube `ρ (F.1 + [0, 1]ⁿ)`:
 it is closed, has volume `ρⁿ` and diameter at most `√n ρ`.  The hyperplanes `{xᵢ = ρ k}` are
@@ -1389,6 +1465,67 @@ theorem Submission.fiw_tb_tda_sub_mass : ∀ (m : ℕ) (X Pc : GeometricCurrentO
       ≤ ENNReal.ofReal (∫ x, |u x - v x|) := ENNReal.ofReal_le_ofReal key
     _ = ∫⁻ x, ENNReal.ofReal |u x - v x| :=
       ofReal_integral_eq_lintegral_ofReal huv (Eventually.of_forall (fun x => abs_nonneg _))
+
+/-- Summed Poincaré bound over the top-dimensional lattice cubes of `ℝⁿ`, `n = m + 1`, with
+`c = (2√n)ⁿ √n`.  A cube lies in the closed ball of radius `√n ρ` about any of its points, so
+summing over the a.e. partition into cubes bounds the left side by
+`ρ⁻ⁿ ∫⁻ₓ ∫⁻_{B(x, √n ρ)} |u x - u y|`.  The translation estimate bounds this double integral by
+`√n ρ Λ L(B(0, √n ρ))`, and `L(B(0, r)) ≤ (2r)ⁿ`. -/
+theorem Submission.fiw_tb_tda_poincare_sum :
+    ∀ m : ℕ, ∃ c : ℝ≥0, ∀ (ρ : ℝ), 0 < ρ → ∀ (u : Eucl (m + 1) → ℝ) (Λ : ℝ≥0∞), Measurable u →
+      (∀ h : Eucl (m + 1), ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) →
+      ∑' F : LatticeFaceIndex (m + 1) (m + 1), ENNReal.ofReal (ρ ^ (m + 1))⁻¹ *
+          ∫⁻ x in latticeFace ρ F, ∫⁻ y in latticeFace ρ F, ENNReal.ofReal |u x - u y| ≤
+        c * ENNReal.ofReal ρ * Λ := by
+  intro m
+  -- `s = √n` and `c = (2s)ⁿ s`.
+  obtain ⟨s, hs, hs_def⟩ : ∃ s : ℝ, 0 ≤ s ∧ Real.sqrt ((m + 1 : ℕ) : ℝ) = s :=
+    ⟨_, Real.sqrt_nonneg _, rfl⟩
+  have hC : 0 ≤ (2 * s) ^ (m + 1) * s := by positivity
+  refine ⟨NNReal.mk ((2 * s) ^ (m + 1) * s) hC, fun ρ hρ u Λ hu hΛ => ?_⟩
+  obtain ⟨-, -, hc, -, he, -, hg, -⟩ := Submission.fiw_tb_tda_lattice_cubes m ρ hρ
+  rw [hs_def] at he
+  have hr : 0 ≤ s * ρ := mul_nonneg hs hρ.le
+  -- Step 1: a cube lies in the closed ball of radius `s ρ` about any of its points.
+  have hcube : ∀ F : LatticeFaceIndex (m + 1) (m + 1),
+      ∫⁻ x in latticeFace ρ F, ∫⁻ y in latticeFace ρ F, ENNReal.ofReal |u x - u y| ≤
+        ∫⁻ x in latticeFace ρ F, ∫⁻ y in closedBall x (s * ρ), ENNReal.ofReal |u x - u y| :=
+    fun F => setLIntegral_mono' (hc F) fun x hx =>
+      lintegral_mono_set fun y hy => mem_closedBall.2 (he F y hy x hx)
+  -- Step 6 (arithmetic): `(ρⁿ)⁻¹ (s ρ) (2 s ρ)ⁿ = (2s)ⁿ s ρ`.
+  have hinv : 0 ≤ (ρ ^ (m + 1))⁻¹ := by positivity
+  have hconst : (ρ ^ (m + 1))⁻¹ * (s * ρ) * (2 * (s * ρ)) ^ (m + 1) =
+      (2 * s) ^ (m + 1) * s * ρ := by
+    calc (ρ ^ (m + 1))⁻¹ * (s * ρ) * (2 * (s * ρ)) ^ (m + 1)
+        = (2 * s) ^ (m + 1) * s * ρ * ((ρ ^ (m + 1))⁻¹ * ρ ^ (m + 1)) := by ring
+      _ = (2 * s) ^ (m + 1) * s * ρ := by
+        rw [inv_mul_cancel₀ (pow_ne_zero _ hρ.ne'), mul_one]
+  calc ∑' F : LatticeFaceIndex (m + 1) (m + 1), ENNReal.ofReal (ρ ^ (m + 1))⁻¹ *
+          ∫⁻ x in latticeFace ρ F, ∫⁻ y in latticeFace ρ F, ENNReal.ofReal |u x - u y|
+      ≤ ∑' F : LatticeFaceIndex (m + 1) (m + 1), ENNReal.ofReal (ρ ^ (m + 1))⁻¹ *
+          ∫⁻ x in latticeFace ρ F, ∫⁻ y in closedBall x (s * ρ), ENNReal.ofReal |u x - u y| :=
+        ENNReal.tsum_le_tsum fun F => by gcongr _ * ?_; exact hcube F
+    -- Step 2: the cubes form an a.e. partition of `ℝⁿ`.
+    _ = ENNReal.ofReal (ρ ^ (m + 1))⁻¹ *
+          ∫⁻ x, ∫⁻ y in closedBall x (s * ρ), ENNReal.ofReal |u x - u y| := by
+        rw [ENNReal.tsum_mul_left, hg]
+    -- Steps 3–5: the translation estimate and the volume of the ball.
+    _ ≤ ENNReal.ofReal (ρ ^ (m + 1))⁻¹ *
+          (ENNReal.ofReal (s * ρ) * Λ * ENNReal.ofReal ((2 * (s * ρ)) ^ (m + 1))) := by
+        gcongr _ * ?_
+        calc ∫⁻ x, ∫⁻ y in closedBall x (s * ρ), ENNReal.ofReal |u x - u y|
+            ≤ ENNReal.ofReal (s * ρ) * Λ * volume (closedBall (0 : Eucl (m + 1)) (s * ρ)) :=
+              Submission.fiw_tb_tda_ps_translation_ball (m + 1) u Λ (s * ρ) hu hΛ
+          _ ≤ ENNReal.ofReal (s * ρ) * Λ * ENNReal.ofReal ((2 * (s * ρ)) ^ (m + 1)) := by
+              gcongr _ * ?_
+              exact Submission.fiw_tb_tda_ps_ball_volume_le (m + 1) (s * ρ) hr
+    -- Step 6: collect the constants.
+    _ = ENNReal.ofReal ((ρ ^ (m + 1))⁻¹ * (s * ρ) * (2 * (s * ρ)) ^ (m + 1)) * Λ := by
+        rw [ENNReal.ofReal_mul (mul_nonneg hinv hr), ENNReal.ofReal_mul hinv]
+        ring
+    _ = ENNReal.ofReal ((2 * s) ^ (m + 1) * s) * ENNReal.ofReal ρ * Λ := by
+        rw [hconst, ENNReal.ofReal_mul hC]
+    _ = _ := by rw [ENNReal.ofReal_eq_coe_nnreal hC]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
