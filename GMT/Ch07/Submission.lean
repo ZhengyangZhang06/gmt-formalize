@@ -515,47 +515,6 @@ theorem Submission.dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx : ∀ (n :
   rw [div_mul_eq_mul_div, le_div_iff₀ hpos] at h
   nlinarith
 
-/-- Step 14 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
-(Simon 7.4.3, via Allard's theorem): weak derivatives tested against `C^∞` functions may be
-tested against `C¹` functions.  If `∫_D G ∂ⱼa = 0` for every `a ∈ C_c^∞(D)`, then `∫ G ∂ᵢφ = 0`
-for every `φ ∈ C_c¹(D)`.  On the compact set `K = cthickening δ (spt φ) ⊆ D`, `G` is integrable
-and `∂ᵢφ` is bounded.  The mollified tests `ψ` satisfy `spt ψ ⊆ K` and `|∂ᵢψ − ∂ᵢφ| ≤ ε`, so
-`∫_K G ∂ᵢφ = 0` in the limit; every integrand vanishes off `K`. -/
-theorem Submission.dgcr_smooth_tests_to_C1_tests : ∀ (n : ℕ) (D : Set (Euclid n)) (G : Euclid n → ℝ), IsOpen D → LocallyIntegrableOn G D volume → (∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ D → ∀ j : Fin n, ∫ v in D, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0) → ∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∀ i : Fin n, ∫ x, G x * fderiv ℝ φ x ((EuclideanSpace.basisFun (Fin n) ℝ) i) = 0 := by
-  intro n D G hD hG htest φ hφ hφc hφD i
-  rw [EuclideanSpace.basisFun_apply]
-  -- step 1: `K = cthickening δ (tsupport φ) ⊆ D` is compact and `G` is integrable on `K`
-  obtain ⟨δ, hδ, hKD⟩ := hφc.isCompact.exists_cthickening_subset_open hD hφD
-  have hK : IsCompact (cthickening δ (tsupport φ)) := hφc.isCompact.cthickening
-  have hGK : IntegrableOn G (cthickening δ (tsupport φ)) volume :=
-    hG.integrableOn_compact_subset hKD hK
-  -- `G ∂ᵢu` vanishes off `K` when `tsupport u ⊆ K`
-  have hvan : ∀ u : Euclid n → ℝ, tsupport u ⊆ cthickening δ (tsupport φ) →
-      ∀ x ∉ cthickening δ (tsupport φ), G x * fderiv ℝ u x (EuclideanSpace.single i 1) = 0 :=
-    fun u hu x hx => by rw [fderiv_of_notMem_tsupport ℝ fun h => hx (hu h), zero_apply, mul_zero]
-  -- step 2: `∂ᵢφ` is continuous, hence bounded on `K`
-  have hf : Continuous fun x => fderiv ℝ φ x (EuclideanSpace.single i 1) :=
-    (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
-  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hf.continuousOn
-  -- step 3: the integral over `ℝⁿ` is the integral over `K`
-  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (hvan φ (self_subset_cthickening _))]
-  -- step 4: smooth tests `ψ` with `tsupport ψ ⊆ K` approximate `∂ᵢφ` uniformly on `K`
-  refine Submission.dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx n
-    (cthickening δ (tsupport φ)) G (fun x => fderiv ℝ φ x (EuclideanSpace.single i 1)) C
-    isClosed_cthickening.measurableSet hGK hf.aestronglyMeasurable
-    (fun x hx => (Real.norm_eq_abs _).symm.trans_le (hC x hx)) fun ε hε => ?_
-  obtain ⟨ψ, hψ, hψc, hψK, hψε⟩ := Submission.dgcr_stc_mollify_C1_fderiv_approx n φ hφ hφc δ hδ
-    (EuclideanSpace.single i 1) ε hε
-  refine ⟨fun x => fderiv ℝ ψ x (EuclideanSpace.single i 1),
-    ((hψ.continuous_fderiv (by simp)).clm_apply continuous_const).aestronglyMeasurable,
-    fun x _ => (abs_sub_comm _ _).trans_le (hψε x), ?_⟩
-  -- `∫_K G ∂ᵢψ = ∫ G ∂ᵢψ = ∫_D G ∂ᵢψ`, which vanishes as `ψ` is a smooth test in `D`
-  have hvanD : ∀ x ∉ D, G x * fderiv ℝ ψ x (EuclideanSpace.single i 1) = 0 :=
-    fun x hx => hvan ψ hψK x fun h => hx (hKD h)
-  rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan ψ hψK),
-    ← setIntegral_eq_integral_of_forall_compl_eq_zero hvanD]
-  exact htest ψ hψ hψc (hψK.trans hKD) i
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -599,5 +558,46 @@ theorem Submission.dgcr_stc_mollify_C1_fderiv_approx : ∀ (n : ℕ) (φ : Eucli
   -- `ρ ≥ 0`, `∫ ρ = 1`, `spt ρ ⊆ B_r(0)` and `|∂ᵥφ(y) − ∂ᵥφ(x)| < ε` on `B_r(x)`
   exact dist_convolution_le hε.le hρs hρ0 hρ1 hg.aestronglyMeasurable fun y hy =>
     (hr₀g ((mem_ball.mp hy).trans_le (min_le_left r₀ δ))).le
+
+/-- Step 14 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
+(Simon 7.4.3, via Allard's theorem): weak derivatives tested against `C^∞` functions may be
+tested against `C¹` functions.  If `∫_D G ∂ⱼa = 0` for every `a ∈ C_c^∞(D)`, then `∫ G ∂ᵢφ = 0`
+for every `φ ∈ C_c¹(D)`.  On the compact set `K = cthickening δ (spt φ) ⊆ D`, `G` is integrable
+and `∂ᵢφ` is bounded.  The mollified tests `ψ` satisfy `spt ψ ⊆ K` and `|∂ᵢψ − ∂ᵢφ| ≤ ε`, so
+`∫_K G ∂ᵢφ = 0` in the limit; every integrand vanishes off `K`. -/
+theorem Submission.dgcr_smooth_tests_to_C1_tests : ∀ (n : ℕ) (D : Set (Euclid n)) (G : Euclid n → ℝ), IsOpen D → LocallyIntegrableOn G D volume → (∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ D → ∀ j : Fin n, ∫ v in D, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0) → ∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∀ i : Fin n, ∫ x, G x * fderiv ℝ φ x ((EuclideanSpace.basisFun (Fin n) ℝ) i) = 0 := by
+  intro n D G hD hG htest φ hφ hφc hφD i
+  rw [EuclideanSpace.basisFun_apply]
+  -- step 1: `K = cthickening δ (tsupport φ) ⊆ D` is compact and `G` is integrable on `K`
+  obtain ⟨δ, hδ, hKD⟩ := hφc.isCompact.exists_cthickening_subset_open hD hφD
+  have hK : IsCompact (cthickening δ (tsupport φ)) := hφc.isCompact.cthickening
+  have hGK : IntegrableOn G (cthickening δ (tsupport φ)) volume :=
+    hG.integrableOn_compact_subset hKD hK
+  -- `G ∂ᵢu` vanishes off `K` when `tsupport u ⊆ K`
+  have hvan : ∀ u : Euclid n → ℝ, tsupport u ⊆ cthickening δ (tsupport φ) →
+      ∀ x ∉ cthickening δ (tsupport φ), G x * fderiv ℝ u x (EuclideanSpace.single i 1) = 0 :=
+    fun u hu x hx => by rw [fderiv_of_notMem_tsupport ℝ fun h => hx (hu h), zero_apply, mul_zero]
+  -- step 2: `∂ᵢφ` is continuous, hence bounded on `K`
+  have hf : Continuous fun x => fderiv ℝ φ x (EuclideanSpace.single i 1) :=
+    (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hf.continuousOn
+  -- step 3: the integral over `ℝⁿ` is the integral over `K`
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (hvan φ (self_subset_cthickening _))]
+  -- step 4: smooth tests `ψ` with `tsupport ψ ⊆ K` approximate `∂ᵢφ` uniformly on `K`
+  refine Submission.dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx n
+    (cthickening δ (tsupport φ)) G (fun x => fderiv ℝ φ x (EuclideanSpace.single i 1)) C
+    isClosed_cthickening.measurableSet hGK hf.aestronglyMeasurable
+    (fun x hx => (Real.norm_eq_abs _).symm.trans_le (hC x hx)) fun ε hε => ?_
+  obtain ⟨ψ, hψ, hψc, hψK, hψε⟩ := Submission.dgcr_stc_mollify_C1_fderiv_approx n φ hφ hφc δ hδ
+    (EuclideanSpace.single i 1) ε hε
+  refine ⟨fun x => fderiv ℝ ψ x (EuclideanSpace.single i 1),
+    ((hψ.continuous_fderiv (by simp)).clm_apply continuous_const).aestronglyMeasurable,
+    fun x _ => (abs_sub_comm _ _).trans_le (hψε x), ?_⟩
+  -- `∫_K G ∂ᵢψ = ∫ G ∂ᵢψ = ∫_D G ∂ᵢψ`, which vanishes as `ψ` is a smooth test in `D`
+  have hvanD : ∀ x ∉ D, G x * fderiv ℝ ψ x (EuclideanSpace.single i 1) = 0 :=
+    fun x hx => hvan ψ hψK x fun h => hx (hKD h)
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan ψ hψK),
+    ← setIntegral_eq_integral_of_forall_compl_eq_zero hvanD]
+  exact htest ψ hψ hψc (hψK.trans hKD) i
 
 end GMT.Ch07
