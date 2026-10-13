@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.ae_tendsto-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 6,
+  "title": "A.e. convergence of approximate identities supported in B_ε with sup ≤ C·ε^{-n} (Lebesgue differentiation)",
+  "statement": "Let n ≥ 1, ℝⁿ = Euclid n with Lebesgue measure Lⁿ, f : ℝⁿ → ℝ integrable, C ∈ ℝ, and φ : ℝ → ℝⁿ → ℝ, (ε, y) ↦ φ ε y. Assume that for every ε > 0:\n- φ ε is continuous;\n- φ ε y = 0 whenever |y| ≥ ε;\n- |φ ε y| ≤ C/εⁿ for all y;\n- ∫ φ ε = 1.\nThen for Lⁿ-almost every x ∈ ℝⁿ, ∫ f(y)·φ ε(x − y) dy → f(x) as ε → 0⁺.",
+  "lean_statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (C : ℝ) (φ : ℝ → Euclid n → ℝ), 0 < n → Integrable f → (∀ ε : ℝ, 0 < ε → Continuous (φ ε)) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, ε ≤ ‖y‖ → φ ε y = 0) → (∀ ε : ℝ, 0 < ε → ∀ y : Euclid n, |φ ε y| ≤ C / ε ^ n) → (∀ ε : ℝ, 0 < ε → ∫ y, φ ε y = 1) → ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun ε => ∫ y, f y * φ ε (x - y)) (𝓝[>] (0 : ℝ)) (𝓝 (f x))",
+  "lean_name": "dorag_ha_weyl_ae_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-81df29144e-a1"
+}

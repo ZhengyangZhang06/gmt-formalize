@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "WeylLemma|weyl_lemma|dorag_ha_weyl_",
+        "contDiff_convolution_right|hasFDerivAt_convolution_right|convolution_precompR_apply|convolutionExists_right|convolution_def",
+        "smoothTransition|contDiff_norm_sq|integral_comp_smul",
+        "iteratedFDeriv_comp_sub|iteratedFDeriv_two_apply|iteratedFDeriv_comp_right|contDiffOn_of_locally_contDiffOn|EventuallyEq.iteratedFDeriv",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "lean /tmp/weyl-decomp/Full.lean",
+        "lean /tmp/weyl-independent-audit/ChallengeTypes.lean",
+        "lean /tmp/weyl-independent-audit/ConditionalAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ea25690300/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ea25690300/decomposition-v1.json",
+        "GMT/Ch07/Submission.lean",
+        "/tmp/weyl-decomp/Full.lean",
+        "/tmp/weyl-independent-audit/ChallengeTypes.lean",
+        "/tmp/weyl-independent-audit/ConditionalAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected Weyl lemma. Verified the pinned revisions, byte-identical project contract, and compatibility of the inspected Mathlib sources. The Weyl-name search returned no matches in the searched snapshot roots. Convolution.lean, FTaylorSeries.lean, Average.lean and the covering files supply the precise calculus and differentiation results used. All six one-line propositions independently elaborate in comparator scope without child implementations; all six supplied Lean proofs compile using only propext, Classical.choice and Quot.sound. The exact frozen parent assembles from these children with only the handoff-authorized dorag_ha_mean_value as an additional assumption; this verifies assembly, not completion of that sibling. The sole child dependency is mollify_harmonic → conv_laplacian, and no dependency returns to Weyl. A scan of 3,122 DAG/node JSON files found no proposed name reserved outside this node. All names are bare identifiers, and no problematic matrix-unit construction occurs. Public context consulted: the mollification strategy described in the [Weyl-lemma overview](https://en.wikipedia.org/wiki/Weyl_lemma_%28Laplace_equation%29)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match all five conclusions. The positive finite normalization constant, global profile bound, support cutoff, smoothness and scaling integral are established explicitly. The construction is non-circular and ready for formalization."
+    },
+    {
+      "key": "conv_laplacian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact locally integrable hypothesis suffices. Twice differentiating the compactly supported right kernel, commuting continuous linear evaluations with integration, and verifying integrability before finite summation prove the stated Laplacian identity and smoothness."
+    },
+    {
+      "key": "mollify_harmonic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including unrestricted R. The proof establishes integrability of the indicator extension, admissible test-function support, and cancellation of both reflection signs. Its only child dependency, conv_laplacian, is correctly declared."
+    },
+    {
+      "key": "conv_swap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes product-measure measurability and an integrable absolute bound before applying Fubini. Reflection invariance and scalar commutativity then give precisely the two displayed iterated integrals. No positivity or radiality assumption is needed."
+    },
+    {
+      "key": "glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit witness agrees locally with a fixed family member on the required smaller balls. The radius inequalities justify regularity, equality of second derivatives, harmonicity and eventual agreement along the positive-radius filter. No regularity in the parameter is assumed."
+    },
+    {
+      "key": "ae_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof matches every kernel hypothesis and the exact almost-everywhere limit. Positive finite ball volumes, shifted normalization and support, and the uniform bound yield the stated Lebesgue-differentiation estimate. No parameter measurability or kernel nonnegativity is missing."
+    }
+  ],
+  "required_changes": []
+}
