@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11199822f0c251e9000b956bacee0ff5827cbe278b2020791aac22345656efcb",
+  "git_delta": {
+    "base_commit": "4b82f81a58692511ddf7d2234fea0cf4f206c82f",
+    "candidate_commit": "23bc8c0a78edc6c6948894e428b524729f8f919b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tpf_bss_dilation_image_slab",
+    "diff_sha256": "61d25a18dacaefeff42065baaba41db5f4fb81e57848fcf4642f48e9dc3c8ad6",
+    "source_sha256": "71a6ce24961325e160ab96c5e2860ffb9f6b9a44bfaced88286e00741732ed12",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_bss_dilation_image_slab",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (x : Euclid P) (σ β : ℝ), 0 < σ → ∀ (Q : Submodule ℝ (Euclid P)), (∀ y ∈ S, dist y x < σ → ‖(y - x) - Q.starProjection (y - x)‖ < β * σ) → ∀ u ∈ dilation x σ '' S, ‖u‖ < 1 → ‖u - Q.starProjection u‖ < β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
