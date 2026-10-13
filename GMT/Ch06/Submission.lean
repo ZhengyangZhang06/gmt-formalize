@@ -1343,12 +1343,6 @@ Borel set `D` of full measure where `g` is differentiable; Lusin gives a closed 
 continuous; the `η_k` step gives a closed `A ⊆ C` satisfying Whitney's condition (‡) (Thm 1.6);
 Whitney's extension theorem then gives `h`. -/
 theorem Submission.lpf_c1_approximation_real :
-/-- Simon Ch. 2, Theorem 1.5 (`C¹` Approximation Theorem), in the form established by its printed
-proof (p. 44): a Lipschitz `g : ℝⁿ → ℝ` agrees, together with its derivative, with a `C¹`
-function `h` on a closed set `A` with `Lⁿ(ℝⁿ ∖ A) < ε`, and `g` is differentiable on `A`.
-Rademacher, then Lusin (`lpf_c1r_lusin_closed`), the uniform remainder estimate
-(`lpf_c1r_uniform_remainder`) and Whitney's extension theorem (`lpf_c1r_whitney_extension`). -/
-theorem Submission.slicing_im_coarea_c1_approx :
     ∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ ε : ℝ≥0∞, 0 < ε →
       ∃ (A : Set (Eucl n)) (h : Eucl n → ℝ), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧
         ContDiff ℝ 1 h ∧ ∀ x ∈ A, g x = h x ∧ HasFDerivAt g (fderiv ℝ h x) x := by
@@ -1387,6 +1381,50 @@ theorem Submission.slicing_im_coarea_c1_approx :
     obtain ⟨hhx, hDhx⟩ := hhA x hx
     rw [hDhx.fderiv]
     exact ⟨hhx.symm, DifferentiableAt.hasFDerivAt (hCD (hAC hx))⟩
+
+/-- Simon Ch. 2, Theorem 1.5 (`C¹` Approximation Theorem), in the form established by its printed
+proof (p. 44): a Lipschitz `g : ℝⁿ → ℝ` agrees, together with its derivative, with a `C¹`
+function `h` on a closed set `A` with `Lⁿ(ℝⁿ ∖ A) < ε`, and `g` is differentiable on `A`.
+Rademacher, then Lusin (`lpf_c1r_lusin_closed`), the uniform remainder estimate
+(`lpf_c1r_uniform_remainder`) and Whitney's extension theorem (`lpf_c1r_whitney_extension`). -/
+theorem Submission.slicing_im_coarea_c1_approx :
+    ∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ ε : ℝ≥0∞, 0 < ε →
+      ∃ (A : Set (Eucl n)) (h : Eucl n → ℝ), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧
+        ContDiff ℝ 1 h ∧ ∀ x ∈ A, g x = h x ∧ HasFDerivAt g (fderiv ℝ h x) x := by
+  intro n g K hg ε hε
+  -- Step 1 (Rademacher): `D = {x : g is differentiable at x}` is Borel and `Lⁿ`-conull, and
+  -- `Dg = fderiv ℝ g` is Borel.
+  set D : Set (Eucl n) := {x | DifferentiableAt ℝ g x}
+  have hDm : MeasurableSet D := measurableSet_of_differentiableAt ℝ g
+  have hD : (volume : Measure (Eucl n)) Dᶜ = 0 := ae_iff.mp hg.ae_differentiableAt
+  have hε2 : 0 < ε / 2 := ENNReal.half_pos hε.ne'
+  -- Step 2 (Lusin): a closed `C ⊆ D` with `Lⁿ(D ∖ C) < ε/2` and `Dg` continuous on `C`.
+  obtain ⟨C, hCc, hCD, hDC, hcont⟩ :=
+    Submission.lpf_c1r_lusin_closed n D (fderiv ℝ g) hDm (measurable_fderiv ℝ g) (ε / 2) hε2
+  -- Step 3 (uniform remainder): a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε/2` satisfying Whitney's
+  -- condition 1.6 (‡) for `g` and `Dg`.
+  obtain ⟨A, hAc, hAC, hCA, hrem⟩ := Submission.lpf_c1r_uniform_remainder n g K hg C hCc
+    (fun x hx => hCD hx) hcont (ε / 2) hε2
+  -- Step 4 (Whitney): a `C¹` function `h` with `h = g` and `Dh = Dg` on `A`.
+  obtain ⟨h, hh, hhA⟩ := Submission.lpf_c1r_whitney_extension n A g (fderiv ℝ g) hAc
+    hg.continuous.continuousOn (hcont.mono hAC) hrem
+  refine ⟨A, h, hAc, ?_, hh, fun x hx => ⟨(hhA x hx).1.symm, ?_⟩⟩
+  -- `ℝⁿ ∖ A ⊆ (ℝⁿ ∖ D) ∪ (D ∖ C) ∪ (C ∖ A)`.
+  · calc (volume : Measure (Eucl n)) Aᶜ ≤ volume (Dᶜ ∪ (D \ C) ∪ (C \ A)) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxC : x ∈ C
+          · exact Or.inr ⟨hxC, hx⟩
+          · by_cases hxD : x ∈ D
+            · exact Or.inl (Or.inr ⟨hxD, hxC⟩)
+            · exact Or.inl (Or.inl hxD)
+      _ ≤ volume Dᶜ + volume (D \ C) + volume (C \ A) :=
+          (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+      _ = volume (D \ C) + volume (C \ A) := by rw [hD, zero_add]
+      _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hDC hCA
+      _ = ε := ENNReal.add_halves ε
+  -- `fderiv ℝ h x = Dg(x)` by uniqueness, and `g` is differentiable at `x ∈ A ⊆ C ⊆ D`.
+  · rw [(hhA x hx).2.fderiv]
+    exact (hCD (hAC hx) : DifferentiableAt ℝ g x).hasFDerivAt
 
 /-- Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42) for `ℝ^Q`-valued maps, applied
 componentwise as in the proof of Ch. 6, Lemma 3.9 (p. 148): a Lipschitz `u : ℝⁿ → ℝ^Q` agrees
@@ -1481,39 +1519,6 @@ theorem Submission.lpf_c1_local_antilipschitz :
       _ ≤ ‖G z - G z'‖ + ‖G z - G z' - A (z - z')‖ := norm_sub_le _ _
   rw [hcK] at h1 ⊢
   linarith
-  -- Step 1 (Rademacher): `D = {x : g is differentiable at x}` is Borel and `Lⁿ`-conull, and
-  -- `Dg = fderiv ℝ g` is Borel.
-  set D : Set (Eucl n) := {x | DifferentiableAt ℝ g x}
-  have hDm : MeasurableSet D := measurableSet_of_differentiableAt ℝ g
-  have hD : (volume : Measure (Eucl n)) Dᶜ = 0 := ae_iff.mp hg.ae_differentiableAt
-  have hε2 : 0 < ε / 2 := ENNReal.half_pos hε.ne'
-  -- Step 2 (Lusin): a closed `C ⊆ D` with `Lⁿ(D ∖ C) < ε/2` and `Dg` continuous on `C`.
-  obtain ⟨C, hCc, hCD, hDC, hcont⟩ :=
-    Submission.lpf_c1r_lusin_closed n D (fderiv ℝ g) hDm (measurable_fderiv ℝ g) (ε / 2) hε2
-  -- Step 3 (uniform remainder): a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε/2` satisfying Whitney's
-  -- condition 1.6 (‡) for `g` and `Dg`.
-  obtain ⟨A, hAc, hAC, hCA, hrem⟩ := Submission.lpf_c1r_uniform_remainder n g K hg C hCc
-    (fun x hx => hCD hx) hcont (ε / 2) hε2
-  -- Step 4 (Whitney): a `C¹` function `h` with `h = g` and `Dh = Dg` on `A`.
-  obtain ⟨h, hh, hhA⟩ := Submission.lpf_c1r_whitney_extension n A g (fderiv ℝ g) hAc
-    hg.continuous.continuousOn (hcont.mono hAC) hrem
-  refine ⟨A, h, hAc, ?_, hh, fun x hx => ⟨(hhA x hx).1.symm, ?_⟩⟩
-  -- `ℝⁿ ∖ A ⊆ (ℝⁿ ∖ D) ∪ (D ∖ C) ∪ (C ∖ A)`.
-  · calc (volume : Measure (Eucl n)) Aᶜ ≤ volume (Dᶜ ∪ (D \ C) ∪ (C \ A)) := by
-          refine measure_mono fun x hx => ?_
-          by_cases hxC : x ∈ C
-          · exact Or.inr ⟨hxC, hx⟩
-          · by_cases hxD : x ∈ D
-            · exact Or.inl (Or.inr ⟨hxD, hxC⟩)
-            · exact Or.inl (Or.inl hxD)
-      _ ≤ volume Dᶜ + volume (D \ C) + volume (C \ A) :=
-          (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
-      _ = volume (D \ C) + volume (C \ A) := by rw [hD, zero_add]
-      _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hDC hCA
-      _ = ε := ENNReal.add_halves ε
-  -- `fderiv ℝ h x = Dg(x)` by uniqueness, and `g` is differentiable at `x ∈ A ⊆ C ⊆ D`.
-  · rw [(hhA x hx).2.fderiv]
-    exact (hCD (hAC hx) : DifferentiableAt ℝ g x).hasFDerivAt
 
 /-- Simon Ch. 3, Lemma 1.2 ("only if" part, p. 70), with each chart restricted, as in the printed
 proof, to a small neighbourhood of a point where its differential is injective, so that it is both
