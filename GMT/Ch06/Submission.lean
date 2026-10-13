@@ -359,6 +359,47 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- An orthonormal `n`-frame in `ℝⁿ` has simple `n`-vector `±e₁ ∧ ⋯ ∧ eₙ` (Simon Ch. 6, 3.1 in top
+dimension: an orientation `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` is `±e₁ ∧ ⋯ ∧ eₙ`, so `⟨ω, ξ⟩ = ±a` for
+`ω = a dx¹ ∧ ⋯ ∧ dxⁿ`, as in the proof of 8.2, p. 179).  `τ` is linearly independent with
+`n = dim ℝⁿ` members, hence an orthonormal basis of `ℝⁿ`, as is the standard basis `e`.  An
+`n`-covector `α` is an alternating `n`-form on `ℝⁿ`, so `α(τ) = α(e) det_e(τ)`
+(`AlternatingMap.eq_smul_basis_det`), and `det_e(τ) = ±1` because the change of basis between
+orthonormal bases is orthogonal (`OrthonormalBasis.det_to_matrix_orthonormalBasis_real`). -/
+theorem Submission.ind_top_orthonormal_frame_sign :
+    ∀ (n : ℕ) (τ : Fin n → Eucl n), Orthonormal ℝ τ →
+      simpleNVector τ = simpleNVector (fun i => EuclideanSpace.single i (1 : ℝ)) ∨
+        simpleNVector τ = -simpleNVector (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro n τ hτ
+  -- Step 1: `τ` spans `ℝⁿ` (`n = 0` included).
+  have hspan : Submodule.span ℝ (range τ) = ⊤ :=
+    hτ.linearIndependent.span_eq_top_of_card_eq_finrank' (by simp)
+  -- Step 2: `τ` and the standard basis `e` are orthonormal bases `bτ`, `be` of `ℝⁿ`.
+  let bτ : OrthonormalBasis (Fin n) ℝ (Eucl n) := OrthonormalBasis.mk hτ hspan.ge
+  let be : OrthonormalBasis (Fin n) ℝ (Eucl n) := EuclideanSpace.basisFun (Fin n) ℝ
+  have hbτ : ⇑bτ = τ := OrthonormalBasis.coe_mk hτ hspan.ge
+  have hbe : ⇑be.toBasis = fun i => EuclideanSpace.single i (1 : ℝ) := by
+    funext i
+    simp [be]
+  -- Step 3: `det_e(τ) = ±1`, the change of basis between orthonormal bases being orthogonal.
+  have hd : be.toBasis.det τ = 1 ∨ be.toBasis.det τ = -1 := by
+    simpa only [hbτ] using be.det_to_matrix_orthonormalBasis_real bτ
+  -- Step 4: an `n`-covector `α` is `α(e) • det_e`, so `α(τ) = α(e) * det_e(τ)`.
+  have key : ∀ α : Covector (Eucl n) n,
+      α τ = α (fun i => EuclideanSpace.single i (1 : ℝ)) * be.toBasis.det τ := by
+    intro α
+    have h := DFunLike.congr_fun (α.toAlternatingMap.eq_smul_basis_det be.toBasis) τ
+    rw [AlternatingMap.smul_apply, smul_eq_mul, hbe] at h
+    exact h
+  -- Step 5: extensionality, as `simpleNVector v α = α v`.
+  rcases hd with hd | hd
+  · left
+    refine ContinuousLinearMap.ext fun α => ?_
+    rw [simpleNVector_apply, simpleNVector_apply, key α, hd, mul_one]
+  · right
+    refine ContinuousLinearMap.ext fun α => ?_
+    rw [_root_.neg_apply, simpleNVector_apply, simpleNVector_apply, key α, hd, mul_neg_one]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
