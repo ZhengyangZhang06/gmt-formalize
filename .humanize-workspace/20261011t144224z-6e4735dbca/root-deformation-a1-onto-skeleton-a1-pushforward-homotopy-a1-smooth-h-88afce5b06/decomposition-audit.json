@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasFDerivAt.(fun_)?smul|IsCompact.cthickening|mem_cthickening_of_dist_le|norm_integral_le_of_norm_le_const|abbrev EuclideanSpace.equiv|abbrev EuclideanSpace.single",
+        "ofLp_single|continuousLinearEquiv|def tail|theorem cons_self_tail|of_isClosed_subset|GeometricCurrentOn.mass|GeometricCurrentOn.support",
+        "affine_homotopy|straight.line|dph_sh_ae_|cthickening|homotop",
+        "affine.?homotop|straight.line|linearhomotopy",
+        "dph_sh_ae_affine_homotopy_contDiff_fderiv|dph_sh_ae_affine_homotopy_isCompact_preimage_cyl",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/affine-estimate-independent-audit-uzsqu1xa/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/affine-estimate-independent-audit-uzsqu1xa/ChildA.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/affine-estimate-independent-audit-uzsqu1xa/ChildB.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/affine-estimate-independent-audit-uzsqu1xa/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Homotopy/Affine.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-88afce5b06/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-88afce5b06/decomposition-v1.json",
+        "/tmp/dph_sh_ae_split/lean/ChildA.lean",
+        "/tmp/dph_sh_ae_split/lean/ChildB.lean",
+        "/tmp/dph_sh_ae_split/lean/Iface.lean",
+        "/tmp/affine-estimate-independent-audit-uzsqu1xa/Types.lean",
+        "/tmp/affine-estimate-independent-audit-uzsqu1xa/ChildA.lean",
+        "/tmp/affine-estimate-independent-audit-uzsqu1xa/ChildB.lean",
+        "/tmp/affine-estimate-independent-audit-uzsqu1xa/Assembly.lean"
+      ],
+      "conclusion": "The split appropriately isolates steps 1 and 2–3 of the selected dph_sh_affine_estimate. Pinned revisions and inspected installed sources agree. Mathlib contains a continuous affine homotopy construction, but the searches found no matching derivative-and-smoothness or cylinder-properness declaration. Both exact child types elaborate independently of their implementations. Independent reruns of the supplied child proofs and an assembly using the exact frozen parent and prerequisite types passed without warnings; their only axioms are propext, Classical.choice and Quot.sound. The assembly establishes the selected estimate with c = sqrt(k+1). Both bare names are unreserved in the 685-node DAG. The reachable dependency graph is acyclic; the five existing dependencies remain correctly directed and the two children add independent leaves. The three accepted prerequisite contracts match their archived comparator challenges exactly and passed the permitted-axiom checks. The two pending sibling prerequisites remain explicit obligations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "affine_homotopy_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose: two globally smooth maps, smoothness of the specified G, and both derivative identities for every real s, x and v. The bare declaration name is unused. Independently checking all six proof steps confirms the continuous-linear coordinate constructions, their values on cons and e₀, smoothness, the chain/product derivative formula, and both evaluations. EuclideanSpace.single and scalar actions infer the intended real Euclidean types; no matrix-unit construction occurs. The proof is complete, independent of the parent and other child, and directly supplies the parent's smoothness and slice-derivative requirements. The reconstructed Lean proof passes with standard axioms only."
+    },
+    {
+      "key": "affine_homotopy_proper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes exactly the stated continuity, closedness, displacement and compact-preimage hypotheses. Its bare name is unused. All five proof steps are valid: the target preimage is closed, the thickened compact set has compact F₀-preimage on S, its cylinder image is compact, and the coordinate reconstruction proves containment. The estimate τ·dist ≤ dist ≤ s uses τ ∈ [0,1] and dist ≥ 0, so no sign hypothesis on s is missing; the pinned cthickening lemmas also require none. This independent, complete proof specializes to S = X.support and supplies precisely the parent's required properness. The reconstructed Lean proof passes with standard axioms only."
+    }
+  ],
+  "required_changes": []
+}

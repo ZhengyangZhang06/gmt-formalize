@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.affine_estimate-a1.affine_homotopy_proper-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.affine_estimate-a1",
+  "depth": 6,
+  "title": "Properness of the straight-line homotopy on the cylinder [0,1] × S",
+  "statement": "Let m, m′ ∈ ℕ, let F₀, F₁ : ℝ^m → ℝ^{m′} be continuous, let S ⊆ ℝ^m be closed and let s ∈ ℝ. Assume that dist(F₁(x), F₀(x)) ≤ s for every x ∈ S, and that F₀⁻¹(K) ∩ S is compact for every compact K ⊆ ℝ^{m′}.\n\nNotation:\n- ℝ^p := Eucl p = EuclideanSpace ℝ (Fin p).\n- t(y) := EuclideanSpace.equiv (Fin (m+1)) ℝ y 0 and tl(y) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ y)) for y ∈ ℝ^{m+1}.\n- G(y) := F₀(tl y) + t(y)·(F₁(tl y) − F₀(tl y)), the straight-line homotopy, written exactly as in dph_sh_affine_estimate.\n- cyl(S) := {y ∈ ℝ^{m+1} : t(y) ∈ [0,1] ∧ tl(y) ∈ S}.\n\nThen G⁻¹(K) ∩ cyl(S) is compact for every compact K ⊆ ℝ^{m′}. No sign condition on s is assumed or needed.",
+  "lean_statement": "∀ (m m' : ℕ) (F₀ F₁ : Eucl m → Eucl m') (S : Set (Eucl m)) (s : ℝ), Continuous F₀ → Continuous F₁ → IsClosed S → (∀ x ∈ S, dist (F₁ x) (F₀ x) ≤ s) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (F₀ ⁻¹' K ∩ S)) → ∀ K : Set (Eucl m'), IsCompact K → IsCompact ((fun y : Eucl (m + 1) => F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) + (EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0) • (F₁ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))) - F₀ ((EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))))) ⁻¹' K ∩ {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ S})",
+  "lean_name": "dph_sh_ae_affine_homotopy_isCompact_preimage_cyl",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-cf22dddeb1-a1"
+}
