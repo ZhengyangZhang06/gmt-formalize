@@ -451,6 +451,326 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gradient length of a linear functional on `ℝⁿ`** (the identities `‖Du‖ = |∇u|` and
+`|∇u · Φ| ≤ ‖Du‖ |Φ|` behind the energy bound in Simon Ch. 5, 3.1, p. 114):
+`‖L‖² = Σᵢ L(eᵢ)²` and `|Σᵢ L(eᵢ) aᵢ| ≤ ‖L‖ √(Σᵢ aᵢ²)`.  The Riesz representative
+`g = toDual⁻¹ L` has `‖g‖ = ‖L‖` and coordinates `gᵢ = ⟪eᵢ, g⟫ = L(eᵢ)`; the bound is the
+finite Cauchy–Schwarz inequality applied to `a` and to `-a`. -/
+theorem Submission.dorag_ha_lsc_grad_norm_sq : ∀ (n : ℕ) (L : Euclid n →L[ℝ] ℝ), ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 ∧ ∀ a : Fin n → ℝ, |∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) * a i| ≤ ‖L‖ * Real.sqrt (∑ i : Fin n, a i ^ 2) := by
+  intro n L
+  -- the Riesz representative `g` of `L`: `⟪g, v⟫ = L v` and `‖g‖ = ‖L‖`
+  set g : Euclid n := (InnerProductSpace.toDual ℝ (Euclid n)).symm L with hg
+  have hgL : ∀ v, inner ℝ g v = L v := fun v => InnerProductSpace.toDual_symm_apply
+  have hnorm : ‖g‖ = ‖L‖ := by simp [hg]
+  -- `L(eᵢ) = ⟪eᵢ, g⟫ = gᵢ`
+  have hcoord : ∀ i, L (EuclideanSpace.single i (1 : ℝ)) = g i := by
+    intro i
+    rw [← hgL, real_inner_comm, EuclideanSpace.inner_single_left]; simp
+  -- (i) `‖L‖² = ‖g‖² = Σᵢ gᵢ²`
+  have hid : ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 := by
+    rw [← hnorm, EuclideanSpace.real_norm_sq_eq]; simp_rw [hcoord]
+  refine ⟨hid, fun a => ?_⟩
+  -- (ii) `‖L‖ = √(Σᵢ L(eᵢ)²)`; Cauchy–Schwarz for `-a` gives the lower bound, for `a` the upper
+  have hL : ‖L‖ = Real.sqrt (∑ i, L (EuclideanSpace.single i (1 : ℝ)) ^ 2) := by
+    rw [← hid, Real.sqrt_sq (norm_nonneg _)]
+  rw [hL, abs_le]
+  constructor
+  · have := Real.sum_mul_le_sqrt_mul_sqrt Finset.univ
+      (fun i => L (EuclideanSpace.single i (1 : ℝ))) (fun i => -a i)
+    simp only [neg_sq, mul_neg, Finset.sum_neg_distrib] at this
+    linarith
+  · exact Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+/-- Integration by parts for a Lipschitz `u` against `C¹` fields `Φᵢ` with compact support in
+`B = B_R(0)`: `∫_B Σᵢ Du(x)eᵢ Φᵢ(x) dx = −∫_B u(x) Σᵢ DΦᵢ(x)eᵢ dx`.  Each `Φᵢ` is Lipschitz, so
+Lipschitz integration by parts in direction `eᵢ` (`LipschitzWith.integral_lineDeriv_mul_eq`) applies
+on `ℝⁿ`; by Rademacher, `lineDeriv u x eᵢ = Du(x)eᵢ` for a.e. `x`.  Both integrands are integrable
+(`Du` is bounded by the Lipschitz constant) and vanish off `B`, so summing over `i` concludes. -/
+theorem Submission.dorag_ha_lsc_ibp_lipschitz : ∀ (n : ℕ) (R : ℝ) (u : Euclid n → ℝ) (Φ : Fin n → Euclid n → ℝ), (∃ L : NNReal, LipschitzWith L u) → (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = -∫ x in ball (0 : Euclid n) R, u x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) := by
+  intro n R u Φ ⟨L, hu⟩ hΦ hΦc hΦs
+  set e : Fin n → Euclid n := fun i => EuclideanSpace.single i (1 : ℝ)
+  have hΦL : ∀ i, ∃ C, LipschitzWith C (Φ i) := fun i =>
+    ContDiff.lipschitzWith_of_hasCompactSupport (hΦc i) (hΦ i) one_ne_zero
+  choose C hC using hΦL
+  -- integrability of the two families of integrands
+  have hint1 : ∀ i, Integrable (fun x => fderiv ℝ u x (e i) * Φ i x) := by
+    intro i
+    refine Integrable.bdd_mul (c := L * ‖e i‖)
+      ((hΦ i).continuous.integrable_of_hasCompactSupport (hΦc i))
+      (measurable_fderiv_apply_const ℝ u (e i)).aestronglyMeasurable ?_
+    refine Eventually.of_forall fun x => ?_
+    exact ((fderiv ℝ u x).le_opNorm (e i)).trans
+      (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hu) (norm_nonneg _))
+  have hcontd : ∀ i, Continuous fun x => fderiv ℝ (Φ i) x (e i) := fun i =>
+    ((hΦ i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hint2 : ∀ i, Integrable (fun x => u x * fderiv ℝ (Φ i) x (e i)) := by
+    intro i
+    refine (hu.continuous.mul (hcontd i)).integrable_of_hasCompactSupport ?_
+    exact ((hΦc i).fderiv_apply (𝕜 := ℝ) (e i)).mul_left
+  -- per-coordinate identity on the whole space
+  have key : ∀ i, ∫ x, fderiv ℝ u x (e i) * Φ i x = -∫ x, u x * fderiv ℝ (Φ i) x (e i) := by
+    intro i
+    have h1 :=
+      hu.integral_lineDeriv_mul_eq (μ := (volume : Measure (Euclid n))) (hC i) (hΦc i) (e i)
+    have h2 : (fun x => lineDeriv ℝ u x (e i) * Φ i x) =ᵐ[volume]
+        fun x => fderiv ℝ u x (e i) * Φ i x := by
+      filter_upwards [hu.ae_differentiableAt] with x hx
+      rw [hx.lineDeriv_eq_fderiv]
+    have h3 : (fun x => lineDeriv ℝ (Φ i) x (-e i) * u x) =
+        fun x => -(u x * fderiv ℝ (Φ i) x (e i)) := by
+      funext x
+      rw [(((hΦ i).differentiable one_ne_zero) x).lineDeriv_eq_fderiv, map_neg]
+      ring
+    rw [integral_congr_ae h2, h3, integral_neg] at h1
+    exact h1
+  -- integrands vanish off the ball
+  have hzero1 : ∀ x, x ∉ ball (0 : Euclid n) R →
+      ∑ i : Fin n, fderiv ℝ u x (e i) * Φ i x = 0 := by
+    intro x hx
+    refine Finset.sum_eq_zero fun i _ => ?_
+    have : x ∉ tsupport (Φ i) := fun h => hx (hΦs i h)
+    rw [image_eq_zero_of_notMem_tsupport this, mul_zero]
+  have hzero2 : ∀ x, x ∉ ball (0 : Euclid n) R →
+      u x * ∑ i : Fin n, fderiv ℝ (Φ i) x (e i) = 0 := by
+    intro x hx
+    rw [Finset.sum_eq_zero fun i _ => ?_, mul_zero]
+    have : x ∉ tsupport (Φ i) := fun h => hx (hΦs i h)
+    rw [fderiv_of_notMem_tsupport ℝ this]; rfl
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hzero1,
+    setIntegral_eq_integral_of_forall_compl_eq_zero hzero2]
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint1 i, integral_finsetSum _ fun i _ => hint2 i,
+    ← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _ => key i
+
+namespace Submission
+
+/-- Integration by parts on `B = B_R(0)` for `h` that is only `C¹` on `B`, against `C¹` fields
+`Φᵢ` with compact support in `B`: `∫_B Σᵢ Dᵢh Φᵢ = -∫_B h Σᵢ DᵢΦᵢ`.  The supports of the `Φᵢ` lie
+in some `B_{r₁}(0)`, `r₁ < R`.  A bump `χ` with `χ = 1` on `B̄_{r₁}(0)` and `spt χ ⊆ B` makes
+`h̃ = χh` a compactly supported `C¹`, hence Lipschitz, function, so `dorag_ha_lsc_ibp_lipschitz`
+applies to `h̃`; both integrands only see `B_{r₁}(0)`, where `h̃ = h`. -/
+theorem dorag_ha_lsc_ibp_c1_ball : ∀ (n : ℕ) (R : ℝ) (h : Euclid n → ℝ) (Φ : Fin n → Euclid n → ℝ), ContDiffOn ℝ 1 h (ball (0 : Euclid n) R) → (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = -∫ x in ball (0 : Euclid n) R, h x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) := by
+  intro n R h Φ hh hΦ hΦc hΦs
+  -- `R ≤ 0`: the ball is empty.
+  rcases le_or_gt R 0 with hR | hR
+  · rw [ball_eq_empty.2 hR]; simp
+  -- The supports of the `Φᵢ` lie in a smaller ball `B_{r₁}(0)`, `0 < r₁ < R`.
+  set K := ⋃ i, tsupport (Φ i)
+  have hKc : IsClosed K := isClosed_iUnion_of_finite fun i => isClosed_tsupport _
+  have hKB : K ⊆ ball 0 R := iUnion_subset hΦs
+  obtain ⟨r₁, ⟨hr₁0, hr₁R⟩, hK₁⟩ := exists_pos_lt_subset_ball hR hKc hKB
+  -- `h̃ = χh` with `χ = 1` on `B̄_{r₁}(0)` and `spt χ = B̄_{(r₁+R)/2}(0) ⊆ B` is `C¹_c`.
+  let χ : ContDiffBump (0 : Euclid n) := ⟨r₁, (r₁ + R) / 2, hr₁0, by linarith⟩
+  set ht : Euclid n → ℝ := fun x => χ x * h x
+  have hχsupp : tsupport χ ⊆ ball 0 R := by
+    rw [χ.tsupport_eq]; exact closedBall_subset_ball (show (r₁ + R) / 2 < R by linarith)
+  have htC : ContDiff ℝ 1 ht := by
+    rw [contDiff_iff_contDiffAt]; intro x
+    by_cases hx : x ∈ ball (0 : Euclid n) R
+    · exact ((χ.contDiff.contDiffOn).mul hh).contDiffAt (isOpen_ball.mem_nhds hx)
+    · have hxχ : x ∉ tsupport χ := fun h' => hx (hχsupp h')
+      have hev : ht =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxχ] with y hy
+        simp [ht, hy]
+      exact contDiffAt_const.congr_of_eventuallyEq hev
+  have htc : HasCompactSupport ht := χ.hasCompactSupport.mul_right
+  obtain ⟨C, hC⟩ := ContDiff.lipschitzWith_of_hasCompactSupport htc htC one_ne_zero
+  have key := Submission.dorag_ha_lsc_ibp_lipschitz n R ht Φ ⟨C, hC⟩ hΦ hΦc hΦs
+  -- On `B_{r₁}(0)`, `h̃ = h` near each point; off it, every `Φᵢ` and `DΦᵢ` vanishes.
+  have hone : ∀ y ∈ ball (0 : Euclid n) r₁, ht y = h y := by
+    intro y hy
+    simp [ht, χ.one_of_mem_closedBall (ball_subset_closedBall hy)]
+  have hEq : ∀ x ∈ ball (0 : Euclid n) r₁, ht =ᶠ[𝓝 x] h := by
+    intro x hx
+    filter_upwards [isOpen_ball.mem_nhds hx] with y hy using hone y hy
+  have hout : ∀ x, x ∉ ball (0 : Euclid n) r₁ → ∀ i, x ∉ tsupport (Φ i) :=
+    fun x hx i h' => hx (hK₁ (mem_iUnion.2 ⟨i, h'⟩))
+  have h1 : ∫ x in ball (0 : Euclid n) R,
+        ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x =
+      ∫ x in ball (0 : Euclid n) R,
+        ∑ i : Fin n, fderiv ℝ ht x (EuclideanSpace.single i (1 : ℝ)) * Φ i x := by
+    refine setIntegral_congr_fun measurableSet_ball fun x _ => ?_
+    by_cases hx : x ∈ ball (0 : Euclid n) r₁
+    · simp only [(hEq x hx).fderiv_eq]
+    · refine Finset.sum_congr rfl fun i _ => ?_
+      simp [image_eq_zero_of_notMem_tsupport (hout x hx i)]
+  have h2 : ∫ x in ball (0 : Euclid n) R,
+        h x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) =
+      ∫ x in ball (0 : Euclid n) R,
+        ht x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) := by
+    refine setIntegral_congr_fun measurableSet_ball fun x _ => ?_
+    by_cases hx : x ∈ ball (0 : Euclid n) r₁
+    · simp only [hone x hx]
+    · have : ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) = 0 :=
+        Finset.sum_eq_zero fun i _ => by rw [fderiv_of_notMem_tsupport ℝ (hout x hx i)]; rfl
+      simp only [this, mul_zero]
+  rw [h1, h2, key]
+
+end Submission
+
+/-- **Duality bound for `Dh`** (the step "`∇f_{k'} ⇀ ∇w` weakly in `L²`, `∫_B |∇w|² ≤ 1`" of
+Simon Ch. 5, Lemma 3.1, p. 114, in the Lipschitz/`L²` setting): if Lipschitz `uⱼ` with
+`∫_B ‖Duⱼ‖² ≤ E` satisfy `∫_B (uⱼ - cⱼ - W)² → 0`, and `h` is `C¹` on `B = B_R(0)` with `h = W`
+a.e. on `B`, then `∫_B Σᵢ Dh(eᵢ) Φᵢ ≤ √E √(∫_B Σᵢ Φᵢ²)` for `C¹` fields `Φᵢ` with compact
+support in `B`.  By `dorag_ha_lsc_ibp_c1_ball`, `dorag_ha_lsc_ibp_lipschitz` and `∫_B div Φ = 0`,
+the pairings `aⱼ = ∫_B Σᵢ Duⱼ(eᵢ) Φᵢ` differ from the left side by `-∫_B (uⱼ - cⱼ - W) div Φ`,
+which tends to `0` by Cauchy–Schwarz; and `aⱼ ≤ √E √(∫_B Σᵢ Φᵢ²)` by
+`dorag_ha_lsc_grad_norm_sq` and Cauchy–Schwarz. -/
+theorem Submission.dorag_ha_lsc_duality_bound : ∀ (n : ℕ) (R E : ℝ) (u : ℕ → Euclid n → ℝ) (c : ℕ → ℝ) (W h : Euclid n → ℝ) (Φ : Fin n → Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ E) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (u j x - c j - W x) ^ 2) atTop (𝓝 0) → ContDiffOn ℝ 1 h (ball (0 : Euclid n) R) → (∀ᵐ x ∂(volume.restrict (ball (0 : Euclid n) R)), h x = W x) → (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x ≤ Real.sqrt E * Real.sqrt (∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, Φ i x ^ 2) := by
+  intro n R E u c W h Φ hu hE hW hconv hh hae hΦ hΦc hΦs
+  set B := ball (0 : Euclid n) R
+  have : IsFiniteMeasure (volume.restrict B) := isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  -- `d = div Φ` and `G = |Φ|²` are continuous with compact support, hence bounded
+  set d : Euclid n → ℝ := fun x =>
+    ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ))
+  set G : Euclid n → ℝ := fun x => ∑ i : Fin n, Φ i x ^ 2
+  have hdC : Continuous d := continuous_finsetSum _ fun i _ =>
+    ((hΦ i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hdc : HasCompactSupport d := by
+    refine HasCompactSupport.intro (isCompact_iUnion fun i => hΦc i) fun x hx => ?_
+    refine Finset.sum_eq_zero fun i _ => ?_
+    have : x ∉ tsupport (Φ i) := fun h' => hx (mem_iUnion.2 ⟨i, h'⟩)
+    rw [fderiv_of_notMem_tsupport ℝ this]; rfl
+  obtain ⟨Cd, hCd⟩ := hdC.bounded_above_of_compact_support hdc
+  have hGC : Continuous G := continuous_finsetSum _ fun i _ => (hΦ i).continuous.pow 2
+  have hGc : HasCompactSupport G := by
+    refine HasCompactSupport.intro (isCompact_iUnion fun i => hΦc i) fun x hx => ?_
+    refine Finset.sum_eq_zero fun i _ => ?_
+    have : x ∉ tsupport (Φ i) := fun h' => hx (mem_iUnion.2 ⟨i, h'⟩)
+    rw [image_eq_zero_of_notMem_tsupport this]; ring
+  obtain ⟨CG, hCG⟩ := hGC.bounded_above_of_compact_support hGc
+  have hG0 : ∀ x, 0 ≤ G x := fun x => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hGle : ∀ x, Real.sqrt (G x) ≤ Real.sqrt CG := fun x =>
+    Real.sqrt_le_sqrt ((le_abs_self _).trans ((Real.norm_eq_abs _).symm.trans_le (hCG x)))
+  -- Cauchy–Schwarz on `B`: Hölder with `p = q = 2` applied to `|f|` and `|g|`
+  have CS : ∀ f g : Euclid n → ℝ, MemLp f 2 (volume.restrict B) →
+      MemLp g 2 (volume.restrict B) →
+      |∫ x in B, f x * g x| ≤ Real.sqrt (∫ x in B, f x ^ 2) * Real.sqrt (∫ x in B, g x ^ 2) := by
+    intro f g hf hg
+    have hf' : MemLp (fun x => |f x|) (ENNReal.ofReal 2) (volume.restrict B) := by
+      simpa [Real.norm_eq_abs] using hf.norm
+    have hg' : MemLp (fun x => |g x|) (ENNReal.ofReal 2) (volume.restrict B) := by
+      simpa [Real.norm_eq_abs] using hg.norm
+    have H := integral_mul_le_Lp_mul_Lq_of_nonneg Real.HolderConjugate.two_two
+      (ae_of_all _ fun x => abs_nonneg (f x)) (ae_of_all _ fun x => abs_nonneg (g x)) hf' hg'
+    calc |∫ x in B, f x * g x| ≤ ∫ x in B, |f x * g x| := abs_integral_le_integral_abs
+      _ = ∫ x in B, |f x| * |g x| := by simp_rw [abs_mul]
+      _ ≤ _ := H
+      _ = _ := by simp_rw [Real.rpow_two, sq_abs, ← Real.sqrt_eq_rpow]
+  have hdL2 : MemLp d 2 (volume.restrict B) :=
+    MemLp.of_bound hdC.aestronglyMeasurable Cd (ae_of_all _ hCd)
+  -- integrability of `W d`, `uⱼ d` and `cⱼ d` on `B`
+  have hW1 : Integrable W (volume.restrict B) := hW.integrable one_le_two
+  have hWd : Integrable (fun x => W x * d x) (volume.restrict B) :=
+    hW1.mul_bdd hdC.aestronglyMeasurable (ae_of_all _ hCd)
+  have hud : ∀ j, Integrable (fun x => u j x * d x) (volume.restrict B) := by
+    intro j
+    obtain ⟨L, hL⟩ := hu j
+    exact ((hL.continuous.mul hdC).integrable_of_hasCompactSupport hdc.mul_left).integrableOn
+  have hcd : ∀ j, Integrable (fun x => c j * d x) (volume.restrict B) := fun j =>
+    ((continuous_const.mul hdC).integrable_of_hasCompactSupport hdc.mul_left).integrableOn
+  -- `∫_B d = 0`: Lipschitz integration by parts with `u ≡ 1`
+  have hdiv0 : ∫ x in B, d x = 0 := by
+    have := Submission.dorag_ha_lsc_ibp_lipschitz n R (fun _ => (1 : ℝ)) Φ
+      ⟨0, LipschitzWith.const 1⟩ hΦ hΦc hΦs
+    simp only [fderiv_const_apply, FunLike.coe_zero, Pi.zero_apply, zero_mul,
+      Finset.sum_const_zero, integral_zero, one_mul] at this
+    linarith
+  -- `T = -∫_B W d` and `aⱼ = -∫_B uⱼ d`
+  set T := ∫ x in B, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x
+    with hTdef
+  have hT : T = -∫ x in B, W x * d x := by
+    rw [hTdef, Submission.dorag_ha_lsc_ibp_c1_ball n R h Φ hh hΦ hΦc hΦs]
+    congr 1
+    refine integral_congr_ae ?_
+    filter_upwards [hae] with x hx
+    rw [hx]
+  set a : ℕ → ℝ := fun j =>
+    ∫ x in B, ∑ i : Fin n, fderiv ℝ (u j) x (EuclideanSpace.single i (1 : ℝ)) * Φ i x
+  have ha : ∀ j, a j = -∫ x in B, u j x * d x := fun j =>
+    Submission.dorag_ha_lsc_ibp_lipschitz n R (u j) Φ (hu j) hΦ hΦc hΦs
+  -- `uⱼ - cⱼ - W ∈ L²(B)`: `uⱼ - cⱼ` is bounded on `B`
+  have hfL2 : ∀ j, MemLp (fun x => u j x - c j - W x) 2 (volume.restrict B) := by
+    intro j
+    obtain ⟨L, hL⟩ := hu j
+    have hb : MemLp (fun x => u j x - c j) 2 (volume.restrict B) := by
+      refine MemLp.of_bound ((hL.continuous.sub continuous_const).aestronglyMeasurable)
+        (|u j 0| + L * R + |c j|) ?_
+      refine (ae_restrict_iff' measurableSet_ball).2 (Eventually.of_forall fun x hx => ?_)
+      have hx' : ‖x‖ < R := mem_ball_zero_iff.1 hx
+      have h1 : |u j x - u j 0| ≤ L * ‖x‖ := by
+        simpa [Real.dist_eq, dist_zero_right] using hL.dist_le_mul x 0
+      have h2 : (L : ℝ) * ‖x‖ ≤ L * R := mul_le_mul_of_nonneg_left hx'.le L.coe_nonneg
+      rw [Real.norm_eq_abs]
+      calc |u j x - c j| ≤ |u j x - u j 0| + |u j 0| + |c j| := by
+              have := abs_sub (u j x) (c j)
+              have := abs_sub_abs_le_abs_sub (u j x) (u j 0)
+              have := abs_add_le (u j x - u j 0) (u j 0)
+              simp only [sub_add_cancel] at this
+              linarith
+        _ ≤ |u j 0| + L * R + |c j| := by linarith
+    exact hb.sub hW
+  -- `aⱼ - T = -∫_B (uⱼ - cⱼ - W) d`, so `|aⱼ - T| ≤ ‖uⱼ - cⱼ - W‖_{L²(B)} ‖d‖_{L²(B)} → 0`
+  have hdiff : ∀ j, a j - T = -∫ x in B, (u j x - c j - W x) * d x := by
+    intro j
+    rw [ha j, hT]
+    have e1 : ∫ x in B, (u j x - c j - W x) * d x
+        = (∫ x in B, u j x * d x) - c j * (∫ x in B, d x) - ∫ x in B, W x * d x := by
+      have hI1 : Integrable (fun x => u j x * d x - c j * d x) (volume.restrict B) :=
+        (hud j).sub (hcd j)
+      simp_rw [sub_mul]
+      rw [integral_sub hI1 hWd, integral_sub (hud j) (hcd j), integral_const_mul]
+    rw [e1, hdiv0]; ring
+  have hbound : ∀ j, |a j - T| ≤
+      Real.sqrt (∫ x in B, (u j x - c j - W x) ^ 2) * Real.sqrt (∫ x in B, d x ^ 2) := by
+    intro j
+    rw [hdiff j, abs_neg]
+    exact CS _ _ (hfL2 j) hdL2
+  have hlim : Tendsto a atTop (𝓝 T) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun j => norm_nonneg _)
+      (fun j => (Real.norm_eq_abs _).trans_le (hbound j)) ?_
+    have := (hconv.sqrt).mul_const (Real.sqrt (∫ x in B, d x ^ 2))
+    simpa using this
+  -- uniform bound `aⱼ ≤ √E √(∫_B G)`: pointwise Cauchy–Schwarz, then Cauchy–Schwarz on `B`
+  have hGsqrt : MemLp (fun x => Real.sqrt (G x)) 2 (volume.restrict B) :=
+    MemLp.of_bound (hGC.sqrt.aestronglyMeasurable) (Real.sqrt CG) (ae_of_all _ fun x => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
+      exact hGle x)
+  have habound : ∀ j, a j ≤ Real.sqrt E * Real.sqrt (∫ x in B, G x) := by
+    intro j
+    obtain ⟨L, hL⟩ := hu j
+    have hDuL2 : MemLp (fun x => ‖fderiv ℝ (u j) x‖) 2 (volume.restrict B) :=
+      MemLp.of_bound ((measurable_fderiv ℝ (u j)).norm.aestronglyMeasurable) L
+        (ae_of_all _ fun x => by rw [norm_norm]; exact norm_fderiv_le_of_lipschitz ℝ hL)
+    have hprodI : Integrable (fun x => ‖fderiv ℝ (u j) x‖ * Real.sqrt (G x))
+        (volume.restrict B) :=
+      Integrable.of_bound ((measurable_fderiv ℝ (u j)).norm.aestronglyMeasurable.mul
+        hGC.sqrt.aestronglyMeasurable) (L * Real.sqrt CG) (ae_of_all _ fun x => by
+          rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (norm_nonneg _) (Real.sqrt_nonneg _))]
+          exact mul_le_mul (norm_fderiv_le_of_lipschitz ℝ hL) (hGle x) (Real.sqrt_nonneg _)
+            L.coe_nonneg)
+    have h1 : |a j| ≤ ∫ x in B, ‖fderiv ℝ (u j) x‖ * Real.sqrt (G x) := by
+      rw [← Real.norm_eq_abs]
+      refine norm_integral_le_of_norm_le hprodI (ae_of_all _ fun x => ?_)
+      rw [Real.norm_eq_abs]
+      exact (Submission.dorag_ha_lsc_grad_norm_sq n (fderiv ℝ (u j) x)).2 (fun i => Φ i x)
+    have h2 : ∫ x in B, ‖fderiv ℝ (u j) x‖ * Real.sqrt (G x)
+        ≤ Real.sqrt (∫ x in B, ‖fderiv ℝ (u j) x‖ ^ 2) * Real.sqrt (∫ x in B, G x) := by
+      have := CS _ _ hDuL2 hGsqrt
+      have hG2 : ∀ x, Real.sqrt (G x) ^ 2 = G x := fun x => Real.sq_sqrt (hG0 x)
+      simp_rw [hG2] at this
+      exact (le_abs_self _).trans this
+    have h3 : Real.sqrt (∫ x in B, ‖fderiv ℝ (u j) x‖ ^ 2) ≤ Real.sqrt E :=
+      Real.sqrt_le_sqrt (hE j)
+    calc a j ≤ |a j| := le_abs_self _
+      _ ≤ _ := h1
+      _ ≤ _ := h2
+      _ ≤ Real.sqrt E * Real.sqrt (∫ x in B, G x) :=
+          mul_le_mul_of_nonneg_right h3 (Real.sqrt_nonneg _)
+  -- pass to the limit
+  exact le_of_tendsto' hlim habound
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
