@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1.face_integral_pos-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1",
+  "depth": 4,
+  "title": "Positivity of the face integral of a nonnegative continuous function positive at a relative-interior point",
+  "statement": "Let n, N ∈ ℕ, ρ > 0, F = (z, α) ∈ LatticeFaceIndex n N (z ∈ ℤ^N, α : Fin n ↪o Fin N strictly increasing), g : ℝ^N → ℝ continuous with g(x) ≥ 0 for all x, and p ∈ ℝ^N with g(p) > 0. Assume p lies in the relative interior of the face: ρ z_i < p_i < ρ(z_i + 1) for every i ∈ range α, and p_i = ρ z_i for every i ∉ range α. Then 0 < ∫_{latticeFace ρ F} g dH^n, where H^n = μHE[n] is the n-dimensional Euclidean Hausdorff measure on ℝ^N.",
+  "lean_statement": "∀ (n N : ℕ) (ρ : ℝ) (F : LatticeFaceIndex n N) (g : Eucl N → ℝ) (p : Eucl N), 0 < ρ → Continuous g → (∀ x, 0 ≤ g x) → 0 < g p → (∀ i : Fin N, (i ∈ range F.2 → ρ * (F.1 i : ℝ) < p i ∧ p i < ρ * ((F.1 i : ℝ) + 1)) ∧ (i ∉ range F.2 → p i = ρ * (F.1 i : ℝ))) → 0 < ∫ x in latticeFace ρ F, g x ∂(μHE[n] : Measure (Eucl N))",
+  "lean_name": "fiw_tb_lcc_face_integral_pos",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.lattice_face_stokes-a1.lattice_face_param-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_face_stokes-a1.lattice_face_param-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-face-stokes-a1-lattice-face-param-a1-a1",
+      "result_commit": "0561b355216f4041a30f4aaf2a4b139abdf038ca",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-lattice-chain-coeff-a1-fac-f1c15dad9e-a1"
+}
