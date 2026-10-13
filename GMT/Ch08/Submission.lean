@@ -10772,8 +10772,6 @@ theorem Submission.allard_rectifiability_and_tangent_cones :
   exact ⟨hA, Submission.allard_tc_tangent_cones_rectifiable Submission.varifold_tangent_theorems.1
     Submission.varifold_tangent_theorems.2 hA Submission.first_rectifiability_theorem⟩
 
-end GMT.Ch08
-
 /-- **Simon Ch. 8, 5.8 (Compactness Theorem)**, "a direct consequence of" Ch. 1, 4.16, 3.7 and 5.5.
 Uniform mass bounds on compact sets let the Radon compactness theorem (Ch. 1, 4.16, corrected)
 extract `V_{φ(j)} → V`; zero extension of test functions on `Gₙ(U)` makes this convergence as Radon
@@ -10827,3 +10825,5 @@ theorem Submission.compactness_theorem : CompactnessTheorem := by
     (Submission.allard_rectifiability_and_tangent_cones.1 N n U V hVbv
       (hVdens.mono fun _ ⟨θ, hθ, hθ1⟩ ↦ ⟨θ, hθ, zero_lt_one.trans_le hθ1⟩)).1
   exact ⟨φ, hφ, V, hRC, hrect, hVbv, hVdens, hVvar⟩
+
+end GMT.Ch08
