@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+  "parent_id": "root.isoperimetric-a1",
+  "depth": 2,
+  "title": "Currents annihilate test forms supported off their support",
+  "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P, every current T ∈ GeometricCurrentOn U n and every test form ω ∈ TestFormOn U n (C^∞, compact support, tsupport ω ⊆ U): if tsupport ω is disjoint from spt T = U ∖ zeroRegion(T) (zeroRegion(T) = union of all open W with closure W compact, closure W ⊆ U and T(η) = 0 for every test form η with tsupport η ⊆ W), then T(ω) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Eucl P) n)) T.support → T ω = 0",
+  "lean_name": "isoperimetric_apply_eq_zero_of_disjoint_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1"
+}
