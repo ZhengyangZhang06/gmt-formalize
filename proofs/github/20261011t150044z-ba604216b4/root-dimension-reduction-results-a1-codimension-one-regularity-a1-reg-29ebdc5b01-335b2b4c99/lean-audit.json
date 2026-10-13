@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d12f8269793b6db84cf2539799e6f23c25b5ebed2b1c9cd4680faae2346fcf19",
+  "git_delta": {
+    "base_commit": "481c32e36599c17926e9a322fde6c54f0450a7ad",
+    "candidate_commit": "6429e125f00efad48faefd75518800efc3e95761",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_tma_halfspace_gauss_green",
+    "diff_sha256": "ac19cbac1b7e5fdee9b975f90e2f37655efd1a25895d3797c34f54ac83579ea6",
+    "source_sha256": "bf031eab4eaa574df5b394fcd8e3562adb806997f93f9d8abe55c29d9ed19915",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_tma_halfspace_gauss_green",
+      "statement": "∀ (m : ℕ) (v : Euclid (m + 1)) (g : Euclid (m + 1) → Euclid (m + 1)), ‖v‖ = 1 → ContDiff ℝ 1 g → HasCompactSupport g → ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), inner ℝ (g z) v ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
