@@ -436,6 +436,115 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
 
+/-- Horizontal slices for the product `[[0,1]] × X`: for `ψ ∈ 𝒟^q(ℝ^{m+1})` and `s ∈ ℝ`, the
+pull-backs `j_s^# ψ` and `j_s^# ∂_s ψ` along `j_s(x) = (s, x)`, i.e. `x ↦ ψ(s, x)(ι ·)` and
+`x ↦ Dψ(s, x)(e₀)(ι ·)` with `ι v = (0, v)`, are test forms in `𝒟^q(ℝ^m)`. -/
+theorem Submission.dph_iprod_horizontal_slices :
+    ∀ (m q : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) q),
+      ∃ Ψ Ψ' : ℝ → TestFormOn (univ : Set (Eucl m)) q,
+        (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m),
+          (Ψ s : DifferentialForm (Eucl m) q) x v =
+            (ψ : DifferentialForm (Eucl (m + 1)) q)
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧
+        ∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m),
+          (Ψ' s : DifferentialForm (Eucl m) q) x v =
+            fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q)
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (EuclideanSpace.single 0 1)
+              (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) := by
+  have hCF := Submission.iwl_sp_exists_compatible_testForm
+  intro m q ψ
+  -- 1. `ι v = (0, v)` is a continuous linear map `ℝ^m → ℝ^{m+1}`.
+  let L : (Fin m → ℝ) →ₗ[ℝ] (Fin (m + 1) → ℝ) :=
+    { toFun := fun w => Fin.cons 0 w
+      map_add' := by
+        intro a b; funext i; refine Fin.cases ?_ (fun i => ?_) i <;> simp
+      map_smul' := by
+        intro c a; funext i; refine Fin.cases ?_ (fun i => ?_) i <;> simp }
+  let ι : Eucl m →L[ℝ] Eucl (m + 1) :=
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.toContinuousLinearMap ∘L
+      LinearMap.toContinuousLinearMap L ∘L (EuclideanSpace.equiv (Fin m) ℝ).toContinuousLinearMap
+  have hιv : ∀ v : Eucl m, ι v = (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ v)) :=
+    fun v => rfl
+  -- 2. `j_s(x) = (s, 0) + ι x` is affine, so smooth with derivative `ι`.
+  have hj : ∀ s : ℝ, (fun x : Eucl m =>
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) =
+      fun x => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s 0) + ι x := by
+    intro s
+    funext x
+    rw [hιv]
+    apply (EuclideanSpace.equiv (Fin (m + 1)) ℝ).injective
+    simp only [map_add, ContinuousLinearEquiv.apply_symm_apply]
+    funext i
+    refine Fin.cases ?_ (fun i => ?_) i <;> simp
+  -- 3. `‖x‖ ≤ ‖j_s(x)‖`, so `j_s` is proper.
+  have hnorm : ∀ (s : ℝ) (x : Eucl m), ‖x‖ ≤ ‖(EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+      (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))‖ := by
+    intro s x
+    rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, Fin.sum_univ_succ]
+    apply Real.sqrt_le_sqrt
+    simp
+    positivity
+  -- 4. Slices of any test form, by the cut-off pull-back along `j_s` (proper on `A = univ`).
+  have hslice : ∀ (ω : TestFormOn (univ : Set (Eucl (m + 1))) q) (s : ℝ),
+      ∃ η : TestFormOn (univ : Set (Eucl m)) q, ∀ (x : Eucl m) (v : Fin q → Eucl m),
+        (η : DifferentialForm (Eucl m) q) x v = (ω : DifferentialForm (Eucl (m + 1)) q)
+          ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => ι (v i)) := by
+    intro ω s
+    have hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x : Eucl m =>
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) := by
+      rw [hj s]
+      exact contDiff_const.add ι.contDiff
+    have hfd : ∀ x, fderiv ℝ (fun x : Eucl m =>
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) x = ι := by
+      intro x
+      rw [hj s]
+      exact ((ι.hasFDerivAt).const_add _).fderiv
+    have hpr : ∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ univ →
+        IsCompact ((fun x : Eucl m => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) ⁻¹' K ∩ univ) := by
+      intro K hK _
+      rw [inter_univ]
+      apply Metric.isCompact_of_isClosed_isBounded
+      · exact hK.isClosed.preimage hsm.continuous
+      · obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
+        refine (Metric.isBounded_closedBall (x := (0 : Eucl m)) (r := R)).subset ?_
+        intro x hx
+        have := hR hx
+        rw [mem_closedBall, dist_zero_right] at this ⊢
+        exact (hnorm s x).trans this
+    obtain ⟨η, ζ, N, -, hAN, -, -, hη2, -⟩ := hCF m (m + 1) q univ univ univ _ isOpen_univ
+      (subset_univ _) hsm hpr ω
+    refine ⟨η, fun x v => ?_⟩
+    rw [hη2 x (hAN (mem_univ x)), hfd x]
+    rfl
+  -- 5. `ψ' = Dψ(·)(e₀)` is a test form.
+  have hψ' : ∃ ψ' : TestFormOn (univ : Set (Eucl (m + 1))) q, ∀ y,
+      (ψ' : DifferentialForm (Eucl (m + 1)) q) y =
+        fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) y (EuclideanSpace.single 0 1) := by
+    refine ⟨⟨fun y => fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) y
+        (EuclideanSpace.single 0 1), ⟨⟨?_, ?_⟩, subset_univ _⟩⟩, fun y => rfl⟩
+    · exact (ψ.property.1.1.fderiv_right (by simp)).clm_apply contDiff_const
+    · exact (ψ.property.1.2.fderiv ℝ).comp_left (g := fun L => L (EuclideanSpace.single 0 1)) rfl
+  -- 6. Choose the slices of `ψ` and `ψ'` for every `s`.
+  obtain ⟨ψ', hψ'⟩ := hψ'
+  choose Ψ hΨ using fun s => hslice ψ s
+  choose Ψ' hΨ' using fun s => hslice ψ' s
+  refine ⟨Ψ, Ψ', fun s x v => ?_, fun s x v => ?_⟩
+  · rw [hΨ s x v]
+    rfl
+  · rw [hΨ' s x v, hψ']
+    rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
