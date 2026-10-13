@@ -1974,6 +1974,51 @@ theorem Submission.dimred_cs_psd_radial_support : ∀ (d : ℕ) (f : ℝ → ℝ
     · exact h _ hε2 hf0
     · exact (measure_ball_pos volume (0 : Euclid d) hε2).ne' hv0
 
+/-- Supports and densities of `[[L]] × S₀` (in the proof of **Simon 7.3.5**, chapter-07.txt
+lines 410–418, which the book leaves to the reader): let `d = dim L < n`, let `R`, `R₀` represent
+`S`, `S₀` in `ℝᴾ`, and put `μ = μ_R`, `μ₀ = μ_{R₀}`.  If `μ₀(ℝᴾ ∖ L^⊥) = 0` and
+`μ(A) = ∫_L μ₀(A − t) dHᵈ(t)` for Borel `A`, then for `t ∈ L`, `y ∈ L^⊥` and `ρ > 0`,
+`μ(B_ρ(t + y)) = ∫_{ℝᵈ} f(√(ρ² − |σ|²)) dσ` with `f(r) = μ₀(B_r(y))`.  As `f` is nondecreasing,
+`μ` charges every ball about `t + y` iff `μ₀` charges every ball about `y`, i.e.
+`t + y ∈ spt S ⟺ y ∈ spt S₀`.  If `(ω_{n−d} r^{n−d})⁻¹ f(r) → θ` as `r ↓ 0`, then
+`(ωₙρⁿ)⁻¹ μ(B_ρ(t + y)) → θ`, as `d + (n − d) = n`; so a density of `S₀` at `y` is one of `S`
+at `t + y`, and, densities being unique, `S₀` having a density at `y` gives the converse. -/
+theorem Submission.dimred_cs_product_support_density : ∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R : IMRep (univ : Set (Euclid P)) n) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)), Module.finrank ℝ L < n → R.Represents S → R₀.Represents S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → (∀ y ∈ Lᗮ, ∃ θ : ℝ, HasMassDensity S₀ y θ) → (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ) := by
+  intro P n L S S₀ R R₀ hdn hR hR₀ hconc hprod hdens
+  -- `M_W(S) = μ(W)` and `M_W(S₀) = μ₀(W)` for open `W`; supports are read off from balls
+  obtain ⟨hmS, hsS, -⟩ := Submission.dimred_im_mass_measure P n univ S R isOpen_univ hR
+  obtain ⟨hmS₀, hsS₀, -⟩ :=
+    Submission.dimred_im_mass_measure P (n - Module.finrank ℝ L) univ S₀ R₀ isOpen_univ hR₀
+  -- slicing: `μ(B_ρ(t + y)) = ∫_{ℝᵈ} μ₀(B_{√(ρ² − |σ|²)}(y)) dσ`
+  have hball := Submission.dimred_cs_psd_ball_formula P L R.measure R₀.measure hconc hprod
+  refine ⟨fun t ht y hy => ?_, fun t ht y hy θ => ?_⟩
+  · -- supports, via the nondecreasing profile `r ↦ μ₀(B_r(y))`
+    have hmono : Monotone fun r : ℝ => R₀.measure (ball y r) :=
+      fun a b hab => measure_mono (ball_subset_ball hab)
+    rw [hsS _ (mem_univ _), hsS₀ _ (mem_univ _),
+      ← Submission.dimred_cs_psd_radial_support (Module.finrank ℝ L) _ hmono]
+    exact forall₂_congr fun ε hε => by rw [hball t ht y hy ε hε]
+  · -- a density `a` of `S₀` at `y` is a density of `S` at `t + y`
+    have key : ∀ a : ℝ, HasMassDensity S₀ y a → HasMassDensity S (t + y) a := by
+      rintro a ⟨ha, hlim⟩
+      refine ⟨ha, ?_⟩
+      have h0 : Tendsto (fun r : ℝ => R₀.measure (ball y r) /
+          (unitBallVolume (n - Module.finrank ℝ L) *
+            ENNReal.ofReal (r ^ (n - Module.finrank ℝ L)))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal a)) :=
+        hlim.congr fun r => by rw [hmS₀ _ isOpen_ball (subset_univ _)]
+      have h1 := Submission.dimred_cs_psd_radial_density (Module.finrank ℝ L)
+        (n - Module.finrank ℝ L) (fun r => R₀.measure (ball y r)) _ (by simp) h0
+      rw [Nat.add_sub_of_le hdn.le] at h1
+      refine h1.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with ρ hρ
+      rw [hmS _ isOpen_ball (subset_univ _), hball t ht y hy ρ hρ]
+    refine ⟨fun h => ?_, key θ⟩
+    -- `S₀` has a density `Θ₀` at `y`, which is also one of `S` at `t + y`; densities are unique,
+    -- as limits along `𝓝[>] 0` are unique and `ofReal` is injective on `[0, ∞)`
+    obtain ⟨Θ₀, hΘ₀⟩ := hdens y hy
+    have hS := key Θ₀ hΘ₀
+    rwa [(ENNReal.ofReal_eq_ofReal_iff h.1 hS.1).1 (tendsto_nhds_unique h.2 hS.2)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
