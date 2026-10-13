@@ -3907,6 +3907,287 @@ theorem Submission.rectifiability_bf_cone_density : ∀ (N m : ℕ) (E : Set (Eu
           field_simp
   apply measure_mono_null hsub
   refine measure_iUnion_null fun q => measure_iUnion_null fun hq => hnull q hq
+/-- The upper limit of `f : ℝ → [0,∞]` at `0⁺` is computed along the radii `1/(n+1)`:
+`limsup_{t→0⁺} f(t) = inf_{n ∈ ℕ} sup_{0<t<1/(n+1)} f(t)`.  The intervals `(0, ε)`, `ε > 0`, form
+a basis of `𝓝[>] 0`, so the upper limit is `inf_{ε>0} sup_{(0,ε)} f`; each radius `1/(n+1)` is
+admissible, and every `ε > 0` exceeds some `1/(n+1)`, below which the supremum is smaller. -/
+theorem Submission.rectifiability_mickle_rado_limsup_eq_iInf :
+    ∀ f : ℝ → ℝ≥0∞, limsup f (𝓝[>] (0 : ℝ)) =
+      ⨅ n : ℕ, ⨆ t ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)), f t := by
+  intro f
+  rw [(nhdsGT_basis (0 : ℝ)).limsup_eq_iInf_iSup]
+  apply le_antisymm
+  · refine le_iInf fun n => ?_
+    exact iInf₂_le (1 / ((n : ℝ) + 1)) (by positivity)
+  · refine le_iInf₂ fun ε hε => ?_
+    obtain ⟨n, hn⟩ := exists_nat_one_div_lt hε
+    refine (iInf_le _ n).trans ?_
+    exact biSup_mono fun t ht => ⟨ht.1, ht.2.trans hn⟩
+theorem Submission.rectifiability_mickle_rado_sup_lsc : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))), (∀ (c : Eucl (m + 1)) (τ : ℝ), ψ (ball c τ) = ⨆ τ' ∈ Ioo (0 : ℝ) τ, ψ (ball c τ')) → ∀ r : ℝ, LowerSemicontinuous (fun c : Eucl (m + 1) => ⨆ t ∈ Ioo (0 : ℝ) r, ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) := by
+  intro m ψ hball r
+  -- step 1: `c ↦ ψ (ball c τ)` is lower semicontinuous, by inner continuity on balls
+  have hlsc : ∀ τ : ℝ, LowerSemicontinuous (fun c : Eucl (m + 1) => ψ (ball c τ)) := by
+    intro τ c a ha
+    change a < ψ (ball c τ) at ha
+    rw [hball c τ] at ha
+    obtain ⟨τ', hτ', hlt⟩ := lt_biSup_iff.1 ha
+    filter_upwards [ball_mem_nhds c (sub_pos.2 hτ'.2)] with c' hc'
+    refine hlt.trans_le (measure_mono ?_)
+    intro z hz
+    rw [mem_ball] at hz hc' ⊢
+    calc dist z c' ≤ dist z c + dist c c' := dist_triangle _ _ _
+      _ < τ' + (τ - τ') := by rw [dist_comm c c']; exact add_lt_add hz hc'
+      _ = τ := by ring
+  -- step 2: divide by the positive finite `tᵏ`, then take the supremum over `t ∈ (0, r)`
+  apply lowerSemicontinuous_biSup
+  intro t ht
+  have hden : ENNReal.ofReal (t ^ (m + 1)) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht.1 _)).ne'
+  exact (ENNReal.continuous_div_const _ hden).comp_lowerSemicontinuous (hlsc t)
+    (fun _ _ h => ENNReal.div_le_div_right h _)
+/-- Vitali covering estimate off a `ψ`-null closed set, a covering step for the Mickle–Radó
+density theorem (Mickle–Radó, Proc. Amer. Math. Soc. 9 (1958), 433–439).  If `K` is closed,
+`ψ K = 0` and `ψ(B(z,τ)) ≤ C τᵏ` for `z ∈ K`, `0 < τ < r` (`k = m + 1`), then
+`ψ(B(c₀,t)) · Lᵏ(B(0,1)) ≤ C 6ᵏ Lᵏ(B(c₀,2t) ∖ K)` for `c₀ ∈ K`, `0 < t`, `6t ≤ r`.  The balls
+`B(z, d z)`, `d z = dist(z,K)`, `z ∈ B(c₀,t) ∖ K`, miss `K` and lie in `B(c₀,2t)`.  A disjoint
+(hence countable) Vitali subfamily has `5`-fold enlargements covering `B(c₀,t) ∖ K`, and
+`B(b, 5 d b) ⊆ B(z'_b, 6 d b)` for a nearest point `z'_b ∈ K` of `b`, where `6 d b < 6t ≤ r`. -/
+theorem Submission.rectifiability_mickle_rado_vitali_bound : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ c₀ ∈ K, ∀ t : ℝ, 0 < t → 6 * t ≤ r → ψ (ball c₀ t) * (volume : Measure (Eucl (m + 1))) (ball 0 1) ≤ C * 6 ^ (m + 1) * (volume : Measure (Eucl (m + 1))) (ball c₀ (2 * t) \ K) := by
+  intro m ψ K C r hK hψK hbound c₀ hc₀ t ht htr
+  set μ : Measure (Eucl (m + 1)) := volume with hμ
+  set ω := μ (ball 0 1) with hω
+  have hfin : Module.finrank ℝ (Eucl (m + 1)) = m + 1 := finrank_euclideanSpace_fin
+  have hKne : K.Nonempty := ⟨c₀, hc₀⟩
+  -- step 1: `ψ(B(c₀,t)) ≤ ψ(B(c₀,t) ∖ K) + ψ(K) = ψ(B(c₀,t) ∖ K)`
+  have h1 : ψ (ball c₀ t) ≤ ψ (ball c₀ t \ K) := by
+    calc ψ (ball c₀ t) ≤ ψ ((ball c₀ t \ K) ∪ K) := measure_mono (fun x hx => by
+          by_cases h : x ∈ K
+          · exact Or.inr h
+          · exact Or.inl ⟨hx, h⟩)
+      _ ≤ ψ (ball c₀ t \ K) + ψ K := measure_union_le _ _
+      _ = ψ (ball c₀ t \ K) := by rw [hψK, add_zero]
+  set T := ball c₀ t \ K with hT
+  -- step 2: on `T`, the radius `d z = dist(z, K)` satisfies `0 < d z ≤ dist(z, c₀) < t`
+  set d : Eucl (m + 1) → ℝ := fun z => infDist z K with hd
+  have hd_pos : ∀ z ∈ T, 0 < d z := fun z hz => (hK.notMem_iff_infDist_pos hKne).1 hz.2
+  have hd_lt : ∀ z ∈ T, d z < t := fun z hz =>
+    (infDist_le_dist_of_mem hc₀).trans_lt (mem_ball.1 hz.1)
+  -- steps 3–4: a disjoint, hence countable, Vitali subfamily `u ⊆ T` with enlargement factor `5`
+  obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_ball
+    T (fun z => z) d t (fun z hz => (hd_lt z hz).le) 5 (by norm_num)
+  have hu_count : u.Countable := hdisj.countable_of_isOpen (fun _ _ => isOpen_ball)
+    (fun z hz => ⟨z, mem_ball_self (hd_pos z (huT hz))⟩)
+  -- step 5: recentre at nearest points `z' b ∈ K`, so that `T ⊆ ⋃_{b ∈ u} B(z' b, 6 d b)`
+  have hnear : ∀ z, ∃ y ∈ K, infDist z K = dist z y := fun z => hK.exists_infDist_eq_dist hKne z
+  choose z' hz'K hz'd using hnear
+  have hcover : T ⊆ ⋃ b ∈ u, ball (z' b) (6 * d b) := by
+    intro a ha
+    obtain ⟨b, hbu, hab⟩ := hcov a ha
+    have hab' : a ∈ ball b (5 * d b) := hab (mem_ball_self (hd_pos a ha))
+    refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
+    rw [mem_ball] at hab' ⊢
+    have hbz : dist b (z' b) = d b := (hz'd b).symm
+    calc dist a (z' b) ≤ dist a b + dist b (z' b) := dist_triangle _ _ _
+      _ < 5 * d b + d b := by rw [hbz]; linarith
+      _ = 6 * d b := by ring
+  -- steps 6–7: as `0 < 6 d b < 6t ≤ r`, `ψ(T) ≤ ∑_{b ∈ u} C 6ᵏ (d b)ᵏ`
+  have h2 : ψ T ≤ ∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+    calc ψ T ≤ ψ (⋃ b ∈ u, ball (z' b) (6 * d b)) := measure_mono hcover
+      _ ≤ ∑' b : u, ψ (ball (z' b) (6 * d b)) := measure_biUnion_le ψ hu_count _
+      _ ≤ ∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+        refine ENNReal.tsum_le_tsum fun b => ?_
+        have hb : (b : Eucl (m + 1)) ∈ T := huT b.2
+        have hpos := hd_pos b hb
+        have hlt := hd_lt b hb
+        calc ψ (ball (z' b) (6 * d b)) ≤ C * ENNReal.ofReal ((6 * d b) ^ (m + 1)) :=
+              hbound (z' b) (hz'K b) (6 * d b) ⟨by linarith, by linarith⟩
+          _ = C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+            rw [mul_pow, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by norm_num)]
+            simp [mul_assoc]
+  -- step 8: for the disjoint balls `B(b, d b) ⊆ B(c₀,2t) ∖ K`,
+  -- `∑_{b ∈ u} (d b)ᵏ ω = Lᵏ(⋃_{b ∈ u} B(b, d b)) ≤ Lᵏ(B(c₀,2t) ∖ K)`
+  have h3 : ∑' b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω ≤ μ (ball c₀ (2 * t) \ K) := by
+    have heq : ∀ b : u,
+        ENNReal.ofReal ((d b) ^ (m + 1)) * ω = μ (ball (b : Eucl (m + 1)) (d b)) := by
+      intro b
+      rw [Measure.addHaar_ball μ _ (hd_pos b (huT b.2)).le, hfin]
+    simp_rw [heq]
+    rw [← measure_biUnion hu_count hdisj (fun _ _ => measurableSet_ball)]
+    apply measure_mono
+    intro y hy
+    obtain ⟨b, hbu, hyb⟩ := mem_iUnion₂.1 hy
+    have hbT := huT hbu
+    refine ⟨?_, ?_⟩
+    · rw [mem_ball] at hyb ⊢
+      have hbc := mem_ball.1 hbT.1
+      have := hd_lt b hbT
+      calc dist y c₀ ≤ dist y b + dist b c₀ := dist_triangle _ _ _
+        _ < 2 * t := by linarith
+    · intro hyK
+      exact Set.disjoint_left.1 (disjoint_ball_infDist (x := b) (s := K)) hyb hyK
+  -- step 9: combine, pulling the constants out of the sums
+  calc ψ (ball c₀ t) * ω
+      ≤ (∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1))) * ω := by
+        gcongr; exact h1.trans h2
+    _ = C * 6 ^ (m + 1) * ∑' b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω := by
+        rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_right, mul_assoc]
+    _ ≤ C * 6 ^ (m + 1) * μ (ball c₀ (2 * t) \ K) := by gcongr
+
+/-- Mickle–Radó density step (Mattila, Thm 18.5, step 3 with `ε ↓ 0`): if `ψ(B(z,τ)) ≤ C τᵏ`
+for `z ∈ K`, `0 < τ < r`, where `K` is closed and `ψ(K) = 0`, then the upper `k`-density of `ψ`
+vanishes at `Lᵏ`-a.e. point of `K`.  At a Lebesgue density point `c ∈ K` of `K`, the Vitali
+estimate `ψ(B(c,t))·ω ≤ C·6ᵏ·Lᵏ(B(c,2t) ∖ K)` together with
+`Lᵏ(B̄(c,2t) ∖ K) = (2t)ᵏ·ω·(1 − R_c(2t))`, `R_c(ρ) = Lᵏ(K ∩ B̄(c,ρ))/Lᵏ(B̄(c,ρ)) → 1`, gives
+`ψ(B(c,t))/tᵏ ≤ C·12ᵏ·(1 − R_c(2t)) → 0`. -/
+theorem Submission.rectifiability_mickle_rado_density_zero : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → C ≠ ⊤ → 0 < r → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ᵐ c ∂((volume : Measure (Eucl (m + 1))).restrict K), limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) = 0 := by
+  intro m ψ K C r hK hψK hC hr hbound
+  set μ : Measure (Eucl (m + 1)) := volume with hμ
+  filter_upwards [Besicovitch.ae_tendsto_measure_inter_div μ K, ae_restrict_mem hK.measurableSet]
+    with c hc hcK
+  apply Tendsto.limsup_eq
+  set ω := μ (ball 0 1) with hω
+  have hω0 : ω ≠ 0 := (measure_ball_pos μ 0 one_pos).ne'
+  have hωtop : ω ≠ ⊤ := measure_ball_lt_top.ne
+  have hfin : Module.finrank ℝ (Eucl (m + 1)) = m + 1 := finrank_euclideanSpace_fin
+  -- the density ratio at radius 2t
+  have hR2 : Tendsto (fun t : ℝ => μ (K ∩ closedBall c (2 * t)) / μ (closedBall c (2 * t)))
+      (𝓝[>] 0) (𝓝 1) := by
+    refine hc.comp ?_
+    have h2 : Tendsto (fun t : ℝ => 2 * t) (𝓝[>] 0) (𝓝[>] (2 * 0)) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+        ((continuous_const.mul continuous_id).tendsto' _ _ rfl |>.mono_left nhdsWithin_le_nhds)
+        (by filter_upwards [self_mem_nhdsWithin] with t ht; exact mem_Ioi.2 (by simpa using ht))
+    simpa using h2
+  have hlim : Tendsto (fun t : ℝ => C * 12 ^ (m + 1) *
+      (1 - μ (K ∩ closedBall c (2 * t)) / μ (closedBall c (2 * t)))) (𝓝[>] 0) (𝓝 0) := by
+    have h1 := ENNReal.Tendsto.sub tendsto_const_nhds hR2 (Or.inl ENNReal.one_ne_top)
+    have h12 : C * 12 ^ (m + 1) ≠ ⊤ := ENNReal.mul_ne_top hC (ENNReal.pow_ne_top (by norm_num))
+    have h2 := ENNReal.Tendsto.const_mul (a := C * 12 ^ (m + 1)) h1 (Or.inr h12)
+    simpa using h2
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Eventually.of_forall fun _ => bot_le) ?_
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < r / 6 by positivity)] with t ht
+  have ht0 : 0 < t := ht.1
+  have h0 := Submission.rectifiability_mickle_rado_vitali_bound m ψ K C r hK hψK hbound c hcK t ht0
+    (by linarith [ht.2])
+  -- measure of the complement in the closed ball
+  set V := μ (closedBall c (2 * t)) with hV
+  set A := μ (K ∩ closedBall c (2 * t)) with hA
+  have hVball : V = ENNReal.ofReal ((2 * t) ^ (m + 1)) * ω := by
+    rw [hV, Measure.addHaar_closedBall μ c (by positivity), hfin]
+  have hV0 : V ≠ 0 := by
+    rw [hVball]; exact mul_ne_zero (ENNReal.ofReal_pos.2 (by positivity)).ne' hω0
+  have hVtop : V ≠ ⊤ := measure_closedBall_lt_top.ne
+  have hAle : A ≤ V := measure_mono inter_subset_right
+  have hdiff : μ (ball c (2 * t) \ K) ≤ V * (1 - A / V) := by
+    have hsplit : μ (closedBall c (2 * t) \ K) + A = V := by
+      rw [hA, inter_comm]; exact measure_sdiff_add_inter _ hK.measurableSet
+    have h1 : μ (ball c (2 * t) \ K) ≤ μ (closedBall c (2 * t) \ K) :=
+      measure_mono (sdiff_subset_sdiff_left ball_subset_closedBall)
+    have h2 : μ (closedBall c (2 * t) \ K) = V - A :=
+      ENNReal.eq_sub_of_add_eq (ne_top_of_le_ne_top hVtop hAle) hsplit
+    have h3 : V * (1 - A / V) = V - A := by
+      rw [ENNReal.mul_sub (fun _ _ => hVtop), mul_one, ENNReal.mul_div_cancel hV0 hVtop]
+    rw [h3, ← h2]; exact h1
+  -- conclude
+  have hpowt : ENNReal.ofReal (t ^ (m + 1)) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht0 _)).ne'
+  rw [ENNReal.div_le_iff_le_mul (Or.inl hpowt) (Or.inl ENNReal.ofReal_ne_top)]
+  have h2t : ENNReal.ofReal ((2 * t) ^ (m + 1)) = 2 ^ (m + 1) * ENNReal.ofReal (t ^ (m + 1)) := by
+    rw [mul_pow, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by norm_num)]
+    simp
+  have key : ψ (ball c t) * ω ≤
+      (C * 12 ^ (m + 1) * (1 - A / V) * ENNReal.ofReal (t ^ (m + 1))) * ω := by
+    calc ψ (ball c t) * ω ≤ C * 6 ^ (m + 1) * μ (ball c (2 * t) \ K) := h0
+      _ ≤ C * 6 ^ (m + 1) * (V * (1 - A / V)) := by gcongr
+      _ = (C * 12 ^ (m + 1) * (1 - A / V) * ENNReal.ofReal (t ^ (m + 1))) * ω := by
+        rw [hVball, h2t]
+        have : (12 : ℝ≥0∞) ^ (m + 1) = 6 ^ (m + 1) * 2 ^ (m + 1) := by
+          rw [← mul_pow]; norm_num
+        rw [this]; ring
+  exact (ENNReal.mul_le_mul_iff_left hω0 hωtop).1 key
+
+/-- **Mickle–Radó density theorem** (Mickle–Radó, Proc. Amer. Math. Soc. 9 (1958), 433–439;
+Mattila, Thm 18.5).  Let `ψ` be an outer measure on `ℝᵏ`, `k = m + 1`, inner continuous on open
+balls, and `D` a Borel set with `ψ(D) = 0`.  Then the upper density
+`ϑ(c) = limsup_{t↓0} ψ(B(c,t))/tᵏ` lies in `{0, ∞}` at `Lᵏ`-a.e. point of `D`.  With
+`g_n(c) = sup_{0<t<1/(n+1)} ψ(B(c,t))/tᵏ`, each `g_n` is lower semicontinuous and `ϑ = inf_n g_n`,
+so `ϑ` is Borel.  The set `{c ∈ D : 0 < ϑ(c) < ∞}` is covered by the Borel sets
+`S_n = {c ∈ D : (n+1)⁻¹ < ϑ(c), g_n(c) ≤ n+1}`.  If `Lᵏ(S_n) > 0`, a compact `K ⊆ S_n` with
+`Lᵏ(K) > 0` has `ψ(K) = 0` and `ψ(B(z,τ)) ≤ (n+1)τᵏ` for `z ∈ K`, `0 < τ < 1/(n+1)`; hence
+`ϑ = 0` at `Lᵏ`-a.e. point of `K`, contradicting `ϑ > (n+1)⁻¹` on `K`. -/
+theorem Submission.rectifiability_mickle_rado : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (D : Set (Eucl (m + 1))), (∀ (c : Eucl (m + 1)) (τ : ℝ), ψ (ball c τ) = ⨆ τ' ∈ Ioo (0 : ℝ) τ, ψ (ball c τ')) → MeasurableSet D → ψ D = 0 → (volume : Measure (Eucl (m + 1))) {c | c ∈ D ∧ 0 < limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) ∧ limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) < ⊤} = 0 := by
+  intro m ψ D hball hD hψD
+  let g : ℕ → Eucl (m + 1) → ℝ≥0∞ := fun n c =>
+    ⨆ t ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)), ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))
+  let ϑ : Eucl (m + 1) → ℝ≥0∞ := fun c =>
+    limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0)
+  -- step 1: `ϑ = inf_n g_n` with every `g_n` lower semicontinuous, so `ϑ` is Borel
+  have hϑ : ∀ c, ϑ c = ⨅ n, g n c := fun c =>
+    Submission.rectifiability_mickle_rado_limsup_eq_iInf
+      (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1)))
+  have hg_meas : ∀ n, Measurable (g n) := fun n =>
+    (Submission.rectifiability_mickle_rado_sup_lsc m ψ hball _).measurable
+  have hϑ_meas : Measurable ϑ := by
+    have h : ϑ = fun c => ⨅ n, g n c := funext hϑ
+    rw [h]
+    exact Measurable.iInf hg_meas
+  have hg_anti : ∀ c, Antitone (fun n => g n c) := by
+    intro c n n' hnn'
+    apply biSup_mono
+    intro t ht
+    refine ⟨ht.1, lt_of_lt_of_le ht.2 ?_⟩
+    have h1 : (n : ℝ) ≤ n' := by exact_mod_cast hnn'
+    gcongr
+  -- step 2: `{c ∈ D : 0 < ϑ c < ∞} ⊆ ⋃_n S_n` for the Borel sets `S_n`
+  let S : ℕ → Set (Eucl (m + 1)) := fun n =>
+    {c | c ∈ D ∧ ((n : ℝ≥0∞) + 1)⁻¹ < ϑ c ∧ g n c ≤ (n : ℝ≥0∞) + 1}
+  have hS_meas : ∀ n, MeasurableSet (S n) := by
+    intro n
+    exact hD.inter ((measurableSet_lt measurable_const hϑ_meas).inter
+      (measurableSet_le (hg_meas n) measurable_const))
+  have hsub : {c | c ∈ D ∧ 0 < limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) ∧ limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) < ⊤} ⊆ ⋃ n, S n := by
+    rintro c ⟨hcD, hpos, hfin⟩
+    change ϑ c < ⊤ at hfin
+    change 0 < ϑ c at hpos
+    rw [hϑ c] at hfin
+    obtain ⟨n₀, hn₀⟩ := iInf_lt_iff.1 hfin
+    obtain ⟨N, hN⟩ := ENNReal.exists_nat_gt hn₀.ne
+    obtain ⟨n₁, hn₁⟩ := ENNReal.exists_inv_nat_lt hpos.ne'
+    set n := max n₀ (max N n₁) with hn
+    refine mem_iUnion.2 ⟨n, hcD, ?_, ?_⟩
+    · refine lt_of_le_of_lt ?_ hn₁
+      apply ENNReal.inv_le_inv.2
+      have : n₁ ≤ n := le_trans (le_max_right _ _) (le_max_right _ _)
+      have : (n₁ : ℝ≥0∞) ≤ n := by exact_mod_cast this
+      exact this.trans le_self_add
+    · calc g n c ≤ g n₀ c := hg_anti c (le_max_left _ _)
+        _ ≤ N := hN.le
+        _ ≤ (n : ℝ≥0∞) := by
+          have : N ≤ n := le_trans (le_max_left _ _) (le_max_right _ _)
+          exact_mod_cast this
+        _ ≤ (n : ℝ≥0∞) + 1 := le_self_add
+  -- step 3: `Lᵏ(S_n) = 0`, via a compact `K ⊆ S_n` and the density-zero step on `K`
+  have hS_null : ∀ n, (volume : Measure (Eucl (m + 1))) (S n) = 0 := by
+    intro n
+    by_contra hne
+    obtain ⟨K, hKS, hKc, hKpos⟩ := (hS_meas n).exists_lt_isCompact (pos_iff_ne_zero.2 hne)
+    have hψK : ψ K = 0 := measure_mono_null (fun x hx => (hKS hx).1) hψD
+    have hbound : ∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)),
+        ψ (ball z τ) ≤ ((n : ℝ≥0∞) + 1) * ENNReal.ofReal (τ ^ (m + 1)) := by
+      intro z hz τ hτ
+      have h1 : ψ (ball z τ) / ENNReal.ofReal (τ ^ (m + 1)) ≤ g n z :=
+        le_iSup₂ (f := fun t (_ : t ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1))) =>
+          ψ (ball z t) / ENNReal.ofReal (t ^ (m + 1))) τ hτ
+      have h2 := h1.trans (hKS hz).2.2
+      rwa [ENNReal.div_le_iff_le_mul (Or.inl (ENNReal.ofReal_pos.2 (pow_pos hτ.1 _)).ne')
+        (Or.inl ENNReal.ofReal_ne_top)] at h2
+    have hae := Submission.rectifiability_mickle_rado_density_zero m ψ K ((n : ℝ≥0∞) + 1)
+      (1 / ((n : ℝ) + 1)) hKc.isClosed hψK (by simp) (by positivity) hbound
+    obtain ⟨c, hcK, hc0⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hKpos.ne' hae
+    have h3 : ((n : ℝ≥0∞) + 1)⁻¹ < ϑ c := (hKS hcK).2.1
+    change _ < limsup _ _ at h3
+    rw [hc0] at h3
+    exact (ENNReal.not_lt_zero h3).elim
+  exact measure_mono_null hsub (measure_iUnion_null hS_null)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
