@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "05926d3c82abbba858f5f7517f3a40caf2d413b2a5f0579447b4f74924104861",
+  "git_delta": {
+    "base_commit": "58e39a82bd9043c7663d6c5372821d941e66dc14",
+    "candidate_commit": "059dac2b93802b3c73dbf2326a0788f9d4904807",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_gbl_blowUp_mass_bound",
+    "diff_sha256": "9290bfd28a87258c0b2af197ca6b651b949239782fd9835f59ba941a565d404b",
+    "source_sha256": "2ad268084111f3424b6e7d5f42b1460a52991148a92e8fa78fb4c9ce7b0fbe27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_gbl_blowUp_mass_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) y) ≤ 1) → currentEval (blowUp T (xs i) (lams i) (hlams i).ne') (ω : DifferentialForm (Euclid P) n) ≤ c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
