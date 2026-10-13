@@ -485,6 +485,66 @@ theorem Submission.regcomp_cop_zdr_setIntegral_eq_indicator : ∀ (P : ℕ) (C K
     by_cases hxC : x ∈ C
     · rw [Set.indicator_of_mem hxC, Set.indicator_of_notMem fun hxK => hx ⟨hxC, hxK⟩]
     · rw [Set.indicator_of_notMem hxC]
+/-- **Bump test `0`-forms** (`𝒟⁰(U)`, Simon Ch. 6, §2, with the Euclidean coefficient norm of
+`M_W`, 6.2.5).  For `a > 0` with `B̄_a(z) ⊆ U` and `c ∈ ℝ`, put
+`ω(x) = c·g(x)·ε₀`, where `g` is a smooth bump at `z` with `g = 1` on `B̄_{a/2}(z)`, `0 ≤ g ≤ 1`
+and `g = 0` off `B_a(z)`, and `ε₀` is the constant `0`-covector `1`.  Then `ω ∈ 𝒟⁰(U)`,
+`spt ω ⊆ B̄_a(z)`, `ω(z)() = c` and `ω = 0` off `B_a(z)`.  The only index map `Fin 0 → Fin P` is
+the empty, strictly increasing one, so a `0`-covector `α` has coefficient norm `|α()|`, and
+`|ω(x)()| = |c|·g(x) ≤ |c|`. -/
+theorem Submission.regcomp_cop_zdr_exists_bumpForm : ∀ (P : ℕ) (U : Set (Euclid P)) (z : Euclid P) (a c : ℝ), 0 < a → closedBall z a ⊆ U → ∃ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ closedBall z a ∧ (ω : DifferentialForm (Euclid P) 0) z (fun i => i.elim0) = c ∧ (∀ x, x ∉ ball z a → (ω : DifferentialForm (Euclid P) 0) x = 0) ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) 0) x) ≤ |c| := by
+  intro P U z a c ha haU
+  -- in degree `0` the coefficient norm is `|α()|`: the only index map is the empty one
+  have hnorm : ∀ α : Covector (Euclid P) 0,
+      covectorEuclideanNorm α = |α (fun i => i.elim0)| := by
+    intro α
+    classical
+    unfold covectorEuclideanNorm
+    rw [Fintype.sum_unique]
+    have hmono : StrictMono (default : Fin 0 → Fin P) := fun i => i.elim0
+    rw [ite_eq_left hmono, Real.sqrt_sq_eq_abs]
+    congr 1
+    congr 1
+    funext i
+    exact i.elim0
+  -- the bump `g` (radii `a/2 < a`), the constant `0`-covector `ε₀ = 1`, and `ω = c·g·ε₀`
+  let g : ContDiffBump z := ⟨a / 2, a, half_pos ha, half_lt_self ha⟩
+  let e : Covector (Euclid P) 0 :=
+    ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (1 : ℝ)
+  have he : ∀ v, e v = 1 := fun v => rfl
+  let f : DifferentialForm (Euclid P) 0 := fun x => (c * g x) • e
+  -- (iii) `ω = 0` off `B_a(z)`, as `g` vanishes there
+  have hzero : ∀ x, x ∉ ball z a → f x = 0 := by
+    intro x hx
+    have hgx : g x = 0 := g.zero_of_le_dist (by simpa [mem_ball, not_lt] using hx)
+    simp [f, hgx]
+  -- (i) `spt ω ⊆ closure (B_a(z)) ⊆ B̄_a(z)`
+  have hts : tsupport f ⊆ closedBall z a := by
+    refine (closure_mono ?_).trans closure_ball_subset_closedBall
+    intro x hx
+    by_contra h
+    exact hx (hzero x h)
+  -- `ω` is smooth with compact support in `B̄_a(z) ⊆ U`, so `ω ∈ 𝒟⁰(U)`
+  have hsmooth : IsSmoothForm f := by
+    unfold IsSmoothForm
+    exact (contDiff_const.mul g.contDiff).smul contDiff_const
+  have hcs : HasCompactSupport f :=
+    (isCompact_closedBall z a).of_isClosed_subset (isClosed_tsupport f) hts
+  refine ⟨⟨f, ⟨hsmooth, hcs⟩, hts.trans haU⟩, hts, ?_, hzero, ?_⟩
+  -- (ii) `ω(z)() = c·g(z) = c`, as `g = 1` on `B̄_{a/2}(z)`
+  · have hg1 : g z = 1 := g.one_of_mem_closedBall (mem_closedBall_self (half_pos ha).le)
+    show (c * g z) • e (fun i => i.elim0) = c
+    rw [hg1, he]
+    simp
+  -- (iv) `|ω(x)()| = |c|·g(x) ≤ |c|`, as `0 ≤ g ≤ 1`
+  · intro x
+    rw [hnorm]
+    show |(c * g x) • e (fun i => i.elim0)| ≤ |c|
+    rw [he, smul_eq_mul, mul_one, abs_mul]
+    have h0 : 0 ≤ g x := g.nonneg
+    have h1 : g x ≤ 1 := g.le_one
+    rw [abs_of_nonneg h0]
+    exact mul_le_of_le_one_right (abs_nonneg c) h1
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
