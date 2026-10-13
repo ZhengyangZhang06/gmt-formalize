@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1.local_to_global_holder-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1",
+  "depth": 4,
+  "title": "Local C^{1,alpha} bounds on small balls imply IsLocallyHolderCkα 1 alpha",
+  "statement": "Let n, l be natural numbers, alpha > 0, U an open subset of R^n and f : R^n -> R^l. Suppose every x in U has r > 0 and a real C such that f is C^1 on the open ball B_r(x) and ||Df(y) - Df(z)|| <= C ||y - z||^alpha for all y, z in B_r(x). Then IsLocallyHolderCkα 1 alpha f U holds: f is C^1 on U, and for every compact K contained in U there is C' with ||iteratedFDeriv R 1 f x - iteratedFDeriv R 1 f y|| <= C' ||x - y||^alpha for all x, y in K.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α : ℝ) (f : Rn n → Rn ℓ) (U : Set (Rn n)), 0 < α → IsOpen U → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ContDiffOn ℝ 1 f (ball x r) ∧ ∃ C : ℝ, ∀ y ∈ ball x r, ∀ z ∈ ball x r, ‖fderiv ℝ f y - fderiv ℝ f z‖ ≤ C * ‖y - z‖ ^ α) → IsLocallyHolderCkα 1 α f U",
+  "lean_name": "dohr_eb_elc2_local_to_global_holder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alph-40a017a29b-a1"
+}
