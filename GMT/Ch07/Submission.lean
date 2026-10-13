@@ -609,6 +609,68 @@ theorem Submission.cbr_ci_pw_bv_smooth_ae_approx : ∀ (n : ℕ) (R δ : ℝ) (g
     congr 1; funext y
     rw [smul_eq_mul, mul_comm]
 
+/-- **The `L¹` norm on a ball by duality with smooth test functions** (steps 2 and 4 of the BV
+estimate `∫_{B_R} |u − u ∗ φ_s| ≤ s V` in the cycle part of the proof of Simon 7.2.4): if `h` is
+integrable on `B_{R+δ}(0)`, `δ > 0`, and `∫ h g ≤ C` for every smooth `g` with compact support in
+`B_{R+δ}(0)` and `|g| ≤ 1`, then `∫_{B_R(0)} |h| ≤ C`.  With a Borel representative `h̃` of `h`
+on `B_{R+δ}(0)` and `g₀ = 1_{B_R(0)} sgn h̃`, the admissible smooth tests `G_j → g₀` a.e. of
+`smooth_ae_approx` give `∫ h G_j ≤ C`, and dominated convergence (dominant `|h|`) gives
+`∫ h G_j → ∫_{B_{R+δ}(0)} h g₀ = ∫_{B_R(0)} |h|`. -/
+theorem Submission.cbr_ci_pw_bv_l1_duality : ∀ (n : ℕ) (R δ C : ℝ) (h : Euclid n → ℝ), 0 < δ → IntegrableOn h (ball 0 (R + δ)) → (∀ g : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + δ) → (∀ x, |g x| ≤ 1) → ∫ x, h x * g x ≤ C) → ∫ x in ball 0 R, |h x| ≤ C := by
+  intro n R δ C h hδ hh htest
+  set B : Set (Euclid n) := ball 0 (R + δ) with hB
+  -- Step 1: a Borel representative `h̃ = hm` of `h` on `B`
+  set hm : Euclid n → ℝ := hh.aestronglyMeasurable.mk h with hhm
+  have hhm_meas : Measurable hm := hh.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  have hae : h =ᵐ[volume.restrict B] hm := hh.aestronglyMeasurable.ae_eq_mk
+  -- Step 2: the sign function `g₀ = 1_{B_R(0)} sgn h̃`: Borel, `|g₀| ≤ 1`, `g₀ = 0` off `B_R(0)`
+  set g₀ : Euclid n → ℝ :=
+    (ball (0 : Euclid n) R).indicator (fun x => if 0 ≤ hm x then 1 else -1) with hg₀
+  have hg₀m : Measurable g₀ :=
+    (Measurable.ite (measurableSet_le measurable_const hhm_meas) measurable_const
+      measurable_const).indicator measurableSet_ball
+  have hg₀b : ∀ x, |g₀ x| ≤ 1 := by
+    intro x
+    simp only [hg₀, Set.indicator]
+    split_ifs <;> norm_num
+  have hg₀z : ∀ x, R ≤ ‖x‖ → g₀ x = 0 := by
+    intro x hx
+    simp only [hg₀]
+    exact Set.indicator_of_notMem (by simpa [mem_ball_zero_iff] using hx) _
+  -- Step 3: smooth admissible tests `G_j → g₀` a.e.
+  obtain ⟨G, hGs, hGc, hGt, hGb, hGl⟩ :=
+    Submission.cbr_ci_pw_bv_smooth_ae_approx n R δ g₀ hδ hg₀m hg₀b hg₀z
+  -- Step 4: `∫_B h G_j = ∫ h G_j ≤ C`, as `G_j` vanishes off `B`
+  have hle : ∀ j, ∫ x in B, h x * G j x ≤ C := by
+    intro j
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport (fun hx' => hx (hGt j hx')), mul_zero])]
+    exact htest (G j) (hGs j) (hGc j) (hGt j) (hGb j)
+  -- Step 5: dominated convergence on `B`, with dominant `|h|`
+  have hlim : Tendsto (fun j => ∫ x in B, h x * G j x) atTop (𝓝 (∫ x in B, h x * g₀ x)) := by
+    refine tendsto_integral_of_dominated_convergence (fun x => ‖h x‖) (fun j => ?_) hh.norm
+      (fun j => ?_) ?_
+    · exact hh.aestronglyMeasurable.mul (hGs j).continuous.aestronglyMeasurable
+    · refine Eventually.of_forall fun x => ?_
+      rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (by rw [Real.norm_eq_abs]; exact hGb j x)
+    · exact (ae_restrict_of_ae hGl).mono fun x hx => tendsto_const_nhds.mul hx
+  -- Step 6: `h g₀ = 1_{B_R(0)} |h|` a.e. on `B`, so `∫_B h g₀ = ∫_{B_R(0)} |h|`
+  have heq : ∫ x in B, h x * g₀ x = ∫ x in ball 0 R, |h x| := by
+    have hfg : (fun x => h x * g₀ x) =ᵐ[volume.restrict B]
+        (ball (0 : Euclid n) R).indicator (fun x => |h x|) := by
+      filter_upwards [hae] with x hx
+      simp only [hg₀, Set.indicator]
+      split_ifs with hxR hpos
+      · rw [hx, mul_one, abs_of_nonneg hpos]
+      · rw [hx, mul_neg_one, abs_of_neg (not_le.1 hpos)]
+      · rw [mul_zero]
+    rw [integral_congr_ae hfg, setIntegral_indicator measurableSet_ball,
+      Set.inter_eq_right.2 (ball_subset_ball (by linarith : R ≤ R + δ))]
+  -- Step 7: a limit of numbers `≤ C` is `≤ C`
+  rw [← heq]
+  exact le_of_tendsto' hlim hle
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
