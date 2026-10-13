@@ -336,6 +336,34 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+section AcceptedChildDeclarations
+
+/-! ### Accepted child declarations
+
+The declarations of this section are the accepted results of the child nodes of this run,
+verbatim. They are elaborated synchronously and without recording info trees: the command-line
+driver keeps the info tree of every command until the end of the file (to write the `.ilean`),
+which for a file of this size exceeds the memory available to the verification workers. Info
+trees are editor metadata only; the elaborated declarations are the same and are checked by the
+kernel as usual. The two linters below read tactic info trees, so they are disabled here. All
+of this is local to the section; `main_theorem` is elaborated with the default settings. -/
+
+set_option Elab.async false
+set_option linter.unusedTactic false
+set_option linter.unreachableTactic false
+
+open Lean Elab Command in
+/-- Elaborates a declaration with the builtin elaborator `elabDeclaration`, without recording info
+trees (local to this section). -/
+@[local command_elab Lean.Parser.Command.declaration]
+private def elabDeclarationWithoutInfoTrees : CommandElab := fun stx => do
+  let enabled := (← getInfoState).enabled
+  modifyInfoState fun s => { s with enabled := false }
+  try
+    Lean.Elab.Command.elabDeclaration stx
+  finally
+    modifyInfoState fun s => { s with enabled := enabled }
+
 /-- **Lusin's theorem for `Lⁿ` with closed sets and finite-dimensional targets** (Simon Ch. 2,
 proof of Theorem 1.5, `chapter-02.txt` lines 248–251: Lusin's theorem "applies to sets of
 infinite measure for `Lⁿ`"; cf. Ch. 1, Theorems 1.15 and 1.17): for a Borel `u : ℝⁿ → F`, `F`
@@ -20397,6 +20425,8 @@ theorem Submission.deGiorgiTheorem_holds : DeGiorgiTheorem := by
     Submission.approximateTangentCharacterizations_hold.1 n 1 U (reducedBoundary U μ ν) μ hU hμU
     hμK hmeas (fun x hx ↦ hx.1) hfull (fun x hx ↦ ⟨_, hT x hx⟩)
   exact ⟨hR, hM, hT, hH⟩
+
+end AcceptedChildDeclarations
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem :=

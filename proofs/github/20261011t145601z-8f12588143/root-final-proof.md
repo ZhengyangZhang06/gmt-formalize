@@ -76,6 +76,9 @@ content is entirely in the accepted children, summarized in §4.
 * Axioms: only `propext`, `Quot.sound`, `Classical.choice` (`#print axioms GMT.Ch03.main_theorem`;
   also checked by the comparator). There is no `sorry`, no new `axiom`, and no change to any
   definition or assumption.
+* Besides the accepted theorems, the file contains only build infrastructure local to the section
+  that holds them (`set_option`s and one `private` tooling elaborator, §3), which affects
+  elaboration metadata and memory use, not the elaborated declarations.
 
 ## 3. How this candidate was assembled (integration repair)
 
@@ -102,14 +105,41 @@ This candidate replaces the merged text by a clean union of the accepted checkpo
 * Each file was split into top-level declarations. Every declaration occurring in several
   checkpoints has the same text in all of them (the only differences were trailing blank lines),
   so the union is well defined: 226 theorems, exactly the 226 accepted DAG nodes below the root
-  (every accepted `lean_name` occurs exactly once; no other declaration was added; no duplicated
-  namespace or placeholder scaffold remains). Statements and proof bodies are copied verbatim — no
+  (every accepted `lean_name` occurs exactly once; no other theorem was added — the only other new
+  declaration is the `private` tooling elaborator described below; no duplicated namespace or
+  placeholder scaffold remains). Statements and proof bodies are copied verbatim — no
   proof was edited.
 * Order: first occurrence when reading the checkpoints in the DAG order above. This is a valid
   dependency order because every checkpoint compiled in its own order; I also extracted the 250
   references between the 226 declarations from the comment-stripped source and checked that none
   points forward.
-* `main_theorem` comes last, followed by `end GMT.Ch03`.
+* The 226 declarations sit in `section AcceptedChildDeclarations … end AcceptedChildDeclarations`;
+  `main_theorem` comes after the section, followed by `end GMT.Ch03`.
+
+**Memory (build infrastructure only).** The first comparator run of the plain union was killed by
+the out-of-memory killer (`Lean exited with code 137`): the verification workers run in a container
+whose cgroup limit is 3.5 GB, and Lean's command-line driver keeps the info tree of every command
+until the end of the file (to write the `.ilean`). Measured with `LEAN_NUM_THREADS=4`, the plain
+20k-line file reaches 2.67 GB of anonymous memory plus ~1.6 GB of mapped `.olean`s, i.e. it only
+fits by thrashing. The section therefore starts with
+
+* `set_option Elab.async false` (elaborate the declarations one at a time),
+* a `private` command elaborator `elabDeclarationWithoutInfoTrees`, registered with
+  `@[local command_elab Lean.Parser.Command.declaration]`, which turns info-tree recording off,
+  calls Lean's builtin `Lean.Elab.Command.elabDeclaration` on the unchanged syntax, and restores the
+  flag,
+* `set_option linter.unusedTactic false` (Mathlib) and `set_option linter.unreachableTactic false`
+  (Batteries), the two linters that read tactic info trees and would otherwise report every
+  tactic as unused or never executed.
+
+Info trees are editor metadata (hover, go-to-definition, `.ilean` references); the elaborated
+declarations are unchanged and every one is still checked by the kernel. The elaborator is a
+tooling `def`, not a theorem, is not reachable from `main_theorem` (so it is not part of the
+comparator's export), and everything is local to the section: after `end
+AcceptedChildDeclarations` the builtin elaborator is the only one for declarations and
+`Elab.async` is back at its default, so `main_theorem` is elaborated with the default settings
+(both facts checked with a probe on a test slice). On a 5.8k-line slice the peak anonymous memory
+drops from 986 MB to 412 MB (import baseline 257 MB); on the full file from 2.67 GB to 0.69 GB.
 
 ## 4. Proof of each conjunct (the accepted children)
 
