@@ -689,6 +689,71 @@ theorem Submission.iwl_weighted_tangent_locality :
     rw [hθx]
     simpa using (hf f).add (hkey f)
 
+/-- Restriction of weighted approximate tangent spaces to a Borel set (orientation step of the
+proof of Simon Ch. 6, 8.2).  At `Hᵏ`-a.e. `x ∈ M ∩ A` the measure `θ Hᵏ ⌞ (M \ A)` has zero
+`k`-density (Upper Density Theorem, Simon Ch. 1, 3.6).  As `|1_M θ - 1_{M ∩ A} θ| = 1_{M \ A} θ`,
+the blow-up defect `(rᵏ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M ∩ A} θ| dHᵏ` then tends to `0`, so by
+locality (Simon Ch. 3, 1.7) every weighted tangent space of `(M, θ)` at `x` is one of
+`(M ∩ A, θ)`. -/
+theorem Submission.dmr_weightedTangent_inter :
+    ∀ (N k : ℕ) (M : Set (Eucl N)) (θ : Eucl N → ℝ),
+      NullMeasurableSet M (μHE[k] : Measure (Eucl N)) → (∀ x ∈ M, 0 < θ x) →
+      (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) →
+      ∀ A : Set (Eucl N), MeasurableSet A →
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict (M ∩ A)), ∀ L : Submodule ℝ (Eucl N),
+        HasWeightedApproximateTangentSpaceAt k M θ x L →
+        HasWeightedApproximateTangentSpaceAt k (M ∩ A) θ x L := by
+  intro N k M θ hM hθ hint A hA
+  set μ : Measure (Eucl N) := μHE[k]
+  have hMA : NullMeasurableSet (M ∩ A) μ := hM.inter hA.nullMeasurableSet
+  have hS : NullMeasurableSet (M \ A) μ := hM.diff hA.nullMeasurableSet
+  -- `∫⁻_{(M \ A) ∩ K} θ dHᵏ < ∞` for compact `K`.
+  have hfin : ∀ K : Set (Eucl N), IsCompact K → K ⊆ univ →
+      ∫⁻ z in (M \ A) ∩ K, ENNReal.ofReal (θ z) ∂μ < ∞ := fun K hK _ =>
+    ((hint K hK).mono_set (inter_subset_inter_left _ sdiff_subset)).setLIntegral_lt_top
+  -- Zero density of `θ Hᵏ ⌞ (M \ A)` at `Hᵏ ⌞ (M ∩ A)`-a.e. `x`, which lies in `M ∩ A`.
+  filter_upwards [ae_restrict_of_ae (Submission.lpf_wtc_ae_zero_density_off_set N k univ (M \ A)
+    (fun z => ENNReal.ofReal (θ z)) isOpen_univ hS hfin), ae_restrict_mem₀ hMA] with x hx hxMA
+  have hZ := hx (mem_univ x) fun h => h.2 hxMA.2
+  -- `‖1_M θ - 1_{M ∩ A} θ‖ₑ = 1_{M \ A} ofReal θ`, as `θ > 0` on `M`.
+  have hpt : ∀ z, ‖M.indicator θ z - (M ∩ A).indicator θ z‖ₑ =
+      (M \ A).indicator (fun z => ENNReal.ofReal (θ z)) z := by
+    intro z
+    by_cases hzM : z ∈ M
+    · by_cases hzA : z ∈ A
+      · rw [indicator_of_mem hzM, indicator_of_mem (mem_inter hzM hzA),
+          indicator_of_notMem fun h => h.2 hzA, sub_self, enorm_zero]
+      · rw [indicator_of_mem hzM, indicator_of_notMem fun h => hzA h.2,
+          indicator_of_mem (mem_sdiff_of_mem hzM hzA), sub_zero,
+          Real.enorm_of_nonneg (hθ z hzM).le]
+    · rw [indicator_of_notMem hzM, indicator_of_notMem fun h => hzM h.1,
+        indicator_of_notMem fun h => hzM h.1, sub_zero, enorm_zero]
+  have hF : ∀ s : ℝ, ∫⁻ z in closedBall x s, ‖M.indicator θ z - (M ∩ A).indicator θ z‖ₑ ∂μ =
+      ∫⁻ z in (M \ A) ∩ closedBall x s, ENNReal.ofReal (θ z) ∂μ := by
+    intro s
+    simp_rw [hpt]
+    rw [lintegral_indicator₀ (hS.mono Measure.restrict_le_self),
+      Measure.restrict_restrict' measurableSet_closedBall]
+  -- Tangent locality with `M' = M ∩ A`, `θ' = θ` and `ρ = 1`.
+  intro L hL
+  refine (Submission.iwl_weighted_tangent_locality N k M (M ∩ A) θ θ x hM hMA rfl
+    ⟨1, one_pos, hint _ (isCompact_closedBall x 1),
+      (hint _ (isCompact_closedBall x 1)).mono_set (inter_subset_inter_left _ inter_subset_left)⟩
+    (fun R hR => ?_) L).mp hL
+  -- `ofReal((rᵏ)⁻¹) F(R r) = ofReal(Rᵏ) · (F(R r) / ofReal((R r)ᵏ)) → 0` as `r → 0+`.
+  have hRr : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · simpa using ((continuous_const_mul R).tendsto 0).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r) using mul_pos hR hr
+  have hlim := ENNReal.Tendsto.const_mul (hZ.comp hRr)
+    (Or.inr (ENNReal.ofReal_ne_top (r := R ^ k)))
+  rw [mul_zero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [Function.comp_apply, hF, mul_pow, ENNReal.ofReal_mul (by positivity), ← mul_div_assoc,
+    ENNReal.mul_div_mul_left _ _ (ENNReal.ofReal_pos.mpr (by positivity)).ne'
+      ENNReal.ofReal_ne_top, ENNReal.ofReal_inv_of_pos (by positivity), div_eq_mul_inv, mul_comm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
