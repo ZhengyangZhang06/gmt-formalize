@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.nearest_point-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "Local nearest-point retraction ψ∘g near a chart point: C¹, nearest, normal, fixing N",
+  "statement": "Let P, d ∈ ℕ, N, W ⊆ ℝ^P, V ⊆ ℝ^d, ψ : ℝ^d → ℝ^P and v₀ ∈ V. Assume V and W are open, ψ is C² on V and injective on V, ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(v) is injective for every v ∈ V. Put y := ψ(v₀), and let P̂(v) be the orthogonal projection of ℝ^P onto range Dψ(v). Then there are r > 0, δ > 0 and g : ℝ^P → ℝ^d such that B̄_δ(v₀) ⊆ V, g is C¹ on B_r(y), and g(B_r(y)) ⊆ B_δ(v₀). Moreover, for every x ∈ B_r(y): (i) |x − ψ(g(x))| ≤ |x − z| for all z ∈ N; (ii) P̂(g(x))(x − ψ(g(x))) = 0; (iii) ψ(g(x)) = x if x ∈ N.",
+  "lean_statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ 2 ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (r δ : ℝ) (g : Euclid P → Euclid d), 0 < r ∧ 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ ContDiffOn ℝ 1 g (ball (ψ v₀) r) ∧ MapsTo g (ball (ψ v₀) r) (ball v₀ δ) ∧ (∀ x ∈ ball (ψ v₀) r, ∀ z ∈ N, ‖x - ψ (g x)‖ ≤ ‖x - z‖) ∧ (∀ x ∈ ball (ψ v₀) r, (fderiv ℝ ψ (g x)).range.starProjection (x - ψ (g x)) = 0) ∧ ∀ x ∈ N ∩ ball (ψ v₀) r, ψ (g x) = x",
+  "lean_name": "dor_lmb_ret_nearest_point",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.chart_localization-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.chart_localization-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-898e4c7b39-a1"
+}
