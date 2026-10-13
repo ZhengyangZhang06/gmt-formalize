@@ -14316,10 +14316,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     Submission.hsNorm_starProjection_trace_identities.1 (n + ℓ) (n + ℓ) A
   have hperp : ∀ v : Amb n ℓ, ‖Tᗮ.starProjection v‖ = infDist v (T : Set (Amb n ℓ)) :=
     fun v => Submission.hsNorm_starProjection_trace_identities.2.1 (n + ℓ) T v
-  -- Notation: `g = |p_x - p_T|²`, `w = x' = p_{T⊥}(x - z)`, the cross term `b`, the field `X`.
-  obtain ⟨g, hg⟩ : ∃ g : Amb n ℓ → ℝ, ∀ x, g x = hsNormSq (V.tangentProj x - T.starProjection) :=
-    ⟨_, fun _ => rfl⟩
-  obtain ⟨w, hw⟩ : ∃ w : Amb n ℓ → Amb n ℓ, ∀ x, w x = Tᗮ.starProjection (x - z) :=
   -- Notation: `g = |p_x - p_T|²`, `w = x' = p_{T⊥}(x - ξ)`, the drift term `b`, the field `X`.
   obtain ⟨g, hg⟩ : ∃ g : Amb n ℓ → ℝ, ∀ x, g x = hsNormSq (V.tangentProj x - T.starProjection) :=
     ⟨_, fun _ => rfl⟩
@@ -14334,22 +14330,11 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
   have hζcont : Continuous ζ := hζC1.continuous
   have hDζcont : Continuous (fderiv ℝ ζ) := hζC1.continuous_fderiv one_ne_zero
   have hwcont : Continuous w := by
-    rw [show w = fun x => Tᗮ.starProjection (x - z) from funext hw]
     rw [show w = fun x => Tᗮ.starProjection (x - ξ) from funext hw]
     fun_prop
   have hXcont : Continuous X := by
     rw [show X = fun x => ζ x ^ 2 • w x from funext hX]
     exact (hζcont.pow 2).smul hwcont
-  have hζout : ∀ x, x ∉ closedBall z r → ζ x = 0 := fun x hx =>
-    hζ0 x (not_le.1 fun hle => hx (mem_closedBall.2 hle)).le
-  have hw_le : ∀ x, ‖w x‖ ≤ ‖x - z‖ := by
-    intro x
-    rw [hw]
-    calc ‖Tᗮ.starProjection (x - z)‖ ≤ ‖Tᗮ.starProjection‖ * ‖x - z‖ :=
-          ContinuousLinearMap.le_opNorm _ _
-      _ ≤ 1 * ‖x - z‖ := by gcongr; exact Submodule.starProjection_norm_le _
-      _ = ‖x - z‖ := one_mul _
-  have hwB : ∀ x ∈ closedBall z r, ‖w x‖ ≤ r := fun x hx =>
   have hζout : ∀ x, x ∉ closedBall ξ ρ → ζ x = 0 := fun x hx =>
     hζ0 x (not_le.1 fun h => hx (mem_closedBall.2 h)).le
   have hw_le : ∀ x, ‖w x‖ ≤ ‖x - ξ‖ := by
@@ -14388,29 +14373,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     refine (hhs_le _).trans ?_
     gcongr
     nlinarith [hA2 x, norm_nonneg (V.tangentProj x - T.starProjection)]
-  -- `μ_V(B_r(z)) < ∞` (integrability of `θ` on compact subsets of `U`).
-  have hμB : V.weight (closedBall z r) < ∞ := by
-    have hint := V.integrableOn_mult (closedBall z r) (isCompact_closedBall z r) hBU
-    rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
-      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
-    exact hint.lintegral_lt_top
-  have : IsFiniteMeasure (V.weight.restrict (closedBall z r)) :=
-    isFiniteMeasure_restrict.2 hμB.ne
-  -- `μ_V`-a.e. point lies in `spt V = U ∩ spt μ_V`.
-  have hsupp : ∀ᵐ x ∂V.weight, x ∈ V.support := by
-    have h1 : ∀ᵐ x ∂V.weight, x ∈ V.weight.support := Measure.support_mem_ae
-    have h2 : ∀ᵐ x ∂V.weight, x ∈ U := by
-      have hac : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier :=
-        withDensity_absolutelyContinuous _ _
-      exact hac.ae_le ((ae_restrict_mem₀ V.nullMeasurableSet_carrier).mono
-        fun x hx => V.carrier_subset hx)
-    filter_upwards [h1, h2] with x hx1 hx2
-    exact ⟨hx2, hx1⟩
-  -- Measurability.
-  have hPm : AEStronglyMeasurable (fun x => V.tangentProj x - T.starProjection)
-      (V.weight.restrict (closedBall z r)) :=
-    hmeas.restrict.sub aestronglyMeasurable_const
-  have hgm : AEStronglyMeasurable g (V.weight.restrict (closedBall z r)) := by
   -- `μ_V(B_ρ(ξ)) < ∞` (integrability of `θ` on compact subsets of `U`).
   have hμB : V.weight (closedBall ξ ρ) < ∞ := by
     have hint := V.integrableOn_mult (closedBall ξ ρ) (isCompact_closedBall ξ ρ) hBU
@@ -14430,7 +14392,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
       exact continuous_finsetSum _ fun i _ =>
         ((continuous_id.clm_apply continuous_const).norm).pow 2
     exact hcont.comp_aestronglyMeasurable hPm
-  have hbm : AEStronglyMeasurable b (V.weight.restrict (closedBall z r)) := by
   have hbm : AEStronglyMeasurable b (V.weight.restrict (closedBall ξ ρ)) := by
     rw [show b = fun x => 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))
       from funext hb]
@@ -14443,10 +14404,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     exact (continuous_const.mul hζcont).aestronglyMeasurable.mul
       (happ'.comp_aestronglyMeasurable₂ hDζcont.aestronglyMeasurable
         (happ.comp_aestronglyMeasurable₂ hPm hwcont.aestronglyMeasurable))
-  -- Integrability on `B_r(z)`.
-  have hHint : Integrable H (V.weight.restrict (closedBall z r)) :=
-    hH.1.integrableOn_compact_subset hBU (isCompact_closedBall z r)
-  have hzg : Integrable (fun x => ζ x ^ 2 * g x) (V.weight.restrict (closedBall z r)) := by
   -- Integrability on `B_ρ(ξ)`; `H ∈ L²(μ_V ⌞ B_ρ(ξ))` since the `|H|²` integral is finite.
   have hHint : Integrable H (V.weight.restrict (closedBall ξ ρ)) :=
     hH.1.integrableOn_compact_subset hBU (isCompact_closedBall ξ ρ)
@@ -14458,11 +14415,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     calc ζ x ^ 2 * g x ≤ 1 * ((n + ℓ : ℕ) * 4) :=
           mul_le_mul (by nlinarith) (hgle x) (hg0 x) zero_le_one
       _ = (n + ℓ : ℕ) * 4 := one_mul _
-  have hbi : Integrable b (V.weight.restrict (closedBall z r)) := by
-    refine Integrable.of_bound hbm 12
-      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
-    obtain ⟨hz0, hz1⟩ := hζ01 x
-    have hD : ‖fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))‖ ≤ 3 / r * (2 * r) := by
   have hbi : Integrable b (V.weight.restrict (closedBall ξ ρ)) := by
     refine Integrable.of_bound hbm 12
       ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
@@ -14474,15 +14426,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
         (mul_le_mul (hA2 x) (hwB x hx) (norm_nonneg _) zero_le_two)
     rw [hb, norm_mul, norm_mul, Real.norm_of_nonneg hz0, Real.norm_of_nonneg zero_le_two]
     calc 2 * ζ x * ‖fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))‖
-        ≤ 2 * 1 * (3 / r * (2 * r)) := by gcongr
-      _ = 12 := by field_simp; norm_num
-  have hh2 : Integrable (fun x => ‖w x‖ ^ 2) (V.weight.restrict (closedBall z r)) := by
-    refine Integrable.of_bound (hwcont.norm.pow 2).aestronglyMeasurable (r ^ 2)
-      ((ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_))
-    rw [Real.norm_of_nonneg (sq_nonneg _)]
-    exact pow_le_pow_left₀ (norm_nonneg _) (hwB x hx) 2
-  have hXH : Integrable (fun x => inner ℝ (X x) (H x)) (V.weight.restrict (closedBall z r)) := by
-    refine Integrable.mono' (hHint.norm.const_mul r)
         ≤ 2 * 1 * (3 / ρ * (2 * ρ)) := by gcongr
       _ = 12 := by field_simp; norm_num
   have hh2 : Integrable (fun x => ‖w x‖ ^ 2) (V.weight.restrict (closedBall ξ ρ)) := by
@@ -14505,21 +14448,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     refine (abs_real_inner_le_norm _ _).trans ?_
     gcongr
     rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
-    calc ζ x ^ 2 * ‖w x‖ ≤ 1 * r := mul_le_mul hz2 (hwB x hx) (norm_nonneg _) zero_le_one
-      _ = r := one_mul _
-  -- Step 2: the test field `X = ζ² x'` is admissible.
-  have hX1 : ContDiff ℝ 1 X := by
-    rw [show X = fun x => ζ x ^ 2 • Tᗮ.starProjection (x - z) from funext fun x => by
-      rw [hX, hw]]
-    exact (hζC1.pow 2).smul ((Tᗮ.starProjection).contDiff.comp (contDiff_id.sub contDiff_const))
-  have hXout : ∀ x, x ∉ closedBall z r → X x = 0 := fun x hx => by
-    rw [hX, hζout x hx]
-    simp
-  have hXcs : HasCompactSupport X := HasCompactSupport.intro (isCompact_closedBall z r) hXout
-  have hXts : tsupport X ⊆ U := by
-    refine (closure_minimal (fun x hx => ?_) isClosed_closedBall).trans hBU
-    by_contra hcon
-    exact hx (hXout x hcon)
     calc ζ x ^ 2 * ‖w x‖ ≤ 1 * ρ := mul_le_mul hz2 (hwB x hx) (norm_nonneg _) zero_le_one
       _ = ρ := one_mul _
   -- Step 2: the test field `X = ζ² x'` is admissible.
@@ -14539,39 +14467,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
   have hdiv : ∀ᵐ x ∂V.weight, V.divM X x = 1 / 2 * (ζ x ^ 2 * g x) + b x := by
     filter_upwards [hae] with x hx
     obtain ⟨P, hP, hPx⟩ := hx
-    rw [show X = fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z) from funext fun y => by
-      rw [hX, hw]]
-    -- `DX(x) = ζ(x)² p_{T⊥} + (2ζ(x) Dζ(x)).smulRight x'`; trace against `p_x = p_P`.
-    have hζx : DifferentiableAt ℝ ζ x := hζC1.differentiable one_ne_zero x
-    have hsq : HasFDerivAt (fun y => ζ y ^ 2) ((2 * ζ x) • fderiv ℝ ζ x) x := by
-      simpa using hζx.hasFDerivAt.pow 2
-    have hlin : HasFDerivAt (fun y => Tᗮ.starProjection (y - z)) Tᗮ.starProjection x :=
-      (Tᗮ.starProjection.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const z)).congr_fderiv
-        (ContinuousLinearMap.comp_id _)
-    have hXd := hsq.fun_smul hlin
-    have hx' : T.starProjection (Tᗮ.starProjection (x - z)) = 0 :=
-      (T.starProjection_apply_eq_zero_iff).mpr (Tᗮ.starProjection_apply_mem _)
-    have htr : LinearMap.trace ℝ (Amb n ℓ)
-        (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) =
-          hsNormSq (P.starProjection - T.starProjection) / 2 :=
-      Submission.hsNorm_starProjection_trace_identities.2.2 (n + ℓ) P T (hP.trans hT.symm)
-    have hrk : (((2 * ζ x) • fderiv ℝ ζ x).smulRight (Tᗮ.starProjection (x - z))).toLinearMap ∘ₗ
-        P.starProjection.toLinearMap =
-          (((2 * ζ x) • fderiv ℝ ζ x).toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight
-            (Tᗮ.starProjection (x - z)) := by
-      ext v
-      simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe,
-        ContinuousLinearMap.smulRight_apply, LinearMap.smulRight_apply]
-    rw [RectifiableVarifold.divM, hXd.fderiv, hPx, ContinuousLinearMap.toLinearMap_add,
-      ContinuousLinearMap.toLinearMap_smul, LinearMap.add_comp, LinearMap.smul_comp, hrk, map_add,
-      map_smul, htr, LinearMap.trace_smulRight, hg, hb, hw, hPx]
-    simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe, smul_apply,
-      smul_eq_mul, sub_apply, hx', sub_zero]
-    ring
-  -- Step 5: the first variation identity, localized to `B_r(z)`.
-  have hFV := hH.2 X hX1 hXcs hXts
-  have hL : ∫ x, V.divM X x ∂V.weight =
-      ∫ x in closedBall z r, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight := by
     rw [show X = fun y => ζ y ^ 2 • Tᗮ.starProjection (y - ξ) from funext fun y => by
       rw [hX, hw]]
     rw [Submission.divM_height_test_field_eq n ℓ U V ζ ξ x P T
@@ -14586,11 +14481,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     rw [hb, hζout x hx]
     ring
   have hR : ∫ x, inner ℝ (X x) (H x) ∂V.weight =
-      ∫ x in closedBall z r, inner ℝ (X x) (H x) ∂V.weight :=
-    (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
-      rw [hXout x hx, inner_zero_left]).symm
-  -- Step 6: absorb the cross term (Young), and bound the curvature term by the height.
-  have hb_bd : ∀ x, -b x ≤ 1 / 4 * (ζ x ^ 2 * g x) + 36 / r ^ 2 * ‖w x‖ ^ 2 := by
       ∫ x in closedBall ξ ρ, inner ℝ (X x) (H x) ∂V.weight :=
     (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
       rw [hXout x hx, inner_zero_left]).symm
@@ -14600,7 +14490,6 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
     obtain ⟨hz0, hz1⟩ := hζ01 x
     have hsq : Real.sqrt (g x) ^ 2 = g x := Real.sq_sqrt (hg0 x)
     have hD : |fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x))| ≤
-        3 / r * (Real.sqrt (g x) * ‖w x‖) := by
         3 / ρ * (Real.sqrt (g x) * ‖w x‖) := by
       rw [← Real.norm_eq_abs]
       refine (ContinuousLinearMap.le_opNorm _ _).trans
@@ -14609,77 +14498,124 @@ theorem tilt_excess_height_estimate : TiltExcessHeightEstimate := by
         (mul_le_mul_of_nonneg_right ?_ (norm_nonneg _))
       rw [hg]
       exact hopHS _
-    have h1 : -b x ≤ 2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) := by
+    have h1 : -b x ≤ 2 * ζ x * (3 / ρ * (Real.sqrt (g x) * ‖w x‖)) := by
       rw [hb]
       calc -(2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)))
           = 2 * ζ x * -fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (w x)) := by ring
-        _ ≤ 2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) :=
+        _ ≤ 2 * ζ x * (3 / ρ * (Real.sqrt (g x) * ‖w x‖)) :=
           mul_le_mul_of_nonneg_left ((neg_le_abs _).trans hD) (by positivity)
-    have e : 1 / 4 * (ζ x ^ 2 * g x) + 36 / r ^ 2 * ‖w x‖ ^ 2 -
-        2 * ζ x * (3 / r * (Real.sqrt (g x) * ‖w x‖)) =
-        (ζ x * Real.sqrt (g x) / 2 - 6 / r * ‖w x‖) ^ 2 := by
+    have e : 1 / 4 * (ζ x ^ 2 * g x) + 36 / ρ ^ 2 * ‖w x‖ ^ 2 -
+        2 * ζ x * (3 / ρ * (Real.sqrt (g x) * ‖w x‖)) =
+        (ζ x * Real.sqrt (g x) / 2 - 6 / ρ * ‖w x‖) ^ 2 := by
       linear_combination (-(1 / 4) * ζ x ^ 2) * hsq
-    linarith [sq_nonneg (ζ x * Real.sqrt (g x) / 2 - 6 / r * ‖w x‖)]
-  have hXH_bd : ∀ᵐ x ∂(V.weight.restrict (closedBall z r)),
-      -inner ℝ (X x) (H x) ≤ h * ‖H x‖ := by
-    filter_upwards [ae_restrict_of_ae hsupp, ae_restrict_mem measurableSet_closedBall]
-      with x hxs hxB
+    linarith [sq_nonneg (ζ x * Real.sqrt (g x) / 2 - 6 / ρ * ‖w x‖)]
+  have hXH_bd : ∀ x, -inner ℝ (X x) (H x) ≤
+      1 / 2 / ρ ^ 2 * ‖w x‖ ^ 2 + ρ ^ 2 / 2 * ‖H x‖ ^ 2 := by
+    intro x
     obtain ⟨hz0, hz1⟩ := hζ01 x
     have hz2 : ζ x ^ 2 ≤ 1 := by nlinarith
-    have hwh : ‖w x‖ ≤ h := by rw [hw, hperp]; exact hht x ⟨hxs, hxB⟩
-    refine (neg_le_abs _).trans ((abs_real_inner_le_norm _ _).trans ?_)
-    gcongr
-    rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
-    calc ζ x ^ 2 * ‖w x‖ ≤ 1 * h := mul_le_mul hz2 hwh (norm_nonneg _) zero_le_one
-      _ = h := one_mul _
-  have e1 : ∫ x in closedBall z r, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight =
-      1 / 2 * ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight +
-        ∫ x in closedBall z r, b x ∂V.weight := by
+    have h1 : -inner ℝ (X x) (H x) ≤ ‖w x‖ * ‖H x‖ := by
+      refine (neg_le_abs _).trans ((abs_real_inner_le_norm _ _).trans ?_)
+      gcongr
+      rw [hX, norm_smul, Real.norm_of_nonneg (sq_nonneg _)]
+      calc ζ x ^ 2 * ‖w x‖ ≤ 1 * ‖w x‖ := mul_le_mul_of_nonneg_right hz2 (norm_nonneg _)
+        _ = ‖w x‖ := one_mul _
+    have e : 1 / 2 / ρ ^ 2 * ‖w x‖ ^ 2 + ρ ^ 2 / 2 * ‖H x‖ ^ 2 - ‖w x‖ * ‖H x‖ =
+        (‖w x‖ / ρ - ρ * ‖H x‖) ^ 2 / 2 := by
+      field_simp
+      ring
+    linarith [sq_nonneg (‖w x‖ / ρ - ρ * ‖H x‖)]
+  have e1 : ∫ x in closedBall ξ ρ, (1 / 2 * (ζ x ^ 2 * g x) + b x) ∂V.weight =
+      1 / 2 * ∫ x in closedBall ξ ρ, ζ x ^ 2 * g x ∂V.weight +
+        ∫ x in closedBall ξ ρ, b x ∂V.weight := by
     rw [integral_add (hzg.const_mul _) hbi, integral_const_mul]
-  have e2 : -∫ x in closedBall z r, b x ∂V.weight ≤
-      1 / 4 * ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight +
-        36 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight := by
-    have hle := integral_mono hbi.neg ((hzg.const_mul (1 / 4)).add (hh2.const_mul (36 / r ^ 2)))
+  have e2 : -∫ x in closedBall ξ ρ, b x ∂V.weight ≤
+      1 / 4 * ∫ x in closedBall ξ ρ, ζ x ^ 2 * g x ∂V.weight +
+        36 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight := by
+    have h := integral_mono hbi.neg ((hzg.const_mul (1 / 4)).add (hh2.const_mul (36 / ρ ^ 2)))
       hb_bd
-    simp only [Pi.neg_apply, Pi.add_apply] at hle
+    simp only [Pi.neg_apply, Pi.add_apply] at h
     rwa [integral_neg, integral_add (hzg.const_mul _) (hh2.const_mul _), integral_const_mul,
-      integral_const_mul] at hle
-  have e3 : -∫ x in closedBall z r, inner ℝ (X x) (H x) ∂V.weight ≤
-      h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
-    have hle := integral_mono_ae hXH.neg (hHint.norm.const_mul h) hXH_bd
-    simp only [Pi.neg_apply] at hle
-    rwa [integral_neg, integral_const_mul] at hle
-  have key : ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight ≤
-      144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight +
-        4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
+      integral_const_mul] at h
+  have e3 : -∫ x in closedBall ξ ρ, inner ℝ (X x) (H x) ∂V.weight ≤
+      1 / 2 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight +
+        ρ ^ 2 / 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight := by
+    have h := integral_mono hXH.neg
+      ((hh2.const_mul (1 / 2 / ρ ^ 2)).add (hk2.const_mul (ρ ^ 2 / 2))) hXH_bd
+    simp only [Pi.neg_apply, Pi.add_apply] at h
+    rwa [integral_neg, integral_add (hh2.const_mul _) (hk2.const_mul _), integral_const_mul,
+      integral_const_mul] at h
+  have key : ∫ x in closedBall ξ ρ, ζ x ^ 2 * g x ∂V.weight ≤
+      146 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight +
+        2 * ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight := by
     have hid := hFV
     rw [hL, hR, e1] at hid
-    have r1 : 144 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight =
-        4 * (36 / r ^ 2 * ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight) := by ring
-    have r2 : 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight =
-        4 * (h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight) := by ring
+    have r1 : 146 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight =
+        4 * (36 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) +
+          4 * (1 / 2 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) := by ring
+    have r2 : 2 * ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight =
+        4 * (ρ ^ 2 / 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight) := by ring
     linarith
-  -- Step 7: `ζ = 1` on `B_{r/2}(z)`, then rescale.
-  have hB2 : ∫ x in closedBall z (r / 2), g x ∂V.weight ≤
-      ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight := by
-    calc ∫ x in closedBall z (r / 2), g x ∂V.weight
-        = ∫ x in closedBall z (r / 2), ζ x ^ 2 * g x ∂V.weight :=
+  -- Step 6: `ζ = 1` on `B_{ρ/2}(ξ)`.
+  have hB2 : ∫ x in closedBall ξ (ρ / 2), g x ∂V.weight ≤
+      ∫ x in closedBall ξ ρ, ζ x ^ 2 * g x ∂V.weight := by
+    calc ∫ x in closedBall ξ (ρ / 2), g x ∂V.weight
+        = ∫ x in closedBall ξ (ρ / 2), ζ x ^ 2 * g x ∂V.weight :=
           setIntegral_congr_fun measurableSet_closedBall fun x hx => by rw [hζ1 x hx]; ring
-      _ ≤ ∫ x in closedBall z r, ζ x ^ 2 * g x ∂V.weight :=
+      _ ≤ ∫ x in closedBall ξ ρ, ζ x ^ 2 * g x ∂V.weight :=
           setIntegral_mono_set hzg (ae_of_all _ fun x => mul_nonneg (sq_nonneg _) (hg0 x))
             (closedBall_subset_closedBall (by linarith)).eventuallyLE
-  have hId : ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight =
-      ∫ x in closedBall z r, ‖w x‖ ^ 2 ∂V.weight := by
+  -- Step 7: rescale and pass to `ℝ≥0∞`.
+  have hIk0 : 0 ≤ ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight :=
+    integral_nonneg fun x => sq_nonneg _
+  have hId : ∫ x in closedBall ξ ρ, (infDist (x - ξ) (T : Set (Amb n ℓ)) / ρ) ^ 2 ∂V.weight =
+      (∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) / ρ ^ 2 := by
+    rw [← integral_div]
     congr 1
     funext x
-    rw [hw, hperp]
-  have hgoal : ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight =
-      ∫ x in closedBall z (r / 2), g x ∂V.weight := by
-    congr 1
-    funext x
-    rw [hg]
-  rw [hgoal, hId, show (144 : ℝ) * (r ^ 2)⁻¹ = 144 / r ^ 2 by ring]
-  exact hB2.trans key
+    rw [hw, hperp, div_pow]
+  have hk : ∫⁻ x in closedBall ξ ρ, ‖H x‖ₑ ^ 2 ∂V.weight =
+      ENNReal.ofReal (∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight) := by
+    rw [ofReal_integral_eq_lintegral_ofReal hk2 (ae_of_all _ fun x => sq_nonneg _)]
+    refine lintegral_congr fun x => ?_
+    rw [ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]
+  have hrpow : ρ ^ ((2 : ℝ) - n) = ρ ^ 2 / ρ ^ n := by
+    rw [Real.rpow_sub hρ, Real.rpow_two, Real.rpow_natCast]
+  have hreal : V.tiltExcess ξ (ρ / 2) T ≤
+      146 * 2 ^ (n + 1) * (ρ ^ n)⁻¹ *
+          ∫ x in closedBall ξ ρ, (infDist (x - ξ) (T : Set (Amb n ℓ)) / ρ) ^ 2 ∂V.weight +
+        146 * 2 ^ (n + 1) * ρ ^ ((2 : ℝ) - n) *
+          ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight := by
+    have hG := hB2.trans key
+    have h2n : ((ρ / 2) ^ n)⁻¹ = 2 ^ n / ρ ^ n := by rw [div_pow, inv_div]
+    rw [RectifiableVarifold.tiltExcess, h2n, hId, hrpow]
+    simp_rw [← hg]
+    calc 2 ^ n / ρ ^ n * ∫ x in closedBall ξ (ρ / 2), g x ∂V.weight
+        ≤ 2 ^ n / ρ ^ n * (146 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight +
+            2 * ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight) := by gcongr
+      _ ≤ 146 * 2 ^ (n + 1) * (ρ ^ n)⁻¹ *
+            ((∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) / ρ ^ 2) +
+          146 * 2 ^ (n + 1) * (ρ ^ 2 / ρ ^ n) *
+            ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight := by
+        have h0 : 0 ≤ 2 ^ n / ρ ^ n *
+            (146 * ((∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) / ρ ^ 2) +
+              290 * (ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight)) := by positivity
+        have e : 146 * 2 ^ (n + 1) * (ρ ^ n)⁻¹ *
+              ((∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) / ρ ^ 2) +
+            146 * 2 ^ (n + 1) * (ρ ^ 2 / ρ ^ n) * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight -
+            2 ^ n / ρ ^ n * (146 / ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight +
+              2 * ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight) =
+            2 ^ n / ρ ^ n *
+              (146 * ((∫ x in closedBall ξ ρ, ‖w x‖ ^ 2 ∂V.weight) / ρ ^ 2) +
+                290 * (ρ ^ 2 * ∫ x in closedBall ξ ρ, ‖H x‖ ^ 2 ∂V.weight)) := by
+          ring
+        linarith
+  have hC0 : 0 ≤ 146 * 2 ^ (n + 1) * ρ ^ ((2 : ℝ) - n) := by positivity
+  have hT0 : 0 ≤ 146 * 2 ^ (n + 1) * (ρ ^ n)⁻¹ *
+      ∫ x in closedBall ξ ρ, (infDist (x - ξ) (T : Set (Amb n ℓ)) / ρ) ^ 2 ∂V.weight :=
+    mul_nonneg (by positivity) (integral_nonneg fun x => sq_nonneg _)
+  rw [hk, ← ENNReal.ofReal_mul hC0, ← ENNReal.ofReal_add hT0 (mul_nonneg hC0 hIk0)]
+  exact ENNReal.ofReal_le_ofReal hreal
 
 set_option maxHeartbeats 1000000 in
 /-- **Tilt-excess decay at the origin at the natural scale `σ = δρ`** (Simon Ch. 5, proof of
