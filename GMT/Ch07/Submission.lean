@@ -451,6 +451,111 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.5** (codimension one, oriented normal frame): for a unit vector `ν ∈ ℝ^{n+1}`,
+`n ≥ 1`, some orthonormal basis `σ` of `ν^⊥` has `det[ν, σ] = −1`, where `[ν, σ]` is the matrix
+with columns `ν, σ₀, …, σₙ₋₁`.  For an orthonormal basis `τ` of `ν^⊥`, `W = [ν, τ]` has
+orthonormal columns, so `WᵀW = 1` and `d = det W` has `d² = 1`; `σ` replaces `τ₀` by `−d τ₀`,
+which keeps the frame orthonormal with the same span and gives `det[ν, σ] = −d² = −1`. -/
+theorem Submission.codim1_lur_no_oriented_normal_frame : ∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r) = -1 := by
+  intro n ν hn hν
+  -- `Q = ν^⊥` has dimension `n`
+  have hν0 : ν ≠ 0 := by
+    rintro rfl
+    simp at hν
+  have : Fact (Module.finrank ℝ (Euclid (n + 1)) = n + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hQn : Module.finrank ℝ (Submodule.span ℝ {ν})ᗮ = n :=
+    Submodule.finrank_orthogonal_span_singleton hν0
+  -- an orthonormal basis `τ` of `Q` indexed by `Fin n`: it spans `Q` and is orthogonal to `ν`
+  let b : OrthonormalBasis (Fin n) ℝ (Submodule.span ℝ {ν})ᗮ :=
+    (stdOrthonormalBasis ℝ (Submodule.span ℝ {ν})ᗮ).reindex (finCongr hQn)
+  let τ : Fin n → Euclid (n + 1) := fun k => (b k : Euclid (n + 1))
+  have hτo : Orthonormal ℝ τ :=
+    b.orthonormal.comp_linearIsometry (Submodule.span ℝ {ν})ᗮ.subtypeₗᵢ
+  have hτs : Submodule.span ℝ (Set.range τ) = (Submodule.span ℝ {ν})ᗮ := by
+    have hr : Set.range τ = (Submodule.span ℝ {ν})ᗮ.subtype '' Set.range b := by
+      rw [← Set.range_comp]
+      rfl
+    have hb : Submodule.span ℝ (Set.range b) = ⊤ := by
+      rw [← b.coe_toBasis]
+      exact b.toBasis.span_eq
+    rw [hr, Submodule.span_image, hb, Submodule.map_top, Submodule.range_subtype]
+  have hτν : ∀ k, inner ℝ ν (τ k) = 0 := fun k =>
+    Submodule.mem_orthogonal_singleton_iff_inner_right.mp (b k).2
+  -- `u = (ν, τ₀, …, τₙ₋₁)` is orthonormal
+  let u : Fin (n + 1) → Euclid (n + 1) := Fin.cons ν τ
+  have hu : Orthonormal ℝ u := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    induction i using Fin.cases with
+    | zero =>
+      induction j using Fin.cases with
+      | zero => simp [u, hν]
+      | succ j => simp [u, hτν, (Fin.succ_ne_zero j).symm]
+    | succ i =>
+      induction j using Fin.cases with
+      | zero => simp [u, real_inner_comm, hτν, Fin.succ_ne_zero]
+      | succ j => simp [u, (orthonormal_iff_ite.mp hτo) i j]
+  -- `W = [ν, τ]` has `WᵀW = 1`, so `d = det W` satisfies `d * d = 1`
+  let W : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ := Matrix.of fun r c => u c r
+  have hWW : W.transpose * W = 1 := by
+    ext c c'
+    rw [Matrix.mul_apply, Matrix.one_apply, ← (orthonormal_iff_ite.mp hu) c c']
+    simp [W, PiLp.inner_apply, mul_comm]
+  set d := W.det with hd_def
+  have hd : d * d = 1 := by
+    calc d * d = (W.transpose * W).det := by rw [Matrix.det_mul, Matrix.det_transpose]
+      _ = 1 := by rw [hWW, Matrix.det_one]
+  -- `σ` replaces `τ i₀` by `(-d) • τ i₀` (`i₀ = 0`, as `n ≥ 1`)
+  let i0 : Fin n := ⟨0, hn⟩
+  let σ : Fin n → Euclid (n + 1) := Function.update τ i0 ((-d) • τ i0)
+  have hσo : Orthonormal ℝ σ := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    have hτ := orthonormal_iff_ite.mp hτo
+    by_cases hi : i = i0 <;> by_cases hj : j = i0
+    · subst hi hj
+      simp only [σ, Function.update_self, real_inner_smul_left, real_inner_smul_right, hτ,
+        ↓reduceIte, mul_one]
+      linear_combination hd
+    · subst hi
+      simp [σ, real_inner_smul_left, Function.update_of_ne hj, hτ, Ne.symm hj]
+    · subst hj
+      simp [σ, real_inner_smul_right, hτ, hi]
+    · simp [σ, Function.update_of_ne hi, Function.update_of_ne hj, hτ]
+  have hσs : Submodule.span ℝ (Set.range σ) = Submodule.span ℝ (Set.range τ) := by
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      by_cases hi : i = i0
+      · subst hi
+        simp only [σ, Function.update_self]
+        exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i0, rfl⟩)
+      · simp only [σ, Function.update_of_ne hi]
+        exact Submodule.subset_span ⟨i, rfl⟩
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      by_cases hi : i = i0
+      · subst hi
+        have h : τ i0 = (-d) • σ i0 := by
+          simp only [σ, Function.update_self, smul_smul, neg_mul_neg, hd, one_smul]
+        rw [h]
+        exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i0, rfl⟩)
+      · have h : τ i = σ i := by simp only [σ, Function.update_of_ne hi]
+        rw [h]
+        exact Submodule.subset_span ⟨i, rfl⟩
+  refine ⟨σ, hσo, hσs.trans hτs, ?_⟩
+  -- `[ν, σ]` is `W` with column `i₀ + 1` multiplied by `-d`, so its determinant is `-d * d`
+  have hM : (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r)
+      = W.updateCol i0.succ ((-d) • fun r => W r i0.succ) := by
+    ext r c
+    simp only [σ, Fin.cons_update, Matrix.of_apply, Matrix.updateCol_apply, Function.update_apply,
+      W, u]
+    split_ifs with h
+    · subst h
+      simp
+    · rfl
+  rw [hM, Matrix.det_updateCol_smul, Matrix.updateCol_eq_self, ← hd_def, neg_mul, hd]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
