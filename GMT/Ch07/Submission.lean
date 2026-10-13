@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Continuity of the inverse of a proper injective chart at a point (Simon Ch. 2, (4.1)–(4.2)):
+if `ψ` is continuous and injective on `V`, `ψ(V) ⊆ W`, and `V ∩ ψ⁻¹(K)` is compact for every
+compact `K ⊆ W`, then `ψ(v') → ψ(v)` with `v' ∈ V` forces `v' → v`.  Otherwise there are `vⱼ ∈ V`
+with `ψ(vⱼ) → ψ(v)` and `|vⱼ - v| ≥ ε`; they lie in the compact set `V ∩ ψ⁻¹({ψ(v)} ∪ {ψ(vⱼ)})`,
+and a limit `w ∈ V` of a subsequence has `ψ(w) = ψ(v)`, so `w = v`, a contradiction. -/
+theorem Submission.dsmc_chart_inverse_continuity : ∀ (P d : ℕ) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), ContinuousOn ψ V → InjOn ψ V → ψ '' V ⊆ W → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → ∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε := by
+  intro P d V W ψ hψ hinj hVW hproper v hv ε hε
+  by_contra! hfar
+  -- `δ = 1/(j+1)` fails: `vⱼ ∈ V`, `|ψ(vⱼ) - ψ(v)| < 1/(j+1)` and `|vⱼ - v| ≥ ε`
+  choose u huV hu_near hu_far using fun j : ℕ => hfar (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hlim : Tendsto (fun j => ψ (u j)) atTop (𝓝 (ψ v)) :=
+    tendsto_iff_dist_tendsto_zero.2 <| squeeze_zero (fun j => dist_nonneg)
+      (fun j => (hu_near j).le) tendsto_one_div_add_atTop_nhds_zero_nat
+  -- `K = {ψ(v)} ∪ {ψ(vⱼ)}` is a compact subset of `W`, so `V ∩ ψ⁻¹(K)` is compact
+  have hKW : insert (ψ v) (range fun j => ψ (u j)) ⊆ W := by
+    rintro _ (rfl | ⟨j, rfl⟩)
+    exacts [hVW (mem_image_of_mem ψ hv), hVW (mem_image_of_mem ψ (huV j))]
+  obtain ⟨w, ⟨hwV, -⟩, φ, hφ, huw⟩ := (hproper _ hKW hlim.isCompact_insert_range).tendsto_subseq
+    (x := u) fun j => ⟨huV j, Or.inr ⟨j, rfl⟩⟩
+  -- `ψ(v_{φ(i)})` tends to `ψ(w)` (continuity on `V`) and to `ψ(v)`, so `w = v`
+  have hw : w = v := hinj hwV hv <| tendsto_nhds_unique
+    ((hψ w hwV).tendsto.comp (tendsto_nhdsWithin_iff.2 ⟨huw, .of_forall fun i => huV (φ i)⟩))
+    (hlim.comp hφ.tendsto_atTop)
+  rw [hw] at huw
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1 huw ε hε
+  exact absurd (hu_far (φ N)) (not_le.2 (hN N le_rfl))
+
+/-- Images of open sets under a proper injective chart are relatively open: if `W` is open, `ψ` is
+continuous and injective on `V` with `ψ(V) = W ∩ M`, and `V ∩ ψ⁻¹(K)` is compact for every compact
+`K ⊆ W`, then every open `V₁ ⊆ V` has `ψ(V₁) = M ∩ N₀` for some open `N₀`.  For `v ∈ V₁`,
+continuity of the inverse (`Submission.dsmc_chart_inverse_continuity`) gives `δᵥ > 0` such that
+`v' ∈ V` and `|ψ(v') - ψ(v)| < δᵥ` force `v' ∈ V₁`; take `N₀ = ⋃_{v ∈ V₁} W ∩ B_{δᵥ}(ψ(v))`. -/
+theorem Submission.idtp_ccd_scsp_li_chart_image_open : ∀ (P d : ℕ) (M W : Set (Euclid P)) (V V₁ : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → IsOpen V₁ → V₁ ⊆ V → ∃ N₀ : Set (Euclid P), IsOpen N₀ ∧ M ∩ N₀ = ψ '' V₁ := by
+  intro P d M W V V₁ ψ hW hψ hinj hVM hproper hV₁ hV₁V
+  -- `δᵥ`: `B_ε(v) ⊆ V₁`, and continuity of the inverse at `v` for this `ε`
+  have hrad : ∀ v ∈ V₁, ∃ δ > 0, ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → v' ∈ V₁ := by
+    intro v hv
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hV₁ v hv
+    obtain ⟨δ, hδ, hδε⟩ := Submission.dsmc_chart_inverse_continuity P d V W ψ hψ hinj
+      (hVM ▸ inter_subset_left) hproper v (hV₁V hv) ε hε
+    exact ⟨δ, hδ, fun v' hv' hd => hball (mem_ball.2 (hδε v' hv' hd))⟩
+  choose δ hδ hδV₁ using hrad
+  refine ⟨⋃ v, ⋃ hv : v ∈ V₁, W ∩ ball (ψ v) (δ v hv),
+    isOpen_iUnion fun v => isOpen_iUnion fun hv => hW.inter isOpen_ball, ?_⟩
+  ext x
+  simp only [mem_inter_iff, mem_iUnion, mem_image]
+  constructor
+  · -- a point of `M ∩ W ∩ B_{δᵥ}(ψ(v))` is `ψ(v')` with `v' ∈ V`, hence `v' ∈ V₁`
+    rintro ⟨hxM, v, hv, hxW, hxb⟩
+    obtain ⟨v', hv'V, rfl⟩ : x ∈ ψ '' V := hVM ▸ ⟨hxW, hxM⟩
+    exact ⟨v', hδV₁ v hv v' hv'V (mem_ball.1 hxb), rfl⟩
+  · -- `ψ(v) ∈ W ∩ M` and `ψ(v) ∈ B_{δᵥ}(ψ(v))`
+    rintro ⟨v, hv, rfl⟩
+    have h : ψ v ∈ W ∩ M := hVM ▸ mem_image_of_mem ψ (hV₁V hv)
+    exact ⟨h.2, v, hv, h.1, mem_ball_self (hδ v hv)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
