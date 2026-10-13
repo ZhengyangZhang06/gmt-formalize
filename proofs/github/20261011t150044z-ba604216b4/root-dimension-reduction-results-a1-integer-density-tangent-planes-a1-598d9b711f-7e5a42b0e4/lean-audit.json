@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1e7a12b6a0e4be038652c5f280fb43abfa4107c0e3196a1a0d522238e562c94e",
+  "git_delta": {
+    "base_commit": "1ff5f2321a47d73f804ed25e71cd54a2e0b13c20",
+    "candidate_commit": "6f418f3d4617913544d44198002cb37c90302066",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idod_nearby_center_ball_mass_bound",
+    "diff_sha256": "c42847e0e57eacf0eb07037dd9c71f26165d8015ae2a480f2e7cd23af8376ad9",
+    "source_sha256": "4f4d70d00609ce99188ce194391ee2c8f65dc6eb4992c9239d62dd3379458ad8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idod_nearby_center_ball_mass_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y y' : Euclid P) (Λ r τ θ₁ θ₂ : ℝ), 0 ≤ Λ → 0 < τ → τ < r → dist y' y < τ → θ₁ * (r / (r - τ)) ^ n ≤ θ₂ → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ)) (Ioo 0 r) → ENNReal.ofReal (Real.exp (Λ * r) / r ^ n) * T.massOn (ball y r) ≤ unitBallVolume n * ENNReal.ofReal θ₁ → ∀ ρ : ℝ, 0 < ρ → ρ < r - τ → T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
