@@ -451,6 +451,157 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Discrete growth** (Simon Ch. 3, 4.3, (10), integrated in discrete steps).  If `V > 0` on
+`(0, ρ₁)` and `V(ρ)^{m/(m+1)} ≤ (K/δ)(V(ρ+δ) − V(ρ))` whenever `ρ, δ > 0`, `ρ + δ < ρ₁`, then
+`(ρ/(2K(m+1)))^{m+1} ≤ V(ρ)` for `0 < ρ < ρ₁`.  With `W = V^{1/(m+1)}` and the Bernoulli bound
+`xⁿ(x + n(y − x)) ≤ x yⁿ` (`x, y ≥ 0`), one step of length `δ` gives
+`δw ≤ (W(r+δ) − W(r))(K(m+1)w + mδ)` for `0 ≤ w ≤ W(r)`.  Summing `N` such steps with
+`δ = ρ/(2N)` from `ρ/2`, `w = W(ρ/2)` and `N > mρ²/(4K²(m+1)²W(ρ/2)²)` gives
+`W(ρ) ≥ ρ/(2K(m+1))`. -/
+theorem Submission.codim1_rdo_dg_vdl_discrete_growth : ∀ (m : ℕ) (K ρ₁ : ℝ) (V : ℝ → ℝ), 0 < K → (∀ r : ℝ, 0 < r → r < ρ₁ → 0 < V r) → (∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → V ρ ^ ((m : ℝ) / (m + 1)) ≤ K / δ * (V (ρ + δ) - V ρ)) → ∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → (ρ / (2 * K * (m + 1))) ^ (m + 1) ≤ V ρ := by
+  intro m K ρ₁ V hK hV hdiff ρ hρ hρ₁
+  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+  have hm1 : (m : ℝ) + 1 ≠ 0 := by positivity
+  have hKm : 0 < K * (m + 1) := by positivity
+  -- Bernoulli's inequality `xⁿ (x + n (y − x)) ≤ x yⁿ` for `x, y ≥ 0`
+  have bern : ∀ n : ℕ, ∀ x y : ℝ, 0 ≤ x → 0 ≤ y → x ^ n * (x + n * (y - x)) ≤ x * y ^ n := by
+    intro n
+    induction n with
+    | zero => intro x y _ _; simp
+    | succ n ih =>
+      intro x y hx hy
+      have h1 := mul_le_mul_of_nonneg_left (ih x y hx hy) hy
+      have h2 : 0 ≤ x ^ n * (n * (y - x) ^ 2) :=
+        mul_nonneg (pow_nonneg hx n) (mul_nonneg (Nat.cast_nonneg n) (sq_nonneg (y - x)))
+      rw [pow_succ, pow_succ]
+      push_cast
+      linarith
+  -- Step 2: `W = V^{1/(m+1)}`, so `W > 0`, `W^{m+1} = V` and `W^m = V^{m/(m+1)}`
+  obtain ⟨W, hWpos, hWpow, hWpowm⟩ : ∃ W : ℝ → ℝ, (∀ r, 0 < r → r < ρ₁ → 0 < W r) ∧
+      (∀ r, 0 < r → r < ρ₁ → W r ^ (m + 1) = V r) ∧
+      (∀ r, 0 < r → r < ρ₁ → W r ^ m = V r ^ ((m : ℝ) / (m + 1))) := by
+    refine ⟨fun r => V r ^ ((1 : ℝ) / (m + 1)), fun r h1 h2 => Real.rpow_pos_of_pos (hV r h1 h2) _,
+      fun r h1 h2 => ?_, fun r h1 h2 => ?_⟩
+    · show (V r ^ ((1 : ℝ) / (m + 1))) ^ (m + 1) = V r
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (hV r h1 h2).le, Nat.cast_add_one,
+        one_div_mul_cancel hm1, Real.rpow_one]
+    · show (V r ^ ((1 : ℝ) / (m + 1))) ^ m = V r ^ ((m : ℝ) / (m + 1))
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (hV r h1 h2).le, one_div_mul_eq_div]
+  -- Step 3, algebra: `δ bᵐ ≤ K (a^{m+1} − b^{m+1})` and `0 ≤ w ≤ b` give
+  -- `δ w ≤ (a − b) (K (m+1) w + m δ)`
+  have alg : ∀ a b δ w : ℝ, 0 < a → 0 < b → 0 < δ → 0 ≤ w → w ≤ b →
+      δ * b ^ m ≤ K * (a ^ (m + 1) - b ^ (m + 1)) →
+      δ * w ≤ (a - b) * (K * (m + 1) * w + m * δ) := by
+    intro a b δ w ha hb hδ hw0 hwb hd
+    rw [pow_succ, pow_succ] at hd
+    have hP : 0 < a ^ m := pow_pos ha m
+    have hQ : 0 < b ^ m := pow_pos hb m
+    have hB1 := bern (m + 1) a b ha.le hb.le
+    rw [pow_succ, pow_succ] at hB1
+    push_cast at hB1
+    have hB0 := bern m a b ha.le hb.le
+    -- `a^{m+1} − b^{m+1} ≤ (m+1) aᵐ (a − b)`
+    have h1 : a ^ m * a - b ^ m * b ≤ (m + 1) * a ^ m * (a - b) := by
+      have h : a * (a ^ m * a - b ^ m * b) ≤ a * ((m + 1) * a ^ m * (a - b)) := by linarith
+      exact le_of_mul_le_mul_left h ha
+    have h2 : δ * b ^ m ≤ K * (m + 1) * a ^ m * (a - b) := by
+      have := mul_le_mul_of_nonneg_left h1 hK.le
+      linarith
+    have hab : 0 ≤ a - b := by
+      by_contra hcon
+      have : K * (m + 1) * a ^ m * (a - b) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hKm.le hP.le) (not_le.mp hcon).le
+      have : 0 < δ * b ^ m := mul_pos hδ hQ
+      linarith
+    -- `δ (a − m (a − b)) ≤ K (m+1) a (a − b)`
+    have h3 : δ * (a + m * (b - a)) ≤ K * (m + 1) * a * (a - b) := by
+      have e1 := mul_le_mul_of_nonneg_left hB0 hδ.le
+      have e2 := mul_le_mul_of_nonneg_left h2 ha.le
+      have h4 : a ^ m * (δ * (a + m * (b - a))) ≤ a ^ m * (K * (m + 1) * a * (a - b)) := by
+        linarith
+      exact le_of_mul_le_mul_left h4 hP
+    have h5 : a * (δ * w) ≤ a * ((a - b) * (K * (m + 1) * w + m * δ)) := by
+      have e1 := mul_le_mul_of_nonneg_left h3 hw0
+      have e2 : 0 ≤ (a - b) * m * δ * (a - w) :=
+        mul_nonneg (mul_nonneg (mul_nonneg hab hm0) hδ.le) (by linarith)
+      linarith
+    exact le_of_mul_le_mul_left h5 ha
+  -- Step 3: one step of length `δ`
+  have step : ∀ r δ w : ℝ, 0 < r → 0 < δ → r + δ < ρ₁ → 0 ≤ w → w ≤ W r →
+      δ * w ≤ (W (r + δ) - W r) * (K * (m + 1) * w + m * δ) := by
+    intro r δ w hr hδ hrδ hw0 hwb
+    have hr1 : r < ρ₁ := by linarith
+    have hrδ0 : 0 < r + δ := by linarith
+    have hd := hdiff r δ hr hδ hrδ
+    rw [← hWpowm r hr hr1, ← hWpow r hr hr1, ← hWpow (r + δ) hrδ0 hrδ] at hd
+    refine alg _ _ δ w (hWpos _ hrδ0 hrδ) (hWpos r hr hr1) hδ hw0 hwb ?_
+    have hδne : δ ≠ 0 := hδ.ne'
+    calc δ * W r ^ m ≤ δ * (K / δ * (W (r + δ) ^ (m + 1) - W r ^ (m + 1))) :=
+          mul_le_mul_of_nonneg_left hd hδ.le
+      _ = K * (W (r + δ) ^ (m + 1) - W r ^ (m + 1)) := by field_simp
+  -- Step 4′: `N` steps of length `δ = ρ/(2N)` from `ρ/2`
+  have hρ2 : 0 < ρ / 2 := by linarith
+  obtain ⟨w₀, hw₀⟩ : ∃ w₀, w₀ = W (ρ / 2) := ⟨_, rfl⟩
+  have hw₀pos : 0 < w₀ := by rw [hw₀]; exact hWpos _ hρ2 (by linarith)
+  obtain ⟨N, hN⟩ := exists_nat_gt ((m : ℝ) * ρ ^ 2 / (4 * (K * (m + 1)) ^ 2 * w₀ ^ 2))
+  have hNpos : (0 : ℝ) < N := lt_of_le_of_lt (by positivity) hN
+  have hNne : (N : ℝ) ≠ 0 := hNpos.ne'
+  obtain ⟨δ, hδ⟩ : ∃ δ : ℝ, δ = ρ / (2 * N) := ⟨_, rfl⟩
+  have hδpos : 0 < δ := by rw [hδ]; positivity
+  have hNδ : (N : ℝ) * δ = ρ / 2 := by
+    rw [hδ]
+    field_simp
+  have ind : ∀ j : ℕ, j ≤ N →
+      (j : ℝ) * δ * w₀ ≤ (K * (m + 1) * w₀ + m * δ) * (W (ρ / 2 + j * δ) - w₀) := by
+    intro j
+    induction j with
+    | zero => intro _; simp [hw₀]
+    | succ j ih =>
+      intro hj
+      have ih' := ih (Nat.le_of_succ_le hj)
+      have hjN : (j : ℝ) + 1 ≤ N := by exact_mod_cast hj
+      have hr : 0 < ρ / 2 + j * δ := by positivity
+      have hrδ : ρ / 2 + j * δ + δ < ρ₁ := by
+        have := mul_le_mul_of_nonneg_right hjN hδpos.le
+        linarith
+      have hcoef : 0 < K * (m + 1) * w₀ + m * δ := by positivity
+      have hwb : w₀ ≤ W (ρ / 2 + j * δ) := by
+        by_contra hcon
+        have h1 : (K * (m + 1) * w₀ + m * δ) * (W (ρ / 2 + j * δ) - w₀) < 0 :=
+          mul_neg_of_pos_of_neg hcoef (by linarith [not_le.mp hcon])
+        have h2 : 0 ≤ (j : ℝ) * δ * w₀ := by positivity
+        linarith
+      have hs := step (ρ / 2 + j * δ) δ w₀ hr hδpos hrδ hw₀pos.le hwb
+      have heq : ρ / 2 + ((j + 1 : ℕ) : ℝ) * δ = ρ / 2 + j * δ + δ := by push_cast; ring
+      rw [heq]
+      push_cast
+      linarith
+  have hfin := ind N le_rfl
+  have hρN : ρ / 2 + (N : ℝ) * δ = ρ := by rw [hNδ]; ring
+  rw [hρN, hNδ] at hfin
+  -- `N` is large: `m δ ρ < 2 (K (m+1))² w₀²`
+  have hmδ : (m : ℝ) * δ * ρ < 2 * (K * (m + 1)) ^ 2 * w₀ ^ 2 := by
+    have h1 : (m : ℝ) * ρ ^ 2 < N * (4 * (K * (m + 1)) ^ 2 * w₀ ^ 2) := by
+      rwa [div_lt_iff₀ (by positivity)] at hN
+    have h2 : (2 * N) * ((m : ℝ) * δ * ρ) = m * ρ ^ 2 := by
+      have : (2 * N) * ((m : ℝ) * δ * ρ) = 2 * m * ρ * (N * δ) := by ring
+      rw [this, hNδ]; ring
+    have h3 : (2 * N) * ((m : ℝ) * δ * ρ) < (2 * N) * (2 * (K * (m + 1)) ^ 2 * w₀ ^ 2) := by
+      rw [h2]; linarith
+    exact lt_of_mul_lt_mul_left h3 (by positivity)
+  -- Steps 4′(c) and 6: `ρ/(2K(m+1)) ≤ W(ρ)`, so `(ρ/(2K(m+1)))^{m+1} ≤ W(ρ)^{m+1} = V(ρ)`
+  have hA : ρ / (2 * K * (m + 1)) ≤ W ρ := by
+    rw [div_le_iff₀ (by positivity)]
+    by_contra hcon
+    have hcoef : 0 < K * (m + 1) * w₀ + m * δ := by positivity
+    have e1 := mul_lt_mul_of_pos_left (not_le.mp hcon) hcoef
+    have e2 := mul_le_mul_of_nonneg_left hfin hKm.le
+    have e3 : 0 ≤ K * (m + 1) * m * δ * w₀ := by positivity
+    linarith
+  calc (ρ / (2 * K * (m + 1))) ^ (m + 1) ≤ W ρ ^ (m + 1) :=
+        pow_le_pow_left₀ (by positivity) hA (m + 1)
+    _ = V ρ := hWpow ρ hρ hρ₁
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

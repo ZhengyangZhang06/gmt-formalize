@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.annular_cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "depth": 6,
+  "title": "C¹ radial cut-off across a thin annulus with gradient O(1/δ)",
+  "statement": "There is a constant C₀ > 0 such that, for every P ∈ ℕ, every y ∈ ℝ^P (= Euclid P) and all ρ > 0, δ > 0, there is ζ : ℝ^P → ℝ with all of the following properties: ζ is C¹ (ContDiff ℝ 1); ζ has compact support; tsupport ζ ⊆ B̄_{ρ+δ}(y); 0 ≤ ζ(z) ≤ 1 for all z; ζ(z) = 1 for z ∈ B̄_ρ(y); ‖Dζ(z)‖ ≤ C₀/δ for all z (operator norm of fderiv ℝ ζ z); and Dζ(z) = 0 for every z ∉ B_{ρ+δ}(y) ∖ B̄_ρ(y).",
+  "lean_statement": "∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ C₀ / δ) ∧ ∀ z, z ∉ ball y (ρ + δ) \\ closedBall y ρ → fderiv ℝ ζ z = 0",
+  "lean_name": "codim1_rdo_dg_vdl_annular_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-14d0d0d5be-a1"
+}
