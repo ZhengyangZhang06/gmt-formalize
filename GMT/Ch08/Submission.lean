@@ -768,20 +768,6 @@ theorem Submission.allard_tc_scf_plane_ball_mass :
   -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
   rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
     finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
-    ext w
-    constructor
-    · rintro ⟨x, rfl⟩
-      exact (b.repr.symm x).2
-    · intro hw
-      exact ⟨b.repr ⟨w, hw⟩, by simp [J]⟩
-  -- Step 3: `H^n(B_r(0) ∩ T) = H^n(J⁻¹(B_r(0)))` and `J⁻¹(B_r(0)) = B_r(0) ⊆ ℝ^n`.
-  have hpre : J ⁻¹' closedBall 0 r = closedBall 0 r := by
-    ext x
-    simp
-  rw [← hrange, ← J.isometry.euclideanHausdorffMeasure_preimage, hpre]
-  -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
-  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
-    finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
 /-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
 `T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
 `H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
