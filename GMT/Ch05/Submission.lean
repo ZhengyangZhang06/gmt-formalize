@@ -610,6 +610,34 @@ theorem ted_lpm_fcm_cmd_radial_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb
 
 end Submission
 
+/-- Derivative of the radial cutoff mass `I(s) = ∫ φ(‖x − y‖/s) dμ` (Simon Ch. 4, 4.3), together
+with the integrability of its two radial profiles: if `μ(B_S(y)) < ∞`, `φ` is `C¹` with `φ = 0` on
+`[T, ∞)`, `T > 0`, `t > 0` and `T t < S`, then `φ(‖x − y‖/t)` and `(‖x − y‖/t) φ'(‖x − y‖/t)` are
+`μ`-integrable and `I'(t) = -(∫ (‖x − y‖/t) φ'(‖x − y‖/t) dμ)/t`.  The profiles `φ` and
+`u ↦ u φ'(u)` are continuous and vanish on `(T, ∞)` (where `φ' = 0`), so
+`ted_lpm_fcm_cmd_radial_integrable` gives both integrability statements; the derivative is the
+weight-`1` case of `allard52_am_cc_cutoff_integral_hasDerivAt`, as `1` is integrable on the
+finite-measure ball `B_S(y)`. -/
+theorem Submission.ted_lpm_fcm_cutoff_mass_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → μ (closedBall y S) < ⊤ → ContDiff ℝ 1 φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → Integrable (fun x => φ (‖x - y‖ / t)) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t := by
+  intro n ℓ μ y φ S T t hT hμ hφ hφ0 ht htS
+  -- `φ' = 0` on `(T, ∞)`: near each such point `φ` is the zero function.
+  have hdzero : ∀ u, T < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hu] with v hv
+      exact hφ0 v hv.le
+    exact h.deriv_eq.trans (deriv_const u 0)
+  refine ⟨?_, ?_, ?_⟩
+  -- (a): the continuous profile `φ` vanishes on `(T, ∞)`.
+  · exact Submission.ted_lpm_fcm_cmd_radial_integrable n ℓ μ y φ S T t hμ hφ.continuous
+      (fun u hu => hφ0 u hu.le) ht htS
+  -- (b): so does the continuous profile `u ↦ u φ'(u)`.
+  · exact Submission.ted_lpm_fcm_cmd_radial_integrable n ℓ μ y (fun u => u * deriv φ u) S T t hμ
+      (continuous_id.mul hφ.continuous_deriv_one) (fun u hu => by simp only [hdzero u hu, mul_zero])
+      ht htS
+  -- (c): the weighted cutoff derivative with weight `1`.
+  · simpa only [mul_one] using Submission.allard52_am_cc_cutoff_integral_hasDerivAt n ℓ μ y
+      (fun _ => 1) φ S T t (integrableOn_const hμ.ne) hφ hT hφ0 ht htS
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
