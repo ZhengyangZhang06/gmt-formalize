@@ -1075,6 +1075,159 @@ theorem Submission.dph_iprod_slice_extDeriv :
       simp only [Fin.removeNth, hιv]
     rw [hrm, Fin.cons_succ, hιv, Fin.val_succ, pow_succ, mul_neg_one, neg_smul]
 
+/-- Fundamental theorem of calculus along horizontal slices: for `M(X) < ∞`, the slices
+`Ψ(s) = ψ(s, ·)` and `Ψ'(s) = ∂ₛψ(s, ·)` of `ψ ∈ 𝒟^q(ℝ^{m+1})` (tested on horizontal vectors)
+satisfy `d/ds X(Ψ(s)) = X(Ψ'(s))`, with `s ↦ X(Ψ'(s))` continuous and
+`∫₀¹ X(Ψ'(s)) ds = X(Ψ(1)) - X(Ψ(0))`. -/
+theorem Submission.dph_iprod_horizontal_ftc :
+    ∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q)
+      (ψ : TestFormOn (univ : Set (Eucl (m + 1))) q) (Ψ Ψ' : ℝ → TestFormOn (univ : Set (Eucl m)) q),
+      X.mass < ∞ →
+      (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ s : DifferentialForm (Eucl m) q) x v =
+        (ψ : DifferentialForm (Eucl (m + 1)) q)
+          ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+          (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ' s : DifferentialForm (Eucl m) q) x v =
+        fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q)
+          ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+          (EuclideanSpace.single 0 1)
+          (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      Continuous (fun s => X (Ψ' s)) ∧ (∀ s : ℝ, HasDerivAt (fun t => X (Ψ t)) (X (Ψ' s)) s) ∧
+        ∫ s in (0 : ℝ)..1, X (Ψ' s) = X (Ψ 1) - X (Ψ 0) := by
+  have hMB := Submission.cmb_abs_apply_le_of_massOn_le
+  have hSN := Submission.dph_iprod_slice_covector_norm_le
+  have hC := Submission.dph_iprod_slice_continuity
+  intro m q X ψ Ψ Ψ' hX hΨ hΨ'
+  -- Mass estimate `|X(ω)| ≤ M(X) · sup |ω|`, from `M(X) < ∞`.
+  have hB0 : 0 ≤ X.mass.toReal := ENNReal.toReal_nonneg
+  have hmb : X.massOn univ ≤ ENNReal.ofReal X.mass.toReal := by
+    rw [ENNReal.ofReal_toReal hX.ne]
+    exact le_rfl
+  -- Restriction to horizontal vectors and comparison with the operator norm.
+  have hC2 := hSN.2.1 m q
+  have hC3 := hSN.2.2 (m + 1) q
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = Real.sqrt ((((m + 1 : ℕ)) : ℝ) ^ q) := ⟨_, rfl⟩
+  have hc0 : 0 ≤ c := hc ▸ Real.sqrt_nonneg _
+  -- The form `ψ' = Dψ(·)(e₀)` is continuous with compact support.
+  obtain ⟨e₀, he₀⟩ : ∃ e₀ : Eucl (m + 1), e₀ = EuclideanSpace.single 0 1 := ⟨_, rfl⟩
+  obtain ⟨ψ', hψ'eq⟩ : ∃ ψ' : Eucl (m + 1) → Covector (Eucl (m + 1)) q,
+      ψ' = fun y => fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) y e₀ := ⟨_, rfl⟩
+  have hψd : Differentiable ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) :=
+    ψ.property.1.1.differentiable (by simp)
+  have hψ'c : Continuous ψ' := by
+    rw [hψ'eq]
+    exact (ψ.property.1.1.continuous_fderiv (by simp)).clm_apply continuous_const
+  have hψ's : HasCompactSupport ψ' := by
+    rw [hψ'eq]
+    exact (ψ.property.1.2.fderiv ℝ).comp_left
+      (g := fun L : Eucl (m + 1) →L[ℝ] Covector (Eucl (m + 1)) q => L e₀) rfl
+  have hΨ'2 : ∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ' s : DifferentialForm (Eucl m) q) x v =
+      ψ' ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+        (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) := by
+    intro s x v
+    rw [hΨ' s x v, hψ'eq, he₀]
+  -- Continuity of `s ↦ X(Ψ'(s))`.
+  have hcont := (hC.2 m q X hX ψ' Ψ' hψ'c hψ's hΨ'2).1
+  -- Lines in the time direction: `cons(s + τ, x) = cons(s, x) + τ e₀`.
+  have hpath : ∀ (s τ : ℝ) (x : Eucl m),
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons (s + τ) (EuclideanSpace.equiv (Fin m) ℝ x)) =
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) +
+        τ • e₀ := by
+    intro s τ x
+    rw [he₀]
+    apply (EuclideanSpace.equiv (Fin (m + 1)) ℝ).injective
+    simp only [map_add, map_smul, ContinuousLinearEquiv.apply_symm_apply]
+    funext i
+    refine Fin.cases ?_ (fun i => ?_) i <;> simp
+  -- Differentiability: `|X(Ψ(s+h)) - X(Ψ(s)) - h X(Ψ'(s))| ≤ ε |h|` for small `h`, by the mean
+  -- value inequality and the uniform continuity of `ψ'`.
+  have hderiv : ∀ s : ℝ, HasDerivAt (fun t => X (Ψ t)) (X (Ψ' s)) s := by
+    intro s
+    rw [hasDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_iff]
+    intro ε hε
+    have huc := hψ's.uniformContinuous_of_continuous hψ'c
+    obtain ⟨ε', hε', hε'ε⟩ : ∃ ε' > 0, X.mass.toReal * c * ε' ≤ ε := by
+      refine ⟨ε / (X.mass.toReal * c + 1), by positivity, ?_⟩
+      have hpos : 0 < X.mass.toReal * c + 1 := by positivity
+      rw [← mul_div_assoc, div_le_iff₀ hpos]
+      nlinarith [mul_nonneg hB0 hc0]
+    obtain ⟨δ, hδ, hδ'⟩ := Metric.uniformContinuous_iff.mp huc ε' hε'
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hδ] with h hh
+    rw [mem_ball, dist_zero_right, Real.norm_eq_abs] at hh
+    obtain ⟨Θ, hΘdef⟩ : ∃ Θ : TestFormOn (univ : Set (Eucl m)) q, Θ = Ψ (s + h) - Ψ s - h • Ψ' s :=
+      ⟨_, rfl⟩
+    have hΘx : ∀ (x : Eucl m) (v : Fin q → Eucl m), (Θ : DifferentialForm (Eucl m) q) x v =
+        (Ψ (s + h) : DifferentialForm (Eucl m) q) x v - (Ψ s : DifferentialForm (Eucl m) q) x v -
+          h * (Ψ' s : DifferentialForm (Eucl m) q) x v := by
+      intro x v
+      rw [hΘdef]
+      rfl
+    have hΘ : ∀ x, covectorEuclideanNorm ((Θ : DifferentialForm (Eucl m) q) x) ≤ c * (ε' * |h|) := by
+      intro x
+      obtain ⟨y, hy⟩ : ∃ y : Eucl (m + 1),
+          y = (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) :=
+        ⟨_, rfl⟩
+      obtain ⟨f, hfdef⟩ : ∃ f : ℝ → Covector (Eucl (m + 1)) q,
+          f = fun τ => (ψ : DifferentialForm (Eucl (m + 1)) q) (y + τ • e₀) - τ • ψ' y := ⟨_, rfl⟩
+      have hf : ∀ τ ∈ Set.uIcc (0 : ℝ) h,
+          HasDerivWithinAt f (ψ' (y + τ • e₀) - ψ' y) (Set.uIcc (0 : ℝ) h) τ := by
+        intro τ _
+        have h1 : HasDerivAt (fun τ : ℝ => y + τ • e₀) e₀ τ := by
+          simpa using ((hasDerivAt_id τ).smul_const e₀).const_add y
+        have h2 : HasDerivAt (fun τ : ℝ => (ψ : DifferentialForm (Eucl (m + 1)) q) (y + τ • e₀))
+            (ψ' (y + τ • e₀)) τ := by
+          rw [hψ'eq]
+          exact (hψd _).hasFDerivAt.comp_hasDerivAt τ h1
+        have h3 : HasDerivAt (fun τ : ℝ => τ • ψ' y) (ψ' y) τ := by
+          simpa using (hasDerivAt_id τ).smul_const (ψ' y)
+        rw [hfdef]
+        exact (h2.sub h3).hasDerivWithinAt
+      have hbound : ∀ τ ∈ Set.uIcc (0 : ℝ) h, ‖ψ' (y + τ • e₀) - ψ' y‖ ≤ ε' := by
+        intro τ hτ
+        rw [← dist_eq_norm]
+        apply le_of_lt
+        apply hδ'
+        rw [dist_eq_norm, add_sub_cancel_left, norm_smul, he₀, PiLp.norm_single, norm_one, mul_one,
+          Real.norm_eq_abs]
+        have : |τ| ≤ |h| := by
+          rcases le_total 0 h with h0 | h0
+          · rw [Set.uIcc_of_le h0] at hτ
+            rw [abs_of_nonneg hτ.1, abs_of_nonneg h0]; exact hτ.2
+          · rw [Set.uIcc_of_ge h0] at hτ
+            rw [abs_of_nonpos hτ.2, abs_of_nonpos h0]; linarith [hτ.1]
+        exact lt_of_le_of_lt this hh
+      have hmv := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hf hbound (convex_uIcc 0 h)
+        Set.left_mem_uIcc Set.right_mem_uIcc
+      rw [sub_zero, Real.norm_eq_abs] at hmv
+      have hγ : ∀ v : Fin q → Eucl m, (f h - f 0) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) = (Θ : DifferentialForm (Eucl m) q) x v := by
+        intro v
+        rw [hΘx, hΨ, hΨ, hΨ'2, hfdef, hpath, ← hy]
+        simp only [zero_smul, add_zero, ContinuousAlternatingMap.sub_apply,
+          ContinuousAlternatingMap.smul_apply, smul_eq_mul, ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+        ring
+      have h4 := hC2 (f h - f 0) ((Θ : DifferentialForm (Eucl m) q) x) (fun v => (hγ v).symm)
+      refine h4.trans ((hC3 _).trans ?_)
+      rw [← hc]
+      exact mul_le_mul_of_nonneg_left hmv hc0
+    have h5 := hMB m q univ univ X Θ X.mass.toReal (c * (ε' * |h|)) hB0 hmb (subset_univ _) hΘ
+    have hlin : X Θ = X (Ψ (s + h)) - X (Ψ s) - h • X (Ψ' s) := by
+      rw [hΘdef]
+      have e1 := map_sub X.toCurrent (Ψ (s + h) - Ψ s) (h • Ψ' s)
+      have e2 := map_sub X.toCurrent (Ψ (s + h)) (Ψ s)
+      have e3 := map_smul X.toCurrent h (Ψ' s)
+      exact e1.trans (by rw [e2, e3])
+    rw [Real.norm_eq_abs, Real.norm_eq_abs, ← hlin]
+    calc |X Θ| ≤ X.mass.toReal * (c * (ε' * |h|)) := h5
+      _ = (X.mass.toReal * c * ε') * |h| := by ring
+      _ ≤ ε * |h| := mul_le_mul_of_nonneg_right hε'ε (abs_nonneg h)
+  -- Fundamental theorem of calculus.
+  refine ⟨hcont, hderiv, ?_⟩
+  exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hderiv s) (hcont.intervalIntegrable 0 1)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
