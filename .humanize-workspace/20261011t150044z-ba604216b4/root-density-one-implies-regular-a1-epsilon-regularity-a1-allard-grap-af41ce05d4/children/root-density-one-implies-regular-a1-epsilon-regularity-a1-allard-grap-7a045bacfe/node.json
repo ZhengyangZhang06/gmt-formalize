@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.mollify_bounds-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "Uniform sup and Lipschitz bounds for mollifications on closedBall(0, 1 − s)",
+  "statement": "Let n ∈ ℕ, u : ℝⁿ → ℝ continuous (ℝⁿ = Euclid n), and ρ : ℝⁿ → ℝ continuous with ρ(z) = 0 whenever ‖z‖ ≥ 1, |ρ(z)| ≤ C and |ρ(z) − ρ(z')| ≤ C‖z − z'‖ for all z, z'. Let 0 < ε ≤ s/2 and v(x) := ∫ u(x − εz)ρ(z) dz; put K := closedBall(0, 1 − s) and B := B̆_1(0). Then (i) |v(x)| ≤ ε^{−n}C∫_B|u| for every x ∈ K, and (ii) |v(x) − v(x')| ≤ ε^{−(n+1)}C‖x − x'‖∫_B|u| for all x, x' ∈ K.",
+  "lean_statement": "∀ (n : ℕ) (u ρ : Euclid n → ℝ) (C ε s : ℝ), Continuous u → Continuous ρ → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → (∀ z, |ρ z| ≤ C) → (∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖) → 0 < ε → ε ≤ s / 2 → (∀ x ∈ closedBall (0 : Euclid n) (1 - s), |∫ z, u (x - ε • z) * ρ z| ≤ (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u y|) ∧ ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ x' ∈ closedBall (0 : Euclid n) (1 - s), |(∫ z, u (x - ε • z) * ρ z) - ∫ z, u (x' - ε • z) * ρ z| ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u y|",
+  "lean_name": "dorag_ha_rb_mollify_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-7a045bacfe-a1"
+}
