@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.abs_det_le-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1",
+  "depth": 5,
+  "title": "Leibniz bound for determinants: |det A| ≤ n!·c^n when every entry satisfies |A_ij| ≤ c",
+  "statement": "Let n ∈ ℕ, c ∈ ℝ, and let A = (A_{ij})_{i,j ∈ Fin n} be a real n×n matrix (A : Matrix (Fin n) (Fin n) ℝ) with |A_{ij}| ≤ c for all i, j ∈ Fin n. Then |det A| ≤ n!·c^n. For n = 0 the empty determinant is 1 = 0!·c^0.",
+  "lean_statement": "∀ (n : ℕ) (c : ℝ) (A : Matrix (Fin n) (Fin n) ℝ), (∀ i j, |A i j| ≤ c) → |Matrix.det A| ≤ (n.factorial : ℝ) * c ^ n",
+  "lean_name": "deformation_ipl_mwc_mil_abs_det_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-ee5f4650a0-a1"
+}

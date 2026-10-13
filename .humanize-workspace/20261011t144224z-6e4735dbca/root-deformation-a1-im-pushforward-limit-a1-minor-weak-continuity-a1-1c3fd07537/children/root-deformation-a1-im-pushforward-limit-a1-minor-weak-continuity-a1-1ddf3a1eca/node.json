@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.ae_fderiv_extension-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1",
+  "depth": 5,
+  "title": "A.e. on an open set, a function agreeing with a coordinate of a Lipschitz map has the projected Fréchet derivative",
+  "statement": "Let k, Q ∈ ℕ, let Ω ⊆ ℝ^k (ℝ^k = Eucl k) be open, C ≥ 0 (C : ℝ≥0), v : ℝ^k → ℝ^Q C-Lipschitz on Ω (LipschitzOnWith C v Ω), c ∈ Fin Q, and g : ℝ^k → ℝ any function with g(w) = EuclideanSpace.proj c (v(w)) for every w ∈ Ω. Then for Lebesgue-almost every w ∈ ℝ^k: if w ∈ Ω, then fderiv ℝ g w x = EuclideanSpace.proj c (fderiv ℝ v w x) for every x ∈ ℝ^k. Here fderiv is Mathlib's Fréchet derivative, defined as 0 at points of non-differentiability; no regularity of g is assumed.",
+  "lean_statement": "∀ (k Q : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (v : Eucl k → Eucl Q) (c : Fin Q) (g : Eucl k → ℝ), IsOpen Ω → LipschitzOnWith C v Ω → EqOn g (fun w => EuclideanSpace.proj c (v w)) Ω → ∀ᵐ w ∂(volume : Measure (Eucl k)), w ∈ Ω → ∀ x : Eucl k, fderiv ℝ g w x = EuclideanSpace.proj c (fderiv ℝ v w x)",
+  "lean_name": "deformation_ipl_mwc_mil_ae_fderiv_eq_proj",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-1ddf3a1eca-a1"
+}

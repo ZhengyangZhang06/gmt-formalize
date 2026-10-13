@@ -1,0 +1,123 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1`
+- Child DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.det_dominated_convergence-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4(a)–(c) and 5 of the supplied proof of the selected node: continuity of the determinant in the entries, the bound |det| ≤ n!·C^n for entries bounded by C, measurability via the Leibniz expansion, and dominated convergence via tendsto_integral_filter_of_dominated_convergence. Here they are isolated as one statement about an arbitrary measure space. The selected node applies it to the left side φ·M[V^m] (with h_m = φ) and to every right-side summand V^m_0·C_q[V^m]·∂_{b(q)}φ (with h_m = (−1)^q·V^m_0·∂_{b(q)}φ).
+
+Notation. F_m(x) := h_m(x)·det A_m(x), F(x) := h₀(x)·det A₀(x), K_n := n!·C^n, and g(x) := H(x)·K_n. S_n := Equiv.Perm (Fin n), and sgn(σ) ∈ {±1} is the sign of σ.
+
+1. (Strategy.) Apply the dominated convergence theorem along the filter atTop on ℕ, which is countably generated: Mathlib's tendsto_integral_filter_of_dominated_convergence with bound g. Its hypotheses are:
+(a) F_m is a.e.-strongly measurable for eventually all m;
+(b) eventually in m, |F_m(x)| ≤ g(x) for μ-a.e. x;
+(c) g is integrable;
+(d) F_m(x) → F(x) for μ-a.e. x.
+Its conclusion is ∫ F_m dμ → ∫ F dμ, which is the claim. The theorem needs no measurability of F; that follows from (a) and (d). Steps 2–5 verify (a)–(d).
+2. ((a) Measurability, for every m.) By the Leibniz formula (Matrix.det_apply; the unit sgn(σ) acts as multiplication by the real number sgn(σ), via Units.smul_def and zsmul_eq_mul): det A_m(x) = Σ_{σ ∈ S_n} sgn(σ)·Π_{i ∈ Fin n} A_m(σ(i), i, x) for every x. Each A_m(σ(i), i, ·) is a.e.-strongly measurable by (i). Constants, finite products and finite sums of a.e.-strongly measurable real functions are a.e.-strongly measurable (aestronglyMeasurable_const, AEStronglyMeasurable.mul, Finset.aestronglyMeasurable_fun_prod, Finset.aestronglyMeasurable_fun_sum). So x ↦ det A_m(x) is a.e.-strongly measurable, and so is F_m = h_m·det A_m, using (i) for h_m.
+3. ((b) Domination.) By (iv), fix any m such that |h_m(x)| ≤ H(x) for every x; all sufficiently large m qualify. Fix x. By (iii), every entry of A_m(x) satisfies |A_m(t,s,x)| ≤ C, so the sibling lemma abs_det_le (with n, c := C and the matrix A_m(x)) gives |det A_m(x)| ≤ K_n. From 0 ≤ |h_m(x)| ≤ H(x) we get H(x) ≥ 0, and |det A_m(x)| ≥ 0. Multiplying the two inequalities (mul_le_mul) gives |F_m(x)| = |h_m(x)|·|det A_m(x)| ≤ H(x)·K_n = g(x). This holds for every x, hence μ-a.e., for all sufficiently large m.
+4. ((c) Integrability.) g = H·K_n is a constant multiple of the μ-integrable H, so it is μ-integrable (Integrable.mul_const).
+5. ((d) Pointwise convergence.) The conull sets in (v) and (vi) intersect in a conull set (filter_upwards). Fix x in it. By (vi), for each t the row (A_m(t,s,x))_s converges to (A₀(t,s,x))_s in the product topology. Matrix (Fin n) (Fin n) ℝ carries the product topology, so A_m(x) → A₀(x) (tendsto_pi_nhds, applied twice). The determinant Matrix (Fin n) (Fin n) ℝ → ℝ is continuous, being a polynomial in the entries (Continuous.matrix_det applied to the identity map). Hence det A_m(x) → det A₀(x). By (v), h_m(x) → h₀(x), and products of convergent real sequences converge to the product of the limits (Tendsto.mul). So F_m(x) → F(x).
+6. Steps 2–5 establish every hypothesis of dominated convergence, so ∫ h_m·det A_m dμ = ∫ F_m dμ → ∫ F dμ = ∫ h₀·det A₀ dμ. ∎ For n = 0 every determinant is 1 and K_0 = 1, and the argument is unchanged.
+
+Formalization note. The script below was compiled as the proof of `theorem Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det : <frozen type>` under `import GMT.Ch06.Submission` in the contract scope, after the sibling deformation_ipl_mwc_mil_abs_det_le (lake env lean; #print axioms: propext, Classical.choice, Quot.sound):
+  intro α _ μ n C A A₀ h h₀ H hAm hhm hH hAb hhb hhl hAl
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun x => H x * ((n.factorial : ℝ) * C ^ n)) ?_ ?_ (hH.mul_const _) ?_
+  · refine Eventually.of_forall fun m => (hhm m).mul ?_
+    have : (fun x => Matrix.det (Matrix.of fun t s => A m t s x)) =
+        fun x => ∑ σ : Equiv.Perm (Fin n), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, A m (σ i) i x := by
+      funext x
+      rw [Matrix.det_apply]
+      refine Finset.sum_congr rfl fun σ _ => ?_
+      rw [Units.smul_def, zsmul_eq_mul]
+      rfl
+    rw [this]
+    refine Finset.aestronglyMeasurable_fun_sum _ fun σ _ => ?_
+    exact aestronglyMeasurable_const.mul (Finset.aestronglyMeasurable_fun_prod _ fun i _ => hAm m _ _)
+  · filter_upwards [hhb] with m hm
+    refine Eventually.of_forall fun x => ?_
+    rw [Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul (hm x)
+      (Submission.deformation_ipl_mwc_mil_abs_det_le n C _ fun t s => hAb m t s x)
+      (abs_nonneg _) ((abs_nonneg _).trans (hm x))
+  · filter_upwards [hhl, hAl] with x hx1 hx2
+    refine hx1.mul ?_
+    have hc : Continuous (Matrix.det : Matrix (Fin n) (Fin n) ℝ → ℝ) := continuous_id.matrix_det
+    exact (hc.tendsto _).comp (tendsto_pi_nhds.2 fun t => tendsto_pi_nhds.2 fun s => hx2 t s)
+
+## Key steps
+
+1. Apply tendsto_integral_filter_of_dominated_convergence along atTop with bound g = H·n!·C^n.
+2. Measurability of h_m·det A_m via the Leibniz expansion into finite sums and products of a.e.-strongly measurable entries.
+3. Domination: |det A_m(x)| ≤ n!·C^n by the sibling abs_det_le, and |h_m| ≤ H for all large m, so |h_m·det A_m| ≤ H·n!·C^n.
+4. Integrability of H·n!·C^n (Integrable.mul_const).
+5. A.e. convergence: entrywise convergence gives matrix convergence (tendsto_pi_nhds), continuity of det gives det A_m(x) → det A₀(x), and Tendsto.mul with h_m(x) → h₀(x) finishes.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git rev-parse HEAD (= project_commit)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean <snapshot>/project/GMT/Ch06/Contract.lean (both byte-identical)`
+- `python3 -I over dag.json: statuses of the minor_weak_continuity-a1 children (minor_ibp_smooth-a1 and lipschitz_smooth_approx-a1 are 'decomposing', not comparator-accepted); scan of cross-branch depends_on (reuse only through accepted declarations, e.g. localization-a1 -> br_weightedTangent_congr); depth of the selected node = 4`
+- `rg -n 'theorem det_le\b|theorem det_le |abs_det_le|det_sum_smul_le|theorem det_le_of' <snapshot>/mathlib/Mathlib`
+- `rg -n 'deformation_ipl_mwc|abs_det_le|det_bound|ae_fderiv|fderiv_extend|extend_real' GMT <snapshot>/project lake-packages-25730c7c/simongmt/Poincare`
+- `rg -n '^theorem Continuous.clm_apply|^lemma prod_le_prod₀|LipschitzOnWith.ae_differentiableWithinAt_of_mem|^theorem LipschitzOnWith.extend_real|^theorem tendsto_integral_filter_of_dominated_convergence|^theorem fderiv_of_notMem_tsupport|^theorem det_apply |^theorem measurable_fderiv_apply_const|^theorem Continuous.matrix_det|^theorem tendsto_pi_nhds' <snapshot>/mathlib/Mathlib; grep -rn 'theorem prod_le_prod' Mathlib/Algebra/Order/BigOperators`
+- `#check under import GMT.Ch06.Submission (lake env lean /tmp/mil_decomp/Test0.lean, Test1.lean, Test2.lean): Matrix.det_le, Poincare.SimonGMT.Chapter02.ae_fderivWithin_eq_of_lipschitz_extension and Filter.Tendsto.clm_apply unknown; LipschitzOnWith.extend_real, LipschitzOnWith.ae_differentiableWithinAt_of_mem, norm_fderiv_le_of_lipschitz, measurable_fderiv_apply_const, tendsto_integral_filter_of_dominated_convergence, setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_congr_ae, fderiv_of_notMem_tsupport, image_eq_zero_of_notMem_tsupport, Matrix.det_apply, Continuous.matrix_det, EventuallyEq.fderiv_eq, Finset.aestronglyMeasurable_sum/prod, PiLp.norm_apply_le, ae_all_iff, Fintype.card_perm available`
+- `lake env lean /tmp/mil_decomp/Children.lean (all three children proved; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/mil_decomp/Link.lean and /tmp/mil_decomp/EndToEnd.lean (selected frozen type proved from the children plus the two sibling declarations as axioms; #print axioms of the comparator-style target: propext, Classical.choice, Quot.sound, deformation_ipl_mwc_lipschitz_smooth_approx, deformation_ipl_mwc_minor_ibp_smooth)`
+- `python3 -I /tmp/mil_decomp/scripts/gen.py /tmp/mil_decomp/children.json /tmp/mil_decomp/challenge (verifier lean_contract.validate_lean_statement + gmt-compare child_modules, contract mode); lake env lean /tmp/mil_decomp/challenge/{abs_det_le,det_dominated_convergence,ae_fderiv_extension}_challenge.lean (exit 0, sorry warnings only)`
+- `python3 -I over the dag.json lean_name set and nodes/*/decomposition*.json for 'mwc_mil'; git --git-dir=workspaces/.github-mirror/gmt-formalize.git grep -l 'mwc_mil_' -- GMT/Ch06/Submission.lean over all 1930 Ch06 refs (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-1c3fd07537/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Matrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/mil_decomp/Children.lean`
+- `/tmp/mil_decomp/Link.lean`
+- `/tmp/mil_decomp/EndToEnd.lean`
+- `/tmp/mil_decomp/challenge`
+- `/tmp/mil_decomp/scripts/gen.py`
+
+The pinned revisions are confirmed: HEAD equals project_commit, and Contract, Submission and the snapshot Contract are byte-identical.
+
+No proof of this node or of its three children exists in the snapshot:
+- Mathlib's Matrix.det_le exists in LinearAlgebra/Matrix/AbsoluteValue.lean but is not in the closure of the frozen import.
+- SimonGMT's ae_fderivWithin_eq_of_lipschitz_extension (Chapter02/AreaDomain.lean) is an fderivWithin variant and is also outside the closure.
+- Filter.Tendsto.clm_apply does not exist (only Continuous.clm_apply).
+- Finset.prod_le_prod needs MulLeftMono; the ℝ version is Finset.prod_le_prod₀.
+
+The needed tools are available under the frozen import: Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem), McShane (LipschitzOnWith.extend_real), dominated convergence (tendsto_integral_filter_of_dominated_convergence), Matrix.det_apply, Continuous.matrix_det, tendsto_pi_nhds, measurable_fderiv_apply_const, fderiv_of_notMem_tsupport and the set-integral lemmas.
+
+The prerequisites minor_ibp_smooth and lipschitz_smooth_approx are not comparator-accepted, so they cannot be reused as children. They stay with the selected node's assembly, and no child needs them.
+
+The three new names deformation_ipl_mwc_mil_* are globally unused.
+
+Lean checks:
+- All three children compile with standard axioms only.
+- The link selected-node ⇐ children + two sibling declarations compiles without sorry.
+- The three challenge statements elaborate in the exact comparator scope.
