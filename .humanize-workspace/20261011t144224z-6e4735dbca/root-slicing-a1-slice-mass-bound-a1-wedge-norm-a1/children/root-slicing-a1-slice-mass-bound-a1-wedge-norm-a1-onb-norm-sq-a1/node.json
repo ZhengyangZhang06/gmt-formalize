@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.onb_norm_sq-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "The Euclidean coefficient norm can be computed in any orthonormal basis (parent Step 3)",
+  "statement": "For all P, k ∈ ℕ, every orthonormal basis u = (u_0,…,u_{P−1}) of ℝ^P (OrthonormalBasis (Fin P) ℝ (Eucl P)) and every k-covector φ on ℝ^P (Covector (Eucl P) k): covectorEuclideanNorm(φ)² = Σ_{I : {0,…,k−1} → [P] strictly increasing} φ(u_{I(0)},…,u_{I(k−1)})². In Lean the sum runs over all I : Fin k → Fin P, with summand 0 for I that are not strictly increasing. So SimonGMT's coefficient norm, defined with the standard basis, takes the same value in every orthonormal basis.",
+  "lean_statement": "∀ (P k : ℕ) (u : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k), covectorEuclideanNorm φ ^ 2 = ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0",
+  "lean_name": "slicing_mb_wn_norm_sq_eq_onb_sum",
+  "depends_on": [
+    "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.count_sq_sum-a1",
+    "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.parseval_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.count_sq_sum-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.parseval_sq_sum-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-onb-norm-sq-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.one_slot_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+  "depth": 4,
+  "title": "One-slot Hilbert–Schmidt bound Σ_a f(Le_a)² ≤ ‖L‖²·Σ_b f(e′_b)²",
+  "statement": "For all P, Q ∈ ℕ, every continuous linear map L : ℝ^P → ℝ^Q (L : Eucl P →L[ℝ] Eucl Q) and every ℝ-linear functional f : ℝ^Q → ℝ (f : Eucl Q →ₗ[ℝ] ℝ):\nΣ_{a : Fin P} f(L e_a)² ≤ ‖L‖²·Σ_{b : Fin Q} f(e′_b)².\nHere:\n- e_a = EuclideanSpace.basisFun (Fin P) ℝ a and e′_b = EuclideanSpace.basisFun (Fin Q) ℝ b are the standard bases;\n- ‖L‖ is the operator norm of L for the Euclidean norms.",
+  "lean_statement": "∀ (P Q : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (f : Eucl Q →ₗ[ℝ] ℝ), ∑ a : Fin P, (f (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 ≤ ‖L‖ ^ 2 * ∑ b : Fin Q, (f (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2",
+  "lean_name": "iwl_sp_pn_sum_sq_comp_basis_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165-a1"
+}

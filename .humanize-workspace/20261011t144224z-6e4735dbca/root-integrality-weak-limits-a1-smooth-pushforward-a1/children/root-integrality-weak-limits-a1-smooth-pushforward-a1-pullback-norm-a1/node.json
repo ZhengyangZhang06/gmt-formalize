@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+  "depth": 3,
+  "title": "Pull-back of covectors: |L^#α| ≤ ‖L‖^j |α| for the Euclidean coefficient norm",
+  "statement": "For all P, Q, j ∈ ℕ, every continuous linear map L : ℝ^P → ℝ^Q and every j-covector α on ℝ^Q: |L^#α| ≤ ‖L‖^j·|α|. Here:\n- L^#α := α.compContinuousLinearMap L, so (L^#α)(v₁, …, v_j) = α(Lv₁, …, Lv_j);\n- |·| is covectorEuclideanNorm: for a j-covector β on ℝ^m, |β|² is the sum of β(e_{I(1)}, …, e_{I(j)})² over strictly increasing I : Fin j → Fin m (standard basis e);\n- ‖L‖ is the operator norm for the Euclidean norms.",
+  "lean_statement": "∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (α : Covector (Eucl Q) j), covectorEuclideanNorm (α.compContinuousLinearMap L) ≤ ‖L‖ ^ j * covectorEuclideanNorm α",
+  "lean_name": "iwl_sp_covectorEuclideanNorm_pullback_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1-a1"
+}
