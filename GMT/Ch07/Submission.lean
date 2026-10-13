@@ -687,6 +687,57 @@ theorem Submission.dpf_smooth_approx_compact_perturbation : ∀ (P : ℕ) (U K :
     rw [hDg x, add_sub_cancel] at h2
     exact h2.congr fun k => ((hderiv k x).fderiv).symm
 
+/-- Simon 6.2.24(1), `∂f_#T = f_#∂T`, for the `C¹` push-forward formula of 6.2.24(2) (step 3
+of the push-forward proof): if `T = τ(M, θ, ξ)` has `∂T = 0` in `U` and
+`S(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ⟩ dHⁿ`, where the `C¹` map `φ` is the identity off a compact
+`K ⊆ U`, then `∂S = 0` in `U`.  Take `C^∞` maps `ψₖ`, equal to the identity off one compact
+`K' ⊆ U`, with `‖Dψₖ‖ ≤ C`, `ψₖ → φ` and `Dψₖ → Dφ` pointwise.  For `η ∈ 𝒟ⁿ⁻¹(U)`,
+`ψₖ^#η ∈ 𝒟ⁿ⁻¹(U)` and `d(ψₖ^#η) = ψₖ^#(dη)`, so `0 = ∂T(ψₖ^#η) = ∫_M θ ⟨ψₖ^#(dη), ξ⟩ dHⁿ`;
+by dominated convergence these integrals tend to `S(dη) = ∂S(η)`. -/
+theorem Submission.dpf_pushforward_formula_boundaryVanishes : ∀ (P n : ℕ) (U K : Set (Euclid P)) (T S : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]) → BoundaryVanishes T → BoundaryVanishes S := by
+  intro P n U K T S R φ hU hRT hK hKU hφ hφK hS hT
+  -- Step 1: `∂ = 0` in degree `0`; for `n = m + 1` show `∂S(η) = S(dη) = 0` for every `η`
+  rcases n with _ | m
+  · trivial
+  change T.boundary = 0 at hT
+  change S.boundary = 0
+  -- Step 2: `C^∞` maps `ψₖ = id` off a compact `K' ⊆ U`, `‖Dψₖ‖ ≤ C`, `ψₖ → φ`, `Dψₖ → Dφ`
+  obtain ⟨ψ, K', C, hK', hK'U, hψ, hψK', hψC, hψφ, hDψφ⟩ :=
+    Submission.dpf_smooth_approx_compact_perturbation P U K φ hU hK hKU hφ hφK
+  ext η
+  rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, hS]
+  -- the test form `α = dη ∈ 𝒟ⁿ(U)`
+  set α : DifferentialForm (Euclid P) (m + 1) :=
+    (exteriorDerivativeTestOn U m η : DifferentialForm (Euclid P) (m + 1))
+  have hα : IsTestForm α ∧ tsupport α ⊆ U := (exteriorDerivativeTestOn U m η).property
+  -- Steps 3–5: `∫_M θ ⟨ψₖ^#α, ξ⟩ dHⁿ = ∂T(ψₖ^#η) = 0` for every `k`
+  have hI : ∀ k, ∫ x in R.carrier, (R.mult x : ℝ) *
+      R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)) ∂μHE[m + 1] = 0 := by
+    intro k
+    -- Step 3: `ψₖ^#η` is a test form supported in `tsupport η ∪ K' ⊆ U`
+    obtain ⟨hηk, hηkK⟩ := Submission.dpf_pb_smooth_pullback_isTestForm P m K' (ψ k)
+      (η : DifferentialForm (Euclid P) m) hK' (hψ k) (hψK' k) η.property.1
+    let ηk : TestFormOn U m :=
+      ⟨fun x => ((η : DifferentialForm (Euclid P) m) (ψ k x)).compContinuousLinearMap
+        (fderiv ℝ (ψ k) x), hηk, hηkK.trans (union_subset η.property.2 hK'U)⟩
+    -- Step 4: `d(ψₖ^#η) = ψₖ^#(dη)` (Simon 6.1.14; Mathlib `extDeriv_pullback`)
+    have hnat : (exteriorDerivativeTestOn U m ηk : DifferentialForm (Euclid P) (m + 1)) =
+        fun x => (α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x) := by
+      funext x
+      exact extDeriv_pullback (η.property.1.1.differentiable (by simp)).differentiableAt
+        (hψ k).contDiffAt (by simp)
+    -- Step 5: `0 = ∂T(ψₖ^#η) = T(d(ψₖ^#η)) = ∫_M θ ⟨ψₖ^#α, ξ⟩ dHⁿ`
+    have h0 : T (exteriorDerivativeTestOn U m ηk) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, hT, GeometricCurrentOn.zero_apply]
+    rw [hRT, IMRep.action, hnat] at h0
+    exact h0
+  -- Step 6: dominated convergence, `∫_M θ ⟨ψₖ^#α, ξ⟩ dHⁿ → ∫_M θ ⟨φ^#α, ξ⟩ dHⁿ = S(dη)`
+  have hlim := Submission.dpf_pb_imrep_pullback_integral_tendsto P (m + 1) U K' R α ψ φ C hK'
+    hK'U hα.1.1.continuous hα.1.2 hα.2 (fun k => (hψ k).of_le (by exact_mod_cast le_top)) hψK'
+    hψC hψφ hDψφ
+  -- Step 7: the limit of the vanishing integrals is `0`
+  exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr fun k => (hI k).symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
