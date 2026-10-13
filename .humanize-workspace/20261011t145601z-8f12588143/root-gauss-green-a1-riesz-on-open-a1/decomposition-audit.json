@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem simon_theorem_4_14|vectorFunctionalEnvelopeMeasure_regular|def IsLocallyBoundedCcFunctional|radonCaratheodoryMeasure_apply|ae_radonCaratheodoryMeasure_iff|integral_radonCaratheodoryMeasure|measure_toOuterMeasure_isBorelRegular|isOpenSigmaFinite_of_finite_compacts|exists_borel_subset_mod_null",
+        "continuous_extend_zero|tsupport_extend_zero_subset|HasCompactSupport.extend_zero|Subtype.isCompact_iff|theorem IsOpen.locallyCompactSpace|sigmaCompactSpace_of_locallyCompact_secondCountable|instance Subtype.borelSpace",
+        "Measurable\\[|StronglyMeasurable\\[",
+        "gaussGreenRep_riesz_caratheodory_borel_version|gaussGreenRep_riesz_sigmaCompact_borel|gaussGreenRep_riesz_zero_extension_functional|gaussGreenRep_riesz_pushforward_subtype",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-riesz-independent-audit-gndjvs_7/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-riesz-independent-audit-gndjvs_7/LibraryAndInstances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-riesz-independent-audit-gndjvs_7/MeasurabilityProofCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-riesz-on-open-a1/parent-child-handoff.json"
+      ],
+      "conclusion": "Verified compatibility with project d09bc8a, Mathlib 25730c7c and pinned SimonGMT 2b366308; dependency working trees are clean. The inspected sources support the supplied proof steps. All four exact one-line types independently elaborate in generated comparator challenges. The Carathéodory-domain/Borel-codomain interpretation and subtype instances were checked explicitly. Independent Lean checks of the Borel-version proof, Riesz proof using the declared sibling hypothesis, and assembly into gaussGreenRep_riesz_on_open compile using only propext, Classical.choice and Quot.sound; the inspected reused declarations pass the same axiom check. All names are bare identifiers, with no collisions in the DAG or 48 other decomposition files. The split is appropriate: riesz_sigma_compact depends only on caratheodory_borel_version, the other children are independent, and every child contributes to the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "caratheodory_borel_version",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type include all hypotheses and distinguish the two source σ-algebras correctly. Compact finiteness and the countable relatively compact open cover justify the finite-measure cancellation and Borel-subset construction. Countable generation of the target then supplies the strongly measurable a.e.-version. The proof is complete and non-circular."
+    },
+    {
+      "key": "riesz_sigma_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The local bound matches IsLocallyBoundedCcFunctional exactly. The checked Riesz theorem covers every N, including zero. The declared sibling supplies the Borel version; equality of null sets transfers unit norm, and integral congruence followed by integral trimming proves the representation. All hypotheses and conclusions match the Lean type, with the dependency correctly directed."
+    },
+    {
+      "key": "zero_extension_functional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness and compact support justify continuous zero extension and its support bound. Pointwise extension identities establish linearity and transfer the local bound. Restriction of an admissible field has compact support in U and extends back to the original field, proving both requested properties of L. The prose matches the exact type without hidden assumptions or circularity."
+    },
+    {
+      "key": "pushforward_from_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel measurability of U supplies the required measurable embedding. Its arbitrary-set measure identity, compactness equivalence and a.e.-measurability transfer prove all measure and field clauses. MeasurableEmbedding.integral_map genuinely applies to arbitrary integrands, so the conclusion for every g requires no omitted integrability assumption. The complete proof matches the exact Lean proposition."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.c1_uniform_approx-a1",
+  "parent_id": "root.gauss_green-a1",
+  "depth": 2,
+  "title": "Uniform C¹ approximation of compactly supported continuous fields inside an open set (mollification)",
+  "statement": "Let N ∈ ℕ, let g : ℝ^N → ℝ^N be continuous with compact support, and let W ⊆ ℝ^N be open with tsupport g ⊆ W. Then there are a compact set K with tsupport g ⊆ K ⊆ W and C¹ maps h_k : ℝ^N → ℝ^N (k ∈ ℕ), each with compact support and tsupport h_k ⊆ K, such that h_k → g uniformly on ℝ^N as k → ∞.",
+  "lean_statement": "∀ (N : ℕ) (g : Rn N → Rn N) (W : Set (Rn N)), Continuous g → HasCompactSupport g → IsOpen W → tsupport g ⊆ W → ∃ K : Set (Rn N), IsCompact K ∧ tsupport g ⊆ K ∧ K ⊆ W ∧ ∃ h : ℕ → Rn N → Rn N, (∀ k, ContDiff ℝ 1 (h k) ∧ HasCompactSupport (h k) ∧ tsupport (h k) ⊆ K) ∧ TendstoUniformly h g atTop",
+  "lean_name": "gaussGreenRep_c1_uniform_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-c1-uniform-approx-a1-a1"
+}
