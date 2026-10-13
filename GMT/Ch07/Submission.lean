@@ -1267,6 +1267,16 @@ theorem Submission.rsd_mw_measure_le_massOn : ∀ (P n : ℕ) (U : Set (Euclid P
         (ENNReal.ofReal_lt_ofReal_iff_of_nonneg ENNReal.toReal_nonneg).2 hlt
     _ ≤ T.massOn W := T.le_massOn hadm
 
+/-- **Simon Ch. 6, Remark 3.2(3)** (with 2.7–2.8): for `T = τ(M, θ, ξ)` integer multiplicity,
+`M_W(T) = μ_T(W) = ∫_{M ∩ W} θ dHⁿ` for every open `W ⊆ U`.  The bound `M_W(T) ≤ μ_T(W)` holds for
+every `W` (`Submission.rsd_mw_massOn_le_measure`); the reverse bound tests `T` against smooth
+admissible forms approximating the unit covector field dual to `ξ`
+(`Submission.rsd_mw_measure_le_massOn`). -/
+theorem Submission.rsd_massOn_eq_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W := by
+  intro P n U T R _ hT W hW hWU
+  exact le_antisymm (Submission.rsd_mw_massOn_le_measure P n U T R hT W)
+    (Submission.rsd_mw_measure_le_massOn P n U T R hT W hW hWU)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
