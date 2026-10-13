@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6eda843668016c37c1d2b746565822b7c8629cbf4f5e8e85b6ab4dbc6218dbf1",
+  "git_delta": {
+    "base_commit": "49e2a77899a65ae65b6a3b1e82f02c92b07431b8",
+    "candidate_commit": "a5ca8b89043b6a7b85c91c49fea8ddafc71f5c5a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_blowUp_isBoundaryOfRegion",
+    "diff_sha256": "36936fb28da71c07441567320cf5a7a92142e4fc34f685d615a170435d4e6cac",
+    "source_sha256": "137ccd0449d9a22aa259338b05415f3f4c6c84b8d007f1c99992d86368e19962",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_blowUp_isBoundaryOfRegion",
+      "statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (y : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsBoundaryOfRegion T E ξN → IsBoundaryOfRegion (blowUp T y lam hlam.ne') (dilation y lam '' E) (fun w => ξN (y + lam • w))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
