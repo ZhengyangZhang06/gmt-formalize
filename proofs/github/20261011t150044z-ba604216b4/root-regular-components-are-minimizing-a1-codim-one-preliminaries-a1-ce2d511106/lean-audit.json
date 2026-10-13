@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "007fee03164e4447fc0f24b64a0ef6409ccbd82078c42e053f615ba96b527c73",
+  "git_delta": {
+    "base_commit": "61033b56103b5ccb0f105b6a6b80bf0cd7f72087",
+    "candidate_commit": "e5cccbbebc5ac482ad420b302bc10b435e8815b0",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ec59438bb67fc5bf2ce89d041f556b2f9608a9ea8ee8d37d0daf3c56c447173c",
+    "source_sha256": "5ad02b2d87d6d7fc6c15a32dd397a27dc39bc10bcc1e052843524695ee5ad8f4",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_codim_one_preliminaries",
+      "statement": "∀ (n k : ℕ) (U N E : Set (Euclid (n + k))) (ξN : Euclid (n + k) → MultiVector (n + k) (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → InClassO n U N ξN → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsMinimizingIn T (N ∩ U) → 1 ≤ k ∧ T.support ⊆ N ∧ BoundaryVanishes T ∧ (n = 0 → regularSet T = ∅)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
