@@ -2081,6 +2081,51 @@ theorem Submission.smr_exists_unit_form_gt : ∀ (P k : ℕ) (U : Set (Eucl P)) 
       simp only [hψC x hx, one_smul, hwu x hx, real_inner_self_eq_norm_sq, hx1, one_pow]
     · simp only [Function.notMem_support.1 hx, zero_smul, inner_zero_left]
 
+/-- **Simon Ch. 6, 2.7–2.9 (p. 136)**, step P6 of `slicing_mass_representation`.  Let `μ` be
+finite on compact subsets of `U`, `|⟨α, v(x)⟩| ≤ |α|`, `x ↦ ⟨α, v(x)⟩` Borel, and, `μ`-a.e.,
+`⟨α, v(x)⟩ = 1` for some `|α| ≤ 1`.  If `S(ω) = ∫_A ⟨ω, v⟩ dμ` for every `ω ∈ 𝒟ᵏ(U)`, `A`
+Borel, then `M_W(S) = μ(W ∩ A)` for every open `W ⊆ U`.
+
+`≤`: an admissible `ω` has `‖⟨ω(x), v(x)⟩‖ ≤ 1_{spt ω}(x)`, so
+`S(ω) ≤ ∫_A ‖⟨ω, v⟩‖ dμ ≤ μ(spt ω ∩ A) ≤ μ(W ∩ A)`.  `≥`: for `c < μ(W ∩ A)`,
+`smr_exists_unit_form_gt` gives a continuous compactly supported `φ` with `spt φ ⊆ W`, `|φ| ≤ 1`
+and `c < ∫_A ⟨φ, v⟩ dμ`, and `smr_ofReal_integral_le_massOn` gives `∫_A ⟨φ, v⟩ dμ ≤ M_W(S)`. -/
+theorem Submission.smr_restriction_massOn_eq : ∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) → (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ S : GeometricCurrentOn U k, (∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → S.massOn W = μ (W ∩ A) := by
+  intro P k U μ v hint hfin hv hmeas hae A hA S hS W hW hWU
+  apply le_antisymm
+  · -- Step 1 (`≤`): `ofReal (S ω) ≤ μ(W ∩ A)` for every admissible `ω`; take the supremum.
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    have hωm : MeasurableSet (tsupport (ω : DifferentialForm (Eucl P) k)) :=
+      (isClosed_tsupport _).measurableSet
+    -- Off `spt ω` the form vanishes; on it `|⟨ω(x), v(x)⟩| ≤ |ω(x)| ≤ 1`.
+    have hpt : ∀ x, ‖v x ((ω : DifferentialForm (Eucl P) k) x)‖ₑ ≤
+        (tsupport (ω : DifferentialForm (Eucl P) k)).indicator 1 x := by
+      intro x
+      by_cases hx : x ∈ tsupport (ω : DifferentialForm (Eucl P) k)
+      · rw [indicator_of_mem hx, Pi.one_apply, Real.enorm_eq_ofReal_abs, ENNReal.ofReal_le_one]
+        exact (hv x _).trans (hω.2 x)
+      · refine le_of_eq ?_
+        rw [indicator_of_notMem hx, image_eq_zero_of_notMem_tsupport hx, map_zero, enorm_zero]
+    calc ENNReal.ofReal (S ω)
+        = ENNReal.ofReal (∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) := by
+          rw [hS]
+      _ ≤ ‖∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ‖ₑ := Real.ofReal_le_enorm _
+      _ ≤ ∫⁻ x in A, ‖v x ((ω : DifferentialForm (Eucl P) k) x)‖ₑ ∂μ :=
+          enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x in A, (tsupport (ω : DifferentialForm (Eucl P) k)).indicator 1 x ∂μ :=
+          lintegral_mono hpt
+      _ = μ (tsupport (ω : DifferentialForm (Eucl P) k) ∩ A) := by
+          rw [lintegral_indicator_one hωm, Measure.restrict_apply hωm]
+      _ ≤ μ (W ∩ A) := measure_mono (inter_subset_inter_left _ hω.1)
+  · -- Step 2 (`≥`): each `c < μ(W ∩ A)` is below `ofReal (∫_A ⟨φ, v⟩ dμ) ≤ M_W(S)` for a
+    -- continuous unit form `φ` supported in `W`.
+    refine le_of_forall_lt fun c hc => ?_
+    obtain ⟨φ, hφc, hφs, hφW, hφ1, hcφ⟩ :=
+      Submission.smr_exists_unit_form_gt P k U μ v hfin hv hmeas hae A hA W hW hWU c hc
+    exact hcφ.trans_le (Submission.smr_ofReal_integral_le_massOn P k U μ v hint hfin hv A S hS
+      W hW hWU φ hφc hφs hφW hφ1)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
