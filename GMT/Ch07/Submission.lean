@@ -451,6 +451,74 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, proof of Lemma 5.4, step (6a)** (segment argument): if
+`|f(w) − f(wₜ)| ≤ K|w − wₜ|` for `w` near each point `wₜ = x + t(y − x)`, `t ∈ [0, 1]`, of the
+segment `[x, y]`, then `|f(y) − f(x)| ≤ K|y − x|`.  With `g(t) = x + t(y − x)`, the local bounds
+make `f ∘ g` continuous on `[0, 1]`, so `S = {t : |f(g(t)) − f(x)| ≤ Kt|y − x|}` meets `[0, 1]`
+in a closed set; `0 ∈ S`, and the local bound at `g(t)` gives `(t, t + δ) ⊆ S` for `t ∈ S`.
+Continuous induction gives `[0, 1] ⊆ S`, and `t = 1` is the claim. -/
+theorem Submission.cmcdtsr_segment_lipschitz : ∀ (P : ℕ) (f : Euclid P → Euclid P) (x y : Euclid P) (K : ℝ), 0 ≤ K → (∀ t ∈ Icc (0 : ℝ) 1, ∀ᶠ w in 𝓝 (x + t • (y - x)), dist (f w) (f (x + t • (y - x))) ≤ K * dist w (x + t • (y - x))) → dist (f y) (f x) ≤ K * dist y x := by
+  intro P f x y K hK hloc
+  -- the segment `g(t) = x + t(y − x)`, with `|g(s) − g(t)| = |s − t| |y − x|`
+  let g : ℝ → Euclid P := fun t => x + t • (y - x)
+  have hgcont : Continuous g := continuous_const.add (continuous_id.smul continuous_const)
+  have hgdist : ∀ s t : ℝ, dist (g s) (g t) = |s - t| * dist y x := by
+    intro s t
+    simp only [g, dist_eq_norm]
+    rw [show x + s • (y - x) - (x + t • (y - x)) = (s - t) • (y - x) by rw [sub_smul]; abel,
+      norm_smul, Real.norm_eq_abs]
+  -- the local bounds make `f` continuous at each `g(t)`, hence `f ∘ g` continuous on `[0, 1]`
+  have hfcont : ∀ t ∈ Icc (0 : ℝ) 1, ContinuousAt (fun s => f (g s)) t := by
+    intro t ht
+    have hft : ContinuousAt f (g t) := by
+      rw [Metric.continuousAt_iff']
+      intro ε hε
+      have hball : ∀ᶠ w in 𝓝 (g t), dist w (g t) < ε / (K + 1) :=
+        Metric.ball_mem_nhds _ (by positivity)
+      filter_upwards [hloc t ht, hball] with w h1 h2
+      calc dist (f w) (f (g t)) ≤ K * dist w (g t) := h1
+        _ ≤ K * (ε / (K + 1)) := by gcongr
+        _ < ε := by
+          rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
+          nlinarith
+    exact hft.comp hgcont.continuousAt
+  have hcontOn : ContinuousOn (fun t => dist (f (g t)) (f x) - K * t * dist y x) (Icc 0 1) := by
+    intro t ht
+    apply ContinuousWithinAt.sub
+    · have hca : ContinuousAt (fun s => dist (f (g s)) (f x)) t :=
+        (hfcont t ht).dist continuousAt_const
+      exact hca.continuousWithinAt
+    · exact ((continuous_const.mul continuous_id).mul continuous_const).continuousWithinAt
+  -- `S ∩ [0, 1]` is closed and `0 ∈ S`
+  let S : Set ℝ := {t | dist (f (g t)) (f x) ≤ K * t * dist y x}
+  have hS_closed : IsClosed (S ∩ Icc 0 1) := by
+    have := hcontOn.preimage_isClosed_of_isClosed isClosed_Icc (isClosed_Iic (a := (0 : ℝ)))
+    convert this using 1
+    ext t
+    simp only [S, Set.mem_inter_iff, Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_Iic, sub_nonpos]
+    tauto
+  have h0 : (0 : ℝ) ∈ S := by
+    show dist (f (x + (0 : ℝ) • (y - x))) (f x) ≤ K * 0 * dist y x
+    simp
+  -- right extension: for `t ∈ S ∩ [0, 1)`, the local bound at `g(t)` gives `(t, t + δ) ⊆ S`
+  have hstep : ∀ t ∈ S ∩ Ico (0 : ℝ) 1, S ∈ 𝓝[>] t := by
+    rintro t ⟨htS, ht⟩
+    have hev : ∀ᶠ s in 𝓝 t, dist (f (g s)) (f (g t)) ≤ K * dist (g s) (g t) :=
+      (hgcont.tendsto t).eventually (hloc t ⟨ht.1, ht.2.le⟩)
+    filter_upwards [hev.filter_mono nhdsWithin_le_nhds, self_mem_nhdsWithin] with s hs hst
+    have hst' : t < s := hst
+    have htS' : dist (f (g t)) (f x) ≤ K * t * dist y x := htS
+    show dist (f (g s)) (f x) ≤ K * s * dist y x
+    calc dist (f (g s)) (f x) ≤ dist (f (g s)) (f (g t)) + dist (f (g t)) (f x) :=
+          dist_triangle _ _ _
+      _ ≤ K * dist (g s) (g t) + K * t * dist y x := add_le_add hs htS'
+      _ = K * s * dist y x := by rw [hgdist, abs_of_pos (sub_pos.mpr hst')]; ring
+  -- continuous induction on `[0, 1]`, evaluated at `t = 1`
+  have h1 : (1 : ℝ) ∈ S :=
+    IsClosed.Icc_subset_of_forall_mem_nhdsWithin hS_closed h0 hstep ⟨zero_le_one, le_rfl⟩
+  have h1' : dist (f (g 1)) (f x) ≤ K * 1 * dist y x := h1
+  rwa [show g 1 = y by simp [g], mul_one] at h1'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
