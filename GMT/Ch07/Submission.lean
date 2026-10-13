@@ -2484,6 +2484,76 @@ theorem Submission.dgcr_bwd_coordinate_covector : ∀ (m : ℕ) (j : Fin (m + 1)
     · simp [Fin.removeNth_apply, hl]
     · exact (Fin.succ_ne_zero l).symm
 
+/-- **Vanishing boundary gives the ambient weak-derivative identity** (the zero weak derivatives
+step of the planar constancy argument, after Simon 6.2.34).  Let `∂S = 0` in `V` and
+`S(ω) = ∫_{V ∩ Q} g(x) ω(x)(τ₁, …, τₙ) dHⁿ(x)` for an orthonormal family `τ` with `Q = span τ`.
+Then `∫_{V ∩ Q} g · D_{τⱼ} f dHⁿ = 0` for every smooth compactly supported `f` with
+`spt f ⊆ V`: test `∂S = 0` against `φ = f · α`, where `α(w) = β(⟨τ, w⟩)` pulls back the
+coordinate covector `β = eⱼ ⌟ δ`, so that `dφ(x)(τ) = Df(x)(τⱼ)`. -/
+theorem Submission.idtp_pc_boundary_weak_derivative : ∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), 1 ≤ n → Orthonormal ℝ τ → BoundaryVanishes S → (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) → ∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0 := by
+  intro P n V S τ g hn hτ hbd hrep f hf hfc hfV j
+  -- Degree: `n = m + 1`, so `BoundaryVanishes S` is `∂S = 0`.
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  have hbd' : S.boundary = 0 := hbd
+  -- The coordinate covector `β` on `ℝ^{m+1}` and its pullback `α` by `y ↦ (⟨τₖ, y⟩)ₖ`.
+  obtain ⟨β, hβ⟩ := Submission.dgcr_bwd_coordinate_covector m j
+  let Ls₀ : Euclid P →ₗ[ℝ] Euclid (m + 1) :=
+    { toFun := fun y => (WithLp.equiv 2 (Fin (m + 1) → ℝ)).symm (fun k => inner ℝ (τ k) y)
+      map_add' := fun y z => by ext k; simp [inner_add_right]
+      map_smul' := fun c y => by ext k; simp [inner_smul_right] }
+  let Ls : Euclid P →L[ℝ] Euclid (m + 1) := LinearMap.toContinuousLinearMap Ls₀
+  have hLsτ : ∀ i, Ls (τ i) = EuclideanSpace.single i (1 : ℝ) := by
+    intro i
+    ext k
+    simp [Ls, Ls₀, orthonormal_iff_ite.mp hτ, eq_comm]
+  let α : Covector (Euclid P) m := β.compContinuousLinearMap Ls
+  have hα : ∀ i : Fin (m + 1), α (i.removeNth τ) = if i = j then (-1 : ℝ) ^ (j : ℕ) else 0 := by
+    intro i
+    have : (fun l => Ls (i.removeNth τ l)) =
+        i.removeNth (fun l : Fin (m + 1) => EuclideanSpace.single l (1 : ℝ)) := by
+      funext l
+      simp [Fin.removeNth_apply, hLsτ]
+    show β (fun l => Ls (i.removeNth τ l)) = _
+    rw [this, hβ i]
+  -- The test form `φ = f · α ∈ 𝒟^m(V)`.
+  let φ : DifferentialForm (Euclid P) m := fun y => f y • α
+  have hφtest : IsTestForm φ ∧ tsupport φ ⊆ V := by
+    refine ⟨⟨?_, ?_⟩, ?_⟩
+    · exact hf.smul contDiff_const
+    · exact hfc.smul_right
+    · exact (tsupport_smul_subset_left _ _).trans hfV
+  let φt : TestFormOn V m := ⟨φ, hφtest⟩
+  -- `dφ(x)(τ) = Σᵢ (−1)ⁱ Df(x)(τᵢ) α(τ without τᵢ) = Df(x)(τⱼ)`.
+  have hd : ∀ x, exteriorDerivative φ x τ = fderiv ℝ f x (τ j) := by
+    intro x
+    have hfd : DifferentiableAt ℝ f x := (hf.differentiable (by simp)).differentiableAt
+    rw [exteriorDerivative_apply (hfd.smul_const α) τ]
+    have h1 : ∀ i : Fin (m + 1),
+        (fun y => (f y • α) (i.removeNth τ)) = fun y => f y * α (i.removeNth τ) := by
+      intro i; funext y; simp [smul_eq_mul]
+    simp only [h1]
+    simp only [fderiv_mul_const hfd, hα]
+    rw [Finset.sum_eq_single j]
+    · simp only [ite_true]
+      rw [zsmul_eq_mul]
+      push_cast
+      simp only [Pi.smul_apply, smul_eq_mul]
+      rw [← mul_assoc, ← pow_add, ← two_mul, pow_mul]
+      simp
+    · intro i _ hij
+      simp [hij]
+    · simp
+  -- `0 = ∂S(φ) = S(dφ) = ∫_{V ∩ Q} g · dφ(τ) dHⁿ = ∫_{V ∩ Q} g · D_{τⱼ} f dHⁿ`.
+  have h0 : S.boundary φt = 0 := by rw [hbd']; rfl
+  rw [GeometricCurrentOn.boundary_apply] at h0
+  have h2 := hrep (exteriorDerivativeTestOn V m φt)
+  rw [h0] at h2
+  rw [h2]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only
+  rw [← hd x]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
