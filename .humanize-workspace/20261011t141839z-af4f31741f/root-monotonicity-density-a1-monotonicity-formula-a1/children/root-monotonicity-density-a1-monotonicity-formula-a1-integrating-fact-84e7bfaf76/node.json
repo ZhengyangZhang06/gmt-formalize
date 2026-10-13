@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.monotonicity_formula-a1.integrating_factor_comparison-a1",
+  "parent_id": "root.monotonicity_density-a1.monotonicity_formula-a1",
+  "depth": 3,
+  "title": "Integrating-factor comparison (mean value theorem form)",
+  "statement": "Let L, a, b ∈ ℝ and f, g, f', g' : ℝ → ℝ with L ≥ 0, a ≥ 0 and a ≤ b. Assume that for every t in the closed interval [a, b]: f has derivative f'(t) at t, g has derivative g'(t) at t, 0 ≤ f'(t) + L·f(t), and g'(t) ≤ f'(t) + L·f(t). Then e^{L·a}·f(a) + (g(b) − g(a)) ≤ e^{L·b}·f(b).",
+  "lean_statement": "∀ (L a b : ℝ) (f g f' g' : ℝ → ℝ), 0 ≤ L → 0 ≤ a → a ≤ b → (∀ t ∈ Icc a b, HasDerivAt f (f' t) t) → (∀ t ∈ Icc a b, HasDerivAt g (g' t) t) → (∀ t ∈ Icc a b, 0 ≤ f' t + L * f t) → (∀ t ∈ Icc a b, g' t ≤ f' t + L * f t) → Real.exp (L * a) * f a + (g b - g a) ≤ Real.exp (L * b) * f b",
+  "lean_name": "mono833_integrating_factor_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-monotonicity-formula-a1-integrating-fact-84e7bfaf76-a1"
+}
