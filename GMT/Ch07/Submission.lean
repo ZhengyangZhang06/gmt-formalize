@@ -517,6 +517,33 @@ theorem Submission.dpf_itt_comp_bilipschitz_piece : ∀ (P n : ℕ) (F : Euclid 
     exact (hφinj (F a)).comp (hdiff a ha).2
   · rw [fderiv_comp a (hφ (F a)) (hdiff a ha).1, ContinuousLinearMap.toLinearMap_comp]
     exact LinearMap.range_comp _ _
+/-- **A.e. transfer through Lipschitz pieces** (step 6 of the image tangent transport).  Let
+`M ⊆ ℝᴾ` be Borel with `Hⁿ(M \ ⋃ᵢ Fᵢ(Bᵢ)) = 0` for Lipschitz `Fᵢ : ℝⁿ → ℝᴾ`.  If `p (Fᵢ b)` holds
+for Lebesgue-a.e. `b ∈ Bᵢ`, then `p x` holds for `Hⁿ`-a.e. `x ∈ M`: the bad parameters
+`Nᵢ ⊆ Bᵢ` are Lebesgue-null, so `Hⁿ(Fᵢ(Nᵢ)) ≤ Lᵢⁿ Hⁿ(Nᵢ) = 0` (`Hⁿ = Lⁿ` on `ℝⁿ`), and every
+`x ∈ M` with `¬p x` lies in `(M \ ⋃ᵢ Fᵢ(Bᵢ)) ∪ ⋃ᵢ Fᵢ(Nᵢ)`. -/
+theorem Submission.dpf_itt_ae_of_ae_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (p : Euclid P → Prop), MeasurableSet M → (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) → μHE[n] (M \ ⋃ i, F i '' B i) = 0 → (∀ i, ∀ᵐ b ∂(volume.restrict (B i)), p (F i b)) → ∀ᵐ x ∂(μHE[n].restrict M), p x := by
+  intro P n M F B p hM hF hcov hp
+  -- `μHE[n] = c • μH[n]` with `c ≠ 0`
+  have hc := Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n
+  -- the bad parameters `Nᵢ = {b ∈ Bᵢ | ¬p (Fᵢ b)}` have `μHE[n]`-null images
+  have hnull : ∀ i, μHE[n] (F i '' {b | ¬(b ∈ B i → p (F i b))}) = 0 := by
+    intro i
+    obtain ⟨L, hL⟩ := hF i
+    have hN : μHE[n] {b | ¬(b ∈ B i → p (F i b))} = 0 := by
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact ae_iff.mp (ae_imp_of_ae_restrict (hp i))
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, smul_eq_zero] at hN ⊢
+    exact Or.inr (le_zero_iff.mp ((hL.hausdorffMeasure_image_le (Nat.cast_nonneg n) _).trans_eq
+      (by rw [hN.resolve_left hc, mul_zero])))
+  -- every bad point of `M` lies in `(M \ ⋃ᵢ Fᵢ(Bᵢ)) ∪ ⋃ᵢ Fᵢ(Nᵢ)`
+  rw [ae_restrict_iff' hM, ae_iff]
+  refine measure_mono_null (fun x hx => ?_) (measure_union_null hcov (measure_iUnion_null hnull))
+  obtain ⟨hxM, hpx⟩ := not_imp.mp hx
+  by_cases hxU : x ∈ ⋃ i, F i '' B i
+  · obtain ⟨i, b, hb, rfl⟩ := mem_iUnion.mp hxU
+    exact Or.inr (mem_iUnion.mpr ⟨i, b, fun h => hpx (h hb), rfl⟩)
+  · exact Or.inl ⟨hxM, hxU⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
