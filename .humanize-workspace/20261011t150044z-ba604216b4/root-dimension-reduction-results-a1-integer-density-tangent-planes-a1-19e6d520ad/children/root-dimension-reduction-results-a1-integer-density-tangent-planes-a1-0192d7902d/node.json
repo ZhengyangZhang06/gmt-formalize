@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.blowup_translation_invariance-a1.rescaled_tests_tendsto-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.blowup_translation_invariance-a1",
+  "depth": 5,
+  "title": "Rescaled test functions against vaguely convergent locally finite measures",
+  "statement": "Let P ∈ ℕ. Let (μ_j)_{j∈ℕ} and μ be Borel measures on ℝ^P = Euclid P with μ_j(K) < ∞ for every j and every compact K ⊆ ℝ^P. Suppose ∫ g dμ_j → ∫ g dμ for every continuous g : ℝ^P → ℝ with compact support. Then for every sequence of reals s_j → 1 and every continuous f : ℝ^P → ℝ with compact support, ∫ f(s_j·y) dμ_j(y) → ∫ f dμ as j → ∞. Here ∫ is the Bochner integral, which is 0 for non-integrable functions.",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (s : ℕ → ℝ) (f : Euclid P → ℝ), (∀ j, ∀ K : Set (Euclid P), IsCompact K → μs j K < ∞) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ))) → Tendsto s atTop (𝓝 1) → Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ y, f (s j • y) ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+  "lean_name": "idtp_cttp_bti_rescaled_tests_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-0192d7902d-a1"
+}
