@@ -1,0 +1,75 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_scaling-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof steps 3(c), 3(d); Simon Ch. 6, 2.23–2.24(1) (∂f_#T = f_#∂T, chapter-06.txt lines 405–418); support of a current (Simon 6.2.11; SimonGMT support, zeroRegion, VanishesOn).
+Conventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U). For Y ∈ 𝒟_n(V): Y vanishes on W iff Y(ω) = 0 for every ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ W; Z(Y) := ⋃{W : W open, closure W compact, closure W ⊆ V, Y vanishes on W}; spt Y := V ∖ Z(Y). For Y ∈ 𝒟_n(U) and ω ∈ 𝒟ⁿ(η(U)), η_#Y(ω) = Y(ν_ω), where ν_ω ∈ 𝒟ⁿ(U) is the affine pullback of ω by η (affinePullbackForm (dilationCLM P λ) (−λ⁻¹x) ω, regarded in U), which depends only on ω and not on Y. η is an affine homeomorphism of ℝ^P with inverse ι: η is y ↦ λ⁻¹y (a homeomorphism, λ⁻¹ ≠ 0) followed by the translation z ↦ z − λ⁻¹x, η(ι(z)) = λ⁻¹(x + λz − x) = z and ι(η(y)) = x + λ·λ⁻¹(y − x) = y; in particular η is injective, η⁻¹(η(E)) = E, and for continuous h and any f, tsupport(f∘h) ⊆ h⁻¹(tsupport f) (the closed set h⁻¹(tsupport f) contains {f∘h ≠ 0}).
+1. (i) For ω ∈ 𝒟ⁿ(η(U)): η_#(S − T)(ω) = (S − T)(ν_ω) = S(ν_ω) − T(ν_ω) = η_#S(ω) − η_#T(ω), because S − T is the pointwise difference of the underlying linear functionals. Currents that agree on every test form are equal (GeometricCurrentOn.ext).
+2. (ii) Suppose η_#S = η_#T and let ω' ∈ 𝒟ⁿ(U). By testform_correspondence (b) choose ω ∈ 𝒟ⁿ(η(U)) with ω'(y) = ω(η(y)) for all y. By testform_correspondence (c), λ^{−n}S(ω') = η_#S(ω) = η_#T(ω) = λ^{−n}T(ω'). Since λ^{−n} ≠ 0, S(ω') = T(ω'). Hence S = T.
+3. (iii) Claim: Z(η_#T) = η(Z(T)).
+ (⊆) Let z ∈ W₀, where W₀ is open, closure W₀ is compact and ⊆ η(U), and η_#T vanishes on W₀. Put W := η⁻¹(W₀). W is open (η continuous). As η is a homeomorphism, closure W = η⁻¹(closure W₀), which is compact and contained in η⁻¹(η(U)) = U. T vanishes on W: let ω' ∈ 𝒟ⁿ(U) with tsupport ω' ⊆ W; by testform_correspondence (b) choose ω with ω'(y) = ω(η(y)) for all y; then ω = ω'∘ι (ω(z) = ω(η(ι(z))) = ω'(ι(z))), so tsupport ω ⊆ ι⁻¹(tsupport ω') ⊆ ι⁻¹(η⁻¹(W₀)) = W₀ (η∘ι = id); hence 0 = η_#T(ω) = λ^{−n}T(ω') by testform_correspondence (c), and T(ω') = 0. Thus W ⊆ Z(T); since η(ι(z)) = z ∈ W₀ we get ι(z) ∈ W ⊆ Z(T), and z = η(ι(z)) ∈ η(Z(T)).
+ (⊇) Let z = η(w) with w ∈ W, where W is open, closure W is compact and ⊆ U, and T vanishes on W. Put W₀ := η(W). W₀ is open (a homeomorphism is an open map); closure W₀ = η(closure W) is compact (continuous image of a compact set) and contained in η(U). η_#T vanishes on W₀: let ω ∈ 𝒟ⁿ(η(U)) with tsupport ω ⊆ W₀; by testform_correspondence (a) choose ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)); then tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(W)) = W, so T(ω') = 0 and η_#T(ω) = λ^{−n}T(ω') = 0 by testform_correspondence (c). Hence z ∈ W₀ ⊆ Z(η_#T).
+ Consequently spt(η_#T) = η(U) ∖ η(Z(T)) = η(U ∖ Z(T)) = η(spt T), the middle equality because η is injective.
+4. (iv) Let T ∈ 𝒟_{m+1}(U) and ω ∈ 𝒟^m(η(U)). By definition ∂Y(φ) = Y(dφ). Then ∂(η_#T)(ω) = η_#T(dω) = T(ν_{dω}) and η_#(∂T)(ω) = ∂T(ν_ω) = T(dν_ω), where the inclusion into 𝒟(U) does not change underlying forms. Exterior differentiation commutes with pullback by the affine map η: d(η^#ω) = η^#(dω) (SimonGMT exteriorDerivative_affinePullbackForm; this is the chain rule, η having constant derivative λ⁻¹·id). Hence dν_ω = ν_{dω}, the two values agree, and ∂(η_#T) = η_#(∂T) (equivalently, SimonGMT GeometricCurrentOn.boundary_affinePushforward applied to the restricted current, together with the fact that restricting the domain commutes with ∂). ∎
+Formalization notes (this exact statement was proved in a scratch build from the sibling's exact type): (i) is `GeometricCurrentOn.ext fun ω => rfl`; (iv) is `unfold blowUp; rw [GeometricCurrentOn.boundary_affinePushforward]; rfl`; (ii) by GeometricCurrentOn.ext and mul_left_cancel₀; (iii) unfold GeometricCurrentOn.support, prove the zero-region identity by ext with Homeomorph.preimage_closure, Homeomorph.image_closure, Homeomorph.isCompact_preimage, Homeomorph.isOpenMap, IsCompact.image, tsupport_comp_subset_preimage, then rewrite with Set.image_sdiff (injectivity).
+
+## Key steps
+
+1. (i) Both sides evaluate S − T on the same pulled-back form.
+2. (ii) Every test form in U is ω∘η for some ω (testform_correspondence (b)), and η_#Y(ω) = λ^{−n}Y(ω∘η) with λ^{−n} ≠ 0.
+3. (iii) The zero regions correspond: η_#T vanishes on W₀ ⊂⊂ η(U) iff T vanishes on η⁻¹(W₀) ⊂⊂ U; hence Z(η_#T) = η(Z(T)) and spt(η_#T) = η(spt T) by injectivity.
+4. (iv) d commutes with the affine pullback (exteriorDerivative_affinePullbackForm / boundary_affinePushforward).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)`
+- `rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem restrict_map \(μ|theorem ae_map_iff \{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib`
+- `rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean`
+- `grep -n '^def\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)`
+- `grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)`
+- `contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types`
+- `lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean`
+- `/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean`
+- `/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean`
+
+The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run.
