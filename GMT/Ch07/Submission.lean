@@ -529,6 +529,31 @@ theorem Submission.dor_lmb_glc_good_radius : ∀ (P : ℕ) (μ : Measure (Euclid
         exact hN₃
   rw [ENNReal.ofReal_le_ofReal_iff (by positivity)] at hle
   linarith
+/-- **Lebesgue's inequality for monotone functions** (Simon Ch. 6, remark before 4.10): if `F` is
+nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)` be the Stieltjes function of
+`F`, with measure `μ_G`; then `μ_G (a, b) = G(b⁻) − G(a) ≤ F(b) − F(a)`.  By Lebesgue's theorem
+(`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
+`(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
+theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
+  intro F a b hF
+  set G := hF.stieltjesFunction
+  -- `F(a) ≤ F(a⁺) = G(a)`, and `G(b⁻) ≤ F(b)` because `G(y) = F(y⁺) ≤ F(b)` for `y < b`
+  have hGa : F a ≤ G a := hF.le_rightLim le_rfl
+  have hGb : leftLim G b ≤ F b := by
+    refine le_of_tendsto (G.mono.tendsto_leftLim b) ?_
+    filter_upwards [self_mem_nhdsWithin] with y (hy : y < b)
+    exact hF.rightLim_le hy
+  calc ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t)
+      ≤ ∫⁻ t in Ioo a b, G.measure.rnDeriv volume t := by
+        -- a.e. `F′(t) = (dμ_G/dt)(t).toReal`
+        refine lintegral_mono_ae (ae_restrict_of_ae ?_)
+        filter_upwards [hF.ae_hasDerivAt] with t ht
+        rw [ht.deriv]
+        exact ENNReal.ofReal_toReal_le
+    _ ≤ volume.withDensity (G.measure.rnDeriv volume) (Ioo a b) := withDensity_apply_le _ _
+    _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
+    _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
+    _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
