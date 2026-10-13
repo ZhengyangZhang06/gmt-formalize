@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3ce1cf04a8e92c1c8b1292337dd73fefa4688e064aea70b16cae4cc547b3bcb6",
+  "git_delta": {
+    "base_commit": "e302f13a53ddb360d2ecc92d3cdedc52b50a26b0",
+    "candidate_commit": "278826ad1d6c231437e5e467f6381023f5c6e9ae",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel",
+    "diff_sha256": "160ebdf92f36271eae3821e5789b039f2b84864ace352d4733faffe51077a048",
+    "source_sha256": "5b89db5e6f050799e81f50dbd1ef2cba1da566956829a0c6818f9884aeaf11ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → μ (tsupport g) < ∞ → limsup (fun j => μs j (tsupport g)) atTop < ∞ → (∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x}))) → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
