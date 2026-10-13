@@ -993,6 +993,28 @@ theorem Submission.slicing_im_creg_jacobian_identity : ∀ (P m : ℕ) (A : Eucl
   rw [hfinal, Real.sqrt_mul (sq_nonneg _),
     Real.sqrt_sq (mul_nonneg (norm_nonneg _) (abs_nonneg _))]
   ring
+/-- Tonelli in the coordinates `ℝ^{m+1} = ℝ × ℝ^m`: `(t, v) ↦ [t, v]` is the composite of the
+volume-preserving maps `id × ofLp`, `(piFinSuccAbove _ 0).symm = Fin.cons` and `toLp`, so
+`∫ F = ∫ F ∘ [·,·]` over `ℝ × ℝ^m`, which splits by `lintegral_prod`. -/
+theorem Submission.slicing_im_creg_lintegral_cons :
+    ∀ (m : ℕ) (F : Eucl (m + 1) → ℝ≥0∞), Measurable F → Measurable (fun t : ℝ => ∫⁻ v : Eucl m, F ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)))) ∧ ∫⁻ y, F y = ∫⁻ t : ℝ, ∫⁻ v : Eucl m, F ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) := by
+  intro m F hF
+  -- `e (t, v) = [t, v]` is volume preserving from `ℝ × ℝ^m` to `ℝ^{m+1}`.
+  set e : ℝ × Eucl m → Eucl (m + 1) := fun p =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin m) ℝ p.2))
+  have he : MeasurePreserving e ((volume : Measure ℝ).prod (volume : Measure (Eucl m)))
+      (volume : Measure (Eucl (m + 1))) := by
+    have h := (PiLp.volume_preserving_toLp (Fin (m + 1))).comp
+      (((volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0).symm _).comp
+        ((MeasurePreserving.id (volume : Measure ℝ)).prod (PiLp.volume_preserving_ofLp (Fin m))))
+    convert h using 1
+    funext p
+    simp only [e, Function.comp_apply, MeasurableEquiv.piFinSuccAbove_symm_apply,
+      Fin.insertNthEquiv_zero]
+    rfl
+  have hFe : Measurable fun p : ℝ × Eucl m => F (e p) := hF.comp he.measurable
+  exact ⟨hFe.lintegral_prod_right', by
+    rw [← he.lintegral_comp hF, lintegral_prod _ hFe.aemeasurable]⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
