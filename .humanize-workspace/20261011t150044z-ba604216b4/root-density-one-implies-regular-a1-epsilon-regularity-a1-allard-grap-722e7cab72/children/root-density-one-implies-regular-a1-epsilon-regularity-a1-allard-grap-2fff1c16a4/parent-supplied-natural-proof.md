@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.hs_integral_compare-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof (P4), Step 2 and Step 5 (Simon Ch. 5, Remark 4.6, book/chapter-05.txt lines 755–774: "since |p_S − p_T|² ≤ 2|p_{T_xM} − p_T|² + 2|p_{T_xM} − p_S|², (∗) follows by adding these inequalities", and proof of Theorem 5.2, display (7), lines 1083–1087). In the parent it is applied with τ(x) := p_x (the projection onto approxTangentPlane n M x), A_k := projections onto n-planes, and s a closed ball. Notation as in the statement. ofReal := ENNReal.ofReal : ℝ → [0, ∞] is monotone, ofReal 2 = 2, and ofReal(α + β) = ofReal α + ofReal β, ofReal(c·α) = ofReal(c)·ofReal(α) for α, β, c ≥ 0. All integrals are lower Lebesgue integrals for the restricted measure μ⌞s.
+1. Pointwise inequality. For vectors u_i, v_i, w_i ∈ E (i < P): Σ_i ‖u_i − w_i‖² ≤ 2Σ_i ‖u_i − v_i‖² + 2Σ_i ‖v_i − w_i‖². Indeed, for each i put α := ‖u_i − v_i‖ ≥ 0 and β := ‖v_i − w_i‖ ≥ 0; the triangle inequality gives 0 ≤ ‖u_i − w_i‖ ≤ α + β, so ‖u_i − w_i‖² ≤ (α + β)² = 2α² + 2β² − (α − β)² ≤ 2α² + 2β²; now sum over i.
+2. Nonnegativity. d ≥ 0 and f_1(x), f_2(x) ≥ 0 for every x, as sums of squares.
+3. Measurability. For a fixed continuous linear A : E → E, the map Φ_A : L(E, E) → ℝ, L ↦ Σ_i ‖L e_i − A e_i‖², is continuous: L ↦ L e_i is continuous (evaluation at a fixed vector), and subtraction of a constant, the norm, squaring and finite sums are continuous. τ is a.e. strongly measurable for μ, hence for μ⌞s (AEStronglyMeasurable.restrict). Therefore f_k = Φ_{A_k} ∘ τ is a.e. strongly measurable, hence a.e. measurable, for μ⌞s (Continuous.comp_aestronglyMeasurable), and so are x ↦ ofReal(f_k(x)) (ENNReal.measurable_ofReal.comp_aemeasurable) and x ↦ 2·ofReal(f_k(x)).
+4. Proof of (i). Fix x ∈ E. Step 1 with u_i := A₁e_i, v_i := τ(x)e_i, w_i := A₂e_i, together with ‖A₁e_i − τ(x)e_i‖ = ‖τ(x)e_i − A₁e_i‖, gives d ≤ 2f_1(x) + 2f_2(x). By Step 2 and the properties of ofReal, ofReal(d) ≤ ofReal(2f_1(x) + 2f_2(x)) = 2·ofReal(f_1(x)) + 2·ofReal(f_2(x)). Integrating over s: ofReal(d)·μ(s) = ∫_s ofReal(d) dμ (integral of a constant over s, setLIntegral_const) ≤ ∫_s (2·ofReal(f_1) + 2·ofReal(f_2)) dμ (monotonicity, lintegral_mono) = ∫_s 2·ofReal(f_1) dμ + ∫_s 2·ofReal(f_2) dμ (additivity of the lower integral, valid since the first summand is a.e. measurable by Step 3; lintegral_add_left') = 2∫_s ofReal(f_1) dμ + 2∫_s ofReal(f_2) dμ (a finite constant factor comes out of a lower integral, lintegral_const_mul' with 2 ≠ ∞). This is (i).
+5. Proof of (ii). Fix x ∈ E. Step 1 with u_i := τ(x)e_i, v_i := A₂e_i, w_i := A₁e_i, together with ‖A₂e_i − A₁e_i‖ = ‖A₁e_i − A₂e_i‖, gives f_1(x) ≤ 2f_2(x) + 2d, hence ofReal(f_1(x)) ≤ 2·ofReal(f_2(x)) + 2·ofReal(d). Integrating over s: ∫_s ofReal(f_1) dμ ≤ ∫_s (2·ofReal(f_2) + 2·ofReal(d)) dμ = ∫_s 2·ofReal(f_2) dμ + ∫_s 2·ofReal(d) dμ (additivity, valid since the second summand is constant, hence measurable; lintegral_add_right) = 2∫_s ofReal(f_2) dμ + 2·ofReal(d)·μ(s) (lintegral_const_mul' and setLIntegral_const). This is (ii). ∎
+Remark. Measurability is needed only in (i): for arbitrary functions the lower integral is superadditive but in general not additive, which is why the a.e. strong measurability of τ is a hypothesis.
+
+## Key steps
+
+1. Pointwise: Σ_i‖u_i − w_i‖² ≤ 2Σ_i‖u_i − v_i‖² + 2Σ_i‖v_i − w_i‖² (triangle inequality and (α + β)² ≤ 2α² + 2β²).
+2. x ↦ ofReal(Σ_i‖τ(x)e_i − A e_i‖²) is a.e. measurable for μ⌞s (continuous function of the a.e. strongly measurable τ).
+3. (i): ofReal(d) ≤ 2ofReal(f_1) + 2ofReal(f_2) pointwise; integrate over s (constant integral = ofReal(d)·μ(s); additivity by a.e. measurability).
+4. (ii): ofReal(f_1) ≤ 2ofReal(f_2) + 2ofReal(d) pointwise; integrate over s (additivity with a constant summand; constant integral = ofReal(d)·μ(s)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)`
+- `rg -n -i 'tilt|excess|hilbert.?schmidt|grassmann' <snapshot>/project/GMT --glob '*.lean'`
+- `rg -n 'starProjection' <snapshot>/project/GMT --glob '*.lean'`
+- `rg -n -i 'tendsto.*starProjection|starProjection.*tendsto|closed.*starProjection|isClosed.*IsStarProjection|IsStarProjection.*isClosed' <snapshot>/mathlib/Mathlib --glob '*.lean'`
+- `rg -n 'IsStarProjection' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/`
+- `rg -n 'theorem IsProj.trace|isProj_range|trace_eq_sum_inner|range_starProjection|isIdempotentElem_starProjection|inner_starProjection_left_eq_right|starProjection_eq_self_iff' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem norm_sq_eq_of_L2|instance completeSpace' <snapshot>/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean; rg -n 'theorem cauchySeq_of_le_geometric |theorem dist_le_of_le_geometric_of_tendsto ' <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem mul_le_mul_left'|theorem mul_le_mul_right" <snapshot>/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `rg -n -i 'tilt|hilbert.?schmidt|hsNorm|grassmann' Poincare --glob '*.lean'; rg -n 'starProjection' Poincare | rg -i 'tendsto|limit|cauchy|finrank|trace'  (in lake-packages-25730c7c/simongmt at rev 2b3663083f3fe399b6296fb8eaee52169170e197)`
+- `grep -rIl -e dorag_ted_planes_limit -e dorag_ted_hs_integral_compare over every workspace's .humanize JSON/MD; python3 lean_name scan of dag.json (216 nodes)  (no match)`
+- `python3 -I lean_contract.validate_lean_statement and lean (v4.35.0-rc3, LEAN_PATH of the built workspace) on Challenge_<key>.lean in the verifier/gmt-compare.py contract_scope (open …; namespace GMT.Ch07; open …; noncomputable section; end)`
+- `lean final/Solution_planes_limit.lean, final/Solution_hs_integral_compare.lean, final/Assembly.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Projection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-722e7cab72/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/ted-decomp-k7q2/v1/Challenge_planes_limit.lean`
+- `/tmp/ted-decomp-k7q2/v1/Challenge_hs_integral_compare.lean`
+- `/tmp/ted-decomp-k7q2/v1/Challenge_PARENT.lean`
+- `/tmp/ted-decomp-k7q2/final/Solution_planes_limit.lean`
+- `/tmp/ted-decomp-k7q2/final/Solution_hs_integral_compare.lean`
+- `/tmp/ted-decomp-k7q2/final/Assembly.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, which form the compiler context of the child types.
+
+Nothing in the snapshot proves either child:
+- The project's Ch05 tilt-excess objects (tiltExcess, tiltExcessStar, hsNormSq, TiltExcessDecayTheorem) are definitions used only in a main_theorem that is `sorry`.
+- SimonGMT Chapter05/Basic.lean defines tiltEnergy and tiltExcess but states that excess decay is not formalized.
+- Mathlib has only starProjection_tendsto_closure_iSup, which covers monotone families. It has no closedness result for rank-n star projections and no integrated Hilbert–Schmidt comparison.
+
+The Mathlib API the child proofs need exists at the pin:
+- isStarProjection_iff_eq_starProjection_range (Adjoint.lean);
+- Submodule.range_starProjection, starProjection_eq_self_iff, inner_starProjection_left_eq_right, norm_starProjection_apply_le (Projection/Basic.lean);
+- LinearMap.trace_eq_sum_inner (InnerProductSpace/Trace.lean:25);
+- LinearMap.IsProj.trace (LinearAlgebra/Trace.lean:327);
+- LinearMap.IsIdempotentElem.isProj_range (Projection.lean:564);
+- PiLp.norm_sq_eq_of_L2 and PiLp.completeSpace (PiLp.lean);
+- cauchySeq_of_le_geometric and dist_le_of_le_geometric_of_tendsto (SpecificLimits/Basic.lean);
+- exists_nat_pow_near_of_lt_one.
+Note: `mul_le_mul_left'` no longer exists in this Mathlib; use mul_le_mul_right or gcongr. SimonGMT Chapter04 also has trace_starProjection.
+
+Lean checks:
+- Both child types, and the frozen parent and sibling types, elaborate in comparator scope; the only diagnostic is the expected sorry warning.
+- Complete proofs of both children compile as Submission.dorag_ted_planes_limit and Submission.dorag_ted_hs_integral_compare, with axioms [propext, Classical.choice, Quot.sound].
+- Assembly.lean proves the exact frozen parent type from the exact child types and the exact frozen sibling types, with the same axioms.
+- An independent reviewer recompiled all three files and returned ACCEPT.
+- No lean_name collision.

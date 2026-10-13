@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "Approximate tangent planes along a Lipschitz graph",
+  "statement": "Let n ≥ 1, k ≥ 0, U ⊆ ℝ^{n+k} any set, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), W ⊆ U open, ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, a ∈ ℝ^{n+k}, L ≥ 0 and f : ℝⁿ → ℝᵏ L-Lipschitz. Then for Hⁿ-almost every x ∈ M ∩ W (μHE[n].restrict (M ∩ W)-a.e.): for every v ∈ ℝⁿ with x = a + ιv + ι'(f(v)), f is differentiable at v and approxTangentPlane n M x = LinearMap.range(ι + ι'∘Df(v)) = {ιw + ι'Df(v)w : w ∈ ℝⁿ}.",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (a : Euclid (n + k)) (f : Euclid n → Euclid k) (L : NNReal), IsOpen W → W ⊆ U → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L f → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), ∀ v : Euclid n, x = a + ι v + ι' (f v) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)",
+  "lean_name": "dorag_lipschitz_graph_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8c018a8a8b-a1"
+}

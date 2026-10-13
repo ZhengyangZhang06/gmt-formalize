@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'campanato|dorag_gc_|graph_slope' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'structure IMRep|def IMRep.measure|locallyIntegrable_mult|mult_pos|carrier_measurable' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "sed -n '350,400p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "sed -n '800,845p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "sed -n '155,198p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "sed -n '380,419p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        ". GMT/Scratch/graph_c1_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/graph_c1_decomposition/GraphC1Full.lean > /tmp/graph-c1-independent-audit-full.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ExtendFrom.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db45a55178/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/graph_c1_decomposition/GraphC1Full.lean",
+        "/tmp/graph-c1-independent-audit-full.log",
+        "/tmp/graph-c1-audit-v2-tj47d2fo/challenge-results.json"
+      ],
+      "conclusion": "The pinned project and package revisions match the compiler context; the snapshot Contract and workspace Contract/Submission are byte-identical. The campanato/dorag_gc_/graph_slope search returned no matches in the three searched snapshot roots. Relevant projection, differentiation, measurable-derivative, extension and convolution APIs were inspected directly. No existing child declaration is being reused.\n\nThe split is appropriate: seven substantive, non-circular obligations establish the selected graph C¹ theorem. The declared dependencies match the supplied implementations and are acyclic, including the selected parent's prerequisite closure. Scanning 1716 DAG nodes found no reservation of any proposed name. All seven names are bare identifiers. Their types are direct, single-line propositions matching the prose, without declarations, placeholders, self-references or post-hoc aliases. Orthogonal-projection instances are valid for the finite-dimensional submodules; no Matrix/IsUnit construction occurs.\n\nIndependently generated comparator-format challenges for all seven children and the parent elaborate successfully. All seven child source deltas pass the single-declaration check. The supplied complete Lean development recompiles successfully, and every child depends only on propext, Classical.choice and Quot.sound. The parent assembly proves the exact frozen type conditional on its four prerequisite stubs, whose types independently match the DAG; its sorryAx dependency is confined to those stubs. The chain slope_campanato → campanato_continuous → c1_criterion closes the selected conclusion. The selected contract digest was independently recomputed and matches the requested binding."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary ambient dimension P and both slope bounds. Pythagoras gives the pointwise comparison; the adjoint frame bound and self-adjointness give the Hilbert–Schmidt estimate with constant (17/16)² ≤ 4. No additional spanning hypothesis or circular result is needed."
+    },
+    {
+      "key": "graph_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact measure inequality is proved for arbitrary A, without an omitted measurability assumption. The contractive left inverse gives volume domination by Hausdorff measure; the measurable-hull argument and positive integer multiplicity give domination by μ. Testing measurable target sets completes the stated pushforward inequality."
+    },
+    {
+      "key": "decay_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes a single full-measure set independent of S, s₀ and K. Finite local restrictions justify Besicovitch differentiation, and small support-centered balls have positive finite mass. The density bound reduces the decay contribution to a multiple of K⁺s exp(κs), which tends to zero for every real κ and K. Equality of projections then gives exactly the asserted subspace equality."
+    },
+    {
+      "key": "graph_tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The radius estimate places graph points inside the required support region. Absolute continuity transfers htan to μ, graph_pushforward transfers both almost-everywhere conclusions to parameters, and decay_plane supplies the universal plane identification. The two declared dependencies suffice and introduce no cycle."
+    },
+    {
+      "key": "slope_campanato",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact open-ball lower-integral bound on a common full-measure set of centers. The geometric inclusions, projection comparison and measurable pushforward integral comparison are justified. C = 2^(n+3)max(K,0) and s₁ = min(s₀/2,a/8) have the required signs and give the stated bound, including K ≤ 0. Precisely the three declared dependencies are used."
+    },
+    {
+      "key": "campanato_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree for arbitrary f and open Ω. Measurability of fderiv justifies the averaging argument, which gives the claimed operator-norm estimate. The corrected non-strict middle inequality handles M = 0. Density, completeness and the explicit extension argument produce a continuous g equal to Df on the full-measure good set, yielding exactly the requested almost-everywhere derivative."
+    },
+    {
+      "key": "c1_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof establishes the exact C¹ conclusion and its stated stronger pointwise derivative fact. Rademacher and measure-preserving translations justify differentiation of the tent-kernel convolutions under an integrable Lipschitz bound. Local uniform convergence of their derivatives and pointwise convergence of the functions give HasFDerivAt everywhere on Ω; continuity of g then gives ContDiffOn ℝ 1. No smooth-kernel assumption or circular regularity claim is used."
+    }
+  ],
+  "required_changes": []
+}

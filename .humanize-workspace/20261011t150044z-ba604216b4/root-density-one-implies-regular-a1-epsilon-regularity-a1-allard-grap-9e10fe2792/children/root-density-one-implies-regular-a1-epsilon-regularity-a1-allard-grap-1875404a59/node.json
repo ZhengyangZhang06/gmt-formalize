@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1.separated_net-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1",
+  "depth": 5,
+  "title": "Finite maximal separated net from a lower ball-measure bound (Simon Ch. 5, proof of Lemma 2.5, (2)–(3))",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P (Lean: Measure (Euclid P), Borel σ-algebra), let K, A ⊆ ℝ^P be arbitrary sets, let s > 0 be real and a ∈ (0, ∞] (Lean ℝ≥0∞ with 0 < a). Suppose μ(A) < ∞, and for every y ∈ K the closed ball B̄_{s/2}(y) = {w : dist(w, y) ≤ s/2} is contained in A and satisfies a ≤ μ(B̄_{s/2}(y)). Then there is a finite set F ⊆ K (Lean: a Finset with ↑F ⊆ K) such that (#F)·a ≤ μ(A) in [0, ∞] and every x ∈ K satisfies dist(x, y) ≤ s for some y ∈ F.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (K A : Set (Euclid P)) (s : ℝ) (a : ℝ≥0∞), 0 < s → 0 < a → μ A ≠ ∞ → (∀ y ∈ K, closedBall y (s / 2) ⊆ A) → (∀ y ∈ K, a ≤ μ (closedBall y (s / 2))) → ∃ F : Finset (Euclid P), (↑F : Set (Euclid P)) ⊆ K ∧ (F.card : ℝ≥0∞) * a ≤ μ A ∧ ∀ x ∈ K, ∃ y ∈ F, dist x y ≤ s",
+  "lean_name": "dorag_aa_finite_separated_net",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-1875404a59-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "Tangent space, continuity of the inverse and secant estimate in a submanifold chart (Simon Ch. 2, §4)",
+  "statement": "Let P, r, d ∈ ℕ with r ≥ 1, N ⊆ ℝ^P, V ⊆ ℝ^d and W ⊆ ℝ^P open, and ψ : ℝ^d → ℝ^P a chart of N as in IsEmbeddedSubmanifold. That is, ψ is C^r on V and injective on V, ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(z) is injective for every z ∈ V. Then for every v ∈ V, with q := ψ(v) and A := Dψ(v) = fderiv ℝ ψ v, the following hold.\n(i) The classical tangent space T_qN = tangentSpace N q (velocities γ'(0) of curves γ that are C¹ on (−1, 1) with γ((−1, 1)) ⊆ N and γ(0) = q) equals A(ℝ^d).\n(ii) For every ε > 0 there is δ > 0 such that v' ∈ V and |ψ(v') − q| < δ imply |v' − v| < ε.\n(iii) For every ε > 0 there is δ > 0 such that every y ∈ N with |y − q| < δ admits some a ∈ ℝ^d with |y − q − Aa| ≤ ε|y − q|.",
+  "lean_statement": "∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ∀ v ∈ V, tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v) ∧ (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε) ∧ (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y (ψ v) < δ → ∃ a : Euclid d, ‖y - ψ v - fderiv ℝ ψ v a‖ ≤ ε * ‖y - ψ v‖)",
+  "lean_name": "dsmc_chart_tangentSpace_eq_range",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.hole_measure-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "depth": 5,
+  "title": "Hausdorff measure of graph points off the support via (10') and 5r-covering (Simon 5.2.6 (11))",
+  "statement": "Let n, k ∈ ℕ, μ a measure on ℝ^{n+k}, e : ℝ^{n+k} → ℝ (e⁺ := ENNReal.ofReal ∘ e), sets F, A, B ⊆ ℝ^{n+k} with B measurable and A ⊆ F, K ∈ [0, ∞] and C₉, R₀ ∈ ℝ. Assume:\n(a) Hⁿ(F ∩ B_r(η)) ≤ K·rⁿ for all η ∈ A and r > 0, where Hⁿ = μHE[n];\n(b) for every η ∈ A there is s with 0 < s ≤ R₀, B_{3s}(η) ⊆ B and sⁿ ≤ C₉·[μ(B_{3s}(η) ∖ F) + ∫_{B_{3s}(η)} e⁺ dμ], as extended reals ofReal(sⁿ) ≤ ofReal(C₉)·[…].\nThen Hⁿ(A) ≤ K·ofReal(15ⁿC₉)·[μ(B ∖ F) + ∫_B e⁺ dμ]. Balls are closed.",
+  "lean_statement": "∀ (n k : ℕ) (μ : Measure (Euclid (n + k))) (e : Euclid (n + k) → ℝ) (F A B : Set (Euclid (n + k))) (K : ℝ≥0∞) (C₉ R₀ : ℝ), MeasurableSet B → A ⊆ F → (∀ η ∈ A, ∀ r : ℝ, 0 < r → μHE[n] (F ∩ closedBall η r) ≤ K * ENNReal.ofReal (r ^ n)) → (∀ η ∈ A, ∃ s : ℝ, 0 < s ∧ s ≤ R₀ ∧ closedBall η (3 * s) ⊆ B ∧ ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal C₉ * (μ (closedBall η (3 * s) \\ F) + ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (e x) ∂μ)) → μHE[n] A ≤ K * ENNReal.ofReal (15 ^ n * C₉) * (μ (B \\ F) + ∫⁻ x in B, ENNReal.ofReal (e x) ∂μ)",
+  "lean_name": "dorag_lip_graph_hole_measure_bound",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.vitali_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.vitali_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-37fdf6ae94-a1"
+}

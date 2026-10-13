@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1.separated_net-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 2 of the parent proof, i.e. Simon Ch. 5, proof of Lemma 2.5 (book chapter-05.txt lines 316–334). That passage combines the 'general principle' that a maximal family of points y_j ∈ K with pairwise disjoint balls B_{σ/2}(y_j) satisfies K ⊆ ⋃_j B_σ(y_j), the counting estimate (3), and N ≤ Cδ^{−αn}. Here it is stated for an arbitrary measure, with the lower bound a and the container A as hypotheses.
+Notation: B̄_t(y) := {w : dist(w, y) ≤ t}; #G is the cardinality of a finite set G. A finite set G ⊆ ℝ^P is s-separated if dist(y, y') > s for all distinct y, y' ∈ G. Arithmetic of measures is in [0, ∞].
+
+1. Disjointness. Let G be s-separated and y ≠ y' in G. If w ∈ B̄_{s/2}(y) ∩ B̄_{s/2}(y'), then dist(y, y') ≤ dist(y, w) + dist(w, y') ≤ s/2 + s/2 = s, contradicting dist(y, y') > s. Hence the closed balls B̄_{s/2}(y), y ∈ G, are pairwise disjoint.
+
+2. Counting bound. Let G ⊆ K be finite and s-separated. Closed balls are closed, hence Borel, sets. By Step 1 and finite additivity of μ (Mathlib measure_biUnion_finset), μ(⋃_{y∈G} B̄_{s/2}(y)) = Σ_{y∈G} μ(B̄_{s/2}(y)) ≥ Σ_{y∈G} a = (#G)·a, because a ≤ μ(B̄_{s/2}(y)) for y ∈ G ⊆ K. Every ball B̄_{s/2}(y) with y ∈ G ⊆ K lies in A, so by monotonicity (#G)·a ≤ μ(⋃_{y∈G} B̄_{s/2}(y)) ≤ μ(A).
+
+3. Uniform bound on cardinalities. Since a ≠ 0 and μ(A) ≠ ∞, the Archimedean property of [0, ∞] (Mathlib ENNReal.exists_nat_mul_gt) gives N₀ ∈ ℕ with μ(A) < N₀·a. Every finite s-separated G ⊆ K then has #G < N₀. Otherwise N₀ ≤ #G, and Step 2 gives N₀·a ≤ (#G)·a ≤ μ(A) < N₀·a, which is absurd.
+
+4. A separated family of maximal cardinality. The empty set is a finite s-separated subset of K of cardinality 0 ≤ N₀. Let m be the largest integer in {0, 1, …, N₀} that is the cardinality of some finite s-separated subset of K. It exists because 0 is such an integer (Mathlib Nat.findGreatest, Nat.findGreatest_spec). Choose a finite s-separated F ⊆ K with #F = m. By Step 2, (#F)·a ≤ μ(A).
+
+5. Covering property. Let x ∈ K and suppose, for contradiction, that dist(x, y) > s for every y ∈ F.
+(a) x ∉ F, because dist(x, x) = 0 < s.
+(b) F' := F ∪ {x} is a finite subset of K, and it is s-separated. Two distinct points of F are more than s apart by the choice of F. For y ∈ F, dist(x, y) > s and dist(y, x) = dist(x, y) > s.
+(c) #F' = m + 1. By Step 3, m + 1 < N₀, so m + 1 lies in {0, …, N₀} and is the cardinality of a finite s-separated subset of K.
+(d) The maximality of m in Step 4 (Nat.le_findGreatest) gives m + 1 ≤ m, a contradiction.
+Hence every x ∈ K satisfies dist(x, y) ≤ s for some y ∈ F.
+
+6. Conclusion. F is a finite subset of K with (#F)·a ≤ μ(A) (Step 4) and the covering property of Step 5. ∎
+
+## Key steps
+
+1. For a finite s-separated G ⊆ K, the closed balls B̄_{s/2}(y), y ∈ G, are pairwise disjoint Borel subsets of A of measure ≥ a, so (#G)·a ≤ μ(A).
+2. Since 0 < a and μ(A) < ∞ there is N₀ ∈ ℕ with μ(A) < N₀·a, so every such G has #G < N₀.
+3. Take a finite s-separated F ⊆ K of maximal cardinality (Nat.findGreatest below N₀); then (#F)·a ≤ μ(A).
+4. If some x ∈ K were more than s from every point of F, F ∪ {x} would be a larger s-separated subset of K; hence F is an s-net of K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (identical)`
+- `sed -n 1,200p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean  (HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.finrank_eq)`
+- `rg -n 'theorem (exists_maximal|.*[Ss]eparated.*maximal|.*maximal.*[Ss]eparated)' mathlib/Mathlib; rg -n 'IsSeparated' mathlib/Mathlib/Topology/MetricSpace; sed -n 1,140p mathlib/Mathlib/Topology/MetricSpace/Cover.lean; sed -n 250,340p mathlib/Mathlib/Topology/MetricSpace/CoveringNumbers.lean`
+- `rg -n "theorem measure_biUnion_finset|theorem measure_compl_support|theorem withDensity_absolutelyContinuous|theorem meas_ge_le_lintegral_div|theorem mul_meas_ge_le_lintegral₀|theorem lintegral_finset_sum'|theorem setLIntegral_const|theorem lintegral_mono_set|theorem lintegral_const_mul'|theorem exists_nat_mul_gt" mathlib/Mathlib`
+- `rg -n 'lintegral_finset_sum|theorem measure_compl_support|lemma measure_compl_support|support_mem_ae|nonempty_inter_support_of_pos' mathlib/Mathlib`
+- `rg -n 'theorem (norm_starProjection|starProjection_orthogonal|sub_starProjection|starProjection_add|norm_sub_starProjection|starProjection_apply|starProjection_orthogonal_val)' mathlib/Mathlib/Analysis/InnerProductSpace; sed -n 195,230p and 405,416p and 585,600p mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n 'theorem .*clm_apply|lemma .*clm_apply|apply_continuousLinearMap|theorem .*comp_aestronglyMeasurable₂|aestronglyMeasurable_comp₂' mathlib/Mathlib/MeasureTheory  (no AEStronglyMeasurable.clm_apply; ContinuousLinearMap.aestronglyMeasurable_comp₂ exists)`
+- `python3 -I scan of dag.json lean_statements and nodes/*/decomposition-v*.json for a.e. statements mentioning finrank and approxTangentPlane  (only the frozen parent-level dorag_* statements; nothing reusable)`
+- `ls .humanize/math-wiki; rg -l finrank .humanize/math-wiki; rg -n 'maximal.*separated|packing|Chebyshev|Markov' .humanize/math-wiki  (no matching accepted lemma)`
+- `grep -l dorag_aa_ */.humanize/github-theorem-prover/runs/*/dag.json; grep -rl --include=*.json dorag_aa_ */.humanize/github-theorem-prover/runs/*/nodes; git grep -c dorag_aa_ $(git for-each-ref) -- 'GMT/*.lean'  (no hits in 8 DAGs, node JSONs, 487 refs)`
+- `awk 'NR>=292 && NR<=375' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt  (Simon Lemma 2.5 and proof)`
+- `python3 /tmp/affapprox-decomp/scripts/mkchal.py  (verifier gmt-compare.py child_modules, contract scope) then lean on /tmp/affapprox-decomp/challenges/Challenge_{separated_net,tangent_dimension,low_height_point,height_bounds,PARENT}.lean  (all exit 0, only 'declaration uses sorry')`
+- `python3 -I lean_contract.validate_lean_statement on the four child lean_statements  (all accepted unchanged)`
+- `lean /tmp/affapprox-decomp/work/AllChecks.lean  (0 errors; #print axioms Kid.separated_net, Kid.tangent_dimension, Kid.low_height_point, Kid.height_bounds, AffAsm.assembly, AffAsm.parent_from_siblings = [propext, Classical.choice, Quot.sound])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Cover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/CoveringNumbers.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/MetricSeparated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9e10fe2792/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/math-wiki`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/affapprox-decomp/challenges/Challenge_separated_net.lean`
+- `/tmp/affapprox-decomp/challenges/Challenge_tangent_dimension.lean`
+- `/tmp/affapprox-decomp/challenges/Challenge_low_height_point.lean`
+- `/tmp/affapprox-decomp/challenges/Challenge_height_bounds.lean`
+- `/tmp/affapprox-decomp/challenges/Challenge_PARENT.lean`
+- `/tmp/affapprox-decomp/work/Assembly.lean`
+- `/tmp/affapprox-decomp/work/AllChecks.lean`
+- `/tmp/affapprox-decomp/work/AllChecks.log`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace GMT/Ch07/Submission.lean, which is the compiler context of the children.
+
+Nothing reusable exists:
+- No DAG node, decomposition file or accepted math-wiki page proves an a.e. dimension statement for approxTangentPlane, a packing/net lemma, or a Chebyshev selection lemma.
+- No dorag_aa_* name occurs anywhere: the 8 DAGs, any node JSON, or the Lean files of all 487 refs.
+
+The pinned Mathlib and SimonGMT supply every tool the child proofs cite:
+- measure_biUnion_finset (Measure/Basic.lean:150)
+- ENNReal.exists_nat_mul_gt (Basic/ENNReal/Inv.lean:658)
+- Nat.findGreatest
+- withDensity_absolutelyContinuous (WithDensity.lean:146)
+- Measure.measure_compl_support (Support.lean:202)
+- lintegral_finsetSum', lintegral_const_mul' (Lebesgue/Add.lean)
+- lintegral_mono_set, setLIntegral_const (Lebesgue/Basic.lean:98, 121)
+- Submodule.starProjection_orthogonal_val and norm_starProjection_apply_le (Projection/Basic.lean:203, 411)
+- ContinuousLinearMap.aestronglyMeasurable_comp₂ (StronglyMeasurable/Lemmas.lean:79); there is no AEStronglyMeasurable.clm_apply
+- SimonGMT HasApproximateTangentSpaceAt (Rectifiable.lean:102), whose first conjunct is finrank = n (finrank_eq)
+Metric.IsSeparated, IsCover.of_maximal_isSeparated and maximalSeparatedSet also exist, in Cover.lean and CoveringNumbers.lean.
+
+Lean checks:
+- All four child types and the parent type elaborate in the exact comparator scope.
+- The assembly proves the exact parent type from the three resolved sibling types plus the four child types, using only propext, Classical.choice and Quot.sound.
+- Each child also has a sorry-free Lean proof with the same axioms.
