@@ -451,6 +451,20 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A continuous function `f` with compact support in `U` is `ν`-integrable for every measure `ν`
+finite on compact subsets of `U` (Simon Ch. 1, 4.16: `∫ f dμ` is finite for `f ∈ K(X)`).
+`S = spt f` is a compact subset of `U`, so `ν(S) < ∞` and `ν⌞S` is a finite measure; `f` is
+`ν⌞S`-integrable, and since `f` vanishes off `S` it is `ν`-integrable. -/
+theorem Submission.cbr_vl_integrable_of_tsupport_subset : ∀ (P : ℕ) (U : Set (Euclid P)) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable f ν := by
+  intro P U ν f hν hf hcf hU
+  -- Step 1: `S = tsupport f` is a compact subset of `U`, so `ν(S) < ∞`.
+  have hS : ν (tsupport f) < ∞ := hν _ hcf hU
+  -- Step 2: `ν⌞S` has total mass `ν(S) < ∞`.
+  have : IsFiniteMeasure (ν.restrict (tsupport f)) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+  -- Steps 3–4: `f` is `ν⌞S`-integrable and vanishes off `S`, hence is `ν`-integrable.
+  exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).mp
+    (hf.integrable_of_hasCompactSupport hcf)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
