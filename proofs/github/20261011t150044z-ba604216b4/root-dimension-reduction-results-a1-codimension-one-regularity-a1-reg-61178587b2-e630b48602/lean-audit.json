@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "73b92c14b61ce4da941da9a7369d93d7a88b011fb7935114fcea088a4070a242",
+  "git_delta": {
+    "base_commit": "23a4669f35ab219c2f80dfafd2b2d40593135254",
+    "candidate_commit": "24908a0e40823975f5c368c010da36cc3be519f7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_no_covector_eq_det_cons",
+    "diff_sha256": "0ad5ad047d2d32f15563abf18102d6f09fdc1e3ec5eb15d0ca403a86b57542a2",
+    "source_sha256": "ec08fa9ee796398c44da711d2416d2f3cdae64ec5bde0d74fb121ef444bffd89",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_no_covector_eq_det_cons",
+      "statement": "∀ (n : ℕ) (β : Covector (Euclid (n + 1)) n) (a : Fin n → Euclid (n + 1)), β a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons (∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • EuclideanSpace.single j (1 : ℝ)) a : Fin (n + 1) → Euclid (n + 1)) c r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

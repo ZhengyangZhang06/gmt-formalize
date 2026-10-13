@@ -451,6 +451,83 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **An `n`-covector on `ℝ^{n+1}` is a determinant with first column `φ_β`** (linear algebra
+for the normal orientation of `T = ∂[[E]]`, Simon §7.5).  With `b_j = β(e ∘ j.succAbove)` and
+`φ_β = ∑ⱼ (-1)ʲ b_j e_j`, `β a = det[φ_β, a]`, the matrix with columns `φ_β, a₀, …, a_{n-1}`.
+Both sides are alternating in `a`, so it suffices to compare them on injective basis tuples
+`e ∘ v` (`Module.Basis.ext_alternating`).  An injective `v` misses an index `m` and equals
+`m.succAbove ∘ σ` for a permutation `σ`, so both sides acquire the factor `sign σ`.  At the
+sorted tuple `e ∘ m.succAbove` only the column term `j = m` survives (for `j ≠ m`, `e_j` is
+repeated), and `det[e_m, e ∘ m.succAbove] = sign (cycleRange m)⁻¹ = (-1)ᵐ`, so both sides equal
+`(-1)ᵐ (-1)ᵐ b_m = b_m`. -/
+theorem Submission.codim1_lur_no_covector_eq_det_cons : ∀ (n : ℕ) (β : Covector (Euclid (n + 1)) n) (a : Fin n → Euclid (n + 1)), β a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons (∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • EuclideanSpace.single j (1 : ℝ)) a : Fin (n + 1) → Euclid (n + 1)) c r) := by
+  intro n β a
+  -- the standard basis `e` of `ℝ^{n+1}`, `e j = EuclideanSpace.single j 1`
+  set e : Module.Basis (Fin (n + 1)) ℝ (Euclid (n + 1)) :=
+    (EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis with he_def
+  have he : ∀ j, e j = EuclideanSpace.single j (1 : ℝ) := fun j => by
+    rw [he_def, OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]
+  set φ : Euclid (n + 1) := ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) *
+    β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • EuclideanSpace.single j (1 : ℝ)
+    with hφ
+  -- Step 0: the matrix determinant is `e.det` of the column family `[φ, a]`
+  have hdet : ∀ w : Fin (n + 1) → Euclid (n + 1),
+      Matrix.det (Matrix.of fun r c : Fin (n + 1) => w c r) = e.det w := by
+    intro w
+    rw [Module.Basis.det_apply]
+    congr 1
+  rw [hdet]
+  -- Step 1: both sides are alternating in `a`; compare `β` with `e.det.curryLeft φ`
+  suffices hFG : β.toAlternatingMap = e.det.curryLeft φ from DFunLike.congr_fun hFG a
+  refine Module.Basis.ext_alternating e fun v hv => ?_
+  -- Step 2: an injective `v` misses some index `m`
+  obtain ⟨m, hm⟩ : ∃ m : Fin (n + 1), ∀ l, v l ≠ m := by
+    by_contra h
+    have hs : Function.Surjective v := fun m => by
+      by_contra hm
+      exact h ⟨m, fun l hl => hm ⟨l, hl⟩⟩
+    have := Fintype.card_le_of_surjective v hs
+    simp at this
+  -- `v = m.succAbove ∘ σ` for a permutation `σ` of `Fin n`
+  choose ρ hρ using fun l => Fin.exists_succAbove_eq (hm l)
+  have hρinj : Function.Injective ρ := fun l l' h => hv (by rw [← hρ l, ← hρ l', h])
+  set σ : Equiv.Perm (Fin n) := Equiv.ofBijective ρ (Finite.injective_iff_bijective.mp hρinj)
+  have hvσ : (fun i => e (v i)) = (fun k => e (m.succAbove k)) ∘ σ := by
+    funext i
+    simp [σ, hρ]
+  -- both sides change by `sign σ`
+  rw [hvσ, AlternatingMap.map_perm, AlternatingMap.map_perm]
+  congr 1
+  -- Step 3: the sorted tuple `e ∘ m.succAbove`; only the column term `j = m` survives
+  have hcol : ∀ j : Fin (n + 1), e.det.curryLeft (e j) (fun k => e (m.succAbove k)) =
+      if j = m then (-1 : ℝ) ^ (m : ℕ) else 0 := by
+    intro j
+    rw [AlternatingMap.curryLeft_apply_apply]
+    split_ifs with hjm
+    · subst hjm
+      have hcyc : (Matrix.vecCons (e j) fun k => e (j.succAbove k)) = e ∘ ⇑j.cycleRange.symm := by
+        funext i
+        refine Fin.cases ?_ (fun k => ?_) i <;> simp
+      rw [hcyc, AlternatingMap.map_perm, Module.Basis.det_self, Equiv.Perm.sign_symm,
+        Fin.sign_cycleRange]
+      simp [Units.smul_def]
+    · obtain ⟨l, hl⟩ := Fin.exists_succAbove_eq hjm
+      refine AlternatingMap.map_eq_zero_of_eq _ _ (i := 0) (j := l.succ) ?_ (Fin.succ_ne_zero l).symm
+      simp [hl]
+  have hφe : φ = ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) *
+      β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ))) • e j := by
+    simp only [hφ, he]
+  -- evaluation at a tuple is additive
+  have hsum : ∀ (g : Fin (n + 1) → Euclid (n + 1) [⋀^Fin n]→ₗ[ℝ] ℝ) (w : Fin n → Euclid (n + 1)),
+      (∑ j, g j) w = ∑ j, g j w := fun g w =>
+    map_sum (AddMonoidHom.mk' (fun f : Euclid (n + 1) [⋀^Fin n]→ₗ[ℝ] ℝ => f w) fun _ _ => rfl) g
+      Finset.univ
+  rw [hφe, map_sum, hsum]
+  simp only [map_smul, AlternatingMap.smul_apply, hcol, smul_eq_mul, mul_ite, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  simp only [ContinuousAlternatingMap.coe_toAlternatingMap, he]
+  rw [mul_comm, ← mul_assoc, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
