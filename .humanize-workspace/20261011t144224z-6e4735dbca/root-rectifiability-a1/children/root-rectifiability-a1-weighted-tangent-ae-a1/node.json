@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.weighted_tangent_ae-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Weighted approximate tangent spaces exist a.e. on a countably rectifiable set (Simon 3, Theorem 1.9 via Remark 1.8(1), localized to U)",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, M ⊆ U Hⁿ-measurable (null-measurable for μHE[n]) and countably n-rectifiable, and θ : ℝ^P → ℝ with θ(x) > 0 for x ∈ M and θ Hⁿ-integrable on M ∩ K for every compact K ⊆ U. Then for Hⁿ-a.e. x ∈ M there is an n-dimensional linear subspace V of ℝ^P which is the approximate tangent space of M at x with respect to θ (HasWeightedApproximateTangentSpaceAt n M θ x V): dim V = n and lim_{r↓0} ∫_{η_{x,r}(M)} f(y) θ(x + r y) dHⁿ(y) = θ(x) ∫_V f dHⁿ for every f ∈ C_c(ℝ^P), where η_{x,r}(y) = r^{-1}(y − x).",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ), IsOpen U → M ⊆ U → NullMeasurableSet M (μHE[m + 1] : Measure (Eucl P)) → CountablyRectifiable (m + 1) M → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∃ V : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x V",
+  "lean_name": "rectifiability_weighted_tangent_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-weighted-tangent-ae-a1-a1"
+}
