@@ -646,6 +646,48 @@ theorem Submission.dgcr_unitOrientation_eq_or_neg : ∀ (P n : ℕ) (Q : Submodu
   · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- Orientation step of the constancy theorem for an integer multiplicity current carried by an
+`n`-plane (Simon Ch. 3, Definition 1.4; Ch. 6, 3.1): if `Hⁿ(M \ Q) = 0` for the plane
+`Q = span{τ₁, …, τₙ}` of an orthonormal family `τ`, then `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for `Hⁿ`-a.e.
+`x ∈ M`.  For `Hⁿ⌞M`-a.e. `x` we have `x ∈ Q` and an approximate tangent space `Qₓ` oriented by
+`ξ(x)`; `Q` is trivially flat at `x` along `Q`, so `Qₓ ≤ Q`, hence `Qₓ = Q` as both have dimension
+`n`; then `ξ(x)` and `α ↦ α(τ)` are unit orientations of the same plane, so they agree up to
+sign. -/
+theorem Submission.idtp_pc_orient_ae_eq_or_neg : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → μHE[n] (R.carrier \ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = 0 → ∀ᵐ x ∂(μHE[n].restrict R.carrier), (∀ α : Covector (Euclid P) n, R.orient x α = α τ) ∨ (∀ α : Covector (Euclid P) n, R.orient x α = -α τ) := by
+  intro P n U R τ hτ hnull
+  set Q : Submodule ℝ (Euclid P) := Submodule.span ℝ (Set.range τ) with hQ
+  have hfin : Module.finrank ℝ Q = n := by
+    rw [hQ, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- `ξ_Q = τ₁ ∧ ⋯ ∧ τₙ`, i.e. `α ↦ α(τ)`, is a unit orientation of `Q`
+  let ξQ : MultiVector P n :=
+    (ContinuousMultilinearMap.apply ℝ (fun _ : Fin n => Euclid P) ℝ τ).comp
+      (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ)
+  have hξQ : ∀ α : Covector (Euclid P) n, ξQ α = α τ := fun α => rfl
+  have hξQo : IsUnitOrientationOf ξQ Q := ⟨τ, hτ, rfl, Or.inl hξQ⟩
+  -- `Hⁿ⌞M`-almost every point lies in `Q`
+  have hmemQ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ (Q : Set (Euclid P)) := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxM
+    by_contra h
+    exact hx ⟨hxM, h⟩
+  filter_upwards [R.orients, hmemQ] with x hx hxQ
+  obtain ⟨Qx, htan, hor⟩ := hx
+  -- `Q` is flat at `x ∈ Q` along `Q`, so `Qₓ ≤ Q`, and `Qₓ = Q` by dimension
+  have hflat : ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ (Q : Set (Euclid P)), dist z x < ρ →
+      ∃ t ∈ Q, ‖z - x - t‖ ≤ ε * ‖z - x‖ := by
+    intro ε hε
+    refine ⟨1, one_pos, fun z hz _ => ⟨z - x, Q.sub_mem hz hxQ, ?_⟩⟩
+    simp only [sub_self, norm_zero]
+    positivity
+  have hle : Qx ≤ Q :=
+    Submission.atsm_approxTangent_le_of_flat P n Q R.carrier x Qx Q hnull hflat htan
+  have heq : Qx = Q := Submodule.eq_of_le_of_finrank_eq hle (htan.1.trans hfin.symm)
+  rw [heq] at hor
+  -- two unit orientations of `Q` agree up to sign
+  rcases Submission.dgcr_unitOrientation_eq_or_neg P n Q ξQ (R.orient x) hξQo hor with h | h
+  · left; intro α; rw [h]; exact hξQ α
+  · right; intro α; rw [h]; rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
