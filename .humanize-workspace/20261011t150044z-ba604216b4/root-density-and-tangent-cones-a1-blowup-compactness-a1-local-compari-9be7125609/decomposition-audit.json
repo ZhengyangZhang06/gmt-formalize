@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasSum",
+        "tsum",
+        "∑'",
+        "series of currents",
+        "dtc_bc_lc_fd_series|cmcdt_ims_series_current|cmcdt_ims_imrep_tsum|dtc_mass_eq_measure|dtc_vanish_off_support",
+        "hasSum_integral_of_dominated_convergence|lintegral_tsum|measurableSet.*summable|Measurable.tsum|StronglyMeasurable.*tsum",
+        "measurable_tsum|theorem.*tsum|exists_isSubordinate|structure SmoothPartitionOfUnity",
+        "git show 9e9baeffcaf4d1c42b6580605c0b8faa1afb6450:GMT/Ch07/Submission.lean",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show bff81d31ecb43002d1bfc77f510d3463c6be155f:GMT/Ch07/Submission.lean",
+        "git show c9573f9d1e1ecf9ca2594f227f83826f0f5003c4:GMT/Ch07/Submission.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/series-independent-audit-z537k8t_/ContractsAndAssembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/series-independent-audit-z537k8t_/AcceptedReuse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9be7125609/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-8064d04b56/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-38ac66b3de/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/series-independent-audit-z537k8t_/ContractsAndAssembly.lean",
+        "/tmp/series-independent-audit-z537k8t_/AcceptedReuse.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace, and the installed Mathlib and SimonGMT revisions match their pins. No current-series theorem was found in the snapshot. The inspected definitions and library results support the supplied arguments. All four names are bare identifiers, each uniquely associated with a comparator-accepted declaration whose frozen type is byte-identical; candidate source hashes also match the acceptance records. Dependency traversal found no cycles or reliance on the selected parent. The four one-line propositions elaborate independently using the frozen definitions, without child implementations or aliases. An independent Lean proof derives the exact selected parent type from them. Recompiling the combined accepted proofs and parent assembly succeeded; all depend only on propext, Classical.choice and Quot.sound. The split is appropriate and establishes this selected series theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type include the universal VO antecedent, openness, finite total mass, and all three conclusions. The proof establishes absolute summability, linearity, sequential continuity, the ENNReal mass bound, and support containment. VO is an explicit assumption, so no sibling dependency is concealed. Specializing to univ and degree k + 1 supplies the parent's first three conclusions."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the statement for arbitrary U. Compact support and disjointness place the test-form support inside the zero region. A finite smooth partition of unity produces test forms annihilated by S, and linearity proves the conclusion. No openness assumption on U is needed. This independently discharges series_current's VO antecedent."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All domain, openness, inclusion, and representation hypotheses match the exact type. The supplied dual-covector calculation proves the upper bound; Lusin approximation, extension, smoothing, and cutoff give the lower bound on compact subsets. Exhaustion handles infinite weight. Applying this identity with U = W = univ correctly converts the parent's mass-summability assumption into representation-weight summability."
+    },
+    {
+      "key": "imrep_tsum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree; finiteness and inequality to infinity are equivalent here. The proof constructs a measurable common orientation using the available inherited tangent-locality result, builds an everywhere integer-valued summable density, verifies every IMRep field, and checks the dominated-convergence hypotheses and action identities. It does not invoke itself or the parent. Uniqueness of real sums then shows that the parent's previously constructed Y has this representation."
+    }
+  ],
+  "required_changes": []
+}
