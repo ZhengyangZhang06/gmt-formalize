@@ -1918,16 +1918,221 @@ theorem Submission.iwl_imc_lincomb_im : ∀ (P k : ℕ) (U : Set (Eucl P)), IsOp
       hEmnm aestronglyMeasurable_const aestronglyMeasurable_const
     convert h using 1
     funext x
-    simp only [smul_apply, smul_eq_mul]
-  refine ⟨?_, ?_⟩
-  -- Steps 1–2: `ω` is continuous with compact support in `U`, so `ltg_tau_integrable` applies.
-  · show Integrable (fun x => (θ x • ξ x) ((ω : DifferentialForm (Eucl P) k) x)) _
-    rw [hfun]
-    exact (Submission.ltg_tau_integrable P k U M θ ξ hT).2 ω ω.2.1.1.continuous ω.2.1.2 ω.2.2
-  -- Step 4: `X(ω) = τ(M, θ, ξ)(ω) = ∫_M θ⟨ω, ξ⟩ dHᵏ`.
-  · show X ω = ∫ x, (θ x • ξ x) ((ω : DifferentialForm (Eucl P) k) x) ∂_
-    rw [hfun]
-    exact hX ω
+    simp only [hσ, Set.piecewise]
+  have hcm : AEStronglyMeasurable c (μHE[k] : Measure (Eucl P)) :=
+    (((aestronglyMeasurable_indicator_iff₀ hM₁).2 hθ₁m).const_mul (a : ℝ)).add
+      ((hσm.mul ((aestronglyMeasurable_indicator_iff₀ hM₂).2 hθ₂m)).const_mul (b : ℝ))
+  have hMnm : NullMeasurableSet M (μHE[k] : Measure (Eucl P)) := hcm.nullMeasurableSet_support
+  -- `c` vanishes off `M₁ ∪ M₂`.
+  have hMsub : M ⊆ M₁ ∪ M₂ := by
+    intro x hx
+    by_contra hcon
+    simp only [mem_union, not_or] at hcon
+    apply hx
+    simp [hc, hcon.1, hcon.2]
+  have hMU : M ⊆ U := hMsub.trans (union_subset h₁.subset h₂.subset)
+  -- Step 2(a): `c` is integer-valued.
+  have hcZ : ∀ x, ∃ z : ℤ, c x = z := by
+    intro x
+    have hi₁ : ∃ n : ℕ, M₁.indicator θ₁ x = n := by
+      by_cases hx : x ∈ M₁
+      · rw [indicator_of_mem hx]; exact hN₁ x hx
+      · exact ⟨0, by simp [hx]⟩
+    have hi₂ : ∃ n : ℕ, M₂.indicator θ₂ x = n := by
+      by_cases hx : x ∈ M₂
+      · rw [indicator_of_mem hx]; exact hN₂ x hx
+      · exact ⟨0, by simp [hx]⟩
+    obtain ⟨n₁, hn₁⟩ := hi₁
+    obtain ⟨n₂, hn₂⟩ := hi₂
+    by_cases hxE : x ∈ Em
+    · refine ⟨a * n₁ + b * (-1 * n₂), ?_⟩
+      simp only [hc, hσ, hxE, ite_true, hn₁, hn₂]
+      push_cast; ring
+    · refine ⟨a * n₁ + b * (1 * n₂), ?_⟩
+      simp only [hc, hσ, hxE, ite_false, hn₁, hn₂]
+      push_cast; ring
+  have hθN : ∀ x ∈ M, ∃ n : ℕ, θ x = n := by
+    intro x _
+    obtain ⟨z, hz⟩ := hcZ x
+    exact ⟨z.natAbs, by simp only [hθ, hz, Nat.cast_natAbs, Int.cast_abs]⟩
+  have hθ1 : ∀ x ∈ M, 1 ≤ θ x := by
+    intro x hx
+    obtain ⟨z, hz⟩ := hcZ x
+    have hz0 : z ≠ 0 := by
+      rintro rfl
+      exact hx (by rw [hz, Int.cast_zero])
+    have h1 : (1 : ℤ) ≤ |z| := Int.one_le_abs hz0
+    simp only [hθ, hz, ← Int.cast_abs]
+    exact_mod_cast h1
+  have hθpos : ∀ x ∈ M, 0 < θ x := fun x hx => zero_lt_one.trans_le (hθ1 x hx)
+  -- Step 5 (integrableOn): `|c| ≤ |a| 1_{M₁} θ₁ + |b| 1_{M₂} θ₂`.
+  have hind₁ : ∀ x, 0 ≤ M₁.indicator θ₁ x := fun x =>
+    Set.indicator_nonneg (fun y hy => zero_le_one.trans (hθ₁1 y hy)) x
+  have hind₂ : ∀ x, 0 ≤ M₂.indicator θ₂ x := fun x =>
+    Set.indicator_nonneg (fun y hy => zero_le_one.trans (hθ₂1 y hy)) x
+  have habsσ : ∀ x, |σ x| = 1 := by
+    intro x
+    simp only [hσ]
+    split_ifs <;> simp
+  have hcbound : ∀ x, |c x| ≤ |(a : ℝ)| * M₁.indicator θ₁ x + |(b : ℝ)| * M₂.indicator θ₂ x := by
+    intro x
+    calc |c x| ≤ |(a : ℝ) * M₁.indicator θ₁ x| + |(b : ℝ) * (σ x * M₂.indicator θ₂ x)| :=
+          abs_add_le _ _
+      _ = |(a : ℝ)| * M₁.indicator θ₁ x + |(b : ℝ)| * M₂.indicator θ₂ x := by
+          rw [abs_mul, abs_mul, abs_mul, habsσ, one_mul, abs_of_nonneg (hind₁ x),
+            abs_of_nonneg (hind₂ x)]
+  have hθint : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
+    intro K hK hKU
+    have hg₁ : Integrable (M₁.indicator θ₁) ((μHE[k] : Measure (Eucl P)).restrict K) := by
+      rw [integrable_indicator_iff₀ (hM₁.mono Measure.restrict_le_self), IntegrableOn,
+        Measure.restrict_restrict' hK.isClosed.measurableSet]
+      exact h₁.integrableOn K hK hKU
+    have hg₂ : Integrable (M₂.indicator θ₂) ((μHE[k] : Measure (Eucl P)).restrict K) := by
+      rw [integrable_indicator_iff₀ (hM₂.mono Measure.restrict_le_self), IntegrableOn,
+        Measure.restrict_restrict' hK.isClosed.measurableSet]
+      exact h₂.integrableOn K hK hKU
+    have hg : IntegrableOn (fun x => |(a : ℝ)| * M₁.indicator θ₁ x +
+        |(b : ℝ)| * M₂.indicator θ₂ x) (M ∩ K) (μHE[k] : Measure (Eucl P)) :=
+      ((hg₁.const_mul _).add (hg₂.const_mul _)).mono_measure
+        (Measure.restrict_mono inter_subset_right le_rfl)
+    refine hg.mono' (continuous_abs.comp_aestronglyMeasurable hcm).restrict ?_
+    exact Eventually.of_forall fun x => by
+      show ‖|c x|‖ ≤ _
+      rw [Real.norm_eq_abs, abs_abs]
+      exact hcbound x
+  -- Step 3(e): `ξ` is a.e.-strongly measurable on `M`.
+  have hξm : AEStronglyMeasurable ξ ((μHE[k] : Measure (Eucl P)).restrict M) := by
+    have hs : AEStronglyMeasurable (fun x => if 0 ≤ c x then (1 : ℝ) else -1)
+        (μHE[k] : Measure (Eucl P)) := by
+      have hmeas : Measurable (fun t : ℝ => if 0 ≤ t then (1 : ℝ) else -1) :=
+        Measurable.ite measurableSet_Ici measurable_const measurable_const
+      exact (hmeas.comp_aemeasurable hcm.aemeasurable).aestronglyMeasurable
+    have hξ₀ : AEStronglyMeasurable ξ₀ ((μHE[k] : Measure (Eucl P)).restrict M) := by
+      refine AEStronglyMeasurable.piecewise (hM₁.mono Measure.restrict_le_self) ?_ ?_
+      · exact h₁.aestronglyMeasurable.mono_measure
+          (Measure.restrict_mono subset_rfl Measure.restrict_le_self)
+      · exact ((aestronglyMeasurable_indicator_iff₀ hM₂).2 h₂.aestronglyMeasurable).restrict.restrict
+    exact hs.restrict.smul hξ₀
+  -- Step 2(b): `θ x • ξ x` acts as `c x • ξ₀ x`.
+  have hθξ : ∀ x (α : Covector (Eucl P) k), θ x * ξ x α = c x * ξ₀ x α := by
+    intro x α
+    simp only [hθ, hξ, smul_apply, smul_eq_mul]
+    split_ifs with h
+    · rw [abs_of_nonneg h]; ring
+    · rw [abs_of_neg (not_le.1 h)]; ring
+  -- Step 5 (orients): tangent comparison between `(M_l, θ_l)` and `(M, θ)`.
+  have hloc₁ := hT M₁ M θ₁ θ h₁.subset hMU hM₁ hMnm hθ₁1 hθ1 h₁.integrableOn hθint
+  have hloc₂ := hT M₂ M θ₂ θ h₂.subset hMU hM₂ hMnm hθ₂1 hθ1 h₂.integrableOn hθint
+  rw [ae_restrict_iff'₀ (hM₁.inter hMnm)] at hloc₁
+  rw [ae_restrict_iff'₀ (hM₂.inter hMnm)] at hloc₂
+  have ho₁ := (ae_restrict_iff'₀ hM₁).1 h₁.orients
+  have ho₂ := (ae_restrict_iff'₀ hM₂).1 h₂.orients
+  have hsgn : ∀ x, ∀ w : NVector (Eucl P) k, ∀ τ : Fin k → Eucl P,
+      (w = simpleNVector τ ∨ w = -simpleNVector τ) →
+      ((if 0 ≤ c x then (1 : ℝ) else -1) • w = simpleNVector τ ∨
+        (if 0 ≤ c x then (1 : ℝ) else -1) • w = -simpleNVector τ) := by
+    intro x w τ hw
+    split_ifs
+    · rw [one_smul]; exact hw
+    · rcases hw with rfl | rfl
+      · right
+        exact ContinuousLinearMap.ext fun α => by
+          simp only [smul_apply, neg_apply, smul_eq_mul,
+            neg_one_mul]
+      · left
+        exact ContinuousLinearMap.ext fun α => by
+          simp only [smul_apply, neg_apply, smul_eq_mul,
+            neg_one_mul, neg_neg]
+  have horient : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∃ τ : Fin k → Eucl P,
+      Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt k M θ x (Submodule.span ℝ (range τ)) ∧
+      (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ) := by
+    rw [ae_restrict_iff'₀ hMnm]
+    filter_upwards [hloc₁, hloc₂, ho₁, ho₂] with x hl₁ hl₂ hx₁ hx₂ hxM
+    by_cases hxM₁ : x ∈ M₁
+    · obtain ⟨τ, hτ, hTx, hξτ⟩ := hx₁ hxM₁
+      refine ⟨τ, hτ, hl₁ ⟨hxM₁, hxM⟩ _ hTx, ?_⟩
+      have h0 : ξ₀ x = ξ₁ x := by simp only [hξ₀, Set.piecewise_eq_of_mem _ _ _ hxM₁]
+      simp only [hξ, h0]
+      exact hsgn x _ τ hξτ
+    · have hxM₂ : x ∈ M₂ := (hMsub hxM).resolve_left hxM₁
+      obtain ⟨τ, hτ, hTx, hξτ⟩ := hx₂ hxM₂
+      refine ⟨τ, hτ, hl₂ ⟨hxM₂, hxM⟩ _ hTx, ?_⟩
+      have h0 : ξ₀ x = ξ₂ x := by
+        simp only [hξ₀, Set.piecewise_eq_of_notMem _ _ _ hxM₁, indicator_of_mem hxM₂]
+      simp only [hξ, h0]
+      exact hsgn x _ τ hξτ
+  refine ⟨M, θ, ξ, ⟨hMU, hMnm,
+    (((Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun i : ℕ => if i = 0 then M₁ else M₂)
+      fun i => by split_ifs; exacts [h₁.countablyRectifiable, h₂.countablyRectifiable])).mono
+      (hMsub.trans (union_subset (subset_iUnion_of_subset 0 (by simp))
+        (subset_iUnion_of_subset 1 (by simp))))),
+    hθpos, hθint, hξm, horient⟩, hθN, ?_⟩
+  -- Step 4: the representation `Z = τ(M, θ, ξ)`.
+  intro ω
+  set w : DifferentialForm (Eucl P) k := (ω : DifferentialForm (Eucl P) k) with hw
+  have hrep₁ := (Submission.iwl_imc_tau_measure_representation P k U M₁ θ₁ ξ₁ X h₁ hX ω).1
+  have hrep₂ := (Submission.iwl_imc_tau_measure_representation P k U M₂ θ₂ ξ₂ Y h₂ hY ω).1
+  have hi₁ : IntegrableOn (fun x => θ₁ x * ξ₁ x (w x)) M₁ (μHE[k] : Measure (Eucl P)) := by
+    simp only [smul_apply, smul_eq_mul] at hrep₁
+    exact hrep₁
+  have hi₂ : IntegrableOn (fun x => θ₂ x * ξ₂ x (w x)) M₂ (μHE[k] : Measure (Eucl P)) := by
+    simp only [smul_apply, smul_eq_mul] at hrep₂
+    exact hrep₂
+  have hI₁ := (integrable_indicator_iff₀ hM₁).2 hi₁
+  have hI₂ := (integrable_indicator_iff₀ hM₂).2 hi₂
+  rw [hZ ω, hX ω, hY ω]
+  unfold tauAction
+  rw [← integral_indicator₀ hM₁, ← integral_indicator₀ hM₂, ← integral_indicator₀ hMnm,
+    ← integral_const_mul, ← integral_const_mul,
+    ← integral_add (hI₁.const_mul (a : ℝ)) (hI₂.const_mul (b : ℝ))]
+  refine integral_congr_ae ?_
+  filter_upwards [hsign] with x hx
+  have hR : M.indicator (fun x => θ x * ξ x (w x)) x = c x * ξ₀ x (w x) := by
+    by_cases hxM : x ∈ M
+    · rw [indicator_of_mem hxM, hθξ]
+    · rw [indicator_of_notMem hxM]
+      have h0 : c x = 0 := by
+        by_contra hne
+        exact hxM hne
+      rw [h0, zero_mul]
+  change (a : ℝ) * M₁.indicator (fun x => θ₁ x * ξ₁ x (w x)) x +
+    (b : ℝ) * M₂.indicator (fun x => θ₂ x * ξ₂ x (w x)) x =
+      M.indicator (fun x => θ x * ξ x (w x)) x
+  rw [hR]
+  by_cases hx1 : x ∈ M₁ <;> by_cases hx2 : x ∈ M₂
+  · have h0 : ξ₀ x = ξ₁ x := by simp only [hξ₀, Set.piecewise_eq_of_mem _ _ _ hx1]
+    by_cases hxB : x ∈ B
+    · have hxE : x ∉ Em := fun h => h.2 hxB
+      have heq : ξ₁ x = ξ₂ x := by
+        have h := hxB
+        simp only [hB, mem_ofPred_eq, indicator_of_mem hx1, indicator_of_mem hx2] at h
+        exact h
+      simp only [indicator_of_mem hx1, indicator_of_mem hx2, hc, hσ, hxE, ite_false, h0, heq]
+      ring
+    · have hxE : x ∈ Em := ⟨⟨hx1, hx2⟩, hxB⟩
+      have hneg : ξ₁ x = -ξ₂ x := by
+        rcases hx ⟨hx1, hx2⟩ with h | h
+        · exfalso
+          apply hxB
+          simp only [hB, mem_ofPred_eq, indicator_of_mem hx1, indicator_of_mem hx2]
+          exact h
+        · exact h
+      have hα : ξ₁ x (w x) = -(ξ₂ x (w x)) := by rw [hneg, neg_apply]
+      simp only [indicator_of_mem hx1, indicator_of_mem hx2, hc, hσ, hxE, ite_true, h0]
+      linear_combination (b : ℝ) * θ₂ x * hα
+  · have hxE : x ∉ Em := fun h => hx2 h.1.2
+    have h0 : ξ₀ x = ξ₁ x := by simp only [hξ₀, Set.piecewise_eq_of_mem _ _ _ hx1]
+    simp only [indicator_of_mem hx1, indicator_of_notMem hx2, hc, hσ, hxE, ite_false, h0]
+    ring
+  · have hxE : x ∉ Em := fun h => hx1 h.1.1
+    have h0 : ξ₀ x = ξ₂ x := by
+      simp only [hξ₀, Set.piecewise_eq_of_notMem _ _ _ hx1, indicator_of_mem hx2]
+    simp only [indicator_of_notMem hx1, indicator_of_mem hx2, hc, hσ, hxE, ite_false, h0]
+    ring
+  · simp only [indicator_of_notMem hx1, indicator_of_notMem hx2, hc]
+    ring
 
 /-- Upper density theorem at every scale `Rr` (Simon Ch. 1, 3.6 with Remark 3.7(2)): if
 `∫⁻_{S ∩ K} g dHᵏ < ∞` for every compact `K ⊆ U`, then for `Hᵏ`-a.e. `x ∈ U \ S` and every
@@ -2285,221 +2490,6 @@ theorem Submission.iwl_imc_restriction_im : ∀ (P k : ℕ) (U : Set (Eucl P)), 
     exact ⟨τ, hτ, hx _ hτM, hξ⟩
   -- Step 5: `S = τ(M ∩ A, θ, ξ)` with `θ` natural-valued on `M ∩ A ⊆ M`.
   exact ⟨M ∩ A, θ, ξ, hMA, fun x hx => hθ x hx.1, hSτ⟩
-    simp only [hσ, Set.piecewise]
-  have hcm : AEStronglyMeasurable c (μHE[k] : Measure (Eucl P)) :=
-    (((aestronglyMeasurable_indicator_iff₀ hM₁).2 hθ₁m).const_mul (a : ℝ)).add
-      ((hσm.mul ((aestronglyMeasurable_indicator_iff₀ hM₂).2 hθ₂m)).const_mul (b : ℝ))
-  have hMnm : NullMeasurableSet M (μHE[k] : Measure (Eucl P)) := hcm.nullMeasurableSet_support
-  -- `c` vanishes off `M₁ ∪ M₂`.
-  have hMsub : M ⊆ M₁ ∪ M₂ := by
-    intro x hx
-    by_contra hcon
-    simp only [mem_union, not_or] at hcon
-    apply hx
-    simp [hc, hcon.1, hcon.2]
-  have hMU : M ⊆ U := hMsub.trans (union_subset h₁.subset h₂.subset)
-  -- Step 2(a): `c` is integer-valued.
-  have hcZ : ∀ x, ∃ z : ℤ, c x = z := by
-    intro x
-    have hi₁ : ∃ n : ℕ, M₁.indicator θ₁ x = n := by
-      by_cases hx : x ∈ M₁
-      · rw [indicator_of_mem hx]; exact hN₁ x hx
-      · exact ⟨0, by simp [hx]⟩
-    have hi₂ : ∃ n : ℕ, M₂.indicator θ₂ x = n := by
-      by_cases hx : x ∈ M₂
-      · rw [indicator_of_mem hx]; exact hN₂ x hx
-      · exact ⟨0, by simp [hx]⟩
-    obtain ⟨n₁, hn₁⟩ := hi₁
-    obtain ⟨n₂, hn₂⟩ := hi₂
-    by_cases hxE : x ∈ Em
-    · refine ⟨a * n₁ + b * (-1 * n₂), ?_⟩
-      simp only [hc, hσ, hxE, ite_true, hn₁, hn₂]
-      push_cast; ring
-    · refine ⟨a * n₁ + b * (1 * n₂), ?_⟩
-      simp only [hc, hσ, hxE, ite_false, hn₁, hn₂]
-      push_cast; ring
-  have hθN : ∀ x ∈ M, ∃ n : ℕ, θ x = n := by
-    intro x _
-    obtain ⟨z, hz⟩ := hcZ x
-    exact ⟨z.natAbs, by simp only [hθ, hz, Nat.cast_natAbs, Int.cast_abs]⟩
-  have hθ1 : ∀ x ∈ M, 1 ≤ θ x := by
-    intro x hx
-    obtain ⟨z, hz⟩ := hcZ x
-    have hz0 : z ≠ 0 := by
-      rintro rfl
-      exact hx (by rw [hz, Int.cast_zero])
-    have h1 : (1 : ℤ) ≤ |z| := Int.one_le_abs hz0
-    simp only [hθ, hz, ← Int.cast_abs]
-    exact_mod_cast h1
-  have hθpos : ∀ x ∈ M, 0 < θ x := fun x hx => zero_lt_one.trans_le (hθ1 x hx)
-  -- Step 5 (integrableOn): `|c| ≤ |a| 1_{M₁} θ₁ + |b| 1_{M₂} θ₂`.
-  have hind₁ : ∀ x, 0 ≤ M₁.indicator θ₁ x := fun x =>
-    Set.indicator_nonneg (fun y hy => zero_le_one.trans (hθ₁1 y hy)) x
-  have hind₂ : ∀ x, 0 ≤ M₂.indicator θ₂ x := fun x =>
-    Set.indicator_nonneg (fun y hy => zero_le_one.trans (hθ₂1 y hy)) x
-  have habsσ : ∀ x, |σ x| = 1 := by
-    intro x
-    simp only [hσ]
-    split_ifs <;> simp
-  have hcbound : ∀ x, |c x| ≤ |(a : ℝ)| * M₁.indicator θ₁ x + |(b : ℝ)| * M₂.indicator θ₂ x := by
-    intro x
-    calc |c x| ≤ |(a : ℝ) * M₁.indicator θ₁ x| + |(b : ℝ) * (σ x * M₂.indicator θ₂ x)| :=
-          abs_add_le _ _
-      _ = |(a : ℝ)| * M₁.indicator θ₁ x + |(b : ℝ)| * M₂.indicator θ₂ x := by
-          rw [abs_mul, abs_mul, abs_mul, habsσ, one_mul, abs_of_nonneg (hind₁ x),
-            abs_of_nonneg (hind₂ x)]
-  have hθint : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
-      IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
-    intro K hK hKU
-    have hg₁ : Integrable (M₁.indicator θ₁) ((μHE[k] : Measure (Eucl P)).restrict K) := by
-      rw [integrable_indicator_iff₀ (hM₁.mono Measure.restrict_le_self), IntegrableOn,
-        Measure.restrict_restrict' hK.isClosed.measurableSet]
-      exact h₁.integrableOn K hK hKU
-    have hg₂ : Integrable (M₂.indicator θ₂) ((μHE[k] : Measure (Eucl P)).restrict K) := by
-      rw [integrable_indicator_iff₀ (hM₂.mono Measure.restrict_le_self), IntegrableOn,
-        Measure.restrict_restrict' hK.isClosed.measurableSet]
-      exact h₂.integrableOn K hK hKU
-    have hg : IntegrableOn (fun x => |(a : ℝ)| * M₁.indicator θ₁ x +
-        |(b : ℝ)| * M₂.indicator θ₂ x) (M ∩ K) (μHE[k] : Measure (Eucl P)) :=
-      ((hg₁.const_mul _).add (hg₂.const_mul _)).mono_measure
-        (Measure.restrict_mono inter_subset_right le_rfl)
-    refine hg.mono' (continuous_abs.comp_aestronglyMeasurable hcm).restrict ?_
-    exact Eventually.of_forall fun x => by
-      show ‖|c x|‖ ≤ _
-      rw [Real.norm_eq_abs, abs_abs]
-      exact hcbound x
-  -- Step 3(e): `ξ` is a.e.-strongly measurable on `M`.
-  have hξm : AEStronglyMeasurable ξ ((μHE[k] : Measure (Eucl P)).restrict M) := by
-    have hs : AEStronglyMeasurable (fun x => if 0 ≤ c x then (1 : ℝ) else -1)
-        (μHE[k] : Measure (Eucl P)) := by
-      have hmeas : Measurable (fun t : ℝ => if 0 ≤ t then (1 : ℝ) else -1) :=
-        Measurable.ite measurableSet_Ici measurable_const measurable_const
-      exact (hmeas.comp_aemeasurable hcm.aemeasurable).aestronglyMeasurable
-    have hξ₀ : AEStronglyMeasurable ξ₀ ((μHE[k] : Measure (Eucl P)).restrict M) := by
-      refine AEStronglyMeasurable.piecewise (hM₁.mono Measure.restrict_le_self) ?_ ?_
-      · exact h₁.aestronglyMeasurable.mono_measure
-          (Measure.restrict_mono subset_rfl Measure.restrict_le_self)
-      · exact ((aestronglyMeasurable_indicator_iff₀ hM₂).2 h₂.aestronglyMeasurable).restrict.restrict
-    exact hs.restrict.smul hξ₀
-  -- Step 2(b): `θ x • ξ x` acts as `c x • ξ₀ x`.
-  have hθξ : ∀ x (α : Covector (Eucl P) k), θ x * ξ x α = c x * ξ₀ x α := by
-    intro x α
-    simp only [hθ, hξ, smul_apply, smul_eq_mul]
-    split_ifs with h
-    · rw [abs_of_nonneg h]; ring
-    · rw [abs_of_neg (not_le.1 h)]; ring
-  -- Step 5 (orients): tangent comparison between `(M_l, θ_l)` and `(M, θ)`.
-  have hloc₁ := hT M₁ M θ₁ θ h₁.subset hMU hM₁ hMnm hθ₁1 hθ1 h₁.integrableOn hθint
-  have hloc₂ := hT M₂ M θ₂ θ h₂.subset hMU hM₂ hMnm hθ₂1 hθ1 h₂.integrableOn hθint
-  rw [ae_restrict_iff'₀ (hM₁.inter hMnm)] at hloc₁
-  rw [ae_restrict_iff'₀ (hM₂.inter hMnm)] at hloc₂
-  have ho₁ := (ae_restrict_iff'₀ hM₁).1 h₁.orients
-  have ho₂ := (ae_restrict_iff'₀ hM₂).1 h₂.orients
-  have hsgn : ∀ x, ∀ w : NVector (Eucl P) k, ∀ τ : Fin k → Eucl P,
-      (w = simpleNVector τ ∨ w = -simpleNVector τ) →
-      ((if 0 ≤ c x then (1 : ℝ) else -1) • w = simpleNVector τ ∨
-        (if 0 ≤ c x then (1 : ℝ) else -1) • w = -simpleNVector τ) := by
-    intro x w τ hw
-    split_ifs
-    · rw [one_smul]; exact hw
-    · rcases hw with rfl | rfl
-      · right
-        exact ContinuousLinearMap.ext fun α => by
-          simp only [smul_apply, neg_apply, smul_eq_mul,
-            neg_one_mul]
-      · left
-        exact ContinuousLinearMap.ext fun α => by
-          simp only [smul_apply, neg_apply, smul_eq_mul,
-            neg_one_mul, neg_neg]
-  have horient : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∃ τ : Fin k → Eucl P,
-      Orthonormal ℝ τ ∧
-      HasWeightedApproximateTangentSpaceAt k M θ x (Submodule.span ℝ (range τ)) ∧
-      (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ) := by
-    rw [ae_restrict_iff'₀ hMnm]
-    filter_upwards [hloc₁, hloc₂, ho₁, ho₂] with x hl₁ hl₂ hx₁ hx₂ hxM
-    by_cases hxM₁ : x ∈ M₁
-    · obtain ⟨τ, hτ, hTx, hξτ⟩ := hx₁ hxM₁
-      refine ⟨τ, hτ, hl₁ ⟨hxM₁, hxM⟩ _ hTx, ?_⟩
-      have h0 : ξ₀ x = ξ₁ x := by simp only [hξ₀, Set.piecewise_eq_of_mem _ _ _ hxM₁]
-      simp only [hξ, h0]
-      exact hsgn x _ τ hξτ
-    · have hxM₂ : x ∈ M₂ := (hMsub hxM).resolve_left hxM₁
-      obtain ⟨τ, hτ, hTx, hξτ⟩ := hx₂ hxM₂
-      refine ⟨τ, hτ, hl₂ ⟨hxM₂, hxM⟩ _ hTx, ?_⟩
-      have h0 : ξ₀ x = ξ₂ x := by
-        simp only [hξ₀, Set.piecewise_eq_of_notMem _ _ _ hxM₁, indicator_of_mem hxM₂]
-      simp only [hξ, h0]
-      exact hsgn x _ τ hξτ
-  refine ⟨M, θ, ξ, ⟨hMU, hMnm,
-    (((Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun i : ℕ => if i = 0 then M₁ else M₂)
-      fun i => by split_ifs; exacts [h₁.countablyRectifiable, h₂.countablyRectifiable])).mono
-      (hMsub.trans (union_subset (subset_iUnion_of_subset 0 (by simp))
-        (subset_iUnion_of_subset 1 (by simp))))),
-    hθpos, hθint, hξm, horient⟩, hθN, ?_⟩
-  -- Step 4: the representation `Z = τ(M, θ, ξ)`.
-  intro ω
-  set w : DifferentialForm (Eucl P) k := (ω : DifferentialForm (Eucl P) k) with hw
-  have hrep₁ := (Submission.iwl_imc_tau_measure_representation P k U M₁ θ₁ ξ₁ X h₁ hX ω).1
-  have hrep₂ := (Submission.iwl_imc_tau_measure_representation P k U M₂ θ₂ ξ₂ Y h₂ hY ω).1
-  have hi₁ : IntegrableOn (fun x => θ₁ x * ξ₁ x (w x)) M₁ (μHE[k] : Measure (Eucl P)) := by
-    simp only [smul_apply, smul_eq_mul] at hrep₁
-    exact hrep₁
-  have hi₂ : IntegrableOn (fun x => θ₂ x * ξ₂ x (w x)) M₂ (μHE[k] : Measure (Eucl P)) := by
-    simp only [smul_apply, smul_eq_mul] at hrep₂
-    exact hrep₂
-  have hI₁ := (integrable_indicator_iff₀ hM₁).2 hi₁
-  have hI₂ := (integrable_indicator_iff₀ hM₂).2 hi₂
-  rw [hZ ω, hX ω, hY ω]
-  unfold tauAction
-  rw [← integral_indicator₀ hM₁, ← integral_indicator₀ hM₂, ← integral_indicator₀ hMnm,
-    ← integral_const_mul, ← integral_const_mul,
-    ← integral_add (hI₁.const_mul (a : ℝ)) (hI₂.const_mul (b : ℝ))]
-  refine integral_congr_ae ?_
-  filter_upwards [hsign] with x hx
-  have hR : M.indicator (fun x => θ x * ξ x (w x)) x = c x * ξ₀ x (w x) := by
-    by_cases hxM : x ∈ M
-    · rw [indicator_of_mem hxM, hθξ]
-    · rw [indicator_of_notMem hxM]
-      have h0 : c x = 0 := by
-        by_contra hne
-        exact hxM hne
-      rw [h0, zero_mul]
-  change (a : ℝ) * M₁.indicator (fun x => θ₁ x * ξ₁ x (w x)) x +
-    (b : ℝ) * M₂.indicator (fun x => θ₂ x * ξ₂ x (w x)) x =
-      M.indicator (fun x => θ x * ξ x (w x)) x
-  rw [hR]
-  by_cases hx1 : x ∈ M₁ <;> by_cases hx2 : x ∈ M₂
-  · have h0 : ξ₀ x = ξ₁ x := by simp only [hξ₀, Set.piecewise_eq_of_mem _ _ _ hx1]
-    by_cases hxB : x ∈ B
-    · have hxE : x ∉ Em := fun h => h.2 hxB
-      have heq : ξ₁ x = ξ₂ x := by
-        have h := hxB
-        simp only [hB, mem_ofPred_eq, indicator_of_mem hx1, indicator_of_mem hx2] at h
-        exact h
-      simp only [indicator_of_mem hx1, indicator_of_mem hx2, hc, hσ, hxE, ite_false, h0, heq]
-      ring
-    · have hxE : x ∈ Em := ⟨⟨hx1, hx2⟩, hxB⟩
-      have hneg : ξ₁ x = -ξ₂ x := by
-        rcases hx ⟨hx1, hx2⟩ with h | h
-        · exfalso
-          apply hxB
-          simp only [hB, mem_ofPred_eq, indicator_of_mem hx1, indicator_of_mem hx2]
-          exact h
-        · exact h
-      have hα : ξ₁ x (w x) = -(ξ₂ x (w x)) := by rw [hneg, neg_apply]
-      simp only [indicator_of_mem hx1, indicator_of_mem hx2, hc, hσ, hxE, ite_true, h0]
-      linear_combination (b : ℝ) * θ₂ x * hα
-  · have hxE : x ∉ Em := fun h => hx2 h.1.2
-    have h0 : ξ₀ x = ξ₁ x := by simp only [hξ₀, Set.piecewise_eq_of_mem _ _ _ hx1]
-    simp only [indicator_of_mem hx1, indicator_of_notMem hx2, hc, hσ, hxE, ite_false, h0]
-    ring
-  · have hxE : x ∉ Em := fun h => hx1 h.1.1
-    have h0 : ξ₀ x = ξ₂ x := by
-      simp only [hξ₀, Set.piecewise_eq_of_notMem _ _ _ hx1, indicator_of_mem hx2]
-    simp only [indicator_of_notMem hx1, indicator_of_mem hx2, hc, hσ, hxE, ite_false, h0]
-    ring
-  · simp only [indicator_of_notMem hx1, indicator_of_notMem hx2, hc]
-    ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
