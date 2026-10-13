@@ -643,6 +643,100 @@ theorem Submission.regcomp_cop_zdr_exists_bumpForm : ∀ (P : ℕ) (U : Set (Euc
     rw [abs_of_nonneg h0]
     exact mul_le_of_le_one_right (abs_nonneg c) h1
 
+/-- **A degree-0 point mass is carried by an isolated carrier point** (Simon Ch. 6, 3.1).  Let
+`T = τ(C, θ, ξ) ∈ 𝒟₀(U)` with `T(ω) = c ω(y)`, `c ≠ 0`, for every `ω ∈ 𝒟⁰(U)` with
+`spt ω ⊆ B_r(y) ⊆ U`.  As `C` is finite on compact subsets of `U` and `ξ(x) = ±` evaluation on `C`,
+`T(ω) = θ(x) ξ(x)(ω(x))` whenever `spt ω ⊆ B̄_a(x)` and `C ∩ B̄_a(x) = {x}`.  A bump form at a point
+`x ≠ y` of `C ∩ B_r(y)`, on a ball isolating `x` in `C` and missing `y`, then gives
+`0 = c ω(y) = θ(x) ξ(x)(ω(x)) = ±θ(x) ≠ 0`; so `C ∩ B_r(y) ⊆ {y}`.  If `y ∉ C`, then `C` misses
+`B_r(y)`, and a bump form at `y` gives `c = T(ω) = 0`; so `y ∈ C`. -/
+theorem Submission.regcomp_cop_zdr_isolated_carrier_point : ∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0) (R : IMRep U 0) (y : Euclid P) (r c : ℝ), R.Represents T → 0 < r → ball y r ⊆ U → c ≠ 0 → (∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r → T ω = c * (ω : DifferentialForm (Euclid P) 0) y (fun i => i.elim0)) → y ∈ R.carrier ∧ R.carrier ∩ ball y r ⊆ {y} := by
+  intro P U T R y r c hRT hr hrU hc hloc
+  -- (1) `C` is finite on compact subsets of `U`, and `ξ(x) = s ·` evaluation with `|s| = 1` on `C`
+  obtain ⟨-, hfin, horient, -⟩ := Submission.dor_zdm_imrep_zero_structure P U R
+  have hsgn : ∀ x ∈ R.carrier, ∃ s : ℝ, |s| = 1 ∧
+      ∀ α : Covector (Euclid P) 0, R.orient x α = s * α (fun i => i.elim0) := by
+    intro x hx
+    obtain ⟨⟨Q, -, hQ⟩, -⟩ := horient x hx
+    exact Submission.regcomp_cop_zdr_unitOrientation_zero P (R.orient x) Q hQ
+  -- (2) the integrand `θ(z) ξ(z)(ω(z))` of `T(ω)` vanishes off `spt ω`
+  have hvan : ∀ (ω : TestFormOn U 0) (z : Euclid P),
+      z ∉ tsupport (ω : DifferentialForm (Euclid P) 0) →
+        (R.mult z : ℝ) * R.orient z ((ω : DifferentialForm (Euclid P) 0) z) = 0 :=
+    fun ω z hz => by rw [image_eq_zero_of_notMem_tsupport hz, map_zero, mul_zero]
+  -- (3) `T(ω) = θ(x) ξ(x)(ω(x))` if `x ∈ C`, `C ∩ B̄_a(x) ⊆ {x}` and `spt ω ⊆ B̄_a(x)`
+  have hatom : ∀ x ∈ R.carrier, ∀ (a : ℝ) (ω : TestFormOn U 0),
+      R.carrier ∩ closedBall x a ⊆ {x} →
+        tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ closedBall x a →
+          T ω = (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 0) x) := by
+    intro x hx a ω hCa hωa
+    rw [hRT ω, IMRep.action, Submission.regcomp_cop_zdr_setIntegral_eq_indicator P R.carrier
+      (closedBall x a) x _ measurableSet_closedBall (fun z hz => hvan ω z fun h => hz (hωa h))
+      hCa, indicator_of_mem hx]
+  -- (4) `C ∩ B_r(y) ⊆ {y}`: a point `x ≠ y` of `C ∩ B_r(y)` is isolated in `C`, and a bump form
+  -- at `x` vanishing at `y` has `T(ω) = c ω(y) = 0` but `T(ω) = θ(x) ξ(x)(ω(x)) = θ(x) s ≠ 0`
+  have hstep4 : R.carrier ∩ ball y r ⊆ {y} := by
+    rintro x ⟨hxC, hxr⟩
+    by_contra hxy
+    have hδ : 0 < dist x y := dist_pos.2 hxy
+    have hrδ : 0 < r - dist x y := sub_pos.2 (mem_ball.1 hxr)
+    -- (a), (b) `a₀ = min(r - δ, δ)/2` has `B̄_{a₀}(x) ⊆ B_r(y)` and `y ∉ B̄_{a₀}(x)`
+    obtain ⟨a₀, ha₀, ha₀r, ha₀δ⟩ : ∃ a₀ : ℝ, 0 < a₀ ∧ a₀ < r - dist x y ∧ a₀ < dist x y :=
+      ⟨min (r - dist x y) (dist x y) / 2, half_pos (lt_min hrδ hδ),
+        (half_lt_self (lt_min hrδ hδ)).trans_le (min_le_left _ _),
+        (half_lt_self (lt_min hrδ hδ)).trans_le (min_le_right _ _)⟩
+    have ha₀sub : closedBall x a₀ ⊆ ball y r := fun z hz => mem_ball.2 <|
+      calc dist z y ≤ dist z x + dist x y := dist_triangle _ _ _
+        _ < r := by linarith [mem_closedBall.1 hz]
+    have hya₀ : y ∉ closedBall x a₀ := fun h => by
+      rw [mem_closedBall, dist_comm] at h
+      linarith
+    -- (c) `(C ∩ B̄_{a₀}(x)) \ {x}` is finite, hence closed, and misses `x`
+    have hcl : IsClosed ((R.carrier ∩ closedBall x a₀) \ {x}) :=
+      ((hfin _ (isCompact_closedBall x a₀) (ha₀sub.trans hrU)).1.subset sdiff_subset).isClosed
+    obtain ⟨ε, hε, hεball⟩ := Metric.isOpen_iff.1 hcl.isOpen_compl x fun h => h.2 rfl
+    -- (d) `a = min(ε/2, a₀)` has `C ∩ B̄_a(x) ⊆ {x}`
+    obtain ⟨a, ha, haε, haa₀⟩ : ∃ a : ℝ, 0 < a ∧ a < ε ∧ a ≤ a₀ :=
+      ⟨min (ε / 2) a₀, lt_min (half_pos hε) ha₀, (min_le_left _ _).trans_lt (half_lt_self hε),
+        min_le_right _ _⟩
+    have hBa : closedBall x a ⊆ closedBall x a₀ := closedBall_subset_closedBall haa₀
+    have hCa : R.carrier ∩ closedBall x a ⊆ {x} := by
+      rintro z ⟨hzC, hza⟩
+      by_contra hzx
+      exact hεball (mem_ball.2 ((mem_closedBall.1 hza).trans_lt haε)) ⟨⟨hzC, hBa hza⟩, hzx⟩
+    -- (e) a bump form `ω` at `x` with `spt ω ⊆ B̄_a(x)` and `ω(x)(()) = 1`
+    obtain ⟨ω, hωs, hωx, hωz, -⟩ :=
+      Submission.regcomp_cop_zdr_exists_bumpForm P U x a 1 ha (hBa.trans (ha₀sub.trans hrU))
+    -- (f) `T(ω) = c ω(y)(()) = 0`, as `y ∉ B̄_a(x)`
+    have h1 : T ω = 0 := by
+      rw [hloc ω (hωs.trans (hBa.trans ha₀sub)),
+        hωz y fun h => hya₀ (hBa (ball_subset_closedBall h))]
+      simp
+    -- (g) `T(ω) = θ(x) ξ(x)(ω(x)) = θ(x) s ≠ 0`
+    obtain ⟨s, hs, hsx⟩ := hsgn x hxC
+    rw [hatom x hxC a ω hCa hωs, hsx, hωx, mul_one] at h1
+    have hθ : (0 : ℝ) < R.mult x := by exact_mod_cast R.mult_pos x hxC
+    have hs0 : s ≠ 0 := fun h => by
+      rw [h, abs_zero] at hs
+      exact zero_ne_one hs
+    exact mul_ne_zero hθ.ne' hs0 h1
+  -- (5) `y ∈ C`: otherwise `C` misses `B_r(y)` by (4), and a bump form at `y` has
+  -- `T(ω) = c ω(y)(()) = c` but `T(ω) = 0`, its integrand vanishing on `C` by (2)
+  refine ⟨?_, hstep4⟩
+  by_contra hyC
+  have hCr : ∀ z ∈ R.carrier, z ∉ ball y r := fun z hz hzr => by
+    have hzy : z = y := hstep4 ⟨hz, hzr⟩
+    exact hyC (hzy ▸ hz)
+  obtain ⟨ω, hωs, hωy, -, -⟩ := Submission.regcomp_cop_zdr_exists_bumpForm P U y (r / 2) 1
+    (half_pos hr) ((closedBall_subset_ball (half_lt_self hr)).trans hrU)
+  have hωr : tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r :=
+    hωs.trans (closedBall_subset_ball (half_lt_self hr))
+  have h0 : T ω = 0 := by
+    rw [hRT ω, IMRep.action]
+    exact setIntegral_eq_zero_of_forall_eq_zero fun z hz => hvan ω z fun h => hCr z hz (hωr h)
+  rw [hloc ω hωr, hωy, mul_one] at h0
+  exact hc h0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
