@@ -380,6 +380,110 @@ theorem Submission.slicing_mb_sa_mollifier_exists :
     fun y hy => mul_eq_zero_of_right _ (φ.zero_of_le_dist (by rwa [dist_zero_right])), ?_⟩
   rw [integral_const_mul, inv_mul_cancel₀ hc.ne']
 
+/-- Mollifying a Lipschitz map, as for Simon's `f^{(σ)} = f ∗ φ^{(σ)}` (Ch. 6, 2.29, p. 141): for
+an `L`-Lipschitz `F : ℝ^m → ℝ^{m'}`, `F_σ(x) = ∫ ρ(w) F(x - w) dw`, with `ρ` the mollifier of
+`slicing_mb_sa_mollifier_exists` at radius `σ/2`, is smooth, `L`-Lipschitz and `Lσ`-close to `F`.
+If `F` is `Λ'`-Lipschitz on `B(x, 2σ)`, then `F_σ` is `Λ'`-Lipschitz on `B(x, σ)`,
+`‖DF_σ(x)‖ ≤ Λ'` and `|F_σ(x) - F(x)| ≤ Λ'σ`; a coordinate of `F` constant on `B(x, σ)` keeps
+its value at `x`. -/
+theorem Submission.dph_sa_mollify_lipschitz :
+    ∀ (m m' : ℕ) (F : Eucl m → Eucl m') (L : ℝ≥0), LipschitzWith L F → ∀ σ : ℝ, 0 < σ →
+      ∃ Fs : Eucl m → Eucl m', ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Fs ∧ LipschitzWith L Fs ∧
+        (∀ x, ‖Fs x - F x‖ ≤ (L : ℝ) * σ) ∧
+        (∀ (x : Eucl m) (Λ' : ℝ≥0), LipschitzOnWith Λ' F (ball x (2 * σ)) →
+          LipschitzOnWith Λ' Fs (ball x σ) ∧ ‖fderiv ℝ Fs x‖ ≤ (Λ' : ℝ) ∧
+            ‖Fs x - F x‖ ≤ (Λ' : ℝ) * σ) ∧
+        ∀ (x : Eucl m) (i : Fin m') (c : ℝ), (∀ y ∈ ball x σ, F y i = c) → Fs x i = c := by
+  intro m m' F L hF σ hσ
+  -- The mollifier `ρ ≥ 0`, `∫ ρ = 1`, vanishing off `B(0, σ/2)`.
+  obtain ⟨ρ, hρs, hρc, hρ0, hρz, hρ1⟩ :=
+    Submission.slicing_mb_sa_mollifier_exists m (σ / 2) (half_pos hσ)
+  have hρi : Integrable ρ := hρs.continuous.integrable_of_hasCompactSupport hρc
+  -- `F_σ(x) = ∫ ρ(w) • F(x - w) dw`; each integrand is continuous with compact support.
+  let Fs : Eucl m → Eucl m' := fun x => ∫ w, ρ w • F (x - w)
+  have hint : ∀ x, Integrable (fun w => ρ w • F (x - w)) := fun x =>
+    (hρs.continuous.smul (hF.continuous.comp (continuous_const.sub continuous_id))
+      ).integrable_of_hasCompactSupport hρc.smul_right
+  -- `|∫ ρ • G| ≤ B` once `|G| ≤ B` on `B(0, σ/2)`, outside of which `ρ = 0`.
+  have hbound : ∀ (G : Eucl m → Eucl m') (B : ℝ), (∀ w : Eucl m, ‖w‖ < σ / 2 → ‖G w‖ ≤ B) →
+      ‖∫ w, ρ w • G w‖ ≤ B := by
+    intro G B hG
+    calc ‖∫ w, ρ w • G w‖ ≤ ∫ w, ρ w * B := by
+          refine norm_integral_le_of_norm_le (hρi.mul_const B) (Eventually.of_forall fun w => ?_)
+          by_cases hw : ‖w‖ < σ / 2
+          · rw [norm_smul, Real.norm_of_nonneg (hρ0 w)]
+            exact mul_le_mul_of_nonneg_left (hG w hw) (hρ0 w)
+          · rw [hρz w (not_lt.1 hw), zero_smul, norm_zero, zero_mul]
+      _ = B := by rw [integral_mul_const, hρ1, one_mul]
+  -- Smoothness: `F_σ = ρ ⋆ F`.
+  have hsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Fs := by
+    have : Fs = convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+      funext x
+      rw [convolution_lsmul]
+    rw [this]
+    exact hρc.contDiff_convolution_left _ hρs hF.continuous.locallyIntegrable
+  -- (E) `|F_σ(y) - F_σ(y')| ≤ Λ'|y - y'|` if `F` is `Λ'`-Lipschitz on a `U` containing
+  -- `y - w` and `y' - w` for all `|w| < σ/2`.
+  have hE : ∀ (U : Set (Eucl m)) (Λ' : ℝ≥0), LipschitzOnWith Λ' F U → ∀ y y' : Eucl m,
+      (∀ w : Eucl m, ‖w‖ < σ / 2 → y - w ∈ U ∧ y' - w ∈ U) →
+        ‖Fs y - Fs y'‖ ≤ Λ' * ‖y - y'‖ := by
+    intro U Λ' hU y y' hyy'
+    have : Fs y - Fs y' = ∫ w, ρ w • (F (y - w) - F (y' - w)) := by
+      simp only [Fs, smul_sub]
+      rw [integral_sub (hint y) (hint y')]
+    rw [this]
+    refine hbound _ _ fun w hw => ?_
+    obtain ⟨h1, h2⟩ := hyy' w hw
+    calc ‖F (y - w) - F (y' - w)‖ ≤ Λ' * ‖(y - w) - (y' - w)‖ := hU.norm_sub_le h1 h2
+      _ = Λ' * ‖y - y'‖ := by rw [sub_sub_sub_cancel_right]
+  -- (C) `|F_σ(x) - F(x)| ≤ Λ'σ` if `F` is `Λ'`-Lipschitz on a `U` containing `x` and `x - w`
+  -- for all `|w| < σ/2`.
+  have hC : ∀ (U : Set (Eucl m)) (Λ' : ℝ≥0), LipschitzOnWith Λ' F U → ∀ x : Eucl m, x ∈ U →
+      (∀ w : Eucl m, ‖w‖ < σ / 2 → x - w ∈ U) → ‖Fs x - F x‖ ≤ Λ' * σ := by
+    intro U Λ' hU x hx hxw
+    have h1 : ∫ w, ρ w • F x = F x := by rw [integral_smul_const, hρ1, one_smul]
+    have : Fs x - F x = ∫ w, ρ w • (F (x - w) - F x) := by
+      simp only [Fs, smul_sub]
+      rw [integral_sub (hint x) (hρi.smul_const (F x)), h1]
+    rw [this]
+    refine hbound _ _ fun w hw => ?_
+    calc ‖F (x - w) - F x‖ ≤ Λ' * ‖(x - w) - x‖ := hU.norm_sub_le (hxw w hw) hx
+      _ = Λ' * ‖w‖ := by rw [sub_sub_cancel_left, norm_neg]
+      _ ≤ Λ' * σ := by gcongr; linarith
+  refine ⟨Fs, hsmooth, ?_, ?_, ?_, ?_⟩
+  -- Global bounds: `U = ℝ^m`, `Λ' = L`.
+  · refine LipschitzWith.of_dist_le_mul fun y y' => ?_
+    rw [dist_eq_norm, dist_eq_norm]
+    exact hE univ L hF.lipschitzOnWith y y' fun w _ => ⟨mem_univ _, mem_univ _⟩
+  · exact fun x => hC univ L hF.lipschitzOnWith x (mem_univ _) fun w _ => mem_univ _
+  -- Local bounds: `U = B(x, 2σ)` contains `y - w` for `y ∈ B(x, σ)`, `|w| < σ/2`.
+  · intro x Λ' hΛ
+    have hmem : ∀ y ∈ ball x σ, ∀ w : Eucl m, ‖w‖ < σ / 2 → y - w ∈ ball x (2 * σ) := by
+      intro y hy w hw
+      rw [mem_ball, dist_eq_norm] at hy ⊢
+      calc ‖y - w - x‖ = ‖(y - x) - w‖ := by rw [sub_right_comm]
+        _ ≤ ‖y - x‖ + ‖w‖ := norm_sub_le _ _
+        _ < 2 * σ := by linarith
+    have hLoc : LipschitzOnWith Λ' Fs (ball x σ) := by
+      refine LipschitzOnWith.of_dist_le_mul fun y hy y' hy' => ?_
+      rw [dist_eq_norm, dist_eq_norm]
+      exact hE _ Λ' hΛ y y' fun w hw => ⟨hmem y hy w hw, hmem y' hy' w hw⟩
+    refine ⟨hLoc, norm_fderiv_le_of_lipschitzOn ℝ (ball_mem_nhds x hσ) hLoc, ?_⟩
+    exact hC _ Λ' hΛ x (mem_ball_self (by linarith)) (hmem x (mem_ball_self hσ))
+  -- Locality of coordinates: `F_σ(x)_i = ∫ ρ(w) F(x - w)_i dw = c ∫ ρ = c`.
+  · intro x i c hc
+    have h1 : Fs x i = ∫ w, ρ w * F (x - w) i := by
+      have := (EuclideanSpace.proj i : Eucl m' →L[ℝ] ℝ).integral_comp_comm (hint x)
+      simpa [Fs] using this.symm
+    rw [h1]
+    have h2 : ∀ w, ρ w * F (x - w) i = ρ w * c := by
+      intro w
+      by_cases hw : ‖w‖ < σ / 2
+      · rw [hc (x - w) (by rw [mem_ball, dist_eq_norm, sub_sub_cancel_left, norm_neg]; linarith)]
+      · rw [hρz w (not_lt.1 hw), zero_mul, zero_mul]
+    simp_rw [h2]
+    rw [integral_mul_const, hρ1, one_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
