@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.smooth_support_approx-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+  "depth": 4,
+  "title": "Uniform C^∞ approximation of a continuous compactly supported covector field inside its support, keeping |·|_E ≤ 1",
+  "statement": "Let P, n ∈ ℕ and f : ℝ^P → Covector (Euclid P) n continuous with compact support and |f(z)|_E ≤ 1 for all z (|·|_E = covectorEuclideanNorm). Then for every κ > 0 there is a differential n-form h : DifferentialForm (Euclid P) n with IsTestForm h (C^∞ with compact support), support h ⊆ support f (Function.support, i.e. h(z) = 0 wherever f(z) = 0), |h(z)|_E ≤ 1 for all z, and |h(z) − f(z)|_E ≤ κ for all z.",
+  "lean_statement": "∀ (P n : ℕ) (f : Euclid P → Covector (Euclid P) n), Continuous f → HasCompactSupport f → (∀ z, covectorEuclideanNorm (f z) ≤ 1) → ∀ κ : ℝ, 0 < κ → ∃ h : DifferentialForm (Euclid P) n, IsTestForm h ∧ support h ⊆ support f ∧ (∀ z, covectorEuclideanNorm (h z) ≤ 1) ∧ ∀ z, covectorEuclideanNorm (h z - f z) ≤ κ",
+  "lean_name": "regcomp_exists_smooth_unit_form_support_approx",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-18fb62e6b6-a1"
+}
