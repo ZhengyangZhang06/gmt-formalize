@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1.leibniz_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Leibniz estimate invoked in step 4 of the parent-supplied proof of cbrcs_cutoff_extension (there cited as Mathlib norm_iteratedFDeriv_smul_le). That Mathlib lemma lives in Mathlib.Analysis.Calculus.ContDiff.Bounds, which is not in the import closure of the frozen contract (checked: the identifier is unknown after import GMT.Ch07.Submission), so the estimate is proved here by the same bilinear induction as Mathlib's ContinuousLinearMap.norm_iteratedFDerivWithin_le_of_bilinear_aux (that lemma is also in the non-imported Bounds file; it is cited only as the model of the induction and is not used), written with an explicit bilinear constant c.
+
+Notation. Write D := ℝ^P, fix x ∈ D, and for a map h from D to a real normed space write D^i h(x) := iteratedFDeriv ℝ i h x and Dh := fderiv ℝ h. All spaces below are real normed spaces in Type (as D and the covector space are).
+
+1. (Generalized claim.) For n ∈ ℕ let (A_n) be the statement: for all real normed spaces E, F, G, every continuous bilinear map B : E →L F →L G, every real c ≥ 0 with ‖B u v‖ ≤ c·‖u‖·‖v‖ for all u ∈ E, v ∈ F, and all C^∞ maps a : D → E and b : D → F,
+   ‖D^n(y ↦ B (a y) (b y))(x)‖ ≤ c · Σ_{i=0}^{n} C(n,i)·‖D^i a(x)‖·‖D^{n−i} b(x)‖.
+   We prove (A_n) for every n by induction on n; the spaces E, F, G, the map B, the constant c and the maps a, b are universally quantified inside (A_n), because the induction step applies (A_n) to different spaces.
+2. (Base case n = 0.) ‖D^0 h(x)‖ = ‖h(x)‖ for every h (norm_iteratedFDeriv_zero), and the right-hand side of (A_0) is c·C(0,0)·‖a(x)‖·‖b(x)‖ = c·‖a(x)‖·‖b(x)‖. So (A_0) is the hypothesis ‖B (a x) (b x)‖ ≤ c·‖a x‖·‖b x‖.
+3. (Induction step: setup.) Assume (A_n). Let E, F, G, B, c, a, b be as in (A_{n+1}) and put h(y) := B (a y) (b y). Since a and b are C^∞, so are Da and Db (ContDiff.fderiv_right with order ∞).
+4. (Two auxiliary bilinear maps.) Let B₁ := B.precompR D : E →L (D →L F) →L (D →L G), B₁ u L = (v ↦ B u (L v)), and B₂ := B.precompL D : (D →L E) →L F →L (D →L G), B₂ L w = (v ↦ B (L v) w). For all u, L and v: ‖B u (L v)‖ ≤ c·‖u‖·‖L v‖ ≤ c·‖u‖·‖L‖·‖v‖, hence ‖B₁ u L‖ ≤ c·‖u‖·‖L‖ by the operator-norm bound (opNorm_le_bound, c·‖u‖·‖L‖ ≥ 0). Likewise ‖B (L v) w‖ ≤ c·‖L v‖·‖w‖ ≤ c·‖L‖·‖w‖·‖v‖ gives ‖B₂ L w‖ ≤ c·‖L‖·‖w‖. So B₁ and B₂ satisfy the hypothesis of (A_n) with the same constant c.
+5. (Product rule.) By the derivative of a bilinear expression (ContinuousLinearMap.fderiv_of_bilinear, a and b differentiable), for every y: Dh(y) = B₁ (a y) (Db y) + B₂ (Da y) (b y).
+6. (Splitting the derivative.) The maps y ↦ B₁ (a y) (Db y) and y ↦ B₂ (Da y) (b y) are C^∞ (a bounded bilinear map is C^∞, composed with the C^∞ pairs (a, Db) and (Da, b)). Hence D^n of their sum at x is the sum of their D^n at x (iteratedFDeriv_add_apply). Using ‖D^{n+1} h(x)‖ = ‖D^n(Dh)(x)‖ (norm_iteratedFDeriv_fderiv), step 5 and the triangle inequality,
+   ‖D^{n+1} h(x)‖ ≤ ‖D^n(y ↦ B₁ (a y) (Db y))(x)‖ + ‖D^n(y ↦ B₂ (Da y) (b y))(x)‖.
+7. (First term.) (A_n) for (E, D →L F, D →L G, B₁, c, a, Db) gives ‖D^n(B₁(a, Db))(x)‖ ≤ c·Σ_{i=0}^{n} C(n,i)·‖D^i a(x)‖·‖D^{n−i}(Db)(x)‖. By norm_iteratedFDeriv_fderiv, ‖D^{n−i}(Db)(x)‖ = ‖D^{n−i+1} b(x)‖, and n − i + 1 = n + 1 − i for i ≤ n. So the first term is ≤ c·Σ_{i=0}^{n} C(n,i)·‖D^i a(x)‖·‖D^{n+1−i} b(x)‖.
+8. (Second term.) (A_n) for (D →L E, F, D →L G, B₂, c, Da, b) gives ‖D^n(B₂(Da, b))(x)‖ ≤ c·Σ_{i=0}^{n} C(n,i)·‖D^i(Da)(x)‖·‖D^{n−i} b(x)‖ = c·Σ_{i=0}^{n} C(n,i)·‖D^{i+1} a(x)‖·‖D^{n−i} b(x)‖ (norm_iteratedFDeriv_fderiv again).
+9. (Pascal's rule.) For φ(i, j) := ‖D^i a(x)‖·‖D^j b(x)‖, Finset.sum_choose_succ_mul states Σ_{i=0}^{n+1} C(n+1,i)·φ(i, n+1−i) = Σ_{i=0}^{n} C(n,i)·φ(i, n+1−i) + Σ_{i=0}^{n} C(n,i)·φ(i+1, n−i). Adding the bounds of steps 7 and 8 and factoring out c therefore gives ‖D^{n+1} h(x)‖ ≤ c·Σ_{i=0}^{n+1} C(n+1,i)·‖D^i a(x)‖·‖D^{n+1−i} b(x)‖, which is (A_{n+1}).
+10. (Specialization.) Apply (A_n) with E := ℝ, F = G := Covector (Euclid P) k, B := ContinuousLinearMap.lsmul ℝ ℝ (so B t v = t • v), c := 1, a := f, b := g. The hypothesis holds because ‖t • v‖ = |t|·‖v‖ = 1·‖t‖·‖v‖, and B (f y) (g y) = f y • g y. Since 1·Σ = Σ, this is exactly the claimed inequality. ∎
+
+Lean note (verified to compile as one theorem under the frozen imports, axioms propext, Classical.choice, Quot.sound): the leaf must be a single theorem without helper declarations or set_option. Prove (A_n) inside it as have aux : ∀ (n : ℕ) (E F G : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G] (B : E →L[ℝ] F →L[ℝ] G) (c : ℝ) (a : Euclid P → E) (b : Euclid P → F), 0 ≤ c → (∀ u v, ‖B u v‖ ≤ c * ‖u‖ * ‖v‖) → ContDiff ℝ (⊤ : ℕ∞) a → ContDiff ℝ (⊤ : ℕ∞) b → ‖iteratedFDeriv ℝ n (fun y => B (a y) (b y)) x‖ ≤ c * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i a x‖ * ‖iteratedFDeriv ℝ (n - i) b x‖ := by intro n; induction n with ... . Use the explicit constant c, not ‖B‖: elaborating ‖B.precompR (Euclid P)‖ needs the operator norm on a doubly nested space of continuous linear maps, which fails to synthesize under the project default maxSynthPendingDepth (Mathlib itself builds with 3). Useful names: norm_iteratedFDeriv_zero, norm_iteratedFDeriv_fderiv, ContinuousLinearMap.precompR_apply, ContinuousLinearMap.compL_apply, ContinuousLinearMap.precompL_apply, ContinuousLinearMap.opNorm_le_bound, ContinuousLinearMap.le_opNorm, ContinuousLinearMap.fderiv_of_bilinear, (B.precompR _).isBoundedBilinearMap.contDiff.comp₂, fun_iteratedFDeriv_add_apply, Finset.sum_choose_succ_mul, Finset.sum_add_distrib, ContinuousLinearMap.lsmul.
+
+## Key steps
+
+1. Generalize to a continuous bilinear B with ‖B u v‖ ≤ c‖u‖‖v‖ and prove ‖D^n B(a,b)(x)‖ ≤ c Σ C(n,i)‖D^i a(x)‖‖D^{n−i} b(x)‖ by induction on n, quantifying over the target spaces.
+2. Base case: the hypothesis on B at (a x, b x).
+3. Step: ‖D^{n+1}h(x)‖ = ‖D^n(Dh)(x)‖ and Dh = B.precompR(a, Db) + B.precompL(Da, b), both bilinear maps again bounded by c.
+4. Apply the induction hypothesis to both terms, convert D^j(Db), D^j(Da) to D^{j+1}b, D^{j+1}a, and combine with Pascal's rule Finset.sum_choose_succ_mul.
+5. Specialize to B = lsmul, c = 1, a = f, b = g.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean with workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (identical); cat snapshot project/lakefile.toml (no leanOptions)`
+- `rg -n in snapshot mathlib/Mathlib and mathlib/lakefile.lean for 'theorem norm_iteratedFDeriv_smul_le|ContinuousLinearMap.norm_iteratedFDerivWithin_le_of_bilinear_aux|theorem exists_contDiff_support_eq_eq_one_iff|theorem exists_open_between_and_isCompact_closure|def precompR|def precompL|theorem norm_precompR_le|theorem norm_precompL_le|theorem norm_iteratedFDeriv_fderiv|theorem sum_choose_succ_mul|theorem Filter.EventuallyEq.extDeriv_eq|theorem support_iteratedFDeriv_subset|theorem HasCompactSupport.iteratedFDeriv|theorem iteratedFDeriv_zero|lemma Continuous.bounded_above_of_compact_support|theorem ContinuousLinearMap.fderiv_of_bilinear|theorem eventually_all_finset|theorem lintegral_mono_set|theorem setIntegral_congr_fun|maxSynthPendingDepth, .ofNat'; rg -n maxSynthPendingDepth in snapshot project (no match)`
+- `lake env lean probes after import GMT.Ch07.Submission: #check norm_iteratedFDeriv_smul_le and ContinuousLinearMap.norm_iteratedFDeriv_le_of_bilinear (unknown identifiers: ContDiff.Bounds is outside the frozen import closure); #check exists_contDiff_support_eq_eq_one_iff, exists_open_between_and_isCompact_closure, ContinuousLinearMap.precompR/precompL/norm_precompR_le, ContinuousLinearMap.fderiv_of_bilinear, norm_iteratedFDeriv_fderiv, Finset.sum_choose_succ_mul, Filter.EventuallyEq.extDeriv_eq, Continuous.bounded_above_of_compact_support (all available); #synth Norm (E →L[ℝ] (D →L[ℝ] F) →L[ℝ] D →L[ℝ] G) fails; a verbatim copy of Mathlib's bilinear Leibniz aux proof fails by default and compiles with set_option maxSynthPendingDepth 3`
+- `python3 -I scans of dag.json (1609 nodes): lean_statement/lean_name search for 'covectorEuclideanNorm (', 'IMRep (univ', 'testFormOnInclusion (subset_univ', 'TestFormOnConverges', 'iteratedFDeriv', 'Disjoint (tsupport' together with '.support', smooth-cutoff existentials '∃ ζ : Euclid P → ℝ … ContDiff … = 1', and names cbrcs_ce_*, rsd_mw_tfa_norm_props, rsd_cmr_support_subset_of_vanish (with statuses and candidate commits)`
+- `grep -n in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py for _existing_lean_name_problem, _accepted_checkpoint, _dependency_problem, _machine_leaf, _leaf_author_task; leaf_verification.py check_source_delta forbidden-token regex; parent_verification.py check_parent_git_delta; swarm-project.json (leaf_lean_agent_review false, max_depth 6, max_children 12)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement on all six child statements (pass); verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) replay (open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end)`
+- `lake env lean /tmp/cbrcs-ce-q8w2/build/Challenges.lean (six statements elaborate in comparator challenge form); /tmp/cbrcs-ce-q8w2/Assembly.lean (hypothesis-only proof of the frozen parent type from the five used child types); /tmp/cbrcs-ce-q8w2/build/E2E.lean, which contains (a) the four new single-theorem child proofs, (b) the accepted proofs of the two reused declarations copied from candidate commits f492ba4a003c8f1324077e050d48667ae23c7100 and 02c6122c94d0280a6288d299659b2dab7b59e109, and (c) the proof of Submission.cbrcs_cutoff_extension; #print axioms reports propext, Classical.choice, Quot.sound only`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lakefile.toml`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Nat/Choose/Sum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/lakefile.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c14d29cb77/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c14d29cb77/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/parent_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/cbrcs-ce-q8w2/build/Challenges.lean`
+- `/tmp/cbrcs-ce-q8w2/Assembly.lean`
+- `/tmp/cbrcs-ce-q8w2/build/E2E.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean. The project sets no Lean options, while Mathlib builds with maxSynthPendingDepth 3.
+
+Mathlib.Analysis.Calculus.ContDiff.Bounds is not in the frozen import closure, so norm_iteratedFDeriv_smul_le, which step 4 of the supplied proof cites, is unavailable; the Leibniz estimate must be re-proved, which motivates the leibniz_bound child. Every other cited Mathlib lemma is available under the frozen imports (exists_open_between_and_isCompact_closure; exists_contDiff_support_eq_eq_one_iff, whose order argument is ℕ∞; Filter.EventuallyEq.extDeriv_eq; support_iteratedFDeriv_subset; precompR/precompL; fderiv_of_bilinear; norm_iteratedFDeriv_fderiv; Finset.sum_choose_succ_mul).
+
+The DAG has accepted, byte-identical-type declarations rsd_mw_tfa_norm_props and rsd_cmr_support_subset_of_vanish, which are reused. It has no accepted iterated-derivative Leibniz bound, cutoff-multiplier continuity, IMRep lift to univ, or general compact smooth cutoff, so these are new children; the new names cbrcs_ce_* are free.
+
+Leaves must be single theorems without set_option. All four new children satisfy this and pass the leaf token check.
+
+Verification: all six statements validate and elaborate in comparator form. The hypothesis-only assembly and the sorry-free end-to-end file (children plus the parent proof) both compile with axioms propext, Classical.choice and Quot.sound only.
