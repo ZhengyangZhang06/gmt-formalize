@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.projected_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 4,
+  "title": "Projecting a compact perturbation onto V does not increase mass (Simon 7.3.1, footnote 2)",
+  "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^P be a linear subspace with orthogonal projection q (V.starProjection), and let T, X, S' ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m). Assume:\n- R_T and R_X are integer multiplicity representations of T and X (IMRep univ m);\n- μ_{R_T}(ℝ^P ∖ V) = 0;\n- spt X is compact;\n- S'(ω) = T(ω) + R_X.action(q^#ω) for every ω ∈ 𝒟^m(ℝ^P), where q^#ω(x) = ω(qx)∘Λ^m q (affinePullbackForm q 0 ω).\nThen there is an integer multiplicity triple R in ℝ^P (IMRep univ m) such that:\n- R.action(ω) = T(ω) + X(ω) for every ω ∈ 𝒟^m(ℝ^P), so R represents T + X;\n- M_O(S') ≤ μ_R(q^{-1}(O)) for every set O ⊆ ℝ^P (S'.massOn O ≤ R.measure (q⁻¹' O)).",
+  "lean_statement": "∀ (P m : ℕ) (T X S' : GeometricCurrentOn (univ : Set (Euclid P)) m) (RT RX : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), RT.Represents T → RX.Represents X → RT.measure ((V : Set (Euclid P))ᶜ) = 0 → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, S' ω = T ω + RX.action (affinePullbackForm V.starProjection 0 (ω : DifferentialForm (Euclid P) m))) → ∃ R : IMRep (univ : Set (Euclid P)) m, (∀ ω : TestFormOn (univ : Set (Euclid P)) m, R.action (ω : DifferentialForm (Euclid P) m) = T ω + X ω) ∧ ∀ O : Set (Euclid P), S'.massOn O ≤ R.measure (V.starProjection ⁻¹' O)",
+  "lean_name": "dimred_cs_sp_projected_massOn_le",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.projection_invariance-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.orient_projection-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.projection_invariance-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.orient_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-construction-a1-a1",
+      "result_commit": "0af9ed599cb8b131973221f740cf2b64fb2fe357",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-4f77cdb170-a1"
+}

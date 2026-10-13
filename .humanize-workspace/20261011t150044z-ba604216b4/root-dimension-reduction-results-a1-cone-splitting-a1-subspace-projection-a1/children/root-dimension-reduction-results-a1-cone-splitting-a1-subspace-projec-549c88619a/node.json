@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.projection_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 4,
+  "title": "A triple whose weight lives on a subspace V is invariant under pull-back by the orthogonal projection onto V",
+  "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^P (Euclid P) be a linear subspace with orthogonal projection q (V.starProjection), and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ m) whose weight μ_R = θ·H^m⌞M (R.measure) satisfies μ_R(ℝ^P ∖ V) = 0. Then R.action(q^#ω) = R.action(ω) for every m-form ω on ℝ^P (every map ω : ℝ^P → Λ^m(ℝ^P), DifferentialForm (Euclid P) m). Here q^#ω(x)(v_1, …, v_m) := ω(qx)(qv_1, …, qv_m) (affinePullbackForm q 0 ω), R.action(η) := ∫_M θ(x)·ξ(x)(η(x)) dH^m(x) and H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω",
+  "lean_name": "dimred_cs_sp_action_starProjection_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-549c88619a-a1"
+}

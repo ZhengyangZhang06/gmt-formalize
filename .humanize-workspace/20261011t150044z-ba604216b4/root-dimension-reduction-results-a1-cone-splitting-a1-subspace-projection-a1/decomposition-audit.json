@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsMinimizingIn|IsIntegerMultiplicity|structure IMRep|def IMRep|IsUnitOrientationOf|BoundaryVanishes|^import|^namespace|^open",
+        "IMRep|linear_pushforward|action_starProjection_eq|orient_projection_le",
+        "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem euclideanHausdorffMeasure_image_eq_normDet_mul_volume|theorem normDet_sq_eq_det_gram|theorem normDet_smul|theorem normDet_eq_zero_iff_ker_ne_bot",
+        "rg -n '\"lean_name\": \"dimred_cs_sp_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes --glob '*.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sp-decomp-v2/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sp-decomp-v2/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/subspace-independent-audit-zpwas12x/ApiAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa43/20261012T034335Z-ch07-root.minimizing_implies_stationary-a1.covector_gram_bounds-a1-wekynz07/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa14/20261012T085156Z-ch07-root.density_and_tangent_cones-a1.im_sub-a1-j229vkzg/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa62/20261011T234948Z-ch07-root.density_and_tangent_cones-a1.vanish_off_support-a1-_ym43_uw/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa7/20261013T004009Z-ch07-root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1-f2oauv4p/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa42/20261012T151228Z-ch07-root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1-efqngzll/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/sp-decomp-v2/Types.lean",
+        "/tmp/sp-decomp-v2/Assembly.lean",
+        "/tmp/subspace-independent-audit-zpwas12x/ApiAxioms.lean"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match the snapshot; the frozen contract is unchanged. The split is appropriate: the pinned contract provides no compact-support IMRep push-forward, while SimonGMT's existing affine-current construction requires global properness. All twelve exact propositions independently elaborated. The supplied assembly proves the selected frozen parent type using only propext, Classical.choice and Quot.sound. The principal analytic library results passed fresh axiom checks. All six reused types are byte-identical to their accepted contracts; candidate hashes, comparator inputs and standard-axiom acceptance records agree. Their dependency closures are accepted and do not depend on this node. The six new names have no competing reservations. All names are bare identifiers, all types are standalone one-line propositions, and dependencies are correctly directed and acyclic. Matrix.of is used for the Gram matrix; no prohibited function-multiplication IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The alternating expansion, Cauchy–Binet identity and Cauchy–Schwarz prove the bound; the determinant covector proves attainment. Zero degree and n > P are covered."
+    },
+    {
+      "key": "im_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Density locality identifies overlap tangents, signed multiplicities handle cancellation, and the proof verifies every IMRep field and the subtraction identity under the stated hypotheses."
+    },
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Unit-orientation duality gives the upper bound; Lusin, extension and mollification give the lower bound. The support argument follows from the resulting mass identity, including open windows not contained in U."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Compactness and a subordinate smooth partition split the test form into finitely many annihilated forms. No openness assumption on U is needed."
+    },
+    {
+      "key": "int_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The Borel sign and integer coefficient construction proves the stated almost-everywhere vector identity and all IMRep fields. Its cited tangent-transfer and overlap-sign results remain accepted dependencies of the reused node."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Compact-support domination proves integrability and linearity; uniform zeroth-derivative convergence proves current continuity. The argument works for arbitrary U as stated."
+    },
+    {
+      "key": "orient_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The declared Gram-bound dependency and projection contraction place all Gram eigenvalues in [0,1], yielding the required coefficient-norm estimate, including degree zero."
+    },
+    {
+      "key": "projection_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Concentration and positive multiplicity give a null carrier outside V. The bump-function argument forces approximate tangents into V, proving pointwise pairing invariance almost everywhere. Integral congruence establishes the statement even for arbitrary, nonintegrable forms."
+    },
+    {
+      "key": "measure_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Equality on supported test forms gives equal masses on open subsets of O. The declared mass formula, local finiteness on balls and generating-pi-system uniqueness prove equality of the restricted measures."
+    },
+    {
+      "key": "imrep_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact compact-concentration contract is proved. A5 supplies quantitative lower Lipschitz bounds; A7 proves tangent transformation through area transport, Lebesgue differentiation and locality. B1–B10 then establish measurable signed multiplicities, integrability, orientation, carrier inclusion and the action identity. The formerly missing analytic obligations are supplied explicitly, without circular or undeclared DAG reliance."
+    },
+    {
+      "key": "current_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies produce the pushed-forward current and its support bound. The cutoff equals one near the compact support, so local exterior-derivative equality proves boundary vanishing. This is precisely the boundary property needed for the parent's compact difference current."
+    },
+    {
+      "key": "projected_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The vector-density combination represents T + X. Concentration on V and compact support of X justify additivity on noncompact pullbacks. Projection invariance and the orientation bound then prove the mass inequality for every set O, using a measurable support preimage before monotonicity."
+    }
+  ],
+  "required_changes": []
+}

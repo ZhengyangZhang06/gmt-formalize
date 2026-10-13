@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.orient_projection-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 4,
+  "title": "Orthogonal projection does not increase the pairing with a unit orientation (Hadamard bound)",
+  "statement": "Let P, m ∈ ℕ, let V, Q ⊆ ℝ^P (Euclid P) be linear subspaces, let q := V.starProjection be the orthogonal projection of ℝ^P onto V, let ξ ∈ Λ_m(ℝ^P) (MultiVector P m, a continuous linear functional on m-covectors) be a unit orientation of Q (IsUnitOrientationOf ξ Q: there is an orthonormal family τ = (τ_1, …, τ_m) spanning Q such that ξ(β) = β(τ_1, …, τ_m) for every m-covector β, or ξ(β) = −β(τ_1, …, τ_m) for every m-covector β), and let α be an m-covector on ℝ^P. Write α∘q for the m-covector (v_1, …, v_m) ↦ α(qv_1, …, qv_m) (α.compContinuousLinearMap q). Then |ξ(α∘q)| ≤ |α|_E, where |α|_E = covectorEuclideanNorm α = (Σ_{i_1<⋯<i_m} α(e_{i_1}, …, e_{i_m})²)^{1/2} is the Euclidean coefficient norm.",
+  "lean_statement": "∀ (P m : ℕ) (V Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P m) (α : Covector (Euclid P) m), IsUnitOrientationOf ξ Q → |ξ (α.compContinuousLinearMap V.starProjection)| ≤ covectorEuclideanNorm α",
+  "lean_name": "dimred_cs_sp_orient_projection_le",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1-a1",
+      "result_commit": "2fd8f6ff9db8d5c94835632a4abd3e7d37106715",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-af41a13265-a1"
+}

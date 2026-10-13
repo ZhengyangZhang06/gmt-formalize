@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.imrep_pushforward-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 4,
+  "title": "Linear push-forward of an integer multiplicity triple carried by a compact set is integer multiplicity (Simon 6.3.3–3.9)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ m), let L : ℝ^P → ℝ^P be linear (Euclid P →L[ℝ] Euclid P), and let K ⊆ ℝ^P be compact with μ_R(ℝ^P ∖ K) = 0 (R.measure Kᶜ = 0). Then there is an integer multiplicity triple R' = (N, θ', ξ') in ℝ^P (IMRep univ m) with N ⊆ L(K) and R'.action(ω) = R.action(L^#ω) for every ω ∈ 𝒟^m(ℝ^P) (TestFormOn univ m). Here L^#ω(x)(v_1, …, v_m) := ω(Lx)(Lv_1, …, Lv_m) (affinePullbackForm L 0 ω), so R.action(L^#ω) = ∫_M θ(x)·ξ(x)(ω(Lx)∘Λ^m L) dH^m(x). In Simon's notation: L_#τ(M, θ, ξ) = τ(N, θ', ξ').",
+  "lean_statement": "∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P) (K : Set (Euclid P)), 0 < m → IsCompact K → R.measure Kᶜ = 0 → ∃ R' : IMRep (univ : Set (Euclid P)) m, R'.carrier ⊆ L '' K ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, R'.action (ω : DifferentialForm (Euclid P) m) = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m))",
+  "lean_name": "dimred_cs_sp_imrep_linear_pushforward",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-871de58778-a1"
+}

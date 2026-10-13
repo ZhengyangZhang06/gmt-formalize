@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "cat nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}",
+        "python3 over dag.json: status counts; lean names, types and statuses of all nodes matching tangent|bilipschitz|pushforward|area; every node whose lean_statement contains HasApproximateTangentSpaceAt; accepted nodes that construct an IMRep or IsIntegerMultiplicity. Found: dpf_approxTangent_ae_bilipschitz_piece decomposing; dpf_rectifiable_bilipschitz_pieces rlcr-lean; no accepted existence theorem for tangent planes of Lipschitz images.",
+        "python3 over dag.json: statuses and byte-identity of the six reused types; scan for dimred_cs_sp_* names",
+        "grep -n '^theorem|^def' over SimonGMT Chapter03/*.lean; Chapter02/{AreaBranches,AreaNoninjective,AreaLipschitz,Area,AreaApproximation,AreaNormalization,Lipschitz}.lean; Chapter01/{DensityComparison,Densities,Hausdorff}.lean",
+        "sed AreaBranches.lean 1–160, AreaLipschitz.lean 1–140, Area.lean 1–110, Rectifiable.lean 20–250, DensityComparison.lean 290–420, AffineCurrentPushforward.lean 35–90, Forms.lean 25–60, Mass.lean 25–75",
+        "rg -i 'approximation theorem|c1_approx' in SimonGMT Chapter02 (no match: the C^1 Approximation Theorem of Simon Ch. 2, 1.5 is absent)",
+        "grep in the Mathlib snapshot: exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (MeasureTheory/Function/Jacobian.lean:255); NormDet.lean 290–440; Geometry/Euclidean/Volume/Measure.lean 125–200; Covering/DensityTheorem.lean 140–160; Determinant.lean (AlternatingMap.eq_smul_basis_det, Module.Basis.det_apply); Constructions/Polish/Basic.lean:821",
+        "for f in Jacobian NormDet Volume/Measure DensityTheorem Determinant Alternating/Basic Polish/Basic FiniteDimension: cmp snapshot mathlib file vs .lake/packages/mathlib (all identical); rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem normDet_comp |theorem ae_tendsto_average_norm_sub|theorem AlternatingMap.eq_smul_basis_det|theorem MeasurableSet.image_of_continuousOn_injOn' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -i 'cauchy.binet' in the Mathlib snapshot (no match)",
+        "python3 + git show <candidate_commit>:GMT/Ch07/Submission.lean for 419 accepted candidates: import headers. 407 use the contract header only; 5 add Poincare.SimonGMT.Chapter02.AreaLipschitz; 2 add Poincare.SimonGMT.Chapter01.DensityComparison.",
+        "sed -n 1,200p book/chapter-03.txt; sed -n 755,880p book/chapter-06.txt; grep item line numbers in chapter-01/02/03/06",
+        "lake env lean /tmp/sp-decomp-v2/Types.lean (12 child types)",
+        "lake env lean /tmp/sp-decomp-v2/Assembly.lean (frozen parent type from the 12 child propositions; #print axioms)",
+        "lake env lean /tmp/sp-decomp-v2/Api.lean and Api2.lean (#check of every library lemma cited by the new imrep_pushforward proof, under the contract imports plus AreaLipschitz and DensityComparison)",
+        "lake env lean /tmp/sp-decomp-v2/Inst.lean (IsUnifLocDoublingMeasure instance for volume on Euclid m; affinePullbackForm unfolding; pp.coercions)",
+        "grep -l dimred_cs_sp_ over nodes/, GMT/, SimonGMT and the Submission.lean files of the 3029 .swarm-worktrees",
+        "independent adversarial review subagent on /tmp/sp-decomp-v2/imrep_proof.txt (verdict ACCEPT; four minor notes incorporated)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/decomposition-review-receipt-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaBranches.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/sp-decomp-v2/Types.lean",
+        "/tmp/sp-decomp-v2/Assembly.lean",
+        "/tmp/sp-decomp-v2/Api.lean",
+        "/tmp/sp-decomp-v2/Api2.lean",
+        "/tmp/sp-decomp-v2/Inst.lean",
+        "/tmp/sp-decomp-v2/imrep_proof.txt"
+      ],
+      "conclusion": "Pins and contract.\n- The snapshot pins match: project b4d606d (= workspace HEAD), mathlib 25730c7c, simongmt 2b36630.\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nNo reusable (TF) or quantitative partition in the DAG.\n- dpf_approxTangent_ae_bilipschitz_piece is still decomposing.\n- dpf_rectifiable_bilipschitz_pieces is in rlcr-lean.\n- No accepted DAG node proves that approximate tangent planes exist along Lipschitz images.\n- So (TF) and the quantitative partition are proved inside the imrep_pushforward proof (A5–A7) and cite no DAG declaration.\n\nPinned library support.\n- The SimonGMT injective Lipschitz area formula: weighted_area_formula_lipschitz_injOn.\n- The SimonGMT regular-set facts and the Lipschitz image bound.\n- The upper density theorem: simon_remark_3_7_hausdorff, with its normalization lemmas.\n- Mathlib's approximately linear partition (Jacobian.lean), normDet API, Lebesgue differentiation, Lusin–Souslin and alternating-map determinant lemmas.\n- Every cited name elaborates once the two extra SimonGMT imports are added, and accepted submissions already add those imports.\n- SimonGMT lacks the C^1 Approximation Theorem, so Simon's own route to (TF) is unavailable; the departure is stated in the proof.\n\nReused declarations. The six reused declarations remain accepted, with byte-identical types.\n\nLean checks.\n- All 12 child types elaborate.\n- The frozen parent type is proved from the 12 child propositions using only the standard axioms.\n- No new name collides with anything in the DAG, the project or the swarm worktrees."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1",
+  "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1",
+  "subproblem": {
+    "key": "current_pushforward",
+    "title": "Linear push-forward of a compactly supported integer multiplicity current (Simon 6.2.23–2.24 and 3.9)",
+    "statement": "Let P, m ∈ ℕ with m ≥ 1, let X ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m) have compact support spt X and an integer multiplicity representation R = (M, θ, ξ) (IMRep univ m, R.Represents X), and let L : ℝ^P → ℝ^P be linear (Euclid P →L[ℝ] Euclid P). Then there is an integer multiplicity current Y ∈ 𝒟_m(ℝ^P) with:\n- spt Y ⊆ L(spt X);\n- ∂Y = 0 whenever ∂X = 0 (BoundaryVanishes X → BoundaryVanishes Y);\n- Y(ω) = R.action(L^#ω) = ∫_M θ(x)·ξ(x)(ω(Lx)∘Λ^m L) dH^m(x) for every ω ∈ 𝒟^m(ℝ^P), where L^#ω = affinePullbackForm L 0 ω.",
+    "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P), 0 < m → R.Represents X → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity Y ∧ Y.support ⊆ L '' X.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, Y ω = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m))",
+    "lean_name": "dimred_cs_sp_linear_pushforward",
+    "depends_on": [
+      "imrep_pushforward",
+      "mass_support",
+      "imrep_current"
+    ],
+    "natural_proof": "Source: Simon Ch. 6, 2.23–2.24 (chapter-06.txt lines 403–440: f_#T(ω) := T(ζ f^#ω) with ζ ≡ 1 near spt T ∩ spt f^#ω; ∂f_#T = f_#∂T; the integral formula 2.24(2)) and Lemma 3.9 (lines 857–860), for the linear map f = L, which is proper on the compact set spt X.\nSiblings: imrep_pushforward (dimred_cs_sp_imrep_linear_pushforward), mass_support (dor_imrep_massOn_eq_measure_and_support), imrep_current (dtc_imrep_current). Notation: H^m = μHE[m], μ_R = R.measure.\n1. (The carrier lives on K.) K := spt X is compact. By mass_support (U = ℝ^P), K = ℝ^P ∩ spt μ_R, so ℝ^P ∖ K ⊆ ℝ^P ∖ spt μ_R. The latter set is μ_R-null (Mathlib Measure.measure_compl_support; ℝ^P is second countable). Hence μ_R(ℝ^P ∖ K) = 0, and since θ ≥ 1 on M, also H^m(M ∖ K) = 0.\n2. (Push the triple forward.) By imrep_pushforward (m ≥ 1, K compact, μ_R(Kᶜ) = 0) there is an IMRep R' = (N, θ', ξ') with N ⊆ L(K) and R'.action(ω) = R.action(L^#ω) for every ω ∈ 𝒟^m(ℝ^P).\n3. (The current.) By imrep_current there is Y ∈ 𝒟_m(ℝ^P) with R'.Represents Y. So Y(ω) = R'.action(ω) = R.action(L^#ω) for every ω ∈ 𝒟^m(ℝ^P), which is the action formula. Y is integer multiplicity, with witness R'.\n4. (Support.) L(K) is compact, as a continuous image of a compact set, hence closed. μ_{R'}(ℝ^P ∖ L(K)) = ∫⁻_{N∖L(K)} θ' dH^m = 0, because N ⊆ L(K). An open μ_{R'}-null set is disjoint from spt μ_{R'} (Mathlib Measure.subset_compl_support_of_isOpen). By mass_support for Y and R', spt Y = ℝ^P ∩ spt μ_{R'} ⊆ L(K) = L(spt X).\n5. (Boundary.) Suppose m = k + 1 and ∂X = 0, and let φ ∈ 𝒟^k(ℝ^P).\n (a) ∂Y(φ) = Y(dφ) = R.action(L^#(dφ)). Also L^#(dφ) = d(L^#φ), because pull-back by an affine map commutes with d (SimonGMT exteriorDerivative_affinePullbackForm; φ is smooth).\n (b) Choose ρ > 0 with K ⊆ B(0, ρ), and a smooth bump function ζ : ℝ^P → [0, 1] with ζ = 1 on B̄(0, ρ) and tsupport ζ ⊆ B̄(0, ρ + 1) (Mathlib ContDiffBump with rIn = ρ, rOut = ρ + 1). Then ψ := ζ·L^#φ (pointwise scalar multiplication) is smooth, since L^#φ is smooth (affinePullbackForm_isSmoothForm). It has compact support in B̄(0, ρ + 1). So ψ ∈ 𝒟^k(ℝ^P) and dψ ∈ 𝒟^{k+1}(ℝ^P).\n (c) On the open set G := B(0, ρ) ⊇ K we have ψ = L^#φ. So for x ∈ G the two forms agree on a neighbourhood of x, their derivatives at x agree, and dψ(x) = d(L^#φ)(x), since the exterior derivative at x is computed from the derivative at x (Filter.EventuallyEq.fderiv_eq).\n (d) H^m(M ∖ K) = 0 (step 1) and K ⊆ G, so the integrands θξ(d(L^#φ)) and θξ(dψ) agree H^m⌞M-a.e. Hence R.action(d(L^#φ)) = R.action(dψ).\n (e) R represents X and dψ is a test form, so R.action(dψ) = X(dψ) = ∂X(ψ) = 0.\n By (a)–(e), ∂Y(φ) = 0 for every φ, i.e. ∂Y = 0 (BoundaryVanishes Y).\n6. (Conclusion.) Steps 3–5 give the four claims:\n- Y is integer multiplicity;\n- spt Y ⊆ L(spt X);\n- BoundaryVanishes X → BoundaryVanishes Y;\n- Y(ω) = R.action(L^#ω) for every test form ω. ∎",
+    "proof_key_steps": [
+      "spt X = spt μ_R (sibling mass_support), so μ_R(Kᶜ) = 0 for the compact set K = spt X.",
+      "Sibling imrep_pushforward gives an IMRep R' carried by L(K) with R'.action = R.action∘L^#. Sibling imrep_current turns it into an IM current Y with the action formula.",
+      "spt Y = spt μ_{R'} ⊆ L(K), since L(K) is closed and the open set ℝ^P ∖ L(K) is μ_{R'}-null.",
+      "∂Y(φ) = R.action(d(L^#φ)) = R.action(d(ζL^#φ)) = ∂X(ζL^#φ) = 0, for a cutoff ζ ≡ 1 near K."
+    ]
+  },
+  "audit": {
+    "key": "current_pushforward",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The declared dependencies produce the pushed-forward current and its support bound. The cutoff equals one near the compact support, so local exterior-derivative equality proves boundary vanishing. This is precisely the boundary property needed for the parent's compact difference current."
+  },
+  "resolved_dependencies": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.imrep_pushforward-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/parent-supplied-natural-proof.json"
+}
