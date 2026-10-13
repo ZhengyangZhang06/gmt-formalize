@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1.abs_arctan_sub_self-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1",
+  "depth": 6,
+  "title": "Cubic bound |arctan z − z| ≤ |z|³",
+  "statement": "For every real number z, |arctan z − z| ≤ |z|³.",
+  "lean_statement": "∀ z : ℝ, |Real.arctan z - z| ≤ |z| ^ 3",
+  "lean_name": "idtp_cse_bml_rbi_abs_arctan_sub_self_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ed3a61c870-a1"
+}
