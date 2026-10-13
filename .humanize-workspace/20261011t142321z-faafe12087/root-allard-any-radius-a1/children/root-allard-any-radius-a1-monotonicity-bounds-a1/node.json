@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.monotonicity_bounds-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Monotonicity consequences under 2.3: mass comparison, lower density, conical excess at 0",
+  "statement": "Let n >= 1, p > n, kappa := (p-n)/(4p), U open, V a contract rectifiable n-varifold in U with generalized mean curvature H, 0 < delta <= kappa, and assume AllardHypotheses H p delta rho (2.3). Put Lambda := 4 p delta/(p-n) (<= 1), mu := V.weight, p_x := V.tangentProj x. Then (M1) for all y, R and 0 < s <= r < R with B_R(y) contained in B_rho(0): s^-n mu(B_s(y)) <= e^(2 Lambda) r^-n mu(B_r(y)) + 2 e^Lambda Lambda; (M2) for all y in spt V and 0 < s < R with B_R(y) contained in B_rho(0): e^-Lambda (omega_n - Lambda) s^n <= mu(B_s(y)); (M3) the lower integral over the open ball B^o_rho(0) of |x - p_x x|^2/|x|^(n+2) d mu(x) is at most e^Lambda (e^Lambda (1 + delta) omega_n + Lambda - omega_n). Masses are the finite real values (toReal) of mu on closed balls.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ (p - n) / (4 * p) → V.AllardHypotheses H p δ ρ → (∀ (y : Amb n ℓ) (R s r : ℝ), 0 < s → s ≤ r → r < R → closedBall y R ⊆ closedBall 0 ρ → (V.weight (closedBall y s)).toReal / s ^ n ≤ Real.exp (2 * (4 * p * δ / (p - n))) * ((V.weight (closedBall y r)).toReal / r ^ n) + 2 * Real.exp (4 * p * δ / (p - n)) * (4 * p * δ / (p - n))) ∧ (∀ y ∈ V.support, ∀ R s : ℝ, 0 < s → s < R → closedBall y R ⊆ closedBall 0 ρ → Real.exp (-(4 * p * δ / (p - n))) * (unitBallVolume n - 4 * p * δ / (p - n)) * s ^ n ≤ (V.weight (closedBall y s)).toReal) ∧ ∫⁻ x in ball (0 : Amb n ℓ) ρ, ENNReal.ofReal (‖x - V.tangentProj x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (Real.exp (4 * p * δ / (p - n)) * (Real.exp (4 * p * δ / (p - n)) * (1 + δ) * unitBallVolume n + 4 * p * δ / (p - n) - unitBallVolume n))",
+  "lean_name": "any_radius_monotonicity_bounds",
+  "depends_on": [
+    "root.allard_any_radius-a1.tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-monotonicity-bounds-a1-a1"
+}

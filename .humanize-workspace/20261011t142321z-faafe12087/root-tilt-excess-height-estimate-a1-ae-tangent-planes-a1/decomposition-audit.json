@@ -1,0 +1,105 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CountablyRectifiable|HasApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt|not asserted|theorem .*unique",
+        "exists_isClosed_continuousOn_of_measurable|ae_dimensionalUpperDensity_eq_zero_outside|measure_toOuterMeasure_isBorelRegular|def dimensionalUpperDensity",
+        "HasWhitneyC1Compatibility|exists_contDiff_one_extension_of_whitney|integral_area_formula_of_injective_derivative|measurePreserving_linearMap_normDet_smul|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|area_image_criticalSet_eq_zero",
+        "map_inverse_blowUp_carrier|hausdorff_blowUp_image|hausdorff_blowUp_ball",
+        "theorem tendstoUniformlyOn_of_ae_tendsto|theorem measurable_fderiv\\b|measurableSet_of_differentiableAt|exists_isClosed_diff_lt|withDensity_apply_le|of_pseudoMetrizableSpace_of_isFiniteMeasure|continuousOn_clm_apply",
+        "lipschitz.*c.?1.*approx|c.?1.*approx.*lipschitz|c¹ approximation|c1 approximation",
+        "aetp_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 4 /tmp/aetp-independent-audit-p9faxjtu/ContractTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 4 /tmp/aetp-independent-audit-p9faxjtu/Skel.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 4 /tmp/aetp-independent-audit-p9faxjtu/AxiomCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1/decomposition-v1.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLinearWeighted.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "../../book/chapter-02.txt",
+        "/tmp/aetp-independent-audit-p9faxjtu/ContractTypes.lean",
+        "/tmp/aetp-independent-audit-p9faxjtu/Skel.lean",
+        "/tmp/aetp-independent-audit-p9faxjtu/AxiomCheck.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected theorem. Verified snapshot compatibility: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and manifest-pinned SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. The contract and compiler inputs match the snapshot. All eight unchanged propositions pass lexical validation and independently elaborate without child implementations. Every proposed name is a bare, unreserved identifier; no competing branch or proposal reserves it. The two dependency edges are correctly directed and acyclic. The supplied assembly independently compiles from exactly children 2–8 as hypotheses, with the selected parent's exact frozen conclusion and only propext, Classical.choice and Quot.sound. Child 1 supplies child 2. All 22 checked supporting declarations have only those permitted axioms; the pinned Whitney extension module was independently compiled for this check. The targeted approximation search found no matching C¹ approximation declaration, while the required Whitney extension is available. Operator multiplication was independently checked to be continuous-linear-map composition; no matrix-instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including ε = ∞. The annular Lusin construction gives a closed good set with summable measure loss. Measurable Whitney quotients, Egorov and inner regularity establish precisely the compact-uniform remainder required by the verified Whitney extension theorem. The proof constructs the approximation without assuming it."
+    },
+    {
+      "key": "c1_piece_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract includes every stated quantitative condition. Coordinatewise approximation uses the declared dependency with valid tolerances. Null-image estimates, derivative antilipschitzness, the mean-value bound, Lindelöf selection and dummy padding establish the entire indexed cover. No tangent-existence theorem is assumed."
+    },
+    {
+      "key": "c1_piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all three prose conclusions. The proof handles empty balls and n = 0, establishes Borel measurability and finite measure, and supplies an integrable uniform bound for the rescaled area integrands. Dominated convergence and the linear area formula prove the exact tangent predicate."
+    },
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No regularity hypothesis is missing: the pinned theorem makes the outer measure induced by any Borel measure Borel regular. The positive finite normalization factor preserves null sets. Nonnegativity converts zero limsup into convergence, and the rescaling gives the exact denominator, including n = 0."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and restricted-measure Lean statement agree. The declared density dependency applies to both A \\ N and N \\ A. Finite measure justifies the integral decomposition; rescaling makes both errors vanish on one exceptional-set complement independent of the test function. The dimension clause follows from the tangent hypothesis on N."
+    },
+    {
+      "key": "weighted_tangent_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Compact positivity and local integrability justify the integrals and finite Hausdorff measure of K. The arbitrary-set transport identity and withDensity inequality accommodate the null-measurable carrier. The three-term decomposition, cutoff bound and density assumption prove the exact weighted tangent predicate."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The operator-norm continuity contract matches the prose. Injectivity makes L†L a unit in the composition ring of continuous linear endomorphisms. The orthogonality calculation identifies the projection formula, and continuity of adjoint, composition and inversion proves ContinuousOn. The argument also covers n = 0."
+    },
+    {
+      "key": "lusin_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract requires precisely the stated countable family, without an unstated nesting condition. Compact localization yields finite weight measures; the Borel good carrier preserves the original multiplicity pointwise. Lusin gives the compacts, and positivity converts the remaining weight-null sets into Hausdorff-null sets. No global integrability assumption is introduced."
+    }
+  ],
+  "required_changes": []
+}

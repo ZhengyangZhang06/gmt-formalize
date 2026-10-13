@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.pinching-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Mass-ratio pinching at every point of spt V cap B_{(1+gamma) rho/2}(0) via conical approximation",
+  "statement": "Assume ConicalApproximationTheorem (Simon 6.1 as frozen in the contract). For n >= 1, p > n, gamma in (0,1) and eps in (0, 1/4] there are delta_P > 0 and cs in (0, (1-gamma)/16] such that for every open U, contract varifold V in U with generalized mean curvature H, 0 < delta <= delta_P and rho with AllardHypotheses H p delta rho, and every y in spt V cap B_{(1+gamma) rho/2}(0): mu(B_{cs rho}(y)) <= (1 + eps) omega_n (cs rho)^n.",
+  "lean_statement": "ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ ε : ℝ, 0 < γ → γ < 1 → 0 < ε → ε ≤ 1 / 4 → ∃ δP cs : ℝ, 0 < δP ∧ 0 < cs ∧ cs ≤ (1 - γ) / 16 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ closedBall 0 ((1 + γ) / 2 * ρ), V.weight (closedBall y (cs * ρ)) ≤ ENNReal.ofReal ((1 + ε) * (unitBallVolume n * (cs * ρ) ^ n))",
+  "lean_name": "any_radius_pinching",
+  "depends_on": [
+    "root.allard_any_radius-a1.rescaled_varifold-a1",
+    "root.allard_any_radius-a1.monotonicity_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.monotonicity_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-pinching-a1-a1"
+}
