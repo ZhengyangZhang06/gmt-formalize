@@ -4693,6 +4693,53 @@ theorem Submission.slicing_im_ll_tangential_weak_limit : ∀ (P n : ℕ) (U M : 
     (fun k => (hgL k).comp_lipschitzOnWith hK) (hgu.comp (Φ j)).tendstoUniformlyOn c hc).congr
     fun k => (hcf (g k) L (hgd k) (hgL k)).symm
 
+/-- Simon Ch. 6, proof of Lemma 4.5(2), (1)–(3) (p. 156): Leibniz rule for a Lipschitz `h` with
+tangential gradient `G_h` on `M`, `T = τ(M, θ, ξ)`:
+`∫ h ⟨ω, v'⟩ dμ' − ∫ h ⟨dω, v⟩ dμ = ∫_M θ ⟨G_h ∧ ω, ξ⟩ dHⁿ`.
+For smooth `Lh`-Lipschitz `g_k → h` the smooth identity, rewritten through the tangent field `Y`
+with `φ(Y) = θ ⟨φ ∧ ω, ξ⟩`, reads `∫_M Dg_k(Y) dHⁿ = ∫ g_k ⟨ω, v'⟩ dμ' − ∫ g_k ⟨dω, v⟩ dμ`; the
+left side tends to `∫_M ⟨G_h, Y⟩ dHⁿ` and the right side to the left side of the claim. -/
+theorem Submission.slicing_im_lipschitz_leibniz :
+    ∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (T : GeometricCurrentOn U (m + 1)), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → (∀ η : TestFormOn U (m + 1), T η = tauAction (m + 1) M θ ξ η) → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)) (μ' : Measure (Eucl P)) (v' : Eucl P → NVector (Eucl P) m), IsMeasureRepresentation T μ v → IsMeasureRepresentation T.boundary μ' v' → ∀ (h : Eucl P → ℝ) (Lh : ℝ≥0) (Gh : Eucl P → Eucl P), LipschitzWith Lh h → Measurable Gh → (∀ x, ‖Gh x‖ ≤ Lh) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → Gh x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (Gh x) u) 0) → ∀ ω : TestFormOn U m, (∫ x, h x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ') - (∫ x, h x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ) = ∫ x in M, θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (Gh x)).smulRight ((ω : DifferentialForm (Eucl P) m) x))) ∂(μHE[m + 1] : Measure (Eucl P)) := by
+  intro P m U M θ ξ T hU hMθξ hT μ v μ' v' hrep hrep' h Lh Gh hh hGm hGb hTG ω
+  obtain ⟨⟨hωs, hωc⟩, -⟩ := ω.2
+  -- Smooth `Lh`-Lipschitz `g k → h` uniformly, and the field `Y` dual to `φ ↦ θ ⟨φ ∧ ω, ξ⟩`.
+  obtain ⟨g, hg, hgL, hgh⟩ := Submission.slicing_im_ll_mollify P h Lh hh
+  obtain ⟨Y, hY, hYφ, hYT⟩ := Submission.slicing_im_ll_tangent_dual_field P m U M θ ξ hMθξ ω
+  -- Simon's (2): the smooth identity for `ψ = g k`, with `θ ⟨Dg_k ∧ ω, ξ⟩ = Dg_k(Y)`.
+  have hk : ∀ k, ∫ x in M, fderiv ℝ (g k) x (Y x) ∂(μHE[m + 1] : Measure (Eucl P)) =
+      (∫ x, g k x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ') -
+        ∫ x, g k x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ := by
+    intro k
+    rw [← Submission.slicing_im_ll_smooth_leibniz P m U M θ ξ T hT μ v μ' v' hrep hrep' ω (g k)
+      (hg k)]
+    exact integral_congr_ae (Eventually.of_forall fun x => hYφ x _)
+  -- Representation side: `⟨ω, v'⟩ ∈ L¹(μ')` and `⟨dω, v⟩ ∈ L¹(μ)` vanish off the compact sets
+  -- `spt ω` and `spt dω`, so the uniform limit `g k → h` passes inside both integrals.
+  have hrhs := (Submission.slicing_im_ll_multiplier_tendsto P μ'
+      (fun x => v' x ((ω : DifferentialForm (Eucl P) m) x))
+      (tsupport (ω : DifferentialForm (Eucl P) m)) h g (hrep' ω).1 hωc
+      (fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx]) hh.continuous
+      (fun k => (hg k).continuous) hgh).sub
+    (Submission.slicing_im_ll_multiplier_tendsto P μ
+      (fun x => v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x))
+      (tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m))) h g
+      (hrep (exteriorDerivativeTestOn U m ω)).1 (exteriorDerivative_isTestForm ⟨hωs, hωc⟩).2
+      (fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx]) hh.continuous
+      (fun k => (hg k).continuous) hgh)
+  -- Simon's (1), (3): `∫_M Dg_k(Y) dHⁿ → ∫_M ⟨G_h, Y⟩ dHⁿ`, as `Y` is tangent to `M`.
+  have hlhs := Submission.slicing_im_ll_tangential_weak_limit P (m + 1) U M θ ξ hU hMθξ h Lh Gh
+    hh hGm hGb hTG Y hY hYT g (fun k => (hg k).differentiable (by simp)) hgL hgh
+  have hlim : ∫ x in M, inner ℝ (Gh x) (Y x) ∂(μHE[m + 1] : Measure (Eucl P)) =
+      (∫ x, h x * v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ') -
+        ∫ x, h x * v x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ :=
+    tendsto_nhds_unique hlhs (hrhs.congr fun k => (hk k).symm)
+  -- Finally `⟨G_h, Y⟩ = θ ⟨G_h ∧ ω, ξ⟩` pointwise (the dual property with `φ = ⟨G_h, ·⟩`).
+  rw [← hlim]
+  exact integral_congr_ae (Eventually.of_forall fun x => by
+    dsimp only
+    rw [← hYφ x (innerSL ℝ (Gh x)), innerSL_apply_apply])
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
