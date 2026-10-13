@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CompactlyContainedOpen|def IsMeasureRepresentation|def IsRestriction|def IsMassMeasure|iwl_restriction_theory|ind_md_mmb_massMeasure_balls",
+        "def massOn|def mass|massOn_mono|le_massOn|TestFormOnConverges|structure GeometricCurrentOn",
+        "simon_theorem_4_14_positive_envelope|simon_theorem_4_14_bounded_caratheodory|def vectorFunctionalEnvelopeMeasure",
+        "theorem exists_contDiff_support_eq_eq_one_iff|theorem ext_of_generate_finite|theorem iUnion_ball_nat",
+        "closure_ball_subset_closedBall|isCompact_closedBall",
+        "git show b9f9acdc41eaa29f36e54d7e570ae94d8ca8b4a6:GMT/Ch06/Submission.lean",
+        "python3 /tmp/mmb-independent-audit-85c42665/RunLean.py FrozenChecks.lean",
+        "python3 /tmp/mmb-independent-audit-85c42665/RunLean.py AcceptedAssembly.lean",
+        "python3 /tmp/mmb-independent-audit-85c42665/RunLean.py RepresentationAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ma-046d2fc55f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/tmp/mmb-independent-audit-85c42665/FrozenChecks.lean",
+        "/tmp/mmb-independent-audit-85c42665/AcceptedAssembly.lean",
+        "/tmp/mmb-independent-audit-85c42665/RepresentationAxioms.lean"
+      ],
+      "conclusion": "Verified the pinned project d8d46c95, Mathlib 25730c7c, and compatible SimonGMT revision 2b366308; inspected snapshot files match the compiled workspace copies. Definitions and cited measure, compactness, cutoff, and representation lemmas support the proofs. The restriction theorem is absent from the selected node's proof base but comparator-accepted at b9f9acdc with an identical frozen type and verified source hash. The new name has no DAG reservation. Dependency traversal finds no path back to the selected parent, and runtime inspection confirms that the reuse edge supplies the missing declaration. Both child types elaborate independently of their implementations. Independent Lean checks prove the ball child and the exact selected parent using the actual accepted restriction theorem. All checks finish without errors; the checked declarations and cited Riesz lemmas use only propext, Classical.choice, and Quot.sound. The split is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restriction_theory",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition agree on all three conjuncts and hypotheses. The bare name validly reuses the identical comparator-accepted contract. Independently checked R0's cutoff coefficient bound; R1's globally integrable localized coefficients, finite signed measures, smooth-to-continuous testing, measure uniqueness, and recovery of restriction integrals; and R2's extension, Riesz envelope, Borel modification, restriction continuity, upper bound, finite cancellation, and exhaustion. These establish the full statement without assuming global integrability of unlocalized coefficients or invoking the child or parent theorem. The proof is sufficiently detailed for formalization. Its R2 supplies exactly the mass-measure witness needed by this parent."
+    },
+    {
+      "key": "mass_measure_ball_values",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the independently elaborated one-line proposition, including arbitrary real radii and no finite-mass assumption. The bare name is unreserved. Properness of Eucl P supplies compact ball closures, so IsMassMeasure gives every ball value. Increasing natural-radius balls exhaust the space; continuity from below and massOn_mono give the total-mass bound. The proof is complete, non-circular, and independent of the sibling. Together with the restriction theorem and the parent's finite-mass hypothesis, it proves the exact frozen parent contract."
+    }
+  ],
+  "required_changes": []
+}
