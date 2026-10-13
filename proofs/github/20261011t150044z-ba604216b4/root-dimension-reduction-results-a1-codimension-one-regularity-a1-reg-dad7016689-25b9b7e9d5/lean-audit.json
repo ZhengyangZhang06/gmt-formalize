@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8ff6b085801d741e9adc50dfbbed8223871fd2ef5305905f6b133c08d6470853",
+  "git_delta": {
+    "base_commit": "d59d612c4fbfa44adbd105df35fa80820eb4a81a",
+    "candidate_commit": "15f8046553cb9af46b3f645a487e52fb756a62ac",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_cd_injective_area_formula_gram",
+    "diff_sha256": "7d14db8cc6eb1f6f2379f487a8718336efc5ac24ebb75380fcef1de0f9eb0056",
+    "source_sha256": "e1c81c451421b87c413ff5256708f2479fd74ebcf46322d8f7ebc463eb912522",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_cd_injective_area_formula_gram",
+      "statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (F : Set (Euclid m)), MeasurableSet F → (∀ v ∈ F, DifferentiableAt ℝ G v) → (∀ v ∈ F, Function.Injective (fderiv ℝ G v)) → InjOn G F → ∀ h : Euclid P → ℝ, ∫ w in G '' F, h w ∂μHE[m] = ∫ v in F, Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G v (EuclideanSpace.single i 1)) (fderiv ℝ G v (EuclideanSpace.single j 1)))) * h (G v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
