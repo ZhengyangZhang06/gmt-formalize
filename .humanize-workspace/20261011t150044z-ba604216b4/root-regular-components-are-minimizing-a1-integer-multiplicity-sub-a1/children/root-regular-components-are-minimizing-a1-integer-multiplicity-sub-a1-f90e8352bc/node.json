@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1.overlap_sign-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1",
+  "depth": 3,
+  "title": "Orientations of two integer multiplicity triples agree up to sign on the overlap",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P, and let R₁ = (C₁, θ₁, ξ₁) and R₂ = (C₂, θ₂, ξ₂) be integer multiplicity triples in U (IMRep U n, Simon Ch. 6, 3.1). Write Hⁿ = μHE[n]. Assume that for Hⁿ-a.e. x ∈ C₁ ∩ C₂, every approximate tangent space of C₁ at x is an approximate tangent space of C₁ ∩ C₂ at x, i.e. HasApproximateTangentSpaceAt n C₁ x Q → HasApproximateTangentSpaceAt n (C₁ ∩ C₂) x Q for every subspace Q. Assume also that for Hⁿ-a.e. x ∈ C₁ ∩ C₂, every approximate tangent space of C₂ at x is an approximate tangent space of C₁ ∩ C₂ at x, i.e. HasApproximateTangentSpaceAt n C₂ x Q → HasApproximateTangentSpaceAt n (C₁ ∩ C₂) x Q for every subspace Q. Then for Hⁿ-a.e. x ∈ C₁ ∩ C₂, ξ₂(x) = ξ₁(x) or ξ₂(x) = −ξ₁(x).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n), (∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₁.carrier x Q → HasApproximateTangentSpaceAt n (R₁.carrier ∩ R₂.carrier) x Q) → (∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₂.carrier x Q → HasApproximateTangentSpaceAt n (R₁.carrier ∩ R₂.carrier) x Q) → ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x",
+  "lean_name": "regcomp_ims_overlap_orient_eq_or_neg",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-integer-multiplicity-sub-a1-f90e8352bc-a1"
+}
