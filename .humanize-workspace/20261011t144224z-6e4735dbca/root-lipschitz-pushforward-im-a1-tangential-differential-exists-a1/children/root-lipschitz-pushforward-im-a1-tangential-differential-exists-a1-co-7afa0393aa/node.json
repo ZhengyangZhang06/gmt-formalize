@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.continuous_left_inverse-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "depth": 3,
+  "title": "Moore–Penrose left inverse: continuous on injective maps, with projection bound",
+  "statement": "For all n, P there is a map Λ : L(ℝⁿ, ℝ^P) → L(ℝ^P, ℝⁿ), continuous on the set of injective linear maps, such that for every injective A ∈ L(ℝⁿ, ℝ^P): Λ(A)∘A = id_{ℝⁿ} and |A(Λ(A)v)| ≤ |v| for every v ∈ ℝ^P.",
+  "lean_statement": "∀ (n P : ℕ), ∃ Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n), ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} ∧ ∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A → (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖",
+  "lean_name": "lpf_tde_continuous_left_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-co-7afa0393aa-a1"
+}
