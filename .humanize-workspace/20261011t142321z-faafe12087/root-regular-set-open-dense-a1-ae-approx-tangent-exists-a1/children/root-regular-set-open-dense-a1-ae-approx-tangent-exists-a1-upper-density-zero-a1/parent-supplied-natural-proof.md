@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.upper_density_zero-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Upper Density Theorem (Simon Ch. 1, Thm 3.6), which the parent proof invokes in steps 5(ii), 5(iii) and 6(a): “if ν is Borel regular and A is ν-measurable with ν(A) < ∞, then r⁻ⁿν(A ∩ B_r(x)) → 0 for Hⁿ-a.e. x ∉ A”. It is stated here once, in the exact form its two users need.
+Tools: simongmt Chapter01.measure_toOuterMeasure_isBorelRegular, Chapter01.ae_dimensionalUpperDensity_eq_zero_outside (Simon 3.6 in a.e. form for simonHausdorffMeasureReal), Chapter02.simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure, Chapter02.simonAreaNormalization_eq_one, Chapter01.realUnitBallVolume_pos and Chapter01.realUnitBallVolume_ne_top. The implementation may add `import Poincare.SimonGMT.Chapter01.DensityComparison` and `import Poincare.SimonGMT.Chapter02.AreaLiteral`. Let ω_n := realUnitBallVolume (n : ℝ), which lies in (0, ∞).
+1. The outer measure ν.toOuterMeasure is Borel regular in Simon's sense (measure_toOuterMeasure_isBorelRegular). The Borel set A is Carathéodory measurable for ν.toOuterMeasure (le_toOuterMeasure_caratheodory ν A hA), and ν.toOuterMeasure(A) = ν(A) < ∞.
+2. Apply Simon's Upper Density Theorem (ae_dimensionalUpperDensity_eq_zero_outside, with the real dimension (n : ℝ) ≥ 0). For simonHausdorffMeasureReal(n)-a.e. x, if x ∉ A then limsup_{ρ↓0} Q(ρ) = 0, where Q(ρ) := ν(A ∩ B_ρ(x)) / (ω_n·ofReal(ρ)^(n:ℝ)) ∈ [0, ∞]. (Q is dimensionalDensityQuotient, and dimensionalUpperDensity is its limsup along 𝓝[>] 0.)
+3. simonHausdorffMeasureReal(n) = simonAreaNormalization(n)•μHE[n] and simonAreaNormalization(n) = 1. So the statement of step 2 holds for Hⁿ-a.e. x.
+4. Fix such an x with x ∉ A. Since 0 ≤ Q and limsup Q = 0 along 𝓝[>] 0, Q(ρ) → 0 (tendsto_of_le_liminf_of_limsup_le; the liminf is ≥ ⊥ = 0, and boundedness is automatic in [0, ∞]). As ω_n ≠ ∞, ω_n·Q(ρ) → ω_n·0 = 0 (ENNReal.Tendsto.const_mul). The limit 0 is finite, so (ω_n·Q(ρ)).toReal → 0 (ENNReal.tendsto_toReal, ENNReal.toReal_zero).
+5. Let ρ > 0, a := ν(A ∩ B_ρ(x)) and b := ofReal(ρ)ⁿ. First, ofReal(ρ)^(n:ℝ) = ofReal(ρ)ⁿ (ENNReal.rpow_natCast). Next, ω_n·(a/(ω_n·b)) = a/b (mul_div_assoc, ENNReal.mul_div_mul_left with ω_n ≠ 0, ω_n ≠ ∞). Finally, (a/b).toReal = a.toReal/ρⁿ = (ρⁿ)⁻¹·ν.real(A ∩ B_ρ(x)) (ENNReal.toReal_div, ENNReal.toReal_pow, ENNReal.toReal_ofReal, Measure.real). Hence the two functions agree on (0, ∞), a set in 𝓝[>] 0. By step 4 and Tendsto.congr', (ρⁿ)⁻¹·ν.real(A ∩ B_ρ(x)) → 0 as ρ ↓ 0, for Hⁿ-a.e. x ∉ A.
+
+## Key steps
+
+1. ν.toOuterMeasure is Borel regular, and A is Carathéodory measurable with finite measure
+2. Simon 3.6 (ae_dimensionalUpperDensity_eq_zero_outside): the upper density of ν on A vanishes at simonHausdorffMeasureReal(n)-a.e. x ∉ A
+3. simonHausdorffMeasureReal n = μHE[n] (normalization factor 1)
+4. a nonnegative quotient with limsup 0 tends to 0; multiply by the finite ω_n and take real parts
+5. identify ω_n·Q(ρ) with (ρⁿ)⁻¹·ν.real(A ∩ B_ρ(x)) for ρ > 0 and conclude by Tendsto.congr'
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sha256(parent-child-handoff.json subproblem.natural_proof) == decomposition-scope-v{1,2,3}.json target.proof_sha256`
+- `field-by-field sha256 diff of decomposition-v{1,2,3}.json subproblems (key, title, statement, lean_statement, lean_name, depends_on, natural_proof, proof_key_steps)`
+- `grep -rlE 'rsod_blowUpMap_measure_scaling|rsod_ae_tendsto_density_zero_outside|rsod_isC1Submanifold_measurableSet|rsod_isC1Submanifold_approxTangent|rsod_ae_approxTangent_of_c1Cover|rsod_ae_weightedApproxTangent_of_unweighted|rsod_weightedApproxTangent_congr' <run dir> --exclude-dir=local-references (excluding this node's own dir); GMT; .lake/packages/simongmt; <snapshot>/project`
+- `rg -l 'rsod_' <snapshot>/mathlib/Mathlib`
+- `git grep -lE '<the 7 proposed names>' <tip> -- '*.lean' for each of the 128 distinct tips of 340 refs`
+- `dag.json: occurrences of each proposed name, duplicate lean_name check, identical-type check, status of rsod_blowUp_setIntegral_eq / tae_c1_chart_image_approxTangent / aetp_c1_piece_approxTangent, sibling rectifiable_c1_cover-a1 lean_statement`
+- `grep -n 'def IsC1Submanifold|structure RectifiableVarifold' GMT/Ch05/Submission.lean`
+- `grep -n 'def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'exists_isClosed_continuousOn|caratheodory' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `grep -n '1\.2 Lemma|1\.3 Remark|1\.6 Theorem|1\.7 Definition|1\.8 Remark|1\.9 Theorem' book/chapter-03.txt`
+- `lake build GMT.Ch05.Submission (fresh scratch /tmp/aetangent-v4-kM1OXj)`
+- `lake env lean AllChallenges.lean / Assembly.lean / Leaves.lean / LeafUD.lean / LibCheck.lean (run in parallel)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1/decomposition-scope-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/aetangent-v4-kM1OXj/AllChallenges.lean`
+- `/tmp/aetangent-v4-kM1OXj/Assembly.lean`
+- `/tmp/aetangent-v4-kM1OXj/Leaves.lean`
+- `/tmp/aetangent-v4-kM1OXj/LeafUD.lean`
+- `/tmp/aetangent-v4-kM1OXj/LibCheck.lean`
+- `/tmp/aetangent-v4-scripts/gen.py`
+- `/tmp/aetangent-v4-scripts/check_leaves.py`
+
+Pins confirmed: project ea5607598f3133b40a13241f2e51517a8c6423cd (equal to workspace HEAD), Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json) and simongmt 2b3663083f3fe399b6296fb8eaee52169170e197 (lake-manifest.json). The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies.
+
+This is a publication retry. The handoff proof sha256 a26c202b… equals proof_sha256 in decomposition-scope-v1/v2/v3.json. v2 and v3 are byte-identical in every subproblem field, all three audits are acceptable, and the DAG node has retry_operation = publication and no children.
+
+Name scan, no match anywhere for any of the 7 proposed names:
+- dag.json (200 nodes);
+- other nodes' run files (145 decomposition files across 200 node dirs);
+- GMT, simongmt and the snapshot project;
+- snapshot Mathlib (rg 'rsod_': no files);
+- Lean files at all 128 distinct git ref tips (340 refs).
+No DAG node has a type identical to a proposed child. rsod_blowUp_setIntegral_eq is now accepted in the density_of_approx_tangent-a1 branch, but its type differs from all seven proposed types, so it is not reused.
+
+Frozen definitions match the child proofs:
+- IsC1Submanifold: charts V ⊆ Rn m, W open, ContDiffOn ℝ 1 φ V, InjOn, φ '' V = W ∩ S, properness, injective fderiv.
+- blowUpMap x r y = r⁻¹ • (y - x).
+- HasApproximateTangentSpaceAt and HasWeightedApproximateTangentSpaceAt: finrank P = n plus the 𝓝[>] 0 limit for every f : C_c(E, ℝ).
+- The simongmt Lusin theorem (IsBorelRegularOuterMeasure.exists_isClosed_continuousOn) requires measurability for mu.caratheodory, which W's step 1 addresses.
+
+Simon Ch. 3 printed text (book/chapter-03.txt): Remark 1.3, the proof of 1.6 '⇒', Remark 1.8(1) and Theorem 1.9 match children U and W and the parent glue. The printed bound written with M \ N_j is read as M \ M_j, matching the displayed decomposition; U uses C \ C_k.
+
+Lean results (fresh build, v4.35.0-rc3, 3014 jobs):
+- AllChallenges: 0 errors and 7 sorry warnings, so all 7 types elaborate in the exact comparator scope. The file is identical to attempt 3's up to target numbering.
+- Assembly: 0 errors and exactly 8 sorry warnings (7 child stubs plus the sibling stub). The parent proof contains no sorry. All 7 `exact Submission.X` solution forms and the parent form typecheck.
+- Leaves (S, B, G) and LeafUD (UD): complete proofs whose axioms are only propext, Classical.choice and Quot.sound.
+- LibCheck: every library result cited by T, U, W, UD and the glue exists with the cited signature.
+
+No Matrix/IsUnit construction occurs.

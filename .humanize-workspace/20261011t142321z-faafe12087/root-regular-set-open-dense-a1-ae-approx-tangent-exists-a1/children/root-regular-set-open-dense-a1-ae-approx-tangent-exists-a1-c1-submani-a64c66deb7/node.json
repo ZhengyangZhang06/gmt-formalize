@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_measurable-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "Embedded C¹ submanifolds are Borel sets",
+  "statement": "Let m, N ∈ ℕ and let S ⊆ ℝ^N satisfy IsC1Submanifold m S: each y ∈ S has open V ⊆ ℝᵐ, open W ∋ y and φ : ℝᵐ → ℝ^N that is C¹ and injective on V, with φ(V) = W ∩ S, V ∩ φ⁻¹(K) compact for every compact K ⊆ W, and Dφ(v) injective for v ∈ V. Then S is a Borel (measurable) subset of ℝ^N.",
+  "lean_statement": "∀ (m N : ℕ) (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → MeasurableSet S",
+  "lean_name": "rsod_isC1Submanifold_measurableSet",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-a64c66deb7-a1"
+}

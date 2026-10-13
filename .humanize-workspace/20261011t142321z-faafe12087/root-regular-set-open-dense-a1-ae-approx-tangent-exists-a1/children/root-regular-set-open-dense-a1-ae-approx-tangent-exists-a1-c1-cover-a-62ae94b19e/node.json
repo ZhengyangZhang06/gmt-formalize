@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_cover_ae_tangent-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "Unweighted approximate tangent spaces a.e. on a finite-measure subset of a C¹ cover (Simon 3.1.6 ⇒)",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ and Hⁿ := μHE[n] on ℝ^{n+ℓ}. Let C be a Borel set with Hⁿ(C) < ∞, Z a set with Hⁿ(Z) = 0, and (N_k)_{k∈ℕ} sets with IsC1Submanifold n (N_k) and Hⁿ(N_k) < ∞ for every k, such that C ⊆ Z ∪ ⋃_k N_k. Then for Hⁿ-a.e. x ∈ C there is a subspace P that is the approximate tangent space of C at x in the sense of Simon Ch. 3, Def. 1.4 (Chapter03.HasApproximateTangentSpaceAt n C x P).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (C Z : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), MeasurableSet C → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (∀ k, IsC1Submanifold n (N k) ∧ (μHE[n] : Measure (Amb n ℓ)) (N k) < ∞) → C ⊆ Z ∪ ⋃ k, N k → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ C → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P",
+  "lean_name": "rsod_ae_approxTangent_of_c1Cover",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.upper_density_zero-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_measurable-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.upper_density_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-cover-a-62ae94b19e-a1"
+}
