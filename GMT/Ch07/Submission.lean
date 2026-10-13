@@ -550,7 +550,7 @@ theorem Submission.codim1_rdo_c1a_whitney_remainder : ∀ (n : ℕ) (f : Euclid 
     rw [Metric.tendsto_atTop]
     intro e he
     obtain ⟨ρ, hρ, hρx⟩ :=
-      Metric.eventually_nhds_iff.mp ((hdiff x hx).hasFDerivAt.isLittleO.def (half_pos he))
+      Metric.eventually_nhds_iff.mp ((hdiff x hx).hasFDerivAt.isLittleO.bound (half_pos he))
     obtain ⟨N, hN⟩ := exists_nat_one_div_lt hρ
     refine ⟨N, fun k hk => ?_⟩
     have hle : η k x ≤ e / 2 := by
