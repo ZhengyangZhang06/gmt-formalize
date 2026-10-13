@@ -728,6 +728,48 @@ theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν 
     gcongr
     exact ball_subset_closedBall
 
+/-- **Simon Ch. 4, 3.11–3.13** (with Ch. 3, Remark 1.5(3)): the weight `μ = θHⁿ⌞M` of an integer
+multiplicity triple `(M, θ, ξ)` in an open `U` has density `≥ 1` at `μ`-a.e. `x`: every limit `θ₀`
+of `μ(B_ρ(x)) / (ωₙρⁿ)` as `ρ ↓ 0` satisfies `θ₀ ≥ 1`.  Since `μ ≪ ν = Hⁿ⌞M`, it suffices to take
+`ν`-a.e. `x`; such `x` lie in `M` and have an approximate tangent plane.  With `B̄_s(x) ⊆ U`,
+`Hⁿ(M ∩ B̄_s(x)) ≤ ∫_{M ∩ B̄_s(x)} θ dHⁿ < ∞`, so `ν(B_ρ(x)) / (ωₙρⁿ) → 1`; and `θ ≥ 1` on `M`
+gives `ν ≤ μ`, hence `1 ≤ θ₀`. -/
+theorem Submission.dimred_mono_ae_ball_density_ge_one : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → ∀ᵐ x ∂R.measure, ∀ θ : ℝ, Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → 1 ≤ θ := by
+  intro P n U R hU
+  -- Step 1: `μ ≪ ν`, where `ν = Hⁿ⌞M`
+  set ν : Measure (Euclid P) := μHE[n].restrict R.carrier with hνdef
+  have hac : R.measure ≪ ν := withDensity_absolutelyContinuous _ _
+  -- Step 3: `θ ≥ 1` `ν`-a.e., hence `ν ≤ μ`
+  have hmem : ∀ᵐ y ∂ν, y ∈ R.carrier := ae_restrict_mem R.measurableSet_carrier
+  have hle : ν ≤ R.measure :=
+    calc ν = ν.withDensity 1 := withDensity_one.symm
+      _ ≤ R.measure := withDensity_mono (hmem.mono fun y hy => Nat.one_le_cast.2 (R.mult_pos y hy))
+  -- Step 2: `ν`-a.e. `x` lies in `M` and has an approximate tangent plane `Q`
+  refine hac.ae_le ?_
+  filter_upwards [hmem, R.orients] with x hxM hxQ
+  obtain ⟨Q, hQ, -⟩ := hxQ
+  intro θ hθ
+  -- Step 4: `Hⁿ(M ∩ B̄_s(x)) < ∞` for some `s > 0` with `B̄_s(x) ⊆ U`
+  obtain ⟨s, hs, hsU⟩ := nhds_basis_closedBall.mem_iff.1 (hU.mem_nhds (R.carrier_subset hxM))
+  have hfin : μHE[n] (R.carrier ∩ closedBall x s) ≠ ∞ := by
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult _ (isCompact_closedBall x s) hsU) ?_
+    calc μHE[n] (R.carrier ∩ closedBall x s) = ∫⁻ _ in R.carrier ∩ closedBall x s, 1 ∂μHE[n] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ y in R.carrier ∩ closedBall x s, (R.mult y : ℝ≥0∞) ∂μHE[n] :=
+          setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) fun y hy =>
+            Nat.one_le_cast.2 (R.mult_pos y hy.1)
+  -- Step 5: `ν(B_ρ(x)) / (ωₙρⁿ) → 1`
+  have hνclosed : Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+      (𝓝[>] 0) (𝓝 1) := by
+    refine (Submission.rsd_tendsto_closedBall_density_of_approxTangent P n R.carrier x Q s hs hfin
+      hQ).congr fun ρ => ?_
+    rw [hνdef, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  have hνball := Submission.rsd_tendsto_ball_density_of_closedBall P n ν x 1 hνclosed
+  -- Step 6: `ν ≤ μ` on balls gives `1 ≤ ofReal θ`
+  have h1 : (1 : ℝ≥0∞) ≤ ENNReal.ofReal θ :=
+    le_of_tendsto_of_tendsto' hνball hθ fun ρ => ENNReal.div_le_div_right (hle _) _
+  exact ENNReal.one_le_ofReal.1 h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
