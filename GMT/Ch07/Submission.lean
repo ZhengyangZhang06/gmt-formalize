@@ -451,6 +451,134 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A unit orientation has operator norm at most `1` (step 1(c) of the proof that the weight of
+`T = τ(M, θ, ξ)` is at most its mass).  If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`,
+then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖` for every `n`-covector `α`, so `‖ξ‖ ≤ 1`. -/
+theorem Submission.rsd_mw_wlm_orient_opNorm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
+  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
+  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
+  have hbound : ‖α τ‖ ≤ ‖α‖ := by
+    simpa [hτ.1] using α.le_opNorm τ
+  rcases hξ with h | h
+  · rw [h, one_mul]
+    exact hbound
+  · rw [h, norm_neg, one_mul]
+    exact hbound
+/-- An open `W ⊆ U` with `c < μ(W)`, `μ = θ Hⁿ⌞M`, contains an open `V` with `c < μ(V) < ∞`
+(step 3 of the proof that the weight of `T = τ(M, θ, ξ)` is at most its mass).  Inner regularity
+gives a compact `K ⊆ W` with `c < μ(K)`; an open `V ⊇ K` with compact `closure V ⊆ W` has
+`μ(V) ≥ μ(K) > c` and `μ(V) ≤ μ(closure V) = ∫⁻_{M ∩ closure V} θ dHⁿ < ∞`. -/
+theorem Submission.rsd_mw_wlm_exists_open_measure_between : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (W : Set (Euclid P)), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < R.measure W → ∃ V : Set (Euclid P), IsOpen V ∧ V ⊆ W ∧ c < R.measure V ∧ R.measure V < ∞ := by
+  intro P n U R W hW hWU c hc
+  -- open sets are inner regular for closed sets, and closed sets for compact sets
+  obtain ⟨K, hKW, hK, hcK⟩ := ((Measure.InnerRegularWRT.isCompact_isClosed R.measure).trans
+    (Measure.InnerRegularWRT.of_pseudoMetrizableSpace R.measure)) hW c hc
+  obtain ⟨V, hVo, hKV, hVW, hVc⟩ := exists_open_between_and_isCompact_closure hK hW hKW
+  refine ⟨V, hVo, subset_closure.trans hVW, hcK.trans_le (measure_mono hKV), ?_⟩
+  -- `μ(closure V) = ∫⁻_{M ∩ closure V} θ dHⁿ`, finite as `closure V` is a compact subset of `U`
+  have hcl : R.measure (closure V) ≠ ∞ := by
+    unfold IMRep.measure
+    rw [withDensity_apply _ isClosed_closure.measurableSet,
+      Measure.restrict_restrict isClosed_closure.measurableSet, Set.inter_comm]
+    exact R.locallyIntegrable_mult _ hVc (hVW.trans hWU)
+  exact (measure_mono subset_closure).trans_lt hcl.lt_top
+/-- A continuous linear image of an a.e. unit-bounded measurable `n`-vector field is integrable:
+if `ν` is finite, `ξ` is `ν`-a.e. strongly measurable with `‖ξ x‖ ≤ 1` for `ν`-a.e. `x`, and
+`J : MultiVector P n →L[ℝ] Covector (Euclid P) n`, then `x ↦ J (ξ x)` is `ν`-integrable.
+Continuity of `J` at `0` gives `δ > 0` with `‖J w‖ < 1` whenever `‖w‖ < δ`; applied to
+`(δ / 2) • w`, homogeneity gives `‖J w‖ ≤ 2 / δ` on the closed unit ball.  Hence `J ∘ ξ` is
+a.e. strongly measurable and a.e. dominated by the constant `2 / δ`, which is `ν`-integrable as
+`ν` is finite. -/
+theorem Submission.rsd_mw_wlm_integrable_clm_comp : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (J : MultiVector P n →L[ℝ] Covector (Euclid P) n), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → (∀ᵐ x ∂ν, ‖ξ x‖ ≤ 1) → Integrable (fun x => J (ξ x)) ν := by
+  intro P n ν ξ J hν hξ hξ1
+  obtain ⟨δ, hδ, hJδ⟩ : ∃ δ > 0, ∀ w : MultiVector P n, ‖w‖ < δ → ‖J w‖ < 1 := by
+    have hJc : @Continuous (MultiVector P n) (Covector (Euclid P) n)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace J := J.continuous
+    obtain ⟨δ, hδ, h⟩ := Metric.continuous_iff.1 hJc 0 1 one_pos
+    refine ⟨δ, hδ, fun w hw => ?_⟩
+    have h' := h w (by convert hw using 1; exact dist_zero_right w)
+    convert h' using 1
+    rw [map_zero]
+    exact (dist_zero_right _).symm
+  have hbound : ∀ w : MultiVector P n, ‖w‖ ≤ 1 → ‖J w‖ ≤ 2 / δ := by
+    intro w hw
+    have h2 : ‖(δ / 2) • w‖ < δ := by
+      calc ‖(δ / 2) • w‖ ≤ ‖δ / 2‖ * ‖w‖ := ContinuousLinearMap.opNorm_smul_le _ _
+        _ ≤ δ / 2 * 1 := by
+          rw [Real.norm_of_nonneg (by positivity)]
+          exact mul_le_mul_of_nonneg_left hw (by positivity)
+        _ < δ := by linarith
+    have := hJδ _ h2
+    rw [map_smul, norm_smul, Real.norm_of_nonneg (by positivity)] at this
+    rw [le_div_iff₀ hδ]
+    nlinarith
+  refine Integrable.mono' (integrable_const (2 / δ)) (J.continuous.comp_aestronglyMeasurable hξ) ?_
+  filter_upwards [hξ1] with x hx using hbound _ hx
+/-- If `T = τ(M, θ, ξ)` and `spt ω ⊆ V`, then `T(ω) = ∫ ⟨ω, ξ⟩ d(μ⌞V)` with `μ = θ Hⁿ⌞M`
+(step 7 of the proof that the weight of `T = τ(M, θ, ξ)` is at most its mass).  The integrand
+vanishes off `spt ω ⊆ V`, so restricting `μ` to `V` changes nothing; writing the density `θ` as
+a measurable `ℝ≥0`-valued function turns `∫ ⟨ω, ξ⟩ dμ` into `∫_M θ ⟨ω, ξ⟩ dHⁿ = T(ω)`. -/
+theorem Submission.rsd_mw_wlm_eval_eq_integral_restrict : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ (V : Set (Euclid P)) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ V → T ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂(R.measure.restrict V) := by
+  intro P n U T R hR V ω hωV
+  rw [hR ω, setIntegral_eq_integral_of_forall_compl_eq_zero]
+  · -- `μ = (Hⁿ⌞M).withDensity θ` with `θ` read as a measurable `ℝ≥0`-valued density
+    have hμ : R.measure = (μHE[n].restrict R.carrier).withDensity
+        (fun x => ((R.mult x : NNReal) : ℝ≥0∞)) := by
+      simp [IMRep.measure]
+    have hmeas : Measurable fun x => (R.mult x : NNReal) :=
+      measurable_from_nat.comp R.measurable_mult
+    rw [hμ, integral_withDensity_eq_integral_smul hmeas]
+    simp [IMRep.action, NNReal.smul_def]
+  · -- off `V`, hence off `spt ω`, the form vanishes and so does `⟨ω, ξ⟩`
+    intro x hx
+    have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      image_eq_zero_of_notMem_tsupport fun h => hx (hωV h)
+    simp [h0]
+/-- Integral lower bound for `⟨ω, ξ⟩` from an `L¹`-close dual field.  Write
+`N = covectorEuclideanNorm`.  Let `ν` be finite, `ξ` `ν`-a.e. strongly measurable and `ω`
+continuous with `N (ω x) ≤ 1`; suppose that, for `ν`-a.e. `x`, `|ξ x α| ≤ N α` for every `α` and
+`ξ x (β x) = 1`.  If `∫⁻ N (ω − β) dν < ε`, then `ν(ℝᴾ) − ε < ∫ ξ(ω) dν`.
+The function `h = ξ(ω)` is a.e. strongly measurable (continuous bilinear evaluation) and a.e.
+bounded by `N ∘ ω ≤ 1`, hence integrable.  A.e., `h ≤ 1` and
+`h = ξ(β) + ξ(ω − β) ≥ 1 − N (ω − β)`, so `0 ≤ 1 − h ≤ N (ω − β)`.  Therefore
+`ofReal (∫ (1 − h) dν) = ∫⁻ ofReal (1 − h) dν ≤ ∫⁻ ofReal (N (ω − β)) dν < ofReal ε`, whence
+`ν(ℝᴾ) − ∫ h dν = ∫ (1 − h) dν < ε`.  No measurability of `β` is needed: the comparison is made
+only between lower integrals. -/
+theorem Submission.rsd_mw_wlm_sub_lt_integral : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β ω : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → Continuous ω → (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → (∀ᵐ x ∂ν, (∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ ξ x (β x) = 1) → ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε → (ν univ).toReal - ε < ∫ x, ξ x (ω x) ∂ν := by
+  intro P n ν ξ β ω ε hν hξ hω hωN hG hlt
+  have hhm : AEStronglyMeasurable (fun x => ξ x (ω x)) ν :=
+    isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+      (hξ.prodMk hω.aestronglyMeasurable)
+  have hh_int : Integrable (fun x => ξ x (ω x)) ν := by
+    refine Integrable.mono' (integrable_const (1 : ℝ)) hhm ?_
+    filter_upwards [hG] with x hx
+    rw [Real.norm_eq_abs]
+    exact (hx.1 (ω x)).trans (hωN x)
+  have hpt : ∀ᵐ x ∂ν, 0 ≤ 1 - ξ x (ω x) ∧
+      1 - ξ x (ω x) ≤ covectorEuclideanNorm (ω x - β x) := by
+    filter_upwards [hG] with x hx
+    have hsplit : ξ x (ω x) = ξ x (β x) + ξ x (ω x - β x) := by
+      rw [← map_add, add_sub_cancel]
+    have h1 := (abs_le.1 ((hx.1 (ω x)).trans (hωN x))).2
+    have h2 := (abs_le.1 (hx.1 (ω x - β x))).1
+    constructor
+    · linarith
+    · rw [hsplit, hx.2]
+      linarith
+  have h1h_int : Integrable (fun x => 1 - ξ x (ω x)) ν := (integrable_const 1).sub hh_int
+  have hint_eq : ∫ x, (1 - ξ x (ω x)) ∂ν = (ν univ).toReal - ∫ x, ξ x (ω x) ∂ν := by
+    rw [integral_sub (integrable_const 1) hh_int, integral_const, smul_eq_mul, mul_one,
+      measureReal_def]
+  have hofreal : ENNReal.ofReal (∫ x, (1 - ξ x (ω x)) ∂ν) < ENNReal.ofReal ε := by
+    rw [ofReal_integral_eq_lintegral_ofReal h1h_int (hpt.mono fun x hx => hx.1)]
+    calc ∫⁻ x, ENNReal.ofReal (1 - ξ x (ω x)) ∂ν
+        ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν :=
+          lintegral_mono_ae (hpt.mono fun x hx => ENNReal.ofReal_le_ofReal hx.2)
+      _ < ENNReal.ofReal ε := hlt
+  have hlt' := (ENNReal.ofReal_lt_ofReal_iff'.1 hofreal).1
+  linarith
 /-- **Simon Ch. 6, Remark 2.6(a)–(b)** for the Euclidean coefficient norm: a unit orientation
 `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal) has `|ξ(α)| ≤ |α|`, and the single continuous linear map
 `J(w) = Σ_I w(e^I) e^I` (`I` strictly increasing) has `|J(ξ)| = 1` and `ξ(J(ξ)) = 1`.  Here
@@ -1070,6 +1198,74 @@ theorem Submission.rsd_mw_exists_testForm_approx : ∀ (P n : ℕ) (ν : Measure
         rw [← ENNReal.ofReal_add (by positivity) (by positivity),
           ← ENNReal.ofReal_add (by positivity) (by positivity)]
         exact ENNReal.ofReal_le_ofReal (by linarith)
+
+/-- **Simon Ch. 6, Remark 3.2(3), `≥` half** (with 2.5 and Remark 2.6(a)–(b)): `μ_T(W) ≤ M_W(T)`
+for `T = τ(M, θ, ξ)` and open `W ⊆ U`.  Given `c < μ_T(W)`, take an open `V ⊆ W` with
+`c < μ_T(V) < ∞` and put `ν = μ_T⌞V`.  With `J` as in `Submission.rsd_mw_unit_orientation_dual`,
+`β = J ∘ ξ` is `ν`-integrable, and `ν`-a.e. `|β| = 1`, `⟨β, ξ⟩ = 1` and `|⟨α, ξ⟩| ≤ |α|`.  A test
+form `ω` with `spt ω ⊆ V`, `|ω| ≤ 1` and `∫ |ω − β| dν < ε = (μ_T(V) − c)/2` is admissible for
+`M_W(T)`, and `T(ω) = ∫ ⟨ω, ξ⟩ dν > ν(ℝᴾ) − ε = (μ_T(V) + c)/2 > c`. -/
+theorem Submission.rsd_mw_measure_le_massOn : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → R.measure W ≤ T.massOn W := by
+  intro P n U T R hT W hW hWU
+  obtain ⟨J, hJ⟩ := Submission.rsd_mw_unit_orientation_dual P n
+  -- it suffices to show `c < M_W(T)` for every `c < μ_T(W)`
+  refine le_of_forall_lt fun c hcW => ?_
+  -- an open `V ⊆ W` with `c < μ_T(V) < ∞`
+  obtain ⟨V, hV, hVW, hcV, hVfin⟩ :=
+    Submission.rsd_mw_wlm_exists_open_measure_between P n U R W hW hWU c hcW
+  -- `ν = μ_T⌞V` is finite, vanishes off `V`, and `ν ≪ μ_T ≪ Hⁿ⌞M`
+  set ν := R.measure.restrict V with hν
+  have hνfin : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 hVfin.ne
+  have hνVc : ν Vᶜ = 0 := by
+    rw [hν, Measure.restrict_apply' hV.measurableSet, compl_inter_self, measure_empty]
+  have hμac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hνac : ν ≪ μHE[n].restrict R.carrier :=
+    Measure.restrict_le_self.absolutelyContinuous.trans hμac
+  -- `ν`-a.e. `ξ(x)` is a unit orientation
+  have hG : ∀ᵐ x ∂ν, ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (R.orient x) Q := by
+    filter_upwards [hνac.ae_le R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact ⟨Q, hQ⟩
+  have hξ : AEStronglyMeasurable R.orient ν := R.aestronglyMeasurable_orient.mono_ac hνac
+  -- `β = J ∘ ξ` is `ν`-integrable, as `‖ξ‖ ≤ 1` `ν`-a.e., and `|β| ≤ 1` `ν`-a.e.
+  have hβ : Integrable (fun x => J (R.orient x)) ν := by
+    refine Submission.rsd_mw_wlm_integrable_clm_comp P n ν R.orient J hνfin hξ ?_
+    filter_upwards [hG] with x hx
+    obtain ⟨Q, hQ⟩ := hx
+    exact Submission.rsd_mw_wlm_orient_opNorm_le_one P n Q (R.orient x) hQ
+  have hβ1 : ∀ᵐ x ∂ν, covectorEuclideanNorm (J (R.orient x)) ≤ 1 := by
+    filter_upwards [hG] with x hx
+    obtain ⟨Q, hQ⟩ := hx
+    exact (hJ _ Q hQ).2.1.le
+  -- `c < ∞`, and `ε = (μ_T(V) − c)/2 > 0` in `ℝ`
+  have hctop : c ≠ ∞ := ne_top_of_lt hcV
+  have hcV' : c.toReal < (R.measure V).toReal := (ENNReal.toReal_lt_toReal hctop hVfin.ne).2 hcV
+  set ε := ((R.measure V).toReal - c.toReal) / 2 with hε
+  have hε0 : 0 < ε := by linarith
+  -- a test form `ω` with `spt ω ⊆ V`, `|ω| ≤ 1` and `∫ |ω − β| dν < ε`
+  obtain ⟨ω, hωt, hωV, hω1, hωβ⟩ := Submission.rsd_mw_exists_testForm_approx P n ν V
+    (fun x => J (R.orient x)) hνfin hV hνVc hβ hβ1 ε hε0
+  -- `ω` is admissible for `M_W(T)`
+  let ω' : TestFormOn U n := ⟨ω, hωt, hωV.trans (hVW.trans hWU)⟩
+  have hadm : ω' ∈ massAdmissibleOn U n W := ⟨hωV.trans hVW, hω1⟩
+  -- `T(ω) = ∫ ⟨ω, ξ⟩ dν > ν(ℝᴾ) − ε`, where `ν(ℝᴾ) = μ_T(V)`
+  have hTω : T ω' = ∫ x, R.orient x (ω x) ∂ν :=
+    Submission.rsd_mw_wlm_eval_eq_integral_restrict P n U T R hT V ω' hωV
+  have hest := Submission.rsd_mw_wlm_sub_lt_integral P n ν R.orient (fun x => J (R.orient x)) ω
+    ε hνfin hξ (ContDiff.continuous hωt.1) hω1 (by
+      filter_upwards [hG] with x hx
+      obtain ⟨Q, hQ⟩ := hx
+      exact ⟨(hJ _ Q hQ).1, (hJ _ Q hQ).2.2⟩) hωβ
+  have hνuniv : ν univ = R.measure V := Measure.restrict_apply_univ V
+  rw [hνuniv] at hest
+  have hlt : c.toReal < T ω' := by
+    rw [hTω]
+    linarith
+  -- `c = ofReal c.toReal < ofReal T(ω) ≤ M_W(T)`
+  calc c = ENNReal.ofReal c.toReal := (ENNReal.ofReal_toReal hctop).symm
+    _ < ENNReal.ofReal (T ω') :=
+        (ENNReal.ofReal_lt_ofReal_iff_of_nonneg ENNReal.toReal_nonneg).2 hlt
+    _ ≤ T.massOn W := T.le_massOn hadm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
