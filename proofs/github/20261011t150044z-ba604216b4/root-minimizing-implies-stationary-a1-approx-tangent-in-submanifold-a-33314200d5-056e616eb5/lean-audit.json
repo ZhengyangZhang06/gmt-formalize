@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "67a8cd48fa3508a730b76adfb09fc5ad349564565877656e071b2dc9d1411332",
+  "git_delta": {
+    "base_commit": "59f319254262309892637079aa3c5208d796f5b3",
+    "candidate_commit": "038573e401c107149b7c1ae80dd1bc7621b035f5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "atsm_approxTangent_le_of_flat",
+    "diff_sha256": "9431a9e2d2a39e8adb5b2a4307a2a92213e316a7c7a591bd61c26a56bd985328",
+    "source_sha256": "a644778d0f758e72abf527a37d5791b63442588f1fd0bb3456c9d32ed2ab0164",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.atsm_approxTangent_le_of_flat",
+      "statement": "∀ (P n : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q T : Submodule ℝ (Euclid P)), μHE[n] (M \\ N) = 0 → (∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z x < ρ → ∃ t ∈ T, ‖z - x - t‖ ≤ ε * ‖z - x‖) → HasApproximateTangentSpaceAt n M x Q → Q ≤ T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
