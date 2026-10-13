@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "lintegral_sum_measure|integral_withDensity_eq_integral_smul|setIntegral_withDensity_eq_setIntegral_smul",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "Cauchy.Binet|cauchyBinet",
+        "area.formula|coarea|approximation",
+        "git show fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2:GMT/Ch07/Submission.lean",
+        "git show a2ba78fca36b5fe8a0051278d30da09823c8b59c:GMT/Ch07/Submission.lean",
+        "git show 048ff2b9b9037a03e4daa8d5ce0db106c1f592a3:GMT/Ch07/Submission.lean",
+        "git show bed5b8494a351297a2be8f0a0b63079868d53507:GMT/Ch07/Submission.lean",
+        "#print axioms GMT.Ch07.Submission.dor_ims_massOn_le_measure",
+        "#print axioms GMT.Ch07.Submission.dpf_rectifiable_bilipschitz_pieces",
+        "#print axioms GMT.Ch07.Submission.regcomp_approx_tangent_locality",
+        "#print axioms GMT.Ch07.Submission.ptd_piece_image_measurable_ae_pullback"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-5d8d9c70c5/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-5d8d9c70c5/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/lur-independent-audit-t7kt9qwv/Types.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/Assembly.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/Inst.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/InlineChecks.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/Reuse_mass_upper_bound.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/Reuse_bilipschitz_pieces.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/Reuse_tangent_locality.lean",
+        "/tmp/lur-independent-audit-t7kt9qwv/Reuse_piece_pullback.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match their pins. The cited area and measure-transport declarations support arbitrary integrands as used here. Chapter03/Rectifiable explicitly omits the rectifiable area theorem; the Cauchy–Binet search in snapshot Mathlib/LinearAlgebra returned no match. Splitting the chart analysis, perimeter estimate and rectifiable transport is appropriate. All eleven standalone, one-line child propositions elaborate independently and match their prose. All names are bare identifiers; seven are unreserved, and four have identical comparator-accepted frozen types. Fresh compilation of each reused declaration reports only propext, Classical.choice and Quot.sound, with frozen definitions unchanged. Matrix.of Gram determinants, adjoint application, indicator, smoothness and default volume constructions pass independent Lean checks. The augmented dependency graph is acyclic, and every child contributes to the assembly. The recompiled conditional assembly proves exactly codim1_rdo_local_unit_representation from the specified child contracts and existing graph_chart/de_giorgi prerequisites, without sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The graph hypotheses give compact pullback support and justify the globally C¹ zero extension. Localization, the regular injective area formula, the orientation identity and exterior differentiation yield exactly the stated trace-divergence formula."
+    },
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type with a clean fresh axiom check. The orientation dual bound controls every admissible action by the representation measure; taking the supremum proves the claim for arbitrary W without assuming W measurable."
+    },
+    {
+      "key": "chart_perimeter",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The squared-norm cutoff gives smooth supported test forms. The determinant expansion recovers φ, and the positive, φ-independent coefficient bound permits scaling before applying the stated dependencies. Local multiplicity integrability supplies the required finite constant."
+    },
+    {
+      "key": "normal_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. The hypothesis n ≥ 1 permits reversing one frame vector; the multilinear and Laplace expansions establish the exact minus sign and the required span."
+    },
+    {
+      "key": "wedge_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Writing the independent family as τR gives Gram = RᵀR and positive determinant. Normalization leaves a single sign independent of the covector, proving the exact orientation predicate. The empty-family case is explicitly covered."
+    },
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted type and clean fresh axiom check. The regular-set partition, coercivity estimate, Borel-image argument and first-index disjointification establish every conclusion, including the null remainder and degenerate dimensions."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type and clean fresh axiom check. Local upper-density estimates make the blow-up integral difference vanish outside one null set, giving the equivalence simultaneously for every candidate plane."
+    },
+    {
+      "key": "piece_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type and clean fresh axiom check. Lusin–Souslin gives the Borel image, and the Lipschitz inverse maps the null exceptional image set onto a superset of the bad parameters. This handles arbitrary predicates as stated."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses the existing Euclidean-source area formula, without circular reliance on the proposed rectifiable formula. Lebesgue differentiation of 1_B J and uniform differentiability on a fixed rescaled ball establish the exact weak tangent limit on a test-function-independent full-measure set."
+    },
+    {
+      "key": "area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The listed dependencies identify the tangent planes on the pieces. The measurable Jacobian ratio and Gram chain rule give the required representative; local Lipschitz bounds handle rectifiability, finiteness and the null remainder. Summation and measure transport justify both integral identities with their stated unrestricted integrands."
+    },
+    {
+      "key": "pushforward_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the finite Borel rectifiable image and a measurable normalized dual field without measurable frame selection. The orientation lemmas and null-image argument give unit orientations almost everywhere. Support localization and the Bochner area formula prove the identity for every form in the exact type."
+    }
+  ],
+  "required_changes": []
+}

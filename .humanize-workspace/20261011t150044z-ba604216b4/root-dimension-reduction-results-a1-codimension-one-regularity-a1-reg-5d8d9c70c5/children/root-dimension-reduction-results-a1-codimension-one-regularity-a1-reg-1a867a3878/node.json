@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1",
+  "depth": 5,
+  "title": "G⁻¹(E) has locally finite perimeter in the chart ball (supplied step 2; Simon 6.2.35)",
+  "statement": "Let P, n ∈ ℕ, U, N, E ⊆ ℝ^P, ξN : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U), x ∈ ℝ^P, ι : ℝ^{n+1} → ℝ^P a linear isometry, u : ℝ^{n+1} → ℝ^P and δ₁, δ₂ ∈ ℝ. Write D := B_{δ₁}(0) ⊆ ℝ^{n+1}, G(v) := x + ιv + u(v), e_0, …, e_n for the standard basis and J(v) := (det[⟨ιe_i + Du(v)e_i, ιe_k + Du(v)e_k⟩]_{i,k})^{1/2}. Assume: E is Borel, E ⊆ N ∩ U, IsBoundaryOfRegion T E ξN (T(ω) = ∫_E ξN(dω) dH^{n+1} for ω ∈ 𝒟^n(U)), and T is integer multiplicity; δ₁ > 0, δ₂ > 0 and closedBall(x, δ₁ + δ₂) ⊆ U; u is C² on D; for every v ∈ D: u(v) ⊥ range ι, ‖Du(v)‖ ≤ 1, |u(v)| < δ₂/2, G(v) ∈ N, and ξN(G(v))(α)·J(v) = α(ιe_0 + Du(v)e_0, …, ιe_n + Du(v)e_n) for every (n+1)-covector α; and whenever |v| < δ₁, |h| < δ₂, h ⊥ range ι and x + ιv + h ∈ N, then h = u(v). Then F := D ∩ G^{-1}(E) is Borel, and for every compact K ⊆ D there is C ∈ ℝ such that ∫_F trace Dφ dL^{n+1} ≤ C for every C^∞ map φ : ℝ^{n+1} → ℝ^{n+1} with compact support, tsupport φ ⊆ K and |φ(y)| ≤ 1 for all y.",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ), MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → 0 < δ₁ → 0 < δ₂ → closedBall x (δ₁ + δ₂) ⊆ U → ContDiffOn ℝ 2 u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, (∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) ∧ ‖fderiv ℝ u v‖ ≤ 1 ∧ ‖u v‖ < δ₂ / 2 ∧ x + ι v + u v ∈ N ∧ ∀ α : Covector (Euclid P) (n + 1), ξN (x + ι v + u v) α * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) (ι (EuclideanSpace.single j 1) + fderiv ℝ u v (EuclideanSpace.single j 1)))) = α (fun i => ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1))) → (∀ (v : Euclid (n + 1)) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid (n + 1), inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v) → MeasurableSet (ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' E) ∧ ∀ K : Set (Euclid (n + 1)), IsCompact K → K ⊆ ball 0 δ₁ → ∃ C : ℝ, ∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ K → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ y : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) ≤ C",
+  "lean_name": "codim1_lur_chart_locally_finite_perimeter",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-up-4048586780-a1",
+      "result_commit": "fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-1a867a3878-a1"
+}

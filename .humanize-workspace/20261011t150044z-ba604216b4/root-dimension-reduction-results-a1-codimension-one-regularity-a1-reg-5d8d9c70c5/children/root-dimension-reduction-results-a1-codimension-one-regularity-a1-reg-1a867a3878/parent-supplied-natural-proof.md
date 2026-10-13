@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 2 of the supplied proof (Simon Ch. 6, 2.35). Departure: the bound |ω_φ| ≤ 1 of the supplied proof (Cauchy–Binet invariance of the coefficient norm) is replaced by the crude bound |ω_φ| ≤ c₀ := (n+1)!·P^{n/2}, applied to ω_φ/c₀; as the supplied proof of the grandparent node already remarks, any bound independent of φ suffices. Siblings used: chart_divergence and mass_upper_bound.
+
+Notation. A := ι* (adjoint of ι); π(w) := A(w − x); p^⊥(w) := w − x − ιπ(w); Z := {w : |π(w)| < δ₁, |p^⊥(w)| < δ₂}; DG(v) := derivative of G at v; for an n-form ω on ℝ^P, Φ_ω := 1_D·Σ_{j=0}^{n} (−1)^j ω(G(·))(DG(·)e_{j.succAbove 0}, …, DG(·)e_{j.succAbove(n−1)}) e_j, the field of chart_divergence.
+
+1. (Preliminaries.) F is Borel: G is continuous on the open set D, so F = D ∩ G̃^{-1}(E) for the Borel map G̃ equal to G on D and to x off D. As in chart_divergence step 2: Aι = id, ‖A‖ ≤ 1 (A is the adjoint of an isometry), and for v ∈ D, π(G(v)) = v, p^⊥(G(v)) = u(v) and A∘DG(v) = id (u and Du take values in (range ι)^⊥). Since ι is an isometric embedding of ℝ^{n+1}, P ≥ n + 1 ≥ 1.
+2. (The constant.) Fix an IMRep R of T. K̂ := closedBall(x, δ₁ + δ₂) is compact and K̂ ⊆ U, so μ_R(K̂) = R.measure(K̂) = ∫⁻_{M_R ∩ K̂} θ_R dH^n < ∞ (IMRep.locallyIntegrable_mult). Put c₀ := (n+1)!·P^{n/2} ≥ 1 and C := c₀·μ_R(K̂).toReal. This C works for every compact K ⊆ D.
+3. (Cut-off.) Choose χ ∈ C^∞(ℝ; [0, 1]) with χ(t) = 1 for t ≤ (δ₂/2)² and χ(t) = 0 for t ≥ (3δ₂/4)² (e.g. built from Real.smoothTransition). Put ζ(w) := χ(|p^⊥(w)|²). ζ is C^∞ (w ↦ |p^⊥(w)|² is a quadratic polynomial) with values in [0, 1].
+4. (The test form.) Fix a compact K ⊆ D and a C^∞ map φ with compact support, tsupport φ ⊆ K and |φ| ≤ 1. For p ∈ ℝ^{n+1} let Λ(p) be the n-covector on ℝ^P with Λ(p)(a_0, …, a_{n−1}) := det[p, Aa_0, …, Aa_{n−1}], the (n+1)×(n+1) determinant with these columns: it is multilinear, alternating and continuous in (a_k), and p ↦ Λ(p) is linear. Define ω_φ(w) := ζ(w)·Λ(φ(π(w))). ω_φ is C^∞ (the smooth ζ times the linear Λ composed with the smooth φ∘π).
+5. (Support.) If ω_φ(w) ≠ 0, then ζ(w) ≠ 0 and φ(π(w)) ≠ 0, so |p^⊥(w)| < 3δ₂/4 and π(w) ∈ K. Hence tsupport ω_φ ⊆ S := {w : π(w) ∈ K, |p^⊥(w)| ≤ 3δ₂/4}, which is closed and bounded (|w − x| ≤ |ιπ(w)| + |p^⊥(w)| ≤ max_K |·| + 3δ₂/4), so tsupport ω_φ is compact. S ⊆ Z because K ⊆ D. Moreover Z ⊆ K̂ ⊆ U, since |w − x| ≤ |π(w)| + |p^⊥(w)| < δ₁ + δ₂ for w ∈ Z. So ω_φ ∈ 𝒟^n(U) and tsupport ω_φ ⊆ Z.
+6. (The pull-back is φ.) Let v ∈ D. Then ζ(G(v)) = χ(|u(v)|²) = 1 because |u(v)| < δ₂/2, π(G(v)) = v and A·DG(v)e_i = e_i. Hence ω_φ(G(v))(DG(v)e_{j.succAbove 0}, …, DG(v)e_{j.succAbove(n−1)}) = det[φ(v), e_{j.succAbove 0}, …, e_{j.succAbove(n−1)}]. Expanding along the first column (Matrix.det_succ_column_zero), only the row-j term survives (every other minor contains the zero row j) and its minor is the identity; so the determinant is (−1)^j φ_j(v), where φ_j := ⟨φ, e_j⟩. Therefore Φ_{ω_φ}(v) = Σ_j (−1)^j(−1)^j φ_j(v)e_j = φ(v). For v ∉ D, Φ_{ω_φ}(v) = 0 = φ(v) because tsupport φ ⊆ K ⊆ D. So Φ_{ω_φ} = φ.
+7. (Divergence formula.) chart_divergence applies to ω_φ (all its hypotheses are among ours, and tsupport ω_φ ⊆ Z by step 5). With step 6 it gives T(ω_φ) = ∫_F trace Dφ dL^{n+1}.
+8. (Coefficient bound.) For every w and every strictly increasing I = (i_0 < … < i_{n−1}) in {0, …, P − 1}, ω_φ(w)(e_{i_0}, …, e_{i_{n−1}}) = ζ(w)·det M_w with M_w := [φ(π(w)), Ae_{i_0}, …, Ae_{i_{n−1}}]. Every entry of M_w has absolute value ≤ 1 (|φ| ≤ 1 and |Ae_i| ≤ ‖A‖ ≤ 1), so |det M_w| ≤ (n+1)! (Matrix.det_le), and 0 ≤ ζ ≤ 1. There are at most P^n maps I : Fin n → Fin P, so covectorEuclideanNorm(ω_φ(w)) ≤ (P^n((n+1)!)²)^{1/2} = c₀.
+9. (Mass bound.) ω′ := c₀^{-1}·ω_φ ∈ 𝒟^n(U) satisfies tsupport ω′ ⊆ Z and covectorEuclideanNorm(ω′(w)) = c₀^{-1}covectorEuclideanNorm(ω_φ(w)) ≤ 1, so ω′ ∈ massAdmissibleOn U n Z. Hence ofReal(T(ω′)) ≤ M_Z(T) (GeometricCurrentOn.le_massOn) ≤ R.measure(Z) (mass_upper_bound) ≤ R.measure(K̂) < ∞. Therefore T(ω′) ≤ μ_R(K̂).toReal, and by linearity of T and step 7, ∫_F trace Dφ = T(ω_φ) = c₀T(ω′) ≤ C. ∎
+
+## Key steps
+
+1. F = D ∩ G⁻¹(E) is Borel because G is continuous on the open ball D.
+2. ω_φ(w) := ζ(w)·det[φ(π(w)), ι*·, …, ι*·] is a test form in 𝒟^n(U) with tsupport in Z ⊆ closedBall(x, δ₁ + δ₂).
+3. ζ∘G = 1, π∘G = id and ι*∘DG = id on D, so Laplace expansion gives Φ_{ω_φ} = φ, and chart_divergence yields T(ω_φ) = ∫_F div φ.
+4. Entrywise determinant bounds give |ω_φ| ≤ c₀ = (n+1)!P^{n/2}; mass_upper_bound for an IMRep R gives ∫_F div φ ≤ c₀·μ_R(closedBall(x, δ₁ + δ₂)) < ∞.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; python3 read of snapshot project/lake-manifest.json`
+- `sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'theorem extDeriv_pullback|theorem extDeriv_apply|theorem LipschitzOnWith.extend_finite_dimension|theorem ContinuousOn.measurableEmbedding|theorem MeasurableSet.image_of_continuousOn_injOn|theorem euclideanHausdorffMeasure_image_eq_normDet_mul_volume|theorem det_succ_column_zero|theorem det_le |theorem ae_tendsto_average_norm_sub|theorem ae_tendsto_measure_inter_div|theorem gramSchmidtNormed_orthonormal|theorem integral_withDensity_eq_integral_smul ' <snapshot>/mathlib/Mathlib`
+- `rg -n 'Cauchy-Binet|Cauchy–Binet|cauchyBinet' <snapshot>/mathlib/Mathlib (no match); rg -n 'eq_smul_basis_det' <snapshot>/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `grep -n '^theorem|^def' simongmt Chapter06/{Forms,Currents,Mass}.lean, Chapter03/{Rectifiable,SubmanifoldCover,FinitePerimeter,Differential}.lean, Chapter02/{WeightedArea,Area,AreaFormula,AreaLipschitz,AreaCritical,AreaApproximation,Lipschitz,WhitneyExtension}.lean`
+- `grep -rln 'C¹ approximation|C1 approximation|Lusin' simongmt/Poincare (no C¹ Approximation Theorem); grep -n for integral_area_formula_of_injective_derivative, weighted_area_formula_of_injective_derivative, areaJacobianAt_eq_sqrt_det_adjoint_comp, measurable_areaJacobianAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn, tsupport_exteriorDerivative_subset, HasApproximateTangentSpaceAt.unique, exists_contDiff_one_extension_of_whitney, area_image_criticalSet_eq_zero`
+- `python3 scans of dag.json (673→719 nodes): frozen types/status of codim1_rdo_graph_chart, codim1_rdo_de_giorgi_gauss_green, dor_ims_massOn_le_measure and the selected node; keyword scan 'C¹ approximation|area formula|approximate tangent|Lemma 1.2|bilipschitz'; diffeo_pushforward subtree statuses; lean_name lookup of the 7 new codim1_lur_* names (no hits)`
+- `git grep -l codim1_lur <1377 unique ref tips> -- 'GMT/*.lean' (no match)`
+- `git show {fae4fd1e,a2ba78fc,048ff2b9,bed5b849}:GMT/Ch07/Submission.lean + '#print axioms' for dor_ims_massOn_le_measure, dpf_rectifiable_bilipschitz_pieces, regcomp_approx_tangent_locality, ptd_piece_image_measurable_ae_pullback; lean -DautoImplicit=false (LEAN_PATH from .lake/build/lib/lean/GMT/Ch07/Submission.trace)`
+- `lean -DautoImplicit=false /tmp/lup-split/final/Types.lean; lean -DautoImplicit=false /tmp/lup-split/final/Assembly.lean (#print axioms Submission.codim1_rdo_local_unit_representation); lean /tmp/lup-split/final/Inst.lean (rfl instance checks)`
+- `sed -n 1,480p book/chapter-03.txt (Ch. 3, 1.1–2.10); sed -n 160,175p book/chapter-02.txt (C¹ Approximation Theorem 1.5, Whitney 1.6)`
+- `read nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-{5d8d9c70c5,de9c9e6c74} (handoff, decomposition-v1.json) and the parent-supplied natural proofs of the four reused nodes and of ptd_piece_image_approxTangent_ae`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-5d8d9c70c5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-de9c9e6c74/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/lup-split/final/Types.lean`
+- `/tmp/lup-split/final/Assembly.lean`
+- `/tmp/lup-split/final/Inst.lean`
+- `/tmp/lup-split/reuse/Check_dor_ims_massOn_le_measure.lean`
+- `/tmp/lup-split/reuse/Check_dpf_rectifiable_bilipschitz_pieces.lean`
+- `/tmp/lup-split/reuse/Check_regcomp_approx_tangent_locality.lean`
+- `/tmp/lup-split/reuse/Check_ptd_piece_image_measurable_ae_pullback.lean`
+
+Pins match.
+- Snapshot manifest: project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib.
+- Snapshot lake-manifest: simongmt 2b366308, equal to .lake/packages/simongmt.
+- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library (what exists).
+- Snapshot Mathlib: extDeriv_pullback and extDeriv_apply (Analysis/Calculus/DifferentialForm/Basic.lean:259, 198); LipschitzOnWith.extend_finite_dimension (Analysis/Normed/Module/FiniteDimension.lean:207); MeasurableSet.image_of_continuousOn_injOn and ContinuousOn.measurableEmbedding (MeasureTheory/Constructions/Polish/Basic.lean:821, 865); LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume (Analysis/InnerProductSpace/NormDet.lean:433); Matrix.det_succ_column_zero, Matrix.det_le and AlternatingMap.eq_smul_basis_det; ae_tendsto_average_norm_sub (MeasureTheory/Covering/DensityTheorem.lean:150); integral_withDensity_eq_integral_smul.
+- SimonGMT: integral_area_formula_of_injective_derivative and weighted_area_formula_of_injective_derivative (Chapter02/WeightedArea.lean:151, 76); areaJacobianAt_eq_sqrt_det_adjoint_comp; measurable_areaJacobianAt; euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216); tsupport_exteriorDerivative_subset (Chapter06/Currents.lean:182); HasApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean:232); the Whitney C¹ extension theorem (Chapter02/WhitneyExtension.lean:373).
+
+Library (what is missing).
+- The snapshot Mathlib has no Cauchy–Binet (rg: no match).
+- SimonGMT has no C¹ Approximation Theorem (Ch. 2, 1.5) and no area formula on rectifiable sets; the Chapter03/Rectifiable.lean header says the area/coarea theorems are not asserted.
+- LinearMap.normDet and the Chapter02 area modules are not imported by GMT.Ch07.Submission, so the child statements use Matrix.det Gram determinants instead.
+
+DAG.
+- The 7 new codim1_lur_* names occur in no dag.json node (719 nodes) and in no GMT/*.lean at any of 1377 unique ref tips.
+- Reused with byte-identical types, all accepted: dor_ims_massOn_le_measure (fae4fd1e), dpf_rectifiable_bilipschitz_pieces (a2ba78fc), regcomp_approx_tangent_locality (048ff2b9) and ptd_piece_image_measurable_ae_pullback (bed5b849). A fresh compilation of each candidate Submission.lean with #print axioms gives only propext, Classical.choice and Quot.sound.
+- ptd_piece_image_approxTangent_ae (decomposing) has the same type as the new piece_tangent but is not accepted. dpf_area_formula_bilipschitz_rectifiable (speculative-ready) concerns self-maps of ℝ^P and is not accepted either.
+
+Lean.
+- Types.lean elaborates all 11 child types after import GMT.Ch07.Submission with the contract opens (exit 0, sorry warnings only).
+- Inst.lean confirms by rfl that the Gram determinants are Matrix.det over Matrix (Fin k) (Fin k) ℝ, that .indicator is Set.indicator, and that the adjoint term is the continuous linear map ι* applied to w − x.
+- Assembly.lean proves Submission.codim1_rdo_local_unit_representation (frozen type copied from dag.json). It takes codim1_rdo_graph_chart and codim1_rdo_de_giorgi_gauss_green (frozen types from dag.json) and chart_divergence, chart_perimeter and pushforward_rep as axioms. #print axioms lists only these five plus propext, Classical.choice and Quot.sound; no sorryAx occurs.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1",
+  "depth": 5,
+  "title": "The Gram-normalized wedge of linearly independent vectors is a unit orientation of their span",
+  "statement": "Let P, n ∈ ℕ and let a_0, …, a_{n−1} ∈ ℝ^P be linearly independent, with Gram matrix Γ := (⟨a_i, a_k⟩)_{i,k}. Then det Γ > 0, and every n-vector ξ ∈ Λ_n(ℝ^P) with ξ(α) = (det Γ)^{−1/2}·α(a_0, …, a_{n−1}) for all n-covectors α is a unit orientation of span{a_0, …, a_{n−1}}, i.e. there is an orthonormal basis τ of this span with ξ(α) = α(τ) for all α or ξ(α) = −α(τ) for all α.",
+  "lean_statement": "∀ (P n : ℕ) (a : Fin n → Euclid P), LinearIndependent ℝ a → 0 < Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i) (a j)) ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, ξ α = (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i) (a j))))⁻¹ * α a) → IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range a))",
+  "lean_name": "codim1_lur_normalized_wedge_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10-a1"
+}
