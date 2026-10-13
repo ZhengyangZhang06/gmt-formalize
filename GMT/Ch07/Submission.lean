@@ -598,6 +598,55 @@ theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid 
   exact ge_of_tendsto hlim
     (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 
+/-- **Uniform approximation by test forms supported in an open set** (selected proof, step 3,
+approximating sequences).  Let `|α| = covectorEuclideanNorm α = ‖c α‖` for a continuous linear
+equivalence `c`.  A continuous, compactly supported `n`-covector field `G` with `tsupport G ⊆ V`
+(`V` open) is uniformly `ε`-approximated in `|·|` by a test form `ω` with `tsupport ω ⊆ V`.
+
+Since `c` is linear, `|tα| = |t| |α|`.  `c ∘ G` is continuous with compact support, hence bounded
+by some `C`; put `s = max C 0 + 1 > 0`, so `|G| ≤ s`.  Then `g = s⁻¹ G` is continuous, compactly
+supported, `tsupport g ⊆ V` and `|g| ≤ 1`, so `dor_ims_sua_mollify_unit_field` gives a test form
+`ω₀` with `tsupport ω₀ ⊆ V` and `|ω₀ − g| ≤ ε/s`.  Finally `ω = s ω₀` is a test form with
+`tsupport ω ⊆ tsupport ω₀ ⊆ V` and `|ω − G| = s |ω₀ − g| ≤ ε`. -/
+theorem Submission.dimred_mbl_fnd_tfe_uniform_testForm_approx : ∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (V : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n) (ε : ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → IsOpen V → Continuous G → HasCompactSupport G → tsupport G ⊆ V → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ ∀ x, covectorEuclideanNorm (ω x - G x) ≤ ε := by
+  intro P n d c V G ε hc hV hGc hGs hGV hε
+  -- (1) homogeneity `|t • α| = |t| |α|`, since `c` is linear
+  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    rw [hc, hc, map_smul, norm_smul, Real.norm_eq_abs]
+  -- (2) `c ∘ G` is continuous with compact support, so `‖c (G x)‖ ≤ C`; `s = max C 0 + 1`
+  obtain ⟨C, hC⟩ := (hGs.comp_left (map_zero c)).exists_bound_of_continuous
+    (c.continuous.comp hGc)
+  set s : ℝ := max C 0 + 1
+  have hs : 0 < s := by positivity
+  have hGb : ∀ x, covectorEuclideanNorm (G x) ≤ s := fun x => by
+    rw [hc]
+    exact (hC x).trans ((le_max_left C 0).trans (le_add_of_nonneg_right zero_le_one))
+  -- (3) the normalized field `g = s⁻¹ • G`: continuous, compactly supported in `V`, `|g| ≤ 1`
+  set g : Euclid P → Covector (Euclid P) n := fun x => s⁻¹ • G x with hg_def
+  have hgc : Continuous g := hGc.const_smul s⁻¹
+  have hgG : support g ⊆ support G := fun x hx h => hx (by simp [g, h])
+  have hgs : HasCompactSupport g := hGs.mono hgG
+  have hgV : tsupport g ⊆ V := (closure_mono hgG).trans hGV
+  have hg1 : ∀ x, covectorEuclideanNorm (g x) ≤ 1 := fun x => by
+    rw [hg_def, hsmul, abs_of_pos (inv_pos.2 hs), inv_mul_le_iff₀ hs, mul_one]
+    exact hGb x
+  -- (4) mollify `g` with error `ε / s`
+  obtain ⟨ω₀, ⟨hω₀s, hω₀c⟩, hω₀V, -, hω₀g⟩ :=
+    Submission.dor_ims_sua_mollify_unit_field P n V g (ε / s) hV hgc hgs hgV hg1 (div_pos hε hs)
+  -- (5) rescale: `ω = s • ω₀` is a test form with `tsupport ω ⊆ tsupport ω₀ ⊆ V`
+  refine ⟨fun x => s • ω₀ x, ⟨ContDiff.const_smul (𝕜 := ℝ) s hω₀s,
+    hω₀c.smul_left (f := fun _ => s)⟩, (tsupport_smul_subset_right (fun _ => s) ω₀).trans hω₀V,
+    fun x => ?_⟩
+  -- (6) `ω x - G x = s • (ω₀ x - g x)`, so `|ω x - G x| = s |ω₀ x - g x| ≤ s (ε / s) = ε`
+  have hdiff : s • ω₀ x - G x = s • (ω₀ x - g x) := by
+    rw [hg_def, smul_sub, smul_smul, mul_inv_cancel₀ hs.ne', one_smul]
+  rw [hdiff, hsmul, abs_of_pos hs]
+  calc s * covectorEuclideanNorm (ω₀ x - g x) ≤ s * (ε / s) :=
+        mul_le_mul_of_nonneg_left (hω₀g x) hs.le
+    _ = ε := mul_div_cancel₀ ε hs.ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
