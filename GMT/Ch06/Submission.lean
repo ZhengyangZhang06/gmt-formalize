@@ -625,6 +625,38 @@ theorem Submission.iwl_sp_pn_multilinear_sum_sq_le :
             congrArg (fun v => β v ^ 2)
               (Fin.comp_cons (fun p => EuclideanSpace.basisFun (Fin Q) ℝ p) b i'').symm)
 
+/-- Pullback bound for the Euclidean covector norm: for `L : ℝ^P → ℝ^Q` and a `j`-covector `α`
+on `ℝ^Q`, `|L^#α| ≤ ‖L‖^j |α|`.  The multilinear bound
+`Submission.iwl_sp_pn_multilinear_sum_sq_le` for `β := α` gives
+`∑_i α(L e∘i)² ≤ (‖L‖²)^j ∑_i α(e′∘i)²`, and `α(L e∘i) = (L^#α)(e∘i)` by definition.  By
+`Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul` the two sums over all index tuples are
+`j! |L^#α|²` and `j! |α|²`; cancel `j! > 0` and take square roots. -/
+theorem Submission.iwl_sp_covectorEuclideanNorm_pullback_le : ∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (α : Covector (Eucl Q) j), covectorEuclideanNorm (α.compContinuousLinearMap L) ≤ ‖L‖ ^ j * covectorEuclideanNorm α := by
+  intro P Q j L α
+  -- Sums over all index tuples: `j! |L^#α|²` on `ℝ^P` and `j! |α|²` on `ℝ^Q`.
+  have hP := Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul P j (α.compContinuousLinearMap L)
+  have hQ := Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul Q j α
+  -- The multilinear bound for `β := α`.
+  have hβ := Submission.iwl_sp_pn_multilinear_sum_sq_le P Q j L α.toMultilinearMap
+  have key : (j.factorial : ℝ) * covectorEuclideanNorm (α.compContinuousLinearMap L) ^ 2 ≤
+      (j.factorial : ℝ) * (‖L‖ ^ j * covectorEuclideanNorm α) ^ 2 :=
+    calc (j.factorial : ℝ) * covectorEuclideanNorm (α.compContinuousLinearMap L) ^ 2
+        = ∑ i : Fin j → Fin P,
+            (α.compContinuousLinearMap L fun k => EuclideanSpace.basisFun (Fin P) ℝ (i k)) ^ 2 :=
+          hP.symm
+      -- `(L^#α)(e∘i) = α(L e∘i)` holds by definition (`compContinuousLinearMap_apply`).
+      _ ≤ (‖L‖ ^ 2) ^ j * ∑ i : Fin j → Fin Q,
+            (α fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k)) ^ 2 := hβ
+      _ = (j.factorial : ℝ) * (‖L‖ ^ j * covectorEuclideanNorm α) ^ 2 := by
+          rw [hQ]
+          ring
+  -- Cancel `j! > 0`, then take square roots of nonnegative quantities.
+  have hsq : covectorEuclideanNorm (α.compContinuousLinearMap L) ^ 2 ≤
+      (‖L‖ ^ j * covectorEuclideanNorm α) ^ 2 :=
+    le_of_mul_le_mul_left key (by exact_mod_cast j.factorial_pos)
+  exact le_of_sq_le_sq hsq
+    (mul_nonneg (pow_nonneg (norm_nonneg L) j) (covectorEuclideanNorm_nonneg α))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
