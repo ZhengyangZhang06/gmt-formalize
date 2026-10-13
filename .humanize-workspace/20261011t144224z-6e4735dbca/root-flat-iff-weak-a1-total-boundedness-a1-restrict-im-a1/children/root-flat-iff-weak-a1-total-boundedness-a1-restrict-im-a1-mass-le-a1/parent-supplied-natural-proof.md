@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.restrict_im-a1`
+- Child DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.restrict_im-a1.mass_le-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: part (i), steps 1–3, of the supplied proof of fiw_tb_restrictDomain_mass_im. That argument never uses that W is open, so the hypothesis is dropped here.
+
+Notation. ι := testFormOnInclusion hWU k : D^k(W) → D^k(U). For ω ∈ D^k(W), ιω is ω regarded as a test form on U. It has the same underlying differential form (testFormOnInclusion_coe, true by rfl). By the definition of restrictDomain, Y|_W(ω) = Y(ιω) (GeometricCurrentOn.restrictDomain_apply, true by rfl). |α| := covectorEuclideanNorm α. massAdmissibleOn V k V' is the set of test forms ω ∈ D^k(V) with tsupport ω ⊆ V' and |ω(x)| ≤ 1 for every x.
+
+1. By the definitions of mass and massOn, (Y|_W).mass = (Y|_W).massOn W = sSup A, where A := {ENNReal.ofReal(Y|_W(ω)) : ω ∈ massAdmissibleOn W k W}. Likewise Y.mass = Y.massOn U.
+2. By sSup_le, it suffices to show ENNReal.ofReal(Y|_W(ω)) ≤ Y.massOn U for every ω ∈ massAdmissibleOn W k W.
+3. Fix such an ω, so tsupport ω ⊆ W and |ω(x)| ≤ 1 for every x. Since ιω has the same underlying form as ω, tsupport(ιω) = tsupport ω ⊆ W ⊆ U, and |(ιω)(x)| = |ω(x)| ≤ 1 for every x. Hence ιω ∈ massAdmissibleOn U k U.
+4. GeometricCurrentOn.le_massOn says every admissible evaluation is bounded by the local mass. Applied to Y and ιω ∈ massAdmissibleOn U k U, it gives ENNReal.ofReal(Y(ιω)) ≤ Y.massOn U. Since Y|_W(ω) = Y(ιω), this is ENNReal.ofReal(Y|_W(ω)) ≤ Y.massOn U.
+5. By steps 2–4, (Y|_W).mass = sSup A ≤ Y.massOn U = Y.mass. ∎
+
+Lean remark (not needed for the argument above). This trial proof was kernel-checked at the frozen base d8d46c9 inside the contract scope, with axioms propext, Classical.choice, Quot.sound:
+  intro P k U W hWU Y
+  show sSup ((fun ω ↦ ENNReal.ofReal (Y.restrictDomain hWU ω)) '' massAdmissibleOn W k W) ≤ Y.massOn U
+  apply sSup_le
+  rintro _ ⟨ω, hω, rfl⟩
+  have hadm : testFormOnInclusion hWU k ω ∈ massAdmissibleOn U k U := ⟨by simpa using hω.1.trans hWU, by simpa using hω.2⟩
+  exact Y.le_massOn hadm
+
+## Key steps
+
+1. Unfold (Y|_W).mass = (Y|_W).massOn W as the sSup of ofReal(Y|_W(ω)) over ω ∈ massAdmissibleOn W k W; reduce by sSup_le to a single admissible ω.
+2. ιω = testFormOnInclusion hWU k ω has the same underlying form, so tsupport(ιω) ⊆ W ⊆ U and |ιω(x)| ≤ 1, i.e. ιω ∈ massAdmissibleOn U k U.
+3. GeometricCurrentOn.le_massOn gives ofReal(Y|_W(ω)) = ofReal(Y(ιω)) ≤ Y.massOn U = Y.mass.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n 'restrictDomain' project (snapshot: no match; the frozen contract has no restriction lemma); rg -l 'restrictDomain' mathlib (only unrelated RingTheory/AlgebraTower, Basic/Rel, FieldTheory/IsAlgClosed hits)`
+- `rg -n 'theorem setIntegral_eq_of_subset_of_ae_sdiff_eq_zero |theorem setIntegral_eq_integral_of_forall_compl_eq_zero |theorem restrict_restrict \(hs|theorem ae_restrict_mem₀|theorem ae_restrict_of_ae_restrict_of_subset' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `grep -n 'def \|theorem ' SimonGMT Chapter06/Mass.lean; sed -n 1,80p Chapter06/CurrentLocalEquality.lean; sed -n 100,175p Chapter06/Currents.lean; sed -n 25,110p and 310,360p Chapter03/Rectifiable.lean`
+- `python3 -I scan of dag.json: lean_statement containing 'restrictDomain' (3 nodes) and lean_name/id containing restrict|tangent|fiw_tb`
+- `git show 03443db0c607754737d538401692c78a08383ee0:GMT/Ch06/Submission.lean | grep -n 'theorem Submission.' (br_weightedTangent_congr l.368, br_restrictDomain_isIntegerMultiplicity l.468)`
+- `grep -c fiw_tb_ri_restrictDomain_mass_le dag.json (0); grep -rl fiw_tb_ri_restrictDomain_mass_le .humanize/math-wiki (none); git log --all --oneline -S fiw_tb_ri_restrictDomain_mass_le (none); grep -rn 'restrictDomain_mass|mass_restrictDomain|restrictDomain_massOn|massOn_restrictDomain' simongmt/Poincare (none)`
+- `python3 -I scan of nodes/*/decomposition-v*.json for cross-parent reuse of accepted lean_names (dozens of precedents, all byte-identical types)`
+- `read runtime.py _existing_lean_name_problem, _accepted_checkpoint, _solve_children, _overlay_accepted_children, _fetch_workspace_result, _install_parent_supplied_child_handoff; store.py ensure`
+- `lake build GMT.Ch06.Submission in /tmp/rim-decomp-txz2bX/base (git archive d8d46c9) and /tmp/rim-decomp-txz2bX/acc (git archive 03443db0)`
+- `python3 -I /tmp/rim-tools/gen.py (verifier/gmt-compare.py child_modules contract mode + flow lean_contract.validate_lean_statement); lake env lean gen/{mass_le,im}_NodeChallenge.lean at d8d46c9 (only the expected sorry warning)`
+- `lake env lean Scratch/MassOnly.lean (base) and Scratch/MassAssembly.lean (acc): #print axioms [propext, Classical.choice, Quot.sound]; lake env lean gen3/{mass_le,im,parent}_NodeSolution.lean against scratch Submission (0 errors)`
+- `python3 -I /tmp/rim-tools/validate.py (key/name regexes, validate_lean_statement, _existing_lean_name_problem simulation, acyclicity): all checks passed`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-restrict-im-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-restrict-domain-im-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-restrict-domain-im-a1/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-restrict-domain-im-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/lean_contract.py`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/store.py`
+- `/tmp/rim-decomp-txz2bX/base/Scratch/MassOnly.lean`
+- `/tmp/rim-decomp-txz2bX/acc/Scratch/MassAssembly.lean`
+- `/tmp/rim-decomp-txz2bX/gen/mass_le_NodeChallenge.lean`
+- `/tmp/rim-decomp-txz2bX/gen/im_NodeChallenge.lean`
+- `/tmp/rim-decomp-txz2bX/gen3/parent_NodeSolution.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) has no lemma about restricting a current to a smaller domain: rg finds no restrictDomain in the frozen project, and SimonGMT has none for mass. SimonGMT does supply the API both child proofs use:
+- mass and massOn via massAdmissibleOn and covectorEuclideanNorm, with le_massOn;
+- testFormOnInclusion(_coe) and restrictDomain(_apply);
+- CountablyRectifiable.mono, blowUpMap and HasWeightedApproximateTangentSpaceAt.
+The snapshot Mathlib has the cited lemmas: setIntegral_eq_of_subset_of_ae_sdiff_eq_zero (Bochner/Set.lean:442), setIntegral_eq_integral_of_forall_compl_eq_zero (:486), Measure.restrict_restrict (Restrict.lean:205), ae_restrict_mem₀ (:637) and ae_restrict_of_ae_restrict_of_subset (:654).
+
+The DAG holds the accepted declaration br_restrictDomain_isIntegerMultiplicity (candidate 03443db0, comparator passed). Its frozen type is byte-identical to the second conjunct of the selected type. Its Lean proof, at Submission.lean:468 of 03443db0, implements the supplied steps 4–8 using br_weightedTangent_congr (line 368, same history). It is reused as a child.
+
+The new child fiw_tb_ri_restrictDomain_mass_le is globally unique. Scratch checks:
+- its trial proof is kernel-checked at d8d46c9;
+- the parent assembly is kernel-checked with standard axioms;
+- all challenge and solution modules compile in the comparator's exact scope.

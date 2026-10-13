@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.restrict_im-a1.mass_le-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.restrict_im-a1",
+  "depth": 4,
+  "title": "Restriction to a smaller domain does not increase mass",
+  "statement": "Let P, k ∈ ℕ, U, W ⊆ ℝ^P with W ⊆ U (W need not be open), and Y ∈ D_k(U). Let Y|_W := Y.restrictDomain hWU ∈ D_k(W), so Y|_W(ω) = Y(ιω) for ω ∈ D^k(W), where ι = testFormOnInclusion hWU k regards ω as a test form on U with the same underlying differential form. Then M_W(Y|_W) ≤ M_U(Y), i.e. (Y|_W).mass ≤ Y.mass in [0, ∞].",
+  "lean_statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U) (Y : GeometricCurrentOn U k), (Y.restrictDomain hWU).mass ≤ Y.mass",
+  "lean_name": "fiw_tb_ri_restrictDomain_mass_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-restrict-im-a1-mass-le-a1-a1"
+}
