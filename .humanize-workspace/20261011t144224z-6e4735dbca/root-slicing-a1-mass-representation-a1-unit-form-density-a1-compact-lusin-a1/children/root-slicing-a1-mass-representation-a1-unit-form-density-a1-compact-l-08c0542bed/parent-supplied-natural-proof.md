@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1.compact_lusin-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1.compact_lusin-a1.vector_lusin-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P) with its Euclidean metric and Borel σ-algebra; μ is a measure on this σ-algebra; measure values, ε and η lie in [0, ∞]. H := EuclideanSpace ℝ (Fin N). For a ∈ H and i ∈ Fin N, the coordinate is a_i = ⟨a, e_i⟩, where e_i = EuclideanSpace.single i 1 is the standard basis.
+
+Source: Simon, Introduction to GMT, Ch. 1, 1.17 (Lusin's theorem), applied coordinatewise. This argument is steps 4(b), 5, 6 and 7 of the supplied proof of the parent theorem smr_ufd_compact_lusin_set (step U4 of smr_exists_unit_form_gt). It is extracted with one change: the compact set C₀ there is replaced by an arbitrary Borel set A of finite measure, and one extra compact approximation K of A (step 5) restores compactness.
+
+1. (Closed and compact inner approximation.) For every Borel S ⊆ ℝ^P with μ(S) < ∞ and every δ ∈ (0, ∞], there is a compact, hence closed, F ⊆ S with μ(S ∖ F) < δ.
+ Proof: if μ(S) < δ, take F := ∅. Otherwise 0 < δ ≤ μ(S) < ∞, so μ(S) − δ < μ(S).
+ Every measure on ℝ^P is inner regular by compact sets on Borel sets of finite measure. Justification: ν(B) := μ(B ∩ S) is a finite Borel measure on the complete separable metric space ℝ^P, hence inner regular by compact sets (Ulam's theorem), and ν(K) = μ(K) for K ⊆ S. In Mathlib this is the instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace.
+ So there is a compact F ⊆ S with μ(S) − δ < μ(F). F is closed because ℝ^P is Hausdorff, hence F is Borel. Since μ(F) ≤ μ(S) < ∞, we get μ(S ∖ F) = μ(S) − μ(F) < δ. In Mathlib this is MeasurableSet.exists_isCompact_isClosed_sdiff_lt.
+2. (Error budget.) Since ε ≠ 0 and N + 1 ≠ ∞, there is η ∈ [0, ∞] with 0 < η and (N + 1)·η < ε (for example via ENNReal.exists_pos_mul_lt). Then η < ∞: η = ∞ would give (N + 1)·η = ∞ < ε, which is impossible.
+3. (Coordinates are Borel.) For i ∈ Fin N let u_i : ℝ^P → ℝ, u_i(x) := u(x)_i. The coordinate map H → ℝ, a ↦ a_i, is linear on a finite-dimensional space, hence continuous (EuclideanSpace.proj i) and Borel. So u_i, its composition with the Borel map u, is Borel.
+4. (Lusin's theorem for each coordinate.) Lusin's theorem is available as Poincare.SimonGMT.Chapter01.exists_isClosed_continuousOn_of_measurable (Simon Ch. 1, 1.17). Its setting: ν is a measure on a topological space X whose open sets are measurable, satisfying the closed-regularity hypothesis "for every measurable S with ν(S) ≠ ∞ and every δ ≠ 0 there is a closed F ⊆ S with ν(S ∖ F) < δ". Its conclusion: for every measurable A with ν(A) ≠ ∞, every measurable f : X → ℝ and every ε′ ≠ 0, there is a closed C ⊆ A with ν(A ∖ C) < ε′ such that f is continuous on C.
+ For X = ℝ^P (Borel σ-algebra) and ν = μ, the hypothesis holds by step 1. For each i ∈ Fin N, apply the theorem to A (Borel, μ(A) ≠ ∞), f := u_i (Borel by step 3) and ε′ := η ≠ 0. This gives a closed F_i ⊆ A with μ(A ∖ F_i) < η such that u_i is continuous on F_i.
+5. (A compact piece of A.) Step 1 with S := A and δ := η gives a compact K ⊆ A with μ(A ∖ K) < η.
+6. (The set C.) Put C := K ∩ ⋂_{i ∈ Fin N} F_i (so C = K when N = 0). Every F_i is closed, so ⋂_i F_i is closed. C is the intersection of the compact set K with a closed set, hence compact. Moreover C ⊆ K ⊆ A.
+7. (u is continuous on C.) For each i ∈ Fin N we have C ⊆ F_i, so u_i is continuous on C. A map into the finite product ℝ^{Fin N} is continuous on C iff each coordinate is (continuousOn_pi), so x ↦ (u_i(x))_{i ∈ Fin N} is continuous on C. Now u(x) is the image of (u_i(x))_i under the identification ℝ^{Fin N} → H (WithLp.toLp 2). That identification is a linear bijection between finite-dimensional spaces, hence continuous (PiLp.continuous_toLp). So the composition u is continuous on C.
+8. (Measure of A ∖ C.) Let x ∈ A ∖ C. If x ∉ K, then x ∈ A ∖ K. If x ∈ K, then x ∉ ⋂_i F_i, so x ∉ F_i for some i, and x ∈ A ∖ F_i. Hence A ∖ C ⊆ (A ∖ K) ∪ ⋃_{i ∈ Fin N} (A ∖ F_i). By monotonicity and finite subadditivity, μ(A ∖ C) ≤ μ(A ∖ K) + Σ_{i ∈ Fin N} μ(A ∖ F_i).
+ By step 4, Σ_i μ(A ∖ F_i) ≤ Σ_i η = N·η, which is finite by step 2. Together with μ(A ∖ K) < η (step 5), this gives μ(A ∖ C) < η + N·η = (N + 1)·η < ε by step 2.
+9. (Conclusion.) C is compact, C ⊆ A, μ(A ∖ C) < ε, and u is continuous on C. ∎
+
+Formalization note (not part of the argument): GMT.Ch06.Submission imports neither of the following, and adding both was checked to compile with the frozen submission:
+- `import Poincare.SimonGMT.Chapter01.Lusin`, for SimonGMT's Lusin theorem;
+- `import Mathlib.MeasureTheory.Measure.RegularityCompacts`, for the step-1 instance with an arbitrary μ.
+Lean hints:
+- u_i is `fun x => u x i`, i.e. (u x).ofLp i.
+- Measurability: (EuclideanSpace.proj i).continuous.measurable.comp hu.
+- Finite subadditivity: measure_union_le, measure_iUnion_fintype_le.
+- Strict sum: ENNReal.add_lt_add_of_lt_of_le, with the finiteness of Σ_i μ(A ∖ F_i).
+- Continuity: continuousOn_pi on fun x => WithLp.ofLp (u x), then (PiLp.continuous_toLp 2 _).comp_continuousOn.
+A scratch proof along steps 1–9 compiles with axioms [propext, Classical.choice, Quot.sound].
+
+## Key steps
+
+1. Regularity: each Borel S with μ(S) < ∞ has, for every δ > 0, a compact (hence closed) F ⊆ S with μ(S ∖ F) < δ (InnerRegularCompactLTTop on ℝ^P; MeasurableSet.exists_isCompact_isClosed_sdiff_lt).
+2. Error budget: choose η ∈ (0, ∞) with (N + 1)·η < ε.
+3. Each coordinate u_i is Borel. SimonGMT Lusin (Ch. 1, 1.17), with its closed-regularity hypothesis supplied by the regularity step, gives a closed F_i ⊆ A with μ(A ∖ F_i) < η on which u_i is continuous.
+4. Take a compact K ⊆ A with μ(A ∖ K) < η. Then C := K ∩ ⋂_i F_i is compact and C ⊆ A.
+5. u is continuous on C because all its coordinates are (continuousOn_pi, PiLp.continuous_toLp).
+6. A ∖ C ⊆ (A ∖ K) ∪ ⋃_i (A ∖ F_i), so μ(A ∖ C) < η + N·η = (N + 1)·η < ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum workspace GMT/Ch06/Submission.lean vs snapshot project/GMT/Ch06/Contract.lean (both ea3ee0dd…: frozen submission identical to contract)`
+- `python3 over dag.json: children of root.slicing-a1.mass_representation-a1.unit_form_density-a1 (5 siblings smr_ufd_*, depth 4); regex (?i)lusin|InnerRegular|exists_lt_isCompact|inner approx over lean_statement/statement/title`
+- `grep -c / grep -rl 'smr_ufd_cl_inner_compact' and 'smr_ufd_cl_vector_lusin' in dag.json, nodes/, lake-packages-25730c7c/simongmt/Poincare, mathlib snapshot (0 matches); dag.json lean_name duplicates check (none)`
+- `grep -n 'theorem|lemma' simongmt Poincare/SimonGMT/Chapter01/Lusin.lean (exists_isClosed_continuousOn_of_measurable: real-valued f, closed-regularity hypothesis hreg, MeasurableSet A, nu A ≠ ∞, ε ≠ 0)`
+- `grep instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace (RegularityCompacts.lean:186), MeasurableSet.exists_isCompact_isClosed_sdiff_lt (Regular.lean:859), exists_lt_isCompact_of_ne_top (Regular.lean)`
+- `grep IsOpen.exists_iUnion_isClosed (Topology/MetricSpace/HausdorffDistance.lean:207), tendsto_measure_iUnion_atTop (MeasureTheory/Measure/Continuity.lean:198), continuous_toLp (Analysis/Normed/Lp/PiLp.lean:546), exists_pos_mul_lt (ENNReal)`
+- `grep -rln Lusin mathlib snapshot --include=*.lean (only Function/Jacobian, Constructions/Polish/Basic, MetricSpace/Polish: no Lusin continuity theorem)`
+- `git show d24e9e7b (lpf_lli_inner_compact_approx) and b7b6c027 (lpf_c1r_lusin_closed): accepted children declare `theorem Submission.X` inside namespace GMT.Ch06 in GMT/Ch06/Submission.lean`
+- `sed verifier/gmt-compare.py (child_modules, contract_scope, candidate_inputs: Submission.lean not byte-frozen, new .lean files allowed under GMT/Ch06/) and verifier/lean_contract.py validate_lean_statement`
+- `lean -o: compile frozen Submission (base) and Submission + RegularityCompacts + SimonGMT Lusin imports (extended) into /tmp/cl-decomp-2L5BXI/build{,2}`
+- `lean checks/Avail.lean (base: InnerRegularCompactLTTop μ for arbitrary μ NOT synthesized; finite-measure Regular/InnerRegular synthesized)`
+- `lean checks/gen/NodeChallenge_{00,01,02}.lean (generated by gmt-compare.py child_modules in Contract scope; all elaborate)`
+- `lean checks/Assembly.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `lean checks/ChildA.lean, checks/ChildB.lean (extended env; #print axioms standard); lean checks/BaseFallback.lean (restrict fallback compiles; SimonGMT Lusin unknown under base import)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-lusin-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-lusin-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/gen/NodeChallenge_00_smr_ufd_cl_inner_compact.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/gen/NodeChallenge_01_smr_ufd_cl_vector_lusin.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/gen/NodeChallenge_02_smr_ufd_compact_lusin_set.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/Assembly.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/ChildA.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/ChildB.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/BaseFallback.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/Avail.lean`
+
+Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Contract is byte-identical to the frozen Submission.
+
+Mathlib has no Lusin continuity theorem. SimonGMT's Lusin (Chapter01/Lusin.lean, exists_isClosed_continuousOn_of_measurable) is real-valued only and takes a closed-regularity hypothesis, hence the coordinatewise argument.
+
+Availability under the base import GMT.Ch06.Submission:
+- InnerRegularCompactLTTop for an arbitrary measure on Eucl P is not available. It comes from Mathlib.MeasureTheory.Measure.RegularityCompacts (instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace).
+- Finite-measure Regular/InnerRegular instances are available, so μ.restrict gives a base-import fallback for inner regularity.
+- SimonGMT Lusin needs import Poincare.SimonGMT.Chapter01.Lusin.
+- Adding both imports to Submission compiles, and the comparator allows it.
+
+No existing declaration or DAG node has either child type, and the proposed names occur nowhere. Related accepted nodes (lpf_lli_inner_compact_approx, lpf_c1r_lusin_closed, lpf_wtc_lusin_compact_pieces) have different types, so they cannot be reused.
+
+Lean checks:
+- Both child types and the parent type elaborate in the comparator child scope.
+- The parent's exact frozen type is kernel-checked from the two child types, with axioms [propext, Classical.choice, Quot.sound].
+- Each child has a sorry-free scratch proof with standard axioms.

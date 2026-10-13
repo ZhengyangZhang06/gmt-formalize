@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.restriction_mass-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Mass of the restriction current: M_W(T⌞A) = μ(W ∩ A) (Simon 6.2.8–2.9, R3)",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P, μ a Borel measure on ℝ^P, v : ℝ^P → NVector (Eucl P) k with x ↦ v(x)(ω(x)) μ-integrable for every ω ∈ D^k(U), μ(K) < ∞ for every compact K ⊆ U, |v(x)(α)| ≤ covectorEuclideanNorm α for all x, α, x ↦ v(x)(α) Borel for every α, and for μ-a.e. x some α with covectorEuclideanNorm α ≤ 1 and v(x)(α) = 1. Then for every Borel A ⊆ ℝ^P, every S ∈ D_k(U) with S(ω) = ∫_A v(x)(ω(x)) dμ(x) for all ω ∈ D^k(U), and every open W ⊆ U, M_W(S) = μ(W ∩ A) in [0, ∞].",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) → (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ S : GeometricCurrentOn U k, (∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → S.massOn W = μ (W ∩ A)",
+  "lean_name": "smr_restriction_massOn_eq",
+  "depends_on": [
+    "root.slicing-a1.mass_representation-a1.continuous_mass_bound-a1",
+    "root.slicing-a1.mass_representation-a1.unit_form_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.continuous_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-restriction-mass-a1-a1"
+}

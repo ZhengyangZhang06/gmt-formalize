@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1.small_cutoff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P) with its Borel σ-algebra; all measures are measures on this σ-algebra. Source: Simon, Introduction to GMT, Ch. 6, 2.7–2.9 (pp. 136–137), with Ch. 1, 1.17 (Lusin) and 4.14 (Riesz), as detailed in the supplied proof of the parent theorem smr_exists_unit_form_gt, whose steps are cited here as U1–U9; this argument is extracted from that proof. This is step U6–U7 of the parent proof.
+
+1. (A compact neighbourhood inside W.) Since C is compact, W is open and C ⊆ W, there is r > 0 with K″ := cthickening(r, C) ⊆ W (IsCompact.exists_cthickening_subset_open), where cthickening(δ, C) = {x : infEdist(x, C) ≤ δ}. K″ is closed and bounded (C is bounded), hence compact because ℝ^P is proper (or: IsCompact.cthickening). As K″ ⊆ W ⊆ U, μ(K″) < ∞.
+2. (Shrinking open neighbourhoods.) For j ∈ ℕ let O_j := thickening(r/(j+1), C) = {x : infEdist(x, C) < r/(j+1)}, an open set. Since r/(j+1) decreases in j, O_{j+1} ⊆ O_j. C ⊆ O_j (points of C have infEdist 0 < r/(j+1)), and O_j ⊆ cthickening(r/(j+1), C) ⊆ cthickening(r, C) = K″. Moreover ⋂_j O_j ⊆ C: if infEdist(x, C) < r/(j+1) for every j then infEdist(x, C) = 0, so x ∈ closure C = C (C is compact, hence closed).
+3. (Small halo.) The sets D_j := O_j ∖ C are Borel (open minus closed) and decreasing, μ(D_0) ≤ μ(K″) < ∞, and ⋂_j D_j = (⋂_j O_j) ∖ C = ∅. By continuity from above (tendsto_measure_iInter_atTop) μ(D_j) → μ(∅) = 0. Since ε > 0 there is j with μ(O_j ∖ C) < ε. Fix such a j and put O := O_j.
+4. (Urysohn's lemma.) ℝ^P is locally compact and regular, C is compact, ℝ^P ∖ O is closed, and C ∩ (ℝ^P ∖ O) = ∅ because C ⊆ O. By exists_continuous_one_zero_of_isCompact there is a continuous ψ : ℝ^P → ℝ with ψ = 1 on C, ψ = 0 on ℝ^P ∖ O, compact support, and ψ(x) ∈ [0, 1] for all x.
+5. (Support.) ψ vanishes off O, so support ψ ⊆ O. Hence tsupport ψ = closure(support ψ) ⊆ closure O ⊆ cthickening(r/(j+1), C) (closure_thickening_subset_cthickening) ⊆ K″ ⊆ W, and μ(support ψ ∖ C) ≤ μ(O ∖ C) < ε. Together with step 4, ψ is continuous, has compact support, tsupport ψ ⊆ W, 0 ≤ ψ ≤ 1, ψ = 1 on C and μ(support ψ ∖ C) < ε. ∎
+
+## Key steps
+
+1. Choose r > 0 with the compact K″ := cthickening(r, C) ⊆ W; μ(K″) < ∞.
+2. O_j := thickening(r/(j+1), C) are open, decreasing, contain C, lie in K″ and ⋂_j O_j = C.
+3. Continuity from above on O_j ∖ C (finite measure, empty intersection): some O := O_j has μ(O ∖ C) < ε.
+4. Urysohn (exists_continuous_one_zero_of_isCompact) for C and ℝ^P ∖ O gives ψ ∈ [0,1], ψ = 1 on C, ψ = 0 off O, compact support.
+5. support ψ ⊆ O, so tsupport ψ ⊆ closure O ⊆ K″ ⊆ W and μ(support ψ ∖ C) ≤ μ(O ∖ C) < ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean vs git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean (identical, sha256 ea3ee0dd…)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') via verifier/gmt-compare.py (child scope: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06 …; noncomputable section; end)`
+- `grep -rn 'def covectorEuclideanNorm|abbrev NVector|abbrev Covector' simongmt/Poincare/SimonGMT/`
+- `grep -n 'theorem\|lemma' simongmt Chapter01/Lusin.lean (exists_isClosed_continuousOn_of_measurable: closed-set regularity hypothesis hreg, MeasurableSet A, nu A ≠ ∞, Measurable f, ε ≠ 0)`
+- `grep -rn Lusin mathlib/Mathlib --include=*.lean -l (only Polish/Basic Lusin separation and Jacobian Lusin N; no Lusin continuity theorem)`
+- `grep instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace, MeasurableSet.exists_lt_isCompact_of_ne_top, MeasurableSet.exists_isCompact_isClosed_sdiff_lt in Mathlib/MeasureTheory/Measure/{RegularityCompacts,Regular}.lean`
+- `grep Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean); ContinuousMap.exists_restrict_eq, ContinuousMap.exists_forall_mem_restrict_eq (Topology/TietzeExtension.lean)`
+- `grep exists_continuous_one_zero_of_isCompact (Topology/UrysohnsLemma.lean); IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, closure_thickening_subset_cthickening, closure_eq_iInter_thickening (Topology/MetricSpace/Thickening.lean); IsOpen.exists_iUnion_isClosed (Topology/MetricSpace/HausdorffDistance.lean)`
+- `grep tendsto_measure_iUnion_atTop, tendsto_measure_iInter_atTop (MeasureTheory/Measure/Continuity.lean); integral_inter_add_sdiff, norm_setIntegral_le_of_norm_le_const (MeasureTheory/Integral/Bochner/Set.lean)`
+- `grep Measurable.inner (MeasureTheory/Function/SpecialFunctions/Inner.lean, not imported by Submission); scoped inner notation and class Inner (Analysis/InnerProductSpace/Defs.lean)`
+- `python3 over dag.json nodes lean_name/lean_statement (212 nodes): smr_covector_coord_isometry type, smr_* siblings, lpf_wtc_lusin_compact_pieces, slicing_mb_cutoff, isoperimetric_lattice_face_cutoff; grep -rl smr_ufd_* in dag.json, nodes/, simongmt (no matches)`
+- `sed -n 255,320p book/sources/chapter-06-source.txt (Simon 2.7–2.9 text)`
+- `lake build GMT.Ch06.Submission in scratch /tmp/ufd-split-IpAAXq (frozen d8d46c9, shared packages lake-packages-25730c7c)`
+- `lake env lean Scratch/Children.lean, Scratch/Challenges.lean (5 child types in comparator scope), Scratch/Assembly.lean and Scratch/Assembly2.lean (#print axioms), Scratch/Avail.lean and Scratch/Avail2.lean (import availability), Scratch/Child{1..5}/Proof.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Complex/Tietze.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/TietzeExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SpecialFunctions/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt`
+- `/tmp/ufd-split-IpAAXq/Scratch/Challenges.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Assembly2.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child1/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child2/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child3/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child4/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child5/Proof.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract, byte-identical to the frozen Contract and Submission. Child types therefore use only contract names, SimonGMT names (Covector, NVector, covectorEuclideanNorm) and Mathlib names.
+
+Available under the base import GMT.Ch06.Submission:
+- measure_inter_conull, tendsto_measure_iUnion_atTop and tendsto_measure_iInter_atTop;
+- IsCompact.exists_cthickening_subset_open and closure_thickening_subset_cthickening;
+- Urysohn (exists_continuous_one_zero_of_isCompact);
+- integral_inter_add_sdiff, norm_setIntegral_le_of_norm_le_const and LinearMap.continuous_of_finiteDimensional.
+
+The following need extra imports, each checked to compile with the frozen submission:
+- the Polish inner-regularity instance InnerRegularCompactLTTop and MeasurableSet.exists_lt_isCompact_of_ne_top / exists_isCompact_isClosed_sdiff_lt (RegularityCompacts);
+- SimonGMT Lusin (Chapter01/Lusin; Mathlib has no Lusin continuity theorem);
+- Tietze, ContinuousMap.exists_restrict_eq and the closed-unit-ball instance (TietzeExtension, Complex.Tietze).
+
+Measurable.inner is not imported, so use continuous_inner. The ⟪·,·⟫_ℝ notation is scoped, so the types write inner ℝ.
+
+No existing declaration matches any proposed child type. The Lusin and cutoff nodes in other branches have different types, so fresh smr_ufd_* names are used; none occurs in dag.json, nodes/, SimonGMT or Mathlib.
+
+All five child types elaborate in the comparator child scope. The parent's exact frozen type is kernel-checked from the sibling isometry type and the five child types with axioms [propext, Classical.choice, Quot.sound]. Each child also has a sorry-free scratch proof with standard axioms.

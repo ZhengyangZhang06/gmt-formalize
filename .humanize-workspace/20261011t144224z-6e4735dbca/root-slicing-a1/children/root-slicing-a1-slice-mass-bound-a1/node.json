@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1",
+  "parent_id": "root.slicing-a1",
+  "depth": 2,
+  "title": "Mass bound for slices with a measurable majorant (Simon 4.9–4.11)",
+  "statement": "For all P, m, every open U ⊆ ℝ^P, every T ∈ D_{m+1}(U) with M_W(T) < ∞ and M_W(∂T) < ∞ for all open W ⊂⊂ U, every f : ℝ^P → ℝ which is L-Lipschitz on U, and every family S : ℝ → D_m(U) with IsSlice T f t (S t) for every t: for every open W ⊆ U, every L_W ≥ 0 with ‖Df(x)‖ ≤ L_W for Lebesgue-a.e. x ∈ W (Df = fderiv), every a < b and every R with IsRestriction T {x ∈ U : a < f(x) < b} R, there is a measurable g : ℝ → [0,∞] with M_W(S t) ≤ g(t) for all t ∈ (a,b) and ∫_{(a,b)} g dt ≤ L_W·M_W(R).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ S : ℝ → GeometricCurrentOn U m, (∀ t, IsSlice T f t (S t)) → ∀ W, IsOpen W → W ⊆ U → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → ∀ a b : ℝ, a < b → ∀ R : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ a < f x ∧ f x < b} R → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ t ∈ Ioo a b, (S t).massOn W ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (LW : ℝ≥0∞) * R.massOn W",
+  "lean_name": "slicing_mass_bound",
+  "depends_on": [
+    "root.slicing-a1.mass_representation-a1",
+    "root.slicing-a1.representation_unique-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.representation_unique-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-a1"
+}

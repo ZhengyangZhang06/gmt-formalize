@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Riesz representation (Simon 1.4.14) for locally bounded functionals on C_c(U; ℝ^N), U ⊆ ℝ^P open, with a Borel measure on ℝ^P and a Borel field of norm ≤ 1",
+  "statement": "Let P, N ∈ ℕ, U ⊆ ℝ^P open and L : (ℝ^P → ℝ^N) → ℝ (ℝ^N = EuclideanSpace ℝ (Fin N)) be additive and homogeneous on CF_N(U) := {f : ℝ^P → ℝ^N continuous, compactly supported, tsupport f ⊆ U}, and locally bounded above: for every compact K ⊆ U there is B with L(f) ≤ B for all continuous f with tsupport f ⊆ K and ‖f(x)‖ ≤ 1 for all x. Then there are a Borel measure μ on ℝ^P and a Borel map ν : ℝ^P → ℝ^N with μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, ‖ν(x)‖ ≤ 1 for all x, ‖ν(x)‖ = 1 for μ-a.e. x, and, for every f ∈ CF_N(U), x ↦ ⟨f(x), ν(x)⟩ is μ-integrable and L(f) = ∫ ⟨f(x), ν(x)⟩ dμ(x).",
+  "lean_statement": "∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → EuclideanSpace ℝ (Fin N)) → ℝ, (∀ f g : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → L (f + g) = L f + L g) → (∀ (c : ℝ) (f : Eucl P → EuclideanSpace ℝ (Fin N)), Continuous f → HasCompactSupport f → tsupport f ⊆ U → L (c • f) = c * L f) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → tsupport f ⊆ K → (∀ x, ‖f x‖ ≤ 1) → L f ≤ B) → ∃ (μ : Measure (Eucl P)) (ν : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable ν ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ x, ‖ν x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable (fun x => inner ℝ (f x) (ν x)) μ ∧ L f = ∫ x, inner ℝ (f x) (ν x) ∂μ",
+  "lean_name": "smr_riesz_borel_euclidean",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-riesz-borel-a1-a1"
+}

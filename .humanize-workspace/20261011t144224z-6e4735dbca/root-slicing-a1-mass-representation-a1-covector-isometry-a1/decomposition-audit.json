@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm|euclideanCovectorCoordinate|wedgeCovectors_apply_det|def wedgeCovectors|SimonMultiIndex|abbrev Covector|def Covector|^import",
+        "smr_ci_|smr_covector_coord_isometry",
+        "structure WithLp|def (toLp|ofLp)|def linearEquiv",
+        "theorem EuclideanSpace.norm_eq|basisFun_apply|def proj",
+        "range_inj_of_wellFoundedLT",
+        "theorem monotone_sort|def sort|theorem ext_alternating|theorem map_perm|theorem det_eq_zero_of_row_eq_zero",
+        "Exact DAG lean_name and lean_statement comparisons for smr_ci_coord_sum_smul_wedge, smr_ci_covector_eq_zero_of_coord, smr_ci_norm_eq_sqrt_sum_coord_sq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smr-ci-independent-audit-0ppcd8nb/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smr-ci-independent-audit-0ppcd8nb/Probe.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smr-ci-independent-audit-0ppcd8nb/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v2.json",
+        "/tmp/smr-ci-independent-audit-0ppcd8nb/ChallengeTypes.lean",
+        "/tmp/smr-ci-independent-audit-0ppcd8nb/Probe.lean",
+        "/tmp/smr-ci-independent-audit-0ppcd8nb/Assembly.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen contract. Snapshot project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d were verified; inspected Mathlib files match the installed package, and frozen Contract/Submission match the workspace copies. SimonGMT supplies the stated covector definitions and determinant formula. No proposed name occurs in the searched snapshot/project library or current DAG; no existing declaration is being reused. All three one-line child propositions elaborate independently in the comparator scope without their implementations. Explicit instance inspection confirms continuous alternating-map scalar multiplication and the Euclidean L² norm; wedgeCovectors_apply_det uses Matrix.of. The cited library results have only standard axioms. The split is appropriate: the children separately establish coordinate surjectivity, coordinate injectivity, and the norm identity. Their empty dependency lists are correctly directed and acyclic. Independently compiled Assembly.lean proves the exact selected parent proposition from the three verbatim child hypotheses, using only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coord_sum_wedge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including all parameters and coefficients. The proof correctly obtains the identity determinant on the diagonal. Off the diagonal, equal range cardinalities and uniqueness of increasing embeddings justify the missing coordinate and zero row. Pointwise evaluation then reduces the sum to c J. The Kronecker corollary follows by choosing indicator coefficients. Empty and degree-zero cases are covered. The proof is complete and non-circular; the name is bare and unreserved."
+    },
+    {
+      "key": "coord_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact vanishing hypothesis and conclusion match. Alternation eliminates noninjective coordinate tuples; sorting an injective tuple gives an order embedding, and its invertible permutation sign transfers vanishing. Basis extensionality then proves equality with the zero covector. The argument includes k = 0 and k > P, requires no other child or parent conclusion, and gives sufficient formalization detail. The name is bare and unreserved."
+    },
+    {
+      "key": "norm_coord",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the coefficient-norm formula in the prose. The proof rewrites basisFun as single, removes precisely the zero summands, and supplies mutually inverse maps between strictly increasing functions and order embeddings. Matching summands and applying Real.sqrt establish the claimed equality without additional hypotheses. Empty and singleton index cases are valid. The proof is complete and independent; the name is bare and unreserved."
+    }
+  ],
+  "required_changes": []
+}

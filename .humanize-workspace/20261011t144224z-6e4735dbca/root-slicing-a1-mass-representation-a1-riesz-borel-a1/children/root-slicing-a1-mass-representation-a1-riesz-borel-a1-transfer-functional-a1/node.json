@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1.transfer_functional-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1",
+  "depth": 4,
+  "title": "Zero extension turns a locally bounded functional on CF_N(U) into a locally bounded linear functional on C_c(↥U, ℝ^N)",
+  "statement": "Let P, N ∈ ℕ, U ⊆ ℝ^P open, H := ℝ^N = EuclideanSpace ℝ (Fin N), and L : (ℝ^P → H) → ℝ be additive and homogeneous on CF_N(U) := {f : ℝ^P → H continuous, compactly supported, tsupport f ⊆ U} (L(f + g) = L f + L g and L(c • f) = c · L f for f, g ∈ CF_N(U), c ∈ ℝ) and locally bounded above (for every compact K ⊆ U there is B with L(f) ≤ B for every continuous f with tsupport f ⊆ K and ‖f(x)‖ ≤ 1 for all x). Let Y := ↥U (U with the subspace topology) and ι : Y → ℝ^P the inclusion. Then there is an ℝ-linear map L′ : C_c(Y, H) → ℝ such that (a) for every compact K_Y ⊆ Y there is B ∈ ℝ with L′(g) ≤ B for every g ∈ C_c(Y, H) with ‖g(y)‖ ≤ 1 for all y and tsupport g ⊆ K_Y, and (b) for every f ∈ CF_N(U) there is g ∈ C_c(Y, H) with g(y) = f(ι y) for all y ∈ Y and L(f) = L′(g).",
+  "lean_statement": "∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → EuclideanSpace ℝ (Fin N)) → ℝ, (∀ f g : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → L (f + g) = L f + L g) → (∀ (c : ℝ) (f : Eucl P → EuclideanSpace ℝ (Fin N)), Continuous f → HasCompactSupport f → tsupport f ⊆ U → L (c • f) = c * L f) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → tsupport f ⊆ K → (∀ x, ‖f x‖ ≤ 1) → L f ≤ B) → ∃ L' : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ, (∀ K : Set ↥U, IsCompact K → ∃ B : ℝ, ∀ g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)), (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L' g ≤ B) ∧ ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)), (∀ y : ↥U, g y = f ↑y) ∧ L f = L' g",
+  "lean_name": "smr_rb_transfer_functional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-riesz-borel-a1-transfer-functional-a1-a1"
+}

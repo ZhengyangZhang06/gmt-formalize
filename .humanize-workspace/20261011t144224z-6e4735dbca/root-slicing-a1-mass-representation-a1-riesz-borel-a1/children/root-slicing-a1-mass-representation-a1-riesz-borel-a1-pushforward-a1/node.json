@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1.pushforward-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1",
+  "depth": 4,
+  "title": "Push-forward of Borel representing data from the open subspace ↥U to ℝ^P",
+  "statement": "Let P, N ∈ ℕ, U ⊆ ℝ^P open, Y := ↥U with the subspace topology and subspace (Borel) σ-algebra, ι : Y → ℝ^P the inclusion, H := EuclideanSpace ℝ (Fin N), m a measure on Y with m(K) < ∞ for every compact K ⊆ Y, and ν₁ : Y → H measurable with ‖ν₁(y)‖ ≤ 1 for all y and ‖ν₁(y)‖ = 1 for m-a.e. y. Then there are a Borel measure μ on ℝ^P and a Borel map ν : ℝ^P → H such that μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, ‖ν(x)‖ ≤ 1 for all x, ‖ν(x)‖ = 1 for μ-a.e. x, and for every continuous compactly supported f : ℝ^P → H with tsupport f ⊆ U the function x ↦ ⟨f(x), ν(x)⟩ is μ-integrable and ∫ ⟨f(x), ν(x)⟩ dμ(x) = ∫_Y ⟨f(ι y), ν₁(y)⟩ dm(y).",
+  "lean_statement": "∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (m : Measure ↥U) (ν₁ : ↥U → EuclideanSpace ℝ (Fin N)), (∀ K : Set ↥U, IsCompact K → m K < ∞) → Measurable ν₁ → (∀ y, ‖ν₁ y‖ ≤ 1) → (∀ᵐ y ∂m, ‖ν₁ y‖ = 1) → ∃ (μ : Measure (Eucl P)) (ν : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable ν ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ x, ‖ν x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable (fun x => inner ℝ (f x) (ν x)) μ ∧ ∫ x, inner ℝ (f x) (ν x) ∂μ = ∫ y, inner ℝ (f ↑y) (ν₁ y) ∂m",
+  "lean_name": "smr_rb_pushforward_subtype",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-riesz-borel-a1-pushforward-a1-a1"
+}

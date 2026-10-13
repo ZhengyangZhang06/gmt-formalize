@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.riesz_forms-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Riesz representation for locally bounded linear functionals on continuous compactly supported k-forms (Simon 6.2.7, R1)",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P open, and L : (ℝ^P → Covector (Eucl P) k) → ℝ additive and homogeneous on CF(U) such that for every compact K ⊆ U there is B with |L(φ)| ≤ B for all continuous φ with tsupport φ ⊆ K and covectorEuclideanNorm(φ(x)) ≤ 1 for all x. Then there are a Borel measure μ on ℝ^P and v : ℝ^P → NVector (Eucl P) k such that: for every φ ∈ CF(U), x ↦ v(x)(φ(x)) is μ-integrable and L(φ) = ∫ v(x)(φ(x)) dμ(x); μ(ℝ^P ∖ U) = 0; μ(K) < ∞ for compact K ⊆ U; |v(x)(α)| ≤ covectorEuclideanNorm α for all x, α; x ↦ v(x)(α) is Borel for each α; and for μ-a.e. x there is a covector α with covectorEuclideanNorm α ≤ 1 and v(x)(α) = 1.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → Covector (Eucl P) k) → ℝ, (∀ φ ψ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → Continuous ψ → HasCompactSupport ψ → tsupport ψ ⊆ U → L (φ + ψ) = L φ + L ψ) → (∀ (c : ℝ) (φ : Eucl P → Covector (Eucl P) k), Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → L (c • φ) = c * L φ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → tsupport φ ⊆ K → (∀ x, covectorEuclideanNorm (φ x) ≤ 1) → |L φ| ≤ B) → ∃ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → Integrable (fun x => v x (φ x)) μ ∧ L φ = ∫ x, v x (φ x) ∂μ) ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) ∧ (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) ∧ ∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1",
+  "lean_name": "smr_riesz_continuous_forms",
+  "depends_on": [
+    "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+    "root.slicing-a1.mass_representation-a1.riesz_borel-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-riesz-forms-a1-a1"
+}

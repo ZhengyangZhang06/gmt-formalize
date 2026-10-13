@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1.borel_riesz-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.riesz_borel-a1",
+  "depth": 4,
+  "title": "Riesz representation (Simon 1.4.14) with a Borel measure and a Borel unit field on a σ-compact locally compact Hausdorff space",
+  "statement": "Let Y be a Hausdorff, locally compact, σ-compact topological space equipped with its Borel σ-algebra, N ∈ ℕ, H := EuclideanSpace ℝ (Fin N), and L : C_c(Y, H) → ℝ an ℝ-linear map such that for every compact K ⊆ Y there is B ∈ ℝ with L(g) ≤ B for every g ∈ C_c(Y, H) with ‖g(y)‖ ≤ 1 for all y and tsupport g ⊆ K. Then there are a (Borel) measure m on Y and a Borel measurable ν : Y → H such that m(K) < ∞ for every compact K ⊆ Y, ‖ν(y)‖ ≤ 1 for all y, ‖ν(y)‖ = 1 for m-a.e. y, and L(g) = ∫_Y ⟨g(y), ν(y)⟩ dm(y) for every g ∈ C_c(Y, H).",
+  "lean_statement": "∀ (Y : Type) [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y] [SigmaCompactSpace Y] [MeasurableSpace Y] [BorelSpace Y] (N : ℕ) (L : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ), (∀ K : Set Y, IsCompact K → ∃ B : ℝ, ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L g ≤ B) → ∃ (m : Measure Y) (ν : Y → EuclideanSpace ℝ (Fin N)), (∀ K : Set Y, IsCompact K → m K < ∞) ∧ Measurable ν ∧ (∀ y, ‖ν y‖ ≤ 1) ∧ (∀ᵐ y ∂m, ‖ν y‖ = 1) ∧ ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), L g = ∫ y, inner ℝ (g y) (ν y) ∂m",
+  "lean_name": "smr_rb_borel_riesz_sigma_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-riesz-borel-a1-borel-riesz-a1-a1"
+}

@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace|exists_lt_isCompact_of_ne_top|exists_isCompact_isClosed_sdiff_lt|exists_iUnion_isClosed|tendsto_measure_iUnion_atTop|theorem continuous_toLp",
+        "theorem|lemma|axiom|sorry|admit|hreg|variable|namespace",
+        "exists_pos_mul_lt|add_lt_add_of_lt_of_le",
+        "smr_ufd_cl_inner_compact|smr_ufd_cl_vector_lusin",
+        "python3 /tmp/compact-lusin-audit-vubzfkxx/run_check.py Challenges",
+        "python3 /tmp/compact-lusin-audit-vubzfkxx/run_check.py ChildA",
+        "python3 /tmp/compact-lusin-audit-vubzfkxx/run_check.py ChildB",
+        "python3 /tmp/compact-lusin-audit-vubzfkxx/run_check.py Assembly",
+        "python3 /tmp/compact-lusin-audit-vubzfkxx/run_check.py References"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-lusin-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-lusin-a1/decomposition-v1.json",
+        "/tmp/compact-lusin-audit-vubzfkxx/checks/Challenges.lean",
+        "/tmp/compact-lusin-audit-vubzfkxx/checks/ChildA.lean",
+        "/tmp/compact-lusin-audit-vubzfkxx/checks/ChildB.lean",
+        "/tmp/compact-lusin-audit-vubzfkxx/checks/Assembly.lean",
+        "/tmp/compact-lusin-audit-vubzfkxx/checks/References.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and relevant source compatibility. Both exact child propositions elaborate in the frozen comparator scope without child implementations. Neither proposed name is reserved elsewhere; the declaration search found only this proposal. Independently checked and recompiled the supplied child proofs and exact parent assembly; all use only propext, Classical.choice and Quot.sound. The regularity instance, real-valued Lusin theorem, Euclidean topology instances and finite ENNReal arithmetic support the supplied arguments. The split is appropriate: two independent analytic obligations establish precisely the selected parent, using compact C₀ followed by vector Lusin with error μ(C₀) − c. Empty dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "inner_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches every prose hypothesis and conclusion; smr_ufd_cl_inner_compact is a bare, unreserved identifier. Each exhaustion step is valid, including containment in arbitrary U through W. Continuity from below supplies a finite-measure Borel piece above c, even when μ(W ∩ E) is infinite. Compact inner regularity then gives the claimed K. No global finiteness, openness of U, or parent theorem is assumed. The supplied proof is complete and directly formalizable."
+    },
+    {
+      "key": "vector_lusin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches the prose: for ENNReal, μ(A) ≠ ∞ expresses finiteness and ε ≠ 0 expresses positivity. smr_ufd_cl_vector_lusin is a bare, unreserved identifier. The proof independently supplies Lusin's full closed-regularity hypothesis, obtains measurable coordinates, and correctly transfers coordinate continuity through PiLp. Intersecting with K ensures compactness, including N = 0. Positive finite η makes the strict finite-sum estimate valid, also for ε = ∞. No unstated measure assumption or circular dependency is used; the supplied proof is complete."
+    }
+  ],
+  "required_changes": []
+}

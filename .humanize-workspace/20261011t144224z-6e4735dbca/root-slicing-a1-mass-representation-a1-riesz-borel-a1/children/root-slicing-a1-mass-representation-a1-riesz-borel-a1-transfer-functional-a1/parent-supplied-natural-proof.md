@@ -1,0 +1,116 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.mass_representation-a1.riesz_borel-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1.riesz_borel-a1.transfer_functional-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P); H := EuclideanSpace ℝ (Fin N); CF_N(U) := {f : ℝ^P → H : f continuous, HasCompactSupport f, tsupport f ⊆ U}. Y := ↥U is U with the subspace topology (Hausdorff, as a subspace of ℝ^P) and ι := Subtype.val : Y → ℝ^P is the inclusion; C_c(Y, H) = CompactlySupportedContinuousMap Y H with pointwise addition and scalar multiplication. This is the topological part of step 1 and steps 2–3 (including the converse half of step 2) of the parent proof of smr_riesz_borel_euclidean, written out in full.
+
+0. (Extension by zero.) For g ∈ C_c(Y, H) define ĝ : ℝ^P → H by ĝ(x) := g(⟨x, hx⟩) if hx : x ∈ U, and ĝ(x) := 0 if x ∉ U. (In Lean ĝ = Function.extend Subtype.val g 0: it equals g ⟨x, hx⟩ for x ∈ U by Function.extend_val_apply, and 0 for x ∉ U by Function.extend_apply', because a point x ∉ U is not of the form ι y.)
+
+1. (Pointwise bound.) If ‖g(y)‖ ≤ 1 for all y ∈ Y, then ‖ĝ(x)‖ ≤ 1 for all x ∈ ℝ^P: for x ∈ U, ‖ĝ(x)‖ = ‖g(⟨x, hx⟩)‖ ≤ 1; for x ∉ U, ‖ĝ(x)‖ = ‖0‖ = 0 ≤ 1.
+
+2. (Support of ĝ.) Put C_g := ι(tsupport g). As g has compact support, tsupport g is compact, so C_g is compact (continuous image of a compact set) and hence closed in the Hausdorff space ℝ^P. If ĝ(x) ≠ 0, then x ∈ U (otherwise ĝ(x) = 0) and g(⟨x, hx⟩) ≠ 0, so x = ι⟨x, hx⟩ ∈ ι(support g) ⊆ C_g. Thus support ĝ ⊆ C_g and, C_g being closed, tsupport ĝ = closure(support ĝ) ⊆ C_g. Consequently (a) tsupport ĝ is a closed subset of the compact set C_g, so ĝ has compact support; (b) tsupport ĝ ⊆ C_g ⊆ U, since every point of C_g has the form ι y ∈ U. (Mathlib: HasCompactSupport.tsupport_extend_zero_subset and HasCompactSupport.extend_zero, applied with continuous_subtype_val.)
+
+3. (Continuity of ĝ.) Let x ∈ ℝ^P. If x ∉ tsupport ĝ, then the open set ℝ^P ∖ tsupport ĝ is a neighbourhood of x on which ĝ vanishes identically, so ĝ is continuous at x. If x ∈ tsupport ĝ, then x ∈ U by step 2(b). Since U is open, ι is an open embedding, so continuity of ĝ at x = ι⟨x, hx⟩ is equivalent to continuity of ĝ ∘ ι at ⟨x, hx⟩; and ĝ ∘ ι = g (step 0) is continuous. Hence ĝ is continuous (Mathlib: HasCompactSupport.continuous_extend_zero, which uses IsOpen U). With step 2, ĝ ∈ CF_N(U) for every g ∈ C_c(Y, H).
+
+4. (The extension is linear.) For g, h ∈ C_c(Y, H) and c ∈ ℝ we have (g + h)^ = ĝ + ĥ and (c • g)^ = c • ĝ as functions ℝ^P → H: for x ∈ U both sides evaluate to g(⟨x, hx⟩) + h(⟨x, hx⟩), respectively c • g(⟨x, hx⟩); for x ∉ U both sides evaluate to 0 = 0 + 0, respectively 0 = c • 0.
+
+5. (Definition and linearity of L′.) Define L′(g) := L(ĝ) for g ∈ C_c(Y, H). By step 4, L′(g + h) = L(ĝ + ĥ); since ĝ, ĥ ∈ CF_N(U) (steps 2–3), the additivity hypothesis gives L(ĝ + ĥ) = L(ĝ) + L(ĥ) = L′(g) + L′(h). Likewise L′(c • g) = L(c • ĝ) = c · L(ĝ) = c · L′(g) by the homogeneity hypothesis, applicable because ĝ ∈ CF_N(U). Hence L′ : C_c(Y, H) → ℝ is ℝ-linear.
+
+6. (Local bound for L′; first conjunct.) Let K_Y ⊆ Y be compact. Then K := ι(K_Y) is compact (continuous image) and K ⊆ U. The local boundedness hypothesis gives B ∈ ℝ with L(f) ≤ B for every continuous f : ℝ^P → H with tsupport f ⊆ K and ‖f(x)‖ ≤ 1 for all x. Let g ∈ C_c(Y, H) with ‖g(y)‖ ≤ 1 for all y and tsupport g ⊆ K_Y. Then ĝ is continuous (step 3), tsupport ĝ ⊆ ι(tsupport g) ⊆ ι(K_Y) = K (step 2 and monotonicity of images), and ‖ĝ(x)‖ ≤ 1 for all x (step 1). Therefore L′(g) = L(ĝ) ≤ B. This single B serves for all such g.
+
+7. (Restricting f ∈ CF_N(U) to Y.) Let f ∈ CF_N(U) and K′ := ι⁻¹(tsupport f) ⊆ Y. The set tsupport f is compact and contained in U = range ι, and ι is an inducing map (a topological embedding); for an inducing map and a subset S of its range, ι⁻¹(S) is compact iff S is compact (Topology.IsInducing.isCompact_preimage_iff). So K′ is compact. The map f ∘ ι : Y → H is continuous (composition of continuous maps) and vanishes outside K′: if y ∉ K′ then ι y ∉ tsupport f, hence f(ι y) = 0 (image_eq_zero_of_notMem_tsupport). As Y is Hausdorff, a function vanishing outside a compact set has compact support (HasCompactSupport.intro). Let g ∈ C_c(Y, H) be f ∘ ι bundled with these facts; by construction g(y) = f(ι y) for every y ∈ Y.
+
+8. (ĝ = f, hence L(f) = L′(g); second conjunct.) For x ∈ U, ĝ(x) = g(⟨x, hx⟩) = f(x). For x ∉ U, ĝ(x) = 0, and x ∉ tsupport f because tsupport f ⊆ U, so f(x) = 0 = ĝ(x). Hence ĝ = f and L(f) = L(ĝ) = L′(g).
+
+9. (Conclusion.) L′ from step 5 satisfies the local bound of step 6, and for every f ∈ CF_N(U) the element g of step 7 satisfies g(y) = f(ι y) for all y and L(f) = L′(g) (step 8). This is exactly the assertion. ∎
+
+Formalization note (not part of the argument): the statement uses only names visible after import GMT.Ch06.Submission; no extra import is needed for this child. Define E g := Function.extend Subtype.val (⇑g) 0 and build L′ as a LinearMap record {toFun := fun g => L (E g), map_add' := …, map_smul' := …}; the pointwise identities of step 4 follow from Function.extend_val_apply / Function.extend_apply' with CompactlySupportedContinuousMap.coe_add / coe_smul. A scratch Lean proof following exactly these steps was kernel-checked against the frozen submission (axioms: propext, Classical.choice, Quot.sound).
+
+## Key steps
+
+1. Extend g ∈ C_c(↥U, H) by zero to ĝ = Function.extend Subtype.val g 0; ĝ = g on U and 0 off U, and ‖g‖ ≤ 1 implies ‖ĝ‖ ≤ 1.
+2. tsupport ĝ ⊆ ι(tsupport g), a compact (hence closed) subset of U; so ĝ has compact support with tsupport in U.
+3. ĝ is continuous since U is open (HasCompactSupport.continuous_extend_zero); hence ĝ ∈ CF_N(U).
+4. g ↦ ĝ is additive and homogeneous pointwise, so L′(g) := L(ĝ) is ℝ-linear by the additivity/homogeneity of L on CF_N(U).
+5. For compact K_Y ⊆ ↥U use the bound B for K = ι(K_Y): tsupport ĝ ⊆ ι(tsupport g) ⊆ K and ‖ĝ‖ ≤ 1 give L′(g) ≤ B.
+6. For f ∈ CF_N(U), g := f ∘ ι has compact support (ι⁻¹(tsupport f) is compact as tsupport f ⊆ range ι), g y = f ↑y, and ĝ = f, so L f = L′ g.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp / sha256sum local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean and GMT/Ch06/Submission.lean (identical, sha256 ea3ee0dd…)`
+- `rg -n "CompactlySupportedContinuousMap|rieszMeasure|simon_theorem_4_14|IsLocallyBoundedCcFunctional|extend Subtype.val|Function.extend" project/GMT (only README tool lists: Ch06/README.md:84,94; Ch01/README.md:40-41)`
+- `rg -n "extend_one\b|extend_zero\b|continuous_extend_one|tsupport_extend|mulSupport_extend_one" mathlib/Mathlib --include=*.lean; sed -n 310,352p mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `rg -n "theorem integral_trim|MeasurableEmbedding.integral_map" mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `rg -n "NullMeasurable.aemeasurable" mathlib/Mathlib/MeasureTheory`
+- `rg -n "theorem measurable_extend|theorem ae_map_iff|theorem map_apply" mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `rg -n "sigmaCompactSpace_of_locallyCompact_secondCountable|IsOpen.locallyCompactSpace|instance Subtype.borelSpace" mathlib/Mathlib`
+- `rg -n "theorem Measurable.inner" mathlib/Mathlib (only MeasureTheory/Function/SpecialFunctions/Inner.lean, not imported by the frozen submission)`
+- `rg -n "setIntegral_eq_integral_of_forall_compl_eq_zero|integrableOn_iff_integrable_of_support_subset" mathlib/Mathlib/MeasureTheory`
+- `grep -n simon_theorem_4_14 and full read of simongmt Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean; grep -n declarations in VectorFunctionalEnvelope.lean, RadonCaratheodoryIntegral.lean, RadonOuterMeasure.lean, RegularityCompletion.lean, Basic.lean (pinned simongmt 2b3663083f3f in lake-packages-25730c7c)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py on the three child statements`
+- `python3 listing of dag.json lean_name for all 211 nodes; grep -rn smr_rb_ dag.json nodes/ and simongmt (no matches)`
+- `lake build GMT.Ch06.Submission in scratch /tmp/rb-split-Sjkh67 (frozen d8d46c9, pinned shared packages)`
+- `lake env lean Scratch/Avail.lean (name availability under import GMT.Ch06.Submission); Scratch/Inst.lean (#synth MeasurableSpace/BorelSpace/CountablyGenerated on EuclideanSpace, Module on CompactlySupportedContinuousMap, subtype instances)`
+- `lake env lean Scratch/Challenge_smr_rb_*.lean (three child types in comparator child scope, 0 errors); Scratch/Assembly.lean (parent from sorry'd children); Scratch/Proofs.lean (#print axioms of all three children and the parent)`
+- `git show --stat of accepted leaf commits cb89cc7f, 8c000d1f, 3ccbe082, ca04907a, eefd7c3e, 6c6b4b27, 26d9d850, e4a2285e (24–89 inserted lines each; granularity calibration)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch01/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Notation/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SpecialFunctions/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-riesz-borel-a1/parent-child-handoff.json`
+- `/tmp/rb-split-Sjkh67/Scratch/Avail.lean`
+- `/tmp/rb-split-Sjkh67/Scratch/Inst.lean`
+- `/tmp/rb-split-Sjkh67/Scratch/Challenge_smr_rb_transfer_functional.lean`
+- `/tmp/rb-split-Sjkh67/Scratch/Challenge_smr_rb_borel_riesz_sigma_compact.lean`
+- `/tmp/rb-split-Sjkh67/Scratch/Challenge_smr_rb_pushforward_subtype.lean`
+- `/tmp/rb-split-Sjkh67/Scratch/Assembly.lean`
+- `/tmp/rb-split-Sjkh67/Scratch/Proofs.lean`
+
+Snapshot: project d8d46c95 and Mathlib 25730c7c. Its frozen Ch06 Contract is byte-identical to the workspace Contract and Submission (sha256 ea3ee0dd…). The project declares nothing about Riesz, C_c or zero extension; the rg hits are only README tool lists that cite simon_theorem_4_14.
+
+Available after import GMT.Ch06.Submission alone:
+- CompactlySupportedContinuousMap;
+- HasCompactSupport.continuous_extend_zero, extend_zero and tsupport_extend_zero_subset;
+- MeasurableEmbedding.subtype_coe, measurable_extend, map_apply, ae_map_iff and integral_map;
+- integral_trim and NullMeasurable.aemeasurable;
+- IsOpen.locallyCompactSpace, the instance sigmaCompactSpace_of_locallyCompact_secondCountable, and Subtype.borelSpace.
+
+Not available after that import:
+- IsLocallyBoundedCcFunctional, simon_theorem_4_14, IsRadonOuterMeasure and radonCaratheodoryMeasure (pinned SimonGMT Chapter01). They are needed only inside child 2's proof, via two extra imports that compile with the frozen submission.
+- Measurable.inner, which sits in an unimported Mathlib file.
+
+So the child statements inline the local-boundedness hypothesis and use only frozen-scope names. No existing declaration states the Borel form of the Riesz theorem, the C_c(↥U) transfer or the push-forward. The smr_rb_* names are unused in the DAG, nodes/ and SimonGMT.
+
+All three child types elaborate in the comparator child scope and pass the lexical validator. The parent's frozen type kernel-checks from them, and all three children were proved in scratch with axioms [propext, Classical.choice, Quot.sound].
