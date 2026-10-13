@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.orientation_sign-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1",
+  "depth": 3,
+  "title": "Orientations of two rectifiable triples agree up to sign on the overlap of the carriers",
+  "statement": "Let P, n ∈ ℕ, H := μHE[n] on ℝ^P, U ⊆ ℝ^P any set, and let (M₁, θ₁, ξ₁) and (M₂, θ₂, ξ₂) satisfy IsRectifiableTriple U n. Assume that for H-a.e. x ∈ M₁ ∩ M₂ (i.e. H.restrict(M₁ ∩ M₂)-a.e.), every subspace Q that is a weighted approximate tangent space of (M₁, θ₁) at x is also a weighted approximate tangent space of (M₂, θ₂) at x. Then for H-a.e. x ∈ M₁ ∩ M₂, ξ₁(x) = ξ₂(x) or ξ₁(x) = −ξ₂(x).",
+  "lean_statement": "∀ (P n : ℕ) (U M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (ξ₁ ξ₂ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M₁ θ₁ ξ₁ → IsRectifiableTriple U n M₂ θ₂ ξ₂ → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q) → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ξ₁ x = ξ₂ x ∨ ξ₁ x = -ξ₂ x",
+  "lean_name": "fiw_ims_orientation_sign",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.frame_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.frame_sign-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-orientation-sign-a1-a1"
+}

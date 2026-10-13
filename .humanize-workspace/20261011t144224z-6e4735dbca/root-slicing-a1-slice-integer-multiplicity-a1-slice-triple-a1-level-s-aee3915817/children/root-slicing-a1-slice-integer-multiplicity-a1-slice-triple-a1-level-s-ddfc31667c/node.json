@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.tangent_range-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1",
+  "depth": 5,
+  "title": "Tangent range of a parametrized regular level set: range D(Φ∘ψ)(v) = DΦ(ψ(v))(ker Dh(ψ(v)))",
+  "statement": "Let P, m ∈ ℕ (ℝ^k = EuclideanSpace ℝ (Fin k), D = fderiv ℝ), ψ : ℝ^m → ℝ^{m+1}, Φ : ℝ^{m+1} → ℝ^P, h : ℝ^{m+1} → ℝ, V ⊆ ℝ^m open, c > 0 and v ∈ V. Assume ψ is differentiable at v, Φ and h are differentiable at ψ(v), Dh(ψ(v)) ≠ 0, c|v′ − v″| ≤ |ψ(v′) − ψ(v″)| for all v′, v″ ∈ V, and h(ψ(v′)) = h(ψ(v)) for all v′ ∈ V. Then the range of D(Φ∘ψ)(v) equals the image under DΦ(ψ(v)) of the kernel of Dh(ψ(v)): D(Φ∘ψ)(v)(ℝ^m) = DΦ(ψ(v))(ker Dh(ψ(v))).",
+  "lean_statement": "∀ (P m : ℕ) (ψ : Eucl m → Eucl (m + 1)) (Φ : Eucl (m + 1) → Eucl P) (h : Eucl (m + 1) → ℝ) (V : Set (Eucl m)) (c : ℝ) (v : Eucl m), IsOpen V → v ∈ V → 0 < c → DifferentiableAt ℝ ψ v → DifferentiableAt ℝ Φ (ψ v) → DifferentiableAt ℝ h (ψ v) → fderiv ℝ h (ψ v) ≠ 0 → (∀ v' ∈ V, ∀ v'' ∈ V, c * ‖v' - v''‖ ≤ ‖ψ v' - ψ v''‖) → (∀ v' ∈ V, h (ψ v') = h (ψ v)) → LinearMap.range (fderiv ℝ (Φ ∘ ψ) v).toLinearMap = Submodule.map (fderiv ℝ Φ (ψ v)).toLinearMap (LinearMap.ker (fderiv ℝ h (ψ v)).toLinearMap)",
+  "lean_name": "slicing_im_st_lsc_tangent_range",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9-a1",
+      "result_commit": "8cfbc487a3d10545b0ea005ad58122242bbcc072",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-level-s-ddfc31667c-a1"
+}

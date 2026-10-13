@@ -1,0 +1,154 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1.c1_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝᵏ = Eucl k = EuclideanSpace ℝ (Fin k) with Euclidean norm |·|. Hⁿ = μHE[n], and on ℝⁿ we have Hⁿ = Lⁿ = volume (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). B(0, r) is the open ball and B̄(0, r) the closed ball of radius r about 0. DΨ(w) := fderiv ℝ Ψ w. A map Ψ is c-antilipschitz on a set O if c|w − w′| ≤ |Ψ(w) − Ψ(w′)| for all w, w′ ∈ O.
+
+Source. This is Step 1 of the proof of slicing_im_st_chart_data, i.e. Simon Ch. 3, Lemma 1.2 'only if' and Remark 1.3. The printed proof uses the C¹ Approximation Theorem (Ch. 2, 1.5), Lipschitz images of null sets, the area formula on the critical set, and local embeddings near noncritical points. Sub-steps (i) (C¹ approximation) and (iii) (antilipschitz estimate near points with injective derivative) of that Step 1 are packaged in the sibling lipschitz_c1_immersion_pieces (Submission.lpf_lipschitz_c1_immersion_pieces). Sub-step (ii) (null critical images) is the area formula in step 3 below, and sub-step (iv) (enumeration) is steps 6–8.
+
+The sibling lipschitz_c1_immersion_pieces states the following. Let Ω ⊆ ℝⁿ be open and u : ℝⁿ → ℝ^Q locally Lipschitz on Ω. Then there are C¹ maps G_k : ℝⁿ → ℝ^Q, open sets O_k ⊆ ℝⁿ and pairwise disjoint Borel sets E_k ⊆ O_k ∩ Ω (k ∈ ℕ) with these properties:
+- each G_k is c_k-antilipschitz on O_k for some c_k > 0;
+- u(w) = G_k(w) and u has Fréchet derivative DG_k(w) at every w ∈ E_k;
+- Lⁿ-a.e. w ∈ Ω at which u has an injective Fréchet derivative lies in ⋃_k E_k.
+
+Let M ⊆ ℝ^P be countably n-rectifiable.
+
+1. (Unpacking Simon Ch. 3, 1.1.) By the definition (SimonGMT CountablyRectifiable) there are M₀ ⊆ ℝ^P with Hⁿ(M₀) = 0 and maps F_j : ℝⁿ → ℝ^P (j ∈ ℕ) such that M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) and each F_j is K_j-Lipschitz for some K_j ≥ 0.
+
+2. (The sibling lemma.) Fix j. The set ℝⁿ is open, and F_j, being Lipschitz, is locally Lipschitz on ℝⁿ. Apply lipschitz_c1_immersion_pieces with Ω := ℝⁿ, Q := P and u := F_j. For k ∈ ℕ this gives C¹ maps G_{j,k} : ℝⁿ → ℝ^P, open sets O_{j,k} ⊆ ℝⁿ and sets E_{j,k} ⊆ O_{j,k} such that:
+   (a) G_{j,k} is c_{j,k}-antilipschitz on O_{j,k} for some c_{j,k} > 0;
+   (b) F_j(w) = G_{j,k}(w) for every w ∈ E_{j,k};
+   (c) for Lⁿ-a.e. w ∈ ℝⁿ: if F_j has at w a Fréchet derivative D that is injective, then w ∈ ⋃_k E_{j,k}.
+   The remaining conclusions of the sibling (Borel sets E_{j,k}, pairwise disjoint, with derivative information on E_{j,k}) are not needed.
+
+3. (Images of the non-regular points are Hⁿ-null; Rademacher and the area formula.) Let R_j := {w ∈ ℝⁿ : F_j is differentiable at w and DF_j(w) is injective}. We claim Hⁿ(F_j(ℝⁿ ∖ R_j)) = 0. Write ℝⁿ ∖ R_j = N_j ∪ C_j, where N_j := {w : F_j is not differentiable at w} and C_j := {w : F_j is differentiable at w and DF_j(w) is not injective}.
+   - By Rademacher's theorem (Simon Ch. 2, 1.4), Lⁿ(N_j) = 0. Since F_j is K_j-Lipschitz, Hⁿ(F_j(N_j)) ≤ K_jⁿ·Hⁿ(N_j) = K_jⁿ·Lⁿ(N_j) = 0.
+   - By the area formula (Simon Ch. 2, §3), Hⁿ(F_j(C_j)) ≤ ∫_{C_j} JF_j dLⁿ = 0. The Jacobian JF_j = √det(DF_j*DF_j) vanishes exactly where DF_j is not injective.
+   - Hence Hⁿ(F_j(ℝⁿ ∖ R_j)) ≤ Hⁿ(F_j(N_j)) + Hⁿ(F_j(C_j)) = 0.
+   - (For n = 0, ℝ⁰ = {0} and R_j = ℝ⁰: every map on a one-point space is differentiable with derivative 0, which is injective on ℝ⁰. So the claim is trivial.)
+   - In Lean this is SimonGMT Poincare.SimonGMT.Chapter02.area_image_compl_regularSet_eq_zero, applied to the Lipschitz map F_j with s := ℝⁿ. Its set areaRegularSet F_j is R_j, and finrank ℝ ℝⁿ = n (finrank_euclideanSpace_fin). It needs `import Poincare.SimonGMT.Chapter02.AreaLipschitz` (a built SimonGMT module; such imports may be added to the Submission header, as accepted candidate f9637977 did for AreaDomain).
+
+4. (Regular points missed by the pieces form a null set.) Let Z_j := R_j ∖ ⋃_k E_{j,k}.
+   - Let w ∈ R_j. Then D := DF_j(w) is injective and F_j has Fréchet derivative D at w. So, by 2(c), if w ∉ ⋃_k E_{j,k}, then w lies in the Lⁿ-null exceptional set of 2(c).
+   - Hence Z_j is contained in that null set, and Lⁿ(Z_j) = 0.
+   - F_j is K_j-Lipschitz on Z_j, and Hⁿ = Lⁿ on ℝⁿ. So Hⁿ(F_j(Z_j)) ≤ K_jⁿ·Hⁿ(Z_j) = K_jⁿ·Lⁿ(Z_j) = 0 (SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+
+5. (F_j(ℝⁿ) is covered by the pieces up to a null set.) We show F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k}) ⊆ F_j(ℝⁿ ∖ R_j) ∪ F_j(Z_j).
+   - Let y = F_j(w) with y ∉ ⋃_k G_{j,k}(O_{j,k}).
+   - If w ∉ R_j, then y ∈ F_j(ℝⁿ ∖ R_j).
+   - Suppose w ∈ R_j and w ∈ E_{j,k} for some k. Then w ∈ O_{j,k}, and y = F_j(w) = G_{j,k}(w) by 2(b), so y ∈ G_{j,k}(O_{j,k}). This is a contradiction.
+   - So in the remaining case w ∈ Z_j, and y ∈ F_j(Z_j).
+   By steps 3 and 4, Hⁿ(F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k})) = 0.
+
+6. (C¹ maps are Lipschitz on balls.) Let Ψ : ℝⁿ → ℝ^P be C¹ and r ∈ ℝ.
+   - DΨ is continuous, so it is bounded on the compact set B̄(0, r) by some C ≥ 0.
+   - The open ball B(0, r) is convex, contained in B̄(0, r), and Ψ is differentiable there. By the mean value inequality (Convex.lipschitzOnWith_of_nnnorm_fderiv_le), Ψ is C-Lipschitz on B(0, r).
+   - If r ≤ 0 the ball is empty and the claim is trivial.
+
+7. (The charts.) Fix a bijection e : ℕ → ℕ × ℕ × ℕ (e.g. the inverse of Denumerable.eqv). For l ∈ ℕ with e(l) = (j, k, r), put Φ_l := G_{j,k} and Ω_l := O_{j,k} ∩ B(0, r). Then:
+   - Ω_l is open, as an intersection of two open sets;
+   - Φ_l is C¹ (step 2);
+   - Φ_l is Lipschitz on Ω_l ⊆ B(0, r), by step 6 applied to G_{j,k} and r;
+   - Φ_l is c_{j,k}-antilipschitz on Ω_l ⊆ O_{j,k} with c_{j,k} > 0, by 2(a).
+
+8. (Coverage.) We show M ∖ ⋃_l Φ_l(Ω_l) ⊆ M₀ ∪ ⋃_j (F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k})).
+   - Let x ∈ M with x ∉ ⋃_l Φ_l(Ω_l). By step 1, x ∈ M₀ or x ∈ F_j(ℝⁿ) for some j.
+   - In the second case suppose x = G_{j,k}(w) with w ∈ O_{j,k} for some k. Choose r ∈ ℕ with |w| < r and put l := e⁻¹(j, k, r). Then w ∈ Ω_l and x = Φ_l(w), contradicting x ∉ ⋃_l Φ_l(Ω_l).
+   - Hence x ∈ F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k}).
+   The right-hand side is a countable union of Hⁿ-null sets: Hⁿ(M₀) = 0, and step 5 for every j. By monotonicity and countable subadditivity, Hⁿ(M ∖ ⋃_l Φ_l(Ω_l)) = 0.
+
+9. (Conclusion.) Steps 7 and 8 give the required C¹ maps Φ_l and open sets Ω_l: each Φ_l is Lipschitz on Ω_l, each Φ_l is c-antilipschitz on Ω_l for some c > 0, and Hⁿ(M ∖ ⋃_l Φ_l(Ω_l)) = 0. ∎
+
+## Key steps
+
+1. Unpack countable n-rectifiability (Simon Ch. 3, 1.1): M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) with Hⁿ(M₀) = 0 and F_j K_j-Lipschitz.
+2. Sibling lipschitz_c1_immersion_pieces with Ω := ℝⁿ and u := F_j: C¹ maps G_{j,k}, c_{j,k}-antilipschitz on open O_{j,k}, with F_j = G_{j,k} on E_{j,k} ⊆ O_{j,k}; Lⁿ-a.e. point where F_j has an injective derivative lies in ⋃_k E_{j,k}.
+3. Rademacher plus the area formula (SimonGMT area_image_compl_regularSet_eq_zero): Hⁿ(F_j(ℝⁿ ∖ R_j)) = 0 for the regular set R_j := {F_j differentiable with injective derivative}.
+4. Z_j := R_j ∖ ⋃_k E_{j,k} is Lⁿ-null, so Hⁿ(F_j(Z_j)) ≤ K_jⁿ·Lⁿ(Z_j) = 0; hence F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k}) ⊆ F_j(ℝⁿ ∖ R_j) ∪ F_j(Z_j) is Hⁿ-null.
+5. C¹ maps are Lipschitz on balls (mean value inequality); charts Φ_l := G_{j,k} on Ω_l := O_{j,k} ∩ B(0, r), indexed by a bijection ℕ ≃ ℕ × ℕ × ℕ, are Lipschitz and c_{j,k}-antilipschitz.
+6. M ∖ ⋃_l Φ_l(Ω_l) ⊆ M₀ ∪ ⋃_j (F_j(ℝⁿ) ∖ ⋃_k G_{j,k}(O_{j,k})), a countable union of Hⁿ-null sets.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean and local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (all identical)`
+- `python3 -I over dag.json: status, candidate_commit, lean_statement, children of lpf_lipschitz_c1_immersion_pieces, lpf_c1_approximation_real, lpf_ccr_hasDerivAt_line_of_comp, lpf_countably_rectifiable_c1_cover, slicing_im_coarea_chart_cover, slicing_im_tg_c1_chart_cover, slicing_im_coarea_pieces, slicing_im_st_weighted_tangent_on_c1_chart, lpf_weighted_tangent_on_c1_chart`
+- `grep -c slicing_im_st_cd_ dag.json DAG.md dag.mmd issue-workers.json; grep -rl slicing_im_st_cd_ nodes/ (only this node's decomposition-v1.json); git log --all -S slicing_im_st_cd_ (no match)`
+- `grep 'already reserved by active' cluster-state/logs/gmt-ch06/*.log; stat -c %w on those logs vs accepted-candidate.json mtimes of the reused nodes (7 cases)`
+- `read /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (_existing_lean_name_problem, _accepted_checkpoint, _reference_use_problem, decomposition loop) and store.py (update -> refresh); prompts.py DECOMPOSITION_AUDIT`
+- `rg Mathlib snapshot: LipschitzOnWith.extend_real, MeasurableSet.image_of_continuousOn_injOn, ae_restrict_union_iff, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, lipschitzOnWith_of_nnnorm_fderiv_le, HasFDerivAt.congr_of_eventuallyEq, HasDerivAt.unique, comp_lipschitzOnWith, ENNReal.tendsto_inv_nat_nhds_zero, Denumerable.eqv`
+- `grep SimonGMT: def CountablyRectifiable, areaRegularSet, area_image_compl_regularSet_eq_zero, area_image_criticalSet_eq_zero, area_image_nondifferentiable_eq_zero, euclideanHausdorffMeasure_image_le_of_lipschitzOn; import closure of Chapter02.AreaDomain (contains AreaLipschitz)`
+- `sed book/sources/chapter-03-source.txt 1-90 (Simon Ch. 3, 1.1-1.3, printed proof of Lemma 1.2)`
+- `read accepted parent-supplied-natural-proof.json of the three reused nodes; decomposition-v1.json of this node, of coarea-a1.pieces-a1, skeleton-polyhedral-a1 (v1, v2) and restriction-theory-a1 (v2, v3)`
+- `python3 -I /tmp/cdv2-k9q4/scripts/build.py and gen_from_json.py (contract_scope from verifier/gmt-compare.py; lean_contract.validate_lean_statement; byte equality with dag.json records)`
+- `lake env lean /tmp/cdv2-k9q4/src/Stmts2.lean, Final2.lean, Variant2.lean, NoImport.lean (all exit 0; only sorry warnings in Stmts2; axioms propext, Classical.choice, Quot.sound)`
+- `independent reviewer subagent (/tmp/cdv2-review-7x3m): re-ran all Lean files, verdict ACCEPT-WITH-FIXES (wording fixes applied)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/Denumerable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-data-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-data-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b45cce92e1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-line-deriv-comp-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-pieces-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-skeleton-polyhedral-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch06/bdbee2664a174f908f6a022a9b9c6907.log`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/cdv2-k9q4/subproblems.json`
+- `/tmp/cdv2-k9q4/src/Stmts2.lean`
+- `/tmp/cdv2-k9q4/src/Final2.lean`
+- `/tmp/cdv2-k9q4/src/Variant2.lean`
+- `/tmp/cdv2-k9q4/src/NoImport.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract, byte-identical to the workspace Contract.lean and Submission.lean. Child types therefore use only contract, SimonGMT and Mathlib names, and all 5 elaborate in the exact comparator scope.
+- Mathlib supplies:
+  - LipschitzOnWith.extend_real (Topology/MetricSpace/Lipschitz.lean:308);
+  - MeasurableSet.image_of_continuousOn_injOn (MeasureTheory/Constructions/Polish/Basic.lean:821);
+  - ae_restrict_union_iff (MeasureTheory/Measure/Restrict.lean:568);
+  - EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187);
+  - Convex.lipschitzOnWith_of_nnnorm_fderiv_le (Analysis/Calculus/MeanValue.lean:507);
+  - HasFDerivAt.congr_of_eventuallyEq (Analysis/Calculus/FDeriv/Congr.lean:176);
+  - HasDerivAt.unique (Analysis/Calculus/Deriv/Basic.lean:396);
+  - ENNReal.tendsto_inv_nat_nhds_zero (Topology/Instances/ENNReal/Lemmas.lean:486);
+  - LipschitzWith.comp_lipschitzOnWith (Topology/EMetricSpace/Lipschitz.lean:231);
+  - Denumerable.eqv (Basic/Denumerable.lean:71).
+- SimonGMT supplies CountablyRectifiable (Chapter03/Rectifiable.lean:34), areaRegularSet and area_image_compl_regularSet_eq_zero (Chapter02/AreaLipschitz.lean:31 and :59), and euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216). AreaLipschitz is reachable from the AreaDomain import of accepted candidate f9637977.
+- Neither library has the C¹ chart cover, C¹ approximation or the chart line derivative. These come from two sources:
+  - the accepted lpf_lipschitz_c1_immersion_pieces, lpf_c1_approximation_real and lpf_ccr_hasDerivAt_line_of_comp, reused with byte-identical types (runtime.py _existing_lean_name_problem / _accepted_checkpoint permit this, since all three were accepted with a candidate_commit before this attempt began at 22:00:50Z);
+  - two new kernel-checked children with fresh names.
+- lpf_countably_rectifiable_c1_cover is not accepted, so its identical type is taken under a fresh name.
+- The parent follows from the child types and the sibling weighted_tangent_chart with standard axioms only.

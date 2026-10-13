@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_measurable_subset_ae_eq|restrict_congr_set|le_restrict_apply|ae_restrict_of_ae_restrict_of_subset|theorem restrict_restrict |aestronglyMeasurable_iUnion_iff|theorem ae_lt_top.|theorem lintegral_indicator|theorem lintegral_const_mul.",
+        "alternatizeUncurryFinCLM|norm_alternatizeUncurryFin_le|alternatizeUncurryFin_apply|norm_smulRight_apply|theorem Continuous.clm_comp|isBoundedBilinearMap_comp",
+        "infEDist",
+        "slicing_im_st_mf_",
+        "git show cb89cc7f436bbfa9b474f73003fa9aa79ebad102:GMT/Ch06/Submission.lean",
+        "python3 -I /tmp/mf-independent-audit/build_checks.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mf-independent-audit/Typechecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mf-independent-audit/ProofChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mf-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-measure-fields-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-measure-fields-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-exhaustion-a1/accepted-candidate.json",
+        "/tmp/mf-independent-audit/build_checks.py",
+        "/tmp/mf-independent-audit/Typechecks.lean",
+        "/tmp/mf-independent-audit/ProofChecks.lean",
+        "/tmp/mf-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility with the inspected compiler sources. All five frozen types are standalone one-line propositions and elaborate without child implementations. All names are bare identifiers; the four new names have no conflicting reservations. Exhaustion reuses an identical comparator-accepted type, with matching immutable artifact hashes. The prospective dependency graph is acyclic. Proof checks, including the reused exhaustion, and an independent assembly of the exact selected parent compile using only propext, Classical.choice and Quot.sound. The split appropriately separates the three analytic conclusions and their two supporting obligations; the existing null-transfer contract supplies the explicit transfer hypotheses."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_null_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match all hypotheses. The measurable kernel, null transfer and restriction inequality prove the complementary slice part null without assuming slice measurability. The resulting measurable-union-null decomposition proves the exact conclusion and supplies parent conclusion (a) after intersection with {G ≠ 0}."
+    },
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of comparator-accepted cmb_exists_compactly_contained_exhaustion at cb89cc7f436bbfa9b474f73003fa9aa79ebad102. The supplied proof establishes compact containment and capture of every compact subset, including empty and whole-space cases through infEDist. Its use by slice_integrable introduces no cycle."
+    },
+    {
+      "key": "slice_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including the absence of measurability assumptions on f and G. Exhaustion yields a global strongly measurable version of θ; null transfer preserves it on almost every slice. Coarea and the finite bound L give finite integrals simultaneously on the countable exhaustion, then monotonicity handles every compact K. No positivity or hidden slice-measurability assumption is used."
+    },
+    {
+      "key": "contraction_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inline expression has the intended continuous-linear-map codomain and operator norm. The alternating expansion proves the subtraction identity, and the cited norm estimates prove the exact Lipschitz constant ((m : ℝ≥0) + 1). The complete argument checks at the pin without relying on the problematic intermediate continuity instance."
+    },
+    {
+      "key": "slice_orientation_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including arbitrary f and measurable G. The proof transfers a strongly measurable representative of ξ, measurably normalizes G including its zero set, uses contraction_lipschitz for continuity, and applies continuous operator composition followed by a.e. congruence. This proves the exact full-slice conclusion using only its declared sibling dependency."
+    }
+  ],
+  "required_changes": []
+}
