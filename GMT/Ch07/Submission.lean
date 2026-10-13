@@ -2229,6 +2229,187 @@ theorem Submission.cone_current_apply_dilation_pullback : ∀ (P n : ℕ) (C : G
   rw [ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
     Fintype.card_fin, smul_eq_mul]
 
+/-- **Gluing local orientations** (the off-vertex representation of a regular cone, used with
+Simons' theorem in the proof of Simon 7.5.8; orientations as in 6.2.2, `[[M]]` as in 6.2.16).
+Let `M` be a Borel embedded `C¹` `m`-submanifold and, for `y ∈ M`, let `C = [[M ∩ B_y]]` (with an
+orientation `ξ_y` of `M ∩ B_y`) on forms supported in `B_y = B_{ρ(y)}(y)`, `Hᵐ(M ∩ B_y) < ∞`.
+Then `ξ(x) := ξ_x(x)` orients `M`, agrees with every `ξ_y` on `M ∩ B_y`, and `C = [[M]]` (oriented
+by `ξ`) on forms supported in some `B_y`.  The pieces `M ∩ B_y` have the tangent spaces of `M`
+(`Submission.codim1_ovr_embedded_submanifold_local`), so `ξ_{y'} = ±ξ_y` at a common point `w`
+(`Submission.rsdic_unitOrientation_eq_or_eq_neg`).  The sign `−` is impossible: for
+`β = L(ξ_y(w))` (`Submission.dor_ims_unitOrientation_dual`) and a bump `φ` near `w`, the two
+representations give `C(φβ) > 0` and `C(−φβ) > 0`, because `Hᵐ(M ∩ B_s(w)) > 0` for `s > 0`
+(`Submission.dimred_rpd_submanifold_density_one`). -/
+theorem Submission.codim1_ovr_orientation_glue : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M : Set (Euclid P)) (ρ : Euclid P → ℝ) (ξs : Euclid P → Euclid P → MultiVector P m), IsEmbeddedSubmanifold 1 m M → MeasurableSet M → (∀ y ∈ M, 0 < ρ y ∧ IsOrientation m (M ∩ ball y (ρ y)) (ξs y) ∧ μHE[m] (M ∩ ball y (ρ y)) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) → C ω = ∫ x in M ∩ ball y (ρ y), ξs y x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ ∧ (∀ y ∈ M, ∀ x ∈ M ∩ ball y (ρ y), ξ x = ξs y x) ∧ ∀ y ∈ M, ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+  intro P m C M ρ ξs hM hMm hloc
+  -- Step 1: the pieces `M ∩ B_y` have the tangent spaces of `M`
+  have hloc2 := (Submission.codim1_ovr_embedded_submanifold_local P 1 m M le_rfl
+    (fun y _ => ⟨univ, isOpen_univ, mem_univ y, by rwa [inter_univ]⟩)).2
+  have htan : ∀ y ∈ M, ∀ w ∈ M ∩ ball y (ρ y),
+      tangentSpace (M ∩ ball y (ρ y)) w = tangentSpace M w :=
+    fun y _ w hw => (hloc2 (ball y (ρ y)) isOpen_ball).2 w hw
+  -- Step 2: `Hᵐ(M ∩ B_s(w)) ≠ 0`, else the density ratio would tend to `0`, not `1`
+  have hpos : ∀ w ∈ M, ∀ s : ℝ, 0 < s → μHE[m] (M ∩ ball w s) ≠ 0 := by
+    intro w hw s hs h0
+    have hlim := Submission.dimred_rpd_submanifold_density_one P m M w hM hw
+    have hev : (fun _ : ℝ => (0 : ℝ≥0∞)) =ᶠ[𝓝[>] (0 : ℝ)]
+        fun s' : ℝ => μHE[m] (M ∩ ball w s') / (unitBallVolume m * ENNReal.ofReal (s' ^ m)) := by
+      filter_upwards [Ioo_mem_nhdsGT hs] with s' hs'
+      have h' : μHE[m] (M ∩ ball w s') = 0 :=
+        measure_mono_null (inter_subset_inter_right _ (ball_subset_ball hs'.2.le)) h0
+      rw [h', ENNReal.zero_div]
+    have h01 := tendsto_nhds_unique (tendsto_const_nhds.congr' hev) hlim
+    exact zero_ne_one h01
+  -- Step 3: `ξ_{y'} = ξ_y` on `M ∩ B_y ∩ B_{y'}`
+  have hagree : ∀ y ∈ M, ∀ y' ∈ M, ∀ w ∈ M ∩ ball y (ρ y), w ∈ ball y' (ρ y') →
+      ξs y' w = ξs y w := by
+    intro y hy y' hy' w hw hw'
+    -- (a) both orient `T_wM`, so `ξ_{y'}(w) = ±ξ_y(w)`
+    obtain ⟨Q, hQ, hQξ⟩ := (hloc y hy).2.1.2 w hw
+    obtain ⟨Q', hQ', hQξ'⟩ := (hloc y' hy').2.1.2 w ⟨hw.1, hw'⟩
+    have hQQ : Q' = Q := by
+      apply SetLike.coe_injective
+      rw [hQ, hQ', htan y hy w hw, htan y' hy' w ⟨hw.1, hw'⟩]
+    subst hQQ
+    rcases Submission.rsdic_unitOrientation_eq_or_eq_neg P m (ξs y w) (ξs y' w) Q' hQξ hQξ' with h | h
+    · exact h
+    · exfalso
+      -- (b) `β = L(ξ_y(w))` has `ξ_y(w)(β) = 1` and `ξ_{y'}(w)(β) = -1`
+      obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P m
+      have hβ1 : ξs y w (L (ξs y w)) = 1 := (hL (ξs y w) Q' hQξ).2.2
+      have hβ2 : ξs y' w (L (ξs y w)) = -1 := by
+        rw [h, neg_apply, hβ1]
+      set β := L (ξs y w) with hβdef
+      have hwM : w ∈ M := hw.1
+      -- (c) by continuity, `ξ_y(β) > 1/2` and `ξ_{y'}(β) < -1/2` on `M ∩ B_r(w) ⊆ B_y ∩ B_{y'}`
+      have hny : M ∩ ball y (ρ y) ∈ 𝓝[M] w :=
+        inter_mem_nhdsWithin M (isOpen_ball.mem_nhds hw.2)
+      have hny' : M ∩ ball y' (ρ y') ∈ 𝓝[M] w :=
+        inter_mem_nhdsWithin M (isOpen_ball.mem_nhds hw')
+      have hcy : ContinuousWithinAt (fun x => ξs y x β) M w :=
+        (((hloc y hy).2.1.1 w hw).mono_of_mem_nhdsWithin hny).clm_apply continuousWithinAt_const
+      have hcy' : ContinuousWithinAt (fun x => ξs y' x β) M w :=
+        (((hloc y' hy').2.1.1 w ⟨hwM, hw'⟩).mono_of_mem_nhdsWithin hny').clm_apply
+          continuousWithinAt_const
+      have hev1 : ∀ᶠ x in 𝓝[M] w, (1 / 2 : ℝ) < ξs y x β :=
+        hcy.eventually (lt_mem_nhds (by show (1 / 2 : ℝ) < ξs y w β; rw [hβ1]; norm_num))
+      have hev2 : ∀ᶠ x in 𝓝[M] w, ξs y' x β < -(1 / 2 : ℝ) :=
+        hcy'.eventually (gt_mem_nhds (by show ξs y' w β < -(1 / 2 : ℝ); rw [hβ2]; norm_num))
+      obtain ⟨r₁, hr₁, hr₁sub⟩ := Metric.mem_nhdsWithin_iff.1 (hev1.and hev2)
+      obtain ⟨r₂, hr₂, hr₂sub⟩ := Metric.isOpen_iff.1 (isOpen_ball.inter (isOpen_ball (x := y') (ε := ρ y')))
+        w ⟨hw.2, hw'⟩
+      set r := min r₁ r₂ with hrdef
+      have hr : 0 < r := lt_min hr₁ hr₂
+      have hrB : ball w r ⊆ ball y (ρ y) ∩ ball y' (ρ y') :=
+        (ball_subset_ball (min_le_right _ _)).trans hr₂sub
+      have hrM : ∀ x ∈ M ∩ ball w r, (1 / 2 : ℝ) < ξs y x β ∧ ξs y' x β < -(1 / 2 : ℝ) :=
+        fun x hx => hr₁sub ⟨ball_subset_ball (min_le_left _ _) hx.2, hx.1⟩
+      -- (d) the bump `φ` (`= 1` on `B̄_{r/4}(w)`, supported in `B̄_{r/2}(w)`) and the forms `φγ`
+      let φ : ContDiffBump w := ⟨r / 4, r / 2, by positivity, by linarith⟩
+      have hφsupp : tsupport φ ⊆ ball w r := by
+        rw [φ.tsupport_eq]; exact closedBall_subset_ball (by simp [φ]; linarith)
+      have hform : ∀ γ : Covector (Euclid P) m,
+          (fun x => φ x • γ) ∈ TestFormOn (univ : Set (Euclid P)) m := by
+        intro γ
+        refine ⟨⟨?_, ?_⟩, subset_univ _⟩
+        · exact (φ.contDiff (n := ⊤)).smul contDiff_const
+        · exact φ.hasCompactSupport.smul_right
+      have htsupp : ∀ γ : Covector (Euclid P) m,
+          tsupport (fun x => φ x • γ) ⊆ ball w r :=
+        fun γ => (tsupport_smul_subset_left _ _).trans hφsupp
+      -- (e) `C(φγ) > 0` if `B_r(w) ⊆ B_z` and `ξ_z(γ) ≥ 1/2` on `M ∩ B_r(w)`
+      have hposC : ∀ z ∈ M, ball w r ⊆ ball z (ρ z) → ∀ γ : Covector (Euclid P) m,
+          (∀ x ∈ M ∩ ball w r, (1 / 2 : ℝ) ≤ ξs z x γ) →
+          0 < C ⟨fun x => φ x • γ, hform γ⟩ := by
+        intro z hz hrz γ hγ
+        rw [(hloc z hz).2.2.2 ⟨fun x => φ x • γ, hform γ⟩ ((htsupp γ).trans hrz)]
+        simp only [map_smul, smul_eq_mul]
+        have hmeasB : MeasurableSet (M ∩ ball z (ρ z)) := hMm.inter measurableSet_ball
+        have hmeas4 : MeasurableSet (M ∩ ball w (r / 4)) := hMm.inter measurableSet_ball
+        have hsub4 : M ∩ ball w (r / 4) ⊆ M ∩ ball z (ρ z) :=
+          inter_subset_inter_right _ ((ball_subset_ball (by linarith)).trans hrz)
+        have hfinB := (hloc z hz).2.2.1
+        have hfin4 : μHE[m] (M ∩ ball w (r / 4)) ≠ ∞ :=
+          ne_top_of_le_ne_top hfinB (measure_mono hsub4)
+        have hpos4 : 0 < μHE[m].real (M ∩ ball w (r / 4)) :=
+          ENNReal.toReal_pos (hpos w hwM (r / 4) (by positivity)) hfin4
+        -- the integrand is bounded by `|γ|`, hence integrable on `M ∩ B_z`
+        have hint : IntegrableOn (fun x => φ x * ξs z x γ) (M ∩ ball z (ρ z)) μHE[m] := by
+          refine IntegrableOn.of_bound (lt_top_iff_ne_top.2 hfinB) ?_ (covectorEuclideanNorm γ) ?_
+          · exact (((φ.continuous.continuousOn).mul
+              (((hloc z hz).2.1.1).clm_apply continuousOn_const))).aestronglyMeasurable hmeasB
+          · refine (ae_restrict_iff' hmeasB).2 (Eventually.of_forall fun x hx => ?_)
+            obtain ⟨Q, -, hQ⟩ := (hloc z hz).2.1.2 x hx
+            have hb := (hL (ξs z x) Q hQ).1 γ
+            rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg φ.nonneg]
+            calc φ x * |ξs z x γ| ≤ 1 * |ξs z x γ| :=
+                  mul_le_mul_of_nonneg_right φ.le_one (abs_nonneg _)
+              _ ≤ covectorEuclideanNorm γ := by rw [one_mul]; exact hb
+        have hnonneg : ∀ x ∈ M ∩ ball z (ρ z), 0 ≤ φ x * ξs z x γ := by
+          intro x hx
+          by_cases hxr : x ∈ ball w r
+          · exact mul_nonneg φ.nonneg (le_trans (by norm_num) (hγ x ⟨hx.1, hxr⟩))
+          · rw [image_eq_zero_of_notMem_tsupport (fun h => hxr (hφsupp h)), zero_mul]
+        have hge : ∀ x ∈ M ∩ ball w (r / 4), (1 / 2 : ℝ) ≤ φ x * ξs z x γ := by
+          intro x hx
+          have hx1 : φ x = 1 := φ.one_of_mem_closedBall (by
+            show x ∈ closedBall w (r / 4); exact ball_subset_closedBall hx.2)
+          rw [hx1, one_mul]
+          exact hγ x ⟨hx.1, ball_subset_ball (by linarith) hx.2⟩
+        calc (0 : ℝ) < 1 / 2 * μHE[m].real (M ∩ ball w (r / 4)) := by positivity
+          _ ≤ ∫ x in M ∩ ball w (r / 4), φ x * ξs z x γ ∂μHE[m] :=
+              setIntegral_ge_of_const_le_real hmeas4 hfin4 hge (hint.mono_set hsub4)
+          _ ≤ ∫ x in M ∩ ball z (ρ z), φ x * ξs z x γ ∂μHE[m] :=
+              setIntegral_mono_set hint
+                ((ae_restrict_iff' hmeasB).2 (Eventually.of_forall hnonneg))
+                (Eventually.of_forall hsub4)
+      -- (f) `C(φβ) > 0` and `C(−φβ) > 0`, contradicting linearity of `C`
+      have h1 := hposC y hy (hrB.trans inter_subset_left) β
+        (fun x hx => (hrM x hx).1.le)
+      have h2 := hposC y' hy' (hrB.trans inter_subset_right) (-β)
+        (fun x hx => by rw [map_neg]; linarith [(hrM x hx).2])
+      have hneg : (⟨fun x => φ x • (-β), hform (-β)⟩ : TestFormOn (univ : Set (Euclid P)) m) =
+          -⟨fun x => φ x • β, hform β⟩ := by
+        apply Subtype.ext
+        funext x
+        simp [smul_neg]
+      have hC : C ⟨fun x => φ x • (-β), hform (-β)⟩ = -C ⟨fun x => φ x • β, hform β⟩ := by
+        rw [hneg]; exact map_neg (C.toCurrent : TestFormOn (univ : Set (Euclid P)) m →ₗ[ℝ] ℝ) _
+      rw [hC] at h2
+      linarith
+  -- Step 4: `ξ(x) := ξ_x(x)` is an orientation of `M` that agrees with every `ξ_y`
+  refine ⟨fun x => ξs x x, ⟨?_, ?_⟩, ?_, ?_⟩
+  · -- continuity within `M` at `y`: `ξ = ξ_y` on the relative neighbourhood `M ∩ B_y`
+    intro y hy
+    have hcont : ContinuousWithinAt (ξs y) (M ∩ ball y (ρ y)) y :=
+      (hloc y hy).2.1.1 y ⟨hy, mem_ball_self (hloc y hy).1⟩
+    have hnhds : M ∩ ball y (ρ y) ∈ 𝓝[M] y :=
+      inter_mem_nhdsWithin M (isOpen_ball.mem_nhds (mem_ball_self (hloc y hy).1))
+    have hc2 : ContinuousWithinAt (ξs y) M y := hcont.mono_of_mem_nhdsWithin hnhds
+    refine hc2.congr_of_eventuallyEq ?_ rfl
+    filter_upwards [hnhds] with x hx
+    exact hagree y hy x hx.1 x hx (mem_ball_self (hloc x hx.1).1)
+  · -- `ξ(x) = ξ_x(x)` orients `T_x(M ∩ B_x) = T_xM`
+    intro x hx
+    obtain ⟨Q, hQ, hQξ⟩ := (hloc x hx).2.1.2 x ⟨hx, mem_ball_self (hloc x hx).1⟩
+    exact ⟨Q, by rw [hQ, htan x hx x ⟨hx, mem_ball_self (hloc x hx).1⟩], hQξ⟩
+  · intro y hy x hx
+    exact hagree y hy x hx.1 x hx (mem_ball_self (hloc x hx.1).1)
+  · -- Step 5: `C(ω) = ∫_{M ∩ B_y} ⟨ω, ξ⟩ dHᵐ = ∫_M ⟨ω, ξ⟩ dHᵐ`, as `ω = 0` on `M \ B_y`
+    intro y hy ω hω
+    rw [(hloc y hy).2.2.2 ω hω]
+    have hmeas : MeasurableSet (M ∩ ball y (ρ y)) := hMm.inter measurableSet_ball
+    have h1 : ∫ x in M ∩ ball y (ρ y), ξs y x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] =
+        ∫ x in M ∩ ball y (ρ y), ξs x x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] :=
+      setIntegral_congr_fun hmeas (fun x hx => by
+        simp only [hagree y hy x hx.1 x hx (mem_ball_self (hloc x hx.1).1)])
+    rw [h1]
+    symm
+    apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMm inter_subset_left
+    intro x hx
+    have hxω : x ∉ tsupport (ω : DifferentialForm (Euclid P) m) := fun h => hx.2 ⟨hx.1, hω h⟩
+    rw [image_eq_zero_of_notMem_tsupport hxω, map_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
