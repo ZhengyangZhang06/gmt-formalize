@@ -621,6 +621,32 @@ theorem gte_graph_image_geometry : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[�
       rwa [hiii] at hz'
   rw [heq]
   exact hcpt.isClosed.measurableSet.inter (isOpen_ball.preimage hii).measurableSet
+/-- A map `f : ℝⁿ → ℝ^ℓ` that is `K`-Lipschitz on the closed ball `B_R(0)` (graph estimates in the
+proof of Simon Ch. 5, Theorem 4.5, displays (8)–(12), pp. 118–119): the set of points of the open
+ball `B̆_R(0)` where `f` is not differentiable is Borel and `Lⁿ`-null (Rademacher's theorem),
+`‖Df(x)‖ ≤ K` on `B̆_R(0)`, and where `f` is differentiable the gradient of the coordinate
+`fʲ = (y ↦ f(y)ⱼ)` represents the `j`-th row of `Df(x)`: `⟨∇fʲ(x), v⟩ = (Df(x) v)ⱼ`. -/
+theorem gte_lipschitz_ball_calculus : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → MeasurableSet (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) ∧ volume (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) = 0 ∧ ∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ f x‖ ≤ K ∧ (DifferentiableAt ℝ f x → ∀ (j : Fin ℓ) (v : Rn n), inner ℝ (gradient (fun y => f y j) x) v = fderiv ℝ f x v j) := by
+  intro n ℓ f K R hf
+  -- (i): the differentiability set of any map into a complete space is Borel
+  refine ⟨measurableSet_ball.inter (measurableSet_of_differentiableAt ℝ f).compl, ?_, ?_⟩
+  -- (ii): Rademacher on the open ball, where differentiability within it is differentiability
+  · have hae := (hf.mono ball_subset_closedBall).ae_differentiableWithinAt_of_mem
+      (μ := (volume : Measure (Rn n)))
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hae] with x hx hxZ
+    exact hxZ.2 ((hx hxZ.1).differentiableAt (isOpen_ball.mem_nhds hxZ.1))
+  · intro x hx
+    -- (iii): `B_R(0)` is a neighbourhood of `x` on which `f` is `K`-Lipschitz
+    refine ⟨norm_fderiv_le_of_lipschitzOn ℝ
+      (mem_of_superset (isOpen_ball.mem_nhds hx) ball_subset_closedBall) hf, ?_⟩
+    -- gradient rows: `fʲ = proj_j ∘ f`, the chain rule, and `⟪(toDual)⁻¹ L, v⟫ = L v`
+    intro hfx j v
+    have hd : HasFDerivAt (fun y => f y j)
+        ((EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).comp (fderiv ℝ f x)) x :=
+      (EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).hasFDerivAt.comp x hfx.hasFDerivAt
+    rw [inner_gradient_left, hd.fderiv]
+    rfl
 
 end Submission
 
