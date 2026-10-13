@@ -1,0 +1,22 @@
+{
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.interior_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5475",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "da03b6b76312888c3f31a8d75c1ca7ae87ba750e",
+  "integrated_commit": "",
+  "proof_base_commit": "395e37817d8e6a787f9e15160161821ffafaf4e4",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1",
+  "requires": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.norm_smul-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.interior_bound-a1.contraction_bound-a1"
+  ]
+}

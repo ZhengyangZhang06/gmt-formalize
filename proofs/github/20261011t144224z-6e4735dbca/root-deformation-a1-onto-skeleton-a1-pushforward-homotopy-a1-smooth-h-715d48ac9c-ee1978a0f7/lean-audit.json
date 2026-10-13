@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8008d0fe1f66e1c9690247cf7aac37e426a5534bd4e7f6234dfd121874fa490b",
+  "git_delta": {
+    "base_commit": "2dbb60606b6ba0388da6023210a7a5498aa0151e",
+    "candidate_commit": "da03b6b76312888c3f31a8d75c1ca7ae87ba750e",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "7b42e3f4136517f538557574fd1a0c38664090fffbb7ab3707f88fb62ca53ac1",
+    "source_sha256": "723786a88b0f507ac8eff88d2d8d8ed89b69c8e8cfc7b4d2b479789830231b0d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_sh_covectorEuclideanNorm_interior_le",
+      "statement": "∀ (m m' k : ℕ) (γ : Covector (Eucl m') (k + 1)) (w : Eucl m') (T : Eucl m →L[ℝ] Eucl m') (a : ℝ) (β : Covector (Eucl m) k), (∀ v : Fin k → Eucl m, β v = a * γ (Fin.cons w (fun i => T (v i)))) → covectorEuclideanNorm β ≤ |a| * Real.sqrt ((k : ℝ) + 1) * ‖w‖ * ‖T‖ ^ k * covectorEuclideanNorm γ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
