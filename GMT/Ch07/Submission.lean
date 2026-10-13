@@ -619,6 +619,67 @@ theorem Submission.cmcs_rc_order_zero_current : ∀ (P n : ℕ) (U : Set (Euclid
     _ < δ := by
       rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
       nlinarith [abs_nonneg c]
+/-- **A mass-summable series of currents converges to a current** (Simon Ch. 6, 3.13; the series
+`R^{(ℓ)} = Σ_{r ≥ ℓ} R_r` in the proof of 7.2).  Let `s = Σ_r M(X_r) < ∞`.  If `|ω(x)| ≤ c` for
+all `x`, then `|X_r(ω)| ≤ c M(X_r)`, so `Σ_r X_r(ω)` converges absolutely and
+`|Σ_r X_r(ω)| ≤ c s`.  Its sum `Y(ω)` is linear in `ω` by uniqueness of sums.  Since
+`|ω(x)| ≤ C ‖ω(x)‖`, `Y` has order `0`, so it is a current.  An admissible `ω` has `c = 1`, so
+`Y(ω) ≤ s` and `M(Y) ≤ s`. -/
+theorem Submission.dimred_mbl_fc_series_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass := by
+  intro P n U X hs
+  -- Step 1: every `M(X_r)` is finite and `Σ_r M(X_r)` has real sum `s`
+  have hfin : ∀ r, (X r).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hs
+  have hsum : HasSum (fun r => ((X r).mass).toReal) (∑' r, (X r).mass).toReal := by
+    rw [ENNReal.tsum_toReal_eq hfin]
+    exact (ENNReal.summable_toReal hs).hasSum
+  -- Step 2: if `|ω(x)| ≤ c` for all `x`, then `Σ_r X_r(ω)` converges and `|Σ_r X_r(ω)| ≤ c s`
+  have hbound : ∀ (ω : TestFormOn U n) (c : ℝ),
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) →
+      Summable (fun r => X r ω) ∧ |∑' r, X r ω| ≤ c * (∑' r, (X r).mass).toReal := by
+    intro ω c hc
+    have h : ∀ r, ‖X r ω‖ ≤ c * ((X r).mass).toReal := fun r => by
+      rw [Real.norm_eq_abs]
+      exact Submission.cmr_abs_apply_le_massOn P n U U (X r) ω c (hfin r) ω.property.2 hc
+    exact ⟨(hsum.mul_left c).summable.of_norm_bounded h,
+      by simpa only [Real.norm_eq_abs] using tsum_of_norm_bounded (hsum.mul_left c) h⟩
+  -- Step 3: `|ω(x)| ≤ C ‖ω(x)‖`, and `‖ω(x)‖` is bounded since `ω` has compact support
+  obtain ⟨-, -, ⟨C, hC0, hC⟩, -⟩ := Submission.rsd_mw_tfa_norm_props P n
+  have hnorm : ∀ (ω : TestFormOn U n) (M : ℝ),
+      (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ M) →
+      ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ C * M :=
+    fun ω M hM x => (hC _).trans (mul_le_mul_of_nonneg_left (hM x) hC0)
+  have hsummable : ∀ ω : TestFormOn U n, Summable (fun r => X r ω) := by
+    intro ω
+    obtain ⟨M, hM⟩ := (ContDiff.continuous ω.property.1.1).bounded_above_of_compact_support
+      ω.property.1.2
+    exact (hbound ω _ (hnorm ω M hM)).1
+  -- Step 4: `L(ω) = Σ_r X_r(ω)` is linear
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑' r, X r ω
+      map_add' := fun ω ω' => by
+        simp only [map_add]
+        exact (hsummable ω).tsum_add (hsummable ω')
+      map_smul' := fun t ω => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        exact tsum_mul_left }
+  -- Step 5: `|L(ω)| ≤ C s M` whenever `‖ω(x)‖ ≤ M`, so `L` is a current `Y`
+  obtain ⟨Y, hY⟩ := Submission.cmcs_rc_order_zero_current P n U L fun _ _ _ =>
+    ⟨C * (∑' r, (X r).mass).toReal, fun ω M _ hM => by
+      calc |L ω| = |∑' r, X r ω| := rfl
+        _ ≤ C * M * (∑' r, (X r).mass).toReal := (hbound ω _ (hnorm ω M hM)).2
+        _ = C * (∑' r, (X r).mass).toReal * M := by ring⟩
+  refine ⟨Y, fun ω => ?_, ?_⟩
+  · rw [hY ω]
+    exact (hsummable ω).hasSum
+  -- Step 6: an admissible `ω` has `c = 1`, so `Y(ω) ≤ s` and `M(Y) ≤ s`
+  · apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (Y ω) ≤ _
+    rw [hY ω]
+    apply ENNReal.ofReal_le_of_le_toReal
+    have h := (hbound ω 1 hω.2).2
+    rw [one_mul] at h
+    exact (le_abs_self _).trans h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
