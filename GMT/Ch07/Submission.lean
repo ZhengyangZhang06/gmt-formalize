@@ -451,6 +451,81 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.5.1** (finiteness of the lattice chains `P = Σ_F β_F [[F]]`): for compact
+`K ⊆ ℝᴾ` and `Λ ∈ ℝ`, only finitely many currents `T = Σ_{p ∈ s} β_p [[F_p]]` exist whose unit
+`k`-faces `F_p = b + {Σⱼ yⱼ e_{ι(j)} : y ∈ [0,1]ᵏ}` (`p = (ι, b)`, `ι` increasing, `b ∈ ℤᴾ`) all
+meet `K` and whose integer coefficients satisfy `Σ_p |β_p| ≤ Λ`.  `K` is bounded, `‖x‖ ≤ R`, so a
+face meeting it has `‖b‖ ≤ R + k`: the admissible `p` lie in the finite set `S` of pairs with
+`b ∈ [-⌊R + k⌋, ⌊R + k⌋]ᴾ`.  Hence `T = Σ_{p ∈ S} c_p [[F_p]]`, `c_p = β_p` on `s` and `0` off it,
+with `c : S → [-⌊Λ⌋, ⌊Λ⌋] ∩ ℤ`, a finite set; and `c` determines `T` (`GeometricCurrentOn.ext`). -/
+theorem Submission.cmcdtfr_finite_family : ∀ (P k : ℕ) (K : Set (Euclid P)) (Λ : ℝ), IsCompact K → {T : GeometricCurrentOn (univ : Set (Euclid P)) k | ∃ (s : Finset ((Fin k → Fin P) × (Fin P → ℤ))) (β : (Fin k → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s, StrictMono p.1) ∧ (∀ p ∈ s, ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ K) ∧ ∑ p ∈ s, |(β p : ℝ)| ≤ Λ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))}.Finite := by
+  intro P k K Λ hK
+  -- step 1: `K` is bounded
+  obtain ⟨R, hR⟩ := hK.isBounded.exists_norm_le
+  -- step 2: the lower corners of the faces meeting `K` lie in the box `[-⌊R + k⌋, ⌊R + k⌋]ᴾ`
+  let S : Finset ((Fin k → Fin P) × (Fin P → ℤ)) :=
+    Finset.univ ×ˢ Fintype.piFinset fun _ => Finset.Icc (-⌊R + k⌋) ⌊R + k⌋
+  have hSK : ∀ p : (Fin k → Fin P) × (Fin P → ℤ), (∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧
+      (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        ∈ K) → p ∈ S := by
+    rintro ⟨ι, b⟩ ⟨y, hy, hyK⟩
+    have hw : ‖∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)‖ ≤ k := by
+      calc ‖∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)‖
+          ≤ ∑ j, ‖y j • EuclideanSpace.single (ι j) (1 : ℝ)‖ := norm_sum_le _ _
+        _ ≤ ∑ _j : Fin k, (1 : ℝ) := Finset.sum_le_sum fun j _ => by
+            rw [norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs,
+              abs_of_nonneg (hy j).1]
+            exact (hy j).2
+        _ = k := by simp
+    have hb : ‖(WithLp.toLp 2 (fun i => (b i : ℝ)) : Euclid P)‖ ≤ R + k :=
+      calc ‖(WithLp.toLp 2 (fun i => (b i : ℝ)) : Euclid P)‖
+          = ‖(WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ))
+              - ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)‖ := by rw [add_sub_cancel_right]
+        _ ≤ ‖WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)‖
+              + ‖∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)‖ := norm_sub_le _ _
+        _ ≤ R + k := add_le_add (hR _ hyK) hw
+    simp only [S, Finset.mem_product, Finset.mem_univ, true_and, Fintype.mem_piFinset,
+      Finset.mem_Icc]
+    intro i
+    have hi := PiLp.norm_apply_le (WithLp.toLp 2 (fun i => (b i : ℝ)) : Euclid P) i
+    rw [PiLp.toLp_apply, Real.norm_eq_abs] at hi
+    obtain ⟨hi₁, hi₂⟩ := abs_le.mp (hi.trans hb)
+    have h₁ : -b i ≤ ⌊R + k⌋ := Int.le_floor.mpr (by push_cast; linarith)
+    exact ⟨by linarith, Int.le_floor.mpr hi₂⟩
+  -- steps 3–5: each such current is `∑_{p ∈ S} c p [[p]]` with `c : S → [-⌊Λ⌋, ⌊Λ⌋]`, and is
+  -- determined by `c`
+  let I : (Fin k → Fin P) × (Fin P → ℤ) → TestFormOn (univ : Set (Euclid P)) k → ℝ := fun p ω =>
+    ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k)
+      (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+      (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))
+  have hC : (Set.pi Set.univ fun _ : S => Set.Icc (-⌊Λ⌋) ⌊Λ⌋).Finite :=
+    Set.Finite.pi fun _ => Set.finite_Icc _ _
+  refine (hC.biUnion fun c _ => Set.Subsingleton.finite (s := {T : GeometricCurrentOn
+    (univ : Set (Euclid P)) k | ∀ ω, T ω = ∑ p : S, (c p : ℝ) * I p ω}) ?_).subset ?_
+  · intro T₁ h₁ T₂ h₂
+    exact GeometricCurrentOn.ext fun ω => (h₁ ω).trans (h₂ ω).symm
+  · rintro T ⟨s, β, -, hsK, hΛ, hT⟩
+    have hsS : s ⊆ S := fun p hp => hSK p (hsK p hp)
+    have hβ : ∀ p ∈ s, |(β p : ℝ)| ≤ Λ := fun p hp =>
+      (Finset.single_le_sum (fun q _ => abs_nonneg (β q : ℝ)) hp).trans hΛ
+    have hΛ0 : 0 ≤ Λ := (Finset.sum_nonneg fun q _ => abs_nonneg (β q : ℝ)).trans hΛ
+    refine Set.mem_biUnion (x := fun p : S => if (p : (Fin k → Fin P) × (Fin P → ℤ)) ∈ s then β p
+      else 0) ?_ ?_
+    · intro p _
+      simp only [Set.mem_Icc]
+      split_ifs with hp
+      · obtain ⟨h₁, h₂⟩ := abs_le.mp (hβ p hp)
+        have h₃ : -β p ≤ ⌊Λ⌋ := Int.le_floor.mpr (by push_cast; linarith)
+        exact ⟨by linarith, Int.le_floor.mpr h₂⟩
+      · have h₀ : (0 : ℤ) ≤ ⌊Λ⌋ := Int.le_floor.mpr (by simpa using hΛ0)
+        exact ⟨by linarith, h₀⟩
+    · intro ω
+      rw [hT ω, Finset.sum_coe_sort S (fun p => ((if p ∈ s then β p else 0 : ℤ) : ℝ) * I p ω),
+        ← Finset.sum_subset hsS]
+      · exact Finset.sum_congr rfl fun p hp => by rw [ite_eq_left hp]
+      · intro p _ hp
+        rw [ite_eq_right hp, Int.cast_zero, zero_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
