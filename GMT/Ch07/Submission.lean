@@ -2356,6 +2356,35 @@ theorem Submission.dtc_mass_eq_measure : ∀ (P n : ℕ) (U W : Set (Euclid P)) 
       _ ≤ T.massOn W := iSup_le fun m => hcompact _
           ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
 
+/-- **A constant mass ratio about `0` makes `C` a cone** (proof of Simon 7.3.1, chapter-07.txt
+lines 336–360, with Ch. 4, 3.6 and Ch. 6, 2.33).  Let `C = τ(M, θ, ξ)` have `∂C = 0`, let
+`V = v(M, θ)` be stationary in `ℝᴾ` and `M_{B_ρ(0)}(C) = ωₙρⁿθ₀` for all `ρ > 0`.  Stationarity
+along `ℝᴾ` imposes no tangency condition (`γ(t) = y + tv` shows `v ∈ T_y ℝᴾ`), so `δV(X) = 0`
+for every `C¹` compactly supported `X`; and `M_{B_ρ(0)}(C) = μ_V(B_ρ(0))` turns the hypothesis
+into `μ_V(B_ρ(0)) = aρⁿ` with `a = ωₙθ₀`.  The monotonicity identity then gives `x ∈ TₓM` for
+`μ_V`-a.e. `x`, hence `x ∧ C⃗ = 0` `μ_C`-a.e., and Lemma 6.2.33 gives `η_{0,λ#}C = C`. -/
+theorem Submission.dtc_cone_of_constant_density : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (θ : ℝ), 0 < n → IsIntegerMultiplicity C → BoundaryVanishes C → (∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → R.IsStationaryAlong univ) → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ) → IsConeCurrent C := by
+  intro P n C θ hn hC hbdry hstat hmass
+  obtain ⟨R, hR⟩ := hC
+  -- `T_y ℝᴾ` contains every `v` (`γ(t) = y + tv`), so `δV(X) = 0` for every `X ∈ C¹_c(ℝᴾ; ℝᴾ)`
+  have hvar : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
+      R.firstVariation X = 0 := by
+    intro X hX hXc
+    refine hstat R hR X hX hXc (subset_univ _) fun y _ => ?_
+    refine ⟨fun t => y + t • X y, (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn,
+      mapsTo_univ _ _, by simp, ?_⟩
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X y)).const_add y
+  -- `μ_V(B_ρ(0)) = M_{B_ρ(0)}(C) = (ωₙθ₀)ρⁿ`
+  have hball : ∀ ρ : ℝ, 0 < ρ →
+      R.measure (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal θ * ENNReal.ofReal (ρ ^ n) := by
+    intro ρ hρ
+    rw [← Submission.dtc_mass_eq_measure P n univ (ball 0 ρ) C R isOpen_univ isOpen_ball
+      (subset_univ _) hR, hmass ρ hρ, mul_right_comm]
+  -- `x ∈ TₓM` for `μ_V`-a.e. `x`, so `x ∧ C⃗ = 0` `μ_C`-a.e., so `C` is a cone (Lemma 6.2.33)
+  exact Submission.dtc_cone_of_wedge_vanishing P n C R hn hR hbdry
+    (Submission.dtc_cone_wedge_vanishes P n univ R
+      (Submission.dtc_cone_radial_tangency P n R (unitBallVolume n * ENNReal.ofReal θ) hvar hball))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
