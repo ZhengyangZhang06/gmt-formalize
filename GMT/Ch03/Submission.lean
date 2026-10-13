@@ -4895,6 +4895,124 @@ theorem Submission.deGiorgi_blowUp_tendsto_halfSpace : ∀ (n : ℕ) (U E : Set 
         measure_union_le _ _
     _ = volume (K ∩ symmDiff (F (φ k)) G) := by rw [hGH, add_zero]
 
+/-- **De Giorgi, the tangent measure of `μ_E` at `x ∈ ∂*E`** (Simon Ch. 3, Theorem 4.3 (‡), proof
+`chapter-03.txt` lines 739–746, with the sign correction E1 for the limit half-space and erratum
+E3): for a Gauss–Green pair `(μ, ν)` of `(U, E)` and `x ∈ ∂*E`, `μ` has approximate tangent space
+`P = (span{ν_E(x)})^⊥` with multiplicity `1` at `x`. So `dim P = n` and
+`r⁻ⁿ ∫ f(η_{x,r}(y)) dμ(y) → ∫_P f dHⁿ` as `r ↓ 0` for every `f ∈ C_c(ℝ^{n+1})`. For `φ ∈ C¹_c` and
+`e = ν_E(x)`, the blow-up Gauss–Green identity with `g = φ e` and `η_{x,r}(E) → {y · e > 0}` in
+`L¹_loc` give `r⁻ⁿ ∫ φ(η_{x,r}(y)) e · ν(y) dμ(y) → -∫_{y · e > 0} D_e φ = ∫_P φ dHⁿ`, and the
+excess decay at `x` removes the defect `1 - e · ν`. The mass bound `μ(B_ρ(x)) ≤ C ρⁿ` and the local
+finiteness of `Hⁿ ⌞ P` extend the limit from `C¹_c` to `C_c`. -/
+theorem Submission.deGiorgi_tangent_measure : ∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, HasApproxTangentPlaneWithMultiplicity n μ x ((Submodule.span ℝ {reducedNormal μ ν x})ᗮ) 1 := by
+  intro n U E μ ν hU hE hGG x hx
+  -- Step 0: `e = ν_E(x)` is the limit of the normal averages, a unit vector, so `dim P = n`.
+  obtain ⟨-, v, hv, hv1⟩ := id hx
+  set e := reducedNormal μ ν x
+  have he1 : ‖e‖ = 1 := by rw [show e = v from hv.limUnder_eq, hv1]
+  have he0 : e ≠ 0 := norm_ne_zero_iff.mp (by rw [he1]; exact one_ne_zero)
+  have : Fact (finrank ℝ (Rn (n + 1)) = n + 1) := ⟨finrank_euclideanSpace_fin⟩
+  set P : Submodule ℝ (Rn (n + 1)) := (Submodule.span ℝ {e})ᗮ
+  have hPn : finrank ℝ P = n := Submodule.finrank_orthogonal_span_singleton he0
+  -- Step 2: the mass bound and the excess decay at `x`.
+  obtain ⟨ρ₁, hρ₁, hρ₁U, C, c, -, hmass, hexc⟩ :=
+    Submission.deGiorgi_density_estimates n U E μ ν hU hE hGG x hx
+  -- Step 1: `σ = Hⁿ ⌞ P` is finite on balls, as `Hⁿ ⌞ P` is Lebesgue measure on `P ≅ ℝⁿ`.
+  set σ : Measure (Rn (n + 1)) := (μHE[n] : Measure (Rn (n + 1))).restrict (P : Set (Rn (n + 1)))
+    with hσ
+  have hσR : ∀ R : ℝ, σ (Metric.ball 0 R) < ∞ := by
+    intro R
+    have hvol := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := P)
+    rw [hPn] at hvol
+    have hiso : Isometry ((↑) : P → Rn (n + 1)) := fun _ _ ↦ rfl
+    have hrange : Set.range ((↑) : P → Rn (n + 1)) = P := by
+      ext z
+      simp
+    have hpre : ((↑) : P → Rn (n + 1)) ⁻¹' Metric.ball 0 R = Metric.ball (0 : P) R := by
+      ext z
+      simp
+    rw [hσ, Measure.restrict_apply measurableSet_ball, ← hrange,
+      ← hiso.euclideanHausdorffMeasure_preimage, hpre, hvol]
+    exact measure_ball_lt_top
+  -- Step 3: the limit for `C¹_c` test functions `φ`.
+  have hC1 : ∀ φ : Rn (n + 1) → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ →
+      Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ) (𝓝[>] 0)
+        (𝓝 (∫ y, φ y ∂σ)) := by
+    intro φ hφ hφc
+    obtain ⟨R₀, hR₀⟩ := hφc.isCompact.isBounded.subset_ball (0 : Rn (n + 1))
+    set R := max R₀ 1
+    have hR0 : 0 < R := zero_lt_one.trans_le (le_max_right _ _)
+    have hφR : tsupport φ ⊆ Metric.ball 0 R :=
+      hR₀.trans (Metric.ball_subset_ball (le_max_left _ _))
+    -- `div (φ e) = D_e φ`.
+    have hdiv : ∀ z, Poincare.SimonGMT.Chapter02.euclideanDivergence (fun z ↦ φ z • e) z =
+        fderiv ℝ φ z e := by
+      intro z
+      rw [Poincare.SimonGMT.Chapter02.euclideanDivergence,
+        fderiv_smul_const ((hφ.differentiable one_ne_zero) z)]
+      exact LinearMap.trace_smulRight _ _
+    -- (i) The blow-up Gauss–Green identity for `g = φ e`, for `r ∈ (0, ρ₁ / R)`:
+    -- `tsupport g ⊆ B_R(0) ⊆ η_{x,r}(B_{ρ₁}(x)) ⊆ η_{x,r}(U)`.
+    have hid : ∀ r ∈ Ioo 0 (ρ₁ / R),
+        (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ =
+          -∫ z in blowUpMap x r '' E, fderiv ℝ φ z e := by
+      intro r hr
+      have hrR : r * R < ρ₁ := (lt_div_iff₀ hR0).1 hr.2
+      have hgU : tsupport (fun z ↦ φ z • e) ⊆ blowUpMap x r '' U := by
+        intro z hz
+        have hzR : ‖z‖ < R := mem_ball_zero_iff.1 (hφR (tsupport_smul_subset_left _ _ hz))
+        refine ⟨x + r • z, hρ₁U ?_, ?_⟩
+        · rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+            Real.norm_of_nonneg hr.1.le]
+          exact (mul_le_mul_of_nonneg_left hzR.le hr.1.le).trans_lt hrR
+        · simp [blowUpMap, smul_smul, inv_mul_cancel₀ hr.1.ne']
+      have h := Submission.deGiorgi_blowUp_gaussGreen_identity n U E μ ν x r hU hE hGG hr.1
+        (fun z ↦ φ z • e) (hφ.smul contDiff_const) (hφc.smul_right (f' := fun _ ↦ e)) hgU
+      simp only [hdiv, real_inner_smul_left] at h
+      rw [h, neg_neg]
+    -- (ii) `η_{x,r}(E) → H = {y · e > 0}` in `L¹_loc`, and the half-space flux identity.
+    have hEr : ∀ᶠ r in 𝓝[>] (0 : ℝ), NullMeasurableSet (blowUpMap x r '' E) volume := by
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have hr0 : 0 < r := hr
+      have himg : blowUpMap x r '' E = (fun z ↦ r • z + x) ⁻¹' E := by
+        ext z
+        constructor
+        · rintro ⟨y, hy, rfl⟩
+          simpa [blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne'] using hy
+        · intro hz
+          exact ⟨r • z + x, hz, by simp [blowUpMap, smul_smul, inv_mul_cancel₀ hr0.ne']⟩
+      rw [himg]
+      exact hE.preimage ((measurePreserving_add_right volume x).quasiMeasurePreserving.comp
+        (Measure.quasiMeasurePreserving_smul volume hr0.ne'))
+    have hH : NullMeasurableSet {y : Rn (n + 1) | 0 < inner ℝ y e} volume :=
+      (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+        |>.nullMeasurableSet
+    have hconv : Tendsto (fun r : ℝ ↦ ∫ z in blowUpMap x r '' E, fderiv ℝ φ z e) (𝓝[>] 0)
+        (𝓝 (∫ z in {y : Rn (n + 1) | 0 < inner ℝ y e}, fderiv ℝ φ z e)) :=
+      Submission.deGiorgiTM_tendsto_setIntegral_of_symmDiff (n + 1) (fun r ↦ blowUpMap x r '' E)
+        {y | 0 < inner ℝ y e} (fun z ↦ fderiv ℝ φ z e) hEr hH
+        ((hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const) (hφc.fderiv_apply ℝ e)
+        (Submission.deGiorgi_blowUp_tendsto_halfSpace n U E μ ν hU hE hGG x hx _
+          (hφc.fderiv_apply ℝ e).isCompact)
+    rw [Submission.deGiorgiTM_halfSpace_integral_fderiv n e φ he1 hφ hφc] at hconv
+    have hmain : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ)
+        (𝓝[>] 0) (𝓝 (∫ y, φ y ∂σ)) := by
+      have h := hconv.neg
+      rw [neg_neg] at h
+      refine h.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hρ₁ hR0)] with r hr
+      exact (hid r hr).symm
+    -- (iii) The excess decay removes the defect `1 - e · ν`.
+    have hdef := Submission.deGiorgiTM_blowUp_defect_tendsto_zero (n + 1) n μ ν x e (ρ₁ / 2) φ
+      (half_pos hρ₁) ((hmass _ ⟨half_pos hρ₁, half_lt_self hρ₁⟩).1.trans_lt ENNReal.ofReal_lt_top)
+      hGG.2.2.1 hGG.2.2.2.1 he1 hexc hφ.continuous hφc
+    simpa only [sub_add_cancel, zero_add] using hdef.add hmain
+  -- Steps 4–5: the mass bound extends the limit from `C¹_c` to `C_c` test functions.
+  refine ⟨hPn, fun f ↦ ?_⟩
+  rw [one_mul]
+  exact Submission.deGiorgiTM_blowUp_tendsto_of_contDiff (n + 1) n μ σ x ρ₁ C hρ₁
+    (fun ρ hρ ↦ (hmass ρ hρ).1) hσR hC1 f
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
