@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1.integral_dilation-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1",
+  "depth": 5,
+  "title": "Change of variables for the dilation η_{x,λ} on ℝ^P",
+  "statement": "Let P ∈ ℕ, let F : ℝ^P → ℝ be an arbitrary function (no measurability or integrability assumption), x ∈ ℝ^P and λ > 0, and let η_{x,λ}(y) = λ⁻¹(y − x) (Contract `dilation x λ`, y ↦ −λ⁻¹x + λ⁻¹y, where ℝ^P = Euclid P = EuclideanSpace ℝ (Fin P)). Then ∫ F(η_{x,λ}(y)) dy = λ^P · ∫ F(z) dz, both integrals being Bochner integrals over all of ℝ^P with respect to Lebesgue measure (volume), with Mathlib's convention that a non-integrable function has integral 0.",
+  "lean_statement": "∀ (P : ℕ) (F : Euclid P → ℝ) (x : Euclid P) (lam : ℝ), 0 < lam → ∫ y, F (dilation x lam y) = lam ^ P * ∫ z, F z",
+  "lean_name": "dtc_bc_cz_blowUp_eval_integral_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-14aba15a7d-a1"
+}

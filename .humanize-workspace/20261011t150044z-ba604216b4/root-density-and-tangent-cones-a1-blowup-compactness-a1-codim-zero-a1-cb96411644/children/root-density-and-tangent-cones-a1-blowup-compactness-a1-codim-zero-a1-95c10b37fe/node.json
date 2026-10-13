@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1.dilation_ball-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1",
+  "depth": 5,
+  "title": "The dilation η_{x,λ} maps B_ρ(x) onto B_{ρ/λ}(0)",
+  "statement": "Let P ∈ ℕ, x ∈ ℝ^P, ρ ∈ ℝ and λ > 0, and let η = η_{x,λ}, η(y) = λ⁻¹(y − x) (Contract `dilation x λ`, y ↦ −λ⁻¹x + λ⁻¹y; ℝ^P = Euclid P). Then η⁻¹(B_{ρ/λ}(0)) = B_ρ(x) and η(B_ρ(x)) = B_{ρ/λ}(0), where B_r(a) = {y : ‖y − a‖ < r} is the open Euclidean ball (empty when r ≤ 0).",
+  "lean_statement": "∀ (P : ℕ) (x : Euclid P) (ρ lam : ℝ), 0 < lam → dilation x lam ⁻¹' ball 0 (ρ / lam) = ball x ρ ∧ dilation x lam '' ball x ρ = ball 0 (ρ / lam)",
+  "lean_name": "dtc_bc_cz_blowUp_eval_dilation_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-95c10b37fe-a1"
+}

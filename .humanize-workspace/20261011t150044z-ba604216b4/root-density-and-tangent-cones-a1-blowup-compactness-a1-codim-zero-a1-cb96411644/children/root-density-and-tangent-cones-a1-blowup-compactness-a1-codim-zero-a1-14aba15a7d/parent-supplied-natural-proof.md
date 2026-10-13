@@ -1,0 +1,79 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1.integral_dilation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the supplied proof of dtc_bc_cz_blowUp_eval (change of variables y = x + λz; "No integrability assumption is needed"), with details filled in. No sibling is used.
+Notation: μ := volume, Lebesgue measure on ℝ^P = EuclideanSpace ℝ (Fin P); it is an additive Haar measure, in particular translation invariant. All integrals are Bochner integrals over ℝ^P; the integral of a non-integrable function is 0.
+1. Formula for η. By the Contract definitions, η_{x,λ}(y) = −(λ⁻¹x) + dilationCLM P λ y with dilationCLM P λ = λ⁻¹·id, so η_{x,λ}(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x) for every y ∈ ℝ^P. Put G(w) := F(λ⁻¹w); then F(η_{x,λ}(y)) = G(y − x) for every y, hence ∫ F(η_{x,λ}(y)) dy = ∫ G(y − x) dy.
+2. Translation. Lebesgue measure on ℝ^P is invariant under the translation y ↦ y − x, which is a measurable equivalence of ℝ^P. Hence for every function G : ℝ^P → ℝ, G(· − x) is integrable iff G is, and ∫ G(y − x) dy = ∫ G(y) dy (Mathlib integral_sub_right_eq_self; in the non-integrable case both sides are 0). Therefore ∫ F(η_{x,λ}(y)) dy = ∫ F(λ⁻¹y) dy.
+3. Scaling. For an additive Haar measure μ on a finite-dimensional real normed space E, every function f : E → ℝ and every R ≥ 0, ∫ f(R⁻¹y) dμ(y) = R^{finrank ℝ E} · ∫ f dμ (Mathlib Measure.integral_comp_inv_smul_of_nonneg; it holds without any integrability assumption, because y ↦ R⁻¹y is a measurable equivalence for R ≠ 0 whose image measure is R^{finrank E}·μ, and the case R = 0 is included in the lemma). Apply it with E = ℝ^P, μ = volume, f = F and R = λ, which is ≥ 0 since λ > 0. As finrank ℝ (EuclideanSpace ℝ (Fin P)) = P (finrank_euclideanSpace_fin) and the scalar action of ℝ on ℝ is multiplication, ∫ F(λ⁻¹y) dy = λ^P · ∫ F(z) dz.
+4. Combining steps 1–3: ∫ F(η_{x,λ}(y)) dy = ∫ F(λ⁻¹y) dy = λ^P · ∫ F(z) dz. ∎
+Lean hint (not part of the proof; this exact statement compiled in a scratch build at the pinned revisions): `intro P F x lam hlam`; `have h1 : ∀ y, dilation x lam y = lam⁻¹ • (y - x) := by intro y; simp [dilation, dilationCLM, sub_eq_neg_add]`; `simp_rw [h1]`; `rw [integral_sub_right_eq_self (fun y => F (lam⁻¹ • y)) x, Measure.integral_comp_inv_smul_of_nonneg volume F hlam.le, finrank_euclideanSpace_fin, smul_eq_mul]`. Name any auxiliary declaration with the prefix dtc_bc_cz_blowUp_eval_.
+
+## Key steps
+
+1. η_{x,λ}(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), so F(η_{x,λ}(y)) = G(y − x) with G(w) = F(λ⁻¹w).
+2. Translation invariance of Lebesgue measure: ∫ G(y − x) dy = ∫ G(y) dy for every G (integral_sub_right_eq_self).
+3. Scaling: ∫ F(λ⁻¹y) dy = λ^{finrank ℝ^P} ∫ F = λ^P ∫ F for λ ≥ 0, without integrability assumptions (Measure.integral_comp_inv_smul_of_nonneg, finrank_euclideanSpace_fin).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical); diff Contract.lean Submission.lean (identical)`
+- `python3 -I over dag.json: selected node record (depth 4, status decomposing, attempts 1); scan of lean_statements containing blowUp/dilation; exact lookups of dtc_blowUp_testForm_corr, dtc_blowUp_algebra, dtc_blowUp_preimage, cbr_cidc_dilation_boundary, setIntegral_blowUpMap_image_eq_inv_pow_mul; scan for dilation together with ball or ∫ (no accepted Lebesgue change-of-variables or ball-image lemma)`
+- `rg -c 'dtc_bc_cz_blowUp_eval_integral_dilation|dtc_bc_cz_blowUp_eval_dilation_ball|dtc_bc_cz_blowUp_eval_' over dag.json, workspace GMT, snapshot project, simongmt (no match)`
+- `grep -n in SimonGMT Chapter06 AffineCurrentPushforward.lean (affinePullbackForm, tsupport_affinePullbackForm_subset, exteriorDerivative_affinePullbackForm, affinePushforward_apply, boundary_affinePushforward), Currents.lean (TestFormOn, GeometricCurrentOn, boundary_apply, exteriorDerivativeTestOn), CurrentLocalEquality.lean (testFormOnInclusion, restrictDomain_apply), Forms.lean (IsTestForm, DifferentialForm)`
+- `rg -n 'theorem integral_comp_inv_smul_of_nonneg|theorem integral_comp_smul', 'theorem finrank_euclideanSpace_fin', 'theorem map_smul_univ', 'integral_div_right_eq_self' (to_additive integral_sub_right_eq_self) in local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `git show 5e184fbc:GMT/Ch07/Submission.lean and f64597f3:GMT/Ch07/Submission.lean; git merge-base --is-ancestor (5e184fbc ≤ f64597f3; neither ≤ 72492511); git diff --stat b4d606db1 72492511 -- GMT/ (empty); git merge-tree --write-tree 72492511 f64597f3 (clean)`
+- `read parent-child-handoff.json of nodes root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1 and ...-blowup-structure-a1 (accepted statements and proofs) and of the selected node`
+- `grep runtime.py (_existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _overlay_accepted_children, _accepted_checkpoint), store.py ensure, prompts.py DECOMPOSITION_AUDIT; gmt-compare.py contract_scope/child_modules; lean_contract.validate_lean_statement on the 4 child types`
+- `lake env lean /tmp/bue-ch07/out/Challenge_{testform_corr,blowup_algebra,integral_dilation,dilation_ball,parent}.lean, /tmp/bue-ch07/out/AssemblyExact.lean, /tmp/bue-ch07/out/AssemblyExact3.lean, /tmp/bue-ch07/check/Children.lean, /tmp/bue-ch07/check/EndToEnd.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-cb96411644/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/bue-ch07/out/AssemblyExact.lean`
+- `/tmp/bue-ch07/out/AssemblyExact3.lean`
+- `/tmp/bue-ch07/check/Children.lean`
+- `/tmp/bue-ch07/check/EndToEnd.lean`
+
+Pin: the snapshot (project b4d606d, Mathlib 25730c7c) Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Library and DAG findings:
+- The pinned SimonGMT library has every API the supplied proof cites: affinePullbackForm, tsupport_affinePullbackForm_subset, exteriorDerivative_affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, restrictDomain_apply, testFormOnInclusion, boundary_apply.
+- Mathlib at the pin has Measure.integral_comp_inv_smul_of_nonneg (Haar/NormedSpace.lean:129), integral_sub_right_eq_self (to_additive of integral_div_right_eq_self, Group/Integral.lean:108), finrank_euclideanSpace_fin (PiL2.lean:205) and ContinuousAlternatingMap.map_smul_univ.
+- The DAG already holds two comparator-accepted declarations that package supplied steps 1, 3, 4 and the ∂-commutation of step 7: dtc_blowUp_testForm_corr (candidate 5e184fbc) and dtc_blowUp_algebra (candidate f64597f3). Their types are byte-identical to the child types used here.
+- No accepted node gives the Lebesgue change of variables for `dilation` or the ball identities, so these are new children.
+- The new names occur nowhere.
+
+Lean verification:
+- All child types and the parent type elaborate in comparator scope.
+- The exact parent type follows from the exact child types; axioms are standard.
+- Both new children are provable; scratch proofs compiled warning-free.
+- The reuse overlay merges cleanly onto dispatch base 72492511, and the end-to-end build uses only propext, Classical.choice and Quot.sound.

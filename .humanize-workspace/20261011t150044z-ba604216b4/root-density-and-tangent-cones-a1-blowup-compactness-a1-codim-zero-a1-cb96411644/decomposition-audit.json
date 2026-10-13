@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "integral_comp_inv_smul_of_nonneg|integral_div_right_eq_self|integral_sub_right_eq_self|finrank_euclideanSpace_fin|map_smul_univ",
+        "affinePullbackForm|affinePullbackTestOn|affinePushforward_apply|boundary_affinePushforward|TestFormOn|def boundary|boundary_apply|def zeroRegion|def support|def VanishesOn|restrictDomain_apply|testFormOnInclusion_coe|def IsTestForm",
+        "dtc_bc_cz_blowUp_eval_integral_dilation|dtc_bc_cz_blowUp_eval_dilation_ball",
+        "git show f64597f33dbddb264b249a7f03156a1073cce7da:GMT/Ch07/Submission.lean",
+        "git merge-base --is-ancestor 5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518 f64597f33dbddb264b249a7f03156a1073cce7da",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-blowup-independent-audit-35ot05qr/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-blowup-independent-audit-35ot05qr/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-blowup-independent-audit-35ot05qr/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-blowup-independent-audit-35ot05qr/NewChildren.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-cb96411644/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-cb96411644/decomposition-v1.json",
+        "/tmp/gmt-blowup-independent-audit-35ot05qr/FrozenTypes.lean",
+        "/tmp/gmt-blowup-independent-audit-35ot05qr/Reuse.lean",
+        "/tmp/gmt-blowup-independent-audit-35ot05qr/Assembly.lean",
+        "/tmp/gmt-blowup-independent-audit-35ot05qr/NewChildren.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace contract; Mathlib and SimonGMT revisions match their configured pins. The cited support, pullback, boundary, translation and scaling APIs have the required hypotheses. Both reused declarations are comparator-accepted, with byte-identical types in the DAG, handoffs and candidate sources. Neither new name is reserved; searches found no declarations with those names in the project snapshot, workspace GMT or SimonGMT. All four names are bare identifiers. All frozen types independently elaborate in comparator scope without child implementations, and no Matrix/IsUnit construction occurs. Fresh Lean checks passed for both reused declarations, both new lemmas, and the supplied assembly regenerated with the exact frozen child and selected parent types. Their axiom dependencies are only propext, Classical.choice and Quot.sound. The split is appropriate: all four children contribute to the selected theorem, and the sole child dependency, blowup_algebra depending on testform_corr, is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_corr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree for arbitrary P, n and U with positive lam. The proof constructs both test-form correspondences using inverse affine homeomorphisms, verifies smoothness, compact support and domain containment, and derives the evaluation factor by multilinearity and current linearity, including degree zero. It is complete and non-circular. Reuse is valid because the accepted frozen type is identical; parts (a) and (c) supply the parent's evaluation and boundary arguments."
+    },
+    {
+      "key": "blowup_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conjuncts match the prose and are proved: differences by evaluation, injectivity using testform_corr and the nonzero scaling factor, support equality by transporting relatively compact open zero regions in both directions, and boundary commutation by affine pullback commuting with exterior differentiation. No openness assumption on U is needed. The declared dependency on testform_corr is sufficient and non-circular. Exact-type reuse of the accepted package is appropriate because conjunct (iv) supplies the parent's boundary step."
+    },
+    {
+      "key": "integral_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the arbitrary-function, volume-integral statement. The proof explicitly rewrites dilation, applies translation invariance, then the pinned Haar scaling theorem and finrank identity. Those lemmas require no measurability or integrability hypothesis on F, and positive lam supplies the required nonnegativity. The proof is complete, independent and directly supplies the parent's Jacobian cancellation."
+    },
+    {
+      "key": "dilation_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches both set identities with arbitrary real rho. The norm calculation and multiplication by positive lam establish the preimage identity; the witness x + lam • z establishes the reverse image inclusion. This covers nonpositive radii and dimension zero without additional hypotheses. The proof is complete and independent, and supplies both support transport and the currentEval domain condition."
+    }
+  ],
+  "required_changes": []
+}
