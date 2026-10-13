@@ -919,6 +919,54 @@ theorem Submission.codim1_rdo_dg_vdl_finite_difference : ∀ (m : ℕ) (D G : Se
   rw [hδη]
   linarith
 
+/-- **One-sided volume density bound** (the lower bound (10) of Simon Ch. 3, 4.3, for a general
+Borel `G`).  Under the Sobolev inequality (S) on `D ⊇ B̄_{ρ₁}(y)` and the annular bound (A), with
+`μ(B̄_r(y)) ≠ 0` for `r > 0`, there is `c' > 0` with `c'ρ^{m+1} ≤ L(G ∩ B_ρ(y))` for
+`0 < ρ < ρ₁`.  With `V(r) = L(G ∩ B̄_r(y))`, `finite_difference` gives
+`V(ρ)^{m/(m+1)} ≤ (K/δ)(V(ρ + δ) − V(ρ))`; (A) at `ρ = δ = r/2` and `μ(B̄_{r/2}(y)) ≠ 0` give
+`V(r) > 0` on `(0, ρ₁)`; `discrete_growth` then gives `V(r) ≥ (r/(2K(m+1)))^{m+1}`, and
+`B̄_{ρ/2}(y) ⊆ B_ρ(y)` gives the bound with `c' = (1/(4K(m+1)))^{m+1}`. -/
+theorem Submission.codim1_rdo_dg_vdl_one_sided_density : ∀ (m : ℕ) (D G : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (y : Euclid (m + 1)) (ρ₁ C₁ c : ℝ), 1 ≤ m → MeasurableSet G → 0 < c → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → μ (closedBall y ρ₁) ≠ ∞ → (∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0) → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → (∫ z in G, ζ z ^ ((m + 1 : ℝ) / m)) ^ ((m : ℝ) / (m + 1)) ≤ c * (∫ z, ζ z ∂μ + ∫ z in G, ‖fderiv ℝ ζ z‖)) → (∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → ENNReal.ofReal δ * μ (closedBall y ρ) ≤ ENNReal.ofReal C₁ * volume (G ∩ (ball y (ρ + δ) \ closedBall y ρ))) → ∃ c' : ℝ, 0 < c' ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → ENNReal.ofReal (c' * ρ ^ (m + 1)) ≤ volume (G ∩ ball y ρ) := by
+  intro m D G μ y ρ₁ C₁ c hm hG hc hC₁ hD hμ_fin hμ_pos hS hA
+  -- Step 1: the finite-difference inequality for `V(r) = L(G ∩ B̄_r(y))`
+  obtain ⟨K, hK, hdiff⟩ :=
+    Submission.codim1_rdo_dg_vdl_finite_difference m D G μ y ρ₁ C₁ c hm hG hc hC₁ hD hμ_fin hS hA
+  -- Step 2: `L(G ∩ B̄_r(y)) ≤ L(B̄_r(y)) < ∞`
+  have hfin : ∀ r : ℝ, volume (G ∩ closedBall y r) ≠ ∞ := fun r =>
+    ((measure_mono inter_subset_right).trans_lt measure_closedBall_lt_top).ne
+  -- Step 3: `V > 0` on `(0, ρ₁)`, from (A) at `ρ = δ = r/2`
+  have hV_pos : ∀ r : ℝ, 0 < r → r < ρ₁ → 0 < (volume (G ∩ closedBall y r)).toReal := by
+    intro r hr hrρ₁
+    have hA' := hA (r / 2) (r / 2) (half_pos hr) (half_pos hr) (by linarith)
+    have hlhs : ENNReal.ofReal (r / 2) * μ (closedBall y (r / 2)) ≠ 0 :=
+      mul_ne_zero (ENNReal.ofReal_ne_zero_iff.2 (half_pos hr)) (hμ_pos _ (half_pos hr))
+    have hann : volume (G ∩ (ball y (r / 2 + r / 2) \ closedBall y (r / 2))) ≠ 0 := by
+      intro h0
+      rw [h0, mul_zero] at hA'
+      exact hlhs (le_zero_iff.1 hA')
+    have hsub : G ∩ (ball y (r / 2 + r / 2) \ closedBall y (r / 2)) ⊆ G ∩ closedBall y r := by
+      rw [add_halves]
+      exact inter_subset_inter_right _ (sdiff_subset.trans ball_subset_closedBall)
+    exact ENNReal.toReal_pos (fun h0 => hann (measure_mono_null hsub h0)) (hfin r)
+  -- Step 4: discrete growth, `V(r) ≥ (r/(2K(m+1)))^{m+1}` on `(0, ρ₁)`
+  have hgrowth := Submission.codim1_rdo_dg_vdl_discrete_growth m K ρ₁
+    (fun r => (volume (G ∩ closedBall y r)).toReal) hK hV_pos hdiff
+  -- Step 5: evaluate at `ρ/2`, with `c' = (1/(4K(m+1)))^{m+1}` and `B̄_{ρ/2}(y) ⊆ B_ρ(y)`
+  refine ⟨(1 / (4 * K * (m + 1))) ^ (m + 1), by positivity, fun ρ hρ hρρ₁ => ?_⟩
+  have hc' : (1 / (4 * K * (m + 1))) ^ (m + 1) * ρ ^ (m + 1) =
+      (ρ / 2 / (2 * K * (m + 1))) ^ (m + 1) := by
+    rw [← mul_pow]
+    congr 1
+    field_simp
+    ring
+  calc ENNReal.ofReal ((1 / (4 * K * (m + 1))) ^ (m + 1) * ρ ^ (m + 1))
+      ≤ ENNReal.ofReal (volume (G ∩ closedBall y (ρ / 2))).toReal := by
+        rw [hc']
+        exact ENNReal.ofReal_le_ofReal (hgrowth (ρ / 2) (half_pos hρ) (by linarith))
+    _ = volume (G ∩ closedBall y (ρ / 2)) := ENNReal.ofReal_toReal (hfin _)
+    _ ≤ volume (G ∩ ball y ρ) :=
+        measure_mono (inter_subset_inter_right _ (closedBall_subset_ball (half_lt_self hρ)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
