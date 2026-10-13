@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4d89e87549872c59f9deb2068d1b19b1882d6103d0bfced1fe47fe552ae7e132",
+  "git_delta": {
+    "base_commit": "5bbf1f94754d8636160722897150c26be2c1321c",
+    "candidate_commit": "161e7cffd5fb058dcd89f0e479f36b12d9db21a6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrfg_face_coord",
+    "diff_sha256": "f3cb3cb6acb9843e441f0e2f35b27d8bdbe1fccc6c2db376c9e9bf7dac295627",
+    "source_sha256": "adcc43124c237c1b2524023487a25a2e254a2c61b774b1f6fdf8f934bb0a45c0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrfg_face_coord",
+      "statement": "∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ) (y : Euclid k), Function.Injective ι → (∀ m, (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (ι m) = (b (ι m) : ℝ) + y m) ∧ (∀ l, (∀ m, ι m ≠ l) → (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) l = (b l : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
