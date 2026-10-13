@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "depth": 4,
+  "title": "Density-one regular points carry a multiplicity-one oriented C¹ piece (parent B2)",
+  "statement": "Local multiplicity-one structure at a regular point of density one. Data: P, m ∈ ℕ with m ≥ 1; an open set U ⊆ ℝ^P; T ∈ 𝒟_m(U) (GeometricCurrentOn U m); y ∈ ℝ^P. Hypotheses: y ∈ reg T (regularSet T: y ∈ spt T and, for some ρ_y > 0 with B_{ρ_y}(y) ⊆ U, T(ω) = m_y∫_{M_y}⟨ω, ξ_y⟩ dH^m whenever tsupport ω ⊆ B_{ρ_y}(y), for an integer m_y ≠ 0 and an embedded C¹ m-submanifold M_y ∋ y with orientation ξ_y and H^m(M_y ∩ K) < ∞ for compact K ⊆ B_{ρ_y}(y)); and Θ^m(μ_T, y) = 1 (HasMassDensity T y 1). Conclusion: there is ρ₀ > 0 with B_{ρ₀}(y) ⊆ U such that for every ρ ∈ (0, ρ₀] there is ξ : ℝ^P → Λ_m(ℝ^P) (MultiVector P m) with (i) spt T ∩ B_ρ(y) an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m); (ii) ξ an orientation of spt T ∩ B_ρ(y) (IsOrientation: ξ continuous there and ξ(x) a unit orientation of tangentSpace(spt T ∩ B_ρ(y), x)); (iii) H^m(spt T ∩ B_ρ(y)) < ∞; (iv) T(ω) = ∫_{spt T ∩ B_ρ(y)} ⟨ω(x), ξ(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_ρ(y). Here H^m = μHE[m] and B_ρ(y) = ball y ρ.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (y : Euclid P), 1 ≤ m → IsOpen U → y ∈ regularSet T → HasMassDensity T y 1 → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ball y ρ₀ ⊆ U ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₀ → ∃ ξ : Euclid P → MultiVector P m, IsEmbeddedSubmanifold 1 m (T.support ∩ ball y ρ) ∧ IsOrientation m (T.support ∩ ball y ρ) ξ ∧ μHE[m] (T.support ∩ ball y ρ) ≠ ∞ ∧ ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ → T ω = ∫ x in T.support ∩ ball y ρ, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+  "lean_name": "codim1_density_one_regular_local_rep",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f-a1",
+      "result_commit": "0501e07ced47186792005c0a22c976aafdb0ebdf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b47a776447-a1"
+}

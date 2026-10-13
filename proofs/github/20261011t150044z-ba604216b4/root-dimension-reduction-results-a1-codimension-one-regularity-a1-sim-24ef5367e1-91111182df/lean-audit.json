@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "413c3d746588601052035bbb85861cc7e838cecbbe2b242f353543bc30db482b",
+  "git_delta": {
+    "base_commit": "735b19983ae270ed187458622f4f449390a7204c",
+    "candidate_commit": "53a42897fe4e36164ba3d32a1511f71792f38d92",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ovr_orientation_glue",
+    "diff_sha256": "7110b12dd868b3ae1599a4c559a034e39da14ba7140b28c8e07934dcdc1b9bb1",
+    "source_sha256": "899cb1ea9fc698851b2662aedeed496c2af830957a6918075c419448b9456f3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ovr_orientation_glue",
+      "statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M : Set (Euclid P)) (ρ : Euclid P → ℝ) (ξs : Euclid P → Euclid P → MultiVector P m), IsEmbeddedSubmanifold 1 m M → MeasurableSet M → (∀ y ∈ M, 0 < ρ y ∧ IsOrientation m (M ∩ ball y (ρ y)) (ξs y) ∧ μHE[m] (M ∩ ball y (ρ y)) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) → C ω = ∫ x in M ∩ ball y (ρ y), ξs y x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ ∧ (∀ y ∈ M, ∀ x ∈ M ∩ ball y (ρ y), ξ x = ξs y x) ∧ ∀ y ∈ M, ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

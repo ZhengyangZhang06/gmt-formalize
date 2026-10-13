@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.secant_estimate-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+  "depth": 4,
+  "title": "Secant estimate at a chart point from differentiability, an injective derivative and inverse continuity",
+  "statement": "Let P, d ∈ ℕ, N ⊆ ℝ^P, V ⊆ ℝ^d, W ⊆ ℝ^P open, ψ : ℝ^d → ℝ^P, A : ℝ^d → ℝ^P a continuous linear map, and v ∈ V. Assume ψ(V) = W ∩ N, ψ is Fréchet differentiable at v with derivative A, and A is injective. Assume also the inverse-continuity condition at v: for every ε > 0 there is δ > 0 such that every v' ∈ V with |ψ(v') − ψ(v)| < δ satisfies |v' − v| < ε. Then for every ε > 0 there is δ > 0 such that every y ∈ N with |y − ψ(v)| < δ admits some a ∈ ℝ^d with |y − ψ(v) − Aa| ≤ ε|y − ψ(v)|.",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P) (A : Euclid d →L[ℝ] Euclid P) (v : Euclid d), IsOpen W → ψ '' V = W ∩ N → v ∈ V → HasFDerivAt ψ A v → Injective A → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y (ψ v) < δ → ∃ a : Euclid d, ‖y - ψ v - A a‖ ≤ ε * ‖y - ψ v‖",
+  "lean_name": "dsmc_chart_secant_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-40ea3a7fae-a1"
+}
