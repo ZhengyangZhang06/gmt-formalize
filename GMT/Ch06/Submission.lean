@@ -458,6 +458,58 @@ theorem Submission.deformation_ipl_mwc_pi_swap_cancel : ∀ (r : ℕ) (H : Fin r
       _ = - ∑ σ, T σ := Finset.sum_neg_distrib _
   linarith
 
+/-- Piola identity (step (3.2)(i) of the proof of `minor_weak_continuity`; Evans, PDE, §8.1.4(b),
+Lemma 1): for `C²` functions `W_0, …, W_{r-1}` on `ℝ^k` and `b : Fin (r + 1) → Fin k`, the signed
+minors `c_q = (-1)^q det (∂_{b (q.succAbove s)} W_t)_{t,s}` satisfy `∑_q ∂_{b q} c_q = 0`.
+By the cofactor formula `c_q = ∑_{σ 0 = q} sgn σ ∏_t ∂_{b (σ t.succ)} W_t` and the product rule,
+`∑_q ∂_{b q} c_q = ∑_σ sgn σ ∑_u H_u(σ 0, σ u.succ) ∏_{t ≠ u} ∂_{b (σ t.succ)} W_t` with
+`H_u(i, j) = ∂_{b i} ∂_{b j} W_u`; this vanishes since `H_u` is symmetric (Schwarz) and
+`σ ↦ σ * swap 0 u.succ` changes the sign. -/
+theorem Submission.deformation_ipl_mwc_piola_identity :
+    ∀ (k r : ℕ) (W : Fin r → Eucl k → ℝ) (b : Fin (r + 1) → Fin k), (∀ t, ContDiff ℝ 2 (W t)) →
+      ∀ w : Eucl k, ∑ q : Fin (r + 1), fderiv ℝ (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) w
+          (EuclideanSpace.single (b q) 1) = 0 := by
+  intro k r W b hW w
+  -- `D t i x = ∂_{b i} W_t (x)`, the entries of the minors; `C¹` since `W_t` is `C²`.
+  let D : Fin r → Fin (r + 1) → Eucl k → ℝ := fun t i x =>
+    fderiv ℝ (W t) x (EuclideanSpace.single (b i) 1)
+  have hD : ∀ t i, DifferentiableAt ℝ (D t i) w := fun t i =>
+    (((hW t).fderiv_right (m := 1) (by norm_num)).differentiable one_ne_zero w).clm_apply
+      (differentiableAt_const _)
+  -- `H u i j = ∂_{b i} ∂_{b j} W_u (w)` is symmetric in `(i, j)`.
+  let H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ := fun u i j =>
+    fderiv ℝ (D u j) w (EuclideanSpace.single (b i) 1)
+  have hH : ∀ u i j, H u i j = H u j i := fun u i j =>
+    Submission.deformation_ipl_mwc_pi_hessian_symm k (W u) (hW u) w
+      (EuclideanSpace.single (b j) 1) (EuclideanSpace.single (b i) 1)
+  -- Cofactor formula and product rule: `∂_{b q} c_q = ∑_{σ 0 = q} sgn σ ∂_{b q} ∏_t D t (σ t.succ)`
+  have hc : ∀ q : Fin (r + 1), fderiv ℝ (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) *
+      Matrix.det (Matrix.of fun t s : Fin r =>
+        fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) w
+        (EuclideanSpace.single (b q) 1) =
+      ∑ σ : Equiv.Perm (Fin (r + 1)), (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) *
+        ∑ u : Fin r, H u q (σ u.succ) * ∏ t ∈ Finset.univ.erase u, D t (σ t.succ) w := by
+    intro q
+    have hcof : (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) =
+        fun x => ∑ σ : Equiv.Perm (Fin (r + 1)),
+          (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, D t (σ t.succ) x :=
+      funext fun x => Submission.deformation_ipl_mwc_pi_cofactor_leibniz r (fun t i => D t i x) q
+    rw [hcof]
+    exact Submission.deformation_ipl_mwc_pi_fderiv_sum_prod k r (Equiv.Perm (Fin (r + 1)))
+      (fun σ => if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0)
+      (fun σ t => D t (σ t.succ)) w _ fun σ t => hD t (σ t.succ)
+  -- Sum over `q`: only `q = σ 0` survives, and the sum cancels in pairs `σ, σ * swap 0 u.succ`.
+  refine Eq.trans ?_
+    (Submission.deformation_ipl_mwc_pi_swap_cancel r H (fun t i => D t i w) hH)
+  rw [Fintype.sum_congr _ _ hc, Finset.sum_comm]
+  refine Fintype.sum_congr _ _ fun σ => ?_
+  rw [Finset.sum_eq_single (σ 0) (fun q _ hq => by rw [ite_eq_right (Ne.symm hq), zero_mul])
+    (fun h => absurd (Finset.mem_univ _) h), ite_eq_left rfl]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
