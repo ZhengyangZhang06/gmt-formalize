@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.covector_finite_dimensional-a1",
+      "key": "covector_finite_dimensional",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+              "cat GMT/Ch07/Submission.lean (IMRep fields, IMRep.action, IMRep.Represents, MultiVector, IsUnitOrientationOf)",
+              "sed -n 1,70p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean; sed -n 95,200p .../Chapter06/Currents.lean; grep -n 'VanishesOn|zeroRegion|def support' -A6 .../Chapter06/*.lean",
+              "python3 -I scan of dag.json: nodes under root.minimizing_implies_stationary-a1.support_null-a1 and root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1; lean_name/status/lean_statement of imsupp_unit_orientation_ne_zero_norm_le_one, imsupp_covector_finiteDimensional, imsupp_orient_apply_ae_eq_zero_of_vanishesOn, regcomp_rim_action_integrable, rsd_cmr_ic_action_integrable",
+              "git diff b4d606d 2e5d20d49a4a41f79e81db1a65e850fb919b38ba -- GMT/ (accepted proof of imsupp_unit_orientation_ne_zero_norm_le_one)",
+              "python3 -I read of nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json (reused child entry and parent rationale)",
+              "rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 196,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "rg in local-references/123e8435b4a2469b/mathlib/Mathlib: Module.Basis.ext_alternating, toAlternatingMap_injective, of_injective, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, integrable_toReal_of_lintegral_ne_top, Integrable.mono', measurable_from_nat, image_eq_one_of_notMem_mulTSupport, tsupport_smul_subset_left, HasCompactSupport.smul_right, ae_iff, ae_all_iff, restrict_apply_univ, ae_restrict_mem, Basis.ext",
+              "rg -n 'FiniteDimensional' mathlib/Mathlib/Topology/Algebra/Module/Alternating/*.lean mathlib/Mathlib/Analysis/Normed/Module/Alternating/*.lean (no match); example (P n : ℕ) : FiniteDimensional ℝ (Covector (Euclid P) n) := by infer_instance (failed to synthesize)",
+              "rg -n 'FiniteDimensional|lintegral_ne_top|IntegrableOn|ae_eq_zero_of_integral' local-references/123e8435b4a2469b/project -g '*.lean' (only unrelated Ch02/Ch05/Ch06 contract lines)",
+              "rg -n 'FiniteDimensional ℝ \\(Covector|instance.*FiniteDimensional' lake-packages-25730c7c/simongmt/Poincare -g '*.lean' (no match)",
+              "sed -n 290,310p and 755,775p book/chapter-06.txt (Simon 6.2.11, 6.3.2(3))",
+              "python3 verifier/lean_contract.py validate_lean_statement on all four child types (all OK, unchanged)",
+              "dag.json lean_name scan and git grep -E 'lcn_covector_finiteDimensional|lcn_mult_mul_orient_apply_integrableOn|lcn_orient_apply_ae_eq_zero_of_vanishesOn' over all 566 refs -- GMT (no match)",
+              "sed -n 1380,1420p, 1790,1900p, 6490,6545p /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py and ensure() in store.py (depth gate, cross-branch reuse only for accepted identical types, existing node returned unchanged)",
+              "lake env lean /tmp/lcn-decomp/All.lean (full proofs of the 3 new children, accepted child, parent glue; #print axioms: propext, Classical.choice, Quot.sound)",
+              "lake env lean /tmp/lcn-decomp/Check.lean (exact parent type from sorry-stubs of all four children)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/store.py",
+              "/tmp/lcn-decomp/All.lean",
+              "/tmp/lcn-decomp/Check.lean",
+              "/tmp/lcn-decomp/Probe.lean"
+            ],
+            "conclusion": "The snapshot (project b4d606d, Mathlib 25730c7c) matches the frozen Ch07 contract.\n\nWhat the contract provides:\n- IMRep fields used here: measurableSet_carrier, measurable_mult, mult_pos, locallyIntegrable_mult, aestronglyMeasurable_orient, orients.\n- IMRep.action and IMRep.Represents.\n- From SimonGMT Chapter06: Covector = E [⋀^Fin n]→L[ℝ] ℝ, IsTestForm, TestFormOn (tsupport ⊆ U) and VanishesOn.\n\nWhat no local source provides:\n- The snapshot project and the SimonGMT package contain no FiniteDimensional instance or lemma for Covector. infer_instance fails, and rg finds no match.\n- They also contain no lemma on local integrability or a.e. vanishing of IMRep components.\nThese obligations therefore become new children.\n\nEvery Mathlib lemma cited in the child proofs exists at 25730c7c with the signature used:\n- IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:205; needs LocallyIntegrableOn on the open set and ContDiff ℝ ∞ test functions);\n- Module.Basis.ext_alternating, ContinuousAlternatingMap.toAlternatingMap_injective, FiniteDimensional.of_injective;\n- setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (no integrability hypothesis), integrable_toReal_of_lintegral_ne_top, Integrable.mono', measurable_from_nat;\n- tsupport_smul_subset_left, HasCompactSupport.smul_right, image_eq_zero_of_notMem_tsupport;\n- ae_iff, ae_all_iff, ae_restrict_mem, Measure.restrict_apply_univ, Basis.ext.\n\nReuse and naming (from dag.json):\n- imsupp_unit_orientation_ne_zero_norm_le_one is accepted (2e5d20d) with a byte-identical type, so it is reused.\n- imsupp_covector_finiteDimensional, imsupp_orient_apply_ae_eq_zero_of_vanishesOn, regcomp_rim_action_integrable and rsd_cmr_ic_action_integrable are unaccepted and owned by other parents. The runtime forbids sharing them.\n- The three new lcn_* names are globally unique across the DAG and all git refs.\n\nKernel checks with lake env lean:\n- Full proofs of all children plus the glue use only propext, Classical.choice and Quot.sound.\n- The exact parent type compiles from sorry-stubs of the children.\n\nTextual sources are Simon 6.2.11 (book/chapter-06.txt about lines 296–303) and 6.3.2(3) (about lines 763–768). Simon uses without proof that an integer multiplicity current carries no mass where it vanishes."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.covector_finite_dimensional-a1",
+        "subproblem": {
+          "key": "covector_finite_dimensional",
+          "title": "The space of n-covectors on ℝ^P is finite-dimensional",
+          "statement": "For all natural numbers P and n, the real vector space Λ^n(ℝ^P) = Covector (Euclid P) n of continuous alternating n-linear forms (ℝ^P)^n → ℝ, with its pointwise ℝ-module structure, is finite-dimensional over ℝ.",
+          "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+          "lean_name": "lcn_covector_finiteDimensional",
+          "depends_on": [],
+          "natural_proof": "Source: step 7 of the parent proof. Finite-dimensionality of Λ^n is used in step 8 to test ξ(x) against a finite basis. Mathlib provides no FiniteDimensional instance for continuous alternating maps, so the fact is proved directly.\nNotation. Λ^n := Covector (Euclid P) n = (ℝ^P)[⋀^Fin n]→L[ℝ] ℝ. For α ∈ Λ^n and w : Fin n → ℝ^P write α(w) = α(w_1, …, w_n). Addition and scalar multiplication on Λ^n are pointwise.\n1. Standard basis. Let e = (e_1, …, e_P) be the standard basis of ℝ^P = EuclideanSpace ℝ (Fin P), for instance the Module.Basis underlying the orthonormal basis EuclideanSpace.basisFun (Fin P) ℝ.\n2. The evaluation map. For each multi-index I : Fin n → Fin P put e_I := (e_{I(1)}, …, e_{I(n)}). Define Φ : Λ^n → ℝ^{(Fin n → Fin P)} by Φ(α)(I) := α(e_I). Because the operations on Λ^n are pointwise, Φ(α + β)(I) = α(e_I) + β(e_I) and Φ(c·α)(I) = c·α(e_I). So Φ is ℝ-linear.\n3. Φ is injective. Let α, β ∈ Λ^n with Φ(α) = Φ(β).\n- Then α(e_v) = β(e_v) for every v : Fin n → Fin P, in particular for every injective v.\n- The underlying algebraic alternating maps of α and β are multilinear and alternating. Two such maps that agree on every tuple (e_{v(1)}, …, e_{v(n)}) with v injective are equal (Module.Basis.ext_alternating). So the underlying alternating maps of α and β coincide.\n- A continuous alternating map is determined by its underlying alternating map (ContinuousAlternatingMap.toAlternatingMap_injective). Hence α = β.\n4. Conclusion. The index set Fin n → Fin P is finite (P^n elements). So the codomain ℝ^{(Fin n → Fin P)} is a finite product of copies of ℝ and is finite-dimensional. A vector space with an injective linear map into a finite-dimensional space is finite-dimensional (FiniteDimensional.of_injective). By steps 2 and 3, FiniteDimensional ℝ (Covector (Euclid P) n) holds.",
+          "proof_key_steps": [
+            "Define the linear evaluation map Φ : Λ^n → ℝ^{(Fin n → Fin P)}, Φ(α)(I) = α(e_{I(1)}, …, e_{I(n)}), on standard-basis tuples.",
+            "Φ is injective: alternating maps that agree on basis tuples are equal (Module.Basis.ext_alternating), and toAlternatingMap is injective.",
+            "The codomain is finite-dimensional, so FiniteDimensional.of_injective gives FiniteDimensional ℝ (Covector (Euclid P) n)."
+          ]
+        },
+        "audit": {
+          "key": "covector_finite_dimensional",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The standalone proposition exactly matches the prose for all P and n. Evaluation on standard-basis tuples defines a linear injection by alternating-map extensionality; its finite-dimensional codomain proves the conclusion. The argument covers zero dimensions, needs no sibling or parent theorem, and supplies a complete formalization route."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1",
+      "key": "component_integrable",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+              "cat GMT/Ch07/Submission.lean (IMRep fields, IMRep.action, IMRep.Represents, MultiVector, IsUnitOrientationOf)",
+              "sed -n 1,70p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean; sed -n 95,200p .../Chapter06/Currents.lean; grep -n 'VanishesOn|zeroRegion|def support' -A6 .../Chapter06/*.lean",
+              "python3 -I scan of dag.json: nodes under root.minimizing_implies_stationary-a1.support_null-a1 and root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1; lean_name/status/lean_statement of imsupp_unit_orientation_ne_zero_norm_le_one, imsupp_covector_finiteDimensional, imsupp_orient_apply_ae_eq_zero_of_vanishesOn, regcomp_rim_action_integrable, rsd_cmr_ic_action_integrable",
+              "git diff b4d606d 2e5d20d49a4a41f79e81db1a65e850fb919b38ba -- GMT/ (accepted proof of imsupp_unit_orientation_ne_zero_norm_le_one)",
+              "python3 -I read of nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json (reused child entry and parent rationale)",
+              "rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 196,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "rg in local-references/123e8435b4a2469b/mathlib/Mathlib: Module.Basis.ext_alternating, toAlternatingMap_injective, of_injective, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, integrable_toReal_of_lintegral_ne_top, Integrable.mono', measurable_from_nat, image_eq_one_of_notMem_mulTSupport, tsupport_smul_subset_left, HasCompactSupport.smul_right, ae_iff, ae_all_iff, restrict_apply_univ, ae_restrict_mem, Basis.ext",
+              "rg -n 'FiniteDimensional' mathlib/Mathlib/Topology/Algebra/Module/Alternating/*.lean mathlib/Mathlib/Analysis/Normed/Module/Alternating/*.lean (no match); example (P n : ℕ) : FiniteDimensional ℝ (Covector (Euclid P) n) := by infer_instance (failed to synthesize)",
+              "rg -n 'FiniteDimensional|lintegral_ne_top|IntegrableOn|ae_eq_zero_of_integral' local-references/123e8435b4a2469b/project -g '*.lean' (only unrelated Ch02/Ch05/Ch06 contract lines)",
+              "rg -n 'FiniteDimensional ℝ \\(Covector|instance.*FiniteDimensional' lake-packages-25730c7c/simongmt/Poincare -g '*.lean' (no match)",
+              "sed -n 290,310p and 755,775p book/chapter-06.txt (Simon 6.2.11, 6.3.2(3))",
+              "python3 verifier/lean_contract.py validate_lean_statement on all four child types (all OK, unchanged)",
+              "dag.json lean_name scan and git grep -E 'lcn_covector_finiteDimensional|lcn_mult_mul_orient_apply_integrableOn|lcn_orient_apply_ae_eq_zero_of_vanishesOn' over all 566 refs -- GMT (no match)",
+              "sed -n 1380,1420p, 1790,1900p, 6490,6545p /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py and ensure() in store.py (depth gate, cross-branch reuse only for accepted identical types, existing node returned unchanged)",
+              "lake env lean /tmp/lcn-decomp/All.lean (full proofs of the 3 new children, accepted child, parent glue; #print axioms: propext, Classical.choice, Quot.sound)",
+              "lake env lean /tmp/lcn-decomp/Check.lean (exact parent type from sorry-stubs of all four children)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/store.py",
+              "/tmp/lcn-decomp/All.lean",
+              "/tmp/lcn-decomp/Check.lean",
+              "/tmp/lcn-decomp/Probe.lean"
+            ],
+            "conclusion": "The snapshot (project b4d606d, Mathlib 25730c7c) matches the frozen Ch07 contract.\n\nWhat the contract provides:\n- IMRep fields used here: measurableSet_carrier, measurable_mult, mult_pos, locallyIntegrable_mult, aestronglyMeasurable_orient, orients.\n- IMRep.action and IMRep.Represents.\n- From SimonGMT Chapter06: Covector = E [⋀^Fin n]→L[ℝ] ℝ, IsTestForm, TestFormOn (tsupport ⊆ U) and VanishesOn.\n\nWhat no local source provides:\n- The snapshot project and the SimonGMT package contain no FiniteDimensional instance or lemma for Covector. infer_instance fails, and rg finds no match.\n- They also contain no lemma on local integrability or a.e. vanishing of IMRep components.\nThese obligations therefore become new children.\n\nEvery Mathlib lemma cited in the child proofs exists at 25730c7c with the signature used:\n- IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:205; needs LocallyIntegrableOn on the open set and ContDiff ℝ ∞ test functions);\n- Module.Basis.ext_alternating, ContinuousAlternatingMap.toAlternatingMap_injective, FiniteDimensional.of_injective;\n- setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (no integrability hypothesis), integrable_toReal_of_lintegral_ne_top, Integrable.mono', measurable_from_nat;\n- tsupport_smul_subset_left, HasCompactSupport.smul_right, image_eq_zero_of_notMem_tsupport;\n- ae_iff, ae_all_iff, ae_restrict_mem, Measure.restrict_apply_univ, Basis.ext.\n\nReuse and naming (from dag.json):\n- imsupp_unit_orientation_ne_zero_norm_le_one is accepted (2e5d20d) with a byte-identical type, so it is reused.\n- imsupp_covector_finiteDimensional, imsupp_orient_apply_ae_eq_zero_of_vanishesOn, regcomp_rim_action_integrable and rsd_cmr_ic_action_integrable are unaccepted and owned by other parents. The runtime forbids sharing them.\n- The three new lcn_* names are globally unique across the DAG and all git refs.\n\nKernel checks with lake env lean:\n- Full proofs of all children plus the glue use only propext, Classical.choice and Quot.sound.\n- The exact parent type compiles from sorry-stubs of the children.\n\nTextual sources are Simon 6.2.11 (book/chapter-06.txt about lines 296–303) and 6.3.2(3) (about lines 763–768). Simon uses without proof that an integer multiplicity current carries no mass where it vanishes."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1",
+        "subproblem": {
+          "key": "component_integrable",
+          "title": "The scalar components θ·ξ(α) of an integer multiplicity triple are H^n-integrable on compact pieces of the carrier",
+          "statement": "Let P, n ∈ ℕ and U, K ⊆ ℝ^P. Let R = (M, θ, ξ) be an integer multiplicity triple in U (R : IMRep U n), with M = R.carrier, θ = R.mult : ℝ^P → ℕ and ξ = R.orient : ℝ^P → Λ_n = MultiVector P n. Assume K is compact and K ⊆ U. Then for every n-covector α ∈ Λ^n = Covector (Euclid P) n, the real function x ↦ θ(x)·ξ(x)(α) is integrable on M ∩ K with respect to H^n = μHE[n] (Mathlib's normalized n-dimensional Hausdorff measure). In Lean: IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x α) (R.carrier ∩ K) μHE[n].",
+          "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → ∀ α : Covector (Euclid P) n, IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x α) (R.carrier ∩ K) μHE[n]",
+          "lean_name": "lcn_mult_mul_orient_apply_integrableOn",
+          "depends_on": [
+            "unit_orientation_bounds"
+          ],
+          "natural_proof": "Source: steps 2–4 of the parent proof (finiteness of θ H^n on a compact piece, and the domination |θ ξ(α)| ≤ ‖α‖ θ). Here they are stated for an arbitrary compact K ⊆ U; the parent uses K = closure W.\nThis proof uses the sibling unit_orientation_bounds: every ξ_0 ∈ Λ_n with IsUnitOrientationOf ξ_0 Q satisfies ξ_0 ≠ 0 and ‖ξ_0‖ ≤ 1.\nNotation.\n- M := R.carrier, θ := R.mult, ξ := R.orient.\n- Λ^n := Covector (Euclid P) n and Λ_n := MultiVector P n = Λ^n →L[ℝ] ℝ, both with operator norms.\n- H^n := μHE[n] and μ := H^n⌞(M ∩ K) = μHE[n].restrict (M ∩ K).\n- Fix α ∈ Λ^n and put f(x) := θ(x)·ξ(x)(α) ∈ ℝ.\nBy definition, IntegrableOn f (M ∩ K) H^n means that f is μ-integrable.\nFields of R used: measurable_mult, locallyIntegrable_mult, aestronglyMeasurable_orient, orients.\n1. θ is μ-integrable.\n- The map x ↦ (θ(x) : [0,∞]) is measurable. It is the composition of the measurable θ : ℝ^P → ℕ with the cast ℕ → [0,∞], and every map out of ℕ is measurable (measurable_from_nat).\n- K is compact and K ⊆ U, so locallyIntegrable_mult gives ∫⁻ (θ(x) : [0,∞]) dμ(x) = ∫⁻_{M∩K} θ dH^n ≠ ∞.\n- Therefore x ↦ (θ(x) : [0,∞]).toReal is μ-integrable (integrable_toReal_of_lintegral_ne_top), and (θ(x) : [0,∞]).toReal = (θ(x) : ℝ).\nSo the real function x ↦ θ(x) is μ-integrable, and so is its constant multiple x ↦ ‖α‖·θ(x) (Integrable.const_mul).\n2. ‖ξ‖ ≤ 1 μ-a.e. By orients, for H^n⌞M-a.e. x there is a subspace Q of ℝ^P with IsUnitOrientationOf (ξ(x)) Q. By unit_orientation_bounds, ‖ξ(x)‖ ≤ 1 for H^n⌞M-a.e. x. Since M ∩ K ⊆ M, μ ≤ H^n⌞M (Measure.restrict_mono), so ‖ξ(x)‖ ≤ 1 for μ-a.e. x (ae_mono).\n3. Domination. θ(x) is a natural number, so θ(x) ≥ 0 and |θ(x)| = θ(x). The operator-norm inequality gives |ξ(x)(α)| ≤ ‖ξ(x)‖·‖α‖ (ContinuousLinearMap.le_opNorm). With step 2, for μ-a.e. x:\n|f(x)| = θ(x)·|ξ(x)(α)| ≤ θ(x)·‖ξ(x)‖·‖α‖ ≤ θ(x)·1·‖α‖ = ‖α‖·θ(x).\n4. Measurability.\n- ξ is H^n⌞M-a.e. strongly measurable (aestronglyMeasurable_orient), hence μ-a.e. strongly measurable (AEStronglyMeasurable.mono_measure with μ ≤ H^n⌞M).\n- The evaluation L ↦ L(α), Λ_n → ℝ, is continuous linear (ContinuousLinearMap.apply). So x ↦ ξ(x)(α) is μ-a.e. strongly measurable (Continuous.comp_aestronglyMeasurable).\n- The real function x ↦ (θ(x) : ℝ) is measurable (as in step 1, via measurable_from_nat). So the product f is μ-a.e. strongly measurable (AEStronglyMeasurable.mul).\n5. Conclusion. f is μ-a.e. strongly measurable (step 4), |f| ≤ ‖α‖·θ μ-a.e. (step 3), and ‖α‖·θ is μ-integrable (step 1). By domination (Integrable.mono'), f is μ-integrable, i.e. IntegrableOn f (M ∩ K) H^n.",
+          "proof_key_steps": [
+            "locallyIntegrable_mult on the compact K ⊆ U gives ∫⁻_{M∩K} θ dH^n < ∞, so θ (as a real function) is integrable for μ = H^n⌞(M ∩ K) (integrable_toReal_of_lintegral_ne_top).",
+            "orients and unit_orientation_bounds give ‖ξ‖ ≤ 1 H^n⌞M-a.e., hence μ-a.e. (restrict_mono, ae_mono).",
+            "|θ ξ(α)| ≤ θ ‖ξ‖ ‖α‖ ≤ ‖α‖ θ μ-a.e. (le_opNorm).",
+            "θ·ξ(α) is μ-a.e. strongly measurable (aestronglyMeasurable_orient, continuous evaluation at α, measurable θ).",
+            "Integrable.mono' with the integrable majorant ‖α‖ θ yields IntegrableOn (θ·ξ(α)) (M ∩ K) H^n."
+          ]
+        },
+        "audit": {
+          "key": "component_integrable",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All hypotheses and the restricted Hausdorff measure match the prose. Compact local integrability yields integrable real multiplicity; measurable evaluation and the transferred orientation bound give an integrable majorant for θ·ξ(α). Domination proves the exact conclusion. Its declared dependency on unit_orientation_bounds is sufficient and correctly directed."
+        },
+        "resolved_dependencies": [
+          "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.orient_component_null-a1",
+      "key": "orient_component_null",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+              "cat GMT/Ch07/Submission.lean (IMRep fields, IMRep.action, IMRep.Represents, MultiVector, IsUnitOrientationOf)",
+              "sed -n 1,70p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean; sed -n 95,200p .../Chapter06/Currents.lean; grep -n 'VanishesOn|zeroRegion|def support' -A6 .../Chapter06/*.lean",
+              "python3 -I scan of dag.json: nodes under root.minimizing_implies_stationary-a1.support_null-a1 and root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1; lean_name/status/lean_statement of imsupp_unit_orientation_ne_zero_norm_le_one, imsupp_covector_finiteDimensional, imsupp_orient_apply_ae_eq_zero_of_vanishesOn, regcomp_rim_action_integrable, rsd_cmr_ic_action_integrable",
+              "git diff b4d606d 2e5d20d49a4a41f79e81db1a65e850fb919b38ba -- GMT/ (accepted proof of imsupp_unit_orientation_ne_zero_norm_le_one)",
+              "python3 -I read of nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json (reused child entry and parent rationale)",
+              "rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 196,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "rg in local-references/123e8435b4a2469b/mathlib/Mathlib: Module.Basis.ext_alternating, toAlternatingMap_injective, of_injective, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, integrable_toReal_of_lintegral_ne_top, Integrable.mono', measurable_from_nat, image_eq_one_of_notMem_mulTSupport, tsupport_smul_subset_left, HasCompactSupport.smul_right, ae_iff, ae_all_iff, restrict_apply_univ, ae_restrict_mem, Basis.ext",
+              "rg -n 'FiniteDimensional' mathlib/Mathlib/Topology/Algebra/Module/Alternating/*.lean mathlib/Mathlib/Analysis/Normed/Module/Alternating/*.lean (no match); example (P n : ℕ) : FiniteDimensional ℝ (Covector (Euclid P) n) := by infer_instance (failed to synthesize)",
+              "rg -n 'FiniteDimensional|lintegral_ne_top|IntegrableOn|ae_eq_zero_of_integral' local-references/123e8435b4a2469b/project -g '*.lean' (only unrelated Ch02/Ch05/Ch06 contract lines)",
+              "rg -n 'FiniteDimensional ℝ \\(Covector|instance.*FiniteDimensional' lake-packages-25730c7c/simongmt/Poincare -g '*.lean' (no match)",
+              "sed -n 290,310p and 755,775p book/chapter-06.txt (Simon 6.2.11, 6.3.2(3))",
+              "python3 verifier/lean_contract.py validate_lean_statement on all four child types (all OK, unchanged)",
+              "dag.json lean_name scan and git grep -E 'lcn_covector_finiteDimensional|lcn_mult_mul_orient_apply_integrableOn|lcn_orient_apply_ae_eq_zero_of_vanishesOn' over all 566 refs -- GMT (no match)",
+              "sed -n 1380,1420p, 1790,1900p, 6490,6545p /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py and ensure() in store.py (depth gate, cross-branch reuse only for accepted identical types, existing node returned unchanged)",
+              "lake env lean /tmp/lcn-decomp/All.lean (full proofs of the 3 new children, accepted child, parent glue; #print axioms: propext, Classical.choice, Quot.sound)",
+              "lake env lean /tmp/lcn-decomp/Check.lean (exact parent type from sorry-stubs of all four children)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/store.py",
+              "/tmp/lcn-decomp/All.lean",
+              "/tmp/lcn-decomp/Check.lean",
+              "/tmp/lcn-decomp/Probe.lean"
+            ],
+            "conclusion": "The snapshot (project b4d606d, Mathlib 25730c7c) matches the frozen Ch07 contract.\n\nWhat the contract provides:\n- IMRep fields used here: measurableSet_carrier, measurable_mult, mult_pos, locallyIntegrable_mult, aestronglyMeasurable_orient, orients.\n- IMRep.action and IMRep.Represents.\n- From SimonGMT Chapter06: Covector = E [⋀^Fin n]→L[ℝ] ℝ, IsTestForm, TestFormOn (tsupport ⊆ U) and VanishesOn.\n\nWhat no local source provides:\n- The snapshot project and the SimonGMT package contain no FiniteDimensional instance or lemma for Covector. infer_instance fails, and rg finds no match.\n- They also contain no lemma on local integrability or a.e. vanishing of IMRep components.\nThese obligations therefore become new children.\n\nEvery Mathlib lemma cited in the child proofs exists at 25730c7c with the signature used:\n- IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:205; needs LocallyIntegrableOn on the open set and ContDiff ℝ ∞ test functions);\n- Module.Basis.ext_alternating, ContinuousAlternatingMap.toAlternatingMap_injective, FiniteDimensional.of_injective;\n- setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (no integrability hypothesis), integrable_toReal_of_lintegral_ne_top, Integrable.mono', measurable_from_nat;\n- tsupport_smul_subset_left, HasCompactSupport.smul_right, image_eq_zero_of_notMem_tsupport;\n- ae_iff, ae_all_iff, ae_restrict_mem, Measure.restrict_apply_univ, Basis.ext.\n\nReuse and naming (from dag.json):\n- imsupp_unit_orientation_ne_zero_norm_le_one is accepted (2e5d20d) with a byte-identical type, so it is reused.\n- imsupp_covector_finiteDimensional, imsupp_orient_apply_ae_eq_zero_of_vanishesOn, regcomp_rim_action_integrable and rsd_cmr_ic_action_integrable are unaccepted and owned by other parents. The runtime forbids sharing them.\n- The three new lcn_* names are globally unique across the DAG and all git refs.\n\nKernel checks with lake env lean:\n- Full proofs of all children plus the glue use only propext, Classical.choice and Quot.sound.\n- The exact parent type compiles from sorry-stubs of the children.\n\nTextual sources are Simon 6.2.11 (book/chapter-06.txt about lines 296–303) and 6.3.2(3) (about lines 763–768). Simon uses without proof that an integer multiplicity current carries no mass where it vanishes."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.orient_component_null-a1",
+        "subproblem": {
+          "key": "orient_component_null",
+          "title": "Each component ξ(α) vanishes H^n-a.e. on the part of the carrier in a relatively compact open set where the current vanishes",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set and W ⊆ ℝ^P. Let T ∈ 𝒟_n(U) be a GeometricCurrentOn U n. Let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n) representing T: T(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Assume W is open, closure W is compact, closure W ⊆ U, and T vanishes on W (T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ W). Then for every n-covector α ∈ Covector (Euclid P) n, ξ(x)(α) = 0 for H^n⌞(M ∩ W)-almost every x, where H^n = μHE[n]. In Lean: ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0.",
+          "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0",
+          "lean_name": "lcn_orient_apply_ae_eq_zero_of_vanishesOn",
+          "depends_on": [
+            "component_integrable"
+          ],
+          "natural_proof": "Source: steps 1 and 4–6 of the parent proof for one fixed covector α, followed by the passage from H^n⌞(M ∩ closure W) to H^n⌞(M ∩ W).\nThis proof uses the sibling component_integrable: for every compact K ⊆ U and every α ∈ Λ^n, x ↦ θ(x)·ξ(x)(α) is integrable on M ∩ K with respect to H^n.\nNotation.\n- M := R.carrier, θ := R.mult, ξ := R.orient, H^n := μHE[n], C := closure W.\n- ν := H^n⌞(M ∩ C) = μHE[n].restrict (M ∩ C) and ν' := H^n⌞(M ∩ W) = μHE[n].restrict (M ∩ W).\n- Fix α ∈ Covector (Euclid P) n and put f(x) := θ(x)·ξ(x)(α).\nFields of R used: measurableSet_carrier, mult_pos.\nRepresentation: T(ω) = R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Openness of U is not needed.\n1. Measurability. M is measurable (measurableSet_carrier), C is closed and W is open, so M ∩ C and M ∩ W are measurable.\n2. Local integrability. C is compact and C ⊆ U, so component_integrable with K = C makes f ν-integrable. Hence f is locally integrable with respect to ν (Integrable.locallyIntegrable), and in particular locally integrable on W with respect to ν (LocallyIntegrable.locallyIntegrableOn).\n3. Testing T. Let g : ℝ^P → ℝ be C^∞ (ContDiff ℝ ∞) with compact support and tsupport g ⊆ W. Define the n-form ω(x) := g(x)·α.\n- ω is C^∞, being the product of the smooth g with the constant α (ContDiff.smul with contDiff_const).\n- ω has compact support (HasCompactSupport.smul_right).\n- tsupport ω ⊆ tsupport g ⊆ W ⊆ C ⊆ U (tsupport_smul_subset_left, subset_closure, and the hypothesis closure W ⊆ U).\nHence ω ∈ TestFormOn U n with tsupport ω ⊆ W, so T(ω) = 0 because T vanishes on W. By the representation,\n0 = T(ω) = ∫_M θ(x)·ξ(x)(g(x)·α) dH^n(x).\nIf x ∈ M ∖ (M ∩ C), then x ∉ C ⊇ W ⊇ tsupport g, so g(x) = 0 (image_eq_zero_of_notMem_tsupport). The integrand at x is then θ(x)·ξ(x)(0) = 0. Since M is measurable and M ∩ C ⊆ M, the integral over M equals the integral over M ∩ C (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, which needs no integrability assumption). By linearity of ξ(x), θ(x)·ξ(x)(g(x)·α) = g(x)·(θ(x)·ξ(x)(α)) = g(x)·f(x). Therefore\n∫ g(x)·f(x) dν(x) = ∫_{M∩C} θ(x)·ξ(x)(g(x)·α) dH^n(x) = ∫_M θ(x)·ξ(x)(g(x)·α) dH^n(x) = 0.\n4. Fundamental lemma. ℝ^P is a finite-dimensional real normed space with its Borel σ-algebra, ℝ is complete, and W is open.\n- By step 2, f is locally integrable on W for ν.\n- By step 3, ∫ g·f dν = 0 for every C^∞ g with compact support and tsupport g ⊆ W.\nMathlib's IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero then gives: for ν-a.e. x, x ∈ W ⇒ f(x) = 0.\n5. Passage to ν'. Since W ⊆ closure W = C, M ∩ W ⊆ M ∩ C, so ν' ≤ ν (Measure.restrict_mono). By ae_mono, for ν'-a.e. x, x ∈ W ⇒ f(x) = 0. Also, by step 1, ν'-a.e. x lies in M ∩ W (ae_restrict_mem).\n6. Cancelling θ. Take x in both full-measure sets of step 5.\n- x ∈ W, so θ(x)·ξ(x)(α) = f(x) = 0.\n- x ∈ M, so θ(x) > 0 (mult_pos), i.e. (θ(x) : ℝ) ≠ 0.\nHence ξ(x)(α) = 0. This holds for ν'-a.e. x, which is exactly ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0.",
+          "proof_key_steps": [
+            "component_integrable with K = closure W makes f = θ·ξ(α) integrable, hence locally integrable on W, for ν = H^n⌞(M ∩ closure W).",
+            "For g ∈ C_c^∞ with tsupport g ⊆ W, ω = g·α is a test form in U supported in W, so 0 = T(ω) = ∫_M θ ξ(gα) dH^n = ∫ g f dν (g = 0 off W; setIntegral_eq_of_subset_of_forall_sdiff_eq_zero).",
+            "IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero on the open W gives, for ν-a.e. x, x ∈ W ⇒ f(x) = 0.",
+            "Restrict to ν' = H^n⌞(M ∩ W) ≤ ν (restrict_mono, ae_mono); ν'-a.e. x lies in M ∩ W (ae_restrict_mem).",
+            "θ > 0 on M cancels the factor θ, giving ξ(x)(α) = 0 for ν'-a.e. x."
+          ]
+        },
+        "audit": {
+          "key": "orient_component_null",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type includes every stated hypothesis and the exact concluding restricted measure. The proof constructs admissible g·α test forms, justifies localization by vanishing outside closure W, applies the pinned fundamental lemma using component_integrable, transfers the result to M ∩ W, and cancels positive multiplicity there. No openness of U or additional measure hypothesis is needed. The proof is complete, non-circular and uses only its declared child dependency."
+        },
+        "resolved_dependencies": [
+          "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/decomposition.json": "9d1ef34d479a8882ec9fd49d4d1f4051179c0dc84e43763b79188680e688d00a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/decomposition-audit.json": "699212e39addfdae3de4168bde064c401d879e5a4550475bd6d24ffc153e2563",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-child-handoff.json": "c6396f4b40bb50eb76ccd3f9e8408bbeaf9d419738349f5a2698f57e768e0dce",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-supplied-plan.md": "bbb5ec93e0d4d949ff0ef0018a2a62006b8300217d8e14d3a03204aadfb664da",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-supplied-natural-proof.md": "86d63af094af0b0dee36fafb1a5e88da5de283ac17bfa254bc6668ad262f749c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/parent-supplied-natural-proof.json": "28b9dd4a507d4b30f2a9ca6ab344df1f64f5123e10b041308a3eeee8e6ba6e73",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/node.json": "729570249df342c1bccf6cae25bcf86ae609e1c42fa70ac86718cedba1e562f9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-child-handoff.json": "15ed286239e53a6753eecfa479793a00c43455e2f1989be2d39109bfe2c0bc87",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-supplied-plan.md": "bda9e9067718e8ea221387a99f5ebb3bf6b8c550acf2ebbbb66b7afbeecfec05",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-supplied-natural-proof.md": "7eee1fdd2757721bd82fc88957a5b158a757cf0f4639ff799e0a4b69a4209e5c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/parent-supplied-natural-proof.json": "51bb2d547f261caf778a0a16c236551b1c854400e3618904364639bf9bcd0c46",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/node.json": "03fcb98a994af548098520eb5f67f6fc88247950bc423bc94214d89076ecdd13",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-child-handoff.json": "27b2c88820487bf1658b4afc4ec23d4714e70415df91953c441228ffd03cc141",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-supplied-plan.md": "fd27a3f1545dc5bff837d52e8ec65ecbe9c578da93eba94bb14683696262c1ef",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-supplied-natural-proof.md": "276fc11d2826e2941ffda932a346863ef9dc692e26ee43b26e80a94899d6736e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/parent-supplied-natural-proof.json": "82bc40edcff9fc578085522f70fdb76bd98e344c9eafe9dcce647218786fac82",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/children/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728/node.json": "f84a06bc3ad0e99ca331645057cb7d31fdeacdc86053c9d78ecd9b71c398dcf5"
+  }
+}

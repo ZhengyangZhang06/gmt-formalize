@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep.action|def IMRep.Represents|def IsIntegerMultiplicity|instance : Sub|massOn_sub|massOn_add|mass_sub|restrictDomain|cmc_fc_",
+        "massAdmissibleOn|def massOn|def mass |massOn_mono|le_massOn|massOn_sub|massOn_add|mass_sub|restrictDomain|testFormOnInclusion|covectorEuclideanNorm_neg|def HasApproximateTangentSpaceAt|def blowUpMap|CountablyRectifiable.mono",
+        "theorem ofReal_add_le|theorem exists_nnreal_pos_mul_lt|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem restrict_restrict \\(|theorem mulTSupport_inv",
+        "git show 8f3bacb2e7f68423e88b488e5939a0d419c646fb:GMT/Ch07/Submission.lean | tail -n 220",
+        "git show 0c79e2ab8192c141221cbe30fcd242e4becc6f00:GMT/Ch07/Submission.lean | tail -n 95",
+        "\"lean_name\": \"(cmc_fc_tb_massOn_sub_le|dtc_restrictDomain_isIntegerMultiplicity|dtc_massOn_eq_of_agreeOn)\""
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/decomposition-scope-v1.json",
+        "/tmp/cmc-tb-independent-audit-20261013/Types.lean",
+        "/tmp/cmc-tb-independent-audit-20261013/Reuse.lean",
+        "/tmp/cmc-tb-independent-audit-20261013/MassSub.lean",
+        "/tmp/cmc-tb-independent-audit-20261013/Assembly.lean"
+      ],
+      "conclusion": "The split appropriately isolates F1 and the IM and mass clauses of F2. The workspace contract matches the pinned snapshot; dependency revisions match their manifests. The snapshot project search found no existing mass-subadditivity declaration. All three frozen types independently elaborate as propositions, and subtraction selects instSubGeometricCurrentOnEuclid. Both reused declarations are accepted with byte-identical frozen types; their extracted proofs compile against the pinned definitions. The new name has no conflicting reservation. Relevant dependency chains are acyclic. Independent Lean translations of the supplied mass proof and the conditional assembly of the exact selected parent type from the three children and the declared cmc_fc_extend_to_univ prerequisite compile. All checked proofs use only propext, Classical.choice and Quot.sound. Every lean_name is a bare identifier."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the statement for arbitrary U and G, without additional openness or finiteness assumptions. Negating an admissible form preserves its support and coefficient-norm bound; linearity, ofReal subadditivity and the supremum bound prove the conclusion. The proof is complete and non-circular. Its two applications establish finite boundary mass before the parent's use of BR."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely V ⊆ U, openness of V and integer multiplicity of T; openness of U is unnecessary. The proof checks every IMRep field. Its explicit small-radius blow-up argument transfers approximate tangent planes, and vanishing outside V establishes representation. This is a complete proof independent of the selected parent. Reuse matches the accepted frozen type exactly, and its existing dependency is acyclic."
+    },
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly expresses the stated inclusions and agreement hypothesis. Both directions of the admissible-value-set equality are justified by preserving the underlying test form; no openness or integrability assumption is missing. Equality of suprema proves the exact conclusion without circularity. The accepted declaration has the identical frozen type, and its specialization followed by mass monotonicity supplies the parent's restriction estimate."
+    }
+  ],
+  "required_changes": []
+}
