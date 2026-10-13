@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "depth": 3,
+  "title": "Test forms have bounded Euclidean coefficient norm",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set and let ω ∈ Dⁿ(U) (a TestFormOn U n: a smooth, compactly supported n-form on ℝ^P with tsupport ω ⊆ U). Then there is C ∈ ℝ with C > 0 such that |ω(x)| ≤ C for every x ∈ ℝ^P, where |α| = covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2}.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C",
+  "lean_name": "br_la_testForm_covectorNorm_bounded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1-a1"
+}
