@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1.column_expansion-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1",
+  "depth": 6,
+  "title": "Laplace expansion along column k writes a determinant covector in the form w♭∧α with w = g_k",
+  "statement": "Let P, d ∈ ℕ, n := d+1, g_0, …, g_d ∈ ℝ^P and k ∈ Fin n. Let γ be an n-covector on ℝ^P with γ(u) = det(⟨g_b, u_a⟩)_{a,b ∈ Fin n} for all u ∈ (ℝ^P)^n (entry ⟨g_b, u_a⟩ in row a, column b). Then there is a d-covector α on ℝ^P such that, for all u = (u_0, …, u_d), γ(u) = Σ_{i=0}^{d} (−1)^i ⟨g_k, u_i⟩ α(u_0, …, û_i, …, u_d). Here (u_0, …, û_i, …, u_d) = removeNth i u is u with the i-th entry deleted.",
+  "lean_statement": "∀ (P d : ℕ) (g : Fin (d + 1) → Euclid P) (k : Fin (d + 1)) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a))) → ∃ α : Covector (Euclid P) d, ∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ (g k) (u i) * α (i.removeNth u))",
+  "lean_name": "cbr_ci_cp_pr_det_covector_laplace",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1.det_covector-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1.det_covector-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-cee464319c-a1"
+}

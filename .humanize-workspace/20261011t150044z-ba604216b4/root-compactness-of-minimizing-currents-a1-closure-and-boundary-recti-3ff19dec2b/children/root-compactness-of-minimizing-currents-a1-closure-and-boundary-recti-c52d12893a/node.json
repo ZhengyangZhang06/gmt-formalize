@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1.adapted_basis-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1",
+  "depth": 6,
+  "title": "Orthonormal basis of ℝ^P adapted to the splitting V ⊕ V^⊥",
+  "statement": "Let P ∈ ℕ and let V ⊆ ℝ^P be a linear subspace (V : Submodule ℝ (Euclid P)) with orthogonal complement V^⊥. Then there is an orthonormal basis e_0, …, e_{P−1} of ℝ^P, indexed by Fin P, such that for every i ∈ Fin P either e_i ∈ V or e_i ∈ V^⊥.",
+  "lean_statement": "∀ (P : ℕ) (V : Submodule ℝ (Euclid P)), ∃ e : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, e i ∈ V ∨ e i ∈ Vᗮ",
+  "lean_name": "cbr_ci_cp_pr_adapted_orthonormalBasis",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c52d12893a-a1"
+}
