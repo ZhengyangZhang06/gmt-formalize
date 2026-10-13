@@ -451,6 +451,243 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, Definition 1.4 and Remark 1.5(1)**: an approximate tangent space of `M` at `x`
+lies in every subspace `T` along which a set `N` carrying `Hⁿ`-almost all of `M` is flat at `x`
+(for each `ε > 0` there is `ρ > 0` such that every `z ∈ N` with `|z − x| < ρ` has some `t ∈ T`
+with `|z − x − t| ≤ ε|z − x|`).  If `q ∈ Q \ T`, put `δ = dist(q, T) > 0` and
+`g = max(0, δ/2 − |· − q|) ∈ C_c(ℝᴾ)`; `∫_Q g dHⁿ > 0` because `spt(Hⁿ⌞Q) = Q`.  With
+`ε = δ / (2(|q| + δ))` and `0 < r < ρ / (|q| + δ)`, flatness makes `g` vanish on `η_{x,r}(M ∩ N)`,
+and `Hⁿ(η_{x,r}(M \ N)) = 0`; so `∫_{η_{x,r}(M)} g dHⁿ = 0` for all small `r`, contradicting
+the defining limit. -/
+theorem Submission.atsm_approxTangent_le_of_flat : ∀ (P n : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q T : Submodule ℝ (Euclid P)), μHE[n] (M \ N) = 0 → (∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z x < ρ → ∃ t ∈ T, ‖z - x - t‖ ≤ ε * ‖z - x‖) → HasApproximateTangentSpaceAt n M x Q → Q ≤ T := by
+  intro P n N M x Q T hnull hflat hQ q hq
+  by_contra hqT
+  -- `T` is closed, so `δ = dist(q, T) > 0`
+  have hTc : IsClosed (T : Set (Euclid P)) := T.closed_of_finiteDimensional
+  have hδ : 0 < infDist q (T : Set (Euclid P)) :=
+    (hTc.notMem_iff_infDist_pos ⟨0, T.zero_mem⟩).1 hqT
+  set δ := infDist q (T : Set (Euclid P)) with hδdef
+  -- the bump `g = max(0, δ/2 − |· − q|)`, positive exactly on `B_{δ/2}(q)`
+  set g : Euclid P → ℝ := fun y => max 0 (δ / 2 - ‖y - q‖) with hgdef
+  have hgc : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).norm)
+  have hg0 : 0 ≤ g := fun y => le_max_left _ _
+  have hgsupp : ∀ y, g y ≠ 0 → ‖y - q‖ < δ / 2 := by
+    intro y hy
+    by_contra h
+    have h' : δ / 2 ≤ ‖y - q‖ := not_lt.mp h
+    apply hy
+    exact max_eq_left (by linarith)
+  have hgpos : ∀ y, ‖y - q‖ < δ / 2 → 0 < g y := fun y hy =>
+    lt_max_of_lt_right (by linarith)
+  have hgcs : HasCompactSupport g := by
+    apply HasCompactSupport.intro (isCompact_closedBall q (δ / 2))
+    intro y hy
+    by_contra h
+    apply hy
+    rw [mem_closedBall, dist_eq_norm]
+    exact (hgsupp y h).le
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hgc⟩, hgcs⟩
+  -- `∫_Q g dHⁿ > 0`: `Hⁿ⌞Q` is regular with support `Q ∋ q`
+  have hQn : Module.finrank ℝ Q = n := hQ.1
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQn
+  have hsupp := Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQn
+  have hint : Integrable g ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))) :=
+    hgc.integrable_of_hasCompactSupport hgcs
+  have hpos : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
+    rw [integral_pos_iff_support_of_nonneg hg0 hint]
+    have hq' : q ∈ ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).support := by
+      rw [hsupp]
+      exact hq
+    have hball : 0 < ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P)))
+        (ball q (δ / 2)) :=
+      (Measure.mem_support_iff_forall q).1 hq' _ (ball_mem_nhds q (by linarith))
+    refine hball.trans_le (measure_mono ?_)
+    intro y hy
+    rw [mem_ball, dist_eq_norm] at hy
+    exact (hgpos y hy).ne'
+  -- constants: `ε (|q| + δ) = δ / 2`
+  have hqδ : 0 < ‖q‖ + δ := by positivity
+  set ε : ℝ := δ / (2 * (‖q‖ + δ)) with hεdef
+  have hε : 0 < ε := by positivity
+  have hεq : ε * (‖q‖ + δ) = δ / 2 := by
+    rw [hεdef]
+    field_simp
+  obtain ⟨ρ, hρ, hflatρ⟩ := hflat ε hε
+  -- `∫_{η_{x,r}(M)} g dHⁿ = 0` for `0 < r < ρ / (|q| + δ)`
+  have hvan : ∀ r : ℝ, 0 < r → r < ρ / (‖q‖ + δ) →
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = 0 := by
+    intro r hr hrρ
+    -- `η_{x,r}(M \ N) = r⁻¹ (M \ N − x)` is `Hⁿ`-null
+    have hnull' : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M \ N)) = 0 := by
+      have himg : Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M \ N) =
+          (fun y => r⁻¹ • y) '' ((fun y => y - x) '' (M \ N)) := by
+        rw [Set.image_image]
+        rfl
+      have hiso : Isometry (fun y : Euclid P => y - x) :=
+        Isometry.of_dist_eq fun a b => dist_sub_right a b x
+      rw [himg, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+        hiso.euclideanHausdorffMeasure_image, hnull, smul_zero]
+    -- flatness: `g` vanishes on `η_{x,r}(M ∩ N)`
+    have hsub : {y | g y ≠ 0} ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ⊆
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M \ N) := by
+      rintro y ⟨hgy, z, hzM, rfl⟩
+      refine ⟨z, ⟨hzM, fun hzN => ?_⟩, rfl⟩
+      have hyq : ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z - q‖ < δ / 2 := hgsupp _ hgy
+      set y := Poincare.SimonGMT.Chapter03.blowUpMap x r z with hy
+      have hy' : y = r⁻¹ • (z - x) := rfl
+      have hzx : z - x = r • y := by
+        rw [hy', smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
+      have hynorm : ‖y‖ < ‖q‖ + δ / 2 := by
+        calc ‖y‖ = ‖(y - q) + q‖ := by rw [sub_add_cancel]
+          _ ≤ ‖y - q‖ + ‖q‖ := norm_add_le _ _
+          _ < δ / 2 + ‖q‖ := by linarith
+          _ = ‖q‖ + δ / 2 := by ring
+      have hzxn : ‖z - x‖ = r * ‖y‖ := by
+        rw [hzx, norm_smul, Real.norm_of_nonneg hr.le]
+      have hdist : dist z x < ρ := by
+        rw [dist_eq_norm, hzxn]
+        calc r * ‖y‖ ≤ r * (‖q‖ + δ) := by gcongr; linarith
+          _ < ρ / (‖q‖ + δ) * (‖q‖ + δ) := by gcongr
+          _ = ρ := by field_simp
+      obtain ⟨t, htT, ht⟩ := hflatρ z hzN hdist
+      have hrt : r⁻¹ • t ∈ T := T.smul_mem _ htT
+      have hyt : y - r⁻¹ • t = r⁻¹ • (z - x - t) := by
+        rw [hy']
+        exact (smul_sub _ _ _).symm
+      have hyt' : ‖y - r⁻¹ • t‖ ≤ ε * ‖y‖ := by
+        rw [hyt, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le)]
+        calc r⁻¹ * ‖z - x - t‖ ≤ r⁻¹ * (ε * ‖z - x‖) := by gcongr
+          _ = ε * ‖y‖ := by rw [hzxn]; field_simp
+      have hle : δ ≤ ‖q - r⁻¹ • t‖ := by
+        rw [← dist_eq_norm]
+        exact infDist_le_dist_of_mem hrt
+      have h2 : ε * ‖y‖ ≤ δ / 2 := by
+        rw [← hεq]
+        gcongr
+        linarith
+      have hlt : ‖q - r⁻¹ • t‖ < δ := by
+        calc ‖q - r⁻¹ • t‖ = ‖(q - y) + (y - r⁻¹ • t)‖ := by congr 1; abel
+          _ ≤ ‖q - y‖ + ‖y - r⁻¹ • t‖ := norm_add_le _ _
+          _ < δ / 2 + δ / 2 := by
+            have h1 : ‖q - y‖ < δ / 2 := by rw [norm_sub_rev]; exact hyq
+            linarith
+          _ = δ := by ring
+      linarith
+    -- so `g = 0` a.e. for `Hⁿ⌞η_{x,r}(M)`, evaluated on the open set `{g ≠ 0}`
+    have hopen : MeasurableSet {y | g y ≠ 0} :=
+      (isOpen_ne_fun hgc continuous_const).measurableSet
+    apply integral_eq_zero_of_ae
+    rw [EventuallyEq, ae_iff]
+    change (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)) {y | g y ≠ 0} = 0
+    rw [Measure.restrict_apply hopen]
+    exact measure_mono_null hsub hnull'
+  -- the blow-up integrals of `g` are eventually `0`, so their limit `∫_Q g dHⁿ` is `0`
+  have hlim := hQ.2 f
+  have hev : (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n])
+      =ᶠ[𝓝[>] 0] fun _ => 0 := by
+    have hpos' : 0 < ρ / (‖q‖ + δ) := by positivity
+    filter_upwards [Ioo_mem_nhdsGT hpos'] with r hr
+    exact hvan r hr.1 hr.2
+  have hlim0 : Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+      f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0) :=
+    tendsto_const_nhds.congr' hev.symm
+  have heq := tendsto_nhds_unique hlim hlim0
+  have hzero : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := heq
+  linarith
+/-- Step 11 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
+(Simon 7.4.3, via Allard's theorem; orientations `±τ₁ ∧ ⋯ ∧ τₙ` as in Ch. 6, 2.1–2.2): two unit
+orientations `ξ₁ = ±τ₁ ∧ ⋯ ∧ τₙ`, `ξ₂ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` differ by a
+sign.  `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`; every alternating `n`-form on `Q` is a
+multiple of `det_b`, so `α(τ') = det_b(b') α(τ)` for every `n`-covector `α`, and
+`det_b(b') = ±1`, the change of orthonormal basis being orthogonal. -/
+theorem Submission.dgcr_unitOrientation_eq_or_neg : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ξ₂ = ξ₁ ∨ ξ₂ = -ξ₁ := by
+  rintro P n Q ξ₁ ξ₂ ⟨τ, hτ, hspan, h₁⟩ ⟨τ', hτ', hspan', h₂⟩
+  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
+  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
+      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
+    intro σ hσ hσspan
+    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
+    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
+    have hu : Orthonormal ℝ u := by
+      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
+      exact hσ
+    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
+      rintro ⟨y, hy⟩ -
+      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
+      obtain ⟨c, hc⟩ := hy
+      rw [Submodule.mem_span_range_iff_exists_fun]
+      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
+    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
+  obtain ⟨b, hb⟩ := frame τ hτ hspan
+  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
+  -- `det_b(b') = ±1`
+  have hd := b.det_to_matrix_orthonormalBasis_real b'
+  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
+  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
+    intro α
+    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
+    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
+        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
+      intro c σ hc
+      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
+      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
+    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
+    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
+    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
+  -- `ξ₂ = ±ξ₁`
+  rcases hd with hd | hd <;> rcases h₁ with h₁ | h₁ <;> rcases h₂ with h₂ | h₂
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, one_mul, neg_neg]
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul]
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
+  · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul]
+  · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
+
+/-- Orientation step of the constancy theorem for an integer multiplicity current carried by an
+`n`-plane (Simon Ch. 3, Definition 1.4; Ch. 6, 3.1): if `Hⁿ(M \ Q) = 0` for the plane
+`Q = span{τ₁, …, τₙ}` of an orthonormal family `τ`, then `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for `Hⁿ`-a.e.
+`x ∈ M`.  For `Hⁿ⌞M`-a.e. `x` we have `x ∈ Q` and an approximate tangent space `Qₓ` oriented by
+`ξ(x)`; `Q` is trivially flat at `x` along `Q`, so `Qₓ ≤ Q`, hence `Qₓ = Q` as both have dimension
+`n`; then `ξ(x)` and `α ↦ α(τ)` are unit orientations of the same plane, so they agree up to
+sign. -/
+theorem Submission.idtp_pc_orient_ae_eq_or_neg : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → μHE[n] (R.carrier \ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = 0 → ∀ᵐ x ∂(μHE[n].restrict R.carrier), (∀ α : Covector (Euclid P) n, R.orient x α = α τ) ∨ (∀ α : Covector (Euclid P) n, R.orient x α = -α τ) := by
+  intro P n U R τ hτ hnull
+  set Q : Submodule ℝ (Euclid P) := Submodule.span ℝ (Set.range τ) with hQ
+  have hfin : Module.finrank ℝ Q = n := by
+    rw [hQ, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- `ξ_Q = τ₁ ∧ ⋯ ∧ τₙ`, i.e. `α ↦ α(τ)`, is a unit orientation of `Q`
+  let ξQ : MultiVector P n :=
+    (ContinuousMultilinearMap.apply ℝ (fun _ : Fin n => Euclid P) ℝ τ).comp
+      (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ)
+  have hξQ : ∀ α : Covector (Euclid P) n, ξQ α = α τ := fun α => rfl
+  have hξQo : IsUnitOrientationOf ξQ Q := ⟨τ, hτ, rfl, Or.inl hξQ⟩
+  -- `Hⁿ⌞M`-almost every point lies in `Q`
+  have hmemQ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ (Q : Set (Euclid P)) := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxM
+    by_contra h
+    exact hx ⟨hxM, h⟩
+  filter_upwards [R.orients, hmemQ] with x hx hxQ
+  obtain ⟨Qx, htan, hor⟩ := hx
+  -- `Q` is flat at `x ∈ Q` along `Q`, so `Qₓ ≤ Q`, and `Qₓ = Q` by dimension
+  have hflat : ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ (Q : Set (Euclid P)), dist z x < ρ →
+      ∃ t ∈ Q, ‖z - x - t‖ ≤ ε * ‖z - x‖ := by
+    intro ε hε
+    refine ⟨1, one_pos, fun z hz _ => ⟨z - x, Q.sub_mem hz hxQ, ?_⟩⟩
+    simp only [sub_self, norm_zero]
+    positivity
+  have hle : Qx ≤ Q :=
+    Submission.atsm_approxTangent_le_of_flat P n Q R.carrier x Qx Q hnull hflat htan
+  have heq : Qx = Q := Submodule.eq_of_le_of_finrank_eq hle (htan.1.trans hfin.symm)
+  rw [heq] at hor
+  -- two unit orientations of `Q` agree up to sign
+  rcases Submission.dgcr_unitOrientation_eq_or_neg P n Q ξQ (R.orient x) hξQo hor with h | h
+  · left; intro α; rw [h]; exact hξQ α
+  · right; intro α; rw [h]; rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
