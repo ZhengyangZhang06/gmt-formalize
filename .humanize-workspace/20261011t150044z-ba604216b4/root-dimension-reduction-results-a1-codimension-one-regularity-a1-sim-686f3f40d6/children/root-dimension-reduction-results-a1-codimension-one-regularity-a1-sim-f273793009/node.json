@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1.signed_area_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1",
+  "depth": 6,
+  "title": "Signed change of variables: a nonnegative area formula transfers integrable real integrands",
+  "statement": "Let α, β be types with σ-algebras, μ a measure on α, ν a measure on β, Φ : α → β, A ⊆ α, B ⊆ β, J : α → ℝ with J(x) ≥ 0 for every x, and f : β → ℝ. Assume the nonnegative change-of-variables identity ∫⁻_B g dν = ∫⁻_A ofReal(J(x))·g(Φ(x)) dμ(x) holds for every function g : β → [0, ∞]. If f is ν-integrable on B (Integrable f (ν.restrict B)) and x ↦ J(x)·f(Φ(x)) is a.e.-strongly measurable for μ⌞A, then x ↦ J(x)·f(Φ(x)) is μ-integrable on A and ∫_B f dν = ∫_A J(x)·f(Φ(x)) dμ(x).",
+  "lean_statement": "∀ (α β : Type) [MeasurableSpace α] [MeasurableSpace β] (μ : Measure α) (ν : Measure β) (Φ : α → β) (A : Set α) (B : Set β) (J : α → ℝ) (f : β → ℝ), (∀ x, 0 ≤ J x) → (∀ g : β → ℝ≥0∞, ∫⁻ y in B, g y ∂ν = ∫⁻ x in A, ENNReal.ofReal (J x) * g (Φ x) ∂μ) → Integrable f (ν.restrict B) → AEStronglyMeasurable (fun x => J x * f (Φ x)) (μ.restrict A) → Integrable (fun x => J x * f (Φ x)) (μ.restrict A) ∧ ∫ y in B, f y ∂ν = ∫ x in A, J x * f (Φ x) ∂μ",
+  "lean_name": "codim1_ac_pp_setIntegral_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f273793009-a1"
+}

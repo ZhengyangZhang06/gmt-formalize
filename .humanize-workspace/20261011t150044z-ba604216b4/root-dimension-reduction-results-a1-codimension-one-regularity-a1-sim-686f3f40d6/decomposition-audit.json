@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "def IsEmbeddedSubmanifold|def IsOrientation|IsUnitOrientationOf|abbrev MultiVector|^namespace|^open|^import",
+        "countablyRectifiable_of_isSimonSubmanifold|measurableSet_of_isSimonSubmanifold|countablyRectifiable_image_contDiffOn_open|CountablyRectifiable.mono|def CountablyRectifiable|def HasApproximateTangentSpaceAt",
+        "theorem integral_eq_lintegral_pos_part_sub_lintegral_neg_part|theorem integral_withDensity_eq_integral_smul|theorem withDensity_one|theorem restrict_apply\\x27|lemma enorm_of_nonneg|lemma enorm_mul|theorem ContinuousOn.aestronglyMeasurable|theorem setLIntegral_const|theorem setLIntegral_one|theorem setLIntegral_mono",
+        "codim1_ac_pp_|dtc_imrep_current|regcomp_rim_action_integrable|dor_ims_massOn_le_measure|dor_ims_unitOrientation_dual|dor_ims_action_eq_integral",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "git show f1339f96a29cbdb17656f4c1e78c5fd20e35f641:GMT/Ch07/Submission.lean",
+        "git show fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2:GMT/Ch07/Submission.lean",
+        "git show 9c8432cb0101c6d41f824c0d8191b92a92dbdd80:GMT/Ch07/Submission.lean",
+        "git show c2e1da27351f187f73bea12498cef1f46ca9bd52:GMT/Ch07/Submission.lean",
+        "python3 /tmp/pp-independent-audit-9utz9erd/run.py Types.lean Recheck.lean",
+        "python3 /tmp/pp-independent-audit-9utz9erd/compare.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-686f3f40d6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-686f3f40d6/decomposition-v1.json",
+        "/tmp/pp-independent-audit-9utz9erd/Types.lean",
+        "/tmp/pp-independent-audit-9utz9erd/Recheck.lean",
+        "/tmp/pp-independent-audit-9utz9erd/Frozen.lean",
+        "/tmp/pp-independent-audit-9utz9erd/Comparator.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; the contract and checked Mathlib sources match the snapshot. SimonGMT supplies the stated submanifold conversion targets. The integral and restriction lemmas have the required hypotheses, including restrict_apply' for arbitrary tested sets. The snapshot name search found no matches. All five reused declarations have unique accepted DAG entries and byte-identical frozen types; the three new names are unreserved. The reachable dependency graph is acyclic. Fresh Lean checks passed for all eight independently elaborated contracts and their proofs, with only propext, Classical.choice and Quot.sound. Separately elaborated frozen challenges accept the implementations directly, including the orientation-measurability topology instances. No problematic matrix-unit construction occurs. Assembly proves the exact selected parent contract using only its four retained geometric prerequisites as additional assumptions. The split appropriately separates three useful obligations and reuses five established results."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "embedded_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree. The chart conversion correctly handles the smoothness cast and properness argument order; the pinned SimonGMT theorems then establish both conclusions, including zero-dimensional cases. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "signed_area_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. Applying the assumed identity to the extended norm proves integrability; applying it to positive and negative parts proves the signed equality. No unstated measurability of the sets, map or test functions is required."
+    },
+    {
+      "key": "unit_piece_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses supply every IMRep field for multiplicity one. The three declared dependencies give the represented current, action integrability and mass bound. withDensity_one and restrict_apply' justify the conclusion for arbitrary W'. The measurable-orientation instance is compatible with the frozen IMRep field."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. The supplied proof establishes measurable, integrable action integrands, linearity and the exact sequential continuity required by GeometricCurrentOn. Compact-support domination closes the continuity argument without parent reliance."
+    },
+    {
+      "key": "action_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated IMRep and test-form hypotheses match the type. Continuous evaluation gives measurability; the orthonormal-frame estimate gives domination by B times the compactly restricted multiplicity. Local integrability supplies the required integrable bound. Accepted reuse is type-identical."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse is type-identical, and both dependencies are correctly directed. The coefficient-norm bound and integral formula reduce each admissible evaluation to the finite measure of its compact support. Monotonicity and the supremum yield the bound for every W without requiring openness or measurability."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the coordinate expansion and Cauchy–Binet identity explicitly. Its globally defined continuous linear map L satisfies all three conclusions; the zero-degree and excessive-degree cases are covered. The prose matches the exact accepted frozen type."
+    },
+    {
+      "key": "action_eq_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse is type-identical. Absolute continuity transfers orientation measurability and bounds to R.measure; finite measure of the compact test-form support proves integrability. The measurable finite multiplicity density then gives the stated integral identity, without circular reliance on the action-integrability child."
+    }
+  ],
+  "required_changes": []
+}

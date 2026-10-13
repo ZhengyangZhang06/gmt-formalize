@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1.unit_piece_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1",
+  "depth": 6,
+  "title": "A multiplicity-one oriented countably m-rectifiable set of locally finite H^m-measure defines an integer multiplicity current [[M]] with M_W([[M]]) ≤ H^m(M ∩ W) (Simon 6.2.2, 6.3.1, 6.3.2(3))",
+  "statement": "Let P, m ∈ ℕ, let M ⊆ ℝ^P be a Borel set that is countably m-rectifiable with H^m(M ∩ K) < ∞ for every compact K ⊆ ℝ^P, and let η : ℝ^P → Λ_m(ℝ^P) be a.e.-strongly measurable for H^m⌞M such that for H^m-a.e. y ∈ M there is a linear subspace Q with HasApproximateTangentSpaceAt m M y Q and η(y) a unit orientation of Q (IsUnitOrientationOf (η y) Q). Then there is an integer multiplicity current D ∈ 𝒟_m(ℝ^P) (IsIntegerMultiplicity D) such that for every ω ∈ 𝒟^m(ℝ^P) the function y ↦ ⟨ω(y), η(y)⟩ = η(y)(ω(y)) is H^m⌞M-integrable and D(ω) = ∫_M η(y)(ω(y)) dH^m(y), and M_{W′}(D) ≤ H^m(M ∩ W′) for every set W′ ⊆ ℝ^P (H^m = μHE[m], M_{W′} = massOn).",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (η : Euclid P → MultiVector P m), MeasurableSet M → CountablyRectifiable m M → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → AEStronglyMeasurable η (μHE[m].restrict M) → (∀ᵐ y ∂(μHE[m].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt m M y Q ∧ IsUnitOrientationOf (η y) Q) → ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity D ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Integrable (fun y => η y ((ω : DifferentialForm (Euclid P) m) y)) (μHE[m].restrict M) ∧ D ω = ∫ y in M, η y ((ω : DifferentialForm (Euclid P) m) y) ∂μHE[m]) ∧ ∀ W' : Set (Euclid P), D.massOn W' ≤ μHE[m] (M ∩ W')",
+  "lean_name": "codim1_ac_pp_unit_rectifiable_current",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+    "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1",
+      "result_commit": "642d7450f79f28435ddba02f9c815e2208bcee00",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-restriction-integer-multipl-1450eb50b9-a1",
+      "result_commit": "f1339f96a29cbdb17656f4c1e78c5fd20e35f641",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-up-4048586780-a1",
+      "result_commit": "fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-fd501f2d16-a1"
+}
