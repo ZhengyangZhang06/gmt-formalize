@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.blowup_hypotheses-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "depth": 3,
+  "title": "The blow-ups η_{x,λ_j#}T satisfy the hypotheses of the compactness argument",
+  "statement": "Let m, k, ℓ ∈ ℕ, n := m + 1, P := n + k, let U ⊆ ℝ^P be open, N ⊆ ℝ^P an embedded C² (n+ℓ)-dimensional submanifold (IsEmbeddedSubmanifold 2 (n + ℓ) N), T ∈ 𝒟_n(U) minimizing in U ∩ N (IsMinimizingIn T (U ∩ N)) with spt T ⊆ U ∩ N, x ∈ spt T ∖ spt ∂T (x ∈ T.support \\ boundarySupport T), θ ∈ ℝ with HasMassDensity T x θ, and λ_j > 0 (j ∈ ℕ) with λ_j → 0. Write η_j := dilation x λ_j (η_j(y) = λ_j⁻¹(y − x)), U_j := η_j(U), A_j := η_j(U ∩ N) and S_j := blowUp T x λ_j ∈ 𝒟_n(U_j). Then: (1) every U_j is open; (2) for every R ∈ ℝ, closedBall(0, R) ⊆ U_j for all large j; (3) every S_j is minimizing in A_j; (4) spt S_j ⊆ A_j for every j; (5) for every R ∈ ℝ there is c ∈ [0, ∞) with M_{B_R(0)}(S_j) ≤ c for all large j; (6) for every R ∈ ℝ, for all large j, ∂S_j(β) = 0 for every β ∈ 𝒟^m(U_j) with tsupport β ⊆ B_R(0); (7) for every G > 0 there are maps π_j : ℝ^P → ℝ^P (j ∈ ℕ) such that, for all large j, π_j is C¹ on B_G(0), maps B_G(0) into A_j, is the identity on A_j ∩ B_G(0) and satisfies |π_j(y)| ≤ 2|y| for y ∈ B_G(0), and such that for every η > 0, for all large j, |π_j(y) − π_j(z)| ≤ (1 + η)|y − z| for all y, z ∈ B_G(0). (Here B_R(0) = ball 0 R, 'for all large j' means 'eventually in atTop'.)",
+  "lean_statement": "∀ (m k ℓ : ℕ) (U N : Set (Euclid (m + 1 + k))) (T : GeometricCurrentOn U (m + 1)) (x : Euclid (m + 1 + k)) (θ : ℝ), IsOpen U → IsEmbeddedSubmanifold 2 (m + 1 + ℓ) N → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → x ∈ T.support \\ boundarySupport T → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid (m + 1 + k)) R ⊆ dilation x (lams j) '' U) ∧ (∀ j, IsMinimizingIn (blowUp T x (lams j) (hlams j).ne') (dilation x (lams j) '' (U ∩ N))) ∧ (∀ j, (blowUp T x (lams j) (hlams j).ne').support ⊆ dilation x (lams j) '' (U ∩ N)) ∧ (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (blowUp T x (lams j) (hlams j).ne').massOn (ball 0 R) ≤ c) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid (m + 1 + k)) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) ∧ (∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid (m + 1 + k) → Euclid (m + 1 + k), (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation x (lams j) '' (U ∩ N)) ∧ (∀ y ∈ dilation x (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖)",
+  "lean_name": "dtc_bc_blowUp_hypotheses",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-blowup-hypotheses-a1-a1"
+}

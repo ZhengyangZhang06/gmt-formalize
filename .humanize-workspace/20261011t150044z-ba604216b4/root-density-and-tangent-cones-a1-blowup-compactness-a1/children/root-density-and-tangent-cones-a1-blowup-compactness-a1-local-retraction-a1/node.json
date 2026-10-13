@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "depth": 3,
+  "title": "Local C¹ retraction onto an embedded C² submanifold with Lipschitz constant tending to 1",
+  "statement": "Let P, d ∈ ℕ, let N ⊆ ℝ^P be a d-dimensional embedded C² submanifold in the sense of the contract (IsEmbeddedSubmanifold 2 d N: every y ∈ N has an open V ⊆ ℝ^d, an open W ⊆ ℝ^P with y ∈ W and a map ψ : ℝ^d → ℝ^P which is C² on V and injective on V, with ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W, and Dψ(v) injective for every v ∈ V), and let x ∈ N. Then there are δ > 0 and a map π : ℝ^P → ℝ^P such that (i) π is C¹ on the open ball B_δ(x); (ii) π(B_δ(x)) ⊆ N; (iii) π(y) = y for every y ∈ N ∩ B_δ(x); (iv) for every η > 0 there is s with 0 < s ≤ δ and |π(y) − π(z)| ≤ (1 + η)|y − z| for all y, z ∈ B_s(x).",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 2 d N → x ∈ N → ∃ (δ : ℝ) (π : Euclid P → Euclid P), 0 < δ ∧ ContDiffOn ℝ 1 π (ball x δ) ∧ MapsTo π (ball x δ) N ∧ (∀ y ∈ N ∩ ball x δ, π y = y) ∧ ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖",
+  "lean_name": "dtc_bc_local_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1-a1"
+}
