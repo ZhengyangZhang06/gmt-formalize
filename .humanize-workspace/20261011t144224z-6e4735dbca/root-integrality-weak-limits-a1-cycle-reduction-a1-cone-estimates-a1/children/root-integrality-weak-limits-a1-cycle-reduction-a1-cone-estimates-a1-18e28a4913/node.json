@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.mass_le_of_forms-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1",
+  "depth": 4,
+  "title": "Mass comparison through bounded transfer test forms",
+  "statement": "Let P, n, k ∈ ℕ, X ∈ D_n(ℝ^P) = GeometricCurrentOn univ n, C ∈ D_k(ℝ^P) = GeometricCurrentOn univ k and c, R ∈ ℝ with c ≥ 0, R ≥ 0 and M(X) < ∞. Assume that for every ω ∈ massAdmissibleOn univ k univ (a test k-form with covectorEuclideanNorm(ω(y)) ≤ 1 for all y) and every δ > 0 there is ψ ∈ D^n(ℝ^P) = TestFormOn univ n with C(ω) = X(ψ) and covectorEuclideanNorm(ψ(x)) ≤ c·(R + δ) for all x. Then M(C) ≤ ofReal(c·R)·M(X).",
+  "lean_statement": "∀ (P n k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) n) (C : GeometricCurrentOn (univ : Set (Eucl P)) k) (c R : ℝ), 0 ≤ c → 0 ≤ R → X.mass < ∞ → (∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) k univ, ∀ δ : ℝ, 0 < δ → ∃ ψ : TestFormOn (univ : Set (Eucl P)) n, C ω = X ψ ∧ ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) n) x) ≤ c * (R + δ)) → C.mass ≤ ENNReal.ofReal (c * R) * X.mass",
+  "lean_name": "iwl_cr_cest_mass_le_of_forms",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mass-bound-a1-a1",
+      "result_commit": "ba202ac0407b6e93210594416fcd0729874b2eff",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1-18e28a4913-a1"
+}

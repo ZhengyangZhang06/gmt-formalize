@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.radial_coeff_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1",
+  "depth": 4,
+  "title": "Coefficient-norm bound for the radial integral",
+  "statement": "Let P, m ∈ ℕ, let ω : ℝ^P → Λ_{m+1}(ℝ^P) be any (m+1)-form (DifferentialForm (Eucl P) (m+1); no regularity is assumed) with covectorEuclideanNorm(ω(y)) ≤ 1 for every y ∈ ℝ^P, let x ∈ ℝ^P, and let β ∈ Λ_m(ℝ^P) be an m-covector with β(v) = ∫_0^1 t^m ω(tx)(x, v) dt for every v ∈ (ℝ^P)^m, where (x, v) := Fin.cons x v and the integral is the interval integral over [0, 1]. Then covectorEuclideanNorm(β) ≤ P^{2m+1}·‖x‖.",
+  "lean_statement": "∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (x : Eucl P) (β : Covector (Eucl P) m), (∀ y, covectorEuclideanNorm (ω y) ≤ 1) → (∀ v : Fin m → Eucl P, β v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → covectorEuclideanNorm β ≤ (P : ℝ) ^ (2 * m + 1) * ‖x‖",
+  "lean_name": "iwl_cr_cest_radial_coeff_bound",
+  "depends_on": [
+    "root.isoperimetric-a1.covector_eval_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.covector_eval_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-covector-eval-bound-a1-a1",
+      "result_commit": "8c000d1fa9feee2acb018915bef93ab6fe6393ef",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1-cde2281771-a1"
+}

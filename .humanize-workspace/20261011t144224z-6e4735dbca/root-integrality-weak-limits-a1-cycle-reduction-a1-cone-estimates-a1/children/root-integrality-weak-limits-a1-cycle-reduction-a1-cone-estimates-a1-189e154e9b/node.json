@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.cutoff_radial_form-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1",
+  "depth": 4,
+  "title": "Smooth cutoff of the radial form to a bounded test form",
+  "statement": "Let P, m ∈ ℕ, let ω : ℝ^P → Λ_{m+1}(ℝ^P) be any (m+1)-form, let ψ₀ : ℝ^P → Λ_m(ℝ^P) be a C^∞ m-form (ContDiff ℝ ∞) with ψ₀(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x ∈ ℝ^P and v ∈ (ℝ^P)^m ((x, v) := Fin.cons x v), and let 0 < r < s. Then there is a test form ψ ∈ D^m(ℝ^P) = TestFormOn univ m such that (i) ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for every x in the open ball B_r(0) and every v, and (ii) if covectorEuclideanNorm(ω(y)) ≤ 1 for every y, then covectorEuclideanNorm(ψ(x)) ≤ P^{2m+1}·s for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (ψ₀ : DifferentialForm (Eucl P) m) (r s : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ₀ → (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ₀ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → 0 < r → r < s → ∃ ψ : TestFormOn (univ : Set (Eucl P)) m, (∀ x ∈ ball (0 : Eucl P) r, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ((∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) m) x) ≤ (P : ℝ) ^ (2 * m + 1) * s)",
+  "lean_name": "iwl_cr_cest_cutoff_radial_form",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.radial_coeff_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.radial_coeff_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1-189e154e9b-a1"
+}
