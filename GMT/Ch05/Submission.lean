@@ -458,6 +458,196 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+set_option maxSynthPendingDepth 5 in
+/-- Elliptic bootstrap for Simon Ch. 5, Theorem 7.1 (second assertion), `C^{1,α} ⇒ C^{2,α}` step:
+difference quotients of a weak solution satisfy the averaged linearized weak equation.  Let
+`Ψ ∈ C²`, `u ∈ C¹(U; ℝ^ℓ)` and `g ∈ C⁰(U; ℝ^ℓ)` with `∫_U DΨ(Du)[Dφ] = -∫_U ⟨φ, g⟩` for every
+`φ ∈ C¹_c(U; ℝ^ℓ)`, let `d ≠ 0` and `x + t d e ∈ U` for `x ∈ V`, `t ∈ [0, 1]`.  With
+`Δ(x) = Du(x + d e) - Du(x)`, every `ζ ∈ C¹_c(V; ℝ^ℓ)` satisfies
+`∫_V ∫₀¹ D²Ψ(Du(x) + tΔ(x))[d⁻¹Δ(x)][Dζ(x)] dt dx = ∫_V ⟨∫₀¹ g(x + t d e) dt, Dζ(x) e⟩ dx`.
+Test the equation with `ζ` and with `ζ(· - d e)` and translate back.  By the fundamental theorem of
+calculus for `t ↦ DΨ(Du(x) + tΔ(x))` the difference of the left sides is `d` times the left side
+above; by `dohr_eb_elc2_shift_ibp` the difference of the right sides is `d` times the right side
+above; cancel `d`. -/
+theorem dohr_eb_elc2_dq_weak_equation : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (U V : Set (Rn n)) (u g : Rn n → Rn ℓ) (e : Rn n) (d : ℝ), ContDiff ℝ 2 Ψ → IsOpen U → IsOpen V → ContDiffOn ℝ 1 u U → ContinuousOn g U → d ≠ 0 → (∀ x ∈ V, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ U) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ V → ∫ x in V, (∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x)) = ∫ x in V, inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e) := by
+  intro n ℓ Ψ U V u g e d hΨ hU hV hu hg hd hseg hweak ζ hζ hζc hζV
+  set K := tsupport ζ
+  have hKc : IsCompact K := hζc
+  have hKV : K ⊆ V := hζV
+  -- the segments from points of `K` stay in `U`
+  have hsegK : ∀ y ∈ K, ∀ t ∈ Icc (0 : ℝ) 1, y + (t * d) • e ∈ U := fun y hy => hseg y (hKV hy)
+  have hKU : K ⊆ U := fun y hy => by simpa using hsegK y hy 0 (by simp)
+  have hKdU : ∀ y ∈ K, y + d • e ∈ U := fun y hy => by simpa using hsegK y hy 1 (by simp)
+  have hDuAt : ∀ y ∈ U, ContinuousAt (fderiv ℝ u) y := fun y hy =>
+    (hu.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt (hU.mem_nhds hy)
+  have hgAt : ∀ y ∈ U, ContinuousAt g y := fun y hy => hg.continuousAt (hU.mem_nhds hy)
+  have hDζ : Continuous (fderiv ℝ ζ) := hζ.continuous_fderiv one_ne_zero
+  have hζcont : Continuous ζ := hζ.continuous
+  have hDζ0 : ∀ y ∉ K, fderiv ℝ ζ y = 0 := fun y hy => fderiv_of_notMem_tsupport ℝ hy
+  have hζ0 : ∀ y ∉ K, ζ y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport hy
+  -- `A = DΨ` is `C¹` with derivative `B = D²Ψ`
+  have hA1 : ContDiff ℝ 1 (fderiv ℝ Ψ) := hΨ.fderiv_right (by norm_num)
+  have hAc : Continuous (fderiv ℝ Ψ) := hA1.continuous
+  have hBc : Continuous (fderiv ℝ (fderiv ℝ Ψ)) := hA1.continuous_fderiv one_ne_zero
+  have hAd : Differentiable ℝ (fderiv ℝ Ψ) := hA1.differentiable one_ne_zero
+  -- a function vanishing off a compact `C` and continuous at the points of `C` is integrable
+  have integ_of : ∀ (F : Rn n → ℝ) (C : Set (Rn n)), IsCompact C → (∀ y ∉ C, F y = 0) →
+      (∀ y ∈ C, ContinuousAt F y) → Integrable F := by
+    intro F C hC h0 hcont
+    have hFc : Continuous F := by
+      rw [continuous_iff_continuousAt]
+      intro y
+      by_cases hy : y ∈ C
+      · exact hcont y hy
+      · have hev : F =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+          filter_upwards [hC.isClosed.isOpen_compl.mem_nhds hy] with z hz using h0 z hz
+        exact continuousAt_const.congr hev.symm
+    exact hFc.integrable_of_hasCompactSupport (HasCompactSupport.intro hC h0)
+  -- the integrands of the two tested equations
+  set F1 : Rn n → ℝ := fun y => fderiv ℝ Ψ (fderiv ℝ u (y + d • e)) (fderiv ℝ ζ y) with hF1
+  set F2 : Rn n → ℝ := fun y => fderiv ℝ Ψ (fderiv ℝ u y) (fderiv ℝ ζ y) with hF2
+  set R2 : Rn n → ℝ := fun y => inner ℝ (ζ y) (g y) with hR2
+  set R3 : Rn n → ℝ := fun x => inner ℝ (ζ (x - d • e)) (g x) with hR3
+  set Kd : Set (Rn n) := (fun y => y + d • e) '' K
+  have hKdc : IsCompact Kd := hKc.image (continuous_id.add continuous_const)
+  have hmemKd : ∀ x, x - d • e ∈ K → x ∈ Kd := fun x hx => ⟨x - d • e, hx, by simp⟩
+  have hKdU' : Kd ⊆ U := by rintro _ ⟨y, hy, rfl⟩; exact hKdU y hy
+  have hF1i : Integrable F1 := by
+    refine integ_of F1 K hKc (fun y hy => by simp [hF1, hDζ0 y hy]) (fun y hy => ?_)
+    have h1 : ContinuousAt (fun y => fderiv ℝ u (y + d • e)) y :=
+      (hDuAt _ (hKdU y hy)).comp_of_eq (continuous_id.add continuous_const).continuousAt rfl
+    exact (hAc.continuousAt.comp h1).clm_apply hDζ.continuousAt
+  have hF2i : Integrable F2 := by
+    refine integ_of F2 K hKc (fun y hy => by simp [hF2, hDζ0 y hy]) (fun y hy => ?_)
+    exact (hAc.continuousAt.comp (hDuAt y (hKU hy))).clm_apply hDζ.continuousAt
+  have hR2i : Integrable R2 := by
+    refine integ_of R2 K hKc (fun y hy => by simp [hR2, hζ0 y hy]) (fun y hy => ?_)
+    exact hζcont.continuousAt.inner (hgAt y (hKU hy))
+  have hR3i : Integrable R3 := by
+    refine integ_of R3 Kd hKdc (fun x hx => ?_) (fun x hx => ?_)
+    · have : x - d • e ∉ K := fun h => hx (hmemKd x h)
+      simp [hR3, hζ0 _ this]
+    · have h1 : ContinuousAt (fun x => ζ (x - d • e)) x :=
+        (hζcont.comp (continuous_sub_right _)).continuousAt
+      exact h1.inner (hgAt x (hKdU' hx))
+  -- (E2): the equation tested with `ζ`
+  have hE2 : ∫ y, F2 y = -∫ y, R2 y := by
+    have h := hweak ζ hζ hζc hKU
+    have hl : ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ ζ x) = ∫ y, F2 y := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hx
+      have : x ∉ K := fun h' => hx (hKU h')
+      simp [hDζ0 x this]
+    have hr : ∫ x in U, inner ℝ (ζ x) (g x) = ∫ y, R2 y := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hx
+      have : x ∉ K := fun h' => hx (hKU h')
+      simp [hζ0 x this]
+    rw [hl, hr] at h
+    exact h
+  -- (E1): the equation tested with the translate `φ₁ = ζ(· - d e)`, translated back
+  set φ1 : Rn n → Rn ℓ := fun x => ζ (x - d • e) with hφ1
+  have hφ1C : ContDiff ℝ 1 φ1 := hζ.comp (contDiff_id.sub contDiff_const)
+  have hφ1c : HasCompactSupport φ1 :=
+    hζc.comp_isClosedEmbedding (Homeomorph.subRight (d • e)).isClosedEmbedding
+  have hφ1ts : tsupport φ1 ⊆ U := by
+    intro x hx
+    have h := (tsupport_comp_eq_preimage ζ (Homeomorph.subRight (d • e))).subset hx
+    have hxK : x - d • e ∈ K := h
+    simpa using hKdU _ hxK
+  have hφ1D : ∀ x, fderiv ℝ φ1 x = fderiv ℝ ζ (x - d • e) := fun x => fderiv_comp_sub (d • e)
+  have hE1 : ∫ y, F1 y = -∫ y, inner ℝ (ζ y) (g (y + d • e)) := by
+    have h := hweak φ1 hφ1C hφ1c hφ1ts
+    have hl : ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ1 x) =
+        ∫ x, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ ζ (x - d • e)) := by
+      rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+      · simp only [hφ1D]
+      · intro x hx
+        have : x - d • e ∉ K := fun h' => hx (hKdU' (hmemKd x h'))
+        simp [hφ1D, hDζ0 _ this]
+    have hr : ∫ x in U, inner ℝ (φ1 x) (g x) = ∫ x, R3 x := by
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro x hx
+      have : x - d • e ∉ K := fun h' => hx (hKdU' (hmemKd x h'))
+      simp [hφ1, hζ0 _ this]
+    have hl' : ∫ x, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ ζ (x - d • e)) = ∫ y, F1 y := by
+      rw [← integral_add_right_eq_self _ (d • e)]
+      simp [hF1]
+    have hr' : ∫ x, R3 x = ∫ y, inner ℝ (ζ y) (g (y + d • e)) := by
+      rw [← integral_add_right_eq_self _ (d • e)]
+      simp [hR3]
+    rw [hl, hr, hl', hr'] at h
+    exact h
+  have hR1R3 : ∫ y, inner ℝ (ζ y) (g (y + d • e)) = ∫ x, R3 x := by
+    rw [← integral_add_right_eq_self R3 (d • e)]
+    simp [hR3]
+  -- (E1) - (E2)
+  have hE3 : ∫ y, (F1 y - F2 y) = ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) := by
+    rw [integral_sub hF1i hF2i, hE1, hE2, hR1R3]
+    have : ∫ x, inner ℝ (ζ x - ζ (x - d • e)) (g x) = ∫ x, (R2 x - R3 x) := by
+      congr 1; funext x; simp [hR2, hR3, inner_sub_left]
+    rw [this, integral_sub hR2i hR3i]
+    ring
+  -- pointwise: `F1 - F2 = d • I` by the fundamental theorem of calculus in `L*`
+  set I : Rn n → ℝ := fun x => ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ)
+    (fderiv ℝ u x + t • (fderiv ℝ u (x + d • e) - fderiv ℝ u x))
+    (d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) (fderiv ℝ ζ x) with hI
+  set J : Rn n → ℝ := fun x => inner ℝ (∫ t in (0 : ℝ)..1, g (x + (t * d) • e)) (fderiv ℝ ζ x e)
+    with hJ
+  have hFTC : ∀ y, F1 y - F2 y = d * I y := by
+    intro y
+    by_cases hy : y ∈ K
+    · set Δ := fderiv ℝ u (y + d • e) - fderiv ℝ u y with hΔ
+      have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1,
+          HasDerivAt (fun t : ℝ => fderiv ℝ Ψ (fderiv ℝ u y + t • Δ))
+            (fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y + t • Δ) Δ) t := by
+        intro t _
+        have hl : HasDerivAt (fun t : ℝ => fderiv ℝ u y + t • Δ) Δ t := by
+          simpa using ((hasDerivAt_id t).smul_const Δ).const_add (fderiv ℝ u y)
+        exact (hAd (fderiv ℝ u y + t • Δ)).hasFDerivAt.comp_hasDerivAt t hl
+      have hint : IntervalIntegrable
+          (fun t : ℝ => fderiv ℝ (fderiv ℝ Ψ) (fderiv ℝ u y + t • Δ) Δ) volume 0 1 := by
+        apply Continuous.intervalIntegrable
+        exact (hBc.comp (by fun_prop)).clm_apply continuous_const
+      have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+      simp only [one_smul, zero_smul, add_zero] at hftc
+      have hP1 : fderiv ℝ u y + Δ = fderiv ℝ u (y + d • e) := by simp [hΔ]
+      rw [hP1] at hftc
+      have happ := DFunLike.congr_fun hftc (fderiv ℝ ζ y)
+      rw [ContinuousLinearMap.intervalIntegral_apply hint] at happ
+      simp only [hF1, hF2, hI]
+      rw [← sub_apply, ← happ, ← intervalIntegral.integral_const_mul]
+      apply intervalIntegral.integral_congr
+      intro t _
+      simp only [map_smul, smul_apply, smul_eq_mul]
+      rw [← mul_assoc, mul_inv_cancel₀ hd, one_mul]
+    · simp [hF1, hF2, hI, hDζ0 y hy]
+  -- the right sides, by the sibling `dohr_eb_elc2_shift_ibp`
+  have hIBP := Submission.dohr_eb_elc2_shift_ibp n ℓ U g ζ e d hU hg hζ hζc hsegK
+  have hmain : ∫ x, I x = ∫ x, J x := by
+    have h1 : ∫ y, (F1 y - F2 y) = d * ∫ x, I x := by
+      rw [← integral_const_mul]; congr 1; funext y; exact hFTC y
+    have h2 : d * ∫ x, I x = d * ∫ x, J x := by rw [← h1, hE3, hIBP]
+    exact mul_left_cancel₀ hd h2
+  -- both integrands vanish off `K ⊆ V`
+  have hIV : ∫ x in V, I x = ∫ x, I x := by
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    have : x ∉ K := fun h' => hx (hKV h')
+    simp [hI, hDζ0 x this]
+  have hJV : ∫ x in V, J x = ∫ x, J x := by
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    have : x ∉ K := fun h' => hx (hKV h')
+    simp [hJ, hDζ0 x this]
+  calc _ = ∫ x in V, I x := rfl
+    _ = ∫ x in V, J x := by rw [hIV, hJV, hmain]
+    _ = _ := rfl
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
