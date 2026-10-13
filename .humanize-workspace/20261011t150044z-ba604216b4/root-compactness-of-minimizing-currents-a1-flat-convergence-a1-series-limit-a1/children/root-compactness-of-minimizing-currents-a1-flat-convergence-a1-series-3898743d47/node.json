@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1.mass_triangle-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_limit-a1",
+  "depth": 4,
+  "title": "Mass subadditivity from an evaluation identity Z = X + c·Y with |c| ≤ 1 (parent step 1, F1)",
+  "statement": "Let P, n ∈ ℕ, let U, G ⊆ ℝ^P be arbitrary sets, let X, Y, Z ∈ 𝒟_n(U), and let c ∈ ℝ with |c| ≤ 1. If Z(ω) = X(ω) + c·Y(ω) for every test form ω ∈ 𝒟^n(U) with tsupport ω ⊆ G, then M_G(Z) ≤ M_G(X) + M_G(Y) in [0, ∞].\n\nConventions:\n- 𝒟_n(U) is the space of n-currents in U (SimonGMT GeometricCurrentOn U n). Its elements act ℝ-linearly on 𝒟^n(U).\n- 𝒟^n(U) is the real vector space of test n-forms in U (TestFormOn U n): smooth forms on ℝ^P with compact support contained in U.\n- |α| is the Euclidean coefficient norm of an n-covector α (covectorEuclideanNorm).\n- M_G(T) = T.massOn G is the supremum in [0, ∞] of ENNReal.ofReal(T(ω)) over the forms ω ∈ 𝒟^n(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x ∈ ℝ^P. This set is massAdmissibleOn U n G, and its elements are called admissible for M_G.",
+  "lean_statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (X Y Z : GeometricCurrentOn U n) (c : ℝ), |c| ≤ 1 → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → Z ω = X ω + c * Y ω) → Z.massOn G ≤ X.massOn G + Y.massOn G",
+  "lean_name": "cmc_fc_sl_massOn_le_add_of_eval_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-3898743d47-a1"
+}

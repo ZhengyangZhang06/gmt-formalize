@@ -451,6 +451,503 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Mass subadditivity from an evaluation identity (step 1 of the series-limit part of the flat
+convergence argument for Simon 7.2.4): if `|c| ≤ 1` and `Z(ω) = X(ω) + c Y(ω)` for every
+`ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ G`, then `M_G(Z) ≤ M_G(X) + M_G(Y)`.  The coefficient norm is
+homogeneous, `|c α| = |c| |α|`, so `c ω` is admissible for `M_G` whenever `ω` is, and then
+`Z(ω) = X(ω) + Y(c ω) ≤ M_G(X) + M_G(Y)`; take the supremum over admissible `ω`. -/
+theorem Submission.cmc_fc_sl_massOn_le_add_of_eval_eq : ∀ (P n : ℕ) (U G : Set (Euclid P)) (X Y Z : GeometricCurrentOn U n) (c : ℝ), |c| ≤ 1 → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → Z ω = X ω + c * Y ω) → Z.massOn G ≤ X.massOn G + Y.massOn G := by
+  intro P n U G X Y Z c hc hZ
+  -- `|c α| = |c| |α|` for the Euclidean coefficient norm
+  have hnorm : ∀ α : Covector (Euclid P) n,
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro α
+    rw [covectorEuclideanNorm, covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs,
+      ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- `c ω` is admissible for `M_G` together with `ω`
+  have hcω : c • ω ∈ massAdmissibleOn U n G := by
+    refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hω.1, fun x => ?_⟩
+    change covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+    rw [hnorm]
+    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) hc).trans (hω.2 x)
+  have hY : Y (c • ω) = c * Y ω := by
+    rw [map_smul, smul_eq_mul]
+  calc ENNReal.ofReal (Z ω) = ENNReal.ofReal (X ω + Y (c • ω)) := by rw [hZ ω hω.1, hY]
+    _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal (Y (c • ω)) := ENNReal.ofReal_add_le
+    _ ≤ X.massOn G + Y.massOn G := add_le_add (X.le_massOn hω) (Y.le_massOn hcω)
+
+/-- **Finite partial sums of integer multiplicity currents** (the partial sums of the series
+`R^{(ℓ)} = Σ_{r ≥ ℓ} R_r` in the proof of Simon Ch. 6, 7.2, p. 172).  If differences of integer
+multiplicity currents in `U` are integer multiplicity and the `Yᵢ ∈ 𝒟ₙ(U)` are integer
+multiplicity, then every partial sum `Σ_{i ≤ N} Yᵢ` is an integer multiplicity `Z ∈ 𝒟ₙ(U)` with
+`M_G(Z) ≤ Σ_{i ≤ N} M_G(Yᵢ)` for every `G`.  Induction on `N`: `Z = Y₀` for `N = 0`; then, with
+`B = Y_{N+1}`, `Z' = Z − ((B − B) − B)` is integer multiplicity by three uses of the hypothesis,
+acts as `Z + B`, and has `M_G(Z') ≤ M_G(Z) + M_G(B)` by the mass triangle inequality with
+`c = 1`. -/
+theorem Submission.cmc_fc_sl_im_partial_sum : ∀ (P n : ℕ) (U : Set (Euclid P)) (Y : ℕ → GeometricCurrentOn U n), (∀ A B : GeometricCurrentOn U n, IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ i, IsIntegerMultiplicity (Y i)) → ∀ N : ℕ, ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ (∀ ω : TestFormOn U n, Z ω = ∑ i ∈ Finset.range (N + 1), Y i ω) ∧ ∀ G : Set (Euclid P), Z.massOn G ≤ ∑ i ∈ Finset.range (N + 1), (Y i).massOn G := by
+  intro P n U Y hIS hY N
+  -- the contract subtraction acts pointwise: `(A − B)(ω) = A(ω) − B(ω)`
+  have hsub : ∀ (A B : GeometricCurrentOn U n) (ω : TestFormOn U n), (A - B) ω = A ω - B ω :=
+    fun _ _ _ => rfl
+  induction N with
+  | zero =>
+    -- step 1: `Z = Y₀`
+    refine ⟨Y 0, hY 0, fun ω => ?_, fun G => ?_⟩
+    · rw [Finset.sum_range_one]
+    · rw [Finset.sum_range_one]
+  | succ N ih =>
+    obtain ⟨Z, hZ, hZω, hZG⟩ := ih
+    -- step 3: `B − B`, `(B − B) − B` and `Z' = Z − ((B − B) − B)` are integer multiplicity
+    have hBB : IsIntegerMultiplicity (Y (N + 1) - Y (N + 1)) := hIS _ _ (hY _) (hY _)
+    have hBBB : IsIntegerMultiplicity ((Y (N + 1) - Y (N + 1)) - Y (N + 1)) := hIS _ _ hBB (hY _)
+    -- step 4: `Z'(ω) = Z(ω) + 1 · B(ω)`
+    have hZ' : ∀ ω : TestFormOn U n,
+        (Z - ((Y (N + 1) - Y (N + 1)) - Y (N + 1))) ω = Z ω + 1 * Y (N + 1) ω := by
+      intro ω
+      rw [hsub, hsub, hsub]
+      ring
+    refine ⟨Z - ((Y (N + 1) - Y (N + 1)) - Y (N + 1)), hIS _ _ hZ hBBB, fun ω => ?_, fun G => ?_⟩
+    · rw [hZ', one_mul, hZω, Finset.sum_range_succ _ (N + 1)]
+    -- step 5: mass triangle inequality with `c = 1`, then the induction hypothesis
+    · calc (Z - ((Y (N + 1) - Y (N + 1)) - Y (N + 1))).massOn G
+          ≤ Z.massOn G + (Y (N + 1)).massOn G :=
+            Submission.cmc_fc_sl_massOn_le_add_of_eval_eq P n U G Z (Y (N + 1)) _ 1 abs_one.le
+              fun ω _ => hZ' ω
+        _ ≤ ∑ i ∈ Finset.range (N + 1), (Y i).massOn G + (Y (N + 1)).massOn G :=
+            add_le_add (hZG G) le_rfl
+        _ = ∑ i ∈ Finset.range (N + 1 + 1), (Y i).massOn G :=
+            (Finset.sum_range_succ _ (N + 1)).symm
+/-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
+(Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
+`τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
+for strictly increasing `I : Fin n → Fin P` and `c_I α = 0` otherwise.  Then
+`covectorEuclideanNorm α = ‖v α‖` for the coefficient vector
+`v α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)`, which is linear in `α`; this gives the
+triangle inequality and homogeneity.  `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖` gives the bound with
+`C = √(card (Fin n → Fin P))`, and then the norm is `C`-Lipschitz, hence continuous. -/
+theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) := by
+  intro P n
+  classical
+  -- Step 1: the coefficients `c_I α` and the coefficient vector `v α`, with `N α = ‖v α‖`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  let c : (Fin n → Fin P) → Covector (Euclid P) n → ℝ := fun I α =>
+    if StrictMono I then α (fun i => e (I i)) else 0
+  let v : Covector (Euclid P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun α =>
+    WithLp.toLp 2 (fun I => c I α)
+  have hN : ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖v α‖ := by
+    intro α
+    rw [EuclideanSpace.norm_eq]
+    unfold covectorEuclideanNorm
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    by_cases hI : StrictMono I <;> simp [v, c, e, hI]
+  -- Step 2: `v` is additive and `ℝ`-homogeneous
+  have hadd : ∀ α α' : Covector (Euclid P) n, v (α + α') = v α + v α' := by
+    intro α α'
+    simp only [v, ← WithLp.toLp_add]
+    congr 1
+    funext I
+    by_cases hI : StrictMono I <;> simp [c, hI]
+  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n), v (t • α) = t • v α := by
+    intro t α
+    simp only [v, ← WithLp.toLp_smul]
+    congr 1
+    funext I
+    by_cases hI : StrictMono I <;> simp [c, hI]
+  -- Step 3: (i), the triangle inequality in `EuclideanSpace ℝ (Fin n → Fin P)`
+  have h1 : ∀ α α' : Covector (Euclid P) n,
+      covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α' := by
+    intro α α'
+    rw [hN, hN, hN, hadd]
+    exact norm_add_le _ _
+  -- Step 4: (ii), homogeneity of the Euclidean norm
+  have h2 : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
+  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
+  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
+    intro I α
+    by_cases hI : StrictMono I
+    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
+    · simp [c, hI]
+  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
+  have h3 : ∀ α : Covector (Euclid P) n,
+      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+    intro α
+    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
+      Finset.sum_le_sum fun I _ => by
+        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
+    rw [hN, EuclideanSpace.norm_eq]
+    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
+          Real.sqrt_le_sqrt hsum
+      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
+  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
+      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
+    intro α α'
+    have ha : covectorEuclideanNorm α ≤
+        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
+      simpa only [sub_add_cancel] using h1 (α - α') α'
+    have hb : covectorEuclideanNorm α' ≤
+        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
+      have h := h1 (α' - α) α
+      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
+    have hC := h3 (α - α')
+    rw [Real.dist_eq, dist_eq_norm, abs_le]
+    constructor <;> linarith
+  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
+    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
+/-- **Simon §6.1** (the test-form topology, the case `β = 0`): if `ωⱼ → 0` in `𝒟ⁿ(U)`, the
+`ωⱼ` vanish outside one compact `C ⊆ U`, and `supₓ ‖ωⱼ(x)‖ → 0`.  The compact set is the one in
+`TestFormOnConverges`; uniform convergence of the `0`-th iterated derivatives on `C` gives the
+bound on `C`, and `ωⱼ = 0` off `C`. -/
+theorem Submission.dpf_pfc_testFormOnConverges_zero_uniform : ∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε := by
+  intro P n U ωs h
+  obtain ⟨C, hC, hCU, hsupp, -, hderiv⟩ := h
+  have hzero : ∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0 := fun j x hx =>
+    image_eq_zero_of_notMem_tsupport fun hx' => hx (hsupp j hx')
+  refine ⟨C, hC, hCU, hzero, fun ε hε => ?_⟩
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hderiv 0) ε hε] with j hj x
+  by_cases hx : x ∈ C
+  · have hjx := hj x hx
+    simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left,
+      norm_iteratedFDeriv_zero] at hjx
+    exact hjx.le
+  · rw [hzero j x hx, norm_zero]
+    exact hε.le
+
+/-- **A test form has bounded Euclidean coefficient norm** (Simon Ch. 6, (1.15):
+`|ω| = sup_x |ω(x)|` is finite for `ω ∈ 𝒟ⁿ(U)`).  `ω` is `C^∞`, hence continuous, with compact
+support; the coefficient norm `N` is continuous (`rsd_mw_tfa_norm_props`) and `N 0 = 0`, so
+`x ↦ N (ω x)` is continuous with compact support, hence bounded by some `C`, and
+`c = max C 0 + 1` is a positive bound. -/
+theorem Submission.cmc_fc_sc_testForm_coeff_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U n), ∃ c : ℝ, 0 < c ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c := by
+  intro P n U ω
+  -- Step 1: `ω` is `C^∞`, hence continuous, and has compact support
+  have hsmooth : IsSmoothForm (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  -- Step 2: `x ↦ N (ω x)` is continuous, with compact support because `N 0 = 0`
+  have hcont : Continuous fun x => covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) :=
+    (Submission.rsd_mw_tfa_norm_props P n).2.2.2.comp (ContDiff.continuous hsmooth)
+  have hcs : HasCompactSupport fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) :=
+    HasCompactSupport.comp_left (g := covectorEuclideanNorm) ω.property.1.2
+      (covectorEuclideanNorm_zero P n)
+  -- Step 3: a continuous compactly supported real function is bounded by some `C`
+  obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hcs
+  -- Step 4: `c = max C 0 + 1 > 0` and `N (ω x) ≤ |N (ω x)| ≤ C ≤ max C 0 < c`
+  refine ⟨max C 0 + 1, by positivity, fun x => ?_⟩
+  have hx := hC x
+  rw [Real.norm_eq_abs] at hx
+  linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)),
+    le_max_left C 0]
+
+/-- **Evaluation of a finite-mass current is bounded by mass times the coefficient sup norm**
+(Simon Ch. 6, 2.4: `M(X) = sup_{|ω| ≤ 1} X(ω)`, so `|X(ω)| ≤ sup |ω| · M(X)`; used for the
+mass-absolutely convergent series in the proof of 7.2).  For `|s| = c⁻¹` the rescaled form
+`s • ω` is admissible for `M(X) = M_U(X)`, as `|s • ω(x)| = c⁻¹ |ω(x)| ≤ 1` by homogeneity of
+the coefficient norm; hence `s X(ω) = X(s • ω) ≤ M(X)`.  The choices `s = ±c⁻¹` give
+`±X(ω) ≤ c M(X)`. -/
+theorem Submission.cmc_fc_sc_abs_le_mul_mass : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (ω : TestFormOn U n) (c : ℝ), 0 < c → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |X ω| ≤ c * X.mass.toReal := by
+  intro P n U X ω c hc hX hω
+  -- Step 1: for `|s| = c⁻¹`, `s • ω` is admissible, so `s X(ω) = X(s • ω) ≤ M(X)`
+  have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * X ω ≤ X.mass.toReal := by
+    intro s hs
+    have hadm : s • ω ∈ massAdmissibleOn U n U := by
+      refine ⟨(s • ω).property.2, fun x => ?_⟩
+      have hx : ((s • ω : TestFormOn U n) : DifferentialForm (Euclid P) n) x =
+          s • ((ω : DifferentialForm (Euclid P) n) x) := rfl
+      rw [hx, (Submission.rsd_mw_tfa_norm_props P n).2.1, hs]
+      calc c⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c⁻¹ * c :=
+            mul_le_mul_of_nonneg_left (hω x) (inv_nonneg.mpr hc.le)
+        _ = 1 := inv_mul_cancel₀ hc.ne'
+    have hle : ENNReal.ofReal (X (s • ω)) ≤ X.mass := X.le_massOn hadm
+    rw [ENNReal.ofReal_le_iff_le_toReal hX] at hle
+    have hlin : X (s • ω) = s * X ω := by
+      rw [map_smul, smul_eq_mul]
+    rwa [hlin] at hle
+  -- Step 2: `s = c⁻¹` and `s = -c⁻¹` give `X(ω) ≤ c M(X)` and `-X(ω) ≤ c M(X)`
+  have hinv : |c⁻¹| = c⁻¹ := abs_of_pos (inv_pos.mpr hc)
+  have hpos := mul_le_mul_of_nonneg_left (hbound c⁻¹ hinv) hc.le
+  have hneg := mul_le_mul_of_nonneg_left (hbound (-c⁻¹) (by rw [abs_neg, hinv])) hc.le
+  rw [← mul_assoc, mul_inv_cancel₀ hc.ne', one_mul] at hpos
+  rw [neg_mul, mul_neg, ← mul_assoc, mul_inv_cancel₀ hc.ne', one_mul] at hneg
+  exact abs_le.mpr ⟨by linarith, hpos⟩
+/-- **A linear functional on test forms dominated by the coefficient sup norm is a current**
+(Simon Ch. 6, proof of 7.2, where the `M`-absolutely convergent series define currents; the
+topology of `𝒟ⁿ(U)` is that of §6.1).  Suppose `|L ω| ≤ c A` whenever `|ω(x)| ≤ c` for all `x`.
+Then `A ≥ 0` (take `ω = 0`).  If `ωⱼ → 0` in `𝒟ⁿ(U)`, then for large `j` and all `x`,
+`|ωⱼ(x)| ≤ C ‖ωⱼ(x)‖ ≤ (C + 1) ε`, so `|L ωⱼ| ≤ (C + 1) ε A < η` for
+`ε = η / (2 (C + 1) (A + 1))`.  Hence `L` is sequentially continuous, and `⟨L, ·⟩` is the
+current. -/
+theorem Submission.cmc_fc_sc_current_of_coeff_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ) (A : ℝ), (∀ (ω : TestFormOn U n) (c : ℝ), 0 < c → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |L ω| ≤ c * A) → ∃ Y : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, Y ω = L ω := by
+  intro P n U L A hL
+  -- Step 1: `A ≥ 0`, from the bound at `ω = 0`, `c = 1`
+  have hA : 0 ≤ A := by simpa using hL 0 1 one_pos fun x => by simp
+  -- Step 2: `|α| ≤ C ‖α‖`
+  obtain ⟨C, hC0, hC⟩ := (Submission.rsd_mw_tfa_norm_props P n).2.2.1
+  -- Step 4: `Y = ⟨L, ·⟩`; its continuity is Step 3
+  refine ⟨⟨L, fun ωs hωs => ?_⟩, fun ω => rfl⟩
+  -- Step 3: eventually `supₓ ‖ωⱼ(x)‖ ≤ ε`, hence `|L ωⱼ| ≤ (C + 1) ε A < η`
+  obtain ⟨K, -, -, -, hunif⟩ := Submission.dpf_pfc_testFormOnConverges_zero_uniform P n U ωs hωs
+  rw [Metric.tendsto_atTop]
+  intro η hη
+  have hC1 : 0 < C + 1 := by linarith
+  have hA1 : 0 < A + 1 := by linarith
+  set ε : ℝ := η / (2 * (C + 1) * (A + 1)) with hε
+  have hεpos : 0 < ε := div_pos hη (by positivity)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif ε hεpos)
+  refine ⟨N, fun j hj => ?_⟩
+  have hbound : ∀ x, covectorEuclideanNorm ((ωs j : DifferentialForm (Euclid P) n) x) ≤
+      (C + 1) * ε := fun x =>
+    (hC _).trans <| (mul_le_mul_of_nonneg_left (hN j hj x) hC0).trans <| by nlinarith
+  have hkey : (C + 1) * ε * (A + 1) = η / 2 := by
+    rw [hε]
+    field_simp
+  rw [Real.dist_eq, sub_zero]
+  calc |L (ωs j)| ≤ (C + 1) * ε * A := hL (ωs j) _ (by positivity) hbound
+    _ ≤ (C + 1) * ε * (A + 1) := by nlinarith
+    _ = η / 2 := hkey
+    _ < η := by linarith
+/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
+`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
+`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
+unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
+`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
+theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
+  intro P n U S ω hdisj
+  classical
+  -- `K = spt ω` is a compact subset of `U`
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hKc : IsCompact K := ω.property.1.2
+  have hKU : K ⊆ U := ω.property.2
+  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
+  let 𝒲 : Set (Set (Euclid P)) :=
+    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
+  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
+    intro x hx
+    have hxZ : x ∈ S.zeroRegion := by
+      by_contra hxZ
+      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
+    (fun W => W.2.1) hKZ
+  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
+    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
+  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+      tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Euclid P) n) x =
+      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
+  change S.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
+
+/-- **M-absolutely convergent series of currents** (Simon Ch. 6, proof of 7.2, p. 172: "the
+`M`-absolutely convergent series `R^{(ℓ)} = Σ_{r ≥ ℓ} R_r`").  If `s = Σ_r M(X_r) < ∞`, every
+`M(X_r)` is finite and `Σ_r M(X_r)^ℝ = s^ℝ`.  For a test form `ω` with `|ω(x)| ≤ c`,
+`|X_r(ω)| ≤ c M(X_r)^ℝ`, so `Σ_r X_r(ω)` converges absolutely; its sum `L(ω)` is linear in `ω`
+and satisfies `|L(ω)| ≤ c s^ℝ`, hence is a current `Y`.  For `ω` admissible for `M`,
+`X_r(ω) ≤ M(X_r)^ℝ`, so `Y(ω) ≤ s^ℝ` and `M(Y) ≤ s`. -/
+theorem Submission.cmc_fc_series_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass := by
+  intro P n U X hX
+  -- Step 1: every `M(X_r)` is finite and `Σ_r M(X_r)^ℝ = s^ℝ`
+  have hfin : ∀ r, (X r).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hX
+  have hm : HasSum (fun r => (X r).mass.toReal) (∑' r, (X r).mass).toReal := by
+    rw [ENNReal.tsum_toReal_eq hfin]
+    exact (ENNReal.summable_toReal hX).hasSum
+  -- Step 2: `|X_r(ω)| ≤ c M(X_r)^ℝ` when `|ω(x)| ≤ c`, so `Σ_r X_r(ω)` converges absolutely
+  have hle : ∀ (ω : TestFormOn U n) (c : ℝ), 0 < c →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) →
+      ∀ r, ‖X r ω‖ ≤ c * (X r).mass.toReal := fun ω c hc hω r => by
+    rw [Real.norm_eq_abs]
+    exact Submission.cmc_fc_sc_abs_le_mul_mass P n U (X r) ω c hc (hfin r) hω
+  have hsum : ∀ ω : TestFormOn U n, Summable fun r => X r ω := fun ω => by
+    obtain ⟨c, hc, hω⟩ := Submission.cmc_fc_sc_testForm_coeff_bound P n U ω
+    exact Summable.of_norm_bounded (hm.summable.mul_left c) (hle ω c hc hω)
+  -- Step 3: `L(ω) = Σ_r X_r(ω)` is linear, by additivity and homogeneity of convergent sums
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑' r, X r ω
+      map_add' := fun ω ω' => by
+        simp only [map_add]
+        exact (hsum ω).tsum_add (hsum ω')
+      map_smul' := fun t ω => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        exact (hsum ω).tsum_mul_left t }
+  have hL : ∀ ω : TestFormOn U n, L ω = ∑' r, X r ω := fun _ => rfl
+  -- Step 4: `|L(ω)| ≤ c s^ℝ` when `|ω(x)| ≤ c`, so `L` is a current `Y`
+  obtain ⟨Y, hY⟩ := Submission.cmc_fc_sc_current_of_coeff_bound P n U L
+    (∑' r, (X r).mass).toReal fun ω c hc hω => by
+      rw [hL, ← Real.norm_eq_abs]
+      exact (hsum ω).hasSum.norm_le_of_bounded (hm.mul_left c) (hle ω c hc hω)
+  refine ⟨Y, fun ω => ?_, ?_⟩
+  · rw [hY, hL]
+    exact (hsum ω).hasSum
+  -- Step 5: for `ω` admissible for `M`, `X_r(ω) ≤ M(X_r)^ℝ`, so `Y(ω) ≤ s^ℝ`
+  · refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    rw [ENNReal.ofReal_le_iff_le_toReal hX, hY, hL]
+    exact hasSum_le (fun r => (ENNReal.ofReal_le_iff_le_toReal (hfin r)).1 ((X r).le_massOn hω))
+      (hsum ω).hasSum hm
+
+/-- **Simon Ch. 6, proof of Theorem 7.2** (summing the flat-Cauchy subsequence; the closure
+theorem `(CL)` replaces Lemma 3.13).  Fix `ℓ`.  The partial sums `R^N = ∑_{r=ℓ}^{ℓ+N} R_r` and
+`S^N = ∑_{r=ℓ}^{ℓ+N} S_r` are integer multiplicity by `(IS)` (`cmc_fc_sl_im_partial_sum`) and
+telescope to `X_{ℓ+N+1} − X_ℓ − S^N = ∂R^N`; applying `∂` gives `∂S^N = ∂X_{ℓ+N+1} − ∂X_ℓ`.
+The tails are mass-summable, so `cmc_fc_series_current` gives `R'`, `S'` with `R^N ⇀ R'`,
+`S^N ⇀ S'` and `M(R') + M(S') ≤ ∑_{r≥ℓ} 2^{−r} = 2·2^{−ℓ}`.  By the triangle inequality
+(`cmc_fc_sl_massOn_le_add_of_eval_eq`) the masses of `R^N`, `∂R^N`, `S^N`, `∂S^N` are bounded
+uniformly in `N`, so `R'` and `S'` are integer multiplicity by `(CL)`; letting `N → ∞` in the
+telescoping identity gives `X_lim − X_ℓ − S' = ∂R'`. -/
+theorem Submission.cmc_fc_series_limit : (∀ (P d : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)) (Xlim : GeometricCurrentOn U (m + 1)) (Λ : NNReal) (R : ℕ → GeometricCurrentOn U (m + 2)) (S : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → WeaklyConvergesOn X Xlim → (∀ r, (X r).mass ≤ Λ ∧ (X r).boundary.mass ≤ Λ) → (∀ r, IsIntegerMultiplicity (R r) ∧ IsIntegerMultiplicity (S r) ∧ X (r + 1) - X r - S r = (R r).boundary ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → ∀ ℓ : ℕ, ∃ (R' : GeometricCurrentOn U (m + 2)) (S' : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ Xlim - X ℓ - S' = R'.boundary ∧ R'.mass + S'.mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+  intro hCL hIS P m U X Xlim Λ R S hU hX hXΛ hRS ℓ
+  -- Step 8: the tails satisfy `∑_{r≥ℓ} (M(R_r) + M(S_r)) ≤ ∑_{r≥ℓ} 2^{−r} = 2·2^{−ℓ}`
+  have htail : ∑' r, ((R (ℓ + r)).mass + (S (ℓ + r)).mass) ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+    calc ∑' r, ((R (ℓ + r)).mass + (S (ℓ + r)).mass) ≤ ∑' r, (2⁻¹ : ℝ≥0∞) ^ (ℓ + r) :=
+          ENNReal.tsum_le_tsum fun r => (hRS (ℓ + r)).2.2.2
+      _ = 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+        simp_rw [pow_add]
+        rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv,
+          mul_comm]
+  have hσR : ∑' r, (R (ℓ + r)).mass ≠ ∞ := by
+    refine ne_top_of_le_ne_top (b := 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ) (by finiteness) (le_trans ?_ htail)
+    exact ENNReal.tsum_le_tsum fun r => le_self_add
+  have hσS : ∑' r, (S (ℓ + r)).mass ≠ ∞ := by
+    refine ne_top_of_le_ne_top (b := 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ) (by finiteness) (le_trans ?_ htail)
+    exact ENNReal.tsum_le_tsum fun r => le_add_self
+  -- Step 2: the integer multiplicity partial sums `R^N`, `S^N`
+  choose ZR hZRim hZRev hZRmass using Submission.cmc_fc_sl_im_partial_sum P (m + 2) U
+    (fun r => R (ℓ + r)) (fun A B hA hB => hIS P (m + 2) U A B hU hA hB) fun r => (hRS (ℓ + r)).1
+  choose ZS hZSim hZSev hZSmass using Submission.cmc_fc_sl_im_partial_sum P (m + 1) U
+    (fun r => S (ℓ + r)) (fun A B hA hB => hIS P (m + 1) U A B hU hA hB) fun r =>
+      (hRS (ℓ + r)).2.1
+  -- Step 5: the series currents `R'`, `S'` are the weak limits of the partial sums
+  obtain ⟨R', hR'sum, hR'mass⟩ :=
+    Submission.cmc_fc_series_current P (m + 2) U (fun r => R (ℓ + r)) hσR
+  obtain ⟨S', hS'sum, hS'mass⟩ :=
+    Submission.cmc_fc_series_current P (m + 1) U (fun r => S (ℓ + r)) hσS
+  have hZRconv : ∀ ω, Tendsto (fun N => ZR N ω) atTop (𝓝 (R' ω)) := fun ω =>
+    ((hR'sum ω).tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)).congr fun N => (hZRev N ω).symm
+  have hZSconv : ∀ ω, Tendsto (fun N => ZS N ω) atTop (𝓝 (S' ω)) := fun ω =>
+    ((hS'sum ω).tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)).congr fun N => (hZSev N ω).symm
+  -- Step 3: telescoping, `X_{ℓ+N+1} − X_ℓ − S^N = ∂R^N`
+  have hstep : ∀ r (ω : TestFormOn U (m + 1)),
+      X (r + 1) ω - X r ω - S r ω = R r (exteriorDerivativeTestOn U (m + 1) ω) := fun r ω =>
+    congrArg (fun T : GeometricCurrentOn U (m + 1) => T ω) (hRS r).2.2.1
+  have hpart : ∀ N (ω : TestFormOn U (m + 1)),
+      X (ℓ + N + 1) ω - X ℓ ω - ∑ i ∈ Finset.range (N + 1), S (ℓ + i) ω =
+        ∑ i ∈ Finset.range (N + 1), R (ℓ + i) (exteriorDerivativeTestOn U (m + 1) ω) := by
+    intro N ω
+    induction N with
+    | zero => simpa using hstep ℓ ω
+    | succ N ih =>
+      rw [Finset.sum_range_succ _ (N + 1), Finset.sum_range_succ _ (N + 1), ← add_assoc ℓ N 1]
+      linarith [hstep (ℓ + N + 1) ω]
+  have htel : ∀ N, X (ℓ + N + 1) - X ℓ - ZS N = (ZR N).boundary := by
+    intro N
+    ext ω
+    change X (ℓ + N + 1) ω - X ℓ ω - ZS N ω = ZR N (exteriorDerivativeTestOn U (m + 1) ω)
+    rw [hZSev, hZRev]
+    exact hpart N ω
+  -- Step 4: `∂S^N = ∂X_{ℓ+N+1} − ∂X_ℓ`, since `∂∂R^N = 0`
+  have hZSbd : ∀ N (η : TestFormOn U m),
+      (ZS N).boundary η = (X (ℓ + N + 1)).boundary η + (-1) * (X ℓ).boundary η := by
+    intro N η
+    have h : (X (ℓ + N + 1) - X ℓ - ZS N).boundary η = (ZR N).boundary.boundary η := by
+      rw [htel N]
+    rw [GeometricCurrentOn.boundary_boundary] at h
+    change X (ℓ + N + 1) (exteriorDerivativeTestOn U m η) - X ℓ (exteriorDerivativeTestOn U m η) -
+      ZS N (exteriorDerivativeTestOn U m η) = 0 at h
+    change ZS N (exteriorDerivativeTestOn U m η) = X (ℓ + N + 1) (exteriorDerivativeTestOn U m η) +
+      (-1) * X ℓ (exteriorDerivativeTestOn U m η)
+    linarith
+  -- Step 6: mass bounds, uniform in `N`, on every `W ⊆ U`
+  have hsub : ∀ {k : ℕ} (A B : GeometricCurrentOn U k) (W : Set (Euclid P)),
+      (A - B).massOn W ≤ A.massOn W + B.massOn W := fun A B W =>
+    Submission.cmc_fc_sl_massOn_le_add_of_eval_eq P _ U W A B (A - B) (-1) (by norm_num)
+      fun ω _ => by
+        change A ω - B ω = A ω + (-1) * B ω
+        ring
+  have hXW : ∀ r W, W ⊆ U → (X r).massOn W ≤ Λ := fun r W hWU =>
+    ((X r).massOn_mono hWU).trans (hXΛ r).1
+  have hXbW : ∀ r W, W ⊆ U → (X r).boundary.massOn W ≤ Λ := fun r W hWU =>
+    ((X r).boundary.massOn_mono hWU).trans (hXΛ r).2
+  have hZRW : ∀ N W, W ⊆ U → (ZR N).massOn W ≤ ∑' r, (R (ℓ + r)).mass := fun N W hWU =>
+    (hZRmass N W).trans ((Finset.sum_le_sum fun i _ => (R (ℓ + i)).massOn_mono hWU).trans
+      (ENNReal.sum_le_tsum _))
+  have hZSW : ∀ N W, W ⊆ U → (ZS N).massOn W ≤ ∑' r, (S (ℓ + r)).mass := fun N W hWU =>
+    (hZSmass N W).trans ((Finset.sum_le_sum fun i _ => (S (ℓ + i)).massOn_mono hWU).trans
+      (ENNReal.sum_le_tsum _))
+  have hZRbdW : ∀ N W, W ⊆ U →
+      (ZR N).boundary.massOn W ≤ (Λ + Λ : ℝ≥0∞) + ∑' r, (S (ℓ + r)).mass := by
+    intro N W hWU
+    rw [← htel N]
+    calc (X (ℓ + N + 1) - X ℓ - ZS N).massOn W
+        ≤ (X (ℓ + N + 1)).massOn W + (X ℓ).massOn W + (ZS N).massOn W :=
+          (hsub _ _ W).trans (add_le_add (hsub _ _ W) le_rfl)
+      _ ≤ (Λ + Λ : ℝ≥0∞) + ∑' r, (S (ℓ + r)).mass :=
+          add_le_add (add_le_add (hXW _ W hWU) (hXW _ W hWU)) (hZSW N W hWU)
+  have hZSbdW : ∀ N W, W ⊆ U → (ZS N).boundary.massOn W ≤ (Λ + Λ : ℝ≥0∞) := fun N W hWU =>
+    (Submission.cmc_fc_sl_massOn_le_add_of_eval_eq P m U W (X (ℓ + N + 1)).boundary
+      (X ℓ).boundary (ZS N).boundary (-1) (by norm_num) fun η _ => hZSbd N η).trans
+        (add_le_add (hXbW _ W hWU) (hXbW _ W hWU))
+  -- Step 6: `R'` and `S'` are integer multiplicity by the closure theorem `(CL)`
+  have hR'im : IsIntegerMultiplicity R' := by
+    refine hCL P (m + 2) U ZR R' hU hZRim (fun W _ hW => ?_) hZRconv
+    have hWU : W ⊆ U := subset_closure.trans hW.2
+    refine lt_of_le_of_lt (iSup_le fun N => add_le_add (hZRW N W hWU) (hZRbdW N W hWU)) ?_
+    finiteness
+  have hS'im : IsIntegerMultiplicity S' := by
+    refine hCL P (m + 1) U ZS S' hU hZSim (fun W _ hW => ?_) hZSconv
+    have hWU : W ⊆ U := subset_closure.trans hW.2
+    refine lt_of_le_of_lt (iSup_le fun N => add_le_add (hZSW N W hWU) (hZSbdW N W hWU)) ?_
+    finiteness
+  -- Step 7: letting `N → ∞` in the telescoping identity
+  have hshift : Tendsto (fun N : ℕ => ℓ + N + 1) atTop atTop :=
+    tendsto_atTop_mono (fun N => (by omega : N ≤ ℓ + N + 1)) tendsto_id
+  have hlim : Xlim - X ℓ - S' = R'.boundary := by
+    ext ω
+    refine tendsto_nhds_unique ((((hX ω).comp hshift).sub tendsto_const_nhds).sub (hZSconv ω)) ?_
+    refine (hZRconv (exteriorDerivativeTestOn U (m + 1) ω)).congr fun N => ?_
+    exact (congrArg (fun T : GeometricCurrentOn U (m + 1) => T ω) (htel N)).symm
+  refine ⟨R', S', hR'im, hS'im, hlim, ?_⟩
+  calc R'.mass + S'.mass ≤ ∑' r, (R (ℓ + r)).mass + ∑' r, (S (ℓ + r)).mass :=
+        add_le_add hR'mass hS'mass
+    _ = ∑' r, ((R (ℓ + r)).mass + (S (ℓ + r)).mass) := ENNReal.tsum_add.symm
+    _ ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := htail
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
