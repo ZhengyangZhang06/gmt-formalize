@@ -1,0 +1,136 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1.frame_sign-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 2 of the parent proof (the sign lemma, parent Step 0(a): a change between orthonormal frames of Q has determinant ε₀ = ±1, so ζ(β) = ε₁β(τ) = ε₁ε₀β(ρ) with a sign independent of β); Simon Ch. 6, 1.1 (book/chapter-06.txt lines 28–30: ω₁∧⋯∧ωₙ(v₁, …, vₙ) = det(ωᵢ(vⱼ))) and 4.3 (lines 1209–1219). It uses the sibling covector_det (Submission.dgoj_covector_eq_det_mul_of_mem_span).
+Notation: ℝ^P = Euclid P = EuclideanSpace ℝ (Fin P); ⟨x, y⟩ = inner ℝ x y; |x| = ‖x‖; an n-covector is an element of Covector (Euclid P) n = Euclid P [⋀^Fin n]→L[ℝ] ℝ; an n-vector is an element of MultiVector P n = Covector (Euclid P) n →L[ℝ] ℝ; ν^⊥ = (ℝ ∙ ν)ᗮ; Fin.cons ν σ is the family (ν, σ_0, …, σ_{n−1}) indexed by Fin (n + 1).
+1. Unfold the hypothesis IsUnitOrientationOf ζ Q: there is τ : Fin m → ℝ^P, orthonormal, with span(range τ) = Q, and (Case ε₁ = 1) ζ(β) = β(τ) for every m-covector β, or (Case ε₁ = −1) ζ(β) = −β(τ) for every β.
+2. Change-of-frame formula. Since span(range τ) = Q and ρ_j ∈ Q, every ρ_j ∈ span(range τ). Let M be the m×m real matrix M_{ij} := ⟨τ_i, ρ_j⟩ (Matrix.of fun i j => inner ℝ (τ i) (ρ j)). By the sibling covector_det applied to the orthonormal frame τ and the family b := ρ: β(ρ) = det(M)·β(τ) for every m-covector β.
+3. Parseval in span(range τ). For x ∈ ℝ^P and y ∈ span(range τ): ⟨x, y⟩ = Σ_i ⟨τ_i, x⟩⟨τ_i, y⟩. Proof: write y = Σ_l c_l τ_l (Submodule.mem_span_range_iff_exists_fun). By orthonormality ⟨τ_i, y⟩ = c_i (Orthonormal.inner_right_fintype), and by linearity ⟨x, y⟩ = Σ_l c_l⟨x, τ_l⟩ (inner_sum, inner_smul_right) = Σ_l ⟨τ_l, x⟩ c_l (real_inner_comm, commutativity of ·) = Σ_l ⟨τ_l, x⟩⟨τ_l, y⟩.
+4. M is orthogonal: MᵀM = I. For j, k ∈ Fin m, (MᵀM)_{jk} = Σ_i M_{ij}M_{ik} = Σ_i ⟨τ_i, ρ_j⟩⟨τ_i, ρ_k⟩ = ⟨ρ_j, ρ_k⟩ (step 3 with x = ρ_j and y = ρ_k ∈ span(range τ)) = (1 if j = k else 0), because ρ is orthonormal (orthonormal_iff_ite).
+5. det M = ±1. det(M)·det(M) = det(Mᵀ)·det(M) = det(MᵀM) = det(I) = 1 (Matrix.det_transpose, Matrix.det_mul, Matrix.det_one). Hence (det M − 1)(det M + 1) = det(M)² − 1 = 0, so ε₀ := det M = 1 or ε₀ = −1. (This is the parent's 'orthogonal change between orthonormal bases has determinant ±1', cf. OrthonormalBasis.det_to_matrix_orthonormalBasis_real.)
+6. Conclusion, by the four sign combinations; in each case fix an arbitrary m-covector β and use step 2, β(ρ) = ε₀β(τ):
+   (a) ε₁ = 1, ε₀ = 1: ζ(β) = β(τ) = 1·β(τ) = β(ρ). First alternative.
+   (b) ε₁ = 1, ε₀ = −1: β(ρ) = −β(τ), so ζ(β) = β(τ) = −β(ρ). Second alternative.
+   (c) ε₁ = −1, ε₀ = 1: β(ρ) = β(τ), so ζ(β) = −β(τ) = −β(ρ). Second alternative.
+   (d) ε₁ = −1, ε₀ = −1: β(ρ) = −β(τ), so ζ(β) = −β(τ) = β(ρ). First alternative.
+   Since ε₁ and ε₀ do not depend on β, in each case the same alternative holds for every β. ∎
+(For m = 0, τ and ρ are the empty family, M is the empty matrix with det M = 1, and the argument is uniform.)
+Formalization note (supplementary; the numbered proof above is complete): unless split further this is a machine leaf: exactly one theorem `Submission.dor_lmbsf_io_orientation_frame_sign` appended to the frozen GMT/Ch07/Submission.lean inside `namespace GMT.Ch07` after the `end` of the noncomputable section (just before `main_theorem`), with no new import, option or helper declaration. Every lemma cited is in the import closure of GMT.Ch07.Submission (pinned Mathlib 25730c7c). The sibling dependency Submission.dgoj_covector_eq_det_mul_of_mem_span is overlaid into the child's base by the workflow before proof work starts. The following Lean proof was compiled by this decomposition session, inserted at exactly that position in a copy of GMT/Ch07/Submission.lean (Lean 4.35.0-rc3; `#print axioms` = propext, Classical.choice, Quot.sound; no errors or warnings), and may be used verbatim:
+theorem Submission.dor_lmbsf_io_orientation_frame_sign : ∀ (P m : ℕ) (ζ : MultiVector P m) (Q : Submodule ℝ (Euclid P)) (ρ : Fin m → Euclid P), IsUnitOrientationOf ζ Q → Orthonormal ℝ ρ → (∀ j, ρ j ∈ Q) → (∀ β : Covector (Euclid P) m, ζ β = β ρ) ∨ ∀ β : Covector (Euclid P) m, ζ β = -β ρ := by
+  intro P m ζ Q ρ hζ hρ hρQ
+  obtain ⟨τ, hτ, hspan, hsign⟩ := hζ
+  set M : Matrix (Fin m) (Fin m) ℝ := Matrix.of fun i j => inner ℝ (τ i) (ρ j) with hM
+  have hρspan : ∀ j, ρ j ∈ Submodule.span ℝ (Set.range τ) := fun j => hspan ▸ hρQ j
+  have hdet : ∀ β : Covector (Euclid P) m, β ρ = M.det * β τ :=
+    Submission.dgoj_covector_eq_det_mul_of_mem_span P m τ ρ hτ hρspan
+  have hparseval : ∀ x y : Euclid P, y ∈ Submodule.span ℝ (Set.range τ) →
+      inner ℝ x y = ∑ i, inner ℝ (τ i) x * inner ℝ (τ i) y := by
+    intro x y hy
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hy
+    simp only [hτ.inner_right_fintype, inner_sum, inner_smul_right]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [real_inner_comm, mul_comm]
+  have hMM : M.transpose * M = 1 := by
+    ext j k
+    rw [Matrix.mul_apply, Matrix.one_apply]
+    simp only [Matrix.transpose_apply, hM, Matrix.of_apply]
+    rw [← hparseval (ρ j) (ρ k) (hρspan k)]
+    exact orthonormal_iff_ite.1 hρ j k
+  have hdet2 : M.det * M.det = 1 := by
+    have := congrArg Matrix.det hMM
+    rwa [Matrix.det_mul, Matrix.det_transpose, Matrix.det_one] at this
+  have hpm : M.det = 1 ∨ M.det = -1 := by
+    have h0 : (M.det - 1) * (M.det + 1) = 0 := by linear_combination hdet2
+    rcases mul_eq_zero.1 h0 with h | h
+    · left; linarith
+    · right; linarith
+  rcases hsign with h | h <;> rcases hpm with hd | hd
+  · left; intro β; rw [h, hdet, hd, one_mul]
+  · right; intro β; rw [h, hdet, hd]; ring
+  · right; intro β; rw [h, hdet, hd, one_mul]
+  · left; intro β; rw [h, hdet, hd]; ring
+
+## Key steps
+
+1. Unfold IsUnitOrientationOf ζ Q: orthonormal τ with span(range τ) = Q and ζ(β) = ε₁β(τ), ε₁ ∈ {1, −1}.
+2. ρ_j ∈ span(range τ); by covector_det, β(ρ) = det(M)·β(τ) with M_{ij} = ⟨τ_i, ρ_j⟩.
+3. Parseval for y ∈ span(range τ): ⟨x, y⟩ = Σ_i ⟨τ_i, x⟩⟨τ_i, y⟩, hence MᵀM = I by orthonormality of ρ.
+4. det(M)² = det(MᵀM) = 1, so ε₀ := det M ∈ {1, −1}.
+5. Case analysis on (ε₁, ε₀): ζ(β) = ε₁ε₀β(ρ) for all β, giving the first alternative if ε₁ε₀ = 1 and the second if ε₁ε₀ = −1.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -n 'def IsUnitOrientationOf|abbrev MultiVector|abbrev Euclid|Covector|alternatizeUncurryFin|innerSL' <snapshot>/project/GMT/Ch07/Contract.lean`
+- `rg -n 'dor_lmbsf_io_|interior_product_orientation' <snapshot>/project/ (no match)`
+- `rg -n 'theorem alternatizeUncurryFin_apply|eq_smul_basis_det|theorem finrank_add_inf_finrank_orthogonal|theorem orthonormal_iff_ite|theorem Orthonormal.comp_linearIsometry|theorem Orthonormal.inner_right_fintype|theorem mem_orthogonal_singleton_iff_inner_right|theorem finrank_span_eq_card|theorem Submodule.mem_span_range_iff_exists_fun|theorem det_transpose|theorem det_mul|theorem finrank_span_singleton|removeNth_zero|theorem tail_cons|theorem innerSL_apply_apply|det_to_matrix_orthonormalBasis_real|stdOrthonormalBasis|theorem span_singleton_le_iff_mem|theorem span_image|theorem map_top|theorem range_subtype|subtypeₗᵢ' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'abbrev Covector' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/`
+- `python3 -I DAG scans of dag.json: lean_statements mentioning IsUnitOrientationOf / alternatizeUncurryFin / Orthonormal+det / Fin.cons / removeNth / innerSL+smulRight; lean_name collision check for the four child names; reuse candidate dgoj_covector_eq_det_mul_of_mem_span (status accepted, candidate_commit 73310ec9); orientation-lemma scan (rsdic_unitOrientation_eq_or_eq_neg, dgcr_unitOrientation_eq_or_neg)`
+- `git log --all -S dor_lmbsf_io_ --oneline -- GMT/Ch07/Submission.lean (no match); git show 73310ec921452a01670f397b34d1cf3cd7135598:GMT/Ch07/Submission.lean (accepted dgoj proof)`
+- `grep -n '4.3\|1.1' book/chapter-06.txt (Simon 6.1.1 at lines 28-30, 6.4.3 at lines 1209-1219)`
+- `python3 -I verifier lean_contract.validate_lean_statement and gmt-compare.child_modules (contract mode) on the 4 child statements`
+- `lake env lean /tmp/wedge-orient-decomp/All.lean; lake env lean /tmp/wedge-orient-decomp/insert/GMT/Ch07/SubmissionInserted.lean; lake env lean /tmp/wedge-orient-decomp/challenges/*_Challenge.lean (#print axioms = propext, Classical.choice, Quot.sound)`
+- `rg -n '_existing_lean_name_problem|An accepted theorem may be reused by Lean name|_overlay_accepted_children' /runtime/flows/gmt-claude-82aee5f72857/_recursive_lean/runtime.py (reuse of accepted nodes by identical frozen type)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1007e4631e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/wedge-orient-decomp/All.lean`
+- `/tmp/wedge-orient-decomp/insert/GMT/Ch07/SubmissionInserted.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c. Snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. IsUnitOrientationOf is defined at Contract.lean:52 and Covector at simongmt Chapter06/Forms.lean:31.
+
+No snapshot or DAG declaration states the adapted frame, the frame-sign lemma or the wedge evaluation; rg for dor_lmbsf_io_ / interior_product_orientation finds nothing.
+
+One exact match exists: the accepted Submission.dgoj_covector_eq_det_mul_of_mem_span (candidate 73310ec9) has exactly the covector_det type. It is reused by its byte-identical frozen type, which the runtime permits for accepted checkpoints.
+
+All cited library facts are in the pinned snapshot:
+- ContinuousAlternatingMap.alternatizeUncurryFin_apply (Uncurry/Fin.lean:137);
+- AlternatingMap.eq_smul_basis_det (Determinant.lean:650);
+- Submodule.finrank_add_inf_finrank_orthogonal (Projection/FiniteDimensional.lean:89);
+- orthonormal_iff_ite (Orthonormal.lean:82), Orthonormal.inner_right_fintype (:129), Orthonormal.comp_linearIsometry (:315);
+- Submodule.mem_orthogonal_singleton_iff_inner_right (Orthogonal.lean:86);
+- finrank_span_eq_card (Dimension/Constructions.lean:463);
+- Submodule.mem_span_range_iff_exists_fun (Finsupp/LinearCombination.lean:379);
+- Matrix.det_mul (:141) and Matrix.det_transpose (:206);
+- finrank_span_singleton (FiniteDimensional/Basic.lean:535);
+- Fin.tail_cons (:117) and Fin.removeNth_zero (:893);
+- innerSL_apply_apply (InnerProductSpace/LinearMap.lean:172);
+- OrthonormalBasis.det_to_matrix_orthonormalBasis_real (PiL2.lean:992) and stdOrthonormalBasis (PiL2.lean:1073);
+- Submodule.span_singleton_le_iff_mem (Span/Defs.lean:545), Submodule.span_image (Span/Basic.lean:254), Submodule.map_top (:305) and Submodule.range_subtype (:309).
+
+Lean checks:
+- All four child types pass validate_lean_statement and elaborate in the exact comparator scope.
+- Complete proofs of all children and the assembly of the exact frozen parent type from them compile inside a copy of Submission.lean with only propext, Classical.choice and Quot.sound.
