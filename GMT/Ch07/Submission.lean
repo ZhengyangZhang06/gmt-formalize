@@ -472,6 +472,48 @@ theorem Submission.dtc_dim_zero_carrier_finite : ∀ (P : ℕ) (U K : Set (Eucli
         simp [Measure.euclideanHausdorffMeasure_zero, hcard]
     _ = μHE[0] (F : Set (Euclid P)) := sum_measure_singleton
     _ ≤ μHE[0] (R.carrier ∩ K) := measure_mono hF
+/-- Deleting a point `p ≠ x` from `M` keeps the approximate tangent space of `M` at `x`
+(Simon Ch. 3, 1.4).  Choose `a > 0` with `spt f ⊆ B̄_a(0)`.  For `0 < r < |p − x|/a` the point
+`η_{x,r}(p)` has norm `|p − x|/r > a`, so `f` vanishes there; the Borel set `η_{x,r}(M)` and its
+subset `η_{x,r}(M ∖ {p})` differ at most by `η_{x,r}(p)`, hence carry the same integral of `f`. -/
+theorem Submission.dtc_approxTangent_sdiff_singleton : ∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \ {p}) x Q := by
+  intro P n M x p Q hM hxp hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `spt f ⊆ B̄_a(0)` with `a > 0`, and `|p − x| > 0`
+  obtain ⟨a, ha, hfa⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 0
+  have hd : 0 < ‖p - x‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxp.symm)
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hd ha)] with r hr
+  have hr0 : r ≠ 0 := hr.1.ne'
+  -- `η_{x,r}(y) = r⁻¹ • (y − x)`
+  have hη : Poincare.SimonGMT.Chapter03.blowUpMap x r = fun y => r⁻¹ • (y - x) := rfl
+  rw [hη]
+  -- `f` vanishes at `η_{x,r}(p)`, whose norm `r⁻¹|p − x|` exceeds `a`
+  have hfp : f (r⁻¹ • (p - x)) = 0 := by
+    apply image_eq_zero_of_notMem_tsupport
+    intro hp
+    have h1 := mem_closedBall_zero_iff.mp (hfa hp)
+    rw [norm_smul, norm_inv, Real.norm_of_nonneg hr.1.le, inv_mul_le_iff₀ hr.1] at h1
+    have h2 := (lt_div_iff₀ ha).mp hr.2
+    linarith
+  -- `η_{x,r}(M)` is Borel: it is the preimage of `M` under `y ↦ x + r • y`
+  have hmeas : MeasurableSet ((fun y => r⁻¹ • (y - x)) '' M) := by
+    have himg : (fun y => r⁻¹ • (y - x)) '' M = (fun y => x + r • y) ⁻¹' M := by
+      ext y
+      constructor
+      · rintro ⟨z, hz, rfl⟩
+        simpa [smul_smul, mul_inv_cancel₀ hr0] using hz
+      · intro hy
+        exact ⟨x + r • y, hy, by simp [smul_smul, inv_mul_cancel₀ hr0]⟩
+    rw [himg]
+    exact hM.preimage (by fun_prop)
+  -- `η_{x,r}(M) ∖ η_{x,r}(M ∖ {p}) ⊆ {η_{x,r}(p)}`, where `f` vanishes
+  refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hmeas (image_mono Set.sdiff_subset) ?_
+  rintro _ ⟨⟨z, hz, rfl⟩, hy⟩
+  by_cases hzp : z = p
+  · subst hzp
+    exact hfp
+  · exact absurd ⟨z, ⟨hz, hzp⟩, rfl⟩ hy
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
