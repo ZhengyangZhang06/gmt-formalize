@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1025011abf2672f81cd5391877ad572d1613e2b7851e04be65d1c36572b23393",
+  "git_delta": {
+    "base_commit": "35c8da38a930359cb8722602afb7b5fe5d1c9960",
+    "candidate_commit": "5b80a17131c7879161db71f7b4b0667609027f96",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_bwd_normal_cutoff",
+    "diff_sha256": "4c8a3010ec6c6143613da551ba0bc6aaace9910e6755495dc606c8673e895028",
+    "source_sha256": "24d7524c13be6e22a34dbf6174379729e2ba4f50e3647e41f2e7cebd225d313a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_bwd_normal_cutoff",
+      "statement": "∀ (k : ℕ) (K : Set (Euclid k)) (h : ℝ), 0 < h → IsCompact K → K ⊆ ball (0 : Euclid k) h → ∃ η : Euclid k → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ ball (0 : Euclid k) h ∧ ∀ w ∈ K, ∀ᶠ y in 𝓝 w, η y = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
