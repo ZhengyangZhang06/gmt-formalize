@@ -1,0 +1,74 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.onto_skeleton-a1`
+- Child DAG node: `root.deformation-a1.onto_skeleton-a1.skeleton_closed-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 6 of the supplied proof of deformation_onto_skeleton ("ψ maps ℝ^d ∖ La into the closed set L_n"; Simon Ch. 6, §5, printed (22)), where the closedness of the n-skeleton L_n = ⋃_F latticeFace 1 F is used to pass from spt ψ_#X_ν ⊆ closure ψ(spt X_ν) to spt ψ_#X_ν ⊆ L_n. Here it is proved for an arbitrary lattice size ρ > 0 and arbitrary dimensions n, N.
+
+Notation. For F = (z, α) ∈ LatticeFaceIndex n N = (Fin N → ℤ) × SimonMultiIndex n N (α : Fin n ↪o Fin N strictly increasing), latticeFace ρ F = {x ∈ ℝ^N : ∀ i, (i ∈ range α → ρz_i ≤ x_i ≤ ρ(z_i + 1)) ∧ (i ∉ range α → x_i = ρz_i)}. For x ∈ ℝ^N, x_i is its i-th coordinate; |x_i − y_i| ≤ |x − y| (Euclidean norm).
+
+1. (Each face is closed.) Fix F = (z, α). For each i ∈ Fin N let S_i := {x : ρz_i ≤ x_i ≤ ρ(z_i + 1)} if i ∈ range α and S_i := {x : x_i = ρz_i} if i ∉ range α. The coordinate map x ↦ x_i is continuous (a continuous linear functional), so S_i is closed (preimage of a closed interval, resp. of a point; IsClosed.inter of isClosed_le, resp. isClosed_eq). For every x, the i-th conjunct of the defining predicate of latticeFace ρ F holds iff x ∈ S_i (case split on i ∈ range α). Hence latticeFace ρ F = ⋂_i S_i is closed (isClosed_iInter).
+
+2. (Coordinates of points of a face.) If y ∈ latticeFace ρ (z, α) then ρz_i ≤ y_i ≤ ρz_i + ρ for every i: for i ∈ range α this is the first conjunct, and for i ∉ range α we have y_i = ρz_i. In particular |y_i − ρz_i| ≤ ρ for all i.
+
+3. (Local finiteness.) Let x ∈ ℝ^N and W := ball(x, ρ), an open neighbourhood of x. Suppose W meets latticeFace ρ (z, α) at a point y. Then for every i, by Step 2, |x_i − ρz_i| ≤ |x_i − y_i| + |y_i − ρz_i| < ρ + ρ = 2ρ, i.e. z_i lies in the bounded real interval (x_i/ρ − 2, x_i/ρ + 2) (here ρ > 0 is used). Each such interval contains at most finitely many integers (at most 4), so the set Z_x of all z ∈ ℤ^N with |x_i − ρz_i| < 2ρ for all i is finite (it is contained in the finite product ∏_i of finite sets of integers). The type SimonMultiIndex n N is finite: an order embedding Fin n ↪o Fin N is determined by its underlying function Fin n → Fin N (injectivity of the coercion), and the function type Fin n → Fin N is finite (Finite.of_injective). Hence the set of indices F with latticeFace ρ F ∩ W ≠ ∅ is contained in the finite set Z_x × SimonMultiIndex n N. This is exactly the statement that the family (latticeFace ρ F)_F is locally finite.
+
+4. (Conclusion.) A locally finite union of closed sets is closed (LocallyFinite.isClosed_iUnion). By Steps 1 and 3, ⋃_F latticeFace ρ F is closed. (If n > N there are no strictly increasing α : Fin n → Fin N, the union is empty and the claim is trivial; the argument above covers this case as well.) ∎
+
+## Key steps
+
+1. Each latticeFace ρ F is an intersection over coordinates of closed slabs or hyperplanes, hence closed.
+2. A ball of radius ρ around x meets latticeFace ρ (z, α) only if |x_i − ρz_i| < 2ρ for all i: finitely many z, and SimonMultiIndex n N is finite, so the family is locally finite.
+3. A locally finite union of closed sets is closed.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cat -n GMT/Ch06/Contract.lean (IsRectifiableTriple, tauAction, IsIntegerMultiplicity, IsMeasureRepresentation, IsRestriction, IsSlice, IsLipschitzPushforward, latticeFace, SlicingTheorem, LipschitzPushforwardIntegerMultiplicity, DeformationTheorem)`
+- `grep -n "^structure\|^def \|^instance\|^theorem" .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,FormsDuality,AffineCurrentPushforward}.lean (GeometricCurrentOn has only Zero/ext, no Add; massOn = sSup over covectorEuclideanNorm ≤ 1; support = U \ zeroRegion; nVectorPushforward n L w = w.comp (covectorPullback n L); only affine push-forwards exist)`
+- `grep -n "def HasWeightedApproximateTangentSpaceAt\|def CountablyRectifiable" -A14 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n "theorem extDeriv_pullback|theorem extDerivWithin_pullback" local-references/.../mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean (lines 239, 259)`
+- `lake env lean Test1/Test3/Test4.lean: #check HasCompactSupport.contDiff_convolution_left, LipschitzOnWith.extend_real, norm_fderiv_le_of_lipschitz, extDeriv_pullback, LocallyFinite.isClosed_iUnion, IsCompact.exists_thickening_subset_open, ENNReal.tendsto_sum_nat_add, exists_contDiff_tsupport_subset, mul_meas_ge_le_lintegral, lintegral_eq_zero_iff, Real.volume_Ioo, norm_iteratedFDeriv_zero (all available); ContDiffBump.normed, ContDiffBump.dist_normed_convolution_le, exists_smooth_tsupport_subset (not in the import closure)`
+- `sed -n 330,560p and 1640,1900p book/chapter-06.txt (Simon 2.17-2.33 and the printed proof of 5.1, displays (1)-(33))`
+- `python3 over dag.json (544 nodes): statuses, lean_names, depends_on, statements of the deformation subtree and of push-forward/product/homotopy/cutoff/area-formula nodes in other branches`
+- `python3 over nodes/<id>/parent-child-handoff.json and isolated-comparator-result.json for the seven reused declarations (status accepted, candidate commit, comparator passed, byte-identical lean_statement)`
+- `grep over the DAG node summary and rg over project + simongmt sources for the four new names deformation_pushforward_homotopy, deformation_telescope_limit, deformation_good_radius, deformation_skeleton_isClosed (no match)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py) on all 11 lean_statements (all valid)`
+- `lake env lean /tmp/onto_skel/lean/AllStmts2.lean: all 11 statements as `theorem _root_.HumanizeNodeComparator.target_<key> : (stmt) := by sorry` in the replayed contract scope (only sorry warnings)`
+- `lake env lean /tmp/onto_skel/lean/Check2.lean: `hA (hS5full hLp)` with the sibling deformation_im_pushforward_limit statement, HEq normality discharge at degree m+1, degree m+1+1 = m+2 (no errors)`
+- `Independent adversarial subagent review of all child statements, natural proofs and the assembly (two rounds; final: no BLOCKER/MAJOR)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-simple-nvector-algebra-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-fiber-sum-glue-a1/parent-child-handoff.json`
+- `/tmp/onto_skel/lean/AllStmts2.lean`
+- `/tmp/onto_skel/lean/Check2.lean`
+
+The pinned contract and SimonGMT provide currents, boundary, mass, support, restrictions and only affine push-forwards. There are no products with [[(0,1)]], no smooth or Lipschitz push-forward of normal currents and no homotopy formula, and the in-flight DAG nodes for these (iwl_cr_interval_product_im, iwl_smooth_pushforward) are unaccepted and integer-multiplicity-only. So the parent's Part I becomes the new child deformation_pushforward_homotopy. Its premise is byte-compatible with the sibling deformation_im_pushforward_limit after LipschitzPushforwardIntegerMultiplicity (checked in Lean). Mathlib supplies the analytic tools it uses: convolution smoothness, McShane extension, extDeriv_pullback, local finiteness, Markov's inequality. Seven accepted declarations are reused by name with byte-identical types: cmb_abs_apply_le_of_massOn_le, isoperimetric_apply_eq_zero_of_disjoint_support, iwl_cr_support_lemmas, lpf_rectifiable_support_null, lpf_simple_nvector_algebra, lpf_raf_local_lipschitz_area and lpf_raf_fiber_sum_glue; their dependencies are mirrored. The four new names are globally unique. All 11 statements pass lexical validation and elaborate in the comparator scope, and an adversarial review found no remaining blocker.
