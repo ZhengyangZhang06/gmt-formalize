@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6be8cafd1f840365a3a83e77b0cd5f159e9d886b9302d58658768df309c481a",
+  "git_delta": {
+    "base_commit": "1ff167fcfa0feda654bd70f30fabb3a7f0e5c9f1",
+    "candidate_commit": "15be873de6f5a404e0ad8d8297c067821c41f34e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_cutoff_pullback_testForm",
+    "diff_sha256": "ccff17eacd95bc25e44c8abe3056298a401499a0cfd7ddf2f767566a4a7c504a",
+    "source_sha256": "b55949e7f7e1cedfaa7b01002a25e59cf4858d3f4e3827251b01a79ffc2b0dfb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_cutoff_pullback_testForm",
+      "statement": "∀ (P Q k : ℕ) (f : Eucl P → Eucl Q) (χ : Eucl P → ℝ) (ω : DifferentialForm (Eucl Q) k), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → HasCompactSupport χ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∃ η : TestFormOn (univ : Set (Eucl P)) k, ∀ y, (η : DifferentialForm (Eucl P) k) y = χ y • (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
