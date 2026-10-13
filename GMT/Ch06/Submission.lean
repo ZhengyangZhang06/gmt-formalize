@@ -1178,6 +1178,66 @@ theorem Submission.fiw_tb_rectifiable_support_null : (∀ (P n : ℕ) (U : Set (
   obtain ⟨i, hi⟩ := mem_iUnion.1 (by rw [hFeq]; exact hx.2.1 : x ∈ ⋃ i, F i)
   exact mem_iUnion.2 ⟨(i, ⌈‖x‖⌉₊), hx, hi, mem_closedBall_zero_iff.2 (Nat.le_ceil _)⟩
 
+/-- **Extension of a compactly supported current to `ℝ^P` (Simon Ch. 6, proof of 7.2, (G3)).**
+If `spt X ⊆ K` with `K ⊆ U` compact and `M(X) < ∞`, then `Y(ω) = X(χ ω)`, `χ` a smooth cutoff
+with `tsupport χ ⊆ U` and `χ = 1` on an open `N ⊇ K`, is a current on `ℝ^P` (`fiw_tb_ext_cutoff`,
+`fiw_tb_ext_cutoff_current`).  Since `X` kills test forms whose support misses `K`
+(`fiw_tb_apply_eq_zero_of_disjoint_support`) and `χ ω = ω` on `N`, `Y|_U = X`
+(`fiw_tb_ext_apply_eq_of_eqOn`); `Y` and `∂Y` kill test forms whose support misses `K`, as
+`tsupport (χ ω) ⊆ tsupport ω` and `tsupport dω ⊆ tsupport ω`, and `(∂Y)|_U = ∂X`.  Support,
+mass and integer multiplicity of `Y` and `∂Y` are then controlled by those of their restrictions
+`X` and `∂X` (`fiw_tb_ext_support_subset`, `fiw_tb_ext_mass_le_restrictDomain`,
+`fiw_tb_ext_isIntegerMultiplicity`).  The mass formula (MF) is not needed. -/
+theorem Submission.fiw_tb_extend_to_univ : (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → ∀ (P m : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ X : GeometricCurrentOn U (m + 1), X.support ⊆ K → X.mass ≠ ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), Y.restrictDomain (subset_univ U) = X ∧ Y.support ⊆ K ∧ Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ (IsIntegerMultiplicity X.boundary → IsIntegerMultiplicity Y.boundary) := by
+  intro _hMF P m U K hU hK hKU X hXK hXm
+  -- (V) for `X`: as `spt X ⊆ K`, `X` kills every test form whose support misses `K`.
+  have hXv : ∀ ω : TestFormOn U (m + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Eucl P) (m + 1))) K → X ω = 0 := fun ω hω =>
+    Submission.fiw_tb_apply_eq_zero_of_disjoint_support P (m + 1) U X ω (hω.mono_right hXK)
+  -- The cutoff `χ` and multiplication by `χ`, from test forms on `ℝ^P` and on `U` to `U`.
+  obtain ⟨χ, N, hχ, hχ01, -, hχU, hN, hKN, hχN⟩ := Submission.fiw_tb_ext_cutoff P U K hU hK hKU
+  obtain ⟨L, hL⟩ := Submission.fiw_tb_ext_smul_testForm P (m + 1) univ U χ hχ hχU
+  obtain ⟨LU, hLU⟩ := Submission.fiw_tb_ext_smul_testForm P (m + 1) U U χ hχ hχU
+  -- `Y(ω) = X(χ ω)` is a current on `ℝ^P`, since `M(X) < ∞` and `|χ| ≤ 1`.
+  obtain ⟨Y, hY⟩ := Submission.fiw_tb_ext_cutoff_current P (m + 1) U χ hχ hχU
+    (fun x => abs_le.2 ⟨by linarith [(hχ01 x).1], (hχ01 x).2⟩) X hXm
+  -- `Y|_U = X`: `Y(ω) = X(χ ω) = X(ω)`, as `χ ω = ω` on `N ⊇ K`.
+  have hres : Y.restrictDomain (subset_univ U) = X := by
+    ext ω
+    rw [GeometricCurrentOn.restrictDomain_apply,
+      hY (testFormOnInclusion (subset_univ U) (m + 1) ω) (LU ω) (hLU ω)]
+    exact Submission.fiw_tb_ext_apply_eq_of_eqOn P (m + 1) U K N X hN hKN hXv ω (LU ω)
+      fun x hx => by rw [hLU, hχN x hx, one_smul]
+  -- (V) for `Y`: `Y(ω) = X(χ ω)` and `tsupport (χ ω) ⊆ tsupport ω`.
+  have hYv : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Eucl P) (m + 1))) K → Y ω = 0 := by
+    intro ω hω
+    rw [hY ω (L ω) (hL ω)]
+    refine hXv (L ω) (hω.mono_left ?_)
+    rw [show (L ω : DifferentialForm (Eucl P) (m + 1)) =
+      fun x => χ x • (ω : DifferentialForm (Eucl P) (m + 1)) x from funext (hL ω)]
+    exact tsupport_smul_subset_right _ _
+  -- (V) for `∂Y`, as `tsupport dω ⊆ tsupport ω`; and `(∂Y)|_U = ∂X`, as `d` commutes with the
+  -- inclusion of test forms on `U` into test forms on `ℝ^P`.
+  have hbYv : ∀ ω : TestFormOn (univ : Set (Eucl P)) m,
+      Disjoint (tsupport (ω : DifferentialForm (Eucl P) m)) K → Y.boundary ω = 0 := fun ω hω =>
+    hYv _ (hω.mono_left (tsupport_exteriorDerivative_subset _))
+  have hbres : Y.boundary.restrictDomain (subset_univ U) = X.boundary := by
+    rw [← hres]
+    rfl
+  refine ⟨Y, hres, Submission.fiw_tb_ext_support_subset P (m + 1) univ K Y isOpen_univ
+    hK.isClosed hYv, ?_, ?_, fun hX => ?_, fun hX => ?_⟩
+  · -- `M(Y) ≤ M(Y|_U) = M(X)`.
+    rw [← hres]
+    exact Submission.fiw_tb_ext_mass_le_restrictDomain P (m + 1) U K hU hK hKU Y hYv
+  · -- `M(∂Y) ≤ M((∂Y)|_U) = M(∂X)`.
+    rw [← hbres]
+    exact Submission.fiw_tb_ext_mass_le_restrictDomain P m U K hU hK hKU Y.boundary hbYv
+  · rw [← hres] at hX
+    exact Submission.fiw_tb_ext_isIntegerMultiplicity P (m + 1) U K hU hK hKU Y hYv hX
+  · rw [← hbres] at hX
+    exact Submission.fiw_tb_ext_isIntegerMultiplicity P m U K hU hK hKU Y.boundary hbYv hX
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
