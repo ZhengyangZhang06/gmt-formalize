@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ab865e81e7b43935c7930f7422c5b74e2cfb8077759cbf60057ec4828888da87",
+  "git_delta": {
+    "base_commit": "12109df833ff2617a5885984291ddf40eb23621d",
+    "candidate_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcmp_measure_le_add_of_open_nhds",
+    "diff_sha256": "cf6d8c547c48c0e79c83be1769e06904bdb0193e05cd84dd320fc034a3261fc5",
+    "source_sha256": "c6f60b0e18746d66331f26ecf5c6bcbbab9e4f3892e0ab5925e00eb12fb44634",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcmp_measure_le_add_of_open_nhds",
+      "statement": "∀ (P : ℕ) (U E : Set (Euclid P)) (μ ν : Measure (Euclid P)) (c : ℝ≥0∞), IsOpen U → IsCompact E → E ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ G : Set (Euclid P), IsOpen G → E ⊆ G → CompactlyContained G U → μ G ≤ ν G + c) → μ E ≤ ν E + c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
