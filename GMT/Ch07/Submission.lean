@@ -1592,6 +1592,91 @@ theorem Submission.submanifold_tangentProjection_c1_extension : ∀ (P d : ℕ) 
     rw [dite_eq_left (hNO hz)]
     exact h1
 
+/-- **Simon Ch. 4, 2.7 and 3.14** (with Ch. 2, 5.9): if `V = v(M, θ)` is stationary in `N ∩ U`,
+where `N` is an embedded `C²` submanifold with `(N̄ \ N) ∩ U = ∅` and `Hⁿ(M \ N) = 0`, then `V`
+has generalized mean curvature `H` in `U`, bounded on compact subsets of `U`.  Extend
+`z ↦ P_{T_zN}` to a `C¹` field `pr` on an open `O ⊇ N` and take `H` with
+`H(x) = Σⱼ (Dpr(x)[p eⱼ])*(p eⱼ)` on `N ∩ U`, `p = p_{TₓM}`.  For `X ∈ C¹_c(U)`, the tangential
+part `X^T` (equal to `pr·X` near `N`) is tangent to `N` on `N ∩ U`, so `δV(X^T) = 0` and
+`δV(X) = δV(X − X^T)`.  At `Hⁿ`-a.e. `x ∈ M`, `x ∈ N` and `TₓM ⊆ TₓN`, so
+`div_M(X − X^T)(x) = −X(x)·H(x)`; integrating against `θ` gives `δV(X) = −∫ X·H dμ_V`. -/
+theorem Submission.meanCurvature_bounded_of_stationaryAlong : ∀ (P n d : ℕ) (U N : Set (Euclid P)) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → μHE[n] (R.carrier \ N) = 0 → R.IsStationaryAlong N → R.HasLocallyBoundedMeanCurvature := by
+  intro P n d U N R hU hN hNU hMN hstat
+  -- the `C¹` extension `pr` of `z ↦ P_{T_zN}` to an open set `O ⊇ N`
+  obtain ⟨O, pr, hO, hNO, hpr, hprN⟩ :=
+    Submission.submanifold_tangentProjection_c1_extension P d N hN
+  -- `p(x) = p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable, and `‖p(x)‖ ≤ 1`
+  have hp : AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      (μHE[n].restrict R.carrier) := Submission.imrep_approxTangent_starProjection_aesm P n U R
+  -- `H` with `H(x) = Σⱼ (Dpr(x)[p eⱼ])*(p eⱼ)` on `N ∩ U`, measurable and bounded on compact
+  -- subsets of `U`
+  obtain ⟨H, hHm, hHb, hH⟩ := Submission.mcs_exists_meanCurvature_field P
+    (μHE[n].restrict R.carrier) U N O pr _ hU hO hNO hpr hNU hp
+    fun x => Submodule.starProjection_norm_le _
+  -- `T_zN` is a linear subspace for `z ∈ N`, the range of `Dψ` in a chart
+  have hTN : ∀ z ∈ N, ∃ T : Submodule ℝ (Euclid P), tangentSpace N z = T := by
+    intro z hz
+    obtain ⟨V, W, ψ, hV, hW, hzW, hψ, hinj, hψV, hproper, hDψ⟩ := hN z hz
+    obtain ⟨v, hv, rfl⟩ : z ∈ ψ '' V := hψV ▸ ⟨hzW, hz⟩
+    exact ⟨LinearMap.range (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P),
+      Submission.chart_tangentSpace_eq_range_fderiv P d 2 N W V ψ v one_le_two hV hW hψ hinj hψV
+        hproper hDψ hv⟩
+  -- `C²` charts are `C¹` charts
+  have hN1 : IsEmbeddedSubmanifold 1 d N := fun y hy => by
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, h⟩ := hN y hy
+    exact ⟨V, W, ψ, hV, hW, hyW, hψ.of_le (by norm_num), h⟩
+  -- `Hⁿ⌞M`-a.e. point lies in `N`, as `Hⁿ(M \ N) = 0`
+  have hMN' : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ N := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hMN] with x hx hxM
+    by_contra hxN
+    exact hx ⟨hxM, hxN⟩
+  refine ⟨H, hHm.mono_ac (withDensity_absolutelyContinuous _ _),
+    fun K hK hKU => (hHb K hK hKU).imp fun Λ hΛ => ae_of_all _ hΛ, fun X hX hXc hXU => ?_⟩
+  -- the tangential part `X^T ∈ C¹_c(U)`, equal to `pr·X` near every point of `N`
+  obtain ⟨XT, hXT, hXTc, hXTU, hXTN⟩ :=
+    Submission.mcs_exists_c1_field_eq_proj_near P U N O pr X hU hO hNO hpr hNU hX hXc hXU
+  -- `X^T(z) = P_{T_zN} X(z) ∈ T_zN` on `N ∩ U`, so `δV(X^T) = 0` by stationarity
+  have hXT0 : R.firstVariation XT = 0 := by
+    refine hstat XT hXT hXTc hXTU fun z hz => ?_
+    obtain ⟨T, hT⟩ := hTN z hz.1
+    have hmem : XT z ∈ Submodule.span ℝ (tangentSpace N z) := by
+      rw [(hXTN z hz.1).eq_of_nhds, hprN z hz.1]
+      exact Submodule.starProjection_apply_mem _ _
+    rw [hT, Submodule.span_eq] at hmem
+    rwa [hT]
+  -- `δV(X) = δV(X^T) + δV(X − X^T) = δV(X − X^T)`
+  have hsplit : R.firstVariation X = R.firstVariation (X - XT) := by
+    have h := Submission.mcs_firstVariation_add P n U R XT (X - XT) hp hXT hXTc hXTU (hX.sub hXT)
+      (hXc.sub hXTc) ((tsupport_sub X XT).trans (union_subset hXU hXTU))
+    rwa [add_sub_cancel, hXT0, zero_add] at h
+  -- at `Hⁿ⌞M`-a.e. `x`: `x ∈ M ∩ N` and `TₓM ⊆ TₓN`, so `div_M(X − X^T)(x) = −X(x)·H(x)`
+  have hdiv : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      tangentialDivergence n R.carrier (X - XT) x = -inner ℝ (X x) (H x) := by
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier, hMN', R.orients]
+      with x hxM hxN ⟨Q, hQ, _⟩
+    have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    have hTx : HasApproximateTangentSpaceAt n R.carrier x (approxTangentPlane n R.carrier x) := by
+      rw [approxTangentPlane, dite_eq_left hex]
+      exact hex.choose_spec
+    have hQS : approxTangentPlane n R.carrier x ≤ Submodule.span ℝ (tangentSpace N x) :=
+      fun u hu => Submodule.subset_span (Submission.approxTangent_le_submanifold_tangentSpace P n d
+        N R.carrier x _ hN1 hxN hMN hTx hu)
+    have hY : (X - XT) =ᶠ[𝓝 x] fun y => X y - pr y (X y) :=
+      (hXTN x hxN).mono fun y hy => by rw [Pi.sub_apply, hy]
+    have hprx : DifferentiableAt ℝ pr x :=
+      (hpr.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds (hNO hxN))
+    rw [tangentialDivergence, Submission.mcs_trace_normal_part_eq_neg_inner P _ _ pr X (X - XT) x
+      hQS (hprN x hxN) hprx (hX.differentiable one_ne_zero x) hY, hH x ⟨hxN, R.carrier_subset hxM⟩]
+  -- integrate against `θ`: `∫_M θ div_M(X − X^T) dHⁿ = −∫ X·H dμ_V`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  rw [hsplit, IMRep.firstVariation, IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
+    (ae_of_all _ fun x => ENNReal.natCast_lt_top _), ← integral_neg]
+  refine integral_congr_ae ?_
+  filter_upwards [hdiv] with x hx
+  rw [hx, ENNReal.toReal_natCast, smul_eq_mul, mul_neg]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
