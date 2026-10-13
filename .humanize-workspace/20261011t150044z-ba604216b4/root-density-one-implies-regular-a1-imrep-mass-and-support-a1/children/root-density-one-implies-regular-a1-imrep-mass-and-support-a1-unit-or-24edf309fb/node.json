@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Euclidean coefficient-norm duality for unit simple n-vectors (Cauchy–Binet)",
+  "statement": "For all natural numbers P and n there is a continuous linear map L from n-vectors Λₙ(ℝ^P) (MultiVector P n, the continuous linear functionals on n-covectors) to n-covectors Λⁿ(ℝ^P) (Covector (Euclid P) n) with the following property. For every ξ ∈ Λₙ and every linear subspace Q ⊆ ℝ^P with IsUnitOrientationOf ξ Q, i.e. there are an orthonormal family τ = (τ_0, …, τ_{n−1}) spanning Q and a sign s ∈ {1, −1} with ξ(α) = s·α(τ) for every n-covector α:\n(a) |ξ(α)| ≤ |α| for every n-covector α, where |α| = covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2};\n(b) |L(ξ)| ≤ 1;\n(c) ξ(L(ξ)) = 1.",
+  "lean_statement": "∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1",
+  "lean_name": "dor_ims_unitOrientation_dual",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1"
+}
