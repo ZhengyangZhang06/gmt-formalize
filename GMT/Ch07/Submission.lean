@@ -599,6 +599,42 @@ theorem Submission.dor_lmbs_tfa_fixed_support_dense : ∀ (P n : ℕ) (U K : Set
       exact ⟨hε, hε⟩
   exact ⟨σ t, ⟨t, ht, rfl⟩, fun x => (key x).1, fun x => (key x).2⟩
 
+/-- **A countable family of test forms, dense for `ω` and `dω` with common compact supports**
+(Simon Ch. 6, proof of 4.5(2), p. 157: "a countable dense set of `ω ∈ 𝒟ⁿ(U)`").  Take the
+compact exhaustion `Kᵢ` of `U` (`dor_lmbs_tfa_compact_exhaustion`) and, for each `i`, a
+countable `Dᵢ` approximating every `ω` with `spt ω ⊆ Kᵢ` uniformly together with `dω`
+(`dor_lmbs_tfa_fixed_support_dense`); then `D = ⋃ᵢ Dᵢ`.  Given `ω`, `spt ω ⊆ Kᵢ` for some `i`,
+and `ωₖ ∈ Dᵢ` within `1/(k+1)` of `ω` and of `dω` gives `ωₖ → ω`, `dωₖ → dω` uniformly. -/
+theorem Submission.dor_lmbs_testForm_countable_approx : ∀ (P n : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ D : Set (TestFormOn U n), D.Countable ∧ ∀ ω : TestFormOn U n, ∃ (K : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), IsCompact K ∧ K ⊆ U ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K ∧ (∀ k, ωs k ∈ D) ∧ (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ K) ∧ TendstoUniformly (fun k x => (ωs k : DifferentialForm (Euclid P) n) x) (ω : DifferentialForm (Euclid P) n) atTop ∧ TendstoUniformly (fun k x => exteriorDerivative (ωs k : DifferentialForm (Euclid P) n) x) (exteriorDerivative (ω : DifferentialForm (Euclid P) n)) atTop := by
+  intro P n U hU
+  -- step 1: the compact exhaustion `Kᵢ` of `U`
+  obtain ⟨K, hKc, hKU, hKex⟩ := Submission.dor_lmbs_tfa_compact_exhaustion P U hU
+  -- steps 2–4: a countable `Dᵢ` for the test forms supported in `Kᵢ`
+  choose D hDc hDK hDω using fun i =>
+    Submission.dor_lmbs_tfa_fixed_support_dense P n U (K i) (hKc i)
+  -- step 5: `D = ⋃ᵢ Dᵢ`
+  refine ⟨⋃ i, D i, Set.countable_iUnion hDc, fun ω => ?_⟩
+  -- step 6: `spt ω` is a compact subset of `U`, so it lies in some `Kᵢ`
+  obtain ⟨i, hi⟩ :=
+    hKex (tsupport (ω : DifferentialForm (Euclid P) n)) ω.property.1.2 ω.property.2
+  -- `ωₖ ∈ Dᵢ` within `1/(k+1)` of `ω` and of `dω`
+  choose ωs hωsD hωs using fun k : ℕ =>
+    hDω i ω hi (1 / ((k : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hsmall : ∀ ε : ℝ, 0 < ε → ∀ᶠ k : ℕ in atTop, 1 / ((k : ℝ) + 1) < ε := fun ε hε => by
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hε
+    filter_upwards [Filter.eventually_ge_atTop N] with k hk
+    exact (Nat.one_div_le_one_div hk).trans_lt hN
+  refine ⟨K i, ωs, hKc i, hKU i, hi, fun k => Set.mem_iUnion.2 ⟨i, hωsD k⟩,
+    fun k => hDK i (ωs k) (hωsD k), ?_, ?_⟩
+  · rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [hsmall ε hε] with k hk x
+    exact ((hωs k).1 x).trans hk
+  · rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [hsmall ε hε] with k hk x
+    exact ((hωs k).2 x).trans hk
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
