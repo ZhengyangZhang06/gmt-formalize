@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean with workspace GMT/Ch07/Contract.lean (identical) and Contract.lean with Submission.lean (identical)",
+        "rg -il 'isodiametric|steiner' over the snapshot project and mathlib/Mathlib: matches only project/GMT/Ch01/{Contract,Submission,README} (Ch01 IsodiametricInequality, stated with realUnitBallVolume; not in the Ch07 import closure); no match anywhere in Mathlib",
+        "sed -n 1,140p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean: μHE[d] := addHaarScalarFactor (volume on EuclideanSpace ℝ (Fin d)) μH[d] • μH[d]; IsAddHaarMeasure instance for μH[d]; the value of the constant is an open TODO",
+        "rg -n for the cited lemmas: le_hausdorffMeasure (Measure/Hausdorff.lean:541), addHaar_closedBall (Measure/Lebesgue/EqHaar.lean:500), isMulLeftInvariant_eq_smul (Measure/Haar/Unique.lean:922, to_additive), OrthonormalBasis.volume_parallelepiped and PiLp.volume_preserving_toLp (Measure/Haar/InnerProductSpace.lean:82,139), volume_preserving_piFinSuccAbove (Constructions/Pi.lean:818), Measure.prod_apply_symm (Measure/Prod.lean:706), Set.exists_isOpen_lt_of_lt (Measure/Regular.lean:359), UpperSemicontinuous.isClosed_preimage (Topology/Semicontinuity/Basic.lean:816), ediam_le / edist_le_ediam_of_mem / ediam_subsingleton (Topology/EMetricSpace/Diam.lean), Metric.ediam_closure (Topology/Instances/ENNReal/Lemmas.lean:649), Fin.update_insertNth (Data/Fin/Tuple/Basic.lean:1050), finrank_euclideanSpace_fin (Analysis/InnerProductSpace/PiL2.lean:205)",
+        "lake env lean scratch importing GMT.Ch07.Submission: #check Poincare.SimonGMT.Chapter01.simon_theorem_2_10, exists_centrally_symmetric_compact_replacement, simonCenteredSlice, ediam_simonSteinerSymmetrization_le, volume_le_volume_simonSteinerSymmetrization, volume_euclidean_closedBall_eq are unknown identifiers (outside the import closure); only realUnitBallVolume is reachable",
+        "read lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/{SteinerSliceBounds,SteinerDiameter,SteinerVolume,SteinerSymmetry,IsodiametricBounds,EuclideanNormalization}.lean (compiled against the same Mathlib; template for the Lean encodings WithLp.toLp 2 (Function.update y.ofLp j t) and the piFinSuccAbove/Tonelli step; their closure-based route was not used, the parent's compactness route is followed)",
+        "python3 -I scan of dag.json lean_name values (1345 names; none starts with cbr_ci_iso_, so all 9 proposed names are fresh); sed of verifier/gmt-compare.py (contract_scope, child_modules) and leaf_verification.check_source_delta (one appended theorem, no helpers or set_option)",
+        "lake env lean /tmp/iso-decomp/final/Integrated.lean (all 9 children proved as Submission.* in dependency order plus the frozen parent type from Submission.cbr_ci_iso_volume_le_smul_hausdorff; #print axioms: propext, Classical.choice, Quot.sound) and /tmp/iso-decomp/final/Comparator.lean (exact Submission.X targets for every child and the parent, no errors); validate_lean_statement from /runtime flow and verifier on all 9 statements (unchanged, pass)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch01/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SteinerSliceBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SteinerDiameter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SteinerVolume.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SteinerSymmetry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/IsodiametricBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py",
+        "/tmp/iso-decomp/final/Integrated.lean",
+        "/tmp/iso-decomp/final/Comparator.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). Mathlib has no isodiametric inequality and no Steiner symmetrization, and leaves cannot add imports. The SimonGMT Chapter01 Steiner/isodiametric modules and the Ch01 contract's IsodiametricInequality are outside the import closure of GMT.Ch07.Submission, so nothing is reusable as a declaration and the proof must be rebuilt from Mathlib. Every Mathlib lemma cited in the child proofs exists at the listed locations and is reachable. All nine child types elaborate in the frozen contract scope and pass validate_lean_statement. A complete Lean development proves all nine children (each using only its declared siblings) and then the frozen parent type, with axioms propext, Classical.choice, Quot.sound only. The names cbr_ci_iso_* are fresh in the DAG."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.volume_le_hausdorff-a1",
+  "subproblem": {
+    "key": "volume_le_hausdorff",
+    "title": "Lebesgue measure is at most (ω_d/2^d)·μH[d] on ℝ^d (completion of Simon 2.9)",
+    "statement": "For every d ∈ ℕ, the Lebesgue measure L^d = volume on ℝ^d = EuclideanSpace ℝ (Fin d) is dominated by (ω_d/2^d)·μH[d]: L^d(s) ≤ (ω_d/2^d)·μH[d](s) for every set s ⊆ ℝ^d (as measures, L^d ≤ (ω_d/2^d)•μH[d]). Here ω_d = unitBallVolume d = L^d(ball(0, 1)), and μH[d] is Mathlib's d-dimensional Hausdorff measure (weight diam^d, no normalising constant).",
+    "lean_statement": "∀ (d : ℕ), (volume : Measure (Euclid d)) ≤ (unitBallVolume d / 2 ^ d) • (μH[(d : ℝ)] : Measure (Euclid d))",
+    "lean_name": "cbr_ci_iso_volume_le_smul_hausdorff",
+    "depends_on": [
+      "isodiametric"
+    ],
+    "natural_proof": "Source: Simon, 'Completion of the proof of 2.9' / parent step 2, translated to Mathlib's normalisation of μH[d].\n1. Let c := ω_d/2^d. Then c ≠ 0, since ω_d ≠ 0 (Metric.measure_ball_pos) and 2^d ≠ ∞ (ENNReal.div_ne_zero). Also c ≠ ∞, since ω_d < ∞ (measure_ball_lt_top) and 2^d ≠ 0 (ENNReal.div_ne_top).\n2. For every set s ⊆ ℝ^d, the sibling isodiametric inequality Submission.cbr_ci_iso_volume_le_ediam_pow gives L^d(s) ≤ ω_d·(ediam s/2)^d = ω_d·ediam(s)^d·(2^d)⁻¹ = c·ediam(s)^d. The ENNReal arithmetic uses a/2 = a·2⁻¹ (div_eq_mul_inv), mul_pow, ENNReal.inv_pow and commutativity. Multiplying by c⁻¹: c⁻¹·L^d(s) ≤ c⁻¹·c·ediam(s)^d = ediam(s)^d (ENNReal.inv_mul_cancel, valid as c ∉ {0, ∞}).\n3. Let ν := c⁻¹•L^d, a measure. By step 2, ν(s) ≤ ediam(s)^d = ediam(s)^(d : ℝ) for every set s (ENNReal.rpow_natCast). Hence ν ≤ μH[d]. Indeed, for any δ > 0 and any countable cover (C_k) of a set B by sets with ediam C_k ≤ δ, ν(B) ≤ Σ_k ν(C_k) ≤ Σ_k ediam(C_k)^d; taking the infimum over such covers and the supremum over δ > 0 gives ν(B) ≤ μH[d](B). In Mathlib this is exactly Measure.le_hausdorffMeasure (d : ℝ) ν 1 one_pos: its hypothesis is required only for sets of ediam ≤ 1, and step 2 gives it for all sets.\n4. For every set s: L^d(s) = c·(c⁻¹·L^d(s)) = c·ν(s) ≤ c·μH[d](s) (ENNReal.mul_inv_cancel and monotonicity of multiplication). By the setwise characterisation of ≤ for measures (Measure.le_iff'), L^d ≤ c•μH[d]. ∎",
+    "proof_key_steps": [
+      "c = ω_d/2^d is positive and finite.",
+      "The isodiametric inequality rewritten: L^d(s) ≤ c·ediam(s)^d, i.e. c⁻¹L^d(s) ≤ ediam(s)^d for all s.",
+      "Measure.le_hausdorffMeasure gives c⁻¹•L^d ≤ μH[d].",
+      "Multiplying back by c gives L^d ≤ c•μH[d] setwise."
+    ]
+  },
+  "audit": {
+    "key": "volume_le_hausdorff",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The normalization constant is proved positive and finite before cancellation. The isodiametric sibling bounds the rescaled measure by the Hausdorff weight; the pinned le_hausdorffMeasure theorem and scaling back establish the exact setwise measure inequality."
+  },
+  "resolved_dependencies": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.isodiametric-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e097dd5dae/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e097dd5dae/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e097dd5dae/parent-supplied-natural-proof.json"
+}
