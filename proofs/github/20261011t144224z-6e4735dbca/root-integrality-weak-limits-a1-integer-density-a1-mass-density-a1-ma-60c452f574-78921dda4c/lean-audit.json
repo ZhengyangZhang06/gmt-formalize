@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "020760a9c137239be999495752bc2d333f4983bb9075f7c968b72630f262ad99",
+  "git_delta": {
+    "base_commit": "49323e070c0851ff8b161b52dc27665c0d7bab02",
+    "candidate_commit": "08dc308eae08354b83d71367c9561df50cef58ca",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_md_mmb_massMeasure_balls",
+    "diff_sha256": "c063744a278ff57d4d697ef1cb983f8a37ef44033a5dc5e9068188607ce5937b",
+    "source_sha256": "8a814e0b43640d9318dcfbd77bcc7123b9b80fb1dc16d40a48fc33607330e39c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_md_mmb_massMeasure_balls",
+      "statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n) (μ : Measure (Eucl P)), IsMassMeasure T μ → μ univ ≤ T.mass ∧ ∀ (x : Eucl P) (r : ℝ), μ (ball x r) = T.massOn (ball x r)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
