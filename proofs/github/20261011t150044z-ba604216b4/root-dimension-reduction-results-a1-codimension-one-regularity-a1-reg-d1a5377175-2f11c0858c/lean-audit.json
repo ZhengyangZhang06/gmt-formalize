@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "02957d2480fde564b68a1444d6d62fc9be5cb8a2d2a7fb56821c77ab16d9bd25",
+  "git_delta": {
+    "base_commit": "23a4669f35ab219c2f80dfafd2b2d40593135254",
+    "candidate_commit": "3ee9850dcc7c3ff81ec06a67d81c93f1d4efbb23",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_no_det_cons_normal_decomp",
+    "diff_sha256": "083c81f2905d8753d0a9f258e572c123a2ba1cc886d6cd9c559f97d21bfe4b31",
+    "source_sha256": "1a51e1f1c9c156f8cc5d281279ce3ab22fbe29c195a5a3ad177b1db944c67bf0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_no_det_cons_normal_decomp",
+      "statement": "∀ (n : ℕ) (ν w : Euclid (n + 1)) (σ : Fin n → Euclid (n + 1)), ‖ν‖ = 1 → Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ → Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons w σ : Fin (n + 1) → Euclid (n + 1)) c r) = inner ℝ w ν * Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
