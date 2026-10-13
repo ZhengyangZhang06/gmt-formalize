@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fd30ec6fafb65b787cf49eb11422ba686eeef6ce7f177b1f55697e49124e270a",
+  "git_delta": {
+    "base_commit": "27c003d1da814acdd91b6a9eded81cb8256dca2f",
+    "candidate_commit": "e69e36029d0d966114f96e82bab501af4ce3a8dc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bh_offset_zero",
+    "diff_sha256": "c6b7b71c80e920dcdbdd12f92a78cdc168feb9d596b85871678e78b5f72aa29c",
+    "source_sha256": "d9756bb71eca19fbd0849706710975c6cc559b995b86db2ac286b3e5b0452212",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bh_offset_zero",
+      "statement": "∀ (m : ℕ) (F₀ : Set (Euclid (m + 1))) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ s : ℝ, 0 < s → 0 < volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ∧ 0 < volume (ball (0 : Euclid (m + 1)) s \\ F₀)) → (volume F₀ = 0 ∨ volume F₀ᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F₀ {z | c < inner ℝ z v}) = 0) → volume (symmDiff F₀ {z | 0 < inner ℝ z v}) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
