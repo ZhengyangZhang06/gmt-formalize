@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6af143960103d852433079cb2a9b6d17aaa9a682c0d8dc0bc68ba225dce0d7dd",
+  "git_delta": {
+    "base_commit": "526e969d846ac441610902de957b9b8678de7b0f",
+    "candidate_commit": "5e5c292160f2a25936669d8db072cbd7bddb6e48",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_dqwe_shifted_weak_identity",
+    "diff_sha256": "ca220670a0b3609bae31f8bcee2ac8f4326e217c04ba9cd5b62a3fd1e4b70e4d",
+    "source_sha256": "81c055343ececdfc147df55e4425491e273f64e6ca5d574d5fa76fa49e5a6ebc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_dqwe_shifted_weak_identity",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (h : Rn n) (η : Rn n → Rn ℓ), (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x in U, a x (fderiv ℝ v x) (fderiv ℝ ζ x) = ∫ x in U, Φ x (fderiv ℝ ζ x)) → ContDiff ℝ 1 η → HasCompactSupport η → (∀ x ∈ tsupport η, x + h ∈ U) → ∫ x, a (x + h) (fderiv ℝ v (x + h)) (fderiv ℝ η x) = ∫ x, Φ (x + h) (fderiv ℝ η x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
