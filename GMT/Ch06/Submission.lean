@@ -359,6 +359,39 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Null transfer to slices (Simon Ch. 6, §4; Step 1 of the slice triple): under the co-area
+identity for `(M, f, G)`, a property holding `H^{m+1}`-a.e. on `M` holds `H^m`-a.e. on
+`M ∩ f⁻¹{t}` for `L¹`-a.e. `t`.  Apply the co-area identity to the indicator of a measurable
+null hull `Z` of `{¬p}`: the right side vanishes, so `H^m⌞(M ∩ f⁻¹{t})(Z) = 0` for a.e. `t`. -/
+theorem Submission.slicing_im_st_ae_transfer :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P),
+      (∀ g : Eucl P → ℝ≥0∞, Measurable g →
+        AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P)))
+          (volume : Measure ℝ) ∧
+        ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) =
+          ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) →
+      ∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) →
+        ∀ᵐ t ∂(volume : Measure ℝ),
+          ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x := by
+  intro P m M f G hcoarea p hp
+  -- A measurable null hull `Z` of the exceptional set `{¬p}` for `H^{m+1}⌞M`.
+  set Z := toMeasurable ((μHE[m + 1] : Measure (Eucl P)).restrict M) {x | ¬p x}
+  have hZ : MeasurableSet Z := measurableSet_toMeasurable _ _
+  have hZ0 : (μHE[m + 1] : Measure (Eucl P)).restrict M Z = 0 := by
+    rw [measure_toMeasurable]
+    exact ae_iff.1 hp
+  -- The co-area identity for `g = 1_Z`; its right side vanishes.
+  obtain ⟨hmeas, hint⟩ := hcoarea (Z.indicator 1) (measurable_one.indicator hZ)
+  have hright : ∫⁻ x in M, ‖G x‖ₑ * Z.indicator 1 x ∂(μHE[m + 1] : Measure (Eucl P)) = 0 := by
+    refine lintegral_eq_zero_of_ae_eq_zero ?_
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZ0] with x hx
+    simp [hx]
+  rw [hright, lintegral_eq_zero_iff' hmeas] at hint
+  -- For a.e. `t`, `H^m⌞(M ∩ f⁻¹{t})(Z) = 0`, and `{¬p} ⊆ Z`.
+  filter_upwards [hint] with t ht
+  rw [Pi.zero_apply, lintegral_indicator_one hZ] at ht
+  exact ae_iff.2 (measure_mono_null (subset_toMeasurable _ _) ht)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
