@@ -359,6 +359,33 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon's currents are sequentially continuous at every test form: if `e l → ω` in `𝒟ᵏ(U)`,
+then `S (e l) → S ω`.  The differences `e l - ω` converge to `0` on the same compact set, so
+continuity of `S` at `0` (`GeometricCurrentOn.continuous'`) and linearity give the limit. -/
+theorem Submission.slicing_im_td_current_tendsto :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (S : GeometricCurrentOn U k) (e : ℕ → TestFormOn U k)
+      (ω : TestFormOn U k), TestFormOnConverges e ω →
+        Tendsto (fun l => S (e l)) atTop (𝓝 (S ω)) := by
+  intro P k U S e ω ⟨K, hK, hKU, he, hω, hd⟩
+  -- `e l - ω → 0` on the same compact `K ⊆ U`.
+  have hconv : TestFormOnConverges (fun l => e l - ω) 0 := by
+    refine ⟨K, hK, hKU, fun l => (tsupport_sub _ _).trans (union_subset (he l) hω), by simp,
+      fun i => Metric.tendstoUniformlyOn_iff.2 fun ε hε => ?_⟩
+    -- The `i`-th derivatives of the smooth forms `e l` and `ω` subtract.
+    have hsub : ∀ l x, iteratedFDeriv ℝ i
+        ((e l : DifferentialForm (Eucl P) k) - (ω : DifferentialForm (Eucl P) k)) x =
+          iteratedFDeriv ℝ i (e l : DifferentialForm (Eucl P) k) x -
+            iteratedFDeriv ℝ i (ω : DifferentialForm (Eucl P) k) x := fun l x =>
+      iteratedFDeriv_sub_apply ((e l).property.1.1.of_le (by exact_mod_cast le_top)).contDiffAt
+        (ω.property.1.1.of_le (by exact_mod_cast le_top)).contDiffAt
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hd i) ε hε] with l hl x hx
+    simpa [hsub, dist_eq_norm, norm_sub_rev] using hl x hx
+  -- Continuity of `S` at `0`, then linearity: `S (e l) = S (e l - ω) + S ω`.
+  have hlim := (S.continuous' _ hconv).add_const (S ω)
+  rw [zero_add] at hlim
+  refine hlim.congr fun l => ?_
+  rw [S.toCurrent.map_sub (e l) ω, sub_add_cancel]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
