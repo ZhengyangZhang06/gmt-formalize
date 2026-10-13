@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4902ca81257a6a5ffdb0397e7e0298558ecc0f626649f6df72a5d8a7e618d15",
+  "git_delta": {
+    "base_commit": "b479d166365d9a9a822937e5d9743d97757e2232",
+    "candidate_commit": "25d3763ff09666f3e8bbe378e0ef53b8e18b8c39",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_measure_le_of_le_on_open",
+    "diff_sha256": "8d4815fc6e3ad751b3c3d1f2351a95a1a92ec8e8dc174dfa13ac83c27f0581d6",
+    "source_sha256": "4a7a7b3848132518441632e68f4d6edb77b1254abdf69a9f255cc41b023f29c7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_measure_le_of_le_on_open",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ V : Set (Euclid P), IsOpen V → V ⊆ U → μ V ≤ ν V) → μ ≤ ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
