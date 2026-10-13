@@ -1,0 +1,105 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.ball_average_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 3 (averaging estimate), with the Fubini and translation-invariance details written out. The parent's step-2 directional estimate is a hypothesis here, and so is Λ ≥ 0 (parent step 1).
+Notation: λ := volume on ℝⁿ = Euclid n. It is an additive Haar measure: translation invariant, σ-finite, finite on compact sets and positive on nonempty open sets. Write B := ball(0, r), V := λ(B).toReal, c := V⁻¹, ‖h‖₁ := ∫|h| dν, A := ∫ a dλ and F := ∫ h(x)a(q x) dν(x).
+1. (The ball.) B is open and nonempty since r > 0, so λ(B) > 0 (measure_ball_pos). B is bounded in the proper space ℝⁿ, so λ(B) < ∞ (measure_ball_lt_top). Hence V > 0 (ENNReal.toReal_pos), c > 0 and V·c = 1.
+2. (Basic integrability.) a is continuous with compact support, so it is λ-integrable (Continuous.integrable_of_hasCompactSupport). Let ψ := c·1_B, the indicator of B with value c. Then ψ is measurable. It is λ-integrable because B is measurable with λ(B) < ∞ (integrableOn_const, then IntegrableOn.integrable_indicator). Also 0 ≤ ψ ≤ c and ψ = 0 off B. Moreover ∫ψ dλ = λ(B).toReal·c = V·c = 1 (integral_indicator_const, which gives λ.real(B) • c, and measureReal_def). For every p ∈ ℝⁿ, z ↦ a(p + z) is λ-integrable (Integrable.comp_add_left), and ∫ a(p + z) dλ(z) = A by translation invariance of λ (integral_add_left_eq_self).
+3. (Product integrands.) Give X × ℝⁿ the product measure ν ⊗ λ (ν is finite and λ is σ-finite, so both are s-finite). Define
+   G₁(x, z) := h(x)·ψ(z)·(a(q x) − a(q x + z)),   G₂(x, z) := h(x)·ψ(z)·a(q x + z).
+ Both are AE-strongly measurable:
+ - (x, z) ↦ h(x) is AE-strongly measurable (AEStronglyMeasurable.comp_fst);
+ - (x, z) ↦ ψ(z) is measurable;
+ - (x, z) ↦ a(q x) and (x, z) ↦ a(q x + z) are the continuous function a composed with the measurable maps (x, z) ↦ q x and (x, z) ↦ q x + z (addition on ℝⁿ is measurable).
+ Since 0 ≤ a ≤ 1, |a(u) − a(v)| ≤ 1 for all u, v. Hence |G₁(x, z)| ≤ |h(x)|ψ(z) and |G₂(x, z)| ≤ |h(x)|ψ(z). The map (x, z) ↦ |h(x)|ψ(z) is ν ⊗ λ-integrable (Integrable.mul_prod, with |h| ∈ L¹(ν) and ψ ∈ L¹(λ)). Hence G₁, G₂ ∈ L¹(ν ⊗ λ) (Integrable.mono'). By Fubini (Integrable.integral_prod_left), x ↦ ∫ G₁(x, z) dλ(z) and x ↦ ∫ G₂(x, z) dλ(z) are ν-integrable. For ν-a.e. x, the slices z ↦ G₁(x, z) and z ↦ G₂(x, z) are λ-integrable (Integrable.prod_right_ae).
+4. (Splitting F.) For every x, G₁(x, z) + G₂(x, z) = h(x)a(q x)·ψ(z). Take x with both slices integrable, which holds for ν-a.e. x. Then ∫ G₁(x, z) dλ(z) + ∫ G₂(x, z) dλ(z) = h(x)a(q x)·∫ψ dλ = h(x)a(q x) (integral_add, integral_const_mul). Integrate this ν-a.e. identity in x (integral_congr_ae, then integral_add with the integrability from step 3). This gives F = F₁ + F₂, where F_i := ∫ ∫ G_i(x, z) dλ(z) dν(x).
+5. (Bound on F₁.) By Fubini (integral_integral_swap for G₁ ∈ L¹(ν ⊗ λ)),
+   F₁ = ∫ ∫ G₁(x, z) dν(x) dλ(z) = ∫ ψ(z)·J(z) dλ(z),
+ where J(z) := ∫ h(x)(a(q x) − a(q x + z)) dν(x) = −∫ h(x)(a(q x + z) − a(q x)) dν(x) (integral_const_mul, integral_neg). By hypothesis, |J(z)| ≤ Λ‖z‖.
+ - If z ∈ B, then ‖z‖ < r. Since Λ ≥ 0 and ψ ≥ 0, |ψ(z)J(z)| = ψ(z)|J(z)| ≤ ψ(z)Λ‖z‖ ≤ ψ(z)Λr.
+ - If z ∉ B, then ψ(z)J(z) = 0 = ψ(z)Λr.
+ Since z ↦ ψ(z)Λr is integrable, |F₁| ≤ ∫ ψ(z)Λr dλ(z) = Λr (norm_integral_le_of_norm_le, integral_mul_const).
+6. (Bound on F₂.) For each x, ∫ G₂(x, z) dλ(z) = h(x)·m(x), where m(x) := ∫ ψ(z)a(q x + z) dλ(z) (integral_const_mul). We have 0 ≤ ψ(z)a(q x + z) ≤ c·a(q x + z), and z ↦ c·a(q x + z) is integrable (step 2). So 0 ≤ m(x) (integral_nonneg). Also m(x) ≤ ∫ c·a(q x + z) dλ(z) = c·A, by integral_mono_of_nonneg, integral_const_mul and step 2. Therefore |h(x)m(x)| ≤ |h(x)|·cA, and |F₂| ≤ ∫ |h(x)|·cA dν(x) = ‖h‖₁·cA (norm_integral_le_of_norm_le, integral_mul_const).
+7. (Conclusion.) |F| ≤ |F₁| + |F₂| ≤ Λr + ‖h‖₁·cA = r·Λ + c·‖h‖₁·A. That is, |∫ h(x)a(q x) dν(x)| ≤ r·Λ + (λ(B).toReal)⁻¹·(∫|h| dν)·∫ a dλ.
+
+## Key steps
+
+1. 0 < λ(B_r) < ∞. ψ := λ(B_r).toReal⁻¹·1_{B_r} satisfies 0 ≤ ψ ≤ λ(B_r).toReal⁻¹ and ∫ψ dλ = 1. Also ∫ a(p + z) dλ(z) = ∫ a dλ.
+2. G₁ = h(x)ψ(z)(a(q x) − a(q x + z)) and G₂ = h(x)ψ(z)a(q x + z) are ν ⊗ λ-integrable (majorant |h(x)|ψ(z)), and F = F₁ + F₂ since ∫ψ = 1.
+3. By Fubini, F₁ = ∫ψ(z)J(z) dλ with |J(z)| ≤ Λ‖z‖ ≤ Λr on B_r, so |F₁| ≤ rΛ.
+4. By translation invariance, 0 ≤ ∫ψ(z)a(q x + z) dλ(z) ≤ λ(B_r).toReal⁻¹∫a, so |F₂| ≤ λ(B_r).toReal⁻¹‖h‖₁∫a.
+5. Add the two bounds.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical); git -C lake-packages-25730c7c/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n 'lemma trace_smulRight|theorem integral_integral_swap|lemma intervalIntegral_integral_swap|theorem integral_eq_sub_of_hasDerivAt|theorem integral_mul_left_eq_self|structure ContDiffBump|theorem zero_of_le_dist|theorem one_of_mem_closedBall|theorem exists_contDiff_support_eq_eq_one_iff|theorem tendsto_measure_cthickening_of_isCompact|theorem closure_eq_iInter_cthickening|theorem tendsto_integral_of_dominated_convergence|theorem Integrable.mul_prod|theorem Integrable.integral_prod_left|theorem Integrable.prod_right_ae|lemma Integrable.comp_snd|theorem hasFDerivAt_comp_add_right|instance isFiniteMeasure_restrict_Ioc|theorem eLpNorm_le_eLpNorm_fderiv_one' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'`
+- `lake env lean /tmp/tdn2/Scope.lean (#check of the cited lemmas and #synth HasContDiffBump (Euclid 3) after import GMT.Ch07.Submission in the replayed contract scope; eLpNorm_le_eLpNorm_fderiv_one reports unknown identifier)`
+- `lake env lean /tmp/tdn2/Stmts.lean (four child types + frozen parent type; instance checks IsAddHaarMeasure, SFinite, IsAddLeftInvariant, IsAddRightInvariant, IsFiniteMeasureOnCompacts, IsOpenPosMeasure, BorelSpace, ProperSpace, HasContDiffBump on Euclid n; (⊤ : ℕ∞) coerces to smooth order ∞ ≠ ω; ∫ y, a y and volume K are volume on Euclid n by rfl)`
+- `lake env lean /tmp/tdn2/Assembly.lean (parent_from_children, D_from_C, #print axioms)`
+- `lake env lean /tmp/tdn2/A/A.lean /tmp/tdn2/B/B.lean /tmp/tdn2/C/C.lean /tmp/tdn2/C/S.lean /tmp/tdn2/E2E/EndToEnd.lean /tmp/tdn2/final/Recheck.lean (#print axioms)`
+- `python3 scan of dag.json lean_name for cmr_tdn_directional_bound, cmr_tdn_ball_average_bound, cmr_tdn_null_set_cutoffs, cmr_tdn_null_of_average_bound (no hits among 739 nodes); grep -rn cmr_tdn GMT/ local-references/123e8435b4a2469b/project lake-packages-25730c7c/simongmt lake-packages-25730c7c/mathlib/Mathlib (no match)`
+- `sed -n 1388,1552p and 1801,1920p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py; grep -n 'def _existing_lean_name_problem' -A 40 runtime.py; sed -n 545,612p verifier/gmt-compare.py (child scope replay); read this node's decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json, decomposition-scope-v1.json and its dag.json entry (status decomposing, attempt 2, children [])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-9a560aab97/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-9a560aab97/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-9a560aab97/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/tdn2/Scope.lean`
+- `/tmp/tdn2/Stmts.lean`
+- `/tmp/tdn2/Assembly.lean`
+- `/tmp/tdn2/A/A.lean`
+- `/tmp/tdn2/B/B.lean`
+- `/tmp/tdn2/C/C.lean`
+- `/tmp/tdn2/C/S.lean`
+- `/tmp/tdn2/E2E/EndToEnd.lean`
+- `/tmp/tdn2/final/Recheck.lean`
+
+Pinned sources. The manifest pins project b4d606db and mathlib 25730c7c, and the active lake mathlib is at 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Import closure. Every lemma cited by the child proofs is in the import closure of GMT.Ch07.Submission, for example:
+- trace_smulRight (LinearAlgebra/Trace.lean:272);
+- integral_integral_swap and intervalIntegral_integral_swap (Integral/Prod.lean:478 and :483);
+- integral_eq_sub_of_hasDerivAt (IntervalIntegral/FundThmCalculus.lean:1148);
+- ContDiffBump with one_of_mem_closedBall and zero_of_le_dist (BumpFunction/Basic.lean:70, :137, :163);
+- exists_contDiff_support_eq_eq_one_iff (Geometry/Manifold/PartitionOfUnity.lean:789);
+- tendsto_measure_cthickening_of_isCompact (BorelSpace/Metric.lean:185);
+- closure_eq_iInter_cthickening (Thickening.lean:511);
+- tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57).
+The Sobolev inequality (SobolevInequality.lean:439) is not in the closure, as the handoff states.
+
+Names. No cmr_tdn_ name exists in the 739-node DAG or in the project, SimonGMT or Mathlib sources.
+
+Lean checks, in the comparator's replayed child scope:
+- all four child types elaborate, with the relevant volume, bump and smoothness instances verified;
+- complete proofs of all four children check;
+- an end-to-end proof of the byte-identical frozen parent type checks with axioms [propext, Classical.choice, Quot.sound] only.
+
+Retry context. The node's attempt-1 split had the same structure and passed audit, but its children were never activated. The DAG shows attempt 2, no children and no feedback.
