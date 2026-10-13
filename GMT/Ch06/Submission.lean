@@ -1647,6 +1647,175 @@ theorem Submission.constancy_local_on_balls : ∀ (m : ℕ) (U : Set (Eucl (m + 
       α (fun i => EuclideanSpace.single i (1 : ℝ))) rfl)
     ((tsupport_comp_subset (g := fun α : Covector (Eucl (m + 1)) (m + 1) =>
       α (fun i => EuclideanSpace.single i (1 : ℝ))) rfl _).trans hω)
+/-- A top-degree test form with unit integral supported in a prescribed nonempty open set (Simon
+Ch. 6, proof of 2.34, p. 143): `ω = (f / ∫ f dLⁿ) dx¹ ∧ ⋯ ∧ dxⁿ` for a smooth bump `f` with
+`spt f = B̄_{δ/2}(z) ⊆ B_δ(z) ⊆ W`, so `spt ω ⊆ W ⊆ U` and `∫ ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ = 1`. -/
+theorem Submission.constancy_exists_topTestForm_integral_eq_one : ∀ (m : ℕ) (U W : Set (Eucl (m + 1))), IsOpen W → W.Nonempty → W ⊆ U → ∃ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ W ∧ ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = 1 := by
+  intro m U W hW hne hWU
+  obtain ⟨z, hz⟩ := hne
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hW z hz
+  -- A smooth bump `f` with `support f = B_{δ/2}(z)` and positive integral.
+  let f : ContDiffBump z := ⟨δ / 4, δ / 2, by positivity, by linarith⟩
+  have hfi : Integrable (fun x => f x) volume :=
+    f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport
+  have hI : 0 < ∫ x, f x ∂volume := by
+    refine (integral_pos_iff_support_of_nonneg f.nonneg' hfi).mpr ?_
+    rw [f.support_eq]
+    exact measure_ball_pos volume z f.rOut_pos
+  -- The constant covector `dx = dx¹ ∧ ⋯ ∧ dxⁿ`, with `dx(e₁, …, eₙ) = det I = 1`.
+  let dx : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) (fun i => EuclideanSpace.proj i)
+  have hdx : dx (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+    simp only [dx, wedgeCovectors_apply_det]
+    have : (Matrix.of fun i j : Fin (m + 1) =>
+        (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ) (EuclideanSpace.single j (1 : ℝ))) = 1 := by
+      ext i j
+      simp [Matrix.one_apply]
+    rw [this, Matrix.det_one]
+  -- `ω = f · ((∫ f dLⁿ)⁻¹ dx)`.
+  let ωf : DifferentialForm (Eucl (m + 1)) (m + 1) :=
+    fun x => f x • ((∫ y, f y ∂volume)⁻¹ • dx)
+  have hsmooth : IsSmoothForm ωf := by
+    change ContDiff ℝ _ (fun x => f x • ((∫ y, f y ∂volume)⁻¹ • dx))
+    exact f.contDiff.smul contDiff_const
+  have hsub_f : tsupport ωf ⊆ tsupport f := tsupport_smul_subset_left _ _
+  have hf_ball : tsupport f ⊆ ball z δ := by
+    rw [f.tsupport_eq]
+    exact closedBall_subset_ball (show δ / 2 < δ by linarith)
+  have hsubW : tsupport ωf ⊆ W := hsub_f.trans (hf_ball.trans hball)
+  have hcpt : HasCompactSupport ωf :=
+    f.hasCompactSupport.mono' ((subset_tsupport _).trans hsub_f)
+  refine ⟨⟨ωf, ⟨hsmooth, hcpt⟩, hsubW.trans hWU⟩, hsubW, ?_⟩
+  change ∫ x, (f x • ((∫ y, f y ∂volume)⁻¹ • dx)) (fun i => EuclideanSpace.single i (1 : ℝ))
+    ∂volume = 1
+  simp only [ContinuousAlternatingMap.smul_apply, hdx, smul_eq_mul, mul_one]
+  rw [integral_mul_const]
+  exact mul_inv_cancel₀ hI.ne'
+/-- Partition-of-unity decomposition of a test form (globalization step of the proof of Simon
+Ch. 6, Theorem 2.34, p. 143): if `spt ω ⊆ ⋃ᵢ Vᵢ` with every `Vᵢ` open, then `ω = ∑_{i ∈ s} ηᵢ`
+for a finite `s` and test forms `ηᵢ ∈ 𝒟ⁿ(U)` with `spt ηᵢ ⊆ Vᵢ`.  Take a finite subcover of the
+compact set `spt ω`, a smooth partition of unity `(χᵢ)_{i ∈ s}` on `spt ω` subordinate to it,
+and `ηᵢ = χᵢ ω`. -/
+theorem Submission.constancy_testFormOn_eq_finset_sum_subordinate :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (ι : Type) (V : ι → Set (Eucl P)), (∀ i, IsOpen (V i)) →
+      ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ ⋃ i, V i →
+        ∃ (s : Finset ι) (η : ι → TestFormOn U n),
+          (∀ i ∈ s, tsupport (η i : DifferentialForm (Eucl P) n) ⊆ V i) ∧ ω = ∑ i ∈ s, η i := by
+  intro P n U ι V hV ω hsub
+  classical
+  set K := tsupport (ω : DifferentialForm (Eucl P) n)
+  have hK : IsCompact K := ω.property.1.2
+  obtain ⟨s, hs⟩ := hK.elim_finite_subcover V hV hsub
+  have hcov : K ⊆ ⋃ i : s, V i := by
+    intro x hx
+    have := hs hx
+    simp only [mem_iUnion] at this ⊢
+    obtain ⟨i, hi, hxi⟩ := this
+    exact ⟨⟨i, hi⟩, hxi⟩
+  -- A smooth partition of unity `(f i)_{i ∈ s}` on `K`, subordinate to `(V i)_{i ∈ s}`.
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate (modelWithCornersSelf ℝ (Eucl P))
+    (isClosed_tsupport _) (fun i : s => V i) (fun i => hV i) hcov
+  have hfsmooth : ∀ i : s, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f i) := fun i =>
+    contMDiff_iff_contDiff.mp (f i).contMDiff
+  -- The pieces `f i • ω`: smooth, with `spt (f i • ω) ⊆ spt ω` compact and contained in `U`.
+  let piece : s → TestFormOn U n := fun i =>
+    ⟨fun x => f i x • (ω : DifferentialForm (Eucl P) n) x,
+      ⟨((hfsmooth i).smul ω.property.1.1),
+        ω.property.1.2.mono' ((subset_tsupport _).trans (tsupport_smul_subset_right _ _))⟩,
+      (tsupport_smul_subset_right _ _).trans ω.property.2⟩
+  have hpiece_coe : ∀ i : s, ((piece i : TestFormOn U n) : DifferentialForm (Eucl P) n) =
+      fun x => f i x • (ω : DifferentialForm (Eucl P) n) x := fun i => rfl
+  let η : ι → TestFormOn U n := fun i => if h : i ∈ s then piece ⟨i, h⟩ else 0
+  refine ⟨s, η, ?_, ?_⟩
+  · intro i hi
+    simp only [η, hi, ↓reduceDIte, hpiece_coe]
+    exact (tsupport_smul_subset_left _ _).trans (hf ⟨i, hi⟩)
+  · have hsum : ∑ i ∈ s, η i = ∑ i : s, piece i := by
+      rw [← Finset.sum_attach s]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [η, i.2, ↓reduceDIte]
+    rw [hsum]
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    simp only [hpiece_coe]
+    rw [← Finset.sum_smul]
+    -- `∑ᵢ f i x = 1` on `K = spt ω`, and `ω x = 0` off `K`.
+    by_cases hx : x ∈ K
+    · have h1 : ∑ i : s, f i x = 1 := by
+        rw [← finsum_eq_sum_of_fintype]
+        exact f.sum_eq_one hx
+      rw [h1, one_smul]
+    · have h0 : (ω : DifferentialForm (Eucl P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      rw [h0, smul_zero]
+
+/-- Globalization in **Simon Ch. 6, Theorem 2.34** (end of the proof, p. 143): if near every point
+of the open connected set `U` the current `T` is a constant multiple of `[[U]]`, then it is one
+global constant multiple of `[[U]]`.  Overlapping balls carry the same constant (test with a
+unit-integral form supported in the overlap), so the constant is locally constant, hence constant
+on the connected `U`; a partition of unity subordinate to the balls adds up the local identities. -/
+theorem Submission.constancy_of_local_constancy : ∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → IsConnected U → ∀ T : GeometricCurrentOn U (m + 1), (∀ x₀ ∈ U, ∃ r : ℝ, 0 < r ∧ ball x₀ r ⊆ U ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ ball x₀ r → T ω = c * ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), T ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume := by
+  intro m U _hU hconn T hloc
+  classical
+  -- A radius `r x` and a constant `c x` for every `x ∈ U`.
+  choose r hr hrU c hc using fun x : U => hloc x x.2
+  -- Overlapping balls have equal constants, so `c` is locally constant on `U`.
+  have hlc : IsLocallyConstant c := by
+    apply (IsLocallyConstant.iff_eventually_eq c).mpr
+    intro x
+    have hn : ∀ᶠ y : U in 𝓝 x, (y : Eucl (m + 1)) ∈ ball (x : Eucl (m + 1)) (r x) :=
+      continuous_subtype_val.continuousAt (isOpen_ball.mem_nhds (mem_ball_self (hr x)))
+    filter_upwards [hn] with y hy
+    obtain ⟨ω, hωW, hω1⟩ := Submission.constancy_exists_topTestForm_integral_eq_one m U
+      (ball (y : Eucl (m + 1)) (r y) ∩ ball (x : Eucl (m + 1)) (r x))
+      (isOpen_ball.inter isOpen_ball) ⟨y, mem_ball_self (hr y), hy⟩
+      (inter_subset_left.trans (hrU y))
+    have h1 := hc y ω (hωW.trans inter_subset_left)
+    have h2 := hc x ω (hωW.trans inter_subset_right)
+    rw [hω1, mul_one] at h1 h2
+    exact h1.symm.trans h2
+  -- `U` is connected, so `c` is a single constant `c₀`.
+  have : PreconnectedSpace U := isPreconnected_iff_preconnectedSpace.mp hconn.isPreconnected
+  obtain ⟨c₀, hc₀⟩ := hlc.exists_eq_const
+  refine ⟨c₀, fun ω => ?_⟩
+  -- Split `ω` into finitely many test forms, each supported in one of the balls.
+  obtain ⟨s, η, hηV, hωsum⟩ := Submission.constancy_testFormOn_eq_finset_sum_subordinate
+    (m + 1) (m + 1) U U (fun x => ball (x : Eucl (m + 1)) (r x)) (fun _ => isOpen_ball) ω
+    (fun z hz => mem_iUnion.mpr ⟨⟨z, ω.property.2 hz⟩, mem_ball_self (hr _)⟩)
+  have hint : ∀ η' : TestFormOn U (m + 1), Integrable (fun x =>
+      (η' : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))) volume := by
+    intro η'
+    have hcont : Continuous (fun x => (η' : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl (m + 1)) ℝ
+        (fun i => EuclideanSpace.single i (1 : ℝ))).continuous.comp
+        η'.property.1.1.continuous
+    exact hcont.integrable_of_hasCompactSupport
+      (η'.property.1.2.comp_left (g := fun α : Covector (Eucl (m + 1)) (m + 1) =>
+        α (fun i => EuclideanSpace.single i (1 : ℝ))) rfl)
+  have hpt : ∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+      (fun i => EuclideanSpace.single i (1 : ℝ)) =
+      ∑ i ∈ s, (η i : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+    intro x
+    rw [hωsum, Submodule.coe_sum, Finset.sum_apply, ContinuousAlternatingMap.sum_apply]
+  have hT : T ω = ∑ i ∈ s, T (η i) := by
+    rw [hωsum]
+    exact map_sum T.toCurrent η s
+  -- `ω` vanishes off `U`, so its integral over `ℝⁿ` is its integral over `U`.
+  have hU0 : ∀ x, x ∉ U → (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+      (fun i => EuclideanSpace.single i (1 : ℝ)) = 0 := by
+    intro x hx
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hx (ω.property.2 h))]
+    rfl
+  -- Add up the local identities `T (η i) = c₀ * ∫ η i (e)`.
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hU0, hT]
+  simp_rw [hpt]
+  rw [integral_finsetSum s (fun i _ => hint (η i)), Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  have hci : c i = c₀ := congrFun hc₀ i
+  rw [hc i (η i) (hηV i hi), hci]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

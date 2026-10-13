@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem (integral_normed|tsupport_normed_eq|contDiff_normed|hasCompactSupport_normed)",
+        "def IsSubordinate|theorem exists_isSubordinate|theorem sum_eq_one|variable.*FiniteDimensional|SigmaCompactSpace|structure SmoothPartitionOfUnity",
+        "theorem contMDiff_iff_contDiff",
+        "theorem IsCompact.elim_finite_subcover",
+        "exists_eq_const|iff_eventually_eq",
+        "theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "theorem integral_finsetSum",
+        "constancy_exists_topTestForm_integral_eq_one|constancy_testFormOn_eq_finset_sum_subordinate",
+        "sed -n '1,200p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "sed -n '1,150p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "sed -n '110,170p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/LocallyConstant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-globalize-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-globalize-a1/decomposition-v1.json",
+        "/tmp/globalize_independent_audit_m54kg87e/baseline/NodeChallenge_unit_top_form.lean",
+        "/tmp/globalize_independent_audit_m54kg87e/baseline/NodeChallenge_pou_decomposition.lean",
+        "/tmp/globalize_independent_audit_m54kg87e/candidate/GMT/Ch06/Submission.lean",
+        "/tmp/globalize_independent_audit_m54kg87e/candidate/compile.log",
+        "/tmp/globalize_independent_audit_m54kg87e/candidate/NodeSolution_parent.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and compatible, unchanged SimonGMT sources. The split appropriately isolates two independent analytic inputs to the selected globalization theorem. The supplied assembly uses the first to equate overlapping local constants, connectedness to obtain one constant, and the second to sum local identities; compact-support integrability and vanishing outside U yield the exact restricted-integral conclusion. Neither proposed name occurs among the 195 DAG declarations. Both names are bare identifiers and both dependency lists are correctly empty. Independently generated comparator challenge modules elaborate against the frozen baseline without either child declaration. Both verbatim child proof appendices, the supplied parent assembly, and all three generated solution modules compile; their targets use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_top_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary U, open nonempty W, W ⊆ U, topological support and the whole-space integral. The proof constructs a normalized smooth bump inside W, multiplies it by the determinant covector evaluating to one on the standard basis, and verifies smoothness, compact support, domain containment and integral normalization. The finite-dimensional bump and measure instances are valid; the determinant calculation correctly uses Matrix.of. The proof is complete and non-circular, and its conclusion supplies precisely the overlap test needed by the parent."
+    },
+    {
+      "key": "pou_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the arbitrary-dimensional, arbitrary-domain open-cover statement. Compactness gives a finite subcover; the pinned smooth partition theorem supplies topological-support subordination on the closed support. Multiplication preserves smoothness, and each piece inherits compact support and containment in U from the original form, without requiring bounded cover sets. Extension by zero outside the finite index set and pointwise summation prove the exact submodule equality, including empty-support cases. The proof is complete, independent of the other child and parent theorem, and supplies the parent's finite localization step."
+    }
+  ],
+  "required_changes": []
+}

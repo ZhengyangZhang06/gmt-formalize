@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.globalize-a1.pou_decomposition-a1",
+  "parent_id": "root.constancy-a1.globalize-a1",
+  "depth": 3,
+  "title": "Partition-of-unity decomposition of a test form subordinate to an open cover of its support",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, let ι be a type, and let (V_i)_{i∈ι} be a family of open subsets of ℝ^P. Let ω ∈ Dⁿ(U), i.e. a C^∞ map from ℝ^P to the n-covectors of ℝ^P with compact support and spt ω ⊆ U, and assume spt ω ⊆ ⋃_{i∈ι} V_i. Then there are a finite set s ⊆ ι and test forms η_i ∈ Dⁿ(U) (i ∈ ι) such that spt η_i ⊆ V_i for every i ∈ s and ω = Σ_{i∈s} η_i in Dⁿ(U), i.e. pointwise as forms.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ι : Type) (V : ι → Set (Eucl P)), (∀ i, IsOpen (V i)) → ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ ⋃ i, V i → ∃ (s : Finset ι) (η : ι → TestFormOn U n), (∀ i ∈ s, tsupport (η i : DifferentialForm (Eucl P) n) ⊆ V i) ∧ ω = ∑ i ∈ s, η i",
+  "lean_name": "constancy_testFormOn_eq_finset_sum_subordinate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-globalize-a1-pou-decomposition-a1-a1"
+}

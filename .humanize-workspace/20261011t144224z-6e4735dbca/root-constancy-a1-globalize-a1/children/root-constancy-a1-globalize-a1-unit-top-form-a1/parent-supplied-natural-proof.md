@@ -1,0 +1,168 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.constancy-a1.globalize-a1`
+- Child DAG node: `root.constancy-a1.globalize-a1.unit_top_form-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 2–3 of the supplied proof of `constancy_of_local_constancy`. That proof expands the final clause of Simon, Introduction to Geometric Measure Theory, Ch. 6, Theorem 2.34, printed proof p. 143: "... on each ball B_ρ(x₀) with B̄_σ(x₀) ⊆ U, and the result follows". There a normalized bump form b dx, supported in the intersection of two overlapping balls, shows that the two balls carry the same constant. This lemma isolates that construction for an arbitrary nonempty open set W. The printed text has no separate argument for this step, so the proof below is the parent's Step 2–3 argument with every detail filled in.
+
+Notation.
+- n := m + 1.
+- e = (e_1, …, e_n), with e_i := EuclideanSpace.single i 1 the standard basis.
+- Lⁿ := Lebesgue measure (Lean: volume).
+- spt := topological support (Lean: tsupport).
+- Dⁿ(U) (Lean: TestFormOn U n) is the set of forms ω : ℝⁿ → Covector ℝⁿ n (continuous alternating n-linear maps ℝⁿ → ℝ) that satisfy all of the following:
+  - ω is C^∞ (Lean: ContDiff ℝ ∞ with ∞ = ((⊤ : ℕ∞) : WithTop ℕ∞));
+  - ω has compact support (HasCompactSupport);
+  - spt ω ⊆ U.
+
+Proof.
+
+1. (A ball in W.) W is nonempty, so choose z ∈ W. W is open, so there is δ > 0 with B_δ(z) ⊆ W (Lean: Metric.isOpen_iff).
+
+2. (Normalized smooth bump.) Let f be the smooth bump function centred at z with inner radius δ/4 and outer radius δ/2. Here 0 < δ/4 < δ/2 (Lean: f : ContDiffBump z := ⟨δ/4, δ/2, _, _⟩). Thus f ∈ C^∞(ℝⁿ), 0 ≤ f ≤ 1, f = 1 on B̄_{δ/4}(z), and {f ≠ 0} = B_{δ/2}(z). Hence 0 < Lⁿ(B̄_{δ/4}(z)) ≤ ∫ f dLⁿ ≤ Lⁿ(B̄_{δ/2}(z)) < ∞. Put b := f / ∫ f dLⁿ (Lean: b := f.normed volume). Then:
+ (a) b ∈ C^∞(ℝⁿ) (ContDiffBump.contDiff_normed);
+ (b) spt b = B̄_{δ/2}(z) (ContDiffBump.tsupport_normed_eq); in particular b has compact support (ContDiffBump.hasCompactSupport_normed);
+ (c) ∫ b dLⁿ = 1 (ContDiffBump.integral_normed).
+
+3. (The constant covector dx.) Let dx := dx¹ ∧ ⋯ ∧ dxⁿ be the n-covector dx(v_1, …, v_n) = det[(v_j)_i]_{i,j=1..n}. This is the wedge product of the coordinate functionals. In Lean, dx := wedgeCovectors (m + 1) (fun i => EuclideanSpace.proj i), a continuous alternating map from Poincare.SimonGMT.Chapter06.FormsDuality. By wedgeCovectors_apply_det, dx v = det (Matrix.of fun i j => proj i (v j)). For v = e the entries are proj i (e_j) = (e_j)_i, which is 1 if i = j and 0 otherwise. So the matrix is the identity, and dx(e_1, …, e_n) = det I_n = 1 (Matrix.det_one).
+
+4. (The form.) Define ω(x) := b(x)·dx for x ∈ ℝⁿ.
+ (a) ω is C^∞, as the product of the C^∞ scalar function b and the constant covector dx (ContDiff.smul with contDiff_const).
+ (b) If ω(x) ≠ 0 then b(x) ≠ 0, so spt ω ⊆ spt b (tsupport_smul_subset_left). By 2(b) and δ/2 < δ, spt ω ⊆ B̄_{δ/2}(z) ⊆ B_δ(z) ⊆ W (closedBall_subset_ball). Since W ⊆ U by hypothesis, spt ω ⊆ U.
+ (c) spt ω is a closed subset of the compact set spt b, hence compact. So ω has compact support (HasCompactSupport.mono').
+ By (a)–(c), ω ∈ Dⁿ(U), and spt ω ⊆ W.
+
+5. (The integral.) For every x ∈ ℝⁿ, Step 3 gives ω(x)(e) = b(x)·dx(e) = b(x)·1 = b(x) (ContinuousAlternatingMap.smul_apply). Therefore ∫ ω(x)(e) dLⁿ(x) = ∫ b dLⁿ = 1 by 2(c).
+
+Steps 4 and 5 show that ω has both required properties. ∎
+
+Formalization appendix (non-normative). This proof was kernel-checked during the decomposition with Lean v4.35.0-rc3 and Mathlib 25730c7c. It was placed inside `namespace GMT.Ch06` (after the contract's closing `end` of the noncomputable section, before `main_theorem`) in a Submission variant with the extra imports `Mathlib.Analysis.Calculus.BumpFunction.Normed` and `Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension`; the latter supplies the HasContDiffBump instance. The generated NodeSolution target depends only on propext, Classical.choice and Quot.sound. Do not `open scoped ContDiff`: it makes `ω` a notation token.
+```lean
+theorem Submission.constancy_exists_topTestForm_integral_eq_one : ∀ (m : ℕ) (U W : Set (Eucl (m + 1))), IsOpen W → W.Nonempty → W ⊆ U → ∃ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ W ∧ ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = 1 := by
+  intro m U W hW hne hWU
+  obtain ⟨z, hz⟩ := hne
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hW z hz
+  let f : ContDiffBump z := ⟨δ / 4, δ / 2, by positivity, by linarith⟩
+  let b : Eucl (m + 1) → ℝ := f.normed volume
+  let dx : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) (fun i => EuclideanSpace.proj i)
+  have hdx : dx (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+    simp only [dx, wedgeCovectors_apply_det]
+    have : (Matrix.of fun i j : Fin (m + 1) =>
+        (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ) (EuclideanSpace.single j (1 : ℝ))) = 1 := by
+      ext i j
+      simp [Matrix.one_apply]
+    rw [this, Matrix.det_one]
+  let ωf : DifferentialForm (Eucl (m + 1)) (m + 1) := fun x => b x • dx
+  have hsmooth : IsSmoothForm ωf := by
+    change ContDiff ℝ _ (fun x => b x • dx)
+    exact (f.contDiff_normed (μ := volume)).smul contDiff_const
+  have hsub_b : tsupport ωf ⊆ tsupport b := tsupport_smul_subset_left _ _
+  have hb : tsupport b = closedBall z (δ / 2) := f.tsupport_normed_eq
+  have hcb : closedBall z (δ / 2) ⊆ ball z δ := closedBall_subset_ball (by linarith)
+  have hsubW : tsupport ωf ⊆ W := hsub_b.trans (hb ▸ hcb.trans hball)
+  have hcpt : HasCompactSupport ωf :=
+    (f.hasCompactSupport_normed (μ := volume)).mono' (subset_tsupport _ |>.trans hsub_b)
+  refine ⟨⟨ωf, ⟨hsmooth, hcpt⟩, hsubW.trans hWU⟩, hsubW, ?_⟩
+  change ∫ x, (b x • dx) (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = 1
+  simp only [ContinuousAlternatingMap.smul_apply, hdx, smul_eq_mul, mul_one]
+  exact f.integral_normed
+```
+
+## Key steps
+
+1. Pick z ∈ W and δ > 0 with B_δ(z) ⊆ W (W open, nonempty).
+2. Normalized smooth bump b = (ContDiffBump at z, rIn δ/4, rOut δ/2).normed volume: b is C^∞, spt b = B̄_{δ/2}(z) is compact, and ∫ b dLⁿ = 1.
+3. Constant covector dx = wedgeCovectors (m+1) EuclideanSpace.proj, with dx(e_1,…,e_n) = det I = 1.
+4. ω := b·dx is C^∞ with compact support and spt ω ⊆ spt b ⊆ B_δ(z) ⊆ W ⊆ U, so ω ∈ Dⁿ(U) and spt ω ⊆ W.
+5. ω(x)(e) = b(x)·dx(e) = b(x), hence ∫ ω(x)(e) dLⁿ = ∫ b dLⁿ = 1.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp project/GMT/Ch06/Contract.lean against the workspace GMT/Ch06/Contract.lean and against project/GMT/Ch06/Submission.lean (all byte-identical)`
+- `git diff --name-only d8d46c95 d74ec47 (node base commit): only .humanize-workspace metadata, no Lean/Lake changes`
+- `sed -n 1,160p Chapter06/Currents.lean (testFormOnSubmodule, TestFormOn, TestFormOnConverges, GeometricCurrentOn) and Chapter06/Forms.lean (Covector, DifferentialForm, IsSmoothForm = ContDiff ℝ ∞, IsTestForm)`
+- `cat Chapter06/CurrentLocalEquality.lean (testFormOnInclusion, restrictDomain, VanishesOn, support; no partition-of-unity decomposition)`
+- `grep -rn -i 'partition|PartitionOfUnity|exists_isSubordinate|IsLocallyConstant|exists_eq_const' simongmt/Poincare/SimonGMT`
+- `grep -rn 'SmoothPartitionOfUnity|ContDiffBump|exists_contDiff_tsupport_subset' simongmt/Poincare/SimonGMT`
+- `grep -n '^def|^theorem' Chapter06/FormsDuality.lean Chapter06/WedgeForms.lean; sed -n 110,160p Chapter06/FormsDuality.lean (wedgeCovectors, wedgeCovectors_apply_det)`
+- `grep -n 'theorem exists_isSubordinate {s : Set M}|def IsSubordinate|theorem sum_eq_one' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `grep -n 'theorem integral_normed|theorem tsupport_normed_eq|theorem contDiff_normed|theorem hasCompactSupport_normed' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `grep -n 'theorem contMDiff_iff_contDiff' mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean; grep -n 'theorem IsCompact.elim_finite_subcover' mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `grep -n 'theorem tsupport_smul_subset_left|theorem tsupport_smul_subset_right' mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `grep -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; grep -n 'theorem integral_finsetSum' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean; grep -rn 'theorem exists_eq_const' mathlib/Mathlib/Topology/LocallyConstant/Basic.lean`
+- `python3 -I: list lean_name values in dag.json (195 nodes, all distinct; neither proposed name present); grep proposed names in dag.json, DAG.md, issue-workers.json (0 matches); grep dag.json nodes for partition/bump/det statements (none reusable with identical type)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py child_modules (contract scope) for both children and the parent, generating NodeChallenge/NodeSolution files in /tmp/globalize_decomp_check`
+- `lean NodeChallenge_{unit_form,pou_split,parent}.lean against GMT.Ch06.Submission compiled from the frozen contract (only the expected sorry warning)`
+- `lean Scratch/UnitForm.lean, Scratch/PoU.lean (#print axioms: propext, Classical.choice, Quot.sound); lean Scratch/Assembly.lean (parent from sorry stubs, sorryAx only from stubs; frozen-type restatement closes by exact)`
+- `lean /tmp/globalize_decomp_check2/GMT/Ch06/Submission.lean (variant with full child proofs and parent assembly) then lean NodeSolution_{unit_form,pou_split,parent}.lean: #print axioms HumanizeNodeComparator.target = [propext, Classical.choice, Quot.sound]`
+- `grep -n 'Constancy' book/chapter-06.txt; sed -n 565,640p (printed proof of 2.34, p. 142-143)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/LocallyConstant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyManifoldGluing.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1/decomposition-v1.json`
+- `/tmp/globalize_decomp_check/Scratch/UnitForm.lean`
+- `/tmp/globalize_decomp_check/Scratch/PoU.lean`
+- `/tmp/globalize_decomp_check/Scratch/Assembly.lean`
+- `/tmp/globalize_decomp_check2/GMT/Ch06/Submission.lean`
+
+Snapshot context:
+- Project d8d46c95, Mathlib 25730c7c.
+- The frozen Contract and Submission are byte-identical.
+- The node base commit d74ec47 changes no Lean files.
+
+Definitions (SimonGMT, Chapter06/Currents.lean and Forms.lean):
+- `TestFormOn U n` = smooth (ContDiff ℝ ∞, ∞ = (⊤ : ℕ∞)), compactly supported forms with tsupport ⊆ U.
+- `GeometricCurrentOn` wraps a linear map `toCurrent`, so `map_sum T.toCurrent` gives finite additivity.
+
+No partition-of-unity decomposition of test forms exists in SimonGMT:
+- No match for SmoothPartitionOfUnity or exists_isSubordinate.
+- CurrentLocalEquality only has restriction and support notions.
+- Chapter01/RadonTopology uses continuous, not smooth, partitions.
+- No DAG node provides a reusable test-form decomposition or unit-integral top form with an identical frozen type.
+- Child (B) is therefore a genuine new reusable lemma.
+
+API used by the children, all found in the pinned Mathlib/SimonGMT:
+- Child (A): ContDiffBump.normed with contDiff_normed, tsupport_normed_eq, hasCompactSupport_normed and integral_normed; SimonGMT wedgeCovectors plus wedgeCovectors_apply_det for the covector dx with dx(e) = 1.
+- Child (B): SmoothPartitionOfUnity.exists_isSubordinate, contMDiff_iff_contDiff, IsCompact.elim_finite_subcover, tsupport_smul_subset_left/right.
+- Parent: IsLocallyConstant.iff_eventually_eq and exists_eq_const (pattern as in SimonGMT Chapter08/DistributionalConstancy.lean), integral_finsetSum, setIntegral_eq_integral_of_forall_compl_eq_zero.
+
+Checks:
+- Both child statements and the parent statement pass validate_lean_statement.
+- All three elaborate in the exact comparator contract scope.
+- Full Lean proofs of both children compile, as does the parent assembly from them.
+- All three generated NodeSolution targets depend only on propext, Classical.choice and Quot.sound.
+- The two proposed names are unique among the 195 DAG nodes.
+
+Printed source: the proof of 2.34 ends with '...on each ball B_ρ(x₀) with B̄_σ(x₀) ⊆ U, and the result follows'. There is no printed argument for the globalization, so the child proofs are extracted from the supplied expansion (Steps 2–3 and 6–7).
