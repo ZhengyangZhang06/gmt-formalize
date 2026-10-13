@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.integrating_factor-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+  "depth": 4,
+  "title": "Integrating-factor identity for the radial first-variation equation",
+  "statement": "Let n be a natural number, I, I', E, Q, a : R -> R, and R, M, beta real with beta < 1. Assume, for every t in (0, R):\n- I has derivative I'(t) at t;\n- E and Q are continuous at t;\n- I(t) >= 0;\n- n I(t) - t I'(t) + t Q(t) = -E(t);\n- |a(t)| <= M t^(-beta) (real power).\nAssume also a(t) = E(t)/t^(n+1)/(1 + I(t)/t^n) for every real t. Then for all 0 < s <= r < R, with interval integrals,\nexp(-integral_0^r a)(1 + I(r)/r^n) - exp(-integral_0^s a)(1 + I(s)/s^n) = integral_s^r exp(-integral_0^t a) (Q(t)/t^n) dt.",
+  "lean_statement": "∀ (n : ℕ) (I I' E Q a : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t ∈ Ioo 0 R, HasDerivAt I (I' t) t) → (∀ t ∈ Ioo 0 R, ContinuousAt E t) → (∀ t ∈ Ioo 0 R, ContinuousAt Q t) → (∀ t ∈ Ioo 0 R, 0 ≤ I t) → (∀ t ∈ Ioo 0 R, (n : ℝ) * I t - t * I' t + t * Q t = -E t) → (∀ t, a t = E t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t ∈ Ioo 0 R, |a t| ≤ M * t ^ (-β)) → ∀ s r : ℝ, 0 < s → s ≤ r → r < R → Real.exp (-∫ τ in (0)..r, a τ) * (1 + I r / r ^ n) - Real.exp (-∫ τ in (0)..s, a τ) * (1 + I s / s ^ n) = ∫ t in s..r, Real.exp (-∫ τ in (0)..t, a τ) * (Q t / t ^ n)",
+  "lean_name": "allard52_am_integrating_factor",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-i-2ee61175b0-a1"
+}
