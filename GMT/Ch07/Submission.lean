@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- First variation of a vertical field (Simon Ch. 4, 2.2–2.3): for differentiable `ζ` and a
+fixed `e`, `D(ζe)(x) = Dζ(x)(·) e`, so `p_x ∘ D(ζe)(x)` is the rank-one map `y ↦ Dζ(x)(y) p_x e`
+and `div_M(ζe)(x) = Dζ(x)(p_x e)`.  As `μ_V = (Hⁿ⌞M).withDensity θ` with `θ` measurable and
+finite, `δV(ζe) = ∫_M θ Dζ(x)(p_x e) dHⁿ = ∫ Dζ(x)(p_x e) dμ_V`, with no integrability needed. -/
+theorem Submission.dorag_tes_gv_vertical_field_first_variation : ∀ (m n : ℕ) (U : Set (Euclid m)) (R : IMRep U n) (ζ : Euclid m → ℝ) (e : Euclid m), Differentiable ℝ ζ → R.firstVariation (fun x => ζ x • e) = ∫ x, fderiv ℝ ζ x ((approxTangentPlane n R.carrier x).starProjection e) ∂R.measure := by
+  intro m n U R ζ e hζ
+  -- `div_M(ζe)(x) = trace(p_x ∘ Dζ(x).smulRight e) = trace(Dζ(x).smulRight (p_x e)) = Dζ(x)(p_x e)`
+  have hdiv : ∀ x, tangentialDivergence n R.carrier (fun x => ζ x • e) x =
+      fderiv ℝ ζ x ((approxTangentPlane n R.carrier x).starProjection e) := by
+    intro x
+    unfold tangentialDivergence
+    rw [fderiv_smul_const (hζ x) e]
+    have hrank : (approxTangentPlane n R.carrier x).starProjection.toLinearMap ∘ₗ
+        ((fderiv ℝ ζ x).smulRight e).toLinearMap =
+        (fderiv ℝ ζ x).toLinearMap.smulRight
+          ((approxTangentPlane n R.carrier x).starProjection e) := by
+      ext y
+      simp [map_smul]
+    rw [hrank, LinearMap.trace_smulRight]
+    rfl
+  -- `μ_V = (Hⁿ⌞M).withDensity θ`, `θ` measurable and finite: `∫ g dμ_V = ∫_M θ g dHⁿ` for all `g`
+  unfold IMRep.firstVariation IMRep.measure
+  have hmeas : Measurable fun x => ((R.mult x : ℕ) : ℝ≥0∞) :=
+    measurable_from_nat.comp R.measurable_mult
+  rw [integral_withDensity_eq_integral_toReal_smul hmeas (Eventually.of_forall fun x => by simp)]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [hdiv x, ENNReal.toReal_natCast, smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
