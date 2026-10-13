@@ -590,6 +590,143 @@ theorem Submission.dtc_cwv_euler_contraction_isTestForm : ∀ (P m : ℕ) (β : 
     rw [h0]
     rfl
 
+/-- Differentiation under the integral sign for the dilations `y ↦ s y` (steps 0(a), 0(b), 2 and 3
+of the proof of Simon Ch. 6, Lemma 2.33, with `c(s) = s`): for `t > 0`, `s ↦ τ(M, θ, ξ)(sⁿ ω(s ·))`
+has derivative `τ(M, θ, ξ)(n tⁿ⁻¹ ω(t ·) + tⁿ Dω(t ·)[·])` at `t`.  For `s ∈ (t/2, 2t)` the
+integrands vanish off `B = B̄_{2r/t}(0)`, where `spt ω ⊆ B̄_r(0)`, and are dominated by `K θ 1_B`,
+`K` bounding the continuous integrand on `[t/2, 2t] × B` (as `‖ξ‖ ≤ 1` a.e.); `θ 1_B` is
+integrable since `θ` is locally `Hⁿ`-integrable. -/
+theorem Submission.dtc_cwv_scaled_action_hasDerivAt : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (t : ℝ), 0 < t → HasDerivAt (fun s : ℝ => R.action (fun y => (s ^ n) • (ω : DifferentialForm (Euclid P) n) (s • y))) (R.action (fun y => ((n : ℝ) * t ^ (n - 1)) • (ω : DifferentialForm (Euclid P) n) (t • y) + (t ^ n) • fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • y) y)) t := by
+  intro P n R ω t ht
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n) with hw_def
+  -- Step 1: ‖ξ(x)‖ ≤ 1 for Hⁿ⌞M-a.e. x (sibling `orientation_norm`).
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ‖R.orient x‖ ≤ 1 := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact Submission.unit_orientation_norm_le_one P n Q _ hQ
+  -- Step 2: a support radius, a bound for ω; ω and Dω vanish off spt ω.
+  have hwcont : Continuous w := hws.continuous
+  have hDw : Continuous (fderiv ℝ w) := hws.continuous_fderiv (by simp)
+  obtain ⟨K0, hK0⟩ := hwcont.bounded_above_of_compact_support hwc
+  obtain ⟨r, hr⟩ : ∃ r, tsupport w ⊆ closedBall (0 : Euclid P) r :=
+    hwc.isCompact.isBounded.subset_closedBall 0
+  have hvan : ∀ z, z ∉ tsupport w → w z = 0 ∧ fderiv ℝ w z = 0 := fun z hz =>
+    ⟨image_eq_zero_of_notMem_tsupport hz,
+      image_eq_zero_of_notMem_tsupport (fun h => hz (tsupport_fderiv_subset ℝ h))⟩
+  -- Step 5: measurability of the integrands (Φ jointly continuous).
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hmeas : ∀ φ : Euclid P → Covector (Euclid P) n, Continuous φ →
+      AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y (φ y)) (μHE[n].restrict R.carrier) :=
+    fun φ hφ => hθm.aestronglyMeasurable.mul
+      (happly.comp_aestronglyMeasurable (R.aestronglyMeasurable_orient.prodMk hφ.aestronglyMeasurable))
+  have hcF : ∀ s : ℝ, Continuous (fun y => (s ^ n) • w (s • y)) := by
+    intro s
+    have h1 : Continuous (fun y : Euclid P => w (s • y)) := hwcont.comp (continuous_const_smul s)
+    exact h1.const_smul (s ^ n)
+  have hΦ : Continuous (fun p : ℝ × Euclid P => ((n : ℝ) * p.1 ^ (n - 1)) • w (p.1 • p.2) +
+      (p.1 ^ n) • fderiv ℝ w (p.1 • p.2) p.2) := by
+    have hsy : Continuous (fun p : ℝ × Euclid P => p.1 • p.2) := continuous_fst.smul continuous_snd
+    exact (((continuous_const.mul (continuous_fst.pow _))).smul (hwcont.comp hsy)).add
+      ((continuous_fst.pow _).smul ((hDw.comp hsy).clm_apply continuous_snd))
+  have hcF' : ∀ s : ℝ, Continuous (fun y => ((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+      (s ^ n) • fderiv ℝ w (s • y) y) := fun s =>
+    hΦ.comp (continuous_const.prodMk continuous_id)
+  -- Steps 6–8: localization in B = B̄_ρ(0), the bound K for Φ on [t/2, 2t] × B, integrability.
+  set ρ : ℝ := 2 * r / t with hρ
+  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  obtain ⟨K, hK⟩ := (isCompact_Icc (a := t / 2) (b := 2 * t)).prod (isCompact_closedBall (0 : Euclid P) ρ)
+    |>.exists_bound_of_continuousOn hΦ.continuousOn
+  have hθB : IntegrableOn (fun x => (R.mult x : ℝ)) B (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
+    simpa only [Real.enorm_natCast] using
+      (R.locallyIntegrable_mult B (isCompact_closedBall 0 ρ) (subset_univ _)).lt_top
+  -- membership: if s • y ∈ spt ω with s > t/2 then y ∈ B
+  have hmemB : ∀ s : ℝ, t / 2 < s → ∀ y : Euclid P, s • y ∈ tsupport w → y ∈ B := by
+    intro s hs y hy
+    have h1 : ‖s • y‖ ≤ r := by simpa using hr hy
+    have hs0 : 0 < s := by linarith
+    rw [norm_smul, Real.norm_of_nonneg hs0.le] at h1
+    simp only [hB, mem_closedBall, dist_zero_right, hρ]
+    rw [le_div_iff₀ ht]
+    nlinarith [norm_nonneg y]
+  -- Steps 7–9: hypotheses of the dominated differentiation theorem (step 4 is `h_diff`).
+  have hs : Ioo (t / 2) (2 * t) ∈ 𝓝 t := Ioo_mem_nhds (by linarith) (by linarith)
+  have hF_meas : ∀ᶠ s in 𝓝 t, AEStronglyMeasurable
+      (fun y => (R.mult y : ℝ) * R.orient y ((s ^ n) • w (s • y))) (μHE[n].restrict R.carrier) :=
+    Eventually.of_forall fun s => hmeas _ (hcF s)
+  have hF'_meas : AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y
+      (((n : ℝ) * t ^ (n - 1)) • w (t • y) + (t ^ n) • fderiv ℝ w (t • y) y))
+      (μHE[n].restrict R.carrier) := hmeas _ (hcF' t)
+  have hF_int : Integrable (fun y => (R.mult y : ℝ) * R.orient y ((t ^ n) • w (t • y)))
+      (μHE[n].restrict R.carrier) := by
+    refine ((hθB.integrable_indicator hBm).const_mul (t ^ n * K0)).mono' (hmeas _ (hcF t)) ?_
+    filter_upwards [hξ] with y hy
+    by_cases hty : t • y ∈ tsupport w
+    · have hyB := hmemB t (by linarith) y hty
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      calc (R.mult y : ℝ) * ‖R.orient y ((t ^ n) • w (t • y))‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖(t ^ n) • w (t • y)‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * (t ^ n * K0)) := by
+            gcongr
+            rw [norm_smul, Real.norm_of_nonneg (by positivity)]
+            gcongr
+            exact hK0 _
+        _ = t ^ n * K0 * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hty).1, smul_zero, map_zero, mul_zero, norm_zero]
+      have hK0n : 0 ≤ K0 := le_trans (norm_nonneg _) (hK0 0)
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]; positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_bound : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t / 2) (2 * t),
+      ‖(R.mult y : ℝ) * R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+        (s ^ n) • fderiv ℝ w (s • y) y)‖ ≤ K * B.indicator (fun x => (R.mult x : ℝ)) y := by
+    filter_upwards [hξ] with y hy s hs
+    obtain ⟨hs1, hs2⟩ := hs
+    by_cases hsy : s • y ∈ tsupport w
+    · have hyB := hmemB s hs1 y hsy
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      have hnorm := hK (s, y) ⟨⟨hs1.le, hs2.le⟩, hyB⟩
+      calc (R.mult y : ℝ) * ‖R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+            (s ^ n) • fderiv ℝ w (s • y) y)‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+            (s ^ n) • fderiv ℝ w (s • y) y‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * K) := by gcongr
+        _ = K * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hsy).1, (hvan _ hsy).2, smul_zero, zero_apply, smul_zero,
+        add_zero, map_zero, mul_zero, norm_zero]
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]
+        have hKn : 0 ≤ K := le_trans (norm_nonneg _)
+          (hK (t, y) ⟨⟨by linarith, by linarith⟩, hyB⟩)
+        positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_diff : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t / 2) (2 * t),
+      HasDerivAt (fun s => (R.mult y : ℝ) * R.orient y ((s ^ n) • w (s • y)))
+        ((R.mult y : ℝ) * R.orient y (((n : ℝ) * s ^ (n - 1)) • w (s • y) +
+          (s ^ n) • fderiv ℝ w (s • y) y)) s := by
+    refine Eventually.of_forall fun y s _ => ?_
+    have h1 : HasDerivAt (fun s : ℝ => s • y) y s := by
+      simpa using (hasDerivAt_id s).smul_const y
+    have h2 : HasDerivAt (fun s : ℝ => w (s • y)) (fderiv ℝ w (s • y) y) s :=
+      ((hws.differentiable (by simp)).differentiableAt (x := s • y)).hasFDerivAt.comp_hasDerivAt s h1
+    have h3 : HasDerivAt (fun s : ℝ => (s ^ n) • w (s • y))
+        ((s ^ n) • fderiv ℝ w (s • y) y + ((n : ℝ) * s ^ (n - 1)) • w (s • y)) s :=
+      (hasDerivAt_pow n s).smul h2
+    have h4 := ((R.orient y).hasFDerivAt.comp_hasDerivAt s h3).const_mul (R.mult y : ℝ)
+    rw [add_comm] at h4
+    exact h4
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound
+    ((hθB.integrable_indicator hBm).const_mul K) h_diff
+  exact key.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
