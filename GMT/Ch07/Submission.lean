@@ -1482,6 +1482,32 @@ theorem Submission.codim1_rdo_dg_flat_tangent_density_cone : ∀ (m : ℕ) (μ :
   -- Step 3: for every `α > 0` the cone `{α|z − y| ≤ |⟨z − y, v⟩|}` has density `0`
   exact ⟨hclosed, hopen, Submission.codim1_rdo_dg_ftd_cone_density m μ y v hm hv hfin hconv⟩
 
+/-- **Rectifiability from flat tangent measures** (Simon Ch. 3, 1.6 "⇐" in codimension one).
+Let `μ` be carried by the open set `D` and finite on its compact subsets. Suppose that at
+`μ`-a.e. `y` the blow-ups `r⁻ᵐ μ(y + r ·)` converge to `Hᵐ⌞ν(y)^⊥`, for a Borel unit vector
+field `ν`. Then `μ` is carried by a Borel countably `m`-rectifiable set.
+Almost every `y` lies in `D`, so `μ(B̄_{r/2}(y)) < ∞` for any ball `B_r(y) ⊆ D`. Hence
+`flat_tangent_density` gives (5) density one and (6) `μ(X_{1/4}(ν(y), y) ∩ B̄_ρ(y)) = o(ρᵐ)`.
+These are the hypotheses of the halving step (★), and iterating (★) (`of_halving`) gives `R`. -/
+theorem Submission.codim1_rdo_dg_rectifiable_of_flat_tangent : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0 := by
+  intro m D μ ν hm hD hDc hK hν hν1 hflat
+  -- step 1: (5) and (6) at `μ`-a.e. `y`; such `y` lie in `D`, where `μ` is finite on small balls
+  have hdens : ∀ᵐ y ∂μ,
+      Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m)))
+        (𝓝[>] 0) (𝓝 1) ∧
+      Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩
+        closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [hflat, mem_ae_iff.2 hDc] with y hy hyD
+    obtain ⟨r, hr, hrD⟩ := Metric.isOpen_iff.1 hD y hyD
+    have hfin : μ (closedBall y (r / 2)) ≠ ∞ :=
+      hK _ (isCompact_closedBall y (r / 2)) ((closedBall_subset_ball (half_lt_self hr)).trans hrD)
+    obtain ⟨h5, -, h6⟩ := Submission.codim1_rdo_dg_flat_tangent_density_cone m μ y (ν y) hm
+      (hν1 y) ⟨r / 2, half_pos hr, hfin⟩ hy
+    exact ⟨h5, h6 (1 / 4) (by norm_num)⟩
+  -- steps 2–6: the halving step (★) for open `U ⋐ D`; step 0: iterate (★) over balls in `D`
+  exact Submission.codim1_rdo_dg_rc_of_halving m D μ hD hDc hK
+    (Submission.codim1_rdo_dg_rc_halving_step m D μ ν hK hν hν1 hdens)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
