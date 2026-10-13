@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -864,6 +865,367 @@ theorem tdo_graph_lintegral_le : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ]
   rw [hΓ, hK]
   -- Step (iii): the Lipschitz image bound with `N = n + ℓ` and `K = √(1 + L²)`.
   exact Submission.tdo_gl_lintegral_image_le n (n + ℓ) _ D _ hD hF g hg
+/-- Integrals over the open ball `B̆_a(0)` of `ℝ¹` are integrals over the interval `(-a, a)`, for
+every function `φ` and every radius `a` (no integrability hypothesis).  The coordinate map
+`e := toLp 2 ∘ (funUnique (Fin 1) ℝ).symm : ℝ ≃ᵐ ℝ¹` sends `t` to `EuclideanSpace.single 0 t` and is
+volume preserving (`volume_preserving_funUnique`, `PiLp.volume_preserving_toLp`), so
+`MeasurePreserving.setIntegral_preimage_emb` transfers the integral; the preimage of the ball is
+`{t | |t| < a} = Ioo (-a) a` since `‖single 0 t‖ = |t|` (`PiLp.norm_single`). -/
+theorem tdo_ods_ball_integral_eq_interval : ∀ (φ : Rn 1 → ℝ) (a : ℝ),
+    (∫ y in ball (0 : Rn 1) a, φ y) =
+      ∫ t in Ioo (-a) a, φ (EuclideanSpace.single (0 : Fin 1) t) := by
+  intro φ a
+  set e : ℝ ≃ᵐ Rn 1 :=
+    (MeasurableEquiv.funUnique (Fin 1) ℝ).symm.trans (MeasurableEquiv.toLp 2 (Fin 1 → ℝ))
+  have he : ∀ t, e t = EuclideanSpace.single (0 : Fin 1) t := by
+    intro t
+    ext i
+    fin_cases i
+    simp [e]
+  have hmp : MeasurePreserving e volume volume :=
+    (PiLp.volume_preserving_toLp (Fin 1)).comp (volume_preserving_funUnique (Fin 1) ℝ).symm
+  have hpre : e ⁻¹' ball (0 : Rn 1) a = Ioo (-a) a := by
+    ext t
+    simp [he, abs_lt]
+  rw [← hmp.setIntegral_preimage_emb e.measurableEmbedding φ (ball 0 a), hpre]
+  simp_rw [he]
+/-- On `ℝ¹` the squared Hilbert–Schmidt norm of `Dw` at `single 0 t` is the squared norm of the
+derivative of `s ↦ w (single 0 s)` at `t`, for every map `w` (Mathlib's `fderiv`/`deriv` vanish at
+points of non-differentiability).  `hsNormSq B = ‖B e‖²` with `e := single 0 1` (`Fin 1` is a
+singleton) and `single 0 s = s • e`.  If `w` is differentiable at `single 0 t`, the chain rule
+(`HasFDerivAt.comp_hasDerivAt`) gives `deriv (w ∘ single 0) t = Dw(single 0 t) e`.  Otherwise
+`w ∘ single 0` is not differentiable at `t` either, since `w = (w ∘ single 0) ∘ π` for the
+coordinate projection `π := EuclideanSpace.proj 0`, so both sides vanish. -/
+theorem tdo_ods_hsNormSq_fderiv_single : ∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (t : ℝ),
+    hsNormSq (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t)) =
+      ‖deriv (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) t‖ ^ 2 := by
+  intro ℓ w t
+  set e : Rn 1 := EuclideanSpace.single (0 : Fin 1) (1 : ℝ)
+  have hsing : ∀ s : ℝ, EuclideanSpace.single (0 : Fin 1) s = s • e := by
+    intro s
+    ext i
+    fin_cases i
+    simp [e]
+  have hLHS : hsNormSq (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t)) =
+      ‖fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t) e‖ ^ 2 := by
+    simp [hsNormSq, e]
+  rw [hLHS]
+  by_cases hw : DifferentiableAt ℝ w (EuclideanSpace.single (0 : Fin 1) t)
+  · have hι : HasDerivAt (fun s : ℝ => EuclideanSpace.single (0 : Fin 1) s) e t := by
+      simpa [hsing] using (hasDerivAt_id t).smul_const e
+    have hW : HasDerivAt (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s))
+        (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t) e) t :=
+      hw.hasFDerivAt.comp_hasDerivAt t hι
+    rw [hW.deriv]
+  · have hW : ¬ DifferentiableAt ℝ (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) t := by
+      intro hW
+      apply hw
+      set π : Rn 1 →L[ℝ] ℝ := EuclideanSpace.proj (0 : Fin 1)
+      have hπt : π (EuclideanSpace.single (0 : Fin 1) t) = t := by simp [π]
+      have hcomp := DifferentiableAt.comp (EuclideanSpace.single (0 : Fin 1) t)
+        (by rw [hπt]; exact hW) π.differentiableAt
+      have hw_eq : ((fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) ∘ π) = w := by
+        funext z
+        simp only [Function.comp_apply]
+        congr 1
+        ext i
+        fin_cases i
+        simp [π]
+      rwa [hw_eq] at hcomp
+    rw [fderiv_zero_of_not_differentiableAt hw, deriv_zero_of_not_differentiableAt hW]
+    simp
+/-- **Integrability of `‖W'‖` for a Lipschitz curve.**  If `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on
+`[-a, a]`, then `r ↦ ‖deriv W r‖` is integrable on `(-a, a)`: it is measurable
+(`measurable_deriv`), bounded by `K` on `(-a, a)` because `[-a, a]` is a neighbourhood of each
+point there (`norm_deriv_le_of_lipschitzOn`), and `(-a, a)` has finite measure. -/
+theorem Submission.tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a) := by
+  intro ℓ W a K hW
+  -- (1) measurability of `‖W'‖`, (4) finite measure of `(-a, a)`
+  refine Measure.integrableOn_of_bounded (M := K) measure_Ioo_lt_top.ne
+    (measurable_deriv W).norm.aestronglyMeasurable ?_
+  -- (3) the a.e. bound on `(-a, a)` follows from the pointwise one
+  rw [ae_restrict_iff' measurableSet_Ioo]
+  refine Filter.Eventually.of_forall fun r hr => ?_
+  -- (2) `[-a, a]` is a neighbourhood of `r ∈ (-a, a)`, so `‖W'(r)‖ ≤ K`
+  rw [norm_norm]
+  exact norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW
+
+
+/-- A.e. derivative comparison for the one-dimensional sup bound in the tilt-excess decay
+(Simon Ch. 5, Theorem 4.5): if `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]` and `‖u‖ ≤ 1`, then
+`|(d/dr)⟨u, W(r)⟩| ≤ ‖W'(r)‖` for a.e. `r ∈ (-a, a)`.  By Rademacher's theorem `W` is
+differentiable within `[-a, a]` at a.e. point of `[-a, a]`, hence differentiable at a.e.
+`r ∈ (-a, a)`, where `[-a, a]` is a neighbourhood of `r`; there `x ↦ ⟨u, W x⟩` has derivative
+`⟨u, W'(r)⟩`, and Cauchy–Schwarz with `‖u‖ ≤ 1` gives the bound. -/
+theorem tdo_ods_ae_abs_deriv_inner_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0) (u : Rn ℓ), LipschitzOnWith K W (Icc (-a) a) → ‖u‖ ≤ 1 → ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |deriv (fun x => inner ℝ u (W x)) r| ≤ ‖deriv W r‖ := by
+  intro ℓ W a K u hW hu
+  -- Step 1 (Rademacher): for a.e. `r ∈ [-a, a]`, `W` is differentiable within `[-a, a]` at `r`.
+  filter_upwards [hW.ae_differentiableWithinAt_of_mem (μ := volume)] with r hr hrI
+  -- Step 2: for `r ∈ (-a, a)`, `[-a, a]` is a neighbourhood of `r`, so `W` is differentiable at `r`.
+  have hWr : DifferentiableAt ℝ W r :=
+    (hr (Ioo_subset_Icc_self hrI)).differentiableAt (Icc_mem_nhds hrI.1 hrI.2)
+  -- Step 3: `x ↦ ⟨u, W x⟩` has derivative `⟨u, W'(r)⟩ + ⟨0, W r⟩ = ⟨u, W'(r)⟩` at `r`.
+  have hd : HasDerivAt (fun x => inner ℝ u (W x)) (inner ℝ u (deriv W r)) r := by
+    simpa using (hasDerivAt_const r u).inner ℝ hWr.hasDerivAt
+  rw [hd.deriv]
+  -- Step 4: Cauchy–Schwarz and `‖u‖ ≤ 1`.
+  calc |inner ℝ u (deriv W r)| ≤ ‖u‖ * ‖deriv W r‖ := abs_real_inner_le_norm u (deriv W r)
+    _ ≤ 1 * ‖deriv W r‖ := mul_le_mul_of_nonneg_right hu (norm_nonneg _)
+    _ = ‖deriv W r‖ := one_mul _
+
+end Submission
+
+namespace Submission
+
+/-- Interval integral bounded by an a.e. dominating function, for the FTC bound in the
+one-dimensional sup estimate of the tilt-excess decay (Simon Ch. 5, Theorem 4.5): if `h` is
+integrable on `(-a, a)`, `s, t ∈ [-a, a]`, `g` is interval integrable between `s` and `t` and
+`|g| ≤ h` a.e. on `(-a, a)`, then `∫_s^t g ≤ ∫_{(-a,a)} h`.  Since `uIoc s t ⊆ (-a, a]` and the
+endpoint `a` is Lebesgue-null,
+`∫_s^t g ≤ ‖∫_s^t g‖ ≤ ∫_{uIoc s t} ‖g‖ ≤ ∫_{uIoc s t} h ≤ ∫_{(-a,a]} h = ∫_{(-a,a)} h`,
+where the fourth step uses `0 ≤ |g| ≤ h` a.e. on `(-a, a]`. -/
+theorem tdo_ods_intervalIntegral_le_of_ae_abs_le : ∀ (g h : ℝ → ℝ) (a s t : ℝ), IntegrableOn h (Ioo (-a) a) → s ∈ Icc (-a) a → t ∈ Icc (-a) a → IntervalIntegrable g volume s t → (∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |g r| ≤ h r) → ∫ r in s..t, g r ≤ ∫ r in Ioo (-a) a, h r := by
+  intro g h a s t hh hs ht hg hgh
+  -- Step 1: `uIoc s t ⊆ (-a, a]`, since `s, t ∈ [-a, a]`.
+  have hsub : uIoc s t ⊆ Ioc (-a) a := by
+    intro r hr
+    rcases mem_uIoc.1 hr with ⟨h1, h2⟩ | ⟨h1, h2⟩
+    · exact ⟨hs.1.trans_lt h1, h2.trans ht.2⟩
+    · exact ⟨ht.1.trans_lt h1, h2.trans hs.2⟩
+  -- Step 2: `h` is integrable on `(-a, a]` (the endpoint `a` is null and `h a` is finite),
+  -- hence on `uIoc s t`.
+  have hhIoc : IntegrableOn h (Ioc (-a) a) :=
+    (integrableOn_Ioc_iff_integrableOn_Ioo enorm_ne_top).2 hh
+  have hhI : IntegrableOn h (uIoc s t) := hhIoc.mono_set hsub
+  -- Step 3: `‖g‖` is integrable on `uIoc s t`.
+  have hgI : IntegrableOn (fun r => ‖g r‖) (uIoc s t) := (intervalIntegrable_iff.1 hg).norm
+  -- Step 4: `|g| ≤ h` a.e. on `(-a, a]` (a.e. `r ≠ a`), hence `0 ≤ h` a.e. there.
+  have hdom : ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioc (-a) a → |g r| ≤ h r := by
+    filter_upwards [hgh, Measure.ae_ne volume a] with r hr hra hrI
+    exact hr ⟨hrI.1, lt_of_le_of_ne hrI.2 hra⟩
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Ioc (-a) a)] h := by
+    rw [EventuallyLE, ae_restrict_iff' measurableSet_Ioc]
+    filter_upwards [hdom] with r hr hrI
+    exact (abs_nonneg _).trans (hr hrI)
+  -- Step 5: the chain of inequalities.
+  calc ∫ r in s..t, g r ≤ ‖∫ r in s..t, g r‖ := Real.le_norm_self _
+    _ ≤ ∫ r in uIoc s t, ‖g r‖ := intervalIntegral.norm_integral_le_integral_norm_uIoc
+    _ ≤ ∫ r in uIoc s t, h r := by
+        refine setIntegral_mono_on_ae hgI hhI measurableSet_uIoc ?_
+        filter_upwards [hdom] with r hr hrI
+        rw [Real.norm_eq_abs]
+        exact hr (hsub hrI)
+    _ ≤ ∫ r in Ioc (-a) a, h r := setIntegral_mono_set hhIoc hnonneg (ae_of_all _ hsub)
+    _ = ∫ r in Ioo (-a) a, h r := integral_Ioc_eq_integral_Ioo
+
+end Submission
+
+namespace Submission
+
+/-- **FTC bound for a Lipschitz curve** (used for the one-dimensional sup bound in the proof of the
+Tilt-excess Decay Theorem, Simon Ch. 5, 4.5).  If `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]`, then
+`|W(t) - W(s)| ≤ ∫_{(-a,a)} |W'|` for all `s, t ∈ [-a, a]`.
+
+Proof: if `W(t) = W(s)` the right side is the integral of a nonnegative function.  Otherwise put
+`v = W(t) - W(s)` and `u = |v|⁻¹ v`, so `|u| = 1` and `⟨u, v⟩ = |v|`.  The scalar function
+`φ = ⟨u, W⟩` is `K`-Lipschitz on `[-a, a] ⊇ uIcc s t`, hence absolutely continuous there, so
+`|v| = φ(t) - φ(s) = ∫_s^t φ'` (`AbsolutelyContinuousOnInterval.integral_deriv_eq_sub`) and `φ'` is
+interval integrable.  Since `|W'|` is integrable on `(-a, a)` (`tdo_ods_integrableOn_norm_deriv`)
+and `|φ'| ≤ |W'|` a.e. on `(-a, a)` (`tdo_ods_ae_abs_deriv_inner_le`), the dominated interval
+bound `tdo_ods_intervalIntegral_le_of_ae_abs_le` gives `∫_s^t φ' ≤ ∫_{(-a,a)} |W'|`. -/
+theorem tdo_ods_norm_sub_le_integral_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → ∀ s ∈ Icc (-a) a, ∀ t ∈ Icc (-a) a, ‖W t - W s‖ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖ := by
+  intro ℓ W a K hW s hs t ht
+  -- The trivial case `W t = W s`: the integrand is nonnegative.
+  by_cases hv : W t - W s = 0
+  · rw [hv, norm_zero]
+    exact integral_nonneg fun r => norm_nonneg _
+  -- The unit vector `u = |v|⁻¹ v` for `v = W t - W s`.
+  have hvn : ‖W t - W s‖ ≠ 0 := norm_ne_zero_iff.mpr hv
+  set u : Rn ℓ := ‖W t - W s‖⁻¹ • (W t - W s) with hu_def
+  have hu : ‖u‖ ≤ 1 := by
+    have h1 : ‖u‖ = 1 := by rw [hu_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvn]
+    exact h1.le
+  -- `φ = ⟨u, W⟩` is `K`-Lipschitz on `[-a, a]`, hence absolutely continuous on `uIcc s t`.
+  set φ : ℝ → ℝ := fun x => inner ℝ u (W x) with hφ_def
+  have hφ : LipschitzOnWith K φ (Icc (-a) a) := by
+    refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+    calc dist (φ x) (φ y) = |inner ℝ u (W x - W y)| := by
+          rw [Real.dist_eq, inner_sub_right]
+      _ ≤ ‖u‖ * ‖W x - W y‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖W x - W y‖ := mul_le_of_le_one_left (norm_nonneg _) hu
+      _ = dist (W x) (W y) := (dist_eq_norm _ _).symm
+      _ ≤ K * dist x y := hW.dist_le_mul x hx y hy
+  have hac := (hφ.mono (uIcc_subset_Icc hs ht)).absolutelyContinuousOnInterval
+  -- `φ(t) - φ(s) = ⟨u, v⟩ = |v|`.
+  have hφst : φ t - φ s = ‖W t - W s‖ := by
+    show inner ℝ u (W t) - inner ℝ u (W s) = ‖W t - W s‖
+    rw [← inner_sub_right, hu_def, real_inner_smul_left, real_inner_self_eq_norm_sq, sq,
+      ← mul_assoc, inv_mul_cancel₀ hvn, one_mul]
+  calc ‖W t - W s‖ = φ t - φ s := hφst.symm
+    _ = ∫ r in s..t, deriv φ r := hac.integral_deriv_eq_sub.symm
+    _ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖ :=
+      Submission.tdo_ods_intervalIntegral_le_of_ae_abs_le (deriv φ) (fun r => ‖deriv W r‖) a s t
+        (Submission.tdo_ods_integrableOn_norm_deriv ℓ W a K hW) hs ht hac.intervalIntegrable_deriv
+        (Submission.tdo_ods_ae_abs_deriv_inner_le ℓ W a K u hW hu)
+
+/-- Cauchy–Schwarz on `(-a, a)`: `∫_{(-a,a)} g ≤ √(2a ∫_{(-a,a)} g²)`.  If `g` is not integrable on
+`(-a, a)`, the left side is `0` (`integral_undef`).  Otherwise put `I := ∫ g²`, `J := ∫ |g|` and
+`m := J / (2a)`.  Then `∫ g ≤ J` (`integral_mono`), the measure of `(-a, a)` is `2a`
+(`Real.volume_real_Ioo_of_le`), and the variance identity
+`0 ≤ ∫ (|g| - m)² = I - 2mJ + 2a m² = I - J² / (2a)` gives `J² ≤ 2a I`, so
+`J ≤ |J| ≤ √(2a I)` (`Real.abs_le_sqrt`). -/
+theorem tdo_ods_integral_le_sqrt : ∀ (g : ℝ → ℝ) (a : ℝ), 0 < a →
+    IntegrableOn (fun s => g s ^ 2) (Ioo (-a) a) →
+    (∫ s in Ioo (-a) a, g s) ≤ Real.sqrt (2 * a * ∫ s in Ioo (-a) a, g s ^ 2) := by
+  intro g a ha hg2
+  by_cases hg : IntegrableOn g (Ioo (-a) a)
+  swap
+  · rw [integral_undef hg]
+    exact Real.sqrt_nonneg _
+  set I := ∫ s in Ioo (-a) a, g s ^ 2
+  set J := ∫ s in Ioo (-a) a, |g s|
+  have hgJ : (∫ s in Ioo (-a) a, g s) ≤ J :=
+    integral_mono hg hg.abs fun s => le_abs_self (g s)
+  have hvol : volume.real (Ioo (-a) a) = 2 * a := by
+    rw [Real.volume_real_Ioo_of_le (by linarith)]; ring
+  set m := J / (2 * a) with hm
+  have hvar : ∫ s in Ioo (-a) a, (|g s| - m) ^ 2 = I - 2 * m * J + 2 * a * m ^ 2 := by
+    have hpt : ∀ s, (|g s| - m) ^ 2 = (g s ^ 2 - 2 * m * |g s|) + m ^ 2 := by
+      intro s; rw [sub_sq, sq_abs]; ring
+    have hgm : IntegrableOn (fun s => 2 * m * |g s|) (Ioo (-a) a) := hg.abs.const_mul (2 * m)
+    have hsub : IntegrableOn (fun s => g s ^ 2 - 2 * m * |g s|) (Ioo (-a) a) := hg2.sub hgm
+    have hc : IntegrableOn (fun _ : ℝ => m ^ 2) (Ioo (-a) a) :=
+      integrableOn_const measure_Ioo_lt_top.ne
+    simp_rw [hpt]
+    rw [integral_add hsub hc, integral_sub hg2 hgm, integral_const_mul, setIntegral_const, hvol,
+      smul_eq_mul]
+  have hnn : 0 ≤ ∫ s in Ioo (-a) a, (|g s| - m) ^ 2 :=
+    setIntegral_nonneg measurableSet_Ioo fun s _ => sq_nonneg _
+  have hJ2 : J ^ 2 ≤ 2 * a * I := by
+    rw [hvar, hm] at hnn
+    have h2a : (0 : ℝ) < 2 * a := by linarith
+    have key : I - 2 * (J / (2 * a)) * J + 2 * a * (J / (2 * a)) ^ 2 = I - J ^ 2 / (2 * a) := by
+      field_simp; ring
+    rw [key, sub_nonneg, div_le_iff₀ h2a] at hnn
+    linarith
+  calc (∫ s in Ioo (-a) a, g s) ≤ J := hgJ
+    _ ≤ |J| := le_abs_self J
+    _ ≤ Real.sqrt (2 * a * I) := Real.abs_le_sqrt hJ2
+
+end Submission
+/-- One-dimensional sup bound (used for the one-dimensional sup estimate in the proof of the
+Tilt-excess Decay Theorem, Simon Ch. 5, 4.5): if `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]`, then
+for every `t ∈ [-a, a]`,
+`|W(t)| ≤ ((2a)⁻¹ ∫_{(-a,a)} |W|²)^{1/2} + (2a ∫_{(-a,a)} |W'|²)^{1/2}`.
+
+Proof: `|W|` and `|W|²` are continuous on `[-a, a]`, and `|W'|² ≤ K²` on `(-a, a)`
+(`norm_deriv_le_of_lipschitzOn`), so all three integrands are integrable on `(-a, a)`.  By
+`tdo_ods_norm_sub_le_integral_deriv`, `|W(t)| ≤ |W(s)| + D` for all `s ∈ (-a, a)`, where
+`D = ∫_{(-a,a)} |W'|`; averaging over `s` gives `|W(t)| ≤ (2a)⁻¹ ∫_{(-a,a)} |W| + D`, and
+`tdo_ods_integral_le_sqrt` (Cauchy–Schwarz) bounds `∫_{(-a,a)} |W|` and `D`. -/
+theorem Submission.tdo_ods_interval_sup_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K W (Icc (-a) a) → ∀ t ∈ Icc (-a) a, ‖W t‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) + Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2) := by
+  intro ℓ W a K ha hW t ht
+  have h2a : 0 < 2 * a := by linarith
+  have hfin : volume (Ioo (-a) a) ≠ ∞ := measure_Ioo_lt_top.ne
+  -- Step 1: `|W|` and `|W|²` are continuous on `[-a, a]`, hence integrable on `(-a, a)`.
+  have hcont : ContinuousOn (fun s => ‖W s‖) (Icc (-a) a) := hW.continuousOn.norm
+  have hW1 : IntegrableOn (fun s => ‖W s‖) (Ioo (-a) a) :=
+    hcont.integrableOn_Icc.mono_set Ioo_subset_Icc_self
+  have hW2 : IntegrableOn (fun s => ‖W s‖ ^ 2) (Ioo (-a) a) :=
+    (hcont.pow 2).integrableOn_Icc.mono_set Ioo_subset_Icc_self
+  -- Step 2: `deriv W` is measurable and `|W'|² ≤ K²` on `(-a, a)`.
+  have hD2 : IntegrableOn (fun s => ‖deriv W s‖ ^ 2) (Ioo (-a) a) := by
+    refine Measure.integrableOn_of_bounded (M := (K : ℝ) ^ 2) hfin
+      ((measurable_deriv W).norm.pow_const 2).aestronglyMeasurable
+      ((ae_restrict_iff' measurableSet_Ioo).2 (ae_of_all _ fun r hr => ?_))
+    rw [Real.norm_of_nonneg (sq_nonneg _)]
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW) 2
+  -- Step 3: `|W(t)| ≤ |W(s)| + D` for every `s ∈ (-a, a)`.
+  set D := ∫ r in Ioo (-a) a, ‖deriv W r‖
+  have hpt : ∀ s ∈ Ioo (-a) a, ‖W t‖ ≤ ‖W s‖ + D := fun s hs =>
+    (norm_le_norm_add_norm_sub' (W t) (W s)).trans (add_le_add le_rfl
+      (Submission.tdo_ods_norm_sub_le_integral_deriv ℓ W a K hW s (Ioo_subset_Icc_self hs) t ht))
+  -- Step 4: average over `s ∈ (-a, a)`, an interval of length `2a`.
+  have hvol : volume.real (Ioo (-a) a) = 2 * a := by
+    rw [Real.volume_real_Ioo_of_le (by linarith)]
+    ring
+  have hconst : IntegrableOn (fun _ : ℝ => ‖W t‖) (Ioo (-a) a) := integrableOn_const hfin
+  have hconstD : IntegrableOn (fun _ : ℝ => D) (Ioo (-a) a) := integrableOn_const hfin
+  have hsum : IntegrableOn (fun s => ‖W s‖ + D) (Ioo (-a) a) := hW1.add hconstD
+  have havg : 2 * a * ‖W t‖ ≤ (∫ s in Ioo (-a) a, ‖W s‖) + 2 * a * D := by
+    have h := setIntegral_mono_on hconst hsum measurableSet_Ioo hpt
+    rwa [setIntegral_const, integral_add hW1 hconstD, setIntegral_const, hvol, smul_eq_mul,
+      smul_eq_mul] at h
+  have hinv : (2 * a)⁻¹ * (2 * a) = 1 := inv_mul_cancel₀ h2a.ne'
+  have hmean : ‖W t‖ ≤ (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖) + D :=
+    calc ‖W t‖ = (2 * a)⁻¹ * (2 * a * ‖W t‖) := by rw [← mul_assoc, hinv, one_mul]
+      _ ≤ (2 * a)⁻¹ * ((∫ s in Ioo (-a) a, ‖W s‖) + 2 * a * D) :=
+        mul_le_mul_of_nonneg_left havg (inv_nonneg.2 h2a.le)
+      _ = (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖) + D := by
+        rw [mul_add, ← mul_assoc, hinv, one_mul]
+  -- Step 5: Cauchy–Schwarz for `|W|`.
+  have hW_cs : (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖) ≤
+      Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) :=
+    calc (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖)
+        ≤ (2 * a)⁻¹ * Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) :=
+          mul_le_mul_of_nonneg_left
+            (Submission.tdo_ods_integral_le_sqrt (fun s => ‖W s‖) a ha hW2)
+            (inv_nonneg.2 h2a.le)
+      _ = Real.sqrt ((2 * a)⁻¹ ^ 2 * (2 * a * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2)) := by
+          rw [Real.sqrt_mul (sq_nonneg (2 * a)⁻¹), Real.sqrt_sq (inv_nonneg.2 h2a.le)]
+      _ = Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) := by
+          rw [sq, mul_assoc, ← mul_assoc (2 * a)⁻¹ (2 * a), hinv, one_mul]
+  -- Step 6: Cauchy–Schwarz for `|W'|`.
+  have hD_cs : D ≤ Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2) :=
+    Submission.tdo_ods_integral_le_sqrt (fun s => ‖deriv W s‖) a ha hD2
+  -- Step 7: combine.
+  exact hmean.trans (add_le_add hW_cs hD_cs)
+
+namespace Submission
+
+/-- **One-dimensional sup bound** (used for `n = 1 < p < 2` in the proof of the Tilt-excess Decay
+Theorem, Simon Ch. 5, 4.5).  If `w : ℝ¹ → ℝ^ℓ` is `K`-Lipschitz on the closed ball `B̄_a(0)` with
+`a > 0`, then for every `x ∈ B̄_a(0)`
+`|w(x)| ≤ ((2a)⁻¹ ∫_{B_a(0)} |w|²)^{1/2} + (2a ∫_{B_a(0)} |Dw|²)^{1/2}`.
+
+Proof: `ι(t) = t e₁` maps `[-a, a]` isometrically into `B̄_a(0)`, so `W = w ∘ ι` is `K`-Lipschitz on
+`[-a, a]`, and `x = ι(x₁)` with `x₁ ∈ [-a, a]`.  The interval bound `tdo_ods_interval_sup_le` at
+`t = x₁` is the claim once both ball integrals are written as integrals over `(-a, a)`
+(`tdo_ods_ball_integral_eq_interval`) and `|Dw(ι t)|² = |W'(t)|²`
+(`tdo_ods_hsNormSq_fderiv_single`). -/
+theorem tdo_one_dim_sup_le : ∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K w (closedBall 0 a) → ∀ x ∈ closedBall (0 : Rn 1) a, ‖w x‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ y in ball (0 : Rn 1) a, ‖w y‖ ^ 2) + Real.sqrt (2 * a * ∫ y in ball (0 : Rn 1) a, hsNormSq (fderiv ℝ w y)) := by
+  intro ℓ w a K ha hw x hx
+  -- Step 2: the curve `W(t) = w(t e₁)` is `K`-Lipschitz on `[-a, a]`.
+  set W : ℝ → Rn ℓ := fun s => w (EuclideanSpace.single (0 : Fin 1) s)
+  have hmaps : ∀ s ∈ Icc (-a) a,
+      EuclideanSpace.single (0 : Fin 1) s ∈ closedBall (0 : Rn 1) a := by
+    intro s hs
+    rw [mem_closedBall_zero_iff, PiLp.norm_single, Real.norm_eq_abs]
+    exact abs_le.mpr hs
+  have hWlip : LipschitzOnWith K W (Icc (-a) a) := by
+    intro s hs t ht
+    simpa only [W, PiLp.edist_single_same] using hw (hmaps s hs) (hmaps t ht)
+  -- `x = x₁ e₁` with `x₁ ∈ [-a, a]`.
+  have hx_eq : EuclideanSpace.single (0 : Fin 1) (x 0) = x := by
+    ext i
+    rw [Subsingleton.elim i 0, PiLp.single_eq_same]
+  have hx0 : x 0 ∈ Icc (-a) a := by
+    have h := mem_closedBall_zero_iff.mp hx
+    rw [← hx_eq, PiLp.norm_single, Real.norm_eq_abs] at h
+    exact abs_le.mp h
+  -- Step 8: both ball integrals are integrals over `(-a, a)` along `W`.
+  have h1 : (∫ y in ball (0 : Rn 1) a, ‖w y‖ ^ 2) = ∫ s in Ioo (-a) a, ‖W s‖ ^ 2 :=
+    Submission.tdo_ods_ball_integral_eq_interval (fun y => ‖w y‖ ^ 2) a
+  have h2 : (∫ y in ball (0 : Rn 1) a, hsNormSq (fderiv ℝ w y)) =
+      ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2 := by
+    rw [Submission.tdo_ods_ball_integral_eq_interval (fun y => hsNormSq (fderiv ℝ w y)) a]
+    exact integral_congr_ae (ae_of_all _ fun s =>
+      Submission.tdo_ods_hsNormSq_fderiv_single ℓ w s)
+  -- Steps 2–7: the interval bound for `W` at `t = x₁`.
+  have hWx : W (x 0) = w x := congrArg w hx_eq
+  rw [h1, h2, ← hWx]
+  exact Submission.tdo_ods_interval_sup_le ℓ W a K ha hWlip (x 0) hx0
 
 end Submission
 
