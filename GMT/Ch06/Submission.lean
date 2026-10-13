@@ -1187,6 +1187,93 @@ theorem Submission.lpf_wtc_ae_zero_density_off_set :
   refine (hy hyW fun h => hyS (hyA ▸ h)).congr fun ρ => ?_
   rw [hνB _ measurableSet_closedBall]
 
+/-- Density bound at a tangent point (Simon Ch. 3, Remark 1.5(3), boundedness part): if `T` is
+the approximate tangent space (Def. 1.4) of `S` at `y` and `Hⁿ(S ∩ B̄_r(y)) < ∞` for some `r > 0`,
+then `Hⁿ(S ∩ B̄_ρ(y)) ≤ K ρⁿ` for all sufficiently small `ρ > 0`. -/
+theorem Submission.lpf_wtc_density_bound_of_tangent : ∀ (Q n : ℕ) (S : Set (Eucl Q)) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y r) < ∞) → ∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n) := by
+  intro Q n S y T hT ⟨r, hr, hfin⟩
+  -- Step 1: the cut-off `φ₀(z) = min(1, max(0, 2 - |z|))`, an element of `C_c(ℝ^Q, ℝ)` with
+  -- `0 ≤ φ₀ ≤ 1`, `φ₀ = 1` on `B̄₁(0)` and `φ₀ = 0` off `B̄₂(0)`.
+  have hzero : ∀ z : Eucl Q, 2 ≤ ‖z‖ → min 1 (max 0 (2 - ‖z‖)) = (0 : ℝ) := fun z hz => by
+    rw [max_eq_left (by linarith), min_eq_right zero_le_one]
+  let φ₀ : CompactlySupportedContinuousMap (Eucl Q) ℝ :=
+    ⟨⟨fun z => min 1 (max 0 (2 - ‖z‖)), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall 0 2) fun z hz =>
+        hzero z (not_le.1 (mt mem_closedBall_zero_iff.2 hz)).le⟩
+  have hφ₀ : ∀ z, φ₀ z = min 1 (max 0 (2 - ‖z‖)) := fun _ => rfl
+  have hφ₀01 : ∀ z, 0 ≤ φ₀ z ∧ φ₀ z ≤ 1 := fun z => by
+    rw [hφ₀]
+    exact ⟨le_min zero_le_one (le_max_left _ _), min_le_left _ _⟩
+  have hφ₀one : ∀ z, ‖z‖ ≤ 1 → φ₀ z = 1 := fun z hz => by
+    rw [hφ₀]
+    exact min_eq_left (le_max_of_le_right (by linarith))
+  set L₀ : ℝ := ∫ z in (T : Set (Eucl Q)), φ₀ z ∂(μHE[n] : Measure (Eucl Q))
+  refine ⟨(L₀ + 1).toNNReal, ?_⟩
+  -- Step 2: the blow-up integrals of `φ₀` tend to `L₀`, so they are eventually `≤ L₀ + 1`;
+  -- also eventually `0 < ρ < r / 2`.
+  filter_upwards [(hT.2 φ₀).eventually (eventually_le_nhds (lt_add_one L₀)),
+    Ioo_mem_nhdsGT (half_pos hr)] with ρ hρ ⟨hρ0, hρr⟩
+  have hρn : 0 < ρ ^ n := pow_pos hρ0 n
+  have hnorm : ∀ x, ‖Poincare.SimonGMT.Chapter03.blowUpMap y ρ x‖ = ρ⁻¹ * dist x y := by
+    intro x
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.2 hρ0), dist_eq_norm]
+  have hcont : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap y ρ) := by
+    unfold Poincare.SimonGMT.Chapter03.blowUpMap
+    fun_prop
+  have hsub : ∀ s ≤ r, S ∩ closedBall y s ⊆ S ∩ closedBall y r := fun s hs =>
+    inter_subset_inter_right _ (closedBall_subset_closedBall hs)
+  -- Step 3: `ψ = φ₀ ∘ η_{y,ρ}` is integrable on `S` (it is bounded by `1_{B̄_{2ρ}(y)}` and
+  -- `Hⁿ(S ∩ B̄_{2ρ}(y)) < ∞`) and dominates `1_{B̄_ρ(y)}`.
+  have hψint : Integrable (fun x => φ₀ (Poincare.SimonGMT.Chapter03.blowUpMap y ρ x))
+      ((μHE[n] : Measure (Eucl Q)).restrict S) := by
+    refine Integrable.mono' (g := (closedBall y (2 * ρ)).indicator fun _ => (1 : ℝ)) ?_
+      (φ₀.continuous.comp hcont).aestronglyMeasurable (ae_of_all _ fun x => ?_)
+    · rw [integrable_indicator_iff measurableSet_closedBall]
+      refine integrableOn_const ?_
+      rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+      exact ne_top_of_le_ne_top hfin.ne (measure_mono (hsub _ (by linarith)))
+    · by_cases hx : x ∈ closedBall y (2 * ρ)
+      · rw [indicator_of_mem hx, Real.norm_of_nonneg (hφ₀01 _).1]
+        exact (hφ₀01 _).2
+      · have h2 : 2 ≤ ‖Poincare.SimonGMT.Chapter03.blowUpMap y ρ x‖ := by
+          rw [mem_closedBall, not_le] at hx
+          rw [hnorm, le_inv_mul_iff₀ hρ0]
+          linarith
+        rw [indicator_of_notMem hx, hφ₀, hzero _ h2, norm_zero]
+  have hle : (μHE[n] : Measure (Eucl Q)).real (S ∩ closedBall y ρ) ≤
+      ∫ x in S, φ₀ (Poincare.SimonGMT.Chapter03.blowUpMap y ρ x)
+        ∂(μHE[n] : Measure (Eucl Q)) := by
+    rw [inter_comm, ← measureReal_restrict_apply measurableSet_closedBall,
+      ← integral_indicator_one measurableSet_closedBall]
+    refine integral_mono_of_nonneg (ae_of_all _ fun x => ?_) hψint (ae_of_all _ fun x => ?_)
+    · exact indicator_nonneg (fun _ _ => zero_le_one) x
+    · by_cases hx : x ∈ closedBall y ρ
+      · have h1 : ‖Poincare.SimonGMT.Chapter03.blowUpMap y ρ x‖ ≤ 1 := by
+          rw [hnorm, inv_mul_le_iff₀ hρ0, mul_one]
+          exact hx
+        rw [indicator_of_mem hx, Pi.one_apply]
+        exact (hφ₀one _ h1).ge
+      · rw [indicator_of_notMem hx]
+        exact (hφ₀01 _).1
+  -- Step 4: by the blow-up identity, `∫_S ψ = ρⁿ ∫_{η_{y,ρ}(S)} φ₀ ≤ (L₀ + 1) ρⁿ`.
+  have hS : ∫ x in S, φ₀ (Poincare.SimonGMT.Chapter03.blowUpMap y ρ x)
+        ∂(μHE[n] : Measure (Eucl Q)) =
+      ρ ^ n * ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y ρ '' S, φ₀ z
+        ∂(μHE[n] : Measure (Eucl Q)) := by
+    rw [Submission.lpf_wtc_blowup_setIntegral_image Q n y ρ S φ₀ hρ0,
+      mul_inv_cancel_left₀ hρn.ne']
+  have hfinρ : (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y ρ) ≠ ∞ :=
+    ne_top_of_le_ne_top hfin.ne (measure_mono (hsub _ (by linarith)))
+  calc (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y ρ)
+      = ENNReal.ofReal ((μHE[n] : Measure (Eucl Q)).real (S ∩ closedBall y ρ)) :=
+        (ofReal_measureReal hfinρ).symm
+    _ ≤ ENNReal.ofReal ((L₀ + 1) * ρ ^ n) := by
+        refine ENNReal.ofReal_le_ofReal (hle.trans ?_)
+        rw [hS, mul_comm]
+        exact mul_le_mul_of_nonneg_right hρ hρn.le
+    _ = (L₀ + 1).toNNReal * ENNReal.ofReal (ρ ^ n) := ENNReal.ofReal_mul' hρn.le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
