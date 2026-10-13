@@ -509,7 +509,7 @@ theorem Submission.idtp_ccd_sfv_span_tangentSpace_finrank : ∀ (P d : ℕ) (M :
         hψd.isLittleO.comp_tendsto hφv
       have h2 : (fun t => φ t - v) =O[𝓝 0] (fun t => γ t - ψ v) := by
         refine Asymptotics.IsBigO.of_bound (2 * K) ?_
-        filter_upwards [h1.def (c := 1 / (2 * K)) (by positivity), hφ] with t ht hφt
+        filter_upwards [h1.bound (c := 1 / (2 * K)) (by positivity), hφ] with t ht hφt
         rw [hφt.2] at ht
         have h4 : ‖L (φ t - v)‖ ≤ ‖γ t - ψ v‖ + 1 / (2 * K) * ‖φ t - v‖ := by
           calc ‖L (φ t - v)‖ = ‖(γ t - ψ v) - (γ t - ψ v - L (φ t - v))‖ := by congr 1; abel
