@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.lipschitz_near_point-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+  "depth": 4,
+  "title": "A C¹ map is (c + η)-Lipschitz on small balls around a point where ‖Df‖ ≤ c",
+  "statement": "Let P ∈ ℕ, f : ℝ^P → ℝ^P, x ∈ ℝ^P and δ, c ∈ ℝ with δ > 0. Suppose f is C¹ on the open ball B_δ(x) and its Fréchet derivative at x (Mathlib fderiv ℝ f x) has operator norm ‖Df(x)‖ ≤ c. Then for every η > 0 there is s with 0 < s ≤ δ such that |f(y) − f(z)| ≤ (c + η)|y − z| for all y, z ∈ B_s(x).",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → Euclid P) (x : Euclid P) (δ c : ℝ), 0 < δ → ContDiffOn ℝ 1 f (ball x δ) → ‖fderiv ℝ f x‖ ≤ c → ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖f y - f z‖ ≤ (c + η) * ‖y - z‖",
+  "lean_name": "dtc_bc_lr_lipschitz_near_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d-a1"
+}
