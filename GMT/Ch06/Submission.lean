@@ -1108,6 +1108,27 @@ theorem Submission.fiw_tl_ae_l1_density :
     ⟨r - dist x y, sub_pos.2 (mem_ball.1 hx.2), hθ₁i _ (isCompact_closedBall x _) hρU,
       hθ₂i _ (isCompact_closedBall x _) hρU⟩ hL hD
 
+/-- Locality of weighted approximate tangent spaces (Simon Ch. 3, Remarks 1.5(2), 1.8(1); the
+step `T_x M_C = T_x M_Q` of Ch. 6, 3.13): for `Hⁿ`-a.e. `x ∈ M₁ ∩ M₂`, every weighted approximate
+tangent space of `(M₁, θ₁)` at `x` is one of `(M₂, θ₂)`.  By `fiw_tl_ae_l1_density`, a.e.
+`x ∈ M₁ ∩ M₂` has `∫_{B̄_s(x)} |1_{M₂} θ₂ − c 1_{M₁} θ₁| dHⁿ = o(∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ)` as
+`s ↓ 0`, where `c = θ₂(x) / θ₁(x)`, so `θ₂(x) = c θ₁(x)`.  As `x ∈ U`, some compact `B̄_ρ(x)` lies
+in `U`, so `θᵢ` is integrable on `Mᵢ ∩ B̄_ρ(x)`, and `fiw_tl_transfer` carries the tangent space
+from `(M₁, θ₁)` to `(M₂, θ₂)`.  The exceptional null set does not depend on `Q`. -/
+theorem Submission.fiw_tangent_locality :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ), M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M₁, 0 < θ₁ x) → (∀ x ∈ M₂, 0 < θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₁ (M₁ ∩ K) (μHE[n] : Measure (Eucl P))) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₂ (M₂ ∩ K) (μHE[n] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q := by
+  intro P n U hU M₁ M₂ θ₁ θ₂ hM₁U hM₂U hM₁ hM₂ hθ₁ hθ₂ hθ₁i hθ₂i
+  -- Step 1: a.e. `x ∈ M₁ ∩ M₂` is an `L¹`-density point with ratio `c = θ₂(x) / θ₁(x)`.
+  filter_upwards [Submission.fiw_tl_ae_l1_density P n U hU M₁ M₂ θ₁ θ₂ hM₁U hM₂U hM₁ hM₂ hθ₁ hθ₂
+    hθ₁i hθ₂i, ae_restrict_mem₀ (hM₁.inter hM₂)] with x hdens hx Q hQ
+  -- Step 2: `x ∈ U` is open, so `B̄_ρ(x) ⊆ U` for some `ρ > 0`.
+  obtain ⟨ρ, hρ, hρU⟩ := nhds_basis_closedBall.mem_iff.1 (hU.mem_nhds (hM₁U hx.1))
+  -- Step 3: transfer the tangent space; `θ₂(x) = (θ₂(x) / θ₁(x)) θ₁(x)` as `θ₁(x) > 0`.
+  exact Submission.fiw_tl_transfer P n M₁ M₂ θ₁ θ₂ x (θ₂ x / θ₁ x) ρ hρ hM₁ hM₂
+    (fun y hy => (hθ₁ y hy).le) (hθ₁i _ (isCompact_closedBall x ρ) hρU)
+    (hθ₂i _ (isCompact_closedBall x ρ) hρU) (div_mul_cancel₀ (θ₂ x) (hθ₁ x hx.1).ne').symm
+    hdens Q hQ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
