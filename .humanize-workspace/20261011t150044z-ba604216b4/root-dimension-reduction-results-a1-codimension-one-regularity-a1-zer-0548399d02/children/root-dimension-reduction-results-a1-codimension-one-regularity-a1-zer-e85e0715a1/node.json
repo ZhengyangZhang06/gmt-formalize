@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.diagonal_subseq-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Common convergent subsequence for countably many bounded real sequences (diagonal extraction)",
+  "statement": "Let ι be a countable type, b : ι → ℕ → ℝ and M : ι → ℝ with |b_k(i)| ≤ M_k for all k and i. Then there is a strictly increasing σ : ℕ → ℕ such that for every k the sequence i ↦ b_k(σ(i)) converges in ℝ.",
+  "lean_statement": "∀ (ι : Type) [Countable ι] (b : ι → ℕ → ℝ) (M : ι → ℝ), (∀ k i, |b k i| ≤ M k) → ∃ σ : ℕ → ℕ, StrictMono σ ∧ ∀ k, ∃ L : ℝ, Tendsto (fun i => b k (σ i)) atTop (𝓝 L)",
+  "lean_name": "codim1_zsl_pc_diagonal_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-e85e0715a1-a1"
+}
