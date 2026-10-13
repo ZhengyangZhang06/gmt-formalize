@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "60fd548b3a30a8d51ca2a2151171f55627df4f59d63fd65256becbefe5c7e9cd",
+  "git_delta": {
+    "base_commit": "fa0b72061a0cd1d776df050dc0c07b6249aea12d",
+    "candidate_commit": "95db7096984c30a713f30c293f6084859925faba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cipi_plane_boundary_zero",
+    "diff_sha256": "a13c9a8a8142faf80a929e918729dca46d81c1c62197347fc756d2800da8d0a9",
+    "source_sha256": "4ea4ce2b29b43d2d51d0c3a9ec9c6d89ced3e69bc8ec32702f975eb8dafb7834",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cipi_plane_boundary_zero",
+      "statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d]) → ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
