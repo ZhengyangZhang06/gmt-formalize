@@ -451,6 +451,504 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, proof of Lemma 5.4** (centres of faces and radial retractions).  For the face
+`F = {y : b_k ≤ y_k ≤ b_k + 1 (k ∈ J), y_i = b_i (i ∉ J)}` with centre `a_F`,
+`(a_F)_k = b_k + a_k` (`|a_k − 1/2| < 1/4`), let
+`N(y) = max_{k ∈ J} max((y_k − b_k − a_k)/(1 − a_k), (b_k + a_k − y_k)/a_k)` be the gauge of
+`y − a_F` and `ψ_F(y) = a_F + (y − a_F)/N(y)`.  For `x ∈ F \ {a_F}`: `|x_k − b_k − a_k| ≤ N(x)`
+(`k ∈ J`), `0 < N(x) ≤ 1`, `ψ_F(x) ∈ ∂F`, `ψ_F(x) = x` if `x ∈ ∂F`, and
+`|ψ_F(y) − ψ_F(x)| ≤ (1 + 4√|J|)/N(x) · |y − x|` for `y ∈ F \ {a_F}`, because `N` is
+`4`-Lipschitz and `|y − a_F| ≤ √|J| N(y)`. -/
+theorem Submission.cmcdtsr_face_radial : ∀ (P : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty) (ψF : Euclid P → Euclid P), (∀ y : Euclid P, ∀ i, ψF y i = if i ∈ J then (b i : ℝ) + a i + (y i - b i - a i) / J.sup' hJ (fun k => max ((y k - b k - a k) / (1 - a k)) ((b k + a k - y k) / a k)) else y i) → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → (∃ i ∈ J, x i ≠ b i + a i) → (∀ k ∈ J, |x k - b k - a k| ≤ J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k))) ∧ 0 < J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) ∧ J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) ≤ 1 ∧ (∀ i, (i ∈ J → (b i : ℝ) ≤ ψF x i ∧ ψF x i ≤ b i + 1) ∧ (i ∉ J → ψF x i = b i)) ∧ (∃ i ∈ J, ψF x i = b i ∨ ψF x i = b i + 1) ∧ ((∃ i ∈ J, x i = b i ∨ x i = b i + 1) → ψF x = x) ∧ ∀ y : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ y i ∧ y i ≤ b i + 1) ∧ (i ∉ J → y i = b i)) → (∃ i ∈ J, y i ≠ b i + a i) → dist (ψF y) (ψF x) ≤ (1 + 4 * Real.sqrt J.card) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) * dist y x := by
+  intro P a ha b J hJ ψF hψ x hx hne
+  -- the gauge `N(u)` of `u − a_F`, kept opaque
+  obtain ⟨N, hN⟩ : ∃ N : Euclid P → ℝ, ∀ u : Euclid P,
+      J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)) = N u :=
+    ⟨fun u => J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)),
+      fun _ => rfl⟩
+  have hψN : ∀ u : Euclid P, ∀ i, ψF u i =
+      if i ∈ J then (b i : ℝ) + a i + (u i - b i - a i) / N u else u i := by
+    intro u i
+    rw [hψ u i, hN u]
+  rw [hN x]
+  -- step 0: `1/4 < a_k < 3/4`
+  have ha' : ∀ i, 1 / 4 < a i ∧ a i < 3 / 4 := by
+    intro i
+    have := abs_lt.mp (ha i)
+    constructor <;> linarith [this.1, this.2]
+  -- `N(u)` dominates each of its terms, and is the largest term
+  have hterm : ∀ u : Euclid P, ∀ k ∈ J,
+      max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k) ≤ N u := by
+    intro u k hk
+    rw [← hN u]
+    exact Finset.le_sup' (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)) hk
+  -- step 1: `|u_k − b_k − a_k| ≤ N(u)` for `k ∈ J`
+  have habs : ∀ u : Euclid P, ∀ k ∈ J, |u k - b k - a k| ≤ N u := by
+    intro u k hk
+    obtain ⟨h1, h2⟩ := ha' k
+    refine le_trans ?_ (hterm u k hk)
+    rcases le_or_gt 0 (u k - b k - a k) with ht | ht
+    · rw [abs_of_nonneg ht]
+      apply le_max_of_le_left
+      rw [le_div_iff₀ (by linarith)]
+      nlinarith [mul_nonneg ht (by linarith : (0 : ℝ) ≤ a k)]
+    · rw [abs_of_neg ht]
+      apply le_max_of_le_right
+      rw [le_div_iff₀ (by linarith)]
+      nlinarith [mul_pos (neg_pos.mpr ht) (by linarith : (0 : ℝ) < 1 - a k)]
+  -- step 2: `N ≤ 1` on `F`, and `N > 0` off the centre
+  have hle1 : ∀ u : Euclid P,
+      (∀ i, (i ∈ J → (b i : ℝ) ≤ u i ∧ u i ≤ b i + 1) ∧ (i ∉ J → u i = b i)) → N u ≤ 1 := by
+    intro u hu
+    rw [← hN u]
+    refine Finset.sup'_le hJ _ (fun k hk => ?_)
+    obtain ⟨h1, h2⟩ := ha' k
+    obtain ⟨hu1, hu2⟩ := (hu k).1 hk
+    apply max_le
+    · rw [div_le_one (by linarith)]; linarith
+    · rw [div_le_one (by linarith)]; linarith
+  have hpos : ∀ u : Euclid P, (∃ i ∈ J, u i ≠ b i + a i) → 0 < N u := by
+    rintro u ⟨i, hi, hui⟩
+    have h0 : u i - b i - a i ≠ 0 := fun h => hui (by linarith)
+    exact (abs_pos.mpr h0).trans_le (habs u i hi)
+  have hNx := hpos x hne
+  refine ⟨habs x, hNx, hle1 x hx, ?_, ?_, ?_, ?_⟩
+  · -- step 3: `ψ_F(x) ∈ F`
+    intro i
+    refine ⟨fun hi => ?_, fun hi => ?_⟩
+    · rw [hψN x i, ite_eq_left hi]
+      obtain ⟨h1, h2⟩ := ha' i
+      have hq := hterm x i hi
+      have hp1 := (le_max_left _ _).trans hq
+      have hp2 := (le_max_right _ _).trans hq
+      rw [div_le_iff₀ (by linarith)] at hp1 hp2
+      have e1 : -(a i) ≤ (x i - b i - a i) / N x := by
+        rw [le_div_iff₀ hNx]; linarith
+      have e2 : (x i - b i - a i) / N x ≤ 1 - a i := by
+        rw [div_le_iff₀ hNx]; linarith
+      constructor <;> linarith
+    · rw [hψN x i, ite_eq_right hi]
+      exact (hx i).2 hi
+  · -- step 4: a coordinate attaining the maximum is pushed to `b_i` or `b_i + 1`
+    obtain ⟨i, hi, heq⟩ := Finset.exists_mem_eq_sup' hJ
+      (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k))
+    have heq' : N x = max ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i) := by
+      rw [← hN x]; exact heq
+    refine ⟨i, hi, ?_⟩
+    rw [hψN x i, ite_eq_left hi]
+    obtain ⟨h1, h2⟩ := ha' i
+    rcases max_choice ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i) with hm | hm
+    · right
+      rw [hm] at heq'
+      have ht : x i - b i - a i = N x * (1 - a i) := by
+        rw [heq', div_mul_cancel₀ _ (by linarith : (1 : ℝ) - a i ≠ 0)]
+      have : (x i - b i - a i) / N x = 1 - a i := by
+        rw [div_eq_iff hNx.ne']; linarith
+      rw [this]; ring
+    · left
+      rw [hm] at heq'
+      have ht : b i + a i - x i = N x * a i := by
+        rw [heq', div_mul_cancel₀ _ (by linarith : a i ≠ 0)]
+      have : (x i - b i - a i) / N x = -(a i) := by
+        rw [div_eq_iff hNx.ne']; linarith
+      rw [this]; ring
+  · -- step 5: on `∂F`, `N(x) = 1` and `ψ_F(x) = x`
+    rintro ⟨i, hi, hbi⟩
+    obtain ⟨h1, h2⟩ := ha' i
+    have hq := hterm x i hi
+    have hN1 : N x = 1 := by
+      apply le_antisymm (hle1 x hx)
+      rcases hbi with h | h
+      · have : (b i + a i - x i) / a i = 1 := by
+          rw [h, div_eq_one_iff_eq (by linarith)]; ring
+        linarith [le_max_right ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i)]
+      · have : (x i - b i - a i) / (1 - a i) = 1 := by
+          rw [h, div_eq_one_iff_eq (by linarith)]; ring
+        linarith [le_max_left ((x i - b i - a i) / (1 - a i)) ((b i + a i - x i) / a i)]
+    ext k
+    rw [hψN x k, hN1]
+    split_ifs <;> ring
+  · -- steps 6–8: the radial estimate
+    intro y hy hney
+    have hNy := hpos y hney
+    have hNx0 : N x ≠ 0 := hNx.ne'
+    have hNy0 : N y ≠ 0 := hNy.ne'
+    -- step 6: `N` is `4`-Lipschitz
+    have hlip : ∀ u v : Euclid P, N u ≤ N v + 4 * dist u v := by
+      intro u v
+      rw [← hN u]
+      refine Finset.sup'_le hJ _ (fun k hk => ?_)
+      obtain ⟨h1, h2⟩ := ha' k
+      have hd : |u k - v k| ≤ dist u v := by
+        have := PiLp.dist_apply_le u v k
+        rwa [Real.dist_eq] at this
+      have hdn : 0 ≤ dist u v := dist_nonneg
+      have hq := hterm v k hk
+      have hp1 := (le_max_left _ _).trans hq
+      have hp2 := (le_max_right _ _).trans hq
+      apply max_le
+      · have e : (u k - b k - a k) / (1 - a k) =
+            (v k - b k - a k) / (1 - a k) + (u k - v k) / (1 - a k) := by
+          rw [← add_div]; congr 1; ring
+        have : (u k - v k) / (1 - a k) ≤ 4 * dist u v := by
+          rw [div_le_iff₀ (by linarith)]
+          nlinarith [le_abs_self (u k - v k),
+            mul_nonneg hdn (by linarith : (0 : ℝ) ≤ 4 * (1 - a k) - 1)]
+        linarith
+      · have e : (b k + a k - u k) / a k = (b k + a k - v k) / a k + (v k - u k) / a k := by
+          rw [← add_div]; congr 1; ring
+        have : (v k - u k) / a k ≤ 4 * dist u v := by
+          rw [div_le_iff₀ (by linarith)]
+          have : |v k - u k| ≤ dist u v := by rw [abs_sub_comm]; exact hd
+          nlinarith [le_abs_self (v k - u k), mul_nonneg hdn (by linarith : (0 : ℝ) ≤ 4 * a k - 1)]
+        linarith
+    have hlipxy : |N x - N y| ≤ 4 * dist y x := by
+      have l1 := hlip x y
+      have l2 := hlip y x
+      rw [dist_comm] at l1
+      rw [abs_le]; constructor <;> linarith
+    -- step 7: `w = y − a_F` (supported in `J`) has `|w| ≤ √|J| N(y)`
+    let W : Euclid P := WithLp.toLp 2 (fun k => if k ∈ J then y k - b k - a k else 0)
+    have hWk : ∀ k, W k = if k ∈ J then y k - b k - a k else 0 := fun k => rfl
+    have hW : ‖W‖ ≤ Real.sqrt J.card * N y := by
+      rw [EuclideanSpace.norm_eq]
+      have h1 : ∑ k, ‖W k‖ ^ 2 = ∑ k ∈ J, ‖W k‖ ^ 2 :=
+        (Finset.sum_subset (Finset.subset_univ J)
+          (fun k _ hk => by rw [hWk k, ite_eq_right hk]; simp)).symm
+      have h2 : ∑ k ∈ J, ‖W k‖ ^ 2 ≤ J.card • N y ^ 2 := by
+        apply Finset.sum_le_card_nsmul
+        intro k hk
+        rw [hWk k, ite_eq_left hk, Real.norm_eq_abs, sq_abs]
+        have := habs y k hk
+        nlinarith [abs_nonneg (y k - b k - a k), sq_abs (y k - b k - a k)]
+      rw [nsmul_eq_mul] at h2
+      calc Real.sqrt (∑ k, ‖W k‖ ^ 2) ≤ Real.sqrt ((J.card : ℝ) * N y ^ 2) :=
+            Real.sqrt_le_sqrt (h1 ▸ h2)
+        _ = Real.sqrt J.card * N y := by
+            rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hNy.le]
+    -- step 8: `ψ_F(y) − ψ_F(x) = (y − x)/N(x) + (1/N(y) − 1/N(x)) w`
+    have hdecomp : ψF y - ψF x = (1 / N x) • (y - x) + (1 / N y - 1 / N x) • W := by
+      ext k
+      rw [PiLp.sub_apply, PiLp.add_apply, PiLp.smul_apply, PiLp.smul_apply, PiLp.sub_apply,
+        hψN x k, hψN y k, hWk k, smul_eq_mul, smul_eq_mul]
+      by_cases hk : k ∈ J
+      · rw [ite_eq_left hk, ite_eq_left hk, ite_eq_left hk]
+        field_simp
+        ring
+      · rw [ite_eq_right hk, ite_eq_right hk, ite_eq_right hk, (hx k).2 hk, (hy k).2 hk]
+        ring
+    have hfrac : |1 / N y - 1 / N x| * N y = |N x - N y| / N x := by
+      rw [div_sub_div _ _ hNy0 hNx0, abs_div, abs_of_pos (mul_pos hNy hNx)]
+      field_simp
+    rw [dist_eq_norm, hdecomp]
+    calc ‖(1 / N x) • (y - x) + (1 / N y - 1 / N x) • W‖
+        ≤ ‖(1 / N x) • (y - x)‖ + ‖(1 / N y - 1 / N x) • W‖ := norm_add_le _ _
+      _ = (1 / N x) * dist y x + |1 / N y - 1 / N x| * ‖W‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+            abs_of_pos (one_div_pos.mpr hNx), dist_eq_norm]
+      _ ≤ (1 / N x) * dist y x + |1 / N y - 1 / N x| * (Real.sqrt J.card * N y) := by
+          gcongr
+      _ = (1 / N x) * dist y x + (|N x - N y| / N x) * Real.sqrt J.card := by
+          rw [← hfrac]; ring
+      _ ≤ (1 / N x) * dist y x + (4 * dist y x / N x) * Real.sqrt J.card := by
+          gcongr
+      _ = (1 + 4 * Real.sqrt J.card) / N x * dist y x := by ring
+
+/-- **Pointwise Lipschitz bound by induction over the face dimension** (Simon Ch. 6, proof of
+Lemma 5.4, claim (3), p. 162; step 5 of the skeleton retraction).  For `b ∈ ℤᴾ` and `J` let
+`F(b, J) = {x : bᵢ ≤ xᵢ ≤ bᵢ + 1 (i ∈ J), xᵢ = bᵢ (i ∉ J)}`, with centre `a_F` (`bᵢ + aᵢ` on `J`),
+gauge `N_{b,J}` and radial retraction `ψ_{b,J}(x) = a_F + (x − a_F)/N_{b,J}(x)` onto `∂F(b, J)`.
+If `Ψ_{m+1} = id` and `Ψ_j = Ψ_{j−1} ∘ ψ_{b,J}` on every `j`-face, `m + 2 ≤ j ≤ P`, then at every
+`x ∈ F(b, J)` with at most `m + 1` coordinates `i ∈ J` within `ρ` of the centre, `Ψ_j(x)` lies in
+`F(b, J)`, has at least `P − m − 1` integer coordinates, and `Ψ_j` is `c/ρ`-Lipschitz at `x` on
+`F(b, J)`, `c = (1 + 4√P)ᴾ`.  Induction on `j`, with constant `K ^ (j − m − 1)`, `K = 1 + 4√P`:
+a coordinate `ρ`-far from the centre gives `N_{b,J}(x) ≥ ρ`, and `cmcdtsr_face_radial` gives the
+radial bound `(1 + 4√j)/N_{b,J}(x)`.  In the step, `y₀ = ψ_{b,J}(x)` lies on the `(j − 1)`-faces
+through it, where the counting condition holds with radius `ρ/N_{b,J}(x)`; for `y` near `x`,
+`ψ_{b,J}(y)` stays on these faces, and the factors `N_{b,J}(x)` cancel. -/
+theorem Submission.cmcdtsr_face_count_induction : ∀ (P m : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ Ψ : ℕ → Euclid P → Euclid P, (∀ x, Ψ (m + 1) x = x) → (∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ y : Euclid P, (∀ i, y i = if i ∈ J then (b i : ℝ) + a i + (x i - b i - a i) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) else x i) → Ψ j x = Ψ (j - 1) y) → ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ ρ : ℝ, 0 < ρ → (J.filter (fun i => |x i - b i - a i| < ρ)).card ≤ m + 1 → (∀ i, (i ∈ J → (b i : ℝ) ≤ Ψ j x i ∧ Ψ j x i ≤ b i + 1) ∧ (i ∉ J → Ψ j x i = b i)) ∧ (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, Ψ j x i = z) ∧ ∀ᶠ y in 𝓝[{w : Euclid P | ∀ i, (i ∈ J → (b i : ℝ) ≤ w i ∧ w i ≤ b i + 1) ∧ (i ∉ J → w i = b i)}] x, dist (Ψ j y) (Ψ j x) ≤ c / ρ * dist y x := by
+  intro P m
+  have hK1 : (1 : ℝ) ≤ 1 + 4 * Real.sqrt P := by
+    have := Real.sqrt_nonneg (P : ℝ); linarith
+  have hc : ∀ n : ℕ, (0 : ℝ) < 1 + 4 * Real.sqrt n := fun n => by positivity
+  refine ⟨(1 + 4 * Real.sqrt P) ^ P, by positivity, ?_⟩
+  intro a ha Ψ hΨ0 hrec
+  -- the face `F(b, J)`, its gauge `N_{b,J}` and its radial retraction `ψ_{b,J}`
+  obtain ⟨InF, hInF⟩ : ∃ InF : (Fin P → ℤ) → Finset (Fin P) → Euclid P → Prop, ∀ b J u,
+      InF b J u ↔ ∀ i, (i ∈ J → (b i : ℝ) ≤ u i ∧ u i ≤ b i + 1) ∧ (i ∉ J → u i = b i) :=
+    ⟨fun b J u => ∀ i, (i ∈ J → (b i : ℝ) ≤ u i ∧ u i ≤ b i + 1) ∧ (i ∉ J → u i = b i),
+      fun _ _ _ => Iff.rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : (Fin P → ℤ) → ∀ J : Finset (Fin P), J.Nonempty → Euclid P → ℝ,
+      ∀ b J hJ u, N b J hJ u =
+        J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)) :=
+    ⟨fun b J hJ u =>
+      J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k)),
+      fun _ _ _ _ => rfl⟩
+  obtain ⟨R, hR⟩ : ∃ R : (Fin P → ℤ) → ∀ J : Finset (Fin P), J.Nonempty → Euclid P → Euclid P,
+      ∀ b J hJ u i, R b J hJ u i =
+        if i ∈ J then (b i : ℝ) + a i + (u i - b i - a i) / N b J hJ u else u i :=
+    ⟨fun b J hJ u => WithLp.toLp 2 fun i =>
+      if i ∈ J then (b i : ℝ) + a i + (u i - b i - a i) / N b J hJ u else u i,
+      fun _ _ _ _ _ => rfl⟩
+  -- the recursion: `Ψ_j = Ψ_{j−1} ∘ ψ_{b,J}` on `F(b, J)`
+  have hrec' : ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P))
+      (hJ : J.Nonempty), J.card = j → ∀ u, InF b J u → Ψ j u = Ψ (j - 1) (R b J hJ u) :=
+    fun j hj hjP b J hJ hcard u hu =>
+      hrec j hj hjP b J hJ hcard u ((hInF b J u).1 hu) (R b J hJ u) fun i => by rw [hR, hN]
+  -- `cmcdtsr_face_radial` for `ψ_{b,J}`
+  have FR : ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty) (x : Euclid P),
+      InF b J x → (∃ i ∈ J, x i ≠ b i + a i) →
+      (∀ k ∈ J, |x k - b k - a k| ≤ N b J hJ x) ∧ 0 < N b J hJ x ∧ InF b J (R b J hJ x) ∧
+      (∃ i ∈ J, R b J hJ x i = b i ∨ R b J hJ x i = b i + 1) ∧
+      ∀ y, InF b J y → (∃ i ∈ J, y i ≠ b i + a i) →
+        dist (R b J hJ y) (R b J hJ x) ≤ (1 + 4 * Real.sqrt J.card) / N b J hJ x * dist y x := by
+    intro b J hJ x hx hne
+    obtain ⟨h1, h2, -, h3, h4, -, h6⟩ := Submission.cmcdtsr_face_radial P a ha b J hJ (R b J hJ)
+      (fun y i => by rw [hR, hN]) x ((hInF b J x).1 hx) hne
+    rw [hN, hInF]
+    exact ⟨h1, h2, h3, h4, fun y hy hne' => h6 y ((hInF b J y).1 hy) hne'⟩
+  -- 1(a): `|J| ≥ m + 2` and the counting condition give a coordinate `ρ`-far from the centre
+  have exists_far : ∀ (b : Fin P → ℤ) (J : Finset (Fin P)), m + 2 ≤ J.card →
+      ∀ (u : Euclid P) (ρ : ℝ), (J.filter (fun i => |u i - b i - a i| < ρ)).card ≤ m + 1 →
+      ∃ i ∈ J, ρ ≤ |u i - b i - a i| := by
+    intro b J hJc u ρ hcount
+    by_contra h
+    have hall : ∀ i ∈ J, |u i - b i - a i| < ρ := fun i hi => not_le.mp fun h' => h ⟨i, hi, h'⟩
+    rw [Finset.filter_true_of_mem hall] at hcount
+    omega
+  have ne_centre : ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (u : Euclid P) (ρ : ℝ), 0 < ρ →
+      (∃ i ∈ J, ρ ≤ |u i - b i - a i|) → ∃ i ∈ J, u i ≠ b i + a i := by
+    rintro b J u ρ hρ ⟨i, hi, hf⟩
+    refine ⟨i, hi, fun he => ?_⟩
+    rw [he, show (b i : ℝ) + a i - b i - a i = 0 by ring, abs_zero] at hf
+    linarith
+  have count_le : ∀ (b b' : Fin P → ℤ) (J J' : Finset (Fin P)) (u v : Euclid P) (ρ ρ' : ℝ),
+      (∀ i ∈ J', |v i - b' i - a i| < ρ' → i ∈ J ∧ |u i - b i - a i| < ρ) →
+      (J'.filter (fun i => |v i - b' i - a i| < ρ')).card ≤
+        (J.filter (fun i => |u i - b i - a i| < ρ)).card := by
+    intro b b' J J' u v ρ ρ' h
+    apply Finset.card_le_card
+    intro i hi
+    rw [Finset.mem_filter] at hi ⊢
+    exact h i hi.1 hi.2
+  -- 1(b): the counting condition passes to nearby points with radius `ρ / 2`
+  have count_near : ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (x y : Euclid P) (ρ : ℝ),
+      dist y x < ρ / 2 → (J.filter (fun i => |x i - b i - a i| < ρ)).card ≤ m + 1 →
+      (J.filter (fun i => |y i - b i - a i| < ρ / 2)).card ≤ m + 1 := by
+    intro b J x y ρ hyx hcount
+    refine (count_le b b J J x y ρ (ρ / 2) fun i hi h' => ⟨hi, ?_⟩).trans hcount
+    have hd : |x i - y i| ≤ dist y x := by
+      rw [dist_comm, ← Real.dist_eq]; exact PiLp.dist_apply_le x y i
+    calc |x i - b i - a i| = |(x i - y i) + (y i - b i - a i)| := by ring_nf
+      _ ≤ |x i - y i| + |y i - b i - a i| := abs_add_le _ _
+      _ < ρ := by linarith
+  -- Claim(j), by induction on `j ≥ m + 2`, with constant `K ^ (j - m - 1)`, `K = 1 + 4√P`
+  have hclaim : ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)), J.card = j →
+      ∀ x, InF b J x → ∀ ρ : ℝ, 0 < ρ → (J.filter (fun i => |x i - b i - a i| < ρ)).card ≤ m + 1 →
+      InF b J (Ψ j x) ∧
+      (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, Ψ j x i = z) ∧
+      ∃ δ > 0, ∀ y, InF b J y → dist y x < δ →
+        dist (Ψ j y) (Ψ j x) ≤ (1 + 4 * Real.sqrt P) ^ (j - m - 1) / ρ * dist y x := by
+    intro j hj
+    induction j, hj using Nat.le_induction with
+    | base =>
+      -- 2. base case: `Ψ_{m+2} = ψ_{b,J}` on `F(b, J)`
+      intro hP b J hcard x hx ρ hρ hcount
+      have hJ : J.Nonempty := Finset.card_pos.mp (by omega)
+      have hΨ : ∀ u, InF b J u → Ψ (m + 2) u = R b J hJ u := fun u hu => by
+        rw [hrec' (m + 2) le_rfl hP b J hJ hcard u hu, show m + 2 - 1 = m + 1 by omega, hΨ0]
+      obtain ⟨i, hi, hfar⟩ := exists_far b J (by omega) x ρ hcount
+      obtain ⟨F1, -, F3, F4, F6⟩ := FR b J hJ x hx (ne_centre b J x ρ hρ ⟨i, hi, hfar⟩)
+      have hNρ : ρ ≤ N b J hJ x := hfar.trans (F1 i hi)
+      refine ⟨?_, ?_, ?_⟩
+      · rw [hΨ x hx]; exact F3
+      · -- the coordinates off `J` and one boundary coordinate in `J` are integers
+        obtain ⟨i₀, hi₀, hbd⟩ := F4
+        refine ⟨insert i₀ (Finset.univ \ J), ?_, fun k hk => ?_⟩
+        · rw [Finset.card_insert_of_notMem (by simp [hi₀]),
+            Finset.card_sdiff_of_subset (Finset.subset_univ J), Finset.card_univ, Fintype.card_fin,
+            hcard]
+          omega
+        · rw [hΨ x hx]
+          rcases Finset.mem_insert.mp hk with rfl | hk'
+          · rcases hbd with h | h
+            · exact ⟨b k, h⟩
+            · exact ⟨b k + 1, by rw [h]; push_cast; ring⟩
+          · exact ⟨b k, ((hInF b J _).1 F3 k).2 (Finset.mem_sdiff.mp hk').2⟩
+      · refine ⟨ρ / 2, by positivity, fun y hy hyx => ?_⟩
+        have hney := ne_centre b J y (ρ / 2) (by positivity)
+          (exists_far b J (by omega) y (ρ / 2) (count_near b J x y ρ hyx hcount))
+        have hsq : Real.sqrt J.card ≤ Real.sqrt P :=
+          Real.sqrt_le_sqrt (by rw [hcard]; exact_mod_cast hP)
+        rw [hΨ y hy, hΨ x hx, show m + 2 - m - 1 = 1 by omega, pow_one]
+        calc dist (R b J hJ y) (R b J hJ x)
+            ≤ (1 + 4 * Real.sqrt J.card) / N b J hJ x * dist y x := F6 y hy hney
+          _ ≤ (1 + 4 * Real.sqrt P) / ρ * dist y x := by
+            apply mul_le_mul_of_nonneg_right _ dist_nonneg
+            exact div_le_div₀ (by positivity) (by linarith) hρ hNρ
+    | succ j hj ih =>
+      -- 3. inductive step `j → j + 1`
+      intro hP b J hcard x hx ρ hρ hcount
+      have hJ : J.Nonempty := Finset.card_pos.mp (by omega)
+      have hΨ : ∀ u, InF b J u → Ψ (j + 1) u = Ψ j (R b J hJ u) := fun u hu => by
+        rw [hrec' (j + 1) (by omega) hP b J hJ hcard u hu, Nat.add_sub_cancel]
+      obtain ⟨i, hi, hfar⟩ := exists_far b J (by omega) x ρ hcount
+      obtain ⟨F1, Fpos, F3, F4, F6⟩ := FR b J hJ x hx (ne_centre b J x ρ hρ ⟨i, hi, hfar⟩)
+      have hNρ : ρ ≤ N b J hJ x := hfar.trans (F1 i hi)
+      have hy₀k : ∀ k ∈ J, R b J hJ x k - b k - a k = (x k - b k - a k) / N b J hJ x := by
+        intro k hk
+        rw [hR, ite_eq_left hk]; ring
+      have hΨx : Ψ (j + 1) x = Ψ j (R b J hJ x) := hΨ x hx
+      -- `y₀ = ψ_{b,J}(x) = a_F + (x − a_F) / N_{b,J}(x)`
+      obtain ⟨Nx, hNx⟩ : ∃ t, N b J hJ x = t := ⟨_, rfl⟩
+      obtain ⟨y₀, hy₀⟩ : ∃ y, R b J hJ x = y := ⟨_, rfl⟩
+      rw [hNx] at Fpos hNρ hy₀k F6
+      rw [hy₀] at F3 F4 hy₀k hΨx F6
+      have hsq : Real.sqrt J.card ≤ Real.sqrt P :=
+        Real.sqrt_le_sqrt (by rw [hcard]; exact_mod_cast hP)
+      -- (i) the `j`-faces `F(b^{i,β}, J ∖ {i})`, `β ∈ {bᵢ, bᵢ + 1}`, lie in `F(b, J)` and contain
+      -- the points of `F(b, J)` with `i`-th coordinate `β`
+      have hGsub : ∀ i' ∈ J, ∀ β : ℤ, b i' ≤ β → β ≤ b i' + 1 → ∀ u,
+          InF (Function.update b i' β) (J.erase i') u → InF b J u := by
+        intro i' hi' β hβ1 hβ2 u hu
+        rw [hInF] at hu ⊢
+        intro k
+        by_cases hk : k = i'
+        · subst hk
+          have hu2 := (hu k).2 (Finset.notMem_erase k J)
+          rw [Function.update_self] at hu2
+          refine ⟨fun _ => ⟨?_, ?_⟩, fun h => absurd hi' h⟩
+          · rw [hu2]; exact_mod_cast hβ1
+          · rw [hu2]
+            have h2 : ((β : ℤ) : ℝ) ≤ ((b k + 1 : ℤ) : ℝ) := Int.cast_le.mpr hβ2
+            push_cast at h2 ⊢
+            linarith
+        · have hupd : Function.update b i' β k = b k := Function.update_of_ne hk _ _
+          have hmem : k ∈ J.erase i' ↔ k ∈ J := by simp [Finset.mem_erase, hk]
+          obtain ⟨h1, h2⟩ := hu k
+          rw [hupd, hmem] at h1 h2
+          exact ⟨h1, h2⟩
+      have hGmem : ∀ i' u, InF b J u → ∀ β : ℤ, u i' = β →
+          InF (Function.update b i' β) (J.erase i') u := by
+        intro i' u hu β hβ
+        rw [hInF] at hu ⊢
+        intro k
+        by_cases hk : k = i'
+        · subst hk
+          refine ⟨fun h => absurd h (Finset.notMem_erase k J), fun _ => ?_⟩
+          rw [Function.update_self]; exact hβ
+        · have hupd : Function.update b i' β k = b k := Function.update_of_ne hk _ _
+          have hmem : k ∈ J.erase i' ↔ k ∈ J := by simp [Finset.mem_erase, hk]
+          rw [hupd, hmem]
+          exact hu k
+      -- (ii) at `y₀` the counting condition holds on these faces with radius `ρ / N_{b,J}(x)`
+      have hρN : 0 < ρ / Nx := div_pos hρ Fpos
+      have hGcount : ∀ i' (β : ℤ),
+          ((J.erase i').filter (fun k => |y₀ k - Function.update b i' β k - a k| < ρ / Nx)).card
+            ≤ m + 1 := by
+        intro i' β
+        refine (count_le b (Function.update b i' β) J (J.erase i') x y₀ ρ (ρ / Nx)
+          fun k hk h' => ?_).trans hcount
+        obtain ⟨hki, hkJ⟩ := Finset.mem_erase.mp hk
+        refine ⟨hkJ, ?_⟩
+        rw [Function.update_of_ne hki, hy₀k k hkJ, abs_div, abs_of_pos Fpos] at h'
+        exact (div_lt_div_iff_of_pos_right Fpos).mp h'
+      -- (iii) Claim(j) on every face through `y₀`
+      have hIH : ∀ i' ∈ J, ∀ β : ℤ, y₀ i' = β →
+          InF (Function.update b i' β) (J.erase i') (Ψ j y₀) ∧
+          (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, Ψ j y₀ i = z) ∧
+          ∃ δ > 0, ∀ y', InF (Function.update b i' β) (J.erase i') y' → dist y' y₀ < δ →
+            dist (Ψ j y') (Ψ j y₀) ≤
+              (1 + 4 * Real.sqrt P) ^ (j - m - 1) / (ρ / Nx) * dist y' y₀ :=
+        fun i' hi' β hβ => ih (by omega) (Function.update b i' β) (J.erase i')
+          (by rw [Finset.card_erase_of_mem hi', hcard, Nat.add_sub_cancel]) y₀
+          (hGmem i' y₀ F3 β hβ) (ρ / Nx) hρN (hGcount i' β)
+      -- (A) and (B) from a face through `y₀`
+      obtain ⟨i₁, hi₁, hbd₁⟩ := F4
+      obtain ⟨β₁, hβ₁a, hβ₁b, hβ₁e⟩ : ∃ β : ℤ, b i₁ ≤ β ∧ β ≤ b i₁ + 1 ∧ y₀ i₁ = β := by
+        rcases hbd₁ with h | h
+        · exact ⟨b i₁, le_rfl, by omega, h⟩
+        · exact ⟨b i₁ + 1, by omega, le_rfl, by rw [h]; push_cast; ring⟩
+      obtain ⟨hA₁, hB₁, -⟩ := hIH i₁ hi₁ β₁ hβ₁e
+      refine ⟨?_, ?_, ?_⟩
+      · rw [hΨx]; exact hGsub i₁ hi₁ β₁ hβ₁a hβ₁b _ hA₁
+      · rw [hΨx]; exact hB₁
+      -- (iv) one radius `η` serves every face through `y₀` and avoids the other faces
+      have hev : ∀ᶠ y' in 𝓝 y₀, ∀ i' ∈ J, ∀ e : Bool,
+          (y₀ i' = ((if e then b i' + 1 else b i' : ℤ) : ℝ) →
+            InF (Function.update b i' (if e then b i' + 1 else b i')) (J.erase i') y' →
+            dist (Ψ j y') (Ψ j y₀) ≤
+              (1 + 4 * Real.sqrt P) ^ (j - m - 1) / (ρ / Nx) * dist y' y₀) ∧
+          (y₀ i' ≠ ((if e then b i' + 1 else b i' : ℤ) : ℝ) →
+            y' i' ≠ ((if e then b i' + 1 else b i' : ℤ) : ℝ)) := by
+        rw [Filter.eventually_all_finset]
+        intro i' hi'
+        rw [Filter.eventually_all]
+        intro e
+        by_cases hβ : y₀ i' = ((if e then b i' + 1 else b i' : ℤ) : ℝ)
+        · obtain ⟨-, -, δ', hδ', hbd⟩ := hIH i' hi' _ hβ
+          filter_upwards [Metric.ball_mem_nhds y₀ hδ'] with y' hy'
+          exact ⟨fun _ hG => hbd y' hG (Metric.mem_ball.mp hy'), fun h => absurd hβ h⟩
+        · have hpos : 0 < |y₀ i' - ((if e then b i' + 1 else b i' : ℤ) : ℝ)| :=
+            abs_pos.mpr (sub_ne_zero.mpr hβ)
+          filter_upwards [Metric.ball_mem_nhds y₀ hpos] with y' hy'
+          refine ⟨fun h => absurd h hβ, fun _ heq => ?_⟩
+          have h1 : |y₀ i' - ((if e then b i' + 1 else b i' : ℤ) : ℝ)| ≤ dist y' y₀ := by
+            rw [← heq, abs_sub_comm, ← Real.dist_eq]; exact PiLp.dist_apply_le _ _ _
+          exact absurd (Metric.mem_ball.mp hy') (not_lt.mpr h1)
+      obtain ⟨η, hη, hηQ⟩ := Metric.eventually_nhds_iff.mp hev
+      -- (v), (vi): for `y` near `x`, `ψ_{b,J}(y)` is `η`-close to `y₀` on a face through `y₀`
+      have hc1 := hc J.card
+      refine ⟨min (ρ / 2) (η * Nx / (1 + 4 * Real.sqrt J.card)),
+        lt_min (half_pos hρ) (div_pos (mul_pos hη Fpos) hc1), fun y hy hyx => ?_⟩
+      have hyx1 : dist y x < ρ / 2 := lt_of_lt_of_le hyx (min_le_left _ _)
+      have hyx2 : dist y x < η * Nx / (1 + 4 * Real.sqrt J.card) :=
+        lt_of_lt_of_le hyx (min_le_right _ _)
+      have hney := ne_centre b J y (ρ / 2) (by positivity)
+        (exists_far b J (by omega) y (ρ / 2) (count_near b J x y ρ hyx1 hcount))
+      obtain ⟨-, -, F3y, F4y, -⟩ := FR b J hJ y hy hney
+      have hd := F6 y hy hney
+      have hdη : dist (R b J hJ y) y₀ < η := by
+        refine hd.trans_lt ?_
+        rw [div_mul_eq_mul_div, div_lt_iff₀ Fpos, mul_comm (1 + 4 * Real.sqrt J.card)]
+        exact (lt_div_iff₀ hc1).mp hyx2
+      obtain ⟨i₂, hi₂, hbd₂⟩ := F4y
+      obtain ⟨e, he⟩ : ∃ e : Bool,
+          R b J hJ y i₂ = ((if e then b i₂ + 1 else b i₂ : ℤ) : ℝ) := by
+        rcases hbd₂ with h | h
+        · exact ⟨false, by simp [h]⟩
+        · exact ⟨true, by simp [h]⟩
+      obtain ⟨hQ1, hQ2⟩ := hηQ hdη i₂ hi₂ e
+      have hy₀β : y₀ i₂ = ((if e then b i₂ + 1 else b i₂ : ℤ) : ℝ) := by
+        by_contra hcon
+        exact hQ2 hcon he
+      have hbound := hQ1 hy₀β (hGmem i₂ _ F3y _ he)
+      rw [hΨ y hy, hΨx]
+      calc dist (Ψ j (R b J hJ y)) (Ψ j y₀)
+          ≤ (1 + 4 * Real.sqrt P) ^ (j - m - 1) / (ρ / Nx) * dist (R b J hJ y) y₀ := hbound
+        _ ≤ (1 + 4 * Real.sqrt P) ^ (j - m - 1) / (ρ / Nx) *
+              ((1 + 4 * Real.sqrt J.card) / Nx * dist y x) := by gcongr
+        _ = (1 + 4 * Real.sqrt P) ^ (j - m - 1) * (1 + 4 * Real.sqrt J.card) / ρ * dist y x *
+              (Nx * Nx⁻¹) := by rw [div_div_eq_mul_div]; ring
+        _ = (1 + 4 * Real.sqrt P) ^ (j - m - 1) * (1 + 4 * Real.sqrt J.card) / ρ * dist y x := by
+            rw [mul_inv_cancel₀ Fpos.ne', mul_one]
+        _ ≤ (1 + 4 * Real.sqrt P) ^ (j - m - 1) * (1 + 4 * Real.sqrt P) / ρ * dist y x := by
+            gcongr
+        _ = (1 + 4 * Real.sqrt P) ^ (j + 1 - m - 1) / ρ * dist y x := by
+            rw [show j + 1 - m - 1 = j - m - 1 + 1 by omega, pow_succ]
+  -- 0. `K ^ (j - m - 1) ≤ K ^ P = c`, and `𝓝[F(b, J)] x` contains a `δ`-ball of `F(b, J)`
+  intro j hj hjP b J hcard x hx ρ hρ hcount
+  obtain ⟨hA, hB, δ, hδ, hC⟩ := hclaim j hj hjP b J hcard x ((hInF b J x).2 hx) ρ hρ hcount
+  refine ⟨(hInF b J _).1 hA, hB, ?_⟩
+  rw [eventually_nhdsWithin_iff]
+  filter_upwards [Metric.ball_mem_nhds x hδ] with y hy hyF
+  calc dist (Ψ j y) (Ψ j x) ≤ (1 + 4 * Real.sqrt P) ^ (j - m - 1) / ρ * dist y x :=
+        hC y ((hInF b J y).2 hyF) (Metric.mem_ball.mp hy)
+    _ ≤ (1 + 4 * Real.sqrt P) ^ P / ρ * dist y x := by
+      apply mul_le_mul_of_nonneg_right _ dist_nonneg
+      apply div_le_div_of_nonneg_right _ hρ.le
+      exact pow_le_pow_right₀ hK1 (by omega)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
