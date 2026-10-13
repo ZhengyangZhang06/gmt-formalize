@@ -671,6 +671,60 @@ theorem Submission.slicing_im_si_signed_coarea :
     (integrable_toReal_of_lintegral_ne_top hφnm hfinn).restrict]
   rw [integral_toReal hφpm.restrict (ae_restrict_of_ae hltp),
     integral_toReal hφnm.restrict (ae_restrict_of_ae hltn)]
+/-- Transfer of an a.e. identity on `M` to almost every slice: if `μ`-null subsets `Z ⊆ M` have
+`ν`-null slices `Z ∩ f⁻¹{t}` for a.e. `t`, `g = 0` off the Borel set `S` and `g = F` on `S`
+`μ⌞M`-a.e., then `∫_{M ∩ f⁻¹{t}} g dν = ∫_{{x ∈ M : f x = t, x ∈ S}} F dν` for a.e. `t`
+(Simon 4.5, slice identification). -/
+theorem Submission.slicing_im_si_slice_ae_transfer :
+    ∀ (P : ℕ) (μ ν : Measure (Eucl P)) (M S : Set (Eucl P)) (f g F : Eucl P → ℝ), NullMeasurableSet M μ → MeasurableSet S → Measurable f → (∀ Z : Set (Eucl P), Z ⊆ M → μ Z = 0 → ∀ᵐ t ∂(volume : Measure ℝ), ν (Z ∩ f ⁻¹' {t}) = 0) → (∀ x, x ∉ S → g x = 0) → (∀ᵐ x ∂(μ.restrict M), x ∈ S → g x = F x) → ∀ᵐ t ∂(volume : Measure ℝ), ∫ x in M ∩ f ⁻¹' {t}, g x ∂ν = ∫ x in {x | x ∈ M ∧ f x = t ∧ x ∈ S}, F x ∂ν := by
+  intro P μ ν M S f g F hM hS hf hNT hg0 hgF
+  -- A Borel `M₁ ⊆ M` with `μ(M \ M₁) = 0`; the bad set `Z₁ ∪ (M \ M₁) ⊆ M` is `μ`-null.
+  obtain ⟨M₁, hM₁M, hM₁m, hM₁ae⟩ := hM.exists_measurable_subset_ae_eq
+  have hZ₁ : μ ({x | ¬(x ∈ S → g x = F x)} ∩ M) = 0 :=
+    le_antisymm ((Measure.le_restrict_apply M _).trans (ae_iff.1 hgF).le) (zero_le)
+  have hZ₂ : μ (M \ M₁) = 0 := (ae_eq_set.1 hM₁ae).2
+  have hZ : μ (({x | ¬(x ∈ S → g x = F x)} ∩ M) ∪ (M \ M₁)) = 0 := measure_union_null hZ₁ hZ₂
+  -- For a.e. `t` the slice of the bad set is `ν`-null.
+  filter_upwards [hNT _ (union_subset inter_subset_right sdiff_subset) hZ] with t ht
+  have hft : MeasurableSet (f ⁻¹' {t}) := hf (measurableSet_singleton t)
+  -- Both domains are `ν`-a.e. equal to Borel sets cut out by `M₁`.
+  have hA : (M ∩ f ⁻¹' {t} : Set (Eucl P)) =ᵐ[ν] (M₁ ∩ f ⁻¹' {t} : Set (Eucl P)) := by
+    rw [ae_eq_set]
+    constructor
+    · refine measure_mono_null ?_ ht
+      intro x hx
+      exact ⟨Or.inr ⟨hx.1.1, fun h => hx.2 ⟨h, hx.1.2⟩⟩, hx.1.2⟩
+    · rw [sdiff_eq_empty.2 (inter_subset_inter_left _ hM₁M), measure_empty]
+  have hB : ({x | x ∈ M ∧ f x = t ∧ x ∈ S} : Set (Eucl P)) =ᵐ[ν] (M₁ ∩ f ⁻¹' {t} ∩ S : Set (Eucl P)) := by
+    rw [ae_eq_set]
+    constructor
+    · refine measure_mono_null ?_ ht
+      rintro x ⟨⟨hxM, hxt, hxS⟩, hx⟩
+      refine ⟨Or.inr ⟨hxM, fun h => hx ⟨⟨h, hxt⟩, hxS⟩⟩, hxt⟩
+    · have : (M₁ ∩ f ⁻¹' {t} ∩ S : Set (Eucl P)) \ {x | x ∈ M ∧ f x = t ∧ x ∈ S} = ∅ := by
+        ext x
+        simp only [Set.mem_sdiff, mem_inter_iff, mem_preimage, mem_singleton_iff, mem_ofPred_eq,
+          mem_empty_iff_false, iff_false, not_and]
+        intro h1 h2
+        exact h2 (hM₁M h1.1.1) h1.1.2 h1.2
+      rw [this, measure_empty]
+  rw [Measure.restrict_congr_set hA, Measure.restrict_congr_set hB]
+  -- `g = 1_S g`, so the left side is the integral of `g` over `M₁ ∩ f⁻¹{t} ∩ S`.
+  have hgS : (fun x => g x) = S.indicator g := by
+    funext x
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx]
+    · rw [indicator_of_notMem hx, hg0 x hx]
+  rw [show (∫ x in M₁ ∩ f ⁻¹' {t}, g x ∂ν) = ∫ x in M₁ ∩ f ⁻¹' {t}, S.indicator g x ∂ν by
+    rw [← hgS], setIntegral_indicator hS]
+  -- On this Borel set `g = F` off the `ν`-null slice of the bad set.
+  apply setIntegral_congr_ae ((hM₁m.inter hft).inter hS)
+  rw [ae_iff]
+  refine measure_mono_null ?_ ht
+  intro x hx
+  simp only [mem_ofPred_eq, Classical.not_imp] at hx
+  obtain ⟨⟨⟨hxM₁, hxt⟩, hxS⟩, hne⟩ := hx
+  exact ⟨Or.inl ⟨fun h => hne (h hxS), hM₁M hxM₁⟩, hxt⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
