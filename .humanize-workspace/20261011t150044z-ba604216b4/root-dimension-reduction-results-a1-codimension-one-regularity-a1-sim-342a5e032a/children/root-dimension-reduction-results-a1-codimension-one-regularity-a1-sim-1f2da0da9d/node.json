@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.tangent_subspace-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "Tangent spaces of an embedded C¹ submanifold contained in a subspace A₀ are m-dimensional subspaces of A₀ (parent step 1)",
+  "statement": "Tangent spaces lie in A₀. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P; M ⊆ ℝ^P. Hypotheses: M is an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m M: every y ∈ M has open V ⊆ ℝ^m, open W ∋ y and ψ : ℝ^m → ℝ^P, C¹ and injective on V, with ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) compact for compact K ⊆ W, and Dψ(z) injective for z ∈ V) and M ⊆ A₀. Conclusion: for every x ∈ M there is a linear subspace Q ⊆ ℝ^P whose underlying set is tangentSpace M x = {γ'(0) : γ C¹ on (−1, 1), γ((−1, 1)) ⊆ M, γ(0) = x}, with dim Q = m and Q ⊆ A₀.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → M ⊆ (A₀ : Set (Euclid P)) → ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), (Q : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ Q = m ∧ Q ≤ A₀",
+  "lean_name": "codim1_hcp_un_tangent_subspace",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-1f2da0da9d-a1"
+}

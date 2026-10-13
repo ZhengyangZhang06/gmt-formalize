@@ -1,0 +1,120 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def (IsEmbeddedSubmanifold|tangentSpace|IsOrientation|IsUnitOrientationOf|MultiVector)|abbrev (MultiVector|Euclid)|tangentialDivergence|namespace|open ' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "sed -n '215,281p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n 'exists_contMDiffMap_forall_mem_convex_of_local|exists_isSubordinate|variable|contDiffAt_finsum' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "sed -n '20,86p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "rg -n 'codim1_hcp_un_|codim1_hcp_minimal_unit_normal|dimred_rpd_submanifold_density_one|chart_tangentSpace_eq_range_fderiv|dimred_rpd_embedded_locally_closed' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT .lake/packages/simongmt/Poincare GMT",
+        "rg -l '\"lean_name\": \"codim1_hcp_un_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition-v*.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/unit-normal-independent-audit/Assembly.lean",
+        "#print axioms Submission.chart_tangentSpace_eq_range_fderiv",
+        "#print axioms Submission.dimred_rpd_submanifold_density_one",
+        "#print axioms Submission.dimred_rpd_embedded_locally_closed"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-342a5e032a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-342a5e032a/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/store.py",
+        "/tmp/unit-normal-independent-audit/Assembly.lean",
+        "/tmp/unit-normal-independent-audit/Inst.lean",
+        "/tmp/unit-normal-independent-audit/ProjCheck.lean",
+        "/tmp/unit-normal-independent-audit/Accepted_chart_tangent_space.log",
+        "/tmp/unit-normal-independent-audit/Accepted_density_one.log",
+        "/tmp/unit-normal-independent-audit/Accepted_locally_closed.log"
+      ],
+      "conclusion": "The split is appropriate for the selected unit-normal theorem. Project and mathlib revisions match the snapshot; the frozen Contract and workspace Submission are byte-identical. All twelve exact child types independently elaborate as Prop without child implementations. Their hypotheses and conclusions match the prose, and all lean_name values are bare identifiers. Searches found no conflicting declarations or reservations for the nine new names. The three reused types are byte-identical to comparator-accepted contracts; fresh compilation and axiom checks at their candidate commits show only propext, Classical.choice and Quot.sound. Existing dependencies, including density_one's two prerequisites, are preserved on reuse. Proposed and reachable existing dependency graphs are acyclic. The conditional assembly kernel-checks the exact selected parent using the proposed children and its already-declared smooth_charts dependency; smooth_charts remains pending and is not redeclared as a child. The snapshot supplies the stated inverse-function, partition-of-unity, derivative, projection, trace and bump-function tools. Instance checks confirm continuous alternating maps, Euclidean inner products, restricted-measure integrals and C-infinity rather than analyticity. No prohibited matrix-function IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted type is reused. Bounded parameter curves prove one inclusion; properness gives inverse continuity, and the injective derivative estimate puts every curve derivative in its closed range. All chart hypotheses are supplied."
+    },
+    {
+      "key": "density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type matches the accepted declaration. The retained, accepted near-isometric-chart and measure-distortion dependencies justify both bounds; the ENNReal squeeze proves the stated limit, including n = 0."
+    },
+    {
+      "key": "locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness and chart continuity make compact slices compact. The identity M = O ∩ closure(M) then proves Borel measurability. This proves both conclusions for every stated r, including r = 0; reuse is type-identical."
+    },
+    {
+      "key": "tangent_subspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared chart dependency identifies the tangent set with an injective derivative's range, giving dimension m. Curve difference quotients lie in the closed subspace A₀, proving containment without additional hypotheses."
+    },
+    {
+      "key": "hyperplane_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Dimension counting identifies Q with A₀ ∩ n-perpendicular. The proposed vector lies in Q and has orthogonal remainder, proving the exact projection formula. The supplied Lean proof also passes fresh compilation with standard axioms only."
+    },
+    {
+      "key": "cross_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant construction gives a continuous alternating map and the identity inner(N(w), u) = Ω(u, w). This proves orthogonality for arbitrary w; the normal-line and determinant arguments prove nonvanishing and unit norm under their respective hypotheses."
+    },
+    {
+      "key": "orientation_normal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation on fixed covectors constructs a continuous linear image of ξ. The orientation hypothesis supplies one consistent sign per point, giving ν₀ = ±N(τ) and all required properties. No unstated embeddedness assumption is used."
+    },
+    {
+      "key": "chart_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness and injectivity establish the required chart homeomorphism. A linear left inverse makes the parameter derivative invertible; the smooth inverse function theorem and explicit neighborhood restriction give smooth ρ, MapsTo ρ O V, and ψ ∘ ρ = id on M ∩ O."
+    },
+    {
+      "key": "normal_local_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit smooth-chart hypothesis supplies every dependency's premises. The cross product of chart derivatives is smooth and nonzero; the projection identity forces the unit normal to equal its normalization up to sign. Continuity fixes that sign locally after retraction, yielding the required extension."
+    },
+    {
+      "key": "smooth_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A smooth partition of unity on the open union gives a locally finite sum agreeing with f on M. Extension by zero outside that union preserves smoothness on it. The argument requires neither closedness of M nor completeness of F."
+    },
+    {
+      "key": "fundamental_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly bounds h on the chosen small neighborhood, establishes measurability and integrability of the bump-weighted function using finite compact-slice measure, and obtains a strictly positive integral from positive local measure. This contradicts the exact test-function hypothesis."
+    },
+    {
+      "key": "zero_mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The projection formula makes the exact trace function continuous on M. The globally admissible field φν has tangential divergence φh because P_xν(x) = 0. Measurability, local finiteness and density-derived positivity then satisfy every hypothesis of fundamental_lemma, proving the required pointwise trace-zero conclusion."
+    }
+  ],
+  "required_changes": []
+}

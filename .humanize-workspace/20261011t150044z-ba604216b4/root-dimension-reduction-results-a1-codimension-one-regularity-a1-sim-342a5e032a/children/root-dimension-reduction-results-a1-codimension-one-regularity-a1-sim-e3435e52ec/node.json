@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.hyperplane_projection-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "Orthogonal projection onto a hyperplane Q of A₀ with unit normal n: P_Q = P_{A₀} − n⊗n (parent steps 1, 3 and 7a)",
+  "statement": "Hyperplane projection in A₀. Data: P, m ∈ ℕ; linear subspaces A₀, Q ⊆ ℝ^P; n ∈ ℝ^P. Hypotheses: dim A₀ = m + 1; dim Q = m; Q ⊆ A₀; n ∈ A₀; |n| = 1; n·v = 0 for every v ∈ Q. Conclusion: for every w ∈ ℝ^P, P_Q w = P_{A₀}w − (n·w)n, where P_Q and P_{A₀} are the orthogonal projections onto Q and A₀ (Submodule.starProjection).",
+  "lean_statement": "∀ (P m : ℕ) (A₀ Q : Submodule ℝ (Euclid P)) (n : Euclid P), Module.finrank ℝ A₀ = m + 1 → Module.finrank ℝ Q = m → Q ≤ A₀ → n ∈ A₀ → ‖n‖ = 1 → (∀ v ∈ Q, inner ℝ n v = 0) → ∀ w : Euclid P, Q.starProjection w = A₀.starProjection w - inner ℝ n w • n",
+  "lean_name": "codim1_hcp_un_hyperplane_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e3435e52ec-a1"
+}
