@@ -1030,6 +1030,72 @@ theorem Submission.deformation_skeleton_isClosed :
     linarith [hy.2]
   · rw [← sub_lt_iff_lt_add, lt_div_iff₀ hρ]
     linarith [hy.1]
+/-- Chebyshev choice of a good slicing radius (step 2 of the proof of the Deformation Theorem,
+Simon Ch. 6, 5.1, printed (10)).  If `a < b`, `g : ℝ → [0, ∞]` is measurable with
+`∫⁻_{(a, b)} g ≤ K` and `N` is Lebesgue-null, then some `t ∈ (a, b) \ N` has
+`g t ≤ 2K/(b − a)`.  With `s = 2K/(b − a)`, the set `B = {t ∈ (a, b) : s < g t}` has measure
+`< b − a` (it is empty if `K = ∞`, null if `K = 0`, and of measure `≤ (b − a)/2` by Markov's
+inequality otherwise), so `(a, b) ⊄ B ∪ N`. -/
+theorem Submission.deformation_good_radius :
+    ∀ (a b : ℝ) (g : ℝ → ℝ≥0∞) (K : ℝ≥0∞) (N : Set ℝ), a < b → Measurable g → ∫⁻ t in Ioo a b, g t ≤ K → volume N = 0 → ∃ t ∈ Ioo a b, t ∉ N ∧ g t ≤ 2 * K / ENNReal.ofReal (b - a) := by
+  intro a b g K N hab hg hK hN
+  -- `ℓ = volume (Ioo a b) ∈ (0, ∞)`, `s = 2K/ℓ` and `B = {t ∈ Ioo a b : s < g t}`.
+  set ℓ : ℝ≥0∞ := ENNReal.ofReal (b - a)
+  have hℓ0 : ℓ ≠ 0 := (ENNReal.ofReal_pos.2 (sub_pos.2 hab)).ne'
+  have hℓtop : ℓ ≠ ∞ := ENNReal.ofReal_ne_top
+  have hvol : volume (Ioo a b) = ℓ := Real.volume_Ioo
+  set s : ℝ≥0∞ := 2 * K / ℓ with hsdef
+  set B : Set ℝ := Ioo a b ∩ {t | s < g t} with hBdef
+  -- Step 1: `volume B < ℓ`.
+  have hB : volume B < ℓ := by
+    rcases eq_or_ne K ∞ with hKtop | hKtop
+    · -- (a) `K = ∞`: then `s = ∞`, so `B = ∅`.
+      have hs : s = ∞ := by
+        rw [hsdef, hKtop, ENNReal.mul_top two_ne_zero, ENNReal.top_div_of_ne_top hℓtop]
+      have hB0 : B = ∅ := by
+        ext t
+        simp [hBdef, hs]
+      rw [hB0, measure_empty]
+      exact pos_iff_ne_zero.2 hℓ0
+    rcases eq_or_ne K 0 with hK0 | hK0
+    · -- (b) `K = 0`: then `s = 0` and `g = 0` a.e. on `Ioo a b`, so `volume B = 0`.
+      have hs : s = 0 := by rw [hsdef, hK0, mul_zero, ENNReal.zero_div]
+      have hint : ∫⁻ t in Ioo a b, g t = 0 := le_antisymm (hK.trans hK0.le) zero_le
+      have hae : g =ᵐ[volume.restrict (Ioo a b)] 0 := (lintegral_eq_zero_iff hg).1 hint
+      have hB0 : volume B = 0 := by
+        refine measure_mono_null (t := {t | g t ≠ 0} ∩ Ioo a b) ?_ ?_
+        · rintro t ⟨htI, hts⟩
+          exact ⟨(hs ▸ hts : (0 : ℝ≥0∞) < g t).ne', htI⟩
+        · refine le_antisymm ((Measure.le_restrict_apply _ _).trans (le_of_eq ?_)) zero_le
+          exact ae_iff.1 hae
+      rw [hB0]
+      exact pos_iff_ne_zero.2 hℓ0
+    · -- (c) `0 < K < ∞`: Markov's inequality gives `s · volume (Ioo a b ∩ {s ≤ g}) ≤ K`;
+      -- `volume B ≥ ℓ` would force `2K = s · ℓ ≤ K`, impossible.
+      have hsℓ : s * ℓ = 2 * K := ENNReal.div_mul_cancel hℓ0 hℓtop
+      have hmarkov : s * volume.restrict (Ioo a b) {t | s ≤ g t} ≤ K :=
+        (mul_meas_ge_le_lintegral hg s).trans hK
+      have hBsub : B ⊆ {t | s ≤ g t} ∩ Ioo a b := fun t ht =>
+        ⟨show s ≤ g t from le_of_lt ht.2, ht.1⟩
+      have hBle : volume B ≤ volume.restrict (Ioo a b) {t | s ≤ g t} :=
+        (measure_mono hBsub).trans (Measure.le_restrict_apply _ _)
+      refine hBle.trans_lt (lt_of_not_ge fun hle => hK0 ?_)
+      have h2K : K + K ≤ K + 0 := by
+        rw [add_zero, ← two_mul, ← hsℓ]
+        calc s * ℓ ≤ s * volume.restrict (Ioo a b) {t | s ≤ g t} := by gcongr
+          _ ≤ K := hmarkov
+      exact nonpos_iff_eq_zero.1 ((ENNReal.add_le_add_iff_left hKtop).1 h2K)
+  -- Step 2: `Ioo a b ⊄ B ∪ N`, since otherwise `ℓ ≤ volume B + volume N = volume B < ℓ`.
+  have hsub : ¬ Ioo a b ⊆ B ∪ N := by
+    intro h
+    refine (lt_irrefl ℓ) (lt_of_le_of_lt ?_ hB)
+    calc ℓ = volume (Ioo a b) := hvol.symm
+      _ ≤ volume (B ∪ N) := measure_mono h
+      _ ≤ volume B + volume N := measure_union_le _ _
+      _ = volume B := by rw [hN, add_zero]
+  -- Step 3: a point of `Ioo a b` outside `B ∪ N` is the required `t`.
+  obtain ⟨t, htI, htBN⟩ := not_subset.1 hsub
+  exact ⟨t, htI, fun htN => htBN (Or.inr htN), not_lt.1 fun hts => htBN (Or.inl ⟨htI, hts⟩)⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
