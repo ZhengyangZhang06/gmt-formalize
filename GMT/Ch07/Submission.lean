@@ -1417,6 +1417,102 @@ theorem Submission.codim1_ovr_cone_support_smul : ∀ (P n : ℕ) (C : Geometric
   refine ⟨mem_univ _, fun htx => hx.2 ?_⟩
   have h := hZ t⁻¹ (inv_pos.2 ht) (t • x) htx
   rwa [smul_smul, inv_mul_cancel₀ ht.ne', one_smul] at h
+/-- `Λⁿ(ℝᴾ)` is finite-dimensional: `α ↦ (α(e_{I(1)}, …, e_{I(n)}))_{I : Fin n → Fin P}` is a linear
+map into the finite-dimensional space `(Fin n → Fin P) → ℝ`, injective because an alternating map
+is determined by its values on tuples of basis vectors. -/
+theorem Submission.dor_ims_lusin_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+  intro P n
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `L α = (α(e ∘ I))_I`
+  let L : Covector (Euclid P) n →ₗ[ℝ] (Fin n → Fin P) → ℝ :=
+    { toFun := fun α I => α fun k => e (I k)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  refine FiniteDimensional.of_injective L fun α β h => ?_
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  exact e.ext_alternating fun v _ => congrFun h v
+/-- **Lusin's theorem**, compact form (Simon 1.17), for a measurable `g : ℝᴾ → Y` into a
+second-countable `Y`.  If `μ(A) < ∞` and `ε ≠ 0`, there is a compact `K ⊆ A` with
+`μ(A \ K) < ε` on which `g` is continuous.  `μ⌞A` is finite, hence inner regular on `ℝᴾ`.  For a
+countable basis `(O_k)` of `Y` and weights `η_k > 0` with `∑ η_k < ε`, choose compact
+`C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)` with defects `< η_k / 2`, and put
+`K = ⋂ₖ (C_k ∪ D_k)`.  On `K`, `g x ∈ O_k ↔ x ∉ D_k`, so every `g⁻¹(O_k) ∩ K` is relatively
+open. -/
+theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < ε ∧ ContinuousOn g K := by
+  intro P Y _ _ _ _ μ A g ε hg hA hμA hε
+  -- `μ⌞A` is finite, hence regular on the σ-compact metric space `ℝᴾ`, so every measurable
+  -- `B ⊆ A` contains a compact `C` with `μ (B \ C) = μ⌞A (B \ C)` arbitrarily small
+  have : IsFiniteMeasure (μ.restrict A) := isFiniteMeasure_restrict.mpr hμA
+  have approx : ∀ B, B ⊆ A → MeasurableSet B → ∀ η : ℝ≥0∞, η ≠ 0 →
+      ∃ C ⊆ B, IsCompact C ∧ μ (B \ C) < η := by
+    intro B hBA hB η hη
+    obtain ⟨C, hCB, hC, hlt⟩ :=
+      hB.exists_isCompact_sdiff_lt (μ := μ.restrict A) (measure_ne_top _ _) hη
+    exact ⟨C, hCB, hC, by rwa [Measure.restrict_eq_self _ (sdiff_subset.trans hBA)] at hlt⟩
+  -- a countable basis `(O_k)` of `Y`, and weights `η_k > 0` with `∑ η_k < ε`
+  obtain ⟨O, hO⟩ := TopologicalSpace.exists_seq_basis Y
+  obtain ⟨η, hη, hηε⟩ := ENNReal.exists_pos_sum_of_countable' hε ℕ
+  have hS : ∀ k, MeasurableSet (g ⁻¹' O k) :=
+    fun k => hg (hO.isOpen (mem_range_self k)).measurableSet
+  -- compact `C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)`, each with defect `< η_k / 2`
+  choose C hCA hC hCμ using fun k =>
+    approx (A ∩ g ⁻¹' O k) inter_subset_left (hA.inter (hS k)) (η k / 2)
+      (ENNReal.half_pos (hη k).ne').ne'
+  choose D hDA hD hDμ using fun k =>
+    approx (A \ g ⁻¹' O k) sdiff_subset (hA.diff (hS k)) (η k / 2)
+      (ENNReal.half_pos (hη k).ne').ne'
+  -- `E_k = C_k ∪ D_k` misses less than `η_k` of `A`
+  have hE : ∀ k, μ (A \ (C k ∪ D k)) < η k := by
+    intro k
+    calc μ (A \ (C k ∪ D k))
+        ≤ μ ((A ∩ g ⁻¹' O k) \ C k ∪ (A \ g ⁻¹' O k) \ D k) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxO : g x ∈ O k
+          · exact Or.inl ⟨⟨hx.1, hxO⟩, fun hxC => hx.2 (Or.inl hxC)⟩
+          · exact Or.inr ⟨⟨hx.1, hxO⟩, fun hxD => hx.2 (Or.inr hxD)⟩
+      _ ≤ μ ((A ∩ g ⁻¹' O k) \ C k) + μ ((A \ g ⁻¹' O k) \ D k) := measure_union_le _ _
+      _ < η k / 2 + η k / 2 := ENNReal.add_lt_add (hCμ k) (hDμ k)
+      _ = η k := ENNReal.add_halves _
+  -- `K = ⋂ₖ E_k` is closed inside the compact `E_0 ⊆ A`
+  refine ⟨⋂ k, (C k ∪ D k), ?_, ?_, ?_, ?_⟩
+  · exact ((hC 0).union (hD 0)).of_isClosed_subset
+      (isClosed_iInter fun k => ((hC k).union (hD k)).isClosed) (iInter_subset _ 0)
+  · exact (iInter_subset _ 0).trans
+      (union_subset ((hCA 0).trans inter_subset_left) ((hDA 0).trans sdiff_subset))
+  · calc μ (A \ ⋂ k, (C k ∪ D k)) = μ (⋃ k, A \ (C k ∪ D k)) := by rw [sdiff_iInter]
+      _ ≤ ∑' k, μ (A \ (C k ∪ D k)) := measure_iUnion_le _
+      _ ≤ ∑' k, η k := ENNReal.tsum_le_tsum fun k => (hE k).le
+      _ < ε := hηε
+  -- on `K`, `g x ∈ O_k ↔ x ∉ D_k`, so `g⁻¹(O_k) ∩ K = D_kᶜ ∩ K` is relatively open
+  · rw [hO.continuousOn_iff]
+    rintro _ ⟨k, rfl⟩
+    refine ⟨(D k)ᶜ, (hD k).isClosed.isOpen_compl, ?_⟩
+    ext x
+    refine ⟨fun ⟨hxO, hxK⟩ => ⟨fun hxD => (hDA k hxD).2 hxO, hxK⟩, fun ⟨hxD, hxK⟩ => ⟨?_, hxK⟩⟩
+    rcases mem_iInter.mp hxK k with hxC | hxD'
+    · exact (hCA k hxC).2
+    · exact absurd hxD' hxD
+
+/-- **Lusin's theorem** (Simon 1.17) for a `μ`-a.e. strongly measurable covector field
+`f : ℝᴾ → Λⁿ(ℝᴾ)`.  `Λⁿ(ℝᴾ)` is finite-dimensional, hence second countable; give it the Borel
+σ-algebra.  `f` agrees with the Borel modification `f' = hf.mk f` off a measurable `μ`-null set
+`Z`, and Lusin's theorem for `f'` on `A \ Z` gives a compact `K ⊆ A \ Z` with
+`μ((A \ Z) \ K) < ε` on which `f = f'` is continuous.  As `μ(Z) = 0`,
+`μ(A \ K) = μ((A \ K) \ Z) = μ((A \ Z) \ K)`. -/
+theorem Submission.dor_ims_lusin_continuousOn : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)) (f : Euclid P → Covector (Euclid P) n) (ε : ℝ), MeasurableSet A → μ A ≠ ∞ → AEStronglyMeasurable f μ → 0 < ε → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < ENNReal.ofReal ε ∧ ContinuousOn f K := by
+  intro P n μ A f ε hA hμA hf hε
+  -- `Λⁿ(ℝᴾ)` is finite-dimensional, hence proper and second countable
+  have := Submission.dor_ims_lusin_covector_finiteDimensional P n
+  borelize (Covector (Euclid P) n)
+  -- `f = f'` off a measurable null set `Z`
+  obtain ⟨Z, hfZ, hZ, hZ0⟩ := exists_measurable_superset_of_null (ae_iff.mp hf.ae_eq_mk)
+  obtain ⟨K, hK, hKA, hKμ, hfK⟩ := Submission.dor_ims_lusin_measurable_continuousOn P μ (A \ Z)
+    (hf.mk f) (ENNReal.ofReal ε) hf.measurable_mk (hA.diff hZ)
+    (ne_top_of_le_ne_top hμA (measure_mono sdiff_subset)) (ENNReal.ofReal_pos.mpr hε).ne'
+  refine ⟨K, hK, hKA.trans sdiff_subset, ?_, hfK.congr fun x hx => ?_⟩
+  · rwa [← measure_sdiff_null hZ0, sdiff_right_comm]
+  · by_contra hfx
+    exact (hKA hx).2 (hfZ hfx)
 /-- **The Euclidean coefficient norm is a pulled-back Euclidean norm** (Simon Ch. 6, 1.2 and 1.5;
 used by the smooth unit approximation behind the mass of `τ(M, θ, ξ)`).  With `e` the standard
 basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})` for strictly increasing `I : Fin n → Fin P`
@@ -2839,6 +2935,189 @@ theorem Submission.codim1_ovr_extend_rep_across_vertex : ∀ (P m : ℕ) (C : Ge
   have h5 : (fun k => C (ωin k) + C (ωout k)) = fun _ => C ω := funext fun k => (hsplit k).symm
   rw [h5] at h4
   exact tendsto_nhds_unique tendsto_const_nhds h4
+/-- **Simon Ch. 6, 2.5 and 3.2(3)**, upper bound: if `T(ω) = ∫_{M'} θ' ⟨ω, ξ'⟩ dHᵏ` for every
+`ω` supported in `V`, with `θ' ≥ 0` and `ξ'` a unit orientation `Hᵏ`-a.e. on `M'`, then
+`M_W(T) ≤ ∫_{M' ∩ W} θ' dHᵏ` for measurable `W ⊆ V`.  For admissible `ω`, `|ξ'(ω)| ≤ |ω| ≤ 1`
+a.e. on `M'` and `ω = 0` off `W`, so `T(ω) ≤ |∫_{M'} θ' ξ'(ω)| ≤ ∫⁻_{M'} 1_W θ'`; no
+integrability or measurability of `θ'`, `ξ'` is needed. -/
+theorem Submission.codim1_oriented_rep_massOn_le_lintegral : ∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), (∀ x, 0 ≤ θ' x) → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), MeasurableSet W → W ⊆ V → T.massOn W ≤ ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] := by
+  intro P k U V M' T θ' ξ' hθ hξ hT W hW hWV
+  obtain ⟨_, hL⟩ := Submission.dor_ims_unitOrientation_dual P k
+  -- `|ξ'(x)(α)| ≤ |α|` for `Hᵏ⌞M'`-a.e. `x`
+  have hgood : ∀ᵐ x ∂(μHE[k].restrict M'),
+      ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α := by
+    filter_upwards [hξ] with x ⟨Q, hQ⟩
+    exact (hL (ξ' x) Q hQ).1
+  -- it suffices to bound `T(ω)` for each admissible `ω`
+  refine sSup_le ?_
+  rintro r ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  dsimp only
+  rw [hT ω (hωW.trans hWV)]
+  -- `|θ' ξ'(ω)| ≤ 1_W θ'` a.e. on `M'`: `ω = 0` off `W` and `|ξ'(ω)| ≤ |ω| ≤ 1`
+  have hdom : ∀ᵐ x ∂(μHE[k].restrict M'),
+      ‖θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x)‖ₑ ≤
+        W.indicator (fun x => ENNReal.ofReal (θ' x)) x := by
+    filter_upwards [hgood] with x hx
+    by_cases hxW : x ∈ W
+    · rw [indicator_of_mem hxW, Real.enorm_eq_ofReal_abs, abs_mul, abs_of_nonneg (hθ x)]
+      refine ENNReal.ofReal_le_ofReal ?_
+      calc θ' x * |ξ' x ((ω : DifferentialForm (Euclid P) k) x)|
+          ≤ θ' x * 1 := mul_le_mul_of_nonneg_left ((hx _).trans (hω1 x)) (hθ x)
+        _ = θ' x := mul_one _
+    · rw [image_eq_zero_of_notMem_tsupport fun h => hxW (hωW h), map_zero, mul_zero,
+        enorm_zero]
+      exact zero_le
+  -- `T(ω) ≤ |∫ g| ≤ ∫⁻ |g| ≤ ∫⁻_{M'} 1_W θ' = ∫⁻_{M' ∩ W} θ'`
+  calc ENNReal.ofReal (∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k])
+      ≤ ‖∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x in M', ‖θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x)‖ₑ ∂μHE[k] :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x in M', W.indicator (fun x => ENNReal.ofReal (θ' x)) x ∂μHE[k] :=
+        lintegral_mono_ae hdom
+    _ = ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] := by
+        rw [lintegral_indicator hW, Measure.restrict_restrict hW, inter_comm]
+/-- **Lower mass bound for an oriented representation** (Simon Ch. 6, 2.5 and 3.2(3)).  If
+`T(ω) = ∫_{M'} θ' ⟨ω, ξ'⟩ dHᵏ` for the test forms supported in `V`, with `θ' ≥ 0` measurable and
+`ξ'` a.e. a unit orientation, then `I = ∫_{M' ∩ W} θ' dHᵏ ≤ M_W(T)` for every open `W ⊆ V` with
+`I < ∞`.  Let `ν = θ' Hᵏ⌞M'` and let `L` be the dual map of `dor_ims_unitOrientation_dual`, so
+`ν`-a.e. `|ξ'(α)| ≤ |α|`, `|L(ξ')| ≤ 1` and `ξ'(L(ξ')) = 1`.  Lusin gives a compact `K ⊆ W` of such
+points with `ν(W \ K) < η` on which `L ∘ ξ'` is continuous, and the smooth unit approximation an
+admissible `ω` with `|ω − L ∘ ξ'| ≤ δ = η/(I + 1)` on `K`.  Then `ξ'(ω) ≥ (1 − δ) 1_K − 1_{W \ K}`
+`ν`-a.e., so `T(ω) = ∫ ξ'(ω) dν ≥ (1 − δ) ν(K) − ν(W \ K) > I − 3η`. -/
+theorem Submission.codim1_oriented_rep_lintegral_le_massOn : ∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), V ⊆ U → Measurable θ' → (∀ x, 0 ≤ θ' x) → AEStronglyMeasurable ξ' (μHE[k].restrict M') → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≠ ∞ → ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≤ T.massOn W := by
+  intro P k U V M' T θ' ξ' hVU hθm hθ0 hξm hξo hT W hW hWV hI
+  -- Step 1: the dual map `L` of the unit orientations
+  obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P k
+  -- Step 2: `ν = θ' Hᵏ⌞M'`, with `ν ≪ Hᵏ⌞M'`, `ν(W) = I < ∞` and `∫ g dν = ∫_{M'} θ' g dHᵏ`
+  set ν : Measure (Euclid P) :=
+    (μHE[k].restrict M').withDensity fun x => ENNReal.ofReal (θ' x) with hν
+  have hνμ : ν ≪ μHE[k].restrict M' := withDensity_absolutelyContinuous _ _
+  have hνW : ν W = ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] := by
+    rw [hν, withDensity_apply _ hW.measurableSet, Measure.restrict_restrict hW.measurableSet,
+      inter_comm]
+  have hνW' : ν W ≠ ∞ := hνW ▸ hI
+  -- `ν`-a.e. `x` is good, and the bad points lie in a measurable `ν`-null set `Z`
+  have hgood : ∀ᵐ x ∂ν, (∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) ∧
+      covectorEuclideanNorm (L (ξ' x)) ≤ 1 ∧ ξ' x (L (ξ' x)) = 1 :=
+    hνμ.ae_le (hξo.mono fun x ⟨Q, hQ⟩ => hL (ξ' x) Q hQ)
+  obtain ⟨Z, hZ, hZm, hZ0⟩ := exists_measurable_superset_of_null (ae_iff.mp hgood)
+  have hξν : AEStronglyMeasurable ξ' ν := hξm.mono_ac hνμ
+  have hdens : ∀ g : Euclid P → ℝ, ∫ x, g x ∂ν = ∫ x in M', θ' x * g x ∂μHE[k] := by
+    intro g
+    rw [hν, integral_withDensity_eq_integral_toReal_smul hθm.ennreal_ofReal
+      (ae_of_all _ fun x => ENNReal.ofReal_lt_top)]
+    refine integral_congr_ae (ae_of_all _ fun x => ?_)
+    simp only [ENNReal.toReal_ofReal (hθ0 x), smul_eq_mul]
+  set m : ℝ := ν.real W
+  have hm0 : 0 ≤ m := measureReal_nonneg
+  -- Steps 4–8: for every `η > 0` some admissible `ω` has `T(ω) > m - 3η`
+  have key : ∀ η : ℝ, 0 < η →
+      ∃ ω : TestFormOn U k, ω ∈ massAdmissibleOn U k W ∧ m - 3 * η < T ω := by
+    intro η hη
+    -- Step 4: Lusin on `W \ Z` gives a compact `K` of good points with `ν(W \ K) < η`
+    obtain ⟨K, hKc, hKA, hKν, hLK⟩ := Submission.dor_ims_lusin_continuousOn P k ν (W \ Z)
+      (fun x => L (ξ' x)) η (hW.measurableSet.diff hZm)
+      (measure_ne_top_of_subset sdiff_subset hνW')
+      (L.continuous.comp_aestronglyMeasurable hξν) hη
+    have hKW : K ⊆ W := hKA.trans sdiff_subset
+    have hKm : MeasurableSet K := hKc.measurableSet
+    have hLK1 : ∀ x ∈ K, covectorEuclideanNorm (L (ξ' x)) ≤ 1 := by
+      intro x hx
+      by_contra h
+      exact (hKA hx).2 (hZ fun hg => h hg.2.1)
+    have hWK : ν.real (W \ K) < η := by
+      refine ENNReal.toReal_lt_of_lt_ofReal ?_
+      rwa [← measure_sdiff_null hZ0, sdiff_right_comm]
+    -- Step 5: an admissible `ω` with `|ω - L ∘ ξ'| ≤ δ` on `K`
+    set δ : ℝ := η / (m + 1) with hδ
+    have hδ0 : 0 < δ := div_pos hη (by linarith)
+    obtain ⟨ω₀, hω₀, hω₀W, hω₀1, hω₀K⟩ := Submission.dor_ims_smooth_unit_approx P k K W
+      (fun x => L (ξ' x)) δ hKc hW hKW hLK hLK1 hδ0
+    let ω : TestFormOn U k := ⟨ω₀, hω₀, hω₀W.trans (hWV.trans hVU)⟩
+    refine ⟨ω, ⟨hω₀W, hω₀1⟩, ?_⟩
+    have hω₀0 : ∀ x, x ∉ W → ω₀ x = 0 := fun x hx =>
+      image_eq_zero_of_notMem_tsupport fun h => hx (hω₀W h)
+    -- Step 6: `f = ξ'(ω₀)` is `ν`-integrable, as `|f| ≤ 1_W`, and `T(ω) = ∫ f dν`
+    have hTω : T ω = ∫ x, ξ' x (ω₀ x) ∂ν := by
+      rw [hdens]
+      exact hT ω (hω₀W.trans hWV)
+    have hfm : AEStronglyMeasurable (fun x => ξ' x (ω₀ x)) ν :=
+      isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+        (hξν.prodMk (ContDiff.continuous hω₀.1).aestronglyMeasurable)
+    have hWi : Integrable (W.indicator (1 : Euclid P → ℝ)) ν :=
+      (integrable_indicator_iff hW.measurableSet).mpr (integrableOn_const hνW')
+    have hfi : Integrable (fun x => ξ' x (ω₀ x)) ν := by
+      refine hWi.mono' hfm (hgood.mono fun x hx => ?_)
+      by_cases hxW : x ∈ W
+      · rw [indicator_of_mem hxW, Pi.one_apply, Real.norm_eq_abs]
+        exact (hx.1 _).trans (hω₀1 x)
+      · rw [indicator_of_notMem hxW, hω₀0 x hxW, map_zero, norm_zero]
+    -- Step 7: `f ≥ (1 - δ) 1_K - 1_{W \ K}` `ν`-a.e.
+    have hKi : Integrable (K.indicator (1 : Euclid P → ℝ)) ν :=
+      (integrable_indicator_iff hKm).mpr (integrableOn_const (measure_ne_top_of_subset hKW hνW'))
+    have hWKi : Integrable ((W \ K).indicator (1 : Euclid P → ℝ)) ν :=
+      (integrable_indicator_iff (hW.measurableSet.diff hKm)).mpr
+        (integrableOn_const (measure_ne_top_of_subset sdiff_subset hνW'))
+    have hlow : ∀ᵐ x ∂ν,
+        (1 - δ) * K.indicator 1 x - (W \ K).indicator 1 x ≤ ξ' x (ω₀ x) := by
+      refine hgood.mono fun x hx => ?_
+      by_cases hxK : x ∈ K
+      · -- `f = 1 + ξ'(ω₀ - L(ξ')) ≥ 1 - |ω₀ - L(ξ')| ≥ 1 - δ`
+        rw [indicator_of_mem hxK, indicator_of_notMem fun h => h.2 hxK, Pi.one_apply, mul_one,
+          sub_zero]
+        have h1 : ξ' x (ω₀ x) = 1 + ξ' x (ω₀ x - L (ξ' x)) := by
+          rw [map_sub, hx.2.2]
+          ring
+        have h2 := (hx.1 (ω₀ x - L (ξ' x))).trans (hω₀K x hxK)
+        rw [h1]
+        linarith [neg_abs_le (ξ' x (ω₀ x - L (ξ' x)))]
+      · rw [indicator_of_notMem hxK, mul_zero, zero_sub]
+        by_cases hxW : x ∈ W
+        · -- `f ≥ -|ω₀| ≥ -1`
+          rw [indicator_of_mem (s := W \ K) ⟨hxW, hxK⟩, Pi.one_apply]
+          linarith [neg_abs_le (ξ' x (ω₀ x)), (hx.1 (ω₀ x)).trans (hω₀1 x)]
+        · -- `ω₀ = 0` off `W`
+          rw [indicator_of_notMem fun h => hxW h.1, hω₀0 x hxW, map_zero, neg_zero]
+    -- Step 8: `T(ω) ≥ (1 - δ) ν(K) - ν(W \ K) > m - 3η`, as `δ ν(K) ≤ δ m < η`,
+    -- `ν(W \ K) < η` and `ν(K) = m - ν(W \ K)`
+    have hge : (1 - δ) * ν.real K - ν.real (W \ K) ≤ T ω := by
+      rw [hTω, ← integral_indicator_one hKm, ← integral_indicator_one (hW.measurableSet.diff hKm),
+        ← integral_const_mul, ← integral_sub (hKi.const_mul _) hWKi]
+      exact integral_mono_ae ((hKi.const_mul _).sub hWKi) hfi hlow
+    have hsplit : ν.real (W \ K) = m - ν.real K := measureReal_sdiff hKW hKm hνW'
+    have hKle : ν.real K ≤ m := measureReal_mono hKW hνW'
+    have hδm : δ * m < η := by
+      rw [hδ, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+      nlinarith
+    have hδK : δ * ν.real K ≤ δ * m := mul_le_mul_of_nonneg_left hKle hδ0.le
+    have hexp : (1 - δ) * ν.real K = ν.real K - δ * ν.real K := by ring
+    linarith
+  -- Steps 3 and 9: every `r < I` is at most `M_W(T)`, via `key` for `η = (m - r)/3`
+  refine ENNReal.le_of_forall_nnreal_lt fun r hr => ?_
+  rw [← hνW] at hr
+  have hrm : (r : ℝ) < m := ENNReal.toReal_strict_mono hνW' hr
+  obtain ⟨ω, hω, hTω⟩ := key ((m - r) / 3) (by linarith)
+  calc (r : ℝ≥0∞) = ENNReal.ofReal r := ENNReal.ofReal_coe_nnreal.symm
+    _ ≤ ENNReal.ofReal (T ω) := ENNReal.ofReal_le_ofReal (by linarith)
+    _ ≤ T.massOn W := T.le_massOn hω
+
+/-- **Mass of a current given on `V` by an oriented weighted set** (Simon Ch. 6, 2.5 and 3.2(3):
+`M_W(T) = ∫_{M ∩ W} θ dHᵏ` for `T = τ(M, θ, ξ)`, with a general weight `θ' ≥ 0`).  Let
+`I(W) = ∫⁻_{M' ∩ W} θ' dHᵏ` for an open `W ⊆ V`.  Step 2: `|θ' ξ'(ω)| ≤ θ' 1_W` a.e. on `M'` for
+every admissible `ω`, so `M_W(T) ≤ I(W)`.  Step 3: if `I(W) < ∞`, a smooth admissible form close
+to `L ∘ ξ'` on a compact `K ⊆ M' ∩ W` of almost full `θ' Hᵏ`-measure gives `I(W) ≤ M_W(T)`, and
+equality follows by antisymmetry. -/
+theorem Submission.codim1_massOn_eq_lintegral_of_oriented_rep : ∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), IsOpen V → V ⊆ U → MeasurableSet M' → M' ⊆ V → Measurable θ' → (∀ x, 0 ≤ θ' x) → AEStronglyMeasurable ξ' (μHE[k].restrict M') → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → T.massOn W ≤ ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ∧ (∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≠ ∞ → T.massOn W = ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k]) := by
+  intro P k U V M' T θ' ξ' _hV hVU _hM' _hM'V hθ hθ0 hξ hξQ hT W hW hWV
+  -- Step 2: `M_W(T) ≤ I(W)`; the open set `W` is Borel
+  have hle := Submission.codim1_oriented_rep_massOn_le_lintegral P k U V M' T θ' ξ' hθ0 hξQ hT W
+    hW.measurableSet hWV
+  -- Step 3: `I(W) ≤ M_W(T)` when `I(W) < ∞`, hence `M_W(T) = I(W)`
+  exact ⟨hle, fun hI => le_antisymm hle
+    (Submission.codim1_oriented_rep_lintegral_le_massOn P k U V M' T θ' ξ' hVU hθ hθ0 hξ hξQ hT W hW
+      hWV hI)⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
