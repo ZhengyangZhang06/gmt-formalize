@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "69b9910fd42a7848ee15c84c47ff09927676755dfa4da19fc3979e8abf5152f9",
+  "git_delta": {
+    "base_commit": "c95ad33d8d6a238c23aeb878f57fedfc41c3358c",
+    "candidate_commit": "55c3948875513101cc5ca0a57cbd6c85c85cc80c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_csfp_planes_eq_or_inf_bot",
+    "diff_sha256": "7d56cb46e01a191972627736d669c1a4cd9f4aa4785fef0f7569eebf45b9a054",
+    "source_sha256": "477d4af3cebaa173128b0255add67a402bdec920b1b2e200be9cb295319d1af2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_csfp_planes_eq_or_inf_bot",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (p₁ p₂ : Euclid P) (δ₁ δ₂ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q₁ = 2 → Module.finrank ℝ Q₂ = 2 → p₁ ∈ Q₁ → ‖p₁‖ = 1 → 0 < δ₁ → S ∩ ball p₁ δ₁ = (Q₁ : Set (Euclid P)) ∩ ball p₁ δ₁ → p₂ ∈ Q₂ → ‖p₂‖ = 1 → 0 < δ₂ → S ∩ ball p₂ δ₂ = (Q₂ : Set (Euclid P)) ∩ ball p₂ δ₂ → Q₁ = Q₂ ∨ Q₁ ⊓ Q₂ = ⊥",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
