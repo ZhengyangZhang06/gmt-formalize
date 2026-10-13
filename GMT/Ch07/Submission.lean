@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Final step of the local comparison of `Hᵐ` on a `C¹` graph with the integral of its Jacobian
+(Simon 7.5.8 via Ch. 2, 3.2–3.3): with `ε < 1`, `c ≥ 0`, `(1 + ε)ᵐ ≤ t(1 − ε)` and
+`1 + ε ≤ t(1 − ε)ᵐ`, the `(1 ± ε)`-sandwiches `(1 − ε)ᵐ c X ≤ H ≤ (1 + ε)ᵐ c X` and
+`(1 − ε) c X ≤ I ≤ (1 + ε) c X` in `[0, ∞]` give `H ≤ t I` and `I ≤ t H`. -/
+theorem Submission.codim1_zsl_ga_lc_sandwich : ∀ (m : ℕ) (t ε c : ℝ) (X H I : ℝ≥0∞), ε < 1 → 0 ≤ c → (1 + ε) ^ m ≤ t * (1 - ε) → 1 + ε ≤ t * (1 - ε) ^ m → ENNReal.ofReal ((1 - ε) ^ m) * (ENNReal.ofReal c * X) ≤ H → H ≤ ENNReal.ofReal ((1 + ε) ^ m) * (ENNReal.ofReal c * X) → ENNReal.ofReal ((1 - ε) * c) * X ≤ I → I ≤ ENNReal.ofReal ((1 + ε) * c) * X → H ≤ ENNReal.ofReal t * I ∧ I ≤ ENNReal.ofReal t * H := by
+  intro m t ε c X H I hε hc h1 h2 hHlo hHhi hIlo hIhi
+  -- (1) `1 − ε > 0`, so `(1 − ε) c ≥ 0` and `(1 − ε)ᵐ c ≥ 0`
+  have hpos : 0 < 1 - ε := sub_pos.mpr hε
+  have hc1 : 0 ≤ (1 - ε) * c := mul_nonneg hpos.le hc
+  have hcm : 0 ≤ (1 - ε) ^ m * c := mul_nonneg (pow_nonneg hpos.le m) hc
+  -- (2) multiply both hypotheses on `t` by `c ≥ 0`
+  have h1' : (1 + ε) ^ m * c ≤ t * ((1 - ε) * c) := by
+    rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right h1 hc
+  have h2' : (1 + ε) * c ≤ t * ((1 - ε) ^ m * c) := by
+    rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right h2 hc
+  constructor
+  -- (3) `H ≤ (1 + ε)ᵐ c X ≤ t ((1 − ε) c) X ≤ t I`
+  · calc H ≤ ENNReal.ofReal ((1 + ε) ^ m) * (ENNReal.ofReal c * X) := hHhi
+      _ = ENNReal.ofReal ((1 + ε) ^ m * c) * X := by rw [ENNReal.ofReal_mul' hc, mul_assoc]
+      _ ≤ ENNReal.ofReal (t * ((1 - ε) * c)) * X := by gcongr ENNReal.ofReal ?_ * X
+      _ = ENNReal.ofReal t * (ENNReal.ofReal ((1 - ε) * c) * X) := by
+        rw [ENNReal.ofReal_mul' hc1, mul_assoc]
+      _ ≤ ENNReal.ofReal t * I := by gcongr
+  -- (4) `I ≤ (1 + ε) c X ≤ t ((1 − ε)ᵐ c) X ≤ t H`
+  · calc I ≤ ENNReal.ofReal ((1 + ε) * c) * X := hIhi
+      _ ≤ ENNReal.ofReal (t * ((1 - ε) ^ m * c)) * X := by gcongr ENNReal.ofReal ?_ * X
+      _ = ENNReal.ofReal t * (ENNReal.ofReal ((1 - ε) ^ m) * (ENNReal.ofReal c * X)) := by
+        rw [ENNReal.ofReal_mul' hcm, ENNReal.ofReal_mul' hc, mul_assoc, mul_assoc]
+      _ ≤ ENNReal.ofReal t * H := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
