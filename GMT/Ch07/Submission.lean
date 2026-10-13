@@ -509,4 +509,19 @@ theorem Submission.dgcr_bwd_extDeriv_smul_const : ∀ (P m : ℕ) (a : Euclid P 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+theorem Submission.dgcr_bwd_coordinate_form : ∀ (m : ℕ) (a : Euclid (m + 1) → ℝ) (j : Fin (m + 1)), ContDiff ℝ (⊤ : ℕ∞) a → ∃ ψ : DifferentialForm (Euclid (m + 1)) m, IsSmoothForm ψ ∧ tsupport ψ ⊆ tsupport a ∧ ∀ x : Euclid (m + 1), exteriorDerivative ψ x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) := by
+  intro m a j ha
+  obtain ⟨β, hβ⟩ := Submission.dgcr_bwd_coordinate_covector m j
+  refine ⟨fun y => a y • β, ha.smul contDiff_const, tsupport_smul_subset_left _ _, fun x => ?_⟩
+  have hax : DifferentiableAt ℝ a x := (ha.differentiable (by simp)).differentiableAt
+  rw [Submission.dgcr_bwd_extDeriv_smul_const (m + 1) m a β x _ hax, Finset.sum_eq_single j]
+  · rw [hβ j, ite_eq_left rfl, ← mul_assoc, mul_comm ((-1 : ℝ) ^ (j : ℕ)), mul_assoc, ← pow_add,
+      ← two_mul, pow_mul]
+    simp
+  · intro i _ hij
+    rw [hβ i, ite_eq_right hij]
+    simp
+  · intro hj
+    exact absurd (Finset.mem_univ j) hj
+
 end GMT.Ch07
