@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.gram_unit_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "Normalized evaluation at a linearly independent family is a unit orientation of its span (parent step 6c)",
+  "statement": "Let P, m ∈ ℕ and let b = (b_0, …, b_{m−1}) be a linearly independent family in ℝ^P, with Gram determinant Γ := det(⟨b_i, b_j⟩)_{i,j} (Matrix.det of Matrix.of fun i j => inner ℝ (b i) (b j)). Then Γ > 0, and every ξ ∈ Λ_m(ℝ^P) (MultiVector P m) with ξ(α)·√Γ = α(b) for every m-covector α is a unit orientation of span{b_0, …, b_{m−1}} (IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range b))).",
+  "lean_statement": "∀ (P m : ℕ) (b : Fin m → Euclid P), LinearIndependent ℝ b → 0 < Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j)) ∧ ∀ ξ : MultiVector P m, (∀ α : Covector (Euclid P) m, ξ α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (b i) (b j))) = α b) → IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range b))",
+  "lean_name": "codim1_rdo_gc_gram_unitOrientation",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f-a1",
+      "result_commit": "93ec31ab686fa25a7af150db4f17b9bcc26da7df",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c-a1",
+      "result_commit": "73310ec921452a01670f397b34d1cf3cd7135598",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a571a4f1fc-a1"
+}

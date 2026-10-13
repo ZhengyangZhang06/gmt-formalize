@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.local_inverse_c2-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "C² inverse function theorem with C² inverse on a neighbourhood (parent step 4, first item)",
+  "statement": "Let d ∈ ℕ, let V ⊆ ℝ^d be open, z₀ ∈ V, and let φ : ℝ^d → ℝ^d be of class C² on V with injective derivative Dφ(z₀) = fderiv ℝ φ z₀. Then there are open sets V₀, O ⊆ ℝ^d and a map g : ℝ^d → ℝ^d such that z₀ ∈ V₀ ⊆ V, g is C² on O, g maps O into V₀, φ(g(y)) = y for every y ∈ O, and φ(z) ∈ O and g(φ(z)) = z for every z ∈ V₀. (Thus φ : V₀ → O is a bijection with C² inverse g; in particular φ(z₀) ∈ O and g(φ(z₀)) = z₀.)",
+  "lean_statement": "∀ (d : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), IsOpen V → z₀ ∈ V → ContDiffOn ℝ 2 φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (g : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ 2 g O ∧ MapsTo g O V₀ ∧ (∀ y ∈ O, φ (g y) = y) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ g (φ z) = z",
+  "lean_name": "codim1_rdo_gc_local_inverse_c2",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0b6659d640-a1"
+}
