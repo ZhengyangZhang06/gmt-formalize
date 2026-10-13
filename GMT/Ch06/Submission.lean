@@ -2274,17 +2274,6 @@ theorem Submission.slicing_im_tg_c1_chart_cover : ∀ (P n : ℕ) (M : Set (Eucl
       simpa only [Equiv.apply_symm_apply] using hk
     · exact Or.inr (mem_iUnion.2 ⟨j, mem_iUnion.2 ⟨i, hi, hOk⟩⟩)
   · exact Or.inl (Or.inr (mem_iUnion.2 ⟨j, hj, hGi⟩))
-/-- Simon Ch. 3, Lemma 1.2 ("only if" part, p. 70), with each chart restricted, as in the printed
-proof, to a small neighbourhood of a point where its differential is injective, so that it is both
-Lipschitz and antilipschitz: a countably `n`-rectifiable `M ⊆ ℝ^P` is covered, up to an `Hⁿ`-null
-set, by countably many images `Φ_i(Ω_i)` of open sets `Ω_i ⊆ ℝⁿ` under `C¹` maps `Φ_i` with
-`c_i |w − w'| ≤ |Φ_i(w) − Φ_i(w')| ≤ K_i |w − w'|` on `Ω_i`.  The `C¹` Approximation Theorem
-(Ch. 2, 1.5) gives `C¹` maps `G_{j,k}` that agree to first order with the Lipschitz
-parametrizations `F_j` off sets of measure `< 1/(k+1)`; the area formula makes the image of the
-critical set of `F_j` null; near points where `DG_{j,k}` is injective, `G_{j,k}` is a chart on a
-small basic open set. -/
-theorem Submission.slicing_im_coarea_chart_cover : ∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \ ⋃ j, Φ j '' Ω j) = 0 := by
-  intro P n M hM
 /-- Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42) combined with the
 inverse-function-theorem estimate of Ch. 3, Lemma 1.2 (p. 70), as used for Ch. 6, Lemma 3.9
 (p. 148).  A map `u : ℝⁿ → ℝ^Q` that is locally Lipschitz on an open `Ω` agrees, together with its
@@ -5596,15 +5585,6 @@ Cover `M` up to an `Hⁿ`-null set by compact pieces `C k` on which `θ` is cont
 `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)` the sets `C k ∖ Φ(Ω)`, `Φ(Ω) ∖ C k` and the weight `θ` on `M ∖ C k`
 have `n`-density `0`, so the tangent plane of `Φ(Ω)` passes to `C k` and then to `(M, θ)`. -/
 theorem Submission.slicing_im_tg_weighted_tangent_chart :
-/-- Weighted approximate tangent planes on a `C¹` antilipschitz chart (Simon Ch. 3, proof of 1.6
-"⇒" and Remark 1.8(1); used for the tangent planes of `M` and of the level sets `M_t` in Ch. 6,
-4.1(2) and 4.4): for `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and every `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is
-the approximate tangent space of `M` with respect to `θ` at `y`.  Cover `M` up to an `Hⁿ`-null
-set by compact pieces `C k` on which `θ` is continuous (Lusin).  At `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)`
-the upper density theorem makes `Hⁿ ⌞ (C k ∖ Φ(Ω))`, `Hⁿ ⌞ (Φ(Ω) ∖ C k)` and `θ Hⁿ ⌞ (M ∖ C k)`
-of `n`-density `0`, so the tangent plane of the chart image `Φ(Ω)` at `y` passes first to `C k`
-and then to `(M, θ)`. -/
-theorem Submission.slicing_im_st_weighted_tangent_on_c1_chart :
     ∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)),
       IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) →
       (∀ y ∈ M, 0 < θ y) →
@@ -5659,6 +5639,72 @@ theorem Submission.slicing_im_st_weighted_tangent_on_c1_chart :
     ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
       hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
     ((hθC k).continuousWithinAt hyk) (hy₃ (hMV hyMN.1) fun h => h.2 hyk)
+/-- Weighted approximate tangent planes on a `C¹` antilipschitz chart (Simon Ch. 3, proof of 1.6
+"⇒" and Remark 1.8(1); used for the tangent planes of `M` and of the level sets `M_t` in Ch. 6,
+4.1(2) and 4.4): for `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and every `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is
+the approximate tangent space of `M` with respect to `θ` at `y`.  Cover `M` up to an `Hⁿ`-null
+set by compact pieces `C k` on which `θ` is continuous (Lusin).  At `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)`
+the upper density theorem makes `Hⁿ ⌞ (C k ∖ Φ(Ω))`, `Hⁿ ⌞ (Φ(Ω) ∖ C k)` and `θ Hⁿ ⌞ (M ∖ C k)`
+of `n`-density `0`, so the tangent plane of the chart image `Φ(Ω)` at `y` passes first to `C k`
+and then to `(M, θ)`. -/
+theorem Submission.slicing_im_st_weighted_tangent_on_c1_chart :
+    ∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)),
+      IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) →
+      (∀ y ∈ M, 0 < θ y) →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V →
+        IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) →
+      IsOpen Ω → ContDiff ℝ 1 Φ →
+      (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y →
+        HasWeightedApproximateTangentSpaceAt n M θ y
+          (LinearMap.range (fderiv ℝ Φ w).toLinearMap) := by
+  intro Q n V M θ Φ Ω hV hMV hM hθ hθK hΩ hΦ hanti
+  -- Step 0: the chart image `N = Φ(Ω)` is Borel and locally `Hⁿ`-finite.
+  obtain ⟨hNm, hNfin⟩ :=
+    Submission.lpf_wtc_chart_image_measurable_locally_finite Q n Φ Ω hΩ hΦ hanti
+  -- Step 1: compact pieces `C k ⊆ M` with `θ|C k` continuous and `Hⁿ(C k) < ∞`, covering `M`
+  -- up to an `Hⁿ`-null set.
+  obtain ⟨C, hCcpt, hCM, hθC, hCfin, hMnull⟩ :=
+    Submission.lpf_wtc_lusin_compact_pieces Q n V M θ hV hMV hM hθ hθK
+  have hCm : ∀ k, MeasurableSet (C k) := fun k => (hCcpt k).isClosed.measurableSet
+  -- Step 2 (i): `Hⁿ ⌞ (C k ∖ N)` has `n`-density `0` at `Hⁿ`-a.e. point outside `C k ∖ N`.
+  have hd₁ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n univ (C k \ Φ '' Ω)
+    (fun _ => 1) isOpen_univ ((hCm k).diff hNm).nullMeasurableSet fun K _ _ => by
+      rw [setLIntegral_one]
+      exact (measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt (hCfin k)
+  -- Step 2 (ii): `Hⁿ ⌞ (N ∖ C k)` has `n`-density `0` at `Hⁿ`-a.e. point outside `N ∖ C k`.
+  have hd₂ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n univ (Φ '' Ω \ C k)
+    (fun _ => 1) isOpen_univ (hNm.diff (hCm k)).nullMeasurableSet fun K hK _ => by
+      rw [setLIntegral_one]
+      exact (measure_mono (inter_subset_inter_left K sdiff_subset)).trans_lt (hNfin K hK)
+  -- Step 3: `θ Hⁿ ⌞ (M ∖ C k)` has `n`-density `0` at `Hⁿ`-a.e. point of `V ∖ (M ∖ C k)`.
+  have hd₃ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n V (M \ C k)
+    (fun x => ENNReal.ofReal (θ x)) hV (hM.diff (hCm k).nullMeasurableSet) fun K hK hKV =>
+      (lintegral_mono_set (inter_subset_inter_left K sdiff_subset)).trans_lt
+        (hθK K hK hKV).setLIntegral_lt_top
+  -- Step 5: the exceptional sets are a countable union of `Hⁿ`-null sets.
+  have hgood := ae_all_iff.2 fun k => (hd₁ k).and ((hd₂ k).and (hd₃ k))
+  rw [ae_restrict_iff'₀ (hM.inter hNm.nullMeasurableSet)]
+  filter_upwards [hgood, measure_eq_zero_iff_ae_notMem.1 hMnull] with y hy hycov hyMN w hw hwy
+  subst hwy
+  obtain ⟨k, hk⟩ : ∃ k, Φ w ∈ C k := by
+    by_contra hnot
+    exact hycov ⟨hyMN.1, fun h => hnot (mem_iUnion.1 h)⟩
+  obtain ⟨hy₁, hy₂, hy₃⟩ := hy k
+  -- Step 2: `N` has approximate tangent space `DΦ(w)(ℝⁿ)` at `Φ w`, hence so does `C k`.
+  have hCtan := Submission.lpf_wtc_tangent_transfer Q n (C k) (Φ '' Ω) (Φ w) _
+    (hCm k).nullMeasurableSet hNm.nullMeasurableSet
+    (Submission.lpf_wtc_chart_approx_tangent Q n Φ Ω hΩ hΦ hanti w hw)
+    ⟨1, one_pos, hNfin _ (isCompact_closedBall _ _)⟩
+    (by simpa only [setLIntegral_one] using hy₁ (mem_univ _) fun h => h.2 hyMN.2)
+    (by simpa only [setLIntegral_one] using hy₂ (mem_univ _) fun h => h.2 hk)
+  -- Step 4: weighted blow-up of `(M, θ)` on a closed ball about `Φ w` contained in `V`.
+  obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.1 hV _ (hMV hyMN.1)
+  exact Submission.lpf_wtc_weighted_tangent_transfer Q n M (C k) θ (Φ w) _ hM
+    (hCm k).nullMeasurableSet (hCM k) hk (fun x hx => (hθ x hx).le) hCtan
+    ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
+      hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
+    ((hθC k).continuousWithinAt hk) (hy₃ (hMV hyMN.1) fun h => h.2 hk)
 /-- Rademacher on a Lipschitz chart (Simon Ch. 2, 1.4 and 1.8(i)): for `f` locally Lipschitz on
 an open `U` and `Φ` `K`-Lipschitz on an open `Ω ⊆ ℝⁿ`, the `Φ`-image of the set of `w ∈ Ω` with
 `Φ w ∈ U` at which `f ∘ Φ` is not differentiable is `Hⁿ`-null. -/
@@ -6024,52 +6070,6 @@ theorem Submission.slicing_im_tangential_gradient :
       (hT.pos x hxM).ne' (htan w hw hwx) hQ
   rw [hGx]
   exact hgrad w hw hwx
-  -- Step 0: the chart image `N = Φ(Ω)` is Borel and locally `Hⁿ`-finite.
-  obtain ⟨hNm, hNfin⟩ :=
-    Submission.lpf_wtc_chart_image_measurable_locally_finite Q n Φ Ω hΩ hΦ hanti
-  -- Step 1: compact pieces `C k ⊆ M` with `θ|C k` continuous and `Hⁿ(C k) < ∞`, covering `M`
-  -- up to an `Hⁿ`-null set.
-  obtain ⟨C, hCcpt, hCM, hθC, hCfin, hMnull⟩ :=
-    Submission.lpf_wtc_lusin_compact_pieces Q n V M θ hV hMV hM hθ hθK
-  have hCm : ∀ k, MeasurableSet (C k) := fun k => (hCcpt k).isClosed.measurableSet
-  -- Step 2 (i): `Hⁿ ⌞ (C k ∖ N)` has `n`-density `0` at `Hⁿ`-a.e. point outside `C k ∖ N`.
-  have hd₁ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n univ (C k \ Φ '' Ω)
-    (fun _ => 1) isOpen_univ ((hCm k).diff hNm).nullMeasurableSet fun K _ _ => by
-      rw [setLIntegral_one]
-      exact (measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt (hCfin k)
-  -- Step 2 (ii): `Hⁿ ⌞ (N ∖ C k)` has `n`-density `0` at `Hⁿ`-a.e. point outside `N ∖ C k`.
-  have hd₂ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n univ (Φ '' Ω \ C k)
-    (fun _ => 1) isOpen_univ (hNm.diff (hCm k)).nullMeasurableSet fun K hK _ => by
-      rw [setLIntegral_one]
-      exact (measure_mono (inter_subset_inter_left K sdiff_subset)).trans_lt (hNfin K hK)
-  -- Step 3: `θ Hⁿ ⌞ (M ∖ C k)` has `n`-density `0` at `Hⁿ`-a.e. point of `V ∖ (M ∖ C k)`.
-  have hd₃ := fun k => Submission.lpf_wtc_ae_zero_density_off_set Q n V (M \ C k)
-    (fun x => ENNReal.ofReal (θ x)) hV (hM.diff (hCm k).nullMeasurableSet) fun K hK hKV =>
-      (lintegral_mono_set (inter_subset_inter_left K sdiff_subset)).trans_lt
-        (hθK K hK hKV).setLIntegral_lt_top
-  -- Step 5: the exceptional sets are a countable union of `Hⁿ`-null sets.
-  have hgood := ae_all_iff.2 fun k => (hd₁ k).and ((hd₂ k).and (hd₃ k))
-  rw [ae_restrict_iff'₀ (hM.inter hNm.nullMeasurableSet)]
-  filter_upwards [hgood, measure_eq_zero_iff_ae_notMem.1 hMnull] with y hy hycov hyMN w hw hwy
-  subst hwy
-  obtain ⟨k, hk⟩ : ∃ k, Φ w ∈ C k := by
-    by_contra hnot
-    exact hycov ⟨hyMN.1, fun h => hnot (mem_iUnion.1 h)⟩
-  obtain ⟨hy₁, hy₂, hy₃⟩ := hy k
-  -- Step 2: `N` has approximate tangent space `DΦ(w)(ℝⁿ)` at `Φ w`, hence so does `C k`.
-  have hCtan := Submission.lpf_wtc_tangent_transfer Q n (C k) (Φ '' Ω) (Φ w) _
-    (hCm k).nullMeasurableSet hNm.nullMeasurableSet
-    (Submission.lpf_wtc_chart_approx_tangent Q n Φ Ω hΩ hΦ hanti w hw)
-    ⟨1, one_pos, hNfin _ (isCompact_closedBall _ _)⟩
-    (by simpa only [setLIntegral_one] using hy₁ (mem_univ _) fun h => h.2 hyMN.2)
-    (by simpa only [setLIntegral_one] using hy₂ (mem_univ _) fun h => h.2 hk)
-  -- Step 4: weighted blow-up of `(M, θ)` on a closed ball about `Φ w` contained in `V`.
-  obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.1 hV _ (hMV hyMN.1)
-  exact Submission.lpf_wtc_weighted_tangent_transfer Q n M (C k) θ (Φ w) _ hM
-    (hCm k).nullMeasurableSet (hCM k) hk (fun x hx => (hθ x hx).le) hCtan
-    ⟨ε / 2, half_pos hε, (measure_mono inter_subset_left).trans_lt (hCfin k),
-      hθK _ (isCompact_closedBall _ _) ((closedBall_subset_ball (half_lt_self hε)).trans hεV)⟩
-    ((hθC k).continuousWithinAt hk) (hy₃ (hMV hyMN.1) fun h => h.2 hk)
 
 /-- Simon Ch. 6, 4.1(2) and 4.4 (Step 7 of the slicing argument for `τ(M, θ, ξ)`, `n = m + 1`):
 countably many `C¹` charts `Φ j`, antilipschitz on open `Ω j ⊆ ℝⁿ`, with sets `A j ⊆ Ω j` and `C¹`
