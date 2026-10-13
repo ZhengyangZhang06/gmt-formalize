@@ -1762,6 +1762,20 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192: `spt S₀` lies in finitely
+many 2-planes): a measure `μ` on `ℝᴾ` that is finite on compact sets admits no infinite pairwise
+disjoint family of measurable sets `Dᵢ ⊆ B_r(0)` with `μ(Dᵢ) ≥ c > 0`.  All `Dᵢ` lie in the
+compact ball `closedBall 0 r`, so `∞ = ∑ᵢ c ≤ ∑ᵢ μ(Dᵢ) = μ(⋃ᵢ Dᵢ) ≤ μ(closedBall 0 r) < ∞`. -/
+theorem Submission.idtp_tdc_nipp_disjoint_packing : ∀ (P : ℕ) (μ : Measure (Euclid P)) (D : ℕ → Set (Euclid P)) (r : ℝ) (c : ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → c ≠ 0 → (∀ i, MeasurableSet (D i)) → (∀ i j, i ≠ j → Disjoint (D i) (D j)) → (∀ i, D i ⊆ ball 0 r) → (∀ i, c ≤ μ (D i)) → False := by
+  intro P μ D r c hμ hc hD hdisj hball hcD
+  -- `closedBall 0 r` is compact, yet `∞ = ∑ᵢ c ≤ ∑ᵢ μ(Dᵢ) = μ(⋃ᵢ Dᵢ) ≤ μ(closedBall 0 r)`
+  refine hμ _ (isCompact_closedBall 0 r) (top_le_iff.mp ?_)
+  calc ∞ = ∑' _ : ℕ, c := (ENNReal.tsum_const_eq_top_of_ne_zero hc).symm
+    _ ≤ ∑' i, μ (D i) := ENNReal.tsum_le_tsum hcD
+    _ = μ (⋃ i, D i) := (measure_iUnion (fun i j hij => hdisj i j hij) hD).symm
+    _ ≤ μ (closedBall 0 r) :=
+      measure_mono (iUnion_subset fun i => (hball i).trans ball_subset_closedBall)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
