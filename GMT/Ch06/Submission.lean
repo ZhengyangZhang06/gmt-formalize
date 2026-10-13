@@ -424,6 +424,56 @@ theorem Submission.iwl_cr_ci_ie_nvector_intervalIntegral : ∀ (P m : ℕ) (a b 
   -- `w` commutes with the integral.
   rw [w.intervalIntegral_comp_comm hfi, hI]
 
+/-- **Fubini for `∫ θ ⟨Φ(s), ξ⟩ dμ` over `s ∈ [0, 1]`.**  Let `μ` be s-finite, `θ ∈ L¹(μ)` and
+`|ξ(x)(α)| ≤ ‖α‖` for `μ`-a.e. `x`, let `(s, x) ↦ Φ(s)(x)` be continuous with `‖Φ(s)(x)‖ ≤ B` on
+`[0, 1] × ℝ^P`, and `Ψ(x) = ∫₀¹ Φ(s)(x) ds`.  Then `∫₀¹ ∫ θ ξ(Φ(s)) dμ ds = ∫ θ ξ(Ψ) dμ`: the
+integrand is dominated by `B |θ(x)|` for `𝓛¹ ⌞ (0, 1] × μ`-a.e. `(s, x)`, so Fubini applies
+(`integral_integral_swap`), and the inner integral is
+`θ(x) ∫₀¹ ξ(x)(Φ(s)(x)) ds = θ(x) ξ(x)(Ψ(x))` (`iwl_cr_ci_ie_nvector_intervalIntegral`). -/
+theorem Submission.iwl_cr_ci_ie_param_fubini : ∀ (P m : ℕ) (μ : Measure (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m) (Φ : ℝ → Eucl P → Covector (Eucl P) m) (Ψ : Eucl P → Covector (Eucl P) m) (B : ℝ), SFinite μ → Integrable θ μ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖) → Continuous (fun p : ℝ × Eucl P => Φ p.1 p.2) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ x, ‖Φ s x‖ ≤ B) → (∀ (x : Eucl P) (v : Fin m → Eucl P), Ψ x v = ∫ s in (0 : ℝ)..1, Φ s x v) → ∫ s in (0 : ℝ)..1, ∫ x, θ x * ξ x (Φ s x) ∂μ = ∫ x, θ x * ξ x (Ψ x) ∂μ := by
+  intro P m μ θ ξ Φ Ψ B hμ hθ hξ hbd hΦ hB hΨ
+  -- `ν = 𝓛¹ ⌞ (0, 1]` is finite, and `F(s, x) = θ(x) ξ(x)(Φ(s)(x))` on `ℝ × ℝ^P`.
+  set ν : Measure ℝ := volume.restrict (Ioc (0 : ℝ) 1) with hν
+  have _instν : IsFiniteMeasure ν := ⟨by simp [hν]⟩
+  set F : ℝ → Eucl P → ℝ := fun s x => θ x * ξ x (Φ s x) with hF
+  -- `F` is a.e. strongly measurable for `ν × μ`: `θ`, `ξ` only depend on `x`, `Φ` is jointly
+  -- continuous and the evaluation `(w, α) ↦ w(α)` is continuous.
+  have hmeas : AEStronglyMeasurable (Function.uncurry F) (ν.prod μ) := by
+    have h1 : AEStronglyMeasurable (fun p : ℝ × Eucl P => θ p.2) (ν.prod μ) :=
+      hθ.aestronglyMeasurable.comp_snd
+    have h2 : AEStronglyMeasurable (fun p : ℝ × Eucl P => ξ p.2) (ν.prod μ) := hξ.comp_snd
+    have h3 : AEStronglyMeasurable (fun p : ℝ × Eucl P => Φ p.1 p.2) (ν.prod μ) :=
+      hΦ.aestronglyMeasurable
+    exact h1.mul ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂ h2 h3)
+  -- `ν × μ`-a.e. `s ∈ (0, 1]` and `|ξ(x)(α)| ≤ ‖α‖`, so `|F(s, x)| ≤ |θ(x)| ‖Φ(s)(x)‖ ≤ B |θ(x)|`.
+  have hbound : ∀ᵐ p ∂(ν.prod μ), ‖Function.uncurry F p‖ ≤ B * ‖θ p.2‖ := by
+    have hs : ∀ᵐ p ∂(ν.prod μ), p.1 ∈ Ioc (0 : ℝ) 1 :=
+      Measure.quasiMeasurePreserving_fst.ae (ae_restrict_mem measurableSet_Ioc)
+    have hx : ∀ᵐ p ∂(ν.prod μ), ∀ α : Covector (Eucl P) m, |ξ p.2 α| ≤ ‖α‖ :=
+      Measure.quasiMeasurePreserving_snd.ae hbd
+    filter_upwards [hs, hx] with p hp1 hp2
+    simp only [Function.uncurry, hF, norm_mul, Real.norm_eq_abs]
+    calc |θ p.2| * |ξ p.2 (Φ p.1 p.2)| ≤ |θ p.2| * B := by
+          gcongr
+          exact (hp2 _).trans (hB p.1 (Ioc_subset_Icc_self hp1) p.2)
+      _ = B * |θ p.2| := mul_comm _ _
+  -- `B |θ|` is `ν × μ`-integrable (`ν` finite), hence so is `F`.
+  have hG : Integrable (fun p : ℝ × Eucl P => B * ‖θ p.2‖) (ν.prod μ) :=
+    (integrable_const B).mul_prod hθ.norm
+  have hint : Integrable (Function.uncurry F) (ν.prod μ) := hG.mono' hmeas hbound
+  -- Fubini, with `∫₀¹ = ∫ dν` since `0 ≤ 1`.
+  rw [intervalIntegral.integral_of_le zero_le_one]
+  change ∫ s, ∫ x, F s x ∂μ ∂ν = _
+  rw [integral_integral_swap hint]
+  congr 1
+  funext x
+  -- The inner integral: `∫₀¹ θ(x) ξ(x)(Φ(s)(x)) ds = θ(x) ξ(x)(Ψ(x))`.
+  change ∫ s in Ioc (0 : ℝ) 1, θ x * ξ x (Φ s x) = _
+  rw [← intervalIntegral.integral_of_le zero_le_one, intervalIntegral.integral_const_mul]
+  congr 1
+  exact Submission.iwl_cr_ci_ie_nvector_intervalIntegral P m 0 1 (fun s => Φ s x) (Ψ x) (ξ x)
+    (hΦ.comp (continuous_id.prodMk continuous_const)) (hΨ x)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
