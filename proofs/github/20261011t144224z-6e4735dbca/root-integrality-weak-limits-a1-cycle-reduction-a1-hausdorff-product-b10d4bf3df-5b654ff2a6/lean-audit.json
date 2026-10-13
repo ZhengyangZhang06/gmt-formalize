@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "686e76744825b30cf728a6ba2780e4bc8f660f5043edfe29041a91e1d817b6cf",
+  "git_delta": {
+    "base_commit": "5e8fbbaea93029238a0f7bc44e354683c5a9767f",
+    "candidate_commit": "52fc2ee0c0a4369cf6ac834c3ea5cba663f4b160",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_hp_cylinder_null",
+    "diff_sha256": "6bba7fe0702888fc6a35faf8ff89bb570f8ee173d3ba32e5a52c0ef115bfc59f",
+    "source_sha256": "89846772f1ff5a32d0791fbac4d069912f166d98d6f2fcfc9875a7edf1665eb4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_hp_cylinder_null",
+      "statement": "∀ (P m : ℕ) (N : Set (Eucl P)), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
