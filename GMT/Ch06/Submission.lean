@@ -891,6 +891,108 @@ theorem Submission.iwl_sp_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (E
     (μHE[n] : Measure (Eucl P)) hM.subset fun W hW hWc hWU hTW =>
       Submission.iwl_sp_sn_local_null P n U W T M θ ξ hM hT hW hWc hWU hTW
 
+/-- **Integrality of the Lipschitz push-forward defined by smooth approximation** (step 5.9 of the
+push-forward homotopy argument; Simon Ch. 6, 2.29 and Lemma 3.9).  Assume (S5′): `g_# X` is an
+integer multiplicity `S'` with `∫_M θ ⟨ω(g_j x), (Dg_j)_# ξ⟩ dHᵏ → S'(ω)` along `C¹` maps
+`g_j → g`.  If `S` is the limit of `X(η_n)` for forms `η_n` compatible with smooth approximations
+`G_n → G` near `spt X`, then `S` is integer multiplicity.  Take `G_n → Ĝ` from
+`dph_lipschitz_smooth_approx` and `η_n` from `iwl_sp_exists_compatible_testForm`.  As
+`Hᵏ(M ∖ spt X) = 0` (`iwl_sp_rectifiable_support_null`), `X(η_n)` is the integral for `g_j = G_n`,
+so `S = S'`. -/
+theorem Submission.dph_lipschitz_pushforward_im : (∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))) → ∀ (m m' k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (S : GeometricCurrentOn (univ : Set (Eucl m')) k), IsIntegerMultiplicity X → 0 < r → LipschitzOnWith Λ G (thickening r X.support) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ X.support)) → (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O → (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) → (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O → ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k), (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap (fderiv ℝ (Gj n) x)) → Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) → IsIntegerMultiplicity S := by
+  intro hS5 m m' k X G Λ r S hX hr hGLip hGprop hLipPF
+  -- 1. `X = τ(M, θ, ξ)` with `θ` integer-valued.
+  obtain ⟨M, θ, ξ, hT, hθ, hXτ⟩ := hX
+  -- 2. `Ĝ = G'` is Lipschitz with `Ĝ = G` on `(spt X)_r`; the `C^∞` maps `G_n` are `L`-Lipschitz,
+  -- `G_n → Ĝ` uniformly and `‖DG_n‖ ≤ Λ` on `O₀ = (spt X)_{r/2}`, where `G_n → G` uniformly.
+  obtain ⟨G', Gj, L, hG'Lip, hG'eq, hGjsmooth, hGjLip, hGjconv, hGjderiv, -⟩ :=
+    Submission.dph_lipschitz_smooth_approx m m' G Λ X.support r hr hGLip
+  have hsptO : X.support ⊆ thickening (r / 2) X.support := self_subset_thickening (half_pos hr) _
+  have hOr : thickening (r / 2) X.support ⊆ thickening r X.support :=
+    thickening_mono (half_le_self hr.le) _
+  have hsptr : X.support ⊆ thickening r X.support := self_subset_thickening hr _
+  have hconvO : TendstoUniformlyOn Gj G atTop (thickening (r / 2) X.support) :=
+    hGjconv.tendstoUniformlyOn.congr_right (hG'eq.mono hOr)
+  -- 3. `Ĝ` is proper on `spt X` (it equals `G` there), so (S5′) gives an integer multiplicity `S'`
+  -- with `I_n(ω) = ∫_M θ ⟨ω(G_n x), (DG_n)_# ξ⟩ dHᵏ → S'(ω)`.
+  have hG'prop : ∀ K : Set (Eucl m'), IsCompact K → IsCompact (G' ⁻¹' K ∩ X.support) := by
+    intro K hK
+    have hEq : G' ⁻¹' K ∩ X.support = G ⁻¹' K ∩ X.support := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hx, hxs⟩
+        exact ⟨hG'eq (hsptr hxs) ▸ hx, hxs⟩
+      · rintro ⟨hx, hxs⟩
+        exact ⟨(hG'eq (hsptr hxs)).symm ▸ hx, hxs⟩
+    rw [hEq]
+    exact hGprop K hK
+  obtain ⟨S', -, hS'im, hS'lim⟩ := hS5 m m' k X M θ ξ hT hθ hXτ G' L hG'Lip hG'prop
+  -- 4. Eventually `dist (G x) (G_n x) < 1` on `spt X`, so `G_n` is proper on the closed `spt X`:
+  -- `G_n⁻¹(K) ∩ spt X` is a closed subset of the compact `G⁻¹(cthickening 1 K) ∩ spt X`.
+  have hsptClosed : IsClosed X.support := isClosed_univ.sdiff X.isOpen_zeroRegion
+  have hprop_ev : ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K →
+      IsCompact (Gj n ⁻¹' K ∩ X.support) := by
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hconvO.mono hsptO) 1 one_pos] with n hn
+    intro K hK
+    refine (hGprop (cthickening 1 K) hK.cthickening).of_isClosed_subset
+      ((hK.isClosed.preimage (hGjsmooth n).continuous).inter hsptClosed) ?_
+    rintro x ⟨hxK, hxs⟩
+    exact ⟨Metric.mem_cthickening_of_dist_le (G x) (Gj n x) 1 K hxK (hn x hxs).le, hxs⟩
+  -- `Hᵏ(M ∖ spt X) = 0`: `Hᵏ`-a.e. point of `M` lies in `spt X`.
+  have hnull := Submission.iwl_sp_rectifiable_support_null m k univ X M θ ξ hT hXτ
+  have hspt : ∀ᵐ x ∂((μHE[k] : Measure (Eucl m)).restrict M), x ∈ X.support := by
+    rw [ae_restrict_iff'₀ hT.nullMeasurableSet]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hnull] with x hx hxM
+    by_contra hxX
+    exact hx ⟨hxM, hxX⟩
+  -- 5. `S(ω) = S'(ω)`: both are limits of `X(η_n) = I_n(ω)`.
+  have hSeq : ∀ ω, S ω = S' ω := by
+    intro ω
+    -- `η_n` is compatible with `(G_n, ω)` near `spt X` whenever `G_n` is proper on `spt X`.
+    have hex : ∀ n, ∃ η : TestFormOn (univ : Set (Eucl m)) k,
+        (∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ X.support)) →
+        ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+          (η : DifferentialForm (Eucl m) k) x =
+            ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+              (fderiv ℝ (Gj n) x) := by
+      intro n
+      by_cases hp : ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ X.support)
+      · obtain ⟨η, _ζ, N, hN, hAN, -, -, hηN, -⟩ :=
+          Submission.iwl_sp_exists_compatible_testForm m m' k univ univ X.support (Gj n)
+            isOpen_univ (subset_univ _) (hGjsmooth n) (fun K hK _ => hp K hK) ω
+        exact ⟨η, fun _ => ⟨N, hN, hAN, hηN⟩⟩
+      · exact ⟨0, fun h => absurd h hp⟩
+    choose ηj hηj using hex
+    have hcompat : ∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N,
+        (ηj n : DifferentialForm (Eucl m) k) x =
+          ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap
+            (fderiv ℝ (Gj n) x) :=
+      hprop_ev.mono fun n hn => hηj n hn
+    -- `LipPF(X, G, S)` for the admissible `(G_n, O₀, Λ)`: `X(η_n) → S(ω)`.
+    have hlim1 : Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω)) :=
+      hLipPF Gj (thickening (r / 2) X.support) (Λ : ℝ) isOpen_thickening hsptO hGjsmooth
+        (Eventually.of_forall fun n x hx => hGjderiv n x hx) hconvO ω ηj hcompat
+    -- Step 3 with `g_n = G_n` (`C^∞` maps are `C¹`): `I_n(ω) → S'(ω)`.
+    have hlim2 := hS'lim Gj L (fun n => (hGjsmooth n).of_le (by exact_mod_cast le_top))
+      hGjLip hGjconv ω
+    -- Eventually `X(η_n) = I_n(ω)`: `η_n = (ω ∘ G_n) ∘ DG_n` on `N ⊇ spt X`, which carries
+    -- `Hᵏ ⌞ M`, and `⟨(ω ∘ G_n) ∘ DG_n, ξ⟩ = ⟨ω ∘ G_n, (DG_n)_# ξ⟩` by definition.
+    have hevEq : ∀ᶠ n in atTop, X (ηj n) = ∫ x in M, θ x * nVectorPushforward k
+        (fderiv ℝ (Gj n) x) (ξ x) ((ω : DifferentialForm (Eucl m') k) (Gj n x))
+          ∂(μHE[k] : Measure (Eucl m)) := by
+      filter_upwards [hcompat] with n hn
+      obtain ⟨N, -, hXN, hηN⟩ := hn
+      rw [hXτ, tauAction]
+      refine integral_congr_ae ?_
+      filter_upwards [hspt] with x hxX
+      rw [hηN x (hXN hxX)]
+      rfl
+    exact tendsto_nhds_unique hlim1 (hlim2.congr' (hevEq.mono fun n h => h.symm))
+  -- `S` inherits the integer multiplicity representation of `S'`.
+  obtain ⟨M', θ', ξ', hT', hθ', hS'τ⟩ := hS'im
+  exact ⟨M', θ', ξ', hT', hθ', fun ω => (hSeq ω).trans (hS'τ ω)⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
