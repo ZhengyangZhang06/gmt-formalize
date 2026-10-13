@@ -4125,6 +4125,52 @@ theorem Submission.br_lattice_approximation : DeformationTheorem → ∀ (P m : 
     · -- `sup_k M(∂P_k) ≤ C M(∂X) < ∞`.
       exact (iSup_le hPb).trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top hXb)
 
+/-- Simon Ch. 6, 6.3 for `U = ℝ^P` and finite masses (proof of 6.3 and Remark 6.4): integer
+lattice chains `P_k ⇀ X` with `sup_k M(∂P_k) < ∞` (deformation theorem); the `∂P_k` are integer
+multiplicity cycles with `∂P_k ⇀ ∂X` and `M_W(∂P_k) ≤ M(∂P_k)`, so `∂X` is integer multiplicity
+by the zero-dimensional case for `m = 0` and by 8.2 for `m ≥ 1`. -/
+theorem Submission.br_boundary_isIntegerMultiplicity_of_finite_mass :
+    DeformationTheorem → IntegralityOfWeakLimits → ∀ (P m : ℕ)
+      (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X →
+        X.mass < ∞ → X.boundary.mass < ∞ → IsIntegerMultiplicity X.boundary := by
+  intro hDef hInt P m X hX hXm hXbm
+  obtain ⟨ρ, β, Pk, hρ, hPk, hconv, hbd⟩ :=
+    Submission.br_lattice_approximation hDef P m X hX hXm hXbm
+  -- `Y_k = ∂P_k` is integer multiplicity and `M_W(Y_k) ≤ M(Y_k) ≤ sup_k M(∂P_k)`.
+  have hY : ∀ k, IsIntegerMultiplicity (Pk k).boundary := fun k =>
+    Submission.br_lattice_chain_boundary_isIntegerMultiplicity P m (ρ k) (hρ k) (β k) (Pk k)
+      (hPk k)
+  have hYW : ∀ W, (⨆ k, (Pk k).boundary.massOn W) < ∞ := fun W =>
+    (iSup_mono fun k => (Pk k).boundary.massOn_mono (subset_univ W)).trans_lt hbd
+  cases m with
+  | zero =>
+    exact Submission.br_zero_dim_weak_limit_isIntegerMultiplicity P univ isOpen_univ
+      (fun k => (Pk k).boundary) X.boundary hY (fun W _ => hYW W) hconv.boundary
+  | succ m =>
+    -- `∂Y_k = 0 = τ(∅, 0, 0)`: the `Y_k` are integral currents and `M_W(∂Y_k) = 0`.
+    have h0 : IsIntegerMultiplicity (0 : GeometricCurrentOn (univ : Set (Eucl P)) m) := by
+      refine ⟨∅, fun _ => 0, fun _ => 0,
+        { subset := empty_subset _
+          nullMeasurableSet := nullMeasurableSet_empty
+          countablyRectifiable :=
+            Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+          pos := fun x hx => absurd hx (notMem_empty x)
+          integrableOn := fun K _ _ => by rw [empty_inter]; exact integrableOn_empty
+          aestronglyMeasurable := aestronglyMeasurable_const
+          orients := ae_restrict_of_forall_mem MeasurableSet.empty fun x hx =>
+            absurd hx (notMem_empty x) },
+        fun x hx => absurd hx (notMem_empty x), fun ω => ?_⟩
+      rw [GeometricCurrentOn.zero_apply, tauAction, setIntegral_empty]
+    have hm0 : ∀ W, (0 : GeometricCurrentOn (univ : Set (Eucl P)) m).massOn W = 0 := fun W =>
+      nonpos_iff_eq_zero.1 <| sSup_le <| by
+        rintro _ ⟨ω, -, rfl⟩
+        simp
+    refine hInt P m univ isOpen_univ (fun k => (Pk k).boundary) X.boundary
+      (fun k => ⟨hY k, ?_⟩) (fun W _ => ?_) hconv.boundary
+    · rw [GeometricCurrentOn.boundary_boundary]
+      exact h0
+    · simpa only [GeometricCurrentOn.boundary_boundary, hm0, add_zero] using hYW W
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
