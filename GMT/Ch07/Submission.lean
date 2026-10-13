@@ -701,6 +701,60 @@ theorem Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff : ∀ (P n : �
     filter_upwards [self_mem_nhdsWithin] with r hr
     exact (hint r (ne_of_gt hr) f).symm
 
+/-- **Simon Ch. 3, 1.4** (measurability of the approximate tangent planes): if `Hⁿ(M ∩ K) < ∞`
+for every compact `K` and `Q(x)` is an approximate tangent space of `M` at `Hⁿ⌞M`-a.e. `x`, then
+`x ↦ p_{Q(x)} = (Q x).starProjection` is `Hⁿ⌞M`-a.e. strongly measurable.  For `n = 0`,
+`Q(x) = 0` a.e.  For `n ≥ 1` and `f_u(y) = max(1 − |y|², 0)⟨u, y⟩²`, the blow-up integrals
+`x ↦ ∫_{η_{x,1/(k+1)}(M)} f_u dHⁿ` are continuous and tend a.e. to
+`∫_{Q(x)} f_u dHⁿ = c|p_{Q(x)} u|²`, so every `x ↦ |p_{Q(x)} u|²` is a.e.-measurable, and hence
+so is `x ↦ p_{Q(x)}`. -/
+theorem Submission.cbr_ci_imc_tangent_field_aestronglyMeasurable : ∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) := by
+  intro P n M Q hloc htan
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: `dim Q(x) = 0`, so `Q(x) = 0` and `p_{Q(x)} = 0` a.e.
+    refine (aestronglyMeasurable_const (b := (0 : Euclid P →L[ℝ] Euclid P))).congr ?_
+    filter_upwards [htan] with x hx
+    have h0 : Q x = ⊥ := Submodule.finrank_eq_zero.1 hx.1
+    rw [h0]
+    ext v
+    simp
+  · -- `n ≥ 1`: `∫_{Q'} f_u dHⁿ = c|p_{Q'} u|²` for every `n`-plane `Q'`
+    obtain ⟨c, hc, hmom⟩ := Submission.exists_plane_cutoff_quadratic_moment_eq n hn
+    apply AEMeasurable.aestronglyMeasurable
+    apply Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq
+    intro u
+    -- the test function `f_u ∈ C_c(ℝᴾ)`, vanishing outside the closed unit ball
+    set f : Euclid P → ℝ := fun y => max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 with hf_def
+    have hfc : Continuous f := by
+      simp only [hf_def]
+      fun_prop
+    have hfs : HasCompactSupport f := by
+      apply HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) 1)
+      intro y hy
+      simp only [mem_closedBall, dist_zero_right, not_le] at hy
+      have h1 : 1 - ‖y‖ ^ 2 ≤ 0 := by nlinarith [norm_nonneg y]
+      simp [hf_def, max_eq_right h1]
+    let F : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨f, hfc⟩, hfs⟩
+    -- the radii `r_k = 1/(k + 1) → 0⁺`
+    let r : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
+    have hrpos : ∀ k, 0 < r k := fun k => by positivity
+    have hr : Tendsto r atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+        Eventually.of_forall hrpos⟩
+    -- the blow-up integrals are continuous in `x`, hence measurable
+    have hmeas : ∀ k, AEMeasurable (fun x => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x (r k) '' M, f y ∂μHE[n]) (μHE[n].restrict M) := fun k =>
+      (Submission.continuous_blowUp_image_setIntegral P n M hloc f hfc hfs (r k) (hrpos k)).measurable.aemeasurable
+    -- and tend a.e. to `∫_{Q(x)} f_u dHⁿ = c|p_{Q(x)} u|²`
+    have hlim : ∀ᵐ x ∂(μHE[n].restrict M), Tendsto (fun k => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x (r k) '' M, f y ∂μHE[n]) atTop (𝓝 (c * ‖(Q x).starProjection u‖ ^ 2)) := by
+      filter_upwards [htan] with x hx
+      rw [← hmom P (Q x) hx.1 u]
+      exact (hx.2 F).comp hr
+    have h1 : AEMeasurable (fun x => c * ‖(Q x).starProjection u‖ ^ 2) (μHE[n].restrict M) :=
+      aemeasurable_of_tendsto_metrizable_ae' hmeas hlim
+    refine (h1.const_mul c⁻¹).congr (Eventually.of_forall fun x => ?_)
+    simp only
+    rw [← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
