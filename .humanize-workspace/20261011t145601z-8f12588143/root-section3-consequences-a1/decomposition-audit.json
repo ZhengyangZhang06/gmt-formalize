@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|coordinateProjection|ForAlmostAllProjections|IsC1Submanifold",
+        "simon_lemma_3_2|measurable_rectifiable_purelyUnrectifiable_decomposition|exists_ae_subset_biUnion_countable|def CountablyRectifiable|def PurelyUnrectifiable|countablyRectifiable_of_measure_zero",
+        "exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null",
+        "def comap|theorem comap_apply",
+        "theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) ",
+        "euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume",
+        "exists_antilipschitzWith",
+        "theorem approximates_deriv_on_nhds",
+        "theorem ContDiffAt.hasStrictFDerivAt|theorem HasStrictFDerivAt.exists_lipschitzOnWith",
+        "theorem eq_starProjection_of_mem_of_inner_eq_zero",
+        "theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)",
+        "theorem isOpen_iUnion_countable",
+        "coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable",
+        "besicovitch.?federer|null.?projection|structure theorem",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/s3c-independent-audit-u2kvnx9a/IndependentAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1/parent-child-handoff.json",
+        "/tmp/s3c-independent-audit-u2kvnx9a/IndependentAudit.lean"
+      ],
+      "conclusion": "Verified the selected contract section3_decomposition_projection_rectifiability : RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ RectifiabilityTheoremForSets. The split is appropriate: every child contributes, dependencies are correctly directed and acyclic, and the parent assembly uses exactly its declared SubmanifoldCoverCharacterization and BesicovitchFedererProjectionTheorem dependencies. All names are distinct bare identifiers with no active-branch reservation conflicts. All six one-line propositions pass validation and elaborate in the exact comparator scope before any child is declared. Rechecked the supplied Lean proofs and a parent assembly with explicit outer hypotheses: all use only propext, Classical.choice and Quot.sound. The contract matches the snapshot; inspected Mathlib files and reused SimonGMT sources match their pinned revisions. The projection and measure instances have the intended meanings. Searches found no corresponding rectifiability/projection declarations in Mathlib and no Besicovitch–Federer theorem in SimonGMT; that result is correctly an explicit hypothesis."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rectifiable_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches RectifiableDecomposition exactly. The finite-measure union supplies the cover required by simon_lemma_3_2; dropping only NullMeasurableSet P yields the requested Borel-choice conclusion. Library compatibility and permitted axioms were checked. The supplied explanatory argument is sound."
+    },
+    {
+      "key": "coordinate_projection_injective",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely the stated dimension hypothesis. The projection formula, dual spanning argument and basis extraction produce n distinct coordinates and prove injectivity on L. The argument includes n = 0 and requires no undeclared dependency."
+    },
+    {
+      "key": "c1_image_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. C¹ regularity on the open domain gives local Lipschitz bounds; Hausdorff normalization and its equality with domain volume give local image nullity. Second countability and OuterMeasure.comap give global nullity without assuming T measurable, including dimension zero."
+    },
+    {
+      "key": "chart_projection_positive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses its declared coordinate-injectivity dependency correctly. Positive outer measure supplies a point with positive measure in every relative neighborhood. The injective projected derivative and strict differentiability yield the stated anti-Lipschitz bound, whose Hausdorff estimate forces positive projected measure. No measurability or global chart injectivity is missing; n = 0 is covered."
+    },
+    {
+      "key": "coordinate_projection_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit SubmanifoldCoverCharacterization antecedent matches the prose. Countable subadditivity and the chart cover select a positive-measure chart piece. The two declared children establish positive parameter measure and then positive coordinate-projection measure, contradicting the hypothesis. The proof is complete for arbitrary S."
+    },
+    {
+      "key": "rectifiability_theorem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit BesicovitchFedererProjectionTheorem antecedent matches the prose. The decomposition child supplies P; intersections with the finite-measure cover give its required sigma-finiteness. Applying the subset hypothesis to P forces it null, and absorbing P into the exceptional set proves countable rectifiability. No circular reliance occurs."
+    }
+  ],
+  "required_changes": []
+}
