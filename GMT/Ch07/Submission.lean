@@ -451,6 +451,135 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cartan's formula for the Euler field** `X(z) = z` (Simon Ch. 6, 2.25–2.26 and 2.33, as used
+in the proof of 7.3.1).  For an `(m+1)`-form `β` differentiable at `y`,
+`d(ι_X β)(y) + ι_y dβ(y) = (m + 1) β(y) + Dβ(y)[y]`, i.e. `L_X β = d ι_X β + ι_X dβ`.  With
+`B = Dβ(y)`, the product rule gives `D(ι_X β)(y) u = (B u).curryLeft y + β(y).curryLeft u`; the
+second term alternates to `(m + 1) β(y)` (`alternatizeUncurryFin_curryLeft`), and the first one
+cancels against every term of `dβ(y)(y, v₀, …, vₘ)` except the `k = 0` term `B y (v₀, …, vₘ)`. -/
+theorem Submission.dtc_cone_euler_cartan : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) y = ((m : ℝ) + 1) • β y + fderiv ℝ β y y := by
+  intro P m β y hβ
+  -- product rule for `z ↦ Φ (β z) z`, where `Φ f x = f.curryLeft x` is continuous bilinear
+  have hψ := (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+    (n := m)).toContinuousLinearMap.hasFDerivAt_of_bilinear hβ.hasFDerivAt (hasFDerivAt_id y)
+  have h1 : exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y =
+      ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun z =>
+        (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+          (n := m)).toContinuousLinearMap (β z) (id z)) y) := rfl
+  have h2 : (ContinuousLinearMap.precompR (Euclid P)
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := m)).toContinuousLinearMap) (β y) (ContinuousLinearMap.id ℝ (Euclid P)) =
+      ContinuousAlternatingMap.curryLeft (β y) := by
+    ext u v
+    rfl
+  -- `d(ι_X β)(y) = alt(u ↦ (B u).curryLeft y) + (m + 1) β(y)`
+  rw [h1, hψ.fderiv, ContinuousAlternatingMap.alternatizeUncurryFin_add, h2,
+    ContinuousAlternatingMap.alternatizeUncurryFin_curryLeft, add_assoc]
+  congr 1
+  · rw [← Nat.cast_smul_eq_nsmul ℝ, Nat.cast_add, Nat.cast_one]
+  · -- removing entry `i + 1` of `(y, v)` leaves `(y, v without vᵢ)`
+    have hrm : ∀ (i : Fin (m + 1)) (v : Fin (m + 1) → Euclid P),
+        Fin.removeNth i.succ (Matrix.vecCons y v) = Matrix.vecCons y (Fin.removeNth i v) := by
+      intro i v
+      funext j
+      cases j using Fin.cases with
+      | zero => simp [Fin.removeNth_apply]
+      | succ j => simp [Fin.removeNth_apply]
+    ext v
+    simp only [ContinuousAlternatingMap.add_apply,
+      ContinuousAlternatingMap.alternatizeUncurryFin_apply, exteriorDerivative, extDeriv,
+      ContinuousLinearMap.precompL_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+      LinearIsometry.coe_toContinuousLinearMap, ContinuousAlternatingMap.curryLeftLI_apply, id_eq]
+    -- split off the `k = 0` term `B y v` of `dβ(y)(y, v)`; the other terms cancel the first sum
+    rw [Fin.sum_univ_succ (n := m + 1)]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_succ, Fin.removeNth_zero, Fin.tail_vecCons,
+      hrm, Fin.val_zero, Fin.val_succ, pow_zero, one_smul, pow_succ, mul_neg_one, neg_smul,
+      Finset.sum_neg_distrib]
+    abel
+/-- **Contraction with the Euler field preserves test forms** (Simon Ch. 6, 2.25–2.26 and 2.33,
+as used in the proof of 7.3.1).  If `β` is a test `(m+1)`-form, then so is
+`ι_X β : z ↦ β(z).curryLeft z` for `X(z) = z`: it is the smooth family of continuous linear maps
+`z ↦ curryLeftLI (β z)` applied to the smooth vector `z`, and it vanishes wherever `β` does, so
+its support lies in the compact `tsupport β`. -/
+theorem Submission.dtc_cwv_euler_contraction_isTestForm : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) z) := by
+  intro P m β hβ
+  obtain ⟨hs, hc⟩ := hβ
+  refine ⟨?_, ?_⟩
+  · -- `z ↦ (curryLeftLI (β z)) z` is a smooth family of continuous linear maps applied to `z`
+    change ContDiff ℝ (⊤ : ℕ∞) (fun z => (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ)
+      (E := Euclid P) (F := ℝ) (n := m)).toContinuousLinearMap (β z) z)
+    exact (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+      (n := m)).toContinuousLinearMap.contDiff).comp hs).clm_apply contDiff_id
+  · -- `β z = 0` forces `β(z).curryLeft z = 0`, so the support stays inside `supp β`
+    refine hc.mono ?_
+    intro z hz
+    simp only [mem_support] at hz ⊢
+    intro h0
+    apply hz
+    rw [h0]
+    rfl
+
+/-- **`∂C = 0` and `x ∧ C⃗ = 0` kill Euler–Lie derivatives** (the homotopy term in the proof of
+Simon Ch. 6, Lemma 2.33, as applied in 7.3.1).  Let `C = τ(M, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)`, `n ≥ 1`, with
+`∂C = 0` and `ξ(x)(ι_x α) = 0` for `μ_C`-a.e. `x` and every `(n+1)`-covector `α`.  Then
+`C(L_X β) = 0` for the Euler field `X(y) = y`, where `L_X β(y) = n β(y) + Dβ(y)[y]`.  By Cartan's
+formula `L_X β = d(ι_X β) + ι_X dβ` (`dtc_cone_euler_cartan`), with `ι_X β` and `ι_X dβ` test forms
+(`dtc_cwv_euler_contraction_isTestForm`): `C(d ι_X β) = ∂C(ι_X β) = 0`, and
+`C(ι_X dβ) = ∫_M θ ξ(ι_y dβ(y)) dHⁿ = 0` since `θ > 0` on `M`. -/
+theorem Submission.dtc_cwv_euler_lie_annihilated : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents C → BoundaryVanishes C → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0) → ∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → C γ = 0 := by
+  intro P n C R hn hR hb hw β γ hγ
+  -- write `n = m + 1`
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  -- `ψ = ι_X β` is a test `m`-form
+  have hψ : IsTestForm (fun z => ContinuousAlternatingMap.curryLeft
+      ((β : DifferentialForm (Euclid P) (m + 1)) z) z) :=
+    Submission.dtc_cwv_euler_contraction_isTestForm P m _ β.property.1
+  let ψ : TestFormOn (univ : Set (Euclid P)) m := ⟨_, hψ, subset_univ _⟩
+  -- `χ = ι_X dβ` is a test `(m + 1)`-form
+  have hdβ : IsTestForm (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1))) :=
+    exteriorDerivative_isTestForm β.property.1
+  have hχ := Submission.dtc_cwv_euler_contraction_isTestForm P (m + 1) _ hdβ
+  let χ : TestFormOn (univ : Set (Euclid P)) (m + 1) := ⟨_, hχ, subset_univ _⟩
+  -- Cartan's formula: `γ = L_X β = dψ + χ`
+  have hsplit : γ = exteriorDerivativeTestOn univ m ψ + χ := by
+    apply Subtype.ext
+    funext y
+    have hdiff : DifferentiableAt ℝ (β : DifferentialForm (Euclid P) (m + 1)) y :=
+      (β.property.1.1.differentiable (by simp)).differentiableAt
+    have hc := Submission.dtc_cone_euler_cartan P m β y hdiff
+    rw [hγ y]
+    push_cast
+    exact hc.symm
+  -- `C(dψ) = ∂C(ψ) = 0`
+  have hbd : C.boundary = 0 := hb
+  have h1 : C (exteriorDerivativeTestOn univ m ψ) = 0 := by
+    have := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) m => T ψ) hbd
+    simpa [GeometricCurrentOn.boundary_apply] using this
+  -- `C(χ) = ∫_M θ ξ(ι_y dβ(y)) dHⁿ = 0`: the wedge hypothesis passes from `θHⁿ⌞M` to `Hⁿ⌞M`
+  have h2 : C χ = 0 := by
+    rw [hR χ]
+    unfold IMRep.action
+    apply integral_eq_zero_of_ae
+    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+      measurable_from_nat.comp R.measurable_mult
+    have h' := (ae_withDensity_iff hθ).1 hw
+    have hmem : ∀ᵐ x ∂(μHE[m + 1].restrict R.carrier), x ∈ R.carrier :=
+      ae_restrict_mem R.measurableSet_carrier
+    filter_upwards [h', hmem] with x hx hxM
+    have hpos : (R.mult x : ℝ≥0∞) ≠ 0 := by
+      have := R.mult_pos x hxM
+      exact_mod_cast this.ne'
+    have := hx hpos (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1)) x)
+    simp only [Pi.zero_apply]
+    change (R.mult x : ℝ) * R.orient x (ContinuousAlternatingMap.curryLeft
+      (exteriorDerivative (β : DifferentialForm (Euclid P) (m + 1)) x) x) = 0
+    rw [this, mul_zero]
+  -- linearity: `C(γ) = C(dψ) + C(χ) = 0`
+  rw [hsplit]
+  change C.toCurrent (exteriorDerivativeTestOn univ m ψ + χ) = 0
+  rw [map_add]
+  exact (congrArg₂ (· + ·) h1 h2).trans (add_zero 0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
