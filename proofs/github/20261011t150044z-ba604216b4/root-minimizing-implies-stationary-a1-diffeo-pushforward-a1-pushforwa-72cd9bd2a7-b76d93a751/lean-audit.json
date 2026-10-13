@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2c02451c2df274a411f6c2474c52254b6d61028067c42ee3de2407c154018b8f",
+  "git_delta": {
+    "base_commit": "99c73cb3d56c07be0e0a85624f29e4413ede81bd",
+    "candidate_commit": "a95facf7331fbcc8f2266d39e1372ae42727bfa1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_pb_smooth_pullback_isTestForm",
+    "diff_sha256": "7e9179912f37c2e77c288f1657849a5150213b73606633d9d9cdbb6a2daf03d0",
+    "source_sha256": "f813629ee10c7ca0d8a639ba2f0dd5dc8b9578bac94d0fedf70311bf093ce3ef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_pb_smooth_pullback_isTestForm",
+      "statement": "∀ (P d : ℕ) (K' : Set (Euclid P)) (ψ : Euclid P → Euclid P) (α : DifferentialForm (Euclid P) d), IsCompact K' → ContDiff ℝ (⊤ : ℕ∞) ψ → (∀ x, x ∉ K' → ψ x = x) → IsTestForm α → IsTestForm (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ∧ tsupport (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ⊆ tsupport α ∪ K'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
