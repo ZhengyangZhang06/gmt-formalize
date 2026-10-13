@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 -I /tmp/sfv_independent_audit/review.py",
+        "withDensity_absolutelyContinuous",
+        "mul_div_mul_comm",
+        "support_fderiv_subset",
+        "setIntegral_eq_of_subset_of_forall_sdiff_eq_zero",
+        "integral_const_mul",
+        "eq_of_le_of_finrank_eq",
+        "HasApproximateTangentSpaceAt.finrank_eq",
+        "idtp_ccd_sfv_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sfv_independent_audit/Direct.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/decomposition-v1.json",
+        "/tmp/sfv_independent_audit/review.py",
+        "/tmp/sfv_independent_audit/evidence.json",
+        "/tmp/sfv_independent_audit/Direct.lean"
+      ],
+      "conclusion": "The split appropriately separates four reusable obligations that establish this selected first-variation theorem. All four frozen types are exact one-line propositions matching their prose, independent of their implementations. Names are bare identifiers and unreserved: no matches in the DAG or 982 worktree Submission files; the proposal scan matched only this selected decomposition. Both sibling dependencies are correctly directed and acyclic. The nine required accepted lemmas and the optional alternative chart lemma have identical accepted frozen types, compatible contract definitions, and successful comparator records permitting only standard axioms; their dependency closures avoid this parent. Snapshot revisions and inspected Mathlib files match the compiler context. A fresh Lean check of verbatim, inlined types proved all four children and the exact parent assembly conditional on those accepted lemmas, with exit 0. All six checked proofs use only propext, Classical.choice, and Quot.sound. The final integral identities require no additional integrability hypothesis. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mult_const",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both almost-everywhere conclusions match the type. Carrier-support nullity, density uniqueness, and mutual absolute continuity from positive measurable multiplicity prove them completely. Neither positive k nor ball containment is needed."
+    },
+    {
+      "key": "support_in_carrier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are present. Local finiteness permits the density-zero lemma; mult_const and the mass-measure identity give the small-ball bound. The ENNReal division and limit steps have the required nonzero and finiteness conditions, yielding the contradiction with k ≥ 1. Dependence on mult_const is correct."
+    },
+    {
+      "key": "tangent_space_dim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart supplies every hypothesis of the accepted tangent-range identity. Taking the span proves the carrier equality, and injectivity of the derivative proves finrank d. Both conjuncts follow without circular reliance."
+    },
+    {
+      "key": "approx_tangent_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly obtains almost-everywhere membership and approximate tangent existence, localizes to the open set, and applies tangent containment. The declared tangent_space_dim dependency supplies equal dimensions, proving equality with the chosen plane. No extra measurability assumption on M is needed."
+    }
+  ],
+  "required_changes": []
+}

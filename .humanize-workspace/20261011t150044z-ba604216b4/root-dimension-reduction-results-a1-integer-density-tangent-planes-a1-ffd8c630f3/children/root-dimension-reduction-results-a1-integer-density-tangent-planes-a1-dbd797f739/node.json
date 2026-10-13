@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.support_in_carrier-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1",
+  "depth": 5,
+  "title": "Constant positive density puts the support inside the carrier up to an Hⁿ-null set",
+  "statement": "For all P, n, k ∈ ℕ, every open U ⊆ ℝ^P, every T ∈ 𝒟_n(U), every integer multiplicity triple R = (S, θ, ξ) ∈ IMRep U n representing T, every p ∈ ℝ^P and every ρ ∈ ℝ with B_ρ(p) ⊆ U: if k ≥ 1 and Θⁿ(μ_T, y) = k (HasMassDensity T y k) for every y ∈ spt T ∩ B_ρ(p), then Hⁿ((spt T ∩ B_ρ(p)) ∖ S) = 0, where Hⁿ := μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → ball p ρ ⊆ U → 1 ≤ k → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → μHE[n] ((T.support ∩ ball p ρ) \\ R.carrier) = 0",
+  "lean_name": "idtp_ccd_sfv_support_sdiff_carrier_null",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.mult_const-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.mult_const-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-dbd797f739-a1"
+}

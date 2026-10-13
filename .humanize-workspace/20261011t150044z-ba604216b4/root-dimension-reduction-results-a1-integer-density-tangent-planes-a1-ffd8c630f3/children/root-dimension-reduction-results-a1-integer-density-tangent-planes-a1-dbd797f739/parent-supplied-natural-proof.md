@@ -1,0 +1,129 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.support_in_carrier-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, steps 1 and 4. The parent states step 4 for M ∩ B_ρ(p), which equals spt T ∩ B_ρ(p) by its hypothesis; this child proves the support form. The density-zero input is Simon Ch. 1, Theorem 3.6 and Remark 3.7(2) (Upper Density Theorem; chapter-01.txt, lines 700–711) for Hⁿ⌞S, as encoded by the accepted lemma `Submission.regcomp_atl_local_density_zero`. M_W(T) = μ_T(W) is Simon Ch. 6, Remark 3.2(3). Conventions: Hⁿ := μHE[n]; Hⁿ⌞A := μHE[n].restrict A; S := R.carrier; θ := R.mult; B := ball p ρ; μ := R.measure = (Hⁿ⌞S).withDensity θ; ω_n := unitBallVolume n = volume(ball (0 : ℝⁿ) 1). All quotients below are in ℝ≥0∞.
+1. (Hⁿ⌞S is locally finite in U.) Let K ⊆ U be compact. For x ∈ S ∩ K we have 1 ≤ θ(x) (field mult_pos). Hence Hⁿ(S ∩ K) = ∫_{S∩K} 1 dHⁿ ≤ ∫_{S∩K} θ dHⁿ (setLIntegral_mono'; S ∩ K is measurable). The right side is finite by the field locallyIntegrable_mult, so Hⁿ(S ∩ K) ≠ ∞.
+2. (Density zero off S.) Apply the accepted lemma `Submission.regcomp_atl_local_density_zero` to U (open) and S (measurable, locally finite by step 1). It gives an Hⁿ-null set Z with the following property. For every x ∉ Z with x ∈ U and x ∉ S, f_x(r) := Hⁿ(S ∩ closedBall(x, r)) / (ofReal r)ⁿ → 0 as r → 0⁺.
+3. (Multiplicity k.) By the second conjunct of the sibling lemma `Submission.idtp_ccd_sfv_mult_ae_eq_density` (U open, R represents T, density hypothesis), θ(y) = k for Hⁿ⌞(S ∩ B)-a.e. y.
+4. (The constant ω_n.) ω_n is the volume of a nonempty open ball of ℝⁿ. So 0 < ω_n (measure_ball_pos) and ω_n < ∞ (measure_ball_lt_top). In particular k/ω_n ≠ ∞.
+5. (Key claim.) Let x ∉ Z with x ∈ spt T ∩ B. We show x ∈ S. Suppose not.
+   (a) Since B ⊆ U, x ∈ U ∖ S, so f_x(r) → 0 by step 2.
+   (b) Since x ∈ spt T ∩ B, HasMassDensity T x k holds. Its second component says g_x(r) := M_{B_r(x)}(T) / (ω_n · ofReal(rⁿ)) → ofReal k as r → 0⁺.
+   (c) Put δ := ρ − |x − p|, which is positive because x ∈ B. Fix r ∈ (0, δ). Then B_r(x) ⊆ B ⊆ U (ball_subset_ball', since r + |x − p| ≤ ρ).
+   (d) The accepted lemma `Submission.rsd_massOn_eq_measure` (U open, R represents T, B_r(x) open) gives M_{B_r(x)}(T) = μ(B_r(x)).
+   (e) By the definition of μ (withDensity_apply with B_r(x) measurable, then Measure.restrict_restrict), μ(B_r(x)) = ∫_{B_r(x) ∩ S} θ dHⁿ. Since B_r(x) ∩ S ⊆ S ∩ B, step 3 gives θ = k Hⁿ⌞(B_r(x) ∩ S)-a.e. Hence μ(B_r(x)) = k · Hⁿ(S ∩ B_r(x)), the integral of a constant.
+   (f) Use ofReal(rⁿ) = (ofReal r)ⁿ for r ≥ 0, and a·b/(c·d) = (a/c)·(b/d) in ℝ≥0∞, which holds since ω_n ≠ 0 and ω_n ≠ ∞ (ENNReal.mul_div_mul_comm). Together with Hⁿ(S ∩ B_r(x)) ≤ Hⁿ(S ∩ closedBall(x, r)) this gives g_x(r) = (k/ω_n) · (Hⁿ(S ∩ B_r(x)) / (ofReal r)ⁿ) ≤ (k/ω_n) · f_x(r).
+   (g) So g_x(r) ≤ (k/ω_n)·f_x(r) for every r in (0, δ), a set in 𝓝[>]0. Since k/ω_n ≠ ∞, (k/ω_n)·f_x(r) → (k/ω_n)·0 = 0 (ENNReal.Tendsto.const_mul).
+   (h) 𝓝[>]0 is a nontrivial filter, so passing to the limit in the inequality (le_of_tendsto_of_tendsto) gives ofReal k ≤ 0, i.e. (k : ℝ) ≤ 0. This contradicts 1 ≤ k, hence x ∈ S.
+6. (Conclusion.) By step 5, (spt T ∩ B) ∖ S ⊆ Z, so Hⁿ((spt T ∩ B) ∖ S) ≤ Hⁿ(Z) = 0. ∎
+
+## Key steps
+
+1. θ ≥ 1 on S and locallyIntegrable_mult give Hⁿ(S ∩ K) < ∞ for every compact K ⊆ U.
+2. regcomp_atl_local_density_zero: for Hⁿ-a.e. x ∈ U ∖ S, Hⁿ(S ∩ closedBall(x, r))/rⁿ → 0 as r ↓ 0.
+3. For such x ∈ spt T ∩ B and 0 < r < ρ − |x − p|, rsd_massOn_eq_measure and sibling mult_const give M_{B_r(x)}(T) = μ(B_r(x)) = k·Hⁿ(S ∩ B_r(x)). So the density ratio is at most (k/ω_n)·Hⁿ(S ∩ closedBall(x, r))/rⁿ, which tends to 0.
+4. The density at x is k ≥ 1 by hypothesis, a contradiction. Hence (spt T ∩ B) ∖ S lies in the Hⁿ-null exceptional set.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `python3 -I scans of dag.json (lean_name, lean_statement, status): the 9 cited lemmas imrep_carrier_sdiff_support_null, rsd_ae_hasMassDensity_mult, dimred_cs_mi_hasMassDensity_unique, regcomp_atl_local_density_zero, rsd_massOn_eq_measure, dtc_approxTangent_of_null_diff, approxTangent_le_submanifold_tangentSpace, chart_tangentSpace_eq_range_fderiv, dpf_itt_approxTangentPlane_eq; statements mentioning tangentSpace together with finrank or span; approxTangentPlane; firstVariation; conclusions of the form 'R.mult x = …' together with HasMassDensity; support-minus-carrier null sets; children of cone_constant_density_planar`
+- `grep -o 'idtp_ccd_[A-Za-z0-9_]*' dag.json; grep -rl 'idtp_ccd_sfv' in run nodes/, decomposition-reopenings/, operator-dependency-edits/, cluster-state/verification and .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no match)`
+- `grep -n 'def support|def zeroRegion|def VanishesOn|isOpen_zeroRegion' simongmt Chapter06/CurrentLocalEquality.lean and Chapter06/Currents.lean; grep -n 'def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique|HasApproximateTangentSpaceAt.finrank_eq' simongmt Chapter03/Rectifiable.lean`
+- `grep -rn in pinned Mathlib for setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, setIntegral_congr_set, integral_const_mul, integral_congr_ae, ae_eq_set, support_fderiv_subset, withDensity_absolutelyContinuous', ENNReal.mul_div_mul_comm, Submodule.eq_of_le_of_finrank_eq, LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin, setLIntegral_mono', setLIntegral_one, ENNReal.Tendsto.const_mul, le_of_tendsto_of_tendsto, measure_ball_lt_top, measure_ball_pos, ball_subset_ball', Ioo_mem_nhdsGT and ENNReal.ofReal_pow; cmp of the 12 containing files between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical)`
+- `grep -n 'theorem Submission.dpf_itt_approxTangentPlane_eq' and the namespace/open lines in .swarm-worktrees/71cd69b7a778a035ba27/gmt-ch07/GMT/Ch07/Submission.lean (declaration convention)`
+- `grep -n and sed in book/chapter-01.txt (3.6 Theorem, 3.7 Remarks, lines 700–711), chapter-02.txt (§4, (4.3), lines 845–871), chapter-03.txt (1.4 Definition, 1.5 Remarks lines 86–90, 1.8 Remarks lines 298–313), chapter-04.txt (line 350, Remark 1.8(2)) and chapter-06.txt (3.2 Remarks (3), lines 755–770)`
+- `sed of the sibling parent-supplied-natural-proof.md files of regular_of_const_density (…-1948384b6f) and stationary_cone_sheet_planar (…-3876084c61), to check reuse`
+- `lake env lean /tmp/sfv_check/Children.lean: the 4 child types elaborate after import GMT.Ch07.Submission`
+- `lake env lean on /tmp/sfv_check/Assembly.lean, ChildDC.lean, ChildA.lean and ChildB.lean: each child and the parent proved from stub hypotheses, with axioms propext, Classical.choice, Quot.sound`
+- `python3 -I /tmp/sfv_scripts/gen_defs.py dag.json children.json defs.inc, then lake env lean /tmp/sfv_check/Combined.lean: #print axioms chk_end_to_end and chk_parent = [propext, Classical.choice, Quot.sound]`
+- `independent reviewer agent re-ran Combined.lean and /tmp/sfv_review/Sim.lean (Submission.* axiom stubs) and ran a byte-identity check (/tmp/sfv_review/check_bytes.py)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1948384b6f/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3876084c61/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/71cd69b7a778a035ba27/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/sfv_check/Children.lean`
+- `/tmp/sfv_check/Assembly.lean`
+- `/tmp/sfv_check/ChildDC.lean`
+- `/tmp/sfv_check/ChildA.lean`
+- `/tmp/sfv_check/ChildB.lean`
+- `/tmp/sfv_check/Combined.lean`
+- `/tmp/sfv_check/children.json`
+- `/tmp/sfv_check/draft.json`
+- `/tmp/sfv_scripts/gen_defs.py`
+- `/tmp/sfv_review/Sim.lean`
+
+The pins match the manifest. Project HEAD is b4d606d, Mathlib is 25730c7c and SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The 12 Mathlib files consulted are identical between the snapshot and .lake/packages/mathlib.
+
+All 9 lemmas cited by the children and the parent assembly are DAG nodes with status `accepted`, and each child applies them with hypotheses that match their dag.json types:
+- imrep_carrier_sdiff_support_null
+- rsd_ae_hasMassDensity_mult
+- dimred_cs_mi_hasMassDensity_unique
+- regcomp_atl_local_density_zero
+- rsd_massOn_eq_measure
+- dtc_approxTangent_of_null_diff
+- approxTangent_le_submanifold_tangentSpace
+- chart_tangentSpace_eq_range_fderiv
+- dpf_itt_approxTangentPlane_eq
+
+No accepted lemma already states any child:
+- Nothing gives finrank or carrier equality of span(tangentSpace M x).
+- Nothing gives Hⁿ-a.e. constancy of mult from constant density on the support.
+- Nothing gives Hⁿ((spt T ∩ B) ∖ carrier) = 0 under constant positive density; dorag_support_sdiff_carrier_null needs a bounded mean curvature hypothesis instead.
+- Nothing gives a.e. equality of approxTangentPlane with the tangent span of a containing C¹ submanifold; dsmc_approxTangentPlane_subset_tangentSpace and approxTangent_le_submanifold_tangentSpace give only containment.
+
+The siblings regular_of_const_density (its step 4) and stationary_cone_sheet_planar (its step 1) re-derive mult_const(a) and tangent_space_dim, so the children are reusable.
+
+The SimonGMT facts used hold as cited:
+- HasApproximateTangentSpaceAt includes finrank = n as its first component.
+- HasApproximateTangentSpaceAt.unique and HasApproximateTangentSpaceAt.finrank_eq exist.
+- spt T = U ∖ zeroRegion with zeroRegion open.
+All cited Mathlib names exist at the pinned revision.
+
+The proposed names idtp_ccd_sfv_* are unreserved: they appear nowhere in dag.json, the run directories, cluster-state verification or any worktree Submission.lean.
+
+Lean checks: the 4 child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract's opens. Combined.lean takes the verbatim accepted-lemma, child and frozen-parent types and proves each child and then the parent; its axioms are propext, Classical.choice and Quot.sound. The independent reviewer re-ran it, confirmed byte identity, and found no defects.
+
+Book sources:
+- Ch. 1, Theorem 3.6 and Remark 3.7(2)
+- Ch. 2, (4.3)
+- Ch. 3, Remarks 1.5(2) and 1.8(2)
+- Ch. 6, Remark 3.2(3)
