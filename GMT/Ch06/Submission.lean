@@ -895,6 +895,90 @@ theorem Submission.fiw_tb_tda_lattice_cubes :
           integral_iUnion_ae (fun F => (hc F).nullMeasurableSet) hdisj (by
             rw [hU]
             exact hfi.integrableOn)
+/-- Simon Ch. 6, (2.7) with `μ = Lⁿ` (`n = m + 1`): an integrable density `v` on `ℝⁿ` defines
+the top-dimensional current `ω ↦ ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` in `𝒟ₙ(ℝⁿ)`.  Since `‖eᵢ‖ = 1`,
+`|⟨ω(x), e₁ ∧ ⋯ ∧ eₙ⟩| ≤ ‖ω(x)‖`, so the integrand is dominated by `(sup ‖ω‖)·|v|`; linearity is
+`integral_add`/`integral_const_mul`, and for a null sequence `ω_j → 0` of test forms
+`sup ‖ω_j‖ → 0`, whence `|T(ω_j)| ≤ sup ‖ω_j‖ · ∫ |v| → 0`. -/
+theorem Submission.fiw_tb_tda_density_current : ∀ (m : ℕ) (v : Eucl (m + 1) → ℝ), Integrable v → ∃ T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro m v hv
+  -- Step 1: `|α(e₁, …, eₙ)| ≤ ‖α‖` for every `n`-covector `α`, since `‖eᵢ‖ = 1`.
+  have hcov : ∀ α : Covector (Eucl (m + 1)) (m + 1),
+      ‖α (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ ‖α‖ := by
+    intro α
+    calc ‖α (fun i => EuclideanSpace.single i (1 : ℝ))‖
+        ≤ ‖α‖ * ∏ i, ‖(EuclideanSpace.single i (1 : ℝ) : Eucl (m + 1))‖ := α.le_opNorm _
+      _ = ‖α‖ := by simp
+  -- Step 2: if `η` is continuous with `‖η‖ ≤ B`, then `v · η(e)` is integrable and
+  -- `|∫ v η(e)| ≤ B ∫ |v|`.
+  have hkey : ∀ (η : Eucl (m + 1) → Covector (Eucl (m + 1)) (m + 1)) (B : ℝ),
+      Continuous η → (∀ x, ‖η x‖ ≤ B) →
+      Integrable (fun x => v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))) ∧
+        ‖∫ x, v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ B * ∫ x, ‖v x‖ := by
+    intro η B hη hB
+    have hbd : ∀ x, ‖η x (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ B :=
+      fun x => (hcov _).trans (hB x)
+    have hbound : ∀ᵐ x, ‖v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))‖ ≤ B * ‖v x‖ :=
+      Eventually.of_forall fun x => by
+        rw [norm_mul, mul_comm]
+        exact mul_le_mul_of_nonneg_right (hbd x) (norm_nonneg _)
+    refine ⟨hv.mul_bdd (hη.eval_const _).aestronglyMeasurable (Eventually.of_forall hbd), ?_⟩
+    calc ‖∫ x, v x * η x (fun i => EuclideanSpace.single i (1 : ℝ))‖
+        ≤ ∫ x, B * ‖v x‖ := norm_integral_le_of_norm_le (hv.norm.const_mul B) hbound
+      _ = B * ∫ x, ‖v x‖ := integral_const_mul B _
+  -- Step 3: the integrand of every test form is integrable.
+  have hintω : ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1),
+      Integrable (fun x => v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))) := by
+    intro ω
+    have hcont : Continuous (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) :=
+      ContDiff.continuous ω.property.1.1
+    obtain ⟨B, hB⟩ := hcont.bounded_above_of_compact_support ω.property.1.2
+    exact (hkey _ B hcont hB).1
+  -- Step 4: the linear functional `ω ↦ ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ`.
+  let T₀ : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))
+      map_add' := by
+        intro ω₁ ω₂
+        simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add]
+        exact integral_add (hintω ω₁) (hintω ω₂)
+      map_smul' := by
+        intro c ω
+        simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+          smul_eq_mul, RingHom.id_apply, mul_left_comm (v _) c]
+        exact integral_const_mul c _ }
+  -- Step 5: sequential continuity at `0`, from uniform convergence of the forms themselves.
+  refine ⟨⟨T₀, ?_⟩, fun ω => rfl⟩
+  intro ωs hconv
+  obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+  set I := ∫ x, ‖v x‖
+  have hI0 : 0 ≤ I := integral_nonneg fun x => norm_nonneg _
+  have h0 := Metric.tendstoUniformlyOn_iff.1 (hunif 0)
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (I + 1) := div_pos hε (by linarith)
+  filter_upwards [h0 _ hδ] with j hj
+  have hBj : ∀ y, ‖(ωs j : DifferentialForm (Eucl (m + 1)) (m + 1)) y‖ ≤ ε / (I + 1) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have h1 := hj y hy
+      have h2 : iteratedFDeriv ℝ 0
+          ((0 : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1)) :
+            DifferentialForm (Eucl (m + 1)) (m + 1)) y = 0 := by
+        rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+        simp
+      rw [h2, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+      exact h1.le
+    · rw [image_eq_zero_of_notMem_tsupport fun hy' => hy (hsupp j hy'), norm_zero]
+      exact hδ.le
+  have hcont : Continuous (ωs j : DifferentialForm (Eucl (m + 1)) (m + 1)) :=
+    ContDiff.continuous (ωs j).property.1.1
+  have hle := (hkey _ _ hcont hBj).2
+  rw [Real.dist_eq, sub_zero, ← Real.norm_eq_abs]
+  refine lt_of_le_of_lt hle ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
 /-- A top-dimensional current with an integrable integer density `v` that is locally constant
 where it is nonzero is integer multiplicity (Simon Ch. 6, 3.1):
 `T(ω) = ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ = τ(M, θ, ξ)(ω)` with `M = {v ≠ 0}` (open), `θ = |v|` and
@@ -1103,6 +1187,146 @@ theorem Submission.fiw_tb_tda_density_current : ∀ (m : ℕ) (v : Eucl (m + 1) 
   refine lt_of_le_of_lt hle ?_
   rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
   nlinarith
+
+/-- **Top-dimensional lattice chains** (Simon Ch. 6, proof of 5.1, (29) and (34), in `ℝⁿ` with
+`n = m + 1`).  If `β_F ∈ ℤ` and `∑_F |β_F| ρⁿ < ∞`, let `v = ∑_F β_F 1_{F̊}`, i.e.
+`v(x) = β(⌊x/ρ⌋, id)` when no coordinate of `x` lies in `ρℤ` and `v(x) = 0` otherwise.
+Then `v` is integrable and integer-valued, `v = β_F` a.e. on each closed cube `F`, and `v` is
+locally constant where it is nonzero.  The current `Pc(ω) = ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` of
+`fiw_tb_tda_density_current` is `∑_F β_F [[F]]` (split the integral over the cubes with
+`fiw_tb_tda_lattice_cubes`) and is integer multiplicity by `fiw_tb_tda_locally_constant_im`. -/
+theorem Submission.fiw_tb_tda_lattice_chain : ∀ (m : ℕ) (ρ : ℝ), 0 < ρ → ∀ β : LatticeFaceIndex (m + 1) (m + 1) → ℝ, (∀ F, ∃ k : ℤ, β F = k) → (∑' F, ENNReal.ofReal (|β F| * ρ ^ (m + 1))) < ∞ → ∃ (Pc : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (v : Eucl (m + 1) → ℝ), IsLatticeChain ρ β Pc ∧ IsIntegerMultiplicity Pc ∧ Integrable v ∧ (∀ F, ∀ᵐ x ∂((volume : Measure (Eucl (m + 1))).restrict (latticeFace ρ F)), v x = β F) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), Pc ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro m ρ hρ β hβZ hβsum
+  -- The cube toolkit: `F.2 = id`, `Q_F = ρ (F.1 + [0, 1]ⁿ)` has volume `ρⁿ`, a.e. point is
+  -- good (no coordinate in `ρℤ`), and integrals split over the cubes.
+  obtain ⟨hF2, hQ, hQmeas, hQvol, -, hgood, hlint, hint⟩ :=
+    Submission.fiw_tb_tda_lattice_cubes m ρ hρ
+  have hcoord : ∀ i : Fin (m + 1), Continuous fun x : Eucl (m + 1) => x i := fun i => by
+    fun_prop
+  -- Step 1: `v(x) = β(z(x), α₀)`, `z(x) = ⌊x/ρ⌋`, at good points `x ∈ G`; `v = 0` off `G`.
+  let α₀ : SimonMultiIndex (m + 1) (m + 1) := RelEmbedding.refl _
+  have hα₀ : ∀ F : LatticeFaceIndex (m + 1) (m + 1), F.2 = α₀ := fun F =>
+    RelEmbedding.ext (hF2 F)
+  let G : Set (Eucl (m + 1)) := {x | ∀ (i : Fin (m + 1)) (k : ℤ), x i ≠ ρ * k}
+  let z : Eucl (m + 1) → Fin (m + 1) → ℤ := fun x i => ⌊x i / ρ⌋
+  let v : Eucl (m + 1) → ℝ := G.indicator fun x => β (z x, α₀)
+  -- Step 2: `v` is measurable and integer-valued.
+  have hGmeas : MeasurableSet G := by
+    have hG : G = ⋂ (i : Fin (m + 1)) (k : ℤ), {x : Eucl (m + 1) | x i ≠ ρ * k} := by
+      ext x
+      simp only [G, Set.mem_ofPred_eq, Set.mem_iInter]
+    rw [hG]
+    exact MeasurableSet.iInter fun i => MeasurableSet.iInter fun k =>
+      (isOpen_ne_fun (hcoord i) continuous_const).measurableSet
+  have hfloor : Measurable (Int.floor : ℝ → ℤ) := measurable_to_countable' fun k => by
+    rw [Int.preimage_floor_singleton]
+    exact measurableSet_Ico
+  have hzmeas : Measurable z :=
+    measurable_pi_iff.mpr fun i => hfloor.comp ((hcoord i).measurable.div_const ρ)
+  have hvmeas : Measurable v :=
+    ((measurable_of_countable fun w : Fin (m + 1) → ℤ => β (w, α₀)).comp hzmeas).indicator
+      hGmeas
+  have hvZ : ∀ x, ∃ k : ℤ, v x = k := by
+    intro x
+    by_cases hx : x ∈ G
+    · obtain ⟨k, hk⟩ := hβZ (z x, α₀)
+      exact ⟨k, (Set.indicator_of_mem hx _).trans hk⟩
+    · exact ⟨0, (Set.indicator_of_notMem hx _).trans Int.cast_zero.symm⟩
+  -- Step 3: at good points of the closed cube `Q_F`, `⌊x/ρ⌋ = F.1`; so `v = β_F` a.e. on `Q_F`.
+  have hval : ∀ (F : LatticeFaceIndex (m + 1) (m + 1)) (x : Eucl (m + 1)),
+      x ∈ latticeFace ρ F → x ∈ G → v x = β F := by
+    intro F x hxQ hxG
+    rw [hQ F] at hxQ
+    have hz : z x = F.1 := by
+      funext i
+      obtain ⟨h1, h2⟩ := hxQ i
+      have h1' : ρ * (F.1 i : ℝ) < x i := lt_of_le_of_ne h1 fun h => hxG i (F.1 i) h.symm
+      have h2' : x i < ρ * ((F.1 i : ℝ) + 1) := lt_of_le_of_ne h2 fun h =>
+        hxG i (F.1 i + 1) (by rw [h, Int.cast_add, Int.cast_one])
+      show ⌊x i / ρ⌋ = F.1 i
+      rw [Int.floor_eq_iff, le_div_iff₀ hρ, div_lt_iff₀ hρ]
+      constructor <;> linarith
+    exact (Set.indicator_of_mem hxG _).trans (congrArg β (Prod.ext hz (hα₀ F).symm))
+  have hae : ∀ F : LatticeFaceIndex (m + 1) (m + 1),
+      ∀ᵐ x ∂((volume : Measure (Eucl (m + 1))).restrict (latticeFace ρ F)), v x = β F := by
+    intro F
+    filter_upwards [ae_restrict_mem (hQmeas F), ae_restrict_of_ae hgood] with x hxQ hxG
+    exact hval F x hxQ hxG
+  -- Step 4: if `v(x) ≠ 0`, `v` is constant on the open cube `∏ᵢ (ρ zᵢ, ρ (zᵢ + 1)) ∋ x`.
+  have hloc : ∀ x, v x ≠ 0 → ∀ᶠ y in 𝓝 x, v y = v x := by
+    intro x hx
+    have hxG : x ∈ G := by
+      by_contra hxG
+      exact hx (Set.indicator_of_notMem hxG _)
+    have hO : IsOpen {y : Eucl (m + 1) |
+        ∀ i, ρ * (z x i : ℝ) < y i ∧ y i < ρ * ((z x i : ℝ) + 1)} := by
+      simp only [Set.ofPred_forall, Set.ofPred_and]
+      exact isOpen_iInter_of_finite fun i =>
+        (isOpen_lt continuous_const (hcoord i)).inter (isOpen_lt (hcoord i) continuous_const)
+    have hxO : ∀ i, ρ * (z x i : ℝ) < x i ∧ x i < ρ * ((z x i : ℝ) + 1) := by
+      intro i
+      have h1 : ((z x i : ℤ) : ℝ) ≤ x i / ρ := Int.floor_le (x i / ρ)
+      have h2 : x i / ρ < (z x i : ℝ) + 1 := Int.lt_floor_add_one (x i / ρ)
+      rw [le_div_iff₀ hρ] at h1
+      rw [div_lt_iff₀ hρ] at h2
+      exact ⟨lt_of_le_of_ne (by linarith) fun h => hxG i (z x i) h.symm, by linarith⟩
+    filter_upwards [hO.mem_nhds hxO] with y hy
+    have hyz : z y = z x := by
+      funext i
+      obtain ⟨h1, h2⟩ := hy i
+      show ⌊y i / ρ⌋ = z x i
+      rw [Int.floor_eq_iff, le_div_iff₀ hρ, div_lt_iff₀ hρ]
+      constructor <;> linarith
+    have hyG : y ∈ G := by
+      intro i k hk
+      obtain ⟨h1, h2⟩ := hy i
+      rw [hk] at h1 h2
+      have h3 : z x i < k := by exact_mod_cast lt_of_mul_lt_mul_left h1 hρ.le
+      have h4 : k < z x i + 1 := by exact_mod_cast lt_of_mul_lt_mul_left h2 hρ.le
+      omega
+    show G.indicator (fun x => β (z x, α₀)) y = G.indicator (fun x => β (z x, α₀)) x
+    rw [Set.indicator_of_mem hyG, Set.indicator_of_mem hxG, hyz]
+  -- Step 5: `∫ |v| = ∑_F |β_F| ρⁿ < ∞`, so `v ∈ L¹`.
+  have hcube : ∀ F : LatticeFaceIndex (m + 1) (m + 1),
+      ∫⁻ x in latticeFace ρ F, ‖v x‖ₑ = ENNReal.ofReal (|β F| * ρ ^ (m + 1)) := by
+    intro F
+    calc ∫⁻ x in latticeFace ρ F, ‖v x‖ₑ = ∫⁻ _ in latticeFace ρ F, ‖β F‖ₑ :=
+          lintegral_congr_ae (by filter_upwards [hae F] with x hx; rw [hx])
+      _ = ‖β F‖ₑ * volume (latticeFace ρ F) := setLIntegral_const _ _
+      _ = ENNReal.ofReal (|β F| * ρ ^ (m + 1)) := by
+          rw [hQvol F, Real.enorm_eq_ofReal_abs, ENNReal.ofReal_mul (abs_nonneg _)]
+  have hvint : Integrable v := by
+    refine ⟨hvmeas.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, hlint fun x => ‖v x‖ₑ, tsum_congr hcube]
+    exact hβsum
+  -- Step 6: the current `Pc(ω) = ∫ v ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ`.
+  obtain ⟨Pc, hPc⟩ := Submission.fiw_tb_tda_density_current m v hvint
+  -- Step 7: splitting `∫ v ω_e` over the cubes, where `v = β_F`, gives `∑_F β_F [[F]](ω)`.
+  have hchain : IsLatticeChain ρ β Pc := by
+    intro ω
+    have hωcont : Continuous (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) :=
+      ContDiff.continuous ω.property.1.1
+    have hωecont : Continuous fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) :=
+      (continuous_eval_const _).comp hωcont
+    have hωecs : HasCompactSupport fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) :=
+      ω.property.1.2.comp_left (g := fun c : Covector (Eucl (m + 1)) (m + 1) =>
+        c (fun i => EuclideanSpace.single i (1 : ℝ))) rfl
+    obtain ⟨C, hC⟩ := hωecont.bounded_above_of_compact_support hωecs
+    have hprod : Integrable fun x => v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) :=
+      hvint.mul_bdd hωecont.aestronglyMeasurable (ae_of_all _ hC)
+    rw [hPc ω, hint _ hprod]
+    refine tsum_congr fun F => ?_
+    rw [latticeFaceAction, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      ← integral_const_mul]
+    simp only [hF2 F]
+    exact integral_congr_ae (by filter_upwards [hae F] with x hx; rw [hx])
+  -- Step 8: `v` is integer-valued and locally constant where nonzero, so `Pc` is integer
+  -- multiplicity.
+  exact ⟨Pc, v, hchain,
+    Submission.fiw_tb_tda_locally_constant_im m Pc v hvmeas hvint hvZ hloc hPc, hvint, hae, hPc⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
