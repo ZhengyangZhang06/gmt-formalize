@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 2.3** (tangential divergence of a rotation field): for the skew linear map
+`A y = ⟨y, a⟩e − ⟨y, e⟩a` and `X = gA` with `g` differentiable at `x`,
+`div_M X(x) = Dg(x)(p(Ax))`, `p = p_{TₓM}`.  The product rule gives `DX(x) = g(x)A + Dg(x)(·)Ax`,
+so `p ∘ DX(x)` is a combination of the rank-one maps `u ↦ ⟨a, u⟩pe`, `u ↦ ⟨e, u⟩pa` and
+`u ↦ Dg(x)(u)p(Ax)`, with traces `⟨a, pe⟩`, `⟨e, pa⟩` and `Dg(x)(p(Ax))`; `p` being
+self-adjoint, `⟨a, pe⟩ = ⟨e, pa⟩`. -/
+theorem Submission.idtp_cse_rc_rotation_divergence : ∀ (P n : ℕ) (M : Set (Euclid P)) (a e x : Euclid P) (g : Euclid P → ℝ), DifferentiableAt ℝ g x → tangentialDivergence n M (fun y : Euclid P => g y • (inner ℝ y a • e - inner ℝ y e • a)) x = fderiv ℝ g x ((approxTangentPlane n M x).starProjection (inner ℝ x a • e - inner ℝ x e • a)) := by
+  intro P n M a e x g hg
+  set p := (approxTangentPlane n M x).starProjection with hp
+  -- `A y = ⟪y, a⟫ e − ⟪y, e⟫ a` is the continuous linear map `⟪a, ·⟫ e − ⟪e, ·⟫ a`
+  set A : Euclid P →L[ℝ] Euclid P := (innerSL ℝ a).smulRight e - (innerSL ℝ e).smulRight a
+    with hA
+  have hAy : ∀ y, A y = inner ℝ y a • e - inner ℝ y e • a := fun y => by
+    simp [A, real_inner_comm]
+  have hX : (fun y : Euclid P => g y • (inner ℝ y a • e - inner ℝ y e • a)) =
+      fun y => g y • A y := by
+    funext y
+    rw [hAy]
+  -- product rule: `DX(x) = g(x) A + Dg(x)(·) Ax`
+  have hD : fderiv ℝ (fun y => g y • A y) x = g x • A + (fderiv ℝ g x).smulRight (A x) := by
+    rw [fderiv_fun_smul hg A.differentiableAt, A.fderiv]
+  -- `p ∘ DX(x)` is a combination of rank-one maps
+  have hdecomp : p.toLinearMap ∘ₗ (g x • A + (fderiv ℝ g x).smulRight (A x)).toLinearMap =
+      g x • ((innerₛₗ ℝ a).smulRight (p e) - (innerₛₗ ℝ e).smulRight (p a)) +
+        (fderiv ℝ g x).toLinearMap.smulRight (p (A x)) := by
+    ext u
+    simp [A, map_sub, map_smul]
+  -- `trace (p ∘ A) = ⟪a, p e⟫ − ⟪e, p a⟫ = 0`, `p` being self-adjoint
+  have hskew : inner ℝ a (p e) - inner ℝ e (p a) = 0 := by
+    rw [hp, ← Submodule.inner_starProjection_left_eq_right, real_inner_comm, sub_self]
+  -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`) for each rank-one term
+  unfold tangentialDivergence
+  rw [hX, hD, ← hp, hdecomp, map_add, map_smul, map_sub, LinearMap.trace_smulRight,
+    LinearMap.trace_smulRight, LinearMap.trace_smulRight, innerₛₗ_apply_apply,
+    innerₛₗ_apply_apply, hskew, smul_zero, zero_add, ContinuousLinearMap.coe_coe, hAy]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
