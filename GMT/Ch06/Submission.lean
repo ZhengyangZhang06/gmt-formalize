@@ -3965,6 +3965,69 @@ theorem Submission.iwl_restriction_theory : (∀ (P k : ℕ) (U : Set (Eucl P)),
       fun ω => (hS ω).trans (setInt hU hrep' hrep hA ω)
     exact massEq hU hmass hrep hfin hv hA S hS2 hW hWU
 
+/-- **Integer multiplicity currents (Simon Ch. 6, 3.2 Remarks (1), (3) and 2.9).**  For open
+`U ⊆ ℝ^P`:
+(a) an integer multiplicity `X = τ(M, θ, ξ)` has `M_W(X) < ∞` for `W ⊂⊂ U`, since
+`(Hᵏ ⌞ M, θ ξ)` represents `X` (2.7) and (R0) of `iwl_restriction_theory` applies;
+(b) a restriction `S = X ⌞ A` is `τ(M ∩ A, θ, ξ)` by uniqueness of the representation, and the
+tangent comparison principle (T) (`iwl_imc_tangent_overlap`, fed by the locality of weighted
+tangent spaces `iwl_weighted_tangent_locality`) transfers the tangent spaces of `(M, θ)` to
+`(M ∩ A, θ)` a.e. on `M ∩ A`;
+(c) `Z = aX + bY` is integer multiplicity by `iwl_imc_lincomb_im`, again fed by (T). -/
+theorem Submission.iwl_im_closure : (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, IsIntegerMultiplicity X → ∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) ∧ (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (X : GeometricCurrentOn U k) (A : Set (Eucl P)) (S : GeometricCurrentOn U k), IsIntegerMultiplicity X → IsRestriction X A S → IsIntegerMultiplicity S) ∧ (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (X Y Z : GeometricCurrentOn U k) (a b : ℤ), IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω : TestFormOn U k, Z ω = (a : ℝ) * X ω + (b : ℝ) * Y ω) → IsIntegerMultiplicity Z) := by
+  -- (T): for `Hᵏ ⌞ (M₁ ∩ M₂)`-a.e. `x`, the weighted tangent spaces of `(M₁, θ₁)` at `x` are
+  -- those of `(M₂, θ₂)`; the locality hypothesis is `iwl_weighted_tangent_locality`.
+  have hT := fun (P k : ℕ) (U : Set (Eucl P)) (hU : IsOpen U) =>
+    Submission.iwl_imc_tangent_overlap P k (Submission.iwl_weighted_tangent_locality P k) U hU
+  refine ⟨?_, ?_, ?_⟩
+  -- (a): `(Hᵏ ⌞ M, θ ξ)` represents `X = τ(M, θ, ξ)`, so (R0) bounds `M_W(X)`.
+  · rintro P k U hU X ⟨M, θ, ξ, hX, -, hXτ⟩ W hW
+    exact Submission.iwl_restriction_theory.1 P k U hU X _ _
+      (Submission.iwl_imc_tau_measure_representation P k U M θ ξ X hX hXτ) W hW
+  -- (b): `S = X ⌞ A = τ(M ∩ A, θ, ξ)`.
+  · rintro P k U hU X A S ⟨M, θ, ξ, hX, hθ, hXτ⟩ ⟨hA, μ, v, hrepr, hS⟩
+    -- Step 1: `θ ≥ 1` on `M`, as `θ` is positive and natural-valued there.
+    have hθ1 : ∀ x ∈ M, 1 ≤ θ x := by
+      intro x hx
+      obtain ⟨n, hn⟩ := hθ x hx
+      have h0 : (0 : ℝ) < n := hn ▸ hX.pos x hx
+      rw [hn]
+      exact_mod_cast h0
+    -- Step 2: `(Hᵏ ⌞ M, θ ξ)` is a second representation of `X`.
+    have hrepr2 := Submission.iwl_imc_tau_measure_representation P k U M θ ξ X hX hXτ
+    -- Step 3: by uniqueness of the representation, `S(ω) = ∫_A θ ⟨ω, ξ⟩ d(Hᵏ ⌞ M)`.
+    have hSτ : ∀ ω : TestFormOn U k, S ω = tauAction k (M ∩ A) θ ξ ω := by
+      intro ω
+      rw [hS ω, Submission.slicing_representation_unique P k U hU μ
+        ((μHE[k] : Measure (Eucl P)).restrict M) v (fun x => θ x • ξ x) (fun ω => (hrepr ω).1)
+        (fun ω => (hrepr2 ω).1) U hU (fun ω _ => by rw [← (hrepr ω).2, ← (hrepr2 ω).2]) A hA ω
+        ω.2.2, Measure.restrict_restrict hA, inter_comm A M]
+      simp only [tauAction, smul_apply, smul_eq_mul]
+    -- Step 4: the triple `(M ∩ A, θ, ξ)` inherits the conditions on `(M, θ, ξ)`.
+    have hsub : M ∩ A ⊆ U := inter_subset_left.trans hX.subset
+    have hnull : NullMeasurableSet (M ∩ A) (μHE[k] : Measure (Eucl P)) :=
+      hX.nullMeasurableSet.inter hA.nullMeasurableSet
+    have hint : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+        IntegrableOn θ (M ∩ A ∩ K) (μHE[k] : Measure (Eucl P)) := fun K hK hKU =>
+      (hX.integrableOn K hK hKU).mono_set (inter_subset_inter_left K inter_subset_left)
+    -- The orientation: (T) for `(M, θ)` and `(M ∩ A, θ)`, where `M ∩ (M ∩ A) = M ∩ A`.
+    have hTA := hT P k U hU M (M ∩ A) θ θ hX.subset hsub hX.nullMeasurableSet hnull hθ1
+      (fun x hx => hθ1 x hx.1) hX.integrableOn hint
+    rw [inter_eq_right.2 inter_subset_left] at hTA
+    have hMA : IsRectifiableTriple U k (M ∩ A) θ ξ := by
+      refine ⟨hsub, hnull, hX.countablyRectifiable.mono inter_subset_left,
+        fun x hx => hX.pos x hx.1, hint,
+        hX.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl), ?_⟩
+      filter_upwards [hTA, ae_restrict_of_ae_restrict_of_subset inter_subset_left hX.orients]
+        with x hx hxo
+      obtain ⟨τ, hτ, hτM, hξ⟩ := hxo
+      exact ⟨τ, hτ, hx _ hτM, hξ⟩
+    -- Step 5: `S = τ(M ∩ A, θ, ξ)` with `θ` natural-valued on `M ∩ A ⊆ M`.
+    exact ⟨M ∩ A, θ, ξ, hMA, fun x hx => hθ x hx.1, hSτ⟩
+  -- (c): integer linear combinations, from (T).
+  · intro P k U hU X Y Z a b hX hY hZ
+    exact Submission.iwl_imc_lincomb_im P k U hU (hT P k U hU) X Y Z a b hX hY hZ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
