@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0fbab121863c54b5f0e0b32a18e63b17733a02201776f0ade491d2cdbab7ce11",
+  "git_delta": {
+    "base_commit": "6050bb529400c6b05f6c893447ce8b263366fdd9",
+    "candidate_commit": "fc50cf6086458e78da5e27e221e4f52f9e8526e7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_cp_measurable_glue",
+    "diff_sha256": "30495fb1e28aa02c25fbb3490cb0326630d07088593be785ab4cc821258234a2",
+    "source_sha256": "5547af705eb2dbefec4f87a86719bac2cca66c31dc6422f2fbb0877c83ea17a5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_cp_measurable_glue",
+      "statement": "∀ (m P : ℕ) (Y : ℕ → Set (Euclid m)) (ψ Φ : ℕ → Euclid m → Euclid P), (∀ j, MeasurableSet (Y j) ∧ ContinuousOn (ψ j) (Y j) ∧ InjOn (ψ j) (Y j) ∧ ContinuousOn (Φ j) (Y j)) → Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) → ∃ g : Euclid P → Euclid P, Measurable g ∧ (∀ j, ∀ y ∈ Y j, g (ψ j y) = Φ j y) ∧ ∀ x, (∀ j, x ∉ ψ j '' Y j) → g x = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
