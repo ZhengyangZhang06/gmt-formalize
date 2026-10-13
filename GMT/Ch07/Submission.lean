@@ -466,6 +466,55 @@ theorem Submission.dgcr_bwd_extDeriv_smul_const : ∀ (P m : ℕ) (a : Euclid P 
   rw [h1, fderiv_mul_const ha]
   simp [zsmul_eq_mul, mul_comm]
 
+/-- **Riesz vector of the wedge functional `w ↦ ζ₀(w♭ ∧ α)`** (used in the constant tangent plane
+step of the compactness theorem, Simon 7.2.4).  For `ζ₀ ∈ Λ_{d+1}(ℝᴾ)` and a fixed `d`-covector
+`α` there is `v ∈ ℝᴾ` with `ζ₀(γ) = ⟨v, w⟩` whenever `γ = w♭ ∧ α`, i.e.
+`γ(u₀, …, u_d) = Σᵢ (−1)ⁱ ⟨w, uᵢ⟩ α(u₀, …, ûᵢ, …, u_d)`: such a `γ` is `d(⟨w, ·⟩ α)(0)`, which
+is linear in `w`, and `v` is the Riesz representative of `w ↦ ζ₀(w♭ ∧ α)`. -/
+theorem Submission.cbr_ci_cp_dir_wedge_riesz_vector : ∀ (P d : ℕ) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d), ∃ v : Euclid P, ∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w := by
+  intro P d ζ₀ α
+  set W : Euclid P → Covector (Euclid P) (d + 1) :=
+    fun w => exteriorDerivative (fun y => inner ℝ w y • α) 0 with hW
+  have hWf : ∀ (w : Euclid P) (u : Fin (d + 1) → Euclid P), W w u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u)) := by
+    intro w u
+    have hd : DifferentiableAt ℝ (fun y => inner ℝ w y) (0 : Euclid P) :=
+      (innerSL ℝ w).differentiableAt
+    rw [hW, Submission.dgcr_bwd_extDeriv_smul_const P d (fun y => inner ℝ w y) α 0 u hd]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    have hf : fderiv ℝ (fun y => inner ℝ w y) (0 : Euclid P) = innerSL ℝ w :=
+      (innerSL ℝ w).fderiv
+    rw [hf, innerSL_apply_apply]
+  have huniq : ∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → γ = W w := by
+    intro w γ hγ
+    ext u
+    rw [hγ u, hWf w u]
+  have hadd : ∀ w w' : Euclid P, W (w + w') = W w + W w' := by
+    intro w w'
+    ext u
+    rw [ContinuousAlternatingMap.add_apply, hWf, hWf, hWf, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [inner_add_left]
+    ring
+  have hsmul : ∀ (c : ℝ) (w : Euclid P), W (c • w) = c • W w := by
+    intro c w
+    ext u
+    rw [ContinuousAlternatingMap.smul_apply, hWf, hWf, smul_eq_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [real_inner_smul_left]
+    ring
+  let ℓ : Euclid P →ₗ[ℝ] ℝ :=
+    { toFun := fun w => ζ₀ (W w)
+      map_add' := by
+        intro w w'
+        simp only [hadd, map_add]
+      map_smul' := by
+        intro c w
+        simp only [hsmul, map_smul, smul_eq_mul, RingHom.id_apply] }
+  refine ⟨(InnerProductSpace.toDual ℝ (Euclid P)).symm (LinearMap.toContinuousLinearMap ℓ), ?_⟩
+  intro w γ hγ
+  rw [InnerProductSpace.toDual_symm_apply, huniq w γ hγ]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
