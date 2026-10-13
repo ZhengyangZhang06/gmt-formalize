@@ -515,6 +515,118 @@ theorem Submission.dor_lmb_ret_chart_localization : ∀ (P d : ℕ) (N W : Set (
     rw [heq]
     exact (hproper _ hρW (isCompact_closedBall _ _)).image_of_continuousOn
       (hψ.mono inter_subset_left)
+/-- **`C¹` local inverse at a point with invertible derivative** (steps 6–7 of
+`dor_lmb_ret_normal_coordinates`).  If `Φ` is `C¹` on an open `U ∋ z₀` and `DΦ(z₀) = Λ` is a
+continuous linear equivalence (`X` complete), then on some ball `B_ρ(z₀) ⊆ U` the map `Φ` has a
+left inverse `G`, and for every open `W ⊆ B_ρ(z₀)` the image `Φ(W)` is open and `G` is `C¹` on it.
+`G` is the inverse of the inverse function theorem's open partial homeomorphism `H` (`H = Φ`), and
+`ρ` is small enough that `B_ρ(z₀)` lies in the source of `H` and `DΦ` is invertible on it. -/
+theorem Submission.dor_lmb_ret_nc_local_inverse : ∀ (X Y : Type) [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X] [NormedAddCommGroup Y] [NormedSpace ℝ Y] (Φ : X → Y) (U : Set X) (z₀ : X) (Λ : X ≃L[ℝ] Y), IsOpen U → z₀ ∈ U → ContDiffOn ℝ 1 Φ U → HasFDerivAt Φ (Λ : X →L[ℝ] Y) z₀ → ∃ ρ : ℝ, 0 < ρ ∧ ball z₀ ρ ⊆ U ∧ ∃ G : Y → X, (∀ z ∈ ball z₀ ρ, G (Φ z) = z) ∧ ∀ W : Set X, W ⊆ ball z₀ ρ → IsOpen W → IsOpen (Φ '' W) ∧ ContDiffOn ℝ 1 G (Φ '' W) := by
+  intro X Y _ _ _ _ _ Φ U z₀ Λ hU hz₀ hΦ hΦ'
+  have hUz₀ : U ∈ 𝓝 z₀ := hU.mem_nhds hz₀
+  -- Step 1: the inverse function theorem at `z₀` gives an open partial homeomorphism `H` with
+  -- underlying function `Φ` and `z₀ ∈ H.source`.
+  have hstrict : HasStrictFDerivAt Φ (Λ : X →L[ℝ] Y) z₀ :=
+    (hΦ.contDiffAt hUz₀).hasStrictFDerivAt' hΦ' one_ne_zero
+  obtain ⟨H, hHΦ, hz₀S⟩ : ∃ H : OpenPartialHomeomorph X Y, (H : X → Y) = Φ ∧ z₀ ∈ H.source :=
+    ⟨hstrict.toOpenPartialHomeomorph Φ, hstrict.toOpenPartialHomeomorph_coe,
+      hstrict.mem_toOpenPartialHomeomorph_source⟩
+  -- Step 2: `DΦ` is continuous at `z₀` with `DΦ(z₀) = Λ`, and the invertible maps form an open
+  -- set, so `DΦ` is invertible near `z₀`.
+  have hB : fderiv ℝ Φ ⁻¹' range ((↑) : (X ≃L[ℝ] Y) → X →L[ℝ] Y) ∈ 𝓝 z₀ := by
+    refine ((hΦ.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt hUz₀).preimage_mem_nhds ?_
+    rw [hΦ'.fderiv]
+    exact Λ.nhds
+  -- Step 3: choose `ρ` with `B_ρ(z₀) ⊆ H.source ∩ U ∩ {DΦ invertible}` and put `G = H⁻¹`.
+  obtain ⟨ρ, hρ, hball⟩ :=
+    Metric.mem_nhds_iff.1 (inter_mem (inter_mem (H.open_source.mem_nhds hz₀S) hUz₀) hB)
+  refine ⟨ρ, hρ, fun z hz => (hball hz).1.2, H.symm, fun z hz => ?_, fun W hW hWo => ?_⟩
+  · -- Step 4: `G (Φ z) = z` on the ball, which lies in the source of `H`.
+    rw [← hHΦ]
+    exact H.left_inv (hball hz).1.1
+  · -- Step 5: `W` lies in the source of `H`, so `Φ '' W = H '' W` is open.
+    have hWS : W ⊆ H.source := fun z hz => (hball (hW hz)).1.1
+    rw [← hHΦ]
+    refine ⟨H.isOpen_image_of_subset_source hWo hWS, ?_⟩
+    -- Step 6: at `y = H z`, `z ∈ W`, the map `H = Φ` is `C¹` with invertible derivative
+    -- `DΦ(z) = e`, so `H⁻¹` is `C¹` at `y`.
+    rintro _ ⟨z, hzW, rfl⟩
+    obtain ⟨⟨hzS, hzU⟩, e, he⟩ := hball (hW hzW)
+    have hΦz : ContDiffAt ℝ 1 Φ z := hΦ.contDiffAt (hU.mem_nhds hzU)
+    have hd : HasFDerivAt Φ (e : X →L[ℝ] Y) z := by
+      rw [show (e : X →L[ℝ] Y) = fderiv ℝ Φ z from he]
+      exact (hΦz.differentiableAt one_ne_zero).hasFDerivAt
+    rw [← hHΦ] at hΦz hd
+    have h₁ : HasFDerivAt (H : X → Y) (e : X →L[ℝ] Y) (H.symm (H z)) := by
+      rwa [H.left_inv hzS]
+    have h₂ : ContDiffAt ℝ 1 (H : X → Y) (H.symm (H z)) := by
+      rwa [H.left_inv hzS]
+    exact (H.contDiffAt_symm (H.map_source hzS) h₁ h₂).contDiffWithinAt
+/-- **Normal coordinates, linear part** (parent proof, steps 1 and 5, with `L` in place of
+`Dψ(v₀)`).  For an injective linear `L : ℝ^d → ℝ^P`, the map `Λ(w, k) = L w + k` is a continuous
+linear isomorphism `ℝ^d × (range L)^⊥ ≅ ℝ^P`: it is injective, since `L w + k = 0` puts `k` in
+`range L ∩ (range L)^⊥ = 0` and then `w = 0`; both sides have dimension `P`; and a linear
+isomorphism between finite-dimensional spaces is continuous. -/
+theorem Submission.dor_lmb_ret_nc_linear_iso : ∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ Λ : (Euclid d × ↥(L.range)ᗮ) ≃L[ℝ] Euclid P, ∀ (w : Euclid d) (k : ↥(L.range)ᗮ), Λ (w, k) = L w + k := by
+  intro P d L hL
+  -- Step 1: `Λ₀ = L ∘ pr₁ + ι ∘ pr₂`, so `Λ₀ (w, k) = L w + k`
+  let Λ₀ : (Euclid d × ↥(L.range)ᗮ) →ₗ[ℝ] Euclid P :=
+    (L : Euclid d →ₗ[ℝ] Euclid P) ∘ₗ LinearMap.fst ℝ (Euclid d) ↥(L.range)ᗮ +
+      (L.range)ᗮ.subtype ∘ₗ LinearMap.snd ℝ (Euclid d) ↥(L.range)ᗮ
+  -- Step 2: `L w + k = 0` puts `k = L (-w)` in `range L ∩ (range L)^⊥ = 0`, then `w = 0`
+  have hinj : Injective Λ₀ := by
+    refine (injective_iff_map_eq_zero Λ₀).2 ?_
+    rintro ⟨w, k⟩ h
+    change L w + (k : Euclid P) = 0 at h
+    have hk : (k : Euclid P) ∈ L.range ⊓ (L.range)ᗮ :=
+      ⟨LinearMap.mem_range.2 ⟨-w, by simpa using neg_eq_of_add_eq_zero_right h⟩, k.2⟩
+    rw [Submodule.inf_orthogonal_eq_bot, Submodule.mem_bot] at hk
+    have hw : w = 0 := (injective_iff_map_eq_zero L).1 hL w (by simpa [hk] using h)
+    exact Prod.ext hw (Subtype.ext hk)
+  -- Step 3: `dim (ℝ^d × (range L)^⊥) = dim range L + dim (range L)^⊥ = P`
+  have hdim : Module.finrank ℝ (Euclid d × ↥(L.range)ᗮ) = Module.finrank ℝ (Euclid P) := by
+    rw [Module.finrank_prod,
+      ← LinearMap.finrank_range_of_inj (f := (L : Euclid d →ₗ[ℝ] Euclid P)) hL]
+    exact (L.range).finrank_add_finrank_orthogonal
+  -- Step 4: injective with equal finite dimensions, hence bijective
+  have hsurj : Surjective Λ₀ :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).1 hinj
+  -- Step 5: a linear equivalence in finite dimensions is continuous
+  exact ⟨(LinearEquiv.ofBijective Λ₀ ⟨hinj, hsurj⟩).toContinuousLinearEquiv, fun w k => rfl⟩
+/-- **Normal-coordinate map calculus.**  Let `V ⊆ ℝᵈ` be open, `v₀ ∈ V`, `ψ : ℝᵈ → ℝᴾ` and
+`Q : ℝᵈ → L(ℝᴾ, ℝᴾ)` be `C¹` on `V`, and `Q(v₀)k = 0` for `k ∈ E`.  Then
+`Φ(v, k) = ψ(v) + k − Q(v)k` is `C¹` on `V × E` (chain rule along `pr₁`, `ContDiffOn.clm_apply`),
+and by the chain and product rules its derivative at `(v₀, 0)` is
+`(w, h) ↦ Dψ(v₀)w + h − Q(v₀)h − (DQ(v₀)w)(0) = Dψ(v₀)w + h`. -/
+theorem Submission.dor_lmb_ret_nc_map_calculus : ∀ (P d : ℕ) (E : Submodule ℝ (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 ψ V → ContDiffOn ℝ 1 Q V → (∀ k ∈ E, Q v₀ k = 0) → ContDiffOn ℝ 1 (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) (V ×ˢ univ) ∧ HasFDerivAt (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) ((fderiv ℝ ψ v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E) + E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)) (v₀, 0) := by
+  intro P d E V ψ Q v₀ hV hv₀ hψ hQ hQ0
+  -- `pr₁` maps `V × E` into `V`; `ι ∘ pr₂` is continuous linear.
+  have hpr : MapsTo (Prod.fst : Euclid d × E → Euclid d) (V ×ˢ univ) V := fun z hz => hz.1
+  have hι : ContDiff ℝ 1 (fun z : Euclid d × E => (z.2 : Euclid P)) :=
+    (E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)).contDiff
+  -- `Φ = ψ ∘ pr₁ + ι ∘ pr₂ − (Q ∘ pr₁)(ι ∘ pr₂)` is `C¹` on `V × E`.
+  refine ⟨((hψ.comp contDiffOn_fst hpr).add hι.contDiffOn).sub
+    ((hQ.comp contDiffOn_fst hpr).clm_apply hι.contDiffOn), ?_⟩
+  -- `ψ` and `Q` are differentiable at `v₀ ∈ V`, `V` open.
+  have hVn : V ∈ 𝓝 v₀ := hV.mem_nhds hv₀
+  have hψd : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+    (hψ.contDiffAt hVn).differentiableAt_one.hasFDerivAt
+  have hQd : HasFDerivAt Q (fderiv ℝ Q v₀) v₀ :=
+    (hQ.contDiffAt hVn).differentiableAt_one.hasFDerivAt
+  -- Chain rule along `pr₁`, and the derivative of `ι ∘ pr₂`.
+  have d1 : HasFDerivAt (fun z : Euclid d × E => ψ z.1)
+      ((fderiv ℝ ψ v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E)) (v₀, (0 : E)) :=
+    hψd.comp (v₀, (0 : E)) hasFDerivAt_fst
+  have d2 : HasFDerivAt (fun z : Euclid d × E => (z.2 : Euclid P))
+      (E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)) (v₀, (0 : E)) :=
+    (E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)).hasFDerivAt
+  have dQ : HasFDerivAt (fun z : Euclid d × E => Q z.1)
+      ((fderiv ℝ Q v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E)) (v₀, (0 : E)) :=
+    hQd.comp (v₀, (0 : E)) hasFDerivAt_fst
+  -- Product rule for application, then `Q(v₀)h = 0` for `h ∈ E`.
+  convert (d1.add d2).sub (dQ.clm_apply d2) using 1
+  refine ContinuousLinearMap.ext fun z => ?_
+  simp [hQ0 _ z.2.2]
 /-- **Tangent projections of a `C²` immersion** (step 2(a) of the nearest point retraction onto `N`
 used for Simon 7.4.3): if `ψ` is `C²` on the open set `V ⊆ ℝᵈ` and `D(v) = Dψ(v)` is injective for
 `v ∈ V`, then `v ↦ P̂(v)`, the orthogonal projection of `ℝᴾ` onto `range D(v)`, is `C¹` on `V`.
@@ -616,6 +728,82 @@ theorem Submission.dor_lmb_ret_normal_space_transfer : ∀ (P : ℕ) (T T' : Sub
   -- Step 5: the preimage `e` of `n` satisfies `e - Q' e = n` and `‖e‖ ≤ 2 ‖n‖`
   have hen : (e : Euclid P) - T'.starProjection e = n := by rw [← hL, he]
   exact ⟨e, e.2, hen, hen ▸ hlow e e.2⟩
+
+/-- **Normal coordinates** (step 3 of the nearest point retraction onto a `C²` submanifold).
+Let `P̂(v)` be the orthogonal projection onto `range Dψ(v)` and `E = (range Dψ(v₀))ᗮ`.  The map
+`Φ(v, e) = ψ(v) + e - P̂(v) e` is `C¹` on `V × E` with `DΦ(v₀, 0)(w, k) = Dψ(v₀) w + k`, an
+isomorphism `ℝᵈ × E ≃ ℝᴾ`, so `Φ` has a `C¹` local inverse `G` on `O = Φ(B_{δ₁}(v₀, 0))`; put
+`g = pr₁ ∘ G` and `δ = δ₁/2`, with `‖P̂(v) - P̂(v₀)‖ ≤ 1/2` on `B_{δ₁}(v₀)`.  A normal vector
+`n` at `ψ(v)` with `|n| < δ` is `e - P̂(v) e` for some `e ∈ E` with `|e| ≤ 2|n| < δ₁`, so
+`ψ(v) + n = Φ(v, e) ∈ O` and `g(ψ(v) + n) = v`. -/
+theorem Submission.dor_lmb_ret_normal_coordinates : ∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (δ : ℝ) (O : Set (Euclid P)) (g : Euclid P → Euclid d), 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ IsOpen O ∧ ContDiffOn ℝ 1 g O ∧ ∀ v ∈ ball v₀ δ, ∀ n : Euclid P, (fderiv ℝ ψ v).range.starProjection n = 0 → ‖n‖ < δ → ψ v + n ∈ O ∧ g (ψ v + n) = v := by
+  intro P d V ψ v₀ hV hψ hinj hv₀
+  -- `P̂(v)` is the orthogonal projection onto `range Dψ(v)`, and `E = (range Dψ(v₀))ᗮ`
+  set Q : Euclid d → Euclid P →L[ℝ] Euclid P := fun v => (fderiv ℝ ψ v).range.starProjection
+  set E : Submodule ℝ (Euclid P) := (fderiv ℝ ψ v₀).rangeᗮ
+  -- Step 2: `P̂` is `C¹` on `V`
+  have hQ : ContDiffOn ℝ 1 Q V := Submission.dor_lmb_ret_tangent_projection P d V ψ hV hψ hinj
+  -- Steps 3–4: `Φ(v, e) = ψ(v) + e - P̂(v) e` is `C¹` on `V × E`, and
+  -- `DΦ(v₀, 0)(w, k) = Dψ(v₀) w + k` because `P̂(v₀) k = 0` for `k ∈ E`
+  obtain ⟨hΦ, hΦ'⟩ := Submission.dor_lmb_ret_nc_map_calculus P d E V ψ Q v₀ hV hv₀
+    (hψ.of_le (by norm_num)) hQ fun k hk => (Submodule.starProjection_apply_eq_zero_iff _).mpr hk
+  set Φ : Euclid d × E → Euclid P := fun z => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)
+  -- Step 5: `Λ(w, k) = Dψ(v₀) w + k` is an isomorphism `ℝᵈ × E ≃ ℝᴾ`, and `Λ = DΦ(v₀, 0)`
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : (Euclid d × E) ≃L[ℝ] Euclid P,
+      ∀ (w : Euclid d) (k : E), Λ (w, k) = fderiv ℝ ψ v₀ w + k :=
+    Submission.dor_lmb_ret_nc_linear_iso P d (fderiv ℝ ψ v₀) (hinj v₀ hv₀)
+  have hΛΦ : HasFDerivAt Φ (Λ : Euclid d × E →L[ℝ] Euclid P) (v₀, 0) :=
+    hΦ'.congr_fderiv <| ContinuousLinearMap.ext fun ⟨w, k⟩ => by simp [hΛ]
+  -- Steps 6–7: inverse function theorem for `Φ` at `(v₀, 0)`
+  obtain ⟨ρ, hρ, hρV, G, hG, hGW⟩ := Submission.dor_lmb_ret_nc_local_inverse (Euclid d × E)
+    (Euclid P) Φ (V ×ˢ univ) (v₀, 0) Λ (hV.prod isOpen_univ) ⟨hv₀, mem_univ _⟩ hΦ hΛΦ
+  -- Step 8: `‖P̂(v) - P̂(v₀)‖ < 1/2` on `B_{δ₂}(v₀)`; take `0 < δ₁ ≤ min ρ δ₂`
+  obtain ⟨δ₂, hδ₂, hδ₂Q⟩ := Metric.continuousAt_iff.mp
+    (hQ.continuousOn.continuousAt (hV.mem_nhds hv₀)) (1 / 2) one_half_pos
+  obtain ⟨δ₁, hδ₁, hδ₁ρ, hδ₁δ₂⟩ : ∃ δ₁ : ℝ, 0 < δ₁ ∧ δ₁ ≤ ρ ∧ δ₁ ≤ δ₂ :=
+    ⟨min ρ δ₂, lt_min hρ hδ₂, min_le_left _ _, min_le_right _ _⟩
+  have hB : ball ((v₀, 0) : Euclid d × E) δ₁ ⊆ ball (v₀, 0) ρ := ball_subset_ball hδ₁ρ
+  have hW := hGW _ hB isOpen_ball
+  -- `B_{δ₁}(v₀) ⊆ V`, as `(v, 0) ∈ B_ρ(v₀, 0) ⊆ V × E`
+  have hball : ball v₀ δ₁ ⊆ V := by
+    intro v hv
+    have hv0 : ((v, 0) : Euclid d × E) ∈ ball (v₀, 0) δ₁ := by
+      rw [← ball_prod_same]
+      exact mk_mem_prod hv (mem_ball_self hδ₁)
+    exact (mem_prod.mp (hρV (hB hv0))).1
+  -- Step 9: `δ = δ₁/2`, `O = Φ(B_{δ₁}(v₀, 0))` and `g = pr₁ ∘ G`
+  refine ⟨δ₁ / 2, Φ '' ball (v₀, 0) δ₁, fun x => (G x).1, half_pos hδ₁,
+    (closedBall_subset_ball (half_lt_self hδ₁)).trans hball, hW.1, hW.2.fst, ?_⟩
+  -- Step 10: let `v ∈ B_δ(v₀)` and `n ⊥ range Dψ(v)` with `|n| < δ`
+  intro v hv n hn hnδ
+  have hv₁ : v ∈ ball v₀ δ₁ := ball_subset_ball (half_le_self hδ₁.le) hv
+  have hvV : v ∈ V := hball hv₁
+  -- `dim range Dψ(v₀) = d = dim range Dψ(v)` and `‖P̂(v) - P̂(v₀)‖ ≤ 1/2`
+  have hdim : Module.finrank ℝ (fderiv ℝ ψ v₀).range =
+      Module.finrank ℝ (fderiv ℝ ψ v).range :=
+    (LinearMap.finrank_range_of_inj (f := (fderiv ℝ ψ v₀ : Euclid d →ₗ[ℝ] Euclid P))
+      (hinj v₀ hv₀)).trans
+      (LinearMap.finrank_range_of_inj (f := (fderiv ℝ ψ v : Euclid d →ₗ[ℝ] Euclid P))
+        (hinj v hvV)).symm
+  have hQv : ‖Q v - Q v₀‖ ≤ 1 / 2 := by
+    rw [← dist_eq_norm]
+    exact (hδ₂Q ((mem_ball.mp hv₁).trans_le hδ₁δ₂)).le
+  -- normal-space transfer: `n = e - P̂(v) e` for some `e ∈ E` with `|e| ≤ 2|n| < δ₁`
+  obtain ⟨e, he, hen, hle⟩ := Submission.dor_lmb_ret_normal_space_transfer P _ _ hdim hQv n
+    ((Submodule.starProjection_apply_eq_zero_iff _).mp hn)
+  have hz : ((v, ⟨e, he⟩) : Euclid d × E) ∈ ball (v₀, 0) δ₁ := by
+    rw [← ball_prod_same]
+    refine mk_mem_prod hv₁ (mem_ball_zero_iff.mpr ?_)
+    change ‖e‖ < δ₁
+    linarith
+  -- so `ψ(v) + n = Φ(v, e) ∈ O` and `G(ψ(v) + n) = (v, e)`, i.e. `g(ψ(v) + n) = v`
+  have hΦz : Φ (v, ⟨e, he⟩) = ψ v + n := by
+    change ψ v + e - (fderiv ℝ ψ v).range.starProjection e = ψ v + n
+    rw [add_sub_assoc, hen]
+  have hGz : G (ψ v + n) = (v, ⟨e, he⟩) := by
+    rw [← hΦz]
+    exact hG _ (hB hz)
+  exact ⟨⟨_, hz, hΦz⟩, congrArg Prod.fst hGz⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
