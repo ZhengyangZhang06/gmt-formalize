@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.energy_convergence-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "L² convergence of tangential gradients implies convergence of the Dirichlet energies",
+  "statement": "Convergence of L² energies. Data: P ∈ ℕ; a measure μ on ℝ^P; functions F_{k,j}, G_j : ℝ^P → ℝ for k ∈ ℕ and j ∈ Fin P. Hypotheses: every F_{k,j} and every G_j is a.e.-strongly measurable for μ; for every k, Σ_j F_{k,j}² is μ-integrable; ∫⁻ ofReal(Σ_j (F_{k,j} − G_j)²) dμ → 0 as k → ∞. Conclusion: Σ_j G_j² is μ-integrable, and ∫ Σ_j F_{k,j}² dμ → ∫ Σ_j G_j² dμ as k → ∞.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F : ℕ → Fin P → Euclid P → ℝ) (G : Fin P → Euclid P → ℝ), (∀ k j, AEStronglyMeasurable (F k j) μ) → (∀ j, AEStronglyMeasurable (G j) μ) → (∀ k, Integrable (fun x => ∑ j : Fin P, (F k j x) ^ 2) μ) → Tendsto (fun k => ∫⁻ x, ENNReal.ofReal (∑ j : Fin P, (F k j x - G j x) ^ 2) ∂μ) atTop (𝓝 0) → Integrable (fun x => ∑ j : Fin P, (G j x) ^ 2) μ ∧ Tendsto (fun k => ∫ x, ∑ j : Fin P, (F k j x) ^ 2 ∂μ) atTop (𝓝 (∫ x, ∑ j : Fin P, (G j x) ^ 2 ∂μ))",
+  "lean_name": "codim1_hcp_stab_energy_convergence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-fd28c8a294-a1"
+}

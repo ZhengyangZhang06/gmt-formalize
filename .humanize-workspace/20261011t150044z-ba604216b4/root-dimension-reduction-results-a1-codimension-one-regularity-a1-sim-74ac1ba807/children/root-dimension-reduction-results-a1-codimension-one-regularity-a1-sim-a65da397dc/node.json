@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.normal_variation_algebra-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "Second-variation integrand of a normal variation: trace and Q identities",
+  "statement": "Second-variation integrand of a normal variation (linear algebra). Data: P ∈ ℕ; a linear subspace S ⊆ ℝ^P; ν₀ ∈ ℝ^P; linear maps N, L : ℝ^P → ℝ^P and g : ℝ^P → ℝ; ζ ∈ ℝ. Hypotheses: |ν₀| = 1; ν₀·v = 0 for every v ∈ S; N(S) ⊆ S; η·Nτ = τ·Nη for all τ, η ∈ S; Lτ = g(τ)ν₀ + ζNτ for every τ ∈ S. Conclusion: trace(P_S∘L) = ζ·trace(P_S∘N), and\n Σ_{j=1}^P (|L(P_Se_j) − P_S L(P_Se_j)|² − P_Se_j·L(P_S L(P_Se_j))) = Σ_j g(P_Se_j)² − ζ²·Σ_j |N(P_Se_j)|²,\nwhere P_S is the orthogonal projection onto S and e_j = EuclideanSpace.single j 1.",
+  "lean_statement": "∀ (P : ℕ) (S : Submodule ℝ (Euclid P)) (ν₀ : Euclid P) (N L : Euclid P →L[ℝ] Euclid P) (g : Euclid P →L[ℝ] ℝ) (ζ : ℝ), ‖ν₀‖ = 1 → (∀ v ∈ S, inner ℝ ν₀ v = 0) → (∀ τ ∈ S, N τ ∈ S) → (∀ τ ∈ S, ∀ η ∈ S, inner ℝ η (N τ) = inner ℝ τ (N η)) → (∀ τ ∈ S, L τ = g τ • ν₀ + ζ • N τ) → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = ζ * LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ N.toLinearMap) ∧ ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) = ∑ j : Fin P, (g (S.starProjection (EuclideanSpace.single j 1))) ^ 2 - ζ ^ 2 * ∑ j : Fin P, ‖N (S.starProjection (EuclideanSpace.single j 1))‖ ^ 2",
+  "lean_name": "codim1_hcp_stab_normal_variation_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-a65da397dc-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.second_variation_nonneg-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "A minimum of the area at t = 0 forces a nonnegative second variation (abstract form)",
+  "statement": "Minimality implies nonnegative second variation. Data: P ∈ ℕ; a measure μ on ℝ^P; E ⊆ ℝ^P; J : ℝ → ℝ^P → ℝ (written J(t,x) := J t x); q : ℝ^P → ℝ; B, C, t₀ ∈ ℝ. Hypotheses: E is measurable and μ(E) < ∞; t₀ > 0; q is a.e.-strongly measurable with respect to μ restricted to E, and |q(x)| ≤ B for every x ∈ E; for every t with |t| < t₀, μ(E) ≤ ∫⁻_E ofReal(J(t,x)) dμ(x) and J(t,x) ≤ 1 + (t²/2)q(x) + C|t|³ for every x ∈ E. Conclusion: ∫_E q dμ ≥ 0.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (J : ℝ → Euclid P → ℝ) (q : Euclid P → ℝ) (B C t₀ : ℝ), MeasurableSet E → μ E ≠ ∞ → 0 < t₀ → AEStronglyMeasurable q (μ.restrict E) → (∀ x ∈ E, |q x| ≤ B) → (∀ t : ℝ, |t| < t₀ → μ E ≤ ∫⁻ x in E, ENNReal.ofReal (J t x) ∂μ) → (∀ t : ℝ, |t| < t₀ → ∀ x ∈ E, J t x ≤ 1 + t ^ 2 / 2 * q x + C * |t| ^ 3) → 0 ≤ ∫ x in E, q x ∂μ",
+  "lean_name": "codim1_hcp_stab_second_variation_nonneg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-907e409093-a1"
+}

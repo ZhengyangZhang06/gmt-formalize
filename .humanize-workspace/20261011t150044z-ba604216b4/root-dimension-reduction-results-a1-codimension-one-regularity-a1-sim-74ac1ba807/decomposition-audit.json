@@ -1,0 +1,111 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsEmbeddedSubmanifold|def tangentSpace|LocallyLipschitzOn|sorry|axiom|namespace|set_option",
+        "coeff_det_one_add_X_smul_eq_sum_minors|coeff_det_one_add_X_smul_one|det_one_add_X_smul",
+        "exists_contDiff_support_eq_eq_one_iff|tendsto_integral_filter_of_dominated_convergence|integral_eq_lintegral_of_nonneg_ae|hasFiniteIntegral_iff_ofReal",
+        "isSymmSndFDerivAt|trace_eq_sum_inner|det_eq_prod_eigenvalues|def starProjection|def subtypeL|def mul |theorem mul_apply",
+        "rg -n 'codim1_hcp_stab_' GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "git show d626082a69a01ae54fab73c0d6072850ddfab6ae -- GMT/Ch07/Submission.lean",
+        "lean -DautoImplicit=false /tmp/stab-decomp-q7/Full.lean",
+        "lean -DautoImplicit=false /tmp/stability-independent-audit-lj9l73xs/TypesAndInstances.lean",
+        "lean -DautoImplicit=false /tmp/stability-independent-audit-lj9l73xs/AcceptedChart.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-74ac1ba807/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-74ac1ba807/decomposition-v1.json",
+        "/tmp/stab-decomp-q7/Full.lean",
+        "/tmp/stability-independent-audit-lj9l73xs/TypesAndInstances.lean",
+        "/tmp/stability-independent-audit-lj9l73xs/AcceptedChart.lean",
+        "/tmp/stability-independent-full.log"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; snapshot Contract.lean and workspace Contract.lean/Submission.lean are byte-identical. Relevant pinned lemmas support the determinant coefficients, cutoff construction and integral limits. The project search found no codim1_hcp_stab_ declarations; DAG scans found no reservations for the 11 new names. The accepted chart declaration has the identical frozen type and independently compiles with only standard axioms. All 12 child propositions elaborate independently without child implementations. Reflexivity checks confirm ordinary matrix multiplication and identity, inherited subspace inner products, orthogonal projections, and the intended sum scopes. No forbidden matrix IsUnit construction occurs. Full.lean independently compiles, proving all 11 new children and the exact selected parent type relative only to four existing dependency contracts, each checked against the DAG. No proof depends on sorryAx. The proposed graph is acyclic, its external dependencies have no path back to the selected node, and actual proof references match the declared child dependencies. The split appropriately separates geometry, second variation and density extension."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every chart hypothesis and matches the frozen proposition. Bounded smooth curves establish one inclusion; properness, injectivity and the derivative lower bound establish the reverse inclusion. Reuse is valid: the existing accepted declaration has the identical type and passes the independent axiom check."
+    },
+    {
+      "key": "tangent_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension argument identifies span(T_xM) with A₀ ∩ ν(x)⊥. The proposed vector satisfies the defining projection conditions, and the formula yields the conditional continuity conclusion. Both conjuncts exactly match the Lean type; only the declared chart dependency is used."
+    },
+    {
+      "key": "shape_operator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiating the subspace and unit-length constraints gives tangentiality. Differentiating normality in a C² chart and applying symmetry of its second derivative proves the stated bilinear symmetry. C¹ regularity of ν suffices, and all hypotheses and dependencies match."
+    },
+    {
+      "key": "variation_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff construction gives global smoothness despite ν being smooth only on O. Equality on M, the derivative identity along curves, extension by linearity to the tangent span, and vanishing off tsupport Z are all justified. No unstated manifold hypothesis is needed."
+    },
+    {
+      "key": "det_second_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient identity and principal-minor bounds give the claimed uniform cubic remainder, including zero dimension and arbitrary κ. The low-order expansion and constants are correct. Independent instance checks confirm that the Lean expression uses ordinary matrix multiplication and identity."
+    },
+    {
+      "key": "jacobian_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram-matrix expansion, trace-zero cancellation and change-of-basis trace identities yield exactly the stated quadratic coefficient. Positivity of the Gram determinant and √y ≤ (1+y)/2 give the bound. The constant is uniform in S and L; sum scope and subspace instances were independently checked."
+    },
+    {
+      "key": "normal_variation_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Projection annihilates ν₀ and fixes N(S), giving the normal component and trace identity. Symmetry of N turns the remaining quadratic term into ζ²‖Nu_j‖². Both conclusions match the Lean proposition, including the scope of the two final sums."
+    },
+    {
+      "key": "second_variation_nonneg",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Boundedness and finite measure establish integrability. The chosen positive t makes the comparison function nonnegative, permitting the ENNReal-to-real integral comparison and contradiction. No measurability or differentiability assumption on J is silently required."
+    },
+    {
+      "key": "perturbation_injective",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The mean-value bound proves injectivity of the perturbation, the derivative rules give the exact derivative formula, and the same norm estimate proves its kernel is trivial. The proof establishes all three conjuncts under precisely the stated assumptions."
+    },
+    {
+      "key": "smooth_case",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The seven dependencies supply the admissible variation, Jacobian bound and nonnegative integrated quadratic term. Measurability, boundedness, integrability and vanishing outside the variation support justify the final Bochner-integral inequality. The explicit area hypothesis is discharged by an existing parent dependency, without circularity."
+    },
+    {
+      "key": "energy_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eventually finite error lintegrals and b ≤ 2a_k + 2d_k establish integrability of the limiting energy. Conversion through ENNReal.toReal and the two ε-inequalities prove convergence of energies for an arbitrary measure. The proof covers the exact measurable-function contract."
+    },
+    {
+      "key": "lipschitz_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Curve differentiation proves vanishing of approximant tangential derivatives outside C'. Energy convergence handles the right side, while dominated convergence on C ∪ C' handles the weighted left side. The stated approximation and smooth-inequality hypotheses suffice and are discharged by the supplied parent assembly."
+    }
+  ],
+  "required_changes": []
+}
