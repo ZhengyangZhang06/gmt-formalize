@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0afc549481a4d57d3b1332c8e2482e2cbb9a9adad85ca9f74eda32555fb82e07",
+  "git_delta": {
+    "base_commit": "e9d9b4d212f02499792f80d25a82223d4b9d7042",
+    "candidate_commit": "e0e2f4f7e51a21799932406c5196da3d5b5219fb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_normalized_bump",
+    "diff_sha256": "1c35e7c6c6a8b293c4b416a36b2c87db3a39d0a7790c27f0c073ab48dbb5bd1e",
+    "source_sha256": "9d393e25b2ade00f3192bb83b2c94e1f35be828fc1bfee408e7f79e7c8dd1a83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_normalized_bump",
+      "statement": "∀ c d : ℝ, c < d → ∃ χ : ℝ → ℝ, ContDiff ℝ 1 χ ∧ tsupport χ ⊆ Ioo c d ∧ ∫ α, χ α = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
