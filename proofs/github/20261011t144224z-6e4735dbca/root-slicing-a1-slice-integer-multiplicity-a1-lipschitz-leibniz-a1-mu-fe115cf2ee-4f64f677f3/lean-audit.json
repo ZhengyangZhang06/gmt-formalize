@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cb1258196dbaadec452a30a35fddc4f39f697990f269854a3ed8bb57137576c5",
+  "git_delta": {
+    "base_commit": "d38f8d269bdd65d1637bdfbc5b30900e9fbd7b50",
+    "candidate_commit": "175d7806c319b96dab96b693949ce750ec2df178",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_multiplier_tendsto",
+    "diff_sha256": "683a4bfb337607222ef670ddbf5c91b8055e179c7d4d504bbab0636e0babb58f",
+    "source_sha256": "8093b309496041a7f4c2bda348aa6ecb3c14126953ff7709f8fea55d5f3590df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_multiplier_tendsto",
+      "statement": "∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ) (g : ℕ → Eucl P → ℝ), Integrable F ν → IsCompact K → (∀ x, x ∉ K → F x = 0) → Continuous f → (∀ k, Continuous (g k)) → TendstoUniformly g f atTop → Tendsto (fun k => ∫ x, g k x * F x ∂ν) atTop (𝓝 (∫ x, f x * F x ∂ν))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
