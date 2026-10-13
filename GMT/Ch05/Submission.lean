@@ -567,6 +567,70 @@ theorem dohr_eb_lhr_dqub_dq_mean_value : ∀ (E F : Type) [NormedAddCommGroup E]
     rw [hrw, norm_smul, norm_inv, Real.norm_eq_abs, inv_mul_le_iff₀ hdpos]
     calc ‖(g (x + d • e) - g (y + d • e)) - (g x - g y)‖ ≤ H * ‖x - y‖ ^ α * |d| := hmv
       _ = |d| * (H * ‖x - y‖ ^ α) := mul_comm _ _
+/-- Difference-quotient bounds in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second
+assertion (p. 127): on a finite-dimensional real normed space `L`, real linear and bilinear forms
+are bounded by `C` times their largest value on finitely many test vectors `b r`.  Take a basis
+`b` of `L`; its coordinates `π r` are continuous, and `c = Σ_r ‖π r‖` gives
+`|b.repr P r| ≤ c ‖P‖`.  Expanding `P` in the basis gives `|f P| ≤ N c m ‖P‖`, expanding in both
+arguments gives `|β Q P| ≤ N² c² m ‖Q‖ ‖P‖`, and `C = N c + N² c²`. -/
+theorem dohr_eb_lhr_dqub_form_coords : ∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (b : Fin N → L) (C : ℝ), 0 ≤ C ∧ (∀ (f : L → ℝ) (m : ℝ), IsLinearMap ℝ f → 0 ≤ m → (∀ r, |f (b r)| ≤ m) → ∀ P, |f P| ≤ C * m * ‖P‖) ∧ ∀ (β : L → L → ℝ) (m : ℝ), (∀ P, IsLinearMap ℝ (fun Q => β Q P)) → (∀ Q, IsLinearMap ℝ (β Q)) → 0 ≤ m → (∀ r t, |β (b r) (b t)| ≤ m) → ∀ Q P, |β Q P| ≤ C * m * ‖Q‖ * ‖P‖ := by
+  intro L _ _ _
+  -- Step 1: a basis `b` of `L` indexed by `Fin N` (`N = finrank ℝ L`).
+  obtain ⟨N, ⟨b⟩⟩ : ∃ N : ℕ, Nonempty (Module.Basis (Fin N) ℝ L) :=
+    ⟨_, ⟨Module.finBasis ℝ L⟩⟩
+  -- Step 2: the coordinates `π r = b.coord r` are continuous as `L` is finite-dimensional, and
+  -- `c = Σ_r ‖π r‖` gives `|b.repr P r| ≤ c ‖P‖`.
+  obtain ⟨c, hc0, hcoord⟩ : ∃ c : ℝ, 0 ≤ c ∧ ∀ r P, |b.repr P r| ≤ c * ‖P‖ := by
+    let π : Fin N → L →L[ℝ] ℝ := fun r => LinearMap.toContinuousLinearMap (b.coord r)
+    refine ⟨∑ r, ‖π r‖, Finset.sum_nonneg fun r _ => norm_nonneg _, fun r P => ?_⟩
+    have hπ : π r P = b.repr P r := by simp [π]
+    calc |b.repr P r| = ‖π r P‖ := by rw [hπ, Real.norm_eq_abs]
+      _ ≤ ‖π r‖ * ‖P‖ := (π r).le_opNorm P
+      _ ≤ (∑ t, ‖π t‖) * ‖P‖ := mul_le_mul_of_nonneg_right
+          (Finset.single_le_sum (fun t _ => norm_nonneg (π t)) (Finset.mem_univ r)) (norm_nonneg P)
+  -- Step 3: a linear `f` is determined by its basis values, `f P = Σ_r b.repr P r · f (b r)`.
+  have hexp : ∀ f : L → ℝ, IsLinearMap ℝ f → ∀ P, f P = ∑ r, b.repr P r * f (b r) := by
+    intro f hf P
+    calc f P = IsLinearMap.mk' f hf (∑ r, b.repr P r • b r) := by
+          rw [b.sum_repr, IsLinearMap.mk'_apply]
+      _ = ∑ r, b.repr P r * f (b r) := by
+          simp only [map_sum, map_smul, IsLinearMap.mk'_apply, smul_eq_mul]
+  -- Step 4: the linear bound `|f P| ≤ N c m ‖P‖`.
+  have hlin : ∀ (f : L → ℝ) (m : ℝ), IsLinearMap ℝ f → 0 ≤ m → (∀ r, |f (b r)| ≤ m) →
+      ∀ P, |f P| ≤ N * c * m * ‖P‖ := by
+    intro f m hf hm hb P
+    rw [hexp f hf P]
+    calc |∑ r, b.repr P r * f (b r)| ≤ ∑ r, |b.repr P r * f (b r)| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _r : Fin N, c * ‖P‖ * m := by
+          gcongr with r
+          rw [abs_mul]
+          exact mul_le_mul (hcoord r P) (hb r) (abs_nonneg _) (by positivity)
+      _ = N * c * m * ‖P‖ := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+          ring
+  -- Steps 5–6: expanding `β` in each argument, i.e. the linear bound for each `β (b r)` and then
+  -- for `Q ↦ β Q P`, gives `|β Q P| ≤ N² c² m ‖Q‖ ‖P‖`.
+  have hbil : ∀ (β : L → L → ℝ) (m : ℝ), (∀ P, IsLinearMap ℝ (fun Q => β Q P)) →
+      (∀ Q, IsLinearMap ℝ (β Q)) → 0 ≤ m → (∀ r t, |β (b r) (b t)| ≤ m) →
+      ∀ Q P, |β Q P| ≤ N * c * (N * c) * m * ‖Q‖ * ‖P‖ := by
+    intro β m hβ₁ hβ₂ hm hb Q P
+    have hr : ∀ r, |β (b r) P| ≤ N * c * m * ‖P‖ := fun r =>
+      hlin (β (b r)) m (hβ₂ (b r)) hm (hb r) P
+    calc |β Q P| ≤ N * c * (N * c * m * ‖P‖) * ‖Q‖ :=
+          hlin (fun Q => β Q P) (N * c * m * ‖P‖) (hβ₁ P) (by positivity) hr Q
+      _ = N * c * (N * c) * m * ‖Q‖ * ‖P‖ := by ring
+  -- Step 7: `C = N c + N² c²` serves for both bounds.
+  refine ⟨N, b, N * c + N * c * (N * c), by positivity, fun f m hf hm hb P => ?_,
+    fun β m hβ₁ hβ₂ hm hb Q P => ?_⟩
+  · calc |f P| ≤ N * c * m * ‖P‖ := hlin f m hf hm hb P
+      _ ≤ (N * c + N * c * (N * c)) * m * ‖P‖ := by
+          rw [add_mul, add_mul]
+          exact le_add_of_nonneg_right (by positivity)
+  · calc |β Q P| ≤ N * c * (N * c) * m * ‖Q‖ * ‖P‖ := hbil β m hβ₁ hβ₂ hm hb Q P
+      _ ≤ (N * c + N * c * (N * c)) * m * ‖Q‖ * ‖P‖ := by
+          rw [add_mul, add_mul, add_mul]
+          exact le_add_of_nonneg_left (by positivity)
 
 end Submission
 
