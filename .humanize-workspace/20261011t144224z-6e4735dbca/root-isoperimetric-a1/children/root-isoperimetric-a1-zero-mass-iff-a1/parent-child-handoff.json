@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (project_commit d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "grep -rn \"euclideanHausdorffMeasure\" Mathlib (snapshot mathlib) -> Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n -i \"cauchy.?binet|det_mul_eq_sum\" Mathlib/LinearAlgebra/Matrix (no match)",
+        "grep -rn -i -l \"binet\" Mathlib/LinearAlgebra Mathlib/Analysis/InnerProductSpace (only LinearAlgebra/CrossProduct.lean remark)",
+        "grep -n \"theorem exists_isSubordinate|theorem exists_contDiff_tsupport_subset\" Mathlib/Geometry/Manifold/PartitionOfUnity.lean Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "grep -n \"^theorem\" Mathlib/Geometry/Manifold/PartitionOfUnity.lean | grep -i \"zero_one|one_nhds|exists_contMDiff\"",
+        "grep -n \"volume_preserving\" Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "grep -n \"theorem map_perm|theorem map_eq_zero_of_eq|theorem map_sum\" Mathlib/Topology/Algebra/Module/Alternating/Basic.lean Mathlib/LinearAlgebra/Alternating/Basic.lean Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean Mathlib/LinearAlgebra/Multilinear/Basic.lean",
+        "grep -n \"def sort|theorem monotone_sort\" Mathlib/Data/Fin/Tuple/Sort.lean",
+        "read SimonGMT Chapter06 Mass.lean, Currents.lean, CurrentLocalEquality.lean, Forms.lean, FormsDuality.lean (pinned simongmt package used by the snapshot project)",
+        "sed -n 1925,2000p book/chapter-06.txt (printed 6.1 proof)",
+        "python3 -I: gmt-compare.py contract_scope(Contract.lean, GMT.Ch06.main_theorem) and lean_contract.validate_lean_statement on the 5 child statements",
+        "python3 -I: dag.json lean_name collision check (26 nodes, no collision with isoperimetric_* names)",
+        "lake build GMT.Ch06.Submission (scratch /tmp/iso_a1_decomp_check, frozen d8d46c9, pinned packages)",
+        "lake env lean Scratch/IsoStmts.lean (5 statements elaborate in comparator scope)",
+        "lake env lean Scratch/IsoAsm0.lean; Scratch/IsoAsm1.lean (rw m+1+(ℓ+1)=m+2+ℓ; IsoperimetricTheorem from DeformationTheorem + 3 children; #print axioms)",
+        "lake env lean Scratch/IsoC3.lean (finite_mass from vanish_off_support + covector_eval_bound; #print axioms)",
+        "lake build GMT.IsoFakeSub; lake env lean Scratch/NodeChallenge{0..4}.lean Scratch/NodeSolution{0..4}.lean; Scratch/IsoParentByName.lean",
+        "lake env lean Scratch/ReviewAll.lean (independent reviewer: all 5 child statements proved, iso_full : DeformationTheorem → IsoperimetricTheorem; #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/CrossProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1/parent-child-handoff.json",
+        "/tmp/iso_a1_decomp_check/Scratch/IsoStmts.lean",
+        "/tmp/iso_a1_decomp_check/Scratch/IsoAsm1.lean",
+        "/tmp/iso_a1_decomp_check/Scratch/IsoC3.lean",
+        "/tmp/iso_a1_decomp_check/GMT/IsoFakeSub.lean",
+        "/tmp/iso_a1_decomp_check/Scratch/IsoParentByName.lean",
+        "/tmp/iso_a1_decomp_check/Scratch/ReviewAll.lean"
+      ],
+      "conclusion": "Snapshot findings (project d8d46c95, Mathlib 25730c7c). The frozen Contract defines IsoperimetricTheorem, DeformationTheorem, IsLatticeChain, latticeFace and latticeFaceAction as used. SimonGMT supplies covectorEuclideanNorm, massAdmissibleOn, massOn and le_massOn (Mass.lean); VanishesOn, zeroRegion, support = U \\ zeroRegion and isOpen_zeroRegion (CurrentLocalEquality.lean); GeometricCurrentOn.ext and the zero current (Currents.lean); and simpleNVector and wedgeCovectors_apply_det (FormsDuality.lean). Mathlib normalises μHE[d] on EuclideanSpace ℝ (Fin d) and provides Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume, so a ρ-lattice k-face has μHE[k]-measure ρ^k. Mathlib also provides SmoothPartitionOfUnity.exists_isSubordinate, exists_contMDiffMap_one_nhds_of_subset_interior, PiLp.volume_preserving_ofLp, AlternatingMap.map_perm, ContinuousAlternatingMap.map_eq_zero_of_eq, multilinear map_sum, and Tuple.sort with monotone_sort. There is no Cauchy–Binet theorem in Mathlib (no match), so the covector child uses the elementary constant P^n. Kernel checks in a scratch copy of the frozen project: all five child statements elaborate in the comparator scope and pass validation; NodeSolution `exact Submission.<name>` typechecks; IsoperimetricTheorem follows from DeformationTheorem plus finite_mass, zero_mass_iff and lattice_mass_lower_bound; finite_mass follows from vanish_off_support and covector_eval_bound; and the independent reviewer's ReviewAll.lean proves all five exact statements. All checks use only propext, Classical.choice and Quot.sound. No lean_name collides with the 26 DAG nodes."
+    }
+  ],
+  "parent_id": "root.isoperimetric-a1",
+  "child_id": "root.isoperimetric-a1.zero_mass_iff-a1",
+  "subproblem": {
+    "key": "zero_mass_iff",
+    "title": "A current has zero mass if and only if it is zero",
+    "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P and every current T ∈ GeometricCurrentOn U n: M(T) = M_U(T) = 0 if and only if T = 0.",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n), T.mass = 0 ↔ T = 0",
+    "lean_name": "isoperimetric_mass_eq_zero_iff",
+    "depends_on": [],
+    "natural_proof": "Source: Step 2 of the parent proof (\"If M(T) = 0 then |T(ω)| ≤ M(T)‖ω‖ = 0 for all ω, so T = 0\") and Step 4 (S = 0 because M(S) = 0), made precise for SimonGMT's Euclidean coefficient norm.\n\nRecall T.mass = T.massOn U = sup{ENNReal.ofReal(T(ω)) : ω ∈ massAdmissibleOn U n U}, where ω ∈ massAdmissibleOn U n U means ω ∈ TestFormOn U n, tsupport ω ⊆ U and covectorEuclideanNorm(ω(x)) ≤ 1 for every x.\n\n1. (⇐) If T = 0, then T(ω) = 0 and ENNReal.ofReal(0) = 0 for every ω, so the supremum, taken over a subset of {0}, equals 0.\n2. (⇒) Assume T.mass = 0 and fix ω ∈ TestFormOn U n. Let g(x) := covectorEuclideanNorm(ω(x)) = sqrt(Σ_{I strictly increasing} ω(x)(e_I)²), e_I := (e_{I(1)}, …, e_{I(n)}). Since ω is C^∞, x ↦ ω(x) is continuous into the normed space of continuous alternating maps, and evaluation at a fixed tuple is a continuous linear functional, so each x ↦ ω(x)(e_I) is continuous (`continuous_eval_const`) and g is continuous. Moreover g(x) = 0 whenever ω(x) = 0 (`covectorEuclideanNorm_zero`), so support g ⊆ support ω and g has compact support. A continuous function with compact support is bounded (`Continuous.bounded_above_of_compact_support`): fix B ≥ 0 with g(x) ≤ B for all x, and put c := B + 1 > 0.\n3. Homogeneity: for λ ∈ ℝ and an n-covector β, covectorEuclideanNorm(λ • β) = |λ| · covectorEuclideanNorm(β), because every coordinate (λ • β)(e_I) = λ β(e_I), so the sum of squares is multiplied by λ², and sqrt(λ² S) = |λ| sqrt(S).\n4. For ε ∈ {1, −1} let η_ε := (ε / c) • ω, an element of the submodule TestFormOn U n. Its support is contained in that of ω, so tsupport η_ε ⊆ tsupport ω ⊆ U, and by step 3, covectorEuclideanNorm(η_ε(x)) = g(x)/c ≤ B/(B + 1) ≤ 1. Hence η_ε ∈ massAdmissibleOn U n U, and `le_massOn` gives ENNReal.ofReal(T(η_ε)) ≤ T.massOn U = T.mass = 0. Therefore T(η_ε) ≤ 0, i.e. (ε / c) · T(ω) ≤ 0 by linearity.\n5. ε = 1 gives T(ω) ≤ 0 and ε = −1 gives T(ω) ≥ 0, so T(ω) = 0 = (0 : GeometricCurrentOn U n)(ω). Since ω was arbitrary, T = 0 by extensionality (`GeometricCurrentOn.ext`).",
+    "proof_key_steps": [
+      "(⇐) The mass of the zero current is a supremum of zeros.",
+      "(⇒) For a test form ω, x ↦ covectorEuclideanNorm(ω(x)) is continuous with compact support, hence bounded by some B ≥ 0.",
+      "By homogeneity of the coefficient norm, ±ω/(B+1) is mass-admissible, so ±T(ω)/(B+1) ≤ M(T) = 0.",
+      "Hence T(ω) = 0 for every test form and T = 0 by extensionality."
+    ]
+  },
+  "audit": {
+    "key": "zero_mass_iff",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type exactly matches total mass on U. Continuity and compact support bound each test form’s coefficient norm; homogeneity makes both signed rescalings admissible. Zero mass forces both signs of its evaluation to be nonpositive, giving zero evaluation and extensional equality. The converse follows directly from the supremum definition."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-zero-mass-iff-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-zero-mass-iff-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-zero-mass-iff-a1/parent-supplied-natural-proof.json"
+}
