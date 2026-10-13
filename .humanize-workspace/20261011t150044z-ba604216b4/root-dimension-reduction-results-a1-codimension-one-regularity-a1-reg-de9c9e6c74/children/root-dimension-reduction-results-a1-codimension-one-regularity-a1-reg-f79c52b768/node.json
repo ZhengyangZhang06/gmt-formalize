@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.density_pos_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1",
+  "depth": 4,
+  "title": "Positive density forces membership in the support (general fact G2)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), y ∈ U and θ ∈ ℝ with θ > 0. If Θ^n(μ_T, y) = θ in the sense HasMassDensity T y θ (θ ≥ 0 and M_{B_t(y)}(T)/(ω_n t^n) → θ in [0, ∞] as t ↓ 0, ω_n = unitBallVolume n), then y ∈ spt T.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P) (θ : ℝ), y ∈ U → 0 < θ → HasMassDensity T y θ → y ∈ T.support",
+  "lean_name": "codim1_rdo_density_pos_mem_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-f79c52b768-a1"
+}

@@ -1,0 +1,132 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. General fact (G7) of the supplied proof, cited there from Simon Ch. 3, 1.8(2) and 1.9. For a set of finite H^n-measure (multiplicity θ ≡ 1) these reduce to the following printed items, copied here with the omitted details supplied:
+- Lemma 1.2, ‘only if’ (chapter-03.txt lines 25–66);
+- Remark 1.3 (lines 67–76);
+- the proof of Theorem 1.6 ‘⇒’ (lines 109–144);
+- Remark 1.5(3) (lines 91–100).
+
+Notation.
+- H^n = μHE[n]. It is isometry invariant, H^n(λA) = λ^n H^n(A), and it equals Lebesgue measure L^n on ℝ^n and on n-planes.
+- ω_n = unitBallVolume n.
+- η_{w,r}(z) = r^{-1}(z − w) (SimonGMT blowUpMap).
+- An n-dimensional subspace Q is an approximate tangent space of M at w (Simon Ch. 3, 1.4; HasApproximateTangentSpaceAt n M w Q) if ∫_{η_{w,r}(M)} f dH^n → ∫_Q f dH^n as r ↓ 0, for every f ∈ C_c(ℝ^P).
+
+Proof.
+1. (Lemma 1.2, ‘only if’: a C¹ cover.)
+- By countable n-rectifiability, M ⊆ M₀ ∪ ⋃_{j≥1} F_j(ℝ^n) with H^n(M₀) = 0 and F_j : ℝ^n → ℝ^P Lipschitz.
+- Fix j. Apply the C¹ Approximation Theorem (Simon Ch. 2, 1.5; chapter-02.txt line 165) to the P coordinates of F_j. For each i ≥ 1 this gives a C¹ map G_{ij} : ℝ^n → ℝ^P with L^n({F_j ≠ G_{ij}}) < 1/i.
+- Put Z_j := ℝ^n ∖ ⋃_i {F_j = G_{ij}}. Then L^n(Z_j) ≤ 1/i for every i, so L^n(Z_j) = 0. E_j := F_j(Z_j) satisfies H^n(E_j) ≤ Lip(F_j)^n L^n(Z_j) = 0. Thus F_j(ℝ^n) ⊆ E_j ∪ ⋃_i G_{ij}(ℝ^n).
+- Let C_{ij} := {z : DG_{ij}(z) not injective}, a closed set on which the Jacobian J_{G_{ij}} vanishes. By the area formula for C¹ (locally Lipschitz) maps (Simon Ch. 2, §3: ∫ H⁰(A ∩ G^{-1}(y)) dH^n(y) = ∫_A J_G dL^n; cf. SimonGMT Chapter02/AreaCritical), H^n(G_{ij}(C_{ij})) = 0.
+- Let z ∉ C_{ij}. Apply the inverse function theorem to G_{ij} followed by the orthogonal projection onto DG_{ij}(z)(ℝ^n). This gives an open ball B_z ∋ z, with closure in ℝ^n ∖ C_{ij}, such that G_{ij} is a C¹ embedding near closure B_z: injective, a homeomorphism onto its image, with injective derivative. Moreover H^n(G_{ij}(B_z)) ≤ Lip(G_{ij}|closure B_z)^n L^n(B_z) < ∞.
+- By Lindelöf, countably many such balls cover ℝ^n ∖ C_{ij}.
+- Altogether M ⊆ N₀ ∪ ⋃_{k≥1} N_k, where N₀ := M₀ ∪ ⋃_j E_j ∪ ⋃_{i,j} G_{ij}(C_{ij}) is H^n-null. Each N_k = g_k(B_k) is the image of an open ball under a C¹ embedding g_k defined near closure B_k, is σ-compact (hence Borel), and has H^n(N_k) < ∞.
+2. (Remark 1.3.) Put M_k := (M ∩ N_k) ∖ ⋃_{1≤i<k} N_i for k ≥ 1. These are pairwise disjoint Borel sets with M_k ⊆ N_k, and M ∖ ⋃_k M_k ⊆ N₀ is H^n-null.
+3. (Tangent planes of the C¹ pieces.) Fix k and w = g_k(z) ∈ N_k, and let T_wN_k := Dg_k(z)(ℝ^n), an n-dimensional subspace.
+- g_k is a homeomorphism of B_k onto N_k with injective derivative at z. So there are ρ₀, c, s > 0 with |g_k(z′) − w| ≥ c|z′ − z| for z′ ∈ B_{ρ₀}(z) ⊆ B_k, and N_k ∩ B_s(w) ⊆ g_k(B_{ρ₀}(z)).
+- Let f ∈ C_c(ℝ^P) vanish outside B_R(0) and let r < s/R. By the area formula and the substitution z′ = z + ra, ∫_{η_{w,r}(N_k)} f dH^n = ∫ f(r^{-1}(g_k(z + ra) − w))·J_{g_k}(z + ra) dL^n(a). The integrand vanishes for |a| > R/c.
+- As r ↓ 0, r^{-1}(g_k(z + ra) − w) → Dg_k(z)a uniformly for |a| ≤ R/c, and J_{g_k}(z + ra) → J_{g_k}(z). By dominated convergence the integral tends to ∫ f(Dg_k(z)a) J_{g_k}(z) da = ∫_{T_wN_k} f dH^n (area formula for the linear map Dg_k(z)).
+4. (Proof of Theorem 1.6 ‘⇒’.) Fix k ≥ 1, f ∈ C_c(ℝ^P) with f = 0 outside B_R(0), w ∈ M_k and r > 0. Since M = M_k ⊔ (M ∖ M_k) and N_k = M_k ⊔ (N_k ∖ M_k),
+ ∫_{η_{w,r}(M)} f dH^n = ∫_{η_{w,r}(N_k)} f dH^n − ∫_{η_{w,r}(N_k∖M_k)} f dH^n + ∫_{η_{w,r}(M∖M_k)} f dH^n.
+- By step 3 the first term tends to ∫_{T_wN_k} f dH^n.
+- For Borel A with H^n(A) < ∞: |∫_{η_{w,r}(A)} f dH^n| ≤ sup|f|·r^{-n}H^n(A ∩ B_{rR}(w)) = sup|f|·R^n(rR)^{-n}H^n(A ∩ B_{rR}(w)).
+- By the Upper Density Theorem (Simon Ch. 1, 3.6; chapter-01.txt line 700), applied to the finite Borel regular measure H^n⌞A, ρ^{-n}H^n(A ∩ B_ρ(w)) → 0 for H^n-a.e. w ∉ A. The accepted Submission.regcomp_atl_upper_density_zero states this with closed balls.
+- Apply this to A = M ∖ M_k and A = N_k ∖ M_k. Both are Borel, have finite measure, and are disjoint from M_k. The exceptional null sets do not depend on f or R, so for H^n-a.e. w ∈ M_k both error terms tend to 0 for every f ∈ C_c(ℝ^P).
+- Hence T_wN_k is an approximate tangent space of M at H^n-a.e. w ∈ M_k. Since M ∖ ⋃_k M_k is null, M has an approximate tangent space at H^n-a.e. w ∈ M.
+5. (Remark 1.5(3): density one at approximate tangent points.) Let w ∈ M have approximate tangent space Q.
+- H^n(M ∩ closedBall(w, 1)) ≤ H^n(M) < ∞. So the accepted lemma Submission.rsd_tendsto_closedBall_density_of_approxTangent gives H^n(M ∩ closedBall(w, t))/(ω_n t^n) → 1 as t ↓ 0. Its proof is Simon's: squeeze 1_{closedBall(0,1)} between continuous cut-offs g_ε ≤ 1 ≤ h_ε supported in B_1(0) and B_{1+ε}(0), with g_ε = 1 on closedBall(0, 1 − ε). Then use H^n(Q ∩ B_ρ(0)) = ω_n ρ^n and H^n(η_{w,t}(A)) = t^{-n}H^n(A).
+- The accepted Submission.rsd_tendsto_ball_density_of_closedBall converts this to open balls, using closedBall(w, (1−ε)t) ⊆ B_t(w) ⊆ closedBall(w, t). Hence H^n(M ∩ B_t(w))/(ω_n t^n) → 1.
+6. (Conclusion.) By steps 4 and 5, the set of w ∈ M at which H^n(M ∩ B_t(w))/(ω_n·ofReal(t^n)) does not tend to 1 along t → 0⁺ is H^n-null. μHE[n].restrict M has the same null sets inside M and gives measure 0 to the complement of M. This is the asserted ∀ᵐ statement (n ≥ 1 is not needed beyond fixing the setting). ∎
+
+## Key steps
+
+1. Lemma 1.2: the C¹ approximation theorem covers M, up to an H^n-null set, by countably many C¹ n-dimensional embedded pieces N_k of finite measure. Remark 1.3 makes the pieces M_k ⊆ N_k disjoint and Borel.
+2. Each C¹ piece has the approximate tangent space Dg_k(z)(ℝ^n) at every point (area formula plus blow-up).
+3. Proof of 1.6 ‘⇒’: the Upper Density Theorem kills the contributions of M ∖ M_k and N_k ∖ M_k at H^n-a.e. w ∈ M_k, so M has approximate tangent spaces a.e.
+4. Remark 1.5(3), via the accepted rsd_tendsto_closedBall_density_of_approxTangent and rsd_tendsto_ball_density_of_closedBall: at approximate tangent points the open-ball density ratio tends to 1.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; python3 read of snapshot project/lake-manifest.json (simongmt, mathlib revs)`
+- `sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `python3 scans of dag.json: frozen types/status of codim1_region_support_cycle, codim1_massOn_eq_lintegral_of_oriented_rep, dor_ims_unitOrientation_dual, rsdic_unitOrientation_eq_or_eq_neg, dor_ims_massOn_le_measure; accepted statements containing HasMassDensity, .support, massOn, CountablyRectifiable, unitBallVolume, HasApproximateTangentSpaceAt with ∀ᵐ; occurrence of codim1_rdo_* names (0 matches in 534 nodes)`
+- `grep -n '^theorem|^def|^structure' simongmt/Poincare/SimonGMT/Chapter03/{Rectifiable,FinitePerimeter,SubmanifoldCover,Differential,DisjointCover,CoordinateProjection}.lean; grep injective_area_formula_of_injective_derivative, euclideanDivergence, IsLocallyBV, bvVariationOn in Chapter02/{AreaFormula,BV}.lean; import lines of Chapter03/Rectifiable, Chapter06/{Mass,Currents,Forms}, Chapter04/Basic`
+- `lean #print GeometricCurrentOn.zeroRegion, GeometricCurrentOn.VanishesOn, massAdmissibleOn, IsSmoothForm, testFormOnSubmodule, covectorEuclideanNorm, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap, Covector, DifferentialForm, TestFormOn, GeometricCurrentOn.massOn/support; #check EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Ioo_mem_nhdsGT`
+- `grep in snapshot mathlib: ContDiffAt.to_localInverse (Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean), lintegral_pow_le_pow_lintegral_fderiv (Analysis/FunctionalSpaces/SobolevInequality.lean), Besicovitch.ae_tendsto_rnDeriv, VitaliFamily.ae_tendsto_average (MeasureTheory/Covering)`
+- `lean -DautoImplicit=false /tmp/rdo-split-check/Types.lean (LEAN_PATH from .lake/build/lib/lean/GMT/Ch07/Submission.trace)`
+- `lean -DautoImplicit=false /tmp/rdo-split-check/Assembly.lean with #print axioms Submission.codim1_region_density_one_dense`
+- `git show fae4fd1e/9c8432cb/fe95347b:GMT/Ch07/Submission.lean + #print axioms for dor_ims_massOn_le_measure, dor_ims_unitOrientation_dual, rsdic_unitOrientation_eq_or_eq_neg`
+- `sed -n of book/chapter-03.txt 1-330 and 520-746, chapter-02.txt 160-250 and 477-626, chapter-01.txt 560-720, 1063-1125, 1649-1680, chapter-07.txt 730-800`
+- `sed -n /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (_decompose, _solve_children, _existing_lean_name_problem, _install_parent_supplied_child_handoff) and store.py ensure`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-de9c9e6c74/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/rdo-split-check/Types.lean`
+- `/tmp/rdo-split-check/Assembly.lean`
+- `/tmp/rdo-split-check/reuse/Check_dor_ims_massOn_le_measure.lean`
+- `/tmp/rdo-split-check/reuse/Check_dor_ims_unitOrientation_dual.lean`
+- `/tmp/rdo-split-check/reuse/Check_rsdic_unitOrientation_eq_or_eq_neg.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+
+Pins match.
+- Snapshot manifest: project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib.
+- Snapshot lake-manifest: simongmt 2b366308, equal to .lake/packages/simongmt.
+- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library (what exists).
+- SimonGMT supplies the definitions used: zeroRegion = ⋃ open W with compact closure in U on which T vanishes; VanishesOn; massAdmissibleOn; IsSmoothForm = C^∞; CountablyRectifiable; HasApproximateTangentSpaceAt; blowUpMap y = r⁻¹(y − x).
+- It also supplies the open-set area formula injective_area_formula_of_injective_derivative (Chapter02/AreaFormula.lean:145) and BV lower semicontinuity (Chapter02/BV.lean).
+- Snapshot Mathlib has the C^n inverse function theorem ContDiffAt.to_localInverse (InverseFunctionTheorem/ContDiff.lean:66), the Gagliardo–Nirenberg–Sobolev inequality (SobolevInequality.lean:371) and Besicovitch differentiation (Besicovitch.lean:1078; Differentiation.lean:855).
+- μHE[d] = volume on Euclid d.
+
+Library (what is missing). Module headers state that these are not provided:
+- De Giorgi's theorem and existence of the finite-perimeter representation (Chapter03/FinitePerimeter.lean);
+- the existence direction of Simon 3.1.6 (Chapter03/Differential.lean);
+- the Lipschitz-image direction of Lemma 1.2 (Chapter03/SubmanifoldCover.lean);
+- the rectifiable area/structure theorems (Chapter03/Rectifiable.lean).
+These become the new obligations de_giorgi, rectifiable_density_one and part of local_unit_rep.
+
+DAG.
+- Reuse of accepted declarations with identical frozen types is permitted (runtime _existing_lean_name_problem; _install_parent_supplied_child_handoff returns early for accepted children).
+- dor_ims_unitOrientation_dual, rsdic_unitOrientation_eq_or_eq_neg and dor_ims_massOn_le_measure are accepted with byte-identical types. Fresh compilation of their candidate commits 9c8432cb, fe95347b and fae4fd1e prints only propext, Classical.choice and Quot.sound.
+- The six new codim1_rdo_* names occur nowhere in dag.json (534 nodes) or SimonGMT.
+- Accepted rsd_tendsto_closedBall_density_of_approxTangent, rsd_tendsto_ball_density_of_closedBall and regcomp_atl_upper_density_zero are relevant to rectifiable_density_one and are cited there for its own session.
+- No accepted node states G2, G3, G7 or De Giorgi.
+
+Lean.
+- Types.lean elaborates all nine child types after import GMT.Ch07.Submission with the contract opens (exit 0, sorry warnings only). The Matrix.of determinant is over Matrix (Fin (n+1)) (Fin (n+1)) ℝ (rfl check). The divergence is LinearMap.trace of fderiv, and the volume integral is on Euclid (m+1).
+- Assembly.lean proves the selected frozen theorem from density_pos_support, support_mass_pos, rectifiable_density_one and local_unit_rep, together with the existing prerequisites codim1_region_support_cycle and codim1_massOn_eq_lintegral_of_oriented_rep, all taken as axioms. No root theorem or sorryAx occurs.
