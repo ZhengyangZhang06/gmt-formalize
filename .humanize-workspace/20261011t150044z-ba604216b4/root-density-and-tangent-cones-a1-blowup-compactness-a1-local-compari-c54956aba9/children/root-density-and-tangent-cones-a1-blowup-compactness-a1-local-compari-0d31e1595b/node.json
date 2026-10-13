@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1.disjointify-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Disjointification of countably many injectively parametrised Borel pieces (Simon Ch. 3, Remark 1.3)",
+  "statement": "Let P, N ∈ ℕ. For j ∈ ℕ let ψ_j : ℝ^N → ℝ^P be continuous and Y_j ⊆ ℝ^N Borel with ψ_j injective on Y_j. Then there are Borel sets Y'_j ⊆ Y_j (j ∈ ℕ) such that the images ψ_j(Y'_j) are pairwise disjoint and ⋃_j ψ_j(Y'_j) = ⋃_j ψ_j(Y_j).",
+  "lean_statement": "∀ (P N : ℕ) (ψ : ℕ → Euclid N → Euclid P) (Y : ℕ → Set (Euclid N)), (∀ j, Continuous (ψ j)) → (∀ j, MeasurableSet (Y j)) → (∀ j, InjOn (ψ j) (Y j)) → ∃ Y' : ℕ → Set (Euclid N), (∀ j, MeasurableSet (Y' j) ∧ Y' j ⊆ Y j) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y' i) (ψ j '' Y' j)) ∧ ⋃ j, ψ j '' Y' j = ⋃ j, ψ j '' Y j",
+  "lean_name": "dtc_bc_lc_sl_cp_disjointify",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-0d31e1595b-a1"
+}

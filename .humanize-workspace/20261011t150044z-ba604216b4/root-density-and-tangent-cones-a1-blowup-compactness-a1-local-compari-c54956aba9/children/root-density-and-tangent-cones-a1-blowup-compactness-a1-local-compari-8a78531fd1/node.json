@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1.chart_tangent-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Approximate tangent planes of M along one bi-Lipschitz C¹ chart, off a Borel null set (Simon Ch. 3, Remark 1.5(2), proof of 1.6 '⇒')",
+  "statement": "Let P, N ∈ ℕ and let M ⊆ ℝ^P be Borel with H^N(M ∩ K) < ∞ for every compact K ⊆ ℝ^P (H^N = μHE[N]). Let g : ℝ^N → ℝ^P be C¹, c ∈ ℝ^N, r ∈ ℝ and m > 0 with m|a − b| ≤ |g(a) − g(b)| for all a, b ∈ ball(c, r), and suppose S := g(ball(c, r)) is Borel with H^N(S) < ∞. Then there is a Borel set E ⊆ ℝ^P with H^N(E) = 0 such that for every y ∈ ball(c, r) with g(y) ∈ M and g(y) ∉ E, M has approximate tangent space Dg(y)(ℝ^N) = range(fderiv ℝ g y) at g(y) (SimonGMT HasApproximateTangentSpaceAt N M (g y) (LinearMap.range (fderiv ℝ g y)), Simon Ch. 3, 1.4).",
+  "lean_statement": "∀ (P N : ℕ) (M : Set (Euclid P)) (g : Euclid N → Euclid P) (c : Euclid N) (r m : ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[N] (M ∩ K) ≠ ∞) → ContDiff ℝ 1 g → 0 < m → (∀ a ∈ ball c r, ∀ b ∈ ball c r, m * ‖a - b‖ ≤ ‖g a - g b‖) → MeasurableSet (g '' ball c r) → μHE[N] (g '' ball c r) ≠ ∞ → ∃ E : Set (Euclid P), MeasurableSet E ∧ μHE[N] E = 0 ∧ ∀ y ∈ ball c r, g y ∈ M → g y ∉ E → HasApproximateTangentSpaceAt N M (g y) (LinearMap.range (fderiv ℝ g y : Euclid N →ₗ[ℝ] Euclid P))",
+  "lean_name": "dtc_bc_lc_sl_cp_chart_tangent",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7-a1",
+      "result_commit": "9ff76906722dcb8bcc007644718f45ab2b7ad407",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6e2110e6b7-a1",
+      "result_commit": "422e346ed7d2fe5411cb5400351e6936cc4d69fe",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8a78531fd1-a1"
+}
