@@ -463,6 +463,147 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- **`Hⁿ(B_r(c)) = ω_n rⁿ` in `ℝⁿ`** (the normalization `Hⁿ = Lⁿ` of Simon's Notation p. ix,
+with `ω_n = π^{n/2}/Γ(n/2 + 1)`).  On `ℝⁿ`, `μHE[n]` is Lebesgue measure, and Haar scaling gives
+`|B_r(c)| = rⁿ |B̆_1(0)|`.  Mathlib's value of `|B̆_1(0)|` lies outside the frozen import closure,
+so it is computed here by evaluating `I = ∫_{ℝⁿ} e^{-|x|²} dx` twice: in coordinates
+`I = (∫_ℝ e^{-t²} dt)ⁿ = π^{n/2}` (Fubini), while the layer-cake formula with
+`{e^{-|x|²} > t} = B̆_{√(-log t)}(0)` and the substitution `t = e^{-u}` give
+`I = |B̆_1(0)| ∫_0^∞ u^{n/2} e^{-u} du = |B̆_1(0)| Γ(n/2 + 1)`. -/
+theorem lip_approx_gm_ball_measure : ∀ (n : ℕ), 1 ≤ n → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Rn n)) (closedBall c r) = ENNReal.ofReal (unitBallVolume n * r ^ n) := by
+  intro n hn c r hr
+  have hfin : Module.finrank ℝ (Rn n) = n := finrank_euclideanSpace_fin
+  have : Nontrivial (Rn n) := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
+  -- `μHE[n] = volume` on `ℝⁿ`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- `∫_ℝ e^{-t²} dt = √π`.
+  have hA : ∫⁻ x : ℝ, ENNReal.ofReal (Real.exp (-x ^ 2)) = ENNReal.ofReal (√Real.pi) := by
+    have h := integral_gaussian 1
+    simp only [neg_mul, one_mul, div_one] at h
+    rw [← h, ofReal_integral_eq_lintegral_ofReal]
+    · simpa using integrable_exp_neg_mul_sq (b := 1) one_pos
+    · exact ae_of_all _ (fun x => (Real.exp_pos _).le)
+  -- Fubini by induction on the dimension: `∫_{ℝᵐ} e^{-|y|²} dy = (√π)ᵐ`.
+  have hB : ∀ m : ℕ, ∫⁻ x : Fin m → ℝ, ENNReal.ofReal (Real.exp (-∑ i, x i ^ 2)) =
+      ENNReal.ofReal (√Real.pi) ^ m := by
+    intro m
+    induction m with
+    | zero => simp [volume_pi]
+    | succ m ih =>
+      have e := volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0
+      have hf : Measurable fun p : ℝ × (Fin m → ℝ) =>
+          ENNReal.ofReal (Real.exp (-p.1 ^ 2)) * ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)) := by
+        fun_prop
+      calc ∫⁻ x : Fin (m + 1) → ℝ, ENNReal.ofReal (Real.exp (-∑ i, x i ^ 2))
+          = ∫⁻ x : Fin (m + 1) → ℝ, (fun p : ℝ × (Fin m → ℝ) =>
+              ENNReal.ofReal (Real.exp (-p.1 ^ 2)) * ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)))
+                (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0 x) := by
+            refine lintegral_congr fun x => ?_
+            simp only [MeasurableEquiv.piFinSuccAbove_apply, Fin.sum_univ_succ]
+            rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add, neg_add]
+            rfl
+        _ = ∫⁻ p : ℝ × (Fin m → ℝ), ENNReal.ofReal (Real.exp (-p.1 ^ 2)) *
+              ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)) := e.lintegral_comp hf
+        _ = (∫⁻ a : ℝ, ENNReal.ofReal (Real.exp (-a ^ 2))) *
+              ∫⁻ y : Fin m → ℝ, ENNReal.ofReal (Real.exp (-∑ i, y i ^ 2)) :=
+            lintegral_prod_mul (f := fun a : ℝ => ENNReal.ofReal (Real.exp (-a ^ 2)))
+              (g := fun y : Fin m → ℝ => ENNReal.ofReal (Real.exp (-∑ i, y i ^ 2)))
+              (by fun_prop) (Measurable.aemeasurable (by fun_prop))
+        _ = ENNReal.ofReal (√Real.pi) ^ (m + 1) := by rw [hA, ih, pow_succ']
+  -- The coordinate map `ℝⁿ → (Fin n → ℝ)` is measure preserving, so `I = (√π)ⁿ`.
+  have hC : ∫⁻ x : Rn n, ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) =
+      ENNReal.ofReal (√Real.pi) ^ n := by
+    rw [← hB, ← (PiLp.volume_preserving_ofLp (Fin n)).lintegral_comp (by fun_prop)]
+    refine lintegral_congr fun x => ?_
+    rw [EuclideanSpace.norm_sq_eq]
+    simp [Real.norm_eq_abs, sq_abs]
+  -- The substitution `t = e^{-u}` and Euler's integral: `∫_0^∞ √(-log t)ⁿ dt = Γ(n/2 + 1)`.
+  have hE : ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (√(-Real.log t) ^ n) =
+      ENNReal.ofReal (Real.Gamma ((n : ℝ) / 2 + 1)) := by
+    have himg : (fun u : ℝ => Real.exp (-u)) '' univ = Ioi 0 := by
+      rw [image_univ]; ext t; simp only [mem_range, mem_Ioi]
+      constructor
+      · rintro ⟨u, rfl⟩; exact Real.exp_pos _
+      · intro ht; exact ⟨-Real.log t, by rw [neg_neg, Real.exp_log ht]⟩
+    rw [← himg, lintegral_image_eq_lintegral_abs_deriv_mul MeasurableSet.univ
+        (fun u _ => (hasDerivAt_neg u).exp.hasDerivWithinAt)
+        (fun u _ v _ h => by simpa using h), Measure.restrict_univ]
+    simp only [mul_neg, mul_one, abs_neg, abs_of_pos (Real.exp_pos _), Real.log_exp, neg_neg]
+    rw [Real.Gamma_eq_integral (by positivity), ofReal_integral_eq_lintegral_ofReal
+      (Real.GammaIntegral_convergent (by positivity))
+      (ae_restrict_of_forall_mem measurableSet_Ioi fun u hu => by
+        have : 0 < u := hu
+        positivity)]
+    rw [← setLIntegral_eq_of_support_subset (s := Ioi 0)]
+    · refine setLIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
+      have hu : 0 < u := hu
+      rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, Real.sqrt_eq_rpow, ← Real.rpow_natCast,
+        ← Real.rpow_mul hu.le]
+      congr 3
+      ring
+    · intro u hu
+      by_contra h
+      simp only [mem_Ioi, not_lt] at h
+      apply hu
+      simp [Real.sqrt_eq_zero'.2 h, zero_pow (by omega : n ≠ 0)]
+  -- Layer cake with `{e^{-|x|²} > t} = B̆_{√(-log t)}(0)`: `I = Γ(n/2 + 1) |B̆_1(0)|`.
+  have hD : ∫⁻ x : Rn n, ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) =
+      ENNReal.ofReal (Real.Gamma ((n : ℝ) / 2 + 1)) * volume (ball (0 : Rn n) 1) := by
+    rw [lintegral_eq_lintegral_meas_lt volume (ae_of_all _ fun x => (Real.exp_pos _).le)
+      (by fun_prop), ← hE, ← lintegral_mul_const _ (by fun_prop)]
+    refine setLIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
+    have ht : 0 < t := ht
+    have hset : {a : Rn n | t < Real.exp (-‖a‖ ^ 2)} = ball (0 : Rn n) √(-Real.log t) := by
+      ext a
+      rw [mem_ofPred_eq, mem_ball_zero_iff, ← Real.log_lt_iff_lt_exp ht,
+        Real.lt_sqrt (norm_nonneg _)]
+      constructor <;> intro h <;> linarith
+    rw [hset, Measure.addHaar_ball volume 0 (Real.sqrt_nonneg _), hfin]
+  -- Solve for `|B̆_1(0)| = (√π)ⁿ / Γ(n/2 + 1) = ω_n`.
+  have hΓ : 0 < Real.Gamma ((n : ℝ) / 2 + 1) := Real.Gamma_pos_of_pos (by positivity)
+  have hω : unitBallVolume n = √Real.pi ^ n / Real.Gamma ((n : ℝ) / 2 + 1) := by
+    unfold unitBallVolume
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul Real.pi_pos.le]
+    congr 2
+    ring
+  have hball : volume (ball (0 : Rn n) 1) = ENNReal.ofReal (unitBallVolume n) := by
+    rw [hω, ENNReal.ofReal_div_of_pos hΓ,
+      ENNReal.eq_div_iff (ENNReal.ofReal_pos.2 hΓ).ne' ENNReal.ofReal_ne_top, ← hD, hC,
+      ENNReal.ofReal_pow (Real.sqrt_nonneg _)]
+  -- Scaling: `|B_r(c)| = rⁿ |B̆_1(0)| = ω_n rⁿ`.
+  rw [Measure.addHaar_closedBall volume c hr, hfin, hball,
+    ← ENNReal.ofReal_mul (pow_nonneg hr n), mul_comm]
+
+/-- Simon Ch. 5, proof of Lemma 2.6 (pp. 110–111): for a linear isometry `q` of `ℝ^{n+ℓ}` and
+`f : ℝⁿ → ℝ^ℓ` with `|f(x) − f(z)| ≤ |x − z|`, the map `Γ(x) = q(x, f(x))` is `√2`-Lipschitz.
+Since `q` preserves distances and `|(x, f x) − (z, f z)|² = |x − z|² + |f(x) − f(z)|²` (split the sum
+`Σ_k w_k²` over the indices `castAdd ℓ i` and `natAdd n j` of `Fin (n + ℓ)` with `Fin.sum_univ_add`),
+the hypothesis gives `|Γ(x) − Γ(z)|² ≤ 2|x − z|² = (√2 |x − z|)²`; take square roots. -/
+theorem lip_approx_gm_graph_map_lipschitz : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → LipschitzWith (NNReal.sqrt 2) (fun x => q (graphPoint x (f x))) := by
+  intro n ℓ q f hf
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `|(a, b) − (a', b')|² = |a − a'|² + |b − b'|²`, splitting `Σ_k w_k²` over the two blocks
+  have hsq : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      ‖graphPoint a b - graphPoint a' b'‖ ^ 2 = ‖a - a'‖ ^ 2 + ‖b - b'‖ ^ 2 := by
+    intro a a' b b'
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [PiLp.sub_apply, hl, hr]
+  -- `q` preserves distances, so it suffices to bound `|(x, f x) − (z, f z)|` by `√2 |x − z|`
+  refine LipschitzWith.of_dist_le_mul fun x z => ?_
+  rw [LinearIsometryEquiv.dist_map, dist_eq_norm, dist_eq_norm, Real.coe_sqrt,
+    NNReal.coe_ofNat]
+  have hfxz : ‖f x - f z‖ ^ 2 ≤ ‖x - z‖ ^ 2 := pow_le_pow_left₀ (norm_nonneg _) (hf x z) 2
+  refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp ?_
+  rw [hsq, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+  linarith
+
 /-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
 `ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
 `ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
@@ -5106,6 +5247,28 @@ theorem lip_approx_bounded_extension : ∀ (n ℓ : ℕ) (A : Set (Rn n)) (g : R
   show P (h x) = g x
   rw [hhA x hx]
   exact hPfix _ (hgb x hx)
+
+/-- Simon Ch. 5, proof of Lemma 2.6, fact (Gr) (Ch. 2, 1.8(i) and `Hⁿ = Lⁿ` on `ℝⁿ`): for a linear
+isometry `q` of `ℝ^{n+ℓ}`, a `1`-Lipschitz `f : ℝⁿ → ℝ^ℓ` and `r ≥ 0`,
+`Hⁿ(q(graph f|B_r(c))) ≤ 2^{n/2} ω_n rⁿ`.
+The set is the image of `B_r(c)` under `Γ(x) = q(x, f(x))`, which is `√2`-Lipschitz
+(`lip_approx_gm_graph_map_lipschitz`); a `K`-Lipschitz map multiplies `Hⁿ` by at most `Kⁿ`
+(SimonGMT `euclideanHausdorffMeasure_image_le_of_lipschitzOn`); `Hⁿ(B_r(c)) = ω_n rⁿ`
+(`lip_approx_gm_ball_measure`); and `(√2)ⁿ = 2^{n/2}`. -/
+theorem lip_approx_graph_measure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall c r)) ≤ ENNReal.ofReal (2 ^ ((n : ℝ) / 2) * unitBallVolume n * r ^ n) := by
+  intro n ℓ hn q f hf c r hr
+  -- `(√2)ⁿ = 2^{n/2}`
+  have hsqrt : ((NNReal.sqrt 2 : ℝ≥0) : ℝ≥0∞) ^ n = ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) := by
+    rw [← ENNReal.ofReal_coe_nnreal, Real.coe_sqrt, NNReal.coe_ofNat,
+      ← ENNReal.ofReal_pow (Real.sqrt_nonneg 2), Real.sqrt_eq_rpow,
+      ← Real.rpow_mul_natCast zero_le_two, one_div_mul_eq_div]
+  -- `q(graph f|B_r(c)) = Γ(B_r(c))` for `Γ(x) = q(x, f(x))`
+  rw [graphOver, Set.image_image]
+  -- `Hⁿ(Γ(B_r(c))) ≤ (√2)ⁿ Hⁿ(B_r(c)) = 2^{n/2} ω_n rⁿ`
+  refine (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+    (Submission.lip_approx_gm_graph_map_lipschitz n ℓ q f hf).lipschitzOnWith).trans_eq ?_
+  rw [Submission.lip_approx_gm_ball_measure n hn c r hr, hsqrt, mul_assoc,
+    ENNReal.ofReal_mul (Real.rpow_nonneg zero_le_two _)]
 
 end Submission
 

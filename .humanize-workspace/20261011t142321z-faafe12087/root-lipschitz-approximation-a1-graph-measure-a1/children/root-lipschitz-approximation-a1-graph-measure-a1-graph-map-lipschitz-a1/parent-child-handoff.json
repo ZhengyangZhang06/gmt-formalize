@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json",
+        "diff GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean (identical)",
+        "cat <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure def :68, EuclideanSpace.euclideanHausdorffMeasure_eq_volume :187)",
+        "grep -n hausdorffMeasure_image_le <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (:688, :733, :745)",
+        "grep -n 'theorem volume_closedBall|theorem volume_ball' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean (:307, :324, :343, :354)",
+        "grep -n 'theorem addHaar_closedBall |theorem addHaar_ball ' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean (:456, :500)",
+        "grep -n integral_gaussian|Gamma_eq_integral|GammaIntegral_convergent|lintegral_eq_lintegral_meas_lt|lintegral_image_eq_lintegral_abs_deriv_mul|volume_preserving_piFinSuccAbove|PiLp.volume_preserving_ofLp|lintegral_prod_mul in the snapshot Mathlib files listed",
+        "grep -n theorem .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean (euclideanHausdorffMeasure_image_le_of_lipschitzOn :216); grep import SimonGMT/Chapter03/Rectifiable.lean (imports Chapter02.Lipschitz)",
+        "python3 -I: dag.json lean_name collision scan (lip_approx_* names; ball-volume nodes: rsod_planeMeasure_closedBall accepted)",
+        "git show 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c (rsod_planeMeasure_closedBall: VolumeOfBalls outside the import closure; Gaussian derivation)",
+        "git show 3ead40d6:GMT/Ch05/Submission.lean | grep -c lip_approx_graph_coordinates (0); git show e2915745:GMT/Ch05/Submission.lean | grep -c 'theorem lip_approx_graph_coordinates' (1)",
+        "lake env lean checks/Avail.lean (#check EuclideanSpace.volume_closedBall and InnerProductSpace.volume_closedBall: unknown constants; SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn available)",
+        "lake env lean checks/Final.lean (both children and the parent from them; #print axioms; comparator-style exact Submission.X checks)",
+        "python3 -I verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch05.main_theorem); verifier/lean_contract.py validate_lean_statement on both child statements"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/JacobianOneDim.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/graphmeasure-dec-1791796928/checks/Avail.lean",
+        "/tmp/graphmeasure-dec-1791796928/checks/Final.lean"
+      ],
+      "conclusion": "Pinned versions:\n- Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.\n- The workspace GMT/Ch05/Submission.lean is byte-identical to the snapshot copy.\n\nDecisive finding:\n- EuclideanSpace.volume_closedBall (VolumeOfBalls.lean:324), which the supplied step 4 cites, is outside the import closure of GMT.Ch05.Submission: `#check` gives an unknown constant.\n- So the omega_n computation must be done inside a child. Accepted commit 7881dde (rsod_planeMeasure_closedBall) confirms this and uses the same Gaussian, layer-cake and Gamma derivation.\n\nAvailable in the import closure and used by the proofs:\n- Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Measure.lean:187).\n- Measure.addHaar_closedBall and addHaar_ball (EqHaar.lean:500, 456).\n- integral_gaussian (GaussianIntegral.lean:211).\n- Real.Gamma_eq_integral (Gamma/Basic.lean:405).\n- lintegral_eq_lintegral_meas_lt (Layercake.lean:496).\n- lintegral_image_eq_lintegral_abs_deriv_mul (JacobianOneDim.lean:44).\n- volume_preserving_piFinSuccAbove (Pi.lean:818).\n- PiLp.volume_preserving_ofLp (Haar/InnerProductSpace.lean:134).\n- lintegral_prod_mul (Prod.lean:1076).\n- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), imported via Chapter03.Rectifiable.\n\nDependency on graph coordinates:\n- lip_approx_graph_coordinates is accepted (candidate e2915745) but absent from this node's base 3ead40d6.\n- So child graph_map_lipschitz re-derives the coordinate identities and has no node dependency.\n\nLean results (/tmp/graphmeasure-dec-1791796928/checks/Final.lean, sha256 e51af93951da7d5d69e694e0829a6a7f0ba8523f068231ecb3e68c0662533448):\n- lip_approx_gm_ball_measure and lip_approx_gm_graph_map_lipschitz are fully proved.\n- The frozen parent lip_approx_graph_measure is proved from them.\n- All three use only the axioms propext, Classical.choice and Quot.sound.\n- Comparator-style `exact Submission.X` checks succeed in the replayed contract scope, which is: open MeasureTheory Metric Set Filter Topology; open scoped ENNReal NNReal; namespace GMT.Ch05; open RectifiableVarifold.\n- Both statements pass validate_lean_statement.\n\nNames: no lean_name in dag.json collides with lip_approx_gm_ball_measure or lip_approx_gm_graph_map_lipschitz, so there is no reuse."
+    }
+  ],
+  "parent_id": "root.lipschitz_approximation-a1.graph_measure-a1",
+  "child_id": "root.lipschitz_approximation-a1.graph_measure-a1.graph_map_lipschitz-a1",
+  "subproblem": {
+    "key": "graph_map_lipschitz",
+    "title": "The rotated graph map of a 1-Lipschitz function is sqrt(2)-Lipschitz",
+    "statement": "Let n, l be natural numbers, q a linear isometry of R^(n+l), and f : R^n -> R^l with |f(x) - f(z)| <= |x - z| for all x, z in R^n. Then the map Gamma : R^n -> R^(n+l), Gamma(x) = q(graphPoint x (f x)), is Lipschitz with constant sqrt 2: |Gamma(x) - Gamma(z)| <= sqrt(2) |x - z| for all x, z. In Lean the constant is NNReal.sqrt 2, i.e. LipschitzWith (NNReal.sqrt 2) Gamma.",
+    "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → LipschitzWith (NNReal.sqrt 2) (fun x => q (graphPoint x (f x)))",
+    "lean_name": "lip_approx_gm_graph_map_lipschitz",
+    "depends_on": [],
+    "natural_proof": "Source: step 2 of the parent proof (fact Gr). The coordinate identities (i)-(ii) of lip_approx_graph_coordinates are re-derived inline, so that this child depends on no other node.\n\n1. By LipschitzWith.of_dist_le_mul, it suffices to show dist(Gamma x, Gamma z) <= sqrt(2) * dist(x, z) for all x, z in R^n, where Gamma(x) = q(graphPoint x (f x)). The real number underlying NNReal.sqrt 2 is sqrt(2) (Real.coe_sqrt, NNReal.coe_ofNat).\n\n2. Fix x, z. A linear isometry equivalence preserves distances (LinearIsometryEquiv.dist_map), and dist(u, v) = |u - v|. So the claim becomes |D| <= sqrt(2) |x - z|, where D := graphPoint x (f x) - graphPoint z (f z) in R^(n+l).\n\n3. By definition, graphPoint a b = toLp(Fin.append a b).\n- Its coordinate at index Fin.castAdd l i (i < n) is a_i, and at index Fin.natAdd n j (j < l) it is b_j (Fin.append_left, Fin.append_right).\n- Every index of Fin (n+l) has exactly one of these two forms.\n- Subtraction in EuclideanSpace is coordinatewise, so D has coordinate x_i - z_i at castAdd l i and (f x)_j - (f z)_j at natAdd n j.\n\n4. For w in a Euclidean space, |w|^2 = sum_k w_k^2 (EuclideanSpace.norm_sq_eq). Split the sum over Fin (n+l) into its castAdd and natAdd parts (Fin.sum_univ_add) and use step 3: |D|^2 = sum_{i<n} (x_i - z_i)^2 + sum_{j<l} ((f x)_j - (f z)_j)^2 = |x - z|^2 + |f x - f z|^2.\n\n5. By hypothesis, 0 <= |f x - f z| <= |x - z|. Hence |f x - f z|^2 <= |x - z|^2, and |D|^2 <= 2|x - z|^2 = (sqrt(2) |x - z|)^2, since (sqrt 2)^2 = 2.\n\n6. Both |D| and sqrt(2)|x - z| are nonnegative, and for nonnegative a, b, a^2 <= b^2 implies a <= b (sq_le_sq₀). Hence |D| <= sqrt(2)|x - z|. By steps 1-2, this proves that Gamma is sqrt(2)-Lipschitz.",
+    "proof_key_steps": [
+      "Reduce LipschitzWith to the distance bound and use that q preserves distances",
+      "Coordinate identity |graphPoint x (f x) - graphPoint z (f z)|^2 = |x - z|^2 + |f x - f z|^2, via Fin.append and Fin.sum_univ_add",
+      "The 1-Lipschitz bound on f gives |D|^2 <= 2|x - z|^2 = (sqrt 2 |x - z|)^2",
+      "Take square roots of nonnegative quantities"
+    ]
+  },
+  "audit": {
+    "key": "graph_map_lipschitz",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line type matches the prose for arbitrary natural dimensions, the linear isometry equivalence, and the global bound on f. The proof independently derives the coordinate norm identity using Fin.append and the Euclidean L² norm, applies the hypothesis with valid nonnegative squaring, and obtains the exact NNReal.sqrt 2 Lipschitz bound. It also covers zero dimensions. No graph-coordinates declaration, parent theorem, or undeclared dependency is used; the proof is complete."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1-graph-map-lipschitz-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1-graph-map-lipschitz-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1-graph-map-lipschitz-a1/parent-supplied-natural-proof.json"
+}
