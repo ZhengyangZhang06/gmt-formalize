@@ -3565,4 +3565,126 @@ theorem Submission.dohr_eb_sch_unit_ball_estimate : ∀ n ℓ : ℕ, 1 ≤ n →
   exact Submission.dohr_eb_sch_ube_absorption n ℓ (fderiv ℝ w) α M (Cδ * (M + M)) hα hα1.le hM
     hA hK hstep hint
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 7.1, second assertion (p. 127): the interior Schauder estimate
+(Giaquinta–Martinazzi, Thms. 5.17/5.19) for `C^{1,α}` weak solutions `w` of the linear system
+`∫_B a(x)[Dw][Dζ] = ∫_B Φ(x)[Dζ]` on `B = B̆_R(x₀)`, with `lam`-Legendre, bounded, `α`-Hölder
+coefficients `a` and `α`-Hölder right side `Φ`: `‖Dw‖ ≤ C` and `[Dw]_α ≤ C` on `B̆_{R/2}(x₀)`, with
+`C = C(n, ℓ, α, lam, M, R)`.  If `M < 0` the bound `‖w(x₀)‖ ≤ M` fails and any `C` works.
+Otherwise `x = x₀ + R z` turns `(a, Φ, w)` into `(a(x₀ + R ·), R Φ(x₀ + R ·), w(x₀ + R ·))` on
+`B̆₁(0)`, which satisfies the same hypotheses with `M (1 + R^α + R^{1+α})` in place of `M`; the
+unit-ball estimate bounds `D(w(x₀ + R ·))(z) = R Dw(x₀ + R z)` on `B̆_{1/2}(0)`, and scaling back
+gives the constant `C₁ (R⁻¹ + R^{-(1+α)})`. -/
+theorem dohr_eb_schauder_interior_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ lam M R : ℝ, 0 < lam → 0 < R → ∃ C : ℝ, ∀ (x₀ : Rn n) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ), (∀ x ∈ ball x₀ R, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball x₀ R, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball x₀ R, ‖w x‖ ≤ M) → ContDiffOn ℝ 1 w (ball x₀ R) → (∃ K : ℝ, ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball x₀ R → ∫ x in ball x₀ R, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in ball x₀ R, Φ x (fderiv ℝ ζ x)) → (∀ x ∈ ball x₀ (R / 2), ‖fderiv ℝ w x‖ ≤ C) ∧ ∀ x ∈ ball x₀ (R / 2), ∀ y ∈ ball x₀ (R / 2), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro n ℓ hn α hα0 hα1 lam M R hlam hR
+  -- Step 0: for `M < 0` hypothesis (H5) fails at `x₀`, so any constant works.
+  rcases lt_or_ge M 0 with hM | hM
+  · refine ⟨0, fun x₀ a Φ w _ _ _ _ hw _ _ _ => ?_⟩
+    exact absurd ((norm_nonneg _).trans (hw x₀ (mem_ball_self hR))) (not_le.2 hM)
+  -- Step 7: the rescaled data live on `B̆₁(0)` with `M` replaced by `M (1 + R^α + R^{1+α})`.
+  have hRα : 0 < R ^ α := Real.rpow_pos_of_pos hR α
+  have hR1α : R ^ (1 + α) = R * R ^ α := by rw [Real.rpow_add hR, Real.rpow_one]
+  have hR1α0 : 0 < R ^ (1 + α) := Real.rpow_pos_of_pos hR _
+  have hMM : M ≤ M * (1 + R ^ α + R ^ (1 + α)) := le_mul_of_one_le_right hM (by linarith)
+  have hMα : M * R ^ α ≤ M * (1 + R ^ α + R ^ (1 + α)) :=
+    mul_le_mul_of_nonneg_left (by linarith) hM
+  have hM1α : R * (M * R ^ α) ≤ M * (1 + R ^ α + R ^ (1 + α)) := by
+    rw [mul_left_comm, ← hR1α]
+    exact mul_le_mul_of_nonneg_left (by linarith) hM
+  obtain ⟨C₁, hC₁, hunit⟩ := Submission.dohr_eb_sch_unit_ball_estimate n ℓ hn α hα0 hα1 lam
+    (M * (1 + R ^ α + R ^ (1 + α))) hlam
+  refine ⟨C₁ * (R⁻¹ + (R ^ (1 + α))⁻¹), ?_⟩
+  intro x₀ a Φ w h1 h2 h3 h4 h5 h6 h7 h8
+  obtain ⟨K, hK⟩ := h7
+  -- `z ↦ x₀ + R z` maps `B̆₁(0)` into `B̆_R(x₀)` and multiplies distances by `R`.
+  have hmem : ∀ z ∈ ball (0 : Rn n) 1, x₀ + R • z ∈ ball x₀ R := by
+    intro z hz
+    rw [mem_ball_zero_iff] at hz
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hR.le]
+    calc R * ‖z‖ < R * 1 := mul_lt_mul_of_pos_left hz hR
+      _ = R := mul_one R
+  have hdist : ∀ z z' : Rn n, ‖x₀ + R • z - (x₀ + R • z')‖ ^ α = R ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_of_nonneg hR.le,
+      Real.mul_rpow hR.le (norm_nonneg _)]
+  -- Step 2 for `(y, ρ) = (x₀, R)`: `w(x₀ + R ·)` is a `C¹` weak solution on `B̆₁(0)`.
+  obtain ⟨hw1, hDw, hweak⟩ := Submission.dohr_eb_sch_weak_eq_affine_rescale n ℓ a Φ w
+    (ball x₀ R) x₀ 0 R 1 hR isOpen_ball (by simp) h6 h8
+  -- Step 6 for the rescaled data.
+  obtain ⟨hsup, hhol⟩ := hunit (fun z => a (x₀ + R • z)) (fun z => R • Φ (x₀ + R • z))
+    (fun z => w (x₀ + R • z))
+    (fun z hz P => h1 _ (hmem z hz) P)
+    (fun z hz P Q => (h2 _ (hmem z hz) P Q).trans
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hMM (norm_nonneg P))
+        (norm_nonneg Q)))
+    (fun z hz z' hz' P Q => by
+      have h := h3 _ (hmem z hz) _ (hmem z' hz') P Q
+      rw [hdist] at h
+      calc _ ≤ M * (R ^ α * ‖z - z'‖ ^ α) * ‖P‖ * ‖Q‖ := h
+        _ = M * R ^ α * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ := by ring
+        _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hMα (Real.rpow_nonneg (norm_nonneg _) _))
+            (norm_nonneg P)) (norm_nonneg Q))
+    (fun z hz z' hz' P => by
+      have h := h4 _ (hmem z hz) _ (hmem z' hz') P
+      rw [hdist] at h
+      simp only [smul_apply, smul_eq_mul]
+      rw [← mul_sub, abs_mul, abs_of_pos hR]
+      calc _ ≤ R * (M * (R ^ α * ‖z - z'‖ ^ α) * ‖P‖) := mul_le_mul_of_nonneg_left h hR.le
+        _ = R * (M * R ^ α) * ‖z - z'‖ ^ α * ‖P‖ := by ring
+        _ ≤ _ := mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hM1α (Real.rpow_nonneg (norm_nonneg _) _))
+            (norm_nonneg P))
+    (fun z hz => (h5 _ (hmem z hz)).trans hMM)
+    hw1
+    ⟨R * K * R ^ α, fun z hz z' hz' => by
+      rw [hDw z hz, hDw z' hz', ← smul_sub R (fderiv ℝ w (x₀ + R • z)) (fderiv ℝ w (x₀ + R • z')),
+        norm_smul, Real.norm_of_nonneg hR.le]
+      have h := hK _ (hmem z hz) _ (hmem z' hz')
+      rw [hdist] at h
+      calc _ ≤ R * (K * (R ^ α * ‖z - z'‖ ^ α)) := mul_le_mul_of_nonneg_left h hR.le
+        _ = R * K * R ^ α * ‖z - z'‖ ^ α := by ring⟩
+    hweak
+  -- Scaling back: `x = x₀ + R z` with `z = R⁻¹ (x - x₀) ∈ B̆_{1/2}(0)` and `Dw̃(z) = R Dw(x)`.
+  have hback : ∀ x ∈ ball x₀ (R / 2), R⁻¹ • (x - x₀) ∈ ball (0 : Rn n) (1 / 2) ∧
+      fderiv ℝ (fun z => w (x₀ + R • z)) (R⁻¹ • (x - x₀)) = R • fderiv ℝ w x := by
+    intro x hx
+    have hz : R⁻¹ • (x - x₀) ∈ ball (0 : Rn n) (1 / 2) := by
+      rw [mem_ball, dist_eq_norm] at hx
+      rw [mem_ball_zero_iff, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hR.le),
+        inv_mul_lt_iff₀ hR]
+      linarith
+    refine ⟨hz, ?_⟩
+    rw [hDw _ (ball_subset_ball (by norm_num) hz), smul_smul, mul_inv_cancel₀ hR.ne', one_smul,
+      add_sub_cancel]
+  refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+  · obtain ⟨hz, hD⟩ := hback x hx
+    have h := hsup _ hz
+    rw [hD, norm_smul, Real.norm_of_nonneg hR.le] at h
+    calc ‖fderiv ℝ w x‖ = R⁻¹ * (R * ‖fderiv ℝ w x‖) := by
+          rw [← mul_assoc, inv_mul_cancel₀ hR.ne', one_mul]
+      _ ≤ R⁻¹ * C₁ := mul_le_mul_of_nonneg_left h (inv_nonneg.2 hR.le)
+      _ ≤ C₁ * (R⁻¹ + (R ^ (1 + α))⁻¹) := by
+          rw [mul_add, mul_comm]
+          exact le_add_of_nonneg_right (mul_nonneg hC₁ (inv_nonneg.2 hR1α0.le))
+  · obtain ⟨hz, hDx⟩ := hback x hx
+    obtain ⟨hz', hDy⟩ := hback y hy
+    have h := hhol _ hz _ hz'
+    rw [hDx, hDy, ← smul_sub R (fderiv ℝ w x) (fderiv ℝ w y), norm_smul,
+      Real.norm_of_nonneg hR.le, ← smul_sub R⁻¹ (x - x₀) (y - x₀), sub_sub_sub_cancel_right,
+      norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hR.le),
+      Real.mul_rpow (inv_nonneg.2 hR.le) (norm_nonneg _), Real.inv_rpow hR.le] at h
+    calc ‖fderiv ℝ w x - fderiv ℝ w y‖ = R⁻¹ * (R * ‖fderiv ℝ w x - fderiv ℝ w y‖) := by
+          rw [← mul_assoc, inv_mul_cancel₀ hR.ne', one_mul]
+      _ ≤ R⁻¹ * (C₁ * ((R ^ α)⁻¹ * ‖x - y‖ ^ α)) :=
+          mul_le_mul_of_nonneg_left h (inv_nonneg.2 hR.le)
+      _ = C₁ * (R ^ (1 + α))⁻¹ * ‖x - y‖ ^ α := by rw [hR1α, mul_inv]; ring
+      _ ≤ C₁ * (R⁻¹ + (R ^ (1 + α))⁻¹) * ‖x - y‖ ^ α := by
+          refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hC₁)
+            (Real.rpow_nonneg (norm_nonneg _) _)
+          exact le_add_of_nonneg_left (inv_nonneg.2 hR.le)
+
+end Submission
+
 end GMT.Ch05
