@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.diffquot_uniform-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1",
+  "depth": 5,
+  "title": "Uniform convergence of difference quotients of a C^1 map into a normed space",
+  "statement": "Let n be a natural number, E a real normed space, g : R^n -> E, U an open subset of R^n, K a compact subset of R^n with K ⊆ U, and e ∈ R^n. Assume g is C^1 on U. Then the difference quotients d^{-1}(g(x + d e) - g(x)) converge to Dg(x) e (Dg = fderiv) uniformly for x ∈ K as d -> 0 with d ≠ 0, i.e. along the punctured neighbourhood filter 𝓝[≠] 0 of 0 in R.",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (g : Rn n → E) (U K : Set (Rn n)) (e : Rn n), IsOpen U → ContDiffOn ℝ 1 g U → IsCompact K → K ⊆ U → TendstoUniformlyOn (fun (d : ℝ) (x : Rn n) => d⁻¹ • (g (x + d • e) - g x)) (fun x => fderiv ℝ g x e) (𝓝[≠] 0) K",
+  "lean_name": "dohr_eb_lhr_ds_diffQuot_tendstoUniformlyOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-39b875b62c-a1"
+}
