@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Fibres of `j ↦ removeNth i j`** (the counting step of the bound `|β ∧ γ| ≤ ‖β‖ |γ|` for the
+Euclidean norm of covectors, Simon Ch. 6, 1.1–1.3, 1.15): for `i₀ : Fin P` and
+`F : (Fin k → Fin P) → ℝ`,
+`Σ_{j : Fin (k+1) → Fin P} Σ_i [j i = i₀] F(removeNth i j) = (k + 1) Σ_{j' : Fin k → Fin P} F j'`.
+For fixed `i`, `j ↦ (j i, removeNth i j)` is a bijection onto `Fin P × (Fin k → Fin P)`
+(`Fin.insertNthEquiv`), so only `j i = i₀` survives and each of the `k + 1` indices `i`
+contributes `Σ_{j'} F j'`. -/
+theorem Submission.cmcs_wn_removeNth_fiber_sum : ∀ (k P : ℕ) (i₀ : Fin P) (F : (Fin k → Fin P) → ℝ), ∑ j : Fin (k + 1) → Fin P, ∑ i : Fin (k + 1), (if j i = i₀ then F (i.removeNth j) else 0) = ((k : ℝ) + 1) * ∑ j' : Fin k → Fin P, F j' := by
+  intro k P i₀ F
+  rw [Finset.sum_comm]
+  -- for fixed `i`, reindex along `j ↦ (j i, removeNth i j)`; only `j i = i₀` survives
+  have hfib : ∀ i : Fin (k + 1),
+      ∑ j : Fin (k + 1) → Fin P, (if j i = i₀ then F (i.removeNth j) else 0) =
+        ∑ j' : Fin k → Fin P, F j' := by
+    intro i
+    rw [Fintype.sum_equiv (Fin.insertNthEquiv (fun _ => Fin P) i).symm
+      (fun j => if j i = i₀ then F (i.removeNth j) else 0)
+      (fun p => if p.1 = i₀ then F p.2 else 0) fun _ => rfl,
+      Fintype.sum_prod_type, Fintype.sum_eq_single i₀]
+    · simp
+    · intro x hx
+      simp [hx]
+  -- each of the `k + 1` indices `i` contributes `Σ_{j'} F j'`
+  rw [Finset.sum_congr rfl fun i _ => hfib i, Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, nsmul_eq_mul, Nat.cast_add_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
