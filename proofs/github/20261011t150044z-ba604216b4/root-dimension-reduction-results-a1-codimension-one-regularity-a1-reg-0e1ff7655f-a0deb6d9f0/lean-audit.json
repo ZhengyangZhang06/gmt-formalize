@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c6ef908bc94abe9d31b331483b6b97124cd24251992614fc80eb9ffbe21bca9",
+  "git_delta": {
+    "base_commit": "3c909d5ef290d41ca292705593bd4fb5962ca6a1",
+    "candidate_commit": "a9903a16e850b7f6e6567dbe257845ae508282a3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_rc_compact_cover",
+    "diff_sha256": "cf6e85d860b19eda3b03901502cfa186419cc3401b7549d24180d5fc102f4b11",
+    "source_sha256": "a9ef3e5910b502650dbd10f326a0c9a1664b56d8cd1cee4793d16854d49b660c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_rc_compact_cover",
+      "statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → IsCompact K → 0 < δ → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ K ⊆ Γ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
