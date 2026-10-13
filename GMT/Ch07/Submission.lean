@@ -767,6 +767,53 @@ theorem Submission.codim1_lur_cd_injective_area_formula_gram : ∀ (P m : ℕ) (
   rw [NNReal.smul_def, Real.coe_toNNReal _ (Real.sqrt_nonneg _)]
   rfl
 
+/-- **Area formula for an injective immersion of a subset of `ℝ × ℝ`** (Simon Ch. 2, 3.1–3.5
+with `m = 2`; used for the area of the cone parametrization `(t, α) ↦ t γ(α)`).  Let
+`G : ℝ × ℝ → ℝᴾ` be differentiable with injective derivative at every point of the measurable
+set `R` and injective on `R`, and write `∂₁G = DG(1, 0)`, `∂₂G = DG(0, 1)`.  Every
+`h : ℝᴾ → ℝ` has `∫_{G(R)} h dH² = ∫_R (‖∂₁G‖²‖∂₂G‖² − ⟨∂₁G, ∂₂G⟩²)^{1/2} h(G(q)) dq`.
+
+Transport along the volume-preserving coordinate equivalence `e : ℝ² ≃ ℝ × ℝ`,
+`e w = (w₀, w₁)`: apply the Gram form of the area formula to `G ∘ e` on `e⁻¹(R)`, expand the
+`2 × 2` Gram determinant, and pull the integral back to `R`. -/
+theorem Submission.idtp_ccd_scsp_ca_prod_area_formula : ∀ (P : ℕ) (G : ℝ × ℝ → Euclid P) (R : Set (ℝ × ℝ)) (h : Euclid P → ℝ), MeasurableSet R → (∀ q ∈ R, DifferentiableAt ℝ G q) → (∀ q ∈ R, Injective (fderiv ℝ G q)) → InjOn G R → ∫ x in G '' R, h x ∂μHE[2] = ∫ q in R, Real.sqrt (‖fderiv ℝ G q (1, 0)‖ ^ 2 * ‖fderiv ℝ G q (0, 1)‖ ^ 2 - inner ℝ (fderiv ℝ G q (1, 0)) (fderiv ℝ G q (0, 1)) ^ 2) * h (G q) := by
+  intro P G R h hR hG hreg hinj
+  -- (1) `e : ℝ² ≃ ℝ × ℝ`, `e w = (w₀, w₁)`, preserves Lebesgue measure
+  let e : Euclid 2 ≃L[ℝ] ℝ × ℝ :=
+    (EuclideanSpace.equiv (Fin 2) ℝ).trans (ContinuousLinearEquiv.finTwoArrow ℝ ℝ)
+  have he : ∀ w, e w = (w 0, w 1) := fun w => rfl
+  have hmp : MeasurePreserving e volume volume :=
+    (volume_preserving_finTwoArrow ℝ).comp
+      (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin 2))
+  have hemb : MeasurableEmbedding e := e.toHomeomorph.measurableEmbedding
+  -- (2) `D(G ∘ e)(w) = DG(e w) ∘ e`, so `G ∘ e` satisfies the Gram area formula on `e⁻¹(R)`,
+  -- and `(G ∘ e)(e⁻¹(R)) = G(R)` since `e` is onto
+  have hfd : ∀ w, fderiv ℝ (G ∘ e) w = (fderiv ℝ G (e w)).comp (e : Euclid 2 →L[ℝ] ℝ × ℝ) :=
+    fun w => e.comp_right_fderiv
+  have key := Submission.codim1_lur_cd_injective_area_formula_gram P 2 (G ∘ e) (e ⁻¹' R)
+    (e.continuous.measurable hR) (fun w hw => (hG (e w) hw).comp w e.differentiableAt)
+    (fun w hw => by rw [hfd]; exact (hreg (e w) hw).comp e.injective)
+    (fun w hw w' hw' heq => e.injective (hinj hw hw' heq)) h
+  rw [Set.image_comp, Set.image_preimage_eq R e.surjective] at key
+  rw [key]
+  -- (3) `e e₀ = (1, 0)`, `e e₁ = (0, 1)`, so the `2 × 2` Gram determinant at `w` is
+  -- `‖∂₁G‖²‖∂₂G‖² − ⟨∂₁G, ∂₂G⟩²` at `e w`
+  have h0 : e (EuclideanSpace.single 0 1) = (1, 0) := by rw [he]; simp
+  have h1 : e (EuclideanSpace.single 1 1) = (0, 1) := by rw [he]; simp
+  let Ψ : ℝ × ℝ → ℝ := fun q => Real.sqrt (‖fderiv ℝ G q (1, 0)‖ ^ 2 *
+    ‖fderiv ℝ G q (0, 1)‖ ^ 2 - inner ℝ (fderiv ℝ G q (1, 0)) (fderiv ℝ G q (0, 1)) ^ 2) * h (G q)
+  have hpt : ∀ w : Euclid 2, Real.sqrt (Matrix.det (Matrix.of fun i j : Fin 2 =>
+      inner ℝ (fderiv ℝ (G ∘ e) w (EuclideanSpace.single i 1))
+        (fderiv ℝ (G ∘ e) w (EuclideanSpace.single j 1)))) * h ((G ∘ e) w) = Ψ (e w) := by
+    intro w
+    simp only [Ψ, hfd, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe, h0, h1,
+      Matrix.det_fin_two, Matrix.of_apply, Function.comp_apply, real_inner_self_eq_norm_sq,
+      real_inner_comm (fderiv ℝ G (e w) (1, 0))]
+    ring_nf
+  -- (4) pull the integral back from `e⁻¹(R)` to `R`
+  simp_rw [hpt]
+  exact hmp.setIntegral_preimage_emb hemb Ψ R
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
