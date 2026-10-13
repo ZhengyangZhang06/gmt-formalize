@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.radon_criterion-a1.fatou_lower_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.radon_criterion-a1",
+  "depth": 4,
+  "title": "Fatou lower bound for integrals from the liminf inequality on bounded open sets",
+  "statement": "Let P ∈ ℕ and let μ and μ_j (j ∈ ℕ) be measures on the Borel σ-algebra of ℝ^P (Measure (Euclid P)). Assume μ(G) ≤ liminf_j μ_j(G) (in [0, ∞]) for every bounded open set G ⊆ ℝ^P. Then for every continuous g : ℝ^P → ℝ with compact support and g(x) ≥ 0 for all x, ∫⁻ ofReal(g) dμ ≤ liminf_j ∫⁻ ofReal(g) dμ_j, where ∫⁻ is the lower Lebesgue integral with values in [0, ∞].",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → ∫⁻ x, ENNReal.ofReal (g x) ∂μ ≤ liminf (fun j => ∫⁻ x, ENNReal.ofReal (g x) ∂(μs j)) atTop",
+  "lean_name": "dtc_bc_rc_lintegral_le_liminf",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-radon-criteri-4b1a7eb4fa-a1"
+}

@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem lintegral_eq_lintegral_meas_(lt|le)|theorem limsup_lintegral_le|theorem lintegral_liminf_le |theorem integral_eq_lintegral_of_nonneg_ae|theorem tendsto_of_le_liminf_of_limsup_le|theorem limsup_nat_add|protected theorem Antitone.measurable|theorem Continuous.bounded_above_of_compact_support|theorem eventually_lt_of_limsup_lt",
+        "dtc_bc_rc_lintegral_le_liminf|dtc_bc_rc_limsup_lintegral_le",
+        "limsup_nat_add|eventually_lt_of_limsup_lt|eventually_gt_of_lt_liminf",
+        "#synth BorelSpace (Euclid P)",
+        "#synth CompleteLinearOrder ℝ≥0∞",
+        "#synth OrderTopology ℝ≥0∞",
+        "#print axioms Submission.dtc_bc_rc_lintegral_le_liminf",
+        "#print axioms Submission.dtc_bc_rc_limsup_lintegral_le",
+        "#print axioms dtc_bc_rc_assembly"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-radon-criterion-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-radon-criterion-a1/decomposition-v1.json",
+        "/tmp/radon-independent-audit-pv6j04ny/Challenge_fatou_lower_bound.lean",
+        "/tmp/radon-independent-audit-pv6j04ny/Challenge_reverse_fatou_upper_bound.lean",
+        "/tmp/radon-independent-audit-pv6j04ny/AssemblyOnly.lean",
+        "/tmp/radon-independent-audit-pv6j04ny/FullReviewed.lean",
+        "/tmp/radon-independent-audit-pv6j04ny/Instances.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility with the workspace. The cited layer-cake formulas require no sigma-finiteness; the Fatou and reverse-Fatou signatures support the supplied arguments. Borel, ENNReal order/topology, and metric bornology instances agree with the prose. Both unchanged child types independently elaborate in comparator scope without child implementations. The reviewed scratch proofs and an isolated conditional assembly of the exact selected parent compile with only propext, Classical.choice, and Quot.sound. Neither proposed name is reserved in the 684-node DAG or another searched branch; no identical accepted child type was found. The split is appropriate: two independent semicontinuity obligations, with acyclic empty dependency lists, combine through eventual integrability, positive/negative parts, and finite-limit toReal continuity to prove the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fatou_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose and all hypotheses. Its name is a valid unreserved bare identifier. Every proof step checks: positive strict superlevels are bounded open subsets of tsupport g; their measure functions are antitone and measurable; layer cake, integral monotonicity, and Fatou establish precisely the claimed ENNReal inequality. No finiteness assumption or circular reliance is hidden, and the proof is ready for formalization."
+    },
+    {
+      "key": "reverse_fatou_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose and both compact-set hypotheses. Its name is a valid unreserved bare identifier. Compact finiteness and the limsup bound supply a finite uniform bound after an index shift. Positive closed superlevels are compact, and the indicator majorant has finite integral on (0,∞). Measurability, reverse Fatou, tail invariance, and layer cake then prove the exact conclusion. All side conditions are supplied; the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
