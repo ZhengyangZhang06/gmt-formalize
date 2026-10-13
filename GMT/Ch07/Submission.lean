@@ -601,6 +601,159 @@ theorem Submission.codim1_rdo_dg_vdl_discrete_growth : ∀ (m : ℕ) (K ρ₁ : 
   calc (ρ / (2 * K * (m + 1))) ^ (m + 1) ≤ W ρ ^ (m + 1) :=
         pow_le_pow_left₀ (by positivity) hA (m + 1)
     _ = V ρ := hWpow ρ hρ hρ₁
+/-- **Annular cut-off** (step 3 of the lower volume-density bound in De Giorgi's theorem, Simon
+Ch. 3, 4.3, proof of (10)–(11)).  There is `C₀ > 0` such that for all `ρ, δ > 0` some `C¹`
+function `ζ` on `ℝᴾ` has compact support in `B̄_{ρ+δ}(y)`, `0 ≤ ζ ≤ 1`, `ζ = 1` on `B̄_ρ(y)`,
+`‖Dζ‖ ≤ C₀/δ`, and `Dζ = 0` off the open annulus `B_{ρ+δ}(y) \ B̄_ρ(y)`.  Take `C₀ = 3/2` and
+`ζ(z) = h((‖z − y‖ − ρ)/δ)` with `h(t) = 1 − ∫₀ᵗ 6 max(0, s(1 − s)) ds` (`= 1 − 3t² + 2t³` on
+`[0, 1]`): `h` is `C¹`, `1` on `(−∞, 0]`, `0` on `[1, ∞)`, `h' = 0` there and `|h'| ≤ 3/2`.  Then
+`ζ` is constant near `y`, `h ∘ u` with `u` smooth away from `y`, and `(3/(2δ))`-Lipschitz by the
+reverse triangle inequality. -/
+theorem Submission.codim1_rdo_dg_vdl_annular_cutoff : ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ C₀ / δ) ∧ ∀ z, z ∉ ball y (ρ + δ) \ closedBall y ρ → fderiv ℝ ζ z = 0 := by
+  -- Step 1: the profile `h(t) = 1 − ∫₀ᵗ g`, `g(s) = 6 max(0, s(1 − s))`
+  obtain ⟨h, hh_C1, hh_flat, hh_bounds, hh_one, hh_zero, hh_lip⟩ : ∃ h : ℝ → ℝ,
+      ContDiff ℝ 1 h ∧ (∀ t, t ≤ 0 ∨ 1 ≤ t → HasDerivAt h 0 t) ∧ (∀ t, 0 ≤ h t ∧ h t ≤ 1) ∧
+      (∀ t, t ≤ 0 → h t = 1) ∧ (∀ t, 1 ≤ t → h t = 0) ∧
+      ∀ a b, ‖h b - h a‖ ≤ 3 / 2 * ‖b - a‖ := by
+    set g : ℝ → ℝ := fun s => 6 * max 0 (s * (1 - s)) with hg_eq
+    have hg_cont : Continuous g := by fun_prop
+    have hg_int : ∀ a b : ℝ, IntervalIntegrable g volume a b := fun a b =>
+      hg_cont.intervalIntegrable a b
+    have hg_nonneg : ∀ s, 0 ≤ g s := fun s => mul_nonneg (by norm_num) (le_max_left _ _)
+    have hg_le : ∀ s, g s ≤ 3 / 2 := fun s => by
+      have h : max 0 (s * (1 - s)) ≤ 1 / 4 :=
+        max_le (by norm_num) (by nlinarith [sq_nonneg (s - 1 / 2)])
+      simp only [hg_eq]
+      linarith
+    have hg_left : ∀ s, s ≤ 0 → g s = 0 := fun s hs => by
+      simp only [hg_eq]
+      rw [max_eq_left (mul_nonpos_of_nonpos_of_nonneg hs (by linarith)), mul_zero]
+    have hg_right : ∀ s, 1 ≤ s → g s = 0 := fun s hs => by
+      simp only [hg_eq]
+      rw [max_eq_left (mul_nonpos_of_nonneg_of_nonpos (by linarith) (by linarith)), mul_zero]
+    -- `∫₀¹ g = 1`: on `[0, 1]`, `g(s) = 6s(1 − s)` is the derivative of `3s² − 2s³`
+    have hg_one : ∫ s in (0 : ℝ)..1, g s = 1 := by
+      have hderiv : ∀ s : ℝ, HasDerivAt (fun s : ℝ => 3 * s ^ 2 - 2 * s ^ 3)
+          (6 * (s * (1 - s))) s := fun s => by
+        convert ((hasDerivAt_pow 2 s).const_mul 3).sub ((hasDerivAt_pow 3 s).const_mul 2) using 1
+        norm_num
+        ring
+      rw [intervalIntegral.integral_congr (g := fun s => 6 * (s * (1 - s))) ?_,
+        intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hderiv s)
+          ((by fun_prop : Continuous fun s : ℝ => 6 * (s * (1 - s))).intervalIntegrable _ _)]
+      · norm_num
+      · intro s hs
+        rw [uIcc_of_le zero_le_one] at hs
+        simp only [hg_eq]
+        rw [max_eq_right (mul_nonneg hs.1 (by linarith [hs.2]))]
+    -- the primitive `F(t) = ∫₀ᵗ g`, with `F' = g`
+    set F : ℝ → ℝ := fun t => ∫ s in (0 : ℝ)..t, g s with hF_eq
+    have hF_deriv : ∀ t, HasDerivAt F (g t) t := fun t =>
+      (hg_cont.integral_hasStrictDerivAt 0 t).hasDerivAt
+    have hF_left : ∀ t, t ≤ 0 → F t = 0 := fun t ht => by
+      simp only [hF_eq]
+      rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+      · simp
+      · intro s hs
+        rw [uIcc_of_ge ht] at hs
+        exact hg_left s hs.2
+    have hF_right : ∀ t, 1 ≤ t → F t = 1 := fun t ht => by
+      simp only [hF_eq]
+      rw [← intervalIntegral.integral_add_adjacent_intervals (hg_int 0 1) (hg_int 1 t), hg_one]
+      have h : ∫ s in (1 : ℝ)..t, g s = 0 := by
+        rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+        · simp
+        · intro s hs
+          rw [uIcc_of_le ht] at hs
+          exact hg_right s hs.1
+      rw [h, add_zero]
+    have hF_bounds : ∀ t, 0 ≤ F t ∧ F t ≤ 1 := fun t => by
+      rcases le_total t 0 with ht | ht
+      · rw [hF_left t ht]
+        exact ⟨le_rfl, zero_le_one⟩
+      rcases le_total 1 t with ht' | ht'
+      · rw [hF_right t ht']
+        exact ⟨zero_le_one, le_rfl⟩
+      refine ⟨intervalIntegral.integral_nonneg ht fun u _ => hg_nonneg u, ?_⟩
+      rw [← hg_one]
+      exact intervalIntegral.integral_mono_interval le_rfl ht ht' (ae_of_all _ hg_nonneg)
+        (hg_int _ _)
+    -- `h = 1 − F`, with `h' = −g`
+    have hh_deriv : ∀ t, HasDerivAt (fun t => 1 - F t) (-g t) t := fun t =>
+      (hF_deriv t).const_sub 1
+    refine ⟨fun t => 1 - F t, ?_, fun t ht => ?_, fun t => ?_, fun t ht => ?_, fun t ht => ?_,
+      fun a b => ?_⟩
+    · rw [contDiff_one_iff_deriv]
+      refine ⟨fun t => (hh_deriv t).differentiableAt, ?_⟩
+      rw [show deriv (fun t => 1 - F t) = fun t => -g t from funext fun t => (hh_deriv t).deriv]
+      exact hg_cont.neg
+    · have hg0 : g t = 0 := ht.elim (hg_left t) (hg_right t)
+      simpa [hg0] using hh_deriv t
+    · obtain ⟨h₀, h₁⟩ := hF_bounds t
+      exact ⟨by linarith, by linarith⟩
+    · simp only [hF_left t ht, sub_zero]
+    · simp only [hF_right t ht, sub_self]
+    · refine convex_univ.norm_image_sub_le_of_norm_hasDerivWithin_le
+        (fun t _ => (hh_deriv t).hasDerivWithinAt) (fun t _ => ?_) (mem_univ a) (mem_univ b)
+      rw [norm_neg, Real.norm_of_nonneg (hg_nonneg t)]
+      exact hg_le t
+  -- Step 2: `C₀ = 3/2` and `ζ(z) = h(u(z))`, `u(z) = (‖z − y‖ − ρ)/δ`
+  refine ⟨3 / 2, by norm_num, fun P y ρ δ hρ hδ => ?_⟩
+  -- Step 3: `ζ ≡ 1` on `B_ρ(y)`, a neighbourhood of `y`
+  have hζ_near : (fun z : Euclid P => h ((‖z - y‖ - ρ) / δ)) =ᶠ[𝓝 y] fun _ => 1 := by
+    filter_upwards [Metric.ball_mem_nhds y hρ] with z hz
+    rw [Metric.mem_ball, dist_eq_norm] at hz
+    exact hh_one _ ((div_le_iff₀ hδ).2 (by linarith))
+  -- `u` is smooth away from `y`
+  have hu : ∀ z : Euclid P, z ≠ y → ContDiffAt ℝ 1 (fun w : Euclid P => (‖w - y‖ - ρ) / δ) z :=
+    fun z hz => (((contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hz)).sub
+      contDiffAt_const).div_const δ
+  -- Step 4: `ζ = 0` off `B_{ρ+δ}(y)`, so `tsupport ζ ⊆ closure B_{ρ+δ}(y) ⊆ B̄_{ρ+δ}(y)`
+  have htsupp : tsupport (fun z : Euclid P => h ((‖z - y‖ - ρ) / δ)) ⊆ closedBall y (ρ + δ) := by
+    refine (closure_mono ?_).trans closure_ball_subset_closedBall
+    intro z hz
+    by_contra hzb
+    apply hz
+    rw [Metric.mem_ball, dist_eq_norm, not_lt] at hzb
+    exact hh_zero _ ((le_div_iff₀ hδ).2 (by linarith))
+  refine ⟨fun z => h ((‖z - y‖ - ρ) / δ), ?_,
+    (isCompact_closedBall y (ρ + δ)).of_isClosed_subset (isClosed_tsupport _) htsupp, htsupp,
+    fun z => hh_bounds _, fun z hz => ?_, fun z => ?_, fun z hz => ?_⟩
+  -- Step 5: `ζ` is `C¹` — constant near `y`, and `h ∘ u` with `u` smooth away from `y`
+  · rw [contDiff_iff_contDiffAt]
+    intro z
+    rcases eq_or_ne z y with rfl | hz
+    · exact contDiffAt_const.congr_of_eventuallyEq hζ_near
+    · exact hh_C1.contDiffAt.comp z (hu z hz)
+  -- Step 3: `ζ = 1` on `B̄_ρ(y)`
+  · rw [Metric.mem_closedBall, dist_eq_norm] at hz
+    exact hh_one _ ((div_le_iff₀ hδ).2 (by linarith))
+  -- Step 6: `ζ` is `(3/(2δ))`-Lipschitz (reverse triangle inequality), so `‖Dζ(z)‖ ≤ 3/(2δ)`
+  · refine norm_fderiv_le_of_lip' ℝ (by positivity) (Eventually.of_forall fun w => ?_)
+    calc ‖h ((‖w - y‖ - ρ) / δ) - h ((‖z - y‖ - ρ) / δ)‖
+        ≤ 3 / 2 * ‖(‖w - y‖ - ρ) / δ - (‖z - y‖ - ρ) / δ‖ := hh_lip _ _
+      _ = 3 / 2 / δ * |‖w - y‖ - ‖z - y‖| := by
+          rw [Real.norm_eq_abs, ← sub_div, sub_sub_sub_cancel_right, abs_div, abs_of_pos hδ]
+          ring
+      _ ≤ 3 / 2 / δ * ‖(w - y) - (z - y)‖ := by gcongr; exact abs_norm_sub_norm_le _ _
+      _ = 3 / 2 / δ * ‖w - z‖ := by rw [sub_sub_sub_cancel_right]
+  -- Step 7: `Dζ(z) = 0` off the open annulus
+  · rcases eq_or_ne z y with rfl | hzy
+    · rw [hζ_near.fderiv_eq, fderiv_const_apply]
+    · -- `u(z) ≤ 0` or `u(z) ≥ 1`, where `h' = 0`; chain rule
+      have hu_out : (‖z - y‖ - ρ) / δ ≤ 0 ∨ 1 ≤ (‖z - y‖ - ρ) / δ := by
+        rcases le_or_gt ‖z - y‖ ρ with h₁ | h₁
+        · exact Or.inl ((div_le_iff₀ hδ).2 (by linarith))
+        · refine Or.inr ((le_div_iff₀ hδ).2 ?_)
+          have h₂ : z ∉ ball y (ρ + δ) := fun hb => hz ⟨hb, by
+            rw [Metric.mem_closedBall, dist_eq_norm, not_le]
+            exact h₁⟩
+          rw [Metric.mem_ball, dist_eq_norm, not_lt] at h₂
+          linarith
+      have hD := (hh_flat _ hu_out).comp_hasFDerivAt z
+        ((hu z hzy).differentiableAt one_ne_zero).hasFDerivAt
+      rw [zero_smul] at hD
+      exact hD.fderiv
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
