@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.singular_set_density_below_two-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent steps 0 and B1–B3 (Simon 7.4.4 and its proof, chapter-07.txt lines 635–684), with departure [D3]: the book's 4.4(8) (sing S = {Θ ≥ 1 + δ}, from Allard's theorem) is proved from the gap lemma (sibling child density_gap) and the sibling density_one_implies_regular. P := n + k; μ_A is the measure of any representation of an integer multiplicity A (sibling child im_mass_measure: all representations have the same measure (c), M_W(A) = μ_A(W) for open W (a), spt A = spt μ_A (b)); Θ_A := Θ^n(μ_A, ·); ω_n := unitBallVolume n.
+0. (n = 0.) By the sibling child zero_dim_vanishing (A := U ∩ N), T = 0, so spt T = ∅ and the statement is vacuous. From now on n ≥ 1, so boundarySupport T = ∅.
+1. (B1: choice of the ball; book (1).) Let ξ ∈ spt T and HasMassDensity T ξ θ with θ < 2. By the sibling child monotonicity (d := n + ℓ) there is an upper semicontinuous Θ on U with HasMassDensity T x (Θ(x)) for x ∈ U, Θ ≥ 1 on spt T, and the monotonicity of e^{Λ_Kρ}ρ^{−n}μ_T(B_ρ(y)) on balls closedBall y R ⊆ K for each compact K ⊆ U; densities are unique, so Θ(ξ) = θ. Put θ' := (2 + θ)/2 < 2 and θ₁ := (θ + θ')/2 ∈ (θ, θ'). By upper semicontinuity choose σ > 0 with closedBall ξ (4σ) ⊆ U and Θ < θ₁ on closedBall ξ (4σ). By the uniform density bound (parent T10; K := closedBall ξ (3σ/2), K'' := closedBall ξ (4σ)): for y ∈ K choose ρ_y ∈ (0, σ) with e^{Λρ_y}μ_T(B_{ρ_y}(y))/(ω_nρ_y^n) < θ₁ (Λ := Λ_{K''}) and τ_y ∈ (0, ρ_y) with θ₁(ρ_y/(ρ_y − τ_y))^n ≤ θ'; for |y' − y| < τ_y and ρ < ρ_y − τ_y, monotonicity at y' and B_{ρ_y−τ_y}(y') ⊆ B_{ρ_y}(y) give μ_T(B_ρ(y')) ≤ θ'ω_nρ^n; covering K by finitely many B_{τ_y}(y) yields ρ₀ > 0 with μ_T(B_ρ(y)) ≤ θ'ω_nρ^n for y ∈ closedBall ξ (3σ/2) and ρ < ρ₀. In particular Θ ≤ θ' < 2 on B_{3σ/2}(ξ).
+2. (Densities of admissible zero-scale limits.) Let x_i ∈ B_σ(ξ), λ_i → 0⁺, and S ∈ 𝒟_n(ℝ^P) with blowUp T x_i λ_i ⇀ S (ConvergesWeakly), S minimizing in ℝ^P with ∂S = 0. For w ∈ ℝ^P and ρ > 0 and large i, x_i + λ_iw ∈ B_{3σ/2}(ξ), λ_iρ < ρ₀ and M_{B_ρ(w)}(blowUp T x_i λ_i) = λ_i^{−n}M_{B_{λ_iρ}(x_i+λ_iw)}(T) ≤ θ'ω_nρ^n; since S(ω) = lim currentEval(blowUp T x_i λ_i, ω) for each admissible ω, M_{B_ρ(w)}(S) ≤ θ'ω_nρ^n. Θ_S exists everywhere (sibling child monotonicity with U = N = ℝ^P), so Θ_S ≤ θ' < 2 everywhere; and Θ_S equals the multiplicity of S μ_S-a.e. (Simon Ch. 3, Theorem 1.9; Ch. 4, Remark 1.8(2)), a positive integer.
+3. (B2: sing T near ξ is a density superlevel set; book (8), [D3].) Let δ > 0 be given by the sibling child density_gap for (P, j) := (n + k, n). Claim: for x ∈ spt T ∩ B_σ(ξ), x ∈ reg T ⟺ Θ(x) < 1 + δ. (⇐) If Θ(x) < 1 + δ: by the sibling density_and_tangent_cones (2) at x ∈ spt T ∖ boundarySupport T (with any λ_j → 0⁺) there is a cone C ∈ 𝒟_n(ℝ^P), minimizing in ℝ^P, with blowUp T x λ_j ⇀ C along a subsequence and HasMassDensity C 0 Θ(x); ∂C = 0 because C(dω) = lim(blowUp T x λ_j)(dω) = 0. By density_gap, Θ(x) ≤ 1; with Θ ≥ 1 on spt T, Θ(x) = 1. Apply the sibling density_one_implies_regular (DAG node root.density_one_implies_regular-a1) with Ts :≡ T (constant sequence), ys :≡ x, y := x: the hypotheses hold (T minimizing in U ∩ N, supports in N, BoundaryVanishes, sup_j M_W(T) = μ_T(W) < ∞ for W ⊂⊂ U, constant sequences converge weakly, x ∈ N ∩ U, HasMassDensity T x 1, x ∈ spt T), so x ∈ reg T. (⇒) If x ∈ reg T, the sibling child regular_point_density gives m ∈ ℕ, m ≥ 1, with HasMassDensity T x m, so Θ(x) = m; since Θ(x) ≤ θ' < 2 (step 1), m = 1 < 1 + δ. Moreover every x ∈ B_σ(ξ) with Θ(x) ≥ 1 + δ > 0 lies in spt T (off spt T the density is 0). Hence sing T ∩ B_σ(ξ) = {x ∈ B_σ(ξ) : Θ(x) ≥ 1 + δ} = {x ∈ B_σ(ξ) : ∃ θ'' ≥ 1 + δ, HasMassDensity T x θ''}.
+4. (B3: dimension reduction; book lines 641–684.) Apply the sibling child threshold_reduction with z := ξ, r := σ (closedBall ξ (2σ) ⊆ U), c := 1 + δ > 0 and d₀ := n − 1. Hypothesis (H1): let S be an admissible zero-scale limit (centres in B_σ(ξ), minimizing, ∂S = 0) with Θ_S = c'·1_Q for an n-dimensional subspace Q and c' ≥ 1 + δ. As c' > 0, Q ⊆ spt S, so μ_S ≠ 0 and by step 2 some y has Θ_S(y) ∈ ℤ_{≥1}; then y ∈ Q and c' = Θ_S(y) is an integer with 1 + δ ≤ c' ≤ θ' < 2: impossible. Hypothesis (H2): let S be an admissible zero-scale limit and L a subspace with n − 1 ≤ dim L < n (so dim L = n − 1), L-invariant density function and {Θ_S ≥ 1 + δ} = L. As 0 ∈ L, Θ_S(0) ≥ 1 + δ, and Θ_S(0) ≤ θ' < 2 by step 2. By the sibling child cone_splitting there is S₀ ∈ 𝒟_1(ℝ^P) (n − dim L = 1), minimizing in ℝ^P, ∂S₀ = 0, a cone, with Θ_S(0) = Θ_{S₀}(0); by the sibling child one_dim_cones (S₀ transported to degree 1) there are e, m' ∈ ℕ with HasMassDensity S₀ 0 m' (0 ∈ span{e}), so Θ_S(0) = m' ∈ ℕ ∩ [1 + δ, θ'] = ∅: impossible. (For n = 1 this is the case dim L = 0, and the argument is the same.) Hence threshold_reduction gives: if n ≥ 2 (d₀ = n − 1 ≥ 1), μH[(n − 1) − 1 + α](Z) = μH[n − 2 + α](Z) = 0 for every α > 0, and if n = 1 (d₀ = 0), Z = ∅, where Z := {x ∈ B_σ(ξ) : ∃ θ'' ≥ 1 + δ, HasMassDensity T x θ''} = sing T ∩ B_σ(ξ) (step 3).
+5. (Conclusion.) Take ρ := σ > 0. For every α > 0, μH[n − 2 + α](singularSet T ∩ B_ρ(ξ)) = 0 (for n = 1 the set is empty, which covers the negative exponents).
+
+## Key steps
+
+1. n = 0: T = 0 and the statement is vacuous; for n ≥ 1 pick σ with Θ ≤ θ' < 2 near ξ and the uniform bound μ_T(B_ρ(y)) ≤ θ'ω_nρ^n, which passes to zero-scale limits.
+2. Gap lemma + density_one_implies_regular + regular_point_density: in B_σ(ξ), x ∈ reg T ⇔ Θ(x) < 1 + δ, so sing T ∩ B_σ(ξ) = {Θ ≥ 1 + δ}.
+3. threshold_reduction with c = 1 + δ and d₀ = n − 1: (H1) fails since integer densities below 2 are ≤ 1, (H2) fails since an (n−1)-invariant cone splits off a 1-dimensional cone, which by one_dim_cones has integer vertex density.
+4. Hence μH[n−2+α](sing T ∩ B_σ(ξ)) = 0 (empty set for n = 1); take ρ := σ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `grep -n 'μHE\|euclideanHausdorffMeasure' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; rg -n addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (same file)`
+- `grep -rn 'theorem massOn_le_liminf\|theorem boundary_affinePushforward\|exp_normalizedBallMass_monotoneOn\|theorem bvVariationOn_le_liminf_of_locallyL1\|theorem cone_simonsDefect_lower_bound' simongmt/Poincare`
+- `grep -n 'def support\|zeroRegion\|def massOn' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `grep -rn dimred --include=*.lean GMT .lake/packages/simongmt/Poincare; grep -c dimred dag.json; grep -rln dimred_ .swarm-worktrees/*/gmt-ch07/GMT (no match anywhere)`
+- `python3 inspection of dag.json: sibling lean_statements (abstract_dimension_reduction, density_and_tangent_cones, density_one_implies_regular, compactness_of_minimizing_currents, minimizing_implies_stationary) and similar lemma nodes in other branches (dtc_mass_eq_measure, dor_imrep_massOn_eq_measure_and_support, dtc_dim_zero_eq_zero, imrep_measure_eq_of_represents_same_current, rsd_massOn_eq_measure)`
+- `lean -R /tmp/dr-v2-check/src /tmp/dr-v2-check/src/CheckV2Types.lean (private olean of GMT.Ch07.Submission; 12 child types declared as Submission.X in namespace GMT.Ch07 with the contract opens; assembly ⟨A, B, C⟩; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-review-receipt-v1.json`
+- `/tmp/dr-v2-check/src/CheckV2Types.lean`
+
+Pins match. The snapshot has project b4d606d (equal to workspace HEAD), mathlib 25730c7c and simongmt 2b36630. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean; its only sorry is the frozen main_theorem.
+
+Normalization (decides correction R1). Mathlib defines μHE[d] = addHaarScalarFactor(volume, μH[d]) • μH[d] (Measure.lean, lines 68–101). The scalar is in ℝ≥0 and nonzero (addHaarScalarFactor_volume_hausdorffMeasure_ne_zero), so μ_A = ϑ_A·μHE[n] gives ∫_K ϑ_A dμH[n] = c_n⁻¹·μ_A(K).
+
+SimonGMT definitions used:
+- massOn is the sSup over admissible forms with Euclidean coefficient norm ≤ 1 (Mass.lean).
+- support = U \ zeroRegion (CurrentLocalEquality.lean, lines 108–117).
+- WeaklyConvergesOn.massOn_le_liminf (Mass.lean:100) gives the lower semicontinuity used for the new mass bounds.
+
+Other cited library facts exist:
+- GeometricCurrentOn.boundary_affinePushforward (AffineCurrentPushforward.lean:188);
+- HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn (Chapter04/MeanCurvature.lean:361);
+- bvVariationOn_le_liminf_of_locallyL1 (Chapter02/BV.lean:225);
+- cone_simonsDefect_lower_bound (AppendixB/ConeDefect.lean:228).
+
+The library provides none of the following for the contract's IMRep currents: the mass–measure identity, product currents, Federer–Fleming compactness, or Appendix A.4. These are children or sibling prerequisites.
+
+Lean check. All twelve child types elaborate after import GMT.Ch07.Submission, in namespace GMT.Ch07 with the contract opens, with only the stub sorry warnings. The assembly ⟨A, B, C⟩ proves IntegerDensityAndTangentPlanes ∧ SingularSetSmallWhereDensityBelowTwo ∧ CodimensionOneRegularity, and the conditional assembly depends only on propext, Classical.choice and Quot.sound.
+
+Names. No dimred_ identifier occurs in the workspace, SimonGMT, any speculative worktree or dag.json. Similar lemmas in other branches have different types and names, so there is neither reuse nor collision.
