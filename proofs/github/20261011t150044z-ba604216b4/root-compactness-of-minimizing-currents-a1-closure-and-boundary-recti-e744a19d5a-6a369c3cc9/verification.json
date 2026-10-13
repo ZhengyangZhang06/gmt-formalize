@@ -1,0 +1,15 @@
+{
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1.subspace_haar-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/6790",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "413eb6b2b2cfad4f3741718acb8a6ca0d984c63f",
+  "integrated_commit": "",
+  "proof_base_commit": "c26fb9357419e2244fdbcad337e7a261a0a93abc",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1",
+  "requires": []
+}
