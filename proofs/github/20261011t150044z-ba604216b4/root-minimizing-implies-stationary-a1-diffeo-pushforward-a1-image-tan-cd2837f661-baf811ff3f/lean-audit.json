@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8738dc3f078e7b9ab200930a6e73d07ecbf6b107277f010c23ada331bc935e27",
+  "git_delta": {
+    "base_commit": "eb98c8be4da42c6330d7e3171e6a48d4137b0785",
+    "candidate_commit": "34325ececca5ed226212e37aa67e711a3a090e9d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dpf_itt_approxTangentPlane_eq",
+    "diff_sha256": "21dd25aeeacf0934a195c43fb38b9e9a9a259a6daefb90db43e22da3eea9b9d6",
+    "source_sha256": "846927c43ac9ab93bd2839d0114106e20e10cd9d842d4f6cceb4c84bbea3f725",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dpf_itt_approxTangentPlane_eq",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n M x Q → approxTangentPlane n M x = Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
