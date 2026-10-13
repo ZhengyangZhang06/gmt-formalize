@@ -471,6 +471,133 @@ theorem Submission.cbr_ct_vs_compact_exhaustion : ∀ (P : ℕ) (U : Set (Euclid
     -- a point `y ∉ U` within `(m + 1)⁻¹ < δ` of `x ∈ C` would lie in `thickening δ C ⊆ U`
     obtain ⟨y, hy, hxy⟩ := mem_thickening_iff.1 hxt
     exact hy (hδU (mem_thickening_iff.2 ⟨x, hx, by rw [dist_comm]; linarith⟩))
+/-- **Simon 1.4.16, one compact piece** (the Alaoglu step of the proof, corrected to a genuine
+subsequence).  If `K ⊆ ℝᴾ` is compact and `supⱼ μⱼ(K) < ∞`, there is a strictly increasing `θ`
+such that `∫ f dμ_{θ(j)}` converges for every continuous `f` with `tsupport f ⊆ K`.  As `f`
+vanishes off `K`, `∫ f dμⱼ = ∫_K f dμⱼ`.  The step functions `g (n, L) x = L[m]` (`m` the first
+index with `|x - dₘ| < 1/(n+1)`, `(dₘ)` dense in `ℝᴾ`, `L` a list of rationals) form a countable
+family that is uniformly dense on `K` for such `f`.  Sequential compactness of a countable product
+of compact intervals gives one subsequence along which every `∫_K g dμⱼ` converges, and a `3ε`
+argument makes `∫_K f dμ_{θ(j)}` Cauchy. -/
+theorem Submission.cbr_ct_vs_compact_piece_subseq : ∀ (P : ℕ) (K : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsCompact K → ⨆ j, μs j K < ∞ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ f : Euclid P → ℝ, Continuous f → tsupport f ⊆ K → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(μs (θ j))) atTop (𝓝 c) := by
+  classical
+  intro P K μs hK hM
+  -- `M = supⱼ μⱼ(K)` as a real number
+  set M : ℝ := (⨆ j, μs j K).toReal
+  have hM0 : 0 ≤ M := ENNReal.toReal_nonneg
+  have hμK : ∀ j, μs j K ≤ ⨆ j, μs j K := fun j => le_iSup (fun j => μs j K) j
+  have hμKfin : ∀ j, μs j K < ∞ := fun j => lt_of_le_of_lt (hμK j) hM
+  have hμKM : ∀ j, (μs j).real K ≤ M := fun j => ENNReal.toReal_mono hM.ne (hμK j)
+  -- a dense sequence `d` in `ℝᴾ`: every `x` is within `1/(n+1)` of some `d m`
+  set d : ℕ → Euclid P := TopologicalSpace.denseSeq (Euclid P)
+  have hr : ∀ n : ℕ, (0 : ℝ) < 1 / ((n : ℝ) + 1) := fun n => Nat.one_div_pos_of_nat
+  have hcov : ∀ (n : ℕ) (x : Euclid P), ∃ m, dist x (d m) < 1 / ((n : ℝ) + 1) :=
+    fun n x => (TopologicalSpace.denseRange_denseSeq (Euclid P)).exists_dist_lt x (hr n)
+  -- the countable test family `g (n, L) x = L[m]`, `m` the first index with
+  -- `dist x (d m) < 1/(n+1)`; it is measurable and bounded by `B (n, L) = ∑ |L[i]|`
+  let g : ℕ × List ℚ → Euclid P → ℝ := fun k x =>
+    ((k.2.getD (Nat.find (hcov k.1 x)) 0 : ℚ) : ℝ)
+  have hgm : ∀ k, Measurable (g k) := fun k =>
+    Measurable.find (f := fun m _ => ((k.2.getD m 0 : ℚ) : ℝ)) (fun _ => measurable_const)
+      (fun _ => measurableSet_ball) (hcov k.1)
+  let B : ℕ × List ℚ → ℝ := fun k => (k.2.map (fun q : ℚ => |(q : ℝ)|)).sum
+  have hgB : ∀ k x, |g k x| ≤ B k := by
+    have key : ∀ (L : List ℚ) (m : ℕ),
+        |((L.getD m 0 : ℚ) : ℝ)| ≤ (L.map (fun q : ℚ => |(q : ℝ)|)).sum := by
+      intro L
+      induction L with
+      | nil => intro m; simp
+      | cons a L ih =>
+        intro m
+        have hs : 0 ≤ (L.map (fun q : ℚ => |(q : ℝ)|)).sum := List.sum_nonneg (by simp)
+        cases m with
+        | zero =>
+          simp only [List.getD_cons_zero, List.map_cons, List.sum_cons]
+          linarith
+        | succ m =>
+          simp only [List.getD_cons_succ, List.map_cons, List.sum_cons]
+          linarith [ih m, abs_nonneg (a : ℝ)]
+    exact fun k x => key k.2 _
+  -- every admissible `f` is uniformly approximated on `K` by the test family
+  have happrox : ∀ f : Euclid P → ℝ, Continuous f → tsupport f ⊆ K →
+      ∀ ε > 0, ∃ k, ∀ x ∈ K, |f x - g k x| ≤ ε := by
+    intro f hf hfK ε hε
+    have hfc : HasCompactSupport f := hK.of_isClosed_subset (isClosed_tsupport f) hfK
+    obtain ⟨δ, hδ, hfδ⟩ := Metric.uniformContinuous_iff.mp
+      (hfc.uniformContinuous_of_continuous hf) (ε / 2) (half_pos hε)
+    obtain ⟨n, hn⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨t, ht⟩ := hK.elim_finite_subcover (fun m => ball (d m) (1 / ((n : ℝ) + 1)))
+      (fun _ => isOpen_ball) (fun x _ => mem_iUnion.mpr (hcov n x))
+    choose q hq using fun m => Rat.denseRange_cast.exists_dist_lt (f (d m)) (half_pos hε)
+    refine ⟨(n, (List.range (t.sup id + 1)).map q), fun x hx => ?_⟩
+    obtain ⟨m, hmt, hxm⟩ := mem_iUnion₂.mp (ht hx)
+    have hlt : Nat.find (hcov n x) < t.sup id + 1 :=
+      Nat.lt_succ_of_le ((Nat.find_min' (hcov n x) hxm).trans (Finset.le_sup (f := id) hmt))
+    have h1 := hfδ ((Nat.find_spec (hcov n x)).trans hn)
+    have h2 := hq (Nat.find (hcov n x))
+    rw [Real.dist_eq] at h1 h2
+    have hg : g (n, (List.range (t.sup id + 1)).map q) x = q (Nat.find (hcov n x)) := by
+      simp only [g, List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_range hlt,
+        Option.map_some, Option.getD_some]
+    rw [hg]
+    linarith [abs_sub_le (f x) (f (d (Nat.find (hcov n x)))) (q (Nat.find (hcov n x)) : ℝ)]
+  -- the test integrals `v j k = ∫_K g k dμⱼ` satisfy `|v j k| ≤ B k * M`
+  have hgi : ∀ j k, IntegrableOn (g k) K (μs j) := fun j k =>
+    Measure.integrableOn_of_bounded (hμKfin j).ne (hgm k).aestronglyMeasurable
+      (ae_of_all _ fun x => (Real.norm_eq_abs _).trans_le (hgB k x))
+  let v : ℕ → ℕ × List ℚ → ℝ := fun j k => ∫ x in K, g k x ∂(μs j)
+  have hvB : ∀ j k, |v j k| ≤ B k * M := by
+    intro j k
+    rw [← Real.norm_eq_abs]
+    calc ‖∫ x in K, g k x ∂(μs j)‖ ≤ B k * (μs j).real K :=
+          norm_setIntegral_le_of_norm_le_const (hμKfin j)
+            (fun x _ => (Real.norm_eq_abs _).trans_le (hgB k x))
+      _ ≤ B k * M := mul_le_mul_of_nonneg_left (hμKM j) ((abs_nonneg _).trans (hgB k 0))
+  -- diagonal selection: `(v j)ⱼ` lies in the compact `∏ₖ [-B k M, B k M]`, which is
+  -- first countable since `ℕ × List ℚ` is countable
+  obtain ⟨a, -, θ, hθ, hlim⟩ :=
+    (isCompact_univ_pi fun k : ℕ × List ℚ =>
+      isCompact_Icc (a := -(B k * M)) (b := B k * M)).tendsto_subseq
+      (x := v) fun j => Set.mem_univ_pi.mpr fun k => abs_le.mp (hvB j k)
+  have hconv : ∀ k, Tendsto (fun j => v (θ j) k) atTop (𝓝 (a k)) := tendsto_pi_nhds.mp hlim
+  refine ⟨θ, hθ, fun f hf hfK => ?_⟩
+  -- `f` vanishes off `K`, so `∫ f dμⱼ = ∫_K f dμⱼ`; and `f` is bounded
+  have hf0 : ∀ x ∉ K, f x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (hfK h)
+  have hfK' : ∀ j, ∫ x, f x ∂(μs j) = ∫ x in K, f x ∂(μs j) := fun j =>
+    (setIntegral_eq_integral_of_forall_compl_eq_zero hf0).symm
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support
+    (hK.of_isClosed_subset (isClosed_tsupport f) hfK)
+  have hfi : ∀ j, IntegrableOn f K (μs j) := fun j =>
+    Measure.integrableOn_of_bounded (hμKfin j).ne hf.aestronglyMeasurable (ae_of_all _ hC)
+  -- `∫ f dμⱼ` is `η M`-close to a test integral, uniformly in `j`
+  have hclose : ∀ η > 0, ∃ k, ∀ j, dist (∫ x, f x ∂(μs j)) (v j k) ≤ η * M := by
+    intro η hη
+    obtain ⟨k, hk⟩ := happrox f hf hfK η hη
+    refine ⟨k, fun j => ?_⟩
+    rw [hfK' j, dist_eq_norm, ← integral_sub (hfi j) (hgi j k)]
+    calc ‖∫ x in K, (f x - g k x) ∂(μs j)‖ ≤ η * (μs j).real K :=
+          norm_setIntegral_le_of_norm_le_const (hμKfin j)
+            (fun x hx => (Real.norm_eq_abs _).trans_le (hk x hx))
+      _ ≤ η * M := mul_le_mul_of_nonneg_left (hμKM j) hη.le
+  -- hence `(∫ f dμ_{θ j})ⱼ` is Cauchy, so it converges
+  have hcauchy : CauchySeq (fun j => ∫ x, f x ∂(μs (θ j))) := by
+    rw [Metric.cauchySeq_iff]
+    intro ε hε
+    obtain ⟨k, hk⟩ := hclose (ε / (3 * (M + 1))) (by positivity)
+    obtain ⟨N, hN⟩ := Metric.cauchySeq_iff.mp (hconv k).cauchySeq (ε / 3) (by positivity)
+    refine ⟨N, fun m hm n hn => ?_⟩
+    have h1 := hk (θ m)
+    have h2 := hk (θ n)
+    have h3 := hN m hm n hn
+    have hη : ε / (3 * (M + 1)) * M ≤ ε / 3 := by
+      rw [div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    calc dist (∫ x, f x ∂(μs (θ m))) (∫ x, f x ∂(μs (θ n)))
+        ≤ dist (∫ x, f x ∂(μs (θ m))) (v (θ m) k) + dist (v (θ m) k) (v (θ n) k) +
+            dist (v (θ n) k) (∫ x, f x ∂(μs (θ n))) := dist_triangle4 _ _ _ _
+      _ < ε := by rw [dist_comm (v (θ n) k)]; linarith
+  exact cauchySeq_tendsto_of_complete hcauchy
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
