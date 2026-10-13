@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "707b19df01d078856f3b804a774df368499317a2fa3c2938f8eec289a9166fe5",
+  "git_delta": {
+    "base_commit": "bbbfd3b812ab009259680fa5dd7023ca7251538b",
+    "candidate_commit": "ec0cc8fff61bc7f241342bdc6d1fbb5a9fb81d74",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_cwv_euler_contraction_isTestForm",
+    "diff_sha256": "7487e218baffbad77a8b1be94f8e4b95a9b3b327b247a1d219002f5b8fd4b14b",
+    "source_sha256": "4f78203c5bc75ddb7de36fc27f3114ca553de1fd81ab6f10950a270de00b66aa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cwv_euler_contraction_isTestForm",
+      "statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) z)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
