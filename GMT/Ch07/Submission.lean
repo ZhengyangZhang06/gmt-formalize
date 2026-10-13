@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Countable Lipschitz localization of a `C¹` map (Simon Ch. 3, §2 works with locally Lipschitz
+`f`).  If `Z ⊆ ℝᴾ` is open and `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`, then countably many open balls
+`V l ⊆ Z` cover `Z`, `F` agrees on `V l` with a Lipschitz `G l : ℝᴾ → ℝⁿ`, and the Borel sets
+`Zs l = V l \ ⋃_{l' < l} V l'` partition `Z`.  `F` is Lipschitz on a closed ball in `Z` about each
+point (`C¹` on a convex compact set), Lindelöf gives a countable subcover, and `F|V l` extends to
+`ℝᴾ` because `ℝⁿ` is finite dimensional. -/
+theorem Submission.idtp_caf_lipschitz_localization : ∀ (P n : ℕ) (Z : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → ∃ (V Zs : ℕ → Set (Euclid P)) (G : ℕ → Euclid P → Euclid n), (∀ l, IsOpen (V l)) ∧ (∀ l, V l ⊆ Z) ∧ (∀ l, MeasurableSet (Zs l)) ∧ (∀ l, Zs l ⊆ V l) ∧ Pairwise (fun l l' => Disjoint (Zs l) (Zs l')) ∧ (⋃ l, Zs l) = Z ∧ (∀ l, ∃ K : NNReal, LipschitzWith K (G l)) ∧ ∀ l, EqOn F (G l) (V l) := by
+  intro P n Z F hZ hF
+  -- Step 1: `Z = ∅`
+  rcases Z.eq_empty_or_nonempty with rfl | hZne
+  · exact ⟨fun _ => ∅, fun _ => ∅, fun _ _ => 0, fun _ => isOpen_empty, fun _ => empty_subset _,
+      fun _ => MeasurableSet.empty, fun _ => empty_subset _, fun _ _ _ => empty_disjoint _,
+      iUnion_empty, fun _ => ⟨0, LipschitzWith.const 0⟩, fun _ => eqOn_empty _ _⟩
+  -- Step 2: `F` is Lipschitz on a ball `B_{r(x)}(x)` with `B̄_{r(x)}(x) ⊆ Z`, for each `x ∈ Z`
+  have hloc : ∀ x ∈ Z, ∃ r > 0, ball x r ⊆ Z ∧ ∃ K, LipschitzOnWith K F (ball x r) := by
+    intro x hx
+    obtain ⟨ε, hε, hεZ⟩ := Metric.isOpen_iff.mp hZ x hx
+    have hcl : closedBall x (ε / 2) ⊆ Z := (closedBall_subset_ball (half_lt_self hε)).trans hεZ
+    obtain ⟨K, hK⟩ := (hF.mono hcl).exists_lipschitzOnWith one_ne_zero (convex_closedBall x _)
+      (isCompact_closedBall x _)
+    exact ⟨ε / 2, half_pos hε, ball_subset_closedBall.trans hcl, K, hK.mono ball_subset_closedBall⟩
+  choose! r hr hrZ K hK using hloc
+  -- Step 3: countably many of these balls cover `Z` (Lindelöf), enumerated by `ℕ`
+  have hcover : (⋃ x ∈ Z, ball x (r x)) = Z :=
+    (iUnion₂_subset hrZ).antisymm fun x hx => mem_biUnion hx (mem_ball_self (hr x hx))
+  obtain ⟨T, hTZ, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable Z (fun x => ball x (r x)) fun _ _ => isOpen_ball
+  have hTne : T.Nonempty := by
+    obtain ⟨x, hx⟩ := hZne
+    rw [← hcover, ← hTU] at hx
+    obtain ⟨y, hy, -⟩ := mem_iUnion₂.mp hx
+    exact ⟨y, hy⟩
+  obtain ⟨c, rfl⟩ := hTc.exists_eq_range hTne
+  have hcZ : ∀ l, c l ∈ Z := fun l => hTZ (mem_range_self l)
+  have hVU : (⋃ l, ball (c l) (r (c l))) = Z := by
+    rw [← hcover, ← hTU, biUnion_range]
+  -- Step 4: Lipschitz extensions `G l` of `F|V l` to `ℝᴾ`
+  choose G hG hGF using fun l => (hK (c l) (hcZ l)).extend_finite_dimension
+  -- Step 5: `Zs = disjointed V`
+  exact ⟨fun l => ball (c l) (r (c l)), disjointed fun l => ball (c l) (r (c l)), G,
+    fun _ => isOpen_ball, fun l => hrZ _ (hcZ l),
+    MeasurableSet.disjointed fun _ => isOpen_ball.measurableSet, disjointed_subset _,
+    disjoint_disjointed _, iUnion_disjointed.trans hVU, fun l => ⟨_, hG l⟩, hGF⟩
+
+/-- **Simon Ch. 2, 1.8(i)**, for a `C¹` map: if `Z ⊆ ℝᴾ` is open, `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`
+and `S ⊆ Z` has `Hⁿ(S) = 0`, then `Lⁿ(F(S)) = 0`.  Split `Z` into Borel pieces `Zₗ ⊆ Vₗ` with
+`F = Gₗ` on `Vₗ` for Lipschitz `Gₗ`; then `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`,
+`Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`, and `Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem Submission.idtp_caf_null_image : ∀ (P n : ℕ) (Z S : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → S ⊆ Z → μHE[n] S = 0 → volume (F '' S) = 0 := by
+  intro P n Z S F hZ hF hSZ hS
+  have hvol : (μHE[n] : Measure (Euclid n)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+  -- Step 1: Lipschitz localization, `F = Gₗ` on `Vₗ ⊇ Zₗ` and `⋃ₗ Zₗ = Z`
+  obtain ⟨V, Zs, G, -, -, -, hZsV, -, hZs, hG, hFG⟩ :=
+    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
+  -- Step 2: `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`
+  have hcover : F '' S ⊆ ⋃ l, G l '' (S ∩ Zs l) := by
+    rintro _ ⟨x, hxS, rfl⟩
+    obtain ⟨l, hxl⟩ := mem_iUnion.mp (hZs.symm.subset (hSZ hxS))
+    exact mem_iUnion.mpr ⟨l, x, ⟨hxS, hxl⟩, (hFG l (hZsV l hxl)).symm⟩
+  -- Step 3: `Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`
+  have hpiece : ∀ l, μHE[n] (G l '' (S ∩ Zs l)) = 0 := by
+    intro l
+    obtain ⟨K, hK⟩ := hG l
+    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hK.lipschitzOnWith (s := S ∩ Zs l))
+    rw [measure_mono_null inter_subset_left hS, mul_zero] at hle
+    exact le_antisymm hle bot_le
+  -- Step 4: `Hⁿ = Lⁿ` on `ℝⁿ` and countable subadditivity
+  rw [← hvol]
+  exact measure_mono_null hcover (measure_iUnion_null hpiece)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
