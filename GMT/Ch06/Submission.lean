@@ -2704,6 +2704,84 @@ theorem Submission.deformation_ipl_cc_pushforward_integrand_bound : ∀ (P Q k :
     rw [abs_mul, abs_of_pos hθ, hval]
     calc θ x * |β x (fun a => A x (τ a))| ≤ θ x * (Λ ^ k * ‖β x‖) := by gcongr
       _ = Λ ^ k * ‖β x‖ * θ x := by ring
+/-- Dominated convergence over a countable partition (Tannery's theorem): if `S = ⋃ E i` a.e. for
+pairwise disjoint null-measurable `E i`, `|f j| ≤ G` eventually in `j` and `|f₀| ≤ G` a.e. on `S`
+with `G` integrable on `S`, and `∫_{E i} f j → ∫_{E i} f₀` for every `i`, then
+`∫_S f j → ∫_S f₀`. -/
+theorem Submission.deformation_ipl_cc_tendsto_setIntegral_of_partition : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (S : Set X) (E : ℕ → Set X) (f : ℕ → X → ℝ) (f₀ G : X → ℝ), (∀ i, NullMeasurableSet (E i) μ) → Pairwise (Function.onFun Disjoint E) → S =ᵐ[μ] (⋃ i, E i) → IntegrableOn G S μ → (∀ j, AEStronglyMeasurable (f j) (μ.restrict S)) → AEStronglyMeasurable f₀ (μ.restrict S) → (∀ᶠ j in atTop, ∀ᵐ x ∂(μ.restrict S), |f j x| ≤ G x) → (∀ᵐ x ∂(μ.restrict S), |f₀ x| ≤ G x) → (∀ i, Tendsto (fun j => ∫ x in E i, f j x ∂μ) atTop (𝓝 (∫ x in E i, f₀ x ∂μ))) → Tendsto (fun j => ∫ x in S, f j x ∂μ) atTop (𝓝 (∫ x in S, f₀ x ∂μ)) := by
+  intro X _ μ S E f f₀ G hEm hEd hSE hG hfm hf₀m hfb hf₀b hlim
+  -- Step 1: `μ ⌞ S = μ ⌞ ⋃ E i`, so `G` is integrable on `⋃ E i`.
+  have hres : μ.restrict S = μ.restrict (⋃ i, E i) := Measure.restrict_congr_set hSE
+  have hGS' : IntegrableOn G (⋃ i, E i) μ := by rw [IntegrableOn, ← hres]; exact hG
+  -- Step 2: eventually `f j`, and `f₀`, are integrable on `⋃ E i` (dominated by `G`).
+  have hint : ∀ᶠ j in atTop, IntegrableOn (f j) (⋃ i, E i) μ := by
+    filter_upwards [hfb] with j hj
+    rw [IntegrableOn, ← hres]
+    exact Integrable.mono' hG (hfm j) (by simpa [Real.norm_eq_abs] using hj)
+  have hint₀ : IntegrableOn f₀ (⋃ i, E i) μ := by
+    rw [IntegrableOn, ← hres]
+    exact Integrable.mono' hG hf₀m (by simpa [Real.norm_eq_abs] using hf₀b)
+  -- Step 3: countable additivity over the a.e.-disjoint pieces `E i`.
+  have hdisj : Pairwise (Function.onFun (AEDisjoint μ) E) := fun i j hij => (hEd hij).aedisjoint
+  have hsumj : ∀ᶠ j in atTop, ∫ x in S, f j x ∂μ = ∑' i, ∫ x in E i, f j x ∂μ := by
+    filter_upwards [hint] with j hj
+    rw [setIntegral_congr_set hSE, integral_iUnion_ae hEm hdisj hj]
+  have hsum₀ : ∫ x in S, f₀ x ∂μ = ∑' i, ∫ x in E i, f₀ x ∂μ := by
+    rw [setIntegral_congr_set hSE, integral_iUnion_ae hEm hdisj hint₀]
+  -- Step 4: eventually `|∫_{E i} f j| ≤ b i := ∫_{E i} G`, and `∑ b i = ∫_{⋃ E i} G` converges.
+  have hEsub : ∀ i, μ.restrict (E i) ≤ μ.restrict S := fun i => by
+    rw [hres]; exact Measure.restrict_mono (subset_iUnion E i) le_rfl
+  have hbsum : Summable (fun i => ∫ x in E i, G x ∂μ) :=
+    (hasSum_integral_iUnion_ae hEm hdisj hGS').summable
+  have hbound : ∀ᶠ j in atTop, ∀ i, ‖∫ x in E i, f j x ∂μ‖ ≤ ∫ x in E i, G x ∂μ := by
+    filter_upwards [hfb] with j hj i
+    refine norm_integral_le_of_norm_le (hGS'.mono_set (subset_iUnion E i)) ?_
+    have hj' : ∀ᵐ x ∂(μ.restrict S), ‖f j x‖ ≤ G x := by simpa [Real.norm_eq_abs] using hj
+    exact ae_mono (hEsub i) hj'
+  -- Step 5: Tannery's theorem (dominated convergence for series), by the `ε / 3` argument of
+  -- Mathlib's `tendsto_tsum_of_dominated_convergence` (not imported here): cut the tail of
+  -- `∑ b i` outside a finite set `T`, and use termwise convergence on `T`.
+  have tannery : ∀ (a : ℕ → ℕ → ℝ) (a₀ b : ℕ → ℝ), Summable b →
+      (∀ i, Tendsto (fun j => a j i) atTop (𝓝 (a₀ i))) → (∀ᶠ j in atTop, ∀ i, ‖a j i‖ ≤ b i) →
+      Tendsto (fun j => ∑' i, a j i) atTop (𝓝 (∑' i, a₀ i)) := by
+    intro a a₀ b hb ha hab
+    have ha₀b : ∀ i, ‖a₀ i‖ ≤ b i := fun i =>
+      le_of_tendsto (tendsto_norm.comp (ha i)) (hab.mono fun j hj => hj i)
+    have hsum₀' : Summable fun i => ‖a₀ i‖ :=
+      hb.of_norm_bounded fun i => (norm_norm (a₀ i)).symm ▸ ha₀b i
+    have hsumj' : ∀ᶠ j in atTop, Summable fun i => ‖a j i‖ := by
+      filter_upwards [hab] with j hj
+      exact hb.of_norm_bounded <| by simpa only [norm_norm] using hj
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨B, hB⟩ := hb
+    obtain ⟨T, hT⟩ : ∃ T : Finset ℕ, dist (∑ i ∈ T, b i) B < ε / 3 := by
+      rw [HasSum, Metric.tendsto_nhds] at hB
+      exact Eventually.exists <| hB _ (by positivity)
+    have htail : ∑' i : (Tᶜ : Set ℕ), b i < ε / 3 := by
+      calc _ ≤ ‖∑' i : (Tᶜ : Set ℕ), b i‖ := Real.le_norm_self _
+           _ = ‖B - ∑ i ∈ T, b i‖ := congrArg _ ?_
+           _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
+      simpa only [hB.summable.sum_add_tsum_compl, eq_sub_iff_add_eq'] using hB.tsum_eq
+    have hfin : Tendsto (fun j => ∑ i ∈ T, a j i) atTop (𝓝 (∑ i ∈ T, a₀ i)) :=
+      tendsto_finsetSum _ fun i _ => ha i
+    rw [Metric.tendsto_nhds] at hfin
+    filter_upwards [hfin (ε / 3) (by positivity), hsumj', hab] with j hj hsj hbj
+    rw [dist_eq_norm, ← hsj.of_norm.tsum_sub hsum₀'.of_norm,
+      ← (hsj.of_norm.sub hsum₀'.of_norm).sum_add_tsum_compl (s := T),
+      (by ring : ε = ε / 3 + (ε / 3 + ε / 3))]
+    refine (norm_add_le _ _).trans_lt (add_lt_add ?_ ?_)
+    · simpa only [dist_eq_norm, Finset.sum_sub_distrib] using hj
+    · rw [(hsj.subtype _).of_norm.tsum_sub (hsum₀'.subtype _).of_norm]
+      refine (norm_sub_le _ _).trans_lt (add_lt_add ?_ ?_)
+      · refine ((norm_tsum_le_tsum_norm (hsj.subtype _)).trans ?_).trans_lt htail
+        exact (hsj.subtype _).tsum_le_tsum (hbj ·) (hB.summable.subtype _)
+      · refine ((norm_tsum_le_tsum_norm (hsum₀'.subtype _)).trans ?_).trans_lt htail
+        exact (hsum₀'.subtype _).tsum_le_tsum (ha₀b ·) (hB.summable.subtype _)
+  have htan := tannery (fun j i => ∫ x in E i, f j x ∂μ) (fun i => ∫ x in E i, f₀ x ∂μ)
+    (fun i => ∫ x in E i, G x ∂μ) hbsum hlim hbound
+  rw [hsum₀]
+  exact htan.congr' (hsumj.mono fun j hj => hj.symm)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
