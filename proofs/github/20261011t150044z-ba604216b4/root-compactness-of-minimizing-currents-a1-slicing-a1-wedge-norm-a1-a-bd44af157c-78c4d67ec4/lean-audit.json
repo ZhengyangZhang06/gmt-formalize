@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7ed406a0e875205b4fb4675fc4bcf1fe4b6e5d6575a15ad7f4cf3d3c8d4740f9",
+  "git_delta": {
+    "base_commit": "b3ab668a510e7d6d515999bf28f43e275b1cfee1",
+    "candidate_commit": "6d1301bd3d0a4411ab5e8df0fc20f299819ed7d5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_wn_adapted_orthonormalBasis",
+    "diff_sha256": "3f45f82384b7e253834257433a5f02bc2807cac060861495da0b69f9761d96ca",
+    "source_sha256": "cfa2007c736a75784c9a23985ec0966d440b0bcbc6a6c5a8915f93c95ec35ad0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_wn_adapted_orthonormalBasis",
+      "statement": "∀ (P : ℕ) (β : Euclid P →L[ℝ] ℝ) (i₀ : Fin P), ∃ f : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, β (f i) = if i = i₀ then ‖β‖ else 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
