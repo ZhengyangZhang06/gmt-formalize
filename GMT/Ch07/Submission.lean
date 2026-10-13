@@ -451,6 +451,29 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Approximate tangent spaces glue over a countable Borel cover** (Simon Ch. 3, Remark 1.5(2),
+with the decomposition of Remark 1.3; used in Ch. 6, proof of Lemma 4.1(2)).  Assume tangent
+locality (TL): for Borel `A ⊆ B ⊆ U`, `U` open and `B` locally `Hⁿ`-finite in `U`, the sets `B`
+and `A` have the same approximate tangent spaces at `Hⁿ`-a.e. `x ∈ A`.  Let `B ⊆ U` be Borel and
+locally `Hⁿ`-finite in `U`, and let Borel sets `S j ⊆ B` cover `B`.  If `S j` has approximate
+tangent space `Q(x)` at `Hⁿ`-a.e. `x ∈ S j` for every `j`, then `B` has approximate tangent space
+`Q(x)` at `Hⁿ`-a.e. `x ∈ B`.
+* (TL) with `A = S j`, evaluated at `Q(x)`, transfers the tangent space from `S j` to `B`,
+  `Hⁿ`-a.e. on `S j`.
+* A countable union of null sets is null (`ae_restrict_iUnion_iff`), and `B ⊆ ⋃ j, S j`. -/
+theorem Submission.dor_lmbsf_tg_tangent_gluing : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U B : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), IsOpen U → MeasurableSet B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → (∀ j, MeasurableSet (S j)) → (∀ j, S j ⊆ B) → B ⊆ ⋃ j, S j → (∀ j, ∀ᵐ x ∂(μHE[n].restrict (S j)), HasApproximateTangentSpaceAt n (S j) x (Q x)) → ∀ᵐ x ∂(μHE[n].restrict B), HasApproximateTangentSpaceAt n B x (Q x) := by
+  intro hTL P n U B S Q hU hB hBU hfin hS hSB hBS hpiece
+  -- Steps 1–2: on `S j`, (TL) with `A = S j` turns `TₓS j = Q(x)` into `TₓB = Q(x)`
+  have hj : ∀ j, ∀ᵐ x ∂(μHE[n].restrict (S j)), HasApproximateTangentSpaceAt n B x (Q x) := by
+    intro j
+    filter_upwards [hTL P n U (S j) B hU (hS j) hB (hSB j) hBU hfin, hpiece j] with x hx hxQ
+    exact (hx (Q x)).2 hxQ
+  -- Step 3: a countable union of null sets is null, so this holds `Hⁿ`-a.e. on `⋃ j, S j`
+  have hcover : ∀ᵐ x ∂(μHE[n].restrict (⋃ j, S j)), HasApproximateTangentSpaceAt n B x (Q x) :=
+    (ae_restrict_iUnion_iff S _).2 hj
+  -- Step 4: restrict to `B ⊆ ⋃ j, S j`
+  exact ae_restrict_of_ae_restrict_of_subset hBS hcover
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
