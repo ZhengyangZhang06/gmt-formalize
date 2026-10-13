@@ -451,6 +451,398 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Basis independence of `Σ_j α(b ∘ j)²`** (Simon 6.1): for an `n`-covector `α` on `ℝᴾ` and
+orthonormal bases `b`, `b'` of `ℝᴾ`, `Σ_{j : Fin n → Fin P} α(b_{j 0}, …, b_{j (n-1)})²` is the same
+for `b` and `b'`.  Expand `bᵢ = Σₛ ⟨b'ₛ, bᵢ⟩ b'ₛ` in every slot (multilinearity), square and sum
+over `j`; the `j`-sum factors over the slots, and `Σᵢ ⟨b'ₛ, bᵢ⟩⟨bᵢ, b'ₜ⟩ = ⟨b'ₛ, b'ₜ⟩ = δₛₜ`
+(Parseval for `b`) kills every cross term. -/
+theorem Submission.regcomp_covector_sq_sum_basis_invariant : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (b b' : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2 = ∑ j : Fin n → Fin P, (α (fun k => b' (j k))) ^ 2 := by
+  intro P n α b b'
+  classical
+  -- `c i s = ⟨b'ₛ, bᵢ⟩`, the coordinates of `bᵢ` in `b'`
+  set c : Fin P → Fin P → ℝ := fun i s => inner ℝ (b' s) (b i) with hc
+  -- multilinearity: `α(b ∘ j) = Σ_a (Πₖ c(j k, a k)) α(b' ∘ a)`
+  have hexp : ∀ j : Fin n → Fin P, α (fun k => b (j k)) =
+      ∑ a : Fin n → Fin P, (∏ k, c (j k) (a k)) * α (fun k => b' (a k)) := by
+    intro j
+    have hb : (fun k => b (j k)) = fun k => ∑ s, c (j k) s • b' s :=
+      funext fun k => (b'.sum_repr' (b (j k))).symm
+    rw [hb, α.map_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [← smul_eq_mul, ← α.map_smul_univ]
+  -- Parseval for `b` and orthonormality of `b'`: `Σᵢ c(i, s) c(i, t) = δₛₜ`
+  have hdelta : ∀ s t : Fin P, ∑ i, c i s * c i t = if s = t then 1 else 0 := by
+    intro s t
+    have h1 : ∑ i, c i s * c i t = inner ℝ (b' s) (b' t) := by
+      rw [← b.sum_inner_mul_inner (b' s) (b' t)]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [hc]
+      rw [real_inner_comm (b' t) (b i)]
+    rw [h1]
+    exact (orthonormal_iff_ite.mp b'.orthonormal) s t
+  -- `Σ_j Πₖ c(j k, a k) c(j k, a' k) = Πₖ Σᵢ c(i, a k) c(i, a' k) = δ_{a a'}`
+  have hT : ∀ a a' : Fin n → Fin P,
+      ∑ j : Fin n → Fin P, ∏ k, (c (j k) (a k) * c (j k) (a' k)) = if a = a' then 1 else 0 := by
+    intro a a'
+    rw [← Fintype.prod_sum (fun k i => c i (a k) * c i (a' k))]
+    simp_rw [hdelta]
+    split_ifs with h
+    · subst h
+      simp
+    · obtain ⟨k, hk⟩ := Function.ne_iff.mp h
+      exact Finset.prod_eq_zero (Finset.mem_univ k) (ite_eq_right hk)
+  calc ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2
+      = ∑ j : Fin n → Fin P, ∑ a : Fin n → Fin P, ∑ a' : Fin n → Fin P,
+          (α (fun k => b' (a k)) * α (fun k => b' (a' k))) *
+            ∏ k, (c (j k) (a k) * c (j k) (a' k)) := by
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hexp j, sq, Finset.sum_mul_sum]
+        refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun a' _ => ?_
+        rw [Finset.prod_mul_distrib]
+        ring
+    _ = ∑ a : Fin n → Fin P, ∑ a' : Fin n → Fin P,
+          (α (fun k => b' (a k)) * α (fun k => b' (a' k))) *
+            ∑ j : Fin n → Fin P, ∏ k, (c (j k) (a k) * c (j k) (a' k)) := by
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun a' _ => ?_
+        rw [Finset.mul_sum]
+    _ = ∑ a : Fin n → Fin P, (α (fun k => b' (a k))) ^ 2 := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        simp_rw [hT]
+        rw [Finset.sum_eq_single a]
+        · simp [sq]
+        · intro a' _ hne
+          simp [Ne.symm hne]
+        · intro h
+          exact absurd (Finset.mem_univ a) h
+/-- **Simon 6.1.2, 6.1.5** (the Euclidean coefficient norm in the standard basis `e`):
+`Σ_{j : Fin n → Fin P} α(e_{j(0)}, …, e_{j(n−1)})² = n! |α|_E²`.  Tuples `j` with a repeated
+index contribute `0` (alternation), and `(I, σ) ↦ I ∘ σ` is a bijection from the strictly
+increasing `I` and the permutations `σ` of `Fin n` onto the injective `j`, with
+`α(e_{I ∘ σ}) = sgn σ · α(e_I)`. -/
+theorem Submission.regcomp_covector_sq_sum_basisFun : ∀ (P n : ℕ) (α : Covector (Euclid P) n), ∑ j : Fin n → Fin P, (α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
+  intro P n α
+  classical
+  -- `|α|_E² = Σ_I [I strictly increasing] α(e_I)²`, so `n! |α|_E² = Σ_{(I, σ)} α(e_I)²` over
+  -- strictly increasing `I` and `σ ∈ Perm(Fin n)`
+  unfold covectorEuclideanNorm
+  rw [Real.sq_sqrt (Finset.sum_nonneg fun I _ => by positivity), ← Finset.sum_filter,
+    Finset.mul_sum]
+  have hcard : ∀ x : ℝ, (n.factorial : ℝ) * x = ∑ _σ : Equiv.Perm (Fin n), x := fun x => by
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  simp only [hcard]
+  rw [← Finset.sum_product']
+  -- alternation: non-injective `j` contribute `0`
+  have hzero : ∀ j : Fin n → Fin P, ¬ Injective j →
+      α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k)) = 0 := fun j hj =>
+    α.map_eq_zero_of_not_injective _
+      fun h => hj (Injective.of_comp (f := ⇑(EuclideanSpace.basisFun (Fin P) ℝ)) h)
+  rw [← Finset.sum_filter_of_ne (p := Injective) fun j _ hne => by
+    by_contra hj
+    exact hne (by rw [hzero j hj]; norm_num)]
+  symm
+  -- `(I, σ) ↦ I ∘ σ` is a bijection onto the injective `j`, and `α(e_{I ∘ σ}) = sgn σ · α(e_I)`
+  refine Finset.sum_bij (fun p _ => fun k => p.1 (p.2 k)) ?_ ?_ ?_ ?_
+  · intro p hp
+    simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp ⊢
+    exact hp.injective.comp p.2.injective
+  · -- equal ranges force `I = I'`, and then `σ = σ'` by injectivity of `I`
+    intro p hp q hq hpq
+    simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp hq
+    have hrange : Set.range p.1 = Set.range q.1 := by
+      rw [← EquivLike.range_comp p.1 p.2, ← EquivLike.range_comp q.1 q.2]
+      exact congrArg Set.range hpq
+    have hI : p.1 = q.1 := (StrictMono.range_inj_of_wellFoundedLT hp hq).mp hrange
+    have hσ : p.2 = q.2 := by
+      ext k
+      have := congr_fun hpq k
+      rw [hI] at this
+      exact congrArg Fin.val (hq.injective this)
+    exact Prod.ext hI hσ
+  · -- `j ∘ Tuple.sort j` is monotone and injective, hence strictly increasing
+    intro j hj
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hj
+    refine ⟨(j ∘ Tuple.sort j, (Tuple.sort j)⁻¹), ?_, ?_⟩
+    · simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true]
+      exact (Tuple.monotone_sort j).strictMono_of_injective (hj.comp (Tuple.sort j).injective)
+    · funext k
+      simp
+  · intro p _
+    have hperm : α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 (p.2 k))) =
+        Equiv.Perm.sign p.2 • α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 k)) :=
+      α.toAlternatingMap.map_perm (fun k => EuclideanSpace.basisFun (Fin P) ℝ (p.1 k)) p.2
+    dsimp only
+    rw [hperm]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign p.2) with h | h <;> simp [h]
+
+/-- **Simon 6.1.2, 6.1.5** in an arbitrary orthonormal basis (the coefficient norm behind
+Remark 6.3.2(3)): for an `n`-covector `α` on `ℝᴾ` and an orthonormal basis `f` of `ℝᴾ`,
+`Σ_{j : Fin n → Fin P} α(f_{j(0)}, …, f_{j(n−1)})² = n! |α|_E²`.  The sum is the same for every
+orthonormal basis (`regcomp_covector_sq_sum_basis_invariant` with `b' = e`, the standard basis),
+and for `e` it is `n! |α|_E²` (`regcomp_covector_sq_sum_basisFun`). -/
+theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (f : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => f (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
+  intro P n α f
+  rw [Submission.regcomp_covector_sq_sum_basis_invariant P n α f
+    (EuclideanSpace.basisFun (Fin P) ℝ)]
+  exact Submission.regcomp_covector_sq_sum_basisFun P n α
+
+/-- **Evaluation on an orthonormal frame is bounded by the Euclidean coefficient norm** (Simon
+Ch. 6, Remark 2.6(a); step 1(a) of the mass formula, Remark 6.3.2(3)): `|α(τ)| ≤ |α|_E` for every
+`n`-covector `α` and orthonormal `τ₁, …, τₙ` in `ℝᴾ`.  Extend `τ` to an orthonormal basis `f` of
+`ℝᴾ` with `f ∘ ι = τ`, `ι = Fin.castLE`.  For every permutation `π`,
+`α(f ∘ (ι ∘ π))² = α(τ ∘ π)² = α(τ)²`, and `π ↦ ι ∘ π` is injective, so
+`n! α(τ)² ≤ Σ_j α(f ∘ j)² = n! |α|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`. -/
+theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α := by
+  intro P n α τ hτ
+  classical
+  -- Step 1: `n ≤ P`, and an orthonormal basis `f` of `ℝᴾ` with `f (ι k) = τ k`, `ι = Fin.castLE`
+  have hnP : n ≤ P := by
+    simpa [finrank_euclideanSpace_fin] using hτ.linearIndependent.fintype_card_le_finrank
+  let ι : Fin n → Fin P := Fin.castLE hnP
+  have hι : Injective ι := Fin.castLE_injective hnP
+  let v : Fin P → Euclid P := fun i => if h : (i : ℕ) < n then τ ⟨i, h⟩ else 0
+  let s : Set (Fin P) := {i | (i : ℕ) < n}
+  have hvs : Orthonormal ℝ (s.domRestrict v) := by
+    let e : s → Fin n := fun i => ⟨i.1, i.2⟩
+    have he : Injective e := fun a b hab =>
+      Subtype.ext (Fin.ext (congrArg (Fin.val : Fin n → ℕ) hab))
+    have hve : s.domRestrict v = τ ∘ e := by
+      funext i
+      have hi : ((i : Fin P) : ℕ) < n := i.2
+      simp [v, e, hi]
+    rw [hve]
+    exact hτ.comp e he
+  obtain ⟨f, hf⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hvs
+  have hfι : ∀ k, f (ι k) = τ k := by
+    intro k
+    rw [hf (ι k) k.2]
+    simp [v, ι]
+  -- Step 2: `α(f ∘ (ι ∘ π))² = α(τ ∘ π)² = α(τ)²` for every permutation `π`
+  let Φ : Equiv.Perm (Fin n) → (Fin n → Fin P) := fun π => ι ∘ π
+  have hΦ : Injective Φ := fun π π' h => Equiv.ext fun k => hι (congrFun h k)
+  have hperm : ∀ π : Equiv.Perm (Fin n), α (fun k => f (Φ π k)) ^ 2 = α τ ^ 2 := by
+    intro π
+    have h1 : (fun k => f (Φ π k)) = τ ∘ π := funext fun k => hfι (π k)
+    have h2 : α (τ ∘ π) = Equiv.Perm.sign π • α τ := α.toAlternatingMap.map_perm τ π
+    rw [h1, h2]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign π) with h | h <;> simp [h]
+  -- Step 3: `n! α(τ)² = Σ_π α(f ∘ (ι ∘ π))² ≤ Σ_j α(f ∘ j)²`, the terms being nonnegative
+  have hle : (n.factorial : ℝ) * α τ ^ 2 ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
+    calc (n.factorial : ℝ) * α τ ^ 2
+        = ∑ j ∈ Finset.univ.image Φ, α (fun k => f (j k)) ^ 2 := by
+          rw [Finset.sum_image fun π _ π' _ h => hΦ h]
+          simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm,
+            Fintype.card_fin, nsmul_eq_mul]
+      _ ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun j _ _ => sq_nonneg _
+  -- Step 4: `Σ_j α(f ∘ j)² = n! |α|_E²` (`regcomp_covector_sq_sum_orthonormalBasis`); cancel `n!`
+  rw [Submission.regcomp_covector_sq_sum_orthonormalBasis P n α f] at hle
+  have hsq : α τ ^ 2 ≤ covectorEuclideanNorm α ^ 2 :=
+    le_of_mul_le_mul_left hle (Nat.cast_pos.mpr n.factorial_pos)
+  -- Step 5: `|α(τ)| ≤ |α|_E`, since `|α|_E ≥ 0`
+  exact abs_le_of_sq_le_sq hsq (covectorEuclideanNorm_nonneg α)
+/-- **A unit covector attaining `1` on an orthonormal frame** (Simon (6.1.1); step 1(b) of the
+mass formula, Remark 6.3.2(3)): every orthonormal `τ₁, …, τₙ` in `ℝᴾ` admits an `n`-covector `β`
+with `|β|_E = 1` and `β(τ) = 1`.  Take the wedge `β(v) = det(⟨τᵢ, v_k⟩)` of the covectors
+`⟨τᵢ, ·⟩`, so `β(τ) = det 1 = 1`.  Extend `τ` to an orthonormal basis `f` of `ℝᴾ` with
+`f ∘ ι = τ`, `ι = Fin.castLE`.  Then `β(f ∘ j) = sgn π` if `j = ι ∘ π` for a permutation `π`,
+and `β(f ∘ j) = 0` otherwise (a zero column, or a repeated vector), so `Σ_j β(f ∘ j)² = n!`;
+`regcomp_covector_sq_sum_orthonormalBasis` turns this into `n! = n! |β|_E²`. -/
+theorem Submission.regcomp_exists_covector_eval_orthonormal_eq_one : ∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β = 1 ∧ β τ = 1 := by
+  intro P n τ hτ
+  classical
+  -- Step 1: the wedge `β(v) = det(⟨τᵢ, v_k⟩)` of the covectors `⟨τᵢ, ·⟩` (Simon (6.1.1))
+  obtain ⟨β, hβ⟩ : ∃ β : Covector (Euclid P) n, ∀ v : Fin n → Euclid P,
+      β v = Matrix.det (Matrix.of fun i k => inner ℝ (τ i) (v k)) := by
+    let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+      LinearMap.pi fun i => (innerSL ℝ (τ i) : Euclid P →L[ℝ] ℝ).toLinearMap
+    let g : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
+    have hg : ∀ v, g v = Matrix.det (Matrix.of fun i k => inner ℝ (τ i) (v k)) := by
+      intro v
+      rw [← Matrix.det_transpose]
+      show Matrix.det (Matrix.of fun a b => L (v a) b) = _
+      congr 1
+    have hcont : Continuous fun v : Fin n → Euclid P =>
+        Matrix.det (Matrix.of fun i k => inner ℝ (τ i) (v k)) := by
+      apply Continuous.matrix_det
+      apply continuous_matrix
+      intro i k
+      exact Continuous.inner (f := fun _ => τ i) (g := fun v : Fin n → Euclid P => v k)
+        continuous_const (continuous_apply k)
+    refine ⟨{ g with cont := ?_ }, hg⟩
+    have : (g : (Fin n → Euclid P) → ℝ) =
+        fun v => Matrix.det (Matrix.of fun i k => inner ℝ (τ i) (v k)) := funext hg
+    simpa [this] using hcont
+  -- Step 2: by orthonormality `(⟨τᵢ, τ_k⟩) = 1`, so `β(τ) = det 1 = 1`
+  have hβτ : β τ = 1 := by
+    have hone : (Matrix.of fun i k => inner ℝ (τ i) (τ k) : Matrix (Fin n) (Fin n) ℝ) = 1 := by
+      ext i k
+      rw [Matrix.of_apply, Matrix.one_apply]
+      exact orthonormal_iff_ite.mp hτ i k
+    rw [hβ, hone, Matrix.det_one]
+  -- Step 3: `n ≤ P`, and an orthonormal basis `f` of `ℝᴾ` with `f (ι k) = τ k`, `ι = Fin.castLE`
+  have hnP : n ≤ P := by
+    simpa [finrank_euclideanSpace_fin] using hτ.linearIndependent.fintype_card_le_finrank
+  let ι : Fin n → Fin P := Fin.castLE hnP
+  have hι : Injective ι := Fin.castLE_injective hnP
+  let v : Fin P → Euclid P := fun i => if h : (i : ℕ) < n then τ ⟨i, h⟩ else 0
+  let s : Set (Fin P) := {i | (i : ℕ) < n}
+  have hvs : Orthonormal ℝ (s.domRestrict v) := by
+    let e : s → Fin n := fun i => ⟨i.1, i.2⟩
+    have he : Injective e := fun a b hab =>
+      Subtype.ext (Fin.ext (congrArg (Fin.val : Fin n → ℕ) hab))
+    have hve : s.domRestrict v = τ ∘ e := by
+      funext i
+      have hi : ((i : Fin P) : ℕ) < n := i.2
+      simp [v, e, hi]
+    rw [hve]
+    exact hτ.comp e he
+  obtain ⟨f, hf⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hvs
+  have hfι : ∀ k, f (ι k) = τ k := by
+    intro k
+    rw [hf (ι k) k.2]
+    simp [v, ι]
+  -- Step 4: `β(f ∘ j)² = 1` if `j = ι ∘ π` for a permutation `π`, and `0` otherwise
+  let Φ : Equiv.Perm (Fin n) → (Fin n → Fin P) := fun π => ι ∘ π
+  have hΦ : Injective Φ := fun π π' h => Equiv.ext fun k => hι (congrFun h k)
+  have hperm : ∀ π : Equiv.Perm (Fin n), β (fun k => f (Φ π k)) ^ 2 = 1 := by
+    intro π
+    have h1 : (fun k => f (Φ π k)) = τ ∘ π := funext fun k => hfι (π k)
+    have h2 : β (τ ∘ π) = Equiv.Perm.sign π • β τ := β.toAlternatingMap.map_perm τ π
+    rw [h1, h2, hβτ]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign π) with h | h <;> simp [h]
+  have hzero : ∀ j : Fin n → Fin P, j ∉ Finset.univ.image Φ → β (fun k => f (j k)) ^ 2 = 0 := by
+    intro j hj
+    have hj' : ∀ π, Φ π ≠ j := fun π hπ => hj (Finset.mem_image.mpr ⟨π, Finset.mem_univ _, hπ⟩)
+    rw [sq_eq_zero_iff]
+    by_cases hr : ∀ k, j k ∈ range ι
+    · -- `j = ι ∘ ρ` with `ρ` not a permutation, hence not injective: `f ∘ j` repeats a vector
+      choose ρ hρ using hr
+      have hρ' : ¬ Injective ρ := fun hinj =>
+        hj' (Equiv.ofBijective ρ (Finite.injective_iff_bijective.mp hinj)) (funext hρ)
+      refine β.map_eq_zero_of_not_injective _ fun hinj => hρ' fun a b hab => hinj ?_
+      exact congrArg f ((hρ a).symm.trans ((congrArg ι hab).trans (hρ b)))
+    · -- some `j k₀ ∉ range ι`: column `k₀` of `(⟨τᵢ, f (j k)⟩)` vanishes
+      obtain ⟨k₀, hk₀⟩ := not_forall.mp hr
+      rw [hβ]
+      refine Matrix.det_eq_zero_of_column_eq_zero k₀ fun i => ?_
+      rw [Matrix.of_apply, ← hfι i, f.inner_eq_ite, ite_eq_right fun h => hk₀ ⟨i, h⟩]
+  have hsum : ∑ j : Fin n → Fin P, β (fun k => f (j k)) ^ 2 = n.factorial := by
+    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image Φ)) fun j _ hj => hzero j hj,
+      Finset.sum_image fun π _ π' _ h => hΦ h]
+    simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+      nsmul_eq_mul, mul_one]
+  -- Step 5: `n! = n! |β|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`, so `|β|_E = 1`
+  have hsq := Submission.regcomp_covector_sq_sum_orthonormalBasis P n β f
+  rw [hsum] at hsq
+  have hfac : (n.factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr n.factorial_ne_zero
+  refine ⟨β, (pow_eq_one_iff_of_nonneg (covectorEuclideanNorm_nonneg β) two_ne_zero).mp ?_, hβτ⟩
+  exact mul_left_cancel₀ hfac (by rw [← hsq, mul_one])
+/-- **Simon Ch. 6, 1.7 and 1.15**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
+has dual Euclidean coefficient norm exactly one: `|ξ(α)| = |α(τ)| ≤ |α|_E` for every
+`n`-covector `α`, and `ξ(±β₀) = 1` for a covector `β₀` with `|β₀|_E = 1` and `β₀(τ) = 1`
+(`+β₀` for the sign `+`, `−β₀` for the sign `−`, using `|−β₀|_E = |β₀|_E`). -/
+theorem Submission.regcomp_unit_orientation_pairing : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ β = 1 := by
+  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩
+  obtain ⟨β₀, hβ₀, hβ₀τ⟩ := Submission.regcomp_exists_covector_eval_orthonormal_eq_one P n τ hτ
+  rcases hξ with h | h
+  · -- `ξ(α) = α(τ)`: take `β = β₀`
+    refine ⟨fun α => ?_, β₀, hβ₀.le, ?_⟩
+    · rw [h α]
+      exact Submission.regcomp_covector_eval_orthonormal_le P n α τ hτ
+    · rw [h β₀, hβ₀τ]
+  · -- `ξ(α) = −α(τ)`: `|ξ(α)| = |α(τ)|`, and take `β = −β₀`
+    refine ⟨fun α => ?_, -β₀, ?_, ?_⟩
+    · rw [h α, abs_neg]
+      exact Submission.regcomp_covector_eval_orthonormal_le P n α τ hτ
+    · rw [covectorEuclideanNorm_neg]
+      exact hβ₀.le
+    · rw [h (-β₀), ContinuousAlternatingMap.neg_apply, hβ₀τ, neg_neg]
+
+/-- **Mass bound for an integer combination** (Simon Ch. 6, Remark 3.2(1)): if
+`1_M θ ξ = p₁ 1_{M₁} θ₁ ξ₁ + p₂ 1_{M₂} θ₂ ξ₂` holds `Hⁿ`-a.e. for integer multiplicity triples
+`R = (M, θ, ξ)`, `R₁ = (M₁, θ₁, ξ₁)`, `R₂ = (M₂, θ₂, ξ₂)`, then `μ_R ≤ |p₁| μ_{R₁} + |p₂| μ_{R₂}`.
+At a.e. `x ∈ M`, `regcomp_unit_orientation_pairing` gives `β` with `|β|_E ≤ 1` and
+`ξ(x)(β) = 1`, and `|ξᵢ(x)(β)| ≤ |β|_E ≤ 1` at a.e. `x ∈ Mᵢ`; evaluating the identity at `β`
+gives `1_M θ ≤ |p₁| 1_{M₁} θ₁ + |p₂| 1_{M₂} θ₂` a.e.  Since `μ_{R'}` has density `1_{M'} θ'` with
+respect to `Hⁿ`, this bound integrates to the claim. -/
+theorem Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure := by
+  intro P n U R₁ R₂ R p₁ p₂ h
+  -- Step 1: `Hⁿ`-a.e., `x ∈ M'` implies that `ξ'(x)` is a unit orientation
+  have hor : ∀ R' : IMRep U n, ∀ᵐ x ∂μHE[n], x ∈ R'.carrier →
+      ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (R'.orient x) Q := by
+    intro R'
+    filter_upwards [(ae_restrict_iff' R'.measurableSet_carrier).mp R'.orients] with x hx hxM
+    obtain ⟨Q, -, hQ⟩ := hx hxM
+    exact ⟨Q, hQ⟩
+  -- Step 2: at such `x`, `|(1_{M'} θ' ξ')(x)(β)| ≤ 1_{M'} θ'(x)` whenever `|β|_E ≤ 1`
+  have hone : ∀ (R' : IMRep U n) (x : Euclid P),
+      (x ∈ R'.carrier → ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (R'.orient x) Q) →
+      ∀ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 →
+        |R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x β| ≤
+          ((R'.carrier.indicator R'.mult x : ℕ) : ℝ) := by
+    intro R' x hx β hβ
+    by_cases hxM : x ∈ R'.carrier
+    · obtain ⟨Q, hQ⟩ := hx hxM
+      have hle :=
+        ((Submission.regcomp_unit_orientation_pairing P n (R'.orient x) Q hQ).1 β).trans hβ
+      rw [Set.indicator_of_mem hxM, Set.indicator_of_mem hxM, smul_apply, smul_eq_mul, abs_mul,
+        Nat.abs_cast]
+      exact mul_le_of_le_one_right (Nat.cast_nonneg _) hle
+    · rw [Set.indicator_of_notMem hxM, Set.indicator_of_notMem hxM]
+      simp
+  -- Step 3: `μ_{R'}` has the measurable density `1_{M'} θ'` with respect to `Hⁿ`
+  have hM : ∀ R' : IMRep U n,
+      R'.measure = μHE[n].withDensity (R'.carrier.indicator fun x => (R'.mult x : ℝ≥0∞)) := by
+    intro R'
+    rw [IMRep.measure, withDensity_indicator R'.measurableSet_carrier]
+  have hmeas : ∀ R' : IMRep U n, Measurable (R'.carrier.indicator fun x => (R'.mult x : ℝ≥0∞)) :=
+    fun R' => (measurable_from_nat.comp R'.measurable_mult).indicator R'.measurableSet_carrier
+  have hind : ∀ (R' : IMRep U n) (x : Euclid P), R'.carrier.indicator
+      (fun y => (R'.mult y : ℝ≥0∞)) x = ((R'.carrier.indicator R'.mult x : ℕ) : ℝ≥0∞) := by
+    intro R' x
+    by_cases hxM : x ∈ R'.carrier
+    · rw [Set.indicator_of_mem hxM, Set.indicator_of_mem hxM]
+    · rw [Set.indicator_of_notMem hxM, Set.indicator_of_notMem hxM, Nat.cast_zero]
+  -- Step 4: `|p₁| μ_{R₁} + |p₂| μ_{R₂}` has density `|p₁| 1_{M₁} θ₁ + |p₂| 1_{M₂} θ₂`, so it
+  -- suffices to compare the densities `Hⁿ`-a.e.
+  rw [hM R, hM R₁, hM R₂, ← withDensity_smul _ (hmeas R₁), ← withDensity_smul _ (hmeas R₂),
+    ← withDensity_add_left ((hmeas R₁).const_smul _)]
+  refine withDensity_mono ?_
+  -- Step 5: `1_M θ ≤ |p₁| 1_{M₁} θ₁ + |p₂| 1_{M₂} θ₂` wherever the identity and Step 1 hold
+  filter_upwards [h, hor R, hor R₁, hor R₂] with x hx h0 h1 h2
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, hind]
+  by_cases hxM : x ∈ R.carrier
+  swap
+  · rw [Set.indicator_of_notMem hxM, Nat.cast_zero]
+    exact zero_le
+  -- evaluate the identity at a `β` with `|β|_E ≤ 1` and `ξ(x)(β) = 1`
+  obtain ⟨Q, hQ⟩ := h0 hxM
+  obtain ⟨-, β, hβ, hξβ⟩ := Submission.regcomp_unit_orientation_pairing P n (R.orient x) Q hQ
+  have hev := congrArg (fun F : MultiVector P n => F β) hx
+  simp only [Set.indicator_of_mem hxM, add_apply, smul_apply, smul_eq_mul, hξβ, mul_one] at hev
+  have hreal : (R.mult x : ℝ) ≤ (p₁.natAbs : ℝ) * ((R₁.carrier.indicator R₁.mult x : ℕ) : ℝ) +
+      (p₂.natAbs : ℝ) * ((R₂.carrier.indicator R₂.mult x : ℕ) : ℝ) := by
+    rw [hev, Nat.cast_natAbs, Nat.cast_natAbs, Int.cast_abs, Int.cast_abs]
+    calc (p₁ : ℝ) * R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x β +
+          (p₂ : ℝ) * R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x β
+        ≤ |(p₁ : ℝ)| * |R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x β| +
+          |(p₂ : ℝ)| * |R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x β| := by
+          rw [← abs_mul, ← abs_mul]
+          exact add_le_add (le_abs_self _) (le_abs_self _)
+      _ ≤ _ := by
+          gcongr
+          · exact hone R₁ x h1 β hβ
+          · exact hone R₂ x h2 β hβ
+  -- a real inequality between natural numbers
+  have hnat : R.mult x ≤ p₁.natAbs * R₁.carrier.indicator R₁.mult x +
+      p₂.natAbs * R₂.carrier.indicator R₂.mult x := by
+    exact_mod_cast hreal
+  rw [Set.indicator_of_mem hxM]
+  exact_mod_cast hnat
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
