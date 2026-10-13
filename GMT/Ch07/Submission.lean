@@ -474,4 +474,45 @@ theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+/-- **Mollification approximates a `C¹_c` function in a directional derivative** (step 3 of the
+extension from smooth to `C¹` tests in the graph-cycle regularity step of Simon 7.4.3).  For
+`φ ∈ C¹_c(ℝⁿ)`, `δ > 0`, a direction `v` and `ε > 0` there is `ψ ∈ C^∞_c(ℝⁿ)` with `spt ψ` in the
+closed `δ`-neighbourhood of `spt φ` and `|Dψ(x)v − Dφ(x)v| ≤ ε` for all `x`.  Take `r₀ > 0` with
+`|∂ᵥφ(a) − ∂ᵥφ(b)| < ε` when `|a − b| < r₀` (`∂ᵥφ` is continuous with compact support), a
+normalized mollifier `ρ` with `spt ρ ⊆ B_r(0)`, `r = min r₀ δ`, and `ψ = ρ ⋆ φ`; then
+`∂ᵥψ = ρ ⋆ ∂ᵥφ`, which is within `ε` of `∂ᵥφ`. -/
+theorem Submission.dgcr_stc_mollify_C1_fderiv_approx : ∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ 1 φ → HasCompactSupport φ → ∀ (δ : ℝ), 0 < δ → ∀ (v : Euclid n) (ε : ℝ), 0 < ε → ∃ ψ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ cthickening δ (tsupport φ) ∧ ∀ x, |fderiv ℝ ψ x v - fderiv ℝ φ x v| ≤ ε := by
+  intro n φ hφ hφc δ hδ v ε hε
+  -- `∂ᵥφ = Dφ(·) v` is continuous with compact support, hence uniformly continuous: it varies by
+  -- less than `ε` on balls of radius `r₀`
+  have hDφ : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv one_ne_zero
+  have hDφc : HasCompactSupport (fderiv ℝ φ) := hφc.fderiv ℝ
+  have hg : Continuous fun x => fderiv ℝ φ x v := hDφ.clm_apply continuous_const
+  have hgc : HasCompactSupport fun x => fderiv ℝ φ x v :=
+    hDφc.comp_left (g := fun A : Euclid n →L[ℝ] ℝ => A v) rfl
+  obtain ⟨r₀, hr₀, hr₀g⟩ :=
+    Metric.uniformContinuous_iff.mp (hgc.uniformContinuous_of_continuous hg) ε hε
+  -- a normalized mollifier `ρ` with `spt ρ ⊆ B_r(0)`, `r = min r₀ δ`; `ψ = ρ ⋆ φ`
+  obtain ⟨ρ, hρ, hρc, hρ0, hρ1, hρs⟩ :=
+    Submission.dgcr_stc_exists_normalized_mollifier n (min r₀ δ) (lt_min hr₀ hδ)
+  have hρi : LocallyIntegrable ρ volume := hρ.continuous.locallyIntegrable
+  let L := ContinuousLinearMap.lsmul ℝ ℝ (E := ℝ)
+  -- `spt ψ ⊆ spt ρ + spt φ ⊆ B_r(0) + spt φ`, inside the closed set `cthickening δ (spt φ)`
+  have hsupp : tsupport (convolution ρ φ L volume) ⊆ cthickening δ (tsupport φ) := by
+    refine closure_minimal (fun z hz => ?_) isClosed_cthickening
+    obtain ⟨a, ha, b, hb, rfl⟩ := Set.mem_add.mp (support_convolution_subset L hz)
+    refine mem_cthickening_of_dist_le _ b δ _ (subset_tsupport φ hb) ?_
+    rw [dist_eq_norm, add_sub_cancel_right]
+    exact (mem_ball_zero_iff.mp (hρs ha)).le.trans (min_le_right r₀ δ)
+  -- `ψ` is smooth, and compactly supported as `cthickening δ (spt φ)` is compact
+  refine ⟨convolution ρ φ L volume,
+    hρc.contDiff_convolution_left L hρ hφ.continuous.locallyIntegrable,
+    (IsCompact.cthickening hφc).of_isClosed_subset (isClosed_tsupport _) hsupp, hsupp, fun x => ?_⟩
+  -- `Dψ(x) v = (ρ ⋆ ∂ᵥφ)(x)`
+  rw [(hφc.hasFDerivAt_convolution_right L hρi hφ x).fderiv,
+    convolution_precompR_apply L hρi hDφc hDφ x v, ← Real.dist_eq]
+  -- `ρ ≥ 0`, `∫ ρ = 1`, `spt ρ ⊆ B_r(0)` and `|∂ᵥφ(y) − ∂ᵥφ(x)| < ε` on `B_r(x)`
+  exact dist_convolution_le hε.le hρs hρ0 hρ1 hg.aestronglyMeasurable fun y hy =>
+    (hr₀g ((mem_ball.mp hy).trans_le (min_le_left r₀ δ))).le
+
 end GMT.Ch07
