@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5f1dc3709913ee44bfca379066e020968353a937b442839f029d573899c5eb43",
+  "git_delta": {
+    "base_commit": "83a8c14f01ce6e31fef1e7a9538b7827c3bbbadd",
+    "candidate_commit": "12f2d8bdf669929d2352a202d501119c499f3983",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b14ecf08a5704519e65cea9ae05106d4431984a4b1d101c1ec1cf8cb5301a76f",
+    "source_sha256": "35c56160106e6c3efda8f8afceb3809d0f15f877a06f78d9674362cd0bc2de83",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_graph_boundary_weak_derivatives",
+      "statement": "∀ (n k : ℕ) (U : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s h : ℝ) (G : Euclid n → ℝ), 0 < n → BoundaryVanishes T → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → 0 < h → ContDiffOn ℝ 1 u (ball 0 s) → (∀ v ∈ ball (0 : Euclid n) s, u v ∈ ball (0 : Euclid k) h) → {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid (n + k)) n) ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} → T ω = ∫ v in ball (0 : Euclid n) s, G v * (ω : DifferentialForm (Euclid (n + k)) n) (z + ι v + ι' (u v)) (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ)))) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ ball (0 : Euclid n) s → ∀ j : Fin n, ∫ v in ball (0 : Euclid n) s, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
