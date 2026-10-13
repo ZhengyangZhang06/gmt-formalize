@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(def|theorem) (LocallyLipschitzOn|ContDiff.locallyLipschitz)|ae_differentiableWithinAt_of_mem|ae_differentiableAt|extend_finite_dimension|le_restrict_apply|ae_restrict_iff.₀|exists_measurable_subset_ae_eq|euclideanHausdorffMeasure_eq_volume|hasDerivAt_iff_isLittleO|comp_hasDerivAt_of_eq",
+        "locallyLipschitz|le_restrict_apply|ae_restrict_iff.₀|def LocallyLipschitzOn|elim_nhds_subcover|isLindelof",
+        "LocallyLipschitz.*ae_differentiable|ae_differentiable.*LocallyLipschitz|Antilipschitz.*ae_|ae_.*Antilipschitz|lpf_ccr_|lpf_chart_chain_rule|lpf_raf_chart_preimage_null|lpf_lli_countable_lipschitz_cover",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ccr_independent_audit_9s4x535u/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ccr_independent_audit_9s4x535u/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-pr-b8935c5987/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-pr-b8935c5987/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/ccr_independent_audit_9s4x535u/Challenges.lean",
+        "/tmp/ccr_independent_audit_9s4x535u/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected chart-chain-rule theorem. The pinned sources support every cited analytic and measure-theoretic step; inspected Mathlib files match the installed pinned revision. Both reused declarations have comparator-accepted, byte-identical frozen types and matching accepted implementations. All names are bare identifiers; the three new names are unreserved. The augmented DAG is acyclic, including the existing tangent-chart dependency. All five child types elaborate independently without child implementations. The five proofs and the exact parent assembly, with the existing sibling supplied explicitly as a hypothesis, compile using only propext, Classical.choice and Quot.sound. Euclidean volume, Haar-measure instances, and derivative constructions were checked. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_preimage_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Injectivity gives a reciprocal-Lipschitz inverse; its Hausdorff null-image bound and μHE[n] = volume prove the conclusion without measurability assumptions. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "countable_lipschitz_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly uses relative neighbourhoods for arbitrary U. Local open pieces, hereditary Lindelöfness, and enumeration yield the stated cover, including the empty case. The proof is complete, and accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "ae_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts follow from the declared null-pullback dependency. The measurable-subset decomposition establishes parameter null-measurability; le_restrict_apply handles arbitrary exceptional predicates and chart images. The final restricted-a.e. conversion therefore has its required hypothesis."
+    },
+    {
+      "key": "ae_diff_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness converts relative Lipschitz neighbourhoods into ambient ones. Composing local bounds, applying the declared countable-cover dependency, and using Rademacher on each open piece prove precisely the ambient-a.e. implication. No additional chart assumptions or circular results are used."
+    },
+    {
+      "key": "line_deriv_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and derivative expressions match exactly. Differentiability supplies the chart-line remainder and the derivative along the chart; the neighbourhood Lipschitz bound makes their image difference little-o. Its value at zero vanishes, so the sum rule proves the claimed derivative without assuming ambient differentiability of f."
+    }
+  ],
+  "required_changes": []
+}
