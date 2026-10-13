@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of dag.json: selected node (decomposing, depends_on [], proof_base_commit f7d98547), parent box_mass_limits deps (edge_tangent_plane, stationary_radial), cbr_vague_portmanteau node (status accepted, candidate_commit ef833280, lean_statement), duplicate lean_names (0), reused-child edges whose child has a different parent (571), depth histogram (max 6)",
+        "git show f7d98547831ab8880caf199f560d9d2dc7da2ede:GMT/Ch07/Submission.lean | grep -c cbr_vague_portmanteau (0; only main_theorem); git diff --stat b4d606db f7d98547 -- GMT (empty); git show ef833280:GMT/Ch07/Submission.lean | grep 'theorem Submission.cbr_vague_portmanteau' (line 463; type byte-identical to dag.json)",
+        "replication of _recursive_lean/inherited.py cited_inherited over nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-808e14f9e9/parent-supplied-natural-proof.md (inherited prerequisites: edge_tangent_plane-a1, stationary_radial-a1 only)",
+        "grep -n 'max_depth|_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children|existing_by_name|reused by Lean name' /runtime/flows/gmt-claude-3b0b44b19c6a/_recursive_lean/runtime.py; sed -n 220,300p prompts.py; sed -n 250,290p store.py (ensure returns existing node)",
+        "rg -n 'theorem integral_smul_measure|theorem integral_map|def Homeomorph.smulOfNeZero|theorem isCompact_preimage|theorem map_apply|theorem ofReal_integral_eq_lintegral_ofReal|exists_cthickening_subset_open|theorem tendsto_measure_cthickening|theorem tendsto_measure_iUnion_atTop' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "python3 -I /tmp/rpm-decomp-q4x8/scripts/scope.py (verifier gmt-compare.py contract_scope replay: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; opens; noncomputable section; end)",
+        "lake env lean /tmp/rpm-decomp-q4x8/check/Stmts.lean (both child types and the parent type elaborate); lake env lean /tmp/rpm-decomp-q4x8/check/Assembly.lean (ChildB fully proved; Assembly proves the parent type from both child types; #print axioms: propext, Classical.choice, Quot.sound)",
+        "name uniqueness for idtp_cse_bml_rpm_dilation_map: dag.json lean_names (1575 nodes), run nodes/ dir, snapshot project, git grep over refs, grep over 1481 .swarm-worktrees GMT dirs (no match)",
+        "independent reviewer subagent over /tmp/rpm-decomp-q4x8/draft/subproblems.json, which compiled /tmp/rpm-decomp-review-z7/gen/E2E.lean containing the accepted cbr proof verbatim plus both children and the parent (verdict ACCEPT; non-blocking provenance wording applied)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-808e14f9e9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-808e14f9e9/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-959ef3c94c/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/1d7c72121c37997a9fc2/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/runtime/flows/gmt-claude-3b0b44b19c6a/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-3b0b44b19c6a/_recursive_lean/prompts.py",
+        "/runtime/flows/gmt-claude-3b0b44b19c6a/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-3b0b44b19c6a/_recursive_lean/store.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/tmp/rpm-decomp-q4x8/check/Stmts.lean",
+        "/tmp/rpm-decomp-q4x8/check/Assembly.lean",
+        "/tmp/rpm-decomp-q4x8/draft/subproblems.json",
+        "/tmp/rpm-decomp-review-z7/gen/E2E.lean"
+      ],
+      "conclusion": "Pins: project b4d606db, mathlib 25730c7c. Submission.cbr_vague_portmanteau, which the supplied proof cites in step 5, is accepted (candidate ef833280, line 463). It is not reachable from this node: it is absent from proof base f7d98547, the node has no depends_on, and it is not an inherited prerequisite. Reusing it as a child with its byte-identical frozen type is allowed by the decomposition rules, and runtime.py maps it to the existing accepted node and overlays that checkpoint. The new child idtp_cse_bml_rpm_dilation_map uses only snapshot Mathlib lemmas that exist: Homeomorph.smulOfNeZero/addLeft, Homeomorph.isCompact_preimage, Measure.map_apply, Measure.smul_apply, ENNReal.mul_lt_top, integral_map, integral_smul_measure (no integrability hypothesis) and ENNReal.toReal_ofReal. It is fully proved in Lean, and the parent type follows from the two child types using only the standard axioms. The new name is unused in the DAG, the snapshot, git refs and all worktrees."
+    }
+  ],
+  "proof": "Put c := ofReal(λ^{-2}) ∈ [0, ∞), so ν_λ = Measure.map η (c·μ). These are steps 1-4 of the parent proof for one fixed scale λ.\n1. (η is a homeomorphism.) Since λ > 0, λ^{-1} ≠ 0. Let e be the homeomorphism Homeomorph.smulOfNeZero λ^{-1} (y ↦ λ^{-1}•y) followed by Homeomorph.addLeft (−(λ^{-1}•a)) (z ↦ −(λ^{-1}•a) + z). By definition dilationCLM P λ = λ^{-1}•id, so dilationCLM P λ y = λ^{-1}•y. Hence dilation a λ y = −(λ^{-1}•a) + λ^{-1}•y = e(y) for every y, i.e. η = e as functions. Consequently:\n- η is continuous, hence Borel measurable (ℝ^P carries its Borel σ-algebra);\n- for every compact K, η^{-1}(K) = e^{-1}(K) is compact (Homeomorph.isCompact_preimage), being the image of K under the continuous inverse e.symm.\n2. (Proof of (ii).) Let S be measurable. Since η and S are measurable, Measure.map_apply gives ν_λ(S) = (c·μ)(η^{-1}(S)). By the definition of a scalar multiple of a measure (Measure.smul_apply, smul_eq_mul), this equals c·μ(η^{-1}(S)) = ofReal(λ^{-2})·μ(η^{-1}(S)).\n3. (Proof of (i).) Let K be compact. In the Hausdorff space ℝ^P, K is closed and therefore measurable, so step 2 gives ν_λ(K) = c·μ(η^{-1}(K)). Here c = ofReal(λ^{-2}) < ∞ (ENNReal.ofReal_lt_top). Also η^{-1}(K) is compact by step 1, so μ(η^{-1}(K)) < ∞ because μ is finite on compact sets. A product of two finite elements of [0, ∞] is finite (ENNReal.mul_lt_top), so ν_λ(K) < ∞.\n4. (Proof of (iii).) Let g be continuous.\n- Measurability: g is a.e.-strongly measurable for every measure, in particular for ν_λ (Continuous.aestronglyMeasurable), and η is measurable, hence a.e.-measurable for c·μ.\n- Change of variables: integral_map gives ∫ g dν_λ = ∫ g(η(x)) d(c·μ)(x).\n- Scalar multiple: ∫ f d(c·μ) = c.toReal·∫ f dμ for every function f and every c ∈ [0, ∞] (integral_smul_measure), with no integrability assumption needed. So ∫ g(η(x)) d(c·μ)(x) = c.toReal·∫ g(η(x)) dμ(x).\n- Constant: c.toReal = (ofReal(λ^{-2})).toReal = λ^{-2}, because λ^{-2} ≥ 0 (ENNReal.toReal_ofReal).\nHence ∫ g dν_λ = λ^{-2}·∫ g(η(x)) dμ(x). ∎",
+  "key_steps": [
+    "dilation a λ coincides with the homeomorphism y ↦ −(λ^{-1}•a) + λ^{-1}•y (smulOfNeZero then addLeft), so η is measurable and η^{-1}(K) is compact for compact K.",
+    "Measure.map_apply and Measure.smul_apply give ν_λ(S) = ofReal(λ^{-2})·μ(η^{-1}S) for measurable S.",
+    "A compact K is closed, hence measurable; η^{-1}K is compact, so μ(η^{-1}K) < ∞ and ν_λ(K) = ofReal(λ^{-2})·μ(η^{-1}K) < ∞.",
+    "integral_map, integral_smul_measure and toReal_ofReal give ∫ g dν_λ = λ^{-2}∫ g∘η dμ for continuous g."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
