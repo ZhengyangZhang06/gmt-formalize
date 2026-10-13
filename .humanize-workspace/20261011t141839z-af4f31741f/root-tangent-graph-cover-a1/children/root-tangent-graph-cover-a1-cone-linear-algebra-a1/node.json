@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.cone_linear_algebra-a1",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "depth": 2,
+  "title": "Linear algebra of tilted cones: points violating the L-graph inequality over P lie, with a ball around them, in the cone around T^⊥",
+  "statement": "Let N, n ∈ ℕ, 0 < L ≤ 1 and P, T ∈ G(N,n), with p := Grassmannian.project P and p_T := Grassmannian.project T, such that ‖p_T u − p u‖ ≤ (L/4)‖u‖ for all u ∈ ℝ^N. If v, w ∈ ℝ^N satisfy L‖p v‖ < ‖v − p v‖ and ‖w − v‖ ≤ (L/8)‖v‖, then (L/16)‖w‖ ≤ ‖w − p_T w‖ and ‖w‖ ≤ 2‖v‖.",
+  "lean_statement": "∀ (N n : ℕ) (L : ℝ) (P T : Grassmannian N n) (v w : Euclidean N), 0 < L → L ≤ 1 → (∀ u : Euclidean N, ‖Grassmannian.project T u - Grassmannian.project P u‖ ≤ L / 4 * ‖u‖) → L * ‖Grassmannian.project P v‖ < ‖v - Grassmannian.project P v‖ → ‖w - v‖ ≤ L / 8 * ‖v‖ → L / 16 * ‖w‖ ≤ ‖w - Grassmannian.project T w‖ ∧ ‖w‖ ≤ 2 * ‖v‖",
+  "lean_name": "tgc_tilted_cone_inclusion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-linear-algebra-a1-a1"
+}

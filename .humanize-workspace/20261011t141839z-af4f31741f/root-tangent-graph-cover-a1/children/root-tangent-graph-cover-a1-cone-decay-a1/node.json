@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.cone_decay-a1",
+  "parent_id": "root.tangent_graph_cover-a1",
+  "depth": 2,
+  "title": "Cone decay at a tangent point (n ≥ 1): the mass near x in a cone around T^⊥ is o(t^n)",
+  "statement": "Let N, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^N, V an n-varifold on U, x ∈ ℝ^N, T ∈ G(N,n) and θ ∈ ℝ with HasTangentPlane V x T θ, and let β > 0; write p_T := Grassmannian.project T. Then for every ε ∈ (0,∞] there is δ > 0 such that for all t ∈ (0,δ): μ_V({y ∈ B_t(x) : β|y − x| ≤ |(y − x) − p_T(y − x)|}) ≤ ε t^n (B_t(x) = closedBall x t).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), 0 < n → HasTangentPlane V x T θ → ∀ β : ℝ, 0 < β → ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), V.weight {y | y ∈ closedBall x t ∧ β * ‖y - x‖ ≤ ‖(y - x) - Grassmannian.project T (y - x)‖} ≤ ε * ENNReal.ofReal t ^ n",
+  "lean_name": "tgc_tangent_cone_weight_decay",
+  "depends_on": [
+    "root.tangent_graph_cover-a1.weight_blowup-a1",
+    "root.tangent_graph_cover-a1.plane_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_graph_cover-a1.weight_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-decay-a1-a1"
+}

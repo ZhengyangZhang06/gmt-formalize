@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1.local_graph_closed_cover-a1",
+  "parent_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+  "depth": 3,
+  "title": "Closed graph pieces from a local graph property: a set whose points at distance ≤ r satisfy the L-graph inequality over P lies on countably many closed L-graphs over P",
+  "statement": "Let N, n ∈ ℕ, L, r ∈ ℝ with r > 0, P ∈ G(N,n) with p := Grassmannian.project P, and E ⊆ ℝ^N. Suppose ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for all y, z ∈ E with ‖y − z‖ ≤ r. Then there are closed sets Γ_0, Γ_1, … ⊆ ℝ^N such that ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for every i and all y, z ∈ Γ_i, and every x ∈ E lies in some Γ_i.",
+  "lean_statement": "∀ (N n : ℕ) (L r : ℝ) (P : Grassmannian N n) (E : Set (Euclidean N)), 0 < r → (∀ y ∈ E, ∀ z ∈ E, ‖y - z‖ ≤ r → ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ E, ∃ i, x ∈ Γ i",
+  "lean_name": "tgc_local_graph_closed_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1-a1"
+}
