@@ -768,6 +768,275 @@ theorem Submission.allard_tc_scf_plane_ball_mass :
   -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
   rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
     finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+    ext w
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact (b.repr.symm x).2
+    · intro hw
+      exact ⟨b.repr ⟨w, hw⟩, by simp [J]⟩
+  -- Step 3: `H^n(B_r(0) ∩ T) = H^n(J⁻¹(B_r(0)))` and `J⁻¹(B_r(0)) = B_r(0) ⊆ ℝ^n`.
+  have hpre : J ⁻¹' closedBall 0 r = closedBall 0 r := by
+    ext x
+    simp
+  rw [← hrange, ← J.isometry.euclideanHausdorffMeasure_preimage, hpre]
+  -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
+    finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+/-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
+`H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.allard_tc_fbl_plane_ball_measure :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `T.plane`, from an orthonormal basis
+  -- of `T.plane` indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 2: `H^n (J '' E) = vol E` for every `E ⊆ ℝ^n`.
+  have hmeas : ∀ E : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (J '' E) = volume E := by
+    intro E
+    rw [J.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `T.plane ∩ {‖w‖ ∈ A} = J '' {‖y‖ ∈ A}`, since `J` preserves norms and has range
+  -- `T.plane`.
+  have himage : ∀ A : Set ℝ,
+      (T.plane : Set (Euclidean N)) ∩ {w | ‖w‖ ∈ A} = J '' {y | ‖y‖ ∈ A} := by
+    intro A
+    ext w
+    constructor
+    · rintro ⟨hw, hwA⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · simpa using hwA
+      · simp [J]
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨by simp [J], by simpa using hy⟩
+  have hcl : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r = J '' closedBall 0 r := by
+    simpa only [Set.mem_Iic, ← mem_closedBall_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iic r)
+  have hop : (T.plane : Set (Euclidean N)) ∩ ball 0 r = J '' ball 0 r := by
+    simpa only [Set.mem_Iio, ← mem_ball_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iio r)
+  -- Steps 4–5: `vol (B_r(0)) = vol (B°_r(0)) = ω_n r^n` in `ℝ^n` (`r > 0`).
+  have hcl_vol : volume (closedBall (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  have hop_vol : volume (ball (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  -- Step 6: conclusion.
+  exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
+/-- **Simon Ch. 8, proof of 5.5, pp. 216–217: a stationary cone with density `≥ θ₀` a.e. is
+`θ₀ v(T)`.** Let `C` be a stationary `n`-varifold on `ℝ^N` with `μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every
+`ρ > 0` (printed (1)) and `Θ^n(μ_C, y) ≥ θ₀` for `μ_C`-a.e. `y` (printed (7)). By 3.4 at every
+centre, `R(y, ρ) = μ_C(B_ρ(y))/(ω_n ρ^n) ≤ θ₀` for all `y` (printed (2)) and `R(y, ρ) ≥ θ₀` for
+`y ∈ spt μ_C`, so `Θ^n(μ_C, y) = θ₀` and the normal defect about `y` vanishes; hence `x - y ∈ S` for
+`y ∈ spt μ_C` and `(x, S) ∈ spt C` (printed (8)). As `0 ∈ spt μ_C = π(spt C)`, some `(0, T)` lies in
+`spt C`, so `spt μ_C ⊆ T`; Constancy 4.1 gives `C = θ v(T)`, and the mass of `B_1(0)` gives
+`θ = θ₀`. -/
+theorem Submission.allard_tc_stationary_cone_flat :
+    StationaryMonotonicityIdentity → ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (θ₀ : ℝ), 0 < θ₀ → C.Stationary → (∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n) → (∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal θ₀ ≤ θ) → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T := by
+  intro hSMI hconst N n C θ₀ hθ₀ hC hball hae
+  -- Step 0: `θ₀` and `ω_n` lie in `(0, ∞)`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have ha0 : ENNReal.ofReal θ₀ ≠ 0 := (ENNReal.ofReal_pos.2 hθ₀).ne'
+  -- Step 1: the monotonicity identity 3.4 at every centre; density ratios are non-decreasing.
+  have hMI := Submission.allard_tc_scf_monotonicity_identity hSMI N n C hC
+  have hmono : ∀ y, MonotoneOn (densityRatio n C.weight y) (Ioi 0) := fun y ↦ (hMI y).2
+  -- Step 2: `R(y, ρ) ≤ θ₀` everywhere (printed (2)) and `θ₀ ≤ R(y, ρ)` on `spt μ_C` (by (7)).
+  have hle := Submission.allard_tc_scf_ratio_le N n C.weight (ENNReal.ofReal θ₀) hmono hball
+  have hge := Submission.allard_tc_scf_ratio_ge_on_support N n C.weight (ENNReal.ofReal θ₀)
+    (fun y ρ ↦ C.weight_finite_on_compact _ (isCompact_closedBall y ρ) (subset_univ _)) hmono hae
+  -- Step 3: at `y ∈ spt μ_C`, `R(y, ·) ≡ θ₀`, so `Θ^n(μ_C, y) = θ₀` and 3.4 reads
+  -- `θ₀ + ω_n⁻¹ D_y(ρ) = θ₀`; as `θ₀ < ∞` and `ω_n⁻¹ ≠ 0`, the normal defect `D_y(ρ)` vanishes.
+  have hdefect : ∀ y ∈ C.weight.support, ∀ ρ : ℝ, 0 < ρ →
+      normalDefect C y (closedBall y ρ) = 0 := by
+    intro y hy ρ hρ
+    obtain ⟨θ, hθ, hid⟩ := (hMI y).1
+    have hR : ∀ r : ℝ, 0 < r → densityRatio n C.weight y r = ENNReal.ofReal θ₀ := fun r hr ↦
+      le_antisymm (hle y r hr) (hge y hy r hr)
+    have hθa : θ = ENNReal.ofReal θ₀ := by
+      refine tendsto_nhds_unique hθ (tendsto_const_nhds.congr' ?_)
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      exact (hR r hr).symm
+    have h := hid ρ hρ
+    rw [hθa, hR ρ hρ, ← add_zero (ENNReal.ofReal θ₀), add_assoc, zero_add,
+      ENNReal.add_right_inj ENNReal.ofReal_ne_top] at h
+    exact (mul_eq_zero.1 h).resolve_left (ENNReal.inv_ne_zero.2 hωt)
+  -- Step 4: printed (8), `x - y ∈ S` for `y ∈ spt μ_C` and `(x, S) ∈ spt C`.
+  have h8 : ∀ y ∈ C.weight.support, ∀ z ∈ C.measure.support, z.1 - y ∈ z.2.plane :=
+    fun y hy ↦ Submission.allard_tc_scf_zero_defect_mem_plane N n univ C y (hdefect y hy)
+  -- Step 5: `0 ∈ spt μ_C`, since every ball about `0` has mass `θ₀ ω_n ρ^n > 0`.
+  have h0 : (0 : Euclidean N) ∈ C.weight.support := by
+    rw [Measure.mem_support_iff_forall]
+    intro s hs
+    obtain ⟨ε, hε, hεs⟩ := Metric.mem_nhds_iff.1 hs
+    refine lt_of_lt_of_le ?_ (measure_mono ((closedBall_subset_ball (half_lt_self hε)).trans hεs))
+    rw [hball _ (half_pos hε)]
+    exact pos_iff_ne_zero.2 (mul_ne_zero (mul_ne_zero ha0 hω0)
+      (pow_ne_zero _ (ENNReal.ofReal_pos.2 (half_pos hε)).ne'))
+  -- Step 6: `spt μ_C ⊆ π(spt C)`, as `π(spt C)` is closed (`G(N,n)` is compact) and `μ_C`-conull;
+  -- so some `(0, T)` lies in `spt C`.
+  obtain ⟨T, hT⟩ : ∃ T : Grassmannian N n, ((0 : Euclidean N), T) ∈ C.measure.support := by
+    have hc : IsClosed (Prod.fst '' C.measure.support) :=
+      isClosedMap_fst_of_compactSpace _ C.measure.isClosed_support
+    have hsub : C.weight.support ⊆ Prod.fst '' C.measure.support := by
+      refine Measure.support_subset_of_isClosed hc ?_
+      change ∀ᵐ x ∂C.measure.map Prod.fst, x ∈ Prod.fst '' C.measure.support
+      refine (ae_map_iff measurable_fst.aemeasurable hc.measurableSet).2 ?_
+      filter_upwards [C.measure.support_mem_ae] with z hz
+      exact mem_image_of_mem Prod.fst hz
+    obtain ⟨⟨x, S⟩, hS, hx⟩ := hsub h0
+    obtain rfl : x = 0 := hx
+    exact ⟨S, hS⟩
+  -- Step 7: `spt μ_C ⊆ T`, since (8) at `(x, S) = (0, T)` gives `-y ∈ T`.
+  have hspt : C.weight.support ⊆ (T.plane : Set (Euclidean N)) := by
+    intro y hy
+    have h : (0 : Euclidean N) - y ∈ T.plane := h8 y hy ((0 : Euclidean N), T) hT
+    rw [zero_sub] at h
+    simpa using T.plane.neg_mem h
+  -- Step 8: Constancy 4.1 gives `C = θ v(T)` with `θ ≥ 0`.
+  obtain ⟨θ, -, hCθ⟩ := Submission.allard_tc_scf_constancy_plane hconst N n C T hC hspt
+  -- Step 9: `μ_C(B_1(0)) = θ ω_n = θ₀ ω_n` and `ω_n ∈ (0, ∞)`, so `θ = θ₀`.
+  have h1 := hball 1 one_pos
+  rw [C.weight_apply measurableSet_closedBall, hCθ, Measure.smul_apply, smul_eq_mul,
+    Submission.allard_tc_scf_plane_ball_mass N n T 1 one_pos, ENNReal.ofReal_one, one_pow,
+    mul_one, mul_one, ENNReal.mul_left_inj hω0 hωt] at h1
+  exact ⟨T, by rw [hCθ, h1]⟩
+/-- Lebesgue density theorem for a measure `μ` on `ℝ^N` that vanishes off an open set `U` and is
+finite on compact subsets of `U` (Simon Ch. 8, Remark 5.6(iii), localized as in Simon Ch. 1, 3.23):
+for measurable `A` and `μ`-a.e. `x`, `μ(A ∩ B_ρ(x)) / μ(B_ρ(x)) → 1_A(x)` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_dbd_lebesgue_density :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∀ A : Set (Euclidean N), MeasurableSet A → ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (A.indicator 1 x)) := by
+  intro N U μ hU hUc hK A hA
+  -- Step 1: the countable family of compact balls `K_i = B_r(q) ⊆ U`, `i = (q, r) ∈ I`, with `q`
+  -- in a countable dense set `D` and `r ∈ ℚ_{>0}`.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Euclidean N)
+  let I : Set (Euclidean N × ℚ) := {i | i.1 ∈ D ∧ 0 < i.2 ∧ closedBall i.1 (i.2 : ℝ) ⊆ U}
+  have hIc : I.Countable :=
+    (hDc.prod (countable_univ (α := ℚ))).mono fun i hi ↦ mem_prod.2 ⟨hi.1, mem_univ _⟩
+  -- Steps 3–4: Besicovitch differentiation for each finite measure `μ ⌞ K_i`, off one `μ`-null set.
+  have hball : ∀ᵐ x ∂μ, ∀ i ∈ I, x ∈ closedBall i.1 (i.2 : ℝ) →
+      Tendsto (fun ρ : ℝ ↦ μ.restrict (closedBall i.1 (i.2 : ℝ)) (A ∩ closedBall x ρ) /
+          μ.restrict (closedBall i.1 (i.2 : ℝ)) (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 (A.indicator 1 x)) := by
+    refine (ae_ball_iff hIc).2 fun i hi ↦ ?_
+    have : IsFiniteMeasure (μ.restrict (closedBall i.1 (i.2 : ℝ))) :=
+      isFiniteMeasure_restrict.2 (hK _ (isCompact_closedBall _ _) hi.2.2)
+    exact (ae_restrict_iff' measurableSet_closedBall).1
+      (Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet _ hA)
+  filter_upwards [hball, mem_ae_iff.2 hUc] with x hx hxU
+  -- Steps 2 and 5: some `i = (q, r) ∈ I` with `dist x q < r`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hxU
+  obtain ⟨r, hr0, hr⟩ := exists_rat_btwn (half_pos hε)
+  obtain ⟨q, hqD, hqx⟩ := hDd.exists_mem_open isOpen_ball ⟨x, mem_ball_self hr0⟩
+  have hxq : dist x q < r := by rw [dist_comm]; exact mem_ball.1 hqx
+  have hi : (q, r) ∈ I := by
+    have h1 : (r : ℝ) + dist q x < ε := by linarith [mem_ball.1 hqx]
+    exact ⟨hqD, Rat.cast_pos.1 hr0, (closedBall_subset_ball' h1).trans hεU⟩
+  -- Step 6: for `0 < ρ < r - dist x q`, `B_ρ(x) ⊆ K_i`, so the two ratios agree near `0`.
+  refine (hx (q, r) hi (mem_closedBall.2 hxq.le)).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hxq)] with ρ hρ
+  have hsub : closedBall x ρ ⊆ closedBall q r := closedBall_subset_closedBall' (by linarith [hρ.2])
+  rw [Measure.restrict_apply' measurableSet_closedBall,
+    Measure.restrict_apply' measurableSet_closedBall, inter_assoc, inter_eq_left.2 hsub]
+/-- Relative density zero at a point of finite density gives `o(ρ^n)` mass (closing steps 8–9 of
+the density blow-up decay for Simon Ch. 8, 5.6(iii)): if `Θ^n(μ, x) = θ < ∞`,
+`μ(A ∩ B_ρ(x)) / μ(B_ρ(x)) → 0` as `ρ ↓ 0` and `μ`-a.e. point of `E` lies in `A`, then
+`μ(B_ρ(x) ∩ E) / ρ^n → 0` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_dbd_relative_decay :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞) (A E : Set (Euclidean N)), HasDensity n μ x θ → θ ≠ ∞ → Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → (∀ᵐ y ∂μ, y ∈ E → y ∈ A) → Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro N n μ x θ A E hθ hθ_ne hκ hAE
+  -- Step 1: `0 < ω_n < ∞`.
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 2: `μ(B_ρ) / ρ^n = ω_n · densityRatio ρ → ω_n θ ≠ ∞`.
+  have hf_eq : ∀ ρ : ℝ, μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n =
+      unitBallVolume n * densityRatio n μ x ρ := fun ρ ↦ by
+    rw [densityRatio, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop]
+  have hf : Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0)
+      (𝓝 (unitBallVolume n * θ)) := by
+    simp_rw [hf_eq]
+    exact ENNReal.Tendsto.const_mul hθ (Or.inr hωtop)
+  have hωθ : unitBallVolume n * θ ≠ ∞ := ENNReal.mul_ne_top hωtop hθ_ne
+  -- Step 3: `κ(ρ) · μ(B_ρ) / ρ^n → 0 · ω_n θ = 0`.
+  have hprod : Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) *
+      (μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+    simpa using ENNReal.Tendsto.mul hκ (Or.inr hωθ) hf (Or.inr ENNReal.zero_ne_top)
+  -- Step 4: eventually `μ(B_ρ) / ρ^n < ∞`.
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μ (closedBall x ρ) / ENNReal.ofReal ρ ^ n < ∞ :=
+    hf.eventually (gt_mem_nhds hωθ.lt_top)
+  -- Step 6: squeeze `0 ≤ μ(B_ρ ∩ E) / ρ^n ≤ κ(ρ) · μ(B_ρ) / ρ^n`, the upper bound holding for
+  -- every `ρ` of step 4.
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hprod
+    (Eventually.of_forall fun _ ↦ zero_le) ?_
+  filter_upwards [hev] with ρ hρ
+  -- Step 4, continued: `ρ^n ≠ ∞`, hence `μ(B_ρ) ≠ ∞`.
+  have hP : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have hB : μ (closedBall x ρ) ≠ ∞ := fun h ↦ by
+    rw [h, ENNReal.top_div_of_ne_top hP] at hρ
+    exact lt_irrefl _ hρ
+  -- Step 5(a): `μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ)`, since `B_ρ ∩ E ⊆ A ∩ B_ρ` up to a `μ`-null set.
+  have ha : μ (closedBall x ρ ∩ E) ≤ μ (A ∩ closedBall x ρ) :=
+    measure_mono_ae (hAE.mono fun y hy hyBE ↦ ⟨hy hyBE.2, hyBE.1⟩)
+  -- Step 5(b): `μ(A ∩ B_ρ) ≤ κ(ρ) · μ(B_ρ)`, the case `μ(B_ρ) = 0` separately.
+  have hb : μ (A ∩ closedBall x ρ) ≤
+      μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) * μ (closedBall x ρ) := by
+    by_cases h0 : μ (closedBall x ρ) = 0
+    · rw [h0, mul_zero]
+      exact (measure_mono inter_subset_right).trans h0.le
+    · exact (ENNReal.div_mul_cancel h0 hB).ge
+  -- Step 5(c): divide by `ρ^n`.
+  calc μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n
+      ≤ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ) * μ (closedBall x ρ) /
+          ENNReal.ofReal ρ ^ n := ENNReal.div_le_div_right (ha.trans hb) _
+    _ = _ := mul_div_assoc _ _ _
+
+/-- Density blow-up decay (Simon Ch. 8, Remark 5.6(iii) and (3)–(4) in the proof of 5.5): assuming
+3.6, if `V` has locally bounded first variation, then for `μ_V`-a.e. `x`, whenever
+`Θ^n(μ_V, x) = θ₀` and `τ < θ₀`, `ρ^{-n} μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V, y) exists and is ≥ τ)})`
+tends to `0` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_density_blowup_decay :
+    DensityExistsAE → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∀ θ₀ τ : ℝ, HasDensity n V.weight x (ENNReal.ofReal θ₀) → τ < θ₀ → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro hD N n U V hV
+  -- Step 1: a Borel `Θ̃`, finite and equal to the density off a `μ_V`-null set.
+  obtain ⟨Θ, hΘm, hΘ⟩ := hD N n U V hV
+  -- Step 2: `μ_V(Uᶜ) = 0`.
+  have hUc : V.weight Uᶜ = 0 := by
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  -- Steps 3–4: off one `μ_V`-null set, `x` is a Lebesgue density point of every
+  -- `A_p = {Θ̃ < p}`, `p ∈ ℚ`.
+  have hLeb : ∀ᵐ x ∂V.weight, ∀ p : ℚ,
+      Tendsto (fun ρ : ℝ ↦ V.weight ({y | Θ y < ENNReal.ofReal p} ∩ closedBall x ρ) /
+          V.weight (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 ({y | Θ y < ENNReal.ofReal p}.indicator 1 x)) :=
+    ae_all_iff.2 fun p ↦ Submission.allard_tc_dbd_lebesgue_density N U V.weight V.isOpen_domain
+      hUc V.weight_finite_on_compact _ (measurableSet_lt hΘm measurable_const)
+  filter_upwards [hΘ, hLeb] with x hx hxL
+  intro θ₀ τ hθ₀ hτ
+  -- Step 5: `Θ̃(x) = θ₀`, so a rational `p ∈ (τ, θ₀)` has `x ∉ A_p`.
+  have heq : Θ x = ENNReal.ofReal θ₀ := tendsto_nhds_unique hx.2 hθ₀
+  obtain ⟨p, hτp, hpθ⟩ := exists_rat_btwn hτ
+  have hxA : x ∉ {y | Θ y < ENNReal.ofReal p} := by
+    rw [Set.mem_ofPred_eq, not_lt, heq]
+    exact ENNReal.ofReal_le_ofReal hpθ.le
+  -- Step 7: `μ_V(A_p ∩ B_ρ(x)) / μ_V(B_ρ(x)) → 0`.
+  have hκ := hxL p
+  rw [Set.indicator_of_notMem hxA] at hκ
+  -- Steps 8–9: the relative decay, applied with `A = A_p` and `E = E_τ`.
+  refine Submission.allard_tc_dbd_relative_decay N n V.weight x (ENNReal.ofReal θ₀)
+    {y | Θ y < ENNReal.ofReal p}
+    {y | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ}
+    hθ₀ ENNReal.ofReal_ne_top hκ ?_
+  -- Step 6: `E_τ ⊆ Z ∪ A_p`.
+  filter_upwards [hΘ] with y hy hyE
+  by_contra hyA
+  exact hyE ⟨Θ y, hy.2, (ENNReal.ofReal_le_ofReal hτp.le).trans (not_lt.1 hyA)⟩
 
 /-- The plane integrals of the unit-ball cut-offs `φ_k⁺ = max(0, 1 - (k+1) max(0, |y| - 1))` and
 `φ_k⁻ = min(1, (k+1) max(0, 1 - |y|))` over an `n`-plane `T ∈ G(N,n)` both converge to `ω_n`
@@ -1406,6 +1675,105 @@ theorem Submission.allard_tc_unique_tangent_plane :
   refine ⟨fun j ↦ φ j + J, ?_⟩
   have hf := hC f
   rwa [huniq C hCtan, hsmul] at hf
+/-- **Simon Ch. 8, 5.5 (Allard's Rectifiability Theorem) with Remark 5.6** (child
+`allard_rectifiability` of `allard_tangent_cones`).  At `μ_V`-a.e. `x`: `θ₀ = Θ^n(μ_V, x)` exists
+in `(0, ∞)`, `D_{μ_V}‖δV‖(x) < ∞` (which gives 5.1), the `β`-averages of `V` over `B_ρ(x)` converge
+(Lemma 1.3), and the density decay of `allard_tc_density_blowup_decay` holds.  At such `x` the
+blow-up density lower bound with `τ_k = θ₀ - θ₀/(k+2) ↑ θ₀` gives `Θ^n(μ_C, ·) ≥ θ₀` `μ_C`-a.e.
+(printed (7)) for each `C ∈ VarTan(V, x)`, so `C = θ₀ v(T)` (`allard_tc_stationary_cone_flat`) and
+`V` has a tangent plane at `x` (`allard_tc_unique_tangent_plane`).  Rectifiability then follows
+from 1.2. -/
+theorem Submission.allard_tc_rectifiability :
+    FirstVariationRepresentation → StationaryMonotonicityIdentity → DensityExistsAE → ConstancyTheorem → VarifoldTangentCones → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (τ : ℝ), V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∃ η : Euclidean N → Measure (Grassmannian N n), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧ ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight) → FirstRectifiabilityTheorem → AllardRectifiabilityTheorem := by
+  intro hFVR hSMI hDE hCT hVTC hlower hdisint hFRT N n U V hV hpos
+  obtain ⟨η, hη, -⟩ := hdisint N n U V
+  obtain ⟨Θ, -, hΘ⟩ := hDE N n U V hV
+  have hU : ∀ᵐ x ∂V.weight, x ∈ U := by
+    rw [ae_iff]
+    change V.weight Uᶜ = 0
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  have hω0 : unitBallVolume n ≠ 0 := by
+    rw [unitBallVolume]
+    exact (measure_ball_pos _ _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Remark 5.6: `V` has a tangent plane at every point where the a.e. statements hold.
+  have htan : ∀ᵐ x ∂V.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ := by
+    filter_upwards [hη, hΘ, (hFVR N n U V hV).2.1, hU,
+      Submission.allard_tc_density_blowup_decay hDE N n U V hV, hpos]
+      with x hηx hΘx hFx hxU hdec hpx
+    -- `θ₀ = Θ^n(μ_V, x) ∈ (0, ∞)`.
+    obtain ⟨θ, hθ, hθpos⟩ := hpx
+    have hθtop : θ ≠ ∞ := by
+      rw [tendsto_nhds_unique hθ hΘx.2]
+      exact hΘx.1
+    obtain ⟨θ₀, hθ₀, rfl⟩ : ∃ θ₀ : ℝ, 0 < θ₀ ∧ ENNReal.ofReal θ₀ = θ :=
+      ⟨θ.toReal, ENNReal.toReal_pos hθpos.ne' hθtop, ENNReal.ofReal_toReal hθtop⟩
+    -- 5.1: `‖δV‖(B_ρ(x)) ≤ Λ μ_V(B_ρ(x))` for small `ρ`, since `D_{μ_V}‖δV‖(x) < ∞`.
+    obtain ⟨Λ, hΛ, hev⟩ : ∃ Λ : ℝ≥0∞, Λ ≠ ∞ ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ),
+        variationMeasure V (closedBall x ρ) ≤ Λ * V.weight (closedBall x ρ) := by
+      have hΛ : variationDensity V x + 1 ≠ ∞ := ENNReal.add_ne_top.2 ⟨hFx.1, ENNReal.one_ne_top⟩
+      refine ⟨_, hΛ, ?_⟩
+      filter_upwards [hFx.2.eventually (gt_mem_nhds (ENNReal.lt_add_right hFx.1 one_ne_zero))]
+        with ρ hρ
+      exact (ENNReal.div_le_iff_le_mul (Or.inr hΛ) (Or.inr (by positivity))).1 hρ.le
+    have h51 : Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) /
+        ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+      have h0 : Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ) (𝓝[>] 0) (𝓝 0) := by
+        rw [← ENNReal.ofReal_zero]
+        exact ENNReal.tendsto_ofReal (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id)
+      have hlim := ENNReal.Tendsto.mul h0
+        (Or.inr (ENNReal.mul_ne_top hΛ (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top)))
+        (ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul hθ (Or.inr hωtop)) (Or.inr hΛ))
+        (Or.inr ENNReal.zero_ne_top)
+      rw [zero_mul] at hlim
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+        (Eventually.of_forall fun _ ↦ zero_le) ?_
+      filter_upwards [hev] with ρ hρ
+      calc ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n
+          ≤ ENNReal.ofReal ρ * (Λ * V.weight (closedBall x ρ)) / ENNReal.ofReal ρ ^ n := by
+            gcongr
+        _ = ENNReal.ofReal ρ * (Λ * (unitBallVolume n * densityRatio n V.weight x ρ)) := by
+            rw [densityRatio, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop,
+              mul_div_assoc, mul_div_assoc]
+    -- 5.2–5.4: compactness, stationarity and the ball identity of the varifold tangents.
+    obtain ⟨hcpt, hcone⟩ := hVTC N n U V x θ₀ hV hxU hθ₀ hθ h51
+    -- Every `C ∈ VarTan(V, x)` is `θ₀ v(T)`.
+    have hflat : ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+        ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T := by
+      intro C hC
+      obtain ⟨hstat, hball, -⟩ := hcone C hC
+      refine Submission.allard_tc_stationary_cone_flat hSMI hCT N n C θ₀ hθ₀ hstat hball ?_
+      -- Printed (3)–(7): `Θ^n(μ_C, ·) ≥ τ_k` a.e. for `τ_k = θ₀ - θ₀/(k+2)`, and `τ_k → θ₀`.
+      have hk : ∀ k : ℕ, ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧
+          ENNReal.ofReal (θ₀ - θ₀ / ((k : ℝ) + 2)) ≤ θ := by
+        intro k
+        have hk2 : (1 : ℝ) < (k : ℝ) + 2 := by
+          have : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+          linarith
+        have hsmall : 0 < θ₀ / ((k : ℝ) + 2) := div_pos hθ₀ (by linarith)
+        have hlt : θ₀ / ((k : ℝ) + 2) < θ₀ := div_lt_self hθ₀ hk2
+        exact hlower N n U V x (θ₀ - θ₀ / ((k : ℝ) + 2)) hV hxU (by linarith) h51
+          (hdec θ₀ (θ₀ - θ₀ / ((k : ℝ) + 2)) hθ (by linarith)) C hC
+      have hτ : Tendsto (fun k : ℕ ↦ θ₀ - θ₀ / ((k : ℝ) + 2)) atTop (𝓝 θ₀) := by
+        have h2 : Tendsto (fun k : ℕ ↦ θ₀ / ((k : ℝ) + 2)) atTop (𝓝 0) :=
+          tendsto_const_nhds.div_atTop
+            (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+        have h3 : Tendsto (fun k : ℕ ↦ θ₀ - θ₀ / ((k : ℝ) + 2)) atTop (𝓝 (θ₀ - 0)) :=
+          tendsto_const_nhds.sub h2
+        rwa [sub_zero] at h3
+      filter_upwards [ae_all_iff.2 hk] with y hy
+      obtain ⟨θy, hθy, -⟩ := hy 0
+      refine ⟨θy, hθy, le_of_tendsto' (ENNReal.tendsto_ofReal hτ) fun k ↦ ?_⟩
+      obtain ⟨θ, hθ', hle⟩ := hy k
+      rwa [tendsto_nhds_unique hθ' hθy] at hle
+    -- (8)–(9): the varifold tangent is unique, so `V` has a tangent plane at `x`.
+    obtain ⟨T, hT⟩ := Submission.allard_tc_unique_tangent_plane N n U V x θ₀ (η x) hxU hθ₀
+      hcpt hflat hηx.2
+    exact ⟨T, θ₀, hT⟩
+  -- 1.2 turns the tangent planes into `V = v(M, θ)`.
+  obtain ⟨θ, -, hM⟩ := hFRT N n U V htan
+  exact ⟨⟨_, θ, hM⟩, htan⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
