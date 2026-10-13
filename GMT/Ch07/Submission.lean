@@ -520,6 +520,159 @@ theorem Submission.regcomp_ims_overlap_orient_eq_or_neg : ∀ (P n : ℕ) (U : S
   have hQ : Q₁ = Q₂ := (hx₁' Q₁ hT₁).unique (hx₂' Q₂ hT₂)
   subst hQ
   exact Submission.rsdic_unitOrientation_eq_or_eq_neg P n (R₁.orient x) (R₂.orient x) Q₁ hξ₁ hξ₂
+/-- **Simon Ch. 6, Remark 3.2(1)**, measurable bookkeeping for `τ(C₁, θ₁, ξ₁) − τ(C₂, θ₂, ξ₂)` when
+`ξ₂ = ±ξ₁` a.e. on `C₁ ∩ C₂`.  With Borel versions `ηᵢ` of `ξᵢ`, the Borel sign `σ = ±1`
+(`σ = 1` iff `η₂ = η₁`, so `ξ₂ = σξ₁` a.e. on `C₁ ∩ C₂`) and `d = θ₁ − σθ₂`, take
+`C = (C₁ \ C₂) ∪ (C₂ \ C₁) ∪ {x ∈ C₁ ∩ C₂ : d(x) ≠ 0}`, and `θ = θ₁, θ₂, |d|`,
+`ξ = η₁, −η₂, sign(d) η₁` on `C₁ \ C₂`, `C₂ \ C₁`, `C₁ ∩ C₂`; then
+`1_C θ ξ = 1_{C₁} θ₁ ξ₁ − 1_{C₂} θ₂ ξ₂` a.e., since `|d| sign(d) = d`. -/
+theorem Submission.regcomp_ims_difference_data : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n), (∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x) → ∃ (C : Set (Euclid P)) (θ : Euclid P → ℕ) (ξ : Euclid P → MultiVector P n), MeasurableSet C ∧ C ⊆ R₁.carrier ∪ R₂.carrier ∧ Measurable θ ∧ (∀ x ∈ C, 0 < θ x) ∧ (∀ x ∈ C, θ x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) ∧ AEStronglyMeasurable ξ (μHE[n].restrict C) ∧ (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ξ x = R₁.orient x ∨ ξ x = -R₁.orient x) ∧ (∀ᵐ x ∂(μHE[n].restrict (C \ R₁.carrier)), ξ x = R₂.orient x ∨ ξ x = -R₂.orient x) ∧ ∀ᵐ x ∂μHE[n], C.indicator (fun y => (θ y : ℝ) • ξ y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x - R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x := by
+  intro P n U R₁ R₂ hH
+  classical
+  have : TopologicalSpace.MetrizableSpace (MultiVector P n) :=
+    { toPseudoMetrizableSpace := ⟨⟨PseudoMetricSpace.toUniformSpace, rfl,
+        Metric.uniformity_basis_dist_inv_nat_succ.isCountablyGenerated⟩⟩,
+      toT0Space := inferInstance }
+  have : ContinuousNeg (MultiVector P n) :=
+    @IsTopologicalAddGroup.toContinuousNeg _ _ _ ContinuousLinearMap.isTopologicalAddGroup
+  have hC₁ := R₁.measurableSet_carrier
+  have hC₂ := R₂.measurableSet_carrier
+  -- Borel versions `ηᵢ` of the orientations `ξᵢ`: `ξᵢ = ηᵢ` a.e. on `Cᵢ`
+  obtain ⟨η₁, hη₁, hA₁⟩ : ∃ η : Euclid P → MultiVector P n, StronglyMeasurable η ∧
+      ∀ᵐ x ∂μHE[n], x ∈ R₁.carrier → R₁.orient x = η x :=
+    ⟨_, R₁.aestronglyMeasurable_orient.stronglyMeasurable_mk,
+      (ae_restrict_iff' hC₁).mp R₁.aestronglyMeasurable_orient.ae_eq_mk⟩
+  obtain ⟨η₂, hη₂, hA₂⟩ : ∃ η : Euclid P → MultiVector P n, StronglyMeasurable η ∧
+      ∀ᵐ x ∂μHE[n], x ∈ R₂.carrier → R₂.orient x = η x :=
+    ⟨_, R₂.aestronglyMeasurable_orient.stronglyMeasurable_mk,
+      (ae_restrict_iff' hC₂).mp R₂.aestronglyMeasurable_orient.ae_eq_mk⟩
+  have hH' := (ae_restrict_iff' (hC₁.inter hC₂)).mp hH
+  -- the Borel sign `σ`: `σ = 1` where `η₂ = η₁`, `σ = -1` elsewhere
+  obtain ⟨σ, hσm, hσ⟩ : ∃ σ : Euclid P → ℤ, Measurable σ ∧
+      ∀ x, (η₂ x = η₁ x ∧ σ x = 1) ∨ (η₂ x ≠ η₁ x ∧ σ x = -1) := by
+    refine ⟨fun x => if η₂ x = η₁ x then 1 else -1,
+      Measurable.ite (hη₂.measurableSet_eq_fun hη₁) measurable_const measurable_const, fun x => ?_⟩
+    by_cases h : η₂ x = η₁ x
+    · exact Or.inl ⟨h, by simp [h]⟩
+    · exact Or.inr ⟨h, by simp [h]⟩
+  -- `ξ₂ = σ ξ₁` a.e. on `C₁ ∩ C₂`
+  have hS : ∀ᵐ x ∂μHE[n], x ∈ R₁.carrier → x ∈ R₂.carrier →
+      R₂.orient x = (σ x : ℝ) • R₁.orient x := by
+    filter_upwards [hA₁, hA₂, hH'] with x h1 h2 hx hx1 hx2
+    rcases hσ x with ⟨he, hs⟩ | ⟨he, hs⟩
+    · rw [hs, h1 hx1, h2 hx2, he]
+      ext α; simp
+    · rcases hx ⟨hx1, hx2⟩ with h | h
+      · exact absurd (by rw [← h1 hx1, ← h2 hx2, h]) he
+      · rw [hs, h]
+        ext α; simp
+  -- the multiplicity difference `d = θ₁ - σ θ₂` on the overlap
+  obtain ⟨d, hdm, hd⟩ : ∃ d : Euclid P → ℤ, Measurable d ∧
+      ∀ x, d x = (R₁.mult x : ℤ) - σ x * (R₂.mult x : ℤ) :=
+    ⟨_, (measurable_from_nat.comp R₁.measurable_mult).sub
+      (hσm.mul (measurable_from_nat.comp R₂.measurable_mult)), fun x => rfl⟩
+  -- the new carrier `C = (C₁ \ C₂) ∪ (C₂ \ C₁) ∪ {x ∈ C₁ ∩ C₂ : d x ≠ 0}`
+  obtain ⟨C, hCm, hC⟩ : ∃ C : Set (Euclid P), MeasurableSet C ∧ ∀ x, x ∈ C ↔
+      (x ∈ R₁.carrier ∧ x ∉ R₂.carrier) ∨ (x ∉ R₁.carrier ∧ x ∈ R₂.carrier) ∨
+        (x ∈ R₁.carrier ∧ x ∈ R₂.carrier ∧ d x ≠ 0) :=
+    ⟨(R₁.carrier \ R₂.carrier) ∪ (R₂.carrier \ R₁.carrier) ∪
+        (R₁.carrier ∩ R₂.carrier ∩ {x | d x ≠ 0}),
+      ((hC₁.diff hC₂).union (hC₂.diff hC₁)).union
+        ((hC₁.inter hC₂).inter (hdm (measurableSet_singleton 0).compl)),
+      fun x => by
+        simp only [Set.mem_union, Set.mem_sdiff, Set.mem_inter_iff, Set.mem_ofPred_eq]; tauto⟩
+  -- the new multiplicity `θ` and orientation `ξ`, piece by piece
+  obtain ⟨θ, hθm, hθ12, hθ1, hθ2⟩ : ∃ θ : Euclid P → ℕ, Measurable θ ∧
+      (∀ x ∈ R₁.carrier, x ∈ R₂.carrier → θ x = (d x).natAbs) ∧
+      (∀ x ∈ R₁.carrier, x ∉ R₂.carrier → θ x = R₁.mult x) ∧
+      (∀ x ∉ R₁.carrier, x ∈ R₂.carrier → θ x = R₂.mult x) :=
+    ⟨fun x => if x ∈ R₁.carrier then (if x ∈ R₂.carrier then (d x).natAbs else R₁.mult x)
+        else (if x ∈ R₂.carrier then R₂.mult x else 0),
+      Measurable.ite hC₁ (Measurable.ite hC₂ ((measurable_of_countable Int.natAbs).comp hdm)
+        R₁.measurable_mult) (Measurable.ite hC₂ R₂.measurable_mult measurable_const),
+      fun x hx1 hx2 => by simp [hx1, hx2], fun x hx1 hx2 => by simp [hx1, hx2],
+      fun x hx1 hx2 => by simp [hx1, hx2]⟩
+  obtain ⟨ξ, hξm, hξ12, hξ1, hξ2⟩ : ∃ ξ : Euclid P → MultiVector P n, StronglyMeasurable ξ ∧
+      (∀ x ∈ R₁.carrier, x ∈ R₂.carrier → ξ x = ((d x).sign : ℝ) • η₁ x) ∧
+      (∀ x ∈ R₁.carrier, x ∉ R₂.carrier → ξ x = η₁ x) ∧
+      (∀ x ∉ R₁.carrier, ξ x = -η₂ x) :=
+    ⟨fun x => if x ∈ R₁.carrier then (if x ∈ R₂.carrier then ((d x).sign : ℝ) • η₁ x else η₁ x)
+        else -η₂ x,
+      StronglyMeasurable.ite hC₁ (StronglyMeasurable.ite hC₂
+        (((measurable_of_countable fun k : ℤ => (k.sign : ℝ)).comp hdm).stronglyMeasurable.smul
+          hη₁) hη₁) hη₂.neg,
+      fun x hx1 hx2 => by simp [hx1, hx2], fun x hx1 hx2 => by simp [hx1, hx2],
+      fun x hx1 => by simp [hx1]⟩
+  refine ⟨C, θ, ξ, hCm, ?_, hθm, ?_, ?_, hξm.aestronglyMeasurable, ?_, ?_, ?_⟩
+  · intro x hx
+    rcases (hC x).mp hx with ⟨hx1, -⟩ | ⟨-, hx2⟩ | ⟨hx1, -⟩
+    exacts [Or.inl hx1, Or.inr hx2, Or.inl hx1]
+  · intro x hx
+    rcases (hC x).mp hx with ⟨hx1, hx2⟩ | ⟨hx1, hx2⟩ | ⟨hx1, hx2, hdx⟩
+    · rw [hθ1 x hx1 hx2]; exact R₁.mult_pos x hx1
+    · rw [hθ2 x hx1 hx2]; exact R₂.mult_pos x hx2
+    · rw [hθ12 x hx1 hx2]; exact Int.natAbs_pos.mpr hdx
+  · intro x hx
+    rcases (hC x).mp hx with ⟨hx1, hx2⟩ | ⟨hx1, hx2⟩ | ⟨hx1, hx2, -⟩
+    · rw [hθ1 x hx1 hx2, Set.indicator_of_mem hx1, Set.indicator_of_notMem hx2]; omega
+    · rw [hθ2 x hx1 hx2, Set.indicator_of_mem hx2, Set.indicator_of_notMem hx1]; omega
+    · rw [hθ12 x hx1 hx2, Set.indicator_of_mem hx1, Set.indicator_of_mem hx2, hd x]
+      rcases hσ x with ⟨-, hs⟩ | ⟨-, hs⟩ <;> rw [hs] <;> omega
+  · refine (ae_restrict_iff' (hCm.inter hC₁)).mpr ?_
+    filter_upwards [hA₁] with x h1 ⟨hxC, hx1⟩
+    rw [h1 hx1]
+    by_cases hx2 : x ∈ R₂.carrier
+    · have hdx : d x ≠ 0 := by
+        rcases (hC x).mp hxC with ⟨-, h⟩ | ⟨h, -⟩ | ⟨-, -, h⟩
+        exacts [absurd hx2 h, absurd hx1 h, h]
+      rw [hξ12 x hx1 hx2]
+      rcases lt_or_gt_of_ne hdx with h | h
+      · rw [Int.sign_eq_neg_one_of_neg h]
+        right; ext α; simp
+      · rw [Int.sign_eq_one_of_pos h]
+        left; ext α; simp
+    · left; exact hξ1 x hx1 hx2
+  · refine (ae_restrict_iff' (hCm.diff hC₁)).mpr ?_
+    filter_upwards [hA₂] with x h2 ⟨hxC, hx1⟩
+    have hx2 : x ∈ R₂.carrier := by
+      rcases (hC x).mp hxC with ⟨h, -⟩ | ⟨-, h⟩ | ⟨h, -, -⟩
+      exacts [absurd h hx1, h, absurd h hx1]
+    right; rw [hξ2 x hx1, h2 hx2]
+  · filter_upwards [hA₁, hA₂, hS] with x h1 h2 hs
+    by_cases hx1 : x ∈ R₁.carrier <;> by_cases hx2 : x ∈ R₂.carrier
+    · rw [Set.indicator_of_mem hx1, Set.indicator_of_mem hx2, hs hx1 hx2, h1 hx1]
+      have hdx' : ((d x : ℤ) : ℝ) = (R₁.mult x : ℝ) - (σ x : ℝ) * (R₂.mult x : ℝ) := by
+        rw [hd x]; push_cast; ring
+      by_cases hdx : d x = 0
+      · rw [Set.indicator_of_notMem (fun h => by
+          rcases (hC x).mp h with ⟨-, h⟩ | ⟨h, -⟩ | ⟨-, -, h⟩
+          exacts [h hx2, h hx1, h hdx])]
+        rw [hdx, Int.cast_zero] at hdx'
+        ext α
+        simp only [smul_apply, sub_apply, smul_eq_mul, zero_apply]
+        linear_combination (η₁ x α) * hdx'
+      · rw [Set.indicator_of_mem ((hC x).mpr (Or.inr (Or.inr ⟨hx1, hx2, hdx⟩))),
+          hθ12 x hx1 hx2, hξ12 x hx1 hx2]
+        have key : ((d x).natAbs : ℝ) * ((d x).sign : ℝ) = (d x : ℝ) := by
+          have h := congrArg (fun z : ℤ => (z : ℝ)) (Int.sign_mul_natAbs (d x))
+          simp only [Int.cast_mul, Int.cast_natCast] at h
+          rw [mul_comm]; exact h
+        ext α
+        simp only [smul_apply, sub_apply, smul_eq_mul]
+        linear_combination (η₁ x α) * (key.trans hdx')
+    · rw [Set.indicator_of_mem hx1, Set.indicator_of_notMem hx2,
+        Set.indicator_of_mem ((hC x).mpr (Or.inl ⟨hx1, hx2⟩)), hθ1 x hx1 hx2, hξ1 x hx1 hx2,
+        h1 hx1]
+      ext α; simp
+    · rw [Set.indicator_of_notMem hx1, Set.indicator_of_mem hx2,
+        Set.indicator_of_mem ((hC x).mpr (Or.inr (Or.inl ⟨hx1, hx2⟩))), hθ2 x hx1 hx2,
+        hξ2 x hx1, h2 hx2]
+      ext α; simp
+    · rw [Set.indicator_of_notMem hx1, Set.indicator_of_notMem hx2,
+        Set.indicator_of_notMem (fun h => by
+          rcases (hC x).mp h with ⟨h, -⟩ | ⟨-, h⟩ | ⟨h, -, -⟩
+          exacts [hx1 h, hx2 h, hx1 h])]
+      ext α; simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
