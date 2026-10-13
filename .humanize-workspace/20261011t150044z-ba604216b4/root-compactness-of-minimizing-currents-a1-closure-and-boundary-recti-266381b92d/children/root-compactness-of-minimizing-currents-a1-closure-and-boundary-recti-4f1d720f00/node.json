@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.im_criterion-a1.im_assembly-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.im_criterion-a1",
+  "depth": 5,
+  "title": "Integer multiplicity from a rectifiable carrier with a.e. integer density and oriented approximate tangent planes",
+  "statement": "Let P, n ∈ ℕ, Γ ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), M ⊆ ℝ^P a Borel set that is countably n-rectifiable (SimonGMT CountablyRectifiable n M), θ : ℝ^P → ℝ Borel measurable with θ > 0 on M and ∫⁻_M ofReal(θ) dHⁿ < ∞ (Hⁿ = μHE[n]), and ζ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) strongly measurable, such that Γ(ω) = ∫_M θ(x)·ζ(x)(ω(x)) dHⁿ(x) for every test n-form ω on ℝ^P. Suppose that for Hⁿ⌞M-a.e. x there is a linear subspace Q with HasApproximateTangentSpaceAt n M x Q (Simon Ch. 3, 1.4), ζ(x) a unit orientation of Q (IsUnitOrientationOf (ζ x) Q) and θ(x) = m for some m ∈ ℕ. Then Γ is an integer multiplicity current (IsIntegerMultiplicity Γ): some IMRep R in ℝ^P represents Γ.",
+  "lean_statement": "∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → CountablyRectifiable n M → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m) → IsIntegerMultiplicity Γ",
+  "lean_name": "cbr_ci_imc_isIntegerMultiplicity_of_rectifiable",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.tangent_null_invariance-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.tangent_null_invariance-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-tang-dd64318517-a1",
+      "result_commit": "ec63142734786e87ac377d3f7a1c48b532e98f85",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4f1d720f00-a1"
+}

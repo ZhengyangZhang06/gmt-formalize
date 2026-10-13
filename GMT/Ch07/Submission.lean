@@ -451,6 +451,425 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cut-off quadratic moments over `n`-planes** (the constant `cₙ` of the measurability proof
+for the approximate tangent planes of Simon Ch. 3, 1.4).  For `n ≥ 1` one constant `c > 0`,
+depending only on `n`, gives `∫_Q max(1 − |y|², 0)⟨u, y⟩² dHⁿ(y) = c|p_Q u|²` for every `P`,
+every `n`-dimensional subspace `Q ⊆ ℝᴾ` and every `u ∈ ℝᴾ`.  On `ℝⁿ` put
+`q(w) = ∫ max(1 − |z|², 0)⟨w, z⟩² dHⁿ(z)` and `c = q(e)`, `|e| = 1`: linear isometries preserve
+`Hⁿ`, so `q` is invariant under them, `q(tw) = t²q(w)`, and a reflection maps `|w|e` to `w`,
+whence `q(w) = c|w|²`; `c > 0` since the integrand is continuous, `≥ 0`, compactly supported and
+`3/16` at `e/2`.  An isometry `ι = L⁻¹ : ℝⁿ → Q ⊆ ℝᴾ` carries `Hⁿ` to `Hⁿ⌞Q`, and
+`⟨u, ι z⟩ = ⟨L(p_Q u), z⟩`, so the integral is `q(L(p_Q u)) = c|p_Q u|²`. -/
+theorem Submission.exists_plane_cutoff_quadratic_moment_eq : ∀ n : ℕ, 0 < n → ∃ c : ℝ, 0 < c ∧ ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ u : Euclid P, ∫ y in (Q : Set (Euclid P)), max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 ∂μHE[n] = c * ‖Q.starProjection u‖ ^ 2 := by
+  intro n hn
+  -- The moment `q(w)` on the model plane `ℝⁿ`; the constant is `c = q(e)` for a unit vector `e`.
+  obtain ⟨q, hq_def⟩ : ∃ q : Euclid n → ℝ,
+      ∀ w, q w = ∫ z, max (1 - ‖z‖ ^ 2) 0 * inner ℝ w z ^ 2 ∂μHE[n] :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨e, he⟩ : ∃ e : Euclid n, ‖e‖ = 1 := ⟨EuclideanSpace.single ⟨0, hn⟩ 1, by simp⟩
+  -- `q(Rw) = q(w)` for a linear isometry `R`: substitute `z = Rz'`, `R` preserves `Hⁿ`.
+  have hq_iso : ∀ (R : Euclid n ≃ₗᵢ[ℝ] Euclid n) (w : Euclid n), q (R w) = q w := by
+    intro R w
+    have key : ∫ z, max (1 - ‖R z‖ ^ 2) 0 * inner ℝ (R w) (R z) ^ 2 ∂μHE[n] =
+        ∫ z, max (1 - ‖z‖ ^ 2) 0 * inner ℝ (R w) z ^ 2 ∂μHE[n] :=
+      (R.toIsometryEquiv.measurePreserving_euclideanHausdorffMeasure n).integral_comp
+        R.toHomeomorph.measurableEmbedding (fun y => max (1 - ‖y‖ ^ 2) 0 * inner ℝ (R w) y ^ 2)
+    simp only [LinearIsometryEquiv.norm_map, LinearIsometryEquiv.inner_map_map] at key
+    rw [hq_def, hq_def, ← key]
+  have hq_smul : ∀ (t : ℝ) (w : Euclid n), q (t • w) = t ^ 2 * q w := by
+    intro t w
+    rw [hq_def, hq_def, ← integral_const_mul]
+    congr 1
+    funext z
+    rw [real_inner_smul_left]
+    ring
+  -- `q(w) = c|w|²`: the reflection in `(|w|e − w)ᗮ` maps `|w|e` to `w`.
+  have hq : ∀ w : Euclid n, q w = q e * ‖w‖ ^ 2 := by
+    intro w
+    have h1 : ‖‖w‖ • e‖ = ‖w‖ := by rw [norm_smul, he, mul_one, norm_norm]
+    obtain ⟨R, hR⟩ : ∃ R : Euclid n ≃ₗᵢ[ℝ] Euclid n, R (‖w‖ • e) = w :=
+      ⟨_, Submodule.reflection_sub h1⟩
+    calc q w = q (R (‖w‖ • e)) := by rw [hR]
+      _ = q (‖w‖ • e) := hq_iso R _
+      _ = q e * ‖w‖ ^ 2 := by rw [hq_smul, mul_comm]
+  -- `c > 0`: on `ℝⁿ`, `Hⁿ` is Lebesgue measure, and the integrand is `3/16` at `e/2`.
+  have hc : 0 < q e := by
+    have hcont : Continuous fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2 := by
+      fun_prop
+    have hsupp : HasCompactSupport fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2 := by
+      refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) 1) fun z hz => ?_
+      have h1 : 1 < ‖z‖ := by simpa using hz
+      have h2 : 1 - ‖z‖ ^ 2 ≤ 0 := by nlinarith
+      simp [max_eq_right h2]
+    have hnonneg : 0 ≤ fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2 :=
+      fun z => mul_nonneg (le_max_right _ _) (sq_nonneg _)
+    have hx : (fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2) ((1 / 2 : ℝ) • e) ≠ 0 := by
+      simp only [norm_smul, he, real_inner_smul_right, real_inner_self_eq_norm_sq]
+      norm_num
+    rw [hq_def, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hsupp hnonneg hx
+  refine ⟨q e, hc, fun P Q hQ u => ?_⟩
+  -- An orthonormal basis of `Q` indexed by `Fin n` gives `L : Q ≃ ℝⁿ`; `ι = L⁻¹` is an isometry
+  -- of `ℝⁿ` onto `Q ⊆ ℝᴾ`, so `ι_# Hⁿ = Hⁿ⌞Q`.
+  obtain ⟨L, -⟩ : ∃ L : Q ≃ₗᵢ[ℝ] Euclid n, True :=
+    ⟨((stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)).repr, trivial⟩
+  have hι : Isometry fun z : Euclid n => ((L.symm z : Q) : Euclid P) :=
+    isometry_subtype_coe.comp L.symm.isometry
+  have hrange : Set.range (fun z : Euclid n => ((L.symm z : Q) : Euclid P)) =
+      (Q : Set (Euclid P)) := by
+    ext y
+    refine ⟨?_, fun hy => ⟨L ⟨y, hy⟩, by simp⟩⟩
+    rintro ⟨z, rfl⟩
+    exact (L.symm z).2
+  have hemb : MeasurableEmbedding fun z : Euclid n => ((L.symm z : Q) : Euclid P) :=
+    hι.isClosedEmbedding.measurableEmbedding
+  have hnorm : ∀ z : Euclid n, ‖((L.symm z : Q) : Euclid P)‖ = ‖z‖ := fun z => L.symm.norm_map z
+  -- `⟨u, ι z⟩ = ⟨p_Q u, ι z⟩ = ⟨L(p_Q u), z⟩`.
+  have hinner : ∀ z : Euclid n, inner ℝ u ((L.symm z : Q) : Euclid P) =
+      inner ℝ (L (Q.orthogonalProjectionOnto u)) z := by
+    intro z
+    rw [LinearIsometryEquiv.inner_map_eq_flip,
+      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right]
+  rw [← hrange, ← hι.map_euclideanHausdorffMeasure, hemb.integral_map]
+  simp only [hnorm, hinner]
+  rw [← hq_def, hq, LinearIsometryEquiv.norm_map, Submodule.starProjection_apply]
+  rfl
+/-- **Simon Ch. 3, 1.4** (change of variables under the blow-up `η_{x,r}`): for `r > 0`, every
+set `M` and every `f`, `∫_{η_{x,r}(M)} f dHⁿ = r⁻ⁿ ∫_M f(η_{x,r}(y)) dHⁿ(y)`.
+`η_{x,r} = (r⁻¹ • ·) ∘ (· − x)` is a homeomorphism with `Hⁿ(η_{x,r}(S)) = r⁻ⁿ Hⁿ(S)` for every
+`S` (translation is an isometry), so `Hⁿ⌞η_{x,r}(M) = r⁻ⁿ η_{x,r#}(Hⁿ⌞M)`. -/
+theorem Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (r : ℝ), 0 < r → ∀ f : Euclid P → ℝ, ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = r⁻¹ ^ n * ∫ y in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μHE[n] := by
+  intro P n M x r hr f
+  -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` is a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P,
+      ⇑e = Poincare.SimonGMT.Chapter03.blowUpMap x r :=
+    ⟨(Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne')), rfl⟩
+  -- `Hⁿ(η_{x,r}(S)) = ‖r⁻¹‖₊ⁿ Hⁿ(S)` for every set `S`
+  have hscale : ∀ S : Set (Euclid P), μHE[n] (e '' S) = ‖r⁻¹‖₊ ^ n • μHE[n] S := by
+    intro S
+    have hS : e '' S = (fun y => r⁻¹ • y) '' ((IsometryEquiv.subRight x) '' S) := by
+      rw [image_image, he]
+      rfl
+    rw [hS, image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image]
+  -- `Hⁿ⌞η_{x,r}(M) = ‖r⁻¹‖₊ⁿ η_{x,r#}(Hⁿ⌞M)`, checked on Borel sets
+  have hmeas : μHE[n].restrict (e '' M) = (‖r⁻¹‖₊ ^ n) • (μHE[n].restrict M).map e := by
+    ext A hA
+    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply e.measurable hA,
+      Measure.restrict_apply (hA.preimage e.measurable), ← hscale, image_inter e.injective,
+      e.image_preimage]
+  -- change of variables, with `‖r⁻¹‖₊ⁿ = r⁻¹ ^ n`
+  rw [← he, hmeas, integral_smul_nnreal_measure, e.measurableEmbedding.integral_map,
+    NNReal.smul_def, smul_eq_mul, NNReal.coe_pow, coe_nnnorm, Real.norm_eq_abs,
+    abs_of_pos (inv_pos.2 hr)]
+/-- Continuity in the centre of the blow-up integrals of Simon Ch. 3, 1.4: for `f` continuous with
+compact support, `r > 0` and `μ` finite on compact sets, `x ↦ ∫ f(η_{x,r}(y)) dμ(y)` is continuous,
+`η_{x,r}(y) = r⁻¹(y − x)`.  With `‖f‖ ≤ C` and `tsupport f ⊆ B̄_R(0)`, the integrand vanishes for
+`x ∈ B_1(x₀)` and `y ∉ B = B̄_{1+rR}(x₀)`; so near `x₀` it is dominated by `C·1_B`, integrable as
+`μ(B) < ∞`, and dominated convergence gives continuity at `x₀`. -/
+theorem Submission.continuous_integral_comp_blowUpMap : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun x : Euclid P => ∫ y, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μ) := by
+  intro P μ hμ f hf hfs r hr
+  -- `‖f‖ ≤ C` and `tsupport f ⊆ closedBall 0 R`
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfs
+  obtain ⟨R, hR⟩ := hfs.isCompact.isBounded.subset_closedBall 0
+  -- `(x, y) ↦ f (r⁻¹ • (y - x))` is jointly continuous
+  have hF : Continuous fun p : Euclid P × Euclid P =>
+      f (Poincare.SimonGMT.Chapter03.blowUpMap p.1 r p.2) :=
+    hf.comp ((continuous_snd.sub continuous_fst).const_smul r⁻¹)
+  refine continuous_iff_continuousAt.2 fun x₀ => ?_
+  -- dominated convergence with the bound `C · 1_B`, `B = closedBall x₀ (1 + r R)`
+  refine continuousAt_of_dominated (bound := (closedBall x₀ (1 + r * R)).indicator fun _ => C)
+    (Eventually.of_forall fun x => (hF.comp (Continuous.prodMk_right x)).aestronglyMeasurable)
+    ?_ ?_ (Eventually.of_forall fun y => (hF.comp (Continuous.prodMk_left y)).continuousAt)
+  · -- for `x ∈ ball x₀ 1`, `f (r⁻¹ • (y - x)) ≠ 0` forces `‖y - x‖ ≤ r R`, so `y ∈ B`
+    filter_upwards [ball_mem_nhds x₀ one_pos] with x hx
+    refine Eventually.of_forall fun y => ?_
+    by_cases hy : y ∈ closedBall x₀ (1 + r * R)
+    · rw [indicator_of_mem hy]
+      exact hC _
+    · rw [indicator_of_notMem hy]
+      refine le_of_eq (norm_eq_zero.2 (by_contra fun h => hy ?_))
+      have h1 := hR (subset_tsupport f h)
+      rw [mem_closedBall, dist_zero_right, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul,
+        Real.norm_eq_abs, abs_inv, abs_of_pos hr, inv_mul_le_iff₀ hr, ← dist_eq_norm] at h1
+      rw [mem_ball] at hx
+      rw [mem_closedBall]
+      linarith [dist_triangle y x x₀]
+  · -- `C · 1_B` is integrable: `B` is compact, so `μ B < ∞`
+    rw [integrable_indicator_iff measurableSet_closedBall]
+    exact integrableOn_const (hμ _ (isCompact_closedBall _ _))
+
+/-- **Simon Ch. 3, 1.4**: if `Hⁿ(M ∩ K) < ∞` for every compact `K`, `f` is continuous with
+compact support and `r > 0`, then the blow-up integral `x ↦ ∫_{η_{x,r}(M)} f dHⁿ` is continuous.
+It equals `r⁻ⁿ ∫_M f(η_{x,r}(y)) dHⁿ(y)`, continuous in `x` because `Hⁿ⌞M` is finite on compact
+sets. -/
+theorem Submission.continuous_blowUp_image_setIntegral : ∀ (P n : ℕ) (M : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun x : Euclid P => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) := by
+  intro P n M hM f hf hfs r hr
+  -- `Hⁿ⌞M` is finite on compact sets: `(Hⁿ⌞M)(K) = Hⁿ(M ∩ K)`, `K` being closed
+  have hμ : ∀ K : Set (Euclid P), IsCompact K → (μHE[n].restrict M) K ≠ ∞ := fun K hK => by
+    rw [Measure.restrict_apply hK.isClosed.measurableSet, inter_comm]
+    exact hM K hK
+  -- change of variables, then continuity of `x ↦ r⁻ⁿ ∫_M f(η_{x,r}(y)) dHⁿ(y)`
+  exact (continuous_const.mul
+    (Submission.continuous_integral_comp_blowUpMap P _ hμ f hf hfs r hr)).congr fun x =>
+      (Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul P n M x r hr f).symm
+/-- A field of orthogonal projections `p_x = (K x).starProjection` is a.e.-measurable (Borel
+σ-algebra of the operator-norm topology) when each quadratic form `x ↦ |p_x u|²` is.  As `p_x` is
+self-adjoint and idempotent, `⟪p_x u, w⟫ = (|p_x(u + w)|² − |p_x(u − w)|²)/4`, so the matrix
+coefficients `⟪p_x e_a, e_b⟫` are a.e.-measurable, and `p_x = Σ_{a,b} ⟪p_x e_a, e_b⟫ ⟪e_a, ·⟫ e_b`
+is a continuous linear function of them. -/
+theorem Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq : ∀ (P : ℕ) (μ : Measure (Euclid P)) (K : Euclid P → Submodule ℝ (Euclid P)), (∀ u : Euclid P, AEMeasurable (fun x => ‖(K x).starProjection u‖ ^ 2) μ) → AEMeasurable (fun x => (K x).starProjection) μ := by
+  intro P μ K h
+  -- by polarization every coefficient `x ↦ ⟪p_x u, w⟫` is a.e.-measurable
+  have hcoef : ∀ u w : Euclid P,
+      AEMeasurable (fun x => inner ℝ ((K x).starProjection u) w) μ := by
+    intro u w
+    have key : ∀ x, inner ℝ ((K x).starProjection u) w =
+        (‖(K x).starProjection (u + w)‖ ^ 2 - ‖(K x).starProjection (u - w)‖ ^ 2) / 4 := by
+      intro x
+      have hsym : inner ℝ ((K x).starProjection u) w =
+          inner ℝ ((K x).starProjection u) ((K x).starProjection w) := by
+        rw [Submodule.inner_starProjection_left_eq_right,
+          Submodule.inner_starProjection_left_eq_right,
+          Submodule.starProjection_eq_self_iff.2 ((K x).starProjection_apply_mem w)]
+      rw [hsym, map_add, map_sub, norm_add_sq_real, norm_sub_sq_real]
+      ring
+    simp_rw [key]
+    exact ((h (u + w)).sub (h (u - w))).div_const 4
+  -- `p_x = Λ (g x)`, `Λ m = ∑ m_{ab} ⟪e_a, ·⟫ e_b`, `g x = (⟪p_x e_a, e_b⟫)_{ab}`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  let Λ : (Fin P × Fin P → ℝ) → (Euclid P →L[ℝ] Euclid P) := fun m =>
+    ∑ ab, m ab • (innerSL ℝ (e ab.1)).smulRight (e ab.2)
+  have heq : (fun x => (K x).starProjection) =
+      fun x => Λ fun ab => inner ℝ ((K x).starProjection (e ab.1)) (e ab.2) := by
+    funext x
+    refine ContinuousLinearMap.ext fun v => ?_
+    simp only [Λ, FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+      Pi.smul_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+      Fintype.sum_prod_type]
+    calc (K x).starProjection v = (K x).starProjection (∑ a, inner ℝ (e a) v • e a) := by
+          rw [e.sum_repr']
+      _ = ∑ a, inner ℝ (e a) v • (K x).starProjection (e a) := by
+          simp only [map_sum, map_smul]
+      _ = ∑ a, inner ℝ (e a) v • ∑ b, inner ℝ (e b) ((K x).starProjection (e a)) • e b := by
+          simp only [e.sum_repr']
+      _ = _ := by
+          refine Finset.sum_congr rfl fun a _ => ?_
+          rw [Finset.smul_sum]
+          refine Finset.sum_congr rfl fun b _ => ?_
+          rw [real_inner_comm (e b), smul_smul, smul_smul, mul_comm]
+  -- `Λ` is continuous and `g` is a.e.-measurable coordinatewise
+  have hΛ : Continuous Λ :=
+    continuous_finsetSum _ fun ab _ => (continuous_apply ab).smul continuous_const
+  rw [heq]
+  exact hΛ.measurable.comp_aemeasurable (AEMeasurable.of_eval fun ab => hcoef _ _)
+/-- **Simon Ch. 3, 1.4** (used in Ch. 6, 3.2(3)): approximate tangent spaces only see a set up to
+`Hⁿ`-null sets.  For `r ≠ 0` the blow-up `η_{x,r}(y) = r⁻¹(y - x)` is a translation followed by a
+dilation, so it maps `Hⁿ`-null sets to `Hⁿ`-null sets.  As `η(A) \ η(B) ⊆ η(A \ B)` and
+`η(B) \ η(A) ⊆ η(B \ A)`, the blow-ups of `A` and `B` agree up to `Hⁿ`-null sets, so their
+integrals coincide for every `r > 0` and have the same limits as `r ↓ 0`. -/
+theorem Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (A \ B) = 0 → μHE[n] (B \ A) = 0 → (HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q) := by
+  intro P n A B x Q hAB hBA
+  -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` maps `Hⁿ`-null sets to `Hⁿ`-null sets when `r ≠ 0`
+  have himg_null : ∀ r : ℝ, r ≠ 0 → ∀ S : Set (Euclid P), μHE[n] S = 0 →
+      μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = 0 := by
+    intro r hr S hS
+    have himg : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S =
+        (fun z => r⁻¹ • z) '' ((fun y => y - x) '' S) := by
+      rw [Set.image_image]
+      rfl
+    have hiso : Isometry (fun y : Euclid P => y - x) := (IsometryEquiv.subRight x).isometry
+    rw [himg, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr),
+      hiso.euclideanHausdorffMeasure_image, hS, smul_zero]
+  -- for `r ≠ 0` the blow-ups of `A` and `B` agree up to `Hⁿ`-null sets, hence so do the integrals
+  have hint : ∀ r : ℝ, r ≠ 0 → ∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ,
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n] =
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] := by
+    intro r hr f
+    apply setIntegral_congr_set
+    refine ae_eq_set.2 ⟨?_, ?_⟩
+    · exact measure_mono_null (Set.subset_image_sdiff _ _ _) (himg_null r hr _ hAB)
+    · exact measure_mono_null (Set.subset_image_sdiff _ _ _) (himg_null r hr _ hBA)
+  -- the integrals agree on `(0, ∞) ∈ 𝓝[>] 0`, so they have the same limits as `r ↓ 0`
+  constructor
+  · rintro ⟨hdim, hlim⟩
+    refine ⟨hdim, fun f => (hlim f).congr' ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact hint r (ne_of_gt hr) f
+  · rintro ⟨hdim, hlim⟩
+    refine ⟨hdim, fun f => (hlim f).congr' ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact (hint r (ne_of_gt hr) f).symm
+
+/-- **Simon Ch. 3, 1.4** (measurability of the approximate tangent planes): if `Hⁿ(M ∩ K) < ∞`
+for every compact `K` and `Q(x)` is an approximate tangent space of `M` at `Hⁿ⌞M`-a.e. `x`, then
+`x ↦ p_{Q(x)} = (Q x).starProjection` is `Hⁿ⌞M`-a.e. strongly measurable.  For `n = 0`,
+`Q(x) = 0` a.e.  For `n ≥ 1` and `f_u(y) = max(1 − |y|², 0)⟨u, y⟩²`, the blow-up integrals
+`x ↦ ∫_{η_{x,1/(k+1)}(M)} f_u dHⁿ` are continuous and tend a.e. to
+`∫_{Q(x)} f_u dHⁿ = c|p_{Q(x)} u|²`, so every `x ↦ |p_{Q(x)} u|²` is a.e.-measurable, and hence
+so is `x ↦ p_{Q(x)}`. -/
+theorem Submission.cbr_ci_imc_tangent_field_aestronglyMeasurable : ∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) := by
+  intro P n M Q hloc htan
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: `dim Q(x) = 0`, so `Q(x) = 0` and `p_{Q(x)} = 0` a.e.
+    refine (aestronglyMeasurable_const (b := (0 : Euclid P →L[ℝ] Euclid P))).congr ?_
+    filter_upwards [htan] with x hx
+    have h0 : Q x = ⊥ := Submodule.finrank_eq_zero.1 hx.1
+    rw [h0]
+    ext v
+    simp
+  · -- `n ≥ 1`: `∫_{Q'} f_u dHⁿ = c|p_{Q'} u|²` for every `n`-plane `Q'`
+    obtain ⟨c, hc, hmom⟩ := Submission.exists_plane_cutoff_quadratic_moment_eq n hn
+    apply AEMeasurable.aestronglyMeasurable
+    apply Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq
+    intro u
+    -- the test function `f_u ∈ C_c(ℝᴾ)`, vanishing outside the closed unit ball
+    set f : Euclid P → ℝ := fun y => max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 with hf_def
+    have hfc : Continuous f := by
+      simp only [hf_def]
+      fun_prop
+    have hfs : HasCompactSupport f := by
+      apply HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) 1)
+      intro y hy
+      simp only [mem_closedBall, dist_zero_right, not_le] at hy
+      have h1 : 1 - ‖y‖ ^ 2 ≤ 0 := by nlinarith [norm_nonneg y]
+      simp [hf_def, max_eq_right h1]
+    let F : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨f, hfc⟩, hfs⟩
+    -- the radii `r_k = 1/(k + 1) → 0⁺`
+    let r : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
+    have hrpos : ∀ k, 0 < r k := fun k => by positivity
+    have hr : Tendsto r atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+        Eventually.of_forall hrpos⟩
+    -- the blow-up integrals are continuous in `x`, hence measurable
+    have hmeas : ∀ k, AEMeasurable (fun x => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x (r k) '' M, f y ∂μHE[n]) (μHE[n].restrict M) := fun k =>
+      (Submission.continuous_blowUp_image_setIntegral P n M hloc f hfc hfs (r k) (hrpos k)).measurable.aemeasurable
+    -- and tend a.e. to `∫_{Q(x)} f_u dHⁿ = c|p_{Q(x)} u|²`
+    have hlim : ∀ᵐ x ∂(μHE[n].restrict M), Tendsto (fun k => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x (r k) '' M, f y ∂μHE[n]) atTop (𝓝 (c * ‖(Q x).starProjection u‖ ^ 2)) := by
+      filter_upwards [htan] with x hx
+      rw [← hmom P (Q x) hx.1 u]
+      exact (hx.2 F).comp hr
+    have h1 : AEMeasurable (fun x => c * ‖(Q x).starProjection u‖ ^ 2) (μHE[n].restrict M) :=
+      aemeasurable_of_tendsto_metrizable_ae' hmeas hlim
+    refine (h1.const_mul c⁻¹).congr (Eventually.of_forall fun x => ?_)
+    simp only
+    rw [← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul]
+/-- **Simon Ch. 6, 3.1** (integer multiplicity currents): if `Γ(ω) = ∫_M θ ⟨ω, ζ⟩ dHⁿ` with `M`
+Borel and countably `n`-rectifiable, `θ > 0` on `M`, `∫_M θ dHⁿ < ∞`, and `Hⁿ`-a.e. on `M` the
+density `θ` is an integer and `ζ` orients an approximate tangent space of `M`, then `Γ` is integer
+multiplicity.  The bad set is `Hⁿ`-null; removing a measurable null hull `N₀` of it leaves a Borel
+carrier `M'' = M \ N₀` on which everything holds pointwise, which has the approximate tangent
+spaces of `M` (Ch. 3, 1.4) and `Hⁿ⌞M'' = Hⁿ⌞M`; the multiplicity is `⌊θ⌋₊` on `M''`. -/
+theorem Submission.cbr_ci_imc_isIntegerMultiplicity_of_rectifiable : ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → CountablyRectifiable n M → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m) → IsIntegerMultiplicity Γ := by
+  intro P n Γ M θ ζ hM hrect hθ hζ hpos hint hrep hae
+  classical
+  set p : Euclid P → Prop := fun x => ∃ Q : Submodule ℝ (Euclid P),
+    HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m
+  -- the bad set `{x ∈ M | ¬ p x}` is `Hⁿ`-null, and so is its measurable hull `N₀`
+  have hbad : μHE[n] {x | x ∈ M ∧ ¬ p x} = 0 := by
+    rw [ae_restrict_iff' hM, ae_iff] at hae
+    simpa only [not_imp] using hae
+  set N₀ := toMeasurable (μHE[n]) {x | x ∈ M ∧ ¬ p x} with hN₀_def
+  have hN₀m : MeasurableSet N₀ := measurableSet_toMeasurable _ _
+  have hN₀ : μHE[n] N₀ = 0 := by rw [hN₀_def, measure_toMeasurable]; exact hbad
+  -- the carrier `M'' = M \ N₀` is Borel, `p` holds on all of it, and `M'' =ᵐ M`
+  set M'' := M \ N₀
+  have hM''m : MeasurableSet M'' := hM.diff hN₀m
+  have hM''sub : M'' ⊆ M := Set.sdiff_subset
+  have hgood : ∀ x ∈ M'', p x := by
+    intro x hx
+    by_contra h
+    exact hx.2 (subset_toMeasurable _ _ ⟨hx.1, h⟩)
+  have hdiff : μHE[n] (M \ M'') = 0 := by
+    refine measure_mono_null (fun x hx => ?_) hN₀
+    by_contra h
+    exact hx.2 ⟨hx.1, h⟩
+  have hdiff' : μHE[n] (M'' \ M) = 0 := by
+    rw [Set.sdiff_eq_empty.2 hM''sub, measure_empty]
+  -- the multiplicity `⌊θ⌋₊` on `M''`, which is `θ` there
+  let mult : Euclid P → ℕ := fun x => if x ∈ M'' then ⌊θ x⌋₊ else 0
+  have hmult_eq : ∀ x ∈ M'', (mult x : ℝ) = θ x := by
+    intro x hx
+    obtain ⟨Q, -, -, m, hm⟩ := hgood x hx
+    simp [mult, hx, hm]
+  have hmult_meas : Measurable mult :=
+    Measurable.ite hM''m (Nat.floor_mono.measurable.comp hθ) measurable_const
+  have hmult_pos : ∀ x ∈ M'', 0 < mult x := by
+    intro x hx
+    have h2 := hpos x (hM''sub hx)
+    rw [← hmult_eq x hx] at h2
+    exact_mod_cast h2
+  have hmult_int : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+      ∫⁻ x in M'' ∩ K, (mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+    intro K _ _
+    apply ne_of_lt
+    calc ∫⁻ x in M'' ∩ K, (mult x : ℝ≥0∞) ∂μHE[n]
+        ≤ ∫⁻ x in M'', (mult x : ℝ≥0∞) ∂μHE[n] := lintegral_mono_set inter_subset_left
+      _ = ∫⁻ x in M'', ENNReal.ofReal (θ x) ∂μHE[n] := by
+        apply setLIntegral_congr_fun hM''m
+        intro x hx
+        simp only
+        rw [← hmult_eq x hx, ENNReal.ofReal_natCast]
+      _ ≤ ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] := lintegral_mono_set hM''sub
+      _ < ∞ := hint
+  -- `M` and `M''` have the same approximate tangent spaces (Ch. 3, 1.4)
+  have horients : ∀ᵐ x ∂(μHE[n].restrict M''), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n M'' x Q ∧ IsUnitOrientationOf (ζ x) Q := by
+    rw [ae_restrict_iff' hM''m]
+    refine Eventually.of_forall fun x hx => ?_
+    obtain ⟨Q, hQ, hor, -⟩ := hgood x hx
+    exact ⟨Q, (Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff P n M M'' x Q
+      hdiff hdiff').1 hQ, hor⟩
+  let R : IMRep (univ : Set (Euclid P)) n :=
+    { carrier := M''
+      mult := mult
+      orient := ζ
+      measurableSet_carrier := hM''m
+      carrier_subset := subset_univ _
+      rectifiable := hrect.mono hM''sub
+      measurable_mult := hmult_meas
+      mult_pos := hmult_pos
+      locallyIntegrable_mult := hmult_int
+      aestronglyMeasurable_orient := hζ.aestronglyMeasurable
+      orients := horients }
+  -- `R` represents `Γ`: `Hⁿ⌞M = Hⁿ⌞M''` and `mult = θ` on `M''`
+  refine ⟨R, fun ω => ?_⟩
+  rw [hrep ω]
+  have hres : μHE[n].restrict M = μHE[n].restrict M'' :=
+    Measure.restrict_congr_set (ae_eq_set.2 ⟨hdiff, hdiff'⟩)
+  show _ = ∫ x in M'', (mult x : ℝ) * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]
+  rw [hres]
+  refine setIntegral_congr_fun hM''m (fun x hx => ?_)
+  simp only [hmult_eq x hx]
+
+/-- **Integer multiplicity criterion** (Simon Ch. 6, 3.1, with Ch. 3, 1.4 and the rectifiability
+criterion `(RECT)`, assumed as the first hypothesis).  Let `Γ(ω) = ∫_M θ⟨ω, ζ⟩ dHⁿ` with `M` Borel,
+`Hⁿ(M) < ∞`, `θ > 0` on `M` and `∫_M θ dHⁿ < ∞`.  If at `Hⁿ`-a.e. `x ∈ M` the multiplicity `θ(x)` is
+a natural number and `ζ(x)` orients an approximate tangent space of `M`, then `Γ` is integer
+multiplicity.  At such `x` the plane `Tₓ = approxTangentPlane n M x` is an approximate tangent
+space; `Hⁿ(M ∩ K) ≤ Hⁿ(M) < ∞`, so `x ↦ p_{Tₓ}` is `Hⁿ⌞M`-a.e. strongly measurable and `(RECT)`
+makes `M` countably `n`-rectifiable.  The representation is then assembled on a Borel part of `M`
+of full measure. -/
+theorem Submission.cbr_ci_isIntegerMultiplicity_of_ae_tangent : (∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M) → ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m) → IsIntegerMultiplicity Γ := by
+  intro hRECT P n Γ M θ ζ hM hfin hθ hζ hpos hint hrep hae
+  -- `Tₓ = approxTangentPlane n M x` is an approximate tangent space of `M` at a.e. `x ∈ M`
+  have htan : ∀ᵐ x ∂(μHE[n].restrict M),
+      HasApproximateTangentSpaceAt n M x (approxTangentPlane n M x) := by
+    filter_upwards [hae] with x hx
+    obtain ⟨Q, hQ, -⟩ := hx
+    have h : ∃ Q, HasApproximateTangentSpaceAt n M x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec
+  -- `Hⁿ(M ∩ K) ≤ Hⁿ(M) < ∞`, so `x ↦ p_{Tₓ}` is a.e. strongly measurable and `(RECT)` applies
+  have hloc : ∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞ := fun K _ =>
+    ne_top_of_le_ne_top hfin.ne (measure_mono inter_subset_left)
+  have hrect : CountablyRectifiable n M :=
+    hRECT P n M (approxTangentPlane n M) hM hfin.ne
+      (Submission.cbr_ci_imc_tangent_field_aestronglyMeasurable P n M _ hloc htan) htan
+  -- assemble the integer multiplicity representation of `Γ` on the rectifiable `M`
+  exact Submission.cbr_ci_imc_isIntegerMultiplicity_of_rectifiable P n Γ M θ ζ hM hrect hθ hζ
+    hpos hint hrep hae
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
