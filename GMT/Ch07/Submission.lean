@@ -451,6 +451,120 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- One of finitely many parallel `n`-planes `Πᵢ = {y | y − wᵢ ∈ span v}` (`v` orthonormal, the
+`wᵢ ⊥ span v` pairwise distinct) is isolated in `ν = Σᵢ αᵢ Hⁿ⌞Πᵢ` by the `1`-Lipschitz
+`g(x) = ‖Q(x − w_{i₀})‖`, `Q y = y − Σⱼ ⟨vⱼ, y⟩ vⱼ`: `g = ‖wⱼ − w_{i₀}‖` on `Πⱼ`, so `g = 0` on
+`Π_{i₀}` and `g ≥ 3δ` on the other planes.  Since `x − w_{i₀} = Σⱼ (pL x)ⱼ vⱼ + Q(x − w_{i₀})`,
+the closed sets `{g ≤ t} ∩ pL⁻¹(B̄_r)` are bounded, hence compact. -/
+theorem Submission.cbr_ci_pw_isolate_plane : ∀ (P n N : ℕ) (v : Fin n → Euclid P) (w : Fin N → Euclid P) (α : Fin N → ℝ) (ν : Measure (Euclid P)) (pL : Euclid P →L[ℝ] Euclid n) (i₀ : Fin N), Orthonormal ℝ v → Injective w → (∀ (i : Fin N) (j : Fin n), inner ℝ (w i) (v j) = 0) → ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ Submodule.span ℝ (Set.range v)} → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → ∃ (g : Euclid P → ℝ) (δ : ℝ), 0 < δ ∧ LipschitzWith 1 g ∧ (∀ y : Euclid P, y - w i₀ ∈ Submodule.span ℝ (Set.range v) → g y = 0) ∧ ν.restrict {x | g x < 3 * δ} = ENNReal.ofReal (α i₀) • (μHE[n]).restrict {y : Euclid P | y - w i₀ ∈ Submodule.span ℝ (Set.range v)} ∧ ∀ t r : ℝ, IsCompact ({x | g x ≤ t} ∩ pL ⁻¹' closedBall 0 r) := by
+  intro P n N v w α ν pL i₀ hv hw hwv hν hpL
+  -- `Q` is the orthogonal projection onto `(span v)ᗮ`.
+  let Q : Euclid P →L[ℝ] Euclid P :=
+    ContinuousLinearMap.id ℝ (Euclid P) - ∑ j, (innerSL ℝ (v j)).smulRight (v j)
+  have hQ : ∀ y, Q y = y - ∑ j, inner ℝ (v j) y • v j := fun y => by
+    simp [Q, innerSL_apply_apply]
+  have hQv : ∀ y k, inner ℝ (Q y) (v k) = 0 := fun y k => by
+    rw [hQ, inner_sub_left, hv.inner_left_fintype, real_inner_comm]
+    simp
+  have hQle : ∀ y, ‖Q y‖ ≤ ‖y‖ := fun y => by
+    have h1 : inner ℝ (Q y) (Q y) = inner ℝ (Q y) y := by
+      nth_rewrite 2 [hQ y]
+      rw [inner_sub_right, inner_sum]
+      simp [inner_smul_right, hQv]
+    have h2 : ‖Q y‖ ^ 2 ≤ ‖Q y‖ * ‖y‖ := by
+      rw [← real_inner_self_eq_norm_sq, h1]
+      exact real_inner_le_norm _ _
+    nlinarith [norm_nonneg (Q y), norm_nonneg y]
+  have hQK : ∀ k ∈ Submodule.span ℝ (Set.range v), Q k = 0 := fun k hk => by
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hk
+    rw [hQ]
+    simp [hv.inner_right_fintype]
+  have hQperp : ∀ u, (∀ j, inner ℝ u (v j) = 0) → Q u = u := fun u hu => by
+    have hu' : ∀ j, inner ℝ (v j) u = 0 := fun j => by rw [real_inner_comm]; exact hu j
+    rw [hQ]
+    simp [hu']
+  let g : Euclid P → ℝ := fun x => ‖Q (x - w i₀)‖
+  have hLip : LipschitzWith 1 g := LipschitzWith.of_dist_le_mul fun x y => by
+    show dist ‖Q (x - w i₀)‖ ‖Q (y - w i₀)‖ ≤ (1 : NNReal) * dist x y
+    rw [Real.dist_eq, dist_eq_norm, NNReal.coe_one, one_mul]
+    calc |‖Q (x - w i₀)‖ - ‖Q (y - w i₀)‖| ≤ ‖Q (x - w i₀) - Q (y - w i₀)‖ :=
+          abs_norm_sub_norm_le _ _
+      _ = ‖Q (x - y)‖ := by rw [← map_sub, sub_sub_sub_cancel_right]
+      _ ≤ ‖x - y‖ := hQle _
+  have hgcont : Continuous g := hLip.continuous
+  have hplane : ∀ j y, y - w j ∈ Submodule.span ℝ (Set.range v) → g y = ‖w j - w i₀‖ :=
+    fun j y hy => by
+      have hsplit : y - w i₀ = (y - w j) + (w j - w i₀) := by abel
+      show ‖Q (y - w i₀)‖ = ‖w j - w i₀‖
+      rw [hsplit, map_add, hQK _ hy, zero_add, hQperp]
+      intro k
+      rw [inner_sub_left, hwv, hwv, sub_zero]
+  have hzero : ∀ y, y - w i₀ ∈ Submodule.span ℝ (Set.range v) → g y = 0 := fun y hy => by
+    rw [hplane i₀ y hy, sub_self, norm_zero]
+  obtain ⟨m, hmpos, hmle⟩ : ∃ m : ℝ, 0 < m ∧ ∀ j, j ≠ i₀ → m ≤ ‖w j - w i₀‖ := by
+    let c : Fin N → ℝ := fun j => if j = i₀ then 1 else ‖w j - w i₀‖
+    refine ⟨Finset.univ.inf' ⟨i₀, Finset.mem_univ _⟩ c,
+      (Finset.lt_inf'_iff _).2 fun j _ => ?_, fun j hj => ?_⟩
+    · by_cases hj : j = i₀
+      · simp [c, hj]
+      · simp only [c, hj, ite_false]
+        exact norm_pos_iff.2 (sub_ne_zero.2 fun h => hj (hw h))
+    · have h1 := Finset.inf'_le c (Finset.mem_univ j)
+      have h2 : c j = ‖w j - w i₀‖ := by simp only [c, hj, ite_false]
+      linarith
+  refine ⟨g, m / 3, div_pos hmpos (by norm_num), hLip, hzero, ?_, ?_⟩
+  · have h3 : (3 : ℝ) * (m / 3) = m := by ring
+    rw [h3]
+    have hS : MeasurableSet {x | g x < m} := measurableSet_lt hgcont.measurable measurable_const
+    rw [hν]
+    ext B hB
+    rw [Measure.restrict_apply hB, Measure.finsetSum_apply, Finset.sum_eq_single i₀]
+    · rw [Measure.smul_apply, Measure.smul_apply, Measure.restrict_apply (hB.inter hS),
+        Measure.restrict_apply hB]
+      congr 2
+      ext x
+      constructor
+      · rintro ⟨⟨hxB, _⟩, hx⟩
+        exact ⟨hxB, hx⟩
+      · rintro ⟨hxB, hx⟩
+        exact ⟨⟨hxB, show g x < m by rw [hzero x hx]; exact hmpos⟩, hx⟩
+    · intro j _ hj
+      rw [Measure.smul_apply, Measure.restrict_apply (hB.inter hS)]
+      have hempty : B ∩ {x | g x < m} ∩ {y | y - w j ∈ Submodule.span ℝ (Set.range v)} = ∅ := by
+        refine Set.eq_empty_of_forall_notMem fun x ⟨⟨_, hxm⟩, hx⟩ => ?_
+        have hxm' : g x < m := hxm
+        rw [hplane j x hx] at hxm'
+        exact absurd hxm' (not_lt.2 (hmle j hj))
+      rw [hempty, measure_empty, smul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ i₀) h
+  · intro t r
+    apply Metric.isCompact_of_isClosed_isBounded
+    · exact (isClosed_le hgcont continuous_const).inter
+        (Metric.isClosed_closedBall.preimage pL.continuous)
+    · rw [Metric.isBounded_iff_subset_closedBall 0]
+      refine ⟨‖w i₀‖ + n * r + t, fun x hx => ?_⟩
+      obtain ⟨hxg, hxr⟩ := hx
+      have hxg' : ‖Q (x - w i₀)‖ ≤ t := hxg
+      rw [Set.mem_preimage, mem_closedBall_zero_iff] at hxr
+      rw [mem_closedBall_zero_iff]
+      have hdecomp : x = w i₀ + ∑ j, inner ℝ (v j) (x - w i₀) • v j + Q (x - w i₀) := by
+        rw [hQ]
+        abel
+      have hsum : ‖∑ j, inner ℝ (v j) (x - w i₀) • v j‖ ≤ n * r := by
+        calc ‖∑ j, inner ℝ (v j) (x - w i₀) • v j‖
+            ≤ ∑ j, ‖inner ℝ (v j) (x - w i₀) • v j‖ := norm_sum_le _ _
+          _ = ∑ j, ‖pL x j‖ := by
+              refine Finset.sum_congr rfl fun j _ => ?_
+              rw [norm_smul, hv.1 j, mul_one, inner_sub_right, real_inner_comm (w i₀) (v j),
+                hwv, sub_zero, hpL]
+          _ ≤ ∑ _j : Fin n, r := Finset.sum_le_sum fun j _ => (PiLp.norm_apply_le _ j).trans hxr
+          _ = n * r := by simp
+      calc ‖x‖ = ‖w i₀ + ∑ j, inner ℝ (v j) (x - w i₀) • v j + Q (x - w i₀)‖ := by
+            rw [← hdecomp]
+        _ ≤ ‖w i₀‖ + ‖∑ j, inner ℝ (v j) (x - w i₀) • v j‖ + ‖Q (x - w i₀)‖ := norm_add₃_le
+        _ ≤ ‖w i₀‖ + n * r + t := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
