@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.cutoff_deriv-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Almost-everywhere derivative of a Lipschitz function that equals the piecewise-linear cut-off of a differentiable function on a Borel set",
+  "statement": "Assume (DD), the frozen statement of the sibling node density_directions of the node being decomposed (Lean dor_lmbsf_density_directions): for every d ∈ ℕ, every Z ⊆ ℝ^d and every y ∈ ℝ^d with L^d(Z ∩ B̄_r(y))/L^d(B̄_r(y)) → 1 as r ↓ 0 (L^d = volume on Euclid d as an outer measure, B̄_r(y) = closedBall y r), and every v ∈ ℝ^d with |v| = 1, there is a sequence (y_i) in Z ∖ {y} with y_i → y and (y_i − y)/|y_i − y| → v. Let d ∈ ℕ, Z ⊆ ℝ^d Borel, F : ℝ^d → ℝ differentiable, u : ℝ^d → ℝ K-Lipschitz (K ≥ 0), a < b and γ(s) := min{1, max{0, (b − s)/(b − a)}}, and suppose u(y) = γ(F(y)) for all y ∈ Z. Then for L^d-a.e. y ∈ Z, Du(y) = γ'(F(y))·DF(y), where γ'(s) := −(b − a)⁻¹ if a < s < b and γ'(s) := 0 otherwise.",
+  "lean_statement": "(∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (F u : Euclid d → ℝ) (K : NNReal) (a b : ℝ), MeasurableSet Z → Differentiable ℝ F → LipschitzWith K u → a < b → (∀ y ∈ Z, u y = min 1 (max 0 ((b - F y) / (b - a)))) → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → fderiv ℝ u y = (if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y",
+  "lean_name": "dor_lmbsf_pwl_fderiv_cutoff_comp_ae",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.eqon_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.eqon_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-626739dc56-a1"
+}

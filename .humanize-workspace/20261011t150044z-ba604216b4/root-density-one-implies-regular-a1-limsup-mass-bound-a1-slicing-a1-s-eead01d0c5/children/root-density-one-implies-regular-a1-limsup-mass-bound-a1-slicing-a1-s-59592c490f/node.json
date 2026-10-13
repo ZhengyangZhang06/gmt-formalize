@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.chart_transfer-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Area-formula transfer of tangential pairings on an injective C¹ chart piece to a single L¹ chart field",
+  "statement": "Let P, d ∈ ℕ, V ⊆ ℝ^d open, ψ : ℝ^d → ℝ^P C¹ on V and injective on V with Dψ(y) injective for y ∈ V, C ⊆ V compact and Y ⊆ C Borel. Let w : ℝ^P → ℝ be integrable on ψ(Y) with respect to H^d = μHE[d], and let W : ℝ^P → ℝ^P be Borel with |W| ≤ c' such that, for H^d-a.e. x ∈ ψ(Y), W(x) ∈ Dψ(y)(ℝ^d) whenever y ∈ Y and ψ(y) = x. Then there is a Lebesgue-integrable Φ : ℝ^d → ℝ^d with Φ = 0 outside Y such that, for all β : ℝ^P → L(ℝ^P, ℝ) and α : ℝ^d → L(ℝ^d, ℝ) with β(ψ(y))∘Dψ(y) = α(y) for every y ∈ Y, ∫_{ψ(Y)} w(x)·β(x)[W(x)] dH^d(x) = ∫_{ℝ^d} α(y)[Φ(y)] dy (Bochner integrals).",
+  "lean_statement": "∀ (P d : ℕ) (V C Y : Set (Euclid d)) (ψ : Euclid d → Euclid P) (w : Euclid P → ℝ) (W : Euclid P → Euclid P) (c' : ℝ), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → IntegrableOn w (ψ '' Y) μHE[d] → Measurable W → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[d].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → W x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P)) → ∃ Φ : Euclid d → Euclid d, Integrable Φ ∧ (∀ y, y ∉ Y → Φ y = 0) ∧ ∀ (β : Euclid P → (Euclid P →L[ℝ] ℝ)) (α : Euclid d → (Euclid d →L[ℝ] ℝ)), (∀ y ∈ Y, (β (ψ y)).comp (fderiv ℝ ψ y) = α y) → ∫ x in ψ '' Y, w x * β x (W x) ∂μHE[d] = ∫ y, α y (Φ y)",
+  "lean_name": "dor_lmbsf_pwl_chart_pairing_transfer",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.left_inverse-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.left_inverse-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-59592c490f-a1"
+}
