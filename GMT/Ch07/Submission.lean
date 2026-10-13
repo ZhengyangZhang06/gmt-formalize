@@ -640,6 +640,132 @@ theorem Submission.dimred_rpd_bilipschitz_image_measure : ∀ (P n : ℕ) (χ : 
           (ENNReal.ofReal (c₂ ^ n) * μH[(n : ℝ)] E) := by gcongr
       _ = _ := by ring
 
+/-- **Density one on an embedded `C¹` submanifold** (the fact `Θⁿ(Hⁿ⌞M, z) = 1` behind
+`Θⁿ(μ_T, z) = |m|` for `T = m[[M]]` near `z ∈ reg T`, Simon 7.4.1):
+`Hⁿ(M ∩ B_s(z)) / (ωₙsⁿ) → 1` as `s ↓ 0`.  For `ε ∈ (0, 1)`, a `(1 ± ε)`-bi-Lipschitz chart `χ`
+with `χ(0) = z` gives `χ(B_{s/(1+ε)}(0)) ⊆ M ∩ B_s(z) ⊆ χ(B_{s/(1−ε)}(0))` for small `s > 0`.  With
+the bi-Lipschitz measure bounds (Simon Ch. 2, 1.8(i)) and `Lⁿ(B_r(0)) = ωₙrⁿ` this gives
+`((1 − ε)/(1 + ε))ⁿ ≤ Hⁿ(M ∩ B_s(z)) / (ωₙsⁿ) ≤ ((1 + ε)/(1 − ε))ⁿ`, and both bounds tend to `1`
+as `ε → 0`. -/
+theorem Submission.dimred_rpd_submanifold_density_one : ∀ (P n : ℕ) (M : Set (Euclid P)) (z : Euclid P), IsEmbeddedSubmanifold 1 n M → z ∈ M → Tendsto (fun s : ℝ => μHE[n] (M ∩ ball z s) / (unitBallVolume n * ENNReal.ofReal (s ^ n))) (𝓝[>] 0) (𝓝 1) := by
+  intro P n M z hM hz
+  -- `ωₙ ∈ (0, ∞)`, and `Lⁿ(B_r(0)) = rⁿωₙ` for `r > 0`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωT : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hvol : ∀ r : ℝ, 0 < r →
+      volume (ball (0 : Euclid n) r) = ENNReal.ofReal (r ^ n) * unitBallVolume n := by
+    intro r hr; rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin]; rfl
+  -- Step 1: for `ε ∈ (0, 1)`, `((1 − ε)/(1 + ε))ⁿ ≤ Hⁿ(M ∩ B_s(z)) / (ωₙsⁿ) ≤ ((1 + ε)/(1 − ε))ⁿ`
+  -- for all small `s > 0`
+  have hbounds : ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ᶠ s in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (((1 - ε) / (1 + ε)) ^ n) ≤
+          μHE[n] (M ∩ ball z s) / (unitBallVolume n * ENNReal.ofReal (s ^ n)) ∧
+        μHE[n] (M ∩ ball z s) / (unitBallVolume n * ENNReal.ofReal (s ^ n)) ≤
+          ENNReal.ofReal (((1 + ε) / (1 - ε)) ^ n) := by
+    intro ε hε hε1
+    -- the `(1 ± ε)`-bi-Lipschitz chart `χ : B_δ(0) → M` with `χ(0) = z`, onto `M` near `z`
+    obtain ⟨χ, δ, δ', hδ, hδ', hχ0, hbil, hχM, hMχ⟩ :=
+      Submission.dimred_rpd_near_isometric_chart P n M z hM hz ε hε
+    have h1ε : 0 < 1 - ε := by linarith
+    have h1ε' : 0 < 1 + ε := by linarith
+    have hs₀ : 0 < min δ' ((1 - ε) * δ) := lt_min hδ' (mul_pos h1ε hδ)
+    filter_upwards [Ioo_mem_nhdsGT hs₀] with s hs
+    obtain ⟨hs0, hs1⟩ := hs
+    have hsδ' : s < δ' := lt_of_lt_of_le hs1 (min_le_left _ _)
+    have hsδ : s < (1 - ε) * δ := lt_of_lt_of_le hs1 (min_le_right _ _)
+    -- `0 < r₁ = s/(1 + ε) ≤ r₂ = s/(1 − ε) < δ`
+    set r₁ := s / (1 + ε) with hr₁def
+    set r₂ := s / (1 - ε) with hr₂def
+    have hr₁ : 0 < r₁ := div_pos hs0 h1ε'
+    have hr₂ : 0 < r₂ := div_pos hs0 h1ε
+    have hr₂δ : r₂ < δ := by rw [hr₂def, div_lt_iff₀ h1ε]; linarith
+    have hr₁r₂ : r₁ ≤ r₂ := div_le_div_of_nonneg_left hs0.le h1ε (by linarith)
+    have hb₁ : ball (0 : Euclid n) r₁ ⊆ ball 0 δ := ball_subset_ball (by linarith)
+    have hb₂ : ball (0 : Euclid n) r₂ ⊆ ball 0 δ := ball_subset_ball hr₂δ.le
+    -- (a) `χ(B_{r₁}(0)) ⊆ M ∩ B_s(z)`: `|χ(w) − z| ≤ (1 + ε)|w| < (1 + ε)r₁ = s`
+    have hinc₁ : χ '' ball 0 r₁ ⊆ M ∩ ball z s := by
+      rintro _ ⟨w, hw, rfl⟩
+      refine ⟨hχM ⟨w, hb₁ hw, rfl⟩, ?_⟩
+      rw [mem_ball, dist_eq_norm, ← hχ0]
+      have h := (hbil w (hb₁ hw) 0 (mem_ball_self hδ)).2
+      rw [sub_zero] at h
+      rw [mem_ball, dist_zero_right] at hw
+      calc ‖χ w - χ 0‖ ≤ (1 + ε) * ‖w‖ := h
+        _ < (1 + ε) * r₁ := mul_lt_mul_of_pos_left hw h1ε'
+        _ = s := by rw [hr₁def]; field_simp
+    -- (b) `M ∩ B_s(z) ⊆ χ(B_{r₂}(0))`: `x = χ(w)` with `(1 − ε)|w| ≤ |x − z| < s`
+    have hinc₂ : M ∩ ball z s ⊆ χ '' ball 0 r₂ := by
+      rintro x ⟨hxM, hxs⟩
+      obtain ⟨w, hw, rfl⟩ := hMχ ⟨hxM, ball_subset_ball hsδ'.le hxs⟩
+      refine ⟨w, ?_, rfl⟩
+      have h := (hbil w hw 0 (mem_ball_self hδ)).1
+      rw [sub_zero] at h
+      rw [mem_ball, dist_eq_norm, ← hχ0] at hxs
+      rw [mem_ball, dist_zero_right, hr₂def, lt_div_iff₀ h1ε]
+      nlinarith [norm_nonneg w]
+    -- (c) the bi-Lipschitz measure bounds on `B_{r₁}(0), B_{r₂}(0) ⊆ B_δ(0)`
+    have hlow := (Submission.dimred_rpd_bilipschitz_image_measure P n χ (ball 0 r₁) (1 - ε) (1 + ε)
+      h1ε h1ε'.le (fun a ha b hb => hbil a (hb₁ ha) b (hb₁ hb))).1
+    have hupp := (Submission.dimred_rpd_bilipschitz_image_measure P n χ (ball 0 r₂) (1 - ε) (1 + ε)
+      h1ε h1ε'.le (fun a ha b hb => hbil a (hb₂ ha) b (hb₂ hb))).2
+    rw [hvol r₁ hr₁] at hlow
+    rw [hvol r₂ hr₂] at hupp
+    have hm1 := hlow.trans (measure_mono hinc₁)
+    have hm2 := (measure_mono hinc₂).trans hupp
+    -- divide by `ωₙsⁿ ∈ (0, ∞)`
+    have hden0 : unitBallVolume n * ENNReal.ofReal (s ^ n) ≠ 0 :=
+      mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hs0 n)).ne'
+    have hdenT : unitBallVolume n * ENNReal.ofReal (s ^ n) ≠ ∞ :=
+      ENNReal.mul_ne_top hωT ENNReal.ofReal_ne_top
+    constructor
+    · rw [ENNReal.le_div_iff_mul_le (Or.inl hden0) (Or.inl hdenT)]
+      have e : ((1 - ε) / (1 + ε)) ^ n * s ^ n = (1 - ε) ^ n * r₁ ^ n := by
+        rw [hr₁def, div_pow, div_pow]; field_simp
+      calc ENNReal.ofReal (((1 - ε) / (1 + ε)) ^ n) * (unitBallVolume n * ENNReal.ofReal (s ^ n))
+          = ENNReal.ofReal (((1 - ε) / (1 + ε)) ^ n * s ^ n) * unitBallVolume n := by
+            rw [ENNReal.ofReal_mul (by positivity)]; ring
+        _ = ENNReal.ofReal ((1 - ε) ^ n * r₁ ^ n) * unitBallVolume n := by rw [e]
+        _ = ENNReal.ofReal ((1 - ε) ^ n) * (ENNReal.ofReal (r₁ ^ n) * unitBallVolume n) := by
+            rw [ENNReal.ofReal_mul (by positivity)]; ring
+        _ ≤ _ := hm1
+    · rw [ENNReal.div_le_iff hden0 hdenT]
+      have e : ((1 + ε) / (1 - ε)) ^ n * s ^ n = (1 + ε) ^ n * r₂ ^ n := by
+        rw [hr₂def, div_pow, div_pow]; field_simp
+      calc μHE[n] (M ∩ ball z s)
+          ≤ ENNReal.ofReal ((1 + ε) ^ n) * (ENNReal.ofReal (r₂ ^ n) * unitBallVolume n) := hm2
+        _ = ENNReal.ofReal ((1 + ε) ^ n * r₂ ^ n) * unitBallVolume n := by
+            rw [ENNReal.ofReal_mul (by positivity)]; ring
+        _ = ENNReal.ofReal (((1 + ε) / (1 - ε)) ^ n * s ^ n) * unitBallVolume n := by rw [e]
+        _ = ENNReal.ofReal (((1 + ε) / (1 - ε)) ^ n) *
+              (unitBallVolume n * ENNReal.ofReal (s ^ n)) := by
+            rw [ENNReal.ofReal_mul (by positivity)]; ring
+  -- Step 2: both bounds tend to `1` as `ε → 0`, so `Hⁿ(M ∩ B_s(z)) / (ωₙsⁿ) → 1` (`tendsto_order`)
+  have hg₁ : Tendsto (fun ε : ℝ => ENNReal.ofReal (((1 - ε) / (1 + ε)) ^ n)) (𝓝 0) (𝓝 1) := by
+    have h : Tendsto (fun ε : ℝ => ((1 - ε) / (1 + ε)) ^ n) (𝓝 0) (𝓝 (((1 - 0) / (1 + 0)) ^ n)) :=
+      ((tendsto_const_nhds.sub tendsto_id).div (tendsto_const_nhds.add tendsto_id)
+        (by norm_num)).pow n
+    simpa using ENNReal.tendsto_ofReal h
+  have hg₂ : Tendsto (fun ε : ℝ => ENNReal.ofReal (((1 + ε) / (1 - ε)) ^ n)) (𝓝 0) (𝓝 1) := by
+    have h : Tendsto (fun ε : ℝ => ((1 + ε) / (1 - ε)) ^ n) (𝓝 0) (𝓝 (((1 + 0) / (1 - 0)) ^ n)) :=
+      ((tendsto_const_nhds.add tendsto_id).div (tendsto_const_nhds.sub tendsto_id)
+        (by norm_num)).pow n
+    simpa using ENNReal.tendsto_ofReal h
+  have hsmall : ∀ᶠ ε in 𝓝[>] (0 : ℝ), 0 < ε ∧ ε < 1 := by
+    filter_upwards [self_mem_nhdsWithin,
+      eventually_nhdsWithin_of_eventually_nhds (eventually_lt_nhds one_pos)] with ε h1 h2
+    exact ⟨h1, h2⟩
+  refine tendsto_order.2 ⟨fun a ha => ?_, fun b hb => ?_⟩
+  · -- `a < 1`: choose `ε ∈ (0, 1)` with `a < ((1 − ε)/(1 + ε))ⁿ`
+    obtain ⟨ε, hεa, hε0, hε1⟩ :=
+      (((hg₁.mono_left nhdsWithin_le_nhds).eventually (lt_mem_nhds ha)).and hsmall).exists
+    filter_upwards [hbounds ε hε0 hε1] with s hs
+    exact lt_of_lt_of_le hεa hs.1
+  · -- `1 < b`: choose `ε ∈ (0, 1)` with `((1 + ε)/(1 − ε))ⁿ < b`
+    obtain ⟨ε, hεb, hε0, hε1⟩ :=
+      (((hg₂.mono_left nhdsWithin_le_nhds).eventually (gt_mem_nhds hb)).and hsmall).exists
+    filter_upwards [hbounds ε hε0 hε1] with s hs
+    exact lt_of_le_of_lt hs.2 hεb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
