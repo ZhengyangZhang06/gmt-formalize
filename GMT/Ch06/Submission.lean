@@ -536,6 +536,39 @@ theorem Submission.slicing_im_st_mf_contraction_lipschitz :
   rw [dist_eq_norm, dist_eq_norm, hsub, NNReal.coe_add, NNReal.coe_natCast, NNReal.coe_one]
   exact hnorm (v - w)
 
+/-- For `L¹`-a.e. `t`, the sliced orientation `x ↦ ξ(x) ∘ ι(|G x|⁻¹ G x)`, where
+`ι v = (v♭ ∧ ·) : Λᵐ → Λᵐ⁺¹`, is a.e. strongly measurable for `Hᵐ` on `M ∩ f⁻¹{t}`:
+it agrees there with `x ↦ ξ₀(x) ∘ ι(|G x|⁻¹ G x)` for a strongly measurable version `ξ₀` of `ξ`. -/
+theorem Submission.slicing_im_st_mf_slice_orientation_aesm :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ)
+      (G : Eucl P → Eucl P),
+      AEStronglyMeasurable ξ ((μHE[m + 1] : Measure (Eucl P)).restrict M) → Measurable G →
+      (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) →
+        ∀ᵐ t ∂(volume : Measure ℝ),
+          ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) →
+      ∀ᵐ t ∂(volume : Measure ℝ), AEStronglyMeasurable (fun x => (ξ x).comp
+        ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+          (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)
+            (innerSL ℝ (‖G x‖⁻¹ • G x)))))
+        ((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})) := by
+  intro P m M ξ f G hξ hG hNT
+  -- `x ↦ ι(|G x|⁻¹ G x)` is strongly measurable: `ι` is Lipschitz and `G` is measurable.
+  have hν : StronglyMeasurable fun x => ‖G x‖⁻¹ • G x :=
+    (hG.norm.inv.smul hG).stronglyMeasurable
+  have hιν := (Submission.slicing_im_st_mf_contraction_lipschitz P m).continuous
+    |>.comp_stronglyMeasurable hν
+  -- With `ξ₀` a strongly measurable version of `ξ`, `F x = ξ₀ x ∘ ι(|G x|⁻¹ G x)` is strongly
+  -- measurable, as operator composition is continuous.
+  have hF : StronglyMeasurable fun x => (hξ.mk ξ x).comp
+      ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)
+          (innerSL ℝ (‖G x‖⁻¹ • G x)))) :=
+    (continuous_fst.clm_comp continuous_snd).comp_stronglyMeasurable
+      (hξ.stronglyMeasurable_mk.prodMk hιν)
+  -- Null transfer of `ξ = ξ₀` to the slices; there `F` agrees a.e. with the sliced orientation.
+  filter_upwards [hNT (fun x => ξ x = hξ.mk ξ x) hξ.ae_eq_mk] with t ht
+  exact hF.aestronglyMeasurable.congr (ht.mono fun x hx => by simp only [hx])
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
