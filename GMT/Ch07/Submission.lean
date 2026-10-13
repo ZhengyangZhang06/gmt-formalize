@@ -451,6 +451,174 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Normal-defect estimate** (Simon Ch. 3, 4.3 (†), "by 4.1, (1) and (2)"): weighting by
+`⟨v, ν⟩` does not change blow-up limits.  Write `B_ρ = B̄_ρ(y)` and
+`A(ρ) = μ(B_ρ)⁻¹ ∫_{B_ρ} ν dμ`.  Choose `R ≥ 1` with `tsupport f ⊆ B̄_R(0)` and `|f| ≤ M`; then
+`f(r⁻¹(z − y)) ≠ 0` forces `z ∈ B_{rR}`, where `μ ≤ C (rR)ⁿ < ∞`.  Splitting
+`f = f ⟨v, ν⟩ + f (1 − ⟨v, ν⟩)` with `0 ≤ 1 − ⟨v, ν⟩ ≤ 2` (Cauchy–Schwarz), the defect
+`Δ(r) = r⁻ⁿ ∫ f(r⁻¹(z − y)) (1 − ⟨v, ν(z)⟩) dμ(z)` satisfies
+`|Δ(r)| ≤ r⁻ⁿ M ∫_{B_{rR}} (1 − ⟨v, ν⟩) dμ = r⁻ⁿ M μ(B_{rR}) (1 − ⟨v, A(rR)⟩)
+  ≤ M C Rⁿ |1 − ⟨v, A(rR)⟩|`, which tends to `0` because `A(rR) → v` and `⟨v, v⟩ = 1`. -/
+theorem Submission.codim1_rdo_dg_tma_normal_defect : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₁ C L : ℝ) (f : Euclid P → ℝ), Measurable ν → (∀ z, ‖ν z‖ = 1) → ‖v‖ = 1 → 0 < ρ₁ → 0 ≤ C → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ) (𝓝[>] 0) (𝓝 L) → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L) := by
+  intro P n μ ν y v ρ₁ C L f hνm hν1 hv hρ₁ hC hdens hA hf hfc hL
+  -- Step 1: `tsupport f ⊆ B̄_R(0)` with `R ≥ 1`, and `|f| ≤ M`
+  obtain ⟨R₀, hR₀⟩ := hfc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  set R := max R₀ 1 with hRdef
+  have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hR : tsupport f ⊆ closedBall 0 R :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfc
+  have hM' : ∀ w, |f w| ≤ M := fun w => by simpa [Real.norm_eq_abs] using hM w
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM' 0)
+  set A : ℝ → Euclid P := fun ρ =>
+    (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ with hAdef
+  -- Step 2: Cauchy–Schwarz, `|⟨v, ν(z)⟩| ≤ 1`
+  have hinner_le : ∀ z, inner ℝ v (ν z) ≤ 1 := by
+    intro z
+    have := real_inner_le_norm v (ν z)
+    rwa [hv, hν1, one_mul] at this
+  have hinner_abs : ∀ z, |inner ℝ v (ν z)| ≤ 1 := by
+    intro z
+    have := abs_real_inner_le_norm v (ν z)
+    rwa [hv, hν1, one_mul] at this
+  have hνinner_meas : Measurable (fun z => inner ℝ v (ν z)) :=
+    (continuous_const.inner continuous_id).measurable.comp hνm
+  -- Steps 3–6: for `0 < r` with `rR < ρ₁`, `|Δ(r)| ≤ M C Rⁿ |1 − ⟨v, A(rR)⟩|`
+  have hbound : ∀ r : ℝ, 0 < r → r * R < ρ₁ →
+      |(r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ -
+        (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ| ≤
+        M * (C * R ^ n) * |1 - inner ℝ v (A (r * R))| := by
+    intro r hr hrR
+    set B := closedBall y (r * R) with hBdef
+    have hBμ : μ B ≤ ENNReal.ofReal (C * (r * R) ^ n) := hdens _ (by positivity) hrR
+    have hBfin : μ B ≠ ∞ := (hBμ.trans_lt ENNReal.ofReal_lt_top).ne
+    have hsupp : ∀ z, z ∉ B → f (r⁻¹ • (z - y)) = 0 := by
+      intro z hz
+      by_contra hne
+      have h1 := hR (subset_tsupport f hne)
+      apply hz
+      rw [mem_closedBall, dist_zero_right, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le)]
+        at h1
+      rw [hBdef, mem_closedBall, dist_eq_norm]
+      calc ‖z - y‖ = r * (r⁻¹ * ‖z - y‖) := by field_simp
+        _ ≤ r * R := mul_le_mul_of_nonneg_left h1 hr.le
+    have hcont : Continuous (fun z => f (r⁻¹ • (z - y))) := by fun_prop
+    -- Step 3: integrability
+    have hint1 : Integrable (fun z => f (r⁻¹ • (z - y))) μ := by
+      refine IntegrableOn.integrable_of_forall_notMem_eq_zero ?_ hsupp
+      exact Measure.integrableOn_of_bounded hBfin hcont.aestronglyMeasurable (M := M)
+        (Eventually.of_forall fun z => by simpa [Real.norm_eq_abs] using hM' _)
+    have hint2 : Integrable (fun z => f (r⁻¹ • (z - y)) * inner ℝ v (ν z)) μ := by
+      refine IntegrableOn.integrable_of_forall_notMem_eq_zero ?_
+        (fun z hz => by rw [hsupp z hz, zero_mul])
+      refine Measure.integrableOn_of_bounded hBfin
+        (hcont.aestronglyMeasurable.mul hνinner_meas.aestronglyMeasurable) (M := M)
+        (Eventually.of_forall fun z => ?_)
+      rw [Real.norm_eq_abs, abs_mul]
+      calc |f (r⁻¹ • (z - y))| * |inner ℝ v (ν z)| ≤ M * 1 :=
+            mul_le_mul (hM' _) (hinner_abs z) (abs_nonneg _) hM0
+        _ = M := mul_one M
+    have hνint : IntegrableOn ν B μ :=
+      Measure.integrableOn_of_bounded hBfin hνm.aestronglyMeasurable (M := 1)
+        (Eventually.of_forall fun z => (hν1 z).le)
+    -- Step 5: `∫_B (1 − ⟨v, ν⟩) dμ = μ(B) (1 − ⟨v, A(rR)⟩)`
+    have hkey : ∫ z in B, (1 - inner ℝ v (ν z)) ∂μ =
+        (μ B).toReal * (1 - inner ℝ v (A (r * R))) := by
+      have hint3 : IntegrableOn (fun z => inner ℝ v (ν z)) B μ :=
+        Measure.integrableOn_of_bounded hBfin hνinner_meas.aestronglyMeasurable (M := 1)
+          (Eventually.of_forall fun z => by simpa [Real.norm_eq_abs] using hinner_abs z)
+      rw [integral_sub (integrableOn_const (C := (1 : ℝ)) hBfin) hint3, setIntegral_const,
+        smul_eq_mul, mul_one]
+      have hcomm : ∫ z in B, inner ℝ v (ν z) ∂μ = inner ℝ v (∫ z in B, ν z ∂μ) := by
+        have := ContinuousLinearMap.integral_comp_comm (innerSL ℝ v) hνint
+        simpa using this
+      rw [hcomm, Measure.real]
+      by_cases h0 : (μ B).toReal = 0
+      · have hμ0 : μ B = 0 := by
+          rcases (ENNReal.toReal_eq_zero_iff _).1 h0 with h | h
+          · exact h
+          · exact absurd h hBfin
+        have : ∫ z in B, ν z ∂μ = 0 := by
+          rw [Measure.restrict_eq_zero.2 hμ0, integral_zero_measure]
+        rw [this, h0]
+        simp
+      · simp only [hAdef]
+        rw [← hBdef, real_inner_smul_right]
+        field_simp
+    -- Step 4: splitting and the pointwise bound `|f (1 − ⟨v, ν⟩)| ≤ M (1 − ⟨v, ν⟩) 1_B`
+    have hdiff : (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ -
+        (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ =
+        (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) * (1 - inner ℝ v (ν z)) ∂μ := by
+      rw [← mul_sub, ← integral_sub hint1 hint2]
+      congr 1
+      refine integral_congr_ae (Eventually.of_forall fun z => ?_)
+      simp only
+      ring
+    have hle : |∫ z, f (r⁻¹ • (z - y)) * (1 - inner ℝ v (ν z)) ∂μ| ≤
+        M * ∫ z in B, (1 - inner ℝ v (ν z)) ∂μ := by
+      have hbint : Integrable (fun z => B.indicator (fun z => M * (1 - inner ℝ v (ν z))) z) μ := by
+        refine (integrable_indicator_iff measurableSet_closedBall).2 ?_
+        refine Measure.integrableOn_of_bounded hBfin
+          (aestronglyMeasurable_const.mul
+            (aestronglyMeasurable_const.sub hνinner_meas.aestronglyMeasurable)) (M := M * 2)
+          (Eventually.of_forall fun z => ?_)
+        rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hM0]
+        refine mul_le_mul_of_nonneg_left ?_ hM0
+        have := hinner_abs z
+        rw [abs_le] at this ⊢
+        constructor <;> linarith [this.1, this.2]
+      rw [← Real.norm_eq_abs]
+      refine (norm_integral_le_of_norm_le hbint (Eventually.of_forall fun z => ?_)).trans ?_
+      · by_cases hz : z ∈ B
+        · rw [indicator_of_mem hz, Real.norm_eq_abs, abs_mul,
+            abs_of_nonneg (sub_nonneg.2 (hinner_le z))]
+          exact mul_le_mul_of_nonneg_right (hM' _) (sub_nonneg.2 (hinner_le z))
+        · rw [indicator_of_notMem hz, hsupp z hz, zero_mul, norm_zero]
+      · rw [integral_indicator measurableSet_closedBall, integral_const_mul]
+    -- Step 6: `μ(B_{rR}) ≤ C (rR)ⁿ`
+    have hμB : (μ B).toReal ≤ C * (r * R) ^ n :=
+      ENNReal.toReal_le_of_le_ofReal (by positivity) hBμ
+    rw [hdiff, abs_mul, abs_of_pos (inv_pos.2 (pow_pos hr n))]
+    calc (r ^ n)⁻¹ * |∫ z, f (r⁻¹ • (z - y)) * (1 - inner ℝ v (ν z)) ∂μ|
+        ≤ (r ^ n)⁻¹ * (M * ((μ B).toReal * |1 - inner ℝ v (A (r * R))|)) := by
+          gcongr
+          refine hle.trans ?_
+          rw [hkey]
+          gcongr
+          exact le_abs_self _
+      _ ≤ (r ^ n)⁻¹ * (M * ((C * (r * R) ^ n) * |1 - inner ℝ v (A (r * R))|)) := by
+          gcongr
+      _ = M * (C * R ^ n) * |1 - inner ℝ v (A (r * R))| := by
+          rw [mul_pow]
+          field_simp
+  -- Step 7: `A(rR) → v`, so the bound tends to `0`
+  have hAr : Tendsto (fun r : ℝ => A (r * R)) (𝓝[>] 0) (𝓝 v) := by
+    refine hA.comp ?_
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have := (tendsto_id (x := 𝓝 (0 : ℝ))).mul_const R
+      simpa using this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hRpos
+  have hin : Tendsto (fun r : ℝ => inner ℝ v (A (r * R))) (𝓝[>] 0) (𝓝 1) := by
+    have hic : Continuous (fun w : Euclid P => inner ℝ v w) := continuous_const.inner continuous_id
+    have := (hic.tendsto v).comp hAr
+    simpa [Function.comp_def, real_inner_self_eq_norm_sq, hv] using this
+  have h0 : Tendsto (fun r : ℝ => M * (C * R ^ n) * |1 - inner ℝ v (A (r * R))|) (𝓝[>] 0)
+      (𝓝 0) := by
+    have := ((tendsto_const_nhds (x := (1 : ℝ))).sub hin).abs.const_mul (M * (C * R ^ n))
+    simpa using this
+  have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r < ρ₁ / R :=
+    nhdsWithin_le_nhds (gt_mem_nhds (div_pos hρ₁ hRpos))
+  have hΔ : Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ -
+      (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ) (𝓝[>] 0) (𝓝 0) := by
+    rw [tendsto_zero_iff_abs_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) ?_ h0
+    filter_upwards [self_mem_nhdsWithin, hsmall] with r hr hrR
+    exact hbound r hr (by have := (lt_div_iff₀ hRpos).mp hrR; linarith)
+  -- Step 8: `r⁻ⁿ ∫ f(r⁻¹(z − y)) dμ = r⁻ⁿ ∫ f(r⁻¹(z − y)) ⟨v, ν(z)⟩ dμ + Δ(r) → L`
+  have := hL.add hΔ
+  simpa using this
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
