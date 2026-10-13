@@ -3633,6 +3633,91 @@ theorem Submission.lpf_tde_measurable_chart_differential :
   obtain ⟨s, hs, hGs⟩ := hv v
   exact ⟨s, hs, by rw [hLx]; exact hGs⟩
 
+/-- Measurability of the push-forward `k`-vector field (Simon Ch. 6, (3.6), p. 147, as needed in
+the proof of the Deformation Theorem, §5, p. 166): for a rectifiable triple `(M, θ, ξ)` in an open
+`U`, a locally Lipschitz `f` and any `L` with `L(x)v = d/dt f(x + tv)|₀` on the weighted
+approximate tangent spaces `TₓM`, `x ↦ L(x)_# ξ(x)` is `Hᵏ⌞M`-a.e. strongly measurable.  Off an
+`Hᵏ`-null set, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₖ` with `span τ = TₓM = DΦ_j(w)(ℝᵏ)` for a `C¹` chart
+`Φ_j(w) = x` (uniqueness of `TₓM`, `θ x > 0`), so `L x` agrees on `τ` with the Borel chartwise
+differential `L'` of `lpf_tde_measurable_chart_differential`. -/
+theorem Submission.deformation_ipl_tangential_pushforward_aestronglyMeasurable : ∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U k M θ ξ → LocallyLipschitzOn U f → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → AEStronglyMeasurable (fun x => nVectorPushforward k (L x) (ξ x)) ((μHE[k] : Measure (Eucl P)).restrict M) := by
+  intro P Q k U M θ ξ f L hU hT hf hL
+  -- Step 1: `C¹` charts `Φ j`, Lipschitz and antilipschitz on open `Ω j`, cover `M` up to an
+  -- `Hᵏ`-null set.
+  obtain ⟨Φ, Ω, hΩ, hΦ, hLip, hanti, hcover⟩ :=
+    Submission.lpf_countably_rectifiable_c1_cover P k M hT.countablyRectifiable
+  -- Step 2: a strongly measurable `L'` with `L'(x) ∘ DΦ_j(w) = D(f ∘ Φ_j)(w)` at a chart
+  -- preimage `w` of every covered point `x`.
+  obtain ⟨L', hL'm, -, hL'⟩ :=
+    Submission.lpf_tde_measurable_chart_differential P Q k Φ Ω f hΩ hΦ hanti
+  -- Step 3: on each chart, the tangent identification and the chain rule hold off an `Lᵏ`-null
+  -- set `E j ⊆ Ω j` of parameters.
+  have hgood : ∀ j, ∃ E : Set (Eucl k), E ⊆ Ω j ∧ (volume : Measure (Eucl k)) E = 0 ∧
+      ∀ w ∈ Ω j, Φ j w ∈ M → w ∉ E →
+        HasWeightedApproximateTangentSpaceAt k M θ (Φ j w)
+            (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) ∧
+          HasFDerivAt (f ∘ Φ j) ((L (Φ j w)).comp (fderiv ℝ (Φ j) w)) w := by
+    intro j
+    have h := Submission.lpf_chart_chain_rule P Q k U M θ ξ f L (Φ j) (Ω j) hU hT hf hL (hΩ j)
+      (hΦ j) (hanti j)
+    refine ⟨{w | ¬ (HasWeightedApproximateTangentSpaceAt k M θ (Φ j w)
+        (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) ∧
+          HasFDerivAt (f ∘ Φ j) ((L (Φ j w)).comp (fderiv ℝ (Φ j) w)) w)} ∩ (Ω j ∩ Φ j ⁻¹' M),
+      fun w hw => hw.2.1,
+      nonpos_iff_eq_zero.1 ((Measure.le_restrict_apply _ _).trans_eq (ae_iff.1 h)), ?_⟩
+    intro w hw hwM hwE
+    by_contra hcon
+    exact hwE ⟨hcon, hw, hwM⟩
+  choose E hEΩ hE0 hEgood using hgood
+  -- Step 4: `Φ j (E j)` is `Hᵏ`-null, as `Φ j` is Lipschitz on `E j ⊆ Ω j` and `Hᵏ = Lᵏ` on `ℝᵏ`.
+  have hΦE : ∀ j, (μHE[k] : Measure (Eucl P)) (Φ j '' E j) = 0 := by
+    intro j
+    obtain ⟨K, hK⟩ := hLip j
+    refine nonpos_iff_eq_zero.1
+      ((Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k
+        (hK.mono (hEΩ j))).trans ?_)
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hE0 j, mul_zero]
+  have hcov : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), x ∈ ⋃ j, Φ j '' Ω j := by
+    rw [ae_iff, Measure.restrict_apply₀' hT.nullMeasurableSet]
+    refine measure_mono_null ?_ hcover
+    intro x hx
+    exact ⟨hx.2, hx.1⟩
+  have hnot : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ j, x ∉ Φ j '' E j :=
+    ae_all_iff.2 fun j => ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 (hΦE j))
+  -- Step 5: off an `Hᵏ`-null set, `ξ x = ±τ₁ ∧ ⋯ ∧ τₖ` with `span τ = DΦ_j(w)(ℝᵏ)` (uniqueness of
+  -- weighted approximate tangent spaces, `θ x > 0`), so `L' x ∘ τ = L x ∘ τ`.
+  have heq : (fun x => nVectorPushforward k (L' x) (ξ x)) =ᵐ[(μHE[k] : Measure (Eucl P)).restrict M]
+      fun x => nVectorPushforward k (L x) (ξ x) := by
+    filter_upwards [ae_restrict_mem₀ hT.nullMeasurableSet, hcov, hnot, hT.orients]
+      with x hxM hxc hxE hor
+    obtain ⟨τ, -, hτ, hξ⟩ := hor
+    obtain ⟨j, w, hw, hΦw, hA, -⟩ := hL' x hxc
+    have hwM : Φ j w ∈ M := by rw [hΦw]; exact hxM
+    have hwE : w ∉ E j := fun hwE => hxE j ⟨w, hwE, hΦw⟩
+    obtain ⟨hW, hD⟩ := hEgood j w hw hwM hwE
+    rw [hΦw] at hW hD
+    have hspan := HasWeightedApproximateTangentSpaceAt.unique (hT.pos x hxM).ne' hτ hW
+    have hcomp : L' x ∘ τ = L x ∘ τ := by
+      funext a
+      obtain ⟨s, hs⟩ : τ a ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap :=
+        hspan ▸ Submodule.subset_span (mem_range_self a)
+      have hs' : fderiv ℝ (Φ j) w s = τ a := hs
+      rw [Function.comp_apply, Function.comp_apply, ← hs', hA s, hD.fderiv,
+        ContinuousLinearMap.comp_apply]
+    rcases hξ with hξ | hξ
+    · rw [hξ, nVectorPushforward_simple, nVectorPushforward_simple, hcomp]
+    · ext ω
+      simp only [nVectorPushforward, hξ, ContinuousLinearMap.comp_apply,
+        neg_apply, simpleNVector_apply, covectorPullback_apply, hcomp]
+  -- Step 6: `(A, w) ↦ A_# w = w ∘ A^#` is continuous, so `x ↦ L'(x)_# ξ(x)` is `Hᵏ⌞M`-a.e.
+  -- strongly measurable, and it agrees a.e. with `x ↦ L(x)_# ξ(x)`.
+  have hcont : Continuous fun p : (Eucl P →L[ℝ] Eucl Q) × NVector (Eucl P) k =>
+      nVectorPushforward k p.1 p.2 :=
+    continuous_snd.clm_comp
+      (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp continuous_fst)
+  exact (hcont.comp_aestronglyMeasurable
+    (hL'm.aestronglyMeasurable.prodMk hT.aestronglyMeasurable)).congr heq
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
