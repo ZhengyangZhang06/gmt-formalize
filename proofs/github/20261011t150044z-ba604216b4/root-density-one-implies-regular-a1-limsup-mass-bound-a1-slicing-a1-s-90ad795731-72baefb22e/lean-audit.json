@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "17f5148b092204251f3d81ec0ea4c72921c283b81e1161b51de1ea474f3abc0e",
+  "git_delta": {
+    "base_commit": "d76b30dc37c59cec38cb2daca59f81993606a6b2",
+    "candidate_commit": "8d0c593003feb340e960bcbd40feaf8fe4787378",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_cit_approxTangent_of_subset",
+    "diff_sha256": "e445ef03ee358cf5cf254677fb38f8b8c5e3734716487633478ff3579e61da0f",
+    "source_sha256": "77edac5f4b0252f40cb2bca03865e35fa62d44c680344747abbfbcab43beec38",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_cit_approxTangent_of_subset",
+      "statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → x ∉ closure (M \\ M') → HasApproximateTangentSpaceAt n M' x Q → HasApproximateTangentSpaceAt n M x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
