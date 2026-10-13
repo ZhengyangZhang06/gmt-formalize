@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1.zero_dim_carrier-a1",
+  "parent_id": "root.rectifiable_of_tangent_measure-a1",
+  "depth": 2,
+  "title": "Zero-dimensional case: a locally finite measure with positive lower 0-density a.e. is carried by a countable, countably 0-rectifiable Borel set",
+  "statement": "Let N ∈ ℕ and let μ be a Borel measure on ℝ^N = EuclideanSpace ℝ (Fin N) with μ(K) < ∞ for every compact K ⊆ ℝ^N. Assume that for μ-a.e. x there is c > 0 such that μ(B_ρ(x)) ≥ c (as ENNReal.ofReal c ≤ μ(B_ρ(x))) for all sufficiently small ρ > 0. Then there is a Borel set R ⊆ ℝ^N which is countably 0-rectifiable (CountablyRectifiable 0 R) and satisfies μ(ℝ^N ∖ R) = 0.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ c : ℝ, 0 < c ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal c ≤ μ (Metric.ball x ρ)) → ∃ R : Set (Rn N), MeasurableSet R ∧ CountablyRectifiable 0 R ∧ μ Rᶜ = 0",
+  "lean_name": "tangentMeasure_zero_dim_carrier",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-zero-dim-carrier-a1-a1"
+}

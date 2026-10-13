@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1.lower_density-a1",
+  "parent_id": "root.rectifiable_of_tangent_measure-a1",
+  "depth": 2,
+  "title": "Positive lower n-density at a point with an approximate tangent plane of positive multiplicity (Remark 1.5(3), lower half)",
+  "statement": "Let N, n ∈ ℕ, ℝ^N = EuclideanSpace ℝ (Fin N), and let μ be a Borel measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ ℝ^N. Let x ∈ ℝ^N, P a linear subspace of ℝ^N and θ > 0 such that HasApproxTangentPlaneWithMultiplicity n μ x P θ holds, i.e. finrank P = n and for every f ∈ C_c(ℝ^N, ℝ), (rⁿ)⁻¹ ∫ f(η_{x,r}(y)) dμ(y) → θ ∫_P f dHⁿ as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x) and Hⁿ = μHE[n]. Then there is c > 0 such that μ(B_ρ(x)) ≥ c ρⁿ (precisely ENNReal.ofReal(c ρⁿ) ≤ μ(B_ρ(x)), B_ρ(x) the open ball) for all sufficiently small ρ > 0, i.e. eventually in the filter 𝓝[>] 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → 0 < θ → HasApproxTangentPlaneWithMultiplicity n μ x P θ → ∃ c : ℝ, 0 < c ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (c * ρ ^ n) ≤ μ (Metric.ball x ρ)",
+  "lean_name": "tangentMeasure_eventually_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-lower-density-a1-a1"
+}
