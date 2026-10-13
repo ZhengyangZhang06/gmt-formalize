@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.pullback_top_form_bound-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Potential bound for the top-dimensional functionals a ↦ T(f·(a∘L)·L^*dy) (Simon 6, proof of 2.36 with 2.35 replaced)",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let U, W ⊆ ℝ^P with W ⊆ U, and let T ∈ D_n(U) with M_W(T) < ∞ and M_W(∂T) < ∞. Let f : ℝ^P → ℝ be C^∞ with compact support and tsupport f ⊆ W. Let L : ℝ^P → ℝⁿ be continuous linear, and put L^*dy := wedgeCovectors n (fun i => y^i∘L), where y^i is the i-th coordinate function of ℝⁿ. Then there is C ∈ ℝ with the following property. For every C^∞ compactly supported a : ℝⁿ → ℝ, every M ∈ ℝ with |a(y)| ≤ M for all y, and every test form φ ∈ Dⁿ(U) with φ(x) = f(x)a(Lx)·L^*dy for all x, we have |T(φ)| ≤ C·M·Lⁿ(tsupport a)^{1/n}. Here Lⁿ(tsupport a) is the real number (volume (tsupport a)).toReal.",
+  "lean_statement": "∀ (P m : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)), W ⊆ U → T.massOn W < ∞ → T.boundary.massOn W < ∞ → ∀ f : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ W → ∀ L : Eucl P →L[ℝ] Eucl (m + 1), ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ φ : TestFormOn U (m + 1), (∀ x, (φ : DifferentialForm (Eucl P) (m + 1)) x = (f x * a (L x)) • wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) → |T φ| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+  "lean_name": "rpn_pullback_top_form_bound",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+    "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+    "root.rectifiability-a1.projection_null-a1.mass_bound_opnorm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.mass_bound_opnorm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-pullback-top-form-bound-a1-a1"
+}
