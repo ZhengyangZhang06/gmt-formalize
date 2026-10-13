@@ -1,0 +1,153 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1`
+- Child DAG node: `root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.retraction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 4 (radial retraction), first two bullets.
+
+Notation. F := Covector (Euclid P) n and N := covectorEuclideanNorm.
+Uses sibling norm_props (Submission.rsd_mw_tfa_norm_props) for these P and n:
+- (i) N(α + α') ≤ N(α) + N(α');
+- (ii) N(t·α) = |t|·N(α);
+- (iv) N is continuous.
+Also N ≥ 0 (covectorEuclideanNorm_nonneg) and N(−α) = N(α) (covectorEuclideanNorm_neg).
+
+1. Definition. For a ∈ F put m(a) := max(1, N(a)) and ρ(a) := m(a)⁻¹·a. Since m(a) ≥ 1, m(a) > 0 for every a.
+
+2. Continuity. N is continuous by (iv), hence so is m = max(1, N). Since m never vanishes, a ↦ m(a)⁻¹ is continuous (Continuous.inv₀). So ρ(a) = m(a)⁻¹·a is continuous as the scalar product of a continuous real function and the identity (Continuous.smul).
+
+3. Zero. ρ(0) = m(0)⁻¹·0 = 0.
+
+4. Unit bound. By (ii), N(ρ(a)) = |m(a)⁻¹|·N(a) = m(a)⁻¹·N(a), because m(a)⁻¹ > 0. Since N(a) ≤ max(1, N(a)) = m(a) and m(a) > 0, we get m(a)⁻¹·N(a) ≤ 1.
+
+5. Factor-two estimate. Let a, b ∈ F with N(b) ≤ 1.
+   Case N(a) ≤ 1. Then m(a) = 1 and ρ(a) = a. So N(ρ(a) − b) = N(a − b) ≤ 2·N(a − b), because N(a − b) ≥ 0.
+   Case N(a) > 1. Write r := N(a) > 1. Then m(a) = r and ρ(a) = r⁻¹·a.
+   (a) a − ρ(a) = (1 − r⁻¹)·a, and 0 ≤ 1 − r⁻¹ because r ≥ 1 implies r⁻¹ ≤ 1. By (ii), N(a − ρ(a)) = (1 − r⁻¹)·r = r − 1.
+   (b) By (i), r = N((a − b) + b) ≤ N(a − b) + N(b) ≤ N(a − b) + 1. Hence r − 1 ≤ N(a − b).
+   (c) ρ(a) − b = −(a − ρ(a)) + (a − b). By (i), N(−x) = N(x), (a) and (b):
+       N(ρ(a) − b) ≤ N(a − ρ(a)) + N(a − b) = (r − 1) + N(a − b) ≤ 2·N(a − b).
+   In both cases N(ρ(a) − b) ≤ 2·N(a − b).
+
+Steps 2–5 give all the required properties of ρ.
+
+Lean note. A compiled route:
+- Take ρ := fun a => (max 1 (covectorEuclideanNorm a))⁻¹ • a.
+- Continuity: `((continuous_const.max hcont).inv₀ fun a => (hmpos a).ne').smul continuous_id`. The equation ρ 0 = 0 follows by `simp`.
+- In the estimate, first `dsimp only` to beta-reduce the lambda, then use `max_eq_left` / `max_eq_right`.
+- On Covector, prove the identity a − r⁻¹ • a = (1 − r⁻¹) • a with `module`, or with `rw [sub_smul (1 : ℝ) r⁻¹ a, one_smul]` with explicit arguments. A bare `rw [sub_smul]` or `simp only [sub_smul]` fails on this type because of the SMul instance path.
+- Then use `abs_of_nonneg (sub_nonneg.mpr (inv_le_one_of_one_le₀ _))`, `sub_mul`, `one_mul` and `inv_mul_cancel₀`.
+
+## Key steps
+
+1. ρ(a) := max(1, N(a))⁻¹·a is continuous, because N is continuous and max(1, N) ≥ 1.
+2. ρ(0) = 0 and N(ρ(a)) = N(a)/max(1, N(a)) ≤ 1.
+3. If N(a) ≤ 1, then ρ(a) = a.
+4. If r = N(a) > 1, then N(a − ρ(a)) = r − 1 ≤ N(a) − N(b) ≤ N(a − b).
+5. By the triangle inequality, N(ρ(a) − b) ≤ N(a − ρ(a)) + N(a − b) ≤ 2N(a − b).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/parent-child-handoff.json parent-supplied-plan.md parent-supplied-natural-proof.json`
+- `python3 -I scan of dag.json: lean_name and status of all nodes; nodes whose lean_statement mentions covectorEuclideanNorm; membership test for the five rsd_mw_tfa_ names (run at 222 and again at 261 nodes)`
+- `grep -rl rsd_mw_tfa --include=*.lean --include=*.json workspaces/ (all 1399 swarm worktrees)`
+- `grep -rn -e 'def covectorEuclideanNorm' -e 'def IsTestForm' -e 'abbrev DifferentialForm' -e 'abbrev Covector' simongmt/Poincare; grep -rn covectorEuclideanNorm simongmt (only _zero, _nonneg, _neg exist)`
+- `grep -n -A 12 'theorem Integrable.exists_hasCompactSupport_integral_sub_le' -e 'theorem Integrable.exists_hasCompactSupport_lintegral_sub_le' Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `cat Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `grep -rn -A 8 -e 'theorem exists_contDiff_support_eq_eq_one_iff' -e 'theorem exists_open_between_and_isCompact_closure' -e 'theorem exists_compact_between' -e 'theorem exists_contDiff_tsupport_subset' Mathlib`
+- `sed -n 830,860p Mathlib/MeasureTheory/Measure/Regular.lean (MeasurableSet.exists_isCompact_sdiff_lt)`
+- `grep -rn -e uniformContinuous_of_continuous -e 'theorem HasCompactSupport.comp_left' -e 'theorem ContDiff.const_smul' -e 'theorem lintegral_const_mul' -e 'lemma inv_le_one_of_one_le₀' -e 'lemma ofReal_norm' -e 'mul_lt_mul_left' Mathlib`
+- `sed -n 140,155p Mathlib/Analysis/InnerProductSpace/PiL2.lean; grep -n le_opNorm Mathlib/Analysis/Normed/Module/Alternating/Basic.lean; grep -n -e toLp_add -e toLp_smul -e toLp_apply Mathlib/Analysis/Normed/Lp/WithLp.lean Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `sed -n 255,388p verifier/gmt-compare.py (frozen_inputs removes Submission.lean; candidate_inputs)`
+- `git show CANDIDATE_COMMIT:GMT/Ch07/Submission.lean | grep ^import, for every accepted node in dag.json`
+- `cmp snapshot project/GMT/Ch07/Contract.lean and lake-manifest.json against the workspace; cmp snapshot mathlib ContinuousMapDense.lean SmoothApprox.lean PartitionOfUnity.lean Regular.lean against lake-packages-25730c7c/mathlib`
+- `lake env lean /tmp/rsd-mw-tfa-split/Probe.lean (instances and lemma availability after import GMT.Ch07.Submission)`
+- `lake env lean /tmp/rsd-mw-tfa-split/Probe2.lean (sub_smul behaviour on Covector)`
+- `lake env lean /tmp/rsd-mw-tfa-split/Assembly.lean`
+- `lake env lean /tmp/rsd-mw-tfa-split/Children.lean`
+- `lake env lean /tmp/rsd-mw-tfa-split/Full.lean`
+- `lake env lean /tmp/rsd-mw-tfa-split/NameCheck.lean`
+- `reviewer: lake env lean /tmp/rsd-mw-tfa-review/Full.lean NoImport.lean OnlyCMD.lean OnlySA.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/rsd-mw-tfa-split/Probe.lean`
+- `/tmp/rsd-mw-tfa-split/Probe2.lean`
+- `/tmp/rsd-mw-tfa-split/Assembly.lean`
+- `/tmp/rsd-mw-tfa-split/Children.lean`
+- `/tmp/rsd-mw-tfa-split/Full.lean`
+- `/tmp/rsd-mw-tfa-split/NameCheck.lean`
+- `/tmp/rsd-mw-tfa-review/Full.lean`
+- `/tmp/rsd-mw-tfa-review/NoImport.lean`
+- `/tmp/rsd-mw-tfa-review/OnlyCMD.lean`
+- `/tmp/rsd-mw-tfa-review/OnlySA.lean`
+
+Snapshot integrity (project b4d606d, Mathlib 25730c7c): the snapshot Contract.lean and lake-manifest.json are byte-identical to the workspace copies, and the workspace Submission.lean equals Contract.lean. The snapshot Mathlib files ContinuousMapDense, SmoothApprox, PartitionOfUnity and Regular are byte-identical to the build tree lake-packages-25730c7c.
+
+No local declaration provides the facts the children need:
+- SimonGMT Chapter06 has only covectorEuclideanNorm_zero, _nonneg and _neg: no triangle inequality, homogeneity, operator-norm bound, continuity, retraction, smoothing or cut-off.
+- No accepted DAG node has these types. The related nodes in other branches have different types and are not accepted: dor_ims_smooth_unit_approx, dor_ims_sua_coeff_norm_rep, dor_ims_sua_mollify_unit_field and regcomp_exists_smooth_unit_form_approx (waiting-children or decomposing).
+- None of the five rsd_mw_tfa_ names occurs in the 261 DAG lean_names or in the 1399 worktrees.
+
+Mathlib tools located in the pinned snapshot:
+- Integrable.exists_hasCompactSupport_lintegral_sub_le (ContinuousMapDense.lean:211);
+- UniformContinuous.exists_contDiff_dist_le (SmoothApprox.lean);
+- exists_contDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:789);
+- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364);
+- MeasurableSet.exists_isCompact_sdiff_lt (Measure/Regular.lean);
+- HasCompactSupport.uniformContinuous_of_continuous (to_additive, HeineCantor.lean:91);
+- ContinuousAlternatingMap.le_opNorm (Alternating/Basic.lean:212);
+- EuclideanSpace.norm_eq (PiL2.lean:145);
+- ofReal_norm (Normed/Group/Basic.lean:386);
+- ENNReal.mul_lt_mul_right (Basic/ENNReal/Operations.lean:58).
+ContinuousMapDense and SmoothApprox are outside the import closure of GMT.Ch07.Submission but are prebuilt. gmt-compare.py byte-checks only the frozen files other than Submission.lean, and an accepted node already added an import there.
+
+Instances and Lean behaviour:
+- CompleteSpace (Covector (Euclid P) n) and ν.Regular for finite ν are inferred.
+- MeasurableSpace, SecondCountableTopology and FiniteDimensional on Covector are not inferred and are not needed.
+- rw [sub_smul] fails on Covector; module works.
+
+Lean checks:
+- All five child types elaborate as Submission declarations after import GMT.Ch07.Submission alone, in the contract scope.
+- The verbatim frozen parent type follows from the children: assembly with only that import.
+- Full proofs of all five children compile with the two extra imports.
+- Axioms are only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced all of this.
