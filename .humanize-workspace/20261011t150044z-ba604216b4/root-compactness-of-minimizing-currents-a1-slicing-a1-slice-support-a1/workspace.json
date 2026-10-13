@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.boundary_inside-a1",
+      "key": "boundary_inside",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (IDENTICAL)",
+              "rg -n -i 'cmcs_ss|level_split|testForm_level|exists_contDiff_zero_iff_one|smul_testForm|TestFormOn.*smul|restrict.*boundary' local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+              "sed -n 95,150p local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+              "rg -n -A6 'theorem exists_contDiff_zero_iff_one_iff_of_isClosed|theorem exists_smooth_zero_one_of_isClosed' local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 780,830p .../Geometry/Manifold/PartitionOfUnity.lean",
+              "rg -n -B2 -A6 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'image_eq_zero_of_notMem_tsupport|image_eq_one_of_notMem_mulTSupport|theorem tsupport_smul_subset_right|theorem HasCompactSupport.smul_left|theorem ContDiff.smul' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean (testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, GeometricCurrentOn.boundary_apply)",
+              "python3 -I scan of dag.json: sibling slicing statements; lean_statement/title search for 'Disjoint (tsupport', '∃ η₁', 'split', 'Urysohn', 'partition', '{x | f x = t}'; collision check for cmcs_ss_testForm_level_split, cmcs_ss_boundary_eq_of_tsupport_subset, cmcs_ss_boundary_vanish_of_disjoint",
+              "git for-each-ref | xargs -n 100 sh -c 'git grep -l -E \"cmcs_ss_|testForm_level_split|boundary_eq_of_tsupport_subset|boundary_vanish_of_disjoint\" \"$@\" -- \"*.lean\"' (sanity check: regcomp_covector_sq_sum_orthonormalBasis gives 25 hits)",
+              "git grep across all refs for 'exists_contDiff_zero_iff_one_iff_of_isClosed' and for existing '∃ η₁ η₂ … η = η₁ + η₂' split lemmas",
+              "lean GMT/Scratch/cmcs_slice_support_decomposition/{Assembly,Children,Full}.lean with #print axioms and pp.explicit check of η = η₁ + η₂",
+              "sed -n 1330,1400p book/chapter-06.txt (Simon 4.6–4.11)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Assembly.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Children.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Full.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+            ],
+            "conclusion": "Snapshot and reuse:\n- The snapshot (project b4d606db, Mathlib 25730c7c) has a Ch07 contract byte-identical to the workspace Submission.lean.\n- Its project files contain no slice-support or test-form-splitting proof. Ch06 has IsRestriction and IsSlice only as frozen definitions, under main_theorem := sorry.\n- No DAG node and no git ref tip declares a reusable level-split or restriction-locality lemma, so nothing can be reused.\n- The three new names collide with nothing: 0 hits in 644 DAG nodes and 0 in 1267 ref tips.\n\nLemmas found:\n- Mathlib supplies every tool the child proofs cite:\n  - exists_contDiff_zero_iff_one_iff_of_isClosed (PartitionOfUnity.lean:809; takes n : ℕ∞, so n := ⊤ gives C^∞);\n  - setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486) and setIntegral_eq_zero_of_forall_eq_zero (:357), with no integrability hypotheses;\n  - image_eq_zero_of_notMem_tsupport, tsupport_smul_subset_right, HasCompactSupport.smul_left, ContDiff.smul and closure_minimal.\n- SimonGMT supplies testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset and the definitional GeometricCurrentOn.boundary_apply.\n\nLean checks:\n- Assembly.lean proves the frozen parent from the three stubs.\n- Children.lean and Full.lean prove all three children. With them, cmcs_slice_support uses only [propext, Classical.choice, Quot.sound].\n- `open scoped ContDiff` must not be used in child files: it turns ω into a token and breaks the frozen statements."
+          }
+        ],
+        "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+        "child_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.boundary_inside-a1",
+        "subproblem": {
+          "key": "boundary_inside",
+          "title": "Inside S the boundary of the restriction T⌞S agrees with (∂T)⌞S",
+          "statement": "Let P, k ∈ ℕ and let U ⊆ ℝ^P be any set. Let T ∈ 𝒟_{k+1}(U), let μ, μ' be measures on ℝ^P, and let ξ : ℝ^P → Λ_{k+1}(ℝ^P) and ξ' : ℝ^P → Λ_k(ℝ^P) be arbitrary maps such that T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and ∂T(θ) = ∫ ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U) (Bochner integrals). Let S ⊆ ℝ^P be any set, and let A ∈ 𝒟_{k+1}(U), B ∈ 𝒟_k(U) satisfy A(ω) = ∫_S ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and B(θ) = ∫_S ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U). Then ∂A(θ) = B(θ) for every θ ∈ 𝒟^k(U) with tsupport θ ⊆ S.",
+          "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (S : Set (Euclid P)) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, T.boundary θ = ∫ x, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in S, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ θ : TestFormOn U k, tsupport (θ : DifferentialForm (Euclid P) k) ⊆ S → A.boundary θ = B θ",
+          "lean_name": "cmcs_ss_boundary_eq_of_tsupport_subset",
+          "depends_on": [],
+          "natural_proof": "Source: steps 1 and 5 of the parent proof of cmcs_slice_support, with the set {f < t} replaced by an arbitrary set S and η₋ replaced by an arbitrary θ ∈ 𝒟^k(U) with tsupport θ̂ ⊆ S. For a form θ write θ̂ for its underlying map ℝ^P → Λ^k(ℝ^P).\n0. (Boundary.) Write dθ := exteriorDerivativeTestOn U k θ ∈ 𝒟^{k+1}(U); its underlying form is exteriorDerivative θ̂. By GeometricCurrentOn.boundary_apply (a definitional equality), ∂A(θ) = A(dθ) and ∂T(θ) = T(dθ).\n1. (Vanishing off S.) Let x ∉ S.\n   (a) Since tsupport θ̂ ⊆ S, x ∉ tsupport θ̂, so θ̂(x) = 0 (image_eq_zero_of_notMem_tsupport).\n   (b) Since tsupport(exteriorDerivative θ̂) ⊆ tsupport θ̂ (SimonGMT tsupport_exteriorDerivative_subset), also x ∉ tsupport(exteriorDerivative θ̂), so (exteriorDerivative θ̂)(x) = 0.\n   (c) ξ(x) and ξ'(x) are linear maps. Hence ξ(x)((exteriorDerivative θ̂)(x)) = ξ(x)(0) = 0 and ξ'(x)(θ̂(x)) = ξ'(x)(0) = 0.\n2. (Integrals over S equal integrals over ℝ^P.) Let ν be any measure and G : ℝ^P → ℝ any function with G(x) = 0 for every x ∉ S. Then ∫_S G dν = ∫ G dν (Mathlib setIntegral_eq_integral_of_forall_compl_eq_zero; no integrability or measurability hypothesis is needed). By step 1 this applies to G(x) := ξ(x)((exteriorDerivative θ̂)(x)) with ν := μ, and to G(x) := ξ'(x)(θ̂(x)) with ν := μ'.\n3. (Chain of equalities.) Each equality below is justified by, in order: step 0; the representation of A applied to ω := dθ; step 2; the representation of T applied to ω := dθ; step 0; the representation of ∂T applied to θ; step 2; the representation of B applied to θ.\n∂A(θ) = A(dθ) = ∫_S ξ(x)((exteriorDerivative θ̂)(x)) dμ(x) = ∫ ξ(x)((exteriorDerivative θ̂)(x)) dμ(x) = T(dθ) = ∂T(θ) = ∫ ξ'(x)(θ̂(x)) dμ'(x) = ∫_S ξ'(x)(θ̂(x)) dμ'(x) = B(θ). ∎",
+          "proof_key_steps": [
+            "∂A(θ) = A(dθ) and ∂T(θ) = T(dθ), where dθ is the test form with underlying map exteriorDerivative θ̂ (boundary_apply).",
+            "Off S both θ̂ and exteriorDerivative θ̂ vanish, because tsupport θ̂ ⊆ S and tsupport(exteriorDerivative θ̂) ⊆ tsupport θ̂. Since ξ(x) and ξ'(x) are linear, both integrands vanish off S.",
+            "So both integrals over S equal the integrals over ℝ^P (setIntegral_eq_integral_of_forall_compl_eq_zero).",
+            "∂A(θ) = ∫_S ξ(dθ̂) dμ = ∫ ξ(dθ̂) dμ = T(dθ) = ∂T(θ) = ∫ ξ'(θ̂) dμ' = ∫_S ξ'(θ̂) dμ' = B(θ)."
+          ]
+        },
+        "audit": {
+          "key": "boundary_inside",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact Lean type include all four representation hypotheses and allow arbitrary U and S. Support preservation under exterior differentiation makes both integrands vanish off S. The pinned set-integral lemma requires neither measurability of S nor integrability. The supplied equality chain correctly uses every representation and boundary_apply, proving the exact conclusion without circularity."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.level_split-a1",
+      "key": "level_split",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (IDENTICAL)",
+              "rg -n -i 'cmcs_ss|level_split|testForm_level|exists_contDiff_zero_iff_one|smul_testForm|TestFormOn.*smul|restrict.*boundary' local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+              "sed -n 95,150p local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+              "rg -n -A6 'theorem exists_contDiff_zero_iff_one_iff_of_isClosed|theorem exists_smooth_zero_one_of_isClosed' local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 780,830p .../Geometry/Manifold/PartitionOfUnity.lean",
+              "rg -n -B2 -A6 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'image_eq_zero_of_notMem_tsupport|image_eq_one_of_notMem_mulTSupport|theorem tsupport_smul_subset_right|theorem HasCompactSupport.smul_left|theorem ContDiff.smul' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean (testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, GeometricCurrentOn.boundary_apply)",
+              "python3 -I scan of dag.json: sibling slicing statements; lean_statement/title search for 'Disjoint (tsupport', '∃ η₁', 'split', 'Urysohn', 'partition', '{x | f x = t}'; collision check for cmcs_ss_testForm_level_split, cmcs_ss_boundary_eq_of_tsupport_subset, cmcs_ss_boundary_vanish_of_disjoint",
+              "git for-each-ref | xargs -n 100 sh -c 'git grep -l -E \"cmcs_ss_|testForm_level_split|boundary_eq_of_tsupport_subset|boundary_vanish_of_disjoint\" \"$@\" -- \"*.lean\"' (sanity check: regcomp_covector_sq_sum_orthonormalBasis gives 25 hits)",
+              "git grep across all refs for 'exists_contDiff_zero_iff_one_iff_of_isClosed' and for existing '∃ η₁ η₂ … η = η₁ + η₂' split lemmas",
+              "lean GMT/Scratch/cmcs_slice_support_decomposition/{Assembly,Children,Full}.lean with #print axioms and pp.explicit check of η = η₁ + η₂",
+              "sed -n 1330,1400p book/chapter-06.txt (Simon 4.6–4.11)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Assembly.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Children.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Full.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+            ],
+            "conclusion": "Snapshot and reuse:\n- The snapshot (project b4d606db, Mathlib 25730c7c) has a Ch07 contract byte-identical to the workspace Submission.lean.\n- Its project files contain no slice-support or test-form-splitting proof. Ch06 has IsRestriction and IsSlice only as frozen definitions, under main_theorem := sorry.\n- No DAG node and no git ref tip declares a reusable level-split or restriction-locality lemma, so nothing can be reused.\n- The three new names collide with nothing: 0 hits in 644 DAG nodes and 0 in 1267 ref tips.\n\nLemmas found:\n- Mathlib supplies every tool the child proofs cite:\n  - exists_contDiff_zero_iff_one_iff_of_isClosed (PartitionOfUnity.lean:809; takes n : ℕ∞, so n := ⊤ gives C^∞);\n  - setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486) and setIntegral_eq_zero_of_forall_eq_zero (:357), with no integrability hypotheses;\n  - image_eq_zero_of_notMem_tsupport, tsupport_smul_subset_right, HasCompactSupport.smul_left, ContDiff.smul and closure_minimal.\n- SimonGMT supplies testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset and the definitional GeometricCurrentOn.boundary_apply.\n\nLean checks:\n- Assembly.lean proves the frozen parent from the three stubs.\n- Children.lean and Full.lean prove all three children. With them, cmcs_slice_support uses only [propext, Classical.choice, Quot.sound].\n- `open scoped ContDiff` must not be used in child files: it turns ω into a token and breaks the frozen statements."
+          }
+        ],
+        "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+        "child_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.level_split-a1",
+        "subproblem": {
+          "key": "level_split",
+          "title": "Level-set splitting of a test form whose support misses {f = t}",
+          "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let f : ℝ^P → ℝ be continuous, let t ∈ ℝ, and let η ∈ 𝒟^n(U) (a C^∞ n-form on ℝ^P with compact support whose topological support lies in U) be such that tsupport η is disjoint from {x : f(x) = t}. Then there are η₁, η₂ ∈ 𝒟^n(U) with η = η₁ + η₂, tsupport η₁ ⊆ {x : f(x) < t} and tsupport η₂ ⊆ {x : t < f(x)}.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (f : Euclid P → ℝ) (t : ℝ) (η : TestFormOn U n), Continuous f → Disjoint (tsupport (η : DifferentialForm (Euclid P) n)) {x | f x = t} → ∃ η₁ η₂ : TestFormOn U n, η = η₁ + η₂ ∧ tsupport (η₁ : DifferentialForm (Euclid P) n) ⊆ {x | f x < t} ∧ tsupport (η₂ : DifferentialForm (Euclid P) n) ⊆ {x | t < f x}",
+          "lean_name": "cmcs_ss_testForm_level_split",
+          "depends_on": [],
+          "natural_proof": "Source: steps 2–3 of the parent proof of cmcs_slice_support (splitting η with a smooth Urysohn function), specialized as follows: the two separating closed sets are taken inside K := tsupport η̂, so the parent's δ-margin is not needed. For a form θ write θ̂ for its underlying map ℝ^P → Λ^n(ℝ^P). Membership θ ∈ 𝒟^n(U) (TestFormOn U n) means three things: θ̂ is C^∞ (IsSmoothForm, i.e. ContDiff ℝ ∞), θ̂ has compact support (HasCompactSupport), and tsupport θ̂ ⊆ U. Addition in 𝒟^n(U) is pointwise addition of the underlying forms.\n1. (The two halves of the support.) Let K := tsupport η̂; it is closed (isClosed_tsupport). Put K₋ := K ∩ {x : f(x) ≤ t} and K₊ := K ∩ {x : t ≤ f(x)}.\n   (a) Both sets are closed: f is continuous, so {f ≤ t} and {t ≤ f} are closed (isClosed_le).\n   (b) They are disjoint: a common point x would lie in K and satisfy f(x) ≤ t ≤ f(x), i.e. x ∈ K ∩ {f = t}, contradicting the hypothesis.\n   (c) Every x ∈ K₋ satisfies f(x) < t: we have f(x) ≤ t, and f(x) ≠ t because x ∈ K is not in {f = t}.\n   (d) In the same way, every x ∈ K₊ satisfies t < f(x).\n2. (Smooth Urysohn function.) The space ℝ^P is finite-dimensional. Apply the smooth Urysohn lemma, Mathlib exists_contDiff_zero_iff_one_iff_of_isClosed, with smoothness order ⊤ : ℕ∞, taking as the lemma's first closed set s := K₊ and as its second closed set K₋. Both are closed by step 1(a) and disjoint by step 1(b). (The lemma's own name for its second set is t; it is unrelated to the level t.) It gives a C^∞ function χ : ℝ^P → ℝ with χ(x) = 0 for every x ∈ K₊ and χ(x) = 1 for every x ∈ K₋. Only these two implications are used.\n3. (The pieces are test forms.) Define η̂₁(x) := χ(x)·η̂(x) and η̂₂(x) := (1 − χ(x))·η̂(x).\n   (a) Both maps are C^∞: χ and 1 − χ are smooth scalar functions and η̂ is a smooth form (ContDiff.smul).\n   (b) If η̂(x) = 0 then c·η̂(x) = 0 for every scalar c, so support η̂ᵢ ⊆ support η̂. Hence both maps have compact support (HasCompactSupport.smul_left), and tsupport η̂ᵢ ⊆ tsupport η̂ ⊆ U (tsupport_smul_subset_right).\n   (c) So they define η₁, η₂ ∈ 𝒟^n(U).\n   (d) For every x, η̂₁(x) + η̂₂(x) = (χ(x) + (1 − χ(x)))·η̂(x) = η̂(x). Hence η = η₁ + η₂, as an equality of elements of the subtype (Subtype.ext, funext, add_smul).\n4. (Support of the lower piece.) Let x satisfy η̂₁(x) ≠ 0.\n   (a) Then η̂(x) ≠ 0, so x ∈ support η̂ ⊆ K, and χ(x) ≠ 0.\n   (b) If t ≤ f(x), then x ∈ K₊, so χ(x) = 0 by step 2, which is impossible. Hence f(x) < t, in particular f(x) ≤ t, so x ∈ K₋.\n   (c) Thus support η̂₁ ⊆ K₋. Since K₋ is closed, tsupport η̂₁ = closure(support η̂₁) ⊆ K₋ (closure_minimal).\n   (d) By step 1(c), K₋ ⊆ {x : f(x) < t}, so tsupport η̂₁ ⊆ {x : f(x) < t}.\n5. (Support of the upper piece.) Let x satisfy η̂₂(x) ≠ 0.\n   (a) Then η̂(x) ≠ 0, so x ∈ K, and 1 − χ(x) ≠ 0, i.e. χ(x) ≠ 1.\n   (b) If f(x) ≤ t, then x ∈ K₋, so χ(x) = 1 by step 2, which is impossible. Hence t < f(x), so x ∈ K₊.\n   (c) Thus support η̂₂ ⊆ K₊. Since K₊ is closed, tsupport η̂₂ ⊆ K₊.\n   (d) By step 1(d), K₊ ⊆ {x : t < f(x)}, so tsupport η̂₂ ⊆ {x : t < f(x)}.\n6. (Conclusion.) η₁ and η₂ lie in 𝒟^n(U) (step 3) and satisfy η = η₁ + η₂, tsupport η̂₁ ⊆ {x : f(x) < t} (step 4) and tsupport η̂₂ ⊆ {x : t < f(x)} (step 5). ∎",
+          "proof_key_steps": [
+            "K := tsupport η is closed. The sets K₋ := K ∩ {f ≤ t} and K₊ := K ∩ {t ≤ f} are closed and disjoint, because K misses {f = t}. Moreover K₋ ⊆ {f < t} and K₊ ⊆ {t < f}.",
+            "The smooth Urysohn lemma (exists_contDiff_zero_iff_one_iff_of_isClosed) gives a C^∞ function χ with χ = 0 on K₊ and χ = 1 on K₋.",
+            "η₁ := χ·η and η₂ := (1 − χ)·η are smooth and compactly supported, with tsupport ⊆ tsupport η ⊆ U. So both are test forms in U, and η = η₁ + η₂.",
+            "support(χ·η) ⊆ K₋ and support((1 − χ)·η) ⊆ K₊. Both sets are closed, so tsupport η₁ ⊆ K₋ ⊆ {f < t} and tsupport η₂ ⊆ K₊ ⊆ {t < f}."
+          ]
+        },
+        "audit": {
+          "key": "level_split",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and standalone Lean proposition agree exactly. The closed sets K∩{f≤t} and K∩{t≤f} are disjoint by the stated hypothesis. Smooth Urysohn with order ⊤ : ℕ∞ supplies the required smooth cutoff. Multiplication preserves smoothness, compact support and containment in U; closure within the two closed sets proves the strict support bounds. The supplied proof is complete and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.vanish_outside-a1",
+      "key": "vanish_outside",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (IDENTICAL)",
+              "rg -n -i 'cmcs_ss|level_split|testForm_level|exists_contDiff_zero_iff_one|smul_testForm|TestFormOn.*smul|restrict.*boundary' local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+              "sed -n 95,150p local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+              "rg -n -A6 'theorem exists_contDiff_zero_iff_one_iff_of_isClosed|theorem exists_smooth_zero_one_of_isClosed' local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 780,830p .../Geometry/Manifold/PartitionOfUnity.lean",
+              "rg -n -B2 -A6 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'image_eq_zero_of_notMem_tsupport|image_eq_one_of_notMem_mulTSupport|theorem tsupport_smul_subset_right|theorem HasCompactSupport.smul_left|theorem ContDiff.smul' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean (testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, GeometricCurrentOn.boundary_apply)",
+              "python3 -I scan of dag.json: sibling slicing statements; lean_statement/title search for 'Disjoint (tsupport', '∃ η₁', 'split', 'Urysohn', 'partition', '{x | f x = t}'; collision check for cmcs_ss_testForm_level_split, cmcs_ss_boundary_eq_of_tsupport_subset, cmcs_ss_boundary_vanish_of_disjoint",
+              "git for-each-ref | xargs -n 100 sh -c 'git grep -l -E \"cmcs_ss_|testForm_level_split|boundary_eq_of_tsupport_subset|boundary_vanish_of_disjoint\" \"$@\" -- \"*.lean\"' (sanity check: regcomp_covector_sq_sum_orthonormalBasis gives 25 hits)",
+              "git grep across all refs for 'exists_contDiff_zero_iff_one_iff_of_isClosed' and for existing '∃ η₁ η₂ … η = η₁ + η₂' split lemmas",
+              "lean GMT/Scratch/cmcs_slice_support_decomposition/{Assembly,Children,Full}.lean with #print axioms and pp.explicit check of η = η₁ + η₂",
+              "sed -n 1330,1400p book/chapter-06.txt (Simon 4.6–4.11)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Assembly.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Children.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Full.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+            ],
+            "conclusion": "Snapshot and reuse:\n- The snapshot (project b4d606db, Mathlib 25730c7c) has a Ch07 contract byte-identical to the workspace Submission.lean.\n- Its project files contain no slice-support or test-form-splitting proof. Ch06 has IsRestriction and IsSlice only as frozen definitions, under main_theorem := sorry.\n- No DAG node and no git ref tip declares a reusable level-split or restriction-locality lemma, so nothing can be reused.\n- The three new names collide with nothing: 0 hits in 644 DAG nodes and 0 in 1267 ref tips.\n\nLemmas found:\n- Mathlib supplies every tool the child proofs cite:\n  - exists_contDiff_zero_iff_one_iff_of_isClosed (PartitionOfUnity.lean:809; takes n : ℕ∞, so n := ⊤ gives C^∞);\n  - setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486) and setIntegral_eq_zero_of_forall_eq_zero (:357), with no integrability hypotheses;\n  - image_eq_zero_of_notMem_tsupport, tsupport_smul_subset_right, HasCompactSupport.smul_left, ContDiff.smul and closure_minimal.\n- SimonGMT supplies testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset and the definitional GeometricCurrentOn.boundary_apply.\n\nLean checks:\n- Assembly.lean proves the frozen parent from the three stubs.\n- Children.lean and Full.lean prove all three children. With them, cmcs_slice_support uses only [propext, Classical.choice, Quot.sound].\n- `open scoped ContDiff` must not be used in child files: it turns ω into a token and breaks the frozen statements."
+          }
+        ],
+        "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+        "child_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.vanish_outside-a1",
+        "subproblem": {
+          "key": "vanish_outside",
+          "title": "Off S both ∂(T⌞S) and (∂T)⌞S vanish",
+          "statement": "Let P, k ∈ ℕ and let U ⊆ ℝ^P be any set. Let μ, μ' be measures on ℝ^P, let ξ : ℝ^P → Λ_{k+1}(ℝ^P) and ξ' : ℝ^P → Λ_k(ℝ^P) be arbitrary maps, and let S ⊆ ℝ^P be any set. Let A ∈ 𝒟_{k+1}(U) and B ∈ 𝒟_k(U) satisfy A(ω) = ∫_S ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and B(θ) = ∫_S ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U) (Bochner integrals). Then ∂A(θ) = 0 and B(θ) = 0 for every θ ∈ 𝒟^k(U) whose topological support tsupport θ is disjoint from S.",
+          "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (S : Set (Euclid P)) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in S, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ θ : TestFormOn U k, Disjoint (tsupport (θ : DifferentialForm (Euclid P) k)) S → A.boundary θ = 0 ∧ B θ = 0",
+          "lean_name": "cmcs_ss_boundary_vanish_of_disjoint",
+          "depends_on": [],
+          "natural_proof": "Source: steps 1 and 4 of the parent proof of cmcs_slice_support, with the set {f < t} replaced by an arbitrary set S and η₊ replaced by an arbitrary θ ∈ 𝒟^k(U) whose support misses S. For a form θ write θ̂ for its underlying map ℝ^P → Λ^k(ℝ^P). Write dθ := exteriorDerivativeTestOn U k θ ∈ 𝒟^{k+1}(U); its underlying form is exteriorDerivative θ̂, and ∂A(θ) = A(dθ) (GeometricCurrentOn.boundary_apply, a definitional equality).\n1. (Vanishing on S.) Let x ∈ S.\n   (a) Since tsupport θ̂ ∩ S = ∅, x ∉ tsupport θ̂, hence θ̂(x) = 0 (image_eq_zero_of_notMem_tsupport).\n   (b) Since tsupport(exteriorDerivative θ̂) ⊆ tsupport θ̂ (SimonGMT tsupport_exteriorDerivative_subset), x ∉ tsupport(exteriorDerivative θ̂), hence (exteriorDerivative θ̂)(x) = 0.\n   (c) ξ(x) and ξ'(x) are linear. Hence ξ(x)((exteriorDerivative θ̂)(x)) = 0 and ξ'(x)(θ̂(x)) = 0 for all x ∈ S.\n2. (Boundary term.) The representation of A applied to ω := dθ gives\n∂A(θ) = A(dθ) = ∫_S ξ(x)((exteriorDerivative θ̂)(x)) dμ(x).\nThe integrand vanishes at every point of S by step 1, so this integral is 0 by Mathlib setIntegral_eq_zero_of_forall_eq_zero (no integrability is needed).\n3. (Restricted boundary term.) By the representation of B, B(θ) = ∫_S ξ'(x)(θ̂(x)) dμ'(x). This is 0 by step 1 and setIntegral_eq_zero_of_forall_eq_zero.\n4. (Conclusion.) ∂A(θ) = 0 and B(θ) = 0. ∎",
+          "proof_key_steps": [
+            "On S, θ̂ = 0 and exteriorDerivative θ̂ = 0, because S misses tsupport θ̂ ⊇ tsupport(exteriorDerivative θ̂).",
+            "∂A(θ) = A(dθ) = ∫_S ξ(dθ̂) dμ = 0, since the integrand vanishes on S (setIntegral_eq_zero_of_forall_eq_zero).",
+            "B(θ) = ∫_S ξ'(θ̂) dμ' = 0, for the same reason."
+          ]
+        },
+        "audit": {
+          "key": "vanish_outside",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose matches the exact standalone Lean proposition. Disjointness makes the form and its exterior derivative vanish on S; linearity of each multivector makes both integrands zero there. Applying the two supplied representations and the unconditional zero set-integral lemma proves both conjuncts. The proof is complete, independent of the other children, and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/decomposition.json": "72e2dece3a52f1a72f7674b7c3477987525209f94aa95323d2d2760ce3b7e3b7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/decomposition-audit.json": "08b8e7cfd70debed964537e2aeebb2fce519013dd1e2df3411335c99982db270",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-child-handoff.json": "c3d641a4b1c3350be909ce8d8b2df92251579ded605a27927c4f1d61792199e3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-supplied-plan.md": "cf7898f622c76a8c71b858e290104a15c8fea87a2896dcc339151b0b235e1470",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-supplied-natural-proof.md": "11dd2d068ce5a2a91e30d76834ba00988d4863d15450bd78e74e67e0a4ecac0f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/parent-supplied-natural-proof.json": "6a5fc7444b9ac1f5e8a81b498f0b2ecfc13e416d74261992738ff49e6ea8fb9b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72/node.json": "edf894a933719242ff01a0a0db09659b8fbc7a9c6f8ad7d4e221b821c4d48550",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-child-handoff.json": "b6f9fb25e9e95e60f8cddb7ba1712b8c4231612bc4847c503d4826534755896d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-supplied-plan.md": "4c00434a132bf96aa96a42c04e9a7780474196bbc7138da7f31d00bb2ae52f91",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-supplied-natural-proof.md": "bd719eb4501df10bda5bf8414090bca2253e2fecfb142276053e974eb4b56618",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/parent-supplied-natural-proof.json": "57b18443e3a9b5bb7e716e9a46168181bae73c7f88fc8ef87619677d6f3a31e3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-76673a3366/node.json": "70a687fbd3d5ae61be0a40fc14c343ad5c97e60086bd73ef4e8e61ec2a1da95a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-child-handoff.json": "4f7966da47b014e924096456165e014664512a76fc6472aca714a07edc39ef6c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-supplied-plan.md": "0002f85d8c590838283992a4f4357aa81a6b95566bab7133f113acc7b750db98",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-supplied-natural-proof.md": "745b208b587dddee923b7815297b9ea68c3160ac4b3b8c30a729975b5b4e9ed8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/parent-supplied-natural-proof.json": "d9a5ac87898f789435142389f631add36f0dab4dcf12345e41683d6c370c293e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/children/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9/node.json": "1cff6c2c0d02352e6e513f297351927454702642329ac4348179874ef0a8c943"
+  }
+}

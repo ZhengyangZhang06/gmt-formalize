@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.boundary_inside-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+  "depth": 4,
+  "title": "Inside S the boundary of the restriction T⌞S agrees with (∂T)⌞S",
+  "statement": "Let P, k ∈ ℕ and let U ⊆ ℝ^P be any set. Let T ∈ 𝒟_{k+1}(U), let μ, μ' be measures on ℝ^P, and let ξ : ℝ^P → Λ_{k+1}(ℝ^P) and ξ' : ℝ^P → Λ_k(ℝ^P) be arbitrary maps such that T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and ∂T(θ) = ∫ ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U) (Bochner integrals). Let S ⊆ ℝ^P be any set, and let A ∈ 𝒟_{k+1}(U), B ∈ 𝒟_k(U) satisfy A(ω) = ∫_S ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and B(θ) = ∫_S ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U). Then ∂A(θ) = B(θ) for every θ ∈ 𝒟^k(U) with tsupport θ ⊆ S.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (S : Set (Euclid P)) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, T.boundary θ = ∫ x, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in S, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ θ : TestFormOn U k, tsupport (θ : DifferentialForm (Euclid P) k) ⊆ S → A.boundary θ = B θ",
+  "lean_name": "cmcs_ss_boundary_eq_of_tsupport_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-ef177dba72-a1"
+}

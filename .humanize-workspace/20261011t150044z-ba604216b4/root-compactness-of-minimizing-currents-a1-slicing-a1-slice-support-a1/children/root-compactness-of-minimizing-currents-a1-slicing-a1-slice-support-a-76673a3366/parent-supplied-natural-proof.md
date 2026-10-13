@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.level_split-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–3 of the parent proof of cmcs_slice_support (splitting η with a smooth Urysohn function), specialized as follows: the two separating closed sets are taken inside K := tsupport η̂, so the parent's δ-margin is not needed. For a form θ write θ̂ for its underlying map ℝ^P → Λ^n(ℝ^P). Membership θ ∈ 𝒟^n(U) (TestFormOn U n) means three things: θ̂ is C^∞ (IsSmoothForm, i.e. ContDiff ℝ ∞), θ̂ has compact support (HasCompactSupport), and tsupport θ̂ ⊆ U. Addition in 𝒟^n(U) is pointwise addition of the underlying forms.
+1. (The two halves of the support.) Let K := tsupport η̂; it is closed (isClosed_tsupport). Put K₋ := K ∩ {x : f(x) ≤ t} and K₊ := K ∩ {x : t ≤ f(x)}.
+   (a) Both sets are closed: f is continuous, so {f ≤ t} and {t ≤ f} are closed (isClosed_le).
+   (b) They are disjoint: a common point x would lie in K and satisfy f(x) ≤ t ≤ f(x), i.e. x ∈ K ∩ {f = t}, contradicting the hypothesis.
+   (c) Every x ∈ K₋ satisfies f(x) < t: we have f(x) ≤ t, and f(x) ≠ t because x ∈ K is not in {f = t}.
+   (d) In the same way, every x ∈ K₊ satisfies t < f(x).
+2. (Smooth Urysohn function.) The space ℝ^P is finite-dimensional. Apply the smooth Urysohn lemma, Mathlib exists_contDiff_zero_iff_one_iff_of_isClosed, with smoothness order ⊤ : ℕ∞, taking as the lemma's first closed set s := K₊ and as its second closed set K₋. Both are closed by step 1(a) and disjoint by step 1(b). (The lemma's own name for its second set is t; it is unrelated to the level t.) It gives a C^∞ function χ : ℝ^P → ℝ with χ(x) = 0 for every x ∈ K₊ and χ(x) = 1 for every x ∈ K₋. Only these two implications are used.
+3. (The pieces are test forms.) Define η̂₁(x) := χ(x)·η̂(x) and η̂₂(x) := (1 − χ(x))·η̂(x).
+   (a) Both maps are C^∞: χ and 1 − χ are smooth scalar functions and η̂ is a smooth form (ContDiff.smul).
+   (b) If η̂(x) = 0 then c·η̂(x) = 0 for every scalar c, so support η̂ᵢ ⊆ support η̂. Hence both maps have compact support (HasCompactSupport.smul_left), and tsupport η̂ᵢ ⊆ tsupport η̂ ⊆ U (tsupport_smul_subset_right).
+   (c) So they define η₁, η₂ ∈ 𝒟^n(U).
+   (d) For every x, η̂₁(x) + η̂₂(x) = (χ(x) + (1 − χ(x)))·η̂(x) = η̂(x). Hence η = η₁ + η₂, as an equality of elements of the subtype (Subtype.ext, funext, add_smul).
+4. (Support of the lower piece.) Let x satisfy η̂₁(x) ≠ 0.
+   (a) Then η̂(x) ≠ 0, so x ∈ support η̂ ⊆ K, and χ(x) ≠ 0.
+   (b) If t ≤ f(x), then x ∈ K₊, so χ(x) = 0 by step 2, which is impossible. Hence f(x) < t, in particular f(x) ≤ t, so x ∈ K₋.
+   (c) Thus support η̂₁ ⊆ K₋. Since K₋ is closed, tsupport η̂₁ = closure(support η̂₁) ⊆ K₋ (closure_minimal).
+   (d) By step 1(c), K₋ ⊆ {x : f(x) < t}, so tsupport η̂₁ ⊆ {x : f(x) < t}.
+5. (Support of the upper piece.) Let x satisfy η̂₂(x) ≠ 0.
+   (a) Then η̂(x) ≠ 0, so x ∈ K, and 1 − χ(x) ≠ 0, i.e. χ(x) ≠ 1.
+   (b) If f(x) ≤ t, then x ∈ K₋, so χ(x) = 1 by step 2, which is impossible. Hence t < f(x), so x ∈ K₊.
+   (c) Thus support η̂₂ ⊆ K₊. Since K₊ is closed, tsupport η̂₂ ⊆ K₊.
+   (d) By step 1(d), K₊ ⊆ {x : t < f(x)}, so tsupport η̂₂ ⊆ {x : t < f(x)}.
+6. (Conclusion.) η₁ and η₂ lie in 𝒟^n(U) (step 3) and satisfy η = η₁ + η₂, tsupport η̂₁ ⊆ {x : f(x) < t} (step 4) and tsupport η̂₂ ⊆ {x : t < f(x)} (step 5). ∎
+
+## Key steps
+
+1. K := tsupport η is closed. The sets K₋ := K ∩ {f ≤ t} and K₊ := K ∩ {t ≤ f} are closed and disjoint, because K misses {f = t}. Moreover K₋ ⊆ {f < t} and K₊ ⊆ {t < f}.
+2. The smooth Urysohn lemma (exists_contDiff_zero_iff_one_iff_of_isClosed) gives a C^∞ function χ with χ = 0 on K₊ and χ = 1 on K₋.
+3. η₁ := χ·η and η₂ := (1 − χ)·η are smooth and compactly supported, with tsupport ⊆ tsupport η ⊆ U. So both are test forms in U, and η = η₁ + η₂.
+4. support(χ·η) ⊆ K₋ and support((1 − χ)·η) ⊆ K₊. Both sets are closed, so tsupport η₁ ⊆ K₋ ⊆ {f < t} and tsupport η₂ ⊆ K₊ ⊆ {t < f}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (IDENTICAL)`
+- `rg -n -i 'cmcs_ss|level_split|testForm_level|exists_contDiff_zero_iff_one|smul_testForm|TestFormOn.*smul|restrict.*boundary' local-references/123e8435b4a2469b/project/GMT -g '*.lean'`
+- `sed -n 95,150p local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `rg -n -A6 'theorem exists_contDiff_zero_iff_one_iff_of_isClosed|theorem exists_smooth_zero_one_of_isClosed' local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 780,830p .../Geometry/Manifold/PartitionOfUnity.lean`
+- `rg -n -B2 -A6 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'image_eq_zero_of_notMem_tsupport|image_eq_one_of_notMem_mulTSupport|theorem tsupport_smul_subset_right|theorem HasCompactSupport.smul_left|theorem ContDiff.smul' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean (testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, GeometricCurrentOn.boundary_apply)`
+- `python3 -I scan of dag.json: sibling slicing statements; lean_statement/title search for 'Disjoint (tsupport', '∃ η₁', 'split', 'Urysohn', 'partition', '{x | f x = t}'; collision check for cmcs_ss_testForm_level_split, cmcs_ss_boundary_eq_of_tsupport_subset, cmcs_ss_boundary_vanish_of_disjoint`
+- `git for-each-ref | xargs -n 100 sh -c 'git grep -l -E "cmcs_ss_|testForm_level_split|boundary_eq_of_tsupport_subset|boundary_vanish_of_disjoint" "$@" -- "*.lean"' (sanity check: regcomp_covector_sq_sum_orthonormalBasis gives 25 hits)`
+- `git grep across all refs for 'exists_contDiff_zero_iff_one_iff_of_isClosed' and for existing '∃ η₁ η₂ … η = η₁ + η₂' split lemmas`
+- `lean GMT/Scratch/cmcs_slice_support_decomposition/{Assembly,Children,Full}.lean with #print axioms and pp.explicit check of η = η₁ + η₂`
+- `sed -n 1330,1400p book/chapter-06.txt (Simon 4.6–4.11)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Children.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+
+Snapshot and reuse:
+- The snapshot (project b4d606db, Mathlib 25730c7c) has a Ch07 contract byte-identical to the workspace Submission.lean.
+- Its project files contain no slice-support or test-form-splitting proof. Ch06 has IsRestriction and IsSlice only as frozen definitions, under main_theorem := sorry.
+- No DAG node and no git ref tip declares a reusable level-split or restriction-locality lemma, so nothing can be reused.
+- The three new names collide with nothing: 0 hits in 644 DAG nodes and 0 in 1267 ref tips.
+
+Lemmas found:
+- Mathlib supplies every tool the child proofs cite:
+  - exists_contDiff_zero_iff_one_iff_of_isClosed (PartitionOfUnity.lean:809; takes n : ℕ∞, so n := ⊤ gives C^∞);
+  - setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486) and setIntegral_eq_zero_of_forall_eq_zero (:357), with no integrability hypotheses;
+  - image_eq_zero_of_notMem_tsupport, tsupport_smul_subset_right, HasCompactSupport.smul_left, ContDiff.smul and closure_minimal.
+- SimonGMT supplies testFormOnSubmodule, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset and the definitional GeometricCurrentOn.boundary_apply.
+
+Lean checks:
+- Assembly.lean proves the frozen parent from the three stubs.
+- Children.lean and Full.lean prove all three children. With them, cmcs_slice_support uses only [propext, Classical.choice, Quot.sound].
+- `open scoped ContDiff` must not be used in child files: it turns ω into a token and breaks the frozen statements.
