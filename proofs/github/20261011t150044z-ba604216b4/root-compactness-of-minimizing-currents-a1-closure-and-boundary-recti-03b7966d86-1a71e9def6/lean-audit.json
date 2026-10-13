@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cef643aea564e56157886d9489da0c00b67af14ed3cdc26321b42c52c3003edc",
+  "git_delta": {
+    "base_commit": "8d881dabd06b64592b316ae3e0e85764368735b1",
+    "candidate_commit": "215074ec7e0fa6a1701b78cbd48d0787bad62d32",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9bcadf5cc8203174cb55e2bcaee3055686343a15bdd8f6e11d7404b3da5944a6",
+    "source_sha256": "1e61dafca1b739d0f3f495cbb74109f1d9a9aad7ef76609dbf4cfc89e7b656ac",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_exists_good_slice_radius",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (a s : ℝ) (N : Set ℝ), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → 1 ≤ n → 0 < a → 0 < s → μ (ball x₁ s) < ENNReal.ofReal ((a * s) ^ n) → volume N = 0 → ∃ ρ : ℝ, 0 < ρ ∧ ρ < s ∧ ρ ∉ N ∧ μ (sphere x₁ ρ) = 0 ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) ≤ ENNReal.ofReal (2 * n * a * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
