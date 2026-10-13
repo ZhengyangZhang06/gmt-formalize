@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.square_lower-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1",
+  "depth": 5,
+  "title": "Lower bound for the integral of N over the square (1 − r, 1 + r) × (−r, r)",
+  "statement": "Let N : ℝ × ℝ → [0, ∞], m ∈ ℕ and r > 0, and let Sq := (1 − r, 1 + r) × (−r, r) ⊆ ℝ × ℝ, with Lebesgue measure on ℝ × ℝ. Assume that m ≤ N(p) for almost every p ∈ Sq, and that m + 1 ≤ N(p) for almost every p ∈ Sq with p₂ > 0. Then ofReal((4m + 2)·r²) ≤ ∫⁻_{Sq} N(p) dp.",
+  "lean_statement": "∀ (N : ℝ × ℝ → ℝ≥0∞) (m : ℕ) (r : ℝ), 0 < r → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r → (m : ℝ≥0∞) ≤ N p) → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r → 0 < p.2 → (m : ℝ≥0∞) + 1 ≤ N p) → ENNReal.ofReal ((4 * (m : ℝ) + 2) * r ^ 2) ≤ ∫⁻ p in Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r, N p",
+  "lean_name": "idtp_cse_fc_square_lintegral_lower",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c9b50ab42a-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.count_arith-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1",
+  "depth": 5,
+  "title": "Integrality of weighted multiplicity sums in [0, ∞]",
+  "statement": "Let ι be a type, θ : ι → ℕ, w : ι → ℝ, t ∈ ℝ with t > 0 and m ∈ ℕ. Assume w(i) ≤ t for all i ∈ ι and Σ'_i θ(i)·ofReal(w(i)) = ofReal(m·t) in [0, ∞]. Then (i) m ≤ Σ'_i θ(i) in [0, ∞]; and (ii) for every i₀ ∈ ι and k ∈ ℕ such that θ(i) ≥ 1 for all i, θ(i₀) = k, w(i₀) = t and w(i) < t for all i ≠ i₀, one has k ≤ m, and if k < m then m + 1 ≤ Σ'_i θ(i).",
+  "lean_statement": "∀ (ι : Type) (θ : ι → ℕ) (w : ι → ℝ) (t : ℝ) (m : ℕ), 0 < t → (∀ i, w i ≤ t) → ∑' i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) = ENNReal.ofReal ((m : ℝ) * t) → (m : ℝ≥0∞) ≤ ∑' i, (θ i : ℝ≥0∞) ∧ ∀ (i₀ : ι) (k : ℕ), (∀ i, 1 ≤ θ i) → θ i₀ = k → w i₀ = t → (∀ i, i ≠ i₀ → w i < t) → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' i, (θ i : ℝ≥0∞))",
+  "lean_name": "idtp_cse_fc_tsum_count_arith",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6081b9ae40-a1"
+}
