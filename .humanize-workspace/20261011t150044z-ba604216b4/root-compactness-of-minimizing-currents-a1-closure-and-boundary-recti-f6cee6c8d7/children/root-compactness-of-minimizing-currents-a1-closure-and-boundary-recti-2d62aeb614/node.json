@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1.orient_union-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1",
+  "depth": 5,
+  "title": "Orientation is local: a countable union of Borel pieces of IMRep carriers is oriented by ξ",
+  "statement": "Assume (IMC)(a), passed as a hypothesis: the exact first conjunct of the frozen statement of cmc_imRep_locality_restrict_sub, namely: for all P, n ∈ ℕ, every open U ⊆ ℝ^P and all Borel sets M ⊆ M' ⊆ U with Hⁿ(M' ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]), for Hⁿ-a.e. x ∈ M and every linear subspace Q, Q is an approximate tangent space of M at x iff it is one of M' at x (HasApproximateTangentSpaceAt). Let ι be a countable type, P, k ∈ ℕ, U ⊆ ℝ^P open, and for each i ∈ ι let W_i ⊆ ℝ^P be open, R_i an IMRep in W_i (IMRep (W i) k) with carrier M_i and orientation ξ_i, and N_i a Borel set with N_i ⊆ M_i. Let ξ : ℝ^P → Λ_k(ℝ^P) (MultiVector P k) and M := ⋃_i N_i. Assume M ⊆ U, Hᵏ(M ∩ K) < ∞ for every compact K ⊆ U (Hᵏ = μHE[k]), and, for every i, ξ(y) = ξ_i(y) for Hᵏ-a.e. y ∈ N_i. Then for Hᵏ-a.e. x ∈ M there is a linear subspace Q of ℝ^P such that Q is an approximate tangent space of M at x (HasApproximateTangentSpaceAt k M x Q) and ξ(x) orients Q (IsUnitOrientationOf (ξ x) Q).",
+  "lean_statement": "(∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (ι : Type) [Countable ι] (P k : ℕ) (U : Set (Euclid P)) (W N : ι → Set (Euclid P)) (R : (i : ι) → IMRep (W i) k) (ξ : Euclid P → MultiVector P k), IsOpen U → (∀ i, IsOpen (W i)) → (∀ i, MeasurableSet (N i)) → (∀ i, N i ⊆ (R i).carrier) → (⋃ i, N i) ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[k] ((⋃ i, N i) ∩ K) ≠ ∞) → (∀ i, ∀ᵐ y ∂(μHE[k].restrict (N i)), ξ y = (R i).orient y) → ∀ᵐ x ∂(μHE[k].restrict (⋃ i, N i)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt k (⋃ i, N i) x Q ∧ IsUnitOrientationOf (ξ x) Q",
+  "lean_name": "cbrg_ae_orient_iUnion",
+  "depends_on": [
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.imrep_local_finiteness-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.imrep_local_finiteness-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1-a1",
+      "result_commit": "702e7082a5a7012f7a8f6efd9d272697e426f50b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2d62aeb614-a1"
+}
