@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.ae_transfer-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1",
+  "depth": 4,
+  "title": "Transfer of parameter-a.e. properties to H^n-a.e. points of a set covered by Lipschitz pieces",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel, F_i : ℝ^n → ℝ^P (i ∈ ℕ) Lipschitz maps, and B_i ⊆ ℝ^n arbitrary sets with H^n(M ∖ ⋃_i F_i(B_i)) = 0, where H^n = μHE[n]. Let p be any property of points of ℝ^P such that, for every i, p(F_i(b)) holds for Lebesgue-a.e. b ∈ B_i (∀ᵐ b ∂(volume⌞B_i)). Then p(x) holds for H^n-a.e. x ∈ M (∀ᵐ x ∂(μHE[n]⌞M)).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (p : Euclid P → Prop), MeasurableSet M → (∀ i, ∃ L : NNReal, LipschitzWith L (F i)) → μHE[n] (M \\ ⋃ i, F i '' B i) = 0 → (∀ i, ∀ᵐ b ∂(volume.restrict (B i)), p (F i b)) → ∀ᵐ x ∂(μHE[n].restrict M), p x",
+  "lean_name": "dpf_itt_ae_of_ae_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-6d6197c93d-a1"
+}
