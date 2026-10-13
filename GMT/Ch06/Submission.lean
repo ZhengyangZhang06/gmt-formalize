@@ -359,6 +359,130 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Euclidean coefficient norms `|γ| = covectorEuclideanNorm γ` of slices of covectors, with
+`ι(v) = (0, v) ∈ ℝ^{m+1}` and `e₀ = EuclideanSpace.single 0 1`: (C1) if `γ'(v) = γ(e₀, ι ∘ v)`
+then `|γ'| ≤ |γ|`; (C2) if `γ'(v) = γ(ι ∘ v)` then `|γ'| ≤ |γ|`; (C3) `|α| ≤ √(P^n) · ‖α‖`.
+For (C1) and (C2), `e₀ = b_0` and `ι(b_j) = b_{j+1}` for the standard bases `b`, so the
+coefficients of `γ'` are coefficients of `γ` on distinct strictly increasing multi-indices; for
+(C3), each of the `P^n` coefficients `α(b_{I(0)}, …, b_{I(n-1)})` is at most
+`‖α‖ · ∏ ‖b_{I(i)}‖ = ‖α‖`. -/
+theorem Submission.dph_iprod_slice_covector_norm_le :
+    (∀ (m k : ℕ) (γ : Covector (Eucl (m + 1)) (k + 1)) (γ' : Covector (Eucl m) k),
+      (∀ v : Fin k → Eucl m, γ' v = γ (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧
+    (∀ (m q : ℕ) (γ : Covector (Eucl (m + 1)) q) (γ' : Covector (Eucl m) q),
+      (∀ v : Fin q → Eucl m, γ' v = γ (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+      covectorEuclideanNorm γ' ≤ covectorEuclideanNorm γ) ∧
+    (∀ (P n : ℕ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖) := by
+  -- `e₀` is the first standard basis vector of `ℝ^{m+1}`.
+  have hb0 : ∀ m : ℕ, (EuclideanSpace.single 0 1 : Eucl (m + 1)) =
+      EuclideanSpace.basisFun (Fin (m + 1)) ℝ 0 := by
+    intro m; simp [EuclideanSpace.basisFun_apply]
+  -- `ι` maps the `j`-th standard basis vector of `ℝ^m` to the `(j+1)`-st one of `ℝ^{m+1}`.
+  have hbι : ∀ (m : ℕ) (j : Fin m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+      (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (EuclideanSpace.basisFun (Fin m) ℝ j))) =
+      EuclideanSpace.basisFun (Fin (m + 1)) ℝ j.succ := by
+    intro m j
+    apply (EuclideanSpace.equiv (Fin (m + 1)) ℝ).injective
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
+    funext i
+    refine Fin.cases ?_ (fun i => ?_) i <;> simp [EuclideanSpace.basisFun_apply]
+  -- A sum dominated termwise, along an injection, by nonnegative terms is at most the full sum.
+  have key : ∀ {A B : Type} [Fintype A] [Fintype B] [DecidableEq B] (g : A → B),
+      Function.Injective g → ∀ (F : B → ℝ) (G : A → ℝ), (∀ b, 0 ≤ F b) →
+      (∀ a, G a ≤ F (g a)) → ∑ a, G a ≤ ∑ b, F b := by
+    intro A B _ _ _ g hg F G hF hG
+    calc ∑ a, G a ≤ ∑ a, F (g a) := Finset.sum_le_sum (fun a _ => hG a)
+      _ = ∑ b ∈ Finset.univ.image g, F b := (Finset.sum_image (fun a _ b _ h => hg h)).symm
+      _ ≤ ∑ b, F b :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) (fun b _ _ => hF b)
+  refine ⟨?_, ?_, ?_⟩
+  · -- (C1): compare along `I ↦ (0, I + 1)`.
+    intro m k γ γ' hγ'
+    unfold covectorEuclideanNorm
+    apply Real.sqrt_le_sqrt
+    apply key (fun I : Fin k → Fin m =>
+      (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)))
+    · intro I I' h
+      funext i
+      have := congrFun h i.succ
+      simpa using this
+    · intro J; split_ifs <;> positivity
+    · intro I
+      by_cases h1 : StrictMono I
+      · have h2 : StrictMono (Fin.cons 0 (fun i => (I i).succ) : Fin (k + 1) → Fin (m + 1)) := by
+          intro a b hab
+          induction a using Fin.cases with
+          | zero =>
+            induction b using Fin.cases with
+            | zero => exact absurd hab (lt_irrefl _)
+            | succ j => simp [Fin.succ_pos]
+          | succ i =>
+            induction b using Fin.cases with
+            | zero => exact absurd hab (Fin.not_lt_zero _)
+            | succ j =>
+              simp only [Fin.cons_succ, Fin.succ_lt_succ_iff] at hab ⊢
+              exact h1 hab
+        rw [ite_eq_left h1, ite_eq_left h2, hγ']
+        apply le_of_eq
+        congr 2
+        funext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp only [Fin.cons_zero]
+          exact hb0 m
+        · simp only [Fin.cons_succ]
+          exact hbι m (I i)
+      · rw [ite_eq_right h1]
+        split_ifs <;> positivity
+  · -- (C2): compare along `I ↦ I + 1`.
+    intro m q γ γ' hγ'
+    unfold covectorEuclideanNorm
+    apply Real.sqrt_le_sqrt
+    apply key (fun I : Fin q → Fin m => (fun i => (I i).succ : Fin q → Fin (m + 1)))
+    · intro I I' h
+      funext i
+      have := congrFun h i
+      simpa using this
+    · intro J; split_ifs <;> positivity
+    · intro I
+      by_cases h1 : StrictMono I
+      · have h2 : StrictMono (fun i => (I i).succ : Fin q → Fin (m + 1)) :=
+          fun a b hab => Fin.succ_lt_succ_iff.mpr (h1 hab)
+        rw [ite_eq_left h1, ite_eq_left h2, hγ']
+        apply le_of_eq
+        congr 2
+        funext i
+        exact hbι m (I i)
+      · rw [ite_eq_right h1]
+        split_ifs <;> positivity
+  · -- (C3): every coefficient is at most `‖α‖`, and there are `P ^ n` of them.
+    intro P n α
+    have hcoef : ∀ I : Fin n → Fin P,
+        |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
+      intro I
+      have h := ContinuousAlternatingMap.le_opNorm α
+        (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+      simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+        Real.norm_eq_abs] at h
+      exact h
+    rw [covectorEuclideanNorm]
+    calc Real.sqrt _ ≤ Real.sqrt ((P : ℝ) ^ n * ‖α‖ ^ 2) := by
+          apply Real.sqrt_le_sqrt
+          calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+                apply Finset.sum_le_sum
+                intro I _
+                split_ifs
+                · rw [← sq_abs]
+                  exact pow_le_pow_left₀ (abs_nonneg _) (hcoef I) 2
+                · positivity
+            _ = (P : ℝ) ^ n * ‖α‖ ^ 2 := by simp [Finset.card_univ]
+      _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

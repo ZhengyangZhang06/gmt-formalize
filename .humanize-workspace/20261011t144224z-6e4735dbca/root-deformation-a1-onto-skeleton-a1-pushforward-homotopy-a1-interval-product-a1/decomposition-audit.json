@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "GeometricCurrentOn|TestFormOnConverges|exteriorDerivativeTestOn|def mass|def covectorEuclideanNorm|def support|def zeroRegion|def massAdmissibleOn",
+        "intervalProduct|interval_product|current_of_bound|slice.*[Cc]ontinu|pointSlice_isTestForm|pointProduct",
+        "extDeriv_apply|fderiv_continuousAlternatingMap_apply_const_apply|norm_image_sub_le_of_norm_hasDerivWithin_le|integral_eq_sub_of_hasDerivAt|norm_iteratedFDeriv_zero|uniformContinuous_of_continuous|tsupport_fderiv_subset",
+        "git show --format= --unified=3 ba202ac0407b6e93210594416fcd0729874b2eff -- GMT/Ch06/Submission.lean",
+        "git show --format= --unified=3 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6 -- GMT/Ch06/Submission.lean",
+        "git show --format= --unified=3 fd5f1e29719e3bfa62df774678e3c6879599f8f9 -- GMT/Ch06/Submission.lean",
+        "git show --format= --unified=3 143edefdefb78884021e674a1258fa4be2c3d315 -- GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/interval-product-independent-audit/Independent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/interval-product-independent-audit/Accepted.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/ParametricCurrentContinuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-product-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-product-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-product-a1/decomposition-review-retry.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1/isolated-comparator-result.json",
+        "/tmp/interval-product-independent-audit/Independent.lean",
+        "/tmp/interval-product-independent-audit/Accepted.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected interval-product theorem. Pinned definitions and revisions agree with the contracts. Related point-product and parameter-slice continuity results exist, but do not supply the full selected contract. All twelve types independently elaborate before child implementations. Each supplied new proof compiles with only its listed dependencies as hypotheses; the supplied assembly proves the exact parent implication. The four reused proofs recompile against their identical frozen types. All checked proofs use only propext, Classical.choice and Quot.sound, without sorryAx. Dependencies are acyclic and correctly directed. All names are bare identifiers; no new-name conflicts were found in the DAG or active decomposition proposals. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three quantified bounds match the prose. The coefficient injections preserve strict monotonicity and identify the required coefficients; the operator-norm estimate correctly counts P^n tuples. The proof covers zero dimensions and degrees and requires no sibling."
+    },
+    {
+      "key": "horizontal_slices",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both families and their identities for every real parameter. Properness of the affine embedding justifies compatible_form, and smoothness plus compact support of Dψ(·)(e₀) justifies its slices. The declared dependency suffices."
+    },
+    {
+      "key": "current_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-domain contract matches the prose. Order-zero uniform convergence on the common compact support, vanishing outside it, and C3 establish the exact sequential-continuity field. Taking the admissible supremum proves the stated mass bound."
+    },
+    {
+      "key": "slice_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "D1 and D2 retain all regularity, support and finite-mass hypotheses. Uniform continuity, the slice coefficient bounds and mass_bound prove both continuity and evaluation bounds. D1 correctly imposes no condition on the family outside [0,1]."
+    },
+    {
+      "key": "slice_ext_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both degree cases match their pointwise contracts. The exterior-derivative expansion, removal of tuple entries and affine chain rule give the stated minus sign. The proof uses only the fixed-parameter slice identity and library calculus."
+    },
+    {
+      "key": "horizontal_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The uniform mean-value estimate controls the remainder for positive, negative and zero increments. The mass estimate transfers this to the scalar derivative; continuity of the derivative integrand supplies FTC integrability. All three conclusions follow from the declared dependencies."
+    },
+    {
+      "key": "product_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four conclusions exactly supply parent clauses (a)–(d). Existing slice families prevent vacuity of ProdChar; equality on [0,1] gives independence and uniqueness. Integrability supports linearity, current_criterion gives mass, and local vanishing outside the closed cylinder gives support."
+    },
+    {
+      "key": "product_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The boundary formulas and normality clause match their contracts for every Z satisfying ProdChar. Part III obtains boundary-integrand continuity without assuming finite boundary mass. Normality subsequently uses HEq only in positive degree. Using the already-proved first two conjuncts is non-circular."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The reused declaration has an identical accepted frozen type. Both signed rescalings are admissible; B≥0 permits unpacking ofReal, and the limit c↓C handles C=0. The complete proof independently establishes the stated bound."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The reused type is identical to the accepted declaration. Disjointness and support in U place the compact support inside the zero region. A finite subordinate smooth partition decomposes the form into annihilated test forms, including the empty-support case."
+    },
+    {
+      "key": "compatible_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The reused type is identical to the accepted declaration. Restricted properness provides the needed compact set; the cutoff and smooth pullback yield every stated property. The constructed open neighbourhood contains A without requiring A closed, V open or a MapsTo hypothesis."
+    },
+    {
+      "key": "slice_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The reused type is identical to the accepted declaration. Continuous linear contraction gives the exact slice identity and smoothness. The coordinate norm estimate proves compact support of each slice, and composition proves the required joint continuity."
+    }
+  ],
+  "required_changes": []
+}
