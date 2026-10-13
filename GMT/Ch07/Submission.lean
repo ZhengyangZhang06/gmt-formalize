@@ -1247,6 +1247,57 @@ theorem Submission.cbr_cipi_halfspace_partial_integral : ∀ (d : ℕ) (g : (Fin
     funext s
     simp [Set.indicator, Fin.insertNth_zero']
 
+/-- **The plane integral of `dφ` vanishes, given the half-plane boundary formula at every level**
+(the last step of Stokes' theorem on a plane, used for the boundary of a plane current in the
+integer-multiplicity criterion for cycles).  Let `v₀, …, v_d` be orthonormal, `φ` a test form,
+`V₀ = span(v₀, …, v_d)`, `H_t = {y | ⟨y, v₀⟩ < t}` and `L_t = t v₀ + span(v₁, …, v_d)`, and assume
+`∫_{V₀ ∩ H_t} dφ(v) dH^{d+1} = ∫_{L_t} φ(v₁, …, v_d) dH^d` for every `t`.  Since `tsupport φ` is
+compact, `|⟨y, v₀⟩| ≤ C` on it; put `T = C + 1`.  As `tsupport dφ ⊆ tsupport φ`, `dφ` vanishes on
+`V₀ \ H_T`, so `∫_{V₀} dφ(v) = ∫_{V₀ ∩ H_T} dφ(v) = ∫_{L_T} φ(v₁, …, v_d)`.  Every `y ∈ L_T` is
+`T v₀ + Σₖ cₖ vₖ₊₁`, so `⟨y, v₀⟩ = T` by orthonormality and `φ(y) = 0`; the last integral is `0`. -/
+theorem Submission.cbr_cipi_plane_boundary_zero : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d]) → ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0 := by
+  intro P d v hv φ hHS
+  -- Step 1: `tsupport φ` is compact, so `|⟨y, v₀⟩| ≤ C` on it; with `T = C + 1`, `T ≤ ⟨y, v₀⟩`
+  -- forces `y ∉ tsupport φ`
+  have hcs : HasCompactSupport (φ : DifferentialForm (Euclid P) d) := φ.2.1.2
+  obtain ⟨C, hC⟩ := hcs.isCompact.exists_bound_of_continuousOn
+    (f := fun y : Euclid P => inner ℝ y (v 0)) (continuous_id.inner continuous_const).continuousOn
+  have hT : ∀ y : Euclid P, C + 1 ≤ inner ℝ y (v 0) →
+      y ∉ tsupport (φ : DifferentialForm (Euclid P) d) := by
+    intro y hy hmem
+    have h1 := hC y hmem
+    rw [Real.norm_eq_abs] at h1
+    linarith [le_abs_self (inner ℝ y (v 0))]
+  -- Step 2: `V₀` is closed, and `dφ` vanishes on `V₀ \ H_T` since `tsupport dφ ⊆ tsupport φ`, so
+  -- `∫_{V₀} dφ(v) = ∫_{V₀ ∩ H_T} dφ(v)`
+  rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+    (s := (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩
+      {y : Euclid P | inner ℝ y (v 0) < C + 1})
+    (Submodule.closed_of_finiteDimensional _).measurableSet inter_subset_left fun y hy => ?_]
+  -- Step 3: the half-plane boundary formula at the level `T`
+  · rw [hHS (C + 1)]
+    -- Step 4: each `y ∈ L_T` is `T v₀ + Σₖ cₖ vₖ₊₁`, so `⟨y, v₀⟩ = T` and `φ(y) = 0`
+    refine setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hy
+    have hy' : y = ∑ i, (Fin.cons (C + 1) c : Fin (d + 1) → ℝ) i • v i := by
+      rw [Fin.sum_univ_succ, Fin.cons_zero]
+      simp only [Fin.cons_succ]
+      rw [show (∑ k : Fin d, c k • v k.succ) = y - (C + 1) • v 0 from hc]
+      abel
+    have hinner : inner ℝ y (v 0) = C + 1 := by
+      rw [hy', hv.inner_left_fintype]
+      simp
+    rw [image_eq_zero_of_notMem_tsupport (hT y hinner.ge)]
+    rfl
+  · obtain ⟨hyV, hyH⟩ := hy
+    have hle : C + 1 ≤ inner ℝ y (v 0) := by
+      by_contra hlt
+      exact hyH ⟨hyV, lt_of_not_ge hlt⟩
+    have hy0 : y ∉ tsupport (exteriorDerivative (φ : DifferentialForm (Euclid P) d)) :=
+      fun h => hT y hle (tsupport_exteriorDerivative_subset _ h)
+    rw [image_eq_zero_of_notMem_tsupport hy0]
+    rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
