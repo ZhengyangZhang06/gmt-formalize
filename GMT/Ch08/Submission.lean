@@ -410,6 +410,96 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, 5.2, the cylinder cut-off** (child `cylinder_cutoff` of `limit_ball_mass`):
+for `a < b` one `F ∈ C_c(ℝ^N × G(N,n), ℝ)`, chosen before the measure, satisfies
+`ν(B_a(0) × G(N,n)) ≤ ∫ F dν ≤ ν(B_b(0) × G(N,n))` for every `ν` with `ν(B_b(0) × G(N,n)) < ∞`.
+Take the ramp `F(y, S) = min 1 (max 0 ((b - |y|) / (b - a)))`: it is continuous, `0 ≤ F ≤ 1`,
+`F = 1` on `B_a(0) × G(N,n)` and `F = 0` off the compact `B_b(0) × G(N,n)`.  Then
+`|F| ≤ 1_{B_b(0) × G(N,n)}` gives integrability, so `ofReal (∫ F dν) = ∫⁻ ofReal ∘ F dν`, and
+`1_{B_a(0) × G(N,n)} ≤ ofReal ∘ F ≤ 1_{B_b(0) × G(N,n)}` gives both bounds. -/
+theorem Submission.varifold_tangents_lbm_exists_cylinder_cutoff :
+    ∀ (N n : ℕ) (a b : ℝ), a < b → ∃ F : C_c(Euclidean N × Grassmannian N n, ℝ), ∀ ν : Measure (Euclidean N × Grassmannian N n), ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → ν (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ ENNReal.ofReal (∫ z, F z ∂ν) ∧ ENNReal.ofReal (∫ z, F z ∂ν) ≤ ν (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) := by
+  intro N n a b hab
+  have hd : 0 < b - a := sub_pos.2 hab
+  set Ka := closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))
+  set Kb := closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)) with hKb
+  -- The ramp `h(y, S) = min 1 (max 0 ((b - ‖y‖) / (b - a)))`: `0 ≤ h ≤ 1`, `h = 1` on `Ka`,
+  -- `h = 0` off `Kb`.
+  set h : Euclidean N × Grassmannian N n → ℝ := fun z ↦ min 1 (max 0 ((b - ‖z.1‖) / (b - a)))
+  have hcont : Continuous h :=
+    continuous_const.min (continuous_const.max
+      ((continuous_const.sub (continuous_norm.comp continuous_fst)).div_const _))
+  have h_nonneg : ∀ z, 0 ≤ h z := fun z ↦ le_min zero_le_one (le_max_left _ _)
+  have h_le_one : ∀ z, h z ≤ 1 := fun z ↦ min_le_left _ _
+  have h_one : ∀ z ∈ Ka, h z = 1 := by
+    rintro ⟨y, S⟩ ⟨hy, -⟩
+    rw [mem_closedBall, dist_zero_right] at hy
+    have h1 : 1 ≤ (b - ‖y‖) / (b - a) := by
+      rw [le_div_iff₀ hd]
+      linarith
+    show min 1 (max 0 ((b - ‖y‖) / (b - a))) = 1
+    rw [max_eq_right (zero_le_one.trans h1), min_eq_left h1]
+  have h_zero : ∀ z ∉ Kb, h z = 0 := by
+    rintro ⟨y, S⟩ hz
+    have hy : b < ‖y‖ := by
+      simpa [hKb, mem_prod, mem_closedBall, dist_zero_right] using hz
+    have h0 : (b - ‖y‖) / (b - a) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hd.le
+    show min 1 (max 0 ((b - ‖y‖) / (b - a))) = 0
+    rw [max_eq_left h0, min_eq_right zero_le_one]
+  -- `Kb` is compact (`ℝ^N` is proper and `G(N,n)` is compact), so `h ∈ C_c`.
+  have hKb_cpt : IsCompact Kb := (isCompact_closedBall 0 b).prod isCompact_univ
+  refine ⟨⟨⟨h, hcont⟩, HasCompactSupport.intro hKb_cpt h_zero⟩, fun ν hν ↦ ?_⟩
+  have hFz : ∀ z, (⟨⟨h, hcont⟩, HasCompactSupport.intro hKb_cpt h_zero⟩ :
+      C_c(Euclidean N × Grassmannian N n, ℝ)) z = h z := fun z ↦ rfl
+  simp only [hFz]
+  have hmeasA : MeasurableSet Ka := measurableSet_closedBall.prod MeasurableSet.univ
+  have hmeasB : MeasurableSet Kb := measurableSet_closedBall.prod MeasurableSet.univ
+  -- `|h| ≤ 1_{Kb}` and `ν(Kb) < ∞`, so `h` is `ν`-integrable.
+  have hint : Integrable h ν := by
+    refine Integrable.mono' ((integrable_indicator_iff hmeasB).2
+      (integrableOn_const (C := (1 : ℝ)) hν)) hcont.aestronglyMeasurable
+      (Eventually.of_forall fun z ↦ ?_)
+    by_cases hz : z ∈ Kb
+    · rw [indicator_of_mem hz, Real.norm_eq_abs, abs_of_nonneg (h_nonneg z)]
+      exact h_le_one z
+    · rw [indicator_of_notMem hz, h_zero z hz, norm_zero]
+  -- `ofReal (∫ h dν) = ∫⁻ ofReal ∘ h dν`, and `1_{Ka} ≤ ofReal ∘ h ≤ 1_{Kb}` pointwise.
+  rw [ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall h_nonneg)]
+  constructor
+  · calc ν Ka = ∫⁻ z, Ka.indicator 1 z ∂ν := (lintegral_indicator_one hmeasA).symm
+      _ ≤ ∫⁻ z, ENNReal.ofReal (h z) ∂ν := lintegral_mono fun z ↦ by
+        by_cases hz : z ∈ Ka
+        · rw [indicator_of_mem hz, Pi.one_apply, h_one z hz, ENNReal.ofReal_one]
+        · rw [indicator_of_notMem hz]
+          exact zero_le
+  · calc ∫⁻ z, ENNReal.ofReal (h z) ∂ν ≤ ∫⁻ z, Kb.indicator 1 z ∂ν := lintegral_mono fun z ↦ by
+          by_cases hz : z ∈ Kb
+          · rw [indicator_of_mem hz, Pi.one_apply]
+            exact ENNReal.ofReal_le_one.2 (h_le_one z)
+          · rw [indicator_of_notMem hz, h_zero z hz, ENNReal.ofReal_zero]
+      _ = ν Kb := lintegral_indicator_one hmeasB
+
+/-- **Simon Ch. 8, 5.2, vague-limit cylinder bounds** (child `vague_cylinder_bounds` of
+`limit_ball_mass`): if `μs j → μ` vaguely, `a < b`, `μ(B_b(0) × G(N,n)) < ∞`,
+`μs j (B_a(0) × G(N,n)) → La` and `μs j (B_b(0) × G(N,n)) → Lb < ∞`, then
+`μ(B_a(0) × G(N,n)) ≤ Lb` and `La ≤ μ(B_b(0) × G(N,n))`.
+Take the cut-off `F` of `varifold_tangents_lbm_exists_cylinder_cutoff` for `a < b`: it puts
+`ofReal (∫ F dμ)` between `μ(B_a(0) × G(N,n))` and `μ(B_b(0) × G(N,n))`, and, as `Lb < ∞`,
+eventually puts `ofReal (∫ F dμs j)` between `μs j (B_a(0) × G(N,n))` and `μs j (B_b(0) × G(N,n))`.
+Vague convergence gives `ofReal (∫ F dμs j) → ofReal (∫ F dμ)`, so passing to the limit gives
+`ofReal (∫ F dμ) ≤ Lb` and `La ≤ ofReal (∫ F dμ)`. -/
+theorem Submission.varifold_tangents_lbm_vague_cylinder_bounds :
+    ∀ (N n : ℕ) (μs : ℕ → Measure (Euclidean N × Grassmannian N n)) (μ : Measure (Euclidean N × Grassmannian N n)) (a b : ℝ) (La Lb : ℝ≥0∞), VagueConverges μs μ → a < b → μ (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → Tendsto (fun j ↦ μs j (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 La) → Tendsto (fun j ↦ μs j (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 Lb) → Lb ≠ ∞ → μ (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ Lb ∧ La ≤ μ (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) := by
+  intro N n μs μ a b La Lb hconv hab hμb hLa hLb hLb_ne
+  obtain ⟨F, hF⟩ := Submission.varifold_tangents_lbm_exists_cylinder_cutoff N n a b hab
+  -- The cut-off bounds `ofReal (∫ F dμ)`, and, since `μs j (B_b(0) × G(N,n)) → Lb ≠ ∞`, eventually
+  -- also `ofReal (∫ F dμs j)`.
+  obtain ⟨hμa, hμF⟩ := hF μ hμb
+  have hev := (hLb.eventually_ne hLb_ne).mono fun j hj ↦ hF (μs j) hj
+  -- Vague convergence at `F`, composed with the continuous `ENNReal.ofReal`.
+  have hFlim := ENNReal.tendsto_ofReal (hconv F)
+  exact ⟨hμa.trans (le_of_tendsto_of_tendsto hFlim hLb (hev.mono fun j hj ↦ hj.2)),
+    (le_of_tendsto_of_tendsto hLa hFlim (hev.mono fun j hj ↦ hj.1)).trans hμF⟩
 /-- **Simon Ch. 8, 5.1–5.2, the ball-mass computation** (child `rescaled_ball_mass` of
 `varifold_tangents`): if `Θ^n(μ_V, x) = θ`, then `V_{x,t}(B_R(0) × G(N,n)) → θ ω_n R^n` as `t ↓ 0`.
 For `t > 0` the preimage of `B_R(0) × G(N,n)` under `(z, S) ↦ (t⁻¹(z - x), S)` is
@@ -642,6 +732,55 @@ theorem Submission.varifold_tangents_limit_stationary :
       (habs'.congr fun j ↦ ENNReal.toReal_ofReal (abs_nonneg _))
   -- Step 5: uniqueness of limits in `ℝ`.
   exact tendsto_nhds_unique hI hI0
+
+/-- **Simon Ch. 8, 5.2 (centre corrected to `0`), ball masses of a varifold tangent** (child
+`limit_ball_mass` of `varifold_tangents`): if `Θ^n(μ_V, x) = θ₀` and `C ∈ VarTan(V, x)`, then
+`μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every `ρ > 0`.
+Write `L(r) = θ₀ ω_n r^n` and `K_r = B_r(0) × G(N,n)`.  For the radii `t_j > 0`, `t_j → 0` of `C`,
+`varifold_tangents_rescaled_ball_mass_tendsto` gives `V_{x,t_j}(K_r) → L(r) < ∞` for `r > 0`.  As
+`C(K_ρ') = μ_C(B_ρ'(0)) < ∞`, `varifold_tangents_lbm_vague_cylinder_bounds` (with `a = ρ`, `b = ρ'`)
+gives `μ_C(B_ρ(0)) ≤ L(ρ')` and `L(ρ) ≤ μ_C(B_ρ'(0))` for every `ρ' > ρ`.  Let `ρ' ↓ ρ`: `L` is
+continuous, and `μ_C(B_ρ'(0)) → μ_C(B_ρ(0))` by continuity from above, since
+`⋂_{ρ' > ρ} B_ρ'(0) = B_ρ(0)`. -/
+theorem Submission.varifold_tangents_limit_ball_mass :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ) (C : Varifold N n (univ : Set (Euclidean N))), HasDensity n V.weight x (ENNReal.ofReal θ₀) → IsVarifoldTangent V x C → ∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n := by
+  intro N n U V x θ₀ C hθ hC ρ hρ
+  obtain ⟨t, ht_pos, ht_lim, hconv⟩ := hC
+  set L : ℝ → ℝ≥0∞ := fun r ↦ ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal r ^ n
+  -- `t j → 0⁺`, so `V_{x,t_j}(B_r(0) × G(N,n)) → L r < ∞` for every `r > 0`.
+  have ht : Tendsto t atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨ht_lim, Eventually.of_forall ht_pos⟩
+  have hmass : ∀ r : ℝ, 0 < r → Tendsto (fun j ↦ rescaledMeasure V x (t j)
+      (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 (L r)) :=
+    fun r hr ↦ (Submission.varifold_tangents_rescaled_ball_mass_tendsto N n U V x _ r hθ hr).comp ht
+  have hc : ENNReal.ofReal θ₀ * unitBallVolume n ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top measure_ball_lt_top.ne
+  have hL : ∀ r, L r ≠ ∞ := fun r ↦ ENNReal.mul_ne_top hc (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- `C(B_r(0) × G(N,n)) = μ_C(B_r(0)) < ∞`, as `B_r(0)` is compact.
+  have hCK : ∀ r : ℝ, C.measure (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n)))
+      = C.weight (closedBall 0 r) := fun r ↦ (C.weight_apply measurableSet_closedBall).symm
+  have hCtop : ∀ r : ℝ, C.weight (closedBall 0 r) ≠ ∞ :=
+    fun r ↦ C.weight_finite_on_compact _ (isCompact_closedBall 0 r) (subset_univ _)
+  -- For `ρ' > ρ`: `μ_C(B_ρ(0)) ≤ L ρ'` and `L ρ ≤ μ_C(B_ρ'(0))`.
+  have hbd : ∀ ρ' > ρ, C.weight (closedBall 0 ρ) ≤ L ρ' ∧ L ρ ≤ C.weight (closedBall 0 ρ') := by
+    intro ρ' hρ'
+    have := Submission.varifold_tangents_lbm_vague_cylinder_bounds N n _ C.measure ρ ρ' (L ρ)
+      (L ρ') hconv hρ' (hCK ρ' ▸ hCtop ρ') (hmass ρ hρ) (hmass ρ' (hρ.trans hρ')) (hL ρ')
+    rwa [hCK, hCK] at this
+  -- Let `ρ' ↓ ρ`: `L` is continuous and `r ↦ μ_C(B_r(0))` is continuous from the right.
+  have hLlim : Tendsto L (𝓝[>] ρ) (𝓝 (L ρ)) :=
+    ((ENNReal.continuous_const_mul hc).comp
+      ((ENNReal.continuous_pow n).comp ENNReal.continuous_ofReal)).continuousAt.tendsto.mono_left
+      nhdsWithin_le_nhds
+  have hClim : Tendsto (fun r ↦ C.weight (closedBall (0 : Euclidean N) r)) (𝓝[>] ρ)
+      (𝓝 (C.weight (closedBall 0 ρ))) := by
+    have := tendsto_measure_biInter_gt (μ := C.weight) (s := closedBall (0 : Euclidean N)) (a := ρ)
+      (fun r _ ↦ measurableSet_closedBall.nullMeasurableSet)
+      (fun i j _ hij ↦ closedBall_subset_closedBall hij) ⟨ρ + 1, by linarith, hCtop _⟩
+    rwa [biInter_gt_closedBall] at this
+  have hev : ∀ᶠ ρ' in 𝓝[>] ρ, ρ < ρ' := self_mem_nhdsWithin
+  exact le_antisymm (ge_of_tendsto hLlim (hev.mono fun ρ' h ↦ (hbd ρ' h).1))
+    (ge_of_tendsto hClim (hev.mono fun ρ' h ↦ (hbd ρ' h).2))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
