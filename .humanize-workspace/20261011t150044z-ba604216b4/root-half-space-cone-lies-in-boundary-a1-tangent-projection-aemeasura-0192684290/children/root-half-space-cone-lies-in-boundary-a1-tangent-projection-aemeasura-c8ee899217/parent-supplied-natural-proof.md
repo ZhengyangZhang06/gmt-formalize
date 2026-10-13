@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1`
+- Child DAG node: `root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_integrand_continuous-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4–8 of the parent-supplied proof of continuous_blowUp_image_setIntegral. There the measure is ν = Hⁿ⌞M. Here μ is any measure that is finite on compact sets, and the finiteness conclusion of the parent's step 6 becomes the hypothesis. The parent's argument is reproduced with all details.
+
+Notation. ℝ^P carries its Borel σ-algebra; η_{x,r}(y) := r⁻¹(y − x) (blowUpMap x r); Ψ(x) := ∫ f(η_{x,r}(y)) dμ(y) (Bochner integral); 1_B is the indicator function of a set B.
+
+1. Bounds for f.
+- f is continuous with compact support, so it is bounded: there is C ∈ ℝ with |f(z)| ≤ C for all z (Continuous.bounded_above_of_compact_support).
+- The topological support tsupport f is compact, hence bounded. So there is R ∈ ℝ with tsupport f ⊆ closedBall(0, R) (IsCompact.isBounded, Bornology.IsBounded.subset_closedBall).
+
+2. Continuity of the integrand. The map (x, y) ↦ f(r⁻¹(y − x)) is continuous on ℝ^P × ℝ^P, as a composition of continuous maps.
+- For each fixed x, the map y ↦ f(η_{x,r}(y)) is therefore continuous. Hence it is Borel measurable and AE-strongly measurable for μ.
+- For each fixed y, the map x ↦ f(η_{x,r}(y)) is continuous.
+
+3. Local domination. Fix x₀ ∈ ℝ^P and let B := closedBall(x₀, 1 + rR). B is a closed ball in the finite-dimensional space ℝ^P, so it is compact. Let x ∈ ball(x₀, 1) and y ∈ ℝ^P. Claim: |f(η_{x,r}(y))| ≤ C·1_B(y).
+- If y ∈ B, then C·1_B(y) = C ≥ |f(η_{x,r}(y))| by step 1.
+- Suppose y ∉ B and f(η_{x,r}(y)) ≠ 0. Then η_{x,r}(y) ∈ support f ⊆ tsupport f ⊆ closedBall(0, R). Hence r⁻¹|y − x| = |η_{x,r}(y)| ≤ R, and multiplying by r > 0 gives |y − x| ≤ rR. So |y − x₀| ≤ |y − x| + |x − x₀| < rR + 1, which means y ∈ B, a contradiction.
+- So if y ∉ B, then f(η_{x,r}(y)) = 0 and |f(η_{x,r}(y))| = 0 = C·1_B(y).
+Thus the bound holds for all y ∈ ℝ^P and all x in the neighbourhood ball(x₀, 1) of x₀.
+
+4. The dominating function is integrable. B is closed, hence Borel, and compact, so μ(B) < ∞ by hypothesis. The function C·1_B is the indicator of the Borel set B with constant value C. So it is measurable, and ∫|C·1_B| dμ = |C|·μ(B) < ∞. Hence C·1_B is μ-integrable (integrable_indicator_iff together with integrableOn_const).
+
+5. Dominated convergence. Apply the dominated convergence theorem for parameter-dependent integrals (continuousAt_of_dominated) with F(x, y) := f(η_{x,r}(y)) and bound C·1_B. Its four hypotheses hold:
+- F(x, ·) is AE-strongly measurable for every x, by step 2.
+- For every x in ball(x₀, 1) and every y, |F(x, y)| ≤ C·1_B(y), by step 3; in particular this holds for x eventually near x₀ and μ-a.e. y.
+- The bound is μ-integrable, by step 4.
+- For every y, x ↦ F(x, y) is continuous at x₀, by step 2.
+Hence Ψ is continuous at x₀. Since x₀ was arbitrary, Ψ is continuous on ℝ^P (continuous_iff_continuousAt). ∎
+
+## Key steps
+
+1. f is bounded by some C, and tsupport f ⊆ closedBall(0, R) for some R.
+2. (x, y) ↦ f(r⁻¹(y − x)) is jointly continuous, so the integrand is measurable in y and continuous in x.
+3. For x ∈ ball(x₀, 1) and all y, |f(r⁻¹(y − x))| ≤ C·1_B(y), where B = closedBall(x₀, 1 + rR) is compact.
+4. C·1_B is μ-integrable because μ(B) < ∞ (hypothesis on compact sets).
+5. continuousAt_of_dominated gives continuity at every x₀, hence continuity of x ↦ ∫ f(η_{x,r}(y)) dμ(y).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json}`
+- `cat local-references/123e8435b4a2469b/manifest.json; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git show 4f63722b:GMT/Ch07/Submission.lean | cmp - GMT/Ch07/Submission.lean`
+- `python3 scan of dag.json lean_statement for 'blowUpMap|dilation|homothety|smul_measure' and of lean_name for setIntegral_blowUpMap_image_eq_inv_pow_mul / continuous_integral_comp_blowUpMap / rsd_cmr_ir_blowUp_image_measure`
+- `grep -rn 'μHE' local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 55,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image)`
+- `grep -n 'theorem continuousAt_of_dominated|theorem integral_smul_measure|MeasurableEmbedding.integral_map' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean; grep -n 'integrableOn_const|integrable_indicator_iff' .../IntegrableOn.lean; grep -n bounded_above_of_compact_support .../Analysis/Normed/Group/Bounded.lean; grep -n 'Homeomorph.measurableEmbedding' .../BorelSpace/Basic.lean; grep -n 'def divRight' .../Topology/MetricSpace/IsometricSMul.lean`
+- `grep -n blowUpMap simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; grep -rn 'hausdorff_blowUp_image|map_inverse_blowUp_carrier|integral_weighted_blowUp|blowUpHomeomorph' simongmt/Poincare/SimonGMT/Chapter04/`
+- `sed -n 70,90p book/chapter-03.txt (Simon Ch. 3 Definition 1.4)`
+- `grep -rlw -e setIntegral_blowUpMap_image_eq_inv_pow_mul -e continuous_integral_comp_blowUpMap local-references/123e8435b4a2469b/{project,mathlib/Mathlib} .lake/packages/simongmt/Poincare nodes/*/*.json; git for-each-ref (201 objects) | git show <ref>:GMT/Ch07/Submission.lean | grep -w`
+- `lake env lean /tmp/bic2-v2/Stmts.lean; /tmp/bic2-v2/Avail.lean; /tmp/bic2-v2/T1.lean; /tmp/bic2-v2/T2.lean; /tmp/bic2-v2/gen/Assembly.lean; /tmp/bic2-v2/gen/AssemblyHyp.lean; /tmp/bic2-v2/gen/Full.lean (#print axioms)`
+- `independent reviewer: lake env lean /tmp/bic2-review-r7k3q9/{R1_Stmts,R2_Assembly,R3_Route,R5_Avail}.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/bic2-v2/Stmts.lean`
+- `/tmp/bic2-v2/Avail.lean`
+- `/tmp/bic2-v2/proposal_subproblems.json`
+- `/tmp/bic2-v2/gen/Assembly.lean`
+- `/tmp/bic2-v2/gen/AssemblyHyp.lean`
+- `/tmp/bic2-v2/gen/Full.lean`
+
+Contract and Submission:
+- The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.
+- The parent's dispatch commit 4f63722b leaves Submission.lean unchanged.
+- The workspace lake-manifest pins Mathlib at the same rev, 25730c7c.
+
+SimonGMT:
+- Chapter03/Rectifiable.lean defines blowUpMap x r y = r⁻¹ • (y − x). HasApproximateTangentSpaceAt uses exactly ∫ y in blowUpMap x r '' M, f y ∂μHE[n], which is Simon Ch. 3 Def. 1.4 (chapter-03.txt lines 77–86).
+- Chapter04 proves the scaling and push-forward steps (hausdorff_blowUp_image, map_inverse_blowUp_carrier). They are unknown identifiers after `import GMT.Ch07.Submission`, so child A is a genuine, reusable obligation.
+
+Mathlib snapshot:
+- It supplies every cited lemma: Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_homothety_image, IsometryEquiv.subRight, Homeomorph.measurableEmbedding, Measure.map_apply, Measure.restrict_apply, MeasurableEmbedding.integral_map, integral_smul_measure, Continuous.bounded_above_of_compact_support, continuousAt_of_dominated, integrable_indicator_iff and integrableOn_const.
+
+DAG:
+- No DAG node, other branch, git ref, snapshot library or SimonGMT declaration uses either child name. They appear only in this node's own unpublished v1 artifacts.
+- The closest DAG node is rsd_cmr_ir_blowUp_image_measure (rlcr-lean). It is only the set-scaling step, with a different name and type.
+
+Lean checks:
+- Both child types and the parent type elaborate.
+- The parent follows from the two children: with the children as hypotheses it uses standard axioms only.
+- Both children are kernel-checked at their exact frozen types, using only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced all of this and returned ACCEPT.
