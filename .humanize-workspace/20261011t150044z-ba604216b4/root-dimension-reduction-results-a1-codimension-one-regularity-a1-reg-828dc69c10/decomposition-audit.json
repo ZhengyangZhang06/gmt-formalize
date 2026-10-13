@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem gramSchmidtOrthonormalBasis_det|def gramSchmidtOrthonormalBasis|theorem gramSchmidtOrthonormalBasis_inv_triangular|theorem eq_smul_basis_det|theorem AlternatingMap.eq_smul_basis_det|theorem is_basis_iff_det|theorem span_apply|theorem finrank_span_eq_card|theorem sum_inner_mul_inner|theorem sqrt_sq_eq_abs",
+        "codim1_lur_normalized_wedge_orientation|dpf_exists_orthonormal_frame_det_gram|dgoj_covector_eq_det_mul_of_mem_span",
+        "def of|of_mul|mul_apply",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b 93ec31ab686fa25a7af150db4f17b9bcc26da7df -- GMT/Ch07/Submission.lean",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b 73310ec921452a01670f397b34d1cf3cd7135598 -- GMT/Ch07/Submission.lean",
+        "python3 /tmp/wedge-independent-audit-6pocszpd/run.py Full.lean",
+        "python3 /tmp/wedge-independent-audit-6pocszpd/run.py Types.lean Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c/accepted-candidate.json",
+        "/tmp/wedge-independent-audit-6pocszpd/Types.lean",
+        "/tmp/wedge-independent-audit-6pocszpd/Assembly.lean",
+        "/tmp/wedge-independent-audit-6pocszpd/Full.lean"
+      ],
+      "conclusion": "Verified project/mathlib pins, contract equality, and byte equality of the inspected foundational library files. The snapshot supplies the Gram–Schmidt, Parseval, basis-determinant and square-root identities used in the proofs; searching its project/GMT root found none of the three audited declaration names. Both reused names have unique accepted DAG owners, comparator-passed checkpoints, identical frozen types, matching candidate-source hashes, and no child dependencies. The proposed dependency graph is acyclic. Fresh Lean checks passed: all three frozen propositions elaborate before child declarations exist; comparator-style checks accept both candidate proofs and the exact selected parent; Matrix.of multiplication reduces to ordinary matrix multiplication. Assembly uses precisely the two child assumptions plus standard axioms. With accepted proofs substituted, both children and the parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: the children establish the frame and determinant expansion, leaving positivity and a covector-independent sign to the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_schmidt_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently elaborated one-line proposition. Step-by-step verification confirms the spanning subtype family, Gram–Schmidt basis, coordinate matrix, Parseval identity, nonzero determinant, and Cauchy–Schwarz product bound, including n = 0. The extra bound is fully proved and valid to retain for exact reuse. The proof is non-circular and sufficiently detailed for formalization. The bare name dpf_exists_orthonormal_frame_det_gram reuses comparator-accepted candidate 93ec31ab with an identical frozen type; no conflicting reservation was found."
+    },
+    {
+      "key": "covector_frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line proposition agree, including orthonormality, every vector's span membership, and universal quantification over covectors. The supplied proof constructs the span basis, restricts the alternating form, identifies its determinant multiple, and computes coordinates using orthonormality. This proves the exact determinant expansion, including n = 0, without either the parent or the other child. The bare name dgoj_covector_eq_det_mul_of_mem_span validly reuses comparator-accepted candidate 73310ec9 with an identical frozen type. Applied to the first child's frame, its conclusion completes the selected parent's normalization argument."
+    }
+  ],
+  "required_changes": []
+}
