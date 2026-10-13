@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "48ff0d5d05fb9d772dc91e5cc78e58584d885dcad51aa46cd074e57c9820356a",
+  "git_delta": {
+    "base_commit": "6ed10a1ba7b87c7b1420af8edb74c48b5ce81666",
+    "candidate_commit": "8fb9b33aaa06e81eb77702e984e3418e0130e9e5",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "80397d2099ff42fbb5f5f24562bf1114885d72e524dbcea4aaeda5c4fb92fc4e",
+    "source_sha256": "f5e23785f9e00b953f5c0917e4ef321de7ae355c50a90c4f070ef19b005664e7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_zero_dim_minimizing_eq_zero",
+      "statement": "∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → T = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
