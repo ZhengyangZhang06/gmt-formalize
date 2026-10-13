@@ -359,6 +359,66 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
+`α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
+theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n), α = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) := by
+  intro P n α
+  classical
+  -- `e v = (e_{v 0}, …, e_{v (n - 1)})` for a tuple `v` of coordinate indices.
+  set e : (Fin n → Fin P) → Fin n → Eucl P := fun v j => EuclideanSpace.single (v j) 1
+  set R : Covector (Eucl P) n := ∑ β : SimonMultiIndex n P,
+    euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) with hR
+  -- Kronecker property: `dx^β (e_γ) = δ_{βγ}`.
+  have hK : ∀ β γ : SimonMultiIndex n P,
+      wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) (e γ) = if β = γ then 1 else 0 := by
+    intro β γ
+    rw [wedgeCovectors_apply_det]
+    split_ifs with hβγ
+    · -- the matrix `[δ_{β i, β j}]` is the identity
+      subst hβγ
+      convert Matrix.det_one (n := Fin n) (R := ℝ)
+      ext i j
+      simp [e, Matrix.one_apply, PiLp.single_apply, β.injective.eq_iff]
+    · -- some `β i` is not among the `γ j`, so row `i` vanishes
+      obtain ⟨i, hi⟩ : ∃ i, ∀ j, β i ≠ γ j := by
+        by_contra! h
+        apply hβγ
+        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
+        have hsub : Set.range β ⊆ Set.range γ := by
+          rintro _ ⟨i, rfl⟩
+          obtain ⟨j, hj⟩ := h i
+          exact ⟨j, hj.symm⟩
+        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range γ)
+        rw [Set.ncard_range_of_injective γ.injective, Set.ncard_range_of_injective β.injective]
+      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [e, PiLp.single_apply, hi j]
+  -- `R` agrees with `α` on increasing tuples of basis vectors.
+  have h1 : ∀ γ : SimonMultiIndex n P, R (e γ) = α (e γ) := by
+    intro γ
+    rw [hR, ContinuousAlternatingMap.sum_apply]
+    simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    rfl
+  -- `R` agrees with `α` on injective tuples: sort them and use `map_perm`.
+  have h2 : ∀ v : Fin n → Fin P, Function.Injective v → R (e v) = α (e v) := by
+    intro v hv
+    have hsm : StrictMono (v ∘ Tuple.sort v) :=
+      (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+    have hγ := h1 (OrderEmbedding.ofStrictMono _ hsm)
+    have heq : e (OrderEmbedding.ofStrictMono _ hsm) = e v ∘ Tuple.sort v := rfl
+    rw [heq, ← ContinuousAlternatingMap.coe_toAlternatingMap R,
+      ← ContinuousAlternatingMap.coe_toAlternatingMap α, AlternatingMap.map_perm,
+      AlternatingMap.map_perm] at hγ
+    exact smul_left_cancel _ hγ
+  -- Conclude by extensionality on the standard basis.
+  symm
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap]
+  exact h2 v hv
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
