@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.c1_local_extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+  "depth": 6,
+  "title": "A map that is C¹ on an open set agrees near any of its points with a globally C¹ map (bump-function cut-off)",
+  "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^m be open, let ψ : ℝ^m → ℝ^P be of class C¹ on V (ContDiffOn ℝ 1 ψ V), and let v₀ ∈ V. Then there are a map g : ℝ^m → ℝ^P of class C¹ on all of ℝ^m (ContDiff ℝ 1 g) and a radius ρ > 0 such that the open ball B_ρ(v₀) is contained in V and g = ψ on B_ρ(v₀). Here ℝ^k = Euclid k with the Euclidean norm.",
+  "lean_statement": "∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → ∃ (g : Euclid m → Euclid P) (ρ : ℝ), 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ ContDiff ℝ 1 g ∧ EqOn g ψ (ball v₀ ρ)",
+  "lean_name": "codim1_ac_sat_c1_local_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d-a1"
+}

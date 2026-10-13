@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.approx_tangent_locality-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+  "depth": 6,
+  "title": "Approximate tangent spaces are local: sets that agree near x have the same approximate tangent spaces at x (parent step 4)",
+  "statement": "Let P, n ∈ ℕ, let S, S' ⊆ ℝ^P be arbitrary sets (no measurability is assumed), x ∈ ℝ^P, Q a linear subspace of ℝ^P and δ > 0 with S ∩ B_δ(x) = S' ∩ B_δ(x), where B_δ(x) is the open ball. If Q is the approximate tangent space of S' at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n S' x Q: dim Q = n, and ∫_{η_{x,r}(S')} f dH^n → ∫_Q f dH^n as r ↓ 0 for every continuous compactly supported f : ℝ^P → ℝ, where η_{x,r}(y) = r^{-1}(y − x) and H^n = μHE[n]), then Q is also the approximate tangent space of S at x (HasApproximateTangentSpaceAt n S x Q).",
+  "lean_statement": "∀ (P n : ℕ) (S S' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → S ∩ ball x δ = S' ∩ ball x δ → HasApproximateTangentSpaceAt n S' x Q → HasApproximateTangentSpaceAt n S x Q",
+  "lean_name": "codim1_ac_sat_approxTangent_of_local_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f-a1"
+}

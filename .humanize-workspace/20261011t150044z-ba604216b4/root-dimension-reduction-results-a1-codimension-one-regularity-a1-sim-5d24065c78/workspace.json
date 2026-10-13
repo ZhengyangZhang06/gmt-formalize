@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.approx_tangent_locality-a1",
+      "key": "approx_tangent_locality",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 215,270p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, approxTangentPlane)",
+              "sed -n 1,160p SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule)",
+              "python3 scans of dag.json (1512 nodes): lean_statement containing HasApproximateTangentSpaceAt together with IsEmbeddedSubmanifold/ContDiffOn/ψ; accepted nodes containing normDet or ∫ … '' … fderiv; status, candidate_commit, children and depends_on of chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, codim1_rdo_c1cov_local_lower_lipschitz, codim1_rdo_c1_piece_approxTangent and the codim1_rdo_c1pt_* subtree",
+              "git show <commit>:GMT/Ch07/Submission.lean for 9ff76906722d, 12e74edc2f87, 5e4b21584624, d626082a69a0 and the proof base 785373c28002 (imports, declarations, sorry count); git merge-base --is-ancestor 5e4b2158 d626082a",
+              "runtime.py: _decompose (max_depth gate), _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint, _overlay_accepted_children, _merge_candidate_history; store.py ensure; decomposition_scope.py; models.py Subproblem; swarm-project.json max_depth 6, max_children 12",
+              "grep in snapshot mathlib: ContDiffBump one_of_mem_closedBall / zero_of_le_dist / hasContDiffBump_of_innerProductSpace, setIntegral_eq_integral_of_forall_compl_eq_zero, theorem restrict_restrict, Filter.EventuallyEq.fderiv_eq, Ioo_mem_nhdsGT, isBounded_iff_subset_ball, image_eq_one_of_notMem_mulTSupport",
+              "xargs -n 200 sh -c 'git grep -l -e codim1_ac_sat_ \"$@\" -- GMT/Ch07/Submission.lean' over all 2578 distinct ref commits (0 hits; control codim1_rdo_c1_piece_approxTangent: 5 hits); grep -c codim1_ac_sat_ dag.json GMT SimonGMT (0)",
+              "lake env lean -DautoImplicit=false /tmp/sat-split/check/TypesAssembly.lean; /tmp/sat-split/check/AssemblyAx.lean; /tmp/sat-split/combined/Combined.lean",
+              "book: sed -n 60,130p chapter-03.txt (Remark 1.3, Definition 1.4, Remarks 1.5, proof of Theorem 1.6 '⇒')"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-audit-v1.json",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/models.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/sat-split/check/TypesAssembly.lean",
+              "/tmp/sat-split/check/AssemblyAx.lean",
+              "/tmp/sat-split/combined/Combined.lean"
+            ],
+            "conclusion": "Pins match.\n- The manifest records project b4d606db and Mathlib 25730c7c. These equal workspace HEAD and .lake/packages/mathlib.\n- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\nLibrary.\n- SimonGMT Chapter03/Rectifiable.lean defines blowUpMap and HasApproximateTangentSpaceAt (C_c test functions, 𝓝[>] 0).\n- It proves only the flat case (hasApproximateTangentSpaceAt_submodule) and uniqueness. It has no existence theorem for C¹ submanifolds.\nDAG.\n- Four declarations are accepted with candidate commits and byte-identical frozen types:\n  - chart_tangentSpace_eq_range_fderiv (d626082a69a0);\n  - dsmc_chart_inverse_continuity (5e4b21584624, an ancestor of d626);\n  - codim1_rdo_c1cov_local_lower_lipschitz (12e74edc2f87);\n  - codim1_rdo_c1_piece_approxTangent (9ff76906722d), which also carries its 4 accepted codim1_rdo_c1pt_* prerequisites.\n- All four candidates keep the contract's 8 imports. Their only sorry is main_theorem.\n- dtc_bc_lc_sl_c1_tangent and dor_lmbsf_c1_image_approxTangent are related but unaccepted (decomposing), so they are not reused.\n- This node's proof base 785373c28002 is the bare contract (457 lines), so the accepted lemmas are reachable only as children.\nSnapshot Mathlib supplies:\n- ContDiffBump: BumpFunction/Basic.lean (one_of_mem_closedBall, zero_of_le_dist) and InnerProduct.lean (hasContDiffBump_of_innerProductSpace);\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486, no measurability hypothesis);\n- Measure.restrict_restrict (Restrict.lean:205);\n- Filter.EventuallyEq.fderiv_eq (FDeriv/Congr.lean:260);\n- image_eq_zero_of_notMem_tsupport (to_additive of Support.lean:111);\n- Ioo_mem_nhdsGT and isBounded_iff_subset_ball.\nNames. The 4 new codim1_ac_sat_ names are free in dag.json, GMT/, SimonGMT and all 2578 ref commits.\nLean.\n- TypesAssembly.lean (8 child types plus the parent assembly) exits 0.\n- The AssemblyAx.lean axioms are as stated in the rationale.\n- Combined.lean (base, real accepted code, new proofs) proves the selected theorem with only propext, Classical.choice and Quot.sound.\nRuntime.\n- max_depth is 6, so the children (depth 6) are leaves.\n- Accepted reuse passes _existing_lean_name_problem and is skipped by _install_parent_supplied_child_handoff.\n- Children and depends_on are overlaid by _overlay_accepted_children."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.approx_tangent_locality-a1",
+        "subproblem": {
+          "key": "approx_tangent_locality",
+          "title": "Approximate tangent spaces are local: sets that agree near x have the same approximate tangent spaces at x (parent step 4)",
+          "statement": "Let P, n ∈ ℕ, let S, S' ⊆ ℝ^P be arbitrary sets (no measurability is assumed), x ∈ ℝ^P, Q a linear subspace of ℝ^P and δ > 0 with S ∩ B_δ(x) = S' ∩ B_δ(x), where B_δ(x) is the open ball. If Q is the approximate tangent space of S' at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n S' x Q: dim Q = n, and ∫_{η_{x,r}(S')} f dH^n → ∫_Q f dH^n as r ↓ 0 for every continuous compactly supported f : ℝ^P → ℝ, where η_{x,r}(y) = r^{-1}(y − x) and H^n = μHE[n]), then Q is also the approximate tangent space of S at x (HasApproximateTangentSpaceAt n S x Q).",
+          "lean_statement": "∀ (P n : ℕ) (S S' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → S ∩ ball x δ = S' ∩ ball x δ → HasApproximateTangentSpaceAt n S' x Q → HasApproximateTangentSpaceAt n S x Q",
+          "lean_name": "codim1_ac_sat_approxTangent_of_local_eq",
+          "depends_on": [],
+          "natural_proof": "Source. Parent step 4, (4.1)–(4.2). For f supported in B_R(0) and 0 < r < δ/R, the blow-up η_{x,r}(N ∩ W) meets B_R(0) only in the image of the part of N ∩ W inside B_δ(x). So the integrals of f over η_{x,r}(N ∩ W) and over the blown-up chart piece coincide. Here this is proved for arbitrary sets. The restriction identity of step 3 replaces the parent's use of setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, which needed Borel measurability of η_{x,r}(N ∩ W).\nNotation:\n- μ := H^n = μHE[n].\n- η_r := η_{x,r} (SimonGMT blowUpMap x r), η_r(t) = r^{-1}(t − x).\n- For a set T, ∫_T f dμ is the Bochner integral of f against the restricted measure μ⌞T (Lean: ∫ y in T, f y ∂μ). It is defined for every set T.\n1. (Dimension.) The first conjunct, dim Q = n, does not involve the set. It holds by the hypothesis on S'.\n2. (Support radius.) Fix f ∈ C_c(ℝ^P). Its topological support is compact, hence bounded, so there is R₀ with spt f ⊆ B_{R₀}(0). Put R := max(R₀, 1) > 0. Then spt f ⊆ B_R(0), so f(y) = 0 for every y ∉ B_R(0).\n3. (Cut-off of the integral.) For every set T ⊆ ℝ^P, ∫_T f dμ = ∫_{B_R(0) ∩ T} f dμ.\n - f vanishes outside B_R(0), so the integral of f against μ⌞T equals its integral against (μ⌞T)⌞B_R(0) (Mathlib setIntegral_eq_integral_of_forall_compl_eq_zero, valid for any set and any measure).\n - B_R(0) is open, hence Borel, so (μ⌞T)⌞B_R(0) = μ⌞(B_R(0) ∩ T) (Mathlib Measure.restrict_restrict, which only needs measurability of B_R(0)).\n4. (Only the part near x matters.) Let 0 < r < δ/R. For every set T, B_R(0) ∩ η_r(T) = B_R(0) ∩ η_r(T ∩ B_δ(x)).\n - ⊇: η_r(T ∩ B_δ(x)) ⊆ η_r(T).\n - ⊆: let y = η_r(t) = r^{-1}(t − x) with t ∈ T and |y| < R. Then |t − x| = r|y| < rR < (δ/R)R = δ. So t ∈ T ∩ B_δ(x) and y ∈ η_r(T ∩ B_δ(x)).\n5. (Equal blown-up integrals.) Let 0 < r < δ/R. By steps 3 and 4 and the hypothesis S ∩ B_δ(x) = S' ∩ B_δ(x):\n ∫_{η_r(S')} f dμ = ∫_{B_R(0) ∩ η_r(S')} f dμ = ∫_{B_R(0) ∩ η_r(S' ∩ B_δ(x))} f dμ = ∫_{B_R(0) ∩ η_r(S ∩ B_δ(x))} f dμ = ∫_{B_R(0) ∩ η_r(S)} f dμ = ∫_{η_r(S)} f dμ.\n6. (Limit.) δ/R > 0, so the interval (0, δ/R) belongs to the filter 𝓝[>] 0 of r ↓ 0. Hence r ↦ ∫_{η_r(S')} f dμ and r ↦ ∫_{η_r(S)} f dμ agree eventually along r ↓ 0. The first tends to ∫_Q f dμ by the hypothesis on S', so the second does too (Filter.Tendsto.congr').\n7. (Conclusion.) f ∈ C_c(ℝ^P) was arbitrary. With step 1 this is HasApproximateTangentSpaceAt n S x Q. ∎",
+          "proof_key_steps": [
+            "The dimension conjunct does not involve the set.",
+            "For f ∈ C_c(ℝ^P) choose R > 0 with spt f ⊆ B_R(0); then ∫_T f dH^n = ∫_{B_R(0) ∩ T} f dH^n for every set T (restriction to the Borel ball).",
+            "For 0 < r < δ/R, B_R(0) ∩ η_{x,r}(T) = B_R(0) ∩ η_{x,r}(T ∩ B_δ(x)), so the blown-up integrals over S and S' agree.",
+            "They agree eventually along r ↓ 0, so the limit ∫_Q f dH^n transfers from S' to S."
+          ]
+        },
+        "audit": {
+          "key": "approx_tangent_locality",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The measurable support ball justifies the restriction identities for arbitrary S and S'. For 0 < r < δ/R, the localized blown-up sets coincide, so their integrals agree eventually. This transfers the exact test-function limit while preserving the dimension conjunct, without hidden measurability assumptions."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.c1_local_extension-a1",
+      "key": "c1_local_extension",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 215,270p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, approxTangentPlane)",
+              "sed -n 1,160p SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule)",
+              "python3 scans of dag.json (1512 nodes): lean_statement containing HasApproximateTangentSpaceAt together with IsEmbeddedSubmanifold/ContDiffOn/ψ; accepted nodes containing normDet or ∫ … '' … fderiv; status, candidate_commit, children and depends_on of chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, codim1_rdo_c1cov_local_lower_lipschitz, codim1_rdo_c1_piece_approxTangent and the codim1_rdo_c1pt_* subtree",
+              "git show <commit>:GMT/Ch07/Submission.lean for 9ff76906722d, 12e74edc2f87, 5e4b21584624, d626082a69a0 and the proof base 785373c28002 (imports, declarations, sorry count); git merge-base --is-ancestor 5e4b2158 d626082a",
+              "runtime.py: _decompose (max_depth gate), _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint, _overlay_accepted_children, _merge_candidate_history; store.py ensure; decomposition_scope.py; models.py Subproblem; swarm-project.json max_depth 6, max_children 12",
+              "grep in snapshot mathlib: ContDiffBump one_of_mem_closedBall / zero_of_le_dist / hasContDiffBump_of_innerProductSpace, setIntegral_eq_integral_of_forall_compl_eq_zero, theorem restrict_restrict, Filter.EventuallyEq.fderiv_eq, Ioo_mem_nhdsGT, isBounded_iff_subset_ball, image_eq_one_of_notMem_mulTSupport",
+              "xargs -n 200 sh -c 'git grep -l -e codim1_ac_sat_ \"$@\" -- GMT/Ch07/Submission.lean' over all 2578 distinct ref commits (0 hits; control codim1_rdo_c1_piece_approxTangent: 5 hits); grep -c codim1_ac_sat_ dag.json GMT SimonGMT (0)",
+              "lake env lean -DautoImplicit=false /tmp/sat-split/check/TypesAssembly.lean; /tmp/sat-split/check/AssemblyAx.lean; /tmp/sat-split/combined/Combined.lean",
+              "book: sed -n 60,130p chapter-03.txt (Remark 1.3, Definition 1.4, Remarks 1.5, proof of Theorem 1.6 '⇒')"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-audit-v1.json",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/models.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/sat-split/check/TypesAssembly.lean",
+              "/tmp/sat-split/check/AssemblyAx.lean",
+              "/tmp/sat-split/combined/Combined.lean"
+            ],
+            "conclusion": "Pins match.\n- The manifest records project b4d606db and Mathlib 25730c7c. These equal workspace HEAD and .lake/packages/mathlib.\n- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\nLibrary.\n- SimonGMT Chapter03/Rectifiable.lean defines blowUpMap and HasApproximateTangentSpaceAt (C_c test functions, 𝓝[>] 0).\n- It proves only the flat case (hasApproximateTangentSpaceAt_submodule) and uniqueness. It has no existence theorem for C¹ submanifolds.\nDAG.\n- Four declarations are accepted with candidate commits and byte-identical frozen types:\n  - chart_tangentSpace_eq_range_fderiv (d626082a69a0);\n  - dsmc_chart_inverse_continuity (5e4b21584624, an ancestor of d626);\n  - codim1_rdo_c1cov_local_lower_lipschitz (12e74edc2f87);\n  - codim1_rdo_c1_piece_approxTangent (9ff76906722d), which also carries its 4 accepted codim1_rdo_c1pt_* prerequisites.\n- All four candidates keep the contract's 8 imports. Their only sorry is main_theorem.\n- dtc_bc_lc_sl_c1_tangent and dor_lmbsf_c1_image_approxTangent are related but unaccepted (decomposing), so they are not reused.\n- This node's proof base 785373c28002 is the bare contract (457 lines), so the accepted lemmas are reachable only as children.\nSnapshot Mathlib supplies:\n- ContDiffBump: BumpFunction/Basic.lean (one_of_mem_closedBall, zero_of_le_dist) and InnerProduct.lean (hasContDiffBump_of_innerProductSpace);\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486, no measurability hypothesis);\n- Measure.restrict_restrict (Restrict.lean:205);\n- Filter.EventuallyEq.fderiv_eq (FDeriv/Congr.lean:260);\n- image_eq_zero_of_notMem_tsupport (to_additive of Support.lean:111);\n- Ioo_mem_nhdsGT and isBounded_iff_subset_ball.\nNames. The 4 new codim1_ac_sat_ names are free in dag.json, GMT/, SimonGMT and all 2578 ref commits.\nLean.\n- TypesAssembly.lean (8 child types plus the parent assembly) exits 0.\n- The AssemblyAx.lean axioms are as stated in the rationale.\n- Combined.lean (base, real accepted code, new proofs) proves the selected theorem with only propext, Classical.choice and Quot.sound.\nRuntime.\n- max_depth is 6, so the children (depth 6) are leaves.\n- Accepted reuse passes _existing_lean_name_problem and is skipped by _install_parent_supplied_child_handoff.\n- Children and depends_on are overlaid by _overlay_accepted_children."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.c1_local_extension-a1",
+        "subproblem": {
+          "key": "c1_local_extension",
+          "title": "A map that is C¹ on an open set agrees near any of its points with a globally C¹ map (bump-function cut-off)",
+          "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^m be open, let ψ : ℝ^m → ℝ^P be of class C¹ on V (ContDiffOn ℝ 1 ψ V), and let v₀ ∈ V. Then there are a map g : ℝ^m → ℝ^P of class C¹ on all of ℝ^m (ContDiff ℝ 1 g) and a radius ρ > 0 such that the open ball B_ρ(v₀) is contained in V and g = ψ on B_ρ(v₀). Here ℝ^k = Euclid k with the Euclidean norm.",
+          "lean_statement": "∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → ∃ (g : Euclid m → Euclid P) (ρ : ℝ), 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ ContDiff ℝ 1 g ∧ EqOn g ψ (ball v₀ ρ)",
+          "lean_name": "codim1_ac_sat_c1_local_extension",
+          "depends_on": [],
+          "natural_proof": "Source. A technical step needed to apply the accepted sibling c1_piece_tangent, which is stated for globally C¹ maps, to the chart ψ of parent step 1, which is C¹ only on the open set V. The parent-supplied proof avoids this step by integrating against the indicator 1_{G_r} of the chart domain (parent steps 4–6). The argument is the standard cut-off by a smooth bump function.\nNotation: B_s(c) is the open ball, B̄_s(c) the closed ball, |·| the Euclidean norm.\n1. (Room in V.) V is open and v₀ ∈ V, so there is ε > 0 with B_ε(v₀) ⊆ V.\n2. (Bump function.) Choose a C^∞ function φ : ℝ^m → ℝ with φ(v) = 1 whenever |v − v₀| ≤ ε/4 and φ(v) = 0 whenever |v − v₀| ≥ ε/2. In Mathlib this is a bump function φ : ContDiffBump v₀ with rIn = ε/4 < rOut = ε/2, available on the inner-product space Euclid m. The three properties are ContDiffBump.contDiff, ContDiffBump.one_of_mem_closedBall and ContDiffBump.zero_of_le_dist.\n3. (Definition.) Put g(v) := φ(v)·ψ(v) for v ∈ ℝ^m, and ρ := ε/4 > 0. Then B_ρ(v₀) ⊆ B_ε(v₀) ⊆ V.\n4. (g = ψ on B_ρ(v₀).) If |v − v₀| < ρ = ε/4, then φ(v) = 1 by step 2, so g(v) = ψ(v).\n5. (g is C¹ at every point.) A map is C¹ on ℝ^m iff it is C¹ at every point (Mathlib contDiff_iff_contDiffAt). Fix v ∈ ℝ^m.\n (a) Case |v − v₀| < ε. Then v ∈ V by step 1, and V, being open, is a neighbourhood of v. ψ is C¹ on V, hence C¹ at v (ContDiffOn.contDiffAt). φ is C^∞, in particular C¹ at v. Hence the product g = φ·ψ of a scalar C¹ function and a vector C¹ function is C¹ at v (ContDiffAt.smul).\n (b) Case |v − v₀| ≥ ε. The set O := {w ∈ ℝ^m : |w − v₀| > ε/2} is open, as the preimage of the open ray (ε/2, ∞) under the continuous map w ↦ |w − v₀|. It contains v, because |v − v₀| ≥ ε > ε/2. For w ∈ O we have φ(w) = 0 by step 2, so g(w) = 0. Thus g coincides with the constant map 0 on a neighbourhood of v. The constant map is C¹, so g is C¹ at v (ContDiffAt.congr_of_eventuallyEq).\n So g is C¹ at every point, i.e. ContDiff ℝ 1 g.\n6. (Conclusion.) By steps 3–5, 0 < ρ, B_ρ(v₀) ⊆ V, g is C¹ on ℝ^m, and g = ψ on B_ρ(v₀). ∎",
+          "proof_key_steps": [
+            "Choose ε > 0 with B_ε(v₀) ⊆ V and a C^∞ bump φ equal to 1 on B̄_{ε/4}(v₀) and to 0 outside B_{ε/2}(v₀).",
+            "Put g := φ·ψ and ρ := ε/4; then B_ρ(v₀) ⊆ V and g = ψ on B_ρ(v₀).",
+            "g is C¹ at points of B_ε(v₀) ⊆ V (product of C¹ maps) and at points with |v − v₀| ≥ ε (g = 0 on the open set |w − v₀| > ε/2), hence C¹ on ℝ^m."
+          ]
+        },
+        "audit": {
+          "key": "c1_local_extension",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The bump construction proves the stated global C¹ extension and equality on the smaller open ball. The two cases cover every point, including the cutoff boundary; arbitrary behavior of ψ outside V is harmless because the product is locally zero there."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.chart_ball_tangent-a1",
+      "key": "chart_ball_tangent",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 215,270p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, approxTangentPlane)",
+              "sed -n 1,160p SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule)",
+              "python3 scans of dag.json (1512 nodes): lean_statement containing HasApproximateTangentSpaceAt together with IsEmbeddedSubmanifold/ContDiffOn/ψ; accepted nodes containing normDet or ∫ … '' … fderiv; status, candidate_commit, children and depends_on of chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, codim1_rdo_c1cov_local_lower_lipschitz, codim1_rdo_c1_piece_approxTangent and the codim1_rdo_c1pt_* subtree",
+              "git show <commit>:GMT/Ch07/Submission.lean for 9ff76906722d, 12e74edc2f87, 5e4b21584624, d626082a69a0 and the proof base 785373c28002 (imports, declarations, sorry count); git merge-base --is-ancestor 5e4b2158 d626082a",
+              "runtime.py: _decompose (max_depth gate), _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint, _overlay_accepted_children, _merge_candidate_history; store.py ensure; decomposition_scope.py; models.py Subproblem; swarm-project.json max_depth 6, max_children 12",
+              "grep in snapshot mathlib: ContDiffBump one_of_mem_closedBall / zero_of_le_dist / hasContDiffBump_of_innerProductSpace, setIntegral_eq_integral_of_forall_compl_eq_zero, theorem restrict_restrict, Filter.EventuallyEq.fderiv_eq, Ioo_mem_nhdsGT, isBounded_iff_subset_ball, image_eq_one_of_notMem_mulTSupport",
+              "xargs -n 200 sh -c 'git grep -l -e codim1_ac_sat_ \"$@\" -- GMT/Ch07/Submission.lean' over all 2578 distinct ref commits (0 hits; control codim1_rdo_c1_piece_approxTangent: 5 hits); grep -c codim1_ac_sat_ dag.json GMT SimonGMT (0)",
+              "lake env lean -DautoImplicit=false /tmp/sat-split/check/TypesAssembly.lean; /tmp/sat-split/check/AssemblyAx.lean; /tmp/sat-split/combined/Combined.lean",
+              "book: sed -n 60,130p chapter-03.txt (Remark 1.3, Definition 1.4, Remarks 1.5, proof of Theorem 1.6 '⇒')"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-audit-v1.json",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/models.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/sat-split/check/TypesAssembly.lean",
+              "/tmp/sat-split/check/AssemblyAx.lean",
+              "/tmp/sat-split/combined/Combined.lean"
+            ],
+            "conclusion": "Pins match.\n- The manifest records project b4d606db and Mathlib 25730c7c. These equal workspace HEAD and .lake/packages/mathlib.\n- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\nLibrary.\n- SimonGMT Chapter03/Rectifiable.lean defines blowUpMap and HasApproximateTangentSpaceAt (C_c test functions, 𝓝[>] 0).\n- It proves only the flat case (hasApproximateTangentSpaceAt_submodule) and uniqueness. It has no existence theorem for C¹ submanifolds.\nDAG.\n- Four declarations are accepted with candidate commits and byte-identical frozen types:\n  - chart_tangentSpace_eq_range_fderiv (d626082a69a0);\n  - dsmc_chart_inverse_continuity (5e4b21584624, an ancestor of d626);\n  - codim1_rdo_c1cov_local_lower_lipschitz (12e74edc2f87);\n  - codim1_rdo_c1_piece_approxTangent (9ff76906722d), which also carries its 4 accepted codim1_rdo_c1pt_* prerequisites.\n- All four candidates keep the contract's 8 imports. Their only sorry is main_theorem.\n- dtc_bc_lc_sl_c1_tangent and dor_lmbsf_c1_image_approxTangent are related but unaccepted (decomposing), so they are not reused.\n- This node's proof base 785373c28002 is the bare contract (457 lines), so the accepted lemmas are reachable only as children.\nSnapshot Mathlib supplies:\n- ContDiffBump: BumpFunction/Basic.lean (one_of_mem_closedBall, zero_of_le_dist) and InnerProduct.lean (hasContDiffBump_of_innerProductSpace);\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486, no measurability hypothesis);\n- Measure.restrict_restrict (Restrict.lean:205);\n- Filter.EventuallyEq.fderiv_eq (FDeriv/Congr.lean:260);\n- image_eq_zero_of_notMem_tsupport (to_additive of Support.lean:111);\n- Ioo_mem_nhdsGT and isBounded_iff_subset_ball.\nNames. The 4 new codim1_ac_sat_ names are free in dag.json, GMT/, SimonGMT and all 2578 ref commits.\nLean.\n- TypesAssembly.lean (8 child types plus the parent assembly) exits 0.\n- The AssemblyAx.lean axioms are as stated in the rationale.\n- Combined.lean (base, real accepted code, new proofs) proves the selected theorem with only propext, Classical.choice and Quot.sound.\nRuntime.\n- max_depth is 6, so the children (depth 6) are leaves.\n- Accepted reuse passes _existing_lean_name_problem and is skipped by _install_parent_supplied_child_handoff.\n- Children and depends_on are overlaid by _overlay_accepted_children."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.chart_ball_tangent-a1",
+        "subproblem": {
+          "key": "chart_ball_tangent",
+          "title": "Approximate tangent plane of the chart image of a small ball at its centre (parent steps 2 and 4–9)",
+          "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^m be open, let ψ : ℝ^m → ℝ^P be of class C¹ on V (ContDiffOn ℝ 1 ψ V), and let v₀ ∈ V be a point at which Dψ(v₀) = fderiv ℝ ψ v₀ is injective. Then there is ρ > 0 such that the open ball B_ρ(v₀) is contained in V and the linear subspace T := range Dψ(v₀) of ℝ^P is the approximate tangent space of the set ψ(B_ρ(v₀)) at the point ψ(v₀) in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt m (ψ(B_ρ(v₀))) (ψ(v₀)) T): dim T = m, and ∫_{η_{ψ(v₀),r}(ψ(B_ρ(v₀)))} f dH^m → ∫_T f dH^m as r ↓ 0 for every continuous compactly supported f : ℝ^P → ℝ, where η_{x,r}(y) = r^{-1}(y − x) and H^m = μHE[m].",
+          "lean_statement": "∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → Injective (fderiv ℝ ψ v₀) → ∃ ρ : ℝ, 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ HasApproximateTangentSpaceAt m (ψ '' ball v₀ ρ) (ψ v₀) (LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P))",
+          "lean_name": "codim1_ac_sat_chart_ball_approxTangent",
+          "depends_on": [
+            "c1_local_extension",
+            "local_lower_lipschitz",
+            "c1_piece_tangent"
+          ],
+          "natural_proof": "Source. Parent steps 2 and 4–9, the analytic core of the parent proof, for the chart image of a small ball. It supplies Simon's unproved assertion in the proof of Ch. 3, 1.6 \"⇒\" (chapter-03.txt lines 113–126): \"since x ∈ N_j and N_j is a C¹ submanifold, lim_{λ↓0} ∫_{η_{x,λ}(N_j)} f dH^n = ∫_{T_xN_j} f dH^n\".\n- Parent steps 4–9 (rescaled area formula, fixed integrable bound, pointwise limit, dominated convergence, linear area formula) are exactly the reviewed and accepted proof of the sibling c1_piece_tangent. That sibling needs a globally C¹ map with a lower Lipschitz bound on a ball.\n- The lower Lipschitz bound is parent step 2, (2.1); it is the sibling local_lower_lipschitz.\n- The globally C¹ map is supplied by the sibling c1_local_extension.\nNotation: A := Dψ(v₀) = fderiv ℝ ψ v₀ and T := range A = LinearMap.range A.\n1. (Global C¹ extension.) By c1_local_extension, applied to V, ψ and v₀, there are g : ℝ^m → ℝ^P with ContDiff ℝ 1 g and ρ₁ > 0 with B_{ρ₁}(v₀) ⊆ V and g = ψ on B_{ρ₁}(v₀).\n2. (Same value and derivative at v₀.) g(v₀) = ψ(v₀), since v₀ ∈ B_{ρ₁}(v₀). The open ball B_{ρ₁}(v₀) is a neighbourhood of v₀ on which g = ψ. The Fréchet derivative at a point depends only on the germ of the map there (Mathlib Filter.EventuallyEq.fderiv_eq), so Dg(v₀) = A. In particular Dg(v₀) is injective.\n3. (Lower Lipschitz bound; parent step 2.) g is C¹ on ℝ^m and Dg(v₀) is injective. By local_lower_lipschitz, applied to g and v₀, there are δ > 0 and μ > 0 with μ|a − b| ≤ |g(a) − g(b)| for all a, b ∈ B_δ(v₀).\n4. (Radius.) Put ρ := min(ρ₁, δ) > 0. Then:\n- B_ρ(v₀) ⊆ B_{ρ₁}(v₀) ⊆ V;\n- B_ρ(v₀) ⊆ B_δ(v₀), so μ|a − b| ≤ |g(a) − g(b)| for all a, b ∈ B_ρ(v₀);\n- v₀ ∈ B_ρ(v₀).\n5. (The C¹ piece; parent steps 4–9.) Apply c1_piece_tangent to g, c := v₀, r := ρ, the constant μ > 0 (called m there), and z := v₀ ∈ B_ρ(v₀). It gives HasApproximateTangentSpaceAt m (g(B_ρ(v₀))) (g(v₀)) (range Dg(v₀)).\n6. (Back to ψ.) g = ψ on B_ρ(v₀) ⊆ B_{ρ₁}(v₀), so g(B_ρ(v₀)) = ψ(B_ρ(v₀)): images of one set under two maps that agree on it (Set.EqOn.image_eq). By step 2, g(v₀) = ψ(v₀) and range Dg(v₀) = range A = T. Substituting into step 5 gives HasApproximateTangentSpaceAt m (ψ(B_ρ(v₀))) (ψ(v₀)) T.\n7. (Conclusion.) Step 4 gives ρ > 0 and B_ρ(v₀) ⊆ V. With step 6 this proves the statement. ∎",
+          "proof_key_steps": [
+            "c1_local_extension gives a globally C¹ map g and ρ₁ > 0 with g = ψ on B_{ρ₁}(v₀) ⊆ V; hence g(v₀) = ψ(v₀) and Dg(v₀) = Dψ(v₀) (equal germs).",
+            "local_lower_lipschitz gives δ, μ > 0 with μ|a − b| ≤ |g(a) − g(b)| on B_δ(v₀); put ρ := min(ρ₁, δ).",
+            "c1_piece_tangent at z = v₀ gives the approximate tangent space range Dg(v₀) of g(B_ρ(v₀)) at g(v₀).",
+            "Since g = ψ on B_ρ(v₀), this is the approximate tangent space range Dψ(v₀) of ψ(B_ρ(v₀)) at ψ(v₀)."
+          ]
+        },
+        "audit": {
+          "key": "chart_ball_tangent",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The three declared prerequisites suffice. Equality on a neighborhood identifies values and derivatives, the minimum radius preserves the domain and lower bound, and the accepted C¹-piece theorem transfers through equality of images. The conclusion exactly matches the frozen type."
+        },
+        "resolved_dependencies": [
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.c1_local_extension-a1",
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1",
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.chart_localization-a1",
+      "key": "chart_localization",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 215,270p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, approxTangentPlane)",
+              "sed -n 1,160p SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule)",
+              "python3 scans of dag.json (1512 nodes): lean_statement containing HasApproximateTangentSpaceAt together with IsEmbeddedSubmanifold/ContDiffOn/ψ; accepted nodes containing normDet or ∫ … '' … fderiv; status, candidate_commit, children and depends_on of chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, codim1_rdo_c1cov_local_lower_lipschitz, codim1_rdo_c1_piece_approxTangent and the codim1_rdo_c1pt_* subtree",
+              "git show <commit>:GMT/Ch07/Submission.lean for 9ff76906722d, 12e74edc2f87, 5e4b21584624, d626082a69a0 and the proof base 785373c28002 (imports, declarations, sorry count); git merge-base --is-ancestor 5e4b2158 d626082a",
+              "runtime.py: _decompose (max_depth gate), _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint, _overlay_accepted_children, _merge_candidate_history; store.py ensure; decomposition_scope.py; models.py Subproblem; swarm-project.json max_depth 6, max_children 12",
+              "grep in snapshot mathlib: ContDiffBump one_of_mem_closedBall / zero_of_le_dist / hasContDiffBump_of_innerProductSpace, setIntegral_eq_integral_of_forall_compl_eq_zero, theorem restrict_restrict, Filter.EventuallyEq.fderiv_eq, Ioo_mem_nhdsGT, isBounded_iff_subset_ball, image_eq_one_of_notMem_mulTSupport",
+              "xargs -n 200 sh -c 'git grep -l -e codim1_ac_sat_ \"$@\" -- GMT/Ch07/Submission.lean' over all 2578 distinct ref commits (0 hits; control codim1_rdo_c1_piece_approxTangent: 5 hits); grep -c codim1_ac_sat_ dag.json GMT SimonGMT (0)",
+              "lake env lean -DautoImplicit=false /tmp/sat-split/check/TypesAssembly.lean; /tmp/sat-split/check/AssemblyAx.lean; /tmp/sat-split/combined/Combined.lean",
+              "book: sed -n 60,130p chapter-03.txt (Remark 1.3, Definition 1.4, Remarks 1.5, proof of Theorem 1.6 '⇒')"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-audit-v1.json",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/models.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/sat-split/check/TypesAssembly.lean",
+              "/tmp/sat-split/check/AssemblyAx.lean",
+              "/tmp/sat-split/combined/Combined.lean"
+            ],
+            "conclusion": "Pins match.\n- The manifest records project b4d606db and Mathlib 25730c7c. These equal workspace HEAD and .lake/packages/mathlib.\n- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\nLibrary.\n- SimonGMT Chapter03/Rectifiable.lean defines blowUpMap and HasApproximateTangentSpaceAt (C_c test functions, 𝓝[>] 0).\n- It proves only the flat case (hasApproximateTangentSpaceAt_submodule) and uniqueness. It has no existence theorem for C¹ submanifolds.\nDAG.\n- Four declarations are accepted with candidate commits and byte-identical frozen types:\n  - chart_tangentSpace_eq_range_fderiv (d626082a69a0);\n  - dsmc_chart_inverse_continuity (5e4b21584624, an ancestor of d626);\n  - codim1_rdo_c1cov_local_lower_lipschitz (12e74edc2f87);\n  - codim1_rdo_c1_piece_approxTangent (9ff76906722d), which also carries its 4 accepted codim1_rdo_c1pt_* prerequisites.\n- All four candidates keep the contract's 8 imports. Their only sorry is main_theorem.\n- dtc_bc_lc_sl_c1_tangent and dor_lmbsf_c1_image_approxTangent are related but unaccepted (decomposing), so they are not reused.\n- This node's proof base 785373c28002 is the bare contract (457 lines), so the accepted lemmas are reachable only as children.\nSnapshot Mathlib supplies:\n- ContDiffBump: BumpFunction/Basic.lean (one_of_mem_closedBall, zero_of_le_dist) and InnerProduct.lean (hasContDiffBump_of_innerProductSpace);\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486, no measurability hypothesis);\n- Measure.restrict_restrict (Restrict.lean:205);\n- Filter.EventuallyEq.fderiv_eq (FDeriv/Congr.lean:260);\n- image_eq_zero_of_notMem_tsupport (to_additive of Support.lean:111);\n- Ioo_mem_nhdsGT and isBounded_iff_subset_ball.\nNames. The 4 new codim1_ac_sat_ names are free in dag.json, GMT/, SimonGMT and all 2578 ref commits.\nLean.\n- TypesAssembly.lean (8 child types plus the parent assembly) exits 0.\n- The AssemblyAx.lean axioms are as stated in the rationale.\n- Combined.lean (base, real accepted code, new proofs) proves the selected theorem with only propext, Classical.choice and Quot.sound.\nRuntime.\n- max_depth is 6, so the children (depth 6) are leaves.\n- Accepted reuse passes _existing_lean_name_problem and is skipped by _install_parent_supplied_child_handoff.\n- Children and depends_on are overlaid by _overlay_accepted_children."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.chart_localization-a1",
+        "subproblem": {
+          "key": "chart_localization",
+          "title": "Near x = ψ(v₀), the set N ∩ W coincides with the chart image of any open ball around v₀ contained in V (parent step 3)",
+          "statement": "Let P, m ∈ ℕ, N, W, W₀ ⊆ ℝ^P, V ⊆ ℝ^m, ψ : ℝ^m → ℝ^P, v₀ ∈ V and ρ > 0. Assume W and W₀ are open, ψ is continuous on V and injective on V, ψ(V) = W₀ ∩ N, V ∩ ψ^{-1}(K) is compact for every compact K ⊆ W₀, ψ(v₀) ∈ W, and the open ball B_ρ(v₀) is contained in V. Then there is δ > 0 with (N ∩ W) ∩ B_δ(ψ(v₀)) = ψ(B_ρ(v₀)) ∩ B_δ(ψ(v₀)).",
+          "lean_statement": "∀ (P m : ℕ) (N W W₀ : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m) (ρ : ℝ), IsOpen W → IsOpen W₀ → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W₀ ∩ N → (∀ K ⊆ W₀, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ψ v₀ ∈ W → 0 < ρ → ball v₀ ρ ⊆ V → ∃ δ : ℝ, 0 < δ ∧ N ∩ W ∩ ball (ψ v₀) δ = ψ '' ball v₀ ρ ∩ ball (ψ v₀) δ",
+          "lean_name": "codim1_ac_sat_chart_localization",
+          "depends_on": [
+            "chart_inverse_continuity"
+          ],
+          "natural_proof": "Source. Parent step 3, (3.1) (localization), together with the inclusion ψ(B_{ρ₀}(v₀)) ∩ B_δ(x) ⊆ N ∩ W used in the \"⊇\" half of (4.1). Parent step 3 derives (3.1) from properness and injectivity of the chart by a compactness argument. That argument is the content of the accepted sibling chart_inverse_continuity (ψ^{-1} is continuous at ψ(v₀) along ψ(V); Simon Ch. 2, (4.1)–(4.2)), which is used here instead.\nNotation: x := ψ(v₀); B_s(c) is the open ball; distances are Euclidean.\n1. (ψ(V) ⊆ W₀.) ψ(V) = W₀ ∩ N ⊆ W₀. Since v₀ ∈ V, x = ψ(v₀) ∈ W₀.\n2. (Inverse continuity.) Apply chart_inverse_continuity to V, W₀ (in the role of W there) and ψ, with the point v₀ ∈ V and ε := ρ > 0. Its hypotheses hold: ψ is continuous and injective on V, ψ(V) ⊆ W₀ by step 1, and V ∩ ψ^{-1}(K) is compact for every compact K ⊆ W₀. It gives δ₁ > 0 such that every v ∈ V with |ψ(v) − ψ(v₀)| < δ₁ satisfies |v − v₀| < ρ.\n3. (Room in W ∩ W₀.) x ∈ W by hypothesis and x ∈ W₀ by step 1. W ∩ W₀ is open, so there is δ₂ > 0 with B_{δ₂}(x) ⊆ W ∩ W₀.\n4. (Choice of δ.) Put δ := min(δ₁, δ₂) > 0. Then B_δ(x) ⊆ B_{δ₂}(x) ⊆ W ∩ W₀.\n5. (⊆.) Let y ∈ N ∩ W with |y − x| < δ. By step 4, y ∈ W₀, so y ∈ W₀ ∩ N = ψ(V): y = ψ(v) for some v ∈ V. Then |ψ(v) − ψ(v₀)| = |y − x| < δ ≤ δ₁, so |v − v₀| < ρ by step 2, i.e. v ∈ B_ρ(v₀). Hence y ∈ ψ(B_ρ(v₀)) ∩ B_δ(x).\n6. (⊇.) Let y = ψ(v) with v ∈ B_ρ(v₀) and |y − x| < δ. Since B_ρ(v₀) ⊆ V, y ∈ ψ(V) = W₀ ∩ N, so y ∈ N. Also y ∈ B_δ(x) ⊆ W by step 4. Hence y ∈ (N ∩ W) ∩ B_δ(x).\n7. (Conclusion.) By steps 5 and 6, (N ∩ W) ∩ B_δ(x) = ψ(B_ρ(v₀)) ∩ B_δ(x), with δ > 0. ∎",
+          "proof_key_steps": [
+            "chart_inverse_continuity (ψ(V) ⊆ W₀, properness, injectivity) gives δ₁ > 0: v ∈ V and |ψ(v) − ψ(v₀)| < δ₁ imply |v − v₀| < ρ.",
+            "Choose δ₂ > 0 with B_{δ₂}(ψ(v₀)) ⊆ W ∩ W₀ and put δ := min(δ₁, δ₂).",
+            "⊆: a point of N ∩ W ∩ B_δ(ψ(v₀)) lies in W₀ ∩ N = ψ(V), so it is ψ(v) with v ∈ B_ρ(v₀).",
+            "⊇: ψ(B_ρ(v₀)) ⊆ ψ(V) ⊆ N and B_δ(ψ(v₀)) ⊆ W."
+          ]
+        },
+        "audit": {
+          "key": "chart_localization",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Every hypothesis required by inverse continuity is supplied. Intersecting its radius with a ball inside W ∩ W₀ proves both set inclusions exactly as stated. Openness of V is neither assumed nor needed."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/decomposition.json": "7898442a39185c1d6a578233bff115c4832e69f7bf3d1192b3b25072e9cdf294",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/decomposition-audit.json": "5aa7bc66711e6f2806346d2d489fe207e4cc69e0d2dfcbb358b732972c61ffb4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-child-handoff.json": "14b1260aefc610bbc1731edfa80733560b6e5b1779e6c4126426f0121f9133f7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-supplied-plan.md": "cd4ad5e89e5c12644df63b947eafdec630eac6399e0a0d5f9ac932fdd24d9639",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-supplied-natural-proof.md": "1f1725d2eea2df936f88e3fe3704f72366bbe1b87e6737b4987db75b6fcf8ecb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/parent-supplied-natural-proof.json": "b9da696e6f26de6e0e8c0cb8beb92988eca5eb6461b95b325e5e53427e9efef8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-026048b94f/node.json": "4c8aca88e0f9ceb639e052856bc65ec43d3b57fa340b718991538458a00be7ae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-child-handoff.json": "804dbafff5292e3cd292280dc2bb01b36ea6af9f1b97cc2639789e7f451eeb0c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-supplied-plan.md": "24e9c19577b0494f2a5a37c4a1b28efa9d8c4cc714640a4bb3d2b54db4a31cc8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-supplied-natural-proof.md": "22bc04e5a43d4a3ff2487fe12a53e27fcfc4a88ab8837d9de84578e7ba628463",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/parent-supplied-natural-proof.json": "cf103dda4ddc63aac05190905470b6103fbd42448da197f21a005ec5f89be17c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9170e6c94d/node.json": "327781a6a11ae12b449d4e8a6048dcd86e9270eb5261e812116905f287356e8b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-child-handoff.json": "0a0884a7f82c9d51c848b471d091377fc5f07743e6b3e13dd4893e19053dddd7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-supplied-plan.md": "cbd016984091eb3bdebfc3b68c92dd3b9d575470a27d261bc09acca970cad479",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-supplied-natural-proof.md": "637b0a610ce2c33176d082333e61c810d8a30b9fe2aa09a0b7b32c55f38637d3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/parent-supplied-natural-proof.json": "3b01f51bc20389e1e304c6f5aae8355a64e7721f2df777f06484ac1bbe9dfd1c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f/node.json": "29c33b5ad0c0ef2e73369bc13624c813ab06615b99c956d2fd5f195c64619863",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-child-handoff.json": "57705ee017e21faef12701422986e8c97460f2da75a6ed179398580c1b8110d0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-supplied-plan.md": "f3da31faf7598940b4145344744866a5680c3e9cabd92096e4fd5013eda66e11",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-supplied-natural-proof.md": "8c517d923f46a399afc66a7730737ea58d6e6737484d55a95faaac0ff4c09dd9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/parent-supplied-natural-proof.json": "72abd22ecf2b4657de41cd5c623736f7c89972c8f003ed75a54641076322ae32",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c/node.json": "d6f2fdcc5932adba280c087df23d0646a4bd8b8a5efbbda98938421c1b43cf8a"
+  }
+}
