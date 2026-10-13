@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of a blow-up inside a ball (scaling of H^n under η_{x,r})",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, r > 0, R ∈ ℝ and S ⊆ ℝ^P (arbitrary). With η_{x,r}(z) = r⁻¹(z − x) (SimonGMT Chapter03.blowUpMap x r) and H^n = μHE[n]: H^n(η_{x,r}(S) ∩ closedBall(0, R)) = (ENNReal.ofReal r)⁻¹^n · H^n(S ∩ closedBall(x, r·R)).",
+  "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R))",
+  "lean_name": "regcomp_atl_blowUp_measure_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-c8e28598f4-a1"
+}

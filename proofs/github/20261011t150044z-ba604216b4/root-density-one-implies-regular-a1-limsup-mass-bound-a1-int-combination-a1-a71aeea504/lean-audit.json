@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "51efed134714dd5d49aaa44724f5e861087f907fd7db32876e2813065f0c77f3",
+  "git_delta": {
+    "base_commit": "8f9fd8c67b2e01b8f9d41a82beef1bc195ddbc7f",
+    "candidate_commit": "49d292c1958a48f26eefa885bdb03b9f5d33f00b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a6a4b3bc2f7c85fa6a4bee5460f12d702c7242b9a57b8a0505eb07016f94b95a",
+    "source_sha256": "81e0ad6c1869539061dbadaf880e5de68086884f9664fde99a6b3e64d51f565c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_int_combination_imrep",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ S : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n) (p₁ p₂ : ℤ), IsOpen U → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn U n, S ω = (p₁ : ℝ) * T₁ ω + (p₂ : ℝ) * T₂ ω) → ∃ R : IMRep U n, R.Represents S ∧ R.measure ≤ (p₁.natAbs : ℝ≥0∞) • R₁.measure + (p₂.natAbs : ℝ≥0∞) • R₂.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

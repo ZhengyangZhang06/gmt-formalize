@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "IsUnitOrientationOf|structure IMRep|def IMRep\\.(measure|action|Represents)|abbrev Euclid|abbrev MultiVector|TestFormOn",
+        "rsdic_|regcomp_|dor_lmb_",
+        "def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|theorem CountablyRectifiable.mono|countablyRectifiable_iUnion|def blowUpMap",
+        "simon_theorem_3_6|simon_remark_3_7_hausdorff",
+        "det_to_matrix_orthonormalBasis_real|eq_smul_basis_det|euclideanHausdorffMeasure_smul₀|exists_orthonormalBasis_extension|theorem le_opNorm\\b",
+        "git show a157a5f4f62ba1c354a3b0cc070d947560abf2e6:GMT/Ch07/Submission.lean",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "git show 0af9ed599cb8b131973221f740cf2b64fb2fe357:GMT/Ch07/Submission.lean",
+        "git show faacb9cb5caf6ce728ef10ab3b0f5bdd7a47b04d:GMT/Ch07/Submission.lean",
+        "git show 2a16c5a8c0e472a729a36dcbf1d2746c4af759d9:GMT/Ch07/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ic-independent-audit-upwxcndh/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ic-independent-audit-upwxcndh/ReuseAndParent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combination-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/ic-independent-audit-upwxcndh/Types.lean",
+        "/tmp/ic-independent-audit-upwxcndh/ReuseAndParent.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected integer-combination theorem. Construction, action, and mass_bound imply its exact frozen conclusion; the other children supply their stated prerequisites. Proposed dependencies and the reused nodes' dependency closures are acyclic and do not rely on the selected parent. The snapshot contains no rsdic_/regcomp_/dor_lmb_ declarations. Independently checked DAG records show five accepted declarations with byte-identical frozen types and no reservation of the new mass-bound name. Their contracts and package manifests match the pinned snapshot. All six names are bare identifiers; all six statements pass lexical validation and elaborate independently as propositions in the comparator scope. Verified accepted proof blocks occur verbatim in the compiled overlay. All six child declarations and the exact selected parent compile with only propext, Classical.choice, and Quot.sound. Real multivector scaling and ENNReal measure scaling have the intended instances; no problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including openness, Borel measurability, local finiteness, and simultaneous quantification over Q. Exhaustion and the upper-density theorem yield one exceptional null set independent of Q and the test function; scaling and integrability justify the blow-up comparison. The argument covers n = 0 and is non-circular. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthonormal families give bases of the same subspace. Their change-of-basis determinant is ±1, and restriction of alternating forms gives one sign valid for every covector, hence equality of multivectors. The empty-family case is covered. The proposition exactly matches the prose and the accepted declaration."
+    },
+    {
+      "key": "combination_construction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes local finiteness before invoking tangent locality, constructs a measurable overlap sign, and verifies every IMRep field. Tangent transfer justifies orientation on both carrier pieces without assuming the desired representation. The four membership cases prove the exact ambient a.e. multivector identity. Both dependencies are correctly directed, and accepted reuse has an identical type."
+    },
+    {
+      "key": "combination_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The operator-norm estimate and compact test-form support establish integrability for every input action. Indicator conversion and Bochner linearity then prove the stated equality. Openness of U is unnecessary because TestFormOn already supplies compact support contained in U. The proof is complete, non-circular, and matches the accepted frozen type."
+    },
+    {
+      "key": "orientation_pairing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly uses the coefficient norm appearing in the Lean type. Permutation counting and orthogonal basis invariance establish the pairing bound; the determinant covector has coefficient norm one and, after adjusting its sign, pairs to one. The n = 0 case is included. No operator-norm substitution or circular normalization is used."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The norming covector is chosen pointwise, so no measurable-selection assumption is needed. Evaluating the a.e. identity yields the natural-valued indicator multiplicity bound for arbitrary R. The withDensity and restricted-integral identities then give comparison on every Borel set and hence the exact measure inequality. The orientation_pairing dependency and ENNReal scalar action are correct; the new name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
