@@ -1211,6 +1211,34 @@ theorem Submission.dtc_bc_lc_measure_le_of_le_on_open : ∀ (P : ℕ) (U : Set (
         exact Monotone.measure_iUnion fun k m hkm => inter_subset_inter_right E (hVmono hkm)
     _ ≤ ν E := iSup_le fun k => (hcomp k E).trans (measure_mono inter_subset_left)
 
+/-- **Subadditivity of weights** (Simon 6.2.5 and 6.3.2(3), as used in the proof of 7.2.4).  If
+`|c| ≤ 1` and `Z(ω) = X(ω) + c Y(ω)` for every `ω ∈ 𝒟ⁿ(U)`, then `μ_Z ≤ μ_X + μ_Y`.  For open
+`V ⊆ U`, `μ_Z(V) = M_V(Z) ≤ M_V(X) + M_V(Y) = μ_X(V) + μ_Y(V)` by the mass triangle inequality
+and `M_V = μ(V)`.  As `M_Z ⊆ U`, `μ_Z` is concentrated on `U`, and `μ_X + μ_Y` is finite on
+compact subsets of `U`; so the inequality extends from open subsets of `U` to all sets. -/
+theorem Submission.dtc_bc_lc_measure_le_add : ∀ (P n : ℕ) (U : Set (Euclid P)) (X Y Z : GeometricCurrentOn U n) (RX RY RZ : IMRep U n) (c : ℝ), IsOpen U → |c| ≤ 1 → RX.Represents X → RY.Represents Y → RZ.Represents Z → (∀ ω : TestFormOn U n, Z ω = X ω + c * Y ω) → RZ.measure ≤ RX.measure + RY.measure := by
+  intro P n U X Y Z RX RY RZ c hU hc hRX hRY hRZ hZ
+  obtain ⟨-, -, -, -, hXK, -, -⟩ := Submission.cbr_imRep_measure_basic P n U RX
+  obtain ⟨-, -, -, -, hYK, -, -⟩ := Submission.cbr_imRep_measure_basic P n U RY
+  obtain ⟨-, -, -, hZM, -, -, -⟩ := Submission.cbr_imRep_measure_basic P n U RZ
+  refine Submission.dtc_bc_lc_measure_le_of_le_on_open P U RZ.measure (RX.measure + RY.measure)
+    hU ?_ ?_ ?_
+  -- Step 3: `μ_Z(ℝᴾ \ U) ≤ μ_Z(ℝᴾ \ M_Z) = 0`, as `M_Z ⊆ U`
+  · exact measure_mono_null (compl_subset_compl.2 RZ.carrier_subset) hZM
+  -- Step 4: `μ_X(K) + μ_Y(K) < ∞` for compact `K ⊆ U`
+  · intro K hK hKU
+    rw [Measure.add_apply]
+    exact ENNReal.add_lt_top.2 ⟨hXK K hK hKU, hYK K hK hKU⟩
+  -- Steps 1–2: `μ_Z(V) = M_V(Z) ≤ M_V(X) + M_V(Y) = μ_X(V) + μ_Y(V)` for open `V ⊆ U`
+  · intro V hV hVU
+    calc RZ.measure V = Z.massOn V :=
+          (Submission.dtc_mass_eq_measure P n U V Z RZ hU hV hVU hRZ).symm
+      _ ≤ X.massOn V + Y.massOn V :=
+          Submission.lcmp_massOn_le_add_of_eval_eq P n U V X Y Z c hc fun ω _ => hZ ω
+      _ = (RX.measure + RY.measure) V := by
+          rw [Measure.add_apply, Submission.dtc_mass_eq_measure P n U V X RX hU hV hVU hRX,
+            Submission.dtc_mass_eq_measure P n U V Y RY hU hV hVU hRY]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
