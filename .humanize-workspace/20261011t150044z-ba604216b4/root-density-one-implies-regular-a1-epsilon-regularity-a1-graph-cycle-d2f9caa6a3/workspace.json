@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1",
+      "key": "normalized_mollifier",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD vs manifest.json project_commit",
+              "lake env lean /tmp/stc1-work/Closure.lean: #check ContDiffBump.{contDiff,support_eq,nonneg,normed,integral_normed,dist_normed_convolution_le,convolution_tendsto_right}, HasContDiffBump (Euclid 3), HasCompactSupport.contDiff_convolution_left, HasCompactSupport.hasFDerivAt_convolution_right, convolution_precompR_apply, dist_convolution_le, support_convolution_subset, IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, LocallyIntegrableOn.integrableOn_compact_subset, integral_pos_iff_support_of_nonneg, Metric.measure_ball_pos, fderiv_of_notMem_tsupport, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, Integrable.mul_bdd, norm_integral_le_of_norm_le, setIntegral_eq_integral_of_forall_compl_eq_zero, HasCompactSupport.fderiv, HasCompactSupport.uniformContinuous_of_continuous, ContDiff.continuous_fderiv, EuclideanSpace.basisFun_apply after import GMT.Ch07.Submission",
+              "lake env lean /tmp/stc1-work/Names.lean: #check ContDiffBump.hasCompactSupport, ContDiffBump.continuous, integral_const_mul, Function.support_mul_subset_right, HasCompactSupport.exists_bound_of_continuous, mem_cthickening_of_dist_le, isClosed_cthickening, self_subset_cthickening, HasCompactSupport.mul_left, ae_restrict_of_forall_mem, Continuous.locallyIntegrable, HasFDerivAt.fderiv, Metric.uniformContinuous_iff, IsCompact.of_isClosed_subset, closure_minimal, Set.mem_add, integral_sub, integral_mul_const, Continuous.clm_apply",
+              "#synth HasContDiffBump (EuclideanSpace ℝ (Fin 3))",
+              "rg -n 'theorem dist_convolution_le\\b|contDiff_convolution_left|hasFDerivAt_convolution_right|theorem convolution_precompR_apply|theorem support_convolution_subset' mathlib/Mathlib/Analysis/Convolution.lean",
+              "rg -n 'theorem support_eq|protected theorem contDiff|theorem nonneg|protected theorem hasCompactSupport|protected theorem continuous|^structure ContDiffBump' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'def normed|theorem integral_normed' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean; rg -n 'hasContDiffBump_of_innerProductSpace' mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "rg -n 'exists_cthickening_subset_open|mem_cthickening_of_dist_le|isClosed_cthickening|IsCompact.cthickening' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "rg -n 'integral_pos_iff_support_of_nonneg|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_integral_of_forall_compl_eq_zero|Integrable.mul_bdd' in mathlib/Mathlib/MeasureTheory/Integral/Bochner/{Basic,Set}.lean and Function/L1Space/Integrable.lean",
+              "rg -n 'mollif|ContDiffBump|convolution' project/GMT; rg -ln 'ContDiffBump|convolution' simongmt/Poincare; rg -n 'ContDiffBump|convolution|^theorem' Chapter08/DistributionalConstancy.lean Chapter02/WhitneyPartition.lean",
+              "python3 scan of dag.json node lean_name/lean_statement/title for mollif|ContDiffBump|convolution|bump, and of nodes/*/decomposition-v*.json lean_names for mollif|bump",
+              "grep -rl dgcr_stc_ dag.json nodes/; git grep -l <each proposed name> over all refs",
+              "python3 -I: verifier lean_contract.validate_lean_statement and gmt-compare.contract_scope replay -> /tmp/stc1-work/Challenge.lean (exact Submission.X for each child type)",
+              "lake env lean /tmp/stc1-work/{A,B,C,Split,All,Challenge}.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+              "/tmp/stc1-work/Closure.lean",
+              "/tmp/stc1-work/Names.lean",
+              "/tmp/stc1-work/A.lean",
+              "/tmp/stc1-work/B.lean",
+              "/tmp/stc1-work/C.lean",
+              "/tmp/stc1-work/Split.lean",
+              "/tmp/stc1-work/All.lean",
+              "/tmp/stc1-work/Challenge.lean"
+            ],
+            "conclusion": "The snapshot is project b4d606d and mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and HEAD equals the manifest project_commit.\n\nImport closure of GMT.Ch07.Submission:\n- Every lemma cited in the three child proofs and the parent glue resolves after import GMT.Ch07.Submission. This includes the ContDiffBump basics, the HasContDiffBump instance on Euclid n, contDiff_convolution_left, hasFDerivAt_convolution_right, convolution_precompR_apply, dist_convolution_le, support_convolution_subset, the cthickening lemmas and the Bochner set-integral lemmas.\n- ContDiffBump.normed, integral_normed, dist_normed_convolution_le and convolution_tendsto_right are Unknown constants. They live in Mathlib/Analysis/Calculus/BumpFunction/Normed.lean and Convolution files outside the closure, so the hand-normalized mollifier child is necessary.\n\nNo reusable local declaration exists:\n- project/GMT has no mollifier, bump or convolution lemma.\n- SimonGMT Chapter08/DistributionalConstancy.lean uses ContDiffBump.normed with C¹ tests and is outside the closure.\n- Chapter02/WhitneyPartition.lean has only unnormalized Whitney bumps.\n- The DAG nodes dor_ims_sua_mollify_unit_field and regcomp_exists_smooth_unit_form_approx approximate covector fields themselves, not derivatives, and sit in other branches.\n\nThe three proposed names dgcr_stc_* collide with nothing in dag.json, nodes/* or any git ref.\n\nLean checks:\n- All child types pass validate_lean_statement and elaborate in the comparator contract scope.\n- Each child type is proved in scratch.\n- The exact parent type follows from the three child types.\n- All four theorems use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1",
+        "subproblem": {
+          "key": "normalized_mollifier",
+          "title": "Normalized smooth mollifier on ℝⁿ with support in a given ball",
+          "statement": "For every n ∈ ℕ and every r > 0 there is ρ : ℝⁿ → ℝ (ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n) with Lebesgue measure) such that ρ is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), ρ has compact support, ρ(x) ≥ 0 for all x, ∫_{ℝⁿ} ρ = 1, and support ρ ⊆ B_r(0) (the open ball of radius r about 0).",
+          "lean_statement": "∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r",
+          "lean_name": "dgcr_stc_exists_normalized_mollifier",
+          "depends_on": [],
+          "natural_proof": "Source: step 2 of the parent proof (\"Mollifiers\": a ContDiffBump B_r centred at 0 with rIn = r/2, rOut = r, normalized by hand as ϱ_r := (∫B_r)⁻¹·B_r). Mathlib's ContDiffBump.normed / ContDiffBump.integral_normed live in Mathlib/Analysis/Calculus/BumpFunction/Normed.lean, which is NOT in the import closure of GMT.Ch07.Submission, so the normalization is done by hand.\nNotation: ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n) with Lebesgue measure volume; ∫ means ∫ ... ∂volume.\n1. Fix n ∈ ℕ and r > 0. Euclid n is a finite-dimensional real normed space, so the instance HasContDiffBump (Euclid n) is found by instance search (ExistsContDiffBumpBase.instHasContDiffBumpOfFiniteDimensionalReal; HasContDiffBump is a Prop, so which instance is found does not matter). Let B : ContDiffBump (0 : Euclid n) be the bump with rIn := r/2 and rOut := r; the side conditions 0 < r/2 and r/2 < r are half_pos hr and half_lt_self hr. Write B(x) for its value (the coercion Euclid n → ℝ).\n2. Properties of B. (i) ContDiff ℝ (⊤ : ℕ∞) B (ContDiffBump.contDiff holds for every order in ℕ∞). (ii) B is continuous (ContDiffBump.continuous). (iii) 0 ≤ B(x) for every x (ContDiffBump.nonneg). (iv) support B = ball 0 r (ContDiffBump.support_eq, since rOut = r). (v) HasCompactSupport B (ContDiffBump.hasCompactSupport; Euclid n is finite-dimensional).\n3. B is integrable: it is continuous with compact support and volume is finite on compact sets (Continuous.integrable_of_hasCompactSupport with 2(ii), 2(v)).\n4. I := ∫ B(x) dx is positive. By integral_pos_iff_support_of_nonneg (B ≥ 0 by 2(iii), integrable by 3), 0 < I if and only if 0 < volume (support B). By 2(iv), support B = ball 0 r, and volume (ball 0 r) > 0 because r > 0 and Lebesgue measure gives positive mass to nonempty open sets (Metric.measure_ball_pos volume 0 hr). Hence I > 0; in particular I ≠ 0 and I⁻¹ ≥ 0.\n5. Define ρ(x) := I⁻¹ · B(x), i.e. ρ = fun x => (∫ y, B y)⁻¹ * B x. Then:\n (a) ρ is C^∞ (order (⊤ : ℕ∞)): it is the product of the constant function I⁻¹ and B (contDiff_const.mul with 2(i)).\n (b) ρ has compact support: support ρ ⊆ support B, and HasCompactSupport.mul_left applied to 2(v) gives HasCompactSupport ρ.\n (c) ρ(x) ≥ 0 for every x: mul_nonneg of I⁻¹ ≥ 0 (inv_nonneg, step 4) and B(x) ≥ 0 (2(iii)).\n (d) ∫ ρ = I⁻¹ · ∫ B = I⁻¹ · I = 1, by integral_const_mul and inv_mul_cancel₀ (I ≠ 0, step 4).\n (e) support ρ ⊆ support B = ball 0 r, by Function.support_mul_subset_right (the support of x ↦ c · B(x) is contained in the support of B) and 2(iv).\n6. Thus ρ is smooth, compactly supported, nonnegative, has integral 1 and support ρ ⊆ ball (0 : Euclid n) r, which is the claim. ∎",
+          "proof_key_steps": [
+            "Take the ContDiffBump B centred at 0 with rIn = r/2, rOut = r: smooth, nonnegative, support B = ball 0 r, compact support, integrable.",
+            "I := ∫B > 0 by integral_pos_iff_support_of_nonneg, since volume (ball 0 r) > 0.",
+            "ρ := I⁻¹·B is smooth, compactly supported, nonnegative, has ∫ρ = I⁻¹·I = 1, and support ρ ⊆ support B = ball 0 r."
+          ]
+        },
+        "audit": {
+          "key": "normalized_mollifier",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and one-line Lean type agree on every hypothesis and conclusion. The proof establishes bump integrability and strictly positive integral before normalization, then verifies smoothness, compact support, nonnegativity, unit integral and support containment. It works for every n, including zero, and uses no child or parent conclusion."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.pairing_uniform_limit-a1",
+      "key": "pairing_uniform_limit",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD vs manifest.json project_commit",
+              "lake env lean /tmp/stc1-work/Closure.lean: #check ContDiffBump.{contDiff,support_eq,nonneg,normed,integral_normed,dist_normed_convolution_le,convolution_tendsto_right}, HasContDiffBump (Euclid 3), HasCompactSupport.contDiff_convolution_left, HasCompactSupport.hasFDerivAt_convolution_right, convolution_precompR_apply, dist_convolution_le, support_convolution_subset, IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, LocallyIntegrableOn.integrableOn_compact_subset, integral_pos_iff_support_of_nonneg, Metric.measure_ball_pos, fderiv_of_notMem_tsupport, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, Integrable.mul_bdd, norm_integral_le_of_norm_le, setIntegral_eq_integral_of_forall_compl_eq_zero, HasCompactSupport.fderiv, HasCompactSupport.uniformContinuous_of_continuous, ContDiff.continuous_fderiv, EuclideanSpace.basisFun_apply after import GMT.Ch07.Submission",
+              "lake env lean /tmp/stc1-work/Names.lean: #check ContDiffBump.hasCompactSupport, ContDiffBump.continuous, integral_const_mul, Function.support_mul_subset_right, HasCompactSupport.exists_bound_of_continuous, mem_cthickening_of_dist_le, isClosed_cthickening, self_subset_cthickening, HasCompactSupport.mul_left, ae_restrict_of_forall_mem, Continuous.locallyIntegrable, HasFDerivAt.fderiv, Metric.uniformContinuous_iff, IsCompact.of_isClosed_subset, closure_minimal, Set.mem_add, integral_sub, integral_mul_const, Continuous.clm_apply",
+              "#synth HasContDiffBump (EuclideanSpace ℝ (Fin 3))",
+              "rg -n 'theorem dist_convolution_le\\b|contDiff_convolution_left|hasFDerivAt_convolution_right|theorem convolution_precompR_apply|theorem support_convolution_subset' mathlib/Mathlib/Analysis/Convolution.lean",
+              "rg -n 'theorem support_eq|protected theorem contDiff|theorem nonneg|protected theorem hasCompactSupport|protected theorem continuous|^structure ContDiffBump' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'def normed|theorem integral_normed' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean; rg -n 'hasContDiffBump_of_innerProductSpace' mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "rg -n 'exists_cthickening_subset_open|mem_cthickening_of_dist_le|isClosed_cthickening|IsCompact.cthickening' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "rg -n 'integral_pos_iff_support_of_nonneg|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_integral_of_forall_compl_eq_zero|Integrable.mul_bdd' in mathlib/Mathlib/MeasureTheory/Integral/Bochner/{Basic,Set}.lean and Function/L1Space/Integrable.lean",
+              "rg -n 'mollif|ContDiffBump|convolution' project/GMT; rg -ln 'ContDiffBump|convolution' simongmt/Poincare; rg -n 'ContDiffBump|convolution|^theorem' Chapter08/DistributionalConstancy.lean Chapter02/WhitneyPartition.lean",
+              "python3 scan of dag.json node lean_name/lean_statement/title for mollif|ContDiffBump|convolution|bump, and of nodes/*/decomposition-v*.json lean_names for mollif|bump",
+              "grep -rl dgcr_stc_ dag.json nodes/; git grep -l <each proposed name> over all refs",
+              "python3 -I: verifier lean_contract.validate_lean_statement and gmt-compare.contract_scope replay -> /tmp/stc1-work/Challenge.lean (exact Submission.X for each child type)",
+              "lake env lean /tmp/stc1-work/{A,B,C,Split,All,Challenge}.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+              "/tmp/stc1-work/Closure.lean",
+              "/tmp/stc1-work/Names.lean",
+              "/tmp/stc1-work/A.lean",
+              "/tmp/stc1-work/B.lean",
+              "/tmp/stc1-work/C.lean",
+              "/tmp/stc1-work/Split.lean",
+              "/tmp/stc1-work/All.lean",
+              "/tmp/stc1-work/Challenge.lean"
+            ],
+            "conclusion": "The snapshot is project b4d606d and mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and HEAD equals the manifest project_commit.\n\nImport closure of GMT.Ch07.Submission:\n- Every lemma cited in the three child proofs and the parent glue resolves after import GMT.Ch07.Submission. This includes the ContDiffBump basics, the HasContDiffBump instance on Euclid n, contDiff_convolution_left, hasFDerivAt_convolution_right, convolution_precompR_apply, dist_convolution_le, support_convolution_subset, the cthickening lemmas and the Bochner set-integral lemmas.\n- ContDiffBump.normed, integral_normed, dist_normed_convolution_le and convolution_tendsto_right are Unknown constants. They live in Mathlib/Analysis/Calculus/BumpFunction/Normed.lean and Convolution files outside the closure, so the hand-normalized mollifier child is necessary.\n\nNo reusable local declaration exists:\n- project/GMT has no mollifier, bump or convolution lemma.\n- SimonGMT Chapter08/DistributionalConstancy.lean uses ContDiffBump.normed with C¹ tests and is outside the closure.\n- Chapter02/WhitneyPartition.lean has only unnormalized Whitney bumps.\n- The DAG nodes dor_ims_sua_mollify_unit_field and regcomp_exists_smooth_unit_form_approx approximate covector fields themselves, not derivatives, and sit in other branches.\n\nThe three proposed names dgcr_stc_* collide with nothing in dag.json, nodes/* or any git ref.\n\nLean checks:\n- All child types pass validate_lean_statement and elaborate in the comparator contract scope.\n- Each child type is proved in scratch.\n- The exact parent type follows from the three child types.\n- All four theorems use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.pairing_uniform_limit-a1",
+        "subproblem": {
+          "key": "pairing_uniform_limit",
+          "title": "An L¹ pairing that vanishes on uniform approximants vanishes in the limit",
+          "statement": "Let n ∈ ℕ, K ⊆ ℝⁿ measurable, G : ℝⁿ → ℝ integrable on K, f : ℝⁿ → ℝ AE-strongly measurable for Lebesgue measure restricted to K with |f(x)| ≤ C for all x ∈ K. Suppose that for every ε > 0 there is g : ℝⁿ → ℝ, AE-strongly measurable for Lebesgue measure restricted to K, with |f(x) − g(x)| ≤ ε for all x ∈ K and ∫_K G·g = 0. Then ∫_K G·f = 0.",
+          "lean_statement": "∀ (n : ℕ) (K : Set (Euclid n)) (G f : Euclid n → ℝ) (C : ℝ), MeasurableSet K → IntegrableOn G K volume → AEStronglyMeasurable f (volume.restrict K) → (∀ x ∈ K, |f x| ≤ C) → (∀ ε : ℝ, 0 < ε → ∃ g : Euclid n → ℝ, AEStronglyMeasurable g (volume.restrict K) ∧ (∀ x ∈ K, |f x - g x| ≤ ε) ∧ ∫ x in K, G x * g x = 0) → ∫ x in K, G x * f x = 0",
+          "lean_name": "dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx",
+          "depends_on": [],
+          "natural_proof": "Source: step 5 of the parent proof. There, the integrals over D are reduced to integrals over the compact K_δ, and |∫ G·∂ᵢφ| = |∫_{K_δ} G·(∂ᵢφ − ∂ᵢφ_ℓ)| ≤ ε·∫_{K_δ}|G| for every ε > 0, so the integral vanishes. Here this is stated abstractly for a measurable set K, a bounded AE-strongly measurable f, and approximants g that G annihilates.\nNotation: ∫_K h means ∫ x in K, h x (volume restricted to K).\n1. Put M := ∫_K |G|. Then M ≥ 0 (integral_nonneg). Every pointwise bound \"for all x ∈ K\" used below holds almost everywhere for volume restricted to K (ae_restrict_of_forall_mem, since K is measurable).\n2. Claim: |∫_K G·f| ≤ ε·M for every ε > 0. Fix ε > 0 and take g from the hypothesis: g AE-strongly measurable for volume restricted to K, |f(x) − g(x)| ≤ ε for x ∈ K, and ∫_K G·g = 0.\n (a) G·f is integrable on K by Integrable.mul_bdd: G is integrable on K, f is AE-strongly measurable, and ‖f‖ ≤ C a.e. on K (step 1).\n (b) G·g is integrable on K. For x ∈ K, |g(x)| = |f(x) − (f(x) − g(x))| ≤ |f(x)| + |f(x) − g(x)| ≤ C + ε (abs_sub). So Integrable.mul_bdd applies with the bound C + ε.\n (c) ∫_K G·f = ∫_K G·f − ∫_K G·g = ∫_K (G·f − G·g) = ∫_K G·(f − g). This uses ∫_K G·g = 0, integral_sub with (a) and (b), and mul_sub.\n (d) For x ∈ K, |G(x)·(f(x) − g(x))| = |G(x)|·|f(x) − g(x)| ≤ |G(x)|·ε. The function x ↦ |G(x)|·ε is integrable on K (Integrable.norm, Integrable.mul_const). So norm_integral_le_of_norm_le gives |∫_K G·(f − g)| ≤ ∫_K |G|·ε = M·ε (integral_mul_const). With (c), |∫_K G·f| ≤ ε·M.\n3. Conclusion. Suppose a := |∫_K G·f| > 0. Apply step 2 with ε := a / (2(M + 1)) > 0, which gives a ≤ a·M / (2(M + 1)). But 0 ≤ M < 2(M + 1) and a > 0, so a·M / (2(M + 1)) < a, a contradiction. Hence ∫_K G·f = 0. ∎",
+          "proof_key_steps": [
+            "G·f and G·g are integrable on K (Integrable.mul_bdd; |g| ≤ C + ε on K).",
+            "∫_K G f = ∫_K G (f − g), so |∫_K G f| ≤ ε·∫_K |G| (norm_integral_le_of_norm_le).",
+            "Since ε > 0 is arbitrary and ∫_K |G| < ∞, ∫_K G f = 0 (choose ε = |∫_K G f| / (2(M+1)) for a contradiction)."
+          ]
+        },
+        "audit": {
+          "key": "pairing_uniform_limit",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean type agree, including restricted-measure measurability and the bound C. The proof derives |g| ≤ C + ε, establishes both products' integrability before subtracting integrals, and proves the ε times L¹-norm estimate. The final positive ε choice handles zero L¹ norm as well. No compactness, positive C, or unstated regularity assumption is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.mollify_deriv_approx-a1",
+      "key": "mollify_deriv_approx",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD vs manifest.json project_commit",
+              "lake env lean /tmp/stc1-work/Closure.lean: #check ContDiffBump.{contDiff,support_eq,nonneg,normed,integral_normed,dist_normed_convolution_le,convolution_tendsto_right}, HasContDiffBump (Euclid 3), HasCompactSupport.contDiff_convolution_left, HasCompactSupport.hasFDerivAt_convolution_right, convolution_precompR_apply, dist_convolution_le, support_convolution_subset, IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, LocallyIntegrableOn.integrableOn_compact_subset, integral_pos_iff_support_of_nonneg, Metric.measure_ball_pos, fderiv_of_notMem_tsupport, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, Integrable.mul_bdd, norm_integral_le_of_norm_le, setIntegral_eq_integral_of_forall_compl_eq_zero, HasCompactSupport.fderiv, HasCompactSupport.uniformContinuous_of_continuous, ContDiff.continuous_fderiv, EuclideanSpace.basisFun_apply after import GMT.Ch07.Submission",
+              "lake env lean /tmp/stc1-work/Names.lean: #check ContDiffBump.hasCompactSupport, ContDiffBump.continuous, integral_const_mul, Function.support_mul_subset_right, HasCompactSupport.exists_bound_of_continuous, mem_cthickening_of_dist_le, isClosed_cthickening, self_subset_cthickening, HasCompactSupport.mul_left, ae_restrict_of_forall_mem, Continuous.locallyIntegrable, HasFDerivAt.fderiv, Metric.uniformContinuous_iff, IsCompact.of_isClosed_subset, closure_minimal, Set.mem_add, integral_sub, integral_mul_const, Continuous.clm_apply",
+              "#synth HasContDiffBump (EuclideanSpace ℝ (Fin 3))",
+              "rg -n 'theorem dist_convolution_le\\b|contDiff_convolution_left|hasFDerivAt_convolution_right|theorem convolution_precompR_apply|theorem support_convolution_subset' mathlib/Mathlib/Analysis/Convolution.lean",
+              "rg -n 'theorem support_eq|protected theorem contDiff|theorem nonneg|protected theorem hasCompactSupport|protected theorem continuous|^structure ContDiffBump' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'def normed|theorem integral_normed' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean; rg -n 'hasContDiffBump_of_innerProductSpace' mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "rg -n 'exists_cthickening_subset_open|mem_cthickening_of_dist_le|isClosed_cthickening|IsCompact.cthickening' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "rg -n 'integral_pos_iff_support_of_nonneg|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_integral_of_forall_compl_eq_zero|Integrable.mul_bdd' in mathlib/Mathlib/MeasureTheory/Integral/Bochner/{Basic,Set}.lean and Function/L1Space/Integrable.lean",
+              "rg -n 'mollif|ContDiffBump|convolution' project/GMT; rg -ln 'ContDiffBump|convolution' simongmt/Poincare; rg -n 'ContDiffBump|convolution|^theorem' Chapter08/DistributionalConstancy.lean Chapter02/WhitneyPartition.lean",
+              "python3 scan of dag.json node lean_name/lean_statement/title for mollif|ContDiffBump|convolution|bump, and of nodes/*/decomposition-v*.json lean_names for mollif|bump",
+              "grep -rl dgcr_stc_ dag.json nodes/; git grep -l <each proposed name> over all refs",
+              "python3 -I: verifier lean_contract.validate_lean_statement and gmt-compare.contract_scope replay -> /tmp/stc1-work/Challenge.lean (exact Submission.X for each child type)",
+              "lake env lean /tmp/stc1-work/{A,B,C,Split,All,Challenge}.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+              "/tmp/stc1-work/Closure.lean",
+              "/tmp/stc1-work/Names.lean",
+              "/tmp/stc1-work/A.lean",
+              "/tmp/stc1-work/B.lean",
+              "/tmp/stc1-work/C.lean",
+              "/tmp/stc1-work/Split.lean",
+              "/tmp/stc1-work/All.lean",
+              "/tmp/stc1-work/Challenge.lean"
+            ],
+            "conclusion": "The snapshot is project b4d606d and mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and HEAD equals the manifest project_commit.\n\nImport closure of GMT.Ch07.Submission:\n- Every lemma cited in the three child proofs and the parent glue resolves after import GMT.Ch07.Submission. This includes the ContDiffBump basics, the HasContDiffBump instance on Euclid n, contDiff_convolution_left, hasFDerivAt_convolution_right, convolution_precompR_apply, dist_convolution_le, support_convolution_subset, the cthickening lemmas and the Bochner set-integral lemmas.\n- ContDiffBump.normed, integral_normed, dist_normed_convolution_le and convolution_tendsto_right are Unknown constants. They live in Mathlib/Analysis/Calculus/BumpFunction/Normed.lean and Convolution files outside the closure, so the hand-normalized mollifier child is necessary.\n\nNo reusable local declaration exists:\n- project/GMT has no mollifier, bump or convolution lemma.\n- SimonGMT Chapter08/DistributionalConstancy.lean uses ContDiffBump.normed with C¹ tests and is outside the closure.\n- Chapter02/WhitneyPartition.lean has only unnormalized Whitney bumps.\n- The DAG nodes dor_ims_sua_mollify_unit_field and regcomp_exists_smooth_unit_form_approx approximate covector fields themselves, not derivatives, and sit in other branches.\n\nThe three proposed names dgcr_stc_* collide with nothing in dag.json, nodes/* or any git ref.\n\nLean checks:\n- All child types pass validate_lean_statement and elaborate in the comparator contract scope.\n- Each child type is proved in scratch.\n- The exact parent type follows from the three child types.\n- All four theorems use only propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+        "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.mollify_deriv_approx-a1",
+        "subproblem": {
+          "key": "mollify_deriv_approx",
+          "title": "Mollification approximates a C¹_c function in directional-derivative sup norm with support control",
+          "statement": "Let n ∈ ℕ, φ : ℝⁿ → ℝ of class C¹ with compact support, δ > 0, v ∈ ℝⁿ and ε > 0. Then there is ψ : ℝⁿ → ℝ of class C^∞ (ContDiff ℝ (⊤ : ℕ∞)) with compact support such that tsupport ψ ⊆ cthickening δ (tsupport φ) (the closed δ-neighbourhood of the topological support of φ) and |Dψ(x)v − Dφ(x)v| ≤ ε for every x ∈ ℝⁿ (Df(x)v = fderiv ℝ f x v).",
+          "lean_statement": "∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ 1 φ → HasCompactSupport φ → ∀ (δ : ℝ), 0 < δ → ∀ (v : Euclid n) (ε : ℝ), 0 < ε → ∃ ψ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ cthickening δ (tsupport φ) ∧ ∀ x, |fderiv ℝ ψ x v - fderiv ℝ φ x v| ≤ ε",
+          "lean_name": "dgcr_stc_mollify_C1_fderiv_approx",
+          "depends_on": [
+            "normalized_mollifier"
+          ],
+          "natural_proof": "Source: step 3 of the parent proof ((a) smoothness, (b) support, (c) derivative of the convolution, (d) uniform convergence), for one mollification radius. The parent uses r_ℓ = δ/(ℓ+1) and takes ℓ with r_ℓ ≤ r₀. Here we take directly r := min r₀ δ for the given ε, which is exactly what step 3(d) needs. The mollifier of step 2 is the sibling lemma dgcr_stc_exists_normalized_mollifier.\nNotation: ℝⁿ = Euclid n with Lebesgue measure volume; ∂ᵥf(x) := Df(x)v = fderiv ℝ f x v; convolution (ρ ⋆ f)(x) := ∫ ρ(t)·f(x − t) dt, i.e. Mathlib's convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume.\n1. Uniform continuity of ∂ᵥφ. φ is C¹, so Dφ = fderiv ℝ φ is continuous (ContDiff.continuous_fderiv with 1 ≠ 0). Dφ has compact support (HasCompactSupport.fderiv). Let g(x) := ∂ᵥφ(x) = fderiv ℝ φ x v. Then g is continuous (Continuous.clm_apply with the constant function v). It has compact support by HasCompactSupport.comp_left, since evaluation at v, L ↦ L v, sends 0 to 0. A continuous function with compact support is uniformly continuous (HasCompactSupport.uniformContinuous_of_continuous). By Metric.uniformContinuous_iff there is r₀ > 0 with dist (g a) (g b) < ε whenever dist a b < r₀.\n2. Mollifier. Put r := min r₀ δ; then r > 0 (lt_min, since r₀ > 0 and δ > 0), r ≤ r₀ and r ≤ δ. The sibling lemma dgcr_stc_exists_normalized_mollifier, applied to n and r, gives ρ : Euclid n → ℝ with: ContDiff ℝ (⊤ : ℕ∞) ρ, HasCompactSupport ρ, ρ ≥ 0 pointwise, ∫ ρ = 1, and support ρ ⊆ ball 0 r. ρ is continuous (ContDiff.continuous), hence locally integrable (Continuous.locallyIntegrable).\n3. Define ψ := ρ ⋆ φ = convolution ρ φ (ContinuousLinearMap.lsmul ℝ ℝ) volume.\n4. Smoothness. ψ is C^∞ (order (⊤ : ℕ∞)) by HasCompactSupport.contDiff_convolution_left with L = lsmul ℝ ℝ. Its hypotheses: the left factor ρ is compactly supported and ContDiff ℝ (⊤ : ℕ∞); the right factor φ is locally integrable, being continuous (C¹; Continuous.locallyIntegrable).\n5. Support. By support_convolution_subset, support ψ ⊆ support ρ + support φ. Let z ∈ support ψ and write z = a + b with a ∈ support ρ and b ∈ support φ (Set.mem_add). Then ‖a‖ < r since support ρ ⊆ ball 0 r, and b ∈ tsupport φ (subset_tsupport). Hence dist z b = ‖(a + b) − b‖ = ‖a‖ < r ≤ δ. So z ∈ cthickening δ (tsupport φ) (mem_cthickening_of_dist_le). Thus support ψ ⊆ cthickening δ (tsupport φ). The closed thickening is closed (isClosed_cthickening), so tsupport ψ = closure (support ψ) ⊆ cthickening δ (tsupport φ) (closure_minimal).\n6. Compact support. tsupport φ is compact (HasCompactSupport φ), so cthickening δ (tsupport φ) is compact (IsCompact.cthickening; Euclid n is a proper space). tsupport ψ is closed (isClosed_tsupport) and contained in it by step 5. Hence tsupport ψ is compact (IsCompact.of_isClosed_subset), i.e. HasCompactSupport ψ.\n7. Derivative of ψ. Fix x. HasCompactSupport.hasFDerivAt_convolution_right applies with L = lsmul ℝ ℝ: ρ is locally integrable, and φ is compactly supported and ContDiff ℝ 1. It says ψ has Fréchet derivative convolution ρ (fderiv ℝ φ) (ContinuousLinearMap.precompR (Euclid n) (lsmul ℝ ℝ)) volume x at x. Hence fderiv ℝ ψ x equals this (HasFDerivAt.fderiv). Evaluate at v with convolution_precompR_apply, using that ρ is locally integrable and Dφ is compactly supported and continuous (step 1). This gives fderiv ℝ ψ x v = convolution ρ g (lsmul ℝ ℝ) volume x = (ρ ⋆ g)(x).\n8. Estimate. Keep x fixed. For every y ∈ ball x r, dist y x < r ≤ r₀, so dist (g y) (g x) < ε by step 1. Apply dist_convolution_le with these inputs: 0 ≤ ε; R := r with support ρ ⊆ ball 0 r; ρ ≥ 0 pointwise and ∫ ρ = 1; g AE-strongly measurable (it is continuous: Continuous.aestronglyMeasurable); z₀ := g(x); and dist (g y) z₀ ≤ ε for all y ∈ ball x r. It yields dist ((ρ ⋆ g)(x)) (g(x)) ≤ ε. By step 7 and Real.dist_eq, this is |fderiv ℝ ψ x v − fderiv ℝ φ x v| ≤ ε.\n9. ψ has the four required properties: smooth (step 4), compactly supported (step 6), tsupport ψ ⊆ cthickening δ (tsupport φ) (step 5), and the derivative bound for every x (step 8). ∎",
+          "proof_key_steps": [
+            "∂ᵥφ is continuous with compact support, hence uniformly continuous: pick r₀ > 0 with |∂ᵥφ(a) − ∂ᵥφ(b)| < ε when dist a b < r₀.",
+            "r := min r₀ δ; the sibling lemma gives a normalized mollifier ρ (smooth, compact support, ρ ≥ 0, ∫ρ = 1, support ⊆ ball 0 r); ψ := ρ ⋆ φ.",
+            "ψ is smooth (contDiff_convolution_left); support ψ ⊆ ball 0 r + tsupport φ ⊆ cthickening δ (tsupport φ), a closed compact set, so tsupport ψ ⊆ cthickening δ (tsupport φ) and ψ has compact support.",
+            "∂ᵥψ = ρ ⋆ ∂ᵥφ (hasFDerivAt_convolution_right, convolution_precompR_apply).",
+            "dist_convolution_le with the uniform-continuity modulus gives |∂ᵥψ(x) − ∂ᵥφ(x)| ≤ ε for every x."
+          ]
+        },
+        "audit": {
+          "key": "mollify_deriv_approx",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The contract exactly matches approximation in an arbitrary fixed direction with controlled topological support. Every convolution theorem's hypotheses are supplied. Uniform continuity gives the radius; support containment passes correctly to closure and compactness; differentiation and evaluation give the stated uniform bound. Its only sibling reliance is the declared normalized_mollifier dependency, with no circularity or deferred proof construction."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/decomposition.json": "be1714f5c394dd521a29fe081af850dce90c27cdd897a157fcae09bb25fc2ffe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/decomposition-audit.json": "dbb56d5cf0bc05663ad4eaea4f62fe4c538fd92dada696508a542162a5341d9a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-child-handoff.json": "219d3cb5ede768e1a47b43914d8ea66b7df6f6e7cac665d5d0452cf6aeb4375f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-plan.md": "3419c91d04f178baec36c2088e5807f1950a8ecab65e14479e767da8518a0ac9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-natural-proof.md": "319dcf7dd3540100f35a83353a941b25e6240e09b55bfff21cccae4450c6e2b9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-natural-proof.json": "303049b092c3a9f64f7210b8365ac53efafa10eb26b29254264465f113f9e3fa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/node.json": "1a45b00e0136d768f2c504089a38fad60dfea226a3e063f9ec8f3f4c0f22e7c8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-child-handoff.json": "df6a74cb581a6c40278dfe07b8cfa34081d4dee078e2647a3a13d31fddef488a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-supplied-plan.md": "d00dc7cce672b79351b9d604b9759cb1c5e3bf68cc40c2861a2dc230c8eb25e9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-supplied-natural-proof.md": "e8067a140a1e1fd12cf04f06d3eac8ae4b24f2fb06f05170c65e269dee9f48a1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/parent-supplied-natural-proof.json": "9db70acd7383e3e3d2de0d2bd1d20e964b0b142059015821e07613c73828c14a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c/node.json": "a7b33a7213d81a2d916ec3ebd2d7fbde7a41d08c58b2d609f2120374fe71ec1f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-child-handoff.json": "4a5f172f2a576a198583f47027e64f70abd09e285ee6f25809cbdd126833dcee",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-supplied-plan.md": "70a127dbdff226e6c78005cdf674992af9f53e65750ecf44b98e0974cc04bc41",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-supplied-natural-proof.md": "386b9f929bc870dce2f12ceac9ecc5650392b19e7d87bc027a43f29f6c290ded",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/parent-supplied-natural-proof.json": "b40ee6c07e3b2c569e57fc0f581a364e5cf9847750c7b0d0bab7bf4ce7e7f06c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3/children/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-34615cc648/node.json": "8025062fb52fe75b97afb0d2cfbb7e018c9d962546de998980ea59b909cd026b"
+  }
+}
