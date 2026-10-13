@@ -458,6 +458,175 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- One-step improvement of a scale-weighted Hölder bound (steps 3–5 of the absorption argument
+for the interior `C^{1,α}` Schauder estimate on the unit ball, in the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1).  Let `g : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` (operator norm), `0 < α ≤ 1` and
+`M, A, Q ≥ 0`; call `(y, ρ)` admissible if `ρ > 0` and `|y| + ρ ≤ 1`.  Assume
+(P1) `ρ^{1+α} ‖g(x) − g(x')‖ ≤ Q |x − x'|^α` on `B̆_{ρ/2}(y)` for admissible `(y, ρ)`;
+(P2) for admissible `(y, ρ)` and real `K`, if `‖g(x) − g(x')‖ ≤ K |x − x'|^α` on `B̆_ρ(y)`, then
+`ρ^{1+α} ‖g(x) − g(x')‖ ≤ ((1/16) ρ^{1+α} K + A) |x − x'|^α` on `B̆_{ρ/2}(y)`;
+(P3) `‖g(x)‖ ≤ 2M/t + t^α K` whenever `|x| + r ≤ 1`, `K ≥ 0`, `0 < t < r` and
+`‖g(z) − g(z')‖ ≤ K |z − z'|^α` on `B̆_r(x)`.
+Then for admissible `(y, ρ)`: `ρ ‖g(x)‖ ≤ 32 M + Q/4 + 16 A` on `B̆_{ρ/2}(y)`, and
+`ρ^{1+α} ‖g(x) − g(x')‖ ≤ (Q/2 + 512 M + 32 A) |x − x'|^α` on `B̆_{ρ/2}(y)`. -/
+theorem dohr_eb_sch_ube_holder_improvement : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (α M A Q : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → 0 ≤ Q → (∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ Q * ‖x - x'‖ ^ α) → (∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖g x - g x'‖ ≤ K * ‖x - x'‖ ^ α) → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (1 / 16 * ρ ^ (1 + α) * K + A) * ‖x - x'‖ ^ α) → (∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r → (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖g z - g z'‖ ≤ K * ‖z - z'‖ ^ α) → ‖g x‖ ≤ 2 * M / t + t ^ α * K) → ∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y (ρ / 2), ρ * ‖g x‖ ≤ 32 * M + Q / 4 + 16 * A) ∧ ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α := by
+  intro n ℓ g α M A Q hα0 hα1 hM hA hQ0 hP1 hP2 hP3 y ρ hρ hyρ
+  -- Step 1: points `x` of `B̆_{ρ/2}(y)` have `|x| + ρ/2 < 1`.
+  have hxnorm : ∀ x ∈ ball y (ρ / 2), ‖x‖ + ρ / 2 < 1 := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    have : ‖x‖ ≤ ‖y‖ + ‖x - y‖ := by
+      calc ‖x‖ = ‖y + (x - y)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖y‖ + ‖x - y‖ := norm_add_le _ _
+    linarith
+  -- Step 2: numerical facts about the powers.
+  have hR : 0 < ρ ^ (1 + α) := Real.rpow_pos_of_pos hρ _
+  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
+  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
+  have p2pos : (0:ℝ) < 2 ^ (1 + α) := by positivity
+  have p4pos : (0:ℝ) < 4 ^ (1 + α) := by positivity
+  have p2ne : (2:ℝ) ^ (1 + α) ≠ 0 := p2pos.ne'
+  have p4ne : (4:ℝ) ^ (1 + α) ≠ 0 := p4pos.ne'
+  have hRne : ρ ^ (1 + α) ≠ 0 := hR.ne'
+  have p2le : (2:ℝ) ^ (1 + α) ≤ 4 := by
+    calc (2:ℝ) ^ (1 + α) ≤ 2 ^ (2:ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+      _ = 4 := by rw [Real.rpow_two]; norm_num
+  have p4le : (4:ℝ) ^ (1 + α) ≤ 16 := by
+    calc (4:ℝ) ^ (1 + α) ≤ 4 ^ (2:ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+      _ = 16 := by rw [Real.rpow_two]; norm_num
+  have hH0 : 0 ≤ Q / 4 + 16 * A := by linarith
+  -- Step 3: `ρ^{1+α} |g(z) − g(z')| ≤ (Q/4 + 16 A) |z − z'|^α` on `B̆_{ρ/8}(x)`, by (P1) at
+  -- `(x, ρ/2)` and (P2) at `(x, ρ/4)`.
+  have hsmall : ∀ x ∈ ball y (ρ / 2), ∀ z ∈ ball x (ρ / 8), ∀ z' ∈ ball x (ρ / 8),
+      ρ ^ (1 + α) * ‖g z - g z'‖ ≤ (Q / 4 + 16 * A) * ‖z - z'‖ ^ α := by
+    intro x hx z hz z' hz'
+    have hx1 := hxnorm x hx
+    have hρ2 : 0 < ρ / 2 := by positivity
+    have hρ4 : 0 < ρ / 4 := by positivity
+    have e2 : (ρ / 2) ^ (1 + α) = ρ ^ (1 + α) / 2 ^ (1 + α) :=
+      Real.div_rpow hρ.le (by norm_num) _
+    have e4 : (ρ / 4) ^ (1 + α) = ρ ^ (1 + α) / 4 ^ (1 + α) :=
+      Real.div_rpow hρ.le (by norm_num) _
+    have hpos2 : 0 < (ρ / 2) ^ (1 + α) := Real.rpow_pos_of_pos hρ2 _
+    have hHolK : ∀ u ∈ ball x (ρ / 4), ∀ u' ∈ ball x (ρ / 4),
+        ‖g u - g u'‖ ≤ Q / (ρ / 2) ^ (1 + α) * ‖u - u'‖ ^ α := by
+      intro u hu u' hu'
+      have e : ρ / 2 / 2 = ρ / 4 := by ring
+      have h := hP1 x (ρ / 2) hρ2 hx1.le u (by rwa [e]) u' (by rwa [e])
+      rw [div_mul_eq_mul_div, le_div_iff₀ hpos2]
+      linarith
+    have hx4 : ‖x‖ + ρ / 4 ≤ 1 := by linarith
+    have e8 : ρ / 4 / 2 = ρ / 8 := by ring
+    have h1 := hP2 x (ρ / 4) (Q / (ρ / 2) ^ (1 + α)) hρ4 hx4 hHolK z (by rwa [e8])
+      z' (by rwa [e8])
+    rw [e4, e2] at h1
+    have hd : 0 ≤ ‖z - z'‖ ^ α := Real.rpow_nonneg (norm_nonneg _) _
+    have key : 1 / 16 * (ρ ^ (1 + α) / 4 ^ (1 + α)) * (Q / (ρ ^ (1 + α) / 2 ^ (1 + α)))
+        = Q * 2 ^ (1 + α) / (16 * 4 ^ (1 + α)) := by
+      field_simp
+    rw [key] at h1
+    have h2 : ρ ^ (1 + α) * ‖g z - g z'‖
+        ≤ (Q * 2 ^ (1 + α) / 16 + A * 4 ^ (1 + α)) * ‖z - z'‖ ^ α := by
+      have h3 := mul_le_mul_of_nonneg_left h1 p4pos.le
+      calc ρ ^ (1 + α) * ‖g z - g z'‖
+          = 4 ^ (1 + α) * (ρ ^ (1 + α) / 4 ^ (1 + α) * ‖g z - g z'‖) := by
+            field_simp
+        _ ≤ 4 ^ (1 + α) * ((Q * 2 ^ (1 + α) / (16 * 4 ^ (1 + α)) + A) * ‖z - z'‖ ^ α) := h3
+        _ = (Q * 2 ^ (1 + α) / 16 + A * 4 ^ (1 + α)) * ‖z - z'‖ ^ α := by
+            field_simp
+    calc ρ ^ (1 + α) * ‖g z - g z'‖
+        ≤ (Q * 2 ^ (1 + α) / 16 + A * 4 ^ (1 + α)) * ‖z - z'‖ ^ α := h2
+      _ ≤ (Q / 4 + 16 * A) * ‖z - z'‖ ^ α := by
+          apply mul_le_mul_of_nonneg_right _ hd
+          have q1 := mul_le_mul_of_nonneg_left p2le hQ0
+          have q2 := mul_le_mul_of_nonneg_left p4le hA
+          linarith
+  -- Step 4: `ρ |g(x)| ≤ 32 M + (Q/4 + 16 A) / 16^α`, by (P3) with `r = ρ/8`, `t = ρ/16`.
+  have hsupfine : ∀ x ∈ ball y (ρ / 2), ρ * ‖g x‖ ≤ 32 * M + (Q / 4 + 16 * A) / 16 ^ α := by
+    intro x hx
+    have hx1 := hxnorm x hx
+    have hK0 : 0 ≤ (Q / 4 + 16 * A) / ρ ^ (1 + α) := div_nonneg hH0 hR.le
+    have hHol8 : ∀ z ∈ ball x (ρ / 8), ∀ z' ∈ ball x (ρ / 8),
+        ‖g z - g z'‖ ≤ (Q / 4 + 16 * A) / ρ ^ (1 + α) * ‖z - z'‖ ^ α := by
+      intro z hz z' hz'
+      have h := hsmall x hx z hz z' hz'
+      rw [div_mul_eq_mul_div, le_div_iff₀ hR]
+      linarith
+    have h := hP3 x (ρ / 8) (ρ / 16) ((Q / 4 + 16 * A) / ρ ^ (1 + α)) (by linarith) hK0
+      (by positivity) (by linarith) hHol8
+    have e16 : (ρ / 16) ^ α = ρ ^ α / 16 ^ α := Real.div_rpow hρ.le (by norm_num) _
+    rw [e16, hsplit] at h
+    have p16 : (0:ℝ) < 16 ^ α := by positivity
+    have p16ne : (16:ℝ) ^ α ≠ 0 := p16.ne'
+    have hραne : ρ ^ α ≠ 0 := hρα.ne'
+    have hρne : ρ ≠ 0 := hρ.ne'
+    have hid : ρ * (2 * M / (ρ / 16) + ρ ^ α / 16 ^ α * ((Q / 4 + 16 * A) / (ρ * ρ ^ α)))
+        = 32 * M + (Q / 4 + 16 * A) / 16 ^ α := by
+      field_simp
+      ring
+    calc ρ * ‖g x‖
+        ≤ ρ * (2 * M / (ρ / 16) + ρ ^ α / 16 ^ α * ((Q / 4 + 16 * A) / (ρ * ρ ^ α))) :=
+          mul_le_mul_of_nonneg_left h hρ.le
+      _ = 32 * M + (Q / 4 + 16 * A) / 16 ^ α := hid
+  have h16 : (1:ℝ) ≤ 16 ^ α := Real.one_le_rpow (by norm_num) hα0.le
+  refine ⟨?_, ?_⟩
+  -- Step 5: conclusion (a), since `16^α ≥ 1`.
+  · intro x hx
+    have h := hsupfine x hx
+    have : (Q / 4 + 16 * A) / 16 ^ α ≤ Q / 4 + 16 * A := div_le_self hH0 h16
+    linarith
+  -- Step 6: conclusion (b), by cases `|x − x'| < ρ/8` (step 3) and `|x − x'| ≥ ρ/8` (step 4).
+  · intro x hx x' hx'
+    have hd : 0 ≤ ‖x - x'‖ ^ α := Real.rpow_nonneg (norm_nonneg _) _
+    by_cases hcase : ‖x - x'‖ < ρ / 8
+    · have hxin : x ∈ ball x (ρ / 8) := mem_ball_self (by positivity)
+      have hx'in : x' ∈ ball x (ρ / 8) := by
+        rw [mem_ball, dist_comm, dist_eq_norm]; exact hcase
+      have h := hsmall x hx x hxin x' hx'in
+      calc ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (Q / 4 + 16 * A) * ‖x - x'‖ ^ α := h
+        _ ≤ (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α := by
+          apply mul_le_mul_of_nonneg_right _ hd; linarith
+    · push Not at hcase
+      have hdl : (ρ / 8) ^ α ≤ ‖x - x'‖ ^ α := Real.rpow_le_rpow (by positivity) hcase hα0.le
+      have e8 : (ρ / 8) ^ α = ρ ^ α / 8 ^ α := Real.div_rpow hρ.le (by norm_num) _
+      have p8 : (0:ℝ) < 8 ^ α := by positivity
+      have p16 : (0:ℝ) < 16 ^ α := by positivity
+      have hρα8 : ρ ^ α ≤ 8 ^ α * ‖x - x'‖ ^ α := by
+        rw [e8, div_le_iff₀ p8] at hdl; linarith
+      have h8 : (8:ℝ) ^ α ≤ 8 := by
+        calc (8:ℝ) ^ α ≤ 8 ^ (1:ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hα1
+          _ = 8 := Real.rpow_one 8
+      have h816 : (8:ℝ) ^ α ≤ 16 ^ α := Real.rpow_le_rpow (by norm_num) (by norm_num) hα0.le
+      have hA1 : ρ ^ α ≤ 8 * ‖x - x'‖ ^ α := by
+        have := mul_le_mul_of_nonneg_right h8 hd
+        linarith
+      have hA2 : ρ ^ α / 16 ^ α ≤ ‖x - x'‖ ^ α := by
+        have := mul_le_mul_of_nonneg_right h816 hd
+        rw [div_le_iff₀ p16]
+        linarith
+      have hsx := hsupfine x hx
+      have hsx' := hsupfine x' hx'
+      have htri : ‖g x - g x'‖ ≤ ‖g x‖ + ‖g x'‖ := norm_sub_le _ _
+      calc ρ ^ (1 + α) * ‖g x - g x'‖ = ρ ^ α * (ρ * ‖g x - g x'‖) := by rw [hsplit]; ring
+        _ ≤ ρ ^ α * (ρ * ‖g x‖ + ρ * ‖g x'‖) := by
+            apply mul_le_mul_of_nonneg_left _ hρα.le
+            rw [← mul_add]
+            exact mul_le_mul_of_nonneg_left htri hρ.le
+        _ ≤ ρ ^ α * (2 * (32 * M + (Q / 4 + 16 * A) / 16 ^ α)) := by
+            apply mul_le_mul_of_nonneg_left _ hρα.le
+            linarith
+        _ = 64 * M * ρ ^ α + 2 * (Q / 4 + 16 * A) * (ρ ^ α / 16 ^ α) := by ring
+        _ ≤ 64 * M * (8 * ‖x - x'‖ ^ α) + 2 * (Q / 4 + 16 * A) * ‖x - x'‖ ^ α :=
+            add_le_add (mul_le_mul_of_nonneg_left hA1 (by linarith))
+              (mul_le_mul_of_nonneg_left hA2 (by linarith))
+        _ = (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α := by ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
