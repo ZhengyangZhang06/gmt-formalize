@@ -1456,6 +1456,47 @@ theorem Submission.cmc_massOn_eq_imRep_measure : ∀ (P n : ℕ) (U : Set (Eucli
   exact le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
     (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
 
+/-- **Simon 7.2.4, proof, remark after (8)** (p. 186): minimality localizes.  Let `S, T` be
+integer multiplicity in the open set `U`, `spt(S − T) ⊆ K` with `K` compact, `K ⊆ W ⊆ W'` open
+and `W' ⊂⊂ U`.  If `M_W(T) ≤ M_W(S)` then `M_{W'}(T) ≤ M_{W'}(S)`.  With `T = τ(M, θ, ξ)` and
+`S = τ(M', θ', ξ')`, masses on open sets are the measures `μ_T`, `μ_S`
+(`cmc_massOn_eq_imRep_measure`).  `S = T` on test forms supported in `O = U \ K`, so
+`μ_S = μ_T` on open subsets of `O`, hence (as `μ_S` is finite on compact subsets of `O`) on the
+Borel set `W' \ W ⊆ O`, and `μ_T(W') = μ_T(W) + μ_T(W' \ W) ≤ μ_S(W) + μ_S(W' \ W) = μ_S(W')`. -/
+theorem Submission.cmc_massOn_le_of_le_near_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K W W' : Set (Euclid P)), IsOpen U → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsCompact K → (S - T).support ⊆ K → IsOpen W → IsOpen W' → K ⊆ W → W ⊆ W' → CompactlyContained W' U → T.massOn W ≤ S.massOn W → T.massOn W' ≤ S.massOn W' := by
+  intro P n U S T K W W' hU hS hT hK hSTK hW hW' hKW hWW' hW'U hle
+  obtain ⟨RS, hRS⟩ := hS
+  obtain ⟨RT, hRT⟩ := hT
+  -- masses on open sets are the representation measures `μ_S`, `μ_T`
+  have hμS : ∀ G : Set (Euclid P), IsOpen G → S.massOn G = RS.measure G :=
+    Submission.cmc_massOn_eq_imRep_measure P n U S RS hU hRS
+  have hμT : ∀ G : Set (Euclid P), IsOpen G → T.massOn G = RT.measure G :=
+    Submission.cmc_massOn_eq_imRep_measure P n U T RT hU hRT
+  -- `O = U \ K` is open, and `μ_S(C) = ∫_{M' ∩ C} θ' dHⁿ < ∞` for compact `C ⊆ O ⊆ U`
+  have hO : IsOpen (U \ K) := hU.sdiff hK.isClosed
+  have hfin : ∀ C : Set (Euclid P), IsCompact C → C ⊆ U \ K → RS.measure C ≠ ∞ := by
+    intro C hC hCO
+    rw [IMRep.measure, withDensity_apply _ hC.measurableSet,
+      Measure.restrict_restrict hC.measurableSet, inter_comm]
+    exact RS.locallyIntegrable_mult C hC (hCO.trans sdiff_subset)
+  -- `μ_S(G) = M_G(S) = M_G(T) = μ_T(G)` for open `G ⊆ O`, as `G` misses `spt(S − T) ⊆ K`
+  have hopen : ∀ G : Set (Euclid P), IsOpen G → G ⊆ U \ K → RS.measure G = RT.measure G := by
+    intro G hG hGO
+    rw [← hμS G hG, ← hμT G hG]
+    exact Submission.cmc_ml_massOn_eq_of_disjoint_sub_support P n U S T K G hSTK
+      (Set.disjoint_left.2 fun x hx => (hGO hx).2)
+  -- hence `μ_S = μ_T` on the Borel set `W' \ W ⊆ O` (`W' ⊆ closure W' ⊆ U` and `K ⊆ W`)
+  have hdiff : RS.measure (W' \ W) = RT.measure (W' \ W) :=
+    Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P (U \ K) RS.measure RT.measure hO hfin
+      hopen (W' \ W) (hW'.measurableSet.diff hW.measurableSet)
+      fun x hx => ⟨hW'U.2 (subset_closure hx.1), fun hxK => hx.2 (hKW hxK)⟩
+  -- `μ_T(W') = μ_T(W) + μ_T(W' \ W) ≤ μ_S(W) + μ_S(W' \ W) = μ_S(W')`
+  have hsplit : ∀ μ : Measure (Euclid P), μ W' = μ W + μ (W' \ W) := fun μ => by
+    rw [← measure_inter_add_sdiff W' hW.measurableSet, inter_eq_right.2 hWW']
+  rw [hμT W hW, hμS W hW] at hle
+  rw [hμT W' hW', hμS W' hW', hsplit RT.measure, hsplit RS.measure, ← hdiff]
+  exact add_le_add hle le_rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
