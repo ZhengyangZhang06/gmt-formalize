@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1.cutoff_converges-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1",
+  "depth": 6,
+  "title": "Multiplying linear pull-backs by a fixed smooth compactly supported cut-off is sequentially continuous at 0 from 𝒟^d(ℝ^P) to 𝒟^d(ℝ^Q)",
+  "statement": "Let P, Q, d ∈ ℕ. Let L : ℝ^Q → ℝ^P be a continuous linear map and ζ : ℝ^Q → ℝ a C^∞ function (ContDiff ℝ ⊤) with compact support. Let ωs : ℕ → 𝒟^d(ℝ^P) and ηs : ℕ → 𝒟^d(ℝ^Q) be sequences of test forms with domain univ (TestFormOn univ d) such that ηs_j(y) = ζ(y)·(ωs_j(Ly)).compContinuousLinearMap L for all j and y, i.e. ηs_j(y)(v_0, …, v_{d−1}) = ζ(y)·ωs_j(Ly)(Lv_0, …, Lv_{d−1}). Suppose ωs → 0 in the sense of TestFormOnConverges: there is a compact C ⊆ ℝ^P containing tsupport ωs_j for every j and tsupport 0, such that for every k, D^k ωs_j → D^k 0 uniformly on C (D^k = iteratedFDeriv ℝ k). Then ηs → 0 in the same sense in 𝒟^d(ℝ^Q), i.e. TestFormOnConverges ηs 0.",
+  "lean_statement": "∀ (P Q d : ℕ) (L : Euclid Q →L[ℝ] Euclid P) (ζ : Euclid Q → ℝ), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → ∀ (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) d) (ηs : ℕ → TestFormOn (univ : Set (Euclid Q)) d), (∀ (j : ℕ) (y : Euclid Q), (ηs j : DifferentialForm (Euclid Q) d) y = ζ y • ((ωs j : DifferentialForm (Euclid P) d) (L y)).compContinuousLinearMap L) → TestFormOnConverges ωs 0 → TestFormOnConverges ηs 0",
+  "lean_name": "dor_lmb_fc_dtop_cp_cutoff_pullback_converges",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1.leibniz_smul-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1.leibniz_smul-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-4fbf6e3d89-a1"
+}
