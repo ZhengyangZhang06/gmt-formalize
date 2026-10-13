@@ -451,6 +451,75 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A cone takes equal values on dilated test forms** (Simon 7.3.1(2), via 6.2.23).
+If `C ∈ 𝒟ₙ(ℝᴾ)` is a cone, `λ > 0` and `ω ∈ 𝒟ⁿ(ℝᴾ)`, then `ω'(y) = λ⁻ⁿ ω(λ⁻¹y)` defines a test
+form with `C(ω') = C(ω)`.  As `η_{0,λ}(ℝᴾ) = ℝᴾ`, the cone property `η_{0,λ#}C = C` reads
+`C(η_{0,λ}^# ω) = C(ω)`, and by multilinearity
+`η_{0,λ}^# ω (y) = ω(λ⁻¹y) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(λ⁻¹y)`. -/
+theorem Submission.cone_current_apply_dilation_pullback : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ lam : ℝ, 0 < lam → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) ∧ C ω' = C ω := by
+  intro P n C hC lam hlam ω
+  -- Step 1: the cone property `η_{0,λ#}C(ω) = C(ω)`.
+  have hcone := hC lam hlam ω
+  -- Step 2: `η_{0,λ}(ℝᴾ) = ℝᴾ`, so `currentEval` takes its test-form branch.
+  have hV : dilation (0 : Euclid P) lam '' univ = univ := by
+    refine eq_univ_of_forall fun x => ⟨lam • x, mem_univ _, ?_⟩
+    simp [dilation, dilationCLM, smul_smul, mul_inv_cancel₀ hlam.ne']
+  have h : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation (0 : Euclid P) lam '' univ :=
+    ⟨ω.property.1, by rw [hV]; exact subset_univ _⟩
+  rw [currentEval, dite_eq_left h] at hcone
+  -- Steps 3–4: unfolding `blowUp`, `η_{0,λ#}C(ω) = C(ω')` for the affine pullback `ω'` of `ω`,
+  -- so `C(ω') = C(ω)`.
+  refine ⟨_, fun y => ?_, hcone⟩
+  -- Step 5: `ω'(y) = ω(λ⁻¹y) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(λ⁻¹y)` by multilinearity.
+  ext v
+  change (ω : DifferentialForm (Euclid P) n) (-(lam⁻¹ • (0 : Euclid P)) + dilationCLM P lam y)
+      (fun i => dilationCLM P lam (v i)) = _
+  simp only [dilationCLM, smul_zero, neg_zero, zero_add, smul_apply,
+    ContinuousLinearMap.id_apply, ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+  rw [ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+    Fintype.card_fin, smul_eq_mul]
+
+/-- **The support of a cone is invariant under positive dilations** (Simon 7.3.1(2), 6.2.11).
+If `C ∈ 𝒟ₙ(ℝᴾ)` is a cone, `t > 0` and `x ∈ spt C`, then `tx ∈ spt C`.  If `C` vanishes on an
+open `W` with compact closure, it vanishes on `tW`: for `tsupport ω ⊆ tW`, the dilation pullback
+identity with `λ = t⁻¹` gives `C(ω) = C(ω')` with `ω'(y) = tⁿ ω(ty)` and `tsupport ω' ⊆ W`.
+So `t·Z(C) ⊆ Z(C)` for every `t > 0`, and `tx ∈ Z(C)` would give `x = t⁻¹(tx) ∈ Z(C)`. -/
+theorem Submission.codim1_ovr_cone_support_smul : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ t : ℝ, 0 < t → ∀ x ∈ C.support, t • x ∈ C.support := by
+  intro P n C hC
+  -- Step 1: `t·Z(C) ⊆ Z(C)` for `t > 0`; here `tW` is the image of `W` under `y ↦ ty`.
+  have hZ : ∀ t : ℝ, 0 < t → ∀ z ∈ C.zeroRegion, t • z ∈ C.zeroRegion := by
+    intro t ht z hz
+    obtain ⟨W, ⟨hWo, hWc, -, hWv⟩, hzW⟩ := hz
+    refine ⟨(fun y => t • y) '' W, ⟨isOpenMap_smul₀ ht.ne' W hWo, ?_, subset_univ _, ?_⟩,
+      ⟨z, hzW, rfl⟩⟩
+    -- (b) `closure (tW) = t·closure W` is compact.
+    · rw [← (isHomeomorph_smul₀ ht.ne').image_closure W]
+      exact hWc.image (continuous_const_smul t)
+    -- (c) `C` vanishes on `tW`, via `ω'(y) = tⁿ ω(ty)` from the cone pullback identity.
+    · intro ω hω
+      obtain ⟨ω', hω'eq, hω'C⟩ :=
+        Submission.cone_current_apply_dilation_pullback P n C hC t⁻¹ (inv_pos.2 ht) ω
+      rw [← hω'C]
+      apply hWv
+      have hsupp : support (ω' : DifferentialForm (Euclid P) n) ⊆
+          (fun y => t • y) ⁻¹' tsupport (ω : DifferentialForm (Euclid P) n) := by
+        intro y hy
+        rw [mem_support, hω'eq y, inv_inv] at hy
+        exact subset_tsupport _ (fun h => hy (by rw [h, smul_zero]))
+      have hcl : IsClosed ((fun y : Euclid P => t • y) ⁻¹'
+          tsupport (ω : DifferentialForm (Euclid P) n)) :=
+        (isClosed_tsupport _).preimage (continuous_const_smul t)
+      -- `y ∈ tsupport ω'` gives `ty ∈ tsupport ω ⊆ tW`, so `ty = tw` with `w ∈ W`, and `w = y`.
+      intro y hy
+      obtain ⟨w, hwW, hw⟩ := hω (closure_minimal hsupp hcl hy)
+      rwa [← smul_right_injective (Euclid P) ht.ne' hw]
+  -- Step 2: `tx ∈ Z(C)` would give `x = t⁻¹(tx) ∈ Z(C)`.
+  intro t ht x hx
+  refine ⟨mem_univ _, fun htx => hx.2 ?_⟩
+  have h := hZ t⁻¹ (inv_pos.2 ht) (t • x) htx
+  rwa [smul_smul, inv_mul_cancel₀ ht.ne', one_smul] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

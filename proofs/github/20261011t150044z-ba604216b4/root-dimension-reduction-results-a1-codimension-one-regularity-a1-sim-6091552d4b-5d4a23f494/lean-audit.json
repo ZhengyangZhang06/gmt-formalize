@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c2a0c14e319cb86032dba68888c0d9aa247fa1565b366c8360eeaf4549dbe8e",
+  "git_delta": {
+    "base_commit": "74b06ce491995050dceea1e8935a3610e70e8d88",
+    "candidate_commit": "f270d42edd13702235da28ec699bec7f38b7671d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ovr_cone_support_smul",
+    "diff_sha256": "8cb96a0ae12b570ca1dc26d3cfb2593011d7c70c687100f407cd23120e872e62",
+    "source_sha256": "870ea1b2893219802d46c24c1ed958d038e0ddc9ab7b81d46e3349b5867cb35d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ovr_cone_support_smul",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ t : ℝ, 0 < t → ∀ x ∈ C.support, t • x ∈ C.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
