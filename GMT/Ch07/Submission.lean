@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A test form has bounded Euclidean coefficient norm: for `ω ∈ 𝒟ᵏ(U)` there is `M ≥ 0` with
+`|ω(x)| ≤ M` for every `x` (Simon (6.1.15), `|ω|_U < ∞`).  The coefficient norm `|ω(x)|` is
+continuous, as a square root of a finite sum of squares of evaluations of `ω(x)`, and vanishes
+off `spt ω`, so it is continuous with compact support, hence bounded. -/
+theorem Submission.cbr_rlim_coeffNorm_bound : ∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k), ∃ M : ℝ, 0 ≤ M ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ M := by
+  intro P k U ω
+  obtain ⟨w, ⟨hws, hwcs⟩, -⟩ := ω
+  change ∃ M : ℝ, 0 ≤ M ∧ ∀ x, covectorEuclideanNorm (w x) ≤ M
+  have hwc : Continuous w := hws.continuous
+  -- `x ↦ |w(x)|` is continuous
+  have hnc : Continuous fun x => covectorEuclideanNorm (w x) := by
+    unfold covectorEuclideanNorm
+    refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ _).continuous.comp hwc).pow 2
+    · exact continuous_const
+  -- and vanishes off `spt w`, so it has compact support
+  have hcs : HasCompactSupport fun x => covectorEuclideanNorm (w x) := by
+    refine HasCompactSupport.intro hwcs fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport hx, covectorEuclideanNorm_zero]
+  -- hence it is bounded by some `M`, and by `max M 0`
+  obtain ⟨M, hM⟩ := hnc.bounded_above_of_compact_support hcs
+  exact ⟨max M 0, le_max_right _ _,
+    fun x => ((Real.le_norm_self _).trans (hM x)).trans (le_max_left _ _)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
