@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_measure_map-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 of the parent-supplied proof ("H^n⌞Q = ι_#(L^n) (μHE[n] is preserved by isometries and equals Lebesgue measure on ℝ^n; Mathlib Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)"), stated as a separate lemma because the transfer between the plane Q and the parameter space ℝ^n is used repeatedly in the sibling plane_constancy_reduction. Notation: H^n := μHE[n]; L^n := volume on ℝ^n = Euclid n = EuclideanSpace ℝ (Fin n); s_i are the coordinates of s ∈ ℝ^n; ι(s) := Σ_i s_i τ_i; Q := span{τ_1, …, τ_n}. Nothing is assumed about n or P beyond τ being orthonormal (n = 0 is allowed: then Q = {0} and ι is the map from the one-point space ℝ^0 to 0).
+1. (ι is a linear isometry.) ι is linear (ι(s + t) = ι(s) + ι(t), ι(cs) = cι(s)). For s ∈ ℝ^n, orthonormality gives ⟨ι(s), ι(s)⟩ = Σ_{i,k} s_i s_k ⟨τ_i, τ_k⟩ = Σ_i s_i² = ‖s‖² (Mathlib Orthonormal.inner_sum together with the Euclidean norm formula EuclideanSpace.norm_eq). Hence ‖ι(s)‖ = ‖s‖ for all s, and, ι being additive, ‖ι(s) − ι(t)‖ = ‖ι(s − t)‖ = ‖s − t‖: ι is an isometry (AddMonoidHomClass.isometry_of_norm).
+2. (range ι = Q.) Each ι(s) = Σ_i s_i τ_i is a linear combination of τ_1, …, τ_n, hence lies in Q. Conversely, every y ∈ Q = span{τ_1, …, τ_n} can be written y = Σ_i c_i τ_i with c : Fin n → ℝ (Submodule.mem_span_range_iff_exists_fun), i.e. y = ι(c) where c is regarded as the element of ℝ^n with coordinates c_i. So range ι = Q.
+3. (Isometry invariance of μHE[n].) For an isometry f : X → Y between metric spaces carrying their Borel σ-algebras, the push-forward of μHE[d] under f is μHE[d] restricted to the range of f: (μHE[d]).map f = μHE[d].restrict (range f) (Mathlib Isometry.map_euclideanHausdorffMeasure; it expresses H^d(f(A)) = H^d(A), the isometry invariance of Hausdorff measure, together with the fact that f is a measurable embedding with image range f). Applying it to ι (step 1) with d = n and using step 2: (μHE[n] on ℝ^n).map ι = μHE[n].restrict (range ι) = μHE[n].restrict Q.
+4. (Normalization.) On ℝ^n = EuclideanSpace ℝ (Fin n) the measure μHE[n] equals Lebesgue measure: μHE[n] = volume (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume; the normalizing factor in the definition of μHE[n] is chosen exactly so that this holds).
+5. (Conclusion.) Substituting 4 into 3: μHE[n].restrict Q = volume.map ι = Measure.map ι volume, i.e. H^n⌞Q = ι_#(L^n). ∎
+
+Formalization note (verified during the decomposition check; not part of the mathematical argument). The following single theorem proves exactly this frozen statement. It was compiled with `lake env lean` (Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b36630) after `import GMT.Ch07.Submission` only, inside `namespace GMT.Ch07` with the contract opens. It uses no sibling declaration, no import and no helper declaration; `#print axioms` gives exactly propext, Classical.choice and Quot.sound. It follows the numbered steps above and may be used directly as the leaf candidate:
+```lean
+theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) = Measure.map (fun s : Euclid n => ∑ i, s i • τ i) volume := by
+  intro P n τ hτ
+  let L : Euclid n →ₗ[ℝ] Euclid P :=
+    { toFun := fun s => ∑ i, s i • τ i
+      map_add' := fun s t => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
+  have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
+  have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
+    intro s
+    have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
+      rw [hLapp, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.norm_eq,
+        Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
+  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
+  have hrange : Set.range L = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+    ext y
+    constructor
+    · rintro ⟨s, rfl⟩
+      rw [hLapp]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · intro hy
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (SetLike.mem_coe.mp hy)
+      exact ⟨(WithLp.equiv 2 (Fin n → ℝ)).symm c, by rw [hLapp]; rfl⟩
+  have h := hiso.map_euclideanHausdorffMeasure (d := n)
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
+  exact h.symm
+```
+
+## Key steps
+
+1. ι(s) = Σ s_iτ_i is a linear isometry ℝ^n → ℝ^P by orthonormality (‖ι(s)‖² = Σ s_i²).
+2. range ι = span{τ_1, …, τ_n} = Q.
+3. Isometry.map_euclideanHausdorffMeasure: (μHE[n]).map ι = μHE[n].restrict (range ι) = H^n⌞Q.
+4. EuclideanSpace.euclideanHausdorffMeasure_eq_volume: μHE[n] = volume on ℝ^n, so H^n⌞Q = ι_#L^n.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (against manifest.json)`
+- `python3 scan of dag.json: accepted nodes (status, lean_name, lean_statement, candidate_commit) for dimred_*, imrep_*, atsm_*, dgcr_*, dgid_*, dgoj_*, rsdic_*, regcomp_*; duplicate lean_names; cross-branch reuse precedents (children whose parent field differs)`
+- `rg -n 'idtp_pc_' over dag.json, nodes/, the snapshot and all git refs (no match)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for 01ae2c59, d15b5cf4, 038573e4, d5e029d5, c1d60848, dcc3f4b7, 8a6855aa; diff against the contract (added declarations, imports, removed lines)`
+- `grep -n theorem/def in .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean, Chapter03/Rectifiable.lean, Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean`
+- `rg -n 'Isometry.map_euclideanHausdorffMeasure|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|exists_cthickening_subset_open|eq_of_le_of_finrank_eq|one_of_mem_closedBall' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `lake env lean /tmp/pc-decomp-k7q2/check/Probe2.lean and Names.lean (#check of the cited Mathlib/SimonGMT names after import GMT.Ch07.Submission; Chapter08 names unknown)`
+- `lake env lean /tmp/pc-decomp-k7q2/check/{Types,Parent,Children}.lean and /tmp/pc-decomp-k7q2/merged/Merged.lean (#print axioms)`
+- `sed -n 560,640p book/chapter-06.txt (Simon 2.34, Constancy Theorem and proof); sed -n 1830,1880p book/chapter-06.txt (deformation theorem (26)–(27))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/pc-decomp-k7q2/check/Types.lean`
+- `/tmp/pc-decomp-k7q2/check/Parent.lean`
+- `/tmp/pc-decomp-k7q2/check/Children.lean`
+- `/tmp/pc-decomp-k7q2/merged/Merged.lean`
+
+The pins match. The snapshot is project b4d606d (equal to workspace HEAD) with mathlib 25730c7c, and SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reused accepted declarations. dimred_im_mass_measure, imrep_carrier_sdiff_support_null, atsm_approxTangent_le_of_flat, dgcr_unitOrientation_eq_or_neg, dgcr_smooth_tests_to_C1_tests and dgcr_bwd_coordinate_covector are comparator-accepted and are reused at byte-identical types. Their candidates only add pairwise-disjoint declarations to the contract.
+
+Library support.
+- Mathlib supplies Isometry.map_euclideanHausdorffMeasure and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:141,187).
+- Mathlib also supplies IsCompact.exists_cthickening_subset_open, Submodule.eq_of_le_of_finrank_eq, the ContDiffBump API and the MeasurableEmbedding transfer lemmas, all inside the frozen import closure.
+- SimonGMT supplies exteriorDerivative_apply (Chapter06/Forms.lean:119) and support_euclideanHausdorffMeasure_restrict_submodule (Chapter03).
+- SimonGMT's ae_eq_const_of_weak_coordinate_derivatives_zero (Chapter08/DistributionalConstancy.lean) is outside the frozen import closure. It is applied in this node's parent proof with an added import, following the accepted precedent 8a6855aa.
+
+Names. No idtp_pc_* name occurs anywhere.
+
+Lean. All 12 child types elaborate. The exact parent type follows from three child types plus the SimonGMT theorem. Each new child has a verified single-theorem proof from its declared dependencies. A fully merged build with the reused accepted code has no sorry, and all seven new declarations depend only on propext, Classical.choice and Quot.sound.

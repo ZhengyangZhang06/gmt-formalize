@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_test_extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "depth": 4,
+  "title": "Extension of a test function on the parameter domain of a plane to an ambient test function",
+  "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P open, τ = (τ_1, …, τ_n) an orthonormal family in ℝ^P, ι : ℝ^n → ℝ^P, ι(s) := Σ_i s_i τ_i, and Ω := {s ∈ ℝ^n : ι(s) ∈ V}. Let ψ : ℝ^n → ℝ be C^∞ with compact support and tsupport ψ ⊆ Ω. Then there is a C^∞ function f : ℝ^P → ℝ with compact support and tsupport f ⊆ V such that, for every s ∈ ℝ^n, f(ι(s)) = ψ(s) and Df(ι(s))(τ_j) = Dψ(s)(e_j) for every j, where e_j = EuclideanSpace.single j 1 is the j-th standard basis vector of ℝ^n and Df(y)(v) = fderiv ℝ f y v.",
+  "lean_statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (τ : Fin n → Euclid P) (ψ : Euclid n → ℝ), IsOpen V → Orthonormal ℝ τ → ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ {s : Euclid n | ∑ i, s i • τ i ∈ V} → ∃ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f ∧ HasCompactSupport f ∧ tsupport f ⊆ V ∧ ∀ s : Euclid n, f (∑ i, s i • τ i) = ψ s ∧ ∀ j : Fin n, fderiv ℝ f (∑ i, s i • τ i) (τ j) = fderiv ℝ ψ s (EuclideanSpace.single j (1 : ℝ))",
+  "lean_name": "idtp_pc_plane_test_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e2b61fb9ff-a1"
+}

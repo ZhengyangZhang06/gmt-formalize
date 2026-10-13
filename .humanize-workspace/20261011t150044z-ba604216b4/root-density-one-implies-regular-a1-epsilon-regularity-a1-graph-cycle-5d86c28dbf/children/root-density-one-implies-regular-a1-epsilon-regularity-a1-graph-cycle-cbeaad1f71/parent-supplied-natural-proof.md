@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.normal_cutoff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent proof (choice of h₂ with max_K‖u‖ < h₂ < h and of the ContDiffBump η with rIn = h₂, rOut = (h₂ + h)/2), stated for an arbitrary compact K ⊆ B_h(0) (the parent applies it to K = u(spt ψ)).
+Notation: ℝ^p means Euclid p = EuclideanSpace ℝ (Fin p); e_l := EuclideanSpace.single l (1 : ℝ) is the l-th standard basis vector; for an (m+1)-tuple w, removeNth i w := Fin.removeNth i w is the m-tuple with entry i deleted, so (removeNth i w)(l) = w(i.succAbove l) (Fin.removeNth_apply); Covector E m = E [⋀^Fin m]→L[ℝ] ℝ (continuous alternating m-linear forms); DifferentialForm E m = E → Covector E m; exteriorDerivative = Mathlib's extDeriv (Poincare.SimonGMT.Chapter06.exteriorDerivative is an abbrev), with the alternating-sum formula dω(x)(w₀,…,w_m) = Σᵢ (−1)^i • D[y ↦ ω(y)(removeNth i w)](x)(wᵢ) for ω differentiable at x (exteriorDerivative_apply); IsSmoothForm ψ := ContDiff ℝ ∞ ψ where ∞ = ((⊤ : ℕ∞) : WithTop ℕ∞) (in the frozen contract scope `∞` denotes ENNReal's ∞ because of `open scoped ENNReal`, so write the order as (⊤ : ℕ∞)).
+1. K is closed (a compact subset of a Hausdorff space, IsCompact.isClosed) and ℝ^k is a proper metric space, so exists_lt_subset_ball yields r' < h with K ⊆ B_{r'}(0).
+2. Put r := max r' (h/2). Then 0 < h/2 ≤ r (lt_max_of_lt_right), r < h (max_lt, since r' < h and h/2 < h), and K ⊆ B_{r'}(0) ⊆ B_r(0) (ball_subset_ball with le_max_left).
+3. Let f be the ContDiffBump centred at 0 ∈ ℝ^k with rIn := r and rOut := (r + h)/2; this is admissible because 0 < r < (r + h)/2. (The instance HasContDiffBump (Euclid k) comes from the inner-product-space structure, hasContDiffBump_of_innerProductSpace; it is found automatically.) Set η := f (coerced to a function).
+4. η is C^∞ (ContDiffBump.contDiff, at order (⊤ : ℕ∞)), η has compact support (ContDiffBump.hasCompactSupport; ℝ^k is finite-dimensional), and tsupport η = closedBall 0 ((r + h)/2) (ContDiffBump.tsupport_eq) ⊆ B_h(0) because (r + h)/2 < h (closedBall_subset_ball).
+5. Let w ∈ K. Then w ∈ B_r(0), which is open, so B_r(0) ∈ 𝓝 w (isOpen_ball.mem_nhds). For every y ∈ B_r(0) ⊆ closedBall 0 r = closedBall 0 rIn, η(y) = 1 (ContDiffBump.one_of_mem_closedBall). Hence ∀ᶠ y in 𝓝 w, η y = 1 (filter_upwards). ∎
+Formalization note: this child is a machine leaf (one theorem `Submission.dgcr_bwd_normal_cutoff` appended inside `namespace GMT.Ch07` of GMT/Ch07/Submission.lean; no helper declarations, no set_option). The following tactic proof was compiled on the pinned toolchain (Lean v4.35.0-rc3, Mathlib 25730c7c, simongmt 2b36630) in exactly that file context under default maxHeartbeats, passes the workflow's leaf source-delta check, and depends only on propext, Classical.choice, Quot.sound; it may be used verbatim:
+theorem Submission.dgcr_bwd_normal_cutoff : ∀ (k : ℕ) (K : Set (Euclid k)) (h : ℝ), 0 < h → IsCompact K → K ⊆ ball (0 : Euclid k) h → ∃ η : Euclid k → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ ball (0 : Euclid k) h ∧ ∀ w ∈ K, ∀ᶠ y in 𝓝 w, η y = 1 := by
+  intro k K h hh hK hKh
+  obtain ⟨r', hr'h, hKr'⟩ := exists_lt_subset_ball hK.isClosed hKh
+  set r : ℝ := max r' (h / 2) with hr
+  have hr0 : 0 < r := lt_max_of_lt_right (by linarith)
+  have hrh : r < h := max_lt hr'h (by linarith)
+  have hKr : K ⊆ ball (0 : Euclid k) r := hKr'.trans (ball_subset_ball (le_max_left _ _))
+  let f : ContDiffBump (0 : Euclid k) := ⟨r, (r + h) / 2, hr0, by linarith⟩
+  refine ⟨f, f.contDiff, f.hasCompactSupport, ?_, ?_⟩
+  · rw [f.tsupport_eq]
+    exact closedBall_subset_ball (show (r + h) / 2 < h by linarith)
+  · intro w hw
+    filter_upwards [isOpen_ball.mem_nhds (hKr hw)] with y hy
+    exact f.one_of_mem_closedBall (ball_subset_closedBall hy)
+
+## Key steps
+
+1. exists_lt_subset_ball gives r' < h with K ⊆ B_{r'}(0); set r := max r' (h/2) ∈ (0, h).
+2. η := ContDiffBump at 0 with rIn = r, rOut = (r + h)/2.
+3. η is smooth, compactly supported, tsupport η = closedBall 0 ((r+h)/2) ⊆ B_h(0).
+4. η = 1 on the open ball B_r(0) ⊇ K, hence near every point of K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (byte-identical); manifest.json project_commit b4d606d, mathlib_commit 25730c7c; simongmt package at 2b36630`
+- `rg -n 'extDeriv_eq|theorem extDeriv_apply|theorem extDeriv_pullback' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `rg -n 'theorem curryLeft_apply_apply|def curryLeft' mathlib/Mathlib/Analysis/Normed/Module/Alternating/*.lean`
+- `rg -n 'cons_removeNth_eq_comp_cycleRange_symm|sign_cycleRange' mathlib/Mathlib`
+- `rg -n 'theorem det_self|theorem det_apply' mathlib/Mathlib/LinearAlgebra/Determinant.lean; rg -n 'Continuous.matrix_det|continuous_matrix' mathlib/Mathlib/Topology/Instances/Matrix.lean`
+- `rg -n 'map_perm|map_eq_zero_of_eq' mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean; rg -n 'adjoint_inner_left' mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `rg -n 'theorem exists_lt_subset_ball' mathlib/Mathlib; rg -n 'one_of_mem_closedBall|tsupport_eq|hasCompactSupport|contDiff' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n 'continuous_of_finiteDimensional' mathlib/Mathlib (only LinearMap.continuous_of_finiteDimensional; no MultilinearMap variant)`
+- `rg -n 'fderiv_mul_const|DifferentiableAt.smul_const|tsupport_smul_subset_left|image_eq_zero_of_notMem_tsupport|setIntegral_congr_fun' mathlib/Mathlib`
+- `rg -n 'exteriorDerivative_apply|exteriorDerivative_affinePullbackForm|affinePullbackForm_isSmoothForm|def affinePullbackForm|tsupport_exteriorDerivative_subset|GeometricCurrentOn.boundary_apply|def exteriorDerivativeTestOn|def IsSmoothForm|abbrev TestFormOn' simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,AffineCurrentPushforward}.lean`
+- `lake env lean /tmp/bwd-split-work/Names.lean and Names2.lean: #check of all cited names after import GMT.Ch07.Submission`
+- `python3 lean_contract.validate_lean_statement on the 6 child types; gmt-compare.contract_scope replay; lake env lean /tmp/bwd-split-work/Elab.lean (types elaborate in the comparator scope)`
+- `lake env lean /tmp/bwd-split-work/Full.lean: six child proofs as GMT.Ch07.Submission.* theorems, the exact parent type proved from them plus dgcr_orthogonal_coordinates as a hypothesis, comparator-style `exact Submission.X` checks, #print axioms`
+- `lake env lean /tmp/bwd-split-work/SimSubmission.lean: frozen Submission.lean with all six children inserted before `end GMT.Ch07`; leaf_verification.check_source_delta simulated for each insertion`
+- `grep 'dgcr_bwd_' over dag.json, nodes/*, and all 1159 git refs (git grep): no match`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/GroupTheory/Perm/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/Matrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5d86c28dbf/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/bwd-split-work/Elab.lean`
+- `/tmp/bwd-split-work/Full.lean`
+- `/tmp/bwd-split-work/SimSubmission.lean`
+
+The snapshot is project b4d606d with Mathlib 25730c7c, and its Contract.lean is byte-identical to the workspace Submission.lean. Every cited lemma is in the import closure of GMT.Ch07.Submission.
+Mathlib lemmas used: Filter.EventuallyEq.extDeriv_eq, extDeriv_apply, ContinuousAlternatingMap.curryLeft_apply_apply, Fin.cons_removeNth_eq_comp_cycleRange_symm, Fin.sign_cycleRange, Module.Basis.det_apply/det_self, Continuous.matrix_det, continuous_matrix, AlternatingMap.map_perm/map_eq_zero_of_eq, ContinuousLinearMap.adjoint_inner_left, exists_lt_subset_ball, the ContDiffBump API, fderiv_mul_const and setIntegral_congr_fun.
+simongmt lemmas used: exteriorDerivative_apply, affinePullbackForm with affinePullbackForm_isSmoothForm and exteriorDerivative_affinePullbackForm, tsupport_exteriorDerivative_subset, exteriorDerivativeTestOn and GeometricCurrentOn.boundary_apply.
+MultilinearMap.continuous_of_finiteDimensional has no match, so the determinant covector proves its continuity explicitly.
+Lean checks:
+- All 6 child types pass validate_lean_statement and elaborate in the comparator contract scope.
+- Each child compiles as a single theorem under default heartbeats and passes the leaf source-delta check.
+- The exact parent type follows from children coordinate_form, graph_pullback_extderiv and graph_cutoff_lift plus dgcr_orthogonal_coordinates, with axioms only propext, Classical.choice and Quot.sound.
+- No dgcr_bwd_ name collision exists in the DAG, node records or git refs.
