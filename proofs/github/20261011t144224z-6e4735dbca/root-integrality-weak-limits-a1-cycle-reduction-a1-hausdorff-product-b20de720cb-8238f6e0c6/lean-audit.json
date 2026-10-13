@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e1753281f63d433c8beba23cdfcca0bb2db774bfc89f9e59aa1fb31c2f4c91c",
+  "git_delta": {
+    "base_commit": "9d71511fc85316d1ede62631630186d094bd5f37",
+    "candidate_commit": "bcc07a06ddc213e6b264de6417cd90b845e9de7a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_hp_piece_product",
+    "diff_sha256": "b5935d3f0d4e384b08ed02cff7178ad06f96fcf0dbd2ebaaa5963d2b13e3d9e2",
+    "source_sha256": "e0b289c58a72dd259d82082b5293135fa2e41b4de13de8391b8b4e74cc0df2a6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_hp_piece_product",
+      "statement": "∀ (P m : ℕ) (G : Eucl m → Eucl P) (K : ℝ≥0) (B : Set (Eucl m)), LipschitzWith K G → MeasurableSet B → InjOn G B → (∀ b ∈ B, DifferentiableAt ℝ G b) → ∀ g : Eucl (P + 1) → ℝ≥0∞, Measurable g → Measurable (fun s : ℝ => ∫⁻ x in G '' B, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))) ∧ ∫⁻ y in {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ G '' B}, g y ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫⁻ s : ℝ, ∫⁻ x in G '' B, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
