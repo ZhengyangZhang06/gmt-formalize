@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.tangential_deformation-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Deformations along a vector field tangent to a C² submanifold (Simon Ch. 2 before 5.8; Ch. 4, 2.5)",
+  "statement": "Let U ⊆ ℝ^P be open, N an embedded C² d-dimensional submanifold with (N̄ ∖ N) ∩ U = ∅, and X ∈ C¹(ℝ^P; ℝ^P) with compact support, spt X ⊆ U and X(x) ∈ T_xN for x ∈ N ∩ U. Then there is a family (φ_t)_{t∈ℝ} of maps ℝ^P → ℝ^P such that every φ_t is C¹, bijective, with injective derivative everywhere, φ_t = id outside spt X and φ_t(N ∩ U) ⊆ N ∩ U, and Dφ_t = I + t·DX + o(t) uniformly: for every ε > 0 there is δ > 0 with ‖Dφ_t(x) − I − t·DX(x)‖ ≤ ε|t| for all |t| < δ and all x.",
+  "lean_statement": "∀ (P d : ℕ) (U N : Set (Euclid P)) (X : Euclid P → Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → (∀ x ∈ N ∩ U, X x ∈ tangentSpace N x) → ∃ φ : ℝ → Euclid P → Euclid P, (∀ t, ContDiff ℝ 1 (φ t) ∧ Bijective (φ t) ∧ (∀ x, Injective (fderiv ℝ (φ t) x)) ∧ (∀ x, x ∉ tsupport X → φ t x = x) ∧ MapsTo (φ t) (N ∩ U) (N ∩ U)) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t|",
+  "lean_name": "tangential_c1_deformation_exists",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-tangential-deformation-a1-a1"
+}
