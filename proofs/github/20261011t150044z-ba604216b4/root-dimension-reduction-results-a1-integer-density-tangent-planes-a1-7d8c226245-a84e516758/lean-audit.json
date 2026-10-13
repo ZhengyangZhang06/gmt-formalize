@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3bf004af03606405e4bbb456774dc6ea46418b4892ba1c664755687ff213621c",
+  "git_delta": {
+    "base_commit": "e9d9b4d212f02499792f80d25a82223d4b9d7042",
+    "candidate_commit": "dc75867184e89d8441d29d42e12283a10bb5b60c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_antiderivative_test",
+    "diff_sha256": "90ac1fcb7e758d5a543a3bf95d0a07ef85db63970a881b608007479f7faae3d9",
+    "source_sha256": "a98c32d5e546d35cbe12b777e5a5d8b873c3ee52727823495018b38df65a0e2d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_antiderivative_test",
+      "statement": "∀ (c d : ℝ) (g : ℝ → ℝ), Continuous g → tsupport g ⊆ Ioo c d → ∫ α, g α = 0 → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ tsupport ψ ⊆ Ioo c d ∧ deriv ψ = g",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
