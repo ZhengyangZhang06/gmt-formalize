@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0eaecb8e58f5e02f0dd8f89c20164e6e875ba881112c74885be37fc666c37253",
+  "git_delta": {
+    "base_commit": "9dbc6697717dbca6a9a56a822fd6ccd6d4355376",
+    "candidate_commit": "a67cdcf4a68bfcc0ebb62b7f88c6cb3b84748059",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_dr_euclideanHausdorff_lt_top_of_lower_density",
+    "diff_sha256": "c111ee8cddb9b34a79a6078cf73525239b99b7402590e088075e818dc0272d61",
+    "source_sha256": "96d53d0c40a0616066337efc2569f4072a4062e09c32cf52b54bee94c4e2f338",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_dr_euclideanHausdorff_lt_top_of_lower_density",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)) (η : ℝ), 0 < η → μ univ < ∞ → (∀ x ∈ A, ENNReal.ofReal η ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → μHE[n] A < ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
