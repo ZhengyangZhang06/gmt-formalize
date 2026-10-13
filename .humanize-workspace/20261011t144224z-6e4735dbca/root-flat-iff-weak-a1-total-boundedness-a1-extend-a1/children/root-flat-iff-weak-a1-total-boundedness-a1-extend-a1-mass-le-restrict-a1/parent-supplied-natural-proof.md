@@ -1,0 +1,128 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.extend-a1`
+- Child DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.mass_le_restrict-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 8 (Lemma A) of the parent proof. The vanishing fact (V) is the sibling eq_near, applied with the hypothesis that Z vanishes on test forms supported off K. (The parent obtains this hypothesis from spt Z ⊆ K.)
+
+Notation. |α| := covectorEuclideanNorm α. ι := testFormOnInclusion (subset_univ U) q : D^q(U) → D^q(ℝ^P); it does not change the underlying form.
+
+1. (Cutoff.) Apply the sibling cutoff (Submission.fiw_tb_ext_cutoff) to U open and K ⊆ U compact. It gives a C^∞ χ with 0 ≤ χ ≤ 1 and tsupport χ ⊆ U, and an open N ⊇ K with χ = 1 on N.
+2. (Multiplication.) The sibling smul_testform with V := ℝ^P, W := U gives a linear L : D^q(ℝ^P) → D^q(U) with (Lω)(x) = χ(x)·ω(x).
+3. (Reduction.) By definition, M(Z) = Z.massOn univ is the supremum of ofReal(Z(ω)) over ω ∈ massAdmissibleOn univ q univ. These are the ω ∈ D^q(ℝ^P) with tsupport ω ⊆ ℝ^P and |ω(x)| ≤ 1 for all x. So it suffices to show ofReal(Z(ω)) ≤ M(Z|_U) for each such ω (sSup_le).
+4. (Admissibility.) Fix such an ω. Then Lω ∈ massAdmissibleOn U q U:
+   - tsupport(Lω) ⊆ U, because Lω ∈ D^q(U);
+   - for every x, the sibling norm_smul and 0 ≤ χ(x) ≤ 1 give |(Lω)(x)| = |χ(x)|·|ω(x)| = χ(x)·|ω(x)| ≤ 1·1 = 1.
+5. (Locality.) For x ∈ N, (ι(Lω))(x) = χ(x)·ω(x) = ω(x), because χ(x) = 1. Apply the sibling eq_near with V := ℝ^P, the sets K ⊆ N (N open) and the vanishing hypothesis on Z. It gives Z(ι(Lω)) = Z(ω).
+6. Hence Z(ω) = Z(ι(Lω)) = Z|_U(Lω) (GeometricCurrentOn.restrictDomain_apply). By GeometricCurrentOn.le_massOn and step 4, ofReal(Z(ω)) = ofReal(Z|_U(Lω)) ≤ (Z|_U).massOn U = M(Z|_U).
+7. Taking the supremum over all ω in step 3 gives M(Z) ≤ M(Z|_U). ∎
+
+Reference Lean proof (kernel-checked in a scratch build importing GMT.Ch06.Submission, in the comparator's contract scope; sibling dependencies are referenced as Submission.X):
+theorem Submission.fiw_tb_ext_mass_le_restrictDomain : ∀ (P q : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ Z : GeometricCurrentOn (univ : Set (Eucl P)) q, (∀ ω : TestFormOn (univ : Set (Eucl P)) q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.mass ≤ (Z.restrictDomain (subset_univ U)).mass := by
+  intro P q U K hU hK hKU Z hZ
+  obtain ⟨χ, N, hχs, hχ01, -, hχU, hN, hKN, hχN⟩ := Submission.fiw_tb_ext_cutoff P U K hU hK hKU
+  obtain ⟨L, hL⟩ := Submission.fiw_tb_ext_smul_testForm P q (univ : Set (Eucl P)) U χ hχs hχU
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  have hadm : L ω ∈ massAdmissibleOn U q U := by
+    refine ⟨(L ω).property.2, fun x => ?_⟩
+    rw [hL, Submission.fiw_tb_ext_covectorNorm_smul, abs_of_nonneg (hχ01 x).1]
+    calc χ x * covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) q) x) ≤ 1 * 1 :=
+          mul_le_mul (hχ01 x).2 (hω.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have hval : Z ω = (Z.restrictDomain (subset_univ U)) (L ω) := by
+    rw [GeometricCurrentOn.restrictDomain_apply]
+    symm
+    apply Submission.fiw_tb_ext_apply_eq_of_eqOn P q univ K N Z hN hKN hZ ω
+      (testFormOnInclusion (subset_univ U) q (L ω))
+    intro x hx
+    change (L ω : DifferentialForm (Eucl P) q) x = _
+    rw [hL, hχN x hx, one_smul]
+  show ENNReal.ofReal (Z ω) ≤ _
+  rw [hval]
+  exact (Z.restrictDomain (subset_univ U)).le_massOn hadm
+
+## Key steps
+
+1. Cutoff χ (0 ≤ χ ≤ 1, tsupport χ ⊆ U, χ = 1 on an open N ⊇ K) and the multiplication map L : D^q(ℝ^P) → D^q(U).
+2. For ω admissible for M(Z), Lω is admissible for M(Z|_U) (norm_smul, χ ≤ 1).
+3. eq_near: Z(ω) = Z(ι(Lω)) = Z|_U(Lω) ≤ M(Z|_U); take the supremum.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c95, Mathlib 25730c7c); diff -q snapshot project/GMT/Ch06/{Contract,Submission}.lean against the workspace (identical; HEAD d8d46c95, clean)`
+- `grep -n '^open|^namespace|^end|^noncomputable|^def|^structure|^abbrev|^theorem' GMT/Ch06/Contract.lean (comparator scope; IsRectifiableTriple, tauAction, IsIntegerMultiplicity)`
+- `grep -n '^structure|^def|^abbrev|^theorem|^@[simp] theorem' in SimonGMT Chapter06 Currents.lean, Mass.lean, CurrentLocalEquality.lean, Forms.lean (TestFormOn, TestFormOnConverges, GeometricCurrentOn, boundary_apply, tsupport_exteriorDerivative_subset, GeometricCurrentOn.ext, massAdmissibleOn, massOn, mass, le_massOn, covectorEuclideanNorm, testFormOnInclusion, restrictDomain_apply, VanishesOn, zeroRegion, support, IsSmoothForm, IsTestForm)`
+- `grep -rn 'covectorEuclideanNorm_smul' SimonGMT (no match; only covectorEuclideanNorm_zero/_nonneg/_neg); grep CountablyRectifiable.mono in Chapter03/Rectifiable.lean`
+- `grep -rn 'theorem exists_contDiff\w*|theorem exists_smooth\w*|theorem exists_contMDiff\w*' Mathlib (exists_contDiff_support_eq_eq_one_iff, exists_contMDiffMap_one_nhds_of_subset_interior); grep setIntegral_congr_fun₀, restrict_congr_set`
+- `python3 -I scans of dag.json (354 nodes): accepted nodes; lean_statement patterns VanishesOn / restrictDomain / covectorEuclideanNorm with • / ContDiff cutoffs / '.support ⊆' with Disjoint; reuse candidates br_la_abs_apply_le_mul_mass, fiw_ims_sc_converges_zero_small, lpf_rectifiable_support_null, br_weightedTangent_congr (byte-identical types); existing cross-branch reuse edges`
+- `git show <commit>:GMT/Ch06/Submission.lean | grep -A8 'theorem Submission.<name>' for d771ac3a (br_la_abs_apply_le_mul_mass), 49ba437c (fiw_ims_sc_converges_zero_small), b0d12af0 (lpf_rectifiable_support_null), def607d8 (br_weightedTangent_congr)`
+- `git log --all --oneline -S fiw_tb_ext_ (1141 refs, no match); grep -rl fiw_tb_ext_ .humanize/math-wiki (no match)`
+- `read /runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py (_decompose, _solve_children, _existing_lean_name_problem, _install_parent_supplied_child_handoff, accepted-child overlay) and store.py (ensure)`
+- `python3 -I /tmp/extdecomp_tools/gen.py (verifier/gmt-compare.py child_modules contract mode + lean_contract.validate_lean_statement); lake env lean /tmp/extdecomp/AllChallenges.lean (all 12 statements elaborate)`
+- `lake env lean /tmp/extdecomp/Assembly.lean (#print axioms assembly: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/extdecomp/Small.lean, /tmp/extdecomp/Big.lean, /tmp/extdecomp/E2E.lean (trial proofs of all 8 new children; Submission-style end-to-end with exact Submission.X checks)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1-converges-small-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/extdecomp/AllChallenges.lean`
+- `/tmp/extdecomp/Assembly.lean`
+- `/tmp/extdecomp/Small.lean`
+- `/tmp/extdecomp/Big.lean`
+- `/tmp/extdecomp/E2E.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) is byte-identical to the workspace build used for checking. It holds the frozen Ch06 contract: IsRectifiableTriple, tauAction, IsIntegerMultiplicity.
+
+SimonGMT supplies the current/test-form API used in every child:
+- TestFormOn as a submodule, with pointwise operations;
+- GeometricCurrentOn with sequential continuity at 0, GeometricCurrentOn.ext, boundary_apply and tsupport_exteriorDerivative_subset;
+- massAdmissibleOn, massOn, mass and le_massOn;
+- testFormOnInclusion and restrictDomain_apply;
+- VanishesOn, zeroRegion and support;
+- CountablyRectifiable.mono.
+There is no covectorEuclideanNorm smul lemma (new child norm_smul) and no converse of vanish_off_support (new child support_subset).
+
+Mathlib supplies:
+- exists_compact_between and exists_contDiff_support_eq_eq_one_iff (cutoff);
+- ContDiff.smul and tsupport_smul_subset_left/right (smul_testform);
+- ae_eq_set, Measure.restrict_congr_set and setIntegral_congr_fun₀ (im_extend).
+
+dag.json has four accepted declarations whose frozen types are byte-identical to what the supplied proof cites. Each was verified at its candidate commit:
+- br_la_abs_apply_le_mul_mass (d771ac3a);
+- fiw_ims_sc_converges_zero_small (49ba437c);
+- lpf_rectifiable_support_null (b0d12af0; the support-null fact without MF);
+- br_weightedTangent_congr (def607d8).
+They are reused as children. The runtime maps them to the accepted nodes, and cross-branch reuse of accepted nodes is established in this DAG.
+
+Kernel checks:
+- all 12 child types elaborate in the comparator's exact challenge scope;
+- the parent type follows from the 8 new child types plus vanish_off_support, with axioms [propext, Classical.choice, Quot.sound];
+- each new child has a trial Lean proof from exactly its declared siblings.
