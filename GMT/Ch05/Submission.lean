@@ -785,32 +785,6 @@ theorem allard52_cae_center_eq_at_lebesgue_point : ∀ (n m k : ℕ) (G : Rn n �
   have hs_sub : ∀ S S' : Rn m →L[ℝ] Rn k,
       hsNormSq (S - S') ≤ 2 * hsNormSq S + 2 * hsNormSq S' := by
     intro S S'
-/-- **Hölder continuity of Campanato centers** (Simon Ch. 5, proof of Theorem 5.2, the Hölder
-step after (11)).  If `∫_{B_{s/2}(z)} |G − c(z)|² ≤ A sⁿ (s/R)^{2α}` for every `z ∈ B_{R/4}(0)` and
-`s ∈ (0, R/4]`, then `|c(x) − c(y)| ≤ C √A (|x − y|/R)^α` for `x, y ∈ B̆_{R/16}(0)`, with
-`C = (4^{n+2} / Lⁿ(B₁(0)))^{1/2}`.
-
-For `x ≠ y` put `d = |x − y| < R/8` and `s = 2d`: the ball `B_{d/2}((x + y)/2)` lies in
-`B_{s/2}(x) ∩ B_{s/2}(y)`, and averaging `|c(x) − c(y)|² ≤ 2|G − c(x)|² + 2|G − c(y)|²` over it
-gives `|c(x) − c(y)|² (d/2)ⁿ Lⁿ(B₁(0)) ≤ 4A (2d)ⁿ (2d/R)^{2α} ≤ 4^{n+2} A (d/R)^{2α} (d/2)ⁿ`. -/
-theorem allard52_campanato_center_holder : ∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α : ℝ), 0 ≤ A → 0 < R → 0 < α → α ≤ 1 → Measurable G → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (c x - c y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ α := by
-  intro n _
-  -- `v = Lⁿ(B₁(0))`, positive and finite; `Lⁿ(B_t(w)) = tⁿ v`.
-  set v : ℝ := (volume (closedBall (0 : Rn n) 1)).toReal with hv_def
-  have hV0 : volume (closedBall (0 : Rn n) 1) ≠ 0 := (measure_closedBall_pos volume 0 one_pos).ne'
-  have hVtop : volume (closedBall (0 : Rn n) 1) ≠ ∞ := measure_closedBall_lt_top.ne
-  have hv : 0 < v := ENNReal.toReal_pos hV0 hVtop
-  refine ⟨Real.sqrt (4 ^ (n + 2) / v), Real.sqrt_nonneg _, ?_⟩
-  intro m k G c A R α hA hR hα hα1 hG hcamp x hx y hy
-  have hRHS : 0 ≤ Real.sqrt (4 ^ (n + 2) / v) * Real.sqrt A * (‖x - y‖ / R) ^ α :=
-    mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
-      (Real.rpow_nonneg (div_nonneg (norm_nonneg _) hR.le) _)
-  -- Hilbert–Schmidt facts.
-  have hHS0 : ∀ T : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq T := fun T =>
-    Finset.sum_nonneg fun i _ => sq_nonneg _
-  have hHSsub : ∀ T T' : Rn m →L[ℝ] Rn k,
-      hsNormSq (T - T') ≤ 2 * hsNormSq T + 2 * hsNormSq T' := by
-    intro T T'
     unfold hsNormSq
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_le_sum fun i _ => ?_
@@ -948,20 +922,36 @@ theorem allard52_campanato_center_holder : ∀ (n : ℕ), 1 ≤ n → ∃ C : �
   have hh0 : h = 0 :=
     le_antisymm (ENNReal.ofReal_eq_zero.1 (nonpos_iff_eq_zero.1 hle)) (hs_nonneg _)
   exact sub_eq_zero.1 (hs_zero _ hh0)
-/-- **Campanato centres agree with `G` almost everywhere** (Simon Ch. 5, proof of Theorem 5.2:
-identification of the centres by Lebesgue's differentiation theorem in the parameter domain `ℝⁿ`).
-Let `G, c : ℝⁿ → L(ℝᵐ, ℝᵏ)` with `G` Borel and `‖G‖ ≤ B`, and suppose that for every
-`z ∈ B_{R/4}(0)` and `s ∈ (0, R/4]`
-`∫_{B_{s/2}(z)} |G(x) − c(z)|² dx ≤ A sⁿ (s/R)^{2α}` (Hilbert–Schmidt norm, `R, α > 0`).
-Then `G(z) = c(z)` for `Lⁿ`-a.e. `z ∈ B̆_{R/4}(0)`.
-Off the null set of `allard52_cae_hsNormSq_lebesgue_ae`, every `z` is a quadratic Lebesgue point
-of `G`; for `z ∈ B̆_{R/4}(0) ⊆ B_{R/4}(0)` the Campanato bound at `z` is the hypothesis of
-`allard52_cae_center_eq_at_lebesgue_point` with `T = c(z)` and `s₀ = R/4`. -/
-theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z := by
-  intro n m k G c A R α B _hn hR hα hG hB hcamp
-  filter_upwards [Submission.allard52_cae_hsNormSq_lebesgue_ae n m k G B hG hB] with z hz hzR
-  exact Submission.allard52_cae_center_eq_at_lebesgue_point n m k G z (c z) A R α (R / 4) hR hα
-    (by positivity) hG hz (hcamp z (ball_subset_closedBall hzR))
+/-- **Hölder continuity of Campanato centers** (Simon Ch. 5, proof of Theorem 5.2, the Hölder
+step after (11)).  If `∫_{B_{s/2}(z)} |G − c(z)|² ≤ A sⁿ (s/R)^{2α}` for every `z ∈ B_{R/4}(0)` and
+`s ∈ (0, R/4]`, then `|c(x) − c(y)| ≤ C √A (|x − y|/R)^α` for `x, y ∈ B̆_{R/16}(0)`, with
+`C = (4^{n+2} / Lⁿ(B₁(0)))^{1/2}`.
+
+For `x ≠ y` put `d = |x − y| < R/8` and `s = 2d`: the ball `B_{d/2}((x + y)/2)` lies in
+`B_{s/2}(x) ∩ B_{s/2}(y)`, and averaging `|c(x) − c(y)|² ≤ 2|G − c(x)|² + 2|G − c(y)|²` over it
+gives `|c(x) − c(y)|² (d/2)ⁿ Lⁿ(B₁(0)) ≤ 4A (2d)ⁿ (2d/R)^{2α} ≤ 4^{n+2} A (d/R)^{2α} (d/2)ⁿ`. -/
+theorem allard52_campanato_center_holder : ∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α : ℝ), 0 ≤ A → 0 < R → 0 < α → α ≤ 1 → Measurable G → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (c x - c y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ α := by
+  intro n _
+  -- `v = Lⁿ(B₁(0))`, positive and finite; `Lⁿ(B_t(w)) = tⁿ v`.
+  set v : ℝ := (volume (closedBall (0 : Rn n) 1)).toReal with hv_def
+  have hV0 : volume (closedBall (0 : Rn n) 1) ≠ 0 := (measure_closedBall_pos volume 0 one_pos).ne'
+  have hVtop : volume (closedBall (0 : Rn n) 1) ≠ ∞ := measure_closedBall_lt_top.ne
+  have hv : 0 < v := ENNReal.toReal_pos hV0 hVtop
+  refine ⟨Real.sqrt (4 ^ (n + 2) / v), Real.sqrt_nonneg _, ?_⟩
+  intro m k G c A R α hA hR hα hα1 hG hcamp x hx y hy
+  have hRHS : 0 ≤ Real.sqrt (4 ^ (n + 2) / v) * Real.sqrt A * (‖x - y‖ / R) ^ α :=
+    mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+      (Real.rpow_nonneg (div_nonneg (norm_nonneg _) hR.le) _)
+  -- Hilbert–Schmidt facts.
+  have hHS0 : ∀ T : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq T := fun T =>
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hHSsub : ∀ T T' : Rn m →L[ℝ] Rn k,
+      hsNormSq (T - T') ≤ 2 * hsNormSq T + 2 * hsNormSq T' := by
+    intro T T'
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [sub_apply]
     have h1 := norm_sub_le (T (EuclideanSpace.single i 1)) (T' (EuclideanSpace.single i 1))
     have h2 := norm_nonneg (T (EuclideanSpace.single i 1) - T' (EuclideanSpace.single i 1))
     nlinarith [sq_nonneg (‖T (EuclideanSpace.single i 1)‖ - ‖T' (EuclideanSpace.single i 1)‖)]
@@ -1081,6 +1071,20 @@ theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m �
   rw [Real.sqrt_le_left hRHS, mul_pow, mul_pow, Real.sq_sqrt (by positivity),
     Real.sq_sqrt hA]
   exact hmain
+/-- **Campanato centres agree with `G` almost everywhere** (Simon Ch. 5, proof of Theorem 5.2:
+identification of the centres by Lebesgue's differentiation theorem in the parameter domain `ℝⁿ`).
+Let `G, c : ℝⁿ → L(ℝᵐ, ℝᵏ)` with `G` Borel and `‖G‖ ≤ B`, and suppose that for every
+`z ∈ B_{R/4}(0)` and `s ∈ (0, R/4]`
+`∫_{B_{s/2}(z)} |G(x) − c(z)|² dx ≤ A sⁿ (s/R)^{2α}` (Hilbert–Schmidt norm, `R, α > 0`).
+Then `G(z) = c(z)` for `Lⁿ`-a.e. `z ∈ B̆_{R/4}(0)`.
+Off the null set of `allard52_cae_hsNormSq_lebesgue_ae`, every `z` is a quadratic Lebesgue point
+of `G`; for `z ∈ B̆_{R/4}(0) ⊆ B_{R/4}(0)` the Campanato bound at `z` is the hypothesis of
+`allard52_cae_center_eq_at_lebesgue_point` with `T = c(z)` and `s₀ = R/4`. -/
+theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z := by
+  intro n m k G c A R α B _hn hR hα hG hB hcamp
+  filter_upwards [Submission.allard52_cae_hsNormSq_lebesgue_ae n m k G B hG hB] with z hz hzR
+  exact Submission.allard52_cae_center_eq_at_lebesgue_point n m k G z (c z) A R α (R / 4) hR hα
+    (by positivity) hG hz (hcamp z (ball_subset_closedBall hzR))
 
 end Submission
 
