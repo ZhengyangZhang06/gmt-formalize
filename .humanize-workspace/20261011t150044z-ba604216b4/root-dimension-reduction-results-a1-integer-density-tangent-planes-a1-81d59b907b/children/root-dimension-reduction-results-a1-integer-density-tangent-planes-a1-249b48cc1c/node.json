@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_area-a1.prod_area-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_area-a1",
+  "depth": 6,
+  "title": "Area formula for an injective immersion of a measurable subset of ℝ × ℝ into ℝ^P",
+  "statement": "Let P ∈ ℕ, G : ℝ × ℝ → ℝ^P, and let R ⊆ ℝ × ℝ be measurable. Assume G is differentiable at every q ∈ R with injective derivative DG(q) : ℝ × ℝ → ℝ^P, and G is injective on R. Write ∂₁G(q) := DG(q)(1, 0) and ∂₂G(q) := DG(q)(0, 1).\n\nThen for every function h : ℝ^P → ℝ:\n∫_{G(R)} h dH² = ∫_R (‖∂₁G(q)‖²‖∂₂G(q)‖² − ⟨∂₁G(q), ∂₂G(q)⟩²)^{1/2} · h(G(q)) dq.\n\nHere H² = μHE[2] on ℝ^P and dq is the product Lebesgue measure (volume) on ℝ × ℝ. Both sides are Bochner integrals; no integrability is assumed.",
+  "lean_statement": "∀ (P : ℕ) (G : ℝ × ℝ → Euclid P) (R : Set (ℝ × ℝ)) (h : Euclid P → ℝ), MeasurableSet R → (∀ q ∈ R, DifferentiableAt ℝ G q) → (∀ q ∈ R, Injective (fderiv ℝ G q)) → InjOn G R → ∫ x in G '' R, h x ∂μHE[2] = ∫ q in R, Real.sqrt (‖fderiv ℝ G q (1, 0)‖ ^ 2 * ‖fderiv ℝ G q (0, 1)‖ ^ 2 - inner ℝ (fderiv ℝ G q (1, 0)) (fderiv ℝ G q (0, 1)) ^ 2) * h (G q)",
+  "lean_name": "idtp_ccd_scsp_ca_prod_area_formula",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1.gram_area_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1.gram_area_formula-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689-a1",
+      "result_commit": "15f8046553cb9af46b3f645a487e52fb756a62ac",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-249b48cc1c-a1"
+}

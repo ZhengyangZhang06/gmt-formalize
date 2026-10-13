@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "area_formula|areaJacobian|normDet|finTwoArrow",
+        "volume_preserving_finTwoArrow|volume_preserving_symm_measurableEquiv_toLp|euclideanHausdorffMeasure_eq_volume|comp_right_fderiv|setIntegral_preimage_emb|normDet_sq_eq_det_gram|theorem det_fin_two",
+        "theorem integral_area_formula_of_injective_derivative|areaJacobianAt_eq_normDet|areaJacobianAt_eq_sqrt_det_gram|def areaJacobianAt",
+        "codim1_lur_cd_injective_area_formula_gram",
+        "idtp_ccd_scsp_ca_cone_map_regular",
+        "idtp_ccd_scsp_ca_prod_area_formula",
+        "git diff --quiet d2fde8c03e02a7cc4f0542787f0bf53c1019dc84 b4d606db1da5da8fa2c0292ad4924d97de8b3c4b -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_area_independent_audit_jigh3cwp/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_area_independent_audit_jigh3cwp/Closure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_area_independent_audit_jigh3cwp/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-81d59b907b/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-81d59b907b/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689/isolated-comparator-result.json",
+        "/runtime/flows/gmt-claude-15bd82d86f30/_recursive_lean/leaf_verification.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/cone_area_independent_audit_jigh3cwp/Types.lean",
+        "/tmp/cone_area_independent_audit_jigh3cwp/Closure.lean",
+        "/tmp/cone_area_independent_audit_jigh3cwp/EndToEnd.lean"
+      ],
+      "conclusion": "Project and dependency pins match; inspected Mathlib files match the snapshot byte-for-byte. All three child types independently elaborate as propositions. The two new names have no DAG reservation; gram_area exactly matches the comparator-accepted frozen type at commit 15f8046553cb9af46b3f645a487e52fb756a62ac. The frozen closure lacks the cited area-formula and normDet declarations, supporting reuse through this split. Independently rerunning the supplied end-to-end implementation succeeds: each child and the exact selected parent depend only on propext, Classical.choice and Quot.sound. The inherited root placeholder produces a warning but is absent from these axiom dependencies. The split is appropriate: cone_map establishes regularity, prod_area transports the reused Gram formula, and the positive square-root simplification establishes precisely the selected parent. Dependencies are acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every hypothesis and conclusion of the prose. Its bare name validly reuses an identical comparator-accepted contract with no dependencies. Independently checked the library area formula, Hausdorff-to-volume normalization, nonnegative normDet/Gram identity and integral substitution. These establish the formula for arbitrary h without an integrability assumption. Matrix.of gives the intended Gram matrix. Reuse and axiom checks passed; no circular reliance occurs."
+    },
+    {
+      "key": "cone_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose, and the bare name is unreserved. Positivity permits scalar cancellation; unit norms and curve injectivity prove map injectivity. Differentiability on the open interval and the chain/product rules give both derivative values. Orthogonality, unit length and nonzero curve derivative prove the derivative has trivial kernel. The redundant 0 < s hypothesis causes no defect. The proof is complete and independent."
+    },
+    {
+      "key": "prod_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the measurable-domain, differentiability and injectivity hypotheses and the stated integral identity. Its bare name is unreserved. The coordinate equivalence preserves product volume; comp_right_fderiv supports the claimed derivative identity even outside R. The pullback satisfies gram_area, det_fin_two gives precisely the stated radicand, and setIntegral_preimage_emb requires no integrability assumption. Its sole dependency on gram_area is correctly directed. Together with cone_map, its conclusion proves the selected parent exactly."
+    }
+  ],
+  "required_changes": []
+}
