@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1",
+  "depth": 5,
+  "title": "Integer median on the unit cube: it minimizes the L¹ deviation and is bounded by twice the L¹ norm",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := (0,1)ⁿ ⊆ Euclid n (Lebesgue measure). If u : ℝⁿ → ℝ takes only integer values (u(y) ∈ ℤ for every y) and is integrable on Q₁, then there is β ∈ ℤ with ∫_{Q₁}|u − β| ≤ ∫_{Q₁}|u − c| for every c ∈ ℝ and |β| ≤ 2∫_{Q₁}|u|.",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ β : ℤ, (∀ c : ℝ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - c|) ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y|",
+  "lean_name": "dimred_mbl_dt_cbm_integer_median",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5a243b38c6-a1"
+}
