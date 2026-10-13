@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The `m`-skeleton of the unit cubical lattice is `H^{m+1}`-null** (Simon Ch. 6, proof of the
+deformation theorem 5.1, (26)–(33): `Hⁿ(L_{n−1}) = 0`, `n = m + 1`).  The points of `ℝᴾ` with at
+least `P − m` integer coordinates lie in the countably many coordinate planes
+`A(s, z) = {x : xᵢ = zᵢ for i ∈ s}`, `P ≤ m + |s|`, `z ∈ ℤᴾ`.  Each `A(s, z)` is the image of the
+Lipschitz map `ℝ^{Fin P \ s} → ℝᴾ`, `t ↦ (zᵢ on s, tᵢ off s)`, whose source is `μH[m + 1]`-null:
+it is a union of balls of finite `μH[P − |s|]` (= Lebesgue) measure, and `P − |s| < m + 1`.
+Finally `μHE[m + 1]` is a multiple of `μH[m + 1]`. -/
+theorem Submission.cmcdtfr_skeleton_null : ∀ (P m : ℕ), μHE[m + 1] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0 := by
+  intro P m
+  -- Step 1: each coordinate plane `A(s, z)` with `P ≤ m + |s|` is `μH[m + 1]`-null
+  have hplane : ∀ s : Finset (Fin P), P ≤ m + s.card → ∀ z : Fin P → ℤ,
+      μH[((m + 1 : ℕ) : ℝ)] {x : Euclid P | ∀ i ∈ s, x i = z i} = 0 := by
+    intro s hs z
+    -- `A(s, z)` is the image of the Lipschitz map `g : t ↦ (zᵢ on s, tᵢ off s)`
+    let g : ({i // i ∉ s} → ℝ) → Euclid P := fun t =>
+      WithLp.toLp 2 fun i => if h : i ∈ s then (z i : ℝ) else t ⟨i, h⟩
+    have hg1 : LipschitzWith 1 fun t : {i // i ∉ s} → ℝ =>
+        fun i : Fin P => if h : i ∈ s then (z i : ℝ) else t ⟨i, h⟩ := by
+      refine LipschitzWith.of_dist_le_mul fun t t' => ?_
+      rw [NNReal.coe_one, one_mul]
+      refine (dist_pi_le_iff dist_nonneg).2 fun i => ?_
+      by_cases h : i ∈ s
+      · simp [h]
+      · simpa [h] using dist_le_pi_dist t t' ⟨i, h⟩
+    have hg : LipschitzWith _ g := (PiLp.lipschitzWith_toLp 2 fun _ : Fin P => ℝ).comp hg1
+    have hsub : {x : Euclid P | ∀ i ∈ s, x i = z i} ⊆ g '' univ := by
+      intro x hx
+      refine ⟨fun j => x j.1, mem_univ _, ?_⟩
+      ext i
+      by_cases h : i ∈ s
+      · simp [g, h, hx i h]
+      · simp [g, h]
+    -- the source of `g` has dimension `P − |s| ≤ m < m + 1`, so it is `μH[m + 1]`-null
+    have hcard : Fintype.card {i // i ∉ s} ≤ m := by
+      rw [Fintype.card_subtype_compl, Fintype.card_coe, Fintype.card_fin]
+      omega
+    have huniv : (μH[((m + 1 : ℕ) : ℝ)] : Measure ({i // i ∉ s} → ℝ)) univ = 0 := by
+      rw [← Metric.iUnion_ball_nat (0 : {i // i ∉ s} → ℝ)]
+      refine measure_iUnion_null fun n => ?_
+      refine (Measure.hausdorffMeasure_zero_or_top
+        (d₁ := (Fintype.card {i // i ∉ s} : ℝ)) ?_ _).resolve_right ?_
+      · exact_mod_cast Nat.lt_succ_of_le hcard
+      · rw [hausdorffMeasure_pi_real]
+        exact measure_ball_lt_top.ne
+    refine measure_mono_null hsub (nonpos_iff_eq_zero.1 ?_)
+    calc μH[((m + 1 : ℕ) : ℝ)] (g '' univ)
+        ≤ _ ^ ((m + 1 : ℕ) : ℝ) * μH[((m + 1 : ℕ) : ℝ)] (univ : Set ({i // i ∉ s} → ℝ)) :=
+          hg.hausdorffMeasure_image_le (Nat.cast_nonneg _) univ
+      _ = 0 := by rw [huniv, mul_zero]
+  -- Step 2: the set is covered by the countably many planes `A(s, z)`, `P ≤ m + |s|`, `z ∈ ℤᴾ`
+  have hcover : {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧
+      ∀ i ∈ s, ∃ z : ℤ, x i = z} ⊆ ⋃ (s : {s : Finset (Fin P) // P ≤ m + s.card})
+        (z : Fin P → ℤ), {x : Euclid P | ∀ i ∈ s.1, x i = z i} := by
+    rintro x ⟨s, hs, hx⟩
+    choose! z hz using hx
+    exact mem_iUnion₂.2 ⟨⟨s, hs⟩, z, hz⟩
+  -- Step 3: countable subadditivity gives `μH[m + 1]`-nullity, and `μHE[m + 1] = c • μH[m + 1]`
+  have hnull : μH[((m + 1 : ℕ) : ℝ)] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧
+      ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0 :=
+    measure_mono_null hcover
+      (measure_iUnion_null fun s => measure_iUnion_null fun z => hplane s.1 s.2 z)
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hnull, smul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
