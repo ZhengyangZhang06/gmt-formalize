@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.rescaled_integral-a1.approx_tangent_local-a1",
+  "parent_id": "root.integral_compactness-a1.rescaled_integral-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent planes are local",
+  "statement": "Let N, n ∈ ℕ, O ⊆ ℝ^N open, M ⊆ ℝ^N, θ : ℝ^N → ℝ, y ∈ O and P ≤ ℝ^N a linear subspace. Then O ∩ M has weighted approximate tangent space P at y with respect to θ (Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ M) θ y P) if and only if M has weighted approximate tangent space P at y with respect to θ (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P).",
+  "lean_statement": "∀ (N n : ℕ) (O M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (y : Euclidean N) (P : Submodule ℝ (Euclidean N)), IsOpen O → y ∈ O → (Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ M) θ y P ↔ Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P)",
+  "lean_name": "intcpt_ri_weightedApproxTangent_inter_open_iff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-rescaled-integral-a1-approx-tangent-local-a1-a1"
+}

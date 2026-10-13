@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def CountablyRectifiable|CountablyRectifiable.mono|def blowUpMap|def HasWeightedApproximateTangentSpaceAt",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_homothety_image",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "theorem restrict_apply |theorem restrict_restrict |theorem ae_restrict_iff.₀|theorem ae_restrict_of_ae_restrict_of_subset",
+        "MeasurableEmbedding.lintegral_map|lintegral_map_equiv",
+        "MeasurableEmbedding.integrable_map_iff|theorem integrable_smul_measure ",
+        "comap_mulLeft_nhdsGT_zero",
+        "map_comap_of_surjective|tendsto_map._iff",
+        "intcpt_ri_restrict_similarity_image",
+        "intcpt_ri_countablyRectifiable_similarity_preimage",
+        "intcpt_ri_weightedApproxTangent_inter_open_iff",
+        "intcpt_ri_weightedApproxTangent_similarity_iff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ri-independent-audit-hzv2y16l/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Order/Field.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Tendsto.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-rescaled-integral-a1/decomposition-v1.json",
+        "/tmp/ri-decomp-1xT8jT/Test/Full.lean",
+        "/tmp/ri-independent-audit-hzv2y16l/Audit.lean",
+        "/tmp/ri-independent-audit-hzv2y16l/Audit.log"
+      ],
+      "conclusion": "The split is appropriate for the selected intcpt_rescaled_restriction_integral contract. A supplies measure transport, B supplies rectifiability, and C followed by D supplies the exact tangent equivalence needed for the representation identity. The remaining parent argument establishes null-measurability, positivity, local integrability and integer multiplicity with the stated hypotheses. All four obligations are independent, so their empty dependency lists are correct and acyclic. No proposed name is reserved in the DAG or another node's JSON files; all are bare identifiers, and no accepted declaration is reused. The snapshot records project 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Contract and runtime-source compatibility checks passed, including the pinned SimonGMT definitions. Independently checked every supplied prose proof. All four one-line types also passed the lexical validator and elaborated as Prop before any child implementation; comparator-form targets and the exact parent assembly compiled successfully. Axiom reports contain only propext, Classical.choice and Quot.sound. Instance checks confirm Measure.instSMul for ENNReal scaling and the real scalar action on Euclidean space."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restrict_similarity_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary, possibly nonmeasurable A. Translation invariance and positive dilation give the required scaling on every set. Evaluation on measurable B uses restrict_apply and map_apply with exactly their required hypotheses; the image-intersection identity then proves measure equality. The proof is complete and independent."
+    },
+    {
+      "key": "rectifiable_similarity_preimage",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches CountablyRectifiable exactly. The proof constructs the inverse-image exceptional set, proves its Hausdorff measure is zero directly from library scaling, supplies Lipschitz parametrizations with explicit constants, and verifies their covering property. Positivity ensures the inverse similarity exists. No sibling or parent theorem is assumed."
+    },
+    {
+      "key": "approx_tangent_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both formulations. The compact-support radius and open neighborhood give eventual equality of the blow-up integrals. The cited cut-off lemma requires no integrability, and restrict_restrict only requires the closed ball to be measurable, so arbitrary M and θ cause no gap. Eventual equality proves both directions with the common dimension condition."
+    },
+    {
+      "key": "approx_tangent_similarity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. The inverse-similarity calculations establish equality of blow-up sets, including r = 0, and the integrands and prescribed limits coincide. Positive multiplication maps the right-neighborhood filter onto itself, proving both convergence directions. The supplied argument is complete, self-contained and non-circular."
+    }
+  ],
+  "required_changes": []
+}
