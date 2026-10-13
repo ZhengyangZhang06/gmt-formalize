@@ -1,0 +1,105 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasMassDensity|unitBallVolume|withDensity|structure IMRep|Represents",
+        "dimred_cs_mi_|rsd_ae_hasMassDensity_mult|rsd_massOn_eq_measure|dimred_cs_measure_invariant_of_density_invariant",
+        "withDensity_absolutelyContinuous'",
+        "lintegral_inter_add_sdiff",
+        "setLIntegral_comp_preimage_emb",
+        "euclideanHausdorffMeasure_smul₀",
+        "git merge-base --is-ancestor 591230fd 71a35e92",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mi-decomp/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mi-decomp/Composed2.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json",
+        "/tmp/mi-decomp/Types.lean",
+        "/tmp/mi-decomp/Composed2.lean"
+      ],
+      "conclusion": "The split appropriately separates density reconstruction from measure transport and proves this selected parent. Pins and contract headers match. The helper-name search found no matches in the pinned GMT sources. All eleven types are standalone one-line propositions matching their prose; names are bare identifiers, and the six new names are unreserved. All five reused declarations have passing comparator receipts and byte-identical frozen types; their accepted proof blocks occur verbatim in Composed2.lean. Proposed dependencies and the 23-node reused dependency closure are acyclic. Pinned APIs justify arbitrary-density lower integrals and measurable-embedding transport without extra measurability assumptions. No matrix construction occurs. Both Lean reruns succeeded: Types.lean validates the contracts and assembly using deliberate stubs; Composed2.lean proves the exact parent and all six new children with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The identical density ratios have unique limits along the nontrivial right-neighborhood filter. Nonnegativity permits injectivity of ENNReal.ofReal. The proof covers the exact arbitrary-domain statement without additional hypotheses."
+    },
+    {
+      "key": "density_eq_mult",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted density theorem and uniqueness give equality R.measure-a.e. Measurability and positivity of multiplicity establish the required absolute continuity in the correct direction, transferring equality to Hausdorff measure restricted to the carrier."
+    },
+    {
+      "key": "null_off_carrier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Carrier concentration, compact local finiteness and mass equality on balls justify the setup. Positive finite denominators yield the lower-density bound; comparison and arbitrarily small open neighborhoods make each threshold set Hausdorff-null. The countable union handles arbitrary, potentially nonmeasurable threshold sets correctly."
+    },
+    {
+      "key": "measure_eq_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Comparison on Borel sets and splitting along the measurable carrier prove measure equality using exactly the two declared dependencies. Lower-integral congruence and the off-carrier null-set argument require no additional measurability of Θ."
+    },
+    {
+      "key": "translate_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation is a measure-preserving measurable embedding for μHE[n]. The cited preimage change-of-variables formula applies to arbitrary f, and its orientation matches the stated preimage conclusion."
+    },
+    {
+      "key": "dilate_homogeneity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive dilation is a homeomorphism, making the image Borel and its preimage equal to A. The declared change-of-variables dependency supplies the inverse factor; multiplication by its positive finite reciprocal proves the conclusion, including infinite measure values."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact comparator-accepted reuse. The orientation norm estimate proves the upper bound; compact approximation, retraction, smoothing and cutoff prove the lower bound with support inside W. Local finiteness is used only on compact subsets of U."
+    },
+    {
+      "key": "ae_density_mult",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact comparator-accepted reuse. Approximate tangents give unweighted density; localized Besicovitch differentiation and the closed/open-ball sandwich give weighted density, followed by mass equality. The reused node retains its existing mass_eq_weight dependency despite the proposal's empty reuse dependency list."
+    },
+    {
+      "key": "lower_density_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact comparator-accepted reuse. The supplied density-quotient argument, Simon comparison theorem and positive finite normalization prove the stated bound for arbitrary A and ν. The disclosed accepted Vitali implementation proves the same type while preserving the frozen imports."
+    },
+    {
+      "key": "null_open_superset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact comparator-accepted reuse. A countable cover by finite-measure balls permits outer regularity of each restricted measure. Summable positive error budgets and countable subadditivity produce the required open neighborhood without assuming global local finiteness or measurability of A."
+    },
+    {
+      "key": "dilation_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact comparator-accepted reuse. Hausdorff scaling gives the pushforward identity; measurable-embedding restriction handles arbitrary M. The lower and Bochner integral transport formulas justify both remaining conclusions without hidden measurability or integrability assumptions."
+    }
+  ],
+  "required_changes": []
+}

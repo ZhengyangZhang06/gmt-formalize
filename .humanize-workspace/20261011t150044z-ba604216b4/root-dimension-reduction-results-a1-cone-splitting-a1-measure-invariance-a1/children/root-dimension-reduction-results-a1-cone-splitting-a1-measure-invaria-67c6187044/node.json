@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.null_off_carrier-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+  "depth": 4,
+  "title": "The density vanishes Hⁿ-a.e. off the carrier (Upper Density Theorem)",
+  "statement": "Let P, n ∈ ℕ, S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), and let R = (M, θ, ξ) be an integer multiplicity representation of S in ℝ^P (R : IMRep univ n with R.Represents S; M = R.carrier). Let Θ : ℝ^P → ℝ satisfy HasMassDensity S x Θ(x) for every x ∈ ℝ^P. Then H^n({x ∈ ℝ^P : x ∉ M and Θ(x) > 0}) = 0, where H^n = μHE[n] (evaluated as an outer measure).",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Θ : Euclid P → ℝ), R.Represents S → (∀ x : Euclid P, HasMassDensity S x (Θ x)) → (μHE[n] : Measure (Euclid P)) {x | x ∉ R.carrier ∧ 0 < Θ x} = 0",
+  "lean_name": "dimred_cs_mi_density_null_off_carrier",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.density_comparison-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.null_open_nbhd-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-a1",
+      "result_commit": "591230fd256e4a25aea8a8a57e9508ced7f5c9db",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.density_comparison-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4410d992f1-a1",
+      "result_commit": "72f84801892257a4f5ffbe3e0c463530ff1d93aa",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.null_open_nbhd-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e3e222819e-a1",
+      "result_commit": "9e9ed91039d2cf6387a1cce74c9551d973e487c3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-67c6187044-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.density_unique-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+  "depth": 4,
+  "title": "Mass densities are unique",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), x ∈ ℝ^P (= Euclid P) and θ, θ' ∈ ℝ. Suppose HasMassDensity T x θ and HasMassDensity T x θ', i.e. θ ≥ 0, θ' ≥ 0, and the ratio T.massOn(B_ρ(x)) / (ω_n·ofReal(ρ^n)) ∈ [0, ∞] (ω_n = unitBallVolume n, B_ρ(x) the open ball) tends both to ofReal θ and to ofReal θ' as ρ → 0⁺ (filter 𝓝[>] 0 on ℝ). Then θ = θ'.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ θ' : ℝ), HasMassDensity T x θ → HasMassDensity T x θ' → θ = θ'",
+  "lean_name": "dimred_cs_mi_hasMassDensity_unique",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4c3c1790aa-a1"
+}
