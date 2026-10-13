@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1.mean_curvature_field-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1",
+  "depth": 3,
+  "title": "Simon Ch. 4, 3.14: the explicit mean curvature field is measurable and bounded on compact subsets of U",
+  "statement": "Let μ be a measure on ℝ^P, U and O open subsets of ℝ^P, N ⊆ O with (closure(N) ∖ N) ∩ U = ∅, pr : ℝ^P → L(ℝ^P, ℝ^P) of class C¹ on O, and p : ℝ^P → L(ℝ^P, ℝ^P) μ-a.e. strongly measurable with ‖p(x)‖ ≤ 1 (operator norm) for all x. Then there is H : ℝ^P → ℝ^P that is μ-a.e. strongly measurable, bounded on every compact K ⊆ U (there is Λ with ‖H(x)‖ ≤ Λ for all x ∈ K), and satisfies H(x) = Σ_{j=1}^P (Dpr(x)[p(x)e_j])^*(p(x)e_j) for every x ∈ N ∩ U, where e_1, …, e_P is the standard basis of ℝ^P, Dpr(x) is the derivative of pr at x and T^* is the adjoint of T ∈ L(ℝ^P, ℝ^P).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (U N O : Set (Euclid P)) (pr p : Euclid P → (Euclid P →L[ℝ] Euclid P)), IsOpen U → IsOpen O → N ⊆ O → ContDiffOn ℝ 1 pr O → (closure N \\ N) ∩ U = ∅ → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H μ ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, ∀ x ∈ K, ‖H x‖ ≤ Λ) ∧ ∀ x ∈ N ∩ U, H x = ∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (p x (EuclideanSpace.single j 1))) (p x (EuclideanSpace.single j 1))",
+  "lean_name": "mcs_exists_meanCurvature_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1-85ac98219a-a1"
+}

@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n sorry local-references/123e8435b4a2469b/project/GMT -t lean -c",
+        "rg -n 'μHE\\[' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n '^(theorem|lemma|def|structure) ' simongmt/Poincare/SimonGMT/{Chapter06/Product.lean,Chapter02/BV.lean,Chapter03/FinitePerimeter.lean,AppendixA/Foundations.lean,Chapter07/Basic.lean}",
+        "rg -n -i 'allard|federer|fleming|compactness theorem|open obligation|slice' simongmt/Poincare/SimonGMT",
+        "lake env lean /tmp/ch07-attempt3/Check.lean (ten child types + conditional root assembly + #print axioms)",
+        "lake env lean /tmp/ch07-attempt3/Lib.lean (#print axioms of minimizing_summands_source, cone_simonsDefect_lower_bound, bvVariationOn_le_liminf_of_locallyL1)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-audit-v2.json",
+        "/tmp/ch07-attempt3/Check.lean",
+        "/tmp/ch07-attempt3/Lib.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; each snapshot chapter contract has only its frozen final sorry. All ten child Lean types elaborate after the contract's definitions in namespace GMT.Ch07 with its opens (only the stub sorry warnings), and the conditional assembly of the eleven-conjunct root depends only on propext, Classical.choice and Quot.sound. Reusable library lemmas, each using only standard axioms: Chapter06.WeaklyConvergesOn.massOn_le_liminf (lower semicontinuity of mass), Chapter07.minimizing_summands_source (Lemma 1.4), AppendixB.cone_simonsDefect_lower_bound (B.11) and Chapter02.bvVariationOn_le_liminf_of_locallyL1 (lower semicontinuity of variation). The library proves none of the following, so they are cited from Simon: Appendix A.4 (Foundations.lean calls the dimension-reduction proof an open obligation), Allard regularity (Chapter05/Basic.lean has only analytic foundations), Federer–Fleming compactness (Currents.lean: separate obligation), BV compactness (BV.lean does not claim subsequence compactness), and products [[ℝ^m]] × S₀ (Product.lean has only point products). μHE[n] is a nonzero finite multiple of μH[n] (Measure.lean), so H^n and μH[n] have the same null sets. The DAG contains only root, so no reserved names collide."
+    }
+  ],
+  "parent_id": "root",
+  "child_id": "root.density_one_implies_regular-a1",
+  "subproblem": {
+    "key": "density_one_implies_regular",
+    "title": "Theorem 7.4.3 (fixed N): density-one points are regular, stably under weak convergence",
+    "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-submanifold with (N̄∖N) ∩ U = ∅. Let T_i, T ∈ 𝒟_n(U) be minimizing in U ∩ N with spt T_i, spt T ⊆ N and ∂T_i = ∂T = 0 in U, sup_i M_W(T_i) < ∞ for every open W ⊂⊂ U, and T_i ⇀ T. If y ∈ N ∩ U has Θ^n(μ_T, y) = 1, y_i ∈ spt T_i and y_i → y, then y ∈ reg T and y_i ∈ reg T_i for all sufficiently large i (reg as in 7.4.1: some ball B_ρ(z) ⊆ U, m ∈ ℤ∖{0} and an embedded oriented C¹ n-submanifold M ∋ z of locally finite H^n-measure in B_ρ(z) with T = m[[M]] in B_ρ(z)).",
+    "lean_statement": "DensityOneImpliesRegular",
+    "lean_name": "density_one_implies_regular",
+    "depends_on": [
+      "minimizing_implies_stationary"
+    ],
+    "natural_proof": "Source: Simon 7.4.3 and its proof (chapter-07.txt lines 617–631), README erratum 5 (N_i = N; the mass bound, which the proof uses through 2.4, is a hypothesis). Allard's theorem is Ch. 5, 5.2 (chapter-05.txt lines 1008–1033), applied with p = 2n.\n1. Case n = 0: a minimizing 0-current with support in N vanishes (deleting a point of a representation lowers mass), so μ_T = 0 and Θ(μ_T, y) = 0 ≠ 1; the statement is vacuous. Assume n ≥ 1.\n2. Uniform mean curvature. By the sibling minimizing_implies_stationary, the varifolds V_i, V of T_i, T are stationary in N ∩ U; by Ch. 4, 2.7 they have generalized mean curvature H = H_N with |H| ≤ κ := √n·sup_{N ∩ B̄_{2r₀}(y)}|B_N| on B_{2r₀}(y), where B̄_{3r₀}(y) ⊂ U; κ does not depend on i. Monotonicity (Ch. 4, 3.17): for z ∈ B_{r₀}(y), 0 < σ < ρ < r₀, e^{−κσ}σ^{−n}μ(B_σ(z)) ≤ e^{κρ}ρ^{−n}μ(B_ρ(z)) for μ = μ_{T_i}, μ_T; densities exist, and Θ(μ_{T_i}, z) ≥ 1 for z ∈ spt T_i (θ ≥ 1, Ch. 4, 4.10(1)).\n3. Lemma M (upper mass bound in the limit; the part of 2.4/2.5(2) used by the book). There are c, c₁ (depending on N near y and on sup_i M_{B_{2r₀}(y)}(T_i)) such that for 0 < ε < ρ < min(r₀/4, 1/(6c)): limsup_i μ_{T_i}(B̄_ρ(y)) ≤ (1+3cρ)^n μ_T(B_{ρ+ε}(y)) + c₁ρ^{n+1}. Proof: let π be the nearest point projection onto N, C¹ on B_{2r₀}(y) with π = id on N, π(y) = y, Lip(π|B_s(y)) ≤ 1 + cs. Take ψ ∈ C^∞, ψ = 1 near B̄_ρ(y), spt ψ ⊂ B_{ρ+ε}(y), W_s := {ψ > s}. By Ch. 6, 7.2 (T_i, T integer multiplicity cycles with uniform mass bounds near y), T − T_i = ∂R_i + S_i with M_{W_0}(R_i) + M_{W_0}(S_i) → 0; slicing (Ch. 6, 4.5) at a good α ∈ (0,1) (along a subsequence; the argument applies to a subsequence of any subsequence) gives T⌞W_α = T_i⌞W_α + ∂R̃_i + S̃_i with M(R̃_i) + M(S̃_i) → 0, boundary error P_i on {ψ = α} with M(P_i) → 0, and μ_{T_i}({ψ=α}) = μ_T({ψ=α}) = 0. Put Z_i := T_i + π_#∂R̃_i (π_# is applied only to the compactly supported integer multiplicity cycle ∂R̃_i; Ch. 6, 2.24(2), 3.9). Since ρ < 1/(6c), Lip(π|B_{3ρ}(y)) ≤ 1 + 3cρ < 3/2 and π(y) = y, so π({ψ ≥ α}) ⊆ π(B_{2ρ}(y)) ⊆ B_{3ρ}(y); hence Z_i is integer multiplicity, ∂Z_i = 0 and spt(Z_i − T_i) ⊆ π(spt ∂R̃_i) is a compact subset of N ∩ G, G := B_{3ρ}(y): Z_i is a competitor for T_i in U ∩ N with W = G. Since π is C¹ and equals the identity on spt T_i ⊆ N, the push-forward formula (Ch. 6, 2.24(2), 3.3–3.9) gives π_#(T_i⌞G) = T_i⌞G, hence Z_i⌞G = π_#((T_i + ∂R̃_i)⌞G); minimality and Lip(π|G) ≤ 1 + 3cρ give μ_{T_i}(G) ≤ μ_{Z_i}(G) ≤ (1+3cρ)^n μ_{T_i+∂R̃_i}(G). As T_i + ∂R̃_i = T_i off {ψ ≥ α}, this yields μ_{T_i}({ψ≥α}) ≤ (1+3cρ)^n μ_{T_i+∂R̃_i}({ψ≥α}) + ((1+3cρ)^n − 1)μ_{T_i}(G), and as in 2.4 (book (9)–(11)) μ_{T_i+∂R̃_i}({ψ≥α}) ≤ μ_T(W_α) + M(S̃_i) + M(P_i). By step 2, μ_{T_i}(G) ≤ c₂ρ^n uniformly in i, which gives the claim.\n4. Density ratios (book lines 624–629). Let δ₀ = δ₀(n, k, 2n) be Allard's constant, decreased if necessary so that δ₀ ≤ 1/2 and C(n,k,2n)δ₀^{1/(2n+2)} ≤ 1/4 (C as in Ch. 5, 5.2), and fix η ∈ (0, 1) with (1+2η)^n ≤ 1 + δ₀/4. Since Θ(μ_T, y) = 1, choose ρ ∈ (0, min(r₀/8, 1/(12c))) so small that (1 + 3c(1+η)ρ)^n(1+2η)^n μ_T(B_{(1+2η)ρ}(y))/(ω_n((1+2η)ρ)^n) + 2^{n+1}c₁ρ/ω_n ≤ 1 + δ₀/2, κρ(2ω_n)^{1/(2n)} ≤ δ₀ and e^{κρ}(1 + δ₀) < 2 (possible: as ρ ↓ 0 the first left side tends to (1+2η)^n ≤ 1 + δ₀/4). For large i, |y_i − y| < ηρ, so the closed ball B̄_ρ(y_i) ⊆ B̄_{(1+η)ρ}(y), and Lemma M with radius (1+η)ρ and ε = ηρ (admissible, as (1+η)ρ < 2ρ) gives limsup_i (ω_nρ^n)^{−1}μ_{T_i}(B̄_ρ(y_i)) ≤ (1 + 3c(1+η)ρ)^n(1+2η)^n μ_T(B_{(1+2η)ρ}(y))/(ω_n((1+2η)ρ)^n) + c₁(1+η)^{n+1}ρ/ω_n ≤ 1 + δ₀/2 (c₁(1+η)^{n+1} ≤ 2^{n+1}c₁). Hence (ω_nρ^n)^{−1}μ_{T_i}(B̄_ρ(y_i)) ≤ 1 + δ₀ for all sufficiently large i. With p = 2n the mean curvature term satisfies ρ^{1−n/p}(∫_{B̄_ρ(y_i)}|H|^p dμ_{T_i})^{1/p} ≤ κρ^{1−n/p}((1 + δ₀)ω_nρ^n)^{1/p} ≤ κρ(2ω_n)^{1/p} ≤ δ₀; θ ≥ 1 a.e., y_i ∈ spt V_i and B̄_ρ(y_i) ⊂ U, so the hypotheses 5.1 of Ch. 5 (where B_ρ denotes the closed ball, Ch. 1 §3) hold with centre y_i and radius ρ for all large i.\n5. Allard (Ch. 5, 5.2, centre y_i, radius ρ, p = 2n): there are γ = γ(n, k, 2n) ∈ (0, 1), a linear isometry q_i of ℝ^{n+k} and a C^{1,1/2} function u_i : B^n_{γρ}(0) → ℝ^k with Du_i(0) = 0, sup|Du_i| ≤ C(n,k,2n)δ₀^{1/(2n+2)} ≤ 1/4 and spt μ_{T_i} ∩ B_{γρ}(y_i) = (y_i + q_i(graph u_i)) ∩ B_{γρ}(y_i); u_i(0) = 0 because y_i ∈ spt μ_{T_i}. Put Φ_i(v) := y_i + q_i(v, u_i(v)), σ := γρ/4, D := B^n_σ(0) and the open cylinder C_i := y_i + q_i(D × B^k_σ(0)) ⊆ B_{γρ}(y_i). As |u_i(v)| ≤ |v|/4 < σ on D, spt T_i ∩ C_i = Φ_i(D) =: M_i, and M_i is a connected embedded C¹ n-submanifold (chart Φ_i|D: injective, C¹, injective differential, Φ_i(D) = C_i ∩ M_i, proper onto M_i because M_i is relatively closed in C_i) containing y_i, with H^n(M_i) < ∞ and the continuous unit orientation ξ_i := (∧_nDΦ_i)(e_1∧⋯∧e_n)/|(∧_nDΦ_i)(e_1∧⋯∧e_n)| (transported to M_i). Constancy: let P_i(z) := first n coordinates of q_i^{−1}(z − y_i), so P_i(C_i) = D and P_i|M_i is a homeomorphism onto D (hence proper on spt(T_i⌞C_i)). Then R_i := P_{i#}(T_i⌞C_i) ∈ 𝒟_n(D) is integer multiplicity (Ch. 6, 2.24(2), 3.9) with ∂R_i = P_{i#}((∂T_i)⌞C_i) = 0, so the Constancy Theorem (Ch. 6, 2.34; D is a connected open subset of ℝ^n) gives R_i = c_i[[D]] with c_i ∈ ℤ (R_i is integer multiplicity). Since Φ_i∘P_i is C¹ and equals the identity on M_i ⊇ spt(T_i⌞C_i), the push-forward formula (Ch. 6, 2.24(2), 3.3–3.9) gives T_i⌞C_i = (Φ_i∘P_i)_#(T_i⌞C_i) = Φ_{i#}R_i = c_i[[M_i]] (M_i oriented by ξ_i). As y_i ∈ spt T_i, c_i ≠ 0. Choose ρ' > 0 with B_{ρ'}(y_i) ⊆ C_i (so B_{ρ'}(y_i) ⊆ U); then T_i(ω) = c_i∫_{M_i}⟨ω, ξ_i⟩dH^n for every ω ∈ 𝒟^n(U) with spt ω ⊆ B_{ρ'}(y_i), with c_i ∈ ℤ ∖ {0}, y_i ∈ M_i, M_i an embedded C¹ n-submanifold with continuous orientation ξ_i and H^n(M_i ∩ K) < ∞ for compact K. Hence y_i ∈ reg T_i for all large i. (Moreover |c_i| = Θ(μ_{T_i}, y_i) ≤ e^{κρ}(ω_nρ^n)^{−1}μ_{T_i}(B_ρ(y_i)) ≤ e^{κρ}(1 + δ₀) < 2, so c_i = ±1; only c_i ≠ 0 is needed.)\n6. For y: Θ(μ_T, y) = 1 > 0 gives y ∈ spt T; apply steps 4–5 to the constant sequence T_i = T, y_i = y (all hypotheses hold), or directly to T, to get y ∈ reg T.",
+    "proof_key_steps": [
+      "Uniform mean-curvature bound and monotonicity for T_i and T.",
+      "The retraction comparison (competitor T_i + π_#∂R̃_i) bounds limsup μ_{T_i}(B̄_ρ(y)) by μ_T near y plus O(ρ^{n+1}).",
+      "At a fixed small scale the density ratios at y_i are eventually ≤ 1 + δ₀ (the limsup bound is ≤ 1 + δ₀/2), so Allard's theorem applies.",
+      "Allard gives a C¹ graph; constancy via projection to the base plane gives T_i = c_i[[M_i]] with c_i ∈ ℤ∖{0}, so y_i ∈ reg T_i; likewise y ∈ reg T."
+    ]
+  },
+  "audit": {
+    "key": "density_one_implies_regular",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The fixed-N and uniform mass hypotheses are correctly included and used. Lemma M provides the needed upper mass estimate; the strict limsup margin gives eventual Allard hypotheses on closed balls. Projection to the base plane and constancy establish the precise oriented-current regularity conclusion."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-natural-proof.json"
+}

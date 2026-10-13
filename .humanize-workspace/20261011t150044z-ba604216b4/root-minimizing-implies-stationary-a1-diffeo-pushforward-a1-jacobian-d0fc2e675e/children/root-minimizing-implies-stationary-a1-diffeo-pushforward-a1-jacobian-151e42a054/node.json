@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1.compression_det_measurable-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1",
+  "depth": 4,
+  "title": "A.e. strong measurability of sqrt det(p L* L p + I − p) for a.e. strongly measurable operator fields p, L",
+  "statement": "Let P ∈ ℕ, E := ℝ^P (Euclid P), μ a measure on E, and p, L : E → End(E) := (E →L[ℝ] E) (operator-norm topology) both μ-a.e. strongly measurable. Then x ↦ sqrt(det(p(x) ∘ (L(x)* ∘ L(x)) ∘ p(x) + (I − p(x)))) is μ-a.e. strongly measurable, where L(x)* is the adjoint of L(x), I is the identity of E and det is the determinant of an endomorphism of E.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (p L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable p μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt ((p x ∘L ((L x).adjoint ∘L L x) ∘L p x + (ContinuousLinearMap.id ℝ (Euclid P) - p x)).det)) μ",
+  "lean_name": "dpf_jm_aestronglyMeasurable_sqrt_det_compression",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-jacobian-151e42a054-a1"
+}

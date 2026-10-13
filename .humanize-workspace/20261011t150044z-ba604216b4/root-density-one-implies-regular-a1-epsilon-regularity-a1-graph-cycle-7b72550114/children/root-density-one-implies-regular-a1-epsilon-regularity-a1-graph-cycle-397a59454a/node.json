@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.orthonormal_frame_range-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "The range of an injective linear map ℝⁿ → ℝᴾ has an orthonormal frame indexed by Fin n",
+  "statement": "Let P, n ∈ ℕ and let F : ℝⁿ → ℝᴾ be an injective continuous linear map. Then there is an orthonormal family τ = (τ₁, …, τₙ) in ℝᴾ, indexed by Fin n, whose span equals the range of F: span ℝ (range τ) = LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P).",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧ Submodule.span ℝ (Set.range τ) = LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P)",
+  "lean_name": "dgoj_exists_orthonormal_frame_range",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-397a59454a-a1"
+}

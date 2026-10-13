@@ -1,0 +1,64 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.existence_of_minimizing_filling-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon 7.2.1 and its proof (chapter-07.txt lines 86–132), with README erratum 2: the conclusion ∂T = S (shown in the printed proof, "T ∈ 𝓘_S") is part of the statement, and n = m+2 ≥ 2 so that S has dimension ≥ 1. Here M(T) = T.mass = M_{ℝ^P}(T).
+1. Let 𝓘_S := {R ∈ 𝒟_{m+2}(ℝ^P) : R integer multiplicity, spt R compact, ∂R = S}. 𝓘_S ≠ ∅: the cone R₀ := 0 ⨯ S = h_#([[(0,1)]] × S), h(t,x) = tx (Ch. 6, 2.30), satisfies ∂R₀ = S − 0 ⨯ ∂S = S (2.31, as ∂S = 0 and dim S ≥ 1), is integer multiplicity (Ch. 6, 3.10, via 3.2(2) and 3.9), and spt R₀ ⊆ {tx : 0 ≤ t ≤ 1, x ∈ spt S} is compact.
+2. Every R ∈ 𝓘_S has M(R) < ∞ (locally finite mass and compact support). Let m₀ := inf_{R∈𝓘_S} M(R) and choose R_q ∈ 𝓘_S with M(R_q) → m₀ (book (1)).
+3. Retraction (book (2),(3)). Fix ρ₀ > 0 with spt S ⊆ B_{ρ₀}(0) and let f be the nearest point retraction of ℝ^P onto the closed ball B̄_{ρ₀}(0); Lip f = 1 and f = id on B̄_{ρ₀}(0). The push-forward f_#R_q (Ch. 6, 2.29 and 3.9; f|spt R_q is proper since spt R_q is compact) is integer multiplicity, spt f_#R_q ⊆ f(spt R_q) ⊆ B̄_{ρ₀}(0), and M(f_#R_q) ≤ (Lip f)^{m+2} M(R_q) = M(R_q). Moreover ∂f_#R_q = f_#∂R_q = f_#S (Ch. 6, 2.24(1) and its Lipschitz extension 2.29), and f_#S = id_#S = S by Ch. 6, 2.28/2.29, because f = id on spt S. Hence f_#R_q ∈ 𝓘_S and M(f_#R_q) → m₀. (Equivalently one may use the smooth 1-Lipschitz map x ↦ g(|x|)x/|x| with g(r) = r on [0, ρ₀], 0 ≤ g' ≤ 1, g ≤ ρ₀+1, which avoids Lipschitz push-forwards.)
+4. Compactness (book: Compactness Theorem 3.11 of Ch. 6). sup_q (M(f_#R_q) + M(∂f_#R_q)) ≤ sup_q M(R_q) + M(S) < ∞, so by the Federer–Fleming compactness theorem (Ch. 6, 3.11) a subsequence f_#R_{q'} converges weakly in ℝ^P to an integer multiplicity T ∈ 𝒟_{m+2}(ℝ^P).
+5. T ∈ 𝓘_S (book lines 131–132): spt T ⊆ B̄_{ρ₀}(0) (every test form supported in the open complement annihilates all f_#R_{q'}), so spt T is compact; ∂T(ω) = T(dω) = lim f_#R_{q'}(dω) = lim S(ω), i.e. ∂T = S.
+6. Minimality (book (4)): by lower semicontinuity of mass under weak convergence (Ch. 6, 2.14; SimonGMT WeaklyConvergesOn.massOn_le_liminf with W = ℝ^P), M(T) ≤ liminf M(f_#R_{q'}) = m₀ ≤ M(R) for every R ∈ 𝓘_S. Every R in the statement belongs to 𝓘_S, which proves the lemma.
+
+## Key steps
+
+1. 𝓘_S ≠ ∅ (cone over S); take a minimizing sequence.
+2. Retract into a ball (1-Lipschitz, identity near spt S); Federer–Fleming gives an integer multiplicity limit T ∈ 𝓘_S.
+3. Lower semicontinuity of mass gives M(T) ≤ M(R).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n sorry local-references/123e8435b4a2469b/project/GMT -t lean -c`
+- `rg -n 'μHE\[' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|structure) ' simongmt/Poincare/SimonGMT/{Chapter06/Product.lean,Chapter02/BV.lean,Chapter03/FinitePerimeter.lean,AppendixA/Foundations.lean,Chapter07/Basic.lean}`
+- `rg -n -i 'allard|federer|fleming|compactness theorem|open obligation|slice' simongmt/Poincare/SimonGMT`
+- `lake env lean /tmp/ch07-attempt3/Check.lean (ten child types + conditional root assembly + #print axioms)`
+- `lake env lean /tmp/ch07-attempt3/Lib.lean (#print axioms of minimizing_summands_source, cone_simonsDefect_lower_bound, bvVariationOn_le_liminf_of_locallyL1)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-audit-v2.json`
+- `/tmp/ch07-attempt3/Check.lean`
+- `/tmp/ch07-attempt3/Lib.lean`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; each snapshot chapter contract has only its frozen final sorry. All ten child Lean types elaborate after the contract's definitions in namespace GMT.Ch07 with its opens (only the stub sorry warnings), and the conditional assembly of the eleven-conjunct root depends only on propext, Classical.choice and Quot.sound. Reusable library lemmas, each using only standard axioms: Chapter06.WeaklyConvergesOn.massOn_le_liminf (lower semicontinuity of mass), Chapter07.minimizing_summands_source (Lemma 1.4), AppendixB.cone_simonsDefect_lower_bound (B.11) and Chapter02.bvVariationOn_le_liminf_of_locallyL1 (lower semicontinuity of variation). The library proves none of the following, so they are cited from Simon: Appendix A.4 (Foundations.lean calls the dimension-reduction proof an open obligation), Allard regularity (Chapter05/Basic.lean has only analytic foundations), Federer–Fleming compactness (Currents.lean: separate obligation), BV compactness (BV.lean does not claim subsequence compactness), and products [[ℝ^m]] × S₀ (Product.lean has only point products). μHE[n] is a nonzero finite multiple of μH[n] (Measure.lean), so H^n and μH[n] have the same null sets. The DAG contains only root, so no reserved names collide.

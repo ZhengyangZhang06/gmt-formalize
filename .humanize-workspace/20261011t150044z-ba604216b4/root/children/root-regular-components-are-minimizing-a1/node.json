@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Corollary 7.5.11: a component of the regular set, with multiplicity one, is a minimizing cycle",
+  "statement": "Let U ⊆ ℝ^{n+k} be open, N ∈ 𝒪 (oriented embedded C² (n+1)-submanifold, (N̄∖N) ∩ U = ∅, N ∩ U ≠ ∅) with orientation ξ_N, E ⊆ N ∩ U measurable, T = ∂[[E]] in U, T minimizing in N ∩ U. Let T = τ(M, θ, ξ) be any integer multiplicity representation, y ∈ reg T, M₁ the connected component of reg T containing y, and T₁ ∈ 𝒟_n(U) with T₁(ω) = ∫_{M₁} ⟨ω, ξ⟩ dH^n. Then ∂T₁ = 0 in U and T₁ is minimizing in U ∩ N.",
+  "lean_statement": "RegularComponentsAreMinimizing",
+  "lean_name": "regular_components_are_minimizing",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1",
+    "root.dimension_reduction_results-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-a1"
+}
