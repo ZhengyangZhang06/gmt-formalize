@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cbcc83bb791e7037e9c541dc4ae934998d6badb195e11192f84a0d696876bfca",
+  "git_delta": {
+    "base_commit": "b86cc9204a5d3a0c49f660924e038185607d3915",
+    "candidate_commit": "4d0ff6ac4c504de2bc50b8fbe9180d5f7bd2aeae",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_campanato_input",
+    "diff_sha256": "f06bab3ed2d156dae4182d030c87fbb8169be6a7fbcca7a28bcb01ef4ad552bf",
+    "source_sha256": "d8760deb93c53e2e5f7fe9423999a7ff8b82f6fb9d1e7407dc9387bd1a478d47",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_campanato_input",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), AEStronglyMeasurable V.tangentProj V.weight → ContinuousOn u Ω → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂V.weight) → (∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) → ∀ (S : Submodule ℝ (Amb n ℓ)) (z : Rn n) (r s : ℝ), 0 < s → closedBall z r ⊆ Ω → (∀ x ∈ closedBall z r, hsNorm (fderiv ℝ u x) ≤ 1 / 4) → (∀ x ∈ closedBall z r, ‖q (graphPoint x (u x)) - q (graphPoint z (u z))‖ ≤ s) → (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u z v)))).starProjection = S.starProjection → V.weight (closedBall (q (graphPoint z (u z))) s) < ⊤ → ∫⁻ x in closedBall z r, ENNReal.ofReal (hsNormSq (fderiv ℝ u x - fderiv ℝ u z)) ≤ ENNReal.ofReal (s ^ n * V.tiltExcess (q (graphPoint z (u z))) s S)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
