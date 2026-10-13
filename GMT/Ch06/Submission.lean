@@ -778,6 +778,158 @@ theorem Submission.rpn_potential_estimate : ∀ m : ℕ, ∃ C : ℝ, ∀ a : Eu
   -- Step 4: `∑_j ∂_j ψ_j(y) = ∑_j ∫ K_j(t) ∂_j a(y - t) dt = a(y)` (representation formula).
   rw [← hrep m a ha hca y]
   exact Finset.sum_congr rfl fun j _ => ((hψ j).2 y (EuclideanSpace.single j 1)).2
+/-- The wedge `γ ∧ β₀ ∧ ⋯ ∧ β_{m-1}` is linear in its first factor `γ`. -/
+theorem Submission.rpn_pfd_wedge_cons_isLinearMap :
+    ∀ (P m : ℕ) (β : Fin m → (Eucl P →L[ℝ] ℝ)), IsLinearMap ℝ (fun γ : Eucl P →L[ℝ] ℝ =>
+      wedgeCovectors (m + 1) (Fin.cons γ β : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))) := by
+  intro P m β
+  -- Unfolding, `wedgeCovectors (m + 1) (Fin.cons γ β)` is
+  -- `alternatizeUncurryFin (γ.smulRight (wedgeCovectors m β))`; `alternatizeUncurryFin` is
+  -- linear, so it remains to see that `γ ↦ γ.smulRight (wedgeCovectors m β)` is linear.
+  constructor
+  · intro γ δ
+    simp only [wedgeCovectors, Fin.cons_zero, Fin.tail_cons]
+    rw [← ContinuousAlternatingMap.alternatizeUncurryFin_add]
+    congr 1
+    ext v w
+    simp [add_smul]
+  · intro c γ
+    simp only [wedgeCovectors, Fin.cons_zero, Fin.tail_cons]
+    rw [← ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+    congr 1
+    ext v w
+    simp [mul_smul]
+/-- Sign lemma for wedges of one-covectors: moving the factor `l j` to the front costs
+`(-1)^j`, while putting another factor `l i` (`i ≠ j`) in front repeats a factor. -/
+theorem Submission.rpn_pfd_wedge_cons_succAbove_sign :
+    ∀ (P m : ℕ) (l : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) (j : Fin (m + 1)),
+      wedgeCovectors (m + 1) (Fin.cons (l j) (fun k => l (j.succAbove k)) :
+          Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = ((-1 : ℝ) ^ (j : ℕ)) • wedgeCovectors (m + 1) l ∧
+        ∀ i : Fin (m + 1), i ≠ j → wedgeCovectors (m + 1) (Fin.cons (l i)
+          (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = 0 := by
+  intro P m l j
+  refine ⟨?_, fun i hij => ?_⟩
+  · -- `Fin.cons (l j) (l ∘ j.succAbove) = l ∘ σ` with `σ = (cycleRange j)⁻¹`, so its value
+    -- matrix is that of `l` with rows permuted by `σ`.
+    have hσ : (Fin.cons (l j) (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) =
+        fun a => l (j.cycleRange.symm a) := by
+      funext a
+      cases a using Fin.cases <;> simp
+    ext v
+    have h := Matrix.det_permute j.cycleRange.symm (Matrix.of fun a b => l a (v b))
+    rw [Equiv.Perm.sign_symm, Fin.sign_cycleRange] at h
+    push_cast at h
+    rw [hσ, ContinuousAlternatingMap.smul_apply, wedgeCovectors_apply_det,
+      wedgeCovectors_apply_det, smul_eq_mul, ← h]
+    rfl
+  · -- `i = j.succAbove k` for some `k`, so rows `0` and `k.succ` of the value matrix coincide.
+    obtain ⟨k, hk⟩ := Fin.exists_succAbove_eq hij
+    ext v
+    rw [wedgeCovectors_apply_det, ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+    refine Matrix.det_zero_of_row_eq (Fin.succ_ne_zero k).symm ?_
+    funext b
+    simp [hk]
+/-- `d(∑ⱼ gⱼ θⱼ) = ∑ⱼ dgⱼ ∧ θⱼ` for constant covectors `θⱼ = βⱼ,₀ ∧ ⋯ ∧ βⱼ,ₘ₋₁` (Simon Ch. 6,
+(1.11), p. 134: `d(a dx^α) = da ∧ dx^α`, with general constant one-covectors `βⱼ` in place of the
+coordinate differentials).  `extDeriv Φ x = Alt (DΦ(x))` only needs `gⱼ` differentiable at `x`. -/
+theorem Submission.rpn_pfd_extDeriv_sum_smul_wedge : ∀ (P m : ℕ) (ι : Type) [Fintype ι] (g : ι → Eucl P → ℝ) (β : ι → Fin m → (Eucl P →L[ℝ] ℝ)) (x : Eucl P), (∀ j, DifferentiableAt ℝ (g j) x) → extDeriv (fun z => ∑ j : ι, g j z • wedgeCovectors m (β j)) x = ∑ j : ι, wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ (g j) x) (β j) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) := by
+  intro P m ι _ g β x hg
+  -- `z ↦ ∑ⱼ gⱼ(z) • θⱼ` has derivative `∑ⱼ Dgⱼ(x).smulRight θⱼ` at `x`.
+  have hD : HasFDerivAt (fun z => ∑ j : ι, g j z • wedgeCovectors m (β j))
+      (∑ j : ι, (fderiv ℝ (g j) x).smulRight (wedgeCovectors m (β j))) x :=
+    HasFDerivAt.fun_sum fun j _ => (hg j).hasFDerivAt.smul_const (wedgeCovectors m (β j))
+  -- `extDeriv Φ x = Alt (fderiv Φ x)`, and `Alt` is linear, so it commutes with the sum.
+  rw [extDeriv, hD.fderiv, ← ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply, map_sum]
+  -- Each term is the successor case of `wedgeCovectors` at `Fin.cons (Dgⱼ(x)) βⱼ`.
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply, wedgeCovectors, Fin.cons_zero,
+    Fin.tail_cons]
+
+/-- One term of the divergence identity of Simon Ch. 6, 2.35 (`dω = div a dx¹ ∧ ⋯ ∧ dxⁿ`),
+pulled back by a linear `L : ℝ^P → ℝ^{m+1}`: for `λᵢ = yⁱ ∘ L` and `ℓ ∈ (ℝ^{m+1})*`,
+`(ℓ ∘ L) ∧ λ₀ ∧ ⋯ ∧ λ̂ⱼ ∧ ⋯ ∧ λₘ = (-1)ʲ ℓ(eⱼ) λ₀ ∧ ⋯ ∧ λₘ`.  Expand `ℓ ∘ L = ∑ᵢ ℓ(eᵢ) λᵢ`; the
+wedge is linear in its first factor, and by the sign lemma only the term `i = j` survives. -/
+theorem Submission.rpn_pfd_wedge_cons_comp_succAbove :
+    ∀ (P m : ℕ) (L : Eucl P →L[ℝ] Eucl (m + 1)) (ℓ : Eucl (m + 1) →L[ℝ] ℝ) (j : Fin (m + 1)),
+      wedgeCovectors (m + 1) (Fin.cons (ℓ.comp L)
+          (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) :
+          Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) =
+        ((-1 : ℝ) ^ (j : ℕ) * ℓ (EuclideanSpace.single j (1 : ℝ))) •
+          wedgeCovectors (m + 1)
+            (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L) := by
+  intro P m L ℓ j
+  -- `λᵢ = yⁱ ∘ L`; `Λ γ = γ ∧ λ_{j.succAbove 0} ∧ ⋯ ∧ λ_{j.succAbove (m - 1)}` is linear in `γ`.
+  let lam : Fin (m + 1) → (Eucl P →L[ℝ] ℝ) := fun i =>
+    (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L
+  let Λ := IsLinearMap.mk' _
+    (Submission.rpn_pfd_wedge_cons_isLinearMap P m fun k => lam (j.succAbove k))
+  have hΛ : ∀ γ, Λ γ = wedgeCovectors (m + 1)
+      (Fin.cons γ fun k => lam (j.succAbove k) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) :=
+    fun _ => rfl
+  -- `ℓ ∘ L = ∑ᵢ ℓ(eᵢ) λᵢ`: expand `L v` in the standard basis of `ℝ^{m+1}`.
+  have hexp : ℓ.comp L = ∑ i, ℓ (EuclideanSpace.single i (1 : ℝ)) • lam i := by
+    ext v
+    have hv := (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).sum_repr (L v)
+    simp only [EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply] at hv
+    conv_lhs => rw [ContinuousLinearMap.comp_apply, ← hv]
+    simp [lam, mul_comm]
+  -- Sign lemma for `l = λ`: the term `i = j` is `(-1)ʲ λ₀ ∧ ⋯ ∧ λₘ`, the others vanish.
+  obtain ⟨hj, hne⟩ := Submission.rpn_pfd_wedge_cons_succAbove_sign P m lam j
+  calc wedgeCovectors (m + 1)
+        (Fin.cons (ℓ.comp L) fun k => lam (j.succAbove k) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))
+      = Λ (∑ i, ℓ (EuclideanSpace.single i (1 : ℝ)) • lam i) := by rw [hΛ, hexp]
+    _ = ∑ i, ℓ (EuclideanSpace.single i (1 : ℝ)) • Λ (lam i) := by
+        simp only [map_sum, map_smul]
+    _ = ℓ (EuclideanSpace.single j (1 : ℝ)) • Λ (lam j) := by
+        refine Finset.sum_eq_single j (fun i _ hij => ?_) (fun h => absurd (Finset.mem_univ j) h)
+        rw [hΛ, hne i hij, smul_zero]
+    _ = ((-1 : ℝ) ^ (j : ℕ) * ℓ (EuclideanSpace.single j (1 : ℝ))) •
+          wedgeCovectors (m + 1) lam := by
+        rw [hΛ, hj, smul_smul, mul_comm]
+
+/-- Exterior derivative of the pulled-back potential form (Simon Ch. 6, 1.14 and the divergence
+identity `dψ̂ = (div ψ) dy` of Remark 2.35).  For `λᵢ = yⁱ ∘ L`, `θⱼ = λ₀ ∧ ⋯ ∧ λ̂ⱼ ∧ ⋯ ∧ λₘ` and
+`Φ(z) = ∑ⱼ (-1)ʲ f(z) ψⱼ(Lz) θⱼ`,
+`dΦ(x) = f(x) (∑ⱼ ∂ⱼψⱼ(Lx)) λ₀ ∧ ⋯ ∧ λₘ + ∑ⱼ (-1)ʲ ψⱼ(Lx) Df(x) ∧ θⱼ`. -/
+theorem Submission.rpn_extDeriv_potential_form :
+    ∀ (P m : ℕ) (L : Eucl P →L[ℝ] Eucl (m + 1)) (f : Eucl P → ℝ)
+      (ψ : Fin (m + 1) → Eucl (m + 1) → ℝ) (x : Eucl P),
+      DifferentiableAt ℝ f x → (∀ j, DifferentiableAt ℝ (ψ j) (L x)) →
+      extDeriv (fun z => ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * (f z * ψ j (L z))) •
+          wedgeCovectors m
+            (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L)) x =
+        (f x * ∑ j : Fin (m + 1), fderiv ℝ (ψ j) (L x) (EuclideanSpace.single j (1 : ℝ))) •
+            wedgeCovectors (m + 1)
+              (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L) +
+          ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * ψ j (L x)) •
+            wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ f x)
+              (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) :
+              Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) := by
+  intro P m L f ψ x hf hψ
+  -- Chain and product rules: `gⱼ(z) = (-1)ʲ f(z) ψⱼ(Lz)` has derivative
+  -- `(-1)ʲ (f(x) Dψⱼ(Lx) ∘ L + ψⱼ(Lx) Df(x))` at `x`.
+  have hg : ∀ j : Fin (m + 1), HasFDerivAt (fun z => (-1 : ℝ) ^ (j : ℕ) * (f z * ψ j (L z)))
+      ((-1 : ℝ) ^ (j : ℕ) • (f x • (fderiv ℝ (ψ j) (L x)).comp L + ψ j (L x) • fderiv ℝ f x))
+      x :=
+    fun j => (hf.hasFDerivAt.fun_mul ((hψ j).hasFDerivAt.comp x L.hasFDerivAt)).const_mul _
+  -- `dΦ(x) = ∑ⱼ Dgⱼ(x) ∧ θⱼ`; compare with the right side term by term.
+  rw [Submission.rpn_pfd_extDeriv_sum_smul_wedge P m (Fin (m + 1))
+      (fun j z => (-1 : ℝ) ^ (j : ℕ) * (f z * ψ j (L z)))
+      (fun j i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) x
+      fun j => (hg j).differentiableAt,
+    Finset.mul_sum, Finset.sum_smul, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  -- The wedge is linear in its first factor, the `Dψⱼ(Lx) ∘ L` part is
+  -- `(-1)ʲ ∂ⱼψⱼ(Lx) λ₀ ∧ ⋯ ∧ λₘ`, and `(-1)ʲ (-1)ʲ = 1`.
+  have hlin := Submission.rpn_pfd_wedge_cons_isLinearMap P m
+    fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L
+  have hsq : (-1 : ℝ) ^ (j : ℕ) * (-1 : ℝ) ^ (j : ℕ) = 1 := by
+    rw [← mul_pow, neg_one_mul, neg_neg, one_pow]
+  rw [(hg j).fderiv, hlin.map_smul, hlin.map_add, hlin.map_smul, hlin.map_smul,
+    Submission.rpn_pfd_wedge_cons_comp_succAbove P m L (fderiv ℝ (ψ j) (L x)) j, smul_add,
+    smul_smul, smul_smul, smul_smul]
+  congr 2
+  linear_combination (f x * fderiv ℝ (ψ j) (L x) (EuclideanSpace.single j (1 : ℝ))) * hsq
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
