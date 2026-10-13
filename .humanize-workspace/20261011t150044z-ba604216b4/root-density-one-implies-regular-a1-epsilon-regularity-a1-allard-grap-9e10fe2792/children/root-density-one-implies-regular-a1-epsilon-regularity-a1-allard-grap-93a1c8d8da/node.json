@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1.tangent_dimension-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes of an integer multiplicity triple are n-dimensional μ_R-a.e.",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set and R = (M, θ, ξ) an integer multiplicity triple in U (Lean IMRep U n; M = R.carrier, θ = R.mult). Its weight is μ_R := R.measure = (Hⁿ⌞M).withDensity θ, where Hⁿ = μHE[n]. Then for μ_R-almost every x ∈ ℝ^P the subspace T_xM := approxTangentPlane n M x has dimension n: Module.finrank ℝ (approxTangentPlane n M x) = n. Here approxTangentPlane n M x is the chosen approximate tangent plane of M at x when one exists, and the zero subspace otherwise.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂R.measure, Module.finrank ℝ (approxTangentPlane n R.carrier x) = n",
+  "lean_name": "dorag_aa_ae_finrank_approxTangentPlane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-93a1c8d8da-a1"
+}
