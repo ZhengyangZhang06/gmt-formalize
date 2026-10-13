@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dtc_|cmc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "structure IMRep|def IMRep\\.(action|measure|Represents)|def IsMinimizingIn|def SameBoundary|abbrev MultiVector",
+        "hausdorffMeasure_zero_singleton|euclideanHausdorffMeasure_zero|sum_measure_singleton|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|IntegrableOn.of_forall_sdiff_eq_zero|integrableOn_singleton|integrableOn_finite_biUnion|dirac_withDensity|withDensity_add_measure|iteratedFDeriv_zero_eq_comp|TendstoUniformlyOn.tendsto_at",
+        "git show 8c9d0203c42b3c83735f4d4b11da5dacd39433b9:GMT/Ch07/Submission.lean",
+        "git show 4bd211adf80cdeb3dff58ca747a26ef9f64cdc96:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc-independent-audit-n2a2e0vn/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc-independent-audit-n2a2e0vn/ReuseAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-zero-dim-minimizer-zero-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1-erase-point-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1-point-current-a1/isolated-comparator-result.json",
+        "/tmp/cmc-independent-audit-n2a2e0vn/Types.lean",
+        "/tmp/cmc-independent-audit-n2a2e0vn/ReuseAssembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical workspace contract sources. The snapshot project has no dtc_ or cmc_ declarations; the required normalization, integrability, measure-splitting, convergence and support definitions are present in the pinned libraries. Both proposed types are byte-identical to their comparator-accepted DAG contracts, and neither name has another reservation. The proposed reuse preserves an acyclic dependency graph, including erase_point's accepted helpers and the selected parent's inherited mass-equality dependency. Independent Lean checks passed: all frozen propositions elaborate before introducing the child declarations; the accepted child proofs compile against the current contract; and the exact selected parent follows by the supplied competitor argument. The assembly keeps the still-pending mass-equality sibling as an explicit hypothesis. Both reused proofs and the conditional assembly use only propext, Classical.choice and Quot.sound. The split is appropriate and establishes the selected node."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "erase_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every IMRep hypothesis and correctly allows arbitrary U. Its one-line Lean proposition exactly specifies the carrier, multiplicity, orientation, measure and action conclusions. The proof establishes local finiteness from singleton mass, preserves approximate tangents by eventual equality of blow-up integrals, verifies every representation field, and establishes integrability before splitting the action integral. No circular reliance or additional proof-planning obligation remains. The bare name reuses an accepted declaration with identical frozen type and verified standard axioms."
+    },
+    {
+      "key": "point_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree for every P, n, open U, arbitrary p and multivector ζ; p need not belong to U. The proof constructs the linear functional, derives sequential continuity from zeroth-derivative convergence when p lies in the common compact support and vanishing otherwise, and proves the support inclusion using relatively compact balls avoiding p. It is complete and non-circular, and its degree-zero specialization supplies the parent's competitor. The bare name validly reuses the identical comparator-accepted contract."
+    }
+  ],
+  "required_changes": []
+}
