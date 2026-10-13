@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "efc54979ad1b45bb3c68dd63a00c79130d80f4dacd1dfa1a52f854a99bc5305e",
+  "git_delta": {
+    "base_commit": "9135eb8eec4f4b2896092a00633de98320b66faa",
+    "candidate_commit": "19028a3c8ca8a1f9578d9732f0e415da550f03a9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pc_slice_area_tonelli",
+    "diff_sha256": "6d915c7c999d8843bf990bef4551ecb106919725a820f11d7bde88ba0bdf79c2",
+    "source_sha256": "c21f392a412094533809c9b8e531a39aa4a9b0a5c0cc5f58be6793f8a698af88",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pc_slice_area_tonelli",
+      "statement": "∀ (P n : ℕ) (Φ : Euclid (n + 1) → Euclid P) (S : Set (Euclid (n + 1))), MeasurableSet S → (∀ w ∈ S, DifferentiableAt ℝ Φ w) → (∀ w ∈ S, Injective (fderiv ℝ Φ w)) → InjOn Φ S → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) = ∫⁻ w in S, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i.succ 1)) (fderiv ℝ Φ w (EuclideanSpace.single j.succ 1))))) * φ (Φ w) ∂volume",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
