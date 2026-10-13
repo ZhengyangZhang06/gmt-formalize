@@ -1804,6 +1804,40 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **An integer multiplicity triple carried by a Borel subset of a rectifiable set with tangent
+data** (Simon Ch. 6, Definitions 3.1 and 4.4; for the slice `(M₊ ∩ f⁻¹(t), θ, ξ⌞ν)` take
+`A = M₊ ∩ f⁻¹(t)` and `S = M ∩ f⁻¹(t)`).  Let `A ⊆ S ⊆ ℝᴾ` be Borel with `S` countably
+`n`-rectifiable, `θ` Borel with `θ > 0` on `S` and `∫_{S ∩ K} θ dHⁿ < ∞` for compact `K`, and `ζ`
+`Hⁿ⌞A`-measurable with `ζ(x)` a unit orientation of `TₓS` for `Hⁿ`-a.e. `x ∈ A`.  Then
+`(A, θ, ζ)` is an `IMRep` in `ℝᴾ`.
+
+`θ ≥ 1` on `S` makes `S` locally `Hⁿ`-finite, so tangent locality (`cmc_imRep_locality_restrict_sub`
+(a) with `U = ℝᴾ`) gives `TₓA = TₓS` for `Hⁿ`-a.e. `x ∈ A`; rectifiability, positivity and local
+integrability of `θ` pass from `S` to `A ⊆ S`. -/
+theorem Submission.dtc_bc_lc_sl_sf_imrep_of_subset : ∀ (P n : ℕ) (A S : Set (Euclid P)) (θ : Euclid P → ℕ) (ζ : Euclid P → MultiVector P n), MeasurableSet A → MeasurableSet S → A ⊆ S → CountablyRectifiable n S → Measurable θ → (∀ x ∈ S, 0 < θ x) → (∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in S ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞) → AEStronglyMeasurable ζ (μHE[n].restrict A) → (∀ᵐ x ∂(μHE[n].restrict A), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n S x Q ∧ IsUnitOrientationOf (ζ x) Q) → ∃ R : IMRep (univ : Set (Euclid P)) n, R.carrier = A ∧ R.mult = θ ∧ R.orient = ζ := by
+  intro P n A S θ ζ hA hS hAS hrect hθ hpos hint hζ hor
+  -- Step 1: `S` is locally `Hⁿ`-finite: `Hⁿ(S ∩ K) = ∫_{S ∩ K} 1 dHⁿ ≤ ∫_{S ∩ K} θ dHⁿ < ∞`
+  have hSfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ → μHE[n] (S ∩ K) ≠ ∞ := by
+    intro K hK _
+    refine ne_top_of_le_ne_top (hint K hK) ?_
+    exact (setLIntegral_one _).symm.trans_le
+      (setLIntegral_mono' (hS.inter hK.measurableSet) fun x hx => Nat.one_le_cast.2 (hpos x hx.1))
+  -- Step 2: `TₓA = TₓS` for `Hⁿ`-a.e. `x ∈ A` (tangent locality, `U = ℝᴾ`, `M = A`, `M' = S`)
+  have hloc := Submission.cmc_imRep_locality_restrict_sub.1 P n univ A S isOpen_univ hA hS hAS
+    (subset_univ S) hSfin
+  -- Step 3: `ζ(x)` orients `TₓA` for `Hⁿ`-a.e. `x ∈ A`
+  have horA : ∀ᵐ x ∂(μHE[n].restrict A), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n A x Q ∧ IsUnitOrientationOf (ζ x) Q := by
+    filter_upwards [hor, hloc] with x ⟨Q, hQ, hζQ⟩ hx
+    exact ⟨Q, (hx Q).2 hQ, hζQ⟩
+  -- Step 4: `∫_{A ∩ K} θ dHⁿ ≤ ∫_{S ∩ K} θ dHⁿ < ∞` for compact `K`, as `A ∩ K ⊆ S ∩ K`
+  have hAint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+      ∫⁻ x in A ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := fun K hK _ =>
+    ne_top_of_le_ne_top (hint K hK) (lintegral_mono_set (inter_subset_inter_left K hAS))
+  -- Step 5: assemble `R = (A, θ, ζ)`; `A ⊆ S` is countably `n`-rectifiable and `θ > 0` on `A`
+  exact ⟨IMRep.mk A θ ζ hA (subset_univ A) (hrect.mono hAS) hθ (fun x hx => hpos x (hAS hx))
+    hAint hζ horA, rfl, rfl, rfl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
