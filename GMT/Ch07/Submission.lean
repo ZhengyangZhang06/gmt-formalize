@@ -741,6 +741,54 @@ theorem Submission.regcomp_exists_covector_eval_orthonormal_eq_one : ∀ (P n : 
   refine ⟨β, (pow_eq_one_iff_of_nonneg (covectorEuclideanNorm_nonneg β) two_ne_zero).mp ?_, hβτ⟩
   exact mul_left_cancel₀ hfac (by rw [← hsq, mul_one])
 
+/-- **Reversing an orthonormal frame by negating its first vector** (Simon 6.1; the sign in
+`ζ = ±v₀ ∧ ⋯ ∧ v_d`): for orthonormal `v₀, …, v_d` in `ℝᴾ`, `w = (-v₀, v₁, …, v_d)` is
+orthonormal with the same span, and `β(w) = -β(v)` for every `(d+1)`-covector `β`.  With the
+signs `c = (-1, 1, …, 1)`, `wᵢ = cᵢ vᵢ` and `cᵢ² = 1`, so `⟨wᵢ, wⱼ⟩ = cᵢcⱼ⟨vᵢ, vⱼ⟩ = δᵢⱼ` and
+`vᵢ = cᵢ wᵢ`; `β` is linear in its first slot. -/
+theorem Submission.cbr_ci_cp_exists_orthonormal_frame_eval_neg : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∃ w : Fin (d + 1) → Euclid P, Orthonormal ℝ w ∧ Submodule.span ℝ (Set.range w) = Submodule.span ℝ (Set.range v) ∧ ∀ β : Covector (Euclid P) (d + 1), β w = -β v := by
+  intro P d v hv
+  -- Step 1: the signs `c = (-1, 1, …, 1)`, with `cᵢ cᵢ = 1` and `w = (cᵢ • vᵢ)ᵢ`
+  let c : Fin (d + 1) → ℝ := Function.update (fun _ => (1 : ℝ)) 0 (-1)
+  have hc : ∀ i, c i * c i = 1 := by
+    intro i
+    by_cases h : i = 0
+    · subst h; simp [c]
+    · simp [c, h]
+  have hw : (fun i => c i • v i) = Function.update v 0 (-v 0) := by
+    funext i
+    by_cases h : i = 0
+    · subst h; simp [c]
+    · simp [c, h]
+  refine ⟨Function.update v 0 (-v 0), ?_, ?_, ?_⟩
+  · -- Step 2: `⟨wᵢ, wⱼ⟩ = cᵢ cⱼ ⟨vᵢ, vⱼ⟩ = δᵢⱼ`
+    rw [← hw]
+    rw [orthonormal_iff_ite] at hv ⊢
+    intro i j
+    rw [real_inner_smul_left, real_inner_smul_right, hv i j]
+    by_cases hij : i = j
+    · subst hij
+      simp only [↓reduceIte, mul_one]
+      exact hc i
+    · simp only [hij, ↓reduceIte, mul_zero]
+  · -- Step 3: `wᵢ = cᵢ • vᵢ` and `vᵢ = cᵢ • wᵢ`, so the two spans contain each other
+    rw [← hw]
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      have h : v i = c i • (c i • v i) := by
+        rw [smul_smul, hc i, one_smul]
+      rw [h]
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  · -- Step 4: `β` is linear in slot `0`: `β(update v 0 ((-1) • v₀)) = (-1) • β(v)`
+    intro β
+    have h := β.map_update_smul v 0 (-1 : ℝ) (v 0)
+    rw [neg_one_smul, Function.update_eq_self] at h
+    rw [h, neg_one_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
