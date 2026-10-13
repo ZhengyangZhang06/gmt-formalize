@@ -654,6 +654,79 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
 
+/-- Area formula through a chart composed with an injective `C¹` change of variables (one
+straightened box of the co-area formula, Simon Ch. 3, 2.7–2.9; used for Ch. 6, §4): if `Φ` is
+Lipschitz and `c`-antilipschitz on the open set `Ω`, `χ` is `C¹` and injective on the open set
+`B` with `χ(B) ⊆ Ω`, `S ⊆ χ(B)` is Borel and `ψ ≥ 0` is Borel, then
+`∫_{Φ(S)} ψ dHⁿ = ∫_{B ∩ χ⁻¹(S)} |det Dχ(y)| ψ(Φ(χ y)) JΦ(χ y) dLⁿ(y)`.  Apply the chart change
+of variables to `A = Φ(S)` (Borel by Lusin–Souslin, with `Ω ∩ Φ⁻¹(A) = S`), then Mathlib's
+change of variables along `χ` on the Borel set `B ∩ χ⁻¹(S)`, whose image is `S`. -/
+theorem Submission.slicing_im_creg_box_bulk : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (B : Set (Eucl n)) (χ : Eucl n → Eucl n) (S : Set (Eucl n)) (ψ : Eucl P → ℝ≥0∞), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → IsOpen B → ContDiffOn ℝ 1 χ B → InjOn χ B → χ '' B ⊆ Ω → MeasurableSet S → S ⊆ χ '' B → Measurable ψ → ∫⁻ x in Φ '' S, ψ x ∂(μHE[n] : Measure (Eucl P)) = ∫⁻ y, (B ∩ χ ⁻¹' S).indicator (fun y => ENNReal.ofReal |(fderiv ℝ χ y).det| * (ψ (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ (χ y) (EuclideanSpace.single i 1)) (fderiv ℝ Φ (χ y) (EuclideanSpace.single j 1))).det))) y ∂(volume : Measure (Eucl n)) := by
+  intro P n Φ Ω B χ S ψ hΩ ⟨K, hK⟩ ⟨c, hc, hΦ⟩ hB hχ hχinj hχΩ hS hSχ hψ
+  -- Step 1: `Φ` is injective and continuous on `Ω`.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' h
+    have h1 := hΦ w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hc (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  have hcont : ContinuousOn Φ Ω := hK.continuousOn
+  -- Step 2: `Φ(S)` is Borel (Lusin–Souslin) and `Ω ∩ Φ⁻¹(Φ(S)) = S`.
+  have hSΩ : S ⊆ Ω := hSχ.trans hχΩ
+  have hΦS : MeasurableSet (Φ '' S) :=
+    hS.image_of_continuousOn_injOn (hcont.mono hSΩ) (hinj.mono hSΩ)
+  have hpre : Ω ∩ Φ ⁻¹' (Φ '' S) = S := by
+    ext w
+    constructor
+    · rintro ⟨hw, w', hw'S, hΦw⟩
+      rwa [← hinj (hSΩ hw'S) hw hΦw]
+    · intro hw
+      exact ⟨hSΩ hw, w, hw, rfl⟩
+  -- Step 3: the area formula for `Φ` with `A = Φ(S)`.
+  obtain ⟨-, -, harea⟩ := Submission.lpf_raf_chart_change_of_variables P n Φ Ω (Φ '' S) ψ hΩ
+    ⟨K, hK⟩ ⟨c, hc, hΦ⟩ (image_mono hSΩ) hΦS.nullMeasurableSet hψ.aemeasurable
+  rw [hpre] at harea
+  -- Step 4: `S' = B ∩ χ⁻¹(S)` is Borel, via the Borel extension `B.piecewise χ 0`.
+  classical
+  have hS' : MeasurableSet (B ∩ χ ⁻¹' S) := by
+    have hm : Measurable (B.piecewise χ (fun _ => (0 : Eucl n))) :=
+      hχ.continuousOn.measurable_piecewise continuousOn_const hB.measurableSet
+    have heq : B ∩ χ ⁻¹' S = B ∩ (B.piecewise χ (fun _ => (0 : Eucl n))) ⁻¹' S := by
+      ext y
+      simp only [mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hy, hyS⟩
+        exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy]⟩
+      · rintro ⟨hy, hyS⟩
+        exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy] at hyS⟩
+    rw [heq]
+    exact hB.measurableSet.inter (hm hS)
+  -- Step 5: `χ(S') = S`.
+  have himg : χ '' (B ∩ χ ⁻¹' S) = S := by
+    ext w
+    constructor
+    · rintro ⟨y, ⟨-, hy⟩, rfl⟩
+      exact hy
+    · intro hw
+      obtain ⟨y, hyB, rfl⟩ := hSχ hw
+      exact ⟨y, ⟨hyB, hw⟩, rfl⟩
+  -- Step 6: `χ` has derivative `Dχ(y)` at every `y ∈ S' ⊆ B` (`B` is open).
+  have hder : ∀ y ∈ B ∩ χ ⁻¹' S, HasFDerivWithinAt χ (fderiv ℝ χ y) (B ∩ χ ⁻¹' S) y := by
+    intro y hy
+    have hd : DifferentiableAt ℝ χ y :=
+      (hχ.differentiableOn one_ne_zero y hy.1).differentiableAt (hB.mem_nhds hy.1)
+    exact hd.hasFDerivAt.hasFDerivWithinAt
+  -- Step 7: change of variables along `χ` on `S'`.
+  have hcov := lintegral_image_eq_lintegral_abs_det_fderiv_mul (volume : Measure (Eucl n)) hS'
+    hder (hχinj.mono inter_subset_left) (fun w => ψ (Φ w) * ENNReal.ofReal (Real.sqrt
+      (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1))
+        (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det))
+  rw [himg] at hcov
+  -- Step 8: combine and write the set integral over `S'` as an indicator integral.
+  rw [harea, hcov, lintegral_indicator hS']
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
