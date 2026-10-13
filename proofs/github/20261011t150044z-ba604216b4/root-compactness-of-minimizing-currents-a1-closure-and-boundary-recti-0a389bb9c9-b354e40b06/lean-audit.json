@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7231b98d1e1c10ceb31602915cb79647f76e48be386b6fa8ab181b9bc1813089",
+  "git_delta": {
+    "base_commit": "5aaeedc03f1aac7eaaa22e789be049a9525e6a30",
+    "candidate_commit": "94a835746765920dbfbef47bf21422e0064a600f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_pu_inner_det_covector",
+    "diff_sha256": "91f24733ab07d7a6b43ed7f166e6122feed4635d9d7b83c697806ed16fbcecf0",
+    "source_sha256": "a4c865fa6e39dd13411d279394e7d0df2e2a772805cc332906f4a4cf3b71b299",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_pu_inner_det_covector",
+      "statement": "∀ (P n : ℕ) (w : Fin n → Euclid P), ∃ β : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
