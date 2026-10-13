@@ -553,6 +553,34 @@ theorem allard52_gfz_transpose_eq_sum : ∀ (n m : ℕ) (L : Rn n →L[ℝ] Rn m
   conv_lhs => rw [hu]
   simp only [map_sum, map_smul, inner_sum, sum_inner, real_inner_smul_left, real_inner_smul_right,
     EuclideanSpace.inner_single_left, map_one, one_mul]
+/-- Simon Ch. 5, p. 123 (the matrix of `p_{T G(f)}` in the proof of Theorem 5.2), step 1 of the
+graph-projection computation: the transpose `Lᵀ w = Σᵢ ⟨L eᵢ, w⟩ eᵢ` of `L : ℝⁿ → ℝᵐ`, built from
+the standard basis `eᵢ` of `ℝⁿ` (`ContinuousLinearMap.adjoint` is outside the import closure).
+`L ↦ Lᵀ` is linear because `⟨L eᵢ, w⟩` is linear in `L`, hence continuous since `L(ℝⁿ, ℝᵐ)` is
+finite-dimensional, and expanding `v = Σᵢ vᵢ eᵢ` gives `⟨Lᵀ w, v⟩ = Σᵢ ⟨L eᵢ, w⟩ vᵢ = ⟨w, L v⟩`. -/
+theorem allard52_gps_transpose_exists : ∀ (n m : ℕ), ∃ τ : (Rn n →L[ℝ] Rn m) →L[ℝ] (Rn m →L[ℝ] Rn n), ∀ (L : Rn n →L[ℝ] Rn m) (w : Rn m) (v : Rn n), inner ℝ (τ L w) v = inner ℝ w (L v) := by
+  intro n m
+  -- The standard basis `e i` of `ℝⁿ`.
+  let e : Fin n → Rn n := fun i => EuclideanSpace.single i (1 : ℝ)
+  -- `τ₀ L = Lᵀ`, linear in `L` since `⟨L eᵢ, w⟩` is.
+  let τ₀ : (Rn n →L[ℝ] Rn m) →ₗ[ℝ] (Rn m →L[ℝ] Rn n) :=
+    { toFun := fun L => ∑ i, (innerSL ℝ (L (e i))).smulRight (e i)
+      map_add' := fun L L' => by
+        ext1 w
+        simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c L => by
+        ext1 w
+        simp [smul_smul, Finset.smul_sum] }
+  -- `L(ℝⁿ, ℝᵐ)` is finite-dimensional, so `τ₀` is continuous.
+  refine ⟨LinearMap.toContinuousLinearMap τ₀, fun L w v => ?_⟩
+  have hv : v = ∑ i, v i • e i := by
+    simpa [e] using ((EuclideanSpace.basisFun (Fin n) ℝ).sum_repr v).symm
+  have hτ : LinearMap.toContinuousLinearMap τ₀ L w = ∑ i, inner ℝ (L (e i)) w • e i := by
+    simp [τ₀]
+  rw [hτ]
+  conv_rhs => rw [hv]
+  simp only [sum_inner, inner_sum, map_sum, map_smul, real_inner_smul_left,
+    real_inner_smul_right, e, EuclideanSpace.inner_single_left, one_mul, map_one]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [real_inner_comm]
   ring
