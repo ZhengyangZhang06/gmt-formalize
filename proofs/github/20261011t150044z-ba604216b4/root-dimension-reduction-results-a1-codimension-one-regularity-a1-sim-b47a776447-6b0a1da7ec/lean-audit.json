@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9ed31c7b71543a27cfd9bfe1cc83ac633af3e5c82964469dddc747414c071f88",
+  "git_delta": {
+    "base_commit": "a3513229e4758ec05d0122b09cf89b80851d6a7b",
+    "candidate_commit": "0f405ee26f43d82b64091f87f4bf68ad56e285a6",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "aa2accc6ff1bcfcbbefc609ac903968b125f448d47e4d9313f17f6d95631940d",
+    "source_sha256": "f0f8a63bf817536a1f50d3cc73d75132219ad360bf8104727fa79378ef767832",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_density_one_regular_local_rep",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (y : Euclid P), 1 ≤ m → IsOpen U → y ∈ regularSet T → HasMassDensity T y 1 → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ball y ρ₀ ⊆ U ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₀ → ∃ ξ : Euclid P → MultiVector P m, IsEmbeddedSubmanifold 1 m (T.support ∩ ball y ρ) ∧ IsOrientation m (T.support ∩ ball y ρ) ξ ∧ μHE[m] (T.support ∩ ball y ρ) ≠ ∞ ∧ ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ → T ω = ∫ x in T.support ∩ ball y ρ, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

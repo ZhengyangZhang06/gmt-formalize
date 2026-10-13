@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1.rep_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1",
+  "depth": 5,
+  "title": "A current equal to k times an oriented C¹ submanifold near y ∈ M has density |k| at y (parent step 4)",
+  "statement": "Density of a locally represented current. Data: P, m ∈ ℕ; U ⊆ ℝ^P; T ∈ 𝒟_m(U) (GeometricCurrentOn U m); y ∈ ℝ^P; ρ ∈ ℝ; k ∈ ℤ; M ⊆ ℝ^P; ξ : ℝ^P → Λ_m(ℝ^P) (MultiVector P m). Hypotheses: ρ > 0; B_ρ(y) ⊆ U; y ∈ M; M is an embedded C¹ m-dimensional submanifold (IsEmbeddedSubmanifold 1 m M); ξ is an orientation of M (IsOrientation m M ξ: ξ continuous on M and ξ(x) a unit orientation of tangentSpace(M, x) for x ∈ M); H^m(M ∩ K) < ∞ for every compact K ⊆ B_ρ(y); and T(ω) = k ∫_M ⟨ω(x), ξ(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_ρ(y). Conclusion: Θ^m(μ_T, y) = |k| (HasMassDensity T y (k.natAbs : ℝ)), i.e. M_{B_s(y)}(T)/(ω_m·s^m) → |k| in [0, ∞] as s ↓ 0. Here H^m = μHE[m], B_s(y) = ball y s, M_W(T) = T.massOn W, ω_m = unitBallVolume m and |k| = k.natAbs.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U m) (y : Euclid P) (ρ : ℝ) (k : ℤ) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 0 < ρ → ball y ρ ⊆ U → y ∈ M → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y ρ → T ω = k * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → HasMassDensity T y (k.natAbs : ℝ)",
+  "lean_name": "codim1_dolr_rep_hasMassDensity",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.mass_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1-a1",
+      "result_commit": "e8842d90b78f15ebdbe728429ce98fccfaa6665c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.mass_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-mass-identity-a1-a1",
+      "result_commit": "5fcaddaa05c1f91fbc4bc02e501a16a8818b9724",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-88d9445be6-a1"
+}
