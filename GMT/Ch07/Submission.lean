@@ -533,6 +533,37 @@ theorem Submission.rsd_cmr_ic_action_integrable : ∀ (P n : ℕ) (U : Set (Eucl
       _ = C := one_mul C
   · simp [indicator_of_notMem hK, image_eq_zero_of_notMem_tsupport hK]
 
+/-- **Simon Ch. 6, 3.1 (‡) under bounded multipliers**: if `h_k` are measurable, `|h_k| ≤ C`
+and `h_k → h` pointwise, then `∫_M θ h_k ⟨ω, ξ⟩ dHⁿ → ∫_M θ h ⟨ω, ξ⟩ dHⁿ`.  The integrands are
+`h_k G` with `G = θ ⟨ω, ξ⟩` `Hⁿ⌞M`-integrable, dominated by `C |G|` and converging pointwise to
+`h G`, so dominated convergence applies. -/
+theorem Submission.dor_lmbsf_ll_action_mul_tendsto : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n) (hs : ℕ → Euclid P → ℝ) (h : Euclid P → ℝ) (C : ℝ), (∀ k, Measurable (hs k)) → (∀ k x, |hs k x| ≤ C) → (∀ x, Tendsto (fun k => hs k x) atTop (𝓝 (h x))) → Tendsto (fun k => ∫ x in R.carrier, (R.mult x : ℝ) * hs k x * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * h x * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n])) := by
+  intro P n U R ω hs h C hmeas hbdd hlim
+  -- `G = θ ⟨ω, ξ⟩` is `Hⁿ⌞M`-integrable
+  have hG := Submission.rsd_cmr_ic_action_integrable P n U R ω
+  set G : Euclid P → ℝ :=
+    fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+  -- the integrands are `h_k G` and `h G`
+  have key : ∀ k,
+      (fun x => (R.mult x : ℝ) * hs k x * R.orient x ((ω : DifferentialForm (Euclid P) n) x))
+        = fun x => hs k x * G x := by
+    intro k; funext x; simp only [G]; ring
+  have keyh : (fun x => (R.mult x : ℝ) * h x * R.orient x ((ω : DifferentialForm (Euclid P) n) x))
+      = fun x => h x * G x := by
+    funext x; simp only [G]; ring
+  rw [keyh]
+  simp_rw [key]
+  -- dominated convergence with bound `C |G|`
+  refine tendsto_integral_of_dominated_convergence (fun x => C * ‖G x‖) ?_ ?_ ?_ ?_
+  · intro k; exact (hmeas k).aestronglyMeasurable.mul hG.aestronglyMeasurable
+  · exact hG.norm.const_mul C
+  · intro k
+    filter_upwards with x
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_right (by simpa [Real.norm_eq_abs] using hbdd k x) (norm_nonneg _)
+  · filter_upwards with x
+    exact (hlim x).mul_const (G x)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
