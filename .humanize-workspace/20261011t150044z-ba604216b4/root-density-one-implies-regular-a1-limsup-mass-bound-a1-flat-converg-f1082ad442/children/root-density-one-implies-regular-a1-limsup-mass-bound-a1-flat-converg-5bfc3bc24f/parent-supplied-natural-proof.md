@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.extend_univ-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3(a) and 3(b) of the parent proof. In Simon Ch. 6, proof of Theorem 7.2 (chapter-06.txt lines 2056–2090), the Deformation Theorem 5.3, which concerns currents in ℝ^{n+ℓ}, is applied to a current T ∈ 𝒟_n(U) supported in a compact subset of U, tacitly regarded as a current in ℝ^{n+ℓ}. This child supplies that extension by zero. Tools: (C1) the sibling imrep_mass (dor_imrep_massOn_eq_measure_and_support): for an open set D, X ∈ 𝒟_d(D) and an IMRep R in D representing X, M_W(X) = μ_R(W) for every open W ⊆ ℝ^P. (IMC)(b) part (b) of the sibling im_calculus (cmc_imRep_locality_restrict_sub): for an open set D, an IMRep R = (M, θ, ξ) in D and a Borel set E, there are a current X' ∈ 𝒟_d(D) and an IMRep R' in D with R'.carrier = M ∩ E, R'.mult = θ and R'.orient = ξ that represents X'.
+1. Let R_A = (M, θ, ξ) be an IMRep in U representing A. K is compact, hence closed (IsCompact.isClosed), so U ∖ K is open (IsOpen.sdiff) and Borel, and K is Borel.
+2. M_{U∖K}(A) = 0. By definition, M_{U∖K}(A) is the supremum of ofReal(A(ω)) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ U ∖ K and |ω(x)| ≤ 1 for all x. For each such ω, tsupport ω is disjoint from K, so A(ω) = 0 because A vanishes off K, and ofReal(A(ω)) = 0. Hence the supremum is 0.
+3. Hᵈ(M ∖ K) = 0. By (C1) for (U, A, R_A) with the open set W := U ∖ K, μ_{R_A}(U ∖ K) = M_{U∖K}(A) = 0. As U ∖ K is measurable, μ_{R_A}(U ∖ K) = ∫_{(U∖K)∩M} θ dHᵈ (withDensity_apply, Measure.restrict_restrict). For x ∈ M, θ(x) is a positive natural number, so θ(x) ≥ 1. Therefore Hᵈ((U ∖ K) ∩ M) = ∫_{(U∖K)∩M} 1 dHᵈ ≤ ∫_{(U∖K)∩M} θ dHᵈ = 0 (setLIntegral_const, setLIntegral_mono'). Because M ⊆ U, M ∖ K = M ∩ (U ∖ K), so Hᵈ(M ∖ K) = 0.
+4. Apply (IMC)(b) in U to R_A and E := K. This gives an IMRep R₁ in U with carrier M ∩ K, multiplicity θ and orientation ξ (the current it represents is not needed).
+5. Define an IMRep R̂ in univ with carrier M ∩ K, multiplicity θ and orientation ξ. The fields measurableSet_carrier, rectifiable, measurable_mult, mult_pos, aestronglyMeasurable_orient and orients are copied from R₁, since they mention only the carrier, multiplicity and orientation, not the domain. carrier_subset holds because M ∩ K ⊆ univ. Local integrability: for every compact K'' ⊆ ℝ^P, ∫_{(M∩K)∩K''} θ dHᵈ ≤ ∫_{M∩K} θ dHᵈ < ∞, by monotonicity in the set (lintegral_mono_set) and the local integrability field of R_A applied to the compact set K ⊆ U.
+6. Apply (IMC)(b) in the open set univ to R̂ and E := univ. This gives Y ∈ 𝒟_d(ℝ^P) and an IMRep R₂ in univ, with carrier (M ∩ K) ∩ univ = M ∩ K, multiplicity θ and orientation ξ, that represents Y. IMRep.action depends only on the carrier, multiplicity and orientation, so R̂.action = R₂.action and R̂ represents Y. In particular Y is integer multiplicity.
+7. Y⌞U = A. Let ω ∈ 𝒟^d(U). Since ιω has the same underlying form as ω, Y(ιω) = R̂.action(ω) = ∫_{M∩K} θ⟨ω, ξ⟩ dHᵈ, while A(ω) = R_A.action(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ. The sets M ∩ K and M differ by (M ∩ K) ∖ M = ∅ and by M ∖ (M ∩ K) = M ∖ K, which is Hᵈ-null by step 3. So they are Hᵈ-a.e. equal (ae_eq_set), and the two set integrals coincide (setIntegral_congr_set). Hence (Y⌞U)(ω) = A(ω) for every ω, and Y⌞U = A by GeometricCurrentOn.ext.
+8. Y vanishes off K. Let ω ∈ 𝒟^d(ℝ^P) have tsupport disjoint from K. For x ∈ M ∩ K, x ∉ tsupport ω, so ω(x) = 0 (image_eq_zero_of_notMem_tsupport). The integrand θ(x)ξ(x)(ω(x)) = θ(x)ξ(x)(0) then vanishes because ξ(x) is linear. Hence Y(ω) = R̂.action(ω) = 0 (setIntegral_eq_zero_of_forall_eq_zero).
+9. M(Y) ≤ M(A). By (C1) for (univ, Y, R̂) with W := univ, M(Y) = M_univ(Y) = μ_{R̂}(ℝ^P) = ∫_{M∩K} θ dHᵈ. By (C1) for (U, A, R_A) with W := U, M(A) = M_U(A) = μ_{R_A}(U) = ∫_{U∩M} θ dHᵈ. Since M ⊆ U, M ∩ K ⊆ U ∩ M, so M(Y) ≤ M(A) (lintegral_mono_set).
+10. Steps 6–9 show that Y has all the required properties. ∎
+
+## Key steps
+
+1. A vanishes on forms supported in U ∖ K, so (C1) gives μ_{R_A}(U ∖ K) = M_{U∖K}(A) = 0; since θ ≥ 1 on M ⊆ U, Hᵈ(M ∖ K) = 0.
+2. (IMC)(b) with E := K gives IMRep data (M ∩ K, θ, ξ). Repackaged in univ (local integrability from the compact K ⊆ U), it is an IMRep R̂ in ℝ^P, and (IMC)(b) in univ produces the current Y that R̂ represents.
+3. Y⌞U = A because M ∩ K and M agree Hᵈ-a.e.; Y vanishes off K because its carrier lies in K.
+4. Applying (C1) twice, M(Y) = ∫_{M∩K} θ dHᵈ ≤ ∫_M θ dHᵈ = M(A).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (all identical)`
+- `rg -n 'theorem exists_.*zero_one|theorem exists_.*_one_of_isClosed|theorem exists_msmooth|theorem exists_contMDiff' local-references/123e8435b4a2469b/mathlib/Mathlib (exists_contMDiffMap_one_nhds_of_subset_interior at Geometry/Manifold/PartitionOfUnity.lean:526)`
+- `rg -n 'cthickening_subset_open|exists_thickening_subset_open|IsCompact.cthickening|isCompact_cthickening' local-references/123e8435b4a2469b/mathlib/Mathlib (Topology/MetricSpace/Thickening.lean:283, 426)`
+- `rg -n 'theorem exists_contDiff_tsupport_subset|theorem IsOpen.exists_contDiff_support_eq' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `rg -n 'theorem norm_apply_le' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean (line 713)`
+- `grep -n 'restrictDomain|testFormOnInclusion|GeometricCurrentOn.ext|zero_apply|boundary_apply|tsupport_exteriorDerivative_subset|exteriorDerivativeTestOn|def massOn|def mass|massAdmissibleOn|abbrev Covector|abbrev DifferentialForm|def IsTestForm' simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass,Forms}.lean`
+- `grep -n 'def CountablyRectifiable|theorem countablyRectifiable_of_measure_zero' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `python3 -I scans of runs/20261011T150044Z-ba604216b4/dag.json: frozen types and status of dor_lmb_fc_total_bounded, dor_lmb_fc_deformation, dor_lmb_fc_deformation_top (decomposing), dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub, dtc_restrictDomain_isIntegerMultiplicity (accepted; byte-identical types); related accepted dtc_extend_by_zero, dtc_imrep_of_null_off_compact, dtc_imrep_current, dtc_massOn_eq_of_agreeOn, dtc_vanish_off_support, imrep_carrier_sdiff_support_null, dgcr_bwd_normal_cutoff; grep of the six dor_lmb_fc_tb_* names in dag.json, nodes/, GMT/, simongmt (no match)`
+- `python3 -I parse of nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json and nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/decomposition-v1.json (reuse-entry format for imrep_mass, im_calculus, restrict_im)`
+- `sed -n 2040,2095p book/chapter-06.txt (Simon Ch. 6, proof of Theorem 7.2, (1)-(3))`
+- `verifier/gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement -> /tmp/tb-decomp/lean/Challenge_*.lean; lake env lean on each (0 errors)`
+- `lake env lean /tmp/tb-decomp/lean/All.lean with #print axioms (components TBCheck.lean, FCheck.lean, ACheck.lean, B.lean, CCheck.lean, DE.lean); independent reviewer replay /tmp/tb-review/Faithful.lean in the exact comparator scope (exit 0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f1082ad442/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/tb-decomp/lean/All.lean`
+- `/tmp/tb-decomp/lean/Challenge_cell_chains_finite.lean`
+- `/tmp/tb-decomp/lean/Challenge_extend_univ.lean`
+- `/tmp/tb-decomp/lean/Challenge_eq_of_vanish_off.lean`
+- `/tmp/tb-decomp/lean/Challenge_extend_boundary.lean`
+- `/tmp/tb-decomp/lean/Challenge_zero_im.lean`
+- `/tmp/tb-decomp/lean/Challenge_high_degree_zero.lean`
+- `/tmp/tb-decomp/lean/Challenge_restrict_im.lean`
+
+Snapshot: project b4d606db and mathlib 25730c7c. The snapshot's Contract.lean and Submission.lean are byte-identical to the workspace files.
+
+Neither SimonGMT nor the snapshot has extension-by-zero, cutoff-uniqueness, cube-chain finiteness, zero-IM or high-degree-vanishing lemmas for GeometricCurrentOn. The DAG has related accepted declarations (dtc_extend_by_zero, dtc_imrep_of_null_off_compact, dtc_massOn_eq_of_agreeOn), but their types differ: support-based hypotheses, no mass bound. The only exact matches are the three reused accepted declarations dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub and dtc_restrictDomain_isIntegerMultiplicity, whose types are byte-identical.
+
+Mathlib in the snapshot supplies everything the child proofs cite:
+- exists_contMDiffMap_one_nhds_of_subset_interior with model modelWithCornersSelf ℝ (Euclid P), and contMDiff_iff_contDiff;
+- IsCompact.exists_cthickening_subset_open and IsCompact.cthickening;
+- PiLp.norm_apply_le, Set.Finite.pi and Set.Finite.of_finite_image;
+- LinearIndependent.fintype_card_le_finrank and AlternatingMap.map_linearDependent;
+- countablyRectifiable_of_measure_zero (SimonGMT Chapter03).
+
+The six new names are fresh. All nine child types elaborate as exact comparator challenges with 0 errors. All.lean shows that the children, together with deformation and deformation_top, imply the exact frozen selected type. Four children are fully proved with standard axioms, and sorry appears only in the five assumed external declarations. An independent reviewer returned ACCEPT.
