@@ -427,6 +427,29 @@ theorem Submission.fiw_tb_ext_apply_eq_of_eqOn : ∀ (P q : ℕ) (V K N : Set (E
   have h1 : Z (η - ω) = Z η - Z ω := Z.toCurrent.map_sub η ω
   rw [h1] at h0
   exact sub_eq_zero.mp h0
+/-- **Support of a current vanishing off a closed set (Simon Ch. 6, 2.11).**  If `Z ∈ 𝒟_q(V)`,
+`V` open, kills every test form whose support misses the closed set `K`, then `spt Z ⊆ K`.  A point
+`x ∈ V \ K` has a ball `B_ε(x) ⊆ V \ K`; `W = B_{ε/2}(x)` is open with compact closure
+`closure W ⊆ B_ε(x) ⊆ V`, and `Z` vanishes on `W`, so `x` lies in the zero region of `Z`. -/
+theorem Submission.fiw_tb_ext_support_subset : ∀ (P q : ℕ) (V K : Set (Eucl P)) (Z : GeometricCurrentOn V q), IsOpen V → IsClosed K → (∀ ω : TestFormOn V q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.support ⊆ K := by
+  intro P q V K Z hV hK hZ x hx
+  by_contra hxK
+  obtain ⟨hxV, hxz⟩ := hx
+  -- `V \ K` is an open neighbourhood of `x`: pick `B_ε(x) ⊆ V \ K`.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp (hV.sdiff hK) x ⟨hxV, hxK⟩
+  -- `W = B_{ε/2}(x)` is one of the open sets whose union is the zero region of `Z`.
+  apply hxz
+  refine ⟨ball x (ε / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (half_pos hε)⟩
+  · exact (isCompact_closedBall x (ε / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  · exact (closure_ball_subset_closedBall.trans
+      (closedBall_subset_ball (half_lt_self hε))).trans (hball.trans sdiff_subset)
+  · -- a test form supported in `W ⊆ B_ε(x)` has support disjoint from `K`
+    intro ω hω
+    apply hZ
+    rw [Set.disjoint_left]
+    intro y hy hyK
+    exact (hball (ball_subset_ball (half_le_self hε.le) (hω hy))).2 hyK
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
