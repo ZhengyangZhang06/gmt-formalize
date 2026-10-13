@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg --no-ignore -n 'rsod_blowUp_setIntegral_eq|rsod_blowUp_integral_tendsto_zero|rsod_approxTangent_transfer' project mathlib/Mathlib",
+        "theorem setIntegral_union|theorem setIntegral_indicator|theorem norm_setIntegral_le_of_norm_le_const|lemma Measure.integrableOn_of_bounded",
+        "euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image",
+        "theorem integral_smul_measure|theorem _root_.MeasurableEmbedding.integral_map",
+        "measure_eq_zero_iff_ae_notMem|theorem ae_all_iff",
+        "git show 98fd790d5bc2f705d0efa953dadfb274b5462997:GMT/Ch05/Submission.lean",
+        "python3 /tmp/c1cover-independent-audit-0ghxdgl7/run_checks.py challenge",
+        "python3 /tmp/c1cover-independent-audit-0ghxdgl7/run_checks.py proofs"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-cover-a-62ae94b19e/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-cover-a-62ae94b19e/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc/accepted-candidate.json",
+        "/tmp/c1cover-independent-audit-0ghxdgl7/proofs/GMT/Ch05/Submission.lean",
+        "/tmp/c1cover-independent-audit-0ghxdgl7/proofs/Axioms.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; the frozen project files and relevant compiler library files match the snapshot. Snapshot searches found none of the proposed declarations. Scanning the 319-node DAG and other decomposition files found no reservation of either new name. The reused declaration has a byte-identical frozen type and a retained comparator acceptance for commit 98fd790d5bc2f705d0efa953dadfb274b5462997.\n\nIndependent Lean checks passed for all three children and the selected parent: standalone challenges elaborate before child implementation, and every exact Submission.X solution compiles afterward. All three child proofs depend only on propext, Classical.choice and Quot.sound. The parent assembly additionally assumes exactly the three used density/submanifold sibling contracts.\n\nThe split is appropriate and acyclic: change of variables supports vanishing and transfer; vanishing supports transfer; transfer supplies the parent's pointwise argument. Borel disjointification, density exceptional sets independent of the test function, and their countable union with Z yield the exact selected parent conclusion. All names are bare identifiers, all types are standalone one-line propositions, and no Matrix/IsUnit construction occurs. The mathematical mechanism also agrees with [Simon's Chapter 3, §1](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including arbitrary sets and functions without measurability or integrability assumptions. Positive r makes the blow-up a measurable homeomorphism. All-set Hausdorff scaling proves the restriction/pushforward identity; integral_smul_measure and MeasurableEmbedding.integral_map then give the stated formula. Every step is justified without circular reliance. Reuse satisfies exact-type, comparator-acceptance, compatibility and axiom checks."
+    },
+    {
+      "key": "blowup_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes exactly the finite-measure and real-density hypotheses in the Lean type. The proof supplies a positive support radius, applies change of variables, localizes using a measurable closed ball, and bounds the integral using finite measure. Composing the density limit with r ↦ rR and applying norm squeeze proves the precise conclusion. No measurability of A or positivity of n is silently required. The only child dependency is correctly directed."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the conclusion match the Lean proposition. The proof inherits finrank P = n, applies vanishing to both finite-measure differences, and establishes the three-term identity through change of variables and integrable splitting of S = (S ∖ D) ∪ D. Measurability of D suffices for this splitting; neither membership of x nor measurability of C or N is assumed implicitly. The eventual identity and limit algebra complete the proof. Applying it with D = C_k establishes the selected parent's required pointwise step."
+    }
+  ],
+  "required_changes": []
+}

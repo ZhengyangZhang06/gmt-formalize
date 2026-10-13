@@ -461,6 +461,145 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- **Blow-up change of variables** (Simon Ch. 3, Remark 1.8(2)).  For `η = η_{x,r}`,
+`η(z) = r⁻¹(z − x)`, with `r > 0`, any set `M` and any `f, θ`:
+`∫_{η(M)} f(y) θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η z) θ(z) dHⁿ(z)`.  As `η` is a homeomorphism and
+`Hⁿ(η(S)) = r⁻ⁿ Hⁿ(S)` for every `S`, `Hⁿ ⌞ η(M) = r⁻ⁿ η_#(Hⁿ ⌞ M)`; no integrability is needed. -/
+theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f θ : Amb n ℓ → ℝ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) = (r ^ n)⁻¹ * ∫ z in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * θ z ∂(μHE[n] : Measure (Amb n ℓ)) := by
+  intro n ℓ M f θ x r hr
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
+  -- `η` is the homeomorphism `z ↦ r⁻¹ • (z - x)`, hence a measurable embedding.
+  let e : Amb n ℓ ≃ₜ Amb n ℓ :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : ⇑e = η := rfl
+  have hemb : MeasurableEmbedding η := he ▸ e.toMeasurableEquiv.measurableEmbedding
+  have hinj : Function.Injective η := he ▸ e.injective
+  have hsurj : Function.Surjective η := he ▸ e.surjective
+  -- `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for every set `S`: a translation followed by a homothety.
+  have hscale : ∀ S : Set (Amb n ℓ), μ (η '' S) = ENNReal.ofReal r⁻¹ ^ n * μ S := by
+    intro S
+    have hshift : Isometry (fun y : Amb n ℓ => y - x) :=
+      Isometry.of_dist_eq fun a b => by simp only [dist_eq_norm, sub_sub_sub_cancel_right]
+    have himage : η '' S = AffineMap.homothety (0 : Amb n ℓ) r⁻¹ '' ((fun y => y - x) '' S) := by
+      rw [← image_comp]
+      congr 1
+      funext y
+      simp [hη, Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Amb n ℓ) (inv_ne_zero hr.ne'),
+      hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow,
+      ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
+  -- `Hⁿ ⌞ η(M) = (r⁻¹)ⁿ η_#(Hⁿ ⌞ M)`, checked on measurable `A` via `A ∩ η(M) = η(η⁻¹(A) ∩ M)`.
+  have hmeas : μ.restrict (η '' M) = (ENNReal.ofReal r⁻¹ ^ n) • (μ.restrict M).map η := by
+    ext A hA
+    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply hemb.measurable hA,
+      Measure.restrict_apply (hemb.measurable hA), smul_eq_mul, ← hscale, image_inter hinj,
+      image_preimage_eq A hsurj]
+  -- Transfer the integral and simplify `x + r • η z = z`.
+  rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_pow,
+    ENNReal.toReal_ofReal (inv_pos.mpr hr).le, inv_pow, smul_eq_mul]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
+  simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
+    one_smul, add_sub_cancel]
+
+/-- **Blow-ups of a set of zero `n`-density vanish** (Simon Ch. 3, proof of Theorem 1.6 "⇒").
+If `Hⁿ(A) < ∞` and `ρ⁻ⁿ Hⁿ(A ∩ B_ρ(x)) → 0` as `ρ ↓ 0`, then `∫_{η_{x,r}(A)} f dHⁿ → 0` as
+`r ↓ 0` for every `f ∈ C_c(ℝ^{n+ℓ}, ℝ)`: if `|f| ≤ M` and `spt f ⊆ B_R(0)`, then
+`|∫_{η_{x,r}(A)} f dHⁿ| ≤ M r⁻ⁿ Hⁿ(A ∩ B_{rR}(x)) = M Rⁿ (rR)⁻ⁿ Hⁿ(A ∩ B_{rR}(x))`. -/
+theorem rsod_blowUp_integral_tendsto_zero : ∀ (n ℓ : ℕ) (x : Amb n ℓ) (A : Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (A ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ x A hA hD f
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  -- `|f| ≤ M` everywhere, and `f = 0` off `B_R(0)` for some `R > 0`.
+  obtain ⟨M, hM⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Amb n ℓ)
+  obtain ⟨R, hR, hR₀R⟩ : ∃ R : ℝ, 0 < R ∧ R₀ ≤ R :=
+    ⟨max R₀ 1, zero_lt_one.trans_le (le_max_right _ _), le_max_left _ _⟩
+  have hfR : ∀ y, R < ‖y‖ → f y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport fun h => by
+    have := mem_closedBall_zero_iff.mp (hR₀ h)
+    linarith
+  -- For `r > 0`, by the change of variables `η = η_{x,r}` and since `f ∘ η = 0` off `B_{rR}(x)`:
+  -- `|∫_{η(A)} f| = r⁻ⁿ |∫_{A ∩ B_{rR}(x)} f ∘ η| ≤ M Rⁿ (rR)⁻ⁿ Hⁿ(A ∩ B_{rR}(x))`.
+  have hbound : ∀ r : ℝ, 0 < r →
+      ‖∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μ‖ ≤
+        M * R ^ n * (((r * R) ^ n)⁻¹ * μ.real (A ∩ closedBall x (r * R))) := by
+    intro r hr
+    set η := Poincare.SimonGMT.Chapter03.blowUpMap x r
+    have hcv : ∫ y in η '' A, f y ∂μ = (r ^ n)⁻¹ * ∫ z in A, f (η z) ∂μ := by
+      simpa only [mul_one] using rsod_blowUp_setIntegral_eq n ℓ A f (fun _ => 1) x r hr
+    have hloc : ∫ z in A, f (η z) ∂μ = ∫ z in A ∩ closedBall x (r * R), f (η z) ∂μ := by
+      rw [← setIntegral_indicator measurableSet_closedBall]
+      refine integral_congr_ae (Eventually.of_forall fun z => ?_)
+      show f (η z) = (closedBall x (r * R)).indicator (fun z => f (η z)) z
+      by_cases hz : z ∈ closedBall x (r * R)
+      · rw [indicator_of_mem hz]
+      · rw [indicator_of_notMem hz]
+        rw [mem_closedBall, not_le] at hz
+        refine hfR _ ?_
+        show R < ‖r⁻¹ • (z - x)‖
+        rwa [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hr.le), lt_inv_mul_iff₀ hr,
+          ← dist_eq_norm]
+    have hfin : μ (A ∩ closedBall x (r * R)) < ∞ := (measure_mono inter_subset_left).trans_lt hA
+    rw [hcv, hloc, norm_mul, norm_inv, norm_pow, Real.norm_of_nonneg hr.le]
+    calc (r ^ n)⁻¹ * ‖∫ z in A ∩ closedBall x (r * R), f (η z) ∂μ‖
+        ≤ (r ^ n)⁻¹ * (M * μ.real (A ∩ closedBall x (r * R))) := by
+          gcongr
+          exact norm_setIntegral_le_of_norm_le_const hfin fun z _ => hM _
+      _ = M * R ^ n * (((r * R) ^ n)⁻¹ * μ.real (A ∩ closedBall x (r * R))) := by
+          have hRn : R ^ n ≠ 0 := pow_ne_zero n hR.ne'
+          rw [mul_pow, mul_inv]
+          field_simp
+  -- `r ↦ rR` maps `𝓝[>] 0` into itself, so the bound tends to `M Rⁿ · 0 = 0`.
+  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · simpa using (tendsto_id (x := 𝓝 (0 : ℝ))).mul_const R |>.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos hr hR
+  have htend := (hD.comp hmap).const_mul (M * R ^ n)
+  rw [mul_zero] at htend
+  refine squeeze_zero_norm' ?_ htend
+  filter_upwards [self_mem_nhdsWithin] with r hr using hbound r hr
+/-- **Transfer of approximate tangent spaces** (Simon Ch. 3, proof of Theorem 1.6 "⇒" and
+Remark 1.5(2)).  Let `D ⊆ C ∩ N` be Borel with `Hⁿ(C), Hⁿ(N) < ∞`, and let `C \ D` and `N \ D`
+have zero `n`-density at `x`.  If `T_x N = P`, then `T_x C = P`: for `η = η_{x,r}` with `r > 0`
+and `f ∈ C_c`, splitting `C` and `N` along `D` before the change of variables gives
+`∫_{η(C)} f = ∫_{η(N)} f − ∫_{η(N \ D)} f + ∫_{η(C \ D)} f`, and the last two terms tend to `0`. -/
+theorem rsod_approxTangent_transfer : ∀ (n ℓ : ℕ) (C N D : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), MeasurableSet D → D ⊆ C → D ⊆ N → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) N < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real ((C \ D) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real ((N \ D) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P := by
+  intro n ℓ C N D x P hD hDC hDN hC hN hCD hND hT
+  -- Step 1: `finrank P = n` is inherited from `T_x N = P`; fix a test function `f ∈ C_c`.
+  refine ⟨hT.1, fun f => ?_⟩
+  -- Step 2: `∫_{η(N)} f → ∫_P f`, while `∫_{η(N \ D)} f → 0` and `∫_{η(C \ D)} f → 0`.
+  have hlim := ((hT.2 f).sub (Submission.rsod_blowUp_integral_tendsto_zero n ℓ x (N \ D)
+      ((measure_mono sdiff_subset).trans_lt hN) hND f)).add
+    (Submission.rsod_blowUp_integral_tendsto_zero n ℓ x (C \ D)
+      ((measure_mono sdiff_subset).trans_lt hC) hCD f)
+  rw [sub_zero, add_zero] at hlim
+  -- Step 3: it suffices to prove `(∗)` `∫_{η(C)} f = ∫_{η(N)} f − ∫_{η(N \ D)} f + ∫_{η(C \ D)} f`
+  -- for every `r > 0`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set g : Amb n ℓ → ℝ := fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+  -- Step 4: change of variables with `θ ≡ 1`: `∫_{η(S)} f = r⁻ⁿ ∫_S f ∘ η`.
+  have hCV : ∀ S : Set (Amb n ℓ), ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y ∂μ =
+      (r ^ n)⁻¹ * ∫ z in S, g z ∂μ := fun S => by
+    simpa only [mul_one] using
+      Submission.rsod_blowUp_setIntegral_eq n ℓ S f (fun _ => 1) x r hr
+  -- Step 5: `g = f ∘ η` is continuous and bounded, hence integrable on sets of finite measure.
+  obtain ⟨B, hB⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  have hg : Continuous g := f.continuous.comp (by
+    unfold Poincare.SimonGMT.Chapter03.blowUpMap
+    fun_prop)
+  have hint : ∀ S : Set (Amb n ℓ), μ S < ∞ → IntegrableOn g S μ := fun S hS =>
+    Measure.integrableOn_of_bounded hS.ne hg.aestronglyMeasurable (ae_of_all _ fun z => hB _)
+  -- Step 6: `∫_S g = ∫_{S \ D} g + ∫_D g` whenever `D ⊆ S` and `Hⁿ(S) < ∞`.
+  have hsplit : ∀ S : Set (Amb n ℓ), D ⊆ S → μ S < ∞ →
+      ∫ z in S, g z ∂μ = ∫ z in S \ D, g z ∂μ + ∫ z in D, g z ∂μ := fun S hDS hS => by
+    conv_lhs => rw [← sdiff_union_of_subset hDS]
+    exact setIntegral_union disjoint_sdiff_left hD
+      (hint _ ((measure_mono sdiff_subset).trans_lt hS)) (hint _ ((measure_mono hDS).trans_lt hS))
+  -- Step 7: the identity `(∗)`.
+  rw [hCV C, hCV N, hCV (N \ D), hCV (C \ D), hsplit C hDC hC, hsplit N hDN hN]
+  ring
 /-- **Scaling of `Hⁿ` under the blow-up map** `η_{x,r}(y) = r⁻¹(y − x)` (`Chapter03.blowUpMap`;
 Simon, Ch. 3, 1.4 and the proof of 1.9): for `r > 0` and **every** set `B ⊆ ℝ^{n+ℓ}` (no
 measurability needed), (i) `rⁿ Hⁿ(η_{x,r}(B)) = Hⁿ(B)` and
@@ -1047,6 +1186,55 @@ theorem rsod_isC1Submanifold_approxTangent : ∀ (m N : ℕ), 1 ≤ m → ∀ (S
   rw [himg]
   ext y
   exact ⟨fun h => ⟨⟨hε₀W h.2, h.1⟩, h.2⟩, fun h => ⟨h.1.2, h.2⟩⟩
+/-- **Approximate tangent spaces a.e. on a set covered by `C¹` submanifolds** (Simon Ch. 3,
+Remark 1.3 and the proof of Theorem 1.6 "⇒", which also gives Remark 1.5(2)).  Let `n ≥ 1`, `C`
+Borel with `Hⁿ(C) < ∞`, `Hⁿ(Z) = 0`, and `C ⊆ Z ∪ ⋃_k N_k` with each `N_k` an `n`-dimensional `C¹`
+submanifold with `Hⁿ(N_k) < ∞`.  Then `T_x C` exists for `Hⁿ`-a.e. `x ∈ C`.
+(1) (1.3) Each `N_k` is Borel, so `C_k := (C ∩ N_k) \ ⋃_{i<k} N_i ⊆ C ∩ N_k` is Borel, and each
+`x ∈ C \ Z` lies in `C_k` for the least `k` with `x ∈ N_k`.
+(2) (Upper Density Theorem, Ch. 1, 3.6) Off an `Hⁿ`-null set `E_k`, every `x ∈ C_k` has
+`ρ⁻ⁿ Hⁿ((C \ C_k) ∩ B_ρ(x)) → 0` and `ρ⁻ⁿ Hⁿ((N_k \ C_k) ∩ B_ρ(x)) → 0` as `ρ ↓ 0`.
+(3) At such `x`, `T_x N_k = P` exists as `N_k` is a `C¹` submanifold, and `T_x C = P` since `C` and
+`N_k` differ from `C_k` by sets of zero `n`-density at `x`.  The exceptional set lies in
+`Z ∪ ⋃_k E_k`, which is `Hⁿ`-null. -/
+theorem rsod_ae_approxTangent_of_c1Cover : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (C Z : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), MeasurableSet C → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (∀ k, IsC1Submanifold n (N k) ∧ (μHE[n] : Measure (Amb n ℓ)) (N k) < ∞) → C ⊆ Z ∪ ⋃ k, N k → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ C → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P := by
+  intro n ℓ hn C Z N hC hCfin hZ hN hcov
+  -- Step 1 (Remark 1.3): the Borel pieces `C_k = (C ∩ N_k) \ ⋃_{i<k} N_i`.
+  have hNm : ∀ k, MeasurableSet (N k) := fun k =>
+    Submission.rsod_isC1Submanifold_measurableSet n (n + ℓ) (N k) (hN k).1
+  set D : ℕ → Set (Amb n ℓ) := fun k => (C ∩ N k) \ ⋃ i < k, N i
+  have hDm : ∀ k, MeasurableSet (D k) := fun k =>
+    (hC.inter (hNm k)).diff (MeasurableSet.iUnion fun i => MeasurableSet.iUnion fun _ => hNm i)
+  -- Step 2 (Upper Density Theorem): `C \ C_k` and `N_k \ C_k` have zero `n`-density at
+  -- `Hⁿ`-a.e. point outside them.
+  have hdC : ∀ k, ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ C \ D k →
+      Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ *
+        (μHE[n] : Measure (Amb n ℓ)).real ((C \ D k) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) :=
+    fun k => Submission.rsod_ae_tendsto_density_zero_outside n ℓ (μHE[n] : Measure (Amb n ℓ))
+      (C \ D k) (hC.diff (hDm k)) ((measure_mono sdiff_subset).trans_lt hCfin)
+  have hdN : ∀ k, ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ N k \ D k →
+      Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ *
+        (μHE[n] : Measure (Amb n ℓ)).real ((N k \ D k) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) :=
+    fun k => Submission.rsod_ae_tendsto_density_zero_outside n ℓ (μHE[n] : Measure (Amb n ℓ))
+      (N k \ D k) ((hNm k).diff (hDm k)) ((measure_mono sdiff_subset).trans_lt (hN k).2)
+  -- Step 3: off `Z ∪ ⋃_k E_k`, each `x ∈ C` lies in `C_k` for the least `k` with `x ∈ N_k`.
+  filter_upwards [ae_all_iff.2 hdC, ae_all_iff.2 hdN, measure_eq_zero_iff_ae_notMem.1 hZ]
+    with x hxC' hxN' hxZ hxC
+  have hex : ∃ k, x ∈ N k := by
+    rcases hcov hxC with h | h
+    · exact absurd h hxZ
+    · exact mem_iUnion.1 h
+  classical
+  obtain ⟨k, hxk, hmin⟩ : ∃ k, x ∈ N k ∧ ∀ i < k, x ∉ N i :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun i hi => Nat.find_min hex hi⟩
+  have hxD : x ∈ D k := ⟨⟨hxC, hxk⟩, fun h => by
+    obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.1 h
+    exact hmin i hi hxi⟩
+  -- Step 4: `T_x N_k = P` (a `C¹` submanifold) transfers to `T_x C = P` (Remark 1.5(2)).
+  obtain ⟨P, hP⟩ := Submission.rsod_isC1Submanifold_approxTangent n (n + ℓ) hn (N k) (hN k).1 x hxk
+  exact ⟨P, Submission.rsod_approxTangent_transfer n ℓ C (N k) (D k) x P (hDm k)
+    (fun y hy => hy.1.1) (fun y hy => hy.1.2) hCfin (hN k).2 (hxC' k fun h => h.2 hxD)
+    (hxN' k fun h => h.2 hxD) hP⟩
 
 end Submission
 
