@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}",
+        "python3 -I: list dag.json node ids and lean_name (56 nodes; no collision with the twelve child names)",
+        "grep -n 'exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' -A 25 mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "grep -rn 'theorem LinearMap.exists_antilipschitzWith' mathlib/Mathlib",
+        "grep -n 'def normDet\\|normDet_of_subsingleton\\|normDet_comp\\|normDet_sq_eq_det_gram\\|euclideanHausdorffMeasure_image' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "sed -n 1,100p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n hausdorffMeasure_zero_singleton mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "grep -rn 'MeasurableSet.image_of_continuousOn_injOn\\|ae_tendsto_measure_inter_div\\|hausdorffMeasure_image_le\\|measurable_fderiv\\|measurableSet_of_differentiableAt\\|extDerivWithin_pullback\\|det_isEmpty\\|lintegral_iUnion\\|to_localInverse\\|toHomeomorph\\|exists_isSubordinate' mathlib/Mathlib",
+        "sed -n 1,420p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n areaJacobianAt simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "sed -n 60,110p simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean; sed -n 30,70p simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 95,140p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; sed -n 110,360p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; sed -n 25,125p simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "sed -n 1,75p book/chapter-07.txt; sed -n 400,440p book/chapter-06.txt; sed -n 760,880p book/chapter-06.txt",
+        "lake env lean /tmp/mis-decomp-v2/Check.lean (import GMT.Ch07.Submission; 12 child types in namespace GMT.Ch07.Submission, minimizing_implies_stationary and a conditional assembly_check; #print axioms)",
+        "lake env lean /tmp/mis-decomp-v2/Standalone.lean (same with the frozen contract inlined)",
+        "lake env lean /tmp/mis-decomp-v2/Radius.lean (radius_check, pieces_check; #print axioms)",
+        "lake env lean /tmp/mis-decomp-v2/Instances.lean (Gram Matrix.of, HasOrthogonalProjection instances, operator norm, μHE[0] singleton, normDet out of ℝ^0)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/mis-decomp-v2/Check.lean",
+        "/tmp/mis-decomp-v2/Standalone.lean",
+        "/tmp/mis-decomp-v2/Radius.lean",
+        "/tmp/mis-decomp-v2/Instances.lean"
+      ],
+      "conclusion": "The local snapshot (project b4d606d, Mathlib 25730c7c) has no counterpart for the contract's IMRep push-forward, first variation or mean curvature, so the twelve children are new. The library facts they reuse are the ones cited in the child proofs. The only blocking defect from v1 is confirmed and repaired. Mathlib's exists_partition_approximatesLinearOn_of_hasFDerivWithinAt takes r : (E →L[ℝ] F) → ℝ≥0 with rpos : ∀ A, r A ≠ 0, and the unit-sphere minimum used in v1 does not exist for n = 0. The fix sets m(A) = 1 for n = 0 (alternatively 1/K from LinearMap.exists_antilipschitzWith, which also covers subsingleton domains) and r = 1 on non-injective maps; rpos then holds for every A. pieces_check compiles the resulting bi-Lipschitz partition for all n and P using only propext, Classical.choice and Quot.sound. The n = 0 facts used in the new step 10 exist: Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, LinearMap.normDet_of_subsingleton and Matrix.det_isEmpty. The upper-density lemma needs only real n ≥ 0, and the SimonGMT area lemmas have no rank hypothesis and accept arbitrary weights. All twelve child types (eleven identical to v1) elaborate after import GMT.Ch07.Submission and also with the contract inlined. minimizing_implies_stationary compiles from them, and the conditional assembly uses only standard axioms. Inferred instances were verified: Matrix.of Gram matrix, Submodule.HasOrthogonalProjection.ofCompleteSpace and ContinuousLinearMap.hasOpNorm. No child name collides with any of the 56 DAG nodes."
+    }
+  ],
+  "proof": "Source: this is the fact \"μ_T(U ∖ spt T) = 0\", used in step 2 of the parent proof (Simon 6.2.11 with 6.3.1; μ_T = θH^n⌞M by 6.3.2(3)).\n1. Notation. M := R.carrier ⊆ U, θ := R.mult (θ ≥ 1 on M), ξ := R.orient, μ := μHE[n].restrict M. By definition T.support = U ∖ Z with Z := T.zeroRegion = ⋃𝒲, where 𝒲 is the family of open W with closure W compact, closure W ⊆ U and T.VanishesOn W (T ω = 0 for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ W). Since M ⊆ U, M ∖ T.support = M ∩ Z.\n2. Countable reduction. ℝ^P is second countable, so ⋃𝒲 = ⋃_k W_k for a countable subfamily (W_k) ⊆ 𝒲 (Mathlib TopologicalSpace.isOpen_sUnion_countable). By countable subadditivity it suffices to show H^n(M ∩ W) = 0 for one fixed W ∈ 𝒲.\n3. A finite measure. C := closure W is compact and C ⊆ U, so ∫_{M ∩ C} θ dH^n < ∞ by R.locallyIntegrable_mult; since θ ≥ 1 on M, H^n(M ∩ C) < ∞. Put ν := μHE[n].restrict (M ∩ C), a finite Borel measure on ℝ^P.\n4. Orientation facts. By R.orients, for μ-a.e. x there are a plane Q and an orthonormal family τ = (τ_1, …, τ_n) spanning Q with ξ(x)(β) = s·β(τ_1, …, τ_n) for all n-covectors β, s ∈ {1, −1}. At such x: (a) |ξ(x)(β)| ≤ ‖β‖ (operator norm of the continuous alternating map, since |τ_i| = 1); (b) ξ(x) ≠ 0: the n-covector β_τ(u_1, …, u_n) := det(⟨τ_a, u_b⟩)_{a,b} (for n = 0 the constant 1) is continuous, multilinear and alternating, and β_τ(τ) = det I = 1, so ξ(x)(β_τ) = s ≠ 0.\n5. Testing T. Fix an n-covector α and set f_α(x) := θ(x)·ξ(x)(α). It is ν-a.e. strongly measurable (θ measurable, ξ a.e. strongly measurable for μ ≥ ν) and |f_α| ≤ ‖α‖θ ν-a.e., so f_α ∈ L¹(ν). For every g ∈ C^∞(ℝ^P, ℝ) with compact support and tsupport g ⊆ W, the form ω(x) := g(x)·α is smooth with compact support and tsupport ω ⊆ tsupport g ⊆ W ⊆ U, so ω ∈ 𝒟^n(U) with tsupport in W. As T vanishes on W and R represents T: 0 = T ω = ∫_M θ(x) ξ(x)(g(x)α) dH^n = ∫ g f_α dν (the integrand vanishes off W ⊆ C).\n6. Fundamental lemma. Mathlib's IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (open set W, measure ν, f_α locally integrable on W) gives: for ν-a.e. x, x ∈ W ⇒ θ(x)ξ(x)(α) = 0. Since θ ≥ 1 on M and ν is carried by M, ξ(x)(α) = 0 for ν-a.e. x ∈ W.\n7. Conclusion. Let α_1, …, α_m be a basis of the finite-dimensional space of n-covectors on ℝ^P. Intersecting the finitely many full-measure sets of step 6, for ν-a.e. x ∈ W the linear functional ξ(x) vanishes on a basis, hence ξ(x) = 0. By step 4(b), ξ(x) ≠ 0 for μ-a.e. x, hence for ν-a.e. x. Therefore ν(W) = H^n(M ∩ C ∩ W) = H^n(M ∩ W) = 0, and by step 2, H^n(M ∖ T.support) = 0.",
+  "key_steps": [
+    "M ∖ spt T = M ∩ zeroRegion(T), a countable union of open W ⊂⊂ U on which T vanishes.",
+    "Testing T with g·α (g ∈ C_c^∞(W), α a constant covector) gives ∫ g θ ξ(α) dH^n⌞M = 0.",
+    "The fundamental lemma of the calculus of variations gives ξ = 0 a.e. on M ∩ W, while unit orientations are nonzero; hence H^n(M ∩ W) = 0."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
