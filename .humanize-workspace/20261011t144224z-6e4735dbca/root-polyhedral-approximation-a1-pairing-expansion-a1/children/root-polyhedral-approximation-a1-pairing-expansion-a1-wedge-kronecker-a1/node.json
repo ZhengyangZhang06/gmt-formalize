@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1.wedge_kronecker-a1",
+  "parent_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+  "depth": 3,
+  "title": "Kronecker duality of coordinate wedges on increasing multi-indices (Simon 6.1.1–1.2)",
+  "statement": "Let P, n ∈ ℕ. For k ∈ Fin P let e_k := EuclideanSpace.single k 1 be the k-th standard basis vector of ℝ^P = Eucl P. For a strictly increasing multi-index I ∈ SimonMultiIndex n P (an order embedding Fin n ↪o Fin P), let dx^I := dx^{I(0)} ∧ ⋯ ∧ dx^{I(n−1)} = wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) ∈ Λ^n(ℝ^P). Then dx^I(e_{I(0)}, …, e_{I(n−1)}) = 1. Moreover dx^I(e_{J(0)}, …, e_{J(n−1)}) = 0 for every J ∈ SimonMultiIndex n P with J ≠ I. In the project's notation: euclideanCovectorCoordinate dx^I I = 1, and euclideanCovectorCoordinate dx^I J = 0 for all J ≠ I.",
+  "lean_statement": "∀ (P n : ℕ) (I : SimonMultiIndex n P), euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) I = 1 ∧ ∀ J : SimonMultiIndex n P, J ≠ I → euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J = 0",
+  "lean_name": "polyhedral_approx_pairing_wedge_kronecker",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-pairing-expansion-a1-wedge-kronecker-a1-a1"
+}

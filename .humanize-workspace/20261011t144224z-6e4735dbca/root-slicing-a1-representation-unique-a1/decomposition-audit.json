@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -g '*.lean' 'slicing_ru_|slicing_representation_unique|covector_eq_sum_coord_smul_wedge' project/GMT",
+        "exists_cthickening_subset_open|exists_contDiff_approx|exists_contMDiffMap_one_nhds_of_subset_interior",
+        "theorem ext_of_generate_finite|theorem isPiSystem_isOpen|theorem integral_withDensity_eq_integral_toReal_smul|theorem isFiniteMeasure_withDensity_ofReal",
+        "ext_alternating|theorem map_perm|theorem monotone_sort|range_inj_of_wellFoundedLT|det_eq_zero_of_column_eq_zero",
+        "rg -n -g '*.json' '\"lean_name\": \"slicing_ru_(integrableOn_apply|smooth_to_continuous|continuous_to_bounded|covector_expansion)\"' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ru_independent_audit/ExactTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/decomposition-v1.json",
+        "/tmp/ru_split_check/Scratch/Full.lean",
+        "/tmp/ru_split_check/Scratch/AssemblyAx.lean",
+        "/tmp/ru_independent_audit/ExactTypes.lean"
+      ],
+      "conclusion": "Verified the pinned project and package revisions and compatibility of the inspected sources. The snapshot supplies the stated test-form, dual-vector, wedge and smoothness definitions and the required approximation, integration and alternating-map lemmas. The declaration-name search in snapshot project/GMT returned no matches. All four proposed names are bare identifiers unreserved by another active branch; the compactness branch's analogous expansion declaration has a different name and is not reused. Each frozen statement passes lexical validation and independently elaborates as Prop in the comparator scope before any child implementation. Borel-space, finite-index and C-infinity coercions were checked; no matrix-unit construction occurs. Independently rerunning Full.lean succeeded: all four exact child targets and the exact selected parent depend only on propext, Classical.choice and Quot.sound. AssemblyAx.lean confirms that precisely these four child obligations suffice, alongside standard axioms. The split is appropriate: localization, approximation, measure uniqueness and coordinate expansion are genuine independent obligations. Their empty sibling dependency lists are correct and acyclic, and the supplied assembly proves the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_integrability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition matches every prose hypothesis and the integrability-on-L conclusion. Compact containment gives the smooth cutoff; multiplying it by the arbitrary constant covector produces an admissible test form. Linearity and the assumed test-form integrability yield an integrable function agreeing with v(·)(c) on measurable L. The empty case is covered. No measurability or local-finiteness assumption on the original data is silently added, and no parent or sibling theorem is used."
+    },
+    {
+      "key": "smooth_to_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly expresses smoothness of every finite order, compact support and support containment. The proof constructs admissible mollifications, verifies their support and common bound, proves pointwise convergence, and applies dominated convergence separately under both measures. The empty-support case is handled. The supplied support-preserving approximation alternative also matches the pinned library. This is a complete independent proof, not deferred proof planning."
+    },
+    {
+      "key": "continuous_to_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including integrability, Borel measurability, global boundedness and vanishing outside O. Borel representatives legitimately preserve the integrals. Positive and negative densities define finite measures, and the integration identity has integrable terms. The explicit cutoffs have compact support inside V and increase to its indicator, including the full-space case. Finite-measure π–λ uniqueness gives equality of restrictions, which proves the bounded-integrand conclusion. No circular dependence or missing regularity assumption remains."
+    },
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated coordinate expansion and the pinned definitions of coefficients and wedges. Determinant evaluation establishes the Kronecker property; equal finite ranges force equal increasing indices, justifying the zero-column argument. Sorting and the alternating sign rule extend equality to injective basis tuples, and basis extensionality completes the proof. The k=0 and k>P cases are covered. The proof is independent of the selected parent and other active branches."
+    }
+  ],
+  "required_changes": []
+}
