@@ -458,6 +458,70 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 7.1, second assertion (pp. 127–128), Schauder step by difference
+quotients (Giaquinta–Martinazzi, §4.3, with uniform `C^{1,α}` bounds in place of `W^{1,2}` bounds):
+let `f` be `C¹` on `B' = B̆_{ρ+δ|e|}(x₀)` and let the difference quotients
+`g_d = d⁻¹ (f(· + d e) - f)`, `0 < |d| < δ`, satisfy `‖Dg_d‖ ≤ M` and `[Dg_d]_α ≤ M` on
+`B = B̆_ρ(x₀)`.  Then `D_e f = Df(·) e` is `C¹` on `B`, `‖D(D_e f)‖ ≤ M` and `[D(D_e f)]_α ≤ M`.
+For `|d| < δ` the shift `x + d e` of `x ∈ B` stays in `B'`, so `Dg_d = d⁻¹ (Df(· + d e) - Df)` on
+`B` by the chain rule.  As `d → 0`, `g_d → D_e f` uniformly on compact subsets of `B`
+(`dohr_eb_dql_diffQuot_tendstoUniformlyOn`), and uniform `C^{1,α}` bounds pass to such limits
+(`dohr_eb_dql_c1Holder_of_tendstoUniformlyOn`). -/
+theorem dohr_eb_difference_quotient_limit : ∀ (n ℓ : ℕ) (α : ℝ) (f : Rn n → Rn ℓ) (x₀ e : Rn n) (ρ δ M : ℝ), 0 < α → α ≤ 1 → 0 < δ → ContDiffOn ℝ 1 f (ball x₀ (ρ + δ * ‖e‖)) → (∀ d : ℝ, d ≠ 0 → |d| < δ → ∀ x ∈ ball x₀ ρ, ‖d⁻¹ • (fderiv ℝ f (x + d • e) - fderiv ℝ f x)‖ ≤ M) → (∀ d : ℝ, d ≠ 0 → |d| < δ → ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖d⁻¹ • (fderiv ℝ f (x + d • e) - fderiv ℝ f x) - d⁻¹ • (fderiv ℝ f (y + d • e) - fderiv ℝ f y)‖ ≤ M * ‖x - y‖ ^ α) → ContDiffOn ℝ 1 (fun x => fderiv ℝ f x e) (ball x₀ ρ) ∧ (∀ x ∈ ball x₀ ρ, ‖fderiv ℝ (fun z => fderiv ℝ f z e) x‖ ≤ M) ∧ ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ (fun z => fderiv ℝ f z e) x - fderiv ℝ (fun z => fderiv ℝ f z e) y‖ ≤ M * ‖x - y‖ ^ α := by
+  intro n ℓ α f x₀ e ρ δ M hα _hα1 hδ hf hbd hhol
+  -- `B = B̆_ρ(x₀) ⊆ B' = B̆_{ρ+δ|e|}(x₀)`, and `f` is differentiable on the open set `B'`.
+  have hB'open : IsOpen (ball x₀ (ρ + δ * ‖e‖)) := isOpen_ball
+  have hBB' : ball x₀ ρ ⊆ ball x₀ (ρ + δ * ‖e‖) :=
+    ball_subset_ball (le_add_of_nonneg_right (mul_nonneg hδ.le (norm_nonneg e)))
+  have hdiff : ∀ z ∈ ball x₀ (ρ + δ * ‖e‖), DifferentiableAt ℝ f z := fun z hz =>
+    (hf.differentiableOn one_ne_zero z hz).differentiableAt (hB'open.mem_nhds hz)
+  -- For `|d| < δ` and `x ∈ B`: `|x + d e - x₀| ≤ |x - x₀| + |d| |e| < ρ + δ |e|`.
+  have hshift : ∀ d : ℝ, |d| < δ → ∀ x ∈ ball x₀ ρ, x + d • e ∈ ball x₀ (ρ + δ * ‖e‖) := by
+    intro d hd x hx
+    rw [mem_ball] at hx ⊢
+    have h1 : dist (x + d • e) x₀ ≤ dist x x₀ + ‖d • e‖ := by
+      rw [dist_eq_norm, dist_eq_norm]
+      calc ‖x + d • e - x₀‖ = ‖(x - x₀) + d • e‖ := by congr 1; abel
+        _ ≤ ‖x - x₀‖ + ‖d • e‖ := norm_add_le _ _
+    have h2 : ‖d • e‖ ≤ δ * ‖e‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_right hd.le (norm_nonneg e)
+    linarith
+  -- Step 1 (chain rule): `Dg_d(x) = d⁻¹ (Df(x + d e) - Df(x))` for `|d| < δ` and `x ∈ B`.
+  have hFderiv : ∀ d : ℝ, |d| < δ → ∀ x ∈ ball x₀ ρ,
+      HasFDerivAt (fun y => d⁻¹ • (f (y + d • e) - f y))
+        (d⁻¹ • (fderiv ℝ f (x + d • e) - fderiv ℝ f x)) x := by
+    intro d hd x hx
+    have h1 : HasFDerivAt (fun y => f (y + d • e)) (fderiv ℝ f (x + d • e)) x :=
+      (hasFDerivAt_comp_add_right (d • e)).2 (hdiff _ (hshift d hd x hx)).hasFDerivAt
+    have h2 : HasFDerivAt f (fderiv ℝ f x) x := (hdiff x (hBB' hx)).hasFDerivAt
+    exact (h1.sub h2).const_smul d⁻¹
+  -- The admissible `d` (`d ≠ 0`, `|d| < δ`) form a set of the punctured filter `𝓝[≠] 0`.
+  have hev : ∀ᶠ d in 𝓝[≠] (0 : ℝ), d ≠ 0 ∧ |d| < δ := by
+    have h1 : ∀ᶠ d in 𝓝[≠] (0 : ℝ), d ≠ 0 := self_mem_nhdsWithin
+    have h2 : ∀ᶠ d in 𝓝[≠] (0 : ℝ), |d| < δ := by
+      have : ∀ᶠ d in 𝓝 (0 : ℝ), |d| < δ := by
+        filter_upwards [Metric.ball_mem_nhds (0 : ℝ) hδ] with d hd
+        simpa [Real.dist_eq] using hd
+      exact nhdsWithin_le_nhds this
+    exact h1.and h2
+  -- Steps 2–7: `g_d → D_e f` uniformly on compact `K ⊆ B ⊆ B'` along `𝓝[≠] 0`, and the uniform
+  -- bounds `‖Dg_d‖ ≤ M`, `[Dg_d]_α ≤ M` pass to the limit.
+  exact Submission.dohr_eb_dql_c1Holder_of_tendstoUniformlyOn n ℓ ℝ (𝓝[≠] (0 : ℝ)) inferInstance
+    (fun d y => d⁻¹ • (f (y + d • e) - f y)) (fun x => fderiv ℝ f x e) x₀ ρ α M hα
+    (hev.mono fun d hd x hx => (hFderiv d hd.2 x hx).differentiableAt)
+    (hev.mono fun d hd x hx => by
+      rw [(hFderiv d hd.2 x hx).fderiv]; exact hbd d hd.1 hd.2 x hx)
+    (hev.mono fun d hd x hx y hy => by
+      rw [(hFderiv d hd.2 x hx).fderiv, (hFderiv d hd.2 y hy).fderiv]
+      exact hhol d hd.1 hd.2 x hx y hy)
+    (fun K hK hKB => Submission.dohr_eb_dql_diffQuot_tendstoUniformlyOn n ℓ f _ K e hB'open hf
+      hK (hKB.trans hBB'))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
