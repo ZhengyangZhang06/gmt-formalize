@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a2634e5b38b444ad2de2d663100d0f2e1cd24fe3a19a442a8b9589aa7f7177ac",
+  "git_delta": {
+    "base_commit": "fb06b2bde8f7dd76f49efd9d91c9dfd76eb57289",
+    "candidate_commit": "6425efc82eeee507181c88664b9a41aecabc6711",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1457e6e6d2e436939641db9960d467b72f09cc6dc2513d7873983a416b8eddae",
+    "source_sha256": "868b0fda30a8eb5d102a1a8bedcda660aec23f582bba72f647334f8b23c50034",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_standing_density_bounds",
+      "statement": "∀ (n k : ℕ), 0 < n → ∃ δ₁ C₂ : ℝ, 0 < δ₁ ∧ δ₁ ≤ 1 / 8 ∧ 0 < C₂ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₁ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → (∀ y ∈ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → R.measure (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) ∧ (∀ y ∈ R.measure.support ∩ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ 2 * R.measure (closedBall y t)) ∧ (∀ y ∈ R.measure.support ∩ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → ∫⁻ x in closedBall y t, ENNReal.ofReal (‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂R.measure ≤ ENNReal.ofReal (C₂ * δ)) ∧ (∀ᵐ x ∂R.measure, x ∈ closedBall z (4 * δ * ρ) → R.mult x = 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
