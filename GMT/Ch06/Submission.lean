@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Mathlib.Analysis.Calculus.ImplicitContDiff
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -358,6 +359,146 @@ def IntegralityOfWeakLimits : Prop :=
       WeaklyConvergesOn Tj T → IsIntegerMultiplicity T
 
 end
+
+/-- Local graph chart of a regular level set (implicit-function step of the level-set charts used
+for integer multiplicity slices, Simon Ch. 6, §4): if `h` is `C¹`, `U` is open, `w₀ ∈ U` and
+`Dh(w₀) ≠ 0`, then a `C¹` map `ψ : ℝ^m → ℝ^{m+1}` with `‖v - v'‖ ≤ ‖ψ v - ψ v'‖` maps `B(0, r)`
+into `U ∩ {h = h(w₀), Dh ≠ 0}` and onto the level set inside an open `W ∋ w₀`.  With the frame
+`(ι, p, e)` of `Dh(w₀)` (`slicing_im_st_lsc_kernel_frame`), `ψ v = w₀ + ι v + g̃ v • e`, where
+`g̃` is a `C¹` extension (`slicing_im_st_lsc_c1_extension`) of the implicit function `g` of
+`H (v, s) = h (w₀ + ι v + s • e)`. -/
+theorem Submission.slicing_im_st_lsc_local_graph :
+    ∀ (m : ℕ) (h : Eucl (m + 1) → ℝ) (U : Set (Eucl (m + 1))) (w₀ : Eucl (m + 1)), ContDiff ℝ 1 h → IsOpen U → w₀ ∈ U → fderiv ℝ h w₀ ≠ 0 → ∃ (ψ : Eucl m → Eucl (m + 1)) (r : ℝ) (W : Set (Eucl (m + 1))), ContDiff ℝ 1 ψ ∧ 0 < r ∧ IsOpen W ∧ w₀ ∈ W ∧ (∀ v v' : Eucl m, ‖v - v'‖ ≤ ‖ψ v - ψ v'‖) ∧ (∀ v ∈ ball (0 : Eucl m) r, ψ v ∈ U ∧ h (ψ v) = h w₀ ∧ fderiv ℝ h (ψ v) ≠ 0) ∧ ∀ w ∈ W, h w = h w₀ → ∃ v ∈ ball (0 : Eucl m) r, ψ v = w := by
+  have hKF := Submission.slicing_im_st_lsc_kernel_frame
+  have hC1E := Submission.slicing_im_st_lsc_c1_extension
+  intro m h U w₀ hh hU hw₀ hdh
+  -- Frame of `ℓ := Dh(w₀)`: `ℓ e = 1`, `ι` isometric, `ι v ⟂ e` and `ι (p u) + ℓ u • e = u`.
+  obtain ⟨ι, p, e, hℓe, hιn, hιe, hdec⟩ := hKF m (fderiv ℝ h w₀) hdh
+  set ℓ := fderiv ℝ h w₀ with hℓdef
+  -- `A (v, s) = w₀ + ι v + s • e` and `H := h ∘ A`; `∂ₛH(0, 0) = s ↦ s • ℓ e` is the identity.
+  let L : Eucl m × ℝ →L[ℝ] Eucl (m + 1) :=
+    ι.comp (ContinuousLinearMap.fst ℝ (Eucl m) ℝ) +
+      (ContinuousLinearMap.snd ℝ (Eucl m) ℝ).smulRight e
+  let A : Eucl m × ℝ → Eucl (m + 1) := fun q => w₀ + L q
+  have hAapp : ∀ q : Eucl m × ℝ, A q = w₀ + ι q.1 + q.2 • e := by
+    intro q
+    simp [A, L, add_assoc]
+  let H : Eucl m × ℝ → ℝ := fun q => h (A q)
+  have hAd : ∀ q, HasFDerivAt A L q := fun q => (L.hasFDerivAt).const_add w₀
+  have hA0 : A (0, 0) = w₀ := by
+    rw [hAapp]
+    simp
+  have hH : ContDiff ℝ 1 H := hh.comp (contDiff_const.add L.contDiff)
+  have hHd : HasFDerivAt H (ℓ.comp L) ((0 : Eucl m), (0 : ℝ)) := by
+    have h1 := (hh.differentiable one_ne_zero (A (0, 0))).hasFDerivAt.comp ((0 : Eucl m), (0 : ℝ))
+      (hAd (0, 0))
+    rw [hA0] at h1
+    exact h1
+  have hcomp : fderiv ℝ H ((0 : Eucl m), (0 : ℝ)) ∘L ContinuousLinearMap.inr ℝ (Eucl m) ℝ =
+      ContinuousLinearMap.id ℝ ℝ := by
+    rw [hHd.fderiv]
+    ext
+    simp [L, hℓe]
+  have hinv : (fderiv ℝ H ((0 : Eucl m), (0 : ℝ)) ∘L
+      ContinuousLinearMap.inr ℝ (Eucl m) ℝ).IsInvertible := by
+    rw [hcomp]
+    exact ⟨ContinuousLinearEquiv.refl ℝ ℝ, rfl⟩
+  -- Implicit function `g`: `g 0 = 0`, `g` is `C¹` at `0` and, on `B((0, 0), ε)`,
+  -- `H (v, s) = H (0, 0) ↔ g v = s`.
+  have hHat : ContDiffAt ℝ 1 H ((0 : Eucl m), (0 : ℝ)) := hH.contDiffAt
+  set g := hHat.implicitFunction one_ne_zero hinv with hgdef
+  have hg0 : g 0 = 0 := hHat.implicitFunction_apply_self one_ne_zero hinv
+  have hgC1 : ContDiffAt ℝ 1 g 0 := hHat.contDiffAt_implicitFunction one_ne_zero hinv
+  have hiff := hHat.eventually_apply_eq_iff_implicitFunction one_ne_zero hinv
+  obtain ⟨ε, hε, hεball⟩ := Metric.mem_nhds_iff.1 hiff
+  -- `g' = g` on `B(0, ρ)` is `C¹` on `ℝ^m`, and `ψ v := w₀ + ι v + g' v • e`.
+  obtain ⟨ρ, hρ, g', hg'C, hg'eq⟩ := hC1E m g 0 hgC1
+  let ψ : Eucl m → Eucl (m + 1) := fun v => w₀ + ι v + g' v • e
+  have hψC : ContDiff ℝ 1 ψ := (contDiff_const.add ι.contDiff).add (hg'C.smul contDiff_const)
+  have hψ0 : ψ 0 = w₀ := by
+    simp [ψ, hg'eq 0 (mem_ball_self hρ), hg0]
+  -- (i) Pythagoras: `‖ψ v - ψ v'‖² = ‖v - v'‖² + ‖(g' v - g' v') • e‖²`.
+  have hanti : ∀ v v' : Eucl m, ‖v - v'‖ ≤ ‖ψ v - ψ v'‖ := by
+    intro v v'
+    have hdiff : ψ v - ψ v' = ι (v - v') + (g' v - g' v') • e := by
+      simp only [ψ, map_sub, sub_smul]
+      abel
+    have horth : inner ℝ (ι (v - v')) ((g' v - g' v') • e) = 0 := by
+      rw [inner_smul_right, hιe, mul_zero]
+    have hsq : ‖ψ v - ψ v'‖ ^ 2 = ‖v - v'‖ ^ 2 + ‖(g' v - g' v') • e‖ ^ 2 := by
+      rw [hdiff, norm_add_sq_real, horth, hιn]
+      ring
+    have hle : ‖v - v'‖ ^ 2 ≤ ‖ψ v - ψ v'‖ ^ 2 := by
+      rw [hsq]
+      nlinarith [sq_nonneg ‖(g' v - g' v') • e‖]
+    exact le_of_sq_le_sq hle (norm_nonneg _)
+  -- `r := min r₀ (min ρ ε)`, where `ψ (B(0, r₀)) ⊆ U ∩ {Dh ≠ 0}` and `|g| < ε` on `B(0, r₀)`.
+  have hopen : IsOpen (U ∩ {w | fderiv ℝ h w ≠ 0}) :=
+    hU.inter (isOpen_ne_fun (hh.continuous_fderiv one_ne_zero) continuous_const)
+  have h1 : ∀ᶠ v in 𝓝 (0 : Eucl m), ψ v ∈ U ∩ {w | fderiv ℝ h w ≠ 0} := by
+    apply hψC.continuous.continuousAt.preimage_mem_nhds
+    rw [hψ0]
+    exact hopen.mem_nhds ⟨hw₀, hdh⟩
+  have h2 : ∀ᶠ v in 𝓝 (0 : Eucl m), g v ∈ ball (0 : ℝ) ε := by
+    apply hgC1.continuousAt.preimage_mem_nhds
+    rw [hg0]
+    exact ball_mem_nhds _ hε
+  obtain ⟨r₀, hr₀, hr₀ball⟩ := Metric.mem_nhds_iff.1 (h1.and h2)
+  set r := min r₀ (min ρ ε) with hrdef
+  have hr : 0 < r := lt_min hr₀ (lt_min hρ hε)
+  have hrr₀ : r ≤ r₀ := min_le_left _ _
+  have hrρ : r ≤ ρ := (min_le_right _ _).trans (min_le_left _ _)
+  have hrε : r ≤ ε := (min_le_right _ _).trans (min_le_right _ _)
+  -- `W := {w | p (w - w₀) ∈ B(0, r), |ℓ (w - w₀)| < ε}`; by the frame,
+  -- `A (p (w - w₀), ℓ (w - w₀)) = w`.
+  let W : Set (Eucl (m + 1)) := {w | p (w - w₀) ∈ ball (0 : Eucl m) r ∧ ℓ (w - w₀) ∈ ball (0 : ℝ) ε}
+  have hWo : IsOpen W := by
+    apply IsOpen.inter
+    · exact isOpen_ball.preimage (p.continuous.comp (continuous_id.sub continuous_const))
+    · exact isOpen_ball.preimage (ℓ.continuous.comp (continuous_id.sub continuous_const))
+  have hw₀W : w₀ ∈ W := by
+    simp [W, hr, hε]
+  refine ⟨ψ, r, W, hψC, hr, hWo, hw₀W, hanti, ?_, ?_⟩
+  -- (ii) For `v ∈ B(0, r)`: `(v, g v) ∈ B((0, 0), ε)` and `ψ v = A (v, g v)`.
+  · intro v hv
+    have hvr₀ : v ∈ ball (0 : Eucl m) r₀ := ball_subset_ball hrr₀ hv
+    obtain ⟨⟨hU', hd'⟩, hgv⟩ := hr₀ball hvr₀
+    refine ⟨hU', ?_, hd'⟩
+    have hvρ : v ∈ ball (0 : Eucl m) ρ := ball_subset_ball hrρ hv
+    have hvε : v ∈ ball (0 : Eucl m) ε := ball_subset_ball hrε hv
+    have hq : ((v, g v) : Eucl m × ℝ) ∈ ball ((0 : Eucl m), (0 : ℝ)) ε := by
+      rw [← ball_prod_same]
+      exact ⟨hvε, hgv⟩
+    have hHq : H (v, g v) = H ((0 : Eucl m), (0 : ℝ)) := (hεball hq).2 rfl
+    have hψv : ψ v = A (v, g v) := by
+      rw [hAapp]
+      simp [ψ, hg'eq v hvρ]
+    rw [hψv]
+    simpa [H, hA0] using hHq
+  -- (iii) For `w ∈ W` on the level set, `v := p (w - w₀)` has `g v = ℓ (w - w₀)`, so `ψ v = w`.
+  · intro w hw hhw
+    obtain ⟨hpw, hℓw⟩ := hw
+    have hAw : A (p (w - w₀), ℓ (w - w₀)) = w := by
+      rw [hAapp]
+      have := hdec (w - w₀)
+      simp only at this ⊢
+      rw [add_assoc, this]
+      abel
+    have hvε : p (w - w₀) ∈ ball (0 : Eucl m) ε := ball_subset_ball hrε hpw
+    have hq : ((p (w - w₀), ℓ (w - w₀)) : Eucl m × ℝ) ∈ ball ((0 : Eucl m), (0 : ℝ)) ε := by
+      rw [← ball_prod_same]
+      exact ⟨hvε, hℓw⟩
+    have hHq : H (p (w - w₀), ℓ (w - w₀)) = H ((0 : Eucl m), (0 : ℝ)) := by
+      simp only [H]
+      rw [hAw, hA0]
+      exact hhw
+    have hgs : g (p (w - w₀)) = ℓ (w - w₀) := (hεball hq).1 hHq
+    refine ⟨p (w - w₀), hpw, ?_⟩
+    have hvρ : p (w - w₀) ∈ ball (0 : Eucl m) ρ := ball_subset_ball hrρ hpw
+    calc ψ (p (w - w₀)) = w₀ + ι (p (w - w₀)) + g' (p (w - w₀)) • e := rfl
+      _ = w₀ + ι (p (w - w₀)) + ℓ (w - w₀) • e := by rw [hg'eq _ hvρ, hgs]
+      _ = A (p (w - w₀), ℓ (w - w₀)) := (hAapp (p (w - w₀), ℓ (w - w₀))).symm
+      _ = w := hAw
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
