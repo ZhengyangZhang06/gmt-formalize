@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1.tangent_of_weighted_tangent-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/4217 | this PR | root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1, root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1.weighted_density_bound-a1, root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.blowup_integral_split-a1, root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.continuity_error_vanishes-a1, root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.remainder_vanishes-a1 |
