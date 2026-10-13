@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6bd559492918ade17f2b280c0e57ffa65a8ed1837d7320e4663dd19e076ae460",
+  "git_delta": {
+    "base_commit": "e9d9b4d212f02499792f80d25a82223d4b9d7042",
+    "candidate_commit": "5815a211b617bd37f53340bbe03319666b143b21",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_ae_linear_of_ae_scaling",
+    "diff_sha256": "b59995d7fa9ca25b78ca2998a0bb19ab17c2da682d5229ac43c077d214b3510f",
+    "source_sha256": "387f8fa39e78bca0a850be567e774f76c935150825aa28213bcc45e6e5dc23dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_ae_linear_of_ae_scaling",
+      "statement": "∀ (s : ℝ) (h : ℝ → ℝ), 0 < s → s ≤ 1 → AEStronglyMeasurable h (volume.restrict (Ioo (1 - s) (1 + s))) → (∀ r : ℝ, |r - 1| < s / 4 → ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = r * h u) → ∃ c : ℝ, ∀ᵐ v, v ∈ Ioo (1 - s / 8) (1 + s / 8) → h v = c * v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
