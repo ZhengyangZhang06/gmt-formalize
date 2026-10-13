@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasLocallyBoundedMeanCurvature|IsStationaryAlong|IsMinimizingIn|locallyIntegrable_mult",
+        "tendsto_nhdsWithin_Ioo_right|integral_withDensity_eq_integral_smul|integral_eq_lintegral_of_nonneg_ae",
+        "Tendsto\\.(mul|const_mul|mul_const|div_const)|euclideanHausdorffMeasure|withDensity_absolutelyContinuous|ae_le|lintegral_prod_right",
+        "dimred_mono_truncated_mean_curvature|dimred_mono_density_usc_of_monotone|dimred_mono_ae_ball_density_ge_one|dimred_mono_support_density_ge_one_of_usc",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show 7eb1db9119b0681b1c3ca8fec039b64826e2874c:GMT/Ch07/Submission.lean",
+        "git show 81933e86452288df671b543eecd65974ff9b8f2e:GMT/Ch07/Submission.lean",
+        "git show dbef2c15948a21d9574315bea458a9edb4f708e3:GMT/Ch07/Submission.lean",
+        "git show c3ca64f29e6259bb0947d084036f55b096f91e3f:GMT/Ch07/Submission.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mono-v2-check/Assembly.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mono-v2-check/Children.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mono-v2-check/Density.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-monotonicity-a1/decomposition-v2.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "../../cluster-state/verification/results/hoa47/20261012T180046Z-ch07-root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_proje-ehibyoip/comparator.log",
+        "../../cluster-state/verification/results/hoa65/20261012T185653Z-ch07-root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonic-c81as3dr/comparator.log",
+        "../../cluster-state/verification/results/hoa60/20261012T140121Z-ch07-root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1-cjt8l6lt/comparator.log",
+        "../../cluster-state/verification/results/hoa57/20261012T142425Z-ch07-root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-9xwd_ezt/comparator.log",
+        "../../book/chapter-04.txt",
+        "/tmp/mono-v2-check/Assembly.lean",
+        "/tmp/mono-v2-check/Children.lean",
+        "/tmp/mono-v2-check/Density.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected theorem. All eight one-line propositions elaborate independently of their implementations and match their prose hypotheses and conclusions. The assembly proves the exact frozen parent type from these obligations, the declared mass–measure prerequisite, and inherited minimizing_implies_stationary. The reachable dependency graph is acyclic. All names are bare identifiers; the four new names have no other DAG reservations or project declarations. The four reused names have identical accepted frozen types, compatible contracts, and passing kernel records restricted to propext, Quot.sound and Classical.choice. Snapshot and installed revisions match. All three Lean checks were independently rerun successfully: truncation, density/USC and support proofs use only standard axioms; the assembly and a.e. proof checks contain explicitly identified prerequisite stubs and are conditional checks. No problematic Matrix/IsUnit construction occurs. The analytic argument also agrees with [Simon, Chapter 4 §3](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type and valid reuse. Compact exhaustion supplies σ-finiteness for Tonelli; the n=0 case, quadratic-moment limits, polarization and finite operator expansion prove the required a.e. measurability without circular reliance."
+    },
+    {
+      "key": "exp_ball_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type and valid reuse. The radial calculation has the correct sign and support conditions. Local finiteness justifies differentiation and dominated convergence; continuity includes the endpoint ρ=r. No additional openness hypothesis on U is needed."
+    },
+    {
+      "key": "truncated_mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. The strongly measurable representative and measurable norm truncation give an everywhere bound. Equality a.e. on K, together with vanishing of test fields outside K, preserves the first-variation integral."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness makes the monotone infimum finite, and the normalization yields exactly HasMassDensity. The proportional ball enlargement proves upper semicontinuity using only massOn_mono, without assuming massOn is a measure. ENNReal limit and cancellation conditions are satisfied."
+    },
+    {
+      "key": "closed_ball_unit_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type and valid reuse. Local finiteness ensures genuine cutoff integrals; plane-volume normalization, scaling and two-sided cutoff estimates establish the limit. The argument covers n=0 and requires no unstated measurability of M."
+    },
+    {
+      "key": "open_ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type and valid reuse. The dilation sandwich and ENNReal scaling identities establish both order bounds, including θ=∞ and n=0. No local-finiteness or Radon hypothesis is silently introduced."
+    },
+    {
+      "key": "ae_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute continuity transfers the good-point property in the correct direction. Positive integer multiplicity gives ν≤μ and local area finiteness. The two declared density dependencies then yield the lower bound by comparison of limits; neither dependency is circular."
+    },
+    {
+      "key": "support_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Support lies in U, and nonnegative density limits give uniqueness. Upper semicontinuity produces a ball with Θ<1; eventual mass–measure equality excludes every point there from the full-measure good set, contradicting positive ball measure. All hypotheses are supplied explicitly."
+    }
+  ],
+  "required_changes": []
+}

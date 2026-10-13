@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.support_density_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+  "depth": 3,
+  "title": "Density at least one on the support from an almost-everywhere bound and upper semicontinuity",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), μ a measure on ℝ^P and Θ : ℝ^P → ℝ. Write ω_n = unitBallVolume n and B_t(z) = ball z t. Assume:\n(a) M_W(T) = T.massOn W = μ(W) for every open W ⊆ U;\n(b) μ(B_ε(x)) ≠ 0 for every x ∈ spt T and every ε > 0;\n(c) for μ-a.e. x: whenever θ' ∈ ℝ and μ(B_ρ(x))/(ω_n·ofReal(ρ^n)) → ofReal(θ') as ρ ↓ 0, θ' ≥ 1;\n(d) HasMassDensity T y (Θ(y)) for every y ∈ U;\n(e) Θ is upper semicontinuous on U.\nThen θ ≥ 1 whenever y ∈ spt T and HasMassDensity T y θ.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (Θ : Euclid P → ℝ), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = μ W) → (∀ x ∈ T.support, ∀ ε : ℝ, 0 < ε → μ (ball x ε) ≠ 0) → (∀ᵐ x ∂μ, ∀ θ : ℝ, Tendsto (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → 1 ≤ θ) → (∀ y ∈ U, HasMassDensity T y (Θ y)) → UpperSemicontinuousOn Θ U → ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ",
+  "lean_name": "dimred_mono_support_density_ge_one_of_usc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-support-density-l-69839965cf-a1"
+}

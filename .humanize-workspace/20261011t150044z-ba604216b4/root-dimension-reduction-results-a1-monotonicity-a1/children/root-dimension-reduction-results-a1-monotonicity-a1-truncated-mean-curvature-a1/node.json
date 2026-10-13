@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.truncated_mean_curvature-a1",
+  "parent_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+  "depth": 3,
+  "title": "A globally bounded mean curvature vector on each compact set",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, and let R be an integer multiplicity triple in U (IMRep U n) with weight μ := R.measure. Assume R.HasLocallyBoundedMeanCurvature: there is a μ-a.e. strongly measurable H₀ : ℝ^P → ℝ^P with two properties. First, for every compact K ⊆ U there is Λ_K ∈ ℝ with ‖H₀(x)‖ ≤ Λ_K for μ-a.e. x ∈ K. Second, R.firstVariation X = −∫⟨X(x), H₀(x)⟩ dμ(x) for every C¹ vector field X : ℝ^P → ℝ^P with compact support and tsupport X ⊆ U. Then for every compact K ⊆ U there are Λ ≥ 0 and a μ-a.e. strongly measurable H : ℝ^P → ℝ^P such that ‖H(x)‖ ≤ Λ for every x ∈ ℝ^P and R.firstVariation X = −∫⟨X(x), H(x)⟩ dμ(x) for every C¹ vector field X with compact support and tsupport X ⊆ K.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), R.HasLocallyBoundedMeanCurvature → ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ Λ) ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ K → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure",
+  "lean_name": "dimred_mono_truncated_mean_curvature",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-truncated-mean-curvature-a1-a1"
+}
