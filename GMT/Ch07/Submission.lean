@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Top-degree covectors of `ℝⁿ`**: if `δ ∈ Λⁿ(ℝⁿ)` has `δ(e₁, …, eₙ) = 1` for the standard
+basis `eᵢ`, then its Euclidean coefficient norm is `1` and `α = α(e₁, …, eₙ) • δ` for every
+`α ∈ Λⁿ(ℝⁿ)` (Simon 6.1: `Λⁿ(ℝⁿ) = ℝ · dx¹ ∧ ⋯ ∧ dxⁿ`).  Every top-degree form is
+`β = β(e) • det_b` for the standard basis `b` (`AlternatingMap.eq_smul_basis_det`), and the
+identity is the only strictly increasing `Fin n → Fin n`, so the coefficient sum defining
+`covectorEuclideanNorm δ` has the single term `δ(e)² = 1`. -/
+theorem Submission.cbr_ci_pw_td_top_covector_spans : ∀ (n : ℕ) (δ : Covector (Euclid n) n), δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 → covectorEuclideanNorm δ = 1 ∧ ∀ α : Covector (Euclid n) n, α = α (fun i => EuclideanSpace.single i (1 : ℝ)) • δ := by
+  intro n δ hδ
+  classical
+  let b : Module.Basis (Fin n) ℝ (Euclid n) := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have hbe : (⇑b : Fin n → Euclid n) = fun i => EuclideanSpace.single i (1 : ℝ) := by
+    funext i; simp [b]
+  have key : ∀ (β : Covector (Euclid n) n) (v : Fin n → Euclid n),
+      β v = β (fun i => EuclideanSpace.single i (1 : ℝ)) * b.det v := by
+    intro β v
+    have := congrArg (fun f => f v) (AlternatingMap.eq_smul_basis_det b β.toAlternatingMap)
+    simpa [hbe] using this
+  refine ⟨?_, ?_⟩
+  · have hmono : ∀ I : Fin n → Fin n, StrictMono I → I = id := by
+      intro I hI
+      have hsurj : Surjective I := Finite.injective_iff_surjective.1 hI.injective
+      exact (hI.range_inj_of_wellFoundedLT strictMono_id).1 (by rw [hsurj.range_eq, range_id])
+    have he : (fun i => EuclideanSpace.basisFun (Fin n) ℝ (id i)) = fun i => EuclideanSpace.single i (1 : ℝ) := by
+      funext i; simp
+    unfold covectorEuclideanNorm
+    rw [Finset.sum_eq_single (id : Fin n → Fin n)]
+    · simp only [strictMono_id, ↓reduceIte, he, hδ, one_pow, Real.sqrt_one]
+    · intro I _ hI
+      have hI' : ¬ StrictMono I := fun h => hI (hmono I h)
+      simp only [hI', ↓reduceIte]
+    · intro h; exact absurd (Finset.mem_univ _) h
+  · intro α
+    ext v
+    rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, key α v, key δ v, hδ, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
