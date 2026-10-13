@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Localization away from the boundary: the restriction to U ∖ spt ∂T is a minimizing cycle",
+  "statement": "Let P ∈ ℕ, n ≥ 1, U ⊆ ℝ^P open, A ⊆ ℝ^P and T ∈ 𝒟_n(U) minimizing in A (IsMinimizingIn T A). Put U' := U ∖ spt ∂T (U \\ boundarySupport T) and let T' ∈ 𝒟_n(U') be the restriction of T (T.restrictDomain). Then (a) U' is open; (b) T' is minimizing in A as a current in U'; (c) ∂T' = 0 in U' (BoundaryVanishes T'); (d) spt T' ⊆ spt T; (e) M_W(T') = M_W(T) for every W ⊆ U'.",
+  "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → 0 < n → IsMinimizingIn T A → IsOpen (U \\ boundarySupport T) ∧ IsMinimizingIn (T.restrictDomain (Set.sdiff_subset : U \\ boundarySupport T ⊆ U)) A ∧ BoundaryVanishes (T.restrictDomain (Set.sdiff_subset : U \\ boundarySupport T ⊆ U)) ∧ (T.restrictDomain (Set.sdiff_subset : U \\ boundarySupport T ⊆ U)).support ⊆ T.support ∧ ∀ W : Set (Euclid P), W ⊆ U \\ boundarySupport T → (T.restrictDomain (Set.sdiff_subset : U \\ boundarySupport T ⊆ U)).massOn W = T.massOn W",
+  "lean_name": "dtc_localize",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.im_sub-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.im_sub-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-a1"
+}

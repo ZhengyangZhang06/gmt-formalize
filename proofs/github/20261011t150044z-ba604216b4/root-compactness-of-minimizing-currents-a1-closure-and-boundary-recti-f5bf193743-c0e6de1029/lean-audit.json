@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5755c86dee40cd34216e651590ed0b35e240ad3ed11ae22d533e80d105941d2b",
+  "git_delta": {
+    "base_commit": "4eedcf628d435e09da217a10c4041852475c6525",
+    "candidate_commit": "eeeb8df750735a0592cfe10ac6a6f050bddfefec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_cone_cycle_eval_eq_zero_of_const_on_ball",
+    "diff_sha256": "baf6413f71ee97e595158292bfa339adaa57241e23f3f238844fd009f388eb0f",
+    "source_sha256": "4637cbe6ea862b829d5e9a6f865b90bebec6e7c57485f09395817bc266d96a7e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_cone_cycle_eval_eq_zero_of_const_on_ball",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (x₀ : Euclid P) (r : ℝ) (α : Covector (Euclid P) (n + 1)) (φ : TestFormOn (univ : Set (Euclid P)) (n + 1)), 0 < r → X.boundary = 0 → X.support ⊆ ball x₀ r → (∀ x ∈ ball x₀ r, (φ : DifferentialForm (Euclid P) (n + 1)) x = α) → X φ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
