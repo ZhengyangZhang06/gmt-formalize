@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.5** (`T = ∂[[E]]` with `E ⊆ N`): if `(N̄ \ N) ∩ U = ∅`, `E ⊆ N` and
+`T(ω) = ∫_E ⟨dω, ξN⟩ dH^{n+1}` for `ω ∈ 𝒟ⁿ(U)`, then `spt T ⊆ N`.  A point `x ∈ spt T \ N` lies
+outside `N̄`, so `B_ε(x) ⊆ U \ N̄` for some `ε > 0`.  `W = B_{ε/2}(x)` is open with `W̄` compact
+in `U`, and every `ω` with `spt ω ⊆ W` has `spt dω ⊆ spt ω` disjoint from `E`.  So the integrand
+vanishes on `E`, `T(ω) = 0`, and `x ∈ W` lies in the zero region of `T`. -/
+theorem Submission.regcomp_cop_region_support_subset : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → (closure N \ N) ∩ U = ∅ → E ⊆ N → IsBoundaryOfRegion T E ξN → T.support ⊆ N := by
+  intro P n U N E ξN T hU hN hEN hT x hx
+  obtain ⟨hxU, hxZ⟩ := hx
+  by_contra hxN
+  -- `x ∉ N̄`, since `(N̄ \ N) ∩ U = ∅`
+  have hxN' : x ∉ closure N := fun h => hN.subset ⟨⟨h, hxN⟩, hxU⟩
+  -- a ball `B_ε(x) ⊆ U \ N̄`
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff isClosed_closure) x ⟨hxU, hxN'⟩
+  -- `W = B_{ε/2}(x)` is open, and `W̄ ⊆ B̄_{ε/2}(x)` is compact and contained in `B_ε(x) ⊆ U`
+  have hcl : closure (ball x (ε / 2)) ⊆ ball x ε :=
+    closure_ball_subset_closedBall.trans (closedBall_subset_ball (by linarith))
+  refine hxZ ⟨ball x (ε / 2), ⟨isOpen_ball,
+    (isCompact_closedBall x (ε / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, hcl.trans (hball.trans sdiff_subset), ?_⟩,
+    mem_ball_self (half_pos hε)⟩
+  -- `T` vanishes on `W`: for `spt ω ⊆ W`, `dω = 0` on `E ⊆ N`, so the integrand vanishes on `E`
+  intro ω hω
+  rw [hT ω]
+  refine setIntegral_eq_zero_of_forall_eq_zero fun z hz => ?_
+  have hzω : z ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) n)) := fun h =>
+    (hball (ball_subset_ball (by linarith) (hω (tsupport_exteriorDerivative_subset _ h)))).2
+      (subset_closure (hEN hz))
+  rw [image_eq_zero_of_notMem_tsupport hzω, map_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
