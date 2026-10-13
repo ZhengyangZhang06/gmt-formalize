@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8e775868e4a7d6905f7fb31ca0af1996fa369ca738ba5e59814453afc19f613b",
+  "git_delta": {
+    "base_commit": "d4e65d96a958c4e7872be8d4524098e159447b45",
+    "candidate_commit": "1d8d3f2d6cbb0a798685dde579d251e9cff06399",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_cop_zdr_exists_bumpForm",
+    "diff_sha256": "393d3083ca1817ecd613c73be85d221e0a97f0750440b54642b09cebca3dc02f",
+    "source_sha256": "966ae3a860b4b82f826f11de30db0fd10c3776a1224b2cf945be3056f4bfe178",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_cop_zdr_exists_bumpForm",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (z : Euclid P) (a c : ℝ), 0 < a → closedBall z a ⊆ U → ∃ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ closedBall z a ∧ (ω : DifferentialForm (Euclid P) 0) z (fun i => i.elim0) = c ∧ (∀ x, x ∉ ball z a → (ω : DifferentialForm (Euclid P) 0) x = 0) ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) 0) x) ≤ |c|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
