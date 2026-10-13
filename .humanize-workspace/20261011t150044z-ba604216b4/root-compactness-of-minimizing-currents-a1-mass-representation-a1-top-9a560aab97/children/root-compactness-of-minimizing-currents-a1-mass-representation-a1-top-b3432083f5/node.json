@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.directional_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1",
+  "depth": 4,
+  "title": "Directional difference estimate from the divergence bound (parent steps 1–2)",
+  "statement": "Let n ∈ ℕ, let (X, ν) be a finite measure space, let q : X → ℝⁿ (Euclid n) be measurable, h : X → ℝ ν-integrable, and Λ ∈ ℝ. Assume |∫ h(x)·div g(q(x)) dν(x)| ≤ Λ for every C^∞ map g : ℝⁿ → ℝⁿ with compact support and ‖g(y)‖ ≤ 1 for all y, where div g(y) := LinearMap.trace ℝ (Euclid n) (fderiv ℝ g y). Then for every C^∞ function a : ℝⁿ → ℝ with compact support and |a(y)| ≤ 1 for all y, and every z ∈ ℝⁿ, |∫ h(x)·(a(q(x) + z) − a(q(x))) dν(x)| ≤ Λ‖z‖.",
+  "lean_statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, |a y| ≤ 1) → ∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖",
+  "lean_name": "cmr_tdn_directional_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-b3432083f5-a1"
+}
