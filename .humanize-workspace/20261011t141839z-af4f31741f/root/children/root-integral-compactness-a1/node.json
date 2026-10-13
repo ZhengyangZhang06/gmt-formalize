@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Allard's Integral Compactness Theorem 8.5.9 (with corrected Lemma 5.10 and repaired conclusion)",
+  "statement": "Let U ⊆ ℝ^N be open and V_j (j ∈ ℕ) integer multiplicity rectifiable n-varifolds on U (IsIntegral: V_j = v(M_j, θ_j) with θ_j ∈ ℕ H^n-a.e. on M_j) with locally bounded first variation and sup_j(μ_{V_j}(W) + ‖δV_j‖(W)) < ∞ for every open W ⊂⊂ U. Then (i) some subsequence V_{φ(j)} (φ strictly increasing) converges as Radon measures on Gₙ(U) to an integral V with locally bounded first variation and ‖δV‖(W) ≤ liminf_j ‖δV_{φ(j)}‖(W) for every open W ⊂⊂ U; and (ii) for every strictly increasing φ and every V with V_{φ(j)} → V as Radon measures on Gₙ(U) (RadonConverges), V is integral. (Exactly IntegralCompactnessTheorem.)",
+  "lean_statement": "IntegralCompactnessTheorem",
+  "lean_name": "integral_compactness_theorem",
+  "depends_on": [
+    "root.first_variation-a1",
+    "root.monotonicity_density-a1",
+    "root.density_semicontinuity-a1",
+    "root.allard_tangent_cones-a1",
+    "root.first_rectifiability-a1",
+    "root.tangent_graph_cover-a1",
+    "root.compactness-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.monotonicity_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_semicontinuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.first_rectifiability-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-a1"
+}

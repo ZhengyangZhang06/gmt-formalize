@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Compactness Theorem 8.5.8 for rectifiable varifolds",
+  "statement": "If V_j (j ∈ ℕ) are rectifiable n-varifolds (IsRectifiable) on open U ⊆ ℝ^N with locally bounded first variation, sup_j(μ_{V_j}(W) + ‖δV_j‖(W)) < ∞ for every open W ⊂⊂ U, and Θ^n(μ_{V_j},x) exists and is ≥ 1 for x ∈ U ∖ A_j where μ_{V_j}(A_j ∩ W) → 0 for every W ⊂⊂ U, then some subsequence V_{φ(j)} converges as Radon measures on Gₙ(U) to a rectifiable V with locally bounded first variation, Θ^n(μ_V,·) ≥ 1 μ_V-a.e., and ‖δV‖(W) ≤ liminf_j ‖δV_{φ(j)}‖(W) for every open W ⊂⊂ U. (Exactly CompactnessTheorem.)",
+  "lean_statement": "CompactnessTheorem",
+  "lean_name": "compactness_theorem",
+  "depends_on": [
+    "root.radon_compactness-a1",
+    "root.density_semicontinuity-a1",
+    "root.allard_tangent_cones-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radon_compactness-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_semicontinuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-compactness-a1-a1"
+}

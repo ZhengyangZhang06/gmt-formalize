@@ -1,0 +1,117 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -l -i 'varifold' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib",
+        "theorem (ae_tendsto_measure_inter_div|ae_tendsto_rnDeriv)|theorem (hausdorffMeasure_image_le)|theorem (measure_toMeasurable_inter_of_sFinite|restrict_toMeasurable_of_sFinite)",
+        "firstVariation_tendsto|firstVariationNormOn_le_liminf|firstVariationRieszMeasure_le_liminf|hasLocallyBoundedFirstVariation",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/simongmt status --porcelain --untracked-files=no",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_ch08_independent_types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt_ch08_independent_axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DeformationIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyCorrected.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/tmp/gmt_ch08_independent_types.lean",
+        "/tmp/gmt_ch08_independent_axioms.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte identity of snapshot Contract, workspace Contract and Submission. The Mathlib varifold search returned no matches. Inspected the differentiation, Hausdorff comparison, measurable-hull, Riesz and SimonGMT lemmas supporting the proofs. All 12 proposed types independently elaborate as Prop before any child declarations are introduced; their constructor assembly checks against the exact frozen parent type under child assumptions. These checks do not constitute implementations of the children. Independent #print axioms checks for 24 cited SimonGMT declarations report only propext, Classical.choice and Quot.sound. The active DAG contains only root: all proposed names are fresh bare identifiers. The dependencies are acyclic and correctly directed, and every child contributes to the selected parent. No prohibited matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches both frozen propositions. The compact-cylinder localization, uniformly dominated Jacobian derivative and trace identity are justified under C² regularity. The inspected Riesz and decomposition lemmas supply the exact representation, finiteness, measurability and integrability conclusions."
+    },
+    {
+      "key": "monotonicity_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches all three conjuncts. The radial identity, layer-cake estimate and integrating factor establish the stated defect inequality. The stationary limit handles the centre correctly, and the localized differentiation and Borel liminf construction prove the density assertion."
+    },
+    {
+      "key": "density_semicontinuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses the actual liminf hypothesis without assuming uniform variation bounds. The Besicovitch estimates, portmanteau passage and null exceptional set establish the density lower bound; the declared predecessors supply density existence and variation lower semicontinuity."
+    },
+    {
+      "key": "constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uses the frozen corrected hypothesis that M ∩ U is preconnected. The chart-to-classical-tangent identification and normalization bridge translate the inspected corrected constancy lemma to the exact Borel-set formula, including zero and empty cases."
+    },
+    {
+      "key": "radon_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the eventual compact-mass bounds and ambient test-function conclusion. Countable approximation, diagonal extraction and Riesz representation establish the result without requiring global finiteness or replacing subsequences by subnets."
+    },
+    {
+      "key": "varifold_tangents",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match their prose. Scaling and compactness establish extraction and stationarity; portmanteau, radial rigidity and the dilation differential identity prove the corrected mass and homogeneity statements. The separately proved threshold transfer uses localized rescalings and the declared semicontinuity predecessor."
+    },
+    {
+      "key": "plane_disintegration",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The probability normalization and simultaneous quantifier over continuous tests match the type. Differentiation on compact pieces, a common countable exceptional set, uniform approximation and Riesz representation prove both clauses, including arbitrary Borel sets and the empty Grassmannian case."
+    },
+    {
+      "key": "tangent_graph_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The vector inequalities encode the intended projection and slope bounds exactly. The cone inclusion constants and uniform mass contradiction establish the graph property; taking closures preserves it. The proof covers every qualifying point and handles dimension zero separately, without assuming rectifiability."
+    },
+    {
+      "key": "first_rectifiability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proves the exact canonical carrier conclusion. It supplies the missing measurability, density-one and Radon–Nikodym steps using the declared graph-cover predecessor, then establishes weighted approximate tangents and the graph measure through disintegration. It does not assume the unavailable rectifiability theorem."
+    },
+    {
+      "key": "allard_tangent_cones",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Part A establishes flatness and uniqueness of tangents before invoking first rectifiability. Part B uses that established result, proves the required canonical weight representation and upgrades weight homogeneity to varifold homogeneity. The internal order and external dependencies are non-circular."
+    },
+    {
+      "key": "compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactness, semicontinuity and Allard predecessors imply every frozen conclusion. The proof explicitly transfers convergence to domain test functions and takes the variation liminf along the extracted subsequence."
+    },
+    {
+      "key": "integral_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proves existence and integrality of every subsequential limit. The density transfer, diagonal blow-ups, cylinder estimates and finite clustering induction supply the needed obligations. The final small-slope graph comparison controls good mass by integer fibre sums and bad mass directly, avoiding the printed concentration gap and any unproved area formula on rectifiable carriers."
+    }
+  ],
+  "required_changes": []
+}

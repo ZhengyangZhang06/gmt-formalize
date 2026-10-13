@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.plane_disintegration-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lemma 8.1.3: disintegration of a varifold along its weight (η_V^(x))",
+  "statement": "For every n-varifold V on open U ⊆ ℝ^N there is η : ℝ^N → Measure(G(N,n)) such that (i) for μ_V-a.e. x, η(x) is a probability measure and for every continuous β : G(N,n) → ℝ, (∫_{Gₙ(B_ρ(x))} β(S) dV(y,S)) / μ_V(B_ρ(x)) → ∫ β dη(x) as ρ ↓ 0; and (ii) for every Borel A ⊆ ℝ^N and continuous β ≥ 0: ∫⁻_{Gₙ(A)} β(S) dV(x,S) = ∫⁻_A (∫⁻ β dη(x)) dμ_V(x).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∃ η : Euclidean N → Measure (Grassmannian N n), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧ ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight",
+  "lean_name": "plane_disintegration",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-plane-disintegration-a1-a1"
+}

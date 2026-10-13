@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_graph_cover-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Tangent points of a varifold with nearly horizontal planes lie on countably many closed L-Lipschitz graphs (cone argument of Simon Ch. 3, 1.6 ⇐)",
+  "statement": "Let N, n ∈ ℕ, 0 < L ≤ 1, U ⊆ ℝ^N open, V an n-varifold on U and P ∈ G(N,n), with p := Grassmannian.project P the orthogonal projection onto P and q := I − p. Then there are closed sets Γ_0, Γ_1, … ⊆ ℝ^N, each an L-Lipschitz graph over P, i.e. |q(y − z)| ≤ L|p(y − z)| (‖(y − z) − Grassmannian.project P (y − z)‖ ≤ L‖Grassmannian.project P (y − z)‖) for all y, z ∈ Γ_i, such that every x at which V has a tangent plane T with some multiplicity θ in the sense of Def. 8.1.1 (HasTangentPlane V x T θ) and whose plane is L/4-close to P in operator norm (|p_T v − p v| ≤ (L/4)|v| for all v) lies in some Γ_i.",
+  "lean_statement": "∀ (N n : ℕ) (L : ℝ), 0 < L → L ≤ 1 → ∀ (U : Set (Euclidean N)) (V : Varifold N n U) (P : Grassmannian N n), ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i",
+  "lean_name": "tangent_points_lipschitz_graph_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-a1"
+}

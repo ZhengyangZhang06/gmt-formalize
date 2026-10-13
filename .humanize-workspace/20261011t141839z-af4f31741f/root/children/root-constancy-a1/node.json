@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Constancy Theorem 8.4.1 (corrected: M ∩ U connected)",
+  "statement": "Let V be a stationary n-varifold in open U ⊆ ℝ^N, M an n-dimensional C² submanifold of ℝ^N in Simon's sense (IsSimonSubmanifold 2 M), U ∩ spt μ_V ⊆ M, and M ∩ U preconnected (corrected hypothesis; the printed 'M connected' is false). Then there is θ0 ≥ 0 with V(A) = θ0 · H^n({x ∈ M ∩ U : (x, T_xM) ∈ A}) for every Borel A ⊆ ℝ^N × G(N,n), where T_xM is the plane equal to the classical tangent space classicalTangentSpace M x (velocities of C¹ curves in M through x). (Exactly ConstancyTheorem.)",
+  "lean_statement": "ConstancyTheorem",
+  "lean_name": "constancy_theorem",
+  "depends_on": [
+    "root.monotonicity_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.monotonicity_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-constancy-a1-a1"
+}
