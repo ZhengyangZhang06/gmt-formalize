@@ -359,6 +359,110 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The product frame of `(0, 1) × M` (Simon Ch. 6, Remark 3.2(2), for `[[(0, 1)]] × τ(M, θ, ξ)`).
+Write `ℝ^{P+1} = ℝ × ℝ^P` with `Φ(s, u) = (s, u₁, …, u_P)` and `π(z) = (z₁, …, z_P)`.  If `τ` is an
+orthonormal family in `ℝ^P`, then `τ̃ = (e₀, Φ(0, τ₁), …, Φ(0, τ_m))` is orthonormal, its span `Q`
+has dimension `m + 1`, and `Q = π⁻¹(span τ)` as sets.  In coordinates
+`⟨Φ(a, u), Φ(b, w)⟩ = ab + ⟨u, w⟩` and `e₀ = Φ(1, 0)`; the generators of `Q` project into `span τ`,
+and conversely `z = z₀ e₀ + ∑ᵢ cᵢ Φ(0, τᵢ)` whenever `π z = ∑ᵢ cᵢ τᵢ`. -/
+theorem Submission.iwl_cr_ip_wt_product_plane :
+    ∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) ∧ Module.finrank ℝ (Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)))) = m + 1 ∧ ((Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1))) : Submodule ℝ (Eucl (P + 1))) : Set (Eucl (P + 1))) = {z : Eucl (P + 1) | ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z))) ∈ Submodule.span ℝ (range τ)} := by
+  intro P m τ hτ
+  -- Coordinates: `Φ(s, u) = (s, u₁, …, u_P)`, `e₀ = Φ(1, 0)`, `⟨Φ(a, u), Φ(b, w)⟩ = ab + ⟨u, w⟩`.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  have he₀ : (EuclideanSpace.single 0 1 : Eucl (P + 1)) = Φ 1 0 := by
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp [Φ]
+    · simp [Φ, Fin.succ_ne_zero]
+  have hinner : ∀ (a b : ℝ) (u w : Eucl P), inner ℝ (Φ a u) (Φ b w) = a * b + inner ℝ u w := by
+    intro a b u w
+    simp only [Φ, PiLp.inner_apply, Fin.sum_univ_succ]
+    simp [mul_comm]
+  set v : Fin (m + 1) → Eucl (P + 1) := (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1))
+    (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) with hv
+  have hv0 : v 0 = Φ 1 0 := by rw [hv, Fin.cons_zero, he₀]
+  have hvs : ∀ i : Fin m, v i.succ = Φ 0 (τ i) := fun i => by rw [hv, Fin.cons_succ]
+  -- `τ̃ = (Φ(1, 0), Φ(0, τ₁), …, Φ(0, τ_m))` is orthonormal, hence linearly independent.
+  have hon : Orthonormal ℝ v := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+    · rw [hv0, hinner]; simp
+    · rw [hv0, hvs, hinner]; simp [(Fin.succ_ne_zero j').symm]
+    · rw [hv0, hvs, hinner]; simp [Fin.succ_ne_zero i']
+    · rw [hvs, hvs, hinner, (orthonormal_iff_ite.1 hτ) i' j']
+      simp [Fin.succ_inj]
+  refine ⟨hon, ?_, ?_⟩
+  · rw [finrank_span_eq_card hon.linearIndependent, Fintype.card_fin]
+  · -- The projection `π` as a linear map; `span τ̃ = π⁻¹(span τ)`.
+    let πₗ : Eucl (P + 1) →ₗ[ℝ] Eucl P :=
+      (EuclideanSpace.equiv (Fin P) ℝ).symm.toLinearMap ∘ₗ
+        (LinearMap.funLeft ℝ ℝ Fin.succ ∘ₗ (EuclideanSpace.equiv (Fin (P + 1)) ℝ).toLinearMap)
+    have hπ : ∀ z, πₗ z = (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z)) := fun z => rfl
+    have hπΦ : ∀ s u, πₗ (Φ s u) = u := by
+      intro s u
+      rw [hπ]
+      simp only [Φ, ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+        ContinuousLinearEquiv.symm_apply_apply]
+    have hspan : Submodule.span ℝ (range v) = (Submodule.span ℝ (range τ)).comap πₗ := by
+      apply le_antisymm
+      · rw [Submodule.span_le]
+        rintro _ ⟨i, rfl⟩
+        refine Fin.cases ?_ (fun i' => ?_) i
+        · simp only [SetLike.mem_coe, Submodule.mem_comap, hv0, hπΦ]
+          exact Submodule.zero_mem _
+        · simp only [SetLike.mem_coe, Submodule.mem_comap, hvs, hπΦ]
+          exact Submodule.subset_span ⟨i', rfl⟩
+      · intro z hz
+        rw [Submodule.mem_comap, Submodule.mem_span_range_iff_exists_fun] at hz
+        obtain ⟨c, hc⟩ := hz
+        -- `z = Φ(z₀, π z)` and `Φ` is linear, so `z = z₀ e₀ + ∑ᵢ cᵢ Φ(0, τᵢ)`.
+        have hz' : z = (EuclideanSpace.equiv (Fin (P + 1)) ℝ z 0) • v 0 +
+            ∑ i, c i • v i.succ := by
+          have hdecomp : z = Φ (EuclideanSpace.equiv (Fin (P + 1)) ℝ z 0) (πₗ z) := by
+            apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+            simp only [Φ, hπ, ContinuousLinearEquiv.apply_symm_apply]
+            exact (Fin.cons_self_tail _).symm
+          have hlin : ∀ (a b : ℝ) (u w : Eucl P), Φ a u + Φ b w = Φ (a + b) (u + w) := by
+            intro a b u w
+            simp only [Φ, ← map_add]
+            congr 1
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp
+          have hsmul : ∀ (c : ℝ) (a : ℝ) (u : Eucl P), c • Φ a u = Φ (c * a) (c • u) := by
+            intro c a u
+            simp only [Φ, ← map_smul]
+            congr 1
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp
+          have hsum : ∀ (s : Finset (Fin m)) (a : Fin m → ℝ) (u : Fin m → Eucl P),
+              ∑ i ∈ s, Φ (a i) (u i) = Φ (∑ i ∈ s, a i) (∑ i ∈ s, u i) := by
+            intro s a u
+            induction s using Finset.induction_on with
+            | empty =>
+              have h00 : Φ 0 0 = 0 := by
+                apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+                simp only [Φ, ContinuousLinearEquiv.apply_symm_apply, map_zero]
+                ext i
+                refine Fin.cases ?_ (fun j => ?_) i <;> simp
+              simp [h00]
+            | insert j s hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj,
+                Finset.sum_insert hj, ih, hlin]
+          rw [hv0]
+          simp_rw [hvs, hsmul, hsum, hlin, mul_zero, Finset.sum_const_zero, mul_one, smul_zero,
+            zero_add, add_zero, hc]
+          exact hdecomp
+        rw [hz']
+        refine Submodule.add_mem _ (Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩))
+          (Submodule.sum_mem _ fun i _ =>
+            Submodule.smul_mem _ _ (Submodule.subset_span ⟨i.succ, rfl⟩))
+    rw [hspan]
+    rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
