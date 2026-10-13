@@ -451,6 +451,125 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Continuity of the inverse of a proper injective chart at a point (Simon Ch. 2, (4.1)–(4.2)):
+if `ψ` is continuous and injective on `V`, `ψ(V) ⊆ W`, and `V ∩ ψ⁻¹(K)` is compact for every
+compact `K ⊆ W`, then `ψ(v') → ψ(v)` with `v' ∈ V` forces `v' → v`.  Otherwise there are `vⱼ ∈ V`
+with `ψ(vⱼ) → ψ(v)` and `|vⱼ - v| ≥ ε`; they lie in the compact set `V ∩ ψ⁻¹({ψ(v)} ∪ {ψ(vⱼ)})`,
+and a limit `w ∈ V` of a subsequence has `ψ(w) = ψ(v)`, so `w = v`, a contradiction. -/
+theorem Submission.dsmc_chart_inverse_continuity : ∀ (P d : ℕ) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), ContinuousOn ψ V → InjOn ψ V → ψ '' V ⊆ W → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → ∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε := by
+  intro P d V W ψ hψ hinj hVW hproper v hv ε hε
+  by_contra! hfar
+  -- `δ = 1/(j+1)` fails: `vⱼ ∈ V`, `|ψ(vⱼ) - ψ(v)| < 1/(j+1)` and `|vⱼ - v| ≥ ε`
+  choose u huV hu_near hu_far using fun j : ℕ => hfar (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hlim : Tendsto (fun j => ψ (u j)) atTop (𝓝 (ψ v)) :=
+    tendsto_iff_dist_tendsto_zero.2 <| squeeze_zero (fun j => dist_nonneg)
+      (fun j => (hu_near j).le) tendsto_one_div_add_atTop_nhds_zero_nat
+  -- `K = {ψ(v)} ∪ {ψ(vⱼ)}` is a compact subset of `W`, so `V ∩ ψ⁻¹(K)` is compact
+  have hKW : insert (ψ v) (range fun j => ψ (u j)) ⊆ W := by
+    rintro _ (rfl | ⟨j, rfl⟩)
+    exacts [hVW (mem_image_of_mem ψ hv), hVW (mem_image_of_mem ψ (huV j))]
+  obtain ⟨w, ⟨hwV, -⟩, φ, hφ, huw⟩ := (hproper _ hKW hlim.isCompact_insert_range).tendsto_subseq
+    (x := u) fun j => ⟨huV j, Or.inr ⟨j, rfl⟩⟩
+  -- `ψ(v_{φ(i)})` tends to `ψ(w)` (continuity on `V`) and to `ψ(v)`, so `w = v`
+  have hw : w = v := hinj hwV hv <| tendsto_nhds_unique
+    ((hψ w hwV).tendsto.comp (tendsto_nhdsWithin_iff.2 ⟨huw, .of_forall fun i => huV (φ i)⟩))
+    (hlim.comp hφ.tendsto_atTop)
+  rw [hw] at huw
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1 huw ε hε
+  exact absurd (hu_far (φ N)) (not_le.2 (hN N le_rfl))
+
+/-- Near-isometric local parametrizations of an embedded `C¹` submanifold `M` (charts as in
+Simon Ch. 2, (4.1)): for `z ∈ M` and `ε > 0` there are `χ` with `χ(0) = z` and `δ, δ' > 0` such
+that `χ` is `(1 ± ε)`-bi-Lipschitz on `B_δ(0)`, `χ(B_δ(0)) ⊆ M` and `M ∩ B_{δ'}(z) ⊆ χ(B_δ(0))`.
+Take a chart `ψ` with `ψ(v₀) = z`, choose `L ∈ GL(ℝⁿ)` with `Dψ(v₀) ∘ L` a linear isometry (an
+orthonormal basis of `Dψ(v₀)(ℝⁿ)`) and put `χ(w) = ψ(v₀ + Lw)`; strict differentiability of `χ`
+at `0` gives the two-point bounds, and continuity of the chart inverse
+(`Submission.dsmc_chart_inverse_continuity`) gives the covering of `M ∩ B_{δ'}(z)`. -/
+theorem Submission.dimred_rpd_near_isometric_chart : ∀ (P n : ℕ) (M : Set (Euclid P)) (z : Euclid P), IsEmbeddedSubmanifold 1 n M → z ∈ M → ∀ ε : ℝ, 0 < ε → ∃ (χ : Euclid n → Euclid P) (δ δ' : ℝ), 0 < δ ∧ 0 < δ' ∧ χ 0 = z ∧ (∀ a ∈ ball (0 : Euclid n) δ, ∀ b ∈ ball (0 : Euclid n) δ, (1 - ε) * ‖a - b‖ ≤ ‖χ a - χ b‖ ∧ ‖χ a - χ b‖ ≤ (1 + ε) * ‖a - b‖) ∧ χ '' ball 0 δ ⊆ M ∧ M ∩ ball z δ' ⊆ χ '' ball 0 δ := by
+  intro P n M z hM hz ε hε
+  obtain ⟨V, W, ψ, hV, hW, hzW, hψ, hinj, himg, hprop, hder⟩ := hM z hz
+  obtain ⟨v₀, hv₀V, hψv₀⟩ : z ∈ ψ '' V := by rw [himg]; exact ⟨hzW, hz⟩
+  set A : Euclid n →L[ℝ] Euclid P := fderiv ℝ ψ v₀
+  have hA : Injective A := hder v₀ hv₀V
+  have hstrict : HasStrictFDerivAt ψ A v₀ :=
+    (hψ.contDiffAt (hV.mem_nhds hv₀V)).hasStrictFDerivAt one_ne_zero
+  -- isometric normalization
+  obtain ⟨L, hLJ⟩ : ∃ L : Euclid n ≃L[ℝ] Euclid n, ∀ w, ‖A (L w)‖ = ‖w‖ := by
+    let Q := LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P)
+    have hfin : Module.finrank ℝ Q = n := by
+      rw [LinearMap.finrank_range_of_inj hA, finrank_euclideanSpace_fin]
+    let b : OrthonormalBasis (Fin n) ℝ Q := (stdOrthonormalBasis ℝ Q).reindex (finCongr hfin)
+    let A' : Euclid n ≃ₗ[ℝ] Q := LinearEquiv.ofInjective (A : Euclid n →ₗ[ℝ] Euclid P) hA
+    let L₀ : Euclid n ≃ₗ[ℝ] Euclid n := b.repr.symm.toLinearEquiv.trans A'.symm
+    refine ⟨L₀.toContinuousLinearEquiv, fun w => ?_⟩
+    have h1 : A' (L₀ w) = b.repr.symm w := by simp [L₀]
+    have h2 : A (L₀ w) = ((A' (L₀ w) : Q) : Euclid P) := rfl
+    change ‖A (L₀ w)‖ = ‖w‖
+    rw [h2, h1]
+    exact b.repr.symm.norm_map w
+  set χ : Euclid n → Euclid P := fun w => ψ (v₀ + L w)
+  have hχ0 : χ 0 = z := by simp [χ, hψv₀]
+  have hχstrict : HasStrictFDerivAt χ (A.comp (L : Euclid n →L[ℝ] Euclid n)) 0 := by
+    have h1 : HasStrictFDerivAt (fun w : Euclid n => v₀ + L w) (L : Euclid n →L[ℝ] Euclid n) 0 :=
+      (L.hasStrictFDerivAt).const_add v₀
+    have h2 : HasStrictFDerivAt ψ A (v₀ + L 0) := by simpa using hstrict
+    exact h2.comp (0 : Euclid n) h1
+  -- two-point estimate
+  have h1 := (hasStrictFDerivAt_iff_isLittleO.1 hχstrict).bound hε
+  have h2 : ∀ᶠ w in 𝓝 (0 : Euclid n), v₀ + L w ∈ V := by
+    have hc : Continuous (fun w : Euclid n => v₀ + L w) := continuous_const.add L.continuous
+    have : (fun w : Euclid n => v₀ + L w) 0 ∈ V := by simpa using hv₀V
+    exact hc.continuousAt.preimage_mem_nhds (hV.mem_nhds this)
+  obtain ⟨δ₁, hδ₁, hball1⟩ := Metric.eventually_nhds_iff_ball.1 h1
+  obtain ⟨δ₂, hδ₂, hball2⟩ := Metric.eventually_nhds_iff_ball.1 h2
+  set δ := min δ₁ δ₂
+  have hδ : 0 < δ := lt_min hδ₁ hδ₂
+  have hδV : ∀ w ∈ ball (0 : Euclid n) δ, v₀ + L w ∈ V :=
+    fun w hw => hball2 w (ball_subset_ball (min_le_right _ _) hw)
+  have hbil : ∀ a ∈ ball (0 : Euclid n) δ, ∀ b ∈ ball (0 : Euclid n) δ,
+      (1 - ε) * ‖a - b‖ ≤ ‖χ a - χ b‖ ∧ ‖χ a - χ b‖ ≤ (1 + ε) * ‖a - b‖ := by
+    intro a ha b hb
+    have hab : (a, b) ∈ ball ((0 : Euclid n), (0 : Euclid n)) δ₁ := by
+      rw [← ball_prod_same]
+      exact ⟨ball_subset_ball (min_le_left _ _) ha, ball_subset_ball (min_le_left _ _) hb⟩
+    have he := hball1 (a, b) hab
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe] at he
+    have hn : ‖A (L (a - b))‖ = ‖a - b‖ := hLJ _
+    have t1 := norm_sub_norm_le (χ a - χ b) (A (L (a - b)))
+    have t2 := norm_sub_norm_le (A (L (a - b))) (χ a - χ b)
+    rw [norm_sub_rev (A (L (a - b))) (χ a - χ b)] at t2
+    constructor <;> linarith
+  -- local surjectivity
+  have hinvc := Submission.dsmc_chart_inverse_continuity P n V W ψ hψ.continuousOn hinj
+    (by rw [himg]; exact inter_subset_left) hprop v₀ hv₀V
+  set C : ℝ := ‖((L.symm : Euclid n ≃L[ℝ] Euclid n) : Euclid n →L[ℝ] Euclid n)‖ with hCdef
+  have hC : 0 ≤ C := norm_nonneg _
+  obtain ⟨η, hη, hηprop⟩ := hinvc (δ / (C + 1)) (div_pos hδ (by linarith))
+  obtain ⟨r₀, hr₀, hr₀W⟩ := Metric.isOpen_iff.1 hW z hzW
+  refine ⟨χ, δ, min η r₀, hδ, lt_min hη hr₀, hχ0, hbil, ?_, ?_⟩
+  · rintro _ ⟨w, hw, rfl⟩
+    have : ψ (v₀ + L w) ∈ W ∩ M := by rw [← himg]; exact ⟨_, hδV w hw, rfl⟩
+    exact this.2
+  · rintro x ⟨hxM, hxb⟩
+    have hxW : x ∈ W := hr₀W (ball_subset_ball (min_le_right _ _) hxb)
+    obtain ⟨v', hv'V, rfl⟩ : x ∈ ψ '' V := by rw [himg]; exact ⟨hxW, hxM⟩
+    have hd : dist (ψ v') (ψ v₀) < η := by
+      rw [hψv₀]; exact lt_of_lt_of_le (mem_ball.1 hxb) (min_le_left _ _)
+    have hv' := hηprop v' hv'V hd
+    refine ⟨L.symm (v' - v₀), ?_, ?_⟩
+    · rw [mem_ball, dist_zero_right]
+      calc ‖L.symm (v' - v₀)‖ ≤ C * ‖v' - v₀‖ := by
+            rw [hCdef]
+            exact ContinuousLinearMap.le_opNorm
+              ((L.symm : Euclid n ≃L[ℝ] Euclid n) : Euclid n →L[ℝ] Euclid n) (v' - v₀)
+        _ ≤ C * (δ / (C + 1)) := by
+            apply mul_le_mul_of_nonneg_left _ hC
+            rw [← dist_eq_norm]; exact hv'.le
+        _ < δ := by
+            rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
+            nlinarith
+    · simp [χ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
