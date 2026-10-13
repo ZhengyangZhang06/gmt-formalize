@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.vague_unit_ball-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Measures converging against C_c to Hⁿ⌞P give mass ω_n to the closed unit ball in the limit (squeeze from parent Steps 3 and 7)",
+  "statement": "Let n, N ∈ ℕ, let P ⊆ ℝ^N be a linear subspace with dim P = n, and let (ν_r)_{r∈ℝ} be Borel measures on ℝ^N such that (i) ν_r(B̄_2(0)) < ∞ for all sufficiently small r > 0, and (ii) for every f ∈ C_c(ℝ^N, ℝ), ∫ f dν_r → ∫_P f dHⁿ as r ↓ 0. Here Hⁿ = μHE[n] and ∫_P is the integral over the set P. Then ν_r(B̄_1(0)) → ω_n := Lⁿ(B_1(0)) in [0, ∞] as r ↓ 0.",
+  "lean_statement": "∀ (n N : ℕ) (ν : ℝ → Measure (Rn N)) (P : Submodule ℝ (Rn N)), finrank ℝ P = n → (∀ᶠ r in 𝓝[>] (0 : ℝ), ν r (Metric.closedBall 0 2) < ∞) → (∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ ∫ y, f y ∂(ν r)) (𝓝[>] 0) (𝓝 (∫ y in (P : Set (Rn N)), f y ∂μHE[n]))) → Tendsto (fun r : ℝ ↦ ν r (Metric.closedBall 0 1)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))",
+  "lean_name": "deGiorgiRH_closedBall_tendsto_of_vague_plane",
+  "depends_on": [
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.plane_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-vague-unit-ball-a1-a1"
+}
