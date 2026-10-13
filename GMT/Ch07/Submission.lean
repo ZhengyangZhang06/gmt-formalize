@@ -1179,6 +1179,88 @@ theorem Submission.dtc_cone_monotonicity_identity : ∀ (P n : ℕ) (R : IMRep (
   congr 1
   linarith
 
+/-- **Simon, proof of 7.3.1 (p. 188): radial tangency at constant density ratio.**  If
+`V = v(M, θ)` (`R = (M, θ, ξ)` in `ℝᴾ`) is stationary and `μ_V(B_ρ(0)) = aρⁿ` for every `ρ > 0`,
+then `x ∈ TₓM`, i.e. `p_{TₓM}(x) = x`, for `μ_V`-a.e. `x` ("by the monotonicity formula 3.6 of
+Ch. 4 … `D^⊥r = 0` `μ_C`-a.e. … That is `x ∈ Tₓ spt C` for `μ_C`-a.e. `x`").  Local
+finiteness of `μ_V` forces `a < ∞`, and squeezing between open balls gives
+`μ_V(B̄_ρ(0)) = aρⁿ`, so the normalized ratio is constantly `a`.  The monotonicity identity
+`dtc_cone_monotonicity_identity` at `z = 0` then makes the defect
+`∫_{B̄_ρ(0) \ B̄_σ(0)} |x − p_x x|² |x|^{−n−2} dμ_V` vanish; its integrand is a.e. measurable by
+`dtc_cone_tangentProjection_aemeasurable`, so `p_x x = x` a.e. on every annulus, and the annuli
+`B̄_{k+1}(0) \ B̄_{1/(k+1)}(0)` exhaust `ℝᴾ \ {0}`, while `p_0 0 = 0`. -/
+theorem Submission.dtc_cone_radial_tangency : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (a : ℝ≥0∞), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (ball 0 ρ) = a * ENNReal.ofReal (ρ ^ n)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x := by
+  intro P n R a hstat hball
+  -- Step 1: `μ_V` is finite on closed balls (`θ` is locally `Hⁿ`-integrable)
+  have hfin : ∀ r : ℝ, R.measure (closedBall 0 r) ≠ ∞ := fun r => by
+    have h := R.locallyIntegrable_mult (closedBall 0 r) (isCompact_closedBall 0 r) (subset_univ _)
+    rwa [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+  -- Step 2: `a = μ_V(B₁(0)) < ∞`
+  have ha : a ≠ ∞ := by
+    have h1 := hball 1 one_pos
+    rw [one_pow, ENNReal.ofReal_one, mul_one] at h1
+    rw [← h1]
+    exact ne_top_of_le_ne_top (hfin 1) (measure_mono ball_subset_closedBall)
+  -- Step 3: `μ_V(B̄_ρ(0)) = aρⁿ`, so the normalized ratio on closed balls is constantly `a`
+  have hratio : ∀ ρ : ℝ, 0 < ρ → R.measure (closedBall 0 ρ) / ENNReal.ofReal (ρ ^ n) = a := by
+    intro ρ hρ
+    suffices h : R.measure (closedBall 0 ρ) = a * ENNReal.ofReal (ρ ^ n) by
+      rw [h, ENNReal.mul_div_cancel_right (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne'
+        ENNReal.ofReal_ne_top]
+    refine le_antisymm ?_ ((hball ρ hρ).ge.trans (measure_mono ball_subset_closedBall))
+    have hlim : Tendsto (fun t : ℝ => a * ENNReal.ofReal (t ^ n)) (𝓝[>] ρ)
+        (𝓝 (a * ENNReal.ofReal (ρ ^ n))) :=
+      (ENNReal.Tendsto.const_mul ((ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto ρ)
+        (Or.inr ha)).mono_left nhdsWithin_le_nhds
+    exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun t (ht : ρ < t) =>
+      (measure_mono (closedBall_subset_ball ht)).trans (hball t (hρ.trans ht)).le)
+  -- Measurability (step 5): `x ↦ p_x x` and the defect integrand are `μ_V`-a.e. measurable,
+  -- as `μ_V ≪ Hⁿ⌞M`
+  have hp : AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection x)
+      R.measure :=
+    (continuous_fst.clm_apply continuous_snd).aemeasurable2
+      ((Submission.dtc_cone_tangentProjection_aemeasurable P n univ R).mono_ac
+        (withDensity_absolutelyContinuous _ _)) aemeasurable_id
+  have hf : AEMeasurable (fun x => ENNReal.ofReal
+      (‖x - (approxTangentPlane n R.carrier x).starProjection x‖ ^ 2 / ‖x‖ ^ (n + 2)))
+      R.measure :=
+    ENNReal.measurable_ofReal.comp_aemeasurable (((aemeasurable_id.sub hp).norm.pow_const 2).div
+      (measurable_norm.pow_const (n + 2)).aemeasurable)
+  -- Steps 4–5: the defect over each annulus `B̄_ρ(0) \ B̄_σ(0)` vanishes, so `p_x x = x` a.e. there
+  have hann : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ∀ᵐ x ∂R.measure, x ∈ closedBall 0 ρ \ closedBall 0 σ →
+      (approxTangentPlane n R.carrier x).starProjection x = x := by
+    intro σ ρ hσ hσρ
+    have h := Submission.dtc_cone_monotonicity_identity P n R hstat 0 σ ρ hσ hσρ
+    rw [hratio σ hσ, hratio ρ (hσ.trans_le hσρ)] at h
+    simp only [sub_zero] at h
+    have hD := (lintegral_eq_zero_iff' (hf.mono_measure Measure.restrict_le_self)).1
+      ((ENNReal.add_right_inj ha).1 (h.trans (add_zero a).symm))
+    have hA : MeasurableSet (closedBall (0 : Euclid P) ρ \ closedBall 0 σ) :=
+      measurableSet_closedBall.diff measurableSet_closedBall
+    filter_upwards [(ae_restrict_iff' hA).1 hD] with x hx hxA
+    have hxσ : σ < ‖x‖ := not_le.1 fun hle => hxA.2 (mem_closedBall_zero_iff.2 hle)
+    have h0 : ‖x - (approxTangentPlane n R.carrier x).starProjection x‖ ^ 2 / ‖x‖ ^ (n + 2) ≤ 0 :=
+      ENNReal.ofReal_eq_zero.1 (hx hxA)
+    rw [div_le_iff₀ (pow_pos (hσ.trans hxσ) _), zero_mul] at h0
+    have hnorm := (pow_eq_zero_iff two_ne_zero).1 (le_antisymm h0 (sq_nonneg _))
+    exact (sub_eq_zero.1 (norm_eq_zero.1 hnorm)).symm
+  -- Step 6: the annuli `B̄_{k+1}(0) \ B̄_{1/(k+1)}(0)` exhaust `ℝᴾ \ {0}`, and `p_0 0 = 0`
+  have hk1 : ∀ k : ℕ, (1 : ℝ) ≤ (k : ℝ) + 1 := fun k => le_add_of_nonneg_left k.cast_nonneg
+  have hall := ae_all_iff.2 fun k : ℕ => hann (1 / ((k : ℝ) + 1)) ((k : ℝ) + 1) (by positivity)
+    (((div_le_one (by positivity)).2 (hk1 k)).trans (hk1 k))
+  filter_upwards [hall] with x hx
+  rcases eq_or_ne x 0 with rfl | hx0
+  · exact map_zero _
+  have hxpos : 0 < ‖x‖ := norm_pos_iff.2 hx0
+  obtain ⟨k, hk⟩ := exists_nat_gt (max ‖x‖ ‖x‖⁻¹)
+  have hk0 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  refine hx k (Set.mem_sdiff_of_mem ?_ ?_)
+  · rw [mem_closedBall_zero_iff]
+    linarith [le_max_left ‖x‖ ‖x‖⁻¹]
+  · rw [mem_closedBall_zero_iff, not_le, one_div_lt hk0 hxpos, one_div]
+    linarith [le_max_right ‖x‖ ‖x‖⁻¹]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
