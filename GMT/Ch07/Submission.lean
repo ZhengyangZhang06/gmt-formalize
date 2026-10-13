@@ -578,6 +578,79 @@ theorem dorag_ha_lsc_ibp_c1_ball : ∀ (n : ℕ) (R : ℝ) (h : Euclid n → ℝ
   rw [h1, h2, key]
 
 end Submission
+/-- Translations are continuous in measure on balls: for measurable `F ⊆ ℝᵐ`,
+`Lᵐ(((F − z) Δ F) ∩ B_R(0)) → 0` as `z → 0`, where `F − z = {v : v + z ∈ F}`.  Inner and outer
+regularity give `K ⊆ A = F ∩ B_{R+1}(0) ⊆ O`, `K` compact, `O` open, with `Lᵐ(A \ K)` and
+`Lᵐ(O \ A)` below `ε / 4`, and some `δ > 0` with the `δ`-thickening of `K` inside `O`.  For
+`|z| < min(δ, 1)` the set lies in `((A \ K) − z) ∪ (O \ A) ∪ (A \ K) ∪ ((O \ A) − z)`, whose
+measure is at most `ε` by translation invariance. -/
+theorem Submission.codim1_zsl_pc_translate_tendsto_zero : ∀ (m : ℕ) (F : Set (Euclid m)) (R : ℝ), MeasurableSet F → Tendsto (fun z : Euclid m => volume (symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R)) (𝓝 0) (𝓝 0) := by
+  intro m F R hF
+  rw [ENNReal.tendsto_nhds_zero]
+  intro ε hε
+  have hε4 : ε / 2 / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.half_pos hε.ne').ne').ne'
+  -- the bounded piece `A = F ∩ B(0, R+1)` of `F`
+  obtain ⟨A, hA⟩ : ∃ A : Set (Euclid m), A = F ∩ ball (0 : Euclid m) (R + 1) := ⟨_, rfl⟩
+  have hmem : ∀ v : Euclid m, v ∈ A ↔ v ∈ F ∧ ‖v‖ < R + 1 := by
+    intro v
+    rw [hA, Set.mem_inter_iff, mem_ball_zero_iff]
+  have hAmeas : MeasurableSet A := by
+    rw [hA]
+    exact hF.inter measurableSet_ball
+  have hAfin : volume A ≠ ∞ := by
+    rw [hA]
+    exact ne_of_lt (lt_of_le_of_lt (measure_mono inter_subset_right) measure_ball_lt_top)
+  -- inner and outer regularity: `K ⊆ A ⊆ O`, `K` compact, `O` open
+  obtain ⟨K, hKA, hKc, hK⟩ := hAmeas.exists_isCompact_sdiff_lt hAfin hε4
+  obtain ⟨O, hAO, hOo, -, hO⟩ := hAmeas.exists_isOpen_sdiff_lt hAfin hε4
+  -- a uniform margin: `thickening δ K ⊆ O`
+  obtain ⟨δ, hδ, hδO⟩ := hKc.exists_thickening_subset_open hOo (hKA.trans hAO)
+  filter_upwards [ball_mem_nhds (0 : Euclid m) (lt_min hδ one_pos)] with z hz
+  rw [mem_ball_zero_iff] at hz
+  have hzδ : ‖z‖ < δ := lt_of_lt_of_le hz (min_le_left _ _)
+  have hz1 : ‖z‖ < 1 := lt_of_lt_of_le hz (min_le_right _ _)
+  have hsub : symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R ⊆
+      ((fun v => v + z) ⁻¹' (A \ K) ∪ (O \ A)) ∪ ((A \ K) ∪ (fun v => v + z) ⁻¹' (O \ A)) := by
+    intro v hv
+    obtain ⟨hv1, hv2⟩ := hv
+    rw [mem_ball_zero_iff] at hv2
+    have hvA : ‖v‖ < R + 1 := by linarith
+    have hvzA : ‖v + z‖ < R + 1 :=
+      calc ‖v + z‖ ≤ ‖v‖ + ‖z‖ := norm_add_le _ _
+        _ < R + 1 := by linarith
+    rcases Set.mem_symmDiff.1 hv1 with ⟨ha, hb⟩ | ⟨ha, hb⟩
+    · -- `v + z ∈ F`, `v ∉ F`
+      rw [mem_preimage] at ha
+      left
+      by_cases hK' : v + z ∈ K
+      · right
+        refine ⟨hδO (mem_thickening_iff.2 ⟨v + z, hK', ?_⟩), fun h => hb ((hmem v).1 h).1⟩
+        rw [dist_self_add_right]
+        exact hzδ
+      · left
+        exact ⟨(hmem (v + z)).2 ⟨ha, hvzA⟩, hK'⟩
+    · -- `v ∈ F`, `v + z ∉ F`
+      rw [mem_preimage] at hb
+      right
+      by_cases hK' : v ∈ K
+      · right
+        refine ⟨hδO (mem_thickening_iff.2 ⟨v, hK', ?_⟩), fun h => hb ((hmem (v + z)).1 h).1⟩
+        rw [dist_self_add_left]
+        exact hzδ
+      · left
+        exact ⟨(hmem v).2 ⟨ha, hvA⟩, hK'⟩
+  calc volume (symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R)
+      ≤ volume (((fun v => v + z) ⁻¹' (A \ K) ∪ (O \ A)) ∪
+          ((A \ K) ∪ (fun v => v + z) ⁻¹' (O \ A))) := measure_mono hsub
+    _ ≤ (volume ((fun v => v + z) ⁻¹' (A \ K)) + volume (O \ A)) +
+          (volume (A \ K) + volume ((fun v => v + z) ⁻¹' (O \ A))) :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) (measure_union_le _ _))
+    _ = (volume (A \ K) + volume (O \ A)) + (volume (A \ K) + volume (O \ A)) := by
+        rw [measure_preimage_add_right (volume : Measure (Euclid m)) z (A \ K),
+          measure_preimage_add_right (volume : Measure (Euclid m)) z (O \ A)]
+    _ ≤ (ε / 2 / 2 + ε / 2 / 2) + (ε / 2 / 2 + ε / 2 / 2) :=
+        add_le_add (add_le_add hK.le hO.le) (add_le_add hK.le hO.le)
+    _ = ε := by rw [ENNReal.add_halves, ENNReal.add_halves]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
