@@ -1084,6 +1084,59 @@ theorem Submission.cbr_ci_const_vector_massOn : ∀ (P m : ℕ) (ν : Measure (E
     (fun _ => s⁻¹ • ζ₀) (fun _ => β) hμK aestronglyMeasurable_const hξ hrep
     aestronglyMeasurable_const ⟨‖β‖, fun _ => le_rfl⟩ (fun _ => hβ1) hξβ W W' hW' hW'U hW'W
 
+/-- **Hausdorff measure of the affine plane through `a` spanned by an orthonormal frame `w`**
+(Simon Ch. 1, 2.9, `Hᵐ = Lᵐ` on `ℝᵐ`, transported by an isometry; step 0 of the integer
+multiplicity criterion for plane cycles).  Let `S = {y | y − a ∈ span w}`.  Orthonormality gives
+`‖Σᵢ cᵢ wᵢ‖ = ‖c‖`, so `J(u) = a + Σᵢ uᵢ wᵢ` is an isometry of `Euclid m` onto `S`.  Hence
+`J_*(Lᵐ) = J_*(Hᵐ) = Hᵐ⌞S`, and composing with the volume-preserving `toLp : ℝᵐ → Euclid m`
+gives (i).  `S` is the preimage of the closed finite-dimensional subspace `span w` under
+`y ↦ y − a`.  For compact `K`, `(Hᵐ⌞S)(K) = Lᵐ(J⁻¹K) < ∞`, as `J` is a closed embedding; and
+`(Hᵐ⌞S)(B_r(a)) = Lᵐ(J⁻¹B_r(a)) > 0`, as `J⁻¹B_r(a)` is open and contains `0`. -/
+theorem Submission.cbr_cipi_affine_plane_measure : ∀ (P m : ℕ) (w : Fin m → Euclid P) (a : Euclid P), Orthonormal ℝ w → Measure.map (fun z : Fin m → ℝ => a + ∑ i, z i • w i) volume = (μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ IsClosed {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) K < ∞) ∧ ∀ r : ℝ, 0 < r → 0 < ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) (ball a r) := by
+  intro P m w a hw
+  set S : Set (Euclid P) := {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} with hS
+  -- Step 1: `J(u) = a + Σᵢ uᵢ wᵢ` is an isometry, as `‖Σᵢ cᵢ wᵢ‖ = ‖c‖` by orthonormality
+  set J : Euclid m → Euclid P := fun u => a + ∑ i, u i • w i
+  have hnorm : ∀ c : Euclid m, ‖∑ i, c i • w i‖ = ‖c‖ := by
+    intro c
+    have h1 : ‖∑ i, c i • w i‖ ^ 2 = ‖c‖ ^ 2 := by
+      rw [← real_inner_self_eq_norm_sq, hw.inner_sum, EuclideanSpace.real_norm_sq_eq]
+      simp [sq]
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h1
+  have hJ : Isometry J := by
+    refine Isometry.of_dist_eq fun u u' => ?_
+    rw [dist_eq_norm, dist_eq_norm, ← hnorm (u - u')]
+    simp [J, sub_smul, Finset.sum_sub_distrib]
+  -- Step 2: `range J = S`, as `y − a ∈ span w` iff `y − a = Σᵢ cᵢ wᵢ` for some `c`
+  have hrange : range J = S := by
+    ext y
+    rw [hS, mem_range, mem_ofPred_eq, Submodule.mem_span_range_iff_exists_fun]
+    constructor
+    · rintro ⟨u, rfl⟩
+      exact ⟨fun i => u i, by simp [J]⟩
+    · rintro ⟨c, hc⟩
+      exact ⟨WithLp.toLp 2 c, by simp [J, hc]⟩
+  -- Step 3: `J_*(Lᵐ) = J_*(Hᵐ) = Hᵐ⌞S`
+  have hJm : Measurable J := hJ.continuous.measurable
+  have hmapJ : Measure.map J volume = (μHE[m] : Measure (Euclid P)).restrict S := by
+    rw [← hrange, ← hJ.map_euclideanHausdorffMeasure,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  refine ⟨?_, ?_, ?_, ?_⟩
+  -- Step 4: (i), as the parametrisation is `J ∘ toLp` and `toLp` preserves volume
+  · have hcomp : (fun z : Fin m → ℝ => a + ∑ i, z i • w i) = J ∘ WithLp.toLp 2 := rfl
+    rw [hcomp, ← Measure.map_map hJm (PiLp.volume_preserving_toLp (Fin m)).measurable,
+      (PiLp.volume_preserving_toLp (Fin m)).map_eq, hmapJ]
+  -- Step 5: (ii), `S` is the preimage of the closed subspace `span w` under `y ↦ y − a`
+  · exact (Submodule.closed_of_finiteDimensional _).preimage (continuous_id.sub continuous_const)
+  -- Step 6: (iii), `(Hᵐ⌞S)(K) = Lᵐ(J⁻¹K) < ∞`, `J` being a closed embedding
+  · intro K hK
+    rw [← hmapJ, Measure.map_apply hJm hK.isClosed.measurableSet]
+    exact (hJ.isClosedEmbedding.isCompact_preimage hK).measure_lt_top
+  -- Step 7: (iv), `(Hᵐ⌞S)(B_r(a)) = Lᵐ(J⁻¹B_r(a)) > 0`, an open set containing `0`
+  · intro r hr
+    rw [← hmapJ, Measure.map_apply hJm measurableSet_ball]
+    exact (isOpen_ball.preimage hJ.continuous).measure_pos _ ⟨0, by simp [J, hr]⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
