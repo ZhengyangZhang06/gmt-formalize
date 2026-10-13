@@ -1506,6 +1506,38 @@ theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (
         refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
         intro x hx
         exact_mod_cast R.mult_pos x hx.1
+/-- Lower semicontinuity of mass under weak convergence on exhausting domains (Simon 6.2.14, as
+used in 7.2.4 and 7.3.1): if every closed ball `B̄_R(0)` lies in `Uⱼ` for all large `j` and
+`Sⱼ ⇀ C` in `ℝᴾ`, then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})` for every subsequence `φ` and every `O`.
+An `ω` admissible for `M_O(C)` has compact support, so it lies in some `B̄_R(0)` and is admissible
+for `S_{φ(i)}` for all large `i`; hence `ofReal(C(ω)) = liminf_i ofReal(S_{φ(i)}(ω))` is at most
+`liminf_i M_O(S_{φ(i)})`. -/
+theorem Submission.dtc_bc_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
+  intro P n Us Ss C hUs hconv φ hφ O
+  -- `M_O(C)` is a supremum: bound each admissible evaluation `ofReal(C(ω))`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+  have hwt : IsTestForm w := ω.property.1
+  -- `tsupport ω` is compact, so it lies in a closed ball, eventually contained in `U_{φ(i)}`.
+  obtain ⟨R, hR⟩ := hwt.2.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  have hev : ∀ᶠ i in atTop, closedBall (0 : Euclid P) R ⊆ Us (φ i) :=
+    hφ.tendsto_atTop.eventually (hUs R)
+  -- There `ω` is admissible for `S_{φ(i)}`, and `currentEval` is its evaluation.
+  have hle : ∀ᶠ i in atTop,
+      ENNReal.ofReal (currentEval (Ss (φ i)) w) ≤ (Ss (φ i)).massOn O := by
+    filter_upwards [hev] with i hi
+    have hmem : IsTestForm w ∧ tsupport w ⊆ Us (φ i) := ⟨hwt, hR.trans hi⟩
+    have heval : currentEval (Ss (φ i)) w = Ss (φ i) ⟨w, hmem⟩ := by
+      unfold currentEval
+      exact dite_eq_left hmem
+    rw [heval]
+    exact (Ss (φ i)).le_massOn (omega := ⟨w, hmem⟩) ⟨hω.1, hω.2⟩
+  -- `currentEval (S_{φ(i)}) ω → C(ω)`, so `ofReal(C(ω))` is the liminf of `ofReal` of these values.
+  calc ENNReal.ofReal (C ω)
+      = liminf (fun i => ENNReal.ofReal (currentEval (Ss (φ i)) w)) atTop :=
+        (ENNReal.tendsto_ofReal ((hconv ω).comp hφ.tendsto_atTop)).liminf_eq.symm
+    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := liminf_le_liminf hle
 /-- **Simon 7.2.4, (12)–(13)** (upper bound on compact sets): let `μ` be finite on compact
 subsets of `ℝᴾ`, and suppose that for every compact `K`, `ε > 0` and subsequence `ψ` there are
 `K ⊆ W ⊆ thickening ε K` and a further subsequence `φ'` with `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)`.
@@ -1579,6 +1611,75 @@ theorem Submission.dtc_bc_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ →
         rw [← hmC W' hW'o, ← hmS W' hW'o, hdiff]
         exact add_le_add hCS le_rfl
     _ = S.massOn W := by rw [hmS W hW, hsplit]
+/-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
+Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
+of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
+theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞ := by
+  intro P n U R K hK hKU
+  have hint := R.locallyIntegrable_mult K hK hKU
+  -- `μ_R(K) = ∫_K θ d(Hⁿ⌞M) = ∫_{M ∩ K} θ dHⁿ`, `K` being closed, hence Borel
+  have hmeas : R.measure K = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+  refine ⟨?_, by rw [hmeas]; exact hint⟩
+  refine ne_top_of_le_ne_top hint ?_
+  -- `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ`, as `1 ≤ θ` on `M`
+  calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, (1 : ℝ≥0∞) ∂μHE[n] := by
+        rw [setLIntegral_one]
+    _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+        refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
+        intro x hx
+        exact_mod_cast R.mult_pos x hx.1
+
+/-- **Simon 7.2.4 (12)–(14)** (chapter-07.txt lines 260–288): for the weights `μⱼ = θⱼ Hⁿ⌞Mⱼ`
+of `Sⱼ = τ(Mⱼ, θⱼ, ξⱼ)` and `μ = θ Hⁿ⌞M` of `C = τ(M, θ, ξ)`, (a) `μ(K) < ∞` and (b)
+`limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)` for bounded open `G`.
+On open sets mass is the weight (Simon 6.3.2(3)); (c) is the lower semicontinuity of mass, and
+(b) is the local comparison with the admissible competitor `S = C`, passed to the whole sequence
+by the subsequence-of-subsequence criterion (lines 278–280). -/
+theorem Submission.dtc_bc_mm_measure_bounds : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → ∀ Rs : (j : ℕ) → IMRep (Us j) n, (∀ j, (Rs j).Represents (Ss j)) → ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → (∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => (Rs j).measure K) atTop ≤ R.measure K) ∧ (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → R.measure G ≤ liminf (fun j => (Rs j).measure G) atTop) := by
+  intro P n Us Ss C hUs hexh hconv hloc Rs hRs R hR
+  -- on open sets mass is the weight: `M_G(C) = μ(G)` and `M_G(Sⱼ) = μⱼ(G)`
+  have hC : ∀ G : Set (Euclid P), IsOpen G → C.massOn G = R.measure G := fun G hG =>
+    Submission.cmc_massOn_eq_imRep_measure P n univ C R isOpen_univ hR G hG
+  have hS : ∀ G : Set (Euclid P), IsOpen G → ∀ j, (Ss j).massOn G = (Rs j).measure G :=
+    fun G hG j =>
+      Submission.cmc_massOn_eq_imRep_measure P n (Us j) (Ss j) (Rs j) (hUs j) (hRs j) G hG
+  -- (a): `μ(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
+  have ha : ∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞ := fun K hK =>
+    lt_top_iff_ne_top.2
+      (Submission.rsd_imrep_compact_measure_ne_top P n univ R K hK (subset_univ K)).2
+  -- `C` is an admissible competitor for itself: `∂C = ∂C`, and `spt(C − C) = ∅` since `C − C`
+  -- vanishes on every ball `B₁(x)`, whose closure is compact
+  have hsame : SameBoundary C C := by
+    cases n
+    · trivial
+    · rfl
+  have hspt : ∀ K : Set (Euclid P), (C - C).support ⊆ K := by
+    intro K x hx
+    have hx' : x ∈ univ \ (C - C).zeroRegion := hx
+    refine absurd (mem_sUnion.2 ⟨ball x 1, ?_, mem_ball_self one_pos⟩) hx'.2
+    refine ⟨isOpen_ball, isBounded_ball.isCompact_closure, subset_univ _, fun ω _ => ?_⟩
+    exact sub_self (C ω)
+  refine ⟨ha, ?_, ?_⟩
+  · -- (b): the comparison with `S = C` gives `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)` on the open
+    -- `W ⊇ K` it provides, the hypothesis of the subsequence criterion
+    refine Submission.dtc_bc_mm_limsup_le_of_subseq P (fun j => (Rs j).measure) R.measure ha ?_
+    intro K ε hK hε ψ hψ
+    obtain ⟨W, hW, hKW, hWK, φ', hφ', hcmp⟩ := hloc K ε hK hε ψ hψ
+    refine ⟨W, hKW, hWK, φ', hφ', ?_⟩
+    calc limsup (fun i => (Rs (ψ (φ' i))).measure W) atTop
+        = limsup (fun i => (Ss (ψ (φ' i))).massOn W) atTop := by
+          congr 1; funext i; exact (hS W hW _).symm
+      _ ≤ C.massOn W := hcmp C ⟨R, hR⟩ hsame (hspt K)
+      _ = R.measure W := hC W hW
+  · -- (c): lower semicontinuity of mass along the whole sequence (`φ = id`)
+    intro G hG _
+    calc R.measure G = C.massOn G := (hC G hG).symm
+      _ ≤ liminf (fun i => (Ss (id i)).massOn G) atTop :=
+          Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hexh hconv id strictMono_id G
+      _ = liminf (fun j => (Rs j).measure G) atTop := by
+          congr 1; funext j; exact hS G hG j
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
