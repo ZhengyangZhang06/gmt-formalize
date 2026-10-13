@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "continuous_compContinuousLinearMapCLM|norm_compContinuousLinearMap_le",
+        "exists_continuous_one_zero_of_isCompact|exists_open_between_and_isCompact_closure|continuous_of_tsupport_subset|continuousOn_fderiv_of_isOpen",
+        "dist_convolution_le|contDiff_convolution_left|theorem HasCompactSupport.convolution",
+        "tendsto_integral_filter_of_dominated_convergence|enorm_natCast|uniformContinuous_of_continuous",
+        "git log --all --oneline -S'dimred_mbl_pf_ext_' -- GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/extension-independent-audit-9hhsu9lz/audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/extension-independent-audit-9hhsu9lz/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/extdecomp/T6.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/decomposition-v1.json",
+        "GMT/Ch07/Submission.lean",
+        "/tmp/extension-independent-audit-9hhsu9lz/audit.py",
+        "/tmp/extension-independent-audit-9hhsu9lz/Contracts.lean",
+        "/tmp/extdecomp/T6.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected extension theorem. The pinned project and Mathlib revisions match the compiler sources. All three exact child types elaborate independently, pass both contract validators, and use the intended operator-norm uniform structure. Their bare names have no reservations in the DAG or matches in the searched declaration history; no accepted declaration is being reused. The children have no mutual dependencies, and the selected node's existing dependency closure is acyclic. Independently rerunning the complete prototypes confirms that each child uses only propext, Classical.choice and Quot.sound. The assembly proves the exact frozen parent type, choosing the sequence before Y and R, with only the exact inherited carrier_facts obligation additionally assumed. That dependency remains queued; this audit does not claim it is proved."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pullback_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and conclusion. The proof establishes pullback continuity using C¹ regularity on the open set, constructs the continuous cutoff with topological support inside O, and proves global continuity and compact support of its product with the pullback. Agreement on K suffices for the parent assembly. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "testform_uniform_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type expresses the claimed uniform approximation in operator norm. The supplied proof verifies positive finite bump normalization, smoothness and compact support of scalar convolution, and an epsilon estimate uniform in x. Completeness and the norm-induced uniform structure were independently checked in Lean. No missing hypothesis or circular dependency is present."
+    },
+    {
+      "key": "action_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including compactness, K ⊆ U, null carrier outside K, continuity, and uniform convergence on K. The proof correctly obtains almost-everywhere localization, the orientation operator-norm bound, finite multiplicity integral, measurable integrands, and eventual integrable domination. Its epsilon argument and stated dominated-convergence alternative prove the exact limit. Carrier localization is an explicit hypothesis, so no undeclared reliance on carrier_facts occurs."
+    }
+  ],
+  "required_changes": []
+}

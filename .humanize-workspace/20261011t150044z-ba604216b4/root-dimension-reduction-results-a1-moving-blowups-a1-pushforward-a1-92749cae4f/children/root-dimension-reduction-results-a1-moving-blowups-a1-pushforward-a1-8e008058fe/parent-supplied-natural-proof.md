@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1.pullback_cutoff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1–2 of the parent proof (continuity of γ = f^#ω on O, and the cutoff h = χγ). Here they are stated for an arbitrary continuous n-form ω. The parent applies this to its test form ω, which is C^∞ and hence continuous.
+Notation. γ(x) := ω(f(x))∘Df(x) := (ω (f x)).compContinuousLinearMap (fderiv ℝ f x) for x ∈ ℝ^P. ‖·‖ denotes operator norms of n-covectors and of linear maps of ℝ^P.
+1. f, Df and ω∘f are continuous on O. f is C¹ on the open set O, so f is continuous on O (ContDiffOn.continuousOn). Its derivative Df = fderiv ℝ f is also continuous on O (ContDiffOn.continuousOn_fderiv_of_isOpen, using 1 ≤ 1). Since ω is continuous, x ↦ ω(f(x)) is continuous on O.
+2. Composition is jointly continuous. Let β, β' be n-covectors and A, A' linear maps of ℝ^P. Then β∘A − β'∘A' = (β − β')∘A + (β'∘A − β'∘A').
+(a) ‖(β − β')∘A‖ ≤ ‖β − β'‖‖A‖ⁿ (ContinuousAlternatingMap.norm_compContinuousLinearMap_le).
+(b) Telescoping over the n slots gives (β'∘A − β'∘A')(v₁,…,vₙ) = Σ_{i=1}^{n} β'(A'v₁,…,A'v_{i−1},(A − A')vᵢ,Av_{i+1},…,Avₙ). Hence ‖β'∘A − β'∘A'‖ ≤ n‖β'‖·max(‖A‖,‖A'‖)^{n−1}·‖A − A'‖. For n = 0 the difference is 0.
+Therefore (β, A) ↦ β∘A is continuous. In Mathlib: A ↦ compContinuousLinearMapCLM A is continuous into the continuous linear maps on covectors (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM). Since β∘A = compContinuousLinearMapCLM A β, ContinuousOn.clm_apply gives continuity of x ↦ γ(x) on O from step 1.
+3. By steps 1 and 2, γ is continuous on O.
+4. Cutoff. ℝ^P is locally compact and Hausdorff, K ⊆ O is compact and O is open. So there is an open set V with K ⊆ V, closure V ⊆ O and closure V compact (exists_open_between_and_isCompact_closure, which returns V, IsOpen V, K ⊆ V, closure V ⊆ O, IsCompact (closure V)). The compact set K and the closed set ℝ^P ∖ V are disjoint. Urysohn's lemma (exists_continuous_one_zero_of_isCompact) then gives a continuous χ : ℝ^P → ℝ with χ = 1 on K, χ = 0 on ℝ^P ∖ V, 0 ≤ χ ≤ 1, and compact support. The parent proof takes χ smooth; only continuity of χ is used here. Since χ vanishes outside V, supp χ ⊆ V, so tsupport χ ⊆ closure V ⊆ O.
+5. Definition of h. Put h(x) := χ(x)·γ(x) for every x ∈ ℝ^P. If x ∉ O then x ∉ tsupport χ, so χ(x) = 0 and h(x) = 0. Thus h is the parent's function: χγ on O and 0 off O.
+6. h is continuous. On O, h is the product of the continuous function χ and the function γ, which is continuous on O by step 3; so h is continuous on O. Also supp h ⊆ supp χ, hence tsupport h ⊆ tsupport χ ⊆ O (tsupport_smul_subset_left). A function that is continuous on an open set containing its topological support is continuous (ContinuousOn.continuous_of_tsupport_subset): at x ∈ O use continuity on the open set O; at x ∉ tsupport h, h vanishes on a neighbourhood of x.
+7. h has compact support: tsupport h is a closed subset of the compact set tsupport χ (HasCompactSupport.smul_right).
+8. For x ∈ K we have χ(x) = 1, so h(x) = γ(x) = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x). By steps 6–8, h is continuous, compactly supported and equal to ω(f)∘Df on K. ∎
+
+## Key steps
+
+1. f and Df = fderiv ℝ f are continuous on the open set O (C¹), so x ↦ ω(f(x)) is continuous on O.
+2. (β, A) ↦ β∘A is jointly continuous (telescoping estimate, or continuous_compContinuousLinearMapCLM with clm_apply), so γ = ω(f)∘Df is continuous on O.
+3. Pick an open V with K ⊆ V and compact closure V ⊆ O. Urysohn then gives a continuous χ ∈ [0,1] with χ = 1 on K, χ = 0 off V and compact support, so tsupport χ ⊆ O.
+4. h := χ·γ is continuous on O and tsupport h ⊆ tsupport χ ⊆ O, hence h is continuous. It has compact support and equals γ on K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I scan of RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json (sibling lean_statements; exact carrier_facts type)`
+- `python3 -I scans of RUN/dag.json: statuses of the pushforward-a1 subtree; accepted nodes whose types mention IsTestForm/TestFormOn with TendstoUniformly/HasCompactSupport/Continuous; covectorEuclideanNorm norm-comparison nodes; lean_name prefix dimred_mbl_pf_ext (no match)`
+- `git log --all --oneline -S'dimred_mbl_pf_ext' (no match)`
+- `cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean RUN/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (both identical); cat manifest.json`
+- `git show 8abce3204fc0:GMT/Ch07/Submission.lean (accepted dor_ims_sua_mollify_unit_field proof); git show d49dda91b75b:GMT/Ch07/Submission.lean (placement of accepted theorem Submission.X inside namespace GMT.Ch07)`
+- `rg -n 'compContinuousLinearMap' RUN/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating RUN/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `rg -n 'continuous_of_mulTSupport|exists_continuous_one_zero_of_isCompact|exists_open_between_and_isCompact_closure|exists_contDiff_zero_iff_one_iff_of_isClosed|dist_convolution_le|uniformContinuous_of_continuous|tendsto_integral_of_dominated_convergence|continuousOn_fderiv_of_isOpen|aestronglyMeasurable_comp₂|enorm_natCast' RUN/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'namespace|Submission' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/{runtime.py,speculation.py,accepted_checkpoint.py} (_existing_lean_name_problem, accepted-declaration layout)`
+- `grep -n '2.13|2.14|2.23|2.24' book/chapter-06.txt (Simon 6.2.14 remark, 6.2.23-2.24)`
+- `lake env lean /tmp/extdecomp/T1.lean (3 child types + carrier_facts + frozen parent type elaborate)`
+- `lake env lean /tmp/extdecomp/T2.lean (conditional assembly from child axioms + carrier_facts axiom to the frozen parent type; #print axioms)`
+- `lake env lean /tmp/extdecomp/T3.lean (instance/feasibility probes: Metric.tendstoUniformly_iff, orientation bound, pullback continuity, a.e. measurability)`
+- `lake env lean /tmp/extdecomp/T4.lean /tmp/extdecomp/T5.lean /tmp/extdecomp/T6.lean (complete prototype proofs of all three children; combined file with assembly; #print axioms)`
+- `python3 -I /tmp/extdecomp/scripts/validate.py with verifier/lean_contract.py and runtime lean_contract.py (validate_lean_statement + verbatim match against compiled T6)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Real.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/speculation.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/accepted_checkpoint.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/extdecomp/T1.lean`
+- `/tmp/extdecomp/T2.lean`
+- `/tmp/extdecomp/T3.lean`
+- `/tmp/extdecomp/T4.lean`
+- `/tmp/extdecomp/T5.lean`
+- `/tmp/extdecomp/T6.lean`
+- `/tmp/extdecomp/scripts/validate.py`
+
+The pins match: HEAD b4d606d and Mathlib 25730c7c. Submission.lean is byte-identical to the frozen contract and to the snapshot contract.
+
+Neither the contract nor SimonGMT provides any of the three needed facts in operator norm: cutoff of a C¹ pullback, uniform density of test forms, or continuity of R.action under uniform convergence. The accepted relatives (dor_ims_sua_mollify_unit_field, dor_ims_smooth_unit_approx, regcomp_exists_smooth_unit_form_support_approx, dimred_mbl_fnd_tfe_uniform_testForm_approx) use covectorEuclideanNorm with unit bounds and single-ε statements, so none has an identical type to reuse. The fresh names dimred_mbl_pf_ext_* collide with nothing in dag.json or in git history.
+
+Every cited Mathlib lemma exists in the pinned snapshot, and all were used in compiled prototypes. One caveat: ContDiffBump.normed is not imported by the contract, so bump normalisation is done by hand.
+
+Results:
+- All child types, the exact carrier_facts type and the exact frozen parent type elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07.
+- The assembly proves the frozen parent type from the three child types plus carrier_facts, using only propext, Classical.choice and Quot.sound otherwise.
+- Full prototype proofs of the three children compile with only the standard axioms.
