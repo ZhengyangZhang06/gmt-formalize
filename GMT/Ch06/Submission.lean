@@ -733,6 +733,34 @@ theorem Submission.dph_sh_ib_covectorEuclideanNorm_contract_le :
   rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]
   exact hsq
 
+/-- Interior-product bound for the Euclidean coefficient norm: if
+`β(v₁, …, v_k) = a γ(w, T v₁, …, T v_k)` for a `(k+1)`-covector `γ` on `ℝ^{m′}`, `w ∈ ℝ^{m′}` and
+`T : ℝ^m → ℝ^{m′}`, then `|β| ≤ |a| √(k+1) ‖w‖ ‖T‖^k |γ|`.  With the contraction
+`δ := γ(w, ·) = γ.curryLeft w` we have `β = a • T^#δ`, so homogeneity
+`Submission.fiw_tb_ext_covectorNorm_smul`, the pull-back bound
+`Submission.iwl_sp_covectorEuclideanNorm_pullback_le` and the contraction bound
+`Submission.dph_sh_ib_covectorEuclideanNorm_contract_le` give
+`|β| = |a| |T^#δ| ≤ |a| ‖T‖^k |δ| ≤ |a| ‖T‖^k √(k+1) ‖w‖ |γ|`. -/
+theorem Submission.dph_sh_covectorEuclideanNorm_interior_le : ∀ (m m' k : ℕ) (γ : Covector (Eucl m') (k + 1)) (w : Eucl m') (T : Eucl m →L[ℝ] Eucl m') (a : ℝ) (β : Covector (Eucl m) k), (∀ v : Fin k → Eucl m, β v = a * γ (Fin.cons w (fun i => T (v i)))) → covectorEuclideanNorm β ≤ |a| * Real.sqrt ((k : ℝ) + 1) * ‖w‖ * ‖T‖ ^ k * covectorEuclideanNorm γ := by
+  intro m m' k γ w T a β hβ
+  -- The contraction `δ := γ(w, ·)`: `δ u = γ (Fin.cons w u)` holds by definition.
+  have hδ := Submission.dph_sh_ib_covectorEuclideanNorm_contract_le m' k γ w (γ.curryLeft w)
+    fun u => ContinuousAlternatingMap.curryLeft_apply_apply γ w u
+  -- `β = a • T^#δ`: both sides send `v` to `a γ(w, T v₁, …, T v_k)`.
+  have hβδ : β = a • (γ.curryLeft w).compContinuousLinearMap T :=
+    ContinuousAlternatingMap.ext fun v => hβ v
+  -- Homogeneity, then the pull-back bound for `T` and the contraction bound for `δ`.
+  rw [hβδ, Submission.fiw_tb_ext_covectorNorm_smul]
+  calc |a| * covectorEuclideanNorm ((γ.curryLeft w).compContinuousLinearMap T)
+      ≤ |a| * (‖T‖ ^ k * covectorEuclideanNorm (γ.curryLeft w)) :=
+        mul_le_mul_of_nonneg_left
+          (Submission.iwl_sp_covectorEuclideanNorm_pullback_le m m' k T (γ.curryLeft w))
+          (abs_nonneg a)
+    _ ≤ |a| * (‖T‖ ^ k * (Real.sqrt ((k : ℝ) + 1) * ‖w‖ * covectorEuclideanNorm γ)) :=
+        mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left hδ (pow_nonneg (norm_nonneg T) k)) (abs_nonneg a)
+    _ = |a| * Real.sqrt ((k : ℝ) + 1) * ‖w‖ * ‖T‖ ^ k * covectorEuclideanNorm γ := by ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
