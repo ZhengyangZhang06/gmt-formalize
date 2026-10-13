@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.dilation-a1.support-a1",
+  "parent_id": "root.deformation-a1.dilation-a1",
+  "depth": 3,
+  "title": "Support scales by ρ under dilation",
+  "statement": "Support scaling under dilation. Let N ∈ ℕ, ρ > 0, k ∈ ℕ, and let X, Y ∈ D_k(ℝ^N) (GeometricCurrentOn univ k on Eucl N). Suppose Y(ω) = X(η) for all test k-forms ω, η with η(x) = ρ^k ω(ρx) for all x. Then spt Y = ρ·spt X, i.e. Y.support = {ρx : x ∈ X.support}.",
+  "lean_statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.support = (fun x => ρ • x) '' X.support",
+  "lean_name": "deformation_dilation_support",
+  "depends_on": [
+    "root.deformation-a1.dilation-a1.calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.dilation-a1.calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-dilation-a1-support-a1-a1"
+}

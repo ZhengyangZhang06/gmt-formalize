@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.dilation-a1.hausdorff-a1",
+  "parent_id": "root.deformation-a1.dilation-a1",
+  "depth": 3,
+  "title": "Hausdorff measure under the dilation x ↦ ρx",
+  "statement": "Hausdorff measure under the dilation x ↦ ρx. Let N, k ∈ ℕ and ρ > 0, and let H^k = μHE[k] be the Euclidean k-dimensional Hausdorff measure on ℝ^N (Eucl N). The map φ(x) = ρx is a measurable embedding of ℝ^N, and φ is measure preserving from ρ^k·H^k to H^k. That is, φ_#(ρ^k H^k) = H^k: H^k(φ⁻¹B) = ρ^{−k}H^k(B) for every Borel set B, or equivalently H^k(ρE) = ρ^k H^k(E).",
+  "lean_statement": "∀ (N k : ℕ) (ρ : ℝ), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) ∧ MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N))",
+  "lean_name": "deformation_dilation_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-dilation-a1-hausdorff-a1-a1"
+}
