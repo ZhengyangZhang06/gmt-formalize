@@ -451,6 +451,151 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 3.8–3.11 and the remark after 3.17**: let `U` be open, let every `y ∈ U` be
+the centre of a ball of finite mass, and let every compact `K ⊆ U` have `Λ ≥ 0` such that
+`ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(y)}(T)` is nondecreasing on `(0, R)` whenever `B̄_R(y) ⊆ K`.  Then `T` has a
+density `Θ(y)` at every `y ∈ U`, and `Θ` is upper semicontinuous on `U`.
+The monotone quantity has a finite limit as `ρ ↓ 0`; multiplying by `e^{-Λρ} → 1` gives the
+density.  Monotonicity at a centre `z` bounds `ωₙΘ(z)` by `e^{Λρ}ρ⁻ⁿ M_{B_ρ(z)}(T)` for every
+smaller radius `ρ`.  For `|z - y| < δρ`, `B_ρ(z) ⊆ B_{(1+δ)ρ}(y)`, and the density at `y` gives
+`Θ(z) < e^δ(1 + δ)ⁿ(Θ(y) + δ)` for small `ρ`. -/
+theorem Submission.dimred_mono_density_usc_of_monotone : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ T.massOn (ball y r) ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → ∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U := by
+  intro P n U T hU hfin hmono
+  -- `0 < ωₙ < ∞`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := volume) (x := (0 : Euclid n)) (r := 1)).ne
+  -- (1) the density exists at every `y ∈ U` (Simon Ch. 4, 3.8–3.10)
+  have hex : ∀ y : Euclid P, ∃ θ : ℝ, y ∈ U → HasMassDensity T y θ := by
+    intro y
+    by_cases hy : y ∈ U
+    swap
+    · exact ⟨0, fun h => absurd h hy⟩
+    obtain ⟨r₀, hr₀, hr₀fin⟩ := hfin y hy
+    obtain ⟨r₁, hr₁, hr₁U⟩ := Metric.isOpen_iff.1 hU y hy
+    have hRpos : 0 < min r₀ (r₁ / 2) := lt_min hr₀ (half_pos hr₁)
+    have hKU : closedBall y (min r₀ (r₁ / 2)) ⊆ U :=
+      (closedBall_subset_ball ((min_le_right _ _).trans_lt (half_lt_self hr₁))).trans hr₁U
+    obtain ⟨Λ, -, hΛ⟩ := hmono _ (isCompact_closedBall y _) hKU
+    -- the monotone function `g` tends to its infimum `L < ∞` as `ρ ↓ 0`
+    obtain ⟨L, hlim, hLtop⟩ : ∃ L : ℝ≥0∞, Tendsto (fun ρ : ℝ => ENNReal.ofReal
+        (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (𝓝[>] 0) (𝓝 L) ∧ L ≠ ∞ := by
+      refine ⟨_, (hΛ y _ subset_rfl).tendsto_nhdsWithin_Ioo_right (nonempty_Ioo.2 hRpos)
+        (OrderBot.bddBelow _), ne_top_of_le_ne_top ?_
+        (sInf_le (mem_image_of_mem _ ⟨half_pos hRpos, half_lt_self hRpos⟩))⟩
+      exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (ne_top_of_le_ne_top hr₀fin
+        (T.massOn_mono (ball_subset_ball ((half_le_self hRpos.le).trans (min_le_left _ _)))))
+    -- multiply by `e^{-Λρ} → 1` and divide by `ωₙ`
+    have hexp : Tendsto (fun ρ : ℝ => ENNReal.ofReal (Real.exp (-(Λ * ρ)))) (𝓝[>] 0) (𝓝 1) := by
+      have : Tendsto (fun ρ : ℝ => Real.exp (-(Λ * ρ))) (𝓝 0) (𝓝 1) :=
+        (by fun_prop : Continuous fun ρ : ℝ => Real.exp (-(Λ * ρ))).tendsto' 0 1 (by simp)
+      simpa using (ENNReal.tendsto_ofReal this).mono_left nhdsWithin_le_nhds
+    have hdiv := ENNReal.Tendsto.div_const
+      (ENNReal.Tendsto.mul hexp (Or.inl one_ne_zero) hlim (Or.inr ENNReal.one_ne_top))
+      (Or.inr hω0)
+    rw [one_mul] at hdiv
+    refine ⟨(L / unitBallVolume n).toReal, fun _ => ⟨ENNReal.toReal_nonneg, ?_⟩⟩
+    rw [ENNReal.ofReal_toReal (ENNReal.div_ne_top hLtop hω0)]
+    refine hdiv.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    have h1 : Real.exp (-(Λ * ρ)) * (Real.exp (Λ * ρ) / ρ ^ n) = (ρ ^ n)⁻¹ := by
+      rw [mul_div_assoc', ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_div]
+    rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.exp_pos _).le, h1,
+      ENNReal.ofReal_inv_of_pos (pow_pos hρ n), div_eq_mul_inv, div_eq_mul_inv,
+      ENNReal.mul_inv (Or.inl hω0) (Or.inl hωtop)]
+    ring
+  choose Θ hΘ using hex
+  -- (2) comparison with a fixed radius: `ωₙ Θ(z) ≤ e^{Λρ} ρ⁻ⁿ M_{B_ρ(z)}(T)`
+  have hcomp : ∀ (Λ : ℝ) (z : Euclid P) (R : ℝ), 0 ≤ Λ → z ∈ U →
+      MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ))
+        (Ioo 0 R) → ∀ ρ ∈ Ioo 0 R, unitBallVolume n * ENNReal.ofReal (Θ z) ≤
+          ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ) := by
+    intro Λ z R hΛ hz hg ρ hρ
+    refine le_of_tendsto (ENNReal.Tendsto.const_mul (hΘ z hz).2 (Or.inr hωtop)) ?_
+    filter_upwards [Ioo_mem_nhdsGT hρ.1] with t ht
+    calc unitBallVolume n * (T.massOn (ball z t) / (unitBallVolume n * ENNReal.ofReal (t ^ n)))
+        = ENNReal.ofReal (t ^ n)⁻¹ * T.massOn (ball z t) := by
+          rw [← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop, ENNReal.div_eq_inv_mul,
+            ENNReal.ofReal_inv_of_pos (pow_pos ht.1 n)]
+      _ ≤ ENNReal.ofReal (Real.exp (Λ * t) / t ^ n) * T.massOn (ball z t) := by
+          gcongr
+          rw [div_eq_mul_inv]
+          exact le_mul_of_one_le_left (inv_nonneg.2 (pow_nonneg ht.1.le n))
+            (Real.one_le_exp (mul_nonneg hΛ ht.1.le))
+      _ ≤ ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ) :=
+          hg ⟨ht.1, ht.2.trans hρ.2⟩ hρ ht.2.le
+  -- (3) upper semicontinuity (Simon Ch. 4, 3.11)
+  refine ⟨Θ, hΘ, upperSemicontinuousOn_iff.2 fun y hy =>
+    upperSemicontinuousWithinAt_iff.2 fun c hc => ?_⟩
+  have hΘy := hΘ y hy
+  have hc0 : 0 < c := hΘy.1.trans_lt hc
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU y hy
+  have hKU : closedBall y (2 * (r / 3)) ⊆ U := (closedBall_subset_ball (by linarith)).trans hrU
+  obtain ⟨Λ, hΛ0, hΛ⟩ := hmono _ (isCompact_closedBall y _) hKU
+  -- choose `δ > 0` with `e^δ (1 + δ)ⁿ (Θ(y) + δ) < c`
+  obtain ⟨δ, hδc, hδ⟩ : ∃ δ : ℝ, Real.exp δ * (1 + δ) ^ n * (Θ y + δ) < c ∧ 0 < δ := by
+    have hcont : Continuous fun δ : ℝ => Real.exp δ * (1 + δ) ^ n * (Θ y + δ) := by fun_prop
+    have h0 : (fun δ : ℝ => Real.exp δ * (1 + δ) ^ n * (Θ y + δ)) 0 < c := by simpa using hc
+    have hev : ∀ᶠ δ in 𝓝[>] (0 : ℝ), Real.exp δ * (1 + δ) ^ n * (Θ y + δ) < c :=
+      ((hcont.tendsto 0).eventually (gt_mem_nhds h0)).filter_mono nhdsWithin_le_nhds
+    exact (hev.and eventually_mem_nhdsWithin).exists
+  -- choose `ρ > 0` with `(1 + δ)ρ` below the density scale at `y` and `r / 3`, and `Λρ < δ`
+  have hscale : Tendsto (fun ρ : ℝ => (1 + δ) * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+    · exact ((by fun_prop : Continuous fun ρ : ℝ => (1 + δ) * ρ).tendsto' 0 0
+        (by simp)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+      exact mul_pos (by linarith) hρ
+  have hΛlim : Tendsto (fun ρ : ℝ => Λ * ρ) (𝓝[>] 0) (𝓝 0) :=
+    ((by fun_prop : Continuous fun ρ : ℝ => Λ * ρ).tendsto' 0 0 (by simp)).mono_left
+      nhdsWithin_le_nhds
+  have hlt : ENNReal.ofReal (Θ y) < ENNReal.ofReal (Θ y + δ) :=
+    (ENNReal.ofReal_lt_ofReal_iff (by linarith [hΘy.1])).2 (by linarith)
+  obtain ⟨ρ, ⟨hρF, hρR⟩, hρΛ, hρ⟩ := (((hscale.eventually (hΘy.2.eventually
+    (gt_mem_nhds hlt))).and ((hscale.mono_right nhdsWithin_le_nhds).eventually
+      (gt_mem_nhds (by positivity : (0 : ℝ) < r / 3)))).and ((hΛlim.eventually
+        (gt_mem_nhds hδ)).and eventually_mem_nhdsWithin)).exists
+  have hρ : 0 < ρ := hρ
+  have hρF : T.massOn (ball y ((1 + δ) * ρ)) /
+      (unitBallVolume n * ENNReal.ofReal (((1 + δ) * ρ) ^ n)) < ENNReal.ofReal (Θ y + δ) := hρF
+  have hρR' : ρ < r / 3 := by nlinarith
+  -- every `z ∈ B_{δρ}(y)` has `Θ(z) < c`
+  filter_upwards [mem_nhdsWithin_of_mem_nhds (ball_mem_nhds y (mul_pos hδ hρ))] with z hz
+  have hzy : dist z y < δ * ρ := hz
+  have hzU : z ∈ U := hrU (mem_ball.2 (by nlinarith))
+  have hρz := hcomp Λ z (r / 3) hΛ0 hzU
+    (hΛ z (r / 3) (closedBall_subset_closedBall' (by nlinarith))) ρ ⟨hρ, hρR'⟩
+  have hD0 : unitBallVolume n * ENNReal.ofReal (((1 + δ) * ρ) ^ n) ≠ 0 :=
+    mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos (mul_pos (by linarith) hρ) n)).ne'
+  have hDtop : unitBallVolume n * ENNReal.ofReal (((1 + δ) * ρ) ^ n) ≠ ∞ :=
+    ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+  have hmass := (ENNReal.div_lt_iff (Or.inl hD0) (Or.inl hDtop)).1 hρF
+  have hA0 : ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) ≠ 0 :=
+    (ENNReal.ofReal_pos.2 (div_pos (Real.exp_pos _) (pow_pos hρ n))).ne'
+  have hkey : unitBallVolume n * ENNReal.ofReal (Θ z) < unitBallVolume n * ENNReal.ofReal c := by
+    calc unitBallVolume n * ENNReal.ofReal (Θ z)
+        ≤ ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ) := hρz
+      _ ≤ ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ((1 + δ) * ρ)) := by
+          gcongr
+          exact T.massOn_mono (ball_subset_ball' (by nlinarith))
+      _ < ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * (ENNReal.ofReal (Θ y + δ) *
+            (unitBallVolume n * ENNReal.ofReal (((1 + δ) * ρ) ^ n))) :=
+          ENNReal.mul_lt_mul_right hA0 ENNReal.ofReal_ne_top hmass
+      _ = unitBallVolume n * ENNReal.ofReal (Real.exp (Λ * ρ) * (1 + δ) ^ n * (Θ y + δ)) := by
+          have hX : Real.exp (Λ * ρ) * (1 + δ) ^ n * (Θ y + δ) =
+              Real.exp (Λ * ρ) / ρ ^ n * ((Θ y + δ) * ((1 + δ) * ρ) ^ n) := by
+            rw [mul_pow, div_mul_eq_mul_div, eq_div_iff (pow_pos hρ n).ne']
+            ring
+          rw [hX, ENNReal.ofReal_mul (div_pos (Real.exp_pos _) (pow_pos hρ n)).le,
+            ENNReal.ofReal_mul (by linarith [hΘy.1] : (0 : ℝ) ≤ Θ y + δ)]
+          ring
+      _ < unitBallVolume n * ENNReal.ofReal c := by
+          refine ENNReal.mul_lt_mul_right hω0 hωtop
+            ((ENNReal.ofReal_lt_ofReal_iff hc0).2 (lt_of_le_of_lt ?_ hδc))
+          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+            (Real.exp_le_exp.2 hρΛ.le) (pow_nonneg (by linarith) n)) (by linarith [hΘy.1])
+  exact (ENNReal.ofReal_lt_ofReal_iff hc0).1 ((ENNReal.mul_lt_mul_iff_right hω0 hωtop).1 hkey)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
