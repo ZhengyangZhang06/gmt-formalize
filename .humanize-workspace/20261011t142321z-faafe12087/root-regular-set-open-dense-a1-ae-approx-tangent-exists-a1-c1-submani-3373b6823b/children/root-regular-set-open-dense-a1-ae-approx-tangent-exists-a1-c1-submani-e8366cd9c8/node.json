@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1.approx_tangent_local-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+  "depth": 4,
+  "title": "Approximate tangent spaces depend only on the set near the point",
+  "statement": "Let m, N ∈ ℕ, S, T ⊆ ℝ^N, x ∈ ℝ^N, ε > 0 and let P be a linear subspace of ℝ^N. Suppose S ∩ B̆_ε(x) = T ∩ B̆_ε(x) (open ball). If P is the approximate tangent space of T at x in the sense of Simon Ch. 3, Def. 1.4 with Hᵐ := μHE[m] (Chapter03.HasApproximateTangentSpaceAt m T x P), then P is the approximate tangent space of S at x (Chapter03.HasApproximateTangentSpaceAt m S x P).",
+  "lean_statement": "∀ (m N : ℕ) (S T : Set (EuclideanSpace ℝ (Fin N))) (x : EuclideanSpace ℝ (Fin N)) (ε : ℝ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))), 0 < ε → S ∩ ball x ε = T ∩ ball x ε → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m T x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P",
+  "lean_name": "rsod_c1tan_approxTangent_of_local_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-e8366cd9c8-a1"
+}

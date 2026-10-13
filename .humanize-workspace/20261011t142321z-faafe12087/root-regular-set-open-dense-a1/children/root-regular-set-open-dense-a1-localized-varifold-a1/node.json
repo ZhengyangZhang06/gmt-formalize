@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.localized_varifold-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Localization and rescaling of a rectifiable varifold to an open subset",
+  "statement": "Let V = v(M, θ) be a rectifiable n-varifold in U ⊆ ℝ^{n+ℓ} (U arbitrary), B ⊆ U open and c > 0. Then there is a rectifiable n-varifold W in B with carrier M ∩ B and multiplicity c·θ, whose weight is ofReal(c) • (μ_V restricted to B), whose support is B ∩ spt V, which has generalized mean curvature H in B whenever V has generalized mean curvature H in U, and with H locally in Lᵖ(μ_W) on B whenever H is locally in Lᵖ(μ_V) on U.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (B : Set (Amb n ℓ)) (c : ℝ), IsOpen B → B ⊆ U → 0 < c → ∃ W : RectifiableVarifold n ℓ B, W.carrier = V.carrier ∩ B ∧ (∀ x, W.mult x = c * V.mult x) ∧ W.weight = ENNReal.ofReal c • V.weight.restrict B ∧ W.support = B ∩ V.support ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature H) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp H p)",
+  "lean_name": "rsod_exists_localized_varifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-localized-varifold-a1-a1"
+}

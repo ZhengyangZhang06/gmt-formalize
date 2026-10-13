@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_open_dense-a1`
+- Child DAG node: `root.regular_set_open_dense-a1.rectifiable_c1_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 3, Lemma 1.2 ("only if"), printed proof, together with the printed proof (Ch. 2, p. 44) of the C¹ Approximation Theorem (Ch. 2, Thm 1.5) on which it relies. Available tools: the Whitney extension theorem (Ch. 2, Thm 1.6; simongmt Chapter02 exists_contDiff_one_extension_of_whitney with HasWhitneyC1Compatibility), Rademacher's theorem (Mathlib LipschitzWith.ae_differentiableAt; simongmt rademacher_ae_differentiableAt), measurability of x ↦ fderiv f x (Mathlib measurable_fderiv), Lusin's theorem (Ch. 1, Thm 1.17; simongmt Chapter01 Lusin), Egoroff's theorem (Mathlib tendstoUniformlyOn_of_ae_tendsto), Lipschitz images (Ch. 2, Thm 1.8(i); Mathlib LipschitzWith.hausdorffMeasure_image_le), and the critical-value estimate (area formula; simongmt Chapter02 area_image_criticalSet_eq_zero: μHE[n](f '' {x | DifferentiableAt ℝ f x ∧ ¬ Injective (fderiv ℝ f x)}) = 0 for f : ℝⁿ → ℝ^{n+ℓ}). Notation: Hⁿ := μHE[n]; on ℝⁿ, Hⁿ = Lⁿ (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). Let n ≥ 1, ℓ ∈ ℕ and M ⊆ ℝ^{n+ℓ} with Chapter03.CountablyRectifiable n M.
+1. By definition there are M₀ with Hⁿ(M₀) = 0 and Lipschitz maps F_j : ℝⁿ → ℝ^{n+ℓ} (j ∈ ℕ) with M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ).
+2. C¹ approximation (Ch. 2, Thm 1.5), localized to balls so that every measure involved is finite. Claim: for every Lipschitz f : ℝⁿ → ℝ, every ε > 0 and every m ∈ ℕ there is g ∈ C¹(ℝⁿ) with Lⁿ(B_m(0) ∩ {x : f(x) ≠ g(x)}) < ε. Printed proof, run inside the closed ball B_m(0): (a) by Rademacher, f is differentiable at every point of a Borel set D with Lⁿ(ℝⁿ minus D) = 0, and x ↦ Df(x) is Borel measurable (measurable_fderiv); since f is Lipschitz, ‖Df(x)‖ ≤ Lip f for x ∈ D. (b) Apply Lusin's theorem on the finite-measure set B_m(0) ∩ D to each of the n real functions x ↦ Df(x)e_i and intersect the n closed sets obtained: there is a closed C ⊆ B_m(0) ∩ D with Df|C continuous and Lⁿ(B_m(0) minus C) < ε/2. (c) For x, y ∈ C with x ≠ y let R(x, y) := (f(y) - f(x) - Df(x)(y - x))/|y - x|, so |R(x, y)| ≤ 2 Lip f, and η_k(x) := sup{|R(x, y)| : y ∈ C, 0 < |y - x| < 1/k} (sup ∅ := 0), a real number in [0, 2 Lip f]. R is continuous on {(x, y) ∈ C × C : x ≠ y} and the condition 0 < |y - x| < 1/k is open in x, so η_k is lower semicontinuous on C, hence Borel; η_k decreases in k, and η_k(x) → 0 for each x ∈ C because f is differentiable at x ∈ D with derivative Df(x). (d) By Egoroff's theorem on the finite-measure set C there is a measurable A₀ ⊆ C with Lⁿ(C minus A₀) < ε/4 on which η_k → 0 uniformly; by inner regularity of the finite measure Lⁿ⌞B_m(0) pick a closed A ⊆ A₀ with Lⁿ(A₀ minus A) < ε/4. Then Lⁿ(B_m(0) minus A) < ε. (e) Whitney's condition (HasWhitneyC1Compatibility A f Df) holds: f and Df are continuous on A, and for x ∈ A, y ∈ A with 0 < |y - x| < 1/k we have |f(y) - f(x) - Df(x)(y - x)| ≤ η_k(x)|y - x| ≤ (sup_A η_k)|y - x| with sup_A η_k → 0 (uniform convergence on A; the case y = x is trivial), which gives the required δ for every compact K ⊆ A and every ε' > 0. (f) The Whitney extension theorem (A closed) gives g ∈ C¹(ℝⁿ) with g = f on A (and Dg = Df on A), so B_m(0) ∩ {f ≠ g} ⊆ B_m(0) minus A has measure < ε. Applying the claim to each of the n + ℓ coordinates of F_j with ε/(n + ℓ) gives, for all j, m ∈ ℕ and i ≥ 1, a C¹ map G_{ijm} : ℝⁿ → ℝ^{n+ℓ} with Lⁿ(B_m(0) ∩ {x : F_j(x) ≠ G_{ijm}(x)}) < 1/i.
+3. Let Z_j := ⋃_m ⋂_i (B_m(0) ∩ {F_j ≠ G_{ijm}}). For each m the inner intersection has Lⁿ-measure ≤ 1/i for every i, hence 0; so Hⁿ(Z_j) = Lⁿ(Z_j) = 0 and Hⁿ(F_j(Z_j)) ≤ Lip(F_j)ⁿ·Hⁿ(Z_j) = 0 (μHE[n] is a constant multiple of μH[n]). If x ∉ Z_j, choose m with x ∈ B_m(0); then x ∉ ⋂_i (B_m(0) ∩ {F_j ≠ G_{ijm}}), so F_j(x) = G_{ijm}(x) for some i. Hence F_j(ℝⁿ) ⊆ F_j(Z_j) ∪ ⋃_{i,m} G_{ijm}(ℝⁿ).
+4. Let G : ℝⁿ → ℝ^{n+ℓ} be C¹. Crit := {x : DG(x) is not injective} (G is differentiable everywhere) satisfies Hⁿ(G(Crit)) = 0 (area_image_criticalSet_eq_zero). Reg := ℝⁿ minus Crit is open (DG is continuous and injective linear maps form an open set). For a ∈ Reg let c_a := min_{|v| = 1}|DG(a)v| > 0 and choose σ_a > 0 with B_{σ_a}(a) ⊆ Reg and ‖DG(z) - DG(a)‖ ≤ c_a/2 for z ∈ B_{σ_a}(a). By the mean value inequality, |G(x) - G(y) - DG(a)(x - y)| ≤ (c_a/2)|x - y| for x, y ∈ B_{σ_a}(a), hence |G(x) - G(y)| ≥ (c_a/2)|x - y|: G is injective on the closed ball B_{σ_a}(a); it is also Lipschitz there (DG is bounded on this compact convex set).
+5. N_a := G(B̆_{σ_a}(a)) is IsC1Submanifold n with Hⁿ(N_a) < ∞. Let V := B̆_{σ_a}(a), S_a := {x : |x - a| = σ_a} and W := ℝ^{n+ℓ} minus G(S_a), which is open because G(S_a) is compact. By injectivity of G on the closed ball, G(V) ∩ G(S_a) = ∅, so N_a ⊆ W and G(V) = W ∩ N_a. G is C¹ and injective on V, and DG(x) is injective for x ∈ V ⊆ Reg. Properness: for compact K ⊆ W, no point of S_a is mapped into K, so V ∩ G⁻¹(K) = B_{σ_a}(a) ∩ G⁻¹(K), a closed subset of the compact ball, hence compact. Thus (V, W, G) is a chart of the required kind at every point of N_a. Finally Hⁿ(N_a) ≤ Lip(G|B_{σ_a}(a))ⁿ·Lⁿ(B_{σ_a}(a)) < ∞.
+6. ℝⁿ is second countable, so the open cover {B̆_{σ_a}(a) : a ∈ Reg} of Reg has a countable subcover (Lindelöf), which we list as {B̆_{σ_{a_q}}(a_q)}_{q ∈ ℕ} (if Reg = ∅ use the empty family, i.e. pad with ∅). Hence G(ℝⁿ) ⊆ G(Crit) ∪ ⋃_q N_{a_q}.
+7. Assembly. Apply steps 4-6 to every G_{ijm}, obtaining critical sets Crit_{ijm} and submanifolds N^{ijm}_q. Put N₀ := M₀ ∪ ⋃_j F_j(Z_j) ∪ ⋃_{i,j,m} G_{ijm}(Crit_{ijm}), a countable union of Hⁿ-null sets, so Hⁿ(N₀) = 0. Enumerate the countable family (N^{ijm}_q)_{i,j,m,q} as (N_k)_{k ∈ ℕ} (e.g. via iterated Nat.pair); any index not used is assigned the empty set, which is vacuously IsC1Submanifold n and has measure 0. Each N_k is IsC1Submanifold n with Hⁿ(N_k) < ∞, and by steps 1, 3 and 6, M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) ⊆ N₀ ∪ ⋃_k N_k. (If M = ∅ every set may be taken empty.)
+
+## Key steps
+
+1. Unpack countable rectifiability: M ⊆ M₀ ∪ ⋃ F_j(ℝⁿ), F_j Lipschitz
+2. C¹ approximation on balls B_m(0) (Rademacher, Lusin, Egoroff, Whitney): G_{ijm} ∈ C¹ with Lⁿ(B_m ∩ {F_j ≠ G_{ijm}}) < 1/i
+3. F_j(ℝⁿ) ⊆ F_j(Z_j) ∪ ⋃ G_{ijm}(ℝⁿ) with Hⁿ(F_j(Z_j)) = 0
+4. Critical values of a C¹ map are Hⁿ-null; near a regular point G is an injective Lipschitz immersion
+5. G(B̆_σ(a)) is an IsC1Submanifold of finite measure (chart G, target ℝ^{n+ℓ} minus G(sphere))
+6. Lindelöf and countable assembly
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -l 'rsod_|regularSet|IsC1Submanifold' <snapshot>/project`
+- `rg -n '^lemma (isClosed_support|mem_support_iff_forall|notMem_support_iff_exists|support_mem_ae|measure_compl_support|interior_inter_support|support_restrict_subset)' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n '^theorem (IsometryEquiv.measurePreserving_euclideanHausdorffMeasure|MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|Isometry.euclideanHausdorffMeasure_image)' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -l -e '[Vv]arifold' -e 'ApproximateTangent' -e 'approximate tangent' -e 'Whitney' -e 'rectifiable' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem ae_tendsto_rnDeriv ' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'subRight' <snapshot>/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean; rg -n 'theorem ae_map_iff \{p' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean; rg -n '^theorem ae_smul_measure ' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Module.lean; rg -n 'protected theorem Tendsto.const_mul' <snapshot>/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `sed -n 1,558p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasWeightedApproximateTangentSpaceAt, .unique)`
+- `rg -n -i 'whitney|c1_approx|C1Approx|approximation theorem|upper density|theorem_1_5' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/{Chapter01/DensityComparison.lean,Chapter01/HausdorffDensityBounds.lean,Chapter01/Lusin.lean,Chapter02/AreaCritical.lean,Chapter02/WhitneyExtension.lean,Chapter04/TangentDensity.lean}`
+- `grep -rl rsod_ .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087 (name-collision check)`
+- `lake env lean /tmp/rsod-check/RsodCheck/All.lean (12 child statements, comparator targets, parent assembly, glue and leaf proofs)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Manifold/WhitneyEmbedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/rsod-check/RsodCheck/All.lean`
+
+The snapshot is pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json).
+
+No prior proofs exist. regularSet and IsC1Submanifold occur only in project/GMT/Ch05/{Contract,Submission}.lean and README.md. No rsod_ name occurs anywhere in the run, so there are no name collisions.
+
+No-match results:
+- Mathlib has no varifold, rectifiable-set, approximate-tangent or Whitney C¹-extension material. The only hits are Geometry/Manifold/WhitneyEmbedding.lean and PartitionOfUnity.lean (the Whitney embedding theorem for manifolds) and a comment in CategoryTheory/Monoidal/Rigid/Braided.lean.
+- The pinned simongmt package lies outside the snapshot, under .lake/packages. It proves uniqueness of weighted approximate tangent planes (Chapter03/Rectifiable.lean, whose definition matches Def 1.7 literally).
+- simongmt proves only the easy direction of Ch. 3 Lemma 1.2; SubmanifoldCover.lean says the 'only if' direction 'remains a separate theorem'.
+- simongmt has no C¹ approximation theorem, and its Chapter04 varifold stores tangent planes as data.
+- So a.e. existence of tangent planes (Ch. 3, 1.9) and the C¹ cover are genuinely new obligations: children rectifiable_c1_cover and ae_approx_tangent_exists.
+
+Usable Mathlib items:
+- Measure.support API: isClosed_support, mem_support_iff_forall, notMem_support_iff_exists, support_mem_ae (hereditarily Lindelöf), interior_inter_support, support_restrict_subset.
+- μHE[n] invariance: IsometryEquiv.measurePreserving_euclideanHausdorffMeasure and euclideanHausdorffMeasure_smul₀.
+- Measurable equivalences: MeasurableEquiv.subRight with MeasurableEmbedding.ae_map_iff and MeasurableEquiv.map_apply.
+- Measure.ae_smul_measure, ENNReal.Tendsto.const_mul and Besicovitch.ae_tendsto_rnDeriv.
+
+Usable simongmt items:
+- Chapter03: CountablyRectifiable.mono and HasWeightedApproximateTangentSpaceAt.unique.
+- Chapter01: simon_theorem_3_6 (upper density), simon_theorem_3_26_i and Lusin (simon_theorem_1_17).
+- Chapter02: exists_contDiff_one_extension_of_whitney with HasWhitneyC1Compatibility, rademacher_ae_differentiableAt, and area_image_criticalSet_eq_zero.
+- Chapter04: planeMeasure_unit_closedBall, tangentDensityCutoff and one_le_density_of_approximateTangent, for Remark 1.8(2).
+
+Lean check (/tmp/rsod-check/RsodCheck/All.lean, built against GMT.Ch05.Submission with Lean v4.35.0-rc3):
+- All 12 child types elaborate in the comparator's contract scope.
+- With the children and the sibling as sorry declarations, the following compile with 0 errors: the parent assembly of RegularSetOpenDense, the glue proofs of regular_set_rel_open, density_one_regular_point and regular_points_dense, and full proofs of c1_submanifold_open_inter and least_integer_density_point.
+- There are 13 sorry warnings: the 12 children plus the simulated sibling.

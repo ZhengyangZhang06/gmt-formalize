@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.upper_density_zero-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "Upper Density Theorem in μHE[n]-a.e. limit form (Simon 1.3.6)",
+  "statement": "Let n, ℓ ∈ ℕ, Hⁿ := μHE[n] on ℝ^{n+ℓ}, ν any measure on (the Borel sets of) ℝ^{n+ℓ}, and A a Borel set with ν(A) < ∞. Then for Hⁿ-a.e. x ∉ A, ρ⁻ⁿ·ν(A ∩ B_ρ(x)) → 0 as ρ ↓ 0. Here B_ρ(x) is the closed ball and the quotient is taken in ℝ, i.e. it is (ρⁿ)⁻¹·ν.real(A ∩ B_ρ(x)).",
+  "lean_statement": "∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), MeasurableSet A → ν A < ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ A → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * ν.real (A ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "rsod_ae_tendsto_density_zero_outside",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-upper-density-zero-a1-a1"
+}

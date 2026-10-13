@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_range_submanifold_cover-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1",
+  "depth": 3,
+  "title": "C¹ image covered by an Hⁿ-null set and countably many finite-measure C¹ submanifolds",
+  "statement": "Let n, ℓ ∈ ℕ and G : ℝⁿ → ℝ^{n+ℓ} be of class C¹. Then there are N₀ ⊆ ℝ^{n+ℓ} with Hⁿ(N₀) = 0 (Hⁿ = μHE[n]) and sets N_q ⊆ ℝ^{n+ℓ} (q ∈ ℕ), each satisfying IsC1Submanifold n and Hⁿ(N_q) < ∞, such that G(ℝⁿ) ⊆ N₀ ∪ ⋃_q N_q.",
+  "lean_statement": "∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ), ContDiff ℝ 1 G → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ q, IsC1Submanifold n (N q) ∧ (μHE[n] : Measure (Amb n ℓ)) (N q) < ∞) ∧ range G ⊆ N₀ ∪ ⋃ q, N q",
+  "lean_name": "rsod_c1_range_subset_submanifold_cover",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.immersion_ball_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.immersion_ball_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-range-subma-fa88a1de83-a1"
+}
