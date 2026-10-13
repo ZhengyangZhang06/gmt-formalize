@@ -2012,6 +2012,27 @@ theorem Submission.dimred_cs_mi_measure_eq_withDensity : ∀ (P n : ℕ) (S : Ge
     exact lintegral_zero
   -- Step 6: `∫⁻_A Θ dHⁿ = ∫⁻_{A∩M} θ dHⁿ + 0 = μ_R(A)`
   rw [hM, hMc, add_zero]
+/-- **Translation invariance of `ν = Hⁿ.withDensity f` for a translation-invariant density `f`**
+(step 6 of the measure invariance proof in the cone splitting argument, with `ofReal ∘ Θ` replaced
+by an arbitrary `f`): if `f(y + x) = f(x)` for every `x`, then `ν((y + ·)⁻¹(A)) = ν(A)`, i.e.
+`ν(A − y) = ν(A)`, for every Borel `A ⊆ ℝᴾ`.  The translation `τ(x) = y + x` is a bijective
+isometry, hence a measurable embedding preserving `Hⁿ`, so
+`∫⁻_{τ⁻¹(A)} f(τ(a)) dHⁿ(a) = ∫⁻_A f dHⁿ`; and `f ∘ τ = f` by hypothesis. -/
+theorem Submission.dimred_cs_mi_withDensity_translate : ∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (y : Euclid P), (∀ x : Euclid P, f (y + x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => y + x) ⁻¹' A) = (μHE[n] : Measure (Euclid P)).withDensity f A := by
+  intro P n f y hf A hA
+  -- Step 1: `τ(x) = y + x` is a homeomorphism, hence a measurable embedding; `τ⁻¹(A)` is Borel.
+  have hτ : MeasurableEmbedding (fun x : Euclid P => y + x) :=
+    (Homeomorph.addLeft y).measurableEmbedding
+  -- Step 2: `τ` is a bijective isometry, so it preserves `Hⁿ`.
+  have hmp : MeasurePreserving (fun x : Euclid P => y + x) μHE[n] μHE[n] :=
+    (IsometryEquiv.addLeft y).measurePreserving_euclideanHausdorffMeasure n
+  -- Steps 3–5: `ν(τ⁻¹(A)) = ∫⁻_{τ⁻¹(A)} f(y + a) dHⁿ(a) = ∫⁻_A f dHⁿ = ν(A)`.
+  calc (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => y + x) ⁻¹' A)
+      = ∫⁻ a in (fun x => y + x) ⁻¹' A, f (y + a) ∂μHE[n] := by
+        rw [withDensity_apply _ (hτ.measurable hA)]
+        simp only [hf]
+    _ = ∫⁻ b in A, f b ∂μHE[n] := hmp.setLIntegral_comp_preimage_emb hτ f A
+    _ = (μHE[n] : Measure (Euclid P)).withDensity f A := (withDensity_apply _ hA).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
