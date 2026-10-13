@@ -566,6 +566,44 @@ theorem Submission.dgcr_orthogonal_coordinates : ∀ (n k : ℕ) (ι : Euclid n 
     rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
     ring
 
+/-- Step 13 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
+(Simon 7.4.3, via Allard's theorem): if `∂T = 0` and `T` integrates forms supported in the cylinder
+`C` over the graph `Φ(v) = z + ι v + ι' (u v)`, `v ∈ D = B_s(0)`, with density `G`, then `G` has
+vanishing weak derivatives: `∫_D G ∂ⱼa = 0` for smooth `a` with compact support in `D`.  Write
+`n = m + 1`.  The `m`-form `ψ = a • βⱼ` on `ℝⁿ` has `dψ(e₀, …, e_m) = ∂ⱼa`, and its cut-off lift
+`φ ∈ 𝒟ᵐ(U)` is supported in `C` and equals `Pr^#ψ` near every graph point, so
+`dφ(Φ(v))(DΦ(v)e) = dψ(v)(e) = ∂ⱼa(v)` on `D`.  Hence `0 = ∂T(φ) = T(dφ) = ∫_D G ∂ⱼa`. -/
+theorem Submission.dgcr_graph_boundary_weak_derivatives : ∀ (n k : ℕ) (U : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s h : ℝ) (G : Euclid n → ℝ), 0 < n → BoundaryVanishes T → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → 0 < h → ContDiffOn ℝ 1 u (ball 0 s) → (∀ v ∈ ball (0 : Euclid n) s, u v ∈ ball (0 : Euclid k) h) → {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid (n + k)) n) ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} → T ω = ∫ v in ball (0 : Euclid n) s, G v * (ω : DifferentialForm (Euclid (n + k)) n) (z + ι v + ι' (u v)) (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ)))) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ ball (0 : Euclid n) s → ∀ j : Fin n, ∫ v in ball (0 : Euclid n) s, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0 := by
+  intro n k U T ι ι' u z s h G hn hT hperp hs hh hu hmaps hCU hrep a ha hac has j
+  -- `n = m + 1`, so `∂T = 0` reads `T.boundary = 0`
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hn.ne'
+  -- the `m`-form `ψ = a • βⱼ` on `ℝⁿ`: `spt ψ ⊆ spt a` and `dψ(x)(e₀, …, e_m) = ∂ⱼa(x)`
+  obtain ⟨ψ, hψs, hψa, hψd⟩ := Submission.dgcr_bwd_coordinate_form m a j ha
+  -- the test form `φ = (η ∘ Q) • Pr^#ψ ∈ 𝒟ᵐ(U)`: `spt φ ⊆ C` and `φ = Pr^#ψ` near each `Φ(v)`
+  obtain ⟨φ, hφC, hφψ⟩ := Submission.dgcr_bwd_graph_cutoff_lift m k U ι ι' u z s h ψ hperp
+    (Submission.dgcr_orthogonal_coordinates (m + 1) k ι ι' hperp).1 hh hu.continuousOn hmaps hCU
+    hψs (hac.mono' ((subset_tsupport ψ).trans hψa)) (hψa.trans has)
+  -- `T(dφ) = ∂T(φ) = 0`
+  have hT0 : T (exteriorDerivativeTestOn U m φ) = 0 := by
+    have hT' : T.boundary = 0 := hT
+    rw [← GeometricCurrentOn.boundary_apply, hT', GeometricCurrentOn.zero_apply]
+  -- `spt dφ ⊆ spt φ ⊆ C`, so `T(dφ)` is the graph integral of `dφ`
+  rw [hrep _ ((tsupport_exteriorDerivative_subset
+    (φ : DifferentialForm (Euclid (m + 1 + k)) m)).trans hφC)] at hT0
+  refine Eq.trans ?_ hT0
+  refine setIntegral_congr_fun measurableSet_ball fun v hv => ?_
+  -- on `D`: `dφ(Φ(v))(DΦ(v)e) = d(Pr^#ψ)(Φ(v))(DΦ(v)e) = dψ(v)(e) = ∂ⱼa(v)`
+  have hud : DifferentiableAt ℝ u v :=
+    (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hv)
+  have hdφ : exteriorDerivative (φ : DifferentialForm (Euclid (m + 1 + k)) m) (z + ι v + ι' (u v)) =
+      exteriorDerivative (affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap)
+        (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ) (z + ι v + ι' (u v)) :=
+    (hφψ v hv).extDeriv_eq
+  change G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) =
+    G v * exteriorDerivative (φ : DifferentialForm (Euclid (m + 1 + k)) m) (z + ι v + ι' (u v))
+      (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ)))
+  rw [hdφ, Submission.dgcr_bwd_graph_pullback_extDeriv m k ι ι' u z ψ v hperp hψs hud, hψd v]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
