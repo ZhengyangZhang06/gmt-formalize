@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); grep -n 'def IMRep.measure' -A2 <snapshot>/project/GMT/Ch07/Contract.lean",
+        "rg -n 'notation.*μHE|μHE\\[' <snapshot>/mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'support_mem_ae|measure_compl_support|compl_support' <snapshot>/mathlib/Mathlib/MeasureTheory --glob '*.lean'",
+        "rg -n 'ball_ae_eq_closedBall|closedBall_ae_eq|ae_eq_closedBall|addHaar_sphere' <snapshot>/mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'norm_fderiv_le_of_lipschitz' <snapshot>/mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'starProjection_minimal|starProjection_apply_mem|sub_starProjection_mem_orthogonal|finrank_add_finrank_orthogonal|eq_of_le_of_finrank_eq|finrank_range_of_inj|finrank_euclideanSpace_fin|norm_add_sq_real' <snapshot>/mathlib/Mathlib",
+        "rg -n 'lintegral_union_le|lintegral_mono_set|setLIntegral_const|lintegral_const_mul'|setLIntegral_congr|lintegral_mono_ae|restrict_restrict'|restrict_restrict_of_subset|restrict_mono|restrict_union_le|pow_le_pow_left₀|mul_le_mul_right' <snapshot>/mathlib/Mathlib",
+        "python3 -I lean_name scan over workspaces/*/.humanize/github-theorem-prover/runs/*/dag.json (1924 names) plus rg 'dorag_tes_[A-Za-z0-9_]+' over this run's nodes/ and dag.json: no dorag_tes_gah_* reserved",
+        "lean (v4.35.0-rc3, LEAN_PATH from /tmp/tes-v2/env.sh) on /tmp/gh-split/lean/Children.lean, Assembly.lean, Frame.lean, Small.lean, EndToEnd.lean, EndToEnd3.lean with #print axioms",
+        "grep -n on book/chapter-05.txt for Theorem 4.5 and its proof (lines 747, 776, 789–797, 935–974)",
+        "rg 'dorag_aa_height_bounds_of_net' over this run's nodes (no-split precedent for the support-conull argument)"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/AddCircle.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-a41b030bfe/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-609ef45196/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/gh-split/lean/Children.lean",
+        "/tmp/gh-split/lean/Assembly.lean",
+        "/tmp/gh-split/lean/Frame.lean",
+        "/tmp/gh-split/lean/Small.lean",
+        "/tmp/gh-split/lean/EndToEnd.lean",
+        "/tmp/gh-split/lean/EndToEnd3.lean"
+      ],
+      "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace Submission.lean; there IMRep.measure = (μHE[n].restrict carrier).withDensity mult.\n\nNothing in the snapshot proves the selected node or any child, and no dorag_tes_gah_* name is reserved, so no declaration is reused.\n\nThe needed Mathlib infrastructure exists:\n- Measure.support_mem_ae (hereditarily Lindelöf spaces);\n- Measure.addHaar_sphere. There is no general ball/closedBall a.e. lemma; only AddCircle.closedBall_ae_eq_ball exists, so weight_ball uses ae_eq_set together with closedBall_diff_ball;\n- norm_fderiv_le_of_lipschitz;\n- Submodule.starProjection_minimal, starProjection_apply_mem, sub_starProjection_mem_orthogonal and finrank_add_finrank_orthogonal;\n- Submodule.eq_of_le_of_finrank_eq and LinearMap.finrank_range_of_inj;\n- restrict_withDensity, ae_withDensity_iff and withDensity_congr_ae;\n- lintegral_union_le, lintegral_mono_set, lintegral_const_mul', setLIntegral_congr and setLIntegral_const;\n- mul_le_mul_right, which is the ordered-monoid name in this Mathlib.\n\nLean results:\n- The three child types elaborate in comparator scope.\n- The exact frozen parent type is proved from them plus the frozen graph_area type (GHSplit.parent3).\n- All three child types are themselves proved.\n- Axioms throughout are propext, Classical.choice and Quot.sound; there is no sorryAx.\n\nThe book passage is Simon, Ch. 5, proof of Theorem 4.5, lines 960–970, with hypotheses (2)–(4) at lines 789–797. The no-split precedent in nodes/…609ef45196 justified folding the support-conull step back into the parent."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_height-a1",
+  "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_height-a1.plane_frame-a1",
+  "subproblem": {
+    "key": "plane_frame",
+    "title": "Frame, dimension and pointwise distance bounds for the affine graph plane",
+    "statement": "Let n, k ∈ ℕ, T an n-dimensional linear subspace of ℝ^{n+k} (Module.finrank ℝ T = n), ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 and ιv ∈ T for all v ∈ ℝⁿ, w ∈ ℝᵏ, Λ : ℝⁿ → ℝᵏ continuous linear (operator norm ‖Λ‖), ξ ∈ ℝ^{n+k} and c ∈ ℝᵏ. Put τ := ξ + ι'c, L := ι + ι'∘Λ (Lean ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap), S := LinearMap.range L, and write p_S, p_T for the orthogonal projections onto S and T (Submodule.starProjection). Then: (a) dim S = n (Module.finrank ℝ S = n); (b) for all v ∈ ℝⁿ and w ∈ ℝᵏ, with y := (ξ + ιv + ι'w) − τ: |y − p_S y| ≤ |w − c − Λv| and |v| ≤ |y|; (c) for every x ∈ ℝ^{n+k}: |(x − τ) − p_S(x − τ)| ≤ |(x − ξ) − p_T(x − ξ)| + |c| + ‖Λ‖·|x − τ|.",
+    "lean_statement": "∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (Λ : Euclid n →L[ℝ] Euclid k) (ξ : Euclid (n + k)) (c : Euclid k), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → Module.finrank ℝ (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)) = n ∧ (∀ (v : Euclid n) (w : Euclid k), ‖(ξ + ι v + ι' w - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (ξ + ι v + ι' w - (ξ + ι' c))‖ ≤ ‖w - c - Λ v‖ ∧ ‖v‖ ≤ ‖ξ + ι v + ι' w - (ξ + ι' c)‖) ∧ ∀ x : Euclid (n + k), ‖(x - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (x - (ξ + ι' c))‖ ≤ ‖(x - ξ) - T.starProjection (x - ξ)‖ + ‖c‖ + ‖Λ‖ * ‖x - (ξ + ι' c)‖",
+    "lean_name": "dorag_tes_gah_plane_frame_bounds",
+    "depends_on": [],
+    "natural_proof": "Source: Steps 0–4 of the parent proof of dorag_tes_graph_affine_height. These formalize Simon, Ch. 5, proof of Theorem 4.5 (Tilt-excess Decay Theorem), book/chapter-05.txt lines 960–962: dist(x, τ + S) ≤ |f(x′) − λ(x′)| for x = (x′, f(x′)) ∈ B_{θρ}(τ) ∩ graph f. They also formalize the bound off graph f, which line 967 obtains from the height bound (2) (line 789) and (18) (line 943). Here the frame ℝ^{n+k} = range ι ⊕ range ι′, dim S = n, and these distance bounds are stated without the measure, the Lipschitz map f or the radius t.\n1. (Pythagoras.) For v ∈ ℝⁿ and u ∈ ℝᵏ: |ιv + ι'u|² = |ιv|² + 2⟨ιv, ι'u⟩ + |ι'u|² = |v|² + |u|² (norm_add_sq_real). This uses ⟨ιv, ι'u⟩ = 0 and that ι, ι' preserve norms.\n2. (Proof of (a).) For w ∈ ℝⁿ, Lw = ιw + ι'(Λw). If Lw = 0, step 1 gives 0 = |Lw|² = |w|² + |Λw|² ≥ |w|², so w = 0. Thus ker L = 0 and L is injective. Hence dim S = dim range L = dim ℝⁿ = n (LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin).\n3. (Nearest point.) For y ∈ ℝ^{n+k} and s ∈ S: |y − p_S y| ≤ |y − s|. Indeed |y − p_S y| = inf_{s' ∈ S}|y − s'| (Submodule.starProjection_minimal). That family of norms is bounded below by 0, so the infimum is at most its value at s (ciInf_le).\n4. (Proof of (b).) Fix v ∈ ℝⁿ and w ∈ ℝᵏ. Since ξ cancels and ι' is linear, y = ξ + ιv + ι'w − (ξ + ι'c) = ιv + ι'(w − c).\n The vector s := Lv = ιv + ι'(Λv) lies in S. Also y − s = ι'(w − c) − ι'(Λv) = ι'(w − c − Λv), which has norm |w − c − Λv| because ι' is an isometry. By step 3, |y − p_S y| ≤ |w − c − Λv|.\n By step 1 with u := w − c, |y|² = |v|² + |w − c|² ≥ |v|². Both norms are nonnegative, so |v| ≤ |y|.\n5. (range ι = T.) ι is an isometry, hence injective, so dim range ι = dim ℝⁿ = n = dim T. Also range ι ⊆ T by hypothesis. A subspace of the finite-dimensional space T with the same dimension equals T (Submodule.eq_of_le_of_finrank_eq). Hence range ι = T.\n6. (range ι' = T^⊥.) Take w ∈ ℝᵏ and u ∈ T. By step 5, u = ιv for some v, so ⟨u, ι'w⟩ = ⟨ιv, ι'w⟩ = 0. Thus ι'w ∈ T^⊥ (Submodule.mem_orthogonal), i.e. range ι' ⊆ T^⊥.\n Next, dim T + dim T^⊥ = dim ℝ^{n+k} = n + k (Submodule.finrank_add_finrank_orthogonal), so dim T^⊥ = k. Since ι' is injective, dim range ι' = k. Hence range ι' = T^⊥ (Submodule.eq_of_le_of_finrank_eq).\n7. (Proof of (c).) Fix x ∈ ℝ^{n+k} and put y₀ := x − ξ.\n Since p_T y₀ ∈ T = range ι (step 5), p_T y₀ = ιv for some v ∈ ℝⁿ.\n Since y₀ − p_T y₀ ∈ T^⊥ (Submodule.sub_starProjection_mem_orthogonal) and T^⊥ = range ι' (step 6), y₀ − p_T y₀ = ι'w for some w ∈ ℝᵏ. Moreover |w| = |ι'w| = |(x − ξ) − p_T(x − ξ)|.\n Then x = ξ + p_T y₀ + (y₀ − p_T y₀) = ξ + ιv + ι'w. So (b), applied to this v and w, reads: |(x − τ) − p_S(x − τ)| ≤ |w − c − Λv| and |v| ≤ |x − τ|.\n By the triangle inequality and |Λv| ≤ ‖Λ‖|v| (ContinuousLinearMap.le_opNorm): |w − c − Λv| ≤ |w − c| + |Λv| ≤ |w| + |c| + ‖Λ‖|v|. Since ‖Λ‖ ≥ 0 and |v| ≤ |x − τ|, this is ≤ |w| + |c| + ‖Λ‖|x − τ|.\n Substituting |w| = |(x − ξ) − p_T(x − ξ)| gives (c). Together with steps 2 and 4 this proves (a), (b) and (c). ∎",
+    "proof_key_steps": [
+      "Pythagoras: |ιv + ι'u|² = |v|² + |u|² by orthogonality and the isometry property.",
+      "L = ι + ι'∘Λ has |Lw|² ≥ |w|², so it is injective and dim S = n.",
+      "Nearest point: |y − p_S y| ≤ |y − s| for every s ∈ S (starProjection_minimal).",
+      "(b): y = ιv + ι'(w − c) and y − Lv = ι'(w − c − Λv), so |y − p_S y| ≤ |w − c − Λv|; Pythagoras gives |v| ≤ |y|.",
+      "Dimension count: range ι = T and range ι' = T^⊥.",
+      "(c): write x − ξ = ιv + ι'w with |w| = |(x − ξ) − p_T(x − ξ)|, apply (b), then the triangle and operator-norm inequalities with |v| ≤ |x − τ|."
+    ]
+  },
+  "audit": {
+    "key": "plane_frame",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and one-line proposition match all hypotheses and three conclusions, including zero-dimensional cases. Pythagoras proves injectivity, dimension and the coordinate bound; projection minimality proves the graph-distance bound. Equal-dimension inclusions identify both frame ranges, allowing the orthogonal decomposition and operator-norm estimate to prove the final bound. Every step is supplied and non-circular. Finite-dimensional projection instances elaborate correctly."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-00e0b893c7/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-00e0b893c7/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-00e0b893c7/parent-supplied-natural-proof.json"
+}
