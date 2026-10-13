@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9258238ed471ae5108b66c5853689f0877466b2604080a412655aba7f08fffcd",
+  "git_delta": {
+    "base_commit": "e9d9b4d212f02499792f80d25a82223d4b9d7042",
+    "candidate_commit": "09d10fdf9bbe69778fcc068b42c20b4e5ed6d9fa",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_ae_scaling_of_weak_scaling",
+    "diff_sha256": "e4e4c8967b0024065e5c1fd0fa3f874507c31577ca106f0d417cabf98755da00",
+    "source_sha256": "f6db92a3834335fa50656b49d0343104904a4e424403cd18334e1b604d9add2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_ae_scaling_of_weak_scaling",
+      "statement": "∀ (a b r : ℝ) (h : ℝ → ℝ), 0 < r → IntegrableOn h (Ioo a b) → IntegrableOn h (Ioo (r * a) (r * b)) → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ t, l (t / r) * h t = r ^ 2 * ∫ t, l t * h t) → ∀ᵐ u, u ∈ Ioo a b → h (r * u) = r * h u",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
