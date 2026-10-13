@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.gram_cofactor-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+  "depth": 6,
+  "title": "Gram determinant identity det Gram(a₁,…,aₙ) = ‖u‖²·det Gram(a₀,…,aₙ) for the dual vector u (cofactor formula)",
+  "statement": "Let P, n ∈ ℕ, let a = (a_0, …, a_n) be vectors of ℝ^P (a : Fin (n+1) → ℝ^P) and u ∈ ℝ^P. Suppose u ∈ span{a_0, …, a_n}, ⟨u, a_0⟩ = 1 and ⟨u, a_{k+1}⟩ = 0 for every k ∈ {0, …, n−1}. Then det[⟨a_{i+1}, a_{j+1}⟩]_{i,j=0}^{n−1} = ‖u‖²·det[⟨a_i, a_j⟩]_{i,j=0}^{n} (the n×n determinant is 1 when n = 0). No linear independence is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (a : Fin (n + 1) → Euclid P) (u : Euclid P), u ∈ Submodule.span ℝ (Set.range a) → inner ℝ u (a 0) = 1 → (∀ k : Fin n, inner ℝ u (a k.succ) = 0) → Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i.succ) (a j.succ)) = ‖u‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (a i) (a j))",
+  "lean_name": "dor_lmbsf_pc_gram_det_succ_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-24f61206dc-a1"
+}
