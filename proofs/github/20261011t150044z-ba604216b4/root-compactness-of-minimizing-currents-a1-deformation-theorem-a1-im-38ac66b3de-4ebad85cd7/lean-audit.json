@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5a337e052b76d762d77e14601eb2b0777b9d63184a94c724d3f5e46036227d72",
+  "git_delta": {
+    "base_commit": "66a2363130a418bbd7262eaa3a39330d5e44b511",
+    "candidate_commit": "c9573f9d1e1ecf9ca2594f227f83826f0f5003c4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_ims_imrep_tsum",
+    "diff_sha256": "22220ceb8aa8e3b4bb7bba05de66170ba14e986baaa48e86575965d6f86b2577",
+    "source_sha256": "fdbdc23fcda7309f42a028fb50cb5bb8ce612638677819d0bc1986d8aa165a8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_ims_imrep_tsum",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → ∑' i, (R i).measure U ≠ ∞ → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, HasSum (fun i => (R i).action (ω : DifferentialForm (Euclid P) n)) (R'.action (ω : DifferentialForm (Euclid P) n))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
