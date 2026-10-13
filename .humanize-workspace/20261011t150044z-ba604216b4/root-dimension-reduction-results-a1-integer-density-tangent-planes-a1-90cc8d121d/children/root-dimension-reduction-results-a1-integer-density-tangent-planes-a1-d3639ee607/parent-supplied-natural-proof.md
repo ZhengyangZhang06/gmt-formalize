@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.local_inverse-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.local_inverse-a1.chart_image_open-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof (selected node local_inverse), step 8 (ψ(V₁) is relatively open in M), stated for an arbitrary open V₁ ⊆ V and arbitrary dimensions P, d. Conventions: B_r(x) := ball x r; distances are Euclidean. No import beyond GMT.Ch07.Submission is needed. The accepted lemma Submission.dsmc_chart_inverse_continuity is supplied by the sibling reuse child chart_inverse_continuity, listed in depends_on so that it is merged into this leaf's Lean base.
+1. (ψ(V) ⊆ W.) ψ(V) = W ∩ M ⊆ W.
+2. (Local radii.) Let v ∈ V₁. As V₁ is open, choose ε_v > 0 with B_{ε_v}(v) ⊆ V₁ (Metric.isOpen_iff). Apply the accepted lemma Submission.dsmc_chart_inverse_continuity to P, d, V, W, ψ (ψ is continuous and injective on V, ψ(V) ⊆ W by step 1, and V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W), to the point v ∈ V (since V₁ ⊆ V) and to ε_v > 0: this gives δ_v > 0 such that every v′ ∈ V with dist(ψ v′, ψ v) < δ_v satisfies dist(v′, v) < ε_v, hence v′ ∈ B_{ε_v}(v) ⊆ V₁. Choose such δ_v for all v ∈ V₁ simultaneously (in Lean, `choose` on the statement ∀ v ∈ V₁, ∃ δ > 0, ∀ v′ ∈ V, dist (ψ v′) (ψ v) < δ → v′ ∈ V₁; then δ_v depends on the proof of v ∈ V₁).
+3. (Definition of N₀.) Put N₀ := ⋃_{v ∈ V₁} (W ∩ B_{δ_v}(ψ v)). Each W ∩ B_{δ_v}(ψ v) is open (W is open and balls are open), so N₀ is open (isOpen_iUnion applied to the outer union over v and to the inner union over the proof of v ∈ V₁).
+4. (M ∩ N₀ ⊆ ψ(V₁).) Let x ∈ M with x ∈ W ∩ B_{δ_v}(ψ v) for some v ∈ V₁. Then x ∈ W ∩ M = ψ(V), so x = ψ(v′) for some v′ ∈ V, and dist(ψ v′, ψ v) < δ_v. By step 2, v′ ∈ V₁, so x = ψ(v′) ∈ ψ(V₁).
+5. (ψ(V₁) ⊆ M ∩ N₀.) Let v ∈ V₁. Then v ∈ V, so ψ(v) ∈ ψ(V) = W ∩ M; thus ψ(v) ∈ M and ψ(v) ∈ W, and ψ(v) ∈ B_{δ_v}(ψ v) because δ_v > 0. Hence ψ(v) ∈ W ∩ B_{δ_v}(ψ v) ⊆ N₀, so ψ(v) ∈ M ∩ N₀.
+6. (Conclusion.) N₀ is open and, by steps 4 and 5, M ∩ N₀ = ψ(V₁). ∎
+
+## Key steps
+
+1. ψ(V) ⊆ W because ψ(V) = W ∩ M.
+2. For each v ∈ V₁, take ε_v with B_{ε_v}(v) ⊆ V₁ and δ_v > 0 from the accepted Submission.dsmc_chart_inverse_continuity, so v′ ∈ V and dist(ψ v′, ψ v) < δ_v imply v′ ∈ V₁.
+3. N₀ := ⋃_{v ∈ V₁} (W ∩ B_{δ_v}(ψ v)) is open (isOpen_iUnion twice).
+4. M ∩ N₀ ⊆ ψ(V₁): a point of M ∩ W ∩ B_{δ_v}(ψ v) is ψ(v′) with v′ ∈ V (W ∩ M = ψ(V)) and then v′ ∈ V₁.
+5. ψ(V₁) ⊆ M ∩ N₀: for v ∈ V₁, ψ(v) ∈ W ∩ M and ψ(v) ∈ B_{δ_v}(ψ v).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `grep -n 'IsEmbeddedSubmanifold\|tangentSpace' GMT/Ch07/Contract.lean; sed -n 200,260p GMT/Ch07/Contract.lean`
+- `python3 -I scan of dag.json lean_statement/statement for: ψ '' V | IsOpen N | IsOpen O ∧ | relatively open | inverse function | local inverse | Surjective (fderiv | PartialHomeomorph | ContinuousLinearEquiv | (\w+ w) = w; lean_name lookups chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, codim1_zsl_gc_local_inverse, dtc_bc_lr_chart_image_nhds, codim1_rdo_gc_local_inverse_c2, dtc_bc_lr_local_inverse`
+- `grep -n 'def toOpenPartialHomeomorph|toOpenPartialHomeomorph_coe|mem_toOpenPartialHomeomorph_source|to_localInverse' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `grep -rn 'contDiffAt_symm|hasFDerivAt_symm|restrOpen_source|symm_image_target_eq_source|ContinuousOn.isOpen_inter_preimage|continuousOn_fderiv_of_isOpen|ContinuousLinearEquiv.isOpen|ofInjectiveEndo' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `git show {d626082a,5e4b2158,fdb3ca81,013681e4,fe444362,bdc225a7}:GMT/Ch07/Submission.lean | grep '^theorem'; git merge-base --is-ancestor 5e4b2158 d626082a; git show d2fde8c0:GMT/Ch07/Submission.lean (proof base)`
+- `grep -c / grep -rl 'idtp_ccd_scsp_li_c1_inverse|idtp_ccd_scsp_li_chart_image_open|idtp_ccd_scsp_li_' over dag.json, runs/.../nodes, ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (1388 files), git log --all -S (no match)`
+- `python3 -I: ancestors' depends_on of the selected node; reuse precedents (parents whose children include accepted nodes of another parent); compare reuse records in nodes/*/decomposition-v*.json with dag.json and handoffs`
+- `controller code /runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean: leaf_verification.py check_source_delta; inherited.py cited_inherited; runtime.py _decompose (max_depth guard), child materialization via existing_by_name, _existing_lean_name_problem, _install_parent_supplied_child_handoff, _overlay_accepted_children; store.py ensure`
+- `lake env lean /tmp/idtp_li_split_k7q2/{Assembly,Child1,Child2,EndToEnd,Names}.lean; recheck/FixedEndToEnd.lean; sim/{Leaf1Ax,Leaf2Ax,ParentAx}.lean with #print axioms; gate simulation with tools/gate_impl.py (verbatim copy of check_source_delta and helpers)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-90cc8d121d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-90cc8d121d/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d752561a6/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/IsImage.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean/inherited.py`
+- `/runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean/decomposition_scope.py`
+- `/tmp/idtp_li_split_k7q2/Assembly.lean`
+- `/tmp/idtp_li_split_k7q2/EndToEnd.lean`
+- `/tmp/idtp_li_split_k7q2/Names.lean`
+- `/tmp/idtp_li_split_k7q2/recheck/FixedEndToEnd.lean`
+- `/tmp/idtp_li_split_k7q2/sim/Leaf1Ax.lean`
+- `/tmp/idtp_li_split_k7q2/sim/Leaf2Ax.lean`
+- `/tmp/idtp_li_split_k7q2/sim/ParentAx.lean`
+- `/tmp/idtp_li_split_k7q2/final_subproblems.json`
+
+Pins match:
+- The snapshot project_commit b4d606d equals workspace HEAD.
+- The Mathlib pin 25730c7c equals .lake/packages/mathlib HEAD.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+- This node's proof base d2fde8c0 is the bare contract.
+
+The supplied proof cites two accepted DAG lemmas, chart_tangentSpace_eq_range_fderiv (d626082a) and dsmc_chart_inverse_continuity (5e4b2158). Neither reaches this node's base on its own:
+- No ancestor's depends_on lists them.
+- The controller's inherited-prerequisite mechanism only follows ancestors' depends_on.
+- A leaf may insert only its theorem (check_source_delta forbids imports and other declarations).
+
+The split therefore adds both lemmas as reuse children with byte-identical frozen types. This is permitted by _existing_lean_name_problem, maps onto the accepted nodes and adds no DAG nodes. 5e4b2158 is an ancestor of d626082a.
+
+No DAG lemma states either new child:
+- codim1_zsl_gc_local_inverse (accepted) is a C¹ local inverse without surjectivity of the inverse derivative and without H '' O = V₁.
+- dtc_bc_lr_chart_image_nhds (accepted) gives only a pointwise ball inclusion.
+- Neither fits the supplied proof's glue, so the new children are faithful extractions of steps 2–6 and step 8.
+- The new names idtp_ccd_scsp_li_c1_inverse and idtp_ccd_scsp_li_chart_image_open have no match in dag.json, run nodes, the 1388 worktree Submission.lean files or git history.
+
+Pinned Mathlib supplies every cited lemma under import GMT.Ch07.Submission (33 names #check'ed). These include ContDiffAt.hasStrictFDerivAt, HasStrictFDerivAt.toOpenPartialHomeomorph (+_coe, mem_…_source), OpenPartialHomeomorph.restrOpen/restrOpen_source/contDiffAt_symm/hasFDerivAt_symm/symm_image_target_eq_source, ContinuousLinearEquiv.isOpen, ContDiffOn.continuousOn_fderiv_of_isOpen, ContinuousOn.isOpen_inter_preimage, LinearEquiv.ofInjectiveEndo, fderiv_comp and Function.Surjective.range_comp. ContDiffAt.toOpenPartialHomeomorph needs an extra import, so it is not used.
+
+Lean checks:
+- Assembly.lean (stubs, only import GMT.Ch07.Submission) elaborates all four child types and proves the parent's exact frozen type.
+- On real bases, Leaf1 = d2fde8c0 + c1_inverse, Leaf2 = 5e4b2158 + chart_image_open, and Parent = d626082a + both children + the assembly all compile.
+- `#print axioms` gives [propext, Classical.choice, Quot.sound] for each new theorem, and the only `sorry` is the inherited main_theorem.
+- Both leaves pass a verbatim copy of the controller's check_source_delta.
