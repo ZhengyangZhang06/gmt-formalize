@@ -993,6 +993,88 @@ theorem Submission.dor_lmb_ret_uniform_injectivity : ∀ (P d : ℕ) (K : Set (E
         _ = ‖w‖⁻¹ * ‖L v w‖ := by rw [map_smul, norm_smul, norm_inv, norm_norm]
     exact (le_inv_mul_iff₀ hm).2 ((le_inv_mul_iff₀' (norm_pos_iff.2 hw)).1 hle)
 
+/-- **Nearest point retraction near `y ∈ N`** (step 1(a) of the limsup mass bound: the tubular
+neighbourhood theorem, Foote 1984, written out in a chart).  Take a `C²` chart `ψ : V → W ∩ N`
+with `ψ(v₀) = y`.  `dor_lmb_ret_nearest_point` gives `g` on `B_{r'}(y)` such that `π := ψ ∘ g` is
+the nearest point map onto `N`: it is `C¹`, fixes `N ∩ B_{r'}(y)`, and `x − π(x)` is normal to `N`
+at `π(x)`.  On `B̄_δ(v₀)`, `a` bounds the derivative of the tangent projection `P̂(v)` (`C¹` by
+`dor_lmb_ret_tangent_projection`), and `|w| ≤ b|Dψ(v)w|` (`dor_lmb_ret_uniform_injectivity`).
+Take `r ≤ r'` with `B̄_r(y) ⊆ U` and `2abr ≤ 1`.  Then `Dπ(x)v = v` on `T_xN`
+(`dor_lmb_ret_fderiv_tangent_eq`).  Differentiating `P̂(g x)(x − π(x)) = 0` gives
+`‖Dπ(x)‖ ≤ 1 + 2ab|x − π(x)|` (`dor_lmb_ret_derivative_estimate`), and `|x − π(x)| ≤ |x − y|`
+because `y ∈ N`.  The hypothesis `(N̄ \ N) ∩ U = ∅` is not used. -/
+theorem Submission.dor_lmb_c1_retraction : ∀ (P d : ℕ) (U N : Set (Euclid P)) (y : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → y ∈ N ∩ U → ∃ (r c : ℝ) (proj : Euclid P → Euclid P), 0 < r ∧ 0 ≤ c ∧ closedBall y r ⊆ U ∧ ContDiffOn ℝ 1 proj (ball y r) ∧ MapsTo proj (ball y r) N ∧ (∀ x ∈ N ∩ ball y r, proj x = x) ∧ (∀ x ∈ N ∩ ball y r, ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v) ∧ ∀ x ∈ ball y r, ‖fderiv ℝ proj x‖ ≤ 1 + c * dist x y := by
+  intro P d U N y hU hN _ hy
+  -- Step 1: a `C²` chart `ψ : V → W ∩ N` with `ψ(v₀) = y`
+  obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hDinj⟩ := hN y hy.1
+  have hψ2 : ContDiffOn ℝ 2 ψ V := by exact_mod_cast hψ
+  obtain ⟨v₀, hv₀, rfl⟩ : y ∈ ψ '' V := by
+    rw [himg]
+    exact ⟨hyW, hy.1⟩
+  -- Step 2: the nearest point map `π = ψ ∘ g` on `B_{r'}(y)`, with `g(B_{r'}(y)) ⊆ B_δ(v₀)`
+  obtain ⟨r', δ, g, hr', -, hδV, hg, hgδ, hnear, hnormal, hfix⟩ :=
+    Submission.dor_lmb_ret_nearest_point P d N W V ψ v₀ hV hW hψ2 hinj himg hprop hDinj hv₀
+  have hgV : MapsTo g (ball (ψ v₀) r') V := fun x hx => hδV (ball_subset_closedBall (hgδ hx))
+  have hπ : ContDiffOn ℝ 1 (ψ ∘ g) (ball (ψ v₀) r') := (hψ2.of_le one_le_two).comp hg hgV
+  -- Step 3: the tangent projection `P̂(v)` is `C¹` on `V`; `a` bounds `‖DP̂‖` on `B̄_δ(v₀)`
+  have hQ : ContDiffOn ℝ 1 (fun v => (fderiv ℝ ψ v).range.starProjection) V :=
+    Submission.dor_lmb_ret_tangent_projection P d V ψ hV hψ2 hDinj
+  obtain ⟨a₀, ha₀⟩ := (isCompact_closedBall v₀ δ).exists_bound_of_continuousOn
+    ((hQ.continuousOn_fderiv_of_isOpen hV le_rfl).mono hδV)
+  obtain ⟨a, ha, hDQ⟩ : ∃ a : ℝ, 0 ≤ a ∧ ∀ v ∈ closedBall v₀ δ,
+      ‖fderiv ℝ (fun v => (fderiv ℝ ψ v).range.starProjection) v‖ ≤ a :=
+    ⟨max a₀ 0, le_max_right _ _, fun v hv => (ha₀ v hv).trans (le_max_left _ _)⟩
+  -- Step 4: `|w| ≤ b|Dψ(v)w|` for `v ∈ B̄_δ(v₀)`
+  obtain ⟨b, hb, hDψ⟩ := Submission.dor_lmb_ret_uniform_injectivity P d (closedBall v₀ δ)
+    (fderiv ℝ ψ) (isCompact_closedBall v₀ δ)
+    ((hψ2.continuousOn_fderiv_of_isOpen hV one_le_two).mono hδV) fun v hv => hDinj v (hδV hv)
+  have hab : 0 ≤ a * b := mul_nonneg ha hb
+  -- Step 5: `r ≤ r'` with `B̄_r(y) ⊆ U` and `2abr ≤ 1`
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU (ψ v₀) hy.2
+  obtain ⟨r, hr, hrr', hrε, hrab⟩ : ∃ r : ℝ, 0 < r ∧ r ≤ r' ∧ r ≤ ε / 2 ∧
+      r ≤ 1 / (2 * (a * b) + 1) :=
+    ⟨min (min r' (ε / 2)) (1 / (2 * (a * b) + 1)),
+      lt_min (lt_min hr' (half_pos hε)) (one_div_pos.mpr (by linarith)),
+      (min_le_left _ _).trans (min_le_left _ _), (min_le_left _ _).trans (min_le_right _ _),
+      min_le_right _ _⟩
+  have hball : ball (ψ v₀) r ⊆ ball (ψ v₀) r' := ball_subset_ball hrr'
+  refine ⟨r, 2 * (a * b), ψ ∘ g, hr, mul_nonneg zero_le_two hab,
+    (closedBall_subset_ball (by linarith)).trans hεU, hπ.mono hball, fun x hx => ?_,
+    fun x hx => hfix x ⟨hx.1, hball hx.2⟩, fun x hx v hv => ?_, fun x hx => ?_⟩
+  · -- Step 6: `π(B_r(y)) ⊆ ψ(V) ⊆ N`
+    have h : ψ (g x) ∈ ψ '' V := mem_image_of_mem ψ (hgV (hball hx))
+    rw [himg] at h
+    exact h.2
+  · -- Step 7: `π` fixes `N ∩ B_r(y)`, so `Dπ(x)v = v` for `v ∈ T_xN`
+    exact Submission.dor_lmb_ret_fderiv_tangent_eq P N (ball (ψ v₀) r) (ψ ∘ g) x isOpen_ball hx.2
+      ((hπ.contDiffAt (isOpen_ball.mem_nhds (hball hx.2))).differentiableAt one_ne_zero)
+      (fun z hz => hfix z ⟨hz.1, hball hz.2⟩) v hv
+  · -- Step 8: differentiate `P̂(g z)(z − π(z)) = 0`; here `|x − π(x)| ≤ |x − y| < r`
+    have hx' := hball hx
+    have hgx : g x ∈ closedBall v₀ δ := ball_subset_closedBall (hgδ hx')
+    have hxπ : ‖x - ψ (g x)‖ ≤ dist x (ψ v₀) := by
+      rw [dist_eq_norm]
+      exact hnear x hx' (ψ v₀) hy.1
+    have hsmall : a * b * ‖x - ψ (g x)‖ ≤ 1 / 2 := by
+      have h2ab : 0 < 2 * (a * b) + 1 := by linarith
+      calc a * b * ‖x - ψ (g x)‖ ≤ a * b * (1 / (2 * (a * b) + 1)) :=
+            mul_le_mul_of_nonneg_left (hxπ.trans ((mem_ball.mp hx).le.trans hrab)) hab
+        _ ≤ 1 / 2 := by
+          rw [mul_one_div, div_le_iff₀ h2ab]
+          linarith
+    have hcomp : ((fderiv ℝ ψ (g x)).range.starProjection).comp (fderiv ℝ ψ (g x)) =
+        fderiv ℝ ψ (g x) := by
+      refine ContinuousLinearMap.ext fun w => ?_
+      rw [ContinuousLinearMap.comp_apply]
+      exact Submodule.starProjection_eq_self_iff.mpr (LinearMap.mem_range_self _ w)
+    have hest := Submission.dor_lmb_ret_derivative_estimate P d (ball (ψ v₀) r') g ψ
+      (fun v => (fderiv ℝ ψ v).range.starProjection) x a b isOpen_ball hx'
+      ((hg.contDiffAt (isOpen_ball.mem_nhds hx')).differentiableAt one_ne_zero)
+      ((hψ2.contDiffAt (hV.mem_nhds (hδV hgx))).differentiableAt two_ne_zero)
+      ((hQ.contDiffAt (hV.mem_nhds (hδV hgx))).differentiableAt one_ne_zero) hnormal hcomp
+      (Submodule.starProjection_norm_le _) ha hb (hDQ _ hgx) (hDψ _ hgx) hsmall
+    linarith [mul_le_mul_of_nonneg_left hxπ (mul_nonneg zero_le_two hab)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
