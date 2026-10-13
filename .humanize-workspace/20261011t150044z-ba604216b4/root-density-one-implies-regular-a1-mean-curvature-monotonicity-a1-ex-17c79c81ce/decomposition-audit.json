@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'smoothTransition|monotoneOn_of_deriv_nonneg|hasDerivAt_integral_of_dominated|dsmc_em_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "norm_integral_le_integral_norm|integral_mono_of_nonneg|continuousOn_of_dominated",
+        "integral_withDensity_eq_integral_smul",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "HasApproximateTangentSpaceAt|unique",
+        "monotoneOn_of_deriv_nonneg|Antitone.deriv_nonpos|starProjection_eq_sum_rankOne|integral_indicator_one|ofReal_measureReal|interior_Ioc",
+        "rg -n --fixed-strings dsmc_em_ GMT/Ch07 .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/dsmc-em-decomp/Full.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/dsmc-em-independent-audit-bpp9ksqy/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/dsmc-em-decomp/Full.lean",
+        "/tmp/dsmc-em-independent-audit-bpp9ksqy/Types.lean"
+      ],
+      "conclusion": "Verified the pinned project b4d606d and mathlib 25730c7c; the frozen contract matches the workspace sources, and the inspected mathlib files match the compiler's package files. The snapshot project search found no existing child declarations. All four names are bare identifiers and have no reservation in the DAG. Every frozen statement is a standalone one-line proposition, matches its comparator-generated challenge, and elaborates without any child implementation. Euclidean and continuous-linear-map measurable/topological instances also passed independent elaboration checks; no matrix-unit construction occurs. I independently read all four natural proofs and the assembly, then reran Full.lean successfully: the four exact child types and the exact selected parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: four substantive independent obligations, no dependency cycles, and an assembly establishing the selected open-ball ENNReal inequality, including the outer endpoint."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ode_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. The logarithmic integrating factor gives the stated nonnegative derivative without sign assumptions on κ or I. Continuity on Ioc and differentiation on its interior justify endpoint monotonicity; nonpositive r is vacuous. The proof is complete and independent."
+    },
+    {
+      "key": "cutoff_integral_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the derivative formula match. C¹ regularity makes η′ vanish also at 1, so both integrands vanish outside the open ball. The stated integrable bounds establish continuity through r and differentiation near each interior s for arbitrary μ with finite open-ball mass. No additional measurability or finiteness assumption is hidden."
+    },
+    {
+      "key": "cutoff_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies compact support, the a.e. orthonormal frame, the correctly signed trace/Bessel inequality, divergence integrability, and the withDensity conversion. The omission of measurability of H is sound: the cited total Bochner-integral inequalities require no such assumption. The proof establishes the exact inequality without relying on the parent or the first-variation sibling."
+    },
+    {
+      "key": "cutoff_ball_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit smoothTransition family satisfies every quantified property. Its radial values are zero on the sphere and exterior and eventually one at each interior point. Domination by the integrable open-ball indicator proves precisely convergence to μ.real (ball z s). The construction is universal, complete, and non-circular."
+    }
+  ],
+  "required_changes": []
+}

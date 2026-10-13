@@ -1,0 +1,83 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_null_image-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 6(b).
+Notation. Hⁿ := μHE[n]; τ(y) := y − x. For c ∈ ℝ and S ⊆ ℝ^P, c·S := {cz : z ∈ S}; in Lean this is the pointwise scalar multiple of a set, available after open scoped Pointwise.
+1. By definition, blowUpMap x λ y = λ⁻¹ • (y − x) = λ⁻¹τ(y). Hence η_{x,λ}(E) = {λ⁻¹τ(y) : y ∈ E} = λ⁻¹·τ(E) (Set.image_image, Set.image_smul).
+2. τ is translation by −x, an isometry of ℝ^P onto itself (IsometryEquiv.subRight x). Hausdorff measures are invariant under isometries, so Hⁿ(τ(E)) = Hⁿ(E) = 0 (Isometry.euclideanHausdorffMeasure_image).
+3. Since λ ≠ 0, also λ⁻¹ ≠ 0. For every nonzero scalar c and every S ⊆ ℝ^P, Hⁿ(c·S) = |c|ⁿ Hⁿ(S) (Measure.euclideanHausdorffMeasure_smul₀). Reason: z ↦ cz maps each cover of S by sets of diameter ≤ δ to a cover of c·S by sets of diameter ≤ |c|δ, multiplying every diameter by |c|; z ↦ c⁻¹z reverses this.
+4. Therefore Hⁿ(η_{x,λ}(E)) = Hⁿ(λ⁻¹·τ(E)) = |λ⁻¹|ⁿ Hⁿ(τ(E)) = |λ⁻¹|ⁿ · 0 = 0. For n = 0 the factor is 1 and the conclusion is the same.
+
+## Key steps
+
+1. η_{x,λ}(E) = λ⁻¹·(E − x): a translation followed by a dilation.
+2. Translation by −x is an isometry, so Hⁿ(E − x) = Hⁿ(E) = 0.
+3. Dilation by λ⁻¹ ≠ 0 multiplies Hⁿ by |λ|⁻ⁿ (euclideanHausdorffMeasure_smul₀), so the image is null.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I over dag.json (lean_name, lean_statement, status of all 214 nodes; sibling chart_tangent_space frozen type; related nodes approx_tangent_in_submanifold, hausdorff_scaling, blowup_measure_scaling, tangent_invariance, tangent_null_invariance, approx_tangent_local, blowup_integral_continuous, plane_quadratic_moment)`
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.md (sibling chart_tangent_space proof)`
+- `diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (both identical)`
+- `sed -n 1,280p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt, support_euclideanHausdorffMeasure_restrict_submodule, regular_euclideanHausdorffMeasure_restrict_submodule)`
+- `cat local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, Isometry.map_euclideanHausdorffMeasure, isAddHaarMeasure_euclideanHausdorffMeasure, homothety lemmas)`
+- `sed -n 60,175p book/chapter-03.txt (Simon 1.4, 1.5, proof of 1.6)`
+- `rg -l 'dsmc_att_|setIntegral_submodule_pos|blowUpMap_image_null|blowUp_points_of_approxTangent|mem_range_of_secant_blowUp' on dag.json, DAG.md, issue-workers.json, problem.json, problem.md, nodes/, GMT, SimonGMT and the Mathlib snapshot (no match)`
+- `lake env lean /tmp/atts-decomp/Stmts.lean (the four child types elaborate in namespace GMT.Ch07 with the contract opens)`
+- `lake env lean /tmp/atts-decomp/Assembly.lean (parent from child and sibling stubs)`
+- `lake env lean /tmp/atts-decomp/ChildAB.lean, ChildB.lean, ChildCD.lean, Final2.lean (full child proofs, parent assembly, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/atts-decomp/Stmts.lean`
+- `/tmp/atts-decomp/Assembly.lean`
+- `/tmp/atts-decomp/ChildAB.lean`
+- `/tmp/atts-decomp/ChildB.lean`
+- `/tmp/atts-decomp/ChildCD.lean`
+- `/tmp/atts-decomp/Final2.lean`
+- `/tmp/atts-decomp/sibling_stmt.txt`
+- `/tmp/atts-decomp/proposal.md`
+- `/tmp/atts-review/Check.lean`
+- `/tmp/atts-review/NoSorry.lean`
+
+Snapshot: project b4d606db, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable facts found:
+- SimonGMT Chapter03/Rectifiable.lean. blowUpMap x r y = r⁻¹ • (y − x). HasApproximateTangentSpaceAt n M x Q = finrank Q = n together with convergence of ∫ over blowUpMap x r '' M of every C_c test along 𝓝[>] 0. support_euclideanHausdorffMeasure_restrict_submodule (the support of μHE[n]⌞Q is Q) and regular_euclideanHausdorffMeasure_restrict_submodule are used in child A.
+- Mathlib Geometry/Euclidean/Volume/Measure.lean. Isometry.euclideanHausdorffMeasure_image and Measure.euclideanHausdorffMeasure_smul₀ are used in child B; isAddHaarMeasure_euclideanHausdorffMeasure and Isometry.map_euclideanHausdorffMeasure are used in child A.
+- Mathlib measure/integral API used in children A and C: integral_pos_iff_support_of_nonneg, Continuous.integrable_of_hasCompactSupport, Measure.mem_support_iff_forall, Measure.restrict_apply (no measurability needed on the restricting set), integral_eq_zero_of_ae, nonempty_of_measure_ne_zero, mem_nhdsGT_iff_exists_Ioo_subset.
+- Submodule.closed_of_finiteDimensional is used in child D.
+- The sibling chart_tangent_space (dsmc_chart_tangentSpace_eq_range; DAG status decomposing, declared dependency) gives tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v) and the secant estimate, verbatim in the form of child D's hypothesis.
+
+Related nodes in other branches, not reused (different types):
+- approxTangent_le_submanifold_tangentSpace (the r = 1 variant, decomposing); no child solves it.
+- dtc_hausdorff_dilation and regcomp_atl_blowUp_measure_scaling (both accepted).
+
+Name check: no match for any proposed identifier or the dsmc_att_ prefix anywhere.
+
+Lean checks:
+- All four child types elaborate after import GMT.Ch07.Submission.
+- All four children are fully proved, using only propext, Classical.choice and Quot.sound.
+- The frozen parent type is proved from the children plus the sibling's frozen-type stub; that stub is the only sorryAx.
+- An independent reviewer reproduced these checks and accepted the split.

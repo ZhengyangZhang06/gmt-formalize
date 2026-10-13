@@ -1,0 +1,24 @@
+{
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/673",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "63a7ad678b142cc99f4a56441cc5af6af06f3e97",
+  "integrated_commit": "",
+  "proof_base_commit": "d001e8a905377ad5c12c189b639c8007c1d2bfad",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_implies_regular-a1",
+  "requires": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_field-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.first_variation_integral-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.mean_curvature_formula-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1"
+  ]
+}

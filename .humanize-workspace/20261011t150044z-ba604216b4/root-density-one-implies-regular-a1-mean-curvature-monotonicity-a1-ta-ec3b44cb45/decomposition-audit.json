@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def approxTangentPlane|structure IMRep|def IMRep.measure|SigmaFinite|SFinite|blowUpMap|dsmc_imrep_carrier_sigmaFinite|dsmc_measurable_blowUp_image_setIntegral",
+        "sigmaFinite_restrict_of_hausdorff_finite_cover|def blowUpMap|def HasApproximateTangentSpaceAt|measurable.*blowUp|continuous.*blowUp",
+        "instance.*MeasurableSpace|instMeasurableSpace|BorelSpace|aemeasurable_of_tendsto_metrizable_ae\\x27",
+        "git show 2b2d626519e4fa0614aa7db98d667e391e9c1c2c:GMT/Ch07/Submission.lean",
+        "git show 3c953dc51e9275172a78ad6ab0ee0f4a0ddfb6ab:GMT/Ch07/Submission.lean",
+        "rg -l --hidden 'dsmc_imrep_carrier_sigmaFinite|dsmc_measurable_blowUp_image_setIntegral' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes .humanize/math-wiki GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-tpm-independent-audit-n23dmc0f/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-tpm-independent-audit-n23dmc0f/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-b7386b9a1e/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-3808e84e38/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/tmp/gmt-tpm-independent-audit-n23dmc0f/Challenge.lean",
+        "/tmp/gmt-tpm-independent-audit-n23dmc0f/Full.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract. The library supports the stated Hausdorff scaling, arbitrary-set restriction formula, nonnegative Bochner-to-lintegral conversion, and s-finite Tonelli argument. No conflicting reservation was found for either new name. Both reused declarations have comparator-passed, identical frozen types and compatible proofs. All names are bare identifiers. Independent Lean checks successfully elaborated all four propositions without declaring any child, verified the continuous-linear-map Borel instance and SigmaFinite-to-SFinite inference, and compiled the exact selected parent assembly. All four children and the parent use only propext, Classical.choice, and Quot.sound. The split is appropriate: its independent obligations implement steps 2, 5, 6, and 8–9; the retained zero-dimensional case, tangent convergence, a.e. limit, and absolute-continuity transfer complete this selected statement. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_quadratic_moment",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose, including a single positive constant independent of P, Q, and u. Compact-support integrability, reflection and permutation identities, positivity, isometric change of variables, and the projection norm identity establish the conclusion without circularity. Reuse has an identical comparator-accepted frozen type."
+    },
+    {
+      "key": "projection_field_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-measure and arbitrary-subspace-field statement. Self-adjointness and idempotence justify polarization; finitely many measurable coefficients reconstruct the operator through a continuous map. The proof covers P = 0 and uses the intended operator-norm Borel structure. Reuse has an identical comparator-accepted frozen type."
+    },
+    {
+      "key": "carrier_sigma_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the IMRep hypotheses and openness required by the exact type. Compact exhaustion inside U, positive integer multiplicity, and local finite lower integrals give finite carrier pieces. Adding the null complement produces a countable finite-measure cover. This is a complete independent proof, and the new name is unreserved."
+    },
+    {
+      "key": "blowup_integral_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes s-finiteness, continuity, nonnegativity, and positive radius. Scaling applies to arbitrary sets, and restriction equality is tested only on Borel sets, so measurability of M is unnecessary. The Bochner-to-lintegral identity handles nonintegrable cases; product measurability and s-finite Tonelli finish. The proof is complete and independent; the parent supplies s-finiteness when applying it."
+    }
+  ],
+  "required_changes": []
+}
