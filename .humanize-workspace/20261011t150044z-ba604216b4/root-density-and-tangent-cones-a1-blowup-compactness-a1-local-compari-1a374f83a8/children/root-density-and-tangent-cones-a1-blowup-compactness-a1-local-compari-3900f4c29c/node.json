@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.orient_interior-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Interior product of a unit simple (n+1)-vector with a 1-covector lies in its plane (supplied step 3)",
+  "statement": "Let P, n ∈ ℕ, ξ ∈ Λ_{n+1}(ℝ^P) (MultiVector P (n+1)) and α an n-covector on ℝ^P. For a 1-covector β put β∧α := alternatizeUncurryFin(β.smulRight α), i.e. (β∧α)(v₀,…,v_n) = Σ_i (−1)^i β(v_i) α(v₀,…,v̂_i,…,v_n). With e_i := EuclideanSpace.single i 1 and e_i♭ := innerSL ℝ e_i, put v := Σ_{i<P} ξ(e_i♭∧α)·e_i. Then (1) ξ(β∧α) = β(v) for every continuous linear β : ℝ^P → ℝ; and (2) if ξ is a unit orientation of a linear subspace Q (IsUnitOrientationOf ξ Q), then v ∈ Q.",
+  "lean_statement": "∀ (P n : ℕ) (ξ : MultiVector P (n + 1)) (α : Covector (Euclid P) n), (∀ β : Euclid P →L[ℝ] ℝ, ξ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P))) ∧ ∀ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ξ Q → (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P)) ∈ Q",
+  "lean_name": "dtc_bc_lc_sl_ll_orient_interior",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-3900f4c29c-a1"
+}

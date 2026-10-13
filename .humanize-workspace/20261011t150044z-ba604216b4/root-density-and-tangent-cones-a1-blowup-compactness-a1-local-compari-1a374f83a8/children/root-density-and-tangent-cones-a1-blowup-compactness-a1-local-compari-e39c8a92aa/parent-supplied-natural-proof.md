@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.approx_grad_unique-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Supplied proof of dtc_bc_lc_sl_lipschitz_leibniz, step 4(b), bullet "Uniqueness along A". There it is stated for the pair H(x) and the chart gradient g(x). Here it is stated symmetrically, for two vectors that both satisfy the approximate-differential condition along A. The classical estimate for g implies that condition, as checked in piece_gradient. This is the uniqueness behind Simon's remark after Ch. 3, Definition 2.1 (chapter-03.txt lines 340–349, printed p. 76): ∇^M f is independent of the decomposition M = ∪M_j up to H^n-null sets.
+
+Notation. H^N := μHE[N], B_r(x) := ball x r and η_{x,r}(y) := r⁻¹(y − x) (blowUpMap x r). HasApproximateTangentSpaceAt N A x Q means: finrank Q = N, and ∫_{η_{x,r}(A)} φ dH^N → ∫_Q φ dH^N as r ↓ 0, for every φ ∈ C_c(ℝ^P).
+
+1. Setup. Suppose u ≠ u'. Put d := u − u' ∈ Q ∖ {0}, e := d/|d| ∈ Q (|e| = 1) and ε := |d|/8 > 0.
+
+2. The cone. Let C₀ := {z ∈ ℝ^P : ⟨e, z⟩ > ½|z|}.
+ - C₀ is open and 0 ∉ C₀.
+ - For t > 0, tz ∈ C₀ ⟺ z ∈ C₀.
+
+3. Inclusion. Let r > 0 and y ∈ A ∩ (x + C₀) ∩ B_r(x).
+ - Then |⟨d, y − x⟩| = |d|⟨e, y − x⟩ > ½|d||y − x| = 4ε|y − x|.
+ - Put a := h(y) − h(x) − ⟨u, y − x⟩ and a' := h(y) − h(x) − ⟨u', y − x⟩. Then a' − a = ⟨d, y − x⟩, so |a| + |a'| > 4ε|y − x|.
+ - Thus |a| > 2ε|y − x| or |a'| > 2ε|y − x|. Since |y − x| > 0, ε|y − x| < |a| or ε|y − x| < |a'|.
+ Let E_r := A ∩ B_r(x) ∩ {y : ε|y − x| < |h(y) − h(x) − ⟨u, y − x⟩|}, and E'_r the same set with u'. We have shown A ∩ (x + C₀) ∩ B_r(x) ⊆ E_r ∪ E'_r. Hence
+ H^N(A ∩ (x + C₀) ∩ B_r(x)) ≤ H^N(E_r) + H^N(E'_r).
+ By the two hypotheses with this ε, r^{−N}H^N(E_r) → 0 and r^{−N}H^N(E'_r) → 0. In [0,∞], (a + b)/c = a/c + b/c, and division is monotone in the numerator. Therefore
+ (∗) H^N(A ∩ (x + C₀) ∩ B_r(x)) / ofReal(r^N) → 0 as r ↓ 0.
+
+4. Rescaling. Let O := C₀ ∩ B_1(0), an open set. For r > 0,
+ η_{x,r}(A) ∩ O = η_{x,r}(A ∩ (x + C₀) ∩ B_r(x)),
+ because η_{x,r}(y) ∈ C₀ ⟺ y − x ∈ C₀ (step 2) and |η_{x,r}(y)| < 1 ⟺ |y − x| < r.
+ H^N is invariant under the translation y ↦ y − x, which is an isometry (Isometry.euclideanHausdorffMeasure_image). It scales as H^N(r⁻¹S) = (r⁻¹)^N H^N(S) (MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀, stated for the pointwise image r⁻¹ • S, which needs `open scoped Pointwise`; it returns ‖r⁻¹‖₊^N • H^N(S), and ‖r⁻¹‖₊ = ofReal(r⁻¹) for r > 0). Hence
+ H^N(η_{x,r}(A) ∩ O) = H^N(A ∩ (x + C₀) ∩ B_r(x)) / ofReal(r^N) → 0 by (∗).
+
+5. Test function. Let φ(z) := max(0, 1 − 8|z − e/2|).
+ - φ is continuous, 0 ≤ φ ≤ 1 and φ(e/2) = 1.
+ - φ vanishes outside the compact set closedBall(e/2, 1/8), so φ ∈ C_c(ℝ^P).
+ - closedBall(e/2, 1/8) ⊆ O. Indeed, if |z − e/2| ≤ 1/8 then ⟨e, z⟩ ≥ 1/2 − 1/8 = 3/8 and |z| ≤ 5/8 < 1, so ½|z| ≤ 5/16 < 3/8 ≤ ⟨e, z⟩.
+ Hence 0 ≤ φ ≤ 1_O.
+
+6. Upper bound. By step 4 there is r₁ > 0 with H^N(η_{x,r}(A) ∩ O) < ∞ for 0 < r < r₁. Fix such an r. O is Borel, so (H^N⌞η_{x,r}(A))(O) = H^N(η_{x,r}(A) ∩ O) (Measure.restrict_apply). Since φ ≤ 1_O, φ is integrable for H^N⌞η_{x,r}(A), and
+ 0 ≤ ∫_{η_{x,r}(A)} φ dH^N ≤ H^N(η_{x,r}(A) ∩ O).
+ By step 4 the right side tends to 0, so ∫_{η_{x,r}(A)} φ dH^N → 0 as r ↓ 0.
+
+7. Lower bound. By HasApproximateTangentSpaceAt N A x Q, ∫_{η_{x,r}(A)} φ dH^N → ∫_Q φ dH^N as r ↓ 0.
+ - The measure H^N⌞Q has support exactly Q (Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule, using finrank Q = N).
+ - It is finite on compact sets: it is the push-forward of H^N = Lebesgue measure on the N-dimensional space Q under the inclusion (directly: (Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ).toIsFiniteMeasureOnCompacts, since Regular extends IsFiniteMeasureOnCompacts). Hence φ is integrable for it.
+ - e/2 ∈ Q, and U := {φ > ½} is an open neighbourhood of e/2. So (H^N⌞Q)(U) > 0.
+ - φ ≥ ½ on U and φ ≥ 0, so ∫_Q φ dH^N ≥ ½(H^N⌞Q)(U) > 0.
+
+8. Conclusion. The filter 𝓝[>]0 on ℝ is nontrivial, so limits are unique. Steps 6 and 7 then give ∫_Q φ dH^N = 0, contradicting step 7. Hence u = u'. ∎
+
+## Key steps
+
+1. Assume d = u − u' ≠ 0; put e = d/|d|, ε = |d|/8 and C₀ = {⟨e, z⟩ > ½|z|}.
+2. Triangle inequality: A ∩ (x + C₀) ∩ B_r(x) ⊆ E_r(u) ∪ E_r(u'), so its H^N-measure is o(r^N).
+3. Rescaling (translation invariance and H^N(r⁻¹S) = r^{−N}H^N(S)): H^N(η_{x,r}(A) ∩ C₀ ∩ B_1(0)) → 0.
+4. Test function φ = max(0, 1 − 8|z − e/2|) ≤ 1_{C₀ ∩ B_1(0)}: ∫_{η_{x,r}(A)} φ dH^N → 0.
+5. Approximate tangent space: ∫_{η_{x,r}(A)} φ dH^N → ∫_Q φ dH^N > 0, because supp(H^N⌞Q) = Q ∋ e/2. Contradiction.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1, mathlib 25730c7c); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scans of dag.json: the slicing-a1 children (chart_pieces, coarea, slice_family, ...) and their lean_statements; the dependencies im_calculus, defect_identity, lipschitz_smoothing, chart_pieces; regex 'lipschitz_leibniz|leibniz|tangential gradient|weak convergence|chart gradient' and 'TendstoUniformly|integral_lineDeriv|weak-limit|weakly' (hits dor_lmbsf_lipschitz_cutoff_leibniz, dor_lmbsf_piece_weak_limit, dor_lmbsf_tangential_gradient: all decomposing, different statements)`
+- `git show <accepted commit>:GMT/Ch07/Submission.lean and whitespace-normalised comparison of theorem Submission.<name> with the DAG type: cmc_imRep_locality_restrict_sub (2af75d6), cmcs_cd_defect_identity (e32f0ad), cmcs_lipschitz_smoothing (00c458d) -> IDENTICAL`
+- `grep -c dtc_bc_lc_sl_ll_ dag.json (0); git log --all -S dtc_bc_lc_sl_ll_ (no match); grep -rl dtc_bc_lc_sl_ll_ runs/.../nodes (none)`
+- `scan of the 958 accepted candidate commits for imports added to Submission.lean (26 do, e.g. Poincare.SimonGMT.Chapter02.WeightedArea, Chapter02.AreaLipschitz, Mathlib.MeasureTheory.Function.ContinuousMapDense, Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox); verifier/gmt-compare.py candidate_inputs/child_modules/contract_scope (Submission.lean and new GMT/Ch07 files may change)`
+- `grep in the snapshot mathlib for integral_lineDeriv_mul_eq, ae_differentiableAt_of_real, Besicovitch.ae_tendsto_measure_inter_div, Integrable.exists_hasCompactSupport_integral_sub_le, UniformContinuous.exists_contDiff_dist_le, tendsto_tsum_of_dominated_convergence, integral_iUnion, hasSum_integral_iUnion, setIntegral_congr_set, MeasurableSet.image_of_continuousOn_injOn, euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, alternatizeUncurryFinCLM, alternatizeUncurryFin_apply, smulRightL, ContDiff.lipschitzWith_of_hasCompactSupport, ContDiffBump.one_of_mem_closedBall`
+- `grep in SimonGMT for HasApproximateTangentSpaceAt (definition, .unique, support_euclideanHausdorffMeasure_restrict_submodule, regular_euclideanHausdorffMeasure_restrict_submodule), weighted_area_formula_volume_of_injective_derivative, integral_area_formula_of_injective_derivative, injective_area_formula_areaJacobianAt, integrableOn_image_iff_integrableOn_areaJacobian_smul, areaJacobianAt_eq_zero_iff_not_injective, ae_eq_of_hasFDerivWithinAt, ae_fderivWithin_eq_of_lipschitz_extension, continuous_normDet, measurable_areaJacobianAt`
+- `lake env lean on /tmp/llz_dec/AllTypes.lean (11 types in the contract-mode challenge header), Avail.lean, Avail2.lean and Avail3.lean (#check of every cited lemma with the base and the extra imports), and AssemblyAll.lean with #print axioms`
+- `sed book/chapter-06.txt lines 1180–1300 (4.2–4.5 and the proof of 4.5(2), including (1)–(3)); book/chapter-03.txt lines 325–362 (Definition 2.1 and the remark that ∇^M f does not depend on the decomposition)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1a374f83a8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-09907e06c7/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/llz_dec/AllTypes.lean`
+- `/tmp/llz_dec/AssemblyAll.lean`
+
+The pinned libraries supply the tools but none of the needed lemmas. SimonGMT has Simon's approximate tangent spaces with uniqueness and plane-support lemmas (Ch. 3), the injective weighted, Bochner and measure area formulas with Jacobian positivity, and a.e. uniqueness of within-derivatives (Ch. 2, AreaDomain). Mathlib has Rademacher, integration by parts for Lipschitz functions, L¹-density of C_c functions, smooth uniform approximation, Tannery's theorem, Lusin–Souslin and the μHE scaling and translation laws. No pinned or DAG declaration proves any of: uniqueness of approximate differentials along a set, weak-* convergence of gradients, the anti-Lipschitz bound for immersions, the chart pull-back, or the Leibniz rule with a Lipschitz multiplier. The dor_lmbsf_* analogues are decomposing and state different results. Hence there are nine new children, with the prefix dtc_bc_lc_sl_ll_ (absent from dag.json and git history), plus two accepted declarations reused with identical types: cmc_imRep_locality_restrict_sub (2af75d6) and cmcs_cd_defect_identity (e32f0ad). Four children need imports outside the base closure: ContinuousMapDense, SmoothApprox, Chapter02.WeightedArea/AreaCritical, Chapter02.AreaDomain and Tannery. Accepted candidates already add such imports. All 11 types elaborate in the contract-mode challenge header. Lean assemblies prove the parent type from weak_limit, smooth_leibniz, orient_interior, chart_pieces and lipschitz_smoothing, and prove weak_limit, piece_gradient, piece_weak_limit and smooth_leibniz from their declared dependencies, all with axioms propext, Classical.choice and Quot.sound only.

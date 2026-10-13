@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.smooth_leibniz-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Leibniz identity with a C^∞ multiplier for an integer multiplicity current and its integer multiplicity boundary (supplied steps 0(d) and 2)",
+  "statement": "Let P, m ∈ ℕ and T ∈ 𝒟_{m+2}(ℝ^P). Let R_T = (M, θ, ξ) (IMRep univ (m+2)) represent T and R_∂ = (M', θ', ξ') (IMRep univ (m+1)) represent ∂T. Let g : ℝ^P → ℝ be C^∞ (ContDiff ℝ (⊤ : ℕ∞) g). Then for every ω ∈ 𝒟^{m+1}(ℝ^P): ∫_{M'} θ' g ⟨ω, ξ'⟩ dH^{m+1} − ∫_M θ g ⟨dω, ξ⟩ dH^{m+2} = ∫_M θ ⟨Dg∧ω, ξ⟩ dH^{m+2}, where dω = exteriorDerivative ω, Dg∧ω := alternatizeUncurryFin((fderiv ℝ g x).smulRight(ω x)) and Hᵏ = μHE[k]. In Simon's notation: ∂T(gω) − T(g dω) = T(dg∧ω).",
+  "lean_statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (g : Euclid P → ℝ), RT.Represents T → RB.Represents T.boundary → ContDiff ℝ (⊤ : ℕ∞) g → ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (∫ x in RB.carrier, (RB.mult x : ℝ) * g x * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) - (∫ x in RT.carrier, (RT.mult x : ℝ) * g x * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) = ∫ x in RT.carrier, (RT.mult x : ℝ) * RT.orient x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight ((ω : DifferentialForm (Euclid P) (m + 1)) x))) ∂μHE[m + 2]",
+  "lean_name": "dtc_bc_lc_sl_ll_smooth_leibniz",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.defect_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.defect_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a-11763512eb-a1",
+      "result_commit": "e32f0ad2100627aa39dcb37b3a0772c3f6e95871",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e85ea4d3ee-a1"
+}

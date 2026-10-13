@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.orient_interior-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Supplied proof of dtc_bc_lc_sl_lipschitz_leibniz, step 3, first and third bullets. This is Simon's computation in the proof of Ch. 6, Lemma 4.5(2) (chapter-06.txt lines 1281–1296, printed p. 156): "since ξ(x) orients T_xM, ⟨ξ, dh^{(σ)} ∧ ω⟩ = ⟨ξ⌞∇^M h^{(σ)}, ω⟩", stated pointwise. Here α plays the role of ω(x), and v is the vector of the interior product, so that ξ(β∧α) = β(v). The parent uses v(x) := θ(x)·v with α = ω(x), β = Dh_k(x) or β = H(x)♭.
+
+Notation. β∧α := alternatizeUncurryFin(β.smulRight α), so (β∧α)(v₀, …, v_n) = Σ_{i=0}^{n} (−1)^i β(v_i) α(v₀, …, v̂_i, …, v_n) (ContinuousAlternatingMap.alternatizeUncurryFin_apply, with Fin.removeNth). e_i := EuclideanSpace.single i 1, e_i♭ := innerSL ℝ e_i = ⟨e_i, ·⟩, and v := Σ_i ξ(e_i♭∧α)e_i.
+
+1. Linearity. β ↦ β.smulRight α is linear in β, and alternatizeUncurryFin is linear (alternatizeUncurryFin_add, alternatizeUncurryFin_smul, or the CLM alternatizeUncurryFinCLM). Composing with the linear map ξ, Λ(β) := ξ(β∧α) is a linear function of β.
+
+2. Expansion of a 1-covector. For y ∈ ℝ^P, y = Σ_i ⟨e_i, y⟩e_i, since the e_i form an orthonormal basis of EuclideanSpace ℝ (Fin P). Hence for every β ∈ (ℝ^P)*, β(y) = Σ_i β(e_i)⟨e_i, y⟩, i.e. β = Σ_i β(e_i)·e_i♭.
+
+3. Proof of (1). By steps 1 and 2, and linearity of β:
+ ξ(β∧α) = Λ(Σ_i β(e_i)e_i♭) = Σ_i β(e_i)ξ(e_i♭∧α) = β(Σ_i ξ(e_i♭∧α)e_i) = β(v).
+
+4. Proof of (2), orthogonality. Suppose IsUnitOrientationOf ξ Q. Then there are an orthonormal family τ = (τ_0, …, τ_n) with span(range τ) = Q and a sign s ∈ {1, −1} with ξ(γ) = s·γ(τ) for every (n+1)-covector γ. Let b ∈ Q^⊥. By (1) with β := b♭ = innerSL ℝ b,
+ ⟨b, v⟩ = b♭(v) = ξ(b♭∧α) = s·(b♭∧α)(τ) = s·Σ_{i=0}^{n} (−1)^i ⟨b, τ_i⟩ α(τ_0, …, τ̂_i, …, τ_n).
+ Every τ_i lies in span(range τ) = Q and b ⊥ Q, so each ⟨b, τ_i⟩ = 0, and therefore ⟨b, v⟩ = 0.
+
+5. Conclusion. By step 4, v ∈ (Q^⊥)^⊥ (Submodule.mem_orthogonal). Q is finite-dimensional, hence complete, so (Q^⊥)^⊥ = Q (Submodule.orthogonal_orthogonal) and v ∈ Q. ∎
+
+## Key steps
+
+1. β ↦ ξ(β∧α) is linear.
+2. β = Σ_i β(e_i)e_i♭ in the orthonormal basis; hence ξ(β∧α) = β(v).
+3. For b ⊥ Q: ⟨b, v⟩ = ξ(b♭∧α) = ±(b♭∧α)(τ) = ±Σ_i (−1)^i⟨b, τ_i⟩α(τ without τ_i) = 0 (alternatizeUncurryFin_apply).
+4. So v ∈ (Q^⊥)^⊥ = Q, since Q is finite-dimensional.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1, mathlib 25730c7c); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scans of dag.json: the slicing-a1 children (chart_pieces, coarea, slice_family, ...) and their lean_statements; the dependencies im_calculus, defect_identity, lipschitz_smoothing, chart_pieces; regex 'lipschitz_leibniz|leibniz|tangential gradient|weak convergence|chart gradient' and 'TendstoUniformly|integral_lineDeriv|weak-limit|weakly' (hits dor_lmbsf_lipschitz_cutoff_leibniz, dor_lmbsf_piece_weak_limit, dor_lmbsf_tangential_gradient: all decomposing, different statements)`
+- `git show <accepted commit>:GMT/Ch07/Submission.lean and whitespace-normalised comparison of theorem Submission.<name> with the DAG type: cmc_imRep_locality_restrict_sub (2af75d6), cmcs_cd_defect_identity (e32f0ad), cmcs_lipschitz_smoothing (00c458d) -> IDENTICAL`
+- `grep -c dtc_bc_lc_sl_ll_ dag.json (0); git log --all -S dtc_bc_lc_sl_ll_ (no match); grep -rl dtc_bc_lc_sl_ll_ runs/.../nodes (none)`
+- `scan of the 958 accepted candidate commits for imports added to Submission.lean (26 do, e.g. Poincare.SimonGMT.Chapter02.WeightedArea, Chapter02.AreaLipschitz, Mathlib.MeasureTheory.Function.ContinuousMapDense, Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox); verifier/gmt-compare.py candidate_inputs/child_modules/contract_scope (Submission.lean and new GMT/Ch07 files may change)`
+- `grep in the snapshot mathlib for integral_lineDeriv_mul_eq, ae_differentiableAt_of_real, Besicovitch.ae_tendsto_measure_inter_div, Integrable.exists_hasCompactSupport_integral_sub_le, UniformContinuous.exists_contDiff_dist_le, tendsto_tsum_of_dominated_convergence, integral_iUnion, hasSum_integral_iUnion, setIntegral_congr_set, MeasurableSet.image_of_continuousOn_injOn, euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, alternatizeUncurryFinCLM, alternatizeUncurryFin_apply, smulRightL, ContDiff.lipschitzWith_of_hasCompactSupport, ContDiffBump.one_of_mem_closedBall`
+- `grep in SimonGMT for HasApproximateTangentSpaceAt (definition, .unique, support_euclideanHausdorffMeasure_restrict_submodule, regular_euclideanHausdorffMeasure_restrict_submodule), weighted_area_formula_volume_of_injective_derivative, integral_area_formula_of_injective_derivative, injective_area_formula_areaJacobianAt, integrableOn_image_iff_integrableOn_areaJacobian_smul, areaJacobianAt_eq_zero_iff_not_injective, ae_eq_of_hasFDerivWithinAt, ae_fderivWithin_eq_of_lipschitz_extension, continuous_normDet, measurable_areaJacobianAt`
+- `lake env lean on /tmp/llz_dec/AllTypes.lean (11 types in the contract-mode challenge header), Avail.lean, Avail2.lean and Avail3.lean (#check of every cited lemma with the base and the extra imports), and AssemblyAll.lean with #print axioms`
+- `sed book/chapter-06.txt lines 1180–1300 (4.2–4.5 and the proof of 4.5(2), including (1)–(3)); book/chapter-03.txt lines 325–362 (Definition 2.1 and the remark that ∇^M f does not depend on the decomposition)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1a374f83a8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-09907e06c7/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/llz_dec/AllTypes.lean`
+- `/tmp/llz_dec/AssemblyAll.lean`
+
+The pinned libraries supply the tools but none of the needed lemmas. SimonGMT has Simon's approximate tangent spaces with uniqueness and plane-support lemmas (Ch. 3), the injective weighted, Bochner and measure area formulas with Jacobian positivity, and a.e. uniqueness of within-derivatives (Ch. 2, AreaDomain). Mathlib has Rademacher, integration by parts for Lipschitz functions, L¹-density of C_c functions, smooth uniform approximation, Tannery's theorem, Lusin–Souslin and the μHE scaling and translation laws. No pinned or DAG declaration proves any of: uniqueness of approximate differentials along a set, weak-* convergence of gradients, the anti-Lipschitz bound for immersions, the chart pull-back, or the Leibniz rule with a Lipschitz multiplier. The dor_lmbsf_* analogues are decomposing and state different results. Hence there are nine new children, with the prefix dtc_bc_lc_sl_ll_ (absent from dag.json and git history), plus two accepted declarations reused with identical types: cmc_imRep_locality_restrict_sub (2af75d6) and cmcs_cd_defect_identity (e32f0ad). Four children need imports outside the base closure: ContinuousMapDense, SmoothApprox, Chapter02.WeightedArea/AreaCritical, Chapter02.AreaDomain and Tannery. Accepted candidates already add such imports. All 11 types elaborate in the contract-mode challenge header. Lean assemblies prove the parent type from weak_limit, smooth_leibniz, orient_interior, chart_pieces and lipschitz_smoothing, and prove weak_limit, piece_gradient, piece_weak_limit and smooth_leibniz from their declared dependencies, all with axioms propext, Classical.choice and Quot.sound only.

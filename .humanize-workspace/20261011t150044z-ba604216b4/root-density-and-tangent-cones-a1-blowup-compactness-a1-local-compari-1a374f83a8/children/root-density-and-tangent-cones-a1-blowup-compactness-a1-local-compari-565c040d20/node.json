@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.piece_gradient-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "On a C¹ chart piece, the approximate tangential gradient equals the chart gradient (supplied step 4(b))",
+  "statement": "Let P, n ∈ ℕ, N := n + 1 and H^N := μHE[N]. Let M ⊆ ℝ^P be Borel with H^N(M ∩ C) < ∞ for every compact C. Let ψ : ℝ^N → ℝ^P be C¹ and V ⊆ ℝ^N open, with ψ injective on V and Dψ(y) injective for y ∈ V. Let F : ℝ^N → ℝ be C¹ and Y ⊆ ℝ^N Borel with closure(Y) compact and contained in V. Assume ψ(Y) ⊆ M, h(ψ(y)) = F(y) for y ∈ Y (h : ℝ^P → ℝ), and that M has approximate tangent space Dψ(y)(ℝ^N) at ψ(y) for every y ∈ Y. Let H : ℝ^P → ℝ^P satisfy, for H^N-a.e. x ∈ M: M has approximate tangent space T_xM := approxTangentPlane N M x at x, H(x) ∈ T_xM, and for every ε > 0, r^{−N}·H^N(M ∩ B_r(x) ∩ {y : ε|y − x| < |h(y) − h(x) − ⟨H(x), y − x⟩|}) → 0 as r ↓ 0. Then for H^N-a.e. x ∈ ψ(Y) and every y ∈ Y with ψ(y) = x: H(x) ∈ Dψ(y)(ℝ^N) and ⟨H(x), Dψ(y)e⟩ = DF(y)e for all e ∈ ℝ^N.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (h : Euclid P → ℝ) (H : Euclid P → Euclid P), MeasurableSet M → (∀ C : Set (Euclid P), IsCompact C → μHE[n + 1] (M ∩ C) ≠ ∞) → IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → ψ '' Y ⊆ M → (∀ y ∈ Y, h (ψ y) = F y) → (∀ y ∈ Y, HasApproximateTangentSpaceAt (n + 1) M (ψ y) (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) → (∀ᵐ x ∂(μHE[n + 1].restrict M), HasApproximateTangentSpaceAt (n + 1) M x (approxTangentPlane (n + 1) M x) ∧ H x ∈ approxTangentPlane (n + 1) M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[n + 1] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ (H x) (y - x)|}) / ENNReal.ofReal (r ^ (n + 1))) (𝓝[>] 0) (𝓝 0)) → ∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → H x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (H x) (fderiv ℝ ψ y e) = fderiv ℝ F y e",
+  "lean_name": "dtc_bc_lc_sl_ll_piece_gradient",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.approx_grad_unique-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.immersion_antilipschitz-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.approx_grad_unique-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.immersion_antilipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-565c040d20-a1"
+}

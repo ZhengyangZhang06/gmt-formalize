@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.chart_pullback-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Pulling integrals over a C¹ chart piece back to the parameter domain (supplied step 4(c))",
+  "statement": "Let P, n ∈ ℕ, N := n + 1, ψ : ℝ^N → ℝ^P C¹, V ⊆ ℝ^N open with ψ injective on V and Dψ(y) injective for y ∈ V, and Y ⊆ ℝ^N Borel with closure(Y) compact and contained in V. Write A := ψ(Y), H^N := μHE[N] and L^N := volume on ℝ^N. Then: (i) every property p of points of ℝ^P that holds H^N-a.e. on A satisfies: p(ψ(y)) holds for L^N-a.e. y ∈ Y. (ii) Let w : ℝ^P → ℝ^P be H^N-integrable on A such that, for H^N-a.e. x ∈ A, w(x) ∈ Dψ(y)(ℝ^N) for every y ∈ Y with ψ(y) = x. Then there is a Lebesgue integrable W : ℝ^N → ℝ^N with W = 0 off Y such that ∫_A ℓ(x)(w(x)) dH^N(x) = ∫_{ℝ^N} ℓ(ψ(y))(Dψ(y)W(y)) dy for every map ℓ : ℝ^P → (ℝ^P →L[ℝ] ℝ); no measurability of ℓ is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → (∀ p : Euclid P → Prop, (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), p x) → ∀ᵐ y ∂(volume.restrict Y), p (ψ y)) ∧ ∀ w : Euclid P → Euclid P, IntegrableOn w (ψ '' Y) μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → w x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → ∃ W : Euclid (n + 1) → Euclid (n + 1), Integrable W ∧ (∀ y, y ∉ Y → W y = 0) ∧ ∀ ℓ : Euclid P → (Euclid P →L[ℝ] ℝ), ∫ x in ψ '' Y, ℓ x (w x) ∂μHE[n + 1] = ∫ y, ℓ (ψ y) (fderiv ℝ ψ y (W y))",
+  "lean_name": "dtc_bc_lc_sl_ll_chart_pullback",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-259635d0f5-a1"
+}

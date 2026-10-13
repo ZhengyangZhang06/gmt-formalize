@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.piece_weak_limit-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Weak convergence of the derivatives of the smoothed functions on one C¹ chart piece (supplied steps 4(c)–(e); Simon's (1) on N_j)",
+  "statement": "Let P, n ∈ ℕ, N := n + 1, H^N := μHE[N] and K ≥ 0. Let ψ : ℝ^N → ℝ^P be C¹ and V ⊆ ℝ^N open, with ψ injective on V and Dψ(y) injective for y ∈ V. Let F : ℝ^N → ℝ be C¹ and Y ⊆ ℝ^N Borel with closure(Y) compact and contained in V. Let h : ℝ^P → ℝ be K-Lipschitz with h(ψ(y)) = F(y) for y ∈ Y. Let h_k : ℝ^P → ℝ (k ∈ ℕ) be C¹ with ‖Dh_k(x)‖ ≤ K for all k, x and h_k → h uniformly. Let G : ℝ^P → ℝ^P be such that, for H^N-a.e. x ∈ ψ(Y) and every y ∈ Y with ψ(y) = x, ⟨G(x), Dψ(y)e⟩ = DF(y)e for all e. Let w : ℝ^P → ℝ^P be H^N-integrable on ψ(Y) with w(x) ∈ Dψ(y)(ℝ^N) for H^N-a.e. x ∈ ψ(Y) and every y ∈ Y with ψ(y) = x. Then ∫_{ψ(Y)} Dh_k(x)(w(x)) dH^N → ∫_{ψ(Y)} ⟨G(x), w(x)⟩ dH^N as k → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (h : Euclid P → ℝ) (K : NNReal) (G : Euclid P → Euclid P) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → LipschitzWith K h → (∀ y ∈ Y, h (ψ y) = F y) → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ K) → TendstoUniformly hs h atTop → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → ∀ e : Euclid (n + 1), inner ℝ (G x) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → IntegrableOn w (ψ '' Y) μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → w x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → Tendsto (fun k => ∫ x in ψ '' Y, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in ψ '' Y, inner ℝ (G x) (w x) ∂μHE[n + 1]))",
+  "lean_name": "dtc_bc_lc_sl_ll_piece_weak_limit",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.grad_weak_limit-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.chart_pullback-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.grad_weak_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.chart_pullback-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1a9ea2f46d-a1"
+}
