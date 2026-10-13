@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "49d8480cf2709f5be84686d12c768da763951e2a907088aa0396f4d3efb9a623",
+  "git_delta": {
+    "base_commit": "c9ed030daac4695d6bdce810b8ae0c516ab2ed93",
+    "candidate_commit": "bdf3439a789984953e7ee0f217646212ad39d38d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_si_left_lebesgue_point",
+    "diff_sha256": "636746a957d0605300b8e312afc8412f518d8d4eb71943d70c432e88f09779a2",
+    "source_sha256": "c8b1f7118323e7b900eb08c921c06d0db2d5b79541f45d4e74427dbc69da47c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_si_left_lebesgue_point",
+      "statement": "∀ φ : ℝ → ℝ, LocallyIntegrable φ (volume : Measure ℝ) → ∀ᵐ t ∂(volume : Measure ℝ), Tendsto (fun ε : ℝ => ε⁻¹ * ∫ r in Ioo (t - ε) t, φ r) (𝓝[>] 0) (𝓝 (φ t))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
