@@ -360,6 +360,62 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Gram-determinant lower bound (the Jacobian bound of step 6a): if `0 ≤ c` and `c‖s‖ ≤ ‖T s‖`
+for all `s ∈ ℝᵏ`, then `cᵏ ≤ √det (⟪T eᵢ, T eⱼ⟫)ᵢⱼ`.  The Gram matrix is the matrix of the
+symmetric operator `S = T† T` in the standard basis; on an orthonormal eigenbasis `uᵢ` of `S` the
+eigenvalues are `⟪S uᵢ, uᵢ⟫ = ‖T uᵢ‖² ≥ c²`, and `det S` is their product. -/
+theorem Submission.deformation_ipl_cc_gram_det_lower_bound : ∀ (P k : ℕ) (T : Eucl k →L[ℝ] Eucl P) (c : ℝ), 0 ≤ c → (∀ s : Eucl k, c * ‖s‖ ≤ ‖T s‖) → c ^ k ≤ Real.sqrt (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1)) (T (EuclideanSpace.single j 1))).det := by
+  intro P k T c hc hT
+  -- `S = T† T` on `ℝᵏ`, with `⟪S x, y⟫ = ⟪T x, T y⟫`
+  set S : Eucl k →ₗ[ℝ] Eucl k :=
+    ((ContinuousLinearMap.adjoint T).comp T : Eucl k →L[ℝ] Eucl k).toLinearMap with hS
+  have hSin : ∀ x y : Eucl k, inner ℝ (S x) y = inner ℝ (T x) (T y) := by
+    intro x y
+    simp only [hS, ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply]
+    exact ContinuousLinearMap.adjoint_inner_left T y (T x)
+  -- Step 1: `S` is symmetric
+  have hsymm : S.IsSymmetric := by
+    intro x y
+    rw [hSin, real_inner_comm (S y) x, hSin, real_inner_comm]
+  have hn : Module.finrank ℝ (Eucl k) = k := finrank_euclideanSpace_fin
+  -- Step 2: the Gram matrix is the matrix of `S` in the standard basis, so `det G = det S`
+  have hmat : LinearMap.toMatrix (EuclideanSpace.basisFun (Fin k) ℝ).toBasis
+      (EuclideanSpace.basisFun (Fin k) ℝ).toBasis S = Matrix.of fun i j =>
+        inner ℝ (T (EuclideanSpace.single i 1)) (T (EuclideanSpace.single j 1)) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+      OrthonormalBasis.coe_toBasis_repr_apply, EuclideanSpace.basisFun_apply,
+      EuclideanSpace.basisFun_repr, Matrix.of_apply, ← hSin,
+      hsymm (EuclideanSpace.single i 1) (EuclideanSpace.single j 1),
+      EuclideanSpace.inner_single_left]
+    simp
+  have hdet : (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1))
+      (T (EuclideanSpace.single j 1))).det = LinearMap.det S := by
+    rw [← hmat, LinearMap.det_toMatrix]
+  -- Step 3: every eigenvalue `λᵢ = ⟪S uᵢ, uᵢ⟫ = ‖T uᵢ‖²` is at least `c²`
+  have heig : ∀ i, c ^ 2 ≤ hsymm.eigenvalues hn i := by
+    intro i
+    have hun : ‖hsymm.eigenvectorBasis hn i‖ = 1 := (hsymm.eigenvectorBasis hn).orthonormal.1 i
+    have h1 := hSin (hsymm.eigenvectorBasis hn i) (hsymm.eigenvectorBasis hn i)
+    rw [hsymm.apply_eigenvectorBasis hn i, real_inner_smul_left, real_inner_self_eq_norm_sq,
+      real_inner_self_eq_norm_sq, hun] at h1
+    have h2 := hT (hsymm.eigenvectorBasis hn i)
+    rw [hun, mul_one] at h2
+    have h3 : hsymm.eigenvalues hn i = ‖T (hsymm.eigenvectorBasis hn i)‖ ^ 2 := by
+      simpa using h1
+    rw [h3]
+    nlinarith [norm_nonneg (T (hsymm.eigenvectorBasis hn i))]
+  -- Step 4: `det G = ∏ λᵢ ≥ (c²)ᵏ`
+  have hprod : (c ^ 2) ^ k ≤ (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1))
+      (T (EuclideanSpace.single j 1))).det := by
+    rw [hdet, hsymm.det_eq_prod_eigenvalues hn]
+    calc (c ^ 2) ^ k = ∏ _i : Fin k, c ^ 2 := by simp
+      _ ≤ ∏ i, hsymm.eigenvalues hn i :=
+          Finset.prod_le_prod₀ (fun _ _ => sq_nonneg c) (fun i _ => heig i)
+  -- Step 5: `cᵏ = √((c²)ᵏ) ≤ √det G`
+  calc c ^ k = Real.sqrt ((c ^ k) ^ 2) := (Real.sqrt_sq (pow_nonneg hc k)).symm
+    _ = Real.sqrt ((c ^ 2) ^ k) := by ring_nf
+    _ ≤ _ := Real.sqrt_le_sqrt hprod
 /-- **Simple `n`-vectors (step (P1) of Simon Ch. 6, Lemma 3.9).**  The operator norm of
 `v₁ ∧ ⋯ ∧ vₙ = simpleNVector v` is the square root of the Gram determinant `det (⟪vᵢ, vⱼ⟫)`, and a
 change of frame `τ ↦ Bτ` multiplies `simpleNVector τ` by `det B`.  The second identity is the
@@ -508,6 +564,166 @@ theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
     rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr htpos.le), le_inv_mul_iff₀ htpos]
     linarith [h1]
   exact ge_of_tendsto hnorm hev
+/-- Countable Lipschitz cover (Lindelöf): if `f` is locally Lipschitz on an arbitrary `U ⊆ ℝ^P`,
+then countably many open sets `O i` cover `U` and `f` is `K i`-Lipschitz on each `O i ∩ U`. -/
+theorem Submission.lpf_lli_countable_lipschitz_cover : ∀ (P Q : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → ∃ (O : ℕ → Set (Eucl P)) (K : ℕ → ℝ≥0), (∀ i, IsOpen (O i)) ∧ U ⊆ ⋃ i, O i ∧ ∀ i, LipschitzOnWith (K i) f (O i ∩ U) := by
+  intro P Q U f hf
+  -- Step 1: each `x ∈ U` has an open `o x ∋ x` with `f` `k x`-Lipschitz on `o x ∩ U`.
+  have hloc : ∀ x ∈ U, ∃ (o : Set (Eucl P)) (k : ℝ≥0),
+      IsOpen o ∧ x ∈ o ∧ LipschitzOnWith k f (o ∩ U) := by
+    intro x hx
+    obtain ⟨k, t, ht, hft⟩ := hf hx
+    obtain ⟨o, ho, hxo, hot⟩ := mem_nhdsWithin.1 ht
+    exact ⟨o, k, ho, hxo, hft.mono hot⟩
+  choose! o k ho hxo hfo using hloc
+  -- Step 2: `ℝ^P` is hereditarily Lindelöf, so countably many `o x` (`x ∈ T ⊆ U`) cover `U`.
+  obtain ⟨T, hTc, hTU, hUT⟩ := (HereditarilyLindelofSpace.isLindelof U).elim_nhds_subcover o
+    fun x hx => (ho x hx).mem_nhds (hxo x hx)
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- Step 3: `T = ∅` forces `U = ∅`; take empty pieces.
+    refine ⟨fun _ => ∅, fun _ => 0, fun _ => isOpen_empty, fun x hx => ?_, fun _ => ?_⟩
+    · simpa using hUT hx
+    · simp
+  · -- Step 4: enumerate `T = range g` and take `O i = o (g i)`, `K i = k (g i)`.
+    obtain ⟨g, rfl⟩ := hTc.exists_eq_range hTne
+    refine ⟨fun i => o (g i), fun i => k (g i), fun i => ho _ (hTU _ (mem_range_self i)),
+      fun x hx => ?_, fun i => hfo _ (hTU _ (mem_range_self i))⟩
+    -- Step 5: the pieces cover `U`.
+    obtain ⟨y, ⟨i, rfl⟩, hxy⟩ := mem_iUnion₂.1 (hUT hx)
+    exact mem_iUnion.2 ⟨i, hxy⟩
+
+/-- Disjoint Lipschitz pieces: if `u` is locally Lipschitz on an open `Ω ⊆ ℝⁿ` and `D ⊆ Ω` is
+`Lⁿ`-null-measurable, then `D` is covered by pairwise disjoint null-measurable `B m ⊆ D ∩ V m`,
+where the `V m ⊆ Ω` are open and `u` is `K m`-Lipschitz on `V m`. -/
+theorem Submission.lpf_raf_lla_disjoint_lipschitz_pieces : ∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → ∃ (V B : ℕ → Set (Eucl n)) (K : ℕ → ℝ≥0), (∀ m, IsOpen (V m)) ∧ (∀ m, V m ⊆ Ω) ∧ (∀ m, LipschitzOnWith (K m) u (V m)) ∧ (∀ m, B m ⊆ D ∩ V m) ∧ Pairwise (Function.onFun Disjoint B) ∧ (∀ m, NullMeasurableSet (B m) (volume : Measure (Eucl n))) ∧ D ⊆ ⋃ m, B m := by
+  intro n Q Ω D u hΩ hu hDΩ hD
+  -- Step 1: countable Lipschitz cover: open `O m` cover `Ω`, `u` is `K m`-Lipschitz on `O m ∩ Ω`.
+  obtain ⟨O, K, hO, hΩO, hK⟩ := Submission.lpf_lli_countable_lipschitz_cover n Q Ω u hu
+  -- Step 2: the open pieces `V m = O m ∩ Ω` lie in `Ω` and cover `Ω`.
+  have hVo : ∀ m, IsOpen (O m ∩ Ω) := fun m => (hO m).inter hΩ
+  have hΩV : Ω ⊆ ⋃ m, O m ∩ Ω := fun x hx => by
+    obtain ⟨m, hm⟩ := mem_iUnion.1 (hΩO hx)
+    exact mem_iUnion.2 ⟨m, hm, hx⟩
+  -- Steps 3–4: `W m = disjointed V m` and `B m = D ∩ W m`.
+  refine ⟨fun m => O m ∩ Ω, fun m => D ∩ disjointed (fun m => O m ∩ Ω) m, K, hVo,
+    fun m => inter_subset_right, hK,
+    fun m => inter_subset_inter_right D (disjointed_subset (fun m => O m ∩ Ω) m),
+    fun i j hij => Disjoint.mono inter_subset_right inter_subset_right
+      (disjoint_disjointed (fun m => O m ∩ Ω) hij),
+    fun m => hD.inter
+      (MeasurableSet.disjointed (fun m => (hVo m).measurableSet) m).nullMeasurableSet,
+    fun x hx => ?_⟩
+  -- Step 4(d): `x ∈ D ⊆ Ω ⊆ ⋃ V m = ⋃ W m`, so `x ∈ D ∩ W m = B m` for some `m`.
+  have hxW : x ∈ ⋃ m, disjointed (fun m => O m ∩ Ω) m := by
+    rw [iUnion_disjointed]
+    exact hΩV (hDΩ hx)
+  obtain ⟨m, hm⟩ := mem_iUnion.1 hxW
+  exact mem_iUnion.2 ⟨m, hx, hm⟩
+/-- Countable gluing of fibre-sum area identities (Simon Ch. 3, proof of 2.6; used for Ch. 6,
+3.9): if `A` is covered, up to a `μ`-null set `Z` with `ν`-null image `f '' Z`, by pairwise
+disjoint `μ`-null-measurable pieces `B m ⊆ A`, each satisfying `∫_{B m} F dμ = ∫ N_{B m} dν` with
+an a.e.-measurable fibre sum `N_S(y) = ∑_{x ∈ S, f x = y} h x`, then so does `A`. -/
+theorem Submission.lpf_raf_fiber_sum_glue : ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (h F : X → ℝ≥0∞) (A Z : Set X) (B : ℕ → Set X), (∀ m, B m ⊆ A) → Pairwise (Function.onFun Disjoint B) → (∀ m, NullMeasurableSet (B m) μ) → (A ⊆ Z ∪ ⋃ m, B m) → μ Z = 0 → ν (f '' Z) = 0 → (∀ m, AEMeasurable (fun y => ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x) ν ∧ ∫⁻ x in B m, F x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x ∂ν) → AEMeasurable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) ν ∧ ∫⁻ x in A, F x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x ∂ν := by
+  intro X Y _ _ μ ν f h F A Z B hBA hdisj hBm hcov hZ hfZ hg
+  -- Off `f '' Z`, the `A`-fibre is the disjoint union of the `B m`-fibres, so the sums split.
+  have hpt : ∀ y ∉ f '' Z, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x =
+      ∑' m, ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x := by
+    intro y hy
+    have he : {x | x ∈ A ∧ f x = y} = ⋃ m, {x | x ∈ B m ∧ f x = y} := by
+      ext x
+      simp only [mem_ofPred_eq, mem_iUnion]
+      constructor
+      · rintro ⟨hxA, rfl⟩
+        rcases hcov hxA with hxZ | hxB
+        · exact absurd ⟨x, hxZ, rfl⟩ hy
+        · obtain ⟨m, hm⟩ := mem_iUnion.mp hxB
+          exact ⟨m, hm, rfl⟩
+      · rintro ⟨m, hm, rfl⟩
+        exact ⟨hBA m hm, rfl⟩
+    have hd : univ.PairwiseDisjoint fun m => {x | x ∈ B m ∧ f x = y} :=
+      fun i _ j _ hij => (hdisj hij).mono (fun _ hx => hx.1) (fun _ hx => hx.1)
+    change ∑' x : ({x | x ∈ A ∧ f x = y} : Set X), h x =
+      ∑' m, ∑' x : ({x | x ∈ B m ∧ f x = y} : Set X), h x
+    rw [he]
+    exact ENNReal.tsum_biUnion hd
+  -- As `ν (f '' Z) = 0`, the fibre sums agree `ν`-a.e.; this gives a.e.-measurability.
+  have hae : (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) =ᵐ[ν]
+      fun y => ∑' m, ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hfZ] with y hy using hpt y hy
+  refine ⟨(AEMeasurable.tsum fun m => (hg m).1).congr hae.symm, ?_⟩
+  -- `A` and `⋃ m, B m` differ by a subset of the `μ`-null set `Z`.
+  have hAe : A =ᵐ[μ] ⋃ m, B m := by
+    refine ae_eq_set.mpr ⟨measure_mono_null ?_ hZ, ?_⟩
+    · rintro x ⟨hxA, hxB⟩
+      exact (hcov hxA).resolve_right hxB
+    · rw [sdiff_eq_empty.mpr (iUnion_subset hBA), measure_empty]
+  -- Sum the identities over `m` on both sides.
+  rw [Measure.restrict_congr_set hAe, lintegral_iUnion₀ hBm hdisj.aedisjoint F,
+    lintegral_congr_ae hae, lintegral_tsum fun m => (hg m).1]
+  exact tsum_congr fun m => (hg m).2
+
+/-- Area formula for a map locally Lipschitz on an open set (Simon Ch. 2, (3.5), localized by the
+countable decomposition of the proof of Ch. 3, 2.4–2.5; used for Ch. 6, 3.9): if `u` is locally
+Lipschitz on open `Ω ⊆ ℝⁿ`, `D ⊆ Ω` is `Lⁿ`-null-measurable and `w ≥ 0` is `Lⁿ ⌞ D`-a.e.
+measurable, then the fibre sum `N(y) = ∑_{x ∈ D, u x = y} w x` is `Hⁿ`-a.e. measurable and
+`∫_D w Ju dLⁿ = ∫ N dHⁿ`, where `Ju = √det(⟨Du eᵢ, Du eⱼ⟩)`.  Split `D` into disjoint pieces
+`B m` inside open `V m ⊆ Ω` on which `u` is Lipschitz, apply SimonGMT's area formula for maps
+Lipschitz on a set to each piece (its within-derivative Jacobian is `Ju` a.e. on `B m`, via a
+Lipschitz extension of `u|V m`), and glue the pieces. -/
+theorem Submission.lpf_raf_local_lipschitz_area : ∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q) (w : Eucl n → ℝ≥0∞), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → AEMeasurable w ((volume : Measure (Eucl n)).restrict D) → AEMeasurable (fun y => ∑' x : {x : Eucl n // x ∈ D ∧ u x = y}, w x) (μHE[n] : Measure (Eucl Q)) ∧ ∫⁻ x in D, w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1)) (fderiv ℝ u x (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) = ∫⁻ y, ∑' x : {x : Eucl n // x ∈ D ∧ u x = y}, w x ∂(μHE[n] : Measure (Eucl Q)) := by
+  intro n Q Ω D u w hΩ hu hDΩ hD hw
+  -- Step 1: `normDet T = √det(⟨T eᵢ, T eⱼ⟩)`, the Gram determinant in the orthonormal basis `eᵢ`.
+  have hJ : ∀ T : Eucl n →L[ℝ] Eucl Q, (T : Eucl n →ₗ[ℝ] Eucl Q).normDet =
+      Real.sqrt (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1))
+        (T (EuclideanSpace.single j 1))).det := by
+    intro T
+    have h := (T : Eucl n →ₗ[ℝ] Eucl Q).normDet_sq_eq_det_gram (EuclideanSpace.basisFun (Fin n) ℝ)
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe,
+      RCLike.ofReal_real_eq_id, id_eq] at h
+    rw [← Real.sqrt_sq (T : Eucl n →ₗ[ℝ] Eucl Q).normDet_nonneg, h]
+    rfl
+  -- Steps 2–3: pairwise disjoint null-measurable `B m ⊆ D ∩ V m` covering `D`, where `V m` is
+  -- open and `u` is `K m`-Lipschitz on `V m`.
+  obtain ⟨V, B, K, hVo, -, hK, hBDV, hBd, hBm, hDB⟩ :=
+    Submission.lpf_raf_lla_disjoint_lipschitz_pieces n Q Ω D u hΩ hu hDΩ hD
+  have hdim : Module.finrank ℝ (Eucl n) = n := finrank_euclideanSpace_fin
+  -- Steps 4–5: the area formula on each piece `B m`.
+  have hpiece : ∀ m, AEMeasurable (fun y => ∑' x : {x : Eucl n // x ∈ B m ∧ u x = y}, w x)
+        (μHE[n] : Measure (Eucl Q)) ∧
+      ∫⁻ x in B m, w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j =>
+        inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1))
+          (fderiv ℝ u x (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) =
+        ∫⁻ y, ∑' x : {x : Eucl n // x ∈ B m ∧ u x = y}, w x ∂(μHE[n] : Measure (Eucl Q)) := by
+    intro m
+    have hBV : B m ⊆ V m := fun x hx => (hBDV m hx).2
+    have hL : LipschitzOnWith (K m) u (B m) := (hK m).mono hBV
+    have hwm : AEMeasurable w ((volume : Measure (Eucl n)).restrict (B m)) :=
+      hw.mono_set fun x hx => (hBDV m hx).1
+    -- Step 4: SimonGMT's weighted area formula for `u` Lipschitz on `B m`.
+    have hmeas :=
+      Poincare.SimonGMT.Chapter02.aemeasurable_weightedAreaFiberSum_lipschitzOn (hBm m) hL hwm
+    have harea :=
+      Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitzOn_fiberSum (hBm m) hL hwm
+    rw [hdim] at hmeas harea
+    refine ⟨hmeas, Eq.trans ?_ harea.symm⟩
+    -- Step 5: `fderivWithin ℝ u (B m) = fderiv ℝ u` a.e. on `B m`, through a global Lipschitz
+    -- extension `g` of `u|V m` (`u = g` near every point of the open `V m ⊇ B m`).
+    obtain ⟨g, L, hg, hug⟩ :=
+      Poincare.SimonGMT.Chapter02.exists_lipschitz_extension_finiteDimensional (hK m)
+    have hder := Poincare.SimonGMT.Chapter02.ae_fderivWithin_eq_of_lipschitz_extension (hBm m) hg
+      (hug.mono hBV)
+    refine lintegral_congr_ae ?_
+    filter_upwards [hder, ae_restrict_mem₀ (hBm m)] with x hx hxB
+    have hxg : fderiv ℝ u x = fderiv ℝ g x :=
+      (Filter.eventuallyEq_of_mem ((hVo m).mem_nhds (hBV hxB)) hug).fderiv_eq
+    rw [Poincare.SimonGMT.Chapter02.areaJacobianWithin, hx, ← hxg, hJ, mul_comm]
+  -- Step 6: glue the pieces with `Z = ∅`.
+  exact Submission.lpf_raf_fiber_sum_glue (Eucl n) (Eucl Q) volume μHE[n] u w
+    (fun x => w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j =>
+      inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1))
+        (fderiv ℝ u x (EuclideanSpace.single j 1))).det))
+    D ∅ B (fun m => (hBDV m).trans inter_subset_left) hBd hBm (hDB.trans subset_union_right)
+    measure_empty (by rw [image_empty, measure_empty]) hpiece
 /-- Rescaled chart integrals converge (Simon Ch. 3, approximate tangent space of a `C¹` chart
 image): for `Φ` continuous, differentiable at `w ∈ Ω` and antilipschitz on the open set `Ω`,
 `J` continuous and `φ ∈ C_c`, `(rⁿ)⁻¹ ∫_Ω J(v) φ(r⁻¹(Φ v − Φ w)) dv → ∫ J(w) φ(DΦ(w) s) ds`
@@ -2319,6 +2535,33 @@ theorem Submission.deformation_ipl_cc_signed_change_of_variables : ∀ (P k : �
     rw [← ENNReal.ofReal_mul' (hJ0 w)]
   · refine lintegral_congr fun w => ?_
     rw [← ENNReal.ofReal_mul' (hJ0 w), neg_mul]
+/-- `Hⁿ`-a.e. properties pull back along antilipschitz charts (used for Simon Ch. 6, 3.9): if
+`M` is `Hⁿ`-null-measurable, `Ω` and `Φ` are measurable and `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` on `Ω`
+with `c > 0`, then `Ω ∩ Φ⁻¹(M)` is `Lⁿ`-null-measurable, and a property holding `Hⁿ`-a.e. on
+`M ∩ Φ(Ω)` holds at `Φ w` for `Lⁿ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`. -/
+theorem Submission.lpf_ccr_ae_pullback : ∀ (P n : ℕ) (M : Set (Eucl P)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (p : Eucl P → Prop), MeasurableSet Ω → Measurable Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ Φ '' Ω)), p x) → NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) ∧ ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), p (Φ w) := by
+  intro P n M Φ Ω p hΩ hΦ ⟨c, hc, hanti⟩ hM hp
+  -- `Hⁿ`-null sets of `ℝ^P` pull back to `Lⁿ`-null sets of parameters in `Ω`.
+  have hnull := Submission.lpf_raf_chart_preimage_null P n Φ Ω c hc hanti
+  -- With `B ⊆ M` measurable and `Hⁿ(M \ B) = 0`, `Ω ∩ Φ⁻¹(M)` is measurable ∪ `Lⁿ`-null.
+  obtain ⟨B, hBM, hB, hBae⟩ := hM.exists_measurable_subset_ae_eq
+  have hS : Ω ∩ Φ ⁻¹' M = (Ω ∩ Φ ⁻¹' B) ∪ (Ω ∩ Φ ⁻¹' (M \ B)) := by
+    ext w
+    by_cases hw : Φ w ∈ B
+    · simp [hw, hBM hw]
+    · simp [hw]
+  have hSm : NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) := by
+    rw [hS]
+    exact (hΩ.inter (hΦ hB)).nullMeasurableSet.union_null (hnull _ (ae_eq_set.mp hBae).2)
+  refine ⟨hSm, (ae_restrict_iff'₀ hSm).mpr ?_⟩
+  -- The exceptional set `{¬p} ∩ (M ∩ Φ(Ω))` is `Hⁿ`-null, so its pullback is `Lⁿ`-null.
+  have hZ : (μHE[n] : Measure (Eucl P)) ({x | ¬p x} ∩ (M ∩ Φ '' Ω)) = 0 :=
+    nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans_eq (ae_iff.mp hp))
+  rw [ae_iff]
+  refine measure_mono_null (fun w hw => ?_) (hnull _ hZ)
+  have hw' : ¬(w ∈ Ω ∩ Φ ⁻¹' M → p (Φ w)) := hw
+  obtain ⟨⟨hwΩ, hwM⟩, hwp⟩ := not_imp.mp hw'
+  exact ⟨hwΩ, hwp, hwM, mem_image_of_mem Φ hwΩ⟩
 
 /-- Measurable relative orientation on a `C¹` antilipschitz chart (Simon Ch. 6, proof of 3.9,
 step (6c)): for a rectifiable triple `(M, θ, ξ)` and a `C¹` map `Φ` that is antilipschitz on the
@@ -2491,6 +2734,142 @@ theorem Submission.deformation_ipl_cc_chart_orientation_sign : ∀ (P k : ℕ) (
       ext γ
       simp only [smul_apply, neg_apply, smul_eq_mul]
       rw [← hcoef]; ring
+
+/-- Chart representation of push-forward integrals (steps (6a)–(6d) of the chart convergence in
+the C¹ push-forward limit behind the proof of Simon Ch. 6, 5.1): let `Φ` be C¹, Lipschitz and
+`c`-antilipschitz (`c > 0`) on the open `Ω ⊆ ℝᵏ`, and let `G ⊆ M ∩ Φ(Ω)` be `Hᵏ`-null-measurable
+with `θ ∈ L¹(Hᵏ ⌞ G)`.  With `D = Ω ∩ Φ⁻¹(G)` and the chart orientation sign `σ = ±1`, the weight
+`ψ = 1_D (θ ∘ Φ) σ` is in `L¹(Ω)` (as `JΦ ≥ cᵏ` and `∫_D (θ ∘ Φ) JΦ = ∫_G θ`), and
+`∫_G θ ⟨α(f), A_# ξ⟩ dHᵏ = ∫_Ω ψ ⟨α(f(Φ)), ∂₀(f ∘ Φ) ∧ ⋯ ∧ ∂ₖ₋₁(f ∘ Φ)⟩ dLᵏ` whenever
+`D(f ∘ Φ)(w) = A(Φ w) ∘ DΦ(w)` a.e. on `D` and the left integrand is integrable: by the signed
+change of variables, `JΦ(w) ξ(Φ w) = σ(w) ∂₀Φ(w) ∧ ⋯ ∧ ∂ₖ₋₁Φ(w)` and `A(Φ w) ∂_bΦ = ∂_b(f ∘ Φ)`. -/
+theorem Submission.deformation_ipl_cc_chart_integral_representation : ∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (G : Set (Eucl P)), IsOpen U → IsRectifiableTriple U k M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → G ⊆ M → G ⊆ Φ '' Ω → NullMeasurableSet G (μHE[k] : Measure (Eucl P)) → IntegrableOn θ G (μHE[k] : Measure (Eucl P)) → ∃ ψ : Eucl k → ℝ, IntegrableOn ψ Ω (volume : Measure (Eucl k)) ∧ ∀ (f : Eucl P → Eucl Q) (A : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (α : Eucl Q → Covector (Eucl Q) k), (∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' G)), HasFDerivAt (f ∘ Φ) ((A (Φ w)).comp (fderiv ℝ Φ w)) w) → IntegrableOn (fun x => θ x * nVectorPushforward k (A x) (ξ x) (α (f x))) G (μHE[k] : Measure (Eucl P)) → ∫ x in G, θ x * nVectorPushforward k (A x) (ξ x) (α (f x)) ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω, ψ w * α (f (Φ w)) (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k)) := by
+  intro P Q k U M θ ξ Φ Ω G hU hT hΩ hΦC1 hΦLip hΦanti hGM hGΦ hGm hθG
+  obtain ⟨c, hc, hcanti⟩ := hΦanti
+  set J : Eucl k → ℝ := fun w => Real.sqrt (Matrix.of fun i j => inner ℝ
+    (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det
+    with hJdef
+  set D : Set (Eucl k) := Ω ∩ Φ ⁻¹' G with hDdef
+  have hDΩ : D ⊆ Ω := inter_subset_left
+  have hDM : D ⊆ Ω ∩ Φ ⁻¹' M := fun w hw => ⟨hw.1, hGM hw.2⟩
+  -- (6a) `c ‖s‖ ≤ ‖DΦ(w) s‖` on `Ω`, hence `cᵏ ≤ JΦ(w)` by the Gram determinant bound.
+  have hJlow : ∀ w ∈ Ω, c ^ k ≤ J w := fun w hw =>
+    Submission.deformation_ipl_cc_gram_det_lower_bound P k (fderiv ℝ Φ w) c hc.le
+      (Submission.lpf_wtc_cat_fderiv_lower_bound P k Φ Ω c w hΩ hw
+        ((hΦC1.differentiable one_ne_zero) w) hcanti)
+  -- (6c) The orientation sign `σ = ±1` with `JΦ ξ(Φ) = σ ∂₀Φ ∧ ⋯ ∧ ∂ₖ₋₁Φ`, restricted to `D`.
+  obtain ⟨σ, hσm, hσ⟩ := Submission.deformation_ipl_cc_chart_orientation_sign P k U M θ ξ Φ Ω
+    hU hT hΩ hΦC1 ⟨c, hc, hcanti⟩
+  have hσD : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict D), (σ w = 1 ∨ σ w = -1) ∧
+      J w • ξ (Φ w) = σ w • simpleNVector (fun b => fderiv ℝ Φ w (EuclideanSpace.single b 1)) :=
+    ae_restrict_of_ae_restrict_of_subset hDM hσ
+  -- (6b) Change of variables for `θ`: `D` is null-measurable, `θ ∘ Φ` is a.e.-measurable on `D`
+  -- and `∫_G θ dHᵏ = ∫_D (θ ∘ Φ) JΦ dLᵏ` (in `ℝ≥0∞`).
+  have hθae : AEMeasurable (fun x => ENNReal.ofReal (θ x))
+      ((μHE[k] : Measure (Eucl P)).restrict G) := hθG.aemeasurable.ennreal_ofReal
+  obtain ⟨hDm, hθΦm, hθCoV⟩ := Submission.lpf_raf_chart_change_of_variables P k Φ Ω G
+    (fun x => ENNReal.ofReal (θ x)) hΩ hΦLip ⟨c, hc, hcanti⟩ hGΦ hGm hθae
+  have hmemD : ∀ᵐ w ∂((volume : Measure (Eucl k)).restrict D), w ∈ D := ae_restrict_mem₀ hDm
+  have hθΦpos : ∀ w ∈ D, 0 < θ (Φ w) := fun w hw => hT.pos _ (hGM hw.2)
+  have hθΦae : AEMeasurable (fun w => θ (Φ w)) ((volume : Measure (Eucl k)).restrict D) := by
+    refine hθΦm.ennreal_toReal.congr ?_
+    filter_upwards [hmemD] with w hw
+    exact ENNReal.toReal_ofReal (hθΦpos w hw).le
+  have hσDm : AEStronglyMeasurable σ ((volume : Measure (Eucl k)).restrict D) :=
+    hσm.mono_measure (Measure.restrict_mono hDM le_rfl)
+  have hDmΩ : NullMeasurableSet D ((volume : Measure (Eucl k)).restrict Ω) :=
+    hDm.mono_ac Measure.restrict_le_self.absolutelyContinuous
+  have hrestrDΩ : ((volume : Measure (Eucl k)).restrict Ω).restrict D =
+      (volume : Measure (Eucl k)).restrict D := by
+    rw [Measure.restrict_restrict₀ hDmΩ, inter_eq_left.mpr hDΩ]
+  -- The weight `ψ = 1_D F₁`, `F₁ = (θ ∘ Φ) σ`, is a.e.-strongly measurable on `Ω`.
+  set F₁ : Eucl k → ℝ := fun w => θ (Φ w) * σ w with hF₁
+  set ψ : Eucl k → ℝ := D.indicator F₁ with hψdef
+  have hF₁m : AEStronglyMeasurable F₁ ((volume : Measure (Eucl k)).restrict D) :=
+    hθΦae.aestronglyMeasurable.mul hσDm
+  have hψm : AEStronglyMeasurable ψ ((volume : Measure (Eucl k)).restrict Ω) := by
+    rw [hψdef, aestronglyMeasurable_indicator_iff₀ hDmΩ, hrestrDΩ]
+    exact hF₁m
+  have hck : 0 < c ^ k := pow_pos hc k
+  have hck0 : ENNReal.ofReal (c ^ k) ≠ 0 := by simpa using hck
+  refine ⟨ψ, ?_, ?_⟩
+  · -- (6d) `∫_Ω |ψ| = ∫_D θ ∘ Φ ≤ c⁻ᵏ ∫_D (θ ∘ Φ) JΦ = c⁻ᵏ ∫_G θ < ∞`.
+    refine ⟨hψm, ?_⟩
+    rw [HasFiniteIntegral]
+    have h1 : ∫⁻ w in Ω, ‖ψ w‖ₑ = ∫⁻ w in D, ‖F₁ w‖ₑ := by
+      have : (fun w => ‖ψ w‖ₑ) = D.indicator (fun w => ‖F₁ w‖ₑ) := by
+        funext w
+        by_cases hw : w ∈ D
+        · simp [hψdef, hw]
+        · simp [hψdef, hw]
+      rw [this, lintegral_indicator₀ hDmΩ, hrestrDΩ]
+    rw [h1]
+    have h2 : ∫⁻ w in D, ‖F₁ w‖ₑ ≤ ∫⁻ w in D,
+        (ENNReal.ofReal (c ^ k))⁻¹ * (ENNReal.ofReal (θ (Φ w)) * ENNReal.ofReal (J w)) := by
+      refine lintegral_mono_ae ?_
+      filter_upwards [hσD, hmemD] with w hw hwD
+      have hθp := hθΦpos w hwD
+      have hσ1 : |σ w| = 1 := by rcases hw.1 with h | h <;> simp [h]
+      have hle : c ^ k ≤ J w := hJlow w hwD.1
+      calc ‖F₁ w‖ₑ = ENNReal.ofReal (θ (Φ w)) := by
+            rw [hF₁, Real.enorm_eq_ofReal_abs, abs_mul, hσ1, abs_of_pos hθp, mul_one]
+        _ = (ENNReal.ofReal (c ^ k))⁻¹ * (ENNReal.ofReal (θ (Φ w)) * ENNReal.ofReal (c ^ k)) := by
+            rw [mul_comm (ENNReal.ofReal (θ (Φ w))), ← mul_assoc,
+              ENNReal.inv_mul_cancel hck0 ENNReal.ofReal_ne_top, one_mul]
+        _ ≤ (ENNReal.ofReal (c ^ k))⁻¹ * (ENNReal.ofReal (θ (Φ w)) * ENNReal.ofReal (J w)) := by
+            gcongr
+    refine lt_of_le_of_lt h2 ?_
+    rw [lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr hck0), ← hθCoV]
+    refine ENNReal.mul_lt_top (ENNReal.inv_lt_top.mpr (by simpa using hck)) ?_
+    refine lt_of_le_of_lt ?_ hθG.2
+    refine lintegral_mono fun x => ?_
+    rw [Real.enorm_eq_ofReal_abs]
+    exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+  · -- (7) `∫_G h dHᵏ = ∫_D h(Φ) JΦ dLᵏ` by the signed change of variables, and pointwise on `D`
+    -- `h(Φ w) JΦ(w) = F₁(w) α(f(Φ w))(∂(f ∘ Φ)(w))`.
+    intro f A α hfd hint
+    obtain ⟨-, hcov⟩ := Submission.deformation_ipl_cc_signed_change_of_variables P k Φ Ω G
+      (fun x => θ x * nVectorPushforward k (A x) (ξ x) (α (f x)))
+      hΩ hΦLip ⟨c, hc, hcanti⟩ hGΦ hGm hint
+    rw [hcov]
+    have hR : ∫ w in Ω, ψ w * α (f (Φ w))
+          (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) =
+        ∫ w in D, F₁ w * α (f (Φ w))
+          (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) := by
+      have : (fun w => ψ w * α (f (Φ w))
+            (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1))) =
+          D.indicator (fun w => F₁ w * α (f (Φ w))
+            (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1))) := by
+        funext w
+        by_cases hw : w ∈ D
+        · simp [hψdef, hw]
+        · simp [hψdef, hw]
+      rw [this, integral_indicator₀ hDmΩ, hrestrDΩ]
+    rw [hR]
+    refine setIntegral_congr_ae₀ hDm ?_
+    have hgood := (ae_restrict_iff'₀ hDm).mp (hσD.and hfd)
+    filter_upwards [hgood] with w hw hwD
+    obtain ⟨⟨-, hJξ⟩, hder⟩ := hw hwD
+    set v : Fin k → Eucl P := fun b => fderiv ℝ Φ w (EuclideanSpace.single b 1) with hv
+    set β : Covector (Eucl P) k := covectorPullback k (A (Φ w)) (α (f (Φ w))) with hβ
+    -- Evaluate `JΦ ξ(Φ w) = σ v₀ ∧ ⋯ ∧ vₖ₋₁` at `β = A(Φ w)^# α(f(Φ w))`.
+    have key : ξ (Φ w) β * J w = σ w * β v := by
+      have := congrArg (fun T : NVector (Eucl P) k => T β) hJξ
+      simp only [smul_apply, smul_eq_mul, simpleNVector_apply] at this
+      linarith [this]
+    -- The chain rule: `∂_b(f ∘ Φ)(w) = A(Φ w) v_b`.
+    have hfv : (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) =
+        (A (Φ w)) ∘ v := by
+      funext b
+      rw [hder.fderiv]
+      rfl
+    have hβv : β v = α (f (Φ w)) ((A (Φ w)) ∘ v) := by
+      rw [hβ, covectorPullback_apply]
+    show θ (Φ w) * nVectorPushforward k (A (Φ w)) (ξ (Φ w)) (α (f (Φ w))) * J w =
+      F₁ w * α (f (Φ w)) (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1))
+    have hpush : nVectorPushforward k (A (Φ w)) (ξ (Φ w)) (α (f (Φ w))) = ξ (Φ w) β := rfl
+    rw [hpush, mul_assoc, key, hβv, hfv, hF₁]
+    ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
