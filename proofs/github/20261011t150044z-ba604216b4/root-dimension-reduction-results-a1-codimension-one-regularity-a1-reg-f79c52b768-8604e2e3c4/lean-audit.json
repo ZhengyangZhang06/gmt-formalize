@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3818a51dc12e46330237d8532bd689ff47655bffacfbb48891637e2b2d2e5573",
+  "git_delta": {
+    "base_commit": "8dd08089ab7876234af1222f48bf863a6a9b9115",
+    "candidate_commit": "02aff6f3eca09975c02370f9fa7463bcc1f79a8e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_density_pos_mem_support",
+    "diff_sha256": "8243576ac90a25fe1fb54551ded0316c6934e31893a36e7883e0da5e152a1ffa",
+    "source_sha256": "8b546b4901282b7c0a1796d53b060ce355563f2cb845664bcb69f0564a190a93",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_density_pos_mem_support",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P) (θ : ℝ), y ∈ U → 0 < θ → HasMassDensity T y θ → y ∈ T.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
