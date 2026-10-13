@@ -530,6 +530,107 @@ theorem Submission.codim1_rdo_dg_hr_translate_integral_eq : ∀ (n : ℕ) (F : S
   rw [integral_sub hi1.integrableOn hi2.integrableOn] at hsplit
   rw [hswap]
   linarith
+/-- **Sign version of the fundamental lemma**: if `f` is locally integrable on `ℝⁿ` and
+`∫ g f ≥ 0` for every nonnegative `C¹` function `g` with compact support, then `f ≥ 0` a.e.
+For compact `K`, smooth Urysohn functions `gⱼ` (`0 ≤ gⱼ ≤ 1`, `gⱼ = 1` on `K`,
+`support gⱼ = K_{uⱼ}`, `uⱼ ↓ 0`) are admissible tests with `gⱼ → 1_K` pointwise and
+`|gⱼ f| ≤ 1_{K¹}|f|`, so dominated convergence gives `∫_K f ≥ 0`.  If `{f < 0}` had positive
+measure, inner regularity would give a compact `K ⊆ {f < 0}` of positive measure, on which
+`∫_K f < 0`. -/
+theorem Submission.codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg : ∀ (n : ℕ) (f : EuclideanSpace ℝ (Fin n) → ℝ), LocallyIntegrable f volume → (∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * f x) → ∀ᵐ x ∂volume, 0 ≤ f x := by
+  intro n f hf htest
+  -- Steps 1–3: `0 ≤ ∫_K f` for every compact `K`
+  have hcpt : ∀ K : Set (EuclideanSpace ℝ (Fin n)), IsCompact K → 0 ≤ ∫ x in K, f x := by
+    intro K hK
+    have hK1 : IsCompact (cthickening 1 K) := hK.cthickening
+    -- radii `u j ∈ (0, 1)` with `u j → 0`
+    obtain ⟨u, -, u_pos, u_lim⟩ : ∃ u : ℕ → ℝ, StrictAnti u ∧ (∀ j, u j ∈ Ioo 0 1) ∧
+        Tendsto u atTop (𝓝 0) := exists_seq_strictAnti_tendsto' zero_lt_one
+    have vK : ∀ j, thickening (u j) K ⊆ cthickening 1 K :=
+      fun j => thickening_subset_cthickening_of_le (u_pos j).2.le K
+    -- smooth Urysohn functions `g j` with `support (g j) = K_{u j}` and `g j = 1` on `K`
+    have : ∀ j, ∃ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g ∧ range g ⊆ Icc 0 1 ∧
+        support g = thickening (u j) K ∧ ∀ x ∈ K, g x = 1 := by
+      intro j
+      obtain ⟨g, hg, hgr, hgs, hg1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+        isOpen_thickening hK.isClosed (self_subset_thickening (u_pos j).1 K)
+      exact ⟨g, hg, hgr, hgs, fun x hx => (hg1 x).1 hx⟩
+    choose g g_diff g_range g_supp hg1 using this
+    have hnn : ∀ j, 0 ≤ ∫ x, g j x * f x := by
+      intro j
+      refine htest _ (g_diff j) ?_ (fun x => (g_range j (mem_range_self x)).1)
+      apply HasCompactSupport.of_support_subset_isCompact hK1
+      rw [g_supp]
+      exact vK j
+    -- dominated convergence: `∫ g j * f → ∫_K f`
+    have L : Tendsto (fun j => ∫ x, g j x * f x) atTop (𝓝 (∫ x in K, f x)) := by
+      rw [← integral_indicator hK.measurableSet]
+      let bound : EuclideanSpace ℝ (Fin n) → ℝ := (cthickening 1 K).indicator fun x => ‖f x‖
+      have A : ∀ j, AEStronglyMeasurable (fun x => g j x * f x) volume :=
+        fun j => (g_diff j).continuous.aestronglyMeasurable.mul hf.aestronglyMeasurable
+      have B : Integrable bound volume := by
+        rw [integrable_indicator_iff hK1.measurableSet]
+        exact (hf.integrableOn_isCompact hK1).norm
+      have C : ∀ j, ∀ᵐ x ∂volume, ‖g j x * f x‖ ≤ bound x := by
+        intro j
+        filter_upwards with x
+        rw [norm_mul]
+        refine le_indicator_apply (fun _ => ?_) (fun hxK => ?_)
+        · have h01 := g_range j (mem_range_self (f := g j) x)
+          have : ‖g j x‖ ≤ 1 := by
+            rw [Real.norm_of_nonneg h01.1]
+            exact h01.2
+          exact mul_le_of_le_one_left (norm_nonneg _) this
+        · have : g j x = 0 := by
+            rw [← notMem_support, g_supp]
+            contrapose hxK
+            exact vK j hxK
+          simp [this]
+      have D : ∀ᵐ x ∂volume, Tendsto (fun j => g j x * f x) atTop (𝓝 (K.indicator f x)) := by
+        filter_upwards with x
+        by_cases hxK : x ∈ K
+        · have : ∀ j, g j x = 1 := fun j => hg1 j x hxK
+          simp [this, indicator_of_mem hxK f]
+        · simp_rw [indicator_of_notMem hxK f]
+          apply tendsto_const_nhds.congr'
+          suffices H : ∀ᶠ j in atTop, g j x = 0 by
+            filter_upwards [H] with j hj using by simp [hj]
+          obtain ⟨ε, εpos, hε⟩ : ∃ ε, 0 < ε ∧ x ∉ thickening ε K := by
+            rw [← hK.isClosed.closure_eq, closure_eq_iInter_thickening K] at hxK
+            simpa using hxK
+          filter_upwards [(tendsto_order.1 u_lim).2 _ εpos] with j hj
+          rw [← notMem_support, g_supp]
+          contrapose hε
+          exact thickening_mono hj.le K hε
+      exact tendsto_integral_of_dominated_convergence bound A B C D
+    exact ge_of_tendsto' L hnn
+  -- Steps 4–6: `{f < 0}` is null; take a measurable `T ⊆ {f < 0}` with `T =ᵐ {f < 0}`
+  rw [ae_iff]
+  simp only [not_le]
+  by_contra hS
+  obtain ⟨T, hTS, hTm, hTeq⟩ := (nullMeasurableSet_lt hf.aestronglyMeasurable.aemeasurable
+    aemeasurable_const : NullMeasurableSet {x | f x < 0} volume).exists_measurable_subset_ae_eq
+  have hTpos : 0 < volume T := by
+    rw [measure_congr hTeq]
+    exact pos_iff_ne_zero.2 hS
+  -- inner regularity: a compact `K ⊆ T` of positive measure
+  obtain ⟨K, hKT, hKc, hKpos⟩ := hTm.exists_lt_isCompact hTpos
+  -- `∫_K f < 0` since `f < 0` on `K`
+  have hneg : 0 < ∫ x in K, -f x := by
+    have hfK : IntegrableOn f K volume := hf.integrableOn_isCompact hKc
+    rw [setIntegral_pos_iff_support_of_nonneg_ae (f := fun x => -f x) _ hfK.neg]
+    · have : support (fun x => -f x) ∩ K = K := by
+        refine inter_eq_right.2 fun x hx => ?_
+        have : f x < 0 := hTS (hKT hx)
+        rw [mem_support]
+        linarith
+      rwa [this]
+    · exact ae_restrict_of_forall_mem hKc.measurableSet fun x hx => by
+        have : f x < 0 := hTS (hKT hx)
+        simp only [Pi.zero_apply]
+        linarith
+  rw [integral_neg] at hneg
+  linarith [hcpt K hKc]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
