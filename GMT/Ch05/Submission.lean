@@ -458,6 +458,70 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Cutoff sequence** (step 4 of the proof of `ted_lpm_abstract_monotonicity`).  For `ε₁ > 0`
+put `ε k = ε₁ / (k + 1)` and `φ k s = 1 - σ((s - 1) / ε k)`, where `σ = Real.smoothTransition`
+is `C^∞`, monotone and `[0, 1]`-valued, with `σ = 0` on `(-∞, 0]` and `σ = 1` on `[1, ∞)`.
+Then `0 < ε k ≤ ε₁` and `ε k → 0`; each `φ k` is `C¹`, antitone and `[0, 1]`-valued, with
+`φ k = 1` on `(-∞, 1]` and `φ k = 0` on `[1 + ε k, ∞)`; and for `s > 1` eventually
+`ε k ≤ s - 1`, so `φ k s = 0` for all large `k`. -/
+theorem ted_lpm_am_cutoff_sequence : ∀ ε₁ : ℝ, 0 < ε₁ → ∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), (∀ k, 0 < ε k ∧ ε k ≤ ε₁) ∧ Tendsto ε atTop (𝓝 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, Antitone (φ k)) ∧ (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) ∧ (∀ k s, s ≤ 1 → φ k s = 1) ∧ (∀ k s, 1 + ε k ≤ s → φ k s = 0) ∧ (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) := by
+  intro ε₁ hε₁
+  -- `ε k = ε₁ / (k + 1)`, kept opaque behind its defining equation.
+  obtain ⟨ε, hεdef⟩ : ∃ ε : ℕ → ℝ, ε = fun k : ℕ => ε₁ / ((k : ℝ) + 1) := ⟨_, rfl⟩
+  -- Item (1): `0 < ε k ≤ ε₁`, since `1 ≤ k + 1`.
+  have hεpos : ∀ k, 0 < ε k := fun k => by
+    rw [hεdef]
+    exact div_pos hε₁ (by positivity)
+  have hεle : ∀ k, ε k ≤ ε₁ := fun k => by
+    rw [hεdef]
+    exact div_le_self hε₁.le (by have := Nat.cast_nonneg (α := ℝ) k; linarith)
+  -- Item (2): `ε k = ε₁ * (1 / (k + 1)) → ε₁ * 0 = 0`.
+  have hεlim : Tendsto ε atTop (𝓝 0) := by
+    have h := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul ε₁
+    rw [mul_zero] at h
+    refine h.congr fun k => ?_
+    rw [hεdef]
+    ring
+  -- Item (7): if `1 + ε k ≤ s` then `1 ≤ (s - 1) / ε k`, where `σ = 1`.
+  have hvanish : ∀ k s, 1 + ε k ≤ s → 1 - Real.smoothTransition ((s - 1) / ε k) = 0 := by
+    intro k s hs
+    have h1 : 1 ≤ (s - 1) / ε k := by
+      rw [le_div_iff₀ (hεpos k)]
+      linarith
+    rw [Real.smoothTransition.one_of_one_le h1, sub_self]
+  refine ⟨fun k s => 1 - Real.smoothTransition ((s - 1) / ε k), ε,
+    fun k => ⟨hεpos k, hεle k⟩, hεlim, ?_, ?_, ?_, ?_, hvanish, ?_⟩
+  -- Item (3): `φ k = 1 - σ ∘ (s ↦ (s - 1) / ε k)` is `C¹`.
+  · intro k
+    exact contDiff_const.sub (Real.smoothTransition.contDiff.comp (by fun_prop))
+  -- Item (4): `s ≤ t` gives `(s - 1) / ε k ≤ (t - 1) / ε k`, and `σ` is monotone.
+  · intro k s t hst
+    have h1 : (s - 1) / ε k ≤ (t - 1) / ε k :=
+      div_le_div_of_nonneg_right (by linarith) (hεpos k).le
+    have h2 := Real.smoothTransition.monotone h1
+    show 1 - Real.smoothTransition ((t - 1) / ε k) ≤ 1 - Real.smoothTransition ((s - 1) / ε k)
+    linarith
+  -- Item (5): `0 ≤ σ ≤ 1`.
+  · intro k s
+    have h0 := Real.smoothTransition.nonneg ((s - 1) / ε k)
+    have h1 := Real.smoothTransition.le_one ((s - 1) / ε k)
+    show 0 ≤ 1 - Real.smoothTransition ((s - 1) / ε k) ∧
+      1 - Real.smoothTransition ((s - 1) / ε k) ≤ 1
+    constructor <;> linarith
+  -- Item (6): if `s ≤ 1` then `(s - 1) / ε k ≤ 0`, where `σ = 0`.
+  · intro k s hs
+    have h1 : (s - 1) / ε k ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) (hεpos k).le
+    show 1 - Real.smoothTransition ((s - 1) / ε k) = 1
+    rw [Real.smoothTransition.zero_of_nonpos h1, sub_zero]
+  -- Item (8): for `s > 1`, eventually `ε k ≤ s - 1` because `ε k → 0`; then item (7) applies.
+  · intro s hs
+    filter_upwards [hεlim.eventually (ge_mem_nhds (by linarith : (0 : ℝ) < s - 1))] with k hk
+    exact hvanish k s (by linarith)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

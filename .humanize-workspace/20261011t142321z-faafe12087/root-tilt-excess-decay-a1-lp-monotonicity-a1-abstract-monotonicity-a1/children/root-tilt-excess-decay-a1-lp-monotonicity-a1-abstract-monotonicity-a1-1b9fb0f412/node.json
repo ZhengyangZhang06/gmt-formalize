@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.integrating_factor_limit-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1",
+  "depth": 4,
+  "title": "Passage to the cutoff limit in the integrating-factor monotonicity, with the bounds on F (parent steps 10-12)",
+  "statement": "Let R, beta, M, K, Lambda be real numbers with R > 0, beta < 1, Lambda > 0 and K R^(1-beta)/(1 - beta) <= Lambda/4 (all powers with real exponents here, such as R^(1-beta), t^(-beta) and (r/R)^(1-beta), are real powers rpow). For k in N = {0, 1, 2, ...} let a_k, Q_k : R -> R. Separately, let a_inf, Q_inf : R -> R be the limit functions (the Lean variables a₀, Q₀; they are not the k = 0 terms). Assume: (H1) every a_k is a.e.-strongly measurable for Lebesgue measure restricted to (0, R]; (H2) |a_k(t)| <= M t^(-beta) for every k and every t in (0, R]; (H3) a_k(t) -> a_inf(t) as k -> infinity for every t in (0, R]; (H4) |a_inf(t)| <= K t^(-beta) for every t in (0, R]; (H5) Q_k(t) -> Q_inf(t) for every t in (0, R]; (H6) for every k and all 0 < s <= r <= R, exp(-integral_0^s a_k(t) dt) Q_k(s) <= exp(-integral_0^r a_k(t) dt) Q_k(r) (interval integrals). Put F(r) := exp(-integral_0^r a_inf(t) dt). Then (i) for every r in (0, R]: e^(-Lambda) <= F(r), F(r) <= e^Lambda, |F(r) - 1| <= (e^(Lambda/2)/2) Lambda (r/R)^(1-beta), and, if Lambda <= 1, |F(r) - 1| <= Lambda (r/R)^(1-beta); and (ii) F(s) Q_inf(s) <= F(r) Q_inf(r) for all 0 < s <= r <= R.",
+  "lean_statement": "∀ (R β M K Λ : ℝ) (a : ℕ → ℝ → ℝ) (a₀ : ℝ → ℝ) (Q : ℕ → ℝ → ℝ) (Q₀ : ℝ → ℝ), 0 < R → β < 1 → 0 < Λ → K * R ^ (1 - β) / (1 - β) ≤ Λ / 4 → (∀ k, AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 R))) → (∀ k t, 0 < t → t ≤ R → |a k t| ≤ M * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t))) → (∀ t, 0 < t → t ≤ R → |a₀ t| ≤ K * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => Q k t) atTop (𝓝 (Q₀ t))) → (∀ k s r, 0 < s → s ≤ r → r ≤ R → Real.exp (-∫ t in (0)..s, a k t) * Q k s ≤ Real.exp (-∫ t in (0)..r, a k t) * Q k r) → (∀ r, 0 < r → r ≤ R → Real.exp (-Λ) ≤ Real.exp (-∫ t in (0)..r, a₀ t) ∧ Real.exp (-∫ t in (0)..r, a₀ t) ≤ Real.exp Λ ∧ |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - β) ∧ (Λ ≤ 1 → |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Λ * (r / R) ^ (1 - β))) ∧ (∀ s r, 0 < s → s ≤ r → r ≤ R → Real.exp (-∫ t in (0)..s, a₀ t) * Q₀ s ≤ Real.exp (-∫ t in (0)..r, a₀ t) * Q₀ r)",
+  "lean_name": "ted_lpm_am_integrating_factor_limit",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.exp_perturbation_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.exp_perturbation_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1-1b9fb0f412-a1"
+}

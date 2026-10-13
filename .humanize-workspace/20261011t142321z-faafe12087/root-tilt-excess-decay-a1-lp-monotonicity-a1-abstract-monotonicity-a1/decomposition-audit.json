@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'ted_lpm_am_|ted_lpm_abstract_monotonicity' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "rg -n 'ted_lpm_am_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "rg -l 'ted_lpm_am_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes",
+        "tendsto_integral_of_dominated_convergence",
+        "tendsto_integral_filter_of_dominated_convergence",
+        "norm_integral_le_of_norm_le",
+        "intervalIntegrable_rpow",
+        "integral_rpow",
+        "abs_exp_sub_one_le",
+        "add_one_le_exp",
+        "ContinuousOn.aestronglyMeasurable",
+        "python3 /tmp/gmt-am-independent-audit-8qe6xyy2/check_lean.py base",
+        "python3 /tmp/gmt-am-independent-audit-8qe6xyy2/check_lean.py impl",
+        "python3 /tmp/gmt-am-independent-audit-8qe6xyy2/check_lean.py challenge",
+        "python3 /tmp/gmt-am-independent-audit-8qe6xyy2/check_lean.py solution"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/ted_lpm_am/ted_lpm_am_split_all_axiom_siblings.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json",
+        "/tmp/gmt-am-independent-audit-8qe6xyy2/check_lean.py",
+        "/tmp/gmt-am-independent-audit-8qe6xyy2/impl.log"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Both project contract files and all 12 inspected Mathlib sources match the active copies byte-for-byte. The snapshot project has no matching proposed declarations. None of the five bare names is reserved in the 411-node DAG or another node's records; no identical child type was found. The five-node split fits max_nodes = 1000 and separates genuine analytic obligations from the selected proof. All five child types and the selected parent type passed validation and independently compiled as comparator challenges against a contract-only build; every corresponding solution module compiled using Submission.<name>. The child proofs use only propext, Classical.choice and Quot.sound. The exact parent assembly additionally depends only on the two frozen handoff siblings, whose types were checked for exact equality. It has no parent/root theorem or sorry dependency. The sole new dependency is integrating_factor_limit on exp_perturbation_bounds; the graph is acyclic. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_sequence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match all eight conclusions. The explicit delta/(k+1) construction and pinned smoothTransition properties prove positivity, convergence, regularity, antitonicity, range bounds, both boundary equalities, and eventual vanishing. The proof is complete, non-circular, and supplies the cutoffs needed by the selected parent."
+    },
+    {
+      "key": "coefficient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly, including natural denominator powers and the real power on the right. The proof correctly establishes nonnegativity, bounds b^(1-1/p), verifies the exponent identity, and divides only by positive quantities. It covers I = 0 and n = 0 and supports both parent applications without additional assumptions."
+    },
+    {
+      "key": "cutoff_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis. Restriction to B_S, vanishing outside it, domination by the integrable norm of g, and pointwise convergence establish the exact set-integral limit. Boundary points remain in the limit because every cutoff equals one there. No global finiteness or global measurability of g is missing. Both parent applications are justified."
+    },
+    {
+      "key": "exp_perturbation_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including q = 0 and the conditional Lambda <= 1 conclusion. Both sign cases for u justify the exponential difference estimate; the subsequent comparisons give precisely the stated constants. The pinned small-exponential inequality has the required hypothesis. The proof is complete and independent."
+    },
+    {
+      "key": "integrating_factor_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly matches H1–H6 and both conclusions, with independent limit functions. Restricted measurability and beta < 1 justify interval dominated convergence; the integral bound, power factorization, and declared exponential child give all bounds. Passing to limits in H6 proves monotonicity, including r = R. No extra sign assumptions on M or K are required. The dependency is correctly directed and non-circular. The supplied parent assembly instantiates these hypotheses and algebraically recovers the selected frozen conclusion."
+    }
+  ],
+  "required_changes": []
+}
