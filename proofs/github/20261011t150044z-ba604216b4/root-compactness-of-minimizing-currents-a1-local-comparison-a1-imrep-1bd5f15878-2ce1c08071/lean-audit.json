@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "70cbd3ed29568c8c7ce19527384c6f81edf5332456b3e1c1c0ec0ff9d1a5e0dd",
+  "git_delta": {
+    "base_commit": "12109df833ff2617a5885984291ddf40eb23621d",
+    "candidate_commit": "ae810e9b4cb8d26664747b2f51d22fb4241e09ca",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcmp_imRep_measure_restrict",
+    "diff_sha256": "5190229ef7d2ce7505c260d82bdf295e7ab53517690de9d32fd331c0e868bf00",
+    "source_sha256": "50a0c33afcaa374efeb6d39e6e20c1643e76571737ecf97adf34891deef4732e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcmp_imRep_measure_restrict",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), R.measure ≪ μHE[n].restrict R.carrier ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ (E : Set (Euclid P)) (R' : IMRep U n), MeasurableSet E → R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient → R'.measure = R.measure.restrict E ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = ∫ x in E, R.orient x (ω x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
