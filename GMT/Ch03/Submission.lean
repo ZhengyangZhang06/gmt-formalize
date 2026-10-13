@@ -335,6 +335,454 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Flat flux identity** (the flat limit in the last step of Simon Ch. 3, proof of Thm. 4.3,
+`chapter-03.txt` lines 739–746: `μ_{ρ⁻¹E} → Hⁿ ⌞ {x^{n+1} = 0}`): for `|e| = 1`,
+`H = {y : ⟨y, e⟩ > 0}`, `P = (span{e})^⊥` and `φ ∈ C¹_c(ℝ^{n+1})`,
+`∫_H D_eφ dL^{n+1} = -∫_P φ dHⁿ`. Split `ℝ^{n+1} ≅ span{e} × P` measure-preservingly and apply
+Fubini; on each line `t ↦ te + p` (`p ∈ P`, so `⟨te + p, e⟩ = t`) the improper FTC gives
+`∫_0^∞ D_eφ(te + p) dt = -φ(p)`; finally `Hⁿ ⌞ P` is the volume of `P`, as `dim P = n`. -/
+theorem Submission.deGiorgiTM_halfSpace_integral_fderiv : ∀ (n : ℕ) (e : Rn (n + 1)) (φ : Rn (n + 1) → ℝ), ‖e‖ = 1 → ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ y in {y : Rn (n + 1) | 0 < inner ℝ y e}, fderiv ℝ φ y e = -∫ y in ((Submodule.span ℝ {e})ᗮ : Set (Rn (n + 1))), φ y ∂μHE[n] := by
+  intro n e φ he hφ hφc
+  set L : Submodule ℝ (Rn (n + 1)) := Submodule.span ℝ {e}
+  set H : Set (Rn (n + 1)) := {y | 0 < inner ℝ y e}
+  set ψ : Rn (n + 1) → ℝ := fun y ↦ fderiv ℝ φ y e
+  -- Step 1: `dim P = n`, `ψ = D_eφ` is continuous with compact support, and `H` is open.
+  have he0 : e ≠ 0 := by
+    rintro rfl
+    simp at he
+  have : Fact (finrank ℝ (Rn (n + 1)) = n + 1) := ⟨finrank_euclideanSpace_fin⟩
+  have hfinP : finrank ℝ Lᗮ = n := Submodule.finrank_orthogonal_span_singleton he0
+  have hψc : Continuous ψ := (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hψcs : HasCompactSupport ψ := hφc.fderiv_apply ℝ e
+  have hψi : Integrable ψ := hψc.integrable_of_hasCompactSupport hψcs
+  have hHm : MeasurableSet H :=
+    (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+  -- Step 2: the measure-preserving decomposition `Φ : ℝ^{n+1} ≃ L × P`, then Fubini.
+  let Φ := L.measurableEquivProd (0 : Rn (n + 1))
+  have hΦ : MeasurePreserving Φ volume volume := by
+    have := L.measurePreserving_measurableEquivProd (0 : Rn (n + 1))
+    rwa [InnerProductSpace.euclideanHausdorffMeasure_eq_volume] at this
+  have hΦs : MeasurePreserving Φ.symm volume volume := hΦ.symm Φ
+  have hΦapp : ∀ q : L × Lᗮ, Φ.symm q = (q.1 : Rn (n + 1)) + q.2 := by
+    intro q
+    simp [Φ]
+  let F : L × Lᗮ → ℝ := fun q ↦ H.indicator ψ (Φ.symm q)
+  have hFi : Integrable F (volume.prod volume) :=
+    (hΦs.integrable_comp_emb Φ.symm.measurableEmbedding).mpr (hψi.indicator hHm)
+  have h1 : ∫ y in H, ψ y = ∫ p : Lᗮ, ∫ l : L, F (l, p) := by
+    rw [← integral_indicator hHm, ← hΦs.integral_comp' (H.indicator ψ)]
+    exact integral_prod_symm F hFi
+  -- Steps 3–4: for `p ∈ P` the inner integral is `∫_0^∞ ψ(te + p) dt = -φ(p)`.
+  have h2 : ∀ p : Lᗮ, ∫ l : L, F (l, p) = -φ p := by
+    intro p
+    let T := LinearIsometryEquiv.toSpanUnitSingleton (𝕜 := ℝ) e he
+    have hT : MeasurePreserving T volume volume := T.measurePreserving
+    have hp : inner ℝ (p : Rn (n + 1)) e = 0 := by
+      have := p.2
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right] at this
+      rwa [real_inner_comm]
+    set c : ℝ → Rn (n + 1) := fun t ↦ t • e + p
+    have hcinner : ∀ t : ℝ, inner ℝ (c t) e = t := by
+      intro t
+      simp [c, inner_add_left, inner_smul_left, he, hp]
+    have hcpre : c ⁻¹' H = Ioi 0 := by
+      ext t
+      simp [H, hcinner]
+    have hciso : Isometry c := by
+      refine Isometry.of_dist_eq fun s t ↦ ?_
+      simp [c, dist_eq_norm, ← sub_smul, norm_smul, he]
+    have hcemb : Topology.IsClosedEmbedding c := hciso.isClosedEmbedding
+    have hcc : Continuous c := hciso.continuous
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun t ↦ φ (c t)) (ψ (c t)) t := by
+      intro t
+      have hc' : HasDerivAt c e t := by
+        simpa only [one_smul] using ((hasDerivAt_id' t).smul_const e).add_const (p : Rn (n + 1))
+      exact ((hφ.differentiable one_ne_zero) (c t)).hasFDerivAt.comp_hasDerivAt t hc'
+    have hfcs : HasCompactSupport (φ ∘ c) := hφc.comp_isClosedEmbedding hcemb
+    have hgcs : HasCompactSupport (ψ ∘ c) := hψcs.comp_isClosedEmbedding hcemb
+    have hgi : Integrable (ψ ∘ c) := (hψc.comp hcc).integrable_of_hasCompactSupport hgcs
+    have hlim : Tendsto (φ ∘ c) atTop (𝓝 0) :=
+      hfcs.is_zero_at_infty.mono_left atTop_le_cocompact
+    calc ∫ l : L, F (l, p) = ∫ t : ℝ, F (T t, p) :=
+          (hT.integral_comp T.toMeasurableEquiv.measurableEmbedding (fun l ↦ F (l, p))).symm
+      _ = ∫ t : ℝ, (Ioi (0 : ℝ)).indicator (ψ ∘ c) t := by
+          congr 1
+          ext t
+          rw [← hcpre, indicator_comp_right]
+          simp [F, hΦapp, T, c]
+      _ = ∫ t in Ioi (0 : ℝ), (ψ ∘ c) t := integral_indicator measurableSet_Ioi
+      _ = 0 - (φ ∘ c) 0 :=
+          integral_Ioi_of_hasDerivAt_of_tendsto (hφ.continuous.comp hcc).continuousWithinAt
+            (fun t _ ↦ hderiv t) hgi.integrableOn hlim
+      _ = -φ p := by simp [c]
+  -- Step 5: `Hⁿ ⌞ P` is the push-forward of the volume of `P`, since `dim P = n`.
+  have h3 : ∫ y in (Lᗮ : Set (Rn (n + 1))), φ y ∂μHE[n] = ∫ p : Lᗮ, φ p := by
+    have hmap := Isometry.map_euclideanHausdorffMeasure (d := n)
+      (isometry_subtype_coe (s := (Lᗮ : Set (Rn (n + 1)))))
+    rw [Subtype.range_coe] at hmap
+    have hPm : MeasurableSet (Lᗮ : Set (Rn (n + 1))) :=
+      Lᗮ.closed_of_finiteDimensional.measurableSet
+    have hvol : (μHE[finrank ℝ Lᗮ] : Measure Lᗮ) = volume :=
+      InnerProductSpace.euclideanHausdorffMeasure_eq_volume
+    rw [hfinP] at hvol
+    rw [← hmap, (MeasurableEmbedding.subtype_coe hPm).integral_map, hvol]
+    rfl
+  -- Step 6: combine Steps 2–5.
+  show ∫ y in H, ψ y = _
+  rw [h1, h3, ← integral_neg]
+  exact integral_congr_ae (Eventually.of_forall h2)
+/-- **`L¹_loc` convergence of sets gives convergence of integrals of `C_c` functions**: the
+`L¹_loc` step behind the last sentence of the proof of Simon Ch. 3, Theorem 4.3
+(`chapter-03.txt` lines 739–746). With `K = tsupport g` and `|g| ≤ M`, whenever `A r` is
+null-measurable, `|∫_{A r} g - ∫_H g| = |∫ (1_{A r} - 1_H) g| ≤ M L^N(K ∩ (A r Δ H))`, and the
+right side tends to `0` as `r ↓ 0`. -/
+theorem Submission.deGiorgiTM_tendsto_setIntegral_of_symmDiff : ∀ (N : ℕ) (A : ℝ → Set (Rn N))
+    (H : Set (Rn N)) (g : Rn N → ℝ), (∀ᶠ r in 𝓝[>] (0 : ℝ), NullMeasurableSet (A r) volume) →
+    NullMeasurableSet H volume → Continuous g → HasCompactSupport g →
+    Tendsto (fun r : ℝ ↦ volume (tsupport g ∩ symmDiff (A r) H)) (𝓝[>] 0) (𝓝 0) →
+    Tendsto (fun r : ℝ ↦ ∫ y in A r, g y) (𝓝[>] 0) (𝓝 (∫ y in H, g y)) := by
+  intro N A H g hA hH hg hgc hlim
+  -- Step 1: `|g| ≤ M`, `g` is integrable, `K = tsupport g` is compact and `g = 0` off `K`.
+  obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+  have hgi : Integrable g volume := hg.integrable_of_hasCompactSupport hgc
+  have hKm : MeasurableSet (tsupport g) := (isClosed_tsupport g).measurableSet
+  have hKfin : volume (tsupport g) < ∞ := hgc.isCompact.measure_lt_top
+  -- Steps 2–4: `|∫_{A r} g - ∫_H g| ≤ M L^N(K ∩ (A r Δ H))` whenever `A r` is null-measurable.
+  have hbound : ∀ r, NullMeasurableSet (A r) volume →
+      ‖(∫ y in A r, g y) - ∫ y in H, g y‖ ≤
+        M * (volume (tsupport g ∩ symmDiff (A r) H)).toReal := by
+    intro r hAr
+    have hS : NullMeasurableSet (tsupport g ∩ symmDiff (A r) H) volume :=
+      hKm.nullMeasurableSet.inter (hAr.symmDiff hH)
+    have hSfin : volume (tsupport g ∩ symmDiff (A r) H) ≠ ∞ :=
+      ((measure_mono inter_subset_left).trans_lt hKfin).ne
+    rw [← integral_indicator₀ hAr, ← integral_indicator₀ hH,
+      ← integral_sub (hgi.indicator₀ hAr) (hgi.indicator₀ hH)]
+    calc ‖∫ y, ((A r).indicator g y - H.indicator g y)‖
+        ≤ ∫ y, (tsupport g ∩ symmDiff (A r) H).indicator (fun _ ↦ M) y := by
+          refine norm_integral_le_of_norm_le ((integrableOn_const hSfin).integrable_indicator₀ hS)
+            (Eventually.of_forall fun y ↦ ?_)
+          by_cases hy : y ∈ tsupport g
+          · have hMy : |g y| ≤ M := by simpa using hM y
+            by_cases hyA : y ∈ A r <;> by_cases hyH : y ∈ H <;>
+              simp [hy, hyA, hyH, mem_symmDiff, hMy]
+          · have h0 : g y = 0 := image_eq_zero_of_notMem_tsupport hy
+            by_cases hyA : y ∈ A r <;> by_cases hyH : y ∈ H <;> simp [hy, hyA, hyH, h0]
+      _ = M * (volume (tsupport g ∩ symmDiff (A r) H)).toReal := by
+          rw [integral_indicator₀ hS, setIntegral_const, smul_eq_mul, mul_comm, measureReal_def]
+  -- Step 5: the bound tends to `0` (`ENNReal.toReal` is continuous at `0`); squeeze.
+  have hlim' : Tendsto (fun r ↦ M * (volume (tsupport g ∩ symmDiff (A r) H)).toReal)
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hlim).const_mul M
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun r ↦ norm_nonneg _) ?_ hlim'
+  filter_upwards [hA] with r hr using hbound r hr
+/-- **Excess defect of the blow-ups** (Step 3(ii) of the supplied proof of (‡) in De Giorgi's
+theorem, Simon Ch. 3, Theorem 4.3). Let `|ν| = 1` `μ`-a.e., `|e| = 1`, `μ(B_{ρ₁}(x)) < ∞`, and let the
+excess `Q(ρ) = ρ⁻ⁿ ∫_{B_ρ(x)} |ν - e| dμ` tend to `0` as `ρ ↓ 0`. Then for continuous compactly
+supported `φ`, `r⁻ⁿ ∫ φ(η_{x,r}(y)) dμ(y) - r⁻ⁿ ∫ φ(η_{x,r}(y)) ⟨e, ν(y)⟩ dμ(y) → 0` as `r ↓ 0`:
+if `|φ| ≤ M` and `tsupport φ ⊆ B_R(0)`, then `φ ∘ η_{x,r}` vanishes off `B_{rR}(x)` and
+`|1 - ⟨e, ν⟩| = |⟨e, e - ν⟩| ≤ |ν - e|`, so the difference is at most `M Rⁿ Q(rR)`. -/
+theorem Submission.deGiorgiTM_blowUp_defect_tendsto_zero : ∀ (N n : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x e : Rn N) (ρ₁ : ℝ) (φ : Rn N → ℝ), 0 < ρ₁ → μ (Metric.ball x ρ₁) < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - e‖ ∂μ) (𝓝[>] 0) (𝓝 0) → Continuous φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ - (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ) (𝓝[>] 0) (𝓝 0) := by
+  intro N n μ ν x e ρ₁ φ hρ₁ hμ hν hν1 he hQ hφ hφs
+  -- Step 1: `|φ| ≤ M` everywhere and `tsupport φ ⊆ B_R(0)` with `R > 0`.
+  obtain ⟨M, hM⟩ := hφ.bounded_above_of_compact_support hφs
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  obtain ⟨R, hR, hsupp⟩ : ∃ R : ℝ, 0 < R ∧ tsupport φ ⊆ Metric.ball 0 R := by
+    obtain ⟨R₀, hR₀⟩ := hφs.isCompact.isBounded.subset_ball (0 : Rn N)
+    exact ⟨max R₀ 1, lt_of_lt_of_le one_pos (le_max_right _ _),
+      hR₀.trans (Metric.ball_subset_ball (le_max_left _ _))⟩
+  -- Step 2: for `r > 0`, `φ (η_{x,r} y) ≠ 0` forces `y ∈ B_{rR}(x)`.
+  have hloc : ∀ r : ℝ, 0 < r → ∀ y, φ (blowUpMap x r y) ≠ 0 → y ∈ Metric.ball x (r * R) := by
+    intro r hr y hy
+    have h1 : blowUpMap x r y ∈ Metric.ball (0 : Rn N) R := hsupp (subset_tsupport φ hy)
+    rw [mem_ball_zero_iff, blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+      inv_mul_lt_iff₀ hr] at h1
+    rwa [Metric.mem_ball, dist_eq_norm]
+  -- Step 7: `M Rⁿ Q(rR) → 0` as `r ↓ 0`, since `r ↦ rR` maps `𝓝[>] 0` into `𝓝[>] 0`.
+  have hmap : Tendsto (fun r : ℝ ↦ r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos hr hR
+  have hlim := (hQ.comp hmap).const_mul (M * R ^ n)
+  rw [mul_zero] at hlim
+  refine squeeze_zero_norm' ?_ hlim
+  -- Steps 3–6: for `0 < r < ρ₁ / R`, `|D(r)| ≤ M Rⁿ Q(rR)`.
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hρ₁ hR)] with r hr
+  obtain ⟨hr0, hrR⟩ := hr
+  have hBmeas : MeasurableSet (Metric.ball x (r * R)) := Metric.isOpen_ball.measurableSet
+  have hBfin : μ (Metric.ball x (r * R)) ≠ ∞ :=
+    ((measure_mono (Metric.ball_subset_ball ((lt_div_iff₀ hR).1 hrR).le)).trans_lt hμ).ne
+  -- Step 4: both integrands are bounded and vanish off `B_{rR}(x)`, hence integrable.
+  have hFc : Continuous fun y ↦ φ (blowUpMap x r y) := by
+    unfold blowUpMap
+    fun_prop
+  have hFi : Integrable (fun y ↦ φ (blowUpMap x r y)) μ := by
+    refine (integrableOn_iff_integrable_of_support_subset (fun y hy ↦ hloc r hr0 y hy)).1
+      (Measure.integrableOn_of_bounded hBfin hFc.aestronglyMeasurable (M := M)
+        (Eventually.of_forall fun y ↦ hM _))
+  have hIm : AEStronglyMeasurable (fun y ↦ inner ℝ e (ν y)) μ :=
+    (continuous_const.inner continuous_id).comp_aestronglyMeasurable hν
+  have hGi : Integrable (fun y ↦ φ (blowUpMap x r y) * inner ℝ e (ν y)) μ := by
+    refine (integrableOn_iff_integrable_of_support_subset
+      (fun y hy ↦ hloc r hr0 y (left_ne_zero_of_mul hy))).1
+      (Measure.integrableOn_of_bounded hBfin (hFc.aestronglyMeasurable.mul hIm) (M := M)
+        (ae_restrict_of_ae (hν1.mono fun y hy ↦ ?_)))
+    rw [norm_mul]
+    calc ‖φ (blowUpMap x r y)‖ * ‖inner ℝ e (ν y)‖ ≤ M * (‖e‖ * ‖ν y‖) :=
+          mul_le_mul (hM _) (norm_inner_le_norm _ _) (norm_nonneg _) hM0
+      _ = M := by rw [he, hy, one_mul, mul_one]
+  -- Step 3: `|ν - e|` is integrable on `B_{rR}(x)`.
+  have hEi : IntegrableOn (fun y ↦ ‖ν y - e‖) (Metric.ball x (r * R)) μ := by
+    refine Measure.integrableOn_of_bounded hBfin (hν.sub aestronglyMeasurable_const).norm (M := 2)
+      (ae_restrict_of_ae (hν1.mono fun y hy ↦ ?_))
+    rw [norm_norm]
+    calc ‖ν y - e‖ ≤ ‖ν y‖ + ‖e‖ := norm_sub_le _ _
+      _ = 2 := by rw [hy, he]; norm_num
+  -- Step 5: the pointwise bound `|F - G| ≤ 1_{B_{rR}(x)} M |ν - e|`.
+  have hpt : ∀ y, ‖φ (blowUpMap x r y) - φ (blowUpMap x r y) * inner ℝ e (ν y)‖ ≤
+      (Metric.ball x (r * R)).indicator (fun y ↦ M * ‖ν y - e‖) y := by
+    intro y
+    by_cases hy : φ (blowUpMap x r y) = 0
+    · rw [hy, zero_mul, sub_zero, norm_zero]
+      exact Set.indicator_nonneg (fun y _ ↦ mul_nonneg hM0 (norm_nonneg _)) y
+    · rw [Set.indicator_of_mem (hloc r hr0 y hy)]
+      have hdiff : φ (blowUpMap x r y) - φ (blowUpMap x r y) * inner ℝ e (ν y) =
+          φ (blowUpMap x r y) * inner ℝ e (e - ν y) := by
+        rw [inner_sub_right, real_inner_self_eq_norm_sq, he]
+        ring
+      rw [hdiff, norm_mul]
+      refine mul_le_mul (hM _) ?_ (norm_nonneg _) hM0
+      calc ‖inner ℝ e (e - ν y)‖ ≤ ‖e‖ * ‖e - ν y‖ := norm_inner_le_norm _ _
+        _ = ‖ν y - e‖ := by rw [he, one_mul, norm_sub_rev]
+  -- Step 6: the estimate `|D(r)| ≤ r⁻ⁿ M ∫_{B_{rR}(x)} |ν - e| dμ = M Rⁿ Q(rR)`.
+  have hgi : Integrable ((Metric.ball x (r * R)).indicator fun y ↦ M * ‖ν y - e‖) μ :=
+    (integrable_indicator_iff hBmeas).2 (hEi.const_mul M)
+  have hrn : 0 < r ^ n := pow_pos hr0 n
+  rw [← mul_sub, ← integral_sub hFi hGi, norm_mul, Real.norm_eq_abs, abs_of_pos (inv_pos.2 hrn)]
+  calc (r ^ n)⁻¹ * ‖∫ y, φ (blowUpMap x r y) - φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ‖
+      ≤ (r ^ n)⁻¹ * ∫ y, (Metric.ball x (r * R)).indicator (fun y ↦ M * ‖ν y - e‖) y ∂μ :=
+        mul_le_mul_of_nonneg_left (norm_integral_le_of_norm_le hgi (Eventually.of_forall hpt))
+          (inv_pos.2 hrn).le
+    _ = M * R ^ n * (((r * R) ^ n)⁻¹ * ∫ y in Metric.ball x (r * R), ‖ν y - e‖ ∂μ) := by
+        rw [integral_indicator hBmeas, integral_const_mul, mul_pow, mul_inv]
+        field_simp
+/-- **Uniform `C¹_c` approximation with support control**: the smoothing step that extends the
+blow-up convergence for `C¹_c` test functions to all of `C_c` (the approximation left implicit at
+the end of the proof of Simon Ch. 3, Thm. 4.3, `chapter-03.txt` lines 739–746). A continuous
+compactly supported `f` vanishing off `B_{R-1}(0)` is uniformly `δ`-approximated by a `C¹_c`
+function `φ` vanishing off `B_R(0)`: `φ = κ ⋆ f` with `κ ≥ 0` a `C¹_c` bump of integral `1`
+supported in `B_ε(0)`, where `ε ≤ 1/2` is a modulus of uniform continuity of `f` for `δ`. -/
+theorem Submission.deGiorgiTM_cc_contDiff_approx : ∀ (N : ℕ) (f : Rn N → ℝ) (R δ : ℝ),
+    Continuous f → HasCompactSupport f → (∀ z, f z ≠ 0 → ‖z‖ < R - 1) → 0 < δ →
+    ∃ φ : Rn N → ℝ, ContDiff ℝ 1 φ ∧ HasCompactSupport φ ∧ (∀ z, |φ z - f z| ≤ δ) ∧
+      ∀ z, φ z ≠ 0 → ‖z‖ < R := by
+  intro N f R δ hfc hfs hfR hδ
+  -- Step 1: `f` is uniformly continuous; `ε = min ε₀ (1/2)` for a modulus `ε₀` at `δ`.
+  obtain ⟨ε₀, hε₀, hε₀f⟩ :=
+    Metric.uniformContinuous_iff.mp (hfs.uniformContinuous_of_continuous hfc) δ hδ
+  set ε : ℝ := min ε₀ (1 / 2) with hεdef
+  have hεpos : 0 < ε := lt_min hε₀ (by norm_num)
+  have hεle₀ : ε ≤ ε₀ := min_le_left _ _
+  have hεhalf : ε ≤ 1 / 2 := min_le_right _ _
+  -- Step 2: a normalized `C¹` bump `κ = c⁻¹ ψ`, `c = ∫ ψ > 0`, supported in `B_ε(0)`.
+  obtain ⟨ψ, hψt, hψcs, hψd, hψr, hψ0⟩ :=
+    exists_contDiff_tsupport_subset (n := 1) (Metric.ball_mem_nhds (0 : Rn N) hεpos)
+  have hψnn : ∀ t, 0 ≤ ψ t := fun t => (hψr (mem_range_self t)).1
+  have hc : 0 < ∫ t, ψ t := hψd.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hψcs
+    (fun t => hψnn t) (x := 0) (by rw [hψ0]; exact one_ne_zero)
+  set κ : Rn N → ℝ := fun t => (∫ t, ψ t)⁻¹ * ψ t with hκdef
+  have hκd : ContDiff ℝ 1 κ := contDiff_const.mul hψd
+  have hκsupp' : Function.support κ ⊆ Function.support ψ := fun t ht h0 => ht (by simp [hκdef, h0])
+  have hκcs : HasCompactSupport κ := hψcs.mono hκsupp'
+  have hκnn : ∀ t, 0 ≤ κ t := fun t => mul_nonneg (inv_nonneg.mpr hc.le) (hψnn t)
+  have hκint : ∫ t, κ t = 1 := by
+    simp only [hκdef]
+    rw [integral_const_mul]
+    exact inv_mul_cancel₀ hc.ne'
+  have hκsupp : Function.support κ ⊆ Metric.ball (0 : Rn N) ε :=
+    fun t ht => hψt (subset_tsupport _ (hκsupp' ht))
+  -- Step 3: the mollification `φ = κ ⋆ f` is `C¹` with compact support.
+  set φ : Rn N → ℝ := convolution κ f (ContinuousLinearMap.lsmul ℝ ℝ) volume with hφdef
+  have hφd : ContDiff ℝ 1 φ := hκcs.contDiff_convolution_left _ hκd hfc.locallyIntegrable
+  have hφcs : HasCompactSupport φ := hκcs.convolution _ hfs
+  -- Step 4: averaging estimate: `|f - w| ≤ η` on `B_ε(z)` implies `|φ z - w| ≤ η`.
+  have avg : ∀ (z : Rn N) (w η : ℝ), 0 ≤ η → (∀ z' ∈ Metric.ball z ε, dist (f z') w ≤ η) →
+      dist (φ z) w ≤ η := fun z w η hη h =>
+    dist_convolution_le (μ := (volume : Measure (Rn N))) hη hκsupp hκnn hκint
+      hfc.aestronglyMeasurable h
+  refine ⟨φ, hφd, hφcs, fun z => ?_, fun z hz => ?_⟩
+  · -- Step 5: uniform approximation (`w = f z`, `η = δ`).
+    have h := avg z (f z) δ hδ.le fun z' hz' =>
+      (hε₀f (lt_of_lt_of_le (Metric.mem_ball.mp hz') hεle₀)).le
+    rwa [Real.dist_eq] at h
+  · -- Step 6: support control: for `‖z‖ ≥ R`, `f = 0` on `B_ε(z)` (there `‖z'‖ > R - 1/2`).
+    by_contra hzR
+    push Not at hzR
+    apply hz
+    have h0 : ∀ z' ∈ Metric.ball z ε, dist (f z') 0 ≤ 0 := by
+      intro z' hz'
+      have hfz' : f z' = 0 := by
+        by_contra hne
+        have h1 := hfR z' hne
+        have h2 := norm_sub_norm_le z z'
+        rw [Metric.mem_ball, dist_eq_norm, norm_sub_rev] at hz'
+        linarith
+      simp [hfz']
+    exact dist_le_zero.mp (avg z 0 0 le_rfl h0)
+/-- **Integral bound for a bounded continuous function supported in a ball** (the integrability
+and estimate step of the proof of Simon Ch. 3, Theorem 4.3, passing from `C¹_c` to `C_c` test
+functions). If `ν(B_ρ(a)) < ∞`, `g` is continuous with `|g| ≤ M` and `g` vanishes off
+`B_ρ(a)`, then `g` is `ν`-integrable and `|∫ g dν| ≤ M ν(B_ρ(a))`: a bounded continuous function
+is integrable on the finite-measure ball, hence on the whole space as its support lies in the
+ball, and `∫ g dν = ∫_{B_ρ(a)} g dν` is bounded by `M ν(B_ρ(a))`. -/
+theorem Submission.deGiorgiTM_integral_bound_of_ball : ∀ (N : ℕ) (ν : Measure (Rn N)) (a : Rn N) (ρ M : ℝ) (g : Rn N → ℝ), ν (Metric.ball a ρ) < ∞ → Continuous g → (∀ y, |g y| ≤ M) → (∀ y, g y ≠ 0 → y ∈ Metric.ball a ρ) → Integrable g ν ∧ |∫ y, g y ∂ν| ≤ M * ν.real (Metric.ball a ρ) := by
+  intro N ν a ρ M g hball hg hM hsupp
+  -- `‖g y‖ = |g y| ≤ M` everywhere.
+  have hnorm : ∀ y, ‖g y‖ ≤ M := fun y => (Real.norm_eq_abs (g y)).le.trans (hM y)
+  -- `g` vanishes off the ball `B_ρ(a)`.
+  have hzero : ∀ y, y ∉ Metric.ball a ρ → g y = 0 := fun y hy => by
+    by_contra h
+    exact hy (hsupp y h)
+  -- `g` is bounded and continuous, hence integrable on the finite-measure ball, hence on the
+  -- whole space since its support lies in the ball.
+  have hint : Integrable g ν :=
+    (integrableOn_iff_integrable_of_support_subset fun y hy => hsupp y hy).1
+      (Measure.integrableOn_of_bounded hball.ne hg.aestronglyMeasurable
+        (Eventually.of_forall hnorm))
+  refine ⟨hint, ?_⟩
+  -- `∫ g dν = ∫_{B_ρ(a)} g dν`, and `|∫_{B_ρ(a)} g dν| ≤ M ν(B_ρ(a))`.
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero, ← Real.norm_eq_abs]
+  exact norm_setIntegral_le_of_norm_le_const hball fun y _ => hnorm y
+
+/-- **Mass bound for the blow-ups** (Step 3 of the proof of
+`Submission.deGiorgiTM_blowUp_tendsto_of_contDiff`: the estimate
+`|r⁻ⁿ ∫ (f - φ)(η_{x,r}(y)) dμ(y)| ≤ δ r⁻ⁿ μ(B_{rR}(x)) ≤ δ C Rⁿ`, with the mass bound of
+Simon Ch. 3, proof of Theorem 4.3, display (6), `chapter-03.txt` line 648, at `ρ = rR`). Let
+`r, R > 0` with `μ(B_{rR}(x)) ≤ C (rR)ⁿ`, and let `h` be continuous with `|h| ≤ M` and `|z| < R`
+whenever `h z ≠ 0`. Then `g = h ∘ η_{x,r}` is continuous, bounded by `M` and vanishes off
+`B_{rR}(x)`, so by `Submission.deGiorgiTM_integral_bound_of_ball` it is `μ`-integrable with
+`|∫ g dμ| ≤ M μ(B_{rR}(x)) ≤ M max(C, 0) (rR)ⁿ` (`C` may be negative); dividing by `rⁿ > 0`
+gives `|r⁻ⁿ ∫ g dμ| ≤ M max(C, 0) Rⁿ`. -/
+theorem Submission.deGiorgiTM_blowUp_integral_bound : ∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (C R r M : ℝ) (h : Rn N → ℝ), 0 < r → 0 < R → μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) → Continuous h → (∀ z, |h z| ≤ M) → (∀ z, h z ≠ 0 → ‖z‖ < R) → Integrable (fun y ↦ h (blowUpMap x r y)) μ ∧ |(r ^ n)⁻¹ * ∫ y, h (blowUpMap x r y) ∂μ| ≤ M * max C 0 * R ^ n := by
+  intro N n μ x C R r M h hr hR hμ hh hM hsupp
+  -- Step 1: `g = h ∘ η_{x,r}` is continuous, as `η_{x,r}(y) = r⁻¹ • (y - x)` is affine.
+  have hη : Continuous (blowUpMap x r) := (continuous_sub_right x).const_smul r⁻¹
+  -- Step 2: `g y ≠ 0` gives `r⁻¹ ‖y - x‖ = ‖η_{x,r}(y)‖ < R`, i.e. `y ∈ B_{rR}(x)`.
+  have hgsupp : ∀ y, h (blowUpMap x r y) ≠ 0 → y ∈ Metric.ball x (r * R) := by
+    intro y hy
+    have hlt := hsupp _ hy
+    rw [blowUpMap, norm_smul_of_nonneg (inv_nonneg.2 hr.le), inv_mul_lt_iff₀ hr] at hlt
+    exact mem_ball_iff_norm.2 hlt
+  -- Step 3: `μ(B_{rR}(x)) ≤ ofReal (C (rR)ⁿ) < ∞`.
+  have hfin : μ (Metric.ball x (r * R)) < ∞ := hμ.trans_lt ENNReal.ofReal_lt_top
+  -- Step 4: the ball bound gives integrability and `|∫ g dμ| ≤ M μ.real(B_{rR}(x))`.
+  obtain ⟨hint, hbound⟩ := Submission.deGiorgiTM_integral_bound_of_ball N μ x (r * R) M
+    (fun y ↦ h (blowUpMap x r y)) hfin (hh.comp hη) (fun _ ↦ hM _) hgsupp
+  refine ⟨hint, ?_⟩
+  -- Step 5: `μ.real(B_{rR}(x)) ≤ max (C (rR)ⁿ) 0 = max C 0 * (rR)ⁿ`, as `(rR)ⁿ ≥ 0`.
+  have hreal : μ.real (Metric.ball x (r * R)) ≤ max C 0 * (r * R) ^ n := by
+    rw [measureReal_def, max_mul_of_nonneg _ _ (pow_nonneg (mul_pos hr hR).le n), zero_mul,
+      ← ENNReal.toReal_ofReal']
+    exact ENNReal.toReal_mono ENNReal.ofReal_ne_top hμ
+  -- Step 6: `M ≥ |h 0| ≥ 0`, so `|∫ g dμ| ≤ M max C 0 (rR)ⁿ = rⁿ (M max C 0 Rⁿ)`.
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- Step 7: `(rⁿ)⁻¹ > 0` (also for `n = 0`), and multiplying by it cancels `rⁿ`.
+  have hrn : 0 < r ^ n := pow_pos hr n
+  rw [abs_mul, abs_of_pos (inv_pos.2 hrn)]
+  calc (r ^ n)⁻¹ * |∫ y, h (blowUpMap x r y) ∂μ|
+      ≤ (r ^ n)⁻¹ * (r ^ n * (M * max C 0 * R ^ n)) := by
+        gcongr
+        calc |∫ y, h (blowUpMap x r y) ∂μ| ≤ M * μ.real (Metric.ball x (r * R)) := hbound
+          _ ≤ M * (max C 0 * (r * R) ^ n) := by gcongr
+          _ = r ^ n * (M * max C 0 * R ^ n) := by ring
+    _ = M * max C 0 * R ^ n := inv_mul_cancel_left₀ hrn.ne' _
+
+/-- **From `C¹_c` to `C_c` test functions** (the last step of Simon Ch. 3, proof of Thm. 4.3,
+`chapter-03.txt` lines 739–746, with the mass bound (6′)): if `μ(B_ρ(x)) ≤ Cρⁿ` for
+`0 < ρ < ρ₁`, `σ` is finite on balls, and `(rⁿ)⁻¹ ∫ φ(η_{x,r}(y)) dμ(y) → ∫ φ dσ` as `r ↓ 0` for
+every `φ ∈ C¹_c(ℝᴺ)`, then the same convergence holds for every `f ∈ C_c(ℝᴺ)`. Take `R > 0` with
+`f = 0` off `B_{R-1}(0)` and, given `ε > 0`, a `C¹_c` function `φ` with `|φ - f| ≤ δ` and `φ = 0`
+off `B_R(0)`, where `δ(C⁺Rⁿ + σ(B_R(0))) < ε/2` and `C⁺ = max(C, 0)`. For `0 < r < ρ₁/R` the
+error `d = f - φ` changes the blow-up integral by at most `δC⁺Rⁿ` and `∫ f dσ` by at most
+`δσ(B_R(0))`, while the hypothesis for `φ` bounds the remaining error by `ε/2` for small `r`. -/
+theorem Submission.deGiorgiTM_blowUp_tendsto_of_contDiff : ∀ (N n : ℕ) (μ σ : Measure (Rn N)) (x : Rn N) (ρ₁ C : ℝ), 0 < ρ₁ → (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ R : ℝ, σ (Metric.ball 0 R) < ∞) → (∀ φ : Rn N → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ) (𝓝[>] 0) (𝓝 (∫ y, φ y ∂σ))) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, f (blowUpMap x r y) ∂μ) (𝓝[>] 0) (𝓝 (∫ y, f y ∂σ)) := by
+  intro N n μ σ x ρ₁ C hρ₁ hμ hσ hC1 f
+  have hfc : Continuous f := map_continuous f
+  -- Step 1: a radius `R > 0` with `f = 0` off `B_{R-1}(0)`.
+  obtain ⟨R, hRpos, hfR⟩ : ∃ R : ℝ, 0 < R ∧ ∀ z, f z ≠ 0 → ‖z‖ < R - 1 := by
+    obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball 0
+    refine ⟨max R₀ 0 + 1, by positivity, fun z hz ↦ ?_⟩
+    rw [add_sub_cancel_right]
+    exact (mem_ball_zero_iff.mp (hR₀ (subset_tsupport f hz))).trans_le (le_max_left R₀ 0)
+  have hS : 0 ≤ σ.real (Metric.ball 0 R) := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Step 5: `δ > 0` with `δ (C⁺Rⁿ + σ(B_R(0))) < ε / 2`, `C⁺ = max C 0`.
+  obtain ⟨δ, hδ, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧
+      δ * (max C 0 * R ^ n + σ.real (Metric.ball 0 R)) < ε / 2 := by
+    have hA : 0 ≤ max C 0 * R ^ n + σ.real (Metric.ball 0 R) := by positivity
+    generalize max C 0 * R ^ n + σ.real (Metric.ball 0 R) = A at hA ⊢
+    refine ⟨ε / (2 * (A + 1)), by positivity, ?_⟩
+    calc ε / (2 * (A + 1)) * A < ε / (2 * (A + 1)) * (A + 1) :=
+          mul_lt_mul_of_pos_left (lt_add_one A) (by positivity)
+      _ = ε / 2 := by field_simp
+  -- Step 2: a `C¹_c` function `φ` with `|φ - f| ≤ δ`, and the error `d = f - φ`; both vanish
+  -- off `B_R(0)`.
+  obtain ⟨φ, hφ, hφc, hφf, hφR⟩ :=
+    Submission.deGiorgiTM_cc_contDiff_approx N f R δ hfc f.hasCompactSupport hfR hδ
+  obtain ⟨M, hM⟩ := hφ.continuous.bounded_above_of_compact_support hφc
+  have hφM : ∀ z, |φ z| ≤ M := fun z ↦ by simpa only [Real.norm_eq_abs] using hM z
+  set d : Rn N → ℝ := fun z ↦ f z - φ z with hd
+  have hdc : Continuous d := hfc.sub hφ.continuous
+  have hdδ : ∀ z, |d z| ≤ δ := fun z ↦ (abs_sub_comm (f z) (φ z)).trans_le (hφf z)
+  have hdR : ∀ z, d z ≠ 0 → ‖z‖ < R := by
+    intro z hz
+    by_contra hzR
+    have hf0 : f z = 0 := by
+      by_contra h
+      exact hzR ((hfR z h).trans (sub_lt_self R one_pos))
+    have hφ0 : φ z = 0 := by
+      by_contra h
+      exact hzR (hφR z h)
+    exact hz (show f z - φ z = 0 by rw [hf0, hφ0, sub_zero])
+  have hfdφ : ∀ z, f z = d z + φ z := fun z ↦ (sub_add_cancel (f z) (φ z)).symm
+  -- Step 4: `d` and `φ` are `σ`-integrable and `|∫ d dσ| ≤ δ σ(B_R(0))`.
+  obtain ⟨hdσ, hdσb⟩ := Submission.deGiorgiTM_integral_bound_of_ball N σ 0 R δ d (hσ R) hdc
+    hdδ fun y hy ↦ mem_ball_zero_iff.mpr (hdR y hy)
+  obtain ⟨hφσ, -⟩ := Submission.deGiorgiTM_integral_bound_of_ball N σ 0 R M φ (hσ R)
+    hφ.continuous hφM fun y hy ↦ mem_ball_zero_iff.mpr (hφR y hy)
+  have hsplitσ : ∫ y, f y ∂σ = ∫ y, d y ∂σ + ∫ y, φ y ∂σ := by
+    rw [← integral_add hdσ hφσ]
+    congr 1
+    ext y
+    exact hfdφ y
+  -- Step 5: for `0 < r < ρ₁ / R` close to `0`, combine the hypothesis for `φ` with the bounds.
+  filter_upwards [Metric.tendsto_nhds.mp (hC1 φ hφ hφc) (ε / 2) (half_pos hε),
+    Ioo_mem_nhdsGT (div_pos hρ₁ hRpos)] with r hr hrI
+  have hr0 : 0 < r := hrI.1
+  have hμr : μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) :=
+    hμ (r * R) ⟨mul_pos hr0 hRpos, (lt_div_iff₀ hRpos).mp hrI.2⟩
+  -- Step 3: `d ∘ η_{x,r}` and `φ ∘ η_{x,r}` are `μ`-integrable and
+  -- `|(rⁿ)⁻¹ ∫ d(η_{x,r}(y)) dμ(y)| ≤ δ C⁺ Rⁿ`.
+  obtain ⟨hdμ, hdμb⟩ :=
+    Submission.deGiorgiTM_blowUp_integral_bound N n μ x C R r δ d hr0 hRpos hμr hdc hdδ hdR
+  obtain ⟨hφμ, -⟩ := Submission.deGiorgiTM_blowUp_integral_bound N n μ x C R r M φ hr0 hRpos hμr
+    hφ.continuous hφM hφR
+  have hsplitμ : ∫ y, f (blowUpMap x r y) ∂μ =
+      ∫ y, d (blowUpMap x r y) ∂μ + ∫ y, φ (blowUpMap x r y) ∂μ := by
+    rw [← integral_add hdμ hφμ]
+    congr 1
+    ext y
+    exact hfdφ _
+  have hr' : |(r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ - ∫ y, φ y ∂σ| < ε / 2 := by
+    simpa only [Real.dist_eq] using hr
+  show dist ((r ^ n)⁻¹ * ∫ y, f (blowUpMap x r y) ∂μ) (∫ y, f y ∂σ) < ε
+  rw [Real.dist_eq, hsplitμ, hsplitσ, abs_lt]
+  obtain ⟨h₁, h₂⟩ := abs_le.mp hdμb
+  obtain ⟨h₃, h₄⟩ := abs_lt.mp hr'
+  obtain ⟨h₅, h₆⟩ := abs_le.mp hdσb
+  constructor <;> linarith
 /-- **Blow-up images of sets under `η_{x,r}`**: the change of variables `y ↦ r⁻¹ (y - x)` of
 Simon Ch. 3, proof of Theorem 4.3, display (8) (`chapter-03.txt` lines 662–667), for a general
 centre `x`. Write `η_{x,r}` as the translation `y ↦ y - x`, which preserves `Lᴺ`, followed by the
@@ -5520,6 +5968,124 @@ theorem Submission.deGiorgi_blowUp_tendsto_halfSpace : ∀ (n : ℕ) (U E : Set 
     _ ≤ volume (K ∩ symmDiff (F (φ k)) G) + volume (symmDiff G {y | 0 < inner ℝ y e}) :=
         measure_union_le _ _
     _ = volume (K ∩ symmDiff (F (φ k)) G) := by rw [hGH, add_zero]
+
+/-- **De Giorgi, the tangent measure of `μ_E` at `x ∈ ∂*E`** (Simon Ch. 3, Theorem 4.3 (‡), proof
+`chapter-03.txt` lines 739–746, with the sign correction E1 for the limit half-space and erratum
+E3): for a Gauss–Green pair `(μ, ν)` of `(U, E)` and `x ∈ ∂*E`, `μ` has approximate tangent space
+`P = (span{ν_E(x)})^⊥` with multiplicity `1` at `x`. So `dim P = n` and
+`r⁻ⁿ ∫ f(η_{x,r}(y)) dμ(y) → ∫_P f dHⁿ` as `r ↓ 0` for every `f ∈ C_c(ℝ^{n+1})`. For `φ ∈ C¹_c` and
+`e = ν_E(x)`, the blow-up Gauss–Green identity with `g = φ e` and `η_{x,r}(E) → {y · e > 0}` in
+`L¹_loc` give `r⁻ⁿ ∫ φ(η_{x,r}(y)) e · ν(y) dμ(y) → -∫_{y · e > 0} D_e φ = ∫_P φ dHⁿ`, and the
+excess decay at `x` removes the defect `1 - e · ν`. The mass bound `μ(B_ρ(x)) ≤ C ρⁿ` and the local
+finiteness of `Hⁿ ⌞ P` extend the limit from `C¹_c` to `C_c`. -/
+theorem Submission.deGiorgi_tangent_measure : ∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, HasApproxTangentPlaneWithMultiplicity n μ x ((Submodule.span ℝ {reducedNormal μ ν x})ᗮ) 1 := by
+  intro n U E μ ν hU hE hGG x hx
+  -- Step 0: `e = ν_E(x)` is the limit of the normal averages, a unit vector, so `dim P = n`.
+  obtain ⟨-, v, hv, hv1⟩ := id hx
+  set e := reducedNormal μ ν x
+  have he1 : ‖e‖ = 1 := by rw [show e = v from hv.limUnder_eq, hv1]
+  have he0 : e ≠ 0 := norm_ne_zero_iff.mp (by rw [he1]; exact one_ne_zero)
+  have : Fact (finrank ℝ (Rn (n + 1)) = n + 1) := ⟨finrank_euclideanSpace_fin⟩
+  set P : Submodule ℝ (Rn (n + 1)) := (Submodule.span ℝ {e})ᗮ
+  have hPn : finrank ℝ P = n := Submodule.finrank_orthogonal_span_singleton he0
+  -- Step 2: the mass bound and the excess decay at `x`.
+  obtain ⟨ρ₁, hρ₁, hρ₁U, C, c, -, hmass, hexc⟩ :=
+    Submission.deGiorgi_density_estimates n U E μ ν hU hE hGG x hx
+  -- Step 1: `σ = Hⁿ ⌞ P` is finite on balls, as `Hⁿ ⌞ P` is Lebesgue measure on `P ≅ ℝⁿ`.
+  set σ : Measure (Rn (n + 1)) := (μHE[n] : Measure (Rn (n + 1))).restrict (P : Set (Rn (n + 1)))
+    with hσ
+  have hσR : ∀ R : ℝ, σ (Metric.ball 0 R) < ∞ := by
+    intro R
+    have hvol := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := P)
+    rw [hPn] at hvol
+    have hiso : Isometry ((↑) : P → Rn (n + 1)) := fun _ _ ↦ rfl
+    have hrange : Set.range ((↑) : P → Rn (n + 1)) = P := by
+      ext z
+      simp
+    have hpre : ((↑) : P → Rn (n + 1)) ⁻¹' Metric.ball 0 R = Metric.ball (0 : P) R := by
+      ext z
+      simp
+    rw [hσ, Measure.restrict_apply measurableSet_ball, ← hrange,
+      ← hiso.euclideanHausdorffMeasure_preimage, hpre, hvol]
+    exact measure_ball_lt_top
+  -- Step 3: the limit for `C¹_c` test functions `φ`.
+  have hC1 : ∀ φ : Rn (n + 1) → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ →
+      Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ) (𝓝[>] 0)
+        (𝓝 (∫ y, φ y ∂σ)) := by
+    intro φ hφ hφc
+    obtain ⟨R₀, hR₀⟩ := hφc.isCompact.isBounded.subset_ball (0 : Rn (n + 1))
+    set R := max R₀ 1
+    have hR0 : 0 < R := zero_lt_one.trans_le (le_max_right _ _)
+    have hφR : tsupport φ ⊆ Metric.ball 0 R :=
+      hR₀.trans (Metric.ball_subset_ball (le_max_left _ _))
+    -- `div (φ e) = D_e φ`.
+    have hdiv : ∀ z, Poincare.SimonGMT.Chapter02.euclideanDivergence (fun z ↦ φ z • e) z =
+        fderiv ℝ φ z e := by
+      intro z
+      rw [Poincare.SimonGMT.Chapter02.euclideanDivergence,
+        fderiv_smul_const ((hφ.differentiable one_ne_zero) z)]
+      exact LinearMap.trace_smulRight _ _
+    -- (i) The blow-up Gauss–Green identity for `g = φ e`, for `r ∈ (0, ρ₁ / R)`:
+    -- `tsupport g ⊆ B_R(0) ⊆ η_{x,r}(B_{ρ₁}(x)) ⊆ η_{x,r}(U)`.
+    have hid : ∀ r ∈ Ioo 0 (ρ₁ / R),
+        (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ =
+          -∫ z in blowUpMap x r '' E, fderiv ℝ φ z e := by
+      intro r hr
+      have hrR : r * R < ρ₁ := (lt_div_iff₀ hR0).1 hr.2
+      have hgU : tsupport (fun z ↦ φ z • e) ⊆ blowUpMap x r '' U := by
+        intro z hz
+        have hzR : ‖z‖ < R := mem_ball_zero_iff.1 (hφR (tsupport_smul_subset_left _ _ hz))
+        refine ⟨x + r • z, hρ₁U ?_, ?_⟩
+        · rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+            Real.norm_of_nonneg hr.1.le]
+          exact (mul_le_mul_of_nonneg_left hzR.le hr.1.le).trans_lt hrR
+        · simp [blowUpMap, smul_smul, inv_mul_cancel₀ hr.1.ne']
+      have h := Submission.deGiorgi_blowUp_gaussGreen_identity n U E μ ν x r hU hE hGG hr.1
+        (fun z ↦ φ z • e) (hφ.smul contDiff_const) (hφc.smul_right (f' := fun _ ↦ e)) hgU
+      simp only [hdiv, real_inner_smul_left] at h
+      rw [h, neg_neg]
+    -- (ii) `η_{x,r}(E) → H = {y · e > 0}` in `L¹_loc`, and the half-space flux identity.
+    have hEr : ∀ᶠ r in 𝓝[>] (0 : ℝ), NullMeasurableSet (blowUpMap x r '' E) volume := by
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have hr0 : 0 < r := hr
+      have himg : blowUpMap x r '' E = (fun z ↦ r • z + x) ⁻¹' E := by
+        ext z
+        constructor
+        · rintro ⟨y, hy, rfl⟩
+          simpa [blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne'] using hy
+        · intro hz
+          exact ⟨r • z + x, hz, by simp [blowUpMap, smul_smul, inv_mul_cancel₀ hr0.ne']⟩
+      rw [himg]
+      exact hE.preimage ((measurePreserving_add_right volume x).quasiMeasurePreserving.comp
+        (Measure.quasiMeasurePreserving_smul volume hr0.ne'))
+    have hH : NullMeasurableSet {y : Rn (n + 1) | 0 < inner ℝ y e} volume :=
+      (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+        |>.nullMeasurableSet
+    have hconv : Tendsto (fun r : ℝ ↦ ∫ z in blowUpMap x r '' E, fderiv ℝ φ z e) (𝓝[>] 0)
+        (𝓝 (∫ z in {y : Rn (n + 1) | 0 < inner ℝ y e}, fderiv ℝ φ z e)) :=
+      Submission.deGiorgiTM_tendsto_setIntegral_of_symmDiff (n + 1) (fun r ↦ blowUpMap x r '' E)
+        {y | 0 < inner ℝ y e} (fun z ↦ fderiv ℝ φ z e) hEr hH
+        ((hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const) (hφc.fderiv_apply ℝ e)
+        (Submission.deGiorgi_blowUp_tendsto_halfSpace n U E μ ν hU hE hGG x hx _
+          (hφc.fderiv_apply ℝ e).isCompact)
+    rw [Submission.deGiorgiTM_halfSpace_integral_fderiv n e φ he1 hφ hφc] at hconv
+    have hmain : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ)
+        (𝓝[>] 0) (𝓝 (∫ y, φ y ∂σ)) := by
+      have h := hconv.neg
+      rw [neg_neg] at h
+      refine h.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hρ₁ hR0)] with r hr
+      exact (hid r hr).symm
+    -- (iii) The excess decay removes the defect `1 - e · ν`.
+    have hdef := Submission.deGiorgiTM_blowUp_defect_tendsto_zero (n + 1) n μ ν x e (ρ₁ / 2) φ
+      (half_pos hρ₁) ((hmass _ ⟨half_pos hρ₁, half_lt_self hρ₁⟩).1.trans_lt ENNReal.ofReal_lt_top)
+      hGG.2.2.1 hGG.2.2.2.1 he1 hexc hφ.continuous hφc
+    simpa only [sub_add_cancel, zero_add] using hdef.add hmain
+  -- Steps 4–5: the mass bound extends the limit from `C¹_c` to `C_c` test functions.
+  refine ⟨hPn, fun f ↦ ?_⟩
+  rw [one_mul]
+  exact Submission.deGiorgiTM_blowUp_tendsto_of_contDiff (n + 1) n μ σ x ρ₁ C hρ₁
+    (fun ρ hρ ↦ (hmass ρ hρ).1) hσR hC1 f
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
