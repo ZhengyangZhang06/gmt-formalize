@@ -486,6 +486,153 @@ theorem gwe_gjb_gram_symm_psd_trace : ∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn �
     exact real_inner_self_nonneg
   · -- (iii) `trace G = Σ_a ⟨D e_a, D e_a⟩ = Σ_a ‖D e_a‖² = hsNormSq D`.
     simp only [Matrix.trace, Matrix.diag, Matrix.of_apply, hsNormSq, real_inner_self_eq_norm_sq]
+/-- **Determinant bounds for `I + G`** (graph Jacobian bounds in the tilt-excess decay argument):
+if `G` is a symmetric real `n × n` matrix with `0 ≤ x ⬝ᵥ G x` for all `x`, then
+`1 ≤ det (I + G) ≤ exp (trace G)`.  By Gaussian elimination: `A = I + G` satisfies
+`x ⬝ᵥ x ≤ x ⬝ᵥ A x`, so its pivot `a = A₀₀` is at least `1`, and clearing the first column gives
+`det A = a * det S` for the Schur complement `S = C - a⁻¹ b bᵀ`.  `S` is again symmetric with
+`x ⬝ᵥ x ≤ x ⬝ᵥ S x` (test `A` on `(-(b ⬝ᵥ x) / a, x)`) and `trace S ≤ trace A - a`, so induction
+gives `1 ≤ det A ≤ exp (trace A - n)` using `a ≤ exp (a - 1)`; finally `trace (I + G) = n + trace G`.
+-/
+theorem gwe_gjb_det_one_add_bounds : ∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) ℝ), Matrix.IsSymm G → (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec G x)) → 1 ≤ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ∧ Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + G) ≤ Real.exp (Matrix.trace G) := by
+  -- Induction on the size: a symmetric `A` with `x ⬝ᵥ x ≤ x ⬝ᵥ A x` for all `x` satisfies
+  -- `1 ≤ det A ≤ exp (trace A - m)`.
+  have key : ∀ (m : ℕ) (A : Matrix (Fin m) (Fin m) ℝ), (∀ i j, A j i = A i j) →
+      (∀ x : Fin m → ℝ, dotProduct x x ≤ dotProduct x (Matrix.mulVec A x)) →
+      1 ≤ A.det ∧ A.det ≤ Real.exp (A.trace - m) := by
+    intro m
+    induction m with
+    | zero =>
+      intro A _ _
+      simp [Matrix.det_fin_zero, Matrix.trace]
+    | succ m ih =>
+      intro A hA hq
+      -- The pivot `a = A₀₀ = e₀ ⬝ᵥ A e₀` is at least `e₀ ⬝ᵥ e₀ = 1`.
+      have ha : 1 ≤ A 0 0 := by
+        have h := hq (Pi.single 0 1)
+        simpa using h
+      have ha0 : A 0 0 ≠ 0 := (by linarith : (0 : ℝ) < A 0 0).ne'
+      -- The Schur complement `S = C - a⁻¹ b bᵀ` of the pivot.
+      obtain ⟨S, hS⟩ : ∃ S : Matrix (Fin m) (Fin m) ℝ,
+          S = Matrix.of fun i j => A i.succ j.succ - A i.succ 0 / A 0 0 * A 0 j.succ := ⟨_, rfl⟩
+      have hSs : ∀ i j, S j i = S i j := by
+        intro i j
+        rw [hS, Matrix.of_apply, Matrix.of_apply, hA i.succ j.succ, hA 0 i.succ, hA 0 j.succ]
+        ring
+      -- `x ⬝ᵥ S x = y ⬝ᵥ A y` for `y = (-(b ⬝ᵥ x) / a, x)`, and `y ⬝ᵥ y ≥ x ⬝ᵥ x`.
+      have hSq : ∀ x : Fin m → ℝ, dotProduct x x ≤ dotProduct x (Matrix.mulVec S x) := by
+        intro x
+        obtain ⟨b, hb⟩ : ∃ b : ℝ, b = ∑ j : Fin m, A 0 j.succ * x j := ⟨_, rfl⟩
+        obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = ∑ i : Fin m, x i * ∑ j : Fin m, A i.succ j.succ * x j :=
+          ⟨_, rfl⟩
+        have hrow : ∀ i : Fin m,
+            Matrix.mulVec S x i = ∑ j, A i.succ j.succ * x j - A 0 i.succ / A 0 0 * b := by
+          intro i
+          simp only [Matrix.mulVec, dotProduct, hS, Matrix.of_apply]
+          rw [hb, Finset.mul_sum, ← Finset.sum_sub_distrib]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [hA 0 i.succ]
+          ring
+        have eS : dotProduct x (Matrix.mulVec S x) = Q - b * b / A 0 0 := by
+          calc dotProduct x (Matrix.mulVec S x)
+              = ∑ i, (x i * ∑ j, A i.succ j.succ * x j - A 0 i.succ * x i * (b / A 0 0)) := by
+                simp only [dotProduct]
+                refine Finset.sum_congr rfl fun i _ => ?_
+                rw [hrow i]
+                ring
+            _ = Q - b * b / A 0 0 := by
+                rw [Finset.sum_sub_distrib, ← Finset.sum_mul, ← hQ, ← hb]
+                ring
+        have eA : ∀ t : ℝ, dotProduct (Fin.cons t x : Fin (m + 1) → ℝ)
+            (Matrix.mulVec A (Fin.cons t x)) = A 0 0 * t * t + 2 * t * b + Q := by
+          intro t
+          simp only [dotProduct, Matrix.mulVec, Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
+          have h1 : ∑ i : Fin m, x i * (A i.succ 0 * t + ∑ j, A i.succ j.succ * x j) =
+              t * b + Q := by
+            rw [hb, hQ, Finset.mul_sum, ← Finset.sum_add_distrib]
+            refine Finset.sum_congr rfl fun i _ => ?_
+            rw [hA 0 i.succ]
+            ring
+          rw [h1, ← hb]
+          ring
+        have eI : ∀ t : ℝ, dotProduct (Fin.cons t x : Fin (m + 1) → ℝ) (Fin.cons t x) =
+            t * t + dotProduct x x := by
+          intro t
+          simp only [dotProduct, Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
+        have h := hq (Fin.cons (-b / A 0 0) x)
+        rw [eA, eI] at h
+        rw [eS]
+        have e : A 0 0 * (-b / A 0 0) * (-b / A 0 0) + 2 * (-b / A 0 0) * b + Q =
+            Q - b * b / A 0 0 := by
+          field_simp
+          ring
+        nlinarith [mul_self_nonneg (-b / A 0 0)]
+      -- Eliminating the first column below the pivot: `det A = a * det S`.
+      have hdet : A.det = A 0 0 * S.det := by
+        obtain ⟨c, hc⟩ : ∃ c : Fin (m + 1) → ℝ,
+            c = Fin.cons 0 (fun i : Fin m => A i.succ 0 / A 0 0) := ⟨_, rfl⟩
+        obtain ⟨E, hE⟩ : ∃ E : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ,
+            E = Matrix.of fun i j => A i j - c i * A 0 j := ⟨_, rfl⟩
+        have hc0 : c 0 = 0 := by rw [hc]; rfl
+        have hE0 : ∀ j, E 0 j = A 0 j := by
+          intro j
+          rw [hE, Matrix.of_apply, hc0]
+          ring
+        have hAE : A.det = E.det :=
+          Matrix.det_eq_of_forall_row_eq_smul_add_const c 0 hc0 fun i j => by
+            rw [hE0, hE, Matrix.of_apply]
+            ring
+        have hcol : ∀ i : Fin m, E i.succ 0 = 0 := by
+          intro i
+          rw [hE, Matrix.of_apply, hc, Fin.cons_succ, div_mul_cancel₀ _ ha0, sub_self]
+        have hsub : E.submatrix Fin.succ Fin.succ = S := by
+          ext i j
+          simp only [Matrix.submatrix_apply, hE, hS, Matrix.of_apply, hc, Fin.cons_succ]
+        rw [hAE, Matrix.det_succ_column_zero, Fin.sum_univ_succ]
+        simp only [hcol, mul_zero, zero_mul, Finset.sum_const_zero, add_zero, Fin.val_zero,
+          pow_zero, one_mul, Fin.succAbove_zero, hE0, hsub]
+      -- `trace A = a + trace S + Σᵢ bᵢ² / a`.
+      have htr : A.trace = A 0 0 + S.trace + ∑ i : Fin m, A 0 i.succ ^ 2 / A 0 0 := by
+        simp only [Matrix.trace, Matrix.diag, Fin.sum_univ_succ, hS, Matrix.of_apply]
+        rw [Finset.sum_sub_distrib]
+        have e : ∀ i : Fin m, A i.succ 0 / A 0 0 * A 0 i.succ = A 0 i.succ ^ 2 / A 0 0 := by
+          intro i
+          rw [hA 0 i.succ]
+          ring
+        simp only [e]
+        ring
+      obtain ⟨h1, h2⟩ := ih S hSs hSq
+      have hsum : 0 ≤ ∑ i : Fin m, A 0 i.succ ^ 2 / A 0 0 :=
+        Finset.sum_nonneg fun i _ => div_nonneg (sq_nonneg _) (by linarith)
+      have hexp : A 0 0 ≤ Real.exp (A 0 0 - 1) := by
+        have := Real.add_one_le_exp (A 0 0 - 1)
+        linarith
+      refine ⟨?_, ?_⟩
+      · rw [hdet]
+        nlinarith
+      · rw [hdet]
+        calc A 0 0 * S.det ≤ Real.exp (A 0 0 - 1) * Real.exp (S.trace - m) :=
+              mul_le_mul hexp h2 (by linarith) (Real.exp_pos _).le
+          _ = Real.exp (A 0 0 - 1 + (S.trace - m)) := (Real.exp_add _ _).symm
+          _ ≤ Real.exp (A.trace - ↑(m + 1)) := by
+              apply Real.exp_le_exp.mpr
+              rw [htr]
+              push_cast
+              linarith
+  intro n G hG hpos
+  have hsymm : ∀ i j, ((1 : Matrix (Fin n) (Fin n) ℝ) + G) j i =
+      ((1 : Matrix (Fin n) (Fin n) ℝ) + G) i j :=
+    (Matrix.isSymm_one.add hG).apply
+  have hquad : ∀ x : Fin n → ℝ,
+      dotProduct x x ≤ dotProduct x (Matrix.mulVec ((1 : Matrix (Fin n) (Fin n) ℝ) + G) x) := by
+    intro x
+    rw [Matrix.add_mulVec, Matrix.one_mulVec, dotProduct_add]
+    linarith [hpos x]
+  obtain ⟨h1, h2⟩ := key n _ hsymm hquad
+  refine ⟨h1, h2.trans_eq ?_⟩
+  rw [Matrix.trace_add, Matrix.trace_one, Fintype.card_fin]
+  congr 1
+  ring
 
 end Submission
 
