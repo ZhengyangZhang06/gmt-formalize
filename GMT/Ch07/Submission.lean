@@ -610,6 +610,36 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
 
+/-- **Signed area transfer** (Simon Ch. 2, 3.5 and 4.13, stated there for `h ≥ 0`): if
+`∫⁻_B g dν = ∫⁻_A ofReal(J)·(g ∘ Φ) dμ` for every `g : β → [0, ∞]` and `J ≥ 0`, then for `f`
+integrable on `B`, `J·(f ∘ Φ)` is integrable on `A` and `∫_B f dν = ∫_A J·(f ∘ Φ) dμ`.  The
+identity at `g = ‖f‖ₑ` gives integrability (`‖J t‖ₑ = ofReal(J)·‖t‖ₑ`); at `g = ofReal(±f)` it
+matches the positive and negative parts (`ofReal(J)·ofReal(±t) = ofReal(±J t)`). -/
+theorem Submission.codim1_ac_pp_setIntegral_transfer : ∀ (α β : Type) [MeasurableSpace α] [MeasurableSpace β] (μ : Measure α) (ν : Measure β) (Φ : α → β) (A : Set α) (B : Set β) (J : α → ℝ) (f : β → ℝ), (∀ x, 0 ≤ J x) → (∀ g : β → ℝ≥0∞, ∫⁻ y in B, g y ∂ν = ∫⁻ x in A, ENNReal.ofReal (J x) * g (Φ x) ∂μ) → Integrable f (ν.restrict B) → AEStronglyMeasurable (fun x => J x * f (Φ x)) (μ.restrict A) → Integrable (fun x => J x * f (Φ x)) (μ.restrict A) ∧ ∫ y in B, f y ∂ν = ∫ x in A, J x * f (Φ x) ∂μ := by
+  intro α β _ _ μ ν Φ A B J f hJ harea hf hmeas
+  -- `∫⁻_A ‖J·(f ∘ Φ)‖ₑ dμ = ∫⁻_B ‖f‖ₑ dν < ∞`
+  have hint : Integrable (fun x => J x * f (Φ x)) (μ.restrict A) := by
+    refine ⟨hmeas, ?_⟩
+    have h1 : ∫⁻ x in A, ‖J x * f (Φ x)‖ₑ ∂μ = ∫⁻ y in B, ‖f y‖ₑ ∂ν := by
+      rw [harea (fun y => ‖f y‖ₑ)]
+      congr 1
+      funext x
+      rw [enorm_mul, Real.enorm_of_nonneg (hJ x)]
+    rw [HasFiniteIntegral, h1]
+    exact hf.2
+  refine ⟨hint, ?_⟩
+  -- both integrals as differences of the integrals of their positive and negative parts
+  rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hf,
+    integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint,
+    harea (fun y => ENNReal.ofReal (f y)), harea (fun y => ENNReal.ofReal (-f y))]
+  congr 2
+  · congr 1
+    funext x
+    rw [ENNReal.ofReal_mul (hJ x)]
+  · congr 1
+    funext x
+    rw [← ENNReal.ofReal_mul (hJ x), mul_neg]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
