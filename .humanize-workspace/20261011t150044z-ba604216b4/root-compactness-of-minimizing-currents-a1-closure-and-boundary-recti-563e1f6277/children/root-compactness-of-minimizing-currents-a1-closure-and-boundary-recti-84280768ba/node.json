@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1.cone_mass_closed-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1",
+  "depth": 5,
+  "title": "Lower semicontinuity of cone mass along a continuous plane field: {x ∈ F : μ(X(x) ∩ B_ρ(x)) ≤ s} is closed (parent step 4(ii))",
+  "statement": "Let P ∈ ℕ, μ any measure on ℝ^P (Borel σ-algebra), and F ⊆ ℝ^P a closed set. Let Q : ℝ^P → linear subspaces of ℝ^P be such that x ↦ p_{Q(x)} (orthogonal projection onto Q(x), an element of L(ℝ^P) with the operator norm) is continuous on F. Let ρ ∈ ℝ and s ∈ [0, ∞]. For x ∈ ℝ^P put X(x) := {z : 2|p_{Q(x)}(z − x)| < |z − x|} and B_ρ(x) := {z : |z − x| < ρ}. Then the set {x : x ∈ F and μ(X(x) ∩ B_ρ(x)) ≤ s} is closed.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (ρ : ℝ) (s : ℝ≥0∞), IsClosed F → ContinuousOn (fun x => (Q x).starProjection) F → IsClosed {x | x ∈ F ∧ μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ s}",
+  "lean_name": "cbrr_ud_isClosed_cone_mass_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-84280768ba-a1"
+}

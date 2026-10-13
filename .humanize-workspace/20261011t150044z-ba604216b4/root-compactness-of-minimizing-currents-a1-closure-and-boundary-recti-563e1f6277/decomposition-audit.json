@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "Semicontinuous.*closedBall|closedBall.*Semicontinuous|semicontinuous_measure|measure_closedBall.*semicont|lowerSemicontinuous_measure|upperSemicontinuous_measure",
+        "theorem lintegral_liminf_le|theorem tendsto_measure_iInter_atTop|theorem exists_measurable_superset_of_null|lemma isFiniteMeasure_restrict|theorem starProjection_norm_le|def starProjection|theorem measurable|def mk|ae_eq_mk",
+        "rg -n 'cbrr_ud_|dor_ims_lusin_measurable_continuousOn' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "git show e4172a7b3e6ff6905ecff6f6d729752746d19ff0:GMT/Ch07/Submission.lean | tail -n 90",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ud-independent-audit-1iymrioe/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ud-independent-audit-1iymrioe/IndependentE2E.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-563e1f6277/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-563e1f6277/decomposition-v1.json",
+        "/tmp/ud-independent-audit-1iymrioe/IndependentTypes.lean",
+        "/tmp/ud-independent-audit-1iymrioe/IndependentE2E.lean"
+      ],
+      "conclusion": "The split appropriately isolates four analytic obligations and one accepted reuse. The snapshot contract matches the workspace, and the installed mathlib revision matches the manifest. The semicontinuity search found no relevant match; inspected sources support regularity, measurable representatives, Fatou and continuity of measure. All five raw one-line types elaborate independently, and projection expressions infer continuous linear maps with the intended operator-norm topology. Comparator-style exact targets and the exact parent assembly compile with only propext, Classical.choice and Quot.sound. The assembly assumes precisely the parent's existing lower-density and cone-density contracts. Dependencies are acyclic and correctly directed. Every lean_name is bare; all four new names are unused. Lusin reuse has a byte-identical accepted type and proof at e4172a7b3e6ff6905ecff6f6d729752746d19ff0."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree, including arbitrary μ and infinite tolerance. Finite restriction supplies compact inner regularity; summably small compact approximations to basis preimages and their complements yield compact K and continuity on K. The proof is complete and non-circular. Reuse is valid because the accepted frozen type is identical."
+    },
+    {
+      "key": "ae_lusin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. Pseudo-metrizability justifies measurability of the strongly measurable representative after choosing the Borel σ-algebra. Restriction equality and a measurable null hull preserve the arbitrary a.e. property pointwise. Applying lusin and transferring continuity proves every conclusion. The sole child dependency, lusin, is correctly directed."
+    },
+    {
+      "key": "ball_mass_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complete sequential-closedness proof matches the exact type. Eventual membership in open complements gives the Fatou inequality; finite total mass validates both complement subtraction and cancellation. The sequence hypothesis forces s to be finite, covering s = ∞ without an omitted case. No positivity assumption on ρ is needed."
+    },
+    {
+      "key": "cone_mass_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly expresses operator-norm continuity of orthogonal projections on closed F. The proof establishes open measurable cone slices, convergence under evaluation at moving vectors, persistence of both strict inequalities, and the Fatou bound. It works for arbitrary μ and all stated ρ and s, with no circular dependency."
+    },
+    {
+      "key": "uniformize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Arbitrary intersections of closed Tρ make Gk Borel without joint measurability in ρ. Eventual membership gives exhaustion, while finite μ(F) permits continuity from above for F minus Gk. Choosing one index supplies the strict measure bound and common positive radius, including infinite tolerance. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

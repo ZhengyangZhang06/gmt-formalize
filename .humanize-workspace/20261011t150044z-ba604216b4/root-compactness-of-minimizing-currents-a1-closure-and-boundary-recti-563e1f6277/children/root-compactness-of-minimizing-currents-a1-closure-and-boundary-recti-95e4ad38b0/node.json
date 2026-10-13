@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1.ball_mass_closed-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1",
+  "depth": 5,
+  "title": "Upper semicontinuity of closed-ball mass: {y : s ≤ μ(B̄_ρ(y))} is closed for a finite measure (parent step 4(i))",
+  "statement": "Let P ∈ ℕ, μ a finite measure on ℝ^P (Borel σ-algebra), ρ ∈ ℝ and s ∈ [0, ∞]. Then the set {y ∈ ℝ^P : s ≤ μ(B̄_ρ(y))} is closed, where B̄_ρ(y) = {z : |z − y| ≤ ρ} is the closed ball.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) [IsFiniteMeasure μ] (ρ : ℝ) (s : ℝ≥0∞), IsClosed {y : Euclid P | s ≤ μ (closedBall y ρ)}",
+  "lean_name": "cbrr_ud_isClosed_closedBall_mass_ge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-95e4ad38b0-a1"
+}
