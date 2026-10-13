@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Complement bound in the covering step of the lower density estimate (cf. Simon Ch. 6, 8.2): if
+`|g| ≤ 1` `μ`-a.e., `V ⊆ W` with `V` measurable, `μ W < ∞` and `∫_V g dμ ≤ θ μ(V)`, then
+`∫_W g dμ = ∫_{W∖V} g dμ + ∫_V g dμ ≤ (μ(W) − μ(V)) + θ μ(V) = μ(W) − (1 − θ) μ(V)`. -/
+theorem Submission.cbrldvc_setIntegral_le_sub_of_subset : ∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (V W : Set (Euclid P)), AEStronglyMeasurable g μ → (∀ᵐ x ∂μ, |g x| ≤ 1) → MeasurableSet V → V ⊆ W → μ W < ∞ → ∫ y in V, g y ∂μ ≤ θ * (μ V).toReal → ∫ y in W, g y ∂μ ≤ (μ W).toReal - (1 - θ) * (μ V).toReal := by
+  intro P μ g θ V W hg hbd hV hVW hW hθ
+  -- `μ V ≤ μ W < ∞` and `μ (W \ V) ≤ μ W < ∞`
+  have hVW_le : μ V ≤ μ W := measure_mono hVW
+  have hVfin : μ V ≠ ∞ := (hVW_le.trans_lt hW).ne
+  have hWVfin : μ (W \ V) ≠ ∞ := ((measure_mono sdiff_subset).trans_lt hW).ne
+  -- `|g| ≤ 1` a.e. makes `g` integrable on every set of finite measure
+  have hgS : ∀ S : Set (Euclid P), μ S ≠ ∞ → IntegrableOn g S μ := fun S hS =>
+    Measure.integrableOn_of_bounded (M := 1) hS hg
+      (by filter_upwards [ae_restrict_of_ae hbd] with x hx; rwa [Real.norm_eq_abs])
+  have hgV : IntegrableOn g V μ := hgS V hVfin
+  have hgWV : IntegrableOn g (W \ V) μ := hgS (W \ V) hWVfin
+  -- `∫_W g = ∫_{W∖V} g + ∫_V g`
+  have hsplit : ∫ y in W, g y ∂μ = ∫ y in W \ V, g y ∂μ + ∫ y in V, g y ∂μ := by
+    conv_lhs => rw [← sdiff_union_of_subset hVW]
+    exact setIntegral_union disjoint_sdiff_left hV hgWV hgV
+  -- `∫_{W∖V} g ≤ ∫_{W∖V} 1 = μ(W ∖ V)`
+  have hcomp : ∫ y in W \ V, g y ∂μ ≤ (μ (W \ V)).toReal := by
+    calc ∫ y in W \ V, g y ∂μ ≤ ∫ _ in W \ V, (1 : ℝ) ∂μ :=
+          integral_mono_ae hgWV (integrableOn_const hWVfin)
+            (by filter_upwards [ae_restrict_of_ae hbd] with x hx; exact (le_abs_self _).trans hx)
+      _ = (μ (W \ V)).toReal := by rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def]
+  -- `μ(W ∖ V) = μ(W) − μ(V)`
+  have hdiff : (μ (W \ V)).toReal = (μ W).toReal - (μ V).toReal := by
+    rw [measure_sdiff hVW hV.nullMeasurableSet hVfin, ENNReal.toReal_sub_of_le hVW_le hW.ne]
+  rw [hsplit]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
