@@ -1292,6 +1292,242 @@ theorem Submission.intcpt_fli_good_mass_estimate :
             ∂(μHE[n] : Measure (Euclidean N))) := by gcongr
     _ = _ := by rw [mul_assoc]
 
+/-- **Simon Ch. 8, proof of 5.9: the flat-limit claim** (child `flat_claim` of
+`flat_limit_integer`).  Let integral `n`-varifolds `W_k` on `B°_5(0)` with `‖δW_k‖(B°_5(0)) → 0`
+converge to `θ₀ v(P)`, `θ₀ > 0`.  Then there are `δ̄ > 0`, `c₀ ≥ 0` and `I₀ > 0` with
+`θ₀ I₀ ≤ c₀ δ⁴ + (1 + (4δ⁴/ω_n)²)^{n/2} k₀ I₀` whenever `0 < δ ≤ δ̄`, `4δ⁴ ≤ ω_n` and
+`(1 + δ)(θ₀ + δ) + δ < k₀ + 1`.
+Take `I₀ = ∫_P ψ dH^n` for a radial profile `ψ` on `P`.  For large `k`, the good-mass estimate
+`intcpt_fli_good_mass_estimate` (with `ε = δ⁴`, `m = θ₀ + δ`) bounds
+`∫ ψ(p_P y) χ(|y - p_P y|) dμ_{W_k}(y)` by the right-hand side, and this integral tends to
+`θ₀ I₀` by `intcpt_fli_weight_integral_tendsto`. -/
+theorem Submission.intcpt_fli_flat_claim : (∀ (N n : ℕ) (Λ : ℝ), 1 ≤ n → 1 ≤ Λ → ∃ δbar c₀ : ℝ, 0 < δbar ∧ 0 ≤ c₀ ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δbar → 0 < ε → ε ≤ δ ^ 4 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → variationMeasure W (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) → (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) < ENNReal.ofReal (ε ^ 2) → W.weight {y | y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ ¬ ((∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)))} ≤ ENNReal.ofReal (c₀ * ε) ∧ ∀ (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞), x ∈ P.plane → ‖x‖ < 1 → (∀ y ∈ s, Grassmannian.project P y = x ∧ y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) ∧ ‖y - Grassmannian.project P y‖ < ε ∧ HasDensity n W.weight y (Θ y) ∧ 1 ≤ Θ y) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), IsIntegral V → ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞)) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) → ∃ θ : Euclidean N → ℝ, IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} θ ∧ (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) ∧ ∀ Z ⊆ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, V.weight Z = 0 → (μHE[n] : Measure (Euclidean N)) Z = 0) → (∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (Γ : ℕ → Set (Euclidean N)) (G : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ i, IsClosed (Γ i)) → (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → G ⊆ ⋃ i, Γ i → NullMeasurableSet G (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in G, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N))) → (∀ (N n : ℕ) (L : ℝ), 0 < L → L ≤ 1 → ∀ (U : Set (Euclidean N)) (V : Varifold N n U) (P : Grassmannian N n), ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i) → ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 1 ≤ n → 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ k, (W k).HasLocallyBoundedFirstVariation) → Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ δbar c₀ I₀ : ℝ, 0 < δbar ∧ 0 ≤ c₀ ∧ 0 < I₀ ∧ ∀ (δ : ℝ) (k₀ : ℕ), 0 < δ → δ ≤ δbar → (1 + δ) * (θ₀ + δ) + δ < k₀ + 1 → 4 * δ ^ 4 ≤ (unitBallVolume n).toReal → θ₀ * I₀ ≤ c₀ * δ ^ 4 + (1 + (4 * δ ^ 4 / (unitBallVolume n).toReal) ^ 2) ^ ((n : ℝ) / 2) * k₀ * I₀ := by
+  intro hA hD hC hG hTGC N n P θ₀ W hn hθ₀ hint hlbfv hvar hconv
+  -- Step 1: `ω = ω_n ∈ (0, ∞)`; the good-mass estimate with `Λ = θ₀ ω 3^n + 1` gives `δ̄₁`, `c₀`.
+  have hωne : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume; exact (measure_ball_lt_top (μ := volume)).ne
+  have hωpos : 0 < (unitBallVolume n).toReal := by
+    unfold unitBallVolume
+    exact ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne'
+      (measure_ball_lt_top (μ := volume)).ne
+  set ω := (unitBallVolume n).toReal with hω
+  have hωeq : unitBallVolume n = ENNReal.ofReal ω := (ENNReal.ofReal_toReal hωne).symm
+  set Λ : ℝ := θ₀ * ω * 3 ^ n + 1 with hΛ
+  have hΛ1 : 1 ≤ Λ := by
+    have : 0 ≤ θ₀ * ω * 3 ^ n := by positivity
+    linarith
+  obtain ⟨δbar₁, c₀, hδbar₁, hc₀, hcore⟩ :=
+    Submission.intcpt_fli_good_mass_estimate hA hD hC hG hTGC N n Λ hn hΛ1
+  -- Step 2: the profile `ψ(a) = max(0, min(1, 2 - 4|a|))`, `1_{B_{1/4}(0)} ≤ ψ ≤ 1_{B_{1/2}(0)}`,
+  -- and `I₀ = ∫_P ψ dH^n ≥ H^n(P ∩ B_{1/4}(0)) = ω 4^{-n} > 0`.
+  set ψ : Euclidean N → ℝ := fun a => max 0 (min 1 (2 - 4 * ‖a‖)) with hψdef
+  have hψcont : Continuous ψ := by
+    simp only [hψdef]; fun_prop
+  have hψ0 : ∀ a, 0 ≤ ψ a := fun a => le_max_left _ _
+  have hψ1 : ∀ a, ψ a ≤ 1 := fun a => max_le zero_le_one (min_le_left _ _)
+  have hψzero : ∀ a, 1 / 2 ≤ ‖a‖ → ψ a = 0 := by
+    intro a ha
+    simp only [hψdef]
+    apply max_eq_left
+    exact (min_le_right _ _).trans (by linarith)
+  have hψone : ∀ a, ‖a‖ ≤ 1 / 4 → ψ a = 1 := by
+    intro a ha
+    simp only [hψdef]
+    rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+  have hplane_meas : MeasurableSet (P.plane : Set (Euclidean N)) :=
+    (Submodule.closed_of_finiteDimensional _).measurableSet
+  have h0mem : (0 : Euclidean N) ∈ P.plane := P.plane.zero_mem
+  have hballfin : ∀ r : ℝ, 0 < r →
+      (μHE[n] : Measure (Euclidean N)) ((P.plane : Set (Euclidean N)) ∩ closedBall 0 r) ≠ ∞ := by
+    intro r hr
+    rw [(Submission.intcpt_fli_plane_ball_measure N n P 0 r h0mem hr).1]
+    exact ENNReal.mul_ne_top hωne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hψle_ind : ∀ a, ψ a ≤ (closedBall (0 : Euclidean N) (1 / 2)).indicator 1 a := by
+    intro a
+    by_cases ha : a ∈ closedBall (0 : Euclidean N) (1 / 2)
+    · rw [indicator_of_mem ha]; exact hψ1 a
+    · rw [indicator_of_notMem ha]
+      have : 1 / 2 ≤ ‖a‖ := by
+        rw [mem_closedBall, dist_zero_right, not_le] at ha; exact ha.le
+      rw [hψzero a this]
+  have hψint : IntegrableOn ψ (P.plane : Set (Euclidean N)) μHE[n] := by
+    have hfin : ((μHE[n] : Measure (Euclidean N)).restrict (P.plane : Set (Euclidean N)))
+        (closedBall 0 (1 / 2)) ≠ ∞ := by
+      rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+      exact hballfin _ (by norm_num)
+    refine Integrable.mono' (g := (closedBall (0 : Euclidean N) (1 / 2)).indicator 1) ?_
+      hψcont.aestronglyMeasurable ?_
+    · exact (integrable_indicator_iff measurableSet_closedBall).2
+        (integrableOn_const hfin)
+    · exact Eventually.of_forall (fun a => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hψ0 a)]; exact hψle_ind a)
+  set I₀ := ∫ a in (P.plane : Set (Euclidean N)), ψ a ∂(μHE[n] : Measure (Euclidean N))
+    with hI₀def
+  have hI₀pos : 0 < I₀ := by
+    have hle : ∀ a, (closedBall (0 : Euclidean N) (1 / 4)).indicator (1 : Euclidean N → ℝ) a
+        ≤ ψ a := by
+      intro a
+      by_cases ha : a ∈ closedBall (0 : Euclidean N) (1 / 4)
+      · rw [indicator_of_mem ha, hψone a (by simpa [mem_closedBall, dist_zero_right] using ha)]
+        rfl
+      · rw [indicator_of_notMem ha]; exact hψ0 a
+    have h1 : ∫ a in (P.plane : Set (Euclidean N)),
+        (closedBall (0 : Euclidean N) (1 / 4)).indicator (1 : Euclidean N → ℝ) a
+          ∂(μHE[n] : Measure (Euclidean N)) ≤ I₀ :=
+      integral_mono_of_nonneg
+        (Eventually.of_forall (fun a => indicator_nonneg (fun _ _ => zero_le_one) a))
+        hψint (Eventually.of_forall hle)
+    have h2 : ∫ a in (P.plane : Set (Euclidean N)),
+        (closedBall (0 : Euclidean N) (1 / 4)).indicator (1 : Euclidean N → ℝ) a
+          ∂(μHE[n] : Measure (Euclidean N)) = ω * (1 / 4) ^ n := by
+      rw [integral_indicator_one measurableSet_closedBall, Measure.real,
+        Measure.restrict_apply measurableSet_closedBall, inter_comm,
+        (Submission.intcpt_fli_plane_ball_measure N n P 0 (1 / 4) h0mem (by norm_num)).1,
+        ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.toReal_ofReal (by norm_num)]
+    have h3 : 0 < ω * (1 / 4 : ℝ) ^ n := by positivity
+    linarith
+  -- Step 3: `δ̄ = min(δ̄₁, 1)`; fix `δ`, `k₀` and put `ε = δ⁴ ≤ 1`.
+  refine ⟨min δbar₁ 1, c₀, I₀, lt_min hδbar₁ one_pos, hc₀, hI₀pos, ?_⟩
+  intro δ k₀ hδ hδbar hk hω4
+  have hδ1 : δ ≤ 1 := hδbar.trans (min_le_right _ _)
+  have hδbar1 : δ ≤ δbar₁ := hδbar.trans (min_le_left _ _)
+  set ε : ℝ := δ ^ 4 with hεdef
+  have hε : 0 < ε := by positivity
+  have hε1 : ε ≤ 1 := pow_le_one₀ hδ.le hδ1
+  -- Step 4: the test function `g₀(y) = ψ(p_P y) χ(|y - p_P y|)` with the normal cutoff
+  -- `χ(t) = max(0, min(1, 2 - 2t/ε))`; `g₀` is continuous with `spt g₀ ⊆ B_2(0)`, and `g₀ = ψ`
+  -- on `P`.
+  set χ : ℝ → ℝ := fun t => max 0 (min 1 (2 - 2 * t / ε)) with hχdef
+  have hχcont : Continuous χ := by
+    simp only [hχdef]; fun_prop
+  have hχ0 : ∀ t, 0 ≤ χ t := fun t => le_max_left _ _
+  have hχ1 : ∀ t, χ t ≤ 1 := fun t => max_le zero_le_one (min_le_left _ _)
+  have hχzero : ∀ t, ε ≤ t → χ t = 0 := by
+    intro t ht
+    simp only [hχdef]
+    apply max_eq_left
+    refine (min_le_right _ _).trans ?_
+    have : 2 ≤ 2 * t / ε := by rw [le_div_iff₀ hε]; linarith
+    linarith
+  have hχzero' : χ 0 = 1 := by simp [hχdef]
+  set p := Grassmannian.project P with hpdef
+  have hpcont : Continuous p := by
+    simp only [hpdef]
+    unfold Grassmannian.project
+    exact (Grassmannian.projectionLinearMap P).continuous_of_finiteDimensional
+  set g₀ : Euclidean N → ℝ := fun y => ψ (p y) * χ ‖y - p y‖ with hg₀def
+  have hg₀cont : Continuous g₀ := by
+    simp only [hg₀def]
+    exact (hψcont.comp hpcont).mul (hχcont.comp (continuous_id.sub hpcont).norm)
+  have hg₀0 : ∀ y, 0 ≤ g₀ y := fun y => mul_nonneg (hψ0 _) (hχ0 _)
+  have hg₀le : ∀ y, g₀ y ≤ ψ (p y) := fun y => mul_le_of_le_one_right (hψ0 _) (hχ1 _)
+  have hg₀1 : ∀ y, g₀ y ≤ 1 := fun y => (hg₀le y).trans (hψ1 _)
+  have hg₀supp : ∀ y, g₀ y ≠ 0 → ‖p y‖ < 1 / 2 ∧ ‖y - p y‖ < ε := by
+    intro y hy
+    constructor
+    · by_contra h
+      push Not at h
+      apply hy
+      simp only [hg₀def]
+      rw [hψzero _ h, zero_mul]
+    · by_contra h
+      push Not at h
+      apply hy
+      simp only [hg₀def]
+      rw [hχzero _ h, mul_zero]
+  have hg₀ball : ∀ y, g₀ y ≠ 0 → y ∈ closedBall (0 : Euclidean N) 2 := by
+    intro y hy
+    obtain ⟨h1, h2⟩ := hg₀supp y hy
+    rw [mem_closedBall, dist_zero_right]
+    calc ‖y‖ = ‖p y + (y - p y)‖ := by congr 1; abel
+      _ ≤ ‖p y‖ + ‖y - p y‖ := norm_add_le _ _
+      _ ≤ 2 := by linarith
+  have hg₀tsupp : tsupport g₀ ⊆ closedBall (0 : Euclidean N) 2 :=
+    closure_minimal (fun y hy => hg₀ball y hy) isClosed_closedBall
+  have hg₀cs : HasCompactSupport g₀ :=
+    HasCompactSupport.intro (isCompact_closedBall 0 2)
+      (fun y hy => by by_contra h; exact hy (hg₀ball y h))
+  have hg₀sub5 : tsupport g₀ ⊆ ball (0 : Euclidean N) 5 :=
+    hg₀tsupp.trans (closedBall_subset_ball (by norm_num))
+  have hg₀plane : EqOn g₀ ψ (P.plane : Set (Euclidean N)) := by
+    intro a ha
+    have hpa : p a = a := Grassmannian.projectionLinearMap_apply_of_mem P ha
+    simp only [hg₀def, hpa, sub_self, norm_zero, hχzero', mul_one]
+  -- Step 5: `∫ g₀ dμ_{W_k} → θ₀ ∫_P g₀ dH^n = θ₀ I₀`.
+  have hlim := Submission.intcpt_fli_weight_integral_tendsto N n P θ₀ W hconv g₀ hg₀cont hg₀cs
+    hg₀sub5
+  rw [setIntegral_congr_fun hplane_meas hg₀plane] at hlim
+  -- Step 6 (i): `μ_{W_k}(B°_3(0)) ≤ Λ` eventually, comparing with `θ₀ H^n(P ∩ B°_{3+η}(0))`
+  -- for some `η ∈ (0, 1)` with `θ₀ ω (3 + η)^n < Λ`.
+  obtain ⟨η, hη0, hη1, hηΛ⟩ : ∃ η : ℝ, 0 < η ∧ η < 1 ∧ θ₀ * ω * (3 + η) ^ n < Λ := by
+    have hc : Continuous (fun η : ℝ => θ₀ * ω * (3 + η) ^ n) := by fun_prop
+    have hlt : θ₀ * ω * (3 + 0) ^ n < Λ := by rw [add_zero, hΛ]; linarith
+    have hev1 : ∀ᶠ η in 𝓝[>] (0 : ℝ), θ₀ * ω * (3 + η) ^ n < Λ :=
+      (tendsto_nhdsWithin_of_tendsto_nhds (hc.tendsto 0)).eventually (gt_mem_nhds hlt)
+    have hev2 : ∀ᶠ η in 𝓝[>] (0 : ℝ), η < 1 :=
+      Filter.mem_of_superset (Ioo_mem_nhdsGT one_pos) (fun η h => h.2)
+    obtain ⟨η, ⟨h1, h2⟩, h3⟩ := ((hev1.and hev2).and self_mem_nhdsWithin).exists
+    exact ⟨η, h3, h2, h1⟩
+  have hi : ∀ᶠ k in atTop, (W k).weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ := by
+    have hO : ball (0 : Euclidean N) (3 + η) ⊆ ball 0 5 := ball_subset_ball (by linarith)
+    have hK : closedBall (0 : Euclidean N) 3 ⊆ ball 0 (3 + η) :=
+      closedBall_subset_ball (by linarith)
+    have hmeasO : ENNReal.ofReal θ₀ * (μHE[n] : Measure (Euclidean N))
+        ((P.plane : Set (Euclidean N)) ∩ ball 0 (3 + η)) < ENNReal.ofReal Λ := by
+      rw [(Submission.intcpt_fli_plane_ball_measure N n P 0 (3 + η) h0mem (by linarith)).2, hωeq,
+        ← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_mul hωpos.le,
+        ← ENNReal.ofReal_mul hθ₀.le, ENNReal.ofReal_lt_ofReal_iff (by linarith)]
+      calc θ₀ * (ω * (3 + η) ^ n) = θ₀ * ω * (3 + η) ^ n := by ring
+        _ < Λ := hηΛ
+    filter_upwards [Submission.intcpt_fli_weight_compact_eventually_lt N n P θ₀ W hθ₀ hconv
+      _ _ _ (isCompact_closedBall 0 3) isOpen_ball hK hO hmeasO] with k hk
+    exact (measure_mono ball_subset_closedBall).trans hk.le
+  -- Step 6 (ii): `‖δW_k‖(B°_3(0)) ≤ ‖δW_k‖(B°_5(0)) < ε²` eventually.
+  have hii : ∀ᶠ k in atTop,
+      variationMeasure (W k) (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) := by
+    have hpos : (0 : ℝ≥0∞) < ENNReal.ofReal (ε ^ 2) := ENNReal.ofReal_pos.2 (by positivity)
+    filter_upwards [hvar.eventually_lt_const hpos] with k hk
+    exact (measure_mono (ball_subset_ball (by norm_num))).trans_lt hk
+  -- Step 6 (iii): the tilt excess on `B°_3(0)` is eventually `< ε²`.
+  have hiii := Submission.intcpt_fli_tilt_excess_eventually N n P θ₀ W hconv (ε ^ 2) (by positivity)
+  -- Step 6 (iv): `μ_{W_k}(B_1(a)) ≤ (θ₀ + δ) ω` for all `a ∈ P`, `|a| ≤ 1`, eventually.
+  have hiv := Submission.intcpt_fli_unit_disc_mass_eventually N n P θ₀ W hθ₀ hconv δ hδ
+  -- Step 7: for such `k`, the good-mass estimate with `g = g₀`, `φ = ψ`, `m = θ₀ + δ` gives
+  -- `∫ g₀ dμ_{W_k} ≤ c₀ ε + (1 + (4ε/ω)²)^{n/2} k₀ I₀`.
+  have hψlint : ∫⁻ a in (P.plane : Set (Euclidean N)), ENNReal.ofReal (ψ a)
+      ∂(μHE[n] : Measure (Euclidean N)) = ENNReal.ofReal I₀ :=
+    (ofReal_integral_eq_lintegral_ofReal hψint (Eventually.of_forall hψ0)).symm
+  have hev : ∀ᶠ k in atTop, ∫ x, g₀ x ∂(W k).weight ≤
+      c₀ * ε + (1 + (4 * ε / ω) ^ 2) ^ ((n : ℝ) / 2) * k₀ * I₀ := by
+    filter_upwards [hi, hii, hiii, hiv] with k h1 h2 h3 h4
+    have hm0 : 0 ≤ θ₀ + δ := by linarith
+    have hkey := hcore δ ε (θ₀ + δ) k₀ hδ hδbar1 hε le_rfl hε1 hω4 hm0 hk
+      (ball (0 : Euclidean N) 5) (W k) P
+      (fun y => ENNReal.ofReal (g₀ y)) (fun a => ENNReal.ofReal (ψ a))
+      (ball_subset_ball (by norm_num)) (hint k) (hlbfv k) h1 h2 h3
+      (fun a ha ha1 => h4 a ha ha1.le)
+      (ENNReal.measurable_ofReal.comp hg₀cont.measurable)
+      (fun y => ENNReal.ofReal_le_one.2 (hg₀1 y))
+      (fun y => ENNReal.ofReal_le_ofReal (hg₀le y))
+      (fun y hy => by
+        have hy' : g₀ y ≠ 0 := fun h => hy (by simp [h])
+        obtain ⟨h1, h2⟩ := hg₀supp y hy'
+        exact ⟨by linarith, h2⟩)
+    rw [hψlint, ← hω] at hkey
+    have hint_g : ∫ x, g₀ x ∂(W k).weight =
+        (∫⁻ x, ENNReal.ofReal (g₀ x) ∂(W k).weight).toReal :=
+      integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall hg₀0)
+        hg₀cont.aestronglyMeasurable
+    rw [hint_g]
+    have hQ : 0 ≤ (1 + (4 * ε / ω) ^ 2) ^ ((n : ℝ) / 2) := by positivity
+    apply ENNReal.toReal_le_of_le_ofReal (by positivity)
+    refine hkey.trans (le_of_eq ?_)
+    have hQk : 0 ≤ (1 + (4 * ε / ω) ^ 2) ^ ((n : ℝ) / 2) * (k₀ : ℝ) := by positivity
+    rw [ENNReal.ofReal_add (by positivity) (by positivity), ENNReal.ofReal_mul hQk,
+      ENNReal.ofReal_mul hQ, ENNReal.ofReal_natCast]
+  -- Step 8: pass to the limit.
+  exact le_of_tendsto hlim hev
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
