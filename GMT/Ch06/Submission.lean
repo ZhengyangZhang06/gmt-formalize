@@ -359,6 +359,33 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Near-optimal covers for `μH[d]` (`d ≥ 0`, `μH[d] A < ∞`): for `r, ε > 0`, `A` is covered by
+sets `S i ⊆ A` of diameter `≤ r` with `∑ᵢ (diam S i)^d ≤ μH[d] A + ε`, empty pieces counting `0`.
+By `hausdorffMeasure_apply` the `r`-content of `A` is `≤ μH[d] A < μH[d] A + ε`, so some cover
+`t` beats `μH[d] A + ε`; its traces `t i ∩ A` keep the cover and only shrink diameters. -/
+theorem Submission.slicing_im_coarea_eil_near_optimal_cover :
+    ∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (A : Set X) (r ε : ℝ≥0∞), 0 ≤ d → 0 < r → 0 < ε → (μH[d] : Measure X) A ≠ ∞ → ∃ S : ℕ → Set X, (∀ i, S i ⊆ A) ∧ A ⊆ ⋃ i, S i ∧ (∀ i, ediam (S i) ≤ r) ∧ ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ d ≤ (μH[d] : Measure X) A + ε := by
+  intro X _ _ _ d A r ε hd hr hε hA
+  -- The `r`-content of `A` is at most `μH[d] A`, hence strictly below `μH[d] A + ε`.
+  have hlt : (⨅ (t : ℕ → Set X) (_ : A ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r),
+      ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ d) < (μH[d] : Measure X) A + ε := by
+    refine lt_of_le_of_lt ?_ (ENNReal.lt_add_right hA hε.ne')
+    rw [Measure.hausdorffMeasure_apply]
+    exact le_iSup₂ (f := fun ρ (_ : 0 < ρ) => ⨅ (t : ℕ → Set X) (_ : A ⊆ ⋃ n, t n)
+      (_ : ∀ n, ediam (t n) ≤ ρ), ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ d) r hr
+  -- So some cover `t` of `A` by sets of diameter `≤ r` has sum below `μH[d] A + ε`.
+  simp only [iInf_lt_iff] at hlt
+  obtain ⟨t, hAt, htr, hsum⟩ := hlt
+  -- Its traces `t i ∩ A` on `A` still cover `A`, have diameter `≤ r` and smaller terms
+  -- (`x ↦ x ^ d` is monotone as `d ≥ 0`; an empty trace contributes `0`).
+  refine ⟨fun i => t i ∩ A, fun i => inter_subset_right, fun x hx => ?_, fun i => ?_, ?_⟩
+  · obtain ⟨i, hi⟩ := mem_iUnion.1 (hAt hx)
+    exact mem_iUnion.2 ⟨i, hi, hx⟩
+  · exact (ediam_mono inter_subset_left).trans (htr i)
+  · refine le_trans (ENNReal.tsum_le_tsum fun i => iSup_le fun hne => ?_) hsum.le
+    exact le_iSup_of_le (hne.mono inter_subset_left)
+      (ENNReal.rpow_le_rpow (ediam_mono inter_subset_left) hd)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
