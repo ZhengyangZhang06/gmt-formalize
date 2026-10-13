@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.tangential_deformation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon asserts the existence of such families in Ch. 2 (discussion before 5.8, families as in 5.6) and Ch. 4, 2.5–2.6; the parent proof (step 3) takes the flow of X. Here the family is built by composing finitely many deformations that are linear in straightening coordinates of N; it has exactly the properties used later (φ_t = id off spt X, φ_t(N ∩ U) ⊆ N ∩ U, Dφ_t = I + tDX + o(t)) and avoids differentiable dependence of ODE solutions on initial data. Write E := ℝ^P, K := tsupport X.
+1. Preliminaries. Since (N̄ ∖ N) ∩ U = ∅, N ∩ U = N̄ ∩ U is relatively closed in U, so U ∖ N is open and K ∩ N = K ∩ N̄ is compact. By the sibling chart_tangentSpace_eq_range_fderiv, for every chart (V, W, ψ) of N (as in IsEmbeddedSubmanifold 2 d N) and v ∈ V, T_{ψ(v)}N = range Dψ(v), a linear subspace of dimension d; in particular X(z) ∈ range Dψ(v) when z = ψ(v) ∈ N ∩ U, and T_zN is closed under linear combinations.
+2. Local straightening. Fix p ∈ N and a chart (V, W, ψ), ψ ∈ C²(V), with p = ψ(v_p). Let F_p := (range Dψ(v_p))^⊥ (dimension P − d) and Ψ_p(a, w) := ψ(v_p + a) + w for a ∈ V − v_p, w ∈ F_p. Ψ_p is C² and DΨ_p(0,0)(h, k) = Dψ(v_p)h + k is a linear isomorphism ℝ^d × F_p → E. By the C² inverse function theorem (Mathlib ContDiffAt.toOpenPartialHomeomorph, ContDiffAt.to_localInverse) there is an open product of balls B_p = B'_p × B''_p ∋ (0,0) on which Ψ_p is injective with invertible derivative, O'_p := Ψ_p(B_p) is open, and the inverse Φ_p : O'_p → B_p is C². As ψ is a homeomorphism of V onto N ∩ W (properness and injectivity, cf. step 3 of the proof of the sibling), ψ(v_p + B'_p) is a relatively open neighbourhood of p in N, so there is ρ > 0 with N ∩ B_ρ(p) ⊆ ψ(v_p + B'_p). Put O_p := O'_p ∩ B_ρ(p) ∩ U ∩ W (if p ∈ U). Then for z ∈ O_p: z ∈ N iff Φ_p(z) ∈ B'_p × {0} (if z ∈ N then z = ψ(v_p + a) = Ψ_p(a, 0) with a ∈ B'_p, and injectivity of Ψ_p on B_p gives Φ_p(z) = (a, 0); conversely Ψ_p(a, 0) = ψ(v_p + a) ∈ N).
+3. Local deformations. Let Y ∈ C¹(E; E) with tsupport Y compact ⊆ O_p and Y(z) ∈ T_zN for z ∈ N ∩ O_p. Put Z(b) := DΨ_p(b)^{-1}Y(Ψ_p(b)) for b ∈ B_p and Z := 0 elsewhere; Z is C¹ (DΨ_p is C¹ and invertible on B_p) with compact support Φ_p(tsupport Y) ⊆ B_p. For b = (a, 0) ∈ B_p, Y(Ψ_p(a,0)) ∈ T_{ψ(v_p+a)}N = range Dψ(v_p + a) = DΨ_p(a,0)(ℝ^d × {0}), so Z(a, 0) ∈ ℝ^d × {0}. For |t| < t_Y := 1/(1 + sup‖DZ‖), h_t := id + tZ has ‖Dh_t − I‖ < 1 everywhere, so h_t is a C¹ diffeomorphism of ℝ^d × F_p (Mathlib ApproximatesLinearOn.toHomeomorph with the identity as linear part, plus the inverse function theorem), equal to the identity off tsupport Z; hence it maps tsupport Z and B_p onto themselves, and h_t(a, 0) = (a + tZ_1(a,0), 0) ∈ B'_p × {0} for (a, 0) ∈ B_p. Define φ^Y_t := Ψ_p∘h_t∘Φ_p on O'_p and φ^Y_t := id elsewhere. Since φ^Y_t = id on O'_p ∖ tsupport Y, φ^Y_t is C¹ on E, bijective, with invertible derivative everywhere, equal to id off tsupport Y and mapping tsupport Y ⊆ U onto itself. It maps N ∩ U into N ∩ U: for z ∈ N ∩ O_p, Φ_p(z) ∈ B'_p × {0}, so φ^Y_t(z) ∈ Ψ_p(B'_p × {0}) ⊆ N, and φ^Y_t(z) ∈ tsupport Y ∪ {z} ⊆ U; points of N outside tsupport Y are fixed. Expansion: for y ∈ O'_p and b := Φ_p(y), Dφ^Y_t(y) = DΨ_p(b + tZ(b))(I + tDZ(b))DΨ_p(b)^{-1}. Differentiating Y(Ψ_p(b)) = DΨ_p(b)Z(b) gives DY(y)DΨ_p(b) = D²Ψ_p(b)[·, Z(b)] + DΨ_p(b)DZ(b), and D²Ψ_p is symmetric and uniformly continuous on a compact neighbourhood of tsupport Z, so DΨ_p(b + tZ(b)) = DΨ_p(b) + tD²Ψ_p(b)[Z(b), ·] + o(t) uniformly in b ∈ tsupport Z. Multiplying out, Dφ^Y_t(y) = I + tDY(y) + o(t) uniformly in y ∈ tsupport Y; for y ∉ tsupport Y both sides equal I (φ^Y_t = id near y, DY(y) = 0). Thus sup_y ‖Dφ^Y_t(y) − I − tDY(y)‖ = o(t), and |φ^Y_t(y) − y| ≤ C_Y|t| for all y.
+4. Partition of unity. Cover the compact K ∩ N by finitely many O_{p_1}, …, O_{p_m} (p_i ∈ K ∩ N ⊆ U) and put O_0 := U ∖ N (open); then K ⊆ O_0 ∪ O_{p_1} ∪ ⋯ ∪ O_{p_m}. Choose smooth χ_0, …, χ_m with compact tsupport χ_i ⊆ O_{p_i} (tsupport χ_0 ⊆ O_0) and Σ_i χ_i = 1 on a neighbourhood of K (smooth partition of unity subordinate to a finite open cover of a compact set; Mathlib SmoothPartitionOfUnity / exists_contDiff_tsupport_subset). Put X_i := χ_i X. Then X = Σ_i X_i, X_i ∈ C¹_c with tsupport X_i ⊆ tsupport χ_i ∩ K; for i ≥ 1, X_i(z) = χ_i(z)X(z) ∈ T_zN for z ∈ N ∩ O_{p_i}; and X_0 = 0 on N.
+5. The family. Let φ^0_t := id + tX_0 and φ^i_t := φ^{X_i}_t (step 3 with p = p_i), and t_0 := min(t_{X_1}, …, t_{X_m}, 1/(1 + sup‖DX_0‖)) > 0. For |t| < t_0 set φ_t := φ^0_t∘φ^1_t∘⋯∘φ^m_t, and φ_t := id for |t| ≥ t_0. For every t: (a) φ_t is C¹, bijective, with invertible (in particular injective) derivative everywhere (φ^0_t by the argument of step 3, compositions of such maps); (b) φ_t(x) = x for x ∉ K, because each factor is the identity outside tsupport X_i ⊆ K; (c) φ_t(N ∩ U) ⊆ N ∩ U, because each φ^i_t (i ≥ 1) maps N ∩ U into itself and φ^0_t fixes every point of N. (d) Expansion: with y_i := φ^{i+1}_t∘⋯∘φ^m_t(x), Dφ_t(x) = Dφ^0_t(y_0)·Dφ^1_t(y_1)⋯Dφ^m_t(x); each factor is I + tDX_i(y_i) + o(t) uniformly (step 3; exact for i = 0), |y_i − x| ≤ C|t|, and the DX_i are uniformly continuous, so DX_i(y_i) = DX_i(x) + o(1) uniformly. Multiplying the finitely many bounded factors, Dφ_t(x) = I + tΣ_i DX_i(x) + o(t) = I + tDX(x) + o(t) uniformly in x: for every ε > 0 there is δ ∈ (0, t_0] with ‖Dφ_t(x) − I − tDX(x)‖ ≤ ε|t| for all |t| < δ and all x.
+
+## Key steps
+
+1. Straighten N near each point by the C² map (a, w) ↦ ψ(v_p + a) + w and the inverse function theorem.
+2. In straightening coordinates a field tangent to N is horizontal on ℝ^d × {0}, so b ↦ b + tZ(b) preserves N; conjugating gives C¹ diffeomorphisms with Dφ_t = I + tDY + o(t).
+3. A partition of unity splits X into finitely many such pieces plus a piece vanishing on N; composing the deformations gives the family.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)`
+- `python3 -I: read nodes/root-minimizing-implies-stationary-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}`
+- `python3 -I: list dag.json node ids and lean_name (56 nodes; no collision with the twelve child names)`
+- `grep -n 'exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' -A 25 mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `grep -rn 'theorem LinearMap.exists_antilipschitzWith' mathlib/Mathlib`
+- `grep -n 'def normDet\|normDet_of_subsingleton\|normDet_comp\|normDet_sq_eq_det_gram\|euclideanHausdorffMeasure_image' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `sed -n 1,100p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n hausdorffMeasure_zero_singleton mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -rn 'MeasurableSet.image_of_continuousOn_injOn\|ae_tendsto_measure_inter_div\|hausdorffMeasure_image_le\|measurable_fderiv\|measurableSet_of_differentiableAt\|extDerivWithin_pullback\|det_isEmpty\|lintegral_iUnion\|to_localInverse\|toHomeomorph\|exists_isSubordinate' mathlib/Mathlib`
+- `sed -n 1,420p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n areaJacobianAt simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `sed -n 60,110p simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean; sed -n 30,70p simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 95,140p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; sed -n 110,360p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; sed -n 25,125p simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `sed -n 1,75p book/chapter-07.txt; sed -n 400,440p book/chapter-06.txt; sed -n 760,880p book/chapter-06.txt`
+- `lake env lean /tmp/mis-decomp-v2/Check.lean (import GMT.Ch07.Submission; 12 child types in namespace GMT.Ch07.Submission, minimizing_implies_stationary and a conditional assembly_check; #print axioms)`
+- `lake env lean /tmp/mis-decomp-v2/Standalone.lean (same with the frozen contract inlined)`
+- `lake env lean /tmp/mis-decomp-v2/Radius.lean (radius_check, pieces_check; #print axioms)`
+- `lake env lean /tmp/mis-decomp-v2/Instances.lean (Gram Matrix.of, HasOrthogonalProjection instances, operator norm, μHE[0] singleton, normDet out of ℝ^0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/mis-decomp-v2/Check.lean`
+- `/tmp/mis-decomp-v2/Standalone.lean`
+- `/tmp/mis-decomp-v2/Radius.lean`
+- `/tmp/mis-decomp-v2/Instances.lean`
+
+The local snapshot (project b4d606d, Mathlib 25730c7c) has no counterpart for the contract's IMRep push-forward, first variation or mean curvature, so the twelve children are new. The library facts they reuse are the ones cited in the child proofs. The only blocking defect from v1 is confirmed and repaired. Mathlib's exists_partition_approximatesLinearOn_of_hasFDerivWithinAt takes r : (E →L[ℝ] F) → ℝ≥0 with rpos : ∀ A, r A ≠ 0, and the unit-sphere minimum used in v1 does not exist for n = 0. The fix sets m(A) = 1 for n = 0 (alternatively 1/K from LinearMap.exists_antilipschitzWith, which also covers subsingleton domains) and r = 1 on non-injective maps; rpos then holds for every A. pieces_check compiles the resulting bi-Lipschitz partition for all n and P using only propext, Classical.choice and Quot.sound. The n = 0 facts used in the new step 10 exist: Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, LinearMap.normDet_of_subsingleton and Matrix.det_isEmpty. The upper-density lemma needs only real n ≥ 0, and the SimonGMT area lemmas have no rank hypothesis and accept arbitrary weights. All twelve child types (eleven identical to v1) elaborate after import GMT.Ch07.Submission and also with the contract inlined. minimizing_implies_stationary compiles from them, and the conditional assembly uses only standard axioms. Inferred instances were verified: Matrix.of Gram matrix, Submodule.HasOrthogonalProjection.ofCompleteSpace and ContinuousLinearMap.hasOpNorm. No child name collides with any of the 56 DAG nodes.
