@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Local `C¹` retraction onto `N` (proof of Simon 7.3.1), Lipschitz bound near a point: if `f` is
+`C¹` on `B_δ(x)` and `‖Df(x)‖ ≤ c`, then for every `η > 0`, `f` is `(c + η)`-Lipschitz on some
+`B_s(x)`, `0 < s ≤ δ`.  `Df` is continuous at `x`, so `‖Df(y)‖ ≤ ‖Df(x)‖ + η ≤ c + η` on a small
+ball `B_s(x)`; the mean value inequality on the convex ball `B_s(x)` gives the bound. -/
+theorem Submission.dtc_bc_lr_lipschitz_near_point : ∀ (P : ℕ) (f : Euclid P → Euclid P) (x : Euclid P) (δ c : ℝ), 0 < δ → ContDiffOn ℝ 1 f (ball x δ) → ‖fderiv ℝ f x‖ ≤ c → ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖f y - f z‖ ≤ (c + η) * ‖y - z‖ := by
+  intro P f x δ c hδ hf hc η hη
+  -- `f` is differentiable at every point of the open ball `B_δ(x)`, and `Df` is continuous there
+  have hdiff : ∀ y ∈ ball x δ, DifferentiableAt ℝ f y := fun y hy =>
+    (hf.differentiableOn one_ne_zero y hy).differentiableAt (isOpen_ball.mem_nhds hy)
+  have hcont : ContinuousOn (fderiv ℝ f) (ball x δ) :=
+    hf.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  -- continuity of `Df` at `x`: `‖Df(y) - Df(x)‖ < η` for `|y - x| < s₁`; take `s = min s₁ δ`
+  obtain ⟨s₁, hs₁, hDf⟩ := Metric.continuousAt_iff.1
+    (hcont.continuousAt (isOpen_ball.mem_nhds (mem_ball_self hδ))) η hη
+  refine ⟨min s₁ δ, lt_min hs₁ hδ, min_le_right _ _, ?_⟩
+  -- `‖Df(y)‖ ≤ ‖Df(x)‖ + ‖Df(y) - Df(x)‖ ≤ c + η` on `B_s(x)`
+  have hbound : ∀ y ∈ ball x (min s₁ δ), ‖fderiv ℝ f y‖ ≤ c + η := by
+    intro y hy
+    have hy₁ : ‖fderiv ℝ f y - fderiv ℝ f x‖ < η := by
+      rw [← dist_eq_norm]
+      exact hDf ((mem_ball.1 hy).trans_le (min_le_left _ _))
+    exact (norm_le_norm_add_norm_sub' _ _).trans (add_le_add hc hy₁.le)
+  -- mean value inequality on the convex ball `B_s(x)`
+  intro y hy z hz
+  exact (convex_ball x (min s₁ δ)).norm_image_sub_le_of_norm_fderiv_le
+    (fun w hw => hdiff w (ball_subset_ball (min_le_right _ _) hw)) hbound hz hy
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
