@@ -806,6 +806,29 @@ theorem Submission.cmr_vr_coordinate_assembly : ∀ (X : Type) [TopologicalSpace
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [inner_smul_right, EuclideanSpace.inner_single_right, hgc, conj_trivial, one_mul, mul_comm]
 
+/-- **Riesz representation of locally bounded functionals on `C_c(X, ℝ^d)`** (step 3 of the
+foundations of the moving blow-ups for Simon's dimension reduction, Ch. 7; the representation of
+Simon Ch. 1, 4.14 used for currents in Ch. 6, 2.7).  If `X` is locally compact Hausdorff and second
+countable with its Borel σ-algebra and `L : C_c(X, ℝ^d) → ℝ` is linear with `|L g| ≤ M_K`
+whenever `tsupport g ⊆ K` and `‖g‖ ≤ 1`, then `L g = ∫ ⟨g, ν⟩ dμ₀` for a measure `μ₀` finite on
+compact sets and a measurable `ν : X → ℝ^d` integrable on compact sets.  The coordinate
+functionals `Λᵢ f = L(f eᵢ)` are locally bounded (`cmr_vr_coordinate_functional`), each is a
+difference `Pᵢ − Nᵢ` of positive functionals (`cmr_vr_jordan_decomposition`, total variation),
+the Riesz–Markov–Kakutani measures of all `Pᵢ, Nᵢ` have densities `ρᵢ` against one common `μ₀`
+(`cmr_vr_common_density`), and `ν = Σᵢ ρᵢ eᵢ` (`cmr_vr_coordinate_assembly`). -/
+theorem Submission.dimred_mbl_fnd_vector_riesz_representation : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∃ (μ₀ : Measure X) (ν : X → EuclideanSpace ℝ (Fin d)), IsFiniteMeasureOnCompacts μ₀ ∧ Measurable ν ∧ (∀ K : Set X, IsCompact K → IntegrableOn ν K μ₀) ∧ ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), L g = ∫ x, inner ℝ (g x) (ν x) ∂μ₀ := by
+  intro X _ _ _ _ _ _ d L hL
+  -- step 1: the coordinate functionals `Λᵢ f = L(f eᵢ)`, locally bounded
+  choose Λ hΛL hΛbd using Submission.cmr_vr_coordinate_functional X d L hL
+  -- steps 2–3: Jordan decomposition `Λᵢ = Pᵢ − Nᵢ` into positive functionals
+  choose Pos Neg hΛ using fun i => Submission.cmr_vr_jordan_decomposition X (Λ i) (hΛbd i)
+  -- steps 4–6 and 8: one measure `μ₀` with `Pᵢ f − Nᵢ f = ∫ f ρᵢ dμ₀`
+  obtain ⟨μ₀, ρ, hμ₀, hρm, hρint, hρ⟩ := Submission.cmr_vr_common_density X d Pos Neg
+  -- steps 7 and 9: `ν = Σᵢ ρᵢ eᵢ` and `L g = Σᵢ ∫ gᵢ ρᵢ dμ₀ = ∫ ⟨g, ν⟩ dμ₀`
+  obtain ⟨ν, hνm, hνint, hν⟩ := Submission.cmr_vr_coordinate_assembly X d L μ₀ ρ hρm hρint
+    fun i f g hg => by rw [hΛL i f g hg, hΛ i f, hρ i f]
+  exact ⟨μ₀, ν, hμ₀, hνm, hνint, hν⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
