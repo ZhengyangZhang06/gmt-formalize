@@ -2793,6 +2793,62 @@ theorem Submission.fiw_im_series : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U 
   refine ⟨S, hS, hSmass, M', θ', ξ', htri', hnat', fun ω => (hS ω).unique ?_⟩
   simpa only [hrep] using hsum' ω
 
+/-- Simon Ch. 6, proof of 7.2 (p. 172), from (5) to `T − T_{j_ℓ} = ∂R^(ℓ) + S^(ℓ)`: if `T_j ⇀ T`
+and every infinite `J ⊆ ℕ` contains an infinite `J'` with `T_i − T_j = ∂R + S` for `i, j ∈ J'`
+(`R`, `S` integer multiplicity, `M(R) + M(S) < ε`), then for some subsequence `T_{φ(ℓ)}`,
+`T_{φ(ℓ)} − T = ∂R + S` with `R`, `S` integer multiplicity and `M(R) + M(S) ≤ 2 · 2^{-ℓ}`. -/
+theorem Submission.fiw_flat_cauchy_limit :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U n)
+      (T : GeometricCurrentOn U n), (∀ ε : ℝ≥0∞, 0 < ε → ∀ J : Set ℕ, J.Infinite →
+        ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', ∃ (R : GeometricCurrentOn U (n + 1))
+          (S : GeometricCurrentOn U n), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+          (∀ ω, Tj i ω - Tj j ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε) →
+      WeaklyConvergesOn Tj T → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ ℓ : ℕ,
+        ∃ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n),
+          IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+          (∀ ω, Tj (φ ℓ) ω - T ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ 2 * 2⁻¹ ^ ℓ := by
+  intro P n U hU Tj T htb hweak
+  -- (5): nested infinite index sets for `ε = 2^{-r}` give a subsequence `T_{φ(r)}` and integer
+  -- multiplicity `R_r`, `S_r`: `T_{φ(r)} − T_{φ(r+1)} = ∂R_r + S_r`, `M(R_r) + M(S_r) < 2^{-r}`.
+  obtain ⟨φ, hφ, hpair⟩ := Submission.fiw_fcl_nested_subseq _ fun r =>
+    htb (2⁻¹ ^ r) (ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) r)
+  choose R S hR hS hRS hRSmass using hpair
+  refine ⟨φ, hφ, fun ℓ => ?_⟩
+  -- The tails: `∑_k M(R_{ℓ+k}) + ∑_k M(S_{ℓ+k}) ≤ ∑_k 2^{-(ℓ+k)} = 2 · 2^{-ℓ} < ∞`.
+  have htail : ∑' k, (R (ℓ + k)).mass + ∑' k, (S (ℓ + k)).mass ≤ 2 * 2⁻¹ ^ ℓ :=
+    calc ∑' k, (R (ℓ + k)).mass + ∑' k, (S (ℓ + k)).mass
+        = ∑' k, ((R (ℓ + k)).mass + (S (ℓ + k)).mass) := ENNReal.tsum_add.symm
+      _ ≤ ∑' k, (2⁻¹ : ℝ≥0∞) ^ ℓ * 2⁻¹ ^ k :=
+          ENNReal.tsum_le_tsum fun k => (hRSmass (ℓ + k)).le.trans_eq (pow_add _ _ _)
+      _ = 2 * 2⁻¹ ^ ℓ := by
+          rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv,
+            mul_comm]
+  have hfin : (2 : ℝ≥0∞) * 2⁻¹ ^ ℓ < ∞ :=
+    ENNReal.mul_lt_top ENNReal.ofNat_lt_top (ENNReal.pow_lt_top (ENNReal.inv_lt_top.2 two_pos))
+  -- 3.13 with `c ≡ 1`: `R^(ℓ) = ∑_k R_{ℓ+k}` and `S^(ℓ) = ∑_k S_{ℓ+k}` are integer multiplicity;
+  -- the series converge since `M_W ≤ M` for `W ⊂⊂ U`.
+  obtain ⟨X, hX, hXmass, hXim⟩ := Submission.fiw_im_series P (n + 1) U hU
+    (fun k => R (ℓ + k)) (fun _ => 1) (fun k => hR (ℓ + k)) fun W hW => by
+      simp only [Int.natAbs_one, Nat.cast_one, one_mul]
+      exact (ENNReal.tsum_le_tsum fun k =>
+        (R (ℓ + k)).massOn_mono (subset_closure.trans hW.2.2)).trans_lt
+        ((le_self_add.trans htail).trans_lt hfin)
+  obtain ⟨Y, hY, hYmass, hYim⟩ := Submission.fiw_im_series P n U hU
+    (fun k => S (ℓ + k)) (fun _ => 1) (fun k => hS (ℓ + k)) fun W hW => by
+      simp only [Int.natAbs_one, Nat.cast_one, one_mul]
+      exact (ENNReal.tsum_le_tsum fun k =>
+        (S (ℓ + k)).massOn_mono (subset_closure.trans hW.2.2)).trans_lt
+        ((le_add_self.trans htail).trans_lt hfin)
+  -- Telescoping (5) and `T_{φ(r)} ⇀ T` give `T_{φ(ℓ)} − T = ∂R^(ℓ) + S^(ℓ)`.
+  refine ⟨X, Y, hXim, hYim, Submission.fiw_fcl_telescope_limit P n U (fun r => Tj (φ r)) T R S
+    X Y ℓ hRS (fun ω => (hweak ω).comp hφ.tendsto_atTop)
+    (fun η => by simpa only [Int.cast_one, one_mul] using hX η)
+    (fun ω => by simpa only [Int.cast_one, one_mul] using hY ω), ?_⟩
+  -- `M(R^(ℓ)) + M(S^(ℓ)) ≤ ∑_k M(R_{ℓ+k}) + ∑_k M(S_{ℓ+k}) ≤ 2 · 2^{-ℓ}`.
+  refine le_trans (add_le_add ?_ ?_) htail
+  · simpa only [GeometricCurrentOn.mass, Int.natAbs_one, Nat.cast_one, one_mul] using hXmass U
+  · simpa only [GeometricCurrentOn.mass, Int.natAbs_one, Nat.cast_one, one_mul] using hYmass U
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
