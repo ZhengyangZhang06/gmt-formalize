@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.25, 6.2.30** (homotopy formula for a constant form): the affine contraction
+`ψ(y) = (n + 1)⁻¹ • α.curryLeft (y - x₀)`, i.e. `ψ(y)(v₁, …, vₙ) = (n + 1)⁻¹ α(y - x₀, v₁, …, vₙ)`,
+is a primitive of the constant `(n + 1)`-covector `α`.  Its derivative is the constant map
+`(n + 1)⁻¹ • α.curryLeft`, and alternatizing `α.curryLeft` gives `(n + 1) • α`. -/
+theorem Submission.cbrld_cone_extDeriv_affine_contraction : ∀ (P n : ℕ) (α : Covector (Euclid P) (n + 1)) (x₀ x : Euclid P), extDeriv (fun y : Euclid P => ((n : ℝ) + 1)⁻¹ • α.curryLeft (y - x₀)) x = α := by
+  intro P n α x₀ x
+  -- `y ↦ α.curryLeft (y - x₀)` is affine with linear part `α.curryLeft`
+  have h1 : HasFDerivAt (fun y : Euclid P => α.curryLeft (y - x₀)) α.curryLeft x := by
+    have h := (α.curryLeft.hasFDerivAt (x := x - x₀)).comp x ((hasFDerivAt_id x).sub_const x₀)
+    rw [ContinuousLinearMap.comp_id] at h
+    exact h
+  have hd : HasFDerivAt (fun y : Euclid P => ((n : ℝ) + 1)⁻¹ • α.curryLeft (y - x₀))
+      (((n : ℝ) + 1)⁻¹ • α.curryLeft) x := h1.const_smul (((n : ℝ) + 1)⁻¹)
+  -- `extDeriv ψ x = (n + 1)⁻¹ • alternatizeUncurryFin α.curryLeft = (n + 1)⁻¹ • (n + 1) • α`
+  rw [extDeriv, hd.fderiv, ContinuousAlternatingMap.alternatizeUncurryFin_smul,
+    ContinuousAlternatingMap.alternatizeUncurryFin_curryLeft, ← Nat.cast_smul_eq_nsmul ℝ,
+    smul_smul]
+  have hn : ((n : ℝ) + 1) ≠ 0 := by positivity
+  push_cast
+  rw [inv_mul_cancel₀ hn, one_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
