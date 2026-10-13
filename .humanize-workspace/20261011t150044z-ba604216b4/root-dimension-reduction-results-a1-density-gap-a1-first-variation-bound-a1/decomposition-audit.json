@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "fvmb_|pushforward_action_massOn|dimred_cdg_|codim1_ldr_",
+        "def approxTangentPlane|def tangentialDivergence|def IsUnitOrientationOf|structure IMRep|orients",
+        "theorem det_eq_prod_eigenvalues|theorem apply_eigenvectorBasis|trace_eq_sum_inner|trace_eq_sum_eigenvalues|trace_smulRight|eq_starProjection_of_mem_of_inner_eq_zero|ofCompleteSpace|isSymmetric_adjoint_comp_self|abs_exp_sub_one_sub_id_le|add_one_le_exp",
+        "HasApproximateTangentSpaceAt.unique|def HasApproximateTangentSpaceAt|def GeometricCurrentOn.massOn",
+        "git show 734e454cc3d143c74375012e4aaee10059ec6d03:GMT/Ch07/Submission.lean",
+        "git show 84fc998516edd166a10a19d138d7fd5856000352:GMT/Ch07/Submission.lean",
+        "git show 56e107017393dc93d7e61087e6b2c2ef320f68b4:GMT/Ch07/Submission.lean",
+        "git show 533617d27b3abcf7aac464798fdc2118b21e9d82:GMT/Ch07/Submission.lean",
+        "git show 4d9f2899c19743fcbb67ddcf158a7f37390c657b:GMT/Ch07/Submission.lean",
+        "lake env lean /tmp/fvb-independent-audit-y9o56iju/Contracts.lean",
+        "lake env lean /tmp/fvb-independent-audit-y9o56iju/Instances.lean",
+        "lake env lean /tmp/fvb-independent-audit-y9o56iju/Assembly.lean",
+        "lake env lean /tmp/fvb-independent-audit-y9o56iju/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-first-variation-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-first-variation-bound-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-3e803c0b62/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-o-90c59096a1/accepted-candidate.json",
+        "/tmp/fvb-independent-audit-y9o56iju/Contracts.lean",
+        "/tmp/fvb-independent-audit-y9o56iju/Instances.lean",
+        "/tmp/fvb-independent-audit-y9o56iju/Assembly.lean",
+        "/tmp/fvb-independent-audit-y9o56iju/EndToEnd.lean"
+      ],
+      "conclusion": "The four-child split appropriately establishes the selected Submission.dimred_cdg_pushforward_massOn_le_first_variation. Project and Mathlib pins match; the snapshot contract equals the workspace contract. The reused names have no matches in the snapshot project, but each has exactly one comparator-accepted DAG owner with a character-identical frozen type and matching candidate declaration. All names are valid bare identifiers. The reachable dependency graph is acyclic. Independent Lean checks passed for all standalone types, matrix/projection/operator-norm constructions, and the parent assembly using the declared children plus CB and TM. End-to-end compilation confirms that all four children and the selected theorem depend only on propext, Classical.choice and Quot.sound; the unrelated frozen main_theorem placeholder is outside their axiom closures."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_det_exp_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose. Realizing the Matrix.of Gram matrix as V*V establishes symmetry, nonnegative eigenvalues, and the stated determinant and trace identities. Multiplying the nonnegative eigenvalue bounds gives the conclusion, including n = 0. The proof is complete and independent of the parent. Identical-type accepted reuse at 734e454c is valid."
+    },
+    {
+      "key": "gram_jacobian_first_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifier dependencies match the standalone Lean type. The supplied constants are positive; the frame expansion bounds the exponent, and the exponential remainder and two error estimates yield exactly ε|t|. Negative t and n = 0 are covered. The sole sibling dependency, gram_det_exp_bound, is correctly directed. No future proof search or circular reliance is required. Identical-type accepted reuse at 84fc9985 is valid."
+    },
+    {
+      "key": "trace_projection_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type agree, including orthonormality, spanning Q, and continuity of B. Finite dimensionality supplies the orthogonal-projection instance without an additional hypothesis. The projection formula, rank-one decomposition, and trace_smulRight prove the exact composition order and sum, including the empty frame. The proof is complete and non-circular. Identical-type accepted reuse at 56e10701 is valid."
+    },
+    {
+      "key": "orient_approx_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The restricted measure and unit-orientation predicate exactly match the prose; no openness assumption on U is needed. R.orients supplies an approximate tangent plane almost everywhere, its existence activates the defining choice, and uniqueness identifies that choice with the oriented plane. Rewriting proves the exact conclusion without parent reliance. Identical-type accepted reuse at 533617d2 is valid."
+    }
+  ],
+  "required_changes": []
+}
