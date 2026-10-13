@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5425fcee8896088da64ddcd196aedef15bd4bf94477fdebc12de68046e960d86",
+  "git_delta": {
+    "base_commit": "23a4669f35ab219c2f80dfafd2b2d40593135254",
+    "candidate_commit": "f99211e8ffa610ee56eac04320cac15e7c878109",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_no_oriented_normal_frame",
+    "diff_sha256": "4f3d34eeee3494e41f5300efec49798b5e6c0a94dd2c771cef0f984f0c2e9b34",
+    "source_sha256": "bb442aca4c60eaf57c61bd8f81bb486c73765d54d8c3f3e673a9226b5f8fc5a1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_no_oriented_normal_frame",
+      "statement": "∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons ν σ : Fin (n + 1) → Euclid (n + 1)) c r) = -1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
