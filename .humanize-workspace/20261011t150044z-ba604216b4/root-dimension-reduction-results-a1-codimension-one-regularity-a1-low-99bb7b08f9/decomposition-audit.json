@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_eq_volume|Isometry.euclideanHausdorffMeasure_image|ae_tendsto_measure_inter_div|ae_tendsto_average_norm_sub|image_of_continuousOn_injOn|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|normDet_of_subsingleton' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n 'def blowUpMap|def HasApproximateTangentSpaceAt|def areaJacobianAt|theorem weighted_area_formula_lipschitz_injOn|theorem measurable_areaJacobianAt|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' .lake/packages/simongmt/Poincare/SimonGMT",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/ptd-independent-audit-vzyxuxy2/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/ptd-independent-audit-vzyxuxy2/Accepted.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-99bb7b08f9/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-99bb7b08f9/decomposition-v1.json",
+        "/tmp/ptd-independent-audit-vzyxuxy2/Assembly.lean",
+        "/tmp/ptd-independent-audit-vzyxuxy2/Accepted.lean",
+        "/tmp/ptd-independent-audit-vzyxuxy2/Type_parent.lean",
+        "/tmp/ptd-independent-audit-vzyxuxy2/Type_tangent_locality.lean",
+        "/tmp/ptd-independent-audit-vzyxuxy2/Type_piece_pullback.lean",
+        "/tmp/ptd-independent-audit-vzyxuxy2/Type_piece_image_tangent.lean"
+      ],
+      "conclusion": "The split is appropriate. Independent Lean checks elaborated all four frozen propositions without child implementations and proved the exact selected parent from the three child types. Project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308 match the pins. The inspected sources supply the required density, scaling, Borel-image, Jacobian and area-formula results. Each proposed bare name has exactly one accepted DAG owner, a passing comparator and a byte-identical frozen type; no conflicting active reservation was found. Adding the proposed reuse edges leaves the 18-node reachable dependency graph acyclic. The accepted declaration bodies are unchanged in the recompiled combined source; all three depend only on propext, Classical.choice and Quot.sound, without sorryAx. The unrelated frozen main_theorem placeholder is not a dependency. Simon's Definition 1.4 and Remarks 1.5 corroborate the analytic framework: [Introduction to Geometric Measure Theory](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly retains the Borel, openness, inclusion and local-finiteness hypotheses and the simultaneous quantifier over Q. Steps 1–8 establish a Q-independent exceptional set, relative excess control, tangent-derived growth, zero normalized excess and integrable blow-up comparison in both directions. No circular tangent-existence assumption is used. Reuse of ptd_ae_approxTangent_iff_of_subset is valid with its identical accepted type."
+    },
+    {
+      "key": "piece_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches both conclusions and all hypotheses. The proof establishes injectivity and Borel image, constructs the inverse on the image, and transfers null sets using its Lipschitz bound and Euclidean Hausdorff normalization. The image bound applies to arbitrary sets, so no measurability assumption on p is missing. Reuse of ptd_piece_image_measurable_ae_pullback is valid with its identical accepted type."
+    },
+    {
+      "key": "piece_image_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the stated assumptions, derivative range and restricted-volume conclusion. The proof supplies Jacobian bounds, a test-function-independent conull parameter set, the derivative lower bound, integrability, rescaled area transport, all three convergence estimates and identification of the limiting plane measure. Dimension zero is handled correctly. It uses neither the selected parent nor sibling conclusions. Reuse of ptd_piece_image_approxTangent_ae is valid with its identical accepted type."
+    }
+  ],
+  "required_changes": []
+}
