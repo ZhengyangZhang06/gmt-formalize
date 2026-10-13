@@ -1,0 +1,21 @@
+{
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3419",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "54d4b4edc3e9a88a083845bcb65d77f8136d50d7",
+  "integrated_commit": "",
+  "proof_base_commit": "11f3ef3eefe9abaf5b1ad22ef7abcb2436f9ee92",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "requires": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.kernel_frame-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.c1_extension-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.local_graph-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.tangent_range-a1"
+  ]
+}
