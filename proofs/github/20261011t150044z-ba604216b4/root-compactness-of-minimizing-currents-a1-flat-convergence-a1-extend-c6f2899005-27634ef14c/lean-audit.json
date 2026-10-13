@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "dd3281c2cd4f992137b13ca717cc5984c9f21a1c992558fd008434cc48652291",
+  "git_delta": {
+    "base_commit": "22f74d87c35bb525e69d4f8c1311abdb03cdaa02",
+    "candidate_commit": "e13458c89ad09d934f5908d9dccfa47e5dc71a66",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9c3c2d23e000b388313395548accce9243ce3b342c52c2e109bca535db7a6428",
+    "source_sha256": "48cfb03a2d15e8121cf421470986c2c6cf18e36a99ec52df701833f01fca7581",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_eu_cutoff_mass_le",
+      "statement": "∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsCompact K → K ⊆ U → Y.restrictDomain (subset_univ U) = X → Y.support ⊆ K → Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
