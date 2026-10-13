@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4d700220389f5feb482d4c521e1483a414032d432ac92970196971e5bcda907e",
+  "git_delta": {
+    "base_commit": "0ae66d749a8ac236d45e8ad53ef871722a24803b",
+    "candidate_commit": "c6671eb413dceb5ec3c6494e999fe075cdb5a407",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mono_density_usc_of_monotone",
+    "diff_sha256": "1ed76a2d493f64392e25eddc3c8c3cbb2bda530496bf2757e948ad90e2bc98d2",
+    "source_sha256": "d6f70f452c62f7a1e7ef24eb6d653c7e58e2147eba8dcb4cd06d836201ed8e3e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mono_density_usc_of_monotone",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ T.massOn (ball y r) ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → ∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
