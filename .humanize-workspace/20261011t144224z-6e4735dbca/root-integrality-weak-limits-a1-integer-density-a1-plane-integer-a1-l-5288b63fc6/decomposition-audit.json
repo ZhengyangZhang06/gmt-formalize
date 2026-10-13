@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "namespace|open |abbrev Eucl|structure IsRectifiableTriple|def IsIntegerMultiplicity|def IsMeasureRepresentation|def IsRestriction|def CompactlyContainedOpen|def SlicingTheorem|main_theorem",
+        "br_restrictDomain_isIntegerMultiplicity|fiw_tb_ext_support_subset",
+        "setIntegral_eq_integral_of_(ae|forall)_compl_eq_zero|setIntegral_eq_zero_of_forall_eq_zero",
+        "theorem restrict_restrict|ae_restrict_iff\\x27|ae_restrict_mem₀|ae_restrict_of_ae_restrict_of_subset",
+        "git show 03443db0c607754737d538401692c78a08383ee0:GMT/Ch06/Submission.lean",
+        "git show 3d64216fd707864ee89d87538a4aa0d85cadf386:GMT/Ch06/Submission.lean",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env lean '/tmp/localized-cycles-independent-audit-tqfqzuld/Type_restrict_domain_im.lean'",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env lean '/tmp/localized-cycles-independent-audit-tqfqzuld/Type_support_subset.lean'",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env lean '/tmp/localized-cycles-independent-audit-tqfqzuld/Combined.lean'"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-l-5288b63fc6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-restrict-domain-im-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-support-subset-a1/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+        "/tmp/localized-cycles-independent-audit-tqfqzuld/Type_restrict_domain_im.lean",
+        "/tmp/localized-cycles-independent-audit-tqfqzuld/Type_support_subset.lean",
+        "/tmp/localized-cycles-independent-audit-tqfqzuld/Combined.lean"
+      ],
+      "conclusion": "Verified project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The pinned definitions and integral lemmas support both supplied proofs. Neither child declaration occurs in the snapshot project; each instead has a unique comparator-accepted DAG entry with an identical frozen type and a matching retained-source hash. Reuse preserves the restriction child's accepted tangent-locality prerequisite, and the relevant dependency graph is acyclic. Both one-line propositions independently elaborate with autoImplicit=false before loading their implementations. Recompiled accepted proofs and the combined parent derivation use only propext, Classical.choice and Quot.sound. The assembly's seven prerequisite types and selected parent conclusion were independently checked byte-for-byte against the frozen contracts. The split is appropriate: both reused children contribute to this selected theorem, without introducing circular obligations or changing its contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restrict_domain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including W open and W ⊆ U without assuming U open. Every rectifiable-triple condition passes to M ∩ W as justified. The supplied blow-up argument proves tangent locality directly; orientation transfers almost everywhere, and vanishing outside W proves the representation identity. The proof is complete and non-circular. The bare name validly reuses the identical accepted contract, retaining its acyclic prerequisite. This child establishes integer multiplicity in parent steps 3 and 7(a)."
+    },
+    {
+      "key": "support_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Openness of V and closedness of K provide the required neighborhood; the half-radius ball has compact closure inside V, and the vanishing hypothesis puts it in zeroRegion. This proves the support inclusion without hidden assumptions or circular reliance. The bare name validly reuses the identical accepted contract. Applied to V = W′ and K = {d ≤ γ}, with the parent's explicitly established vanishing, it supplies step 7(e)."
+    }
+  ],
+  "required_changes": []
+}
