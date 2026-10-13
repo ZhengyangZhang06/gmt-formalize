@@ -458,6 +458,81 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Elementary properties of the difference quotient `w = d⁻¹ (u(· + d e) - u)` of a `C¹` map `u`
+whose derivative is bounded by `ε` and `α`-Hölder with constant `H` on a set `K ⊆ U` containing the
+segments `x + [0, 1] d e` (`x ∈ V`): `w` is `C¹` on `V`, `Dw = d⁻¹ (Du(· + d e) - Du)` on `V`,
+`‖w‖ ≤ ε ‖e‖` on `V` (mean value inequality along the segment), and `Dw` is `α`-Hölder on `V`
+with constant `2 |d|⁻¹ H`. -/
+theorem dohr_eb_elc2_dq_basic : ∀ (n ℓ : ℕ) (u : Rn n → Rn ℓ) (U V K : Set (Rn n)) (e : Rn n) (d ε H α : ℝ), IsOpen U → ContDiffOn ℝ 1 u U → K ⊆ U → d ≠ 0 → (∀ x ∈ V, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ K) → (∀ x ∈ K, ‖fderiv ℝ u x‖ ≤ ε) → (∀ x ∈ K, ∀ y ∈ K, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ H * ‖x - y‖ ^ α) → ContDiffOn ℝ 1 (fun z => d⁻¹ • (u (z + d • e) - u z)) V ∧ (∀ x ∈ V, fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x = d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) ∧ (∀ x ∈ V, ‖d⁻¹ • (u (x + d • e) - u x)‖ ≤ ε * ‖e‖) ∧ ∀ x ∈ V, ∀ y ∈ V, ‖fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x - fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) y‖ ≤ 2 * |d|⁻¹ * H * ‖x - y‖ ^ α := by
+  intro n ℓ u U V K e d ε H α hU hu hKU hd hseg hε hH
+  have hx0 : ∀ x ∈ V, x ∈ K := fun x hx => by simpa using hseg x hx 0 (by simp)
+  have hx1 : ∀ x ∈ V, x + d • e ∈ K := fun x hx => by simpa using hseg x hx 1 (by simp)
+  have hdiff : ∀ y ∈ U, DifferentiableAt ℝ u y := fun y hy =>
+    (hu.differentiableOn one_ne_zero y hy).differentiableAt (hU.mem_nhds hy)
+  have hD : ∀ x ∈ V, fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x =
+      d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x) := by
+    intro x hx
+    have h1 : DifferentiableAt ℝ (fun z => u (z + d • e)) x := by
+      have := hdiff _ (hKU (hx1 x hx))
+      exact this.comp x (differentiableAt_id.add_const _)
+    have h2 := hdiff x (hKU (hx0 x hx))
+    have ha : HasFDerivAt (fun z => u (z + d • e)) (fderiv ℝ u (x + d • e)) x := by
+      have := (hdiff _ (hKU (hx1 x hx))).hasFDerivAt.comp x ((hasFDerivAt_id x).add_const (d • e))
+      simp only [ContinuousLinearMap.comp_id] at this
+      exact this
+    exact ((ha.sub h2.hasFDerivAt).const_smul d⁻¹).fderiv
+  refine ⟨?_, hD, ?_, ?_⟩
+  · have h1 : ContDiffOn ℝ 1 (fun z => u (z + d • e)) V :=
+      hu.comp (by fun_prop) (fun x hx => hKU (hx1 x hx))
+    have h2 : ContDiffOn ℝ 1 u V := hu.mono (fun x hx => hKU (hx0 x hx))
+    exact (h1.sub h2).const_smul d⁻¹
+  · intro x hx
+    have hmv : ‖u (x + d • e) - u x‖ ≤ ε * (|d| * ‖e‖) := by
+      have := norm_image_sub_le_of_norm_deriv_le_segment_01' (f := fun t : ℝ => u (x + (t * d) • e))
+        (f' := fun t => fderiv ℝ u (x + (t * d) • e) (d • e)) (C := ε * (|d| * ‖e‖))
+        (fun t ht => by
+          have hp : x + (t * d) • e ∈ U := hKU (hseg x hx t ⟨ht.1, ht.2⟩)
+          have hda := (hdiff _ hp).hasFDerivAt
+          have hl : HasDerivAt (fun t : ℝ => x + (t * d) • e) (d • e) t := by
+            have := ((hasDerivAt_id t).mul_const d).smul_const e
+            simpa using this.const_add x
+          exact (hda.comp_hasDerivAt t hl).hasDerivWithinAt)
+        (fun t ht => by
+          have hp : x + (t * d) • e ∈ K := hseg x hx t ⟨ht.1, ht.2.le⟩
+          calc ‖fderiv ℝ u (x + (t * d) • e) (d • e)‖ ≤ ‖fderiv ℝ u (x + (t * d) • e)‖ * ‖d • e‖ :=
+                (fderiv ℝ u _).le_opNorm _
+            _ ≤ ε * ‖d • e‖ := by gcongr; exact hε _ hp
+            _ = ε * (|d| * ‖e‖) := by rw [norm_smul, Real.norm_eq_abs])
+      simpa using this
+    rw [norm_smul, norm_inv, Real.norm_eq_abs]
+    have hd' : 0 < |d| := abs_pos.mpr hd
+    calc |d|⁻¹ * ‖u (x + d • e) - u x‖ ≤ |d|⁻¹ * (ε * (|d| * ‖e‖)) := by gcongr
+      _ = ε * ‖e‖ := by field_simp
+  · intro x hx y hy
+    rw [hD x hx, hD y hy]
+    have hsm : d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x) - d⁻¹ • (fderiv ℝ u (y + d • e) - fderiv ℝ u y)
+        = d⁻¹ • ((fderiv ℝ u (x + d • e) - fderiv ℝ u x) - (fderiv ℝ u (y + d • e) - fderiv ℝ u y)) :=
+      (smul_sub _ _ _).symm
+    rw [hsm, norm_smul, norm_inv, Real.norm_eq_abs]
+    have h1 := hH _ (hx1 x hx) _ (hx1 y hy)
+    have h2 := hH _ (hx0 x hx) _ (hx0 y hy)
+    have h3 : x + d • e - (y + d • e) = x - y := by abel
+    rw [h3] at h1
+    have : ‖fderiv ℝ u (x + d • e) - fderiv ℝ u x - (fderiv ℝ u (y + d • e) - fderiv ℝ u y)‖ ≤
+        2 * H * ‖x - y‖ ^ α := by
+      calc _ = ‖(fderiv ℝ u (x + d • e) - fderiv ℝ u (y + d • e)) - (fderiv ℝ u x - fderiv ℝ u y)‖ := by
+            congr 1; abel
+        _ ≤ ‖fderiv ℝ u (x + d • e) - fderiv ℝ u (y + d • e)‖ + ‖fderiv ℝ u x - fderiv ℝ u y‖ :=
+            norm_sub_le _ _
+        _ ≤ H * ‖x - y‖ ^ α + H * ‖x - y‖ ^ α := add_le_add h1 h2
+        _ = 2 * H * ‖x - y‖ ^ α := by ring
+    calc |d|⁻¹ * _ ≤ |d|⁻¹ * (2 * H * ‖x - y‖ ^ α) := by gcongr
+      _ = 2 * |d|⁻¹ * H * ‖x - y‖ ^ α := by ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
