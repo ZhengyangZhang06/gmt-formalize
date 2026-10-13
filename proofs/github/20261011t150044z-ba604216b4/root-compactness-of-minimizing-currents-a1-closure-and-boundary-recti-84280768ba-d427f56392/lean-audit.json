@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eba84d4615eafbb2ac06276e5112639601f08503eb2c7744a9570dd95c9aee2e",
+  "git_delta": {
+    "base_commit": "d8d4bc0a63e6e44e07ebebc5499f834d737592d0",
+    "candidate_commit": "073b07eb830104a52afb409c2e7ebcda2f0a2f76",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_ud_isClosed_cone_mass_le",
+    "diff_sha256": "bea71cfab31af9818a377e8479fc2208474f38e200db628f12e96a216142b4a2",
+    "source_sha256": "9c89c748deac4e2b7442850db56813af1cd96a3d88eeeb5666587c392134dcda",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_ud_isClosed_cone_mass_le",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (ρ : ℝ) (s : ℝ≥0∞), IsClosed F → ContinuousOn (fun x => (Q x).starProjection) F → IsClosed {x | x ∈ F ∧ μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ s}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
