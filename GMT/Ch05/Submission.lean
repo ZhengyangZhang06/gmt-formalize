@@ -458,6 +458,33 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): if
+`Ψ` is `C^∞` on `L = L(ℝⁿ, ℝ^ℓ)`, then for fixed `P, Q ∈ L` the Hessian component
+`R ↦ D²Ψ(R)[P][Q]` is `C^∞`.  `A = DΨ` is `C^∞`, hence so is `a_Q(R) = A(R)[Q]` and its
+derivative; `fderiv_clm_apply` with the constant `Q` gives `Da_Q(R)[P] = DA(R)[P][Q]`, so the map
+is the `C^∞` derivative `Da_Q` evaluated at `P`. -/
+theorem dohr_eb_ehs_hessian_apply_contDiff : ∀ n ℓ : ℕ, ∀ Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ, ContDiff ℝ (⊤ : ℕ∞) Ψ → ∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiff ℝ (⊤ : ℕ∞) (fun R : Rn n →L[ℝ] Rn ℓ => fderiv ℝ (fderiv ℝ Ψ) R P Q) := by
+  intro n ℓ Ψ hΨ P Q
+  -- Step 1: `A = DΨ` is `C^∞`.
+  have hA : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ Ψ) := (contDiff_infty_iff_fderiv.1 hΨ).2
+  -- Step 2: `a_Q(R) = A(R)[Q]` is `C^∞` (evaluation at `Q` is continuous linear), so is `Da_Q`.
+  have haQ : ContDiff ℝ (⊤ : ℕ∞) (fun R => fderiv ℝ Ψ R Q) := hA.clm_apply contDiff_const
+  have hDaQ : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ (fun R => fderiv ℝ Ψ R Q)) :=
+    (contDiff_infty_iff_fderiv.1 haQ).2
+  -- Step 3: `Da_Q(R)[P] = DA(R)[P][Q]`, by the product rule with the constant map `Q`.
+  have heq : (fun R => fderiv ℝ (fderiv ℝ Ψ) R P Q)
+      = fun R => fderiv ℝ (fun R' => fderiv ℝ Ψ R' Q) R P := by
+    funext R
+    rw [fderiv_clm_apply (hA.differentiable (by simp) R) (differentiableAt_const Q)]
+    simp
+  -- Step 4: the map is `Da_Q` followed by the continuous linear evaluation at `P`.
+  rw [heq]
+  exact hDaQ.clm_apply contDiff_const
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
