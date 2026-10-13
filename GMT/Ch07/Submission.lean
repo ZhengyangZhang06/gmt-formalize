@@ -523,6 +523,63 @@ theorem Submission.dimred_zdv_approxTangent_sdiff_singleton : ∀ (P n : ℕ) (M
     exact hy.2 ⟨hy.1, hne⟩
   exact hfq
 
+/-- Deleting a point `p ∈ M` from a `0`-dimensional triple `R = (M, θ, ξ)` leaves the triple
+`R' = (M ∖ {p}, θ, ξ)`, and `R(ω) = R'(ω) + θ(p)⟨ω(p), ξ(p)⟩` for `ω ∈ 𝒟⁰(U)`.  The fields of
+`R'` are inherited from `R`; a.e. `x ∈ M ∖ {p}` has `x ≠ p`, so `M ∖ {p}` keeps the approximate
+tangent space at `x`.  The integrand vanishes off the compact `spt ω ⊆ U`, and `M ∩ spt ω` is
+finite with `H⁰{y} = 1`, so it is integrable on `M`; then split `M = (M ∖ {p}) ∪ {p}`. -/
+theorem Submission.dimred_zdv_erase_point : ∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p) := by
+  intro P U R p hp
+  -- `H⁰{x} = 1`, as `μHE[0] = μH[0]`
+  have hpt : ∀ x : Euclid P, (μHE[0] : Measure (Euclid P)) {x} = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hM' : MeasurableSet (R.carrier \ {p}) :=
+    R.measurableSet_carrier.diff (measurableSet_singleton p)
+  -- `R' = (M ∖ {p}, θ, ξ)`: each field of `R` passes to the smaller carrier
+  let R' : IMRep U 0 :=
+    { carrier := R.carrier \ {p}
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := hM'
+      carrier_subset := sdiff_subset.trans R.carrier_subset
+      rectifiable := R.rectifiable.mono sdiff_subset
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      locallyIntegrable_mult := fun K hK hKU =>
+        ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU)
+          (lintegral_mono_set (inter_subset_inter_left K sdiff_subset))
+      aestronglyMeasurable_orient :=
+        R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono sdiff_subset le_rfl)
+      orients := by
+        -- a.e. `x ∈ M ∖ {p}` has `x ≠ p`, so `TₓM` is also the tangent space of `M ∖ {p}`
+        filter_upwards [ae_restrict_of_ae_restrict_of_subset sdiff_subset R.orients,
+          ae_restrict_mem hM'] with x hxQ hx
+        obtain ⟨Q, hQ, hξ⟩ := hxQ
+        exact ⟨Q, Submission.dimred_zdv_approxTangent_sdiff_singleton P 0 R.carrier x p Q
+          R.measurableSet_carrier hx.2 hQ, hξ⟩ }
+  refine ⟨R', rfl, rfl, rfl, fun ω => ?_⟩
+  -- the integrand `g = θ⟨ω, ξ⟩` vanishes off the compact set `spt ω ⊆ U`
+  obtain ⟨⟨-, hK⟩, hKU⟩ := ω.2
+  set g : Euclid P → ℝ :=
+    fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 0) x) with hg
+  have hg0 : ∀ x ∉ tsupport (ω : DifferentialForm (Euclid P) 0), g x = 0 := fun x hx => by
+    simp only [hg, image_eq_zero_of_notMem_tsupport hx, map_zero, mul_zero]
+  -- `M ∩ spt ω` is finite and `H⁰{y} = 1`, so `g` is integrable on `M ∩ spt ω`, hence on `M`
+  have hgK : IntegrableOn g (R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0)) μHE[0] := by
+    rw [← biUnion_of_singleton (R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0)),
+      integrableOn_finite_biUnion
+        (Submission.dimred_zdv_carrier_finite P U _ R hK.isCompact hKU)]
+    exact fun y _ => integrableOn_singleton (hx := (hpt y).trans_lt ENNReal.one_lt_top)
+  have hgM : IntegrableOn g R.carrier μHE[0] :=
+    hgK.of_forall_sdiff_eq_zero R.measurableSet_carrier fun x hx =>
+      hg0 x fun hxK => hx.2 ⟨hx.1, hxK⟩
+  -- `∫_M g = ∫_{M ∖ {p}} g + H⁰{p} g(p)` and `H⁰{p} = 1`
+  have hsplit := setIntegral_union (μ := μHE[0]) disjoint_sdiff_left (measurableSet_singleton p)
+    (hgM.mono_set sdiff_subset) (hgM.mono_set (singleton_subset_iff.2 hp))
+  rw [sdiff_union_of_subset (singleton_subset_iff.2 hp), integral_singleton, measureReal_def,
+    hpt, ENNReal.toReal_one, one_smul] at hsplit
+  exact hsplit
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
