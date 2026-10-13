@@ -467,6 +467,90 @@ theorem Submission.dr_cc_skeleton_facts :
     · -- A fixed coordinate would give `a_i = y_i = c_i ∈ {0, 1}`.
       rw [hxc i hiJ, sub_self, mul_zero] at h
       rcases hc01 i hiJ with h0 | h0 <;> linarith
+/-- Simon Ch. 6, Lemma 5.4, displays (4)–(7) (corrected similarity bound): if `y ∈ [0,1]^d` lies
+on the ray `y = c + s(x - c)` from a face centre `c` (with `c_i = a_i` on `J`, `c_i ∈ {0,1}`
+and `x_i = c_i` off `J`), then `min{1/4, s·dist(x, La)} ≤ dist(y, La)`.  A point `w ∈ La` either
+has a witness coordinate where `y_i ∈ [0,1]` is `1/4`-far from `a_i + ℤ`, or all its witness
+coordinates are free with zero shift, and then `w' = c + s⁻¹(w - c) ∈ La` and
+`y - w = s(x - w')`. -/
+theorem Submission.dr_cc_similarity_bound : ∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → min (1 / 4) (s * infDist x La) ≤ infDist y La := by
+  intro m ℓ a ha La hLa J c x y s hcJ hcJc hxJc hy hs hrel
+  -- `La = ∅` is trivial; otherwise it suffices to bound `dist y w` for each `w ∈ La`.
+  rcases La.eq_empty_or_nonempty with hE | hne
+  · simp [hE]
+  rw [Metric.le_infDist hne]
+  intro w hw
+  -- The witness set `J'` (of `m + 2` indices) and the integers `k_i` for `w ∈ La`.
+  rw [hLa, Set.mem_ofPred_eq] at hw
+  obtain ⟨J', hJ'card, hJ'⟩ := hw
+  -- `|y_i - w_i| ≤ |y - w|`, so a coordinate gap of `1/4` gives the bound.
+  have hcoord : ∀ i, 1 / 4 ≤ |y i - w i| → min (1 / 4) (s * infDist x La) ≤ dist y w := by
+    intro i hi
+    have hi' := PiLp.dist_apply_le y w i
+    rw [Real.dist_eq] at hi'
+    exact (min_le_left _ _).trans (hi.trans hi')
+  by_cases h1 : ∃ i ∈ J', i ∉ J
+  · -- Case 1: a witness index `i ∉ J`, where `y_i = c_i ∈ {0, 1}`.
+    obtain ⟨i, hiJ', hiJ⟩ := h1
+    obtain ⟨k, hk⟩ := hJ' i hiJ'
+    obtain ⟨ha1, ha2⟩ := ha i
+    have hyi : y i = c i := by
+      have hri := hrel i
+      rw [hxJc i hiJ, sub_self, mul_zero, sub_eq_zero] at hri
+      exact hri
+    refine hcoord i ?_
+    rcases hcJc i hiJ with hc | hc
+    · have hk' : (k : ℝ) ≤ -1 ∨ (0 : ℝ) ≤ k := by
+        rcases le_or_gt 0 k with h | h
+        · right; exact_mod_cast h
+        · left; exact_mod_cast (show k ≤ -1 by omega)
+      rcases hk' with hk1 | hk1
+      · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
+      · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
+    · have hk' : (k : ℝ) ≤ 0 ∨ (1 : ℝ) ≤ k := by
+        rcases le_or_gt 1 k with h | h
+        · right; exact_mod_cast h
+        · left; exact_mod_cast (show k ≤ 0 by omega)
+      rcases hk' with hk1 | hk1
+      · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
+      · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
+  push Not at h1
+  by_cases h2 : ∃ i ∈ J', w i ≠ a i
+  · -- Case 2: a nonzero shift `k_i` at a witness index, where `y_i ∈ [0, 1]`.
+    obtain ⟨i, hiJ', hwi⟩ := h2
+    obtain ⟨k, hk⟩ := hJ' i hiJ'
+    obtain ⟨ha1, ha2⟩ := ha i
+    obtain ⟨hy0, hy1⟩ := hy i
+    have hk0 : k ≠ 0 := by
+      rintro rfl
+      rw [Int.cast_zero, sub_eq_zero] at hk
+      exact hwi hk
+    have hk' : (k : ℝ) ≤ -1 ∨ (1 : ℝ) ≤ k := by
+      rcases le_or_gt 1 k with h | h
+      · right; exact_mod_cast h
+      · left; exact_mod_cast (show k ≤ -1 by omega)
+    refine hcoord i ?_
+    rcases hk' with hk1 | hk1
+    · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
+    · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
+  -- Case 3: all witness indices lie in `J` with zero shifts; `w' = c + s⁻¹(w - c) ∈ La`.
+  push Not at h2
+  have hw' : c + s⁻¹ • (w - c) ∈ La := by
+    rw [hLa, Set.mem_ofPred_eq]
+    refine ⟨J', hJ'card, fun i hi => ⟨0, ?_⟩⟩
+    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, h2 i hi,
+      hcJ i (h1 i hi), sub_self, mul_zero, add_zero, Int.cast_zero]
+  have hyw : y - w = s • (x - (c + s⁻¹ • (w - c))) := by
+    ext i
+    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
+    calc y i - w i = (y i - c i) - (w i - c i) := by ring
+      _ = s * (x i - c i) - s * s⁻¹ * (w i - c i) := by rw [hrel i, mul_inv_cancel₀ hs.ne', one_mul]
+      _ = s * (x i - (c i + s⁻¹ * (w i - c i))) := by ring
+  have hdist : dist y w = s * dist x (c + s⁻¹ • (w - c)) := by
+    rw [dist_eq_norm, dist_eq_norm, hyw, norm_smul, Real.norm_of_nonneg hs.le]
+  rw [hdist]
+  exact (min_le_right _ _).trans
+    (mul_le_mul_of_nonneg_left (Metric.infDist_le_dist_of_mem hw') hs.le)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
