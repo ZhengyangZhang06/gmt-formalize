@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1.exhaustion-a1",
+  "parent_id": "root.harmonic_approximation-a1.poincare_inequality-a1",
+  "depth": 3,
+  "title": "Exhaustion B_r ↑ B_1 for the double integral of |f(x) − f(y)|²",
+  "statement": "Let n ∈ ℕ, let f : ℝ^n → ℝ be a.e.-strongly measurable for Lebesgue measure restricted to the open unit ball B_1, and let K ∈ [0, ∞]. If ∫⁻_{x ∈ B_r} ∫⁻_{y ∈ B_r} ‖f(x) − f(y)‖ₑ² dy dx ≤ K for every r with 0 < r < 1 (B_r = ball(0, r)), then ∫⁻_{x ∈ B_1} ∫⁻_{y ∈ B_1} ‖f(x) − f(y)‖ₑ² dy dx ≤ K.",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0∞), AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) 1)) → (∀ r : ℝ, 0 < r → r < 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ K) → ∫⁻ x in ball (0 : Rn n) 1, ∫⁻ y in ball (0 : Rn n) 1, ‖f x - f y‖ₑ ^ 2 ≤ K",
+  "lean_name": "poincare_ball_double_integral_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-poincare-inequality-a1-exhaustion-a1-a1"
+}

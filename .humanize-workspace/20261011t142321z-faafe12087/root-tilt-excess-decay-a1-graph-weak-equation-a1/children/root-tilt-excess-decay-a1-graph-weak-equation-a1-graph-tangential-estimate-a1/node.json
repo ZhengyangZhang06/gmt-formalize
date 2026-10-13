@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "Approximate weak equation on the graph part of the varifold (Simon 4.5 (8)-(12))",
+  "statement": "Let n >= 1, l, U an open subset of R^{n+l}, V a rectifiable n-varifold in U with generalized mean curvature H in U, with x |-> p_x = V.tangentProj x mu-a.e. strongly measurable (mu = V.weight), sigma > 0 with B_sigma(0) contained in U, q a linear isometry, T = rotatedPlane q, P = T.starProjection, and f : R^n -> R^l 1-Lipschitz on B^n_{sigma/2}(0) with |f| <= sigma/16 there. Assume dist(x, T) <= sigma/16 for x in spt V cap B_sigma(0), and that for mu-a.e. x, whenever x = q(graphPoint x' (f x')) with |x'| < sigma/2 and f differentiable at x', p_x is the orthogonal projection onto span{q(graphPoint v (Df(x') v))}. Let zeta : R^n -> R be C^1 with compact support, tsupport zeta contained in B°^n_{sigma/4}(0), |grad zeta| <= M, j in Fin l, a(x) := (EuclideanSpace.finAddEquivProd (q^{-1}x)).1, Gamma := q(graph f over B^n_{sigma/2}(0)) and Gamma' := q(graph f over B°^n_{sigma/4}(0)). Then |int_{Gamma'} <grad f^j(a(x)), grad zeta(a(x))> dmu| <= M mu(B_{sigma/2}(0) cap (spt V \\ Gamma)) + M int_{B_sigma(0)} |p_x - P|^2 dmu + M (sigma/4) int_{B_{sigma/2}(0)} |H| dmu, where f^j = (f .)_j, |.|^2 = hsNormSq, the integrals are Bochner integrals, and the first term is M times (mu(B_{sigma/2}(0) cap (spt V \\ Gamma))).toReal; under these hypotheses this measure is at most mu(B_sigma(0)), which is finite because B_sigma(0) is a compact subset of U, so toReal loses nothing.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → (∀ x ∈ closedBall (0 : Rn n) (σ / 2), ‖f x‖ ≤ σ / 16) → (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → (∀ᵐ x ∂V.weight, ∀ x' ∈ ball (0 : Rn n) (σ / 2), x = q (graphPoint x' (f x')) → DifferentiableAt ℝ f x' → V.tangentProj x = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (fderiv ℝ f x' v)))).starProjection) → ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in q '' graphOver f (ball 0 (σ / 4)), inner ℝ (gradient (fun y => f y j) (EuclideanSpace.finAddEquivProd (q.symm x)).1) (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) ∂V.weight| ≤ M * (V.weight (closedBall 0 (σ / 2) ∩ (V.support \\ q '' graphOver f (closedBall 0 (σ / 2))))).toReal + M * ∫ x in closedBall 0 σ, hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight + M * (σ / 4) * ∫ x in closedBall 0 (σ / 2), ‖H x‖ ∂V.weight",
+  "lean_name": "gwe_graph_tangential_estimate",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.lipschitz_graph_area-a1",
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1",
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+    "root.lipschitz_approximation-a1.graph_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.lipschitz_graph_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1",
+      "result_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-estimate-a1-a1"
+}

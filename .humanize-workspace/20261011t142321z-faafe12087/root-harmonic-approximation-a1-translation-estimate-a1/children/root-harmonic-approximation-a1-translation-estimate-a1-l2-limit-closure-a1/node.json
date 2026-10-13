@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.translation_estimate-a1.l2_limit_closure-a1",
+  "parent_id": "root.harmonic_approximation-a1.translation_estimate-a1",
+  "depth": 3,
+  "title": "Quadratic lintegral inequalities pass to L^2 limits",
+  "statement": "Let alpha be a measurable space with measures mu and nu, let E and F be normed additive commutative groups, and let c in [0,infinity) (c != infinity). Let a_j, a_0 : alpha -> E and b_j, b_0 : alpha -> F (j in N) be a.e.-strongly measurable (the a's for mu, the b's for nu). If int^- ||a_j - a_0||_e^2 dmu -> 0, int^- ||b_j - b_0||_e^2 dnu -> 0, and int^- ||a_j||_e^2 dmu <= c int^- ||b_j||_e^2 dnu for every j, then int^- ||a_0||_e^2 dmu <= c int^- ||b_0||_e^2 dnu (lintegrals in [0,infinity]; the types live in universe Type).",
+  "lean_statement": "∀ {α E F : Type} [MeasurableSpace α] [NormedAddCommGroup E] [NormedAddCommGroup F] (μ ν : Measure α) (c : ℝ≥0∞) (a : ℕ → α → E) (a₀ : α → E) (b : ℕ → α → F) (b₀ : α → F), c ≠ ∞ → (∀ j, AEStronglyMeasurable (a j) μ) → AEStronglyMeasurable a₀ μ → (∀ j, AEStronglyMeasurable (b j) ν) → AEStronglyMeasurable b₀ ν → Tendsto (fun j => ∫⁻ x, ‖a j x - a₀ x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖b j x - b₀ x‖ₑ ^ 2 ∂ν) atTop (𝓝 0) → (∀ j, ∫⁻ x, ‖a j x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b j x‖ₑ ^ 2 ∂ν) → ∫⁻ x, ‖a₀ x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b₀ x‖ₑ ^ 2 ∂ν",
+  "lean_name": "lintegral_sq_le_of_l2_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-translation-estimate-a1-l2-limit-closure-a1-a1"
+}

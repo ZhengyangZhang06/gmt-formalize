@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "Graph planes of a linear map: energy and tangential error controlled by the tilt |p_S - p_T|^2",
+  "statement": "For all n, l, every linear isometry q of R^{n+l} and every linear map D : R^n -> R^l with operator norm ||D|| <= 1, let S := span{q(graphPoint v (D v)) : v in R^n}, p := S.starProjection, T := rotatedPlane q = q(R^n x {0}), P := T.starProjection, and |A|^2 := hsNormSq A. Then (a) |D|^2 <= (l + 1/2) |p - P|^2; and (b) for every j in Fin l and all r, w in R^n with <r, v> = (D v)_j for every v (r is the j-th row of D), |<p e'_j, p q(graphPoint w 0)> - <r, w>| <= |p - P|^2 ||w||, where e'_j := q(graphPoint 0 (EuclideanSpace.single j 1)).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Rn n →L[ℝ] Rn ℓ), ‖D‖ ≤ 1 → hsNormSq D ≤ ((ℓ : ℝ) + 1 / 2) * hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection - (rotatedPlane q).starProjection) ∧ ∀ (j : Fin ℓ) (r w : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → |inner ℝ ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint w 0))) - inner ℝ r w| ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection - (rotatedPlane q).starProjection) * ‖w‖",
+  "lean_name": "gwe_graph_tilt_algebra",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+    "root.lipschitz_approximation-a1.graph_coordinates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-projection-algebra-a1-a1",
+      "result_commit": "164f08e449a335e8b0962c8f511579e3e102246a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1",
+      "result_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tilt-algebra-a1-a1"
+}

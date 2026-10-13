@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1.graph_point_inner-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1.proj_fderiv_zero-a1",
+  "depth": 5,
+  "title": "Inner product of graph points",
+  "statement": "For all natural numbers n, l, all x, x' in R^n and all y, y' in R^l: <graphPoint x y, graphPoint x' y'> = <x, x'> + <y, y'>, where < , > is the real inner product of the Euclidean spaces R^k = EuclideanSpace R (Fin k) and graphPoint x y in R^(n+l) = Amb n l has first n coordinates x and last l coordinates y.",
+  "lean_statement": "∀ (n ℓ : ℕ) (x x' : Rn n) (y y' : Rn ℓ), inner ℝ (graphPoint x y) (graphPoint x' y') = inner ℝ x x' + inner ℝ y y'",
+  "lean_name": "allard52_gfz_graphPoint_inner",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-f1c2a3988c-a1"
+}

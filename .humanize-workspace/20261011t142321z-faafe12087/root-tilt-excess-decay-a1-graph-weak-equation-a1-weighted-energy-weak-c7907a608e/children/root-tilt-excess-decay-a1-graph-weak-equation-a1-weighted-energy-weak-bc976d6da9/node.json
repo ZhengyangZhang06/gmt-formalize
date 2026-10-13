@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.weight_error_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1",
+  "depth": 4,
+  "title": "Error made by dropping the weight W in the weak equation (Simon 4.5 (15), steps 4-6)",
+  "statement": "Let n, l be natural numbers, cJ >= 0, sigma > 0, 0 <= kappa <= 1, M real, f : R^n -> R^l 1-Lipschitz on closedBall 0 (sigma/2), W : R^n -> R measurable, zeta : R^n -> R any function with ||grad zeta(x)|| <= M for all x, and j in Fin l. Put B1 := ball 0 (3 sigma/8), B2 := ball 0 (sigma/4), |Df(x)|^2 := hsNormSq(fderiv R f x), f^j(y) := (f y)_j and u(x) := <grad f^j(x), grad zeta(x)>.\nAssume (H1): for a.e. x, if x is in B1, then W(x) = 0 or 1 <= W(x) <= (1 + kappa)(1 + cJ |Df(x)|^2).\nThen, with all integrals taken with respect to Lebesgue measure L^n,\n|int_{B2} u - int_{B2} u W| <= M (L^n(B1 cap {W = 0})).toReal + M kappa int_{B2} ||grad f^j|| + 2 cJ M int_{B2} |Df|^2.",
+  "lean_statement": "∀ (n ℓ : ℕ) (cJ σ κ M : ℝ) (f : Rn n → Rn ℓ) (W ζ : Rn n → ℝ) (j : Fin ℓ), 0 ≤ cJ → 0 < σ → 0 ≤ κ → κ ≤ 1 → LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → Measurable W → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ (1 ≤ W x ∧ W x ≤ (1 + κ) * (1 + cJ * hsNormSq (fderiv ℝ f x)))) → (∀ x, ‖gradient ζ x‖ ≤ M) → |(∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)) - ∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x| ≤ M * (volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0})).toReal + M * κ * (∫ x in ball (0 : Rn n) (σ / 4), ‖gradient (fun y => f y j) x‖) + 2 * cJ * M * ∫ x in ball (0 : Rn n) (σ / 4), hsNormSq (fderiv ℝ f x)",
+  "lean_name": "gwe_wewe_weight_error_bound",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.lipschitz_fderiv_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.lipschitz_fderiv_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-bc976d6da9-a1"
+}

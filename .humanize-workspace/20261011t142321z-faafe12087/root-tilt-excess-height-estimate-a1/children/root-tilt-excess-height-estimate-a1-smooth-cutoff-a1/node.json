@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1",
+  "depth": 2,
+  "title": "Smooth radial cutoff with ζ = 1 on B_{ρ/2}(ξ), ζ = 0 off B°_ρ(ξ), and |Dζ| <= 3/ρ",
+  "statement": "For every m ∈ N, ξ ∈ R^m and ρ > 0 there is a C^infinity function ζ : R^m → R with:\n- 0 <= ζ <= 1;\n- ζ = 1 on the closed ball B_{ρ/2}(ξ);\n- ζ(x) = 0 whenever |x − ξ| >= ρ;\n- ‖Dζ(x)‖ <= 3/ρ for every x (operator norm of the Fréchet derivative).",
+  "lean_statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ), 0 < ρ → ∃ ζ : Rn m → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ Metric.closedBall ξ (ρ / 2), ζ x = 1) ∧ (∀ x, ρ ≤ dist x ξ → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / ρ",
+  "lean_name": "exists_smooth_cutoff_half_ball_grad_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-a1"
+}

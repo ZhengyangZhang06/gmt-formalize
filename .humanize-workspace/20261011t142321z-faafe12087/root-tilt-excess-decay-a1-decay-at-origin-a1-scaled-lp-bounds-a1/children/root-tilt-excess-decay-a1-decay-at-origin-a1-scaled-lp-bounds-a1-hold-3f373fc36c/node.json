@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.holder_scaled_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1",
+  "depth": 4,
+  "title": "Hoelder bound of the q-th power integral by the scaled L^p norm on a larger ball",
+  "statement": "Let n, ℓ be natural numbers, U ⊆ ℝ^{n+ℓ} any subset, V a rectifiable n-varifold in U (contract structure RectifiableVarifold n ℓ U) with weight μ := V.weight, H : ℝ^{n+ℓ} → ℝ^{n+ℓ} any function, and K(y, r) := V.scaledLpNorm H p y r = (ofReal(r^{p-n}) · ∫⁻_{B̄_r(y)} ‖H‖ₑ^p dμ)^{1/p} ∈ [0, ∞] (closed balls, lower integrals). If 0 < q ≤ p, t > 0, m ≥ 0, B̄_s(z) ⊆ B̄_t(w) and μ(B̄_s(z)) ≤ ofReal(m), then ∫⁻_{B̄_s(z)} ‖H‖ₑ^q dμ ≤ ofReal(m^{1-q/p} · t^{q(n-p)/p}) · K(w, t)^q, where K(w, t)^q is the real power in [0, ∞].",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q",
+  "lean_name": "tdo_slb_lintegral_rpow_le_scaledLpNorm",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.lintegral_holder-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.lintegral_holder-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-hold-3f373fc36c-a1"
+}

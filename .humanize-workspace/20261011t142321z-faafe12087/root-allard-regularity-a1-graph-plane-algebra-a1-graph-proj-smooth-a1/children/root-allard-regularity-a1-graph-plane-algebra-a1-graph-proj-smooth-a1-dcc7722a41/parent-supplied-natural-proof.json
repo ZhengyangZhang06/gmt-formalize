@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -c 'allard52_gps' <snapshot>/project  (exit 1, no match)",
+        "rg -c 'allard52_gps|gps_transpose_exists|starProjection_eq_gram|hsNormSq_swap|gps_fderiv_zero_apply' <snapshot>/mathlib/Mathlib  (no match)",
+        "python3 -I over dag.json nodes: all 431 lean_name values (unique); none equals or contains a proposed name; none contains 'gps'",
+        "git for-each-ref refs/heads | xargs git grep -l allard52_gps  (955 branches, no match)",
+        "rg -n 'theorem contDiffAt_ringInverse|theorem hasFDerivAt_ringInverse' <snapshot>/mathlib/Mathlib/Analysis/Calculus",
+        "rg -n 'theorem HasFDerivAt.clm_comp|theorem ContDiff.clm_comp' <snapshot>/mathlib/Mathlib/Analysis/Calculus",
+        "rg -n 'theorem eq_starProjection_of_mem_of_inner_eq_zero' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace",
+        "rg -n 'theorem isUnit_iff_isUnit_toLinearMap|theorem isUnit_iff_ker_eq_bot' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem ext_inner_right' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace; rg -n 'finAddEquivProd|def basisFun|theorem sum_repr' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "rg -n 'theorem mul_inverse_cancel|theorem inverse_one' <snapshot>/mathlib/Mathlib/Algebra/GroupWithZero",
+        "rg -n 'theorem hasFDerivAt_const_add_iff|theorem contDiff_iff_contDiffAt' <snapshot>/mathlib/Mathlib/Analysis/Calculus; grep -n 'HasFDerivAt.const_add' FDeriv/Add.lean",
+        "rg -n 'def toContinuousLinearMap' <snapshot>/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "rg -n 'ContinuousLinearMap.adjoint' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean; rg -n '^import' <snapshot>/project/GMT/Ch05/Contract.lean",
+        "diff -q <snapshot>/project/GMT/Ch05/Contract.lean and Submission.lean against the workspace copies (identical)",
+        "git show 9f89be4c -- GMT/Ch05/Submission.lean (accepted aetp_starProjection_range_continuousOn); git show 18a457c4 (accepted rsod_graphPoint_eq_finAddEquivProd_symm)",
+        "lean Probe.lean (#check of every cited lemma) and Probe3.lean (adjoint absence, instances, Amb n ℓ = Rn (n+ℓ) by rfl) against a scratch Submission.olean built from the workspace Submission.lean",
+        "lean Stmts.lean (5 child types by sorry plus the parent frozen type proved from them)",
+        "lean Full.lean (all 5 children proved, parent assembled, #print axioms)",
+        "comparator-style NodeChallenge/NodeSolution per child, scope from gmt-compare.py contract_scope, compiled against scratch Submission2.lean containing the children",
+        "python3 -I lean_contract.validate_lean_statement on all 5 lean_statements"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/gps-decomp-8uUBVY/check/Probe.lean",
+        "/tmp/gps-decomp-8uUBVY/check/Probe3.lean",
+        "/tmp/gps-decomp-8uUBVY/check/Stmts.lean",
+        "/tmp/gps-decomp-8uUBVY/check/Full.lean",
+        "/tmp/gps-decomp-8uUBVY/Submission2.lean",
+        "/tmp/gps-decomp-8uUBVY/cmp/Chal_allard52_gps_fderiv_zero_apply.lean",
+        "/tmp/gps-decomp-8uUBVY/cmp/Sol_allard52_gps_fderiv_zero_apply.lean"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot's Contract.lean and Submission.lean are byte-identical to the workspace copies.\n\nNames\n- The proposed bare names allard52_gps_{transpose_exists, starProjection_eq_gram, contDiff, fderiv_zero_apply, hsNormSq_swap} have no match in the snapshot project, the snapshot Mathlib, the 431 DAG lean_names or 955 local branches.\n\nMathlib lemmas used by the child proofs (all inside the import closure)\n- contDiffAt_ringInverse (Calculus/ContDiff/Operations.lean:772)\n- hasFDerivAt_ringInverse (Calculus/FDeriv/Mul.lean:661)\n- HasFDerivAt.clm_comp (FDeriv/CompCLM.lean:61)\n- ContDiff.clm_comp (ContDiff/Comp.lean:472)\n- contDiff_iff_contDiffAt (ContDiff/Defs.lean:1103)\n- hasFDerivAt_const_add_iff and its alias HasFDerivAt.const_add (FDeriv/Add.lean:344, 348)\n- Submodule.eq_starProjection_of_mem_of_inner_eq_zero (InnerProductSpace/Projection/Basic.lean:180)\n- ContinuousLinearMap.isUnit_iff_isUnit_toLinearMap (Normed/Operator/Banach.lean:477)\n- LinearMap.isUnit_iff_ker_eq_bot (LinearAlgebra/FiniteDimensional/Basic.lean:456)\n- ext_inner_right (InnerProductSpace/Basic.lean:330)\n- EuclideanSpace.finAddEquivProd (PiL2.lean:378)\n- EuclideanSpace.basisFun (PiL2.lean:802)\n- OrthonormalBasis.sum_repr (PiL2.lean:494)\n- Ring.mul_inverse_cancel and Ring.inverse_one (GroupWithZero/Units/Basic.lean:99, 129)\n- LinearMap.toContinuousLinearMap (Topology/Algebra/Module/FiniteDimension.lean:307)\n\nImport gaps and instances\n- ContinuousLinearMap.adjoint exists in Mathlib (InnerProductSpace/Adjoint.lean) but is an unknown constant after `import GMT.Ch05.Submission`. This confirms that the hand-built transpose child is needed.\n- These instances are inferred: HasSummableGeomSeries (Rn n →L[ℝ] Rn n) and FiniteDimensional ℝ (Rn n →L[ℝ] Rn ℓ). Also Amb n ℓ = Rn (n+ℓ) holds by rfl.\n\nAccepted precedents (reused as proof patterns, not as dependencies)\n- Commit 9f89be4c (aetp_starProjection_range_continuousOn) uses the same hand-built transpose and the same Gram projection identity.\n- Commit 18a457c4 proves graphPoint = finAddEquivProd.symm with ext, Fin.addCases and simp [graphPoint].\n- Neither theorem's type equals a child here, so no accepted declaration is reused.\n\nLean results\n- Full.lean proves all five children and then the parent's exact frozen type from them. #print axioms reports only propext, Classical.choice and Quot.sound.\n- Every comparator-style challenge and solution module compiles.\n- validate_lean_statement accepts all five statements.\n\nNo public source beyond Simon p. 123, which the parent proof already cites, was needed."
+    }
+  ],
+  "proof": "Source: parent proof, steps 0 (graphPoint), 2 (parametrization), 3-4 (Gram operator, projection formula; here supplied by the sibling gram_projection) and 5 (smoothness).\n\n1. Splitting graphPoint. Let Phi := (EuclideanSpace.finAddEquivProd)^(-1) : R^n x R^l -> R^(n+l), a continuous linear equivalence. Then graphPoint x y = Phi(x, y): compare coordinates; every index of Fin (n+l) is Fin.castAdd l j or Fin.natAdd n k (Fin.addCases), and at these indices both sides equal x_j, resp. y_k (Fin.append_left/right and the definition of finAddEquivProd). Put iota := Phi o inl in L(R^n, R^(n+l)) and kappa := Phi o inr in L(R^l, R^(n+l)). Since (x, y) = (x, 0) + (0, y) and Phi is additive, graphPoint x y = iota x + kappa y for all x, y.\n\n2. Transpose. By the sibling transpose_clm with m = n + l (Amb n l and Rn (n+l) are the same type EuclideanSpace R (Fin (n+l))), there is a continuous linear tau : L(R^n, R^(n+l)) -> L(R^(n+l), R^n) with <tau(L) w, v> = <w, L v> for all L, w, v.\n\n3. Parametrization. For A in L(R^n, R^l) put J_A := iota + kappa o A in L(R^n, R^(n+l)). By step 1, J_A v = iota v + kappa(A v) = graphPoint v (A v) for every v.\n\n4. Projection formula. Apply the sibling gram_projection to (n, l, A, J_A, tau(J_A)); its two hypotheses are step 3 and step 2 with L = J_A. Hence, for every A, G_A := tau(J_A) o J_A is a unit of L(R^n, R^n) and Pi(A) = J_A o (Ring.inverse(G_A) o tau(J_A)). Therefore Pi = F as functions on L(R^n, R^l), where F(A) := J_A o (Ring.inverse(G_A) o tau(J_A)); it suffices to show that F is C^2.\n\n5. Smooth building blocks. A |-> J_A is the constant iota plus the continuous linear map A |-> kappa o A (ContinuousLinearMap.compL R R^n R^l R^(n+l) kappa), hence C^2 (contDiff_const.add, ContinuousLinearMap.contDiff). A |-> tau(J_A) is the continuous linear map tau composed with a C^2 map, hence C^2 (ContDiff.comp). A |-> G_A = tau(J_A) o J_A is C^2 because composition of two C^2 operator-valued maps is C^2 (ContDiff.clm_comp).\n\n6. Smooth inversion. L(R^n, R^n) is a complete normed R-algebra (finite dimension), so the instance HasSummableGeomSeries holds and Ring.inverse is C^2 at every unit (contDiffAt_ringInverse). Fix A. By step 4, G_A = (u : L(R^n, R^n)) for some unit u, so Ring.inverse is C^2 at G_A, and by the chain rule (ContDiffAt.comp) with the C^2 map A |-> G_A of step 5, A |-> Ring.inverse(G_A) is C^2 at A. Since A was arbitrary, A |-> Ring.inverse(G_A) is C^2 (contDiff_iff_contDiffAt).\n\n7. Conclusion. Two applications of ContDiff.clm_comp, first to A |-> Ring.inverse(G_A) and A |-> tau(J_A) and then to A |-> J_A and the result, show that F is C^2. Since Pi = F (step 4), Pi is C^2.",
+  "key_steps": [
+    "graphPoint x y = iota x + kappa y with iota = Phi o inl, kappa = Phi o inr, Phi = finAddEquivProd^-1",
+    "J_A := iota + kappa o A parametrizes Gamma_A; tau from transpose_clm",
+    "gram_projection gives Pi(A) = J_A o Ring.inverse(G_A) o tau(J_A) with G_A a unit, so Pi = F",
+    "A |-> J_A, tau(J_A), G_A are C^2 (affine map, CLM, ContDiff.clm_comp)",
+    "Ring.inverse is C^2 at units (contDiffAt_ringInverse), so A |-> Ring.inverse(G_A) and then F are C^2"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

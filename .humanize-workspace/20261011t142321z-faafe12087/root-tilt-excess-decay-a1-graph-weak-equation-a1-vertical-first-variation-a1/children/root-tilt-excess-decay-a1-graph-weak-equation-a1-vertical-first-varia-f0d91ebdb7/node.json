@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1.sup_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+  "depth": 4,
+  "title": "Sup bound from a gradient bound: |ζ| <= M r when tsupport ζ ⊆ B°_r(0)",
+  "statement": "Let n >= 1, let ζ : R^n → R be differentiable, let r >= 0 with tsupport ζ contained in the open ball B°_r(0), and let M be a real number with ‖∇ζ(x)‖ <= M for every x ∈ R^n (∇ζ = gradient ζ). Then |ζ(y)| <= M r for every y ∈ R^n.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (ζ : Rn n → ℝ) (r M : ℝ), 0 ≤ r → Differentiable ℝ ζ → tsupport ζ ⊆ ball 0 r → (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ y, |ζ y| ≤ M * r",
+  "lean_name": "gwe_vfv_abs_le_grad_bound_mul_radius",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-varia-f0d91ebdb7-a1"
+}

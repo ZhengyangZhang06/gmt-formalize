@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.pinched_density-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Pinched mass bounds near the origin (Simon 5.2.4, fact P)",
+  "statement": "For n >= 1, l, p > n there is delta_P in (0, 1/8] such that: if 0 < delta <= delta_P and 2.3 (AllardHypotheses H p delta rho) holds for a contract rectifiable varifold V in an open U with generalized mean curvature H, then for every y with |y| <= 3 delta rho and every 0 < s <= rho/2: mu(B_s(y)) <= 2 omega_n s^n, and if moreover y in spt V then mu(B_s(y)) >= omega_n s^n/2 (mu = V.weight, closed balls).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δP : ℝ, 0 < δP ∧ δP ≤ 1 / 8 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * (δ * ρ) → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal (2 * unitBallVolume n * s ^ n) ∧ (y ∈ V.support → ENNReal.ofReal (unitBallVolume n * s ^ n / 2) ≤ V.weight (closedBall y s))",
+  "lean_name": "lip_approx_pinched_density",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-pinched-density-a1-a1"
+}

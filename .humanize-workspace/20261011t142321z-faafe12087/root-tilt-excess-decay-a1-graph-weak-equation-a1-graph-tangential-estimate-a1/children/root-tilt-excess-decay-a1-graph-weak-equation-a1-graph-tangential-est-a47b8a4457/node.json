@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1.tangent_proj_integrands-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1",
+  "depth": 4,
+  "title": "Tangent projections are contractions; tangent-projection integrands are integrable on sets of finite weight",
+  "statement": "Let n, l be natural numbers, U an arbitrary subset of R^{n+l}, V a rectifiable n-varifold in U, mu := V.weight and p_x := V.tangentProj x (a continuous linear map of R^{n+l}). Then: (a) ||p_x v|| <= ||v|| for all x, v in R^{n+l}; (b) if x |-> p_x is mu-a.e. strongly measurable (as a map into the space of continuous linear maps R^{n+l} -> R^{n+l} with the operator norm), then for every set S of R^{n+l} with mu(S) < infinity: (b1) for every e in R^{n+l}, every mu-a.e. strongly measurable g : R^{n+l} -> R^{n+l} and every real C with ||g(x)|| <= C for all x, the function x |-> <p_x e, p_x g(x)> is mu-integrable on S; (b2) for every linear subspace T of R^{n+l}, the function x |-> |p_x - p_T|^2 := hsNormSq(p_x - T.starProjection) is mu-integrable on S.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ x v : Amb n ℓ, ‖V.tangentProj x v‖ ≤ ‖v‖) ∧ (AEStronglyMeasurable V.tangentProj V.weight → ∀ S : Set (Amb n ℓ), V.weight S < ⊤ → (∀ (e : Amb n ℓ) (g : Amb n ℓ → Amb n ℓ) (C : ℝ), AEStronglyMeasurable g V.weight → (∀ x, ‖g x‖ ≤ C) → IntegrableOn (fun x => inner ℝ (V.tangentProj x e) (V.tangentProj x (g x))) S V.weight) ∧ ∀ T : Submodule ℝ (Amb n ℓ), IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) S V.weight)",
+  "lean_name": "gte_tangentProj_integrands",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-est-a47b8a4457-a1"
+}

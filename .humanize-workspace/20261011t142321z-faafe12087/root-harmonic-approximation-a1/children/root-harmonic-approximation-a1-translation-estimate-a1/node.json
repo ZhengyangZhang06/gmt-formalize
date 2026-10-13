@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.translation_estimate-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Interior translation (difference) estimate for W^{1,2}(B)",
+  "statement": "Let n >= 1 and IsW12WithGradient f g B, with B the open unit ball of R^n. For every r > 0 and every z in R^n with |z| < 1 - r: int_{B_r} |f(x - z) - f(x)|^2 dx <= |z|^2 int_B |g|^2. Here B_r := ball(0,r), the integrals are lintegrals, and the right side is ENNReal.ofReal(|z|^2) times the energy.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (r : ℝ) (z : Rn n), 0 < r → ‖z‖ < 1 - r → ∫⁻ x in ball (0 : Rn n) r, ‖f (x - z) - f x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2",
+  "lean_name": "w12_ball_translation_estimate",
+  "depends_on": [
+    "root.harmonic_approximation-a1.smooth_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-translation-estimate-a1-a1"
+}

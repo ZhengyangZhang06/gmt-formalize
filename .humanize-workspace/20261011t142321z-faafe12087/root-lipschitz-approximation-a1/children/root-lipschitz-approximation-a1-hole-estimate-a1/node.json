@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.hole_estimate-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Mass estimate at points of a flat set away from the support (Simon 5.2.6, (9)-(10))",
+  "statement": "For n >= 1, l, p > n there are eps > 0, delta_0 > 0 and C_0 > 0 such that: if 0 < delta <= delta_0, 2.3 holds, sigma_0 = delta rho, T is a linear subspace with projection P, F is a closed set with |(x - z) - P(x - z)| <= eps |x - z| for all x, z in F, and zeta in F satisfies |zeta| <= 17 sigma_0/32 and 0 < d := dist(zeta, spt V) <= sigma_0/16, then with s = d/2: s^n <= C_0 [mu(B_(3s)(zeta) minus F) + integral_(B_(3s)(zeta)) hsNormSq(p_x - P) dmu].",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ ε δ₀ C₀ : ℝ, 0 < ε ∧ 0 < δ₀ ∧ 0 < C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → ∀ (T : Submodule ℝ (Amb n ℓ)) (F : Set (Amb n ℓ)), IsClosed F → (∀ x ∈ F, ∀ z ∈ F, ‖(x - z) - T.starProjection (x - z)‖ ≤ ε * ‖x - z‖) → ∀ ζ ∈ F, ‖ζ‖ ≤ 17 * (δ * ρ) / 32 → 0 < infDist ζ V.support → infDist ζ V.support ≤ δ * ρ / 16 → ENNReal.ofReal ((infDist ζ V.support / 2) ^ n) ≤ ENNReal.ofReal C₀ * (V.weight (closedBall ζ (3 * (infDist ζ V.support / 2)) \\ F) + ENNReal.ofReal (∫ x in closedBall ζ (3 * (infDist ζ V.support / 2)), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight))",
+  "lean_name": "lip_approx_hole_estimate",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.tangent_structure-a1",
+    "root.lipschitz_approximation-a1.monotonicity-a1",
+    "root.lipschitz_approximation-a1.pinched_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.pinched_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-hole-estimate-a1-a1"
+}

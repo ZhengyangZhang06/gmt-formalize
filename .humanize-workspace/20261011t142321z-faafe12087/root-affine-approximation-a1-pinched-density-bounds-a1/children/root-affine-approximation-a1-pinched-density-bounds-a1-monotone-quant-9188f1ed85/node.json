@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1.monotone_quantity_ge_density-a1",
+  "parent_id": "root.affine_approximation-a1.pinched_density_bounds-a1",
+  "depth": 3,
+  "title": "A monotone density quantity with F -> 1 and lower density omega is at least omega (step 5 of the parent)",
+  "statement": "Let n be a natural number, alpha, omega, R, Lambda real numbers with alpha > 0, omega > 0, R > 0, and m, F : R -> R. Put Phi(u) := F(u) (m(u)/u^n) + (F(u) - 1). Assume (H1) |F(u) - 1| <= Lambda (u/R)^alpha for every u in (0, R]; (H2) Phi(u) <= Phi(t) whenever 0 < u <= t <= R; (H3) for every epsilon > 0, (1 - epsilon)(omega u^n) <= m(u) for all sufficiently small u > 0 (eventually along the filter u -> 0+). Then omega <= Phi(t) for every t in (0, R].",
+  "lean_statement": "∀ (n : ℕ) (α ω R Λ : ℝ) (m F : ℝ → ℝ), 0 < α → 0 < ω → 0 < R → (∀ u : ℝ, 0 < u → u ≤ R → |F u - 1| ≤ Λ * (u / R) ^ α) → (∀ u t : ℝ, 0 < u → u ≤ t → t ≤ R → F u * (m u / u ^ n) + (F u - 1) ≤ F t * (m t / t ^ n) + (F t - 1)) → (∀ ε : ℝ, 0 < ε → ∀ᶠ u in 𝓝[>] (0 : ℝ), (1 - ε) * (ω * u ^ n) ≤ m u) → ∀ t : ℝ, 0 < t → t ≤ R → ω ≤ F t * (m t / t ^ n) + (F t - 1)",
+  "lean_name": "aal_monotone_quantity_ge_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-pinched-density-bounds-a1-monotone-quant-9188f1ed85-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.lipschitz_fderiv_facts-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1",
+  "depth": 4,
+  "title": "Derivative bounds and measurability for a map that is 1-Lipschitz on a closed ball (Simon 4.5 (14)-(16), step 1)",
+  "statement": "Let n, l be natural numbers, r a real number, and f : R^n -> R^l (Rn n -> Rn l) 1-Lipschitz on the closed ball closedBall 0 r. Write |Df(x)|^2 := hsNormSq(fderiv R f x) = sum_{i<n} ||Df(x) e_i||^2 with e_i = EuclideanSpace.single i 1. Write f^j(y) := (f y)_j for j in Fin l, and grad f^j := gradient f^j. These are Mathlib's fderiv and gradient, which are 0 where the map is not differentiable. Then:\n(a) x -> |Df(x)|^2 is measurable and, for every j, grad f^j is measurable;\n(b) |Df(x)|^2 >= 0 for every x;\n(c) for every x in the open ball ball 0 r: |Df(x)|^2 <= n, and ||grad f^j(x)|| <= 1 for every j;\n(d) for Lebesgue-a.e. x in R^n: if x is in ball 0 r, then ||grad f^j(x)||^2 <= |Df(x)|^2 for every j.",
+  "lean_statement": "∀ (n ℓ : ℕ) (r : ℝ) (f : Rn n → Rn ℓ), LipschitzOnWith 1 f (closedBall 0 r) → Measurable (fun x => hsNormSq (fderiv ℝ f x)) ∧ (∀ j : Fin ℓ, Measurable (gradient (fun y => f y j))) ∧ (∀ x, 0 ≤ hsNormSq (fderiv ℝ f x)) ∧ (∀ x ∈ ball (0 : Rn n) r, hsNormSq (fderiv ℝ f x) ≤ n ∧ ∀ j : Fin ℓ, ‖gradient (fun y => f y j) x‖ ≤ 1) ∧ ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 r → ∀ j : Fin ℓ, ‖gradient (fun y => f y j) x‖ ^ 2 ≤ hsNormSq (fderiv ℝ f x)",
+  "lean_name": "gwe_wewe_lipschitz_fderiv_facts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-6472e8750e-a1"
+}

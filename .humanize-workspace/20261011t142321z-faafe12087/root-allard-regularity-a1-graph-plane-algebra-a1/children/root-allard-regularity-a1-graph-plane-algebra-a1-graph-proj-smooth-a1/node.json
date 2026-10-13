@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "The graph-plane projection map is C^2, with derivative at 0 of Hilbert-Schmidt size sqrt 2",
+  "statement": "For natural numbers n, l let Pi : L(R^n, R^l) -> L(R^(n+l), R^(n+l)) send A to the orthogonal projection (starProjection) of R^(n+l) onto Gamma_A = span{graphPoint v (A v) : v in R^n}, both spaces carrying the operator norm. Then (1) Pi is C^2 (ContDiff R 2), and (2) for every H in L(R^n, R^l), hsNormSq (DPi(0)[H]) = 2 hsNormSq H, where DPi(0) = fderiv R Pi 0.",
+  "lean_statement": "∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) ∧ ∀ H : Rn n →L[ℝ] Rn ℓ, hsNormSq (fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H) = 2 * hsNormSq H",
+  "lean_name": "allard52_gpa_graphProj_smooth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-smooth-a1-a1"
+}

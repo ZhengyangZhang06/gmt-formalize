@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1.proj_inner_defect-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1",
+  "depth": 4,
+  "title": "Projection defect on a plane: |<p_S u, p_S w> - <u, w>| <= |p_S - p_T|^2 |u| |w| for u, w in T (Simon 4.5 (10)-(11))",
+  "statement": "For every m in N, all linear subspaces S, T of R^m = EuclideanSpace R (Fin m), with orthogonal projections p := S.starProjection and P := T.starProjection, and all u, w in T: |<p u, p w> - <u, w>| <= hsNormSq(p - P) * (|u| |w|), where hsNormSq A = sum_{i in Fin m} |A e_i|^2 (e_i = EuclideanSpace.single i 1) is the squared Hilbert-Schmidt norm and <.,.>, |.| are the Euclidean inner product and norm.",
+  "lean_statement": "∀ (m : ℕ) (S T : Submodule ℝ (Rn m)) (u w : Rn m), u ∈ T → w ∈ T → |inner ℝ (S.starProjection u) (S.starProjection w) - inner ℝ u w| ≤ hsNormSq (S.starProjection - T.starProjection) * (‖u‖ * ‖w‖)",
+  "lean_name": "gwe_gta_proj_inner_defect",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.projection_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-projection-algebra-a1-a1",
+      "result_commit": "164f08e449a335e8b0962c8f511579e3e102246a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tilt-algebra-a-56631c5d1c-a1"
+}

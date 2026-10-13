@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.l2_sq_norm_tendsto-a1",
+  "parent_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1",
+  "depth": 3,
+  "title": "Convergence of squared L^2 norms under L^2 convergence",
+  "statement": "Let (alpha, mu) be a measure space and E a normed additive commutative group. Let f : alpha -> E satisfy MemLp f 2 mu, and let phi_j : alpha -> E (j in N) be mu-a.e. strongly measurable with int ‖phi_j - f‖ₑ^2 dmu -> 0 in [0, infinity]. Then int ‖phi_j‖ₑ^2 dmu -> int ‖f‖ₑ^2 dmu in [0, infinity] (all integrals are lintegrals).",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] {E : Type} [NormedAddCommGroup E] (μ : Measure α) (f : α → E) (φ : ℕ → α → E), MemLp f 2 μ → (∀ j, AEStronglyMeasurable (φ j) μ) → Tendsto (fun j => ∫⁻ x, ‖φ j x - f x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖φ j x‖ₑ ^ 2 ∂μ) atTop (𝓝 (∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ))",
+  "lean_name": "ble_lintegral_sq_tendsto_of_l2_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-boundary-layer-estimate-a1-l2-sq-norm-tendsto-a1-a1"
+}
