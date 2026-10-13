@@ -451,6 +451,81 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Limit of a fast-Cauchy sequence of sets** (the completeness step of the BV compactness
+argument in the De Giorgi proof, cf. Simon Ch. 2, 2.6; the Riesz–Fischer argument specialized to
+indicators).  If the Borel sets `Gⱼ ⊆ ℝⁿ` satisfy `L((G_{i+1} Δ Gᵢ) ∩ B_{i+1}(0)) ≤ 2⁻ⁱ` for
+every `i`, then the liminf `F₀ = ⋃_J ⋂_i G_{J+i}` is Borel and `L((Gⱼ Δ F₀) ∩ B_R(0)) → 0` for
+every `R`: `Gⱼ Δ F₀ ⊆ ⋃_l (G_{j+l+1} Δ G_{j+l})`, and for `j ≥ ⌈R⌉₊` every ball `B_{j+l+1}(0)`
+contains `B_R(0)`, so the measure is at most `∑_l 2^{-(j+l)} = 2 · 2⁻ʲ → 0`. -/
+theorem Submission.codim1_rdo_dg_bvc_limit_of_fast_cauchy : ∀ (n : ℕ) (Gs : ℕ → Set (Euclid n)), (∀ j, MeasurableSet (Gs j)) → (∀ i : ℕ, volume (symmDiff (Gs (i + 1)) (Gs i) ∩ ball (0 : Euclid n) ((i : ℝ) + 1)) ≤ (2⁻¹ : ℝ≥0∞) ^ i) → ∃ F₀ : Set (Euclid n), MeasurableSet F₀ ∧ ∀ R : ℝ, Tendsto (fun j => volume (symmDiff (Gs j) F₀ ∩ ball (0 : Euclid n) R)) atTop (𝓝 0) := by
+  intro n Gs hGm hG
+  -- Step 1: the liminf `F₀ = ⋃_J ⋂_i G_{J+i}` is Borel
+  set F₀ : Set (Euclid n) := ⋃ J : ℕ, ⋂ i : ℕ, Gs (J + i) with hF₀
+  refine ⟨F₀, MeasurableSet.iUnion fun J => MeasurableSet.iInter fun i => hGm _, fun R => ?_⟩
+  -- Step 2: `Gⱼ Δ F₀ ⊆ ⋃_l (G_{j+l+1} Δ G_{j+l})`
+  have hincl : ∀ j, symmDiff (Gs j) F₀ ⊆ ⋃ l : ℕ, symmDiff (Gs (j + l + 1)) (Gs (j + l)) := by
+    intro j x hx
+    by_contra hxU
+    simp only [mem_iUnion, not_exists] at hxU
+    -- `x` is in no `G_{j+l+1} Δ G_{j+l}`, so by induction `x ∈ G_{j+l} ↔ x ∈ Gⱼ` for every `l`
+    have hstep : ∀ l, (x ∈ Gs (j + l + 1) ↔ x ∈ Gs (j + l)) := by
+      intro l
+      have hl := hxU l
+      rw [Set.mem_symmDiff] at hl
+      tauto
+    have hall : ∀ l, (x ∈ Gs (j + l) ↔ x ∈ Gs j) := by
+      intro l
+      induction l with
+      | zero => simp
+      | succ l ih => rw [← ih, ← add_assoc]; exact hstep l
+    -- hence `x ∈ F₀ ↔ x ∈ Gⱼ`, contradicting `x ∈ Gⱼ Δ F₀`
+    have hF : x ∈ F₀ ↔ x ∈ Gs j := by
+      constructor
+      · intro hx0
+        rw [hF₀, mem_iUnion] at hx0
+        obtain ⟨J, hJ⟩ := hx0
+        have hJj := mem_iInter.1 hJ j
+        rw [Nat.add_comm] at hJj
+        exact (hall J).1 hJj
+      · intro hxj
+        rw [hF₀, mem_iUnion]
+        exact ⟨j, mem_iInter.2 fun i => (hall i).2 hxj⟩
+    rw [Set.mem_symmDiff] at hx
+    tauto
+  -- Step 3: for `j ≥ N = ⌈R⌉₊` and every `l`, `B_R(0) ⊆ B_{j+l+1}(0)`, so by countable
+  -- subadditivity the measure is at most `∑_l 2^{-(j+l)} = 2⁻ʲ · ∑_l 2⁻ˡ = 2 · 2⁻ʲ`
+  set N : ℕ := ⌈R⌉₊
+  have hbound : ∀ j, N ≤ j →
+      volume (symmDiff (Gs j) F₀ ∩ ball (0 : Euclid n) R) ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ j := by
+    intro j hj
+    calc volume (symmDiff (Gs j) F₀ ∩ ball (0 : Euclid n) R)
+        ≤ volume (⋃ l : ℕ, symmDiff (Gs (j + l + 1)) (Gs (j + l)) ∩
+            ball (0 : Euclid n) (((j + l : ℕ) : ℝ) + 1)) := by
+          refine measure_mono ?_
+          rintro x ⟨hx, hxR⟩
+          obtain ⟨l, hl⟩ := mem_iUnion.1 (hincl j hx)
+          refine mem_iUnion.2 ⟨l, hl, ball_subset_ball ?_ hxR⟩
+          have h1 : R ≤ (N : ℝ) := Nat.le_ceil R
+          have h2 : (N : ℝ) ≤ ((j + l : ℕ) : ℝ) := by
+            exact_mod_cast hj.trans (Nat.le_add_right j l)
+          linarith
+      _ ≤ ∑' l : ℕ, volume (symmDiff (Gs (j + l + 1)) (Gs (j + l)) ∩
+            ball (0 : Euclid n) (((j + l : ℕ) : ℝ) + 1)) := measure_iUnion_le _
+      _ ≤ ∑' l : ℕ, (2⁻¹ : ℝ≥0∞) ^ (j + l) := ENNReal.tsum_le_tsum fun l => hG (j + l)
+      _ = (2⁻¹ : ℝ≥0∞) ^ j * ∑' l : ℕ, (2⁻¹ : ℝ≥0∞) ^ l := by
+          rw [← ENNReal.tsum_mul_left]
+          simp_rw [pow_add]
+      _ = 2 * (2⁻¹ : ℝ≥0∞) ^ j := by
+          rw [ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv, mul_comm]
+  -- Step 4: `2 · 2⁻ʲ → 0`, and the measures are squeezed between `0` and this bound for `j ≥ N`
+  have hlim : Tendsto (fun j : ℕ => 2 * (2⁻¹ : ℝ≥0∞) ^ j) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul
+      (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (ENNReal.inv_lt_one.2 ENNReal.one_lt_two))
+      (Or.inr (ENNReal.ofNat_ne_top : (2 : ℝ≥0∞) ≠ ∞))
+    simpa using h
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Eventually.of_forall fun _ => zero_le) (eventually_atTop.2 ⟨N, hbound⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
