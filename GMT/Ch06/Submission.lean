@@ -1732,6 +1732,100 @@ theorem Submission.iwl_cr_cone_estimates : ∀ (P m : ℕ), ∃ c : ℝ, 0 ≤ c
     rw [hcone ω ψ ⟨ball 0 (R + 1), isOpen_ball,
       hX.trans (closedBall_subset_ball (by linarith)), hψeq⟩]
     exact (hconv ψ).congr fun j => (hj j).symm
+/-- Simon 2.31 for `X = ∂Y` with `spt Y` compact: the cone `C = 0 ⨯ ∂Y` (`C(ω) = ∂Y(ψ)` whenever
+`ψ = H(ω)` near `spt ∂Y`) has `∂C = ∂Y`.  For `φ ∈ 𝒟ᵐ` the radial form `χ = H(dφ)` satisfies
+`dχ = dφ` by the radial homotopy formula, and `ζχ`, with a cut-off `ζ = 1` near `spt Y`, is
+admissible in the cone identity, so `∂C(φ) = C(dφ) = Y(d(ζχ)) = Y(dφ) = ∂Y(φ)`. -/
+theorem Submission.iwl_cr_cone_boundary :
+    ∀ (P m : ℕ) (R : ℝ) (Y C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)),
+      Y.support ⊆ closedBall 0 R →
+      (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m),
+        (∃ N : Set (Eucl P), IsOpen N ∧ Y.boundary.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P,
+          (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1,
+            t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) →
+        C ω = Y.boundary ψ) →
+      C.boundary = Y.boundary := by
+  intro P m R Y C hY hcone
+  -- `dχ = dφ` for `χ = H(dφ)`: in degree `0`, `χ = φ - φ 0`; in degree `k + 1`, `χ + dψ = φ`
+  -- with `ψ = Hφ`, and `d(dψ) = 0`.
+  have hd : ∀ (k : ℕ) (φ χ : DifferentialForm (Eucl P) k),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ →
+      (∀ (x : Eucl P) (v : Fin k → Eucl P),
+        χ x v = ∫ t in (0 : ℝ)..1, t ^ k * extDeriv φ (t • x) (Fin.cons x v)) →
+      extDeriv χ = extDeriv φ := by
+    intro k
+    cases k with
+    | zero =>
+      intro φ χ hφ _ hχ
+      have hχφ : χ = fun x => φ x - φ 0 :=
+        funext (Submission.iwl_cr_radial_homotopy.2 P φ χ hφ hχ)
+      subst hχφ
+      funext x
+      rw [extDeriv, extDeriv, fderiv_sub_const]
+    | succ k =>
+      intro φ χ hφ hχs hχ
+      obtain ⟨ψ, hψ, -, hψd, -⟩ := Submission.iwl_cr_radial_operator P k k φ hφ
+      have hφχ : φ = χ + extDeriv ψ := funext fun x =>
+        (Submission.iwl_cr_radial_homotopy.1 P k φ ψ χ hφ hψd hχ x).symm
+      have hdψ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (extDeriv ψ) := by
+        change ContDiff ℝ _ (fun x => ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ ψ x))
+        simpa only [← ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply, Function.comp_def]
+          using (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).contDiff.comp
+            (hψ.fderiv_right (by simp))
+      funext x
+      rw [hφχ, extDeriv_add (hχs.differentiable (by simp)).differentiableAt
+        (hdψ.differentiable (by simp)).differentiableAt, extDeriv_extDeriv hψ (by simp),
+        Pi.zero_apply, add_zero]
+  -- A cut-off `ζ` with `ζ = 1` on the ball `B = B_{R₀+1}(0) ⊇ spt Y ⊇ spt ∂Y`.
+  have hR₀ : 0 ≤ max R 0 := le_max_right R 0
+  let ζ : ContDiffBump (0 : Eucl P) := ⟨max R 0 + 1, max R 0 + 2, by linarith, by linarith⟩
+  have hζ : ∀ x ∈ ball (0 : Eucl P) (max R 0 + 1), ζ x = 1 := fun x hx =>
+    ζ.one_of_mem_closedBall (ball_subset_closedBall hx)
+  have hYB : Y.support ⊆ ball (0 : Eucl P) (max R 0 + 1) :=
+    hY.trans (closedBall_subset_ball (by linarith [le_max_left R 0]))
+  refine GeometricCurrentOn.ext fun φ => ?_
+  rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+  have hφ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (φ : DifferentialForm (Eucl P) m) := φ.property.1.1
+  have hdφ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (extDeriv (φ : DifferentialForm (Eucl P) m)) :=
+    (exteriorDerivativeTestOn univ m φ).property.1.1
+  -- `χ = H(dφ)` and the test form `ζχ`.
+  obtain ⟨χ, hχs, hχ, -, -⟩ := Submission.iwl_cr_radial_operator P m m _ hdφ
+  let ζχ : TestFormOn (univ : Set (Eucl P)) m :=
+    ⟨fun x => ζ x • χ x, ⟨⟨ζ.contDiff.smul hχs, ζ.hasCompactSupport.smul_right⟩, subset_univ _⟩⟩
+  -- `ζχ` satisfies the `H(dφ)`-formula on `B ⊇ spt ∂Y`, so `C(dφ) = ∂Y(ζχ) = Y(d(ζχ))`.
+  have hC : C (exteriorDerivativeTestOn univ m φ) = Y.boundary ζχ := by
+    refine hcone _ _ ⟨ball 0 (max R 0 + 1), isOpen_ball,
+      (Submission.iwl_cr_support_lemmas.1 P m univ Y).trans hYB, ?_⟩
+    intro x hx v
+    change (ζ x • χ x) v = _
+    rw [ContinuousAlternatingMap.smul_apply, hζ x hx, one_smul, hχ x v]
+    rfl
+  rw [hC, GeometricCurrentOn.boundary_apply]
+  -- `d(ζχ) = dχ = dφ` on `B`.
+  have hdχ := hd m _ χ hφ hχs hχ
+  have hloc : ∀ x ∈ ball (0 : Eucl P) (max R 0 + 1),
+      extDeriv (ζχ : DifferentialForm (Eucl P) m) x =
+        extDeriv (φ : DifferentialForm (Eucl P) m) x := by
+    intro x hx
+    rw [← hdχ]
+    apply Filter.EventuallyEq.extDeriv_eq
+    filter_upwards [isOpen_ball.mem_nhds hx] with y hy
+    change ζ y • χ y = χ y
+    rw [hζ y hy, one_smul]
+  -- So `d(ζχ) - dφ` vanishes on `B ⊇ spt Y`, and `Y` kills it.
+  have hsupp : tsupport ((exteriorDerivativeTestOn univ m ζχ - exteriorDerivativeTestOn univ m φ :
+      TestFormOn (univ : Set (Eucl P)) (m + 1)) : DifferentialForm (Eucl P) (m + 1)) ⊆
+      (ball (0 : Eucl P) (max R 0 + 1))ᶜ := by
+    refine closure_minimal ?_ isOpen_ball.isClosed_compl
+    intro x hx hxB
+    apply hx
+    change extDeriv (ζχ : DifferentialForm (Eucl P) m) x -
+      extDeriv (φ : DifferentialForm (Eucl P) m) x = 0
+    rw [hloc x hxB, sub_self]
+  have h0 := Submission.isoperimetric_apply_eq_zero_of_disjoint_support P (m + 1) univ Y _
+    (Set.disjoint_of_subset_left hsupp hYB.disjoint_compl_left)
+  rw [map_sub Y.toCurrent] at h0
+  exact sub_eq_zero.1 h0
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
