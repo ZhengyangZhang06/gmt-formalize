@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a697c758a8e27c447c8f60403663cc79bb4536c96c2d65f8bfb3a09d21d2100d",
+  "git_delta": {
+    "base_commit": "7669b9158ce9f226c1f8dbd35a350d8015aba57f",
+    "candidate_commit": "a1bda583f280bca30297cea61307277c08998af9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrldvc_setIntegral_biUnion_le_mul_measure",
+    "diff_sha256": "d24c5af730447c8b22a1178c1a8c5777328d1f7b13208592cddba4c7e060627e",
+    "source_sha256": "cda70ddcf7c71e6eb112e8424c22048b31cc745fd5d839016614e3ad099e5e75",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrldvc_setIntegral_biUnion_le_mul_measure",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (t : Set (Euclid P)) (B : Euclid P → Set (Euclid P)), t.Countable → (∀ x ∈ t, MeasurableSet (B x)) → t.PairwiseDisjoint B → μ (⋃ x ∈ t, B x) < ∞ → IntegrableOn g (⋃ x ∈ t, B x) μ → (∀ x ∈ t, ∫ y in B x, g y ∂μ ≤ θ * (μ (B x)).toReal) → ∫ y in ⋃ x ∈ t, B x, g y ∂μ ≤ θ * (μ (⋃ x ∈ t, B x)).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
