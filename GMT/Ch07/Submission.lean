@@ -1438,6 +1438,162 @@ theorem Submission.dorag_tes_gt_bounded_transfer_of_lintegral_bounds : ∀ (X Y 
     constructor
     · linarith
     · linarith
+/-- Frame bounds for the affine graph plane (Simon Ch. 5, proof of Theorem 4.5).  Let
+`L = ι + ι' ∘ Λ`, `S = range L` and `τ = ξ + ι' c`, where `ι`, `ι'` are orthogonal isometric
+frames with `range ι ⊆ T`, `dim T = n`.  Then (a) `dim S = n`; (b) at `ξ + ι v + ι' w`, the
+distance to `τ + S` is at most `‖w - c - Λ v‖`, and `‖v‖ ≤ ‖ξ + ι v + ι' w - τ‖`; (c) for every
+`x`, `dist(x - τ, S) ≤ dist(x - ξ, T) + ‖c‖ + ‖Λ‖ ‖x - τ‖`, since `range ι = T`,
+`range ι' = Tᗮ` and so `x = ξ + ι v + ι' w` with `‖w‖ = dist(x - ξ, T)`. -/
+theorem Submission.dorag_tes_gah_plane_frame_bounds : ∀ (n k : ℕ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (Λ : Euclid n →L[ℝ] Euclid k) (ξ : Euclid (n + k)) (c : Euclid k), Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → Module.finrank ℝ (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)) = n ∧ (∀ (v : Euclid n) (w : Euclid k), ‖(ξ + ι v + ι' w - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (ξ + ι v + ι' w - (ξ + ι' c))‖ ≤ ‖w - c - Λ v‖ ∧ ‖v‖ ≤ ‖ξ + ι v + ι' w - (ξ + ι' c)‖) ∧ ∀ x : Euclid (n + k), ‖(x - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (x - (ξ + ι' c))‖ ≤ ‖(x - ξ) - T.starProjection (x - ξ)‖ + ‖c‖ + ‖Λ‖ * ‖x - (ξ + ι' c)‖ := by
+  intro n k T ι ι' Λ ξ c hT horth hιT
+  set L : Euclid n →ₗ[ℝ] Euclid (n + k) := ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap
+  have hLv : ∀ v, L v = ι v + ι' (Λ v) := fun v => rfl
+  -- Step 1 (Pythagoras): `‖ι v + ι' u‖² = ‖v‖² + ‖u‖²`
+  have hpy : ∀ (v : Euclid n) (u : Euclid k), ‖ι v + ι' u‖ ^ 2 = ‖v‖ ^ 2 + ‖u‖ ^ 2 := by
+    intro v u
+    rw [norm_add_sq_real, horth v u, ι.norm_map, ι'.norm_map]
+    ring
+  -- Step 2 (a): `L` is injective, so `dim S = n`
+  have ha : Module.finrank ℝ (LinearMap.range L) = n := by
+    have hinj : Function.Injective L := by
+      rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+      intro v hv
+      have h := hpy v (Λ v)
+      rw [← hLv, hv, norm_zero] at h
+      have h0 : ‖v‖ ^ 2 = 0 := by nlinarith [sq_nonneg ‖v‖, sq_nonneg ‖Λ v‖]
+      simpa using h0
+    rw [LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+  -- Step 3 (nearest point): `‖y - p_S y‖ ≤ ‖y - s‖` for `s ∈ S`
+  have hnear : ∀ y s : Euclid (n + k), s ∈ LinearMap.range L →
+      ‖y - (LinearMap.range L).starProjection y‖ ≤ ‖y - s‖ := by
+    intro y s hs
+    rw [Submodule.starProjection_minimal]
+    exact ciInf_le ⟨0, by rintro _ ⟨z, rfl⟩; exact norm_nonneg _⟩ (⟨s, hs⟩ : LinearMap.range L)
+  -- Step 4 (b)
+  have hb : ∀ (v : Euclid n) (w : Euclid k),
+      ‖(ξ + ι v + ι' w - (ξ + ι' c)) - (LinearMap.range L).starProjection (ξ + ι v + ι' w - (ξ + ι' c))‖
+        ≤ ‖w - c - Λ v‖ ∧ ‖v‖ ≤ ‖ξ + ι v + ι' w - (ξ + ι' c)‖ := by
+    intro v w
+    have hy : ξ + ι v + ι' w - (ξ + ι' c) = ι v + ι' (w - c) := by
+      rw [map_sub]; abel
+    rw [hy]
+    refine ⟨?_, ?_⟩
+    · have h1 : ι v + ι' (w - c) - L v = ι' (w - c - Λ v) := by
+        rw [hLv, map_sub ι' (w - c) (Λ v)]; abel
+      calc _ ≤ ‖ι v + ι' (w - c) - L v‖ := hnear _ _ (LinearMap.mem_range_self L v)
+        _ = ‖w - c - Λ v‖ := by rw [h1, ι'.norm_map]
+    · have h2 := hpy v (w - c)
+      have h3 : ‖v‖ ^ 2 ≤ ‖ι v + ι' (w - c)‖ ^ 2 := by nlinarith [sq_nonneg ‖w - c‖]
+      exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 h3
+  -- Step 5: `range ι = T`
+  have hrι : LinearMap.range ι.toLinearMap = T := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rintro _ ⟨v, rfl⟩
+      exact hιT v
+    · rw [LinearMap.finrank_range_of_inj ι.injective, finrank_euclideanSpace_fin, hT]
+  -- Step 6: `range ι' = Tᗮ`
+  have hrι' : LinearMap.range ι'.toLinearMap = Tᗮ := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rintro _ ⟨w, rfl⟩
+      rw [Submodule.mem_orthogonal]
+      intro u hu
+      rw [← hrι] at hu
+      obtain ⟨v, rfl⟩ := hu
+      exact horth v w
+    · have h := Submodule.finrank_add_finrank_orthogonal T
+      rw [hT, finrank_euclideanSpace_fin] at h
+      rw [LinearMap.finrank_range_of_inj ι'.injective, finrank_euclideanSpace_fin]
+      omega
+  -- Step 7 (c)
+  refine ⟨ha, hb, ?_⟩
+  intro x
+  obtain ⟨v, hv⟩ : T.starProjection (x - ξ) ∈ LinearMap.range ι.toLinearMap := by
+    rw [hrι]; exact T.starProjection_apply_mem _
+  obtain ⟨w, hw⟩ : (x - ξ) - T.starProjection (x - ξ) ∈ LinearMap.range ι'.toLinearMap := by
+    rw [hrι']; exact Submodule.sub_starProjection_mem_orthogonal _
+  simp only [LinearIsometry.coe_toLinearMap] at hv hw
+  have hx : ξ + ι v + ι' w = x := by
+    rw [hv, hw]; abel
+  have hwn : ‖w‖ = ‖(x - ξ) - T.starProjection (x - ξ)‖ := by
+    rw [← hw, ι'.norm_map]
+  obtain ⟨hb1, hb2⟩ := hb v w
+  rw [hx] at hb1 hb2
+  rw [← hwn]
+  calc _ ≤ ‖w - c - Λ v‖ := hb1
+    _ ≤ ‖w - c‖ + ‖Λ v‖ := norm_sub_le _ _
+    _ ≤ ‖w‖ + ‖c‖ + ‖Λ‖ * ‖v‖ := by gcongr; exacts [norm_sub_le _ _, Λ.le_opNorm v]
+    _ ≤ ‖w‖ + ‖c‖ + ‖Λ‖ * ‖x - (ξ + ι' c)‖ := by gcongr
+/-- Where the multiplicity is `1` `μ`-a.e., `μ = θ Hⁿ⌞M` is dominated by `Hⁿ` (Simon Ch. 5, proof of
+Theorem 4.5): if `θ = 1` `μ`-a.e. on the measurable set `B`, then `μ⌞B ≤ Hⁿ⌞B`, hence
+`∫⁻_A h dμ ≤ ∫⁻_A h dHⁿ` for every `A ⊆ B` and every `h ≥ 0`.  As `θ ≥ 1` on `M`, the exceptional
+set `{x ∈ M ∩ B : θ(x) ≠ 1}` is `Hⁿ`-null, so `μ⌞B = Hⁿ⌞(B ∩ M)`. -/
+theorem Submission.dorag_tes_gah_mult_one_le_hausdorff : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (B : Set (Euclid P)), MeasurableSet B → (∀ᵐ x ∂R.measure, x ∈ B → R.mult x = 1) → R.measure.restrict B ≤ (μHE[n] : Measure (Euclid P)).restrict B ∧ ∀ (A : Set (Euclid P)) (h : Euclid P → ℝ≥0∞), A ⊆ B → (∫⁻ x in A, h x ∂R.measure) ≤ ∫⁻ x in A, h x ∂μHE[n] := by
+  intro P n U R B hB hmult
+  -- Step 1: `θ = R.mult` is measurable and `μ⌞B = ((Hⁿ⌞M)⌞B).withDensity θ`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hμB : R.measure.restrict B =
+      ((μHE[n].restrict R.carrier).restrict B).withDensity fun x => (R.mult x : ℝ≥0∞) :=
+    restrict_withDensity hB _
+  -- Step 2: for `Hⁿ⌞M`-a.e. `x`, `θ(x) ≠ 0 → x ∈ B → θ(x) = 1`
+  have h2 : ∀ᵐ x ∂μHE[n].restrict R.carrier,
+      (R.mult x : ℝ≥0∞) ≠ 0 → x ∈ B → R.mult x = 1 :=
+    (ae_withDensity_iff hθ).1 hmult
+  -- Step 3: `θ = 1` a.e. for `(Hⁿ⌞M)⌞B`, since `θ ≥ 1` on `M`
+  have h3 : (fun x => (R.mult x : ℝ≥0∞)) =ᵐ[(μHE[n].restrict R.carrier).restrict B] 1 := by
+    filter_upwards [ae_restrict_of_ae h2,
+      ae_restrict_of_ae (ae_restrict_mem R.measurableSet_carrier), ae_restrict_mem hB]
+      with x hx hxM hxB
+    rw [hx (Nat.cast_ne_zero.2 (R.mult_pos x hxM).ne') hxB, Pi.one_apply, Nat.cast_one]
+  -- Step 4: `μ⌞B = (Hⁿ⌞M)⌞B = Hⁿ⌞(B ∩ M) ≤ Hⁿ⌞B`
+  have hle : R.measure.restrict B ≤ (μHE[n] : Measure (Euclid P)).restrict B := by
+    rw [hμB, withDensity_congr_ae h3, withDensity_one, Measure.restrict_restrict hB]
+    exact Measure.restrict_mono inter_subset_left le_rfl
+  refine ⟨hle, fun A h hAB => ?_⟩
+  -- Step 5: restrict to `A ⊆ B` and compare lower integrals
+  have hA : R.measure.restrict A ≤ (μHE[n] : Measure (Euclid P)).restrict A := by
+    simpa only [Measure.restrict_restrict_of_subset hAB] using Measure.restrict_mono_measure hle A
+  exact lintegral_mono' hA le_rfl
+/-- Area-weight bound for `1`-Lipschitz graphs, closed to open parameter ball: if `n ≥ 1` and
+`|f(v) - f(w)| ≤ |v - w|`, then `∫⁻_{B̄ₜ(0)} (1 + 2ⁿ Σᵢ |Df(v)eᵢ|²) G ≤ (1 + n2ⁿ) ∫⁻_{Bₜ(0)} G`
+for every `G ≥ 0` and `t`.  As `f` is `1`-Lipschitz, `‖Df(v)‖ ≤ 1` (also where `Df(v) = 0`), so
+`|Df(v)eᵢ| ≤ 1`, `Σᵢ |Df(v)eᵢ|² ≤ n` and the weight is at most the finite constant `1 + n2ⁿ`,
+which is pulled out of the integral.  For `n ≥ 1` the sphere is Lebesgue-null, so
+`closedBall 0 t =ᵐ ball 0 t` and the two lower integrals of `G` agree. -/
+theorem Submission.dorag_tes_gah_lipschitz_weight_ball_le : ∀ (n k : ℕ), 0 < n → ∀ (f : Euclid n → Euclid k), (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → ∀ (G : Euclid n → ℝ≥0∞) (t : ℝ), (∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * G v) ≤ ENNReal.ofReal (1 + n * 2 ^ n) * (∫⁻ v in ball (0 : Euclid n) t, G v) := by
+  intro n k hn f hf G t
+  have hlip : LipschitzWith 1 f := LipschitzWith.mk_one fun v w => by
+    simpa only [dist_eq_norm] using hf v w
+  have hw : ∀ v, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+      ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ≤ ENNReal.ofReal (1 + n * 2 ^ n) := by
+    intro v
+    have hD : ‖fderiv ℝ f v‖ ≤ 1 := by
+      simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := v) hlip
+    have hsum : ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ n := by
+      calc ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+          ≤ ∑ _i : Fin n, (1 : ℝ) := by
+            refine Finset.sum_le_sum fun i _ => pow_le_one₀ (norm_nonneg _) ?_
+            calc ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖
+                ≤ ‖fderiv ℝ f v‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ := (fderiv ℝ f v).le_opNorm _
+              _ ≤ 1 := by simpa using hD
+        _ = n := by simp
+    have h2 : (0 : ℝ) ≤ 2 ^ n := by positivity
+    have := mul_le_mul_of_nonneg_left hsum h2
+    exact ENNReal.ofReal_le_ofReal (by linarith)
+  have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  have hae : closedBall (0 : Euclid n) t =ᵐ[volume] ball (0 : Euclid n) t := by
+    refine ae_eq_set.2 ⟨?_, ?_⟩
+    · rw [closedBall_sdiff_ball]
+      exact Measure.addHaar_sphere volume 0 t
+    · rw [Set.sdiff_eq_empty.2 ball_subset_closedBall]
+      exact measure_empty
+  calc (∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+        ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * G v)
+      ≤ ∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + n * 2 ^ n) * G v :=
+        lintegral_mono fun v => mul_le_mul_left (hw v) (G v)
+    _ = ENNReal.ofReal (1 + n * 2 ^ n) * ∫⁻ v in closedBall (0 : Euclid n) t, G v :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ = ENNReal.ofReal (1 + n * 2 ^ n) * ∫⁻ v in ball (0 : Euclid n) t, G v := by
+        rw [setLIntegral_congr hae]
 /-- Product bound used for the graph area Jacobian: if `0 ≤ λᵢ ≤ 1` for `i < m`, then
 `1 ≤ Πᵢ (1 + λᵢ) ≤ 1 + 2ᵐ Σᵢ λᵢ`.  Induction on `m`, splitting off the last index:
 `Π = P'(1 + μ)` and `Σ = S' + μ` with `0 ≤ μ ≤ 1`, `S' ≥ 0` and `1 ≤ P' ≤ 1 + 2ᵐS'`.  Then
@@ -1942,6 +2098,77 @@ theorem Submission.dorag_tes_graph_weak_harmonic : ∀ (n k : ℕ), 0 < n → �
               fderiv ℝ ζ (P (x - ξ)) (EuclideanSpace.single i (1 : ℝ)) ∂R.measure)]
     _ = G * (a + 2 ^ n * (k * (2 * e + a)) + (e + a + κ * r / 2 * m)) := by ring
     _ ≤ G * ((2 + 2 ^ (n + 1) * k) * (e + a) + κ * r * m) := mul_le_mul_of_nonneg_left key hG
+/-- **`L²` height of `μ` about the plane of an affine approximation of a Lipschitz graph** (Simon
+Ch. 5, proof of 4.5; chapter-05.txt lines 960–970, with (2)–(4) at lines 789–797).  Put
+`τ = ξ + ι'c`, `S = range(ι + ι'Λ)`, `Φ(v) = ξ + ιv + ι'f(v)` and `F = Φ(ℝⁿ)`.  Then `dim S = n`,
+and if `θ = 1` `μ`-a.e. on `B = B_t(τ)` and `|(x − ξ) − p_T(x − ξ)| ≤ h₀` on `spt μ ∩ B`, then
+`∫_B |(x − τ) − p_S(x − τ)|² dμ ≤ (1 + n2ⁿ) ∫_{B̆ⁿ_t(0)} |f − c − Λ·|²` plus
+`(h₀ + |c| + ‖Λ‖t)² μ(B ∖ F)`.  On `B ∩ F ⊆ Φ(Bⁿ_t)` we have `μ ≤ Hⁿ`, and the area formula with
+`|(Φ(v) − τ) − p_S(Φ(v) − τ)| ≤ |f(v) − c − Λv|` gives the first term; `μ`-a.e. point of `B ∖ F`
+lies in `spt μ`, where the integrand is at most `(h₀ + |c| + ‖Λ‖t)²`. -/
+theorem Submission.dorag_tes_graph_affine_height : ∀ (n k : ℕ), 0 < n → ∀ (U : Set (Euclid (n + k))) (R : IMRep U n) (ξ : Euclid (n + k)) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (c : Euclid k) (Λ : Euclid n →L[ℝ] Euclid k) (t h₀ : ℝ), 0 < t → 0 ≤ h₀ → Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → (∀ᵐ x ∂R.measure, x ∈ closedBall (ξ + ι' c) t → R.mult x = 1) → (∀ x ∈ R.measure.support ∩ closedBall (ξ + ι' c) t, ‖(x - ξ) - T.starProjection (x - ξ)‖ ≤ h₀) → Module.finrank ℝ (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)) = n ∧ (∫⁻ x in closedBall (ξ + ι' c) t, ENNReal.ofReal (‖(x - (ξ + ι' c)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)).starProjection (x - (ξ + ι' c))‖ ^ 2) ∂R.measure) ≤ ENNReal.ofReal (1 + n * 2 ^ n) * (∫⁻ v in ball (0 : Euclid n) t, ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2)) + ENNReal.ofReal ((h₀ + ‖c‖ + ‖Λ‖ * t) ^ 2) * R.measure (closedBall (ξ + ι' c) t \ range (fun v => ξ + ι v + ι' (f v))) := by
+  intro n k hn U R ξ T ι ι' f c Λ t h₀ ht hh₀ hT horth hιT hf hmult hheight
+  -- `dim S = n` and the pointwise distance bounds come from the frame lemma.
+  obtain ⟨hrank, hgraph, hoff⟩ :=
+    Submission.dorag_tes_gah_plane_frame_bounds n k T ι ι' Λ ξ c hT horth hιT
+  refine ⟨hrank, ?_⟩
+  set τ := ξ + ι' c
+  set S := LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ Λ.toLinearMap)
+  set Φ : Euclid n → Euclid (n + k) := fun v => ξ + ι v + ι' (f v)
+  set g : Euclid (n + k) → ℝ≥0∞ := fun x =>
+    ENNReal.ofReal (‖(x - τ) - S.starProjection (x - τ)‖ ^ 2)
+  have hgm : Measurable g := by fun_prop
+  -- Split `B = (B ∩ F) ∪ (B ∖ F)`; no measurability of `F` is needed.
+  have hsplit : ∫⁻ x in closedBall τ t, g x ∂R.measure ≤
+      ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂R.measure +
+        ∫⁻ x in closedBall τ t \ range Φ, g x ∂R.measure := by
+    conv_lhs => rw [← Set.inter_union_sdiff (closedBall τ t) (range Φ)]
+    exact lintegral_union_le _ _ _
+  -- Graph part: `B ∩ F ⊆ Φ(Bⁿ_t)` since `|v| ≤ |Φ(v) − τ|`.
+  have hsub : closedBall τ t ∩ range Φ ⊆ Φ '' closedBall (0 : Euclid n) t := by
+    rintro x ⟨hxB, v, rfl⟩
+    refine ⟨v, ?_, rfl⟩
+    rw [mem_closedBall, dist_eq_norm] at hxB
+    rw [mem_closedBall_zero_iff]
+    exact (hgraph v (f v)).2.trans hxB
+  have hgraph_part : ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂R.measure ≤
+      ENNReal.ofReal (1 + n * 2 ^ n) *
+        ∫⁻ v in ball (0 : Euclid n) t, ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2) := by
+    calc ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂R.measure
+        ≤ ∫⁻ x in closedBall τ t ∩ range Φ, g x ∂μHE[n] :=
+          (Submission.dorag_tes_gah_mult_one_le_hausdorff (n + k) n U R (closedBall τ t)
+            measurableSet_closedBall hmult).2 _ g inter_subset_left
+      _ ≤ ∫⁻ x in Φ '' closedBall (0 : Euclid n) t, g x ∂μHE[n] := lintegral_mono_set hsub
+      _ ≤ ∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+            ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * g (Φ v) :=
+          (Submission.dorag_tes_lipschitz_graph_area_bounds n k hn ι ι' ξ f
+            (closedBall (0 : Euclid n) t) g horth hf measurableSet_closedBall hgm).2
+      _ ≤ ∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n,
+            ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) *
+              ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2) := by
+          refine lintegral_mono fun v => mul_le_mul' le_rfl ?_
+          exact ENNReal.ofReal_le_ofReal
+            (pow_le_pow_left₀ (norm_nonneg _) (hgraph v (f v)).1 2)
+      _ ≤ _ := Submission.dorag_tes_gah_lipschitz_weight_ball_le n k hn f hf _ t
+  -- Off-graph part: `μ`-a.e. point of `B ∖ F` lies in `spt μ ∩ B`, where `g ≤ K²`.
+  have hoff_part : ∫⁻ x in closedBall τ t \ range Φ, g x ∂R.measure ≤
+      ENNReal.ofReal ((h₀ + ‖c‖ + ‖Λ‖ * t) ^ 2) * R.measure (closedBall τ t \ range Φ) := by
+    rw [← setLIntegral_const]
+    refine lintegral_mono_ae ?_
+    have h1 : ∀ᵐ x ∂R.measure.restrict (closedBall τ t \ range Φ), x ∈ R.measure.support :=
+      ae_restrict_of_ae Measure.support_mem_ae
+    have h2 : ∀ᵐ x ∂R.measure.restrict (closedBall τ t \ range Φ), x ∈ closedBall τ t :=
+      ae_restrict_of_ae_restrict_of_subset sdiff_subset (ae_restrict_mem measurableSet_closedBall)
+    filter_upwards [h1, h2] with x hx1 hx2
+    have hxt : ‖x - τ‖ ≤ t := by rwa [mem_closedBall, dist_eq_norm] at hx2
+    have hK : ‖(x - τ) - S.starProjection (x - τ)‖ ≤ h₀ + ‖c‖ + ‖Λ‖ * t :=
+      calc ‖(x - τ) - S.starProjection (x - τ)‖
+          ≤ ‖(x - ξ) - T.starProjection (x - ξ)‖ + ‖c‖ + ‖Λ‖ * ‖x - τ‖ := hoff x
+        _ ≤ h₀ + ‖c‖ + ‖Λ‖ * t := by
+          gcongr
+          exact hheight x ⟨hx1, hx2⟩
+    exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (norm_nonneg _) hK 2)
+  exact hsplit.trans (add_le_add hgraph_part hoff_part)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
