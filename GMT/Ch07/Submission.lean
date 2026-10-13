@@ -513,6 +513,51 @@ theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Ty
     · exact (hCA k hxC).2
     · exact absurd hxD' hxD
 
+/-- **Lusin's theorem** for `Lⁿ` with a closed set, `Lⁿ(B) = ∞` allowed (Simon Ch. 2, proof of
+1.5, step 2, glued as in the infinite-measure case of Simon 1.15(2)).  On the bounded Borel shells
+`S_j = {j ≤ ‖x‖ < j + 1}`, the compact form `dor_ims_lusin_measurable_continuousOn` gives compact
+`K_j ⊆ B ∩ S_j` with `Lⁿ((B ∩ S_j) \ K_j) < δ_j` on which `g` is continuous, where `∑ δ_j < ε`.
+As `K_j ⊆ S_j`, the family `(K_j)` is locally finite, so `C = ⋃ⱼ K_j` is closed and `g` is
+continuous on `C`; and `B \ C ⊆ ⋃ⱼ (B ∩ S_j) \ K_j` has measure `< ε`. -/
+theorem Submission.codim1_rdo_c1a_lusin_isClosed : ∀ (n : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (g : Euclid n → Y) (B : Set (Euclid n)), Measurable g → MeasurableSet B → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C : Set (Euclid n), C ⊆ B ∧ IsClosed C ∧ ContinuousOn g C ∧ volume (B \ C) < ε := by
+  intro n Y _ _ _ _ g B hg hB ε hε
+  -- bounded Borel shells `S_j = {j ≤ ‖x‖ < j + 1}`, each of finite measure; `x ∈ S_⌊‖x‖⌋`
+  set S : ℕ → Set (Euclid n) := fun j => {x | (j : ℝ) ≤ ‖x‖ ∧ ‖x‖ < j + 1}
+  have hSm : ∀ j, MeasurableSet (S j) := fun j =>
+    (measurableSet_le measurable_const measurable_norm).inter
+      (measurableSet_lt measurable_norm measurable_const)
+  have hSμ : ∀ j, volume (S j) ≠ ∞ := fun j =>
+    ((measure_mono fun x hx => mem_closedBall_zero_iff.mpr hx.2.le).trans_lt
+      measure_closedBall_lt_top).ne
+  have hxS : ∀ x : Euclid n, x ∈ S ⌊‖x‖⌋₊ := fun x =>
+    ⟨Nat.floor_le (norm_nonneg x), Nat.lt_floor_add_one _⟩
+  -- weights `δ_j > 0` with `∑ δ_j < ε`
+  obtain ⟨δ, hδ, hδε⟩ := ENNReal.exists_pos_sum_of_countable' hε.ne' ℕ
+  -- Lusin on each shell: compact `K_j ⊆ B ∩ S_j`, defect `< δ_j`, `g` continuous on `K_j`
+  choose K hK hKB hKμ hKg using fun j =>
+    Submission.dor_ims_lusin_measurable_continuousOn n volume (B ∩ S j) g (δ j) hg
+      (hB.inter (hSm j)) (ne_top_of_le_ne_top (hSμ j) (measure_mono inter_subset_right))
+      (hδ j).ne'
+  -- `K_j ⊆ S_j`, so `ball x 1` meets `K_j` only for the finitely many `j < ‖x‖ + 1`
+  have hlf : LocallyFinite K := by
+    intro x
+    refine ⟨ball x 1, ball_mem_nhds x one_pos, (finite_lt_nat ⌈‖x‖ + 1⌉₊).subset ?_⟩
+    rintro j ⟨y, hyK, hyx⟩
+    refine Nat.lt_ceil.mpr ((hKB j hyK).2.1.trans_lt ?_)
+    calc ‖y‖ ≤ ‖x‖ + dist y x := norm_le_norm_add_const_of_dist_le le_rfl
+      _ < ‖x‖ + 1 := by linarith [mem_ball.mp hyx]
+  -- hence `C = ⋃ⱼ K_j` is closed and `g` is continuous on `C`
+  refine ⟨⋃ j, K j, iUnion_subset fun j => (hKB j).trans inter_subset_left,
+    hlf.isClosed_iUnion fun j => (hK j).isClosed,
+    hlf.continuousOn_iUnion (fun j => (hK j).isClosed) hKg, ?_⟩
+  -- `x ∈ B \ C` lies in `(B ∩ S_j) \ K_j` for `j = ⌊‖x‖⌋`
+  calc volume (B \ ⋃ j, K j) ≤ volume (⋃ j, (B ∩ S j) \ K j) :=
+        measure_mono fun x hx => mem_iUnion.mpr
+          ⟨⌊‖x‖⌋₊, ⟨hx.1, hxS x⟩, fun hxK => hx.2 (mem_iUnion_of_mem _ hxK)⟩
+    _ ≤ ∑' j, volume ((B ∩ S j) \ K j) := measure_iUnion_le _
+    _ ≤ ∑' j, δ j := ENNReal.tsum_le_tsum fun j => (hKμ j).le
+    _ < ε := hδε
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
