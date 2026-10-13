@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "32e3442fdebeb677e857374fe31b54d03375d981e2ac62e811b823e29198f2d1",
+  "git_delta": {
+    "base_commit": "2bf50bd26318e77d6e722fa831febcb691cee456",
+    "candidate_commit": "8189dfce05dc97023b65c74b01b9f5156b6dd50d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ovr_imrep_vanish_at_vertex",
+    "diff_sha256": "99e6f7250850b028e345b7e6bb8ff5f3c9f05d577b92c920254fffa0b4706e3d",
+    "source_sha256": "ca26d08242af79d2e0105c9587db93569d973cf5e168684fbddcbdf644325ae5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ovr_imrep_vanish_at_vertex",
+      "statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) m) (r : ℕ → ℝ) (c : ℝ), 1 ≤ m → IsIntegerMultiplicity C → Tendsto r atTop (𝓝 0) → (∀ (k : ℕ) (x : Euclid P), r k ≤ ‖x‖ → (ωs k : DifferentialForm (Euclid P) m) x = 0) → (∀ (k : ℕ) (x : Euclid P), covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) m) x) ≤ c) → Tendsto (fun k => C (ωs k)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
