@@ -525,6 +525,22 @@ theorem Submission.dpf_jm_aestronglyMeasurable_sqrt_det_compression : ∀ (P : �
   have h := hΦ.comp_aestronglyMeasurable (hp.prodMk hL)
   exact h
 
+/-- **The tangential Jacobian is a.e. strongly measurable** (Simon Ch. 3, 2.3 and the remark
+"Thus `J^M_f` is `Hⁿ`-measurable", chapter-03.txt lines 362–385; step 7 of the push-forward
+proof, Simon 6.2.23–2.24).  If `x ↦ p_{Q(x)}` (orthogonal projection onto `Q(x)`) and `x ↦ L(x)`
+are `μ`-a.e. strongly measurable, so is `x ↦ (det(L(x)eₐ · L(x)e_b))^{1/2}`, `e` the standard
+orthonormal basis of `Q(x)`: the Gram determinant is `det(p L(x)* L(x) p + I − p)`,
+`p = p_{Q(x)}`, a continuous function of the pair `(p_{Q(x)}, L(x))`. -/
+theorem Submission.dpf_aestronglyMeasurable_gramJacobian : ∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable (fun x => (Q x).starProjection) μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (L x (stdOrthonormalBasis ℝ (Q x) i)) (L x (stdOrthonormalBasis ℝ (Q x) j))))) μ := by
+  intro P μ Q L hp hL
+  -- for each `x`, `det(L(x)eₐ · L(x)e_b) = det(p L(x)* L(x) p + I − p)` with `p = p_{Q(x)}`
+  simp_rw [Submission.dpf_jm_gram_det_eq_det_compression P (Q _) (stdOrthonormalBasis ℝ (Q _))
+    (L _)]
+  -- `(q, B) ↦ √det(q B* B q + I − q)` is continuous and `x ↦ (p_{Q(x)}, L(x))` is a.e. strongly
+  -- measurable
+  exact Submission.dpf_jm_aestronglyMeasurable_sqrt_det_compression P μ
+    (fun x => (Q x).starProjection) L hp hL
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
