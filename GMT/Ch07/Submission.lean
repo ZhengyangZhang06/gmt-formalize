@@ -852,6 +852,28 @@ theorem Submission.codim1_rdo_dg_hr_monotone_set_trichotomy : ∀ (n : ℕ) (F :
     · exact Or.inl hzN
     · exact absurd (show c < inner ℝ z v from hzH) (not_lt.mpr (hc₀ z (hA₀ z hzF hzN)))
 
+/-- **Half-space rigidity** (Simon Ch. 3, 4.3 (8)–(9); for the inward normal the limit set is
+`{⟨z, v⟩ > c}`): if `D_w 1_{F₀} = 0` for every `w ⊥ v` and `D_v 1_{F₀} ≥ 0` in the sense of
+distributions, then `F₀` is null, co-null, or a.e. a half-space `{⟨z, v⟩ > c}`.  Translation by
+`w ⊥ v` preserves `F₀` a.e. and translation by `t • v`, `t ≥ 0`, maps `F₀` into itself a.e.; writing
+`a = (a - ⟨a, v⟩ • v) + ⟨a, v⟩ • v`, translation by any `a` with `⟨a, v⟩ ≥ 0` maps `F₀` into itself
+a.e., and the Lebesgue density trichotomy for such monotone sets concludes. -/
+theorem Submission.codim1_rdo_dg_halfspace_rigidity : ∀ (m : ℕ) (F₀ : Set (Euclid (m + 1))) (v : Euclid (m + 1)), ‖v‖ = 1 → MeasurableSet F₀ → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in F₀, fderiv ℝ ζ z w = 0) → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∫ z in F₀, fderiv ℝ ζ z v ≤ 0) → volume F₀ = 0 ∨ volume F₀ᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F₀ {z | c < inner ℝ z v}) = 0 := by
+  intro m F₀ v hv hF htan hnor
+  refine Submission.codim1_rdo_dg_hr_monotone_set_trichotomy (m + 1) F₀ v hF fun a ha => ?_
+  -- `a = w + t • v` with `t = ⟨a, v⟩ ≥ 0` and `w = a - t • v ⊥ v`, as `‖v‖ = 1`
+  generalize ht : inner ℝ a v = t at ha
+  have hw : inner ℝ (a - t • v) v = 0 := by
+    rw [inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq, hv, ht]
+    ring
+  -- a.e. `z + w ∈ F₀ ↔ z ∈ F₀`, and a.e. `z + w ∈ F₀ → z + w + t • v ∈ F₀` (translate by `w`)
+  have hinv := Submission.codim1_rdo_dg_hr_ae_translate_invariant (m + 1) F₀ (a - t • v) hF
+    fun ζ hζ hζc => htan ζ hζ hζc (a - t • v) hw
+  have hmono := (measurePreserving_add_right volume (a - t • v)).quasiMeasurePreserving.ae
+    (Submission.codim1_rdo_dg_hr_ae_translate_monotone (m + 1) F₀ v hF hnor t ha)
+  filter_upwards [hinv, hmono] with z hzw hzwv hz
+  simpa only [add_assoc, sub_add_cancel] using hzwv (hzw.2 hz)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
