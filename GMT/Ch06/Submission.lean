@@ -6338,4 +6338,45 @@ theorem Submission.fiw_tb_finite_net :
       _ = C * ENNReal.ofReal ρ * (X.mass + X.boundary.mass) := (mul_add _ _ _).symm
       _ ≤ C * ENNReal.ofReal ρ * B := mul_le_mul_right hmass _
 
+/-- **Total boundedness (Simon Ch. 6, proof of 7.2, (1)–(3)).**  Assume the Deformation Theorem,
+and let `T_j ∈ 𝒟_{m+1}(U)` be integer multiplicity with `∂T_j` integer multiplicity, `spt T_j ⊆ K`
+(`K ⊆ U` compact) and `M(T_j) + M(∂T_j) ≤ B < ∞`.  For `ε > 0` and infinite `J ⊆ ℕ` there is an
+infinite `J' ⊆ J` such that for `i, j ∈ J'`, `T_i − T_j = ∂R + S` with `R, S` integer multiplicity
+and `M(R) + M(S) < ε`.  With `C` from the finite flat net (`fiw_tb_finite_net`), pick `ρ > 0` with
+`ρ · 2CB < ε`; the net at scale `ρ` gives finitely many centres `Q` and, for each `j`, a centre
+`Q_j` with `T_j − Q_j = ∂R_j + S_j`, `M(R_j) + M(S_j) ≤ CρB`.  By the pigeonhole principle some
+fibre `J' = {j ∈ J : Q_j = q}` is infinite, and for `i, j ∈ J'` the difference of the two
+decompositions (`fiw_tb_flat_sub`) has `T_i − T_j = ∂R + S` and `M(R) + M(S) ≤ 2CρB < ε`. -/
+theorem Submission.fiw_total_boundedness : DeformationTheorem → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P)), IsCompact K → K ⊆ U → ∀ (B : ℝ≥0∞), B ≠ ∞ → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, IsIntegerMultiplicity (Tj j).boundary) → (∀ j, (Tj j).support ⊆ K) → (∀ j, (Tj j).mass + (Tj j).boundary.mass ≤ B) → ∀ ε : ℝ≥0∞, 0 < ε → ∀ J : Set ℕ, J.Infinite → ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', ∃ (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, Tj i ω - Tj j ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε := by
+  intro hDef P m U hU K hK hKU B hB Tj hTj hbTj hsupp hmass ε hε J hJ
+  -- The finite flat net (Simon 7.2, (1)–(3)) gives the constant `C`.
+  obtain ⟨C, hC⟩ := Submission.fiw_tb_finite_net hDef Submission.fiw_im_mass_formula
+    Submission.fiw_im_lincomb P m U hU K hK hKU
+  -- A scale `ρ > 0` with `ρ · 2CB < ε`, since `2CB < ∞` and `ε ≠ 0`.
+  have h2CB : 2 * (C : ℝ≥0∞) * B ≠ ∞ :=
+    ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top) hB
+  obtain ⟨ρ, hρ, hρε⟩ := ENNReal.exists_nnreal_pos_mul_lt h2CB hε.ne'
+  -- Finitely many centres; each `T_j` has a centre `Q j` with `T_j − Q j = ∂(R j) + S j` and
+  -- `M(R j) + M(S j) ≤ CρB`.
+  obtain ⟨Qs, hQs, hnet⟩ := hC B hB ρ (NNReal.coe_pos.2 hρ)
+  choose Q hQ R S hR hS hTRS hRS using
+    fun j => hnet (Tj j) (hTj j) (hbTj j) (hsupp j) (hmass j)
+  rw [ENNReal.ofReal_coe_nnreal] at hRS
+  -- Pigeonhole: `J ⊆ ⋃_{q ∈ Qs} {j ∈ J : Q j = q}`, so some fibre is infinite.
+  obtain ⟨q, -, hq⟩ : ∃ q ∈ Qs, {j | j ∈ J ∧ Q j = q}.Infinite := by
+    by_contra hfin
+    exact hJ ((hQs.biUnion fun q hq => Set.not_infinite.1 fun hinf => hfin ⟨q, hq, hinf⟩).subset
+      fun j hj => Set.mem_biUnion (hQ j) ⟨hj, rfl⟩)
+  refine ⟨{j | j ∈ J ∧ Q j = q}, fun j hj => hj.1, hq, fun i hi j hj => ?_⟩
+  -- `T_i − T_j = (∂(R i) + S i) − (∂(R j) + S j)`, as `Q i = q = Q j`.
+  obtain ⟨R', S', hR', hS', hRS', hmass'⟩ := Submission.fiw_tb_flat_sub Submission.fiw_im_lincomb
+    P (m + 1) U hU (R i) (R j) (S i) (S j) (hR i) (hR j) (hS i) (hS j)
+  refine ⟨R', S', hR', hS', fun ω => ?_, ?_⟩
+  · rw [hRS' ω, ← hTRS i ω, ← hTRS j ω, hi.2, hj.2]
+    ring
+  · calc R'.mass + S'.mass ≤ ((R i).mass + (S i).mass) + ((R j).mass + (S j).mass) := hmass'
+      _ ≤ C * ρ * B + C * ρ * B := add_le_add (hRS i) (hRS j)
+      _ = ρ * (2 * C * B) := by ring
+      _ < ε := hρε
+
 end GMT.Ch06
