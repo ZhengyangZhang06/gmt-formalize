@@ -821,6 +821,37 @@ theorem gwe_vfv_abs_le_grad_bound_mul_radius : ∀ n : ℕ, 1 ≤ n → ∀ (ζ 
     _ ≤ M * ‖y - r • w‖ := hmv
     _ ≤ M * r := mul_le_mul_of_nonneg_left hw2 hM0
 
+/-- Simon Ch. 5, proof of Theorem 4.5, display (5) (p. 117): `x` is no farther from the origin
+than its coordinate along `T = q(ℝⁿ × {0})` plus its height over `T`. For a linear isometry `q` of
+`ℝ^{n+ℓ}`, `|x| ≤ |a(x)| + dist(x, T)`, where `a(x) ∈ ℝⁿ` is the first block of `q⁻¹ x`.
+Writing `q⁻¹ x = (a, b)`, `p_{T⊥} x = q(a, b) − q(a, 0) = q(0, b)`, so
+`dist(x, T) = |p_{T⊥} x| = |(0, b)| = |b|`, while `|x|² = |a|² + |b|² ≤ (|a| + |b|)²`. -/
+theorem gwe_vfv_norm_le_first_block_add_infDist : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (x : Amb n ℓ), ‖x‖ ≤ ‖(EuclideanSpace.finAddEquivProd (q.symm x)).1‖ + infDist x (rotatedPlane q : Set (Amb n ℓ)) := by
+  intro n ℓ q x
+  obtain ⟨hsub, hnorm, hsurj, hproj⟩ := lip_approx_graph_coordinates n ℓ q
+  -- write `q⁻¹ x = (a, b)`; its first block is `a`
+  obtain ⟨a, b, hab⟩ := hsurj (q.symm x)
+  have hx : x = q (graphPoint a b) := by rw [← hab, q.apply_symm_apply]
+  have ha : (EuclideanSpace.finAddEquivProd (q.symm x)).1 = a := by
+    rw [hab]
+    ext i
+    simp [graphPoint]
+  -- `p_{T⊥} x = q(a, b) − q(a, 0) = q(0, b)`, so `dist(x, T) = |(0, b)| = |b|`
+  have hb : infDist x (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖ := by
+    have h0 := hnorm 0 b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h0
+    rw [← hsNorm_starProjection_trace_identities.2.1 (n + ℓ) (rotatedPlane q) x,
+      Submodule.starProjection_orthogonal_val, hx, hproj, ← map_sub, hsub, sub_self, sub_zero,
+      q.norm_map]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h0
+  -- `|x|² = |a|² + |b|² ≤ (|a| + |b|)²`
+  have hxn : ‖x‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by rw [hx, q.norm_map, hnorm]
+  rw [ha, hb]
+  refine (pow_le_pow_iff_left₀ (norm_nonneg x) (add_nonneg (norm_nonneg a) (norm_nonneg b))
+    two_ne_zero).1 ?_
+  rw [hxn, add_sq]
+  linarith [mul_nonneg (norm_nonneg a) (norm_nonneg b)]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
