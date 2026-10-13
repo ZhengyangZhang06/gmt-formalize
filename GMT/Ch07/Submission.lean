@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Angle-parametrized unit curve** (step 6 of the parent proof).  Differentiating
+`⟨γ, γ⟩ = ‖γ‖² ≡ 1` gives `⟨γ, γ′⟩ = 0`.  With `A = ⟨γ, u⟩ > 0` and `B = ⟨γ, e⟩`, the quotient
+and chain rules differentiate `arctan (B / A) ≡ α` to `(1 + (B / A)²)⁻¹ (B′ A − B A′) / A² = 1`,
+i.e. `A B′ − B A′ = A² + B²`; the right side is positive, so `γ′ ≠ 0`. -/
+theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s : ℝ) (γ : ℝ → Euclid P), ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → ∀ α ∈ Ioo (-s) s, inner ℝ (γ α) (deriv γ α) = 0 ∧ inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u = inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 ∧ deriv γ α ≠ 0 := by
+  intro P u e s γ hγ hprop α hα
+  -- `(-s, s)` is a neighbourhood of `α` on which `γ` is differentiable
+  have hI : Ioo (-s) s ∈ 𝓝 α := Ioo_mem_nhds hα.1 hα.2
+  have hd : HasDerivAt γ (deriv γ α) α :=
+    ((hγ.differentiableOn one_ne_zero).differentiableAt hI).hasDerivAt
+  -- orthogonality: `⟨γ, γ⟩ = ‖γ‖² ≡ 1` near `α`, so its derivative `2 ⟨γ, γ′⟩` vanishes
+  have hn1 : (fun t => inner ℝ (γ t) (γ t)) =ᶠ[𝓝 α] fun _ => (1 : ℝ) := by
+    filter_upwards [hI] with t ht
+    rw [real_inner_self_eq_norm_sq, (hprop t ht).1, one_pow]
+  have h0 := (hd.inner ℝ hd).unique ((hasDerivAt_const α (1 : ℝ)).congr_of_eventuallyEq hn1)
+  rw [real_inner_comm (γ α) (deriv γ α)] at h0
+  have horth : inner ℝ (γ α) (deriv γ α) = 0 := by linarith
+  -- the angle: `A = ⟨γ, u⟩`, `B = ⟨γ, e⟩` and `arctan (B / A) ≡ id` near `α`
+  have hA : 0 < inner ℝ (γ α) u := (hprop α hα).2.1
+  have hAd : HasDerivAt (fun t => inner ℝ (γ t) u) (inner ℝ (deriv γ α) u) α := by
+    simpa using hd.inner ℝ (hasDerivAt_const α u)
+  have hBd : HasDerivAt (fun t => inner ℝ (γ t) e) (inner ℝ (deriv γ α) e) α := by
+    simpa using hd.inner ℝ (hasDerivAt_const α e)
+  have hid : (fun t => Real.arctan (((fun t => inner ℝ (γ t) e) / fun t => inner ℝ (γ t) u) t))
+      =ᶠ[𝓝 α] fun t => t := by
+    filter_upwards [hI] with t ht
+    exact (hprop t ht).2.2
+  have h1 := ((hBd.div hAd hA.ne').arctan).unique ((hasDerivAt_id' α).congr_of_eventuallyEq hid)
+  simp only [Pi.div_apply] at h1
+  -- clearing `(1 + (B / A)²) A² = A² + B² > 0` from `h1` gives the angle identity
+  have hpos : 0 < inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by positivity
+  have hkey : inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u =
+      inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by
+    field_simp at h1
+    linarith
+  -- non-degeneracy: `γ′ = 0` would make the left side `0`
+  refine ⟨horth, hkey, fun h => ?_⟩
+  rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
+  exact hpos.ne' hkey.symm
+
+/-- **Smooth cutoff near a compact set** (step 3 of the parent proof).  Take `δ > 0` with
+`cthickening δ K ⊆ N`.  The smooth Urysohn lemma for the closed set `cthickening (δ / 4) K`
+inside the open set `thickening (δ / 2) K` gives a `C¹` function `ζ` with
+`support ζ = thickening (δ / 2) K` and `ζ = 1` exactly on `cthickening (δ / 4) K`.  Then
+`tsupport ζ ⊆ cthickening (δ / 2) K ⊆ N` is a closed subset of a compact set, and
+`V = thickening (δ / 4) K` is an open plateau around `K`. -/
+theorem Submission.idtp_ccd_scsp_tf_cutoff : ∀ (P : ℕ) (K N : Set (Euclid P)), IsCompact K → IsOpen N → K ⊆ N → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ N ∧ ∃ V : Set (Euclid P), IsOpen V ∧ K ⊆ V ∧ ∀ y ∈ V, ζ y = 1 := by
+  intro P K N hK hN hKN
+  -- a margin: `cthickening δ K ⊆ N` for some `δ > 0`
+  obtain ⟨δ, hδ, hδN⟩ := hK.exists_cthickening_subset_open hN hKN
+  -- smooth Urysohn: `ζ = 1` exactly on `cthickening (δ / 4) K`, `support ζ = thickening (δ / 2) K`
+  obtain ⟨ζ, hζ, -, hsupp, hone⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+    (isOpen_thickening (δ := δ / 2) (E := K)) (isClosed_cthickening (δ := δ / 4) (E := K))
+    (cthickening_subset_thickening' (by positivity) (by linarith) K)
+  have hts : tsupport ζ ⊆ cthickening (δ / 2) K := by
+    rw [tsupport, hsupp]
+    exact closure_thickening_subset_cthickening _ _
+  -- the plateau `V = thickening (δ / 4) K ⊆ cthickening (δ / 4) K`
+  refine ⟨ζ, by exact_mod_cast hζ, ?_, ?_, thickening (δ / 4) K, isOpen_thickening,
+    self_subset_thickening (by positivity) K,
+    fun y hy => (hone y).1 (thickening_subset_cthickening _ _ hy)⟩
+  -- `tsupport ζ` is closed inside the compact set `cthickening (δ / 2) K` (`Euclid P` is proper)
+  · exact hK.cthickening.of_isClosed_subset (isClosed_tsupport ζ) hts
+  · exact hts.trans ((cthickening_mono (by linarith) K).trans hδN)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
