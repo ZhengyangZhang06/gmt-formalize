@@ -451,6 +451,98 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Rescaled Gauss–Green identity** (Simon Ch. 3, proof of Theorem 4.3 (De Giorgi), the change
+of variable `x → λₖ x` in (8), chapter-03.txt lines 661–665).  Suppose
+`∫_F div φ dLᵐ⁺¹ = -∫ ⟨φ, ν⟩ dμ` for every `C¹` compactly supported `φ` with `tsupport φ ⊆ D`.
+If `r > 0` and `g` is `C¹` with compact support and `y + r • tsupport g ⊆ D`, then with
+`F_{y,r} = {w : y + r w ∈ F}`, `r⁻ᵐ ∫ ⟨g((z - y)/r), ν(z)⟩ dμ(z) = -∫_{F_{y,r}} div g dLᵐ⁺¹`:
+`φ = g((· - y)/r)` is admissible with `div φ = r⁻¹ (div g)((· - y)/r)`, and the substitution
+`z = y + r w` has Jacobian `rᵐ⁺¹`. -/
+theorem Submission.codim1_rdo_dg_tma_rescaled_gauss_green : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r : ℝ) (g : Euclid (m + 1) → Euclid (m + 1)), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → ContDiff ℝ 1 g → HasCompactSupport g → (∀ w ∈ tsupport g, y + r • w ∈ D) → (r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ = -∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) := by
+  intro m D F μ ν y r g hF hGG hr hg hgc hD
+  set T : Euclid (m + 1) → ℝ := fun w =>
+    LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1))
+    with hTdef
+  -- the affine homeomorphism `A w = y + r • w` and its inverse
+  let A : Euclid (m + 1) ≃ₜ Euclid (m + 1) :=
+    (Homeomorph.smulOfNeZero r hr.ne').trans (Homeomorph.addLeft y)
+  have hA : ∀ w, A w = y + r • w := fun w => rfl
+  have hAsymm : ∀ z, A.symm z = r⁻¹ • (z - y) := by
+    intro z
+    apply A.injective
+    rw [A.apply_symm_apply, hA, smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
+    abel
+  -- `φ = g ∘ A⁻¹` is admissible in the Gauss–Green identity
+  set φ : Euclid (m + 1) → Euclid (m + 1) := fun z => g (r⁻¹ • (z - y)) with hφdef
+  have hφA : φ = g ∘ A.symm := by
+    funext z
+    simp [hφdef, hAsymm]
+  have hφ : ContDiff ℝ 1 φ := hg.comp (by fun_prop)
+  have hφts : tsupport φ = A '' tsupport g := by
+    rw [hφA, tsupport_comp_eq_preimage _ A.symm, A.preimage_symm]
+  have hφc : HasCompactSupport φ := by
+    rw [HasCompactSupport, hφts]
+    exact hgc.isCompact.image A.continuous
+  have hφD : tsupport φ ⊆ D := by
+    rw [hφts]
+    rintro _ ⟨w, hw, rfl⟩
+    rw [hA]
+    exact hD w hw
+  -- chain rule: `div φ (z) = r⁻¹ (div g) (r⁻¹ • (z - y))`
+  have hfd : ∀ z, fderiv ℝ φ z = r⁻¹ • fderiv ℝ g (r⁻¹ • (z - y)) := by
+    intro z
+    have hin : HasFDerivAt (fun z : Euclid (m + 1) => r⁻¹ • (z - y))
+        (r⁻¹ • ContinuousLinearMap.id ℝ (Euclid (m + 1))) z :=
+      ((hasFDerivAt_id (𝕜 := ℝ) z).sub_const y).const_smul (r⁻¹ : ℝ)
+    have hgd := ((hg.differentiable one_ne_zero) (r⁻¹ • (z - y))).hasFDerivAt
+    have h2 : HasFDerivAt φ ((fderiv ℝ g (r⁻¹ • (z - y))).comp
+        (r⁻¹ • ContinuousLinearMap.id ℝ (Euclid (m + 1)))) z := hgd.comp z hin
+    rw [h2.fderiv]
+    ext x
+    simp
+  have htr : ∀ z, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = r⁻¹ * T (r⁻¹ • (z - y)) := by
+    intro z
+    rw [hfd]
+    simp [hTdef, map_smul]
+  have hGG' := hGG φ hφ hφc hφD
+  simp_rw [htr] at hGG'
+  rw [integral_const_mul] at hGG'
+  -- change of variables `z = y + r • w`
+  have hcv : ∫ z in F, T (r⁻¹ • (z - y)) =
+      r ^ (m + 1) * ∫ w in (fun w => y + r • w) ⁻¹' F, T w := by
+    have hpre : MeasurableSet ((fun w => y + r • w) ⁻¹' F) := hF.preimage (by fun_prop)
+    rw [← integral_indicator hF, ← integral_indicator hpre]
+    set Ψ : Euclid (m + 1) → ℝ := F.indicator (fun z => T (r⁻¹ • (z - y))) with hΨ
+    have h1 : (fun w => ((fun w => y + r • w) ⁻¹' F).indicator T w) =
+        fun w => Ψ (r • w + y) := by
+      funext w
+      rw [add_comm (r • w) y]
+      by_cases hw : y + r • w ∈ F
+      · rw [indicator_of_mem (show w ∈ (fun w => y + r • w) ⁻¹' F from hw), hΨ,
+          indicator_of_mem hw]
+        simp [smul_smul, inv_mul_cancel₀ hr.ne']
+      · rw [indicator_of_notMem (show w ∉ (fun w => y + r • w) ⁻¹' F from hw), hΨ,
+          indicator_of_notMem hw]
+    rw [h1, Measure.integral_comp_smul volume (fun x => Ψ (x + y)) r,
+      integral_add_right_eq_self Ψ y]
+    simp only [finrank_euclideanSpace, Fintype.card_fin, smul_eq_mul]
+    rw [abs_of_pos (inv_pos.2 (pow_pos hr _))]
+    field_simp
+  rw [hcv] at hGG'
+  -- `rᵐ ∫_{F_{y,r}} div g = -∫ ⟨g ((z - y) / r), ν⟩ dμ`; divide by `rᵐ`
+  have hrm : (r ^ m) ≠ 0 := pow_ne_zero _ hr.ne'
+  have key : ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ =
+      -(r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, T w) := by
+    have : r⁻¹ * (r ^ (m + 1) * ∫ w in (fun w => y + r • w) ⁻¹' F, T w) =
+        r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, T w := by
+      rw [pow_succ]
+      field_simp
+    rw [this] at hGG'
+    linarith
+  rw [key]
+  field_simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
