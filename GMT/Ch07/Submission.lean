@@ -1057,6 +1057,50 @@ theorem Submission.dor_ims_smooth_unit_approx : ∀ (P n : ℕ) (K V : Set (Eucl
   rw [← hgK x hx]
   exact hωg x
 
+/-- **Simon Ch. 6, 2.5 and 3.2(3)**, upper bound: if `T(ω) = ∫_{M'} θ' ⟨ω, ξ'⟩ dHᵏ` for every
+`ω` supported in `V`, with `θ' ≥ 0` and `ξ'` a unit orientation `Hᵏ`-a.e. on `M'`, then
+`M_W(T) ≤ ∫_{M' ∩ W} θ' dHᵏ` for measurable `W ⊆ V`.  For admissible `ω`, `|ξ'(ω)| ≤ |ω| ≤ 1`
+a.e. on `M'` and `ω = 0` off `W`, so `T(ω) ≤ |∫_{M'} θ' ξ'(ω)| ≤ ∫⁻_{M'} 1_W θ'`; no
+integrability or measurability of `θ'`, `ξ'` is needed. -/
+theorem Submission.codim1_oriented_rep_massOn_le_lintegral : ∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), (∀ x, 0 ≤ θ' x) → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), MeasurableSet W → W ⊆ V → T.massOn W ≤ ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] := by
+  intro P k U V M' T θ' ξ' hθ hξ hT W hW hWV
+  obtain ⟨_, hL⟩ := Submission.dor_ims_unitOrientation_dual P k
+  -- `|ξ'(x)(α)| ≤ |α|` for `Hᵏ⌞M'`-a.e. `x`
+  have hgood : ∀ᵐ x ∂(μHE[k].restrict M'),
+      ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α := by
+    filter_upwards [hξ] with x ⟨Q, hQ⟩
+    exact (hL (ξ' x) Q hQ).1
+  -- it suffices to bound `T(ω)` for each admissible `ω`
+  refine sSup_le ?_
+  rintro r ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  dsimp only
+  rw [hT ω (hωW.trans hWV)]
+  -- `|θ' ξ'(ω)| ≤ 1_W θ'` a.e. on `M'`: `ω = 0` off `W` and `|ξ'(ω)| ≤ |ω| ≤ 1`
+  have hdom : ∀ᵐ x ∂(μHE[k].restrict M'),
+      ‖θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x)‖ₑ ≤
+        W.indicator (fun x => ENNReal.ofReal (θ' x)) x := by
+    filter_upwards [hgood] with x hx
+    by_cases hxW : x ∈ W
+    · rw [indicator_of_mem hxW, Real.enorm_eq_ofReal_abs, abs_mul, abs_of_nonneg (hθ x)]
+      refine ENNReal.ofReal_le_ofReal ?_
+      calc θ' x * |ξ' x ((ω : DifferentialForm (Euclid P) k) x)|
+          ≤ θ' x * 1 := mul_le_mul_of_nonneg_left ((hx _).trans (hω1 x)) (hθ x)
+        _ = θ' x := mul_one _
+    · rw [image_eq_zero_of_notMem_tsupport fun h => hxW (hωW h), map_zero, mul_zero,
+        enorm_zero]
+      exact zero_le
+  -- `T(ω) ≤ |∫ g| ≤ ∫⁻ |g| ≤ ∫⁻_{M'} 1_W θ' = ∫⁻_{M' ∩ W} θ'`
+  calc ENNReal.ofReal (∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k])
+      ≤ ‖∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x in M', ‖θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x)‖ₑ ∂μHE[k] :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x in M', W.indicator (fun x => ENNReal.ofReal (θ' x)) x ∂μHE[k] :=
+        lintegral_mono_ae hdom
+    _ = ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] := by
+        rw [lintegral_indicator hW, Measure.restrict_restrict hW, inter_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
