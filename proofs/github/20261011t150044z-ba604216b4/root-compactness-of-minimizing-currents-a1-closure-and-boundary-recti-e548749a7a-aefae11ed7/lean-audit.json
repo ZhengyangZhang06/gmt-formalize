@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e3e5fc18765919fa4ba113b19d5bf41463879431cded4d6f06066ba07420cf43",
+  "git_delta": {
+    "base_commit": "e9e712f1d56f68a583ca6150ca2616ef7edf16a5",
+    "candidate_commit": "4fbe8e57af761f705923302f00a3e91a00ae141a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_bv_pairing_identity",
+    "diff_sha256": "4610e290d85938e168ebf5fccc5b477ccc9b8a08fcad63fe14084d63ccf9379d",
+    "source_sha256": "b7f5dd5f99f3065b762d4519f69dc0017bc98adf2ff7e078ffeb12ee4056dcda",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_bv_pairing_identity",
+      "statement": "∀ (n : ℕ) (S : Set (Euclid n)) (φ u g : Euclid n → ℝ), MeasurableSet S → Continuous φ → HasCompactSupport φ → ∫ y, φ y = 1 → IntegrableOn u S → Continuous g → HasCompactSupport g → (∀ x, x ∉ S → g x = 0) → ∫ x, (u x - ∫ y in S, u y * φ (x - y)) * g x = ∫ z, φ z * ∫ y in S, u y * (g y - g (y + z))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
