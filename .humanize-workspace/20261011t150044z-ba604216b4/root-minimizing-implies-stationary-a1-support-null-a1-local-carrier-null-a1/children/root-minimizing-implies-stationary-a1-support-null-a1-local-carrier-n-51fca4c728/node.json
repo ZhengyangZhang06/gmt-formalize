@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.orient_component_null-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+  "depth": 4,
+  "title": "Each component ξ(α) vanishes H^n-a.e. on the part of the carrier in a relatively compact open set where the current vanishes",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set and W ⊆ ℝ^P. Let T ∈ 𝒟_n(U) be a GeometricCurrentOn U n. Let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n) representing T: T(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Assume W is open, closure W is compact, closure W ⊆ U, and T vanishes on W (T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ W). Then for every n-covector α ∈ Covector (Euclid P) n, ξ(x)(α) = 0 for H^n⌞(M ∩ W)-almost every x, where H^n = μHE[n]. In Lean: ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0",
+  "lean_name": "lcn_orient_apply_ae_eq_zero_of_vanishesOn",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-51fca4c728-a1"
+}
