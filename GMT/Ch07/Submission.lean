@@ -761,6 +761,44 @@ theorem Submission.regcomp_unit_orientation_pairing : ∀ (P n : ℕ) (ξ : Mult
       exact hβ₀.le
     · rw [h (-β₀), ContinuousAlternatingMap.neg_apply, hβ₀τ, neg_neg]
 
+/-- **Upper mass bound for `T = τ(M, θ, ξ)`** (one half of Simon Ch. 6, Remark 3.2(3); mass
+(6.2.5)).  If `R = (C, θ, ξ)` represents `T` in `U`, then `M_W(T) ≤ (θ Hⁿ⌞C)(W)` for every
+`W ⊆ ℝᴾ`.  For an admissible `ω` put `S = spt ω ⊆ W`, a closed (hence Borel) set.  A.e. on `C`
+the orientation `ξ(x)` is a unit `n`-vector, so `|⟨ω(x), ξ(x)⟩| ≤ |ω(x)| ≤ 1`, and
+`⟨ω(x), ξ(x)⟩ = 0` off `S`; hence `|θ⟨ω, ξ⟩| ≤ θ 1_S` a.e. on `C`, and
+`T(ω) ≤ ∫_C |θ⟨ω, ξ⟩| dHⁿ ≤ ∫_{C ∩ S} θ dHⁿ = (θ Hⁿ⌞C)(S) ≤ (θ Hⁿ⌞C)(W)`. -/
+theorem Submission.regcomp_imrep_massOn_le_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W := by
+  intro P n U T R hR W
+  refine sSup_le ?_
+  rintro _ ⟨ω, ⟨hωW, hω⟩, rfl⟩
+  -- `S = spt ω` is closed, hence Borel, and `S ⊆ W`
+  set S := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hS : MeasurableSet S := (isClosed_tsupport _).measurableSet
+  -- a.e. on `C`: `‖θ ⟨ω, ξ⟩‖ₑ ≤ θ 1_S`, by the unit orientation pairing and `|ω|_E ≤ 1`
+  have hbound : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)‖ₑ ≤
+        S.indicator (fun x => (R.mult x : ℝ≥0∞)) x := by
+    filter_upwards [R.orients] with x hxQ
+    obtain ⟨Q, -, hQ⟩ := hxQ
+    by_cases hx : x ∈ S
+    · rw [Set.indicator_of_mem hx, enorm_mul, Real.enorm_natCast]
+      refine mul_le_of_le_one_right zero_le ?_
+      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_one]
+      exact ENNReal.ofReal_le_ofReal
+        (((Submission.regcomp_unit_orientation_pairing P n (R.orient x) Q hQ).1 _).trans (hω x))
+    · rw [Set.indicator_of_notMem hx, image_eq_zero_of_notMem_tsupport hx]
+      simp
+  calc ENNReal.ofReal (T ω) ≤ ‖T ω‖ₑ := Real.ofReal_le_enorm _
+    _ ≤ ∫⁻ x in R.carrier,
+          ‖(R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)‖ₑ ∂μHE[n] := by
+      rw [hR ω]
+      exact enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x in R.carrier, S.indicator (fun x => (R.mult x : ℝ≥0∞)) x ∂μHE[n] :=
+      lintegral_mono_ae hbound
+    _ = R.measure S := by
+      rw [lintegral_indicator hS, IMRep.measure, withDensity_apply _ hS]
+    _ ≤ R.measure W := measure_mono hωW
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
