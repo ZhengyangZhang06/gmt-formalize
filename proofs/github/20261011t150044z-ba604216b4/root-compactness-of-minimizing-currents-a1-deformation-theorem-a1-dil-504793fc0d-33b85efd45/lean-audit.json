@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "be7624161bf6abcdf3ff62e87e407be6c2d3be9667aefc2b6eb48350ea9f931a",
+  "git_delta": {
+    "base_commit": "69dd0d89a86f37ee0b01642cc8903dad281890cc",
+    "candidate_commit": "41106336685658c49d96be8c1a2a94d648408ea1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_dil_support_eq",
+    "diff_sha256": "ed09ec95050486fadd24c75bb1ea3fd77eacc5ca7e5964b062ef76ded0dfd23a",
+    "source_sha256": "35121f534aadf32a5940a4169795ffb87ef2ffc2c19b959747036b0c354d681e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_dil_support_eq",
+      "statement": "∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → Y.support = (fun x => lam • x) '' X.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
