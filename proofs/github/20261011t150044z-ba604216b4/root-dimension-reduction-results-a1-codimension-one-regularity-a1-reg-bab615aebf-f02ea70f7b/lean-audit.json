@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1b1b46bc792ab9b17f89514a032986acd0b2af63f9477da5a835e57945a7f5dc",
+  "git_delta": {
+    "base_commit": "5ca4144b09d15c4827cc273b058f080029a87b84",
+    "candidate_commit": "e2ca8aea7f750f814f3e397dbad4dc044ce49509",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1pt_rescaled_area_formula",
+    "diff_sha256": "65a6192a215852fa03e77e9ea9b703811d4059f78931f2659bd2adf80858d2e3",
+    "source_sha256": "bf02d83088f42b3dd2c4e4db5eb3a5bb3000fe3078137d7e92ec7a8fed61f809",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1pt_rescaled_area_formula",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (B : Set (Euclid n)) (z : Euclid n) (s : ℝ) (f : Euclid P → ℝ), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ g a) → InjOn g B → (∀ a ∈ B, Injective (fderiv ℝ g a)) → 0 < s → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap (g z) s '' (g '' B), f y ∂μHE[n] = ∫ b in {b : Euclid n | z + s • b ∈ B}, Real.sqrt (((fderiv ℝ g (z + s • b)).adjoint ∘L fderiv ℝ g (z + s • b)).det) * f (s⁻¹ • (g (z + s • b) - g z))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
