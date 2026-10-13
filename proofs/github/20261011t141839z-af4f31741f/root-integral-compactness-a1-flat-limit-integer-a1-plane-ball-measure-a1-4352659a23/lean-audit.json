@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d0c3a16de6a7c18c3d893b9c9061637bb3e2f5857c56fde197a043d964e6be8",
+  "git_delta": {
+    "base_commit": "229867f1a492ea45ca09251902c21af2338946f0",
+    "candidate_commit": "1afc952ce5c07ffef0150c184f1f0b16beacd3ca",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_plane_ball_measure",
+    "diff_sha256": "79ddc72be6e6e74c6b3c52069a1b2473ea1e434efabef371ef7f7c4a44dec862",
+    "source_sha256": "5c8035144d04cdbf69c2b9df63b9d70b0b00add79f0722be4841b55dcb06e0d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_plane_ball_measure",
+      "statement": "∀ (N n : ℕ) (T : Grassmannian N n) (a : Euclidean N) (r : ℝ), a ∈ T.plane → 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall a r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball a r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
