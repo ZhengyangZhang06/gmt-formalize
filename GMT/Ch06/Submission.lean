@@ -1490,6 +1490,7 @@ theorem Submission.dph_sh_affine_estimate :
   calc _ ≤ _ := hint
     _ = Real.sqrt ((k : ℝ) + 1) * s * L ^ k * B * C := by
       rw [sub_zero, abs_one, mul_one]
+      ring
 /-- Supports of boundaries, weak limits and linear combinations: `spt ∂Z ⊆ spt Z`; a weak limit of
 currents supported in a closed `K` is supported in `K`; `spt Z ⊆ spt Z₁ ∪ spt Z₂` when
 `Z = a Z₁ + b Z₂`.  In each case a point outside the claimed support lies in an open `W ⊂⊂ U` on
