@@ -702,6 +702,53 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- **M-absolutely convergent series of currents** (Simon Ch. 6, proof of 7.2, p. 172: "the
+`M`-absolutely convergent series `R^{(ℓ)} = Σ_{r ≥ ℓ} R_r`").  If `s = Σ_r M(X_r) < ∞`, every
+`M(X_r)` is finite and `Σ_r M(X_r)^ℝ = s^ℝ`.  For a test form `ω` with `|ω(x)| ≤ c`,
+`|X_r(ω)| ≤ c M(X_r)^ℝ`, so `Σ_r X_r(ω)` converges absolutely; its sum `L(ω)` is linear in `ω`
+and satisfies `|L(ω)| ≤ c s^ℝ`, hence is a current `Y`.  For `ω` admissible for `M`,
+`X_r(ω) ≤ M(X_r)^ℝ`, so `Y(ω) ≤ s^ℝ` and `M(Y) ≤ s`. -/
+theorem Submission.cmc_fc_series_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass := by
+  intro P n U X hX
+  -- Step 1: every `M(X_r)` is finite and `Σ_r M(X_r)^ℝ = s^ℝ`
+  have hfin : ∀ r, (X r).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hX
+  have hm : HasSum (fun r => (X r).mass.toReal) (∑' r, (X r).mass).toReal := by
+    rw [ENNReal.tsum_toReal_eq hfin]
+    exact (ENNReal.summable_toReal hX).hasSum
+  -- Step 2: `|X_r(ω)| ≤ c M(X_r)^ℝ` when `|ω(x)| ≤ c`, so `Σ_r X_r(ω)` converges absolutely
+  have hle : ∀ (ω : TestFormOn U n) (c : ℝ), 0 < c →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) →
+      ∀ r, ‖X r ω‖ ≤ c * (X r).mass.toReal := fun ω c hc hω r => by
+    rw [Real.norm_eq_abs]
+    exact Submission.cmc_fc_sc_abs_le_mul_mass P n U (X r) ω c hc (hfin r) hω
+  have hsum : ∀ ω : TestFormOn U n, Summable fun r => X r ω := fun ω => by
+    obtain ⟨c, hc, hω⟩ := Submission.cmc_fc_sc_testForm_coeff_bound P n U ω
+    exact Summable.of_norm_bounded (hm.summable.mul_left c) (hle ω c hc hω)
+  -- Step 3: `L(ω) = Σ_r X_r(ω)` is linear, by additivity and homogeneity of convergent sums
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑' r, X r ω
+      map_add' := fun ω ω' => by
+        simp only [map_add]
+        exact (hsum ω).tsum_add (hsum ω')
+      map_smul' := fun t ω => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        exact (hsum ω).tsum_mul_left t }
+  have hL : ∀ ω : TestFormOn U n, L ω = ∑' r, X r ω := fun _ => rfl
+  -- Step 4: `|L(ω)| ≤ c s^ℝ` when `|ω(x)| ≤ c`, so `L` is a current `Y`
+  obtain ⟨Y, hY⟩ := Submission.cmc_fc_sc_current_of_coeff_bound P n U L
+    (∑' r, (X r).mass).toReal fun ω c hc hω => by
+      rw [hL, ← Real.norm_eq_abs]
+      exact (hsum ω).hasSum.norm_le_of_bounded (hm.mul_left c) (hle ω c hc hω)
+  refine ⟨Y, fun ω => ?_, ?_⟩
+  · rw [hY, hL]
+    exact (hsum ω).hasSum
+  -- Step 5: for `ω` admissible for `M`, `X_r(ω) ≤ M(X_r)^ℝ`, so `Y(ω) ≤ s^ℝ`
+  · refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    rw [ENNReal.ofReal_le_iff_le_toReal hX, hY, hL]
+    exact hasSum_le (fun r => (ENNReal.ofReal_le_iff_le_toReal (hfin r)).1 ((X r).le_massOn hω))
+      (hsum ω).hasSum hm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
