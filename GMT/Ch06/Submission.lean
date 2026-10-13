@@ -589,6 +589,62 @@ theorem Submission.ind_pi_ss_fatou_level_selection :
   exact ⟨γ, σ, _, hγ, hγE, hσ, ENNReal.add_lt_top.2 ⟨hγF, ENNReal.one_lt_top⟩,
     fun k => (hσG k).le⟩
 
+/-- Simon Ch. 6, proof of 8.2, display (8) ("by 4.5(1) and a selection argument as in 6.7(2) of
+Ch. 2"): for cycles `X_k ⇀ X` with `sup_k M_W(X_k) < ∞` there are a level `γ ∈ (a, b)` and a
+subsequence `κ` such that the restrictions `R_k = X_{κ(k)} ⌞ {d < γ}` satisfy
+`M_W(R_k) ≤ M_W(X_{κ(k)})`, `sup_k M_W(∂R_k) < ∞` and `R_k(ω) → (X ⌞ {d < γ})(ω)` for
+`spt ω ⊆ W`. -/
+theorem Submission.ind_pi_good_slice_selection :
+    SlicingTheorem → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U →
+      ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P))
+        (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U →
+        (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U →
+        ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E,
+          ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k),
+            (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) →
+            IsRestriction X {x | x ∈ U ∧ φ x < s} R →
+            (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W →
+              Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧
+            (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K →
+              WeaklyConvergesOn Rj R)) →
+    ∀ (P m : ℕ) (U W : Set (Eucl P)) (Xk : ℕ → GeometricCurrentOn U (m + 1))
+      (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ),
+      IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b →
+      (∀ k, (Xk k).boundary = 0) →
+      (∀ k V, CompactlyContainedOpen V U → (Xk k).massOn V < ∞) →
+      (⨆ k, (Xk k).massOn W) < ∞ → WeaklyConvergesOn Xk X →
+      ∃ (γ : ℝ) (κ : ℕ → ℕ) (Rk : ℕ → GeometricCurrentOn U (m + 1)) (G : ℝ≥0∞),
+        γ ∈ Ioo a b ∧ StrictMono κ ∧ G < ∞ ∧
+        (∀ k, IsRestriction (Xk (κ k)) {x | x ∈ U ∧ d x < γ} (Rk k)) ∧
+        (∀ k, (Rk k).massOn W ≤ (Xk (κ k)).massOn W) ∧
+        (∀ k, (Rk k).boundary.massOn W ≤ G) ∧
+        ∀ R : GeometricCurrentOn U (m + 1), IsRestriction X {x | x ∈ U ∧ d x < γ} R →
+          ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ W →
+            Tendsto (fun k => Rk k ω) atTop (𝓝 (R ω)) := by
+  intro hSlice hRWL P m U W Xk X d L a b hU hW hd hab hcycle hmass hsup hconv
+  -- Steps 1–4 for each cycle `X_k`: restrictions `A k t` of `X_k` to `{d < t}` with
+  -- `M_W(∂(A k t)) ≤ g k t` for `t ∈ (a, b)` and `∫⁻_{(a,b)} g k ≤ L · M_W(X_k)`.
+  choose A g hg hA hAg hgi using fun k =>
+    Submission.ind_pi_ss_cycle_slice_family hSlice P m U W (Xk k) d L a b hU hW hd hab
+      (hcycle k) (hmass k)
+  -- Step 5: (RWL) with `φ := d` gives `ψ` and a countable exceptional set `E` of levels.
+  obtain ⟨ψ, E, hψ, hE, hlim⟩ := hRWL P (m + 1) U hU Xk X W d hconv hW.1
+    (subset_closure.trans hW.2.2) hsup hd.continuous.continuousOn
+  -- `∫⁻_{(a,b)} g (ψ k) ≤ L · M_W(X_{ψ k}) ≤ L · sup_j M_W(X_j) < ∞`.
+  have hgψ : ∀ k, ∫⁻ t in Ioo a b, g (ψ k) t ≤ (L : ℝ≥0∞) * ⨆ j, (Xk j).massOn W := fun k =>
+    (hgi (ψ k)).trans (mul_le_mul_right (le_iSup (fun j => (Xk j).massOn W) (ψ k)) _)
+  -- Steps 6–8: a level `γ ∈ (a, b) \ E` and a subsequence `σ` with `g (ψ (σ k)) γ ≤ G`.
+  obtain ⟨γ, σ, G, hγ, hγE, hσ, hG, hgG⟩ :=
+    Submission.ind_pi_ss_fatou_level_selection (fun k => g (ψ k)) a b
+      ((L : ℝ≥0∞) * ⨆ j, (Xk j).massOn W) E hab (fun k => hg (ψ k))
+      (ENNReal.mul_lt_top ENNReal.coe_lt_top hsup) hgψ hE
+  -- Step 9: `κ := ψ ∘ σ` and `R_k := A (κ k) γ`; convergence passes to the subsequence `σ`.
+  refine ⟨γ, ψ ∘ σ, fun k => A (ψ (σ k)) γ, G, hγ, hψ.comp hσ, hG, fun k => hA (ψ (σ k)) γ,
+    fun k => Submission.ind_pi_ss_restriction_massOn_le P (m + 1) U W _ _ _ hU hW
+      (hA (ψ (σ k)) γ), fun k => (hAg (ψ (σ k)) γ hγ).trans (hgG k), fun R hR ω hω => ?_⟩
+  exact ((hlim γ hγE (fun j => A (ψ j) γ) R (fun j => hA (ψ j) γ) hR).1 ω hω).comp
+    hσ.tendsto_atTop
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
