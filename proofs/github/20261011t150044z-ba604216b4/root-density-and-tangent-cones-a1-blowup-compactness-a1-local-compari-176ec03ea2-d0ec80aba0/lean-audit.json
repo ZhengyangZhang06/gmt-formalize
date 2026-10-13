@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "32ee21488cf7fe5f00b3af60f295278d427e2d002277fa390e6bc2df5b42286e",
+  "git_delta": {
+    "base_commit": "1bd69a9160fd136ec1d593a2e84f56171602086c",
+    "candidate_commit": "4a2b7dad553dc38664cfa6addb4a522e2d4d5159",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_eil_scale",
+    "diff_sha256": "5bad72951d2ec952b557f740337ac7cfedf9f601482839f69bbb12b59175d6e7",
+    "source_sha256": "d3f8a3061d4770a44f1685be53b6c29a10709bdac9328a4fb0929c7192b72d6f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_eil_scale",
+      "statement": "∀ (P d : ℕ) (A : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (δ ε : ℝ≥0∞), LipschitzWith L f → 0 < δ → 0 < ε → μH[((d + 1 : ℕ) : ℝ)] A ≠ ∞ → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, (⨅ (c : ℕ → Set (Euclid P)) (_ : A ∩ f ⁻¹' {t} ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ (d : ℝ)) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ (L : ℝ≥0∞) * (μH[((d + 1 : ℕ) : ℝ)] A + ε)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
