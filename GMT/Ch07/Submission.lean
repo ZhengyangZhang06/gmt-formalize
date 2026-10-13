@@ -733,33 +733,11 @@ theorem Submission.dorag_lip_good_set_cone_estimate : ∀ (n k : ℕ) (C₃ C₆
       simpa using this.symm
     have hAu : A u = ∑ i : Fin (n + k), u i • A (EuclideanSpace.single i (1 : ℝ)) := by
       conv_lhs => rw [hu]
-/-- **Simon Ch. 5, proof of 2.6, (9)–(10), corrected** (estimate (10') of the Lipschitz
-approximation: `B_σ(η)` becomes `B_{3s}(η)`, and as only `κσ₀ ≤ 1` is used there is no additive
-error `Cδσⁿ`).
-For `η ∈ (F ∖ spt μ) ∩ B_{σ₀/4}(ξ)` let `y ∈ spt μ` be a nearest point and `s = |y − η|/2`.  Then
-`μ(B_s(η)) = 0`, the density bounds give `ωsⁿ/2 ≤ μ(B_{3s}(η)) ≤ 2·5ⁿωsⁿ`, and monotonicity with
-radii `s < 3s` and `e^{3κs} ≤ 2` gives `μ(B_{3s}(η)) ≤ 2·3ⁿs⁻²∫_{B_{3s}(η)}|p_x^⊥(x − η)|² dμ`.
-Splitting `p_x^⊥(x − η) = Q(x − η) + (P − p_x)(x − η)` (cone condition on `F`, Hilbert–Schmidt
-bound) and absorbing the `λ²`-term yields `sⁿ ≤ C₉[μ(B_{3s}(η) ∖ F) + ∫_{B_{3s}(η)}|p_x − P|² dμ]`,
-with `λ₀ = (288·15ⁿ)^{-1/2}` and `C₉ = 144·3ⁿ/ω`. -/
-theorem Submission.dorag_lip_off_support_estimate : ∀ (n k : ℕ), ∃ lam₀ C₉ : ℝ, 0 < lam₀ ∧ 0 < C₉ ∧ ∀ (μ : Measure (Euclid (n + k))) (τ : Euclid (n + k) → Submodule ℝ (Euclid (n + k))) (T₀ : Submodule ℝ (Euclid (n + k))) (F : Set (Euclid (n + k))) (ξ : Euclid (n + k)) (σ₀ κ lam : ℝ), 0 < σ₀ → 0 ≤ κ → κ * σ₀ ≤ 1 → 0 ≤ lam → lam ≤ lam₀ → ξ ∈ μ.support → (∀ x ∈ F, ∀ x' ∈ F, ‖(x - x') - T₀.starProjection (x - x')‖ ≤ lam * ‖x - x'‖) → (∀ y ∈ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 8 → μ (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) → (∀ y ∈ μ.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 8 → unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ 2 * μ (closedBall y t)) → (∀ (y : Euclid (n + k)) (s t : ℝ), y ∈ closedBall ξ (σ₀ / 4) → 0 < s → s < t → t ≤ 3 * σ₀ / 8 → ENNReal.ofReal (Real.exp (-(κ * t)) / t ^ n) * μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp (-(κ * s)) / s ^ n) * μ (closedBall y s) + ∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (τ x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ) → ∀ η ∈ (F \ μ.support) ∩ closedBall ξ (σ₀ / 4), ∃ s : ℝ, ∃ y ∈ μ.support, 0 < s ∧ 2 * s ≤ dist η ξ ∧ dist y η = 2 * s ∧ ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal C₉ * (μ (closedBall η (3 * s) \ F) + ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (∑ i : Fin (n + k), ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) := by
-  intro n k
-  -- Hilbert–Schmidt bound `‖A u‖² ≤ (∑ᵢ ‖A eᵢ‖²) ‖u‖²`
-  have hHS : ∀ (A : Euclid (n + k) →L[ℝ] Euclid (n + k)) (u : Euclid (n + k)),
-      ‖A u‖ ^ 2 ≤ (∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖u‖ ^ 2 := by
-    intro A u
-    have hu : ∑ i : Fin (n + k), u i • EuclideanSpace.single i (1 : ℝ) = u := by
-      have h := (EuclideanSpace.basisFun (Fin (n + k)) ℝ).sum_repr u
-      simpa using h
-    have hAu : A u = ∑ i : Fin (n + k), u i • A (EuclideanSpace.single i (1 : ℝ)) := by
-      conv_lhs => rw [← hu]
       rw [map_sum]
       exact Finset.sum_congr rfl fun i _ => map_smul A _ _
     have h1 : ‖A u‖ ≤ ∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖ := by
       rw [hAu]
       refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun i _ => ?_))
-      refine (norm_sum_le _ _).trans (le_of_eq ?_)
-      refine Finset.sum_congr rfl fun i _ => ?_
       rw [norm_smul, Real.norm_eq_abs]
     have h2 : (∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 ≤
         (∑ i : Fin (n + k), |u i| ^ 2) *
@@ -969,6 +947,41 @@ theorem Submission.dorag_lip_off_support_estimate : ∀ (n k : ℕ), ∃ lam₀ 
       _ = 4 * C₆ * (β * L * t) := by ring
       _ ≤ C₈ * (β * L * t) := mul_le_mul_of_nonneg_right hC₈b (by positivity)
       _ = C₈ * β * L * t := by ring
+
+/-- **Simon Ch. 5, proof of 2.6, (9)–(10), corrected** (estimate (10') of the Lipschitz
+approximation: `B_σ(η)` becomes `B_{3s}(η)`, and as only `κσ₀ ≤ 1` is used there is no additive
+error `Cδσⁿ`).
+For `η ∈ (F ∖ spt μ) ∩ B_{σ₀/4}(ξ)` let `y ∈ spt μ` be a nearest point and `s = |y − η|/2`.  Then
+`μ(B_s(η)) = 0`, the density bounds give `ωsⁿ/2 ≤ μ(B_{3s}(η)) ≤ 2·5ⁿωsⁿ`, and monotonicity with
+radii `s < 3s` and `e^{3κs} ≤ 2` gives `μ(B_{3s}(η)) ≤ 2·3ⁿs⁻²∫_{B_{3s}(η)}|p_x^⊥(x − η)|² dμ`.
+Splitting `p_x^⊥(x − η) = Q(x − η) + (P − p_x)(x − η)` (cone condition on `F`, Hilbert–Schmidt
+bound) and absorbing the `λ²`-term yields `sⁿ ≤ C₉[μ(B_{3s}(η) ∖ F) + ∫_{B_{3s}(η)}|p_x − P|² dμ]`,
+with `λ₀ = (288·15ⁿ)^{-1/2}` and `C₉ = 144·3ⁿ/ω`. -/
+theorem Submission.dorag_lip_off_support_estimate : ∀ (n k : ℕ), ∃ lam₀ C₉ : ℝ, 0 < lam₀ ∧ 0 < C₉ ∧ ∀ (μ : Measure (Euclid (n + k))) (τ : Euclid (n + k) → Submodule ℝ (Euclid (n + k))) (T₀ : Submodule ℝ (Euclid (n + k))) (F : Set (Euclid (n + k))) (ξ : Euclid (n + k)) (σ₀ κ lam : ℝ), 0 < σ₀ → 0 ≤ κ → κ * σ₀ ≤ 1 → 0 ≤ lam → lam ≤ lam₀ → ξ ∈ μ.support → (∀ x ∈ F, ∀ x' ∈ F, ‖(x - x') - T₀.starProjection (x - x')‖ ≤ lam * ‖x - x'‖) → (∀ y ∈ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 8 → μ (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) → (∀ y ∈ μ.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 8 → unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ 2 * μ (closedBall y t)) → (∀ (y : Euclid (n + k)) (s t : ℝ), y ∈ closedBall ξ (σ₀ / 4) → 0 < s → s < t → t ≤ 3 * σ₀ / 8 → ENNReal.ofReal (Real.exp (-(κ * t)) / t ^ n) * μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp (-(κ * s)) / s ^ n) * μ (closedBall y s) + ∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (τ x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ) → ∀ η ∈ (F \ μ.support) ∩ closedBall ξ (σ₀ / 4), ∃ s : ℝ, ∃ y ∈ μ.support, 0 < s ∧ 2 * s ≤ dist η ξ ∧ dist y η = 2 * s ∧ ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal C₉ * (μ (closedBall η (3 * s) \ F) + ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (∑ i : Fin (n + k), ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) := by
+  intro n k
+  -- Hilbert–Schmidt bound `‖A u‖² ≤ (∑ᵢ ‖A eᵢ‖²) ‖u‖²`
+  have hHS : ∀ (A : Euclid (n + k) →L[ℝ] Euclid (n + k)) (u : Euclid (n + k)),
+      ‖A u‖ ^ 2 ≤ (∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖u‖ ^ 2 := by
+    intro A u
+    have hu : ∑ i : Fin (n + k), u i • EuclideanSpace.single i (1 : ℝ) = u := by
+      have h := (EuclideanSpace.basisFun (Fin (n + k)) ℝ).sum_repr u
+      simpa using h
+    have hAu : A u = ∑ i : Fin (n + k), u i • A (EuclideanSpace.single i (1 : ℝ)) := by
+      conv_lhs => rw [← hu]
+      rw [map_sum]
+      exact Finset.sum_congr rfl fun i _ => map_smul A _ _
+    have h1 : ‖A u‖ ≤ ∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖ := by
+      rw [hAu]
+      refine (norm_sum_le _ _).trans (le_of_eq ?_)
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [norm_smul, Real.norm_eq_abs]
+    have h2 : (∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 ≤
+        (∑ i : Fin (n + k), |u i| ^ 2) *
+          ∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ∑ i : Fin (n + k), |u i| ^ 2 = ‖u‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      exact Finset.sum_congr rfl fun i _ => sq_abs _
     calc ‖A u‖ ^ 2 ≤ (∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 :=
           pow_le_pow_left₀ (norm_nonneg _) h1 2
       _ ≤ (∑ i : Fin (n + k), |u i| ^ 2) *
