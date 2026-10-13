@@ -451,6 +451,61 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Eilenberg's covering estimate at one scale** (Simon Ch. 2, proof of Theorem 1.9: (1), `gᵢ`
+and (2), case `m = 1`).  Choose a `δ`-cover `(Cᵢ)` of `A` with `∑ᵢ (diam Cᵢ)^(d+1)` below
+`μH[d+1] A + ε`.  Then `ψ = ∑ᵢ (diam Cᵢ)ᵈ 𝟙_{f (closure Cᵢ)}` is Borel (the images are
+σ-compact), the sets `closure Cᵢ ∩ A ∩ f⁻¹{t}` form a `δ`-cover of `A ∩ f⁻¹{t}` whose sum is at
+most `ψ t`, and `L¹ (f (closure Cᵢ)) ≤ diam f (closure Cᵢ) ≤ L diam Cᵢ` bounds `∫ ψ`. -/
+theorem Submission.dtc_bc_lc_sl_eil_scale : ∀ (P d : ℕ) (A : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (δ ε : ℝ≥0∞), LipschitzWith L f → 0 < δ → 0 < ε → μH[((d + 1 : ℕ) : ℝ)] A ≠ ∞ → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, (⨅ (c : ℕ → Set (Euclid P)) (_ : A ∩ f ⁻¹' {t} ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ (d : ℝ)) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ (L : ℝ≥0∞) * (μH[((d + 1 : ℕ) : ℝ)] A + ε) := by
+  intro P d A f L δ ε hf hδ hε hA
+  -- Simon's (1): a `δ`-cover `C` of `A` whose `(d + 1)`-sum is below `μH[d + 1] A + ε`
+  have hcover : (⨅ (C : ℕ → Set (Euclid P)) (_ : A ⊆ ⋃ i, C i) (_ : ∀ i, ediam (C i) ≤ δ),
+      ∑' i, ⨆ _ : (C i).Nonempty, ediam (C i) ^ (((d + 1 : ℕ) : ℝ))) <
+        μH[((d + 1 : ℕ) : ℝ)] A + ε := by
+    refine lt_of_le_of_lt ?_ (ENNReal.lt_add_right hA hε.ne')
+    rw [Measure.hausdorffMeasure_apply]
+    exact le_iSup₂_of_le δ hδ le_rfl
+  obtain ⟨C, hcover⟩ := iInf_lt_iff.1 hcover
+  obtain ⟨hAC, hcover⟩ := iInf_lt_iff.1 hcover
+  obtain ⟨hCδ, hsum⟩ := iInf_lt_iff.1 hcover
+  -- the images `f (closure (C i))` are σ-compact, hence Borel
+  have hK : ∀ i, MeasurableSet (f '' closure (C i)) := fun i => by
+    obtain ⟨K, hKc, hKu⟩ := (isSigmaCompact_univ.of_isClosed_subset isClosed_closure
+      (subset_univ (closure (C i)))).image hf.continuous
+    rw [← hKu]
+    exact MeasurableSet.iUnion fun j => (hKc j).measurableSet
+  -- Simon's `gᵢ`: `ψ = ∑ᵢ (diam Cᵢ)ᵈ 𝟙_{f (closure Cᵢ)}`
+  refine ⟨fun t => ∑' i, (f '' closure (C i)).indicator (fun _ => ediam (C i) ^ (d : ℝ)) t,
+    Measurable.tsum fun i => measurable_const.indicator (hK i), fun t => ?_, ?_⟩
+  · -- Simon's (2): `(closure Cᵢ ∩ A ∩ f⁻¹{t})ᵢ` is an admissible `δ`-cover of `A ∩ f⁻¹{t}`
+    refine iInf_le_of_le (fun i => closure (C i) ∩ (A ∩ f ⁻¹' {t})) <|
+      iInf_le_of_le (fun x hx => ?_) <| iInf_le_of_le (fun i => ?_) <|
+        ENNReal.tsum_le_tsum fun i => iSup_le fun ⟨x, hxC, _, hxt⟩ => ?_
+    · obtain ⟨i, hi⟩ := mem_iUnion.1 (hAC hx.1)
+      exact mem_iUnion.2 ⟨i, subset_closure hi, hx⟩
+    · exact (ediam_mono inter_subset_left).trans ((ediam_closure _).trans_le (hCδ i))
+    · rw [indicator_of_mem (show t ∈ f '' closure (C i) from ⟨x, hxC, hxt⟩)]
+      exact ENNReal.rpow_le_rpow ((ediam_mono inter_subset_left).trans (ediam_closure _).le)
+        (Nat.cast_nonneg d)
+  · -- integrate term by term: `L¹ (f (closure Cᵢ)) ≤ diam f (closure Cᵢ) ≤ L diam Cᵢ`
+    rw [lintegral_tsum fun i => (measurable_const.indicator (hK i)).aemeasurable]
+    calc ∑' i, ∫⁻ t, (f '' closure (C i)).indicator (fun _ => ediam (C i) ^ (d : ℝ)) t
+        ≤ ∑' i, (L : ℝ≥0∞) * ⨆ _ : (C i).Nonempty, ediam (C i) ^ (((d + 1 : ℕ) : ℝ)) := by
+          refine ENNReal.tsum_le_tsum fun i => ?_
+          rw [lintegral_indicator_const (hK i)]
+          rcases (C i).eq_empty_or_nonempty with hC | hC
+          · simp [hC]
+          rw [iSup_pos hC, ENNReal.rpow_natCast, ENNReal.rpow_natCast, pow_succ]
+          calc ediam (C i) ^ d * volume (f '' closure (C i))
+              ≤ ediam (C i) ^ d * (L * ediam (C i)) := by
+                gcongr
+                exact (Real.volume_le_diam _).trans
+                  ((hf.ediam_image_le _).trans_eq (by rw [ediam_closure]))
+            _ = L * (ediam (C i) ^ d * ediam (C i)) := by ring
+      _ = L * ∑' i, ⨆ _ : (C i).Nonempty, ediam (C i) ^ (((d + 1 : ℕ) : ℝ)) :=
+          ENNReal.tsum_mul_left
+      _ ≤ L * (μH[((d + 1 : ℕ) : ℝ)] A + ε) := mul_le_mul_right hsum.le _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
