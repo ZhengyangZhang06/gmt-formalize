@@ -7,7 +7,11 @@ commit `ea5607598f3133b40a13241f2e51517a8c6423cd` (Lean `v4.35.0-rc3`, Mathlib `
 `simongmt` package `2b3663083f3f`). Book: Simon, *Introduction to Geometric Measure Theory*,
 Ch. 5, "The Allard Regularity Theorem" (`book/sources/chapter-05-source.txt`, sha256
 `f2b3cadaebc7373e8a2768bdbd3b0cb0d3b357552bd9981b707c00a709ad9da8`; line numbers below refer to
-this file).
+this file). A public copy of the same text is the PDF
+<https://web.stanford.edu/class/math285/ts-gmt>, which the prose audit also cites. I checked
+its decompressed text streams: the title page reads "Introduction to Geometric Measure Theory,
+Leon Simon, © Leon Simon 2014", and the table of contents lists §6 "Conical Approximation,
+Extension of Allard's Th." on p. 124, as in the local source.
 
 ## 1. Statement
 
@@ -145,9 +149,11 @@ GMT/Ch05/Submission.lean:18198:8: error:
   `GMT.Ch05.Submission.lipts_rectifiable_tangent_chart_cover` has already been declared
 ```
 
-This is the only error. The log is `.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root/comparator-v1.log`
-and the evidence is
-`cluster-state/verification/results/hoa63/20261013T133825Z-ch05-root-ds67xlr5`.
+This is the only error (log line 495). The full log is `comparator.log` in the evidence
+directory `cluster-state/verification/results/hoa63/20261013T133825Z-ch05-root-ds67xlr5`.
+The first version of this document cited the run's `nodes/root/comparator-v1.log` for this
+log. That file now holds the controller's later passing run on `dc91aaf9` (§8), so the
+evidence directory is the record of the rejection.
 
 **Repair.** Commit `26012c4ae4071cbf92436dec796a678f939b243e` changes only the Lean target
 (2 insertions, 32 deletions):
@@ -167,9 +173,9 @@ and the evidence is
      `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1.averaged_hessian-a1`.
 
    The overlay placed them inside `namespace Submission` blocks (now lines 15237–15955 and
-   56759–60682), so they were declared as `GMT.Ch05.Submission.Submission.X`. Lean's
-   `linter.dupNamespace` warnings in `comparator-v1.log` show this. I renamed them to
-   `theorem tdo_ods_integrableOn_norm_deriv` (line 15790) and
+   56759–60682), so they were declared as `GMT.Ch05.Submission.Submission.X`. The two
+   `linter.dupNamespace` warnings in the rejected run's `comparator.log` show this. I renamed
+   them to `theorem tdo_ods_integrableOn_norm_deriv` (line 15790) and
    `theorem dohr_eb_elc2_averaged_hessian` (line 57501), which gives them their accepted names
    `GMT.Ch05.Submission.X` again.
 
@@ -197,6 +203,39 @@ No statement and no proof body was changed.
   in `dag.json`). The comparison ignores trailing whitespace. It also treats
   `theorem Submission.X` at top level as equal to `theorem X` inside `namespace Submission`,
   since both declare `GMT.Ch05.Submission.X`.
+
+### Revision of this document (prose only)
+
+The first version of this document was committed in `dc91aaf9`. The controller's prose audit
+`nodes/root/publication-prose-audit-v1.json` reviewed exactly that version: its `proof_blob`
+`e3d4f77233cd` is the blob of this file in `dc91aaf9`. It did not accept that version. Its two
+issues both concern the conical-approximation exposition in §4.9, and ask to:
+
+1. state a support condition that makes the field `X(x) = x ∫_1^{1/τ} s^{n−1} g(sx) ds`
+   admissible in `U`, and check it for the cutoffs used;
+2. keep the dimensional constant in the bound for `∫_{B_1 ∖ B_λ} |x|^{1−n} |H| dμ`, and define
+   the three annular integrals.
+
+This revision rewrites §4.9 to follow the Lean proof step by step:
+
+* Step 2 states the hypothesis `tsupport g ⊆ B_β(0) ⊆ U` of `conical_P1` and explains why it is
+  needed.
+* Steps 4 and 8 check it for the radial cutoffs (`β = 1 + ε`) and for the conical test
+  functions (`β = b ≤ 1`).
+* Step 7 defines `I_⊥`, `I_0` and `I_H` and gives the bounds proved in Lean:
+  `(ω_n + 3) δL`, `(Λ + 3)(1 + nL)` and `δ(1 + (n − 1)L) ≤ nδL`.
+* Step 9 absorbs these constants into the final `C`.
+
+The revision also makes these changes:
+
+* §6 and §7 list the Mathlib declarations that §4.9 now names.
+* The header cites the public copy of the book.
+* §3 points to the evidence directory for the rejected run's log.
+* §8 describes this commit.
+
+The audit record and the root's historical outline and plan are unchanged.
+`GMT/Ch05/Submission.lean` and every other comparator input are byte-identical to `dc91aaf9`
+and `26012c4a`.
 
 ## 4. Proof of each conjunct (the accepted children)
 
@@ -354,34 +393,275 @@ It calls `Submission.allard_regularity_theorem` directly.
 
 ### 4.9 Theorem 6.1 — `conical_approximation_theorem` (issue #123, PR #3057, checkpoint `0f113e83c542`)
 
-Write `μ = μ_V`, `p_x = p_{T_x M}`, `x^⊥ = x − p_x x`, `d = δ^{1/4}` and `L = |log λ|`.
+This section was rewritten in this revision (§3). It follows the Lean proof: the local lemmas
+`conical_P1` (step 2 below, line 48199), `conical_P3` (step 3, line 48466), `conical_P2`
+(step 4, line 48686), `conical_P4` (step 8, line 49255), the tangent-plane lemma `lemmaT`
+(step 1, line 49747) and the final assembly (steps 0 and 5–12, from line 50462).
 
-1. **Tangent planes.** `p_x` is `μ`-a.e. the projection onto an `n`-plane, and it is `μ`-a.e.
-   strongly measurable (Simon Ch. 3, 1.9, via the accepted `aetp_*` lemmas and
-   `rsod_blowUp_setIntegral_eq`).
-2. **Homogeneous first variation.** For `g ∈ C¹_c` and `τ ∈ (0, 1]`, use the field
-   `X(x) = F(x)x` with `F(x) = ∫_1^{1/τ} s^{n−1} g(sx) ds`. This field is admissible. By the
-   fundamental theorem of calculus in `s`,
-   `div_M X = τ^{-n}g(x/τ) − g(x) − ∫_1^{1/τ} sⁿ Dg(sx)(x^⊥) ds` a.e.
-3. **Monotonicity identity (3.18).** Radial cutoffs `g_k → 1_{B_1}` and dominated convergence
-   give
-   `|(μ(B_1) − σ^{-n}μ(B_σ)) − ∫_{B_1∖B_σ} |x^⊥|²|x|^{-n-2} dμ| ≤ δ(2 + log σ^{-1})`.
-   The layer-cake bound (4.11) also holds.
-4. **Annular test functions.** Take `g(y) = χ(|y|) φ(|y − ξ|)` supported in the annulus. The
-   integrand is bounded by `2|x^⊥|²|x|^{-n-2} + 4κ|x^⊥||x|^{-n-1}`, and `|F| ≤ 4ρ|x|^{-n}`.
-5. **Assembly.**
-   * If `dL > 1`, both inequalities follow from `μ(B_1) ≤ Λ` and (3.18).
-   * Otherwise, (3.18) and (4.11) bound the three annular integrals by `CδL`, `CL` and `δL`.
-   * Step 4 with a cutoff `φ` of width `dρ` at radius `ρ` and `χ ≡ 1` gives the first
-     inequality.
-   * Step 4 with `φ` at radius `(1+d)ρ` and annular cutoffs `χ_k`, with `k → ∞`, gives the
-     second inequality.
+**Claim.** Fix `n ≥ 1`, `ℓ` and `Λ > 0`. Let `λ, θ, δ ∈ (0, 1/4)` and `|ξ| = 1 − θ`. Let
+`U ⊇ B_1(0)` be open. Let `V` have generalized mean curvature `H` in `U`, and write
+`μ = μ_V`. Assume `μ(B_1) ≤ Λ` and
 
-The book's proof of 6.1 uses the co-area formula 2.9 of Ch. 3 (book ll. 1229 and 1272). The
-Lean proof does not use it. Its dependency closure consists of the tangent-plane lemmas of
-step 1, and the radial integrations are done through the first-variation identity of step 2.
+* (H) `|μ(B_1)/ω_n − μ(B_λ)/(ω_n λⁿ)| + r^{1−n} ∫_{B_r} |H| dμ ≤ δ` for every `r ∈ [λ, 1]`.
 
-**Uses:** none.
+Then for all `ρ ∈ (0, θ]` and `τ ∈ [2λ, 1]`:
+
+* `μ(B_{(1−d)ρ}(ξ)) ≤ τ^{-n} μ(B_{τρ}(τξ)) + C d L`;
+* `τ^{-n} μ(B_{τρ}(τξ)) ≤ μ(B_{(1+d)ρ}(ξ)) + C d L`.
+
+Here `d = δ^{1/4}` and `L = |log λ|`. The constant `C` is given in step 9 and depends only on
+`n` and `Λ`. All balls are closed, `B_r = B_r(0)`, and `ω_n = unitBallVolume n`.
+
+**Notation.**
+
+* `p_x = p_{T_x M}` (`V.tangentProj x`) and `x^⊥ = x − p_x x`.
+* For every `x`, `p_x` is either `0` or an orthogonal projection, by the definition of
+  `tangentProj`. Hence, for all `x`:
+  * (i) `|x^⊥| ≤ |x|`;
+  * (ii) `⟨x, x^⊥⟩ = |x^⊥|²`.
+* `S` is Mathlib's smooth step `Real.smoothTransition`. It is `C^∞` and nondecreasing, takes
+  values in `[0, 1]`, and has `S = 0` on `(−∞, 0]` and `S = 1` on `[1, ∞)`.
+* `K_S = sup |S′|`. This is finite, because `S′` is continuous and vanishes outside `[0, 1]`.
+
+0. **Consequences of the hypotheses.**
+   * (a) The first summand in (H) is nonnegative. So `∫_{B_t} |H| dμ ≤ δ t^{n−1}` for every
+     `t ∈ [λ, 1]`.
+   * (b) Take `r = 1` in (H) and multiply by `ω_n`: `|μ(B_1) − λ^{-n} μ(B_λ)| ≤ ω_n δ`.
+   * (c) `μ(B_r) < ∞` for `r ≤ 1`, because the multiplicity `θ_V` of `V = v(M, θ_V)` is
+     integrable on compact subsets of `U` (`V.integrableOn_mult`). Also, `H` is `μ`-integrable
+     on every compact subset of `U`; this is part of `HasGeneralizedMeanCurvature`.
+   * (d) `L = log(1/λ) > log 4 > 1`.
+   * (e) Geometry:
+     * `|ξ| + ρ ≤ (1 − θ) + θ = 1`, so `B_ρ(ξ) ⊆ B_1`;
+     * `|ξ| − ρ ≥ 1 − 2θ > 1/2`;
+     * `B_{τρ}(τξ) ⊆ B_τ`;
+     * `λ ≤ τ/2`.
+1. **Tangent planes (Simon Ch. 3, 1.9).** `lemmaT` proves two facts:
+   * `μ`-a.e., `p_x` is the orthogonal projection onto an `n`-plane (the weighted approximate
+     tangent space);
+   * `x ↦ p_x` is `μ`-a.e. strongly measurable.
+
+   It uses these accepted lemmas, all declared before this theorem (lines 8241–14812):
+   * `aetp_lusin_compact_exhaustion`, `aetp_upper_density_zero_ae`,
+     `aetp_starProjection_range_continuousOn` and `aetp_weightedTangent_of_lusin_compact`,
+     from the subtree of `tilt_excess_height_estimate`;
+   * `rsod_blowUp_setIntegral_eq`, from the subtree of `regular_set_open_dense`.
+
+   It also uses the `simongmt` results listed in §6.
+2. **(P1) First variation of the radial field `X(x) = F(x) x`.**
+
+   *Hypotheses.* `g ∈ C¹(ℝ^{n+ℓ})`, a radius `β` with `tsupport g ⊆ B_β(0)` and
+   `B_β(0) ⊆ U`, and `τ ∈ (0, 1]`. Put `F(x) = ∫_1^{1/τ} s^{n−1} g(sx) ds`.
+
+   *Conclusion.* Put `J(x) = ∫_1^{1/τ} sⁿ Dg(sx)(x^⊥) ds`. Then
+   `∫ (τ^{-n} g(x/τ) − g(x)) dμ = ∫ J dμ − ∫ F(x) ⟨x, H(x)⟩ dμ`.
+
+   *Proof.*
+   * **Admissibility.** Let `|x| > β`. For every `s ∈ [1, 1/τ]`, `|sx| ≥ |x| > β`, so
+     `g(sx) = 0` and `Dg(sx) = 0`. Hence `F` and `DF` vanish there, and
+     `tsupport X ⊆ B_β(0) ⊆ U`. In particular `X` has compact support.
+     Differentiation under the integral sign gives `F ∈ C¹` with
+     `DF(x) = ∫_1^{1/τ} sⁿ Dg(sx) ds`; the `x`-derivative `sⁿ Dg(sx)` of the integrand is
+     bounded by `τ^{-n} sup|Dg|`. So `X ∈ C¹_c` with `tsupport X ⊆ U`, and `X` is a valid test
+     field in the definition of generalized mean curvature.
+
+     The support hypothesis is needed. `X` vanishes outside the radial contractions
+     `{y/s : g(y) ≠ 0, s ∈ [1, 1/τ]}` of the support of `g`, but in general not on them. These
+     points need not lie in `U`, even when `tsupport g` is a compact subset of `U`, because `U`
+     is not assumed to be invariant under radial contractions. The hypothesis
+     `tsupport g ⊆ B_β(0) ⊆ U` keeps all of them inside `U`. Steps 4 and 8 check it for every
+     test function used.
+   * **FTC in `s`.** `d/ds [sⁿ g(sx)] = n s^{n−1} g(sx) + sⁿ Dg(sx) x`. Integrating over
+     `[1, 1/τ]` gives `τ^{-n} g(x/τ) − g(x) = n F(x) + DF(x) x`.
+   * **Divergence.** `DX(x) v = F(x) v + (DF(x) v) x`. Wherever `p_x` is the projection onto an
+     `n`-plane, which holds `μ`-a.e. by step 1,
+     `div_M X = trace(DX(x) ∘ p_x) = n F(x) + DF(x)(p_x x) = τ^{-n} g(x/τ) − g(x) − DF(x)(x^⊥)`.
+   * **First variation.** `∫ div_M X dμ = −∫ ⟨X, H⟩ dμ = −∫ F(x) ⟨x, H(x)⟩ dμ`.
+     * Every integrand vanishes off `B_β(0)`.
+     * On `B_β(0)`, each integrand is either bounded (by (i) and the bounds on `g` and `Dg`) or
+       at most a constant times `|H|`.
+     * `μ(B_β(0)) < ∞` and `H ∈ L¹(B_β(0), μ)`.
+
+     So all integrals are finite. Substituting the formula for `div_M X` gives the conclusion.
+3. **(P3) Layer-cake bound (Ch. 4, 4.11).**
+
+   *Hypotheses.*
+   * `ν` is a measure with `ν(B_R) < ∞`;
+   * `w ≥ 0` is `ν`-integrable on `B_R`;
+   * `m ∈ ℕ` and `0 < a ≤ R`;
+   * `∫_{B_t} w dν ≤ K t^m` for every `t ∈ [a, R]`.
+
+   *Conclusion.* `∫_{B_R ∖ B_a} |x|^{-m} w dν ≤ K (1 + m log(R/a))`.
+
+   *Proof.* For `a < |x| ≤ R`,
+   `|x|^{-m} = R^{-m} + ∫_a^R m t^{-m−1} 1{|x| < t} dt`.
+   Integrate this against `w dν` over `B_R ∖ B_a`, and exchange the integrals by Fubini. The
+   integrand is bounded by `m a^{-m−1} w`, so Fubini applies. The result is at most
+   `R^{-m} · K R^m + ∫_a^R m t^{-m−1} · K t^m dt = K (1 + m log(R/a))`.
+4. **(P2) Monotonicity identity (Ch. 4, 3.18; the book's (1)–(2), ll. 1184–1190).**
+
+   For `σ ∈ [λ, 1]`, put `I_⊥(σ) = ∫_{B_1 ∖ B_σ} |x^⊥|² |x|^{-n−2} dμ`. Then
+   `|(μ(B_1) − σ^{-n} μ(B_σ)) − I_⊥(σ)| ≤ δ (2 + log σ^{-1})`.
+
+   *Proof.*
+   * **Support ball.** `B_1` is compact and `U` is open. So some closed `ε`-thickening of
+     `B_1` lies in `U` (`IsCompact.exists_cthickening_subset_open`). This thickening is
+     `B_{1+ε}(0)` (`cthickening_closedBall`). Put `R′ = 1 + ε`.
+   * **Cutoffs.** Put `η_k = ε/(k+1)`, `γ_k(u) = 1 − S((u − 1)/η_k)` and `g_k(y) = γ_k(|y|)`.
+     * `g_k` is `C¹`: it is `≡ 1` near `0`, and it is a composition of `C¹` maps away from `0`.
+     * `g_k` takes values in `[0, 1]`, equals `1` on `B_1`, and equals `0` for
+       `|y| ≥ 1 + η_k`.
+
+     So `tsupport g_k ⊆ B_{1+η_k}(0) ⊆ B_{R′}(0) ⊆ U`, and step 2 applies with `β = R′` and
+     `τ = σ`.
+   * **Radial reduction.** Put `q(x) = |x^⊥|²/|x|²`, which lies in `[0, 1]` by (i). Let
+     `x ≠ 0`. By (ii), `Dg_k(sx)(x^⊥) = γ_k′(s|x|) ⟨x, x^⊥⟩/|x| = q(x) Dg_k(sx)(x)`.
+
+     Put `L_k(x) = σ^{-n} g_k(x/σ) − g_k(x)`. The FTC identity of step 2 gives
+     `J_k = q (L_k − n F_k)`. So step 2 reads
+     `∫ L_k dμ = ∫ q (L_k − n F_k) dμ − ∫ F_k ⟨x, H⟩ dμ`.
+   * **Limit `k → ∞`.** `g_k → 1_{B_1}` pointwise. Hence `L_k → L_∞ = σ^{-n} 1_{B_σ} − 1_{B_1}`
+     and `F_k → F_∞`, where:
+     * `F_∞ = (σ^{-n} − 1)/n` on `B_σ`;
+     * `F_∞ = (|x|^{-n} − 1)/n` on `B_1 ∖ B_σ`;
+     * `F_∞ = 0` off `B_1`.
+
+     All integrands vanish off `B_{R′}(0)`. On `B_{R′}(0)` they are bounded by constants
+     (`|L_k| ≤ σ^{-n} + 1` and `|F_k| ≤ σ^{1−n}(σ^{-1} − 1)`), or by a constant times `|H|`. So
+     dominated convergence applies.
+   * **Evaluation.** `∫ L_∞ dμ = σ^{-n} μ(B_σ) − μ(B_1)`, and
+     `q (L_∞ − n F_∞) = −1_{B_1 ∖ B_σ} |x^⊥|² |x|^{-n−2}`. Therefore
+     `(μ(B_1) − σ^{-n} μ(B_σ)) − I_⊥(σ) = ∫ F_∞ ⟨x, H⟩ dμ`.
+   * **Error.** `|F_∞ ⟨x, H⟩| ≤ σ^{1−n}|H|/n` on `B_σ`, and `≤ |x|^{1−n}|H|/n` on
+     `B_1 ∖ B_σ`. Use 0(a) at `t = σ`, and step 3 with `w = |H|`, `m = n − 1`, `K = δ`,
+     `a = σ`, `R = 1` (its hypothesis is 0(a) for `t ∈ [σ, 1]`). The error is at most
+     `δ/n + δ(1 + (n − 1) log σ^{-1})/n ≤ δ (2 + log σ^{-1})`.
+5. **Mass bounds from (3.18).**
+   * (a) For `σ ∈ [λ, 1]`: `σ^{-n} μ(B_σ) ≤ μ(B_1) + δ (2 + log σ^{-1}) ≤ Λ + 3δL`. This uses
+     `I_⊥(σ) ≥ 0`, `log σ^{-1} ≤ L` and `L > 1`.
+   * (b) `I_⊥(λ) ≤ |μ(B_1) − λ^{-n} μ(B_λ)| + δ (2 + L) ≤ ω_n δ + 2δ + δL ≤ (ω_n + 3) δ L`.
+     This uses 0(b) and `L > 1`.
+6. **Trivial case `dL > 1`.** The constant `C` of step 9 satisfies `C ≥ Λ + 3`.
+   * *First inequality.* `μ(B_{(1−d)ρ}(ξ)) ≤ μ(B_1) ≤ Λ ≤ C ≤ C d L`.
+   * *Second inequality.* Use 5(a) with `σ = τ`, then `δ ≤ d` and `dL ≥ 1`:
+     `τ^{-n} μ(B_{τρ}(τξ)) ≤ τ^{-n} μ(B_τ) ≤ Λ + 3δL ≤ Λ + 3dL ≤ (Λ + 3) dL ≤ C d L`.
+
+   The remaining steps treat the case `dL ≤ 1`.
+7. **The three annular integrals.** Since `dL ≤ 1`, also `δL ≤ dL ≤ 1`. So 5(a) gives
+   `μ(B_t) ≤ (Λ + 3) tⁿ` for every `t ∈ [λ, 1]`. Define
+   * `I_⊥ = ∫_{B_1 ∖ B_λ} |x^⊥|² |x|^{-n−2} dμ`,
+   * `I_0 = ∫_{B_1 ∖ B_λ} |x|^{-n} dμ`,
+   * `I_H = ∫_{B_1 ∖ B_λ} |x|^{1−n} |H| dμ`.
+
+   Their bounds are:
+   * `I_⊥ ≤ (ω_n + 3) δ L`, by 5(b);
+   * `I_0 ≤ (Λ + 3)(1 + nL) ≤ (Λ + 3)(n + 1) L`, by step 3 with `w ≡ 1`, `m = n`,
+     `K = Λ + 3`, `a = λ`, `R = 1`;
+   * `I_H ≤ δ (1 + (n − 1) L) ≤ n δ L`, by step 3 with `w = |H|`, `m = n − 1`, `K = δ`,
+     `a = λ`, `R = 1`, using 0(a).
+
+   The bound for `I_H` is `nδL`, not `δL`. Step 3 gives only `δ(1 + (n − 1)L)`, which exceeds
+   `δL` when `n ≥ 2`. This dimensional factor is the constant `C = C(n)` of the book's (3)
+   (l. 1197), `∫_{B_1 ∖ B_λ} r^{1−n} |H| dμ ≤ C δ |log λ|`. Step 9 absorbs it into the final
+   constant.
+8. **(P4) Comparison for conical test functions.**
+
+   *Hypotheses.*
+   * `0 < λ ≤ τa`, `b ≤ 1`, `τ ∈ (0, 1]`, `ρ > 0`, `ε > 0` and `κ ≥ 0`;
+   * `χ, φ : ℝ → [0, 1]` are `C¹`;
+   * `∫_α^β |χ′| ≤ 2` for all `α ≤ β`;
+   * `|φ′| ≤ κ/ρ`, and `φ(t) = 0` for `t ≥ 2ρ`;
+   * `g(y) = χ(|y|) φ(|y − ξ|)` is `C¹`, and `g(y) ≠ 0` implies `a < |y| < b`.
+
+   *Conclusion.*
+   `|τ^{-n} ∫ g(x/τ) dμ − ∫ g dμ| ≤ (2 + 2κε) I_⊥ + (2κ/ε) I_0 + 4ρ I_H`.
+
+   *Proof.*
+   * **Support hypothesis of step 2.** `{g ≠ 0} ⊆ {a < |y| < b}`. So
+     `tsupport g ⊆ {a ≤ |y| ≤ b} ⊆ B_b(0) ⊆ B_1(0) ⊆ U`, using `b ≤ 1`. Hence step 2 applies
+     with `β = b`, and the left side equals `|∫ J dμ − ∫ F ⟨x, H⟩ dμ|`.
+   * **Localization to `B_1 ∖ B_λ`.** Let `x ∉ B_1 ∖ B_λ`. Then for every `s ∈ [1, 1/τ)`,
+     `sx ∉ tsupport g`, so `g(sx) = 0` and `Dg(sx) = 0`:
+     * if `|x| > 1`, then `|sx| > 1 ≥ b`;
+     * if `|x| ≤ λ`, then `|sx| < λ/τ ≤ a`.
+
+     Hence `J(x) = F(x) = 0`. Now let `x ∈ B_1 ∖ B_λ`, and let `s ≥ 1` with `sx ∈ tsupport g`.
+     Then `s|x| ≤ b ≤ 1`, so `sⁿ ≤ |x|^{-n}` and `s^{n−1} ≤ |x|^{1−n}`.
+   * **Ray segments.** If `|sx − ξ| < 2ρ`, then `|s − ⟨x, ξ⟩/|x|²| < 2ρ/|x|`. So these `s` lie
+     in an interval of length `4ρ/|x|`.
+   * **Derivative.** Let `sx ∉ {0, ξ}`; only one `s` has `sx = ξ`, a null set. By (ii),
+     `Dg(sx)(x^⊥) = χ′(s|x|) φ(|sx − ξ|) |x^⊥|²/|x| + χ(s|x|) φ′(|sx − ξ|) ⟨(sx − ξ)/|sx − ξ|, x^⊥⟩`.
+     A zero of the nonnegative `C¹` function `φ` is a minimum. So `φ′(t) ≠ 0` forces
+     `φ(t) ≠ 0`, and hence `t < 2ρ`. Therefore
+     `|Dg(sx)(x^⊥)| ≤ |χ′(s|x|)| |x^⊥|²/|x| + (κ/ρ) |x^⊥| 1{|sx − ξ| < 2ρ}`.
+   * **Integration in `s`.** The change of variables `s ↦ s|x|` and the total-variation bound
+     give `∫_1^{1/τ} |χ′(s|x|)| ds ≤ 2/|x|`. Put `u = |x^⊥|/|x|`. With the previous two bullets
+     and `sⁿ ≤ |x|^{-n}`,
+     `|J(x)| ≤ |x|^{-n} ((|x^⊥|²/|x|)(2/|x|) + (κ/ρ)|x^⊥|(4ρ/|x|)) = |x|^{-n} (2u² + 4κu)`.
+   * **Young's inequality.** `2u² + 4κu ≤ (2 + 2κε) u² + 2κ/ε`, since the difference is
+     `2κ(εu − 1)²/ε ≥ 0`. So
+     `|J(x)| ≤ (2 + 2κε) |x^⊥|² |x|^{-n−2} + (2κ/ε) |x|^{-n}`.
+   * **Curvature term.** `0 ≤ g ≤ 1`, and `g(sx) ≠ 0` forces `|sx − ξ| < 2ρ`. So
+     `|F(x)| ≤ |x|^{1−n} · 4ρ/|x| = 4ρ |x|^{-n}`, and
+     `|F(x) ⟨x, H(x)⟩| ≤ 4ρ |x|^{1−n} |H(x)|`.
+
+   Integrating the bounds for `J` and `F ⟨x, H⟩` over `B_1 ∖ B_λ` proves the conclusion.
+9. **Constants.** Put `κ = K_S/d` and `ε = d^{-2}`. Then `κεδ = K_S d` and `2κ/ε = 2 K_S d`.
+   Use step 7, `δ ≤ d`, `ρ ≤ θ < 1` and `L > 1`. The error term of step 8 satisfies
+   `E := (2 + 2κε) I_⊥ + (2κ/ε) I_0 + 4ρ I_H ≤ C′ d L`, where
+   `C′ = 2(ω_n + 3)(1 + K_S) + 2 K_S (Λ + 3)(n + 1) + 4n`.
+   The three terms of `C′` bound the three terms of `E`, in order.
+
+   The constant of the theorem is `C = Λ + 3 + C′`. It depends only on `n` and `Λ`. The frozen
+   statement allows `C = C(n, ℓ, Λ)`.
+10. **First inequality.** For `c > dρ`, put `φ_c(t) = S((c − t)/(dρ))`. Apply step 8 with
+    `a = 1/2`, `b = |ξ| + ρ`, `χ ≡ 1` (total variation `0`) and `φ = φ_ρ`. The hypotheses
+    hold:
+    * `λ ≤ τ/2` and `b ≤ 1`, by 0(e);
+    * `|φ_ρ′| ≤ K_S/(dρ) = κ/ρ`;
+    * `φ_ρ = 0` on `[ρ, ∞) ⊇ [2ρ, ∞)`, and `φ_ρ = 1` on `(−∞, (1−d)ρ]`;
+    * `y ↦ φ_ρ(|y − ξ|)` is `C¹`, being `≡ 1` near `ξ`;
+    * if `g(y) ≠ 0`, then `|y − ξ| < ρ`, so `1/2 < |ξ| − ρ < |y| < b`.
+
+    Since `φ_ρ(|x/τ − ξ|) ≤ 1_{B_{τρ}(τξ)}(x)`,
+    `μ(B_{(1−d)ρ}(ξ)) ≤ ∫ φ_ρ(|x − ξ|) dμ ≤ τ^{-n} ∫ φ_ρ(|x/τ − ξ|) dμ + E ≤ τ^{-n} μ(B_{τρ}(τξ)) + C d L`.
+11. **Second inequality.** For `k ≥ 1`, apply step 8 with `a = 1/2`, `b = |ξ| + ρ`,
+    `φ = φ_{(1+d)ρ}` and `χ_k(u) = S(k(u − 1/2)) · S(k(b − u))`. The hypotheses hold:
+    * `χ_k = f₁ f₂`, where `f₁` is nondecreasing, `f₂` is nonincreasing, and both take values
+      in `[0, 1]`. So `|χ_k′| ≤ f₁′ − f₂′`, and `∫_α^β |χ_k′| ≤ 2`.
+    * `χ_k(u) = 0` unless `1/2 < u < b`, and `χ_k(u) → 1_{(1/2, b)}(u)` as `k → ∞`.
+    * `φ_{(1+d)ρ} = 1` on `[0, ρ]`, and `φ_{(1+d)ρ} = 0` on `[(1+d)ρ, ∞) ⊇ [2ρ, ∞)`, because
+      `d < 1`.
+    * `g_k(y) = χ_k(|y|) φ_{(1+d)ρ}(|y − ξ|)` is `C¹`. It vanishes on the open ball
+      `B̆_{1/2}(0)`, hence near `0`. Away from `0`, `χ_k(|y|)` is a composition of `C¹` maps,
+      and `φ_{(1+d)ρ}(|y − ξ|)` is `C¹` because it is `≡ 1` near `ξ`.
+
+    Step 8 gives
+    `τ^{-n} ∫ g_k(x/τ) dμ ≤ ∫ g_k dμ + E ≤ μ(B_{(1+d)ρ}(ξ) ∩ B_1) + C′ d L`.
+    Let `k → ∞`, with dominating function `1_{B_1}`. Then
+    `g_k(x/τ) → G(x) = 1{1/2 < |x/τ| < b} φ_{(1+d)ρ}(|x/τ − ξ|)`.
+
+    Next, `G = 1` on `B_{τρ}(τξ) ∖ {p}`, where `p = τ(1 + ρ/|ξ|)ξ`. Indeed, let `y = x/τ` with
+    `|y − ξ| ≤ ρ`. Then:
+    * `|y| ≥ |ξ| − ρ > 1/2`;
+    * `|y| ≤ |ξ| + ρ = b`, with equality only if `y − ξ` is the nonnegative multiple of `ξ` of
+      length `ρ`, i.e. `y = (1 + ρ/|ξ|)ξ`;
+    * `φ_{(1+d)ρ}(|y − ξ|) = 1`.
+
+    Also `μ({p}) = 0`, since `μ ≪ Hⁿ` and `Hⁿ{p} = 0` for `n ≥ 1`. Hence
+    `μ(B_{τρ}(τξ)) ≤ ∫ G dμ`, and
+    `τ^{-n} μ(B_{τρ}(τξ)) ≤ μ(B_{(1+d)ρ}(ξ)) + C d L`.
+12. **Extended reals.** All sets involved lie in `B_1`, and `μ(B_1) < ∞`. So the real
+    inequalities give the frozen inequalities in `[0, ∞]`.
+
+**Relation to the book.** The book's proof (ll. 1182–1300) combines (1)–(3) with first
+variation for homogeneous degree-zero test functions, the co-area formula 2.9 of Ch. 3
+(ll. 1229 and 1272) and Cauchy–Schwarz. The Lean proof uses the same estimates (1)–(3), as
+steps 4, 5 and 7. In place of the homogeneous-function and co-area argument, it uses the direct
+comparison of step 8: the radial field `F(x) x` of step 2, the test functions
+`χ(|y|) φ(|y − ξ|)`, and Young's inequality. It does not use the co-area formula.
+
+**Uses:** no sibling conjunct. The only accepted lemmas it uses are those of step 1.
 
 ### 4.10 Theorem 7.1, first assertion — `density_one_regularity` (issue #124, PR #5781, checkpoint `63173e03f8f2`)
 
@@ -515,7 +795,18 @@ of them is presented as new work.
   * `InnerProductSpace.volume_closedBall`;
   * `tendsto_integral_of_dominated_convergence`;
   * `intervalIntegral.integral_eq_sub_of_hasDerivAt`;
-  * Fubini–Tonelli: `integral_prod`, `lintegral_prod`.
+  * Fubini–Tonelli: `integral_prod`, `lintegral_prod`;
+  * additionally named in §4.9 (Theorem 6.1):
+    * the smooth step `Real.smoothTransition`, with its lemmas `contDiff`, `monotone`,
+      `zero_of_nonpos`, `one_of_one_le`, `nonneg` and `le_one`;
+    * `IsCompact.exists_cthickening_subset_open` and `cthickening_closedBall` (the ball
+      `B_{1+ε}(0) ⊆ U`);
+    * `hasFDerivAt_integral_of_dominated_of_fderiv_le` (differentiation under the integral sign
+      in step 2);
+    * `intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'` and
+      `intervalIntegral.tendsto_integral_filter_of_dominated_convergence`;
+    * `MeasureTheory.integral_integral_swap` (Fubini in step 3);
+    * `MeasureTheory.Measure.nullSingletonClass_hausdorff` (`Hⁿ{p} = 0` in step 11).
 * **Proved in this run, not reused.** Several results are not in Mathlib or `simongmt`; they are
   proved by accepted nodes of this run:
   * the Poincaré inequality on balls (`w12_ball_poincare_inequality`);
@@ -577,8 +868,33 @@ of them is presented as new work.
     * `MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`:
       `integral_eq_sub_of_hasDerivAt` (l. 1148);
     * `Analysis/Calculus/BumpFunction/Basic.lean`: `ContDiffBump` (l. 70).
+  * Locations of the Mathlib items added for §4.9:
+    * `Analysis/SpecialFunctions/SmoothTransition.lean`: `def Real.smoothTransition` (l. 146),
+      with `one_of_one_le` (l. 161), `zero_of_nonpos` (l. 168), `le_one` (l. 187), `nonneg`
+      (l. 190), `contDiff` (l. 205) and `monotone` (l. 222);
+    * `Topology/MetricSpace/Thickening.lean`: `IsCompact.exists_cthickening_subset_open`
+      (l. 426);
+    * `Analysis/Normed/Module/Ball/Pointwise.lean`: `cthickening_closedBall` (l. 318);
+    * `Analysis/Calculus/ParametricIntegral.lean`:
+      `hasFDerivAt_integral_of_dominated_of_fderiv_le` (l. 208);
+    * `MeasureTheory/Integral/DominatedConvergence.lean`:
+      `intervalIntegral.tendsto_integral_filter_of_dominated_convergence` (l. 170) and
+      `intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'` (l. 619);
+    * `MeasureTheory/Integral/Prod.lean`: `integral_integral_swap` (l. 478);
+    * `MeasureTheory/Measure/Hausdorff.lean`: `nullSingletonClass_hausdorff` (l. 615).
+  * `rg -n "conical_approximation_theorem|conical_P1|conical_P2|conical_P3|conical_P4" project`:
+    **no match**. `rg -n "ConicalApproximationTheorem" project` finds only the frozen definition
+    (`Contract.lean` and `Submission.lean`, l. 391), the `main_theorem` stubs (l. 461) and the
+    README row for Theorem 6.1 (`project/GMT/Ch05/README.md:26`). The proof of §4.9 comes from
+    the accepted checkpoint `0f113e83c542`.
 * **Compatibility.** Every cited declaration comes from the pinned Mathlib and `simongmt`
   revisions used by the build. The comparator's axiom check covers them.
+
+**Mathematical citation (not a `reference_use` entry).** Simon, *Introduction to Geometric
+Measure Theory* (© Leon Simon 2014), <https://web.stanford.edu/class/math285/ts-gmt>. This is
+the public copy that the prose audit cites for equation (3) of §6. I checked its title page and
+table of contents (see the header of this document). Line numbers in this document refer to the
+local source text.
 
 ## 8. Verification
 
@@ -601,8 +917,18 @@ All results below are for the final Lean file `GMT/Ch05/Submission.lean` (67617 
 * **Evidence.** `cluster-state/verification/results/hoa63/20261013T143228Z-ch05-root-jq_k7qwl`,
   verdict key `bdb024590ba7fbf13282b2ca2a07bf69ad51a5c54d69eacf7a550703383470de`. The log
   contains no error, no redeclaration and no `dupNamespace` diagnostic.
-* **Later commits.** The commit that adds this document changes no comparator input. Its Lean
-  and Lake inputs are byte-identical to `26012c4a`, so it has the same verdict key.
+* **Later commits.** Two later commits change only this document, so no comparator input
+  changes:
+  * `dc91aaf9` added it;
+  * the prose-only revision described in §3 revised it.
+
+  Their Lean and Lake inputs are byte-identical to `26012c4a`, and the comparator's verdict key
+  depends only on those inputs and the pinned verifier, so they have the same verdict key. The
+  controller's run of the same comparator on `dc91aaf9` confirms this:
+  `cluster-state/verification/results/hoa63/20261013T164526Z-ch05-root-tqevxcdb` has status
+  `passed` with the same verdict key, reusing the evidence above ("identical inputs already
+  passed every check"). Its log is the run's `nodes/root/comparator-v1.log`, and
+  `nodes/root/isolated-comparator-result.json` records `passed: true` for candidate `dc91aaf9`.
 
 ### Child interfaces and axioms (scratch compile)
 
