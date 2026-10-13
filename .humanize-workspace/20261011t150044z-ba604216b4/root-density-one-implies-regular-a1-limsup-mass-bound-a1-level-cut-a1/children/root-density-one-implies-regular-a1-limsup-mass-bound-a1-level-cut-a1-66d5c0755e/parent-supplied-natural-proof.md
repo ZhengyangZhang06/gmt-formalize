@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1.mass_difference-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 8(b) of the parent proof; mass is Simon Ch. 6, 2.5 (chapter-06.txt line 231), formalized as SimonGMT GeometricCurrentOn.massOn. Let 𝒜 := massAdmissibleOn U n W = {ω ∈ 𝒟ⁿ(U) : tsupport ω ⊆ W and covectorEuclideanNorm(ω(x)) ≤ 1 for all x}, so that M_W(Z) = sup{ofReal(Z(ω)) : ω ∈ 𝒜} for every Z ∈ 𝒟_n(U).
+1. Reduction. By the definition of a supremum (sSup_le) it suffices to prove ofReal(Y(ω)) ≤ M_W(T) + M_W(S) for every ω ∈ 𝒜. Fix ω ∈ 𝒜.
+2. −ω is admissible. −ω ∈ 𝒟ⁿ(U) because 𝒟ⁿ(U) is a submodule, and its underlying form is −ω (Submodule.coe_neg). Hence tsupport(−ω) = tsupport(ω) ⊆ W (tsupport_neg), and for each x, covectorEuclideanNorm((−ω)(x)) = covectorEuclideanNorm(−ω(x)) = covectorEuclideanNorm(ω(x)) ≤ 1 (covectorEuclideanNorm_neg). So −ω ∈ 𝒜.
+3. Rewriting Y(ω). Since tsupport ω ⊆ W (because ω ∈ 𝒜), the hypothesis gives Y(ω) = T(ω) − S(ω). By linearity of S, S(−ω) = −S(ω), so Y(ω) = T(ω) + S(−ω).
+4. Estimate. For real a, b, ofReal(a + b) ≤ ofReal(a) + ofReal(b) (ENNReal.ofReal_add_le). Each admissible evaluation is bounded by the mass (GeometricCurrentOn.le_massOn): ofReal(T(ω)) ≤ M_W(T) because ω ∈ 𝒜, and ofReal(S(−ω)) ≤ M_W(S) because −ω ∈ 𝒜. Hence ofReal(Y(ω)) = ofReal(T(ω) + S(−ω)) ≤ ofReal(T(ω)) + ofReal(S(−ω)) ≤ M_W(T) + M_W(S).
+5. As ω ∈ 𝒜 was arbitrary, step 1 gives M_W(Y) ≤ M_W(T) + M_W(S). ∎
+
+## Key steps
+
+1. M_W(Y) is the supremum of ofReal(Y(ω)) over admissible ω; fix an admissible ω.
+2. −ω is admissible (same topological support; covectorEuclideanNorm_neg).
+3. Y(ω) = T(ω) + S(−ω), so ofReal(Y(ω)) ≤ ofReal(T(ω)) + ofReal(S(−ω)) ≤ M_W(T) + M_W(S); take the supremum.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 -I: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') -> open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end`
+- `grep -n '^def|^structure|^theorem|^abbrev|^instance' simongmt Chapter06/Currents.lean; read Chapter06/Mass.lean, Forms.lean, CurrentLocalEquality.lean`
+- `grep -rn 'instance.*Add' simongmt Chapter06 (no match: GeometricCurrentOn has no Add instance; the contract defines only Sub)`
+- `rg -n in snapshot mathlib: 'protected theorem dist_left' (Topology/MetricSpace/Lipschitz.lean:142), 'theorem countable_meas_pos_of_disjoint_iUnion' (Measure/Typeclasses/SFinite.lean:305), 'theorem meas_ge_le_lintegral_div' (Integral/Lebesgue/Markov.lean:106), 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero' (Integral/Bochner/Set.lean:466,357), 'theorem ball_union_sphere' (MetricSpace/Pseudo/Defs.lean:504), 'theorem le_iff'' (Measure/CompleteLattice.lean:46), 'lemma isFiniteMeasure_restrict' (Typeclasses/Finite.lean:40), 'theorem lintegral_eq_zero_iff'' (Lebesgue/Basic.lean:322), 'theorem volume_Ioo' (Measure/Lebesgue/Basic.lean:96), 'theorem ofReal_add_le' (Basic/ENNReal/Real.lean:57), 'image_eq_one_of_notMem_mulTSupport|mulTSupport_inv' (Topology/Algebra/Support.lean:111,154), 'theorem _root_.Set.Countable.measure_zero' (Typeclasses/NullSingletonClass.lean:58), 'theorem extDeriv_extDeriv ' (DifferentialForm/Basic.lean:234)`
+- `python3 -I dag.json: lean_name collision scan for dor_lmb_glc_* (677 nodes, none); keyword scan of lean_statements and ids for sphere|Markov|countable|∫⁻ t|triangle|good|level`
+- `git log --all -S 'dor_lmb_glc' -- GMT/Ch07/Submission.lean; git log --all -S 'dor_lmb_good_level_cut' -- GMT/Ch07/Submission.lean (no match)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement on the three lean_statement strings (accepted unchanged)`
+- `lake env lean /tmp/glc-decomp/Types.lean (three child types elaborate in the comparator scope)`
+- `lake env lean /tmp/glc-decomp/Children.lean (#print axioms of the three proved children: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/glc-decomp/Assembly.lean and /tmp/glc-decomp/Full.lean (#print axioms Submission.dor_lmb_good_level_cut: sorryAx only from the three sibling stubs; comparator-style `exact Submission.X` targets for each child)`
+- `sed -n chapter-07.txt 180-250, chapter-06.txt 225-240 and 1215-1243, chapter-02.txt 1512-1535`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/decomposition-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/glc-decomp/Types.lean`
+- `/tmp/glc-decomp/Children.lean`
+- `/tmp/glc-decomp/Assembly.lean`
+- `/tmp/glc-decomp/Full.lean`
+- `/tmp/glc-decomp/children_final.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable facts found:
+- SimonGMT Chapter06: exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.ext, zero_apply, tsupport_exteriorDerivative_subset, exteriorDerivative_sq (d∘d = 0), massAdmissibleOn, massOn, le_massOn, massOn_mono, covectorEuclideanNorm_neg.
+- Mathlib: LipschitzWith.dist_left, Measure.countable_meas_pos_of_disjoint_iUnion, meas_ge_le_lintegral_div, lintegral_eq_zero_iff', isFiniteMeasure_restrict, Set.Countable.measure_zero, Real.volume_Ioo, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, setIntegral_eq_zero_of_forall_eq_zero, ball_union_sphere, Measure.le_iff', ENNReal.ofReal_add_le, image_eq_zero_of_notMem_tsupport and tsupport_neg (additive forms of the mulTSupport lemmas).
+
+Not available:
+- No Add instance on GeometricCurrentOn, so sums of currents are built inline.
+- No accepted radius-selection or mass-difference lemma. Related nodes are lcmp_massOn_le_add_of_eval_eq (decomposing; its |c| ≤ 1 general form is not accepted, so not reused), lcmp_exists_good_slice_level and cmc_fc_good_slice (decomposing, different statements), and dtc_measure_ball_eq_of_null_sphere (accepted, different statement).
+- No name collisions for the three dor_lmb_glc_* identifiers.
+
+Lean checks in the exact comparator scope:
+- The three child types elaborate.
+- Their full proofs compile using only propext, Classical.choice and Quot.sound.
+- The exact frozen parent type compiles from them and from sorry-stubs of the sibling frozen types dor_lmb_int_combination_imrep, dor_lmb_imrep_restrict_current and dor_lmb_slicing_lipschitz. The only sorryAx comes from those stubs.
+- An independent reviewer re-verified this.

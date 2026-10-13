@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.radius-a1.annulus_liminf-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.radius-a1",
+  "depth": 5,
+  "title": "Inner-annulus quotients are bounded by the derivative of r ↦ μ(B_r(x₁))",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P (Borel sets), x₁ ∈ ℝ^P, and ρ, d ∈ ℝ with μ(B_ρ(x₁)) < ∞, where B_r(x₁) = ball x₁ r is the open ball. Let F(r) := μ(B_r(x₁)) read as a real number (ENNReal.toReal, which is 0 if the measure is infinite). If F has derivative d at ρ (HasDerivAt F d ρ), then liminf_{h→0, h>0} h⁻¹·μ({x : ρ − h < |x − x₁| < ρ}) ≤ d, where the liminf is taken in [0, ∞] along 𝓝[>] 0 with the factor ENNReal.ofReal h⁻¹, and the right side is ENNReal.ofReal d.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (ρ d : ℝ), μ (ball x₁ ρ) ≠ ∞ → HasDerivAt (fun r : ℝ => (μ (ball x₁ r)).toReal) d ρ → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) ≤ ENNReal.ofReal d",
+  "lean_name": "cbrld_radius_liminf_annulus_le_of_hasDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c79dbf19c5-a1"
+}
