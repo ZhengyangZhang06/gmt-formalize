@@ -1,0 +1,22 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.low_density_regular-a1.first_variation_mass_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4961",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "30dc6a0e17760ba2e3ba1a327110c9a680787926",
+  "integrated_commit": "",
+  "proof_base_commit": "72a6406f64cec19787b48c676224be3c9eeecdaa",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.low_density_regular-a1",
+  "requires": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_det_exp_bound-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.trace_projection_frame-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.orient_approx_tangent_plane-a1"
+  ]
+}
