@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b58103560e66378a2cde45f553498d6a9ff17e3d4600f6662c28def6ae3117a9",
+  "git_delta": {
+    "base_commit": "3fce2d7c2e6850a691ab5cdd920b9e0ec007b25c",
+    "candidate_commit": "4a45b792039849e45f99afc812195ebdb827568e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_creg_box_integrand_measurable",
+    "diff_sha256": "5953acc9e42d10af535544875e75f4bc9cfb79f2d96f221d6e810222d1cdda2a",
+    "source_sha256": "576e474cb32d73314cd1a8dbddc8b2955c8687eca82a9e660f0850a698eb1d73",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_creg_box_integrand_measurable",
+      "statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)) (S : Set (Eucl (m + 1))) (g : Eucl P → ℝ≥0∞), ContDiff ℝ 1 Φ → IsOpen B → ContDiffOn ℝ 1 χ B → MeasurableSet S → Measurable g → Measurable ((B ∩ χ ⁻¹' S).indicator (fun y => g (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1))) (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1)))).det)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
