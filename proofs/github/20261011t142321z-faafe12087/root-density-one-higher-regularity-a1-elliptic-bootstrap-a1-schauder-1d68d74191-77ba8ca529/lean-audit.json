@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cd6f4b57aea49a55f4510ad2bf9b00d183ed7dbc8bdec16bec0061fd68ec3070",
+  "git_delta": {
+    "base_commit": "4e1a9b03a954923386db45bab36103167f0119e1",
+    "candidate_commit": "a7ce8de2e59344735e62d3043bbcc32bd559387f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_liou_dir_deriv_solution",
+    "diff_sha256": "534613b5fe92223a60bb2fe7daa954e2f3d7fa6dfb2af71d3463236b4b25b017",
+    "source_sha256": "7dcc5d69f3bb827297f6fa0adf7c1fe57a91abe9f09a5e90c77c46629c645db6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_liou_dir_deriv_solution",
+      "statement": "∀ (n ℓ : ℕ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (V : Rn n → Rn ℓ) (v : Rn n), ContDiff ℝ 2 V → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ x, A (fderiv ℝ (fun y => fderiv ℝ V y v) x) (fderiv ℝ ζ x) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
