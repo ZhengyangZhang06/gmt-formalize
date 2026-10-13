@@ -1363,6 +1363,102 @@ theorem gwe_lipschitz_graph_area_formula : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (q :
           Filter.eventuallyEq_of_mem (isOpen_ball.mem_nhds hxb) fun y hy =>
             hf'eq (ball_subset_closedBall hy)
         rw [hJ, hG, hev.fderiv_eq, hf'eq (hAR hxA)]
+/-- **Pull-back of the varifold weight to the parameter domain of a 1-Lipschitz graph** (the
+transfer step "from (12), (13) and the area formula" in the proof of Simon Ch. 5, 4.5).  With
+`F(x) = q(x, f(x))`, `J = J_f` and `B = B_R(0)`, the weight `μ_V` restricted to `F(A)` has the Borel
+density `W = J · g₂ ∘ F̂` over Borel `A ⊆ B`, where `g₂ ≥ 0` is a Borel version of `1_M θ`
+(`gwe_vgt_weight_density`) and `F̂` a Borel version of `F` (`gwe_vgt_graph_measurability`).
+
+Proof: `J ≥ 1` (`gwe_graph_jacobian_bounds`), so the area formula
+(`gwe_lipschitz_graph_area_formula`, `K = 1`, `g = 1`) gives `Lⁿ(B') ≤ Hⁿ(F(B'))` for Borel
+`B' ⊆ B`; hence `F` pulls `Hⁿ`-null sets back to `Lⁿ`-null subsets of `B`, and
+`g₂(F̂ x) = 1_M θ (F x)` for a.e. `x ∈ B`, which is (c).  For (a),
+`∫_{F(A)} φ dμ_V = ∫_{F(A)} 1_M θ φ dHⁿ = ∫_A J (1_M θ ∘ F) (φ ∘ F) dLⁿ` and the a.e. identity.
+(b) and (d) follow from (a) with `F̂ = F` on `A` (`gwe_vgt_transfer_consequences`, `G = F̂`). -/
+theorem gwe_varifold_graph_transfer : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), LipschitzOnWith 1 f (closedBall 0 R) → ∃ W : Rn n → ℝ, Measurable W ∧ (∀ x, 0 ≤ W x) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ≥0∞, ∫⁻ y in q '' graphOver f A, φ y ∂V.weight = ∫⁻ x in A, ENNReal.ofReal (W x) * φ (q (graphPoint x (f x)))) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ, Measurable φ → ∫ y in q '' graphOver f A, φ y ∂V.weight = ∫ x in A, W x * φ (q (graphPoint x (f x)))) ∧ (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 R → W x = Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))) * V.carrier.indicator V.mult (q (graphPoint x (f x)))) ∧ ∀ Z : Set (Amb n ℓ), V.weight Z = 0 → ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R → q (graphPoint x (f x)) ∈ Z → W x = 0 := by
+  intro n ℓ hn U V q f R hf
+  -- The graph Jacobian `J = J_f`; `J ≥ 1` by JB (i) with `D = Df(x)`.
+  obtain ⟨J, hJ⟩ : ∃ J : Rn n → ℝ, ∀ x, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))) = J x :=
+    ⟨_, fun _ => rfl⟩
+  have hJ1 : ∀ x, 1 ≤ J x := fun x => by
+    rw [← hJ x]
+    exact (Submission.gwe_graph_jacobian_bounds n ℓ (fderiv ℝ f x)).1
+  have hJ0 : ∀ x, 0 ≤ J x := fun x => zero_le_one.trans (hJ1 x)
+  -- (P2)-(P4): `F(A)` is Borel, `F̂` is a Borel version of `F` on `B`, and `J` is Borel.
+  obtain ⟨hFA, ⟨Fh, hFh, hFhF⟩, hJm⟩ :=
+    Submission.gwe_vgt_graph_measurability n ℓ q f R hf.continuousOn
+  simp only [hJ] at hJm
+  -- AREA with `K = 1`.
+  have harea := Submission.gwe_lipschitz_graph_area_formula n ℓ hn q f 1 R hf
+  simp only [hJ] at harea
+  -- (P5): `Lⁿ(B') ≤ Hⁿ(F(B'))` for Borel `B' ⊆ B`.
+  have hP5 : ∀ B' : Set (Rn n), MeasurableSet B' → B' ⊆ closedBall 0 R →
+      volume B' ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f B') := by
+    intro B' hB' hB'R
+    calc volume B' = ∫⁻ _ in B', 1 := (setLIntegral_one B').symm
+      _ ≤ ∫⁻ x in B', ENNReal.ofReal (J x) * 1 := setLIntegral_mono' hB' fun x _ => by
+          rw [mul_one]
+          exact ENNReal.one_le_ofReal.2 (hJ1 x)
+      _ = ∫⁻ _ in q '' graphOver f B', 1 ∂(μHE[n] : Measure (Amb n ℓ)) :=
+          (harea B' hB' hB'R fun _ => 1).symm
+      _ = (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f B') := setLIntegral_one _
+  -- (P6): `F` pulls `Hⁿ`-null sets back to `Lⁿ`-null subsets of `B`.
+  have hP6 : ∀ Y : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) Y = 0 →
+      ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R → q (graphPoint x (f x)) ∉ Y := by
+    intro Y hY
+    obtain ⟨Y', hYY', hY'm, hY'0⟩ := exists_measurable_superset_of_null hY
+    have hB'm : MeasurableSet (closedBall (0 : Rn n) R ∩ Fh ⁻¹' Y') :=
+      measurableSet_closedBall.inter (hFh hY'm)
+    have hB'0 : volume (closedBall (0 : Rn n) R ∩ Fh ⁻¹' Y') = 0 := by
+      refine le_antisymm ?_ zero_le
+      calc volume (closedBall (0 : Rn n) R ∩ Fh ⁻¹' Y')
+          ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall 0 R ∩ Fh ⁻¹' Y')) :=
+            hP5 _ hB'm inter_subset_left
+        _ ≤ (μHE[n] : Measure (Amb n ℓ)) Y' := by
+            refine measure_mono ?_
+            rintro _ ⟨_, ⟨x, ⟨hxB, hxY'⟩, rfl⟩, rfl⟩
+            rw [mem_preimage, hFhF x hxB] at hxY'
+            exact hxY'
+        _ = 0 := hY'0
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hB'0] with x hx hxB hxY
+    exact hx ⟨hxB, by rw [mem_preimage, hFhF x hxB]; exact hYY' hxY⟩
+  -- Step 1: a Borel version `g₂ ≥ 0` of `1_M θ`, and (*) `g₂ ∘ F̂ = 1_M θ ∘ F` a.e. on `B`.
+  obtain ⟨⟨g₂, hg₂m, hg₂0, hg₂⟩, hdens⟩ := Submission.gwe_vgt_weight_density n ℓ U V
+  have hstar : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R →
+      g₂ (Fh x) = V.carrier.indicator V.mult (q (graphPoint x (f x))) := by
+    filter_upwards [hP6 _ (ae_iff.1 hg₂)] with x hx hxB
+    rw [hFhF x hxB]
+    by_contra h
+    exact hx hxB h
+  -- Step 2: `W = J · g₂ ∘ F̂`.
+  have hWm : Measurable fun x => J x * g₂ (Fh x) := hJm.mul (hg₂m.comp hFh)
+  have hW0 : ∀ x, 0 ≤ J x * g₂ (Fh x) := fun x => mul_nonneg (hJ0 x) (hg₂0 _)
+  -- (a): the density of `μ_V`, AREA applied to `1_M θ φ`, and (*).
+  have ha : ∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ≥0∞,
+      ∫⁻ y in q '' graphOver f A, φ y ∂V.weight =
+        ∫⁻ x in A, ENNReal.ofReal (J x * g₂ (Fh x)) * φ (q (graphPoint x (f x))) := by
+    intro A hA hAR φ
+    rw [hdens _ (hFA A hA hAR) φ, harea A hA hAR]
+    refine setLIntegral_congr_fun_ae hA ?_
+    filter_upwards [hstar] with x hx hxA
+    rw [hx (hAR hxA), ENNReal.ofReal_mul (hJ0 x), mul_assoc]
+  -- (b) and (d): `gwe_vgt_transfer_consequences` with `G = F̂`, which equals `F` on `A ⊆ B`.
+  have htr := fun (A : Set (Rn n)) (hA : MeasurableSet A) (hAR : A ⊆ closedBall 0 R) =>
+    Submission.gwe_vgt_transfer_consequences n ℓ V.weight (q '' graphOver f A) A Fh
+      (fun x => J x * g₂ (Fh x)) hA hFh hWm hW0 fun φ _ => by
+        rw [ha A hA hAR φ]
+        exact setLIntegral_congr_fun hA fun x hx => by simp only [hFhF x (hAR hx)]
+  refine ⟨fun x => J x * g₂ (Fh x), hWm, hW0, ha, ?_, ?_, ?_⟩
+  · intro A hA hAR φ hφ
+    rw [(htr A hA hAR).1 φ hφ]
+    exact setIntegral_congr_fun hA fun x hx => by simp only [hFhF x (hAR hx)]
+  · filter_upwards [hstar] with x hx hxR
+    show J x * g₂ (Fh x) = _
+    rw [hJ x, hx (ball_subset_closedBall hxR)]
+  · intro Z hZ
+    filter_upwards [(htr (closedBall 0 R) measurableSet_closedBall subset_rfl).2 Z hZ]
+      with x hx hxB hxZ
+    exact hx hxB (by rw [hFhF x hxB]; exact hxZ)
 
 end Submission
 
