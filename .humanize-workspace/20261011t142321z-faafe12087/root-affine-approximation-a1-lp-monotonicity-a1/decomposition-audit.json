@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'aal_radial_first_variation_identity|aal_curvature_pairing_holder_bound|aal_cutoff_integrating_factor_squeeze|aal_monotonicity_of_radial_identity' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "theorem integral_mul_le_Lp_mul_Lq_of_nonneg|theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem tendsto_integral_filter_of_dominated_convergence|theorem integral_hasDerivAt_right|theorem integral_eq_sub_of_hasDerivAt|theorem integral_integral_swap|theorem intervalIntegrable_rpow|theorem integral_rpow|lemma starProjection_orthogonal|theorem norm_starProjection_apply_le|theorem trace_smulRight|theorem LocallyIntegrableOn.integrableOn_compact_subset",
+        "smoothTransition.contDiff|contDiffAt_norm|trace_smulRight",
+        "lpMeanCurvatureKappa|structure LpAnnularCorrection|exists_lpAnnularCorrection|trace_starProjection|trace_radialEndomorphism|inner_starProjection_eq_norm_sq",
+        "validate_lean_statement(c['lean_statement'])",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j2 /tmp/lp-monotonicity-independent-audit/StandaloneTypes.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j2 /tmp/lp-monotonicity-independent-audit/Assembly.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j2 /tmp/lp-monotonicity-independent-audit/ReferenceAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        "/tmp/lp-monotonicity-independent-audit/StandaloneTypes.lean",
+        "/tmp/lp-monotonicity-independent-audit/Assembly.lean",
+        "/tmp/lp-monotonicity-independent-audit/ReferenceAxioms.lean"
+      ],
+      "conclusion": "The four-way split appropriately establishes the selected aal_lp_monotonicity contract. No proposed name occurs in the snapshot project or conflicts with another DAG branch; all names are bare identifiers. Dependencies are correctly directed and acyclic: monotonicity_core uses curvature_holder and cutoff_squeeze. All four exact one-line types independently elaborate as Prop before any child declaration and pass lexical validation, with no forward references or problematic inline instances. The supplied parent assembly compiles against the exact frozen handoff type, conditional only on radial_first_variation, monotonicity_core, and the permitted tangent_structure dependency; its axiom report contains those explicit scratch assumptions and standard axioms, without sorryAx. Located library tools support the stated analytic steps, and their independently checked axiom reports contain only propext, Classical.choice, and Quot.sound. Compiler/package revisions match the pinned context; the current contract matches the snapshot."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including the explicit a.e. rank-n projection hypothesis. The proof establishes C¹ regularity at the center, compact support inside U, and the trace identity both away from and at the center. Applying generalized first variation and a.e. integral congruence proves the exact conclusion without circular reliance."
+    },
+    {
+      "key": "curvature_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All support, measurability, integrability, exponent, and finite-measure hypotheses match. The proof establishes integrability, applies Cauchy–Schwarz and Hölder on the restricted measure, and uses ψ^q ≤ ψ. It yields the exact real-valued bound, including t = 0."
+    },
+    {
+      "key": "cutoff_squeeze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit defining equations for I and a make the type independently usable. The proof supplies derivative dominators, continuity and integrability near zero, both FTC applications, and Fubini on a finite product measure. The derivative's radial support yields precisely the two squeeze constants. Center and equal-radius cases are covered; no sibling or parent theorem is assumed."
+    },
+    {
+      "key": "monotonicity_core",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the Lean type and uses exactly its declared siblings. Their hypotheses are established before application. The proof justifies measurability, all dominated-convergence passages, closed-ball endpoints, annular integrability, and the κ/(1−n/p)=1/4 calculation giving the required F bounds. Its squeeze supplies the parent’s G by the stated ratio construction, including zero annular integral. No additional proof-planning pass is needed."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "aal_|pinched|scaledLpNorm_mono|scaledLpNorm_le",
+        "theorem withDensity_apply|theorem ofReal_integral_eq_lintegral_ofReal|theorem lintegral_singleton|theorem.*measure_iUnion|lemma one_add_mul_le_pow|theorem continuousAt_rpow_const|theorem top_rpow_of_pos|theorem rpow_le_rpow",
+        "ofReal_le_iff_le_toReal|toReal_le_of_le_ofReal|lt_top_of_mul_ne_top_right",
+        "aal_pinched_constants",
+        "aal_allard_subball_bounds",
+        "aal_monotone_quantity_ge_density",
+        "aal_lintegral_closedBall_le_of_annuli",
+        "python3 /tmp/pinched-density-audit-3mzz0ij9/run_checks.py candidate",
+        "python3 /tmp/pinched-density-audit-3mzz0ij9/run_checks.py challenges",
+        "python3 /tmp/pinched-density-audit-3mzz0ij9/run_checks.py assembly"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-pinched-density-bounds-a1/parent-child-handoff.json",
+        "/tmp/pdb/proj/Combined.lean",
+        "/tmp/pinched-density-audit-3mzz0ij9/frozen/ChallengesAudit.lean",
+        "/tmp/pinched-density-audit-3mzz0ij9/candidate/GMT/Ch05/Submission.lean",
+        "/tmp/pinched-density-audit-3mzz0ij9/candidate/AssemblyAudit.lean"
+      ],
+      "conclusion": "Verified the pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The project search found no matching prior declarations. All four names are bare identifiers, remain unreserved in the DAG, and introduce no declaration reuse. Their empty dependency lists are correct; the selected parent's existing dependency paths are acyclic. Relevant library contracts confirm Bernoulli's inequality, continuity of positive real powers at zero, integral conversion, and continuity from below. In particular, withDensity_apply requires measurability of the set, not the integrand. Independently compiled all four exact challenge types against a fresh frozen Submission without child implementations, then compiled the supplied child proofs and exact Submission.X checks. Each child uses only propext, Classical.choice, and Quot.sound. The exact frozen aal_pinched_density_bounds assembly also compiles; its sorryAx comes from the two explicitly stubbed, verbatim existing dependency contracts. The split appropriately isolates constants, subball estimates, the density-limit argument, and annular exhaustion, which together with those dependencies establish this selected parent. No problematic matrix or other mismatched typeclass-sensitive construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pinched_constants",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the hypotheses, constant constraints, and three inequalities, including n = 0. The explicit maxima/minima, Bernoulli reciprocal estimate, exponential estimates, and sign cases prove every conclusion. All divisions have positive denominators. The proof is complete and non-circular; substituting the parent's kappa and unit-ball volume supplies precisely its required estimates."
+    },
+    {
+      "key": "allard_subball_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree with the frozen AllardHypotheses and scaledLpNorm definitions. Since p > n >= 0, both power exponents used for monotonicity are positive. Ball inclusion gives containment and mass bounds; integral and power monotonicity give the curvature bound. Positive outer scaling and finite scaled norm force the curvature integral to be finite. No additional openness or delta-positivity assumption is needed."
+    },
+    {
+      "key": "monotone_quantity_ge_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses H1–H3 and the asserted lower bound. The supplied eta argument selects a positive small radius, derives positivity of F and the normalized mass before multiplying inequalities, and contradicts monotonicity. Positive alpha justifies the power limit. No unstated sign assumption on Lambda or global positivity of m is used. The parent's finite subball masses justify its application with m equal to the mass's toReal."
+    },
+    {
+      "key": "lintegral_closed_ball_le_of_annuli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all stated hypotheses. The annuli with inner radii s/(k+2) increase and cover the punctured closed ball. Annular integrability and nonnegativity justify conversion to lower integrals; withDensity and continuity from below then give the bound. The center contributes zero even if its measure is infinite. No global measurability, finite-measure, or nonatomicity hypothesis is missing, and the proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}
