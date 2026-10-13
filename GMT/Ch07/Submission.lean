@@ -1564,6 +1564,76 @@ theorem Submission.dimred_rpd_submanifold_density_one : ∀ (P n : ℕ) (M : Set
     filter_upwards [hbounds ε hε0 hε1] with s hs
     exact lt_of_le_of_lt hs.2 hεb
 
+/-- **Density at regular points** (Simon 7.4.1 with 6.2.8 and 6.3.2(3): `μ_T = |m₀| Hⁿ⌞M` where
+`T = m₀[[M]]`).  If `y ∈ reg T`, i.e. `T = m₀[[M]]` in `B_{ρ₀}(y)` for some `m₀ ∈ ℤ \ {0}` and an
+oriented embedded `C¹` submanifold `M ∋ y`, then `Θⁿ(μ_T, z) = |m₀|` at every `z ∈ spt T` near
+`y`.  `M ∩ closedBall(y, ε)` is compact for some `ε > 0`; take `0 < ρ ≤ min(ε, ρ₀)/2`.  Each
+`z ∈ spt T ∩ B_ρ(y)` lies on `M`: otherwise some `B_t(z) ⊆ B_{ρ₀}(y)` misses `M`, so `T` vanishes
+on `B_t(z)` and `B_{t/2}(z) ⊂⊂ U` puts `z` in the zero region of `T`.  For `0 < s < ρ`,
+`M_{B_s(z)}(T) = |m₀| Hⁿ(M ∩ B_s(z))`, and `Hⁿ(M ∩ B_s(z))/(ωₙsⁿ) → 1` as `s ↓ 0`. -/
+theorem Submission.dimred_regular_point_density : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P), IsOpen U → y ∈ regularSet T → ∃ (m : ℕ) (ρ : ℝ), 1 ≤ m ∧ 0 < ρ ∧ ∀ z ∈ T.support ∩ ball y ρ, HasMassDensity T z m := by
+  -- Step 1: `T = m₀[[M]]` in `B_{ρ₀}(y)`; the multiplicity is `m = |m₀| ≥ 1`
+  rintro P n U T y - ⟨-, ρ₀, hρ₀, hball, m₀, M, ξ, hm₀, hyM, hM, hξ, hfin, hrep⟩
+  -- Step 2: `M` is Borel and `M ∩ closedBall(y, ε)` is compact; `2ρ ≤ min(ε, ρ₀)`
+  obtain ⟨hMmeas, hloc⟩ := Submission.dimred_rpd_embedded_locally_closed P 1 n M hM
+  obtain ⟨ε, hε, hcpt⟩ := hloc y hyM
+  obtain ⟨ρ, hρ, hρε, hρρ₀⟩ : ∃ ρ : ℝ, 0 < ρ ∧ 2 * ρ ≤ ε ∧ 2 * ρ ≤ ρ₀ :=
+    ⟨min ε ρ₀ / 2, by positivity, by linarith [min_le_left ε ρ₀],
+      by linarith [min_le_right ε ρ₀]⟩
+  refine ⟨m₀.natAbs, ρ, Int.natAbs_pos.mpr hm₀, hρ, ?_⟩
+  rintro z ⟨hzS, hzy⟩
+  rw [mem_ball] at hzy
+  -- Step 3: `z ∈ M`.  Otherwise a ball `B_t(z) ⊆ B_{ρ₀}(y) ∩ closedBall(y, ε)` misses `M`, so `T`
+  -- vanishes on `B_t(z)`, and `B_{t/2}(z) ⊂⊂ U` puts `z` in the zero region of `T`
+  have hzM : z ∈ M := by
+    by_contra hzM
+    obtain ⟨s, hs, hsC⟩ := Metric.isOpen_iff.1 hcpt.isClosed.isOpen_compl z fun h => hzM h.1
+    obtain ⟨t, ht, hts, htρ⟩ : ∃ t : ℝ, 0 < t ∧ t ≤ s ∧ t ≤ ρ :=
+      ⟨min s ρ, lt_min hs hρ, min_le_left _ _, min_le_right _ _⟩
+    have hdist : ∀ w ∈ ball z t, dist w y < 2 * ρ := fun w hw =>
+      calc dist w y ≤ dist w z + dist z y := dist_triangle _ _ _
+        _ < 2 * ρ := by linarith [mem_ball.1 hw]
+    have hsub₀ : ball z t ⊆ ball y ρ₀ := fun w hw => mem_ball.2 ((hdist w hw).trans_le hρρ₀)
+    have hdisj : ∀ x ∈ M, x ∉ ball z t := fun x hxM hxt =>
+      hsC (ball_subset_ball hts hxt) ⟨hxM, mem_closedBall.2 ((hdist x hxt).le.trans hρε)⟩
+    have hvan : T.VanishesOn (ball z t) := by
+      intro ω hω
+      have hint : ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] = 0 := by
+        refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+        rw [image_eq_zero_of_notMem_tsupport fun h => hdisj x hx (hω h), map_zero]
+      rw [hrep ω (hω.trans hsub₀), hint, mul_zero]
+    refine hzS.2 (mem_sUnion.2 ⟨ball z (t / 2), ⟨isOpen_ball, ?_, ?_, fun ω hω => ?_⟩,
+      mem_ball_self (half_pos ht)⟩)
+    · exact (isCompact_closedBall z (t / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (half_lt_self ht)).trans (hsub₀.trans hball))
+    · exact hvan ω (hω.trans (ball_subset_ball (by linarith)))
+  -- Step 4: `M_{B_s(z)}(T) = |m₀| Hⁿ(M ∩ B_s(z))` for `0 < s < ρ`; `closedBall(z, s) ⊆ B_{ρ₀}(y)`
+  have hmass : ∀ s ∈ Ioo (0 : ℝ) ρ,
+      T.massOn (ball z s) = (m₀.natAbs : ℝ≥0∞) * μHE[n] (M ∩ ball z s) := by
+    intro s hs
+    have hcl : closedBall z s ⊆ ball y ρ₀ := fun w hw => mem_ball.2 <|
+      calc dist w y ≤ dist w z + dist z y := dist_triangle _ _ _
+        _ < ρ₀ := by linarith [mem_closedBall.1 hw, hs.2]
+    have hsub₀ : ball z s ⊆ ball y ρ₀ := ball_subset_closedBall.trans hcl
+    refine Submission.dimred_rpd_massOn_eq_mult_measure P n U T M (ball z s) m₀ ξ isOpen_ball
+      (hsub₀.trans hball) hMmeas hξ.1 (fun x hx => ?_) ?_ fun ω hω => hrep ω (hω.trans hsub₀)
+    · obtain ⟨Q, -, hQ⟩ := hξ.2 x hx
+      exact ⟨Q, hQ⟩
+    · exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall z s) hcl)
+        (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
+  -- Step 5: `Hⁿ(M ∩ B_s(z))/(ωₙsⁿ) → 1`, hence `M_{B_s(z)}(T)/(ωₙsⁿ) → |m₀|` as `s ↓ 0`
+  refine ⟨Nat.cast_nonneg _, ?_⟩
+  have hlim := ENNReal.Tendsto.const_mul
+    (Submission.dimred_rpd_submanifold_density_one P n M z hM hzM)
+    (Or.inr (ENNReal.natCast_ne_top m₀.natAbs))
+  rw [mul_one] at hlim
+  rw [ENNReal.ofReal_natCast]
+  refine hlim.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
+  rw [hmass s hs, mul_div_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
