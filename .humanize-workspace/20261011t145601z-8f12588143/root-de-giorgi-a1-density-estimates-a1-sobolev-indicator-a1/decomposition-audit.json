@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Rn|def IsGaussGreenPair|μ Uᶜ|euclideanDivergence",
+        "ae_convolution_tendsto_right_of_locallyIntegrable|contDiff_normed|nonneg_normed|integral_normed|tsupport_normed_eq|hasCompactSupport_normed",
+        "hasFDerivAt_convolution_left|contDiff_convolution_left",
+        "theorem integral_indicator₀|protected theorem indicator₀",
+        "eLpNorm_lim_le_liminf_eLpNorm",
+        "deGiorgiSobInd_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sobind-independent-audit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/SobIndReuseCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndSplitAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndReuseCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/sobind-independent-audit.lean"
+      ],
+      "conclusion": "The split is appropriate. Snapshot contracts match the workspace, and the Mathlib and SimonGMT revisions match the pinned manifests. The cited convolution, normalization, null-measurable indicator and Fatou results support the supplied arguments, including the infinite exponent. All four literal child propositions independently elaborate before child declarations; parsing and instance checks confirm real multiplication, operator norms and the intended measures and integral grouping. The exact parent assembly compiles using precisely the four child assumptions and the frozen Sobolev sibling, plus propext, Classical.choice and Quot.sound; no sorryAx or circular assumption occurs. The two cited SimonGMT reuse lemmas have only these standard axioms. All proposed names are bare identifiers, with no matching reservation in the DAG or other branch proposals. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollifier_seq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches every hypothesis and conclusion, including kernels chosen independently of G. Normalized bumps supply the kernel properties; the compact-support estimate proves Lipschitz continuity; Lebesgue differentiation and domination by |h| prove both limits. Null-measurability and N = 0 are covered. The proof is complete and non-circular."
+    },
+    {
+      "key": "mul_fderiv_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the prose, and the right side parses as two separate integrals. The supplied proof establishes the product Lipschitz constant and compact support, applies Rademacher to both factors, and justifies all integrability requirements before integral comparison. No additional hypothesis or circular dependency is needed."
+    },
+    {
+      "key": "mollified_fderiv_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract includes the full Gauss–Green assumptions and required support containment. The proof correctly handles reflection and signs, establishes C¹ regularity, compact support and Fubini integrability, and uses μ-a.e. unit norm with justified μ-integrability. Explicit continuous dual fields and dominated convergence recover the operator norm. Zero kernels, negative radii and empty supports cause no gap."
+    },
+    {
+      "key": "mollified_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose without adding positivity assumptions on ζ or the radii. Mass one forces nonnegative radii; continuity and bounded support ensure kernel integrability. Uniform continuity gives convergence, while the finite-measure thickening supplies a common integrable bound. Dominated convergence applies to the arbitrary measure μ. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

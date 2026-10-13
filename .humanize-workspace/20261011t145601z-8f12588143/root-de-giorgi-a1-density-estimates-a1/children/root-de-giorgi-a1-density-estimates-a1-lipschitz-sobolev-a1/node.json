@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Sobolev inequality for compactly supported Lipschitz functions: ‖u‖_{(n+1)/n} ≤ c∫|Du| (Gagliardo-Nirenberg-Sobolev for n ≥ 1, sup|u| ≤ ½∫|u'| for n = 0; parent Step 7 'Constants')",
+  "statement": "Let n ∈ ℕ, N := n + 1, and p := (n + 1)/n computed in ℝ≥0∞ (so p = ∞ when n = 0). There is c > 0 such that every K-Lipschitz u : ℝ^N → ℝ (K ∈ ℝ≥0) with compact support satisfies eLpNorm(u, p, L^N) ≤ ENNReal.ofReal(c ∫ |Du| dL^N), where |Du(y)| = ‖fderiv ℝ u y‖ and eLpNorm(·, ∞) is the essential supremum.",
+  "lean_statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (u : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K u → HasCompactSupport u → eLpNorm u ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖)",
+  "lean_name": "deGiorgiDens_lipschitz_sobolev",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.lipschitz_smooth_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lipschitz-sobolev-a1-a1"
+}

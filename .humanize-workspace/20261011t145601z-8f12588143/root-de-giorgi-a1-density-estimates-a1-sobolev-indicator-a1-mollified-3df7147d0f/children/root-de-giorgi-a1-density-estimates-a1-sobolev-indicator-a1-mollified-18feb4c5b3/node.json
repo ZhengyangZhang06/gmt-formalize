@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.fubini_swap-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1",
+  "depth": 5,
+  "title": "Fubini swap for the mollified weight against μ: ∫ζ(y)(∫ρ(y − z)dμ(z))dy = ∫(∫ζ(y)ρ(y − z)dy)dμ(z), with integrability",
+  "statement": "Let N ∈ ℕ, let μ be any measure on ℝ^N (Borel σ-algebra), let ζ, ρ : ℝ^N → ℝ be continuous with compact support, let r ∈ ℝ with tsupport ρ ⊆ B̄_r(0), and suppose μ(K') < ∞ for K' := cthickening(r, tsupport ζ), the closed r-neighbourhood of tsupport ζ. Then the function y ↦ ζ(y)∫ρ(y − z) dμ(z) is L^N-integrable, and ∫ ζ(y)(∫ ρ(y − z) dμ(z)) dL^N(y) = ∫ (∫ ζ(y)ρ(y − z) dL^N(y)) dμ(z). All integrals are Bochner integrals, so the integral of a non-integrable function is 0. For y ∉ tsupport ζ the factor ζ(y) vanishes, so the integrand ζ(y)∫ρ(y − z)dμ(z) is 0 there whether or not z ↦ ρ(y − z) is μ-integrable.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → Continuous ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → μ (Metric.cthickening r (tsupport ζ)) < ∞ → Integrable (fun y ↦ ζ y * (∫ z, ρ (y - z) ∂μ)) ∧ ∫ y, ζ y * (∫ z, ρ (y - z) ∂μ) = ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ",
+  "lean_name": "deGiorgiSobIndMFL_integral_mul_swap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-18feb4c5b3-a1"
+}

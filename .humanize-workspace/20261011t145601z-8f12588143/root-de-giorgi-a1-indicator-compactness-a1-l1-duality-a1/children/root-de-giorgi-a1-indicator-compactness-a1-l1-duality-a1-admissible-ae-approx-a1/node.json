@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1.admissible_ae_approx-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+  "depth": 4,
+  "title": "A.e. approximation of bounded functions on a ball by admissible C1 test functions",
+  "statement": "Let N ∈ ℕ and R > 0, and let s : ℝ^N → ℝ be a.e.-strongly measurable for Lebesgue measure L^N. Assume |s(y)| ≤ 1 for every y ∈ ℝ^N and s(y) = 0 for every y ∉ B_R(0) (open ball). Then there exist functions ψ_j : ℝ^N → ℝ (j ∈ ℕ) such that, for every j, ψ_j is C¹, has compact support, satisfies tsupport ψ_j ⊆ B_R(0), and has |ψ_j(y)| ≤ 1 for all y. Moreover, ψ_j(y) → s(y) as j → ∞ for L^N-almost every y ∈ ℝ^N.",
+  "lean_statement": "∀ (N : ℕ) (R : ℝ) (s : Rn N → ℝ), 0 < R → AEStronglyMeasurable s volume → (∀ y, |s y| ≤ 1) → (∀ y, y ∉ Metric.ball (0 : Rn N) R → s y = 0) → ∃ ψ : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (ψ j)) ∧ (∀ j, HasCompactSupport (ψ j)) ∧ (∀ j, tsupport (ψ j) ⊆ Metric.ball (0 : Rn N) R) ∧ (∀ j y, |ψ j y| ≤ 1) ∧ ∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))",
+  "lean_name": "indCompact_l1Dual_exists_admissible_ae_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-l1-duality-a1-admissible-ae-approx-a1-a1"
+}

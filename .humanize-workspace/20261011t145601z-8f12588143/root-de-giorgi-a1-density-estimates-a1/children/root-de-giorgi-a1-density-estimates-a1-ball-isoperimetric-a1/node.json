@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.ball_isoperimetric-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Isoperimetric differential inequality at a differentiability radius: V(ρ)^{n/(n+1)} ≤ c(μ(B_ρ(x)) + V'(ρ)) (Simon p. 83)",
+  "statement": "Let n ∈ ℕ and N := n + 1. There is c > 0 such that the following holds for every open U ⊆ ℝ^N, Lebesgue null-measurable G ⊆ ℝ^N, Gauss-Green pair (μ, ν) for (U, G), x ∈ ℝ^N, ρ > 0 with B̄_ρ(x) ⊆ U and L^N(G ∩ B_ρ(x)) > 0, and d ∈ ℝ such that V(r) := L^N(G ∩ B_r(x)).toReal has derivative d at r = ρ: V(ρ)^{n/(n+1)} ≤ c (μ(B_ρ(x)).toReal + d), where t^{n/(n+1)} is the real power (equal to 1 for n = 0).",
+  "lean_statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x : Rn (n + 1)) (ρ d : ℝ), 0 < ρ → Metric.closedBall x ρ ⊆ U → 0 < volume (G ∩ Metric.ball x ρ) → HasDerivAt (fun r : ℝ ↦ (volume (G ∩ Metric.ball x r)).toReal) d ρ → (volume (G ∩ Metric.ball x ρ)).toReal ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + d)",
+  "lean_name": "deGiorgiDens_ball_isoperimetric",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.radial_cutoff-a1",
+    "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.radial_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-ball-isoperimetric-a1-a1"
+}

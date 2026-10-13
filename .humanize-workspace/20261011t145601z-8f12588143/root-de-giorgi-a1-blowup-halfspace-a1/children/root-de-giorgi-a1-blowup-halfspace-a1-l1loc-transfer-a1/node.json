@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.blowup_halfspace-a1.l1loc_transfer-a1",
+  "parent_id": "root.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 3,
+  "title": "L¹_loc convergence of sets passes to integrals of C_c functions and to volumes inside bounded sets",
+  "statement": "Let N ∈ ℕ and let F_k (k ∈ ℕ) and G be L^N-null-measurable subsets of ℝ^N such that L^N(K ∩ (F_k Δ G)) → 0 as k → ∞ for every compact K ⊆ ℝ^N. Then (i) ∫_{F_k} f dL^N → ∫_G f dL^N for every continuous compactly supported f : ℝ^N → ℝ; and (ii) for every bounded set B ⊆ ℝ^N (no measurability assumed), L^N(F_k ∩ B) → L^N(G ∩ B) and L^N(B ∖ F_k) → L^N(B ∖ G) in [0, ∞].",
+  "lean_statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)) (G : Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → NullMeasurableSet G volume → (∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0)) → (∀ f : Rn N → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k ↦ ∫ y in F k, f y) atTop (𝓝 (∫ y in G, f y))) ∧ ∀ B : Set (Rn N), Bornology.IsBounded B → Tendsto (fun k ↦ volume (F k ∩ B)) atTop (𝓝 (volume (G ∩ B))) ∧ Tendsto (fun k ↦ volume (B \\ F k)) atTop (𝓝 (volume (B \\ G)))",
+  "lean_name": "deGiorgiHS_L1loc_limit_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-blowup-halfspace-a1-l1loc-transfer-a1-a1"
+}

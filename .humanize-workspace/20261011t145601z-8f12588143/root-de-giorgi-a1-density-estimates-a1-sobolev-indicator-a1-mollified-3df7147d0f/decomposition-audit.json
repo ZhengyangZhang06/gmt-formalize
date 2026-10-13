@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsGaussGreenPair|deGiorgiSobIndMFL_|mollified_fderiv_le",
+        "hasFDerivAt_integral_of_dominated_of_fderiv_le|trace_smulRight|integral_integral_swap|theorem Integrable.integral_prod_left|norm_integral_le_of_norm_le|integral_mono_of_nonneg|setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_indicator|closedBall_subset_cthickening|mem_cthickening_of_dist_le|IsCompact.cthickening",
+        "integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|integrableOn_const|integrableOn_iff_integrable",
+        "child_modules|header|open scoped|namespace GMT|contract_digest",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mfl-independent-audit-iudr4ob7/FullProofAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-3df7147d0f/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-3df7147d0f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/mfl-independent-audit-iudr4ob7/FullProofAudit.lean",
+        "/tmp/mfl-independent-audit-iudr4ob7/fderiv_setintegral_Challenge.lean",
+        "/tmp/mfl-independent-audit-iudr4ob7/kernel_gauss_green_Challenge.lean",
+        "/tmp/mfl-independent-audit-iudr4ob7/pointwise_bound_Challenge.lean",
+        "/tmp/mfl-independent-audit-iudr4ob7/fubini_swap_Challenge.lean"
+      ],
+      "conclusion": "The pinned contract matches the handoff and workspace; inspected Mathlib sources match the compiler's pinned revision. The cited differentiation, trace, support, integrability and Fubini lemmas have the required hypotheses. Simon Chapter 2, Lemma 2.5 and its Chapter 3 application support the supplied analytic route. No proposed name occurs in the snapshot project, existing DAG declarations, or another branch's proposed children. All four names are bare identifiers, and every frozen statement is a standalone one-line proposition. Independently generated comparator challenges all elaborate. Verbatim supplied appendix proofs and the exact selected parent assembly compile; all five declarations use only propext, Classical.choice and Quot.sound. The split is appropriate: the first two children establish the pointwise bound, and finite-restriction Fubini plus weighted domination establishes precisely the selected parent. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_setintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree. Compact support supplies an integrable bound uniform over a neighbourhood of each evaluation point. Dominated differentiation against volume.restrict G and continuous-linear evaluation prove the exact identity. The redundant null-measurability assumption is harmless. No circular reliance or missing construction remains."
+    },
+    {
+      "key": "kernel_gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all hypotheses and matches the type. The reflected kernel field is admissible; its negative rank-one derivative has the stated trace, giving the correct Gauss–Green sign. Vanishing outside U and the measurable-U indicator identity justify replacing G ∩ U by G without assuming G measurable. The proof is complete and independent."
+    },
+    {
+      "key": "pointwise_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type specify the intended continuous-linear-map operator norm. Compact-ball finiteness establishes kernel integrability. Exactly the two declared dependencies provide the directional representation; nonnegativity, the almost-everywhere unit normal and Cauchy–Schwarz give the operator-norm bound. No additional hypothesis or circular dependency is used."
+    },
+    {
+      "key": "fubini_swap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both integrability and equality match the prose exactly. Restricting μ to the finite-mass thickening supplies the required Fubini instances. Continuity, boundedness and finite-measure support establish product integrability; support vanishing restores μ in both integrals. Constant-factor identities remain valid under the stated Bochner conventions. No positivity or global s-finiteness assumption is missing."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem HasCompactSupport.continuous_convolution_right|theorem convolution_def",
+        "toMeasurable_ae_eq|protected theorem symmDiff",
+        "theorem restrict_le_self|theorem restrict_congr_set|theorem restrict_apply'|IsLocallyFiniteMeasure \\(μ.restrict",
+        "theorem lintegral_lintegral_swap",
+        "theorem ofReal_integral_eq_lintegral_ofReal|theorem setIntegral_congr_set|theorem integral_indicator",
+        "integral_div_left_eq_self|measurePreserving_mul_right",
+        "theorem lintegral_add_left'|theorem lintegral_add_right'|theorem lintegral_indicator_one₀",
+        "indCompact_mollCauchy_l1_error|indCompact_mollCauchy_setIntegral_continuous",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mollcauchy-independent-audit-qt88e37c/Complete.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mollcauchy-independent-audit-qt88e37c/AssemblyFromChildren.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-mollified-cauchy-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-indicator-compactness-a1-mollified-cauchy-a1/decomposition-v1.json",
+        "/tmp/mollcauchy-decomp/lean/ChildProofs.lean",
+        "/tmp/mollcauchy-decomp/lean/Assembly.lean",
+        "/tmp/mollcauchy-independent-audit-qt88e37c/Challenge_mollifier_l1_error.lean",
+        "/tmp/mollcauchy-independent-audit-qt88e37c/Challenge_mollified_continuous.lean",
+        "/tmp/mollcauchy-independent-audit-qt88e37c/Complete.lean",
+        "/tmp/mollcauchy-independent-audit-qt88e37c/AssemblyFromChildren.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte equality of the inspected Mathlib files with compiler sources. The snapshot supplies measurable-hull replacement, translation invariance, Tonelli, lower-integral additivity, and convolution continuity for arbitrary restricted locally finite measures. Neither proposed name occurs in the 185-node DAG, issue-workers registry, or GMT sources. Both exact one-line child types pass validation and independently elaborate in the comparator scope before either implementation exists. Independently reconstructed complete proofs and comparator-style targets compile using only propext, Classical.choice and Quot.sound. With the children replaced by axioms, the exact selected parent compiles using precisely those two child axioms and the standard three. The split is appropriate: the independent analytic obligations supply the error estimate and measurability required by the parent's complete epsilon argument; dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollifier_l1_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree on every hypothesis and conclusion. The supplied proof correctly transfers restricted integrals and translation bounds through a measurable hull, justifies substitution and subtraction by integrability, applies Tonelli to a jointly measurable integrand, uses the translation estimate at −h, and finishes with nonnegativity and unit kernel mass. No unstated positivity assumption on σ or R is needed, including N = 0. The proof is complete and independent of both the sibling and parent. Its bare declaration name is unreserved."
+    },
+    {
+      "key": "mollified_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition both permit arbitrary F and require exactly continuity and compact support of ρ. Restriction remains dominated by volume and locally finite without measurability of F. After discarding finitely many sequence terms, the stated common compact support and bound give an integrable dominating function, so dominated convergence proves continuity. The convolution implementation independently confirms the required instances and exact integral expression. The proof is complete, has no sibling or parent dependence, and supplies the parent's measurability requirement. Its bare declaration name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

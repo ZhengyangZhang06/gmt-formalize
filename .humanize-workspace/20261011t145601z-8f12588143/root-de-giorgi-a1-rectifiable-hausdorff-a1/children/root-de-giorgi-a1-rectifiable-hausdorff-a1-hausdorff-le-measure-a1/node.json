@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.hausdorff_le_measure-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Density comparison: unit density on A implies Hⁿ(A) ≤ μ(A) (Simon Ch. 1 Thm 3.3; parent Step 4)",
+  "statement": "Let n, N ∈ ℕ, let μ be a Borel measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ ℝ^N, and let A ⊆ ℝ^N be an arbitrary set such that, for every x ∈ A, μ(B̄_ρ(x))/ρⁿ → ω_n := Lⁿ(B_1(0)) in [0, ∞] as ρ ↓ 0. Then Hⁿ(A) ≤ μ(A), where Hⁿ = μHE[n] and both sides are outer-measure values.",
+  "lean_statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (A : Set (Rn N)), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → (∀ x ∈ A, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μHE[n] A ≤ μ A",
+  "lean_name": "deGiorgiRH_hausdorff_le_of_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-hausdorff-le-measure-a1-a1"
+}

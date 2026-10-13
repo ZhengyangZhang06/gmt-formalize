@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "Density estimates at a reduced-boundary point: μ(B_ρ) ≤ Cρⁿ, two-sided volume bounds, excess decay (Simon (1)-(6), (10), (11))",
+  "statement": "Let n ∈ ℕ, N := n + 1, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable and (μ, ν) a Gauss-Green pair for (U, E) (IsGaussGreenPair U E μ ν). Let x ∈ ∂*E := reducedBoundary U μ ν (x ∈ U and normalAverage μ ν x ρ = μ(B_ρ(x)).toReal⁻¹ • ∫_{B_ρ(x)} ν dμ converges as ρ ↓ 0 to a unit vector) and e := ν_E(x) := reducedNormal μ ν x (that limit). Then there are ρ₁ > 0 with B_{ρ₁}(x) ⊆ U and constants C, c ∈ ℝ with c > 0 such that for every ρ ∈ (0, ρ₁): μ(B_ρ(x)) ≤ ofReal(Cρⁿ), ofReal(cρ^{n+1}) ≤ L^N(E ∩ B_ρ(x)) and ofReal(cρ^{n+1}) ≤ L^N(B_ρ(x) ∖ E); and (ρⁿ)⁻¹ ∫_{B_ρ(x)} |ν(y) − e| dμ(y) → 0 as ρ ↓ 0.",
+  "lean_statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ Metric.ball x ρ₁ ⊆ U ∧ ∃ C c : ℝ, 0 < c ∧ (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n) ∧ ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (E ∩ Metric.ball x ρ) ∧ ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (Metric.ball x ρ \\ E)) ∧ Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - reducedNormal μ ν x‖ ∂μ) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "deGiorgi_density_estimates",
+  "depends_on": [
+    "root.de_giorgi-a1.compl_pair-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.compl_pair-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-a1"
+}

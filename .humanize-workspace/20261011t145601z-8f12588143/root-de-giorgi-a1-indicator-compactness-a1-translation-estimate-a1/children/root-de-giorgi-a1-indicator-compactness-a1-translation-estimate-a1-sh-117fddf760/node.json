@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.shift_change_of_variables-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "Translation change of variables for indicator differences tested against an integrable function",
+  "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be L^N-null-measurable with real indicator 1_F, let ψ : ℝ^N → ℝ be Lebesgue integrable, and let h ∈ ℝ^N. Then ∫_{ℝ^N} (1_F(y + h) − 1_F(y))·ψ(y) dy = ∫_F (ψ(z − h) − ψ(z)) dz.",
+  "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), NullMeasurableSet F volume → Integrable ψ volume → ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y = ∫ z in F, (ψ (z - h) - ψ z)",
+  "lean_name": "indCompact_transEst_integral_indicator_shift_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-sh-117fddf760-a1"
+}

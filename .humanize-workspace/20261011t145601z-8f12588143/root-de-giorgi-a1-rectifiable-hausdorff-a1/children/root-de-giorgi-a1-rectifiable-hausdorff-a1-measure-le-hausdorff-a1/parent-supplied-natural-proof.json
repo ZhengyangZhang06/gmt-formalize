@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+        "grep -n 'def HasApproxTangentPlaneWithMultiplicity|def ApproximateTangentCharacterization' <snapshot>/project/GMT/Ch03/Contract.lean",
+        "grep -rn 'simon_theorem_3_3|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure' .lake/packages/simongmt/Poincare/SimonGMT",
+        "grep -n 'def IsBorelRegularOuterMeasure|theorem measure_toOuterMeasure_isBorelRegular' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "grep -n 'def simonHausdorffOuterMeasureReal|def simonHausdorffMeasureReal|theorem simonHausdorffMeasureReal_toOuterMeasure' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "grep -n 'theorem realUnitBallVolume_nat_eq|theorem volume_euclidean_ball_eq' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "grep -rn 'dimensionalUpperDensity.*≤ |2 ^ n' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01 (no 2^n upper-density bound present)",
+        "grep -n 'def CountablyRectifiable|theorem countablyRectifiable_of_measure_zero|theorem countablyRectifiable_iUnion|def blowUpMap|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "grep -n 'theorem ae_tendsto_rnDeriv|theorem tendsto_filterAt|protected def vitaliFamily' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "grep -rn 'theorem withDensity_rnDeriv_eq' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Decomposition",
+        "grep -rn 'theorem restrict_iUnion_congr|exists_iUnion_isCompact|IsOpen.exists_iUnion_' <snapshot>/mathlib/Mathlib (restrict_iUnion_congr found; no ready-made exhaustion lemma for open subsets)",
+        "grep -n 'theorem addHaar_closedBall|theorem addHaar_ball_of_pos|theorem addHaar_closedBall_eq_addHaar_ball' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "sed -n 1,200p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul₀, euclideanHausdorffMeasure_homothety_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)",
+        "grep -n 'theorem _root_.Set.measure_eq_iInf_isOpen' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "grep -rn 'theorem.*infEDist_zero|theorem.*infEDist_pos' <snapshot>/mathlib/Mathlib/Topology",
+        "sed -n 560,640p book/chapter-01.txt (Simon Thm 3.3) and book/chapter-03.txt (Thm 4.3 proof, line 604)",
+        "python3 -I dag.json lean_name collision check (143 nodes): none",
+        "python3 -I verifier/gmt-compare.py child_modules(contract mode) and verifier/lean_contract.py validate_lean_statement on the 10 statements; lake env lean on the 10 generated NodeChallenge files: all OK",
+        "lake env lean GMT/Scratch/RectifiableHausdorffSplitDecision.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/RectifiableHausdorffSplitDecision.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c). Neither Mathlib nor the pinned SimonGMT contains this statement, the 2^n upper-density covering bound (only the reverse comparison, simon_theorem_3_3, is present), a vague-limit-to-plane squeeze, or a ready-made exhaustion of open subsets. Those become children. The children's proofs can draw on the following library facts: Besicovitch.ae_tendsto_rnDeriv; Measure.withDensity_rnDeriv_eq (needs import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym); Measure.restrict_iUnion_congr; Set.measure_eq_iInf_isOpen with OuterRegular inferred from IsFiniteMeasureOnCompacts; Measure.addHaar_closedBall; Isometry.euclideanHausdorffMeasure_image; euclideanHausdorffMeasure_smul₀; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Metric.infEDist lemmas; SimonGMT simon_theorem_3_3, measure_toOuterMeasure_isBorelRegular, simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, simonHausdorffMeasureReal_toOuterMeasure, volume_euclidean_ball_eq, countablyRectifiable_iUnion and countablyRectifiable_of_measure_zero. All ten child types elaborate in the exact NodeChallenge scope. The scratch assembly compiles the parent and the core child against stubs. Five children are already proved there with standard axioms only."
+    }
+  ],
+  "proof": "Source: parent proof, Step 6 (D2), stated for an arbitrary set A and an arbitrary Borel measure μ. No finiteness of μ is used.\n\nNotation.\n- Hⁿ := μHE[n]; ω_n := Lⁿ(B_1(0)) ∈ (0, ∞).\n- For δ > 0 and E ⊆ ℝ^N, Hⁿ_δ(E) := ω_n·inf{Σ_m (diam C_m/2)ⁿ : (C_m)_{m∈ℕ} countable, E ⊆ ⋃_m C_m, diam C_m < δ}. Here (d/2)⁰ := 1, empty C_m may be discarded, and the infimum of the empty set is ∞.\n- Simon's Hausdorff measure is sup_{δ>0} Hⁿ_δ(E) = lim_{δ↓0} Hⁿ_δ(E) (Simon Ch. 1 (2.1)–(2.2)), and it coincides with μHE[n](E). Library references: SimonGMT simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure and simonHausdorffMeasureReal_toOuterMeasure, and the definitions simonHausdorffOuterMeasureReal / simonHausdorffContentOuter. The covering formula there is OuterMeasure.boundedBy of the cost C ↦ (diam C/2)ⁿ if diam C < δ, and ∞ otherwise.\n- In particular Hⁿ_δ(E) ≤ Hⁿ(E) for every δ > 0.\n\n1. The sets A_j. Fix τ > 0. For j ≥ 1 let A_j := {x ∈ A : μ(B̄_ρ(x)) ≤ (1 + τ)ω_nρⁿ for every ρ ∈ (0, 1/j)}.\n   - Clearly A_j ⊆ A_{j+1} ⊆ A.\n   - Let x ∈ A. Since μ(B̄_ρ(x))/ρⁿ → ω_n < (1 + τ)ω_n (as 0 < ω_n < ∞), there is ρ_x > 0 such that μ(B̄_ρ(x))/ρⁿ < (1 + τ)ω_n, hence μ(B̄_ρ(x)) ≤ (1 + τ)ω_nρⁿ, for all ρ ∈ (0, ρ_x).\n   - So x ∈ A_j whenever 1/j ≤ ρ_x. Therefore A = ⋃_j A_j, an increasing union.\n\n2. Bound on each covering set. Fix j ≥ 1 and an arbitrary countable cover (C_m) of A_j by sets with diam C_m < 1/j. We show μ(C_m ∩ A_j) ≤ 2ⁿ(1 + τ)ω_n(diam C_m/2)ⁿ for every m.\n   - If C_m ∩ A_j = ∅, the left side is 0.\n   - Otherwise pick x_m ∈ C_m ∩ A_j and put d_m := diam C_m < 1/j. Every y ∈ C_m satisfies |y − x_m| ≤ d_m, so C_m ⊆ B̄_{d_m}(x_m).\n   (a) If d_m > 0: since x_m ∈ A_j and 0 < d_m < 1/j, μ(C_m ∩ A_j) ≤ μ(B̄_{d_m}(x_m)) ≤ (1 + τ)ω_n d_mⁿ = 2ⁿ(1 + τ)ω_n(d_m/2)ⁿ.\n   (b) If d_m = 0: then C_m = {x_m}, and for every ρ ∈ (0, 1/j), μ({x_m}) ≤ μ(B̄_ρ(x_m)) ≤ (1 + τ)ω_nρⁿ. If n ≥ 1, letting ρ ↓ 0 gives μ(C_m ∩ A_j) = 0. If n = 0, μ(C_m ∩ A_j) ≤ (1 + τ)ω₀ = 2⁰(1 + τ)ω₀(d_m/2)⁰.\n\n3. Summing over the cover. By countable subadditivity and step 2, μ(A_j) ≤ Σ_m μ(C_m ∩ A_j) ≤ 2ⁿ(1 + τ)·ω_nΣ_m (diam C_m/2)ⁿ. Taking the infimum over all admissible covers, and noting that multiplication by the finite positive constant 2ⁿ(1 + τ) commutes with infima, gives\n   μ(A_j) ≤ 2ⁿ(1 + τ)Hⁿ_{1/j}(A_j) ≤ 2ⁿ(1 + τ)Hⁿ(A_j) ≤ 2ⁿ(1 + τ)Hⁿ(A),\n   using monotonicity of Hⁿ in the last step.\n\n4. Letting j → ∞. The sets A_j increase to A (step 1). Continuity from below holds for increasing sequences of arbitrary, not necessarily measurable, sets: pass to measurable hulls (Mathlib tendsto_measure_iUnion_atTop). Hence μ(A) = lim_j μ(A_j) ≤ 2ⁿ(1 + τ)Hⁿ(A).\n\n5. Letting τ ↓ 0. If Hⁿ(A) = ∞, the claim μ(A) ≤ 2ⁿHⁿ(A) is trivial. Otherwise step 4 holds for every τ > 0, and letting τ ↓ 0 gives μ(A) ≤ 2ⁿHⁿ(A). ∎",
+  "key_steps": [
+    "A_j := points of A with μ(B̄_ρ) ≤ (1+τ)ω_nρⁿ for all ρ < 1/j; A_j increases to A",
+    "Any cover set C_m of A_j with diam < 1/j lies in B̄_{diam C_m}(x_m), so μ(C_m ∩ A_j) ≤ 2ⁿ(1+τ)ω_n(diam C_m/2)ⁿ, including the zero-diameter case",
+    "Subadditivity and the infimum over covers give μ(A_j) ≤ 2ⁿ(1+τ)Hⁿ_{1/j}(A_j) ≤ 2ⁿ(1+τ)Hⁿ(A)",
+    "Continuity from below along A_j ↑ A (arbitrary sets)",
+    "Let τ ↓ 0"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

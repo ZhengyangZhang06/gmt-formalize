@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Sobolev inequality for ζχ_G with a Gauss-Green pair (Simon p. 83; parent Step 7 (S), errata E5 and E6)",
+  "statement": "Let n ∈ ℕ, N := n + 1 and p := (n + 1)/n ∈ [1, ∞] (computed in ℝ≥0∞, so p = ∞ when n = 0). There is c > 0 such that for every open U ⊆ ℝ^N, every Lebesgue null-measurable G ⊆ ℝ^N, every Gauss-Green pair (μ, ν) for (U, G) and every K-Lipschitz ζ : ℝ^N → ℝ (K ∈ ℝ≥0) with ζ ≥ 0, compact support and tsupport ζ ⊆ U: eLpNorm(χ_G ζ, p, L^N) ≤ ENNReal.ofReal(c (∫ ζ dμ + ∫_G |Dζ| dL^N)), where χ_G ζ = G.indicator ζ, eLpNorm(·, ∞) is the essential supremum, and |Dζ(y)| = ‖fderiv ℝ ζ y‖.",
+  "lean_statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → (∀ y, 0 ≤ ζ y) → eLpNorm (G.indicator ζ) ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖))",
+  "lean_name": "deGiorgiDens_sobolev_indicator",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-a1"
+}
