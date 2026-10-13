@@ -661,6 +661,32 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **A linear left inverse makes a map an injective immersion** (Simon Ch. 2, §4, (4.4), where
+the graph map `G(x) = (x, u(x))` has the linear left inverse `(x, y) ↦ x`; step 4 of the `C^∞`
+chart construction for the hypercone plane).  Let `D ⊆ ℝᵈ` be open, `g` differentiable on `D`,
+and `π : ℝᴾ → ℝᵈ` continuous linear with `π(g(a) − c) = a` for `a ∈ D`.  Then `g` is injective
+on `D`, since `a = π(g(a) − c) = π(g(b) − c) = b`.  For `a ∈ D` the map `b ↦ π(g(b) − c)` has
+derivative `π ∘ Dg(a)` at `a` by the chain rule, and it agrees with the identity on the
+neighbourhood `D` of `a`; uniqueness of the derivative gives `π ∘ Dg(a) = id`, so `π` is a left
+inverse of `Dg(a)` and `Dg(a)` is injective. -/
+theorem Submission.codim1_hcp_sc_left_inverse_immersion : ∀ (P d : ℕ) (D : Set (Euclid d)) (g : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P), IsOpen D → DifferentiableOn ℝ g D → (∀ a ∈ D, π (g a - c) = a) → InjOn g D ∧ ∀ a ∈ D, π ∘L fderiv ℝ g a = ContinuousLinearMap.id ℝ (Euclid d) ∧ Injective (fderiv ℝ g a) := by
+  intro P d D g π c hD hg hπ
+  -- Steps 2–3: `π ∘ Dg(a) = id` for every `a ∈ D`
+  have hid : ∀ a ∈ D, π ∘L fderiv ℝ g a = ContinuousLinearMap.id ℝ (Euclid d) := by
+    intro a ha
+    -- chain rule: `b ↦ π(g(b) − c)` has derivative `π ∘ Dg(a)` at `a`
+    have h₁ : HasFDerivAt (fun b => π (g b - c)) (π ∘L fderiv ℝ g a) a :=
+      π.hasFDerivAt.comp a ((hg.hasFDerivAt (hD.mem_nhds ha)).sub_const c)
+    -- it equals the identity on the neighbourhood `D` of `a`, so it also has derivative `id`
+    have h₂ : HasFDerivAt (fun b => π (g b - c)) (ContinuousLinearMap.id ℝ (Euclid d)) a :=
+      (hasFDerivAt_id a).congr_of_eventuallyEq (eventually_of_mem (hD.mem_nhds ha) hπ)
+    -- uniqueness of the Fréchet derivative
+    exact h₁.unique h₂
+  refine ⟨fun a ha b hb hab => ?_, fun a ha => ⟨hid a ha, ?_⟩⟩
+  · -- Step 1: `a = π(g(a) − c) = π(g(b) − c) = b`
+    rw [← hπ a ha, hab, hπ b hb]
+  · -- Step 4: `π(Dg(a) u) = u`, so `π` is a left inverse of `Dg(a)`
+    exact LeftInverse.injective fun u => DFunLike.congr_fun (hid a ha) u
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
