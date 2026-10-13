@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Area-minimizing cycles in `ℝᴾ` are stationary** (Simon 7.1.2 with `U = N = ℝᴾ`).  If
+`n ≤ P`, write `P = n + k` and apply `minimizing_implies_stationary` with `ℓ = k` and the identity
+chart of `N = ℝᴾ`; every vector is tangent to `ℝᴾ` (straight lines), so every `X ∈ C¹_c` is
+admissible.  If `P < n`, then `Hⁿ = 0` on `ℝᴾ`, so the first-variation integral vanishes. -/
+theorem Submission.idtp_ccd_minimizing_stationary : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → R.Represents C → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0 := by
+  intro P n C R hmin hbd hrep X hX hXc
+  rcases le_or_gt n P with hnP | hnP
+  · -- `P = n + k`: Simon 7.1.2 with `U = N = ℝᴾ`, `ℓ = k`
+    obtain ⟨k, rfl⟩ : ∃ k, P = n + k := ⟨P - n, by omega⟩
+    -- `ℝᴾ` is an embedded `C²` submanifold of itself (identity chart)
+    have hN : IsEmbeddedSubmanifold 2 (n + k) (univ : Set (Euclid (n + k))) := by
+      intro y _
+      refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id _,
+        by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+      simpa [fderiv_id] using Function.injective_id
+    have hst := (Submission.minimizing_implies_stationary n k k le_rfl univ univ C isOpen_univ hN
+      (by simp) (subset_univ _) (by rwa [univ_inter]) hbd R hrep).1
+    -- every vector `v` is tangent to `ℝᴾ` at `x`: the line `t ↦ x + t v`
+    refine hst X hX hXc (subset_univ _) fun x _ => ?_
+    refine ⟨fun t => x + t • X x, ?_, fun _ _ => mem_univ _, by simp, ?_⟩
+    · exact (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn
+    · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X x)).const_add x
+  · -- `P < n`: `μHE[n] = 0` on `ℝᴾ`, since every ball has finite `μHE[P]` = Lebesgue measure
+    have h0 : (μHE[n] : Measure (Euclid P)) univ = 0 := by
+      rw [← iUnion_ball_nat (0 : Euclid P)]
+      refine measure_iUnion_null fun j => ?_
+      refine (Measure.euclideanHausdorffMeasure_zero_or_top hnP _).resolve_right ?_
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact measure_ball_lt_top.ne
+    have hM : (μHE[n] : Measure (Euclid P)).restrict R.carrier = 0 :=
+      Measure.restrict_eq_zero.2 (measure_mono_null (subset_univ _) h0)
+    rw [IMRep.firstVariation, hM, integral_zero_measure]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
