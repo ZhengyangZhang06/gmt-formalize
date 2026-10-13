@@ -1084,6 +1084,35 @@ theorem Submission.dor_lmb_approx_tangent_locality : ∀ (P n : ℕ) (U A B : Se
   exact Submission.regcomp_atl_tangent_iff_of_density_zero P n A B x (ε / 2) hA hB hAB
     (half_pos hε) (hfin _ (isCompact_closedBall x (ε / 2)) hsub) (hx hxU fun h => h.2 hxA)
 
+/-- **Restriction of an integer multiplicity current to a Borel set** (Simon Ch. 6, 4.5(2); e.g.
+`Rⱼ⌞W_α` and `T⌞W_α` in the proof of 7.2.4): for a triple `R = (M, θ, ξ)` in `U` and Borel `A`,
+`R' = (M ∩ A, θ, ξ)` is again a triple in `U`, it represents a current `S = τ(M, θ, ξ)⌞A` in
+`𝒟ₙ(U)`, and `μ_{R'} = μ_R⌞A`.
+
+As `θ ≥ 1` on `M`, `Hⁿ(M ∩ K) < ∞` for compact `K ⊆ U`.  So tangent locality for `M ∩ A ⊆ M`
+gives `T_x(M ∩ A) = T_xM` for `Hⁿ`-a.e. `x ∈ M ∩ A`, and `ξ` still orients `M ∩ A`.  The triple
+`R'` defines a current by Simon 6.3.1, and `(Hⁿ⌞(M ∩ A))θ = ((Hⁿ⌞M)θ)⌞A` because restriction to
+the Borel set `A` commutes with taking densities. -/
+theorem Submission.dor_lmb_imrep_restrict_current : ∀ (P n : ℕ) (U A : Set (Euclid P)) (R : IMRep U n), IsOpen U → MeasurableSet A → ∃ (S : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents S ∧ R'.carrier = R.carrier ∩ A ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R'.measure = R.measure.restrict A := by
+  intro P n U A R hU hA
+  -- Step 2(a): `Hⁿ(M ∩ K) < ∞` for compact `K ⊆ U`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ :=
+    fun K hK hKU => (Submission.rsd_imrep_compact_measure_ne_top P n U R K hK hKU).1
+  -- Step 2(b): `M ∩ A` and `M` have the same approximate tangent spaces `Hⁿ`-a.e. on `M ∩ A`
+  have hloc := Submission.dor_lmb_approx_tangent_locality P n U (R.carrier ∩ A) R.carrier hU
+    (R.measurableSet_carrier.inter hA) R.measurableSet_carrier inter_subset_left
+    R.carrier_subset hfin
+  -- Steps 1 and 2(c): `R' = (M ∩ A, θ, ξ)` is a triple in `U`
+  obtain ⟨R', hc, hm, ho⟩ := Submission.regcomp_rim_sub_imrep P n U (R.carrier ∩ A) R R.mult
+    (R.measurableSet_carrier.inter hA) inter_subset_left R.measurable_mult
+    (fun x hx => R.mult_pos x hx.1) (fun x _ => le_rfl) (hloc.mono fun x hx Q hQ => (hx Q).1 hQ)
+  -- Step 3: `R'` represents a current `S`
+  obtain ⟨S, hS⟩ := Submission.dtc_imrep_current P n U R'
+  refine ⟨S, R', hS, hc, hm, ho, ?_⟩
+  -- Step 4: `(Hⁿ⌞(M ∩ A))θ = ((Hⁿ⌞M)θ)⌞A`
+  simp only [IMRep.measure, hc, hm]
+  rw [restrict_withDensity hA, Measure.restrict_restrict hA, inter_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
