@@ -458,6 +458,73 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Covering step in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): if every
+point of the open set `U` has a ball in `U` on which `F` is `C¹` with `α`-Hölder derivative, then
+`F` is `C¹` on `U` and `D¹F` is `α`-Hölder on every compact `K ⊆ U`.  Pairs of points of `K` closer
+than a Lebesgue number `δ` of a finite subcover lie in one ball; for the other pairs,
+`‖DF(x) - DF(y)‖ ≤ 2 sup_K ‖DF‖ ≤ 2 sup_K ‖DF‖ δ^{-α} ‖x - y‖^α`. -/
+theorem dohr_eb_lhr_cover_holder_one : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (α : ℝ) (U : Set (Rn n)) (F : Rn n → E), 0 < α → IsOpen U → (∀ x ∈ U, ∃ R : ℝ, 0 < R ∧ ball x R ⊆ U ∧ ContDiffOn ℝ 1 F (ball x R) ∧ ∃ C : ℝ, ∀ y ∈ ball x R, ∀ z ∈ ball x R, ‖fderiv ℝ F y - fderiv ℝ F z‖ ≤ C * ‖y - z‖ ^ α) → ContDiffOn ℝ 1 F U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 F x - iteratedFDeriv ℝ 1 F y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro n E _ _ α U F hα hU hloc
+  choose! R hR hRU hRF C hC using hloc
+  -- Step 1: `F` is `C¹` on `U` by locality.
+  have hF : ContDiffOn ℝ 1 F U := by
+    refine contDiffOn_of_locally_contDiffOn fun x hx =>
+      ⟨ball x (R x), isOpen_ball, mem_ball_self (hR x hx), ?_⟩
+    rw [inter_eq_right.2 (hRU x hx)]
+    exact hRF x hx
+  refine ⟨hF, fun K hK hKU => ?_⟩
+  -- Steps 2–3: `DF` is continuous on `U`, hence bounded by `S` on `K`.
+  obtain ⟨S, hS⟩ := hK.exists_bound_of_continuousOn
+    ((hF.continuousOn_fderiv_of_isOpen hU le_rfl).mono hKU)
+  -- Step 4: finitely many hypothesis balls cover `K`; `Cs` bounds their Hölder constants.
+  obtain ⟨t, htK, hKt⟩ := hK.elim_nhds_subcover (fun x => ball x (R x))
+    fun x hx => ball_mem_nhds x (hR x (hKU hx))
+  obtain ⟨Cs, hCs⟩ : ∃ Cs : ℝ, ∀ i ∈ t, C i ≤ Cs :=
+    ⟨∑ i ∈ t, |C i|, fun i hi => (le_abs_self _).trans
+      (Finset.single_le_sum (f := fun j => |C j|) (fun j _ => abs_nonneg _) hi)⟩
+  -- Step 5: a Lebesgue number `δ` of this finite cover.
+  obtain ⟨δ, hδ, hδK⟩ := lebesgue_number_lemma_of_metric hK
+    (c := fun i : t => ball (i : Rn n) (R i)) (fun _ => isOpen_ball) fun x hx => by
+      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.1 (hKt hx)
+      exact mem_iUnion.2 ⟨⟨i, hi⟩, hxi⟩
+  -- Steps 6–8: the Hölder bound for `DF` on `K`.
+  have hD : ∀ x ∈ K, ∀ y ∈ K, ‖fderiv ℝ F x - fderiv ℝ F y‖ ≤
+      max Cs (2 * S * (δ ^ α)⁻¹) * ‖x - y‖ ^ α := by
+    intro x hx y hy
+    have hxy : 0 ≤ ‖x - y‖ ^ α := Real.rpow_nonneg (norm_nonneg _) α
+    rcases lt_or_ge ‖x - y‖ δ with hlt | hge
+    · -- Near pairs lie in one ball of the subcover.
+      obtain ⟨⟨i, hi⟩, hiδ⟩ := hδK x hx
+      have hxB : x ∈ ball i (R i) := hiδ (mem_ball_self hδ)
+      have hyB : y ∈ ball i (R i) := hiδ (mem_ball'.2 (by rwa [dist_eq_norm]))
+      calc ‖fderiv ℝ F x - fderiv ℝ F y‖ ≤ C i * ‖x - y‖ ^ α :=
+            hC i (hKU (htK i hi)) x hxB y hyB
+        _ ≤ max Cs (2 * S * (δ ^ α)⁻¹) * ‖x - y‖ ^ α :=
+            mul_le_mul_of_nonneg_right ((hCs i hi).trans (le_max_left _ _)) hxy
+    · -- Far pairs: `‖x - y‖ ^ α ≥ δ ^ α > 0`.
+      have hS0 : 0 ≤ S := (norm_nonneg _).trans (hS x hx)
+      have hδα : 0 < δ ^ α := Real.rpow_pos_of_pos hδ α
+      calc ‖fderiv ℝ F x - fderiv ℝ F y‖ ≤ ‖fderiv ℝ F x‖ + ‖fderiv ℝ F y‖ := norm_sub_le _ _
+        _ ≤ S + S := add_le_add (hS x hx) (hS y hy)
+        _ = 2 * S * (δ ^ α)⁻¹ * δ ^ α := by rw [inv_mul_cancel_right₀ hδα.ne', two_mul]
+        _ ≤ 2 * S * (δ ^ α)⁻¹ * ‖x - y‖ ^ α :=
+            mul_le_mul_of_nonneg_left (Real.rpow_le_rpow hδ.le hge hα.le) (by positivity)
+        _ ≤ max Cs (2 * S * (δ ^ α)⁻¹) * ‖x - y‖ ^ α :=
+            mul_le_mul_of_nonneg_right (le_max_right _ _) hxy
+  -- Step 9: `D¹F(z)` is the image of `DF(z)` under a linear isometry equivalence.
+  have hiso : ∀ z, iteratedFDeriv ℝ 1 F z =
+      (continuousMultilinearCurryFin1 ℝ (Rn n) E).symm (fderiv ℝ F z) := by
+    intro z
+    ext m
+    rw [iteratedFDeriv_one_apply, continuousMultilinearCurryFin1_symm_apply]
+  refine ⟨max Cs (2 * S * (δ ^ α)⁻¹), fun x hx y hy => ?_⟩
+  rw [hiso x, hiso y, ← map_sub, LinearIsometryEquiv.norm_map]
+  exact hD x hx y hy
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
