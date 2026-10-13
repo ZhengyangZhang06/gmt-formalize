@@ -589,6 +589,149 @@ theorem Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl :
     exact ⟨hs, hx⟩
   · ext v
     rw [hφ, hφ', hηη' _ hx]
+/-- Simon Ch. 6, 2.23 (p. 139), cut-off construction: if `f` is `C^∞` and proper on `A ⊆ U`, every
+`ω ∈ 𝒟ʲ(V)` has a pull-back `η = ζ f^#ω ∈ 𝒟ʲ(U)` with `0 ≤ ζ ≤ 1`, `η = f^#ω` on an open
+`N ⊇ A`, and `spt η ⊆ f⁻¹(spt ω)`. -/
+theorem Submission.iwl_sp_exists_compatible_testForm :
+    ∀ (P Q j : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (A : Set (Eucl P)) (f : Eucl P → Eucl Q),
+      IsOpen U → A ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f →
+      (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ A)) →
+      ∀ ω : TestFormOn V j, ∃ (η : TestFormOn U j) (ζ : Eucl P → ℝ) (N : Set (Eucl P)),
+        IsOpen N ∧ A ⊆ N ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧
+        (∀ x, (η : DifferentialForm (Eucl P) j) x =
+          ζ x • ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap
+            (fderiv ℝ f x)) ∧
+        (∀ x ∈ N, (η : DifferentialForm (Eucl P) j) x =
+          ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧
+        tsupport (η : DifferentialForm (Eucl P) j) ⊆
+          f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) := by
+  intro P Q j U V A f hU hAU hf hprop ω
+  obtain ⟨⟨hωs, hωc⟩, hωV⟩ := ω.property
+  have hωs' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Eucl Q) j) := hωs
+  -- 1. `K = f⁻¹(spt ω) ∩ A` is compact, by properness.
+  have hK : IsCompact (f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A) :=
+    hprop _ hωc.isCompact hωV
+  set K := f ⁻¹' tsupport (ω : DifferentialForm (Eucl Q) j) ∩ A
+  -- 2. A closed `δ`-thickening of `K` lies in `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU fun x hx => hAU hx.2
+  -- 3. Smooth Urysohn: `support ζ = thickening δ K`, and `ζ = 1` exactly on `cthickening (δ/2) K`.
+  obtain ⟨ζ, hζs, hζr, hζsupp, hζone⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K)) (isClosed_cthickening (δ := δ / 2) (E := K))
+    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  have hζt : tsupport ζ ⊆ cthickening δ K := by
+    rw [tsupport, hζsupp]
+    exact closure_thickening_subset_cthickening δ K
+  -- 4. The pull-back `p = f^# ω` is smooth, since `B ↦ B^#` is analytic.
+  set p : DifferentialForm (Eucl P) j := fun x =>
+    ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x)
+  have hp : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p := by
+    have hD : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fderiv ℝ f) := hf.fderiv_right (by simp)
+    have hC : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun x => ContinuousAlternatingMap.compContinuousLinearMapCLM (ι := Fin j) (F := ℝ)
+          (fderiv ℝ f x)) :=
+      (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff.comp hD
+    exact hC.clm_apply (hωs'.comp hf)
+  -- `p` vanishes wherever `ω ∘ f` does.
+  have hp0 : ∀ x, f x ∉ tsupport (ω : DifferentialForm (Eucl Q) j) → p x = 0 := by
+    intro x hx
+    show ((ω : DifferentialForm (Eucl Q) j) (f x)).compContinuousLinearMap (fderiv ℝ f x) = 0
+    rw [image_eq_zero_of_notMem_tsupport hx,
+      ← ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, map_zero]
+  -- 5. The test form `η = ζ p`.
+  have hηs : IsSmoothForm (fun x => ζ x • p x) := hζs.smul hp
+  have hηt : tsupport (fun x => ζ x • p x) ⊆ U :=
+    (tsupport_smul_subset_left ζ p).trans (hζt.trans hδU)
+  have hηc : HasCompactSupport (fun x => ζ x • p x) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport _)
+      ((tsupport_smul_subset_left ζ p).trans hζt)
+  let η : TestFormOn U j := ⟨fun x => ζ x • p x, ⟨hηs, hηc⟩, hηt⟩
+  refine ⟨η, ζ, thickening (δ / 2) K ∪ f ⁻¹' (tsupport (ω : DifferentialForm (Eucl Q) j))ᶜ,
+    isOpen_thickening.union ((isClosed_tsupport _).isOpen_compl.preimage hf.continuous), ?_,
+    fun x => hζr (mem_range_self x), fun x => rfl, ?_, ?_⟩
+  · -- 7. `A ⊆ N`.
+    intro x hx
+    by_cases hfx : f x ∈ tsupport (ω : DifferentialForm (Eucl Q) j)
+    · exact Or.inl (self_subset_thickening (half_pos hδ) K ⟨hfx, hx⟩)
+    · exact Or.inr hfx
+  · -- 8. `η = p` on `N`.
+    rintro x (hx | hx)
+    · have h1 : ζ x = 1 := (hζone x).1 (thickening_subset_cthickening _ _ hx)
+      show ζ x • p x = p x
+      rw [h1, one_smul]
+    · show ζ x • p x = p x
+      rw [hp0 x hx, smul_zero]
+  · -- 6. `spt η ⊆ f⁻¹(spt ω)`, a closed set.
+    refine closure_minimal ?_ ((isClosed_tsupport _).preimage hf.continuous)
+    intro x hx
+    by_contra hfx
+    exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+
+/-- Horizontal slices of a compatible form: for `j_s(x) = (s, x)`, the slice `θ_s = j_s^# θ` is a
+test form on `ℝ^m` with `θ_s(x)(v) = θ(s, x)((0, v₁), …, (0, v_q))`, and `θ_s = (G ∘ j_s)^# ω`
+at every `x` with `(s, x) ∈ N` whenever `θ = G^# ω` on `N` (chain rule). -/
+theorem Submission.dph_sh_slice_compatible_testForm :
+    ∀ (m m' q : ℕ) (G : Eucl (m + 1) → Eucl m') (ω : DifferentialForm (Eucl m') q)
+      (θ : TestFormOn (univ : Set (Eucl (m + 1))) q) (N : Set (Eucl (m + 1))) (s : ℝ),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G →
+      (∀ y ∈ N, (θ : DifferentialForm (Eucl (m + 1)) q) y =
+        (ω (G y)).compContinuousLinearMap (fderiv ℝ G y)) →
+      ∃ θs : TestFormOn (univ : Set (Eucl m)) q,
+        (∀ (x : Eucl m) (v : Fin q → Eucl m), (θs : DifferentialForm (Eucl m) q) x v =
+          (θ : DifferentialForm (Eucl (m + 1)) q)
+            ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+            (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧
+        ∀ x : Eucl m, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ N →
+          (θs : DifferentialForm (Eucl m) q) x =
+            (ω ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+              (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap
+              (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x) := by
+  intro m m' q G ω θ N s hG hθN
+  -- 1. `j_s x = (s, x)` has derivative `L v = (0, v)` everywhere, so it is `C^∞`.
+  let L : Eucl m →L[ℝ] Eucl (m + 1) :=
+    ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm : (Fin (m + 1) → ℝ) →L[ℝ] Eucl (m + 1)).comp
+      ((0 : Eucl m →L[ℝ] ℝ).finCons
+        (EuclideanSpace.equiv (Fin m) ℝ : Eucl m →L[ℝ] (Fin m → ℝ)))
+  let j : Eucl m → Eucl (m + 1) := fun x =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))
+  have hjd : ∀ x, HasFDerivAt j L x := fun x =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.hasFDerivAt.comp x
+      ((hasFDerivAt_const s x).finCons (EuclideanSpace.equiv (Fin m) ℝ).hasFDerivAt)
+  have hjs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) j := by
+    refine contDiff_infty_iff_fderiv.2 ⟨fun x => (hjd x).differentiableAt, ?_⟩
+    rw [show fderiv ℝ j = fun _ => L from funext fun x => (hjd x).fderiv]
+    exact contDiff_const
+  -- 2. `j_s` is proper: the continuous map `tl (y₀, y') = y'` is a left inverse.
+  let tl : Eucl (m + 1) → Eucl m := fun y =>
+    (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y))
+  have htl : Continuous tl :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.continuous.comp <| continuous_pi fun i : Fin m =>
+      (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (m + 1)) ℝ).continuous
+  have htlj : ∀ x, tl (j x) = x := fun x => by
+    simp only [tl, j, ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  have hprop : ∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ univ →
+      IsCompact (j ⁻¹' K ∩ univ) := fun K hK _ => by
+    rw [inter_univ]
+    exact (hK.image htl).of_isClosed_subset (hK.isClosed.preimage hjs.continuous)
+      fun x hx => ⟨j x, hx, htlj x⟩
+  -- 3. The slice `θ_s = j_s^# θ ∈ 𝒟^q(ℝ^m)`; it equals `θ(j_s x) ∘ L` everywhere.
+  obtain ⟨θs, -, N₀, -, hN₀, -, -, hθsN, -⟩ :=
+    Submission.iwl_sp_exists_compatible_testForm m (m + 1) q univ univ univ j isOpen_univ
+      subset_rfl hjs hprop θ
+  have hθs : ∀ x, (θs : DifferentialForm (Eucl m) q) x =
+      ((θ : DifferentialForm (Eucl (m + 1)) q) (j x)).compContinuousLinearMap L := fun x => by
+    rw [hθsN x (hN₀ (mem_univ x)), (hjd x).fderiv]
+  refine ⟨θs, fun x v => by rw [hθs x]; rfl, fun x hx => ?_⟩
+  -- 4. Chain rule `D(G ∘ j_s)(x) = DG(j_s x) ∘ L`, and `θ = G^# ω` at `j_s x ∈ N`.
+  have hGj : HasFDerivAt (fun x : Eucl m => G (j x)) ((fderiv ℝ G (j x)).comp L) x :=
+    ((hG.differentiable (by simp)) (j x)).hasFDerivAt.comp x (hjd x)
+  rw [hθs x, hGj.fderiv, hθN (j x) hx]
+  ext v
+  rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
