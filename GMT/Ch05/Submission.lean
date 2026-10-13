@@ -7002,6 +7002,147 @@ theorem allard52_graph_comparison : ∀ (n : ℕ), 1 ≤ n → ∀ p : ℝ, (n :
     _ ≤ ∫⁻ y in F '' A, Φ y (V.tangentProj y) ∂V.weight := lintegral_mono' hmeas_le le_rfl
     _ = ∫⁻ y in q '' graphOver f A, Φ y (V.tangentProj y) ∂V.weight := by rw [hFA]
 
+/-- **Simon Ch. 5, proof of 5.2, (10)–(11) and the Hölder argument after (11)**: a Lipschitz graph
+with decaying tilt-excess is `C^{1,1−n/p}`.  For `n ≥ 1` and `p > n` there are `L ∈ (0, 1/4]`,
+`δ₃ > 0` and `C ≥ 0` (depending only on `n, ℓ, p`) such that, under 2.3 with `0 < δ ≤ δ₃`, if
+`spt V ∩ B_R(0) = q(graph f) ∩ B_R(0)` with `0 < R ≤ δρ`, `f(0) = 0`, `Lip f ≤ L` on `Bⁿ_R(0)`, and
+`A ≥ 0` and the `n`-planes `S(ζ)` satisfy `E(ζ, s, S(ζ)) ≤ A (s/R)^{2(1−n/p)}` for
+`ζ ∈ spt V ∩ B_{R/2}(0)`, `0 < s ≤ R/2`, then `f` is `C¹` on `B̆ⁿ_{R/16}(0)`,
+`|Df(x) − Df(y)| ≤ C √A (|x − y|/R)^{1−n/p}` there, and `q(graph Df(z)) = S(q(z, f(z)))` for every
+`z` in that ball.
+
+Proof: `L = L₀/√n` and `δ₃ = min{δ₂, 1/8}`, with `L₀` from `allard52_graph_plane_algebra` and `δ₂`
+from `allard52_graph_comparison`; `C` is the constant of `allard52_campanato_center_holder`.  Then
+`B_R(0) ⊆ B_ρ(0) ⊆ U` and `f` is 1-Lipschitz, so the graph comparison and the measurability of
+`p_{T_x M}` (`allard52_tangent_ae`) turn the decay into the Campanato bound of
+`allard52_campanato_from_tilt` for `G(x) = p_{q(graph Df(x))}` with centres
+`c(z) = p_{S(q(z, f(z)))}`.  Hence `G = c` a.e. in `B̆ⁿ_{R/4}(0)` (`allard52_campanato_ae_center`)
+and `c` is `(1 − n/p)`-Hölder in `B̆ⁿ_{R/16}(0)` (`allard52_campanato_center_holder`).  On the
+full-measure set `Z` where `f` is differentiable (Rademacher) and `G = c`, `|Df| ≤ √n L = L₀`, so
+`|Df(x) − Df(y)| ≤ |G(x) − G(y)| = |c(x) − c(y)|`, and `allard52_c1_holder_of_ae_fderiv` gives the
+`C¹` and Hölder assertions.  Finally `G` (as `Df` is continuous) and `c` (Hölder) are continuous on
+`B̆ⁿ_{R/16}(0)` and agree a.e., hence everywhere, and a subspace is the range of its orthogonal
+projection. -/
+theorem allard52_graph_campanato : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ L δ₃ C : ℝ, 0 < L ∧ L ≤ 1 / 4 ∧ 0 < δ₃ ∧ 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₃ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), 0 < R → R ≤ δ * ρ → f 0 = 0 → LipschitzOnWith (Real.toNNReal L) f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → ∀ (S : Amb n ℓ → Submodule ℝ (Amb n ℓ)) (A : ℝ), 0 ≤ A → (∀ ζ ∈ V.support ∩ closedBall 0 (R / 2), Module.finrank ℝ (S ζ) = n ∧ ∀ s : ℝ, 0 < s → s ≤ R / 2 → V.tiltExcess ζ s (S ζ) ≤ A * (s / R) ^ (2 * (1 - n / p))) → ContDiffOn ℝ 1 f (ball 0 (R / 16)) ∧ (∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ (1 - n / p)) ∧ ∀ z ∈ ball (0 : Rn n) (R / 16), (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map q.toLinearEquiv.toLinearMap = S (q (graphPoint z (f z))) := by
+  intro n ℓ hn p hp
+  -- Step 1: the constants `L = L₀/√n`, `δ₃ = min{δ₂, 1/8}` and `C = C₃`.
+  obtain ⟨L₀, hL₀pos, hL₀le, hAlg1, -, -, hAlg4, -, hAlg6⟩ :=
+    Submission.allard52_graph_plane_algebra n ℓ hn
+  obtain ⟨δ₂, hδ₂pos, hCmp⟩ := Submission.allard52_graph_comparison n hn p hp
+  obtain ⟨C₃, hC₃, hHolc⟩ := Submission.allard52_campanato_center_holder n hn
+  have hsqrt_ge : 1 ≤ Real.sqrt n := Real.one_le_sqrt.2 (by exact_mod_cast hn)
+  have hsqrt_pos : 0 < Real.sqrt n := one_pos.trans_le hsqrt_ge
+  have hLpos : 0 < L₀ / Real.sqrt n := div_pos hL₀pos hsqrt_pos
+  have hLle : L₀ / Real.sqrt n ≤ 1 / 4 := (div_le_self hL₀pos.le hsqrt_ge).trans hL₀le
+  refine ⟨L₀ / Real.sqrt n, min δ₂ (1 / 8), C₃, hLpos, hLle, lt_min hδ₂pos (by norm_num), hC₃, ?_⟩
+  intro U hU V H δ ρ hδ hδle hAH q f R hR hRle hf0 hfL hgraph S A hA hdecay
+  set α : ℝ := 1 - (n : ℝ) / p
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  have hα0 : 0 < α := sub_pos.2 ((div_lt_one hp0).2 hp)
+  have hα1 : α ≤ 1 := sub_le_self _ (div_nonneg (Nat.cast_nonneg n) hp0.le)
+  -- Step 2: `R ≤ δρ ≤ ρ/8`, so `B_R(0) ⊆ B_ρ(0) ⊆ U`; `f` is 1-Lipschitz, and the graph
+  -- comparison (with `δ ≤ δ₂`) and the measurability of `p_{T_x M}` are available.
+  have hρ : 0 < ρ := hAH.1
+  have hδ₂ : δ ≤ δ₂ := hδle.trans (min_le_left _ _)
+  have hδ8 : δ ≤ 1 / 8 := hδle.trans (min_le_right _ _)
+  have hRρ : R ≤ ρ := by nlinarith
+  have hBRU : closedBall (0 : Amb n ℓ) R ⊆ U :=
+    (closedBall_subset_closedBall hRρ).trans hAH.2.2.2.2.1
+  have hL1 : Real.toNNReal (L₀ / Real.sqrt n) ≤ 1 := by
+    rw [← Real.toNNReal_one]
+    exact Real.toNNReal_le_toNNReal (hLle.trans (by norm_num))
+  have hf1 : LipschitzOnWith 1 f (closedBall 0 R) := hfL.weaken hL1
+  have hcmp := hCmp ℓ U hU V H δ ρ hδ hδ₂ hAH q f R hR hRle hf0 hf1 hgraph
+  obtain ⟨hTmeas, -, -⟩ := Submission.allard52_tangent_ae n ℓ hn U hU V
+  -- Step 3: the Campanato bound (book (10)–(11)) for `G = p_{q(graph Df)}` with centres
+  -- `c(z) = p_{S(q(z, f(z)))}`.
+  have hCamp := Submission.allard52_campanato_from_tilt n ℓ U V q f S R A (2 * α) hR hBRU hf0 hf1
+    hgraph hTmeas hcmp fun ζ hζ => (hdecay ζ hζ).2
+  set G : Rn n → (Amb n ℓ →L[ℝ] Amb n ℓ) := fun x =>
+    ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map
+      q.toLinearEquiv.toLinearMap).starProjection
+  set c : Rn n → (Amb n ℓ →L[ℝ] Amb n ℓ) := fun z => (S (q (graphPoint z (f z)))).starProjection
+  have hGmeas : Measurable G := (hAlg6 q).measurable.comp (measurable_fderiv ℝ f)
+  have hGbd : ∀ x, ‖G x‖ ≤ 1 := fun x => Submodule.starProjection_norm_le _
+  -- Step 4: `G = c` a.e. in `B̆ⁿ_{R/4}(0)` and `c` is `α`-Hölder in `B̆ⁿ_{R/16}(0)`.
+  have hGc := Submission.allard52_campanato_ae_center n (n + ℓ) (n + ℓ) G c A R α 1 hn hR hα0
+    hGmeas hGbd hCamp
+  have hcHol := hHolc (n + ℓ) (n + ℓ) G c A R α hA hR hα0 hα1 hGmeas hCamp
+  -- Step 5: on the full-measure set `Z` of differentiability points (Rademacher) where `G = c`,
+  -- `|Df| ≤ √n L = L₀`, so `|Df(x) − Df(y)| ≤ |G(x) − G(y)| = |c(x) − c(y)|`.
+  have hsub : ball (0 : Rn n) (R / 16) ⊆ closedBall 0 R :=
+    ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))
+  have hfLb : LipschitzOnWith (Real.toNNReal (L₀ / Real.sqrt n)) f (ball 0 (R / 16)) :=
+    hfL.mono hsub
+  have hRad : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball (0 : Rn n) (R / 16) →
+      DifferentiableAt ℝ f x := by
+    filter_upwards [hfLb.ae_differentiableWithinAt_of_mem] with x hx hxb
+    exact (hx hxb).differentiableAt (isOpen_ball.mem_nhds hxb)
+  set Z : Set (Rn n) := {x | x ∈ ball (0 : Rn n) (R / 16) ∧ DifferentiableAt ℝ f x ∧ G x = c x}
+  have hZsub : Z ⊆ ball 0 (R / 16) := fun x hx => hx.1
+  have hZnull : volume (ball (0 : Rn n) (R / 16) \ Z) = 0 := by
+    have h1 : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball (0 : Rn n) (R / 16) → x ∈ Z := by
+      filter_upwards [hRad, hGc] with x hx1 hx2 hxb
+      exact ⟨hxb, hx1 hxb, hx2 (ball_subset_ball (by linarith) hxb)⟩
+    rw [ae_iff] at h1
+    refine measure_mono_null (fun x hx => ?_) h1
+    exact fun h => hx.2 (h hx.1)
+  have hDf : ∀ x ∈ ball (0 : Rn n) (R / 16), hsNorm (fderiv ℝ f x) ≤ L₀ := by
+    intro x hx
+    have h1 : ‖fderiv ℝ f x‖ ≤ L₀ / Real.sqrt n := by
+      simpa only [Real.coe_toNNReal _ hLpos.le] using
+        norm_fderiv_le_of_lipschitzOn ℝ (isOpen_ball.mem_nhds hx) hfLb
+    calc hsNorm (fderiv ℝ f x) ≤ Real.sqrt n * ‖fderiv ℝ f x‖ := (hAlg4 _).2
+      _ ≤ Real.sqrt n * (L₀ / Real.sqrt n) := by gcongr
+      _ = L₀ := mul_div_cancel₀ L₀ hsqrt_pos.ne'
+  have hZHol : ∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤
+      C₃ * Real.sqrt A * (‖x - y‖ / R) ^ α := by
+    intro x hx y hy
+    have h1 := (hAlg1 q (fderiv ℝ f x) (fderiv ℝ f y) (hDf x hx.1) (hDf y hy.1)).1
+    have h2 : G x - G y = c x - c y := by rw [hx.2.2, hy.2.2]
+    refine le_trans (Real.sqrt_le_sqrt ?_) (hcHol x hx.1 y hy.1)
+    rw [← h2]
+    exact h1
+  -- The `C¹` and Hölder assertions.
+  obtain ⟨hC1, hHol⟩ := Submission.allard52_c1_holder_of_ae_fderiv n ℓ f 0 (R / 16)
+    (Real.toNNReal (L₀ / Real.sqrt n)) Z (C₃ * Real.sqrt A) R α
+    (mul_nonneg hC₃ (Real.sqrt_nonneg A)) hR hα0 hfLb hZsub hZnull (fun x hx => hx.2.1) hZHol
+  refine ⟨hC1, hHol, ?_⟩
+  -- Step 6: `G` and `c` are continuous on `B̆ⁿ_{R/16}(0)` and agree a.e., hence everywhere.
+  -- `‖T‖ ≤ |T|` for operators of `ℝ^{n+ℓ}` (`allard52_graph_plane_algebra` at `(n + ℓ, n + ℓ)`).
+  obtain ⟨-, -, -, -, -, -, hAlg4', -, -⟩ :=
+    Submission.allard52_graph_plane_algebra (n + ℓ) (n + ℓ) (by omega)
+  have hGcont : ContinuousOn G (ball (0 : Rn n) (R / 16)) :=
+    (hAlg6 q).comp_continuousOn (hC1.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl)
+  have hccont : ContinuousOn c (ball (0 : Rn n) (R / 16)) := by
+    intro x hx
+    have hlim : Tendsto (fun y : Rn n => C₃ * Real.sqrt A * (‖y - x‖ / R) ^ α) (𝓝 x) (𝓝 0) := by
+      have h0 : Tendsto (fun y : Rn n => ‖y - x‖ / R) (𝓝 x) (𝓝 0) := by
+        have h : Continuous fun y : Rn n => ‖y - x‖ / R := by fun_prop
+        simpa using h.tendsto x
+      have h1 := (Real.continuousAt_rpow_const 0 α (Or.inr hα0.le)).tendsto.comp h0
+      rw [Real.zero_rpow hα0.ne'] at h1
+      simpa using h1.const_mul (C₃ * Real.sqrt A)
+    rw [ContinuousWithinAt, tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero_norm' ?_ (tendsto_nhdsWithin_of_tendsto_nhds hlim)
+    filter_upwards [self_mem_nhdsWithin] with y hy
+    rw [norm_norm]
+    exact (hAlg4' (c y - c x)).1.trans (hcHol y hy x hx)
+  have hEq : EqOn G c (ball (0 : Rn n) (R / 16)) := by
+    refine Measure.eqOn_open_of_ae_eq (μ := (volume : Measure (Rn n))) ?_ isOpen_ball hGcont
+      hccont
+    rw [EventuallyEq, ae_restrict_iff' measurableSet_ball]
+    filter_upwards [hGc] with x hx hxb
+    exact hx (ball_subset_ball (by linarith) hxb)
+  -- A subspace is the range of its orthogonal projection.
+  intro z hz
+  have hPz : ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map
+      q.toLinearEquiv.toLinearMap).starProjection = (S (q (graphPoint z (f z)))).starProjection :=
+    hEq hz
+  rw [← Submodule.range_starProjection
+      ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map
+        q.toLinearEquiv.toLinearMap), hPz, Submodule.range_starProjection]
+
 end Submission
 
 end GMT.Ch05
