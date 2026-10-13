@@ -359,6 +359,113 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Level cut-offs converge to the indicator of `{x ∈ U : f x < t}` under the integral: for
+`χ_h = 1` on `(-∞, t - h]`, `χ_h = 0` on `[t, ∞)` and `|χ_h| ≤ 1`,
+`∫ χ_h(f) F dν → ∫_{x ∈ U, f x < t} F dν` as `h → 0+` (dominated convergence; Simon 4.11). -/
+theorem Submission.slicing_mb_pointwise_cutoff_tendsto :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ (ν : Measure (Eucl P)) (F : Eucl P → ℝ), Integrable F ν → (∀ x, x ∉ U → F x = 0) → ∀ (t : ℝ) (χ : ℝ → ℝ → ℝ), (∀ h : ℝ, 0 < h → Measurable (χ h)) → (∀ h s : ℝ, 0 < h → |χ h s| ≤ 1) → (∀ h s : ℝ, 0 < h → s ≤ t - h → χ h s = 1) → (∀ h s : ℝ, 0 < h → t ≤ s → χ h s = 0) → Tendsto (fun h : ℝ => ∫ x, χ h (f x) * F x ∂ν) (𝓝[>] 0) (𝓝 (∫ x in {x | x ∈ U ∧ f x < t}, F x ∂ν)) := by
+  intro P U hU f L hf ν F hF hF0 t χ hχm hχb hχ1 hχ0
+  -- McShane extension `g` of `f|U`: globally Lipschitz, hence continuous.
+  obtain ⟨g, hg, hfg⟩ := hf.extend_real
+  have hgc : Continuous g := hg.continuous
+  -- The limit set `A = U ∩ g⁻¹(-∞, t)` is open, so the set integral is an indicator integral.
+  set A : Set (Eucl P) := {x | x ∈ U ∧ f x < t} with hA
+  have hAeq : A = U ∩ g ⁻¹' Iio t := by
+    ext x
+    constructor
+    · rintro ⟨hx, hfx⟩
+      exact ⟨hx, show g x < t from hfg hx ▸ hfx⟩
+    · rintro ⟨hx, hgx⟩
+      exact ⟨hx, show f x < t from (hfg hx).symm ▸ hgx⟩
+  have hAm : MeasurableSet A := by
+    rw [hAeq]
+    exact (hU.inter (isOpen_Iio.preimage hgc)).measurableSet
+  rw [← integral_indicator hAm]
+  -- Off `U` we have `F = 0`, so `f` may be replaced by `g` inside the integrand.
+  have hfg' : ∀ h x, χ h (f x) * F x = χ h (g x) * F x := by
+    intro h x
+    by_cases hx : x ∈ U
+    · rw [hfg hx]
+    · simp [hF0 x hx]
+  refine tendsto_integral_filter_of_dominated_convergence (fun x => ‖F x‖) ?_ ?_ hF.norm ?_
+  · -- measurability for `h > 0`
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    have : (fun x => χ h (f x) * F x) = fun x => χ h (g x) * F x := funext (hfg' h)
+    rw [this]
+    exact ((hχm h hh).comp hgc.measurable).aestronglyMeasurable.mul hF.aestronglyMeasurable
+  · -- domination by `‖F‖` for `h > 0`
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs (χ h (f x))]
+    calc |χ h (f x)| * ‖F x‖ ≤ 1 * ‖F x‖ := by gcongr; exact hχb h _ hh
+      _ = ‖F x‖ := one_mul _
+  · -- pointwise convergence at every `x`
+    refine Eventually.of_forall fun x => ?_
+    by_cases hx : x ∈ U
+    · by_cases hft : f x < t
+      · rw [indicator_of_mem (show x ∈ A from ⟨hx, hft⟩)]
+        apply tendsto_const_nhds.congr'
+        filter_upwards [Ioo_mem_nhdsGT (sub_pos.mpr hft)] with h hh
+        rw [hχ1 h (f x) hh.1 (by linarith [hh.2]), one_mul]
+      · rw [indicator_of_notMem (show x ∉ A from fun h => hft h.2)]
+        apply tendsto_const_nhds.congr'
+        filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+        rw [hχ0 h (f x) hh (not_lt.mp hft), zero_mul]
+    · rw [indicator_of_notMem (show x ∉ A from fun h => hx h.1), hF0 x hx]
+      simp
+/-- Passing `ofReal |X_ε(h)| ≤ ofReal ((1 + ε) / h) · LW · a(h)` to the `liminf` as `h → 0+`
+and then letting `ε ↓ 0`, in `[0, ∞]`: if for every `ε > 0` some `X_ε(h) → r` as `h → 0+`
+satisfies this bound for all `h > 0`, then `ofReal |r| ≤ LW · liminf_{h → 0+} a(h) / ofReal h`.
+For fixed `ε`, `ofReal |r|` is the `liminf` of `ofReal |X_ε(h)|`, and
+`ofReal ((1 + ε) / h) · LW · a(h) = (ofReal (1 + ε) · LW) · (a(h) / ofReal h)` for `h > 0`;
+the finite constant `ofReal (1 + ε) · LW` commutes with the `liminf`, and
+`ofReal (1 + ε) → 1` as `ε → 0+`. -/
+theorem Submission.slicing_mb_pointwise_liminf_bound :
+    ∀ (a : ℝ → ℝ≥0∞) (LW : ℝ≥0) (r : ℝ),
+      (∀ ε : ℝ, 0 < ε → ∃ X : ℝ → ℝ, Tendsto X (𝓝[>] 0) (𝓝 r) ∧
+        ∀ h : ℝ, 0 < h →
+          ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h) →
+      ENNReal.ofReal |r| ≤
+        (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0) := by
+  intro a LW r hX
+  -- For fixed `ε > 0`: `ofReal |r| ≤ ofReal (1 + ε) · (LW · liminf_{h → 0+} a(h) / ofReal h)`.
+  have key : ∀ ε : ℝ, 0 < ε → ENNReal.ofReal |r| ≤ ENNReal.ofReal (1 + ε) *
+      ((LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)) := by
+    intro ε hε
+    obtain ⟨X, hXr, hXb⟩ := hX ε hε
+    -- `ofReal |X(h)| → ofReal |r|`, so `ofReal |r|` is the `liminf` of `ofReal |X(h)|`.
+    have hlim : Tendsto (fun h => ENNReal.ofReal |X h|) (𝓝[>] 0) (𝓝 (ENNReal.ofReal |r|)) :=
+      ENNReal.tendsto_ofReal hXr.abs
+    -- For `h > 0`: `ofReal ((1 + ε) / h) · LW · a(h) = (ofReal (1 + ε) · LW) · (a(h) / ofReal h)`.
+    have hle : ∀ᶠ h in 𝓝[>] (0 : ℝ), ENNReal.ofReal |X h| ≤
+        ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h) := by
+      filter_upwards [self_mem_nhdsWithin] with h hh
+      calc ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h := hXb h hh
+        _ = ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h) := by
+          rw [ENNReal.ofReal_div_of_pos hh, div_eq_mul_inv, div_eq_mul_inv]
+          ring
+    -- Monotonicity of the `liminf` and the `liminf` of a finite constant multiple.
+    calc ENNReal.ofReal |r| = liminf (fun h => ENNReal.ofReal |X h|) (𝓝[>] 0) :=
+          hlim.liminf_eq.symm
+      _ ≤ liminf (fun h => ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h))
+            (𝓝[>] 0) := liminf_le_liminf hle
+      _ = ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) *
+            liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0) :=
+          ENNReal.liminf_const_mul_of_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+            ENNReal.coe_ne_top)
+      _ = ENNReal.ofReal (1 + ε) *
+            ((LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)) :=
+          mul_assoc _ _ _
+  -- `ofReal (1 + ε) · Y → Y` as `ε → 0+` (the limit factor `1` is nonzero), then `ε ↓ 0`.
+  have hone : Tendsto (fun ε : ℝ => ENNReal.ofReal (1 + ε)) (𝓝[>] 0) (𝓝 1) := by
+    have h1 : Tendsto (fun ε : ℝ => 1 + ε) (𝓝[>] 0) (𝓝 (1 + 0)) :=
+      ((continuous_const.add continuous_id).tendsto' 0 (1 + 0) rfl).mono_left nhdsWithin_le_nhds
+    have h2 := ENNReal.tendsto_ofReal h1
+    rwa [add_zero, ENNReal.ofReal_one] at h2
+  have hY := ENNReal.Tendsto.mul_const hone (Or.inl one_ne_zero)
+    (b := (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0))
+  rw [one_mul] at hY
+  exact ge_of_tendsto hY (eventually_nhdsWithin_of_forall fun ε hε => key ε hε)
 /-- Sharp smooth cut-off below the level `t` (the cut-off of the proof of Simon Ch. 6, 4.11,
 p. 158, with slope bound `(1 + ε)/h`): for `h, ε > 0` there is a `C^∞` function `χ : ℝ → ℝ` with
 `0 ≤ χ ≤ 1`, `χ = 1` on `(-∞, t - h]`, `χ = 0` on `[t, ∞)`, `|χ'| ≤ (1 + ε)/h`, and `χ' = 0` off
@@ -1425,6 +1532,77 @@ theorem Submission.slicing_mb_cutoff_defect_bound :
     (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.coe_ne_top))
   exact le_of_tendsto_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp (hL₂.sub hL₁).abs)
     hR key
+
+/-- Simon Ch. 6, 4.9 (p. 158) for the slice `S = ⟨T, f, t₋⟩` of 4.6, `T` represented by `(μ, v)`:
+for open `W ⊆ U` with `|Df| ≤ L_W` a.e. on `W`,
+`M_W(S) ≤ L_W · liminf_{h ↓ 0} μ(W ∩ {t - h ≤ f ≤ t}) / h`.  For admissible `ω` and the
+cut-offs `χ_h` of `slicing_mb_cutoff` (slope at most `(1 + ε)/h`), the defect
+`X(h) = ∫ χ_h(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ_h(f) ⟨dω, v₁⟩ dμ₁` of 4.11 tends to `B(ω) - ∂A(ω) = -S(ω)`
+as `h ↓ 0` and satisfies `|X(h)| ≤ (1 + ε)/h · L_W · μ(W ∩ {t - h ≤ f ≤ t})`; let `h ↓ 0`,
+then `ε ↓ 0`. -/
+theorem Submission.slicing_mb_pointwise : ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U →
+    ∀ (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+    (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) →
+    (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+    ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+    ∀ (t : ℝ) (S : GeometricCurrentOn U m), IsSlice T f t S →
+    ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ LW : ℝ≥0,
+    (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+    S.massOn W ≤ (LW : ℝ≥0∞) *
+      liminf (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) := by
+  intro P m U hU T μ v hT hμ hv f L hf t S hS W hW hWU LW hLW
+  -- `S = ∂A - B`, `A = T ⌞ {f < t}` (represented by `μ₁, v₁`), `B = (∂T) ⌞ {f < t}` (`μ₂, v₂`).
+  obtain ⟨A, B, ⟨-, μ₁, v₁, hT₁, hA⟩, ⟨-, μ₂, v₂, hT₂, hB⟩, hSAB⟩ := hS
+  -- It suffices to bound `S ω` for every `ω` admissible for `M_W`.
+  refine sSup_le ?_
+  rintro _ ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  have hSω : S ω = (∫ x in {x | x ∈ U ∧ f x < t},
+        v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁) -
+      ∫ x in {x | x ∈ U ∧ f x < t}, v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ := by
+    have := hSAB ω
+    rw [GeometricCurrentOn.boundary_apply, hA, hB] at this
+    exact this
+  -- The integrands `⟨ω, v₂⟩` and `⟨dω, v₁⟩` are integrable and vanish off `U`.
+  have hint₂ : Integrable (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) μ₂ := (hT₂ ω).1
+  have hint₁ : Integrable
+      (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x)) μ₁ :=
+    (hT₁ (exteriorDerivativeTestOn U m ω)).1
+  have hvan₂ : ∀ x, x ∉ U → v₂ x ((ω : DifferentialForm (Eucl P) m) x) = 0 := fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport fun hx' => hx (ω.property.2 hx'), map_zero]
+  have hvan₁ : ∀ x, x ∉ U → v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) = 0 :=
+    fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport fun hx' =>
+        hx (ω.property.2 (tsupport_exteriorDerivative_subset _ hx')), map_zero]
+  calc ENNReal.ofReal (S ω) ≤ ENNReal.ofReal |S ω| := ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ = ENNReal.ofReal |(∫ x in {x | x ∈ U ∧ f x < t},
+          v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+        ∫ x in {x | x ∈ U ∧ f x < t},
+          v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| := by
+      rw [hSω, abs_sub_comm]
+    _ ≤ _ := by
+      refine Submission.slicing_mb_pointwise_liminf_bound
+        (fun h => μ (W ∩ f ⁻¹' Icc (t - h) t)) LW _ fun ε hε => ?_
+      -- The cut-offs `χ_h`, `h > 0`, of slope at most `(1 + ε)/h`.
+      choose! χ hχs hχ01 hχ1 hχ0 hχd hχd0 using
+        fun h (hh : 0 < h) => Submission.slicing_mb_cutoff t h ε hh hε
+      have hχm : ∀ h : ℝ, 0 < h → Measurable (χ h) := fun h hh =>
+        (hχs h hh).continuous.measurable
+      have hχabs : ∀ h s : ℝ, 0 < h → |χ h s| ≤ 1 := fun h s hh =>
+        abs_le.2 ⟨by linarith [(hχ01 h hh s).1], (hχ01 h hh s).2⟩
+      refine ⟨fun h => (∫ x, χ h (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂) -
+          ∫ x, χ h (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁,
+        ?_, fun h hh => ?_⟩
+      · -- `X(h) → B(ω) - ∂A(ω)` as `h ↓ 0`.
+        exact (Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf μ₂ _ hint₂ hvan₂ t χ
+          hχm hχabs (fun h s hh => hχ1 h hh s) (fun h s hh => hχ0 h hh s)).sub
+          (Submission.slicing_mb_pointwise_cutoff_tendsto P U hU f L hf μ₁ _ hint₁ hvan₁ t χ
+            hχm hχabs (fun h s hh => hχ1 h hh s) (fun h s hh => hχ0 h hh s))
+      · -- `|X(h)| ≤ (1 + ε)/h · L_W · μ(spt ω ∩ {t - h ≤ f ≤ t})`, and `spt ω ⊆ W`.
+        refine (Submission.slicing_mb_cutoff_defect_bound P m U T μ v hT hμ hv μ₁ v₁ hT₁ μ₂ v₂
+          hT₂ f L hf W hW hWU LW hLW ω hωW hω1 (χ h) t h ((1 + ε) / h) (hχs h hh)
+          (fun s => hχabs h s hh) (hχd h hh) (hχd0 h hh)).trans ?_
+        gcongr
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
