@@ -460,6 +460,246 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- The weight `μ_V = Hⁿ ⌞ θ` of a rectifiable `n`-varifold `V = v(M, θ)` in `U` (steps 2(i), 2(ii)
+and 8 of the proof of Simon Ch. 5, Theorem 4.5, pp. 118–119): `μ_V(K) < ∞` for compact `K ⊆ U`,
+`μ_V` vanishes off `spt V`, and `μ_V ≪ Hⁿ` (every `Hⁿ`-null set, measurable or not, is
+`μ_V`-null). -/
+theorem gte_weight_null_finite : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ U → V.weight K < ⊤) ∧ V.weight (V.support)ᶜ = 0 ∧ ∀ Z : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) Z = 0 → V.weight Z = 0 := by
+  intro n ℓ U V
+  -- `μ_V = (Hⁿ ⌞ M).withDensity (ofReal ∘ θ) ≪ Hⁿ ⌞ M ≪ Hⁿ`
+  have hM : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier :=
+    withDensity_absolutelyContinuous _ _
+  have hH : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)) :=
+    hM.trans (Measure.absolutelyContinuous_of_le Measure.restrict_le_self)
+  refine ⟨fun K hK hKU => ?_, ?_, fun Z hZ => hH hZ⟩
+  -- (i): `μ_V(K) = ∫⁻_{M ∩ K} ofReal θ dHⁿ ≤ ∫⁻_{M ∩ K} ‖θ‖ₑ dHⁿ < ∞`, `θ` integrable on `M ∩ K`
+  · rw [RectifiableVarifold.weight, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (lintegral_mono fun x => Real.ofReal_le_enorm (V.mult x)).trans_lt
+      (V.integrableOn_mult K hK hKU).hasFiniteIntegral
+  -- (ii): `(spt V)ᶜ = Uᶜ ∪ (spt μ_V)ᶜ`; `μ_V` is conull on its support, and `Hⁿ ⌞ M` vanishes
+  -- on `Uᶜ` because `M ⊆ U`
+  · rw [RectifiableVarifold.support, compl_inter]
+    refine measure_union_null (hM ?_) Measure.measure_compl_support
+    rw [Measure.restrict_apply₀' V.nullMeasurableSet_carrier]
+    exact measure_mono_null (fun x hx => hx.1 (V.carrier_subset hx.2)) measure_empty
+/-- Tangent projections and the integrands of the graph tangential estimate (steps 1(iii) and 3 of
+its proof, for Simon Ch. 5, Theorem 4.5, displays (8)–(12)): `p_x = V.tangentProj x` satisfies
+`‖p_x v‖ ≤ ‖v‖`, and if `x ↦ p_x` is `μ_V`-a.e. strongly measurable, then on each `S` with
+`μ_V(S) < ∞` the functions `x ↦ ⟨p_x e, p_x g(x)⟩` (`g` a.e. strongly measurable, `‖g‖ ≤ C`) and
+`x ↦ |p_x − p_T|²` are `μ_V`-integrable.  `p_x` is an orthogonal projection or `0`; each integrand
+is a continuous function of `(p_x, g(x))`, resp. of `p_x`, bounded by `‖e‖ C`, resp. `4 (n + ℓ)`. -/
+theorem gte_tangentProj_integrands : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ x v : Amb n ℓ, ‖V.tangentProj x v‖ ≤ ‖v‖) ∧ (AEStronglyMeasurable V.tangentProj V.weight → ∀ S : Set (Amb n ℓ), V.weight S < ⊤ → (∀ (e : Amb n ℓ) (g : Amb n ℓ → Amb n ℓ) (C : ℝ), AEStronglyMeasurable g V.weight → (∀ x, ‖g x‖ ≤ C) → IntegrableOn (fun x => inner ℝ (V.tangentProj x e) (V.tangentProj x (g x))) S V.weight) ∧ ∀ T : Submodule ℝ (Amb n ℓ), IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) S V.weight) := by
+  intro n ℓ U V
+  -- Step 1, (a): `p_x` is `K.starProjection` (operator norm `≤ 1`) or `0`.
+  have ha : ∀ x v : Amb n ℓ, ‖V.tangentProj x v‖ ≤ ‖v‖ := by
+    intro x v
+    unfold RectifiableVarifold.tangentProj
+    split_ifs with h
+    · calc ‖(Classical.choose h).starProjection v‖
+          ≤ ‖(Classical.choose h).starProjection‖ * ‖v‖ := ContinuousLinearMap.le_opNorm _ _
+        _ ≤ 1 * ‖v‖ := by gcongr; exact Submodule.starProjection_norm_le _
+        _ = ‖v‖ := one_mul _
+    · simp
+  -- Step 2: `x ↦ p_x` is a.e. strongly measurable and `μ_V(S) < ∞`.
+  refine ⟨ha, fun hmeas S hS => ⟨?_, ?_⟩⟩
+  · intro e g C hg hC
+    -- Step 3: `(L, w) ↦ ⟨L e, L w⟩` is continuous, so the integrand is a.e. strongly measurable.
+    have hcont : Continuous (fun (L : Amb n ℓ →L[ℝ] Amb n ℓ) (w : Amb n ℓ) =>
+        inner ℝ (L e) (L w)).uncurry :=
+      (continuous_fst.clm_apply continuous_const).inner (continuous_fst.clm_apply continuous_snd)
+    -- Steps 4–5: the integrand is bounded by `‖e‖ C` (Cauchy–Schwarz and (a)).
+    refine Measure.integrableOn_of_bounded (M := ‖e‖ * C) hS.ne
+      (hcont.comp_aestronglyMeasurable₂ hmeas hg) (Eventually.of_forall fun x => ?_)
+    rw [Real.norm_eq_abs]
+    calc |inner ℝ (V.tangentProj x e) (V.tangentProj x (g x))|
+        ≤ ‖V.tangentProj x e‖ * ‖V.tangentProj x (g x)‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖e‖ * C :=
+        mul_le_mul (ha x e) ((ha x (g x)).trans (hC x)) (norm_nonneg _) (norm_nonneg _)
+  · intro T
+    -- Step 6: `A ↦ hsNormSq A = Σᵢ ‖A eᵢ‖²` is continuous, so the integrand is a.e. strongly
+    -- measurable.
+    have hcont : Continuous (fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq A) := by
+      unfold hsNormSq
+      exact continuous_finsetSum _ fun i _ =>
+        ((continuous_id.clm_apply continuous_const).norm).pow 2
+    -- Steps 7–8: `0 ≤ hsNormSq (p_x − P_T) ≤ 4 (n + ℓ)`, since `‖(p_x − P_T) eᵢ‖ ≤ 2`.
+    refine Measure.integrableOn_of_bounded (M := 4 * (n + ℓ)) hS.ne
+      (hcont.comp_aestronglyMeasurable (hmeas.sub aestronglyMeasurable_const))
+      (Eventually.of_forall fun x => ?_)
+    have hnn : 0 ≤ hsNormSq (V.tangentProj x - T.starProjection) := by
+      unfold hsNormSq; positivity
+    rw [Real.norm_of_nonneg hnn]
+    unfold hsNormSq
+    have hterm : ∀ i : Fin (n + ℓ),
+        ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ^ 2 ≤ 4 := by
+      intro i
+      have h1 : ‖(EuclideanSpace.single i (1 : ℝ) : Amb n ℓ)‖ = 1 := by simp
+      have hp : ‖V.tangentProj x (EuclideanSpace.single i 1)‖ ≤ 1 := (ha x _).trans h1.le
+      have hq : ‖T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ≤ 1 :=
+        calc ‖T.starProjection (EuclideanSpace.single i (1 : ℝ))‖
+            ≤ ‖T.starProjection‖ * ‖(EuclideanSpace.single i (1 : ℝ) : Amb n ℓ)‖ :=
+              ContinuousLinearMap.le_opNorm _ _
+          _ ≤ 1 * 1 := by rw [h1]; gcongr; exact Submodule.starProjection_norm_le _
+          _ = 1 := one_mul _
+      have hd : ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ≤ 2 := by
+        rw [sub_apply]
+        calc _ ≤ ‖V.tangentProj x (EuclideanSpace.single i 1)‖
+              + ‖T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ := norm_sub_le _ _
+          _ ≤ 1 + 1 := add_le_add hp hq
+          _ = 2 := by norm_num
+      have h0 := norm_nonneg ((V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1))
+      nlinarith
+    calc ∑ i : Fin (n + ℓ), ‖(V.tangentProj x - T.starProjection) (EuclideanSpace.single i 1)‖ ^ 2
+        ≤ ∑ _i : Fin (n + ℓ), (4 : ℝ) := Finset.sum_le_sum fun i _ => hterm i
+      _ = 4 * (n + ℓ) := by simp [Finset.sum_const, Finset.card_univ]; ring
+/-- Graph coordinates for the graph tangential estimate (steps 1(i), 1(ii) and 2(iii) of its proof,
+for Simon Ch. 5, Theorem 4.5, displays (8)–(12)).  With `E = EuclideanSpace.finAddEquivProd` and
+`a(z) = (E (q⁻¹ z)).1`: (i) `(x, y) ↦ graphPoint x y` is continuous; (ii) `a` is continuous;
+(iii) `a(q(x, y)) = x`; (iv) if `f` is continuous on `B_R(0)` and `r ≤ R`, then
+`q(graph f|B_R(0))` is compact and `q(graph f|B̆_r(0))` is Borel.  Comparing coordinates
+(`Fin.addCases`), `graphPoint x y = E⁻¹(x, y)`, which gives (i)–(iii).  `q(graph f|B_R(0))` is the
+image of the compact ball under `F x = q(x, f x)`, continuous on it; by (iii) and `r ≤ R`,
+`q(graph f|B̆_r(0)) = q(graph f|B_R(0)) ∩ a⁻¹(B̆_r(0))`, the intersection of a closed and an open
+set. -/
+theorem gte_graph_image_geometry : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) ∧ Continuous (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) ∧ (∀ (x : Rn n) (y : Rn ℓ), (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x) ∧ ∀ (f : Rn n → Rn ℓ) (R r : ℝ), ContinuousOn f (closedBall 0 R) → r ≤ R → IsCompact (q '' graphOver f (closedBall 0 R)) ∧ MeasurableSet (q '' graphOver f (ball 0 r)) := by
+  intro n ℓ q
+  -- Step 1: `graphPoint x y = E⁻¹(x, y)`, comparing coordinates.
+  have hgp : ∀ (x : Rn n) (y : Rn ℓ), graphPoint x y =
+      (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y) := by
+    intro x y
+    ext i
+    refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+    · simp [graphPoint]
+    · simp [graphPoint]
+  -- Step 2, (i): `(x, y) ↦ graphPoint x y` is the continuous map `E⁻¹`.
+  have hi : Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) := by
+    have : (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) =
+        (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm := by
+      funext p
+      exact hgp p.1 p.2
+    rw [this]
+    exact ContinuousLinearEquiv.continuous _
+  -- Step 3, (ii): `a = Prod.fst ∘ E ∘ q⁻¹`.
+  have hii : Continuous (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) :=
+    continuous_fst.comp ((ContinuousLinearEquiv.continuous _).comp q.symm.continuous)
+  -- Step 4, (iii): `a(q(x, y)) = (E (E⁻¹(x, y))).1 = x`.
+  have hiii : ∀ (x : Rn n) (y : Rn ℓ),
+      (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x := by
+    intro x y
+    rw [LinearIsometryEquiv.symm_apply_apply, hgp, ContinuousLinearEquiv.apply_symm_apply]
+  refine ⟨hi, hii, hiii, ?_⟩
+  intro f R r hf hrR
+  -- Step 5, (iv) compactness: `q '' graphOver f D = F '' D`, and `F` is continuous on the compact
+  -- ball `B_R(0)`.
+  have himg : ∀ D : Set (Rn n), q '' graphOver f D = (fun x => q (graphPoint x (f x))) '' D := by
+    intro D
+    unfold graphOver
+    rw [Set.image_image]
+  have hFcont : ContinuousOn (fun x => q (graphPoint x (f x))) (closedBall 0 R) :=
+    q.continuous.comp_continuousOn (hi.comp_continuousOn (continuousOn_id.prodMk hf))
+  have hcpt : IsCompact (q '' graphOver f (closedBall 0 R)) := by
+    rw [himg]
+    exact (isCompact_closedBall 0 R).image_of_continuousOn hFcont
+  refine ⟨hcpt, ?_⟩
+  -- Step 6, (iv) Borel: `F(B̆_r(0)) = F(B_R(0)) ∩ a⁻¹(B̆_r(0))` by (iii) and `r ≤ R`.
+  have heq : q '' graphOver f (ball 0 r) =
+      q '' graphOver f (closedBall 0 R) ∩
+        (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) ⁻¹' ball 0 r := by
+    rw [himg, himg]
+    ext z
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      refine ⟨⟨x, (ball_subset_closedBall.trans (closedBall_subset_closedBall hrR)) hx, rfl⟩, ?_⟩
+      show (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x (f x))))).1 ∈ ball 0 r
+      rw [hiii]
+      exact hx
+    · rintro ⟨⟨x, hx, rfl⟩, hz⟩
+      refine ⟨x, ?_, rfl⟩
+      have hz' : (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x (f x))))).1 ∈ ball 0 r :=
+        hz
+      rwa [hiii] at hz'
+  rw [heq]
+  exact hcpt.isClosed.measurableSet.inter (isOpen_ball.preimage hii).measurableSet
+/-- A map `f : ℝⁿ → ℝ^ℓ` that is `K`-Lipschitz on the closed ball `B_R(0)` (graph estimates in the
+proof of Simon Ch. 5, Theorem 4.5, displays (8)–(12), pp. 118–119): the set of points of the open
+ball `B̆_R(0)` where `f` is not differentiable is Borel and `Lⁿ`-null (Rademacher's theorem),
+`‖Df(x)‖ ≤ K` on `B̆_R(0)`, and where `f` is differentiable the gradient of the coordinate
+`fʲ = (y ↦ f(y)ⱼ)` represents the `j`-th row of `Df(x)`: `⟨∇fʲ(x), v⟩ = (Df(x) v)ⱼ`. -/
+theorem gte_lipschitz_ball_calculus : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → MeasurableSet (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) ∧ volume (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) = 0 ∧ ∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ f x‖ ≤ K ∧ (DifferentiableAt ℝ f x → ∀ (j : Fin ℓ) (v : Rn n), inner ℝ (gradient (fun y => f y j) x) v = fderiv ℝ f x v j) := by
+  intro n ℓ f K R hf
+  -- (i): the differentiability set of any map into a complete space is Borel
+  refine ⟨measurableSet_ball.inter (measurableSet_of_differentiableAt ℝ f).compl, ?_, ?_⟩
+  -- (ii): Rademacher on the open ball, where differentiability within it is differentiability
+  · have hae := (hf.mono ball_subset_closedBall).ae_differentiableWithinAt_of_mem
+      (μ := (volume : Measure (Rn n)))
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hae] with x hx hxZ
+    exact hxZ.2 ((hx hxZ.1).differentiableAt (isOpen_ball.mem_nhds hxZ.1))
+  · intro x hx
+    -- (iii): `B_R(0)` is a neighbourhood of `x` on which `f` is `K`-Lipschitz
+    refine ⟨norm_fderiv_le_of_lipschitzOn ℝ
+      (mem_of_superset (isOpen_ball.mem_nhds hx) ball_subset_closedBall) hf, ?_⟩
+    -- gradient rows: `fʲ = proj_j ∘ f`, the chain rule, and `⟪(toDual)⁻¹ L, v⟫ = L v`
+    intro hfx j v
+    have hd : HasFDerivAt (fun y => f y j)
+        ((EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).comp (fderiv ℝ f x)) x :=
+      (EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).hasFDerivAt.comp x hfx.hasFDerivAt
+    rw [inner_gradient_left, hd.fderiv]
+    rfl
+/-- **Simon Ch. 5, proof of Theorem 4.5, displays (8)–(12) (pp. 118–119)**, localization step in an
+abstract measure space.  If `Φ` is integrable on `B`, `|Φ| ≤ M` everywhere, `Φ` vanishes on
+`(B \ G') ∩ G`, `μ((B \ G') \ G) ≤ m < ∞`, and `|Φ − φ| ≤ M ψ` a.e. on `G' ⊆ B ∩ B'` with `ψ ≥ 0`
+integrable on `B'`, then `|∫_{G'} φ| ≤ |∫_B Φ| + M m + M ∫_{B'} ψ`.
+Proof: splitting `∫_B Φ` along `G'` and then along `G` gives `∫_{G'} Φ = ∫_B Φ − ∫_{(B \ G') \ G} Φ`,
+and the last integral is at most `M μ((B \ G') \ G) ≤ M m` in absolute value.  On `G'`, `Φ − φ` is
+dominated by `M ψ`, so `φ` is integrable there and `|∫_{G'} Φ − ∫_{G'} φ| ≤ M ∫_{G'} ψ ≤ M ∫_{B'} ψ`;
+conclude by the triangle inequality. -/
+theorem gte_localized_comparison : ∀ {X : Type} [MeasurableSpace X] (μ : Measure X) (B B' G G' : Set X) (Φ φ ψ : X → ℝ) (M : ℝ) (m : ℝ≥0∞), 0 ≤ M → MeasurableSet G → MeasurableSet G' → G' ⊆ B → G' ⊆ B' → IntegrableOn Φ B μ → (∀ x, |Φ x| ≤ M) → (∀ x ∈ (B \ G') ∩ G, Φ x = 0) → μ ((B \ G') \ G) ≤ m → m < ⊤ → AEStronglyMeasurable φ (μ.restrict G') → IntegrableOn ψ B' μ → (∀ x, 0 ≤ ψ x) → (∀ᵐ x ∂μ, x ∈ G' → |Φ x - φ x| ≤ M * ψ x) → |∫ x in G', φ x ∂μ| ≤ |∫ x in B, Φ x ∂μ| + M * m.toReal + M * ∫ x in B', ψ x ∂μ := by
+  intro X _ μ B B' G G' Φ φ ψ M m hM hG hG' hG'B hG'B' hΦ hΦM hΦ0 hμm hm hφ hψ hψ0 hcmp
+  -- Steps 1–3: split `∫_B Φ` along `G'` (`B ∩ G' = G'`) and then `∫_{B \ G'} Φ` along `G`; the
+  -- `(B \ G') ∩ G` part vanishes, so `∫_{G'} Φ = ∫_B Φ − ∫_{(B \ G') \ G} Φ`.
+  have h1 : ∫ x in B ∩ G', Φ x ∂μ + ∫ x in B \ G', Φ x ∂μ = ∫ x in B, Φ x ∂μ :=
+    integral_inter_add_sdiff hG' hΦ
+  rw [inter_eq_right.mpr hG'B] at h1
+  have h2 : ∫ x in (B \ G') ∩ G, Φ x ∂μ + ∫ x in (B \ G') \ G, Φ x ∂μ =
+      ∫ x in B \ G', Φ x ∂μ :=
+    integral_inter_add_sdiff hG (hΦ.mono_set sdiff_subset)
+  rw [setIntegral_eq_zero_of_forall_eq_zero hΦ0, zero_add] at h2
+  -- Step 4: the off part is at most `M μ((B \ G') \ G) ≤ M m` in absolute value.
+  have h4 : |∫ x in (B \ G') \ G, Φ x ∂μ| ≤ M * m.toReal := by
+    have h := norm_setIntegral_le_of_norm_le_const (hμm.trans_lt hm)
+      (fun x _ => (Real.norm_eq_abs (Φ x)).le.trans (hΦM x))
+    rw [Real.norm_eq_abs, measureReal_def] at h
+    exact h.trans (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hm.ne hμm) hM)
+  -- Step 5: `Φ − φ` is dominated by `M ψ` on `G'`, so `φ = Φ − (Φ − φ)` is integrable on `G'`.
+  have hΦG' : Integrable Φ (μ.restrict G') := (hΦ.mono_set hG'B).integrable
+  have hψG' : Integrable (fun x => M * ψ x) (μ.restrict G') :=
+    (hψ.mono_set hG'B').integrable.const_mul M
+  have hae : ∀ᵐ x ∂μ.restrict G', ‖Φ x - φ x‖ ≤ M * ψ x := by
+    rw [ae_restrict_iff' hG']
+    filter_upwards [hcmp] with x hx hxG'
+    rw [Real.norm_eq_abs]
+    exact hx hxG'
+  have hdiff : Integrable (fun x => Φ x - φ x) (μ.restrict G') :=
+    hψG'.mono' (hΦG'.aestronglyMeasurable.sub hφ) hae
+  have hφG' : Integrable φ (μ.restrict G') :=
+    (hΦG'.sub hdiff).congr (Eventually.of_forall fun x => sub_sub_cancel (Φ x) (φ x))
+  -- Step 6: `|∫_{G'} Φ − ∫_{G'} φ| = |∫_{G'} (Φ − φ)| ≤ M ∫_{G'} ψ ≤ M ∫_{B'} ψ`.
+  have h6 : |∫ x in G', Φ x ∂μ - ∫ x in G', φ x ∂μ| ≤ M * ∫ x in B', ψ x ∂μ := by
+    rw [← integral_sub hΦG' hφG', ← Real.norm_eq_abs]
+    calc ‖∫ x in G', (Φ x - φ x) ∂μ‖ ≤ ∫ x in G', M * ψ x ∂μ :=
+          norm_integral_le_of_norm_le hψG' hae
+      _ = M * ∫ x in G', ψ x ∂μ := integral_const_mul M _
+      _ ≤ M * ∫ x in B', ψ x ∂μ :=
+          mul_le_mul_of_nonneg_left (setIntegral_mono_set hψ (Eventually.of_forall hψ0)
+            (Eventually.of_forall hG'B')) hM
+  -- Step 7: the triangle inequality.
+  have hI := le_abs_self (∫ x in B, Φ x ∂μ)
+  have hI' := neg_abs_le (∫ x in B, Φ x ∂μ)
+  obtain ⟨h4l, h4r⟩ := abs_le.mp h4
+  obtain ⟨h6l, h6r⟩ := abs_le.mp h6
+  exact abs_le.mpr ⟨by linarith, by linarith⟩
 /-- The linear algebra in the proof of Simon Ch. 5, Lemma 2.1 (p. 107): (i) the operator norm of a
 linear map is at most its Hilbert–Schmidt norm `|A|`; (ii) `|p_{T⊥} v| = dist(v, T)`; and
 (iii) display (2) of the proof, `trace(p_{T⊥} ∘ p_P) = ½ |p_P − p_T|²` when `dim P = dim T`. -/
@@ -1623,6 +1863,75 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
+/-- The linear algebra of Simon Ch. 5, proof of Theorem 4.5, displays (7), (10), (11) and (13)
+(pp. 118–119). For a linear isometry `q` of `ℝ^{n+ℓ}` and a linear map `D : ℝⁿ → ℝ^ℓ` with
+`‖D‖ ≤ 1`, let `p` be the orthogonal projection onto the rotated graph plane
+`S = span{q(v, Dv) : v ∈ ℝⁿ}` and `P` the one onto `T = q(ℝⁿ × {0})`. Then
+(a) `|D|² ≤ (ℓ + ½)|p − P|²`, and (b) `|⟨p e'_j, p q(w, 0)⟩ − ⟨r, w⟩| ≤ |p − P|² |w|` whenever `r`
+is the `j`-th row of `D`, where `e'_j = q(0, ε_j)`.
+The horizontal vectors `q(a, 0)` lie in `T`, with `|q(a, 0)| = |a|` and
+`⟨q(a, 0), q(b, 0)⟩ = ⟨a, b⟩`. By (7), `p e'_j = p q(r, 0)`, so the projection defect (10)–(11)
+on `T` bounds the error in (b) by `|p − P|² |r| |w|`, and `|r| ≤ ‖D‖ ≤ 1`. For (a), the same
+bound with `u = w = q(r_j, 0)` gives `|r_j|² ≤ |p e'_j|² + |p − P|²`. Summing over `j` and using
+`|D|² = Σ_j |r_j|²` and the trace identity `Σ_j |p e'_j|² = ½|p − P|²` (13), valid because
+`dim S = n`, gives (a). -/
+theorem gwe_graph_tilt_algebra : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Rn n →L[ℝ] Rn ℓ), ‖D‖ ≤ 1 → hsNormSq D ≤ ((ℓ : ℝ) + 1 / 2) * hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection - (rotatedPlane q).starProjection) ∧ ∀ (j : Fin ℓ) (r w : Rn n), (∀ v : Rn n, inner ℝ r v = D v j) → |inner ℝ ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection (q (graphPoint w 0))) - inner ℝ r w| ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))).starProjection - (rotatedPlane q).starProjection) * ‖w‖ := by
+  intro n ℓ q D hD
+  -- (L4) and (IP) for graph points, and (L5) `P(q(a, b)) = q(a, 0)`
+  obtain ⟨-, -, -, -, -, hnorm, hinner⟩ := Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  obtain ⟨hproj, -, -⟩ := Submission.any_radius_gr_la_rotatedPlane_facts n ℓ q
+  -- the horizontal vectors `q(a, 0)` lie in `T`, have norm `|a|` and inner products `⟨a, b⟩`
+  have hmem : ∀ a : Rn n, q (graphPoint a 0) ∈ rotatedPlane q := fun a =>
+    Submodule.starProjection_eq_self_iff.mp (hproj a 0)
+  have hnorm0 : ∀ a : Rn n, ‖q (graphPoint a 0)‖ = ‖a‖ := fun a => by
+    have h := hnorm a 0
+    rw [norm_zero, zero_pow two_ne_zero, add_zero] at h
+    rw [LinearIsometryEquiv.norm_map]
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  have hinner0 : ∀ a b : Rn n,
+      inner ℝ (q (graphPoint a 0)) (q (graphPoint b 0)) = inner ℝ a b := fun a b => by
+    rw [LinearIsometryEquiv.inner_map_map, hinner, inner_zero_left, add_zero]
+  -- the rows `R j` of `D`; Simon (7); the trace identity (13) for `S`, of dimension `n`; and the
+  -- projection defect (10)–(11) for `S` and `T`
+  obtain ⟨hrow, R, hR, hRsum⟩ := Submission.gwe_gta_row_bounds n ℓ D
+  have horth := Submission.gwe_gta_graph_row_orthogonal n ℓ q D
+  have hvert := Submission.gwe_gta_vertical_trace_sum n ℓ q _
+    (Submission.tdo_gpd_graph_plane_finrank n ℓ q D)
+  have hdefect := Submission.gwe_gta_proj_inner_defect (n + ℓ)
+    (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))) (rotatedPlane q)
+  generalize Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v))) = S
+    at horth hvert hdefect ⊢
+  have hE : 0 ≤ hsNormSq (S.starProjection - (rotatedPlane q).starProjection) :=
+    Finset.sum_nonneg fun i _ => sq_nonneg _
+  generalize hsNormSq (S.starProjection - (rotatedPlane q).starProjection) = E
+    at hvert hdefect hE ⊢
+  refine ⟨?_, ?_⟩
+  -- (a): `|R j|² ≤ |p e'_j|² + E` for every row, and `Σ_j |p e'_j|² = E / 2`
+  · have hj : ∀ j : Fin ℓ, ‖R j‖ ^ 2 ≤
+        ‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 + E := by
+      intro j
+      have h := hdefect _ _ (hmem (R j)) (hmem (R j))
+      rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq, ← horth j (R j) (hR j),
+        hnorm0] at h
+      have h1 : ‖R j‖ ≤ 1 := (hrow j (R j) (hR j)).trans hD
+      have h2 : E * (‖R j‖ * ‖R j‖) ≤ E :=
+        mul_le_of_le_one_right hE ((mul_le_of_le_one_left (norm_nonneg _) h1).trans h1)
+      linarith [(abs_le.mp h).1]
+    calc hsNormSq D = ∑ j : Fin ℓ, ‖R j‖ ^ 2 := hRsum.symm
+      _ ≤ ∑ j : Fin ℓ,
+            (‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 + E) :=
+          Finset.sum_le_sum fun j _ => hj j
+      _ = E / 2 + ℓ * E := by
+          rw [Finset.sum_add_distrib, hvert, Finset.sum_const, Finset.card_univ,
+            Fintype.card_fin, nsmul_eq_mul]
+      _ = ((ℓ : ℝ) + 1 / 2) * E := by ring
+  -- (b): by (7), `p e'_j = p q(r, 0)`; then the projection defect and `|r| ≤ ‖D‖ ≤ 1`
+  · intro j r w hr
+    rw [horth j r hr]
+    have h := hdefect _ _ (hmem r) (hmem w)
+    rw [hinner0, hnorm0, hnorm0] at h
+    have h1 : ‖r‖ ≤ 1 := (hrow j r hr).trans hD
+    exact h.trans (mul_le_mul_of_nonneg_left (mul_le_of_le_one_left (norm_nonneg w) h1) hE)
 
 /-- Simon Ch. 2, 3.5 (area formula) for a rotated Lipschitz graph, as used in the proof of Ch. 5,
 Theorem 4.5: if `f` is `K`-Lipschitz on `B_R(0)`, `A ⊆ B_R(0)` is Borel and `q` is a linear isometry
@@ -2168,23 +2477,505 @@ theorem gwe_graph_tilt_algebra : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ]
     Submodule.starProjection_eq_self_iff.mp (hproj a 0)
   have hnorm0 : ∀ a : Rn n, ‖q (graphPoint a 0)‖ = ‖a‖ := fun a => by
     have h := hnorm a 0
+/-- Simon Ch. 5, proof of Theorem 4.5, step (1a): the weight `μ_V = (Hⁿ ⌞ M) ⌞ θ` of a
+rectifiable varifold is concentrated on `spt V = U ∩ spt μ_V`. The support of a measure on the
+second countable space `ℝ^{n+ℓ}` is conull (`Measure.support_mem_ae`), and `μ_V ≪ Hⁿ ⌞ M`
+(`withDensity_absolutelyContinuous`), where `Hⁿ ⌞ M` is concentrated on the `Hⁿ`-null-measurable
+carrier `M ⊆ U` (`ae_restrict_mem₀`). -/
+theorem tdo_ghe_ae_mem_support : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∀ᵐ x ∂V.weight, x ∈ V.support := by
+  intro n ℓ U V
+  -- `μ_V`-a.e. point lies in `spt μ_V`
+  have h1 : ∀ᵐ x ∂V.weight, x ∈ V.weight.support := Measure.support_mem_ae
+  -- `μ_V`-a.e. point lies in `M`, since `Hⁿ ⌞ M`-a.e. point does and `μ_V ≪ Hⁿ ⌞ M`
+  have h2 : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  filter_upwards [h1, h2] with x hx1 hx2
+  exact ⟨V.carrier_subset hx2, hx1⟩
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 108): the profile of the cutoff `ζ(x) = φ(|x − ξ|/ρ)` with
+`ζ ≡ 1` in `B_{ρ/2}(ξ)`, `ζ ≡ 0` outside `B_ρ(ξ)` and `|∇ζ| ≤ 3/ρ`.  With `S = smoothTransition`,
+the bump `g(t) = S(12(t − 1/2)) S(12(1 − t)) ∈ [0, 1]` vanishes for `t ≤ 1/2` and for `t ≥ 1` and
+equals `1` on `[7/12, 11/12]`, so `c = ∫_{1/2}^1 g ≥ 1/3`; then `φ(t) = 1 − c⁻¹ ∫_{1/2}^t g` is
+`C^∞` with `|φ'| = c⁻¹ g ≤ 3`. -/
+theorem exists_smooth_step_profile_lipschitz_three : ∃ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ ∧ (∀ t, 0 ≤ φ t ∧ φ t ≤ 1) ∧ (∀ t, t ≤ 1 / 2 → φ t = 1) ∧ (∀ t, 1 ≤ t → φ t = 0) ∧ LipschitzWith 3 φ := by
+  -- The bump `g`: smooth, with values in `[0, 1]`, zero off `(1/2, 1)`, one on `[7/12, 11/12]`.
+  set g : ℝ → ℝ := fun t =>
+    Real.smoothTransition (12 * (t - 1 / 2)) * Real.smoothTransition (12 * (1 - t)) with hg_def
+  have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g := by
+    have h₁ : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => 12 * (t - 1 / 2) := by fun_prop
+    have h₂ : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => 12 * (1 - t) := by fun_prop
+    exact (Real.smoothTransition.contDiff.comp h₁).mul (Real.smoothTransition.contDiff.comp h₂)
+  have hg_cont : Continuous g := hg_smooth.continuous
+  have hg_int : ∀ a b : ℝ, IntervalIntegrable g volume a b := fun a b =>
+    hg_cont.intervalIntegrable a b
+  have hg_nonneg : ∀ t, 0 ≤ g t := fun t =>
+    mul_nonneg (Real.smoothTransition.nonneg _) (Real.smoothTransition.nonneg _)
+  have hg_le_one : ∀ t, g t ≤ 1 := fun t =>
+    (mul_le_of_le_one_left (Real.smoothTransition.nonneg _) (Real.smoothTransition.le_one _)).trans
+      (Real.smoothTransition.le_one _)
+  have hg_left : ∀ t, t ≤ 1 / 2 → g t = 0 := fun t ht => by
+    simp only [hg_def]
+    rw [Real.smoothTransition.zero_of_nonpos (by linarith), zero_mul]
+  have hg_right : ∀ t, 1 ≤ t → g t = 0 := fun t ht => by
+    simp only [hg_def]
+    rw [Real.smoothTransition.zero_of_nonpos (by linarith : 12 * (1 - t) ≤ 0), mul_zero]
+  have hg_mid : ∀ t, 7 / 12 ≤ t → t ≤ 11 / 12 → g t = 1 := fun t h₁ h₂ => by
+    simp only [hg_def]
+    rw [Real.smoothTransition.one_of_one_le (by linarith),
+      Real.smoothTransition.one_of_one_le (by linarith), mul_one]
+  -- The normalizing constant `c = ∫_{1/2}^1 g ≥ ∫_{7/12}^{11/12} 1 = 1/3`, so `c⁻¹ ≤ 3`.
+  set c : ℝ := ∫ s in (1 / 2 : ℝ)..1, g s with hc_def
+  have hc_ge : 1 / 3 ≤ c := by
+    have h : ∫ s in (7 / 12 : ℝ)..(11 / 12), g s = 1 / 3 := by
+      rw [intervalIntegral.integral_congr (g := fun _ => (1 : ℝ)) ?_]
+      · simp only [intervalIntegral.integral_const, smul_eq_mul, mul_one]
+        norm_num
+      · intro s hs
+        rw [uIcc_of_le (by norm_num)] at hs
+        exact hg_mid s hs.1 hs.2
+    rw [← h]
+    exact intervalIntegral.integral_mono_interval (by norm_num) (by norm_num) (by norm_num)
+      (ae_of_all _ hg_nonneg) (hg_int _ _)
+  have hc_pos : 0 < c := by linarith
+  have hcinv_le : c⁻¹ ≤ 3 := by
+    rw [inv_le_comm₀ hc_pos (by norm_num)]
+    linarith
+  -- The primitive `F(t) = ∫_{1/2}^t g`: `F' = g` (FTC), so `F` is smooth; `0 ≤ F ≤ c`,
+  -- `F = 0` on `(-∞, 1/2]` and `F = c` on `[1, ∞)`.
+  set F : ℝ → ℝ := fun t => ∫ s in (1 / 2 : ℝ)..t, g s with hF_def
+  have hF_deriv : ∀ t, HasDerivAt F (g t) t := fun t =>
+    (hg_cont.integral_hasStrictDerivAt (1 / 2) t).hasDerivAt
+  have hF_smooth : ContDiff ℝ (⊤ : ℕ∞) F :=
+    contDiff_infty_iff_deriv.2 ⟨fun t => (hF_deriv t).differentiableAt,
+      (funext fun t => (hF_deriv t).deriv : deriv F = g) ▸ hg_smooth⟩
+  have hF_left : ∀ t, t ≤ 1 / 2 → F t = 0 := fun t ht => by
+    simp only [hF_def]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+    · simp
+    · intro s hs
+      rw [uIcc_of_ge ht] at hs
+      exact hg_left s hs.2
+  have hF_right : ∀ t, 1 ≤ t → F t = c := fun t ht => by
+    simp only [hF_def, hc_def]
+    rw [← intervalIntegral.integral_add_adjacent_intervals (hg_int (1 / 2) 1) (hg_int 1 t)]
+    have h : ∫ s in (1 : ℝ)..t, g s = 0 := by
+      rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+      · simp
+      · intro s hs
+        rw [uIcc_of_le ht] at hs
+        exact hg_right s hs.1
+    rw [h, add_zero]
+  have hF_bounds : ∀ t, 0 ≤ F t ∧ F t ≤ c := fun t => by
+    rcases le_total t (1 / 2) with ht | ht
+    · rw [hF_left t ht]
+      exact ⟨le_rfl, hc_pos.le⟩
+    rcases le_total 1 t with ht' | ht'
+    · rw [hF_right t ht']
+      exact ⟨hc_pos.le, le_rfl⟩
+    exact ⟨intervalIntegral.integral_nonneg ht fun u _ => hg_nonneg u,
+      intervalIntegral.integral_mono_interval le_rfl ht ht' (ae_of_all _ hg_nonneg) (hg_int _ _)⟩
+  -- The profile `φ = 1 − c⁻¹ F`, with `φ' = −c⁻¹ g`.
+  have hφ_deriv : ∀ t, HasDerivAt (fun t => 1 - c⁻¹ * F t) (-(c⁻¹ * g t)) t := fun t => by
+    simpa using ((hF_deriv t).const_mul c⁻¹).const_sub 1
+  refine ⟨fun t => 1 - c⁻¹ * F t, contDiff_const.sub (contDiff_const.mul hF_smooth), ?_, ?_, ?_, ?_⟩
+  · intro t
+    obtain ⟨h₀, h₁⟩ := hF_bounds t
+    have hci : 0 ≤ c⁻¹ := inv_nonneg.2 hc_pos.le
+    have h : c⁻¹ * F t ≤ 1 := by
+      calc c⁻¹ * F t ≤ c⁻¹ * c := mul_le_mul_of_nonneg_left h₁ hci
+        _ = 1 := inv_mul_cancel₀ hc_pos.ne'
+    exact ⟨by linarith, by linarith [mul_nonneg hci h₀]⟩
+  · intro t ht
+    simp only [hF_left t ht, mul_zero, sub_zero]
+  · intro t ht
+    simp only [hF_right t ht, inv_mul_cancel₀ hc_pos.ne', sub_self]
+  · refine lipschitzWith_of_nnnorm_deriv_le (fun t => (hφ_deriv t).differentiableAt) fun t => ?_
+    rw [(hφ_deriv t).deriv, ← NNReal.coe_le_coe, coe_nnnorm, Real.norm_eq_abs, abs_neg,
+      abs_of_nonneg (mul_nonneg (inv_nonneg.2 hc_pos.le) (hg_nonneg t))]
+    calc c⁻¹ * g t ≤ c⁻¹ * 1 := mul_le_mul_of_nonneg_left (hg_le_one t) (inv_nonneg.2 hc_pos.le)
+      _ ≤ 3 := by rw [mul_one]; exact hcinv_le
+      _ = ((3 : ℝ≥0) : ℝ) := by norm_num
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 107), smoothness of the cutoff: if `φ` is `C^∞` with
+`φ ≡ 1` on `(-∞, 1/2]` and `ρ > 0`, then `ζ(x) = φ(‖x − ξ‖/ρ)` is `C^∞` on `ℝᵐ`.  Near `ξ`,
+`ζ ≡ 1` on `B̆_{ρ/2}(ξ)`; at `x ≠ ξ` the norm is `C^∞` at `x − ξ ≠ 0`. -/
+theorem contDiff_radial_profile_of_eq_one_le_half : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (φ : ℝ → ℝ), 0 < ρ → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ t, t ≤ 1 / 2 → φ t = 1) → ContDiff ℝ (⊤ : ℕ∞) (fun x : Rn m => φ (‖x - ξ‖ / ρ)) := by
+  intro m ξ ρ φ hρ hφ hφ1
+  rw [contDiff_iff_contDiffAt]
+  intro x
+  rcases eq_or_ne x ξ with rfl | hx
+  · -- `ζ ≡ 1` on the open ball `B̆_{ρ/2}(ξ)`, a neighbourhood of `ξ`.
+    refine (contDiffAt_const (c := (1 : ℝ))).congr_of_eventuallyEq ?_
+    filter_upwards [Metric.ball_mem_nhds x (half_pos hρ)] with y hy
+    rw [Metric.mem_ball, dist_eq_norm] at hy
+    exact hφ1 _ ((div_le_iff₀ hρ).2 (by linarith))
+  · -- `y ↦ ‖y − ξ‖/ρ` is `C^∞` at `x` since `x − ξ ≠ 0`; compose with `φ`.
+    have h : ContDiffAt ℝ (⊤ : ℕ∞) (fun y : Rn m => ‖y - ξ‖ / ρ) x :=
+      ((contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hx)).div_const ρ
+    exact hφ.contDiffAt.comp x h
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 108): the cutoff gradient bound `|∇ζ| ≤ 3/ρ`, for a general
+Lipschitz constant `K` in place of `3`.  If `φ` is `K`-Lipschitz and `ρ > 0`, then
+`ζ(y) = φ(‖y - ξ‖/ρ)` is `(K/ρ)`-Lipschitz by the reverse triangle inequality, so
+`‖Dζ(x)‖ ≤ K/ρ` at every `x` (where `ζ` is not differentiable, `fderiv ℝ ζ x = 0`). -/
+theorem norm_fderiv_radial_profile_le_of_lipschitzWith : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (K : ℝ≥0) (φ : ℝ → ℝ), 0 < ρ → LipschitzWith K φ → ∀ x : Rn m, ‖fderiv ℝ (fun y : Rn m => φ (‖y - ξ‖ / ρ)) x‖ ≤ (K : ℝ) / ρ := by
+  intro m ξ ρ K φ hρ hφ x
+  -- `ζ(y) = φ(‖y - ξ‖/ρ)` is `(K/ρ)`-Lipschitz by the reverse triangle inequality.
+  have hKρ : ((K / ρ.toNNReal : ℝ≥0) : ℝ) = K / ρ := by
+    rw [NNReal.coe_div, Real.coe_toNNReal ρ hρ.le]
+  have hlip : LipschitzWith (K / ρ.toNNReal) fun y : Rn m => φ (‖y - ξ‖ / ρ) := by
+    refine LipschitzWith.of_dist_le_mul fun y z => ?_
+    rw [hKρ]
+    calc dist (φ (‖y - ξ‖ / ρ)) (φ (‖z - ξ‖ / ρ))
+        ≤ K * dist (‖y - ξ‖ / ρ) (‖z - ξ‖ / ρ) := hφ.dist_le_mul _ _
+      _ = K / ρ * |‖y - ξ‖ - ‖z - ξ‖| := by
+          rw [Real.dist_eq, ← sub_div, abs_div, abs_of_pos hρ]; ring
+      _ ≤ K / ρ * ‖(y - ξ) - (z - ξ)‖ := by gcongr; exact abs_norm_sub_norm_le _ _
+      _ = K / ρ * dist y z := by rw [sub_sub_sub_cancel_right, dist_eq_norm]
+  -- A `C`-Lipschitz function has `‖Dζ(x)‖ ≤ C` (and `fderiv ℝ ζ x = 0` where not differentiable).
+  exact (norm_fderiv_le_of_lipschitz ℝ hlip).trans_eq hKρ
+/-- Simon Ch. 5, proof of Lemma 2.1 (p. 108): a cutoff `ζ ∈ C^∞(ℝᵐ)` with `0 ≤ ζ ≤ 1`, `ζ ≡ 1` on
+`B_{ρ/2}(ξ)`, `ζ ≡ 0` outside `B̆_ρ(ξ)` and `|Dζ| ≤ 3/ρ`.  Take `ζ(x) = φ(|x − ξ|/ρ)` for the smooth
+`3`-Lipschitz step profile `φ` (`φ = 1` on `(-∞, 1/2]`, `φ = 0` on `[1, ∞)`): `ζ` is smooth since it
+is constant near `ξ`, and the radial lift of a `3`-Lipschitz profile has `|Dζ| ≤ 3/ρ`. -/
+theorem exists_smooth_cutoff_half_ball_grad_le : ∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ), 0 < ρ → ∃ ζ : Rn m → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ Metric.closedBall ξ (ρ / 2), ζ x = 1) ∧ (∀ x, ρ ≤ dist x ξ → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / ρ := by
+  intro m ξ ρ hρ
+  obtain ⟨φ, hφ_smooth, hφ_bounds, hφ_one, hφ_zero, hφ_lip⟩ :=
+    Submission.exists_smooth_step_profile_lipschitz_three
+  refine ⟨fun x => φ (‖x - ξ‖ / ρ),
+    Submission.contDiff_radial_profile_of_eq_one_le_half m ξ ρ φ hρ hφ_smooth hφ_one,
+    fun x => hφ_bounds _, fun x hx => hφ_one _ ?_, fun x hx => hφ_zero _ ?_, fun x => ?_⟩
+  · -- `|x − ξ| ≤ ρ/2`, so `|x − ξ|/ρ ≤ 1/2`.
+    rw [Metric.mem_closedBall, dist_eq_norm] at hx
+    rw [div_le_iff₀ hρ]
+    linarith
+  · -- `ρ ≤ |x − ξ|`, so `1 ≤ |x − ξ|/ρ`.
+    rw [dist_eq_norm] at hx
+    rw [le_div_iff₀ hρ]
+    linarith
+  · -- The profile is `3`-Lipschitz, so `|Dζ(x)| ≤ 3/ρ`.
+    have h := Submission.norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφ_lip x
+    rwa [NNReal.coe_ofNat] at h
+/-- Simon Ch. 5, proof of Theorem 4.5, step 1(v): a `C¹` function with `tsupport ζ ⊆ B̆_r(0)` and
+`|∇ζ| ≤ M` satisfies `|ζ| ≤ M r`. For `|y| < r` pick a unit vector `w` with `|y − r w| ≤ r`
+(`w = y/|y|`, or a standard basis vector if `y = 0`, which needs `n ≥ 1`); then `ζ(r w) = 0` and
+the mean value inequality (`Convex.norm_image_sub_le_of_norm_fderiv_le`, with
+`‖Dζ‖ = ‖∇ζ‖` since the Riesz map is an isometry) gives `|ζ(y)| ≤ M |y − r w| ≤ M r`. -/
+theorem gwe_vfv_abs_le_grad_bound_mul_radius : ∀ n : ℕ, 1 ≤ n → ∀ (ζ : Rn n → ℝ) (r M : ℝ), 0 ≤ r → Differentiable ℝ ζ → tsupport ζ ⊆ ball 0 r → (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ y, |ζ y| ≤ M * r := by
+  intro n hn ζ r M hr hζ hsupp hM y
+  -- `M ≥ ‖∇ζ(0)‖ ≥ 0`
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  -- `ζ` vanishes off `B̆_r(0)`
+  have hzero : ∀ z : Rn n, r ≤ ‖z‖ → ζ z = 0 := by
+    intro z hz
+    by_contra h
+    have hz' := hsupp (subset_tsupport ζ h)
+    rw [mem_ball_zero_iff] at hz'
+    linarith
+  -- `‖Dζ(x)‖ = ‖∇ζ(x)‖ ≤ M`, the Riesz map being a linear isometry equivalence
+  have hD : ∀ x, ‖fderiv ℝ ζ x‖ ≤ M := by
+    intro x
+    have h := hM x
+    rwa [gradient, LinearIsometryEquiv.norm_map] at h
+  rcases le_or_gt r ‖y‖ with hy | hy
+  · rw [hzero y hy, abs_zero]
+    exact mul_nonneg hM0 hr
+  -- a unit vector `w` with `‖y − r w‖ ≤ r`
+  obtain ⟨w, hw1, hw2⟩ : ∃ w : Rn n, ‖w‖ = 1 ∧ ‖y - r • w‖ ≤ r := by
+    rcases eq_or_ne y 0 with hy0 | hy0
+    · refine ⟨EuclideanSpace.single ⟨0, hn⟩ 1, by simp, ?_⟩
+      rw [hy0, zero_sub, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_nonneg hr]
+      simp
+    · have hy' : 0 < ‖y‖ := norm_pos_iff.mpr hy0
+      refine ⟨‖y‖⁻¹ • y, ?_, ?_⟩
+      · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hy'.ne']
+      · have hyw : y - r • (‖y‖⁻¹ • y) = (1 - r * ‖y‖⁻¹) • y := by
+          rw [smul_smul, sub_smul, one_smul]
+        have hc : 1 - r * ‖y‖⁻¹ ≤ 0 := by
+          rw [sub_nonpos, ← div_eq_mul_inv, le_div_iff₀ hy', one_mul]
+          exact hy.le
+        rw [hyw, norm_smul, Real.norm_eq_abs, abs_of_nonpos hc, neg_sub, sub_mul, mul_assoc,
+          inv_mul_cancel₀ hy'.ne', mul_one, one_mul]
+        linarith
+  -- `ζ(r w) = 0`, and the mean value inequality on `ℝⁿ`
+  have hrw : ζ (r • w) = 0 :=
+    hzero _ (by rw [norm_smul, hw1, Real.norm_eq_abs, abs_of_nonneg hr, mul_one])
+  have hmv : ‖ζ y - ζ (r • w)‖ ≤ M * ‖y - r • w‖ :=
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun x _ => hζ x) (fun x _ => hD x)
+      (mem_univ _) (mem_univ _)
+  calc |ζ y| = ‖ζ y - ζ (r • w)‖ := by rw [hrw, sub_zero, Real.norm_eq_abs]
+    _ ≤ M * ‖y - r • w‖ := hmv
+    _ ≤ M * r := mul_le_mul_of_nonneg_left hw2 hM0
+
+/-- Simon Ch. 5, proof of Theorem 4.5, display (5) (p. 117): `x` is no farther from the origin
+than its coordinate along `T = q(ℝⁿ × {0})` plus its height over `T`. For a linear isometry `q` of
+`ℝ^{n+ℓ}`, `|x| ≤ |a(x)| + dist(x, T)`, where `a(x) ∈ ℝⁿ` is the first block of `q⁻¹ x`.
+Writing `q⁻¹ x = (a, b)`, `p_{T⊥} x = q(a, b) − q(a, 0) = q(0, b)`, so
+`dist(x, T) = |p_{T⊥} x| = |(0, b)| = |b|`, while `|x|² = |a|² + |b|² ≤ (|a| + |b|)²`. -/
+theorem gwe_vfv_norm_le_first_block_add_infDist : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (x : Amb n ℓ), ‖x‖ ≤ ‖(EuclideanSpace.finAddEquivProd (q.symm x)).1‖ + infDist x (rotatedPlane q : Set (Amb n ℓ)) := by
+  intro n ℓ q x
+  obtain ⟨hsub, hnorm, hsurj, hproj⟩ := lip_approx_graph_coordinates n ℓ q
+  -- write `q⁻¹ x = (a, b)`; its first block is `a`
+  obtain ⟨a, b, hab⟩ := hsurj (q.symm x)
+  have hx : x = q (graphPoint a b) := by rw [← hab, q.apply_symm_apply]
+  have ha : (EuclideanSpace.finAddEquivProd (q.symm x)).1 = a := by
+    rw [hab]
+    ext i
+    simp [graphPoint]
+  -- `p_{T⊥} x = q(a, b) − q(a, 0) = q(0, b)`, so `dist(x, T) = |(0, b)| = |b|`
+  have hb : infDist x (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖ := by
+    have h0 := hnorm 0 b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h0
+    rw [← hsNorm_starProjection_trace_identities.2.1 (n + ℓ) (rotatedPlane q) x,
+      Submodule.starProjection_orthogonal_val, hx, hproj, ← map_sub, hsub, sub_self, sub_zero,
+      q.norm_map]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h0
+  -- `|x|² = |a|² + |b|² ≤ (|a| + |b|)²`
+  have hxn : ‖x‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by rw [hx, q.norm_map, hnorm]
+  rw [ha, hb]
+  refine (pow_le_pow_iff_left₀ (norm_nonneg x) (add_nonneg (norm_nonneg a) (norm_nonneg b))
+    two_ne_zero).1 ?_
+  rw [hxn, add_sq]
+  linarith [mul_nonneg (norm_nonneg a) (norm_nonneg b)]
+/-- Chain rule in rotated coordinates (step 1(ii) of the vertical first variation in Simon's proof
+of 4.5): for `a(y) = (finAddEquivProd (q⁻¹ y)).1`, a continuous linear map,
+`D(ζ ∘ a)(x) v = Dζ(a(x)) (a v) = ⟨∇ζ(a(x)), a v⟩ = ⟨graphPoint (∇ζ(a(x))) 0, q⁻¹ v⟩
+= ⟨q (graphPoint (∇ζ(a(x))) 0), v⟩`. -/
+theorem gwe_vfv_hasFDerivAt_comp_first_block : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (ζ : Rn n → ℝ) (x : Amb n ℓ), DifferentiableAt ℝ ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1 → HasFDerivAt (fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1) (innerSL ℝ (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) x := by
+  intro n ℓ q ζ x hζ
+  -- `a = fst ∘ finAddEquivProd ∘ q⁻¹` is a continuous linear map `L`.
+  let L : Amb n ℓ →L[ℝ] Rn n := (ContinuousLinearMap.fst ℝ (Rn n) (Rn ℓ)).comp
+    ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).toContinuousLinearMap.comp
+      q.symm.toContinuousLinearEquiv.toContinuousLinearMap)
+  have hL : ∀ y, L y = (EuclideanSpace.finAddEquivProd (q.symm y)).1 := fun y => rfl
+  -- `⟨graphPoint w 0, z⟩ = ⟨w, (finAddEquivProd z).1⟩`: split the sum over `Fin (n + ℓ)`.
+  have hcoord : ∀ (w : Rn n) (z : Amb n ℓ),
+      inner ℝ (graphPoint w (0 : Rn ℓ)) z = inner ℝ w (EuclideanSpace.finAddEquivProd z).1 := by
+    intro w z
+    simp only [graphPoint, WithLp.ofLp_zero, PiLp.inner_apply, RCLike.inner_apply, conj_trivial,
+      Fin.sum_univ_add, Fin.append_left, Fin.append_right, Pi.zero_apply, mul_zero,
+      Finset.sum_const_zero, add_zero, ContinuousLinearEquiv.trans_apply,
+      LinearIsometryEquiv.coe_toContinuousLinearEquiv, WithLp.prodContinuousLinearEquiv_apply,
+      PiLp.sumPiLpEquivProdLpPiLp_apply_ofLp, LinearIsometryEquiv.piLpCongrLeft_apply,
+      Equiv.piCongrLeft'_apply, Equiv.symm_symm, finSumFinEquiv_apply_left,
+      finSumFinEquiv_apply_right]
+  -- Chain rule: `D(ζ ∘ L)(x) = Dζ(L x) ∘ L`.
+  have hd : HasFDerivAt (fun y : Amb n ℓ => ζ (L y)) ((fderiv ℝ ζ (L x)).comp L) x :=
+    hζ.hasFDerivAt.comp x L.hasFDerivAt
+  -- `Dζ(L x) (L v) = ⟨∇ζ(L x), L v⟩ = ⟨graphPoint (∇ζ(L x)) 0, q⁻¹ v⟩ = ⟨q (graphPoint …), v⟩`.
+  refine hd.congr_fderiv (ContinuousLinearMap.ext fun v => ?_)
+  rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, LinearIsometryEquiv.inner_map_eq_flip,
+    hcoord, gradient, InnerProductSpace.toDual_symm_apply, hL, hL]
+/-- Rank-one tangential divergence (the trace computation in step (5) of Simon's proof of 4.5):
+if `Df(x) = ⟨g, ·⟩`, then `div_M (f e)(x) = trace(v ↦ ⟨g, p_x v⟩ e) = ⟨g, p_x e⟩ = ⟨p_x e, p_x g⟩`,
+because `p_x = p_{T_x M}` is an orthogonal projection (or `0`), hence self-adjoint and idempotent. -/
+theorem gwe_vfv_divM_smul_const_eq_inner : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (f : Amb n ℓ → ℝ) (e g x : Amb n ℓ), HasFDerivAt f (innerSL ℝ g) x → V.divM (fun y => f y • e) x = inner ℝ (V.tangentProj x e) (V.tangentProj x g) := by
+  intro n ℓ U V f e g x hf
+  -- `⟨p u, p v⟩ = ⟨u, p v⟩` for `p = p_x`, an orthogonal projection or `0`.
+  have hp : ∀ u v : Amb n ℓ,
+      inner ℝ (V.tangentProj x u) (V.tangentProj x v) = inner ℝ u (V.tangentProj x v) := by
+    intro u v
+    rw [RectifiableVarifold.tangentProj]
+    split_ifs with h
+    · rw [Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.2 (Submodule.starProjection_apply_mem _ v)]
+    · simp
+  -- `D(f e)(x) = ⟨g, ·⟩ e`, so `D(f e)(x) ∘ p = ⟨g, p ·⟩ e` has rank one.
+  have hcomp : (fderiv ℝ (fun y => f y • e) x).toLinearMap ∘ₗ (V.tangentProj x).toLinearMap =
+      ((innerSL ℝ g).comp (V.tangentProj x)).toLinearMap.smulRight e := by
+    rw [(hf.smul_const e).fderiv]
+    refine LinearMap.ext fun w => ?_
+    simp
+  -- Its trace is `⟨g, p e⟩ = ⟨p g, p e⟩ = ⟨p e, p g⟩`.
+  rw [RectifiableVarifold.divM, hcomp, LinearMap.trace_smulRight, ContinuousLinearMap.coe_coe,
+    ContinuousLinearMap.comp_apply, innerSL_apply_apply, ← hp g e, real_inner_comm]
+/-- Simon Ch. 5, proof of Theorem 4.5, the identity before (6) (p. 117): the defining identity 3.14
+of the generalized mean curvature, localized to `B_s(0)`.  If `φ ∈ C¹`, `2r ≤ R`, `r ≤ s ≤ R`,
+`B_R(0) ⊆ U` and `spt V ∩ B_R(0) ∩ spt φ ⊆ B̆_r(0)`, then
+`∫_{B_s(0)} div_M(φ e) dμ_V = −∫_{B_s(0)} φ e · H dμ_V`.  Test 3.14 with `X = χ φ e ∈ C¹_c(U)`,
+where the cutoff `χ` (`ρ = 2r` in `exists_smooth_cutoff_half_ball_grad_le`) is `1` on `B_r(0)`
+and `0` off `B̆_{2r}(0)`.  As `div_M` is local (`Filter.EventuallyEq.fderiv_eq`),
+`div_M X = 1_{B_s(0)} div_M(φ e)` and `X · H = 1_{B_s(0)} φ e · H` on `spt V`: near `x`, `χ = 1`
+if `|x| < r`, `φ = 0` if `r ≤ |x| ≤ R`, and `χ = 0` if `|x| > R`.  Finally `spt V` is
+`μ_V`-conull (`tdo_ghe_ae_mem_support`). -/
+theorem gwe_vfv_localized_first_variation : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (φ : Amb n ℓ → ℝ) (e : Amb n ℓ) (r s R : ℝ), ContDiff ℝ 1 φ → 0 < r → 2 * r ≤ R → r ≤ s → s ≤ R → closedBall (0 : Amb n ℓ) R ⊆ U → (∀ x ∈ V.support ∩ closedBall 0 R, x ∈ tsupport φ → ‖x‖ < r) → ∫ x in closedBall (0 : Amb n ℓ) s, V.divM (fun y => φ y • e) x ∂V.weight = -∫ x in closedBall (0 : Amb n ℓ) s, φ x * inner ℝ e (H x) ∂V.weight := by
+  intro n ℓ U V H hH φ e r s R hφ hr h2r hrs hsR hRU hspt
+  -- The cutoff `χ ∈ C^∞` with `χ = 1` on `B_r(0)` and `χ = 0` where `|y| ≥ 2r`.
+  obtain ⟨χ, hχ, -, hχ1, hχ0, -⟩ :=
+    Submission.exists_smooth_cutoff_half_ball_grad_le (n + ℓ) 0 (2 * r) (by positivity)
+  have hχ1' : ∀ y : Amb n ℓ, ‖y‖ ≤ r → χ y = 1 := fun y hy =>
+    hχ1 y (by rw [mem_closedBall, dist_zero_right]; linarith)
+  have hχ0' : ∀ y : Amb n ℓ, 2 * r ≤ ‖y‖ → χ y = 0 := fun y hy =>
+    hχ0 y (by rwa [dist_zero_right])
+  -- The test field `X = χ φ e ∈ C¹_c(U)`, supported in `B_{2r}(0) ⊆ B_R(0) ⊆ U`.
+  set X : Amb n ℓ → Amb n ℓ := fun y => (χ y * φ y) • e with hX_def
+  have hX : ContDiff ℝ 1 X :=
+    ((hχ.of_le (by exact_mod_cast le_top)).mul hφ).smul contDiff_const
+  have hX_supp : tsupport X ⊆ closedBall 0 (2 * r) := by
+    refine closure_minimal (fun y hy => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_zero_right]
+    by_contra h
+    exact hy (by simp only [hX_def, hχ0' y (by linarith), zero_mul, zero_smul])
+  have hXc : HasCompactSupport X :=
+    (isCompact_closedBall 0 (2 * r)).of_isClosed_subset (isClosed_tsupport X) hX_supp
+  have hXU : tsupport X ⊆ U :=
+    hX_supp.trans ((closedBall_subset_closedBall (by linarith)).trans hRU)
+  -- The first variation formula 3.14 for `X`.
+  have hfv := hH.2 X hX hXc hXU
+  -- `div_M Y (x)` only depends on `Y` near `x`, and `div_M 0 = 0`.
+  have hloc : ∀ (Y Z : Amb n ℓ → Amb n ℓ) (x : Amb n ℓ), Y =ᶠ[𝓝 x] Z →
+      V.divM Y x = V.divM Z x := fun Y Z x h => by
+    simp only [RectifiableVarifold.divM, h.fderiv_eq (𝕜 := ℝ)]
+  have hzero : ∀ x : Amb n ℓ, V.divM (fun _ => 0) x = 0 := fun x => by
+    simp [RectifiableVarifold.divM]
+  -- On `spt V`: `div_M X = 1_{B_s(0)} div_M(φ e)` and `X · H = 1_{B_s(0)} φ e · H`.
+  have hpt : ∀ x ∈ V.support,
+      V.divM X x =
+        (closedBall (0 : Amb n ℓ) s).indicator (fun x => V.divM (fun y => φ y • e) x) x ∧
+      inner ℝ (X x) (H x) =
+        (closedBall (0 : Amb n ℓ) s).indicator (fun x => φ x * inner ℝ e (H x)) x := by
+    intro x hx
+    rcases lt_or_ge ‖x‖ r with h1 | h1
+    · -- `|x| < r`: `X = φ e` on the neighbourhood `B̆_r(0)` of `x`, and `x ∈ B_s(0)`.
+      have hxs : x ∈ closedBall (0 : Amb n ℓ) s := by
+        rw [mem_closedBall, dist_zero_right]; linarith
+      have hev : X =ᶠ[𝓝 x] fun y => φ y • e := by
+        have hxr : x ∈ ball (0 : Amb n ℓ) r := by rwa [mem_ball, dist_zero_right]
+        filter_upwards [isOpen_ball.mem_nhds hxr] with y hy
+        rw [mem_ball, dist_zero_right] at hy
+        simp only [hX_def, hχ1' y hy.le, one_mul]
+      rw [indicator_of_mem hxs, indicator_of_mem hxs]
+      refine ⟨hloc _ _ x hev, ?_⟩
+      simp only [hX_def, hχ1' x h1.le, one_mul, real_inner_smul_left]
+    · rcases le_or_gt ‖x‖ R with h2 | h2
+      · -- `r ≤ |x| ≤ R`: `x ∉ spt φ`, so `φ = 0` near `x`.
+        have hφx : x ∉ tsupport φ := fun h =>
+          absurd (hspt x ⟨hx, by rwa [mem_closedBall, dist_zero_right]⟩ h) (not_lt.2 h1)
+        have hφ0 : φ =ᶠ[𝓝 x] 0 := notMem_tsupport_iff_eventuallyEq.1 hφx
+        have hX0 : X =ᶠ[𝓝 x] fun _ => 0 := hφ0.mono fun y hy => by simp [hX_def, hy]
+        have hφe0 : (fun y => φ y • e) =ᶠ[𝓝 x] fun _ => 0 := hφ0.mono fun y hy => by simp [hy]
+        have hφx0 : φ x = 0 := hφ0.self_of_nhds
+        refine ⟨?_, ?_⟩
+        · rw [hloc _ _ x hX0, hzero]
+          by_cases hxs : x ∈ closedBall (0 : Amb n ℓ) s
+          · rw [indicator_of_mem hxs, hloc _ _ x hφe0, hzero]
+          · rw [indicator_of_notMem hxs]
+        · rw [indicator_apply_eq_zero.2 fun _ => by simp only [hφx0, zero_mul]]
+          simp [hX_def, hφx0]
+      · -- `|x| > R ≥ 2r`: `χ = 0` near `x`, and `x ∉ B_s(0)`.
+        have hxs : x ∉ closedBall (0 : Amb n ℓ) s := by
+          rw [mem_closedBall, dist_zero_right]; linarith
+        have hX0 : X =ᶠ[𝓝 x] fun _ => 0 := by
+          have hxR : x ∈ {y : Amb n ℓ | R < ‖y‖} := h2
+          filter_upwards [(isOpen_lt continuous_const continuous_norm).mem_nhds hxR] with y hy
+          have hy' : R < ‖y‖ := hy
+          simp [hX_def, hχ0' y (by linarith)]
+        rw [indicator_of_notMem hxs, indicator_of_notMem hxs]
+        refine ⟨by rw [hloc _ _ x hX0, hzero], ?_⟩
+        simp [hX_def, hχ0' x (by linarith)]
+  -- `μ_V`-a.e. point lies in `spt V`; integrate the pointwise identities.
+  have hae := Submission.tdo_ghe_ae_mem_support n ℓ U V
+  calc ∫ x in closedBall (0 : Amb n ℓ) s, V.divM (fun y => φ y • e) x ∂V.weight
+      = ∫ x, (closedBall (0 : Amb n ℓ) s).indicator
+          (fun x => V.divM (fun y => φ y • e) x) x ∂V.weight :=
+        (integral_indicator measurableSet_closedBall).symm
+    _ = ∫ x, V.divM X x ∂V.weight :=
+        integral_congr_ae (hae.mono fun x hx => (hpt x hx).1.symm)
+    _ = -∫ x, inner ℝ (X x) (H x) ∂V.weight := hfv
+    _ = -∫ x, (closedBall (0 : Amb n ℓ) s).indicator
+          (fun x => φ x * inner ℝ e (H x)) x ∂V.weight := by
+        rw [integral_congr_ae (hae.mono fun x hx => (hpt x hx).2)]
+    _ = -∫ x in closedBall (0 : Amb n ℓ) s, φ x * inner ℝ e (H x) ∂V.weight := by
+        rw [integral_indicator measurableSet_closedBall]
+/-- Simon Ch. 5, proof of Theorem 4.5, displays (5), (6) and the curvature term of (8)
+(pp. 117–118), in the rotated frame `T = q(ℝⁿ × {0})`: with `e'_j = q(0, e_j)`, `a(x)` the first
+block of `q⁻¹x` and `g(x) = q(∇ζ(a(x)), 0)`,
+`|∫_{B_{σ/2}(0)} p_x e'_j · p_x g(x) dμ_V| ≤ M (σ/4) ∫_{B_{σ/2}(0)} |H| dμ_V`.
+`ζ̃ = ζ ∘ a` has `Dζ̃(x) = ⟨g(x), ·⟩`, so the integrand is `div_M(ζ̃ e'_j)`.  On
+`spt V ∩ B_σ(0) ∩ tsupport ζ̃`, `|x| ≤ |a(x)| + dist(x, T) < σ/4 + σ/16 = 5σ/16`, so the first
+variation formula localizes to `B_{σ/2}(0)`; then `|ζ| ≤ Mσ/4`, `|e'_j| = 1` and the integrability
+of `|H|` on the compact `B_{σ/2}(0) ⊆ U` bound the curvature term. -/
+theorem gwe_vertical_first_variation : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in closedBall (0 : Amb n ℓ) (σ / 2), inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) (V.tangentProj x (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) ∂V.weight| ≤ M * (σ / 4) * ∫ x in closedBall (0 : Amb n ℓ) (σ / 2), ‖H x‖ ∂V.weight := by
+  intro n ℓ hn U _hU V H hH σ hσ hσU q hheight ζ hζ _hζc hζσ M hM j
+  -- `ζ̃ = ζ ∘ a` is `C¹`, since `a(y) = (q⁻¹y)₁` is continuous linear.
+  have ha : Continuous fun y : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm y)).1 :=
+    continuous_fst.comp (EuclideanSpace.finAddEquivProd.continuous.comp q.symm.continuous)
+  have hζ' : ContDiff ℝ 1 fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1 :=
+    hζ.comp (contDiff_fst.comp (EuclideanSpace.finAddEquivProd.contDiff.comp q.symm.contDiff))
+  have hζd : Differentiable ℝ ζ := hζ.differentiable one_ne_zero
+  -- The integrand is `div_M(ζ̃ e'_j)`: `Dζ̃(x) = ⟨g(x), ·⟩`, and the trace of the rank-one map.
+  have hdiv : ∀ x, inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+      (V.tangentProj x
+        (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) =
+      V.divM (fun y => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1 •
+        q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))) x := fun x =>
+    (Submission.gwe_vfv_divM_smul_const_eq_inner n ℓ U V _ _ _ x
+      (Submission.gwe_vfv_hasFDerivAt_comp_first_block n ℓ q ζ x (hζd _))).symm
+  -- Localization: on `spt V ∩ B_σ(0) ∩ tsupport ζ̃`, `|x| ≤ |a(x)| + dist(x, T) < σ/4 + σ/16`.
+  have hloc : ∀ x ∈ V.support ∩ closedBall 0 σ,
+      x ∈ tsupport (fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1) →
+      ‖x‖ < 5 * σ / 16 := by
+    intro x hx hxζ
+    have h₁ : ‖(EuclideanSpace.finAddEquivProd (q.symm x)).1‖ < σ / 4 :=
+      mem_ball_zero_iff.1 (hζσ (tsupport_comp_subset_preimage ζ ha hxζ))
+    linarith [hheight x hx, Submission.gwe_vfv_norm_le_first_block_add_infDist n ℓ q x]
+  -- The first variation formula on `B_{σ/2}(0)`, with `r = 5σ/16` and `R = σ`.
+  simp only [hdiv]
+  rw [Submission.gwe_vfv_localized_first_variation n ℓ U V H hH _ _ (5 * σ / 16) (σ / 2) σ hζ'
+      (by positivity) (by linarith) (by linarith) (by linarith) hσU hloc, abs_neg,
+    ← Real.norm_eq_abs, ← integral_const_mul]
+  -- `|ζ| ≤ Mσ/4`, `|e'_j| = 1`, and `|H|` is integrable on the compact `B_{σ/2}(0) ⊆ U`.
+  have hζM : ∀ y, |ζ y| ≤ M * (σ / 4) :=
+    Submission.gwe_vfv_abs_le_grad_bound_mul_radius n hn ζ (σ / 4) M (by positivity) hζd hζσ hM
+  have he : ‖q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))‖ = 1 := by
+    rw [q.norm_map, ← Real.sqrt_sq (norm_nonneg _),
+      (Submission.lip_approx_graph_coordinates n ℓ q).2.1]
+    simp
+  have hH' : IntegrableOn H (closedBall 0 (σ / 2)) V.weight :=
+    hH.1.integrableOn_compact_subset ((closedBall_subset_closedBall (by linarith)).trans hσU)
+      (isCompact_closedBall 0 _)
+  refine norm_integral_le_of_norm_le (hH'.norm.const_mul _) (Eventually.of_forall fun x => ?_)
+  rw [Real.norm_eq_abs, abs_mul]
+  exact mul_le_mul (hζM _) ((abs_real_inner_le_norm _ _).trans_eq (by rw [he, one_mul]))
+    (abs_nonneg _) ((abs_nonneg _).trans (hζM 0))
+
+/-- Simon Ch. 5, proof of Theorem 4.5, (8)–(12) on the varifold side. Let `f` be `1`-Lipschitz on
+`Bⁿ_{σ/2}(0)` with `|f| ≤ σ/16`, let `spt V ∩ B_σ(0)` lie within `σ/16` of `T = q(ℝⁿ × {0})`, and
+let `p_x` be the graph plane of `Df(x')` at `μ_V`-a.e. `x = q(x', f x')` with `|x'| < σ/2` and `f`
+differentiable at `x'`. For `ζ ∈ C¹_c(B̆ⁿ_{σ/4}(0))` with `|∇ζ| ≤ M`, `a(x)` the first `n`
+coordinates of `q⁻¹x`,
+`Γ = q(graph f|B_{σ/2})` and `Γ' = q(graph f|B̆_{σ/4})`,
+`|∫_{Γ'} ∇fʲ(a x) · ∇ζ(a x) dμ_V| ≤ M μ_V(B_{σ/2}(0) ∩ (spt V \ Γ)) + M ∫_{B_σ(0)} |p_x − p_T|² dμ_V
+  + M (σ/4) ∫_{B_{σ/2}(0)} |H| dμ_V`.
+The integrand `Φ(x) = p_x e'_j · p_x q(∇ζ(a x), 0)` of the vertical first variation satisfies
+`|∫_{B_{σ/2}(0)} Φ| ≤ M (σ/4) ∫ |H|` and `|Φ| ≤ M`. It vanishes at points of `Γ \ Γ'`, where
+`∇ζ(a x) = 0`, and `B_{σ/2}(0) \ (Γ ∪ Γ')` has weight at most `μ_V(B_{σ/2}(0) ∩ (spt V \ Γ))`,
+since `μ_V((spt V)ᶜ) = 0`. By the area formula and Rademacher's theorem, the points of `Γ'` over
+non-differentiability points of `f` form an `Hⁿ`-null, hence `μ_V`-null, set. At `μ_V`-a.e. other
+point of `Γ'`, the tilt algebra gives `|Φ − ∇fʲ · ∇ζ| ≤ M |p_x − p_T|²`; integrate over `Γ'`. -/
+theorem gwe_graph_tangential_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → (∀ x ∈ closedBall (0 : Rn n) (σ / 2), ‖f x‖ ≤ σ / 16) → (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → (∀ᵐ x ∂V.weight, ∀ x' ∈ ball (0 : Rn n) (σ / 2), x = q (graphPoint x' (f x')) → DifferentiableAt ℝ f x' → V.tangentProj x = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (fderiv ℝ f x' v)))).starProjection) → ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in q '' graphOver f (ball 0 (σ / 4)), inner ℝ (gradient (fun y => f y j) (EuclideanSpace.finAddEquivProd (q.symm x)).1) (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) ∂V.weight| ≤ M * (V.weight (closedBall 0 (σ / 2) ∩ (V.support \ q '' graphOver f (closedBall 0 (σ / 2))))).toReal + M * ∫ x in closedBall 0 σ, hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight + M * (σ / 4) * ∫ x in closedBall 0 (σ / 2), ‖H x‖ ∂V.weight := by
+  intro n ℓ hn U hU V H hH hpm σ hσ hσU q f hf hfb hdist htan ζ hζ hζc hζs M hM j
+  obtain ⟨hfin, hcompl, hnull⟩ := Submission.gte_weight_null_finite n ℓ U V
+  obtain ⟨hproj, hint⟩ := Submission.gte_tangentProj_integrands n ℓ U V
+  obtain ⟨hgpc, hac, hagp, himg⟩ := Submission.gte_graph_image_geometry n ℓ q
+  obtain ⟨hZm, hZ0, hDf⟩ := Submission.gte_lipschitz_ball_calculus n ℓ f 1 (σ / 2) hf
+  obtain ⟨hsub, hnorm, -, -⟩ := lip_approx_graph_coordinates n ℓ q
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  -- Step 1: `|q(w, 0)| = |w|`, `|e'_j| = 1`, `(0, 0) = 0` and `|A|² ≥ 0`
+  have hgp0 : ∀ w : Rn n, ‖q (graphPoint w (0 : Rn ℓ))‖ = ‖w‖ := by
+    intro w
+    have h := hnorm w 0
     rw [norm_zero, zero_pow two_ne_zero, add_zero] at h
     rw [LinearIsometryEquiv.norm_map]
-    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
-  have hinner0 : ∀ a b : Rn n,
-      inner ℝ (q (graphPoint a 0)) (q (graphPoint b 0)) = inner ℝ a b := fun a b => by
-    rw [LinearIsometryEquiv.inner_map_map, hinner, inner_zero_left, add_zero]
-  -- the rows `R j` of `D`; Simon (7); the trace identity (13) for `S`, of dimension `n`; and the
-  -- projection defect (10)–(11) for `S` and `T`
-  obtain ⟨hrow, R, hR, hRsum⟩ := Submission.gwe_gta_row_bounds n ℓ D
-  have horth := Submission.gwe_gta_graph_row_orthogonal n ℓ q D
-  have hvert := Submission.gwe_gta_vertical_trace_sum n ℓ q _
-    (Submission.tdo_gpd_graph_plane_finrank n ℓ q D)
-  have hdefect := Submission.gwe_gta_proj_inner_defect (n + ℓ)
-    (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v)))) (rotatedPlane q)
-  generalize Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (D v))) = S
-    at horth hvert hdefect ⊢
-  have hE : 0 ≤ hsNormSq (S.starProjection - (rotatedPlane q).starProjection) :=
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h
+  have he : ‖q (graphPoint (0 : Rn n) (EuclideanSpace.single j (1 : ℝ)))‖ = 1 := by
+    have h := hnorm 0 (EuclideanSpace.single j (1 : ℝ))
+    have h1 : ‖EuclideanSpace.single j (1 : ℝ)‖ = 1 := by simp
+    rw [norm_zero, zero_pow two_ne_zero, zero_add, h1] at h
+    rw [LinearIsometryEquiv.norm_map]
+    exact (pow_left_inj₀ (norm_nonneg _) zero_le_one two_ne_zero).mp h
+  have hgp00 : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+    have h := hsub 0 0 0 0
+    simp only [sub_self] at h
+    exact h.symm
+  have hψ0 : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, 0 ≤ hsNormSq A := fun A =>
     Finset.sum_nonneg fun i _ => sq_nonneg _
   generalize hsNormSq (S.starProjection - (rotatedPlane q).starProjection) = E
     at hvert hdefect hE ⊢
@@ -2497,6 +3288,138 @@ theorem gwe_vertical_first_variation : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set
   rw [Real.norm_eq_abs, abs_mul]
   exact mul_le_mul (hζM _) ((abs_real_inner_le_norm _ _).trans_eq (by rw [he, one_mul]))
     (abs_nonneg _) ((abs_nonneg _).trans (hζM 0))
+  -- Step 2: `Γ` is compact, `Γ'` is Borel, `Γ' ⊆ B_{σ/2}(0)`, and `μ_V(B_σ(0)) < ∞`
+  obtain ⟨hΓc, hΓ'm⟩ := himg f (σ / 2) (σ / 4) hf.continuousOn (by linarith)
+  have hΓm : MeasurableSet (q '' graphOver f (closedBall 0 (σ / 2))) := hΓc.measurableSet
+  have hBσ : closedBall (0 : Amb n ℓ) (σ / 2) ⊆ closedBall 0 σ :=
+    closedBall_subset_closedBall (by linarith)
+  have hμB : V.weight (closedBall (0 : Amb n ℓ) (σ / 2)) < ⊤ :=
+    hfin _ (isCompact_closedBall 0 _) (hBσ.trans hσU)
+  have hμBσ : V.weight (closedBall (0 : Amb n ℓ) σ) < ⊤ :=
+    hfin _ (isCompact_closedBall 0 _) hσU
+  have hΓ'B : q '' graphOver f (ball 0 (σ / 4)) ⊆ closedBall (0 : Amb n ℓ) (σ / 2) := by
+    rintro _ ⟨_, ⟨x', hx', rfl⟩, rfl⟩
+    have hx'n : ‖x'‖ < σ / 4 := mem_ball_zero_iff.mp hx'
+    have hfx : ‖f x'‖ ≤ σ / 16 :=
+      hfb x' (ball_subset_closedBall (ball_subset_ball (by linarith) hx'))
+    rw [mem_closedBall_zero_iff, LinearIsometryEquiv.norm_map]
+    -- `|(x', f x')|² = |x'|² + |f x'|² ≤ σ²/16 + σ²/256 ≤ σ²/4`
+    have h2 : ‖graphPoint x' (f x')‖ ^ 2 ≤ (σ / 2) ^ 2 := by
+      rw [hnorm]
+      nlinarith [mul_le_mul hx'n.le hx'n.le (norm_nonneg _) (by linarith),
+        mul_le_mul hfx hfx (norm_nonneg _) (by linarith), sq_nonneg σ]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by linarith) two_ne_zero).mp h2
+  -- Step 3: the first-variation integrand `Φ` is bounded by `M` and integrable on `B_{σ/2}(0)`
+  have hgrad : Continuous (gradient ζ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hζ.continuous_fderiv one_ne_zero)
+  have hgcont : Continuous fun x : Amb n ℓ =>
+      q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) (0 : Rn ℓ)) := by
+    have hgp0c : Continuous fun w : Rn n => graphPoint w (0 : Rn ℓ) :=
+      hgpc.comp (continuous_id.prodMk continuous_const)
+    exact q.continuous.comp (hgp0c.comp (hgrad.comp hac))
+  have hΦint : IntegrableOn (fun x => inner ℝ
+      (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+      (V.tangentProj x
+        (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))))
+      (closedBall 0 (σ / 2)) V.weight :=
+    (hint hpm _ hμB).1 _ _ M hgcont.aestronglyMeasurable fun x => (hgp0 _).trans_le (hM _)
+  have hΦle : ∀ x, |inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+      (V.tangentProj x
+        (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0)))| ≤ M := by
+    intro x
+    calc _ ≤ ‖V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ *
+          ‖V.tangentProj x
+            (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))‖ :=
+          abs_real_inner_le_norm _ _
+      _ ≤ ‖q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))‖ *
+          ‖q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0)‖ :=
+          mul_le_mul (hproj _ _) (hproj _ _) (norm_nonneg _) (norm_nonneg _)
+      _ ≤ 1 * M := by
+          rw [he, hgp0]
+          exact mul_le_mul_of_nonneg_left (hM _) zero_le_one
+      _ = M := one_mul M
+  -- Step 4: `Φ = 0` at the points of `Γ` outside `Γ'`, where `∇ζ(a x) = 0`
+  have hΦzero : ∀ x ∈ (closedBall (0 : Amb n ℓ) (σ / 2) \ q '' graphOver f (ball 0 (σ / 4))) ∩
+      q '' graphOver f (closedBall 0 (σ / 2)),
+      inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+        (V.tangentProj x
+          (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) = 0 := by
+    rintro x ⟨⟨-, hxG'⟩, ⟨_, ⟨x', -, rfl⟩, rfl⟩⟩
+    have hx' : x' ∉ tsupport ζ := fun h => hxG' ⟨_, ⟨x', hζs h, rfl⟩, rfl⟩
+    have hgrad0 : gradient ζ x' = 0 := by
+      rw [gradient, fderiv_of_notMem_tsupport ℝ hx', map_zero]
+    rw [hagp, hgrad0, hgp00, map_zero, map_zero, inner_zero_right]
+  -- Step 5: off `Γ ∪ Γ'`, `B_{σ/2}(0)` has weight at most `μ_V(B_{σ/2}(0) ∩ (spt V \ Γ)) < ∞`
+  have hmle : V.weight ((closedBall (0 : Amb n ℓ) (σ / 2) \ q '' graphOver f (ball 0 (σ / 4))) \
+      q '' graphOver f (closedBall 0 (σ / 2))) ≤
+      V.weight (closedBall 0 (σ / 2) ∩ (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) := by
+    calc _ ≤ V.weight ((closedBall 0 (σ / 2) ∩
+          (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) ∪ V.supportᶜ) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hs : x ∈ V.support
+          · exact Or.inl ⟨hx.1.1, hs, hx.2⟩
+          · exact Or.inr hs
+      _ ≤ _ + V.weight V.supportᶜ := measure_union_le _ _
+      _ = _ := by rw [hcompl, add_zero]
+  have hmlt : V.weight (closedBall (0 : Amb n ℓ) (σ / 2) ∩
+      (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) < ⊤ :=
+    (measure_mono inter_subset_left).trans_lt hμB
+  -- Step 6: `φ = ∇fʲ(a x) · ∇ζ(a x)` is Borel, and the tilt integrand is integrable on `B_σ(0)`
+  have hφm : AEStronglyMeasurable (fun x => inner ℝ
+      (gradient (fun y => f y j) (EuclideanSpace.finAddEquivProd (q.symm x)).1)
+      (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1))
+      (V.weight.restrict (q '' graphOver f (ball 0 (σ / 4)))) := by
+    have h1 : Measurable (gradient fun y => f y j) :=
+      (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.measurable.comp (measurable_fderiv ℝ _)
+    exact (Continuous.measurable2 (c := fun a b : Rn n => inner ℝ a b) continuous_inner
+      (h1.comp hac.measurable) (hgrad.measurable.comp hac.measurable)).aestronglyMeasurable
+  have hψint : IntegrableOn (fun x => hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection))
+      (closedBall 0 σ) V.weight :=
+    (hint hpm _ hμBσ).2 _
+  -- Step 7: the graph over the non-differentiability points of `f` is `Hⁿ`-null (area formula
+  -- and Rademacher), hence `μ_V`-null
+  have hZnull : V.weight (q '' graphOver f (ball (0 : Rn n) (σ / 2) ∩
+      {x | ¬DifferentiableAt ℝ f x})) = 0 := by
+    apply hnull
+    have h := gwe_lipschitz_graph_area_formula n ℓ hn q f 1 (σ / 2) hf _ hZm
+      (inter_subset_left.trans ball_subset_closedBall) (fun _ => 1)
+    rw [setLIntegral_one, setLIntegral_measure_zero _ _ hZ0] at h
+    exact h
+  -- Step 8: a.e. on `Γ'`, `p_x` is the graph plane of `Df(a x)`, and the tilt algebra gives
+  -- `|Φ - φ| ≤ |p_x - p_T|² |∇ζ(a x)| ≤ M |p_x - p_T|²`
+  have hae : ∀ᵐ x ∂V.weight, x ∈ q '' graphOver f (ball 0 (σ / 4)) →
+      |inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+        (V.tangentProj x
+          (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) -
+        inner ℝ (gradient (fun y => f y j) (EuclideanSpace.finAddEquivProd (q.symm x)).1)
+          (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1)| ≤
+        M * hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) := by
+    filter_upwards [htan, measure_eq_zero_iff_ae_notMem.mp hZnull] with x hxt hxZ hxG'
+    obtain ⟨_, ⟨x', hx', rfl⟩, rfl⟩ := hxG'
+    have hx'2 : x' ∈ ball (0 : Rn n) (σ / 2) := ball_subset_ball (by linarith) hx'
+    have hd : DifferentiableAt ℝ f x' := by
+      by_contra hnd
+      exact hxZ ⟨_, ⟨x', ⟨hx'2, hnd⟩, rfl⟩, rfl⟩
+    obtain ⟨hD1, hgradf⟩ := hDf x' hx'2
+    have hD : ‖fderiv ℝ f x'‖ ≤ 1 := by exact_mod_cast hD1
+    have hTA := (Submission.gwe_graph_tilt_algebra n ℓ q (fderiv ℝ f x') hD).2 j _
+      (gradient ζ x') (hgradf hd j)
+    rw [hagp, hxt x' hx'2 rfl hd]
+    exact hTA.trans ((mul_le_mul_of_nonneg_left (hM _) (hψ0 _)).trans_eq (mul_comm _ _))
+  -- Step 9: combine the localized comparison with the vertical first-variation bound
+  have hcmp := Submission.gte_localized_comparison V.weight (closedBall (0 : Amb n ℓ) (σ / 2))
+    (closedBall 0 σ) (q '' graphOver f (closedBall 0 (σ / 2))) (q '' graphOver f (ball 0 (σ / 4)))
+    (fun x => inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ)))))
+      (V.tangentProj x
+        (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))))
+    (fun x => inner ℝ (gradient (fun y => f y j) (EuclideanSpace.finAddEquivProd (q.symm x)).1)
+      (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1))
+    (fun x => hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection)) M
+    (V.weight (closedBall 0 (σ / 2) ∩ (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))))
+    hM0 hΓm hΓ'm hΓ'B (hΓ'B.trans hBσ) hΦint hΦle hΦzero hmle hmlt hφm hψint (fun _ => hψ0 _) hae
+  have hfv := Submission.gwe_vertical_first_variation n ℓ hn U hU V H hH σ hσ hσU q hdist ζ hζ
+    hζc hζs M hM j
+  linarith
 
 end Submission
 
