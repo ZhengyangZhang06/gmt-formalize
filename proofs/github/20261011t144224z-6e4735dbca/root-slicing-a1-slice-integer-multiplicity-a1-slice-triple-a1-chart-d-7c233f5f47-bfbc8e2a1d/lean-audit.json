@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9837a00d8dd3bff48c5591acc565edf73d73b508e0a589b27b6e6a2d165c2224",
+  "git_delta": {
+    "base_commit": "62121bed44cb284b94c9b6166ccf3ebe9fb54bac",
+    "candidate_commit": "ca0d69f9608bbb72ac175ed15dc9da7a8ec1390a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_cd_c1c_critical_image_null",
+    "diff_sha256": "065afe612bb1aef27c122c3fe54775e3c72410d70af0fa0cb210db62191e2f20",
+    "source_sha256": "1e80c57013737652a1ffbf67cc4fed829eff8ed5b80a7122d5891d9ef62b90d1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_cd_c1c_critical_image_null",
+      "statement": "∀ (n P : ℕ) (f : Eucl n → Eucl P) (L : ℝ≥0), LipschitzWith L f → (μHE[n] : Measure (Eucl P)) (f '' {w | DifferentiableAt ℝ f w ∧ ¬ Function.Injective (fderiv ℝ f w)}) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
