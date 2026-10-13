@@ -359,6 +359,23 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The upper limit of `f : ℝ → [0,∞]` at `0⁺` is computed along the radii `1/(n+1)`:
+`limsup_{t→0⁺} f(t) = inf_{n ∈ ℕ} sup_{0<t<1/(n+1)} f(t)`.  The intervals `(0, ε)`, `ε > 0`, form
+a basis of `𝓝[>] 0`, so the upper limit is `inf_{ε>0} sup_{(0,ε)} f`; each radius `1/(n+1)` is
+admissible, and every `ε > 0` exceeds some `1/(n+1)`, below which the supremum is smaller. -/
+theorem Submission.rectifiability_mickle_rado_limsup_eq_iInf :
+    ∀ f : ℝ → ℝ≥0∞, limsup f (𝓝[>] (0 : ℝ)) =
+      ⨅ n : ℕ, ⨆ t ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)), f t := by
+  intro f
+  rw [(nhdsGT_basis (0 : ℝ)).limsup_eq_iInf_iSup]
+  apply le_antisymm
+  · refine le_iInf fun n => ?_
+    exact iInf₂_le (1 / ((n : ℝ) + 1)) (by positivity)
+  · refine le_iInf₂ fun ε hε => ?_
+    obtain ⟨n, hn⟩ := exists_nat_one_div_lt hε
+    refine (iInf_le _ n).trans ?_
+    exact biSup_mono fun t ht => ⟨ht.1, ht.2.trans hn⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
