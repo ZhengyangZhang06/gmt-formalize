@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f039e85b0f3a83bb8686417412911664597f0078793ee3e8259dcf970ad89348",
+  "git_delta": {
+    "base_commit": "f52892eb1d94178bb1efa14163f4267a12dd6570",
+    "candidate_commit": "00c458d8b5f0043b634cbdd0b8d43d20d1d7deb6",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b5b4d6b0004123d6bfed1f49e26cf938d47623e10bb609f727e153df51a6f37d",
+    "source_sha256": "2d7d1f2ed5266c3eb0505785930a5530312bcd5a7df005e0dc8eb2005ea954ab",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_lipschitz_smoothing",
+      "statement": "∀ (P : ℕ) (g : Euclid P → ℝ) (K : NNReal) (σ : ℝ), LipschitzWith K g → 0 < σ → ∃ g' : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g' ∧ (∀ x, ‖fderiv ℝ g' x‖ ≤ K) ∧ (∀ x, |g' x - g x| ≤ K * σ) ∧ ∀ (x : Euclid P) (c : ℝ), (∀ y ∈ ball x σ, g y = c) → g' x = c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
