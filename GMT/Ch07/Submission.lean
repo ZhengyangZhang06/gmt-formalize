@@ -576,6 +576,46 @@ theorem Submission.dor_lmb_ret_tangent_projection : ∀ (P d : ℕ) (V : Set (Eu
   rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left, map_sub]
   change inner ℝ (_ - G v y) x = 0
   rw [hGy, sub_self, inner_zero_left]
+/-- **Normal-space transfer** (step 3(c) of the nearest point retraction onto a `C²`
+submanifold).  Let `Q`, `Q'` be the orthogonal projections onto `T`, `T'` with
+`dim T = dim T'` and `‖Q' - Q‖ ≤ 1/2`.  For `e ∈ Tᗮ` we have `Q e = 0`, so
+`‖Q' e‖ = ‖(Q' - Q) e‖ ≤ ‖e‖/2` and `‖e‖ ≤ 2 ‖e - Q' e‖`.  Hence `e ↦ e - Q' e` is an
+injective linear map `Tᗮ → T'ᗮ`; as `dim Tᗮ = dim T'ᗮ` it is onto, and the preimage `e` of
+`n ∈ T'ᗮ` satisfies `e - Q' e = n` and `‖e‖ ≤ 2 ‖n‖`. -/
+theorem Submission.dor_lmb_ret_normal_space_transfer : ∀ (P : ℕ) (T T' : Submodule ℝ (Euclid P)), Module.finrank ℝ T = Module.finrank ℝ T' → ‖T'.starProjection - T.starProjection‖ ≤ 1 / 2 → ∀ n ∈ T'ᗮ, ∃ e ∈ Tᗮ, e - T'.starProjection e = n ∧ ‖e‖ ≤ 2 * ‖n‖ := by
+  intro P T T' hdim hQ n hn
+  -- Step 1: `L e := e - Q' e` maps `Tᗮ` linearly into `T'ᗮ`
+  let L : Tᗮ →ₗ[ℝ] T'ᗮ :=
+    ((LinearMap.id - (T'.starProjection : Euclid P →ₗ[ℝ] Euclid P)).domRestrict Tᗮ).codRestrict
+      T'ᗮ fun e => T'.sub_starProjection_mem_orthogonal (e : Euclid P)
+  have hL : ∀ e : Tᗮ, ((L e : T'ᗮ) : Euclid P) = e - T'.starProjection e := fun e => rfl
+  -- Step 2: for `e ∈ Tᗮ`, `Q e = 0`, so `‖Q' e‖ ≤ ‖e‖ / 2` and `‖e‖ ≤ 2 ‖e - Q' e‖`
+  have hlow : ∀ e ∈ Tᗮ, ‖e‖ ≤ 2 * ‖e - T'.starProjection e‖ := by
+    intro e he
+    have hQe : T'.starProjection e = (T'.starProjection - T.starProjection) e := by
+      rw [sub_apply, T.starProjection_apply_eq_zero_iff.mpr he, sub_zero]
+    have h₁ : ‖T'.starProjection e‖ ≤ 1 / 2 * ‖e‖ := by
+      rw [hQe]
+      exact ((T'.starProjection - T.starProjection).le_opNorm e).trans
+        (mul_le_mul_of_nonneg_right hQ (norm_nonneg e))
+    have h₂ : ‖e‖ ≤ ‖e - T'.starProjection e‖ + ‖T'.starProjection e‖ := by
+      simpa using norm_add_le (e - T'.starProjection e) (T'.starProjection e)
+    linarith
+  -- Step 3: `L` is injective, since `L e = 0` forces `‖e‖ ≤ 0`
+  have hinj : Function.Injective L := by
+    refine (injective_iff_map_eq_zero L).mpr fun e he => ?_
+    have h := hlow e e.2
+    rw [← hL, he, ZeroMemClass.coe_zero, norm_zero, mul_zero] at h
+    exact Subtype.ext (norm_le_zero_iff.mp h)
+  -- Step 4: `dim Tᗮ = dim T'ᗮ`, so the injective map `L` is onto `T'ᗮ`
+  have hdim' : Module.finrank ℝ Tᗮ = Module.finrank ℝ T'ᗮ := by
+    have h₁ := T.finrank_add_finrank_orthogonal
+    have h₂ := T'.finrank_add_finrank_orthogonal
+    omega
+  obtain ⟨e, he⟩ := (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim').mp hinj ⟨n, hn⟩
+  -- Step 5: the preimage `e` of `n` satisfies `e - Q' e = n` and `‖e‖ ≤ 2 ‖n‖`
+  have hen : (e : Euclid P) - T'.starProjection e = n := by rw [← hL, he]
+  exact ⟨e, e.2, hen, hen ▸ hlow e e.2⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
