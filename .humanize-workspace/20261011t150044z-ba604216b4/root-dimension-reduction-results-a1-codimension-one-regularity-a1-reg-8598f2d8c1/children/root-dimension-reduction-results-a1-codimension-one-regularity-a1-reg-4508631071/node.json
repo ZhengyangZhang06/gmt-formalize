@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.tangential_halfspace-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Derivatives parallel to the boundary integrate to zero over a half-space",
+  "statement": "Let P ∈ ℕ, v, u ∈ ℝ^P with ⟨u, v⟩ = 0, and h : ℝ^P → ℝ of class C¹ with compact support. Then ∫_H Dh(w)(u) dL^P(w) = 0, where H := {w ∈ ℝ^P : ⟨w, v⟩ > 0}.",
+  "lean_statement": "∀ (P : ℕ) (v u : Euclid P) (h : Euclid P → ℝ), inner ℝ u v = 0 → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid P | 0 < inner ℝ w v}, fderiv ℝ h w u = 0",
+  "lean_name": "codim1_rdo_dg_tma_tangential_halfspace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4508631071-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.vector_convergence-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Blow-up convergence of the vector measure ν μ on C¹ vector test fields (3a)",
+  "statement": "Let m ∈ ℕ, D, F ⊆ ℝ^{m+1} with F Borel, μ a measure and ν : ℝ^{m+1} → ℝ^{m+1} satisfying (GG) ∫_F div φ dL^{m+1} = −∫ ⟨φ, ν⟩ dμ for every C¹ compactly supported φ with tsupport φ ⊆ D. Let y, v ∈ ℝ^{m+1} with |v| = 1 and ρ₁ > 0 with B̄_{ρ₁}(y) ⊆ D, and assume that for every R, L^{m+1}((F_{y,r} Δ {w : ⟨w, v⟩ > 0}) ∩ B_R(0)) → 0 as r ↓ 0, where F_{y,r} := {w : y + r w ∈ F}. Then for every C¹ compactly supported g : ℝ^{m+1} → ℝ^{m+1}, r^{-m} ∫ ⟨g(r^{-1}(z − y)), ν(z)⟩ dμ(z) → ∫_{(span{v})^⊥} ⟨g, v⟩ dH^m as r ↓ 0 (H^m = μHE[m]).",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)) (ρ₁ : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < ρ₁ → closedBall y ρ₁ ⊆ D → ‖v‖ = 1 → (∀ R : ℝ, Tendsto (fun r : ℝ => volume (symmDiff ((fun w => y + r • w) ⁻¹' F) {w | 0 < inner ℝ w v} ∩ ball (0 : Euclid (m + 1)) R)) (𝓝[>] 0) (𝓝 0)) → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), inner ℝ (g z) v ∂μHE[m]))",
+  "lean_name": "codim1_rdo_dg_tma_vector_convergence",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.rescaled_gauss_green-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.halfspace_gauss_green-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.rescaled_gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.halfspace_gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ad18504a1c-a1"
+}
