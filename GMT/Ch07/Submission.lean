@@ -1804,6 +1804,62 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **The current `[[G]]` of a Borel set `G ⊆ ℝⁿ` is integer multiplicity** (Simon Ch. 6, 2.2
+and Definition 3.1).  The full-space triple `(ℝⁿ, 1, e₀ ∧ ⋯ ∧ eₙ₋₁)` is an `IMRep` in `ℝⁿ`: the
+standard basis `e` is orthonormal and spans `⊤`, `ℝⁿ = ⊤` is its own approximate tangent space at
+every point, `ℝⁿ = range id` is countably `n`-rectifiable and `Hⁿ` is Lebesgue measure.  Its
+restriction to `G` (integer multiplicity calculus (b)) represents `[[G]] = τ(G, 1, e₀ ∧ ⋯ ∧ eₙ₋₁)`,
+`[[G]](ω) = ∫_G ω(x)(e₀, …, eₙ₋₁) dHⁿ(x)`. -/
+theorem Submission.dor_lmb_fc_dtop_cci_borel_current_im : ∀ (n : ℕ) (G : Set (Euclid n)), MeasurableSet G → ∃ A : GeometricCurrentOn (univ : Set (Euclid n)) n, IsIntegerMultiplicity A ∧ ∀ ω : TestFormOn (univ : Set (Euclid n)) n, A ω = ∫ x in G, (ω : DifferentialForm (Euclid n) n) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[n] := by
+  intro n G hG
+  -- the standard basis `e = (e₀, …, eₙ₋₁)` and `ξ₀ = e₀ ∧ ⋯ ∧ eₙ₋₁`, `⟨α, ξ₀⟩ = α(e)`
+  set e : Fin n → Euclid n := fun k => EuclideanSpace.single k (1 : ℝ)
+  let ξ₀ : MultiVector n n := ContinuousAlternatingMap.apply ℝ (Euclid n) ℝ e
+  -- Step 1: `e` is an orthonormal basis of `ℝⁿ`, so `ξ₀` is a unit orientation of `⊤`
+  have hb : ⇑(EuclideanSpace.basisFun (Fin n) ℝ) = e := by
+    ext1 k
+    exact EuclideanSpace.basisFun_apply (ι := Fin n) (𝕜 := ℝ) k
+  have hξ₀ : IsUnitOrientationOf ξ₀ (⊤ : Submodule ℝ (Euclid n)) := by
+    refine ⟨e, hb ▸ (EuclideanSpace.basisFun (Fin n) ℝ).orthonormal, ?_, Or.inl fun α => rfl⟩
+    rw [← hb, ← OrthonormalBasis.coe_toBasis]
+    exact Module.Basis.span_eq _
+  -- Step 2: `ℝⁿ = ⊤` has approximate tangent space `⊤` at every point
+  have htan : ∀ x : Euclid n, HasApproximateTangentSpaceAt n (univ : Set (Euclid n)) x ⊤ := by
+    intro x
+    have h := Poincare.SimonGMT.Chapter03.hasApproximateTangentSpaceAt_submodule
+      (P := (⊤ : Submodule ℝ (Euclid n))) (n := n)
+      (by rw [finrank_top, finrank_euclideanSpace_fin]) (x := x) Submodule.mem_top
+    rwa [Submodule.top_coe] at h
+  -- Step 3: `ℝⁿ = range id` is countably `n`-rectifiable
+  have hrect : CountablyRectifiable n (univ : Set (Euclid n)) := by
+    rw [← range_id]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range LipschitzWith.id
+  -- Steps 4–5: the full-space triple `(ℝⁿ, 1, ξ₀)`; `Hⁿ` is Lebesgue measure, finite on compacts
+  obtain ⟨R, hRc, hRm, hRo⟩ : ∃ R : IMRep (univ : Set (Euclid n)) n,
+      R.carrier = univ ∧ R.mult = (fun _ => 1) ∧ R.orient = (fun _ => ξ₀) :=
+    ⟨{ carrier := univ
+       mult := fun _ => 1
+       orient := fun _ => ξ₀
+       measurableSet_carrier := MeasurableSet.univ
+       carrier_subset := subset_rfl
+       rectifiable := hrect
+       measurable_mult := measurable_const
+       mult_pos := fun _ _ => one_pos
+       locallyIntegrable_mult := fun K hK _ => by
+         simp only [Nat.cast_one, lintegral_one, Measure.restrict_apply_univ, univ_inter]
+         rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+         exact hK.measure_lt_top.ne
+       aestronglyMeasurable_orient := aestronglyMeasurable_const
+       orients := Filter.Eventually.of_forall fun x => ⟨⊤, htan x, hξ₀⟩ }, rfl, rfl, rfl⟩
+  -- Step 6: its restriction `(G, 1, ξ₀)` to `G` represents a current `A`
+  obtain ⟨A, R', hA, hcar, hmult, horient⟩ :=
+    Submission.cmc_imRep_locality_restrict_sub.2.1 n n univ R G isOpen_univ hG
+  refine ⟨A, ⟨R', hA⟩, fun ω => ?_⟩
+  -- Step 7: `A(ω) = ∫_G 1 · ⟨ω(x), ξ₀⟩ dHⁿ = ∫_G ω(x)(e) dHⁿ`
+  rw [hA ω, IMRep.action, hcar, hmult, horient, hRc, hRm, hRo, univ_inter]
+  simp only [Nat.cast_one, one_mul]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
