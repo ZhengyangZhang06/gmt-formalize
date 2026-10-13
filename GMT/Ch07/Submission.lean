@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Layer-cake convergence** (the "standard approximation argument" ending Simon's proof of
+7.2.4, chapter-07.txt lines 284–289).  Let `g ≥ 0` be continuous with compact support,
+`C = tsupport g`, `μ(C) < ∞` and `limsup_j μ_j(C) < ∞`.  If `μ_j{g > t} → μ{g > t}` for a.e.
+`t > 0`, then `∫ g dμ_j → ∫ g dμ`.  For `ν(C) < ∞`, `g` is `ν`-integrable and
+`∫ g dν = ∫_{(0,∞)} ν{g > t} dt` (layer cake).  Pick `Λ` with `limsup_j μ_j(C) < Λ < ∞`; for
+large `j` the distribution functions are dominated by `Λ·1_{t ≤ b}` (`g ≤ b`), so dominated
+convergence applies. -/
+theorem Submission.cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → μ (tsupport g) < ∞ → limsup (fun j => μs j (tsupport g)) atTop < ∞ → (∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x}))) → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ)) := by
+  intro P μs μ g hg hgc hg0 hμ hlim hae
+  -- `g ≤ ‖g‖ ≤ b`
+  obtain ⟨b, hb⟩ := hg.bounded_above_of_compact_support hgc
+  -- `μ_j(C) < Λ < ∞` for all large `j`
+  obtain ⟨Λ, hΛ, hΛtop⟩ := exists_between hlim
+  have hev : ∀ᶠ j in atTop, μs j (tsupport g) < Λ := eventually_lt_of_limsup_lt hΛ
+  -- layer cake for every `ν` with `ν(C) < ∞`, for which `g` is integrable
+  have hlc : ∀ ν : Measure (Euclid P), ν (tsupport g) < ∞ →
+      ∫ x, g x ∂ν = ∫ t in Ioi 0, ν.real {x | t < g x} := fun ν hν =>
+    ((integrableOn_iff_integrable_of_support_subset (subset_tsupport g)).mp
+      (hg.continuousOn.integrableOn_of_subset_isCompact hgc (isClosed_tsupport g).measurableSet
+        subset_rfl hν.ne)).integral_eq_integral_meas_lt (Eventually.of_forall hg0)
+  -- `{g > t} ⊆ C` for `t > 0`
+  have hsub : ∀ t : ℝ, 0 < t → {x | t < g x} ⊆ tsupport g := fun t ht x hx =>
+    subset_tsupport g (ht.trans (show t < g x from hx)).ne'
+  rw [hlc μ hμ]
+  refine Tendsto.congr' (f₁ := fun j => ∫ t in Ioi 0, (μs j).real {x | t < g x}) ?_ ?_
+  · filter_upwards [hev] with j hj
+    exact (hlc (μs j) (hj.trans hΛtop)).symm
+  -- dominated convergence with the bound `Λ·1_{(-∞, b]}`
+  refine tendsto_integral_filter_of_dominated_convergence (indicator (Iic b) fun _ => Λ.toReal)
+    ?_ ?_ ?_ ?_
+  · refine Eventually.of_forall fun j => ?_
+    have hanti : Antitone fun t : ℝ => μs j {x | t < g x} := fun s t hst =>
+      measure_mono fun x hx => lt_of_le_of_lt hst hx
+    exact hanti.measurable.ennreal_toReal.aestronglyMeasurable
+  · filter_upwards [hev] with j hj
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    rw [Real.norm_eq_abs, abs_of_nonneg measureReal_nonneg]
+    by_cases htb : t ≤ b
+    · rw [indicator_of_mem (show t ∈ Iic b from htb)]
+      exact ENNReal.toReal_mono hΛtop.ne ((measure_mono (hsub t ht)).trans hj.le)
+    · have hempty : {x | t < g x} = ∅ := eq_empty_of_forall_notMem fun x hx =>
+        htb (((show t < g x from hx).le.trans (Real.le_norm_self _)).trans (hb x))
+      rw [hempty, measureReal_empty, indicator_of_notMem (show t ∉ Iic b from htb)]
+  · rw [integrable_indicator_iff measurableSet_Iic]
+    refine integrableOn_const ?_
+    rw [Measure.restrict_apply measurableSet_Iic]
+    exact ((measure_mono fun t ht => ⟨ht.2, ht.1⟩ :
+      volume (Iic b ∩ Ioi 0) ≤ volume (Ioc 0 b)).trans_lt measure_Ioc_lt_top).ne
+  · filter_upwards [hae, ae_restrict_mem measurableSet_Ioi] with t ht htpos
+    exact (ENNReal.tendsto_toReal ((measure_mono (hsub t htpos)).trans_lt hμ).ne).comp ht
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
