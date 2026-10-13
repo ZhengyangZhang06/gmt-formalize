@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e1ac1abc8fae7b8fc921e50570787c54f79c139979d5e4e46ce9f9bc210ddab",
+  "git_delta": {
+    "base_commit": "1ee04d117a8d19c247dd4d8986c112e62ec03aa3",
+    "candidate_commit": "a721460f545582d02feef66fc3ec167e56687e82",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gt_bounded_transfer_of_lintegral_bounds",
+    "diff_sha256": "39e40ef893194fe3144dde5c162fc35affbed006fee12b542cf06894e6a61614",
+    "source_sha256": "285cf99737b86eac464aa53b3ef79e8995bb47b0eb3d0af1d6007768b8f0ad8f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gt_bounded_transfer_of_lintegral_bounds",
+      "statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Nonempty X] (m : Measure X) (ν : Measure Y) (D Z : Set X) (S : Set Y) (φ : Y → X) (s : X → ℝ) (a c : ℝ), MeasurableSet D → MeasurableSet Z → Measurable φ → m D ≠ ∞ → ν S ≠ ∞ → m Z ≤ ENNReal.ofReal a → 0 ≤ a → 0 ≤ c → (∀ v, 0 ≤ s v) → IntegrableOn s D m → (∀ h : X → ℝ≥0∞, Measurable h → (∫⁻ v in D \\ Z, h v ∂m) ≤ (∫⁻ y in S, h (φ y) ∂ν) ∧ (∫⁻ y in S, h (φ y) ∂ν) ≤ ∫⁻ v in D \\ Z, ENNReal.ofReal (1 + c * s v) * h v ∂m) → (∀ (g : X → ℝ) (G : ℝ), Measurable g → (∀ v, 0 ≤ g v) → (∀ v, g v ≤ G) → (∫⁻ v in D, ENNReal.ofReal (g v) ∂m) ≤ (∫⁻ y in S, ENNReal.ofReal (g (φ y)) ∂ν) + ENNReal.ofReal (G * a)) ∧ ∀ (g : X → ℝ) (G : ℝ), Measurable g → (∀ v, |g v| ≤ G) → |(∫ v in D, g v ∂m) - (∫ y in S, g (φ y) ∂ν)| ≤ G * (a + c * (∫ v in D, s v ∂m))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
