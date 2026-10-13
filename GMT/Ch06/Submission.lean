@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -399,6 +400,55 @@ theorem Submission.lpf_c1_local_antilipschitz :
       _ ≤ ‖G z - G z'‖ + ‖G z - G z' - A (z - z')‖ := norm_sub_le _ _
   rw [hcK] at h1 ⊢
   linarith
+
+/-- Simon Ch. 3, proof of Lemma 1.2 (p. 70) and Remark 1.3, for one `C¹` map `G : ℝⁿ → ℝ^P`:
+countably many open sets `O k` on each of which `G` is Lipschitz and bi-Lipschitz onto its image
+cover `G(ℝⁿ)` up to an `Hⁿ`-null set.  Regular points (`DG(w)` injective) lie in some `O k`;
+the image of the critical set is `Hⁿ`-null by the area formula. -/
+theorem Submission.slicing_im_tg_cc_contDiff_range_chart_cover : ∀ (n P : ℕ) (G : Eucl n → Eucl P), ContDiff ℝ 1 G → ∃ O : ℕ → Set (Eucl n), (∀ k, IsOpen (O k)) ∧ (∀ k, ∃ K : ℝ≥0, LipschitzOnWith K G (O k)) ∧ (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G w - G w'‖) ∧ (μHE[n] : Measure (Eucl P)) (range G \ ⋃ k, G '' O k) = 0 := by
+  intro n P G hG
+  -- A countable basis `𝔅` of `ℝⁿ`; enumerate `{∅} ∪ {U ∈ 𝔅 : G Lipschitz and antilipschitz on U}`.
+  obtain ⟨b, hbc, -, hb⟩ := TopologicalSpace.exists_countable_basis (Eucl n)
+  set good : Set (Set (Eucl n)) := {U | U ∈ b ∧ (∃ K : ℝ≥0, LipschitzOnWith K G U) ∧
+    ∃ c : ℝ, 0 < c ∧ ∀ w ∈ U, ∀ w' ∈ U, c * ‖w - w'‖ ≤ ‖G w - G w'‖} with hgood
+  have hgc : (insert ∅ good).Countable := (hbc.mono fun U hU => hU.1).insert ∅
+  obtain ⟨O, hO⟩ := hgc.exists_eq_range (insert_nonempty _ _)
+  have hOk : ∀ k, O k = ∅ ∨ O k ∈ good := fun k => by
+    have : O k ∈ insert ∅ good := hO ▸ mem_range_self k
+    simpa using this
+  -- Each `O k` is open, and `G` is Lipschitz and antilipschitz on it.
+  refine ⟨O, fun k => ?_, fun k => ?_, fun k => ?_, ?_⟩
+  · rcases hOk k with h | h
+    · rw [h]; exact isOpen_empty
+    · exact hb.isOpen h.1
+  · rcases hOk k with h | h
+    · exact ⟨0, by rw [h]; exact lipschitzOnWith_empty _ _⟩
+    · exact h.2.1
+  · rcases hOk k with h | h
+    · exact ⟨1, one_pos, by simp [h]⟩
+    · exact h.2.2
+  · -- A regular point has an antilipschitz ball and a Lipschitz neighbourhood, hence a good
+    -- basis set around it.
+    have hreg : ∀ w, Function.Injective (fderiv ℝ G w) → ∃ k, w ∈ O k := by
+      intro w hw
+      obtain ⟨r, hr, c, hc, hcr⟩ := Submission.lpf_c1_local_antilipschitz n P G w hG hw
+      obtain ⟨K, t, ht, hKt⟩ := hG.locallyLipschitz w
+      have hmem : ball w r ∩ t ∈ 𝓝 w := inter_mem (ball_mem_nhds w hr) ht
+      obtain ⟨U, hUb, hwU, hUs⟩ := hb.mem_nhds_iff.1 hmem
+      have hUg : U ∈ good := ⟨hUb, ⟨K, hKt.mono fun x hx => (hUs hx).2⟩,
+        ⟨c, hc, fun z hz z' hz' => hcr z (hUs hz).1 z' (hUs hz').1⟩⟩
+      obtain ⟨k, hk⟩ : U ∈ range O := hO ▸ mem_insert_of_mem _ hUg
+      exact ⟨k, hk ▸ hwU⟩
+    -- The image of the critical set is `Hⁿ`-null (area formula), and it contains every
+    -- uncovered point of `G(ℝⁿ)`.
+    have hcrit := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero
+      (E := Eucl n) (F := Eucl P) G
+    rw [finrank_euclideanSpace_fin] at hcrit
+    refine measure_mono_null ?_ hcrit
+    rintro y ⟨⟨w, rfl⟩, hy⟩
+    refine ⟨w, ⟨(hG.differentiable one_ne_zero) w, fun hinj => ?_⟩, rfl⟩
+    obtain ⟨k, hk⟩ := hreg w hinj
+    exact hy (mem_iUnion.2 ⟨k, w, hk, rfl⟩)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
