@@ -529,6 +529,124 @@ theorem Submission.dorwbl_test_fn_diff_quotient_integral_tendsto_zero : ∀ (n k
   · rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
     linarith
 
+/-- Weighted blow-up limit at one good point `v`.  Let `f` be continuous and differentiable at
+`v`, `G` Borel with `|G| ≤ C`, and `∫_{B_R(0)} |G(v + r w) - G(v)| dw → 0` as `r ↓ 0` for every
+`R > 0`.  With `Φ_r w = ι w + ι'(r⁻¹(f(v + r w) - f(v)))` and `Φ w = ι w + ι'(Df(v) w)`, every
+continuous compactly supported `ψ` has `∫ ψ(Φ_r w) G(v + r w) dw → G(v) ∫ ψ(Φ w) dw`.
+Orthogonality gives `‖w‖ ≤ ‖ι w + ι' u‖`, so both integrands vanish off `B_R(0)` once
+`spt ψ ⊆ B_R(0)`; there they differ by at most `C |ψ ∘ Φ_r - ψ ∘ Φ| + M |G(v + r ·) - G(v)|`
+(`|ψ| ≤ M`), whose integral tends to `0`. -/
+theorem Submission.dorwbl_weighted_blowup_tendsto_at_point : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (G : Euclid n → ℝ) (C : ℝ) (v : Euclid n), (∀ x y, inner ℝ (ι x) (ι' y) = 0) → Continuous f → Measurable G → (∀ u, |G u| ≤ C) → DifferentiableAt ℝ f v → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |G (v + r • w) - G v|) (𝓝[>] 0) (𝓝 0)) → ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ → Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w)))) := by
+  intro n k ι ι' f G C v horth hf hG hGC hdiff hleb ψ hψ hψc
+  -- `|ψ| ≤ M`, and `tsupport ψ ⊆ closedBall 0 R₀` with `R₀ ≤ R`, `0 < R`.
+  obtain ⟨M, hM⟩ := hψc.exists_bound_of_continuous hψ
+  have hψM : ∀ y, |ψ y| ≤ M := fun y => by rw [← Real.norm_eq_abs]; exact hM y
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hψM 0)
+  have hC0 : 0 ≤ C := (abs_nonneg _).trans (hGC 0)
+  obtain ⟨R₀, hR₀⟩ := hψc.isCompact.isBounded.subset_closedBall (0 : Euclid (n + k))
+  obtain ⟨R, hRpos, hR₀R⟩ : ∃ R : ℝ, 0 < R ∧ R₀ ≤ R :=
+    ⟨max R₀ 1, lt_of_lt_of_le one_pos (le_max_right _ _), le_max_left _ _⟩
+  have hBfin : volume (closedBall (0 : Euclid n) R) ≠ ∞ := measure_closedBall_lt_top.ne
+  -- Pythagoras: `‖w‖ ≤ ‖ι w + ι' u‖`.
+  have hpyth : ∀ (w : Euclid n) (u : Euclid k), ‖w‖ ≤ ‖ι w + ι' u‖ := by
+    intro w u
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth w u)
+    rw [LinearIsometry.norm_map, LinearIsometry.norm_map] at h
+    refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2 ?_
+    rw [h]
+    exact le_add_of_nonneg_right (mul_self_nonneg _)
+  -- Both integrands vanish off `closedBall 0 R`.
+  have hvanish : ∀ w : Euclid n, w ∉ closedBall (0 : Euclid n) R → ∀ u : Euclid k,
+      ψ (ι w + ι' u) = 0 := by
+    intro w hw u
+    apply image_eq_zero_of_notMem_tsupport
+    intro hmem
+    apply hw
+    have h1 := hR₀ hmem
+    rw [mem_closedBall_zero_iff] at h1 ⊢
+    exact (hpyth w u).trans (h1.trans hR₀R)
+  -- `C ∫_{B_R} |ψ ∘ Φ_r - ψ ∘ Φ| + M ∫_{B_R} |G(v + r ·) - G(v)| → 0`.
+  have hU := Submission.dorwbl_test_fn_diff_quotient_integral_tendsto_zero n k ι ι' f v ψ hf
+    hdiff hψ hψc R
+  have hV := hleb R hRpos
+  have hlim := (hU.const_mul C).add (hV.const_mul M)
+  rw [mul_zero, mul_zero, add_zero] at hlim
+  -- Pointwise: `a x - G(v) b = (a - b) x + b (x - G(v))`.
+  have hpt : ∀ a b x : ℝ, |b| ≤ M → |x| ≤ C →
+      |a * x - G v * b| ≤ C * |a - b| + M * |x - G v| := by
+    intro a b x hb hx
+    calc |a * x - G v * b| = |(a - b) * x + b * (x - G v)| := by congr 1; ring
+      _ ≤ |(a - b) * x| + |b * (x - G v)| := abs_add_le _ _
+      _ = |a - b| * |x| + |b| * |x - G v| := by rw [abs_mul, abs_mul]
+      _ ≤ |a - b| * C + M * |x - G v| :=
+        add_le_add (mul_le_mul_of_nonneg_left hx (abs_nonneg _))
+          (mul_le_mul_of_nonneg_right hb (abs_nonneg _))
+      _ = C * |a - b| + M * |x - G v| := by ring
+  -- For every `r`, the error is bounded by the quantity in `hlim`.
+  have key : ∀ r : ℝ,
+      ‖(∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) -
+          G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w))‖ ≤
+        C * (∫ w in closedBall (0 : Euclid n) R,
+            |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|) +
+          M * ∫ w in closedBall (0 : Euclid n) R, |G (v + r • w) - G v| := by
+    intro r
+    have hcr : Continuous fun w : Euclid n => ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) := by
+      fun_prop
+    have hc : Continuous fun w : Euclid n => ψ (ι w + ι' (fderiv ℝ f v w)) := by fun_prop
+    have hGr : Measurable fun w : Euclid n => G (v + r • w) :=
+      hG.comp (by fun_prop : Continuous fun w : Euclid n => v + r • w).measurable
+    have ha : IntegrableOn
+        (fun w => ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w))
+        (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := M * C) hBfin
+        (hcr.measurable.mul hGr).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul (hψM _) (hGC _) (abs_nonneg _) hM0)
+    have hb : IntegrableOn (fun w => G v * ψ (ι w + ι' (fderiv ℝ f v w)))
+        (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := C * M) hBfin
+        (hc.measurable.const_mul (G v)).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul (hGC _) (hψM _) (abs_nonneg _) hC0)
+    have hΔ : IntegrableOn
+        (fun w => |ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) - ψ (ι w + ι' (fderiv ℝ f v w))|)
+        (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := M + M) hBfin
+        (continuous_abs.measurable.comp (hcr.measurable.sub hc.measurable)).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_abs]
+          exact (abs_sub _ _).trans (add_le_add (hψM _) (hψM _)))
+    have hg : IntegrableOn (fun w => |G (v + r • w) - G v|) (closedBall (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := C + C) hBfin
+        (continuous_abs.measurable.comp (hGr.sub measurable_const)).aestronglyMeasurable
+        (ae_of_all _ fun w => by
+          rw [Real.norm_eq_abs, abs_abs]
+          exact (abs_sub _ _).trans (add_le_add (hGC _) (hGC _)))
+    have hA : (∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) =
+        ∫ w in closedBall (0 : Euclid n) R,
+          ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w) := by
+      symm
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro w hw
+      rw [hvanish w hw, zero_mul]
+    have hB : G v * (∫ w, ψ (ι w + ι' (fderiv ℝ f v w))) =
+        ∫ w in closedBall (0 : Euclid n) R, G v * ψ (ι w + ι' (fderiv ℝ f v w)) := by
+      rw [← integral_const_mul]
+      symm
+      apply setIntegral_eq_integral_of_forall_compl_eq_zero
+      intro w hw
+      rw [hvanish w hw, mul_zero]
+    rw [hA, hB, ← integral_sub ha hb, ← integral_const_mul, ← integral_const_mul,
+      ← integral_add (hΔ.const_mul C) (hg.const_mul M)]
+    refine norm_integral_le_of_norm_le ((hΔ.const_mul C).add (hg.const_mul M))
+      (ae_of_all _ fun w => ?_)
+    rw [Real.norm_eq_abs]
+    exact hpt _ _ _ (hψM _) (hGC _)
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun r => norm_nonneg _) key hlim
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
