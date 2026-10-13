@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "00a9504a1515c2cd73f4c7c0a7230cd06b8d0dcb639f48c95dab526e5dc41f1a",
+  "git_delta": {
+    "base_commit": "6ee939bc3256e31e09e6b9d3c660c6ee9e719571",
+    "candidate_commit": "2fe9c1f38968530f48080d5ebbd393e02c081401",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_structure_projection",
+    "diff_sha256": "3e63dfa22ba0a95535c9550299918cd49ef4d2c63e34304a4f7f1f245550717f",
+    "source_sha256": "68d0cdd68d589883f99ffe27ec848bdbf1e330f9f61a525e340d664a84e95904",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_structure_projection",
+      "statement": "∀ (P m : ℕ) (A : Set (Eucl P)), Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) A → (∃ S : ℕ → Set (Eucl P), A ⊆ ⋃ j, S j ∧ ∀ j, (μHE[m + 1] : Measure (Eucl P)) (S j) < ∞) → ∃ Q : Eucl P ≃ₗᵢ[ℝ] Eucl P, ∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' A) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
