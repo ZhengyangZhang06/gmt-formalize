@@ -1273,6 +1273,7 @@ theorem dohr_eb_sch_integral_clm_fderiv_eq_zero : ∀ (n ℓ : ℕ) (c : (Rn n �
       (Eventually.of_forall fun y => integral_add_right_eq_self ζ y)
   simpa using hderiv.unique hzero
 
+end Submission
 /-- **Interpolation bound for `Dw`** (step (1b) of the Schauder estimate in the elliptic bootstrap
 for Simon 7.1).  If `w` is `C¹` on `B̆_ρ(x)` with `|w| ≤ S` there and
 `‖Dw(y) − Dw(z)‖ ≤ K |y − z|^α` for `y, z ∈ B̆_ρ(x)`, then `‖Dw(x)‖ ≤ 2S/t + t^α K` for every
@@ -1331,6 +1332,8 @@ theorem Submission.dohr_eb_sch_fderiv_norm_interpolation : ∀ (n ℓ : ℕ) (w 
   rw [hv', norm_smul, Real.norm_of_nonneg (norm_nonneg v)]
   exact (mul_le_mul_of_nonneg_left (hunit _ (norm_smul_inv_norm hv)) (norm_nonneg v)).trans_eq
     (mul_comm _ _)
+namespace Submission
+
 /-- **Affine rescaling of `C¹` weak solutions** (scaling step of the Schauder estimate in the
 elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).  Let `w` be `C¹` on the open
 set `U` with `∫_U a(x)[Dw][Dζ] = ∫_U Φ(x)[Dζ]` for every `ζ ∈ C¹_c(U; ℝ^ℓ)`, and let
@@ -2322,6 +2325,420 @@ theorem dohr_eb_sch_liou_poly_sublinear_const : ∀ (ℓ m : ℕ) (α C : ℝ) (
   · have := hall m j (by omega) hpos hj
     simp only [ha] at this
     simp [this]
+namespace Submission
+
+/-- **Blow-up Hölder estimate on the unit ball** (L. Simon's scaling argument; step 5 of the
+Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion).
+For `0 < α < 1`, `λ > 0`, `M` and `δ > 0` there is `C_δ ≥ 0` such that every `C¹` weak solution `w`
+on `B₁ = B̆₁(0)` of `∫ a(x)[Dw][Dζ] = ∫ Φ(x)[Dζ]`, with `a` Legendre-elliptic (`λ`), bounded and
+`α`-Hölder (`M`), `Φ` `α`-Hölder (`G ≥ 0`), `|w| ≤ S` and `[Dw]_{α;B₁} ≤ K`, satisfies
+`‖Dw(x) − Dw(y)‖ ≤ (δK + C_δ(S + G))|x − y|^α` on `B̆_{1/2}(0)`.
+Proof by contradiction: violating data for `C_δ = k` are normalized by the difference quotient
+`σ_k = ‖Dw_k(x_k) − Dw_k(y_k)‖/ρ_k^α`, `ρ_k = |x_k − y_k|`; the interpolation bound gives
+`‖Dw_k‖ = o(σ_k)` on `B̆_{1/2}(0)`, hence `ρ_k → 0`. The blow-ups
+`W_k(z) = (σ_k ρ_k^{1+α})⁻¹ (w_k(x_k + ρ_k z) − w_k(x_k) − ρ_k Dw_k(x_k) z)` solve rescaled systems
+(rescale, zero mean, affine subtraction) with `DW_k(0) = 0`, `[DW_k]_α ≤ δ⁻¹`,
+`‖DW_k((y_k − x_k)/ρ_k)‖ = 1` and errors tending to `0`.  The blow-up limit is a global solution of a
+constant-coefficient Legendre system with `DW(0) = 0`, `‖DW(e₀)‖ = 1` and `[DW]_α ≤ δ⁻¹`, whose
+gradient is constant by the Liouville theorem: a contradiction. -/
+theorem dohr_eb_sch_blowup_holder_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ lam M δ : ℝ, 0 < lam → 0 < δ → ∃ Cδ : ℝ, 0 ≤ Cδ ∧ ∀ (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ) (K S G : ℝ), 0 ≤ G → (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ G * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ S) → ContDiffOn ℝ 1 w (ball (0 : Rn n) 1) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) 1 → ∫ x in ball (0 : Rn n) 1, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in ball (0 : Rn n) 1, Φ x (fderiv ℝ ζ x)) → ∀ x ∈ ball (0 : Rn n) (1 / 2), ∀ y ∈ ball (0 : Rn n) (1 / 2), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ (δ * K + Cδ * (S + G)) * ‖x - y‖ ^ α := by
+  -- Norms, subtraction and continuity on `L(ℝⁿ, ℝ^ℓ)` and its dual need a deeper instance search.
+  set_option maxSynthPendingDepth 3 in
+  intro n ℓ _hn α hα hα1 lam M δ hlam hδ
+  -- Step (0b): `α`-Hölder dependence on the base point gives continuity of linear forms in
+  -- operator norm, and joint continuity of `(z, P, Q) ↦ b(z)[P][Q]`.
+  have hcontL : ∀ (f : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : Set (Rn n)) (C : ℝ),
+      (∀ z ∈ U, ∀ z' ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, |f z P - f z' P| ≤ C * ‖z - z'‖ ^ α * ‖P‖) →
+      ContinuousOn f U := by
+    intro f U C hf z₀ hz₀
+    have hb : ∀ z ∈ U, ‖f z - f z₀‖ ≤ |C| * ‖z - z₀‖ ^ α := by
+      intro z hz
+      refine ContinuousLinearMap.opNorm_le_bound _
+        (mul_nonneg (abs_nonneg C) (Real.rpow_nonneg (norm_nonneg _) α)) fun P => ?_
+      rw [sub_apply, Real.norm_eq_abs]
+      calc |f z P - f z₀ P| ≤ C * ‖z - z₀‖ ^ α * ‖P‖ := hf z hz z₀ hz₀ P
+        _ ≤ |C| * ‖z - z₀‖ ^ α * ‖P‖ := by gcongr; exact le_abs_self C
+    have hg : Continuous fun z : Rn n => |C| * ‖z - z₀‖ ^ α :=
+      continuous_const.mul ((continuous_id.sub continuous_const).norm.rpow_const
+        fun _ => Or.inr hα.le)
+    have hg0 : Tendsto (fun z : Rn n => |C| * ‖z - z₀‖ ^ α) (𝓝[U] z₀)
+        (𝓝 (|C| * ‖z₀ - z₀‖ ^ α)) := hg.continuousWithinAt
+    rw [sub_self, norm_zero, Real.zero_rpow hα.ne', mul_zero] at hg0
+    exact tendsto_iff_norm_sub_tendsto_zero.mpr
+      (squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
+        (eventually_nhdsWithin_of_forall hb) hg0)
+  have hcontJ : ∀ (b : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)
+      (U : Set (Rn n)) (C : ℝ),
+      (∀ z ∈ U, ∀ z' ∈ U, ∀ P Q : Rn n →L[ℝ] Rn ℓ,
+        |b z P Q - b z' P Q| ≤ C * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) →
+      ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        b p.1 p.2.1 p.2.2) (U ×ˢ univ) := by
+    intro b U C hb p₀ hp₀
+    have hfr : Continuous fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        b p₀.1 p.2.1 p.2.2 :=
+      ((b p₀.1).continuous.comp continuous_snd.fst).clm_apply continuous_snd.snd
+    have hg : Continuous fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        |C| * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖ :=
+      ((continuous_const.mul ((continuous_fst.sub continuous_const).norm.rpow_const
+        fun _ => Or.inr hα.le)).mul continuous_snd.fst.norm).mul continuous_snd.snd.norm
+    have hg0 : Tendsto (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        |C| * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖) (𝓝[U ×ˢ univ] p₀)
+        (𝓝 (|C| * ‖p₀.1 - p₀.1‖ ^ α * ‖p₀.2.1‖ * ‖p₀.2.2‖)) := hg.continuousWithinAt
+    rw [sub_self, norm_zero, Real.zero_rpow hα.ne', mul_zero, zero_mul, zero_mul] at hg0
+    have hdiff : Tendsto (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+        b p.1 p.2.1 p.2.2 - b p₀.1 p.2.1 p.2.2) (𝓝[U ×ˢ univ] p₀) (𝓝 0) := by
+      refine squeeze_zero_norm' ?_ hg0
+      filter_upwards [self_mem_nhdsWithin] with p hp
+      rw [Real.norm_eq_abs]
+      calc |b p.1 p.2.1 p.2.2 - b p₀.1 p.2.1 p.2.2|
+          ≤ C * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖ := hb _ hp.1 _ hp₀.1 _ _
+        _ ≤ |C| * ‖p.1 - p₀.1‖ ^ α * ‖p.2.1‖ * ‖p.2.2‖ := by gcongr; exact le_abs_self C
+    have hsum := hdiff.add hfr.continuousWithinAt
+    simp only [sub_add_cancel, zero_add] at hsum
+    exact hsum
+  -- Step 1: contradiction hypothesis; for each `k` take violating data with `C_δ = k`.
+  by_contra hcon
+  push Not at hcon
+  choose a Φ w K S G hG hell hbd haH hΦH hwS hwC hwH hweak x hx y hy hviol using
+    fun k : ℕ => hcon (k : ℝ) (Nat.cast_nonneg k)
+  have h0B : (0 : Rn n) ∈ ball (0 : Rn n) 1 := mem_ball_self one_pos
+  have hx1 : ∀ k, x k ∈ ball (0 : Rn n) 1 := fun k => ball_subset_ball (by norm_num) (hx k)
+  have hy1 : ∀ k, y k ∈ ball (0 : Rn n) 1 := fun k => ball_subset_ball (by norm_num) (hy k)
+  have hxn : ∀ k, ‖x k‖ < 1 / 2 := fun k => mem_ball_zero_iff.mp (hx k)
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℕ → ℝ, ∀ k, ρ k = ‖x k - y k‖ := ⟨_, fun _ => rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : ℕ → ℝ, ∀ k,
+      N k = ‖fderiv ℝ (w k) (x k) - fderiv ℝ (w k) (y k)‖ := ⟨_, fun _ => rfl⟩
+  have hviol' : ∀ k : ℕ, (δ * K k + k * (S k + G k)) * ρ k ^ α < N k := fun k => by
+    rw [hρ, hN]; exact hviol k
+  -- `x_k ≠ y_k`, so `ρ_k > 0`; `K_k, S_k ≥ 0` and `N_k > 0`.
+  have hρpos : ∀ k, 0 < ρ k := by
+    intro k
+    rw [hρ]
+    refine norm_pos_iff.mpr fun hxy => ?_
+    have h := hviol k
+    rw [sub_eq_zero.mp hxy, sub_self, sub_self, norm_zero, norm_zero,
+      Real.zero_rpow hα.ne', mul_zero] at h
+    exact lt_irrefl 0 h
+  have hραpos : ∀ k, 0 < ρ k ^ α := fun k => Real.rpow_pos_of_pos (hρpos k) α
+  have hK0 : ∀ k, 0 ≤ K k := by
+    intro k
+    have h := hwH k (x k) (hx1 k) (y k) (hy1 k)
+    rw [← hρ, ← hN] at h
+    by_contra hneg
+    push Not at hneg
+    have h1 : K k * ρ k ^ α < 0 := mul_neg_of_neg_of_pos hneg (hραpos k)
+    have h2 : 0 ≤ N k := by rw [hN]; exact norm_nonneg _
+    linarith
+  have hS0 : ∀ k, 0 ≤ S k := fun k => (norm_nonneg _).trans (hwS k 0 h0B)
+  have hsplit : ∀ k : ℕ, (δ * K k + k * (S k + G k)) * ρ k ^ α =
+      δ * K k * ρ k ^ α + (k * S k * ρ k ^ α + k * G k * ρ k ^ α) := fun k => by ring
+  have hKρ : ∀ k, 0 ≤ δ * K k * ρ k ^ α := fun k =>
+    mul_nonneg (mul_nonneg hδ.le (hK0 k)) (hραpos k).le
+  have hSρ : ∀ k : ℕ, 0 ≤ (k : ℝ) * S k * ρ k ^ α := fun k =>
+    mul_nonneg (mul_nonneg (Nat.cast_nonneg k) (hS0 k)) (hραpos k).le
+  have hGρ : ∀ k : ℕ, 0 ≤ (k : ℝ) * G k * ρ k ^ α := fun k =>
+    mul_nonneg (mul_nonneg (Nat.cast_nonneg k) (hG k)) (hραpos k).le
+  have hNpos : ∀ k, 0 < N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hKρ k, hSρ k, hGρ k]
+  have hKN : ∀ k, δ * K k * ρ k ^ α ≤ N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hSρ k, hGρ k]
+  have hSN : ∀ k : ℕ, (k : ℝ) * S k * ρ k ^ α ≤ N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hKρ k, hGρ k]
+  have hGN : ∀ k : ℕ, (k : ℝ) * G k * ρ k ^ α ≤ N k := fun k => by
+    have := hviol' k; rw [hsplit] at this; linarith [hKρ k, hSρ k]
+  -- Step 3: small gradients.  The interpolation bound with `t = k^{-1/2}` on `B̆_{1/2}(z)` gives
+  -- `‖Dw_k(z)‖ ρ_k^α ≤ ε_k N_k` on `B̆_{1/2}(0)`, `ε_k = 2k^{-1/2} + k^{-α/2}/δ → 0`.
+  obtain ⟨ε, hε⟩ : ∃ ε : ℕ → ℝ, ∀ k : ℕ,
+      ε k = 2 / Real.sqrt k + (Real.sqrt k)⁻¹ ^ α / δ := ⟨_, fun _ => rfl⟩
+  have hinterp : ∀ k : ℕ, 5 ≤ k → ∀ z ∈ ball (0 : Rn n) (1 / 2),
+      ‖fderiv ℝ (w k) z‖ * ρ k ^ α ≤ ε k * N k := by
+    intro k hk z hz
+    have hk' : (5 : ℝ) ≤ k := by exact_mod_cast hk
+    have hsq2 : 2 < Real.sqrt k := by
+      rw [show (2 : ℝ) = Real.sqrt 4 by
+        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      exact Real.sqrt_lt_sqrt (by norm_num) (by linarith)
+    have hsq : 0 < Real.sqrt k := by linarith
+    have ht : 0 < (Real.sqrt k)⁻¹ := inv_pos.mpr hsq
+    have ht2 : (Real.sqrt k)⁻¹ < 1 / 2 := by
+      rw [one_div]; exact inv_strictAnti₀ (by norm_num) hsq2
+    have hsub : ball z (1 / 2) ⊆ ball (0 : Rn n) 1 :=
+      ball_subset_ball' (by rw [dist_zero_right]; linarith [mem_ball_zero_iff.mp hz])
+    have hI := Submission.dohr_eb_sch_fderiv_norm_interpolation n ℓ (w k) z (1 / 2)
+      (Real.sqrt k)⁻¹ α (S k) (K k) hα.le (hK0 k) ht ht2 ((hwC k).mono hsub)
+      (fun y' hy' => hwS k y' (hsub hy'))
+      (fun y' hy' z' hz' => hwH k y' (hsub hy') z' (hsub hz'))
+    have hkk : Real.sqrt k * Real.sqrt k = k := Real.mul_self_sqrt (Nat.cast_nonneg k)
+    have e1 : 2 * S k / (Real.sqrt k)⁻¹ * ρ k ^ α ≤ 2 / Real.sqrt k * N k := by
+      rw [div_inv_eq_mul, div_mul_eq_mul_div, le_div_iff₀ hsq]
+      calc 2 * S k * Real.sqrt k * ρ k ^ α * Real.sqrt k
+          = 2 * ((Real.sqrt k * Real.sqrt k) * S k * ρ k ^ α) := by ring
+        _ = 2 * ((k : ℝ) * S k * ρ k ^ α) := by rw [hkk]
+        _ ≤ 2 * N k := by linarith [hSN k]
+    have e2 : (Real.sqrt k)⁻¹ ^ α * K k * ρ k ^ α ≤ (Real.sqrt k)⁻¹ ^ α / δ * N k := by
+      have htα : 0 ≤ (Real.sqrt k)⁻¹ ^ α := Real.rpow_nonneg ht.le α
+      rw [div_mul_eq_mul_div, le_div_iff₀ hδ]
+      calc (Real.sqrt k)⁻¹ ^ α * K k * ρ k ^ α * δ
+          = (Real.sqrt k)⁻¹ ^ α * (δ * K k * ρ k ^ α) := by ring
+        _ ≤ (Real.sqrt k)⁻¹ ^ α * N k := mul_le_mul_of_nonneg_left (hKN k) htα
+    calc ‖fderiv ℝ (w k) z‖ * ρ k ^ α
+        ≤ (2 * S k / (Real.sqrt k)⁻¹ + (Real.sqrt k)⁻¹ ^ α * K k) * ρ k ^ α :=
+          mul_le_mul_of_nonneg_right hI (hραpos k).le
+      _ = 2 * S k / (Real.sqrt k)⁻¹ * ρ k ^ α + (Real.sqrt k)⁻¹ ^ α * K k * ρ k ^ α := by ring
+      _ ≤ 2 / Real.sqrt k * N k + (Real.sqrt k)⁻¹ ^ α / δ * N k := add_le_add e1 e2
+      _ = ε k * N k := by rw [hε]; ring
+  have hεt : Tendsto ε atTop (𝓝 0) := by
+    have hinv : Tendsto (fun k : ℕ => (Real.sqrt k)⁻¹) atTop (𝓝 0) :=
+      tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)
+    have h1 : Tendsto (fun k : ℕ => 2 / Real.sqrt k) atTop (𝓝 0) := by
+      simpa [div_eq_mul_inv] using hinv.const_mul 2
+    have h2 : Tendsto (fun k : ℕ => (Real.sqrt k)⁻¹ ^ α / δ) atTop (𝓝 0) := by
+      have h3 := ((Real.continuousAt_rpow_const 0 α (Or.inr hα.le)).tendsto.comp hinv).div_const δ
+      rw [Real.zero_rpow hα.ne', zero_div] at h3
+      exact h3
+    have h4 := h1.add h2
+    rw [add_zero] at h4
+    exact h4.congr fun k => (hε k).symm
+  -- Step 4: the scale tends to `0`: `ρ_k^α = N_k/σ_k ≤ 2ε_k`.
+  have hρα_le : ∀ k, 5 ≤ k → ρ k ^ α ≤ 2 * ε k := by
+    intro k hk
+    have h1 := hinterp k hk (x k) (hx k)
+    have h2 := hinterp k hk (y k) (hy k)
+    have h3 : N k ≤ ‖fderiv ℝ (w k) (x k)‖ + ‖fderiv ℝ (w k) (y k)‖ := by
+      rw [hN]; exact norm_sub_le _ _
+    have h4 : N k * ρ k ^ α ≤ N k * (2 * ε k) := by
+      calc N k * ρ k ^ α
+          ≤ (‖fderiv ℝ (w k) (x k)‖ + ‖fderiv ℝ (w k) (y k)‖) * ρ k ^ α :=
+            mul_le_mul_of_nonneg_right h3 (hραpos k).le
+        _ = ‖fderiv ℝ (w k) (x k)‖ * ρ k ^ α + ‖fderiv ℝ (w k) (y k)‖ * ρ k ^ α := by ring
+        _ ≤ ε k * N k + ε k * N k := add_le_add h1 h2
+        _ = N k * (2 * ε k) := by ring
+    exact le_of_mul_le_mul_left h4 (hNpos k)
+  have hραt : Tendsto (fun k => ρ k ^ α) atTop (𝓝 0) := by
+    have h2ε : Tendsto (fun k => 2 * ε k) atTop (𝓝 0) := by simpa using hεt.const_mul 2
+    refine squeeze_zero' (Eventually.of_forall fun k => (hραpos k).le) ?_ h2ε
+    filter_upwards [eventually_ge_atTop 5] with k hk using hρα_le k hk
+  have hρt : Tendsto ρ atTop (𝓝 0) := by
+    have h1 := (Real.continuousAt_rpow_const 0 α⁻¹ (Or.inr (inv_nonneg.mpr hα.le))).tendsto.comp
+      hραt
+    rw [Real.zero_rpow (inv_ne_zero hα.ne')] at h1
+    exact h1.congr fun k => Real.rpow_rpow_inv (hρpos k).le hα.ne'
+  have hρhalf : ∀ᶠ k in atTop, ρ k < 1 / 2 := hρt.eventually (Iio_mem_nhds (by norm_num))
+  -- Step 5: the blow-up sequence on `D_k = B̆_{R_k}(0)`, `R_k = 1/(2ρ_k)`.
+  obtain ⟨s, hs⟩ : ∃ s : ℕ → ℝ, ∀ k, s k = (ρ k * N k)⁻¹ := ⟨_, fun _ => rfl⟩
+  obtain ⟨R, hR⟩ : ∃ R : ℕ → ℝ, ∀ k, R k = (2 * ρ k)⁻¹ := ⟨_, fun _ => rfl⟩
+  obtain ⟨P₀, hP₀⟩ : ∃ P₀ : ℕ → (Rn n →L[ℝ] Rn ℓ), ∀ k,
+      P₀ k = ρ k • fderiv ℝ (w k) (x k) := ⟨_, fun _ => rfl⟩
+  obtain ⟨ah, hah⟩ : ∃ ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ,
+      ∀ k z, ah k z = a k (x k + ρ k • z) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨W, hW⟩ : ∃ W : ℕ → Rn n → Rn ℓ, ∀ k,
+      W k = fun z => s k • (w k (x k + ρ k • z) - w k (x k) - P₀ k z) := ⟨_, fun _ => rfl⟩
+  obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, ∀ k z,
+      Ψ k z = s k • ((ρ k • Φ k (x k + ρ k • z) - ρ k • Φ k (x k)) -
+        (ah k z (P₀ k) - a k (x k) (P₀ k))) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨e, he⟩ : ∃ e : ℕ → Rn n, ∀ k, e k = (ρ k)⁻¹ • (y k - x k) := ⟨_, fun _ => rfl⟩
+  have hspos : ∀ k, 0 < s k := fun k => by
+    rw [hs]; exact inv_pos.mpr (mul_pos (hρpos k) (hNpos k))
+  have hsρ : ∀ k, s k * ρ k = (N k)⁻¹ := fun k => by
+    rw [hs, mul_inv, mul_comm (ρ k)⁻¹, mul_assoc, inv_mul_cancel₀ (hρpos k).ne', mul_one]
+  have hRpos : ∀ k, 0 < R k := fun k => by
+    rw [hR]; exact inv_pos.mpr (mul_pos two_pos (hρpos k))
+  have hρR : ∀ k, ρ k * R k = 1 / 2 := fun k => by
+    rw [hR, mul_inv, ← mul_assoc, mul_comm (ρ k), mul_assoc, mul_inv_cancel₀ (hρpos k).ne',
+      mul_one, one_div]
+  have hmap : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), x k + ρ k • z ∈ ball (0 : Rn n) 1 := by
+    intro k z hz
+    rw [mem_ball_zero_iff] at hz ⊢
+    calc ‖x k + ρ k • z‖ ≤ ‖x k‖ + ‖ρ k • z‖ := norm_add_le _ _
+      _ = ‖x k‖ + ρ k * ‖z‖ := by rw [norm_smul, Real.norm_of_nonneg (hρpos k).le]
+      _ < 1 / 2 + ρ k * R k := add_lt_add (hxn k) (mul_lt_mul_of_pos_left hz (hρpos k))
+      _ = 1 := by rw [hρR k]; norm_num
+  have hscale : ∀ k (z z' : Rn n),
+      ‖(x k + ρ k • z) - (x k + ρ k • z')‖ ^ α = ρ k ^ α * ‖z - z'‖ ^ α := by
+    intro k z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_of_nonneg (hρpos k).le,
+      Real.mul_rpow (hρpos k).le (norm_nonneg _)]
+  -- The rescaled maps `w_k(x_k + ρ_k ·)` solve the rescaled system on `D_k` (sibling rescale).
+  have hres := fun k => Submission.dohr_eb_sch_weak_eq_affine_rescale n ℓ (a k) (Φ k) (w k)
+    (ball 0 1) (x k) 0 (ρ k) (R k) (hρpos k) isOpen_ball
+    (by
+      rw [smul_zero, add_zero, hρR k]
+      exact ball_subset_ball' (by rw [dist_zero_right]; linarith [hxn k]))
+    (hwC k) (hweak k)
+  -- Step (0b) for the rescaled coefficients.
+  have hJ : ∀ k, ContinuousOn (fun p : Rn n × (Rn n →L[ℝ] Rn ℓ) × (Rn n →L[ℝ] Rn ℓ) =>
+      ah k p.1 p.2.1 p.2.2) (ball (0 : Rn n) (R k) ×ˢ univ) := by
+    intro k
+    refine hcontJ (ah k) (ball 0 (R k)) (M * ρ k ^ α) fun z hz z' hz' P Q => ?_
+    rw [hah, hah]
+    calc |a k (x k + ρ k • z) P Q - a k (x k + ρ k • z') P Q|
+        ≤ M * ‖(x k + ρ k • z) - (x k + ρ k • z')‖ ^ α * ‖P‖ * ‖Q‖ :=
+          haH k _ (hmap k z hz) _ (hmap k z' hz') P Q
+      _ = M * ρ k ^ α * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ := by rw [hscale]; ring
+  have hΘc : ∀ k, ContinuousOn (fun z => ρ k • Φ k (x k + ρ k • z)) (ball (0 : Rn n) (R k)) := by
+    intro k
+    refine hcontL _ (ball 0 (R k)) (ρ k * G k * ρ k ^ α) fun z hz z' hz' P => ?_
+    simp only [smul_apply, smul_eq_mul]
+    rw [← mul_sub, abs_mul, abs_of_pos (hρpos k)]
+    calc ρ k * |Φ k (x k + ρ k • z) P - Φ k (x k + ρ k • z') P|
+        ≤ ρ k * (G k * ‖(x k + ρ k • z) - (x k + ρ k • z')‖ ^ α * ‖P‖) :=
+          mul_le_mul_of_nonneg_left (hΦH k _ (hmap k z hz) _ (hmap k z' hz') P) (hρpos k).le
+      _ = ρ k * G k * ρ k ^ α * ‖z - z'‖ ^ α * ‖P‖ := by rw [hscale]; ring
+  -- Step 6: the blow-ups solve the rescaled system with error `Ψ_k`
+  -- (sibling zero mean and child `weak_eq_sub_affine`).
+  have hsub := fun k => Submission.dohr_eb_sch_bu_weak_eq_sub_affine n ℓ (ah k)
+    (fun z => ρ k • Φ k (x k + ρ k • z)) (fun z => w k (x k + ρ k • z)) (ball 0 (R k))
+    (a k (x k)) (ρ k • Φ k (x k)) (P₀ k) (w k (x k)) (s k) isOpen_ball (hJ k) (hΘc k)
+    (hres k).1 (fun ζ hζ hζc hζs => by simpa only [hah] using (hres k).2.2 ζ hζ hζc hζs)
+    (fun ζ hζ hζc => Submission.dohr_eb_sch_integral_clm_fderiv_eq_zero n ℓ _ ζ hζ hζc)
+    (fun ζ hζ hζc => Submission.dohr_eb_sch_integral_clm_fderiv_eq_zero n ℓ _ ζ hζ hζc)
+  have hWC : ∀ k, ContDiffOn ℝ 1 (W k) (ball (0 : Rn n) (R k)) := fun k => by
+    rw [hW k]; exact (hsub k).1
+  have hDW : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k),
+      fderiv ℝ (W k) z = s k • (ρ k • fderiv ℝ (w k) (x k + ρ k • z) - P₀ k) := by
+    intro k z hz
+    rw [hW k, (hsub k).2.1 z hz, (hres k).2.1 z hz]
+  have hW0 : ∀ k, W k 0 = 0 := fun k => by
+    rw [hW k]; simp
+  have hDW0 : ∀ k, fderiv ℝ (W k) 0 = 0 := fun k => by
+    rw [hDW k 0 (mem_ball_self (hRpos k)), hP₀, smul_zero, add_zero, sub_self, smul_zero]
+  have hWH : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k),
+      ‖fderiv ℝ (W k) z - fderiv ℝ (W k) z'‖ ≤ δ⁻¹ * ‖z - z'‖ ^ α := by
+    intro k z hz z' hz'
+    rw [hDW k z hz, hDW k z' hz']
+    have h1 : s k • (ρ k • fderiv ℝ (w k) (x k + ρ k • z) - P₀ k) -
+        s k • (ρ k • fderiv ℝ (w k) (x k + ρ k • z') - P₀ k) =
+        (s k * ρ k) • (fderiv ℝ (w k) (x k + ρ k • z) - fderiv ℝ (w k) (x k + ρ k • z')) := by
+      rw [← smul_sub, sub_sub_sub_cancel_right, ← smul_sub, smul_smul]
+    rw [h1, norm_smul, Real.norm_of_nonneg (mul_pos (hspos k) (hρpos k)).le, hsρ]
+    have h2 := hwH k _ (hmap k z hz) _ (hmap k z' hz')
+    rw [hscale] at h2
+    have h3 : (N k)⁻¹ * (K k * ρ k ^ α) ≤ δ⁻¹ := by
+      rw [inv_mul_le_iff₀ (hNpos k), le_mul_inv_iff₀ hδ]
+      calc K k * ρ k ^ α * δ = δ * K k * ρ k ^ α := by ring
+        _ ≤ N k := hKN k
+    calc (N k)⁻¹ * ‖fderiv ℝ (w k) (x k + ρ k • z) - fderiv ℝ (w k) (x k + ρ k • z')‖
+        ≤ (N k)⁻¹ * (K k * (ρ k ^ α * ‖z - z'‖ ^ α)) :=
+          mul_le_mul_of_nonneg_left h2 (inv_nonneg.mpr (hNpos k).le)
+      _ = (N k)⁻¹ * (K k * ρ k ^ α) * ‖z - z'‖ ^ α := by ring
+      _ ≤ δ⁻¹ * ‖z - z'‖ ^ α := mul_le_mul_of_nonneg_right h3 (Real.rpow_nonneg (norm_nonneg _) α)
+  -- Bounds for the frozen and rescaled coefficients and for the error `Ψ_k`.
+  have hah0 : ∀ k, ah k 0 = a k (x k) := fun k => by rw [hah, smul_zero, add_zero]
+  have hell0 : ∀ k (P : Rn n →L[ℝ] Rn ℓ), lam * ‖P‖ ^ 2 ≤ ah k 0 P P := fun k P => by
+    rw [hah0]; exact hell k (x k) (hx1 k) P
+  have hbd0 : ∀ k (P Q : Rn n →L[ℝ] Rn ℓ), |ah k 0 P Q| ≤ M * ‖P‖ * ‖Q‖ := fun k P Q => by
+    rw [hah0]; exact hbd k (x k) (hx1 k) P Q
+  have hahb : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ P Q : Rn n →L[ℝ] Rn ℓ,
+      |ah k z P Q - ah k 0 P Q| ≤ M * ρ k ^ α * ‖z‖ ^ α * ‖P‖ * ‖Q‖ := by
+    intro k z hz P Q
+    have h := haH k _ (hmap k z hz) _ (hmap k 0 (mem_ball_self (hRpos k))) P Q
+    rw [hscale, sub_zero] at h
+    rw [hah k z, hah k 0]
+    calc _ ≤ M * (ρ k ^ α * ‖z‖ ^ α) * ‖P‖ * ‖Q‖ := h
+      _ = M * ρ k ^ α * ‖z‖ ^ α * ‖P‖ * ‖Q‖ := by ring
+  have hΨd : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k),
+      ∀ Q : Rn n →L[ℝ] Rn ℓ, |Ψ k z Q - Ψ k z' Q| ≤
+        (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k) * ‖z - z'‖ ^ α * ‖Q‖ := by
+    intro k z hz z' hz' Q
+    have hΦ := hΦH k _ (hmap k z hz) _ (hmap k z' hz') Q
+    have ha := haH k _ (hmap k z hz) _ (hmap k z' hz') (P₀ k) Q
+    have hP : ‖P₀ k‖ = ρ k * ‖fderiv ℝ (w k) (x k)‖ := by
+      rw [hP₀, norm_smul, Real.norm_of_nonneg (hρpos k).le]
+    rw [hscale] at hΦ ha
+    rw [hP] at ha
+    have hexp : Ψ k z Q - Ψ k z' Q = s k * (ρ k * (Φ k (x k + ρ k • z) Q -
+        Φ k (x k + ρ k • z') Q) - (a k (x k + ρ k • z) (P₀ k) Q -
+        a k (x k + ρ k • z') (P₀ k) Q)) := by
+      rw [hΨ, hΨ, hah, hah]
+      simp only [smul_apply, sub_apply, smul_eq_mul]
+      ring
+    rw [hexp, abs_mul, abs_of_pos (hspos k)]
+    have htri : |ρ k * (Φ k (x k + ρ k • z) Q - Φ k (x k + ρ k • z') Q) -
+        (a k (x k + ρ k • z) (P₀ k) Q - a k (x k + ρ k • z') (P₀ k) Q)| ≤
+        ρ k * (G k * (ρ k ^ α * ‖z - z'‖ ^ α) * ‖Q‖) +
+          M * (ρ k ^ α * ‖z - z'‖ ^ α) * (ρ k * ‖fderiv ℝ (w k) (x k)‖) * ‖Q‖ := by
+      refine (abs_sub _ _).trans ?_
+      rw [abs_mul, abs_of_pos (hρpos k)]
+      exact add_le_add (mul_le_mul_of_nonneg_left hΦ (hρpos k).le) ha
+    calc s k * |ρ k * (Φ k (x k + ρ k • z) Q - Φ k (x k + ρ k • z') Q) -
+          (a k (x k + ρ k • z) (P₀ k) Q - a k (x k + ρ k • z') (P₀ k) Q)|
+        ≤ s k * (ρ k * (G k * (ρ k ^ α * ‖z - z'‖ ^ α) * ‖Q‖) +
+          M * (ρ k ^ α * ‖z - z'‖ ^ α) * (ρ k * ‖fderiv ℝ (w k) (x k)‖) * ‖Q‖) :=
+          mul_le_mul_of_nonneg_left htri (hspos k).le
+      _ = (s k * ρ k) * (G k + M * ‖fderiv ℝ (w k) (x k)‖) * ρ k ^ α * ‖z - z'‖ ^ α * ‖Q‖ := by
+          ring
+      _ = (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k) * ‖z - z'‖ ^ α * ‖Q‖ := by
+          rw [hsρ]; ring
+  have hΨc : ∀ k, ContinuousOn (Ψ k) (ball (0 : Rn n) (R k)) := fun k => hcontL (Ψ k) _ _ (hΨd k)
+  have hΨb : ∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ Q : Rn n →L[ℝ] Rn ℓ,
+      |Ψ k z Q| ≤ (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k) * ‖z‖ ^ α * ‖Q‖ := by
+    intro k z hz Q
+    have h := hΨd k z hz 0 (mem_ball_self (hRpos k)) Q
+    have h0 : Ψ k 0 Q = 0 := by
+      rw [hΨ, hah]
+      simp
+    rwa [h0, sub_zero, sub_zero] at h
+  have hWeq : ∀ k (ζ : Rn n → Rn ℓ), ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      tsupport ζ ⊆ ball (0 : Rn n) (R k) →
+      ∫ z in ball (0 : Rn n) (R k), ah k z (fderiv ℝ (W k) z) (fderiv ℝ ζ z) =
+        ∫ z in ball (0 : Rn n) (R k), Ψ k z (fderiv ℝ ζ z) := by
+    intro k ζ hζ hζc hζs
+    rw [hW k]
+    simp only [hΨ]
+    exact (hsub k).2.2 ζ hζ hζc hζs
+  -- The unit vectors `e_k = (y_k − x_k)/ρ_k` with `‖DW_k(e_k)‖ = 1`.
+  have he1 : ∀ k, ‖e k‖ = 1 := fun k => by
+    rw [he, norm_smul, norm_inv, Real.norm_of_nonneg (hρpos k).le, norm_sub_rev, ← hρ,
+      inv_mul_cancel₀ (hρpos k).ne']
+  have hxe : ∀ k, x k + ρ k • e k = y k := fun k => by
+    rw [he, smul_smul, mul_inv_cancel₀ (hρpos k).ne', one_smul, add_sub_cancel]
+  have heN : ∀ᶠ k in atTop, ‖fderiv ℝ (W k) (e k)‖ = 1 := by
+    filter_upwards [hρhalf] with k hk
+    have hek : e k ∈ ball (0 : Rn n) (R k) := by
+      rw [mem_ball_zero_iff, he1, hR, one_lt_inv₀ (mul_pos two_pos (hρpos k))]
+      linarith
+    rw [hDW k (e k) hek, hxe, hP₀, ← smul_sub, smul_smul, norm_smul,
+      Real.norm_of_nonneg (mul_pos (hspos k) (hρpos k)).le, hsρ, norm_sub_rev, ← hN,
+      inv_mul_cancel₀ (hNpos k).ne']
+  -- Limits of the scale-dependent constants.
+  have hRt : Tendsto R atTop atTop := by
+    have h2ρ : Tendsto (fun k => 2 * ρ k) atTop (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.mpr ⟨?_, Eventually.of_forall fun k => ?_⟩
+      · simpa using hρt.const_mul 2
+      · exact mul_pos two_pos (hρpos k)
+    exact (tendsto_inv_nhdsGT_zero.comp h2ρ).congr fun k => (hR k).symm
+  have hct : Tendsto (fun k => M * ρ k ^ α) atTop (𝓝 0) := by
+    simpa using hραt.const_mul M
+  have hdt : Tendsto (fun k => (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k))
+      atTop (𝓝 0) := by
+    have hG' : Tendsto (fun k => G k * (ρ k ^ α / N k)) atTop (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun k =>
+        mul_nonneg (hG k) (div_nonneg (hραpos k).le (hNpos k).le)) ?_
+        tendsto_one_div_atTop_nhds_zero_nat
+      filter_upwards [eventually_ge_atTop 1] with k hk
+      have hk' : (0 : ℝ) < k := by exact_mod_cast hk
+      rw [mul_div_assoc', div_le_div_iff₀ (hNpos k) hk', one_mul]
+      calc G k * ρ k ^ α * k = k * G k * ρ k ^ α := by ring
+        _ ≤ N k := hGN k
+    have hD' : Tendsto (fun k => ‖fderiv ℝ (w k) (x k)‖ * (ρ k ^ α / N k)) atTop (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun k =>
+        mul_nonneg (norm_nonneg _) (div_nonneg (hραpos k).le (hNpos k).le)) ?_ hεt
+      filter_upwards [eventually_ge_atTop 5] with k hk
+      rw [mul_div_assoc', div_le_iff₀ (hNpos k)]
+      exact hinterp k hk (x k) (hx k)
+    have h := hG'.add (hD'.const_mul M)
+    rw [mul_zero, add_zero] at h
+    exact h.congr fun k => by ring
+  -- Steps 7–8 (child `blowup_limit`) and step 9 (sibling Liouville theorem).
+  obtain ⟨A, W', hA1, hA2, hW'C, hW'H, hW'eq, hW'0, e₀, he₀⟩ :=
+    Submission.dohr_eb_sch_bu_blowup_limit n ℓ α lam M δ⁻¹ W ah Ψ e R (fun k => M * ρ k ^ α)
+      (fun k => (G k + M * ‖fderiv ℝ (w k) (x k)‖) * (ρ k ^ α / N k)) hα
+      (inv_nonneg.mpr hδ.le) hRt hct hdt hWC hW0 hDW0 hWH hJ hΨc hell0 hbd0 hahb hΨb hWeq
+      (fun k => (he1 k).le) heN
+  have hconst := Submission.dohr_eb_sch_liouville_const_coeff n ℓ α lam M δ⁻¹ A W' hα hα1 hlam
+    hA1 hA2 hW'C hW'H hW'eq e₀ 0
+  rw [hconst, hW'0, norm_zero] at he₀
+  exact zero_ne_one he₀
 
 end Submission
 
