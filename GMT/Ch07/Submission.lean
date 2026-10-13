@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Chart coordinates of the blow-up centres and bounded offsets of nearby carrier points**
+(Simon 7.5.5, steps 1 and 3 of the graph blow-up limit, chapter-07.txt lines 790–901).  Let
+`ι : ℝᵐ → ℝᴾ`, `ι' : ℝᵏ → ℝᴾ` be linear isometries with orthogonal ranges spanning `ℝᴾ`, and let
+`N` be the graph `{x + ιv + ι'u(v) : |v| < δ₁}` of `u` inside the chart
+`{x + ιv + ι'w : |v| < δ₁, |w| < δ₂}`.  If `xᵢ → x`, `λᵢ ↓ 0` and each `xᵢ` is within `C₀λᵢ` of
+some `pᵢ ∈ N`, then `xᵢ = x + ιsᵢ + ι'tᵢ` with `sᵢ, tᵢ → 0`, and for all large `i` the offset
+`w = λᵢ⁻¹(v − sᵢ)` of `pᵢ = x + ιv + ι'u(v)` satisfies `|w| ≤ C₀`, `sᵢ + λᵢw ∈ B_{δ₁}(0)` and
+`|u(sᵢ + λᵢw) − tᵢ| ≤ C₀λᵢ`.  The key estimate is Pythagoras: `|ιa + ι'b|² = |a|² + |b|²`. -/
+theorem Submission.codim1_zsl_gbl_centre_chart_offsets : ∀ (m k P : ℕ) (N : Set (Euclid P)) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (u : Euclid m → Euclid k) (δ₁ δ₂ C₀ : ℝ), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∀ i, 0 < lams i) → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid P, ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → N ∩ {y | ∃ v ∈ ball (0 : Euclid m) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid m) δ₁ → ∃ (s : ℕ → Euclid m) (t : ℕ → Euclid k), (∀ i, xs i = x + ι (s i) + ι' (t i)) ∧ Tendsto s atTop (𝓝 0) ∧ Tendsto t atTop (𝓝 0) ∧ ∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ₁ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i := by
+  intro m k P N x xs lams ι ι' u δ₁ δ₂ C₀ hxs hlams hlpos hnear horth hspan hδ₁ hδ₂ hchart
+  -- Step 1 (Pythagoras): `|ιa + ι'b|² = |a|² + |b|²`, hence `|a|, |b| ≤ |ιa + ι'b|`.
+  have hpyth : ∀ (a : Euclid m) (b : Euclid k), ‖a‖ ≤ ‖ι a + ι' b‖ ∧ ‖b‖ ≤ ‖ι a + ι' b‖ := by
+    intro a b
+    have hsq : ‖ι a + ι' b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+      rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
+      ring
+    constructor
+    · rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _), hsq]
+      exact le_add_of_nonneg_right (sq_nonneg _)
+    · rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _), hsq]
+      exact le_add_of_nonneg_left (sq_nonneg _)
+  -- Step 2 (coordinates of the centres): `xᵢ − x = ιsᵢ + ι'tᵢ` and `|sᵢ|, |tᵢ| ≤ |xᵢ − x| → 0`.
+  choose s t hst using fun i => hspan (xs i - x)
+  have hcentre : ∀ i, xs i = x + ι (s i) + ι' (t i) := by
+    intro i
+    rw [add_assoc, ← hst i, add_sub_cancel]
+  have hxs0 : Tendsto (fun i => ‖xs i - x‖) atTop (𝓝 0) :=
+    tendsto_iff_norm_sub_tendsto_zero.1 hxs
+  have hst_le : ∀ i, ‖s i‖ ≤ ‖xs i - x‖ ∧ ‖t i‖ ≤ ‖xs i - x‖ := by
+    intro i
+    rw [hst i]
+    exact hpyth (s i) (t i)
+  have hs : Tendsto s atTop (𝓝 0) := squeeze_zero_norm (fun i => (hst_le i).1) hxs0
+  have ht : Tendsto t atTop (𝓝 0) := squeeze_zero_norm (fun i => (hst_le i).2) hxs0
+  -- Step 3 (nearby carrier points converge to `x`): `|pᵢ − x| ≤ |C₀|λᵢ + |xᵢ − x| → 0`.
+  choose p hpN hpd using hnear
+  have hbound : ∀ i, ‖p i - x‖ ≤ |C₀| * lams i + ‖xs i - x‖ := by
+    intro i
+    calc ‖p i - x‖ = ‖(p i - xs i) + (xs i - x)‖ := by rw [sub_add_sub_cancel]
+      _ ≤ ‖p i - xs i‖ + ‖xs i - x‖ := norm_add_le _ _
+      _ ≤ |C₀| * lams i + ‖xs i - x‖ := by
+        gcongr
+        rw [← dist_eq_norm]
+        exact (hpd i).trans (mul_le_mul_of_nonneg_right (le_abs_self C₀) (hlpos i).le)
+  have hlim : Tendsto (fun i => |C₀| * lams i + ‖xs i - x‖) atTop (𝓝 0) := by
+    have h := (hlams.const_mul |C₀|).add hxs0
+    rwa [mul_zero, add_zero] at h
+  have hp : Tendsto (fun i => ‖p i - x‖) atTop (𝓝 0) :=
+    squeeze_zero (fun i => norm_nonneg _) hbound hlim
+  have hev : ∀ᶠ i in atTop, ‖p i - x‖ < min δ₁ δ₂ := (tendsto_order.1 hp).2 _ (lt_min hδ₁ hδ₂)
+  refine ⟨s, t, hcentre, hs, ht, ?_⟩
+  filter_upwards [hev] with i hi
+  -- Step 4 (`pᵢ` lies on the graph): `pᵢ − x = ιa + ι'b` with `|a| < δ₁`, `|b| < δ₂`, so the
+  -- chart identity gives `pᵢ = x + ιv + ι'u(v)` with `|v| < δ₁`.
+  obtain ⟨a, b, hab⟩ := hspan (p i - x)
+  have hpab : ‖ι a + ι' b‖ = ‖p i - x‖ := by rw [hab]
+  have hmem : p i ∈ N ∩ {y | ∃ v ∈ ball (0 : Euclid m) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂,
+      y = x + ι v + ι' w} := by
+    refine ⟨hpN i, a, ?_, b, ?_, ?_⟩
+    · rw [mem_ball_zero_iff]
+      exact ((hpyth a b).1.trans_eq hpab).trans_lt (hi.trans_le (min_le_left _ _))
+    · rw [mem_ball_zero_iff]
+      exact ((hpyth a b).2.trans_eq hpab).trans_lt (hi.trans_le (min_le_right _ _))
+    · rw [add_assoc, ← hab, add_sub_cancel]
+  rw [hchart] at hmem
+  obtain ⟨v, hv, hpv⟩ := hmem
+  have hpv' : x + ι v + ι' (u v) = p i := hpv
+  -- Step 5 (the offset `w = λᵢ⁻¹(v − sᵢ)`): `pᵢ − xᵢ = ι(v − sᵢ) + ι'(u(v) − tᵢ)`, so by Step 1
+  -- `|v − sᵢ|, |u(v) − tᵢ| ≤ |pᵢ − xᵢ| ≤ C₀λᵢ`.
+  have hdiff : p i - xs i = ι (v - s i) + ι' (u v - t i) := by
+    rw [← hpv', hcentre i, map_sub, map_sub]
+    abel
+  have hd : ‖ι (v - s i) + ι' (u v - t i)‖ ≤ C₀ * lams i := by
+    rw [← hdiff, ← dist_eq_norm]
+    exact hpd i
+  have hl := hlpos i
+  have hsv : s i + lams i • ((lams i)⁻¹ • (v - s i)) = v := by
+    rw [smul_smul, mul_inv_cancel₀ hl.ne', one_smul, add_sub_cancel]
+  refine ⟨(lams i)⁻¹ • (v - s i), ?_, ?_, ?_⟩
+  · rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hl, inv_mul_le_iff₀ hl, mul_comm]
+    exact (hpyth (v - s i) (u v - t i)).1.trans hd
+  · rw [hsv]
+    exact hv
+  · rw [hsv]
+    exact (hpyth (v - s i) (u v - t i)).2.trans hd
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
