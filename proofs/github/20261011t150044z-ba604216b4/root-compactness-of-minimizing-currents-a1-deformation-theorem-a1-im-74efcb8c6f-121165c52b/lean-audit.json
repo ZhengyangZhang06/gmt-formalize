@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f26e09d01f0f5607eb444a9b3583baa22892591b148ecc93aa3636efc113968",
+  "git_delta": {
+    "base_commit": "85726f620ff51ff80ae2e47a68c7f5e29aff148b",
+    "candidate_commit": "c48b246382e6d5141d80cb617ebabdf541a30fec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_ims_imrep_of_int_density",
+    "diff_sha256": "34f8e713096cc9c3a9c925e2390ddac7c4b6115e928b5d18f0970ec156cc7505",
+    "source_sha256": "31a7260df803e1396e9f627a3dc7f84b0ae3363938dd95c25fce7148b1cee6fb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_ims_imrep_of_int_density",
+      "statement": "∀ (P n : ℕ) (U N : Set (Euclid P)) (η : Euclid P → MultiVector P n) (m : Euclid P → ℝ), IsOpen U → MeasurableSet N → N ⊆ U → CountablyRectifiable n N → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (N ∩ K) ≠ ∞) → StronglyMeasurable η → Measurable m → (∀ x, ∃ z : ℤ, m x = z) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∫⁻ x in N ∩ K, ‖m x‖ₑ ∂μHE[n] ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict N), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n N x Q ∧ IsUnitOrientationOf (η x) Q) → ∃ R : IMRep U n, ∀ ω : DifferentialForm (Euclid P) n, R.action ω = ∫ x in N, m x * η x (ω x) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
