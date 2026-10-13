@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,49 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Area formula with a bounded Borel Jacobian on an injective Lipschitz piece** (Simon Ch. 3,
+2.3–2.6, used in 7.5).  Let `F : ℝⁿ → ℝᴾ` be `L`-Lipschitz and injective on the Borel set `B`.
+Then `J = areaJacobianAt F = normDet DF` is Borel with `0 ≤ J ≤ Lⁿ`,
+`∫_{F(B)} g dHⁿ = ∫_B J (g ∘ F) dλ` for every `g ≥ 0`, and `Hⁿ(DF(a)(S)) = J(a) λ(S)` for all `a`
+and all `S`.  The last identity is the linear area formula; with `S` the closed unit ball and
+`‖DF(a)‖ ≤ L` it gives `J(a) ≤ Lⁿ`. -/
+theorem Submission.codim1_lurpt_piece_area_jacobian : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal), LipschitzWith L F → MeasurableSet B → InjOn F B → ∃ J : Euclid n → ℝ, Measurable J ∧ (∀ a, 0 ≤ J a ∧ J a ≤ (L : ℝ) ^ n) ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in F '' B, g y ∂μHE[n] = ∫⁻ x in B, ENNReal.ofReal (J x) * g (F x) ∂volume) ∧ ∀ (a : Euclid n) (S : Set (Euclid n)), μHE[n] (fderiv ℝ F a '' S) = ENNReal.ofReal (J a) * volume S := by
+  intro P n F B L hF hB hFi
+  have hn : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
+  -- (3): the linear area formula for `DF(a)`, with `J = areaJacobianAt F = normDet DF`
+  have hlin : ∀ (a : Euclid n) (S : Set (Euclid n)), μHE[n] (fderiv ℝ F a '' S) =
+      ENNReal.ofReal (Poincare.SimonGMT.Chapter02.areaJacobianAt F a) * volume S := by
+    intro a S
+    have h := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
+      (fderiv ℝ F a : Euclid n →ₗ[ℝ] Euclid P) S
+    rw [hn] at h
+    rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+    exact h
+  refine ⟨Poincare.SimonGMT.Chapter02.areaJacobianAt F,
+    Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt F,
+    fun a => ⟨Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg F a, ?_⟩, fun g => ?_, hlin⟩
+  · -- (1): compare `Hⁿ(DF(a)(D₁))` with `Lⁿ λ(D₁)` on the closed unit ball `D₁`
+    have hD0 : volume (closedBall (0 : Euclid n) 1) ≠ 0 :=
+      (measure_closedBall_pos volume 0 one_pos).ne'
+    have hDtop : volume (closedBall (0 : Euclid n) 1) ≠ ∞ := measure_closedBall_lt_top.ne
+    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      ((fderiv ℝ F a).lipschitzWith.lipschitzOnWith (s := closedBall (0 : Euclid n) 1))
+    rw [hlin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at hle
+    have hnorm : ‖fderiv ℝ F a‖₊ ≤ L := by
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact norm_fderiv_le_of_lipschitz ℝ hF
+    have hle' : ENNReal.ofReal (Poincare.SimonGMT.Chapter02.areaJacobianAt F a) ≤
+        ENNReal.ofReal ((L : ℝ) ^ n) := by
+      rw [ENNReal.ofReal_pow L.coe_nonneg, ENNReal.ofReal_coe_nnreal,
+        ← ENNReal.mul_le_mul_iff_left hD0 hDtop]
+      refine hle.trans ?_
+      gcongr
+    exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hle'
+  · -- (2): the injective Lipschitz area formula (critical and nondifferentiability images are null)
+    have h := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hF hB hFi g
+    rw [hn] at h
+    exact h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
