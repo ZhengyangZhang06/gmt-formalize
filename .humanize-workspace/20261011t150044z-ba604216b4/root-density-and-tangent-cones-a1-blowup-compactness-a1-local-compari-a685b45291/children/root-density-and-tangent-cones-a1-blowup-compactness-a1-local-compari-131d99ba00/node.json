@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.mass_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1",
+  "depth": 5,
+  "title": "Mass bound M(Z) ≤ Lⁿ·M(Y) for a current Z given by the push-forward formula",
+  "statement": "Let P, n ∈ ℕ, O ⊆ ℝ^P, f : ℝ^P → ℝ^P and L ∈ ℝ with ‖Df(y)‖ ≤ L for every y ∈ O (Df(y) = fderiv ℝ f y, operator norm). Let Y, Z ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) representing Y, with spt Y compact and spt Y ⊆ O. Suppose Z(ω) = ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(ℝ^P) (Hⁿ = μHE[n], ω(f(x))∘Df(x) := (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)). Then M(Z) ≤ ENNReal.ofReal(Lⁿ)·M(Y) for the total masses (Z.mass ≤ ENNReal.ofReal (L ^ n) * Y.mass).",
+  "lean_statement": "∀ (P n : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P) (L : ℝ) (Y Z : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ L) → R.Represents Y → IsCompact Y.support → Y.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → Z.mass ≤ ENNReal.ofReal (L ^ n) * Y.mass",
+  "lean_name": "dtc_bc_lc_pf_pushforward_mass_le",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.carrier_facts-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.carrier_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-131d99ba00-a1"
+}

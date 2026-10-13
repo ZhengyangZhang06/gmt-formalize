@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.carrier_facts-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1",
+  "depth": 5,
+  "title": "Carrier, mass and support facts for integer multiplicity currents in ℝ^P",
+  "statement": "Let P, n ∈ ℕ and write 𝒟_n(ℝ^P) for GeometricCurrentOn univ n. (1) Let Y ∈ 𝒟_n(ℝ^P) be represented by an integer multiplicity triple R = (M, θ, ξ) in ℝ^P (IMRep univ n, R.Represents Y), and let μ_R := θ·Hⁿ⌞M (R.measure, Hⁿ = μHE[n]). Then Hⁿ(M ∖ spt Y) = 0, the total mass satisfies M(Y) = μ_R(ℝ^P) (Y.mass = R.measure univ), and if spt Y is compact then μ_R(ℝ^P) < ∞. (2) For all Y₁, Y₂ ∈ 𝒟_n(ℝ^P): spt Y₁ is closed, and spt(Y₁ − Y₂) ⊆ spt Y₁ ∪ spt Y₂, where Y₁ − Y₂ is the pointwise difference of currents.",
+  "lean_statement": "∀ (P n : ℕ), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → μHE[n] (R.carrier \\ Y.support) = 0 ∧ Y.mass = R.measure univ ∧ (IsCompact Y.support → R.measure univ ≠ ∞)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y₁.support ∧ (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support",
+  "lean_name": "dtc_bc_lc_pf_imrep_carrier_mass_support",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-5581422880-a1"
+}
