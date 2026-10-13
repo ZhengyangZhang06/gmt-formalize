@@ -4872,56 +4872,6 @@ theorem Submission.codim1_rdo_dg_halfspace_rigidity : ∀ (m : ℕ) (F₀ : Set 
   filter_upwards [hinv, hmono] with z hzw hzwv hz
   simpa only [add_assoc, sub_add_cancel] using hzwv (hzw.2 hz)
 
-/-- **Blow-ups of the Gauss–Green measure converge to `Hᵐ⌞ν(y)ᗮ`** (Simon Ch. 3, proof of
-Theorem 4.3 (De Giorgi), 4.3 (†), chapter-03.txt lines 734–746).  By `normal_average_ae`,
-`μ`-a.e. `y` lies in `D` and has normal averages `A(ρ) → ν(y)`; fix such `y` and put
-`v = ν(y)`.  `cutoff_estimates` gives `B̄_{ρ₁}(y) ⊆ D` and `μ(B̄_ρ(y)) ≤ C ρᵐ`,
-`blowup_halfspace` gives `F_{y,r} → {⟨w, v⟩ > 0}` in `L¹_loc`, and `hyperplane_param` shows
-that `τ = Hᵐ⌞vᗮ` is finite on balls.  By `continuous_extension` it suffices to treat `C¹`
-test functions `g`; by `normal_defect` it suffices to show
-`r⁻ᵐ ∫ g(r⁻¹(z − y)) ⟨v, ν(z)⟩ dμ(z) → ∫_{vᗮ} g dHᵐ`, which is the vector convergence (3a)
-(`vector_convergence`) for the field `g v`, since `⟨g v, ν⟩ = g ⟨v, ν⟩` and `⟨g v, v⟩ = g`. -/
-theorem Submission.codim1_rdo_dg_tangent_measure_ae : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m])) := by
-  intro m D F μ ν hm hD hF hDc hloc hνm hν1 hGG
-  -- Step 1: good points `y` (`y ∈ D`, `A(ρ) → ν(y)`), with `v = ν(y)`
-  filter_upwards [Submission.codim1_rdo_dg_normal_average_ae m D μ ν hD hDc hloc hνm hν1]
-    with y hy
-  obtain ⟨hyD, hA⟩ := hy
-  have hv : ‖ν y‖ = 1 := hν1 y
-  obtain ⟨ρ₁, C, hρ₁, hC, hball, -, hdens⟩ :=
-    Submission.codim1_rdo_dg_cutoff_estimates m D F μ ν y (ν y) hD hF hDc hloc hνm hν1 hGG
-      hyD hv hA
-  have hblow := Submission.codim1_rdo_dg_blowup_halfspace m D F μ ν y (ν y) hm hD hF hDc hloc
-    hνm hν1 hGG hyD hv hA
-  -- `τ = Hᵐ⌞ν(y)ᗮ = ι_# Lᵐ` is finite on closed balls
-  have hv0 : ν y ≠ 0 := by
-    intro h
-    rw [h, norm_zero] at hv
-    exact zero_ne_one hv
-  obtain ⟨ι, -, hmap⟩ := Submission.codim1_rdo_dg_tma_hyperplane_param m (ν y) hv0
-  have hfin : ∀ R : ℝ, ((μHE[m] : Measure (Euclid (m + 1))).restrict
-      ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1)))) (closedBall (0 : Euclid (m + 1)) R)
-      ≠ ∞ := by
-    intro R
-    rw [hmap, Measure.map_apply ι.continuous.measurable measurableSet_closedBall]
-    have hpre : (ι : Euclid m → Euclid (m + 1)) ⁻¹' closedBall 0 R = closedBall 0 R := by
-      ext x
-      simp [ι.norm_map]
-    rw [hpre]
-    exact measure_closedBall_lt_top.ne
-  -- Step 5: it suffices to treat `C¹` test functions
-  intro f hf hfc
-  refine Submission.codim1_rdo_dg_tma_continuous_extension (m + 1) m μ _ y ρ₁ C hρ₁ hC hdens hfin
-    ?_ f hf hfc
-  -- Step 4: it suffices to treat the integrals weighted by `⟨ν(y), ν⟩`
-  intro g hg hgc
-  refine Submission.codim1_rdo_dg_tma_normal_defect (m + 1) m μ ν y (ν y) ρ₁ C _ g hνm hν1 hv hρ₁
-    hC hdens hA hg.continuous hgc ?_
-  -- Step 3: the vector convergence (3a) for the field `g ν(y)`
-  have key := Submission.codim1_rdo_dg_tma_vector_convergence m D F μ ν y (ν y) ρ₁ hF hGG hρ₁
-    hball hv hblow (fun w => g w • ν y) (hg.smul contDiff_const) hgc.smul_right
-  simpa [real_inner_smul_left, real_inner_self_eq_norm_sq, hv] using key
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -5375,5 +5325,55 @@ theorem Submission.codim1_rdo_dg_blowup_halfspace : ∀ (m : ℕ) (D F : Set (Eu
           measure_union_le _ _
       _ = volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R) := by rw [hH, add_zero]
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hconv R) (fun j => by simp) hle
+
+/-- **Blow-ups of the Gauss–Green measure converge to `Hᵐ⌞ν(y)ᗮ`** (Simon Ch. 3, proof of
+Theorem 4.3 (De Giorgi), 4.3 (†), chapter-03.txt lines 734–746).  By `normal_average_ae`,
+`μ`-a.e. `y` lies in `D` and has normal averages `A(ρ) → ν(y)`; fix such `y` and put
+`v = ν(y)`.  `cutoff_estimates` gives `B̄_{ρ₁}(y) ⊆ D` and `μ(B̄_ρ(y)) ≤ C ρᵐ`,
+`blowup_halfspace` gives `F_{y,r} → {⟨w, v⟩ > 0}` in `L¹_loc`, and `hyperplane_param` shows
+that `τ = Hᵐ⌞vᗮ` is finite on balls.  By `continuous_extension` it suffices to treat `C¹`
+test functions `g`; by `normal_defect` it suffices to show
+`r⁻ᵐ ∫ g(r⁻¹(z − y)) ⟨v, ν(z)⟩ dμ(z) → ∫_{vᗮ} g dHᵐ`, which is the vector convergence (3a)
+(`vector_convergence`) for the field `g v`, since `⟨g v, ν⟩ = g ⟨v, ν⟩` and `⟨g v, v⟩ = g`. -/
+theorem Submission.codim1_rdo_dg_tangent_measure_ae : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m])) := by
+  intro m D F μ ν hm hD hF hDc hloc hνm hν1 hGG
+  -- Step 1: good points `y` (`y ∈ D`, `A(ρ) → ν(y)`), with `v = ν(y)`
+  filter_upwards [Submission.codim1_rdo_dg_normal_average_ae m D μ ν hD hDc hloc hνm hν1]
+    with y hy
+  obtain ⟨hyD, hA⟩ := hy
+  have hv : ‖ν y‖ = 1 := hν1 y
+  obtain ⟨ρ₁, C, hρ₁, hC, hball, -, hdens⟩ :=
+    Submission.codim1_rdo_dg_cutoff_estimates m D F μ ν y (ν y) hD hF hDc hloc hνm hν1 hGG
+      hyD hv hA
+  have hblow := Submission.codim1_rdo_dg_blowup_halfspace m D F μ ν y (ν y) hm hD hF hDc hloc
+    hνm hν1 hGG hyD hv hA
+  -- `τ = Hᵐ⌞ν(y)ᗮ = ι_# Lᵐ` is finite on closed balls
+  have hv0 : ν y ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hv
+    exact zero_ne_one hv
+  obtain ⟨ι, -, hmap⟩ := Submission.codim1_rdo_dg_tma_hyperplane_param m (ν y) hv0
+  have hfin : ∀ R : ℝ, ((μHE[m] : Measure (Euclid (m + 1))).restrict
+      ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1)))) (closedBall (0 : Euclid (m + 1)) R)
+      ≠ ∞ := by
+    intro R
+    rw [hmap, Measure.map_apply ι.continuous.measurable measurableSet_closedBall]
+    have hpre : (ι : Euclid m → Euclid (m + 1)) ⁻¹' closedBall 0 R = closedBall 0 R := by
+      ext x
+      simp [ι.norm_map]
+    rw [hpre]
+    exact measure_closedBall_lt_top.ne
+  -- Step 5: it suffices to treat `C¹` test functions
+  intro f hf hfc
+  refine Submission.codim1_rdo_dg_tma_continuous_extension (m + 1) m μ _ y ρ₁ C hρ₁ hC hdens hfin
+    ?_ f hf hfc
+  -- Step 4: it suffices to treat the integrals weighted by `⟨ν(y), ν⟩`
+  intro g hg hgc
+  refine Submission.codim1_rdo_dg_tma_normal_defect (m + 1) m μ ν y (ν y) ρ₁ C _ g hνm hν1 hv hρ₁
+    hC hdens hA hg.continuous hgc ?_
+  -- Step 3: the vector convergence (3a) for the field `g ν(y)`
+  have key := Submission.codim1_rdo_dg_tma_vector_convergence m D F μ ν y (ν y) ρ₁ hF hGG hρ₁
+    hball hv hblow (fun w => g w • ν y) (hg.smul contDiff_const) hgc.smul_right
+  simpa [real_inner_smul_left, real_inner_self_eq_norm_sq, hv] using key
 
 end GMT.Ch07
