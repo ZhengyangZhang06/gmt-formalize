@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cutoff for the cone `X = {y : 2|p_Q y| < |y|}`**: for a subspace `Q ⊆ ℝᴾ` and `δ > 0` there
+is `f ∈ C_c(ℝᴾ)` with `0 ≤ f ≤ 1`, `f = 1` on `X ∩ B₁(0)` and `f = 0` on `Q \ B̄_δ(0)`.  With
+`s = δ/4` take `f = φχ`, `φ(y) = max(0, min(1, 1 + ((3/4)|y| − |p_Q y|)/s))` and
+`χ(y) = max(0, min(1, 2 − |y|))`; `f` vanishes outside `B̄₂(0)`. -/
+theorem Submission.cbrr_tcd_cone_cutoff_exists : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ, (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y : Euclid P, 2 * ‖Q.starProjection y‖ < ‖y‖ → ‖y‖ < 1 → f y = 1) ∧ ∀ y ∈ Q, δ < ‖y‖ → f y = 0 := by
+  intro P Q δ hδ
+  -- Step 1: `s = δ/4`, `h(y) = (3/4)|y| − |p_Q y|`, `φ = max(0, min(1, 1 + h/s))`,
+  -- `χ = max(0, min(1, 2 − |y|))`.
+  set s : ℝ := δ / 4 with hs_def
+  have hs : 0 < s := by positivity
+  let φ : Euclid P → ℝ := fun y => max 0 (min 1 (1 + (3 / 4 * ‖y‖ - ‖Q.starProjection y‖) / s))
+  let χ : Euclid P → ℝ := fun y => max 0 (min 1 (2 - ‖y‖))
+  -- Step 2: `φ` and `χ` are continuous (`p_Q` is a continuous linear map).
+  have hφ : Continuous φ :=
+    continuous_const.max (continuous_const.min (continuous_const.add
+      (((continuous_const.mul continuous_norm).sub Q.starProjection.continuous.norm).div_const s)))
+  have hχ : Continuous χ :=
+    continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))
+  -- Step 3: `χ`, hence `φχ`, vanishes outside the compact ball `B̄₂(0)`.
+  have hsupp : HasCompactSupport fun y => φ y * χ y := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) 2) fun y hy => ?_
+    rw [mem_closedBall_zero_iff, not_le] at hy
+    have hχy : χ y = 0 := by
+      simp only [χ]
+      rw [min_eq_right (by linarith), max_eq_left (by linarith)]
+    simp [hχy]
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+    { toFun := fun y => φ y * χ y
+      continuous_toFun := hφ.mul hχ
+      hasCompactSupport' := hsupp }
+  have hf : ∀ y, f y = φ y * χ y := fun _ => rfl
+  -- Step 4: `max(0, min(1, a)) ∈ [0, 1]`, so `0 ≤ φ, χ ≤ 1` and `0 ≤ φχ ≤ φ ≤ 1`.
+  have hclamp : ∀ a : ℝ, 0 ≤ max 0 (min 1 a) ∧ max 0 (min 1 a) ≤ 1 := fun a =>
+    ⟨le_max_left _ _, max_le zero_le_one (min_le_left _ _)⟩
+  refine ⟨f, fun y => ?_, fun y => ?_, fun y hX hB => ?_, fun y hyQ hyδ => ?_⟩
+  · rw [hf]
+    exact mul_nonneg (hclamp _).1 (hclamp _).1
+  · rw [hf]
+    calc φ y * χ y ≤ φ y * 1 := mul_le_mul_of_nonneg_left (hclamp _).2 (hclamp _).1
+      _ = φ y := mul_one _
+      _ ≤ 1 := (hclamp _).2
+  -- Step 5: if `2|p_Q y| < |y| < 1` then `h(y) > |y|/4 ≥ 0`, so `φ(y) = 1`; and `χ(y) = 1`.
+  · have hh : 0 ≤ (3 / 4 * ‖y‖ - ‖Q.starProjection y‖) / s :=
+      div_nonneg (by linarith [norm_nonneg y]) hs.le
+    have hφy : φ y = 1 := by
+      simp only [φ]
+      rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+    have hχy : χ y = 1 := by
+      simp only [χ]
+      rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+    rw [hf, hφy, hχy, one_mul]
+  -- Step 6: if `y ∈ Q` and `|y| > δ` then `p_Q y = y`, so `1 + h(y)/s = 1 − |y|/δ < 0` and
+  -- `φ(y) = 0`.
+  · have hp : Q.starProjection y = y := Submodule.starProjection_eq_self_iff.mpr hyQ
+    have hneg : 1 + (3 / 4 * ‖y‖ - ‖y‖) / s < 0 := by
+      have h1 : (3 / 4 * ‖y‖ - ‖y‖) / s = -(‖y‖ / δ) := by
+        rw [hs_def]
+        field_simp
+        ring
+      have h2 : 1 < ‖y‖ / δ := (one_lt_div hδ).mpr hyδ
+      linarith
+    have hφy : φ y = 0 := by
+      simp only [φ]
+      rw [hp, min_eq_right (by linarith), max_eq_left hneg.le]
+    rw [hf, hφy, zero_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
