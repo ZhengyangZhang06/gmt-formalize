@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b982fe2f6fb7ea7106dc55310dbab9954cb81cc0ef4117cd21fca08d1b930f23",
+  "git_delta": {
+    "base_commit": "36bb5fccb4e60a60dffd1adf21fbd89754e377b7",
+    "candidate_commit": "e3c38e26eb73057af3c89b89ff312e5fde1b76a2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_gbl_centre_chart_offsets",
+    "diff_sha256": "7ff8b1a1a268a7dd21016454daabc70e2a01d144763e55a3706cfa620a5269a3",
+    "source_sha256": "b61f766e93c2d0a5e164b1995e070d667d39484a91a866ccce1ac72e5fbaca5a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_gbl_centre_chart_offsets",
+      "statement": "∀ (m k P : ℕ) (N : Set (Euclid P)) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (u : Euclid m → Euclid k) (δ₁ δ₂ C₀ : ℝ), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∀ i, 0 < lams i) → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid P, ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → N ∩ {y | ∃ v ∈ ball (0 : Euclid m) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid m) δ₁ → ∃ (s : ℕ → Euclid m) (t : ℕ → Euclid k), (∀ i, xs i = x + ι (s i) + ι' (t i)) ∧ Tendsto s atTop (𝓝 0) ∧ Tendsto t atTop (𝓝 0) ∧ ∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ₁ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
