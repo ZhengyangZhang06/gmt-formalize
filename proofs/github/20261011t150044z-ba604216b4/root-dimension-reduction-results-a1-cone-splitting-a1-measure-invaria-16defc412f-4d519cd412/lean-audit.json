@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a120e3ff75662fdaef9d34ec899771eb9367d28ed8d045857d772bdcf0b7019f",
+  "git_delta": {
+    "base_commit": "417ebc5a0ae45c425acfbff736df3ba4f56f4876",
+    "candidate_commit": "b0ca2599fa518c681e48568a9d7b7b1fb0ea2f30",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_mi_density_eq_mult_ae",
+    "diff_sha256": "2e716bfd6b678cca0fe1f2be67e0dbaa42263a0bfabc9b4aa38e3cbe9d3c136f",
+    "source_sha256": "62835c77a6c7605bd42f59ecc5586ba10ea95f197954d94bbfed890d24c2f9c4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_mi_density_eq_mult_ae",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Θ : Euclid P → ℝ), R.Represents S → (∀ x : Euclid P, HasMassDensity S x (Θ x)) → ∀ᵐ x ∂((μHE[n] : Measure (Euclid P)).restrict R.carrier), Θ x = (R.mult x : ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
