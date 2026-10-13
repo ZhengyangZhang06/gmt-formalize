@@ -451,6 +451,63 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Steps 9–10 of the oriented graph chart of an embedded `(n+1)`-submanifold used for the
+zero-scale limits of Simon 7.5.3–7.5.5 (codimension-one regularity, 7.5.8).  Let `ι`, `ι'` be
+linear isometries with orthogonal ranges and `Γ(v) = x + ιv + ι'u(v)`, `u` continuous at `0` with
+`u(0) = 0`.  If `Γ(O) ⊆ N` for an open `O ∋ 0` and every point of `N ∩ B_s(x)` is some `Γ(v)`,
+`v ∈ O`, then for `δ₂ = s/2` and a small `δ₁ > 0`: `B_{δ₁} ⊆ O`, `u(B_{δ₁}) ⊆ B_{δ₂}` and the part
+of `N` in the cylinder `{x + ιv + ι'w : |v| < δ₁, |w| < δ₂}` is exactly `Γ(B_{δ₁})`.  The cylinder
+lies in `B_s(x)`, and `ιa + ι'b = 0` forces `a = 0` (Pythagoras), so the `ι`-coordinate of a point
+of `N` in the cylinder is that of a graph point. -/
+theorem Submission.codim1_zsl_gc_graph_cylinder : ∀ (d k : ℕ) (N : Set (Euclid (d + k))) (x : Euclid (d + k)) (ι : Euclid d →ₗᵢ[ℝ] Euclid (d + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (d + k)) (O : Set (Euclid d)) (u : Euclid d → Euclid k) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen O → (0 : Euclid d) ∈ O → ContinuousAt u 0 → u 0 = 0 → 0 < s → (∀ v ∈ O, x + ι v + ι' (u v) ∈ N) → (∀ y ∈ N, dist y x < s → ∃ v ∈ O, y = x + ι v + ι' (u v)) → ∃ δ₁ δ₂ : ℝ, 0 < δ₁ ∧ 0 < δ₂ ∧ ball (0 : Euclid d) δ₁ ⊆ O ∧ (∀ v ∈ ball (0 : Euclid d) δ₁, u v ∈ ball (0 : Euclid k) δ₂) ∧ N ∩ {y | ∃ v ∈ ball (0 : Euclid d) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid d) δ₁ := by
+  intro d k N x ι ι' O u s horth hO h0O hu hu0 hs hN hfib
+  -- `ι a + ι' b = 0` forces `a = 0` (Pythagoras)
+  have hinj : ∀ a b, ι a + ι' b = 0 → a = 0 := by
+    intro a b h
+    have h1 := norm_add_sq_real (ι a) (ι' b)
+    rw [h, horth, ι.norm_map, ι'.norm_map, norm_zero] at h1
+    have h2 : ‖a‖ = 0 := by nlinarith [norm_nonneg a, sq_nonneg ‖b‖]
+    exact norm_eq_zero.mp h2
+  -- radii: `δ₂ = s / 2`, `δ₁ = min (min η ρ) (s / 2)`
+  obtain ⟨η, hη, hηu⟩ := Metric.continuousAt_iff.mp hu (s / 2) (half_pos hs)
+  obtain ⟨ρ, hρ, hρO⟩ := Metric.isOpen_iff.mp hO 0 h0O
+  have hδ₁ : 0 < min (min η ρ) (s / 2) := lt_min (lt_min hη hρ) (half_pos hs)
+  have hballO : ball (0 : Euclid d) (min (min η ρ) (s / 2)) ⊆ O :=
+    (ball_subset_ball ((min_le_left _ _).trans (min_le_right _ _))).trans hρO
+  have hball2 : ∀ v ∈ ball (0 : Euclid d) (min (min η ρ) (s / 2)),
+      u v ∈ ball (0 : Euclid k) (s / 2) := by
+    intro v hv
+    have hv' : dist v 0 < η :=
+      lt_of_lt_of_le (mem_ball.mp hv) ((min_le_left _ _).trans (min_le_left _ _))
+    have h := hηu hv'
+    rw [hu0] at h
+    exact mem_ball.mpr h
+  refine ⟨min (min η ρ) (s / 2), s / 2, hδ₁, half_pos hs, hballO, hball2, ?_⟩
+  ext y
+  constructor
+  · -- `N ∩ Z ⊆ Γ(B_{δ₁})`: a point of the cylinder lies in `B_s(x)`
+    rintro ⟨hyN, v', hv', w', hw', rfl⟩
+    have hv's : ‖v'‖ < s / 2 :=
+      lt_of_lt_of_le (mem_ball_zero_iff.mp hv') (min_le_right _ _)
+    have hw's : ‖w'‖ < s / 2 := mem_ball_zero_iff.mp hw'
+    have hdist : dist (x + ι v' + ι' w') x < s := by
+      rw [dist_eq_norm, add_assoc, add_sub_cancel_left]
+      calc ‖ι v' + ι' w'‖ ≤ ‖ι v'‖ + ‖ι' w'‖ := norm_add_le _ _
+        _ = ‖v'‖ + ‖w'‖ := by rw [ι.norm_map, ι'.norm_map]
+        _ < s / 2 + s / 2 := add_lt_add hv's hw's
+        _ = s := add_halves s
+    obtain ⟨v, -, hv⟩ := hfib _ hyN hdist
+    have hv2 : ι v' + ι' w' = ι v + ι' (u v) := by
+      rw [add_assoc, add_assoc] at hv
+      exact add_left_cancel hv
+    have h3 : ι (v' - v) + ι' (w' - u v) = 0 := by
+      rw [map_sub, map_sub, sub_add_sub_comm, hv2, sub_self]
+    have hvv : v' = v := sub_eq_zero.mp (hinj _ _ h3)
+    exact ⟨v, hvv ▸ hv', hv.symm⟩
+  · -- `Γ(B_{δ₁}) ⊆ N ∩ Z`
+    rintro ⟨v, hv, rfl⟩
+    exact ⟨hN v (hballO hv), v, hv, u v, hball2 v hv, rfl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
