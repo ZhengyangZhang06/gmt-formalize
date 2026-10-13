@@ -1,0 +1,134 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.perturbation_injective-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the supplied proof of the parent (the deformations φ_t of Simon Ch. 2, 5.1–5.2, book/chapter-02.txt lines 1162–1190, are diffeomorphisms).
+
+1. (Bound on DZ.) DZ is continuous because Z is C¹ (ContDiff.continuous_fderiv), and its support lies in tsupport Z (support_fderiv_subset), so DZ has compact support (HasCompactSupport.fderiv). A continuous compactly supported function is bounded (Continuous.bounded_above_of_compact_support): there is Λ₀ with ‖DZ(x)‖ ≤ Λ₀ for all x. Put Λ := max(Λ₀, 0) ≥ 0.
+2. (Choice of c.) Let c := 1/(Λ + 1) > 0. If |t| < c then |t|(Λ + 1) < 1, hence |t|Λ < 1.
+3. (Lipschitz bound.) Z is differentiable on the convex set ℝ^P with ‖DZ‖ ≤ Λ, so by the mean value inequality |Z(a) − Z(b)| ≤ Λ|a − b| for all a, b (Convex.norm_image_sub_le_of_norm_fderiv_le).
+4. (Φ_t injective.) Let |t| < c and Φ_t(a) = Φ_t(b). Then a − b = t(Z(b) − Z(a)), so |a − b| = |t||Z(b) − Z(a)| ≤ |t|Λ|a − b|. If a ≠ b, dividing by |a − b| > 0 gives 1 ≤ |t|Λ < 1, a contradiction. So a = b.
+5. (DΦ_t(x) injective.) Z is differentiable, so by the sum rule DΦ_t(x) = I + tDZ(x). If (I + tDZ(x))v = (I + tDZ(x))w, then v − w = tDZ(x)(w − v), so |v − w| ≤ |t|·‖DZ(x)‖·|w − v| ≤ |t|Λ|v − w|, and as in step 4 v = w. ∎
+
+Lean reference proof (verified). The declaration below was compiled with Lean v4.35.0-rc3 and Mathlib 25730c7c after `import GMT.Ch07.Submission`, inside `namespace GMT.Ch07` with the contract's `open`s, with every dependency declared under its exact `Submission.` name and byte-identical frozen type (file /tmp/fv-split-e936/check/Final.lean, exit 0). It is a single declaration with no helper lemmas, and `#print axioms` lists only propext, Classical.choice, Quot.sound and the dependencies named above.
+
+```lean
+theorem Submission.codim1_hcp_fv_perturbation_injective : ∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ c : ℝ, 0 < c ∧ ∀ t : ℝ, |t| < c → Injective (fun x => x + t • Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x) := by
+  intro P Z hZ hZc
+  have hdiff : Differentiable ℝ Z := hZ.differentiable one_ne_zero
+  obtain ⟨Λ₀, hΛ₀⟩ := (hZ.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+    (hZc.fderiv (𝕜 := ℝ))
+  set Λ := max Λ₀ 0 with hΛdef
+  have hΛ : ∀ x, ‖fderiv ℝ Z x‖ ≤ Λ := fun x => (hΛ₀ x).trans (le_max_left _ _)
+  have hΛ0 : 0 ≤ Λ := le_max_right _ _
+  refine ⟨1 / (Λ + 1), by positivity, fun t ht => ?_⟩
+  have htΛ : |t| * Λ < 1 := by
+    have h1 : |t| * (Λ + 1) < 1 := by
+      rwa [lt_div_iff₀ (by positivity)] at ht
+    nlinarith [abs_nonneg t]
+  have hlip : ∀ a b, ‖Z a - Z b‖ ≤ Λ * ‖a - b‖ := fun a b =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun x _ => hdiff x) (fun x _ => hΛ x)
+      (Set.mem_univ b) (Set.mem_univ a)
+  refine ⟨fun a b hab => ?_, fun x => ?_⟩
+  · have hab' : a - b = t • Z b - t • Z a := by
+      rw [sub_eq_sub_iff_add_eq_add, add_comm (t • Z b) b]; exact hab
+    have hn : ‖a - b‖ ≤ |t| * Λ * ‖a - b‖ := by
+      calc ‖a - b‖ = |t| * ‖Z b - Z a‖ := by
+            rw [hab', ← smul_sub, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖b - a‖) := mul_le_mul_of_nonneg_left (hlip b a) (abs_nonneg t)
+        _ = |t| * Λ * ‖a - b‖ := by rw [norm_sub_rev]; ring
+    have h0 : ‖a - b‖ = 0 := by
+      by_contra hne
+      have hpos : 0 < ‖a - b‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+      nlinarith
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+  · have hfd : fderiv ℝ (fun x => x + t • Z x) x =
+        ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x :=
+      ((hasFDerivAt_id x).add ((hdiff x).hasFDerivAt.const_smul t)).fderiv
+    rw [hfd]
+    intro v w hvw
+    have hvw' : v - w = t • fderiv ℝ Z x w - t • fderiv ℝ Z x v := by
+      rw [sub_eq_sub_iff_add_eq_add, add_comm (t • fderiv ℝ Z x w) w]; exact hvw
+    have hn : ‖v - w‖ ≤ |t| * Λ * ‖v - w‖ := by
+      calc ‖v - w‖ = |t| * ‖fderiv ℝ Z x (w - v)‖ := by
+            conv_lhs => rw [hvw']
+            rw [← smul_sub, ← map_sub, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖w - v‖) :=
+          mul_le_mul_of_nonneg_left ((fderiv ℝ Z x).le_of_opNorm_le (hΛ x) (w - v))
+            (abs_nonneg t)
+        _ = |t| * Λ * ‖v - w‖ := by rw [norm_sub_rev]; ring
+    have h0 : ‖v - w‖ = 0 := by
+      by_contra hne
+      have hpos : 0 < ‖v - w‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+      nlinarith
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+```
+
+## Key steps
+
+1. DZ is continuous with compact support, so ‖DZ‖ ≤ Λ; take c = 1/(Λ + 1), so |t|Λ < 1.
+2. Mean value inequality: |Z(a) − Z(b)| ≤ Λ|a − b|, hence Φ_t(a) = Φ_t(b) forces |a − b| ≤ |t|Λ|a − b| and a = b.
+3. DΦ_t(x) = I + tDZ(x) and ‖tDZ(x)‖ < 1 make the derivative injective.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `sed -n 1,457p GMT/Ch07/Submission.lean (IsEmbeddedSubmanifold, tangentSpace, tangentialDivergence, IMRep.IsStationaryAlong)`
+- `read nodes/<selected>/parent-child-handoff.json and parent-supplied-plan.md; nodes/root-…-sim-b5d5990773/decomposition-v1.json (hypercone_plane split)`
+- `python3 scans of dag.json: nodes whose lean_statement mentions starProjection|tangentSpace|IsEmbeddedSubmanifold|adjoint+det|subtypeL|LinearMap.trace|convolution|TendstoUniformly|ContDiff ℝ (⊤, with status and candidate_commit`
+- `read parent-child-handoff.json of dsmc_chart_tangentSpace_eq_range, dimred_rpd_embedded_locally_closed, fvmb_orthonormal_gram_sqrt_det_le_first_order, fvmb_gram_det_le_exp_sum_norm_sq_sub, fvmb_trace_starProjection_comp_eq_sum_inner, dpf_smooth_approx_compact_perturbation`
+- `git show <commit>:GMT/Ch07/Submission.lean | grep '^theorem Submission.' for 44afba4d4bb9 6da66b1edf6f 84fc998516ed 56e107017393 6b000c36933a 39688605e0a8 (exact frozen type present)`
+- `grep -rn in local-references/123e8435b4a2469b/mathlib/Mathlib: setLIntegral_mono', ofReal_integral_eq_lintegral_ofReal, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, ContinuousOn.aestronglyMeasurable, IntegrableOn.of_bound, support_fderiv_subset, inverse_continuousAt, eq_starProjection_of_mem_of_inner_eq_zero, ContDiffOn.continuousOn_fderiv_of_isOpen, det_toMatrix, repr_apply_apply, adjoint_inner_right, LinearMap.continuous_of_finiteDimensional, tendsto_integral_of_dominated_convergence, norm_image_sub_le_of_norm_fderiv_le, HasCompactSupport.fderiv, bounded_above_of_compact_support, image_eq_zero_of_notMem_tsupport, Orthonormal.comp_linearIsometry, LinearMap.finrank_range_of_inj, coe_range, mul_apply_eq_comp`
+- `grep -c codim1_hcp_fv_ dag.json GMT/Ch07/Submission.lean; grep -rl codim1_hcp_fv_ .lake/packages/simongmt; git grep codim1_hcp_fv_ over all 2626 refs (no match)`
+- `runtime.py (_decompose max_depth, _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _overlay_accepted_children, _leaf_author_task) and store.py ensure`
+- `lean -DautoImplicit=false /tmp/fv-split-e936/check/{TypesAll,Assembly,N1,N2N3,N4,N5,N6,Chain,Final}.lean and /tmp/fv-split-e936/reuse/R_*.lean (#print axioms)`
+- `book/chapter-02.txt lines 1030–1041 (4.18–4.20) and 1160–1285 (§5: 5.1–5.4, stationarity)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e93625a0c2/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-3e803c0b62/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-smooth-ap-e30aa8106d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/fv-split-e936/check/TypesAll.lean`
+- `/tmp/fv-split-e936/check/Assembly.lean`
+- `/tmp/fv-split-e936/check/Final.lean`
+- `/tmp/fv-split-e936/reuse/R_dsmc_chart_tangentSpace_eq_range.lean`
+
+Pins match. The manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…). Reusable accepted DAG lemmas found:
+- dsmc_chart_tangentSpace_eq_range: T_{ψ v} = range Dψ(v), plus continuity of ψ⁻¹.
+- dimred_rpd_embedded_locally_closed: M is Borel.
+- fvmb_orthonormal_gram_sqrt_det_le_first_order: √det Gram(Lτ) ≤ 1 + tΣ⟨τ_a,Bτ_a⟩ + ε|t|.
+- fvmb_trace_starProjection_comp_eq_sum_inner: trace(P_Q∘B) = Σ⟨τ_a,Bτ_a⟩.
+- dpf_smooth_approx_compact_perturbation: C^∞ approximation of id + X with a fixed compact K' ⊆ U and pointwise derivative convergence.
+Their types are byte-identical to the DAG, and each compiles at its candidate commit with standard axioms only. The C² tangent-projection proof (dor_lmb_ret_tangent_projection, commit 39688605e0a8) supplied the D(D*D)⁻¹D* technique, adapted to continuity for C¹ charts. No accepted lemma gives continuity of P_x for C¹ M, a trace bound, a subspace-det Jacobian bound, injectivity of id + tZ, or the first-variation and C¹-extension steps. These are the six new codim1_hcp_fv_ nodes; the names have no match anywhere. All cited Mathlib names exist in the snapshot (the current spelling is setIntegral_eq_of_subset_of_forall_sdiff_eq_zero). Lean: all child types elaborate. All six new children and the selected frozen type are kernel-checked from exactly the declared prerequisites, with the area formula as the parent's own prerequisite (Final.lean, exit 0).

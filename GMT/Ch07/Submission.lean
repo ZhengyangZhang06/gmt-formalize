@@ -451,6 +451,121 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- An embedded `Cʳ` submanifold `M ⊆ ℝᴾ` (Simon Ch. 2, §4, (4.1)) is Borel, and it meets every
+small closed ball about one of its points in a compact set.  For a chart `(V, W, ψ)` and a compact
+`K ⊆ W`, `M ∩ K = ψ(V ∩ ψ⁻¹(K))` is compact because `ψ` is proper and continuous on `V`.  With `O`
+the union of the chart domains `W`, `M = O ∩ closure M`: a point `p ∈ O ∩ closure M` lies in the
+closure of the compact, hence closed, set `M ∩ closedBall p ε`.  So `M` is Borel. -/
+theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → MeasurableSet M ∧ ∀ y ∈ M, ∃ ε : ℝ, 0 < ε ∧ IsCompact (M ∩ closedBall y ε) := by
+  intro P r d M hM
+  -- step 1: for a chart `(V, W, ψ)` at `y` and compact `K ⊆ W`, `M ∩ K = ψ(V ∩ ψ⁻¹(K))` is compact
+  have key : ∀ y ∈ M, ∃ W : Set (Euclid P), IsOpen W ∧ y ∈ W ∧
+      ∀ K ⊆ W, IsCompact K → IsCompact (M ∩ K) := by
+    intro y hy
+    obtain ⟨V, W, ψ, -, hW, hyW, hψ, -, himg, hprop, -⟩ := hM y hy
+    refine ⟨W, hW, hyW, fun K hKW hK => ?_⟩
+    have hEq : M ∩ K = ψ '' (V ∩ ψ ⁻¹' K) := by
+      ext x
+      constructor
+      · rintro ⟨hxM, hxK⟩
+        have hx : x ∈ ψ '' V := by rw [himg]; exact ⟨hKW hxK, hxM⟩
+        obtain ⟨v, hv, rfl⟩ := hx
+        exact ⟨v, ⟨hv, hxK⟩, rfl⟩
+      · rintro ⟨v, ⟨hv, hvK⟩, rfl⟩
+        have hv' : ψ v ∈ W ∩ M := by rw [← himg]; exact ⟨v, hv, rfl⟩
+        exact ⟨hv'.2, hvK⟩
+    rw [hEq]
+    exact (hprop K hKW hK).image_of_continuousOn (hψ.continuousOn.mono inter_subset_left)
+  refine ⟨?_, ?_⟩
+  · -- steps 3-5: `O = ⋃_{y ∈ M} W_y` is open and `M = O ∩ closure M`, so `M` is Borel
+    choose! Wf hWo hyW hcpt using key
+    have hO : IsOpen (⋃ y ∈ M, Wf y) := isOpen_biUnion fun y hy => hWo y hy
+    have hMeq : M = (⋃ y ∈ M, Wf y) ∩ closure M := by
+      apply Subset.antisymm
+      · intro x hx
+        exact ⟨mem_biUnion hx (hyW x hx), subset_closure hx⟩
+      · -- `p ∈ O ∩ closure M` lies in the closure of the compact set `M ∩ closedBall p (r'/2)`
+        rintro p ⟨hpO, hpcl⟩
+        obtain ⟨y, hy, hpW⟩ := mem_iUnion₂.1 hpO
+        obtain ⟨r', hr', hball⟩ := Metric.isOpen_iff.1 (hWo y hy) p hpW
+        have hcb : closedBall p (r' / 2) ⊆ Wf y :=
+          (closedBall_subset_ball (by linarith)).trans hball
+        have hC := hcpt y hy (closedBall p (r' / 2)) hcb (isCompact_closedBall p (r' / 2))
+        have h1 : p ∈ ball p (r' / 2) ∩ closure M := ⟨mem_ball_self (by linarith), hpcl⟩
+        have h2 := isOpen_ball.inter_closure h1
+        have hsub : ball p (r' / 2) ∩ M ⊆ M ∩ closedBall p (r' / 2) :=
+          fun x hx => ⟨hx.2, ball_subset_closedBall hx.1⟩
+        have h3 : p ∈ closure (M ∩ closedBall p (r' / 2)) := closure_mono hsub h2
+        rw [hC.isClosed.closure_eq] at h3
+        exact h3.1
+    rw [hMeq]
+    exact hO.measurableSet.inter isClosed_closure.measurableSet
+  · -- step 2: a closed ball about `y` inside the chart domain `W` meets `M` in a compact set
+    intro y hy
+    obtain ⟨W, hW, hyW, hcpt⟩ := key y hy
+    obtain ⟨r', hr', hball⟩ := Metric.isOpen_iff.1 hW y hyW
+    exact ⟨r' / 2, by linarith,
+      hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
+
+/-- Small deformations `x ↦ x + t • Z x` by a compactly supported `C¹` field `Z` are injective
+immersions (the maps `φ_t` of Simon Ch. 2, 5.1–5.2).  `DZ` is continuous with compact support, so
+`‖DZ‖ ≤ Λ` for some `Λ ≥ 0`, and `|t| < 1 / (Λ + 1)` gives `|t| Λ < 1`.  By the mean value
+inequality `Z` is `Λ`-Lipschitz, so `a + t • Z a = b + t • Z b` forces `‖a - b‖ ≤ |t| Λ ‖a - b‖`,
+i.e. `a = b`; in the same way the derivative `I + t • DZ(x)` is injective. -/
+theorem Submission.codim1_hcp_fv_perturbation_injective : ∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ c : ℝ, 0 < c ∧ ∀ t : ℝ, |t| < c → Injective (fun x => x + t • Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x) := by
+  intro P Z hZ hZc
+  have hdiff : Differentiable ℝ Z := hZ.differentiable one_ne_zero
+  -- step 1: `DZ` is continuous with compact support, hence bounded by some `Λ ≥ 0`
+  obtain ⟨Λ₀, hΛ₀⟩ := (hZ.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+    (hZc.fderiv (𝕜 := ℝ))
+  obtain ⟨Λ, hΛ0, hΛ⟩ : ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x, ‖fderiv ℝ Z x‖ ≤ Λ :=
+    ⟨max Λ₀ 0, le_max_right _ _, fun x => (hΛ₀ x).trans (le_max_left _ _)⟩
+  -- step 2: `c = 1 / (Λ + 1)`, so `|t| < c` gives `|t| Λ < 1`
+  refine ⟨1 / (Λ + 1), by positivity, fun t ht => ?_⟩
+  have htΛ : |t| * Λ < 1 := by
+    have h1 : |t| * (Λ + 1) < 1 := by
+      rwa [lt_div_iff₀ (by positivity)] at ht
+    nlinarith [abs_nonneg t]
+  -- step 3: mean value inequality, `‖Z a - Z b‖ ≤ Λ ‖a - b‖`
+  have hlip : ∀ a b, ‖Z a - Z b‖ ≤ Λ * ‖a - b‖ := fun a b =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun x _ => hdiff x) (fun x _ => hΛ x)
+      (Set.mem_univ b) (Set.mem_univ a)
+  refine ⟨fun a b hab => ?_, fun x => ?_⟩
+  · -- step 4: `a - b = t • (Z b - Z a)` gives `‖a - b‖ ≤ |t| Λ ‖a - b‖`, so `a = b`
+    have hab' : a - b = t • Z b - t • Z a := by
+      rw [sub_eq_sub_iff_add_eq_add, add_comm (t • Z b) b]; exact hab
+    have hn : ‖a - b‖ ≤ |t| * Λ * ‖a - b‖ := by
+      calc ‖a - b‖ = |t| * ‖Z b - Z a‖ := by
+            rw [hab', ← smul_sub, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖b - a‖) := mul_le_mul_of_nonneg_left (hlip b a) (abs_nonneg t)
+        _ = |t| * Λ * ‖a - b‖ := by rw [norm_sub_rev]; ring
+    have h0 : ‖a - b‖ = 0 := by
+      by_contra hne
+      have hpos : 0 < ‖a - b‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+      nlinarith
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+  · -- step 5: `D(x + t • Z x) = I + t • DZ(x)`, and `‖v - w‖ ≤ |t| Λ ‖v - w‖` as in step 4
+    have hfd : fderiv ℝ (fun x => x + t • Z x) x =
+        ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x :=
+      ((hasFDerivAt_id x).add ((hdiff x).hasFDerivAt.const_smul t)).fderiv
+    rw [hfd]
+    intro v w hvw
+    have hvw' : v - w = t • fderiv ℝ Z x w - t • fderiv ℝ Z x v := by
+      rw [sub_eq_sub_iff_add_eq_add, add_comm (t • fderiv ℝ Z x w) w]; exact hvw
+    have hn : ‖v - w‖ ≤ |t| * Λ * ‖v - w‖ := by
+      calc ‖v - w‖ = |t| * ‖fderiv ℝ Z x (w - v)‖ := by
+            conv_lhs => rw [hvw']
+            rw [← smul_sub, ← map_sub, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖w - v‖) :=
+          mul_le_mul_of_nonneg_left ((fderiv ℝ Z x).le_of_opNorm_le (hΛ x) (w - v))
+            (abs_nonneg t)
+        _ = |t| * Λ * ‖v - w‖ := by rw [norm_sub_rev]; ring
+    have h0 : ‖v - w‖ = 0 := by
+      by_contra hne
+      have hpos : 0 < ‖v - w‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+      nlinarith
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
