@@ -660,6 +660,72 @@ theorem Submission.dohr_eb_sch_bu_hds_holder_of_limit : ∀ (n ℓ : ℕ) (α K 
   exact tendsto_iff_norm_sub_tendsto_zero.mpr
     (squeeze_zero (fun z' => norm_nonneg _) (fun z' => hV z' z) hK0)
 
+namespace Submission
+
+/-- **Arzelà–Ascoli with diagonal extraction for uniformly Hölder maps on growing balls**
+(blow-up step of the Schauder estimate behind Simon Ch. 5, Theorem 7.1, second assertion).
+Let `R_k → ∞` and let `f_k : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` satisfy `f_k(0) = 0` and
+`‖f_k(z) − f_k(z')‖ ≤ K|z − z'|^α` on `B̆_{R_k}(0)`.  Then a subsequence `f_{φ(j)}` converges
+uniformly on every closed ball `B_r(0)` to a continuous `V` with `V(0) = 0` and
+`‖V(z) − V(z')‖ ≤ K|z − z'|^α` on `ℝⁿ`: on `B_m(0)` the tail `k ≥ k_m` (`R_k > m`) is uniformly
+Hölder and bounded by `K mᵅ`, so every subsequence has a further subsequence converging uniformly
+on `B_m(0)` (Arzelà–Ascoli); a diagonal subsequence converges on every `B_m(0)`, and the Hölder
+bound passes to the limit. -/
+theorem dohr_eb_sch_bu_holder_diag_subseq : ∀ (n ℓ : ℕ) (α K : ℝ) (f : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), 0 < α → 0 ≤ K → Tendsto R atTop atTop → (∀ k, f k 0 = 0) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k), ‖f k z - f k z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ V 0 = 0 ∧ Continuous V ∧ (∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ ∀ r : ℝ, TendstoUniformlyOn (fun j => f (φ j)) V atTop (closedBall (0 : Rn n) r) := by
+  intro n ℓ α K f R hα hK hR hf0 hf
+  -- Step 1: for each `m` there is `k_m` with `R_k > m` for `k ≥ k_m`; for such `k` the map `f_k`
+  -- is `K`-`α`-Hölder on `B_m(0)` and bounded there by `K mᵅ` (since `f_k(0) = 0`).
+  have hkm : ∀ m : ℕ, ∃ km : ℕ, ∀ k ≥ km, (m : ℝ) < R k := fun m =>
+    eventually_atTop.1 (hR.eventually_gt_atTop (m : ℝ))
+  choose km hkm using hkm
+  have hhol : ∀ m : ℕ, ∀ k ≥ km m, ∀ z ∈ closedBall (0 : Rn n) m,
+      ∀ z' ∈ closedBall (0 : Rn n) m, ‖f k z - f k z'‖ ≤ K * ‖z - z'‖ ^ α :=
+    fun m k hk z hz z' hz' =>
+      hf k z (closedBall_subset_ball (hkm m k hk) hz) z' (closedBall_subset_ball (hkm m k hk) hz')
+  have hbd : ∀ m : ℕ, ∀ k ≥ km m, ∀ z ∈ closedBall (0 : Rn n) m, ‖f k z‖ ≤ K * (m : ℝ) ^ α := by
+    intro m k hk z hz
+    have h := hhol m k hk z hz 0 (mem_closedBall_self (Nat.cast_nonneg m))
+    rw [hf0, sub_zero, sub_zero] at h
+    exact h.trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (norm_nonneg z) (mem_closedBall_zero_iff.1 hz) hα.le) hK)
+  -- Step 2 (Arzelà–Ascoli): along any strictly increasing `ψ`, the shifted tail
+  -- `f_{ψ(k_m + j)}` satisfies the bounds of step 1 on `B_m(0)`, so a further subsequence
+  -- converges uniformly on `B_m(0)`.
+  have hstep2 : ∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ)
+      (g : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧
+        TendstoUniformlyOn (fun j => f (ψ (χ j))) g atTop (closedBall (0 : Rn n) m) := by
+    intro m ψ hψ
+    have hge : ∀ j, km m ≤ ψ (km m + j) := fun j =>
+      (Nat.le_add_right (km m) j).trans (hψ.id_le (km m + j))
+    obtain ⟨χ', G, hχ', hG⟩ := Submission.dohr_eb_sch_bu_hds_compact_subseq n ℓ α K
+      (K * (m : ℝ) ^ α) (closedBall (0 : Rn n) m) (fun j => f (ψ (km m + j))) hα hK
+      (isCompact_closedBall 0 m) (fun j z hz => hbd m _ (hge j) z hz)
+      (fun j z hz z' hz' => hhol m _ (hge j) z hz z' hz')
+    exact ⟨fun j => km m + χ' j, G, fun a b hab => Nat.add_lt_add_left (hχ' hab) (km m), hG⟩
+  -- Steps 3–6: diagonal extraction over the balls `B_m(0)`, with a single limit `V`; every
+  -- `B_r(0)` lies in `B_{⌈r⌉}(0)`, and pointwise convergence at `z` follows from `z ∈ B_{|z|}(0)`.
+  obtain ⟨φ, V, hφ, hV⟩ := Submission.dohr_eb_sch_bu_hds_diagonal_extract n ℓ f
+    (fun m => closedBall (0 : Rn n) m) hstep2
+  have hVr : ∀ r : ℝ, TendstoUniformlyOn (fun j => f (φ j)) V atTop (closedBall (0 : Rn n) r) :=
+    fun r => (hV ⌈r⌉₊).mono (closedBall_subset_closedBall (Nat.le_ceil r))
+  have hpt : ∀ z, Tendsto (fun j => f (φ j) z) atTop (𝓝 (V z)) := fun z =>
+    (hVr ‖z‖).tendsto_at (mem_closedBall_zero_iff.2 le_rfl)
+  -- Step 7a: `f_{φ(j)}(0) = 0` for every `j`, so `V(0) = 0`.
+  have hV0 : V 0 = 0 :=
+    tendsto_nhds_unique (hpt 0) (tendsto_const_nhds.congr fun j => (hf0 (φ j)).symm)
+  -- Step 7b–c: `R_{φ(j)} → ∞`, so for large `j` both `z, z'` lie in `B̆_{R_{φ(j)}}(0)` and the
+  -- Hölder bound holds at `z, z'`; it passes to the limit, which is therefore continuous.
+  have hev : ∀ z z' : Rn n, ∀ᶠ j in atTop, ‖f (φ j) z - f (φ j) z'‖ ≤ K * ‖z - z'‖ ^ α := by
+    intro z z'
+    filter_upwards [(hR.comp hφ.tendsto_atTop).eventually_gt_atTop (max ‖z‖ ‖z'‖)] with j hj
+    exact hf (φ j) z (mem_ball_zero_iff.2 ((le_max_left _ _).trans_lt hj))
+      z' (mem_ball_zero_iff.2 ((le_max_right _ _).trans_lt hj))
+  obtain ⟨hVH, hVc⟩ := Submission.dohr_eb_sch_bu_hds_holder_of_limit n ℓ α K
+    (fun j => f (φ j)) V hα hK hpt hev
+  exact ⟨φ, V, hφ, hV0, hVc, hVH, hVr⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
