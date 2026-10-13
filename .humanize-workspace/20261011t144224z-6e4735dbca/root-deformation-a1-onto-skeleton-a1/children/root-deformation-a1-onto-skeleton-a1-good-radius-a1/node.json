@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.good_radius-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1",
+  "depth": 3,
+  "title": "Chebyshev choice of a good slicing radius (parent Step 2, printed (10))",
+  "statement": "Let a < b be real, g : ℝ → [0, ∞] measurable with ∫⁻_{(a,b)} g ≤ K (K ∈ [0, ∞]) and N ⊆ ℝ Lebesgue-null. Then there is t ∈ (a, b) with t ∉ N and g(t) ≤ 2K/(b − a).",
+  "lean_statement": "∀ (a b : ℝ) (g : ℝ → ℝ≥0∞) (K : ℝ≥0∞) (N : Set ℝ), a < b → Measurable g → ∫⁻ t in Ioo a b, g t ≤ K → volume N = 0 → ∃ t ∈ Ioo a b, t ∉ N ∧ g t ≤ 2 * K / ENNReal.ofReal (b - a)",
+  "lean_name": "deformation_good_radius",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-good-radius-a1-a1"
+}

@@ -981,6 +981,55 @@ theorem Submission.lpf_raf_local_lipschitz_area : ∀ (n Q : ℕ) (Ω D : Set (E
         (fderiv ℝ u x (EuclideanSpace.single j 1))).det))
     D ∅ B (fun m => (hBDV m).trans inter_subset_left) hBd hBm (hDB.trans subset_union_right)
     measure_empty (by rw [image_empty, measure_empty]) hpiece
+/-- The lattice `n`-skeleton `⋃_{F ∈ 𝓛ₙ(ρ)} F` of the cubical decomposition of `ℝ^N` of side
+`ρ > 0` is closed (used for `spt Q ⊆ Lₙ`, Simon Ch. 6, §5, (22), in the proof of Theorem 5.1).
+Each face `ρ (z + F_α)` is an intersection of closed coordinate slabs and hyperplanes; a point
+`y ∈ ρ (z + F_α)` has `ρ zᵢ ≤ yᵢ ≤ ρ zᵢ + ρ`, so the ball `B(x, ρ)` meets `ρ (z + F_α)` only if
+`xᵢ/ρ − 2 < zᵢ < xᵢ/ρ + 2` for every `i`.  With finitely many `α`, the faces form a locally finite
+family, and a locally finite union of closed sets is closed. -/
+theorem Submission.deformation_skeleton_isClosed :
+    ∀ (n N : ℕ) (ρ : ℝ), 0 < ρ → IsClosed (⋃ F : LatticeFaceIndex n N, latticeFace ρ F) := by
+  intro n N ρ hρ
+  -- Step 1: every face is closed.
+  have hclosed : ∀ F : LatticeFaceIndex n N, IsClosed (latticeFace ρ F) := by
+    intro F
+    rw [latticeFace, ofPred_forall]
+    refine isClosed_iInter fun i => ?_
+    have hc : Continuous fun x : Eucl N => x i := PiLp.continuous_apply 2 _ i
+    by_cases hi : i ∈ range F.2
+    · simpa [hi, ofPred_and] using
+        (isClosed_le continuous_const hc).inter (isClosed_le hc continuous_const)
+    · simpa [hi] using isClosed_eq hc continuous_const
+  -- Steps 2–3: the ball `B(x, ρ)` meets only finitely many faces.
+  refine LocallyFinite.isClosed_iUnion (fun x => ?_) hclosed
+  refine ⟨ball x ρ, ball_mem_nhds x hρ, ?_⟩
+  let T : Fin N → Set ℤ := fun i => ((↑) : ℤ → ℝ) ⁻¹' Ioo (x i / ρ - 2) (x i / ρ + 2)
+  have hT : ∀ i, (T i).Finite := fun i => by
+    simp only [T, Int.preimage_Ioo]
+    exact finite_Ioo _ _
+  refine ((Finite.pi hT).prod (toFinite (univ : Set (SimonMultiIndex n N)))).subset ?_
+  rintro ⟨z, α⟩ ⟨y, hyF, hyB⟩
+  refine ⟨fun i _ => ?_, mem_univ _⟩
+  -- Step 2: `ρ zᵢ ≤ yᵢ ≤ ρ zᵢ + ρ`.
+  have hy : ρ * (z i : ℝ) ≤ y i ∧ y i ≤ ρ * (z i : ℝ) + ρ := by
+    by_cases hi : i ∈ range α
+    · have h : ρ * (z i : ℝ) ≤ y i ∧ y i ≤ ρ * ((z i : ℝ) + 1) := (hyF i).1 hi
+      exact ⟨h.1, by linarith [h.2]⟩
+    · have h : y i = ρ * (z i : ℝ) := (hyF i).2 hi
+      exact ⟨h.ge, by linarith⟩
+  -- Step 3: `|yᵢ − xᵢ| ≤ |y − x| < ρ`, hence `xᵢ/ρ − 2 < zᵢ < xᵢ/ρ + 2`.
+  have hxy : |y i - x i| < ρ := by
+    have h1 : dist y x < ρ := hyB
+    have h2 : dist (y i) (x i) ≤ dist y x := PiLp.dist_apply_le y x i
+    rw [Real.dist_eq] at h2
+    linarith
+  obtain ⟨hxy1, hxy2⟩ := abs_lt.1 hxy
+  show x i / ρ - 2 < (z i : ℝ) ∧ (z i : ℝ) < x i / ρ + 2
+  constructor
+  · rw [sub_lt_iff_lt_add, div_lt_iff₀ hρ]
+    linarith [hy.2]
+  · rw [← sub_lt_iff_lt_add, lt_div_iff₀ hρ]
+    linarith [hy.1]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

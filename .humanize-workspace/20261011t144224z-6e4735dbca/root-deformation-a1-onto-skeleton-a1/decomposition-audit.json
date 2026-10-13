@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(def|structure) (IsRectifiableTriple|IsIntegerMultiplicity|IsRestriction|IsSlice|IsLipschitzPushforward|latticeFace|SlicingTheorem)",
+        "homotopy|intervalProduct|cartesianProduct|pushforward|Pushforward",
+        "deformation_pushforward_homotopy|deformation_telescope_limit|deformation_good_radius|deformation_skeleton_isClosed|homotopy|intervalProduct",
+        "weighted_area_formula_lipschitzOn_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitzOn|ae_fderivWithin_eq_of_lipschitz_extension|exists_lipschitz_extension_finiteDimensional",
+        "validate_lean_statement",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/onto_skeleton_audit_20261013/ContractsStandalone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/onto_skeleton_audit_20261013/InterfaceChecks.lean",
+        "#print axioms GMT.Ch06.Submission.cmb_abs_apply_le_of_massOn_le",
+        "#print axioms GMT.Ch06.Submission.isoperimetric_apply_eq_zero_of_disjoint_support",
+        "#print axioms GMT.Ch06.Submission.iwl_cr_support_lemmas",
+        "#print axioms GMT.Ch06.Submission.lpf_simple_nvector_algebra",
+        "#print axioms GMT.Ch06.Submission.lpf_rectifiable_support_null",
+        "#print axioms GMT.Ch06.Submission.lpf_raf_fiber_sum_glue",
+        "#print axioms GMT.Ch06.Submission.lpf_raf_local_lipschitz_area"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1/decomposition-review-retry.json",
+        "/tmp/onto_skeleton_audit_20261013/ContractsStandalone.lean",
+        "/tmp/onto_skeleton_audit_20261013/InterfaceChecks.lean",
+        "/tmp/onto_skeleton_audit_20261013/cmb_abs_apply_le_of_massOn_le.lean",
+        "/tmp/onto_skeleton_audit_20261013/isoperimetric_apply_eq_zero_of_disjoint_support.lean",
+        "/tmp/onto_skeleton_audit_20261013/iwl_cr_support_lemmas.lean",
+        "/tmp/onto_skeleton_audit_20261013/lpf_simple_nvector_algebra.lean",
+        "/tmp/onto_skeleton_audit_20261013/lpf_rectifiable_support_null.lean",
+        "/tmp/onto_skeleton_audit_20261013/lpf_raf_fiber_sum_glue.lean",
+        "/tmp/onto_skeleton_audit_20261013/lpf_raf_local_lipschitz_area.lean"
+      ],
+      "conclusion": "The split appropriately isolates obligations needed for deformation_onto_skeleton. The pinned library supplies affine push-forwards and point products, but no matching normal-current homotopy package. All eleven frozen propositions passed lexical validation and independently elaborated using frozen definitions without child implementations. All names are bare identifiers; the four new names have no reservation collisions. The seven reused types exactly match their accepted handoffs and DAG entries; independent replay of their candidate proofs showed only propext, Classical.choice and Quot.sound. Dependencies, including inherited siblings, are acyclic. Lean also verified the S5′ premise application, HEq normality discharge and degree conversion. The supplied assembly establishes every selected-parent conclusion. Matrix expressions use Matrix.of; no IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The finite cover and subordinate smooth partition split the test form into forms annihilated by T. The proof works for arbitrary U and handles empty support."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Homogeneity, positive rescaling and passage down to C prove the stated bound. The proof derives C ≥ 0 rather than assuming it and covers zero bounds."
+    },
+    {
+      "key": "support_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conclusions match the type. Locality of exterior differentiation proves boundary support inclusion; vanishing on small balls proves the weak-limit and linear-combination clauses. Openness assumptions and the declared dependency are correctly used."
+    },
+    {
+      "key": "simple_nvector_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant expansion proves change of frame. Hadamard's inequality and Gram–Schmidt establish the operator-norm identity, including dependent families and degree zero. Matrix.of correctly constructs the Gram matrix."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof tests the finite weighted measure on each zero-region patch, detects every coefficient of ξ, and contradicts its almost-everywhere unit norm. Positivity of θ transfers nullity back to Hausdorff measure."
+    },
+    {
+      "key": "fiber_sum_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fibre decomposition holds outside the null image of Z. Countable nonnegative sums and integration over disjoint null-measurable pieces yield both conclusions without adding measurability assumptions on f or F."
+    },
+    {
+      "key": "lipschitz_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned area theorem has the required hypotheses. The proof normalizes its Jacobian, identifies within derivatives using local extensions, and applies the declared gluing lemma to a countable disjoint cover."
+    },
+    {
+      "key": "skeleton_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Each face is closed, and a radius-ρ ball meets only finitely many lattice indices. Local finiteness proves closedness of the union for all dimensions, including empty-index cases."
+    },
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable majorant and positive finite interval length justify Markov's inequality. Separate zero and infinite K cases complete the argument; the excluded set needs only outer measure zero."
+    },
+    {
+      "key": "telescope_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute convergence defines the limit functional. Continuity follows from A₀'s continuity and the finite increment sum, without requiring finite mass of A₀. The proof establishes the exact universal difference-current tail bound, mass bound and support clause."
+    },
+    {
+      "key": "pushforward_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include all local Lipschitz, displacement, support and normality hypotheses. The supplied constructions prove all nine clauses: compatible smooth push-forwards, products and their integrality, approximation limits, extension independence, estimates, tangential vanishing and the correctly signed homotopy identity. S5′ is discharged by the inherited sibling contract. The proof is non-circular and supplies the required arguments rather than deferring their construction."
+    }
+  ],
+  "required_changes": []
+}

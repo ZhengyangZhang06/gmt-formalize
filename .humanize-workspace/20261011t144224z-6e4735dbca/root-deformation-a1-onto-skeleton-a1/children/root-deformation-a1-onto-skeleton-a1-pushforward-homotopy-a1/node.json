@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1",
+  "depth": 3,
+  "title": "Lipschitz push-forward and straight-line homotopy operators for normal currents near a region (Simon 2.17–2.29, 3.2(2); parent A2, A4, I.6, I.7 and the core of Step 7)",
+  "statement": "Assume (S5′), the conclusion of the sibling theorem deformation_im_pushforward_limit after its premise LipschitzPushforwardIntegerMultiplicity: for all P, Q, k, every integer multiplicity X = τ(M, θ, ξ) ∈ D_k(ℝ^P) (IsRectifiableTriple univ k M θ ξ, θ natural-valued on M, X(ω) = tauAction k M θ ξ ω) and every Λ-Lipschitz g : ℝ^P → ℝ^Q with g⁻¹(K) ∩ spt X compact for compact K, there is S ∈ D_k(ℝ^Q) with IsLipschitzPushforward X g S, S integer multiplicity, and ∫_M θ(x)·nVectorPushforward k (Dg_j(x)) (ξ(x)) (ω(g_j(x))) dH^k(x) → S(ω) for every sequence of C¹ maps g_j with a common Lipschitz bound converging uniformly to g and every test form ω. Then for every D ∈ ℕ there are constants c_k ≥ 0 (k ∈ ℕ, depending only on D, k) such that for every map f : ℝ^D → ℝ^D there are operators P_k : D_k(ℝ^D) → D_k(ℝ^D) and H_k : D_k(ℝ^D) → D_{k+1}(ℝ^D) (all k) with the following properties. (I) For every k, closed E ⊆ ℝ^D, Λ ≥ 0, δ > 0, b ∈ ℝ such that f is Λ-Lipschitz on the open δ-neighbourhood thickening δ E and |f(x) − x| ≤ b for x ∈ E, and every X ∈ D_k(ℝ^D) with M(X) < ∞, M(∂X) < ∞ in case k = j + 1 (formally: every Y ∈ D_{j+1} with k = j + 1 and HEq Y X has M(∂Y) < ∞) and spt X ⊆ E: (1) M(P_kX) ≤ c_kΛ^kM(X); (2) M(H_kX) ≤ c_k·b·(1 + Λ)^k·M(X); (3) spt P_kX ⊆ closure f(spt X); (4) spt H_kX ⊆ cthickening b (spt X); (5) if X is integer multiplicity then so are P_kX and H_kX; (6) (tangential vanishing) if α ∈ SimonMultiIndex k D, z ∈ ℝ^D, ω ∈ D^k(ℝ^D), ε > 0, every x ∈ thickening ε (spt X) with f(x) ∈ thickening ε (tsupport ω) satisfies f(x)_i = z_i for all i ∉ range α, and ω(y)(e_{α(1)},…,e_{α(k)}) = 0 for every y, then P_kX(ω) = 0; (7) (linearity) if X₁ ∈ D_k(ℝ^D) satisfies the same hypotheses (M(X₁) < ∞, the boundary condition, spt X₁ ⊆ E) and X₂(ω) = aX(ω) + a₁X₁(ω) for all ω, then P_kX₂(ω) = aP_kX(ω) + a₁P_kX₁(ω) and H_kX₂(ω) = aH_kX(ω) + a₁H_kX₁(ω) for all ω. (II) For every j, E, Λ, δ, b as above and X ∈ D_{j+1}(ℝ^D) with M(X) < ∞, M(∂X) < ∞, spt X ⊆ E: (8) ∂(P_{j+1}X) = P_j(∂X); (9) X(ω) − P_{j+1}X(ω) = ∂(H_{j+1}X)(ω) + H_j(∂X)(ω) for every ω (homotopy from f at t = 0 to the identity at t = 1).",
+  "lean_statement": "(∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))) → ∀ D : ℕ, ∃ c : ℕ → ℝ≥0, ∀ f : Eucl D → Eucl D, ∃ (Pf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k → GeometricCurrentOn (univ : Set (Eucl D)) k) (Hf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k → GeometricCurrentOn (univ : Set (Eucl D)) (k + 1)), (∀ (k : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl D)) k), IsClosed E → 0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → X.mass < ∞ → (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq Y X → Y.boundary.mass < ∞) → X.support ⊆ E → (Pf k X).mass ≤ (c k : ℝ≥0∞) * (Λ : ℝ≥0∞) ^ k * X.mass ∧ (Hf k X).mass ≤ (c k : ℝ≥0∞) * ENNReal.ofReal b * (1 + (Λ : ℝ≥0∞)) ^ k * X.mass ∧ (Pf k X).support ⊆ closure (f '' X.support) ∧ (Hf k X).support ⊆ cthickening b X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity (Pf k X) ∧ IsIntegerMultiplicity (Hf k X)) ∧ (∀ (α : SimonMultiIndex k D) (z : Eucl D) (ω : TestFormOn (univ : Set (Eucl D)) k) (ε : ℝ), 0 < ε → (∀ x ∈ thickening ε X.support, f x ∈ thickening ε (tsupport (ω : DifferentialForm (Eucl D) k)) → ∀ i, i ∉ range α → f x i = z i) → (∀ y, (ω : DifferentialForm (Eucl D) k) y (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0) → Pf k X ω = 0) ∧ ∀ (X₁ X₂ : GeometricCurrentOn (univ : Set (Eucl D)) k) (a a₁ : ℝ), X₁.mass < ∞ → (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq Y X₁ → Y.boundary.mass < ∞) → X₁.support ⊆ E → (∀ ω, X₂ ω = a * X ω + a₁ * X₁ ω) → (∀ ω, Pf k X₂ ω = a * Pf k X ω + a₁ * Pf k X₁ ω) ∧ ∀ ω, Hf k X₂ ω = a * Hf k X ω + a₁ * Hf k X₁ ω) ∧ ∀ (j : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), IsClosed E → 0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → X.mass < ∞ → X.boundary.mass < ∞ → X.support ⊆ E → (Pf (j + 1) X).boundary = Pf j X.boundary ∧ ∀ ω, X ω - Pf (j + 1) X ω = (Hf (j + 1) X).boundary ω + Hf j X.boundary ω",
+  "lean_name": "deformation_pushforward_homotopy",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.mass_bound-a1",
+    "root.isoperimetric-a1.vanish_off_support-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mass-bound-a1-a1",
+      "result_commit": "ba202ac0407b6e93210594416fcd0729874b2eff",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1-a1",
+      "result_commit": "02f3305faacfc43200f665dd4b67e2a44ab25d0b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-a1",
+      "result_commit": "b0d12af0ae3de012b5efa6fa488511b9ff716893",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6-a1",
+      "result_commit": "4b36491e59d43eaee9d8c6cf91a3f4a91518acbd",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-a1"
+}
