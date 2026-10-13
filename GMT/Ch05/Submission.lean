@@ -465,35 +465,35 @@ Let `L = L(ℝⁿ, ℝ^ℓ)` and let `Φ : ℝⁿ → L* = L(L, ℝ)` be such th
 open `U` for every `P ∈ L`.  Then `Φ` is `C¹` on `U` as an `L*`-valued map, and
 `(DΦ(x) e)[P] = D(Φ(·)[P])(x) e` for all `x ∈ U`, `e ∈ ℝⁿ` and `P ∈ L`.
 Proof: `L` is finite-dimensional; with a basis `E_r` of `L` and its continuous coordinate forms
-`π_r`, linearity gives `Φ(x) = Σ_r Φ(x)[E_r] π_r`, a finite sum of `C¹` scalar functions times
-constant vectors of `L*`, so `Φ` is `C¹` on `U`.  For `x ∈ U`, `Φ` is differentiable at `x`, and
-the product rule for evaluation at the constant `P` gives `D(Φ(·)[P])(x) = (DΦ(x)).flip P`. -/
+`π_r`, linearity gives `Φ(x)[P] = Σ_r π_r(P) Φ(x)[E_r]`, so `Φ(x) = Σ_r Φ(x)[E_r] π_r` is a finite
+sum of the constant forms `π_r` times `C¹` scalar functions, and `Φ` is `C¹` on `U`.  For `x ∈ U`,
+`Φ` is differentiable at `x`, and the product rule for evaluation at the constant `P` gives
+`D(Φ(·)[P])(x) = (DΦ(x)).flip P`. -/
 theorem dohr_eb_lhr_ds_clm_family : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U) → ContDiffOn ℝ 1 Φ U ∧ ∀ x ∈ U, ∀ (e : Rn n) (P : Rn n →L[ℝ] Rn ℓ), fderiv ℝ Φ x e P = fderiv ℝ (fun z => Φ z P) x e := by
-  -- `IsBoundedSMul ℝ ((Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ)` (for `ContDiffOn.smul`) needs depth 3.
-  set_option maxSynthPendingDepth 3 in
-  · intro n ℓ U Φ hU hΦ
-    -- Step 1: a basis `b` of `L` and its continuous coordinate forms `π r`.
-    let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
-    let π : Fin (Module.finrank ℝ (Rn n →L[ℝ] Rn ℓ)) → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ :=
-      fun r => LinearMap.toContinuousLinearMap (b.coord r)
-    -- Step 2: `Φ(x) = Σ_r Φ(x)[b r] • π r` in `L*`, by linearity of `Φ(x)`.
-    have hexp : ∀ x, Φ x = ∑ r, Φ x (b r) • π r := by
-      intro x
-      ext P
-      have hP : Φ x P = Φ x (∑ r, b.repr P r • b r) := by rw [b.sum_repr]
-      rw [hP, map_sum]
-      simp [map_smul, π, mul_comm]
-    -- Step 3: a finite sum of `C¹` scalar multiples of constant forms is `C¹`.
-    have hC1 : ContDiffOn ℝ 1 Φ U := by
-      have h : ContDiffOn ℝ 1 (fun x => ∑ r, Φ x (b r) • π r) U :=
-        ContDiffOn.sum fun r _ => (hΦ (b r)).smul contDiffOn_const
-      exact h.congr fun x _ => hexp x
-    refine ⟨hC1, fun x hx e P => ?_⟩
-    -- Step 4: differentiate the evaluation `z ↦ Φ(z)[P]` at the constant `P`.
-    have hd : DifferentiableAt ℝ Φ x :=
-      (hC1.differentiableOn one_ne_zero x hx).differentiableAt (hU.mem_nhds hx)
-    rw [fderiv_clm_apply hd (differentiableAt_const P)]
-    simp
+  intro n ℓ U Φ hU hΦ
+  -- Step 1: a basis `b` of `L` and its continuous coordinate forms `π r`.
+  let b := Module.finBasis ℝ (Rn n →L[ℝ] Rn ℓ)
+  let π : Fin (Module.finrank ℝ (Rn n →L[ℝ] Rn ℓ)) → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ :=
+    fun r => LinearMap.toContinuousLinearMap (b.coord r)
+  -- Step 2: `Φ(x) = Σ_r Φ(x)[b r] π r` in `L*`, by linearity of `Φ(x)`; the summand is written
+  -- `(π r).smulRight (Φ x (b r)) : P ↦ π r P • Φ x (b r)`, so no scalar action on `L*` is needed.
+  have hexp : ∀ x, Φ x = ∑ r, (π r).smulRight (Φ x (b r)) := by
+    intro x
+    ext P
+    have hP : Φ x P = Φ x (∑ r, b.repr P r • b r) := by rw [b.sum_repr]
+    rw [hP, map_sum]
+    simp [map_smul, π]
+  -- Step 3: each summand is `C¹` (constant form, `C¹` coefficient), hence so are the sum and `Φ`.
+  have hC1 : ContDiffOn ℝ 1 Φ U := by
+    have h : ContDiffOn ℝ 1 (fun x => ∑ r, (π r).smulRight (Φ x (b r))) U :=
+      ContDiffOn.sum fun r _ => contDiffOn_const.smulRight (hΦ (b r))
+    exact h.congr fun x _ => hexp x
+  refine ⟨hC1, fun x hx e P => ?_⟩
+  -- Step 4: differentiate the evaluation `z ↦ Φ(z)[P]` at the constant `P`.
+  have hd : DifferentiableAt ℝ Φ x :=
+    (hC1.differentiableOn one_ne_zero x hx).differentiableAt (hU.mem_nhds hx)
+  rw [fderiv_clm_apply hd (differentiableAt_const P)]
+  simp
 
 end Submission
 
