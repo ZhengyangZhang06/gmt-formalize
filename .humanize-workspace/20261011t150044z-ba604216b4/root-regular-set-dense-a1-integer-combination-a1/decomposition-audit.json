@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsIntegerMultiplicity|IsUnitOrientationOf|MultiVector",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|theorem CountablyRectifiable.mono|theorem countablyRectifiable_iUnion|def blowUpMap",
+        "ae_tendsto_measure_inter_div|variable.*FiniteDimensional|IsLocallyFiniteMeasure",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image|IsAddRightInvariant|def euclideanHausdorffMeasure|notation",
+        "measurableSet_eq_fun|theorem ae_eq_mk|def mk|theorem stronglyMeasurable_mk|theorem smul",
+        "det_to_matrix_orthonormalBasis_real|eq_smul_basis_det|theorem le_opNorm",
+        "rg -n 'rsdic_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT .lake/packages/simongmt/Poincare",
+        "rg -n 'IMRep|IsIntegerMultiplicity' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "python3 /tmp/rsdic-independent-audit/runlean.py /tmp/rsdic-independent-audit/TypesAndAssembly.lean",
+        "python3 /tmp/rsdic-independent-audit/runlean.py /tmp/rsdic-independent-audit/Facts.lean",
+        "python3 /tmp/rsdic-independent-audit/runlean.py /tmp/rsdic-check/Sign.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/rsdic-independent-audit/TypesAndAssembly.lean",
+        "/tmp/rsdic-independent-audit/Facts.lean",
+        "/tmp/rsdic-check/Sign.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected sources. No reusable integer-combination theorem for this IMRep was found; Ch06 uses a different representation contract. All seven exact propositions elaborate in comparator scope, with autoImplicit disabled and no proposed child declarations present. A sorry-free conditional proof establishes the exact selected parent from combination_construction and combination_action. The orientation-sign proof, measurability checks, scalar evaluation and orientation bound also compile. Reused lemmas and checked proofs require only propext, Classical.choice and Quot.sound. Explicitly installing the existing MetricSpace instance resolves the equality-set measurability check without additional hypotheses. Splitting is appropriate: every child contributes, dependencies are acyclic and correctly directed, and names are bare and unreserved. The identical locality contract elsewhere has a different, unaccepted name and is not reused. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_growth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including the essential finite closed-ball hypothesis. Scaling and the explicit cutoff give integrability at small radii, so the integral comparison and conversion to the ENNReal bound are justified. The proof is complete and also covers n = 0."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All Borel, inclusion, openness and local-finiteness hypotheses match. Finite compact restrictions justify Besicovitch differentiation; the exceptional set is independent of Q. Tangent growth controls the excess measure, and integrable blow-up comparisons establish both implications without circularity."
+    },
+    {
+      "key": "imrep_tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses are present in both formulations. Positive multiplicity supplies local finiteness of the original carrier. Restricting R.orients and applying locality twice, in the stated directions, gives the required tangent plane of C with the original orientation."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the orientation disjunction. The orthonormal bases, determinant sign and alternating-form identity produce a single sign independent of the covector, including in degree zero. The corresponding complete Lean proof independently recompiles with only standard axioms."
+    },
+    {
+      "key": "overlap_orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Local finiteness permits transfer of the first orientation to the second carrier on the overlap. Tangent uniqueness then identifies the planes, and orientation_sign gives the conclusion. Both declared dependencies are used correctly."
+    },
+    {
+      "key": "combination_construction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied construction proves the exact global a.e. multivector identity and verifies every IMRep field. Strongly measurable representatives justify the Borel equality-based sign; the coefficient bound gives local integrability; tangent transfer handles both carrier pieces. Cancellation, zero coefficients and off-carrier values are accounted for, with no reliance on the parent theorem."
+    },
+    {
+      "key": "combination_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type match, including arbitrary U. TestFormOn already supplies global smoothness and compact support inside U, so openness is unnecessary. The orientation norm bound and local multiplicity integrability justify domination, indicator rewriting and Bochner-integral linearity. The proof establishes exactly the asserted action identity."
+    }
+  ],
+  "required_changes": []
+}
