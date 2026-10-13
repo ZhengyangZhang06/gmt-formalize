@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6c1fb112b54f04c9967342bd99b2403131b460f31364277a7b8ce6e2a1bf6f2a",
+  "git_delta": {
+    "base_commit": "492da0f53731448ca3ac071fee7ef2ebe3857f17",
+    "candidate_commit": "cf62f63388beb53ffff1db0948b3e4bcce5c5f10",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e0ea68f233f5b7b90b81120ec7401ab010ffb117f564dfe9011cb2d16a2a6625",
+    "source_sha256": "1894366996c90ef95d22d13bee432a8acd660b0927f3a209789e9d435eef22a6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_chart_critical",
+      "statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (f : Eucl P → ℝ) (W : Set (Eucl P)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → MeasurableSet W → W ⊆ Φ '' Ω → (∀ w ∈ Ω, Φ w ∈ W → f (Φ w) = h w ∧ fderiv ℝ h w = 0) → ∀ᵐ t ∂(volume : Measure ℝ), (μHE[m] : Measure (Eucl P)) (W ∩ f ⁻¹' {t}) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
