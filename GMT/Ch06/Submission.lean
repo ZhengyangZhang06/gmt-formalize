@@ -544,6 +544,45 @@ theorem Submission.iwl_sp_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (E
     (μHE[n] : Measure (Eucl P)) hM.subset fun W hW hWc hWU hTW =>
       Submission.iwl_sp_sn_local_null P n U W T M θ ξ hM hT hW hWc hWU hTW
 
+/-- **The Lipschitz push-forward by a differentiable map is the classical one** (Simon Ch. 6,
+remark after 3.10, p. 148: for `f` of class `C¹`, `f_# T` of 3.6 agrees with 2.23).  If
+`S = f_# X` in the sense of 3.6 with `X = τ(M, θ, ξ)`, and `η = Df^# (ω ∘ f)` on an open set
+`N ⊇ spt X`, then `S(ω) = X(η)`.  `Hⁿ`-a.e. point of `M` lies in `spt X ⊆ N`
+(`Submission.iwl_sp_rectifiable_support_null`) and has `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for a frame `τ` of
+`TₓM`.  There the derivative of `t ↦ f(x + tτᵢ)` at `0` is both `L(x)τᵢ` and `Df(x)τᵢ`, so
+`⟨ω(f(x)), L(x)_# ξ(x)⟩ = ⟨Df(x)^# ω(f(x)), ξ(x)⟩ = ⟨η(x), ξ(x)⟩`. -/
+theorem Submission.iwl_sp_lipschitzPushforward_apply_eq : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (X : GeometricCurrentOn U n) (S : GeometricCurrentOn V n) (f : Eucl P → Eucl Q), Differentiable ℝ f → IsLipschitzPushforward X f S → ∀ (ω : TestFormOn V n) (η : TestFormOn U n), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) n) x = ((ω : DifferentialForm (Eucl Q) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η := by
+  intro P Q n U V X S f hf hpush ω η hN
+  obtain ⟨M, θ, ξ, L, hT, hX, hL, hS⟩ := hpush
+  obtain ⟨N, -, hXN, hη⟩ := hN
+  -- Step 1: `S(ω)` and `X(η) = τ(M, θ, ξ)(η)` are integrals over `M`; compare the integrands
+  -- `Hⁿ ⌞ M`-a.e. (no integrability is needed for this).
+  rw [hS, hX η, tauAction]
+  refine integral_congr_ae ?_
+  -- Step 2: `Hⁿ ⌞ M`-a.e. point lies in `spt X`, as `Hⁿ(M ∖ spt X) = 0`.
+  have hspt : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ X.support := by
+    rw [ae_restrict_iff'₀ hT.nullMeasurableSet]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1
+      (Submission.iwl_sp_rectifiable_support_null P n U X M θ ξ hT hX)] with x hx hxM
+    by_contra hxX
+    exact hx ⟨hxM, hxX⟩
+  -- Step 3: at such `x`, `L(x)` has the tangential derivatives of `f` and `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ`
+  -- for a frame `τ` of an approximate tangent space.
+  filter_upwards [hspt, hL, hT.orients] with x hxX hLx hor
+  obtain ⟨τ, -, htan, hξ⟩ := hor
+  -- Step 4: `L(x) τᵢ = Df(x) τᵢ`, both being the derivative of `t ↦ f(x + tτᵢ)` at `t = 0`.
+  have hτ : L x ∘ τ = fderiv ℝ f x ∘ τ := by
+    funext i
+    have hline : HasDerivAt (fun t : ℝ => x + t • τ i) (τ i) 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (τ i)).const_add x
+    have hDf : HasDerivAt (fun t : ℝ => f (x + t • τ i)) (fderiv ℝ f x (τ i)) 0 :=
+      (hf x).hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hline (by simp)
+    exact (hLx _ htan (τ i) (Submodule.subset_span ⟨i, rfl⟩)).unique hDf
+  -- Step 5: hence `⟨ω(f(x)), L(x)_# ξ(x)⟩ = ±ω(f(x))(L(x) ∘ τ) = ±ω(f(x))(Df(x) ∘ τ)
+  -- = ⟨Df(x)^# ω(f(x)), ξ(x)⟩ = ⟨η(x), ξ(x)⟩`, using `x ∈ spt X ⊆ N`.
+  rw [hη x (hXN hxX)]
+  rcases hξ with hξ | hξ <;> simp [hξ, nVectorPushforward, hτ]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
