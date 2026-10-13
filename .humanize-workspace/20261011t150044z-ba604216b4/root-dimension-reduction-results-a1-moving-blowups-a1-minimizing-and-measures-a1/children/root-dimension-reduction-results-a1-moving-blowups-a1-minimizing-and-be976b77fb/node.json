@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.mass_lsc-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1",
+  "depth": 4,
+  "title": "Lower semicontinuity of local mass under weak convergence on exhausting domains, along every subsequence (Simon 6.2.14 as used in 7.2.4)",
+  "statement": "Let P, n ∈ ℕ. For j ∈ ℕ let U_j ⊆ ℝ^P be any sets and S_j ∈ 𝒟_n(U_j), and let C ∈ 𝒟_n(ℝ^P). Assume (1) for every r ∈ ℝ, closedBall(0, r) ⊆ U_j for all sufficiently large j, and (2) S_j ⇀ C in ℝ^P (ConvergesWeakly). Then for every strictly increasing φ : ℕ → ℕ and every set O ⊆ ℝ^P, M_O(C) ≤ liminf_{i→∞} M_O(S_{φ(i)}) in [0, ∞]. Notation: 𝒟_n(V) = GeometricCurrentOn V n; 𝒟ⁿ(V) = TestFormOn V n (smooth compactly supported n-forms ω on ℝ^P with tsupport ω ⊆ V); for Y ∈ 𝒟_n(V) and any O ⊆ ℝ^P, M_O(Y) := Y.massOn O = sup{ofReal(Y(ω)) : ω ∈ 𝒟ⁿ(V), tsupport ω ⊆ O, |ω(x)| ≤ 1 for all x} ∈ [0, ∞] (SimonGMT massOn, |·| the Euclidean coefficient norm of covectors); currentEval(Y, ω) := Y(ω) if ω is a test form with tsupport ω ⊆ V and 0 otherwise; S_j ⇀ C (ConvergesWeakly Ss C) means currentEval(S_j, ω) → C(ω) for every ω ∈ 𝒟ⁿ(ℝ^P); thickening(ε, K) = {x : inf_{y∈K} |x − y| < ε}.",
+  "lean_statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop",
+  "lean_name": "dimred_mbl_mm_massOn_le_liminf",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-minimizing-and-be976b77fb-a1"
+}

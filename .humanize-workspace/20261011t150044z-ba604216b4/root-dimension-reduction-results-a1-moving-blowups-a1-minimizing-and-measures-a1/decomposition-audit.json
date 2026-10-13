@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def (measure|Represents|IsIntegerMultiplicity|IsMinimizingIn|SameBoundary|currentEval|ConvergesWeakly|MassMeasuresConverge)|CompactlyContained|namespace IMRep|abbrev Euclid|namespace Submission|main_theorem",
+        "def (massOn|massAdmissibleOn|support|zeroRegion|VanishesOn)|theorem.*massOn|massOn_le_liminf|def TestFormOn|abbrev TestFormOn|structure GeometricCurrentOn",
+        "tendsto_measure_thickening_of_isClosed|exists_thickening_subset_open|extraction_of_frequently_atTop|frequently_lt_of_lt_limsup|le_limsup_of_frequently_le|theorem liminf_le_limsup|liminf_le_limsup|integral_eq_integral_meas_lt",
+        "dimred_mbl_mm_massOn_le_liminf|dimred_mbl_mm_limsup_le_of_subseq|dimred_mbl_mm_isMinimizingIn_univ|dimred_mbl_mm_measure_bounds",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show 27de75e6856bea4ad251fe33afb1925333bb7655:GMT/Ch07/Submission.lean",
+        "git show d5faa9559552004918848007349c7c09e7e16e5a:GMT/Ch07/Submission.lean",
+        "git show f9e4df7c999140c4c105810dbdfa2b7b37f1f1a3:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dimred-mm-independent-audit/StandaloneAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dimred-mm-a1/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-minimizing-and-measures-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-minimizing-and-measures-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/dimred-mm-independent-audit/StandaloneAndAssembly.lean",
+        "/tmp/dimred-mm-a1/EndToEnd.lean"
+      ],
+      "conclusion": "The split is appropriate: four substantive new obligations and four exact-type accepted reuses establish this selected parent. Project and dependency pins match. All eight frozen types independently elaborate as propositions; my conditional assembly proves the exact parent contract. The resolved dependency graph is acyclic and correctly directed. Every name is bare; the four new names have no conflicting reservation outside this proposal. Reused types, handoff fields and accepted proof bodies match. The full proof check passed: all eight children and the selected parent use only propext, Classical.choice and Quot.sound, without depending on the unrelated frozen main_theorem's sorry. No matrix-unit construction occurs. The supplied parent digest was independently recomputed and matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. Compact test support lies in the zero region; a finite subordinate smooth partition splits the form into annihilated pieces. Linearity completes the proof for arbitrary U, including empty support. Prose and frozen type agree."
+    },
+    {
+      "key": "mass_equals_rep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse with matching open-domain and open-region hypotheses. Unit-orientation duality proves the upper bound; local finiteness, Lusin approximation, extension and norm-preserving mollification prove the lower bound. The supplied proof handles n > P and n = 0 and contains a complete argument, not a future proof-search plan."
+    },
+    {
+      "key": "minimality_localizes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse using the two declared dependencies. Equality off K gives equality of measures on open subsets of U minus K; finite-measure uniqueness along an exhaustion extends this to Borel subsets. Additivity then transfers the inequality to W', with all containment and compactness hypotheses correctly used."
+    },
+    {
+      "key": "radon_convergence_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. Compact-set bounds give eventual integrability and uniform domination. Positive superlevels lie inside U even when U is not open. Outside countably many exceptional levels, the upper and lower bounds force measure convergence; layer cake and dominated convergence, followed by positive/negative decomposition, prove the exact Bochner-integral conclusion."
+    },
+    {
+      "key": "mass_lsc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger arbitrary-set statement is justified. Each admissible form has compact support, so exhaustion places it in the varying domains eventually along every strictly increasing subsequence. Weak convergence, continuity of ofReal, eventual monotonicity of liminf and the defining supremum prove the claim without openness or boundedness of O."
+    },
+    {
+      "key": "limsup_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bad-subsequence extraction and subsequent comparison produce the stated contradiction in ENNReal. Only measure monotonicity is used for W, so its lack of a measurability hypothesis is harmless. Compact closed thickenings supply finite neighbourhood measure, allowing continuity from above to yield the exact compact-set bound."
+    },
+    {
+      "key": "minimality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly chooses a thin neighbourhood inside the prescribed comparison region, applies local comparison with the identity subsequence, and combines mass_lsc with liminf ≤ limsup. The explicit localization instantiation transfers the inequality to the original region. It uses exactly the declared dependencies and proves IsMinimizingIn, including integer multiplicity."
+    },
+    {
+      "key": "measure_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every representation is quantified as required. Local integrability proves compact finiteness; R witnesses integer multiplicity of C. Self-boundary equality and empty support of C minus C are established explicitly. Comparison with C and the declared mass/measure equality give the limsup criterion; mass_lsc gives the open-set liminf bound. These are precisely the hypotheses needed for the parent's integral convergence."
+    }
+  ],
+  "required_changes": []
+}
