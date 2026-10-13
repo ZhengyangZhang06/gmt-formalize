@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2b86a8367972c3b0dfbe48d365a544bb61c8ff53f299e0fc244dc07d375e68c4",
+  "git_delta": {
+    "base_commit": "b66f9fe79b8eb39d6b120b0318d0ae349cf9d015",
+    "candidate_commit": "fa4a3cc8922de9d08c67500c95cbd70d2eb5b939",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "5e206fc220675b196bbaec909f5a918cd34932e90e6b9142bdcebdbd13209e10",
+    "source_sha256": "d12756e7243f8a51f6d3c71433fea1e713489cbc2231a73323acf2aee016433b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_graph_parameter_transfer",
+      "statement": "∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (ξ : Euclid (n + k)) (r a : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (P : Euclid (n + k) →L[ℝ] Euclid n) (f : Euclid n → Euclid k), IsOpen W → W ⊆ U → 0 < r → closedBall ξ r ⊆ W → 0 ≤ a → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, P (ι v) = v) → (∀ w, P (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → (∀ v, ‖f v‖ ≤ r / 4) → (∀ᵐ x ∂R.measure, x ∈ closedBall ξ r → R.mult x = 1) → μHE[n] ((R.measure.support ∩ W) \\ R.carrier) = 0 → μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \\ R.measure.support) ∩ closedBall ξ r) ≤ ENNReal.ofReal a → (∀ (g : Euclid n → ℝ) (G : ℝ), Measurable g → (∀ v, 0 ≤ g v) → (∀ v, g v ≤ G) → (∫⁻ v in ball (0 : Euclid n) (r / 2), ENNReal.ofReal (g v)) ≤ (∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), ENNReal.ofReal (g (P (x - ξ))) ∂R.measure) + ENNReal.ofReal (G * a)) ∧ ∀ (g : Euclid n → ℝ) (G : ℝ), Measurable g → (∀ v, |g v| ≤ G) → |(∫ v in ball (0 : Euclid n) (r / 2), g v) - (∫ x in (fun v => ξ + ι v + ι' (f v)) '' ball (0 : Euclid n) (r / 2), g (P (x - ξ)) ∂R.measure)| ≤ G * (a + 2 ^ n * (∫ v in ball (0 : Euclid n) (r / 2), ∑ j : Fin k, ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
