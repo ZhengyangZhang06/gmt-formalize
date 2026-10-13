@@ -414,6 +414,95 @@ theorem Submission.ind_ab_rescaled_tangent_limit :
   simp only [hy]
   exact mul_comm _ _
 
+/-- Weighted ball growth at a point with a weighted approximate tangent space `Q`:
+`∫_{M ∩ B̄_s(x)} θ dHⁿ ≤ C sⁿ` for all small `s > 0`.  Test the rescaled tangent limit
+`(sⁿ)⁻¹ ∫_M θ(y) f₀(s⁻¹(y − x)) dHⁿ(y) → θ(x) ∫_Q f₀ dHⁿ` against the bump
+`f₀(z) = max(0, min(1, 2 − ‖z‖))`, which is `1` on `B̄_1(0)` and `0` off `B̄_2(0)`. -/
+theorem Submission.ind_ab_weighted_ball_growth :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (Q : Submodule ℝ (Eucl P)),
+      NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M, 0 ≤ θ y) →
+      (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P))) →
+      HasWeightedApproximateTangentSpaceAt n M θ x Q →
+      ∃ C : ℝ≥0, ∀ᶠ s in 𝓝[>] (0 : ℝ),
+        ∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)) ≤
+          C * ENNReal.ofReal (s ^ n) := by
+  intro P n M θ x Q hM hθ hint hQ
+  -- The bump `f₀`: continuous, `0 ≤ f₀ ≤ 1`, `f₀ = 1` on `B̄_1(0)`, `f₀ = 0` off `B̄_2(0)`.
+  obtain ⟨f₀, hf₀⟩ : ∃ f₀ : Eucl P → ℝ, f₀ = fun z => max 0 (min 1 (2 - ‖z‖)) := ⟨_, rfl⟩
+  have hf₀c : Continuous f₀ := by
+    rw [hf₀]
+    exact continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))
+  have hf₀nn : ∀ z, 0 ≤ f₀ z := fun z => by rw [hf₀]; exact le_max_left _ _
+  have hf₀le : ∀ z, f₀ z ≤ 1 := fun z => by
+    rw [hf₀]; exact max_le zero_le_one (min_le_left _ _)
+  have hf₀one : ∀ z : Eucl P, ‖z‖ ≤ 1 → f₀ z = 1 := by
+    intro z hz
+    rw [hf₀]
+    simp only
+    rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+  have hf₀zero : ∀ z : Eucl P, 2 < ‖z‖ → f₀ z = 0 := by
+    intro z hz
+    rw [hf₀]
+    simp only
+    exact max_eq_left ((min_le_right _ _).trans (by linarith))
+  have hf₀cs : HasCompactSupport f₀ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Eucl P) 2) (fun z hz => ?_)
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    exact hf₀zero z hz
+  -- `I(s) = (sⁿ)⁻¹ ∫_M θ(y) f₀(s⁻¹(y − x)) dHⁿ(y) → L`, so eventually `I(s) ≤ L + 1`.
+  have hlim := Submission.ind_ab_rescaled_tangent_limit P n M θ x Q f₀ hQ hf₀c hf₀cs
+  obtain ⟨L, hL⟩ : ∃ L : ℝ,
+      L = θ x * ∫ z in (Q : Set (Eucl P)), f₀ z ∂(μHE[n] : Measure (Eucl P)) := ⟨_, rfl⟩
+  rw [← hL] at hlim
+  have hev := hlim.eventually (ge_mem_nhds (lt_add_one L))
+  refine ⟨Real.toNNReal (L + 1), ?_⟩
+  filter_upwards [hev, self_mem_nhdsWithin] with s hs hspos
+  have hs0 : 0 < s := hspos
+  -- `g_s(y) = θ(y) f₀(s⁻¹(y − x))` is integrable on `M ∩ B̄_{2s}(x)` and vanishes off it.
+  have hgint : IntegrableOn (fun y => θ y * f₀ (s⁻¹ • (y - x))) M (μHE[n] : Measure (Eucl P)) := by
+    have h1 : IntegrableOn (fun y => θ y * f₀ (s⁻¹ • (y - x))) (M ∩ closedBall x (2 * s))
+        (μHE[n] : Measure (Eucl P)) := by
+      refine Integrable.mul_bdd (c := 1) (hint _ (isCompact_closedBall x (2 * s))) ?_ ?_
+      · exact (hf₀c.comp
+          (by fun_prop : Continuous fun y : Eucl P => s⁻¹ • (y - x))).aestronglyMeasurable
+      · exact Eventually.of_forall fun y => by
+          rw [Real.norm_of_nonneg (hf₀nn _)]; exact hf₀le _
+    refine h1.of_ae_sdiff_eq_zero hM (Eventually.of_forall fun y hy => ?_)
+    have hy2 : y ∉ closedBall x (2 * s) := fun h => hy.2 ⟨hy.1, h⟩
+    rw [mem_closedBall, not_le, dist_eq_norm] at hy2
+    have h2 : 2 < ‖s⁻¹ • (y - x)‖ := by
+      rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs0.le), lt_inv_mul_iff₀ hs0]
+      linarith
+    show θ y * f₀ (s⁻¹ • (y - x)) = 0
+    rw [hf₀zero _ h2, mul_zero]
+  have hgnn : 0 ≤ᵐ[(μHE[n] : Measure (Eucl P)).restrict M] fun y => θ y * f₀ (s⁻¹ • (y - x)) := by
+    filter_upwards [ae_restrict_mem₀ hM] with y hy
+    exact mul_nonneg (hθ y hy) (hf₀nn _)
+  have hball : ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ closedBall x s)),
+      y ∈ closedBall x s :=
+    ae_mono (Measure.restrict_mono inter_subset_right le_rfl)
+      (ae_restrict_mem measurableSet_closedBall)
+  -- On `B̄_s(x)`, `g_s = θ`; so the ball integral is at most `∫_M g_s = sⁿ I(s) ≤ sⁿ (L + 1)`.
+  calc ∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P))
+      = ∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y * f₀ (s⁻¹ • (y - x)))
+          ∂(μHE[n] : Measure (Eucl P)) := by
+        refine lintegral_congr_ae ?_
+        filter_upwards [hball] with y hy
+        rw [mem_closedBall, dist_eq_norm] at hy
+        have h1 : ‖s⁻¹ • (y - x)‖ ≤ 1 := by
+          rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs0.le), inv_mul_le_iff₀ hs0]
+          linarith
+        rw [hf₀one _ h1, mul_one]
+    _ ≤ ∫⁻ y in M, ENNReal.ofReal (θ y * f₀ (s⁻¹ • (y - x))) ∂(μHE[n] : Measure (Eucl P)) :=
+        lintegral_mono' (Measure.restrict_mono inter_subset_left le_rfl) le_rfl
+    _ = ENNReal.ofReal (∫ y in M, θ y * f₀ (s⁻¹ • (y - x)) ∂(μHE[n] : Measure (Eucl P))) :=
+        (ofReal_integral_eq_lintegral_ofReal hgint hgnn).symm
+    _ ≤ ENNReal.ofReal (s ^ n * (L + 1)) :=
+        ENNReal.ofReal_le_ofReal ((inv_mul_le_iff₀ (pow_pos hs0 n)).1 hs)
+    _ = (Real.toNNReal (L + 1) : ℝ≥0∞) * ENNReal.ofReal (s ^ n) := by
+        rw [ENNReal.ofReal_mul (pow_nonneg hs0.le n), mul_comm]
+        rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
