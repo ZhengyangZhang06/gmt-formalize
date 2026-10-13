@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.2.4, proof (3)–(5)** (choice of the level `α`): given countably many properties of
+`t ∈ ℝ`, each holding for `L¹`-a.e. `t`, functions `gᵢ ≥ 0` on `(a, b)` with
+`Σᵢ ∫_{(a,b)} gᵢ < ∞`, and measures `μᵢ` with `μᵢ{a < h < b} < ∞`, some `t ∈ (a, b)` satisfies
+every property, has `Σᵢ gᵢ(t) < ∞` and `μᵢ{h = t} = 0` for all `i`.  The failures of the
+properties form a null set; `Σᵢ gᵢ` has finite integral over `(a, b)`, hence is finite a.e.;
+the disjoint level sets `{h = t}` carry mass of the finite measure `μᵢ⌞{a < h < b}` for at most
+countably many `t`; and `(a, b)` has positive measure. -/
+theorem Submission.dtc_bc_lc_good_level : ∀ (P : ℕ) (g : ℕ → ℝ → ℝ≥0∞) (μ : ℕ → Measure (Euclid P)) (h : Euclid P → ℝ) (good : ℕ → ℝ → Prop) (a b : ℝ), a < b → Measurable h → (∀ i, AEMeasurable (g i) (volume.restrict (Ioo a b))) → (∑' i, ∫⁻ t in Ioo a b, g i t) ≠ ∞ → (∀ i, μ i {x | a < h x ∧ h x < b} ≠ ∞) → (∀ i, ∀ᵐ t, good i t) → ∃ t ∈ Ioo a b, (∀ i, good i t) ∧ (∑' i, g i t) ≠ ∞ ∧ ∀ i, μ i {x | h x = t} = 0 := by
+  intro P g μ h good a b hab hh hg hsum hμ hgood
+  set S : Set (Euclid P) := {x | a < h x ∧ h x < b}
+  -- for each `i`, only countably many levels `t` have `μᵢ⌞S {h = t} > 0`
+  have hC : ∀ i, {t : ℝ | 0 < (μ i).restrict S {x | h x = t}}.Countable := by
+    intro i
+    have : IsFiniteMeasure ((μ i).restrict S) := isFiniteMeasure_restrict.2 (hμ i)
+    exact Measure.countable_meas_level_set_pos hh
+  -- `∫_{(a,b)} Σᵢ gᵢ = Σᵢ ∫_{(a,b)} gᵢ < ∞`, so `Σᵢ gᵢ < ∞` a.e. on `(a, b)`
+  have hfin : ∀ᵐ t ∂(volume.restrict (Ioo a b)), ∑' i, g i t < ∞ := by
+    refine ae_lt_top' (AEMeasurable.tsum hg) ?_
+    rwa [lintegral_tsum hg]
+  have hall : ∀ᵐ t ∂(volume.restrict (Ioo a b)), t ∈ Ioo a b ∧ (∀ i, good i t) ∧
+      ∑' i, g i t < ∞ ∧ t ∉ ⋃ i, {t : ℝ | 0 < (μ i).restrict S {x | h x = t}} := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioo, ae_restrict_of_ae (ae_all_iff.2 hgood),
+      hfin, ae_restrict_of_ae ((countable_iUnion hC).ae_notMem volume)] with t h₁ h₂ h₃ h₄
+    exact ⟨h₁, h₂, h₃, h₄⟩
+  -- `(a, b)` has positive measure
+  have : (ae (volume.restrict (Ioo a b))).NeBot := by
+    refine ae_neBot.2 fun h₀ => ?_
+    rw [Measure.restrict_eq_zero, Real.volume_Ioo] at h₀
+    exact (ENNReal.ofReal_pos.2 (sub_pos.2 hab)).ne' h₀
+  obtain ⟨t, ht, hgt, hst, hCt⟩ := hall.exists
+  refine ⟨t, ht, hgt, hst.ne, fun i => ?_⟩
+  have hS : {x | h x = t} ⊆ S := fun x (hx : h x = t) => show a < h x ∧ h x < b from hx ▸ ht
+  rw [← Measure.restrict_eq_self (μ i) hS]
+  exact nonpos_iff_eq_zero.1 (not_lt.1 fun hpos => hCt (mem_iUnion.2 ⟨i, hpos⟩))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
