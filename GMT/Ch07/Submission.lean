@@ -485,6 +485,81 @@ theorem Submission.codim1_rdo_dg_tma_hyperplane_param : ∀ (m : ℕ) (v : Eucli
     -- `ι_# Lᵐ = ι_# μHE[m] = μHE[m]⌞range ι`
     rw [← hrange, ← ι.isometry.map_euclideanHausdorffMeasure,
       EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+/-- **Simon Ch. 3, 4.3 (†)** (boundary-parallel directions): if `⟨u, v⟩ = 0` and `h` is `C¹` with
+compact support, then `∫_H Dh(w)(u) dw = 0` on the half-space `H = {w : ⟨w, v⟩ > 0}`.  `H` is
+invariant under `w ↦ w + t u`, so `Φ(t) = ∫_H h(w + t u) dw` is constant by translation
+invariance of Lebesgue measure; differentiating under the integral sign at `t = 0` gives
+`Φ'(0) = ∫_H Dh(w)(u) dw = 0`. -/
+theorem Submission.codim1_rdo_dg_tma_tangential_halfspace : ∀ (P : ℕ) (v u : Euclid P) (h : Euclid P → ℝ), inner ℝ u v = 0 → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid P | 0 < inner ℝ w v}, fderiv ℝ h w u = 0 := by
+  intro P v u h huv hh hhc
+  set H : Set (Euclid P) := {w | 0 < inner ℝ w v} with hHdef
+  -- Step 1: `H` is open, hence measurable, and invariant under translation along `u`
+  have hHmeas : MeasurableSet H :=
+    (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+  have hHinv : ∀ (t : ℝ) (w : Euclid P), w + t • u ∈ H ↔ w ∈ H := by
+    intro t w
+    simp [hHdef, inner_add_left, real_inner_smul_left, huv]
+  -- Step 2: `Φ(t) = ∫_H h(w + t u) dw` does not depend on `t`
+  have hconst : ∀ t : ℝ, ∫ w in H, h (w + t • u) = ∫ w in H, h w := by
+    intro t
+    rw [← integral_indicator hHmeas, ← integral_indicator hHmeas]
+    have hfun : (fun w => H.indicator (fun w => h (w + t • u)) w) =
+        fun w => H.indicator h (w + t • u) := by
+      funext w
+      by_cases hw : w ∈ H
+      · rw [indicator_of_mem hw, indicator_of_mem ((hHinv t w).2 hw)]
+      · rw [indicator_of_notMem hw, indicator_of_notMem (fun h' => hw ((hHinv t w).1 h'))]
+    rw [hfun, integral_add_right_eq_self (fun w => H.indicator h w) (t • u)]
+  -- Step 3: `|Dh(w + t u)(u)| ≤ M‖u‖ 1_{B̄_{R+‖u‖}(0)}(w)` for `|t| < 1`
+  obtain ⟨R, hR⟩ := hhc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  have hdc : Continuous (fderiv ℝ h) := hh.continuous_fderiv one_ne_zero
+  obtain ⟨M, hM⟩ := hdc.bounded_above_of_compact_support (hhc.fderiv ℝ)
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  set bound : Euclid P → ℝ :=
+    (closedBall (0 : Euclid P) (R + ‖u‖)).indicator (fun _ => M * ‖u‖) with hbound
+  have hhd : Differentiable ℝ h := hh.differentiable one_ne_zero
+  -- Step 4: differentiation under the integral sign at `t = 0`
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (μ := volume.restrict H) (F := fun (t : ℝ) w => h (w + t • u))
+    (F' := fun (t : ℝ) w => fderiv ℝ h (w + t • u) u) (x₀ := (0 : ℝ)) (bound := bound)
+    (ball_mem_nhds (0 : ℝ) one_pos)
+    (Eventually.of_forall fun t => (hh.continuous.comp (by fun_prop)).aestronglyMeasurable)
+    (by
+      simp only [zero_smul, add_zero]
+      exact (hh.continuous.integrable_of_hasCompactSupport hhc).integrableOn)
+    ((hdc.clm_apply continuous_const).comp (by fun_prop)).aestronglyMeasurable
+    (Eventually.of_forall fun w t ht => by
+      by_cases hwt : w + t • u ∈ tsupport h
+      · have h1 : ‖w + t • u‖ ≤ R := by simpa using hR hwt
+        have ht1 : |t| < 1 := by simpa using ht
+        have h2 : ‖w‖ ≤ R + ‖u‖ := by
+          calc ‖w‖ = ‖(w + t • u) - t • u‖ := by simp
+            _ ≤ ‖w + t • u‖ + ‖t • u‖ := norm_sub_le _ _
+            _ ≤ R + ‖u‖ := by
+                rw [norm_smul, Real.norm_eq_abs]
+                nlinarith [abs_nonneg t, norm_nonneg u]
+        rw [hbound, indicator_of_mem (by simpa using h2)]
+        exact (ContinuousLinearMap.le_opNorm _ _).trans
+          (mul_le_mul_of_nonneg_right (hM _) (norm_nonneg _))
+      · have : fderiv ℝ h (w + t • u) = 0 := by
+          by_contra hne
+          exact hwt (support_fderiv_subset ℝ hne)
+        rw [this, zero_apply, norm_zero]
+        exact indicator_nonneg (fun _ _ => mul_nonneg hM0 (norm_nonneg _)) _)
+    ((integrable_indicator_iff measurableSet_closedBall).2
+      (integrableOn_const (measure_closedBall_lt_top).ne)).integrableOn
+    (Eventually.of_forall fun w t _ => by
+      have h1 : HasDerivAt (fun t : ℝ => w + t • u) u t := by
+        simpa using ((hasDerivAt_id t).smul_const u).const_add w
+      exact ((hhd (w + t • u)).hasFDerivAt.comp_hasDerivAt t h1))
+  -- Step 5: `Φ` is constant, so `Φ'(0) = ∫_H Dh(w)(u) dw` vanishes
+  have h0 : HasDerivAt (fun t : ℝ => ∫ w in H, h (w + t • u)) 0 0 := by
+    have hfun : (fun t : ℝ => ∫ w in H, h (w + t • u)) = fun _ => ∫ w in H, h w :=
+      funext hconst
+    rw [hfun]
+    exact hasDerivAt_const _ _
+  have := key.2.unique h0
+  simpa using this
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
