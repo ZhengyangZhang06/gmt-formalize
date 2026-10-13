@@ -451,6 +451,90 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Disjoint Borel refinement of chart pieces** (Simon Ch. 3, Remark 1.3).  Let `M ⊆ ℝᴾ` be
+Borel, `Cⱼ ⊆ ℝᵐ` compact and `ψⱼ` continuous on `Cⱼ`, with `μ(M ∖ ⋃ⱼ ψⱼ(Cⱼ)) = 0`, and suppose
+that for `μ⌞(M ∩ ψⱼ(Cⱼ))`-a.e. `x` every `y ∈ Cⱼ` with `ψⱼ(y) = x` satisfies `Goodⱼ(y)`.  Then
+there are Borel sets `Yⱼ ⊆ Cⱼ` of good points whose images `ψⱼ(Yⱼ) ⊆ M` are pairwise disjoint
+and cover `M` up to a `μ`-null set. -/
+theorem Submission.dor_lmbsf_cp_disjoint_refinement : ∀ (m P : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (C : ℕ → Set (Euclid m)) (ψ : ℕ → Euclid m → Euclid P) (Good : ℕ → Euclid m → Prop), MeasurableSet M → (∀ j, IsCompact (C j) ∧ ContinuousOn (ψ j) (C j)) → μ (M \ ⋃ j, ψ j '' C j) = 0 → (∀ j, ∀ᵐ x ∂(μ.restrict (M ∩ ψ j '' C j)), ∀ y ∈ C j, ψ j y = x → Good j y) → ∃ Y : ℕ → Set (Euclid m), (∀ j, MeasurableSet (Y j) ∧ Y j ⊆ C j ∧ ψ j '' Y j ⊆ M ∧ ∀ y ∈ Y j, Good j y) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) ∧ μ (M \ ⋃ j, ψ j '' Y j) = 0 := by
+  classical
+  intro m P μ M C ψ Good hM hC hnull hgood
+  -- `Eⱼ = ψⱼ(Cⱼ)` is compact, hence Borel, and `Aⱼ = M ∩ Eⱼ` is Borel
+  let E : ℕ → Set (Euclid P) := fun j => ψ j '' C j
+  have hEc : ∀ j, IsCompact (E j) := fun j => (hC j).1.image_of_continuousOn (hC j).2
+  have hEm : ∀ j, MeasurableSet (E j) := fun j => (hEc j).isClosed.measurableSet
+  let A : ℕ → Set (Euclid P) := fun j => M ∩ E j
+  have hAm : ∀ j, MeasurableSet (A j) := fun j => hM.inter (hEm j)
+  -- a Borel set `Tⱼ` containing the exceptional points, with `μ(Tⱼ ∩ Aⱼ) = 0`
+  have hT : ∀ j, ∃ T : Set (Euclid P), {x | ¬ ∀ y ∈ C j, ψ j y = x → Good j y} ⊆ T ∧
+      MeasurableSet T ∧ μ (T ∩ A j) = 0 := by
+    intro j
+    obtain ⟨T, hsub, hTm, hT0⟩ := exists_measurable_superset_of_null (ae_iff.1 (hgood j))
+    exact ⟨T, hsub, hTm, by rwa [Measure.restrict_apply hTm] at hT0⟩
+  choose T hTsub hTm hT0 using hT
+  -- Remark 1.3: `Dⱼ = Aⱼ ∖ ⋃_{i<j} Aᵢ`; then `M'ⱼ = Dⱼ ∖ Tⱼ` and `Yⱼ = Cⱼ ∩ ψⱼ⁻¹(M'ⱼ)`
+  let D : ℕ → Set (Euclid P) := disjointed A
+  let M' : ℕ → Set (Euclid P) := fun j => D j \ T j
+  have hDm : ∀ j, MeasurableSet (D j) := MeasurableSet.disjointed hAm
+  have hM'm : ∀ j, MeasurableSet (M' j) := fun j => (hDm j).diff (hTm j)
+  have hDA : ∀ j, D j ⊆ A j := disjointed_subset A
+  -- `ψⱼ(Yⱼ) = M'ⱼ`, since `M'ⱼ ⊆ Aⱼ ⊆ ψⱼ(Cⱼ)`
+  have himg : ∀ j, ψ j '' (C j ∩ ψ j ⁻¹' M' j) = M' j := by
+    intro j
+    ext x
+    constructor
+    · rintro ⟨y, ⟨_, hy⟩, rfl⟩
+      exact hy
+    · intro hx
+      obtain ⟨y, hy, rfl⟩ := (hDA j hx.1).2
+      exact ⟨y, ⟨hy, hx⟩, rfl⟩
+  refine ⟨fun j => C j ∩ ψ j ⁻¹' M' j, fun j => ⟨?_, inter_subset_left, ?_, ?_⟩, ?_, ?_⟩
+  · -- `Yⱼ` is Borel: on `Cⱼ`, `ψⱼ` agrees with the Borel map equal to `ψⱼ` on `Cⱼ`, `0` off it
+    have hpw : Measurable ((C j).piecewise (ψ j) (fun _ => 0)) :=
+      (hC j).2.measurable_piecewise continuousOn_const (hC j).1.isClosed.measurableSet
+    have : C j ∩ ψ j ⁻¹' M' j = C j ∩ (C j).piecewise (ψ j) (fun _ => 0) ⁻¹' M' j := by
+      ext y
+      constructor
+      · rintro ⟨hy, hy'⟩
+        exact ⟨hy, by simpa [Set.piecewise_eq_of_mem _ _ _ hy] using hy'⟩
+      · rintro ⟨hy, hy'⟩
+        exact ⟨hy, by simpa [Set.piecewise_eq_of_mem _ _ _ hy] using hy'⟩
+    show MeasurableSet (C j ∩ ψ j ⁻¹' M' j)
+    rw [this]
+    exact (hC j).1.isClosed.measurableSet.inter (hpw (hM'm j))
+  · -- `ψⱼ(Yⱼ) = M'ⱼ ⊆ Aⱼ ⊆ M`
+    rw [himg j]
+    exact fun x hx => (hDA j hx.1).1
+  · -- points of `Yⱼ` are good, since `ψⱼ(y) ∉ Tⱼ`
+    intro y hy
+    have hx : ψ j y ∉ T j := hy.2.2
+    have : ψ j y ∉ {x | ¬ ∀ y ∈ C j, ψ j y = x → Good j y} := fun h => hx (hTsub j h)
+    simp only [mem_ofPred_eq, not_not] at this
+    exact this y hy.1 rfl
+  · -- the images lie in the pairwise disjoint `Dⱼ`
+    intro i j hij
+    simp only
+    rw [himg i, himg j]
+    exact (disjoint_disjointed A hij).mono sdiff_subset sdiff_subset
+  · -- `M ∖ ⋃ⱼ ψⱼ(Yⱼ) ⊆ (M ∖ ⋃ⱼ Eⱼ) ∪ ⋃ⱼ (Tⱼ ∩ Aⱼ)`, a `μ`-null set
+    have hsub : M \ ⋃ j, ψ j '' (C j ∩ ψ j ⁻¹' M' j) ⊆ (M \ ⋃ j, E j) ∪ ⋃ j, (T j ∩ A j) := by
+      rintro x ⟨hxM, hxnot⟩
+      by_cases hxE : x ∈ ⋃ j, E j
+      · right
+        have hxA : x ∈ ⋃ j, A j := by
+          obtain ⟨j, hj⟩ := mem_iUnion.1 hxE
+          exact mem_iUnion.2 ⟨j, hxM, hj⟩
+        rw [← iUnion_disjointed] at hxA
+        obtain ⟨j, hj⟩ := mem_iUnion.1 hxA
+        have hxT : x ∈ T j := by
+          by_contra hxT
+          exact hxnot (mem_iUnion.2 ⟨j, by rw [himg j]; exact ⟨hj, hxT⟩⟩)
+        exact mem_iUnion.2 ⟨j, hxT, hDA j hj⟩
+      · exact Or.inl ⟨hxM, hxE⟩
+    refine measure_mono_null hsub ?_
+    rw [measure_union_null_iff]
+    exact ⟨hnull, measure_iUnion_null hT0⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
