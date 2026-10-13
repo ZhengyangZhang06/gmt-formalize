@@ -451,6 +451,105 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Fundamental theorem of calculus for a Lipschitz `u` along the line `τ ↦ p + τ v`: if `u` is
+differentiable at `p + τ v` for a.e. `τ ∈ [a, b]`, then
+`u(p + b v) − u(p + a v) = ∫_a^b Du(p + τ v) v dτ`.  The difference quotients of
+`φ(τ) = u(p + τ v)` are bounded by `L ‖v‖`, so dominated convergence takes their integrals to
+`∫_a^b Du(p + τ v) v`; the same integrals are boundary averages of `φ`, which tend to
+`φ(b) − φ(a)`. -/
+theorem dorag_ha_rb_line_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (p v : Euclid n) (a b : ℝ), LipschitzWith L u → (∀ᵐ τ : ℝ, τ ∈ Set.uIcc a b → DifferentiableAt ℝ u (p + τ • v)) → u (p + b • v) - u (p + a • v) = ∫ τ in a..b, fderiv ℝ u (p + τ • v) v := by
+  intro n u L p v a b hu hdiff
+  -- `φ τ = u (p + τ • v)` is continuous and `L ‖v‖`-Lipschitz
+  set φ : ℝ → ℝ := fun τ => u (p + τ • v) with hφ
+  have hφcont : Continuous φ :=
+    hu.continuous.comp (continuous_const.add (continuous_id.smul continuous_const))
+  have hφlip : ∀ s t : ℝ, |φ s - φ t| ≤ L * ‖v‖ * |s - t| := by
+    intro s t
+    have h := hu.dist_le_mul (p + s • v) (p + t • v)
+    rw [Real.dist_eq, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul,
+      Real.norm_eq_abs] at h
+    calc |φ s - φ t| ≤ L * (|s - t| * ‖v‖) := h
+      _ = L * ‖v‖ * |s - t| := by ring
+  -- chain rule along the line
+  have hderiv : ∀ τ : ℝ, DifferentiableAt ℝ u (p + τ • v) →
+      HasDerivAt φ (fderiv ℝ u (p + τ • v) v) τ := by
+    intro τ hτ
+    have hγ : HasDerivAt (fun t : ℝ => p + t • v) v τ := by
+      simpa using ((hasDerivAt_id τ).smul_const v).const_add p
+    exact hτ.hasFDerivAt.comp_hasDerivAt τ hγ
+  -- dominated convergence for the difference quotients
+  have hlim1 : Tendsto (fun h : ℝ => ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)) (𝓝[>] 0)
+      (𝓝 (∫ τ in a..b, fderiv ℝ u (p + τ • v) v)) := by
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+      (fun _ => (L : ℝ) * ‖v‖) ?_ ?_ intervalIntegrable_const ?_
+    · filter_upwards with h
+      exact (((hφcont.comp (continuous_id.add continuous_const)).sub hφcont).const_smul
+        h⁻¹).aestronglyMeasurable
+    · filter_upwards [self_mem_nhdsWithin] with h hh
+      filter_upwards with τ _
+      have hh' : (0 : ℝ) < h := hh
+      rw [norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, abs_inv, abs_of_pos hh']
+      have := hφlip (τ + h) τ
+      rw [add_sub_cancel_left, abs_of_pos hh'] at this
+      calc h⁻¹ * |φ (τ + h) - φ τ| ≤ h⁻¹ * (L * ‖v‖ * h) :=
+            mul_le_mul_of_nonneg_left this (inv_nonneg.2 hh'.le)
+        _ = L * ‖v‖ := by field_simp
+    · filter_upwards [hdiff] with τ hτ hτ'
+      exact (hderiv τ (hτ (uIoc_subset_uIcc hτ'))).tendsto_slope_zero_right
+  -- the difference quotients integrate to boundary averages
+  set F : ℝ → ℝ := fun x => ∫ τ in (0 : ℝ)..x, φ τ with hF
+  have hFint : ∀ s t : ℝ, ∫ τ in s..t, φ τ = F t - F s := by
+    intro s t
+    exact (intervalIntegral.integral_interval_sub_left (hφcont.intervalIntegrable _ _)
+      (hφcont.intervalIntegrable _ _)).symm
+  have hkey : ∀ h : ℝ, ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)
+      = h⁻¹ • (F (b + h) - F b) - h⁻¹ • (F (a + h) - F a) := by
+    intro h
+    have hi : IntervalIntegrable (fun τ => φ (τ + h)) volume a b :=
+      (hφcont.comp (continuous_id.add continuous_const)).intervalIntegrable a b
+    rw [intervalIntegral.integral_smul, intervalIntegral.integral_sub hi
+      (hφcont.intervalIntegrable a b), intervalIntegral.integral_comp_add_right (fun τ => φ τ) h,
+      hFint, hFint]
+    simp only [smul_eq_mul]
+    ring
+  have hFd : ∀ x : ℝ, HasDerivAt F (φ x) x := fun x =>
+    (hφcont.integral_hasStrictDerivAt 0 x).hasDerivAt
+  have hlim2 : Tendsto (fun h : ℝ => ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)) (𝓝[>] 0)
+      (𝓝 (φ b - φ a)) := by
+    simp_rw [hkey]
+    exact (hFd b).tendsto_slope_zero_right.sub (hFd a).tendsto_slope_zero_right
+  exact tendsto_nhds_unique hlim2 hlim1
+
+end Submission
+
+/-- **FTC along translates of a Lipschitz function, for a.e. base point.**  If `u : ℝⁿ → ℝ` is
+`L`-Lipschitz and `z ∈ ℝⁿ`, then `u(p + z) − u(p) = ∫₀¹ Du(p + τz)z dτ` for a.e. `p ∈ ℝⁿ`.  By
+Rademacher's theorem the measurable set `D` of differentiability points of `u` is conull, so by
+translation invariance `p + τz ∈ D` for a.e. `p`, for every `τ`.  Fubini for the null set of the
+measurable set `{(p, τ) : p + τz ∈ D}` then gives, for a.e. `p`, `p + τz ∈ D` for a.e. `τ`: the
+hypothesis of the line FTC `Submission.dorag_ha_rb_line_ftc` with `v = z`, `a = 0`, `b = 1`. -/
+theorem Submission.dorag_ha_rb_segment_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (z : Euclid n), LipschitzWith L u → ∀ᵐ p : Euclid n, u (p + z) - u p = ∫ τ in (0 : ℝ)..1, fderiv ℝ u (p + τ • z) z := by
+  intro n u L z hu
+  -- step 1: the set `D` of differentiability points of `u` is measurable and conull (Rademacher)
+  have hD : MeasurableSet {y : Euclid n | DifferentiableAt ℝ u y} :=
+    measurableSet_of_differentiableAt ℝ u
+  have hae : ∀ᵐ y : Euclid n, DifferentiableAt ℝ u y := hu.ae_differentiableAt
+  -- step 2: for every `τ`, `p ↦ p + τz` preserves Lebesgue measure, so `p + τz ∈ D` for a.e. `p`
+  have hτ : ∀ τ : ℝ, ∀ᵐ p : Euclid n, DifferentiableAt ℝ u (p + τ • z) := fun τ =>
+    (measurePreserving_add_right volume (τ • z)).quasiMeasurePreserving.ae hae
+  -- step 3: `{(p, τ) : p + τz ∈ D}` is measurable, so Fubini lets us swap the a.e. quantifiers
+  have hmeas : MeasurableSet {q : Euclid n × ℝ | DifferentiableAt ℝ u (q.1 + q.2 • z)} :=
+    hD.preimage (measurable_fst.add (measurable_snd.smul_const z))
+  have hp : ∀ᵐ p : Euclid n, ∀ᵐ τ : ℝ, DifferentiableAt ℝ u (p + τ • z) :=
+    (Measure.ae_ae_comm (p := fun p τ => DifferentiableAt ℝ u (p + τ • z)) hmeas).2
+      (Eventually.of_forall hτ)
+  -- step 4: the line FTC with `v = z`, `a = 0`, `b = 1`, and `1 • z = z`, `p + 0 • z = p`
+  filter_upwards [hp] with p hp
+  have h := Submission.dorag_ha_rb_line_ftc n u L p z 0 1 hu (hp.mono fun τ hτ _ => hτ)
+  rwa [one_smul, zero_smul, add_zero] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
