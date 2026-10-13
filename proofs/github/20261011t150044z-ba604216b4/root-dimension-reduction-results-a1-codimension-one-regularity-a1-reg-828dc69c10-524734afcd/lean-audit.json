@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e73afa22ab07364ca7c777bbc4353cb48e601531bf59f53e9ca1cd3ab0fb99a9",
+  "git_delta": {
+    "base_commit": "3257f9e9dfa28d29c7884fa093cf75e6d42ec392",
+    "candidate_commit": "6057bc9f0af7e624ac82e56dc0bef1991ba13181",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "146558f4dc5902bf1d4b7525564ef058c81ad0b841d94dfb67c175b6e683771a",
+    "source_sha256": "962cb88ee825c9b38d5fe0423faf73e97bcfe6a3c679caaacbc20cf2b2190de5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_normalized_wedge_orientation",
+      "statement": "∀ (P n : ℕ) (a : Fin n → Euclid P), LinearIndependent ℝ a → 0 < Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i) (a j)) ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, ξ α = (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i) (a j))))⁻¹ * α a) → IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range a))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
