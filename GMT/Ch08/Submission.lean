@@ -548,6 +548,71 @@ theorem Submission.intcpt_fli_weight_compact_eventually_lt :
   -- Step 8: combine steps 6 and 7.
   exact hev.mono fun k hk ↦ (hKg k).trans_lt hk
 
+/-- Uniform eventual mass bound on the unit disc of `P` (step 4(iv) of the flat-limit argument in the
+proof of Simon Ch. 8, 5.9, p. 219): if `W_k → θ₀ v(P)` as Radon measures on `Gₙ(B°_5(0))`, then for
+each `η > 0` and all large `k`, `μ_{W_k}(B_1(a)) ≤ (θ₀ + η) ω_n` for every `a ∈ P` with `|a| ≤ 1`.
+The compact disc `P ∩ B_1(0)` is covered by finitely many balls `B°_{η'}(a_l)`, and the eventual
+compact-set mass bound is applied at each centre. -/
+theorem Submission.intcpt_fli_unit_disc_mass_eventually :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ η : ℝ, 0 < η → ∀ᶠ k in atTop, ∀ a ∈ (P.plane : Set (Euclidean N)), ‖a‖ ≤ 1 → (W k).weight (closedBall a 1) ≤ ENNReal.ofReal ((θ₀ + η) * (unitBallVolume n).toReal) := by
+  intro N n P θ₀ W hθ₀ hconv η hη
+  -- Step 1: `ω = ω_n ∈ (0, ∞)`, so `unitBallVolume n = ofReal ω`.
+  have hωne : unitBallVolume n ≠ ∞ := by
+    rw [unitBallVolume]
+    exact measure_ball_lt_top.ne
+  have hωpos : 0 < (unitBallVolume n).toReal := by
+    refine ENNReal.toReal_pos ?_ hωne
+    rw [unitBallVolume]
+    exact (measure_ball_pos _ _ one_pos).ne'
+  set ω := (unitBallVolume n).toReal with hω
+  have hωeq : unitBallVolume n = ENNReal.ofReal ω := (ENNReal.ofReal_toReal hωne).symm
+  -- Step 2: some `η' ∈ (0,1)` has `θ₀ (1 + 2η')^n < θ₀ + η`, by continuity at `s = 0`.
+  obtain ⟨η', hη'0, hη'1, hη'b⟩ :
+      ∃ η' : ℝ, 0 < η' ∧ η' < 1 ∧ θ₀ * (1 + 2 * η') ^ n < θ₀ + η := by
+    have hcont : Continuous fun s : ℝ ↦ θ₀ * (1 + 2 * s) ^ n := by fun_prop
+    have h0 : θ₀ * (1 + 2 * 0) ^ n < θ₀ + η := by simpa using hη
+    have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), θ₀ * (1 + 2 * s) ^ n < θ₀ + η :=
+      (tendsto_nhdsWithin_of_tendsto_nhds (hcont.tendsto 0)).eventually (gt_mem_nhds h0)
+    obtain ⟨s, hs, hs01⟩ := (hev.and (Ioo_mem_nhdsGT one_pos)).exists
+    exact ⟨s, hs01.1, hs01.2, hs⟩
+  -- Step 3: the disc `D = P ∩ B_1(0)` is compact, so finitely many `B°_{η'}(a_l)`, `a_l ∈ D`,
+  -- cover it.
+  have hD : IsCompact ((P.plane : Set (Euclidean N)) ∩ closedBall 0 1) :=
+    (isCompact_closedBall 0 1).inter_left (Submodule.closed_of_finiteDimensional _)
+  obtain ⟨t, htD, htfin, hcover⟩ := finite_cover_balls_of_compact hD hη'0
+  -- Step 4: at each centre `a_l`, with `K_l = B_{1+η'}(a_l) ⊆ O_l = B°_{1+2η'}(a_l) ⊆ B°_5(0)`,
+  -- `plane_ball_measure` gives `θ₀ H^n(P ∩ O_l) = ofReal (θ₀ ω (1 + 2η')^n) < ofReal ((θ₀ + η) ω)`,
+  -- so `compact_mass_eventually` bounds `μ_k(K_l)` for all large `k`.
+  have hl : ∀ al ∈ t, ∀ᶠ k in atTop,
+      (W k).weight (closedBall al (1 + η')) < ENNReal.ofReal ((θ₀ + η) * ω) := by
+    intro al hal
+    obtain ⟨halP, hal1⟩ := htD hal
+    rw [mem_closedBall, dist_zero_right] at hal1
+    have hO5 : ball al (1 + 2 * η') ⊆ ball (0 : Euclidean N) 5 := by
+      intro z hz
+      rw [mem_ball, dist_eq_norm] at hz
+      rw [mem_ball, dist_zero_right]
+      calc ‖z‖ = ‖(z - al) + al‖ := by rw [sub_add_cancel]
+        _ ≤ ‖z - al‖ + ‖al‖ := norm_add_le _ _
+        _ < 5 := by linarith
+    have hmass : ENNReal.ofReal θ₀ * (μHE[n] : Measure (Euclidean N))
+        ((P.plane : Set (Euclidean N)) ∩ ball al (1 + 2 * η')) <
+          ENNReal.ofReal ((θ₀ + η) * ω) := by
+      rw [(Submission.intcpt_fli_plane_ball_measure N n P al (1 + 2 * η') halP (by linarith)).2,
+        hωeq, ← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_mul hωpos.le,
+        ← ENNReal.ofReal_mul hθ₀.le, ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+      calc θ₀ * (ω * (1 + 2 * η') ^ n) = θ₀ * (1 + 2 * η') ^ n * ω := by ring
+        _ < (θ₀ + η) * ω := mul_lt_mul_of_pos_right hη'b hωpos
+    exact Submission.intcpt_fli_weight_compact_eventually_lt N n P θ₀ W hθ₀ hconv _ _ _
+      (isCompact_closedBall _ _) isOpen_ball (closedBall_subset_ball (by linarith)) hO5 hmass
+  -- Step 5: `t` is finite, so these bounds hold simultaneously for all large `k`.
+  filter_upwards [(eventually_all_finite htfin).2 hl] with k hk a ha ha1
+  -- Step 6: `a ∈ D` lies in some `B°_{η'}(a_l)`, hence `B_1(a) ⊆ B_{1+η'}(a_l)`.
+  obtain ⟨al, hal, hadist⟩ :=
+    mem_iUnion₂.1 (hcover ⟨ha, by rwa [mem_closedBall, dist_zero_right]⟩)
+  rw [mem_ball] at hadist
+  exact (measure_mono (closedBall_subset_closedBall' (by linarith))).trans (hk al hal).le
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
