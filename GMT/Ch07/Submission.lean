@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Derivative of the polar map `F(y) = (|y|, arctan(⟨y, e⟩ / ⟨y, a⟩))` at a point `x` with
+`⟨x, a⟩ ≠ 0` (no orthonormality of `a`, `e` is assumed):
+`DF(x) v = (⟨x, v⟩ / |x|, ⟨⟨x, a⟩ e − ⟨x, e⟩ a, v⟩ / (⟨x, a⟩² + ⟨x, e⟩²))`.  The norm is
+`√(|y|²)`; the angle is `arctan(⟨y, e⟩ ⟨y, a⟩⁻¹)`, differentiated by the inverse, chain and product
+rules. -/
+theorem Submission.idtp_cse_fa_pj_polar_fderiv_apply : ∀ (P : ℕ) (a e x : Euclid P), inner ℝ x a ≠ 0 → ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x v = (inner ℝ x v / ‖x‖, inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / (inner ℝ x a ^ 2 + inner ℝ x e ^ 2)) := by
+  intro P a e x hxa v
+  -- non-degeneracy: `x ≠ 0` and `⟨x, a⟩² + ⟨x, e⟩² ≠ 0`
+  have hx : x ≠ 0 := by
+    rintro rfl
+    exact hxa (inner_zero_left a)
+  have hnx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+  have hρ : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 ≠ 0 := by positivity
+  -- the norm is `√(‖y‖²)`
+  have hN : HasFDerivAt (fun y : Euclid P => ‖y‖)
+      ((1 / (2 * √(‖x‖ ^ 2))) • (2 • innerSL ℝ x)) x := by
+    refine ((hasStrictFDerivAt_norm_sq x).hasFDerivAt.sqrt (by positivity)).congr_of_eventuallyEq
+      (Eventually.of_forall fun y => ?_)
+    exact (Real.sqrt_sq (norm_nonneg y)).symm
+  -- the linear coordinates `⟨y, e⟩` and `⟨y, a⟩`
+  have hE : HasFDerivAt (fun y : Euclid P => inner ℝ y e) (innerSL ℝ e) x :=
+    (innerSL ℝ e).hasFDerivAt.congr_of_eventuallyEq
+      (Eventually.of_forall fun y => real_inner_comm e y)
+  have hA : HasFDerivAt (fun y : Euclid P => inner ℝ y a) (innerSL ℝ a) x :=
+    (innerSL ℝ a).hasFDerivAt.congr_of_eventuallyEq
+      (Eventually.of_forall fun y => real_inner_comm a y)
+  -- `⟨y, e⟩ ⟨y, a⟩⁻¹` by the inverse, chain and product rules, then `arctan`
+  have hQ := hE.fun_mul ((hasFDerivAt_inv hxa).comp x hA)
+  have hF := hN.prodMk hQ.arctan
+  have hF' : HasFDerivAt (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) _ x :=
+    hF.congr_of_eventuallyEq (Eventually.of_forall fun y => by simp only [div_eq_mul_inv]; rfl)
+  rw [hF'.fderiv]
+  -- field arithmetic in each coordinate
+  simp only [ContinuousLinearMap.prod_apply, smul_apply, add_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.toSpanSingleton_apply, innerSL_apply_apply, Function.comp_apply,
+    smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat, Real.sqrt_sq (norm_nonneg x), inner_sub_left,
+    real_inner_smul_left]
+  refine Prod.ext ?_ ?_
+  · field_simp
+  · field_simp
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
